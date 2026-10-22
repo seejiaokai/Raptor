@@ -1,9 +1,11 @@
 /* [ABSENCE-SMALL-SEEN] 1 (28 Sep 26) — EVERY CLASH LINE NAMES WHERE IT CAN BE UNDONE. The Leave War's clash strip said
    "— resolve on the sheet" on every line, but when the leave in the way was filed on the Inputs page the day's sheet has
-   no control for it (it says "Change it on the Inputs page"), and once a war is published its approved leave cannot be
-   sent back from the sheet either (21 Sep 26: published leave is finished paperwork). Found by the absence-record
-   re-test (W6 N2). One test per holder of the day — a bid, leave the war approved, the same once the war is published,
-   leave filed on the Inputs page — each on the strip the admin reads, not only in the list behind it.
+   no control for it (it says "Change it on the Inputs page"). Found by the absence-record re-test (W6 N2). One test per
+   holder of the day — a bid, leave the war approved, the same with bidding closed, leave filed on the Inputs page — each
+   on the strip the admin reads, not only in the list behind it.
+   THE STAGES WENT (D1177, 21 Oct 26), and with them the published war whose approved leave was finished paperwork and
+   the line "Step the war back to Bidding Closed" (D827 narrowed): nothing is frozen, so leave the war approved reads
+   "Change the approved leave", its sentence naming the leave as approved, whether the day is open for bidding or not.
 
    [LW-CLASH-NOTE-PHONE] (owner D805, D823, D827 — "A+", approved as drawn 13 Oct 26; the words D837, 14 Oct 26):
    the words are the writing guide's — the name, the day, what clashes as a sentence, then the instruction as the
@@ -23,9 +25,9 @@ import { initStore as raptorInitStore } from '../state/store'
 import { CURPAGE, setPage } from '../state/view'
 import { INPEDIT, setInpEdit } from '../ui/pops'
 import { projectPeople } from './state/raptorRoster'
-import { advanceStage, focusDay, getState, initStore as lwInitStore, reopenStage, setBidState, setCell, setPeople, setRole, takeFocusOpen } from './state/store'
+import { closeDates, focusDay, getState, initStore as lwInitStore, setBidState, setCell, setPeople, setRole, takeFocusOpen } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, installAbsenceDoor, runOilPass, syncAbsences } from './sync'
+import { clashPairOrder, getClashes, installAbsenceDoor, runOilPass, syncAbsences } from './sync'
 import { LeaveWarPage } from './LeaveWarPage'
 import { StageBar } from './ui/Chrome'
 import { PHONE_QUERY } from './ui/phone'
@@ -79,43 +81,56 @@ const stripLine = () => {
   expect(row, 'the strip carries the Saturday').toBeTruthy()
   return row!
 }
-const stageTo = (want: string) => {
-  for (let i = 0; i < 4 && getState().period.stage !== want; i++) {
-    const order = ['draft', 'open', 'closed', 'published']
-    if (order.indexOf(getState().period.stage) < order.indexOf(want)) advanceStage(); else reopenStage()
-  }
-  expect(getState().period.stage).toBe(want)
-}
+/* the whole period on screen closed for bidding (D1177 — what stepping the war on used to do) */
+const closeAll = () => { const p = getState().period; expect(closeDates(p.start, p.end)).toBe('set'); expect(getState().period.open).toEqual([]) }
 /* the four holders of the day, each set up the way the app does it */
 const aBid = () => { setCell('plasma', SAT, 'LL'); publishSat() }
-const warLeave = () => { stageTo('closed'); setCell('plasma', SAT, 'LL'); setBidState('plasma', SAT, 'approved'); publishSat() }
-const warLeavePublished = () => { stageTo('closed'); setCell('plasma', SAT, 'LL'); setBidState('plasma', SAT, 'approved'); stageTo('published'); publishSat() }
+const warLeave = () => { setCell('plasma', SAT, 'LL'); setBidState('plasma', SAT, 'approved'); publishSat() }
+const warLeaveClosed = () => { setCell('plasma', SAT, 'LL'); setBidState('plasma', SAT, 'approved'); closeAll(); publishSat() }
 const inputsLeave = () => {
   INPUTS.push({ iid: 'cwo-ll-1', person: 'plasma', type: 'LL', date: 'Jul 18', yr: 2026, allday: true, remarks: '', mod: 'now' })
   syncAbsences()
   publishSat()
 }
 
+/* M1's code read, L5: the sentence puts "approved" on its second code, so leave the war approved is always the second */
+describe('the clash pair is read in the sentence’s order', () => {
+  const c = (id: string, kind: any, code: string, lw?: string) => ({ id, kind, code, win: [0, 1440], ...(lw ? { lw } : {}) }) as any
+  it('a credit first; leave the war approved second; otherwise as the day has them', () => {
+    const credit = c('k', 'credit', 'HO'), approved = c('a', 'absence', 'OL', 'y2026'), medical = c('m', 'absence', 'HL'), bid = c('b', 'request', 'LL')
+    expect(clashPairOrder([approved, credit]).map(x => x.id)).toEqual(['k', 'a'])
+    expect(clashPairOrder([credit, approved]).map(x => x.id)).toEqual(['k', 'a'])
+    expect(clashPairOrder([approved, medical]).map(x => x.id)).toEqual(['m', 'a'])
+    expect(clashPairOrder([medical, approved]).map(x => x.id)).toEqual(['m', 'a'])
+    expect(clashPairOrder([medical, bid]).map(x => x.id)).toEqual(['m', 'b'])
+  })
+})
+
 describe('every clash line names where it can be undone — the words of record (D827, D837)', () => {
   it('a bid in the way: "Decide the bid"', () => {
-    aBid()                                              // an undecided bid; July is outside the seed bid window, admin writes it
+    aBid()                                              // an undecided bid; July is outside the seed open dates, admin writes it
     const c = theClash()
     expect(c.kind).toBe('duty')
     expect(c.wayOut).toBe('bid')
     expect(stripLine()).toBe(`${cs('plasma')} · Sat 18 Jul · Weekend/PH work earns ${c.inputCode}, but the day holds LL. Decide the bid ›`)
   })
 
-  it('leave the war approved: "Send the leave back or delete it"', () => {
+  it('leave the war approved: "Change the approved leave" (D1177 narrowing D827)', () => {
     warLeave()                                          // the absence door writes the Input, carrying the war's mark
     expect(INPUTS.some((r: any) => holds(r, 'plasma') && r.lw), 'the approval wrote war-approved leave').toBe(true)
     expect(theClash().wayOut).toBe('war')
-    expect(stripLine()).toMatch(/, but the day holds LL\. Send the leave back or delete it ›$/)
+    expect(stripLine()).toMatch(/, but the day holds approved LL\. Change the approved leave ›$/)
   })
 
-  it('the same leave once the war is published: the sheet offers neither, so the line says it is published and to step the war back', () => {
-    warLeavePublished()
-    expect(theClash().wayOut).toBe('war-published')
-    expect(stripLine()).toMatch(/, but the day holds published LL\. Step the war back to Bidding Closed ›$/)
+  /* the published war and its "Step the war back to Bidding Closed" went with the stages (D1177): with bidding closed
+     nothing is frozen — the admin sends back, moves or deletes the leave from the day at any time — so the line is the
+     same as while the day is open, and the old way out is never offered */
+  it('the same leave with bidding closed: nothing is frozen, so the line is the same — never "step the war back"', () => {
+    warLeaveClosed()
+    expect(theClash().wayOut).toBe('war')
+    const line = stripLine()
+    expect(line).toMatch(/, but the day holds approved LL\. Change the approved leave ›$/)
+    expect(line).not.toMatch(/published|Step the war back/)
   })
 
   it('leave filed on the Inputs page: change it there — the sheet has no control for it', () => {
@@ -158,12 +173,17 @@ describe('a tap on a clash goes where its instruction says (D827)', () => {
     expect(takeFocusOpen(SAT), 'a plain jump to the very day must not open it for him').toBeNull()
   })
 
-  it('leave the war approved, and the same once published: the day is opened for him too', () => {
+  it('leave the war approved, with bidding open and with it closed: the day is opened for him too', () => {
     warLeave()
-    const { getByTestId, unmount } = render(<StageBar />)
-    fireEvent.click(getByTestId('clash-go-0'))
+    const a = render(<StageBar />)
+    fireEvent.click(a.getByTestId('clash-go-0'))
     expect(takeFocusOpen(SAT)).toBe('plasma')
-    unmount()
+    a.unmount()
+    closeAll()
+    const b = render(<StageBar />)
+    fireEvent.click(b.getByTestId('clash-go-0'))
+    expect(takeFocusOpen(SAT)).toBe('plasma')
+    b.unmount()
   })
 
   it('"Change the leave on Inputs": the leave’s own window, on the Inputs page', () => {
@@ -325,12 +345,12 @@ describe('on a phone the note is a line of its own that opens its list (D805, D8
     expect(INPEDIT && INPEDIT.iid).toBe('cwo-ll-1')
   })
 
-  it('the published case keeps its fact: "holds published LL", and the war is what steps back', () => {
-    asPhone(); warLeavePublished()
+  it('leave the war approved keeps its fact on a phone: "holds approved LL", and "Change the approved leave" — bidding closed too', () => {
+    asPhone(); warLeaveClosed()
     const { getByTestId } = render(<StageBar />)
     const row = getByTestId('clash-row-0')
-    expect(flat(row.querySelector('.clash-what'))).toMatch(/, but the day holds published LL$/)
-    expect(flat(row.querySelector('.clash-do'))).toBe('Step the war back to Bidding Closed ›')
+    expect(flat(row.querySelector('.clash-what'))).toMatch(/, but the day holds approved LL$/)
+    expect(flat(row.querySelector('.clash-do'))).toBe('Change the approved leave ›')
   })
 
   /* The schedule's stylesheet is ONE global sheet, and it already owns short names — `.day` is a day of the week,

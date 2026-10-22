@@ -13,7 +13,7 @@
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { advanceStage, getState, initStore, lwHistInit, lwUndo, setCell, setRole } from '../state/store'
+import { closeDates, getState, initStore, lwHistInit, lwUndo, openDates, setBidState, setCell, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
@@ -66,13 +66,24 @@ describe('the one-day sheet’s Move (D262)', () => {
     expect(screen.queryByTestId('move-banner')).toBeNull()
   })
 
-  it('once bidding has closed it lands with the dotted "moved" trail', async () => {
-    advanceStage()
-    render(<Matrix />)
+  /* WAS "once bidding has closed it lands with the dotted 'moved' trail". CHANGED by D1177's reading — "the dotted
+     'moved' mark shows on any move of a leave already approved": a bid that only waits lands with no trail, whatever is
+     open; an APPROVED leave lands with it. */
+  it('a waiting bid lands with no trail even with every date closed; an approved leave lands with the dotted "moved" trail', async () => {
+    closeDates('2026-01-01', '2026-12-31')
+    const r = render(<Matrix />)
     pickUp()
     await land('cell-asics-2026-01-30')
-    expect(getState().states.asics['2026-01-30']).toEqual({ state: 'pending', source: 'bid', shiftedFrom: '2026-01-23' })
-    expect(screen.getByTestId('cell-asics-2026-01-30').querySelector('.c')!.className).toContain('moved')
+    expect(getState().states.asics['2026-01-30']).toEqual({ state: 'pending', source: 'bid' })
+    expect(screen.getByTestId('cell-asics-2026-01-30').querySelector('.c')!.className).not.toContain('moved')
+    r.unmount()
+    act(() => { setBidState('asics', '2026-01-30', 'approved') })
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-asics-2026-01-30'))
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    await land('cell-asics-2026-02-02')
+    expect(getState().states.asics['2026-02-02']).toEqual({ state: 'approved', source: 'bid', shiftedFrom: '2026-01-30' })
+    expect(screen.getByTestId('cell-asics-2026-02-02').querySelector('.c')!.className).toContain('moved')
   })
 
   it('a day that cannot take it is refused with its reason, and the move stays on', async () => {
@@ -149,10 +160,15 @@ describe('while the chip is picked up (D262)', () => {
     expect(screen.queryByTestId('move-banner')).toBeNull()
   })
 
-  it('a stage change ends it (the existing guard)', () => {
+  /* WAS "a stage change ends it". Since the stages went the guard is keyed on the open dates (D1177; the scenario
+     designer's S29): opening or closing any days under a picked-up chip ends the move. */
+  it('opening or closing dates ends it (the existing guard)', () => {
     render(<Matrix />)
     pickUp()
-    act(() => advanceStage())
+    act(() => { closeDates('2026-03-01', '2026-03-31') })
+    expect(screen.queryByTestId('move-banner')).toBeNull()
+    pickUp()
+    act(() => { openDates('2026-06-01', '2026-06-30') })
     expect(screen.queryByTestId('move-banner')).toBeNull()
   })
 

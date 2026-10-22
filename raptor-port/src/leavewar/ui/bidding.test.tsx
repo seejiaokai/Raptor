@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setBalance, setRole } from '../state/store'
+import { closeDates, getState, initStore, setBalance, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
@@ -63,15 +63,17 @@ describe('placing a bid', () => {
     expect(screen.getByTestId('bid-OL')).toBeTruthy()
   })
 
-  it('does nothing once bidding has closed', () => {
-    /* an admin closes the war (advancing is admin-only, 27 Aug 26), then the
-       member finds nothing to click — the behaviour under test */
+  it('places no bid once bidding has closed — the tap says why instead', () => {
+    /* an admin closes every date (opening and closing is admin-only — D1177), then the
+       member finds no bid window — the behaviour under test. Never a dead tap: his
+       own row's closed day opens the closed note (D1176) */
     setRole('admin')
-    advanceStage() // open -> closed
+    closeDates('2026-01-01', '2026-12-31')
     setRole('member')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.getByTestId('closed-note')).toBeTruthy()
   })
 
   // The whole point of the leave-code rework: a portion is something any
@@ -201,6 +203,7 @@ describe('bidding over a range', () => {
     const said = screen.getByTestId('span-note').textContent!
     expect(said).toContain('3 days written')
     expect(said).toContain('4 skipped')
+    expect(said, 'and why, in the words of the open dates (M1, B-N1) — a member reads the closed days').toContain('closed for bidding')
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 

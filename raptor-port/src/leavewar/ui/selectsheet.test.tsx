@@ -1,9 +1,10 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { boxValue, pickDate } from '../../ui/datecal-testkit'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { advanceStage, getState, initStore, setCell, setRole } from '../state/store'
+import { closeDates, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { SelectSheet } from './SelectSheet'
+import { skipWhy } from './BidPicker'
 import type { Selection } from './select'
 
 // The batched selection sheet (owner, 27 Aug 26). The DRAG that opens it needs
@@ -51,6 +52,14 @@ describe('the selection sheet', () => {
     expect(getState().grid.ramp['2026-01-06']).toBe('*LL')
   })
 
+  /* M1's code read (L2 / F4): the reason is true for whoever reads it */
+  it('names why days were skipped, as true for an admin, a member and a delete', () => {
+    expect(skipWhy('written', 'member')).toBe('closed for bidding, before today, or already holding leave or a medical')
+    expect(skipWhy('written', 'admin')).toBe('already holding leave or a medical')
+    expect(skipWhy('deleted', 'member')).toBe('already decided, or filed on the Inputs page')
+    expect(skipWhy('cleared', 'admin')).toBe('already decided, or filed on the Inputs page')
+  })
+
   it('reports a partial write and keeps the sheet up', () => {
     const onDone = vi.fn()
     // tata carries a Raptor-owned OIL on 2026-01-09 (seed) — it must skip
@@ -81,10 +90,10 @@ describe('the selection sheet', () => {
     setCell('ramp', '2026-01-06', 'LL')
     setCell('ramp', '2026-01-07', 'LL')
     expect(screen.queryByTestId('sel-approve')).toBeNull() // canDecide false by default
-    // the store itself now refuses a decision unless an admin holds it at
-    // closed/published (canDecide) — put the war in the state the sheet's
-    // canDecide prop claims
-    setRole('admin'); advanceStage()
+    // the store itself refuses a decision unless an admin holds it (canDecide —
+    // at any time since the stages went, D1177); the dates closed as well, the
+    // old closed stage's translation
+    setRole('admin'); closeDates('2026-01-01', '2026-12-31')
     mount(rampTwo, { canDecide: true })
     fireEvent.click(screen.getByTestId('sel-approve'))
     expect(getState().states.ramp['2026-01-06'].state).toBe('approved')
@@ -231,7 +240,7 @@ describe('the ask before a drag takes anyone below zero (D418)', () => {
 
   it('a Decide between the ask and the leave drops the ask (Astra F2)', () => {
     setCell('ramp', '2026-01-06', 'LL')
-    setRole('admin'); advanceStage()
+    setRole('admin'); closeDates('2026-01-01', '2026-12-31')
     mount(rampTwo, { canDecide: true, wouldLeave: zero({ ramp: 0 }) })
     fireEvent.click(screen.getByTestId('sel-CCL'))
     fireEvent.click(screen.getByTestId('sel-pending'))               // Ack the one bid — a partial decision keeps the sheet

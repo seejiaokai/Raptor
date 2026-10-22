@@ -224,12 +224,27 @@
   font-weight: 600;
 }
 
-/* Stage tint: only 'open' has a comp reference to match (the squadron's
-   normal working state); other stages stay the neutral chip rather than
-   guessing at colours nothing has approved. Same ink lift as `.wk.on`, and
-   for the same reason — these are the app's tinted-chip pairs and they must
-   not drift apart. */
-.fchip.stage-open {
+/* THE OPEN-DATES CHIP (D1177): green while anything is open ("Open 1 Jan – 31 Mar"), the neutral chip when
+   "Bidding closed". A button for everyone — the admin changes the dates, a member reads them. Same ink lift as
+   `.wk.on`, and for the same reason — these are the app's tinted-chip pairs and they must not drift apart. */
+.fchip.openchip {
+  cursor: pointer;
+  font-family: inherit;
+}
+.fchip.openchip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.fchip.openchip .openword {
+  font-weight: 500;
+}
+/* the space between the parts is drawn, not typed: on a phone the chip is a flex box, which drops a typed space
+   ("Open15 Feb" — the walk's find, 22 Oct 26) */
+.fchip.openchip .openword + .opentxt,
+.fchip.openchip .openmore {
+  margin-left: .3em;
+}
+.fchip.open-on {
   background: rgba(87, 201, 122, .16);
   color: #EAF9EF;
   border-color: rgba(87, 201, 122, .7);
@@ -484,35 +499,6 @@
   display: inline;
 }
 
-/* The stage control. Deliberately quieter than the stage chip beside it —
-   the chip is the fact, this is the action on it, and a louder button would
-   invite a click on a one-way transition. Sized to match `.fchip` so the
-   two sit on the same line without the strip looking assembled. */
-.stage-go {
-  background: transparent;
-  border: 1px solid var(--edge);
-  color: var(--ink-3);
-  padding: 6px 11px;
-  border-radius: 9px;
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: .04em;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.stage-go:hover:not([disabled]) {
-  border-color: rgba(59, 198, 232, .5);
-  color: var(--accent);
-}
-
-/* At published there is nowhere to go, and the cycle is forward only, so
-   this is the end state rather than a temporarily unavailable action. */
-.stage-go[disabled] {
-  opacity: .4;
-  cursor: default;
-}
-
 /* The role switch. Tinted only as admin, because member is the ordinary
    state and the squadron should not see a permanently lit control implying
    they hold something they do not. */
@@ -636,23 +622,6 @@
 
 /* The war's Undo / Redo pair left the period row for the app's top bar ([UNDO-TOPBAR], owner D347, 28 Sep 26). */
 
-/* The bidding-window chip. Reads as a value when a member looks at it and as
-   a control when an admin does — same chip, because it is the same fact and
-   only one of them can change it. */
-.winchip.can {
-  cursor: pointer;
-  border-color: rgba(59, 198, 232, .45);
-  color: var(--accent);
-}
-
-.winchip.can:hover {
-  background: rgba(59, 198, 232, .12);
-}
-
-.winchip:disabled {
-  cursor: default;
-}
-
 /* ---- phone: give the grid the screen ----
 
    Same breakpoint as the matrix's own, and last in this file for the same
@@ -716,7 +685,6 @@
   }
 
   .fchip,
-  .stage-go,
   .rchip {
     padding: 4px 8px;
     font-size: 11px;
@@ -803,52 +771,23 @@
   /* THE LINE HOLDS WHATEVER LETTERS THE DEVICE DRAWS IT IN (9 Oct 26). The spare above is measured in this PC's
      letters; the app loads no font, and on wider ones (GitHub's machines' are about a seventh wider - the pull
      request's own check failed there) the four chips no longer fitted and Legend fell to a third line. So the row
-     does not wrap, and ONE thing gives way: the stage's name, cut with an ellipsis - as the callsign is on line 1.
-     Its small arrow (an admin's) stays; the dates, the count and Legend are never cut. */
-  .filters > .fchip:has(> .stagetxt) {
+     does not wrap, and ONE thing gives way: the open chip's dates ("Bidding closed" or the first stretch — since the
+     stage went, D1177), cut with an ellipsis - as the callsign is on line 1; the count and Legend are never cut. */
+  .filters > .fchip:has(> .opentxt) {
     flex: 0 1 auto;
     min-width: 0;
     display: inline-flex;
     align-items: center;
   }
 
-  .stagetxt {
+  .opentxt {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .stagebtn::after {
-    flex: 0 0 auto;
-  }
-
   .legkey {
     margin-left: auto;
-  }
-
-  /* an admin's stage is a BUTTON here — his two moves hang from it — and the small arrow says so. Drawn by this
-     sheet, not written into the button: its words stay exactly the desktop label's. */
-  .stagebtn {
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  /* a drawn triangle, not the "▾" letter: a letter comes from whichever font the phone falls back to, at that font's
-     size and height (on this PC it made the stage button 3px taller than its neighbours) */
-  .stagebtn::after {
-    content: '';
-    display: inline-block;
-    margin-left: 5px;
-    vertical-align: 1px;
-    border: 3.5px solid transparent;
-    border-top: 4.5px solid currentColor;
-    border-bottom: 0;
-    opacity: .85;
-  }
-
-  .stagebtn[aria-expanded="true"] {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
   }
 
   /* "Under" before the count: the one quiet word left of the label that stood beside it */
@@ -966,47 +905,6 @@
   font-size: 11px;
   font-weight: 600;
   white-space: nowrap;
-}
-
-/* ---- the stage menu — a phone only (owner, D678, 8 Oct 26) ---------------
-   An admin's two stage moves, behind the stage button on a phone, where the strip is one line and has no room to show
-   them. The same fixed, JS-anchored pop-out as the under-manned list above, over the same scrim, for the same reasons;
-   the two buttons inside it are the strip's own `.stage-go` pair, drawn as full-width rows a thumb can tell apart
-   (40px — a little taller than the drawing's, on purpose: one of them moves the whole squadron's cycle). Never drawn
-   on a tablet or a desktop, where the pair stays in sight on the strip. */
-.stagemenu {
-  position: fixed;
-  top: 96px;
-  left: 8px;
-  z-index: 70;   /* above the frozen header mirror (55) — see .umlist */
-  width: 224px;  /* kept in step with Chrome.tsx STAGE_MENU_WIDTH */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 9px 8px 8px;
-  background: var(--panel);
-  border: 1px solid var(--edge);
-  border-radius: 12px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, .6);
-}
-
-.stagemenu-hd {
-  padding: 1px 3px 0;
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  font-weight: 600;
-}
-
-.stagemenu .stage-go {
-  display: block;
-  width: 100%;
-  min-height: 40px;
-  padding: 8px 11px;
-  font-size: 12px;
-  text-align: left;
 }
 
 /* ---- the colour/mark legend (owner, 27 Aug 26) --------------------------

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  advanceStage, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setBidWindow, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, saveManningRule, deleteManningRule, setQualCatalog, orderedManningIds, moveManningRow, setPeople, clearBidWindow, reopenStage, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
+  openDates, closeDates, setStretch, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, saveManningRule, deleteManningRule, setQualCatalog, orderedManningIds, moveManningRow, setPeople, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
 } from './store'
 import { FIGURES, figureParts, makeWar, MAX_MANNING_RULES, type CounterName } from '../engine'
 import { balanceOf, figureLines } from '../engine/counters'
@@ -191,13 +191,11 @@ describe('bids', () => {
     expect(getState().grid.ramp?.['2026-02-05']).toBeUndefined()
   })
 
-  // Decisions are made by an admin once bidding is no longer open —
-  // setBidState re-checks canDecide since the 27 Aug overnight pass, so each
-  // of these earns its decision the way the sheet does: close the war first.
+  // Decisions are an admin's, at any time (D1177's reading — the stages went, and with them "decide only once
+  // bidding has closed"); setBidState re-checks canDecide since the 27 Aug overnight pass.
   it('keeps a decision when the same code is rewritten', () => {
     setCell('ramp', '2026-02-06', 'LL')
     setRole('admin')
-    advanceStage()
     setBidState('ramp', '2026-02-06', 'approved')
     setCell('ramp', '2026-02-06', 'LL')
     expect(getState().states.ramp['2026-02-06']?.state).toBe('approved')
@@ -209,7 +207,6 @@ describe('bids', () => {
   it('resets the decision when the bid is changed to different leave', () => {
     setCell('ramp', '2026-02-06', 'LL')
     setRole('admin')
-    advanceStage()
     setBidState('ramp', '2026-02-06', 'acknowledged')
     setCell('ramp', '2026-02-06', 'OL')
     expect(getState().states.ramp['2026-02-06']?.state).toBe('pending')
@@ -218,19 +215,19 @@ describe('bids', () => {
   it('records a decision', () => {
     setCell('ramp', '2026-02-07', 'LL')
     setRole('admin')
-    advanceStage()
     setBidState('ramp', '2026-02-07', 'refused')
     expect(getState().states.ramp['2026-02-07']?.state).toBe('refused')
   })
 
-  // The store refuses the decision itself when the ROLE or the STAGE is
-  // wrong — the same canDecide the sheet renders by, checked where it
-  // counts (owner doctrine: the interface hides, the store makes it true).
-  it('refuses a decision from a MEMBER at every stage, and takes one from an admin at any', () => {
-    /* MOVED 21 Sep 26: an admin may now answer an input while bidding is
-       still open (owner — "enable it in all Stage on leave war"). The member
-       half is untouched and is the half that matters: a member never decides,
-       their own row included. */
+  // The store refuses the decision itself when the ROLE is wrong — the same
+  // canDecide the sheet renders by, checked where it counts (owner doctrine:
+  // the interface hides, the store makes it true).
+  it('refuses a decision from a MEMBER on an open day or a closed one, and takes one from an admin on either', () => {
+    /* MOVED 21 Sep 26: an admin may answer an input while bidding is still
+       open (owner — "enable it in all Stage on leave war"); since D1177 there
+       are no stages: the admin decides at any time, open dates or closed. The
+       member half is untouched and is the half that matters: a member never
+       decides, their own row included. */
     setCell('ramp', '2026-02-07', 'LL')
     setBidState('ramp', '2026-02-07', 'approved')           // member, open
     expect(getState().states.ramp['2026-02-07']?.state).toBe('pending')
@@ -239,7 +236,7 @@ describe('bids', () => {
     expect(getState().states.ramp['2026-02-07']?.state).toBe('approved')
     setBidState('ramp', '2026-02-07', 'acknowledged')       // and is changeable back
     expect(getState().states.ramp['2026-02-07']?.state).toBe('acknowledged')
-    advanceStage()
+    closeDates('2026-01-01', '2026-12-31')                  // the admin closes the whole period
     setRole('member')
     setBidState('ramp', '2026-02-07', 'approved')           // member, closed
     expect(getState().states.ramp['2026-02-07']?.state).toBe('acknowledged')
@@ -253,7 +250,6 @@ describe('bids', () => {
   it('refuses to decide a cell nobody bid for', () => {
     setRole('admin')
     setCell('ramp', '2026-02-12', 'CSE')
-    advanceStage()
     setBidState('ramp', '2026-02-12', 'approved')
     expect(getState().states.ramp?.['2026-02-12']).toBeUndefined()
     setBidState('ramp', '2026-02-13', 'approved')
@@ -263,7 +259,6 @@ describe('bids', () => {
   it('bumps the version so the interface re-reads', () => {
     setCell('ramp', '2026-02-08', 'LL')
     setRole('admin')
-    advanceStage()
     const before = getVersion()
     setBidState('ramp', '2026-02-08', 'approved')
     expect(getVersion()).toBe(before + 1)
@@ -286,73 +281,89 @@ describe('bids', () => {
 
 })
 
-describe('advanceStage', () => {
-  /* advancing the cycle is ADMIN ONLY since 27 Aug 26 (owner — "for a member
-     i shouldnt be able to click on bidding closed or published"), so these
-     mechanics tests run as an admin; the member refusal is pinned on its own
-     below */
+/* THE OPEN DATES (D1177, 21 Oct 26 — the stages went): these were the stage's mechanics tests (advanceStage — "walks
+   the period forward one stage at a time", "stops at published", "persists the stage"). What replaced the stage is the
+   period's list of open stretches, written by `openDates` / `closeDates` / `setStretch` — admin only, ONE `lw.open`
+   command each — so the same mechanics are pinned on them: who may, the one normal form, nothing-to-do is 'unchanged'
+   and silent, a reload keeps it. */
+describe('opening and closing dates', () => {
   beforeEach(() => { setRole('admin') })
+  const SEEDED = [{ from: '2026-01-01', to: '2026-03-31' }]
 
-  it('is refused for a member — the cycle does not move', () => {
+  it('is refused for a member — the open dates do not move', () => {
     setRole('member')
-    expect(getState().period.stage).toBe('open')
-    advanceStage()
-    expect(getState().period.stage).toBe('open')
+    expect(getState().period.open).toEqual(SEEDED)
+    expect(openDates('2026-04-01', '2026-04-30')).toBe('forbidden')
+    expect(closeDates('2026-01-01', '2026-03-31')).toBe('forbidden')
+    expect(setStretch(SEEDED[0]!, '2026-07-01', '2026-07-31')).toBe('forbidden')
+    expect(getState().period.open).toEqual(SEEDED)
   })
 
-  it('walks the period forward one stage at a time', () => {
-    expect(getState().period.stage).toBe('open')
-    advanceStage()
-    expect(getState().period.stage).toBe('closed')
-    advanceStage()
-    expect(getState().period.stage).toBe('published')
+  it('opens and closes days, keeping one normal form — a stretch it touches joins, one it cuts splits', () => {
+    expect(getState().period.open).toEqual(SEEDED)
+    // April touches March's last day, so the two are one stretch
+    expect(openDates('2026-04-01', '2026-04-30')).toBe('set')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-04-30' }])
+    // closing February cuts the stretch in two
+    expect(closeDates('2026-02-01', '2026-02-28')).toBe('set')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-01-31' }, { from: '2026-03-01', to: '2026-04-30' }])
+    // closing the whole period leaves nothing open — empty means closed (B2)
+    expect(closeDates('2026-01-01', '2026-12-31')).toBe('set')
+    expect(getState().period.open).toEqual([])
   })
 
-  it('stops at published rather than wrapping', () => {
-    advanceStage(); advanceStage(); advanceStage()
-    expect(getState().period.stage).toBe('published')
+  it('answers \'unchanged\' when the days are already as asked, rather than writing', () => {
+    expect(openDates('2026-02-01', '2026-02-28')).toBe('unchanged')        // already open
+    expect(closeDates('2026-07-01', '2026-07-31')).toBe('unchanged')       // already closed
+    expect(getState().period.open).toEqual(SEEDED)
   })
 
-  it('does not notify when there is nowhere further to go', () => {
-    advanceStage(); advanceStage()
+  it('does not notify when there is nothing to change', () => {
     const before = getVersion()
-    advanceStage()
+    openDates('2026-01-01', '2026-03-31')
+    closeDates('2026-10-01', '2026-10-31')
     expect(getVersion()).toBe(before)
   })
 
-  it('persists the stage and reloads it', () => {
+  it('persists the open dates and reloads them', () => {
     const backend = memoryBackend()
     initStore(backend)
-    setRole('admin')          // a fresh boot returns to member; advancing is admin-only
-    advanceStage()
+    setRole('admin')          // a fresh boot returns to member; opening and closing dates is admin-only
+    closeDates('2026-02-01', '2026-02-28')
+    openDates('2026-06-01', '2026-06-30')
     initStore(backend)
-    expect(getState().period.stage).toBe('closed')
+    expect(getState().period.open).toEqual([
+      { from: '2026-01-01', to: '2026-01-31' }, { from: '2026-03-01', to: '2026-03-31' }, { from: '2026-06-01', to: '2026-06-30' },
+    ])
   })
 })
 
-describe('the stored stage', () => {
+describe('the stored open dates', () => {
+  /* the old app kept a `stage` key of its own; nothing reads it now (D1177) — the open dates are the war's own row */
   it.each([
     ['a stage nobody defined', 'reopened'],
     ['an empty string', ''],
     ['something that is not a stage at all', '{"stage":"open"}'],
-  ])('falls back to the seeded stage when the backend holds %s', (_label, raw) => {
+  ])('ignores a stray stage key holding %s — the seeded open dates stand', (_label, raw) => {
     const backend = memoryBackend()
     backend.write('stage', raw)
     initStore(backend)
-    expect(getState().period.stage).toBe('open')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
   })
 
 
-  it('reloads each war with its own stage, independently', () => {
+  it('reloads each war with its own open dates, independently', () => {
     const backend = memoryBackend()
     initStore(backend)
-    setRole('admin')          // advancing is admin-only (27 Aug 26)
-    advanceStage() // the open war -> closed
-    const other = getState().wars.find(w => w.period.id !== getState().currentId)!
-    expect(other.period.stage).toBe('draft')
+    setRole('admin')          // opening and closing dates is admin-only
+    const [y26, y27] = getState().wars.map(w => w.period.id)
+    closeDates('2026-02-01', '2026-02-28')                  // the war on screen (2026)
+    expect(getState().wars.find(w => w.period.id === y27)!.period.open).toEqual([])
+    selectWar(y27!)
+    openDates('2027-05-01', '2027-05-31')
     initStore(backend)
-    expect(getState().period.stage).toBe('closed')
-    expect(getState().wars.find(w => w.period.id !== getState().currentId)!.period.stage).toBe('draft')
+    expect(getState().wars.find(w => w.period.id === y26)!.period.open).toEqual([{ from: '2026-01-01', to: '2026-01-31' }, { from: '2026-03-01', to: '2026-03-31' }])
+    expect(getState().wars.find(w => w.period.id === y27)!.period.open).toEqual([{ from: '2027-05-01', to: '2027-05-31' }])
   })
 })
 
@@ -405,18 +416,16 @@ describe('shifting a bid', () => {
     expect(getState().grid.dusk['2026-02-18']).toBe('LL')
   })
 
-  // A shift is a PROPOSAL with a paper trail, not a silent re-approval.
-  // Management still has to approve the date they moved it to.
-  it('lands pending, recording the date it came from', () => {
-    // A management shift is a CLOSED-war action, and only then does it leave a
-    // trail (owner, 27 Aug 26) — close the war before shifting.
-    setRole('admin'); advanceStage()
+  // A shift is a PROPOSAL, not a silent re-approval: management still has to
+  // approve the date they moved it to. A bid that only waits carries no moved
+  // trail any more (D1177's reading: the moved mark is a leave already
+  // approved's — nothing approved was moved).
+  it('lands pending, with no moved trail — a waiting bid was never approved', () => {
+    setRole('admin')
     setCell('dusk', '2026-02-11', 'LL')
     setBidState('dusk', '2026-02-11', 'acknowledged')
     moveBidVia('dusk', '2026-02-11', '2026-02-18')
-    expect(getState().states.dusk['2026-02-18']).toEqual({
-      state: 'pending', source: 'bid', shiftedFrom: '2026-02-11',
-    })
+    expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending', source: 'bid' })
     expect(getState().states.dusk?.['2026-02-11']).toBeUndefined()
   })
 
@@ -426,30 +435,34 @@ describe('shifting a bid', () => {
     expect(getState().grid.dusk['2026-02-18']).toBe('*LL')
   })
 
-  it('approving afterwards keeps the trail', () => {
-    setRole('admin'); advanceStage()   // a management shift once bidding closed
+  // THE MOVED TRAIL IS AN APPROVED LEAVE'S (D1177's reading — "the dotted moved
+  // mark shows on any move of a leave already approved", no longer only once
+  // bidding has closed): management moving leave it already approved leaves
+  // the trail, on any day.
+  it('an approved leave moved wears the trail of the date it came from', () => {
+    setRole('admin')
     setCell('dusk', '2026-02-11', 'LL')
-    moveBidVia('dusk', '2026-02-11', '2026-02-18')
-    setBidState('dusk', '2026-02-18', 'approved')
+    setBidState('dusk', '2026-02-11', 'approved')
+    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
     expect(getState().states.dusk['2026-02-18']).toEqual({
       state: 'approved', source: 'bid', shiftedFrom: '2026-02-11',
     })
+    expect(getState().grid.dusk?.['2026-02-11']).toBeUndefined()
   })
 
-  // While bidding is OPEN a shift is ordinary shuffling and leaves NO trail —
-  // the moved stripe must not appear on a bid the squadron simply tidied
-  // (owner, 27 Aug 26). It records the trace only once bidding has closed.
-  it('an OPEN-bidding shift records no moved trail; a closed one does', () => {
-    setCell('dusk', '2026-02-11', 'LL')            // seed stage is OPEN
+  // A bid that only waits is ordinary shuffling and leaves NO trail — on an
+  // open day or, for the admin, a closed one (owner, 27 Aug 26: the moved
+  // stripe must not appear on a bid the squadron simply tidied; D1177 took
+  // away the "once closed" half, since a waiting bid was never approved).
+  it('a waiting bid’s move records no moved trail, open days or closed', () => {
+    setCell('dusk', '2026-02-11', 'LL')            // the seed opens 1 Jan – 31 Mar
     expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
     expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending', source: 'bid' })
     expect(getState().states.dusk['2026-02-18'].shiftedFrom).toBeUndefined()
-    // close the war and shift again → NOW the trail is recorded
-    setRole('admin'); advanceStage()
+    // the admin closes the period and moves it again → still no trail
+    setRole('admin'); closeDates('2026-01-01', '2026-12-31')
     expect(moveBidVia('dusk', '2026-02-18', '2026-02-25')).toBe('shifted')
-    expect(getState().states.dusk['2026-02-25']).toEqual({
-      state: 'pending', source: 'bid', shiftedFrom: '2026-02-18',
-    })
+    expect(getState().states.dusk['2026-02-25']).toEqual({ state: 'pending', source: 'bid' })
   })
 
   // Never overwrite. Moving one man's leave onto a day he already has
@@ -494,8 +507,9 @@ describe('shifting a bid', () => {
   it('persists across a reload', () => {
     const backend = memoryBackend()
     initStore(backend)
-    setRole('admin'); advanceStage()   // closed, so the shift leaves a trail
+    setRole('admin')                   // an approved leave's move leaves the trail (D1177)
     setCell('dusk', '2026-02-11', 'LL')
+    setBidState('dusk', '2026-02-11', 'approved')
     moveBidVia('dusk', '2026-02-11', '2026-02-18')
     initStore(backend)
     expect(getState().states.dusk['2026-02-18'].shiftedFrom).toBe('2026-02-11')
@@ -506,31 +520,42 @@ describe('shifting a bid', () => {
   // here: a member could slide their bid after bidding closed, and a typed
   // date could land a bid on a day no column renders — gone from every
   // screen, still draining the leave balance.
-  it('a member cannot shift a bid once bidding has closed', () => {
+  it('a member cannot shift a bid once its day has closed', () => {
     setCell('dusk', '2026-02-11', 'LL')
-    setRole('admin'); advanceStage(); setRole('member')
-    /* once bidding has closed a member's bid is not a record HE may move (D333: his own bid, while bidding is open) — the
-       one door answers 'nothing' (the old mover said 'window'); either way it does not move ([LW-SPARE-MOVE-DOORS]) */
-    expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('nothing')
+    setRole('admin'); closeDates('2026-02-01', '2026-02-28'); setRole('member')
+    /* once its day has closed a member's bid is not a record HE may move (D333 narrowed by D1177: his own bid, while it
+       waits and its days are open) — the one door answers 'nothing'; it does not move ([LW-SPARE-MOVE-DOORS]) */
+    expect(moveBidVia('dusk', '2026-02-11', '2026-03-11')).toBe('nothing')
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
-    expect(getState().grid.dusk?.['2026-02-18']).toBeUndefined()
+    expect(getState().grid.dusk?.['2026-03-11']).toBeUndefined()
   })
 
-  it('refuses a landing day the war has no column for', () => {
+  // …and where it LANDS must be open too (D333 narrowed by D1177: "while his bid
+  // waits and its days are open" — where it is and where it lands).
+  it('a member cannot shift a bid onto a day not open for bidding', () => {
+    setCell('dusk', '2026-03-25', 'LL')             // open (the seed opens 1 Jan – 31 Mar)
+    expect(moveBidVia('dusk', '2026-03-25', '2026-04-08')).toBe('window')   // April is closed
+    expect(getState().grid.dusk['2026-03-25']).toBe('LL')
+    expect(getState().grid.dusk?.['2026-04-08']).toBeUndefined()
+  })
+
+  /* A landing is asked of the period HOLDING it (the red team's B3), so a day in the next period is a real landing now:
+     the day with no column is one NO period holds (the seed's periods are 2026 and 2027). */
+  it('refuses a landing day no period has a column for', () => {
     setRole('admin')
     setCell('dusk', '2026-02-11', 'LL')
-    advanceStage()
-    expect(moveBidVia('dusk', '2026-02-11', '2027-02-18')).toBe('window')
+    expect(moveBidVia('dusk', '2026-02-11', '2028-02-18')).toBe('window')
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
-    expect(getState().grid.dusk?.['2027-02-18']).toBeUndefined()
+    expect(getState().grid.dusk?.['2028-02-18']).toBeUndefined()
   })
 
-  // A bid moved 11 → 18 → 25 was still BID on the 11th; the trail answers
-  // exactly that. Overwriting the origin with each hop would trace a
-  // two-hop move to a date nobody asked for.
-  it('a chain of closed-war shifts keeps the ORIGINAL origin in the trail', () => {
-    setRole('admin'); advanceStage()
+  // Leave approved for the 11th and moved 11 → 18 → 25 was approved for the
+  // 11th first; the trail answers exactly that. Overwriting the origin with
+  // each hop would trace a two-hop move to a date nobody asked for.
+  it('a chain of moves of approved leave keeps the ORIGINAL origin in the trail', () => {
+    setRole('admin')
     setCell('dusk', '2026-02-11', 'LL')
+    setBidState('dusk', '2026-02-11', 'approved')
     moveBidVia('dusk', '2026-02-11', '2026-02-18')
     moveBidVia('dusk', '2026-02-18', '2026-02-25')
     expect(getState().states.dusk['2026-02-25'].shiftedFrom).toBe('2026-02-11')
@@ -616,35 +641,36 @@ describe('more than one leave war', () => {
     expect(getState().period.name).toBe('JAN - DEC 26')
   })
 
-  // The war it opens on is chosen by STAGE, not by list order (owner,
-  // 7 Sep 26): the seed carries an OPEN 2026 war and a DRAFT 2027 war, and the
-  // open one is where the squadron is acting — so that is the one on screen at
-  // boot. It happens to be first in the list too, but the rule is the stage,
-  // not the index (`pickDefaultPeriodId` is pinned order-independent in
-  // engine/stages.test).
-  it('opens on the war that is open for bidding, not merely the first', () => {
-    expect(getState().period.stage).toBe('open')
-    expect(getState().wars.some(w => w.period.stage === 'draft')).toBe(true)
+  // The war it opens on is chosen by its OPEN DATES, not by list order (owner,
+  // 7 Sep 26; since D1177 the period holding the first open date from today,
+  // else the one holding today): the seed carries a 2026 period open 1 Jan –
+  // 31 Mar and a 2027 period with nothing open, and the open one is where the
+  // squadron is acting — so that is the one on screen at boot. It happens to be
+  // first in the list too, but the rule is the open dates, not the index
+  // (`landingOf` is pinned order-independent in engine/opendates.test).
+  it('opens on the period with dates open for bidding, not merely the first', () => {
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(getState().wars.some(w => w.period.open.length === 0)).toBe(true)
   })
 
   /* [LW-OPEN] (owner, 17 Sep 26, restating his 7 Sep rule under the
      newest-instruction-wins principle): the tab ALWAYS opens on the war being
-     worked — open for bidding, else closed, else published, else draft — and a
-     remembered choice must NOT override it.
+     worked — since D1177 the period holding the first open date from today,
+     else the one holding today — and a remembered choice must NOT override it.
      This is a REGRESSION GUARD, not a new feature. Before the 8 Sep 26 storage
      seam nothing was ever stored, so the stage pick ran on every load and the
      rule held by accident. Once the Leave War persisted, the stored `current`
      started winning from the second visit onward and the squadron would reopen
-     on whatever war was last looked at — a DRAFT year, say, instead of the one
-     actually open for bidding. */
+     on whatever war was last looked at — a year with nothing open, say, instead
+     of the one actually open for bidding. */
   it('ignores a remembered war and still opens on the one being worked', () => {
     const backend = memoryBackend()
     initStore(backend)
-    const draft = getState().wars.find(w => w.period.stage === 'draft')!.period.id
-    const worked = getState().wars.find(w => w.period.stage === 'open')!.period.id
+    const draft = getState().wars.find(w => w.period.open.length === 0)!.period.id
+    const worked = getState().wars.find(w => w.period.open.length > 0)!.period.id
     expect(draft).not.toBe(worked)
 
-    // the reader switches to the draft war; that choice IS recorded
+    // the reader switches to the closed war; that choice IS recorded
     selectWar(draft)
     expect(getState().currentId).toBe(draft)
     expect(backend.read('current')).toBe(draft)   // recorded raw, not JSON-wrapped
@@ -652,7 +678,7 @@ describe('more than one leave war', () => {
     // ...but the next load opens on the war being worked, not the remembered one
     initStore(backend)
     expect(getState().currentId).toBe(worked)
-    expect(getState().period.stage).toBe('open')
+    expect(getState().period.open.length).toBeGreaterThan(0)
   })
 
   /* The other half of the same ruling (the host's implementation call, owner
@@ -662,10 +688,10 @@ describe('more than one leave war', () => {
   it('keeps a switched war for the rest of the session', () => {
     const backend = memoryBackend()
     initStore(backend)
-    const draft = getState().wars.find(w => w.period.stage === 'draft')!.period.id
+    const draft = getState().wars.find(w => w.period.open.length === 0)!.period.id
     selectWar(draft)
     expect(getState().currentId).toBe(draft)
-    expect(getState().period.stage).toBe('draft')
+    expect(getState().period.open).toEqual([])
   })
 
   it('switches to another war, and the grid on screen switches with it', () => {
@@ -705,13 +731,13 @@ describe('more than one leave war', () => {
     expect(backend.read('current')).toBe(chosen)     // still written down
     initStore(backend)
     expect(getState().currentId).not.toBe(chosen)    // but not reopened on
-    expect(getState().period.stage).toBe('open')     // the war being worked
+    expect(getState().period.open.length).toBeGreaterThan(0)   // the war being worked
   })
 
   // Writes land in the war on screen and nowhere else. A cell written while
   // looking at Apr–Jun must not appear in Jan–Mar.
   // Admin, and that is not incidental. This test used to pass as a MEMBER
-  // writing into a DRAFT war, because `setCell` checked neither stage nor
+  // writing into a DRAFT war (a stage since gone, D1177), because `setCell` checked neither stage nor
   // role — the edit lock lived only in the grid's click handler, so anything
   // calling the store directly walked straight past it. Adding the bidding
   // window put all three checks in the store and this test went red, which is
@@ -727,18 +753,18 @@ describe('more than one leave war', () => {
     expect(getState().grid.dusk?.['2027-04-20']).toBeUndefined()
   })
 
-  it('advances the stage of the war on screen only', () => {
-    setRole('admin')          // advancing is admin-only (27 Aug 26)
+  it('opens and closes the dates of the war on screen only', () => {
+    setRole('admin')          // opening and closing dates is admin-only (D1177)
     const [q1, q2] = getState().wars.map(w => w.period.id)
     selectWar(q2)
-    advanceStage() // draft -> open
-    expect(getState().period.stage).toBe('open')
+    expect(openDates('2027-04-01', '2027-04-30')).toBe('set')
+    expect(getState().period.open).toEqual([{ from: '2027-04-01', to: '2027-04-30' }])
     selectWar(q1)
-    expect(getState().period.stage).toBe('open') // its own, unchanged
-    advanceStage()
-    expect(getState().period.stage).toBe('closed')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }]) // its own, unchanged
+    expect(closeDates('2026-01-01', '2026-12-31')).toBe('set')
+    expect(getState().period.open).toEqual([])
     selectWar(q2)
-    expect(getState().period.stage).toBe('open')
+    expect(getState().period.open).toEqual([{ from: '2027-04-01', to: '2027-04-30' }])
   })
 })
 
@@ -754,13 +780,17 @@ describe('creating a leave war', () => {
     expect(made.grid).toEqual({})
   })
 
-  // A new war starts in draft and is NOT switched to. Creating next
-  // quarter's war should not yank the admin off the one they are working in.
-  it('starts it in draft and leaves the current war on screen', () => {
+  // A new war starts with NOTHING open (D1177 — "nothing is open until he opens
+  // it"; empty means closed, the red team's B2) and is NOT switched to.
+  // Creating next quarter's war should not yank the admin off the one they are
+  // working in.
+  it('starts it with nothing open and leaves the current war on screen', () => {
     const before = getState().currentId
     createWar('JUL 28', '2028-07-01', '2028-07-31')
     expect(getState().currentId).toBe(before)
-    expect(getState().wars.find(w => w.period.name === 'JUL 28')!.period.stage).toBe('draft')
+    const made = getState().wars.find(w => w.period.name === 'JUL 28')!.period
+    expect(made.open).toEqual([])
+    expect(made.lastClosed).toBeNull()
   })
 
   // A date belongs to at most one war, or a person could hold leave on it
@@ -867,14 +897,19 @@ describe('reading stored wars', () => {
     expect(backend.read('war:a')).toBe(raw)
   })
 
-  it('rejects a war whose stage is not one of the cycle', () => {
+  /* WAS "rejects a war whose stage is not one of the cycle". The stages went (D1177): a stage is read only from an OLD
+     row with no open dates, where 'open' reads its window and anything else reads as nothing open — so a stage nobody
+     defined is no longer a reason to throw a squadron's war away; it loads, closed. */
+  it('reads an old war whose stage is not one of the cycle as a war with nothing open', () => {
     const backend = memoryBackend()
     const w = war('a', '2026-01-01', '2026-03-31') as unknown as { period: Record<string, unknown> }
+    delete w.period.open
+    delete w.period.lastClosed
     w.period.stage = 'reopened'
     stored(backend, w)
     initStore(backend)
-    expect(getState().wars).toHaveLength(0)
-    expect(backend.read('war:a')).not.toBeNull()
+    expect(getState().wars.map(x => x.period.id)).toEqual(['a'])
+    expect(getState().period.open).toEqual([])
   })
 
   it('rejects a war whose range runs backwards', () => {
@@ -907,19 +942,21 @@ describe('reading stored wars', () => {
   })
 })
 
-describe('the bidding window', () => {
+/* WAS "the bidding window" — one window (bidFrom / bidTo) a period carried. The stages and the window went (D1177): a
+   period holds a list of open stretches, and a member bids only on an open day. The same rules, on the new list. */
+describe('the open dates', () => {
   beforeEach(() => {
     initStore(memoryBackend())
   })
 
-  // The seed opens the year on its first quarter, so the window is real from
-  // the first screen rather than a feature nobody can see until they set one.
+  // The seed opens the year on its first quarter, so the open dates are real
+  // from the first screen rather than a feature nobody can see until they set one.
   it('seeds the current war with bidding open on the first quarter', () => {
-    expect(getState().period.bidFrom).toBe('2026-01-01')
-    expect(getState().period.bidTo).toBe('2026-03-31')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(getState().period.lastClosed).toBeNull()
   })
 
-  it('lets a member write inside the window', () => {
+  it('lets a member write on an open day', () => {
     setCell('ramp', '2026-02-11', 'LL')
     expect(getState().grid.ramp['2026-02-11']).toBe('LL')
   })
@@ -927,22 +964,25 @@ describe('the bidding window', () => {
   // The store is what makes the lock true. The grid hides an unopenable cell,
   // but anything calling the store directly — a keyboard path, a future sync,
   // a test — has to hit the same wall.
-  it('refuses a member writing outside the window, silently and without a version bump', () => {
+  it('refuses a member writing on a closed day, silently and without a version bump', () => {
     const before = getVersion()
     setCell('ramp', '2026-08-11', 'LL')
     expect(getState().grid.ramp?.['2026-08-11']).toBeUndefined()
     expect(getVersion()).toBe(before)
   })
 
-  it('lets an admin write outside the window', () => {
+  it('lets an admin write on a closed day', () => {
     setRole('admin')
     setCell('ramp', '2026-08-11', 'LL')
     expect(getState().grid.ramp['2026-08-11']).toBe('LL')
   })
 
-  it('moves the window, and the member follows it', () => {
+  // A stretch's exact days, from its line's calendar (D1172): the old stretch
+  // goes and the new days open, in one write — and the member follows it.
+  it('moves a stretch to exact days, and the member follows it', () => {
     setRole('admin')
-    expect(setBidWindow('2026-07-01', '2026-09-30')).toBe('set')
+    expect(setStretch({ from: '2026-01-01', to: '2026-03-31' }, '2026-07-01', '2026-09-30')).toBe('set')
+    expect(getState().period.open).toEqual([{ from: '2026-07-01', to: '2026-09-30' }])
     setRole('member')
     setCell('ramp', '2026-08-11', 'LL')
     expect(getState().grid.ramp['2026-08-11']).toBe('LL')
@@ -950,24 +990,27 @@ describe('the bidding window', () => {
     expect(getState().grid.ramp?.['2026-02-11']).toBeUndefined()
   })
 
-  it('refuses a window a member tries to set', () => {
-    expect(setBidWindow('2026-07-01', '2026-09-30')).toBe('forbidden')
-    expect(getState().period.bidFrom).toBe('2026-01-01')
+  it('refuses open dates a member tries to set', () => {
+    expect(openDates('2026-07-01', '2026-09-30')).toBe('forbidden')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
   })
 
-  it('refuses a window that leaves the war, and one that runs backwards', () => {
+  it('refuses dates that leave the war, and dates that run backwards', () => {
     setRole('admin')
-    expect(setBidWindow('2025-12-01', '2026-03-31')).toBe('outside')
-    expect(setBidWindow('2026-11-01', '2027-02-01')).toBe('outside')
-    expect(setBidWindow('2026-09-30', '2026-07-01')).toBe('backwards')
-    // Refused means UNCHANGED, not partly applied.
-    expect(getState().period.bidFrom).toBe('2026-01-01')
-    expect(getState().period.bidTo).toBe('2026-03-31')
+    expect(openDates('2025-12-01', '2026-03-31')).toBe('outside')
+    expect(openDates('2026-11-01', '2027-02-01')).toBe('outside')
+    expect(openDates('2026-09-30', '2026-07-01')).toBe('backwards')
+    expect(closeDates('2025-12-01', '2026-01-31')).toBe('outside')
+    expect(closeDates('2026-03-31', '2026-01-01')).toBe('backwards')
+    expect(setStretch({ from: '2026-01-01', to: '2026-03-31' }, '2026-12-01', '2027-01-31')).toBe('outside')
+    // Refused means UNCHANGED, not partly applied (and never clamped).
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
   })
 
-  it('clears the window, opening the whole war again', () => {
+  it('opening the whole period lets a member bid anywhere in it', () => {
     setRole('admin')
-    expect(clearBidWindow()).toBe('set')
+    expect(openDates('2026-01-01', '2026-12-31')).toBe('set')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-12-31' }])
     setRole('member')
     setCell('ramp', '2026-08-11', 'LL')
     expect(getState().grid.ramp['2026-08-11']).toBe('LL')
@@ -975,53 +1018,58 @@ describe('the bidding window', () => {
 
   it('belongs to the war, not to the app', () => {
     setRole('admin')
-    setBidWindow('2026-07-01', '2026-09-30')
+    setStretch({ from: '2026-01-01', to: '2026-03-31' }, '2026-07-01', '2026-09-30')
     const [, y27] = getState().wars.map(w => w.period.id)
     selectWar(y27)
-    expect(getState().period.bidFrom).toBeNull()
-    expect(getState().wars[0].period.bidFrom).toBe('2026-07-01')
+    expect(getState().period.open).toEqual([])
+    expect(getState().wars[0].period.open).toEqual([{ from: '2026-07-01', to: '2026-09-30' }])
   })
 
   it('survives a reload', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
-    setBidWindow('2026-07-01', '2026-09-30')
+    setStretch({ from: '2026-01-01', to: '2026-03-31' }, '2026-07-01', '2026-09-30')
     initStore(backend)
-    expect(getState().period.bidFrom).toBe('2026-07-01')
-    expect(getState().period.bidTo).toBe('2026-09-30')
+    expect(getState().period.open).toEqual([{ from: '2026-07-01', to: '2026-09-30' }])
   })
 
-  // A war written before the window existed has neither key. Reading it as
-  // "the whole period is open" is what that war actually did, and rejecting
-  // it would throw away a squadron's grid over a field that did not exist
-  // when it was saved. Everything else in this loader degrades to the seed;
-  // this one field is deliberately lenient, so it gets its own test.
-  it('reads a stored war with no window at all as fully open', () => {
+  // A war written before the open dates existed has no `open`: an OPEN war with
+  // no window was "the whole period is open", and reading it so is what that war
+  // actually did — rejecting it would throw away a squadron's grid over a field
+  // that did not exist when it was saved (the build plan, batch 1: an old saved
+  // war still loads). Deliberately lenient, so it gets its own test.
+  it('reads an old stored war, open with no window at all, as wholly open', () => {
     const backend = memoryBackend()
     const war = makeWar('old', 'OLD', '2026-01-01', '2026-12-31')
-    const { bidFrom: _f, bidTo: _t, ...periodWithoutWindow } = war.period
-    backend.write('war:old', JSON.stringify({ ...periodWithoutWindow, stage: 'open' }))   // its row ([DB-READINESS] group A, phase 3)
+    const { open: _o, lastClosed: _l, ...periodWithoutOpen } = war.period
+    backend.write('war:old', JSON.stringify({ ...periodWithoutOpen, stage: 'open' }))   // its row ([DB-READINESS] group A, phase 3)
     backend.write('current', JSON.stringify('old'))
     initStore(backend)
 
     expect(getState().period.id).toBe('old')
-    expect(getState().period.bidFrom).toBeNull()
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-12-31' }])
     setCell('ramp', '2026-08-11', 'LL')
     expect(getState().grid.ramp['2026-08-11']).toBe('LL')
   })
 
-  // Present but nonsense is corruption, not an older shape, and falls back to
-  // the seed like every other malformed field here.
-  it('rejects a stored window that leaves its own war', () => {
+  /* WAS "rejects a stored window that leaves its own war" (a window outside the war refused the whole war). The open
+     dates are read leniently into their one normal form (`normaliseOpen`, store.ts readWar — D1177's build): a stretch
+     that runs past its war is clipped to the war, one wholly outside or backwards is dropped, and the war still loads. */
+  it('clips a stored stretch that leaves its own war, and drops one that is not a stretch', () => {
     const backend = memoryBackend()
-    const war = makeWar('bad', 'BAD', '2026-01-01', '2026-12-31')
-    war.period.bidFrom = '2025-01-01'
+    const war = makeWar('bad', 'BAD', '2026-01-01', '2026-12-31') as unknown as { period: Record<string, unknown> }
+    war.period.open = [
+      { from: '2025-01-01', to: '2026-03-31' },     // runs past the war's start → clipped
+      { from: '2026-09-30', to: '2026-07-01' },     // backwards → dropped
+      { from: '2027-02-01', to: '2027-03-01' },     // wholly outside → dropped
+      'nonsense',                                   // not a stretch → dropped
+    ]
     backend.write('war:bad', JSON.stringify(war.period))
     backend.write('current', JSON.stringify('bad'))
     initStore(backend)
-    expect(getState().wars.map(w => w.period.id)).toEqual([])
-    expect(backend.read('war:bad')).not.toBeNull()
+    expect(getState().wars.map(w => w.period.id)).toEqual(['bad'])
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
   })
 })
 
@@ -1089,10 +1137,10 @@ describe('writing leave over a range', () => {
   // PARTIAL BY DESIGN. Refusing the whole range would make the common case —
   // a fortnight that happens to include one locked day — impossible to ask
   // for at all, so it writes what it may and reports what it did not.
-  it('writes up to the edge of the bidding window and reports the rest', () => {
+  it('writes up to the edge of the open dates and reports the rest', () => {
     const { written, skipped } = setCellRange('dusk', '2026-03-29', '2026-04-04', 'LL')
     expect(written).toBe(3) // 29, 30, 31 March
-    expect(skipped).toBe(4) // 1-4 April, outside the window
+    expect(skipped).toBe(4) // 1-4 April, not open (the seed opens 1 Jan – 31 Mar)
     expect(getState().grid.dusk['2026-03-31']).toBe('LL')
     expect(getState().grid.dusk?.['2026-04-01']).toBeUndefined()
   })
@@ -1177,47 +1225,39 @@ describe('editing the roster', () => {
   })
 })
 
-// Owner, 10 Aug 26: "as an admin I can open bidding again after closing it".
-describe('reopening a period', () => {
-  it('steps an admin back from closed to open', () => {
+// Owner, 10 Aug 26: "as an admin I can open bidding again after closing it". Since D1177 the stages are gone, and
+// reopening is opening the dates again (`openDates`) after closing them (`closeDates`).
+describe('opening dates again after closing them', () => {
+  it('lets an admin open dates again after closing them', () => {
     setRole('admin')
-    advanceStage()
-    expect(getState().period.stage).toBe('closed')
-    expect(reopenStage()).toBe(true)
-    expect(getState().period.stage).toBe('open')
+    expect(closeDates('2026-01-01', '2026-12-31')).toBe('set')
+    expect(getState().period.open).toEqual([])
+    expect(openDates('2026-01-01', '2026-03-31')).toBe('set')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
   })
 
-  it('lets an admin walk all the way back to draft', () => {
+  /* WAS "stops at draft rather than falling off the beginning" (reopenStage answered false at draft). Closing a period
+     with nothing open has nothing to do: it says so and writes nothing. ("Lets an admin walk all the way back to draft"
+     is deleted with no replacement — there is no draft, D1177; nothing open is the one closed state.) */
+  it('closing a period with nothing open does nothing', () => {
     setRole('admin')
-    advanceStage()
-    advanceStage()
-    expect(getState().period.stage).toBe('published')
-    reopenStage()
-    reopenStage()
-    expect(getState().period.stage).toBe('open')
-    reopenStage()
-    expect(getState().period.stage).toBe('draft')
+    closeDates('2026-01-01', '2026-12-31')
+    const before = getVersion()
+    expect(closeDates('2026-01-01', '2026-12-31')).toBe('unchanged')
+    expect(getState().period.open).toEqual([])
+    expect(getVersion()).toBe(before)
   })
 
-  it('stops at draft rather than falling off the beginning', () => {
-    setRole('admin')
-    reopenStage()
-    expect(getState().period.stage).toBe('draft')
-    expect(reopenStage()).toBe(false)
-    expect(getState().period.stage).toBe('draft')
-  })
-
-  // The refusal lives at the write, not only in the strip that hides the
-  // button: the role switch is an affordance, so anything reachable from a
+  // The refusal lives at the write, not only in the window that hides the
+  // control: the role switch is an affordance, so anything reachable from a
   // console has to be refused here too.
   it('refuses a member even though nothing hides the call from them', () => {
-    setRole('admin')          // an admin closes the war (advancing is admin-only)…
-    advanceStage()
-    setRole('member')         // …and a member still may not step it back
+    setRole('admin')          // an admin closes the dates (admin only)…
+    closeDates('2026-01-01', '2026-12-31')
+    setRole('member')         // …and a member still may not open them again
     expect(getState().role).toBe('member')
-    expect(getState().period.stage).toBe('closed')
-    expect(reopenStage()).toBe(false)
-    expect(getState().period.stage).toBe('closed')
+    expect(openDates('2026-01-01', '2026-03-31')).toBe('forbidden')
+    expect(getState().period.open).toEqual([])
   })
 
   // The whole reason reopening is safe enough to allow. Reopening changes
@@ -1226,46 +1266,46 @@ describe('reopening a period', () => {
   // decision already made.
   it('leaves every decision exactly as it was', () => {
     setRole('admin')
-    advanceStage()
+    closeDates('2026-01-01', '2026-12-31')
     setBidState('asics', '2026-01-23', 'approved')
     /* CROSS's 10 Mar, not JAGUAR's 19 Jan: since D402 the seed's OIL award on 19 Jan is drawn on that day and is its
        box, the refused bid behind it as "+1" ([OIL-AWARD-IS-A-GRANT]) */
     setBidState('cross', '2026-03-10', 'refused')
-    reopenStage()
-    expect(getState().period.stage).toBe('open')
+    openDates('2026-01-01', '2026-03-31')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
     expect(getState().states.asics['2026-01-23'].state).toBe('approved')
     expect(getState().states.cross['2026-03-10'].state).toBe('refused')
   })
 
-  it('leaves the grid and the bidding window alone', () => {
+  it('leaves the grid alone', () => {
     setRole('admin')
     const grid = JSON.stringify(getState().grid)
-    const window = [getState().period.bidFrom, getState().period.bidTo]
-    advanceStage()
-    reopenStage()
+    const open = getState().period.open
+    closeDates('2026-01-01', '2026-12-31')
+    openDates('2026-01-01', '2026-03-31')
     expect(JSON.stringify(getState().grid)).toBe(grid)
-    expect([getState().period.bidFrom, getState().period.bidTo]).toEqual(window)
+    expect(getState().period.open).toEqual(open)
   })
 
-  it('survives a reload, like every other stage change', () => {
+  it('survives a reload, like every other change to the open dates', () => {
     const backend = memoryBackend()
     initStore(backend)
     setRole('admin')
-    advanceStage()
-    reopenStage()
+    closeDates('2026-01-01', '2026-12-31')
+    openDates('2026-01-01', '2026-03-31')
     initStore(backend)
-    expect(getState().period.stage).toBe('open')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
   })
 
-  // Wars are independent: reopening the one on screen must not walk another
-  // war's cycle back with it.
+  // Wars are independent: closing and reopening the one on screen must not
+  // touch another war's open dates.
   it('moves only the war on screen', () => {
     setRole('admin')
     const other = getState().wars.find(w => w.period.id !== getState().period.id)!
-    const before = other.period.stage
-    advanceStage()
-    reopenStage()
-    expect(getState().wars.find(w => w.period.id === other.period.id)!.period.stage).toBe(before)
+    const before = other.period.open
+    closeDates('2026-01-01', '2026-12-31')
+    openDates('2026-01-01', '2026-03-31')
+    expect(getState().wars.find(w => w.period.id === other.period.id)!.period.open).toEqual(before)
   })
 })
 
@@ -1755,7 +1795,7 @@ describe('the batch writers (drag-select)', () => {
     expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
   })
 
-  it('a member can fill in the window but never batch-decide', () => {
+  it('a member can fill on open days but never batch-decide', () => {
     setRole('member')
     expect(setCells(cells('ramp', '2026-01-06'), 'LL').written).toBe(1)
     expect(setBidStates(cells('ramp', '2026-01-06'), 'approved')).toEqual({ decided: 0, skipped: 1, already: 0 })
@@ -1764,36 +1804,43 @@ describe('the batch writers (drag-select)', () => {
 
   it('setBidStates (admin) decides biddable cells and skips a Raptor cell', () => {
     setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
-    advanceStage()  // decisions live at closed/published — canDecide, same as the single writer
+    // the admin decides at any time (D1177) — canDecide, same as the single writer
     const r = setBidStates([...cells('ramp', '2026-01-06', '2026-01-07'), ...cells('tata', '2026-01-09')], 'approved')
     expect(r).toEqual({ decided: 2, skipped: 1, already: 0 })
     expect(getState().states.ramp['2026-01-06'].state).toBe('approved')
     expect(getState().states.ramp['2026-01-07'].state).toBe('approved')
   })
 
-  it('moveCells slides a block by a delta, landing pending with the moved trail', () => {
-    advanceStage()   // close the war: a move then leaves the moved trail (27 Aug 26)
+  it('moveCells slides a block by a delta, landing pending', () => {
     setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
     expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBe('moved')
     expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
     expect(getState().grid.ramp['2026-01-10']).toBe('LL')
-    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid', shiftedFrom: '2026-01-06' })
+    // a waiting bid's move carries no moved trail (D1177's reading — the mark is an approved leave's)
+    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid' })
     expect(getState().grid.ramp['2026-01-11']).toBe('LL')
   })
 
-  // The moved stripe must not appear on a bid shuffled while bidding was OPEN,
-  // even after the war closes — the trail is recorded only for a move made once
-  // bidding has closed (owner, 27 Aug 26 — "only after bidding is closed AND the
-  // input is moved").
-  it('a move while OPEN records no moved trail; a move once CLOSED does', () => {
-    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')       // seed stage is OPEN
+  // The moved stripe must not appear on a bid the squadron simply shuffled
+  // (owner, 27 Aug 26). Since D1177 the trail is no longer "a move made once
+  // bidding has closed" but "a move of a leave already approved" — so a waiting
+  // bid moved on closed days still carries none, and approved leave moved on
+  // open days does.
+  it('a waiting bid moved records no trail, open or closed; approved leave moved does, on any day', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')       // the seed opens 1 Jan – 31 Mar
     expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBe('moved')
     expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid' })
     expect(getState().states.ramp['2026-01-10'].shiftedFrom).toBeUndefined()
-    // close, then move again → the trail is recorded now
-    advanceStage()
+    // close the period, then move again → still no trail on a waiting bid
+    closeDates('2026-01-01', '2026-12-31')
     expect(moveCells(cells('ramp', '2026-01-10', '2026-01-11'), 4)).toBe('moved')
-    expect(getState().states.ramp['2026-01-14']).toEqual({ state: 'pending', source: 'bid', shiftedFrom: '2026-01-10' })
+    expect(getState().states.ramp['2026-01-14']).toEqual({ state: 'pending', source: 'bid' })
+    // reopen, approve, move → the approved leave wears the trail, open days or not
+    openDates('2026-01-01', '2026-03-31')
+    setBidStates(cells('ramp', '2026-01-14', '2026-01-15'), 'approved')
+    expect(moveCells(cells('ramp', '2026-01-14', '2026-01-15'), 7)).toBe('moved')
+    expect(getState().states.ramp['2026-01-21']).toEqual({ state: 'approved', source: 'bid', shiftedFrom: '2026-01-14' })
+    expect(getState().states.ramp['2026-01-22']).toEqual({ state: 'approved', source: 'bid', shiftedFrom: '2026-01-15' })
   })
 
   it('moveCells allows a self-overlapping slide (the block moves over its own days)', () => {
@@ -1821,7 +1868,7 @@ describe('the batch writers (drag-select)', () => {
     expect(moveCells(cells('tata', '2026-01-09'), 3)).toEqual({ reason: 'raptor', at: '2026-01-09' })
   })
 
-  it('moveCells refuses a landing day outside the war', () => {
+  it('moveCells refuses a landing day no period holds', () => {
     setCells(cells('ramp', '2026-01-06'), 'LL')
     expect(moveCells(cells('ramp', '2026-01-06'), -400)).toMatchObject({ reason: 'window' })
     expect(getState().grid.ramp['2026-01-06']).toBe('LL')
@@ -1869,15 +1916,15 @@ describe('the batch writers (drag-select)', () => {
     expect(getState().grid.ramp['2026-01-06']).toBe('LL')
   })
 
-  // A two-hop closed-war move traces to the day the man actually bid, not
-  // the intermediate hop (same rule as shiftBid).
-  it('a chain of closed-war moves keeps the ORIGINAL origin in the trail', () => {
-    advanceStage()
+  // A two-hop move of approved leave traces to the day it was first approved
+  // for, not the intermediate hop (same rule as the single-cell move).
+  it('a chain of moves of approved leave keeps the ORIGINAL origin in the trail', () => {
     setCells(cells('ramp', '2026-01-06'), 'LL')
+    setBidStates(cells('ramp', '2026-01-06'), 'approved')
     expect(moveCells(cells('ramp', '2026-01-06'), 4)).toBe('moved')
     expect(moveCells(cells('ramp', '2026-01-10'), 4)).toBe('moved')
     expect(getState().states.ramp['2026-01-14']).toEqual({
-      state: 'pending', source: 'bid', shiftedFrom: '2026-01-06',
+      state: 'approved', source: 'bid', shiftedFrom: '2026-01-06',
     })
   })
 })
@@ -1886,7 +1933,7 @@ describe('the batch writers (drag-select)', () => {
 // 27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
 // war, I shouldn't be able to input on other people's row except mine"). The
 // identity in this prototype IS the "View as" selection (`viewer`); an admin
-// is bound by neither the window nor the row.
+// is bound by neither the open dates nor the row.
 describe('a member edits only their own row', () => {
   beforeEach(() => { initStore(memoryBackend()); setRole('member'); setViewer('ramp') })
   const cells = (person: string, ...dates: string[]) => dates.map(date => ({ personId: person, date }))
@@ -1931,7 +1978,7 @@ describe('a member edits only their own row', () => {
     expect(moveCells(cells('ramp', '2026-01-06'), 3)).toBe('moved')
   })
 
-  it('an admin is bound by neither window nor row — every row stays editable', () => {
+  it('an admin is bound by neither the open dates nor the row — every row stays editable', () => {
     setRole('admin'); setViewer('ramp')
     const r = setCells([...cells('ramp', '2026-01-06'), ...cells('dusk', '2026-01-06')], 'LL')
     expect(r).toEqual({ written: 2, skipped: 0 })
@@ -2002,8 +2049,7 @@ describe('undo / redo', () => {
 
   it('undoes an admin decision on a bid', () => {
     setCell('ramp', '2026-01-20', 'LL')
-    setRole('admin')
-    advanceStage()                            // open -> closed, so a bid can be decided
+    setRole('admin')                          // the admin decides at any time (D1177)
     setBidState('ramp', '2026-01-20', 'acknowledged')
     expect(getState().states.ramp['2026-01-20'].state).toBe('acknowledged')
 

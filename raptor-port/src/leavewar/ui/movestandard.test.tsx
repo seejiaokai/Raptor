@@ -5,15 +5,15 @@
 // day's list moves a record by the move mode, no date box; and his answers to the mock-up
 // (docs/mock/lw-move-standard.html) — D331 order A: Decide → Selected (Move · Delete) → How much → Which leave; D332
 // "Delete" the one word (the one-day Clear and the list's Clear), dashed grey; D333 a member's Move on his own bid while
-// bidding is open; D334 the Move button a grey chip with a teal arrow ("⇄ Move") on every sheet; D335 the one-day sheet
+// bidding is open (narrowed by D1177: while his bid waits and its days are open); D334 the Move button a grey chip with a teal arrow ("⇄ Move") on every sheet; D335 the one-day sheet
 // keeps How many, a picked range widening what it acts on.
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, awardsOnDay, clearCells, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
+import { awardsOnDay, clearCells, closeDates, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
-import { canEditCell } from '../engine'
+import { canEditCell, memberToday } from '../engine'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
 import type { Selection } from './select'
@@ -173,22 +173,42 @@ describe('a range that sweeps up an award day and an empty day (Fable’s S14)',
   })
 })
 
-describe('a bid moved once bidding has closed says where it came from on its list line (Fable’s S4)', () => {
-  it('the award on top hides the grid’s dotted mark, so the line carries it', async () => {
+/* WAS "a bid moved once bidding has closed says where it came from on its list line" (Fable's S4: the award on top of
+   the day it landed on hid the grid's dotted mark, so the day's list line carried it). Since the stages went only an
+   APPROVED leave's move keeps a trail (D1177's reading — "the dotted 'moved' mark shows on any move of a leave already
+   approved"); a bid that only waits moves with none. Both halves pinned here, onto a day holding an award: the approved
+   leave ranks above the award, so its dotted mark stays on the grid where S4 needed it; the waiting bid carries none,
+   on the grid or its list line. */
+describe('a move onto a day holding an award, and where it came from (Fable’s S4)', () => {
+  it('an approved leave keeps its dotted mark on the grid — it is on top of the award', async () => {
     setCell(P, '2026-02-11', 'LL')
     setDayAward(P, '2026-02-16', 1)
-    advanceStage()
+    expect(decideRequestById(P, '2026-02-11', bidsAt(P, '2026-02-11')[0]!.id, 'approved')).toBe(true)
+    closeDates('2026-01-01', '2026-12-31')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    await land(`cell-${P}-2026-02-16`)
+    const view = getState().views[P]?.['2026-02-16']
+    expect(view?.main?.kind).toBe('absence')
+    expect(view?.main?.movedFrom).toBe('2026-02-11')
+    expect(view?.all.some(c => c.kind === 'credit')).toBe(true)                   // the award is still there, beneath
+    expect(screen.getByTestId(`cell-${P}-2026-02-16`).querySelector('.c')!.className).toContain('moved')
+  })
+
+  it('a bid moved while it waits carries no trail — not on the grid, not on its list line', async () => {
+    setCell(P, '2026-02-11', 'LL')
+    setDayAward(P, '2026-02-16', 1)
+    closeDates('2026-01-01', '2026-12-31')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
     fireEvent.click(screen.getByTestId('decide-shift'))
     await land(`cell-${P}-2026-02-16`)
     expect(bidsAt(P, '2026-02-16')).toHaveLength(1)
-    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
     const bid = bidsAt(P, '2026-02-16')[0]!
-    /* a date inside a sentence reads day-first with its year, the bid sheet's own "moved from" voice ([LW-ISO-DATES];
-       Fable's final read F3 — the list read "moved from Wed 11 Feb", the sheet one tap away "moved from 11 Feb 26") */
-    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).toContain('moved from 11 Feb 26')
-    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).not.toContain('moved from Wed 11 Feb')
+    expect(bid.shiftedFrom).toBeUndefined()
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
+    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).not.toContain('moved from')
   })
 })
 
@@ -273,10 +293,10 @@ describe('the block offers Move and Delete only where they would do something (D
 
 describe('a member moves his own bid while bidding is open (D333)', () => {
   it('his one-day sheet offers the one Move, and it picks the bid up', async () => {
-    const date = getState().period.bidFrom!
+    const date = getState().period.open[0]!.from
     const next = new Date(Date.parse(`${date}T00:00:00Z`) + 2 * 86400000).toISOString().slice(0, 10)
     setRole('member'); setViewer(P)
-    expect(canEditCell(getState().period, 'member', date)).toBe(true)
+    expect(canEditCell(getState().period, 'member', date, memberToday())).toBe(true)
     expect(setCell(P, date, 'LL')).toBe(true)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
@@ -289,14 +309,20 @@ describe('a member moves his own bid while bidding is open (D333)', () => {
     expect(bidsAt(P, next)).toHaveLength(1)
   })
 
-  it('once bidding has closed his sheet does not open, so there is no Move to press', () => {
-    const date = getState().period.bidFrom!
+  /* "his sheet does not open" CHANGED by D1176 / D1225: his tap on a closed day opens the closed note — with his own
+     pending bid there, the note that he may delete it, and Delete — but still no Move (D333 narrowed: he moves his bid
+     only while its days are open). */
+  it('once his days have closed his tap opens the closed note — Delete, but no Move to press', () => {
+    const date = getState().period.open[0]!.from
     setCell(P, date, 'LL')
-    advanceStage()
+    closeDates('2026-01-01', '2026-12-31')
     setRole('member'); setViewer(P)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
+    expect(screen.getByTestId('closed-note')).toBeTruthy()
+    expect(screen.getByTestId('closed-delete')).toBeTruthy()
     expect(screen.queryByTestId('decide-shift')).toBeNull()
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 })
 

@@ -429,9 +429,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
   'lw.moveApproved': op(T.bid, 'U'),
-  /* D352 (28 Sep 26): a stage move (Open for bidding / Bidding closed / Published) — the admin's, as the stage always was
-     (27 Aug 26); its own type only so Undo can name it */
-  'lw.stage': op(T.bid, 'U'),
+  /* opening or closing dates for bidding (D1177, 21 Oct 26 — the stages went; D352 narrowed): the admin's, as the stage
+     always was (27 Aug 26) — the period's own record; its own type so Undo can name it ("Undid: opening bidding …") */
+  'lw.open': op(T.war, 'U'),
   /* the Holidays list's three writers (leavewar/state/store.ts holidayAdd / holidayChange / holidayRemove — the Inputs /
      SANS redesign, plan §3.4): a public holiday or an Off day is the leave period's own record, an admin's to change */
   'lw.holiday.add': op(T.war, 'U'), 'lw.holiday.change': op(T.war, 'U'), 'lw.holiday.remove': op(T.war, 'U'),
@@ -633,6 +633,69 @@ type ReplayCheck = (env: CommitEnvelope) => ((c: Change) => boolean) | null
 let REPLAY: ReplayCheck | null = null
 export function setInputReplayCheck(fn: ReplayCheck | null): void { REPLAY = fn }
 
+/* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8, 22 Oct 26; D1177, D1211, D1225). A member's war record —
+   `lw.cell`, id `war:person:date` — may change on a day OPEN for him (the period holding it has the day open, and it is
+   not before today); on any other day his command may only TAKE AWAY his own pending (live) bids there (D1225: "a
+   member may delete his own pending bid on a day that has since closed") or a replaced-bid notice he has seen — never
+   add or change a record. Whether a day is open is the Leave War's to say (its store installs the probe: the pure rule
+   `leavewar/engine/access.ts canEditCell`, asked of the period holding the date); with no war wired every day reads
+   open, as before. Undo and Redo: D1263, below. */
+type LwDayOpen = (cellId: string) => boolean
+let LW_DAY_OPEN: LwDayOpen | null = null
+export function setLwDayOpenProbe(fn: LwDayOpen | null): void { LW_DAY_OPEN = fn }
+/* D1263 (22 Oct 26, his "no" — [LW-REDO-ONTO-CLOSED]): a member's Undo or Redo never puts a bid of his back on a day closed
+   for him since; the one exception is his Undo of a step he made on that day while it was ALREADY closed — deleting his
+   own pending bid there (D1225, the walk's B-F1), or an Inputs-page half day that cut his bid there (D1166). The timeline
+   vouches for such a restore, record by record (undo/timeline.ts verifiedWarRestore, installed by state/undo-wire.ts);
+   anything else that would add or change a war record on a closed day is refused, whatever calls itself a restore.
+   `lwClosedKeys` is what the timeline keeps on each step as it is recorded: the war records a member's step changed on a
+   day not open for him at that moment. */
+let LW_RESTORE: ReplayCheck | null = null
+export function setLwRestoreCheck(fn: ReplayCheck | null): void { LW_RESTORE = fn }
+export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] | null | undefined): string[] {
+  if (!LW_DAY_OPEN || !actor || actor.role !== 'member') return []
+  const out: string[] = []
+  for (const c of changes) if (c.collection === 'lw.cell' && !LW_DAY_OPEN(c.id)) out.push(`${c.collection}/${c.id}`)
+  return out
+}
+function onlyTakesPending(before: unknown, after: unknown): boolean {
+  const b: any[] = Array.isArray(before) ? before : []
+  const a: any[] = Array.isArray(after) ? after : []
+  const was = new Map(b.map(r => [String(r?.id), JSON.stringify(r)] as const))
+  const old = new Map(b.map(r => [String(r?.id), r] as const))
+  for (const r of a) {
+    if (was.get(String(r?.id)) === JSON.stringify(r)) continue
+    if (narrowed(old.get(String(r?.id)), r)) continue                                    // his whole-day bid cut to one half
+    return false                                                                          // nothing added or changed
+  }
+  const kept = new Set(a.map(r => String(r?.id)))
+  for (const r of b) {
+    if (kept.has(String(r?.id))) continue
+    /* his UNDECIDED bid, taken (D1225 — "his own pending bid"): named as the two undecided states rather than "not
+       refused", so a state added to a war record later is never taken by default (the break tests' 17b case — a war
+       record cannot be approved today: approved leave is an input) */
+    if (r?.kind === 'request' && (r.state === 'pending' || r.state === 'acknowledged')) continue
+    if (r?.kind === 'notice') continue                                                    // a notice he has seen
+    return false
+  }
+  return true
+}
+
+/* HIS WHOLE-DAY PENDING BID CUT TO ONE HALF IS A TAKE, NOT A CHANGE (M1's code read — both readers, H1 / F1). Leave or a
+   medical he files on the Inputs page for a morning or an afternoon of a day where his whole-day bid waits cuts the bid to
+   the half the input leaves free (`leavewar/inputgate.ts replaceClashingBids`: the same record, `LL` → `LL*` or `*LL`),
+   inside his own command. On a closed day, or a day before today, that read as a change and refused his whole filing —
+   and D1166 says the Inputs page is never stopped by the closed dates. Only that one cut passes: the same record, a
+   request not refused, its state unchanged, a whole-day code become exactly one of its halves, every other field equal. */
+function narrowed(was: any, now: any): boolean {
+  if (!was || !now || was.kind !== 'request' || now.kind !== 'request') return false
+  if ((was.state !== 'pending' && was.state !== 'acknowledged') || was.state !== now.state) return false
+  const code = String(was.code ?? '')
+  if (!code || code.includes('*')) return false
+  if (now.code !== `${code}*` && now.code !== `*${code}`) return false
+  return JSON.stringify({ ...was, code: '' }) === JSON.stringify({ ...now, code: '' })
+}
+
 const same = (a: any, b: any): boolean => (a ?? null) === (b ?? null)
 const filed = (x: any, y: any): boolean => same(x.by, y.by) && same(x.at, y.at) && same(x.grp, y.grp) && same(x.grpBy, y.grpBy)
 const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id !== INPUT_ORDER
@@ -710,6 +773,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
+  let warRestore: ((c: Change) => boolean) | null | undefined
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (a.role !== 'member') {
@@ -740,7 +804,20 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         return `a notice that is not his own change's (${where})`
       }
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
-      case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
+      case 'lw.cell': {
+        const parts = c.id.split(':')
+        if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
+        /* …and his Undo of such a step puts back exactly what it took (the walk's B-F1, 22 Oct 26: the Undo was refused) —
+           but ONLY that (D1263): an Undo the timeline vouches for, of his own step made on the day already closed, image
+           for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a
+           restore puts nothing back on a closed day. (Taking his own pending bid away passes above, Undo or not.) */
+        const after = c.op === 'delete' ? [] : c.after
+        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after)) {
+          if (warRestore === undefined) warRestore = env.origin === 'restore' && LW_RESTORE ? LW_RESTORE(env) : null
+          if (!(warRestore && warRestore(c))) return `a war day not open for bidding (${where})`
+        }
+        break
+      }
       case 'lw.current': break
       /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes his OWN seen row and no other (EditLogSeen, own row
          — one row per person since [DB-READINESS] group A, phase 4.3) */

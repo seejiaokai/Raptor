@@ -21,7 +21,7 @@ const person = (id: string, seat: Person['seat']): Person =>
 const pilotCtx: CountCtx = { eventDefs: seedEventDefs(), people: [person('ace', 'pilot'), person('wiz', 'wso')] }
 
 const period = (start: string, end: string, tweak?: (p: Period) => void): Period => {
-  const p: Period = { id: `${start}`, name: 'w', start, end, stage: 'open', bidFrom: null, bidTo: null, days: buildDays(start, end), bands: [] }
+  const p: Period = { id: `${start}`, name: 'w', start, end, open: [], lastClosed: null, days: buildDays(start, end), bands: [] }
   tweak?.(p)
   return p
 }
@@ -238,7 +238,7 @@ describe('the remembered day index answers for the CURRENT calendar (6 Sep 26)',
     // `bands` live on the period and are deliberately outside the index, so a
     // band added to a period whose days array is the SAME array must land at
     // once. Two periods sharing one days array is the shape every non-day edit
-    // makes (`{ ...w.period, stage }` and friends keep the array).
+    // makes (`{ ...w.period, open }` and friends keep the array).
     const p = period('2026-01-01', '2026-01-31')
     expect(drawnFrom([src({ wiz: { [jan5]: 'LL' } }, p)], 'wiz', 'annual', pilotCtx)).toBe(1)
     const banded: Period = { ...p, bands: [{ line: 0, from: jan5, to: jan5, text: 'PH', kind: 'off' }] }

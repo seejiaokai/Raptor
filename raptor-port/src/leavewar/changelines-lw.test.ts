@@ -7,7 +7,7 @@ import { INPUTS, holds } from '../engine/inputs'
 import { ELOG, elogClear, rowTouches } from '../engine/editlog'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
-import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, advanceStage, setDayAward, clearCells, grantOil, changeAbsenceById, moveCells, moveRecords } from './state/store'
+import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, closeDates, setDayAward, clearCells, grantOil, changeAbsenceById, moveCells, moveRecords } from './state/store'
 import { resetSession, writeInputs } from '../state/store'
 import { signIn, sessionFor } from '../state/accounts'
 import { inpId } from '../engine/inputs'
@@ -40,7 +40,8 @@ beforeEach(() => {
   setRole('admin')
   pid = getState().people[0].id
   setCell(pid, '2026-02-02', 'LL')
-  if (getState().period.stage === 'open') advanceStage()
+  /* bidding closed before deciding, as the stage step did (the stages went — D1177; the admin decides at any time) */
+  { const p = getState().period; closeDates(p.start, p.end) }
   elogClear()
 })
 const war = () => ELOG.rows.filter(r => r.sect === 'abs')

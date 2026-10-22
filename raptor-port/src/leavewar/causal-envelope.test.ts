@@ -9,7 +9,7 @@ import { INPUTS, holds } from '../engine/inputs'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
 import {
-  getState, initStore as lwInitStore, setCell, setCellRange, setBidState, setPeople, setRole, advanceStage,
+  getState, initStore as lwInitStore, setCell, setCellRange, setBidState, setPeople, setRole, closeDates,
   lwCanUndo,
 } from './state/store'
 import { memoryBackend } from './state/storage'
@@ -35,7 +35,8 @@ beforeEach(() => {
 function approveWatched(person: string, dates: string[]): CommitEnvelope[] {
   setRole('admin')
   for (const d of dates) setCell(person, d, 'LL')
-  if (getState().period.stage === 'open') advanceStage()
+  /* bidding closed before deciding, as the stage step did (the stages went — D1177; the admin decides at any time) */
+  { const p = getState().period; closeDates(p.start, p.end) }
   // watch only the decisive edit — the one whose ripple mints the input
   const seen: CommitEnvelope[] = []
   const unsub = onCommit(e => seen.push(e))

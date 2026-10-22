@@ -70,7 +70,17 @@ describe('stepToward / rollingTarget (the one draw-toward-a-target engine)', () 
   it('rollingTarget puts more runway ahead than behind, clamped to the war', () => {
     expect(rollingTarget(12, 5, 5, 1, 3)).toEqual({ lo: 4, hi: 8 })
     expect(rollingTarget(12, 0, 0, 1, 3)).toEqual({ lo: 0, hi: 3 })   // clamped at the year's start
-    expect(rollingTarget(12, 11, 11, 1, 3)).toEqual({ lo: 10, hi: 11 }) // and its end
+    expect(rollingTarget(12, 11, 11, 1, 3)).toEqual({ lo: 7, hi: 11 }) // and its end — the runway cut off goes behind
+  })
+  /* M1's look on his iPhone (23 Oct 26): the page now lands on today (late October in the demo year), and a swipe back from
+     there met months never drawn — striped until the scroll stopped (a month left of the view whose width is unknown is
+     not drawn in motion). The runway the war's end cuts off is drawn on the other side instead, so the same number of
+     months is drawn and a swipe back from the year's end meets drawn columns; the same at its start. */
+  it('the runway the war cuts off at its end is drawn behind; at its start nothing changes', () => {
+    expect(rollingTarget(12, 9, 9, 1, 3)).toEqual({ lo: 7, hi: 11 })   // October: two ahead left, so two more behind
+    expect(rollingTarget(12, 10, 10, 1, 3)).toEqual({ lo: 7, hi: 11 })
+    expect(rollingTarget(12, 0, 0, 1, 3)).toEqual({ lo: 0, hi: 3 })    // January: nothing behind — ahead already full
+    expect(rollingTarget(3, 1, 1, 1, 3)).toEqual({ lo: 0, hi: 2 })     // a war shorter than the window: all of it
   })
 })
 

@@ -53,6 +53,9 @@ export interface UndoEntry {
      E's undo shares a key" — permanently, not only while that newer entry stands). It is never
      redone and never blocks a redo (walk W3 F-w3-2, 24 Sep 26). Still `undone` for every other reader. */
   abandoned?: boolean
+  /* D1263 — the record keys this step changed on a Leave War day already closed for its maker when he made it (the
+     `closedAtStep` hook, asked as the step was recorded). Only an Undo of such a step may put a bid back there. */
+  closedAt?: string[]
 }
 
 export type { Actor, Boundary, Change, Scope, Module }

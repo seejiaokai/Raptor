@@ -6361,3 +6361,35 @@ list. A new control: its questions and a picture before it is built, as its own 
 ### [INPUTS-SANS-HEAD-SAME] The Inputs and SANS calendars' top rows laid out alike (his D1123, 21 Oct 26)
 **His words** (two desktop pictures, the Inputs calendar and the SANS calendar): *"why the format of inputs and sans are different. can we standardise this too?"* **What is there (desktop):** Inputs puts its three tabs, Calendar / List, ‹ month › and Today on one row (the month 18px, weight 700); SANS puts the tabs on a row of their own and ‹ month › Today, Highlight and the gear on a second row (the month 20px, weight 800, letters spaced wider). The phone already matches (D705, D697, D698). **Why:** built at different times — SANS has no list (D620), so no switch; Inputs keeps its switch first so it never moves between the Calendar and the List (D687). **To do:** draw the matched row on the real app (desktop; the phone checked unchanged), put it to him with a recommendation, build on his pick, the bug-check order (a shared look on two pages: WALK). **Place:** `raptor-port/src/ui/InputsCal.tsx`, `SansCal.tsx`, `25-inputs-calendar.css`, `24-sans-calendar.css`; D687's and D705's browser tests in `raptor-port/e2e/inputs-calendar.spec.ts`.
 
+
+*Moved here 2026-10-22 by backlog-archive.mjs ([START-SIZE-AFTER-M1]). Forward facts: `raptor-port/docs/doc-budget.md`.*
+
+### [START-SIZE-AFTER-M1] What a chat loads and a big job reads, measured again and trimmed (his word, 22 Oct 26 — D1261)
+**WITHDRAWN 22 Oct 26 by D1262** (*"actually dont need to trim it yet since we done a trim recently"*) — kept below as written.
+**His words:** *"Yes — after M1 goes live, measure what a fresh chat loads and what a big job reads, and put the trim options to me."* — after *"I might bust my context quickly every chat… maybe bringing this repo into a new repo and cut all the unwanted data"*. **When:** once the Leave War overhaul's M1 is live (`claude/lw-m1-open-dates`), before the Tracker app's build. **To do:** as the 7 Oct 26 audit ([START-CONTEXT-AUDIT], D602, D609): measure, at a fresh chat's first turn, what is loaded (the rule files, the area rulings that load with a Leave War file, `HANDOFF.md`, memory, tools) and, for M1 itself, what the job read (the plan, the code map, the rulings, the drawings, the source and test files); then options to him — each with what it saves and what it risks (e.g. finished `## Now` blocks and long §Settled passages moved to the archive, the Leave War rulings file's size, a big merge split into a build chat and a check chat) — nothing trimmed before his ruling, never at the cost of the work's quality (D68). A new repo was not recommended (a chat pays for what it reads, not the repo's size); his to raise again. **Measured so far:** M1's chat began at 22% of its 880k context after reading the handoff, plan, code map, the bug-check order and the Leave War rulings; it reached about 75% midway through the build (about 60 files).
+
+
+*Moved here 2026-10-22 by backlog-archive.mjs ([LW-REDO-ONTO-CLOSED]). Forward facts: `raptor-port/docs/data-model.md`, `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md`.*
+
+### [LW-REDO-ONTO-CLOSED] A member's Undo or Redo must not put his pending bid back on a day closed since — to build (filed 22 Oct 26, M1; ruled D1263)
+Found by M1's two code readers (Fable F2, Opus scenario 6), each blind to the other. A member bids on a day while it is open;
+the admin closes the day; the member presses Undo (his bid goes — he may take his own pending bid off a closed day, D1225)
+and then Redo — his bid is back on the closed day. The same with Undo of a delete he made while the day was open. The
+commit's check lets a restore through when it only adds back pending bids of his (`raptor-port/src/state/perms.ts`, the
+`lw.cell` case — built for the walk's B-F1: his Undo of his own closed-day delete must put it back), and an Undo / Redo
+cannot tell "back" from "new". **Not reachable today in one browser:** the admin's closing sits on the one shared
+timeline above the member's step, so his Undo is refused there ("Switch back to the admin view…"); it becomes real with two
+people on one database. **His answer, D1263 (22 Oct 26, "no"):** a member's Redo, or his Undo of a delete made while the day
+was open, never puts a bid back on a day closed since; only his Undo of a delete he made on the day already closed does.
+**Build:** the timeline carries the direction (undo / redo) on the restore envelope, and the forward step records whether
+the day was closed for him when it was made; `ownershipViolation` lets the add-back through only for an Undo of a
+closed-day delete; the two tests the readers described (Redo after a close; Undo of an open-day delete after a close),
+red first. Pinned as built today:
+`raptor-port/src/leavewar/opendates-store.test.ts` "a restore on a closed day passes only when…" (to change with the build).
+**Place:** before M1's merge live — small, in the next chat.
+**DONE 22 Oct 26** on `claude/lw-m1-open-dates` (pull request 566): built as above (`undo/timeline.ts verifiedWarRestore`, the
+`closedAtStep` hook; `state/perms.ts lwClosedKeys`, `setLwRestoreCheck`); a refused one says "Bidding is closed on that day,
+so your bid can’t go back on it." and, after the fresh Opus read's F1, is passed over by the next press instead of jamming
+the button. Tests red first (the D1263 block); walked on a phone, W1–W5 (`scripts/handpass/lw-d1263-walk.mjs`); the
+evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBid row), D1263's full row.
+

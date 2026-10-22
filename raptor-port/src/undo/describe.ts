@@ -11,7 +11,7 @@
    - a text box — the FACT of which box a `sched.text` wrote (`entry.detail`, the key; [AMEND-SMALL-SEEN] item 2):
      "a take-off time", "a day note", "an area" — never "a note on the schedule" for a time (walker A2-F6);
    - the Leave War — the app's word (never "leave board") and the act: "a bid", "an OIL award", "moving a bid",
-     "a Leave War setting", and the stage's own words (D352, `lw.stage`) — walker A2-F1;
+     "a Leave War setting", and opening or closing dates in its own words (D352 narrowed by D1177, `lw.open`) — walker A2-F1;
    - one input filed on the Inputs page — "a personal input", however it was filed (walker A2-F2);
    - the roster and the settings, now Undo steps ([UNDO-ROSTER-SETTINGS]) — "Hex's quals", "a rule on the Logic
      page", "suspending Outlaw's sign-in" (Fable 3e, S23).
@@ -153,31 +153,48 @@ export function textLabel(key: string | undefined): string | null {
   }
 }
 
-/* ---- the Leave War (walker A2-F1; D352) ---- */
-const STAGE_TO: Record<string, string> = {
-  open: 'opening bidding', closed: 'closing bidding', published: 'publishing the war', draft: 'taking the war back to a draft',
+/* ---- the Leave War (walker A2-F1; D352 narrowed by D1177: Undo takes back opening or closing dates, and says so) ---- */
+const MON3 = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const dayMs = (iso: string) => Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))
+const isoOf = (ms: number) => new Date(ms).toISOString().slice(0, 10)
+const shortD = (iso: string) => `${+iso.slice(8, 10)} ${MON3[+iso.slice(5, 7) - 1]}`
+/* every open day a period record names, as a set — a year at most, so a plain walk is cheap */
+function openDays(v: any): Set<string> {
+  const out = new Set<string>()
+  for (const s of Array.isArray(v?.open) ? v.open : []) {
+    if (!s || typeof s.from !== 'string' || typeof s.to !== 'string') continue
+    for (let t = dayMs(s.from), end = dayMs(s.to); t <= end; t += 86_400_000) out.add(isoOf(t))
+  }
+  return out
 }
-function stageOf(v: any): string | null { return v && typeof v.stage === 'string' ? v.stage : null }
-function stageMove(entry: UndoEntry): { from: string | null; to: string | null } | null {
-  /* a move needs a war on both sides — a new war (no before) starts at draft and is no step back (Fable's final read, F1) */
+/* WHAT AN `lw.open` STEP DID: the days it opened or closed, as one span ("1 Apr – 30 Apr") — read only from the step */
+function openChange(entry: UndoEntry): { kind: 'open' | 'close' | 'both'; span: string } | null {
   const w = entry.forward.find(c => c.collection === 'lw.war' && c.before && c.after)
   if (!w) return null
-  const from = stageOf(w.before), to = stageOf(w.after)
-  return from !== to ? { from, to } : null
+  const was = openDays(w.before), now = openDays(w.after)
+  const opened = [...now].filter(d => !was.has(d)), closed = [...was].filter(d => !now.has(d))
+  const all = [...opened, ...closed].sort()
+  if (!all.length) return null
+  return { kind: opened.length && closed.length ? 'both' : opened.length ? 'open' : 'close', span: runsText(all) }
 }
-const ORDER = ['draft', 'open', 'closed', 'published']
-function stageLabel(entry: UndoEntry): string | null {
-  const m = stageMove(entry)
-  if (!m || !m.to) return null
-  /* a step BACK (the ← button) says so: closed → open is "reopening bidding" */
-  if (m.from && ORDER.indexOf(m.to) < ORDER.indexOf(m.from))
-    return m.to === 'open' ? 'reopening bidding' : m.to === 'closed' ? 'taking the war back to Bidding closed' : STAGE_TO[m.to] || 'a stage change on the Leave War'
-  return STAGE_TO[m.to] || 'a stage change on the Leave War'
+/* THE DAYS THAT CHANGED, AS THEIR RUNS (M1's code read, L3 / F5): one first-to-last span named days that stayed open —
+   "closing bidding 1 Mar – 31 Mar" when only its two ends closed. Two runs are named; more read "and N more". */
+function runsText(days: string[]): string {
+  const next = (iso: string) => { const t = new Date(`${iso}T00:00:00Z`); t.setUTCDate(t.getUTCDate() + 1); return t.toISOString().slice(0, 10) }
+  const runs: Array<[string, string]> = []
+  for (const d of days) {
+    const last = runs[runs.length - 1]
+    if (last && next(last[1]) === d) last[1] = d
+    else runs.push([d, d])
+  }
+  const one = ([a, b]: [string, string]) => a === b ? shortD(a) : `${shortD(a)} – ${shortD(b)}`
+  if (runs.length <= 2) return runs.map(one).join(' and ')
+  return `${one(runs[0]!)} and ${runs.length - 1} more`
 }
-/* what the stage IS after an undo or a redo — D352: the bubble says it opened or closed for everyone */
-const STAGE_NOW: Record<string, string> = {
-  open: 'bidding is open again for everyone', closed: 'bidding is closed for everyone', published: 'the war is published',
-  draft: 'the war is a draft again',
+function openLabel(entry: UndoEntry): string | null {
+  const m = openChange(entry)
+  if (!m) return null
+  return m.kind === 'open' ? `opening bidding ${m.span}` : m.kind === 'close' ? `closing bidding ${m.span}` : `changing the open dates ${m.span}`
 }
 function listOf(v: any): any[] { return Array.isArray(v) ? v : [] }
 function lwCellLabel(entry: UndoEntry): string | null {
@@ -224,7 +241,7 @@ function eventLabel(entry: UndoEntry): string {
   return `${entry.type === 'lw.event.remove' ? 'removing ' : ''}${name}${on}`
 }
 function lwLabel(entry: UndoEntry): string {
-  if (entry.type === 'lw.stage') return stageLabel(entry) || 'a stage change on the Leave War'
+  if (entry.type === 'lw.open') return openLabel(entry) || 'the open dates on the Leave War'
   if (entry.type.startsWith('lw.holiday.')) return holidayLabel(entry)
   if (entry.type.startsWith('lw.event.')) return eventLabel(entry)
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]
@@ -269,7 +286,7 @@ function lwLabel(entry: UndoEntry): string {
   const war = entry.forward.find(c => c.collection === 'lw.war')
   if (war && !war.before && war.after) return 'a new Leave War period'
   if (war && war.before && !war.after) return 'deleting a Leave War period'
-  if (colls.has('lw.war')) return stageLabel(entry) || 'the war’s dates or name'
+  if (colls.has('lw.war')) return openLabel(entry) || 'the war’s dates or name'
   return 'a change on the Leave War'
 }
 
@@ -410,14 +427,17 @@ export function describeEntry(entry: UndoEntry): string {
   return genericLabel(entry)
 }
 
-/* the full bubble text for an undo or a redo of `entry`. A stage move says what the war is NOW (D352: "Undid: closing
-   bidding — bidding is open again for everyone"), since it changes what every member may do at once. */
+/* the full bubble text for an undo or a redo of `entry`. Opening or closing dates says what those days are NOW (D352
+   narrowed by D1177: "Undid: closing bidding 1 Apr – 30 Apr — those days are open again for everyone"), since it changes
+   what every member may do at once. */
 export function bubbleText(entry: UndoEntry, dir: 'undo' | 'redo'): string {
   const head = `${dir === 'undo' ? 'Undid' : 'Redid'}: ${entry.label}`
-  if (entry.type === 'lw.stage') {
-    const m = stageMove(entry)
-    const now = m ? (dir === 'undo' ? m.from : m.to) : null
-    if (now && STAGE_NOW[now]) return `${head} — ${STAGE_NOW[now]}`
+  if (entry.type === 'lw.open') {
+    const m = openChange(entry)
+    if (m && m.kind !== 'both') {
+      const nowOpen = (m.kind === 'open') === (dir === 'redo')
+      return `${head} — those days are ${nowOpen ? 'open' : 'closed'} ${dir === 'undo' ? 'again ' : ''}for everyone`
+    }
   }
   return head
 }

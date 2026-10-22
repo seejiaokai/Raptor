@@ -33,7 +33,8 @@ import { Matrix } from './ui/Matrix'
 import { WarSheet } from './ui/WarSheet'
 import { setLwOnScreen } from './state/screen'
 import { focusDay, getState, rawState, subscribe } from './state/store'
-import { defaultFocusDate } from './engine'
+import { focusDateOf, memberToday } from './engine'
+import { installDayClock } from './ui/dayclock'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
    notify re-renders the Shell, and a plain child here would make React
@@ -73,7 +74,7 @@ function NoWar() {
       <h2>No leave period yet</h2>
       {admin ? (
         <>
-          <p>Create the first leave period — its name and dates. It starts in draft; open it for bidding when the schedule firms up.</p>
+          <p>Create the first leave period — its name and dates. Nothing in it is open for bidding until you open dates.</p>
           <button className="lw-first" data-testid="lw-first-war" onClick={() => setMaking(true)}>Create the first period</button>
         </>
       ) : (
@@ -91,15 +92,16 @@ const LwBody = memo(function LwBody() {
 export function LeaveWarPage({ active = true }: { active?: boolean }) {
   const savedY = useRef(0)
   /* Has the tab landed on its default view yet? The FIRST time it comes on
-     screen we snap the grid to the start of the current war's bidding window
-     (owner, 7 Sep 26 — "the start of the period in which it is opened for
-     bidding"); which war that is was already decided at boot by the stage
-     priority (store `pickDefaultPeriodId`). Once only — a later return to the
+     screen we snap the grid to the first open date from today, else today (D1177's reading — once the start of the
+     war's bidding window, owner 7 Sep 26); which war that is was already decided at boot by the same rule (store
+     `landingOf`). Once only — a later return to the
      tab restores where the reader actually was (the DOM never went away and
      `savedY` holds the page scroll), so re-landing would yank them off it. A
      hidden pre-warm mount never runs this, because the effect returns early
      while `active` is false. */
   const landedRef = useRef(false)
+  /* today moves at midnight with the page left open (D1266) — one clock for the page's life, mounted or merely kept */
+  useEffect(() => installDayClock(), [])
   useEffect(() => {
     if (!active) return
     /* Tell the Matrix the tab is on screen BEFORE the resize kick, so its
@@ -123,7 +125,7 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
     if (!landedRef.current) {
       landedRef.current = true
       /* no war yet (the page's empty state) has no day to land on */
-      if (!hasNoWar()) focusDay(defaultFocusDate(getState().period))
+      if (!hasNoWar()) focusDay(focusDateOf(getState().period, memberToday()))
     }
     /* Track the spot continuously rather than reading scrollY on the way
        out: by the time a leave-effect runs the section is already hidden,

@@ -517,7 +517,7 @@ world replaces it, inside the boot's group); the one-time fold (`store.ts leavew
 
 | stored key | the design's table | holds |
 |---|---|---|
-| `war:<warId>` | `LeaveWar` | the war's `Period` (its days, bands, stage, bidding window) with `ord` — its place among the wars, the order they were created (the period picker's) |
+| `war:<warId>` | `LeaveWar` | the war's `Period` (its days, bands, open dates and last-closed note — D1177) with `ord` — its place among the wars, the order they were created (the period picker's) |
 | `rec:<warId>:<recId>` | `LeaveBid` | ONE of the war's own records (a request, an earned credit, a notice — `WarRec` below) with `pid` and `date` (its address) and `ord` (its place at that address). Several share an address; the list there reads back by `(ord, recId)`. A MOVE rewrites the one row (its new `pid` / `date`) |
 | `ledger:<id>` | `LeaveLedger` | one `LedgerEntry`; a reload reads the ledger by (date, entry time, id) — every reader sorts it for itself |
 | `opening:<pid>:<counter>` | `LeaveOpening` | one opening balance, a number |
@@ -571,7 +571,7 @@ postOuts: { personId: Person }   // (personEdits went with the war's Edit person
 | `LeaveWar` | `{ period, recs }` — one war (stored) |
 | `Recs` | `personId → date → WarRec[]` — the war's OWN records only ([ARCH-STACK] step 4) |
 | `WarRec` | each with `ord?` (its place at its address — `[DB-READINESS]` group A, phase 3), one of: **request** `{ id, kind:'request', code, state: 'pending' \| 'acknowledged' \| 'refused', shiftedFrom?, carried? }` · **OIL credit** `{ id, kind:'credit', code: 'FO' \| 'HO', oil: 'auto', via?, note?, spans? }` — the SCHEDULE'S credit only; an OIL award is a ledger entry since [OIL-AWARD-IS-A-GRANT] (29 Sep 26), and an old `oil:'manual'` record is dropped on read (D401) · **notice** `{ id, kind:'notice', code, was, byType, byWho, seq, at }` (a replaced bid, until "OK, seen"). Nothing "approved" is ever stored here — approved leave is the Input with `lw` |
-| `Period` | `id, name, start, end, stage: 'draft' \| 'open' \| 'closed' \| 'published', bidFrom, bidTo, days: DayInfo[], bands: EventBand[], ord?` (its place among the wars — `[DB-READINESS]` group A, phase 3) |
+| `Period` | `id, name, start, end, open: {from, to}[], lastClosed: {from, to, by, at} \| null, days: DayInfo[], bands: EventBand[], ord?` (the open dates replaced `stage`, `bidFrom`, `bidTo` — D1177, 22 Oct 26; empty `open` = closed; an old saved period with a stage still loads: an `open` war's window becomes one stretch, any other stage none — `leavewar/state/store.ts readWar`) (its place among the wars — `[DB-READINESS]` group A, phase 3) |
 | `Grid` (derived) | `personId → date → code` — the main code a cell shows |
 | `Cell` | `{ type, portion: 'full' \| 'am' \| 'pm' }` — a parsed code |
 | `States` (derived) | `personId → date → BidRecord` — the main record's colour state; `source: 'raptor'` now means "locked on the war" (filed on the Inputs page, or medical) |

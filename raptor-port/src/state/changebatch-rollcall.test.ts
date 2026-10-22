@@ -33,6 +33,8 @@ import { markSeen } from './changes'
 import { globalUndo, globalRedo } from '../undo'
 import { initStore as lwInitStore, lwHistInit, getState, setCell, recordsAt, moveCells, setRole } from '../leavewar/state/store'
 import { installDemoWorld } from '../leavewar/state/demoworld'
+import { setMemberTodayForTests } from '../leavewar/engine/opendates'
+import { addDays } from '../leavewar/engine/period'
 import { wireLeaveWarSync } from '../leavewar/sync'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from '../storage/adapters'
@@ -111,7 +113,7 @@ describe('the roll-call: every save after boot carries its batch', () => {
     /* the Leave War: a bid, then a move */
     setRole('admin')
     const lwPid = getState().people[0].id
-    const day = String(getState().period.bidFrom || getState().period.start)
+    const day = String(getState().period.open[0]?.from ?? getState().period.start)
     expect(setCell(lwPid, day, 'LL')).toBe(true)
     /* Undo and Redo (their history lines ride the restore) */
     expect(globalUndo().ok).toBe(true)
@@ -182,8 +184,15 @@ describe('the roll-call: every save after boot carries its batch', () => {
     expect(globalUndo().ok, 'his own Undo').toBe(true)
     expect(NOTICES.length, 'and the notice went with it').toBe(nBefore)
     setRole('member')
-    const day = String(getState().period.bidFrom || getState().period.start)
-    setCell(me, day, 'LL')
+    /* his own bid on an open day he has nothing on yet (the roll-call above already bid on the first open day for him —
+       re-typing the same bid writes nothing, so the bid's rows would never reach the check below) */
+    const first = getState().period.open[0]!
+    let day = first.from
+    while (recordsAt(me, day).length && day < first.to) day = addDays(day, 1)
+    /* A MEMBER NEVER BIDS BEFORE TODAY (D1211) — and the demo's open dates are fixed 2026 dates the real calendar passes;
+       today is pinned back so his bid is really made and its rows really held to §11 below */
+    setMemberTodayForTests('2000-01-01')
+    try { expect(setCell(me, day, 'LL'), 'his own bid, on an open day').toBe(true) } finally { setMemberTodayForTests(null) }
     await flushAll()
     /* (the three kinds of row the bell added were really saved — else the check below would hold them to nothing) */
     const saved = groups.slice(from).flatMap(({ g }) => itemsOf(g)).map(i => `${i.table} ${i.op}`)
@@ -226,7 +235,7 @@ describe('the roll-call: every save after boot carries its batch', () => {
   it('a Leave War MOVE is exactly one row in its batch (P3-CELL-DIFF): the record, put, at its new date', () => {
     setRole('admin')
     const lwPid = getState().people[1].id
-    const day = String(getState().period.bidFrom || getState().period.start)
+    const day = String(getState().period.open[0]?.from ?? getState().period.start)
     expect(setCell(lwPid, day, 'LL')).toBe(true)
     const id = recordsAt(lwPid, day)[0]!.id
     const from = groups.length
@@ -275,7 +284,7 @@ describe('the stand-in reader (phase 4.2): a second client catches up from the c
     expect(writeInputs(() => { INPUTS.push({ person: 'dj', date: 'Jul 16', allday: true, type: 'LL', remarks: 'READER', mod: '2026-07-01' }) })).toBe(true)
     schedWrite(SCHED_TYPES.text, () => { txtSet('dn:2.0', 'READER NOTE'); markEdit() })
     schedWrite(SCHED_TYPES.text, () => { txtSet('dn:2.0', 'READER NOTE 2'); markEdit() })
-    const day = String(getState().period.bidFrom || getState().period.start)
+    const day = String(getState().period.open[0]?.from ?? getState().period.start)
     /* the first man with nothing on that day takes the bid */
     const lwPid = getState().people.map(p => p.id).find(id => !recordsAt(id, day).length && setCell(id, day, 'LL'))!
     expect(lwPid, 'a man took the bid').toBeTruthy()

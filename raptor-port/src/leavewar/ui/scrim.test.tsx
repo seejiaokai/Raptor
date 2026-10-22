@@ -1,15 +1,15 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { advanceStage, getState, initStore, setRole, setViewer } from '../state/store'
+import { closeDates, getState, initStore, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { syncAbsences } from '../sync'
 import { StageBar, Topbar } from './Chrome'
 import { Matrix } from './Matrix'
 
-/* these open the admin sheets (decision, counter, person), and advancing the
-   cycle to reach them is admin-only since 27 Aug 26 (owner) — so run as an
-   admin */
+/* these open the admin sheets (decision, counter, person), and closing the
+   dates to reach them is admin-only (owner, 27 Aug 26, carried to the open
+   dates by D1177) — so run as an admin */
 const ISNAP = JSON.stringify(INPUTS)
 beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
 afterEach(() => { INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
@@ -41,7 +41,7 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
     name: 'the decision sheet',
     testid: 'bid-picker',
     open: () => {
-      advanceStage()
+      closeDates('2026-01-01', '2026-12-31')   // every date closed (D1177 — was the closed stage)
       setRole('admin')
       render(<Matrix />)
       fireEvent.click(screen.getByTestId('cell-asics-2026-01-23'))
@@ -74,24 +74,25 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
       fireEvent.click(screen.getByTestId('war-new'))
     },
   },
+  /* was the bidding-window sheet — the stages' one window went for the "Open for bidding" window (D1177) */
   {
-    name: 'the bidding-window sheet',
-    testid: 'window-sheet',
+    name: 'the Open for bidding window',
+    testid: 'open-dates',
     open: () => {
       setRole('admin')
       render(<StageBar />)
-      fireEvent.click(screen.getByTestId('bid-window'))
+      fireEvent.click(screen.getByTestId('open-chip'))
     },
   },
   {
-    name: 'the published remarks sheet',
+    name: 'the remarks sheet',
     testid: 'remarks-sheet',
     open: () => {
-      // a filed leave, synced in, then published — an admin taps it to edit
-      // the note (owner, 27 Aug 26)
+      // a filed leave, synced in — the member taps his own approved leave to edit its note, at any time (D418 narrowed
+      // by D1177: it was the published stage's, and an admin's tap too; an admin's tap now opens the decide window)
       INPUTS.push({ iid: 'scrim-rmk', person: 'dusk', type: 'LL', date: 'Feb 11', yr: 2026, allday: true, remarks: 'x' })
       syncAbsences()
-      advanceStage(); advanceStage()   // open -> closed -> published (admin)
+      setRole('member')
       setViewer('dusk')
       render(<Matrix />)
       fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
@@ -201,7 +202,7 @@ describe('clicking outside a sheet closes it', () => {
   // Dismissing is not deciding. A bid left pending must still be pending after
   // the sheet is waved away, or "click outside" becomes a way to lose work.
   it('changes nothing about the bid it was opened on', () => {
-    advanceStage()
+    closeDates('2026-01-01', '2026-12-31')
     setRole('admin')
     render(<Matrix />)
     const before = getState().states.asics['2026-01-23']?.state

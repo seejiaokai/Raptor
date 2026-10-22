@@ -11,7 +11,7 @@ import { INPUTS, holds } from '../../engine/inputs'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setMe, setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
-import { advanceStage, initStore as lwInitStore, setBidStates, setCells, setPeople, setRole } from '../state/store'
+import { closeDates, initStore as lwInitStore, setBidStates, setCells, setPeople, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { wireLeaveWarSync } from '../sync'
 import { Matrix } from './Matrix'
@@ -34,7 +34,7 @@ const warLeave = () => INPUTS.filter((r: any) => holds(r, 'ammo') && r.type === 
 describe('the range Clear (F5)', () => {
   it('takes a leave the war approved inside the span, as the one-day Clear does', () => {
     setCells([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'LL')
-    advanceStage()                                                  // bidding closed — the admin decides
+    closeDates('2026-01-01', '2026-12-31')                          // every date closed (was the closed stage, D1177) — the admin decides
     setBidStates([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'approved')
     expect(warLeave().length).toBeGreaterThan(0)
     render(<Matrix />)

@@ -9,7 +9,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  advanceStage, changeAbsenceById, decideRequestById, getState, getVersion, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setBidState, setCell, setPeople, setRole, moveRecords,
+  changeAbsenceById, closeDates, decideRequestById, getState, getVersion, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setBidState, setCell, setPeople, setRole, moveRecords,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { wireLeaveWarSync } from './sync'
@@ -52,6 +52,16 @@ function file(person: string, type: string, date: string, extra: Record<string, 
 const recsAt = (p: string, d: string) => rawState().wars[0]!.recs[p]?.[d] ?? []
 const lwRows = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw)
 
+/** Close the whole period on screen for bidding — what stepping the war to "bidding closed" did before the stages went
+ *  (D1177). The admin decides at any time now; the tests that closed bidding before deciding keep that world. */
+function closeBidding(): void {
+  const was = getState().role
+  setRole('admin')
+  const p = getState().period
+  expect(closeDates(p.start, p.end)).toBe('set')
+  setRole(was)
+}
+
 describe('Fable #1 / Codex AS4-001 — the war repaints after every absence change', () => {
   it('an Inputs-page filing bumps the war with no manual sync', () => {
     const v = getVersion()
@@ -61,7 +71,7 @@ describe('Fable #1 / Codex AS4-001 — the war repaints after every absence chan
   })
 
   it('deleting approved leave from the tap list bumps the war', () => {
-    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); advanceStage()
+    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); closeBidding()
     setBidState('ammo', '2026-02-10', 'approved')
     const iid = String(lwRows('ammo')[0].iid)
     const v = getVersion()
@@ -89,7 +99,7 @@ describe('Fable #2 — a credit worked in two stretches is ONE credit', () => {
 
 describe('Fable #3 — a locked week refuses the tap-list change with words, not a crash', () => {
   it('changeAbsenceById on a locked week returns a reason and changes nothing', () => {
-    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); advanceStage()
+    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); closeBidding()
     setBidState('ammo', '2026-02-10', 'approved')
     const iid = String(lwRows('ammo')[0].iid)
     stashPut('09/02/2026', 'null')          // the week of 9 Feb becomes a locked week
@@ -128,7 +138,7 @@ describe('Opus scenario — overnight leave and back-to-back leave', () => {
 
 describe('Codex AS4-002 — un-approving never overwrites a stored request', () => {
   it('a refused request on that time blocks "back to bid" and "refuse", naming it', () => {
-    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); advanceStage()
+    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); closeBidding()
     setBidState('ammo', '2026-02-10', 'approved')
     const iid = String(lwRows('ammo')[0].iid)
     lwEditLists([{ personId: 'ammo', date: '2026-02-10', drop: [], add: [{ id: 'old-ref', kind: 'request', code: 'OIL', state: 'refused' } as any] }])
@@ -170,10 +180,12 @@ describe('Codex AS4-003 / AS4-004 — notices', () => {
 })
 
 describe('Codex AS4-006 — the tap list moves ONE leave off a busy day', () => {
-  it('moves exactly the chosen Input, keeps the other, and marks the move once bidding is closed', () => {
+  /* the moved mark is an approved leave's on ANY move (D1177's reading) — no longer only once bidding is closed, so the
+     dates stay open here: the mark must come all the same */
+  it('moves exactly the chosen Input, keeps the other, and marks the move of an approved leave (bidding still open)', () => {
     setRole('admin')
     setCell('ammo', '2026-02-10', '*LL'); setCell('ammo', '2026-02-10', 'OIL*')
-    advanceStage()
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
     // approve each request on its own (the tap list's per-record decision)
     for (const r of recsAt('ammo', '2026-02-10').filter(x => x.kind === 'request')) {
       expect(decideRequestById('ammo', '2026-02-10', r.id, 'approved')).toBe(true)
@@ -191,7 +203,7 @@ describe('Codex AS4-006 — the tap list moves ONE leave off a busy day', () => 
 
 describe('Codex round 2 — the per-record doors', () => {
   function approved(p: string, d: string): string {
-    setRole('admin'); setCell(p, d, 'LL'); advanceStage()
+    setRole('admin'); setCell(p, d, 'LL'); closeBidding()
     setBidState(p, d, 'approved')
     return String(lwRows(p)[0].iid)
   }

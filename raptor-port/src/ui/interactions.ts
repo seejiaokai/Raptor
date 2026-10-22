@@ -23,7 +23,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor, showPeriodOf } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -1726,9 +1726,9 @@ export function routeClick(e: MouseEvent) {
   /* THE MISSING LEAVE WAR PERIOD, CREATED FROM THE SCHEDULE (owner's ruling
      D19, 22 Sep 26). The day says a period for that year does not exist and
      that nothing can be paid for it; this is the way out sitting beside the
-     reason. It lands in DRAFT and takes him to the Leave War, because a period
-     carries bidding dates and a stage — opening it for bidding is his own act,
-     never something a schedule screen does behind him. */
+     reason. It is made with nothing open for bidding and takes him to the Leave War,
+     on the period just made (M1, A-F3) — opening its dates for bidding is his own
+     act, never something a schedule screen does behind him (D1177). */
   const mkp = t.closest('[data-mkperiod]') as HTMLElement | null
   if (mkp) {
     e.stopPropagation()
@@ -1736,7 +1736,8 @@ export function routeClick(e: MouseEvent) {
     const yr = String(mkp.dataset.mkperiod || '')
     const made = createOilPeriodFor(yr)
     if (made === 'created') {
-      HOOKS.toast(`The ${yr} leave war period is created. Set its bidding window here.`, 'ok')
+      HOOKS.toast(`The ${yr} leave war period is created. Open its dates for bidding here.`, 'ok')
+      showPeriodOf(`${yr}-01-01`)
       view.setPage('leavewar'); notify()
     } else if (made === 'overlap') {
       HOOKS.toast(`A leave war already covers part of ${yr}. Open the Leave War and extend it instead.`, 'warn')

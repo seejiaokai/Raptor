@@ -113,6 +113,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
 - [LEAVE-YEAR] — yearly leave balances and carry-over — undecided ("we will do this next time").
 - [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
+- [LW-M1-READ-LEFTOVERS] — four small things M1's code read found that are older than M1 or need two live sessions — check each with the database step.
+- [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
 - [TRK-PINCH-OLD-EDGES] — two older edges of the chart's pinch: a throw in Edit chart layout, a stale zoom label.
@@ -1342,6 +1344,29 @@ blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the l
 root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
 
+### [LW-UNDO-BLOCK-REOPEN] A refused Undo or Redo onto a closed day stays passed over after the day reopens — with the database step (filed 22 Oct 26)
+From the narrow read of D1263's fix (evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §15). A member's
+Undo or Redo the commit refuses onto a Leave War day closed for him is BLOCKED for the rest of his sign-in, and so is an older
+step sharing its record (`undo/timeline.ts refusedFor`, `undoConflictOf`, `redoConflictOf`) — right for a day closed by time,
+which never reopens. A day the admin closes can be reopened (`openDates`); that writes the war's own record, not his day's, so
+nothing clears the block: the step stays skipped and the greyed button says bidding is closed. **Not reachable today:** in one
+browser the admin's close sits on the shared timeline above the member's step, which is then refused "Switch back to the admin
+view…". It becomes real once two people work on one database. **Fix then:** when the war's open dates change (an `lw.war`
+change arriving from elsewhere, in `ingest`), clear the blocks `refusedFor` set and the ones behind them. **Place:** the database step.
+
+### [LW-M1-READ-LEFTOVERS] Four small things M1's code read found, older than M1 or needing two live sessions (filed 22 Oct 26)
+From M1's two blind code reads (the evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §13).
+(1) **A member's SHARED input over another man's pending bid** (D660 — he files for others): the clash rule writes a notice
+on the other man's war row inside the member's command, and the commit refuses "another person's war row" — so his whole
+filing fails. Older than M1 (the check is the same on any day), more often met now that Inputs-page filing is the way on a
+closed day. Check in the running app first; if it fails, let a notice the clash rule writes for another man ride a member's
+own filing. (2) **The "This replaces your LL bid…" note is raised before the commit's check**, so a filing the check refuses
+still shows it (Opus H1 step 4) — say it only once the command lands. (3) **— BUILT 23 Oct 26 on M1 (D1266, his word): `leavewar/ui/dayclock.ts`.** **Midnight with the page open:** a member's dim,
+lock, outline and chip read his today when the store last changed, so they stay a day behind until the next change (Fable
+scenario 7, Opus 10) — re-read today on the page's next show or a timer at midnight. (4) **A member's Move refused on a
+closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
+for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch (M2), each small.
+
 ### [LW-HARNESS-VIEWER-PIN] In the Leave War browser tests, switching the role quietly undoes the pinned viewer (filed 27 Sep 26)
 Found by the `[LW-MOVE-CI-RED]` investigation, confirmed in the running bundle: the test bridge's `raptorRole()` →
 `setEffectiveRole()` (`raptor-port/src/state/auth.ts`) REPLACES the session object, and the viewer pin `lwSetViewer` sets
@@ -1826,6 +1851,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | The Inputs batch — `[TILL-NEXT-YEAR]`, `[OIL-ASK-HEAD-SEVERAL]`, `[INP-TILL-STALE]`, `[CAL-UNDO-OTHERS]` (D994); built 20 Oct 26 on `claude/inputs-small-fixes` (pull request 553) | one fresh, blind Opus reader of the finished code, asked for missing scenarios too (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md`) | Astra's scenario design (D353); Sol 6.1's second read (the published record: the printed till date a published day compares) |
 | Round 2 of the consistency look — D1129–D1132 (Quals' Edit quals plain, the board's bar and highlighter mark, the Tracker's line icons); built 21 Oct 26 on `claude/consistency-round2` (pull request 563) | one fresh, blind Opus reader of the finished code (D790, D903); walked 100/100 (`raptor-port/docs/handpass/2026-10-21-consistency-round2.md`) | Astra's code read (a WALK-tier interface change: one reader) |
 | `[LW-OVERHAUL]` — the whole design's red team, the twelve questions and the build plan (the night of 21–22 Oct 26, branch `claude/leave-war-overhaul`; D1204) | two fresh, blind Opus readers, each blind to the other (A the design, B the what-ifs); one fresh Opus reader of the rulings' short lines (D138); one fresh, blind Opus reader of the build plan (ten findings, taken) | a ChatGPT reader of the plan — an important plan wants two providers (D590) |
+| The Leave War overhaul's M1 — open dates (22 Oct 26; branch `claude/lw-m1-open-dates`, pull request 566): permissions and saved data | a fresh, blind Opus read and Fable beside it, blind to each other (D790, D1260), after the walk | the two ChatGPT reads (D590) — `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.

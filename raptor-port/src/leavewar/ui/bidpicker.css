@@ -286,11 +286,15 @@
 /* Moving a bid is the third decision, and it is deliberately the quietest of
    the three: approve and refuse are the common answers, and a move is what
    you reach for when neither fits. */
-.bidsheet .dchip.move {
+.bidsheet .dchip.move,
+.bidsheet .dchip.plain {
   background: var(--panel-2);
   color: var(--ink-2);
   border: 1px solid var(--edge);
 }
+/* `.plain`: Move's quiet grey for a chip with no colour of its own — the admin's Note beside Move and Delete (M1's code
+   read, L6), the closed note's "Open the Inputs page" (M1's look): a bare .dchip has no colours of its own and fell back
+   to the browser's grey button with a white edge. (Not `.note`: that is the sheets' line of small text.) */
 
 /* THE ONE MOVE LOOK — the grey chip above with a TEAL arrow before the word (owner, D330 / D334, 27 Sep 26: "Can move be
    the same design and colour and be abit different"; option B of docs/mock/lw-move-standard.html §7). The same on every
@@ -1359,4 +1363,222 @@
   .bidsheet .reqp-apply .pchip,
   .bidsheet .reqp-do .tchip { min-height: 40px; }
   .bidsheet .reqp-inc { padding: 8px 12px; }
+
+}
+
+/* A FULL PAGE FROM THE TOP, ON A PHONE (owner D1264, 23 Oct 26 — "at the top full page … so that when the dates below jumps
+   it doesn't affect the user to chase the buttons"; Sheet.tsx `page`). The floating sheet is docked at the foot and grows
+   upward, so the "Open for bidding" window's month buttons rose each time a stretch line was added. Here it fills the
+   screen from the top, as the OIL tracker's sheet does on a phone, and grows down: the title and the months stay put. It
+   still scrolls itself (a long list of stretches), its header stuck to the top; no drag offset — it has nowhere to go. */
+#page-leavewar .bidsheet.fullpage {
+  /* (the four edges written out, and the page id named: outside the file's #page-leavewar wrapper, a bare class loses to the wrapper's own .bidsheet; `.page` is the app's own hidden page, so the class is `fullpage`) */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  max-height: none;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: max(10px, env(safe-area-inset-top, 0px)) 12px max(16px, env(safe-area-inset-bottom, 0px));
+}
+/* not movable: no grip, no move cursor, and a finger on the title may scroll the page's own list */
+#page-leavewar .bidsheet.fullpage .bidsheet-hd { cursor: default; touch-action: auto; }
+#page-leavewar .bidsheet.fullpage .bidsheet-hd::before { content: none; }
+
+
+/* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------
+   The month buttons: one row of twelve on a desktop, two rows of six on a phone, each a finger's size there. Lit in
+   the open-bidding green the chip and the grid's outline use (the app's one "open" green — not a new colour); a month
+   open only in part has the same green as a DOTTED edge (D1168's reading); a drag in progress shows its months in a
+   lighter wash of the colour it will leave them in. */
+.bidsheet .od-months {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.bidsheet .od-months.phone {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+.bidsheet .od-m {
+  min-height: 34px;
+  padding: 6px 2px;
+  border-radius: 9px;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.bidsheet .od-months.phone .od-m {
+  min-height: 44px;
+  font-size: 13px;
+}
+.bidsheet .od-m.open {
+  background: rgba(87, 201, 122, .16);
+  color: #EAF9EF;
+  border-color: rgba(87, 201, 122, .7);
+}
+.bidsheet .od-m.part {
+  color: #EAF9EF;
+  border: 1px dashed rgba(87, 201, 122, .85);
+}
+.bidsheet .od-m.sweep-open {
+  background: rgba(87, 201, 122, .30);
+  color: #EAF9EF;
+  border-color: rgba(87, 201, 122, .9);
+}
+.bidsheet .od-m.sweep-close {
+  background: var(--panel);
+  color: var(--ink-3);
+  border-style: dashed;
+}
+/* A PAST MONTH (owner D1265, D1268, 23 Oct 26): the grid's own look for a closed date — half strength and the same small
+   padlock (matrix.css `.mx .mxhead th.locked`, `th.day.locked::after`) — so "closed, and nothing to open" reads alike
+   in both places; not pressable. A stretch wholly past is dimmed the same way. */
+.bidsheet .od-m.past { opacity: .45; position: relative; }
+.bidsheet .od-m.past::after {
+  content: ''; position: absolute; top: 4px; right: 5px; width: 8px; height: 9px; pointer-events: none;
+  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M3.5 7V5a3.5 3.5 0 0 1 7 0v2' fill='none' stroke='%23AEB7C2' stroke-width='1.8'/%3E%3Crect x='1' y='7' width='12' height='8.5' rx='1.6' fill='%23AEB7C2'/%3E%3C/svg%3E");
+}
+.bidsheet .od-line.past { opacity: .45; }
+.bidsheet .od-m:disabled {
+  cursor: default;
+}
+.bidsheet .od-m:focus-visible,
+.bidsheet .od-line-go:focus-visible,
+.bidsheet .od-cal:focus-visible,
+.bidsheet .od-more:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* One line a stretch: its dates in the green, its days counted at the right, the calendar icon at the end (D1172). */
+.bidsheet .od-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+.bidsheet .od-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  border-radius: 10px;
+  padding: 4px 6px 4px 4px;
+}
+.bidsheet .od-line-go {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 8px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.bidsheet .od-line-go.ro {
+  cursor: default;
+}
+.bidsheet .od-span {
+  color: #8FE0A8;
+  font-weight: 700;
+  font-size: 13px;
+}
+.bidsheet .od-days {
+  color: var(--ink-3);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet .od-cal {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--edge);
+  background: var(--panel);
+  color: var(--accent);
+  border-radius: 9px;
+  cursor: pointer;
+}
+.bidsheet .od-cal .btnglyph {
+  width: 17px;
+  height: 17px;
+}
+.bidsheet .od-none {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px dashed var(--ink-3);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.bidsheet .od-last {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.bidsheet .od-more {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 2px;
+  cursor: pointer;
+}
+
+.bidsheet .od-apply {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* ---- THE CLOSED NOTE (D1176, D1225; drawn r7-08, r7-09) ---------------------------------------------------------- */
+.bidsheet .cn-note {
+  margin: 10px 0 4px;
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.bidsheet .cn-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.bidsheet .cn-bid {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.bidsheet .cn-code {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-right: 4px;
+  border: 1px dashed rgba(242, 200, 121, .8);
+  border-radius: 5px;
+  color: #F2C879;
 }

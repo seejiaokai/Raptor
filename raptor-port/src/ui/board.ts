@@ -539,7 +539,7 @@ export function boardWarnHTML(di: number, look = false) {
            himself. Same helper as the week (mkPeriod), so the button and the
            sentence cannot name different years, and no other check grows an
            action. */
-        + (!look && !hid && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
+        + (!look && !hid && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period, with nothing open for bidding, and takes you to the Leave War to open its dates">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
         + `</div>`
     })
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`

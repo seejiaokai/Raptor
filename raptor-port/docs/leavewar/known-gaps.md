@@ -553,6 +553,8 @@ they SETTLED is here, so it is not relitigated:
 
 ## Wars, and what is not built about them
 
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. A new period has nothing open (D1177); the "No leave period yet" page says so. What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
+
 An admin can create a leave war over any span and switch between them. Three
 things are deliberately absent:
 
@@ -774,6 +776,8 @@ out of view during ordinary use rather than only in extreme cases. Worth
 raising with the owner rather than assuming it is fine.
 
 ## The cycle runs backwards for an admin, and forwards for anyone
+
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. There is no cycle: the admin opens and closes dates; a member's day rule is `engine/access.ts canEditCell` and the commit checks it too (`state/perms.ts`, the red team's B8). What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
 
 Overturned on 10 Aug 26 at the owner's word: "as an admin I can open bidding
 again after closing it". It had been forward-only since the bidding plan, and

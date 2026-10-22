@@ -1,10 +1,9 @@
-// The published-stage remarks editor (owner, 27 Aug 26 — "after the leave war
-// is published … click on their inputs directly on the leave war and edit the
-// remarks. but the admin can also … the same for all").
+// The remarks editor (owner, 27 Aug 26 — "click on their inputs directly on the leave war and edit the remarks. but
+// the admin can also … the same for all"; D418 narrowed by D1177: a member's approved leave offers its remarks at any
+// time, the published stage having gone).
 //
-// A published war is read-only for the squadron EXCEPT this: a member taps
-// their own approved leave and edits the note on it; an admin does it for
-// anyone. The note lives on the Raptor INPUT the cell derives from (found by
+// A member taps his own approved leave on the grid and edits the note on it (the leave itself he changes on the
+// Inputs page — D1166); an admin edits any man's from the day's list. The note lives on the Raptor INPUT the cell derives from (found by
 // sync.ts:leaveInputAt — a leave filed on Inputs OR bid in the war and minted
 // at publish, both ordinary rows). The save runs through Raptor's ONE commit
 // path (inputedit.ts:setLeaveRemarks → commitInputEdit): a remarks-only edit

@@ -3935,6 +3935,8 @@ context intact. This makes the render gate the write gate. Pinned in
 
 ### The Leave War: moving the stage, batch writers and deciding bids
 
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. Bidding is on the OPEN DATES the admin sets in the "Open for bidding" window (`ui/OpenDatesSheet.tsx`; the store's `openDates` / `closeDates` / `setStretch`, each ONE command `lw.open`, admin only, Undo names it — D352 narrowed); a member writes only an open day of the period HOLDING the date, never before today (`engine/access.ts canEditCell`; D1211, B3), and may delete his own pending bid on a day since closed (D1225); the admin writes and decides at any day and time; nothing is frozen (no "published"). What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
+
 **In the Leave War, moving the cycle FORWARD is admin-only (owner, 27 Aug 26
 — "for a member i shouldnt be able to click on bidding closed or published,
 thats an admin function").** This is the ONLY member-facing change to the

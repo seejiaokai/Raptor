@@ -9,7 +9,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, awardsIn, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setDayAward, setPeople, setRole, setViewer,
+  ackReplacement, awardsIn, closeDates, cellProblem, getState, setBidState, initStore as lwInitStore, lwEditLists, lwHistInit, rawState, setCell, setCells, clearCells, setBidStates, setDayAward, setPeople, setRole, setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { MAX_CARRIED_REMARK } from './engine/warrecs'
@@ -46,6 +46,15 @@ function file(person: string, type: string, date: string, extra: Record<string, 
 const rowsOf = (person: string, type?: string) => INPUTS.filter((r: any) => holds(r, person) && (!type || r.type === type))
 const codeAt = (p: string, d: string) => getState().grid[p]?.[d]
 const recsAt = (p: string, d: string) => rawState().wars[0]!.recs[p]?.[d] ?? []
+/** Close the whole period on screen for bidding — what stepping the war to "bidding closed" did before the stages went
+ *  (D1177). The admin decides at any time now; the tests that closed bidding before deciding keep that world. */
+function closeBidding(): void {
+  const was = getState().role
+  setRole('admin')
+  const p = getState().period
+  expect(closeDates(p.start, p.end)).toBe('set')
+  setRole(was)
+}
 
 describe('the invariant — no overlapping leave, no leave over a medical (B7, §25)', () => {
   it('refuses a second leave on the same time and names the first', () => {
@@ -121,7 +130,7 @@ describe('leave over recorded work is FLAGGED, not refused (owner, 20 Sep 26)', 
     // the SCHEDULE credited the work after the bid — an award would not flag
     // the day at all (N13), so it cannot stand in for one here
     lwEditLists([{ personId: 'ammo', date: '2026-02-14', drop: [], add: [{ id: 'c-late', kind: 'credit', code: 'FO', oil: 'auto' } as any] }])
-    advanceStage()
+    closeBidding()
     setBidState('ammo', '2026-02-14', 'approved')
     expect(rowsOf('ammo', 'LL')).toHaveLength(1)                    // granted
     expect(codeAt('ammo', '2026-02-14')).toBe('LL')
@@ -215,7 +224,7 @@ describe('a clashing input replaces an undecided bid (owner rule, H1, answer B, 
 
   it('a morning filing removes only the morning of a full-day bid; the afternoon keeps its state', () => {
     bid('ammo', '2026-02-10')
-    advanceStage()
+    closeBidding()
     const id = (recsAt('ammo', '2026-02-10')[0] as any).id
     expect(file('ammo', 'OL', 'Feb 10', { allday: false, half: 'am', s: 0, e: 720 })).toBe(true)
     const req = recsAt('ammo', '2026-02-10').find(r => r.kind === 'request') as any
@@ -231,7 +240,7 @@ describe('a clashing input replaces an undecided bid (owner rule, H1, answer B, 
 
   it('a refused bid is history and is never replaced', () => {
     bid('ammo', '2026-02-10')
-    advanceStage()
+    closeBidding()
     expect(file('ammo', 'LL', 'Feb 11')).toBe(true)   // unrelated day first
     setBidState('ammo', '2026-02-10', 'refused')
     expect(file('ammo', 'OL', 'Feb 10')).toBe(true)
@@ -293,7 +302,7 @@ describe('a carried remark is stored at the length a reload keeps', () => {
     setRole('admin')
     const cell = [{ personId: 'ammo', date: '2026-02-18' }]
     setCells(cell, 'LL')
-    advanceStage()
+    closeBidding()
     setBidStates(cell, 'approved')                             // the war approves: a leave on the Inputs page
     /* its remark typed to the box's limit on the Inputs page (the box holds 200 letters) */
     expect(writeInputs(() => { (rowsOf('ammo', 'LL')[0] as any).remarks = 'B'.repeat(200) })).toBe(true)
@@ -344,7 +353,7 @@ describe('undo and redo do not put a bid back over a medical (B7, W3-F8)', () =>
   it('Undo of a bid’s refusal, after a medical was filed on its day, is refused by name — the bid stays refused', () => {
     setRole('admin')
     setCells([{ personId: 'ammo', date: '2026-02-13' }], 'LL')
-    advanceStage()
+    closeBidding()
     setBidStates([{ personId: 'ammo', date: '2026-02-13' }], 'refused')
     const st = () => (recsAt('ammo', '2026-02-13').find((x: any) => x.kind === 'request') as any)?.state
     expect(st()).toBe('refused')
@@ -361,7 +370,7 @@ describe('undo and redo do not put a bid back over a medical (B7, W3-F8)', () =>
   it('Redo that turns a refused bid back into a live one, after a medical was filed on its day, is refused by name', () => {
     setRole('admin')
     setCells([{ personId: 'ammo', date: '2026-02-12' }], 'LL')
-    advanceStage()
+    closeBidding()
     setBidState('ammo', '2026-02-12', 'refused')
     setBidState('ammo', '2026-02-12', 'acknowledged')
     const st = () => (recsAt('ammo', '2026-02-12').find((x: any) => x.kind === 'request') as any)?.state
@@ -398,7 +407,7 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
   it('Delete over a WAR-approved morning takes the afternoon bid beside it too', () => {
     setRole('admin')
     setCells([{ personId: 'ammo', date: '2026-02-18' }], '*LL')
-    advanceStage()
+    closeBidding()
     setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
     expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(true)
     setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL*')
@@ -413,7 +422,7 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
   it('Delete takes an OIL award beneath a WAR-approved leave, and beneath leave filed on the Inputs page', () => {
     setRole('admin')
     setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
-    advanceStage()
+    closeBidding()
     setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
     expect(setDayAward('ammo', '2026-02-18', 2)).toBeNull()
     expect(file('ammo', 'LL', 'Feb 19')).toBe(true)
@@ -426,25 +435,25 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
     expect(rowsOf('ammo', 'LL').some((r: any) => r.lw)).toBe(false)     // the war's own leave went
     expect(rowsOf('ammo', 'LL').some((r: any) => r.date === 'Feb 19')).toBe(true)   // the Inputs page's stayed
   })
-  /* …AND ON A PUBLISHED WAR, WHERE THE APPROVED LEAVE IS FINISHED PAPERWORK (Fable's D260 scenarios, S18): the award
-     beside it goes, the leave stays — and the count must say the leave stayed, or the sheet closes as though the whole
-     day had been deleted. Leave filed on the Inputs page staying is by design and counted as nothing (W3-F3, above). */
-  it('on a published war Delete takes the award and COUNTS the approved leave it could not take', () => {
+  /* …AND WITH BIDDING CLOSED, NOTHING IS FROZEN (D1177, 21 Oct 26 — the published stage went, and with it "approved
+     leave on a published war is finished paperwork"; D418 narrowed: the admin puts back, moves or deletes approved leave
+     at any time). Fable's D260 scenario S18 pinned the published war's leave STAYING and being counted; what replaced it:
+     on a day closed for bidding the admin's Delete takes the award AND the approved leave, and counts nothing skipped. */
+  it('with bidding closed Delete takes the award AND the approved leave — nothing is frozen (D1177)', () => {
     setRole('admin')
     setCells([{ personId: 'ammo', date: '2026-02-18' }], 'LL')
-    advanceStage()
     setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
     expect(setDayAward('ammo', '2026-02-18', 1)).toBeNull()
-    advanceStage()                                      // published
+    closeBidding()
     const r = clearCells([{ personId: 'ammo', date: '2026-02-18' }])
     expect(recsAt('ammo', '2026-02-18').some((x: any) => x.kind === 'credit' && x.oil === 'manual')).toBe(false)
-    expect(rowsOf('ammo', 'LL').some((x: any) => x.lw)).toBe(true)       // the published leave stays
-    expect(r).toEqual({ written: 1, skipped: 1 })
+    expect(rowsOf('ammo', 'LL').some((x: any) => x.lw)).toBe(false)      // the approved leave goes too
+    expect(r).toEqual({ written: 1, skipped: 0 })
   })
   it('Approve does not count a leave that was already approved as a decision', () => {
     setRole('admin')
     setCells([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'LL')
-    advanceStage()
+    closeBidding()
     setBidStates([{ personId: 'ammo', date: '2026-02-16' }], 'approved')
     const r = setBidStates([{ personId: 'ammo', date: '2026-02-16' }, { personId: 'ammo', date: '2026-02-17' }], 'approved')
     expect(r.decided).toBe(1)
@@ -453,7 +462,7 @@ describe('bulk Delete and Approve over mixed days (W3-F3, AB7)', () => {
 })
 
 /* THE BID SHEET NAMES WHAT HOLDS THE TIME (the absence-record re-test's break tests, 26 Sep 26 — bug-check order §8.4):
-   switching off every clash refusal the bid sheet gives past its stage / row / medical-code checks turned only ONE test
+   switching off every clash refusal the bid sheet gives past its open-day / row / medical-code checks turned only ONE test
    red, the timed-medical one. The two sentences a bidder meets most — a leave filed on the Inputs page already there,
    and a whole-day medical — are pinned here, through the store's own question (`cellProblem`, what the sheet asks
    before it writes). */

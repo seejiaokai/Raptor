@@ -23,7 +23,7 @@ import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, is
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe } from '../state/perms'
 import { SESSION } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
@@ -67,6 +67,8 @@ import {
   shortOf,
   normShort,
   isWeekend,
+  canEditCell,
+  memberToday,
   type PostOutcome,
   type Contrib,
   type RequestRec,
@@ -87,6 +89,7 @@ import {
   type HolidayRun,
   clearRaptorCell,
   createWar,
+  selectWar,
   figureCtxOf,
   getState,
   ingestDutyCredit,
@@ -235,6 +238,15 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
   setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+  /* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8): the permissions module asks, of a member's war record
+     (`war:person:date`), whether that day is open for HIM — the one rule (`canEditCell`), asked of the period holding
+     the date, with a member's today (D1211). Read from the right: a war id may carry a colon. */
+  setLwDayOpenProbe((cellId: string) => {
+    const iDate = cellId.lastIndexOf(':')
+    if (iDate < 0) return true
+    const date = cellId.slice(iDate + 1)
+    return canEditCell(warHolding(getState().wars, date)?.period ?? null, 'member', date, memberToday())
+  })
   /* a refused war gesture rolled INPUTS back; the absence index was refreshed
      inside it, so re-read it before the repaint (Codex AS4-R2-001) */
   setRefusalHook(() => { refreshAbsences(true) })
@@ -279,11 +291,11 @@ export function installAbsenceDoor(): void {
  *  beside the reason (owner's ruling D19, 22 Sep 26: "indicate that the leave
  *  war period doesn't exist, create it").
  *
- *  A whole calendar year, named for it, and left in DRAFT: a period carries
- *  bidding dates and a stage, and opening it for bidding is the admin's own
- *  act taken when the schedule firms up — so it is never made open from a
- *  schedule screen. The scheduler is handed to the Leave War afterwards to set
- *  the window, which is his half of the job.
+ *  A whole calendar year, named for it, with NOTHING OPEN (D1177): opening
+ *  dates for bidding is the admin's own act taken when the schedule firms up —
+ *  so it is never done from a schedule screen. The scheduler is handed to the
+ *  Leave War afterwards to open dates in the "Open for bidding" window, which
+ *  is his half of the job.
  *
  *  Refusals come straight back from the store, which is where they belong: a
  *  member gets 'forbidden', and a year another war already reaches gets
@@ -294,6 +306,13 @@ export function createOilPeriodFor(year: string): string {
   if (!/^\d{4}$/.test(y)) return 'backwards'
   return createWar(y, `${y}-01-01`, `${y}-12-31`)
 }
+/* THE LEAVE WAR SHOWS THE PERIOD JUST MADE (M1's walk, A-F3): the schedule's "Create the period" brought the Leave War to
+   the front on the period it was showing, while its note said to open the new one's dates "here". The Leave War's own
+   "new period" goes straight to the period it made (owner, 2 Sep 26 — WarSheet); this is the same for the schedule's. */
+export function showPeriodOf(iso: string): void {
+  const war = warHolding(getState().wars, iso)
+  if (war) selectWar(war.period.id)
+}
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */
 export function syncAbsences(): void {
@@ -301,7 +320,7 @@ export function syncAbsences(): void {
   absencesChanged()
 }
 
-/* The Raptor leave INPUT behind a war cell — what the published-stage remarks
+/* The Raptor leave INPUT behind a war cell — what the remarks
    editor edits (owner, 27 Aug 26). The day view knows exactly which Inputs make
    the cell (their iids), so this is a lookup, not a guess: the tapped half's
    contributor when the code names one, else the main one. */
@@ -584,8 +603,9 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
 /** slide approved leave days by `delta` (design §5.2 `lw.moveApproved`, §17
  *  FB3-01). `check` = validate only (the store's moveProblem). The moved days
  *  are cut from their Input and re-filed as a new Input over the landing
- *  dates, carrying lw / remarks / docs / mod and — once bidding is closed —
- *  the moved-from marks. */
+ *  dates, carrying lw / remarks / docs / mod and the moved-from marks when
+ *  `tracked` (the store passes it on every move since D1177: "the dotted moved
+ *  mark shows on any move of a leave already approved"). */
 /* `skip` (the final reads, Fable 3 / Astra 1, 27 Sep 26 — [LW-MOVE-STANDARD]): the ids of the war's own requests moving in
    the SAME move. At the preview they still stand on their old days, so a leave landing on the day a moving bid is leaving
    was refused though the result fits; leaving them out of the landing check makes the preview the move's own picture. The
@@ -682,10 +702,10 @@ function publishLeaveClashes(): void {
              depends only on the order the records happen to sit in on the day
              (state/merge.ts puts the war's own records before the absences).
              Order the pair here rather than letting the wording flip. */
-          const [a, b] = pair[1].kind === 'credit' && pair[0].kind !== 'credit' ? [pair[1], pair[0]] : pair
+          const [a, b] = clashPairOrder(pair)
           const duty = a.kind === 'credit' || b.kind === 'credit'
           const holders = duty ? [b] : [a, b]
-          const wayOut = clashWayOut(holders, war.period?.stage === 'published')
+          const wayOut = clashWayOut(holders)
           /* the leave filed on the Inputs page that is in the way — what "Change the leave on Inputs" opens (D827) */
           const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw) : undefined
           out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(duty ? { kind: 'duty' as const } : {}),
@@ -702,19 +722,31 @@ function publishLeaveClashes(): void {
    the sheet", but for leave filed on the Inputs page the day's sheet has no control; it says "Change it on the Inputs
    page"). The way out follows the record that is IN THE WAY — for a worked weekend, what the day already holds (the
    credit is the schedule's and nobody deletes it); for two leaves, the one a person can act on, a bid first: a bid is
-   decided on the sheet at every stage the war decides; leave the war approved is sent back or deleted on the sheet —
-   except once its war is published, when the sheet offers neither (21 Sep 26: published leave is finished paperwork)
-   and the war must step back first; leave filed on the Inputs page is changed there. */
-function clashWayOut(holders: readonly Contrib[], published: boolean): ClashWayOut {
+   decided on the sheet; leave the war approved is changed on the sheet (sent back, moved or deleted) — at any time
+   since the stages went (D1177; the "published" way out, "Step the war back to Bidding Closed", went with them — D827
+   narrowed); leave filed on the Inputs page is changed there. */
+/** The pair in the order its sentence reads it: a CREDIT first ("work earns X but the day holds Y"); otherwise leave the
+ *  war APPROVED second, where the sentence puts "approved" ("The input is HL, but the bid is approved OL" — M1's code
+ *  read, L5: for two absences the day's order is not fixed, so "approved" could land on the other leave). */
+export function clashPairOrder(pair: readonly [Contrib, Contrib]): [Contrib, Contrib] {
+  const [x, y] = pair
+  if (y.kind === 'credit' && x.kind !== 'credit') return [y, x]
+  if (x.kind === 'credit') return [x, y]
+  const warOwn = (c: Contrib) => c.kind === 'absence' && !!c.lw
+  if (warOwn(x) && !warOwn(y)) return [y, x]
+  return [x, y]
+}
+
+function clashWayOut(holders: readonly Contrib[]): ClashWayOut {
   if (holders.some(c => c.kind === 'request')) return 'bid'
-  if (holders.some(c => c.kind === 'absence' && c.lw)) return published ? 'war-published' : 'war'
+  if (holders.some(c => c.kind === 'absence' && c.lw)) return 'war'
   return 'inputs'
 }
 
 /* ---- the clash list's shape and its subscribers --------------------------- */
 
 /** Where the admin undoes a clash — the words the strip prints after each line. */
-export type ClashWayOut = 'bid' | 'war' | 'war-published' | 'inputs'
+export type ClashWayOut = 'bid' | 'war' | 'inputs'
 
 /** A leave input asking for a date the squadron already bid differently on.
  *  The system never overwrites a bid — it raises the clash and a human
@@ -2528,6 +2560,13 @@ export function openInputWindow(iid: string): boolean {
   setInpEdit(row)
   raptorNotify()
   return true
+}
+
+/** THE CLOSED NOTE'S "Open the Inputs page" (D1176, D1166 — "seek management's approval, then file it on the Inputs
+ *  page"; drawn r7-08): the Inputs page brought to the front, nothing opened on it. Only a flag is reached, as `openDays`. */
+export function openInputsPage(): void {
+  if (CURPAGE !== 'inputs') setPage('inputs')
+  raptorNotify()
 }
 
 /** THE WAR'S NEW-PERIOD SHEET, ASKED FOR FROM DAYS, on a run of dates no leave period covers (the plan §3.4). The

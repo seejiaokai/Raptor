@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { go, gridAtRest, login, lwRole, lwView, moveOneTo, stageMove } from './app'
+import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -231,10 +231,8 @@ async function dragSelect(page: Page, p: string, from: string, to: string) {
   await expect(sheet).toBeVisible()
 }
 
-async function closeBidding(page: Page) {
-  await stageMove(page, 'advance')        // in sight on a desktop, behind the stage button on a phone (D678)
-  await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
-}
+/* closing bidding is e2e/app.ts closeBidding: every open month shut in the "Open for bidding" window, the chip then
+   reading "Bidding closed" (D1177 — the stage's forward move until the stages went) */
 
 /* ====================================================================== */
 /*  Scenarios that should hold — the owner's agreed rules                  */
@@ -456,13 +454,15 @@ test('clearing leave after a posting-out: LL with the PO tag, charged, never cou
   expect(await counts()).toBe(manning0)            // already out of manning; the leave changes nothing
 })
 
-test('move an approved leave after bidding closes: dotted moved mark, undo, redo', async ({ page }) => {
+/* THE MOVED MARK IS AN APPROVED LEAVE'S, AT ANY TIME (D1177 — it was "after bidding closes" while there were stages):
+   the dates stay open here, and the move still wears the dotted mark */
+test('move an approved leave while its dates are open: dotted moved mark, undo, redo', async ({ page }) => {
   await openWar(page)
   const P = 'slipway', from = '2026-02-11', to = '2026-02-18'
   await showMonth(page, from)
   await tap(page, P, from)
   await page.locator('[data-testid="bid-LL"]').click()
-  await closeBidding(page)
+  await expect(page.locator('[data-testid="open-chip"]'), 'nothing closed first').toContainText('1 Jan – 31 Mar')
   await tap(page, P, from)
   await page.locator('[data-testid="decide-approve"]').click()
   await expect(chip(page, P, from)).toHaveClass(/appr/)

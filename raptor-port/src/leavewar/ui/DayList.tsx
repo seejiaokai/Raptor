@@ -11,11 +11,11 @@
 // check — the buttons are only offered where it would succeed.
 import { useState, type ReactElement } from 'react'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
-import { biddingClosed, canDecide, canEditCell, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
+import { canDecide, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type NoticeRec, type RequestRec } from '../engine/warrecs'
-import { ackReplacement, changeAbsenceById, clearRecordById, decideRequestById, editAward, movableRecords, oilOnDay, recordsAt, type OilShown } from '../state/store'
+import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, editAward, movableRecords, oilOnDay, recordsAt, type OilShown } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
 import { dayLabel, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
@@ -63,7 +63,7 @@ export function DayListSheet({
   role: Role
   viewer: string | null
   period: Period
-  /** open the published remarks editor on this Input */
+  /** open the remarks editor on this Input */
   onEditRemark: (row: any) => void
   /** Pick ONE record up into the grid's move mode (owner, D266 — "instead of date box it should also be the same move
    *  modality and I can choose what to move"): the matrix closes the list and carries exactly this record, by its id. */
@@ -76,8 +76,11 @@ export function DayListSheet({
   const [eWhy, setEWhy] = useState('')
   const [eWho, setEWho] = useState('')
   const [eDays, setEDays] = useState('')
-  const deciding = canDecide(period.stage, role)
-  const editable = canEditCell(period, role, date) && canEditRow(role, viewer, personId)
+  const deciding = canDecide(role)
+  /* a bid of this day may be deleted where the day is open for this person — or, on a day since closed, his own
+     PENDING bid (D1225): the store's one rule (`canBidOn`, `ownPendingOnClosedDay`) */
+  const editable = canBidOn(personId, date)
+  const pendingHere = new Set(ownPendingOnClosedDay(personId, date).map(r => r.id))
   const own = viewer === personId
   const raw = recordsAt(personId, date)
   /* WHICH RECORDS HERE CAN MOVE — the store's one rule (D265, D333): each such line offers the one Move (D334), the
@@ -115,18 +118,14 @@ export function DayListSheet({
       const row = row0
       const isLeave = codeOf(c.code)?.spends != null
       const warOwned = !!row?.lw
-      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}`
+      /* an approved leave the war moved says where from (D1177: the moved mark is an approved leave's now — a bid that only
+         waits carries none), as the grid's dotted edge does */
+      const movedAbs = (c as { movedFrom?: string }).movedFrom ? ` · moved from ${shortDate((c as { movedFrom?: string }).movedFrom!)}` : ''
+      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}${movedAbs}`
       const actions: ReactElement[] = []
-      /* APPROVED AND PUBLISHED IS FINISHED PAPERWORK (owner, 21 Sep 26 — "if
-         the input is approved and published … the member and admin can input
-         the remarks there. In order to edit it again, admin has to go back to
-         open for bidding or bidding closed"). The single-record window has
-         always obeyed this; THIS list did not, because `deciding` means
-         closed-OR-published, so a day holding two records let an admin send a
-         published, approved leave back to a bid in one click. Found by Astra,
-         21 Sep 26. Note stays — a remark is the one thing he DID ask for here. */
-      const finished = period.stage === 'published'
-      if (warOwned && isLeave && role === 'admin' && deciding && !finished) {
+      /* NOTHING IS FROZEN NOW (D1177 — the published stage went): the admin sends a leave the war approved back, refuses,
+         moves or deletes it at any time, here as on the single-record window. */
+      if (warOwned && isLeave && deciding) {
         /* the sheets' order (D264): the decisions, then Move, then Delete — Move picks this one leave up into the move
            mode, no date box (D266) */
         actions.push(
@@ -136,7 +135,9 @@ export function DayListSheet({
           <DeleteChip key="d" testid={`dl-remove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'removed'))} />,
         )
       }
-      if (row && isLeave && period.stage === 'published' && (role === 'admin' || own)) {
+      /* its NOTE at any time (D418 narrowed by D1177: a member's approved leave offers its remarks any time; the admin's
+         Note on any man's) */
+      if (row && isLeave && (role === 'admin' || own)) {
         actions.push(<button key="n" className="dchip" data-testid={`dl-note-${c.id}`} onClick={() => onEditRemark(row)}>Note</button>)
       }
       return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row && remarksTyped(row.remarks, row) ? remarksShown(row) : '', actions }
@@ -147,12 +148,12 @@ export function DayListSheet({
       const st = c.state === 'acknowledged' ? 'bid, acked' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'
       /* WHERE IT WAS MOVED FROM, on its own line (Fable's scenario S4): the grid's dotted "moved" mark and the one-day
          sheet's "moved from" read the day's TOP record, so a bid moved once bidding had closed onto a day holding an
-         award (now possible from every door, D265) left no trace anywhere. The same rule as the mark: recorded, and
-         shown, only for a move made once bidding is closed. */
+         award (now possible from every door, D265) left no trace anywhere. The same rule as the mark: shown wherever the
+         record carries it (since D1177 a bid that only waits records none when it moves). */
       const src = raw.find(r => r.id === c.id) as RequestRec | undefined
       /* a date INSIDE a sentence reads day-first with its year, as the bid sheet's own "moved from" does — the list's
          header keeps the one-day voice (Fable's final read F3: the same phrase read two ways, one tap apart) */
-      const movedFrom = biddingClosed(period.stage) && src?.shiftedFrom ? ` · moved from ${shortDate(src.shiftedFrom)}` : ''
+      const movedFrom = src?.shiftedFrom ? ` · moved from ${shortDate(src.shiftedFrom)}` : ''
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}${movedFrom}`
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Ack · Approve · Refuse, then Move, then Delete — where this list
@@ -163,7 +164,7 @@ export function DayListSheet({
         if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'refused'))}>Refuse</button>)
       }
       actions.push(...moveBtn(c.id))
-      if (editable) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
+      if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
       const cls = c.state === 'acknowledged' ? 'tbc' : c.state === 'refused' ? 'ref' : ''
       return { key: `r-${c.id}`, cls, text, sub: '', actions }
     }

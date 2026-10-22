@@ -12,10 +12,9 @@ import { evaluatePeriod } from './engine'
 import {
   addEventBand,
   addEventRow,
-  advanceStage,
   autoSortRoster,
-  clearBidWindow,
   clearCells,
+  closeDates,
   createWar,
   deleteManningRule,
   focusDay,
@@ -32,13 +31,13 @@ import {
   moveCells,
   removeEventBand,
   removeEventRow,
-  reopenStage,
+  openDates,
   resetRosterOrder,
   saveManningRule,
   selectWar,
   setBidState,
   setBidStates,
-  setBidWindow,
+  setStretch,
   setCell,
   setCellRange,
   setDayEvent,
@@ -79,11 +78,19 @@ const lwInputs = () => INPUTS.filter((r: any) => r.lw)
 const codeOf = (id: string, d: string) => getState().grid[id]?.[d]
 const stateOf = (id: string, d: string) => getState().states[id]?.[d]
 
+/* close bidding on the whole period on screen, as an admin does before deciding (the stages went — D1177; closing the
+   dates is the act that replaced "advance to Bidding Closed", one lw.open step). The admin may decide at any time now,
+   so a test that closes first keeps the old "decide after the bids are in" setting, not a requirement. */
+function closeBidding() {
+  const p = getState().period
+  closeDates(p.start, p.end)
+}
+
 // approve one day the way the app does (admin, close, decide)
 function approve(id: string, d: string, code = 'LL') {
   setRole('admin')
   setCell(id, d, code)
-  if (getState().period.stage === 'open') advanceStage()
+  closeBidding()
   setBidState(id, d, 'approved')
 }
 
@@ -103,7 +110,7 @@ describe('undo/redo — baseline & mechanics', () => {
   it('a batch decide is ONE step', () => {
     setRole('admin')
     setCell('ramp', '2026-03-02', 'LL'); setCell('ramp', '2026-03-03', 'LL')
-    advanceStage()
+    closeBidding()
     wireUndo()
     setBidStates([{ personId: 'ramp', date: '2026-03-02' }, { personId: 'ramp', date: '2026-03-03' }], 'approved')
     expect(stateOf('ramp', '2026-03-02')!.state).toBe('approved')
@@ -237,23 +244,27 @@ describe('undo/redo — full state coverage (every editable surface)', () => {
     expect(getState().requirements.default.rules.some(r => r.id === 'nvg-pilots')).toBe(true)
   })
 
-  it('the bidding window narrowed, then undone to exactly its prior value', () => {
+  it('the open dates narrowed, then undone to exactly their prior value', () => {
     setRole('admin')
-    const from0 = getState().period.bidFrom   // the seed opens the whole year
-    expect(setBidWindow('2026-03-01', '2026-03-31')).toBe('set')
-    expect(getState().period.bidFrom).toBe('2026-03-01')
+    const open0 = getState().period.open.map(s => ({ ...s }))   // the seed opens 1 Jan – 31 Mar
+    expect(open0).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(setStretch(open0[0]!, '2026-03-01', '2026-03-31')).toBe('set')
+    expect(getState().period.open).toEqual([{ from: '2026-03-01', to: '2026-03-31' }])
     lwUndo()
-    expect(getState().period.bidFrom).toBe(from0)   // restored, not blanked
+    expect(getState().period.open).toEqual(open0)   // restored, not blanked
   })
 
-  it('a stage reopen', () => {
+  /* was "a stage reopen" (advance to closed, step back to open, undo back to closed) — the stages went (D1177); the same
+     round trip is closing every date, opening them again, and one undo closing them again */
+  it('closing then opening the dates again', () => {
     setRole('admin')
-    advanceStage()  // open -> closed
-    expect(getState().period.stage).toBe('closed')
-    reopenStage()   // closed -> open
-    expect(getState().period.stage).toBe('open')
+    const p = getState().period
+    closeDates(p.start, p.end)
+    expect(getState().period.open).toEqual([])
+    openDates('2026-01-01', '2026-03-31')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
     lwUndo()        // back to closed
-    expect(getState().period.stage).toBe('closed')
+    expect(getState().period.open).toEqual([])
   })
   it('an OIL grant (the tracker\'s credit)', () => {
     setRole('admin')
@@ -318,7 +329,7 @@ describe('undo/redo — the deliberate exclusions (must NOT corrupt)', () => {
 
 describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
   it('undoing an approval removes its Raptor input; redo files it again', () => {
-    setRole('admin'); setCell('rocky', '2026-02-10', 'LL'); advanceStage()
+    setRole('admin'); setCell('rocky', '2026-02-10', 'LL'); closeBidding()
     wireUndo()
     setBidState('rocky', '2026-02-10', 'approved')
     expect(lwInputs()).toHaveLength(1)
@@ -333,7 +344,7 @@ describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
   it('undoing a MOVE of an approved leave carries the input back to the original day', () => {
     setRole('admin')
     setCell('rocky', '2026-02-10', 'LL')
-    advanceStage()                                  // closed
+    closeBidding()                                  // closed
     setBidState('rocky', '2026-02-10', 'approved')
     expect(lwInputs()).toHaveLength(1)
     expect(lwInputs()[0].date).toBe('Feb 10')
@@ -352,16 +363,33 @@ describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
     expect(lwInputs()[0].date).toBe('Feb 10')
   })
 
-  it('a closed-stage move records the moved stripe; undo clears it, redo restores it', () => {
+  /* was "a closed-stage move records the moved stripe" — since D1177 the moved mark is an APPROVED leave's (on any move of
+     a leave already approved; a bid that only waits carries no trail, open or closed). The approved leave is a Raptor
+     Input, so the undo that carries the stripe back and forth is the global one. */
+  it('an approved leave\'s move records the moved stripe; undo clears it, redo restores it', () => {
     setRole('admin')
     setCell('rocky', '2026-02-10', 'LL')
-    advanceStage()
-    moveCells([{ personId: 'rocky', date: '2026-02-10' }], 2)
+    setBidState('rocky', '2026-02-10', 'approved')
+    wireUndo()
+    expect(moveCells([{ personId: 'rocky', date: '2026-02-10' }], 2)).toBe('moved')
     expect(stateOf('rocky', '2026-02-12')!.shiftedFrom).toBe('2026-02-10')
-    lwUndo()
+    expect(globalUndo().ok).toBe(true)
+    expect(stateOf('rocky', '2026-02-10')!.state).toBe('approved')
     expect(stateOf('rocky', '2026-02-10')!.shiftedFrom).toBeUndefined()
-    lwRedo()
+    expect(globalRedo().ok).toBe(true)
     expect(stateOf('rocky', '2026-02-12')!.shiftedFrom).toBe('2026-02-10')
+  })
+
+  it('a waiting bid\'s move records no stripe, with bidding closed or open, and its undo brings none back', () => {
+    setRole('admin')
+    setCell('rocky', '2026-02-10', 'LL')
+    closeBidding()
+    moveCells([{ personId: 'rocky', date: '2026-02-10' }], 2)
+    expect(codeOf('rocky', '2026-02-12')).toBe('LL')
+    expect(stateOf('rocky', '2026-02-12')!.shiftedFrom).toBeUndefined()
+    lwUndo()
+    expect(codeOf('rocky', '2026-02-10')).toBe('LL')
+    expect(stateOf('rocky', '2026-02-10')!.shiftedFrom).toBeUndefined()
   })
 
   it('a Raptor-owned cell survives an undo of an unrelated edit', () => {
@@ -381,7 +409,7 @@ describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
     const dates = getState().period.days.map(d => d.date)
     const verdicts = () => JSON.stringify(evaluatePeriod(getState().people, getState().grid, getState().states, getState().requirements, dates, getState().views))
     for (const id of ['ramp', 'rocky', 'dusk', 'ammo']) setCell(id, '2026-02-10', 'LL')
-    advanceStage()
+    closeBidding()
     wireUndo()
     const before = verdicts()
     setBidStates(['ramp', 'rocky', 'dusk', 'ammo'].map(id => ({ personId: id, date: '2026-02-10' })), 'approved')
@@ -390,7 +418,7 @@ describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
   })
 
   it('undo then repeated re-reads is a fixed point (no oscillation)', () => {
-    setRole('admin'); setCell('rocky', '2026-02-10', 'LL'); advanceStage()
+    setRole('admin'); setCell('rocky', '2026-02-10', 'LL'); closeBidding()
     wireUndo()
     setBidState('rocky', '2026-02-10', 'approved')
     globalUndo()

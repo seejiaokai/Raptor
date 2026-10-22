@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { advanceStage, initStore, lwHistEpoch, lwUndo, setBalance, setRole, toggleFigure } from '../state/store'
+import { closeDates, initStore, lwHistEpoch, lwUndo, setBalance, setRole, toggleFigure } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { FIGSEL_ATTR } from './select'
@@ -195,7 +195,7 @@ describe('a drag down the figure column selects a run of people', () => {
     expect(marked()).toHaveLength(0)
   })
 
-  it('an undo, a stage change and the drawer toggle all drop it', async () => {
+  it('an undo, opening or closing dates and the drawer toggle all drop it', async () => {
     render(<Matrix />)
     const [a] = layOutColumn()
     // Something to undo: the selection itself writes nothing, so a bare undo
@@ -210,7 +210,7 @@ describe('a drag down the figure column selects a run of people', () => {
 
     dragDown(layOutColumn()[0])
     expect(marked()).toHaveLength(2)
-    act(() => { advanceStage() })
+    act(() => { closeDates('2026-03-01', '2026-03-31') })   // was a stage move — the guard is keyed on the open dates (D1177)
     expect(marked()).toHaveLength(0)
 
     dragDown(layOutColumn()[0])
@@ -228,7 +228,7 @@ describe('a drag down the figure column selects a run of people', () => {
   }, 60_000)   // renders the whole year; past 20s only on a busy PC — [LW-FIGSEL-SLOW]'s own fix, not a pause
 
   /* …and so does HIDING the figure the run is on (review, 6 Sep 26). The clear
-     above watches the stage, the war, the undo epoch, the drawer and the role,
+     above watches the open dates, the war, the undo epoch, the drawer and the role,
      and `toggleFigure` bumps none of them — so a hidden figure left the run
      ALIVE with nothing on screen to say so: no bar (its figure has left the
      visible list) and no lit boxes (the column falls back to the first visible

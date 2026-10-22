@@ -133,7 +133,13 @@ export function rollingTarget(
   after: number,
 ): ColWin {
   const last = Math.max(0, monthCount - 1)
-  return clampWin({ lo: visLo - before, hi: visHi + after }, monthCount)
+  /* THE RUNWAY THE WAR CUTS OFF AT ONE END IS DRAWN AT THE OTHER (M1's look on his iPhone, 23 Oct 26). The page lands on
+     today, so in late autumn the three months ahead ran into the war's end and only a month behind was drawn: a swipe back
+     met months never drawn, and those stay striped until the scroll stops (a month left of the view whose width is not yet
+     known is never drawn in motion — stepAllowedInMotion). No more months are drawn than mid-year, so the phone's DOM is no
+     heavier; at the war's START nothing is lent forward — the runway ahead is already whole, and the first open stays as it was. */
+  const cutAfter = Math.max(0, visHi + after - last)
+  return clampWin({ lo: visLo - before - cutAfter, hi: visHi + after }, monthCount)
 }
 
 /** The months whose spans overlap the viewport, from the cached content-space

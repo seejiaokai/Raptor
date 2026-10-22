@@ -7,7 +7,7 @@
    `PersonMonth` per month") — a prop added here is a repaint to argue for; `matrix-rows-memo.test.tsx` pins the row's. */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, canEditCell, canEditRow, catClass, catText, codeOf, displayCell, inSquadron, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
+import { addDays, canEditRow, catClass, catText, codeOf, displayCell, inSquadron, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
 import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow } from '../state/store'
 import { FigureCell, show } from './FigureCell'
 import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
@@ -132,30 +132,18 @@ export function ownAwardAlone(view: DayView | undefined, viewer: string | null, 
 /** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
  *  row share. Where a tap goes (bid / decide / read-only / remarks) is decided
  *  in the sheet from the same facts; this only says "there is a sheet". */
-export function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
+export function cellOpenable(states: States, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
   return raptorOwns(states, personId, date) ||
-    /* HIS OWN OIL AWARD, AT EVERY STAGE (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardPresent`)
-       where nothing else would — outside the bidding window, once bidding has closed, on a published war. Another man's
-       award stays shut to a member. */
+    /* HIS OWN OIL AWARD, AT ANY TIME (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardPresent`)
+       where nothing else would — a day not open for him. Another man's award stays shut to a member. */
     ownAwardPresent(view, viewer, personId) ||
-    // A member may open a cell to EDIT only on their own row (the person they
-    // are viewing as); an admin, any row. Without the row half a member could
-    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
-    // date/window half is `canEditCell`; both must pass.
-    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
-    (deciding && isBiddable(grid[personId]?.[date])) ||
-    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
-    // leave is tappable to edit its note (an admin's every cell is already
-    // openable through the canEditCell branch above). Kept CHEAP — code and
-    // state truthiness, never leaveInputAt, because this runs for every drawn
-    // cell; the precise "is there a backing leave input" test is `canRemark`,
-    // computed once when a cell is opened. Approved-only on purpose: a
-    // member's refused or pending bid at published opens NOTHING (no editor,
-    // no decision sheet), and the first cut still painted it tappable — a
-    // dead-feeling tap exactly where the stakes are highest, a refusal.
-    (period.stage === 'published' && personId === viewer
-      && isBiddable(grid[personId]?.[date])
-      && states[personId]?.[date]?.state === 'approved')
+    // EVERY DAY OF A PERSON'S OWN ROW OPENS SOMETHING FOR HIM (D1177, D1176, D1225): an open day from today, the bid
+    // window; any other day, the closed note (with Delete where his own pending bid stands); his approved leave, its
+    // remarks (D418 narrowed). An admin, any row. Another man's row stays shut to a member (owner, 27 Aug 26). Kept
+    // CHEAP — no date question here, because this runs for every drawn cell; which sheet opens is decided once, when
+    // the cell is opened (Matrix).
+    canEditRow(role, viewer, personId) ||
+    (deciding && isBiddable(grid[personId]?.[date]))
 }
 
 type PersonRowProps = {
@@ -388,7 +376,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           // declared after the weekend so a holiday Saturday reads as the
           // holiday, not the weekend.
           evKind.get(d.date) ?? '',
-          // Outside the bidding window, for this role. Declared after the
+          // Not open for bidding, for this role (a member's closed days — D1177). Declared after the
           // event colour so a locked, tinted day still reads as locked — the
           // same cascade care the .blocked/.weekend pair needs, and for the
           // same reason.
@@ -453,13 +441,13 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            an ADMIN's tap manages the POSTING (the post-out sheet after, the
            post-in sheet before), and the person's OWN tap places LEAVE. */
         const actionable =
-          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
+          (here && cellOpenable(states, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
           (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
-          // …and the person may bid clearing leave after posting out, or leave
-          // dated before they post in
-          (!here && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
+          // …and the person may bid clearing leave after posting out, or leave dated before they post in — on an open day;
+          // any other such day of his gives the closed note (D1176)
+          (!here && role !== 'admin' && viewer === p.id)
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise

@@ -1,7 +1,7 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { addDays, biddingClosed, canDecide, canEditCell, canEditRow, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, inBidWindow, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, defaultFocusDate, type Person, type Period, type DayInfo, type Grid } from '../engine'
-import { awardsOnDay, balanceAfterFill, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -31,6 +31,7 @@ import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
+import { ClosedNoteSheet } from './ClosedNoteSheet'
 import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
@@ -153,7 +154,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, focusSoft, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, focusSoft, focusQuiet, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -624,7 +625,10 @@ export function Matrix() {
   // sheet opened (bug test, 30 Aug 26). moveErr goes too, so no stale banner
   // message lingers.
   const histEpoch = lwHistEpoch()
-  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr(''); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') }, [period.stage, period.id, histEpoch])
+  /* keyed on the OPEN DATES since the stages went (D1177): opening or closing days under an open panel ends it, as a stage
+     move did — a panel built on days since closed must not act on them (the scenario designer's S29) */
+  const openSig = period.open.map(s => `${s.from}~${s.to}`).join(',')
+  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr(''); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') }, [openSig, period.id, histEpoch])
   /* ...and a WAR change closes the sheet open on the old war (the absence-record re-test, W5-F3, 26 Sep 26): left open,
      its controls still wrote to the day it was opened on — in the war no longer on screen. The Sheet now holds the
      keyboard too, so the switch cannot be reached from inside one; this is the second guard, for any other road to a
@@ -692,7 +696,7 @@ export function Matrix() {
   // the identity of the shown list, not its length: swapping one figure for
   // another is the same change to a live run.
   const figIds = figures.map(f => f.id).join('|')
-  useEffect(() => { setFigSel(null) }, [period.stage, period.id, histEpoch, figuresOpen, role, figIds])
+  useEffect(() => { setFigSel(null) }, [openSig, period.id, histEpoch, figuresOpen, role, figIds])
 
   // A press outside the bar and the boxes drops the selection (the tracker's
   // own rule, owner 2 Sep 26 — no Deselect button); a press ON a box is the
@@ -908,7 +912,7 @@ export function Matrix() {
   // jump raced the fill). `LeaveWarPage`/`selectWar` do the actual scroll via
   // `focusDate`; this only decides which columns exist when they land.
   const defaultMonth = (() => {
-    const k = defaultFocusDate(period).slice(0, 7)
+    const k = focusDateOf(period, memberToday()).slice(0, 7)
     const i = months.findIndex(m => m.first.slice(0, 7) === k)
     return i < 0 ? 0 : i
   })()
@@ -2631,13 +2635,13 @@ export function Matrix() {
     return () => window.removeEventListener('resize', measure)
   }, [zoom, period.id, drawnDates.length])
 
-  // ---- the OPEN-BIDDING box (owner, 1 Sep 26) -----------------------------
-  // A glowing dark-green rectangle around the columns open for bidding, so it
-  // is obvious at a glance which dates the squadron may bid on. Shown ONLY
-  // while bidding is OPEN (stage 'open'); a draft / closed / published war
-  // shows none — the box means "open right NOW". The span is the period's
-  // bidFrom..bidTo (null bounds = the whole war open, so the box wraps every
-  // column). The owner chose the deeper, more faded green over a brighter one.
+  // ---- the OPEN-DATES outline (owner, 1 Sep 26; D881 no glow; D1177 one per stretch) ----
+  // A dark-green outline around the columns open for bidding, so it is obvious
+  // at a glance which dates the squadron may bid on — ONE BOX PER OPEN STRETCH
+  // since the stages went (D1177: "the open days keep today's green outline").
+  // Nothing open, no box (empty means closed — the red team's B2). A member's
+  // outline starts at today (D1211's reading): he never bids before it. The
+  // owner chose the deeper, more faded green over a brighter one.
   //
   // ONE absolutely-positioned overlay inside `.mx-wrap` (which is
   // position:relative), NOT per-cell borders: a single element gives the clean
@@ -2650,37 +2654,44 @@ export function Matrix() {
   // as a day cell does when the year scrolls under the frozen columns.
   // Measured in the same layout signals as the month strip; jsdom (every rect
   // 0×0) leaves it null, which also keeps every geometry-free test honest.
-  const [bidBox, setBidBox] = useState<{ left: number; top: number; width: number; height: number; cutL: boolean; cutR: boolean } | null>(null)
+  type BidBox = { key: string; left: number; top: number; width: number; height: number; cutL: boolean; cutR: boolean }
+  const [bidBoxes, setBidBoxes] = useState<BidBox[]>([])
   const measureBidBox = () => {
     const wrap = wrapRef.current, head = headRef.current
     if (!wrap || !head) return
-    if (period.stage !== 'open') { setBidBox(prev => (prev ? null : prev)); return }
-    const open = period.days.filter(d => inBidWindow(period, d.date))
-    if (open.length === 0 || drawnDates.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
+    const none = () => setBidBoxes(prev => (prev.length ? [] : prev))
+    /* only the open days from today, for the admin as for a member (owner D1269, 23 Oct 26 — D1268's rule on the grid):
+       a stretch wholly past has no outline; the window still lists it, reading "past" */
+    const stretches = openFrom(period, memberToday())
+    if (stretches.length === 0 || drawnDates.length === 0) return none()
     // Only the drawn part is measurable. A bound outside the window cuts that
-    // side of the box (matrix.css .cut-l / .cut-r) — no false edge at the seam.
+    // side of its box (matrix.css .cut-l / .cut-r) — no false edge at the seam.
     const first = drawnDates[0]!, last = drawnDates[drawnDates.length - 1]!
-    const shown = open.filter(d => d.date >= first && d.date <= last)
-    if (shown.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
-    const cutL = open[0]!.date < first, cutR = open[open.length - 1]!.date > last
-    const fh = headCell(shown[0]!.date)
-    const lh = headCell(shown[shown.length - 1]!.date)
     const table = wrap.querySelector<HTMLElement>('table.mx')
-    if (!fh || !lh || !table) return
+    if (!table) return
     const wr = wrap.getBoundingClientRect()
-    if (wr.width === 0) return // jsdom / not laid out — leave it null
-    const fr = fh.getBoundingClientRect(), lr = lh.getBoundingClientRect()
-    if (fr.width === 0) return
+    if (wr.width === 0) return // jsdom / not laid out — leave it empty
     const hr = head.getBoundingClientRect(), tr = table.getBoundingClientRect()
-    // Content coordinates (add scrollLeft so the value is stable wherever the
-    // grid is scrolled — the browser re-offsets the absolute child as it
-    // scrolls). The header tbody top is the month-bracket row; the box runs
-    // from there to the foot of the roster.
-    const left = fr.left - wr.left + wrap.scrollLeft
-    const right = lr.right - wr.left + wrap.scrollLeft
-    const top = hr.top - wr.top
-    const next = { left, top, width: right - left, height: tr.bottom - hr.top, cutL, cutR }
-    setBidBox(prev => (prev && prev.left === next.left && prev.top === next.top && prev.width === next.width && prev.height === next.height && prev.cutL === next.cutL && prev.cutR === next.cutR ? prev : next))
+    const next: BidBox[] = []
+    for (const s of stretches) {
+      if (s.to < first || s.from > last) continue
+      const a = s.from < first ? first : s.from, b = s.to > last ? last : s.to
+      const fh = headCell(a), lh = headCell(b)
+      if (!fh || !lh) continue
+      const fr = fh.getBoundingClientRect(), lr = lh.getBoundingClientRect()
+      if (fr.width === 0) continue
+      // Content coordinates (add scrollLeft so the value is stable wherever the
+      // grid is scrolled — the browser re-offsets the absolute child as it
+      // scrolls). The header tbody top is the month-bracket row; each box runs
+      // from there to the foot of the roster.
+      const left = fr.left - wr.left + wrap.scrollLeft
+      next.push({ key: s.from, left, top: hr.top - wr.top, width: lr.right - wr.left + wrap.scrollLeft - left, height: tr.bottom - hr.top, cutL: s.from < first, cutR: s.to > last })
+    }
+    /* bail when nothing moved — the effect below runs on every store commit, and an unchanged box must not repaint */
+    setBidBoxes(prev => (prev.length === next.length && prev.every((p, i) => {
+      const n = next[i]!
+      return p.key === n.key && p.left === n.left && p.top === n.top && p.width === n.width && p.height === n.height && p.cutL === n.cutL && p.cutR === n.cutR
+    }) ? prev : next))
   }
   measureBidBoxRef.current = measureBidBox // this render's, for `onArchiveChange`
   useLayoutEffect(() => {
@@ -2710,7 +2721,7 @@ export function Matrix() {
     // measure effects (the month strip, the frozen-mirror geometry) already
     // carry `arranging` for the same reason; this one had been missed.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen, arranging])
+  }, [version, period.id, openSig, role, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen, arranging])
 
   // iOS WebKit settles the frozen-column width change a FRAME LATER than the
   // synchronous layout-effect above reads it: on LEAVING Rearrange the column
@@ -3027,6 +3038,8 @@ export function Matrix() {
   // not drawn, the column under the frozen names, or off either edge. Every plain ask still jumps.
   useEffect(() => {
     if (!focusDate) return
+    /* the day clock's ask (D1266): the mark moves, the view stays — never a jump away from where he scrolled */
+    if (focusQuiet) return
     if (focusSoft) {
       const wrap = wrapRef.current, cell = headCell(focusDate)
       if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return
@@ -3042,31 +3055,28 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusSeq, focusDate])
 
-  // Every "may this be written" question now goes through `canEditCell`,
-  // which folds the stage, the role and the bidding window into one answer
-  // for one date. `canEdit` is what the stage strip and the role toggle ask —
-  // "is the sheet writable at all" — and has no date to narrow itself with.
-  const deciding = canDecide(period.stage, role)
+  // Every "may this be bid on" question goes through the store's `canBidOn` — the day open in the period holding it,
+  // a member's today, his own row (D1177, D1211) — the same one body every write asks.
+  const deciding = canDecide(role)
 
-  // The dotted-orange "moved" mark is only meaningful once bidding has CLOSED
-  // (owner, 27 Aug 26). While a war is still open for bidding, people shuffle
-  // their own bids around freely — a moved mark on every re-placed bid is just
-  // noise. It becomes worth showing only after close, when a shift is the
-  // admin deliberately moving someone's input off the date they bid. This gates
-  // the DISPLAY; the store gates the RECORD (an open move stores no shiftedFrom
-  // at all, so a bid moved while open stays clean even after the war closes) —
-  // one `biddingClosed` body behind both so the two cannot disagree.
-  const movedShown = biddingClosed(period.stage)
+  // The dotted "moved" mark shows on ANY move of a leave already approved (D1177's reading — no longer only once
+  // bidding closed). The store gates the RECORD: a bid that only waits stores no trail when it moves, so the mark
+  // appears exactly where an approved leave was moved.
+  const movedShown = true
 
-  // Published-stage remarks editor (owner, 27 Aug 26 — "after the leave war is
-  // published … click on their inputs … and edit the remarks. but the admin
-  // can also … the same for all"). A click on an approved leave at PUBLISHED
-  // opens the note editor for the run's OWN person (a member editing their own
-  // leave) or for an admin (anyone). `viewer` is the war's mirror of Raptor's
-  // "view as" — the member's own person. It takes precedence over the
-  // read-only Raptor sheet and the bid/decision sheets below, and exists only
-  // at published; `leaveInputAt` runs once per open cell, never per grid cell.
-  const remarkRow = open && period.stage === 'published'
+  // THE REMARKS EDITOR — A MEMBER'S OWN APPROVED LEAVE, AT ANY TIME (D418 narrowed by D1177: "a member's approved leave
+  // offers only its remarks, any time; the leave itself he changes on the Inputs page, D1166"). It was the published
+  // stage's (owner, 27 Aug 26), and there it took an admin's tap too; with nothing frozen now an admin's tap on approved
+  // leave opens the sheet that changes it (send back, move, delete — D1177: he decides at any time), not a remarks-only
+  // editor that would hide those (the scenario designer's S6). `viewer` is the signed-in person; `leaveInputAt` runs
+  // once per open cell, never per grid cell.
+  const remarkRow = open && role !== 'admin' && open.id === viewer
+    ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
+    : null
+  /* THE ADMIN'S NOTE ON ONE APPROVED LEAVE (M1's code read, L6): his tap opens the decide window, so its remarks are
+     reached there, by the same Note the day's list gives him on a busier day (D418 narrowed by D1177) */
+  const noteAt = open ? `${open.id}|${open.date}` : ''
+  const adminNoteRow = open && role === 'admin' && states[open.id]?.[open.date]?.state === 'approved'
     ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
     : null
   /* [ARCH-STACK] step 4 — a day holding more than one record (the corner
@@ -3077,7 +3087,12 @@ export function Matrix() {
   const openView = open ? views[open.id]?.[open.date] : undefined
   const listOpen = !!open && !!openView && (openView.mark !== '' ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
-  const canRemark = !listOpen && !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
+  /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
+     half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
+     war-approved leave by M1's code read, M2: `main` opened the bid window there): remarks at any time must not hide the
+     half he may still bid on. Its remarks are reached from the Inputs page then. */
+  const canRemark = !listOpen && !!remarkRow
+    && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
   /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
      cell is locked to the Inputs page but only HALF of it is actually spoken
      for, the tap opens the bid picker on the free half instead of the
@@ -3108,12 +3123,12 @@ export function Matrix() {
     && openView.all.length > 0 && openView.all.every(c => c.kind === 'credit')
     && !openView.all.some(c => c.kind === 'credit' && !c.auto)
   const openFreeHalf = open && raptorOwns(states, open.id, open.date)
-    && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
+    && canBidOn(open.id, open.date)
     ? freeHalfBeside(openView)
     : null
 
-  // Which sheet a click opens follows from three things: the stage, the role,
-  // and what the cell already holds.
+  // Which sheet a click opens follows from three things: whether the day is open for this person, the role, and what
+  // the cell already holds.
   //
   // A cell Raptor owns always opens, at every stage and for either role, but
   // only ever onto the read-only sheet — a member who cannot edit anything
@@ -3125,25 +3140,33 @@ export function Matrix() {
   // "Does a tap here open something" lives in `cellOpenable` (module level, the
   // row's own body) — the comment block above is its rationale.
 
-  // A day the squadron may not bid on, drawn as such. Without this the window
-  // is invisible: a member taps an October cell, nothing happens, and the app
-  // reads as broken rather than as closed. Admin sees no lock — the window
-  // does not bind them, so drawing one would be a lie about their own screen.
+  // THE CLOSED DAYS DIM, WITH A SMALL LOCK ON THEIR DATE, WHILE ANYTHING IS OPEN (D1177's reading — "with nothing open
+  // the grid shows as normal"). A member's view: the stretches from his today (D1211); nothing open for him — no dim.
   // A Set per store change rather than a predicate per cell (3 Sep 26): the
   // cells asked this ~18,000 times per build, once per person per day, when
-  // the answer only varies by DAY — 365 answers. Also a stable row prop.
+  // the answer only varies by DAY — 365 answers. Also a stable row prop. The
+  // role is a key too: the admin's member view changes the answer without a store change (the scenario designer's S34).
   const lockedCols = useMemo(() => {
     const out = new Set<string>()
-    for (const d of period.days) if (!canEditCell(period, role, d.date)) out.add(d.date)
+    /* NOT FOR THE ADMIN — measured (22 Oct 26, M1's speed check): faded on his screen too, thousands of cells drawn at
+       half strength slowed his tap on a cell about threefold on a desktop (0.77 s → 2.3 s, CPU 4×), and the open dates
+       do not bind him; the green outline already shows him what is open. As before the open dates: a member's only. */
+    if (role === 'admin') return out
+    const visible = { open: openFrom(period, memberToday()) }
+    if (!visible.open.length) return out
+    for (const d of period.days) {
+      let on = false
+      for (const s of visible.open) if (s.from <= d.date && d.date <= s.to) { on = true; break }
+      if (!on) out.add(d.date)
+    }
     return out
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version])
+  }, [version, role])
   const lockedDate = (date: string): boolean => lockedCols.has(date)
 
-  // Feed the drag-select controller live state. A member may DRAG only while
-  // the war is OPEN (batch fill). The published remarks editor is a SINGLE
-  // click, not a drag — a block of runs has no one note to edit — so a member
-  // still cannot drag at published. An admin may drag at every stage.
+  // Feed the drag-select controller live state. A member drags on his own row at any time since the stages went
+  // (D1177): a fill writes only his open days from today and counts the rest skipped; a Delete over days since closed
+  // takes his own pending bids there (D1225). An admin drags anywhere.
   selCtxRef.current = {
     // A member drags only WITHIN their own row: the rectangle's rows come from
     // this list, so limiting it to the viewer keeps a member's drag on their
@@ -3156,7 +3179,7 @@ export function Matrix() {
       .map(r => (r as { p: Person }).p.id)
       .filter(id => canEditRow(role, viewer, id)),
     dates: () => drawnDates,
-    enabled: () => !arranging && !moveSel && !eventMoveSel && (role === 'admin' || period.stage === 'open'),
+    enabled: () => !arranging && !moveSel && !eventMoveSel,
     onSelect: s => { flyPickRef.current?.close(); setSel(s) },
     // Events are the admin's (the store refuses a member write anyway); a drag
     // along one event line opens the event sheet pre-set to that date span
@@ -3578,17 +3601,18 @@ export function Matrix() {
               })()}
             </tbody>
           </table>
-          {/* The open-bidding box (see measureBidBox). A sibling of the table
-              inside `.mx-wrap`, so it scrolls sideways with the grid; null
-              unless bidding is open and laid out. */}
-          {bidBox && (
+          {/* The open-dates outline, one box per open stretch (see measureBidBox). Siblings of the table inside
+              `.mx-wrap`, so they scroll sideways with the grid; none unless something is open and laid out. */}
+          {bidBoxes.map(b => (
             <div
-              className={`lw-bidbox${bidBox.cutL ? ' cut-l' : ''}${bidBox.cutR ? ' cut-r' : ''}`}
+              key={b.key}
+              className={`lw-bidbox${b.cutL ? ' cut-l' : ''}${b.cutR ? ' cut-r' : ''}`}
               data-testid="bid-box"
+              data-from={b.key}
               aria-hidden="true"
-              style={{ left: bidBox.left, top: bidBox.top, width: bidBox.width, height: bidBox.height }}
+              style={{ left: b.left, top: b.top, width: b.width, height: b.height }}
             />
-          )}
+          ))}
         </div>
         {/* The phone's frozen header — the fixed mirror described above the
             sticky machinery. Sits under the top bar (z 55 < the bar's 60 and
@@ -3807,11 +3831,8 @@ export function Matrix() {
           sheet inside it would be clipped by its own scroller. Keyed by the
           cell so opening a second one remounts rather than carrying the
           first's portion choice across. */}
-      {/* The published-stage remarks editor wins FIRST where it applies (an
-          approved leave, the viewer's own or an admin's any) — even over the
-          Raptor sheet, because on a published war editing the note is the
-          point, and the note lives on the same Raptor row the read-only sheet
-          would only point at. */}
+      {/* A member's remarks editor wins FIRST where it applies (his own approved leave, any day — D418 narrowed) — even
+          over the Raptor sheet, because the note lives on the same Raptor row the read-only sheet would only point at. */}
       {open && listOpen && !(listRemark && listRemark.at === `${open.id}|${open.date}`) && (
         <DayListSheet
           key={`dl-${open.id}-${open.date}`}
@@ -3880,15 +3901,31 @@ export function Matrix() {
           onClose={close}
         />
       )}
-      {/* HIS OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26), wherever the bid sheet will not open for him — outside
-          the bidding window, once bidding has closed, on a published war. Where it does open (inside the window) its
-          foot reads the award back already, so this stands aside. */}
+      {/* HIS OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26), wherever the bid sheet will not open for him — a day not
+          open for him. Where it does open its foot reads the award back already, so this stands aside. */}
       {open && !listOpen && !canRemark && openCredit && ownAwardAlone(openView, viewer, open.id)
-        && !(canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)) && (
+        && !canBidOn(open.id, open.date) && (
         <AwardSheet
           callsign={open.callsign}
           date={open.date}
           award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: openCredit.givenBy ?? '', entered: openCredit.enteredName }}
+          onClose={close}
+        />
+      )}
+      {/* A MEMBER'S TAP ON HIS OWN ROW, ON A DAY NOT OPEN FOR HIM (D1176, D1225; drawn r7-08, r7-09): the closed note — or,
+          where his own pending bid stands, that note with its Delete. Never a dead tap, never a bid window that then
+          refuses. Last in line: his remarks, a leave filed on the Inputs page, his own award and the day's list each
+          answer first, as before. The posting days (before he joined, after he left) are his too. */}
+      {open && !listOpen && !canRemark && role !== 'admin' && canEditRow(role, viewer, open.id)
+        && !canBidOn(open.id, open.date)
+        && !raptorOwns(states, open.id, open.date)
+        && !(openCredit && ownAwardAlone(openView, viewer, open.id)) && (
+        <ClosedNoteSheet
+          key={`cn-${open.id}-${open.date}`}
+          personId={open.id}
+          callsign={open.callsign}
+          date={open.date}
+          pending={ownPendingOnClosedDay(open.id, open.date)}
           onClose={close}
         />
       )}
@@ -3905,7 +3942,7 @@ export function Matrix() {
           /* the ask before a fill takes anyone below zero (D418) */
           wouldLeave={balanceAfter}
           role={role}
-          canDecide={canDecide(period.stage, role)}
+          canDecide={canDecide(role)}
           /* never on a deleted man (his posting is final — [POST-OUT-OUTCOMES], Fable F3) */
           onPostOut={role === 'admin' && !sel.people.some(id => people.find(p => p.id === id)?.gone || postingLocked(id)) ? (pid, from, outcome) => postOutOr(pid, from, outcome) : undefined}
           hasAccount={hasAccount}
@@ -4179,10 +4216,11 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
-        && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id) && (
+      {open && !listOpen && !canRemark && !(listRemark && listRemark.at === noteAt) && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
+        && canBidOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
+          onNote={adminNoteRow ? () => setListRemark({ at: noteAt, row: adminNoteRow }) : undefined}
           callsign={open.callsign}
           personId={open.id}
           date={open.date}
@@ -4225,10 +4263,8 @@ export function Matrix() {
           /* THE FOUR ANSWERS TO AN INPUT, IN EVERY STAGE (owner, 21 Sep 26).
              An admin, and a cell that actually holds a bid to answer — a
              course, a medical, an OIL credit and an empty day are not things
-             anybody asked for. `canDecide` is deliberately NOT the gate: it
-             means closed-or-published, and the whole point of his ruling is
-             that the window is the same while bidding is still open. */
-          decide={canDecide(period.stage, role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
+             anybody asked for. The admin decides at any time (D1177). */
+          decide={canDecide(role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
             ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
             : null}
           /* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): the sheet's Move picks the chip up into the grid's own move

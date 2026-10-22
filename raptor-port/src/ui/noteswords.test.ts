@@ -66,7 +66,7 @@ const BUILT: [string, string, string, number][] = [
   ['N28 — NAAR’s instructor mark (List 3 row 6)', 'state/quals-write.ts', '`${p.cs} needs the DAAR instructor mark before NAAR can carry one, so the NAAR tick comes off instead`', 1],
   ['N29 — a qualification off the LoX', 'ui/QualsPage.tsx', "`${c.h} removed from the LoX. Nobody's record changed. Add it back and the ticks return.`", 1],
   ['N30 — a store off the list', 'ui/interactions.ts', '`${lab} removed from the list. Every jet carrying it keeps it. Add it back and the chips return.`', 1],
-  ['N31 — a leave war period created', 'ui/interactions.ts', '`The ${yr} leave war period is created. Set its bidding window here.`', 1],
+  ['N31 — a leave war period created', 'ui/interactions.ts', '`The ${yr} leave war period is created. Open its dates for bidding here.`', 1],
   ['N32 — a leave war already there', 'ui/interactions.ts', '`A leave war already covers part of ${yr}. Open the Leave War and extend it instead.`', 1],
   ['"is not a time" — a schedule box', 'engine/slots.ts', '`${v} is not a time. Try 0900 or 09:00.`', 1],
   ['"is not a time" — a duty template', 'ui/DutyTplModal.tsx', '`${v} is not a time. Try 0900 or 09:00.`', 1],

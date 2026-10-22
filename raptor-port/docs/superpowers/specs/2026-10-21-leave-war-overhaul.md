@@ -256,6 +256,12 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q4b → A (D1167):** "4b i decided A" — two whole-day entries side by side, each the full height (the agent had recommended C, a strip, as three letters are cramped in a half-width box on a phone — told him); a full day of leave with an HO, the HO in its half of the right side. Narrows D1146.
 - **His idea on Q5 (D1168):** the "Open for bidding" window gets the period's months as quick buttons — a tap opens or closes a whole month; exact days stay behind the pencil (design lesson 24); drawn (`../../mock/lw-overhaul/full-q5-flow.mjs`).
 - **And (D1169):** "also allow hold and drag to select months" — a hold and drag across the month buttons opens every month it passes over, as one stretch.
+**D1264 (23 Oct 26):** on a phone the "Open for bidding" window opens as a full page from the top of the screen, its month buttons at the top, so they never move as the list of open stretches below them changes (a desktop keeps its window).
+**D1265 (23 Oct 26):** the admin is shown which open dates are already past for members — past months marked in the window, the chip saying when what is open is all past; drawn first, then built in M1.
+**D1266 (23 Oct 26):** today moves at midnight with the page open — the today ring, a member's dim and lock, his outline and chip together; in M1, not the next batch.
+**D1267 (23 Oct 26):** a member's closed days dim with a lock only while some dates are open for him; with nothing open his grid draws as normal (D1177's reading, now his ruling).
+**D1268 (23 Oct 26):** D1265 as drawn — a month wholly before today locked and not pressable in the window, a past stretch reads "past", the admin's chip counts from today (`docs/img/mock/lw-d1265/`).
+**D1269 (23 Oct 26):** the grid's green outline marks only the open days from today, for the admin as for a member (D1268's rule on the grid).
 - **And (D1172):** "perhaps instead of an edit icon put a calendar icon" — each open stretch's line carries a calendar icon, not a pencil. He also asked how the main page looks with two stretches open — drawn (`../../mock/lw-overhaul/full-q5-two.mjs`).
 - **And (D1173, D1174):** the "Viewing as <callsign>" chip goes (only a label on the war — the admin / member switch is the name badge, D292; replaces D365, narrows D678); the period picker is labelled "View" ("View JAN – DEC 26"), on a phone too. To draw with round 4's Q10 (the top row).
 - **Q2 confirmed (D1175):** "2 f" — look F as drawn, every input.

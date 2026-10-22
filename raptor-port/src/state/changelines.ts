@@ -518,7 +518,7 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
   if (!sorted.length) {
     /* an Undo line only where its change wrote a line of its own (the change-recording plan §11.9, walker A2-F5): the
        roster, the war's ledger and its postings write theirs dated today (changeLinesFor below), so their Undo does too;
-       a Leave War ⚙ setting, a stage move, a war's dates, a balance, the OIL policy and every settings record write none
+       a Leave War ⚙ setting, opening or closing dates, a war's dates, a balance, the OIL policy and every settings record write none
        — until `[HIST-PER-PAGE]` gives Admin, Logic and the war's settings a place — so their Undo writes none either */
     const wrote = (entry.forward || []).some(c => c.collection === 'people' || c.collection === 'lw.ledger' || c.collection === 'lw.postouts')
     if (wrote) logAction(null, what, { date: localToday(), sect: 'day' })
