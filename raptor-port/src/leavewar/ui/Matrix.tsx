@@ -15,7 +15,7 @@ import { FlyRows, type FlyPickApi } from './FlyRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
-import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { clampWin, leftGrowAbsorbable, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import type { PostOutcome } from '../engine'
 import { outcomeOf, bandAt, classifyEvent, dayEvent, dayEventKind, EVENT_KIND_WORDS } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
@@ -1001,8 +1001,18 @@ export function Matrix() {
   // still the ones it was measured with, which is what `gen` records (see
   // `widthGen` below). A month never drawn falls back to an estimate (the
   // average day width × its days) — see colwindow.ts for why that estimate is
-  // never swapped for the real month LEFT of the view while the scroll is moving.
+  // never swapped for the real month LEFT of the view while the scroll is moving
+  // — unless the error can go to the left placeholder (`padErrRef` below).
   const monthPxRef = useRef<{ key: string; px: (number | null)[]; gen: (object | null)[] }>({ key: '', px: [], gen: [] })
+  // WHAT THE LEFT PLACEHOLDER IS SHORT OF, OR OVER, ITS ESTIMATE (his video, 23 Oct 26 — a fling from December back to
+  // January left the months striped until rest). A month drawn LEFT mid-fling over an estimated width lands at its real
+  // width; the difference would push every column to its right — the ones on screen — so the same commit takes it off
+  // the left placeholder instead (layout px, added up: a month drawn wider takes more off). The placeholder stands for
+  // months nobody can see, so nothing visible moves. Squared when the war's first month is drawn (the placeholder is
+  // gone then) and on a new war or zoom (every width is re-read). `absorbRef` is the drawn month the step is measured
+  // against: its left edge before the step, in the scroller's content px.
+  const padErrRef = useRef(0)
+  const absorbRef = useRef<{ month: number; left: number } | null>(null)
   // Is the Leave War tab on screen right now? A ref, not React state, so the
   // fill loop below can read it every idle beat without a re-render, and
   // flipping it (state/screen.ts) never repaints the ~25k-node grid. Seeded from
@@ -2214,7 +2224,7 @@ export function Matrix() {
   // width; a new war is a new set of months) — started fresh when the key moves.
   const monthPxCache = () => {
     const key = `${period.id}|${zoom}`
-    if (monthPxRef.current.key !== key) monthPxRef.current = { key, px: months.map(() => null), gen: months.map(() => null) }
+    if (monthPxRef.current.key !== key) { monthPxRef.current = { key, px: months.map(() => null), gen: months.map(() => null) }; padErrRef.current = 0 }
     return monthPxRef.current
   }
   // A month's width in LAYOUT px (the table's own space, zoom divided out — the
@@ -2251,6 +2261,9 @@ export function Matrix() {
     if (win) {
       for (let m = 0; m < win.lo; m++) l += monthPx(m)
       for (let m = win.hi + 1; m < months.length; m++) r += monthPx(m)
+      // the error a mid-fling left draw handed it (padErrRef); none once the first month is drawn — no placeholder is left
+      if (win.lo === 0) padErrRef.current = 0
+      l = Math.max(0, l - padErrRef.current)
     }
     const next = { l: `${l.toFixed(2)}px`, r: `${r.toFixed(2)}px` }
     const prev = phWRef.current
@@ -2357,8 +2370,20 @@ export function Matrix() {
   // quiet before drawing a month, so a fill draw never lands under a moving
   // scroll (which is the very freeze this whole thing exists to avoid).
   const lastScrollTsRef = useRef(0)
+  // How fast the grid is scrolling sideways (px a millisecond), smoothed over the last few scroll events — the fill
+  // draws a month LEFT of the view mid-scroll only under DRAW_LEFT_MAX_SPEED (colwindow.ts). Pure arithmetic on the
+  // event: no layout read, no render.
+  const scrollSpeedRef = useRef({ v: 0, t: 0, sl: 0 })
   const onWrapScroll = () => {
-    lastScrollTsRef.current = Date.now()
+    const now = Date.now()
+    {
+      const sp = scrollSpeedRef.current, sl = wrapRef.current?.scrollLeft ?? 0
+      const dt = now - sp.t
+      const inst = dt > 0 && dt < 200 ? Math.abs(sl - sp.sl) / dt : 0
+      sp.v = dt >= 200 ? inst : sp.v * 0.5 + inst * 0.5
+      sp.t = now; sp.sl = sl
+    }
+    lastScrollTsRef.current = now
     // The frozen-column overlay sits ON TOP of the real columns. At rest
     // (scrollLeft 0) it must let a tap fall THROUGH to the real cell beneath —
     // that cell still carries the handler, the testid and the focus seat — so
@@ -2518,7 +2543,9 @@ export function Matrix() {
       const inMotion = moving()
       // `widthExact`, not "measured once": a month measured while other rows
       // showed is not the width it will draw at now ([LW-MONTHJUMP-PHONE]).
-      if (inMotion && !stepAllowedInMotion(win, next, widthExact)) {
+      const sl = wrapRef.current?.scrollLeft ?? 1
+      const speed = scrollSpeedRef.current.v
+      if (inMotion && !stepAllowedInMotion(win, next, widthExact, m => leftGrowAbsorbable(m, sl, speed))) {
         // Not safe under a moving scroll: look again once the moving window has
         // passed. The scroll-rest kick itself lands INSIDE that window (it fires
         // 120 ms after the last scroll event, the window is 160), so it cannot be
@@ -2536,7 +2563,16 @@ export function Matrix() {
       // altogether, because the `scrollLeft` write that would fix a stray pixel
       // is exactly what kills a fling (the 30 Aug history). A rightward step
       // writes none.
-      if (next.lo !== win.lo && !(inMotion && coarsePointer())) {
+      // A left month over an ESTIMATED width drawn mid-fling hands its error to the left placeholder (padErrRef): measured
+      // against the drawn month that was the window's left edge, in the commit that draws it. The war's first month has no
+      // placeholder left of it and is drawn in motion only at the very start of the scroll, where nothing is anchored —
+      // the reader is at January's first day and stays there.
+      const absorbing = next.lo < win.lo && inMotion && !widthExact(next.lo)
+      if (absorbing && next.lo > 0) {
+        const g = stripGeoRef.current
+        absorbRef.current = g && g.spans[win.lo] ? { month: win.lo, left: g.spans[win.lo]!.left } : null
+      }
+      if (next.lo !== win.lo && !(inMotion && coarsePointer()) && !absorbing) {
         const wrap = wrapRef.current
         if (wrap) { anchorRef.current = anchorNow(wrap); colShiftRef.current = true }
       }
@@ -2608,6 +2644,16 @@ export function Matrix() {
     const remeasure = () => { applyPlaceholders(); measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
     remeasureRef.current = remeasure
     remeasure()
+    // A left month drawn mid-fling over an estimate (padErrRef): how far it pushed the month that was the window's left
+    // edge is taken off the left placeholder, and the strip re-read — all before this frame paints, so no column on
+    // screen ever moved.
+    const ab = absorbRef.current
+    absorbRef.current = null
+    const span = ab ? stripGeoRef.current?.spans[ab.month] : undefined
+    if (ab && span) {
+      const d = span.left - ab.left
+      if (Math.abs(d) > 0.5) { padErrRef.current += d / zoom; remeasure() }
+    }
     window.addEventListener('resize', remeasure)
     return () => window.removeEventListener('resize', remeasure)
     // The window's EDGES are deps, not only the drawn-day count: two windows a

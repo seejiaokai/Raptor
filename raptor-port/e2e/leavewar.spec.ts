@@ -123,6 +123,9 @@ test.beforeEach(async ({ page }) => {
  *  a desktop comes back with it OUT and over the grid the test is driving. */
 async function putDrawerAway(page: Page) {
   const bar = page.locator('[data-testid="figures-toggle"]')
+  // The drawer is switched off since the overhaul's M2 (D1245 — the Balances fold goes; its code leaves whole with M5):
+  // no toggle, nothing to put away.
+  if ((await bar.count()) === 0) return
   if ((await bar.getAttribute('aria-expanded')) === 'true') await bar.click()
 }
 
@@ -6365,6 +6368,53 @@ test('the grid draws a window of months over year-wide placeholders, keeps every
   if (!jump.janWasDrawn) expect(jump.decWithJan, 'the jump drew January and dropped December in the same draw').toBe(false)
   else expect((await read()).months.length).toBe(12)   // the fill finished the year first: the jump only scrolled
   expect((await read()).misaligned).toBe(0)
+})
+
+// HIS VIDEO, 23 Oct 26 (05:36, the live app on his iPhone): a fling from December back to January left every month it
+// passed striped, and January striped for a second after the grid stopped. A month LEFT of the view whose width was only
+// an estimate was never drawn while the scroll moved (colwindow.ts stepAllowedInMotion — it would have hopped the
+// columns on screen). Now it is drawn mid-scroll and its error goes to the left placeholder (Matrix padErrRef), so no
+// column on screen moves. The scroll is moved frame by frame (this browser's touch gesture does not fling the grid), slow
+// enough that the view stays next to the drawn window: then the only path that can draw the month is the in-motion one.
+test('a month left of the view is drawn while the scroll is still moving, and no column on screen moves', async ({ page }) => {
+  test.skip(!isPhone(), "the phone's rolling window — the desktop draws the whole year")
+  await page.locator('[data-testid="month-DEC"]').click()
+  await gridAtRest(page, '2026-12-01')
+  // the rolling window settles at rest, the months left of it undrawn
+  const drawn = () => page.evaluate(() => [...new Set([...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')]
+    .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12)))].sort())
+  let prev = ''
+  await expect.poll(async () => { const d = JSON.stringify(await drawn()); const same = d === prev; prev = d; return same }, { timeout: 0, intervals: [400] }).toBe(true)
+  expect((await drawn())[0]! > '2026-04', 'the window at rest leaves the spring undrawn').toBe(true)
+  // Now scroll left 12px a frame — a steady drag, ~720px a second — for four seconds' worth of frames, never stopping.
+  // Every frame: how long a placeholder stripe has stood in the view without a break, and whether any day column on
+  // screen sits anywhere but where it sat the first time it was seen (in the scroller's own content px).
+  const r = await page.evaluate(() => new Promise<{ longestStripe: number; hop: number; moved: number; frames: number }>(res => {
+    const w = document.querySelector<HTMLElement>('.mx-wrap')!
+    const head = () => w.querySelector('tbody.mxhead tr:last-child')!
+    const frozen = () => { let x = 0; for (const th of head().children) { if (th.classList.contains('lwph') || th.classList.contains('day')) break; x = Math.max(x, th.getBoundingClientRect().right) } return x }
+    const seen = new Map<string, number>()
+    const sl0 = w.scrollLeft
+    let run = 0, longestStripe = 0, hop = 0, n = 0
+    const step = () => {
+      const wr = w.getBoundingClientRect(), L = frozen(), R = wr.right
+      let stripe = false
+      for (const ph of head().querySelectorAll('.lwph')) { const q = ph.getBoundingClientRect(); if (Math.min(q.right, R) - Math.max(q.left, L) > 2) stripe = true }
+      run = stripe ? run + 1 : 0; longestStripe = Math.max(longestStripe, run)
+      for (const th of head().querySelectorAll<HTMLElement>('th.day')) {
+        const q = th.getBoundingClientRect(); if (q.right < L || q.left > R) continue
+        const id = th.dataset.testid!, x = q.left - wr.left + w.scrollLeft
+        const was = seen.get(id); if (was == null) seen.set(id, x); else hop = Math.max(hop, Math.abs(x - was))
+      }
+      if (n++ < 240 && w.scrollLeft > 0) { w.scrollLeft -= 12; requestAnimationFrame(step) } else res({ longestStripe, hop, moved: sl0 - w.scrollLeft, frames: n })
+    }
+    requestAnimationFrame(step)
+  }))
+  expect(r.moved, 'the scroll really moved, over several undrawn months').toBeGreaterThan(2000)
+  // A month takes a beat to draw, so a stripe may show for a few frames as it comes into view — never for the whole pass
+  // over a month (about 50 frames at this speed), which is what the old rule did: it waited for the scroll to stop.
+  expect(r.longestStripe, 'no stripe stood in the view for the pass over a month').toBeLessThanOrEqual(15)
+  expect(r.hop, 'no day column on screen moved when a month was drawn beside it').toBeLessThanOrEqual(1)
 })
 
 // ---- the year-wide bottom scrollbar, and the background fill (owner, 4 Sep 26)

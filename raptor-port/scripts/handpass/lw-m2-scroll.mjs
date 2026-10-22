@@ -2,7 +2,7 @@
 // January on to December — and how long months stay striped (a placeholder in view) during and after it.
 // M1's lw-m1-scroll-perf.mjs, with the long flings added and a real touch fling (momentum on).
 // usage: node lw-m2-scroll.mjs <runs> <scenarioList> <who> <port1,port2,...>   (ports alternate per run)
-//   scenarios: FLB (fling back Dec → Jan), FLF (fling on Jan → Dec), LB / LF (M1's 2.5-month swipes)
+//   scenarios: FLBB (FLB, then the iPhone's 0.6 s bounce at January), FLB (fling back Dec → Jan), FLF (fling on Jan → Dec), DB (a steady drag back from Dec), LB / LF (M1's 2.5-month swipes)
 import { createRequire } from 'node:module'
 import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -91,6 +91,25 @@ async function fling(page, cdp, months, ms) {
   }), [months, ms])
 }
 
+// A steady drag back: 12px a frame (~720px a second) for up to 240 frames — a finger moving the grid, not a fling.
+async function drag(page) {
+  return page.evaluate(() => new Promise(res => {
+    const w = document.querySelector('.mx-wrap'); let n = 0
+    const step = () => { if (n++ < 240 && w.scrollLeft > 0) { w.scrollLeft -= 12; requestAnimationFrame(step) } else res(null) }
+    requestAnimationFrame(step)
+  }))
+}
+
+// The iPhone's bounce at the war's start: Safari keeps reporting the scroll for about 0.6 s after the fling reaches
+// January's first day (the rubber band), the position staying at 0. Played as scroll events at 0, every frame.
+async function bounce(page, ms) {
+  return page.evaluate(ms => new Promise(res => {
+    const w = document.querySelector('.mx-wrap'); const t0 = performance.now()
+    const step = () => { w.scrollLeft = 0; w.dispatchEvent(new Event('scroll')); if (performance.now() - t0 < ms) requestAnimationFrame(step); else res(null) }
+    requestAnimationFrame(step)
+  }), ms)
+}
+
 async function measure(page, fn, ms = 9000) {
   const t0 = await page.evaluate(() => performance.now())
   const days0 = await page.evaluate(() => window.__drawnDays())
@@ -125,6 +144,8 @@ for (let r = 0; r < RUNS; r++) {
       let m
       if (sc === 'FLB') { await tapMonth(page, 11); await page.waitForTimeout(3500); m = await measure(page, () => fling(page, cdp, -11, 1300)) }
       else if (sc === 'FLF') { await tapMonth(page, 0); await page.waitForTimeout(3500); m = await measure(page, () => fling(page, cdp, 11, 1300)) }
+      else if (sc === 'FLBB') { await tapMonth(page, 11); await page.waitForTimeout(3500); m = await measure(page, async () => { await fling(page, cdp, -11, 1300); await bounce(page, 600) }) }
+      else if (sc === 'DB') { await tapMonth(page, 11); await page.waitForTimeout(3500); m = await measure(page, () => drag(page)) }
       else if (sc === 'LB') { await tapMonth(page, 11); await page.waitForTimeout(3500); m = await measure(page, () => fling(page, cdp, -2.5, 700)) }
       else if (sc === 'LF') { await tapMonth(page, 0); await page.waitForTimeout(3500); m = await measure(page, () => fling(page, cdp, 2.5, 700)) }
       const end = await page.evaluate(() => window.__onMonth())

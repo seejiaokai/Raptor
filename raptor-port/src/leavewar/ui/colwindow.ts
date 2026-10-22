@@ -112,13 +112,37 @@ export function stepToward(
  *  month and the swap moves nothing; an estimated width, or one measured while
  *  other rows showed, could be off by a few pixels and would hop the content
  *  under the finger, so that case waits for rest and the anchor correction. */
-export function stepAllowedInMotion(win: ColWin, next: ColWin, widthKnown: (month: number) => boolean): boolean {
+export function stepAllowedInMotion(
+  win: ColWin,
+  next: ColWin,
+  widthKnown: (month: number) => boolean,
+  absorbable: (month: number) => boolean = () => false,
+): boolean {
   const growsR = next.hi > win.hi
   const growsL = next.lo < win.lo
   if (!growsR && !growsL) return false
-  if (growsL && !widthKnown(next.lo)) return false
+  if (growsL && !widthKnown(next.lo) && !absorbable(next.lo)) return false
   return true
 }
+
+/* WHICH LEFT MONTH MAY BE DRAWN MID-FLING OVER AN ESTIMATED WIDTH (his video, 23 Oct 26: a fast fling from December back
+   to January left every month it passed striped, and January striped a second after it stopped — the rule above held
+   each one for rest). An estimate's error need not hop anything: the grid gives it to the LEFT placeholder, which stands
+   for months nobody can see (Matrix `padErrRef`), so every column from the new month rightward stays exactly where it
+   was. That needs a placeholder to give it to — any month but the war's first. The first month has none, so it is drawn
+   in motion only once the scroll has reached the war's very start: there the reader is looking at its stripe, and the
+   few pixels the months after it settle by are nothing beside a stripe that stays until the bounce ends. */
+export function leftGrowAbsorbable(month: number, scrollLeft: number, speed = 0): boolean {
+  if (month === 0) return scrollLeft <= 1
+  return speed <= DRAW_LEFT_MAX_SPEED
+}
+
+/** How fast the scroll may be moving (px a millisecond, the scroller's own px) for a month LEFT of the view to be drawn
+ *  over an estimate mid-scroll. A steady drag or a slowing fling is under it, and the month lands as the reader reaches
+ *  it. A fast fling is over it: there a month's draw (a long task on a phone) cannot keep up — eleven months in about a
+ *  second — and only made the fling's frames heavier (measured 23 Oct 26, CPU 4×: the months stayed striped about as
+ *  long, the longest frame half as long again), so it waits, as before, for the fling to slow or stop. */
+export const DRAW_LEFT_MAX_SPEED = 1.5
 
 /** The rolling target window for the phone (and for the small grid the desktop
  *  shrinks to while hidden): the visible months plus a runway — more AFTER than
