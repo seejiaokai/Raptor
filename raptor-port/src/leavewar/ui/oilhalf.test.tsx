@@ -140,4 +140,22 @@ describe('the OIL tracker', () => {
     fireEvent.click(screen.getByTestId('oil-edit-save'))
     expect(awardsOnDay(P, TUE)[0]).toMatchObject({ half: 'am', reason: 'Recall' })
   })
+
+  /* M4 (the scenario designer, 23 Oct 26): an FO turned 0.5 in the editor lights the default of the day it saves on — the
+     afternoon beside a morning leave (D1164) — and saving without a pick stores the half that was lit. The editor shows
+     the award's date read only (D260), so that day is its own. */
+  it('an FO turned 0.5 in the editor lights its day\'s free half, and saving unpicked stores the half lit', () => {
+    expect(setDayAward(P, TUE, 1, { note: 'Recall' })).toBeNull()
+    expect(setCell(P, TUE, '*LL')).toBe(true)
+    const id = awardsOnDay(P, TUE)[0]!.id
+    openTracker()
+    fireEvent.click(screen.getByTestId(`oil-entry-${id}`))
+    expect(screen.getByTestId('oil-edit-date').tagName).toBe('SPAN')     // the day is read, never changed (D260)
+    expect(screen.queryByTestId('oil-edit-half-am')).toBeNull()          // a whole day takes no half
+    fireEvent.change(screen.getByTestId('oil-edit-amt'), { target: { value: '0.5' } })
+    expect(pressed('oil-edit-half-pm')).toBe('true')
+    expect(pressed('oil-edit-half-am')).toBe('false')
+    fireEvent.click(screen.getByTestId('oil-edit-save'))
+    expect(awardsOnDay(P, TUE)[0]).toMatchObject({ amount: 0.5, half: 'pm' })
+  })
 })

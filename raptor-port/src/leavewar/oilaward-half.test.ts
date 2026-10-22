@@ -189,6 +189,23 @@ describe('the writers store the half', () => {
     expect(awardsOnDay(P, TUE)[0]!.half).toBe('pm')
   })
 
+  /* THE SCENARIO DESIGNER'S M4 (23 Oct 26): an FO turned HO in the OIL tracker's editor takes the default of the day it
+     is saved on, read from the edit's date. An award never changes its day (D260 — the store refuses it, and the editor
+     shows the date read only), so the turn and a date change in ONE edit are refused whole, nothing written; the turn
+     alone takes that day's free half — the afternoon beside a morning leave (D1164). */
+  it('an FO turned HO takes its own day\'s free half; with a date change in the same edit the whole edit is refused (D260)', () => {
+    expect(setDayAward(P, TUE, 1)).toBeNull()
+    const id = awardsOnDay(P, TUE)[0]!.id
+    expect(setCell(P, '2026-01-14', 'LL*')).toBe(true)          // an afternoon leave on the day it would move to
+    const before = rawState().ledger
+    expect(updateLedgerEntry(id, { amount: 0.5, date: '2026-01-14' })).toBe('An OIL award stays on its day — delete it and give it again on the right one')
+    expect(rawState().ledger).toBe(before)
+    expect(setCell(P, TUE, '*LL')).toBe(true)                    // a morning leave on its own day
+    expect(updateLedgerEntry(id, { amount: 0.5, date: TUE })).toBeNull()
+    expect(awardsOnDay(P, TUE)[0]).toMatchObject({ amount: 0.5, half: 'pm' })
+    expect(awardWin(P, TUE)).toEqual(PM)
+  })
+
   it('a no-op is a no-op: the same half sent again writes nothing (no undo step)', () => {
     setDayAward(P, TUE, 0.5, { half: 'pm' })
     const before = rawState().ledger

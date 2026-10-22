@@ -441,9 +441,10 @@ export function OilTracker({ person, onClose, onGranted }: {
           <div key={c.id} className={cls} data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}>
             <div className="oil-edit">
               <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
-              {/* half a day takes a half (D1164): the award's own, else the day's default until he picks */}
+              {/* half a day takes a half (D1164): the award's own, else the default of the day the edit saves to (`eDate`,
+                  the date the store reads the same default on — M4); an award's day never changes (D260), so it is its own */}
               {Number(eAmt) === 0.5 && (
-                <HalfPick testid="oil-edit-half" value={eHalf ?? defaultAwardHalf(p.id, c.date, c.ledgerId)} onPick={setEHalf} />
+                <HalfPick testid="oil-edit-half" value={eHalf ?? defaultAwardHalf(p.id, eDate, c.ledgerId)} onPick={setEHalf} />
               )}
               {/* AN AWARD'S DATE IS SHOWN, NEVER CHANGED (D260's reading — delete it and give it again on the right
                   day); the store refuses a changed date on an award too */}
