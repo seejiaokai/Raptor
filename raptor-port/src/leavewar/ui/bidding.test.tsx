@@ -277,10 +277,14 @@ describe('a bid that would go below zero asks once, then writes', () => {
     fireEvent.click(screen.getByTestId(`bid-${type}`))
     expect(getState().grid.dusk['2026-02-11']).toBe(type)
     expect(screen.queryByTestId('bid-picker')).toBeNull()
-    // The column has followed the write to the balance it came off, which now
-    // reads one day under, in the red a negative balance wears.
-    expect(screen.getByTestId('counter-name').textContent).toBe(title)
-    const fb = screen.getByTestId('bal-dusk').querySelector('.fb')!
+    // Re-expressed for D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the column no
+    // longer follows the write to the balance it came off; it stays +LVE. That balance is read where it now lives, in
+    // the person's window (a tap on his name) — one day under, in the red a negative balance wears.
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
+    fireEvent.click(screen.getByTestId('person-dusk'))
+    const row = screen.getByTestId(`pfig-${counter}`)
+    expect(row.querySelector('.cn')!.textContent).toBe(title.slice(1))
+    const fb = row.querySelector('.fb')!
     expect(fb.textContent).toBe('-1')
     expect(fb.className).toContain('neg')
   }
