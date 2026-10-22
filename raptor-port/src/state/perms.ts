@@ -792,7 +792,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         const parts = c.id.split(':')
         if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
         /* …and his Undo of such a delete puts back exactly what it took (the walk's find, 22 Oct 26: the Undo was refused):
-           a restore that only ADDS BACK pending bids of his — the same check, read the other way */
+           a restore that only ADDS BACK pending bids of his — the same check, read the other way. RULED NARROWER, D1263
+           (22 Oct 26, to build — [LW-REDO-ONTO-CLOSED]): only his Undo of a delete made on a day already closed may put a
+           bid back; a Redo, or the Undo of a delete made while the day was open, is refused. Today this lets both through. */
         const after = c.op === 'delete' ? [] : c.after
         if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after)
           && !(env.origin === 'restore' && onlyTakesPending(after, c.before))) {

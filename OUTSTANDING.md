@@ -113,7 +113,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
 - [LEAVE-YEAR] — yearly leave balances and carry-over — undecided ("we will do this next time").
 - [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
-- [LW-REDO-ONTO-CLOSED] — a member's Undo or Redo may put his pending bid back on a day closed since — a question for him before the database step.
+- [LW-REDO-ONTO-CLOSED] — to build before M1's merge live (D1263): a member's Redo, or Undo of an open-day delete, must not put his bid back on a day closed since.
 - [LW-M1-READ-LEFTOVERS] — four small things M1's code read found that are older than M1 or need two live sessions — check each with the database step.
 
 **Tracker**
@@ -1344,7 +1344,7 @@ blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the l
 root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
 
-### [LW-REDO-ONTO-CLOSED] A member's Undo or Redo may put his pending bid back on a day closed since (filed 22 Oct 26, M1)
+### [LW-REDO-ONTO-CLOSED] A member's Undo or Redo must not put his pending bid back on a day closed since — to build (filed 22 Oct 26, M1; ruled D1263)
 Found by M1's two code readers (Fable F2, Opus scenario 6), each blind to the other. A member bids on a day while it is open;
 the admin closes the day; the member presses Undo (his bid goes — he may take his own pending bid off a closed day, D1225)
 and then Redo — his bid is back on the closed day. The same with Undo of a delete he made while the day was open. The
@@ -1352,11 +1352,14 @@ commit's check lets a restore through when it only adds back pending bids of his
 `lw.cell` case — built for the walk's B-F1: his Undo of his own closed-day delete must put it back), and an Undo / Redo
 cannot tell "back" from "new". **Not reachable today in one browser:** the admin's closing sits on the one shared
 timeline above the member's step, so his Undo is refused there ("Switch back to the admin view…"); it becomes real with two
-people on one database. **The question for him (D994 — put to him when he says):** may a member's Redo (or Undo of an
-open-day delete) put a bid back on a day the admin has closed since? Recommended: no — only an Undo of a delete he made on
-the closed day itself puts the bid back (the timeline carries the direction and when the step was made). Pinned as built:
-`raptor-port/src/leavewar/opendates-store.test.ts` "a restore on a closed day passes only when…". **Place:** with the
-database step (D473), before two people can work at once.
+people on one database. **His answer, D1263 (22 Oct 26, "no"):** a member's Redo, or his Undo of a delete made while the day
+was open, never puts a bid back on a day closed since; only his Undo of a delete he made on the day already closed does.
+**Build:** the timeline carries the direction (undo / redo) on the restore envelope, and the forward step records whether
+the day was closed for him when it was made; `ownershipViolation` lets the add-back through only for an Undo of a
+closed-day delete; the two tests the readers described (Redo after a close; Undo of an open-day delete after a close),
+red first. Pinned as built today:
+`raptor-port/src/leavewar/opendates-store.test.ts` "a restore on a closed day passes only when…" (to change with the build).
+**Place:** before M1's merge live — small, in the next chat.
 
 ### [LW-M1-READ-LEFTOVERS] Four small things M1's code read found, older than M1 or needing two live sessions (filed 22 Oct 26)
 From M1's two blind code reads (the evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §13).

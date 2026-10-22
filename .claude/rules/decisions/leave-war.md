@@ -56,7 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1260 | 22 Oct 26 | Fable 5.1 reads the Leave War overhaul's M1 (open dates) finished code beside the fresh, blind Opus read — the two blind to each other, after the walk, each given the evidence sheet; the plan is not read again. |
+| D1263 | 22 Oct 26 | A member's Undo or Redo never puts a bid of his back on a Leave War day closed for him since, with one exception: his Undo of deleting his own pending bid on a day that was already closed when he deleted it. |
 | D1259 | 22 Oct 26 | The Leave War's events stay full Event rows on the grid, as built: not tags in the date heading (G3), not an Events fold (G3b), not an events lane; the events study is left for later and is not put to him again until he raises it. |
 | D1258 | 22 Oct 26 | On a phone the Leave War's Manning rows open folded for everyone, admins as well as members, remembered per person; a tap opens them, and a bid that turns a row amber or red still opens them with its bubble (D1227); on a desktop they open as today. |
 | D1257 | 22 Oct 26 | The Leave War grid's month band row over the dates goes: the lit month button and each month's first date ("JAN THU 01") name the month; the grid's Balances fold that sat in that row goes too (D1245). |

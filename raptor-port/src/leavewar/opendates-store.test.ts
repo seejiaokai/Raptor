@@ -208,7 +208,7 @@ describe('B8 — a member\'s bid on a closed day is refused at the commit, not o
 
   /* the break tests' gap 17b: B-F1 proves his Undo of a delete goes through; nothing proved a restore bringing anything
      ELSE onto a closed day is still refused. What passes: a restore that only adds back pending bids of his (B-F1 — and,
-     read the same way, his Redo of a bid made while the day was open: [LW-REDO-ONTO-CLOSED], a question for him). What
+     read the same way, his Redo of a bid made while the day was open — which D1263 rules OUT, to build: [LW-REDO-ONTO-CLOSED]). What
      does not: a restore that changes a bid, brings an approved or refused record, or takes someone else's. */
   it('a restore on a closed day passes only when it adds back his pending bids; a change or anything else is refused', () => {
     const restore = (before: WarRec[], after: WarRec[]): CommitEnvelope => ({ ...env('2026-06-10', before, after), origin: 'restore' } as CommitEnvelope)
