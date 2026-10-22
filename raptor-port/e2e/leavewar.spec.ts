@@ -3893,6 +3893,23 @@ test('a Required figure is typed straight into its cell: one box on a desktop, t
 // phone date's ONE button is big enough for a thumb; on a phone the window starts under the app's top bar (Undo stays
 // in reach) and runs to the foot of the screen; the Leave War's own Required row — the page BEHIND the window — changes
 // at the press, with the window still up; and on a desktop the grid behind still takes a click.
+// HIS PICTURE, 23 Oct 26 (D1270): on his iPhone the ⚙ Settings window dragged sideways. Its contents were 4px wider than
+// the window (the "Who wins" fold: full width plus a margin either side), and a phone lets any such window be dragged.
+// Nothing in it may be wider than the window — the fold closed and open, at a phone's width and a desktop's.
+test('the Settings window never scrolls sideways: nothing in it is wider than the window (D1270)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  await press(tid('settings-open'))
+  const sheet = tid('settings-sheet')
+  await expect(sheet).toBeVisible()
+  const spill = () => sheet.evaluate(el => el.scrollWidth - el.clientWidth)
+  expect(await spill(), 'the window with every fold closed').toBeLessThanOrEqual(0)
+  await press(sheet.locator('.set-disc'))
+  expect(await spill(), 'the window with "Who wins" open').toBeLessThanOrEqual(0)
+})
+
 test('Days opens from the Leave War’s settings: the month sets a date’s class, and the grid behind it follows at once', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')

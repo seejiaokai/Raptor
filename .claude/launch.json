@@ -799,6 +799,23 @@
         "--strictPort"
       ],
       "port": 4265
+    },
+    {
+      "name": "lw-m2-e2e",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-e2e",
+        "--port",
+        "4266",
+        "--strictPort"
+      ],
+      "port": 4266
     }
   ]
 }
