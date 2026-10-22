@@ -20,6 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-m2-looks -->
+### THE NIGHT OF 23 Oct 26 — `claude/lw-m2-looks`, the Leave War overhaul's M2 (how it looks), his /overnight 12 — written 23 Oct 26 at the start, verify before use
+- **After a compaction:** re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.
+- **His selection ("Ok go", 23 Oct 26, about 00:20 his time):** (1) **M2 — how it looks** (the build plan `raptor-port/docs/superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md`, batches 2, 3, 4, with the approval note's answers D1242–D1259 that fall in M2); (2) **the owed rulings read** — one fresh reader of the short lines D1231–D1255 and D1264–D1269 against their full rows, and of design lessons 31–40 and the §8 line (D138, D941). Nothing else. No questions were open; none asked.
+- **Branch:** `claude/lw-m2-looks`, cut from `claude/lw-m1-open-dates` at its head `4a827bb11` (M1 unmerged when cut; its own chat merges it, pull request 566 — never touched from here). **Once M1 is on `main`:** merge `origin/main` into this branch before running its checks; only then open M2's pull request against `main` — never against M1's branch. If M1 is still unmerged at the morning report: no pull request; the morning report offers one.
+- **Check:** FULL (the plan §4 — the OIL award's half is saved data): rules sweep, a scenario designer other than the builder (a fresh Opus, D790), the roll-call, the door check, the walk sized by the walk ledger (wide: member and admin, phone and desktop) by Sonnet 5.5 walkers with pictures, break tests, the tests of what changed on his PC under the lock, one fresh, blind Opus read of the finished code (D903 — no Fable; D1260 was M1's alone and is spent), fixes, re-walk, evidence sheet `raptor-port/docs/handpass/2026-10-23-lw-m2-looks.md` with its `Walk:` line. The speed measured before and after (performance.md §E — the cell's memo and node band). Rough time: 8–10 hours.
+- **Job 2:** documents only; about 30 minutes, run by a helper beside the build.
+- **Questions waiting for him:** none yet.
+- **GitHub was degraded on the night of 22–23 Oct 26:** a stalled run is not a fault of the code.
+<!-- /now -->
 <!-- now:claude/lw-m1-open-dates -->
 ### `claude/lw-m1-open-dates` — the Leave War overhaul's M1, open dates (D1250's plan, batch 1), with D1263 and his look's fixes built: awaiting his look and "merge live", written 23 Oct 26 — verify before use
 - **Where it started:** M1 built, walked, read and fixed in the chat before (evidence sheet §1–§14). This chat: pushed its last commits, built D1263 (§15), then took his look on his iPhone (22–23 Oct 26, §16).
