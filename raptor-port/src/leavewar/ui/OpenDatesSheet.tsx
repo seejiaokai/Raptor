@@ -43,6 +43,12 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
   const open: OpenStretch[] = admin ? period.open : openFrom(period, memberToday())
   const shown = { open }
   const months = periodMonths(period)
+  /* A MONTH WHOLLY BEFORE TODAY IS PAST (owner D1265, D1268, 23 Oct 26 — "1 yes" to the drawing): dimmed with the grid's
+     small padlock and not pressable, for the admin too; a drag passes over it. Opening a past day changes nothing for
+     anyone — a member never bids before today (D1211) and the admin bids there without opening it. Today as the member's
+     (D1211's), so the day clock (D1266) moves it at midnight. */
+  const today = memberToday()
+  const isPast = (ix: number) => { const m = months[ix]; return !!m && m.to < today }
   const [editing, setEditing] = useState<OpenStretch | 'new' | null>(null)
   const [problem, setProblem] = useState('')
   const say = (r: OpenResult) => {
@@ -81,7 +87,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
        click to the strip (the two buttons' common parent), and a finger that moved sends none, so the flag set below
        stayed up and ate the next real tap. The click a drag leaves, if any, always comes before the next press. */
     swallowClick.current = false
-    if (!admin || e.button !== 0) return
+    if (!admin || e.button !== 0 || isPast(ix)) return
     const closing = monthState(shown, months[ix]!) === 'open'
     const touch = e.pointerType === 'touch'
     const d = { start: ix, cur: ix, closing, armed: !touch, moved: false, x: e.clientX, y: e.clientY, timer: null as number | null }
@@ -111,7 +117,9 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     if (!d) return
     if (d.moved) {
       const s = monthSpan(months, d.start, d.cur)
-      if (s) say(d.closing ? closeDates(s.from, s.to) : openDates(s.from, s.to))
+      /* the past months a drag passed over stay as they are (D1268): the span starts at today */
+      const from = s && s.from < today ? today : s?.from
+      if (s && from && from <= s.to) say(d.closing ? closeDates(from, s.to) : openDates(from, s.to))
       swallowClick.current = true          // the click that follows a drag is not a tap
     }
     endDrag()
@@ -120,9 +128,10 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
   onUpRef.current = onUp
   const tap = (ix: number) => {
     if (swallowClick.current) { swallowClick.current = false; return }
-    if (!admin) return
+    if (!admin || isPast(ix)) return
     const m = months[ix]!
-    say(monthState(shown, m) === 'open' ? closeDates(m.from, m.to) : openDates(m.from, m.to))
+    /* a month part past opens from today, as a drag across it does (D1268): the days before today change nothing */
+    say(monthState(shown, m) === 'open' ? closeDates(m.from, m.to) : openDates(m.from < today ? today : m.from, m.to))
   }
 
   /* ---- the calendar for exact days ----
@@ -197,13 +206,13 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
             <button
               key={m.key}
               type="button"
-              className={`od-m ${st}${inSpan ? (span!.closing ? ' sweep-close' : ' sweep-open') : ''}`}
+              className={`od-m ${st}${isPast(i) ? ' past' : ''}${inSpan && !isPast(i) ? (span!.closing ? ' sweep-close' : ' sweep-open') : ''}`}
               data-month-ix={i}
               data-testid={`od-month-${m.key}`}
               data-state={st}
-              disabled={!admin}
+              disabled={!admin || isPast(i)}
               aria-pressed={st === 'open'}
-              aria-label={`${word} — ${st === 'open' ? 'open' : st === 'part' ? 'open in part' : 'closed'}`}
+              aria-label={`${word} — ${isPast(i) ? 'past' : st === 'open' ? 'open' : st === 'part' ? 'open in part' : 'closed'}`}
               onPointerDown={e => onDown(e, i)}
               onClick={() => tap(i)}
             >
@@ -226,19 +235,22 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
         {open.map(s => {
           const key = `${s.from}|${s.to}`
           const isEditing = editing !== null && editing !== 'new' && editing.from === s.from && editing.to === s.to
+          /* a stretch wholly before today reads "past" in place of its day count (D1268) */
+          const past = s.to < today
+          const days = past ? 'past' : `${stretchDays(s)} days`
           return (
             <div key={key} className="od-line-wrap">
-              <div className="od-line" data-testid={`od-line-${s.from}`}>
+              <div className={`od-line${past ? ' past' : ''}`} data-testid={`od-line-${s.from}`}>
                 {admin ? (
                   <button type="button" className="od-line-go" onClick={() => startEdit(isEditing ? null : s)}
-                    aria-expanded={isEditing} aria-label={`${stretchLabel(s)}, ${stretchDays(s)} days — change its days`}>
+                    aria-expanded={isEditing} aria-label={`${stretchLabel(s)}, ${days} — change its days`}>
                     <span className="od-span">{stretchLabel(s)}</span>
-                    <span className="od-days">{stretchDays(s)} days</span>
+                    <span className="od-days">{days}</span>
                   </button>
                 ) : (
                   <span className="od-line-go ro">
                     <span className="od-span">{stretchLabel(s)}</span>
-                    <span className="od-days">{stretchDays(s)} days</span>
+                    <span className="od-days">{days}</span>
                   </span>
                 )}
                 {admin && (

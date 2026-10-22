@@ -428,3 +428,36 @@ describe('the grid shows which days are open', () => {
     expect(screen.getByTestId('closed-note')).toBeTruthy()
   })
 })
+
+/* D1265, D1268 (owner, 23 Oct 26 — "1 yes" to the drawing): a month wholly before today is past — dimmed with the grid's
+   padlock and not pressable, for the admin too; a stretch wholly past reads "past"; the admin's chip counts from today. */
+describe('past months in the window (D1268)', () => {
+  afterEach(() => { setMemberTodayForTests('2000-01-01') })
+  it('on 1 Apr the seed\'s Jan–Mar is past: its months locked and not pressable, its stretch reads "past", the chip "Bidding closed"', () => {
+    setMemberTodayForTests('2026-04-01')
+    setRole('admin'); setViewer(null)
+    openWindow()
+    for (const k of ['2026-01', '2026-02', '2026-03']) {
+      expect(month(k).classList.contains('past')).toBe(true)
+      expect((month(k) as HTMLButtonElement).disabled).toBe(true)
+    }
+    expect(month('2026-04').classList.contains('past')).toBe(false)
+    expect((month('2026-04') as HTMLButtonElement).disabled).toBe(false)
+    expect(line('2026-01-01').textContent).toContain('past')
+    expect(line('2026-01-01').classList.contains('past')).toBe(true)
+    /* a tap on a past month does nothing */
+    fireEvent.click(month('2026-02'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
+  })
+  it('a month part past is not past: a tap opens it from today; a month ahead from its first day', () => {
+    setMemberTodayForTests('2026-04-15')
+    setRole('admin'); setViewer(null)
+    openWindow()
+    expect(month('2026-04').classList.contains('past')).toBe(false)
+    fireEvent.click(month('2026-04'))
+    expect(getState().period.open.some(s => s.from === '2026-04-15' && s.to === '2026-04-30')).toBe(true)
+    fireEvent.click(month('2026-06'))
+    expect(getState().period.open.some(s => s.from === '2026-06-01')).toBe(true)
+  })
+})

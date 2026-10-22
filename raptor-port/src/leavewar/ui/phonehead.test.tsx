@@ -110,8 +110,9 @@ describe('on a phone — the open dates line (D678; the stage chip went with the
     expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
   })
 
-  // D1211: a member never bids before today, so his chip reads the open dates from HIS today — the admin's all of them.
-  it('a member\'s chip reads from his today; past every stretch, "Bidding closed" — the admin\'s still the whole stretch', () => {
+  // D1211: a member never bids before today, so his chip reads the open dates from HIS today — and since D1268 (23 Oct 26)
+  // the admin's reads from today too: open dates no member can use a day of say "Bidding closed" to him as well.
+  it('the chip reads from today for a member and the admin alike; past every stretch, "Bidding closed" for both (D1268)', () => {
     setMemberTodayForTests('2026-02-10')
     act(() => setRole('member'))
     render(<StageBar />)
@@ -121,7 +122,7 @@ describe('on a phone — the open dates line (D678; the stage chip went with the
     act(() => setRole('member'))
     expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
     act(() => setRole('admin'))
-    expect(screen.getByTestId('open-chip').textContent).toBe('Open 1 Jan – 31 Mar')
+    expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
   })
 
   it('under-manned reads "Under 4 days" — the same count the desktop shows, with the one word that says what it counts', () => {

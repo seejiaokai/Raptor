@@ -216,7 +216,9 @@ export function StageBar() {
      rest ("+1"); with none it reads "Bidding closed". One chip, a button for everyone: an admin's tap opens the "Open
      for bidding" window to change them, a member's opens it to read them — and, with nothing open, the last open stretch
      and who closed it. */
-  const openNow = role === 'admin' ? period.open : openFrom(period, memberToday())
+  /* what is open FROM TODAY, for the admin as for a member (D1268, 23 Oct 26): an admin whose only open dates are past reads
+     "Bidding closed" here, as every member does, not "Open 1 Mar – 31 May" that no member can use a day of */
+  const openNow = openFrom(period, memberToday())
 
   // Where the list hangs. Measured, because the strip wraps: the chip is in a
   // different place on a phone than on a desktop, and a list anchored to its

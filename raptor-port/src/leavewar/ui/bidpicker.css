@@ -1444,6 +1444,15 @@
   color: var(--ink-3);
   border-style: dashed;
 }
+/* A PAST MONTH (owner D1265, D1268, 23 Oct 26): the grid's own look for a closed date — half strength and the same small
+   padlock (matrix.css `.mx .mxhead th.locked`, `th.day.locked::after`) — so "closed, and nothing to open" reads alike
+   in both places; not pressable. A stretch wholly past is dimmed the same way. */
+.bidsheet .od-m.past { opacity: .45; position: relative; }
+.bidsheet .od-m.past::after {
+  content: ''; position: absolute; top: 4px; right: 5px; width: 8px; height: 9px; pointer-events: none;
+  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M3.5 7V5a3.5 3.5 0 0 1 7 0v2' fill='none' stroke='%23AEB7C2' stroke-width='1.8'/%3E%3Crect x='1' y='7' width='12' height='8.5' rx='1.6' fill='%23AEB7C2'/%3E%3C/svg%3E");
+}
+.bidsheet .od-line.past { opacity: .45; }
 .bidsheet .od-m:disabled {
   cursor: default;
 }

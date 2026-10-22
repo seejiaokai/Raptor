@@ -714,6 +714,40 @@
         "--strictPort"
       ],
       "port": 4255
+    },
+    {
+      "name": "lwperf-before",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor--claude-worktrees-leave-war-events-design-28fa1a/9e8108cd-e7f7-40c8-a051-6cd0a2b07414/scratchpad/perf/dist-m1",
+        "--port",
+        "4257",
+        "--strictPort"
+      ],
+      "port": 4257
+    },
+    {
+      "name": "lwperf-after",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor--claude-worktrees-leave-war-events-design-28fa1a/9e8108cd-e7f7-40c8-a051-6cd0a2b07414/scratchpad/perf/dist-fix",
+        "--port",
+        "4258",
+        "--strictPort"
+      ],
+      "port": 4258
     }
   ]
 }
