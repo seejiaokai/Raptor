@@ -1366,6 +1366,30 @@
 
 }
 
+/* A FULL PAGE FROM THE TOP, ON A PHONE (owner D1264, 23 Oct 26 — "at the top full page … so that when the dates below jumps
+   it doesn't affect the user to chase the buttons"; Sheet.tsx `page`). The floating sheet is docked at the foot and grows
+   upward, so the "Open for bidding" window's month buttons rose each time a stretch line was added. Here it fills the
+   screen from the top, as the OIL tracker's sheet does on a phone, and grows down: the title and the months stay put. It
+   still scrolls itself (a long list of stretches), its header stuck to the top; no drag offset — it has nowhere to go. */
+#page-leavewar .bidsheet.fullpage {
+  /* (the four edges written out, and the page id named: outside the file's #page-leavewar wrapper, a bare class loses to the wrapper's own .bidsheet; `.page` is the app's own hidden page, so the class is `fullpage`) */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  max-height: none;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: max(10px, env(safe-area-inset-top, 0px)) 12px max(16px, env(safe-area-inset-bottom, 0px));
+}
+/* not movable: no grip, no move cursor, and a finger on the title may scroll the page's own list */
+#page-leavewar .bidsheet.fullpage .bidsheet-hd { cursor: default; touch-action: auto; }
+#page-leavewar .bidsheet.fullpage .bidsheet-hd::before { content: none; }
+
+
 /* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------
    The month buttons: one row of twelve on a desktop, two rows of six on a phone, each a finger's size there. Lit in
    the open-bidding green the chip and the grid's outline use (the app's one "open" green — not a new colour); a month

@@ -172,7 +172,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
   const closedBy = last ? people.find(p => p.id === last.by)?.callsign ?? '' : ''
 
   return (
-    <Sheet testid="open-dates" label="Open for bidding" onClose={onClose}>
+    <Sheet testid="open-dates" label="Open for bidding" onClose={onClose} page>
       <div className="bidsheet-hd">
         <span className="who">Open for bidding</span>
         <span className="dt">{period.name}</span>

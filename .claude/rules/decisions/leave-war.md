@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1264 | 23 Oct 26 | On a phone the Leave War's "Open for bidding" window opens as a full page from the top of the screen, its month buttons at the top, so they stay in one place however the list of open stretches below them grows or shrinks. |
 | D1263 | 22 Oct 26 | A member's Undo or Redo never puts a bid of his back on a Leave War day closed for him since, with one exception: his Undo of deleting his own pending bid on a day that was already closed when he deleted it. |
 | D1259 | 22 Oct 26 | The Leave War's events stay full Event rows on the grid, as built: not tags in the date heading (G3), not an Events fold (G3b), not an events lane; the events study is left for later and is not put to him again until he raises it. |
 | D1258 | 22 Oct 26 | On a phone the Leave War's Manning rows open folded for everyone, admins as well as members, remembered per person; a tap opens them, and a bid that turns a row amber or red still opens them with its bubble (D1227); on a desktop they open as today. |
