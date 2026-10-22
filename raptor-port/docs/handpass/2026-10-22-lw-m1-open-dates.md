@@ -373,8 +373,8 @@ grid back to the landing day even where he had scrolled (a finger scroll and the
 day clock's ask is now quiet: the mark moves, the view stays (`focusQuiet`). **F3 (low) — fixed:** a phone turned past the
 full page's width kept a dead grip — the drag re-arms with its form, its offset cleared. Tests red first for F1 and F2.
 Re-walked: `lw-d1268-walk.mjs`, `lw-d1264-walk.mjs` (`d1264-r/`, the clock held at 15 Feb), all PASS. Leave War unit 3078 /
-3078; build clean. **Put to him, not built:** an admin's green outline on the grid still marks past open dates while his chip
-reads "Bidding closed" — D1268 ruled the chip and the window only.
+3078; build clean. **Put to him, then built (D1269, his "Yes"):** the admin's green outline marks only the open days from today, as a
+member's does — walked (`lw-d1269-walk.mjs`, `d1269/`): clock 15 Feb, one outline from 15 Feb; clock 15 Apr, none.
 
 **Walk:** §16 · ~20 pictures (`d1264/`, `d1264-r/`, `d1268/`, `docs/img/mock/lw-d1265/`) · 3 surfaces (the "Open for bidding"
 window, the chip, the grid's month window) · the host alone, phone 390 by finger and desktop 1440 · MISSING: 5 fixed from his

@@ -2660,7 +2660,9 @@ export function Matrix() {
     const wrap = wrapRef.current, head = headRef.current
     if (!wrap || !head) return
     const none = () => setBidBoxes(prev => (prev.length ? [] : prev))
-    const stretches = role === 'admin' ? period.open : openFrom(period, memberToday())
+    /* only the open days from today, for the admin as for a member (owner D1269, 23 Oct 26 — D1268's rule on the grid):
+       a stretch wholly past has no outline; the window still lists it, reading "past" */
+    const stretches = openFrom(period, memberToday())
     if (stretches.length === 0 || drawnDates.length === 0) return none()
     // Only the drawn part is measurable. A bound outside the window cuts that
     // side of its box (matrix.css .cut-l / .cut-r) — no false edge at the seam.

@@ -56,7 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1268 | 23 Oct 26 | In the "Open for bidding" window a month wholly before today is dimmed with the grid's small padlock and cannot be pressed, for the admin as for everyone; a stretch wholly past reads "past" in place of its day count; and the admin's chip counts from today, as a member's does, reading "Bidding closed" when only past dates are open. |
+| D1269 | 23 Oct 26 | On the Leave War grid the green open-bidding outline marks only the open days from today, for the admin as for a member: a stretch wholly past has no outline, and one that began before today is outlined from today; the "Open for bidding" window still lists a past stretch, reading "past". |
+| D1268 | 23 Oct 26 | In the "Open for bidding" window a month wholly before today is dimmed with the grid's small padlock and cannot be pressed, for the admin as for everyone; a stretch wholly past reads "past" in place of its day count; and the admin's chip counts from today, as a member's does, reading "Bidding closed" when only past dates are open. — changed by D1269 |
 | D1267 | 23 Oct 26 | A member's closed days are dimmed with a small lock on their date only while some dates are open for him; with nothing open for him his grid draws as normal and the chip reads "Bidding closed". |
 | D1266 | 23 Oct 26 | The Leave War's today moves at midnight with the page left open: the today ring, a member's dimmed and locked days, his open outline and his chip all follow the new day together, before M1's merge live, not left for the next batch. |
 | D1265 | 23 Oct 26 | The admin is shown which open dates are already past for members: in the "Open for bidding" window a month wholly before today is locked and cannot be pressed, a stretch wholly past reads "past", and his chip counts from today (D1268). — changed by D1268 |
