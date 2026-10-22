@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1255 | 22 Oct 26 | On the balances page OIL is read only: its figure with "›" opens that person's OIL tracker; an opening OIL balance from an old system is given once in the OIL tracker as an award, "Opening balance from the old system", so every day of OIL has its record. |
 | D1254 | 22 Oct 26 | The Leave War's navigation is built as drawn in round 19: one tab row as the Inputs page's — Grid · Approvals · Balances · OIL for an admin, Grid · Balances · OIL for a member — with ⚙ at its right end; then View, the period picker and My leave; then the grid's own bar, Manning at its left. |
 | D1253 | 22 Oct 26 | A pending CCL, FCL, PL, EL or CL shows in its small tile as drawn in round 20d: the box with his App bal, then "Pending −1" and "War bal 2" as a little list, words left and figures right, only the pending figure amber; the two lines show only while something is pending. |
 | D1252 | 22 Oct 26 | In the person window's balance tiles the tiles sit close under the "Balances" heading; a small tile's two lines under its box read as a list — "Pending" and "War bal" on the left, their figures lined up on the right — and the word "Pending" is grey like every other label, only its figure amber. |
