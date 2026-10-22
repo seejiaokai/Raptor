@@ -228,12 +228,14 @@ describe('the colour/mark legend', () => {
 describe('the viewer badge (owner, 28 Aug 26)', () => {
   // The whole page answers for the viewing person; the badge says so out loud,
   // at the top, so nobody wonders whose numbers the counter column shows.
-  it('names whose page this is, prominently, when a viewer is set', () => {
+  /* The "Viewing as" chip goes (D1173, 21 Oct 26): the person signed in knows who he is, and My leave (D1141) carries
+     his own figures — so a viewer set shows My leave, never the chip. */
+  it('shows My leave for the person signed in, and no "Viewing as" chip (D1173, D1141)', () => {
     act(() => setViewer('ramp'))
     render(<Topbar />)
-    const chip = screen.getByTestId('lw-viewing')
-    expect(chip.textContent).toContain('Viewing as')
-    expect(chip.textContent).toContain('RAMP')
+    expect(screen.queryByTestId('lw-viewing')).toBeNull()
+    expect(screen.getByTestId('my-leave').textContent).toContain('My leave')
+    expect(screen.getByTestId('my-leave-lve').textContent).toMatch(/^LVE -?\d+(\.5)?$/)
   })
 
   // Nobody in the roster being viewed → no "you" to name, so the badge is
@@ -251,10 +253,11 @@ describe('the leave war picker', () => {
     // "JAN - DEC 26" on its own does not say it is the period being bid for,
     // and the picker is the first thing on the screen. The stage strip below
     // labels every one of its chips this way; this one was the odd one out.
-    expect(screen.getByTestId('period-label').textContent).toBe('Period')
+    /* the word is "View" since D1174 ("View JAN – DEC 26"), on a desktop and a phone alike */
+    expect(screen.getByTestId('period-label').textContent).toBe('View')
     // The label has to name the control for a screen reader too, not just
     // sit beside it — `aria-label` was carrying a different word entirely.
-    expect(screen.getByTestId('war-picker').getAttribute('aria-label')).toContain('Period')
+    expect(screen.getByTestId('war-picker').getAttribute('aria-label')).toContain('View')
   })
 })
 

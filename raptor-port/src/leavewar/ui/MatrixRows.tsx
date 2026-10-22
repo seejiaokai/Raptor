@@ -444,7 +444,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         const two = entries.length === 2 ? pairPlaces(portion, entries[1]!) : null
         const where = two ? two[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
         const wide = text.replace('*', '').length > 2 ? ' wide' : ''
-        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}` : ''
+        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
         const portionClass = ''
         const second = two ? entries[1]! : null
         /* with the day's two entries both drawn (D1146), "+1" has nothing more to say; the amber "!" stays */

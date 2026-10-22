@@ -24,7 +24,7 @@ function LegBox({ code, text, fill = 'a', place = 'whole', mark }: { code: strin
   const t = text ?? boxText(code)
   return (
     <span className="leg-box">
-      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.length > 2 ? ' wide' : ''}${mark ? ` ${mark}` : ''}`}>{t}</span>
+      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.replace('*', '').length > 2 ? ' wide' : ''}${mark ? ` ${mark}` : ''}`}>{t}</span>
     </span>
   )
 }
