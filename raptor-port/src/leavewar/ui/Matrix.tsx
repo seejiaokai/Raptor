@@ -1335,8 +1335,9 @@ export function Matrix() {
   useEffect(() => {
     if (!bubble) return
     const off = () => setBubble(null)
-    const t = window.setTimeout(() => document.addEventListener('pointerdown', off, { once: true }), 0)
-    return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', off) }
+    /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) */
+    const t = window.setTimeout(() => { document.addEventListener('pointerdown', off, { once: true }); document.addEventListener('keydown', off, { once: true }) }, 0)
+    return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', off); document.removeEventListener('keydown', off) }
   }, [bubble])
   const viewerNow = getState().viewer
   const seenViewer = useRef(viewerNow)
@@ -3324,7 +3325,7 @@ export function Matrix() {
         <div className="card-hd">
           {bubble && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble}</div>}
           <StageBar
-            manningOpen={countsOpen}
+            manningOpen={countsOpen || (arranging && role === 'admin')}
             onManning={toggleManning}
             extra={
               <>

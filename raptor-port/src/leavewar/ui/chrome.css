@@ -1013,6 +1013,9 @@
     min-width: 0;
   }
   .lw-spring { flex: 1 1 auto; }
+  /* a long period name is cut with "…" rather than pushing My leave off the row (walker 3, scenario 36: a 47-letter name
+     made a phone's page scroll sideways; the full name is in the list) */
+  .lw-view .warpick { max-width: 320px; text-overflow: ellipsis; }
   .lw-gear {
     display: inline-flex;
     align-items: center;
@@ -1125,7 +1128,7 @@
     }
     /* the picker keeps its whole name ("JAN - DEC 26", as drawn); My leave takes what is left */
     .lw-viewline .lw-view { flex: 0 0 auto; }
-    .lw-viewline .warpick { max-width: none; }
+    .lw-viewline .warpick { max-width: 44vw; }
     .lw-viewline .myleave {
       position: relative;
       flex: 1 1 auto;

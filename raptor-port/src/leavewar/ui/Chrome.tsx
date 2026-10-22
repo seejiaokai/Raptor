@@ -135,8 +135,10 @@ export function Topbar() {
     const by = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
     if (!by) return
     e.preventDefault()
-    const to = tabs[(i + by + tabs.length) % tabs.length]!
-    to[2]()
+    const j = (i + by + tabs.length) % tabs.length
+    tabs[j]![2]()
+    /* the keyboard goes with the tab it chose (walker 3, scenario 38 — as the Inputs page's tab row does) */
+    ;(e.currentTarget.parentElement?.children[j] as HTMLElement | undefined)?.focus()
   }
   const tabRow = (
     <div className="inputs-tabs lw-tabs" role="tablist" aria-label="Leave War">
