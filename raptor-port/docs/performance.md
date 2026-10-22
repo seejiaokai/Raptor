@@ -246,6 +246,8 @@ Grouped by area. Each is the short rule; the source has the full story.
   hover affordance on the dense surfaces is a per-crossing cost; measure it.
 
 ### E. Leave War (the heavy grid — ~28k nodes)
+
+**The runway at the war's end (23 Oct 26, M1 — his look: fast scrolling showed the stripes).** Measured paired with main (`scripts/handpass/lw-m1-scroll-perf.mjs`, phone 390, CPU 4x): no month draws slower on M1; the page now lands on today, and from late in the year a swipe back met months never drawn — striped until the scroll stops (`stepAllowedInMotion`: a month left of the view with an unknown width is never drawn in motion). `colwindow.ts rollingTarget` now lends the runway the war's end cuts off to the months behind — never more months than mid-year draws; the war's start unchanged. A swipe back from October: striped 1004 ms → 0, its long tasks 845 → 0 ms; forward swipes and month taps unchanged.
 - **Kept alive between visits, not unmounted** — leaving hides it with
   `content-visibility:hidden` (re-shows in 1–2 ms vs a 411–863 ms relayout from
   display:none). Only Leave War gets this.

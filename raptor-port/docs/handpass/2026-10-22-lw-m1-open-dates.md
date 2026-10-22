@@ -351,3 +351,16 @@ the shared undo, permission, undo-wiring and store tests 360 / 360; `npm run bui
 **Walk:** this section · 27 pictures (`d1263/`, `d1263-r/`, `d1263-r2/`) · 1 surface (the Leave War grid's Undo and Redo, the
 member's) · the host alone, phone 390 by finger · MISSING: 2 fixed (the refusal's words; F1 / R1 the jam), 1 comment fixed
 (F2), 1 filed ([LW-UNDO-BLOCK-REOPEN])
+
+## 16. His look at the preview on his iPhone (22–23 Oct 26) — what he found, and what was done
+
+| He saw | What it was | Done |
+|---|---|---|
+| A member's closed days showed no lock (nothing open) | as built: the dim and lock show only while some dates are open for him — the look page's caption had left that out | ruled as is, **D1267** |
+| The Settings window let a finger scroll the page behind | older than M1: the war's windows relied on `overscroll-behavior`, which an iPhone ignores where a list fits or is at its end (**D686**) | `Sheet.tsx` takes the app's guard (`ui/floatwin.ts holdPageScroll`) on its panel; the background still scrolls the grid (his 28 Aug 26 ruling). Test red first (`sheet-holdscroll.test.tsx`); not reproducible in the build PC's browser — his phone is the check |
+| Fast scrolling between months showed the stripes, "loads slowly" | measured paired with main (`lw-m1-scroll-perf.mjs`): no month draws slower; the page lands on today, and a swipe back from late October met months never drawn | `colwindow.ts rollingTarget` draws the cut-off runway behind: striped 1004 ms → 0 (performance.md §E). Test red first |
+| "Open for bidding" grew upward, so its month buttons moved | M1's window, docked at the foot | **D1264**: a full page from the top on a phone (`Sheet` `page`, `.bidsheet.fullpage`); walked: the buttons' top 55 in six states. Lesson 40 |
+| Opened Mar–May as admin; the member saw it closed | as built (D1211: a member never bids before today, 23 Oct); but the admin had no warning | **D1265 / D1268**: past months locked and not pressable, a past stretch reads "past", the admin's chip counts from today; drawn first (`lw-d1265-mock.mjs`), walked (`lw-d1268-walk.mjs`) |
+| The landing box stayed on 22 Oct after midnight | the page opened before midnight; a member's dim and outline stay a day behind too ([LW-M1-READ-LEFTOVERS] item 3) | **D1266**: `ui/dayclock.ts` + `store.ts dayTurned`. Tests (`dayclock.test.ts`, 5) |
+
+Gates: Leave War unit 3077 / 3077 (window tests 32 / 32 after the tap's clip); build clean; GitHub's run on the pushed head — see the handoff.

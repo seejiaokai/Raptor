@@ -1361,7 +1361,7 @@ on the other man's war row inside the member's command, and the commit refuses "
 filing fails. Older than M1 (the check is the same on any day), more often met now that Inputs-page filing is the way on a
 closed day. Check in the running app first; if it fails, let a notice the clash rule writes for another man ride a member's
 own filing. (2) **The "This replaces your LL bid…" note is raised before the commit's check**, so a filing the check refuses
-still shows it (Opus H1 step 4) — say it only once the command lands. (3) **Midnight with the page open:** a member's dim,
+still shows it (Opus H1 step 4) — say it only once the command lands. (3) **— BUILT 23 Oct 26 on M1 (D1266, his word): `leavewar/ui/dayclock.ts`.** **Midnight with the page open:** a member's dim,
 lock, outline and chip read his today when the store last changed, so they stay a day behind until the next change (Fable
 scenario 7, Opus 10) — re-read today on the page's next show or a timer at midnight. (4) **A member's Move refused on a
 closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
