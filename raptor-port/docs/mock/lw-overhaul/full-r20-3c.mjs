@@ -2,6 +2,7 @@
 // person window's balance tiles (round 18, approved D1241; halves now .5 — D1246). Sample: CCL App bal 3, one day pending.
 //   r20-3c-a   A (recommended): one figure, his App bal in its box, and the small line "1 pending"
 //   r20-3c-b   B: three figures, as LVE has: App bal · Pending · War bal (the tile takes three columns; the row wraps)
+//   r20-3c-c   his 3c (22 Oct 26): A stacked, every kind filled — the box, "1 pending" (amber), "War bal 2"; pending amber everywhere, LVE's too (D1251)
 //   cd raptor-port ; LWMOCK_OUT=<scratch> node docs/mock/lw-overhaul/full-r20-3c.mjs
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
@@ -30,6 +31,11 @@ const CSS = R14CSS + `
 .bidsheet .r17-t.r2 .s{grid-row:3}
 .bidsheet .r17-t .s .pd{color:#F2C879}
 .bidsheet .r17-ccl3{grid-column:span 3}
+.bidsheet .r17-sum .v.pd{color:#F2C879}
+.bidsheet .r17-t.r2.st{grid-template-rows:22px 30px 14px 14px;row-gap:4px}
+.bidsheet .r17-t .s.pd{color:#F2C879;font-size:10.5px}
+.bidsheet .r17-t .s2{grid-row:4;align-self:center;font:600 10.5px/1 system-ui;color:#8a96a3;white-space:nowrap}
+.bidsheet .r17-t .s2 b{color:#fff;font-weight:800;font-size:12.5px}
 .bidsheet .r17-t .k{grid-row:1;display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0}
 .bidsheet .r17-t .tk{font:600 11px/1 system-ui;color:#8a96a3;white-space:nowrap}
 .bidsheet .r17-t .f{grid-row:3;display:flex;align-items:center;gap:5px;font:700 20px/1 system-ui;font-variant-numeric:tabular-nums;color:#f1f4f7}
@@ -56,12 +62,16 @@ const box = (v, o = {}) => `<span class="r17-box${o.sm ? ' sm' : ''}${o.ro ? ' r
 const kbx = k => k === 'LVE' ? PR.kb('LL').replace('<b>LL</b>', '<b>LVE</b>') : PR.kb(k)
 const lve = ro => `<div class="r17-t r17-lve" data-zk="lve"><span class="k">${kbx('LVE')}<span class="tk" data-zk="taken">3 taken</span></span>` +
   `<div class="r17-sum" data-zk="sum"><span class="h" style="grid-column:1">App bal</span><span class="h" style="grid-column:2">Pending</span><span class="h" style="grid-column:3">War bal</span>` +
-  `<span class="v" style="grid-column:1">${box('17', { ro, zk: 'app' })}</span><span class="v" style="grid-column:2">−2.5</span><span class="v war" style="grid-column:3" data-zk="war">14.5</span></div>` +
+  `<span class="v" style="grid-column:1">${box('17', { ro, zk: 'app' })}</span><span class="v pd" style="grid-column:2">−2.5</span><span class="v war" style="grid-column:3" data-zk="war">14.5</span></div>` +
   `<span class="r17-cf" data-zk="cf">incl. ${box('4', { ro, sm: 1, zk: 'cfbox' })} carried fwd · till 31 Dec</span></div>`
 const tile = (k, v, o = {}) => `<div class="r17-t${o.r2 ? ' r2' : ''}${o.hs ? ' hs' : ''}" data-zk="${k}"><span class="k">${kbx(k)}</span>` +
   `<span class="f${!o.box && v === '0' ? ' z' : ''}">${o.box ? box(v, { ro: o.ro }) : v}${o.go ? '<span class="r17-go">›</span>' : ''}</span>${o.sub ? `<span class="s">${o.sub}</span>` : ''}</div>`
 const cclB = ro => `<div class="r17-t r17-ccl3" data-zk="CCL"><span class="k">${kbx('CCL')}</span><div class="r17-sum"><span class="h" style="grid-column:1">App bal</span><span class="h" style="grid-column:2">Pending</span><span class="h" style="grid-column:3">War bal</span><span class="v" style="grid-column:1">${box('3', { ro })}</span><span class="v" style="grid-column:2">−1</span><span class="v war" style="grid-column:3">2</span></div></div>`
-const grid = (o = {}) => `<div class="r17-bal zz-balgrid">` + lve(!!o.ro) + tile('OIL', '0', { go: true }) + tile('MED', '0', { sub: 'days' }) +
+const stTile = (k, v, pend, war, ro) => `<div class="r17-t r2 st" data-zk="${k}"><span class="k">${kbx(k)}</span><span class="f">${box(v, { ro })}</span>` +
+  (pend ? `<span class="s pd">${pend} pending</span><span class="s2">War bal <b>${war}</b></span>` : '') + '</div>'
+const gridC = ro => `<div class="r17-bal zz-balgrid">` + lve(ro) + tile('OIL', '3', { go: true }) + tile('MED', '2', { sub: 'days' }) +
+  stTile('CCL', '3', '1', '2', ro) + stTile('FCL', '5', '', '', ro) + stTile('PL', '2', '0.5', '1.5', ro) + stTile('EL', '4', '', '', ro) + stTile('CL', '1', '1', '0', ro) + '</div>'
+const grid = (o = {}) => o.v === 'c' ? gridC(!!o.ro) : `<div class="r17-bal zz-balgrid">` + lve(!!o.ro) + tile('OIL', '0', { go: true }) + tile('MED', '0', { sub: 'days' }) +
   (o.v === 'b' ? cclB(!!o.ro) : tile('CCL', '3', { box: true, ro: !!o.ro, r2: true, hs: true, sub: '<span class="pd">1 pending</span>' })) +
   ['FCL', 'PL', 'EL', 'CL'].map(k => tile(k, '0', { box: true, ro: !!o.ro, r2: true })).join('') + `</div>`
 
@@ -92,12 +102,13 @@ const fit = p => p.evaluate(() => [...document.querySelectorAll('.zz-balgrid > *
 for (const [v, o, head, rest] of [
   ['a', { v: 'a' }, 'A · one figure:', 'his App bal in its box, "1 pending" under it'],
   ['b', { v: 'b' }, 'B · three figures, as LVE:', 'App bal · Pending · War bal; the tile takes three columns'],
+  ['c', { v: 'c' }, 'Your A, stacked, every kind filled:', 'the box, then "1 pending", then War bal; pending amber, LVE\'s too'],
 ]) {
   const { ctx, p } = await newPage(browser, 390, 844, true, state); await signIn(p, 'member')
   await scene(p, o)
   console.log(v, JSON.stringify(await fit(p)))
   await R14.caption(p, head, rest)
-  await mk(p, '[data-zk="CCL"]', v.toUpperCase(), { prefer: ['ne', 'e'] })
+  if (v !== 'c') await mk(p, '[data-zk="CCL"]', v.toUpperCase(), { prefer: ['ne', 'e'] })
   await shot(p, 'r20-3c-' + v, { clip: await R14.clipOf(p) })
   await ctx.close()
 }

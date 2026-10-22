@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1251 | 22 Oct 26 | On the Leave War's balance tiles and balances page every pending figure is amber — LVE's "Pending" as much as another kind's "1 pending" — so a figure still waiting on a decision reads the same everywhere. |
 | D1250 | 22 Oct 26 | The Leave War overhaul's build plan is approved as written (five merges, M1 open dates first), each merge on its own branch cut from main once the one before is live, and built only once the questions it waits on are answered; nothing merges without his "merge live". |
 | D1249 | 22 Oct 26 | The balances page has no "No grade" chip: a person with no grade shows "No grade" in amber in his own row, where his grade is set, and nothing else counts them. |
 | D1248 | 22 Oct 26 | The balances page has a second view, "Days taken": each person's days taken this year by kind of leave, beside the Balances view, switched by one control at the top of the page. |
