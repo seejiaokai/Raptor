@@ -1144,7 +1144,9 @@
       top: 50%;
       transform: translateY(-50%);
     }
-    .card-hd .filters.lw-gridbar { gap: 6px; }
+    /* never cut a chip ("Bidding cl…" with a red count beside it — walker 2): the bar takes a second line when it must */
+    .card-hd .filters.lw-gridbar { gap: 6px; row-gap: 6px; flex-wrap: wrap; }
+    .card-hd .filters.lw-gridbar > * { flex-shrink: 0; }
   }
 
   /* D1227's bubble: under the Manning button, naming the rows a bid just turned amber or red; gone at the next tap. The

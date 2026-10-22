@@ -90,6 +90,8 @@ export function availVerdict(have: number | null, required: number | null, point
 
 /** One row a red day is red by, with the figure that broke it — the list's line ("Available P 23"). */
 export interface RedLine {
+  /** an Available row's line: the day's Required, so the list reads "Available P 23 of 24" as drawn (r19c, D1243) */
+  need?: number
   ruleId: string
   label: string
   have: number
@@ -103,7 +105,7 @@ export function availRedLines(rules: { p: ManningRule; w: ManningRule }, day: { 
   const out: RedLine[] = []
   for (const s of ['p', 'w'] as const) {
     const d = day[s]
-    if (availVerdict(d.have, d.required, availPointsOf(rules[s])) === 'red') out.push({ ruleId: rules[s].id, label: rules[s].label, have: d.have! })
+    if (availVerdict(d.have, d.required, availPointsOf(rules[s])) === 'red') out.push({ ruleId: rules[s].id, label: rules[s].label, have: d.have!, need: d.required! })
   }
   return out
 }

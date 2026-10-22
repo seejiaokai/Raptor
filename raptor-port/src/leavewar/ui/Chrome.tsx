@@ -460,7 +460,7 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
                     onClick={() => { focusDay(date); setListOpen(false) }}
                   >
                     <span className="d">{shortDate(date)}</span>
-                    <span className="why">{broken.map(r => `${r.label} ${r.have}`).join(' · ')}</span>
+                    <span className="why">{broken.map(r => `${r.label} ${r.have}${r.need != null ? ` of ${r.need}` : ''}`).join(' · ')}</span>
                   </button>
                 )
               })}
