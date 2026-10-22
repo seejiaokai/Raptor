@@ -12,8 +12,9 @@ import { FIGSEL_ATTR } from './select'
    for real in e2e; what this file proves is the WIRING through the matrix:
    that the admin's drag reaches the counter column at all, that it writes
    nothing, that a member's does nothing, that the things which invalidate a
-   selection clear it, that the counter swipe stands down for the touch the
-   drag armed, and — the one that would fail silently — that a store write
+   selection clear it, that a touch hold-and-drag selects and leaves the column
+   LVE (the counter swipe it once stood down went with the picker, D1245), and
+   — the one that would fail silently — that a store write
    mid-selection leaves the highlight standing (the reason it is an attribute
    React owns rather than a class painted from outside).
 
@@ -230,25 +231,25 @@ describe('a drag down the figure column selects a run of people', () => {
      figure). Showing it again then brought the whole run back lit, as though it
      had been waiting there. The identity of the visible list is a dependency of
      the clear now, which is what makes the second half of this test the one
-     that bites. */
+     that bites.
+     Re-expressed for D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the column is +LVE
+     alone, so the run sits on LVE and there is no other figure to pick first. Hiding LVE (the store's own write — no
+     control on the grid offers it now) still ends the run, and the column never leaves +LVE, hidden or shown. */
   it('hiding the figure a run is on ends it — showing it again brings nothing back', () => {
     render(<Matrix />)
-    // The run has to sit on a figure that is not the column's fallback, or
-    // hiding it would take the highlight away by simply changing the column.
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    fireEvent.click(screen.getByTestId('counter-ccl'))
     const [a] = layOutColumn()
     dragDown(a)
-    expect(screen.getByTestId('oil-credit-who').textContent).toBe('2 people · +CCL')
+    expect(screen.getByTestId('oil-credit-who').textContent).toBe('2 people · +LVE')
     expect(marked()).toHaveLength(2)
 
-    act(() => { toggleFigure('ccl') })
+    act(() => { toggleFigure('lve') })
     expect(screen.queryByTestId('balance-bar')).toBeNull()
     expect(marked()).toHaveLength(0)
+    expect(screen.getByTestId('counter-name').textContent, 'the column stays LVE (D1245)').toBe('+LVE')
 
-    act(() => { toggleFigure('ccl') })
-    expect(screen.getByTestId('counter-name').textContent, 'the column comes back').toBe('+CCL')
-    expect(marked(), 'the run does not').toHaveLength(0)
+    act(() => { toggleFigure('lve') })
+    expect(screen.getByTestId('counter-name').textContent, 'the column is still LVE').toBe('+LVE')
+    expect(marked(), 'the run does not come back').toHaveLength(0)
     expect(screen.queryByTestId('balance-bar')).toBeNull()
   })
 
@@ -298,13 +299,16 @@ describe('a drag down the figure column selects a run of people', () => {
   })
 })
 
-describe('the counter swipe stands down for the touch a figure drag armed', () => {
+/* Re-expressed for D1245 (22 Oct 26): the swipe across the column that cycled its figure is gone with the picker — the
+   column is LVE alone (the picker's code leaves whole with M5). What still exists is the touch half: a finger that holds
+   and drags down the column selects a run, and neither that nor a quick sideways flick changes the column. */
+describe('a touch hold-and-drag selects a run; the column stays LVE (D1245)', () => {
   beforeEach(() => vi.useFakeTimers())
   afterEach(() => vi.useRealTimers())
 
   const column = () => screen.getByTestId('counter-name').textContent
 
-  it('a hold-and-drag never cycles the column; a plain flick still does', () => {
+  it('a hold-and-drag selects without touching the column; a plain flick changes nothing either', () => {
     render(<Matrix />)
     const [a] = layOutColumn()
     const before = column()
@@ -317,13 +321,13 @@ describe('the counter swipe stands down for the touch a figure drag armed', () =
     act(() => { vi.advanceTimersByTime(200) })
     act(() => { pointerMove(30); pointerUp() })
     fireEvent.touchEnd(a, { changedTouches: [{ clientX: 80, clientY: 10 }] })
+    expect(before).toBe('+LVE')
     expect(column()).toBe(before)          // the select owned that touch
     expect(marked()).toHaveLength(2)       // ...and kept what it selected
 
-    // The quick flick — no hold, nothing armed — still cycles the column, which
-    // is the fast path this must not cost.
+    // The quick flick — no hold, nothing armed — used to cycle the column; since D1245 there is nothing to cycle to.
     fireEvent.touchStart(a, { touches: [{ clientX: 20, clientY: 10 }] })
     fireEvent.touchEnd(a, { changedTouches: [{ clientX: 80, clientY: 10 }] })
-    expect(column()).not.toBe(before)
+    expect(column()).toBe('+LVE')
   })
 })
