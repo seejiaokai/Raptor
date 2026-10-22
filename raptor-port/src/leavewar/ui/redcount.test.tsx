@@ -43,7 +43,7 @@ describe('an Available row at red counts; at amber it does not', () => {
     const have = dayFacts(TUE).availP!
     setFlyDays([{ iso: TUE, p: have + 1 }])
     render(<StageBar />)
-    expect(screen.getByTestId('undermanned').textContent).toContain(`${RED.length + 1} days`)
+    expect(screen.getByTestId('undermanned').textContent).toBe(`${RED.length + 1} red ›`)   // D1243: the Manning button's right half
     expect(listed()).toEqual([...RED.slice(0, 1), TUE, ...RED.slice(1)])
     expect(screen.getByTestId(`undermanned-day-${TUE}`).textContent).toContain(`Available P ${have}`)
   })
@@ -73,8 +73,8 @@ describe('an Available row at red counts; at amber it does not', () => {
   })
   it('a Required figure typed while the strip is up moves the count, with no reload', () => {
     render(<StageBar />)
-    expect(screen.getByTestId('undermanned').textContent).toContain(`${RED.length} days`)
+    expect(screen.getByTestId('undermanned').textContent).toBe(`${RED.length} red ›`)       // D1243: the Manning button's right half
     act(() => { setFlyDays([{ iso: TUE, p: dayFacts(TUE).availP! + 1 }]) })
-    expect(screen.getByTestId('undermanned').textContent).toContain(`${RED.length + 1} days`)
+    expect(screen.getByTestId('undermanned').textContent).toBe(`${RED.length + 1} red ›`)
   })
 })

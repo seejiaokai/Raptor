@@ -17,6 +17,10 @@ import { openNewPeriod } from '../sync'
 import { peekNewWarAsk, clearNewWarAsk } from './warask'
 import { Topbar } from './Chrome'
 
+/* "+ New period" is the period list's last line since D1244 — no "+ New" button on the row: choosing it opens the
+   new-period window. */
+const chooseNewPeriod = () => fireEvent.change(screen.getByTestId('war-picker'), { target: { value: '\u0000new' } })
+
 beforeEach(() => { initStore(memoryBackend()); setRole('admin'); clearNewWarAsk(); setPage('leavewar') })
 afterEach(() => { clearNewWarAsk() })
 
@@ -73,14 +77,14 @@ describe('the war’s top row answers it', () => {
     const w = document.createElement('div'); w.className = 'floatwin'; document.body.append(w)
     try {
       render(<Topbar />)
-      fireEvent.click(screen.getByTestId('war-new'))
+      chooseNewPeriod()
       expect(sheet()!.className).toContain('raised')
       expect(document.querySelector('[data-testid="sheet-scrim"].raised')).toBeTruthy()
     } finally { w.remove() }
   })
   it('the sheet "+ New" opens by itself is as it was: no dates picked, not raised', () => {
     render(<Topbar />)
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     expect(sheet()!.className).not.toContain('raised')
     expect(screen.queryByTestId('war-clear')).toBeNull()
     /* and closed, a later ask still opens it with ITS dates */
@@ -93,7 +97,7 @@ describe('the war’s top row answers it', () => {
     act(() => { openNewPeriod(`${FREE}-04-01`, `${FREE}-12-31`) })
     fireEvent.click(screen.getByTestId('war-cancel'))
     expect(sheet()).toBeNull()
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     expect(sheet()!.className).not.toContain('raised')
     expect(screen.queryByTestId('war-clear')).toBeNull()
     expect(screen.getByTestId('war-selection').textContent).toBe('Pick a start date')

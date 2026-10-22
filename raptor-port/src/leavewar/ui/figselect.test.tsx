@@ -195,7 +195,10 @@ describe('a drag down the figure column selects a run of people', () => {
     expect(marked()).toHaveLength(0)
   })
 
-  it('an undo, opening or closing dates and the drawer toggle all drop it', async () => {
+  /* WAS "…and the drawer toggle all drop it". The Balances fold (the figures drawer) left the grid with the month band row
+     (D1245, D1257): there is no toggle to press, so this test pins that the grid offers none — its clear stays in the code,
+     switched off, until M5's Balances tab replaces the drawer whole. */
+  it('an undo and opening or closing dates drop it; the drawer toggle is gone (D1245)', async () => {
     render(<Matrix />)
     const [a] = layOutColumn()
     // Something to undo: the selection itself writes nothing, so a bare undo
@@ -213,18 +216,10 @@ describe('a drag down the figure column selects a run of people', () => {
     act(() => { closeDates('2026-03-01', '2026-03-31') })   // was a stage move — the guard is keyed on the open dates (D1177)
     expect(marked()).toHaveLength(0)
 
-    dragDown(layOutColumn()[0])
-    expect(marked()).toHaveLength(2)
-    // The drawer toggle: the same boxes are drawn in a second place while it
-    // is open, so a selection made against one layout does not follow into the
-    // other. The tick first — a committed drag swallows the ONE click that
-    // follows it (the anchor's own, which would otherwise open a breakdown
-    // over the selection) and sweeps that listener a tick later, so a test
-    // pressing a button in the same tick is pressing into the swallow.
+    // D1245, D1257: the drawer toggle went with the month band row — nothing on the grid opens the drawer any more
     await tick()
-    fireEvent.click(screen.getByTestId('figures-toggle'))
-    expect(screen.getByTestId('figures-toggle').getAttribute('aria-expanded')).toBe('true')
-    expect(marked()).toHaveLength(0)
+    expect(screen.queryByTestId('figures-toggle')).toBeNull()
+    expect(screen.queryByTestId('figdrawer')).toBeNull()
   }, 60_000)   // renders the whole year; past 20s only on a busy PC — [LW-FIGSEL-SLOW]'s own fix, not a pause
 
   /* …and so does HIDING the figure the run is on (review, 6 Sep 26). The clear

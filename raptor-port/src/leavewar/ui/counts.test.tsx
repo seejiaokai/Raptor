@@ -1,11 +1,16 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { DayVerdict, RuleResult } from '../engine'
-import { initStore, moveManningRowTo, orderedManningIds, setCell, setRole } from '../state/store'
+import { initStore, moveManningRowTo, orderedManningIds, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { CountRows } from './CountRows'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+import { PHONE_QUERY } from './phone'
+
+/* Rearrange's way in is a line in ⚙ since D1254 ("⇅ Rearrange the grid"); the bar's "⇅ Done" is only the way out. */
+const startRearrange = () => { act(() => { askLw({ kind: 'settings' }) }); fireEvent.click(screen.getByTestId('settings-rearrange')) }
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -202,7 +207,7 @@ describe('the manning rows can be reordered and deleted (admin)', () => {
   it('the cross deletes its counter through the store, and the row leaves the grid at once — nothing is asked', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('roster-arrange'))            // enter Rearrange
+    startRearrange()            // enter Rearrange
     fireEvent.click(screen.getByTestId('manning-delete-ip'))         // the cross
     expect(screen.queryByTestId('count-ip')).toBeNull()              // gone at once
     expect(orderedManningIds()).not.toContain('ip')
@@ -229,7 +234,7 @@ describe('the manning rows can be reordered and deleted (admin)', () => {
   it('every count row keeps its grip and cross after a manning reorder', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('roster-arrange'))            // enter Rearrange
+    startRearrange()            // enter Rearrange
     const toolCount = () => ({
       /* the squadron's OWN count rows. The four Required / Available rows at the foot of the block (FlyRows.tsx — D665,
          8 Oct 26) are not among them: the SANS calendar reads those, so they carry no grip and no cross by design
@@ -304,8 +309,76 @@ describe('collapsing the manning block', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counts-toggle'))       // collapse
     expect(screen.queryByTestId('count-sets')).toBeNull()
-    fireEvent.click(screen.getByTestId('roster-arrange'))       // enter Rearrange
+    startRearrange()       // enter Rearrange
     expect(screen.getByTestId('count-sets')).toBeTruthy()
     expect(screen.getByTestId('manning-drag-sets')).toBeTruthy()  // and its controls
+  })
+})
+
+/* THE MANNING ROWS' FOLD ON A PHONE (D1258, 22 Oct 26 — widening D1227): on a phone they open folded for everyone, admins
+   too, and his choice is remembered per person on that device (the browser's own storage, `lw:manning:<viewer>`); on a
+   desktop they open as today. "A phone" is the Leave War's phone width (ui/phone.ts), stood up here as jsdom has none. */
+describe('the Manning fold on a phone, remembered per person (D1258)', () => {
+  const phone = (on: boolean) => {
+    ;(window as any).matchMedia = (q: string) => ({ media: q, matches: q === PHONE_QUERY ? on : false, addEventListener() {}, removeEventListener() {} })
+  }
+  const shown = () => !!screen.queryByTestId('count-sets')
+  beforeEach(() => { localStorage.clear() })
+  afterEach(() => { delete (window as any).matchMedia; localStorage.clear() })
+
+  it('opens folded on a phone — for a member and for an admin alike — and a tap opens it', () => {
+    phone(true)
+    act(() => setViewer('ramp'))
+    const m = render(<Matrix />)
+    expect(shown()).toBe(false)
+    expect(screen.getByTestId('counts-toggle').getAttribute('aria-expanded')).toBe('false')
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(shown()).toBe(true)
+    m.unmount()
+    localStorage.clear()
+    act(() => setRole('admin'))
+    render(<Matrix />)
+    expect(shown()).toBe(false)
+  })
+
+  it('opens on a desktop as it always has', () => {
+    phone(false)
+    act(() => setViewer('ramp'))
+    render(<Matrix />)
+    expect(shown()).toBe(true)
+  })
+
+  it('keeps each person\'s choice apart: two people signed in on one phone keep separate memories', () => {
+    phone(true)
+    act(() => setViewer('ramp'))
+    let r = render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counts-toggle'))          // RAMP opens his
+    expect(shown()).toBe(true)
+    expect(localStorage.getItem('lw:manning:ramp')).toBe('open')
+    r.unmount()
+
+    act(() => setViewer('tata'))
+    r = render(<Matrix />)
+    expect(shown()).toBe(false)                                    // TATA's is his own: folded, as a phone opens it
+    r.unmount()
+
+    act(() => setViewer('ramp'))
+    r = render(<Matrix />)
+    expect(shown()).toBe(true)                                     // RAMP's choice came back with him
+    fireEvent.click(screen.getByTestId('counts-toggle'))          // and folding it again is remembered too
+    expect(localStorage.getItem('lw:manning:ramp')).toBe('shut')
+    r.unmount()
+    render(<Matrix />)
+    expect(shown()).toBe(false)
+    expect(localStorage.getItem('lw:manning:tata')).toBeNull()    // TATA never chose, so nothing is kept for him
+  })
+
+  it('a desktop\'s fold is not written into the phone\'s memory', () => {
+    phone(false)
+    act(() => setViewer('ramp'))
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(shown()).toBe(false)
+    expect(localStorage.getItem('lw:manning:ramp')).toBeNull()
   })
 })

@@ -61,7 +61,8 @@ describe('the under-manned list', () => {
 
   it('counts the same days the chip counts', () => {
     render(<StageBar />)
-    expect(screen.getByTestId('undermanned').textContent).toContain(`${RED.length} days`)
+    // D1243: the count is the Manning button's right half, "n red ›" (was "n days")
+    expect(screen.getByTestId('undermanned').textContent).toBe(`${RED.length} red ›`)
     fireEvent.click(screen.getByTestId('undermanned'))
     expect(within(screen.getByTestId('undermanned-list')).getAllByTestId(/^undermanned-day-/)).toHaveLength(RED.length)
   })
@@ -106,10 +107,10 @@ describe('the under-manned list', () => {
       }
     })
     render(<StageBar />)
-    const chip = screen.getByTestId('undermanned')
-    expect(chip.textContent).toContain('0 days')
-    expect(chip.hasAttribute('disabled')).toBe(true)
-    fireEvent.click(chip)
+    /* WAS "the chip reads 0 days and is disabled". D1243: with no red day the Manning button's right half goes — there
+       is nothing to press, and the button reads "Manning" alone */
+    expect(screen.queryByTestId('undermanned')).toBeNull()
+    expect(screen.getByTestId('counts-toggle').textContent!.trim()).toMatch(/Manning$/)
     expect(screen.queryByTestId('undermanned-list')).toBeNull()
   })
 })
@@ -146,7 +147,7 @@ describe('snapping to a day', () => {
   })
 
   it('marks the chosen day in the matrix so the eye lands on it', () => {
-    render(<StageBar />)
+    // D1254: the grid's bar (the Manning button and its red count) is drawn inside the grid card — the grid alone has it
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('undermanned'))
     fireEvent.click(screen.getByTestId('undermanned-day-2026-02-10'))

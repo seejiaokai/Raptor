@@ -5,7 +5,7 @@
 
    Days is the scheduler's window (ui/DaysWindow.tsx). The war reaches it through its one seam file, sync.ts `openDays`
    — never by importing the scheduler's screens — and asks for the month the war is showing. */
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { getState, initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
@@ -13,6 +13,11 @@ import { DAYSWIN, setDaysWin } from '../../ui/pops'
 import { getVersion as raptorVersion } from '../../state/store'
 import { openDays } from '../sync'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
+   asked as the ⚙ press asks it (ui/lwnav.ts). */
+const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
 
 beforeEach(() => { initStore(memoryBackend()); setRole('admin'); setDaysWin(null) })
 afterEach(() => { setDaysWin(null) })
@@ -20,7 +25,7 @@ afterEach(() => { setDaysWin(null) })
 describe('⚙ Settings → Days…', () => {
   it('is in the sheet for an admin, says what it is for, and sits above the counters', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     const line = screen.getByTestId('settings-days')
     /* on screen the window is "Calendar" (owner, D675, 8 Oct 26) */
     expect(line.textContent).toBe('Calendar…')
@@ -32,7 +37,7 @@ describe('⚙ Settings → Days…', () => {
   })
   it('closes the sheet and opens Days on a month of the period on screen', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     const v = raptorVersion()
     fireEvent.click(screen.getByTestId('settings-days'))
     expect(screen.queryByTestId('settings-sheet')).toBeNull()

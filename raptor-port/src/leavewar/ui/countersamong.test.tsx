@@ -20,6 +20,10 @@ import { initStore as lwInitStore, manningBlockOrder, moveManningRowTo, saveMann
 import { memoryBackend } from '../state/storage'
 import { projectPeople } from '../state/raptorRoster'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* Rearrange's way in is a line in ⚙ since D1254 ("⇅ Rearrange the grid"); the bar's "⇅ Done" is only the way out. */
+const startRearrange = () => { act(() => { askLw({ kind: 'settings' }) }); fireEvent.click(screen.getByTestId('settings-rearrange')) }
 
 const [RP, RW, AP, AW] = FIXED_ROWS
 const TUE = '2026-01-06'
@@ -44,7 +48,7 @@ afterEach(() => { cleanup(); document.elementFromPoint = origEFP; setSession(nul
 const REQ_P = 'fly-row-req-p', REQ_W = 'fly-row-req-w', AV_P = 'fly-row-avail-p', AV_W = 'fly-row-avail-w'
 /** the rows of the Manning block, top to bottom, by their own ids */
 const rowsOfBlock = () => [...document.querySelector('tbody.counts')!.querySelectorAll(':scope > tr')].map(tr => tr.getAttribute('data-testid') ?? '')
-const arrange = () => { render(<Matrix />); fireEvent.click(screen.getByTestId('roster-arrange')) }
+const arrange = () => { render(<Matrix />); startRearrange() }
 
 describe('the Manning block draws its rows in the one order', () => {
   it('to start with: the counters, then the four (reading 4)', () => {
@@ -56,7 +60,7 @@ describe('the Manning block draws its rows in the one order', () => {
     const want = [REQ_P, 'count-a', REQ_W, AV_P, 'count-b', AV_W, 'count-c']
     render(<Matrix />)
     expect(rowsOfBlock()).toEqual(want)
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    startRearrange()
     expect(rowsOfBlock()).toEqual(want)
     cleanup()
     setRole('member')
@@ -112,6 +116,9 @@ describe('in Rearrange (reading 1)', () => {
     render(<Matrix />)
     expect(document.querySelector('tbody.counts [data-mrow]')).toBeNull()
     expect(screen.queryByTestId('roster-arrange')).toBeNull()
+    // D1254: Rearrange's way in is a line in ⚙ — a member asking for ⚙ gets no sheet, so no way in either
+    act(() => { askLw({ kind: 'settings' }) })
+    expect(screen.queryByTestId('settings-rearrange')).toBeNull()
   })
   it('an Available row\'s name still opens its form, and a Required cell is still a Required cell, with a counter between them', () => {
     moveManningRowTo('a', AP)

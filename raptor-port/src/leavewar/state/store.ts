@@ -4132,8 +4132,11 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
   const requireReason = award ? cur.reason.trim() !== '' : reasonRequired(cur.counter)
   const problem = ledgerProblem(cur.counter, amount, date, reason, givenBy, requireReason)
   if (problem) return problem
+  /* an FO turned HO takes the default of the day the entry ENDS on (`date`), never the one it had (the scenario designer's
+     M4, 23 Oct 26). An award never changes its day today — refused above (D260) — so the two are the same date; read
+     from the new one, the default stays right if that rule is ever relaxed. */
   const half: Half | undefined = award && amount === 0.5
-    ? pickedHalf(patch.half) ?? (cur.amount === 0.5 ? cur.half : defaultAwardHalf(cur.personId, cur.date, cur.id))
+    ? pickedHalf(patch.half) ?? (cur.amount === 0.5 ? cur.half : defaultAwardHalf(cur.personId, date, cur.id))
     : undefined
   if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '') && half === cur.half) return null
   gesture(ledgerType(cur.counter, cur.amount), () => {
