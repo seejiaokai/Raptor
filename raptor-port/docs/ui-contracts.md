@@ -6696,6 +6696,8 @@ as before.
 
 ## Selecting on the Leave War grid (owner, 27 Aug 26)
 
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. A member drags on his own row at any time: a fill writes only his open days from today and counts the rest skipped; a Delete over days since closed takes his own pending bids (D1225). The admin decides at any time. What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
+
 Press-and-drag across day-cells to select a rectangle — one row or many
 people's rows — then act on the whole block at once. It is built AROUND the
 BidPicker's look and vocabulary, not instead of it.
@@ -6815,6 +6817,8 @@ first bullet.)*
   walk `docs/handpass/2026-09-29-lw-drag-below-zero.md`.
 
 ### Move mode — the landing preview, one chip one move, and the moved mark
+
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. A member moves his own pending bid only while its days — where it is and where it lands — are open (D333 narrowed); the dotted moved mark shows on any move of a leave already approved, and a bid that only waits records none (`state/store.ts moveRecords`); a landing is asked of the period holding it (B3). What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
 
 - **Move mode** (`wireMove`) moves the inputs PRESENT in the box and ignores
   the empty cells swept up around them (owner, 27 Aug 26 — "move items … that
@@ -7614,6 +7618,8 @@ sentence or a span reads day-first with its year (`shortDate` → "17 Jul 26"); 
 Pinned by `leavewar/ui/isodates.test.tsx` — one roll-call over every sheet, reading the page a sheet draws into.
 
 ## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
+
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. Nothing here hung on a stage beyond the strip it sat in: the strip now carries one open-dates chip ("Open for bidding 1 Jan – 31 Mar" / "Bidding closed", `ui/Chrome.tsx`) in place of the stage chip, its moves and the bidding-dates chip. What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
 
 **The counter's own window — its three buttons (owner, D673, 8 Oct 26: "delete counter button be red, save counter be
 another colour like green or blue, similar to the rest of the app").** "Save counter" ("Add counter"; "Save" on an
@@ -8568,6 +8574,8 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
 
 ### Published-stage remarks editing (owner, 27 Aug 26)
 
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. A member's tap on his own approved leave opens its remarks editor at ANY time (D418 narrowed); an admin's tap on approved leave opens the decide window (send back, refuse, move, delete — at any time), his Note being on the day's list. A member's tap on a day not open for him opens the closed note (`ui/ClosedNoteSheet.tsx`, D1176), or the pending note with Delete where his own pending bid stands (D1225). What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
+
 Once a war is PUBLISHED, a single tap on an approved leave opens a note editor
 (`ui/RemarksSheet.tsx`, testid `remarks-sheet`) — the run's OWN person (a
 member editing their own leave) or an admin (anyone). It takes precedence in
@@ -8757,6 +8765,8 @@ works after the hidden spell, no page error).
 
 ## The Leave War opens on the war being bid on (owner, 7 Sep 26)
 
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. The page opens on the period holding the FIRST OPEN DATE FROM TODAY, else on the one holding today (`engine/opendates.ts landingOf`, `focusDateOf` — D1177's reading); a period switch lands on its own first open date from today, else today, else its first day. What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
+
 "The default view of leave war when a user gets to it is always the start of
 the period in which it is opened for bidding, followed by bidding closed,
 followed by published." Two halves:
@@ -8794,6 +8804,8 @@ in the year or a squadron has wars in several stages. Pinned:
 `ui/undermanned.test.tsx` (focus moves with the war), and the browser drive.
 
 ## The open-bidding box on the Leave War grid (owner, 1 Sep 26)
+
+*[CHANGED 22 Oct 26 by D1177 — the Leave War's M1, open dates (`claude/lw-m1-open-dates`): the four stages are gone. ONE box per open stretch (`[data-testid="bid-box"]`, `data-from`), none when nothing is open (empty = closed — B2); a member's starts at today (D1211). Closed days dim, with a small drawn lock on the date heading, while anything is open (for everyone; a member's from his today), and the grid shows as normal with nothing open (`Matrix.tsx lockedCols`, `matrix.css`). What follows is kept as written for its history; where it names a stage, `stage`, `bidFrom`/`bidTo`, `biddingClosed`, `canEdit`, `advanceStage`/`reopenStage` or `setBidWindow`, this note wins.]*
 
 "Can u make the border of the dates open for bidding green … the exterior box
 of the entire period" → refined to a deeper, more faded green border (its glow went 15 Oct 26, D881),
