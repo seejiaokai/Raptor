@@ -96,7 +96,21 @@ Before (main c413f2541, built bundle on 4251, CPU 4×, 5 runs, tap 2026-02-10):
 | phone · admin | 1266 ms | 8441 | 550 ms |
 | phone · member | 1129 ms | 8208 | 678 ms |
 
-After: (to fill).
+After — measured PAIRED with `main` the same hour (the machine was busier than at the first measure, so both columns are
+read together), 5 runs each, a member's today pinned through the bridge so the same tap opens the same bid window:
+
+| Size · who | open: main → M1 | nodes: main → M1 | tap: main → M1 |
+|---|---|---|---|
+| desktop · admin | 1398 → 1911 ms (runs 1361–1930 vs 1355–2228 — the same spread) | 18292 → 18292 | 827 → 823 ms |
+| desktop · member | 1232 → 1224 ms | 17760 → 17760 | 1432 → 1373 ms |
+| phone · admin | 1193 → 1201 ms | 8441 → 8441 | 765 → 760 ms |
+| phone · member | 1324 → 1313 ms | 8208 → 8208 | 935 → 971 ms |
+
+**A fault this measure found, fixed before the walk:** the first build of M1 dimmed the closed days for the admin too (the
+builder's reading of D1177); his tap measured 774 → 2338 ms on a desktop and 769 → 1058 ms on a phone — thousands of
+cells drawn at half strength. The admin's dim went (as before M1: the open dates do not bind him, and the outline shows
+what is open); the table above is the build without it. Members' dim is as it always was. No node is added to any day
+cell (the lock is a pseudo-element on the date heading).
 
 ## 6. Orders walked · 7. Cases carried by a test · 8. Pictures · 9. Break tests · 10. Errors seen · 11. Not walked, and why · 12. Gate counts · 13. The reads (fresh Opus; Fable — D1260) · 14. Findings and dispositions
 
