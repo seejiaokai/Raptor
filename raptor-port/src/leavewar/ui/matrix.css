@@ -909,6 +909,27 @@
   position: relative;
 }
 
+/* A CORNER TILE NEVER COVERS A BOX'S LETTERS (walker 1's #8, #9, 23 Oct 26; the cell's classes are MatrixRows
+   `mkLow` / `poHigh`). A whole day's letters, and a side-by-side box's, sit mid-height, clear of both corners; a
+   morning box's sit under the mark and an afternoon box's under the PO tag. So, where the other corner on the right is
+   free, the tile moves there: the mark drops to the bottom-right (off the last-day ribbon too, which it otherwise steps
+   left of), the PO tag rises to the top-right. */
+.mx td.mklo .mk { top: auto; bottom: 0; right: 0; border-radius: 4px 0 0 0; }
+.mx td.pohi .potag { top: 0; bottom: auto; border-radius: 0 0 0 4px; }
+/* …and where neither corner is free (a morning and an afternoon box both drawn, or a tile in each corner), the box
+   under the tile keeps its size — its half says how much of the day (D1160) — and its LETTERS step aside: centred
+   between its left edge mark and the tile, a three-letter code a step smaller, the tile at its slimmest — the "!" at
+   1.5px a side, so OML still fits beside it (measured in the system font, 23 Oct 26: OML 13.0px wide at 6px, in 13.5px
+   of room ending 0.75px short of the "!" and its dark ring). Under the wider PO tag 9.5px of room is left — LL and OL
+   fit, just; a wider code there (HO, or three letters) still touches it, and only on a posted-out man's day holding a
+   morning and an afternoon box, or a mark, after he left. */
+.mx td.mkd:not(.mklo) .c.top { padding: 0 5.5px 0 2px; }
+.mx td.outlv:not(.pohi) .c.bot { padding: 0 9.5px 0 2px; }
+.mx td.mkd:not(.mklo) .c.top.wide,
+.mx td.outlv:not(.pohi) .c.bot.wide { font-size: 6px; }
+.mx td:not(.mklo) .c.top ~ .mk { padding: 1px 1.5px; }
+.mx td:not(.pohi) .c.bot ~ .potag { padding: 1px; }
+
 /* The LAST day in the squadron wears a small corner tag (owner, 19 Aug 26).
    Without it, a person posting out on the 1st of a month is invisible as a
    PO: their final month looks completely normal and the month after, their

@@ -11393,6 +11393,14 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   more entries keep one box and "+n"; two drawn drop a "+1"; an amber "!" always stays. The Inputs-page edge and the moved
   edge are drawn inside the box (`::before`), above a pending box's dashed outline. One element a box — no node added
   per cell (`docs/performance.md` §E).
+- **Each box's edge is its own entry's, and no corner tile covers letters (walker 1's #8, #9, #11 — 23 Oct 26):** the
+  Inputs-page edge is asked of each entry (`engine/dayview.ts offWar` — filed on the Inputs page, a medical, a course,
+  overseas duty, or the app's own credit), never of the day, so leave approved on the war stays plain beside a course;
+  the day as a whole is still locked to the war when any of its records is (`raptorOwns`). The mark ("!", "+n") keeps
+  the top-right and the PO tag the bottom-right unless a box's letters sit there (a morning box or a morning HO's quarter
+  under the mark; an afternoon one under the tag): then the tile takes the other right-hand corner if it is free
+  (`mklo`, `pohi` on the cell), else that box's letters step aside, the box keeping its place and size
+  (`boxcorners-css.test.ts`).
 - **The Legend (r7-07):** the colour (what kind), the fill (where it stands), the size (how much of the day), the dates
   (open, not open), the left edge, the corner, the figures, the letters — every swatch `Chrome.tsx LegBox`, the grid's own
   box in a cell-sized frame, so the key cannot show a colour the grid does not paint.

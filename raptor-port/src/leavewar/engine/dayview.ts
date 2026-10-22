@@ -87,6 +87,15 @@ export const isSickCode = (code: string) => SICK.has(code)
 export const isAwayDutyCode = (code: string) => AWAY_DUTY.has(code)
 export const isCreditCode = (code: string) => CREDIT.has(code)
 const isAnnual = (code: string) => code === 'LL' || code === 'OL'
+/* the codes the war never changes, even approved on it — medical, a course, overseas duty (design §5.4, owner §13 Q1) */
+const OFF_WAR = new Set(['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD'])
+/** Whether ONE record is changed off the war: an absence filed on the Inputs page (not approved on the war, or a
+ *  medical, a course, overseas duty), or a credit the app worked out itself. It is the blue edge THAT record's own box
+ *  wears — asked of each entry, never of the day, so leave approved on the war keeps a plain box beside a course filed
+ *  on the Inputs page (walker 1's #11, 23 Oct 26). Whether the war may write the DAY is a wider question — any record
+ *  on it changed off the war locks it — and stays `state/merge.ts projRecord`'s, which asks this first. */
+export const offWar = (c: Contrib): boolean =>
+  c.kind === 'absence' ? !c.lw || OFF_WAR.has(c.code) : c.kind === 'credit' && !!c.auto
 
 /* Two windows clash only when they share time: an end and a start at the same
    minute (LL 08:00–10:00, OL 10:00–11:00) sit back to back and do NOT clash —

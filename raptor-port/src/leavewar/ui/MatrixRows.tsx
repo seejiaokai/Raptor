@@ -10,7 +10,7 @@ import { shortDate } from './dates'
 import { addDays, boxText, canEditRow, catClass, catText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
 import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow } from '../state/store'
 import { FigureCell, show } from './FigureCell'
-import { portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
+import { offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { outcomeOf } from '../engine'
 import type { Views } from '../engine/dayview'
@@ -449,13 +449,30 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         const second = two ? entries[1]! : null
         /* with the day's two entries both drawn (D1146), "+1" has nothing more to say; the amber "!" stays */
         const mk = two && mark === '+1' ? '' : mark
+        /* A CORNER TILE NEVER COVERS A BOX'S LETTERS (walker 1's #8, #9, 23 Oct 26). The mark ("!", "+n") keeps the
+           top-right corner and the PO tag the bottom-right — until a box in that half of the cell holds letters there: a
+           morning box (`top`) or a morning HO beside a whole day (`right-am`) under the mark, an afternoon one (`bot`,
+           `right-pm`) under the tag. A whole day's letters (and a side-by-side box's) sit mid-height, clear of both.
+           Then the tile takes the other corner on the right when nothing is there — no box's letters, no other tile —
+           (`mklo`, `pohi`); when there is none, the box's letters step aside for it (matrix.css). Classes on the cell,
+           no node added (`docs/performance.md` §E). */
+        const places: readonly string[] = !live ? [] : two ?? [where]
+        const lettersTop = places.some(pl => pl === 'top' || pl === 'right-am')
+        const lettersBot = places.some(pl => pl === 'bot' || pl === 'right-pm')
+        const mkShown = !!mk && (here || outLeave || notYetArrived)
+        const poTag = outLeave && !notYetArrived
+        const mkLow = mkShown && lettersTop && !lettersBot && !poTag
+        const poHigh = poTag && lettersBot && !lettersTop && !mkShown
         // Two marks on top of the state colour, never instead of it: the
         // squadron reads green as approved and magenta as pending, and that
         // stays true here. `raptor` says the approval happened elsewhere and
         // nothing on this screen will change it; `moved` says management
         // shifted this bid off another date.
+        /* `raptor` is the main ENTRY's own (`offWar`), never the day's (walker 1's #11, 23 Oct 26): a day holding leave
+           approved on the war and a course filed on the Inputs page is locked as a whole (`raptorOwns`, what a tap and
+           every write ask), but only the course's box wears the edge. */
         const marks = [
-          (here || outLeave) && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
+          (here || outLeave) && code && (view?.main ? offWar(view.main) : raptorOwns(states, p.id, d.date)) ? 'raptor' : '',
           movedShown && (here || outLeave) && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
         ].filter(Boolean).join(' ')
         /* BOTH ENDS of the squadron window are tappable (owner answer C, 20
@@ -490,7 +507,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           <td
             key={d.date}
             data-testid={`cell-${p.id}-${d.date}`}
-            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}${mkLow ? ' mklo' : ''}${poHigh ? ' pohi' : ''}`}
             onClick={actionable
               ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
               : undefined}
@@ -503,13 +520,14 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
               </span>
             )}
             {second && two && (
-              /* the second box wears its own edges too (the scenario designer's find): the Inputs page's for leave filed there
-                 (an absence the war did not approve), the dotted one for leave moved here */
-              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 2 ? ' wide' : ''}${second.kind === 'absence' && !second.lw ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
+              /* the second box wears its own edges too (the scenario designer's find): the Inputs page's by the same one rule
+                 as the main box (`offWar` — filed there, or the app's own credit, as it wears alone), the dotted one for
+                 leave moved here */
+              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 2 ? ' wide' : ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
                 {boxText(second.code, !!second.auto)}
               </span>
             )}
-            {mk && (here || outLeave || notYetArrived) && (
+            {mkShown && (
               <span
                 className={`mk ${view!.amber ? 'warn' : 'more'}`}
                 data-testid={`mark-${p.id}-${d.date}`}
@@ -525,7 +543,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
                 {mk}
               </span>
             )}
-            {outLeave && !notYetArrived && (
+            {poTag && (
               <span className="potag" data-testid={`potag-${p.id}-${d.date}`}>PO</span>
             )}
             {lastIn && (
