@@ -118,7 +118,7 @@ with its permission row (D200); the events list in the new Settings (after M5's 
 
 **Waiting on his look (M5):** the person window (D1201, D1148, D1203 — fixes A1, A3/B7, A10, B6: a member writes only his
 own balances while unlocked, a history line, halves only), "since your last visit" (D1199), the Settings window (D1205 —
-fix A12's Rearrange button, "Add a group").
+fix A12's Rearrange button, "Add a group"). The balances page (D1230) for everyone (D1242): a member sees every row and, while unlocked, edits his own (App bal, carried forward, CCL…CL; never OIL or his grade), through the same write path and history line as his person window.
 
 **Not in these merges:** red-team fix **A7a** (a second finger cancels a selection that is arming) belongs to the
 phone's pinch to zoom (D1117) and is written on its backlog item, `[LW-PHONE-PINCH-ZOOM]`.
