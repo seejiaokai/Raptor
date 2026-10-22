@@ -207,12 +207,17 @@ type PersonMonthProps = {
 }
 
 const NO_ENTRIES: Contrib[] = []
+/** Which half of the cell a record's box takes (D1160, D1164): an HO its half — the admin's pick for an award, the half
+ *  its work started in for the app's own (`engine/warrecs.ts` gives its `win` AM or PM); an FO always the whole day,
+ *  whatever hours the app's own one was worked; anything else the part of the day its window takes. */
+const placeOf = (c: Contrib): 'am' | 'pm' | 'full' =>
+  c.kind === 'credit' ? (c.code === 'HO' ? portionOf(c.win) : 'full') : portionOf(c.win)
 type Place = 'top' | 'bot' | 'whole' | 'left' | 'right' | 'right-am' | 'right-pm'
 /** Where the two boxes of a two-entry day sit (D1146, D1167): [the main box's place, the second's], or null when the
  *  two cannot both be drawn (both in the same half) — then the day keeps one box and its "+1" corner. */
 function pairPlaces(mainPortion: string | undefined, second: Contrib): [Place, Place] | null {
   const a = mainPortion === 'am' || mainPortion === 'pm' ? mainPortion : 'full'
-  const b = portionOf(second.win)
+  const b = placeOf(second)
   if (a === 'full' && b === 'full') return ['left', 'right']
   if (a === 'full') return ['left', b === 'am' ? 'right-am' : 'right-pm']
   if (b === 'full') return [a === 'am' ? 'right-am' : 'right-pm', 'left']
@@ -430,7 +435,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         const fill = !live ? '' : isDuty(code) || !isBiddable(code) || bid === 'approved' ? 'a' : bid === 'refused' ? 'r' : 'w'
         /* WHERE THE BOX SITS, by its half (D1160, D1145): a whole day fills the cell, the morning its top half, the
            afternoon its bottom half — read off the stored string by `parseCell`, the one source of truth for the half. */
-        const portion = live ? parseCell(code)?.portion : undefined
+        const portion = !live ? undefined : view?.main?.kind === 'credit' ? placeOf(view.main) : parseCell(code)?.portion
         /* TWO ENTRIES ON A DAY BOTH SHOW (D1146, narrowed by D1167): a morning and an afternoon top and bottom; two whole
            days side by side, each the full height; a whole day beside a half (an HO, D1164), the half in its own half of
            the right side. Three or more keep one box and the "+n" corner, which opens the day's list. A notice is never a

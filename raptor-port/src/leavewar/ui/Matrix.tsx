@@ -35,7 +35,7 @@ import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
-import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { availRowNames, availVerdictAt, leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -1303,6 +1303,13 @@ export function Matrix() {
   const flaggedNow = () => {
     const m = new Map<string, string>()
     for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}|${r.verdict}`, r.label)
+    /* …and the two Available rows at their amber or red points (D1190, D1202 — the same verdict their cells wear,
+       `sync.ts availVerdictAt`), over the days drawn: a bid is placed on a day in view */
+    const names = availRowNames()
+    for (const d of drawnDates) for (const seat of ['p', 'w'] as const) {
+      const v = availVerdictAt(d, seat)
+      if (v) m.set(`avail${seat}|${d}|${v}`, names[seat])
+    }
     return m
   }
   useEffect(() => {
