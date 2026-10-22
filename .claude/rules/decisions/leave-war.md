@@ -56,6 +56,10 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1250 | 22 Oct 26 | The Leave War overhaul's build plan is approved as written (five merges, M1 open dates first), each merge on its own branch cut from main once the one before is live, and built only once the questions it waits on are answered; nothing merges without his "merge live". |
+| D1249 | 22 Oct 26 | The balances page has no "No grade" chip: a person with no grade shows "No grade" in amber in his own row, where his grade is set, and nothing else counts them. |
+| D1248 | 22 Oct 26 | The balances page has a second view, "Days taken": each person's days taken this year by kind of leave, beside the Balances view, switched by one control at the top of the page. |
+| D1247 | 22 Oct 26 | The admin's one balance lock (D1220) sits on the balances page itself, "Lock for members", where the balances are; the Leave War's Settings keep only a line that opens the balances page. |
 | D1246 | 22 Oct 26 | On the Leave War a half day is written as .5 everywhere — 14.5, 2.5, −1.5 — never as ½: the person window's tiles, the balances page, Approvals, My leave, the day panel and the grid alike. |
 | D1245 | 22 Oct 26 | The Leave War grid's Balances fold goes: every balance column now lives on the Balances tab (D1242), and on the grid each name keeps only its LVE figure beside it, so no two things on the page share the name "Balances". |
 | D1244 | 22 Oct 26 | The Leave War's "+" (a new period) leaves the top row and becomes the last line of the period list, "+ New period", an admin's only, on a phone and a desktop alike. |
@@ -80,7 +84,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D1224 | 22 Oct 26 | Leave taken on the Leave War always comes off the carried-forward days first, then this year's annual leave — as the official leave system does. |
 | D1223 | 22 Oct 26 | The URHO who runs the Leave War is given an admin account; the app gets no Leave-War-only role. |
 | D1221 | 22 Oct 26 | In the Leave War's Settings, SANS men are put on the war by "+ SANS" among the groups and taken off by that group's ✕, in place of the Show SANS switch; never added, they stay off (D1215). |
-| D1220 | 22 Oct 26 | The admin locks every member's balances at once with one switch, "Lock balances", in the Leave War's Settings; locked, every person window shows a small padlock and a member's figures read only; there is no lock per person. |
+| D1220 | 22 Oct 26 | The admin locks every member's balances at once with one switch, "Lock for members", on the balances page (D1247); locked, every person window shows a small padlock and a member's figures read only; there is no lock per person. — changed by D1247 |
 | D1219 | 22 Oct 26 | There is no setting to turn on notifications of new Leave War requests for the admin: what waits is seen only on the Approvals count when he opens the Leave War — no bell line, no phone ping, no switch. |
 | D1218 | 22 Oct 26 | The Leave War reflects carried-forward leave as the official leave system keeps it: a year's unused annual leave carries forward for one year, and carried-forward leave not used by the start of the year after that is gone. — changed by D1224 |
 | D1217 | 22 Oct 26 | A leave request not yet decided is called "pending", not "waiting", on the Leave War; and the person window names its two LVE figures plainly — the balance the official leave app shows, and the Leave War's balance after the days pending — with the days pending counted in days (2.5 — D1246), never in requests. — changed by D1246 |

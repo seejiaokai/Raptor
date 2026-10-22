@@ -5,7 +5,7 @@ design note `../specs/2026-10-21-leave-war-overhaul.md` §10). Inputs: the code 
 (`2026-10-22-leave-war-overhaul-code-map.md` — every ruling to its files), the red team's two reports
 (`../briefs/2026-10-22-lw-overhaul-red-team-A.md`, `…-B.md`), the design note §5, §6, §10. Read the same night by a
 fresh, blind Opus reader (`../briefs/2026-10-22-lw-overhaul-plan-read.md`); its ten findings are taken in this version.
-**Nothing is built from this plan until he approves it** — and until he has answered the questions each merge waits on
+**APPROVED 22 Oct 26 (D1250 — "p as recommended").** His answers of that afternoon to fold in before each merge: D1242 (members get the Balances tab, edit their own row while unlocked), D1243 (Manning "1 red"), D1244 ("+" into the period list), D1245 (the grid's Balances fold goes), D1246 (halves .5), D1247 (the lock on the balances page), D1248 (Days taken view), D1249 (no "No grade"); still open: N1 (tabs), G1–G3 (the grid's order), 3c, B3. **Nothing is built from this plan until he approves it** — and until he has answered the questions each merge waits on
 (§2).
 
 ## 1. The shape

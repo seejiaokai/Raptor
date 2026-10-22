@@ -1822,3 +1822,18 @@ different feature that merely pass through it.
 **Suggested improvement:** After recording a ruling that changes a design, list every picture on the page that draws the changed thing (grep the drawing scripts for the element or the role it touches) and redraw each in the same turn; then look at the redrawn screens whole for clashes the change created.
 
 **Principle:** An answer changes every picture of the thing it governs, not only the picture it was given on; redrawing them all in the same pass is also how the change's knock-on effects are found.
+
+### Observation 676: A drawing's caption described how today's app behaves from memory, and was wrong twice
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War navigation, round 19: the under-manned chip folded into the Manning button.
+**Skill:** brainstorming (mockups-on-the-real-app.md); impeccable (shape)
+**Type:** open-source
+**Phase/Area:** writing what a proposed control does, on the page put to him
+
+**Issue:** The page said the count took amber and red days and that a tap jumped to the next one. His question ("is 1 short helpful with several? amber or red?") made me open the code: today's chip counts red days only and a tap opens a list. The design reading had been carried from a ruling's summary, not from the app.
+
+**Suggested improvement:** Before a mock-up page states what an existing control does today (what it counts, what a tap does), open that control's code or run it once, and cite which; a reading not checked says "not checked".
+
+**Principle:** A description of current behaviour is a claim about the running thing; check it at the source before it reaches the person deciding, or label it unverified.
