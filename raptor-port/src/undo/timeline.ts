@@ -675,6 +675,9 @@ function undoConflictOf(entry: UndoEntry): Conflict | null {
   for (const o of entries) {
     if (o === entry || o.undone || o.seq <= entry.seq) continue
     if (sharesKeys(keySet(o), keys)) {
+      /* the newer step is BLOCKED for good (refusedFor — D1263's code read): no press will ever take it, so this one can
+         never pass either — passed over the same way, naming the step the next press takes */
+      if ((o as any)[BLOCKED_U]) return { text: 'A later change touches the same thing and can’t be undone.', sticky: true }
       if (isEligible(o) && !deadFor(o, 'undo')) return { text: 'A later change touches the same thing — undo that first.', sticky: false }
       /* the newer step is one Undo never takes (D350): say which act, and that the way back is by hand (plan B3; Fable's
          final read, F3 — the generic sentence left a suspension behind an added person with no way forward) */
@@ -880,6 +883,15 @@ function sayBlocked(entry: UndoEntry, dir: 'undo' | 'redo', text: string): strin
   return next ? `${text} Press ${dir === 'undo' ? 'Undo' : 'Redo'} again for: ${next.label}.` : text
 }
 
+/* D1263's code read (F1): the commit's refusal of a member's restore onto a Leave War day closed for him is for good — a day
+   closed by time never reopens, and his step's images will not change — so, like every other step that can never pass,
+   it is BLOCKED (passed over by the next press, which names the step it will take) instead of refusing every press and
+   leaving everything older out of reach. Any other failure in the apply keeps refusing as before. */
+function refusedFor(entry: UndoEntry, dir: 'undo' | 'redo', reason?: string): string {
+  const text = plainRestoreReason(reason, entry)
+  return reason && /war day not open for bidding/.test(reason) ? sayBlocked(entry, dir, text) : text
+}
+
 export function globalUndo(): UndoResult {
   const entry = newestUndoable()
   if (!entry) return { ok: false, reason: nothingToUndoWhy() || 'Nothing to undo.' }
@@ -900,7 +912,7 @@ export function globalUndo(): UndoResult {
   const postConflict = undoConflictOf(entry)
   if (postConflict) return { ok: false, reason: postConflict.sticky ? sayBlocked(entry, 'undo', postConflict.text) : postConflict.text }
   const r = applyRestore(entry, entry.inverse, 'undo')
-  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason, entry) }
+  if (!r.ok) return { ok: false, reason: refusedFor(entry, 'undo', r.reason) }
   entry.undone = true
   entry.undoneAt = ++stamp
   entry.undoneSeq = r.seq
@@ -923,7 +935,7 @@ export function globalRedo(): UndoResult {
   const postConflict = redoConflictOf(entry)
   if (postConflict) return { ok: false, reason: postConflict.sticky ? sayBlocked(entry, 'redo', postConflict.text) : postConflict.text }
   const r = applyRestore(entry, entry.forward, 'redo')
-  if (!r.ok) return { ok: false, reason: plainRestoreReason(r.reason, entry) }
+  if (!r.ok) return { ok: false, reason: refusedFor(entry, 'redo', r.reason) }
   entry.undone = false
   entry.undoneAt = undefined
   bumpUndo()

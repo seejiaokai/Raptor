@@ -30,7 +30,7 @@ import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { installAbsenceDoor, wireLeaveWarSync } from './sync'
 import { globalRedo, globalUndo } from '../undo'
-import { _resetTimeline, _timelineEntries } from '../undo/timeline'
+import { _resetTimeline, _timelineEntries, undoState } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 
 const Y26 = 'y2026', Y27 = 'y2027'
@@ -296,8 +296,9 @@ describe('the open dates and the last-closed note survive a reload', () => {
 })
 
 /* M1's walk, B-F1: a member deleted his own pending bid on a day since closed (D1225) and his Undo was refused ("That
-   couldn't be completed just now") — the commit's open-day check (B8) read the Undo as adding a bid to a closed day. A
-   restore that only adds back his own pending bids is let through; a restore that brings anything else is not. */
+   couldn't be completed just now") — the commit's open-day check (B8) read the Undo as adding a bid to a closed day. His
+   Undo puts back exactly what his closed-day delete took, vouched for by the timeline (D1263); a Redo, or the Undo of a
+   step made while the day was open, is refused (the D1263 block below). */
 describe('B-F1 — his Undo of deleting his own pending bid on a closed day puts it back', () => {
   const ISNAP = JSON.stringify(INPUTS)
   const pid = 'bane'                                         // Ranger, the seeded member account
@@ -372,7 +373,9 @@ describe('D1263 — a member\'s Undo or Redo never puts his bid back on a day cl
     const own = requests(pid, day)
     expect(clearRecordById(pid, day, own[0]!.id)).toBe(true)
     closeByTime()
-    expect(globalUndo()).toMatchObject({ ok: false, reason: 'Bidding is closed on that day, so your bid can’t go back on it.' })
+    const u = globalUndo()
+    expect(u.ok).toBe(false)
+    expect(u.reason).toMatch(/^Bidding is closed on that day, so your bid can’t go back on it\. Press Undo again for: /)   // his bid step is next
     expect(requests(pid, day)).toHaveLength(0)
   })
 
@@ -386,6 +389,42 @@ describe('D1263 — a member\'s Undo or Redo never puts his bid back on a day cl
     expect(requests(pid, day).map(r => [r.code, r.state])).toEqual([['LL', 'pending']])
     expect(globalRedo().ok).toBe(true)
     expect(requests(pid, day)).toHaveLength(0)
+  })
+
+  /* D1263's code read (F1): a refused Undo must not jam the button — the refusal is for good (a day closed by time never
+     reopens), so it is passed over like every other step that can never be taken, and an older step behind it that shares
+     its record is passed over too; the next press reaches his steps on days still open */
+  it('a refused Undo is passed over: the presses after it reach his older step on a day still open', () => {
+    expect(setCell(pid, '2026-02-20', 'LL')).toBe(true)                        // A — stays open
+    expect(setCell(pid, day, 'LL')).toBe(true)                                 // B
+    expect(clearRecordById(pid, day, requests(pid, day)[0]!.id)).toBe(true)    // C — the delete, while open
+    closeByTime()
+    expect(canBidOn(pid, '2026-02-20')).toBe(true)
+    const u1 = globalUndo()
+    expect(u1.ok).toBe(false)
+    expect(u1.reason).toMatch(/^Bidding is closed on that day, so your bid can’t go back on it\. Press Undo again for: /)
+    const u2 = globalUndo()                                                    // B shares 10 Feb with the blocked C
+    expect(u2.ok).toBe(false)
+    expect(u2.reason).toMatch(/Press Undo again for: /)
+    expect(globalUndo().ok).toBe(true)                                         // A
+    expect(requests(pid, '2026-02-20')).toHaveLength(0)
+    expect(requests(pid, day)).toHaveLength(0)
+  })
+
+  it('a refused Redo is passed over too: the next press reaches the step undone before it', () => {
+    expect(setCell(pid, '2026-02-20', 'LL')).toBe(true)                        // A — stays open
+    expect(setCell(pid, day, 'LL')).toBe(true)                                 // B
+    expect(globalUndo().ok).toBe(true)                                         // B undone
+    expect(globalUndo().ok).toBe(true)                                         // A undone
+    closeByTime()
+    expect(globalRedo().ok).toBe(true)                                         // A back on 20 Feb, still open
+    const r1 = globalRedo()                                                    // B onto 10 Feb, closed since
+    expect(r1.ok).toBe(false)
+    expect(r1.reason).toMatch(/^Bidding is closed on that day, so your bid can’t go back on it\./)
+    expect(undoState()).toMatchObject({ canRedo: false, redoWhy: 'Bidding is closed on that day, so your bid can’t go back on it.' })   // greyed, saying why
+    expect(globalRedo()).toMatchObject({ ok: false, reason: 'Bidding is closed on that day, so your bid can’t go back on it.' })
+    expect(requests(pid, day)).toHaveLength(0)
+    expect(requests(pid, '2026-02-20')).toHaveLength(1)
   })
 
   /* M1's H1 fix let his Inputs-page half day cut his whole-day bid to its free half on a closed day (D1166); the Undo of
