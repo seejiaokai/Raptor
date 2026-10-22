@@ -555,7 +555,7 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
                   <div className={'leg-sec' + (g.onlyHere ? ' leg-sec-here' : '')}>{g.group}</div>
                   {g.rows.map(r => (
                     <div className="leg-row" key={r.show}>
-                      <LegBox code={r.show} />
+                      <LegBox code={r.show} text={r.show} place={r.show === 'HO' ? 'top' : 'whole'} />
                       <span className="leg-t">{r.mean}</span>
                     </div>
                   ))}

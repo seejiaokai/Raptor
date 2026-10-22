@@ -1286,10 +1286,12 @@ export function Matrix() {
      own storage, read and written inside a try, the grid drawing as ruled without it); on a DESKTOP they open as today. A
      bid that turns a row amber or red still opens them (D1227's bubble). */
   const phoneNow = usePhone()
-  const manningKey = `lw:manning:${getState().viewer ?? ''}`
+  /* read where it is used — the first draw can come before the person signed in is known, and a key with no person in it
+     would be one memory for everyone on the device (the scenario designer's find, 23 Oct 26; D1258 "per person") */
+  const manningKey = () => { const v = getState().viewer; return v ? `lw:manning:${v}` : null }
   const [countsOpen, setCountsOpen] = useState(() => {
     if (!phoneNow) return true
-    try { return localStorage.getItem(manningKey) === 'open' } catch { return false }
+    try { const k = manningKey(); return !!k && localStorage.getItem(k) === 'open' } catch { return false }
   })
   /* D1227's BUBBLE (22 Oct 26 — "Only when the input reduces the counter to hit amber or red. The manning bar will appear
      and a bubble will notify the user that this input cause what"; on any phone since D1258). When a bid placed through a
@@ -1298,17 +1300,19 @@ export function Matrix() {
      difference between the grid's verdicts when the window opened and when it closed — the window that placed the bid
      is the gesture, so a change made elsewhere (another device, a setting) never raises it. */
   const sheetUp = !!open || !!sel
-  const beforeRef = useRef<Map<string, string> | null>(null)
+  const beforeRef = useRef<Map<string, { label: string; lv: number }> | null>(null)
   const [bubble, setBubble] = useState<string | null>(null)
   const flaggedNow = () => {
-    const m = new Map<string, string>()
-    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}|${r.verdict}`, r.label)
+    /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
+       never reported as turned amber (the scenario designer's find, 23 Oct 26) */
+    const m = new Map<string, { label: string; lv: number }>()
+    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}`, { label: r.label, lv: r.verdict === 'red' ? 2 : 1 })
     /* …and the two Available rows at their amber or red points (D1190, D1202 — the same verdict their cells wear,
        `sync.ts availVerdictAt`), over the days drawn: a bid is placed on a day in view */
     const names = availRowNames()
     for (const d of drawnDates) for (const seat of ['p', 'w'] as const) {
       const v = availVerdictAt(d, seat)
-      if (v) m.set(`avail${seat}|${d}|${v}`, names[seat])
+      if (v) m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1 })
     }
     return m
   }
@@ -1318,10 +1322,9 @@ export function Matrix() {
     beforeRef.current = null
     if (!before) return
     const worst = new Map<string, 'amber' | 'red'>()
-    for (const [k, label] of flaggedNow()) {
-      if (before.has(k)) continue
-      const v = k.slice(k.lastIndexOf('|') + 1) as 'amber' | 'red'
-      if (worst.get(label) !== 'red') worst.set(label, v)
+    for (const [k, { label, lv }] of flaggedNow()) {
+      if (lv <= (before.get(k)?.lv ?? 0)) continue
+      if (worst.get(label) !== 'red') worst.set(label, lv === 2 ? 'red' : 'amber')
     }
     if (!worst.size) return
     setCountsOpen(true)
@@ -1335,9 +1338,19 @@ export function Matrix() {
     const t = window.setTimeout(() => document.addEventListener('pointerdown', off, { once: true }), 0)
     return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', off) }
   }, [bubble])
+  const viewerNow = getState().viewer
+  const seenViewer = useRef(viewerNow)
+  useEffect(() => {
+    if (seenViewer.current === viewerNow) return
+    seenViewer.current = viewerNow
+    if (!phoneNow) return
+    try { const k = manningKey(); setCountsOpen(!!k && localStorage.getItem(k) === 'open') } catch { setCountsOpen(false) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewerNow])
   const toggleManning = () => setCountsOpen(o => {
     const next = !o
-    if (phoneNow) { try { localStorage.setItem(manningKey, next ? 'open' : 'shut') } catch { /* a view convenience only */ } }
+    const k = manningKey()
+    if (phoneNow && k) { try { localStorage.setItem(k, next ? 'open' : 'shut') } catch { /* a view convenience only */ } }
     return next
   })
 

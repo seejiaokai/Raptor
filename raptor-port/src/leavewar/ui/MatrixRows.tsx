@@ -503,7 +503,9 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
               </span>
             )}
             {second && two && (
-              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 2 ? ' wide' : ''}`}>
+              /* the second box wears its own edges too (the scenario designer's find): the Inputs page's for leave filed there
+                 (an absence the war did not approve), the dotted one for leave moved here */
+              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 2 ? ' wide' : ''}${second.kind === 'absence' && !second.lw ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
                 {boxText(second.code, !!second.auto)}
               </span>
             )}

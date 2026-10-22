@@ -1088,7 +1088,10 @@
 }
 
 :is(.mx td, .leg-box) .c.raptor::before { border-left: 2px solid var(--accent); }
-:is(.mx td, .leg-box) .c.moved::before { border-left: 2px dotted #F2C879; }
+:is(.mx td, .leg-box) .c.moved::before { border-left: 2px dotted #F2C879; box-shadow: 1px 0 0 rgba(13, 17, 23, .85); }
+/* the moved edge and the clash corner each carry a thin dark outline, so they read on the amber leave boxes (D1175's
+   reading — look F's local and overseas leave are ambers, as the moved edge and the "!" are) */
+.mx td .mk.warn { box-shadow: 0 0 0 1px rgba(13, 17, 23, .85); }
 
 /* Outside the bidding window: not editable by whoever is looking.
    Deliberately QUIET — a dimmed column that reads as "not yours to touch

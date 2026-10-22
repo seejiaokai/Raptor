@@ -38,6 +38,9 @@ const poss = (cs: string | null | undefined) => (cs ? `${cs}’s ` : '')
 /* known command types → a specific plain phrase. Optional: any type absent here
    falls back to a safe generic label from its module. */
 const TYPE_PHRASE: Record<string, string> = {
+  /* the overhaul's M2 (D1190, D1193): the Available rows' amber and red points, the Required rows' names */
+  'lw.availrow': 'a change to an Available row on the Leave War',
+  'lw.reqname': 'a Required row renamed on the Leave War',
   'sched.slot': 'a change to the schedule',
   'sched.fill': 'a change to the schedule',
   'sched.text': 'a note on the schedule',
