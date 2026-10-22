@@ -241,7 +241,9 @@ const RULING_BYTES = [
   /* how-we-work 42000 -> 44000 (21 Oct 26, round 2 of the consistency look): 42,803 bytes with D1124, D1126, D1127 (the
      consistency look, the top bar to 1599, one search box) and D1086-D1097 - live; none is trimmed (D136).
      [RULINGS-SPENT-PASS] still brings it down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 44000],
+  /* how-we-work 44000 -> 46000 (22 Oct 26, the Leave War overhaul's round 17): 44,268 bytes with D1237 (what he should
+     look at stands at the top of every mock-up page) - live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 46000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
