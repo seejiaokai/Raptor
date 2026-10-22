@@ -2565,13 +2565,15 @@ test.skip('an admin hides a figure and the drawer loses that column; a member ha
   await expect(drawer.locator('th.fig[data-fig="pl"]')).toHaveCount(0)
 })
 
+// M2 (D1245): re-expressed — the key now teaches the one column beside the names, LVE; the fit on the screen stands.
 test('the Legend pop-out carries the figures key, and fits the screen', async ({ page }) => {
   await page.locator('[data-testid="legend-open"]').click()
   const leg = page.locator('[data-testid="legend"]')
   await expect(leg).toBeVisible()
   const figs = page.locator('[data-testid="legend-figures"]')
-  await expect(figs).toContainText('balance left')
-  await expect(figs).toContainText('All leave taken')
+  await expect(figs).toContainText('LVE left')
+  await expect(figs).toContainText('below zero')
+  await expect(figs).not.toContainText('All leave taken')
   // The pop-out was widened 272 -> 312 for the eight figures' captions; that
   // number is only checkable in a browser. Measured 6 Sep 26 on the phone
   // project: 312 wide, 310 of client width, nothing scrolling sideways inside
@@ -3802,7 +3804,10 @@ test('the counter sheet changes the column, and every row with it', async ({ pag
 // `'phone'`, which no project has been called since the Leave War suite moved
 // into raptor-port's own config (`lw-phone`/`lw-desktop`, 16 Aug 26) — so they
 // skipped everywhere and proved nothing for three weeks. Named correctly now.
+// M2: skipped — D1245: the column beside the names is LVE alone, so a swipe across it cycles nothing (the picker's code
+// leaves whole with M5); the unit test of the hold-and-drag (figselect.test.tsx) pins that a flick no longer changes it.
 test('swiping across the counter column cycles it', async ({ page }, testInfo) => {
+  test.skip(true, 'D1245 — the column is LVE alone')
   test.skip(testInfo.project.name !== 'lw-phone', 'needs touch emulation')
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
   expect(await shown()).toBe('+LVE')
@@ -5123,12 +5128,16 @@ test('an off day is green, a no-leave day orange, and a work word red', async ({
 // The counter picker was a rounded floating pill that crowded the events; the
 // owner asked to square it off. Pin that it reads as a contained, squared
 // control — a small radius and a real border — which jsdom cannot measure.
-test('the counter picker is a contained, squared control', async ({ page }) => {
-  const pick = page.locator('[data-testid="counter-pick"]')
-  const radius = parseFloat(await pick.evaluate(el => getComputedStyle(el).borderTopLeftRadius))
-  expect(radius).toBeLessThanOrEqual(4)
-  const border = parseFloat(await pick.evaluate(el => getComputedStyle(el).borderTopWidth))
-  expect(border).toBeGreaterThan(0)
+// M2 (D1245): re-expressed — no picker any more; the heading is a plain label, so it wears no box that would say it can
+// be pressed, and it keeps its height (the header row does not move).
+test('the column heading beside the names is a plain LVE label, not a control', async ({ page }) => {
+  await expect(page.locator('[data-testid="counter-pick"]')).toHaveCount(0)
+  const head = page.locator('[data-testid="counter-head"]')
+  await expect(head.locator('[data-testid="counter-name"]')).toHaveText('+LVE')
+  await expect(head.locator('button')).toHaveCount(0)
+  const label = head.locator('.cpick')
+  expect(parseFloat(await label.evaluate(el => getComputedStyle(el).borderTopWidth))).toBe(0)
+  expect(await label.evaluate(el => getComputedStyle(el).cursor)).not.toBe('pointer')
 })
 
 // ---- the period label, the contrast, and the under-manned list -----------
