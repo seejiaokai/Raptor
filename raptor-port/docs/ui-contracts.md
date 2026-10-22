@@ -11423,7 +11423,7 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   a Manning, Available P or Available W row is RED — `sync.ts manningRedDays`; amber never; gone at 0 — D1243) · the open
   dates · … · the zoom pair (until pinch to zoom, [LW-PHONE-PINCH-ZOOM], D1228) · Legend. Rearrange is a line in ⚙
   ("⇅ Rearrange the grid"); while it is on the bar carries "⇅ Done", the one way out.
-- **The ⚙ Settings window fits a phone's width (D1270, 23 Oct 26):** on a phone nothing in it scrolls sideways — its
+- **The Leave War's ⚙ Settings window fits a phone's width (D1270, 23 Oct 26):** on a phone nothing in it scrolls sideways — its
   words wrap, its group rows and trays keep inside the window, only up and down scrolls; pinned at a phone's width by a
   browser test that the window's content is no wider than the window.
 - **The grid's order (D1256, D1257):** the month buttons, then the dates (the header and its frozen copy), then the
