@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefCallback, type TouchEvent } from 'react'
+import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
@@ -27,6 +27,9 @@ import { edgeAutoScroll } from '../../ui/edgescroll'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
+import { StageBar } from './Chrome'
+import { askLw, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
+import { usePhone } from './phone'
 import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
@@ -266,8 +269,12 @@ export function Matrix() {
   // view preference, session-only, either role. Decided once at mount from the
   // same width query the phone flag uses; jsdom (no matchMedia) opens closed so
   // the unit suite sees the grid it always saw.
-  const [figuresOpen, setFiguresOpen] = useState(() =>
-    typeof window.matchMedia === 'function' && !window.matchMedia('(max-width: 700px)').matches)
+  /* THE GRID'S BALANCES FOLD GOES (D1245, 22 Oct 26 — "n5 as recommended"; narrowing D1185): every balance column is to
+     live on the Balances tab (the overhaul's M5) and on the grid each name keeps only its LVE figure, so no two things on
+     the page share the name "Balances". Its switch stood in the month band row, which goes too (D1257). Until M5 a
+     person's every figure is a tap on his name (his person window). The drawer's code stays switched off here — it goes
+     whole with M5's Balances page, which replaces it ([LW-OVERHAUL] — the build plan's M5). */
+  const [figuresOpen, setFiguresOpen] = useState(false)
   // Where the drawer sits and how wide it came out: the real header row's top
   // inside `.mx-outer`, the names column's right edge, the header row's height
   // and the drawer's own measured widths (its right edge and its columns feed
@@ -297,6 +304,18 @@ export function Matrix() {
   // write to light the credit it had just made; the write-opens-the-tracker
   // route was reversed the same day, so both the field and the prop are gone.
   const [oilTracker, setOilTracker] = useState<{ person: string | null } | null>(null)
+  /* THE TOP ROW'S ASKS (ui/lwnav.ts — D1254): its tabs, ⚙ and My leave open the windows this grid owns, as their buttons
+     did when they sat on the grid card's bar. Taken once; the OIL tab reads as chosen while the tracker is up. */
+  const navSeq = useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
+  useEffect(() => {
+    const a = takeLwAsk()
+    if (!a) return
+    if (a.kind === 'grid') setOilTracker(null)
+    else if (a.kind === 'oil') setOilTracker({ person: null })
+    else if (a.kind === 'settings') setSettings(true)
+    else if (a.kind === 'person') setWhoOpen(a.id)
+  }, [navSeq])
+  useEffect(() => { setOilUp(!!oilTracker) }, [oilTracker])
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
@@ -1262,7 +1281,21 @@ export function Matrix() {
   // viewing, click to open or close"). A view preference, session-only like the
   // zoom above; forced open while an admin is Rearranging so the row reorder /
   // hide controls stay reachable.
-  const [countsOpen, setCountsOpen] = useState(true)
+  /* THE MANNING ROWS' FOLD (D1258, widening D1227): on a PHONE they open folded for everyone, admins too, and his choice is
+     remembered — per person, on this device (a view convenience, never a record: `lw:manning:<viewer>` in the browser's
+     own storage, read and written inside a try, the grid drawing as ruled without it); on a DESKTOP they open as today. A
+     bid that turns a row amber or red still opens them (D1227's bubble). */
+  const phoneNow = usePhone()
+  const manningKey = `lw:manning:${getState().viewer ?? ''}`
+  const [countsOpen, setCountsOpen] = useState(() => {
+    if (!phoneNow) return true
+    try { return localStorage.getItem(manningKey) === 'open' } catch { return false }
+  })
+  const toggleManning = () => setCountsOpen(o => {
+    const next = !o
+    if (phoneNow) { try { localStorage.setItem(manningKey, next ? 'open' : 'shut') } catch { /* a view convenience only */ } }
+    return next
+  })
 
   /* WHICH CATEGORY GROUPS ARE FOLDED AWAY (owner, 28 Aug 26 — "allow me to
      minimise categories on leave war"). Same doctrine as the manning collapse
@@ -3227,100 +3260,51 @@ export function Matrix() {
             the right. The old "JAN – DEC 26 · 365 days · 50 people" line was
             dropped (owner, same day); the war's NAME still lives in the Period
             picker in the page chrome above, so nothing is stranded. */}
+        {/* THE GRID'S OWN BAR (D1254 — the navigation as drawn in round 19): [▸ Manning | 1 red ›] · the open dates · … ·
+            Legend, the same for everyone (`StageBar`, Chrome.tsx). ⚙ went up to the tab row's right end and OIL became a
+            tab (Chrome.tsx `Topbar`); Rearrange moved into ⚙ (its "Done" rides this bar while it is on). The zoom pair
+            stays at the bar's right end until pinch to zoom replaces it — its own job, [LW-PHONE-PINCH-ZOOM] (D1228). */}
         <div className="card-hd">
-          {/* Manning LEADS the row, sitting directly above the counter rows it
-              shows/hides (owner, 5 Sep 26 — "move the manning to be infused with
-              the counter rows … still with a drop down"). EITHER role (owner,
-              19 Aug 26); a plain view toggle, above the scroll so it does not
-              ride the grid it hides. */}
-          <button
-            className="rtbtn countstoggle"
-            data-testid="counts-toggle"
-            aria-expanded={countsOpen}
-            title={countsOpen ? 'Hide the manning counts' : 'Show the manning counts'}
-            onClick={() => setCountsOpen(o => !o)}
-          >
-            {countsOpen ? '▾' : '▸'} Manning
-          </button>
-          {role === 'admin' && (
-            <>
-              {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26). Every admin CONFIG
-                  control — counters, event rows, Show SANS, the roster groups —
-                  folds into the sheet it opens. */}
-              <button
-                className="rtbtn gear"
-                data-testid="settings-open"
-                title="Settings — counters, event rows and roster groups"
-                aria-label="Settings — counters, event rows and roster groups"
-                onClick={() => setSettings(true)}
-              >
-                ⚙
-              </button>
-              {/* REARRANGE toggle — moved here from the grid corner (owner, 5 Sep
-                  26 — "the rearrange button goes after [settings]"). The actual
-                  rearranging is HANDS-ON-GRID: this only turns the on-grid drag
-                  handles on and off, and it is the ONE way in and out (owner,
-                  6 Sep 26 — "delete this whole blue section … when I click on it,
-                  it exits the rearrange mode"): the old strip under the header
-                  (Auto-sort + Done) is gone. Lights accent (`.on`) while live so
-                  it is obvious the handles are on and that tapping again leaves.
-                  On a phone it is the ⇅ icon alone (the word rides `.rtlbl`,
-                  hidden ≤700px since D1019 — "just show an arrow up and down icon"); desktop
-                  keeps the word. Admin only. */}
-              <button
-                className={`rtbtn${arranging ? ' on' : ''}`}
-                data-testid="roster-arrange"
-                aria-pressed={arranging}
-                aria-label={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster'}
-                title={arranging ? 'Finish rearranging — tap again to leave' : 'Rearrange the roster — drag people and category blocks'}
-                onClick={() => setArranging(a => !a)}
-              >
-                ⇅<span className="rtlbl"> {arranging ? 'Rearranging' : 'Rearrange'}</span>
-              </button>
-            </>
-          )}
-          {/* The OIL TRACKER (owner, 2 Sep 26): every person's OIL balance, the
-              ledger behind each, and the admin's crediting. BOTH roles — a member
-              reads, an admin edits; the sheet decides which controls to draw and
-              the store refuses a member's write. It sits RIGHT AFTER the last
-              control, not pushed to the far edge (owner, 5 Sep 26 — "the oil
-              tracker can be right of rearrange … in normal user it's just right
-              of manning"): no spring, so admin reads Manning · ⚙ · Rearrange · OIL
-              and a member reads Manning · OIL, each cluster left. "tracker" drops
-              on a phone (`.rtlbl`) so the row still holds one line. */}
-          <button
-            className="rtbtn"
-            data-testid="oil-tracker"
-            title="OIL balances, credits and history"
-            onClick={() => setOilTracker({ person: null })}
-          >
-            ◷ OIL<span className="rtlbl"> tracker</span>
-          </button>
-          {/* The grid ZOOM, − then +, right after OIL at BOTH widths (owner,
-              6 Sep 26 — "put the zoom + - button after oil/oil tracker. But
-              make sure it's still 1 row on the mobile"). Both roles — it is a
-              view control. Moved here from the end of the month strip, where
-              it was phone-only; the strip's tests and readers treat every
-              button there as a month, so it never belonged among them. A
-              phone opens one step out (see `zoom`). */}
-          <span className="lwzoom" data-testid="lw-zoom">
-            <button
-              className="rtbtn zoom"
-              data-testid="lw-zoom-out"
-              aria-label="Zoom out"
-              title="Zoom out"
-              disabled={zoom === ZOOMS[0]}
-              onClick={() => zoomStep(-1)}
-            >−</button>
-            <button
-              className="rtbtn zoom"
-              data-testid="lw-zoom-in"
-              aria-label="Zoom in"
-              title="Zoom in"
-              disabled={zoom === ZOOMS[ZOOMS.length - 1]}
-              onClick={() => zoomStep(1)}
-            >＋</button>
-          </span>
+          <StageBar
+            manningOpen={countsOpen}
+            onManning={toggleManning}
+            extra={
+              <>
+                {arranging && role === 'admin' && (
+                  /* THE ONE WAY OUT OF REARRANGE (owner, 6 Sep 26 — the toggle is the way in and out; D1254 put the way in
+                     inside ⚙): lit while the drag handles are on, a tap leaves */
+                  <button
+                    className="rtbtn on"
+                    data-testid="roster-arrange"
+                    aria-pressed="true"
+                    aria-label="Finish rearranging the roster"
+                    title="Finish rearranging — tap to leave"
+                    onClick={() => setArranging(false)}
+                  >
+                    ⇅<span className="rtlbl"> Done</span>
+                  </button>
+                )}
+                <span className="lwzoom" data-testid="lw-zoom">
+                  <button
+                    className="rtbtn zoom"
+                    data-testid="lw-zoom-out"
+                    aria-label="Zoom out"
+                    title="Zoom out"
+                    disabled={zoom === ZOOMS[0]}
+                    onClick={() => zoomStep(-1)}
+                  >−</button>
+                  <button
+                    className="rtbtn zoom"
+                    data-testid="lw-zoom-in"
+                    aria-label="Zoom in"
+                    title="Zoom in"
+                    disabled={zoom === ZOOMS[ZOOMS.length - 1]}
+                    onClick={() => zoomStep(1)}
+                  >＋</button>
+                </span>
+              </>
+            }
+          />
         </div>
         {/* The on-grid REARRANGE BAR (3 Sep 26: "⠿ Rearranging — drag people…",
             Auto-sort, Done) is GONE (owner, 6 Sep 26 — "delete this whole blue
@@ -3360,42 +3344,6 @@ export function Matrix() {
             {/* Collapsed away on the view toggle, but always shown while an
                 admin is Rearranging — that is where the per-row reorder / delete
                 controls live, and hiding the block would hide them too. */}
-            {(countsOpen || (arranging && role === 'admin')) && (
-              <CountRows
-                verdicts={verdicts}
-                dates={drawnDates}
-                order={manningBlockOrder()}
-                arranging={arranging}
-                admin={role === 'admin'}
-                onInfo={setManningInfo}
-                onRowDragStart={(e, ruleId) => startRowDrag(e, ruleId, MANNING_DRAG)}
-                draggingId={draggingId}
-                dragOver={dragOver}
-                dragAfter={dragAfter}
-                padL={padL}
-                padR={padR}
-                phL={phL}
-                phR={phR}
-                onRowsChange={onArchiveChange}
-                /* THE FOUR FIXED ROWS OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs / SANS
-                   redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to the
-                   plan's and the war's signals; a figure that widens a day column asks for the same re-measure the
-                   Archive rows did — which also re-places the Figures drawer and the open-bidding outline, both
-                   measured off the dates BELOW this block (the two things he circled on the hand-drawn picture: the
-                   gate e2e/leavewar.spec.ts checks both in a real browser).
-                     AND THE COUNTERS STAND AMONG THEM WHERE THE ADMIN PUTS THEM (D674, 8 Oct 26): CountRows hands its
-                   rows over in runs and FlyRows draws each run above, between or below its four. In Rearrange each of
-                   the four is a place to drop (the same `data-mrow` the counters carry, so MANNING_DRAG hit-tests
-                   them with no second machine) and shows the landing bar from the drag state below. */
-                fixed={runs => (
-                  <FlyRows
-                    days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR}
-                    onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail}
-                    runs={runs} arranging={arranging && role === 'admin'} dragOver={draggingId ? dragOver : null} dragAfter={dragAfter}
-                  />
-                )}
-              />
-            )}
             {/* The month strip, now a row of the grid so it sits between the
                 counts and the header (owner's arrows). The buttons live in a
                 sticky two-column cell and overflow visibly across the fill
@@ -3436,9 +3384,47 @@ export function Matrix() {
               </tr>
             </tbody>
             <tbody className="mxhead" ref={headRef}>
-              {bracketRow(true)}
               {headerRow(true)}
             </tbody>
+            {/* THE MANNING ROWS STRAIGHT UNDER THE DATES (D1256, 22 Oct 26 — "G1 as recommended"): every Manning figure reads
+                straight down from its date; the Event rows, then the people, follow. They stood above the month buttons until
+                M2 (the owner's arrows of 18 Aug 26); D665's four rows stay at the block's foot. */}
+            {(countsOpen || (arranging && role === 'admin')) && (
+              <CountRows
+                verdicts={verdicts}
+                dates={drawnDates}
+                order={manningBlockOrder()}
+                arranging={arranging}
+                admin={role === 'admin'}
+                onInfo={setManningInfo}
+                onRowDragStart={(e, ruleId) => startRowDrag(e, ruleId, MANNING_DRAG)}
+                draggingId={draggingId}
+                dragOver={dragOver}
+                dragAfter={dragAfter}
+                padL={padL}
+                padR={padR}
+                phL={phL}
+                phR={phR}
+                onRowsChange={onArchiveChange}
+                /* THE FOUR FIXED ROWS OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs / SANS
+                   redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to the
+                   plan's and the war's signals; a figure that widens a day column asks for the same re-measure the
+                   Archive rows did — which also re-places the Figures drawer and the open-bidding outline, both
+                   measured off the dates BELOW this block (the two things he circled on the hand-drawn picture: the
+                   gate e2e/leavewar.spec.ts checks both in a real browser).
+                     AND THE COUNTERS STAND AMONG THEM WHERE THE ADMIN PUTS THEM (D674, 8 Oct 26): CountRows hands its
+                   rows over in runs and FlyRows draws each run above, between or below its four. In Rearrange each of
+                   the four is a place to drop (the same `data-mrow` the counters carry, so MANNING_DRAG hit-tests
+                   them with no second machine) and shows the landing bar from the drag state below. */
+                fixed={runs => (
+                  <FlyRows
+                    days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR}
+                    onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail}
+                    runs={runs} arranging={arranging && role === 'admin'} dragOver={draggingId ? dragOver : null} dragAfter={dragAfter}
+                  />
+                )}
+              />
+            )}
             {/* Above the roster, below the header — an event is the REASON a
                 day is thin, so it reads right under the date it explains. */}
             <EventRows
@@ -3647,7 +3633,6 @@ export function Matrix() {
                   ))}
                 </colgroup>
                 <tbody className="mxhead">
-                  {bracketRow(false, drawer)}
                   {headerRow(false, drawer)}
                 </tbody>
               </table>
@@ -4202,6 +4187,7 @@ export function Matrix() {
           onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
           // Days… opens the scheduler's Days window on the month the grid is showing (the month strip's lit one),
           // through the war's one seam (sync.ts openDays); the sheet closes so it does not cover the window
+          onRearrange={() => { setSettings(false); setArranging(true) }}
           onDays={() => {
             setSettings(false)
             const shown = months.find(m => m.label === inViewRef.current) || months[0]
