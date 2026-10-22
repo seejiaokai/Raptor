@@ -341,7 +341,7 @@ reader reported a line a break test had cut out for one minute).
 are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
 chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
 and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Saving tokens never
-costs this (owner, D1271, 23 Oct 26 — "I don't want u to loose quality for debugging or quality check"):** a look that
+costs this (owner, D1271, 23 Oct 26 — "I don't want u to loose quality for debugging or quality check"):** a look at a picture that
 decides whether something is wrong or right — a fault's cause, a fix's check, a finding — stays the host's; only a look
 whose answer the host does not rely on alone (picking pictures to send him) may go to Sonnet. **Sonnet never reads
 code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
