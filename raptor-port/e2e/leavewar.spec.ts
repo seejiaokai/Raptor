@@ -533,7 +533,7 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
   }
 })
 
-test('on a phone the open chip opens the "Open for bidding" window inside the screen, over the grid; a press outside closes it and changes nothing; a month is one tap each way', async ({ page }) => {
+test('on a phone the open chip opens the "Open for bidding" window as a full page from the top (D1264); its ✕ and Escape close it and change nothing; a month is one tap each way', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size control (D678, D1177)')
   await lwRole(page, 'admin')
   const chip = openChip(page), win = datesWindow(page)
@@ -569,9 +569,14 @@ test('on a phone the open chip opens the "Open for bidding" window inside the sc
     }
     expect(g.months.filter(m => m.state === 'open').map(m => m.id), 'the seed\'s stretch, lit').toEqual(['od-month-2026-01', 'od-month-2026-02', 'od-month-2026-03'])
 
-    /* A PRESS OUTSIDE (the 4 Sep 26 rule) — on the page above the window, well clear of it: the window goes, the dates
-       stand, and the press reached nothing under it (no day's sheet came up) */
-    await page.mouse.click(30, Math.max(g.win.t - 40, 10))
+    /* A FULL PAGE FROM THE TOP (owner D1264, 23 Oct 26 — "put the open for bidding at the top full page. So that when the
+       dates below jumps it doesn't affect the user to chase the buttons"): it fills the screen, so there is no "outside"
+       to press (the 4 Sep 26 rule's press outside went with it); its ✕ closes it, the dates stand, nothing under it opened */
+    expect(g.win.t, `${width}: the page starts below the screen's top`).toBeLessThanOrEqual(0.5)
+    expect(g.win.l, `${width}: the page leaves a gap at the left`).toBeLessThanOrEqual(0.5)
+    expect(g.win.r, `${width}: the page leaves a gap at the right`).toBeGreaterThanOrEqual(g.vw - 0.5)
+    expect(g.win.b, `${width}: the page stops short of the screen's foot`).toBeGreaterThanOrEqual(g.vh - 0.5)
+    await page.locator('[data-testid="open-dates-close"]').click()
     await expect(win).toHaveCount(0)
     await expect(chip).toHaveText('Open 1 Jan – 31 Mar')
     await expect(chip).toHaveAttribute('aria-expanded', 'false')
