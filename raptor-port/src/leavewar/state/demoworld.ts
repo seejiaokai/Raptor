@@ -163,6 +163,32 @@ export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
   ],
 }
 
+/* THE WALK'S OWN CASES (the Leave War overhaul's M2 — the bug-check order §7.1, "the case seeded in the demo data"), so a
+   fresh demo shows on first run the two-entry days look F draws, without anyone having to build them by hand. On days the
+   demo leaves EMPTY, and kept apart from the OIL story above so its baseline — captured before the award move
+   (oilaward-baseline.test.ts) — stays the story's alone. Keyed by SEED id, so DEMO_MAP dresses them with everyone else:
+   · DECAL (→ CASPER), Thu 5 Feb 26: a MORNING half-day leave, approved (filed below with the seed's approved leave), and
+     an HO award in the AFTERNOON — each in its own half of the one day (D1164).
+   · CAGE (→ SPACEMAN), Mon 23 Feb 26: two whole-day entries side by side — an FO award beside a refused OL bid, as the
+     approved drawing r7-04 shows ("two entries on one day"). JAGUAR's 19 Jan (a two-day award beside a refused OL) is
+     the seed's own example of the same shape.
+   The Available rows' amber points are left unset: the walk's admin sets them. The ids sort after the seed's ("seed1"…):
+   a saved war reads its records back in id order, and the first boot's seal check compares the world before and after a
+   reload as written (bootseal.test.ts). */
+export const DEMO_WALK: { recs: Recs; ledger: Ledger } = {
+  recs: {
+    cage: { '2026-02-23': [{ id: 'walk-1', kind: 'request', code: 'OL', state: 'refused' }] },
+  },
+  ledger: [
+    { ...grant('walk-2', 'decal', 0.5, '2026-02-05', 'SIM', 'SQNCDR'), half: 'pm' as const },
+    grant('walk-3', 'cage', 1, '2026-02-23', 'FLT', 'SQNCDR'),
+  ],
+}
+/* the walk's approved leave — an Input, as all approved leave is (seed ids; `*LL` is the morning) */
+const DEMO_WALK_LEAVE: Array<[string, string, string]> = [
+  ['decal', '*LL', '2026-02-05'],
+]
+
 /**
  * Boot-time projection + demo re-key. Called once from main.tsx, after
  * lwInitStore and before the sync wires run.
@@ -197,6 +223,7 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
      the demo OIL story goes in first, so the re-key dresses it too. */
   if (demo) {
     installDemoOil(DEMO_OIL)
+    installDemoOil(DEMO_WALK)
     remapPersonKeys(DEMO_MAP)
     /* save the DRESSED world now — setPeople above saved the undressed seed, and the next boot, finding a
        started store, never dresses it again ([DB-READINESS] group A phase 0; store.ts persistBootWorld) */
@@ -212,6 +239,7 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
     const seedRows = [
       ...SEED_ABSENCES.map(a => ({ ...a, to: a.endDate ?? a.date })),
       ...DEMO_OIL_TAKEN.map(([person, date]) => ({ person, code: 'OIL', date, to: date, lw: true })),
+      ...DEMO_WALK_LEAVE.map(([person, code, date]) => ({ person, code, date, to: date, lw: true })),
     ]
     for (const a of seedRows) {
       const person = DEMO_MAP[a.person] ?? a.person
