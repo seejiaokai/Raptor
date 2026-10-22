@@ -14,11 +14,13 @@ import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
 import { canDecide, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
-import { creditGiver, type NoticeRec, type RequestRec } from '../engine/warrecs'
-import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, editAward, movableRecords, oilOnDay, recordsAt, type OilShown } from '../state/store'
+import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
+import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, type OilShown } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
 import { dayLabel, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
+import { halfWord } from './awardwords'
+import { HalfPick } from './CreditForm'
 import './bidpicker.css'
 
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -76,6 +78,8 @@ export function DayListSheet({
   const [eWhy, setEWhy] = useState('')
   const [eWho, setEWho] = useState('')
   const [eDays, setEDays] = useState('')
+  /* an HO's half, as the editor holds it (D1164) — the award's own when it is one, else picked when he types 0.5 */
+  const [eHalf, setEHalf] = useState<Half | null>(null)
   const deciding = canDecide(role)
   /* a bid of this day may be deleted where the day is open for this person — or, on a day since closed, his own
      PENDING bid (D1225): the store's one rule (`canBidOn`, `ownPendingOnClosedDay`) */
@@ -182,7 +186,9 @@ export function DayListSheet({
          man is OWED a day, not that he was at work (N13). On a worked
          Saturday the sheet would have shown the same four words twice. */
       const kind = rec && !rec.award ? 'OIL earned' : 'OIL award'
-      const text = `${c.code} — ${kind}${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
+      /* an HO says which half it is in (D1164), as a half day's leave on this list does */
+      const half = rec?.half ? `, ${halfWord(rec.half)}` : ''
+      const text = `${c.code} — ${kind}${half}${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
       const actions: ReactElement[] = []
       if (rec?.award && role === 'admin') {
         /* AN AWARD IS EDITABLE WHEREVER IT OPENS (owner, [LW-OIL-DETAIL]).
@@ -191,7 +197,7 @@ export function DayListSheet({
            this the ruling quietly stopped being true on exactly the days
            N16 creates. One door: `editAward` writes all three fields as a
            single step, so one undo takes the whole change back. */
-        actions.push(<button key="ed" className="dchip" data-testid={`dl-oil-edit-${c.id}`} onClick={() => { setEditing(editing === c.id ? null : c.id); setEWhy(rec.note ?? ''); setEWho(rec.givenBy ?? ''); setEDays(String(rec.days)) }}>Edit…</button>)
+        actions.push(<button key="ed" className="dchip" data-testid={`dl-oil-edit-${c.id}`} onClick={() => { setEditing(editing === c.id ? null : c.id); setEWhy(rec.note ?? ''); setEWho(rec.givenBy ?? ''); setEDays(String(rec.days)); setEHalf(rec.half ?? null) }}>Edit…</button>)
         actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
       }
       const from = !rec || rec.award ? ''
@@ -272,6 +278,7 @@ export function DayListSheet({
               <span className="lab">{award ? 'OIL award' : 'OIL earned'}</span>
               <span className="note" data-testid={`oil-detail-days-${rec.id}`}>
                 {creditWorthText({ code: rec.code, days: rec.days })}
+                {rec.half ? `, ${halfWord(rec.half)}` : ''}
                 {!award && rec.spans?.length
                   ? ` — worked ${rec.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
                   : ''}
@@ -299,10 +306,14 @@ export function DayListSheet({
                 <input className="notebox" aria-label="Reason" data-testid={`oil-edit-why-${rec.id}`} value={eWhy} onChange={e => setEWhy(e.target.value)} placeholder="Why it was given" />
                 <input className="notebox" aria-label="Given by" data-testid={`oil-edit-given-${rec.id}`} value={eWho} onChange={e => setEWho(e.target.value)} placeholder="Given by" />
                 <input className="oil-num" aria-label="Days" data-testid={`oil-edit-days-${rec.id}`} value={eDays} onChange={e => setEDays(e.target.value)} placeholder="Days" />
+                {/* half a day takes a half (D1164): the award's own, else the day's default until he picks */}
+                {Number(eDays.trim()) === 0.5 && (
+                  <HalfPick testid={`oil-edit-half-${rec.id}`} value={eHalf ?? defaultAwardHalf(personId, date, rec.id)} onPick={setEHalf} />
+                )}
                 <button className="dchip approve" data-testid={`oil-edit-save-${rec.id}`} onClick={() => {
                   const n = Number(eDays.trim())
                   if (!eDays.trim() || !Number.isFinite(n)) { setMsg('Type how many days'); return }
-                  const problem = editAward(rec.id, { note: eWhy, givenBy: eWho, days: n })
+                  const problem = editAward(rec.id, { note: eWhy, givenBy: eWho, days: n, ...(eHalf ? { half: eHalf } : {}) })
                   if (problem) setMsg(problem)
                   else { setMsg(''); setEditing(null) }
                 }}>Save</button>

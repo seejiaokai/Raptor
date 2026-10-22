@@ -73,6 +73,7 @@ import {
   oilLedgerOf,
   OTHER_ID,
   OTHER_LABEL,
+  type Half,
   type OilCredit,
   type OilDebit,
   type OilExpiryUnit,
@@ -80,6 +81,7 @@ import {
   type Person,
 } from '../engine'
 import {
+  defaultAwardHalf,
   displayRoster,
   figureCtxOf,
   getState,
@@ -93,7 +95,7 @@ import {
 } from '../state/store'
 import { hhmm } from '../../engine/time'
 import { SaveBand } from '../../ui/SaveStatus'
-import { CreditForm, DayChip } from './CreditForm'
+import { CreditForm, DayChip, HalfPick } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
 import { wireRowSelect } from './select'
@@ -216,6 +218,8 @@ export function OilTracker({ person, onClose, onGranted }: {
   const [eDate, setEDate] = useState('')
   const [eReason, setEReason] = useState('')
   const [eGiven, setEGiven] = useState('')
+  /* an HO's half in the editor (D1164) — the award's own; null until picked on one made half a day here */
+  const [eHalf, setEHalf] = useState<Half | null>(null)
   const [eErr, setEErr] = useState('')
   const [armDel, setArmDel] = useState<string | null>(null)
   const groupDefs = groupsInOrder()
@@ -317,13 +321,13 @@ export function OilTracker({ person, onClose, onGranted }: {
 
   /* ---- editing an award or a correction ---------------------------------- */
   const startEdit = (c: OilCredit) => {
-    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); setEIsCorr(false)
+    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); setEIsCorr(false); setEHalf(c.half ?? null)
   }
   /* A CORRECTION's editor has no "given by" box, so the save leaves the one it has alone — it used to send the blank and
      wipe it (Astra's final read, OA-002) */
   const [eIsCorr, setEIsCorr] = useState(false)
   const saveEdit = () => {
-    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, ...(eIsCorr ? {} : { givenBy: eGiven }) })
+    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, ...(eIsCorr ? {} : { givenBy: eGiven }), ...(!eIsCorr && eHalf ? { half: eHalf } : {}) })
     if (problem) { setEErr(problem); return }
     setEditId(null)
     done()
@@ -437,6 +441,10 @@ export function OilTracker({ person, onClose, onGranted }: {
           <div key={c.id} className={cls} data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}>
             <div className="oil-edit">
               <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
+              {/* half a day takes a half (D1164): the award's own, else the day's default until he picks */}
+              {Number(eAmt) === 0.5 && (
+                <HalfPick testid="oil-edit-half" value={eHalf ?? defaultAwardHalf(p.id, c.date, c.ledgerId)} onPick={setEHalf} />
+              )}
               {/* AN AWARD'S DATE IS SHOWN, NEVER CHANGED (D260's reading — delete it and give it again on the right
                   day); the store refuses a changed date on an award too */}
               <span className="oil-dateread" data-testid="oil-edit-date">{shortDate(eDate)}</span>
@@ -471,7 +479,8 @@ export function OilTracker({ person, onClose, onGranted }: {
         >
           <div className="l1">
             <span className="amt">{signed(c.amount)}</span>
-            <span className="dt">{c.date ? dmy(c.date, lane) : 'carried in'}</span>
+            {/* an HO's half beside its date (D1164), as the grid draws it */}
+            <span className="dt">{c.date ? dmy(c.date, lane) : 'carried in'}{c.half ? ` ${c.half === 'pm' ? 'PM' : 'AM'}` : ''}</span>
             {c.source === 'auto' && <span className="by auto">Auto</span>}
             {/* Who said so — on a grant since 2 Sep 26, and now on a
                 hand-typed credit too, where it answers the sharper question:

@@ -3896,6 +3896,7 @@ export function Matrix() {
               giver: creditGiver({ auto: true, ...(openAnyCredit.via ? { via: openAnyCredit.via } : {}) }),
               spans: openAnyCredit.spans,
               via: openAnyCredit.via,
+              ...(openAnyCredit.half ? { half: openAnyCredit.half } : {}),     // an HO's half (D1164)
             }
             : null}
           onClose={close}
@@ -3908,7 +3909,7 @@ export function Matrix() {
         <AwardSheet
           callsign={open.callsign}
           date={open.date}
-          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: openCredit.givenBy ?? '', entered: openCredit.enteredName }}
+          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: openCredit.givenBy ?? '', entered: openCredit.enteredName, ...(openCredit.half ? { half: openCredit.half } : {}) }}
           onClose={close}
         />
       )}
@@ -4253,7 +4254,7 @@ export function Matrix() {
              other time box in the app is (`08:00`, `8:00`, `0800`, `800`);
              blank means the whole day. */
           credit={role === 'admin' && openCredit
-            ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy }
+            ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy, ...(openCredit.half ? { half: openCredit.half } : {}) }
             : null}
           /* a day holding SEVERAL awards: the +OIL panel changes none of them — the day's list carries each */
           awardCount={role === 'admin' ? openAwards.length : 0}
@@ -4290,18 +4291,20 @@ export function Matrix() {
               spans: openAnyCredit.spans,
               via: openAnyCredit.via,
               ...(openAnyCredit.award && openAnyCredit.enteredName ? { entered: openAnyCredit.enteredName } : {}),
+              ...(openAnyCredit.half ? { half: openAnyCredit.half } : {}),     // an HO's half (D1164)
             }
             : null}
           onCreditClear={role === 'admin' && openCredit
             ? () => { clearRecordById(open.id, open.date, openCredit.id); close() }
             : undefined}
           onCredit={role === 'admin'
-            ? (_code, days, note, givenBy) => {
-              /* the AMOUNT is the award (FO / HO is only its label); a blank box is a day, as the panel shows */
+            ? (_code, days, note, givenBy, half) => {
+              /* the AMOUNT is the award (FO / HO is only its label); a blank box is a day, as the panel shows; the half
+                 the panel picked rides along and counts only on half a day (D1164) */
               const raw = days.trim()
               const n = raw ? Number(raw) : 1
               if (!Number.isFinite(n)) return 'Type how many days'
-              const problem = setDayAward(open.id, open.date, n, { note, givenBy })
+              const problem = setDayAward(open.id, open.date, n, { note, givenBy, half })
               if (!problem) showFigure('oil')
               return problem
             }
