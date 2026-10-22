@@ -39,11 +39,16 @@ export interface Contrib {
    *  ATTB, CSE, OD, FO, HO. A notice carries the REPLACED bid's code. */
   code: string
   /** The part of this date it takes — for a credit worked in several
-   *  stretches, the envelope from first start to last end (what it shows as). */
+   *  stretches, the envelope from first start to last end (what it shows as).
+   *  An HO's is the half it is drawn in, AM or PM (owner, D1164): an award's
+   *  the half the admin picked, the schedule's the half its work fell in
+   *  (`warrecs.ts awardHalf`, `creditHalf`). */
   win: Win
   /** credit only: the separate work stretches, when there are several. Every
    *  overlap test reads these, so leave in a GAP between two stretches is not a
-   *  clash (Fable inspection #2, 20 Sep 26). */
+   *  clash (Fable inspection #2, 20 Sep 26). An automatic HO always carries
+   *  them — its `win` is the HALF it is drawn in (D1164), its real hours are
+   *  here (a medical's real hours ride the same way, `absences.ts`). */
   wins?: readonly Win[]
   /** request only */
   state?: RequestState

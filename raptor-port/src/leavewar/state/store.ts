@@ -111,6 +111,10 @@ import {
   newRecId,
   isCredit,
   isOilAward,
+  awardHalf,
+  creditHalf,
+  freeHalfFor,
+  type Half,
   liveRequestsOn,
   portionOfCode,
   requestWin,
@@ -490,6 +494,11 @@ function readLedger(x: unknown): Ledger | null {
     const { enteredBy, enteredAt } = e as { enteredBy?: unknown; enteredAt?: unknown }
     if (typeof enteredBy === 'string' && enteredBy) entry.enteredBy = enteredBy
     if (typeof enteredAt === 'string' && !Number.isNaN(Date.parse(enteredAt))) entry.enteredAt = enteredAt
+    /* AN HO'S HALF (owner, D1164) survives a reload — only on an OIL award worth half a day, the only entry that has
+       one; a bad or misplaced one is dropped with the entry kept, as `givenBy` is. None at all — every award given
+       before D1164 — reads as the morning (`awardHalf`); nothing is converted (D401). */
+    const { half } = e as { half?: unknown }
+    if (counter === 'oil' && amount === 0.5 && (half === 'am' || half === 'pm')) entry.half = half
     out.push(entry)
   }
   return out
@@ -3120,6 +3129,8 @@ export interface OilShown {
   spans?: Array<[number, number]>
   enteredName?: string
   enteredAt?: string
+  /** an HO's half of the day (owner, D1164) — an award's as picked, the schedule's where its work fell; absent on an FO */
+  half?: Half
 }
 /** Every OIL credit on one day — the schedule's first, then each award (ONE reader for the tap list, the bid sheet and
  *  the member's own award sheet, so none can see a different set — [OIL-AWARD-IS-A-GRANT]). */
@@ -3127,19 +3138,31 @@ export function oilOnDay(personId: string, date: string): OilShown[] {
   const out: OilShown[] = []
   for (const r of listAt(personId, date)) {
     if (r.kind !== 'credit') continue
-    out.push({ id: r.id, award: false, code: r.code, days: creditWorth({ code: r.code, auto: true }), ...(r.note ? { note: r.note } : {}), ...(r.via ? { via: r.via } : {}), ...(r.spans ? { spans: r.spans } : {}) })
+    const half = creditHalf(r)
+    out.push({ id: r.id, award: false, code: r.code, days: creditWorth({ code: r.code, auto: true }), ...(r.note ? { note: r.note } : {}), ...(r.via ? { via: r.via } : {}), ...(r.spans ? { spans: r.spans } : {}), ...(half ? { half } : {}) })
   }
   for (const e of awardsOnDay(personId, date)) out.push(awardShown(e))
   return out
 }
 export function awardShown(e: LedgerEntry): OilShown {
   const name = (e.enteredBy && state.people.find(p => p.id === e.enteredBy)?.callsign) || e.approvedBy
+  const half = awardHalf(e)
   return {
     id: e.id, award: true, code: e.amount === 0.5 ? 'HO' : 'FO', days: e.amount,
     ...(e.reason ? { note: e.reason } : {}), ...(e.givenBy ? { givenBy: e.givenBy } : {}),
     ...(name ? { enteredName: name } : {}), ...(e.enteredAt ? { enteredAt: e.enteredAt } : {}),
+    ...(half ? { half } : {}),
   }
 }
+
+/** THE HALF AN HO GIVEN ON THIS DAY TAKES UNLESS THE ADMIN PICKS (owner, D1164): the other half beside a half-day box,
+ *  else the morning (`freeHalfFor`). What the +OIL panel and the OIL tracker's form open on, and what a write that
+ *  names no half stores. `exceptId` leaves out the award being changed. */
+export function defaultAwardHalf(personId: string, date: string, exceptId?: string): Half {
+  return freeHalfFor(viewAt(personId, date)?.all ?? [], exceptId)
+}
+/* a half a caller passed, kept only when it is one — anything else is "none picked" */
+const pickedHalf = (h: unknown): Half | undefined => (h === 'am' || h === 'pm' ? h : undefined)
 
 /** An approved absence the war may change: every absence on the address was
  *  approved on the war, none is medical / course / OD, and it is not a cell
@@ -4025,8 +4048,10 @@ const ledgerType = (counter: CounterName, amount: number): string => (isOilAward
  * here, as it always was (a direct blank call is refused — Astra's plan read F08).
  * Returns the error sentence for the form, or null on success.
  * One command for the whole batch → one persist, one undo step.
+ * An HO (an OIL award of half a day) takes `half` — the half the admin picked (D1164); none picked, each person's own
+ * default (`defaultAwardHalf`: the other half beside a half-day box, else the morning). Every other entry ignores it.
  */
-export function grantTo(personIds: string[], counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
+export function grantTo(personIds: string[], counter: CounterName, amount: number, date: string, reason: string, givenBy = '', half?: Half): string | null {
   if (state.role !== 'admin') return `Only an admin can credit ${counterLabel(counter)}`
   const ids = [...new Set(personIds)].filter(id => state.people.some(p => p.id === id))
   if (!ids.length) return 'Pick at least one person'
@@ -4035,9 +4060,11 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
   const approvedBy = approverName()
   const by = givenBy.trim()
   const who = entered()
+  const ho = counter === 'oil' && amount === 0.5      // an HO award — the one entry with a half
   const entries: Ledger = ids.map(personId => ({
     id: ledgerId(), personId, counter, amount, date, reason: reason.trim(), approvedBy,
     ...(by ? { givenBy: by } : {}), ...who,
+    ...(ho ? { half: pickedHalf(half) ?? defaultAwardHalf(personId, date) } : {}),
   }))
   gesture(ledgerType(counter, amount), () => {
     state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
@@ -4048,8 +4075,8 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
 
 /** The OIL case of `grantTo` — kept so the tracker and its tests read as they
  *  always did. */
-export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
-  return grantTo(personIds, 'oil', amount, date, reason, givenBy)
+export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = '', half?: Half): string | null {
+  return grantTo(personIds, 'oil', amount, date, reason, givenBy, half)
 }
 
 /** Edit a ledger entry in place — amount, date, reason or given by. The approver and who entered it stay; the change
@@ -4060,8 +4087,11 @@ export function grantOil(personIds: string[], amount: number, date: string, reas
  *  - AN OIL ENTRY KEEPS ITS SIGN: an award never becomes a correction or back, or an award could be re-dated in three
  *    steps (Fable's round-2 read, N2).
  *  - ITS REASON: an award keeps one if it had one, and never has to invent one it never had (given on the grid with
- *    none); a correction always needs one; every other pool keeps its own rule (Astra's round-2 read, R2-05). */
-export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string }): string | null {
+ *    none); a correction always needs one; every other pool keeps its own rule (Astra's round-2 read, R2-05).
+ *  - ITS HALF (D1164): an award that is (or becomes) an HO takes the half named; none named, an HO keeps the one it has
+ *    (an old HO with none still reads as the morning) and an FO turned HO takes the day's default (`defaultAwardHalf`).
+ *    One that stops being half a day drops it. */
+export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string; half?: Half }): string | null {
   // The ENTRY first, then the role — so the refusal can name the pool it is
   // about (review, 6 Sep 26). An id that names nothing answers "That entry is
   // gone" first, which is true for a member and an admin alike.
@@ -4080,14 +4110,17 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
   const requireReason = award ? cur.reason.trim() !== '' : reasonRequired(cur.counter)
   const problem = ledgerProblem(cur.counter, amount, date, reason, givenBy, requireReason)
   if (problem) return problem
-  if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '')) return null
+  const half: Half | undefined = award && amount === 0.5
+    ? pickedHalf(patch.half) ?? (cur.amount === 0.5 ? cur.half : defaultAwardHalf(cur.personId, cur.date, cur.id))
+    : undefined
+  if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '') && half === cur.half) return null
   gesture(ledgerType(cur.counter, cur.amount), () => {
     state = withCurrent({
       ...state,
       ledger: state.ledger.map(e => {
         if (e.id !== id) return e
-        const { givenBy: _g, ...rest } = e
-        return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}) }
+        const { givenBy: _g, half: _h, ...rest } = e
+        return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}), ...(half ? { half } : {}) }
       }),
     })
     persistNotify()
@@ -4511,7 +4544,10 @@ export const OIL_DOOR_MSG = 'OIL is given from the day’s +OIL panel or the OIL
  * truth: not an admin, no war on that date, days that are not halves. Never refused for clashing with leave: an award
  * clashes with nothing (D80) and adds to a worked day (D82).
  */
-export function setDayAward(personId: string, date: string, days: number, opts: { note?: string; givenBy?: string } = {}): string | null {
+/* AN HO TAKES A HALF OF THE DAY (owner, D1164): `opts.half`, the half the admin picked on the panel; none picked, a new
+   HO takes the day's default (`defaultAwardHalf` — the other half beside a half-day box, else the morning) and a
+   changed one keeps its own (`updateLedgerEntry`). */
+export function setDayAward(personId: string, date: string, days: number, opts: { note?: string; givenBy?: string; half?: Half } = {}): string | null {
   if (state.role !== 'admin') return 'Only an admin can enter OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
   if (!Number.isFinite(days) || days <= 0) return 'Type how many days'
@@ -4521,12 +4557,14 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
   const givenBy = (opts.givenBy ?? '').trim()
   const here = awardsOnDay(personId, date)
   if (here.length > 1) return `This day holds ${here.length} OIL awards — change them from the day’s list`
-  if (here.length === 1) return updateLedgerEntry(here[0]!.id, { amount: days, reason: note, givenBy })
+  const half = pickedHalf(opts.half)
+  if (here.length === 1) return updateLedgerEntry(here[0]!.id, { amount: days, reason: note, givenBy, ...(half ? { half } : {}) })
   const problem = ledgerProblem('oil', days, date, note, givenBy, false)
   if (problem) return problem
   const entry: LedgerEntry = {
     id: ledgerId(), personId, counter: 'oil', amount: days, date, reason: note, approvedBy: approverName(),
     ...(givenBy ? { givenBy } : {}), ...entered(),
+    ...(days === 0.5 ? { half: half ?? defaultAwardHalf(personId, date) } : {}),
   }
   gesture('lw.award', () => {
     state = withCurrent({ ...state, ledger: [...state.ledger, entry] })
@@ -4541,7 +4579,7 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
  * before anything is written. `null` days is refused — an award is worth what it says (the old "blank means the code's
  * own worth" went with the code). Returns null when done, else the reason in the sheet's words.
  */
-export function editAward(id: string, patch: { note?: string; givenBy?: string; days?: number }): string | null {
+export function editAward(id: string, patch: { note?: string; givenBy?: string; days?: number; half?: Half }): string | null {
   const cur = state.ledger.find(e => e.id === id)
   if (!cur || !isOilAward(cur)) return 'There is no OIL award there'
   if (patch.days !== undefined && patch.days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
@@ -4549,6 +4587,7 @@ export function editAward(id: string, patch: { note?: string; givenBy?: string; 
     ...(patch.days !== undefined ? { amount: patch.days } : {}),
     ...(patch.note !== undefined ? { reason: patch.note } : {}),
     ...(patch.givenBy !== undefined ? { givenBy: patch.givenBy } : {}),
+    ...(patch.half !== undefined ? { half: patch.half } : {}),
   })
 }
 
