@@ -11422,7 +11422,9 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
 - **The grid's own bar (on the grid card, the same for everyone):** [▸ Manning | n red ›] (the right half counts the days
   a Manning, Available P or Available W row is RED — `sync.ts manningRedDays`; amber never; gone at 0 — D1243) · the open
   dates · … · the zoom pair (until pinch to zoom, [LW-PHONE-PINCH-ZOOM], D1228) · Legend. Rearrange is a line in ⚙
-  ("⇅ Rearrange the grid"); while it is on the bar carries "⇅ Done", the one way out.
+  ("⇅ Rearrange the grid"); while it is on the bar carries "⇅ Done", the one way out. On a phone it reads "⇅ Done" in words and the − / + step
+  aside while Rearrange is on, so the bar stays one line (D1275 — to build, [LW-REARRANGE-DONE-WORD]). The − / + go for good
+  only once pinch to zoom works with the frozen date bar; else they stay (D1276, [LW-PHONE-PINCH-ZOOM]).
 - **The Leave War's ⚙ Settings window fits a phone's width (D1270, 23 Oct 26):** on a phone nothing in it scrolls sideways — its
   words wrap, its group rows and trays keep inside the window, only up and down scrolls; pinned at a phone's width by a
   browser test that the window's content is no wider than the window.
