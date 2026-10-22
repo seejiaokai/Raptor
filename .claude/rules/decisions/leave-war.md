@@ -242,6 +242,7 @@ decision + a pointer. Owner + date establish authority; keep them.
   strip CANCELS the grid zoom (`zoom: 1/zoom` inline — navigation chrome stays
   readable at 0.8). The OIL TRACKER sheet has its OWN − / + beside RANGE with
   the same steps and the same phone-opens-at-0.8 default (`OilTracker.tsx`).
+  *[NARROWED 22 Oct 26 by D1254, BUILT 23 Oct 26 in the overhaul's M2: the grid card's row is the grid's own bar — [Manning | n red ›] · the open dates · … · Legend, the zoom pair at its right end until pinch to zoom replaces it (D1228, [LW-PHONE-PINCH-ZOOM]); ⚙ stands at the right end of the page's tab row, OIL is a tab, and Rearrange is a line in ⚙ with "Done" on the bar while it is on.]*
   Don't put the zoom back on the strip, let the strip wrap, or let it scale
   with the grid. ⚙ opens `SettingsSheet`
   (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters *[gone 8 Oct 26 — D669: the Manning block comes with no count rows of its own, so there is nothing to reset to; a row's eye in Rearrange is a delete cross and the Archive bar went with it]* + the roster GROUPS
