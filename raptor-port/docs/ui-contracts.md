@@ -9494,6 +9494,19 @@ a flex sibling and squeezed in beside the number it explains.
   dated in no war shows on no cell; a correction is never drawn. Several awards may share a day (two tracker credits on
   one date): the tap list shows each, and the bid sheet's +OIL panel then changes none of them — its button reads "N OIL
   awards" and it says "change them from the day's list".
+- **An HO belongs to a half of its day (owner, D1164, 21 Oct 26 — built 23 Oct 26, M2).** Its day-view window is the
+  half it is drawn in (`Contrib.win` AM or PM — what the grid draws from); an FO stays the whole day. An award's half is
+  the one the admin picked (`LedgerEntry.half`), the morning when none is stored (every HO before D1164 — D401); the
+  schedule's own HO takes the half its earliest work started in — before 12:00 the morning, from 12:00 the afternoon,
+  no hours reported the morning (`warrecs.ts creditHalf`) — and its real hours ride in `wins`, so its clashes are
+  unchanged (a morning HO beside an afternoon's leave is no clash, one on the same hours still is); an award still
+  clashes with nothing (D80); no charge, manning or balance figure reads the half. The picking: the +OIL panel's
+  **Half** row (AM / PM, under Days, once the amount is 0.5), the OIL tracker's form and editor and the day's list editor
+  (the same chips, `CreditForm.tsx HalfPick`); each opens on the award's own half, else the day's default — **the other
+  half beside a half-day leave, medical or HO, else the morning** (`warrecs.ts freeHalfFor`, `store.ts
+  defaultAwardHalf`) — and the admin may pick either. Unpicked, the store writes that default per person. Every
+  read-back names it: "half a day, afternoon" on the day's detail and the member's own award window, "HO — OIL award,
+  morning" on the day's list, the date's "AM" / "PM" on the tracker's line.
 - **Its date is fixed (D260's reading):** an award never moves; one on the wrong day is deleted and given again. The
   tracker's editor shows the date read only on an award (a correction keeps its date editor), and the store refuses a
   changed date — and a change of sign (an award never becomes a correction).
