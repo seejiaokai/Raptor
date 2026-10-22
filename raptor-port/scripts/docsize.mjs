@@ -324,7 +324,10 @@ const RULING_BYTES = [
      Tracker's down days, flex, legend - his directions of 18 Oct 26), already over on `main` when the tidy found it. A
      documents-only tidy is not the place to split an area; the split, or archiving the spent and restated rulings first
      (D560, D564 named as candidates, each checked by a fresh reader - D971), is filed in [RULINGS-SPENT-PASS]. */
-  ['.claude/rules/decisions/tracker.md', 2, 27500],
+  /* tracker 27500 -> 29500 (22 Oct 26, the Leave War design's merge on his "merge live"): 28,018 bytes on `main` with
+     D1170, D1171 (main's round 3 - the Tracker bar's height), already over on `main` and failing the documents check of
+     every pull request; none is trimmed (D136). The split or the spent-rulings pass stays filed in [RULINGS-SPENT-PASS]. */
+  ['.claude/rules/decisions/tracker.md', 2, 29500],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
