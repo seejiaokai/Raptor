@@ -157,3 +157,14 @@ the mark, a pending bid's none). Not walked: S36 (no route — carried by a test
 - **A-N1 (RECORD):** the window is modal, so the top bar's Undo cannot be pressed while it is open (S19) — as every Leave
   War sheet but two ([LW-WINDOWS-NONBLOCKING]); after closing it, Undo and reopening show the new picture.
 
+**Walker C (the seams and what must not change, desktop 1440 and phone 390) — returned 22 Oct 26: 48 PASS, 10 RECORD,
+0 FAIL** (`scripts/handpass/lw-m1-walk-c.mjs`, 98 pictures in `…/c/`; no console or page errors). PASS at both sizes: S6
+(the admin's tap on approved leave opens the decide sheet, open or closed day; the day's list adds Note), S28 (a member's
+Inputs-page leave on closed days lands approved, the war follows its edit and delete; his tap opens its remarks), S31
+(the bell and the changes window say nothing of opening, closing, Undo or Redo), S32 (the SANS month and the Calendar
+window identical before, with APR open, and after), S33 (OIL awards on a closed day from +OIL and the tracker; Delete
+names the award), the Legend, D672 (Undo / Redo of opening APR leave the grid on June). RECORD: S33 the award's sheet;
+S34a (signed in without access sees only "Request access"; a viewer-less war through the bridge opens nothing); the
+year-end move (no control lands a record in another period — the grid ends at 31 Dec and the View switch ends a move;
+carried by `scenarios-corners.test.ts`); "Pick a range" cannot cross 31 Dec. The phone chip's missing gap it saw is B-F2
+(fixed).
