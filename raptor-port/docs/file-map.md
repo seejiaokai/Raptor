@@ -957,12 +957,23 @@ Undo, and that nothing which reads the four cares where they sit), `ui/countersa
 order; each of the four a place to drop in Rearrange, with the landing bar; the drag as far as jsdom carries it). A look at
 the running build: `scripts/handpass/lw-counters-among-look.mjs`.
 `src/leavewar/engine/availrows.ts` - the two Available rows the SANS calendar reads (`availp`, `availw` - D640): their
-built-in definitions, the check that keeps a stored one a people count with no amber or red, and `availHave`, the ONE sum
-that never counts a SANS man (D626); the store's side is `state/store.ts` `availRules`, `manningDeleteProblem` and the
-guards in `saveManningRule`, `setManningThreshold`, `deleteManningRule`, `readManningRules` (the two are beside the
-sixty-counter limit, never inside it), and `engine/evaluate.ts` passes them over (they judge no day). `engine/eventdefs.ts
+built-in definitions, the check that keeps a stored one a people count with its threshold held at 0 and its POINTS kept,
+and `availHave`, the ONE sum that never counts a SANS man (D626). Since the Leave War overhaul (batch 3 - D1190, D1191,
+D1202) it also holds the rows' amber and red POINTS against the day's Required: `readAvailPoints`, `availPointsOf`,
+`amberHidden`, `availVerdict` (the ONE answer '' | 'amber' | 'red' every screen reads) and `availRedLines`; the type
+`AvailPoints` sits on `ManningRule.points` in `engine/requirements.ts`. The store's side is `state/store.ts`
+`availRules`, `manningDeleteProblem`, the guards in `saveManningRule`, `setManningThreshold`, `deleteManningRule`,
+`readManningRules` (the two are beside the sixty-counter limit, never inside it), and the row's own writers
+`saveAvailRow` / `setAvailPoints` (one command, `lw.availrow`). `engine/evaluate.ts` passes them over in a day's
+verdict (they are never Manning rows), and its `redDays` merges an Available row at RED into the days breaking a manning
+rule (D1243 - amber never counted; `sync.ts manningRedDays` hands in the day's Required). `engine/fixedrows.ts` also
+holds the Required rows' names (D1193): `REQ_NAMES_ORIGINAL`, `readReqNames`, `reqNameToKeep`, `reqNamesOf`; the store's
+`reqNames` field (`reqnames`) and `setReqName` (`lw.reqname`). Tests: `engine/availpoints.test.ts`,
+`leavewar/availsettings.test.ts` (each kept over a reload, Undo, a member refused, the signal, the red days). `engine/eventdefs.ts
 holidayAt` - the holiday on a day with its name. `src/leavewar/sync.ts` (its last block) - what the calendars read from the
-war: `dayFacts(iso)`, `holidaysIn(year)` and the signal `useWarFacts()` / `warFactsVersion()` / `subscribeWarFacts()`;
+war: `dayFacts(iso)`, `holidaysIn(year)` and the signal `useWarFacts()` / `warFactsVersion()` / `subscribeWarFacts()`
+(it moves on the Required rows' names too); `reqRowNames()`, `availVerdictAt(iso, seat)`, `availRedAt(iso)` and
+`manningRedDays(dates, verdicts)` (the under-manned count and list — D1243);
 `src/leavewar/dayfacts.test.ts` pins all of it. `src/state/flyplan.ts` also holds `sansCommittedOn` / `sansFly` - the
 SANS people committed to F, O and A on a date, per seat, each once a day, never a man since archived and only a man the
 roster marks SANS (`sansfly.test.ts`); it REPLACED `ui/sans-calendar-model.ts activityPeopleOn` when the SANS calendar was
@@ -984,8 +995,10 @@ everyone, an admin's carrying Edit; an empty cell still opens the sheet at once 
 changes it (`ui/eventsheet-presets.test.tsx`). The contract: `docs/ui-contracts.md` "The Event rows print a short form".
 `src/leavewar/ui/FlyRows.tsx` - THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK (the Inputs / SANS redesign, plan §3.3;
 D617, D637, D640; D665 - his "I'm going with B", first built under the Event rows): Required P and W (the one resolver's figure, "NF" on a no-fly day, a dash; a corner mark where a running figure
-starts) and Available P and W (the war's own count, red where it is under its Required; a tap opens the read-only
-working - required, available, SANS committed to fly, still needed). Rows of the grid's own table, drawn through the
+starts) and Available P and W (the war's own count, red under its red point and amber under its amber point - D1190,
+D1191, D1202; a tap opens the read-only working - required, available, SANS committed to fly, still needed); the pairs
+tinted faintly (`pair-p` / `pair-w` - D1194); an admin's tap on a Required row's name opens its rename window
+(`ReqNameForm.tsx`, below - D1193). Rows of the grid's own table, drawn through the
 `fixed` render prop of `CountRows` (until D674 a `children` slot, last in `tbody.counts`): it is handed the counters' rows in
 five runs and draws each above, between or below its four, and in Rearrange each of the four is a place to drop a counter;
 it subscribes ITSELF to the plan's signal (`sync.ts usePlanVersion`) and the war's (`useWarFacts`),
@@ -1027,9 +1040,16 @@ Available rows untouched, nothing stored converted; and that the counter form ca
 a count row goes in or out. `ui/CountRows.tsx` lost the eye, the Archive bar and its `hidden` prop; it draws its block
 for the rows handed to it even with no counter.
 `ui/CounterForm.tsx` has a MODE for the two Available rows (D640; plan §3.3) - reached by a tap on the row's name in
-`FlyRows` (`onEditAvail` -> Matrix's `counterEdit`): a people count only, no amber / red, no Delete, no SANS chip, a
-sample summed by `availHave`, one line saying SANS people are never counted. `ui/availform.test.tsx`; the browser gate
+`FlyRows` (`onEditAvail` -> Matrix's `counterEdit`): a people count only, no fixed amber / red numbers but the row's
+amber and red POINTS against the day's Required (D1190, D1191, D1202 - a line when red hides amber), no Delete, no SANS
+chip, a sample summed by `availHave`, one line saying SANS people are never counted and one saying how the SANS calendar
+follows the row (D1154); its Save is `saveAvailRow`, one command. `ui/availform.test.tsx`; the browser gate
 "an Available row's name opens the counter form for it…".
+`src/leavewar/ui/ReqNameForm.tsx` - THE RENAME WINDOW OF A REQUIRED ROW (D1193, narrowing D668; drawn r7-27): the name,
+Save, Cancel - a blank name or the original typed back puts the original back; opened from the row's name by an admin,
+held and portalled by `FlyRows`; `state/store.ts setReqName`, one command. `ui/FlyEdit.tsx` `reqName` / `reqShort` and
+`ui/ReqPanel.tsx` name the row by it. Tests: `ui/reqname.test.tsx` (the window, the repaint, the tints, the amber and red
+figures); `ui/redcount.test.tsx` (the under-manned count and list with the Available rows at red - D1243).
 `src/ui/FloatWindow.tsx` - THE WINDOWS SHELL of the Inputs / SANS calendar job (plan §3.7; D641), exporting `FloatWin`:
 a movable window that does NOT block the page - a bar it is dragged by, a close button, `role="dialog"` with
 `aria-modal="false"`, no veil, no close on a press outside, no Tab trap, focus in and back, Escape for the front one. A

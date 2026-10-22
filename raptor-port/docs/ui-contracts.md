@@ -7246,15 +7246,37 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   (`ui/figdrawer.test.tsx` states the rule whole).
 - **A Required cell** shows the ONE resolver's figure (`sync.ts flyMonth`): the number in the accent, "NF" on a no-fly
   day, a dash where no figure applies; the day a running figure starts wears a corner mark, its title "16 from Tue 6 Jan
-  onward". **An Available cell** shows the war's own count for the seat (never a SANS man), red where it is UNDER its
-  Required; a tap opens the working — required, available, SANS committed to fly, still needed — a small read-only menu
-  for everyone (a press outside, Escape, a scroll or a second tap closes it).
-- **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W are FIXED — D668
-  (8 Oct 26: "1 as recommended")**: no control renames them, and the saved name step 1 had made room for (`flynames`, its
-  command, permission row, reader, writer and Undo's words) was taken out on 8 Oct 26 — the rows read `REQ_NAME`
-  (`ui/FlyEdit.tsx`), never a store; a record that build left behind is read by nothing (`ui/flyrows.test.tsx`,
-  `state/flyplan.test.ts`). While a name is still the one it started with, a
-  phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
+  onward". **An Available cell** shows the war's own count for the seat (never a SANS man), RED under its red point and
+  AMBER under its amber point — each that day's Required plus or minus the row's own number, set in the row's window
+  (the Leave War overhaul, D1190, D1191, D1202 — below); red "+ 0" and no amber until an admin sets them, which is the
+  rule the rows always had: red where it is UNDER its Required. Red wins where both hold; a no-fly day or a day with no
+  Required shows neither; the figure takes the colour, never a filled box (a Manning row's look) —
+  `engine/availrows.ts availVerdict`, the ONE answer every later screen reads too (the bid window, the day panel,
+  Approvals). A tap opens the working — required, available, SANS committed to fly, still needed — a small read-only
+  menu for everyone (a press outside, Escape, a scroll or a second tap closes it). Pins: `ui/flyrows.test.tsx`,
+  `ui/reqname.test.tsx`, `engine/availpoints.test.ts`.
+- **The pairs tinted faintly (D1194, 21 Oct 26):** Required P and Available P wear one faint tint, the pilots' olive;
+  Required W and Available W another, the WSOs' green — the name bars' own seat hues, laid as a background image over
+  each cell's own colour (`tr.flyrow.pair-p` / `.pair-w`, `ui/matrix.css`), so the amber and red figures stay
+  readable on them. A counter standing among the four (D674) is a row of its own and wears none. Pins:
+  `ui/reqname.test.tsx`.
+- **An Available row at RED counts among the days breaking a manning rule (D1243, narrowing D1213):** the under-manned
+  count and its list ("Days breaking a manning rule") take a day with Available P or W under its red point, naming the
+  row and its figure as a Manning row is named; a day with one only at amber is never counted. The rows are judged
+  BESIDE the Manning verdicts, never made Manning rows (`manningRowIds` is unchanged): `engine/evaluate.ts redDays`
+  merges them, and `sync.ts manningRedDays(dates, verdicts)` hands in each day's Required from the one resolver — so
+  the strip also hears the plan's signal. Pins: `ui/redcount.test.tsx`, `availsettings.test.ts`.
+- **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W may be renamed
+  too since D1193 (21 Oct 26, narrowing D668 — the name only; their figures stay typed in their cells).** For an admin
+  the row's name is a button (`fly-name-req-p` / `-w`) that opens a small window of its own (`ui/ReqNameForm.tsx`,
+  drawn r7-27): the name, Save, Cancel; a blank name or the original typed back puts the original back. The name is the
+  war's own setting (`reqnames`, `state/store.ts setReqName`, one command `lw.reqname` — the Setting row's, the
+  admin's); every place that names the row reads it (`sync.ts reqRowNames`: the rows, the typing box and its pad,
+  the Required panel), and the calendars' signal moves on a rename. The SANS calendar's opened day names neither row —
+  its lines read "Required to fly" and "Available" for both seats (D626) — so it does not change. The old Raptor-side
+  `flynames` record step 1 left (taken out 8 Oct 26 under D668) is still read by nothing (`ui/flyrows.test.tsx`). While a
+  name is still the one it started with, a phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W). Pins:
+  `ui/reqname.test.tsx`, `availsettings.test.ts`.
 - **Repaint:** the component subscribes itself to the scheduler's signal and to `useWarFacts()`; Matrix and its memo
   firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the
   resolver's answers — so a run or a weekday rule that began before the month still repaints it. After a change is
@@ -7327,16 +7349,25 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   something"); a tap opens the counter form the war already has (`CounterForm.tsx`, Matrix's `counterEdit` = `availp` /
   `availw`) in a MODE for these two rows, which shows what holds for them and nothing the store would refuse:
   the name and who it counts (crew, CAT with "is not", qualifications held or lacked) — and NO "Sets / teams" choice
-  (they count people), NO amber / red boxes (their red comes from the Required row above), NO Delete (the SANS
-  calendar reads them), and no "SANS" qualification chip (a SANS man is never counted here, so it could decide
-  nothing). One line says so: "SANS people are never counted here. The SANS calendar reads this row, so it cannot be
-  deleted." Its live sample ("On this war's first day that counts N") is summed the row's OWN way
+  (they count people), NO fixed amber / red numbers, NO Delete (the SANS calendar reads them), and no "SANS"
+  qualification chip (a SANS man is never counted here, so it could decide nothing). One line says so: "SANS people are
+  never counted here. The SANS calendar reads this row, so it cannot be deleted." **In place of the fixed numbers, the
+  row's AMBER and RED POINTS (the Leave War overhaul — D1190, D1191, D1202; drawn r7-26):** "Amber · when under Required
+  [+ 2]" and "Red · when under Required [+ 0]", each a number plus or minus that day's Required, negatives allowed (a
+  bare number reads as plus; "−" or "-" as minus); red opens at "+ 0", amber blank ("none"). Typed like the counters'
+  numbers — one tap then typing replaces (D1080, the `.mth-in` boxes). A point that is not a number keeps Save off and
+  says "Enter each as a number above or below Required, like + 2 or − 1."; where red is set at or above amber the window
+  says "Red is set at or above amber, so amber never shows." One more line says how the SANS calendar follows what the
+  row counts (D1154), by the rows' own names: "On the SANS calendar, still needed is Required P less Available P, less
+  the SANS committed to fly." The Save — name, count and points — is ONE command (`state/store.ts saveAvailRow`,
+  `lw.availrow`, the Setting row's), so one Undo takes it back; the points are kept on the row
+  (`manningdefs`, the rule's `points`), never as a threshold. Its live sample ("On this war's first day that counts N") is summed the row's OWN way
   (`engine/availrows.ts availHave` — never a SANS man), so the form cannot promise a number the grid does not show.
   The row is read with `availRuleOf` (the squadron's own where its list holds one, else the built-in) — it is not IN
   the list until first changed, so a search of the list would open an empty "New counter". A new counter can never
   take one of the two ids (`mintId` holds them as taken — a counter named "availp" was otherwise saved over the row).
-  A member's name is plain text. The Required rows' names open nothing (D668). The store's own refusals — delete, a
-  teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
+  A member's name is plain text. A Required row's name opens its own rename window since D1193 (above). The store's own
+  refusals — delete, a teams count, thresholds held at 0 — are `dayfacts.test.ts`; the points', `availsettings.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
   opens the counter form for it…" (phone and desktop). Pins: `ui/availform.test.tsx`.
 - **The "Days…" line in ⚙ Settings (the last piece of step 2 — built 8 Oct 26 with Days' month).** At the head of the
   sheet: a "Calendar…" button (its on-screen name since D675; "Days…" until then) with "Day flying, night flying or no fly for each date, and the year's holidays." under it. It closes the sheet and
