@@ -262,7 +262,7 @@ describe('the OIL on a day, read back on one click', () => {
     open(TUE)
     expect(screen.getByTestId('oil-detail-why').textContent).toBe('Not given')
     expect(screen.getByTestId('oil-detail-given').textContent).toBe('Not given')
-    expect(screen.getByTestId('oil-detail-days').textContent).toBe('half a day')
+    expect(screen.getByTestId('oil-detail-days').textContent).toBe('half a day, morning')   // an HO names its half (D1164)
   })
 
   it('OIL the app earned names the WEEKEND as its giver, and the hours behind it', () => {

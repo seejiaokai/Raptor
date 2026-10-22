@@ -396,6 +396,14 @@
     border-color: rgba(240, 85, 95, .55);
     color: var(--hard);
   }
+  /* An HO's half, picked (owner, D1164 — CreditForm.tsx HalfPick): lit as a picked chip is in a sheet
+     (`.bidsheet .tchip.on`), here too for the figures bar under the grid, which is not a sheet — "a pick the eye
+     cannot see is a form that lies" */
+  .oil-bar .tchip.half.on {
+    background: rgba(59, 198, 232, .14);
+    border-color: rgba(59, 198, 232, .55);
+    color: var(--accent);
+  }
   .oil-bar .note.warn { flex-basis: 100%; }
   /* the credit's date: the app's own date box (CreditForm.tsx DayChip — step two of the one date calendar, D901); its
      calendar floats over the page, so nothing here places it */
