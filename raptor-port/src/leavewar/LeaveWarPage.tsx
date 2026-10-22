@@ -34,6 +34,7 @@ import { WarSheet } from './ui/WarSheet'
 import { setLwOnScreen } from './state/screen'
 import { focusDay, getState, rawState, subscribe } from './state/store'
 import { focusDateOf, memberToday } from './engine'
+import { installDayClock } from './ui/dayclock'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
    notify re-renders the Shell, and a plain child here would make React
@@ -99,6 +100,8 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
      hidden pre-warm mount never runs this, because the effect returns early
      while `active` is false. */
   const landedRef = useRef(false)
+  /* today moves at midnight with the page left open (D1266) — one clock for the page's life, mounted or merely kept */
+  useEffect(() => installDayClock(), [])
   useEffect(() => {
     if (!active) return
     /* Tell the Matrix the tab is on screen BEFORE the resize kick, so its

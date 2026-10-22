@@ -56,6 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1267 | 23 Oct 26 | A member's closed days are dimmed with a small lock on their date only while some dates are open for him; with nothing open for him his grid draws as normal and the chip reads "Bidding closed". |
+| D1266 | 23 Oct 26 | The Leave War's today moves at midnight with the page left open: the today ring, a member's dimmed and locked days, his open outline and his chip all follow the new day together, before M1's merge live, not left for the next batch. |
+| D1265 | 23 Oct 26 | The admin is shown which open dates are already past for members: in the "Open for bidding" window months wholly before today are marked as past, and his chip says when what is open is all in the past; drawn for him first, then built in M1 before its merge live. |
 | D1264 | 23 Oct 26 | On a phone the Leave War's "Open for bidding" window opens as a full page from the top of the screen, its month buttons at the top, so they stay in one place however the list of open stretches below them grows or shrinks. |
 | D1263 | 22 Oct 26 | A member's Undo or Redo never puts a bid of his back on a Leave War day closed for him since, with one exception: his Undo of deleting his own pending bid on a day that was already closed when he deleted it. |
 | D1259 | 22 Oct 26 | The Leave War's events stay full Event rows on the grid, as built: not tags in the date heading (G3), not an Events fold (G3b), not an events lane; the events study is left for later and is not put to him again until he raises it. |

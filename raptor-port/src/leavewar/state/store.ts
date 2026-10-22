@@ -4868,6 +4868,23 @@ export function deletableIn(cells: readonly { personId: string; date: string }[]
  * the store is already the channel they share. It is not persisted; where
  * someone was last looking is not a fact about the leave war.
  */
+/* TODAY MOVES AT MIDNIGHT WITH THE PAGE LEFT OPEN (owner D1266, 23 Oct 26 — found on his iPhone: the page opened before
+   midnight kept its landing mark on 22 Oct, and a member's dim, lock and outline, worked out on the last change, stayed a
+   day behind, while the chip, read at each draw, said the 23rd). Called by the day clock (ui/dayclock.ts) when the day
+   turns: everything that reads today draws again; and the landing mark, if it still stands where the page landed for the
+   old day, moves to where it would land today — softly (D670), so the grid moves only if that day is out of view. A mark he
+   moved himself (a month, a jump, an Undo) is his and stays. */
+export function dayTurned(prev: string, now: string): void {
+  if (prev === now) return
+  const period = state.period
+  if (period && state.focusDate && state.focusDate === focusDateOf(period, prev)) {
+    const next = focusDateOf(period, now)
+    if (next !== state.focusDate) { focusDay(next, { ifHidden: true }); return }
+  }
+  state = { ...state }
+  notify()
+}
+
 export function focusDay(date: string, opts?: { ifHidden?: boolean; open?: string }): void {
   /* `ifHidden` — the soft ask (D670): the matrix jumps only when the day's column is not already on screen. What Undo
      and Redo send (state/undo-wire.ts snapView), so a change he is looking at is taken back where he is looking. */
