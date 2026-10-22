@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1231 | 22 Oct 26 | The Leave War's grid shows no "new" dot: what is new is found in Approvals' "New" choice (and, for a member, the dotted lines in My leave), and a tap on a request's dates — cyan, with "›" — scrolls the grid there and rings the cell with the app's just-added ring; Approvals stays docked on a desktop and drops to a slim bar on a phone. |
 | D1230 | 22 Oct 26 | The Leave War gets one page where an admin enters and updates every person's balances and sets each person's leave grade — designed the app's own way with the design skill (Impeccable), red-teamed against the colleague's version for a cleaner, aligned, more intuitive layout, and drawn for him before anything is built. |
 | D1229 | 22 Oct 26 | Every person on the Leave War has a leave grade, set by hand by an admin — Senior pilot, Junior pilot, Senior WSO, Junior WSO or Ops A — and on every 1 January the app adds that year's annual leave by grade by itself: 36, 33, 21, 18 and 14 days. |
 | D1228 | 22 Oct 26 | The Leave War's grid has no zoom buttons on a phone or a desktop: a pinch zooms it on a phone, and on a desktop Ctrl+scroll or a trackpad pinch over the grid zooms the grid only, never the whole page; a phone still opens one step out and a desktop at normal size. |
@@ -86,7 +87,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D1202 | 21 Oct 26 | The Available P and W rows' red point is a setting too, beside amber, set the same way — a number plus or minus that day's Required — "+ 0" by default, which is today's rule (red under Required). |
 | D1201 | 21 Oct 26 | A person's window on the Leave War shows all his balances at once, every kind of leave with what is left and what is taken, and fits as much of his leave as it can, each balance editable but OIL (D1209); designed the app's own way and drawn for him before it is built. — changed by D1209 |
 | D1200 | 21 Oct 26 | The Leave War's Management group comes from a Management tick column on Quals: added as a group like any Quals column, it stands first on the war; a man in Management still counts in his own seat. |
-| D1199 | 21 Oct 26 | The Leave War shows a person what has changed for him since his last visit — designed the app's own way, not copied from the colleague's band — drawn for him before anything is built. |
+| D1199 | 21 Oct 26 | The Leave War shows a person what has changed for him since his last visit — designed the app's own way, not copied from the colleague's band — drawn for him before anything is built. — changed by D1231 |
 | D1198 | 21 Oct 26 | Question 11 is removed: the Leave War's day panel lays out its figures as his design lessons 20 and 29 already say — each on its own line, names in one column and figures in another, lined up — with no question put. |
 | D1197 | 21 Oct 26 | The Leave War gets no quick-approve switch: the Approvals list's dates choose a period, and "Approve all" approves exactly what the list shows — his "approve all for a selected period"; the grid's drag-select stays. |
 | D1196 | 21 Oct 26 | The Leave War's Approvals button stands on the top line, right after "+ New" on a desktop and "+" on a phone; the second line — the open dates, under-manned, Legend — is the same for everyone. |

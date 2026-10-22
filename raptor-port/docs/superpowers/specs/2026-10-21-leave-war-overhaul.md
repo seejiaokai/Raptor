@@ -311,6 +311,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **Q12 → as recommended (D1228):** no zoom buttons on either; pinch on a phone, Ctrl+scroll / trackpad pinch on a desktop, the grid only; D1117 narrowed.
 - **D1229:** a leave grade per person, set by hand (Senior pilot 36, Junior pilot 33, Senior WSO 21, Junior WSO 18, Ops A 14); the year's annual leave added by grade every 1 January, by itself.
 - **D1230:** one page for an admin to enter everyone's balances and grades, designed with Impeccable from the colleague's version, drawn first. (This branch takes **D1230–D1239**, checked 22 Oct 26: nothing above D1228 on any branch.)
+- **D1231 (round 14, question 1 — "as recommended"):** no "new" dot on the grid; Approvals' "New" choice (and a member's My leave) carries the dotted lines, cleared when the list closes; a request's dates, cyan with "›", scroll the grid there and ring the cell with the just-added ring; Approvals docked on a desktop, a slim bar with "Back" on a phone (`raptor-port/docs/mock/lw-overhaul/full/r14-dots-*`). Answers D1199. Built with M4.
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
