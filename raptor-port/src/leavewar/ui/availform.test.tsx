@@ -13,7 +13,7 @@
    and availsettings.test.ts; this is the screen, which must not offer what the store would refuse. A Required row's name
    opens its own rename window since D1193 (narrowing D668) — reqname.test.tsx. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { storeBackend } from '../../engine/hooks'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
@@ -24,6 +24,11 @@ import { memoryBackend } from '../state/storage'
 import { projectPeople } from '../state/raptorRoster'
 import { dayFacts } from '../sync'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
+   asked as the ⚙ press asks it (ui/lwnav.ts). */
+const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
 
 const mem = new Map<string, string>()
 beforeEach(() => {
@@ -256,7 +261,7 @@ describe('an ordinary counter’s form is what it was', () => {
   })
   it('and a NEW counter can never be saved over one of the two rows: its id is its own', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open')); fireEvent.click(screen.getByTestId('counter-add'))
+    openSettings(); fireEvent.click(screen.getByTestId('counter-add'))
     fireEvent.change(screen.getByTestId('cform-name'), { target: { value: 'availp' } })
     fireEvent.click(screen.getByTestId('cform-save'))
     const made = getState().requirements.default.rules

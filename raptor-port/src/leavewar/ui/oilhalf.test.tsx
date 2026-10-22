@@ -5,12 +5,17 @@
 // is half a day, open on the day's default, and save the half picked; the tracker's editor and the day's list change it;
 // an award opened read only says which half. The data under them is pinned in `oilaward-half.test.ts`.
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { awardsOnDay, getState, initStore, setCell, setDayAward, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { AwardSheet } from './BidPicker'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* the OIL tracker opens from the OIL tab of the top row since D1254 (Chrome.tsx `Topbar`): the grid rendered alone is
+   asked as the tab's press asks it (ui/lwnav.ts). */
+const openOil = () => act(() => { askLw({ kind: 'oil' }) })
 
 const P = 'slammed'
 const TUE = '2026-01-13'
@@ -99,7 +104,7 @@ describe('an award opened read only says which half', () => {
 describe('the OIL tracker', () => {
   const openTracker = () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('oil-tracker'))
+    openOil()
   }
 
   it('the grant form offers the half for half a day, the morning by default, and saves the half picked', () => {

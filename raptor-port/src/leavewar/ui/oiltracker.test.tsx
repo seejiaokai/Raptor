@@ -5,6 +5,11 @@ import { balanceOf } from '../engine'
 import { awardsOnDay, getState, grantTo, ingestDutyCredit, setDayAward, initStore, setBalance, setCell, setDayEvent, setOilPolicy, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* the OIL tracker opens from the OIL tab of the top row since D1254 (Chrome.tsx `Topbar`): the grid rendered alone is
+   asked as the tab's press asks it (ui/lwnav.ts). */
+const openOil = () => act(() => { askLw({ kind: 'oil' }) })
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -12,7 +17,7 @@ beforeEach(() => {
 
 const openTracker = () => {
   render(<Matrix />)
-  fireEvent.click(screen.getByTestId('oil-tracker'))
+  openOil()
   return screen.getByTestId('oil-sheet')
 }
 
@@ -25,7 +30,8 @@ function slammedStory() {
 }
 
 describe('the OIL tracker grid', () => {
-  it('is on the toolbar for a member and an admin alike: one row per person, the balance beside the name', () => {
+  // WAS "is on the toolbar" — the grid card's OIL button. Since D1254 it is the top row's OIL tab, for both roles alike.
+  it('opens from the OIL tab for a member and an admin alike: one row per person, the balance beside the name', () => {
     const sheet = openTracker()
     expect(sheet.textContent).toContain('OIL TRACKER')
     expect(sheet.className).toContain('full')

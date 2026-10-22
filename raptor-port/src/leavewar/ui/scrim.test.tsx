@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
 import { closeDates, getState, initStore, setRole, setViewer } from '../state/store'
@@ -6,6 +6,10 @@ import { memoryBackend } from '../state/storage'
 import { syncAbsences } from '../sync'
 import { StageBar, Topbar } from './Chrome'
 import { Matrix } from './Matrix'
+
+/* "+ New period" is the period list's last line since D1244 — no "+ New" button on the row: choosing it opens the
+   new-period window. */
+const chooseNewPeriod = () => fireEvent.change(screen.getByTestId('war-picker'), { target: { value: '\u0000new' } })
 
 /* these open the admin sheets (decision, counter, person), and closing the
    dates to reach them is admin-only (owner, 27 Aug 26, carried to the open
@@ -71,7 +75,7 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
     open: () => {
       setRole('admin')
       render(<Topbar />)
-      fireEvent.click(screen.getByTestId('war-new'))
+      chooseNewPeriod()
     },
   },
   /* was the bidding-window sheet — the stages' one window went for the "Open for bidding" window (D1177) */
