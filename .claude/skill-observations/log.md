@@ -1792,3 +1792,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In critique.md's Assessment B (or the mock-ups guide), add: when the target is a drawn mock-up, first write a standalone snapshot of the drawn element with the page's stylesheets inlined (one file per state), and point the detector and the browser measurements at it; measure non-text contrast of control edges, not only text.
 
 **Principle:** A machine check that cannot reach a surface is not skipped; give it a copy it can read. And a rule that rests on a visual cue ("a box means you can type it") is only as good as that cue's measured contrast.
+
+### Observation 674: A "less height" redraw measured its own saving in the drawing script, and the first draw saved almost nothing
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War navigation, round 19 (D1240: tabs design redrawn with less height at the top), drawn into the running app.
+**Skill:** brainstorming (mockups-on-the-real-app.md); impeccable (shape)
+**Type:** open-source
+**Phase/Area:** drawing a layout change on the real app; reporting it
+
+**Issue:** The ask was "less vertical space at the top". The drawing script measured the top of the grid's first row before and after its own rearrangement. The desktop saved 50px (one row) on the first draw; the phone saved only 10px, because the new tab row (copied from another page so the two look alike) is taller than the row it replaced, and one bar overflowed its width. Two tightening passes, each re-measured, brought the phone to 27px; a member's phone stayed level. Without the numbers, the picture alone looked like a clear win and would have gone to him as one.
+
+**Suggested improvement:** In the mock-ups guide, for any ask about size or space ("less height", "fits on one line", "more names on the first screen"), the drawing script measures the quantity asked about on the real build before and after its own changes, and also each row's overflow, and the page states the measured figures per device and role, including any device where nothing was saved.
+
+**Principle:** When the request is a quantity, measure the quantity in the same run that draws the change, on every device and role it touches; a picture that looks better is not evidence of the quantity, and a saving on one device can hide none on another.
