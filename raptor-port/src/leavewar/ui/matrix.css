@@ -351,17 +351,11 @@
      step out and the picker fell to 32px tall with the rest of the header —
      under the floor. Only the header row grows by the difference at 0.8. */
   min-height: calc(40px / var(--lwz, 1));
-  background: var(--panel);
-  border: 1px solid var(--edge);
-  border-radius: 3px;
+  /* A plain label since the column shows LVE alone (D1245, 23 Oct 26): no box, no pointer, no hover — nothing here is
+     pressed any more, and a box would say it could be. The height stays, so the header row does not move. */
   color: inherit;
-  cursor: pointer;
   padding: 3px 2px;
   font-family: inherit;
-}
-
-.mx .mxhead th.bal .cpick:hover .cname {
-  color: #8FE2F5;
 }
 
 /* Six dots under the label, one lit. Two jobs at once and both needed: it
