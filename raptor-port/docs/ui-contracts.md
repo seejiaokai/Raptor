@@ -11433,4 +11433,4 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   person on that device (`lw:manning:<viewer>`, a view convenience in the browser's own storage — never a record); a
   desktop opens them. When a bid placed through a bid window turns a Manning or Available row amber or red on a day it was
   not, they open by themselves and a bubble under the Manning button names each row ("This bid turns IP amber, Available P
-  red."), gone at the next tap — read as the difference of the verdicts between the window's opening and its closing. The same bubble on a desktop (D1272), where the rows are already open.
+  red."), gone at the next tap — read as the difference of the verdicts between the window's opening and its closing. The same bubble on a desktop (D1272), where the rows are already open. A Move or a drag of a bid raises it too (D1274 — to build, [LW-BUBBLE-MOVE]).

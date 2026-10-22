@@ -96,6 +96,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — one register of every notification the app should send, kept by the agent (D1151) — written in the overhaul's next chat.
 - [LW-PHONE-PINCH-ZOOM] — on a phone the Leave War grid pinches to zoom (D1117) — its own job in a fresh chat, questions and pictures first.
+- [LW-BUBBLE-MOVE] — a Move or a drag of a bid that turns a row amber or red raises the bid bubble (his D1274) — to build in M2 before its merge, or the next chat.
 - [LW-ENTERED-DATE-UTC] — an OIL award's "entered" date reads the day before between midnight and 8 a.m. (world time, not his) — small, found by M2's walk.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK], then [LW-WEEKDAY-WORK], then the database.
@@ -250,6 +251,9 @@ what a tap opens, and whether it is built. The first entry: a reminder to attach
 starts (D1150). The bell's notices already built are listed in it too. Kept by the agent: any job that finds a place that
 needs one adds a line and names it in its closing report; he may strike any. **Where:** `raptor-port/docs/notifications-register.md`
 (its row in the project guide's map). **21 Oct 26:** written — 11 built, 1 ruled (D1142), 6 proposed by the full mock-up (P1–P6), put to him to strike; the item stays open while proposed lines wait.
+
+### [LW-BUBBLE-MOVE] A moved bid raises the bubble too (his D1274, 23 Oct 26)
+**What:** D1227's bubble ("This bid turns Available P red.") today reads the verdicts between a bid window's opening and closing (`raptor-port/src/leavewar/ui/Matrix.tsx`, `flaggedNow` and the `sheetUp` effect), so a Move — the window's Move, then a tap on the target day — or a drag of a bid raises nothing, though it can turn a row red (walker 3, scenario 58; picture `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q2-move-no-bubble.png`). **To do:** take the "before" when a move or drag begins (the grid's move mode and the drag), compare when it lands, the same words and the same rule (only a worsening); a unit test in the bubble's file (`availform.test.tsx`) red first, and a look on a phone and a desktop. **Place:** M2, before its merge live, if the chat has room; else the next chat.
 
 ### [LW-ENTERED-DATE-UTC] An OIL award's "entered" date is the world date, not his (found 23 Oct 26 by M2's walk, walker 2; older)
 **Seen (the built app, 03:xx on 23 Oct 26):** the award's window and the day's list print "Entered by Saber · 22 Oct 26" — the date the award was entered taken from the world (UTC) date, so between midnight and 8 a.m. in his time zone it reads the day before. Picture: `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/w2/s19-desk-b-after-save-list.png` (bottom right of the window); the walker's note: `raptor-port/docs/handpass/parts/lw-m2-w2.md`. Code going forward, so not D56's. **To do:** find where the entered date is stamped or printed (the OIL ledger entry's time, the award sheet and `ui/DayList.tsx`) and read it in local time, as every other date on the war is (the Leave War suite runs under a hostile time zone — pin it there). **Place:** small, with the next Leave War batch (M3).
