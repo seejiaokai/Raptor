@@ -207,8 +207,14 @@ Leave War · Input added", one OL row saved, the war's 20 Feb "<OL +1" (the afte
 fill 27 Mar – 2 Apr: "5 days written. 2 skipped: closed for bidding, before today, or already holding leave or a medical."
 (PASS); the Undo after closing FEB reads "Undo — closing bidding 1 Feb – 28 Feb" (RECORD). No console or page errors.
 
+**His look's pictures** (`scripts/handpass/lw-m1-look.mjs`, `look/` — each place cut to itself at twice the pixels) found two
+faults of the look, both in buttons M1 added, both fixed and re-pictured: **K-F1** the closed note's "Open the Inputs page"
+was a bare chip — the browser's grey with a white edge, unlike every button beside it; **K-F2** the admin's new Note had
+the same, and its first fix took the class `note` — the sheets' line of small text — and stretched across the row. Both
+now wear Move's quiet grey (`.dchip.plain`, `bidpicker.css`). Seen in `look/05` and `look/08`.
+
 **Walk:** docs/handpass/2026-10-22-lw-m1-open-dates.md · 342 pictures · 23 surfaces (the roll-call) · 3 walkers + 2 re-walks
-+ 2 host walks, desktop 1440 / 768 and phone 390 · MISSING: 11 fixed (A-F1, A-F2, A-F3, B-F1, B-F2, H-F1, H-F2, and the
++ 2 host walks, desktop 1440 / 768 and phone 390 · MISSING: 13 fixed (A-F1, A-F2, A-F3, B-F1, B-F2, H-F1, H-F2, K-F1, K-F2, and the
 reads' R-H1, R-M1, M2, L6), 4 words / looks fixed (B-N1, L2, L3, L5), 2 filed ([LW-REDO-ONTO-CLOSED], his question;
 [LW-M1-READ-LEFTOVERS]), 1 judged (the dashed part-month edge)
 

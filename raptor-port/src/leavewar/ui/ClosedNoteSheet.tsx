@@ -65,7 +65,7 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
         <>
           <p className="cn-note" data-testid="closed-note-text">{CLOSED_NOTE}</p>
           <div className="cn-foot">
-            <button type="button" className="dchip" data-testid="closed-inputs" onClick={() => { openInputsPage(); onClose() }}>
+            <button type="button" className="dchip plain" data-testid="closed-inputs" onClick={() => { openInputsPage(); onClose() }}>
               Open the Inputs page
             </button>
           </div>

@@ -502,7 +502,7 @@ export function BidPicker({
             }} />
           )}
           {canDeleteHere && <DeleteChip testid="bid-clear" armed={clearAsked} onClick={() => write('')} />}
-          {onNote && <button type="button" className="dchip" data-testid="decide-note" onClick={onNote}>Note</button>}
+          {onNote && <button type="button" className="dchip plain" data-testid="decide-note" onClick={onNote}>Note</button>}
           {moveErr && <span className="note warn" data-testid="shift-problem">{moveErr}</span>}
         </div>
       )}

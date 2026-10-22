@@ -286,11 +286,15 @@
 /* Moving a bid is the third decision, and it is deliberately the quietest of
    the three: approve and refuse are the common answers, and a move is what
    you reach for when neither fits. */
-.bidsheet .dchip.move {
+.bidsheet .dchip.move,
+.bidsheet .dchip.plain {
   background: var(--panel-2);
   color: var(--ink-2);
   border: 1px solid var(--edge);
 }
+/* `.plain`: Move's quiet grey for a chip with no colour of its own — the admin's Note beside Move and Delete (M1's code
+   read, L6), the closed note's "Open the Inputs page" (M1's look): a bare .dchip has no colours of its own and fell back
+   to the browser's grey button with a white edge. (Not `.note`: that is the sheets' line of small text.) */
 
 /* THE ONE MOVE LOOK — the grey chip above with a TEAL arrow before the word (owner, D330 / D334, 27 Sep 26: "Can move be
    the same design and colour and be abit different"; option B of docs/mock/lw-move-standard.html §7). The same on every
