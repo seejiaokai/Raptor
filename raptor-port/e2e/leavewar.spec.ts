@@ -6993,7 +6993,9 @@ const daySheetFor = async (page: Page, who: string) => {
   await expect(sheet.locator('[data-testid^="dl-approve-"]'), 'the sheet where the bid is decided').toBeVisible()
 }
 
-// M2: left failing on purpose — the APP is wrong here: since the grid's bar moved onto the grid card (D1254) the clash note is a flex item beside it, 227 of 390 wide at 25 from the left, its words run together ("scheduleShow"), not the slim full-width line D827 approved.
+// M2 (D1254): the grid's bar stands on the grid card now, and the note is drawn in that card's head row — a line of its own
+// under the bar, edge to edge across the CARD (D827's slim line, where the bar now is). List B's run found it a box
+// beside the bar, 227 of 390 wide, its words run together; fixed in chrome.css (.card-hd > .clashnote).
 test('on a phone the clash note is a slim line under the two lines of buttons; it opens its list in place, in aligned columns, and a tap opens that day for that person', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size design (D827); the desktop keeps its strip — the test below (D679)')
   await page.setViewportSize({ width: 390, height: 844 })
@@ -7010,6 +7012,7 @@ test('on a phone the clash note is a slim line under the two lines of buttons; i
     })
     return {
       inFilters: filters.contains(n), next: filters.nextElementSibling === n, left: Math.round(r.left), width: Math.round(r.width), vw: innerWidth,
+      card: (() => { const el = n.closest('.card-hd')!.parentElement as HTMLElement, c = el.getBoundingClientRect(); return [Math.round(c.left + el.clientLeft), Math.round(el.clientWidth)] })(),   // inside the card's frame
       line: (line.textContent || '').replace(/\s+/g, ' ').trim(), lineH: Math.round(line.getBoundingClientRect().height), expanded: line.getAttribute('aria-expanded'),
       filtersH: Math.round(filters.getBoundingClientRect().height), gridTop: Math.round(pg.querySelector('.stage')!.getBoundingClientRect().top),
       rows, innerScroll: !!list && list.scrollHeight > list.clientHeight + 1, sideways: document.documentElement.scrollWidth > innerWidth,
@@ -7018,7 +7021,8 @@ test('on a phone the clash note is a slim line under the two lines of buttons; i
   let m = await read()
   expect(m.inFilters, 'never inside the second line of buttons').toBe(false)
   expect(m.next, 'straight after the two lines').toBe(true)
-  expect([m.left, m.width], 'the width of the screen').toEqual([0, m.vw])
+  expect([m.left, m.width], 'edge to edge across the grid card, on a line of its own').toEqual(m.card)
+  expect(m.width, 'nearly the screen').toBeGreaterThan(m.vw - 30)
   expect(m.line).toBe('⚠ 2 clashes with the schedule Show')
   expect(m.expanded, 'several clashes start closed').toBe('false')
   expect(m.lineH, 'a slim line — the schedule’s own styles must not reach it (it stood 46 tall when one did)').toBeLessThanOrEqual(34)
