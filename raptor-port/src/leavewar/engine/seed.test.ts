@@ -80,9 +80,12 @@ describe('seed', () => {
 describe('seed records', () => {
   const all = () => Object.values(seedRecs()).flatMap(r => Object.values(r).flat())
 
-  it('shows every request colour — pending, acknowledged, refused — and approved green via an absence', () => {
+  /* Ack is gone (D1158, 21 Oct 26): the request states are pending and refused only — ASICS's 24 Feb OIL bid, the
+     seed's one 'acknowledged', is now pending. */
+  it('shows every request fill — pending, refused — and approved via an absence; no Ack (D1158)', () => {
     const states = new Set(all().filter(r => r.kind === 'request').map(r => (r as any).state))
-    expect(states).toEqual(new Set(['pending', 'acknowledged', 'refused']))
+    expect(states).toEqual(new Set(['pending', 'refused']))
+    expect(seedRecs().asics?.['2026-02-24']?.[0]).toMatchObject({ kind: 'request', code: 'OIL', state: 'pending' })
     expect(SEED_ABSENCES.some(a => a.lw)).toBe(true)
   })
 
