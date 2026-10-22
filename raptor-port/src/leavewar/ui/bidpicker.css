@@ -1359,4 +1359,181 @@
   .bidsheet .reqp-apply .pchip,
   .bidsheet .reqp-do .tchip { min-height: 40px; }
   .bidsheet .reqp-inc { padding: 8px 12px; }
+
+/* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------
+   The month buttons: one row of twelve on a desktop, two rows of six on a phone, each a finger's size there. Lit in
+   the open-bidding green the chip and the grid's outline use (the app's one "open" green — not a new colour); a month
+   open only in part has the same green as a DOTTED edge (D1168's reading); a drag in progress shows its months in a
+   lighter wash of the colour it will leave them in. */
+.bidsheet .od-months {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.bidsheet .od-months.phone {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+.bidsheet .od-m {
+  min-height: 34px;
+  padding: 6px 2px;
+  border-radius: 9px;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.bidsheet .od-months.phone .od-m {
+  min-height: 44px;
+  font-size: 13px;
+}
+.bidsheet .od-m.open {
+  background: rgba(87, 201, 122, .16);
+  color: #EAF9EF;
+  border-color: rgba(87, 201, 122, .7);
+}
+.bidsheet .od-m.part {
+  color: #EAF9EF;
+  border: 1px dashed rgba(87, 201, 122, .85);
+}
+.bidsheet .od-m.sweep-open {
+  background: rgba(87, 201, 122, .30);
+  color: #EAF9EF;
+  border-color: rgba(87, 201, 122, .9);
+}
+.bidsheet .od-m.sweep-close {
+  background: var(--panel);
+  color: var(--ink-3);
+  border-style: dashed;
+}
+.bidsheet .od-m:disabled {
+  cursor: default;
+}
+.bidsheet .od-m:focus-visible,
+.bidsheet .od-line-go:focus-visible,
+.bidsheet .od-cal:focus-visible,
+.bidsheet .od-more:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* One line a stretch: its dates in the green, its days counted at the right, the calendar icon at the end (D1172). */
+.bidsheet .od-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+.bidsheet .od-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  border-radius: 10px;
+  padding: 4px 6px 4px 4px;
+}
+.bidsheet .od-line-go {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 8px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.bidsheet .od-line-go.ro {
+  cursor: default;
+}
+.bidsheet .od-span {
+  color: #8FE0A8;
+  font-weight: 700;
+  font-size: 13px;
+}
+.bidsheet .od-days {
+  color: var(--ink-3);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet .od-cal {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--edge);
+  background: var(--panel);
+  color: var(--accent);
+  border-radius: 9px;
+  cursor: pointer;
+}
+.bidsheet .od-cal .btnglyph {
+  width: 17px;
+  height: 17px;
+}
+.bidsheet .od-none {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px dashed var(--ink-3);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.bidsheet .od-last {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.bidsheet .od-more {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 2px;
+  cursor: pointer;
+}
+
+/* ---- THE CLOSED NOTE (D1176, D1225; drawn r7-08, r7-09) ---------------------------------------------------------- */
+.bidsheet .cn-note {
+  margin: 10px 0 4px;
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.bidsheet .cn-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.bidsheet .cn-bid {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.bidsheet .cn-code {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-right: 4px;
+  border: 1px dashed rgba(242, 200, 121, .8);
+  border-radius: 5px;
+  color: #F2C879;
+}
 }

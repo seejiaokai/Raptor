@@ -4,10 +4,9 @@
 // same portion+leave+medical+PO vocabulary — just batched, so it reads as the
 // multi-cell version of the thing the squadron already knows.
 //
-// Sections are CONTEXTUAL to role and stage, the same gates the single-cell
-// path uses: everyone fills while the war is open (admin any stage); medical
-// and PO are the admin's; Decide (Ack/Approve/Refuse) is the admin's once
-// bidding has closed. Delete and Move act on whatever the selection holds that
+// Sections are CONTEXTUAL to role and to the open dates (D1177), the same gates the single-cell path uses: everyone
+// fills (a member only his open days from today — the rest counted skipped); medical and PO are the admin's; Decide
+// (Ack/Approve/Refuse) is the admin's, at any time. Delete and Move act on whatever the selection holds that
 // this role may change — every RECORD, not each day's top one (D265): a bid
 // beside an OIL award moves alone; Delete takes the admin's OIL awards in it
 // too, and names them first (owner, D260, 27 Sep 26). Its rows follow the
@@ -191,7 +190,8 @@ export function SelectSheet({
     if (decided > 0) onDone(true, true)
   }
 
-  const canFill = role === 'admin' || !canDecide // members fill while open; the sheet only opens for them then
+  /* everyone fills: a member's fill writes his open days from today and counts the rest skipped (D1177, D1211) */
+  const canFill = true
 
   return (
     <Sheet testid="select-sheet" label="Selected days" onClose={onClose} modal={false}>

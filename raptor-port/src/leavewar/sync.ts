@@ -2542,6 +2542,13 @@ export function openInputWindow(iid: string): boolean {
   return true
 }
 
+/** THE CLOSED NOTE'S "Open the Inputs page" (D1176, D1166 — "seek management's approval, then file it on the Inputs
+ *  page"; drawn r7-08): the Inputs page brought to the front, nothing opened on it. Only a flag is reached, as `openDays`. */
+export function openInputsPage(): void {
+  if (CURPAGE !== 'inputs') setPage('inputs')
+  raptorNotify()
+}
+
 /** THE WAR'S NEW-PERIOD SHEET, ASKED FOR FROM DAYS, on a run of dates no leave period covers (the plan §3.4). The
  *  Holidays list cannot write a holiday there, and nothing about making a period is rebuilt in the scheduler's
  *  window: the ask is left for the war's own top row (ui/warask.ts, ui/Chrome.tsx), the Leave War is brought to the

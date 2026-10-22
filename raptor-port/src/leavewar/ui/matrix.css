@@ -1104,6 +1104,23 @@
   opacity: .45;
 }
 
+/* THE SMALL LOCK ON A CLOSED DATE (D1177's reading: "closed days dim with a small lock while anything is open"). A
+   pseudo-element on the date heading only — no node in any day cell, so the grid's node count and its memo are
+   untouched (docs/performance.md §E). A drawn padlock, never a letter or an emoji (D919). */
+.mx .mxhead th.day.locked {
+  position: relative;
+}
+.mx .mxhead th.day.locked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 7px;
+  height: 8px;
+  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M3.5 7V5a3.5 3.5 0 0 1 7 0v2' fill='none' stroke='%23AEB7C2' stroke-width='1.8'/%3E%3Crect x='1' y='7' width='12' height='8.5' rx='1.6' fill='%23AEB7C2'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
 .mx td.locked {
   opacity: .5;
 }
