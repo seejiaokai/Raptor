@@ -3362,6 +3362,13 @@ test('the "Open for bidding" window is anchored to the viewport, not clipped', a
   const view = page.viewportSize()!
   expect(box.y).toBeGreaterThanOrEqual(0)
   expect(box.y + box.height).toBeLessThanOrEqual(view.height + 1)
+  if (isPhone()) {
+    /* D1264 (23 Oct 26): on a phone it is a full page from the top, over the top bar as the OIL tracker's is — anchored
+       to the viewport means it fills it, never boxed inside the bar */
+    expect(box.y).toBeLessThanOrEqual(0.5)
+    expect(box.height).toBeGreaterThanOrEqual(view.height - 1)
+    return
+  }
   const bar = (await page.locator('#page-leavewar .topbar').boundingBox())!
   expect(box.y).toBeGreaterThan(bar.y + bar.height)
 })
