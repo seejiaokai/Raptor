@@ -1170,7 +1170,7 @@ export function dayWarnHTML(di:any){
            what is missing and leaving him to find the Leave War himself is half
            an answer. The year is read from the SAME hook the warning was
            written from, never parsed back out of its sentence. */
-        +(!PV&&!hid&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
+        +(!PV&&!hid&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period, with nothing open for bidding, and takes you to the Leave War to open its dates">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
         +`</div>`;
     };
     /* an OFFICIAL-only warning (it clears once the day is signed): struck through,

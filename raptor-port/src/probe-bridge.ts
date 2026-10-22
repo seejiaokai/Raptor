@@ -45,7 +45,8 @@ import { roleOf } from './state/perms'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
+import { setMemberTodayForTests as lwSetMemberToday, landingOf as lwLandingOf, memberToday as lwMemberToday } from './leavewar/engine'
+import { setRole as lwSetRole, selectWar as lwSelectWar, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
 import { pinViewer, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
 
@@ -151,6 +152,14 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
+  /* A MEMBER'S TODAY, PINNED FOR A BROWSER TEST (D1211 — he never bids before today): the demo's open dates are 1 Jan –
+     31 Mar 26, which the real calendar has passed. Pinned, the page is put on the period the boot would pick for that
+     day (`landingOf`), as a load would. Developer's PC only, like the rest of this bridge. */
+  w.lwSetMemberToday = (iso: string | null) => {
+    lwSetMemberToday(iso)
+    const land = lwLandingOf(lwGetState().wars.map(x => x.period), lwMemberToday())
+    if (land) lwSelectWar(land.periodId)
+  }
   /* the flying plan's two typed writers (state/flyplan.ts) — a day's required pilots and WSOs, and a figure that runs
      from a date on. The browser tests of the Leave War's Required rows plant a figure with these, as an admin's typing
      will (the Inputs / SANS redesign, plan §3.3); each is the real command, refused for a member like any other. */

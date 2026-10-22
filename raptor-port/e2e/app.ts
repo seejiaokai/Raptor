@@ -49,6 +49,26 @@ async function slowMachine(page: Page) {
   if (rate > 1) await (await page.context().newCDPSession(page)).send('Emulation.setCPUThrottlingRate', { rate })
 }
 
+/* THE LEAVE WAR'S "TODAY", HELD STILL (M1 — D1177, D1211, 22 Oct 26). A member never bids before today, the open-dates
+   chip, outline and window show him the open stretches from today, and the page lands on the first open date from
+   today (else today). The demo's open stretch is a fixed 1 Jan – 31 Mar 26 that the real calendar has passed — left to
+   the real date, every member bid in this suite would meet the closed note and the grid would open in October. So
+   every sign-in first pins the war's today far back, as the unit suite's own setup does (src/leavewar/test-setup.ts):
+   "today" decides nothing unless a test sets it on purpose. Pinned BEFORE the sign-in, so the grid's
+   first landing (and the idle pre-warm after login) already reads it. The bridge (src/probe-bridge.ts, this PC only)
+   is the one seam; a bridge without it fails here by name rather than as a hundred closed notes. */
+export const LW_TODAY = '2000-01-01'
+async function pinLeaveWarToday(page: Page) {
+  await page.waitForSelector('#luser')
+  const ok = await page.evaluate(d => {
+    const w = window as any
+    if (typeof w.lwSetMemberToday !== 'function') return false
+    w.lwSetMemberToday(d)
+    return true
+  }, LW_TODAY)
+  if (!ok) throw new Error('login: the probe bridge has no lwSetMemberToday — the Leave War\'s today cannot be pinned (src/probe-bridge.ts)')
+}
+
 /* Login is ad/a for full edit, us/us for the member (owner, 24 Aug 26). The
    username is lowercased before matching but the PASSWORD is compared
    exactly. The parameter keeps its historical 'a' | 'user' shape so the 100+
@@ -57,6 +77,7 @@ async function slowMachine(page: Page) {
 export async function login(page: Page, who: 'a' | 'user' = 'a') {
   await page.goto('/')
   await slowMachine(page)
+  await pinLeaveWarToday(page)
   await page.fill('#luser', who === 'a' ? 'ad' : 'us')
   await page.fill('#lpass', who === 'a' ? 'a' : 'us')
   await page.click('#loginForm button[type=submit]')
@@ -279,16 +300,52 @@ export async function lwView(page: Page, id: string | null) {
   await page.waitForTimeout(150)
 }
 
-/* MOVE THE WAR'S STAGE the way a person does at this size ([LW-PHONE-HEADER-SPACE], owner D678, 8 Oct 26). On a tablet
-   and a desktop the two moves are in sight on the stage strip; on a phone (the Leave War's own phone width, 430px and
-   under) an admin's stage is a button and the same two moves are in the menu it opens — one tap more. A test that is
-   about what the stage DOES, not where its button is, goes through here and runs unchanged in both projects. */
-export async function stageMove(page: Page, which: 'advance' | 'back') {
-  if ((page.viewportSize()?.width ?? 1440) <= 430) {
-    await page.locator('[data-testid="stage-now"]').click()
-    await page.locator('[data-testid="stage-menu"]').waitFor({ state: 'visible' })
+/* OPEN AND CLOSE THE DATES the way a person does (D1177, D1168 — 21 Oct 26: the stages went; the admin opens the days
+   the squadron may bid on in the "Open for bidding" window). The one chip — "Open for bidding 1 Jan – 31 Mar" on a
+   desktop, "Open 1 Jan – 31 Mar" on a phone, "Bidding closed" with nothing open — opens the window at every size; a tap
+   on a month button opens a closed month whole and closes an open one. A test that is about what opening or closing
+   DOES goes through these and runs unchanged in both projects. */
+export const openChip = (page: Page) => page.locator('[data-testid="open-chip"]')
+export const datesWindow = (page: Page) => page.locator('[data-testid="open-dates"]')
+/** Open the "Open for bidding" window from the chip. */
+export async function openDatesWindow(page: Page) {
+  await openChip(page).click()
+  await expect(datesWindow(page)).toBeVisible()
+}
+/** Close it by its ✕. */
+export async function closeDatesWindow(page: Page) {
+  await page.locator('[data-testid="open-dates-close"]').click()
+  await expect(datesWindow(page)).toHaveCount(0)
+}
+/** Tap these months ("2026-04") in the open window, each one tap, waiting for each to change. */
+export async function tapMonths(page: Page, keys: string[]) {
+  for (const k of keys) {
+    const m = page.locator(`[data-testid="od-month-${k}"]`)
+    const was = await m.getAttribute('data-state')
+    await m.click()
+    await expect(m, `the ${k} button changed`).not.toHaveAttribute('data-state', was!)
   }
-  await page.locator(`[data-testid="stage-${which}"]`).click()
+}
+/** CLOSE BIDDING on the period on screen, as the admin does: every open month tapped shut (a month open in part is
+ *  tapped twice — the first tap opens it whole, the second closes it); the chip then reads "Bidding closed". */
+export async function closeBidding(page: Page) {
+  await openDatesWindow(page)
+  for (let i = 0; i < 30; i++) {
+    const lit = page.locator('[data-testid^="od-month-"][data-state="open"], [data-testid^="od-month-"][data-state="part"]').first()
+    if (!(await lit.count())) break
+    await tapMonths(page, [(await lit.getAttribute('data-testid'))!.slice('od-month-'.length)])
+  }
+  await expect(page.locator('[data-testid="od-none"]')).toBeVisible()
+  await closeDatesWindow(page)
+  await expect(openChip(page)).toHaveText('Bidding closed')
+}
+/** OPEN these whole months for bidding (the seed's own stretch is Jan – Mar 26), from the window. */
+export async function openMonths(page: Page, keys: string[] = ['2026-01', '2026-02', '2026-03']) {
+  await openDatesWindow(page)
+  for (const k of keys) {
+    if ((await page.locator(`[data-testid="od-month-${k}"]`).getAttribute('data-state')) !== 'open') await tapMonths(page, [k])
+  }
+  await closeDatesWindow(page)
 }
 
 /* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): with a day's sheet open, its Move picks the chip up into the grid's

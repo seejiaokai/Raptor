@@ -86,7 +86,7 @@ describe('D200 (3): the permissions matrix IS data-model.md §11', () => {
     expect(MEDICAL_DETAIL).toEqual(expect.arrayContaining(['admin', 'member', 'guest']))
   })
   it('the parser itself reads the forms the table uses', () => {
-    expect(parseCell('R, C U D **own** (while `stage = open`)')).toEqual({ all: ['R'], own: ['C', 'U', 'D'] })
+    expect(parseCell('R, C U D **own** on a day open for bidding, not before today (on any other day only D of his own pending bid — D1177, D1211, D1225)')).toEqual({ all: ['R'], own: ['C', 'U', 'D'] })
     expect(parseCell('C R U D **own**; R')).toEqual({ all: ['R'], own: ['C', 'R', 'U', 'D'] })
     expect(parseCell('R (D by sweep only)')).toEqual({ all: ['R'], own: [] })
     expect(parseCell('C R U D (decide, move)')).toEqual({ all: ['C', 'R', 'U', 'D'], own: [] })

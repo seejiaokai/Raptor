@@ -3,8 +3,9 @@
    "Perhaps indicate that the leave war period doesn't exist, create it."
    The day naming the missing period is half an answer; the other half is the
    control that makes it, without sending the scheduler off to find the Leave
-   War and work out what to build there. It lands in DRAFT and hands him over
-   to set the bidding window, because opening a period for bidding is his act. */
+   War and work out what to build there. It lands with NOTHING OPEN for bidding
+   (a new period is closed — D1177) and hands him over to open its dates,
+   because opening dates for bidding is his act. */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { dayWarnHTML } from './html'
 import { routeClick } from './interactions'
@@ -55,14 +56,14 @@ describe('the day offers to create the leave war period it says is missing', () 
     expect(offer()!.textContent).toContain('2028')
   })
 
-  it('pressing it creates the period, in draft, and moves to the Leave War', () => {
+  it('pressing it creates the period, with nothing open, and moves to the Leave War', () => {
     setRole('admin')
     draw()
     offer()!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
     const w = getState().wars.find(x => x.period.start === '2028-01-01')
     expect(w, 'the period exists now').toBeTruthy()
-    expect(w!.period.stage, 'in draft — opening it for bidding stays his act').toBe('draft')
-    expect(view.CURPAGE, 'and he is taken there to set the bidding window').toBe('leavewar')
+    expect(w!.period.open, 'nothing open — opening its dates for bidding stays his act (D1177)').toEqual([])
+    expect(view.CURPAGE, 'and he is taken there to open its dates').toBe('leavewar')
   })
 
   /* the words (owner D838, 14 Oct 26 — N31, N32: a fact, then what to do; each dash became a full stop) */
@@ -70,7 +71,7 @@ describe('the day offers to create the leave war period it says is missing', () 
     setRole('admin')
     draw()
     offer()!.dispatchEvent(new MouseEvent('click', { bubbles: true }))
-    expect(said).toEqual(['The 2028 leave war period is created. Set its bidding window here.'])
+    expect(said).toEqual(['The 2028 leave war period is created. Open its dates for bidding here.'])
     said = []
     draw()
     offer()!.dispatchEvent(new MouseEvent('click', { bubbles: true }))

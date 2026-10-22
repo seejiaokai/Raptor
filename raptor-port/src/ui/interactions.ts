@@ -1736,7 +1736,7 @@ export function routeClick(e: MouseEvent) {
     const yr = String(mkp.dataset.mkperiod || '')
     const made = createOilPeriodFor(yr)
     if (made === 'created') {
-      HOOKS.toast(`The ${yr} leave war period is created. Set its bidding window here.`, 'ok')
+      HOOKS.toast(`The ${yr} leave war period is created. Open its dates for bidding here.`, 'ok')
       view.setPage('leavewar'); notify()
     } else if (made === 'overlap') {
       HOOKS.toast(`A leave war already covers part of ${yr}. Open the Leave War and extend it instead.`, 'warn')

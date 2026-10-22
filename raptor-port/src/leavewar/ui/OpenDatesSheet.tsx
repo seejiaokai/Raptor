@@ -83,7 +83,10 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     const d = { start: ix, cur: ix, closing, armed: !touch, moved: false, x: e.clientX, y: e.clientY, timer: null as number | null }
     if (touch) d.timer = window.setTimeout(() => { if (drag.current === d && !d.moved) { d.armed = true; setSpan({ lo: ix, hi: ix, closing }) } }, HOLD_MS)
     drag.current = d
-    try { stripRef.current?.setPointerCapture(e.pointerId) } catch { /* jsdom */ }
+    /* NO POINTER CAPTURE: captured, a mouse's click went to the strip and never reached the month pressed (the test
+       helper's read, 22 Oct 26). The moves bubble to the strip; a release anywhere ends the drag. */
+    const end = () => { window.removeEventListener('pointerup', end); if (drag.current === d) onUpRef.current() }
+    window.addEventListener('pointerup', end)
   }
   const onMove = (e: React.PointerEvent) => {
     const d = drag.current
@@ -109,6 +112,8 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     }
     endDrag()
   }
+  const onUpRef = useRef(onUp)
+  onUpRef.current = onUp
   const tap = (ix: number) => {
     if (swallowClick.current) { swallowClick.current = false; return }
     if (!admin) return
@@ -116,13 +121,26 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     say(monthState(shown, m) === 'open' ? closeDates(m.from, m.to) : openDates(m.from, m.to))
   }
 
-  /* ---- the calendar for exact days ---- */
-  const pickExact = (r: Range | null) => {
-    if (editing === 'new') { if (r && say(openDates(r.from, r.to))) setEditing(null); return }
-    if (!editing) return
-    if (!r) { if (say(closeDates(editing.from, editing.to))) setEditing(null); return }
-    if (say(setStretch(editing, r.from, r.to))) setEditing(null)
+  /* ---- the calendar for exact days ----
+     A picked run is a DRAFT until its button applies it: the calendar reports a one-day run on its first tap and the
+     whole run on the second, so applying on every report made only one-day stretches (the test helper's read). */
+  const [draft, setDraft] = useState<Range | null>(null)
+  const startEdit = (e: OpenStretch | 'new' | null) => { setEditing(e); setDraft(e && e !== 'new' ? { ...e } : null); setProblem('') }
+  const applyExact = () => {
+    if (!draft) return
+    if (editing === 'new') { if (say(openDates(draft.from, draft.to))) startEdit(null); return }
+    if (editing && say(setStretch(editing, draft.from, draft.to))) startEdit(null)
   }
+  const closeExact = () => { if (editing && editing !== 'new' && say(closeDates(editing.from, editing.to))) startEdit(null) }
+  const exactFoot = (forNew: boolean) => (
+    <div className="od-apply">
+      <button type="button" className="dchip approve" data-testid="od-apply" disabled={!draft} onClick={applyExact}>
+        {draft ? `${forNew ? 'Open' : 'Save'} ${stretchLabel(draft)}` : 'Pick the first and last day'}
+      </button>
+      {!forNew && <button type="button" className="dchip del" data-testid="od-close-stretch" onClick={closeExact}>Close these days</button>}
+      <button type="button" className="dchip" data-testid="od-cancel" onClick={() => startEdit(null)}>Cancel</button>
+    </div>
+  )
 
   const yearOf = (key: string) => key.slice(2, 4)
   const multiYear = months.length > 0 && months[0]!.key.slice(0, 4) !== months[months.length - 1]!.key.slice(0, 4)
@@ -143,7 +161,6 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
         role="group"
         aria-label={admin ? 'Months — tap to open or close a month, hold and drag across months' : 'Months open for bidding'}
         onPointerMove={onMove}
-        onPointerUp={onUp}
         onPointerCancel={endDrag}
       >
         {months.map((m, i) => {
@@ -187,7 +204,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
             <div key={key} className="od-line-wrap">
               <div className="od-line" data-testid={`od-line-${s.from}`}>
                 {admin ? (
-                  <button type="button" className="od-line-go" onClick={() => setEditing(isEditing ? null : s)}
+                  <button type="button" className="od-line-go" onClick={() => startEdit(isEditing ? null : s)}
                     aria-expanded={isEditing} aria-label={`${stretchLabel(s)}, ${stretchDays(s)} days — change its days`}>
                     <span className="od-span">{stretchLabel(s)}</span>
                     <span className="od-days">{stretchDays(s)} days</span>
@@ -201,22 +218,28 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
                 {admin && (
                   <button type="button" className="od-cal" data-testid={`od-cal-${s.from}`} title="Exact days"
                     aria-label={`Exact days of ${stretchLabel(s)}`} aria-expanded={isEditing}
-                    onClick={() => setEditing(isEditing ? null : s)}>
+                    onClick={() => startEdit(isEditing ? null : s)}>
                     <CalIcon />
                   </button>
                 )}
               </div>
               {isEditing && (
-                <RangePicker testid="od-range" clear min={period.start} max={period.end} value={s} onChange={pickExact} />
+                <>
+                  <RangePicker testid="od-range" min={period.start} max={period.end} value={draft} onChange={setDraft} />
+                  {exactFoot(false)}
+                </>
               )}
             </div>
           )
         })}
         {admin && (
           editing === 'new' ? (
-            <RangePicker testid="od-new" min={period.start} max={period.end} anchor={open[open.length - 1]?.to ?? period.start} value={null} onChange={pickExact} />
+            <>
+              <RangePicker testid="od-new" min={period.start} max={period.end} anchor={open[open.length - 1]?.to ?? period.start} value={draft} onChange={setDraft} />
+              {exactFoot(true)}
+            </>
           ) : (
-            <button type="button" className="od-more" data-testid="od-more" onClick={() => setEditing('new')}>
+            <button type="button" className="od-more" data-testid="od-more" onClick={() => startEdit('new')}>
               + Open more dates
             </button>
           )

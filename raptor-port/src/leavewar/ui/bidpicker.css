@@ -1512,6 +1512,13 @@
   cursor: pointer;
 }
 
+.bidsheet .od-apply {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
 /* ---- THE CLOSED NOTE (D1176, D1225; drawn r7-08, r7-09) ---------------------------------------------------------- */
 .bidsheet .cn-note {
   margin: 10px 0 4px;
