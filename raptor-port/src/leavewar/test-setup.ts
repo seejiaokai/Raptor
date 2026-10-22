@@ -8,7 +8,7 @@
 import { beforeEach } from 'vitest'
 import '../testing/marks-guard'   // every validate() this suite runs is checked too ([WARN-HIDE-KEPT])
 import { INPUTS, inpId } from '../engine/inputs'
-import { SEED_ABSENCES, seedWars, warHolding } from './engine'
+import { SEED_ABSENCES, seedWars, setMemberTodayForTests, warHolding } from './engine'
 import { inputRowFor } from './absences'
 import { _setInitHook } from './state/store'
 import { installAbsenceDoor, syncAbsences } from './sync'
@@ -17,6 +17,9 @@ const PRISTINE = JSON.stringify(INPUTS)
 const wars = seedWars()
 
 beforeEach(() => {
+  /* A MEMBER NEVER BIDS BEFORE TODAY (D1211) — and the suite's bids sit on fixed 2026 dates that the real calendar has
+     passed. Pinned far back, so "today" decides nothing unless a test sets it on purpose (the D1211 tests do). */
+  setMemberTodayForTests('2000-01-01')
   INPUTS.length = 0
   for (const r of JSON.parse(PRISTINE)) INPUTS.push(r)
   for (const a of SEED_ABSENCES) {

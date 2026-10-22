@@ -131,7 +131,8 @@ check; the walk sized at the build (the walk ledger) and walked by Sonnet 5.5 he
 replaced by a test that changes the data directly (D608); the break tests and the case seeded in the demo data; GitHub's
 run of the pull request as the full check while the repo is public (D1086), the tests of what changed on his PC; **one
 fresh, blind Opus read of the finished code** (D790 — Fable only on his word, D903; two Opus reads never count as two
-independent readers, D67); the fixes, the re-walk; the evidence sheet with its `Walk:` line; pictures for his look;
+independent readers, D67) — **for M1, Fable 5.1 reads its finished code too, beside the Opus read and blind to it, on
+his call (D1260, 22 Oct 26; M1 only)**; the fixes, the re-walk; the evidence sheet with its `Walk:` line; pictures for his look;
 "merge live" his. **Owed while the ChatGPT readers are out** and written on `[NO-ASTRA-LIST]` for each merge (D761):
 the two ChatGPT reads FULL wants (Astra, then Sol 6.1) and the scenario design by the other provider.
 

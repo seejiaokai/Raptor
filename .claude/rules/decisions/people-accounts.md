@@ -27,7 +27,7 @@ paths:
   - raptor-port/src/engine/schema.ts
   - raptor-port/src/leavewar/sync.ts
   - raptor-port/src/leavewar/engine/people.ts
-  - raptor-port/src/leavewar/engine/stages.ts
+  - raptor-port/src/leavewar/engine/access.ts
   - raptor-port/src/leavewar/state/**
   - raptor-port/src/leavewar/ui/BidPicker.tsx
   - raptor-port/src/leavewar/ui/Matrix.tsx

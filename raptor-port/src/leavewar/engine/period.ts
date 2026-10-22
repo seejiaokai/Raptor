@@ -5,12 +5,11 @@
 // accessors shift the day for anyone east or west of UTC, which would silently
 // move a weekend and therefore silently move an OIL credit.
 
-export type Stage = 'draft' | 'open' | 'closed' | 'published'
-
 // Type-only — eventdefs.ts imports DayInfo from here the same way; both
 // directions are erased at compile so there is no runtime cycle.
 import type { EventKind } from './eventdefs'
 import { normShort } from './eventshort'
+import type { ClosedNote, OpenStretch } from './opendates'
 
 /**
  * A MERGED event — one label shown as a single cell across a range of days, on
@@ -72,23 +71,16 @@ export interface Period {
   name: string
   start: string
   end: string
-  stage: Stage
   /**
-   * The range of dates members may bid on, inside this period. `null` means
-   * the whole period.
-   *
-   * A leave war is a WHOLE YEAR on screen, because that is how the owner
-   * reads it — but the schedule firms up a quarter or a month at a time, and
-   * bidding opens on that much of it. Those two facts used to fight: the only
-   * way to open a quarter was to make the war a quarter, which meant never
-   * seeing the year. Settled 10 Aug 26 — the year is the sheet, and this is
-   * the window opened inside it.
-   *
-   * Both `null` on every war that predates this, which reads as "the whole
-   * period is open" and is exactly the old behaviour.
+   * The days open for bidding (owner, D1177, 21 Oct 26 — the stages and the one bidding window went). A list of
+   * inclusive stretches inside the period, in the one normal form `opendates.ts normaliseOpen` keeps: sorted, never
+   * overlapping or touching. EMPTY MEANS CLOSED — a new period takes no member bid until the admin opens dates in the
+   * "Open for bidding" window (the red team's B2). The year stays the sheet; these are the stretches opened inside it.
    */
-  bidFrom: string | null
-  bidTo: string | null
+  open: OpenStretch[]
+  /** What the admin's last closing took away, and who did it — what a tap on "Bidding closed" shows (D1177's reading).
+   *  Null until anything has been closed. */
+  lastClosed: ClosedNote | null
   days: DayInfo[]
   /** Merged event labels — the spanning-cell alternative to per-day repeat.
    *  Empty on every war that predates the feature, read leniently in the
@@ -225,44 +217,6 @@ const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
  *  east or west of UTC. */
 export function dayName(date: string): string {
   return DAY_NAMES[weekday(date)]
-}
-
-/**
- * Whether this date is inside the period's bidding window.
- *
- * `null` bounds mean the whole period is open, which is what every war
- * created before the window existed carries. A window is clamped by the
- * caller, not here — this answers only the question it is asked.
- */
-export function inBidWindow(period: Period, date: string): boolean {
-  if (period.bidFrom && date < period.bidFrom) return false
-  if (period.bidTo && date > period.bidTo) return false
-  return true
-}
-
-/**
- * The day the grid should land on when this war first comes up, and the day a
- * war-switch snaps to — the START of the part that is (or was) open for bidding
- * (owner, 7 Sep 26: "the start of the period in which it is opened for
- * bidding"). `bidFrom` is where the squadron actually acts, and it is kept
- * across a stage change (closing or publishing a war does not clear the window
- * it was bid on), so it is the right anchor at EVERY stage, not only while
- * open. A war with no window set — `null` bounds, the whole period open — has
- * no narrower "start" than its first day, so it lands there.
- */
-export function defaultFocusDate(period: Period): string {
-  return period.bidFrom ?? period.start
-}
-
-/**
- * Whether a proposed bidding window is one this period can hold.
- *
- * Refused rather than clamped: an admin who typed dates outside the war has
- * made a mistake worth telling them about, and silently moving their dates to
- * the period's edges would leave them believing they opened something else.
- */
-export function windowFits(period: Period, from: string, to: string): boolean {
-  return to >= from && from >= period.start && to <= period.end
 }
 
 /** A period's empty band list. A named helper so the two constructors and the

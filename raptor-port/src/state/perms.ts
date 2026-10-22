@@ -429,9 +429,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
   'lw.moveApproved': op(T.bid, 'U'),
-  /* D352 (28 Sep 26): a stage move (Open for bidding / Bidding closed / Published) — the admin's, as the stage always was
-     (27 Aug 26); its own type only so Undo can name it */
-  'lw.stage': op(T.bid, 'U'),
+  /* opening or closing dates for bidding (D1177, 21 Oct 26 — the stages went; D352 narrowed): the admin's, as the stage
+     always was (27 Aug 26) — the period's own record; its own type so Undo can name it ("Undid: opening bidding …") */
+  'lw.open': op(T.war, 'U'),
   /* the Holidays list's three writers (leavewar/state/store.ts holidayAdd / holidayChange / holidayRemove — the Inputs /
      SANS redesign, plan §3.4): a public holiday or an Off day is the leave period's own record, an admin's to change */
   'lw.holiday.add': op(T.war, 'U'), 'lw.holiday.change': op(T.war, 'U'), 'lw.holiday.remove': op(T.war, 'U'),
@@ -633,6 +633,31 @@ type ReplayCheck = (env: CommitEnvelope) => ((c: Change) => boolean) | null
 let REPLAY: ReplayCheck | null = null
 export function setInputReplayCheck(fn: ReplayCheck | null): void { REPLAY = fn }
 
+/* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8, 22 Oct 26; D1177, D1211, D1225). A member's war record —
+   `lw.cell`, id `war:person:date` — may change on a day OPEN for him (the period holding it has the day open, and it is
+   not before today); on any other day his command may only TAKE AWAY his own pending (live) bids there (D1225: "a
+   member may delete his own pending bid on a day that has since closed") or a replaced-bid notice he has seen — never
+   add or change a record. Whether a day is open is the Leave War's to say (its store installs the probe: the pure rule
+   `leavewar/engine/access.ts canEditCell`, asked of the period holding the date); with no war wired every day reads
+   open, as before. An Undo or Redo of his own step passes, image for image (the replay check, as the inputs'). */
+type LwDayOpen = (cellId: string) => boolean
+let LW_DAY_OPEN: LwDayOpen | null = null
+export function setLwDayOpenProbe(fn: LwDayOpen | null): void { LW_DAY_OPEN = fn }
+function onlyTakesPending(before: unknown, after: unknown): boolean {
+  const b: any[] = Array.isArray(before) ? before : []
+  const a: any[] = Array.isArray(after) ? after : []
+  const was = new Map(b.map(r => [String(r?.id), JSON.stringify(r)] as const))
+  for (const r of a) if (was.get(String(r?.id)) !== JSON.stringify(r)) return false     // nothing added or changed
+  const kept = new Set(a.map(r => String(r?.id)))
+  for (const r of b) {
+    if (kept.has(String(r?.id))) continue
+    if (r?.kind === 'request' && r.state !== 'refused') continue                          // his pending bid, taken
+    if (r?.kind === 'notice') continue                                                    // a notice he has seen
+    return false
+  }
+  return true
+}
+
 const same = (a: any, b: any): boolean => (a ?? null) === (b ?? null)
 const filed = (x: any, y: any): boolean => same(x.by, y.by) && same(x.at, y.at) && same(x.grp, y.grp) && same(x.grpBy, y.grpBy)
 const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id !== INPUT_ORDER
@@ -740,7 +765,15 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         return `a notice that is not his own change's (${where})`
       }
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
-      case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
+      case 'lw.cell': {
+        const parts = c.id.split(':')
+        if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
+        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, c.op === 'delete' ? [] : c.after)) {
+          if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+          if (!(replayed && replayed(c))) return `a war day not open for bidding (${where})`
+        }
+        break
+      }
       case 'lw.current': break
       /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes his OWN seen row and no other (EditLogSeen, own row
          — one row per person since [DB-READINESS] group A, phase 4.3) */

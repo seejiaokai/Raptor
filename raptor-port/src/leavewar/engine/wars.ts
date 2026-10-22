@@ -22,11 +22,12 @@ export interface LeaveWar {
 }
 
 /**
- * A new war over the given span, in draft and empty.
+ * A new war over the given span, empty and with NOTHING OPEN (D1177: "nothing
+ * is open until he opens it").
  *
- * Draft, not open: opening it is the admin's act, taken when the schedule
- * firms up, and making creation open it would take that decision away at
- * exactly the moment they are least ready to make it.
+ * Opening dates is the admin's act, taken when the schedule firms up, and
+ * making creation open anything would take that decision away at exactly the
+ * moment they are least ready to make it.
  */
 export function makeWar(id: string, name: string, start: string, end: string): LeaveWar {
   // `yyyy-mm-dd` compares correctly as a plain string, so no parsing and no
@@ -36,7 +37,8 @@ export function makeWar(id: string, name: string, start: string, end: string): L
     throw new Error(`makeWar: '${name}' ends (${end}) before it starts (${start})`)
   }
   return {
-    period: { id, name, start, end, stage: 'draft', bidFrom: null, bidTo: null, days: buildDays(start, end), bands: [] },
+    // nothing open until the admin opens dates (D1177; empty means closed — the red team's B2)
+    period: { id, name, start, end, open: [], lastClosed: null, days: buildDays(start, end), bands: [] },
     recs: {},
   }
 }

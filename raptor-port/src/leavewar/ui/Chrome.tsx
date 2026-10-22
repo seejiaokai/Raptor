@@ -1,24 +1,15 @@
-// Raptor's topbar idiom plus a stage strip below it. Only real, computable
+// Raptor's topbar idiom plus the open-dates strip below it. Only real, computable
 // facts are surfaced here — no dead nav links to pages that don't exist
 // yet (My leave, Ledger, Rules, Roster) and no "closes in N days", which
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { biddingClosed, canReopen, evaluatePeriod, FIGURES, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
+import { evaluatePeriod, FIGURES, isBiddable, isDuty, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, openInputWindow, subscribeClashes, type ClashWayOut, type SyncClash } from '../sync'
-import {
-  advanceStage,
-  clearBidWindow,
-  focusDay,
-  reopenStage,
-  getState,
-  selectWar,
-  setBidWindow,
-} from '../state/store'
-import { RangePicker, type Range } from './RangePicker'
-import { Sheet } from './Sheet'
-import { dayLabel, shortDate, shortSpan, spanInYear } from './dates'
+import { focusDay, getState, selectWar } from '../state/store'
+import { OpenDatesSheet } from './OpenDatesSheet'
+import { dayLabel, shortDate } from './dates'
 import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
@@ -33,24 +24,25 @@ const LIST_WIDTH = 244
  *  word the popover now carries, and the constant has to track the CSS
  *  width exactly or the clamp math above places the popover off-screen. */
 const LEGEND_WIDTH = 312
-/** Same, for the phone's stage menu (`.stagemenu`) — the two stage moves behind the stage button (D678). */
-const STAGE_MENU_WIDTH = 224
 /** What each clash tells the admin to do — where it can actually be undone ([ABSENCE-SMALL-SEEN] 1, 28 Sep 26; the reason
  *  for each is at `clashWayOut` in sync.ts). "Resolve on the sheet" sent him to a sheet with no control on it whenever
  *  the leave in the way was filed on the Inputs page.
  *  THE WORDS OF RECORD (owner D827, D837 — 14 Oct 26; docs/superpowers/briefs/2026-10-13-wording-recheck.md, the second
  *  table): each is an instruction that starts with its verb, and is the clash's own link — a tap goes where it says. */
+/* THE APPROVED-LEAVE LINE (D1177 narrowing D827 — "Step the war back to Bidding Closed" is reworded at the build: there
+   is no stage to step back): "Change the approved leave", its sentence "…but the bid is approved OL", as the overhaul's
+   drawing of the phone's clash note has them (r7-19, approved with the plan — D1250). A tap opens the day for that
+   person, where the admin sends it back, moves or deletes it at any time. */
 const WAY_OUT: Record<ClashWayOut, string> = {
   bid: 'Decide the bid',
-  war: 'Send the leave back or delete it',
-  'war-published': 'Step the war back to Bidding Closed',
+  war: 'Change the approved leave',
   inputs: 'Change the leave on Inputs',
 }
 /** What clashes, as a sentence — today's words less the name and the date, which stand beside it (D825: every key word
- *  kept). Where the leave in the way is PUBLISHED the sentence says so: it is the reason the instruction is to step the
- *  war back, and the old line's "the leave is published" must not be lost with its dash. */
+ *  kept). Where the leave in the way is one the war APPROVED the sentence says so (r7-19): it is why the instruction is
+ *  to change the approved leave rather than decide a bid. */
 export function clashWhat(c: SyncClash): string {
-  const held = `${c.wayOut === 'war-published' ? 'published ' : ''}${c.bidCode}`
+  const held = `${c.wayOut === 'war' ? 'approved ' : ''}${c.bidCode}`
   return c.kind === 'duty'
     ? `Weekend/PH work earns ${c.inputCode}, but the day holds ${held}`
     : `The input is ${c.inputCode}, but the bid is ${held}`
@@ -95,7 +87,7 @@ export function Topbar() {
         space"). Raptor's shell topbar already carries the 142 identity and
         highlights the Leave War tab, so a second copy under it was pure
         duplication and a band of wasted height on a phone. What stays is the
-        real controls only: the period picker here, and the stage strip below. */}
+        real controls only: the period picker here, and the open-dates strip below. */}
     <div className="topbar">
       <div className="spring">
         {/* A native select rather than a popover: it is the one control that
@@ -103,14 +95,8 @@ export function Topbar() {
             no geometry of its own inside a page that already has a scroller
             and three sheets.
 
-            Each option is the war's NAME only. Adding its stage would widen
-            the closed chip to whatever the longest label is, and the stage
-            strip immediately below already names the current war's — so the
-            cost lands on every phone screen to answer a question only
-            someone mid-switch is asking. */}
-        {/* The picker carried only the war's name, which says what is in it
-            and not what it is. Every chip in the stage strip below is
-            labelled this way already. */}
+            Each option is the war's NAME only: the open-dates strip
+            immediately below says what is open in the current one. */}
         {!phone && <span className="lab" data-testid="period-label">Period</span>}
         <select
           className="wk on warpick"
@@ -159,68 +145,6 @@ export function Topbar() {
         while it was broken; the browser gate is what caught it. */}
     {making && <WarSheet key={asked ? `${asked.from}|${asked.to}` : 'new'} initial={asked} raised={!!asked} onClose={closeSheet} />}
     </>
-  )
-}
-
-/**
- * Choose which dates the squadron may bid on.
- *
- * The refusals are the store's, not this sheet's: `setBidWindow` re-checks
- * the role and the bounds because the role switch is an affordance rather
- * than a permission, and the picker's own `min`/`max` only stop the mistake
- * being made in the first place.
- */
-function WindowSheet({ onClose }: { onClose: () => void }) {
-  const { period } = getState()
-  const [range, setRange] = useState<Range | null>(
-    period.bidFrom && period.bidTo ? { from: period.bidFrom, to: period.bidTo } : null,
-  )
-  const [problem, setProblem] = useState('')
-
-  const apply = () => {
-    const result = range ? setBidWindow(range.from, range.to) : clearBidWindow()
-    if (result === 'set') return onClose()
-    setProblem(
-      result === 'outside'
-        ? `Those dates leave ${period.name}, which runs ${shortSpan(period.start, period.end)}.`
-        : result === 'backwards'
-          ? 'The end date is before the start date.'
-          : 'Only an admin can open bidding.',
-    )
-  }
-
-  return (
-    <Sheet testid="window-sheet" label="Open bidding on" onClose={onClose}>
-      <div className="bidsheet-hd">
-        <span className="who">OPEN BIDDING ON</span>
-        <span className="dt">{period.name}</span>
-        <button className="x" data-testid="window-cancel" onClick={onClose} aria-label="Cancel">
-          ✕
-        </button>
-      </div>
-      <div className="bidsheet-row">
-        <RangePicker
-          testid="window"
-          clear
-          min={period.start}
-          max={period.end}
-          value={range}
-          onChange={setRange}
-        />
-      </div>
-      <div className="bidsheet-row">
-        <span className="lab" />
-        <button className="dchip approve" data-testid="window-apply" onClick={apply}>
-          {range ? 'Open these dates' : 'Open the whole year'}
-        </button>
-        {/* Clearing is a real choice, not a fallback: before a schedule firms
-            up at all, the whole year being open is the right state. */}
-        <span className="note">
-          The year stays on screen. Only these dates are editable by the squadron.
-        </span>
-        {problem && <span className="note warn" data-testid="window-problem">{problem}</span>}
-      </div>
-    </Sheet>
   )
 }
 
@@ -279,42 +203,20 @@ export function StageBar() {
   // a refusal had already recovered.
   const red = dates.filter(d => verdicts[d].verdict === 'red')
   const redDays = red.length
-  const next = nextStage(period.stage)
-  // The way back, and who may take it. Both asked of the engine rather than
-  // worked out here, so the control the strip draws and the write the store
-  // will accept cannot disagree.
-  const back = canReopen(period.stage, role) ? previousStage(period.stage) : null
   const [listOpen, setListOpen] = useState(false)
   const showList = listOpen && redDays > 0
 
-  /* ON A PHONE THIS STRIP IS ONE LINE — the stage, the bidding dates, under-manned, Legend ([LW-PHONE-HEADER-SPACE];
-     owner, D678, 8 Oct 26: idea A of the page he was shown). Three things make room for it, each a reading he was
-     told with the drawing: the words "Stage", "Bidding on" and "Under-manned" go (the buttons say it); the dates read
-     without their year; and AN ADMIN'S TWO STAGE MOVES GO BEHIND THE STAGE BUTTON — a tap opens a small menu holding
-     the very same two buttons, so moving the stage is one tap more than on a desktop. A member has no moves, so his
-     stage stays the plain label it always was and a tap on it opens nothing. A TABLET AND A DESKTOP ARE NOT TOUCHED
-     (D679): there `stageMenu` is false and every branch below draws what it drew before. */
+  /* ON A PHONE THIS STRIP IS ONE LINE — the open dates, under-manned, Legend ([LW-PHONE-HEADER-SPACE]; owner, D678,
+     8 Oct 26: idea A of the page he was shown; the stage chip and its menu went with the stages, D1177). The words
+     "Under-manned" go on a phone (the buttons say it) and the dates read without their year. A TABLET AND A DESKTOP
+     draw the same chip with its longer words (D679). */
   const phone = usePhone()
-  const stageMenu = phone && role === 'admin'
-  const [stageOpen, setStageOpen] = useState(false)
-  const showStage = stageOpen && stageMenu
-  const closeStage = () => setStageOpen(false)
-  /* The menu's reason to exist can go while it is open — he switches to the member view, the phone is turned on its
-     side. It is put away then, not merely hidden: left "open" it would spring back the moment he is an admin on a
-     narrow screen again, over whatever he is doing. */
-  useEffect(() => { if (!stageMenu) setStageOpen(false) }, [stageMenu])
-  const stageRef = useRef<HTMLButtonElement>(null)
-  const [stageAt, setStageAt] = useState<{ left: number; top: number } | null>(null)
-  useLayoutEffect(() => {
-    if (!showStage) { setStageAt(null); return }
-    const r = stageRef.current?.getBoundingClientRect()
-    if (!r) return
-    const margin = 8
-    setStageAt({
-      left: Math.max(margin, Math.min(r.left, window.innerWidth - STAGE_MENU_WIDTH - margin)),
-      top: r.bottom + 6,
-    })
-  }, [showStage, period.stage])
+  /* WHAT IS OPEN, AS THIS PERSON SEES IT (D1177; D1211): the admin every open stretch; a member those from today on —
+     he never bids before today, so a stretch wholly past is not "open" to him. The chip shows the first and counts the
+     rest ("+1"); with none it reads "Bidding closed". One chip, a button for everyone: an admin's tap opens the "Open
+     for bidding" window to change them, a member's opens it to read them — and, with nothing open, the last open stretch
+     and who closed it. */
+  const openNow = role === 'admin' ? period.open : openFrom(period, memberToday())
 
   // Where the list hangs. Measured, because the strip wraps: the chip is in a
   // different place on a phone than on a desktop, and a list anchored to its
@@ -349,7 +251,7 @@ export function StageBar() {
      own sheets. `Sheet` carries the same rule for the panels it wraps; these
      two use a different overlay, which is why it is restated here. */
   useEffect(() => {
-    if (!legOpen && !listOpen && !showStage) return
+    if (!legOpen && !listOpen) return
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       /* Same kept-mounted guard as Sheet.tsx (bug-hunt fix, 1 Sep 26): the
@@ -359,12 +261,11 @@ export function StageBar() {
       if (pg && !pg.classList.contains('on')) return
       e.stopPropagation()
       if (legOpen) setLegOpen(false)
-      else if (listOpen) setListOpen(false)
-      else setStageOpen(false)      // the phone's stage menu (D678) — the third of these pop-outs, by the same rule
+      else setListOpen(false)
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [legOpen, listOpen, showStage])
+  }, [legOpen, listOpen])
   useLayoutEffect(() => {
     if (!legOpen) { setLegAt(null); return }
     const r = legRef.current?.getBoundingClientRect()
@@ -376,125 +277,27 @@ export function StageBar() {
     })
   }, [legOpen])
 
-  /* The stage's two moves, built ONCE and placed twice: in sight on the strip (a tablet, a desktop) or inside the
-     stage menu (a phone, D678). One pair of buttons — the same words, the same test ids, the same store calls — so the
-     two sizes cannot come to offer different moves. */
-  /* It names the stage it will move TO — the label answers "what does this do", and the chip beside it (or above it,
-     in the menu) is already showing where the period stands.
-     Forward only, and disabled at the end of the cycle: `nextStage` owns which transitions exist and this asks it
-     rather than deciding for itself.
-     ADMIN ONLY, absent rather than disabled for a member (owner, 27 Aug 26 — "for a member i shouldnt be able to click
-     on bidding closed or published, thats an admin function"), the same idiom as the back control below; the store's
-     advanceStage refuses a member write regardless. Members still BID as before — this is the only member-facing
-     change. */
-  const advanceBtn = role === 'admin' && (
-    <button
-      className="stage-go"
-      data-testid="stage-advance"
-      disabled={next === null}
-      title={next ? `Move this period to ${stageLabel(next)}` : 'The cycle ends at published'}
-      onClick={() => { advanceStage(); closeStage() }}
-    >
-      → {next ? stageLabel(next) : 'END OF CYCLE'}
-    </button>
-  )
-  /* Stepping the cycle BACK — how bidding is opened again after being closed (owner, 10 Aug 26). Admin only, and
-     absent rather than disabled for a member: a disabled control advertises something they cannot have, and this one
-     is not theirs to want.
-
-     It names where it returns to, exactly as the forward control names where it goes, so the two read as one cycle.
-     Nothing here is destructive — every decision already made survives the move; see `reopenStage`. */
-  const backBtn = back && (
-    <button
-      className="stage-go"
-      data-testid="stage-back"
-      title={`Step this period back to ${stageLabel(back)}. Bids and decisions already made are kept.`}
-      onClick={() => { reopenStage(); closeStage() }}
-    >
-      ← {stageLabel(back)}
-    </button>
-  )
-
   return (
     <>
     <div className="filters">
-      {!phone && <span className="lab">Stage</span>}
-      {stageMenu ? (
-        /* A PHONE, AN ADMIN: the stage is the button its two moves hang from (D678). It reads the stage alone — the
-           small arrow that says "this opens" is drawn by the stylesheet, so the words on the button are exactly the
-           words on a desktop's label. */
-        <button
-          ref={stageRef}
-          className={`fchip stagebtn${period.stage === 'open' ? ' stage-open' : ''}`}
-          data-testid="stage-now"
-          aria-haspopup="dialog"
-          aria-expanded={showStage}
-          title="Move this period to another stage"
-          onClick={() => setStageOpen(o => !o)}
-        >
-          {/* its words in a box of their own: on a phone they are the one thing on the line that gives way (chrome.css) */}
-          <span className="stagetxt">{stageLabel(period.stage)}</span>
-        </button>
-      ) : (
-        <span
-          className={`fchip${period.stage === 'open' ? ' stage-open' : ''}`}
-          data-testid="stage-now"
-        >
-          <span className="stagetxt">{stageLabel(period.stage)}</span>
-        </span>
-      )}
-      {/* The control sits beside the stage it moves, so the strip reads as one thing rather than as a label and an
-          unrelated button. On a phone the pair is in the stage menu instead (below). */}
-      {!stageMenu && advanceBtn}
-      {!stageMenu && backBtn}
-      {showStage && (
-        <>
-          {/* the same scrim the two pop-outs below use: a press anywhere outside the menu puts it away and reaches
-              nothing under it (the 4 Sep 26 rule — a click-open popup closes on a click outside it) */}
-          <div className="umscrim" data-testid="stage-scrim" onClick={closeStage} />
-          <div
-            className="stagemenu"
-            data-testid="stage-menu"
-            role="dialog"
-            aria-label="Move the stage"
-            style={stageAt ? { left: stageAt.left, top: stageAt.top } : undefined}
-          >
-            <div className="stagemenu-hd">Move the stage</div>
-            {advanceBtn}
-            {backBtn}
-          </div>
-        </>
-      )}
-      {/* Which part of the year the squadron may bid on. The war is a whole
-          year on screen and the schedule firms up a quarter at a time, so
-          this is what "the admin opens a period" means — the year stays
-          visible and this much of it is writable.
-
-          Only shown while the war is OPEN: a draft or closed war is shut to
-          the squadron on every date, and a window advertised beside "BIDDING
-          CLOSED" would contradict it. */}
-      {period.stage === 'open' && (
-        <>
-          {!phone && <span className="lab" style={{ marginLeft: 12 }}>Bidding on</span>}
-          <button
-            className={`fchip winchip${role === 'admin' ? ' can' : ''}`}
-            data-testid="bid-window"
-            disabled={role !== 'admin'}
-            /* on a phone the words "Bidding on" and the dates' year are not on screen (D678), so they are said here */
-            aria-label={phone
-              ? `Bidding on ${period.bidFrom && period.bidTo ? shortSpan(period.bidFrom, period.bidTo) : 'the whole year'}`
-              : undefined}
-            title={role === 'admin'
-              ? 'Choose which dates the squadron may bid on'
-              : 'The dates the squadron may bid on'}
-            onClick={() => setPicking(true)}
-          >
-            {period.bidFrom && period.bidTo
-              ? (phone ? spanInYear : shortSpan)(period.bidFrom, period.bidTo)
-              : 'THE WHOLE YEAR'}
-          </button>
-        </>
-      )}
+      <button
+        className={`fchip openchip${openNow.length ? ' open-on' : ''}`}
+        data-testid="open-chip"
+        aria-haspopup="dialog"
+        aria-expanded={picking}
+        title={role === 'admin' ? 'Choose the dates open for bidding' : 'The dates open for bidding'}
+        onClick={() => setPicking(true)}
+      >
+        {openNow.length ? (
+          <>
+            <span className="openword">{phone ? 'Open' : 'Open for bidding'}</span>{' '}
+            <span className="opentxt">{stretchLabel(openNow[0]!)}</span>
+            {openNow.length > 1 && <span className="openmore">{' '}+{openNow.length - 1}</span>}
+          </>
+        ) : (
+          <span className="opentxt">Bidding closed</span>
+        )}
+      </button>
       {/* The standalone app's "Viewing as" role toggle stood here — an
           unverified affordance anyone could flip, because that app had no
           login. Inside Raptor there IS a login: the role now comes from the
@@ -587,13 +390,8 @@ export function StageBar() {
               <div className="leg-row"><span className="leg-sw ref">LL</span><span className="leg-t">Refused</span></div>
               <div className="leg-sec">The left edge — where it came from</div>
               <div className="leg-row"><span className="leg-sw raptor">LL</span><span className="leg-t">Filed on the Inputs page — change it there, not here</span></div>
-              {/* The moved stripe exists only once bidding has closed
-                  (movedShown, one biddingClosed body with the store) — while
-                  the war is open the legend must not advertise a mark no cell
-                  can wear, sending readers hunting for it. */}
-              {biddingClosed(period.stage) && (
-                <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
-              )}
+              {/* the moved stripe: any move of a leave already approved wears it (D1177 — no longer only once bidding closed) */}
+              <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
               {/* [ARCH-STACK] step 4 — the corner mark: one code per day, the
                   rest behind a count (owner comp, 19 Sep 26) */}
               <div className="leg-sec">The corner — more on the day</div>
@@ -661,7 +459,7 @@ export function StageBar() {
       {/* Rendered inside `.filters` rather than `.topbar`, which carries no
           `backdrop-filter` — see the note on WarSheet in Topbar for why that
           distinction decides where a `position: fixed` sheet actually lands. */}
-      {picking && <WindowSheet onClose={() => setPicking(false)} />}
+      {picking && <OpenDatesSheet onClose={() => setPicking(false)} />}
     </div>
     {/* THE PHONE'S CLASH NOTE — after the two lines, never inside the second (above). Admin only, as the strip is. */}
     {role === 'admin' && clashes.length > 0 && phone && (
