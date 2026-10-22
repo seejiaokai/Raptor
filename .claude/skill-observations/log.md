@@ -1867,3 +1867,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In the bug-check order's walk step, after the walkers return, take one close-up picture per new or restyled control (cut to the control's window or row, deviceScaleFactor 2) and set each beside its neighbours' look before the code read; in walk-scripts.md, add an assertion pattern for a new button: its computed background and border equal a sibling button's of the same kind.
 
 **Principle:** A full-screen picture proves a control is present; only a close-up at real pixel density proves it looks like its neighbours — check new controls at the zoom a person sees them.
+
+### Observation 679: A refusal made permanent must be followed through both directions and one step behind
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Building D1263 (a member's Undo/Redo onto a Leave War day closed since) on M1's branch; two fresh Opus reads.
+**Skill:** systematic-debugging (and the bug-check order's §5 "a fix is new code")
+**Type:** open-source
+**Phase/Area:** fixing a reviewer's finding about a stuck control
+
+**Issue:** A new permission refusal for Undo/Redo was correct in itself, but the first read found it jammed the Undo button (every press picked the same refused step). The fix made the refused step "blocked" and passed over, and gave the Undo conflict check a guard for an older step behind a blocked one. The narrow read then found the identical jam on the Redo side one step later: the guard was added to one direction only.
+
+**Suggested improvement:** In systematic-debugging's fix step (or the bug-check order's §5 "a fix is new code"), add one line: when a fix turns a refusal into a skip / block / permanent state, enumerate (a) every direction or twin path (undo AND redo, add AND remove), and (b) every step that can sit BEHIND the blocked one and still pick it — and write a test for each before calling the fix complete.
+
+**Principle:** A stuck-control fix is only complete when every path that can select the stuck item — both directions, and the items queued behind it — has been checked; fixing the one path the finding named leaves its mirror broken.

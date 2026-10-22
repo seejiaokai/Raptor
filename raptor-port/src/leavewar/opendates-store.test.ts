@@ -427,6 +427,26 @@ describe('D1263 — a member\'s Undo or Redo never puts his bid back on a day cl
     expect(requests(pid, '2026-02-20')).toHaveLength(1)
   })
 
+  /* the narrow read of that fix (R1): a Redo behind a blocked older undone step that shares its record is passed over
+     too — never "redo that first" for a step no press can take */
+  it('a Redo behind a blocked step on the same day is passed over: the next press reaches his step on a day still open', () => {
+    expect(setCell(pid, day, 'LL')).toBe(true)                                 // A
+    expect(clearRecordById(pid, day, requests(pid, day)[0]!.id)).toBe(true)    // B
+    expect(setCell(pid, '2026-02-20', 'LL')).toBe(true)                        // C — stays open
+    for (let i = 0; i < 3; i++) expect(globalUndo().ok).toBe(true)
+    closeByTime()
+    const r1 = globalRedo()                                                    // A onto 10 Feb — closed since
+    expect(r1.ok).toBe(false)
+    expect(r1.reason).toMatch(/^Bidding is closed on that day, so your bid can’t go back on it\. Press Redo again for: /)
+    const r2 = globalRedo()                                                    // B shares 10 Feb with the blocked A
+    expect(r2.ok).toBe(false)
+    expect(r2.reason).toMatch(/can’t be redone\. Press Redo again for: /)
+    expect(globalRedo().ok).toBe(true)                                         // C
+    expect(requests(pid, '2026-02-20')).toHaveLength(1)
+    expect(requests(pid, day)).toHaveLength(0)
+    expect(undoState().canRedo).toBe(false)
+  })
+
   /* M1's H1 fix let his Inputs-page half day cut his whole-day bid to its free half on a closed day (D1166); the Undo of
      that filing puts the cut back — the same kind of step: made on the closed day, its Undo restoring exactly what it took */
   it('his Inputs-page morning over his whole-day bid on a closed day: Undo takes the leave away and gives the bid its whole day back', () => {

@@ -697,6 +697,9 @@ function redoConflictOf(entry: UndoEntry): Conflict | null {
     if (o === entry) continue
     // an ABANDONED entry is never redone, so it can never be "redone first" (F-w3-2)
     if (o.undone && !o.abandoned && o.seq < entry.seq && sharesKeys(keySet(o), keys)) {
+      /* the earlier step is BLOCKED for good (refusedFor — the narrow read of D1263's fix, R1): no press will redo it, so
+         this one never passes either — passed over, naming the step the next press takes */
+      if ((o as any)[BLOCKED_R]) return { text: 'An earlier undone change touches the same thing and can’t be redone.', sticky: true }
       return { text: 'An earlier undone change touches the same thing — redo that first.', sticky: false }
     }
     if (!o.undone && o.seq > entry.seq && sharesKeys(keySet(o), keys)) {

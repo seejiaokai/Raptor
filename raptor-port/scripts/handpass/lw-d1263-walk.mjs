@@ -8,7 +8,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import { newPhone, signIn, signInPlain, tapSel, T, cellId, vis, gotoMonth, bid, cellText, undo, redo, rec, results, getBrowser, toggleMonths, asMember, asAdmin, closeAny, lve } from './lw-m1-rewalk-b-lib.mjs'
-console.log('lw-d1263-walk v2')
+console.log('lw-d1263-walk v3')
 const here = path.dirname(fileURLToPath(import.meta.url))
 // the re-walk of the code read's fix writes beside the first walk, never over it (OUT_SUB=d1263-r)
 const OUT = path.resolve(here, '../../docs/img/handpass/2026-10-22-lw-m1-open-dates', process.env.OUT_SUB || 'd1263')
@@ -136,6 +136,32 @@ await run('W5', async ({ page, cdp }) => {
   rec('W5', /Bidding is closed on that day/.test(said[0] || '') && /Press Undo again for/.test(said[0] || '') && c10 === '' && c20 === '' ? 'PASS' : 'FAIL',
     `three Undo presses said: ${said.map(x => '"' + x + '"').join(' · ')}; after: 10 Feb "${c10}", 20 Feb "${c20}"`,
     ['W5-01-undo-press-1.png', 'W5-02-undo-press-2.png', 'W5-03-undo-press-3.png'])
+})
+
+/* W6 — the narrow read of that fix (R1): a Redo behind a blocked older step on the same day. Bid 10 Feb (A), delete it (B),
+   bid 20 Feb (C), three Undos; today → 15 Feb; Redo is refused for A, then passes over B, then puts C back */
+await run('W6', async ({ page, cdp }) => {
+  await signIn(page, 'member', '2026-02-01')
+  await gotoMonth(cdp, page, 'FEB')
+  await bid(cdp, page, 'bane', '2026-02-10', 'LL')
+  await tapSel(cdp, page, T(cellId('bane', '2026-02-10')))
+  await page.waitForSelector(T('bid-clear'), { timeout: 4000 })
+  await tapSel(cdp, page, T('bid-clear')); await page.waitForTimeout(500)
+  if (await vis(page, T('bid-picker'))) await closeAny(cdp, page)
+  await bid(cdp, page, 'bane', '2026-02-20', 'LL')
+  for (let i = 0; i < 3; i++) { await undo(cdp, page); await page.waitForTimeout(2200) }
+  await setToday(page, '2026-02-15')
+  const said = []
+  for (let i = 1; i <= 3; i++) {
+    await redo(cdp, page)
+    said.push(await toast(page))
+    await shot(page, `W6-0${i}-redo-press-${i}`)
+    await page.waitForTimeout(2500)
+  }
+  const c10 = await cellText(page, 'bane', '2026-02-10'), c20 = await cellText(page, 'bane', '2026-02-20')
+  rec('W6', /Bidding is closed on that day/.test(said[0] || '') && /can’t be redone/.test(said[1] || '') && c10 === '' && c20 === 'LL' ? 'PASS' : 'FAIL',
+    `three Redo presses said: ${said.map(x => '"' + x + '"').join(' · ')}; after: 10 Feb "${c10}", 20 Feb "${c20}"`,
+    ['W6-01-redo-press-1.png', 'W6-02-redo-press-2.png', 'W6-03-redo-press-3.png'])
 })
 
 console.log('ERRORS', JSON.stringify(allErrs))

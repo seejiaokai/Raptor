@@ -113,8 +113,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
 - [LEAVE-YEAR] — yearly leave balances and carry-over — undecided ("we will do this next time").
 - [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
-- [LW-REDO-ONTO-CLOSED] — to build before M1's merge live (D1263): a member's Redo, or Undo of an open-day delete, must not put his bid back on a day closed since.
 - [LW-M1-READ-LEFTOVERS] — four small things M1's code read found that are older than M1 or need two live sessions — check each with the database step.
+- [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
 - [TRK-PINCH-OLD-EDGES] — two older edges of the chart's pinch: a throw in Edit chart layout, a stale zoom label.
@@ -1344,22 +1344,15 @@ blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the l
 root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
 
-### [LW-REDO-ONTO-CLOSED] A member's Undo or Redo must not put his pending bid back on a day closed since — to build (filed 22 Oct 26, M1; ruled D1263)
-Found by M1's two code readers (Fable F2, Opus scenario 6), each blind to the other. A member bids on a day while it is open;
-the admin closes the day; the member presses Undo (his bid goes — he may take his own pending bid off a closed day, D1225)
-and then Redo — his bid is back on the closed day. The same with Undo of a delete he made while the day was open. The
-commit's check lets a restore through when it only adds back pending bids of his (`raptor-port/src/state/perms.ts`, the
-`lw.cell` case — built for the walk's B-F1: his Undo of his own closed-day delete must put it back), and an Undo / Redo
-cannot tell "back" from "new". **Not reachable today in one browser:** the admin's closing sits on the one shared
-timeline above the member's step, so his Undo is refused there ("Switch back to the admin view…"); it becomes real with two
-people on one database. **His answer, D1263 (22 Oct 26, "no"):** a member's Redo, or his Undo of a delete made while the day
-was open, never puts a bid back on a day closed since; only his Undo of a delete he made on the day already closed does.
-**Build:** the timeline carries the direction (undo / redo) on the restore envelope, and the forward step records whether
-the day was closed for him when it was made; `ownershipViolation` lets the add-back through only for an Undo of a
-closed-day delete; the two tests the readers described (Redo after a close; Undo of an open-day delete after a close),
-red first. Pinned as built today:
-`raptor-port/src/leavewar/opendates-store.test.ts` "a restore on a closed day passes only when…" (to change with the build).
-**Place:** before M1's merge live — small, in the next chat.
+### [LW-UNDO-BLOCK-REOPEN] A refused Undo or Redo onto a closed day stays passed over after the day reopens — with the database step (filed 22 Oct 26)
+From the narrow read of D1263's fix (evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §15). A member's
+Undo or Redo the commit refuses onto a Leave War day closed for him is BLOCKED for the rest of his sign-in, and so is an older
+step sharing its record (`undo/timeline.ts refusedFor`, `undoConflictOf`, `redoConflictOf`) — right for a day closed by time,
+which never reopens. A day the admin closes can be reopened (`openDates`); that writes the war's own record, not his day's, so
+nothing clears the block: the step stays skipped and the greyed button says bidding is closed. **Not reachable today:** in one
+browser the admin's close sits on the shared timeline above the member's step, which is then refused "Switch back to the admin
+view…". It becomes real once two people work on one database. **Fix then:** when the war's open dates change (an `lw.war`
+change arriving from elsewhere, in `ingest`), clear the blocks `refusedFor` set and the ones behind them. **Place:** the database step.
 
 ### [LW-M1-READ-LEFTOVERS] Four small things M1's code read found, older than M1 or needing two live sessions (filed 22 Oct 26)
 From M1's two blind code reads (the evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §13).

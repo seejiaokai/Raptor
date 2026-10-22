@@ -297,3 +297,57 @@ carried by `scenarios-corners.test.ts`); "Pick a range" cannot cross 31 Dec. The
   [LW-WINDOWS-NONBLOCKING]).
 - **The re-walk, whole:** ra — 8 PASS, 8 RECORD, the two judged lines above, S20 then PASS; rb — 28 PASS, 6 RECORD, 0 FAIL;
   host — S9 PASS, S27 PASS, S29 PASS (phone) and RECORD (desktop, as the scenario asks). No console or page errors.
+
+## 15. D1263 — a member's Undo or Redo onto a day closed since ([LW-REDO-ONTO-CLOSED], built 22 Oct 26)
+
+**What changed.** His ruling (D1263, "no"): a member's Undo or Redo never puts his bid back on a Leave War day closed for him
+since, but for his Undo of a step he made on the day while it was already closed. The commit's open-day check (§13, B8) had
+let through any restore that only added back his pending bids. Now the undo timeline keeps, on each member step as it is
+recorded, the war records it changed on a day already closed for him, and vouches for a restore onto a closed day only for
+his UNDO of such a step, image for image; the check asks only that (`undo/timeline.ts verifiedWarRestore`, the
+`closedAtStep` hook; `state/perms.ts lwClosedKeys`). Read as the same kind of step (the agent's reading, D1166): his
+Inputs-page half day that cut his bid on the closed day still undoes. A refused one says "Bidding is closed on that day, so
+your bid can’t go back on it." (it said "That couldn’t be completed just now").
+
+**Tier.** FULL by question 7 (who may do something), riding M1's own FULL check: the permission tests (`perms.test.ts`,
+`perms-scan.test.ts`) green with §11's LeaveBid row rewritten; the walk; one fresh blind Opus read, then a narrow read of
+its fix. Sized SMALL for the walk (walk-ledger row, 22 Oct 26): one permission rule and the timeline behind it, no new
+screen. **Not reachable through the admin's window in one browser** — his closing sits above the member's step on the one
+timeline — so the walk closes the day for the member by his clock (a day before today is closed for him, D1211: the same
+rule), every bid, Delete, Undo and Redo a real tap on the phone at 390.
+
+**Tests, red first** (`leavewar/opendates-store.test.ts`, the D1263 block): Redo after the day closes; Redo after an
+open-day Undo; Undo of an open-day delete — all three failed before the change; the exception by the clock and the
+Inputs-page half day's Undo pass before and after. The break tests' 17b pin rewritten as D1263 narrows it (a command
+that only calls itself a restore puts nothing back). Leave War unit 3060 / 3060; the shared undo, permission and store
+tests 309 / 309; `npm run build` clean.
+
+**The walk** (`scripts/handpass/lw-d1263-walk.mjs`, pictures `d1263/`, the re-walk `d1263-r/`): W1 a Redo after the day
+passed — refused, 20 Feb empty, the bubble says why (PASS); W2 the Undo of an open-day delete after it passed — refused
+(PASS); W3 the exception by the clock — Delete from the closed note, Undo puts LL back, Redo takes it (PASS); W4 the
+exception with the admin closing MAR in the window (PASS — its first run used the memory-only sign-in and lost the bid at
+the admin's sign-in: the script's, fixed); W5 (after the read) a refused Undo then two more presses — the button passes
+over the blocked steps and takes his 20 Feb bid (PASS). No console or page errors.
+
+**The read** (fresh Opus, blind, the code commit and D1263): no path puts a bid back on a day closed since (Redo, an
+open-day step's Undo, a folded projection, steps recorded before the hooks, an admin in the member view, a mixed step, a
+colon in a war id, a command calling itself a restore); the exception holds single, for two halves, for a two-day block and
+for the Inputs-page cut. **F1 (medium) — fixed:** a refused Undo or Redo jammed the button for the session — every press
+picked the same step, so everything older was out of reach; now the step is blocked as every never-passing step is
+(`refusedFor` → `sayBlocked`), and an older step sharing its record is passed over too (`undoConflictOf`). Tests red
+first ("a refused Undo is passed over", "a refused Redo is passed over too"); re-walked (W5). **F2 (low) — fixed:** the B-F1
+test header still stated the old rule.
+
+**The narrow read of that fix** (fresh Opus, the fix commit and F1 only — order §5 "a fix is new code"): the Undo half right
+and complete; **R1 (medium) — fixed:** a Redo could still jam one step later, behind a blocked older undone step sharing its
+record ("redo that first" for a step no press can take) — `redoConflictOf` given the same guard as `undoConflictOf`, a
+one-line guard (no further read, §5); test red first ("a Redo behind a blocked step on the same day is passed over");
+re-walked (W6: three Redo presses — refused, passed over, "Redid: Ranger’s bid"; pictures `d1263-r2/`, W1–W6 all PASS).
+**Caveat, filed:** [LW-UNDO-BLOCK-REOPEN] — a block outlives an admin reopening the day from another device; not reachable
+in one browser; with the database step. Its judgement that the older-step guard changes behaviour for other sticky blocks
+only from a jam to a pass-over (never from "could succeed") is recorded here. Gates after R1: Leave War unit 3061 / 3061;
+the shared undo, permission, undo-wiring and store tests 360 / 360; `npm run build` clean.
+
+**Walk:** this section · 27 pictures (`d1263/`, `d1263-r/`, `d1263-r2/`) · 1 surface (the Leave War grid's Undo and Redo, the
+member's) · the host alone, phone 390 by finger · MISSING: 2 fixed (the refusal's words; F1 / R1 the jam), 1 comment fixed
+(F2), 1 filed ([LW-UNDO-BLOCK-REOPEN])
