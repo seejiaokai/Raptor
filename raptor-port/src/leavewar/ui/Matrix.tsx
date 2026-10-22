@@ -35,7 +35,7 @@ import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
-import { availRowNames, availVerdictAt, leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { availRowNames, availVerdictAt, flyMonth, leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -1274,9 +1274,22 @@ export function Matrix() {
     /* …and the two Available rows at their amber or red points (D1190, D1202 — the same verdict their cells wear,
        `sync.ts availVerdictAt`), over the days drawn: a bid is placed on a day in view */
     const names = availRowNames()
-    for (const d of drawnDates) for (const seat of ['p', 'w'] as const) {
-      const v = availVerdictAt(d, seat)
-      if (v) m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1 })
+    /* the plan's answers read a MONTH at a time (`flyMonth`, as the red count does) — not one resolver call per drawn
+       date and seat, ~730 on a desktop with the year drawn, on every opening and closing of a bid window (the M2 code
+       read's F5) */
+    const months = new Map<string, Record<string, DayAnswer>>()
+    const answer = (iso: string): DayAnswer | undefined => {
+      const k = iso.slice(0, 7)
+      let mo = months.get(k)
+      if (!mo) { mo = flyMonth(+k.slice(0, 4), +k.slice(5, 7)); months.set(k, mo) }
+      return mo[iso]
+    }
+    for (const d of drawnDates) {
+      const a = answer(d)
+      for (const seat of ['p', 'w'] as const) {
+        const v = availVerdictAt(d, seat, a)
+        if (v) m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1 })
+      }
     }
     return m
   }
@@ -1303,6 +1316,17 @@ export function Matrix() {
     const t = window.setTimeout(() => { document.addEventListener('pointerdown', off, { once: true }); document.addEventListener('keydown', off, { once: true }) }, 0)
     return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', off); document.removeEventListener('keydown', off) }
   }, [bubble])
+  /* …and a change of WIDTH across the phone line after the page opened (a desktop window narrowed under 700, a phone
+     turned on its side and back — the M2 code read's F6): the fold is decided again by the same rule, folded on a phone
+     unless he opened it there, open on a desktop (D1258). Not on the first draw — the state's own start decided that. */
+  const seenPhone = useRef(phoneNow)
+  useEffect(() => {
+    if (seenPhone.current === phoneNow) return
+    seenPhone.current = phoneNow
+    if (!phoneNow) { setCountsOpen(true); return }
+    try { const k = manningKey(); setCountsOpen(!!k && localStorage.getItem(k) === 'open') } catch { setCountsOpen(false) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phoneNow])
   const viewerNow = getState().viewer
   const seenViewer = useRef(viewerNow)
   useEffect(() => {

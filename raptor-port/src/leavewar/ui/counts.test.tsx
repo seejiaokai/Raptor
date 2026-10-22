@@ -373,6 +373,24 @@ describe('the Manning fold on a phone, remembered per person (D1258)', () => {
     expect(localStorage.getItem('lw:manning:tata')).toBeNull()    // TATA never chose, so nothing is kept for him
   })
 
+  /* the M2 code read's F6: a width that crosses the phone line after the page opened decides the fold again — a desktop
+     window narrowed folds it, widened again opens it (D1258) */
+  it('follows a change of width: narrowed to a phone it folds, widened again it opens', () => {
+    let on = false
+    const subs = new Set<() => void>()
+    ;(window as any).matchMedia = (q: string) => ({
+      media: q, get matches() { return q === PHONE_QUERY ? on : false },
+      addEventListener: (_: string, cb: () => void) => subs.add(cb), removeEventListener: (_: string, cb: () => void) => subs.delete(cb),
+    })
+    act(() => setViewer('ramp'))
+    render(<Matrix />)
+    expect(shown()).toBe(true)                                     // a desktop opens them
+    act(() => { on = true; subs.forEach(cb => cb()) })
+    expect(shown(), 'narrowed under the phone line: folded').toBe(false)
+    act(() => { on = false; subs.forEach(cb => cb()) })
+    expect(shown(), 'widened again: open').toBe(true)
+  })
+
   it('a desktop\'s fold is not written into the phone\'s memory', () => {
     phone(false)
     act(() => setViewer('ramp'))
