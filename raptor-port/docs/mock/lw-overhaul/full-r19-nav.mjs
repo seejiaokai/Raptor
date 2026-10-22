@@ -3,7 +3,7 @@
 // Navigation A redrawn with the design skill (Impeccable, shape + distill) — one row fewer at the top on a phone AND a
 // desktop, Manning back at the LEFT of the grid card, "Under 1 day" folded into Manning:
 //   row 1  the tabs, the app's own Inputs-page tab row (.inputs-tabs / .intab, lesson 17): Grid · Approvals 15 ·
-//          Balances · OIL (a member: Grid · OIL); ⚙ at its right end (an admin's). On a desktop the same row carries
+//          Balances · OIL (a member: Grid · Balances · OIL — D1242); ⚙ at its right end (an admin's). On a desktop the same row carries
 //          View and the period picker and My leave too.
 //   row 2  (phone only) View, the period picker and My leave — the line a member's phone already has (D1227), now an
 //          admin's too, so his third line goes. "+" (a new period) moves into the picker's own list, its last line.
@@ -12,6 +12,7 @@
 //          the zoom pair is gone (D1228).
 // Drawn into the real local build with the round's top rows (full-r7-one.mjs via full-r7-decide.mjs's stage).
 //   r19-nav-admin-phone / -admin-desk / -member-phone   the new top, numbered
+//   r19-nav-member-twobal                                  a member: A the Balances tab, B the grid's Balances fold
 //   r19-nav-picker-phone                                   the picker's list, "+ New period" its last line
 //   cd raptor-port ; LWMOCK_OUT=<scratch> node docs/mock/lw-overhaul/full-r19-nav.mjs
 import { readFileSync } from 'node:fs'
@@ -92,7 +93,7 @@ async function draw(p, touch, member) {
     const nav = document.createElement('div'); nav.className = 'zz-nav' + (touch ? ' ph' : ''); nav.setAttribute('data-zz', 'nav')
     const T = (k, label, on, n) => `<button type="button" role="tab" class="intab" aria-selected="${on}" data-zz="tab-${k}">${IC[k]}<span class="intab-t">${label}</span>${n ? `<i class="n">${n}</i>` : ''}</button>`
     const tabs = document.createElement('div'); tabs.className = 'inputs-tabs'; tabs.setAttribute('role', 'tablist'); tabs.setAttribute('data-zz', 'tabs')
-    tabs.innerHTML = T('grid', 'Grid', true) + (member ? '' : T('appr', 'Approvals', false, 15) + T('bal', 'Balances', false)) + T('oil', 'OIL', false)
+    tabs.innerHTML = T('grid', 'Grid', true) + (member ? T('bal', 'Balances', false) : T('appr', 'Approvals', false, 15) + T('bal', 'Balances', false)) + T('oil', 'OIL', false)
     nav.appendChild(tabs)
     // My leave: the member's two-line chip (D1227) on a phone, the one-line chip on a desktop
     let ml = pg.querySelector('[data-zk="ml"]')
@@ -164,6 +165,13 @@ for (const [w, h, touch, who, name] of [[1536, 860, false, 'admin', 'admin-desk'
     })
     await mk(p, '.zz-plist .nw', '7', { prefer: ["e"] })
     await shot(p, 'r19-nav-picker-phone', { clip: { x: 0, y: 0, width: 390, height: 330 } })
+  }
+  if (name === 'member-phone') {
+    // two things called Balances (D1242 gave a member the tab; the grid's fold is D1185's): A the tab, B the fold
+    await p.evaluate(() => { document.querySelectorAll('.zz-tag').forEach(n => n.remove()); document.querySelectorAll('.zz-marked').forEach(n => { n.style.outline = '' }) })
+    await mk(p, '[data-zz="tab-bal"]', 'A', { prefer: ['s'] })
+    await mk(p, '[data-testid="figures-toggle"]', 'B', { prefer: ['e'] })
+    await shot(p, 'r19-nav-member-twobal', { clip: { x: 0, y: 0, width: w, height: 400 } })
   }
   await ctx.close()
 }

@@ -1807,3 +1807,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In the mock-ups guide, for any ask about size or space ("less height", "fits on one line", "more names on the first screen"), the drawing script measures the quantity asked about on the real build before and after its own changes, and also each row's overflow, and the page states the measured figures per device and role, including any device where nothing was saved.
 
 **Principle:** When the request is a quantity, measure the quantity in the same run that draws the change, on every device and role it touches; a picture that looks better is not evidence of the quantity, and a saving on one device can hide none on another.
+
+### Observation 675: A ruling answered on one picture left another picture of the same screen stale, and he caught it
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War navigation, round 19: his D1242 gave members the Balances tab; the drawing of the member's main page (tabs Grid · OIL) was not redrawn in the same turn.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** updating a mock-up page after an answer
+
+**Issue:** The answer was recorded and its own question's pictures redrawn, but the main-page picture a few sections up still showed the member's tabs without Balances. He asked "are u updating a better design for the main page? Like members can have a balance tab?" Redrawing it then exposed a further clash (two things named Balances on one screen), which became a new question.
+
+**Suggested improvement:** After recording a ruling that changes a design, list every picture on the page that draws the changed thing (grep the drawing scripts for the element or the role it touches) and redraw each in the same turn; then look at the redrawn screens whole for clashes the change created.
+
+**Principle:** An answer changes every picture of the thing it governs, not only the picture it was given on; redrawing them all in the same pass is also how the change's knock-on effects are found.
