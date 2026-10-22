@@ -1366,8 +1366,9 @@
 
 /* THE FOUR ROWS AT THE FOOT OF THE MANNING BLOCK (FlyRows.tsx; the Inputs / SANS redesign, plan §3.3; D665 — first
    under the Event rows) — Required P and W, Available P and W. Drawn as he approved them (the fifth mock-ups): each name behind a small cyan dot; a Required
-   figure in the accent, a dash and "NF" quiet; an Available figure in the count rows' own white, red where it is under
-   its Required. Figures are centred and never wrap — a number is one line. */
+   figure in the accent, a dash and "NF" quiet; an Available figure in the count rows' own white, red under its red point
+   and amber under its amber point (the overhaul, D1190–D1202 — below); the pairs faintly tinted (D1194 — below).
+   Figures are centred and never wrap — a number is one line. */
 .mx .counts tr.flyrow .who::before {
   content: '';
   display: inline-block;
@@ -1432,7 +1433,18 @@
   border-color: var(--accent) transparent transparent transparent;
 }
 .mx .counts td.fr.avail.tap { cursor: pointer; }
+/* an Available figure under its red point, and under its amber point (D1190, D1191, D1202 — each that day's Required
+   plus or minus the row's own number): the figure in the colour, as drawn (r7-26) — never a filled box, which is a
+   Manning row's look */
 .mx .counts td.fr.avail.under { color: #FF7A84; }
+.mx .counts td.fr.avail.amb { color: #F2B84B; }
+/* THE PAIRS TINTED FAINTLY (D1194 — "so that people know which row is for which row for required and available"):
+   Required P with Available P in the pilots' olive, the W pair in the WSOs' green — the name bars' own seat hues, faint,
+   so no colour that means a status is spent. Laid as a background IMAGE over each cell's own colour (the frozen name
+   cell keeps its panel under it), so the amber and red figures stay readable on it. A counter standing among the four
+   (D674) is its own row and wears none. */
+.mx .counts tr.flyrow.pair-p > td { background-image: linear-gradient(rgba(150, 140, 50, .15), rgba(150, 140, 50, .15)); }
+.mx .counts tr.flyrow.pair-w > td { background-image: linear-gradient(rgba(40, 160, 110, .15), rgba(40, 160, 110, .15)); }
 /* the first of the four sits a hair apart from the squadron's own counts above it */
 .mx .counts tr.flyrow:first-of-type td { border-top-color: var(--edge-2); }
 

@@ -29,16 +29,22 @@
 // step. A save the app refuses says why in the strip and keeps the box with what was typed.
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { dropFlyRun, flyAnswer, getFlyPlan, setFlyDays, setFlyRun, usePlanVersion, type FlySave } from '../sync'
+import { dropFlyRun, flyAnswer, getFlyPlan, reqRowNames, setFlyDays, setFlyRun, usePlanVersion, type FlySave } from '../sync'
+import { REQ_NAMES_ORIGINAL } from '../engine'
 import { dayLabel } from './dates'
 
 export type ReqRow = 'req-p' | 'req-w'
 export interface FlyEditAt { row: ReqRow; iso: string; touch: boolean }
 type Seat = 'p' | 'w'
 
-/** The Required rows' names — FIXED (D668, 8 Oct 26: "1 as recommended"); the short form is a phone's. */
-export const REQ_NAME: Record<ReqRow, string> = { 'req-p': 'Required P', 'req-w': 'Required W' }
+/** The Required rows' names as they START — an admin may rename them since D1193 (21 Oct 26, narrowing D668), so a
+ *  window that names one reads `reqName` below; the short form is a phone's, shown only while the name is this one. */
+export const REQ_NAME: Record<ReqRow, string> = { 'req-p': REQ_NAMES_ORIGINAL.p, 'req-w': REQ_NAMES_ORIGINAL.w }
 export const REQ_SHORT: Record<ReqRow, string> = { 'req-p': 'Req P', 'req-w': 'Req W' }
+/** a Required row's name as it stands (D1193) */
+export const reqName = (row: ReqRow): string => reqRowNames()[row === 'req-p' ? 'p' : 'w']
+/** what a phone shows for it: the short form while the name is the one it started with, else the name itself */
+export const reqShort = (row: ReqRow): string => { const n = reqName(row); return n === REQ_NAME[row] ? REQ_SHORT[row] : n }
 const MAX_DIGITS = 3
 const digits = (v: string) => v.replace(/\D/g, '').slice(0, MAX_DIGITS)
 /** "Tue 6 Jan" → "6 Jan" */
@@ -238,12 +244,12 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
       <button type="button" className={mode === 'day' ? 'on' : ''} aria-pressed={mode === 'day'} data-testid="fly-edit-day" onMouseDown={hold} onClick={() => setMode('day')}>This day</button>
       <button
         type="button" className={mode === 'run' ? 'on' : ''} aria-pressed={mode === 'run'} data-testid="fly-edit-run" disabled={!runOk}
-        title={runOk ? `${REQ_NAME[at.row]} on every flying day from ${dayLabel(at.iso)}, until a different figure is typed on a later day` : 'A running figure skips weekends, public holidays and Off days'}
+        title={runOk ? `${reqName(at.row)} on every flying day from ${dayLabel(at.iso)}, until a different figure is typed on a later day` : 'A running figure skips weekends, public holidays and Off days'}
         onMouseDown={hold} onClick={() => setMode('run')}
       >From {dm(at.iso)} on</button>
     </span>
   )
-  const label = `${REQ_NAME[at.row]}, ${dayLabel(at.iso)}`
+  const label = `${reqName(at.row)}, ${dayLabel(at.iso)}`
 
   if (at.touch) {
     return (
@@ -251,7 +257,7 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
         <div className="flyedit touch" ref={el => { boxRef.current = el }} data-testid="fly-edit-touch" aria-label={label}>{text}</div>
         <div className="flypad" ref={padRef} data-testid="fly-pad" role="group" aria-label={`Number pad — ${label}`}>
           <div className="flypad-hd flyedit-strip" data-testid="fly-edit-strip">
-            <b>{REQ_SHORT[at.row]}</b><span className="flypad-day">{dayLabel(at.iso)}</span>
+            <b>{reqShort(at.row)}</b><span className="flypad-day">{dayLabel(at.iso)}</span>
             <span className="flypad-nav">
               <button type="button" data-testid="fly-pad-prev" aria-label="Previous flying day" onClick={() => step(-1)}>‹</button>
               <button type="button" data-testid="fly-pad-next" aria-label="Next flying day" onClick={() => step(1)}>›</button>
@@ -280,7 +286,7 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
         onKeyDown={onKeyDown}
       />
       <div className="flyedit-strip desk" ref={stripRef} data-testid="fly-edit-strip">
-        <b>{REQ_NAME[at.row]}</b><span className="flyedit-day">{dayLabel(at.iso)}</span>
+        <b>{reqName(at.row)}</b><span className="flyedit-day">{dayLabel(at.iso)}</span>
         {choice}
         {err
           ? <span className="flyedit-err" data-testid="fly-edit-err" role="alert">{err}</span>

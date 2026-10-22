@@ -284,7 +284,12 @@ Grouped by area. Each is the short rule; the source has the full story.
   signature of what the one resolver ANSWERED for that month (`sync.ts
   flyMonth`) — never on the records dated inside it: a running figure or a
   weekday rule that began months earlier moves the answers, and a memo keyed on
-  the month's own rows would miss it. They follow the row contract above to the
+  the month's own rows would miss it. The signature is built from what each cell
+  SHOWS — its text and its class — so an Available row's amber and red points
+  (the Leave War overhaul, D1190–D1202) repaint it: they live on the row in the
+  war's settings, a change moves `useWarFacts`, and the verdict is part of the
+  class; the pairs' faint tint (D1194) is a class on the ROW, not on a cell, and
+  costs no node. They follow the row contract above to the
   letter (`who`, `bal`, the two placeholders, one cell per drawn day), and a
   cell at rest has NO children — the typing box and the working are drawn
   once, outside the row, and the corner mark is a class and a title. Measured on the built bundle,

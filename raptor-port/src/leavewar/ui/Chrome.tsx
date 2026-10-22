@@ -6,7 +6,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { boxText, evaluatePeriod, FIGURES, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
-import { getClashes, getClashVersion, openInputWindow, subscribeClashes, type ClashWayOut, type SyncClash } from '../sync'
+import { getClashes, getClashVersion, manningRedDays, openInputWindow, subscribeClashes, usePlanVersion, type ClashWayOut, type SyncClash } from '../sync'
 import { figureCtxOf, focusDay, getState, selectWar } from '../state/store'
 import { OpenDatesSheet } from './OpenDatesSheet'
 import { dayLabel, shortDate } from './dates'
@@ -290,7 +290,12 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
   // The red days themselves, not just how many. Recomputed every render like
   // the tally beside them: a list built once would send a scheduler to a day
   // a refusal had already recovered.
-  const red = dates.filter(d => verdicts[d].verdict === 'red')
+  // …and since D1243 (narrowing D1213) a day with an Available P or W row at its red counts too, named in the list
+  // with its figure; amber never does. Their red reads the day's Required — the scheduler's plan — so the strip also
+  // hears the plan's signal.
+  usePlanVersion()
+  const redList = manningRedDays(dates, verdicts)
+  const red = redList.map(d => d.date)
   const redDays = red.length
   const [listOpen, setListOpen] = useState(false)
   const showList = listOpen && redDays > 0
@@ -440,12 +445,11 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
           >
             <div className="umlist-hd">Days breaking a manning rule</div>
             <div className="umlist-body">
-              {red.map(date => {
+              {redList.map(({ date, lines: broken }) => {
                 // Which rules are red, and the figure that broke each. "SXO 0"
                 // and "IWSO 1" are different problems and a scheduler acts
                 // differently on them, so a list of bare dates would just mean
                 // opening all seven to find out which is which.
-                const broken = verdicts[date].results.filter(r => r.verdict === 'red')
                 return (
                   <button
                     key={date}

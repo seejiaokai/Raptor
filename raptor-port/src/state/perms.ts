@@ -438,6 +438,10 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* the Event sheet's Save and Delete, each one command (leavewar/state/store.ts saveEvent / deleteEvent — plan §3.12):
      a day's event is the leave period's own record too, an admin's to change */
   'lw.event.save': op(T.war, 'U'), 'lw.event.remove': op(T.war, 'U'),
+  /* the Manning block's settings (the Leave War overhaul, batch 3): an Available row's Save — its name, who it counts and
+     its amber and red points (D1190, D1191, D1202) — and a Required row's name (D1193); both kept in the war's settings
+     (`manningdefs`, `reqnames`), a Setting, the admin's like every other */
+  'lw.availrow': op(T.setting, 'U'), 'lw.reqname': op(T.setting, 'U'),
   /* [OIL-AWARD-IS-A-GRANT] (Astra's round-2 read, R2-01): an OIL award is written under ITS row of the table, a ledger
      entry (another pool's credit, a correction) under the ledger's, and a clear that takes an award beside a bid names
      both — a member's clear takes no award and runs as `lw.edit` */

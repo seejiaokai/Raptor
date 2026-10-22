@@ -62,6 +62,15 @@ import {
   outcomeOf,
   holidayAt,
   availHave,
+  availPointsOf,
+  availRedLines,
+  availVerdict,
+  reqNamesOf,
+  redDays,
+  type AvailVerdict,
+  type DayVerdict,
+  type RedDay,
+  type RedLine,
   classifyEvent,
   defKey,
   shortOf,
@@ -2353,7 +2362,8 @@ let WF_SIG: readonly unknown[] = []
 const FACTS = new Map<string, WarDayFacts>()
 export function warFactsVersion(): number {
   const s = getState()
-  const sig: unknown[] = [s.people, s.requirements, s.eventDefs, ...s.wars]
+  /* the Required rows' names too (D1193): the calendars and the war's rows name them, so a rename must move this */
+  const sig: unknown[] = [s.people, s.requirements, s.eventDefs, s.reqNames, ...s.wars]
   if (sig.length !== WF_SIG.length || sig.some((x, i) => x !== WF_SIG[i])) {
     WF_SIG = sig
     WF_VER += 1
@@ -2535,6 +2545,49 @@ export function usePlanVersion(): number {
 export function availRowNames(): { p: string; w: string } {
   const r = availRules()
   return { p: r.p.label, w: r.w.label }
+}
+/** the two Required rows' names as they stand (D1193 — an admin renames them from the row's name; "Required P" and
+ *  "Required W" until then). The war's rows and every window that names a Required row read them here. */
+export function reqRowNames(): { p: string; w: string } {
+  return reqNamesOf(getState().reqNames)
+}
+
+/** WHERE AN AVAILABLE ROW STANDS ON A DAY — '' | 'amber' | 'red' (D1190, D1191, D1202): who the war has for the seat
+ *  against that day's Required from the ONE resolver, judged by the row's own points (engine/availrows.ts availVerdict,
+ *  the one answer). A no-fly day requires nobody and shows neither. `a` — the day's answer, where the caller has it. */
+export function availVerdictAt(iso: string, seat: 'p' | 'w', a: DayAnswer = flyAnswer(iso)): AvailVerdict {
+  const f = dayFacts(iso)
+  const rule = availRules()[seat]
+  return availVerdict(seat === 'p' ? f.availP : f.availW, a.reqFrom[seat] === 'nf' ? null : a.req[seat], availPointsOf(rule))
+}
+/** The Available rows at RED on one day, each named with its figure (P, then W) — never at amber (D1243). */
+export function availRedAt(iso: string, a: DayAnswer = flyAnswer(iso)): RedLine[] {
+  const f = dayFacts(iso)
+  const req = (s: 'p' | 'w') => (a.reqFrom[s] === 'nf' ? null : a.req[s])
+  return availRedLines(availRules(), { p: { have: f.availP, required: req('p') }, w: { have: f.availW, required: req('w') } })
+}
+
+/** THE DAYS BREAKING A MANNING RULE — the under-manned count and its list (D1243, narrowing D1213): every day of
+ *  `dates` with a Manning row below its red (`verdicts`, evaluatePeriod's) or an Available P or W row at its red, each
+ *  with the rows and their figures ("SXO 1 · Available P 23"); amber is never counted. In date order. The Available
+ *  rows' Required comes from the scheduler's plan, so a screen showing this listens to `usePlanVersion()` as well as to
+ *  the war. The answers are read a month at a time (the resolver's own month), never once per day. */
+export function manningRedDays(dates: readonly string[], verdicts: Record<string, DayVerdict>): RedDay[] {
+  const months = new Map<string, Record<string, DayAnswer>>()
+  const answer = (iso: string): DayAnswer => {
+    const k = iso.slice(0, 7)
+    let m = months.get(k)
+    if (!m) { m = flyMonth(+k.slice(0, 4), +k.slice(5, 7)); months.set(k, m) }
+    return m[iso] ?? flyAnswer(iso)
+  }
+  /* the two rows read once for the whole run of dates, not once a day (the strip repaints on every war notify) */
+  const rules = availRules()
+  const req = (a: DayAnswer, s: 'p' | 'w') => (a.reqFrom[s] === 'nf' ? null : a.req[s])
+  return redDays(dates, verdicts, iso => {
+    if (!validIso(iso)) return []
+    const a = answer(iso), f = dayFacts(iso)
+    return availRedLines(rules, { p: { have: f.availP, required: req(a, 'p') }, w: { have: f.availW, required: req(a, 'w') } })
+  })
 }
 
 /** THE WAR'S DOOR TO DAYS (the plan §3.3 — the "Days…" line in the war's ⚙ Settings). Days is the scheduler's window

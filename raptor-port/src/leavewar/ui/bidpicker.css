@@ -930,6 +930,28 @@
   flex-basis: 100%;
 }
 
+/* AN AVAILABLE ROW'S AMBER AND RED POINTS (ui/CounterForm.tsx; the Leave War overhaul — D1190, D1191, D1202; drawn
+   r7-26): the label, a small dot in the colour it sets, "when under Required" and a short box for the number above or
+   below it — on one line, the box sized for "− 12", not the form's full-width field. */
+.bidsheet .cf-pt { flex-wrap: nowrap; }
+.bidsheet .cf-ptdot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.bidsheet .cf-ptdot.amb { background: var(--adv, #E5A83B); }
+.bidsheet .cf-ptdot.red { background: var(--hard, #F0555F); }
+.bidsheet .cf-ptwhen { font-size: 13px; color: var(--ink); white-space: nowrap; }
+.bidsheet .mth-in.cf-ptin {
+  width: 72px;
+  flex: none;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet .mth-in.cf-ptin.bad { border-color: var(--hard, #F0555F); }
+
 .bidsheet .cf-row .cf-hint:not(:first-child) {
   flex-basis: auto;
 }
