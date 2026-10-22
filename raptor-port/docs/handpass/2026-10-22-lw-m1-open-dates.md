@@ -83,7 +83,7 @@ a member reaches the Inputs page from a closed day (the closed note's "Open the 
    Calendar window before and after, the bell silent, an old saved war loaded in a browser, a range across the year end).
    The host opens the pictures behind every FAIL and every saved-data or role PASS, reproduces every finding, and runs
    the speed after-measure himself (`scripts/handpass/lw-m1-perf.mjs`, the same 4× CPU, 5 runs).
-5. **After the walk:** the ledger row — (to fill).
+5. **After the walk:** the ledger row — `docs/walk-ledger.md`, 22 Oct 26, M1.
 
 ## 5. The speed (performance.md §E — before and after)
 
@@ -196,6 +196,21 @@ input over another man's pending bid (older), the replace note raised before the
 a vague Move refusal.
 **Judged, no change:** the chip's "+1" (the drawing of record); "Bidding is closed" on an open day before his today (D1176's
 words, true for him); the clash sentence "…but the bid is approved OL" (the drawing of record, r7-19).
+
+**The re-walk of the reads' fixes** (the host, `scripts/handpass/lw-m1-walk-h2.mjs` on the build of bcf79e040; pictures
+`h/R1-…` to `h/R5-…`): the first tap after a month drag acts — desktop by mouse, phone by a held finger (PASS ×2); a
+member's approved MORNING on an open day opens the bid window on the free afternoon, and on the day closed, its remarks
+(PASS ×2); the admin's decide window carries Note, which opens the remarks (PASS); the member's Inputs-page morning of OL
+over his own whole-day pending LL on 20 Feb, February closed — "This replaces your LL bid on 20 Feb (morning) on the
+Leave War · Input added", one OL row saved, the war's 20 Feb "<OL +1" (the afternoon bid kept) — PASS by the picture
+(`h/R4-03`; the script's own check looked for "LL" in the cell's text, where the kept half sits behind "+1"); the range
+fill 27 Mar – 2 Apr: "5 days written. 2 skipped: closed for bidding, before today, or already holding leave or a medical."
+(PASS); the Undo after closing FEB reads "Undo — closing bidding 1 Feb – 28 Feb" (RECORD). No console or page errors.
+
+**Walk:** docs/handpass/2026-10-22-lw-m1-open-dates.md · 342 pictures · 23 surfaces (the roll-call) · 3 walkers + 2 re-walks
++ 2 host walks, desktop 1440 / 768 and phone 390 · MISSING: 11 fixed (A-F1, A-F2, A-F3, B-F1, B-F2, H-F1, H-F2, and the
+reads' R-H1, R-M1, M2, L6), 4 words / looks fixed (B-N1, L2, L3, L5), 2 filed ([LW-REDO-ONTO-CLOSED], his question;
+[LW-M1-READ-LEFTOVERS]), 1 judged (the dashed part-month edge)
 
 ## 14. Findings and dispositions (filled as they come)
 
