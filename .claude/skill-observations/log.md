@@ -1837,3 +1837,18 @@ different feature that merely pass through it.
 **Suggested improvement:** Before a mock-up page states what an existing control does today (what it counts, what a tap does), open that control's code or run it once, and cite which; a reading not checked says "not checked".
 
 **Principle:** A description of current behaviour is a claim about the running thing; check it at the source before it reaches the person deciding, or label it unverified.
+
+### Observation 677: A design study draws every option on one shared data set, the earlier option redrawn too
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War events study (his "is there a better way to design the events"), three ways drawn on the real grid
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing alternatives for a comparison
+
+**Issue:** The option already drawn the round before (event tags in the date heading) used a different made-up data set from the new options, and its text and picture disagreed (text: two events stacked; picture: first event plus a count). Redrawing it with the same events as the new options exposed a defect the old data hid: a several-day event's tag took the day's slot and hid that day's own event behind the count.
+
+**Suggested improvement:** In the mock-up guide's comparison step: define one data set in the script that covers the hard cases the owner named (the maximum per day, spans, a name-only item, a kind with its own colour), draw every option from it including any option drawn earlier, and measure them in one table.
+
+**Principle:** Options compared on different sample data are not compared; a shared stress-case data set is what makes a design study's verdict hold.

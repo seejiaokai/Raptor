@@ -170,6 +170,22 @@ async function wayB(p, EVENTS, lane, phone) {
     return { lanes: n, bars: out }
   }, [EVENTS, lane, phone])
 }
+async function wayR(p) {
+  return p.evaluate(PINK => {
+    const t = document.querySelector('#page-leavewar table.mx'), tb = c => t.querySelector(':scope > tbody.' + c)
+    const counts = tb('counts'), ev = tb('events'), head = tb('mxhead')
+    t.insertBefore(ev, (counts || head).nextSibling)
+    const pin = (el, txt) => { if (!el) return; if (getComputedStyle(el).position === 'static') el.style.position = 'relative'; const g = document.createElement('div'); g.textContent = txt; Object.assign(g.style, { position: 'absolute', right: '4px', top: '50%', transform: 'translateY(-50%)', background: PINK, color: '#fff', font: '800 11px/1 system-ui', padding: '3px 6px', borderRadius: '10px', zIndex: 9, boxShadow: '0 0 0 2px #0b0d10' }); el.appendChild(g) }
+    pin(head.querySelector('tr:not(.mbrak)')?.cells[0], '1')
+    const vis = counts && [...counts.rows].find(r => r.offsetHeight > 0)
+    if (vis) pin(vis.cells[0], '2')
+    else { const b = document.querySelector('#page-leavewar [data-testid="counts-toggle"]'); pin(b, '2'); const g = b.lastElementChild; Object.assign(g.style, { right: '-10px', top: '-9px', transform: 'none' }) }
+    pin(ev.rows[0].cells[0], '3')
+    for (const td of ev.rows[0].cells) td.style.boxShadow = `inset 0 2px 0 ${PINK}`
+    for (const td of ev.rows[ev.rows.length - 1].cells) td.style.boxShadow = (td.style.boxShadow ? td.style.boxShadow + ',' : '') + `inset 0 -2px 0 ${PINK}`
+    return 'R'
+  }, PINK)
+}
 async function wayC(p, EVENTS) {
   return p.evaluate(EVENTS => {
     const t = document.querySelector('#page-leavewar table.mx'), head = t.querySelector(':scope > tbody.mxhead'), ev = t.querySelector(':scope > tbody.events')
@@ -203,7 +219,8 @@ const lane = pack(EVENTS)
 console.log('lanes', JSON.stringify(lane))
 const out = {}
 for (const [w, h, touch, dev] of [[390, 844, true, 'phone'], [1536, 860, false, 'desk']]) {
-  for (const way of ['A', 'B', 'C', ...(dev === 'desk' ? ['Bzoom'] : [])]) {
+  const WAYS = process.env.LWMOCK_WAYS ? process.env.LWMOCK_WAYS.split(',') : ['A', 'B', 'C', ...(dev === 'desk' ? ['Bzoom'] : [])]
+  for (const way of WAYS) {
     const { ctx, p } = await N.page(w, h, touch, 'admin')
     await N.draw(p, touch, false)
     { const fb = p.locator('[data-testid="figures-toggle"]'); if (await fb.count() && /(^| )on( |$)/.test(await fb.getAttribute('class') || '')) { await fb.click({ force: true }); await p.waitForTimeout(500) } }
@@ -214,12 +231,13 @@ for (const [w, h, touch, dev] of [[390, 844, true, 'phone'], [1536, 860, false, 
     if (way === 'A') info = await wayA(p, EVENTS)
     if (way === 'B' || way === 'Bzoom') info = await wayB(p, EVENTS, lane, touch)
     if (way === 'C') info = await wayC(p, EVENTS)
+    if (way === 'R') info = await wayR(p)
     await p.waitForTimeout(300)
     const r = await firstPerson(p); out[`${way}-${dev}`] = { ...r, info }
     console.log(way, dev, n, JSON.stringify(r), JSON.stringify(info))
-    if (way !== 'Bzoom') await markArea(p, way[0])
+    if (way !== 'Bzoom' && way !== 'R') await markArea(p, way[0])
     await p.mouse.move(2, 2)
-    const name = way === 'Bzoom' ? 'r21-ev-b-zoom-desk' : `r21-ev-${way.toLowerCase()}-${dev}`
+    const name = way === 'Bzoom' ? 'r21-ev-b-zoom-desk' : way === 'R' ? `r21-rows-${dev}` : `r21-ev-${way.toLowerCase()}-${dev}`
     if (way === 'Bzoom') {
       const box = await p.evaluate(() => { const r = document.querySelector('#page-leavewar .zz-lanes').getBoundingClientRect(); return { y: Math.round(r.top) - 90, h: Math.round(r.height) + 150 } })
       await shot(p, name, { clip: { x: 0, y: box.y, width: 900, height: box.h } })

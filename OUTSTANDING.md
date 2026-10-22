@@ -93,6 +93,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Leave War**
 - [LW-OVERHAUL] — the Leave War's major overhaul, taking the good things from a colleague's app (D1140) — planning: his answers, round by round.
+- [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — one register of every notification the app should send, kept by the agent (D1151) — written in the overhaul's next chat.
 - [LW-PHONE-PINCH-ZOOM] — on a phone the Leave War grid pinches to zoom (D1117) — its own job in a fresh chat, questions and pictures first.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
@@ -234,6 +235,9 @@ build batches). **It decides together:** [LEAVE-YEAR] (yearly balances), [LW-SOR
 `claude/leave-war-overhaul` (planning only). **Place:** his rounds of questions first; the build in batches by area (D1087),
 each with its own bug check. **21 Oct 26:** round 1 answered (D1141-D1144); his list of 22 points recorded (D1145-D1156); next, a full mock-up of the new Leave War in a fresh chat, with the design skill. **21 Oct 26, later:** the full mock-up published (https://claude.ai/artifact/6xaVkA1QHg7UmevMBRFaT9); round 2 answered (D1157-D1160: the year grid kept, Ack gone, the one Document button, a half day's box filling its half), question 2 redrawn his way and put again with 4b (two whole-day entries on one day), 5 and 6 as round 3.
 **The night of 21–22 Oct 26 (/overnight, D1204–D1207):** the person window, "since your last visit" and the Settings window drawn (`full/r6-*`); the whole design red-teamed by two fresh, blind Opus readers (the note's §10 — fixes settled, twelve questions for him in three rounds, §10.3); every screen as it will be drawn (`full/r7-*`, D1206); the build plan written for his approval (`raptor-port/docs/superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md`, five merges); the owed fresh read done. **Next:** his answers to §10.3 (Q5 and Q6 before the first merge) and his approval of the plan.
+
+### [LW-EVENTS-LANE] A better way to show the Leave War's events — parked (his word, 22 Oct 26 — D1259)
+**His words:** *"/impeccable /design is there a better way to design the events"*, then, shown the study: *"Leave E out first. Means that events are shown as full rows"*. **What stands:** the events stay full Event rows as built (D1259); G3 and G3b are not built. **The study, kept for when he raises it** (D994 — not put to him before): three ways drawn on one busy squadron (`raptor-port/docs/mock/lw-overhaul/full-r21-events.mjs`, `full/r21-ev-*`; his page, version 59, section E): A tags in the date heading with an Events fold (322px to the first person on his phone, 375px open), B an events lane, recommended (each event one thin bar across its days in its kind's colour, packed into as few lanes as the period needs, no row to pick; 345px), C leave events only (a tag only for PH, OFF, NL, a dot for the rest; 302px). Found in it: A's tag on a several-day event hides the day's own event behind the count. **Place:** after the overhaul's merges, only on his word.
 
 ### [NOTIFY-REGISTER] One register of every notification the app should send (his word, 21 Oct 26 — D1151)
 **His words:** *"Can u create a document to note down all the areas in which we should have a notification and how it
