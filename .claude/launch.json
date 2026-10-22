@@ -614,6 +614,21 @@
         "--strictPort"
       ],
       "port": 4321
+    },
+    {
+      "name": "raptor-lwmock",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4197",
+        "--strictPort"
+      ],
+      "port": 4197
     }
   ]
 }

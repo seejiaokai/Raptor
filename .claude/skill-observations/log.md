@@ -377,6 +377,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A vendored tool's own store and the host project's filing rule have to be reconciled once, in writing — otherwise every run pays for the clash again, and the tool's later steps silently lose what an earlier step saved.
 
+**Met again 2026-10-22:** Leave War overhaul round 14 (the LVE tile critique): persistence skipped on purpose, the synthesis put on his mock-up page instead; still undecided in writing.
+
 ### Observation 579: "Shorten it" was answered with summaries — the owner sent the list back: "the key words are gone"
 
 **Status:** ACTIONED (2026-10-14) — the design guide §1a tests 2, 3, 4 and 8 (a word is cut only if the note states the same facts without it; show the change); on the branch, awaiting his approval (D832)
@@ -1699,3 +1701,154 @@ different feature that merely pass through it.
 **Suggested improvement:** In `walk-scripts.md`: when a ruling says something "does not grow / does not move", record the before from a BUILD of the old look (swap the one stylesheet back, build, measure with the same script into a file, restore), and compare the after against that file; never against numbers from another browser or a style undone on the page. And when making two things "as tall as" each other, set both to the number, not one.
 
 **Principle:** A comparison is only as good as its baseline; measure the old state the same way, in the same browser, as the new — and a match between a fixed size and a computed one is a match on one device only.
+### Observation 671: A shared claude.ai app draws nothing without its database — run its saved source locally against a stand-in store to picture it
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** [LW-OVERHAUL] (D1140) — comparing a colleague's leave app (a claude.ai artifact from another organisation) with our Leave War, pictures of both for the owner. Parallel branch claude/consistency-round2 was at 663 when this was written.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`); impeccable (shape — studying a reference product)
+**Type:** open-source
+**Phase/Area:** gathering evidence about a reference app before a design comparison
+
+**Issue:** The Artifact read of the colleague's page returned an empty summary ("only a title"), because the page builds every screen in script from its runtime database and sign-in. Opening the live page would have shown another squadron's real data. What worked: read the saved raw source whole, then serve a local copy with a small stand-in for the page's `window.claude.use('db' | 'user' | 'assets')` that feeds made-up people (snapshot listeners, set/update/delete with null-deletes), the clock held, the other unit's name replaced before any picture. Every screen then drew and could be driven like any page — tabs, its form's live preview, a drag — with zero errors, and nothing touched their real store.
+
+**Suggested improvement:** In the mock-up guide, a short "Picturing someone else's app" note: read the source whole (the summary of a script-drawn page is empty); never open its live data; run it locally against a stand-in store with invented records; replace identifying names in the HTML before capture; do not commit the stand-in if it carries their storage keys or names.
+
+**Principle:** To study a data-driven reference app, run its code against invented data in a sandbox rather than reading its live data or trusting a summary of its empty shell.
+
+### Observation 667: In a zoomed grid a rect reads unzoomed, and a copied column table hides behind the real one — a mock-up's moves and marks go wrong silently
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** the Leave War overhaul's full mock-up, drawn into the real build (claude/leave-war-overhaul). Numbered 667 past main's and consistency round 2's 664.
+**Skill:** brainstorming (`mockups-on-the-real-app.md` — Traps When Injecting Into a Live Page)
+**Type:** open-source
+**Phase/Area:** injecting into a live page
+
+**Issue:** Three traps cost a redraw each. (1) The phone's grid is drawn at CSS zoom 0.8: `getBoundingClientRect` inside it returned unzoomed values, so a scroll computed from it overshot by days and a tag placed from it sat off its cell. (2) The app keeps second copies of rows (a desktop "figures drawer" table, a phone frozen band) beside the year table: moving a person's rows in one copy left his balance figures in the other, showing the wrong man's numbers. (3) A window drawn outside the page's styled scope (appended to body) lost every scoped style and rendered transparent over the dialog behind it. Each passed its script with no error.
+
+**Suggested improvement:** Add to the traps: "Inside a zoomed subtree, compare rects only after dividing by the zoom (or place tags as children of the element); before moving rows, list every table holding a copy of them and move each by position from a shared anchor row; append a new window inside the page's scoped container, or style it fully inline — then look at the picture."
+
+**Principle:** A live page often draws one thing in several places and under several coordinate systems; a transform that touches one copy, or measures in one system, leaves a picture that looks plausible and is wrong.
+
+### Observation 668: A shell edit turned `\b` in a regex into a backspace character, twice — the trap the memory names for `node -e` hits Python and here-docs too
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** editing the mock-up's drawing scripts by Python inside a bash here-doc and by `python -c`.
+**Skill:** task-observer (repo memory notes: "node -e in Git Bash loses escapes", "Python edits turn LF into CRLF")
+**Type:** open-source
+**Phase/Area:** editing files from a shell
+
+**Issue:** A JS regex `/\bSXO\b/` written through a Python string in a here-doc came out as `/<BS>SXO<BS>/` (Python read `\b` as a backspace); the replacement meant to fix it did the same again. The helper silently matched nothing, and three debugging runs passed before `cat -A` showed the control characters. The apostrophe trap in here-docs struck the same session.
+
+**Suggested improvement:** Make the default unconditional: script edits go through the Edit tool or a script file written with the Write tool, never a code string passed through a shell; when a helper "finds nothing", `cat -A` the line first.
+
+**Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
+
+- Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding a regex with a doubled backslash lost one backslash on the way (and this very note lost another when written by a script), and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
+
+### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
+
+**Status:** OPEN
+**Date:** 21 Oct 26
+**Session context:** Leave War overhaul round 4 — finding the next free D-number across every branch before recording his answers
+**Skill:** record-decisions (the "take the next free number" step) / task-observer numbering rule 4 (same trap)
+**Type:** internal
+**Phase/Area:** checking other branches for numbers
+
+**Issue:** A loop of `git show "$b:.claude/rules/decisions/leave-war.md" 2>/dev/null` across 100+ remote branches returned nothing for that file on every branch (Git Bash rewrote `rev:path` into a Windows path), while the same loop's other files, run with MSYS_NO_PATHCONV=1, worked. The silence read as "no numbers there", and the loop also took over two minutes. One `git grep -o -E "^\| D11[7-9][0-9] \|" $(git branch -r ...) -- .claude/rules/decisions .claude/decisions-full DECISIONS-ARCHIVE.md` answered in seconds, with no path rewrite. (Number 670: 669 exists on another branch.)
+
+**Suggested improvement:** In record-decisions.md / DECISIONS.md step 1, give the one command for "the next free number on every branch": `git grep` over all refs, never a `git show rev:path` loop; and say a check that prints nothing must first be run where the answer is known (the current branch) to prove it works.
+
+**Principle:** A search across refs is one `git grep` over the refs, not a loop of `git show rev:path` — on Git Bash the latter can fail silently, and silence reads as "none".
+
+### Observation 672: Design lessons are numbered in one sequence, so two branches adding lessons collide at the merge — as rulings would without their ranges
+
+**Status:** OPEN
+**Date:** 22 Oct 26
+**Session context:** the Leave War overhaul's overnight run merged `main` into `claude/leave-war-overhaul`.
+**Skill:** New skill candidate / the design guide's §9 rule (D941) and `record-decisions.md`
+**Type:** internal
+**Phase/Area:** numbering of the design guide's lessons (§9 of `raptor-port/docs/design-practices.md`)
+
+**Issue:** The branch had added lessons 18–28 while `main` (another chat) added its own 18 and 19 (the pencils). The merge conflicted in the guide, and the branch's eleven lessons had to be renumbered 20–30 in the guide, the Leave War rulings (short and full), the design note and the handoff — and the owner's page still says "lesson 28" for what is now 30. Rulings avoid this by each branch taking a range of D-numbers before it starts; lessons have no such rule.
+
+**Suggested improvement:** In the design guide's §9 head (D941's rule), and in `record-decisions.md`'s parallel-branch line: a branch that will add lessons takes a range (or names lessons by their ruling, "the lesson of D1194", and numbers them only at the merge). Until then, a merge that renumbers lessons does so by a script that touches only the branch's own side, and the closing report tells him the old and new numbers.
+
+**Principle:** Any sequence that parallel branches append to needs the same collision rule as the main one — a reserved range, or an identity that is not a position.
+
+### Observation 673: A critique of a mock-up drawn into the running app needs a standalone markup copy before the detector can read it
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War overhaul, round 14 — /impeccable critique of a balance tile that exists only as a mock-up injected into the real local build by a Playwright script
+**Skill:** impeccable (reference/critique.md — Assessment B); brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Critique — Assessment B on a drawn (not built) surface
+
+**Issue:** Assessment B's CLI detector reads markup files and its browser path expects a served page; the tile under review lived only inside a script that draws it into the running app. A small script had to stage the scene, inline every stylesheet the page had, and write the drawn element to a standalone HTML file; the detector then ran on it (and in-page by injecting detect.js directly). It found the one defect the design reviewer missed: the "you can type this" box edges measured 1.85:1, under the 3:1 a control's edge needs — the box rule could not be seen.
+
+**Suggested improvement:** In critique.md's Assessment B (or the mock-ups guide), add: when the target is a drawn mock-up, first write a standalone snapshot of the drawn element with the page's stylesheets inlined (one file per state), and point the detector and the browser measurements at it; measure non-text contrast of control edges, not only text.
+
+**Principle:** A machine check that cannot reach a surface is not skipped; give it a copy it can read. And a rule that rests on a visual cue ("a box means you can type it") is only as good as that cue's measured contrast.
+
+### Observation 674: A "less height" redraw measured its own saving in the drawing script, and the first draw saved almost nothing
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War navigation, round 19 (D1240: tabs design redrawn with less height at the top), drawn into the running app.
+**Skill:** brainstorming (mockups-on-the-real-app.md); impeccable (shape)
+**Type:** open-source
+**Phase/Area:** drawing a layout change on the real app; reporting it
+
+**Issue:** The ask was "less vertical space at the top". The drawing script measured the top of the grid's first row before and after its own rearrangement. The desktop saved 50px (one row) on the first draw; the phone saved only 10px, because the new tab row (copied from another page so the two look alike) is taller than the row it replaced, and one bar overflowed its width. Two tightening passes, each re-measured, brought the phone to 27px; a member's phone stayed level. Without the numbers, the picture alone looked like a clear win and would have gone to him as one.
+
+**Suggested improvement:** In the mock-ups guide, for any ask about size or space ("less height", "fits on one line", "more names on the first screen"), the drawing script measures the quantity asked about on the real build before and after its own changes, and also each row's overflow, and the page states the measured figures per device and role, including any device where nothing was saved.
+
+**Principle:** When the request is a quantity, measure the quantity in the same run that draws the change, on every device and role it touches; a picture that looks better is not evidence of the quantity, and a saving on one device can hide none on another.
+
+### Observation 675: A ruling answered on one picture left another picture of the same screen stale, and he caught it
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War navigation, round 19: his D1242 gave members the Balances tab; the drawing of the member's main page (tabs Grid · OIL) was not redrawn in the same turn.
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** updating a mock-up page after an answer
+
+**Issue:** The answer was recorded and its own question's pictures redrawn, but the main-page picture a few sections up still showed the member's tabs without Balances. He asked "are u updating a better design for the main page? Like members can have a balance tab?" Redrawing it then exposed a further clash (two things named Balances on one screen), which became a new question.
+
+**Suggested improvement:** After recording a ruling that changes a design, list every picture on the page that draws the changed thing (grep the drawing scripts for the element or the role it touches) and redraw each in the same turn; then look at the redrawn screens whole for clashes the change created.
+
+**Principle:** An answer changes every picture of the thing it governs, not only the picture it was given on; redrawing them all in the same pass is also how the change's knock-on effects are found.
+
+### Observation 676: A drawing's caption described how today's app behaves from memory, and was wrong twice
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War navigation, round 19: the under-manned chip folded into the Manning button.
+**Skill:** brainstorming (mockups-on-the-real-app.md); impeccable (shape)
+**Type:** open-source
+**Phase/Area:** writing what a proposed control does, on the page put to him
+
+**Issue:** The page said the count took amber and red days and that a tap jumped to the next one. His question ("is 1 short helpful with several? amber or red?") made me open the code: today's chip counts red days only and a tap opens a list. The design reading had been carried from a ruling's summary, not from the app.
+
+**Suggested improvement:** Before a mock-up page states what an existing control does today (what it counts, what a tap does), open that control's code or run it once, and cite which; a reading not checked says "not checked".
+
+**Principle:** A description of current behaviour is a claim about the running thing; check it at the source before it reaches the person deciding, or label it unverified.
+
+### Observation 677: A design study draws every option on one shared data set, the earlier option redrawn too
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War events study (his "is there a better way to design the events"), three ways drawn on the real grid
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** drawing alternatives for a comparison
+
+**Issue:** The option already drawn the round before (event tags in the date heading) used a different made-up data set from the new options, and its text and picture disagreed (text: two events stacked; picture: first event plus a count). Redrawing it with the same events as the new options exposed a defect the old data hid: a several-day event's tag took the day's slot and hid that day's own event behind the count.
+
+**Suggested improvement:** In the mock-up guide's comparison step: define one data set in the script that covers the hard cases the owner named (the maximum per day, spans, a name-only item, a kind with its own colour), draw every option from it including any option drawn earlier, and measure them in one table.
+
+**Principle:** Options compared on different sample data are not compared; a shared stress-case data set is what makes a design study's verdict hold.

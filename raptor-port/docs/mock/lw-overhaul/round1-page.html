@@ -1,0 +1,196 @@
+<title>Leave War Overhaul</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each question a section with its pictures in a row (today → proposed → theirs), tap to zoom. Raptor's own dark look, cyan for what you press, pink only for the marks drawn on the pictures. */
+:root{
+  --bg:#0d1117; --panel:#161b22; --line:#2a323c; --ink:#e6edf3; --muted:#9aa7b3; --accent:#5fd0e6; --rec:#58c48a; --mark:#ff2d95;
+  --f-body:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+h1{font-size:26px;margin:0;letter-spacing:.02em;text-wrap:balance}
+h2{font-size:19px;margin:0 0 6px;text-wrap:balance}
+h3{font-size:13px;margin:0;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+p{margin:0;max-width:70ch}
+.lede{color:var(--muted)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.q{scroll-margin-top:12px}
+.tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--accent);text-transform:uppercase}
+.opts{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.opts li{border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.opts li.rec{border-color:var(--rec)}
+.opts b{color:var(--ink)}
+.rec-pill{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--bg);background:var(--rec);border-radius:999px;padding:1px 8px;vertical-align:1px}
+.eg{border-left:3px solid var(--line);padding-left:12px;color:var(--muted)}
+.shots{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+figure{margin:0;flex:0 0 auto;width:220px;display:flex;flex-direction:column;gap:6px}
+figure.wide{width:440px}
+figure img{width:100%;border-radius:8px;border:1px solid var(--line);cursor:zoom-in;display:block;background:#000}
+figcaption{font-size:12.5px;color:var(--muted);line-height:1.35}
+figcaption b{color:var(--ink);font-weight:600}
+.k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.k.t{color:var(--muted)} .k.n{color:var(--mark)} .k.c{color:#ffb27a}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.grid .box p{font-size:14px}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.answer{border:1px dashed var(--accent);border-radius:12px;padding:14px 16px;font-size:15px}
+.answer code{background:#0b1f26;color:var(--accent);border-radius:6px;padding:2px 6px;font-size:14px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:calc(14px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 14px max(12px,env(safe-area-inset-left,0px));z-index:50;cursor:zoom-out}
+#zoom img{max-width:100%;height:auto;border-radius:8px}
+#zoom[hidden]{display:none!important}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:560px){figure{width:170px} figure.wide{width:300px}}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <span class="tag">Leave War overhaul · round 1 of 4</span>
+    <h1>Taking the best of your colleague's leave app</h1>
+    <p class="lede">I went through your colleague's app screen by screen and put it beside our Leave War. Four of its ideas are about a member's own leave, and that's this round. A second reviewer checked the questions against your earlier rulings before you see them. Every picture of ours is the real app, with a member's leave set up through its own buttons (Ranger: 19–21 Jan approved, 26–27 Jan waiting, 2 Feb refused, the clock held at 8 Jan); the new parts are drawn in and marked in pink. Their app is shown running on made-up people (its squadron name replaced). Tap any picture to enlarge it.</p>
+  </header>
+
+  <section class="box">
+    <h2>The two apps, as they are today</h2>
+    <div class="shots">
+      <figure class="wide"><img src="ours-desk-admin.png" alt="Our Leave War on a desktop, admin view"><figcaption><span class="k t">Ours · desktop</span><br>The year grid, the manning rows, every person's figures.</figcaption></figure>
+      <figure><img src="ours-phone-member.png" alt="Our Leave War on a phone, member view"><figcaption><span class="k t">Ours · phone (member)</span><br>Ranger has to find his own row to see anything of his.</figcaption></figure>
+      <figure class="wide"><img src="theirs-desk-calendar.png" alt="The colleague's app calendar on a desktop"><figcaption><span class="k c">Theirs · desktop</span><br>His own numbers, "since your last visit", his week, one month at a time.</figcaption></figure>
+      <figure><img src="theirs-phone-calendar.png" alt="The colleague's app on a phone"><figcaption><span class="k c">Theirs · phone</span><br>The same, then a panel for one day, then the month.</figcaption></figure>
+      <figure class="wide"><img src="theirs-desk-approvals.png" alt="The colleague's app approvals list"><figcaption><span class="k c">Theirs · approvals</span><br>Every waiting request in one list (that one is round 2).</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="box q" id="q1">
+    <span class="tag">Question 1</span>
+    <h2>Should a member see "My leave" in one line at the top of the Leave War?</h2>
+    <p>Today Ranger's numbers sit in his row of the grid ("15" over "5"), and nothing lists his own requests. Theirs puts his numbers first (box 1 in their picture). His "15" already takes off the two days still waiting, as the grid's does.</p>
+    <p class="eg">This changes your earlier rulings on the top of the Leave War: a phone's top is two lines (D678, D1000), a desktop's stays as it is (D679), and the "Viewing as" button keeps its words (D365).</p>
+    <ul class="opts">
+      <li class="rec"><b>A · One line</b><span class="rec-pill">recommended</span><br>"My leave · LVE 15 · OIL 0 · 2 waiting · next LL 19 Jan ›". A tap opens his own leave, one line a request, each marked approved, waiting or refused; a tap on one takes the grid there. You see your own the same way. On a phone it is a third line under the two; on a desktop it fits in the free end of the stage row, so no new line there.</li>
+      <li><b>B · No new line, even on a phone</b><br>The "Viewing as" button carries his numbers when it is himself: "Ranger · LVE 15 · 2 waiting ›". No height, but the button's words change with who you view, and "next leave" doesn't fit.</li>
+      <li><b>C · Leave it as it is</b></li>
+    </ul>
+    <p class="eg">Example: Ranger opens the Leave War on his phone on 8 Jan. Without scrolling he sees he has 15 days left, two days waiting, and his next leave is 19 Jan. He taps the line and sees 19–21 Jan approved, 26–27 Jan waiting, 2 Feb refused.</p>
+    <div class="shots">
+      <figure><img src="r1q1-ours-phone-today.png" alt="Today, phone"><figcaption><span class="k t">Today</span></figcaption></figure>
+      <figure><img src="r1q1-ours-phone-mock.png" alt="Option A, the line"><figcaption><span class="k n">A · the line</span></figcaption></figure>
+      <figure><img src="r1q1-ours-phone-list-mock.png" alt="Option A, his list"><figcaption><span class="k n">A · tap it: his list</span></figcaption></figure>
+      <figure><img src="r1q1-ours-phone-mockB.png" alt="Option B"><figcaption><span class="k n">B · in the Viewing as button</span></figcaption></figure>
+      <figure class="wide"><img src="r1q1-ours-desk-mock.png" alt="Option A on a desktop"><figcaption><span class="k n">A · on a desktop</span> · in the stage row</figcaption></figure>
+      <figure><img src="r1-theirs-phone-top.png" alt="Theirs"><figcaption><span class="k c">Theirs</span> · box 1</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="box q" id="q2">
+    <span class="tag">Question 2</span>
+    <h2>How should a member be told his leave was approved or refused?</h2>
+    <p>Today, when you approve or refuse his bid, nothing tells him. The bell stays quiet, so he only finds out if he spots his cell change colour. Theirs shows "Since your last visit: 3 approved · 1 rejected" (box 2 in their picture).</p>
+    <ul class="opts">
+      <li class="rec"><b>A · The bell</b><span class="rec-pill">recommended</span><br>One line per decision, naming who made it, as every bell line does: "Your leave · Mon 19 – Wed 21 Jan · LL approved · Saber". Tapping it takes the grid there. It tells him when his bid is approved or refused, when approved leave is put back to a bid, moved or deleted, and when another input replaced his bid. It doesn't tell him about an Ack, which only means "seen". Days decided together make one line, not three.</li>
+      <li><b>B · A line on the Leave War itself</b>, as theirs, with "Mark as seen". If you pick 1A, it would sit inside that line.</li>
+      <li><b>C · Both</b></li>
+    </ul>
+    <p class="eg">Example: Saber approves Ranger's 19–21 Jan and refuses his 2 Feb. His bell shows two lines. He taps the first and the war scrolls to 19 Jan. The refused day stays on the grid in red, as it does today.</p>
+    <div class="shots">
+      <figure><img src="r1q2-ours-phone-today.png" alt="Today"><figcaption><span class="k t">Today</span> · the bell has nothing for him</figcaption></figure>
+      <figure><img src="r1q2-ours-phone-bell-mock.png" alt="Option A, the bell"><figcaption><span class="k n">A · the bell</span></figcaption></figure>
+      <figure><img src="r1-theirs-phone-top.png" alt="Theirs"><figcaption><span class="k c">Theirs</span> · box 2</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="box q" id="q3">
+    <span class="tag">Question 3</span>
+    <h2>Should tapping a date open that day: who is away, and the day's numbers?</h2>
+    <p>Today there's only the year grid. To see who is off on a day you scan a column of fifty rows. Theirs has a panel for one day on the phone.</p>
+    <ul class="opts">
+      <li class="rec"><b>A · On a phone and a desktop</b><span class="rec-pill">recommended</span><br>Tap a date's heading: that day rises from the foot of the screen, the same kind of panel as the Inputs and SANS calendars' day. It shows ‹ day ›, the day's numbers (Available P and W, and any manning row of yours with its amber or red), and who is away with his leave's letters and whether it's approved or waiting. That's only what the grid already shows him, never a remark.</li>
+      <li><b>B · A phone only</b></li>
+      <li><b>C · Leave it as it is</b></li>
+    </ul>
+    <p class="eg">Example: Ranger wonders about Tue 27 Jan. He taps "TUE 27". The panel shows Avail P 25, Avail W 17, and that Reaper, Drifter and Basher have bid LL that day too, all waiting.</p>
+    <div class="shots">
+      <figure><img src="r1q3-ours-phone-today.png" alt="Today"><figcaption><span class="k t">Today</span></figcaption></figure>
+      <figure><img src="r1q3-ours-phone-day-mock.png" alt="Option A, the day panel"><figcaption><span class="k n">A · the day panel</span></figcaption></figure>
+      <figure><img src="r1q3-theirs-phone-day.png" alt="Theirs"><figcaption><span class="k c">Theirs</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="box q" id="q4">
+    <span class="tag">Question 4</span>
+    <h2>How should a member see what a bid will cost?</h2>
+    <p>Ours places the bid the moment he taps a leave type. Each type draws on a different balance: LL and OL on his LVE, OIL on his OIL, CCL on its own, and a weekend or holiday takes nothing. So one cost line can't be right before he picks. Theirs shows it under a form with a Submit button. Both of our bid windows (one day, and a dragged block) would change alike, and the "tap again" check before a balance goes below zero stays.</p>
+    <ul class="opts">
+      <li class="rec"><b>A · What's left, on each leave button</b><span class="rec-pill">recommended</span><br>"LL 15 · OL 15 · OIL 0 · CCL 0 …", plus one line at the top for the day: "Wed 28 Jan · Avail P 28 → 27 if you bid", naming any manning row of yours that would turn amber or red. Still one tap to bid.</li>
+      <li><b>B · Pick, then confirm</b><br>The type lights up, a line says what it takes ("LL Wed 28 Jan: LVE 15 → 14"), and "Place bid" places it. One more tap on every bid.</li>
+      <li><b>C · Leave it as it is</b></li>
+    </ul>
+    <p class="eg">Example, a range over a weekend: Ranger picks Fri 30 Jan – Mon 2 Feb and taps LL. Friday and Monday take 1 each; Saturday and Sunday take nothing. His LVE goes from 15 to 13.</p>
+    <div class="shots">
+      <figure><img src="r1q4-ours-phone-today.png" alt="Today"><figcaption><span class="k t">Today</span></figcaption></figure>
+      <figure><img src="r1q4-ours-phone-mock.png" alt="Option A"><figcaption><span class="k n">A · what's left on each button</span></figcaption></figure>
+      <figure><img src="r1q4-ours-phone-mockB.png" alt="Option B"><figcaption><span class="k n">B · pick, then confirm</span></figcaption></figure>
+      <figure class="wide"><img src="r1q4-theirs-desk-apply.png" alt="Theirs"><figcaption><span class="k c">Theirs</span> · the box marked 4</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="box q" id="q4more">
+    <span class="tag">Your question on 4</span>
+    <h2>"What if there are more counters at the top?"</h2>
+    <p>I gave the squadron eleven manning counters (the eleven the app used to start with) and placed a real bid for Ranger on Wed 28 Jan to measure it. That one bid moves five of the eleven: IP 16 → 15, IP + IWSO 23 → 22, flight-lead pilots 19 → 18, SXO 12 → 11, SC Day 7.7 → 7.5. None of them turns amber or red. Three ways to show that on the bid window's top line:</p>
+    <ul class="opts">
+      <li><b>A · Every counter</b><br>All eleven, with the five that move shown "before → after". Four lines of text on a phone, and it grows with every counter you add.</li>
+      <li><b>A2 · Only the counters the bid moves</b><br>The five, each "before → after". Three lines here; still grows with more counters.</li>
+      <li class="rec"><b>A3 · Only a counter the bid turns amber or red</b><span class="rec-pill">recommended</span><br>Usually one calm line: "Avail P 28 → 27 · no manning row turns amber or red". If the bid would turn a row amber or red, that row is named, in its colour: "SXO 2 → 1". The full counters are still right above, in the Manning rows. It stays short however many counters you have.</li>
+    </ul>
+    <p>In all three, what's left on each leave button stays as you chose in A.</p>
+    <div class="shots">
+      <figure><img src="r1q4-more-all.png" alt="A, every counter"><figcaption><span class="k n">A · every counter</span></figcaption></figure>
+      <figure><img src="r1q4-more-moved.png" alt="A2, only the ones it moves"><figcaption><span class="k n">A2 · only what it moves</span></figcaption></figure>
+      <figure><img src="r1q4-more-warn.png" alt="A3, only amber or red"><figcaption><span class="k n">A3 · only amber or red</span></figcaption></figure>
+    </div>
+    <p class="eg"><b>Your answer: A3, each counter flushed left.</b> Below, three counters turned at once, each on its own line with the figures lined up. These are the real numbers from Ranger's bid; I raised three counters' limits only for this picture, so they show amber and red. With one counter turned it stands on its own line the same way, and with none the line says so.</p>
+    <div class="shots">
+      <figure><img src="r1q4-a3-stacked.png" alt="A3 stacked, three counters"><figcaption><span class="k n">A3 · three counters, one a line</span></figcaption></figure>
+      <figure><img src="r1q4-a3-one.png" alt="A3, one counter"><figcaption><span class="k n">A3 · one counter</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="answer">
+    <b>How to answer:</b> one line in the chat, for example <code>1A 2A 3A 4A</code>, or "as recommended". Add a word on anything you'd like changed.
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <h2>What comes after this round</h2>
+    <div class="grid">
+      <div class="box"><h3>Round 2 · your side</h3><p>A list of every waiting request with Approve on each line · "approve all that turn no day red" · what a No Leave day does to a member's bid (you chose "colours only", so urgent leave still goes through; I'll ask whether it should at least ask first) · an entry approved as you place it · who placed a bid and when · photos of leave forms (recommended: not until the database).</p></div>
+      <div class="box"><h3>Round 3 · finding things</h3><p>A "Show" filter: one group, or people with leave in the bidding window · sorting by flight (your idea from 18 Oct) · a way to jump to today · whether cells keep colour by decision (recommended) or take theirs' colour per leave type.</p></div>
+      <div class="box"><h3>Round 4 · balances and manning</h3><p>Leave balances per year and carry-over (your "next time" from 19 Sep) · whether a whole-day Training or Duty lowers manning (you parked it "for now" until the Leave War's next batch, and this is that batch).</p></div>
+    </div>
+  </section>
+
+  <section class="box">
+    <h2>What we're not taking, and why</h2>
+    <ul class="plain">
+      <li><b>Already ours, often more:</b> manning rows with amber and red (ours are yours to define) · everyone's balances (ours show one figure, already less what's waiting) · half days and two records a day · dragging across days · event bars · locking members out once bidding closes.</li>
+      <li><b>You've ruled it:</b> editing people on the Leave War (that stays on Quals) · one month at a time (the year grid stays) · a pop-up note after every action.</li>
+      <li><b>Left out:</b> "Quick approve" (it's easy to leave on, and then a tap meant to open a cell approves it) · one-press national holidays (a list that must be kept right every year) · the colour key always under the grid (a phone screen of height every visit) · their orange look.</li>
+    </ul>
+  </section>
+</div>
+
+<div id="zoom" hidden role="dialog" aria-label="Enlarged picture" tabindex="-1"><img id="zimg" alt=""></div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'),zi=document.getElementById('zimg'),last=null;
+  document.addEventListener('click',function(e){
+    var im=e.target.closest('figure img');
+    if(im){last=im;zi.src=im.src;zi.alt=im.alt;z.hidden=false;z.scrollTop=0;z.focus();return}
+    if(!z.hidden&&z.contains(e.target)){z.hidden=true;if(last)last.focus()}
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!z.hidden){z.hidden=true;if(last)last.focus()}});
+  document.querySelectorAll('figure img').forEach(function(i){i.tabIndex=0;i.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();i.click()}})});
+})();
+</script>

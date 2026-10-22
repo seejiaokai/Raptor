@@ -23,6 +23,24 @@
         ],
         "createdAt": "2026-10-18T10:49:28.237Z",
         "reason": "owner D1025 (18 Oct 26, 'Keep it'): the amber left edge on the upchit sheet's cut lines (D1023) is the app's own status mark for a warning row (D747, the Scheduler Board's late-input line), not a side stripe to remove"
+      },
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "raptor-port/docs/mock/lw-overhaul/full-page.html"
+        ],
+        "createdAt": "2026-10-21T11:18:30.321Z",
+        "reason": "agent: the tap-to-enlarge overlay's img gets its src from the page's script when a picture is tapped; empty by design until then"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "raptor-port/docs/mock/lw-overhaul/full-page.html"
+        ],
+        "createdAt": "2026-10-22T02:31:16.303Z",
+        "reason": "agent judgement: the mock-up review page's own .note style (a 3px neutral grey quote rule, not an accent colour), unchanged since the page's first version; not app UI"
       }
     ]
   },
