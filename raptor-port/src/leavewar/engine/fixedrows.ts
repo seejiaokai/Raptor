@@ -43,6 +43,37 @@ export function blockOrder(saved: readonly string[], counters: readonly string[]
   return out
 }
 
+/* ---- THE REQUIRED ROWS' NAMES (D1193, 21 Oct 26, narrowing D668): an admin may rename Required P and Required W —
+   the name only; their figures stay typed in their cells. A seat with no name of its own reads the one it started with,
+   and only then does a phone show the short form ("Req P"). */
+
+/** the names the two Required rows start with */
+export const REQ_NAMES_ORIGINAL = Object.freeze({ p: 'Required P', w: 'Required W' })
+/** the longest name kept — the counter form's own limit for a row's name */
+export const REQ_NAME_MAX = 80
+/** an admin's names for the two Required rows, a seat present only where it has been renamed */
+export interface ReqNames { p?: string; w?: string }
+
+/** One name as it will be kept: trimmed, at most REQ_NAME_MAX long — or null for "the original" (blank, or the
+ *  original itself, so a name typed back to how it started is stored as no name at all). */
+export function reqNameToKeep(seat: 'p' | 'w', name: unknown): string | null {
+  if (typeof name !== 'string') return null
+  const t = name.trim().slice(0, REQ_NAME_MAX)
+  return !t || t === REQ_NAMES_ORIGINAL[seat] ? null : t
+}
+/** a stored pair, read leniently: a seat that is not a name is left out (it reads the original) */
+export function readReqNames(x: unknown): ReqNames | null {
+  if (!x || typeof x !== 'object' || Array.isArray(x)) return null
+  const o = x as Record<string, unknown>
+  const out: ReqNames = {}
+  for (const s of ['p', 'w'] as const) { const n = reqNameToKeep(s, o[s]); if (n !== null) out[s] = n }
+  return out
+}
+/** the two rows' names as they stand */
+export function reqNamesOf(names: ReqNames): { p: string; w: string } {
+  return { p: names.p ?? REQ_NAMES_ORIGINAL.p, w: names.w ?? REQ_NAMES_ORIGINAL.w }
+}
+
 /** What is SAVED for an order: the four at the foot in their own order is what a list without them already means, so
  *  they are left out — a squadron that never puts a counter among or below the four saves exactly what it always
  *  saved. Any other order is saved whole. */

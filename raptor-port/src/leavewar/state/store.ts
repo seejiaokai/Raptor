@@ -154,6 +154,11 @@ import {
   blockOrder,
   isFixedRow,
   orderToSave,
+  readAvailPoints,
+  readReqNames,
+  reqNameToKeep,
+  type AvailPoints,
+  type ReqNames,
 } from '../engine'
 import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
@@ -316,6 +321,11 @@ interface State {
    *  it to projectPeople on every notify, so flipping it re-projects at once. */
   showSans: boolean
 
+  /** The Required P and Required W rows' names, where an admin has renamed one (D1193, 21 Oct 26, narrowing D668 — the
+   *  name only; their figures stay typed in their cells). A seat absent reads its original name
+   *  (engine/fixedrows.ts REQ_NAMES_ORIGINAL). Squadron-wide config, persisted `reqnames`, admin-gated (`setReqName`). */
+  reqNames: ReqNames
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -425,6 +435,7 @@ function blank(): State {
     groupColors: {},
     eventRows: DEFAULT_EVENT_ROWS,
     showSans: false,
+    reqNames: {},
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -587,6 +598,9 @@ function readManningRule(x: unknown): ManningRule | null {
   if (!threshold || !count) return null
   const out: ManningRule = { id: x.id, label: x.label, count, threshold }
   if (typeof x.desc === 'string' && x.desc.length <= 2000) out.desc = x.desc
+  /* the Available rows' amber and red points (D1190, D1191, D1202) — read on those two rows only; a pair that will not
+     read is left out, and the row reads as it always did (red under Required, no amber) */
+  if (isAvailId(x.id) && x.points !== undefined) { const p = readAvailPoints(x.points); if (p) out.points = p }
   return out
 }
 
@@ -603,7 +617,8 @@ function readManningRules(x: unknown): ManningRule[] | null {
     if (!rule || seen.has(rule.id)) continue
     if (isAvailId(rule.id)) {
       /* a stored Available row that is not a people count is left out — the built-in one serves — and one that is
-         carries no amber or red, whatever was stored */
+         has its threshold held at 0, whatever was stored: its amber and red are its points against the day's Required
+         (D1190, D1191, D1202), never a threshold */
       rule = cleanAvailRule(rule)
       if (!rule) { dropped++; continue }
     }
@@ -1084,6 +1099,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
   const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
+  const reqNames = readStored('reqnames', readReqNames) ?? {}
   const postOuts = stored ? stored.postOuts : {}
 
   /* The role is neither read nor persisted since the Raptor merge: it is
@@ -1100,7 +1116,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
      back is what Leave War owns about a person (8 Sep 26): the posting-out
      windows, laid onto the projection by setPeople. (The admin's identity
      overrides it read beside them are gone — D460, D461.) */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, postOuts })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, reqNames, postOuts })
   /* every list's order on its records — the seed's, and a stored record not yet placed (command/ord.ts) */
   state = placeRecords(null, state)
   /* the committed world is this one: a command the test hook below runs diffs against it, not the last world */
@@ -1331,7 +1347,7 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
       manningOrder: s.manningOrder, manningHidden: s.manningHidden,
       figureHidden: s.figureHidden, groupDefs: s.groupDefs, groupPriority: s.groupPriority,
       groupPriorityCustom: s.groupPriorityCustom, groupColors: s.groupColors,
-      requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
+      requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans, reqNames: s.reqNames,
     },
   })
   return m
@@ -1412,6 +1428,8 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
         figureHidden: v.figureHidden, groupDefs: v.groupDefs, groupPriority: v.groupPriority,
         groupPriorityCustom: v.groupPriorityCustom, groupColors: v.groupColors,
         requirements: v.requirements, eventRows: v.eventRows, showSans: v.showSans,
+        /* a config record from before D1193 carries no names: both rows read their originals */
+        reqNames: v.reqNames ?? {},
       })
       return
     }
@@ -1478,6 +1496,10 @@ function lwRegisterCommands(): void {
      say "a public holiday on 9 Aug"; admin only, by perms.ts COMMAND_OPS and by the writers themselves — and the
      Event sheet's Save and Delete (saveEvent / deleteEvent), for the same two reasons */
   for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove', 'lw.event.save', 'lw.event.remove']) cmdDefinePermission(t, cmdAnyone)
+  /* the Manning block's two settings of the overhaul's batch 3, each its own command so the gate asks the Setting row
+     (perms.ts COMMAND_OPS — the admin's): an Available row's Save — its name, who it counts and its amber and red points
+     (D1190, D1191, D1202) — and a Required row's name (D1193) */
+  for (const t of ['lw.availrow', 'lw.reqname']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   /* [DB-READINESS] group A, phase 3 — THE WAR'S ROWS, WRITTEN FROM THE COMMAND STREAM (state/rows.ts): every command's
      changes to the war, mapped to the rows they land in and written through the war's own door at phase 9 — inside the
@@ -1642,7 +1664,7 @@ function historySnap(): string {
     figureOrder: s.figureOrder, rosterOrder: s.rosterOrder, persLabels: s.persLabels,
     manningOrder: s.manningOrder, manningHidden: s.manningHidden, figureHidden: s.figureHidden,
     groupDefs: s.groupDefs, groupPriority: s.groupPriority, groupPriorityCustom: s.groupPriorityCustom,
-    requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
+    requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans, reqNames: s.reqNames,
   })
 }
 
@@ -1710,7 +1732,7 @@ function historyApply(i: number): void {
   const snap = JSON.parse(HIST.stack[i]) as Pick<State,
     'wars' | 'openings' | 'ledger' | 'oilPolicy' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
     | 'persLabels' | 'manningOrder' | 'manningHidden' | 'figureHidden' | 'groupDefs'
-    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans'>
+    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans' | 'reqNames'>
   HIST.ix = i
   historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
   locked(() => {
@@ -4311,7 +4333,8 @@ export function resetManning(): void {
 export function setManningThreshold(id: string, amber: number, red: number): boolean {
   if (state.role !== 'admin') return false
   if (!Number.isFinite(amber) || amber < 0 || !Number.isFinite(red) || red < 0) return false
-  /* the two Available rows carry no amber or red of their own — their red comes from the Required row above them */
+  /* the two Available rows carry no threshold: their amber and red are points against the day's Required (D1191),
+     set by setAvailPoints / saveAvailRow */
   if (isAvailId(id)) return false
   const rules = state.requirements.default.rules
   if (!rules.some(r => r.id === id)) return false
@@ -4336,7 +4359,8 @@ export function saveManningRule(rule: ManningRule): boolean {
   let clean = readManningRule(rule)
   if (!clean) return false
   /* one of the two Available rows (engine/availrows.ts — D640): renamed and re-defined like any counter, but it stays a
-     count of PEOPLE (a "teams" count is refused) and its amber and red are held at 0 */
+     count of PEOPLE (a "teams" count is refused), its threshold held at 0 and its amber and red kept as its points
+     against the day's Required (D1191 — its own window saves through saveAvailRow, one command) */
   if (isAvailId(clean.id)) {
     clean = cleanAvailRule(clean)
     if (!clean) return false
@@ -4355,6 +4379,40 @@ export function saveManningRule(rule: ManningRule): boolean {
   state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
   persistNotify()
   return true
+}
+
+/** AN AVAILABLE ROW'S SAVE — its name, who it counts and its amber and red points (D1190, D1191, D1202 — each a number
+ *  plus or minus that day's Required), all from the row's own window, as ONE command (`lw.availrow`): the command gate
+ *  asks the Setting row (the admin's — perms.ts COMMAND_OPS) and one Undo takes the whole Save back. The body is
+ *  `saveManningRule`'s, so the row is made safe the one way (engine/availrows.ts cleanAvailRule). ADMIN-gated. */
+export function saveAvailRow(rule: ManningRule): boolean {
+  if (state.role !== 'admin' || !rule || !isAvailId(rule.id)) return false
+  return gesture('lw.availrow', () => saveManningRule(rule)) === true
+}
+
+/** One Available row's amber and red points alone, the rest of the row kept — the same command as its Save. A pair that
+ *  is not one (engine/availrows.ts readAvailPoints) is refused; negatives are allowed. ADMIN-gated. */
+export function setAvailPoints(id: string, points: AvailPoints): boolean {
+  if (state.role !== 'admin' || !isAvailId(id)) return false
+  const p = readAvailPoints(points)
+  if (!p) return false
+  return saveAvailRow({ ...availRuleOf(state.requirements.default.rules, id), points: p })
+}
+
+/** RENAME A REQUIRED ROW (D1193, 21 Oct 26, narrowing D668): the name only — the figures stay typed in their cells. A
+ *  blank name, or the original typed back, puts the original back (engine/fixedrows.ts reqNameToKeep), so a phone shows
+ *  its short form again. Its own command (`lw.reqname`), the Setting row's — the admin's. Returns whether it holds. */
+export function setReqName(seat: 'p' | 'w', name: string): boolean {
+  if (state.role !== 'admin' || (seat !== 'p' && seat !== 'w') || typeof name !== 'string') return false
+  const keep = reqNameToKeep(seat, name)
+  const next: ReqNames = { ...state.reqNames }
+  if (keep === null) delete next[seat]; else next[seat] = keep
+  if (next.p === state.reqNames.p && next.w === state.reqNames.w) return true   // already so: nothing to save
+  return gesture('lw.reqname', () => {
+    state = withCurrent({ ...state, reqNames: next })
+    persistNotify()
+    return true
+  }) === true
 }
 
 /** Why a counter cannot be deleted, as a sentence for the sheet — null when it can. The two Available rows cannot: the
