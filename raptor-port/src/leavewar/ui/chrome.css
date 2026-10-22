@@ -985,13 +985,7 @@
 
 }
 
-/* [ARCH-STACK] step 4 — the legend's corner-mark swatches, drawn like the
-   grid's own `.mk` / `.potag` (matrix.css) */
-.leg-sw.legmk { position: relative; padding-right: 9px; }
-.leg-sw .lmk { position: absolute; right: -3px; font-style: normal; font-size: 7px; font-weight: 800; line-height: 1; padding: 1px 2px; border-radius: 3px; }
-.leg-sw .lmk.more { top: -3px; background: rgba(150, 162, 178, .85); color: #0d1117; }
-.leg-sw .lmk.warn { top: -3px; background: #F2C879; color: #3a2500; padding: 1px 3px; }
-.leg-sw .lmk.po { bottom: -3px; background: rgba(150, 162, 178, .85); color: #0d1117; }
+/* the legend's corner rows draw the grid's own `.mk` / `.potag` inside a `.leg-box` (matrix.css) since M2 */
 
 /* THE LEAVE WAR'S NAVIGATION, AS DRAWN IN ROUND 19 (D1254 — `docs/mock/lw-overhaul/full/r19-nav-*`, `full/r21-rows-*`).
    Row 1 the Inputs page's own tab row (`.inputs-tabs` / `.intab`, 25-inputs-calendar.css — one look for the two pages),

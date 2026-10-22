@@ -213,6 +213,20 @@ describe('the colour/mark legend', () => {
 
   /* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — the Legend teaches that one
      column, no longer every balance the old drawer and picker carried (walker 1's fault 65, the code read's F2). */
+  /* walker 1's #64 (the code read's F4): the corner rows are the grid's own box with the grid's own tiles — "+1", the
+     amber "!" and the PO tag — never the old text swatch, so the key cannot show a mark the grid does not paint */
+  it("draws the corner rows with the grid's own box and tiles", () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    for (const [id, tile] of [['leg-corner-more', '.mk.more'], ['leg-corner-warn', '.mk.warn'], ['leg-corner-po', '.potag']] as const) {
+      const box = screen.getByTestId(id)
+      expect(box.className).toBe('leg-box')
+      expect(box.querySelector('.c.k-ll.s-a.whole')?.textContent).toBe('LL')
+      expect(box.querySelector(tile)).toBeTruthy()
+    }
+    expect(screen.getByTestId('legend-open').ownerDocument.querySelector('.leg-sw.legmk')).toBeNull()
+  })
+
   it('explains the one figure beside each name — LVE — and no other balance column', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('legend-open'))

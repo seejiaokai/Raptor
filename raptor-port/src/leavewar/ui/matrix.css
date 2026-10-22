@@ -855,7 +855,9 @@
   position: relative;
 }
 
-.mx td .mk {
+/* the grid's corner marks, drawn inside the Legend's cell-sized frame too (walker 1's #64, the code read's F4: the
+   Legend's corner rows are the grid's own tiles) */
+:is(.mx td, .leg-box) .mk {
   position: absolute;
   top: 0;
   right: 0;
@@ -867,12 +869,12 @@
   pointer-events: none;
 }
 
-.mx td .mk.more {
+:is(.mx td, .leg-box) .mk.more {
   background: rgba(150, 162, 178, .85);
   color: #0d1117;
 }
 
-.mx td .mk.warn {
+:is(.mx td, .leg-box) .mk.warn {
   background: #F2C879;
   color: #3a2500;
   padding: 1px 3px;
@@ -885,7 +887,7 @@
 
 /* Leave dated after a posting-out (owner answer C, 20 Sep 26): the leave code
    prints as usual, the hatch says "not counted", and this small tag says why. */
-.mx td .potag {
+:is(.mx td, .leg-box) .potag {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -1106,7 +1108,7 @@
 :is(.mx td, .leg-box) .c.moved::before { border-left: 2px dotted #F2C879; box-shadow: 1px 0 0 rgba(13, 17, 23, .85); }
 /* the moved edge and the clash corner each carry a thin dark outline, so they read on the amber leave boxes (D1175's
    reading — look F's local and overseas leave are ambers, as the moved edge and the "!" are) */
-.mx td .mk.warn { box-shadow: 0 0 0 1px rgba(13, 17, 23, .85); }
+:is(.mx td, .leg-box) .mk.warn { box-shadow: 0 0 0 1px rgba(13, 17, 23, .85); }
 
 /* Outside the bidding window: not editable by whoever is looking.
    Deliberately QUIET — a dimmed column that reads as "not yours to touch

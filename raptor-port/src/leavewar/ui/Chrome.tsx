@@ -535,9 +535,10 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               {/* [ARCH-STACK] step 4 — the corner mark: one code per day, the
                   rest behind a count (owner comp, 19 Sep 26) */}
               <div className="leg-sec">The corner — more on the day</div>
-              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk more">+1</i></span><span className="leg-t">More on this day — tap to see every entry</span></div>
-              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk warn">!</i></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
-              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk po">PO</i></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
+              {/* the grid's own tiles over the grid's own box (walker 1's #64, the code read's F4) */}
+              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-more"><span className="c k-ll s-a whole">LL</span><span className="mk more">+1</span></span><span className="leg-t">More on this day — tap to see every entry</span></div>
+              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-warn"><span className="c k-ll s-a whole">LL</span><span className="mk warn">!</span></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
+              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-po"><span className="c k-ll s-a whole">LL</span><span className="potag">PO</span></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
               {/* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — every other balance is on
                   the Balances tab and in a person's window, so the Legend teaches the one column the grid still shows. */}
               <div data-testid="legend-figures">
