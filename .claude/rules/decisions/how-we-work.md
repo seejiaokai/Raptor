@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1237 | 22 Oct 26 | On every mock-up page put to him, what he should look at now stands at the very top, in one short list: each open question or answer in one line with its recommendation, a link to its pictures, and the newest first; answered and older rounds go below it. |
 | D1222 | 22 Oct 26 | A picture put to him for a question shows only what that question is about — cut to that area, or everything else dimmed — with the change named in plain words on the picture, so he sees at a glance what he is asked; a whole screen is shown only when the question is about the whole screen. |
 | D1195 | 21 Oct 26 | A session he starts from a handoff — the button or a pasted opening line — has Remote Control on by default. |
 | D1138 | 21 Oct 26 | Help's and Admin's titles take the size and weight of Logic's page name and keep their place; the pages without a title stay without one. |

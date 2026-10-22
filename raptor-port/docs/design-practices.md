@@ -645,6 +645,7 @@ state nobody drew.
   record holds is on the page by its number, or under "considered and left" with its reason; the report states both
   counts — the record's gaps and the page's — and a script compares them, never the eye (13 Oct 26: a gap in the key
   record was reasoned away and left off the page; a second reader found it).
+- **What he should look at stands at the top of the page (D1237, 22 Oct 26 — "I can't find the no grade answer").** Every mock-up or look page put to him opens with one short list: each open question or answer in one line with its recommendation and a link to its pictures, newest first; answered and older rounds go below it, and a question he asked is answered there in words.
 - **Nothing is changed by a look.** Findings go to him, in rounds of at most four with a recommended answer each (D541).
 
 ## 9. His design lessons (D941)
@@ -652,6 +653,8 @@ state nobody drew.
 *What his design corrections teach, written in the same day he makes one (§0, step 2), each checked by one fresh reader;
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
 points here.*
+
+**Lesson 35 (22 Oct 26, D1238 — "can this be designed with alignment in consideration so that it looks neat on the formatting").** Tiles or cards that stand side by side share one grid: their labels on one line, their main figures on one line, their small lines on one line; and inside a tile a label stands right over its own figure, figures in a column sharing one edge — nothing floats between them. Said of the person window's balance tiles. *(That it holds for any group of tiles or cards side by side, and that a sign such as "−" or "=" gets a narrow column of its own, are the agent's readings, not his words; it is lesson 29's columns carried into a tile.)* *Other places, named under D852 and not changed:* the Medical tab's cards (lesson 5 made their widths even, not their lines); the Inputs calendar's opened day; Insights' tiles.
 
 **Lesson 34 (22 Oct 26, D1233 — "Perhaps state that it's Auto + LVE on 1st Jan … better to convert the message").** A figure the app acts on says what happens to it, not what it is: the balances page's grade shows "+36" under "Auto + LVE on 1 Jan", not "36" under "Days on 1 Jan". *(That the sign and the word "Auto" are what make it read as an action the app takes by itself, and that it holds for other figures the app applies later, are the agent's readings, not his words.)* *Other places, named under D852 and not changed:* the Available P and W rows' amber and red points ("+ 2", already a sign); the Logic page's settings; the OIL figures in the OIL tracker.
 
