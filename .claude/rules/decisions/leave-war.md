@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1236 | 22 Oct 26 | On a phone the balances page shows every balance the desktop shows — OIL and CCL, FCL, PL, EL, CL too — on the page itself, not behind a tap, and it can be pinched to zoom; its design keeps to the app's standard ways, its speed and the fewest taps. |
 | D1235 | 22 Oct 26 | On every 1 January the Leave War rolls each person's leave over by itself: what is left of his carried-forward days is gone, what is left of the year just ended becomes his carried-forward leave, and his grade's days are added — 37 left, of which 4 carried forward, as a junior pilot becomes 33 carried forward and 66 in all. |
 | D1234 | 22 Oct 26 | The leave grades are the squadron's own list, kept in the Grades window: an admin adds a grade, renames one, deletes one and drags them into his order, as well as setting each one's days; the five of D1229 are only the list it starts with. |
 | D1233 | 22 Oct 26 | On the balances page a grade's figure says what the app does with it — it is added to LVE by itself every 1 Jan — not what it is: the heading reads "GRADE · AUTO + LVE ON 1 JAN" and each grade shows "+36", "+33", "+21", "+18", "+14", in the grade box, the grade picker, the phone's grade line and the Grades window alike. |

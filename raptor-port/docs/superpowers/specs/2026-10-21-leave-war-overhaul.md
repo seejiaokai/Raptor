@@ -316,6 +316,7 @@ this instead for document to standardise it. 4 how about u keep it as B and make
 - **D1233:** on the balances page a grade's figure says what the app does with it: heading "GRADE · AUTO + LVE ON 1 JAN", each grade "+36" … "+14" (box, picker, phone line, Grades window). Lesson 34.
 - **D1234:** the grades are the squadron's own list in the Grades window: add, rename, delete, drag into order, each with its days; D1229's five are the starting list. Deleting one people hold asks first and leaves them "No grade".
 - **D1235 (his worked example):** every 1 Jan, by itself: the unused carried-forward days go, what is left of the year just ended becomes carried forward, the grade's days are added. 37 left with 4 carried fwd, a junior pilot: on 1 Jan 33 carried fwd, 66 in all. New balance = (left − unused carried fwd) + grade days; new carried fwd = left − unused carried fwd.
+- **D1236:** on a phone the balances page shows every balance the desktop does (OIL, CCL, FCL, PL, EL, CL) on the page, not behind a tap, and pinches to zoom: names fixed, figures slide sideways as on the grid (D1228).
 - **The rounds that follow, re-cut to four questions each (21 Oct 26):** round 3 — Q2 again (drawn his way:
   `../../mock/lw-overhaul/full/p4b-*.png`, script `full-cells2.mjs`), Q4b (his question "in what scenario": the clash rules allow only leave during a course or overseas duty, leave beside
   ATT B, and an FO given by hand on a leave day; recommended now C — the leave fills the cell, the other a strip down its right
