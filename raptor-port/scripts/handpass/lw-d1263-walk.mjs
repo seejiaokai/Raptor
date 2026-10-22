@@ -8,9 +8,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { mkdirSync } from 'node:fs'
 import { newPhone, signIn, signInPlain, tapSel, T, cellId, vis, gotoMonth, bid, cellText, undo, redo, rec, results, getBrowser, toggleMonths, asMember, asAdmin, closeAny, lve } from './lw-m1-rewalk-b-lib.mjs'
-console.log('lw-d1263-walk v1')
+console.log('lw-d1263-walk v2')
 const here = path.dirname(fileURLToPath(import.meta.url))
-const OUT = path.resolve(here, '../../docs/img/handpass/2026-10-22-lw-m1-open-dates/d1263')
+// the re-walk of the code read's fix writes beside the first walk, never over it (OUT_SUB=d1263-r)
+const OUT = path.resolve(here, '../../docs/img/handpass/2026-10-22-lw-m1-open-dates', process.env.OUT_SUB || 'd1263')
 mkdirSync(OUT, { recursive: true })
 const shot = (page, name) => page.screenshot({ path: path.join(OUT, name + '.png') })
 const toast = page => page.evaluate(() => [...document.querySelectorAll('.toast, [role="status"], [data-testid="toast"]')].map(e => e.innerText.replace(/\s+/g, ' ').trim()).filter(Boolean).join(' || ') || null)
@@ -109,6 +110,32 @@ await run('W4', async ({ page, cdp }) => {
   rec('W4', st['2026-03'] === 'closed' && delOffered && c0 === '' && c1 === 'LL' ? 'PASS' : 'FAIL',
     `MAR ${JSON.stringify(st)}; closed note's Delete offered ${delOffered}; after Delete "${c0}"; Undo "${c1}" (said "${t1}")`,
     ['W4-01-admin-closed-mar-delete-then-undo.png'])
+})
+
+/* W5 — D1263's code read (F1): a refused Undo must not jam the button. Bid 20 Feb (stays open), bid 10 Feb, delete the
+   10 Feb bid while open; today → 15 Feb (10 Feb closed for him). Undo is refused with the reason and names what the next
+   press takes; the next presses pass over the 10 Feb steps and take his 20 Feb bid off */
+await run('W5', async ({ page, cdp }) => {
+  await signIn(page, 'member', '2026-02-01')
+  await gotoMonth(cdp, page, 'FEB')
+  await bid(cdp, page, 'bane', '2026-02-20', 'LL')
+  await bid(cdp, page, 'bane', '2026-02-10', 'LL')
+  await tapSel(cdp, page, T(cellId('bane', '2026-02-10')))
+  await page.waitForSelector(T('bid-clear'), { timeout: 4000 })
+  await tapSel(cdp, page, T('bid-clear')); await page.waitForTimeout(500)
+  if (await vis(page, T('bid-picker'))) await closeAny(cdp, page)
+  await setToday(page, '2026-02-15')
+  const said = []
+  for (let i = 1; i <= 3; i++) {
+    await undo(cdp, page)
+    said.push(await toast(page))
+    await shot(page, `W5-0${i}-undo-press-${i}`)
+    await page.waitForTimeout(2500)
+  }
+  const c10 = await cellText(page, 'bane', '2026-02-10'), c20 = await cellText(page, 'bane', '2026-02-20')
+  rec('W5', /Bidding is closed on that day/.test(said[0] || '') && /Press Undo again for/.test(said[0] || '') && c10 === '' && c20 === '' ? 'PASS' : 'FAIL',
+    `three Undo presses said: ${said.map(x => '"' + x + '"').join(' · ')}; after: 10 Feb "${c10}", 20 Feb "${c20}"`,
+    ['W5-01-undo-press-1.png', 'W5-02-undo-press-2.png', 'W5-03-undo-press-3.png'])
 })
 
 console.log('ERRORS', JSON.stringify(allErrs))
