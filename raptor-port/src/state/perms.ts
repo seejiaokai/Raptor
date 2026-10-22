@@ -768,7 +768,11 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'lw.cell': {
         const parts = c.id.split(':')
         if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
-        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, c.op === 'delete' ? [] : c.after)) {
+        /* …and his Undo of such a delete puts back exactly what it took (the walk's find, 22 Oct 26: the Undo was refused):
+           a restore that only ADDS BACK pending bids of his — the same check, read the other way */
+        const after = c.op === 'delete' ? [] : c.after
+        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after)
+          && !(env.origin === 'restore' && onlyTakesPending(after, c.before))) {
           if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
           if (!(replayed && replayed(c))) return `a war day not open for bidding (${where})`
         }

@@ -238,6 +238,12 @@
 .fchip.openchip .openword {
   font-weight: 500;
 }
+/* the space between the parts is drawn, not typed: on a phone the chip is a flex box, which drops a typed space
+   ("Open15 Feb" — the walk's find, 22 Oct 26) */
+.fchip.openchip .openword + .opentxt,
+.fchip.openchip .openmore {
+  margin-left: .3em;
+}
 .fchip.open-on {
   background: rgba(87, 201, 122, .16);
   color: #EAF9EF;

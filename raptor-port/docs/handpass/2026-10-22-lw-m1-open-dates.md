@@ -112,6 +112,26 @@ cells drawn at half strength. The admin's dim went (as before M1: the open dates
 what is open); the table above is the build without it. Members' dim is as it always was. No node is added to any day
 cell (the lock is a pseudo-element on the date heading).
 
-## 6. Orders walked · 7. Cases carried by a test · 8. Pictures · 9. Break tests · 10. Errors seen · 11. Not walked, and why · 12. Gate counts · 13. The reads (fresh Opus; Fable — D1260) · 14. Findings and dispositions
+## 6. Orders walked · 7. Cases carried by a test · 8. Pictures · 9. Break tests · 10. Errors seen · 11. Not walked, and why · 12. Gate counts · 13. The reads (fresh Opus; Fable — D1260)
 
 (to fill)
+
+## 14. Findings and dispositions (filled as they come)
+
+**Walker B (phone 390, touch; member Ranger, then the admin) — returned 22 Oct 26** (its script
+`scripts/handpass/lw-m1-walk-b.mjs` + `-lib.mjs`, 51 pictures in `docs/img/handpass/2026-10-22-lw-m1-open-dates/b/`; no console
+or page errors). PASS: S2 (the closed note's words — a curly ’ in "management’s", the app's own apostrophe), S2c, S3's
+day's list / drag-select / half day, S4 (a–d), S7, S14 phone (MAY → SEP across the two rows: one stretch MAY–SEP; one
+Undo), S21, S22 phone (two stretches: one line, 34 px), S25 (a–d), S26 member and admin, S34 (b). RECORD: S35 (another
+man's row opens nothing), S30 (the panel is replaced by the tapped cell's window, so a stale Approve is not reachable
+that way), S29 (partial — a FEB tap in the window with the drag-select panel up did not close FEB, and LL in the panel
+then wrote nothing: TO REPRODUCE by the host). Not walked: S9, S27 (out of context).
+- **B-F1 — FAIL, fixed:** a member deleted his own pending bid on a day since closed; his Undo was refused ("That couldn’t
+  be completed just now.") — the commit's open-day check (B8) refused the restore. Fix: `state/perms.ts` lets a restore
+  that only adds back his own pending bids through (the same check read the other way). **Owed: a regression test** (a
+  member's `clearRecordById` on a closed day, then his Undo restores the bid) and a re-walk of S3's Undo step.
+- **B-F2 — cosmetic, fixed:** on a phone the chip read "Open15 Feb" — a typed space dropped by the flex chip; drawn as a
+  margin now (`chrome.css`). Re-walk: one picture of the phone chip.
+- **B-N1 (words, recorded):** a range or drag-select fill's skip note still says "locked, owned by Raptor, or outside the
+  window / your time in the squadron" — it never says "closed". Older words; the host to judge whether M1 should name
+  the closed days (likely yes, small).
