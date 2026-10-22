@@ -28,7 +28,7 @@ the later merge keeps both (D78).
 - **Branch:** `claude/lw-m1-open-dates`; pull request 566; everything pushed.
 - **Gates:** Leave War unit 3061 / 3061 and the shared undo, permission, undo-wiring and store tests 360 / 360 on his PC; `npm run build` clean; GitHub's full run green on bc318927a (the D1263 build), on 57f052091–81b620179 in progress at writing, and the closing push (R1, records) after it — read both before his look.
 - **Open questions for him:** the refusal's new words (on the look page, recommended: approve); then his look at M1 and "merge live".
-- **Running when written:** the walk server `lwm1-walk-b` on 4253 (`dist-m1w`, the D1263 build) — stop it by port when done. The PC lock is free.
+- **Running when written:** nothing on his PC (the walk servers stopped; the lock free).
 - **Pick up here:** his look and his "merge live" for M1 (D1088: push the closing records, wait for that run, merge once green, confirm the live app). Then M2 on a new branch cut from `main` once M1 is live (the build plan's order, D1250).
 - **Opening line:** Switch this chat to the branch `claude/lw-m1-open-dates`: `git fetch origin`, `git switch claude/lw-m1-open-dates`, `git pull --ff-only`. If the switch is refused because another checkout holds the branch, release it there only if that checkout has no uncommitted changes and its HEAD equals `git rev-parse origin/claude/lw-m1-open-dates`; then `git -C <that folder> switch --detach` and switch again; otherwise stop and tell me which folder holds it. Then read `HANDOFF.md` — the `claude/lw-m1-open-dates` block under `## Now` — and carry on from its "Pick up here".
 <!-- /now -->
