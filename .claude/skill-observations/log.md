@@ -1852,3 +1852,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In the mock-up guide's comparison step: define one data set in the script that covers the hard cases the owner named (the maximum per day, spans, a name-only item, a kind with its own colour), draw every option from it including any option drawn earlier, and measure them in one table.
 
 **Principle:** Options compared on different sample data are not compared; a shared stress-case data set is what makes a design study's verdict hold.
+
+### Observation 678: Close-up pictures of each changed control caught button-style faults that full-page walk pictures missed
+
+**Status:** OPEN
+**Date:** 22 Oct 26
+**Session context:** the Leave War overhaul's M1 bug check — three Sonnet walkers, two re-walks, two blind code reads, then the owner's look pictures
+**Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md`) and `raptor-port/docs/walk-scripts.md`
+**Type:** open-source
+**Phase/Area:** the walk's pictures; the look card
+
+**Issue:** Two new buttons (a closed note's "Open the Inputs page", the admin's new Note) rendered as bare browser-default grey with a white edge — their class had no colours of its own. Over 300 full-page and full-window walk pictures, three walkers and two code readers passed them. Cropping each changed control to itself at twice the pixels for the owner's look page showed both at once, and the first fix's class name ("note") then collided with an existing small-text class and stretched the button — also seen only in the close-up.
+
+**Suggested improvement:** In the bug-check order's walk step, after the walkers return, take one close-up picture per new or restyled control (cut to the control's window or row, deviceScaleFactor 2) and set each beside its neighbours' look before the code read; in walk-scripts.md, add an assertion pattern for a new button: its computed background and border equal a sibling button's of the same kind.
+
+**Principle:** A full-screen picture proves a control is present; only a close-up at real pixel density proves it looks like its neighbours — check new controls at the zoom a person sees them.
