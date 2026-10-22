@@ -33,17 +33,21 @@ beforeEach(() => {
 // Seed: ASICS has a pending half day of LL on 2026-01-23.
 const PENDING = 'cell-asics-2026-01-23'
 
+/** The words of the one-day window's Decide row, in order (D1158: Approve · Refuse — Ack is gone). */
+const decideRow = () => [...screen.getByTestId('decide-approve').parentElement!.querySelectorAll('button')].map(b => b.textContent)
+
 describe('deciding a bid', () => {
-  it('offers the SAME four answers while bidding is still open', () => {
+  it('offers the SAME answers while bidding is still open', () => {
     /* MOVED 21 Sep 26. The decision used to appear only once bidding closed,
        so the same input answered to different controls depending on which day
        of the cycle you clicked it. Owner: "enable it in all Stage on leave
-       war". An admin can Ack, Approve, Refuse or Move from the first day of
+       war". An admin can Approve, Refuse or Move from the first day of
        bidding — what is open decides what the SQUADRON may do, never what the
-       admin running it may do (D1177: he decides at any time). */
+       admin running it may do (D1177: he decides at any time). Ack went (D1158). */
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.getByTestId('decide-ack')).toBeTruthy()
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(decideRow()).toEqual(['Approve', 'Refuse'])
     expect(screen.getByTestId('decide-approve')).toBeTruthy()
     expect(screen.getByTestId('decide-refuse')).toBeTruthy()
     expect(screen.getByTestId('decide-shift')).toBeTruthy()
@@ -71,34 +75,36 @@ describe('deciding a bid', () => {
     expect(getState().states.asics['2026-01-23']?.state).toBe('approved')
   })
 
-  // Acknowledging is deliberately NOT a decision: it records that management
-  // has the bid in hand. The man stays out of the counts, because the counts
-  // show the worst case and nothing has been granted or denied yet.
-  it('acknowledges a pending bid without moving the counts', () => {
+  /* WAS "acknowledges a pending bid without moving the counts". Ack is gone (D1158, 21 Oct 26): a bid simply waits
+     until it is decided. What stands is the waiting itself — the window on a pending bid offers Approve · Refuse and
+     nothing that records "seen"; the bid stays pending and the man stays out of the counts (the worst case) until an
+     answer comes. */
+  it('a pending bid simply waits — no Ack, and the counts stay as they are (D1158)', () => {
     closeAll()
     setRole('admin')
     render(<Matrix />)
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
     fireEvent.click(screen.getByTestId(PENDING))
-    // the button reads "Ack" (owner, 21 Sep 26, renaming his own 27 Aug
-    // "Pending") though the stored state token is still 'acknowledged' — the
-    // label changed, not the model
-    expect(screen.getByTestId('decide-ack').textContent).toBe('Ack')
-    fireEvent.click(screen.getByTestId('decide-ack'))
-    expect(getState().states.asics['2026-01-23']?.state).toBe('acknowledged')
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(decideRow()).toEqual(['Approve', 'Refuse'])
+    expect(screen.getByTestId('decide-approve').getAttribute('aria-pressed')).toBe('false')
+    expect(screen.getByTestId('decide-refuse').getAttribute('aria-pressed')).toBe('false')
+    expect(getState().states.asics['2026-01-23']?.state).toBe('pending')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
   })
 
-  // An acknowledged bid is still awaiting an answer, so all three controls
-  // have to remain on it — otherwise acknowledging would be a dead end.
-  it('still offers every control on a bid already acknowledged', () => {
+  /* WAS "still offers every control on a bid already acknowledged". Ack is gone (D1158); the same point — a decided
+     bid is never a dead end, every answer stays live on it — is pinned on a bid already REFUSED. */
+  it('still offers every control on a bid already refused', () => {
     closeAll()
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    fireEvent.click(screen.getByTestId('decide-ack'))
+    fireEvent.click(screen.getByTestId('decide-refuse'))
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.getByTestId('decide-ack').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.getByTestId('decide-refuse').getAttribute('aria-pressed')).toBe('true')
+    expect(decideRow()).toEqual(['Approve', 'Refuse'])
+    expect(screen.getByTestId('decide-shift')).toBeTruthy()
     fireEvent.click(screen.getByTestId('decide-approve'))
     expect(getState().states.asics['2026-01-23']?.state).toBe('approved')
   })
@@ -182,8 +188,8 @@ describe('deciding a bid', () => {
   })
 })
 
-/* ONE WINDOW FOR AN INPUT, OPEN OR CLOSED (owner, 21 Sep 26). Four answers —
-   Ack, Approve, Refuse, Move — plus what was asked for, on the same window
+/* ONE WINDOW FOR AN INPUT, OPEN OR CLOSED (owner, 21 Sep 26). Three answers —
+   Approve, Refuse, Move (Ack went, D1158) — plus what was asked for, on the same window
    whatever is open. His old exception — an input approved AND published was
    finished paperwork, remarks only — went with the published stage (D1177:
    nothing is frozen; the admin puts back, moves or deletes approved leave at
@@ -209,15 +215,16 @@ describe('the one input window', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    // 24 Feb already holds ASICS's acknowledged OIL bid — the day is taken
+    // 24 Feb already holds ASICS's pending OIL bid (acknowledged until Ack went, D1158) — the day is taken
     await moveTo('cell-asics-2026-02-24')
     expect(screen.getByTestId('move-banner').textContent).toContain('already booked')
   })
 
   /* WAS "an APPROVED input on a PUBLISHED war offers remarks and nothing else". Replaced by D1177 (nothing frozen; the
      admin decides at any time) and the scenario designer's S6: an ADMIN's tap on approved leave opens the window that
-     changes it — the decision shown, Ack to put it back to a bid, Move, Delete — never a remarks-only sheet that would
-     hide those. Whatever is open: here with every date closed. */
+     changes it — the decision shown, Refuse, Move, Delete — never a remarks-only sheet that would hide those. Whatever
+     is open: here with every date closed. (Its "Ack to put it back to a bid" went with Ack, D1158: the other answer,
+     Refuse, is what the window offers to change it.) */
   it('an APPROVED input opens the decide window for an admin, never a remarks-only sheet', () => {
     setRole('admin')
     render(<Matrix />)
@@ -227,13 +234,13 @@ describe('the one input window', () => {
     fireEvent.click(screen.getByTestId(PENDING))
     expect(screen.queryByTestId('remarks-sheet')).toBeNull()
     expect(screen.getByTestId('decide-approve').getAttribute('aria-pressed')).toBe('true')
-    expect(screen.getByTestId('decide-ack')).toBeTruthy()
-    expect(screen.getByTestId('decide-refuse')).toBeTruthy()
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(decideRow()).toEqual(['Approve', 'Refuse'])
     expect(screen.getByTestId('decide-shift')).toBeTruthy()
     expect(screen.getByTestId('bid-clear')).toBeTruthy()
-    // …and putting it back to a bid works from there
-    fireEvent.click(screen.getByTestId('decide-ack'))
-    expect(getState().states.asics['2026-01-23']?.state).toBe('acknowledged')
+    // …and changing the decision works from there (D1158: Refuse, where it was Ack)
+    fireEvent.click(screen.getByTestId('decide-refuse'))
+    expect(getState().states.asics['2026-01-23']?.state).toBe('refused')
   })
 
   /* M1's code read (L6): that window carries the admin's Note — the remarks of the approved leave, as the day's list has */
@@ -255,7 +262,7 @@ describe('the one input window', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.getByTestId('decide-ack')).toBeTruthy()
+    expect(decideRow()).toEqual(['Approve', 'Refuse'])   // where it checked Ack (D1158)
     expect(screen.getByTestId('decide-shift')).toBeTruthy()
     expect(screen.getByTestId('bid-LL')).toBeTruthy()
     expect(screen.getByTestId('bid-clear')).toBeTruthy()
@@ -271,7 +278,7 @@ describe('the one input window', () => {
     expect(getState().period.open).toEqual([])
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.getByTestId('decide-ack')).toBeTruthy()
+    expect(decideRow()).toEqual(['Approve', 'Refuse'])   // where it checked Ack (D1158)
     expect(screen.getByTestId('decide-shift')).toBeTruthy()
     fireEvent.click(screen.getByTestId('decide-refuse'))
     expect(getState().states.asics['2026-01-23']?.state).toBe('refused')
@@ -414,11 +421,13 @@ describe('a cell Raptor owns', () => {
     expect(screen.queryByTestId('closed-note')).toBeNull()
   })
 
+  /* look F (D1175): green is OIL's KIND (`k-oil`) and filled is approved (`s-a`) — where it was the one class `appr` */
   it('paints green, and marks where it came from', () => {
     render(<Matrix />)
     const chip = screen.getByTestId(RAPTOR).querySelector('.c')!
-    expect(chip.className).toContain('appr')
-    expect(chip.className).toContain('raptor')
+    expect(chip.classList.contains('k-oil')).toBe(true)
+    expect(chip.classList.contains('s-a')).toBe(true)
+    expect(chip.classList.contains('raptor')).toBe(true)
   })
 })
 

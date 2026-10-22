@@ -195,10 +195,17 @@ describe('tapping an OIL day shows what is on it', () => {
 })
 
 describe('the marks on the box', () => {
-  it('an arrow points at the half, and a star means the app put it there', () => {
+  /* WAS "an arrow points at the half": `<LL` on the grid. Look F (D1160, D1145): the half is WHERE the box sits — the
+     morning in the top half — and the letters are the bare code, no arrow; the star an app credit wears stays. */
+  it('the half is where the box sits — no arrow — and a star means the app put it there', () => {
     expect(setCell(P, TUE, '*LL')).toBe(true)
+    ingestDutyCredit(P, '2026-01-14', 'FO', 'Duty', [[480, 1080]])
     render(<Matrix />)
-    expect(screen.getByTestId(`cell-${P}-${TUE}`).textContent).toContain('<LL')
+    const box = screen.getByTestId(`cell-${P}-${TUE}`).querySelector('.c')!
+    expect(box.textContent).toBe('LL')
+    expect(box.classList.contains('top')).toBe(true)
+    expect(screen.getByTestId(`cell-${P}-${TUE}`).textContent).not.toContain('<')
+    expect(screen.getByTestId(`cell-${P}-2026-01-14`).querySelector('.c')!.textContent).toBe('FO*')
   })
 })
 

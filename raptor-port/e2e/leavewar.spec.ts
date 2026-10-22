@@ -766,33 +766,27 @@ test('a blocked day that falls on a weekend still paints amber, not grey', async
   expect(bg).toBe(BLOCKED_BG)
 })
 
-// jsdom (the unit-test DOM) never computes an element's cascade, so it can
-// prove the `.am`/`.pm` class landed on the right chip but not that the
-// divider it triggers is actually painted — that only a real browser's
-// `getComputedStyle(el, '::after')` can answer. Seed (re-keyed): slipway carries `*OIL`
-// on 2026-02-10 (morning, half day), and OL on 2026-01-01 (whole day, no
-// divider).
-test('the half-day divider is painted on a half-day chip and absent on a whole-day chip', async ({ page }) => {
-  const half = page.locator('[data-testid="cell-slipway-2026-02-10"] .c')
-  const halfAfter = await half.evaluate(el => {
-    const s = getComputedStyle(el, '::after')
-    return { width: s.width, background: s.backgroundColor }
+// jsdom (the unit-test DOM) never lays anything out, so it can prove the
+// place class landed on the right box but not that the box is drawn where
+// that class says — only a real browser's layout can answer. WAS "the half-day
+// divider is painted on a half-day chip and absent on a whole-day chip" (the
+// `.am`/`.pm` divider). Look F (D1160, D1145): the divider is gone — a half day's
+// box FILLS its half of the cell (the morning the top half), a whole day's box
+// fills the cell, the rows keeping their height. Seed (re-keyed): slipway carries
+// `*OIL` on 2026-02-10 (morning, half day), and OL on 2026-01-01 (whole day).
+test('a half day fills its half of the cell — the morning the top — and a whole day the cell', async ({ page }) => {
+  const geo = (id: string) => page.locator(`[data-testid="${id}"]`).evaluate(td => {
+    const c = td.getBoundingClientRect(), b = td.querySelector('.c')!.getBoundingClientRect()
+    return { cellTop: c.top, cellH: c.height, top: b.top, h: b.height, text: td.querySelector('.c')!.textContent }
   })
-  expect(parseFloat(halfAfter.width)).toBeGreaterThan(0)
-  expect(halfAfter.background).not.toBe('rgba(0, 0, 0, 0)')
+  const half = await geo('cell-slipway-2026-02-10')
+  expect(half.text).toBe('OIL')                                   // the bare code, no arrow (D1160)
+  expect(half.h).toBeGreaterThan(half.cellH * 0.3)
+  expect(half.h).toBeLessThan(half.cellH * 0.6)                   // half the cell, not the whole
+  expect(half.top - half.cellTop).toBeLessThan(half.cellH * 0.25) // in the TOP half — the morning
 
-  // A whole-day chip carries no `::after` rule at all, so the browser
-  // reports it with no generated box: `content: none` and a computed width
-  // of `auto` rather than `0px` — `parseFloat('auto')` is `NaN`, not `0`, so
-  // this checks the same "nothing painted" fact via content and background
-  // instead of width.
-  const whole = page.locator('[data-testid="cell-slipway-2026-01-01"] .c')
-  const wholeAfter = await whole.evaluate(el => {
-    const s = getComputedStyle(el, '::after')
-    return { content: s.content, background: s.backgroundColor }
-  })
-  expect(wholeAfter.content).toBe('none')
-  expect(wholeAfter.background).toBe('rgba(0, 0, 0, 0)')
+  const whole = await geo('cell-slipway-2026-01-01')
+  expect(whole.h).toBeGreaterThan(whole.cellH * 0.75)             // the whole cell
 })
 
 test('the matrix stays within a sane DOM size', async ({ page }) => {
@@ -1024,46 +1018,58 @@ test('the whole month strip is on screen at phone width', async ({ page }) => {
   }
 })
 
-// The owner's colour rule, restated 10 Aug 26: a bid nobody has answered
-// carries no colour at all, purple means management has acknowledged it,
-// green approved, red refused. jsdom can prove which class was emitted and
-// nothing about what was painted — only a browser computes the cascade.
-test('the four bid states read as three colours and one plain cell', async ({ page }) => {
-  const bg = (sel: string) => page.locator(sel).evaluate(el => getComputedStyle(el).backgroundColor)
-  const appr = await bg('[data-testid="cell-dj-2026-01-16"] .c')
-  const ack = await bg('[data-testid="cell-bruise-2026-02-24"] .c')
-  const ref = await bg('[data-testid="cell-dj-2026-01-19"] .c')
-  expect(new Set([appr, ack, ref]).size).toBe(3)
-  for (const c of [appr, ack, ref]) expect(c).not.toBe('rgba(0, 0, 0, 0)')
+/* WAS "the four bid states read as three colours and one plain cell" (the owner's rule of 10 Aug 26: pending no
+   colour, purple acknowledged, green approved, red refused). Replaced by look F (D1175) and Ack's going (D1158): the
+   colour is the KIND and the FILL says where a bid stands — filled approved, hollow and dashed pending, grey and struck
+   refused. jsdom can prove which class was emitted and nothing about what was painted — only a browser computes the
+   cascade. Seed (re-keyed): dj's approved OL of 16 Jan; bruise's pending *LL of 23 Jan and its OIL of 24 Feb
+   (acknowledged until Ack went — pending now); dj's refused OL of 19 Jan — its day holds the seed's OIL award too, so
+   since D1167 it is the day's second box, drawn beside the award (`.c.k-ol`; the old `.c` read the award's box). */
+test('the three bid states read as filled, hollow and dashed, and grey and struck', async ({ page }) => {
+  const look = (sel: string) => page.locator(sel).evaluate(el => {
+    const s = getComputedStyle(el)
+    return { bg: s.backgroundColor, outline: s.outlineStyle, line: s.textDecorationLine, color: s.color }
+  })
+  const appr = await look('[data-testid="cell-dj-2026-01-16"] .c')
+  const pending = await look('[data-testid="cell-bruise-2026-01-23"] .c')
+  const wasAck = await look('[data-testid="cell-bruise-2026-02-24"] .c')
+  const ref = await look('[data-testid="cell-dj-2026-01-19"] .c.k-ol')
 
-  // Pending is the absence of news, so it must be the absence of paint —
-  // asserted against all three answered colours, not merely "not purple".
-  const pending = await bg('[data-testid="cell-bruise-2026-01-23"] .c')
-  expect(pending).toBe('rgba(0, 0, 0, 0)')
-  for (const c of [appr, ack, ref]) expect(pending).not.toBe(c)
+  // approved: filled, solid, not struck
+  expect(appr.bg).not.toBe('rgba(0, 0, 0, 0)')
+  expect(appr.outline).not.toBe('dashed')
+  expect(appr.line).not.toContain('line-through')
 
-  // Plain must still be READABLE. A cell with no background is only correct
-  // if its text keeps the ordinary ink — an invisible bid would be worse
-  // than a wrongly coloured one.
-  const ink = await page.locator('[data-testid="cell-bruise-2026-01-23"] .c')
-    .evaluate(el => getComputedStyle(el).color)
-  const body = await page.evaluate(() => getComputedStyle(document.body).color)
-  expect(ink).toBe(body)
+  // pending: no fill, a dashed outline — the stored Ack among them (D1158)
+  for (const p of [pending, wasAck]) {
+    expect(p.bg).toBe('rgba(0, 0, 0, 0)')
+    expect(p.outline).toBe('dashed')
+    expect(p.line).not.toContain('line-through')
+  }
+
+  // refused: no fill, struck through, no dashed outline
+  expect(ref.bg).toBe('rgba(0, 0, 0, 0)')
+  expect(ref.line).toContain('line-through')
+  expect(ref.outline).not.toBe('dashed')
+
+  // a box with no fill must still be READABLE — its letters carry ink, never none
+  for (const c of [pending, wasAck, ref]) expect(c.color).not.toBe('rgba(0, 0, 0, 0)')
 })
 
-// A bid lands PENDING, which since 10 Aug 26 means plain — no colour class
-// at all. It used to assert `tbc`, which is now the acknowledged colour: the
-// squadron must be able to tell a bid nobody has looked at from one already
-// in management's hands, and a freshly typed bid is the former.
-test('a bid can be placed, and lands plain because nobody has answered it', async ({ page }) => {
+/* WAS "a bid can be placed, and lands plain because nobody has answered it". A bid lands PENDING, which under look F
+   (D1175) is the hollow, dashed box — `s-w`, no fill — and Ack is gone (D1158), so nothing else waits between it and
+   a decision. */
+test('a bid can be placed, and lands hollow and dashed because nobody has answered it', async ({ page }) => {
   await lwView(page, 'ammo')   // a member bids on his OWN row ([ACCOUNTS] — the one-person-writes-his-own check)
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-LL"]').click()
   const chip = page.locator('[data-testid="cell-ammo-2026-02-11"] .c')
   await expect(chip).toBeVisible()
-  const cls = (await chip.getAttribute('class'))!
-  for (const painted of ['tbc', 'appr', 'ref']) expect(cls).not.toContain(painted)
+  const cls = (await chip.getAttribute('class'))!.split(' ')
+  expect(cls).toEqual(expect.arrayContaining(['k-ll', 's-w', 'whole']))
+  for (const other of ['s-a', 's-r']) expect(cls).not.toContain(other)
   expect(await chip.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
+  expect(await chip.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('dashed')
 })
 
 // Leave War persists per browser since the storage seam: its store boots on the
@@ -1166,15 +1172,24 @@ test('opening the bid sheet never makes the page scroll sideways', async ({ page
   expect(overflow).toBeLessThanOrEqual(1)
 })
 
-// A cell Raptor owns must be indistinguishable in COLOUR from an approved
-// bid — the squadron's colour convention is that green means approved, and
-// where the approval happened does not change that. Only a real browser
-// computes which of the two rules on the chip actually won.
-test('a cell Raptor owns is the same green as an approved bid', async ({ page }) => {
+// A cell Raptor owns must be indistinguishable in COLOUR from the same kind
+// approved on the war — where the approval happened does not change the
+// colour; the left edge says that. Only a real browser computes which of the
+// rules on the box actually won. Look F (D1175): the colour is the KIND and
+// filled is approved, so the Raptor-owned OIL (prowler, 9 Jan) is compared with
+// an OIL-green box filled on the war — the FO credit of 1 Jan — where it was
+// compared with an approved OL, which is now another kind's colour.
+test('a cell Raptor owns is the same colour as the same kind approved on the war', async ({ page }) => {
   const bg = (sel: string) => page.locator(sel).evaluate(el => getComputedStyle(el).backgroundColor)
+  const raptorBox = page.locator('[data-testid="cell-prowler-2026-01-09"] .c')
+  const warBox = page.locator('[data-testid="cell-prowler-2026-01-01"] .c')
+  await expect(raptorBox).toHaveClass(/(^|\s)k-oil(\s|$)/)
+  await expect(raptorBox).toHaveClass(/(^|\s)raptor(\s|$)/)
+  await expect(warBox).toHaveClass(/(^|\s)k-oil(\s|$)/)
+  await expect(warBox).not.toHaveClass(/(^|\s)raptor(\s|$)/)
   const raptor = await bg('[data-testid="cell-prowler-2026-01-09"] .c')
-  const bid = await bg('[data-testid="cell-dj-2026-01-16"] .c')
-  expect(raptor).toBe(bid)
+  const onWar = await bg('[data-testid="cell-prowler-2026-01-01"] .c')
+  expect(raptor).toBe(onWar)
   expect(raptor).not.toBe('rgba(0, 0, 0, 0)')
 })
 
@@ -1182,9 +1197,11 @@ test('a cell Raptor owns is the same green as an approved bid', async ({ page })
 // than merely being a class jsdom can see. If this ever reads as damage on a
 // real device the rule is meant to be deleted, so it is asserted as a
 // deliberate decision and not left to rot unnoticed.
+/* look F (D1175): the box is placed absolutely in its cell, so its left-edge marks are drawn by a `::before` strip
+   laid over the box's left edge — read there, where they were the box's own border-left */
 test('the Raptor mark is painted, and an ordinary bid carries none', async ({ page }) => {
   const edge = (sel: string) => page.locator(sel).evaluate(el => {
-    const s = getComputedStyle(el)
+    const s = getComputedStyle(el, '::before')
     return { width: s.borderLeftWidth, style: s.borderLeftStyle }
   })
   const raptor = await edge('[data-testid="cell-prowler-2026-01-09"] .c')
@@ -1249,11 +1266,13 @@ test('an admin moves a bid to another date, and it lands pending there', async (
   const moved = page.locator('[data-testid="cell-bruise-2026-01-30"] .c')
   await expect(moved).toBeVisible()
   // A shift lands PENDING — a move is a proposal, and someone still has to
-  // approve the date it moved to — so the chip is plain, not purple. A bid that
-  // only waits keeps no trail when it moves (D1177: the dotted `moved` edge is an
-  // APPROVED leave's, any time — the test above), so it carries no moved mark.
-  const cls = (await moved.getAttribute('class'))!
-  for (const painted of ['tbc', 'appr', 'ref']) expect(cls).not.toContain(painted)
+  // approve the date it moved to — so the box is hollow and dashed (look F,
+  // D1175: `s-w`; Ack is gone, D1158). A bid that only waits keeps no trail when
+  // it moves (D1177: the dotted `moved` edge is an APPROVED leave's, any time —
+  // the test above), so it carries no moved mark.
+  const cls = (await moved.getAttribute('class'))!.split(' ')
+  expect(cls).toContain('s-w')
+  for (const other of ['s-a', 's-r']) expect(cls).not.toContain(other)
   expect(cls).not.toContain('moved')
 })
 
@@ -5184,11 +5203,12 @@ test('a decision made before the reopen survives it', async ({ page }) => {
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await page.locator('[data-testid="decide-refuse"]').click()
   const chip = page.locator('[data-testid="cell-bruise-2026-01-23"] .c')
-  expect(await chip.getAttribute('class')).toContain('ref')
+  // look F (D1175): refused is the grey, struck box — `s-r`, where it was `ref`
+  await expect(chip).toHaveClass(/(^|\s)s-r(\s|$)/)
 
   await openMonths(page, ['2026-01', '2026-02', '2026-03'])
   await expect(openChip(page)).toContainText('1 Jan – 31 Mar')
-  expect(await chip.getAttribute('class')).toContain('ref')
+  await expect(chip).toHaveClass(/(^|\s)s-r(\s|$)/)
 })
 
 // ---- the categorised roster (owner, 18 Aug 26) --------------------------
