@@ -360,7 +360,7 @@ scheduler half of the group — the board DOM ceiling, the dragged ghost, the pe
   (`Shell.tsx`, idle-gated). Load-bearing invariants: `docs/performance.md`
   §Leave War window engine holds them in full — the short form (don't undo): a drawn month keeps
   its MEASURED width in the placeholder (`monthPxRef`); never draw/prune an
-  estimated-width month left of the view mid-scroll; placeholder widths are INLINE
+  estimated-width month left of the view mid-scroll *[AMENDED 23 Oct 26 (the overhaul's M2, his video of a fling back to January on the live app): a month left of the view whose width is only an estimate IS drawn mid-scroll now, while the scroll moves at a drag's speed — its error is given to the left placeholder in the same commit (Matrix `padErrRef`), so nothing on screen hops, which was this rule's whole point; a fast fling still waits, and January is drawn the moment a fling reaches it (`colwindow.ts leftGrowAbsorbable`, `DRAW_LEFT_MAX_SPEED`). `docs/performance.md` §E.]*; placeholder widths are INLINE
   styles, never a CSS custom property on `.mx-outer` or ANY grid ancestor (restyles
   ~7k nodes; `--lwx-max` lives on the frozen bar's own box); EVERY row incl header
   carries identical cells (the owner's iPhone/WebKit is the gate); on-screen signal is

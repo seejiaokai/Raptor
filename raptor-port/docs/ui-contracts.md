@@ -8918,7 +8918,8 @@ The contract, in the order a reader meets it:
   average day width × its days, `avgDayWRef`). Why this is safe where the 3
   Sep "no spacers" rule (22 distinct day-column widths) said it wasn't: an
   estimate's error only matters LEFT of the view, and such a month is never
-  drawn there mid-scroll (next bullet). Every row carries the SAME cells as
+  drawn there mid-scroll (next bullet) — *since 23 Oct 26 it may be, its error given to the left placeholder so
+  nothing on screen moves (next bullet)*. Every row carries the SAME cells as
   the header — the 20 Aug column virtualisation that misaligned on iOS gave
   some rows colSpan spacers over full header columns; no row here differs.
   This container has no WebKit, so the owner's iPhone is the gate for that.
@@ -8928,7 +8929,14 @@ The contract, in the order a reader meets it:
   measured under the rows on screen now (`widthExact` — the swap is then
   width-for-width, so nothing hops); a prune,
   and a left grow over an estimated width, wait for scroll REST (the 120 ms
-  idle), where the anchor correction (`anchorRef`) hides the shift. On a
+  idle), where the anchor correction (`anchorRef`) hides the shift. **Since 23 Oct 26 (M2 — his video: a fling
+  from December back to January left the months striped, January a second after the stop):** a left grow over an
+  estimate is drawn mid-scroll too while the scroll moves at a drag's speed (`DRAW_LEFT_MAX_SPEED`, 1.5 px a ms):
+  the commit that draws it measures how far the month that was the window's left edge moved and takes that off the
+  LEFT placeholder (`padErrRef`, squared when January is drawn), so no column on screen moves; a fast fling still
+  waits (a month's draw cannot keep up, and only made its frames heavier); January — no placeholder left of it — is
+  drawn in motion once the scroll is at its very start (`leftGrowAbsorbable`). Pinned: `colwindow.test.ts` and
+  the browser test "a month left of the view is drawn while the scroll is still moving, and no column on screen moves". On a
   touch screen the in-motion left grow skips the anchor altogether — the
   `scrollLeft` write that would fix a stray pixel is what kills a fling. A
   view parked nowhere near the drawn window (a scrubber drag, a long fling

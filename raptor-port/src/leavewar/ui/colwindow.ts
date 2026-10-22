@@ -27,10 +27,13 @@
 //    (a posted-out man's leave) and has since left the roster makes the month
 //    draw narrower, so a width measured under other rows counts as an estimate
 //    for the rule below (Matrix `widthExact`, [LW-MONTHJUMP-PHONE] 23 Sep 26);
-//  · a month whose width is still an estimate is drawn LEFT of the view only
-//    at rest, where the existing anchor correction (`anchorRef`) absorbs the
-//    error invisibly; to the RIGHT of the view an estimate is harmless (nothing
-//    on screen moves) and it is drawn mid-scroll (`stepAllowedInMotion`).
+//  · a month whose width is still an estimate is drawn LEFT of the view at
+//    rest, where the existing anchor correction (`anchorRef`) absorbs the
+//    error invisibly — and, since 23 Oct 26, mid-scroll at a drag's speed,
+//    its error given to the left placeholder so nothing on screen moves
+//    (`leftGrowAbsorbable` below, Matrix `padErrRef`); to the RIGHT of the
+//    view an estimate is harmless (nothing on screen moves) and it is drawn
+//    mid-scroll (`stepAllowedInMotion`).
 //
 // This file is the arithmetic, kept pure so it is provable in jsdom (which
 // computes no layout). Matrix.tsx does the measuring and the scrolling.
