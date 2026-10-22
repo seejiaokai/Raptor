@@ -11376,3 +11376,42 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
 - **Device caveat:** on an iPhone, pulling the page down past its top lets the bar bounce while a fixed note stays —
   the band may part from the bar for the length of the bounce (the floating note did the same). Not measured on his
   phone.
+
+## The Leave War's look F, its top rows and its grid order (the overhaul's M2, the night of 23 Oct 26)
+
+Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-07-legend-phone`, `r19-nav-*`,
+`r21-rows-*`) and the build plan's M2 (`docs/superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md`).
+- **The box (D1175, D1158, D1160, D1145, D1146, D1167, D1164):** a cell holding something is the box's frame (`td.hasc`,
+  `position: relative`, the old chip's content width — a three-letter code no longer widens its column); the box is
+  `<span class="c k-<kind> s-<fill> <place>">` absolutely placed inside it. Kind from `engine/codes.ts kindOf` (ll, ol,
+  oil, care, cse, od, med — look F's colours, value for value from `full-cells4.mjs`); fill `a` filled (approved and
+  everything nobody bids for), `w` hollow dashed (pending — Ack is gone, D1158), `r` grey struck (refused); place `whole`,
+  `top` (morning), `bot` (afternoon), and on a two-entry day `left`/`right` or a whole beside a half `right-am`/`right-pm`
+  (`MatrixRows.tsx pairPlaces`). An HO takes its half by the day view's window (an award's stored half, the app's own by
+  where its work started — `engine/warrecs.ts creditHalf`); an FO is always whole (`placeOf`). Letters bare
+  (`boxText` — the half is said by where the box sits; B and C for ATT B / C; an app-credited OIL keeps its star). Three or
+  more entries keep one box and "+n"; two drawn drop a "+1"; an amber "!" always stays. The Inputs-page edge and the moved
+  edge are drawn inside the box (`::before`), above a pending box's dashed outline. One element a box — no node added
+  per cell (`docs/performance.md` §E).
+- **The Legend (r7-07):** the colour (what kind), the fill (where it stands), the size (how much of the day), the dates
+  (open, not open), the left edge, the corner, the figures, the letters — every swatch `Chrome.tsx LegBox`, the grid's own
+  box in a cell-sized frame, so the key cannot show a colour the grid does not paint.
+- **The top (D1254, narrowing D1196, D1231, D678, D679, D1141):** the page's tab row is the Inputs page's own
+  (`.inputs-tabs` / `.intab`) — Grid · OIL now; Approvals joins with its list (M4) and Balances with its page (M5), never a
+  tab with nothing behind it. OIL opens the OIL tracker and reads as the chosen tab while it is up (`ui/lwnav.ts` carries
+  the top row's asks to the grid, which owns the windows). Then "View" and the period picker (D1174; "+ New period" its
+  last line, an admin's only — D1244), My leave (D1141 — LVE, OIL, days pending, next leave; `ui/myleave.ts`; a tap opens
+  his person window), ⚙ at the row's right end for an admin. Desktop: one row. Phone: the tabs (and ⚙) on line 1, View,
+  the picker and My leave on line 2. No "Viewing as" (D1173).
+- **The grid's own bar (on the grid card, the same for everyone):** [▸ Manning | n red ›] (the right half counts the days
+  a Manning, Available P or Available W row is RED — `sync.ts manningRedDays`; amber never; gone at 0 — D1243) · the open
+  dates · … · the zoom pair (until pinch to zoom, [LW-PHONE-PINCH-ZOOM], D1228) · Legend. Rearrange is a line in ⚙
+  ("⇅ Rearrange the grid"); while it is on the bar carries "⇅ Done", the one way out.
+- **The grid's order (D1256, D1257):** the month buttons, then the dates (the header and its frozen copy), then the
+  Manning rows straight under them, then the Event rows, then the people. The month band row is gone (each month's first
+  date names it) and with it the Balances fold (D1245 — its drawer's code is switched off and goes whole with M5).
+- **The Manning fold (D1258, D1227):** on a phone the rows open folded, for everyone, and his choice is remembered per
+  person on that device (`lw:manning:<viewer>`, a view convenience in the browser's own storage — never a record); a
+  desktop opens them. When a bid placed through a bid window turns a Manning or Available row amber or red on a day it was
+  not, they open by themselves and a bubble under the Manning button names each row ("This bid turns IP amber, Available P
+  red."), gone at the next tap — read as the difference of the verdicts between the window's opening and its closing.
