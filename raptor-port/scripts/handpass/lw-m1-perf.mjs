@@ -30,6 +30,9 @@ for (const [size, opts] of Object.entries(SIZES)) {
       await page.fill('#luser', u); await page.fill('#lpass', p)
       await page.click('#loginForm button[type=submit]')
       await page.waitForSelector('#vWeek .day')
+      /* after M1 a member never bids before today (D1211) and the demo's open dates (Jan–Mar 26) are past: pin his today
+         back where the build has the bridge door, so the same tap measures the same bid window as before */
+      await page.evaluate(() => window.lwSetMemberToday?.('2000-01-01'))
       const cdp = await ctx.newCDPSession(page)
       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
       const t0 = Date.now()

@@ -3240,11 +3240,10 @@ test('a locked column is visibly dimmer than an open one, and still readable', a
   expect((await locked.boundingBox())!.width).toBeGreaterThan(0)
 })
 
-// THE CLOSED DAYS DIM FOR EVERYONE WHILE ANYTHING IS OPEN — the admin too (D1177's reading: "closed days dim with a
-// small lock while anything is open"). It was "an admin sees no lock, because the window does not bind them" while
-// there were stages; the open dates still do not bind him (he writes any day), but the dim now says which days the
-// squadron may bid on, and he reads the same grid. With NOTHING open no day dims, for anyone — the grid shows as normal.
-test('an admin sees the closed days dim too while anything is open, and no dim once nothing is', async ({ page }) => {
+// THE CLOSED DAYS DIM FOR A MEMBER, NEVER FOR THE ADMIN ("an admin sees no lock, because the window does not bind
+// them" — kept through the open dates: the dim on his screen was measured to slow his tap about threefold, M1's speed
+// check, 22 Oct 26; the green outline shows him what is open). With NOTHING open no day dims, for anyone.
+test('an admin sees no dim on a closed day and still writes on it; nothing dims once nothing is open', async ({ page }) => {
   await lwRole(page, 'admin')
   const open = page.locator('[data-testid="head-2026-02-11"]')
   const locked = page.locator('[data-testid="head-2026-08-11"]')
@@ -3252,8 +3251,8 @@ test('an admin sees the closed days dim too while anything is open, and no dim o
   expect(await opacity(open), 'an open day is not dimmed').toBe(1)
   await page.locator('[data-testid="month-AUG"]').click()
   await expect(locked).toHaveCount(1)
-  await expect(locked, 'a closed day carries the lock').toHaveClass(/\blocked\b/)
-  expect(await opacity(locked)).toBeLessThan(1)
+  await expect(locked, 'a closed day carries no lock for the admin').not.toHaveClass(/\blocked\b/)
+  expect(await opacity(locked)).toBe(1)
   /* and he still writes on it — the dim is not a lock on the people running the war */
   await page.locator('[data-testid="cell-ammo-2026-08-11"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()

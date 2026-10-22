@@ -3130,15 +3130,18 @@ export function Matrix() {
   // row's own body) — the comment block above is its rationale.
 
   // THE CLOSED DAYS DIM, WITH A SMALL LOCK ON THEIR DATE, WHILE ANYTHING IS OPEN (D1177's reading — "with nothing open
-  // the grid shows as normal"). Open as THIS person sees it: the admin, every open stretch; a member, those from today
-  // (D1211). Nothing open for him — no dim at all.
+  // the grid shows as normal"). A member's view: the stretches from his today (D1211); nothing open for him — no dim.
   // A Set per store change rather than a predicate per cell (3 Sep 26): the
   // cells asked this ~18,000 times per build, once per person per day, when
   // the answer only varies by DAY — 365 answers. Also a stable row prop. The
   // role is a key too: the admin's member view changes the answer without a store change (the scenario designer's S34).
   const lockedCols = useMemo(() => {
     const out = new Set<string>()
-    const visible = { open: role === 'admin' ? period.open : openFrom(period, memberToday()) }
+    /* NOT FOR THE ADMIN — measured (22 Oct 26, M1's speed check): faded on his screen too, thousands of cells drawn at
+       half strength slowed his tap on a cell about threefold on a desktop (0.77 s → 2.3 s, CPU 4×), and the open dates
+       do not bind him; the green outline already shows him what is open. As before the open dates: a member's only. */
+    if (role === 'admin') return out
+    const visible = { open: openFrom(period, memberToday()) }
     if (!visible.open.length) return out
     for (const d of period.days) {
       let on = false

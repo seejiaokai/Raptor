@@ -270,16 +270,14 @@ describe('the grid shows which days are open', () => {
     expect(screen.getByTestId('cell-ramp-2026-08-11').className).toContain('locked')
   })
 
-  /* WAS "locks nothing for an admin" (the window held only the squadron, so a lock on the admin's screen was a lie).
-     CHANGED by D1177's reading, drawn and approved with the build plan (D1250): "the open days keep today's green
-     outline and the closed days dim with a small lock while anything is open" — for everyone; the admin still writes
-     them (the dim is what is open for bidding, not a refusal). */
-  it('dims the closed days for the admin too, while anything is open', () => {
+  /* "locks nothing for an admin" — KEPT through the open dates: the dates do not bind him, the green outline shows him
+     what is open, and the dim on his screen was measured to slow his tap about threefold (M1's speed check, 22 Oct 26). */
+  it('dims nothing for the admin — the open dates do not bind him', () => {
     setRole('admin')
     render(<Matrix />)
     expect(screen.getByTestId('head-2026-02-11').className).not.toContain('locked')
-    expect(screen.getByTestId('head-2026-08-11').className).toContain('locked')
-    expect(screen.getByTestId('cell-ramp-2026-08-11').className).toContain('locked')
+    expect(screen.getByTestId('head-2026-08-11').className).not.toContain('locked')
+    expect(screen.getByTestId('cell-ramp-2026-08-11').className).not.toContain('locked')
   })
 
   it('offers no bid sheet on a closed day — the closed note instead — and one on an open day', () => {
