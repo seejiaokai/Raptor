@@ -54,6 +54,20 @@ describe('the open chip', () => {
   })
 })
 
+/* M1's walk, S29: with a drag-selected block's panel up (a non-blocking panel at the sheets' own layer), the window came up
+   under it, unseen. A blocking window is raised over a non-blocking panel, as over the scheduler's floating windows. */
+describe('over the selection panel', () => {
+  it('the window is raised above a non-blocking panel that is up', () => {
+    const panel = document.createElement('div'); panel.className = 'bidsheet nonmodal'; document.body.append(panel)
+    try {
+      expect(openWindow().className.split(' ')).toContain('raised')
+    } finally { panel.remove() }
+  })
+  it('and stays at its own layer when none is', () => {
+    expect(openWindow().className.split(' ')).not.toContain('raised')
+  })
+})
+
 describe('the month buttons', () => {
   beforeEach(() => { setRole('admin') })
 
@@ -199,6 +213,37 @@ describe('a stretch’s exact days', () => {
     fireEvent.click(screen.getByTestId('od-cancel'))
     expect(screen.queryByTestId('od-range-picker')).toBeNull()
     expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+  })
+
+  /* M1's walk, A-F2: Escape closed the calendar AND the window at once, and the keyboard was left on the page body. The
+     design guide §3: Escape closes what opened last, and the keyboard returns to the button that opened it. */
+  it('Escape puts the calendar away first, then closes the window, and the keyboard goes back to the chip', () => {
+    openWindow()
+    fireEvent.click(screen.getByTestId('od-cal-2026-01-01'))
+    expect(screen.getByTestId('od-range-picker')).toBeTruthy()
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('od-range-picker')).toBeNull()
+    expect(screen.getByTestId('open-dates')).toBeTruthy()
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('open-dates')).toBeNull()
+    expect(document.activeElement).toBe(screen.getByTestId('open-chip'))
+  })
+
+  /* the re-walk, S20: with the calendar's month-and-year lists open, the first Escape shuts only the lists (D1012) */
+  it('with the calendar’s month list open, Escape shuts the list first, then the calendar, then the window', () => {
+    openWindow()
+    fireEvent.click(screen.getByTestId('od-cal-2026-01-01'))
+    const title = document.querySelector('[data-testid="open-dates"] .dcal-title') as HTMLElement
+    fireEvent.click(title)
+    expect(title.getAttribute('aria-expanded')).toBe('true')
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.getByTestId('od-range-picker')).toBeTruthy()
+    expect((document.querySelector('[data-testid="open-dates"] .dcal-title') as HTMLElement).getAttribute('aria-expanded')).toBe('false')
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('od-range-picker')).toBeNull()
+    expect(screen.getByTestId('open-dates')).toBeTruthy()
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('open-dates')).toBeNull()
   })
 })
 

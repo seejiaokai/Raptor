@@ -352,10 +352,13 @@ export function BidPicker({
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
     const verb = code ? 'written' : 'deleted'
+    /* WHY DAYS WERE SKIPPED, in the words of what can refuse a day now (M1's walk, B-N1): the open dates replaced the
+       bidding window, so "locked … or outside the window" no longer named the commonest reason, a closed day */
+    const why = verb === 'written' ? 'closed for bidding, before today, or already taken' : 'closed for bidding, before today, decided, or filed on the Inputs page'
     setNote(
       written === 0
-        ? `None of those days could be ${verb} — they are locked, owned by Raptor, or outside your time in the squadron.`
-        : `${written} day${written === 1 ? '' : 's'} ${verb}. ${skipped} skipped — locked, owned by Raptor, or outside your time in the squadron.`,
+        ? `None of those days could be ${verb}. They are ${why}.`
+        : `${written} day${written === 1 ? '' : 's'} ${verb}. ${skipped} skipped: ${why}.`,
     )
   }
 

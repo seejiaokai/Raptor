@@ -268,6 +268,39 @@ describe('the open dates and the last-closed note survive a reload', () => {
   })
 })
 
+/* M1's walk, B-F1: a member deleted his own pending bid on a day since closed (D1225) and his Undo was refused ("That
+   couldn't be completed just now") — the commit's open-day check (B8) read the Undo as adding a bid to a closed day. A
+   restore that only adds back his own pending bids is let through; a restore that brings anything else is not. */
+describe('B-F1 — his Undo of deleting his own pending bid on a closed day puts it back', () => {
+  const ISNAP = JSON.stringify(INPUTS)
+  const pid = 'bane'                                         // Ranger, the seeded member account
+  beforeEach(() => {
+    INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+    setSession({ user: 'us', role: 'main' }); setMe(pid)
+    raptorInitStore(); initStore(memoryBackend()); setPeople(projectPeople()); wireLeaveWarSync()
+    _resetTimeline(); lwHistInit(); installGlobalUndo()
+    setRole('member'); setViewer(pid)
+  })
+  afterEach(() => { _resetTimeline(); setSession(null); setMe(null as any) })
+
+  it('bid while open, the day closed by the admin, his Delete, then his Undo: the bid is back; Redo takes it again', () => {
+    expect(setCell(pid, '2026-02-10', 'LL')).toBe(true)
+    setSession({ user: 'ad', role: 'admin' }); setRole('admin'); setViewer(null)
+    expect(closeDates('2026-02-01', '2026-02-28')).toBe('set')
+    setSession({ user: 'us', role: 'main' }); setMe(pid); setRole('member'); setViewer(pid)
+    expect(isDayOpen('2026-02-10')).toBe(false)
+    const own = ownPendingOnClosedDay(pid, '2026-02-10')
+    expect(own).toHaveLength(1)
+    expect(clearRecordById(pid, '2026-02-10', own[0]!.id)).toBe(true)
+    expect(requests(pid, '2026-02-10')).toHaveLength(0)
+    const u = globalUndo()
+    expect(u.ok, JSON.stringify(u)).toBe(true)
+    expect(requests(pid, '2026-02-10').map(r => [r.code, r.state])).toEqual([['LL', 'pending']])
+    expect(globalRedo().ok).toBe(true)
+    expect(requests(pid, '2026-02-10')).toHaveLength(0)
+  })
+})
+
 describe('one gesture, one Undo step (B12; D352 narrowed by D1177)', () => {
   const ISNAP = JSON.stringify(INPUTS)
   const DSNAP = JSON.stringify(DAYS)

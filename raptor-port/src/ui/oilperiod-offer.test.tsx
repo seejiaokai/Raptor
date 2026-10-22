@@ -64,6 +64,8 @@ describe('the day offers to create the leave war period it says is missing', () 
     expect(w, 'the period exists now').toBeTruthy()
     expect(w!.period.open, 'nothing open — opening its dates for bidding stays his act (D1177)').toEqual([])
     expect(view.CURPAGE, 'and he is taken there to open its dates').toBe('leavewar')
+    /* M1's walk, A-F3: and the Leave War shows the period just made, not the one it was showing before */
+    expect(getState().currentId, 'the new period is the one on screen').toBe(w!.period.id)
   })
 
   /* the words (owner D838, 14 Oct 26 — N31, N32: a fact, then what to do; each dash became a full stop) */

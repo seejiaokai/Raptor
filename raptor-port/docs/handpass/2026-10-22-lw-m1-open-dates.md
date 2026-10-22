@@ -1,4 +1,4 @@
-# The Leave War overhaul's M1 — open dates — the bug check (22 Oct 26)
+| the bridge pins a member's today (`lwSetMemberToday`); the Leave War browser tests moved | — | — | every walk; e2e 363 on his PC; GitHub's run || admin, member, the admin's member view, signed in without access | — | — | A, B, C; B S34b; C S34a || unchanged: Inputs-page leave on a closed day lands approved; OIL on a closed day; the SANS month and the Calendar window; the bell silent | — | — | C S28, S31, S32, S33; host S27 || "No leave period yet" — its words | — | — | `leavewarpage.test.tsx` (no war cannot be made from the app's controls) || "+ New" and the schedule's "Create the period" make a period with nothing open, on screen (A-F3, fixed); the Holidays ask | — | — | A S1, S37; re-walk ra S37; `oilperiod-offer.test.tsx`, `warask.test.tsx` || stretches and the last closing survive a reload; an old saved war loads | — | — | A S1, S12; `opendates-store.test.ts` || a member's change on a closed day refused at the commit except taking his own pending bid, or its Undo | — | the Undo was refused (B-F1, fixed) | `opendates-store.test.ts` B8, B-F1 || every write asks the period HOLDING the date (B3) and a member's today (D1211) | — | — | `opendates-store.test.ts` B2, B3, D1211, D1225 || one step a gesture; "opening bidding 1 Apr – 30 Apr — those days are open for everyone" | top-bar Undo / Redo; the grid stays on June (D672) | the window blocks the top bar while open (A-N1, as every Leave War sheet but two) | A S13, S19; B S14-undo; C D672 || the first open date from today, in the period that holds it, else today | boot, tab, View switch | — | A S10; host S9 (clock 15 Dec 26: 2026); `opendates-store.test.ts` || "Change the approved leave ›" / "…but the bid is approved OL" | a tap opens the day's list | — | A S11 || the moved line always | — | — | C the Legend || only on approved leave moved; a pending bid's move none | — | — | A S24 || a member moves his own pending bid between open days; approved leave never into another period | the one-day chip, the day's list, a drag | — | B S25; A S24; C the year-end move || a member's lines on a closed day: Delete only; the admin: decide and Note | — | — | B S3-daylist; C S6 || a member's block on closed days offers Delete of his own pending bids only; the admin's any action | fill, decide, Delete, Move | closes when the open dates change under it; the window now drawn over it (H-F1) | B S3-drag, S4-dragfill; host S29 (desktop and phone) || "Pick a range" skips closed days and says so — the words named the old window (B-N1, reworded) | — | — | B S4-range; `bidding.test.tsx` || the decide sheet on any day, approved leave included | Approve / Refuse / Move / Delete / Note | — | C S6; A S10 || open day: the bid window; closed: the closed note (D1176); his pending bid on a closed day: the pending note with Delete (D1225); his approved leave: its remarks, any day | each sheet's own buttons; Undo of the Delete (B-F1, fixed) | — | B S2, S3, S4, S26; re-walk rb S3-single || a member's closed days dim with a small lock on the date; never the admin's | — | the admin's dim cost his tap 3× (§5) — removed before the walk | B S2; `window.test.tsx`; §5 || one green outline per stretch; a member's from today | — | — | A S22; `window.test.tsx` || months lit (open), dashed green edge (part), plain (closed); a line per stretch with its days and the calendar icon; "+ Open more dates"; the last closing with who | tap, second tap, a held drag (a phone's two rows by finger), the calendar with Open / Save / Close these days / Cancel; Tab and Space; Escape one layer at a time | unstyled at desktop widths (A-F1, fixed); under a drag-selected block's panel (H-F1, fixed) | A L1, S1, S5, S8, S14, S17, S20; B S14; host S29; re-walk ra L1, S20 || desktop "Open for bidding 1 Jan – 31 Mar +1"; phone "Open 15 Feb – 31 Mar" (a member's from today); "Bidding closed" | a press opens the window, for everyone; Enter on the keyboard | one line on a phone with two stretches (34 px) — the space was missing on a phone (B-F2, fixed) | A S22; B S2-chip, S22; re-walk rb `S2-00` |# The Leave War overhaul's M1 — open dates — the bug check (22 Oct 26)
 
 Branch `claude/lw-m1-open-dates`, cut from `main` c413f2541. The build plan
 `../superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md` §3 batch 1 (approved, D1250). Rulings: D1177, D1176,
@@ -24,7 +24,7 @@ D1260 (Fable reads the finished code too).
 
 From the independent scenario designer's 23 rows (`../superpowers/briefs/2026-10-22-lw-m1-scenarios.md` §1), one row per
 place the stage or the bidding window was read. Columns: SHOWS (the new sign) · USABLE (the new gesture) · PAINTED OVER
-(what shares its pixels). Filled during the walk.
+(what shares its pixels) · Proof (A, B, C the walkers; "host" the host's own walk; "re-walk" the walkers' scripts run again on the fixed build).
 
 | # | Place | Shows | Usable | Painted over | Proof |
 |---|---|---|---|---|---|
@@ -112,7 +112,50 @@ cells drawn at half strength. The admin's dim went (as before M1: the open dates
 what is open); the table above is the build without it. Members' dim is as it always was. No node is added to any day
 cell (the lock is a pseudo-element on the date heading).
 
-## 6. Orders walked · 7. Cases carried by a test · 8. Pictures · 9. Break tests · 10. Errors seen · 11. Not walked, and why · 12. Gate counts · 13. The reads (fresh Opus; Fable — D1260)
+## 6. Orders walked
+
+Three Sonnet 5.5 walkers on one frozen build (`dist-m1w` from 66f75a2b7): A the admin at 1440 by mouse (S1, S5, S8, S10–S20,
+S22–S24, S36–S37 and the window's look L1); B the phone at 390 by finger, member then admin (S2–S4, S7, S14, S21, S22,
+S25, S26, S29, S30, S34b, S35); C the seams at 1440 and 390 (S6, S28, S31–S34a, the year-end move, the Legend, D672).
+Then, on the fixed build (70ec49a2f + the fixes of §14), **the re-walk**: A's and B's scripts run again whole (pictures in
+`ra/` and `rb/`), and the host's own walk (`scripts/handpass/lw-m1-walk-h.mjs`, pictures in `h/`) — S29 at both
+sizes, S9 across the year end (clock 15 Dec 26), S27 a member's own OIL award on a closed day.
+
+## 7. Cases carried by a test
+
+B2, B3, D1211, D1225, B8 and B-F1 (`opendates-store.test.ts`); an old saved war's five shapes and a stored one through a
+reload (the same file, test 6 — the walk loaded them through the bridge, S12); one gesture one Undo (B12); the landing;
+the window's gestures, the calendar, Escape and focus (`window.test.tsx`); the closed and pending notes
+(`closednote.test.tsx`); S36 (no route on screen); "No leave period yet" (`leavewarpage.test.tsx`); the schedule's
+create landing on the new period (`oilperiod-offer.test.tsx`); the year-end move (`scenarios-corners.test.ts`).
+
+## 8. Pictures
+
+`docs/img/handpass/2026-10-22-lw-m1-open-dates/` — a/ 57, b/ 51, c/ 98 (the walk); ra/ 63, rb/ 52, h/ 11 (after the fixes).
+The host opened every picture behind a FAIL and the saved-data and role PASSes named in §14, and after the fixes: the
+window at 1440 (`ra/01`), the window drawn over the selection panel (`h/S29-02`), the phone chip (`rb/S2-00`).
+
+## 9. Break tests
+
+Each fix of §14 was proved by its test going red with the fix taken out, then green with it: A-F2 (Escape and focus),
+B-F1 (the member's Undo), A-F3 (the new period on screen), H-F1 (the window over the panel), H-F2 (the month list first).
+The scenario designer's 13 cuts (its §3): (to fill — run in a separate checkout).
+
+## 10. Errors seen
+
+None in the browser console or page errors, in any walk or re-walk.
+
+## 11. Not walked, and why
+
+S29's member half (a member's bid window open while the admin closes the day — two live sessions); S36 (no route on
+screen — carried by a test); S10 (c, d) (carried by `opendates-store.test.ts`'s landing tests).
+
+## 12. Gate counts
+
+Leave War unit tests 3035 / 3035 (his PC, 22 Oct 26, after the fixes); the Leave War browser tests 363 on his PC before the
+walk; GitHub's full run of the pull request green on d2ff349a4 — the run on the fixes: (to fill).
+
+## 13. The reads (fresh Opus; Fable — D1260)
 
 (to fill)
 
@@ -168,3 +211,30 @@ S34a (signed in without access sees only "Request access"; a viewer-less war thr
 year-end move (no control lands a record in another period — the grid ends at 31 Dec and the View switch ends a move;
 carried by `scenarios-corners.test.ts`); "Pick a range" cannot cross 31 Dec. The phone chip's missing gap it saw is B-F2
 (fixed).
+
+**The fixes after the walk (22 Oct 26, evening), each red without it and green with it:**
+- **A-F2 — fixed:** Escape with the exact-days calendar open now puts the calendar away and leaves the window; the window
+  hands the keyboard back to the chip that opened it (`ui/OpenDatesSheet.tsx`, `ui/Chrome.tsx`; `window.test.tsx`).
+- **A-F3 — fixed** (older than M1 — on `main` the schedule's button never selected the new period either; M1's note
+  "Open its dates for bidding here" made it wrong): the Leave War now shows the period just made, as its own "+ New" does
+  (owner, 2 Sep 26) — `sync.ts showPeriodOf`, `ui/interactions.ts`; `oilperiod-offer.test.tsx`. Re-walk: ra S37 PASS.
+- **B-F1 — the owed regression test written** (`opendates-store.test.ts` "B-F1"): his bid, the day closed, his Delete,
+  his Undo puts it back, Redo takes it again. Re-walk: rb S3-single PASS.
+- **B-N1 — reworded:** the fill's skip note named the old window; now "… skipped: closed for bidding, before today, or
+  already taken." (a fill) and "… closed for bidding, before today, decided, or filed on the Inputs page." (a delete)
+  (`ui/BidPicker.tsx`, `ui/SelectSheet.tsx`; `bidding.test.tsx`). New words: to be read cold by the code readers.
+- **H-F1 — FAIL found by the host's walk, fixed (S29):** with a drag-selected block's panel up, the "Open for bidding"
+  window opened UNDER the panel, unseen (both at the sheets' layer, the panel drawn later) — the chip seemed to do
+  nothing, and a press meant for a month went to the panel. That is what walker B's partial S29 saw on the phone (FEB
+  "did not close"). A blocking window is now raised over a non-blocking panel, as it already was over the scheduler's
+  floating windows (`ui/Sheet.tsx`; `window.test.tsx`). Re-walk: host S29 — desktop: MAY closes, the stale panel goes;
+  phone: FEB closes on one finger tap, the panel goes.
+- **H-F2 — FAIL found by the re-walk (ra S20), fixed:** the A-F2 fix took Escape before the calendar's own month-and-year
+  list could, so the first Escape closed the whole calendar (D1012: the list first). The window's listener now lets the
+  open list take it (`ui/OpenDatesSheet.tsx`; `window.test.tsx`). Re-walk: ra S20 PASS.
+- **Judged, no change:** ra L1's one FAIL line — a month open in part wears a DASHED green edge where the scenario wrote
+  "dotted". No ruling sets it; the app's dotted edge already means "moved" (D1175's family), so the dashed one stays.
+  ra S19's FAIL line is A-N1 (the window blocks the top bar while open, as every Leave War sheet but two —
+  [LW-WINDOWS-NONBLOCKING]).
+- **The re-walk, whole:** ra — 8 PASS, 8 RECORD, the two judged lines above, S20 then PASS; rb — 28 PASS, 6 RECORD, 0 FAIL;
+  host — S9 PASS, S27 PASS, S29 PASS (phone) and RECORD (desktop, as the scenario asks). No console or page errors.

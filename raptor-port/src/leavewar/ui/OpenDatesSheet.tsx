@@ -131,6 +131,26 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     if (editing === 'new') { if (say(openDates(draft.from, draft.to))) startEdit(null); return }
     if (editing && say(setStretch(editing, draft.from, draft.to))) startEdit(null)
   }
+  /* ESCAPE PEELS ONE LAYER (M1's walk, A-F2): with the calendar for exact days open, Escape closes the calendar only,
+     and the window stays. Listened on the WINDOW in its capture phase, so it runs before the Sheet's own Escape (on the
+     document) and can stop it; only while the Leave War is the page showing, as the Sheet's. */
+  const editingRef = useRef(editing)
+  editingRef.current = editing
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || !editingRef.current) return
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      /* the calendar's own month-and-year lists shut first (D1012): its listener takes this press (the re-walk, S20) */
+      if (document.querySelector('[data-testid="open-dates"] .dcal-title[aria-expanded="true"]')) return
+      e.stopPropagation()
+      startEditRef.current(null)
+    }
+    window.addEventListener('keydown', esc, true)
+    return () => window.removeEventListener('keydown', esc, true)
+  }, [])
+  const startEditRef = useRef(startEdit)
+  startEditRef.current = startEdit
   const closeExact = () => { if (editing && editing !== 'new' && say(closeDates(editing.from, editing.to))) startEdit(null) }
   const exactFoot = (forNew: boolean) => (
     <div className="od-apply">

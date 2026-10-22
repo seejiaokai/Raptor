@@ -125,10 +125,13 @@ export function SelectSheet({
      earned it). */
   const awards = awardsIn(sel.cells)
 
-  const skipNote = (verb: string, written: number, skipped: number) =>
-    written === 0
-      ? `Nothing could be ${verb} — those cells are locked, owned by Raptor, or outside the window.`
-      : `${written} ${verb}. ${skipped} skipped — locked, owned by Raptor, or outside the window.`
+  /* why cells were skipped, in the words of what can refuse a cell now (M1's walk, B-N1 — the bidding window is gone) */
+  const skipNote = (verb: string, written: number, skipped: number) => {
+    const why = verb === 'written' ? 'closed for bidding, before today, or already taken' : 'closed for bidding, before today, decided, or filed on the Inputs page'
+    return written === 0
+      ? `Nothing could be ${verb}. Those cells are ${why}.`
+      : `${written} ${verb}. ${skipped} skipped: ${why}.`
+  }
 
   /** Everyone this fill would take below zero, in the block's own order — one line each, for the one ask. */
   const belowZero = (code: string): BelowZero[] => {

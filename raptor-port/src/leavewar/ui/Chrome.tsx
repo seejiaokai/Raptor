@@ -223,6 +223,8 @@ export function StageBar() {
   // left edge runs off the right of a narrow viewport and stops being
   // clickable at all.
   const chipRef = useRef<HTMLButtonElement>(null)
+  /* the open chip: the window it opens hands the keyboard back to it on closing (the design guide §3 — M1's walk, A-F2) */
+  const openChipRef = useRef<HTMLButtonElement>(null)
   const [at, setAt] = useState<{ left: number; top: number } | null>(null)
   useLayoutEffect(() => {
     if (!showList) { setAt(null); return }
@@ -283,6 +285,7 @@ export function StageBar() {
       <button
         className={`fchip openchip${openNow.length ? ' open-on' : ''}`}
         data-testid="open-chip"
+        ref={openChipRef}
         aria-haspopup="dialog"
         aria-expanded={picking}
         title={role === 'admin' ? 'Choose the dates open for bidding' : 'The dates open for bidding'}
@@ -459,7 +462,7 @@ export function StageBar() {
       {/* Rendered inside `.filters` rather than `.topbar`, which carries no
           `backdrop-filter` — see the note on WarSheet in Topbar for why that
           distinction decides where a `position: fixed` sheet actually lands. */}
-      {picking && <OpenDatesSheet onClose={() => setPicking(false)} />}
+      {picking && <OpenDatesSheet onClose={() => { setPicking(false); openChipRef.current?.focus({ preventScroll: true }) }} />}
     </div>
     {/* THE PHONE'S CLASH NOTE — after the two lines, never inside the second (above). Admin only, as the strip is. */}
     {role === 'admin' && clashes.length > 0 && phone && (

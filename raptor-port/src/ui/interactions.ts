@@ -23,7 +23,7 @@ import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor, showPeriodOf } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -1737,6 +1737,7 @@ export function routeClick(e: MouseEvent) {
     const made = createOilPeriodFor(yr)
     if (made === 'created') {
       HOOKS.toast(`The ${yr} leave war period is created. Open its dates for bidding here.`, 'ok')
+      showPeriodOf(`${yr}-01-01`)
       view.setPage('leavewar'); notify()
     } else if (made === 'overlap') {
       HOOKS.toast(`A leave war already covers part of ${yr}. Open the Leave War and extend it instead.`, 'warn')

@@ -89,6 +89,7 @@ import {
   type HolidayRun,
   clearRaptorCell,
   createWar,
+  selectWar,
   figureCtxOf,
   getState,
   ingestDutyCredit,
@@ -304,6 +305,13 @@ export function createOilPeriodFor(year: string): string {
   const y = String(year || '').trim()
   if (!/^\d{4}$/.test(y)) return 'backwards'
   return createWar(y, `${y}-01-01`, `${y}-12-31`)
+}
+/* THE LEAVE WAR SHOWS THE PERIOD JUST MADE (M1's walk, A-F3): the schedule's "Create the period" brought the Leave War to
+   the front on the period it was showing, while its note said to open the new one's dates "here". The Leave War's own
+   "new period" goes straight to the period it made (owner, 2 Sep 26 — WarSheet); this is the same for the schedule's. */
+export function showPeriodOf(iso: string): void {
+  const war = warHolding(getState().wars, iso)
+  if (war) selectWar(war.period.id)
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
  *  does in the app; tests that push INPUTS directly call it. */

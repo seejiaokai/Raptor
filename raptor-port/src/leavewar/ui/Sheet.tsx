@@ -435,8 +435,11 @@ export function Sheet({
      sheet's own layer each came up BEHIND the window (the calendar job's bug check, 8 Oct 26 - walker C). Only the one
      sheet the Holidays list asks for was raised (`raised`). A blocking sheet is the question now being asked; a window
      cannot open while it stands (its veil takes every press), so what is read here at the draw holds for its life.
-     A panel that does not block stays at its own layer - the window may lie over it and be dragged aside. */
-  const over = raised || (modal && typeof document !== 'undefined' && !!document.querySelector('.floatwin'))
+     A panel that does not block stays at its own layer - the window may lie over it and be dragged aside.
+     AND OVER THE WAR'S OWN NON-BLOCKING PANEL (M1's walk, S29): with a drag-selected block's panel up, the "Open for
+     bidding" window (a blocking sheet, opened from the chip above the grid) came up at the panel's own layer, under it,
+     unseen - the chip seemed to do nothing, and the panel took the presses meant for the window's months. */
+  const over = raised || (modal && typeof document !== 'undefined' && !!document.querySelector('.floatwin, .bidsheet.nonmodal'))
   return (
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader

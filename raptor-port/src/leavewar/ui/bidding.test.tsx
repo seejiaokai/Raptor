@@ -203,6 +203,7 @@ describe('bidding over a range', () => {
     const said = screen.getByTestId('span-note').textContent!
     expect(said).toContain('3 days written')
     expect(said).toContain('4 skipped')
+    expect(said, 'and why, in the words of the open dates (M1, B-N1)').toContain('closed for bidding')
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 
