@@ -124,8 +124,8 @@ async function draw(p, touch, member) {
     const split = document.createElement('span'); split.className = 'zz-split'; split.setAttribute('data-zz', 'manning')
     man.before(split); split.appendChild(man)
     const sh = document.createElement('button'); sh.type = 'button'; sh.className = 'zz-short'; sh.setAttribute('data-zz', 'short')
-    sh.title = 'Days a Manning or Available row is amber or red — tap for the next one'
-    sh.innerHTML = '<b>1</b> short <i>›</i>'; split.appendChild(sh)
+    sh.title = 'Days a Manning or Available row is red — tap for the list'
+    sh.innerHTML = '<b style="color:#FF7A82">1</b> red <i>›</i>'; split.appendChild(sh) // his 19c question: red days only, a tap lists them (as the chip does today)
     open.removeAttribute('style'); bar.appendChild(open)
     const sp2 = document.createElement('span'); sp2.style.flex = '1'; bar.appendChild(sp2)
     bar.appendChild(legend)
