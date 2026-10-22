@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
-import { advanceStage, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
+import { closeDates, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
 import { FigureCell } from './FigureCell'
@@ -163,8 +163,8 @@ describe('the counter column', () => {
     const before = Number(top('dusk'))
     act(() => setCell('dusk', '2026-02-11', 'LL'))
     expect(Number(top('dusk'))).toBe(before - 1)
-    // the refusal is management's, once bidding is closed (canDecide)
-    act(() => { setRole('admin'); advanceStage(); setBidState('dusk', '2026-02-11', 'refused') })
+    // the refusal is management's (canDecide — the admin, at any time since the stages went, D1177)
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('dusk', '2026-02-11', 'refused') })
     expect(Number(top('dusk'))).toBe(before)
   })
 

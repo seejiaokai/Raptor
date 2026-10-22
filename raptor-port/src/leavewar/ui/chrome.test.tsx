@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
+import { closeDates, getState, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { setSession } from '../../state/auth'
@@ -11,33 +11,40 @@ beforeEach(() => {
   elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
-describe('the stage strip', () => {
-  it('names the stage the period is in', () => {
+/* THE STAGE STRIP WENT WITH THE STAGES (owner, D1177, 21 Oct 26): its stage chip and its two moves are one chip now,
+   the open dates, whose tap opens the "Open for bidding" window (the window's own tests: window.test.tsx; the phone's
+   words: phonehead.test.tsx). */
+describe('the open-dates strip', () => {
+  /* WAS "names the stage the period is in". The chip names what is open instead. */
+  it('names the dates open for bidding', () => {
     render(<StageBar />)
-    expect(getState().period.stage).toBe('open')
-    expect(screen.getByTestId('stage-now').textContent).toBe('OPEN FOR BIDDING')
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open for bidding 1 Jan – 31 Mar')
   })
 
-  // Advancing the cycle is an admin function (owner, 27 Aug 26 — "for a member
-  // i shouldnt be able to click on bidding closed or published"). The control
-  // is ABSENT for a member, not merely disabled — the same idiom the step-back
-  // control already uses — so there is nothing for them to click. A member
-  // still sees the stage and bids as before; this is the only change.
-  it('shows the stage-advance control to an admin and hides it from a member', () => {
+  // Opening and closing dates is an admin function (owner, 27 Aug 26 — "for a member i shouldnt be able to click on
+  // bidding closed or published", carried over to the open dates by D1177). The CONTROLS are absent for a member, not
+  // merely disabled where they can be — nothing for him to press — while the chip still opens the window for him to
+  // read what is open.
+  it('gives the controls to an admin and hides them from a member', () => {
     act(() => setRole('member'))
     const m = render(<StageBar />)
-    expect(screen.queryByTestId('stage-advance')).toBeNull()
-    expect(screen.getByTestId('stage-now').textContent).toBe('OPEN FOR BIDDING')
+    fireEvent.click(screen.getByTestId('open-chip'))
+    expect(screen.getByTestId('open-dates')).toBeTruthy()
+    expect(screen.queryByTestId('od-more')).toBeNull()
+    expect(screen.queryByTestId('od-cal-2026-01-01')).toBeNull()
     m.unmount()
     act(() => setRole('admin'))
     render(<StageBar />)
-    expect(screen.getByTestId('stage-advance')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('open-chip'))
+    expect(screen.getByTestId('od-more')).toBeTruthy()
+    expect(screen.getByTestId('od-cal-2026-01-01')).toBeTruthy()
   })
 
   // The under-manned tally is the one number in the chrome that depends on
   // the bid states, and it is counted from its own evaluatePeriod call
   // rather than shared with the Matrix. A strip still passing `{}` there
-  // would render the right stage and the wrong count, so this drives a
+  // would render the right dates and the wrong count, so this drives a
   // refusal through and asserts the tally moves.
   //
   // RAMP is the only SXO on the roster and the SXO rule reds at 1, so his
@@ -46,9 +53,8 @@ describe('the stage strip', () => {
   it('counts under-manned days against the live bid states', () => {
     render(<StageBar />)
     const before = screen.getByTestId('undermanned').textContent
-    // deciding is the admin's, once bidding is closed (canDecide — the store
-    // refuses it otherwise since the 27 Aug overnight pass)
-    act(() => { setRole('admin'); advanceStage(); setBidState('ramp', '2026-01-01', 'refused') })
+    // deciding is the admin's, at any time (canDecide — D1177; the store refuses anyone else)
+    act(() => { setRole('admin'); setBidState('ramp', '2026-01-01', 'refused') })
     const after = screen.getByTestId('undermanned').textContent
     expect(after).not.toBe(before)
     expect(Number(after!.split(' ')[0])).toBe(Number(before!.split(' ')[0]) - 1)
@@ -74,10 +80,9 @@ describe('the colour/mark legend', () => {
     expect(text).toContain('Filed on the Inputs page')
     expect(text).toContain('AM (before the code)')
     expect(text).toContain('PM (after the code)')
-    // The moved row appears only once bidding has closed — at `open` no cell
-    // can wear the stripe (movedShown), and a legend advertising a mark the
-    // grid cannot show sends readers hunting for it (27 Aug 26).
-    expect(text).not.toContain('Moved here from another day')
+    // The moved row ALWAYS shows since the stages went (D1177's reading: the dotted "moved" mark shows on any move of
+    // a leave already approved, so the grid can wear it whatever is open). Its own test is below.
+    expect(text).toContain('Moved here from another day')
     // the swatches reuse the grid's own classes, so the key cannot drift from
     // the cells (the blue 'raptor' edge mark; the dotted-orange 'moved' below)
     expect(leg.querySelector('.leg-sw.raptor')).toBeTruthy()
@@ -114,11 +119,16 @@ describe('the colour/mark legend', () => {
     } finally { pg.remove() }
   })
 
-  it('the moved row joins the key once bidding is closed', () => {
-    setRole('admin')
-    advanceStage()
+  /* WAS "the moved row joins the key once bidding is closed" (27 Aug 26: a legend advertising a mark the grid could
+     not show at `open` sent readers hunting for it). CHANGED by D1177's reading — the mark shows on ANY move of an
+     approved leave, whatever is open — so the row is always in the key: with the dates open and with none. */
+  it('the moved row is in the key whatever is open', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('legend-open'))
+    expect(screen.getByTestId('legend').textContent).toContain('Moved here from another day')
+    expect(screen.getByTestId('legend').querySelector('.leg-sw.moved')).toBeTruthy()
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31') })
+    expect(getState().period.open).toEqual([])
     const leg = screen.getByTestId('legend')
     expect(leg.textContent).toContain('Moved here from another day')
     expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()

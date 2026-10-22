@@ -3,7 +3,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { advanceStage, awardsOnDay, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
+import { awardsOnDay, closeDates, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { syncAbsences } from '../sync'
@@ -60,7 +60,7 @@ describe('the tap list', () => {
     const am = fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     setRole('admin')
-    act(() => { advanceStage() })       // closed — deciding
+    act(() => { closeDates('2026-01-01', '2026-12-31') })       // every date closed — the admin decides at any time (D1177)
     render(<Matrix />)
     fireEvent.click(cell())
     fireEvent.click(screen.getByTestId(`dl-unapprove-${am.iid}`))
@@ -69,17 +69,26 @@ describe('the tap list', () => {
     expect(list.find(r => r.kind === 'request')).toMatchObject({ code: '*LL', state: 'pending' })
   })
 
-  it('an APPROVED leave on a PUBLISHED war offers the NOTE and nothing else', () => {
-    /* Owner, 21 Sep 26: "if the input is approved and published … the member
-       and admin can input the remarks there. In order to edit it again, admin
-       has to go back to open for bidding or bidding closed." The single-record
-       window always obeyed that; THIS list did not, because deciding means
-       closed-OR-published — so a day holding two records let an admin send a
-       published, approved leave back to a bid in one click (Astra, 21 Sep 26). */
+  /* WAS "an APPROVED leave on a PUBLISHED war offers the NOTE and nothing else" (owner, 21 Sep 26 — "if the input is
+     approved and published … In order to edit it again, admin has to go back to open for bidding or bidding closed";
+     Astra, 21 Sep 26: this list must obey the single-record window). The published stage went (D1177): nothing is
+     frozen, the admin sends back, refuses, moves or deletes approved leave at any time — and this list still obeys the
+     single-record window, which offers him the same. A MEMBER's own approved leave offers the Note and nothing else
+     (D418 narrowed: "a member's approved leave offers only its remarks, any time"). */
+  it('an APPROVED leave offers the admin every action at any time, and its owner the NOTE and nothing else', () => {
     const am = fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     setRole('admin')
-    act(() => { advanceStage(); advanceStage() })     // closed → published
+    act(() => { closeDates('2026-01-01', '2026-12-31') })     // nothing open at all
+    const r = render(<Matrix />)
+    fireEvent.click(cell())
+    expect(screen.getByTestId(`dl-unapprove-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-refuse-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-remove-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-move-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-note-${am.iid}`)).toBeTruthy()
+    r.unmount()
+    act(() => { setRole('member'); setViewer(P) })
     render(<Matrix />)
     fireEvent.click(cell())
     expect(screen.queryByTestId(`dl-unapprove-${am.iid}`)).toBeNull()
@@ -93,7 +102,7 @@ describe('the tap list', () => {
     const a = fileAbsence(P, '*LL', D)
     fileAbsence(P, 'CSE', D)
     setRole('admin')
-    act(() => { advanceStage() })
+    act(() => { closeDates('2026-01-01', '2026-12-31') })
     render(<Matrix />)
     fireEvent.click(cell())
     expect(screen.queryByTestId(`dl-unapprove-${a.iid}`)).toBeNull()

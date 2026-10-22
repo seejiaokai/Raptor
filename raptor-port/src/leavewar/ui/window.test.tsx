@@ -1,85 +1,268 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setRole } from '../state/store'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { monthSpan, periodMonths, setMemberTodayForTests } from '../engine'
+import { closeDates, createWar, getState, initStore, selectWar, setRole, setStretch, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar } from './Chrome'
 import { Matrix } from './Matrix'
+
+/* THE "OPEN FOR BIDDING" WINDOW (owner, D1177, D1168, D1169, D1172 — 21 Oct 26). It replaces the one-window "Open
+   bidding on" sheet of the stages: the admin opens the days the squadron may bid on — whole months by their buttons,
+   exact days by a stretch's calendar — and nothing is open until he does. The seed's war (JAN – DEC 26) opens
+   1 Jan – 31 Mar. Reached through the one chip on the strip (`open-chip`), for everyone: an admin to change the dates, a
+   member to read them. */
 
 beforeEach(() => {
   initStore(memoryBackend())
 })
 
-describe('the bidding window on screen', () => {
+const line = (from: string) => screen.getByTestId(`od-line-${from}`)
+const month = (key: string) => screen.getByTestId(`od-month-${key}`)
+function openWindow() {
+  render(<StageBar />)
+  fireEvent.click(screen.getByTestId('open-chip'))
+  return screen.getByTestId('open-dates')
+}
+
+describe('the open chip', () => {
   it('says which dates the squadron may bid on', () => {
     render(<StageBar />)
-    expect(screen.getByTestId('bid-window').textContent).toBe('1 Jan 26 – 31 Mar 26')
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open for bidding 1 Jan – 31 Mar')
   })
 
   // A member sees the fact; only an admin can change it. Same chip, because
-  // it is the same fact and there is no second thing to show. The role used
-  // to flip through an on-screen toggle; since the Raptor merge it rides the
-  // Raptor login (resetSession → setRole), so the test drives the seam the
-  // way resetSession does — and pins that the old toggle stays gone.
-  it('is a control for an admin and a label for a member', () => {
-    render(<StageBar />)
-    expect((screen.getByTestId('bid-window') as HTMLButtonElement).disabled).toBe(true)
+  // it is the same fact. The role used to flip through an on-screen toggle;
+  // since the Raptor merge it rides the Raptor login (resetSession → setRole),
+  // so the test drives the seam the way resetSession does — and pins that the
+  // old toggle stays gone.
+  it('opens the window for everyone — to change for an admin, to read for a member', () => {
+    act(() => setRole('member'))
+    const sheet = openWindow()
     expect(screen.queryByTestId('role-toggle')).toBeNull()
+    expect((within(sheet).getByTestId('od-month-2026-06') as HTMLButtonElement).disabled).toBe(true)
     act(() => setRole('admin'))
-    expect((screen.getByTestId('bid-window') as HTMLButtonElement).disabled).toBe(false)
+    expect((within(sheet).getByTestId('od-month-2026-06') as HTMLButtonElement).disabled).toBe(false)
   })
 
-  // A draft or closed war is shut to the squadron on every date. A window
-  // advertised beside "BIDDING CLOSED" would contradict the chip next to it.
-  it('is absent unless the war is open', () => {
-    act(() => setRole('admin'))          // advancing the cycle is admin-only (27 Aug 26)
+  /* WAS "is absent unless the war is open" (a window beside BIDDING CLOSED would contradict it). With the stages gone
+     the chip stays, and with nothing open it says so (D1177). */
+  it('reads "Bidding closed" once nothing is open', () => {
+    act(() => setRole('admin'))
     render(<StageBar />)
-    expect(screen.queryByTestId('bid-window')).toBeTruthy()
-    fireEvent.click(screen.getByTestId('stage-advance')) // open -> closed
-    expect(screen.queryByTestId('bid-window')).toBeNull()
+    act(() => { closeDates('2026-01-01', '2026-12-31') })
+    expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
+  })
+})
+
+describe('the month buttons', () => {
+  beforeEach(() => { setRole('admin') })
+
+  it('draws one button per month of the period, each with its state', () => {
+    openWindow()
+    expect(screen.getByTestId('od-months').querySelectorAll('[data-month-ix]')).toHaveLength(12)
+    expect(month('2026-01').getAttribute('data-state')).toBe('open')
+    expect(month('2026-03').getAttribute('data-state')).toBe('open')
+    expect(month('2026-04').getAttribute('data-state')).toBe('closed')
+    expect(month('2026-01').textContent).toBe('JAN')
   })
 
-  it('moves the window through the picker', () => {
+  // D1168: "a tap opens a whole month, first day to last" — and his reading drawn r7-17: a second tap closes it.
+  it('opens a whole month on a tap, and closes it on a second', () => {
+    openWindow()
+    fireEvent.click(month('2026-06'))
+    expect(getState().period.open).toEqual([
+      { from: '2026-01-01', to: '2026-03-31' },
+      { from: '2026-06-01', to: '2026-06-30' },
+    ])
+    expect(month('2026-06').getAttribute('data-state')).toBe('open')
+    expect(line('2026-06-01').textContent).toContain('1 Jun – 30 Jun')
+    fireEvent.click(month('2026-06'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(month('2026-06').getAttribute('data-state')).toBe('closed')
+    expect(screen.queryByTestId('od-line-2026-06-01')).toBeNull()
+  })
+
+  // "Months next to each other join into one stretch on the list" (D1168's reading) — one line, its days counted.
+  it('joins months next to each other into ONE line, with its day count', () => {
+    openWindow()
+    fireEvent.click(month('2026-04'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-04-30' }])
+    expect(screen.getByTestId('od-lines').querySelectorAll('.od-line')).toHaveLength(1)
+    expect(line('2026-01-01').textContent).toContain('1 Jan – 30 Apr')
+    expect(line('2026-01-01').textContent).toContain('120 days')   // 31 + 28 + 31 + 30
+  })
+
+  it('shows a month open in part as "part", and a tap opens it whole', () => {
+    act(() => { setStretch({ from: '2026-01-01', to: '2026-03-31' }, '2026-01-01', '2026-03-15') })
+    openWindow()
+    expect(month('2026-03').getAttribute('data-state')).toBe('part')
+    expect(month('2026-02').getAttribute('data-state')).toBe('open')
+    expect(line('2026-01-01').textContent).toContain('1 Jan – 15 Mar')
+    fireEvent.click(month('2026-03'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(month('2026-03').getAttribute('data-state')).toBe('open')
+  })
+
+  /* A HOLD AND DRAG ACROSS THE MONTHS (D1169) opens every month from the first to the one under the finger, in
+     CALENDAR order (the red team's A7b). jsdom has no layout, so the month under the pointer is answered by a stand-in
+     `elementFromPoint`; the finger's real path on a phone (two rows of six) is left to the browser walk. */
+  it('a drag from MAY to SEP opens every month between, in calendar order, as ONE stretch', () => {
+    openWindow()
+    const strip = screen.getByTestId('od-months')
+    const under = { el: month('2026-05') as Element }
+    const had = document.elementFromPoint
+    document.elementFromPoint = () => under.el
+    try {
+      fireEvent.pointerDown(month('2026-05'), { button: 0, pointerType: 'mouse', pointerId: 1, clientX: 10, clientY: 10 })
+      under.el = month('2026-09')
+      fireEvent.pointerMove(strip, { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+      fireEvent.pointerUp(strip, { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+    } finally {
+      document.elementFromPoint = had
+    }
+    expect(getState().period.open).toEqual([
+      { from: '2026-01-01', to: '2026-03-31' },
+      { from: '2026-05-01', to: '2026-09-30' },
+    ])
+    for (const m of ['05', '06', '07', '08', '09']) expect(month(`2026-${m}`).getAttribute('data-state')).toBe('open')
+  })
+
+  // The pure half of the drag, which the screen hands its two ends: calendar order, either direction.
+  it('spans the months between the two ends in calendar order, either way round', () => {
+    const months = periodMonths(getState().period)
+    expect(monthSpan(months, 4, 8)).toEqual({ from: '2026-05-01', to: '2026-09-30' })
+    expect(monthSpan(months, 8, 4)).toEqual({ from: '2026-05-01', to: '2026-09-30' })
+    expect(monthSpan(months, 11, 11)).toEqual({ from: '2026-12-01', to: '2026-12-31' })
+  })
+})
+
+describe('a stretch’s exact days', () => {
+  beforeEach(() => { setRole('admin') })
+
+  // D1172: "each open stretch's line carries a calendar icon, not a pencil, since what it opens is the calendar for
+  // exact days".
+  it('opens the range calendar from the calendar icon, and "Close these days" closes the stretch', () => {
+    openWindow()
+    expect(screen.queryByTestId('od-range-picker')).toBeNull()
+    fireEvent.click(screen.getByTestId('od-cal-2026-01-01'))
+    expect(screen.getByTestId('od-range-picker')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('od-close-stretch'))
+    expect(getState().period.open).toEqual([])
+    expect(screen.queryByTestId('od-range-picker')).toBeNull()
+  })
+
+  it('“+ Open more dates” opens the calendar for a new stretch', () => {
+    openWindow()
+    expect(screen.getByTestId('od-more').textContent).toContain('Open more dates')
+    fireEvent.click(screen.getByTestId('od-more'))
+    expect(screen.getByTestId('od-new-picker')).toBeTruthy()
+    expect(screen.queryByTestId('od-more')).toBeNull()
+  })
+
+  /* The calendar's whole point (D1172 — "the calendar for exact days"): a start and an end, two taps, as every range
+     calendar in the app takes them — and nothing changes until its button applies them (the first tap of a range is a
+     one-day run; applied at once, it shrank the stretch to that one day and shut the calendar — found by this file's
+     first run, 22 Oct 26). */
+  it('takes a stretch’s exact days as a start and an end, applied by its button', () => {
+    openWindow()
+    fireEvent.click(screen.getByTestId('od-cal-2026-01-01'))
+    fireEvent.click(screen.getByTestId('od-range-day-2026-01-10'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])   // the first tap changes nothing
+    fireEvent.click(screen.getByTestId('od-range-day-2026-01-20'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(screen.getByTestId('od-apply').textContent).toBe('Save 10 Jan – 20 Jan')
+    fireEvent.click(screen.getByTestId('od-apply'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-10', to: '2026-01-20' }])
+    expect(screen.queryByTestId('od-range-picker')).toBeNull()
+  })
+
+  it('takes a NEW stretch as a start and an end, opened by its button', () => {
+    openWindow()
+    fireEvent.click(screen.getByTestId('od-more'))
+    expect((screen.getByTestId('od-apply') as HTMLButtonElement).disabled).toBe(true)
+    fireEvent.click(screen.getByTestId('od-new-next'))
+    fireEvent.click(screen.getByTestId('od-new-day-2026-04-10'))
+    fireEvent.click(screen.getByTestId('od-new-day-2026-04-20'))
+    expect(screen.getByTestId('od-apply').textContent).toBe('Open 10 Apr – 20 Apr')
+    fireEvent.click(screen.getByTestId('od-apply'))
+    expect(getState().period.open).toEqual([
+      { from: '2026-01-01', to: '2026-03-31' },
+      { from: '2026-04-10', to: '2026-04-20' },
+    ])
+  })
+
+  it('Cancel puts the calendar away and changes nothing', () => {
+    openWindow()
+    fireEvent.click(screen.getByTestId('od-cal-2026-01-01'))
+    fireEvent.click(screen.getByTestId('od-range-day-2026-01-10'))
+    fireEvent.click(screen.getByTestId('od-range-day-2026-01-20'))
+    fireEvent.click(screen.getByTestId('od-cancel'))
+    expect(screen.queryByTestId('od-range-picker')).toBeNull()
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+  })
+})
+
+describe('nothing open', () => {
+  beforeEach(() => { setRole('admin') })
+
+  it('says bidding is closed', () => {
+    initStore(memoryBackend())
     setRole('admin')
-    render(<StageBar />)
-    fireEvent.click(screen.getByTestId('bid-window'))
-    // Opens on January, because that is where the window currently starts.
-    // Walking to July is what an admin actually does, so the test does it.
-    expect(screen.getByTestId('window').getAttribute('data-month')).toBe('2026-01')
-    for (let i = 0; i < 6; i++) fireEvent.click(screen.getByTestId('window-next'))
-    fireEvent.click(screen.getByTestId('window-day-2026-07-01'))
-    fireEvent.click(screen.getByTestId('window-next'))
-    fireEvent.click(screen.getByTestId('window-day-2026-08-31'))
-    fireEvent.click(screen.getByTestId('window-apply'))
-
-    expect(getState().period.bidFrom).toBe('2026-07-01')
-    expect(getState().period.bidTo).toBe('2026-08-31')
-    expect(screen.queryByTestId('window-sheet')).toBeNull()
-    expect(screen.getByTestId('bid-window').textContent).toBe('1 Jul 26 – 31 Aug 26')
+    act(() => { closeDates('2026-01-01', '2026-12-31') })
+    openWindow()
+    expect(screen.getByTestId('od-none').textContent).toContain('Nothing is open, so bidding is closed.')
   })
 
-  it('opens the whole year when the selection is cleared', () => {
-    setRole('admin')
-    render(<StageBar />)
-    fireEvent.click(screen.getByTestId('bid-window'))
-    fireEvent.click(screen.getByTestId('window-clear'))
-    fireEvent.click(screen.getByTestId('window-apply'))
-    expect(getState().period.bidFrom).toBeNull()
-    expect(screen.getByTestId('bid-window').textContent).toBe('THE WHOLE YEAR')
+  // D1177's reading: "a tap on 'Bidding closed' shows the last open stretch and who closed it".
+  it('names the last open stretch and who closed it', () => {
+    setViewer('asics')
+    const cs = getState().people.find(p => p.id === 'asics')!.callsign
+    act(() => { closeDates('2026-01-01', '2026-12-31') })
+    openWindow()
+    expect(screen.getByTestId('od-last').textContent).toBe(`Last open 1 Jan – 31 Mar · closed by ${cs}`)
   })
 
-  // The picker's bounds are the war's own span, so the refusal it would
-  // otherwise need cannot be reached from the interface at all.
-  it('offers no date outside the war', () => {
-    setRole('admin')
-    render(<StageBar />)
-    fireEvent.click(screen.getByTestId('bid-window'))
-    fireEvent.click(screen.getByTestId('window-prev')) // back into 2025
-    expect((screen.getByTestId('window-day-2025-12-31') as HTMLButtonElement).disabled).toBe(true)
+  // Empty means closed (the red team's B2): a new period opens nothing until the admin does — and, never closed, it
+  // has no last stretch to name.
+  it('a new period is closed, with no last stretch to name', () => {
+    act(() => { createWar('JAN – DEC 28', '2028-01-01', '2028-12-31'); selectWar('war-2028-01-01-2028-12-31') })
+    expect(getState().period.start).toBe('2028-01-01')
+    openWindow()
+    expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
+    expect(screen.getByTestId('od-none').textContent).toContain('Nothing is open, so bidding is closed.')
+    expect(screen.queryByTestId('od-last')).toBeNull()
+  })
+})
+
+describe('a member reads it', () => {
+  afterEach(() => { setMemberTodayForTests('2000-01-01') })
+
+  it('reads only: months disabled, no calendar icon, no “+ Open more dates”', () => {
+    setRole('member')
+    openWindow()
+    expect((month('2026-01') as HTMLButtonElement).disabled).toBe(true)
+    expect(month('2026-01').getAttribute('data-state')).toBe('open')
+    expect(line('2026-01-01').textContent).toContain('1 Jan – 31 Mar')
+    expect(screen.queryByTestId('od-cal-2026-01-01')).toBeNull()
+    expect(screen.queryByTestId('od-more')).toBeNull()
+    fireEvent.click(month('2026-06'))
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+  })
+
+  // D1211: he never bids before today, so what is open FOR HIM starts at today.
+  it('shows him the open dates from his today', () => {
+    setMemberTodayForTests('2026-02-10')
+    setRole('member')
+    openWindow()
+    expect(line('2026-02-10').textContent).toContain('10 Feb – 31 Mar')
+    expect(month('2026-01').getAttribute('data-state')).toBe('closed')
+    expect(month('2026-02').getAttribute('data-state')).toBe('part')
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open for bidding 10 Feb – 31 Mar')
   })
 })
 
 describe('the grid shows which days are open', () => {
-  it('locks the columns a member may not bid on, and not the ones they may', () => {
+  it('dims the columns a member may not bid on, and not the ones they may', () => {
     render(<Matrix />)
     expect(screen.getByTestId('head-2026-02-11').className).not.toContain('locked')
     expect(screen.getByTestId('cell-ramp-2026-02-11').className).not.toContain('locked')
@@ -87,32 +270,39 @@ describe('the grid shows which days are open', () => {
     expect(screen.getByTestId('cell-ramp-2026-08-11').className).toContain('locked')
   })
 
-  // The window holds the squadron to the part of the year the schedule has
-  // reached. Drawing a lock on the admin's screen would be a lie about it.
-  it('locks nothing for an admin', () => {
+  /* WAS "locks nothing for an admin" (the window held only the squadron, so a lock on the admin's screen was a lie).
+     CHANGED by D1177's reading, drawn and approved with the build plan (D1250): "the open days keep today's green
+     outline and the closed days dim with a small lock while anything is open" — for everyone; the admin still writes
+     them (the dim is what is open for bidding, not a refusal). */
+  it('dims the closed days for the admin too, while anything is open', () => {
     setRole('admin')
     render(<Matrix />)
-    expect(screen.getByTestId('head-2026-08-11').className).not.toContain('locked')
-    expect(screen.getByTestId('cell-ramp-2026-08-11').className).not.toContain('locked')
+    expect(screen.getByTestId('head-2026-02-11').className).not.toContain('locked')
+    expect(screen.getByTestId('head-2026-08-11').className).toContain('locked')
+    expect(screen.getByTestId('cell-ramp-2026-08-11').className).toContain('locked')
   })
 
-  it('offers no bid sheet on a locked day, and one on an open day', () => {
+  it('offers no bid sheet on a closed day — the closed note instead — and one on an open day', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-ramp-2026-08-11'))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.getByTestId('closed-note')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('closed-note-close'))
     fireEvent.click(screen.getByTestId('cell-ramp-2026-02-11'))
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 
-  // The lock is a property of the DATE and the role, not of the stage alone —
-  // so an admin closing the war locks every column for the member, window or
-  // no window.
-  it('locks the whole year for a member once the war closes', () => {
+  /* WAS "locks the whole year for a member once the war closes". CHANGED by D1177's reading: "with nothing open the
+     grid shows as normal" — no dim — while a member still cannot bid anywhere. */
+  it('dims nothing once nothing is open, and a member still cannot bid', () => {
     setRole('admin')
-    advanceStage() // open -> closed
+    closeDates('2026-01-01', '2026-12-31')
     setRole('member')
     render(<Matrix />)
-    expect(screen.getByTestId('head-2026-02-11').className).toContain('locked')
-    expect(screen.getByTestId('head-2026-08-11').className).toContain('locked')
+    expect(screen.getByTestId('head-2026-02-11').className).not.toContain('locked')
+    expect(screen.getByTestId('head-2026-08-11').className).not.toContain('locked')
+    fireEvent.click(screen.getByTestId('cell-ramp-2026-02-11'))
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.getByTestId('closed-note')).toBeTruthy()
   })
 })

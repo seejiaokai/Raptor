@@ -8,10 +8,16 @@
    presentation". So this test does not describe the rows; it RECORDS them — every row's whole markup, in several
    worlds, as an admin and as a member — into the file beside it, and fails on any difference. The record was made on
    the code BEFORE the move and must stand unchanged after it. (A deliberate change to how a row is drawn updates the
-   record in the same change, on purpose: `npx vitest run src/leavewar/ui/matrix-rows.test.tsx -u`.) */
+   record in the same change, on purpose: `npx vitest run src/leavewar/ui/matrix-rows.test.tsx -u`.)
+
+   RE-RECORDED 22 Oct 26 for the open dates (D1177), on purpose, and only for what the rulings changed: the closed days
+   dim ("locked") for the admin too while anything is open, and every cell of a member's OWN row is tappable ("act" —
+   his closed note, D1176). The worlds of the stages became worlds of the open dates: "bidding closed" is every date
+   closed; "published" (gone) is replaced by a war open in part — January closed, a member's today on 1 Feb. */
 import { act, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { advanceStage, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
+import { setMemberTodayForTests } from '../engine'
+import { closeDates, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
@@ -52,9 +58,9 @@ describe('[LW-ROWS-SPLIT] the rows of the Leave War are drawn exactly as they we
     await expect(rows(container)).toMatchFileSnapshot('./__rows__/open-member.html')
   })
 
-  it('bidding closed, with one bid approved, one acknowledged and one refused — as an admin and as a member', async () => {
+  it('every date closed, with one bid approved, one acknowledged and one refused — as an admin and as a member', async () => {
     act(() => {
-      setRole('admin'); advanceStage()
+      setRole('admin'); closeDates('2026-01-01', '2026-12-31')
       setBidState('asics', '2026-01-23', 'approved'); setBidState('asics', '2026-01-26', 'refused'); setBidState('ramp', '2026-01-22', 'acknowledged')
     })
     const a = render(<Matrix />)
@@ -65,14 +71,15 @@ describe('[LW-ROWS-SPLIT] the rows of the Leave War are drawn exactly as they we
     await expect(rows(m.container)).toMatchFileSnapshot('./__rows__/closed-member.html')
   })
 
-  it('published — as an admin and as a member', async () => {
-    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'approved'); advanceStage() })
+  it('open in part, an approved bid on a closed day — as an admin and as a member from his today', async () => {
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-01-31'); setBidState('asics', '2026-01-23', 'approved') })
     const a = render(<Matrix />)
-    await expect(rows(a.container)).toMatchFileSnapshot('./__rows__/published-admin.html')
+    await expect(rows(a.container)).toMatchFileSnapshot('./__rows__/part-admin.html')
     a.unmount()
+    setMemberTodayForTests('2026-02-10')
     act(() => { setRole('member'); setViewer(ME) })
     const m = render(<Matrix />)
-    await expect(rows(m.container)).toMatchFileSnapshot('./__rows__/published-member.html')
+    await expect(rows(m.container)).toMatchFileSnapshot('./__rows__/part-member.html')
   })
 
   it('the record is of real rows: every world drew people, cells and headings', async () => {

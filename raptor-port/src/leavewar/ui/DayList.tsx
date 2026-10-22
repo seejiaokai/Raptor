@@ -118,7 +118,10 @@ export function DayListSheet({
       const row = row0
       const isLeave = codeOf(c.code)?.spends != null
       const warOwned = !!row?.lw
-      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}`
+      /* an approved leave the war moved says where from (D1177: the moved mark is an approved leave's now — a bid that only
+         waits carries none), as the grid's dotted edge does */
+      const movedAbs = (c as { movedFrom?: string }).movedFrom ? ` · moved from ${shortDate((c as { movedFrom?: string }).movedFrom!)}` : ''
+      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}${movedAbs}`
       const actions: ReactElement[] = []
       /* NOTHING IS FROZEN NOW (D1177 — the published stage went): the admin sends a leave the war approved back, refuses,
          moves or deletes it at any time, here as on the single-record window. */

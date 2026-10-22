@@ -2,12 +2,13 @@
    of three ideas drawn into the running build after "how can we optimise the space such that we don't use so much
    vertical space?"), AND A DESKTOP'S IS AS IT WAS (D679 — "keep the same for desktop").
 
-   On a phone: the words "Period", "Stage", "Bidding on" and "Under-manned" go (the buttons beside them say it); "+ New"
-   reads "+"; the bidding dates read without their year; under-manned reads "Under 0 days"; and an admin's two stage
-   moves are behind the stage button — a member's stage is a label that opens nothing.
+   On a phone: the words "Period" and "Under-manned" go (the buttons beside them say it); "+ New" reads "+"; the one open
+   chip reads "Open 1 Jan – 31 Mar" (on a desktop "Open for bidding …"); under-manned reads "Under 0 days". The stage
+   chip, its phone menu and the dates chip went with the stages (D1177, 21 Oct 26): the open chip opens the "Open for
+   bidding" window, for an admin to change the dates and a member to read them.
 
    What these tests can and cannot see: jsdom lays nothing out, so that the two lines ARE two lines, that nothing runs
-   off a 360px screen and that the menu opens inside it are the browser tests' (e2e/leavewar.spec.ts, "the top of the
+   off a 360px screen and that the window opens inside it are the browser tests' (e2e/leavewar.spec.ts, "the top of the
    Leave War on a phone is two lines"). Here: the words, which control is which, and who is offered what.
 
    "A phone" is the Leave War's own phone width — `(max-width: 430px)`, the query its stylesheets and the Required
@@ -15,7 +16,8 @@
    sees the desktop's; the phone tests below stand one up. */
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setRole, setViewer } from '../state/store'
+import { setMemberTodayForTests } from '../engine'
+import { closeDates, getState, initStore, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { StageBar, Topbar } from './Chrome'
@@ -77,7 +79,7 @@ describe('on a phone — the Period line (D678)', () => {
   })
 })
 
-describe('on a phone — the Stage line (D678)', () => {
+describe('on a phone — the open dates line (D678; the stage chip went with the stages, D1177)', () => {
   beforeEach(() => { standUpMatchMedia(true) })
 
   it('drops the words "Stage", "Bidding on" and "Under-manned"', () => {
@@ -87,11 +89,39 @@ describe('on a phone — the Stage line (D678)', () => {
     for (const word of ['Stage', 'Bidding on', 'Under-manned']) expect(screen.queryByText(word)).toBeNull()
   })
 
-  it('the bidding dates read without their year, and the whole dates are still said to a screen reader', () => {
+  /* WAS "the bidding dates read without their year …" on the old dates chip. The one open chip says "Open" and the
+     first open stretch, no year — the period picker says it (D1177, drawn r7-17). */
+  it('the open chip reads "Open" and the first open stretch, without the year', () => {
     render(<StageBar />)
-    const win = screen.getByTestId('bid-window')
-    expect(win.textContent).toBe('1 Jan – 31 Mar')
-    expect(win.getAttribute('aria-label')).toBe('Bidding on 1 Jan 26 – 31 Mar 26')
+    const chip = screen.getByTestId('open-chip')
+    expect(chip.tagName).toBe('BUTTON')
+    expect(chip.textContent).toBe('Open 1 Jan – 31 Mar')
+  })
+
+  it('with two stretches open it names the first and counts the rest: "+1"', () => {
+    act(() => { setRole('admin'); closeDates('2026-02-01', '2026-02-28') })
+    render(<StageBar />)
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open 1 Jan – 31 Jan +1')
+  })
+
+  it('with nothing open it reads "Bidding closed"', () => {
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31') })
+    render(<StageBar />)
+    expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
+  })
+
+  // D1211: a member never bids before today, so his chip reads the open dates from HIS today — the admin's all of them.
+  it('a member\'s chip reads from his today; past every stretch, "Bidding closed" — the admin\'s still the whole stretch', () => {
+    setMemberTodayForTests('2026-02-10')
+    act(() => setRole('member'))
+    render(<StageBar />)
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open 10 Feb – 31 Mar')
+    act(() => setMemberTodayForTests('2026-04-01'))
+    act(() => setRole('admin'))
+    act(() => setRole('member'))
+    expect(screen.getByTestId('open-chip').textContent).toBe('Bidding closed')
+    act(() => setRole('admin'))
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open 1 Jan – 31 Mar')
   })
 
   it('under-manned reads "Under 4 days" — the same count the desktop shows, with the one word that says what it counts', () => {
@@ -120,109 +150,73 @@ describe('on a phone — the Stage line (D678)', () => {
     expect(screen.getByTestId('legend').textContent).toContain('Approved')
   })
 
-  describe('an admin\'s stage button', () => {
+  /* WAS "an admin's stage button" — a button naming the stage whose menu held the two stage moves. The stages went
+     (D1177): the one chip opens the "Open for bidding" window, for an admin to change the dates (its own tests:
+     window.test.tsx). What the menu's tests pinned that still applies is pinned here: the chip opens it, a press
+     outside or Escape puts it away and changes nothing (the 4 Sep 26 rule), and a man who stops being an admin is never
+     left holding the controls. */
+  describe('an admin\'s open chip', () => {
     beforeEach(() => { act(() => setRole('admin')) })
 
-    it('is a button naming the stage, with the two moves OUT of sight until it is pressed', () => {
+    it('is a button that opens the "Open for bidding" window', () => {
       render(<StageBar />)
-      const now = screen.getByTestId('stage-now')
-      expect(now.tagName).toBe('BUTTON')
-      expect(now.textContent).toBe('OPEN FOR BIDDING')
-      expect(now.getAttribute('aria-expanded')).toBe('false')
-      expect(now.className).toContain('stage-open')            // the green of an open war, kept
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
-      expect(screen.queryByTestId('stage-advance')).toBeNull()
-      expect(screen.queryByTestId('stage-back')).toBeNull()
+      const chip = screen.getByTestId('open-chip')
+      expect(chip.getAttribute('aria-expanded')).toBe('false')
+      expect(screen.queryByTestId('open-dates')).toBeNull()
+      fireEvent.click(chip)
+      expect(screen.getByTestId('open-dates')).toBeTruthy()
+      expect(chip.getAttribute('aria-expanded')).toBe('true')
+      expect((screen.getByTestId('od-month-2026-04') as HTMLButtonElement).disabled).toBe(false)
     })
 
-    it('pressed, it opens a menu holding both moves, each naming the stage it moves to', () => {
+    it('a month closed in the window changes the chip, and the window stays up for the next', () => {
       render(<StageBar />)
-      fireEvent.click(screen.getByTestId('stage-now'))
-      const menu = screen.getByTestId('stage-menu')
-      expect(screen.getByTestId('stage-now').getAttribute('aria-expanded')).toBe('true')
-      expect(menu.textContent).toContain('Move the stage')
-      expect(menu.contains(screen.getByTestId('stage-advance'))).toBe(true)
-      expect(menu.contains(screen.getByTestId('stage-back'))).toBe(true)
-      expect(screen.getByTestId('stage-advance').textContent).toContain('BIDDING CLOSED')
-      expect(screen.getByTestId('stage-back').textContent).toContain('DRAFT')
+      fireEvent.click(screen.getByTestId('open-chip'))
+      fireEvent.click(screen.getByTestId('od-month-2026-01'))
+      expect(getState().period.open).toEqual([{ from: '2026-02-01', to: '2026-03-31' }])
+      expect(screen.getByTestId('open-chip').textContent).toBe('Open 1 Feb – 31 Mar')
+      expect(screen.getByTestId('open-dates')).toBeTruthy()
     })
 
-    it('a move chosen in the menu moves the stage and puts the menu away — forward, then back', () => {
+    it('a press outside the window, Escape, or its ✕ each put it away and change nothing (the 4 Sep 26 rule)', () => {
       render(<StageBar />)
-      fireEvent.click(screen.getByTestId('stage-now'))
-      fireEvent.click(screen.getByTestId('stage-advance'))
-      expect(getState().period.stage).toBe('closed')
-      expect(screen.getByTestId('stage-now').textContent).toBe('BIDDING CLOSED')
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
-      expect(screen.queryByTestId('bid-window')).toBeNull()      // a closed war advertises no dates, as on a desktop
-      fireEvent.click(screen.getByTestId('stage-now'))
-      expect(screen.getByTestId('stage-back').textContent).toContain('OPEN FOR BIDDING')
-      fireEvent.click(screen.getByTestId('stage-back'))
-      expect(getState().period.stage).toBe('open')
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
-    })
-
-    it('back first, then forward — the other order', () => {
-      render(<StageBar />)
-      fireEvent.click(screen.getByTestId('stage-now'))
-      fireEvent.click(screen.getByTestId('stage-back'))
-      expect(getState().period.stage).toBe('draft')
-      expect(screen.getByTestId('stage-now').textContent).toBe('DRAFT')
-      fireEvent.click(screen.getByTestId('stage-now'))
-      expect(screen.queryByTestId('stage-back')).toBeNull()      // nothing is before draft
-      fireEvent.click(screen.getByTestId('stage-advance'))
-      expect(getState().period.stage).toBe('open')
-    })
-
-    it('at the end of the cycle the menu still opens: forward is there and cannot be pressed, back can', () => {
-      act(() => { advanceStage(); advanceStage() })
-      expect(getState().period.stage).toBe('published')
-      render(<StageBar />)
-      fireEvent.click(screen.getByTestId('stage-now'))
-      expect((screen.getByTestId('stage-advance') as HTMLButtonElement).disabled).toBe(true)
-      expect(screen.getByTestId('stage-advance').textContent).toContain('END OF CYCLE')
-      expect(screen.getByTestId('stage-back').textContent).toContain('BIDDING CLOSED')
-    })
-
-    it('a press outside the menu, Escape, or the button again each put it away and move nothing (the 4 Sep 26 rule)', () => {
-      render(<StageBar />)
-      const now = screen.getByTestId('stage-now')
-      fireEvent.click(now)
-      fireEvent.click(screen.getByTestId('stage-scrim'))
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
-      fireEvent.click(now)
+      const chip = screen.getByTestId('open-chip')
+      fireEvent.click(chip)
+      fireEvent.click(screen.getByTestId('sheet-scrim'))
+      expect(screen.queryByTestId('open-dates')).toBeNull()
+      fireEvent.click(chip)
       fireEvent.keyDown(document, { key: 'Escape' })
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
-      fireEvent.click(now)
-      fireEvent.click(now)
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
-      expect(getState().period.stage).toBe('open')
+      expect(screen.queryByTestId('open-dates')).toBeNull()
+      fireEvent.click(chip)
+      fireEvent.click(screen.getByTestId('open-dates-close'))
+      expect(screen.queryByTestId('open-dates')).toBeNull()
+      expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
     })
 
-    it('an open menu goes when he stops being an admin — a member is never left holding the two moves', () => {
+    it('an open window loses its controls when he stops being an admin — a member is never left holding them', () => {
       render(<StageBar />)
-      fireEvent.click(screen.getByTestId('stage-now'))
-      expect(screen.getByTestId('stage-menu')).toBeTruthy()
+      fireEvent.click(screen.getByTestId('open-chip'))
+      expect(screen.getByTestId('od-more')).toBeTruthy()
       act(() => setRole('member'))
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
-      expect(screen.queryByTestId('stage-advance')).toBeNull()
-      /* and it does not spring back open when he is an admin again */
-      act(() => setRole('admin'))
-      expect(screen.queryByTestId('stage-menu')).toBeNull()
+      expect(screen.queryByTestId('od-more')).toBeNull()
+      expect(screen.queryByTestId('od-cal-2026-01-01')).toBeNull()
+      expect((screen.getByTestId('od-month-2026-04') as HTMLButtonElement).disabled).toBe(true)
     })
   })
 
-  it('a member\'s stage is a label: it says the stage, is no button, and a press opens nothing', () => {
+  /* WAS "a member's stage is a label … a press opens nothing". CHANGED by D1177's reading: the chip is a button for
+     everyone — a member's tap opens the window to READ the dates (and, with nothing open, the last open stretch and who
+     closed it), never to change them. */
+  it('a member\'s chip opens the window read only', () => {
     act(() => setRole('member'))
     render(<StageBar />)
-    const now = screen.getByTestId('stage-now')
-    expect(now.tagName).toBe('SPAN')
-    expect(now.textContent).toBe('OPEN FOR BIDDING')
-    expect(now.hasAttribute('aria-expanded')).toBe(false)
-    fireEvent.click(now)
-    expect(screen.queryByTestId('stage-menu')).toBeNull()
-    expect(screen.queryByTestId('stage-advance')).toBeNull()
-    expect(screen.queryByTestId('stage-back')).toBeNull()
+    const chip = screen.getByTestId('open-chip')
+    expect(chip.tagName).toBe('BUTTON')
+    expect(chip.textContent).toBe('Open 1 Jan – 31 Mar')
+    fireEvent.click(chip)
+    expect(screen.getByTestId('open-dates')).toBeTruthy()
+    expect((screen.getByTestId('od-month-2026-01') as HTMLButtonElement).disabled).toBe(true)
+    expect(screen.queryByTestId('od-more')).toBeNull()
   })
 })
 
@@ -248,30 +242,36 @@ describe.each([
     expect(plus.hasAttribute('aria-label')).toBe(false)
   })
 
-  it('the Stage line keeps its three words, in their order', () => {
+  /* WAS "the Stage line keeps its three words" — "Stage", "Bidding on", "Under-manned". The stage chip and the dates
+     chip went (D1177): the one open chip carries its own words, "Open for bidding", so only "Under-manned" stays a label. */
+  it('the strip keeps the word "Under-manned"; the open chip carries its own words', () => {
     act(() => setRole('admin'))
     const { container } = render(<StageBar />)
-    expect([...container.querySelectorAll('.filters > .lab')].map(el => el.textContent)).toEqual(['Stage', 'Bidding on', 'Under-manned'])
+    expect([...container.querySelectorAll('.filters > .lab')].map(el => el.textContent)).toEqual(['Under-manned'])
+    expect(screen.queryByText('Stage')).toBeNull()
+    expect(screen.queryByText('Bidding on')).toBeNull()
   })
 
-  it('the stage is a label with its two moves IN SIGHT beside it — no menu, and a press on the stage opens none', () => {
+  /* WAS "the stage is a label with its two moves IN SIGHT beside it". CHANGED by D1177: the chip is the one control,
+     and it opens the same window as on a phone — no menu, no stage moves. */
+  it('the open chip reads "Open for bidding" and opens the same window as on a phone', () => {
     act(() => setRole('admin'))
-    const { container } = render(<StageBar />)
-    const now = screen.getByTestId('stage-now')
-    expect(now.tagName).toBe('SPAN')
-    expect(now.hasAttribute('aria-expanded')).toBe(false)
-    const strip = container.querySelector('.filters')!
-    expect(screen.getByTestId('stage-advance').parentElement).toBe(strip)
-    expect(screen.getByTestId('stage-back').parentElement).toBe(strip)
-    fireEvent.click(now)
-    expect(screen.queryByTestId('stage-menu')).toBeNull()
-    expect(screen.queryByTestId('stage-scrim')).toBeNull()
-  })
-
-  it('the bidding dates keep their year and under-manned reads the bare count', () => {
     render(<StageBar />)
-    expect(screen.getByTestId('bid-window').textContent).toBe('1 Jan 26 – 31 Mar 26')
-    expect(screen.getByTestId('bid-window').hasAttribute('aria-label')).toBe(false)
+    const chip = screen.getByTestId('open-chip')
+    expect(chip.tagName).toBe('BUTTON')
+    expect(chip.textContent).toBe('Open for bidding 1 Jan – 31 Mar')
+    fireEvent.click(chip)
+    expect(screen.getByTestId('open-dates')).toBeTruthy()
+    expect(screen.queryByTestId('stage-menu')).toBeNull()
+  })
+
+  /* WAS "the bidding dates keep their year". CHANGED by D1177 (drawn r7-17): the chip's dates read without the year on
+     every width — the period picker says it. Under-manned still reads the bare count. */
+  it('the open dates read without the year, "+1" for a second stretch, and under-manned reads the bare count', () => {
+    render(<StageBar />)
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open for bidding 1 Jan – 31 Mar')
+    act(() => { setRole('admin'); closeDates('2026-02-01', '2026-02-28') })
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open for bidding 1 Jan – 31 Jan +1')
     expect(screen.getByTestId('undermanned').textContent).toBe('4 days')
     expect(screen.getByTestId('undermanned').hasAttribute('aria-label')).toBe(false)
   })
@@ -295,17 +295,18 @@ describe('the phone width is followed live', () => {
     expect(screen.getByTestId('probe').textContent).toBe('phone')
   })
 
-  it('an open stage menu goes when the screen widens: the two moves are back in sight on the strip itself', () => {
+  /* WAS "an open stage menu goes when the screen widens". The menu went with the stages (D1177); the chip's words follow
+     the width live, and an open window stays open through it. */
+  it('the chip\'s words follow the screen as it widens and narrows, and an open window stays up', () => {
     const mq = standUpMatchMedia(true)
     act(() => setRole('admin'))
-    const { container } = render(<StageBar />)
-    fireEvent.click(screen.getByTestId('stage-now'))
-    expect(screen.getByTestId('stage-menu')).toBeTruthy()
+    render(<StageBar />)
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open 1 Jan – 31 Mar')
+    fireEvent.click(screen.getByTestId('open-chip'))
     act(() => mq.flip(false))
-    expect(screen.queryByTestId('stage-menu')).toBeNull()
-    expect(screen.getByTestId('stage-advance').parentElement).toBe(container.querySelector('.filters'))
-    /* and narrowing again does not spring the menu back open */
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open for bidding 1 Jan – 31 Mar')
+    expect(screen.getByTestId('open-dates')).toBeTruthy()
     act(() => mq.flip(true))
-    expect(screen.queryByTestId('stage-menu')).toBeNull()
+    expect(screen.getByTestId('open-chip').textContent).toBe('Open 1 Jan – 31 Mar')
   })
 })

@@ -3077,7 +3077,11 @@ export function Matrix() {
   const openView = open ? views[open.id]?.[open.date] : undefined
   const listOpen = !!open && !!openView && (openView.mark !== '' ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
+  /* …but on a day OPEN for him, beside half a day of leave filed on the Inputs page, the free half's bid comes first (the
+     free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26): remarks at any time must not hide
+     the half he may still bid on. Its remarks stay on the Inputs page then. */
   const canRemark = !listOpen && !!remarkRow
+    && !(open && raptorOwns(states, open.id, open.date) && canBidOn(open.id, open.date) && freeHalfBeside(openView))
   /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
      cell is locked to the Inputs page but only HALF of it is actually spoken
      for, the tap opens the bid picker on the free half instead of the

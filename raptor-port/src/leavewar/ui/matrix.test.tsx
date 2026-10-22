@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Person } from '../engine'
-import { addGroup, advanceStage, getState, initStore, setBidState, setCell, setGroupColor, setPersLabel, setRole } from '../state/store'
+import { addGroup, closeDates, getState, initStore, setBidState, setCell, setGroupColor, setPersLabel, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
@@ -389,7 +389,7 @@ describe('bid state on a cell', () => {
     render(<Matrix />)
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
     expect(cls()).not.toContain('appr')
-    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'approved') })
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'approved') })
     expect(cls()).toContain('appr')
   })
 
@@ -402,7 +402,7 @@ describe('bid state on a cell', () => {
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
     expect(cls()).not.toContain('tbc')
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'acknowledged') })
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'acknowledged') })
     expect(cls()).toContain('tbc')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
   })
@@ -413,7 +413,7 @@ describe('bid state on a cell', () => {
   it('counts a refused bid as a man at work', () => {
     render(<Matrix />)
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'refused') })
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'refused') })
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).not.toBe(before)
   })
 })
