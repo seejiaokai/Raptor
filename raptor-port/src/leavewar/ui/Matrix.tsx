@@ -1291,6 +1291,43 @@ export function Matrix() {
     if (!phoneNow) return true
     try { return localStorage.getItem(manningKey) === 'open' } catch { return false }
   })
+  /* D1227's BUBBLE (22 Oct 26 — "Only when the input reduces the counter to hit amber or red. The manning bar will appear
+     and a bubble will notify the user that this input cause what"; on any phone since D1258). When a bid placed through a
+     bid window turns a Manning row amber or red on a day where it was not, the Manning rows open by themselves and a short
+     bubble under the Manning button names each row and how far it went; it is gone at his next tap. Read as the
+     difference between the grid's verdicts when the window opened and when it closed — the window that placed the bid
+     is the gesture, so a change made elsewhere (another device, a setting) never raises it. */
+  const sheetUp = !!open || !!sel
+  const beforeRef = useRef<Map<string, string> | null>(null)
+  const [bubble, setBubble] = useState<string | null>(null)
+  const flaggedNow = () => {
+    const m = new Map<string, string>()
+    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}|${r.verdict}`, r.label)
+    return m
+  }
+  useEffect(() => {
+    if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
+    const before = beforeRef.current
+    beforeRef.current = null
+    if (!before) return
+    const worst = new Map<string, 'amber' | 'red'>()
+    for (const [k, label] of flaggedNow()) {
+      if (before.has(k)) continue
+      const v = k.slice(k.lastIndexOf('|') + 1) as 'amber' | 'red'
+      if (worst.get(label) !== 'red') worst.set(label, v)
+    }
+    if (!worst.size) return
+    setCountsOpen(true)
+    setBubble(`This bid turns ${[...worst].map(([l, v]) => `${l} ${v}`).join(', ')}.`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sheetUp])
+  /* gone at his next tap, anywhere */
+  useEffect(() => {
+    if (!bubble) return
+    const off = () => setBubble(null)
+    const t = window.setTimeout(() => document.addEventListener('pointerdown', off, { once: true }), 0)
+    return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', off) }
+  }, [bubble])
   const toggleManning = () => setCountsOpen(o => {
     const next = !o
     if (phoneNow) { try { localStorage.setItem(manningKey, next ? 'open' : 'shut') } catch { /* a view convenience only */ } }
@@ -3265,6 +3302,7 @@ export function Matrix() {
             tab (Chrome.tsx `Topbar`); Rearrange moved into ⚙ (its "Done" rides this bar while it is on). The zoom pair
             stays at the bar's right end until pinch to zoom replaces it — its own job, [LW-PHONE-PINCH-ZOOM] (D1228). */}
         <div className="card-hd">
+          {bubble && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble}</div>}
           <StageBar
             manningOpen={countsOpen}
             onManning={toggleManning}
