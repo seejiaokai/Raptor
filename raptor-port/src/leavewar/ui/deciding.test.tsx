@@ -236,6 +236,20 @@ describe('the one input window', () => {
     expect(getState().states.asics['2026-01-23']?.state).toBe('acknowledged')
   })
 
+  /* M1's code read (L6): that window carries the admin's Note — the remarks of the approved leave, as the day's list has */
+  it('the admin’s Note on one approved leave opens its remarks; a pending bid has no Note', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    expect(screen.queryByTestId('decide-note')).toBeNull()
+    fireEvent.click(screen.getByTestId('decide-approve'))
+    closeAll()
+    fireEvent.click(screen.getByTestId(PENDING))
+    fireEvent.click(screen.getByTestId('decide-note'))
+    expect(screen.getByTestId('remarks-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('decide-approve')).toBeNull()
+  })
+
   it('an input NOT yet approved on a closed day is still the admin’s to change', () => {
     closeAll()
     setRole('admin')

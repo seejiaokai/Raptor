@@ -647,15 +647,37 @@ function onlyTakesPending(before: unknown, after: unknown): boolean {
   const b: any[] = Array.isArray(before) ? before : []
   const a: any[] = Array.isArray(after) ? after : []
   const was = new Map(b.map(r => [String(r?.id), JSON.stringify(r)] as const))
-  for (const r of a) if (was.get(String(r?.id)) !== JSON.stringify(r)) return false     // nothing added or changed
+  const old = new Map(b.map(r => [String(r?.id), r] as const))
+  for (const r of a) {
+    if (was.get(String(r?.id)) === JSON.stringify(r)) continue
+    if (narrowed(old.get(String(r?.id)), r)) continue                                    // his whole-day bid cut to one half
+    return false                                                                          // nothing added or changed
+  }
   const kept = new Set(a.map(r => String(r?.id)))
   for (const r of b) {
     if (kept.has(String(r?.id))) continue
-    if (r?.kind === 'request' && r.state !== 'refused') continue                          // his pending bid, taken
+    /* his UNDECIDED bid, taken (D1225 — "his own pending bid"): approved leave and a refused bid are decided records, never
+       his to take on a closed day (the break tests' 17b case showed approved leave passing here) */
+    if (r?.kind === 'request' && (r.state === 'pending' || r.state === 'acknowledged')) continue
     if (r?.kind === 'notice') continue                                                    // a notice he has seen
     return false
   }
   return true
+}
+
+/* HIS WHOLE-DAY PENDING BID CUT TO ONE HALF IS A TAKE, NOT A CHANGE (M1's code read — both readers, H1 / F1). Leave or a
+   medical he files on the Inputs page for a morning or an afternoon of a day where his whole-day bid waits cuts the bid to
+   the half the input leaves free (`leavewar/inputgate.ts replaceClashingBids`: the same record, `LL` → `LL*` or `*LL`),
+   inside his own command. On a closed day, or a day before today, that read as a change and refused his whole filing —
+   and D1166 says the Inputs page is never stopped by the closed dates. Only that one cut passes: the same record, a
+   request not refused, its state unchanged, a whole-day code become exactly one of its halves, every other field equal. */
+function narrowed(was: any, now: any): boolean {
+  if (!was || !now || was.kind !== 'request' || now.kind !== 'request') return false
+  if ((was.state !== 'pending' && was.state !== 'acknowledged') || was.state !== now.state) return false
+  const code = String(was.code ?? '')
+  if (!code || code.includes('*')) return false
+  if (now.code !== `${code}*` && now.code !== `*${code}`) return false
+  return JSON.stringify({ ...was, code: '' }) === JSON.stringify({ ...now, code: '' })
 }
 
 const same = (a: any, b: any): boolean => (a ?? null) === (b ?? null)

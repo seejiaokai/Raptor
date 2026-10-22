@@ -17,7 +17,7 @@ import { useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, decidableIn, deletableIn, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
+import { awardsIn, cellProblem, clearCells, decidableIn, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -46,6 +46,15 @@ const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'pm', label: 'PM', testid: 'portion-pm' },
 ]
 
+/* WHY A FILL OR A DELETE SKIPPED DAYS — true for whoever reads it (M1's code read, L2 / F4, both readers): the open dates
+   and his today bind a member's fill, never the admin's; a delete is stopped by a decided record or leave filed on the
+   Inputs page, never by a closed day (a member deletes his own pending bid there — D1225). Shared by the range fill here
+   and the drag-selected block's panel (SelectSheet). */
+export function skipWhy(verb: string, role: 'admin' | 'member'): string {
+  if (verb !== 'written') return 'already decided, or filed on the Inputs page'
+  return role === 'member' ? 'closed for bidding, before today, or already holding leave or a medical' : 'already holding leave or a medical'
+}
+
 export function BidPicker({
   callsign,
   personId,
@@ -67,6 +76,7 @@ export function BidPicker({
   awardCount = 0,
   onlyPortion,
   heldBy,
+  onNote,
   onClose,
 }: {
   callsign: string
@@ -144,6 +154,9 @@ export function BidPicker({
   /** What is already on the day, in the words the box shows, so the sheet can
    *  name the half it is NOT offering. */
   heldBy?: string
+  /** Open the remarks of the approved leave on this day — the admin's Note, as the day's list has it (M1's code read,
+   *  L6: his tap on a single approved leave opens this window, which had no way to its remarks). */
+  onNote?: () => void
   onClose: () => void
 }) {
   // Deliberately not seeded from `current`: the portion resets to a whole
@@ -270,7 +283,7 @@ export function BidPicker({
   /* DECIDE OVER A PICKED RANGE, EVEN FROM A DAY WITH NO BID (the final reads, Fable 4 / Astra 2, both blind): the row was
      drawn from the tapped day alone, so a range holding bids around an empty tapped day offered Move and Delete but no
      Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
-     (`decidableIn` — `setBidStates`'s own eligibility, the admin at a deciding stage). */
+     (`decidableIn` — `setBidStates`'s own eligibility, the admin at any time — D1177). */
   const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)
 
   const write = (code: string) => {
@@ -329,7 +342,7 @@ export function BidPicker({
          which is the owner's own rule. */
       if (!code) {
         const { written } = clearCells([{ personId, date }], clearAsked ? clearIds : awardsIn([{ personId, date }]).map(a => a.id))
-        if (!written) return setNote('Nothing here can be deleted from the war — leave filed on the Inputs page is changed there, and an approved leave on a published war needs the war reopened.')
+        if (!written) return setNote('Nothing here can be deleted from the war: approved leave and leave filed on the Inputs page are changed on the Inputs page.')
         onWrote?.('')
         return onClose()
       }
@@ -354,7 +367,7 @@ export function BidPicker({
     const verb = code ? 'written' : 'deleted'
     /* WHY DAYS WERE SKIPPED, in the words of what can refuse a day now (M1's walk, B-N1): the open dates replaced the
        bidding window, so "locked … or outside the window" no longer named the commonest reason, a closed day */
-    const why = verb === 'written' ? 'closed for bidding, before today, or already taken' : 'closed for bidding, before today, decided, or filed on the Inputs page'
+    const why = skipWhy(verb, getState().role)
     setNote(
       written === 0
         ? `None of those days could be ${verb}. They are ${why}.`
@@ -479,7 +492,7 @@ export function BidPicker({
           a bid beside an OIL award moves alone), for a member too on his own bid
           while bidding is open (D333). Delete was this sheet's Clear, a leave chip
           at the end of Which leave (D332). */}
-      {(canMoveHere || canDeleteHere) && (
+      {(canMoveHere || canDeleteHere || !!onNote) && (
         <div className="bidsheet-row">
           <span className="lab">Selected</span>
           {canMoveHere && (
@@ -489,6 +502,7 @@ export function BidPicker({
             }} />
           )}
           {canDeleteHere && <DeleteChip testid="bid-clear" armed={clearAsked} onClick={() => write('')} />}
+          {onNote && <button type="button" className="dchip" data-testid="decide-note" onClick={onNote}>Note</button>}
           {moveErr && <span className="note warn" data-testid="shift-problem">{moveErr}</span>}
         </div>
       )}
@@ -935,8 +949,8 @@ function OilDetailRows({ c, auto }: {
 
 /**
  * A MEMBER'S OWN OIL AWARD, READ ONLY (owner, D261, 27 Sep 26 — "3 yes": he opens it at every stage, not only while
- * bidding is open). Inside the bidding window his tap opens the bid sheet, whose foot already reads the award back;
- * everywhere else — a locked day, bidding closed, a published war — the tap used to open nothing (the absence-record
+ * bidding is open). On a day open for him his tap opens the bid sheet, whose foot already reads the award back;
+ * everywhere else — a day closed for him (D1177; before the open dates, a locked day or a later stage) — the tap used to open nothing (the absence-record
  * re-test, W3-F10). This is that read-back on its own: the same three lines, and nothing to press but ✕ — an award is
  * the admin's to give, change and remove (N11).
  */

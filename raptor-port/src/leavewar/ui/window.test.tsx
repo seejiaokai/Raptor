@@ -4,6 +4,12 @@ import { monthSpan, periodMonths, setMemberTodayForTests } from '../engine'
 import { closeDates, createWar, getState, initStore, selectWar, setRole, setStretch, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar } from './Chrome'
+import { initStore as raptorInitStore } from '../../state/store'
+import { setSession } from '../../state/auth'
+import { lwHistInit } from '../state/store'
+import { globalUndo } from '../../undo'
+import { _resetTimeline, _timelineEntries } from '../../undo/timeline'
+import { installGlobalUndo } from '../../state/undo-wire'
 import { Matrix } from './Matrix'
 
 /* THE "OPEN FOR BIDDING" WINDOW (owner, D1177, D1168, D1169, D1172 — 21 Oct 26). It replaces the one-window "Open
@@ -65,6 +71,79 @@ describe('over the selection panel', () => {
   })
   it('and stays at its own layer when none is', () => {
     expect(openWindow().className.split(' ')).not.toContain('raised')
+  })
+})
+
+/* M1's code read (both readers, M1 / F3): after a drag across the months, the next single tap did nothing — the drag's
+   click lands on the strip (released on another month) or never comes (a finger), so the "swallow the drag's click" flag
+   stayed up and ate the tap. */
+/* the break tests' gap 7: the drag test checked only the stretches, which join up either way — a drag written as one
+   command per month (five Undo steps for MAY → SEP) passed every test (B12: one gesture, one Undo) */
+describe('a drag across months is one Undo step', () => {
+  beforeEach(() => {
+    setSession({ user: 'ad', role: 'admin' })
+    raptorInitStore(); initStore(memoryBackend())
+    _resetTimeline(); lwHistInit(); installGlobalUndo()
+    setRole('admin')
+  })
+  afterEach(() => { _resetTimeline(); setSession(null) })
+  it('MAY → SEP adds ONE step, and one Undo takes all five months back', () => {
+    openWindow()
+    const n = _timelineEntries().length
+    const strip = screen.getByTestId('od-months')
+    const under = { el: month('2026-05') as Element }
+    const had = document.elementFromPoint
+    document.elementFromPoint = () => under.el
+    try {
+      fireEvent.pointerDown(month('2026-05'), { button: 0, pointerType: 'mouse', pointerId: 1, clientX: 10, clientY: 10 })
+      under.el = month('2026-09')
+      fireEvent.pointerMove(strip, { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+      fireEvent.pointerUp(strip, { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+    } finally { document.elementFromPoint = had }
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }, { from: '2026-05-01', to: '2026-09-30' }])
+    expect(_timelineEntries().length).toBe(n + 1)
+    act(() => { expect(globalUndo().ok).toBe(true) })
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+  })
+})
+
+describe('a tap right after a drag', () => {
+  beforeEach(() => { setRole('admin') })
+  it('a drag MAY → SEP released on SEP, then ONE tap on NOV opens NOV', () => {
+    openWindow()
+    const strip = screen.getByTestId('od-months')
+    const under = { el: month('2026-05') as Element }
+    const had = document.elementFromPoint
+    document.elementFromPoint = () => under.el
+    try {
+      fireEvent.pointerDown(month('2026-05'), { button: 0, pointerType: 'mouse', pointerId: 1, clientX: 10, clientY: 10 })
+      under.el = month('2026-09')
+      fireEvent.pointerMove(strip, { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+      fireEvent.pointerUp(month('2026-09'), { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+      fireEvent.click(strip)
+    } finally { document.elementFromPoint = had }
+    expect(month('2026-09').getAttribute('data-state')).toBe('open')
+    fireEvent.pointerDown(month('2026-11'), { button: 0, pointerType: 'mouse', pointerId: 2, clientX: 300, clientY: 10 })
+    fireEvent.pointerUp(month('2026-11'), { pointerType: 'mouse', pointerId: 2, clientX: 300, clientY: 10 })
+    fireEvent.click(month('2026-11'))
+    expect(month('2026-11').getAttribute('data-state')).toBe('open')
+  })
+  it('and a keyboard press on a month right after a drag that left no click (a finger) acts at once', () => {
+    openWindow()
+    const strip = screen.getByTestId('od-months')
+    const under = { el: month('2026-05') as Element }
+    const had = document.elementFromPoint
+    document.elementFromPoint = () => under.el
+    try {
+      fireEvent.pointerDown(month('2026-05'), { button: 0, pointerType: 'mouse', pointerId: 1, clientX: 10, clientY: 10 })
+      under.el = month('2026-09')
+      fireEvent.pointerMove(strip, { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+      fireEvent.pointerUp(strip, { pointerType: 'mouse', pointerId: 1, clientX: 200, clientY: 40 })
+    } finally { document.elementFromPoint = had }
+    expect(month('2026-09').getAttribute('data-state')).toBe('open')
+    fireEvent.keyDown(month('2026-11'), { key: ' ' })
+    fireEvent.click(month('2026-11'))
+    expect(month('2026-11').getAttribute('data-state')).toBe('open')
   })
 })
 

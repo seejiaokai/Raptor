@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { closeDates, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { SelectSheet } from './SelectSheet'
+import { skipWhy } from './BidPicker'
 import type { Selection } from './select'
 
 // The batched selection sheet (owner, 27 Aug 26). The DRAG that opens it needs
@@ -49,6 +50,14 @@ describe('the selection sheet', () => {
     fireEvent.click(screen.getByTestId('sel-portion-am'))
     fireEvent.click(screen.getByTestId('sel-LL'))
     expect(getState().grid.ramp['2026-01-06']).toBe('*LL')
+  })
+
+  /* M1's code read (L2 / F4): the reason is true for whoever reads it */
+  it('names why days were skipped, as true for an admin, a member and a delete', () => {
+    expect(skipWhy('written', 'member')).toBe('closed for bidding, before today, or already holding leave or a medical')
+    expect(skipWhy('written', 'admin')).toBe('already holding leave or a medical')
+    expect(skipWhy('deleted', 'member')).toBe('already decided, or filed on the Inputs page')
+    expect(skipWhy('cleared', 'admin')).toBe('already decided, or filed on the Inputs page')
   })
 
   it('reports a partial write and keeps the sheet up', () => {

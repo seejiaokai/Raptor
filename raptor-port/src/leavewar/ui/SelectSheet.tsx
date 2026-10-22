@@ -35,6 +35,7 @@ import '../../ui/postout.css'
 import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
+import { skipWhy } from './BidPicker'
 import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './belowzero'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
@@ -127,7 +128,7 @@ export function SelectSheet({
 
   /* why cells were skipped, in the words of what can refuse a cell now (M1's walk, B-N1 — the bidding window is gone) */
   const skipNote = (verb: string, written: number, skipped: number) => {
-    const why = verb === 'written' ? 'closed for bidding, before today, or already taken' : 'closed for bidding, before today, decided, or filed on the Inputs page'
+    const why = skipWhy(verb, role)
     return written === 0
       ? `Nothing could be ${verb}. Those cells are ${why}.`
       : `${written} ${verb}. ${skipped} skipped: ${why}.`

@@ -7,11 +7,11 @@
 //     seek management's approval, then file it on the Inputs page. Your approved leave updates here by itself." — and
 //     "Open the Inputs page" (D1166: he files or changes his leave there himself, after management's verbal yes).
 //   · HIS OWN PENDING BID THERE — the bid, and the note that it is pending a decision and he may delete it (D1225;
-//     "pending", never "waiting" — D1217), with Delete: the store's one rule (`clearRecordById` takes only his own
+//     "pending", never "waiting" — D1217), with Delete: the store's one rule (the cell's empty write, `setCell`, takes only his own
 //     pending bid on a day closed for him). The drawing's Document button is the overhaul's M3 (D1159), not built here.
 
 import { displayCell, type RequestRec } from '../engine'
-import { clearRecordById } from '../state/store'
+import { setCell } from '../state/store'
 import { openInputsPage } from '../sync'
 import { DeleteChip } from './SheetActions'
 import { Sheet } from './Sheet'
@@ -53,7 +53,9 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
             <DeleteChip
               testid="closed-delete"
               onClick={() => {
-                for (const r of pending) clearRecordById(personId, date, r.id)
+                /* ONE command for all of them, so one Undo brings them back (M1's code read, L1 / F6): the cell's empty
+                   write on a closed day takes exactly his own pending bids there (`ownPendingOnClosedDay`) */
+                setCell(personId, date, '')
                 onClose()
               }}
             />

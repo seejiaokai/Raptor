@@ -1726,9 +1726,9 @@ export function routeClick(e: MouseEvent) {
   /* THE MISSING LEAVE WAR PERIOD, CREATED FROM THE SCHEDULE (owner's ruling
      D19, 22 Sep 26). The day says a period for that year does not exist and
      that nothing can be paid for it; this is the way out sitting beside the
-     reason. It lands in DRAFT and takes him to the Leave War, because a period
-     carries bidding dates and a stage — opening it for bidding is his own act,
-     never something a schedule screen does behind him. */
+     reason. It is made with nothing open for bidding and takes him to the Leave War,
+     on the period just made (M1, A-F3) — opening its dates for bidding is his own
+     act, never something a schedule screen does behind him (D1177). */
   const mkp = t.closest('[data-mkperiod]') as HTMLElement | null
   if (mkp) {
     e.stopPropagation()

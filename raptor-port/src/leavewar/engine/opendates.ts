@@ -80,6 +80,22 @@ export function withClosed(period: Pick<Period, 'start' | 'end' | 'open'>, from:
 }
 
 /** How many days a stretch holds, both ends counted. */
+/** The runs of days open BEFORE and not AFTER, in date order — what a change of the open dates closed (M1's code read,
+ *  L3 / F5: one first-to-last span named days that stayed open, or were never open). */
+export function closedRuns(before: readonly OpenStretch[], after: readonly OpenStretch[]): OpenStretch[] {
+  const runs: OpenStretch[] = []
+  const stillOpen = (d: string) => after.some(s => s.from <= d && d <= s.to)
+  for (const s of [...before].sort((a, b) => a.from.localeCompare(b.from))) {
+    let run: OpenStretch | null = null
+    for (let d = s.from; d <= s.to; d = addDays(d, 1)) {
+      if (stillOpen(d)) { if (run) { runs.push(run); run = null } continue }
+      run = run ? { from: run.from, to: d } : { from: d, to: d }
+    }
+    if (run) runs.push(run)
+  }
+  return runs
+}
+
 export function stretchDays(s: OpenStretch): number {
   let n = 0
   for (let d = s.from; d <= s.to; d = addDays(d, 1)) n++

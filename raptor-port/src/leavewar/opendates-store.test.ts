@@ -15,14 +15,15 @@ import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { stashClear } from '../engine/weekstash'
-import { initStore as raptorInitStore } from '../state/store'
+import { initStore as raptorInitStore, writeInputs } from '../state/store'
+import { HOOKS } from '../engine/hooks'
 import { setSession, setMe } from '../state/auth'
 import { ownershipViolation, setLwDayOpenProbe } from '../state/perms'
 import { commit, type CommitEnvelope } from '../command'
 import { focusDateOf, landingOf, makeWar, memberToday, setMemberTodayForTests, type WarRec } from './engine'
 import {
   canBidOn, cellProblem, clearRecordById, closeDates, createWar, getState, initStore, isDayOpen, lwEditLists, lwHistInit,
-  lwStore, openDates, ownPendingOnClosedDay, recordsAt, selectWar, setBidState, setCell, setCellRange, setPeople, setRole,
+  lwStore, openDates, ownPendingOnClosedDay, recordsAt, deletableIn, clearCells, selectWar, setBidState, setCell, setCellRange, setPeople, setRole,
   setViewer,
 } from './state/store'
 import { memoryBackend } from './state/storage'
@@ -138,6 +139,18 @@ describe('D1225 — his own pending bid on a day since closed may be deleted, ne
     expect(requests('ramp', '2026-02-11')).toHaveLength(0)
   })
 
+  /* the break tests' gap 5b: nothing asked `deletableIn`, so a drag-selected block of his pending bids on closed days
+     could lose its Delete button unseen */
+  it('a dragged block over his pending bids on closed days offers Delete for each; his refused bid is not counted', () => {
+    setUp()
+    const cells = ['2026-02-10', '2026-02-11', '2026-02-12'].map(date => ({ personId: 'ramp', date }))
+    expect(deletableIn(cells)).toBe(2)                               // 10 and 11 pending; 12 refused
+    expect(clearCells(cells).written).toBe(2)
+    expect(requests('ramp', '2026-02-10')).toHaveLength(0)
+    expect(requests('ramp', '2026-02-11')).toHaveLength(0)
+    expect(requests('ramp', '2026-02-12').map(r => r.state)).toEqual(['refused'])
+  })
+
   it('he cannot add a bid there, nor change the one he has', () => {
     setUp()
     expect(setCell('ramp', '2026-02-13', 'LL')).toBe(false)
@@ -191,6 +204,19 @@ describe('B8 — a member\'s bid on a closed day is refused at the commit, not o
     expect(ownershipViolation(env('2026-06-10', [bid('n1')], []))).toBeNull()                 // D1225
     expect(ownershipViolation(env('2026-06-10', [{ ...bid('n1'), state: 'refused' } as WarRec], []))).toMatch(/not open for bidding/)
     expect(ownershipViolation(env('2026-02-10', [], [bid('n1')]))).toBeNull()                 // an open day
+  })
+
+  /* the break tests' gap 17b: B-F1 proves his Undo of a delete goes through; nothing proved a restore bringing anything
+     ELSE onto a closed day is still refused. What passes: a restore that only adds back pending bids of his (B-F1 — and,
+     read the same way, his Redo of a bid made while the day was open: [LW-REDO-ONTO-CLOSED], a question for him). What
+     does not: a restore that changes a bid, brings an approved or refused record, or takes someone else's. */
+  it('a restore on a closed day passes only when it adds back his pending bids; a change or anything else is refused', () => {
+    const restore = (before: WarRec[], after: WarRec[]): CommitEnvelope => ({ ...env('2026-06-10', before, after), origin: 'restore' } as CommitEnvelope)
+    expect(ownershipViolation(restore([], [bid('n1')]))).toBeNull()
+    expect(ownershipViolation(restore([bid('n1')], [bid('n1', 'OL')]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'approved' } as WarRec]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(restore([], [{ ...bid('n1'), state: 'refused' } as WarRec]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(restore([bid('n1')], [{ ...bid('n1'), state: 'approved' } as WarRec]))).toMatch(/not open for bidding/)
   })
 
   it('a member command that writes a bid onto a closed day around the store\'s check is rolled back whole', () => {
@@ -298,6 +324,99 @@ describe('B-F1 — his Undo of deleting his own pending bid on a closed day puts
     expect(requests(pid, '2026-02-10').map(r => [r.code, r.state])).toEqual([['LL', 'pending']])
     expect(globalRedo().ok).toBe(true)
     expect(requests(pid, '2026-02-10')).toHaveLength(0)
+  })
+})
+
+/* M1's code read, H1 (both readers, each proving it alone): a member's Inputs-page half day — leave or a medical — over
+   his own whole-day pending bid, on a day closed for him or a day before today, was refused whole: the clash rule cuts the
+   bid to its free half inside his command, and the commit's open-day check read the cut as a change. D1166: the Inputs
+   page is never stopped by the closed dates; D1211: he may correct a past input there. */
+describe('H1 — his Inputs-page half day over his own whole-day pending bid lands on a closed or past day', () => {
+  const ISNAP = JSON.stringify(INPUTS)
+  const pid = 'bane'
+  let said: string[] = []
+  const toast = HOOKS.toast
+  beforeEach(() => {
+    INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+    setSession({ user: 'ad', role: 'admin' })
+    raptorInitStore(); initStore(memoryBackend()); setPeople(projectPeople()); wireLeaveWarSync()
+    _resetTimeline(); lwHistInit(); installGlobalUndo()
+    said = []; HOOKS.toast = (m: any) => { said.push(String(m)) }
+  })
+  afterEach(() => { HOOKS.toast = toast; _resetTimeline(); setSession(null); setMe(null as any); setMemberTodayForTests('2000-01-01') })
+  let n = 0
+  const file = (type: string, extra: Record<string, any>): boolean => {
+    const row: any = { iid: 'h1-' + (++n), person: pid, type, date: 'Feb 10', yr: 2026, remarks: '', mod: '2026-02-01', ...extra }
+    return writeInputs(() => { INPUTS.unshift(row) })
+  }
+  const asMember = () => { setSession({ user: 'us', role: 'main' }); setMe(pid); setRole('member'); setViewer(pid) }
+  const setUp = (mode: 'open' | 'closed' | 'past') => {
+    asMember()
+    expect(setCell(pid, '2026-02-10', 'LL')).toBe(true)
+    if (mode === 'closed') {
+      setSession({ user: 'ad', role: 'admin' }); setRole('admin'); setViewer(null)
+      expect(closeDates('2026-02-01', '2026-02-28')).toBe('set')
+      asMember()
+    }
+    if (mode === 'past') setMemberTodayForTests('2026-02-15')
+  }
+  const left = () => requests(pid, '2026-02-10').map(r => [r.code, r.state])
+  for (const mode of ['open', 'closed', 'past'] as const) {
+    it(`a morning of OL on a ${mode} day lands, and his bid keeps the afternoon`, () => {
+      setUp(mode)
+      expect(file('OL', { half: 'am', s: 0, e: 720 })).toBe(true)
+      expect(INPUTS.filter((r: any) => r.person === pid && r.type === 'OL' && r.date === 'Feb 10')).toHaveLength(1)
+      expect(left()).toEqual([['LL*', 'pending']])
+    })
+  }
+  /* the break tests' gap 5d: his pending afternoon bid beside a morning filed on the Inputs page, the day since closed — his
+     Delete (a dragged block's) takes the bid and leaves the filed leave */
+  it('his pending afternoon bid beside Inputs-page leave on a closed day: Delete takes the bid, the leave stays', () => {
+    asMember()
+    expect(setCell(pid, '2026-02-10', 'LL*')).toBe(true)
+    expect(file('OL', { half: 'am', s: 0, e: 720 })).toBe(true)
+    setSession({ user: 'ad', role: 'admin' }); setRole('admin'); setViewer(null)
+    expect(closeDates('2026-02-01', '2026-02-28')).toBe('set')
+    asMember()
+    expect(clearCells([{ personId: pid, date: '2026-02-10' }]).written).toBe(1)
+    expect(requests(pid, '2026-02-10')).toHaveLength(0)
+    expect(INPUTS.filter((r: any) => r.person === pid && r.type === 'OL' && r.date === 'Feb 10')).toHaveLength(1)
+  })
+
+  /* M1's code read (L1 / F6): his two pending halves on a closed day go with ONE Delete — one Undo brings both back */
+  it('two pending halves on a closed day: the closed note’s Delete (the empty write) takes both as one Undo step', () => {
+    asMember()
+    expect(setCell(pid, '2026-02-10', '*LL')).toBe(true)
+    expect(setCell(pid, '2026-02-10', 'OL*')).toBe(true)
+    setSession({ user: 'ad', role: 'admin' }); setRole('admin'); setViewer(null)
+    expect(closeDates('2026-02-01', '2026-02-28')).toBe('set')
+    asMember()
+    expect(requests(pid, '2026-02-10')).toHaveLength(2)
+    expect(setCell(pid, '2026-02-10', '')).toBe(true)
+    expect(requests(pid, '2026-02-10')).toHaveLength(0)
+    expect(globalUndo().ok).toBe(true)
+    expect(requests(pid, '2026-02-10')).toHaveLength(2)
+  })
+
+  it('a morning medical (ATT C 08:00–10:00) on a closed day lands too', () => {
+    setUp('closed')
+    expect(file('ATT C', { s: 480, e: 600 })).toBe(true)
+    expect(INPUTS.filter((r: any) => r.person === pid && r.type === 'ATT C' && r.date === 'Feb 10')).toHaveLength(1)
+    expect(left()).toHaveLength(1)
+  })
+  it('the permission itself: the cut passes; any other change to the bid on a closed day is still refused', () => {
+    setUp('closed')
+    const bid = requests(pid, '2026-02-10')[0]! as WarRec
+    const env = (after: WarRec[]): CommitEnvelope => ({
+      seq: 0, at: '', type: 'lw.edit', origin: 'user', scope: { module: 'lw', warId: Y26 } as any,
+      actor: { id: 'us', role: 'member', personId: pid, session: {} },
+      changes: [{ op: 'put', collection: 'lw.cell', id: `${Y26}:${pid}:2026-02-10`, before: [bid], after }],
+    })
+    expect(ownershipViolation(env([{ ...bid, code: 'LL*' } as WarRec]))).toBeNull()
+    expect(ownershipViolation(env([{ ...bid, code: '*LL' } as WarRec]))).toBeNull()
+    expect(ownershipViolation(env([{ ...bid, code: 'OL' } as WarRec]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(env([{ ...bid, code: '*OL' } as WarRec]))).toMatch(/not open for bidding/)
+    expect(ownershipViolation(env([{ ...bid, code: 'LL*', state: 'approved' } as WarRec]))).toMatch(/not open for bidding/)
   })
 })
 

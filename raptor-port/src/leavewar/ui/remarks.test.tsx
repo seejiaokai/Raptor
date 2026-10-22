@@ -76,14 +76,17 @@ describe('the remarks editor', () => {
 
   /* …and for leave approved on the WAR (not filed on the Inputs page): his tap on his own approved bid opens its
      remarks, open or closed. ASICS's seeded pending half day on 23 Jan, approved by the admin. */
-  it('opens for his own leave approved on the war, open day or closed', () => {
+  /* CHANGED by M1's code read (M2): his approved leave here is HALF a day — on a day open for him the free half's bid
+     comes first, as `main` had it (remarks must not hide the half he may still bid on); once the day is closed, remarks. */
+  it('opens for his own leave approved on the war on a closed day; on an open day the free half’s bid comes first', () => {
     setRole('admin')
     setBidState('asics', '2026-01-23', 'approved')
     expect(getState().states.asics['2026-01-23']?.state).toBe('approved')
     setRole('member'); setViewer('asics')
     const r = render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-asics-2026-01-23'))
-    expect(screen.getByTestId('remarks-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('remarks-sheet')).toBeNull()
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
     r.unmount()
     closeAll()
     setRole('member'); setViewer('asics')

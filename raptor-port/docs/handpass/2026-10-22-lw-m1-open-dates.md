@@ -1,4 +1,4 @@
-| the bridge pins a member's today (`lwSetMemberToday`); the Leave War browser tests moved | — | — | every walk; e2e 363 on his PC; GitHub's run || admin, member, the admin's member view, signed in without access | — | — | A, B, C; B S34b; C S34a || unchanged: Inputs-page leave on a closed day lands approved; OIL on a closed day; the SANS month and the Calendar window; the bell silent | — | — | C S28, S31, S32, S33; host S27 || "No leave period yet" — its words | — | — | `leavewarpage.test.tsx` (no war cannot be made from the app's controls) || "+ New" and the schedule's "Create the period" make a period with nothing open, on screen (A-F3, fixed); the Holidays ask | — | — | A S1, S37; re-walk ra S37; `oilperiod-offer.test.tsx`, `warask.test.tsx` || stretches and the last closing survive a reload; an old saved war loads | — | — | A S1, S12; `opendates-store.test.ts` || a member's change on a closed day refused at the commit except taking his own pending bid, or its Undo | — | the Undo was refused (B-F1, fixed) | `opendates-store.test.ts` B8, B-F1 || every write asks the period HOLDING the date (B3) and a member's today (D1211) | — | — | `opendates-store.test.ts` B2, B3, D1211, D1225 || one step a gesture; "opening bidding 1 Apr – 30 Apr — those days are open for everyone" | top-bar Undo / Redo; the grid stays on June (D672) | the window blocks the top bar while open (A-N1, as every Leave War sheet but two) | A S13, S19; B S14-undo; C D672 || the first open date from today, in the period that holds it, else today | boot, tab, View switch | — | A S10; host S9 (clock 15 Dec 26: 2026); `opendates-store.test.ts` || "Change the approved leave ›" / "…but the bid is approved OL" | a tap opens the day's list | — | A S11 || the moved line always | — | — | C the Legend || only on approved leave moved; a pending bid's move none | — | — | A S24 || a member moves his own pending bid between open days; approved leave never into another period | the one-day chip, the day's list, a drag | — | B S25; A S24; C the year-end move || a member's lines on a closed day: Delete only; the admin: decide and Note | — | — | B S3-daylist; C S6 || a member's block on closed days offers Delete of his own pending bids only; the admin's any action | fill, decide, Delete, Move | closes when the open dates change under it; the window now drawn over it (H-F1) | B S3-drag, S4-dragfill; host S29 (desktop and phone) || "Pick a range" skips closed days and says so — the words named the old window (B-N1, reworded) | — | — | B S4-range; `bidding.test.tsx` || the decide sheet on any day, approved leave included | Approve / Refuse / Move / Delete / Note | — | C S6; A S10 || open day: the bid window; closed: the closed note (D1176); his pending bid on a closed day: the pending note with Delete (D1225); his approved leave: its remarks, any day | each sheet's own buttons; Undo of the Delete (B-F1, fixed) | — | B S2, S3, S4, S26; re-walk rb S3-single || a member's closed days dim with a small lock on the date; never the admin's | — | the admin's dim cost his tap 3× (§5) — removed before the walk | B S2; `window.test.tsx`; §5 || one green outline per stretch; a member's from today | — | — | A S22; `window.test.tsx` || months lit (open), dashed green edge (part), plain (closed); a line per stretch with its days and the calendar icon; "+ Open more dates"; the last closing with who | tap, second tap, a held drag (a phone's two rows by finger), the calendar with Open / Save / Close these days / Cancel; Tab and Space; Escape one layer at a time | unstyled at desktop widths (A-F1, fixed); under a drag-selected block's panel (H-F1, fixed) | A L1, S1, S5, S8, S14, S17, S20; B S14; host S29; re-walk ra L1, S20 || desktop "Open for bidding 1 Jan – 31 Mar +1"; phone "Open 15 Feb – 31 Mar" (a member's from today); "Bidding closed" | a press opens the window, for everyone; Enter on the keyboard | one line on a phone with two stretches (34 px) — the space was missing on a phone (B-F2, fixed) | A S22; B S2-chip, S22; re-walk rb `S2-00` |# The Leave War overhaul's M1 — open dates — the bug check (22 Oct 26)
+# The Leave War overhaul's M1 — open dates — the bug check (22 Oct 26)
 
 Branch `claude/lw-m1-open-dates`, cut from `main` c413f2541. The build plan
 `../superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md` §3 batch 1 (approved, D1250). Rulings: D1177, D1176,
@@ -28,29 +28,29 @@ place the stage or the bidding window was read. Columns: SHOWS (the new sign) ·
 
 | # | Place | Shows | Usable | Painted over | Proof |
 |---|---|---|---|---|---|
-| R1 | the chip on the strip (desktop, phone) | | | | |
-| R2 | the "Open for bidding" window | | | | |
-| R3 | the green outline, one per stretch | | | | |
-| R4 | closed days dim + the lock on the date | | | | |
-| R5 | a member's tap on his own row (bid / closed note / pending note / remarks) | | | | |
-| R6 | an admin's tap (decide at any time; approved leave changeable) | | | | |
-| R7 | "Pick a range" in the bid window | | | | |
-| R8 | the drag-select panel (member and admin) | | | | |
-| R9 | the day's list (decide, Delete own pending, Note) | | | | |
-| R10 | Move (one-day chip, day's list, drag) | | | | |
-| R11 | the dotted moved mark | | | | |
-| R12 | the Legend | | | | |
-| R13 | the clash note (phone line, desktop strip) | | | | |
-| R14 | where the page opens (boot, tab, View switch, clash tap) | | | | |
-| R15 | Undo / Redo of opening and closing | | | | |
-| R16 | the store's doors (every write) | | | | |
-| R17 | the command gate (B8; `lw.open`) | | | | |
-| R18 | the saved shape (reload; an old saved war) | | | | |
-| R19 | creating a period ("+ New", the Holidays ask, the schedule's "create it") | | | | |
-| R20 | "No leave period yet" | | | | |
-| R21 | must not change: the Inputs page on a closed day, OIL, the SANS calendar and Calendar window, the bell | | | | |
-| R22 | roles: admin, member, the admin's member view, signed in without access | | | | |
-| R23 | the test bridge and e2e | | | | |
+| R1 | the chip on the strip (desktop, phone) | desktop "Open for bidding 1 Jan – 31 Mar +1"; phone "Open 15 Feb – 31 Mar" (a member's from today); "Bidding closed" | a press opens the window, for everyone; Enter on the keyboard | one line on a phone with two stretches (34 px) — the space was missing on a phone (B-F2, fixed) | A S22; B S2-chip, S22; re-walk rb `S2-00` |
+| R2 | the "Open for bidding" window | months lit (open), dashed green edge (part), plain (closed); a line per stretch with its days and the calendar icon; "+ Open more dates"; the last closing with who | tap, second tap, a held drag (a phone's two rows by finger), the calendar with Open / Save / Close these days / Cancel; Tab and Space; Escape one layer at a time | unstyled at desktop widths (A-F1, fixed); under a drag-selected block's panel (H-F1, fixed) | A L1, S1, S5, S8, S14, S17, S20; B S14; host S29; re-walk ra L1, S20 |
+| R3 | the green outline, one per stretch | one green outline per stretch; a member's from today | — | — | A S22; `window.test.tsx` |
+| R4 | closed days dim + the lock on the date | a member's closed days dim with a small lock on the date; never the admin's | — | the admin's dim cost his tap 3× (§5) — removed before the walk | B S2; `window.test.tsx`; §5 |
+| R5 | a member's tap on his own row (bid / closed note / pending note / remarks) | open day: the bid window; closed: the closed note (D1176); his pending bid on a closed day: the pending note with Delete (D1225); his approved leave: its remarks, any day | each sheet's own buttons; Undo of the Delete (B-F1, fixed) | — | B S2, S3, S4, S26; re-walk rb S3-single |
+| R6 | an admin's tap (decide at any time; approved leave changeable) | the decide sheet on any day, approved leave included | Approve / Refuse / Move / Delete / Note | — | C S6; A S10 |
+| R7 | "Pick a range" in the bid window | "Pick a range" skips closed days and says so — the words named the old window (B-N1, reworded) | — | — | B S4-range; `bidding.test.tsx` |
+| R8 | the drag-select panel (member and admin) | a member's block on closed days offers Delete of his own pending bids only; the admin's any action | fill, decide, Delete, Move | closes when the open dates change under it; the window now drawn over it (H-F1) | B S3-drag, S4-dragfill; host S29 (desktop and phone) |
+| R9 | the day's list (decide, Delete own pending, Note) | a member's lines on a closed day: Delete only; the admin: decide and Note | — | — | B S3-daylist; C S6 |
+| R10 | Move (one-day chip, day's list, drag) | a member moves his own pending bid between open days; approved leave never into another period | the one-day chip, the day's list, a drag | — | B S25; A S24; C the year-end move |
+| R11 | the dotted moved mark | only on approved leave moved; a pending bid's move none | — | — | A S24 |
+| R12 | the Legend | the moved line always | — | — | C the Legend |
+| R13 | the clash note (phone line, desktop strip) | "Change the approved leave ›" / "…but the bid is approved OL" | a tap opens the day's list | — | A S11 |
+| R14 | where the page opens (boot, tab, View switch, clash tap) | the first open date from today, in the period that holds it, else today | boot, tab, View switch | — | A S10; host S9 (clock 15 Dec 26: 2026); `opendates-store.test.ts` |
+| R15 | Undo / Redo of opening and closing | one step a gesture; "opening bidding 1 Apr – 30 Apr — those days are open for everyone" | top-bar Undo / Redo; the grid stays on June (D672) | the window blocks the top bar while open (A-N1, as every Leave War sheet but two) | A S13, S19; B S14-undo; C D672 |
+| R16 | the store's doors (every write) | every write asks the period HOLDING the date (B3) and a member's today (D1211) | — | — | `opendates-store.test.ts` B2, B3, D1211, D1225 |
+| R17 | the command gate (B8; `lw.open`) | a member's change on a closed day refused at the commit except taking his own pending bid, or its Undo | — | the Undo was refused (B-F1, fixed) | `opendates-store.test.ts` B8, B-F1 |
+| R18 | the saved shape (reload; an old saved war) | stretches and the last closing survive a reload; an old saved war loads | — | — | A S1, S12; `opendates-store.test.ts` |
+| R19 | creating a period ("+ New", the Holidays ask, the schedule's "create it") | "+ New" and the schedule's "Create the period" make a period with nothing open, on screen (A-F3, fixed); the Holidays ask | — | — | A S1, S37; re-walk ra S37; `oilperiod-offer.test.tsx`, `warask.test.tsx` |
+| R20 | "No leave period yet" | "No leave period yet" — its words | — | — | `leavewarpage.test.tsx` (no war cannot be made from the app's controls) |
+| R21 | must not change: the Inputs page on a closed day, OIL, the SANS calendar and Calendar window, the bell | unchanged: Inputs-page leave on a closed day lands approved; OIL on a closed day; the SANS month and the Calendar window; the bell silent | — | — | C S28, S31, S32, S33; host S27 |
+| R22 | roles: admin, member, the admin's member view, signed in without access | admin, member, the admin's member view, signed in without access | — | — | A, B, C; B S34b; C S34a |
+| R23 | the test bridge and e2e | the bridge pins a member's today (`lwSetMemberToday`); the Leave War browser tests moved | — | — | every walk; e2e 363 on his PC; GitHub's run |
 
 ## 3. The door check
 
@@ -139,7 +139,13 @@ window at 1440 (`ra/01`), the window drawn over the selection panel (`h/S29-02`)
 
 Each fix of §14 was proved by its test going red with the fix taken out, then green with it: A-F2 (Escape and focus),
 B-F1 (the member's Undo), A-F3 (the new period on screen), H-F1 (the window over the panel), H-F2 (the month list first).
-The scenario designer's 13 cuts (its §3): (to fill — run in a separate checkout).
+The scenario designer's 13 cuts (its §3) and five for the walk's fixes — 23 cuts in all, run by a helper in its own
+checkout on 543ed46bc, one test file at a time, each source put back: **19 red, 4 gaps.** The gaps, each now a test: 5b
+(`deletableIn` — a dragged block of his pending bids on closed days keeps its Delete; a refused one not counted), 5d (his
+pending half beside Inputs-page leave on a closed day: Delete takes the bid, the leave stays), 7 (a drag in the window is
+ONE Undo step — proved red with the drag cut month by month), 17b (what a restore on a closed day may and may not bring —
+it found approved leave passing as "his pending bid": tightened to undecided bids). Its note A (the "before today" render
+test never moved his today) is a real before-today test now. Every fix after the reads was red without it, green with it.
 
 ## 10. Errors seen
 
@@ -153,11 +159,42 @@ screen — carried by a test); S10 (c, d) (carried by `opendates-store.test.ts`'
 ## 12. Gate counts
 
 Leave War unit tests 3035 / 3035 (his PC, 22 Oct 26, after the fixes); the Leave War browser tests 363 on his PC before the
-walk; GitHub's full run of the pull request green on d2ff349a4 — the run on the fixes: (to fill).
+walk; GitHub's full run of the pull request green on d2ff349a4 — the run on the fixes: (to fill). After the reads' fixes:
+Leave War unit tests 3053 / 3053; the shared tests they touch (permissions, Undo words, the schedule's button) 153 / 153.
 
 ## 13. The reads (fresh Opus; Fable — D1260)
 
-(to fill)
+Two readers, blind to each other, after the walk, given the evidence sheet (brief
+`../superpowers/briefs/2026-10-22-lw-m1-read-brief.md`): a fresh Opus 5.5 (about 423k tokens) and Fable 5.1 (about 370k).
+**Both found, each alone, the same two faults** — and proved each in a throwaway test:
+- **R-H1 (high) — fixed:** a member's half day filed on the Inputs page (leave, or a timed medical) over his own whole-day
+  pending bid, on a day closed for him or before his today, was refused whole — the clash rule cuts the bid to its free
+  half inside his command, and the commit's open-day check read the cut as a change (D1166, D1211 broken). The cut now
+  passes as a take (`state/perms.ts narrowed`); four tests (open, closed, past; a medical; the permission itself).
+- **R-M1 (medium) — fixed:** after a drag across the window's months, the next single tap did nothing (the drag's click
+  lands on the strip, or a finger sends none, so the "swallow the drag's click" flag stayed up). A new press, a click on the
+  strip or a key clears it (`ui/OpenDatesSheet.tsx`); two tests, red without it.
+Opus alone: **M2 — fixed:** a member's war-approved HALF day on an open day hid its free half (his tap opened remarks;
+`main` opened the bid window) — the free-half rule now covers it (`ui/Matrix.tsx`; `remarks.test.tsx` changed to say
+so). **L6 — fixed:** the admin's tap on one approved leave opens the decide window, which had no way to its remarks — it
+carries the day's list's Note now (`ui/BidPicker.tsx`, `ui/Matrix.tsx`; `deciding.test.tsx`) — a new control, in his look.
+**L5 — fixed:** with two leaves clashing, "approved" could name the wrong one — the pair's order is fixed
+(`sync.ts clashPairOrder`). **L7 — fixed:** this sheet's roll-call had been written onto its first line (the host's
+script) — moved back into §2.
+Both: **closed note's Delete as one step — fixed** (`ClosedNoteSheet.tsx`, one command; a test with two halves and one
+Undo); **the skip words untrue for some readers — fixed:** a member's fill "closed for bidding, before today, or already
+holding leave or a medical", an admin's "already holding leave or a medical", a delete "already decided, or filed on the
+Inputs page" (`BidPicker.tsx skipWhy`, pinned); **one span naming days that stayed open — fixed:** the Undo words name the
+runs ("closing bidding 1 Jan – 31 Jan and 1 Mar – 31 Mar") and the last closing records the latest run that closed
+(`engine/opendates.ts closedRuns`, `undo/describe.ts`); **the store file's line endings** — put back as `main` has them
+(the diff 10,000 lines → 387); **stage words** — the one on screen ("…an approved leave on a published war needs the war
+reopened") reworded, the stale comments brought up to date.
+**Filed, not fixed:** [LW-REDO-ONTO-CLOSED] — a member's Redo may put his bid back on a day closed since (both readers;
+not reachable in one browser today; his question, with a recommendation); [LW-M1-READ-LEFTOVERS] — a member's shared
+input over another man's pending bid (older), the replace note raised before the check, the stale "today" at midnight,
+a vague Move refusal.
+**Judged, no change:** the chip's "+1" (the drawing of record); "Bidding is closed" on an open day before his today (D1176's
+words, true for him); the clash sentence "…but the bid is approved OL" (the drawing of record, r7-19).
 
 ## 14. Findings and dispositions (filled as they come)
 

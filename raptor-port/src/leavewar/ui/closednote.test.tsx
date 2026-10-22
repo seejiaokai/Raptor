@@ -13,6 +13,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { CURPAGE, setPage } from '../../state/view'
 import { closeDates, getState, initStore, setBidState, setRole, setViewer } from '../state/store'
+import { setMemberTodayForTests } from '../engine'
 import { memoryBackend } from '../state/storage'
 import type { SyncClash } from '../sync'
 import { clashWhat } from './Chrome'
@@ -24,7 +25,7 @@ beforeEach(() => {
   initStore(memoryBackend())
   setRole('admin')
 })
-afterEach(() => { setPage('editsched') })
+afterEach(() => { setPage('editsched'); setMemberTodayForTests('2000-01-01') })
 
 /** Every date of the seeded war closed, by the admin; then the member signed in as `who`. */
 function closedFor(who: string) {
@@ -60,6 +61,18 @@ describe('the closed note (D1176)', () => {
     expect(screen.getByTestId('closed-note-text').textContent).toBe(CLOSED_NOTE)
     fireEvent.click(screen.getByTestId('closed-note-close'))
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))      // February still open: the bid window
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+  })
+
+  /* the break tests' note A: the test above never moved his today (the suite pins it to 2000-01-01) */
+  it('opens on an open day before his today, and the bid window from his today on (D1211)', () => {
+    act(() => { setMemberTodayForTests('2026-02-15'); setRole('member'); setViewer('dusk') })
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))      // open, but before his today
+    expect(screen.getByTestId('closed-note-text').textContent).toBe(CLOSED_NOTE)
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    fireEvent.click(screen.getByTestId('closed-note-close'))
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-16'))      // open, from his today on
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 

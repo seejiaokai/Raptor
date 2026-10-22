@@ -18,6 +18,7 @@ import {
   memberToday,
   normaliseOpen,
   openPartOf,
+  closedRuns,
   withOpened,
   withClosed,
   type OpenStretch,
@@ -3335,8 +3336,12 @@ function writeOpen(next: OpenStretch[], closed: OpenStretch | null, note: string
   const cur = state.period.open
   const same = next.length === cur.length && next.every((x, i) => x.from === cur[i]!.from && x.to === cur[i]!.to)
   if (same) return 'unchanged'
-  const lastClosed: ClosedNote | null = closed
-    ? { from: closed.from, to: closed.to, by: state.viewer ?? '', at: new Date().toISOString() }
+  /* what really closed: the LATEST run of days open before and not now (M1's code read, L3 / F5 — the span the caller
+     names can hold days that stayed open, or were never open) */
+  const runs = closed ? closedRuns(cur, next) : []
+  const took = runs.length ? runs[runs.length - 1]! : null
+  const lastClosed: ClosedNote | null = took
+    ? { from: took.from, to: took.to, by: state.viewer ?? '', at: new Date().toISOString() }
     : state.period.lastClosed
   gesture('lw.open', () => updateCurrent(w => ({ ...w, period: { ...w.period, open: next, lastClosed } })), { note })
   return 'set'

@@ -105,6 +105,19 @@ describe('B8 — the Leave War says what came back', () => {
     expect(r2.ok).toBe(true)
     expect(bubbleText(r2.entry!, 'redo')).toBe('Redid: closing bidding 1 Jan – 31 Mar — those days are closed for everyone')
   })
+  /* M1's code read (L3 / F5): the words name the days that changed, run by run — never one span with open days inside */
+  it('a stretch cut at both ends names its two closed runs; the last closing records the latest run that closed', () => {
+    expect(setStretch({ from: '2026-01-01', to: '2026-03-31' }, '2026-02-01', '2026-02-28')).toBe('set')
+    expect(undoState().undoLabel).toBe('closing bidding 1 Jan – 31 Jan and 1 Mar – 31 Mar')
+    expect(getState().period.lastClosed).toMatchObject({ from: '2026-03-01', to: '2026-03-31' })
+  })
+  it('closing across months with a closed month between names only what was open', () => {
+    expect(openDates('2026-05-01', '2026-05-31')).toBe('set')
+    expect(closeDates('2026-03-01', '2026-05-31')).toBe('set')        // MAR open, APR never, MAY open
+    expect(undoState().undoLabel).toBe('closing bidding 1 Mar – 31 Mar and 1 May – 31 May')
+    expect(getState().period.lastClosed).toMatchObject({ from: '2026-05-01', to: '2026-05-31' })
+  })
+
   it('opening: its own words, the dates, and what those days are now', () => {
     expect(openDates('2026-04-01', '2026-04-30')).toBe('set')
     expect(undoState().undoLabel).toBe('opening bidding 1 Apr – 30 Apr')

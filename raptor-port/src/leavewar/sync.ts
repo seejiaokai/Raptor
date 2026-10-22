@@ -702,7 +702,7 @@ function publishLeaveClashes(): void {
              depends only on the order the records happen to sit in on the day
              (state/merge.ts puts the war's own records before the absences).
              Order the pair here rather than letting the wording flip. */
-          const [a, b] = pair[1].kind === 'credit' && pair[0].kind !== 'credit' ? [pair[1], pair[0]] : pair
+          const [a, b] = clashPairOrder(pair)
           const duty = a.kind === 'credit' || b.kind === 'credit'
           const holders = duty ? [b] : [a, b]
           const wayOut = clashWayOut(holders)
@@ -725,6 +725,18 @@ function publishLeaveClashes(): void {
    decided on the sheet; leave the war approved is changed on the sheet (sent back, moved or deleted) — at any time
    since the stages went (D1177; the "published" way out, "Step the war back to Bidding Closed", went with them — D827
    narrowed); leave filed on the Inputs page is changed there. */
+/** The pair in the order its sentence reads it: a CREDIT first ("work earns X but the day holds Y"); otherwise leave the
+ *  war APPROVED second, where the sentence puts "approved" ("The input is HL, but the bid is approved OL" — M1's code
+ *  read, L5: for two absences the day's order is not fixed, so "approved" could land on the other leave). */
+export function clashPairOrder(pair: readonly [Contrib, Contrib]): [Contrib, Contrib] {
+  const [x, y] = pair
+  if (y.kind === 'credit' && x.kind !== 'credit') return [y, x]
+  if (x.kind === 'credit') return [x, y]
+  const warOwn = (c: Contrib) => c.kind === 'absence' && !!c.lw
+  if (warOwn(x) && !warOwn(y)) return [y, x]
+  return [x, y]
+}
+
 function clashWayOut(holders: readonly Contrib[]): ClashWayOut {
   if (holders.some(c => c.kind === 'request')) return 'bid'
   if (holders.some(c => c.kind === 'absence' && c.lw)) return 'war'

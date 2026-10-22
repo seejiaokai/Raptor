@@ -175,8 +175,21 @@ function openChange(entry: UndoEntry): { kind: 'open' | 'close' | 'both'; span: 
   const opened = [...now].filter(d => !was.has(d)), closed = [...was].filter(d => !now.has(d))
   const all = [...opened, ...closed].sort()
   if (!all.length) return null
-  const a = all[0]!, b = all[all.length - 1]!
-  return { kind: opened.length && closed.length ? 'both' : opened.length ? 'open' : 'close', span: a === b ? shortD(a) : `${shortD(a)} – ${shortD(b)}` }
+  return { kind: opened.length && closed.length ? 'both' : opened.length ? 'open' : 'close', span: runsText(all) }
+}
+/* THE DAYS THAT CHANGED, AS THEIR RUNS (M1's code read, L3 / F5): one first-to-last span named days that stayed open —
+   "closing bidding 1 Mar – 31 Mar" when only its two ends closed. Two runs are named; more read "and N more". */
+function runsText(days: string[]): string {
+  const next = (iso: string) => { const t = new Date(`${iso}T00:00:00Z`); t.setUTCDate(t.getUTCDate() + 1); return t.toISOString().slice(0, 10) }
+  const runs: Array<[string, string]> = []
+  for (const d of days) {
+    const last = runs[runs.length - 1]
+    if (last && next(last[1]) === d) last[1] = d
+    else runs.push([d, d])
+  }
+  const one = ([a, b]: [string, string]) => a === b ? shortD(a) : `${shortD(a)} – ${shortD(b)}`
+  if (runs.length <= 2) return runs.map(one).join(' and ')
+  return `${one(runs[0]!)} and ${runs.length - 1} more`
 }
 function openLabel(entry: UndoEntry): string | null {
   const m = openChange(entry)

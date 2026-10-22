@@ -5,7 +5,7 @@
    one (`wars`), every opening balance in one, the whole ledger in one, every posting window in one — so two people
    bidding at once overwrote each other. Now each thing is the row of its table in the design (data-model.md §5):
 
-     war:<warId>                 LeaveWar — the period (its days, bands, stage, bidding window; `ord`, its place)
+     war:<warId>                 LeaveWar — the period (its days, bands, open dates and last closing — D1177; `ord`, its place)
      rec:<warId>:<recId>         LeaveBid — one of the war's own records (a bid, an earned credit, a notice), with its
                                  person, its date and its place at that address (`ord`)
      ledger:<id>                 LeaveLedger — one entry

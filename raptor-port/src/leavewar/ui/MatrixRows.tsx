@@ -376,7 +376,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           // declared after the weekend so a holiday Saturday reads as the
           // holiday, not the weekend.
           evKind.get(d.date) ?? '',
-          // Outside the bidding window, for this role. Declared after the
+          // Not open for bidding, for this role (a member's closed days — D1177). Declared after the
           // event colour so a locked, tinted day still reads as locked — the
           // same cascade care the .blocked/.weekend pair needs, and for the
           // same reason.

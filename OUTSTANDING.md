@@ -113,6 +113,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
 - [LEAVE-YEAR] — yearly leave balances and carry-over — undecided ("we will do this next time").
 - [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
+- [LW-REDO-ONTO-CLOSED] — a member's Undo or Redo may put his pending bid back on a day closed since — a question for him before the database step.
+- [LW-M1-READ-LEFTOVERS] — four small things M1's code read found that are older than M1 or need two live sessions — check each with the database step.
 
 **Tracker**
 - [TRK-PINCH-OLD-EDGES] — two older edges of the chart's pinch: a throw in Edit chart layout, a stale zoom label.
@@ -1341,6 +1343,33 @@ re-test applied elsewhere (item D, W5-F4: a half is offered only when it can be 
 blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the lock by day vs by record is the same
 root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
 `raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
+
+### [LW-REDO-ONTO-CLOSED] A member's Undo or Redo may put his pending bid back on a day closed since (filed 22 Oct 26, M1)
+Found by M1's two code readers (Fable F2, Opus scenario 6), each blind to the other. A member bids on a day while it is open;
+the admin closes the day; the member presses Undo (his bid goes — he may take his own pending bid off a closed day, D1225)
+and then Redo — his bid is back on the closed day. The same with Undo of a delete he made while the day was open. The
+commit's check lets a restore through when it only adds back pending bids of his (`raptor-port/src/state/perms.ts`, the
+`lw.cell` case — built for the walk's B-F1: his Undo of his own closed-day delete must put it back), and an Undo / Redo
+cannot tell "back" from "new". **Not reachable today in one browser:** the admin's closing sits on the one shared
+timeline above the member's step, so his Undo is refused there ("Switch back to the admin view…"); it becomes real with two
+people on one database. **The question for him (D994 — put to him when he says):** may a member's Redo (or Undo of an
+open-day delete) put a bid back on a day the admin has closed since? Recommended: no — only an Undo of a delete he made on
+the closed day itself puts the bid back (the timeline carries the direction and when the step was made). Pinned as built:
+`raptor-port/src/leavewar/opendates-store.test.ts` "a restore on a closed day passes only when…". **Place:** with the
+database step (D473), before two people can work at once.
+
+### [LW-M1-READ-LEFTOVERS] Four small things M1's code read found, older than M1 or needing two live sessions (filed 22 Oct 26)
+From M1's two blind code reads (the evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §13).
+(1) **A member's SHARED input over another man's pending bid** (D660 — he files for others): the clash rule writes a notice
+on the other man's war row inside the member's command, and the commit refuses "another person's war row" — so his whole
+filing fails. Older than M1 (the check is the same on any day), more often met now that Inputs-page filing is the way on a
+closed day. Check in the running app first; if it fails, let a notice the clash rule writes for another man ride a member's
+own filing. (2) **The "This replaces your LL bid…" note is raised before the commit's check**, so a filing the check refuses
+still shows it (Opus H1 step 4) — say it only once the command lands. (3) **Midnight with the page open:** a member's dim,
+lock, outline and chip read his today when the store last changed, so they stay a day behind until the next change (Fable
+scenario 7, Opus 10) — re-read today on the page's next show or a timer at midnight. (4) **A member's Move refused on a
+closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
+for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch (M2), each small.
 
 ### [LW-HARNESS-VIEWER-PIN] In the Leave War browser tests, switching the role quietly undoes the pinned viewer (filed 27 Sep 26)
 Found by the `[LW-MOVE-CI-RED]` investigation, confirmed in the running bundle: the test bridge's `raptorRole()` →

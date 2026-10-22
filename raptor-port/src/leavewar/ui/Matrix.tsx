@@ -3069,6 +3069,12 @@ export function Matrix() {
   const remarkRow = open && role !== 'admin' && open.id === viewer
     ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
     : null
+  /* THE ADMIN'S NOTE ON ONE APPROVED LEAVE (M1's code read, L6): his tap opens the decide window, so its remarks are
+     reached there, by the same Note the day's list gives him on a busier day (D418 narrowed by D1177) */
+  const noteAt = open ? `${open.id}|${open.date}` : ''
+  const adminNoteRow = open && role === 'admin' && states[open.id]?.[open.date]?.state === 'approved'
+    ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
+    : null
   /* [ARCH-STACK] step 4 — a day holding more than one record (the corner
      mark), or leave dated outside the person's time in the squadron (owner
      answer C), opens THE TAP LIST: every record on its own line with its own
@@ -3077,11 +3083,12 @@ export function Matrix() {
   const openView = open ? views[open.id]?.[open.date] : undefined
   const listOpen = !!open && !!openView && (openView.mark !== '' ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
-  /* …but on a day OPEN for him, beside half a day of leave filed on the Inputs page, the free half's bid comes first (the
-     free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26): remarks at any time must not hide
-     the half he may still bid on. Its remarks stay on the Inputs page then. */
+  /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
+     half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
+     war-approved leave by M1's code read, M2: `main` opened the bid window there): remarks at any time must not hide the
+     half he may still bid on. Its remarks are reached from the Inputs page then. */
   const canRemark = !listOpen && !!remarkRow
-    && !(open && raptorOwns(states, open.id, open.date) && canBidOn(open.id, open.date) && freeHalfBeside(openView))
+    && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
   /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
      cell is locked to the Inputs page but only HALF of it is actually spoken
      for, the tap opens the bid picker on the free half instead of the
@@ -4205,10 +4212,11 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
+      {open && !listOpen && !canRemark && !(listRemark && listRemark.at === noteAt) && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
         && canBidOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
+          onNote={adminNoteRow ? () => setListRemark({ at: noteAt, row: adminNoteRow }) : undefined}
           callsign={open.callsign}
           personId={open.id}
           date={open.date}

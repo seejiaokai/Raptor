@@ -77,6 +77,10 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     return () => el.removeEventListener('touchmove', stop)
   }, [])
   const onDown = (e: React.PointerEvent, ix: number) => {
+    /* A NEW PRESS ENDS THE SWALLOW (M1's code read — both readers, M1 / F3): a drag released on ANOTHER month sends its
+       click to the strip (the two buttons' common parent), and a finger that moved sends none, so the flag set below
+       stayed up and ate the next real tap. The click a drag leaves, if any, always comes before the next press. */
+    swallowClick.current = false
     if (!admin || e.button !== 0) return
     const closing = monthState(shown, months[ix]!) === 'open'
     const touch = e.pointerType === 'touch'
@@ -182,6 +186,8 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
         aria-label={admin ? 'Months — tap to open or close a month, hold and drag across months' : 'Months open for bidding'}
         onPointerMove={onMove}
         onPointerCancel={endDrag}
+        onClick={e => { if (!(e.target as HTMLElement).closest('[data-month-ix]')) swallowClick.current = false }}
+        onKeyDown={() => { swallowClick.current = false }}
       >
         {months.map((m, i) => {
           const st = monthState(shown, m)

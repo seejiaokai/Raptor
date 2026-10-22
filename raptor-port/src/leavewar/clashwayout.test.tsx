@@ -27,7 +27,7 @@ import { INPEDIT, setInpEdit } from '../ui/pops'
 import { projectPeople } from './state/raptorRoster'
 import { closeDates, focusDay, getState, initStore as lwInitStore, setBidState, setCell, setPeople, setRole, takeFocusOpen } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, installAbsenceDoor, runOilPass, syncAbsences } from './sync'
+import { clashPairOrder, getClashes, installAbsenceDoor, runOilPass, syncAbsences } from './sync'
 import { LeaveWarPage } from './LeaveWarPage'
 import { StageBar } from './ui/Chrome'
 import { PHONE_QUERY } from './ui/phone'
@@ -92,6 +92,19 @@ const inputsLeave = () => {
   syncAbsences()
   publishSat()
 }
+
+/* M1's code read, L5: the sentence puts "approved" on its second code, so leave the war approved is always the second */
+describe('the clash pair is read in the sentence’s order', () => {
+  const c = (id: string, kind: any, code: string, lw?: string) => ({ id, kind, code, win: [0, 1440], ...(lw ? { lw } : {}) }) as any
+  it('a credit first; leave the war approved second; otherwise as the day has them', () => {
+    const credit = c('k', 'credit', 'HO'), approved = c('a', 'absence', 'OL', 'y2026'), medical = c('m', 'absence', 'HL'), bid = c('b', 'request', 'LL')
+    expect(clashPairOrder([approved, credit]).map(x => x.id)).toEqual(['k', 'a'])
+    expect(clashPairOrder([credit, approved]).map(x => x.id)).toEqual(['k', 'a'])
+    expect(clashPairOrder([approved, medical]).map(x => x.id)).toEqual(['m', 'a'])
+    expect(clashPairOrder([medical, approved]).map(x => x.id)).toEqual(['m', 'a'])
+    expect(clashPairOrder([medical, bid]).map(x => x.id)).toEqual(['m', 'b'])
+  })
+})
 
 describe('every clash line names where it can be undone — the words of record (D827, D837)', () => {
   it('a bid in the way: "Decide the bid"', () => {
