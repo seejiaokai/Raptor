@@ -105,4 +105,11 @@ describe('redDays — the days breaking a manning rule', () => {
     ])
     expect(out.some(d => d.date === '2026-01-05')).toBe(false)   // Available P amber on Mon: not a red day
   })
+  /* the M2 code read's F3: the line names the figure the row fell under — Required plus its red point */
+  it('"of N" is Required plus the red point: "25 of 26" under a red point of + 2, never "25 of 24"', () => {
+    const r2 = { p: { ...builtinAvailRule(AVAIL_P), points: { red: 2 } }, w: builtinAvailRule(AVAIL_W) }
+    expect(availRedLines(r2, { p: { have: 25, required: 24 }, w: { have: 18, required: 16 } }))
+      .toEqual([{ ruleId: 'availp', label: 'Available P', have: 25, need: 26 }])
+    expect(availRedLines(rules, day['2026-01-06']!)).toEqual([{ ruleId: 'availp', label: 'Available P', have: 23, need: 24 }])   // + 0: as drawn
+  })
 })

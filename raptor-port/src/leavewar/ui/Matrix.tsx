@@ -1,9 +1,9 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
-import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
+import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
 import { OilTracker } from './OilTracker'
@@ -262,8 +262,6 @@ export function Matrix() {
   // and a fresh array every render would defeat them.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const figures = useMemo(() => visibleFigures(), [version])
-  const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
-  const [picking, setPicking] = useState(false)
   // The figures DRAWER (owner, 6 Sep 26): every figure at once, popped out
   // beside the names over the days. Open on a desktop, closed on a phone — a
   // view preference, session-only, either role. Decided once at mount from the
@@ -551,21 +549,11 @@ export function Matrix() {
      Astra's code read 5, 27 Sep 26: Edit aircrew — gone since D461 — and the counter form stayed open with live controls), so switching back
      never reopens a stale draft either */
   useEffect(() => { if (role !== 'admin') setCounterEdit(false) }, [role])
-  // Falls back to the first visible figure when `shownId` names one an admin
-  // has since hidden (or a stale saved id) — `shownIx` is then DERIVED from
-  // `shown`, not the other way round, so the dots and the cycle never point
-  // past the figure actually on screen.
-  const shown = figures.find(f => f.id === shownId) ?? figures[0]!
-  const shownIx = figures.indexOf(shown)
-  /** Put a figure in the column — the ONE gated way in (6 Sep 26 review).
-   *
-   *  A hidden figure never becomes the column's: an admin who hid it should not
-   *  have the column jump to something the picker, the drawer and the cycle no
-   *  longer offer. That rule was written on the leave-just-entered snap and
-   *  nowhere else, so the two OIL paths (a tracker grant, an admin's hand-typed
-   *  OIL day) walked straight past it and could park the column on a figure the
-   *  dots did not contain. One body now, so a fourth caller cannot miss it. */
-  const showFigure = (id: string) => { if (figures.some(f => f.id === id)) setShownId(id) }
+  /* THE COLUMN BESIDE THE NAMES IS LVE ALONE (D1245, 22 Oct 26 — "each name keeps only its LVE figure beside it"; the
+     M2 code read's F2). Every other balance lives on the Balances tab (D1242, M5) and in a person's window (a tap on his
+     name). So the column no longer picks: no picker in its heading, no swipe across it, no jump to OIL or CCL after a
+     write — and an admin's hidden-figures list, which orders the person window's figures, never takes LVE off it. */
+  const shown = FIGURES.find(f => f.id === DEFAULT_FIGURE_ID)!
   // Everything a figure needs to read a person's number — the store's one
   // builder, so this column, the sheets and the tracker read the same OIL
   // policy and the same "today" (a hand-built literal here used to drift).
@@ -577,36 +565,7 @@ export function Matrix() {
      the drag-selection sheet, which asks too since his ruling D418 (29 Sep 26 — "Drag asks too"). The store answers it
      (`balanceAfterFill`) from the balance column's own figure, read of the wars as the fill would leave them. */
   const balanceAfter = (personId: string, dates: readonly string[], code: string) => balanceAfterFill(personId, dates, code)
-  const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
-  // Swipe across the counter column to cycle it — the fast path, beside the
-  // sheet's guaranteed one. Bound on the wrapper rather than on each cell so
-  // one pair of listeners covers a column of twenty-odd, and filtered to
-  // touches that START on a `.bal` cell so a swipe anywhere else still
-  // scrolls the grid, which is what a horizontal drag must go on doing.
-  const swipe = useRef<{ x: number; y: number } | null>(null)
-  // `figArmed` is the figure select's own flag, declared with that gesture's
-  // block further down (search FIGURE SELECT): it says a hold-and-drag took
-  // this touch, and these two handlers are the only readers.
-  const onTouchStart = (e: TouchEvent) => {
-    figArmed.current = false
-    const on = (e.target as HTMLElement).closest?.('.bal')
-    swipe.current = on ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null
-  }
-  const onTouchEnd = (e: TouchEvent) => {
-    const from = swipe.current
-    swipe.current = null
-    // A hold-and-drag that ARMED a figure selection during this touch is not a
-    // swipe, however far the finger travelled: the select owns it (6 Sep 26).
-    if (figArmed.current) { figArmed.current = false; return }
-    if (!from) return
-    const dx = e.changedTouches[0].clientX - from.x
-    const dy = e.changedTouches[0].clientY - from.y
-    // Horizontal, and decisively so: 40px across and more sideways than up,
-    // or every scroll of the rows would flip the counter under the thumb.
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return
-    cycle(dx < 0 ? 1 : -1)
-  }
 
   // Jumping to a month is how a year-long war is navigable at all: 365
   // columns is roughly 13,600px, and nobody finds September by dragging.
@@ -685,11 +644,6 @@ export function Matrix() {
   // effect runs after mount either way.
   const [figSel, setFigSel] = useState<FigureSelection | null>(null)
   const figSelCtxRef = useRef<FigureSelectCtx | null>(null)
-  // Set the instant a figure drag ARMS during a touch: the counter column's
-  // swipe-to-cycle (onTouchEnd) must stand down for that touch, or a slow
-  // hold-and-drag that travelled 40px sideways would flip the column under
-  // the selection it just made.
-  const figArmed = useRef(false)
   useEffect(() => {
     const o = mxOuterRef.current
     if (!o) return
@@ -697,7 +651,7 @@ export function Matrix() {
       order: () => figSelCtxRef.current?.order() ?? [],
       selectable: id => figSelCtxRef.current?.selectable(id) ?? false,
       enabled: () => figSelCtxRef.current?.enabled() ?? false,
-      onArm: () => { figArmed.current = true },
+      onArm: () => {},
       onSelect: s => figSelCtxRef.current?.onSelect(s),
     })
   }, [])
@@ -2022,38 +1976,12 @@ export function Matrix() {
           <FigureTitle figure={f} />
         </th>
       ))}
-      {/* The counter selector lives in the column header, which is the only
-          place a 40px-wide column has room for a control. The WHOLE header is
-          the control (the two 13px arrows were too small to hit from a
-          phone): tapping anywhere on it opens the full-width counter sheet,
-          and swiping across the column (handled on `.mx-wrap`) is the fast
-          path. The column is frozen beside the callsign so the figure stays
-          on screen however far the grid scrolls. */}
+      {/* The column's heading: LVE, the one figure it shows (D1245). Frozen beside the callsign, so the figure stays on
+          screen however far the grid scrolls. */}
       {!drawer && <th className="bal" data-testid={testids ? 'counter-head' : undefined}>
-        <button
-          className="cpick"
-          data-testid={testids ? 'counter-pick' : undefined}
-          aria-label={`Showing ${shown.label}. Choose what this column shows`}
-          onClick={() => setPicking(true)}
-        >
+        <span className="cpick" aria-label={`${shown.label} balance`}>
           <span className="cname" data-testid={testids ? 'counter-name' : undefined}>{shown.title}</span>
-          <span className="cdots" aria-hidden="true">
-            {figures.map((f, i) => (
-              <span key={f.id} className={`cdot${i === shownIx ? ' on' : ''}`} />
-            ))}
-          </span>
-          {/* A tap hint (owner, 18 Aug 26): the whole header has been the
-              control since the arrows were pulled, but on a phone nothing
-              SAID so; this little finger does. aria-hidden — the button's own
-              label already tells a screen reader it is tappable. */}
-          <span className="ctap" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="12" height="12" fill="none"
-              stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7.5 9V4.4a1.5 1.5 0 0 1 3 0V8.5" />
-              <path d="M10.5 8.6V7.2a1.4 1.4 0 0 1 2.8 0v3.9c0 2.7-1.8 4.4-4.3 4.4-1.7 0-3-.8-3.8-2.2L4 11.1a1.25 1.25 0 0 1 2.1-1.3l1 1.4" />
-            </svg>
-          </span>
-        </button>
+        </span>
       </th>}
       {padL && <th className="lwph lwph-l" ref={phL} />}
       {drawnDays.map(d => {
@@ -3436,8 +3364,6 @@ export function Matrix() {
           className="mx-wrap"
           ref={wrapRef}
           onScroll={onWrapScroll}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
         >
           <table className="mx" style={zoomStyle}>
             {/* THE ROW ORDER IS THE OWNER'S (18 Aug 26, arrows on a
@@ -4153,9 +4079,6 @@ export function Matrix() {
           wins on a cell that holds a bid, because that is what the stage is
           for; the picker still opens on an empty one, so an admin can add
           leave to a closed sheet without a second control. */}
-      {picking && (
-        <CounterSheet shownId={shown.id} onPick={setShownId} onClose={() => setPicking(false)} />
-      )}
       {/* The tapped person's breakdown of one figure — the column's shown
           one from a counter-cell tap, or whichever row was tapped in the
           person-figures sheet. Guarded on the person still existing — an
@@ -4246,10 +4169,6 @@ export function Matrix() {
           key={oilTracker.person ?? '*'}
           person={oilTracker.person}
           onClose={() => setOilTracker(null)}
-          /* A credit lands → the column shows +OIL (owner, 2 Sep 26; id
-             renamed 6 Sep 26 when OIL BAL and OIL USED merged into one
-             balance figure, 'oil'). */
-          onGranted={() => showFigure('oil')}
         />
       )}
       {eventEdit && role === 'admin' && (
@@ -4395,41 +4314,12 @@ export function Matrix() {
               const raw = days.trim()
               const n = raw ? Number(raw) : 1
               if (!Number.isFinite(n)) return 'Type how many days'
-              const problem = setDayAward(open.id, open.date, n, { note, givenBy, half })
-              if (!problem) showFigure('oil')
-              return problem
+              return setDayAward(open.id, open.date, n, { note, givenBy, half })
             }
             : undefined}
           /* No medical here: medical is member-filed only (owner, 13 Sep 26).
              Everyone files a medical input with its certificate on Raptor's
              Inputs page; the war displays it read-only, never creates it. */
-          /* The column follows the leave just entered, to the BALANCE it
-             comes off (owner, 6 Sep 26) — ask for OIL and it snaps to +OIL.
-             The owner's ask, and it makes the figure answer the question the
-             bidder is holding in their head at that moment. `figureForLeave`
-             (counters.ts) is the one map: LL/OL both come off LVE, every
-             other balance-bearing type snaps to its own, ATT C/HL/OML feed
-             MED TOT, and a type with no figure (EL, ATT B) simply returns
-             null and does not snap. Through `showFigure`, which is where the
-             "must still be VISIBLE" gate now lives for every caller. */
-          onWrote={code => {
-            const cell = parseCell(code)
-            const earns = (codeOf(code)?.earnsOil ?? 0) > 0
-            if (cell) {
-              const id = figureForLeave(cell.type)
-              if (id) showFigure(id)
-            }
-            /* A write on the grid keeps you ON the grid (owner, 6 Sep 26 —
-               "it should never bring me to the oil tracker page"), reversing
-               the 2 Sep rule that sent an admin's manual OIL straight to the
-               tracker to type a reason. Being thrown off the grid mid-pass
-               cost more than the reason was worth, and the tracker is one tap
-               away on the OIL button when he does want it. What survives is
-               the COLUMN: an FO/HO day EARNS oil, so the figure that just grew
-               is the one left on screen — the balance answers for the write
-               without moving the reader. */
-            if (earns) showFigure('oil')
-          }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative — the shared body above. */
           wouldLeave={(code, dates) => balanceAfter(open.id, dates, code)}

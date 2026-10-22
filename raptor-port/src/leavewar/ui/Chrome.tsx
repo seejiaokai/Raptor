@@ -3,7 +3,7 @@
 // yet (My leave, Ledger, Rules, Roster) and no "closes in N days", which
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
-import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { boxText, evaluatePeriod, FIGURES, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, manningRedDays, openInputWindow, subscribeClashes, usePlanVersion, type ClashWayOut, type SyncClash } from '../sync'
@@ -240,7 +240,7 @@ function nextLabel(iso: string): string {
  *  the Manning fold (its own state — the counts it hides are the grid's rows) and anything that rides the bar's right end
  *  before Legend (the zoom pair until pinch to zoom replaces it — [LW-PHONE-PINCH-ZOOM], D1228; "Done" while rearranging). */
 export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen?: boolean; onManning?: () => void; extra?: ReactNode } = {}) {
-  useVersion()
+  const sv = useVersion()
   /* The clash list lives in the sync module, not the store — it is a view of
      two live records, re-derived on every inbound pass — so it carries its
      own subscription rather than riding the store's version. */
@@ -281,22 +281,29 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
   // plus a PM OML against one approved bid), and a duplicate key drops one row on repaint — hiding a clash the admin
   // must resolve. The list is re-derived whole on every pass, so the index is a safe tiebreak, not a reorder hazard.
   const clashKey = (c: SyncClash, i: number) => `${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`
-  const dates = period.days.map(d => d.date)
+  /* COUNTED WHEN WHAT IT COUNTS MOVES, NEVER ON A REDRAW (the M2 code read's F1, 23 Oct 26). Since the overhaul this bar
+     stands INSIDE the grid card (D1254), so it renders with every grid render — a month the window draws mid-scroll, a
+     row dragged over, a sheet opened — and each render ran a whole period's manning evaluation and twelve months of the
+     flying plan's answers, inside the scroll's own frames. The war's store version and the plan's version are what the
+     two read; between their moves the answer cannot change. */
+  const dates = useMemo(() => period.days.map(d => d.date), [period])
   // Duplicates the same evaluatePeriod call Matrix makes internally. Both
   // stay self-contained (no prop plumbing between them) so Matrix keeps
   // rendering standalone in its existing tests; the cost is one extra pass
   // over a 90-day period, which is not worth threading props for. Both must
   // be handed the same `states`, or the strip counts a different squadron
   // from the one the grid below it is painting.
-  const verdicts = evaluatePeriod(people, grid, states, requirements, dates, views)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const verdicts = useMemo(() => evaluatePeriod(people, grid, states, requirements, dates, views), [sv, dates])
   // The red days themselves, not just how many. Recomputed every render like
   // the tally beside them: a list built once would send a scheduler to a day
   // a refusal had already recovered.
   // …and since D1243 (narrowing D1213) a day with an Available P or W row at its red counts too, named in the list
   // with its figure; amber never does. Their red reads the day's Required — the scheduler's plan — so the strip also
   // hears the plan's signal.
-  usePlanVersion()
-  const redList = manningRedDays(dates, verdicts)
+  const planV = usePlanVersion()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const redList = useMemo(() => manningRedDays(dates, verdicts), [verdicts, planV])
   const red = redList.map(d => d.date)
   const redDays = red.length
   const [listOpen, setListOpen] = useState(false)
@@ -531,19 +538,12 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk more">+1</i></span><span className="leg-t">More on this day — tap to see every entry</span></div>
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk warn">!</i></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk po">PO</i></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
-              {/* The figures (owner, 6 Sep 26): the colours the boxes and the
-                  column titles wear, then what each column counts — read off
-                  the figure catalogue so this can never drift from the grid. */}
+              {/* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — every other balance is on
+                  the Balances tab and in a person's window, so the Legend teaches the one column the grid still shows. */}
               <div data-testid="legend-figures">
-                <div className="leg-sec">The figures — the colours</div>
-                <div className="leg-row"><span className="leg-sw plain figw">26</span><span className="leg-t">white — balance left (+ in the title)</span></div>
-                <div className="leg-row"><span className="leg-sw plain figa">3</span><span className="leg-t">amber — local leave (LL) taken</span></div>
-                <div className="leg-row"><span className="leg-sw plain figr">2</span><span className="leg-t">red — overseas leave (OL) taken, days used, or a total (− in the title)</span></div>
-                <div className="leg-row"><span className="leg-sw plain figr">−4</span><span className="leg-t">red with a minus — a balance below zero</span></div>
-                <div className="leg-sec">The figures — each column</div>
-                {FIGURES.map(f => (
-                  <div key={f.id} className="leg-row"><span className={`leg-sw plain ${f.kind === 'bal' ? 'figw' : 'figr'}`}>{f.title}</span><span className="leg-t">{f.desc}</span></div>
-                ))}
+                <div className="leg-sec">The figure beside each name</div>
+                <div className="leg-row"><span className="leg-sw plain figw">26</span><span className="leg-t">LVE left: local and overseas leave</span></div>
+                <div className="leg-row"><span className="leg-sw plain figr">−4</span><span className="leg-t">Red with a minus: below zero</span></div>
               </div>
               {/* What the LETTERS mean (owner, 28 Aug 26). The grid shows codes
                   the Inputs page never explains — FO/HO above all, which are not

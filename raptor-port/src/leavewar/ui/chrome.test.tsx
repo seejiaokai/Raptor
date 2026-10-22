@@ -211,17 +211,17 @@ describe('the colour/mark legend', () => {
     expect(leg.textContent).not.toContain('The arrow points at the half')
   })
 
-  // The figures section (owner, 6 Sep 26): the same colours the boxes wear,
-  // then every column read off the FIGURES catalogue — one source, so this
-  // can never drift from the grid or the picker.
-  it('explains the figures — the colours and each column', () => {
+  /* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — the Legend teaches that one
+     column, no longer every balance the old drawer and picker carried (walker 1's fault 65, the code read's F2). */
+  it('explains the one figure beside each name — LVE — and no other balance column', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('legend-open'))
     const sec = screen.getByTestId('legend-figures')
-    expect(sec.textContent).toContain('white')
-    expect(sec.textContent).toContain('amber')
-    expect(sec.textContent).toContain('+LVE')
-    expect(sec.textContent).toContain('Medical days: ATT C + HL + OML')
+    expect(sec.textContent).toContain('LVE left')
+    expect(sec.textContent).toContain('below zero')
+    expect(sec.textContent).not.toContain('+OIL')
+    expect(sec.textContent).not.toContain('Medical days')
+    expect(sec.textContent).not.toContain('each column')
   })
 })
 

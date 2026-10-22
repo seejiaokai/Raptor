@@ -6,7 +6,7 @@
    The Available rows' red reads the day's Required from the scheduler's plan, so a figure typed there moves the count
    with no reload. undermanned.test.tsx is the list's own behaviour, on the Manning rows alone. */
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { storeBackend } from '../../engine/hooks'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
@@ -15,8 +15,14 @@ import { AVAIL_P } from '../engine'
 import { initStore, saveAvailRow, availRules, setAvailPoints, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
-import { availVerdictAt, dayFacts } from '../sync'
+import { availVerdictAt, dayFacts, manningRedDays } from '../sync'
 import { StageBar } from './Chrome'
+
+/* manningRedDays wrapped so a test can count the bar's counting (F1 below); it still answers as before */
+vi.mock('../sync', async orig => {
+  const m = await orig<typeof import('../sync')>()
+  return { ...m, manningRedDays: vi.fn(m.manningRedDays) }
+})
 
 const mem = new Map<string, string>()
 beforeEach(() => {
@@ -76,5 +82,21 @@ describe('an Available row at red counts; at amber it does not', () => {
     expect(screen.getByTestId('undermanned').textContent).toBe(`${RED.length} red ›`)       // D1243: the Manning button's right half
     act(() => { setFlyDays([{ iso: TUE, p: dayFacts(TUE).availP! + 1 }]) })
     expect(screen.getByTestId('undermanned').textContent).toBe(`${RED.length + 1} red ›`)
+  })
+})
+
+/* THE M2 CODE READ'S F1 (23 Oct 26): the bar now stands inside the grid card and renders with every grid render — a
+   month drawn mid-scroll, a row dragged over. Its count of the red days must run only when what it counts moves. */
+describe('the bar counts the red days only when what it counts moves', () => {
+  it('a redraw with nothing changed runs no count; a change to the war does', () => {
+    const counted = vi.mocked(manningRedDays)
+    const { rerender } = render(<StageBar manningOpen />)
+    const once = counted.mock.calls.length
+    expect(once).toBeGreaterThan(0)
+    rerender(<StageBar manningOpen={false} />)
+    rerender(<StageBar manningOpen extra={<span />} />)
+    expect(counted.mock.calls.length, 'two redraws of the grid, nothing counted again').toBe(once)
+    act(() => setAvailPoints(AVAIL_P, { amber: 2, red: 1 } as any))
+    expect(counted.mock.calls.length, 'the war changed: counted again').toBeGreaterThan(once)
   })
 })

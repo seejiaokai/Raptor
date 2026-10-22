@@ -90,7 +90,8 @@ export function availVerdict(have: number | null, required: number | null, point
 
 /** One row a red day is red by, with the figure that broke it — the list's line ("Available P 23"). */
 export interface RedLine {
-  /** an Available row's line: the day's Required, so the list reads "Available P 23 of 24" as drawn (r19c, D1243) */
+  /** an Available row's line: the figure it fell under — the day's Required plus the row's red point — so the list reads
+   *  "Available P 23 of 24" as drawn (r19c, D1243) with the default "+ 0", and "25 of 26" with "+ 2" */
   need?: number
   ruleId: string
   label: string
@@ -105,7 +106,10 @@ export function availRedLines(rules: { p: ManningRule; w: ManningRule }, day: { 
   const out: RedLine[] = []
   for (const s of ['p', 'w'] as const) {
     const d = day[s]
-    if (availVerdict(d.have, d.required, availPointsOf(rules[s])) === 'red') out.push({ ruleId: rules[s].id, label: rules[s].label, have: d.have!, need: d.required! })
+    const pts = availPointsOf(rules[s])
+    /* "of N" is the figure the row fell under — Required plus its red point — so a red point of "+ 2" reads "25 of 26",
+       never "25 of 24", which would list a day with more than Required as breaking a rule (the M2 code read's F3) */
+    if (availVerdict(d.have, d.required, pts) === 'red') out.push({ ruleId: rules[s].id, label: rules[s].label, have: d.have!, need: d.required! + pts.red })
   }
   return out
 }
