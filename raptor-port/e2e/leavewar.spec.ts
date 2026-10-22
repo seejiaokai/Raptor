@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
+import { elevenCounters, openManning, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
 
 /** Open the figure picker. The whole column header is the control — the two
  *  arrows it replaced were 13px glyphs the owner could not hit on a phone.
@@ -3191,6 +3191,7 @@ test('on a desktop the scrim stays in the way of the mouse', async ({ page }) =>
   expect(under).toEqual({ scrim: true, scrimPE: 'auto' })
 })
 
+// M2: re-expressed — the "Viewing as" badge and the title sheet are gone (D1173, D1245); My leave answers instead (D1141).
 // The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
 // the grid, the title sheet answers with THEIR numbers, and any callsign
 // opens that person's all-figures sheet, member included (owner, 17 Aug 26).
@@ -3206,19 +3207,15 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   const other = await page.locator('[data-testid="row-prowler"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
   expect(bg).not.toBe(other)
 
-  // The persistent viewer badge names whose page this is (owner, 28 Aug 26).
-  await expect(page.locator('[data-testid="lw-viewing"]')).toContainText('Ranger')
-
-  await openPicker(page)
-  // The picker leads with VIEWING AS <callsign> (28 Aug 26), not a grey aside.
-  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('VIEWING AS')
-  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('Ranger')
-  // The row still answers with the viewer's OWN number, drawn as the same
-  // two-line box the grid shows (6 Sep 26 — the per-row "N left, yours" words
-  // went when the box arrived; the key at the top of the sheet says what the
-  // lines mean). A dash here would mean the sheet lost the viewer.
-  await expect(page.locator('[data-testid="counter-lve"] .fb')).toHaveText(/^-?[\d.]+$/)
-  await page.locator('[data-testid="counter-cancel"]').click()
+  // RE-EXPRESSED FOR M2: the "Viewing as" badge is gone (D1173) and so is the title sheet — the column's figure
+  // picker (D1245, the column beside the names is LVE alone). What answers with the viewer's OWN numbers now is
+  // "My leave" on the top row (D1141): his LVE, OIL and days pending — and its LVE is the very figure his row shows.
+  await expect(page.locator('[data-testid="lw-viewing"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="counter-pick"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="my-leave-lve"]')).toHaveText(/^LVE -?[\d.]+$/)
+  await expect(page.locator('[data-testid="my-leave-oil"]')).toHaveText(/^OIL -?[\d.]+$/)
+  const rowLve = (await page.locator('[data-testid="bal-bane"] .fb').textContent())!.trim()
+  await expect(page.locator('[data-testid="my-leave-lve"]')).toHaveText(`LVE ${rowLve}`)
 
   await page.locator('[data-testid="person-prowler"]').click()
   const figs = page.locator('[data-testid="person-figures"]')
@@ -3256,52 +3253,74 @@ test('nothing in the callsign column is cut off', async ({ page }) => {
 // AFTER rearrange (no spring to the far edge). jsdom can't see the single line;
 // this is the browser-measured gate the perf checklist asks for, run at BOTH
 // widths (phone and desktop are different CSS paths).
+// M2: re-expressed — the grid's own bar is [Manning] · the open dates · … · − + · Legend (D1254); ⚙ moved to the tab
+// row's right end, OIL became a tab beside Grid, and Rearrange went into ⚙ (D1254). Still one row, in that order, on
+// the screen, at both widths.
 test('the counter controls sit on one row, in order, OIL right after rearrange, zoom after OIL', async ({ page }) => {
   await lwRole(page, 'admin')
-  const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker', 'lw-zoom-out', 'lw-zoom-in']
-  const box: Record<string, { x: number; y: number; w: number }> = {}
-  for (const id of ids) {
-    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
-    box[id] = { x: b.x, y: b.y, w: b.width }
+  const rowOf = async (ids: string[]) => {
+    const box: Record<string, { x: number; y: number; w: number }> = {}
+    for (const id of ids) {
+      const b = (await page.locator(`#page-leavewar [data-testid="${id}"]`).boundingBox())!
+      box[id] = { x: b.x, y: b.y + b.height / 2, w: b.width }
+    }
+    // one row: every control shares a middle within a few px
+    const mids = ids.map(id => box[id]!.y)
+    expect(Math.max(...mids) - Math.min(...mids), `${ids.join(' · ')} are not one row`).toBeLessThan(4)
+    // left to right, in the order given
+    for (let i = 1; i < ids.length; i++) expect(box[ids[i]!]!.x, `${ids[i]} is not right of ${ids[i - 1]}`).toBeGreaterThan(box[ids[i - 1]!]!.x)
+    // the whole row fits the viewport (the phone is the real guard)
+    const last = box[ids[ids.length - 1]!]!
+    expect(last.x + last.w).toBeLessThanOrEqual(page.viewportSize()!.width)
+    return box
   }
-  // one row: every control shares a top within a few px
-  const tops = ids.map(id => box[id].y)
-  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(4)
-  // left-to-right: Manning, settings, rearrange, OIL, −, +
-  for (let i = 1; i < ids.length; i++) expect(box[ids[i]!].x).toBeGreaterThan(box[ids[i - 1]!].x)
-  // the whole row fits the viewport (the phone is the real guard)
-  const last = box['lw-zoom-in']!
-  expect(last.x + last.w).toBeLessThanOrEqual(page.viewportSize()!.width)
-  // OIL sits right after rearrange — one inter-button gap, not a spring to the edge
-  expect(box['oil-tracker']!.x - (box['roster-arrange']!.x + box['roster-arrange']!.w)).toBeLessThan(24)
+  // the grid's own bar, as the page opens (no red day, so Manning is whole — D1243)
+  const bar = await rowOf(['counts-toggle', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open'])
+  // the zoom pair is a pair: − then + one gap apart, not spread
+  expect(bar['lw-zoom-in']!.x - (bar['lw-zoom-out']!.x + bar['lw-zoom-out']!.w)).toBeLessThan(24)
+  // the tab row: Grid, OIL right after it, ⚙ at its right end
+  await rowOf(['lw-tab-grid', 'oil-tracker', 'settings-open'])
+  // nothing of the old bar is left on the grid card: no ⚙, no OIL, no Rearrange toggle
+  for (const id of ['settings-open', 'oil-tracker', 'roster-arrange']) await expect(page.locator(`#page-leavewar .card-hd [data-testid="${id}"]`)).toHaveCount(0)
   // the "… · 365 days · 50 people" line is gone
   await expect(page.locator('.card-hd')).not.toContainText('people')
 })
 
 // A member's counter bar is just Manning · OIL, adjacent (owner, 5 Sep 26 — "in
 // normal user it's just right of manning"). Runs as the default member role.
+// M2: re-expressed — OIL is a tab on the page's tab row now, for a member as for an admin (D1254), so the member's bar
+// is the grid's own bar, the same for everyone: Manning, the open dates right after it, then the zoom pair and Legend.
 test('a member counter bar is Manning then OIL, adjacent, one row', async ({ page }) => {
   await expect(page.locator('[data-testid="settings-open"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="settings-rearrange"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
   const m = (await page.locator('[data-testid="counts-toggle"]').boundingBox())!
-  const o = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
-  expect(o.x).toBeGreaterThan(m.x)                       // OIL right of Manning
-  expect(Math.abs(o.y - m.y)).toBeLessThan(4)            // same row
+  const o = (await page.locator('[data-testid="open-chip"]').boundingBox())!
+  const mid = (b: { y: number; height: number }) => b.y + b.height / 2
+  expect(o.x).toBeGreaterThan(m.x)                       // the open dates right of Manning
+  expect(Math.abs(mid(o) - mid(m))).toBeLessThan(4)      // same row
   expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
-  // the zoom pair follows OIL on the same row, for a member too (6 Sep 26)
+  // the zoom pair follows on the same row, for a member too (6 Sep 26)
   const z = (await page.locator('[data-testid="lw-zoom-in"]').boundingBox())!
   expect(z.x).toBeGreaterThan(o.x)
-  expect(Math.abs(z.y - m.y)).toBeLessThan(4)
+  expect(Math.abs(mid(z) - mid(m))).toBeLessThan(4)
+  // and OIL is the member's tab, right after Grid on the tab row
+  const g = (await page.locator('[data-testid="lw-tab-grid"]').boundingBox())!
+  const t = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
+  expect(t.x).toBeGreaterThan(g.x)
+  expect(Math.abs(mid(t) - mid(g))).toBeLessThan(4)
+  expect(t.x - (g.x + g.width)).toBeLessThan(24)
 })
 
 // In Rearrange the reorder grip shares the frozen NAME cell, to the LEFT of the
 // label (owner, 5 Sep 26). This is the gate that finally VISITS Rearrange: the
 // existing clip test runs in normal view, where the grip is not drawn, so it
 // could never have caught the grip pushing "Crew sets" past the 76px phone cell.
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done"; the counters are opened by Manning first on a phone (D1258, in elevenCounters).
 test('in Rearrange the counter grip is left of the name and nothing clips', async ({ page }) => {
   await lwRole(page, 'admin')
   await elevenCounters(page)   // the app starts with no counters (D669); this is about a counter's row
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   const clipped = await page.evaluate(() =>
     [...document.querySelectorAll('.mx tbody.counts .who')]
       .map(el => el as HTMLElement)
@@ -3341,6 +3360,7 @@ test('in Rearrange the counter grip is left of the name and nothing clips', asyn
 // shortened. Instead extend the horizontal space required to show their name.
 // Same as before rearrange was selected." The frozen name column grows by the
 // grip's footprint in Rearrange, so the callsign keeps the width it had at rest.
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done".
 test('in Rearrange the name column grows by the grip: callsigns keep their width, the frozen pair stays joined', async ({ page }) => {
   await lwRole(page, 'admin')
   const row = '.mx tbody.mxbody tr[data-testid^="row-"]'
@@ -3357,7 +3377,7 @@ test('in Rearrange the name column grows by the grip: callsigns keep their width
   }, row)
   const restClipped = await clippedNames()
   const rest = await geo()
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   const arr = await geo()
   expect(arr.whoW).toBeGreaterThan(rest.whoW)
   expect(arr.gap).toBeLessThan(1)
@@ -3390,6 +3410,13 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
   expect(before).toBe('-2')
 })
 
+/** "+ New period" is the period list's last line since the overhaul's M2, an admin's only (D1244) — no "+ New" button on
+ *  the row any more: the new-period window is opened by choosing that line, the way a person does. */
+async function newPeriod(page: Page) {
+  await page.selectOption('[data-testid="war-picker"]', { label: '+ New period' })
+}
+
+// M2: re-expressed — the window opens from "+ New period", the period list's last line (D1244).
 // The create sheet renders OUTSIDE `.topbar` because that element carries
 // `backdrop-filter`, which makes it the containing block for any
 // `position: fixed` descendant — the sheet would otherwise resolve its
@@ -3398,7 +3425,7 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
 // layout at all. This is the test that caught it.
 test('the new-leave-war sheet is anchored to the viewport, not the topbar', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="war-new"]').click()
+  await newPeriod(page)
 
   const sheet = page.locator('[data-testid="war-sheet"]')
   await expect(sheet).toBeVisible()
@@ -3415,36 +3442,47 @@ test('the new-leave-war sheet is anchored to the viewport, not the topbar', asyn
   expect(view.height - (box.y + box.height)).toBeLessThan(40)
 
   const bar = (await page.locator('#page-leavewar .topbar').boundingBox())!
-  expect(box.y).toBeGreaterThan(bar.y + bar.height)
+  // The fault itself: inside the bar, the sheet was drawn in the bar's own box at the top of the page. Since M2 the tab
+  // row is taller (its 36-tall tabs, D1254), and on a phone this tall sheet reaches a little over the row's lower edge —
+  // a sheet over the page, as every sheet is — so "its top is under the bar" no longer says anything about the fault
+  // there. What is pinned on a phone: it is not the bar's child, and its foot is at the screen's foot, far below the bar.
+  if (isPhone()) {
+    expect(await sheet.evaluate(el => !!el.closest('.topbar'))).toBe(false)
+    expect(box.y + box.height).toBeGreaterThan(bar.y + bar.height + 200)
+  } else expect(box.y).toBeGreaterThan(bar.y + bar.height)
 })
 
 // A single month, deliberately: the owner settled that a period is any range
 // they choose, down to one month, and this is the short end of that. The
 // dates are in 2028 because the two seeded wars now cover the whole of 2026
 // and 2027 — with year-long wars there is no free month any nearer.
+// M2: re-expressed — opened from "+ New period", which stays the period list's last line (D1244).
 test('an admin creates a leave war, and it joins the picker', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="war-new"]').click()
+  await newPeriod(page)
   await page.fill('[data-testid="war-name"]', 'JUL 28')
   await pickSpan(page, 'war', '2028-07-01', '2028-07-31')
   await page.locator('[data-testid="war-create"]').click()
 
   await expect(page.locator('[data-testid="war-sheet"]')).toHaveCount(0)
+  // the new period joins the list, and "+ New period" stays its last line (D1244)
   await expect(page.locator('[data-testid="war-picker"] option')).toHaveText([
-    'JAN - DEC 26', 'JAN - DEC 27', 'JUL 28',
+    'JAN - DEC 26', 'JAN - DEC 27', 'JUL 28', '+ New period',
   ])
 })
 
+// M2: re-expressed — opened from "+ New period" (D1244); the periods are counted without that line.
 test('overlapping dates are refused, with the reason on screen', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="war-new"]').click()
+  await newPeriod(page)
   await page.fill('[data-testid="war-name"]', 'CLASH')
   await pickSpan(page, 'war', '2026-05-01', '2026-08-31')
   await page.locator('[data-testid="war-create"]').click()
 
   await expect(page.locator('[data-testid="war-problem"]')).toBeVisible()
   await expect(page.locator('[data-testid="war-sheet"]')).toBeVisible()
-  await expect(page.locator('[data-testid="war-picker"] option')).toHaveCount(2)
+  // still the two periods — the list's last line is "+ New period", not a period (D1244)
+  await expect(page.locator('[data-testid="war-picker"] option:not([data-testid="war-new"])')).toHaveCount(2)
 })
 
 // The bidding window is the answer to the owner's "the admin can select which
@@ -3713,7 +3751,9 @@ test('every date column names its weekday', async ({ page }) => {
 // the view for the leave counter is too small." They were — two 13px glyphs
 // inside a 44px column. This is the size question, and only a browser can
 // answer it.
+// M2: skipped — the figure picker is gone (D1245, the column beside the names is LVE alone).
 test('the counter control is a real tap target on a phone', async ({ page }) => {
+  test.skip(true, 'D1245 — the column beside the names is LVE alone since M2: no figure picker, so no control to size')
   await page.setViewportSize({ width: 390, height: 760 })
   const head = (await page.locator('[data-testid="counter-pick"]').boundingBox())!
   // The whole column header is the button now, so it is as wide as the
@@ -3738,7 +3778,9 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
   }
 })
 
+// M2: skipped — the figure picker is gone (D1245, the column beside the names is LVE alone).
 test('the counter sheet changes the column, and every row with it', async ({ page }) => {
+  test.skip(true, 'D1245 — the column beside the names is LVE alone since M2: no sheet to change it')
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
   expect(await shown()).toBe('+LVE')
   const top = () => page.locator('[data-testid="bal-slipway"] .fb').textContent()
@@ -3911,9 +3953,11 @@ test('no event widens its day: the grid prints a short form, the Event row stays
 // day's cell sits exactly under its date and over the roster's cell for that day, at phone and desktop size; a figure
 // in them moves no column and adds no sideways scroll to the page; and what they show is what a browser PAINTS — the
 // Required figure in the accent, an Available under its Required in red. None of it is visible to jsdom.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('the four rows at the foot of the Manning block keep every day column in line, and paint what they mean', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const rows = ['req-p', 'req-w', 'avail-p', 'avail-w']
   for (const r of rows) await expect(page.locator(`[data-testid="fly-row-${r}"]`)).toBeVisible()
   const box = (sel: string) => page.locator(sel).evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, w: b.width, h: b.height } })
@@ -3985,9 +4029,11 @@ test('the four rows at the foot of the Manning block keep every day column in li
 // exactly over its cell, the strip under the four rows and on the screen, no day column moved by any of it — and on a
 // phone that NO input takes the focus (so the phone's keyboard never comes up and the page never zooms), with the
 // app's own pad docked at the foot of the screen, clear of the cell being typed, every key big enough for a thumb.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('a Required figure is typed straight into its cell: one box on a desktop, the app’s own number pad on a phone', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const cell = (r: string, d: string) => page.locator(`[data-testid="${r}-${d}"]`)
   const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
   const days = ['2026-01-07', '2026-01-08', '2026-01-09']
@@ -4114,9 +4160,11 @@ test('the Settings window never scrolls sideways: nothing in it is wider than th
   expect(await spill(), 'the window with "Who wins" open').toBeLessThanOrEqual(0)
 })
 
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('Days opens from the Leave War’s settings: the month sets a date’s class, and the grid behind it follows at once', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // the grid behind Days is read through the Required rows, folded on a phone since M2 (D1258)
   const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
   const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
   const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
@@ -4220,9 +4268,11 @@ test('Days opens from the Leave War’s settings: the month sets a date’s clas
 // the month it is about; on a phone the bottom panel, with Save on the screen even when "A date" adds a box; the
 // heading it came from big enough for a thumb; and that a saved rule reaches the month AND the war's rows behind both
 // windows — a whole weekday at once — and comes back out with Remove.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('a weekday’s heading on Days sets every such day from a date onward, and the war’s rows follow', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // the war's rows behind Days are the Required rows, folded on a phone since M2 (D1258)
   const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
   const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
   const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
@@ -4648,9 +4698,11 @@ test('Undo and Redo leave the grid where it is when the changed day is on screen
 // or opening the typing box on the drag's own trailing click; that the panel sits wholly on the screen with nothing
 // drawn over the page; that the page behind it really takes a press while it is up; and that its number box is big
 // enough not to make a phone zoom the page.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('several Required cells are picked with a drag and given one number, and the panel leaves the grid behind it working', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await page.evaluate(() => { (window as any).setFlyDays([{ iso: '2026-01-07', cls: 'nf' }]) })
   const cell = (r: string, d: string) => page.locator(`[data-testid="${r}-${d}"]`)
   await expect(cell('req-p', '2026-01-07')).toHaveText('NF')
@@ -4742,9 +4794,11 @@ test('several Required cells are picked with a drag and given one number, and th
 // And rename it with free text"). jsdom proves what the form offers and saves (availform.test.tsx); the browser says
 // the name button sits on its row without making it taller or clipping in the frozen column, that the form opens
 // wholly on the screen at phone size, and that the renamed row and its new figure are what the grid then draws.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('an Available row’s name opens the counter form for it — renamed and told to leave out OCU, the row follows', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
   const name = page.locator('[data-testid="fly-name-avail-p"]')
   await expect(name).toBeVisible()
@@ -4823,22 +4877,26 @@ test('the people’s-days panel stays up with no veil: a new drag replaces what 
 // box is incorrect" (the open-bidding outline cutting through the Available rows instead of sitting round the
 // dates). Both were the hand drawing's — nothing re-measured after the rows were moved in the page — but neither is
 // taken on trust: this is the built grid, in a real browser, at phone and desktop size, Figures panel open and shut.
+// M2: re-expressed — the grid's order is months, dates, Manning (D1256), the outline starts at the dates, the Figures drawer is gone (D1245), the rows opened first on a phone (D1258).
 test('in the Manning block the four rows cover no month button, and the open-bidding outline stays round the dates', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await page.evaluate(() => { (window as any).setFlyRun('2026-01-02', { p: 16, w: 16 }) })
   await expect(page.locator('[data-testid="req-p-2026-01-02"]')).toHaveText('16')
   await elevenCounters(page)   // the squadron's own counts, for the four rows to sit under (the app starts with none — D669)
   const rect = (sel: string) => page.locator(sel).first().evaluate(el => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } })
 
-  /* the order down the page: the squadron's counts, the four rows, the month buttons, the dates */
+  /* the order down the page since M2 (D1256): the month buttons, the dates, then the Manning block straight under them —
+     the squadron's counts, then the four rows */
+  const firstCount = await rect('.mx tbody.counts > tr')
   const lastCount = await rect('[data-testid="count-scn"]')
-  const first = await rect('[data-testid="fly-row-req-p"]'), last = await rect('[data-testid="fly-row-avail-w"]')
+  const first = await rect('[data-testid="fly-row-req-p"]')
   const strip = await rect('[data-testid="month-strip"]')
   const head = await rect('[data-testid="head-2026-01-02"]')
-  expect(first.top).toBeGreaterThanOrEqual(lastCount.bottom - 1)
-  expect(strip.top).toBeGreaterThanOrEqual(last.bottom - 1)
   expect(head.top).toBeGreaterThanOrEqual(strip.bottom - 1)
+  expect(firstCount.top).toBeGreaterThanOrEqual(head.bottom - 1)
+  expect(first.top).toBeGreaterThanOrEqual(lastCount.bottom - 1)
 
   /* (the check below must not pass for want of anything to check: the strip really holds the year's twelve buttons) */
   expect(await page.locator('[data-testid="month-strip"] button').count()).toBeGreaterThanOrEqual(12)
@@ -4855,18 +4913,16 @@ test('in the Manning block the four rows cover no month button, and the open-bid
       const d = await rect('[data-testid="figdrawer"]'), s = await rect('[data-testid="month-strip"]')
       expect(d.top, `${state}: the Figures panel reaches above the month buttons`).toBeGreaterThanOrEqual(s.bottom - 1.5)
     }
-    /* 3. the green open-bidding outline starts under the month buttons, at the dates — it crosses none of the four rows */
-    const box = await rect('#page-leavewar .lw-bidbox'), s = await rect('[data-testid="month-strip"]'), l = await rect('[data-testid="fly-row-avail-w"]')
+    /* 3. the green open-bidding outline starts under the month buttons, AT the dates. Since M2 the four rows stand under
+       the dates (D1256), inside the dates' own columns, so the outline's top is the dates' top — never above it, and
+       never down in the Manning block (the phone's fault he circled: the outline cutting through the Available rows) */
+    const box = await rect('#page-leavewar .lw-bidbox'), s = await rect('[data-testid="month-strip"]'), h = await rect('[data-testid="head-2026-01-02"]')
     expect(box.top, `${state}: the bidding outline starts above the month buttons`).toBeGreaterThanOrEqual(s.top - 1.5)
-    expect(box.top, `${state}: the bidding outline cuts through the four rows`).toBeGreaterThanOrEqual(l.bottom - 1.5)
+    expect(Math.abs(box.top - h.top), `${state}: the bidding outline does not start at the dates`).toBeLessThanOrEqual(1.5)
   }
   await check('as it opens')
-  /* the Figures panel the other way round from how this size opens (shut on a phone, open on a desktop) */
-  await figBar(page).click()
-  await settleGrid(page)
-  await check('with the Figures panel switched')
+  /* (the Figures panel's other state is not asked again: the drawer is switched off since M2 — D1245) */
   /* and after the block is folded away and brought back: the rows return to the same place, the outline with them */
-  await figBar(page).click()
   await page.locator('[data-testid="counts-toggle"]').click()
   await expect(page.locator('[data-testid="fly-row-req-p"]')).toHaveCount(0)
   await page.locator('[data-testid="counts-toggle"]').click()
@@ -4883,6 +4939,7 @@ test('in the Manning block the four rows cover no month button, and the open-bid
 // four: every row of the block still stands in line under the dates, nothing covers a month button, and the green
 // open-bidding outline still starts at the dates. Then that the order is the squadron's: Undo takes the last drop
 // back, and a reload — signed in as a member — shows the same order.
+// M2: re-expressed — months, dates, then the block (D1256); the outline starts at the dates; Rearrange from ⚙ (D1254); the rows opened first on a phone (D1258).
 test('a counter row is dragged between the fixed rows and below all four, and the grid stays whole', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
@@ -4890,13 +4947,15 @@ test('a counter row is dragged between the fixed rows and below all four, and th
   const refused = await page.evaluate(() => [['ca', 'CA', 'pilot'], ['cb', 'CB', 'wso'], ['cc', 'CC', 'pilot']]
     .filter(([id, label, seat]) => !(window as any).lwSaveManningRule({ id, label, count: { kind: 'people', filter: { seats: [seat] } }, threshold: { amber: 0, red: 0 } })).length)
   expect(refused).toBe(0)
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await page.waitForSelector('[data-testid="count-cc"]')
   const FLY = ['fly-row-req-p', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w']
   const order = () => page.$$eval('.mx tbody.counts > tr', els => els.map(e => e.getAttribute('data-testid')))
   expect(await order()).toEqual(['count-ca', 'count-cb', 'count-cc', ...FLY])
 
+  /* in from ⚙ (D1254); the bar's "⇅ Done" is the way out */
   const toggle = page.locator('[data-testid="roster-arrange"]')
-  await toggle.click()
+  await rearrangeOn(page)
   await settleGrid(page)
   /* in Rearrange the four carry no grip and no cross — a counter does */
   await expect(page.locator('.mx tbody.counts tr.flyrow .drag, .mx tbody.counts tr.flyrow .mrow-btn')).toHaveCount(0)
@@ -4973,13 +5032,15 @@ test('a counter row is dragged between the fixed rows and below all four, and th
       expect(Math.abs(row.cell!.left - g.head.left), `${state}: ${row.id} is out of line with the dates`).toBeLessThan(1)
       expect(Math.abs(row.cell!.width - g.head.width), `${state}: ${row.id}'s day is not as wide as the date above it`).toBeLessThan(1)
     }
-    const last = g.rows[g.rows.length - 1]!
-    expect(g.strip.top, `${state}: the month buttons are not under the block's last row`).toBeGreaterThanOrEqual(last.bottom - 1)
+    /* the grid's order since M2 (D1256): the month buttons, the dates, then the block straight under the dates */
+    const firstRow = g.rows[0]!
     expect(g.head.top, `${state}: the dates are not under the month buttons`).toBeGreaterThanOrEqual(g.strip.bottom - 1)
+    expect(firstRow.top, `${state}: the block's first row is not under the dates`).toBeGreaterThanOrEqual(g.head.bottom - 1)
     expect(g.covered, `${state}: something covers these month buttons`).toEqual([])
     expect(g.box, `${state}: the open-bidding outline is drawn`).not.toBeNull()
     expect(g.box!.top, `${state}: the bidding outline starts above the month buttons`).toBeGreaterThanOrEqual(g.strip.top - 1.5)
-    expect(g.box!.top, `${state}: the bidding outline cuts through the block's rows`).toBeGreaterThanOrEqual(last.bottom - 1.5)
+    /* the outline starts AT the dates — the block's rows stand inside the dates' columns now, under them (D1256) */
+    expect(Math.abs(g.box!.top - g.head.top), `${state}: the bidding outline does not start at the dates`).toBeLessThanOrEqual(1.5)
   }
   await whole('in Rearrange')
   await toggle.click()
@@ -5008,8 +5069,10 @@ test('a counter row is dragged between the fixed rows and below all four, and th
   await page.reload()
   await openLeaveWar(page)
   await putDrawerAway(page)
+  await openManning(page)   // a fresh page on a phone opens them folded again (D1258)
   expect(await order()).toEqual(moved)
   await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="settings-rearrange"]')).toHaveCount(0)
 })
 
 test('a member reads the events and cannot type into them', async ({ page }) => {
@@ -5071,21 +5134,25 @@ test('the counter picker is a contained, squared control', async ({ page }) => {
 // ---- the period label, the contrast, and the under-manned list -----------
 // All three from the owner's review of 10 Aug 26.
 
+// M2: re-expressed — the word is "View", not "Period", and it stands beside the picker on a phone too (D1174).
 test('the period picker says what it is', async ({ page }) => {
-  // On a phone the word beside the picker is gone (owner, D678, 8 Oct 26 — the top of the page is two lines there);
-  // a tablet and a desktop keep it (D679). The picker's own name, below, says "Period" at every size.
-  if (isPhone()) await expect(page.locator('[data-testid="period-label"]')).toHaveCount(0)
-  else await expect(page.locator('[data-testid="period-label"]')).toHaveText('Period')
+  await expect(page.locator('[data-testid="period-label"]')).toHaveText('View')
+  // beside the picker, on its line, before it
+  const lab = (await page.locator('[data-testid="period-label"]').boundingBox())!
+  const pick = (await page.locator('[data-testid="war-picker"]').boundingBox())!
+  expect(lab.x + lab.width).toBeLessThanOrEqual(pick.x + 1)
+  expect(Math.abs((lab.y + lab.height / 2) - (pick.y + pick.height / 2))).toBeLessThan(4)
   // The visible label has to name the control for a screen reader too, not
   // merely sit next to it.
   expect(await page.locator('[data-testid="war-picker"]').getAttribute('aria-label'))
-    .toContain('Period')
+    .toContain('View')
 })
 
 // The complaint was green ink on a green field. Luminance contrast never
 // caught it — the old pair measured ~10.9:1 — so this pins what actually
 // broke: ink that is a tint of its own background's hue gives the eye no
 // edge. A near-neutral ink is the fix, and this is what holds it.
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the tinted chips are not ink in their own background hue', async ({ page }) => {
   /* The `.undermanned` class only exists while some day is red, and on the
      projected 58-man roster the demo breaks no rule — so the red chip needs
@@ -5127,17 +5194,18 @@ test('the picker options are neutral, not the chip green', async ({ page }) => {
    truth (0 days, chip disabled); the three list tests that follow seed a
    red-day fixture of their own through storage, because the list cannot be
    opened otherwise. */
+// M2: re-expressed — the count is the Manning button's right half now, red days only, and it is GONE at 0 (D1243): the
+// button reads "Manning" alone, rather than a disabled "0 days".
 test('the under-manned chip reads 0 days on the projected roster, and is disabled', async ({ page }) => {
   const chip = page.locator('[data-testid="undermanned"]')
-  /* on a phone the label beside the count is gone and the count carries its one word (D678): "Under 0 days" */
-  const zero = isPhone() ? 'Under 0 days' : '0 days'
+  const manning = page.locator('[data-testid="counts-toggle"]')
   /* as the app opens — NO counters, so nothing can be under-manned (D669) */
-  await expect(chip).toHaveText(zero)
-  await expect(chip).toBeDisabled()
+  await expect(chip).toHaveCount(0)
+  await expect(manning).toHaveText(/^\W*Manning$/)
   /* and still 0 once the eleven counters the app used to start with are made: the demo roster breaks none of them */
   await elevenCounters(page)
-  await expect(chip).toHaveText(zero)
-  await expect(chip).toBeDisabled()
+  await expect(chip).toHaveCount(0)
+  await expect(manning).toHaveText(/^\W*Manning$/)
   await expect(page.locator('[data-testid="undermanned-list"]')).toHaveCount(0)
 })
 
@@ -5187,6 +5255,7 @@ async function seedRedDays(page: Page) {
   }, RED_DAYS)
 }
 
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the under-manned chip opens the days that caused it', async ({ page }) => {
   await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
@@ -5200,6 +5269,7 @@ test('the under-manned chip opens the days that caused it', async ({ page }) => 
 // 0x0, so the unit suite proves the right column was MARKED and nothing about
 // whether 365 columns actually moved. 10 Feb is the last red day and sits far
 // off the right edge on both projects.
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('choosing a day jumps the grid to it, clear of the frozen columns', async ({ page }) => {
   await seedRedDays(page)
   const wrap = page.locator('.mx-wrap')
@@ -5226,6 +5296,7 @@ test('choosing a day jumps the grid to it, clear of the frozen columns', async (
   expect(box.hr).toBeLessThanOrEqual(box.wr + 1)
 })
 
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the jumped-to day is visibly marked', async ({ page }) => {
   await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
@@ -5240,6 +5311,7 @@ test('the jumped-to day is visibly marked', async ({ page }) => {
 // The list is positioned from JS precisely so this cannot happen. On a phone
 // the chip sits far enough right that a list anchored to its left edge runs
 // past the viewport and stops being clickable at all.
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the under-manned list stays on screen and its rows are reachable', async ({ page }) => {
   await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
@@ -5465,6 +5537,7 @@ test('CAT sub-headings split the ops groups on desktop and fold away on a phone'
   else await expect(sub).toBeHidden()   // rendered but display:none — the owner's "just colour code it" on mobile
 })
 
+// M2: re-expressed — in from ⚙'s "⇅ Rearrange the grid", out by the bar's "⇅ Done", which goes when Rearrange ends (D1254).
 test('an admin hand-drags the roster from the ⇅ toggle, which is also the way out; a member gets no tool', async ({ page }) => {
   await lwRole(page, 'admin')
   const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid').slice(4)))
@@ -5472,9 +5545,12 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
   const toggle = page.locator('[data-testid="roster-arrange"]')
   const gone = page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')
 
+  /* since M2 the way in is ⚙'s "⇅ Rearrange the grid" (D1254); the lit "⇅ Done" on the grid's bar is the way out, and
+     is drawn only while Rearrange is on */
+  await expect(toggle).toHaveCount(0)
   if (page.viewportSize()!.width >= 700) {
     // Pointer drag (works on touch too): move the top row down past the fifth.
-    await page.locator('[data-testid="roster-arrange"]').click()
+    await rearrangeOn(page)
     const h = (await page.locator(`[data-testid="drag-${before[0]}"]`).boundingBox())!
     const tgt = (await page.locator(`[data-testid="row-${before[5]}"]`).boundingBox())!
     await page.mouse.move(h.x + 5, h.y + 5)
@@ -5506,12 +5582,12 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
     await expect(gone).toHaveCount(0)
     await expect(toggle).toHaveClass(/\bon\b/)
     await toggle.click()
-    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(toggle).toHaveCount(0)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   } else {
-    // On a phone the toggle is the ⇅ icon alone (the word is hidden), lit while
-    // on; in and out through the same button, nothing else appears.
-    await toggle.click()
+    // On a phone "Done" is the ⇅ icon alone (the word is hidden), lit while
+    // on; in from ⚙, out through Done, nothing else appears.
+    await rearrangeOn(page)
     await expect(toggle).toHaveClass(/\bon\b/)
     await expect(gone).toHaveCount(0)
     const lbl = toggle.locator('.rtlbl')
@@ -5519,13 +5595,15 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
     expect((await toggle.textContent())!.trim().startsWith('⇅')).toBe(true)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(1)
     await toggle.click()
-    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(toggle).toHaveCount(0)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   }
 
   await lwRole(page, 'member')
   await expect(gone).toHaveCount(0)
   await expect(toggle).toHaveCount(0)
+  // a member has no ⚙, so no way in either
+  await expect(page.locator('[data-testid="settings-open"], [data-testid="settings-rearrange"]')).toHaveCount(0)
 })
 
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26). During a Rearrange drag exactly one
@@ -5535,11 +5613,12 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
    after the drop the same frame flashes once on the row where it LANDED and
    is gone within a second. The phone drives a real CDP touch (the machine arms
    on pointerdown, no hold); the desktop a mouse. */
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254).
 test('a picked-up row wears one frame the width of the visible grid, and the row it lands on flashes once', async ({ page }) => {
   await lwRole(page, 'admin')
   const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid')!.slice(4)))
   const before = await ids()
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   const src = before[1]!, dst = before[5]!
   /* The drop point has to be ON SCREEN before the gesture starts: the phone's
      viewport is 390x664 and the sixth roster row sits ~700px down, and a touch
@@ -5628,6 +5707,7 @@ test('a picked-up row wears one frame the width of the visible grid, and the row
   await expect(page.locator('.lift-frame.lift-land')).toHaveCount(0, { timeout: 1500 })
 })
 
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done".
 test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {
   // The free-text label editor was REMOVED (owner, 28 Aug 26 — "i can edit
   // personnel, dont need to show that, just leave it as the callsign/name").
@@ -5635,7 +5715,7 @@ test('a personnel row shows its callsign, with no edit box, in Rearrange', async
   // Rearrange too — no edit box in either mode, at every width.
   await lwRole(page, 'admin')
   await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
   // the callsign is what the name column shows
   await expect(page.locator('[data-testid="row-torque"] .cs')).toHaveText('Ratchet')
@@ -5645,39 +5725,49 @@ test('a personnel row shows its callsign, with no edit box, in Rearrange', async
 /* ---- the 18 Aug 26 layout rework: row order, bracket, frozen header, zoom.
    Browser-gated because every one of these is geometry jsdom cannot see. */
 
+// M2: re-expressed — the grid reads months, dates, Manning, events, roster now (D1256).
 test('the grid reads counts, months, header, events, roster — top to bottom', async ({ page }) => {
   await elevenCounters(page)   // a count row to measure (the app starts with none — D669); the four rows are checked below
+  /* since M2 (D1256): the month buttons, the dates, the Manning rows straight under them, the Event rows, the people */
   const groups = page.locator('#page-leavewar table.mx > *')
-  await expect(groups.nth(0)).toHaveClass('counts')
-  await expect(groups.nth(1)).toHaveClass('mstripe')
-  await expect(groups.nth(2)).toHaveClass('mxhead')
+  await expect(groups.nth(0)).toHaveClass('mstripe')
+  await expect(groups.nth(1)).toHaveClass('mxhead')
+  await expect(groups.nth(2)).toHaveClass('counts')
   await expect(groups.nth(3)).toHaveClass('events')
   // and the order is PAINTED that way, not merely in the DOM
+  const strip = (await page.locator('[data-testid="month-strip"]').boundingBox())!
   const counts = (await page.locator('[data-testid="count-sets"]').boundingBox())!
   const head = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  const event = (await page.locator('[data-testid="event-row-1"]').boundingBox())!
   const firstRow = (await page.locator('[data-testid="group-SXO"]').boundingBox())!
-  expect(counts.y).toBeLessThan(head.y)
-  expect(head.y).toBeLessThan(firstRow.y)
-  /* the four Required / Available rows are the block's LAST rows, above the month buttons */
+  expect(strip.y).toBeLessThan(head.y)
+  expect(head.y + head.height).toBeLessThanOrEqual(counts.y + 1)
+  /* the four Required / Available rows are the block's LAST rows, above the Event rows */
   const lastFly = (await page.locator('[data-testid="fly-row-avail-w"]').boundingBox())!
   expect(counts.y).toBeLessThan(lastFly.y)
-  expect(lastFly.y + lastFly.height).toBeLessThanOrEqual((await page.locator('[data-testid="month-strip"]').boundingBox())!.y + 1)
+  expect(lastFly.y + lastFly.height).toBeLessThanOrEqual(event.y + 1)
+  expect(event.y).toBeLessThan(firstRow.y)
 })
 
 // AS THE APP OPENS (owner, D669, 8 Oct 26): the Manning block comes with NO count rows of its own — only the four
 // Required / Available rows — and the grid is still counts, months, header, events, roster. In a real browser, because
 // a block with nothing but those four rows is a new shape for the frozen columns, the month strip and the outline.
+// M2: re-expressed — months, dates, then the four rows (D1256); the outline starts at the dates; opened first on a phone (D1258); Rearrange from ⚙ (D1254).
 test('with no counters the Manning block is the four rows alone, and the grid still reads top to bottom', async ({ page }) => {
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await expect(page.locator('#page-leavewar [data-testid^="count-"]')).toHaveCount(0)
+  /* since M2 (D1256): the month buttons, the dates, then the block straight under them */
   const groups = page.locator('#page-leavewar table.mx > *')
-  await expect(groups.nth(0)).toHaveClass('counts')
+  await expect(groups.nth(0)).toHaveClass('mstripe')
+  await expect(groups.nth(1)).toHaveClass('mxhead')
+  await expect(groups.nth(2)).toHaveClass('counts')
   await expect(page.locator('#page-leavewar tbody.counts > tr')).toHaveCount(4)
   const rect = (sel: string) => page.locator(sel).first().evaluate(el => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } })
   const first = await rect('[data-testid="fly-row-req-p"]'), last = await rect('[data-testid="fly-row-avail-w"]')
   const strip = await rect('[data-testid="month-strip"]'), head = await rect('#page-leavewar .mx .mxhead th.who')
   expect(first.top).toBeLessThan(last.top)
-  expect(strip.top).toBeGreaterThanOrEqual(last.bottom - 1)
   expect(head.top).toBeGreaterThanOrEqual(strip.bottom - 1)
+  expect(first.top).toBeGreaterThanOrEqual(head.bottom - 1)
   /* every row of the four sits under its date, as wide as it — the column contract holds with nothing above them */
   for (const d of ['2026-01-05', '2026-01-09']) {
     const h = await rect(`[data-testid="head-${d}"]`)
@@ -5692,8 +5782,8 @@ test('with no counters the Manning block is the four rows alone, and the grid st
     .filter(b => { const r = b.getBoundingClientRect(); if (r.right <= 0 || r.left >= innerWidth || !r.width) return false
       const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !(at && (at === b || b.contains(at))) })
     .map(b => b.textContent))).toEqual([])
-  const box = await rect('#page-leavewar .lw-bidbox')
-  expect(box.top).toBeGreaterThanOrEqual(last.bottom - 1.5)
+  const box = await rect('#page-leavewar .lw-bidbox'), date = await rect('[data-testid="head-2026-01-05"]')
+  expect(Math.abs(box.top - date.top), 'the outline starts at the dates (the four rows stand under them — D1256)').toBeLessThanOrEqual(1.5)
   /* folded away and back with the Manning button, for a member */
   await page.locator('[data-testid="counts-toggle"]').click()
   await expect(page.locator('[data-testid="fly-row-req-p"]')).toHaveCount(0)
@@ -5701,12 +5791,14 @@ test('with no counters the Manning block is the four rows alone, and the grid st
   await expect(page.locator('[data-testid="fly-row-avail-w"]')).toBeVisible()
   /* an admin in Rearrange: no grip, no cross, no Archive — there is nothing of the squadron's own to move or delete */
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   await expect(page.locator('[data-testid^="manning-"]')).toHaveCount(0)
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 })
 
+// M2: skipped — the month band row over the dates is gone (D1257): the lit month button and each month's first date name it.
 test('every month wears a bracket spanning exactly its days', async ({ page }) => {
+  test.skip(true, 'D1257 — no month band row (no bracket) over the dates since M2')
   const jan = page.locator('[data-testid="bracket-2026-01"]')
   await expect(jan).toHaveText('JAN')
   const bb = (await jan.boundingBox())!
@@ -5721,16 +5813,20 @@ test('every month wears a bracket spanning exactly its days', async ({ page }) =
 // fixed 72px was too short, so NOV/DEC spilled onto the bracket bar below
 // (owner, 19 Aug 26). The cell now measures the strip and reserves its real
 // height, so the last row must sit clear of the bracket.
+// M2: re-expressed — the bracket bar is gone (D1257); the row under the month buttons is the dates now (D1256), so the
+// strip's reserved height is proved against the dates' header.
 test('the month strip fits its wrapped rows and clears the bracket bar below', async ({ page }) => {
   for (const m of ['JAN', 'JUN', 'DEC']) await expect(page.locator(`[data-testid="month-${m}"]`)).toBeVisible()
+  await expect(page.locator('[data-testid="month-bracket"]')).toHaveCount(0)
   const dec = (await page.locator('[data-testid="month-DEC"]').boundingBox())!
-  const bracket = (await page.locator('[data-testid="month-bracket"]').boundingBox())!
-  expect(dec.y + dec.height).toBeLessThanOrEqual(bracket.y + 1)
+  const dates = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  expect(dec.y + dec.height).toBeLessThanOrEqual(dates.y + 1)
 })
 
 // The manning counts block collapses on a header toggle, for EITHER role — the
 // default login is a member, so this proves a normal user can hide it (owner,
 // 19 Aug 26).
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('a member can collapse and reopen the manning counts', async ({ page }) => {
   await elevenCounters(page)   // the app starts with no counters (D669)
   await expect(page.locator('[data-testid="count-sets"]')).toBeVisible()
@@ -6152,6 +6248,7 @@ test('the roster does not reflow mid-scroll, only once the scroll settles', asyn
 // form, and it reads real numbers on the real grid. The form is the tallest
 // sheet in the app — the whole-viewport assertion is the point of running
 // this in a browser, on the phone project especially.
+// M2: re-expressed — on a phone the Manning rows are opened by their button to see the new row (D1258).
 test('an admin builds a counter in the form, and the new row counts', async ({ page }) => {
   await lwRole(page, 'admin')
   await page.locator('[data-testid="settings-open"]').click()
@@ -6170,6 +6267,7 @@ test('an admin builds a counter in the form, and the new row counts', async ({ p
   await page.locator('[data-testid="cform-name"]').fill('SXO CREW')
   await page.locator('[data-testid="cf-qual-sxo"]').click()
   await page.locator('[data-testid="cform-save"]').click()
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const row = page.locator('[data-testid="count-sxo-crew"]')
   await expect(row).toHaveCount(1)
   // The seeded world has SXOs on its roster, so the new row shows a real
@@ -6178,6 +6276,7 @@ test('an admin builds a counter in the form, and the new row counts', async ({ p
   await expect(first).not.toHaveText('0')
 })
 
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('deleting a counter takes its row off the grid', async ({ page }) => {
   await lwRole(page, 'admin')
   await elevenCounters(page)   // the app starts with no counters (D669)
@@ -6209,6 +6308,7 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
 // sheet (counters & rows); the on-grid rearrange bar is gone (6 Sep 26) — so this
 // checks each in its place on BOTH projects (the phone is the real guard, the
 // desktop proves it costs nothing).
+// M2: re-expressed — ⚙ and OIL on the tab row, "+ New period" in the period list, Rearrange inside ⚙ and "⇅ Done" on the bar (D1254, D1244).
 test('every admin control is reachable within the viewport', async ({ page }) => {
   await lwRole(page, 'admin')
   const vw = page.viewportSize()!.width
@@ -6219,17 +6319,18 @@ test('every admin control is reachable within the viewport', async ({ page }) =>
     expect(box.x, `${id} starts off the left edge`).toBeGreaterThanOrEqual(0)
     expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
   }
-  // the top row: the OIL tracker, the ⚙ settings entry and the ⇅ rearrange toggle
+  // the top row: the OIL tab and the ⚙ settings entry at its right end (D1254); "+ New period" is a line of the period
+  // list (D1244), which is itself on the screen
   await within('oil-tracker')
   await within('settings-open')
-  await within('roster-arrange')
-  // config controls, folded into ⚙ Settings
+  await within('war-picker')
+  // config controls, folded into ⚙ Settings — Rearrange among them since M2 (D1254)
   await page.locator('[data-testid="settings-open"]').click()
-  for (const id of ['event-add', 'sans-toggle', 'counter-add']) await within(id)
+  for (const id of ['event-add', 'sans-toggle', 'counter-add', 'settings-rearrange']) await within(id)
   await expect(page.locator('[data-testid="counter-reset-all"]')).toHaveCount(0)   // "Reset counters" left with the built-in counters (D669)
   await page.locator('[data-testid="settings-close"]').click()
-  // rearranging adds no control of its own — the lit toggle is the only one
-  await page.locator('[data-testid="roster-arrange"]').click()
+  // rearranging adds one control of its own — "⇅ Done" on the grid's bar, the way out
+  await rearrangeOn(page)
   await within('roster-arrange')
   await expect(page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')).toHaveCount(0)
   await page.locator('[data-testid="roster-arrange"]').click()
@@ -6452,6 +6553,7 @@ test('a green box frames each open stretch, and clears when bidding closes', asy
 // the left green border vanishes while the far right edge stays clear (owner,
 // 7 Sep 26, from the preview). jsdom computes no layout, so only a browser can
 // prove it moved. Pins the `arranging` dep added to measureBidBox.
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done".
 test('the open-bidding box keeps its left edge on 1 Jan through Rearrange', async ({ page }) => {
   await openLeaveWar(page, 'a')   // admin, so Rearrange is available
   await putDrawerAway(page)
@@ -6461,7 +6563,7 @@ test('the open-bidding box keeps its left edge on 1 Jan through Rearrange', asyn
     document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().left)
   const janRest = await jan1Left()
   expect(Math.abs(await boxLeft() - janRest)).toBeLessThanOrEqual(4)  // aligned at rest
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   // Rearrange grows the frozen name column, so 1 Jan shifts right...
   const janArr = await jan1Left()
   expect(janArr).toBeGreaterThan(janRest)
@@ -6891,6 +6993,7 @@ const daySheetFor = async (page: Page, who: string) => {
   await expect(sheet.locator('[data-testid^="dl-approve-"]'), 'the sheet where the bid is decided').toBeVisible()
 }
 
+// M2: left failing on purpose — the APP is wrong here: since the grid's bar moved onto the grid card (D1254) the clash note is a flex item beside it, 227 of 390 wide at 25 from the left, its words run together ("scheduleShow"), not the slim full-width line D827 approved.
 test('on a phone the clash note is a slim line under the two lines of buttons; it opens its list in place, in aligned columns, and a tap opens that day for that person', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size design (D827); the desktop keeps its strip — the test below (D679)')
   await page.setViewportSize({ width: 390, height: 844 })

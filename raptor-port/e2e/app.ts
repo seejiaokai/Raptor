@@ -386,7 +386,36 @@ export async function elevenCounters(page: Page) {
     return rules.filter((r: unknown) => !w.lwSaveManningRule(r)).map((r: any) => r.id)
   }, JSON.parse(JSON.stringify(ELEVEN_COUNTERS)))
   if (refused.length) throw new Error(`elevenCounters: refused ${refused.join(', ')}`)
+  /* the counters are made to be read: on a phone the Manning rows open folded since the overhaul's M2 (D1258), so they
+     are opened the way a person opens them before the first row is waited for — on a desktop they are open already */
+  await openManning(page)
   await page.waitForSelector('[data-testid="count-scn"]')
+}
+
+/* THE MANNING ROWS, OPENED BY THEIR BUTTON (D1258, 22 Oct 26): on a phone the Manning rows — the counters and the four
+   Required / Available rows — open folded, for everyone, so a test that reads or presses one taps "Manning" first; on a
+   desktop they open as before and this does nothing. */
+export async function openManning(page: Page) {
+  const t = page.locator('[data-testid="counts-toggle"]')
+  if ((await t.getAttribute('aria-expanded')) !== 'true') await t.click()
+  await expect(t).toHaveAttribute('aria-expanded', 'true')
+  /* …and kept open when the war's viewer changes under the test. The fold is remembered per person (`lw:manning:<viewer>`)
+     and re-read when the viewer changes; these tests open the war UNSCOPED (openLeaveWar's null viewer), and after a role
+     switch the next sync pass names the signed-in person again — which in production is who the war was scoped to all
+     along. Without this the rows fold away mid-test on that hand-over alone (measured: one setFlyRun after raptorRole).
+     So the choice is written as remembered for whoever the sync may name, as the person's own tap would have written it. */
+  await page.evaluate(() => {
+    try { for (const id of Object.keys((window as any).PEOPLE ?? {})) localStorage.setItem(`lw:manning:${id}`, 'open') } catch { /* view convenience only */ }
+  })
+}
+
+/* INTO REARRANGE THE WAY AN ADMIN GETS THERE (D1254, 22 Oct 26): the ⇅ toggle left the grid's bar for ⚙ — "⇅ Rearrange
+   the grid" turns the drag handles on and closes the window, and the bar then carries "⇅ Done" (`roster-arrange`), the
+   one way out. */
+export async function rearrangeOn(page: Page) {
+  await page.locator('[data-testid="settings-open"]').click()
+  await page.locator('[data-testid="settings-rearrange"]').click()
+  await expect(page.locator('[data-testid="roster-arrange"]')).toBeVisible()
 }
 
 /* ---- THE APP'S ONE DATE CALENDAR ([ONE-DATE-CALENDAR], 13 Oct 26 — src/ui/DateCal.tsx, DateBox.tsx). A date box is a
