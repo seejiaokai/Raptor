@@ -372,9 +372,10 @@ describe('undo and redo do not put a bid back over a medical (B7, W3-F8)', () =>
     setCells([{ personId: 'ammo', date: '2026-02-12' }], 'LL')
     closeBidding()
     setBidState('ammo', '2026-02-12', 'refused')
-    setBidState('ammo', '2026-02-12', 'acknowledged')
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    setBidState('ammo', '2026-02-12', 'pending')
     const st = () => (recsAt('ammo', '2026-02-12').find((x: any) => x.kind === 'request') as any)?.state
-    expect(st()).toBe('acknowledged')
+    expect(st()).toBe('pending')
     expect(globalUndo().ok).toBe(true)
     expect(st()).toBe('refused')
     expect(file('ammo', 'ATT C', 'Feb 12')).toBe(true)

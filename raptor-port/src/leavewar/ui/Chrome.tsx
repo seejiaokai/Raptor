@@ -4,7 +4,7 @@
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { evaluatePeriod, FIGURES, isBiddable, isDuty, memberToday, openFrom, stretchLabel } from '../engine'
+import { boxText, evaluatePeriod, FIGURES, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, openInputWindow, subscribeClashes, type ClashWayOut, type SyncClash } from '../sync'
 import { focusDay, getState, selectWar } from '../state/store'
@@ -15,6 +15,17 @@ import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
 import './chrome.css'
+
+/** One of the Legend's swatches: the grid's OWN box, drawn by the same classes the cell uses (look F — D1175), in a frame
+ *  a cell's size. `fill` a (filled), w (pending), r (refused); `place` where it sits in the cell; `mark` an edge. */
+function LegBox({ code, text, fill = 'a', place = 'whole', mark }: { code: string; text?: string; fill?: 'a' | 'w' | 'r'; place?: 'whole' | 'top' | 'bot'; mark?: 'raptor' | 'moved' }) {
+  const t = text ?? boxText(code)
+  return (
+    <span className="leg-box">
+      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.length > 2 ? ' wide' : ''}${mark ? ` ${mark}` : ''}`}>{t}</span>
+    </span>
+  )
+}
 
 /** Kept in step with `.umlist`'s width in chrome.css — the clamp has to know
  *  how wide the thing it is clamping actually is. */
@@ -389,23 +400,43 @@ export function StageBar() {
           >
             <div className="umlist-hd">What the grid is telling you</div>
             <div className="leglist-body">
-              <div className="leg-sec">The fill colour — where a bid stands</div>
-              <div className="leg-row"><span className="leg-sw appr">LL</span><span className="leg-t">Approved</span></div>
-              <div className="leg-row"><span className="leg-sw tbc">LL</span><span className="leg-t">Ack — seen, waiting on a decision</span></div>
-              <div className="leg-row"><span className="leg-sw ref">LL</span><span className="leg-t">Refused</span></div>
-              <div className="leg-sec">The left edge — where it came from</div>
-              <div className="leg-row"><span className="leg-sw raptor">LL</span><span className="leg-t">Filed on the Inputs page — change it there, not here</span></div>
+              {/* LOOK F's Legend, as drawn (`docs/mock/lw-overhaul/full/r7-07-legend-phone.png` — D1175, D1158, D1160,
+                  D1167): the colour is the kind, the fill where it stands, the size how much of the day. Every swatch is
+                  the grid's own box (`LegBox`, the same classes the cell draws), so the key cannot say a colour the grid
+                  does not paint. */}
+              <div className="leg-sec">The colour: what kind</div>
+              <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Local leave</span></div>
+              <div className="leg-row"><LegBox code="OL" /><span className="leg-t">Overseas leave</span></div>
+              <div className="leg-row"><LegBox code="OIL" /><span className="leg-t">Off in lieu (OIL; FO a day credited, HO half a day; a star, the app credited it)</span></div>
+              <div className="leg-row"><LegBox code="CCL" /><span className="leg-t">Other leave: CCL, FCL, PL, CL, EL</span></div>
+              <div className="leg-row"><LegBox code="CSE" /><span className="leg-t">Course</span></div>
+              <div className="leg-row"><LegBox code="OD" /><span className="leg-t">Overseas duty</span></div>
+              <div className="leg-row"><LegBox code="ATTC" text="C" /><span className="leg-t">Medical: B, C, OML, HL</span></div>
+              <div className="leg-sec">The fill: where it stands</div>
+              <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Approved</span></div>
+              <div className="leg-row"><LegBox code="LL" fill="w" /><span className="leg-t">Pending a decision</span></div>
+              <div className="leg-row"><LegBox code="LL" fill="r" /><span className="leg-t">Refused</span></div>
+              <div className="leg-sec">The size: how much of the day</div>
+              <div className="leg-row"><LegBox code="LL" /><span className="leg-t">A whole day</span></div>
+              <div className="leg-row"><LegBox code="LL" place="top" /><span className="leg-t">Morning (AM)</span></div>
+              <div className="leg-row"><LegBox code="LL" place="bot" /><span className="leg-t">Afternoon (PM)</span></div>
+              <div className="leg-row">
+                <span className="leg-box"><span className="c k-oil s-a left">FO</span><span className="c k-ol s-r right">OL</span></span>
+                <span className="leg-t">Two entries on one day</span>
+              </div>
+              <div className="leg-sec">The dates</div>
+              <div className="leg-row"><span className="leg-box leg-open" /><span className="leg-t">Open for bidding</span></div>
+              <div className="leg-row"><span className="leg-box leg-shut" /><span className="leg-t">Not open for bidding</span></div>
+              <div className="leg-sec">The left edge: where it came from</div>
+              <div className="leg-row"><LegBox code="LL" mark="raptor" /><span className="leg-t">Filed on the Inputs page: change it there, not here</span></div>
               {/* the moved stripe: any move of a leave already approved wears it (D1177 — no longer only once bidding closed) */}
-              <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
+              <div className="leg-row"><LegBox code="LL" mark="moved" /><span className="leg-t">Moved here from another day</span></div>
               {/* [ARCH-STACK] step 4 — the corner mark: one code per day, the
                   rest behind a count (owner comp, 19 Sep 26) */}
               <div className="leg-sec">The corner — more on the day</div>
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk more">+1</i></span><span className="leg-t">More on this day — tap to see every entry</span></div>
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk warn">!</i></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
               <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk po">PO</i></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
-              <div className="leg-sec">The <b>*</b> — a half day</div>
-              <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">AM (before the code)</span></div>
-              <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">PM (after the code)</span></div>
               {/* The figures (owner, 6 Sep 26): the colours the boxes and the
                   column titles wear, then what each column counts — read off
                   the figure catalogue so this can never drift from the grid. */}
@@ -432,7 +463,7 @@ export function StageBar() {
                   <div className={'leg-sec' + (g.onlyHere ? ' leg-sec-here' : '')}>{g.group}</div>
                   {g.rows.map(r => (
                     <div className="leg-row" key={r.show}>
-                      <span className={'leg-sw ' + (isDuty(r.show) ? 'sc' : !isBiddable(r.show) ? 'info' : 'plain')}>{r.show}</span>
+                      <LegBox code={r.show} />
                       <span className="leg-t">{r.mean}</span>
                     </div>
                   ))}

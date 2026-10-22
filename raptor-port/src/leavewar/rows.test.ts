@@ -133,9 +133,10 @@ describe('a bid is one row', () => {
     setCell('ramp', D, 'LL')
     const id = idsAt('ramp', D)[0]!
     J.log.length = 0
-    expect(decideRequestById('ramp', D, id, 'acknowledged')).toBe(true)
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    expect(decideRequestById('ramp', D, id, 'refused')).toBe(true)
     expect(J.log.map(o => o[0] + ' ' + o[1])).toEqual([`put rec:${warId()}:${id}`])
-    expect(JSON.parse(recRow(J.be, id)!).state).toBe('acknowledged')
+    expect(JSON.parse(recRow(J.be, id)!).state).toBe('refused')
   })
 
   /* the group-wide walk (30 Sep 26, W3 finding 2): the decision moved its record to the END of the day's list, so the
@@ -147,7 +148,7 @@ describe('a bid is one row', () => {
     const [am, pm] = idsAt('ramp', D)
     const pmBytes = recRow(J.be, pm!)
     J.log.length = 0
-    for (const bid of ['acknowledged', 'refused'] as const) {
+    for (const bid of ['refused', 'pending'] as const) { /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
       expect(decideRequestById('ramp', D, am!, bid)).toBe(true)
       expect(J.log.map(o => o[0] + ' ' + o[1]), bid).toEqual([`put rec:${warId()}:${am}`])
       expect(recRow(J.be, pm!), 'the other record, byte for byte').toBe(pmBytes)
@@ -259,11 +260,12 @@ describe('two people at once', () => {
     /* the member's afternoon bid, committed by his client after this one loaded */
     J.be.write(`rec:${warId()}:rMember`, JSON.stringify({ id: 'rMember', kind: 'request', code: 'LL*', state: 'pending', pid: 'ramp', date: D, ord: 99999 }))
     J.log.length = 0
-    expect(decideRequestById('ramp', D, mine, 'acknowledged')).toBe(true)
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    expect(decideRequestById('ramp', D, mine, 'refused')).toBe(true)
     expect(J.log.map(o => o[1])).toEqual([`rec:${warId()}:${mine}`])
     initStore(J.be)
     expect(idsAt('ramp', D)).toEqual([mine, 'rMember'])
-    expect(recordsAt('ramp', D).find(r => r.id === mine)).toMatchObject({ state: 'acknowledged' })
+    expect(recordsAt('ramp', D).find(r => r.id === mine)).toMatchObject({ state: 'refused' })
   })
 
   it('a stale client editing one record never brings back a record another client deleted', () => {
@@ -273,7 +275,8 @@ describe('two people at once', () => {
     /* another client deletes X; this one still holds it */
     J.be.remove(`rec:${warId()}:${x}`)
     J.log.length = 0
-    expect(decideRequestById('ramp', D, y!, 'acknowledged')).toBe(true)
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    expect(decideRequestById('ramp', D, y!, 'refused')).toBe(true)
     expect(J.log.map(o => o[1])).toEqual([`rec:${warId()}:${y}`])
     initStore(J.be)
     expect(idsAt('ramp', D)).toEqual([y])

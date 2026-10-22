@@ -446,19 +446,7 @@ export function BidPicker({
       {canDecideHere && (
         <div className="bidsheet-row">
           <span className="lab">Decide</span>
-          {/* ACK, not "Pending" (owner, 21 Sep 26). It means SEEN, NOT YET
-              ANSWERED — the state between a bid arriving and a verdict — and
-              it is what turns the cell purple. The STATE TOKEN is untouched:
-              still 'acknowledged' in storage, still `decide-ack`. */}
-          <button
-            className="dchip ack"
-            data-testid="decide-ack"
-            aria-pressed={!range && decide?.state === 'acknowledged'}
-            title="Acknowledged — seen, not yet decided"
-            onClick={() => answer('acknowledged')}
-          >
-            Ack
-          </button>
+          {/* Approve · Refuse — Ack is gone (D1158, 21 Oct 26): a bid simply waits until it is decided. */}
           <button
             className="dchip approve"
             data-testid="decide-approve"

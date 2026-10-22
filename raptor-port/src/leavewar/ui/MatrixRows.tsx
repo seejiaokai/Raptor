@@ -7,10 +7,10 @@
    `PersonMonth` per month") — a prop added here is a repaint to argue for; `matrix-rows-memo.test.tsx` pins the row's. */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, canEditRow, catClass, catText, codeOf, displayCell, inSquadron, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
+import { addDays, boxText, canEditRow, catClass, catText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
 import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow } from '../state/store'
 import { FigureCell, show } from './FigureCell'
-import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
+import { portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { outcomeOf } from '../engine'
 import type { Views } from '../engine/dayview'
@@ -206,6 +206,23 @@ type PersonMonthProps = {
   api: MutableRefObject<RowApi>
 }
 
+const NO_ENTRIES: Contrib[] = []
+type Place = 'top' | 'bot' | 'whole' | 'left' | 'right' | 'right-am' | 'right-pm'
+/** Where the two boxes of a two-entry day sit (D1146, D1167): [the main box's place, the second's], or null when the
+ *  two cannot both be drawn (both in the same half) — then the day keeps one box and its "+1" corner. */
+function pairPlaces(mainPortion: string | undefined, second: Contrib): [Place, Place] | null {
+  const a = mainPortion === 'am' || mainPortion === 'pm' ? mainPortion : 'full'
+  const b = portionOf(second.win)
+  if (a === 'full' && b === 'full') return ['left', 'right']
+  if (a === 'full') return ['left', b === 'am' ? 'right-am' : 'right-pm']
+  if (b === 'full') return [a === 'am' ? 'right-am' : 'right-pm', 'left']
+  if (a === b) return null
+  return a === 'am' ? ['top', 'bot'] : ['bot', 'top']
+}
+/** The fill of a day's second entry, by the same rule as the first: a request pending or refused, anything else filed,
+ *  credited or approved. */
+const entryFill = (c: Contrib) => c.kind === 'request' ? (c.state === 'refused' ? 'r' : 'w') : 'a'
+
 // A placeholder cell's width, all three properties so auto table layout can
 // neither widen nor narrow it (Matrix `applyPlaceholders`).
 export const setPhWidth = (el: HTMLElement, w: string) => {
@@ -389,7 +406,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            credit the APP worked out from the published schedule, rather than
            one a person granted. It prints as the trailing star (owner, 20 Sep
            26). */
-        const text = here || outLeave ? displayCell(code, !!view?.main?.auto) : notYetArrived ? '' : 'PO'
+        const text = here || outLeave ? boxText(code, !!view?.main?.auto) : notYetArrived ? '' : 'PO'
         // Duty first for the reader — FO/HO are work, not a bid. (They carry
         // `bid: false`, so they could not reach a bid branch anyway; the
         // order is legibility, not a guard.) Then the bid state, but only
@@ -405,22 +422,28 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         // sheet could not distinguish them. Purple now means acknowledged —
         // somebody has seen this — and the absence of colour means the
         // absence of news.
+        /* LOOK F (D1175, D1158): the box's COLOUR is its kind (`k-`), its FILL where it stands (`s-`) — filled approved
+           (and everything nobody bids for: a credit, a medical, a course, overseas duty), hollow and dashed pending,
+           grey and struck refused. Ack is gone (D1158): a bid with no decision simply waits. */
         const bid = stateOf(states, p.id, d.date)
-        const chipState = (!here && !outLeave) || !code
-          ? ''
-          : isDuty(code) ? 'sc'
-          : !isBiddable(code) ? 'info'
-          : bid === 'approved' ? 'appr'
-          : bid === 'refused' ? 'ref'
-          : bid === 'acknowledged' ? 'tbc'
-          : ''
-        // The half-day fill is read off the stored string via `parseCell`,
-        // never kept as its own bit of state and never guessed by matching an
-        // asterisk here in the component. The asterisk in `text` stays the
-        // one source of truth; this is only a derived echo of it, so the two
-        // can never disagree.
-        const portion = (here || outLeave) && code ? parseCell(code)?.portion : undefined
-        const portionClass = portion === 'am' || portion === 'pm' ? ` ${portion}` : ''
+        const live = (here || outLeave) && !!code
+        const fill = !live ? '' : isDuty(code) || !isBiddable(code) || bid === 'approved' ? 'a' : bid === 'refused' ? 'r' : 'w'
+        /* WHERE THE BOX SITS, by its half (D1160, D1145): a whole day fills the cell, the morning its top half, the
+           afternoon its bottom half — read off the stored string by `parseCell`, the one source of truth for the half. */
+        const portion = live ? parseCell(code)?.portion : undefined
+        /* TWO ENTRIES ON A DAY BOTH SHOW (D1146, narrowed by D1167): a morning and an afternoon top and bottom; two whole
+           days side by side, each the full height; a whole day beside a half (an HO, D1164), the half in its own half of
+           the right side. Three or more keep one box and the "+n" corner, which opens the day's list. A notice is never a
+           box. The second entry is the day view's next record in its one order (`compareContrib`). */
+        const entries = live && view ? view.all.filter(c => c.kind !== 'notice') : NO_ENTRIES
+        const two = entries.length === 2 ? pairPlaces(portion, entries[1]!) : null
+        const where = two ? two[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
+        const wide = text.replace('*', '').length > 2 ? ' wide' : ''
+        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}` : ''
+        const portionClass = ''
+        const second = two ? entries[1]! : null
+        /* with the day's two entries both drawn (D1146), "+1" has nothing more to say; the amber "!" stays */
+        const mk = two && mark === '+1' ? '' : mark
         // Two marks on top of the state colour, never instead of it: the
         // squadron reads green as approved and magenta as pending, and that
         // stays true here. `raptor` says the approval happened elsewhere and
@@ -462,7 +485,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           <td
             key={d.date}
             data-testid={`cell-${p.id}-${d.date}`}
-            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mark ? ' mkd' : ''}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}`}
             onClick={actionable
               ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
               : undefined}
@@ -474,7 +497,12 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
                 {text}
               </span>
             )}
-            {mark && (here || outLeave || notYetArrived) && (
+            {second && two && (
+              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 2 ? ' wide' : ''}`}>
+                {boxText(second.code, !!second.auto)}
+              </span>
+            )}
+            {mk && (here || outLeave || notYetArrived) && (
               <span
                 className={`mk ${view!.amber ? 'warn' : 'more'}`}
                 data-testid={`mark-${p.id}-${d.date}`}
@@ -487,7 +515,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
                     ? 'Your bid is still live — tap to see what else is on this day'
                     : 'Something on this day needs an admin — tap to see'}
               >
-                {mark}
+                {mk}
               </span>
             )}
             {outLeave && !notYetArrived && (

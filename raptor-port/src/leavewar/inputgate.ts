@@ -315,7 +315,7 @@ export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, 
       drop.push(r.id)
       if (keep) add.push(keep)
       if (!own(p)) {
-        const n: NoticeRec = { id: newRecId('n'), kind: 'notice', code: gone, was: (r as RequestRec).state as 'pending' | 'acknowledged', byType, byWho, seq: group, at: nowStamp() }
+        const n: NoticeRec = { id: newRecId('n'), kind: 'notice', code: gone, was: 'pending', byType, byWho, seq: group, at: nowStamp() }
         add.push(n)
       }
       said.push(`${own(p) ? 'your' : `${cs(p)}'s`} ${bare} bid on ${dm(d)}${keep ? ` (${gone.startsWith('*') ? 'morning' : 'afternoon'})` : ''}`)

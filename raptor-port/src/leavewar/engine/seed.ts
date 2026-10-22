@@ -147,7 +147,7 @@ export interface SeedAbsence {
 }
 
 let seedN = 0
-const rq = (code: string, state: 'pending' | 'acknowledged' | 'refused'): WarRec[] =>
+const rq = (code: string, state: 'pending' | 'refused'): WarRec[] =>
   [{ id: `seed${++seedN}`, kind: 'request', code, state }]
 
 export function seedRecs(): Recs {
@@ -163,7 +163,7 @@ export function seedRecs(): Recs {
     jaguar: { '2026-01-19': rq('OL', 'refused') },
     // ASICS carries every request colour at once: refused red, acknowledged
     // purple, and a plain pending bid (his approved green LL is an Input).
-    asics: { '2026-01-09': rq('LL', 'refused'), '2026-01-23': rq('*LL', 'pending'), '2026-02-24': rq('OIL', 'acknowledged') },
+    asics: { '2026-01-09': rq('LL', 'refused'), '2026-01-23': rq('*LL', 'pending'), '2026-02-24': rq('OIL', 'pending') },
     // MILES holds two plain pending bids — no seeded `shiftedFrom` (a trail is
     // a closed-war fact, owner 27 Aug 26).
     miles: { '2026-02-02': rq('LL', 'pending'), '2026-02-03': rq('LL*', 'pending') },

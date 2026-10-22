@@ -763,82 +763,77 @@
   box-shadow: var(--mrow-ring);
 }
 
-/* cells — chip idiom: tint + ink + hairline, never a solid block. Five
-   states are emitted: `.sc` for an OIL credit (FO/HO — cyan since the
-   28 Aug 26 rename; the class name predates it), `.info` for the codes
-   nobody bids for, and `.appr` / `.tbc` / `.ref` for an approved, pending
-   and refused bid. The three bid colours sat here unused until the bidding
-   plan lit them up; the values are unchanged from that original definition. */
-.mx td .c {
+/* THE BOX — LOOK F (D1175, D1165, D1161; D1160, D1145, D1146, D1167; 21 Oct 26). Drawn as the approved pictures are
+   (`docs/mock/lw-overhaul/full-cells4.mjs` — the colours are its look F, value for value; `full/r7-04-cells-*.png`).
+   - COLOUR is the kind (`k-`): local leave light amber, overseas leave deep amber, OIL / FO / HO green, the other leave
+     blue, a course lilac, overseas duty grey, medical rose. One map, `engine/codes.ts kindOf`.
+   - FILL is where it stands (`s-`): `a` filled (approved, and everything nobody bids for), `w` hollow and dashed
+     (pending — Ack is gone, D1158), `r` grey and struck through (refused).
+   - SIZE is how much of the day (D1160): rows keep their height; a whole day's box fills its cell, the morning its top
+     half, the afternoon its bottom half, the letters smaller. Two entries (D1146, D1167): two halves top and bottom; two
+     whole days side by side, each the full height; a whole day and a half, the half in its own half of the right side.
+   The cell holding a box (`.hasc`) is the box's frame: `position: relative` and a fixed content width (the old chip's
+   20px + 3px a side), so a column is as wide as it was and a three-letter code no longer widens its column. The box is
+   absolutely placed inside it — one element a box, nothing added per cell (`docs/performance.md` §E). */
+.mx td.hasc {
+  position: relative;
+  width: 26px;
+  min-width: 26px;
+}
+
+/* the Legend's swatch is a frame a cell's size (Chrome.tsx `LegBox`), so the key draws the grid's own box */
+.leg-box {
+  position: relative;
+  flex: 0 0 auto;
   display: inline-block;
-  min-width: 20px;
-  padding: 1px 3px;
-  border-radius: 5px;
+  width: 30px;
+  height: 28px;
+  border: 1px solid rgba(70, 81, 94, .8);
+  border-radius: 4px;
+  background: var(--panel-2);
+}
+.leg-box.leg-open { box-shadow: inset 0 0 0 2px rgba(74, 140, 100, .80); }
+
+.mx td .c, .leg-box .c {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-radius: 4px;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: .03em;
-  line-height: 14px;
+  letter-spacing: .02em;
+  line-height: 1;
+  white-space: nowrap;
 }
 
-.c.appr {
-  background: rgba(87, 201, 122, .16);
-  color: #8FE0A8;
-  box-shadow: inset 0 0 0 1px rgba(87, 201, 122, .5);
-}
+:is(.mx td, .leg-box) .c.whole { inset: 2px; }
+:is(.mx td, .leg-box) .c.whole.wide { font-size: 8.5px; letter-spacing: -.01em; }
+:is(.mx td, .leg-box) .c.top { left: 2px; right: 2px; top: 2px; bottom: calc(50% + .5px); border-radius: 4px 4px 2px 2px; }
+:is(.mx td, .leg-box) .c.bot { left: 2px; right: 2px; top: calc(50% + .5px); bottom: 2px; border-radius: 2px 2px 4px 4px; }
+:is(.mx td, .leg-box) .c.left { top: 2px; bottom: 2px; left: 2px; right: calc(50% + .5px); border-radius: 4px 2px 2px 4px; }
+:is(.mx td, .leg-box) .c.right { top: 2px; bottom: 2px; left: calc(50% + .5px); right: 2px; border-radius: 2px 4px 4px 2px; }
+:is(.mx td, .leg-box) .c.right-am { top: 2px; bottom: calc(50% + .5px); left: calc(50% + .5px); right: 2px; border-radius: 2px 4px 2px 2px; }
+:is(.mx td, .leg-box) .c.right-pm { top: calc(50% + .5px); bottom: 2px; left: calc(50% + .5px); right: 2px; border-radius: 2px 2px 4px 2px; }
+:is(.mx td, .leg-box) .c:is(.top, .bot, .left, .right) { font-size: 7.5px; letter-spacing: 0; }
+:is(.mx td, .leg-box) .c:is(.right-am, .right-pm) { font-size: 6.5px; letter-spacing: 0; }
+:is(.mx td, .leg-box) .c.wide:not(.whole) { font-size: 6.5px; letter-spacing: -.02em; }
 
-.c.tbc {
-  background: rgba(178, 77, 234, .16);
-  color: #D9A6F5;
-  box-shadow: inset 0 0 0 1px rgba(178, 77, 234, .5);
-}
+/* the kinds — each a hue (`--h`), an ink for the filled box and a fill strength, as look F has them */
+.c.k-ll   { --h: 242, 200, 110; --ink: #FFF1CF; --fill: .22; }
+.c.k-ol   { --h: 226, 146, 38;  --ink: #FFE7C7; --fill: .48; }
+.c.k-oil  { --h: 70, 196, 108;  --ink: #DDF8E6; --fill: .38; }
+.c.k-care { --h: 138, 150, 255; --ink: #DCE0FF; --fill: .32; }
+.c.k-cse  { --h: 184, 142, 240; --ink: #EEE2FF; --fill: .32; }
+.c.k-od   { --h: 160, 170, 182; --ink: #E6EBF0; --fill: .26; }
+.c.k-med  { --h: 236, 104, 140; --ink: #FFD0DD; --fill: .26; }
 
-.c.ref {
-  background: rgba(240, 85, 95, .16);
-  color: #FFA6AD;
-  box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .5);
-}
-
-.c.sc {
-  background: rgba(59, 198, 232, .16);
-  color: #9FDCEE;
-  box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .5);
-}
-
-.c.info {
-  color: var(--ink-3);
-}
-
-/* Half-day fill: a hard-edged divider echoing the asterisk's position, not a
-   second store of it. `parseCell` is the only place that reads the
-   asterisk — Matrix.tsx derives `.am`/`.pm` from its result cell-by-cell, so
-   this class can never drift out of sync with the text it decorates. The
-   filled half sits where the asterisk sits (left for a leading `*`, i.e.
-   morning; right for a trailing one, i.e. afternoon), so the two cues always
-   agree instead of racing each other for the reader's attention. `position:
-   relative` is needed on `.c` itself so the `::after` divider line anchors
-   to the chip rather than to the row. */
-.c {
-  position: relative;
-}
-
-.c.am {
-  background-image: linear-gradient(90deg, rgba(255, 255, 255, .20) 0 50%, transparent 50%);
-}
-
-.c.pm {
-  background-image: linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, .20) 50%);
-}
-
-.c.am::after,
-.c.pm::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  bottom: 2px;
-  width: 1px;
-  left: 50%;
-  background: rgba(255, 255, 255, .35);
-}
+/* the fills */
+.c.s-a { background: rgba(var(--h), var(--fill)); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(var(--h), .85); }
+.c.s-w { background: transparent; color: rgb(var(--h)); outline: 1px dashed rgba(var(--h), .95); outline-offset: -1px; }
+.c.s-r { background: transparent; color: #7d8894; box-shadow: inset 0 0 0 1px #4a5560; text-decoration: line-through; }
 
 /* Out-of-squadron cells: shaded grey diagonal lines rather than a flat block.
    The owner asked for exactly this on 10 Aug 26 — it already existed, and
@@ -1081,15 +1076,19 @@
    26px wide on a phone and anything larger competes with the code it is
    decorating. If either reads as damage at that size, delete the rule: the
    state colour is the load-bearing part and it survives without them. */
-.mx td .c.raptor {
-  border-left: 2px solid var(--accent);
-  padding-left: 2px;
+:is(.mx td, .leg-box) .c.raptor::before,
+:is(.mx td, .leg-box) .c.moved::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  z-index: 1;
 }
 
-.mx td .c.moved {
-  border-left: 2px dotted #F2C879;
-  padding-left: 2px;
-}
+:is(.mx td, .leg-box) .c.raptor::before { border-left: 2px solid var(--accent); }
+:is(.mx td, .leg-box) .c.moved::before { border-left: 2px dotted #F2C879; }
 
 /* Outside the bidding window: not editable by whoever is looking.
    Deliberately QUIET — a dimmed column that reads as "not yours to touch

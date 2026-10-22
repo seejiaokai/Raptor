@@ -28,7 +28,9 @@ export const AM: Win = [0, 720]
 export const PM: Win = [721, 1439]
 export const FULL: Win = [0, 1439]
 
-export type RequestState = 'pending' | 'acknowledged' | 'refused'
+/* Ack is gone (D1158, 21 Oct 26): a bid waits until it is approved or refused. A stored 'acknowledged' is read as
+   pending (`warrecs.ts readRecBody`). */
+export type RequestState = 'pending' | 'refused'
 
 /** One thing on a person's day. `id` is the Input's iid for an absence and
  *  the war record's own id otherwise — the tap list acts on it. */
@@ -209,7 +211,7 @@ export interface DayView {
   /** the stored notation of the main code: `LL`, `*LL` (morning), `LL*` */
   code: string | null
   /** the main code's colour state: an absence or credit reads approved */
-  state: 'pending' | 'acknowledged' | 'approved' | 'refused' | null
+  state: 'pending' | 'approved' | 'refused' | null
   /** the corner mark: '!' when an admin must look, '+n' for more records, '' */
   mark: string
   amber: boolean

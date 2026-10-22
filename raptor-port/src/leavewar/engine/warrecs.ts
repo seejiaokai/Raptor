@@ -100,7 +100,7 @@ export interface NoticeRec extends Placed {
   /** the REPLACED bid's notation */
   code: string
   /** what it was when replaced */
-  was: 'pending' | 'acknowledged'
+  was: 'pending'
   /** what replaced it, in the app's words: `ATT C`, `published schedule` */
   byType: string
   /** who did it, frozen at the time: a callsign, or `the published schedule` */
@@ -256,7 +256,8 @@ function readRecBody(x: unknown): WarRec | null {
   if (!isObj(x) || typeof x.id !== 'string' || !x.id || 'source' in x) return null
   if (x.kind === 'request') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || typeof x.state !== 'string' || !REQ_STATES.has(x.state)) return null
-    const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: x.state as RequestState }
+    /* a stored Ack reads as waiting (D1158 — Ack goes; D401 — an old shape still loads, nothing converted) */
+    const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: (x.state === 'acknowledged' ? 'pending' : x.state) as RequestState }
     if (typeof x.shiftedFrom === 'string' && ISO.test(x.shiftedFrom)) r.shiftedFrom = x.shiftedFrom
     const c = readCarried(x.carried)
     if (c) r.carried = c
@@ -288,7 +289,7 @@ function readRecBody(x: unknown): WarRec | null {
   if (x.kind === 'notice') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || (x.was !== 'pending' && x.was !== 'acknowledged')) return null
     if (typeof x.byType !== 'string' || typeof x.byWho !== 'string' || typeof x.seq !== 'number' || typeof x.at !== 'string') return null
-    return { id: x.id, kind: 'notice', code: x.code, was: x.was, byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
+    return { id: x.id, kind: 'notice', code: x.code, was: 'pending', byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
   }
   return null
 }

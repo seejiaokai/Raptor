@@ -212,7 +212,6 @@ export function SelectSheet({
       {canDecide && (
         <div className="bidsheet-row">
           <span className="lab">Decide</span>
-          <button className="dchip ack" data-testid="sel-pending" onClick={() => decide('acknowledged')}>Ack</button>
           <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>
           <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>
         </div>

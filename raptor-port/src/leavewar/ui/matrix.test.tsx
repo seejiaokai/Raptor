@@ -397,13 +397,16 @@ describe('bid state on a cell', () => {
   // management has the bid in hand. A plain input becomes purple, and the
   // counts do not move — an acknowledged bid still removes the person,
   // exactly as a pending one does.
-  it('turns a plain pending input purple when it is acknowledged, without moving the counts', () => {
+  /* Ack is gone (D1158) and a box's colour is its kind, its fill where it stands (look F, D1175): a pending bid is the
+     hollow, dashed box; approving fills it — and moves no count, since a pending bid already counts as away */
+  it('draws a pending input hollow and fills it when approved, without moving the counts', () => {
     render(<Matrix />)
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
-    expect(cls()).not.toContain('tbc')
+    expect(cls()).toContain('s-w')
+    expect(cls()).toContain('k-ll')
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'acknowledged') })
-    expect(cls()).toContain('tbc')
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'approved') })
+    expect(cls()).toContain('s-a')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
   })
 

@@ -58,7 +58,8 @@ describe('the main code (agreed ladder)', () => {
   })
 
   it('an undecided bid only shows when nothing else is there; its state is its colour', () => {
-    expect(dayView([rq('p', 'LL', 'acknowledged')]).state).toBe('acknowledged')
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    expect(dayView([rq('p', 'LL', 'pending')]).state).toBe('pending')
     const v = dayView([rq('p', 'LL', 'pending', PM), ab('c', 'CSE', AM)])
     expect(v.code).toBe('CSE'); expect(v.state).toBe('approved')
   })

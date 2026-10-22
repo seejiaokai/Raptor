@@ -143,9 +143,8 @@ export function DayListSheet({
       return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row && remarksTyped(row.remarks, row) ? remarksShown(row) : '', actions }
     }
     if (c.kind === 'request') {
-      /* "Ack" is the word everywhere since 21 Sep 26 — the button, the
-         legend and this line had drifted into three ways of saying it. */
-      const st = c.state === 'acknowledged' ? 'bid, acked' : c.state === 'refused' ? 'bid refused' : 'bid, not decided yet'
+      /* Ack is gone (D1158): a bid is pending until it is approved or refused (D1217's word) */
+      const st = c.state === 'refused' ? 'bid refused' : 'bid pending'
       /* WHERE IT WAS MOVED FROM, on its own line (Fable's scenario S4): the grid's dotted "moved" mark and the one-day
          sheet's "moved from" read the day's TOP record, so a bid moved once bidding had closed onto a day holding an
          award (now possible from every door, D265) left no trace anywhere. The same rule as the mark: shown wherever the
@@ -156,16 +155,14 @@ export function DayListSheet({
       const movedFrom = src?.shiftedFrom ? ` · moved from ${shortDate(src.shiftedFrom)}` : ''
       const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}${movedFrom}`
       const actions: ReactElement[] = []
-      /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Ack · Approve · Refuse, then Move, then Delete — where this list
-         used to say Approve · Ack · Refuse · Clear */
+      /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
-        if (c.state !== 'acknowledged') actions.push(<button key="ak" className="dchip ack" data-testid={`dl-ack-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'acknowledged'))}>Ack</button>)
         actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time')}>Approve</button>)
         if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'refused'))}>Refuse</button>)
       }
       actions.push(...moveBtn(c.id))
       if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
-      const cls = c.state === 'acknowledged' ? 'tbc' : c.state === 'refused' ? 'ref' : ''
+      const cls = c.state === 'refused' ? 'ref' : ''
       return { key: `r-${c.id}`, cls, text, sub: '', actions }
     }
     if (c.kind === 'credit') {

@@ -963,8 +963,8 @@
   color: var(--ink-2);
   background: var(--panel-2);
 }
-.leg-sw.appr { background: rgba(87, 201, 122, .16); color: #8FE0A8; box-shadow: inset 0 0 0 1px rgba(87, 201, 122, .5); }
-.leg-sw.tbc  { background: rgba(178, 77, 234, .16); color: #D9A6F5; box-shadow: inset 0 0 0 1px rgba(178, 77, 234, .5); }
+/* look F's approved local leave (D1175 — matrix.css `.c.k-ll.s-a`): the corner rows' swatch; Ack's purple is gone (D1158) */
+.leg-sw.appr { background: rgba(242, 200, 110, .22); color: #FFF1CF; box-shadow: inset 0 0 0 1px rgba(242, 200, 110, .85); }
 .leg-sw.ref  { background: rgba(240, 85, 95, .16); color: #FFA6AD; box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .5); }
 .leg-sw.raptor { border-left: 2px solid var(--accent); padding-left: 4px; }
 .leg-sw.moved  { border-left: 2px dotted #F2C879; padding-left: 4px; }
