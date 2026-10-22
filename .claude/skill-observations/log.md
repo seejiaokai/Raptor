@@ -377,6 +377,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A vendored tool's own store and the host project's filing rule have to be reconciled once, in writing — otherwise every run pays for the clash again, and the tool's later steps silently lose what an earlier step saved.
 
+**Met again 2026-10-22:** Leave War overhaul round 14 (the LVE tile critique): persistence skipped on purpose, the synthesis put on his mock-up page instead; still undecided in writing.
+
 ### Observation 579: "Shorten it" was answered with summaries — the owner sent the list back: "the key words are gone"
 
 **Status:** ACTIONED (2026-10-14) — the design guide §1a tests 2, 3, 4 and 8 (a word is cut only if the note states the same facts without it; show the change); on the branch, awaiting his approval (D832)
@@ -1775,3 +1777,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In the design guide's §9 head (D941's rule), and in `record-decisions.md`'s parallel-branch line: a branch that will add lessons takes a range (or names lessons by their ruling, "the lesson of D1194", and numbers them only at the merge). Until then, a merge that renumbers lessons does so by a script that touches only the branch's own side, and the closing report tells him the old and new numbers.
 
 **Principle:** Any sequence that parallel branches append to needs the same collision rule as the main one — a reserved range, or an identity that is not a position.
+
+### Observation 673: A critique of a mock-up drawn into the running app needs a standalone markup copy before the detector can read it
+
+**Status:** OPEN
+**Date:** 2026-10-22
+**Session context:** Leave War overhaul, round 14 — /impeccable critique of a balance tile that exists only as a mock-up injected into the real local build by a Playwright script
+**Skill:** impeccable (reference/critique.md — Assessment B); brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Critique — Assessment B on a drawn (not built) surface
+
+**Issue:** Assessment B's CLI detector reads markup files and its browser path expects a served page; the tile under review lived only inside a script that draws it into the running app. A small script had to stage the scene, inline every stylesheet the page had, and write the drawn element to a standalone HTML file; the detector then ran on it (and in-page by injecting detect.js directly). It found the one defect the design reviewer missed: the "you can type this" box edges measured 1.85:1, under the 3:1 a control's edge needs — the box rule could not be seen.
+
+**Suggested improvement:** In critique.md's Assessment B (or the mock-ups guide), add: when the target is a drawn mock-up, first write a standalone snapshot of the drawn element with the page's stylesheets inlined (one file per state), and point the detector and the browser measurements at it; measure non-text contrast of control edges, not only text.
+
+**Principle:** A machine check that cannot reach a surface is not skipped; give it a copy it can read. And a rule that rests on a visual cue ("a box means you can type it") is only as good as that cue's measured contrast.
