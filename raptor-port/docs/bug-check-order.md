@@ -340,7 +340,10 @@ reader reported a line a break test had cut out for one minute).
 **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
 are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
 chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
-and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Sonnet never reads
+and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Saving tokens never
+costs this (owner, D1271, 23 Oct 26 — "I don't want u to loose quality for debugging or quality check"):** a look that
+decides whether something is wrong or right — a fault's cause, a fix's check, a finding — stays the host's; only a look
+whose answer the host does not rely on alone (picking pictures to send him) may go to Sonnet. **Sonnet never reads
 code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
 false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. Two trials led here (D476, D480 — both run — and the one check made before the reset, D508; their text:
 `docs/archive/codex-arrangement-2026-10-07.md`). Following the second, on a build with five known faults, the agent kept

@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1271 | 23 Oct 26 | Saving tokens never costs the quality of finding a fault or of checking one: the host keeps every look that decides whether something is wrong or right — a fault's cause, a fix's check, a finding before it enters the evidence sheet — and hands Sonnet only the looks whose answer the host does not rely on alone. |
 | D1262 | 22 Oct 26 | What a chat loads is not measured or trimmed after the Leave War's M1, since a trim was done recently (the start-size job of 17 Oct 26 — D969 to D976); it is raised again only on his word. |
 | D1237 | 22 Oct 26 | On every mock-up page put to him, what he should look at now stands at the very top, in one short list: each open question or answer in one line with its recommendation, a link to its pictures, and the newest first; answered and older rounds go below it. |
 | D1222 | 22 Oct 26 | A picture put to him for a question shows only what that question is about — cut to that area, or everything else dimmed — with the change named in plain words on the picture, so he sees at a glance what he is asked; a whole screen is shown only when the question is about the whole screen. |
