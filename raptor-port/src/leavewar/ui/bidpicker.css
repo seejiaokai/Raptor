@@ -1360,6 +1360,8 @@
   .bidsheet .reqp-do .tchip { min-height: 40px; }
   .bidsheet .reqp-inc { padding: 8px 12px; }
 
+}
+
 /* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------
    The month buttons: one row of twelve on a desktop, two rows of six on a phone, each a finger's size there. Lit in
    the open-bidding green the chip and the grid's outline use (the app's one "open" green — not a new colour); a month
@@ -1542,5 +1544,4 @@
   border: 1px dashed rgba(242, 200, 121, .8);
   border-radius: 5px;
   color: #F2C879;
-}
 }

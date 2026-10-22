@@ -135,3 +135,25 @@ then wrote nothing: TO REPRODUCE by the host). Not walked: S9, S27 (out of conte
 - **B-N1 (words, recorded):** a range or drag-select fill's skip note still says "locked, owned by Raptor, or outside the
   window / your time in the squadron" — it never says "closed". Older words; the host to judge whether M1 should name
   the closed days (likely yes, small).
+
+**Walker A (desktop admin, 1440 by mouse) — returned 22 Oct 26** (`scripts/handpass/lw-m1-walk-a.mjs`, 57 pictures in
+`…/a/`; no console or page errors). PASS: S1, S5, S8, S13 (each gesture one Undo, the bubble's words, the grid stays on
+June), S14, S17, S22 desktop. RECORD: S10 (a, b, c'), S11 (a duty clash: "Weekend/PH work earns *HO, but the day holds
+approved OL. Change the approved leave ›", a tap opens the day's list with Back to bid · Refuse · Move · Delete · Note;
+the scenario's input-clash recipe made no clash), S12 (all five old shapes load through the bridge; a stored old row
+through a reload is carried by `opendates-store.test.ts` test 6), S15, S16, S18, S23, S24 (an approved leave's move wears
+the mark, a pending bid's none). Not walked: S36 (no route — carried by a test), S10 (c, d).
+- **A-F1 — FAIL, fixed:** at desktop widths the "Open for bidding" window and the closed note were UNSTYLED (raw grey
+  buttons; open / part / closed months alike; "31 Mar90 days") — their rules had been appended INSIDE the stylesheet's
+  phone-only block (`bidpicker.css`, the last block, `@media (max-width: 430px)`). Fixed: the phone block closed before
+  them; the built CSS checked (the rules now outside every media query). **Owed: re-walk the window at 1440 and 768.**
+- **A-F2 — FAIL, to fix:** Escape with the exact-days calendar open closes the calendar AND the window together; and after
+  Escape or ✕ focus lands on the page body, not back on the chip (the design guide §3: Escape closes what opened last;
+  the keyboard returns to the button that opened it).
+- **A-F3 — FAIL, to check against main first:** the schedule's "Create the 2028 period" makes the period and brings the
+  Leave War to the front — on the OLD period (the toast says "Open its dates for bidding here"); it should land on the new
+  one. Likely older than M1 (`ui/interactions.ts`, `sync.ts createOilPeriodFor`): compare on `main` (4251), then fix
+  (select the new period) or file.
+- **A-N1 (RECORD):** the window is modal, so the top bar's Undo cannot be pressed while it is open (S19) — as every Leave
+  War sheet but two ([LW-WINDOWS-NONBLOCKING]); after closing it, Undo and reopening show the new picture.
+
