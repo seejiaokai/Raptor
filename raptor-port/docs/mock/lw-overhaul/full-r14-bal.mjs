@@ -119,6 +119,16 @@ const CSS = `
 .zgw .r .n{margin-left:auto;color:#8a96a3;font-weight:500;margin-right:10px}
 .zgw .r .bx{display:inline-flex;align-items:center;justify-content:flex-end;box-sizing:border-box;min-width:54px;height:28px;padding:0 9px;border:1px solid #66717f;border-radius:7px;background:#0d1217;color:#f1f4f7;font:700 13.5px system-ui;font-variant-numeric:tabular-nums}
 .zgw .ft{padding:10px 14px;color:#8a96a3;font:500 12.5px system-ui}
+.zgw .r{gap:10px}.zgw .r .n{margin-right:0;white-space:nowrap}
+.zgw .r.h{height:30px;font:600 9.5px system-ui;letter-spacing:.1em;color:#8a96a3}
+.zgw .r.h .dh{width:130px;text-align:right;white-space:nowrap;letter-spacing:.06em}
+.zgw .gp{width:12px;color:#6b7785;flex:none}
+.zgw .nm{display:inline-flex;align-items:center;box-sizing:border-box;width:160px;height:30px;padding:0 10px;border:1px solid #66717f;border-radius:7px;background:#0d1217;color:#f1f4f7;font:600 13.5px system-ui;flex:none}
+.zgw .nm.h{border:0;background:none;padding:0;height:auto;font:600 9.5px system-ui;letter-spacing:.1em;color:#8a96a3}
+.zgw .r .bx{min-width:130px}
+.zgw .xx{width:18px;text-align:center;color:#FF7A84;font-size:14px;flex:none}
+.zgw .add{padding:10px 14px}
+.zgw .ad{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:8px;border:1px solid #2f3a46;background:#12161b;color:#e6edf3;font:600 13.5px system-ui}
 /* the phone */
 .zbp.ph .bar{height:auto;flex-wrap:wrap;padding:8px 10px;gap:6px}
 .zbp.ph .srch{width:auto;flex:1}
@@ -162,7 +172,7 @@ function model(groups) {
   }) }))
 }
 const puck = m => `<span class="pk ${m.seat}"><span class="cs">${m.cs}</span><b style="background:${m.bg};color:${m.ink}">${m.cat}</b></span>`
-const grade = (g, o = {}) => g ? `<span class="gr${o.zk ? ' ' + o.zk : ''}">${GRADES.find(x => x[0] === g)[1]}<span class="d">${GRADES.find(x => x[0] === g)[2]}</span>${CHEV}</span>` : `<span class="gr none${o.zk ? ' ' + o.zk : ''}">No grade<span class="d" style="color:inherit">–</span>${CHEV}</span>`
+const grade = (g, o = {}) => g ? `<span class="gr${o.zk ? ' ' + o.zk : ''}">${GRADES.find(x => x[0] === g)[1]}<span class="d">+${GRADES.find(x => x[0] === g)[2]}</span>${CHEV}</span>` : `<span class="gr none${o.zk ? ' ' + o.zk : ''}">No grade<span class="d" style="color:inherit">–</span>${CHEV}</span>`
 const bx = (v, sm) => `<span class="bx${sm ? ' sm' : ''}${v === 0 ? ' z' : ''}">${half(v)}</span>`
 const OTHERK = ['CCL', 'FCL', 'PL', 'EL', 'CL']
 const TAKENK = ['LL', 'OL', 'OIL', 'CCL', 'FCL', 'PL', 'EL', 'CL', 'MED', 'CSE', 'OD']
@@ -170,9 +180,9 @@ const TAKENK = ['LL', 'OL', 'OIL', 'CCL', 'FCL', 'PL', 'EL', 'CL', 'MED', 'CSE',
 function deskHTML(M, view) {
   const head = view === 'bal'
     ? `<tr class="h1"><th class="l" colspan="2"></th><th class="span sep" colspan="4">LVE</th><th class="sep"></th><th class="span sep" colspan="5">OTHER LEAVE</th><th></th></tr>
-       <tr class="h2"><th class="l">NAME</th><th class="l">GRADE · DAYS ON 1 JAN</th><th class="sep">APP BAL</th><th>INCL. CARRIED FWD</th><th>PENDING</th><th>WAR BAL</th><th class="sep">OIL</th>${OTHERK.map((k, i) => `<th${i ? '' : ' class="sep"'}>${k}</th>`).join('')}<th style="width:100%"></th></tr>`
+       <tr class="h2"><th class="l">NAME</th><th class="l">GRADE · AUTO + LVE ON 1 JAN</th><th class="sep">APP BAL</th><th>INCL. CARRIED FWD</th><th>PENDING</th><th>WAR BAL</th><th class="sep">OIL</th>${OTHERK.map((k, i) => `<th${i ? '' : ' class="sep"'}>${k}</th>`).join('')}<th style="width:100%"></th></tr>`
     : `<tr class="h1"><th class="l" colspan="2"></th><th class="span sep" colspan="${TAKENK.length}">DAYS TAKEN IN 2026</th><th></th></tr>
-       <tr class="h2"><th class="l">NAME</th><th class="l">GRADE · DAYS ON 1 JAN</th>${TAKENK.map((k, i) => `<th${i ? '' : ' class="sep"'} style="min-width:46px">${k}</th>`).join('')}<th style="width:100%"></th></tr>`
+       <tr class="h2"><th class="l">NAME</th><th class="l">GRADE · AUTO + LVE ON 1 JAN</th>${TAKENK.map((k, i) => `<th${i ? '' : ' class="sep"'} style="min-width:46px">${k}</th>`).join('')}<th style="width:100%"></th></tr>`
   const span = view === 'bal' ? 13 : TAKENK.length + 3
   const body = M.map(G => `<tr class="grp"><td colspan="${span}"><i style="background:${G.col}"></i>${G.g}<em>${G.people.length}</em></td></tr>` + G.people.map(m => {
     const cells = view === 'bal'
@@ -276,10 +286,10 @@ if (want('2')) {
   const r = await p.evaluate(GR => {
     const d = window.__d, row = document.querySelector('tr[data-cs="Wildcard"]'), g = row.querySelector('.gr'), G = d.R(g)
     const m = document.createElement('div'); m.className = 'zgm'
-    m.innerHTML = GR.map(([, n, k]) => `<div>${n}<span class="d">${k}</span></div>`).join('') + '<hr><div class="no on">No grade<span class="d">–</span></div>'
+    m.innerHTML = GR.map(([, n, k]) => `<div>${n}<span class="d">+${k}</span></div>`).join('') + '<hr><div class="no on">No grade<span class="d">–</span></div>'
     Object.assign(m.style, { left: G.left + 'px', top: (G.bottom + 4) + 'px' }); document.body.appendChild(m)
     const M2 = d.R(m)
-    d.tag('one tap sets his grade; the figure is the days<br>it adds every 1 Jan (D1229)', { left: M2.right + 18, cy: M2.top + 40 })
+    d.tag('one tap sets his grade; +36 is added to<br>his LVE by itself every 1 Jan', { left: M2.right + 18, cy: M2.top + 40 })
     const tr = d.R(row)
     return { left: tr.left - 6, top: tr.top - 120, width: 760, height: M2.bottom - tr.top + 140 }
   }, GRADES)
@@ -298,14 +308,17 @@ if (want('4')) {
   const r = await p.evaluate(([GR, cnt]) => {
     const d = window.__d, btn = d.R('.zz-grades')
     const w = document.createElement('div'); w.className = 'zgw'
+    // D1234: the squadron's own list — each line a grip, its name in a box, who holds it, its "+ days", a ✕; "+ Grade"
+    w.style.width = '470px'
     w.innerHTML = `<div class="hd"><span style="color:#6b7785">⠿</span><b>Grades</b><span class="x">✕</span></div>` +
-      GR.map(([k, n, v]) => `<div class="r">${n}<span class="n">${cnt[k]} people</span><span class="bx">${v}</span></div>`).join('') +
-      `<div class="ft">Days of annual leave each grade gets on 1 Jan.</div>`
-    Object.assign(w.style, { left: (btn.right - 360) + 'px', top: (btn.bottom + 8) + 'px' }); document.body.appendChild(w)
+      `<div class="r h"><span class="gp"></span><span class="nm h">GRADE</span><span class="n">HOLDS</span><span class="dh">AUTO + LVE ON 1 JAN</span><span class="xx"></span></div>` +
+      GR.map(([k, n, v], i) => `<div class="r${i === 0 ? ' zz-g1' : ''}"><span class="gp zz-grip">⠿</span><span class="nm${i === 0 ? ' zz-nm' : ''}">${n}</span><span class="n">${cnt[k]} people</span><span class="bx">+${v}</span><span class="xx${i === 0 ? ' zz-del' : ''}">✕</span></div>`).join('') +
+      `<div class="add"><span class="ad zz-add">+ Grade</span></div>`
+    Object.assign(w.style, { left: (btn.right - 470) + 'px', top: (btn.bottom + 8) + 'px' }); document.body.appendChild(w)
     const W = d.R(w)
     d.ring(btn, 2)
-    const t = d.tag('the days are settings the admin can change;<br>the app adds them by itself every 1 Jan', { right: W.right, top: W.bottom + 12 })
-    return { left: W.left - 24, top: btn.top - 14, width: W.width + 38, height: t.bottom - btn.top + 26 }
+    const t = d.tag('rename in its box · drag ⠿ to reorder · ✕ deletes<br>(asks first if people hold it; they become “No grade”) · + Grade adds one', { right: W.right, top: W.bottom + 12 })
+    const L = Math.min(W.left, t.left) - 14; return { left: L, top: btn.top - 14, width: W.right + 14 - L, height: t.bottom - btn.top + 26 }
   }, [GRADES, CNT])
   await p.mouse.move(2, 2)
   await crop(p, 'r14-bal-4-grades', r)
