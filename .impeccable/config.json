@@ -32,6 +32,15 @@
         ],
         "createdAt": "2026-10-21T11:18:30.321Z",
         "reason": "agent: the tap-to-enlarge overlay's img gets its src from the page's script when a picture is tapped; empty by design until then"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "raptor-port/docs/mock/lw-overhaul/full-page.html"
+        ],
+        "createdAt": "2026-10-22T02:31:16.303Z",
+        "reason": "agent judgement: the mock-up review page's own .note style (a 3px neutral grey quote rule, not an accent colour), unchanged since the page's first version; not app UI"
       }
     ]
   },
