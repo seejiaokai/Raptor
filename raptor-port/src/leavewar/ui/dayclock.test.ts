@@ -23,7 +23,7 @@ describe('the Leave War day clock (D1266)', () => {
     expect(msToMidnight(new Date(2026, 9, 23, 0, 0, 0))).toBe(24 * 3600 * 1000 + 1000)
   })
 
-  it('the page shown again on a new day: the landing mark moves to today softly, and the grid draws again', () => {
+  it('the page shown again on a new day: the landing mark moves to today quietly — the view stays — and the grid draws again', () => {
     setMemberTodayForTests('2026-02-14')
     focusDay(focusDateOf(getState().period, '2026-02-14'))
     expect(getState().focusDate).toBe('2026-02-14')
@@ -34,7 +34,11 @@ describe('the Leave War day clock (D1266)', () => {
     document.dispatchEvent(new Event('visibilitychange'))
     un()
     expect(getState().focusDate).toBe('2026-02-15')
-    expect(getState().focusSoft).toBe(true)
+    /* the fresh read (F2): the mark moves and the VIEW stays — never a jump away from where he scrolled (a month strip's
+       tap and a finger scroll never touch the mark, so "the mark on the old landing" cannot mean "he has not moved") */
+    expect(getState().focusQuiet).toBe(true)
+    focusDay('2026-03-01')
+    expect(getState().focusQuiet).toBe(false)
     expect(draws).toBeGreaterThan(0)
   })
 

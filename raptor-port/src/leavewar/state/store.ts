@@ -328,6 +328,9 @@ interface State {
    *  looking at must leave the grid where it is). False for every plain ask: a month's worth of jumps — the
    *  under-manned list, a new or a switched period, the first showing — still put the day at the left. */
   focusSoft: boolean
+  /** The mark moves and the VIEW stays — the day clock's ask when the day turns (D1266; the fresh read's F2): a finger
+   *  scroll and the month strip never touch the mark, so nothing tells "he has not moved"; the grid is never moved for it. */
+  focusQuiet: boolean
 
   /* (The war's own seat / band / SXO overrides — `personEdits`, written by its
      "Edit person" sheet — are GONE: D460, D461, 30 Sep 26. Quals is the one
@@ -429,6 +432,7 @@ function blank(): State {
     focusDate: null,
     focusSeq: 0,
     focusSoft: false,
+    focusQuiet: false,
     postOuts: {},
   })
 }
@@ -4872,26 +4876,28 @@ export function deletableIn(cells: readonly { personId: string; date: string }[]
    midnight kept its landing mark on 22 Oct, and a member's dim, lock and outline, worked out on the last change, stayed a
    day behind, while the chip, read at each draw, said the 23rd). Called by the day clock (ui/dayclock.ts) when the day
    turns: everything that reads today draws again; and the landing mark, if it still stands where the page landed for the
-   old day, moves to where it would land today — softly (D670), so the grid moves only if that day is out of view. A mark he
+   old day, moves to where it would land today — quietly: the mark moves and the view stays (below). A mark he
    moved himself (a month, a jump, an Undo) is his and stays. */
 export function dayTurned(prev: string, now: string): void {
   if (prev === now) return
   const period = state.period
   if (period && state.focusDate && state.focusDate === focusDateOf(period, prev)) {
     const next = focusDateOf(period, now)
-    if (next !== state.focusDate) { focusDay(next, { ifHidden: true }); return }
+    /* QUIETLY (the fresh read's F2): the mark moves, the view stays — a finger scroll and the month strip never touch the
+       mark, so its standing on the old landing does not mean he has not moved; the grid is never moved for the day */
+    if (next !== state.focusDate) { focusDay(next, { quiet: true }); return }
   }
   state = { ...state }
   notify()
 }
 
-export function focusDay(date: string, opts?: { ifHidden?: boolean; open?: string }): void {
+export function focusDay(date: string, opts?: { ifHidden?: boolean; open?: string; quiet?: boolean }): void {
   /* `ifHidden` — the soft ask (D670): the matrix jumps only when the day's column is not already on screen. What Undo
      and Redo send (state/undo-wire.ts snapView), so a change he is looking at is taken back where he is looking. */
   /* `open` — a person's id: the ask is "bring that day into view AND open it for him" (below). Every other ask drops
      an `open` nobody has taken up, so it cannot spring up later on some other day. */
   focusOpenAsk = opts && opts.open ? { person: opts.open, date } : null
-  state = { ...state, focusDate: date, focusSeq: state.focusSeq + 1, focusSoft: !!(opts && opts.ifHidden) }
+  state = { ...state, focusDate: date, focusSeq: state.focusSeq + 1, focusSoft: !!(opts && opts.ifHidden), focusQuiet: !!(opts && opts.quiet) }
   notify()
 }
 
@@ -4926,6 +4932,7 @@ export function selectWar(id: string): void {
     focusDate: focusDateOf(picked.period, memberToday()),
     focusSeq: state.focusSeq + 1,
     focusSoft: false,                 // a period switched to is always a jump (D670 is Undo's and Redo's alone)
+    focusQuiet: false,
   })
   persistNotify()
   // Undo is scoped to the war on screen: switching wars starts a fresh stack,

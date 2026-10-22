@@ -380,7 +380,9 @@ describe('a member reads it', () => {
     openWindow()
     expect(line('2026-02-10').textContent).toContain('10 Feb – 31 Mar')
     expect(month('2026-01').getAttribute('data-state')).toBe('closed')
-    expect(month('2026-02').getAttribute('data-state')).toBe('part')
+    /* read from today (D1268; the fresh read's F1): every day of February from today is open, so it reads open — its
+       days before today are past, not "closed in part" */
+    expect(month('2026-02').getAttribute('data-state')).toBe('open')
     expect(screen.getByTestId('open-chip').textContent).toBe('Open for bidding 10 Feb – 31 Mar')
   })
 })
@@ -459,5 +461,17 @@ describe('past months in the window (D1268)', () => {
     expect(getState().period.open.some(s => s.from === '2026-04-15' && s.to === '2026-04-30')).toBe(true)
     fireEvent.click(month('2026-06'))
     expect(getState().period.open.some(s => s.from === '2026-06-01')).toBe(true)
+  })
+  /* the fresh read (F1): opened from today, the month read "open in part" (its days before today closed) and a second tap
+     tried to open it again — nothing happened. Its state is read from today: open, a second tap closes it. */
+  it('the current month opened from today reads open, and a second tap closes it', () => {
+    setMemberTodayForTests('2026-04-15')
+    setRole('admin'); setViewer(null)
+    openWindow()
+    fireEvent.click(month('2026-04'))
+    expect(month('2026-04').getAttribute('data-state')).toBe('open')
+    fireEvent.click(month('2026-04'))
+    expect(getState().period.open.some(s => s.to >= '2026-04-15' && s.from <= '2026-04-30')).toBe(false)
+    expect(month('2026-04').getAttribute('data-state')).toBe('closed')
   })
 })

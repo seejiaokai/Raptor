@@ -268,8 +268,12 @@ function useSheetDrag(enabled = true) {
       handle.removeEventListener('pointermove', move)
       handle.removeEventListener('pointerup', up)
       handle.removeEventListener('pointercancel', up)
+      /* re-armed when `enabled` changes — a phone turned past the full page's width (D1264; the fresh read's F3): the
+         drag offset goes with it, so the sheet it becomes opens where a sheet always does */
+      panel.style.removeProperty('--lw-dx')
+      panel.style.removeProperty('--lw-dy')
     }
-  }, [])
+  }, [enabled])
   return panelRef
 }
 

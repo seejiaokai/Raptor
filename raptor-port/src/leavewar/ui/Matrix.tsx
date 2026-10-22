@@ -154,7 +154,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, focusSoft, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, focusSoft, focusQuiet, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -3036,6 +3036,8 @@ export function Matrix() {
   // not drawn, the column under the frozen names, or off either edge. Every plain ask still jumps.
   useEffect(() => {
     if (!focusDate) return
+    /* the day clock's ask (D1266): the mark moves, the view stays — never a jump away from where he scrolled */
+    if (focusQuiet) return
     if (focusSoft) {
       const wrap = wrapRef.current, cell = headCell(focusDate)
       if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return

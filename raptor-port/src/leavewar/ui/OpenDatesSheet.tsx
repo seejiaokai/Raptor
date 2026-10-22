@@ -49,6 +49,9 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
      (D1211's), so the day clock (D1266) moves it at midnight. */
   const today = memberToday()
   const isPast = (ix: number) => { const m = months[ix]; return !!m && m.to < today }
+  /* the current month read from TODAY (the fresh read, F1): opened from today it is open, not "open in part" — its days
+     before today change nothing — so a second tap closes it rather than trying to open it again */
+  const live = <M extends { from: string; to: string }>(m: M): M => (m.from < today && today <= m.to ? { ...m, from: today } : m)
   const [editing, setEditing] = useState<OpenStretch | 'new' | null>(null)
   const [problem, setProblem] = useState('')
   const say = (r: OpenResult) => {
@@ -88,7 +91,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
        stayed up and ate the next real tap. The click a drag leaves, if any, always comes before the next press. */
     swallowClick.current = false
     if (!admin || e.button !== 0 || isPast(ix)) return
-    const closing = monthState(shown, months[ix]!) === 'open'
+    const closing = monthState(shown, live(months[ix]!)) === 'open'
     const touch = e.pointerType === 'touch'
     const d = { start: ix, cur: ix, closing, armed: !touch, moved: false, x: e.clientX, y: e.clientY, timer: null as number | null }
     if (touch) d.timer = window.setTimeout(() => { if (drag.current === d && !d.moved) { d.armed = true; setSpan({ lo: ix, hi: ix, closing }) } }, HOLD_MS)
@@ -131,7 +134,8 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     if (!admin || isPast(ix)) return
     const m = months[ix]!
     /* a month part past opens from today, as a drag across it does (D1268): the days before today change nothing */
-    say(monthState(shown, m) === 'open' ? closeDates(m.from, m.to) : openDates(m.from < today ? today : m.from, m.to))
+    const lm = live(m)
+    say(monthState(shown, lm) === 'open' ? closeDates(lm.from, m.to) : openDates(lm.from, m.to))
   }
 
   /* ---- the calendar for exact days ----
@@ -199,7 +203,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
         onKeyDown={() => { swallowClick.current = false }}
       >
         {months.map((m, i) => {
-          const st = monthState(shown, m)
+          const st = monthState(shown, live(m))
           const inSpan = span && i >= span.lo && i <= span.hi
           const word = `${MON[+m.key.slice(5, 7) - 1]}${multiYear ? ` ${yearOf(m.key)}` : ''}`
           return (

@@ -22,7 +22,7 @@ const allErrs = []
 {
   const { ctx, page, cdp, errs } = await newPhone()
   try {
-    await signIn(page, 'admin')
+    await signIn(page, 'admin', '2026-02-15')   // the clock held: since D1268 a past month cannot be pressed, so APR–JUN must lie ahead
     await tapSel(cdp, page, T('open-chip')); await page.waitForSelector(T('open-dates')); await page.waitForTimeout(400)
     const sheet = await rectOf(page, T('open-dates'))
     const m0 = await rectOf(page, T('od-months'))

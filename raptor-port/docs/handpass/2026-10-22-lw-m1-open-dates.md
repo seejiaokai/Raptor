@@ -364,3 +364,18 @@ member's) · the host alone, phone 390 by finger · MISSING: 2 fixed (the refusa
 | The landing box stayed on 22 Oct after midnight | the page opened before midnight; a member's dim and outline stay a day behind too ([LW-M1-READ-LEFTOVERS] item 3) | **D1266**: `ui/dayclock.ts` + `store.ts dayTurned`. Tests (`dayclock.test.ts`, 5) |
 
 Gates: Leave War unit 3077 / 3077 (window tests 32 / 32 after the tap's clip); build clean; GitHub's run on the pushed head — see the handoff.
+
+**The fresh, blind Opus read of §16's code** (the diff from 938bdbab1): D686, D1264, the runway and most of D1268 and D1266
+held. **F1 (medium) — fixed:** a month opened from today read "open in part", so a second tap tried to open it again and did
+nothing — the window now reads the current month from today (`OpenDatesSheet.tsx live`); a member's month whose days from
+today are all open reads open too (no dashed edge for days merely past). **F2 (medium) — fixed:** the day turning moved the
+grid back to the landing day even where he had scrolled (a finger scroll and the month strip never touch the mark) — the
+day clock's ask is now quiet: the mark moves, the view stays (`focusQuiet`). **F3 (low) — fixed:** a phone turned past the
+full page's width kept a dead grip — the drag re-arms with its form, its offset cleared. Tests red first for F1 and F2.
+Re-walked: `lw-d1268-walk.mjs`, `lw-d1264-walk.mjs` (`d1264-r/`, the clock held at 15 Feb), all PASS. Leave War unit 3078 /
+3078; build clean. **Put to him, not built:** an admin's green outline on the grid still marks past open dates while his chip
+reads "Bidding closed" — D1268 ruled the chip and the window only.
+
+**Walk:** §16 · ~20 pictures (`d1264/`, `d1264-r/`, `d1268/`, `docs/img/mock/lw-d1265/`) · 3 surfaces (the "Open for bidding"
+window, the chip, the grid's month window) · the host alone, phone 390 by finger and desktop 1440 · MISSING: 5 fixed from his
+look (D686, the runway, D1264, D1266, D1268), 3 from the read (F1–F3), 1 put to him (the admin's outline)
