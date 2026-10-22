@@ -22,7 +22,7 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { commitInput, commitNewInput, commitInputEdit, draftOf, setInpField, medKeptSegments, mintMedSegments, ordISO } from '../ui/inputedit'
-import { advanceStage, clearCells, getState, initStore as lwInitStore, lwHistInit, moveCells, setBidStates, setCell, setPeople } from './state/store'
+import { closeDates, clearCells, getState, initStore as lwInitStore, lwHistInit, moveCells, setBidStates, setCell, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { postOut, runPoOutcomes, wireLeaveWarSync } from './sync'
@@ -58,10 +58,11 @@ const add = (person: string, type: string, iso: string, end = '', extra: Record<
   person, type, allday: true, half: '', start: iso, end, sTime: '06:00', eTime: '18:00', remarks: '', sans: null, docIds: [], ...extra,
 })
 const cells = (p: string, ...dates: string[]) => dates.map(date => ({ personId: p, date }))
-/* bids on the war, then closed for deciding (an admin decides in every stage but draft) */
+/* bids on the war, then closed for deciding (the admin decides at any time — D1177) */
 const bid = (p: string, ...dates: string[]) => {
   for (const d of dates) expect(setCell(p, d, 'LL'), `bid ${d}`).toBe(true)
-  if (getState().period.stage === 'open') advanceStage()
+  /* bidding closed before deciding, as the stage step did (the stages went — D1177; the admin decides at any time) */
+  { const p = getState().period; closeDates(p.start, p.end) }
 }
 const approve = (p: string, ...dates: string[]) => { bid(p, ...dates); setBidStates(cells(p, ...dates), 'approved') }
 

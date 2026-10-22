@@ -4723,7 +4723,13 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
     if (liveRequestsOn(landing, portionOfCode(r.rec.code)).length) return { reason: 'occupied', at: to }
   }
   if (abs.length) {
-    for (const a of abs) if (!held(addDays(a.date, dayDelta))) return { reason: 'window', at: addDays(a.date, dayDelta) }
+    /* AN APPROVED LEAVE STAYS IN ITS OWN PERIOD (as before the open dates): it carries the war that approved it (`lw`, the
+       Input's tag, read where two leaves are joined — sync.ts), and a move across the year's end would leave it tagged
+       with a period that no longer holds it. A bid may cross (B3 — it lands in the period holding the day). */
+    for (const a of abs) {
+      const to = addDays(a.date, dayDelta)
+      if (!held(to) || warHolding(state.wars, to) !== warHolding(state.wars, a.date)) return { reason: 'window', at: to }
+    }
     /* the moving requests still stand on their old days now — the door leaves them out (Fable 3, Astra 1) */
     const skip = new Set(reqs.map(r => r.rec.id))
     const p = DOOR ? DOOR.moveApproved(abs, dayDelta, true, true, skip) : { reason: 'nothing' as const }

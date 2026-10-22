@@ -9,11 +9,11 @@
    Register line AC9. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
-  initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, advanceStage,
-  setBidWindow, setBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
+  initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, openDates, closeDates,
+  setStretch, setBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { allows, T, type Act, type Role } from '../state/perms'
+import { allows, cmdAuthorize, COMMAND_OPS, T, type Act, type Role } from '../state/perms'
 
 beforeEach(() => { initStore(memoryBackend()) })
 
@@ -30,7 +30,7 @@ const identity = (w: Who) => (w.role === 'guest' ? null : w.viewer)
 const XMAS = { warId: 'y2026', src: 'day', line: 0, from: '2026-12-25', to: '2026-12-25', kind: 'ph', name: 'PH' } as const
 /* each: the §11 table and letter, whose row it writes (null = no row), and the write */
 const CASES: { what: string; table: string; letter: Act; owner: string | null; run: () => boolean }[] = [
-  { what: 'a bid on his own row, in the window', table: T.bid, letter: 'C', owner: 'ramp', run: () => setCell('ramp', '2026-01-20', 'LL') },
+  { what: 'a bid on his own row, on an open day', table: T.bid, letter: 'C', owner: 'ramp', run: () => setCell('ramp', '2026-01-20', 'LL') },
   { what: 'a bid on ANOTHER row', table: T.bid, letter: 'C', owner: 'tata', run: () => setCell('tata', '2026-01-21', 'LL') },
   { what: 'deciding a bid', table: T.bid, letter: 'U', owner: null, run: () => {
       const was = getState().role; setRole('admin'); setCell('tata', '2026-01-22', 'LL'); setRole(was)
@@ -38,8 +38,11 @@ const CASES: { what: string; table: string; letter: Act; owner: string | null; r
   { what: 'a hand-typed OIL award', table: T.award, letter: 'C', owner: null, run: () => setDayAward('ramp', '2026-02-07', 1) === null },
   { what: 'a ledger grant', table: T.ledger, letter: 'C', owner: null, run: () => grantTo(['ramp'], 'oil', 1, '2026-02-07', 'weekend duty') === null },
   { what: 'a balance', table: T.ledger, letter: 'U', owner: null, run: () => setBalance('ramp', 'oil', 5) },
-  { what: 'moving the war\'s stage forward', table: T.war, letter: 'U', owner: null, run: () => { const s = getState().period.stage; advanceStage(); return getState().period.stage !== s } },
-  { what: 'the bid window', table: T.war, letter: 'U', owner: null, run: () => (setBidWindow('2026-01-05', '2026-03-30') as any)?.ok !== false && getState().period.bidFrom === '2026-01-05' },
+  /* the open dates (D1177 — they replaced the stage and the bid window): the leave period's own record, `lw.open`, an
+     admin's as the stage was. Each writer is held to the row by what it did, not only by its answer. */
+  { what: 'opening dates for bidding', table: T.war, letter: 'U', owner: null, run: () => openDates('2026-04-01', '2026-04-30') === 'set' && getState().period.open.some(s => s.to === '2026-04-30') },
+  { what: 'closing dates for bidding', table: T.war, letter: 'U', owner: null, run: () => closeDates('2026-02-01', '2026-02-28') === 'set' && getState().period.open.length === 2 },
+  { what: 'a stretch\'s exact days', table: T.war, letter: 'U', owner: null, run: () => setStretch({ from: '2026-01-01', to: '2026-03-31' }, '2026-01-05', '2026-03-30') === 'set' && getState().period.open[0]?.from === '2026-01-05' },
   { what: 'a posting out', table: T.profile, letter: 'U', owner: null, run: () => setPostOut('tata', '2026-06-01') },
   /* the Holidays list's three writers (the Inputs / SANS redesign, plan §3.4) — the leave period's own record */
   { what: 'a holiday added from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayAdd({ kind: 'ph', name: '', from: '2026-05-01', to: '2026-05-01' }).ok },
@@ -63,4 +66,15 @@ describe('D200 (3): the Leave War\'s writers agree with the permissions matrix (
       expect(did, `the war ${did ? 'allowed' : 'refused'}; §11 says ${want ? 'allowed' : 'refused'}`).toBe(want)
     })
   }
+
+  /* the command gate knows `lw.open` (D352 narrowed by D1177): mapped to the LeaveWar row's U, so the store's writer and
+     the command layer answer from the same cell — and the stage's old type is gone with the stage */
+  it('the command gate maps lw.open to the LeaveWar row, as the writers are held to it', () => {
+    expect(COMMAND_OPS['lw.open']).toMatchObject({ table: T.war, act: 'U' })
+    expect(COMMAND_OPS['lw.stage']).toBeUndefined()
+    for (const w of WHO) {
+      const actor = { id: w.viewer || 'guest', role: w.role, personId: identity(w), session: {} } as any
+      expect(cmdAuthorize('lw.open', actor), w.label).toBe(allows(w.role, T.war, 'U', null, identity(w)))
+    }
+  })
 })

@@ -29,7 +29,7 @@ import { initStore as raptorInitStore } from '../state/store'
 import { commitSetDayApproved, commitPublishALDay } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
-import { advanceStage, getState, initStore as lwInitStore, lwHistInit, rawState, setBidState, setCell, setPeople, setRole } from './state/store'
+import { getState, initStore as lwInitStore, lwHistInit, rawState, setBidState, setCell, setPeople, setRole } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
 import { globalUndo, globalRedo } from '../undo'
@@ -114,7 +114,7 @@ describe('publishing weekend work FLAGS a clashing leave bid (owner, 20 Sep 26)'
     setRole('admin')
     expect(setCell('plasma', SAT, 'LL')).toBe(true)
     expect(setCell('rocky', SAT, 'OL')).toBe(true)
-    advanceStage()
+    // the admin decides at any time — no stage to close first (D1177; D418 narrowed)
     setBidState('plasma', SAT, 'acknowledged')
     setBidState('rocky', SAT, 'refused')
     said = []

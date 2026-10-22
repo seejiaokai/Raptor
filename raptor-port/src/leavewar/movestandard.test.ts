@@ -19,7 +19,7 @@ import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  advanceStage, deletableIn, getState, initStore as lwInitStore, lwHistInit, movableCells, movableRecords, moveCells,
+  closeDates, deletableIn, getState, initStore as lwInitStore, lwHistInit, movableCells, movableRecords, moveCells,
   moveProblem, moveRecords, moveRecordsProblem, rawState, setBidStates, setCell, setDayAward, setPeople, setRole,
   setViewer, stayingIn, decideRequestById, absenceDoor, setAbsenceDoor, decidableIn, awardsOnDay,
 } from './state/store'
@@ -59,6 +59,15 @@ const bidsAt = (p: string, d: string) => recsAt(p, d).filter((r: any) => r.kind 
 const awardAt = (p: string, d: string) => awardsOnDay(p, d).length > 0
 const one = (p: string, d: string) => [{ personId: p, date: d }]
 const lwRows = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw)
+/** Close the whole period on screen for bidding — what stepping the war to "bidding closed" did before the stages went
+ *  (D1177). The admin decides at any time now; the tests that closed bidding before deciding keep that world. */
+function closeBidding(): void {
+  const was = getState().role
+  setRole('admin')
+  const p = getState().period
+  expect(closeDates(p.start, p.end)).toBe('set')
+  setRole(was)
+}
 
 describe('a bid beneath an OIL award (Vector’s 3 Jan — D265)', () => {
   beforeEach(() => {
@@ -143,7 +152,7 @@ describe('two things that can move on one day (D266 — only by halves)', () => 
 
   it('a leave the war approved for the morning and an afternoon bid: both travel (S8)', () => {
     setCell('ammo', '2026-02-18', '*LL')
-    advanceStage()
+    closeBidding()
     setBidStates(one('ammo', '2026-02-18'), 'approved')
     expect(lwRows('ammo')).toHaveLength(1)
     expect(setCell('ammo', '2026-02-18', 'LL*')).toBe(true)
@@ -178,7 +187,7 @@ describe('two things that can move on one day (D266 — only by halves)', () => 
 describe('a refused bid (the mock-up’s reading, uncorrected — D331)', () => {
   it('alone on its day it moves, and lands undecided', () => {
     setCell('ammo', '2026-02-10', 'LL')
-    advanceStage()
+    closeBidding()
     const id = bidsAt('ammo', '2026-02-10')[0]!.id
     expect(decideRequestById('ammo', '2026-02-10', id, 'refused')).toBe(true)
     expect(movableRecords(one('ammo', '2026-02-10'))).toHaveLength(1)
@@ -188,7 +197,7 @@ describe('a refused bid (the mock-up’s reading, uncorrected — D331)', () => 
 
   it('beside a live bid on the same half it is history and stays — the live bid travels (S32)', () => {
     setCell('ammo', '2026-02-10', '*LL')
-    advanceStage()
+    closeBidding()
     const refused = bidsAt('ammo', '2026-02-10')[0]!.id
     expect(decideRequestById('ammo', '2026-02-10', refused, 'refused')).toBe(true)
     expect(setCell('ammo', '2026-02-10', '*OL')).toBe(true)
@@ -211,23 +220,36 @@ describe('who may move — one rule at every door (D333)', () => {
     expect(bidsAt('ammo', '2026-02-12')).toHaveLength(1)
   })
 
-  it('once bidding has closed a member moves nothing', () => {
+  /* D333 narrowed by D1177: a member moves his own bid only while its days are open — where it sits AND where it lands */
+  it('once its days are closed a member moves nothing', () => {
     setCell('ammo', '2026-02-10', 'LL')
-    advanceStage()
+    closeBidding()
     setRole('member'); setViewer('ammo')
     expect(movableRecords(one('ammo', '2026-02-10'))).toEqual([])
   })
 
-  it('an approved leave on a PUBLISHED war stays (finished paperwork) — and is named as staying', () => {
+  it('a member’s move onto a day closed for bidding is refused, with where (D1177)', () => {
+    setCell('ammo', '2026-02-10', 'LL')
+    expect(closeDates('2026-02-12', '2026-02-12')).toBe('set')
+    setRole('member'); setViewer('ammo')
+    expect(movableRecords(one('ammo', '2026-02-10'))).toHaveLength(1)
+    expect(moveCells(one('ammo', '2026-02-10'), 2)).toEqual({ reason: 'window', at: '2026-02-12' })
+    expect(bidsAt('ammo', '2026-02-10')).toHaveLength(1)
+    expect(moveCells(one('ammo', '2026-02-10'), 3)).toBe('moved')
+  })
+
+  /* NOTHING IS FROZEN (D1177 — the published stage went, and with it "an approved leave on a published war is finished
+     paperwork"; D418 narrowed): with bidding closed the admin still moves an approved leave, and nothing is named as
+     staying */
+  it('an approved leave moves at any time for the admin, bidding closed or not — nothing stays', () => {
     setCell('ammo', '2026-02-18', 'LL')
-    advanceStage()
     setBidStates(one('ammo', '2026-02-18'), 'approved')
-    advanceStage()                                   // published
+    closeBidding()
     setCell('ammo', '2026-02-20', 'LL')
     const cells = [...one('ammo', '2026-02-18'), ...one('ammo', '2026-02-20')]
     const m = movableRecords(cells)
-    expect(m.map(x => x.date)).toEqual(['2026-02-20'])
-    expect(stayingIn(cells, m).map(s => s.what)).toEqual(['approved'])
+    expect(m.map(x => x.date)).toEqual(['2026-02-18', '2026-02-20'])
+    expect(stayingIn(cells, m)).toEqual([])
   })
 })
 
@@ -328,7 +350,7 @@ describe('FR3b — the door’s answer at the commit is never thrown away (Fable
 describe('FR3 (S32) — the refused bid beside a live one is named as staying (Astra 3)', () => {
   it('"1 refused bid stays"', () => {
     setCell('ammo', '2026-02-10', '*LL')
-    advanceStage()
+    closeBidding()
     const refused = bidsAt('ammo', '2026-02-10')[0]!.id
     decideRequestById('ammo', '2026-02-10', refused, 'refused')
     setCell('ammo', '2026-02-10', '*OL')

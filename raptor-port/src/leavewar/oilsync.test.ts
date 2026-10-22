@@ -678,13 +678,13 @@ describe('the day knows when no leave war period covers it (D19)', () => {
     expect(HOOKS.oilNoPeriod(wed)).toBe('')
   })
 
-  it('creating the period from the schedule makes a real war for that year, in draft', () => {
+  it('creating the period from the schedule makes a real war for that year, with nothing open', () => {
     setRole('admin')
     expect(createOilPeriodFor('2028')).toBe('created')
     const w = getState().wars.find(x => x.period.start === '2028-01-01')
     expect(w, 'the war exists').toBeTruthy()
     expect(w!.period.end).toBe('2028-12-31')
-    expect(w!.period.stage, 'draft — opening it for bidding stays his act').toBe('draft')
+    expect(w!.period.open, 'nothing open — opening dates for bidding stays his act (D1177: empty means closed)').toEqual([])
     installAbsenceDoor()
     loadWeek('07/02/2028')
     const sat = DATES.findIndex((d: any) => /Feb 12/.test(String(d)))

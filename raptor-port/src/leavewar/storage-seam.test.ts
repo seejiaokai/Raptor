@@ -7,7 +7,7 @@ import { stashClear } from '../engine/weekstash'
 import { initStore as raptorInitStore, weekStashSnap, weekDirty } from '../state/store'
 import { hydrate, wirePersist } from '../state/persist'
 import { projectPeople } from './state/raptorRoster'
-import { advanceStage, getState, initStore as lwInitStore, setBidState, setCell, setPeople, setRole } from './state/store'
+import { closeDates, getState, initStore as lwInitStore, setBidState, setCell, setPeople, setRole } from './state/store'
 import { syncAbsences } from './sync'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter, leavewarAdapter } from '../storage/adapters'
@@ -21,7 +21,8 @@ function approve(person: string, dates: string[], code = 'LL') {
   const wasRole = getState().role
   setRole('admin')
   for (const d of dates) setCell(person, d, code)
-  if (getState().period.stage === 'open') advanceStage()
+  /* bidding closed before deciding, as the stage step did (the stages went — D1177; the admin decides at any time) */
+  { const p = getState().period; closeDates(p.start, p.end) }
   for (const d of dates) setBidState(person, d, 'approved')
   setRole(wasRole)
 }
