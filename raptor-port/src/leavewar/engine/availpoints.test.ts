@@ -100,8 +100,8 @@ describe('redDays — the days breaking a manning rule', () => {
   it('an Available row at red counts, named with its figure; at amber it never does', () => {
     const out = redDays(dates, verdicts, d => availRedLines(rules, day[d]!))
     expect(out).toEqual([
-      { date: '2026-01-06', lines: [{ ruleId: 'sxo', label: 'SXO', have: 1 }, { ruleId: 'availp', label: 'Available P', have: 23 }] },
-      { date: '2026-01-07', lines: [{ ruleId: 'availw', label: 'Available W', have: 15 }] },
+      { date: '2026-01-06', lines: [{ ruleId: 'sxo', label: 'SXO', have: 1 }, { ruleId: 'availp', label: 'Available P', have: 23, need: expect.any(Number) }] },
+      { date: '2026-01-07', lines: [{ ruleId: 'availw', label: 'Available W', have: 15, need: expect.any(Number) }] },
     ])
     expect(out.some(d => d.date === '2026-01-05')).toBe(false)   // Available P amber on Mon: not a red day
   })

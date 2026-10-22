@@ -158,13 +158,13 @@ describe('where an Available row stands on a day, and the days breaking a mannin
     expect(availVerdictAt(TUE, 'p')).toBe('red')
     expect(availVerdictAt(WED, 'w')).toBe('amber')
     expect(availVerdictAt(THU, 'p')).toBe('')
-    expect(availRedAt(TUE)).toEqual([{ ruleId: AVAIL_P, label: 'Available P', have: p }])
+    expect(availRedAt(TUE)).toEqual([{ ruleId: AVAIL_P, label: 'Available P', have: p, need: expect.any(Number) }])  // the day's Required rides the line (r19c, D1243)
     expect(availRedAt(WED)).toEqual([])
 
     const s = getState()
     const dates = s.period.days.map(d => d.date)
     const red = manningRedDays(dates, evaluatePeriod(s.people, s.grid, s.states, s.requirements, dates, s.views))
-    expect(red.find(d => d.date === TUE)!.lines).toContainEqual({ ruleId: AVAIL_P, label: 'Available P', have: p })
+    expect(red.find(d => d.date === TUE)!.lines).toContainEqual({ ruleId: AVAIL_P, label: 'Available P', have: p, need: expect.any(Number) })
     expect(red.some(d => d.date === WED)).toBe(false)
     expect(red.some(d => d.date === THU)).toBe(false)
   })
@@ -172,7 +172,7 @@ describe('where an Available row stands on a day, and the days breaking a mannin
     const p = dayFacts(TUE).availP!
     setFlyDays([{ iso: TUE, p: p + 1 }])
     saveAvailRow({ ...availRules().p, label: 'Pilots here' })
-    expect(availRedAt(TUE)).toEqual([{ ruleId: AVAIL_P, label: 'Pilots here', have: p }])
+    expect(availRedAt(TUE)).toEqual([{ ruleId: AVAIL_P, label: 'Pilots here', have: p, need: expect.any(Number) }])
   })
   it('moving red lower takes the day off the list', () => {
     const p = dayFacts(TUE).availP!

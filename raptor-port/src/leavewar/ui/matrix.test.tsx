@@ -429,24 +429,23 @@ describe('bid state on a cell', () => {
 /* The 18 Aug 26 layout order (owner's arrows on a screenshot): counts →
    month buttons → callsign/dates header → event rows → roster. */
 describe('the grid row order', () => {
-  it('draws counts, then the month strip, then the header, then events, then people', () => {
+  /* the grid's order since D1256: the month buttons, the dates, the Manning rows straight under them, the events, people */
+  it('draws the month strip, then the header, then the counts, then events, then people', () => {
     render(<Matrix />)
     const table = screen.getByTestId('month-strip').closest('table')!
     const sections = Array.from(table.children).map(el => el.className || el.tagName.toLowerCase())
     // The roster body is `.mxbody` now (20 Aug 26) — the frozen-column overlay
     // measures it by that name and draws a second copy of its two lead columns.
-    expect(sections).toEqual(['counts', 'mstripe', 'mxhead', 'events', 'mxbody'])
+    expect(sections).toEqual(['mstripe', 'mxhead', 'counts', 'events', 'mxbody'])
   })
 
-  it('brackets every month above the dates, spanning its own days', () => {
+  /* the month band row over the dates goes (D1257): each month's first date names it */
+  it('has no month band row over the dates; the header is the dates alone', () => {
     render(<Matrix />)
-    const jan = screen.getByTestId('bracket-2026-01')
-    expect(jan.getAttribute('colspan')).toBe('31')
-    expect(jan.textContent).toBe('JAN')
-    expect(screen.getByTestId('bracket-2026-02').getAttribute('colspan')).toBe('28')
-    // the bracket row sits directly above the header row, inside one tbody
-    const head = jan.closest('tbody')!
-    expect(head.className).toBe('mxhead')
+    expect(screen.queryByTestId('month-bracket')).toBeNull()
+    expect(screen.queryByTestId('bracket-2026-01')).toBeNull()
+    const head = screen.getByTestId('month-strip').closest('table')!.querySelector('tbody.mxhead')!
+    expect(head.querySelectorAll('tr')).toHaveLength(1)
     expect(head.querySelector('[data-testid="counter-head"]')).toBeTruthy()
   })
 
