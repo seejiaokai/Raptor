@@ -21,7 +21,7 @@
 
 import type { BidRecord, Grid, LeaveWar, States } from '../engine'
 import type { LedgerEntry } from '../engine/counters'
-import { dayView, type Contrib, type DayView, type Views } from '../engine/dayview'
+import { dayView, offWar, type Contrib, type DayView, type Views } from '../engine/dayview'
 import { awardContrib, recContribs, type Recs, type WarRec } from '../engine/warrecs'
 
 export type { Views }
@@ -128,8 +128,7 @@ function projRecord(v: DayView): BidRecord | undefined {
   /* an absence: war-editable only when approved on the war (`lw`) and not
      medical, course or OD — everything else says "change it on the Inputs
      page" (design §5.4, owner §13 Q1) */
-  const locked = !m.lw || !(v.all.every(c => c.kind !== 'absence' || c.lw))
-    || ['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD'].includes(m.code)
+  const locked = offWar(m) || !(v.all.every(c => c.kind !== 'absence' || c.lw))
   const r: BidRecord = { state: 'approved', source: locked ? 'raptor' : 'bid' }
   if (m.movedFrom) r.shiftedFrom = m.movedFrom
   return r
