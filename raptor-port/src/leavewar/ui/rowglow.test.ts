@@ -265,11 +265,12 @@ describe('the Rearrange switch rings only for a keyboard, and shows "on" by the 
   it('every .rtbtn hover rule is behind @media (hover: hover)', () => {
     expect(HOVER_MEDIA.length, 'matrix.css declares an @media (hover: hover) block').toBeGreaterThan(0)
     const hovers = RULES.filter(r => r.sels.some(s => /\.rtbtn[^,]*:hover$/.test(s)))
-    // At least the three that exist today, so the guard cannot be "passed" by
-    // deleting the hovers — but not EXACTLY three, or a future hover added
+    // At least the two that exist today, so the guard cannot be "passed" by
+    // deleting the hovers — but not EXACTLY two, or a future hover added
     // correctly inside the guard would fail. The per-rule check below is what
-    // actually holds the line.
-    expect(hovers.length, 'the .rtbtn family still HAS hover rules — a mouse keeps them').toBeGreaterThanOrEqual(3)
+    // actually holds the line. (Three until 23 Oct 26: the zoom pair's
+    // disabled-end hover went with the − / + — pinch to zoom, D1276.)
+    expect(hovers.length, 'the .rtbtn family still HAS hover rules — a mouse keeps them').toBeGreaterThanOrEqual(2)
     for (const r of hovers)
       expect(insideHoverMedia(r.at), `${r.sels.join(', ')} is guarded — a touch screen keeps :hover stuck on the last thing tapped`).toBe(true)
   })
