@@ -1011,16 +1011,19 @@
     align-items: center;
     gap: 8px;
     margin-left: 4px;
-    min-width: 0;
-    /* the picker and My leave give way before ⚙ leaves the screen: the one row needs ~770px at its widest, and from 701
-       wide it is the desktop's (list A's browser tests, 23 Oct 26 — ⚙ stood past the right edge at 701) */
-    flex: 0 1 auto;
+    /* View and the picker never shrink as a group: a <select> cannot be drawn narrower than its own padding (~48px), so a
+       group allowed to shrink past that let the picker spill out of it and My leave slide over it (GitHub's Linux run,
+       23 Oct 26 — at 701 wide, its wider letters, "my-leave lies over war-picker" by 47px). The picker's own cap below
+       keeps the group small; My leave, whose words cut with "…", is what gives way before ⚙ leaves the screen (the one
+       row needs ~770px at its widest, and from 701 wide it is the desktop's — list A, 23 Oct 26). */
+    flex: 0 0 auto;
   }
   .lw-view .warpick { min-width: 0; }
   .lw-spring { flex: 1 1 auto; }
   /* a long period name is cut with "…" rather than pushing My leave off the row (walker 3, scenario 36: a 47-letter name
-     made a phone's page scroll sideways; the full name is in the list) */
-  .lw-view .warpick { max-width: 320px; text-overflow: ellipsis; }
+     made a phone's page scroll sideways; the full name is in the list); at a narrow desktop the cap follows the width, as
+     the phone's 44vw does, so the group stays small with any letters */
+  .lw-view .warpick { max-width: min(320px, 22vw); text-overflow: ellipsis; }
   .lw-gear {
     display: inline-flex;
     align-items: center;
@@ -1045,6 +1048,10 @@
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    /* My leave is the one that gives way on the one row (its words cut with "…"): said outright, because up to 820 wide the
+       shell's phone bar holds every top-bar item at its full width (scheduler.css `.topbar>*{flex:0 0 auto}`), so it never
+       shrank — ⚙ was pushed off a 701-wide screen */
+    flex: 0 1 auto;
     min-width: 0;
     min-height: 44px;
     padding: 6px 12px;
@@ -1129,9 +1136,11 @@
   @media (max-width: 700px) {
     /* the grid card's 20px edge up to 700 (D1016 — "from 431 to 700 the top keeps the grid card's 20px edge so the two
        line up"; the tab row of D1254 is that top); 12px at 430 and under, as the card's own */
+    /* the two top lines as low as the round-19 drawing (D1278 — his "seems quite tall and big on the phone", 23 Oct 26):
+       the tab row ~53px (the tabs' 44 and 4px above and below), the View line ~42px (My leave's two lines, ~34px, and 3px) */
     .lw-top {
       gap: 8px;
-      padding: 8px 20px;
+      padding: 4px 20px;
     }
     .lw-top .lw-tabs { flex: 1 1 auto; }
     .lw-top .lw-tabs .intab { flex: 1 1 0; padding: 4px 8px; }
@@ -1139,7 +1148,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 8px 20px;
+      padding: 3px 20px;
       border-bottom: 1px solid var(--edge);
     }
     /* the picker keeps its whole name ("JAN - DEC 26", as drawn); My leave takes what is left */
@@ -1151,8 +1160,11 @@
       min-width: 0;
       flex-direction: column;
       align-items: flex-start;
-      gap: 2px;
-      padding-right: 24px;
+      gap: 1px;
+      /* sized to its two lines, as drawn (D1278) — not the desktop's 44px floor */
+      min-height: 0;
+      padding: 2px 24px 2px 12px;
+      line-height: 1.1;
     }
     .lw-viewline .myleave .ml-go {
       position: absolute;

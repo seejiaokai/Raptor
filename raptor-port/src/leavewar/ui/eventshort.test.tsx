@@ -39,17 +39,22 @@ describe('a day cell prints the short form', () => {
     expect(cell('2026-05-13').textContent).toBe('ND')
     expect(cell('2026-05-14').textContent).toBe('EXE')
   })
-  it('never asks its day for more than three characters of width — and the same for every filled day', () => {
+  /* RE-EXPRESSED 23 Oct 26: the cell carried a floor of up to three characters ("3ch"), and with wider letters than his
+     PC's (GitHub's Linux machines, his iPhone) three characters and the padding were wider than a day — "OFF" widened its
+     day by 1.1px. Now the short form sits in a span that counts for no width when the table sizes its columns (matrix.css
+     `.evs`, the browser test "no event widens its day" measures it), and the cell asks for none. */
+  it('never asks its day for any width — the short form, at most three characters, sits in its own no-width span', () => {
     setDayEvent('2026-05-12', 0, 'National Day', 'off')
     setDayEvent('2026-05-13', 0, 'No Leave')
     setDayEvent('2026-05-14', 0, 'Off day')
     setDayEvent('2026-05-15', 0, 'Range closure 0900-1400')
     render(<Matrix />)
     for (const iso of ['2026-05-12', '2026-05-13', '2026-05-14', '2026-05-15']) {
-      const w = parseFloat(cell(iso).style.minWidth)
-      expect(cell(iso).style.minWidth.endsWith('ch')).toBe(true)
-      expect(w).toBeGreaterThanOrEqual(1)
-      expect(w).toBeLessThanOrEqual(3)
+      expect(cell(iso).style.minWidth).toBe('')
+      const span = cell(iso).querySelector('.evs')
+      expect(span, `${iso}: the short form is not in its span`).toBeTruthy()
+      expect(span!.textContent).toBe(cell(iso).textContent)
+      expect(cell(iso).textContent!.length).toBeGreaterThanOrEqual(1)
       expect(cell(iso).textContent!.length).toBeLessThanOrEqual(3)
     }
   })

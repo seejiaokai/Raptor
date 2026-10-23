@@ -102,6 +102,24 @@ async function settleGrid(page: Page) {
   })
 }
 
+/* WIDE LETTERS ON DEMAND (23 Oct 26). GitHub's Linux machines draw this app's letters wider than his PC does (the app
+   loads no font of its own), and so does his iPhone: three of M2's geometry tests passed here and failed there. Run with
+   LW_WIDE_LETTERS=1 and every page of the run is drawn in Verdana — as wide as Linux's DejaVu Sans — so a width fault
+   that only GitHub would see is reproduced on his PC first. Off by default: the tests' own numbers are his PC's. */
+if (process.env.LW_WIDE_LETTERS) {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      const add = () => {
+        const s = document.createElement('style')
+        s.textContent = '*, *::before, *::after { font-family: Verdana, "DejaVu Sans", sans-serif !important }'
+        document.head.appendChild(s)
+      }
+      if (document.head) add()
+      else document.addEventListener('DOMContentLoaded', add)
+    })
+  })
+}
+
 test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
   /* THE FIGURES DRAWER STARTS PUT AWAY FOR EVERY TEST BUT ITS OWN (6 Sep 26).
@@ -703,6 +721,30 @@ test('on a phone the open chip opens the "Open for bidding" window as a full pag
    line that gives way is the open chip's dates (the stage's name was, until the stages went — D1177): cut with "…",
    and the line holds. Wide letters are forced here so this PC sees what another device would. */
 // RE-EXPRESSED, D1254 (the overhaul's M2): the tab row and View line hold with wide letters; the grid's bar may take a second line, never cutting a chip.
+/* D1278 (his correction, 23 Oct 26 — "seems quite tall and big on the phone the top 2 row of the view and grid/oil. See the
+   mock up u created"): on a phone the two top lines are as low as the round-19 drawing (r19-nav-admin-phone.png at 390
+   wide: the tab row ~53px, the View line ~42px). They had been ~60 and ~61 — padding and My leave's 44px floor. Measured
+   at his iPhone's 390 and at 360, for an admin (⚙ on the tab row) and a member; with LW_WIDE_LETTERS too. */
+test('on a phone the two top rows are no taller than the drawing: the tab row, and View with My leave (D1278)', async ({ page }) => {
+  test.skip(!isPhone(), "the phone's two top lines (D1278); the desktop is one row")
+  for (const role of ['admin', 'member'] as const) {
+    await lwRole(page, role)
+    await lwView(page, 'slipway')
+    for (const width of [390, 360]) {
+      await page.setViewportSize({ width, height: 664 })
+      await page.waitForTimeout(200)
+      const h = await page.evaluate(() => {
+        const pg = document.querySelector('#page-leavewar')!
+        const ht = (sel: string) => (pg.querySelector(sel) as HTMLElement).getBoundingClientRect().height
+        return { tabs: ht(':scope > .lw-top'), view: ht(':scope > .lw-viewline'), myLeave: ht('[data-testid="my-leave"]') }
+      })
+      expect(h.tabs, `${role}, ${width}: the tab row is taller than drawn`).toBeLessThanOrEqual(54)
+      expect(h.view, `${role}, ${width}: the View line is taller than drawn`).toBeLessThanOrEqual(43)
+      expect(h.myLeave, `${role}, ${width}: My leave is held taller than its two lines`).toBeLessThan(40)
+    }
+  }
+})
+
 test('with wide letters the top of the Leave War on a phone is still two lines: the open dates give way, nothing wraps or leaves the screen', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'admin')
@@ -3268,7 +3310,7 @@ test('the counter controls sit on one row, in order, OIL right after rearrange, 
     }
     // one row: every control shares a middle within a few px
     const mids = ids.map(id => box[id]!.y)
-    expect(Math.max(...mids) - Math.min(...mids), `${ids.join(' · ')} are not one row`).toBeLessThan(4)
+    expect(Math.max(...mids) - Math.min(...mids), `${ids.join(' · ')} are not one row (${ids.map(id => `${id} x ${box[id]!.x.toFixed(0)} w ${box[id]!.w.toFixed(0)} mid ${box[id]!.y.toFixed(0)}`).join('; ')})`).toBeLessThan(4)
     // left to right, in the order given
     for (let i = 1; i < ids.length; i++) expect(box[ids[i]!]!.x, `${ids[i]} is not right of ${ids[i - 1]}`).toBeGreaterThan(box[ids[i - 1]!]!.x)
     // the whole row fits the viewport (the phone is the real guard)
@@ -3276,9 +3318,48 @@ test('the counter controls sit on one row, in order, OIL right after rearrange, 
     expect(last.x + last.w).toBeLessThanOrEqual(page.viewportSize()!.width)
     return box
   }
-  // the grid's own bar, as the page opens (no red day, so Manning is whole — D1243)
-  const bar = await rowOf(['counts-toggle', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open'])
-  // the zoom pair is a pair: − then + one gap apart, not spread
+  /* the grid's own bar, as the page opens (no red day, so Manning is whole — D1243). ONE LINE WHENEVER IT FITS, and a
+     second line only when the next control truly has no room — never a chip cut to make it fit (walker 2, M2's walk:
+     "Bidding cl…" beside a red count; the phone's stylesheet lets the bar wrap). Re-expressed 23 Oct 26: this asserted
+     one line outright, which held with his PC's letters only — with Linux's and his iPhone's wider ones "Open 1 Jan –
+     31 Mar" leaves a 390-wide phone ~20px short, and Legend takes the second line (GitHub's run of d0ff2c633; reproduced
+     here with LW_WIDE_LETTERS=1). So: in order, line by line; at most two lines; each line break forced by the width. */
+  const BAR_IDS = ['counts-toggle', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open']
+  const m = await page.evaluate(ids => {
+    const gb = document.querySelector('#page-leavewar .card-hd .lw-gridbar') as HTMLElement
+    const gcs = getComputedStyle(gb), gr = gb.getBoundingClientRect()
+    const right = gr.right - parseFloat(gcs.paddingRight) - parseFloat(gcs.borderRightWidth)
+    const gap = parseFloat(gcs.columnGap) || 0
+    return {
+      right, gap, vw: innerWidth,
+      boxes: ids.map(id => {
+        const el = gb.querySelector(`[data-testid="${id}"]`) as HTMLElement
+        const r = el.getBoundingClientRect()
+        return { id, x: r.left, r: r.right, w: r.width, mid: r.top + r.height / 2, cut: el.scrollWidth > el.clientWidth + 1 }
+      }),
+    }
+  }, BAR_IDS)
+  const bar = Object.fromEntries(m.boxes.map(b => [b.id, b]))
+  const lines: (typeof m.boxes)[] = []
+  for (const b of m.boxes) {
+    const line = lines[lines.length - 1]
+    if (line && Math.abs(line[0]!.mid - b.mid) < 4) line.push(b)
+    else lines.push([b])
+  }
+  const where = m.boxes.map(b => `${b.id} x ${b.x.toFixed(0)} w ${b.w.toFixed(0)} mid ${b.mid.toFixed(0)}`).join('; ')
+  expect(lines.length, `the grid's bar takes more than two lines (${where})`).toBeLessThanOrEqual(2)
+  for (const line of lines) for (let i = 1; i < line.length; i++)
+    expect(line[i]!.x, `${line[i]!.id} is not right of ${line[i - 1]!.id} (${where})`).toBeGreaterThan(line[i - 1]!.x)
+  for (let l = 1; l < lines.length; l++) {
+    const prev = lines[l - 1]![lines[l - 1]!.length - 1]!, first = lines[l]![0]!
+    expect(prev.r + m.gap + first.w, `${first.id} went to a line of its own though it fits beside ${prev.id} (${where})`).toBeGreaterThan(m.right - 0.5)
+  }
+  for (const b of m.boxes) {
+    expect(b.cut, `${b.id} is cut to fit (${where})`).toBe(false)
+    expect(b.r, `${b.id} runs past the screen (${where})`).toBeLessThanOrEqual(m.vw)
+  }
+  // the zoom pair is a pair: − then + one gap apart on one line, not spread
+  expect(Math.abs(bar['lw-zoom-in']!.mid - bar['lw-zoom-out']!.mid), `the − and + are split (${where})`).toBeLessThan(4)
   expect(bar['lw-zoom-in']!.x - (bar['lw-zoom-out']!.x + bar['lw-zoom-out']!.w)).toBeLessThan(24)
   // the tab row: Grid, OIL right after it, ⚙ at its right end
   await rowOf(['lw-tab-grid', 'oil-tracker', 'settings-open'])

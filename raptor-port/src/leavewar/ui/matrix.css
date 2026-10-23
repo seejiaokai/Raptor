@@ -1361,6 +1361,20 @@
 }
 .mx .events td.ev.has:not(.band) {
   white-space: nowrap;
+  /* centred in the day, a pixel from each side: the short form takes the day's width as it is, never more */
+  padding-left: 1px;
+  padding-right: 1px;
+  text-align: center;
+}
+/* NO EVENT WIDENS ITS DAY, WITH ANY LETTERS (23 Oct 26). The short form's own width counts for nothing when the table
+   sizes its columns (`width: 0`), and it is drawn across the cell's width (`min-width: 100%`) — so the day is as wide
+   as its date makes it, and three letters sit inside it. GitHub's Linux machines and his iPhone draw wider letters than
+   his PC: there the cell's old floor of three characters widened "OFF"'s and "RC0"'s days by up to 1.9px. */
+.mx .events td.ev .evs {
+  display: block;
+  width: 0;
+  min-width: 100%;
+  overflow: hidden;
 }
 
 .mx .events td.ev .evadd {

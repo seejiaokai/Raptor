@@ -11418,7 +11418,9 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   the top row's asks to the grid, which owns the windows). Then "View" and the period picker (D1174; "+ New period" its
   last line, an admin's only — D1244), My leave (D1141 — LVE, OIL, days pending, next leave; `ui/myleave.ts`; a tap opens
   his person window), ⚙ at the row's right end for an admin. Desktop: one row. Phone: the tabs (and ⚙) on line 1, View,
-  the picker and My leave on line 2. No "Viewing as" (D1173).
+  the picker and My leave on line 2 — each line as low as the round-19 drawing (`docs/mock/lw-overhaul/full/r19-nav-admin-phone.png`),
+  no taller: the tab row about 53px, the View line about 42px, My leave sized to its two lines, never held at 44px (D1278, his
+  correction of 23 Oct 26; pinned by the browser test "on a phone the two top rows are no taller than the drawing"). No "Viewing as" (D1173).
 - **The grid's own bar (on the grid card, the same for everyone):** [▸ Manning | n red ›] (the right half counts the days
   a Manning, Available P or Available W row is RED — `sync.ts manningRedDays`; amber never; gone at 0 — D1243) · the open
   dates · … · the zoom pair (until pinch to zoom, [LW-PHONE-PINCH-ZOOM], D1228) · Legend. Rearrange is a line in ⚙
