@@ -6,6 +6,7 @@
 // command it runs in — state/rows.ts), bumps the version and notifies. A write
 // that skips these is invisible and unsaved.
 
+import { dayWhatIf, type DayWhatIf, type WhatIfLevel, type WhatIfWar } from '../engine/whatif'
 import {
   addDays,
   isNonWorkingDay,
@@ -3961,6 +3962,20 @@ export function balanceAfterFill(personId: string, dates: readonly string[], cod
   const before = read(ctx.sources)
   const writes = dates.filter(d => !cellProblem(personId, d, code))
   return { counter, before, after: writes.length ? read(withFill(ctx.sources, personId, writes, code)) : before }
+}
+
+/** WHAT A BID WOULD DO TO MANNING — the bid windows' day line (D1144, D1213; M3): each day of `dates` the store would
+ *  write (`cellProblem` refuses the rest, as `balanceAfterFill` does), read off the war on screen as the fill would leave
+ *  it (engine/whatif.ts — the grid's own rules). `judge` says where an Available figure stands that day (leavewar/sync.ts
+ *  `bidDayLine` hands in the day's Required and the row's points). [] where no day would be written. */
+export function bidWhatIf(personId: string, dates: readonly string[], code: string, judge: (seat: 'p' | 'w', have: number, date: string) => '' | WhatIfLevel): DayWhatIf[] {
+  const writes = dates.filter(d => !cellProblem(personId, d, code))
+  if (!writes.length) return []
+  /* the MERGED war on screen — approved leave lives in the Inputs and reaches the war's views only through getState()
+     (as figureCtxOf reads it) */
+  const st = getState()
+  const war: WhatIfWar = { people: st.people, grid: st.grid, states: st.states, requirements: st.requirements, views: st.views, avail: availRules() }
+  return writes.map(d => dayWhatIf(war, personId, d, code, judge))
 }
 
 export function setOilPolicy(patch: Partial<OilPolicy>): boolean {

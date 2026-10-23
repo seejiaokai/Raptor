@@ -38,6 +38,7 @@ import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
 import { setDaysWin, setInpEdit, setOilList } from '../ui/pops'
+import type { DayWhatIf } from './engine/whatif'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -92,6 +93,7 @@ import {
 import {
   absencesChanged,
   availRules,
+  bidWhatIf,
   getVersion,
   setRefusalHook,
   setHolidayTell,
@@ -2560,6 +2562,17 @@ export function availVerdictAt(iso: string, seat: 'p' | 'w', a: DayAnswer = flyA
   const rule = availRules()[seat]
   return availVerdict(seat === 'p' ? f.availP : f.availW, a.reqFrom[seat] === 'nf' ? null : a.req[seat], availPointsOf(rule))
 }
+/** THE BID WINDOWS' DAY LINE (D1144, D1213; M3): what a bid of `code` on `dates` would do to manning, each day the store
+ *  would write — his seat's Available row judged against that day's Required by its own points (the same judge as
+ *  `availVerdictAt`, on the figure the bid would leave), and the Manning rows it would turn amber or red. */
+export function bidDayLine(personId: string, dates: readonly string[], code: string): DayWhatIf[] {
+  const rules = availRules()
+  return bidWhatIf(personId, dates, code, (seat, have, iso) => {
+    const a = flyAnswer(iso)
+    return availVerdict(have, a.reqFrom[seat] === 'nf' ? null : a.req[seat], availPointsOf(rules[seat]))
+  })
+}
+
 /** The Available rows at RED on one day, each named with its figure (P, then W) — never at amber (D1243). */
 export function availRedAt(iso: string, a: DayAnswer = flyAnswer(iso)): RedLine[] {
   const f = dayFacts(iso)
