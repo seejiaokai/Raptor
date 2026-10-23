@@ -1915,3 +1915,33 @@ different feature that merely pass through it.
 **Suggested improvement:** (1) walk-scripts.md: on a touch-screen walk, take a picture within 100 ms of each tap as well as after it settles, and keep the hover state (iOS keeps it) — or force `:hover` on the pressed element before the settled picture. (2) A standing browser test per dense screen: press each control on a phone and assert every pinned (sticky) cell stays fully opaque. (3) The bug-check order's walk: a built screen from an approved drawing is measured beside it (heights and side-by-side boxes), as his lesson 42 now says.
 
 **Principle:** A check finds only the states it is pointed at. When a device keeps a state the test browser drops (hover after a tap, wider letters, a slow frame), make the test hold that state on purpose; pictures taken only after everything settles prove only the settled screen.
+
+### Observation 682: An iPhone screen recording can be read on a PC with no video tools — the installed Chrome, in a visible window, decodes it
+
+**Status:** OPEN
+**Date:** 23 Oct 26
+**Session context:** planning the Leave War's pinch to zoom; he attached a screen recording of the fault and said to ask him to describe it if it could not be opened
+**Skill:** brainstorming (its mockups-on-the-real-app reference)
+**Type:** open-source
+**Phase/Area:** taking in the owner's evidence before drawing
+
+**Issue:** The PC has no ffmpeg, and an iPhone records in HEVC: the headless test browser loaded the file but reported a 0 x 0 video and drew blank frames. A search of the disk for an attached file also cost a two-minute timeout before the upload's own path arrived in his next message. Opening the same file in the installed Chrome through Playwright with `headless: false` and the HEVC decoder feature on played it, and canvas captures every half second gave clear frames; turned upright and cropped, three of them became the before / after pictures of his question page.
+
+**Suggested improvement:** In the mockups reference, under "Showing It" or a new "His own evidence" line: a recording he sends is read first, frames pulled with the repo's `scripts/handpass/video-frames.mjs` (visible Chrome, HEVC on), and its key frames — turned and cropped to the place, marked — go on the page as his own pictures beside the drawn ones; ask him to describe it only if that fails. Wait for the upload path rather than searching the disk.
+
+**Principle:** Before asking a person to describe evidence they sent, try the ordinary tool they used to make it (their phone's format in a full browser); a headless or minimal player failing is not the file failing.
+
+### Observation 683: A ring on a top-cropped picture is placed against the crop, not the whole picture
+
+**Status:** OPEN
+**Date:** 2026-10-23
+**Session context:** the Leave War pinch look card, an Artifact page of walk pictures with marked places (D921, D1222)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** marking the place on a picture shown cropped
+
+**Issue:** A tall phone picture was shown cut to its top (a box of 804x1100 over a 1748-tall picture, the picture covering it from the top) and the ring round the date row was first placed in percentages of the whole picture, so it would have sat about a third too high and too short.
+
+**Suggested improvement:** In the mock-up guide, one line: when a picture is cropped by its box, a ring placed in percent takes the BOX as its measure (pixels from the top / the box height in picture pixels), or the ring is drawn onto the picture itself.
+
+**Principle:** A mark placed in relative units is relative to the element that holds it; once a crop makes that element differ from the source, convert every coordinate to the crop.

@@ -273,11 +273,13 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
     }
     window.addEventListener('scroll', close, true)
     window.addEventListener('resize', close)
+    window.addEventListener('lw-zoomstart', close)   // a pinch or Ctrl+scroll begins (Matrix.tsx)
     document.addEventListener('pointerdown', onDown, true)
     window.addEventListener('keydown', onKey, true)
     return () => {
       window.removeEventListener('scroll', close, true)
       window.removeEventListener('resize', close)
+      window.removeEventListener('lw-zoomstart', close)
       document.removeEventListener('pointerdown', onDown, true)
       window.removeEventListener('keydown', onKey, true)
     }

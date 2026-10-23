@@ -801,6 +801,23 @@
       "port": 4265
     },
     {
+      "name": "lw-pz-walk",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-pz8",
+        "--port",
+        "4274",
+        "--strictPort"
+      ],
+      "port": 4274
+    },
+    {
       "name": "lw-m2-e2e",
       "runtimeExecutable": "npx",
       "runtimeArgs": [
@@ -816,6 +833,21 @@
         "--strictPort"
       ],
       "port": 4266
+    },
+    {
+      "name": "lw-pz-break",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4280",
+        "--strictPort"
+      ],
+      "port": 4280
     }
   ]
 }

@@ -177,6 +177,49 @@ test('the undo/redo pair sits in the app’s top bar on the Leave War, disabled 
 // overlay's copy; on a desktop (untouched sticky path) it is still the real
 // cell. This helper points each project at whichever one is doing the freezing.
 const isPhone = () => test.info().project.name === 'lw-phone'
+
+/** A real two-finger pinch over CDP (D1282): about (cx, cy), the fingers d0 → d1 apart, sideways; `hold` keeps the first
+ *  finger down that long before the second lands. Waits for the lift's layout. */
+async function lwPinch(page: Page, cx: number, cy: number, d0: number, d1: number, o: { hold?: number } = {}) {
+  const cdp = await page.context().newCDPSession(page)
+  const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+  const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[cx - d / 2, cy], [cx + d / 2, cy]] }
+  await touch('touchStart', [at(0)[0]!]); await page.waitForTimeout(o.hold ?? 30)
+  await touch('touchStart', at(0)); await page.waitForTimeout(30)
+  for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await page.waitForTimeout(16) }
+  await touch('touchEnd', []); await page.waitForTimeout(600)
+  await cdp.detach()
+}
+/** Ctrl+scroll over a point (a desktop's zoom, D1228): `dy` wheel pixels, in notches of 100 */
+async function lwCtrlScroll(page: Page, x: number, y: number, dy: number) {
+  await page.mouse.move(x, y)
+  await page.keyboard.down('Control')
+  for (let left = dy; Math.abs(left) > 0.5; left -= Math.sign(left) * Math.min(100, Math.abs(left))) {
+    await page.mouse.wheel(0, Math.sign(left) * Math.min(100, Math.abs(left))); await page.waitForTimeout(30)
+  }
+  await page.keyboard.up('Control'); await page.waitForTimeout(500)
+}
+/** The frozen date row against the grid: every date he can see beside the frozen names whose frozen copy is off its
+ *  column or not its width (more than a pixel), as "date dx dw" — empty when it lines up, or when nothing is frozen. */
+async function frozenOffColumns(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const wrap = document.querySelector('#page-leavewar .mx-wrap')!
+    const head = [...wrap.querySelectorAll(':scope > table.mx > tbody.mxhead tr:last-child > th')] as HTMLElement[]
+    const mirror = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
+    if (!mirror) return []
+    const mcells = [...mirror.querySelectorAll('.mxfixed-scroll .mxhead tr:last-child > th')] as HTMLElement[]
+    const edge = wrap.querySelector('.mxhead th.bal')!.getBoundingClientRect().right
+    const off: string[] = []
+    head.forEach((h, i) => {
+      if (!h.dataset.testid?.startsWith('head-') || !mcells[i]) return
+      const a = h.getBoundingClientRect(), c = mcells[i]!.getBoundingClientRect()
+      if (a.left < edge + 2 || a.right > innerWidth - 2) return
+      if (Math.abs(a.left - c.left) > 1 || Math.abs(a.width - c.width) > 1 || h.textContent!.trim() !== mcells[i]!.textContent!.trim())
+        off.push(`${h.dataset.testid} ${Math.round(c.left - a.left)} ${Math.round(c.width - a.width)}`)
+    })
+    return off
+  })
+}
 function frozen(page: Page, id: string, col: '.who' | '.bal') {
   return isPhone()
     ? page.locator(`.mxband [data-band-id="${id}"] ${col}`)
@@ -507,12 +550,12 @@ const PHONES: [number, number][] = [[390, 844], [360, 740]]
    · the page's TAB ROW — Grid · OIL (Approvals and Balances join with their pages) — with ⚙ at its right end, an admin's;
    · then "View" (never "Period" — D1174), the period picker ("+ New period" its last line, an admin's — D1244) and My leave
      (D1141 — only for a person with a row on the war): on a phone a second line under the tabs, on a desktop the same row;
-   · the grid's OWN BAR on the grid card — [▸ Manning | n red ›] · the open dates · … · the zoom pair · Legend — the same for
-     everyone; the red count is gone at 0 (D1243). On a phone it takes a second line rather than cut a chip (M2's walk).
+   · the grid's OWN BAR on the grid card — [▸ Manning | n red ›] · the open dates · … · Legend — the same for
+     everyone (its − / + went with pinch to zoom: D1228, D1276, 23 Oct 26); the red count is gone at 0 (D1243). On a phone it takes a second line rather than cut a chip (M2's walk).
    No "Viewing as" (D1173). ---- */
 const TABS_ADMIN = ['lw-tab-grid', 'oil-tracker', 'settings-open'], TABS_MEMBER = ['lw-tab-grid', 'oil-tracker']
 const VIEW_LINE = ['war-picker', 'my-leave'], BAR = ['counts-toggle', 'open-chip', 'legend-open']
-const TOP_IDS = ['lw-tab-grid', 'oil-tracker', 'settings-open', 'war-picker', 'my-leave', 'lw-viewing', 'counts-toggle', 'undermanned', 'open-chip', 'lw-zoom', 'legend-open']
+const TOP_IDS = ['lw-tab-grid', 'oil-tracker', 'settings-open', 'war-picker', 'my-leave', 'lw-viewing', 'counts-toggle', 'undermanned', 'open-chip', 'legend-open']
 /** The top as it is painted since M2: the controls' boxes, the label words in sight, how far any of the three rows runs
  *  sideways, the period list's last line, and which of the grid bar's chips are cut. */
 async function topNow(page: Page) {
@@ -590,8 +633,8 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
     /* the grid's bar may take a second line on a phone rather than cut a chip; from 431 to 700 its buttons stay on one
-       line (D1019 — "−" and "+" on the head's one line) */
-    const m = await expectTopLines(page, TABS_ADMIN, VIEW_LINE, width > 430 ? [...BAR, 'lw-zoom'] : null, `admin, ${width} wide`)
+       line (D1019 — made for "−" and "+", which went with pinch to zoom, D1276) */
+    const m = await expectTopLines(page, TABS_ADMIN, VIEW_LINE, width > 430 ? BAR : null, `admin, ${width} wide`)
     if (width > 430) {
       /* D1016 (18 Oct 26, not changed by D1254): from 431 to 700 the top keeps the grid card's 20px edge so the two line
          up. Soft, so the rest of the widths are still measured if it does not hold. */
@@ -630,8 +673,8 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
     const edge = m.vw > 430 ? 24 : 14
     expect(m.boxes['settings-open']!.r).toBeGreaterThan(m.vw - edge)
     expect(m.boxes['my-leave']!.r).toBeGreaterThan(m.vw - edge)
-    /* at 360 the bar takes a second line and Legend lands on it, under the zoom pair, right-aligned with it */
-    for (const id of ['counts-toggle', 'open-chip', 'lw-zoom']) {
+    /* Legend ends the bar, right-aligned, on its last line (at 360 with wide letters it may take a second one) */
+    for (const id of ['counts-toggle', 'open-chip']) {
       expect(m.boxes['legend-open']!.r, `${width}: Legend ends the bar, at its right`).toBeGreaterThanOrEqual(m.boxes[id]!.r - 0.5)
       expect(m.boxes['legend-open']!.t, `${width}: Legend is on the bar's last line`).toBeGreaterThanOrEqual(m.boxes[id]!.t - 3)
     }
@@ -909,7 +952,7 @@ test('on a tablet and a desktop the top of the Leave War is as it was: its label
     /* ONE row (D679 as narrowed), and the grid's bar one line, at every one of these sizes; nothing past the screen */
     expectOneLine(m.boxes, [...TABS_ADMIN, 'war-picker', 'my-leave'], `${width}, the one row`)
     expectApart(m.boxes, [...TABS_ADMIN, 'war-picker', 'my-leave'], `${width}, the one row`)
-    expectOneLine(m.boxes, [...BAR, 'lw-zoom'], `${width}, the grid's bar`)
+    expectOneLine(m.boxes, BAR, `${width}, the grid's bar`)
     for (const [id, b] of Object.entries(m.boxes)) {
       expect(b.l, `${width}: "${id}" starts off the screen`).toBeGreaterThanOrEqual(0)
       expect(b.r, `${width}: "${id}" runs past the screen's edge`).toBeLessThanOrEqual(m.vw + 0.5)
@@ -2120,8 +2163,7 @@ test("pressing the Leave War's controls on a phone never turns a pinned cell see
   for (const m of ['JAN', 'FEB', 'MAR', 'JUN', 'DEC']) await press(`[data-testid="month-${m}"]`, `month ${m}`)
   await press('[data-testid="counts-toggle"]', 'Manning (open)')
   await press('[data-testid="counts-toggle"]', 'Manning (fold)')
-  await press('[data-testid="lw-zoom-out"]', 'zoom out')
-  await press('[data-testid="lw-zoom-in"]', 'zoom in')
+  // (the − / + it pressed here went with pinch to zoom — D1276; a pinch is not a press: its own tests are below)
   await press('[data-testid="legend-open"]', 'Legend', true)
   await press('[data-testid="month-JAN"]', 'back to January')
   await press('[data-testid^="event-0-2026-01-1"]', 'an Event cell', true)
@@ -3440,10 +3482,10 @@ async function expectBarLines(page: Page, ids: string[]) {
 // AFTER rearrange (no spring to the far edge). jsdom can't see the single line;
 // this is the browser-measured gate the perf checklist asks for, run at BOTH
 // widths (phone and desktop are different CSS paths).
-// M2: re-expressed — the grid's own bar is [Manning] · the open dates · … · − + · Legend (D1254); ⚙ moved to the tab
+// M2: re-expressed — the grid's own bar is [Manning] · the open dates · … · Legend (D1254); ⚙ moved to the tab
 // row's right end, OIL became a tab beside Grid, and Rearrange went into ⚙ (D1254). Still one row, in that order, on
-// the screen, at both widths.
-test('the counter controls sit on one row, in order, OIL right after rearrange, zoom after OIL', async ({ page }) => {
+// the screen, at both widths. Its − / + went with pinch to zoom (D1228, D1276, 23 Oct 26).
+test('the counter controls sit on one row, in order, OIL a tab, no zoom pair', async ({ page }) => {
   await lwRole(page, 'admin')
   const rowOf = async (ids: string[]) => {
     const box: Record<string, { x: number; y: number; w: number }> = {}
@@ -3467,12 +3509,10 @@ test('the counter controls sit on one row, in order, OIL right after rearrange, 
      one line outright, which held with his PC's letters only — with Linux's and his iPhone's wider ones "Open 1 Jan –
      31 Mar" leaves a 390-wide phone ~20px short, and Legend takes the second line (GitHub's run of d0ff2c633; reproduced
      here with LW_WIDE_LETTERS=1). So: in order, line by line; at most two lines; each line break forced by the width. */
-  const BAR_IDS = ['counts-toggle', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open']
-  const bar = await expectBarLines(page, BAR_IDS)
-  const where = Object.values(bar).map(b => `${b.id} x ${b.x.toFixed(0)} mid ${b.mid.toFixed(0)}`).join('; ')
-  // the zoom pair is a pair: − then + one gap apart on one line, not spread
-  expect(Math.abs(bar['lw-zoom-in']!.mid - bar['lw-zoom-out']!.mid), `the − and + are split (${where})`).toBeLessThan(4)
-  expect(bar['lw-zoom-in']!.x - (bar['lw-zoom-out']!.x + bar['lw-zoom-out']!.w)).toBeLessThan(24)
+  const BAR_IDS = ['counts-toggle', 'open-chip', 'legend-open']
+  await expectBarLines(page, BAR_IDS)
+  // no − / + anywhere on the page: the grid is pinched, a desktop Ctrl+scrolls (D1228, D1276)
+  await expect(page.locator('#page-leavewar [data-testid="lw-zoom"], #page-leavewar [data-testid^="lw-zoom-"]')).toHaveCount(0)
   // the tab row: Grid, OIL right after it, ⚙ at its right end
   await rowOf(['lw-tab-grid', 'oil-tracker', 'settings-open'])
   // nothing of the old bar is left on the grid card: no ⚙, no OIL, no Rearrange toggle
@@ -3482,37 +3522,29 @@ test('the counter controls sit on one row, in order, OIL right after rearrange, 
 })
 
 /* D1275 (23 Oct 26 — Q3, "as recommended"): on a phone, while Rearrange is on, its way out reads "⇅ Done" in words (the
-   phone's short words, D1019, stay for every other button) and the − / + step aside until it is off, so the bar keeps
-   to one line as drawn (questions/q3c-done-zoom-aside.png). Off again, the − / + come back. On a desktop the − / + stay.
-   Measured at 390 and 360; with wider letters (LW_WIDE_LETTERS=1) the bar keeps the rule above — one line whenever it
-   fits. [LW-REARRANGE-DONE-WORD], red first. */
-test('while rearranging, the bar reads "⇅ Done" in words, and on a phone the − / + step aside (D1275)', async ({ page }) => {
+   phone's short words, D1019, stay for every other button), so the bar keeps to one line as drawn. The − / + it stepped
+   aside for went with pinch to zoom (D1276, 23 Oct 26). Measured at 390 and 360; with wider letters (LW_WIDE_LETTERS=1)
+   the bar keeps the rule above — one line whenever it fits. [LW-REARRANGE-DONE-WORD], red first. */
+test('while rearranging, the bar reads "⇅ Done" in words (D1275)', async ({ page }) => {
   await lwRole(page, 'admin')
   await page.locator('[data-testid="settings-open"]').click()
   await page.locator('[data-testid="settings-rearrange"]').click()
   const done = page.locator('#page-leavewar [data-testid="roster-arrange"]')
-  const zoom = page.locator('#page-leavewar [data-testid="lw-zoom"]')
   await expect(done).toBeVisible()
   for (const width of isPhone() ? [390, 360] : [1440]) {
     await page.setViewportSize({ width, height: isPhone() ? 664 : 900 })
     await page.waitForTimeout(200)
     expect((await done.innerText()).replace(/\s+/g, ' ').trim(), `${width}: the word is drawn`).toBe('⇅ Done')
-    if (isPhone()) {
-      await expect(zoom, `${width}: the − / + step aside while Rearrange is on`).toBeHidden()
-      await expectBarLines(page, ['counts-toggle', 'open-chip', 'roster-arrange', 'legend-open'])
-    } else {
-      await expect(zoom, 'a desktop keeps the − / +').toBeVisible()
-    }
+    if (isPhone()) await expectBarLines(page, ['counts-toggle', 'open-chip', 'roster-arrange', 'legend-open'])
   }
   await done.click()
   await expect(done).toHaveCount(0)
-  await expect(zoom, 'Rearrange off: the − / + are back').toBeVisible()
 })
 
 // A member's counter bar is just Manning · OIL, adjacent (owner, 5 Sep 26 — "in
 // normal user it's just right of manning"). Runs as the default member role.
 // M2: re-expressed — OIL is a tab on the page's tab row now, for a member as for an admin (D1254), so the member's bar
-// is the grid's own bar, the same for everyone: Manning, the open dates right after it, then the zoom pair and Legend.
+// is the grid's own bar, the same for everyone: Manning, the open dates right after it, then Legend (no − / + — D1276).
 test('a member counter bar is Manning then OIL, adjacent, one row', async ({ page }) => {
   await expect(page.locator('[data-testid="settings-open"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="settings-rearrange"]')).toHaveCount(0)
@@ -3523,10 +3555,8 @@ test('a member counter bar is Manning then OIL, adjacent, one row', async ({ pag
   expect(o.x).toBeGreaterThan(m.x)                       // the open dates right of Manning
   expect(Math.abs(mid(o) - mid(m))).toBeLessThan(4)      // same row
   expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
-  // the zoom pair follows on the same row, for a member too (6 Sep 26)
-  const z = (await page.locator('[data-testid="lw-zoom-in"]').boundingBox())!
-  expect(z.x).toBeGreaterThan(o.x)
-  expect(Math.abs(mid(z) - mid(m))).toBeLessThan(4)
+  // no − / + for a member either: the grid is pinched (D1228, D1276)
+  await expect(page.locator('[data-testid="lw-zoom-in"]')).toHaveCount(0)
   // and OIL is the member's tab, right after Grid on the tab row
   const g = (await page.locator('[data-testid="lw-tab-grid"]').boundingBox())!
   const t = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
@@ -6150,78 +6180,475 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   })
   const d0 = await copyMatchesGrid()
   if (d0 !== null) expect(Math.abs(d0)).toBeLessThan(2)
-  // the zoom buttons sit in the top row, so a click scrolls the page up to
-  // them and thaws the header — scroll back down so it freezes again first
-  await page.locator('[data-testid="lw-zoom-in"]').click()
-  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  // A PINCH while frozen (D1282 — it replaced the − / + of 6 Sep 26, D1276): in, then out, by real fingers. After each,
+  // the frozen copy is the grid's width and every date he can see stands over its own column, the same width.
+  await lwPinch(page, 220, 500, 100, 160)
   const d1 = await copyMatchesGrid()
   if (d1 !== null) expect(Math.abs(d1)).toBeLessThan(2)
-  await page.locator('[data-testid="lw-zoom-out"]').click()
-  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  expect(await frozenOffColumns(page), 'after a pinch in, the frozen dates stand over their columns').toEqual([])
+  await lwPinch(page, 220, 500, 200, 110)
   await expect(mirror).toHaveCount(1)
+  expect(await frozenOffColumns(page), 'after a pinch out, the frozen dates stand over their columns').toEqual([])
   // …but the header must NEVER drive the grid (owner, 20 Aug 26). Writing the
   // mirror's lagged position back onto the grid mid-fling is what snapped the
   // grid back and halted the sideways scroll the moment the header froze.
   // Setting the mirror's OWN scrollLeft now leaves the grid exactly where it is
   // (checked last, since it deliberately desyncs the mirror). No re-sync fires
   // because the pump only runs while the GRID is being scrolled.
+  // (the pinches above moved the grid's own scroll, to keep the day under the fingers — so where it is NOW is the mark)
+  const gridAt = await page.evaluate(() => document.querySelector('.mx-wrap')!.scrollLeft)
   await page.evaluate(() => { document.querySelector('.mxfixed-scroll')!.scrollLeft = 50 })
   await page.waitForTimeout(150)
-  expect(await page.evaluate(() => document.querySelector('.mx-wrap')!.scrollLeft)).toBe(400)
+  expect(await page.evaluate(() => document.querySelector('.mx-wrap')!.scrollLeft)).toBe(gridAt)
   // scrolling back up thaws it
   await page.evaluate(() => window.scrollTo(0, 0))
   await page.waitForTimeout(250)
   await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
 })
 
-test('the zoom steps the whole grid down and back, on both widths', async ({ page }) => {
-  // One column's width, not the table's: the table also grows as the column
-  // window adds months at rest (colwindow.ts), which is not what zoom claims.
+/* WAS "the zoom steps the whole grid down and back" (the − / +, 6 Sep 26). CHANGED by D1228, D1276, D1282–D1284
+   (23 Oct 26): a pinch on a phone, Ctrl+scroll on a desktop; out until a month fits across a phone held upright, in to
+   1.4. One column's width, not the table's: the table also grows as the column window adds months at rest. */
+test('a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back, within its limits', async ({ page }) => {
   const width = () => page.evaluate(() => document.querySelector('.mx-wrap [data-testid="head-2026-01-15"]')!.getBoundingClientRect().width)
-  const before = await width()
-  await page.locator('[data-testid="lw-zoom-out"]').click()
-  const small = await width()
-  expect(small).toBeLessThan(before * 0.9)
-  await page.locator('[data-testid="lw-zoom-in"]').click()
-  expect(Math.abs((await width()) - before)).toBeLessThan(4)
+  const zoom = () => page.evaluate(() => parseFloat((document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+  await page.locator('[data-testid="month-JAN"]').click(); await page.waitForTimeout(400)
+  const out = (d: number) => isPhone() ? lwPinch(page, 220, 560, 200, 200 / d) : lwCtrlScroll(page, 800, 520, Math.log(d) / 0.002)
+  const before = await width(), z0 = await zoom()
+  await out(1.5)
+  expect(await width()).toBeLessThan(before * 0.8)
+  await out(1 / 1.5)
+  expect(Math.abs((await width()) - before), 'back to the size it started at').toBeLessThan(before * 0.06)
+  expect(Math.abs((await zoom()) - z0)).toBeLessThan(0.02)
+  await out(1 / 4); await out(1 / 4)
+  expect(await zoom(), 'in to 1.4, no further (D1284)').toBeCloseTo(1.4, 3)
+  await out(6); await out(6); await out(6)
+  const floor = await zoom()
+  expect(floor, 'out to about 0.4, a month across a phone held upright (D1283)').toBeGreaterThan(0.3)
+  expect(floor).toBeLessThan(0.5)
+  /* on a phone: about a whole month beside the names at the floor */
+  if (isPhone()) {
+    const days = await page.evaluate(() => {
+      const wrap = document.querySelector('#page-leavewar .mx-wrap')!, bal = wrap.querySelector('.mxhead th.bal')!.getBoundingClientRect()
+      const d = wrap.querySelector('[data-testid^="head-"]')!.getBoundingClientRect().width
+      return (wrap.getBoundingClientRect().right - bal.right) / d
+    })
+    expect(days, 'about a month across').toBeGreaterThan(27)
+    expect(days).toBeLessThan(34)
+  }
+  expect(await page.evaluate(() => visualViewport ? visualViewport.scale : 1), 'the page itself never zoomed').toBe(1)
 })
 
-// Owner, 6 Sep 26: the − / + pair lives in the counter block's top row at both
-// widths (it used to ride the month strip, phone-only), and a phone OPENS one
-// step out — "can this be the default zoom? Like zoom 1 click out".
-test('the zoom control is in the top row on both widths; a phone opens one step out', async ({ page }, testInfo) => {
-  const pair = page.locator('[data-testid="lw-zoom"]')
-  await expect(pair).toBeVisible()
-  expect(await pair.evaluate(el => !!el.closest('.card-hd'))).toBe(true)
+// Owner, 6 Sep 26: a phone OPENS one step out — "can this be the default zoom? Like zoom 1 click out"; a desktop at
+// normal size (D159). The − / + that used to sit in the top row went with pinch to zoom (D1228, D1276, 23 Oct 26).
+test('no − / + on the Leave War; a phone opens one step out, a desktop at normal size', async ({ page }, testInfo) => {
+  await expect(page.locator('[data-testid="lw-zoom"], [data-testid="lw-zoom-in"], [data-testid="lw-zoom-out"]')).toHaveCount(0)
   const z = await page.evaluate(() => (document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom)
   expect(z).toBe(testInfo.project.name === 'lw-phone' ? '0.8' : '')
 })
 
-// Owner, 6 Sep 26: the OIL tracker too — "zoom out once as a default view as
-// well, and put a plus minus for zoom placed beside range".
-test('the OIL tracker has its own − / + beside RANGE, on one row; a phone opens it one step out', async ({ page }, testInfo) => {
+/* THE PINCH, BY REAL FINGERS (D1282, 23 Oct 26 — [LW-PHONE-PINCH-ZOOM]): it starts anywhere on the page — the app's top
+   bar included — and zooms the grid only, never the page; the month buttons keep their size; turned sideways while
+   zoomed, the frozen dates still stand over their columns; and a pinch whose first finger was held on a day (past the
+   180 ms that arms a selection) selects nothing and opens nothing (fix A7a). The walk that found what these pin:
+   docs/handpass/2026-10-23-lw-pinch.md. */
+test.describe('the Leave War grid pinches on a phone (D1282)', () => {
+  test.beforeEach(() => { test.skip(!isPhone(), 'a pinch is a touch screen\'s; a desktop has its Ctrl+scroll test above') })
+
+  test('a pinch on the top bar zooms the grid, not the page; the month buttons keep their size', async ({ page }) => {
+    const month = () => page.locator('[data-testid="month-MAR"]').boundingBox()
+    const m0 = (await month())!
+    const z0 = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+    await lwPinch(page, 200, 28, 80, 160)
+    const z1 = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+    expect(z1, 'the grid zoomed in').toBeGreaterThan(z0 + 0.3)
+    expect(await page.evaluate(() => visualViewport ? visualViewport.scale : 1), 'the page did not').toBe(1)
+    const m1 = (await month())!
+    expect([Math.round(m1.width), Math.round(m1.height)], 'the month buttons kept their size').toEqual([Math.round(m0.width), Math.round(m0.height)])
+    expect(await page.evaluate(() => (document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.transform), 'laid out sharp at the lift').toBe('')
+  })
+
+  test('while the fingers move the frozen dates stretch with the grid, over the same columns; after the lift the lit month is the one in view and the strip no taller than its buttons need', async ({ page }) => {
+    await page.locator('[data-testid="month-OCT"]').click(); await page.waitForTimeout(500)
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    await touch('touchStart', [[170, 500]]); await page.waitForTimeout(30)
+    await touch('touchStart', [[170, 500], [270, 500]]); await page.waitForTimeout(30)
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', [[170 - 5 * i, 500], [270 + 5 * i, 500]]); await page.waitForTimeout(16) }
+    /* mid-pinch (the zoom 0.8 → ~1.4 when it lands, far enough for a wrong width estimate to show): both are stretched pictures; the frozen copy's date cells must be drawn where the grid's are */
+    expect(await frozenOffColumns(page), 'mid-pinch, the frozen dates stand over the stretched columns').toEqual([])
+    await touch('touchEnd', []); await page.waitForTimeout(600)
+    await cdp.detach()
+    expect(await frozenOffColumns(page), 'after the lift').toEqual([])
+    /* the lit month is the month under the frozen edge — a wrong width estimate after a zoom once lit DEC over October */
+    const lit = await page.locator('#page-leavewar .mjump.on').innerText()
+    expect(lit, 'the lit month after a pinch in over October').toBe('OCT')
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const z = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+    if (z > 1) {
+      /* the rule itself, not a number of pixels (the letters' height differs by machine): the strip cell is no taller
+         than the desktop's one-row strip, 44 on the screen, or its buttons and a little room — before the fix it was
+         44 of the GRID's pixels, 62 on the screen at 1.4 */
+      const m = await page.evaluate(() => {
+        const cell = document.querySelector('#page-leavewar td.mstick')!.getBoundingClientRect(), row = document.querySelector('#page-leavewar .mstrow')!.getBoundingClientRect()
+        return { cell: cell.height, need: row.bottom - cell.top + 6 }
+      })
+      expect(m.cell, `zoomed in, no tall empty band under the month buttons (${JSON.stringify(m)})`).toBeLessThanOrEqual(Math.max(44, m.need) + 1.5)
+    }
+  })
+
+  /* HIS iPHONE PICTURES, MID-PINCH (owner D1287, 23 Oct 26 — "Some untidiness … This is a mid pinch zoom picture"): with
+     the fingers still down the names column and the corner stood in from the grid's left edge with days on their left,
+     the date row grew up over the month buttons, and the month buttons' own cell stood boxed behind JAN–MAR. The walk had
+     the first in its own picture and passed it; it measured the names' rows top to bottom, never their left edge. Each
+     case is read with the fingers DOWN — after the lift the zoom's layout put all of it right, which is why only a picture
+     mid-gesture shows it. */
+  test('while the fingers are down the pinned parts stay pinned: the names and the corner at the left edge, the date row under the month buttons, the month buttons clear (D1287)', async ({ page }) => {
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    /** two fingers about (cx, cy), d0 → d1 apart; reads the screen with them still down, then lifts */
+    const midPinch = async (cx: number, cy: number, d0: number, d1: number) => {
+      const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[cx - d / 2, cy], [cx + d / 2, cy]] }
+      await touch('touchStart', [at(0)[0]!]); await page.waitForTimeout(30)
+      await touch('touchStart', at(0)); await page.waitForTimeout(30)
+      for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await page.waitForTimeout(16) }
+      await page.waitForTimeout(80)
+      const m = await readPinned()
+      await touch('touchEnd', []); await page.waitForTimeout(700)
+      return m
+    }
+    const readPinned = () => page.evaluate(() => {
+      const q = (s: string) => document.querySelector<HTMLElement>(s)
+      const R = (el: Element | null | undefined) => el ? el.getBoundingClientRect() : null
+      const wrap = q('#page-leavewar .mx-wrap')!.getBoundingClientRect()
+      const strip = R(q('#page-leavewar .mstrow'))!
+      const corner = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who'))!
+      const lve = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.bal'))!
+      /* the date row's foot against the first row under it: no gap opens, nothing slides over it */
+      const headB = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who'))!.bottom
+      const firstRow = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead + tbody > tr > td.who'))
+      const band = q('#page-leavewar [data-testid="frozen-cols"]')
+      const bandR = band && getComputedStyle(band).visibility !== 'hidden' ? R(band) : null
+      /* a Manning row's pinned name, on screen */
+      const counter = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap > table.mx > tbody.counts td.who')].map(c => c.getBoundingClientRect()).find(r => r.bottom > 0 && r.top < innerHeight) ?? null
+      /* between the month buttons, past MAR: what is drawn there must be the strip's own band */
+      const btn = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mstrow .mjump')]
+      const gaps = btn.slice(3, 11).map((b, i) => { const a = b.getBoundingClientRect(), n = btn[i + 4]!.getBoundingClientRect(); return [(a.right + n.left) / 2, a.top + a.height / 2] })
+      /* the first thing under the buttons' own row there: the strip's cell, never a cell of the grid sliding beneath */
+      const offStrip = gaps.filter(([x, y]) => { const first = document.elementsFromPoint(x!, y!).find(e => !e.closest('.mstrow')); return !(first && first.closest('td.mstick')) }).length
+      const mirror = q('#page-leavewar [data-testid="sticky-head"]')
+      const mf = R(mirror?.querySelector('.mxfixed-frozen')), mb = R(mirror)
+      /* the frozen date row reaches the screen's right edge: a date is drawn there, not the row's empty box */
+      const mirrorRight = mb ? !!document.elementFromPoint(wrap.right - 3, mb.top + 6)?.closest('[data-testid="sticky-head"] th') : null
+      return {
+        wrapL: wrap.left, stripB: strip.bottom, cornerL: corner.left, cornerT: corner.top, cornerGap: lve.left - corner.right, headGap: firstRow ? firstRow.top - headB : null, bandL: bandR?.left ?? null, bandT: bandR?.top ?? null,
+        counterL: counter?.left ?? null, offStrip, mirrorFrozenL: mf?.left ?? null, mirrorL: mb?.left ?? null, mirrorRight,
+        transformed: !!(q('#page-leavewar .mx-wrap > table.mx')!.style.transform),
+      }
+    })
+    /* his first picture: September, Manning open, a pinch out at the top of the page */
+    await page.locator('[data-testid="counts-toggle"]').click(); await page.waitForTimeout(400)
+    await page.locator('[data-testid="month-SEP"]').click(); await page.waitForTimeout(700)
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const rest = await readPinned()
+    const out = await midPinch(230, 620, 220, 120)
+    expect(out.transformed, 'read mid-pinch, the grid stretched as a picture').toBe(true)
+    expect(Math.abs(out.cornerL - out.wrapL), `pinching out, the corner stays at the left edge (${JSON.stringify(out)})`).toBeLessThan(1.5)
+    expect(Math.abs(out.cornerT - rest.cornerT), 'pinching out, the date row stays under the month buttons').toBeLessThan(1.5)
+    expect(Math.abs(out.cornerGap - rest.cornerGap), 'pinching out, the names and LVE columns stay side by side, no day between them').toBeLessThan(1.5)
+    expect(out.bandL === null ? 0 : Math.abs(out.bandL - out.wrapL), 'pinching out, the names stay at the left edge').toBeLessThan(1.5)
+    expect(out.counterL === null ? 0 : Math.abs(out.counterL - out.wrapL), 'pinching out, a Manning row\'s name stays at the left edge').toBeLessThan(1.5)
+    expect(out.offStrip, 'pinching out, nothing but the strip between the month buttons').toBe(0)
+    /* the page part-way down, the date row still in sight: pinching out, the date row follows the rows down — no empty
+       band opens under it (the re-walk's own find, 23 Oct 26) */
+    await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)
+    const restP = await readPinned()
+    const part = await midPinch(230, 500, 220, 120)
+    expect(Math.abs((part.headGap ?? 0) - (restP.headGap ?? 0)), `part-way down, no gap under the date row (${JSON.stringify(part)})`).toBeLessThan(1.5)
+    expect(part.cornerT, 'part-way down, the date row never over the month buttons').toBeGreaterThanOrEqual(part.stripB - 1)
+    expect(Math.abs(part.cornerL - part.wrapL), 'part-way down, the corner at the left edge').toBeLessThan(1.5)
+    /* his third picture: a pinch in at the top of the page */
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const rest2 = await readPinned()
+    const inn = await midPinch(230, 470, 120, 220)
+    expect(Math.abs(inn.cornerL - inn.wrapL), `pinching in, the corner stays at the left edge (${JSON.stringify(inn)})`).toBeLessThan(1.5)
+    expect(Math.abs(inn.cornerT - rest2.cornerT), 'pinching in, the date row does not grow up over the month buttons').toBeLessThan(1.5)
+    expect(inn.cornerT, 'pinching in, the corner below the month buttons').toBeGreaterThanOrEqual(inn.stripB - 1)
+    expect(Math.abs(inn.cornerGap - rest2.cornerGap), 'pinching in, the names and LVE columns stay side by side').toBeLessThan(1.5)
+    expect(inn.bandL === null ? 0 : Math.abs(inn.bandL - inn.wrapL), 'pinching in, the names stay at the left edge').toBeLessThan(1.5)
+    expect(inn.offStrip, 'pinching in, nothing but the strip between the month buttons').toBe(0)
+    /* the page scrolled, the dates frozen under the top bar: the frozen row's corner stays at its left */
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const fr = await midPinch(230, 520, 220, 130)
+    expect(fr.mirrorFrozenL === null || fr.mirrorL === null ? 0 : Math.abs(fr.mirrorFrozenL - fr.mirrorL), `the frozen dates' corner stays at the left (${JSON.stringify(fr)})`).toBeLessThan(1.5)
+    expect(fr.bandL === null ? 0 : Math.abs(fr.bandL - fr.wrapL), 'the names stay at the left edge').toBeLessThan(1.5)
+    expect(fr.mirrorRight, 'the frozen dates still reach the screen’s right edge').toBe(true)
+    await cdp.detach()
+  })
+
+  test('a big pinch out where the grid opens, at the top of the page: the month buttons hold their size mid-pinch, and the day under the fingers does not move across from the stretched picture to a beat after the lift', async ({ page }) => {
+    /* where the grid opens. Measured against the PICTURE, not the fingers: at the year's start (this test world opens on
+       1 January) or the page's top the grid cannot scroll to keep the day under the fingers, and the picture is held
+       there too (`edges`) — what must never happen is a move after the lift (the walk's W3: the year slid 1,600 px) */
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const X = 260, Y = 640
+    const under = await page.evaluate(([x, y]) => [...document.querySelectorAll('#page-leavewar .mx-wrap [data-testid^="head-"]')].find(c => { const q = c.getBoundingClientRect(); return x >= q.left && x < q.right })?.getAttribute('data-testid') ?? null, [X, Y])
+    expect(under).toBeTruthy()
+    const mon = () => page.locator('[data-testid="month-MAR"]').boundingBox()
+    const m0 = (await mon())!
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    await touch('touchStart', [[X - 110, Y]]); await page.waitForTimeout(30)
+    await touch('touchStart', [[X - 110, Y], [X + 110, Y]]); await page.waitForTimeout(30)
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', [[X - 110 + 6 * i, Y], [X + 110 - 6 * i, Y]]); await page.waitForTimeout(16) }
+    const m1 = (await mon())!
+    expect(Math.abs(m1.width - m0.width), 'mid-pinch, the month buttons keep their size (D1282)').toBeLessThan(1.5)
+    const at = () => page.evaluate(id => { const q = document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect(); return q.left + q.width / 2 }, under!)
+    const pic = await at()
+    await touch('touchEnd', []); await page.waitForTimeout(900)
+    await cdp.detach()
+    const x = await at()
+    expect(Math.abs(x - pic), `the day under the fingers (${under}) does not move across after the lift`).toBeLessThan(12)
+  })
+
+  test('turned sideways while zoomed, and back, the frozen dates stand over their columns', async ({ page }) => {
+    await lwPinch(page, 220, 560, 100, 150)
+    await page.setViewportSize({ width: 844, height: 390 }); await page.waitForTimeout(800)
+    await page.evaluate(() => window.scrollTo(0, 500)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    expect(await frozenOffColumns(page), 'sideways').toEqual([])
+    await lwPinch(page, 420, 250, 120, 80)
+    expect(await frozenOffColumns(page), 'sideways, after a pinch').toEqual([])
+    await page.setViewportSize({ width: 390, height: 664 }); await page.waitForTimeout(800)
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    expect(await frozenOffColumns(page), 'back upright').toEqual([])
+  })
+
+  test('a pinch whose first finger was held on a day, or rested on a name, selects nothing and opens nothing (A7a)', async ({ page }) => {
+    await lwRole(page, 'admin')
+    await lwPinch(page, 250, 600, 120, 170, { hold: 420 })   // the first finger on a day, held past the 180 ms
+    await page.waitForTimeout(300)
+    await expect(page.locator('#page-leavewar .bidsheet')).toHaveCount(0)
+    await expect(page.locator('#page-leavewar .selcell')).toHaveCount(0)
+    await lwPinch(page, 160, 600, 200, 90, { hold: 60 })     // the first finger on the frozen names, the second on a day
+    await page.waitForTimeout(500)
+    await expect(page.locator('#page-leavewar .bidsheet')).toHaveCount(0)
+    await expect(page.locator('#page-leavewar .selcell')).toHaveCount(0)
+    // and one finger still taps a day open, as before
+    await page.locator('[data-testid="month-JAN"]').tap(); await page.waitForTimeout(400)
+    await page.locator('[data-testid="cell-slipway-2026-01-20"]').tap()
+    await expect(page.locator('#page-leavewar .bidsheet')).toHaveCount(1)
+  })
+})
+
+// Owner, 6 Sep 26: the OIL tracker opens one step out on a phone — "zoom out once as a default view as well". Its − / +
+// beside RANGE went with the grid's (D1285, D1276, 23 Oct 26): the table is pinched on a phone, Ctrl+scrolled on a
+// desktop, in to 1.4 as the grid; the tools row stays its size.
+test('the OIL tracker pinches (D1285): no − / +; a phone opens it one step out; its table zooms, its tools stay', async ({ page }, testInfo) => {
   await page.locator('[data-testid="oil-tracker"]').click()
   await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
-  const range = (await page.locator('[data-testid="oil-range-pick"]').boundingBox())!
-  const out = (await page.locator('[data-testid="oil-zoom-out"]').boundingBox())!
-  const inn = (await page.locator('[data-testid="oil-zoom-in"]').boundingBox())!
-  const show = (await page.locator('.oil-tools .lab').boundingBox())!
-  expect(out.x).toBeGreaterThan(range.x + range.width - 1)     // right after RANGE
-  expect(inn.x).toBeGreaterThan(out.x)
-  for (const b of [range, out, inn]) expect(Math.abs((b.y + b.height / 2) - (show.y + show.height / 2))).toBeLessThan(12)  // same row as SHOW
-  expect(inn.x + inn.width).toBeLessThanOrEqual(page.viewportSize()!.width)
-  const z = () => page.evaluate(() => (document.querySelector('[data-testid="oil-list"] table.oil-grid') as HTMLElement).style.zoom)
-  expect(await z()).toBe(testInfo.project.name === 'lw-phone' ? '0.8' : '')
-  // the frozen NAME column's width is what the zoom moves (the table itself
-  // always fills the sheet — `min-width: 100%`); a step from 0.8 to 1 leaves
-  // no inline zoom at all
+  await expect(page.locator('[data-testid="oil-zoom"], [data-testid="oil-zoom-in"], [data-testid="oil-zoom-out"]')).toHaveCount(0)
+  const z = () => page.evaluate(() => parseFloat((document.querySelector('[data-testid="oil-list"] table.oil-grid') as HTMLElement).style.zoom || '1'))
+  expect(await z()).toBe(testInfo.project.name === 'lw-phone' ? 0.8 : 1)
+  const tools = () => page.locator('.oil-tools').boundingBox()
+  const t0 = (await tools())!
+  // the frozen NAME column's width is what the zoom moves (the table itself always fills the sheet — `min-width: 100%`)
   const w = () => page.locator('[data-testid="oil-list"] table.oil-grid th.f.c1').first().evaluate(el => el.getBoundingClientRect().width)
   const before = await w()
-  await page.locator('[data-testid="oil-zoom-in"]').click()
-  expect(await z()).toBe(testInfo.project.name === 'lw-phone' ? '' : '1.2')
+  if (isPhone()) await lwPinch(page, 200, 520, 100, 170)
+  else await lwCtrlScroll(page, 600, 500, -300)
+  expect(await z()).toBeGreaterThan(testInfo.project.name === 'lw-phone' ? 1.2 : 1.5 - 0.2)
+  expect(await z()).toBeLessThanOrEqual(1.4)
   expect(await w()).toBeGreaterThan(before * 1.1)
-  await page.locator('[data-testid="oil-zoom-out"]').click()
-  expect(Math.abs((await w()) - before)).toBeLessThan(4)
+  const t1 = (await tools())!
+  expect(Math.round(t1.height), 'the tools row kept its size').toBe(Math.round(t0.height))
+  expect(await page.evaluate(() => visualViewport ? visualViewport.scale : 1)).toBe(1)
+  await page.locator('[data-testid="oil-close"]').click()
+})
+
+/* MID-PINCH HELPERS (D1287, D1288 and the fix read's findings, 23 Oct 26): two fingers about (cx, cy), d0 → d1 apart,
+   the screen read by `read` with them still down, then lifted. */
+async function lwMidPinch<T>(page: Page, cx: number, cy: number, d0: number, d1: number, read: () => Promise<T>): Promise<T> {
+  const cdp = await page.context().newCDPSession(page)
+  const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+  const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[cx - d / 2, cy], [cx + d / 2, cy]] }
+  await touch('touchStart', [at(0)[0]!]); await page.waitForTimeout(30)
+  await touch('touchStart', at(0)); await page.waitForTimeout(30)
+  for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await page.waitForTimeout(16) }
+  await page.waitForTimeout(80)
+  const m = await read()
+  await touch('touchEnd', []); await page.waitForTimeout(700)
+  await cdp.detach()
+  return m
+}
+/** points down one column, from under the top bar to the fingers, where nothing of the grid is drawn — the bare box
+ *  behind it (the band of his picture, D1288) */
+const lwBandHits = (page: Page, x: number, yTo: number) => page.evaluate(([x, yTo]) => {
+  const bar = document.querySelector<HTMLElement>('.topbar')?.getBoundingClientRect().bottom ?? 0
+  const bare: number[] = []
+  for (let y = Math.ceil(bar) + 2; y < yTo; y += 6) {
+    const hit = document.elementFromPoint(x!, y)
+    if (hit && hit.matches('#page-leavewar .mx-wrap, #page-leavewar .mx-outer, #page-leavewar .mx-wrap > table.mx, #page-leavewar .mxfixed, #page-leavewar .mxfixed-scroll')) bare.push(Math.round(y))
+  }
+  return bare
+}, [x, yTo] as const)
+
+test.describe('mid-pinch, the page moves with the grid and the pinned parts stay whole (D1288; the fix read, 23 Oct 26)', () => {
+  test.beforeEach(() => { test.skip(!isPhone(), 'two fingers are a touch screen\'s') })
+
+  test('part-way down the page, a pinch out opens no band between the month buttons and the date row (D1288)', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)
+    const bare = await lwMidPinch(page, 230, 520, 220, 120, () => lwBandHits(page, 300, 500))
+    expect(bare, 'mid-pinch, nothing bare between the top bar and the fingers').toEqual([])
+  })
+
+  test('with the dates frozen under the top bar, a pinch out shows no second date row with a band above it (his picture)', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 260)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const bare = await lwMidPinch(page, 230, 620, 220, 120, () => lwBandHits(page, 300, 600))
+    expect(bare, 'mid-pinch, nothing bare between the top bar and the fingers').toEqual([])
+  })
+
+  test('the tinted dates — a holiday, a no-leave day, a closed date — stay solid mid-pinch, never showing the rows through them', async ({ page }) => {
+    /* a no-leave day in sight, made by the app's own controls (the tint test's way) */
+    await lwRole(page, 'admin')
+    await page.locator('[data-testid="month-JAN"]').click(); await page.waitForTimeout(700)
+    await page.locator('[data-testid="event-1-2026-01-21"]').click()
+    await page.locator('[data-testid="event-text"]').fill('Standby crew')
+    await page.locator('[data-testid="event-tag-nolv"]').click()
+    await page.locator('[data-testid="event-apply"]').click(); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="head-2026-01-21"]')).toHaveClass(/evnolv/)
+    await page.locator('[data-testid="head-2026-01-21"]').scrollIntoViewIfNeeded()
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const solid = () => page.evaluate(() => {
+      const see: string[] = []
+      for (const th of document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.day, #page-leavewar [data-testid="sticky-head"] th.day')) {
+        const r = th.getBoundingClientRect(); if (r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) continue
+        const cs = getComputedStyle(th), a = cs.backgroundColor.match(/rgba\([^)]*,\s*([\d.]+)\)/)
+        if ((a && parseFloat(a[1]!) < 1) || parseFloat(cs.opacity) < 1) see.push(`${th.dataset.testid} ${cs.backgroundColor} ${cs.opacity}`)
+      }
+      return see
+    })
+    expect(await lwMidPinch(page, 230, 470, 120, 200, solid), 'pinching in at the top, every date heading in sight is solid').toEqual([])
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    expect(await lwMidPinch(page, 230, 520, 200, 130, solid), 'with the dates frozen, every frozen date heading is solid').toEqual([])
+  })
+})
+
+test('on a desktop, a Ctrl+scroll holds the CAT headings at the left edge with the names, mid-burst (the fix read, finding 3)', async ({ page }) => {
+  test.skip(isPhone(), 'the CAT headings are a desktop\'s')
+  await page.locator('[data-testid="month-SEP"]').click(); await page.waitForTimeout(700)
+  const sub = page.locator('#page-leavewar .mx-wrap td.catsub-in').first()
+  await sub.scrollIntoViewIfNeeded(); await page.waitForTimeout(300)
+  const box = (await sub.boundingBox())!
+  await page.mouse.move(700, box.y + 40)
+  await page.keyboard.down('Control')
+  await page.mouse.wheel(0, 200); await page.waitForTimeout(40)
+  const m = await page.evaluate(() => {
+    const w = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect()
+    const c = document.querySelector('#page-leavewar .mx-wrap td.catsub-in')!.getBoundingClientRect()
+    const n = [...document.querySelectorAll('#page-leavewar .mx-wrap .mxbody td.who')].map(e => e.getBoundingClientRect()).find(r => r.top > 0)!
+    return { wrapL: w.left, catL: c.left, nameL: n.left, tf: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
+  })
+  await page.keyboard.up('Control'); await page.waitForTimeout(500)
+  expect(m.tf, 'read mid-burst').toBe(true)
+  expect(Math.abs(m.nameL - m.wrapL), `the names at the left edge (${JSON.stringify(m)})`).toBeLessThan(1.5)
+  expect(Math.abs(m.catL - m.wrapL), 'the CAT heading at the left edge with them').toBeLessThan(1.5)
+})
+
+test.describe('where the browser cannot move the frozen dates by itself (the fix read, finding 4)', () => {
+  test.beforeEach(async ({ page }) => {
+    test.skip(!isPhone(), 'two fingers are a touch screen\'s')
+    /* the older browsers' path: no scroll-driven animations (Matrix.tsx `sdaActive`) — the page is loaded again with them
+       reported missing */
+    await page.addInitScript(() => {
+      const real = CSS.supports.bind(CSS)
+      ;(CSS as any).supports = (...a: any[]) => (String(a[0]).includes('timeline') ? false : (real as any)(...a))
+    })
+    await page.reload(); await page.waitForSelector('#vWeek .day, #luser')
+  })
+  test('mid-pinch the frozen dates\' corner stays at the left edge, in one piece', async ({ page }) => {
+    if (await page.locator('#luser').count()) {
+      await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a'); await page.click('#loginForm button[type=submit]')
+      await page.waitForSelector('#vWeek .day')
+    }
+    await page.evaluate(() => (window as any).go('leavewar')); await page.waitForSelector('#page-leavewar .mx-wrap [data-testid^="head-"]')
+    expect(await page.evaluate(() => document.querySelector('#page-leavewar .mx-outer')!.classList.contains('lw-sda')), 'the older browsers\' path').toBe(false)
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const m = await lwMidPinch(page, 230, 520, 220, 130, () => page.evaluate(() => {
+      const head = document.querySelector('#page-leavewar [data-testid="sticky-head"]')!
+      const box = head.getBoundingClientRect(), copy = head.querySelector('.mxfixed-frozen')?.getBoundingClientRect() ?? null
+      /* what is drawn at the corner's own spot: the frozen copy, opaque */
+      const hit = document.elementFromPoint(box.left + 8, box.top + 8)
+      return { boxL: box.left, copyL: copy ? copy.left : null, atCorner: !!hit?.closest('.mxfixed-frozen') }
+    }))
+    expect(m.copyL, `the corner drawn as its own copy (${JSON.stringify(m)})`).not.toBeNull()
+    expect(Math.abs((m.copyL ?? 0) - m.boxL), 'at the left edge').toBeLessThan(1.5)
+    expect(m.atCorner, 'and it is what shows there').toBe(true)
+  })
+})
+
+test('the OIL tab opened over a scrolled page: a pinch out opens no gap under its heading rows (the fix read, finding 5)', async ({ page }) => {
+  test.skip(!isPhone(), 'two fingers are a touch screen\'s')
+  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const read = () => page.evaluate(() => {
+    const list = document.querySelector<HTMLElement>('[data-testid="oil-list"]')!
+    const head = list.querySelector<HTMLElement>('table.oil-grid thead tr.cols th:not(.f)')!.getBoundingClientRect()
+    const row = [...list.querySelectorAll<HTMLElement>('table.oil-grid tbody tr')].map(r => r.getBoundingClientRect()).find(r => r.top >= head.bottom - 2)!
+    return { gap: row.top - head.bottom, sy: scrollY }
+  })
+  const rest = await read()
+  const m = await lwMidPinch(page, 240, 560, 200, 120, read)
+  expect(Math.abs(m.gap - rest.gap), `mid-pinch no gap opens under the headings (${JSON.stringify({ rest, m })})`).toBeLessThan(1.5)
+  /* (opening the OIL tab holds the page still — scrollY reads its own value then; what matters is that the pinch moves nothing behind it) */
+  expect(m.sy, 'and the page behind the OIL tab did not scroll').toBe(rest.sy)
+  expect(await page.evaluate(() => scrollY), '…nor at the lift').toBe(rest.sy)
+  await page.locator('[data-testid="oil-close"]').click()
+})
+
+/* The grid's lesson on the OIL tab (owner D1287, 23 Oct 26 — the readings: the same holds here): with the fingers still
+   down, its name columns stay at the table's left edge and its heading rows at their place; only the credits stretch. */
+test('while the fingers are down the OIL tab\'s names and headings stay pinned (D1287)', async ({ page }) => {
+  test.skip(!isPhone(), 'a pinch is a touch screen\'s')
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const read = () => page.evaluate(() => {
+    const list = document.querySelector<HTMLElement>('[data-testid="oil-list"]')!
+    const box = list.getBoundingClientRect()
+    const name = list.querySelector<HTMLElement>('table.oil-grid thead th.f.c1')!.getBoundingClientRect()
+    const bal = list.querySelector<HTMLElement>('table.oil-grid thead th.f.c2')!.getBoundingClientRect()
+    const yrs = list.querySelector<HTMLElement>('table.oil-grid thead tr.yrs th:not(.f)')!.getBoundingClientRect()
+    const head = list.querySelector<HTMLElement>('table.oil-grid thead tr.cols th:not(.f)')!.getBoundingClientRect()
+    const row = [...list.querySelectorAll<HTMLElement>('table.oil-grid tbody td.f.c1')].map(c => c.getBoundingClientRect()).find(r => r.top > box.top + 60 && r.bottom < box.bottom)!
+    return { boxL: box.left, nameL: name.left, nameT: name.top, yrsT: yrs.top, colsGap: head.top - yrs.bottom, rowL: row.left, balGap: bal.left - name.right, tf: !!list.querySelector<HTMLElement>('table.oil-grid')!.style.transform }
+  })
+  const cdp = await page.context().newCDPSession(page)
+  const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+  for (const [d0, d1] of [[100, 180], [200, 120]] as const) {
+    const rest = await read()
+    const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[240 - d / 2, 560], [240 + d / 2, 560]] }
+    await touch('touchStart', [at(0)[0]!]); await page.waitForTimeout(30)
+    await touch('touchStart', at(0)); await page.waitForTimeout(30)
+    for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await page.waitForTimeout(16) }
+    await page.waitForTimeout(80)
+    const m = await read()
+    await touch('touchEnd', []); await page.waitForTimeout(700)
+    const what = d1 > d0 ? 'pinching in' : 'pinching out'
+    expect(m.tf, `${what}: read mid-pinch`).toBe(true)
+    expect(Math.abs(m.nameL - rest.nameL), `${what}: the names' heading stays at the left (${JSON.stringify({ rest, m })})`).toBeLessThan(1.5)
+    expect(Math.abs(m.nameT - rest.nameT), `${what}: …and at its place down the screen`).toBeLessThan(1.5)
+    expect(Math.abs(m.yrsT - rest.yrsT), `${what}: the first heading row stays at its place`).toBeLessThan(1.5)
+    expect(Math.abs(m.colsGap - rest.colsGap), `${what}: the second stays right under it`).toBeLessThan(1.5)
+    expect(Math.abs(m.rowL - rest.nameL), `${what}: a person's name stays at the left`).toBeLessThan(1.5)
+    expect(Math.abs(m.balGap - rest.balGap), `${what}: the name and BAL columns stay side by side`).toBeLessThan(1.5)
+  }
+  await cdp.detach()
   await page.locator('[data-testid="oil-close"]').click()
 })
 
@@ -6318,19 +6745,24 @@ test('every label and reason on an OIL credit box reads in full, at every zoom s
   await expect(auto.locator('.by.auto')).toHaveText('Auto')
   await expect(auto.locator('.by:not(.auto)')).toHaveText('Weekend/PH')
 
-  const zoomOut = page.locator('[data-testid="oil-zoom-out"]')
-  const zoomIn = page.locator('[data-testid="oil-zoom-in"]')
-  while (await zoomOut.isEnabled()) await zoomOut.click()
-  const steps: string[] = []
-  for (;;) {
-    const z = await list.locator('table.oil-grid').evaluate(el => (el as HTMLElement).style.zoom || '1')
+  /* every label reads whole at every zoom, from the table's floor up to 1.4 — reached by a pinch on a phone, Ctrl+scroll
+     on a desktop, since its − / + went with the grid's (D1285, D1276; they stepped 0.6 · 0.8 · 1 · 1.2 · 1.4) */
+  const oz = () => list.locator('table.oil-grid').evaluate(el => parseFloat((el as HTMLElement).style.zoom || '1'))
+  const zoomBy = (k: number) => isPhone() ? lwPinch(page, 200, 520, 200, 200 * k) : lwCtrlScroll(page, 600, 500, -Math.log(k) / 0.002)
+  await zoomBy(0.2); await zoomBy(0.2)   // out to the floor
+  const steps: number[] = []
+  for (let i = 0; i < 10; i++) {
+    const z = await oz()
     steps.push(z)
     expect(await cutOilLabels(page), `at zoom ${z}`).toEqual([])
     expect(await misplacedOilLabels(page), `at zoom ${z}`).toEqual([])
-    if (!(await zoomIn.isEnabled())) break
-    await zoomIn.click()
+    if (z >= 1.4 - 0.001) break
+    await zoomBy(1.2)
   }
-  expect(steps).toEqual(['0.6', '0.8', '1', '1.2', '1.4'])
+  /* the floor: a phone's table goes out past its opening 0.8; a desktop's already fits its wide screen at normal size, so
+     it goes no further out (D1285's reading — out no further than its whole width fits) */
+  expect(steps[0], `the floor (${steps.join(' · ')})`).toBeLessThanOrEqual(isPhone() ? 0.8 : 1)
+  expect(steps[steps.length - 1], `the ceiling (${steps.join(' · ')})`).toBeCloseTo(1.4, 2)
 })
 
 // [LW-OIL-DATECHIP-HIDDEN] (filed 30 Sep 26 — the group-A walk's W3 finding 3): a correction's date calendar in the

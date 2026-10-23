@@ -20,15 +20,15 @@ beforeEach(() => {
 
 /* The grid card's ONE-ROW bar (owner, 5 Sep 26 — "all in 1 row to minimise row height space"; the old "JAN – DEC 26 ·
    365 days · 50 people" line dropped). WAS "Manning · ⚙ · Rearrange · OIL · − · +". CHANGED by D1254 (22 Oct 26 — the
-   navigation as drawn in round 19): the bar is [Manning | n red ›] · the open dates · … · − + · Legend, the same for
-   everyone; ⚙ went up to the top row's right end, OIL became a tab there, and Rearrange's way in is a line in ⚙ — the bar
+   navigation as drawn in round 19): the bar is [Manning | n red ›] · the open dates · … · Legend, the same for
+   everyone (its − / + went with pinch to zoom — D1228, D1276, 23 Oct 26); ⚙ went up to the top row's right end, OIL became a tab there, and Rearrange's way in is a line in ⚙ — the bar
    carries only its "⇅ Done" while it is on. jsdom can't see the single line, but it pins the DOM: which controls live in
    the bar, in order, by role, and that the date/size text is gone. */
 describe('the grid card\'s bar (D1254)', () => {
-  const BAR = ['counts-toggle', 'undermanned', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open']
+  const BAR = ['counts-toggle', 'undermanned', 'open-chip', 'legend-open']
   const inBar = (hd: Element) => [...hd.querySelectorAll('[data-testid]')].map(el => el.getAttribute('data-testid'))
 
-  it('is Manning | n red · the open dates · − + · Legend for an admin, with no ⚙, OIL or Rearrange and no date/size line', () => {
+  it('is Manning | n red · the open dates · Legend for an admin, with no ⚙, OIL, Rearrange or − / + and no date/size line', () => {
     setRole('admin')
     const { container } = render(<Matrix />)
     const hd = container.querySelector('.card-hd')!
@@ -39,6 +39,8 @@ describe('the grid card\'s bar (D1254)', () => {
     expect(inBar(hd).filter(id => BAR.includes(id!))).toEqual(BAR)
     // D1254: ⚙ and OIL are the top row's (Chrome.tsx `Topbar`), and Rearrange's way in is ⚙'s — none of them on this bar
     for (const id of ['settings-open', 'oil-tracker', 'roster-arrange']) expect(hd.querySelector(`[data-testid="${id}"]`), id).toBeNull()
+    // D1228, D1276: the grid is pinched (Ctrl+scroll on a desktop) — no − / + on the bar or anywhere on the page
+    for (const id of ['lw-zoom', 'lw-zoom-out', 'lw-zoom-in']) expect(screen.queryByTestId(id), id).toBeNull()
   })
 
   it('is the same bar for a member — the view controls only', () => {
@@ -48,8 +50,8 @@ describe('the grid card\'s bar (D1254)', () => {
     expect(inBar(hd).filter(id => BAR.includes(id!))).toEqual(BAR)
     expect(hd.querySelector('[data-testid="settings-open"]')).toBeNull()
     expect(hd.querySelector('[data-testid="roster-arrange"]')).toBeNull()
-    // the zoom no longer rides the month strip
-    expect(screen.getByTestId('month-strip').querySelector('[data-testid="lw-zoom"]')).toBeNull()
+    // no − / + for a member either (D1228, D1276) — nor on the month strip, where they once rode
+    expect(screen.queryByTestId('lw-zoom')).toBeNull()
   })
 
   it('⚙ → "⇅ Rearrange the grid" turns arrange mode on — the sheet closes, the grips appear, the column widens, the bar carries Done', () => {
@@ -65,14 +67,14 @@ describe('the grid card\'s bar (D1254)', () => {
     expect(screen.queryByTestId('settings-sheet')).toBeNull()
     expect(screen.getByTestId('manning-drag-sets')).toBeTruthy()
     expect(outer().classList.contains('mx-arranging')).toBe(true)
-    // D1254: while it is on, the bar carries "⇅ Done", lit, in the bar before the zoom pair
+    // D1254: while it is on, the bar carries "⇅ Done", lit, in the bar before Legend
     const done = screen.getByTestId('roster-arrange')
     expect(done.classList.contains('on')).toBe(true)
     expect(done.getAttribute('aria-pressed')).toBe('true')
     expect(done.closest('.card-hd')).toBeTruthy()
     expect(done.closest('.mxhead')).toBeNull()
     const ids = inBar(document.querySelector('.card-hd')!)
-    expect(ids.indexOf('roster-arrange')).toBeLessThan(ids.indexOf('lw-zoom-out'))
+    expect(ids.indexOf('roster-arrange')).toBeLessThan(ids.indexOf('legend-open'))
     // the old strip under the header (Auto-sort / Done) is gone (owner, 6 Sep 26)
     expect(screen.queryByTestId('rearrange-bar')).toBeNull()
     expect(screen.queryByTestId('roster-autosort')).toBeNull()
@@ -81,19 +83,17 @@ describe('the grid card\'s bar (D1254)', () => {
 
   /* WAS "the toggle reads ⇅ with the word on a droppable tail — icon-only on a phone" (Rearrange → Rearranging). Since
      D1254 the bar's button is the way out only. RE-EXPRESSED by D1275 (23 Oct 26): "⇅ Done" in words on a phone too — the
-     word is never on the droppable tail the phone hides — and while it is on, the − / + are marked to step aside (the
-     phone's stylesheet hides them; the browser test "while rearranging, the bar reads ⇅ Done" measures it). */
-  it('Done reads "⇅ Done", its word never on the droppable tail; the − / + step aside while it is on (D1275)', () => {
+     word is never on the droppable tail the phone hides. The − / + it stepped aside for went with pinch to zoom (D1276). */
+  it('Done reads "⇅ Done", its word never on the droppable tail (D1275)', () => {
     setRole('admin')
     render(<Matrix />)
-    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(false)
     startRearrange()
     const btn = screen.getByTestId('roster-arrange')
     expect(btn.textContent!.replace(/\s+/g, ' ').trim()).toBe('⇅ Done')
     expect(btn.querySelector('.rtlbl')).toBeNull()
-    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(true)
+    expect(screen.queryByTestId('lw-zoom')).toBeNull()
     fireEvent.click(btn)
-    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(false)
+    expect(screen.queryByTestId('roster-arrange')).toBeNull()
   })
 })
 

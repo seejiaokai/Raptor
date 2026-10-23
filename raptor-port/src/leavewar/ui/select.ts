@@ -243,7 +243,36 @@ type GestureMark =
   | { mark: (el: Element, on: boolean) => void; cls?: never }
 type GestureSpec<A, P> = GestureBase<A, P> & GesturePaint & GestureMark
 
+/* EVERY FINGER ON THE GLASS, for every selection on the page (fix A7a — see onSecond in wireGesture). Kept by listeners
+   on the window, added once and registered before any gesture's own, so a press is counted before a gesture reads it.
+   A finger is gone at its lift, and all are gone when the last touch leaves the glass (its end or its cancel); one left
+   behind by a lift that never came (a test world, a lost event) is forgotten after FINGER_STALE_MS rather than blocking
+   holds. A POINTER CANCEL IS NOT A LIFT (the fresh code read, F2, 23 Oct 26): the browser cancels a finger's pointer
+   when it takes that finger for its own scroll — the finger is still down, and a second landing then is a pinch's. */
+const fingers = new Map<number, number>()   // pointerId → when it landed
+const FINGER_STALE_MS = 10000
+let watchingFingers = false
+function watchFingers() {
+  if (watchingFingers || typeof window === 'undefined') return
+  watchingFingers = true
+  window.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') fingers.set(e.pointerId, Date.now()) }, true)
+  window.addEventListener('pointerup', e => { fingers.delete(e.pointerId) }, true)
+  const allUp = (e: TouchEvent) => { if (!e.touches || e.touches.length === 0) fingers.clear() }
+  document.addEventListener('touchend', allUp, true)
+  document.addEventListener('touchcancel', allUp, true)
+}
+/** another finger than `id` is on the glass now */
+function otherFingerDown(id: number): boolean {
+  const now = Date.now()
+  for (const [k, t] of fingers) {
+    if (now - t > FINGER_STALE_MS) { fingers.delete(k); continue }
+    if (k !== id) return true
+  }
+  return false
+}
+
 function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => void {
+  watchFingers()
   let anchor: A | null = null
   let armed = false
   let pid = -1
@@ -529,6 +558,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     window.removeEventListener('pointermove', onMove, true)
     window.removeEventListener('pointerup', onUp, true)
     window.removeEventListener('pointercancel', onCancel, true)
+    window.removeEventListener('pointerdown', onSecond, true)
     document.removeEventListener('contextmenu', onCtxMenu, true)
     if (pid >= 0) { try { wrap.releasePointerCapture(pid) } catch { /* not captured */ } }
     wrap.removeEventListener('touchmove', onTouchMove)
@@ -538,6 +568,21 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     anchor = null; armed = false; pid = -1; vscroll = null; held = 0   // re-resolve next drag
     enteredAt.clear()
     spec.reset?.()
+  }
+  /* A SECOND FINGER LETS GO OF THE HOLD (the overhaul's red team, fix A7a, 22 Oct 26; owner D1282, 23 Oct 26 — "a pinch
+     never arms a selection or opens a day"). A pinch's first finger lands on a day and, held 180 ms, would arm a
+     selection — the grid's two-finger zoom (Matrix.tsx, ui/pinchzoom.ts) then stretched over a selection he never
+     meant. The moment another finger lands, anywhere on the screen, a hold that is arming or armed is let go, selecting
+     nothing; its trailing tap is swallowed as a cancel's is. The selection is a one-finger gesture: a mouse never meets
+     this, and no finger starts a hold while another is on the glass (`otherFingerDown` — one record shared by every
+     selection on the page: the day grid's, the figures', the counter rows'; the walk of 23 Oct 26 found a pinch whose
+     first finger sat on a name start the DAY grid's hold with its second finger, which saved a selection at the
+     lift). It ends the older rule that a second finger brushing an armed drag was ignored (the newer, A7a, wins — D90). */
+  const onSecond = (e: PointerEvent) => {
+    if (anchor === null || e.pointerId === pid || e.pointerType === 'mouse') return
+    const wasArmed = armed, touch = touchGesture
+    teardown(); clearPaint()
+    if (wasArmed) swallowNextClick(touch)
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours
@@ -568,6 +613,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     // selection silently evaporated on lift. The first pointer owns the
     // gesture until it ends.
     if (anchor !== null) return
+    if (e.pointerType !== 'mouse' && otherFingerDown(e.pointerId)) return   // a finger of a pinch is never a hold (A7a)
     const a = spec.hit(e.target as HTMLElement)
     if (a === null) return   // not a selectable thing (who / bal / handle / a band / events off)
     anchor = a
@@ -579,6 +625,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     window.addEventListener('pointerup', onUp, true)
     window.addEventListener('pointercancel', onCancel, true)
     if (e.pointerType !== 'mouse') {
+      window.addEventListener('pointerdown', onSecond, true)
       holdTimer = setTimeout(arm, HOLD)
       slowReady = false
       slowTimer = setTimeout(() => { slowReady = true }, SLOWARM)
@@ -586,7 +633,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   }
 
   wrap.addEventListener('pointerdown', onDown)
-  return () => { wrap.removeEventListener('pointerdown', onDown); teardown(); clearPaint(); endSwallow?.() }
+  return () => { wrap.removeEventListener('pointerdown', onDown); teardown(); fingers.clear(); clearPaint(); endSwallow?.() }
 }
 
 export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
@@ -905,7 +952,7 @@ export function wireMove(
      the drag-select's held-band rule. A button held is the drag machine's (below), never this loop's. */
   /* THE BANDS ARE THE DAYS' OWN EDGES (the final reads, 27 Sep 26 — Fable F1, F4): measured from where the days begin
      (past the frozen names and the month buttons) to the grid's right edge, and only within the days' box top to
-     bottom — the card's own controls (Manning, ⚙, OIL, zoom), the frozen names and the early month buttons are the
+     bottom — the card's own controls (Manning, the open dates, Legend), the frozen names and the early month buttons are the
      grid's too, and resting the mouse on one used to run the days off toward January. The band is GEOMETRY alone, so
      "left the band" is judged the same whether a button is held or the mouse crosses the banner; whether the mouse is
      over the days (`overGrid`) decides only whether this loop scrolls. At either end of the grid it stops asking for
