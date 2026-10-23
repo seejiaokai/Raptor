@@ -13,6 +13,7 @@ import { useSyncExternalStore } from 'react'
 import { addDays } from '../engine'
 import { availRowNames, availVerdictAt, dayFacts, flyAnswer, reqRowNames, useWarFacts } from '../sync'
 import { dayPanelData } from '../state/daypanel'
+import { getState } from '../state/store'
 import { useVersion } from './useStore'
 import { FloatWin } from '../../ui/FloatWindow'
 import { dayLabel } from './dates'
@@ -49,11 +50,17 @@ function DayPanel({ iso }: { iso: string }) {
     { id: 'availw', label: an.w, value: fig(f.availW), level: f.covered ? availVerdictAt(iso, 'w', a) : '' },
   ]
   const step = (n: number) => openDayPanel(addDays(iso, n))
+  /* the year, two digits (D1096), where the date is not in the year the grid shows (C's F6 — stepped into 2027 it read
+     "Fri 1 Jan" over a 2026 grid) */
+  const shownYear = getState().period?.start.slice(0, 4)
+  const title = iso.slice(0, 4) === shownYear ? dayLabel(iso) : `${dayLabel(iso)} ${iso.slice(2, 4)}`
   return (
-    <FloatWin id="lwday" title={dayLabel(iso)} testid="win-lwday" className="lwday" rests tallFirst onClose={closeDayPanel}
+    /* AT THE LOWER OF ITS TWO HEIGHTS on a phone (M3's walk, C's F2): what it holds is short, and the grid above it is where
+       he picks the next day — opened tall it covered the grid for 500px of nothing; its bar still pulls it up */
+    <FloatWin id="lwday" title={title} testid="win-lwday" className="lwday" rests onClose={closeDayPanel}
       tools={<>
-        <button type="button" className="win-step" data-testid="lwday-prev" aria-label="The day before" onClick={() => step(-1)}>‹</button>
-        <button type="button" className="win-step" data-testid="lwday-next" aria-label="The day after" onClick={() => step(1)}>›</button>
+        <button type="button" className="abtn win-step" data-testid="lwday-prev" aria-label="The day before" onClick={() => step(-1)}>‹</button>
+        <button type="button" className="abtn win-step" data-testid="lwday-next" aria-label="The day after" onClick={() => step(1)}>›</button>
       </>}>
       <div className="lwday-body" data-testid="lwday-body" data-iso={iso}>
         {!d.covered && <p className="lwday-note" data-testid="lwday-nocover">No leave period covers this date</p>}

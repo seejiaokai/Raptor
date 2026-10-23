@@ -41,7 +41,7 @@ export function DocConfirm({ who, typeLabel, leave = false, onUpload, onNoDoc }:
           <button className="x" aria-label="Close" onClick={onUpload}>✕</button></div>
         <div className="airpop-body upconf-body">
           {leave
-            ? <div className="upconf-h">Attach the approval from the leave app now, or file it and attach it later.</div>
+            ? <div className="docconf-what">Attach the approval from the leave app now, or file it and attach it later.</div>
             : <>
               <div className="upconf-h">This {typeLabel} has no certificate attached.</div>
               <div className="docconf-what">Attach one now, or file it without — for when the record genuinely isn’t available yet.</div>

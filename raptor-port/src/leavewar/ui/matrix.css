@@ -598,6 +598,9 @@ touch-action: pan-x pan-y;
 
 .mx .mxhead th .mon {
   display: block;
+  /* it spills over the next date's heading on a narrow column ("JAN" over 2 Jan): a press there reaches 2 Jan's
+     heading, never the 1st's (M3's walk, C's F1 — the day panel opened 1 Jan from 2 Jan's left edge) */
+  pointer-events: none;
   font-size: 8.5px;
   letter-spacing: .12em;
   color: var(--accent);
