@@ -62,7 +62,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
-- [ARM-STRIP-STALE-TITLE] — the "Planning …" strip keeps the title the line had when its seat was picked; a callsign typed after does not show (older; low).
+- [ARM-STRIP-STALE-TITLE] — the "Planning …" strip keeps the title the line had when its seat was picked; a callsign typed after does not show (older; low). BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live").
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
@@ -74,7 +74,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
 - [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
-- [BOARD-MODALS-ESCAPE] — the Scheduler Board's Duty templates, Day templates and Plans windows do not close on Escape (older; found by the round 3 walk).
+- [BOARD-MODALS-ESCAPE] — the Scheduler Board's Duty templates, Day templates and Plans windows do not close on Escape (older; found by the round 3 walk). BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live").
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
 - [REST-FIRST-CREW-HINT] — an empty formation gives no crew-rest hint for its first man — with caps and ops limits.
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
@@ -139,7 +139,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
-- [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them.
+- [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them. The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"); its three low leftovers stay open.
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
@@ -269,7 +269,8 @@ job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 **23 Oct 26 — his look at the live app (after M1):** *"pinch to zoom the frozen top bar position goes off"* — on his iPhone, Safari's own pinch zooms the whole page, and the date row frozen at the top (the mirror, `raptor-port/src/leavewar/ui/Matrix.tsx` `stuck` / `pin`) keeps the column widths and the place it measured when it froze: its dates no longer stand over their columns, and in landscape the frozen copy is narrower than the grid, some dates shown twice. Pictures: `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/his-look/pinch-1-portrait.png`, `pinch-2-portrait.png`, `pinch-3-landscape.png`. Not patched in M2: this job's own pinch zooms the grid alone (the page no longer zooms on the grid), and the frozen row already re-measures on every zoom step — so the fix is this job; its walk checks the frozen row stands over its columns after a pinch, after a turn of the phone while zoomed, and in landscape. Recommended to him as the job right after M2.
 
 ### [ARM-STRIP-STALE-TITLE] The strip over the crew list keeps an old title (found 21 Oct 26 by the blind read of [BOARD-SIDE-WIDTH]; older)
-**Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list.
+**Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list. **BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** as
+said (`palette-html.ts armStripHTML`; test `ui/armstrip.test.tsx`). Archived once it is live.
 
 ### [CREW-REASON-TWICE] A crossed-out man's reason says each fact once (his D1121, 21 Oct 26; a later job)
 **His words** (to round 2 of [BOARD-SIDE-WIDTH], whose "checked and left" item showed Grit's reason): *"Yeah we shouldnt have the reason explained twice. we can do that job later too"*. **What is there:** with a place picked, a man struck for an absence reads the kind's meaning, then his own remark — "medically down — cannot report to work (ATT C) — Medically down till 17 Jul", "ordinary medical leave (OML) — Medical leave 13 Jul" (`raptor-port/src/engine/avail.ts` slotBar and `inputs.ts` offWord build it; the same sentence is the note a tap raises and the ALL AVAIL window's reason). Picture: `raptor-port/docs/img/handpass/2026-10-21-board-side-width/look/crop-reason-repeat.png`. **To do:** a wording that keeps the kind's fact where his remark does not say it ("cannot report to work") and drops the repeat; put to him before and after, read cold first (`design-practices.md` §1a); the design guide's lesson 15. **Place:** a job of its own after [BOARD-SIDE-WIDTH], or with the words pass ([UI-SLEEK-PASS], D808) — his to place.
@@ -279,7 +280,9 @@ job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 Manage templates) and the Plans window (the plans menu → Manage plans) stay open on Escape; each closes by its ✕ or Done. The
 design guide §2: Escape closes what opened last. **Place:** `raptor-port/src/ui/DutyTplModal.tsx`, `DayTplModal.tsx`,
 `DraftsModal.tsx` (no keydown handler). **To do:** Escape closes each, the keyboard back on the button that opened it — with
-the next keyboard batch.
+the next keyboard batch. **BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** each closes on Escape (the Scheduler Board behind it stays open), takes and keeps the
+keyboard, and gives it back to the button that opened its menu (`ui/sheetfocus.ts` `useEscClose`, `noteOpener`; test
+`ui/windowkeys.test.tsx`). Archived once it is live.
 
 ### [QUALS-HEAD-FINGER-CAPTURE] In Edit quals a heading dragged by a finger may never reach another column (found 21 Oct 26, the pinch-zoom job; older)
 **Seen (the test browser, a finger over CDP):** in Edit quals a finger pressed on a heading's words and slid across the
@@ -1986,6 +1989,9 @@ schedule behind them (the Tab route stands down; a box there still saves on leav
 check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered
 the caret is on nothing (his place in a Tab run is lost); the red explanation refresh (AB-F2) has no test of its own; with several
 unnamed lines an unreadable clock is explained once per line under the box. **Place:** low — with the next change to those windows.
+**The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** a request's window opened from the schedule (on the Inputs page it is a window the page behind
+works with, D641, and holds nothing), Week insights, the document viewer and the Flying waves window take and keep the keyboard;
+Insights and Flying waves close on Escape too (test `ui/windowkeys.test.tsx`). **The three low leftovers above stay open.**
 
 ### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
 Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound
