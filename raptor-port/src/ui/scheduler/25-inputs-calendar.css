@@ -619,4 +619,4 @@ body.in-cal{padding-bottom:0}
 .odl-foot .upconf-need{flex:1;min-width:0}
 /* THE TYPE BOX KEEPS ITS WIDTH (M3 7.4 — D1179): its family choices ("All duty & commitments") would widen it and wrap the
    row onto a second line on a desktop (D687's one line); a long choice is cut in the closed box, read whole in the list */
-.inputs-top .inputs-filterfields #inFType{max-width:11.5em;text-overflow:ellipsis}
+.inputs-top .inputs-filterfields #inFType{max-width:8.5em;text-overflow:ellipsis}   /* (8.5em: GitHub's Linux letters are wider — 11.5 still wrapped there) */
