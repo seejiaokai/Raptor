@@ -11500,3 +11500,4 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **A quick sideways swipe picks months (D1294):** in the "Open for bidding" window on a phone a mostly sideways move across the month buttons arms the drag at once, with no hold; up and down still scrolls.
 - **The day line on a day already holding the bid (D1296):** it shows the day's manning as it now stands, the bid counted ("Available P 27 · red"), never the calm line while a row is amber or red.
 - **A date clicked behind a new input's window (D1298):** on the Inputs calendar it never lights as picked while the window keeps its old date; what it does is his to choose.
+- **The Medical tab's "+ Medical" and its window on the right (D1300):** on a desktop, clear of the cards; a new card wears the just-added cyan ring.

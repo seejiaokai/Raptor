@@ -94,6 +94,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Leave War**
 - [LW-DAYLINE-PLACED-BID] — FAULT of M3, first: a window reopened on a day holding the bid says "No manning row turns amber or red" while Available P is red (his D1296).
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
+- [MED-ADD-RIGHT-FLASH] — the Medical tab's "+ Medical" and its window at the right on a desktop; the new card flashes the just-added ring (his D1300).
+- [INPUT-COLOURS] — his question on every kind's colour, answered with a picture page (https://claude.ai/artifact/1526et5fddT78gkus6ipPu); his picks first.
 - [LW-FILE-OD-CRS] — an overseas duty and a course filed on the Leave War, early while bidding is open (his D1299); his questions first.
 - [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs and SANS calendars a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
 - [LW-OPEN-MONTHS-QUICK-SWIPE] — a quick sideways swipe across the "Open for bidding" months picks them, with no hold first (his D1294).
@@ -251,6 +253,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ### [LW-FILE-OD-CRS] An overseas duty and a course filed on the Leave War (his D1299, 24 Oct 26)
 **His intent:** people enter an OD and a CRS on the Leave War far ahead, while bidding is open, since both lower manning and the Inputs page is seldom used for them early. **First:** his answers, at most four questions with pictures (decided as a bid or filed straight; open dates only; his own only; a document asked for) — the overhaul spec's last section. **Place:** his to place after the M3 follow-ups.
+
+### [MED-ADD-RIGHT-FLASH] "+ Medical" and its window on the right; the new card marked (his D1300, 24 Oct 26)
+**Seen (his desktop):** "+ Medical" at the left; its window opens over the cards, so a new card is hidden as it arrives, and nothing marks it. **To do:** on a desktop the button at the right of its row and the window opened at the right; the new card wears the just-added ring (D860) and is scrolled into view; the Inputs tab's "+ Input" checked for the same. **Place:** with the M3 follow-ups.
+
+### [INPUT-COLOURS] The colour of each kind of input (his question, 24 Oct 26)
+**Put to him** with pictures (`raptor-port/docs/img/handpass/2026-10-24-lw-colours/`, script `scripts/handpass/lw-colours-look.mjs`): (1) OIL taken the other leave's blue, FO / HO green (D1291); (2) other leave a truer blue, away from the course's lilac; (3) overseas duty slate and filled, not grey (grey also means refused); (4) the Inputs calendar wears the Leave War's colours per kind — today every absence is the app's error red and every duty its warning amber — and duties then need a colour of their own, since amber is leave's. **Waits on:** his picks.
 
 ### [LW-PICK-HELD-MARK] The tapped day stays marked and in view while its bid window is open (his D1289, D1290 — 24 Oct 26, his look at pull request 569)
 **What:** on the Leave War a day tapped to open its bid window wears the grid's cyan selection mark (`matrix.css .selcell`, the drag-selection's look) until the window closes or the leave is placed (D1289); on a phone, when the window opens over what was picked, the grid scrolls so it stands just above the window (D1290). **And his question the same message:** can the one-day bid window be less tall — put to him with pictures of ways to do it, each naming the ruling it would change (D1144's day line, D1212's rows). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave` (pull request 569), after his answer on the pictures; the design guide's lesson 45.
