@@ -1684,3 +1684,27 @@
   border-radius: 8px;
 }
 .bidsheet .bp-rmk input[type='text']:focus { outline: none; border-color: var(--accent); }
+
+/* THE DAY PANEL (M3 batch 6 — D1143, D1198): the app's floating window (FloatWindow.tsx), so nothing here is scoped
+   under the page. Its figures read as the bid windows' day line does — names in one column, figures in a second, each
+   in its amber or red (his lessons 20, 29); its Away lines are the shared one-line row (LeaveLine.tsx). */
+.lwday-body { display: flex; flex-direction: column; gap: 10px; padding: 2px 0 8px; }
+.lwday-note { margin: 0; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+.lwday-events { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; color: var(--ink); }
+.lwday-figs { display: grid; grid-template-columns: max-content max-content; column-gap: 18px; row-gap: 3px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.lwday-figs .dl-row { display: contents; }
+.lwday-figs .dl-name { color: var(--ink-2); }
+.lwday-figs .dl-fig { color: var(--ink); font-weight: 600; }
+.lwday-figs .dl-amber .dl-name, .lwday-figs .dl-amber .dl-fig { color: var(--adv); }
+.lwday-figs .dl-red .dl-name, .lwday-figs .dl-red .dl-fig { color: var(--hard); }
+.lwday-away { display: flex; flex-direction: column; gap: 4px; }
+.lwday-h { margin: 4px 0 2px; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+/* the one-line leave row: puck · box · dates · days · state, lined up from line to line */
+.ll-row { display: grid; grid-template-columns: max-content 34px 1fr max-content max-content; align-items: center; column-gap: 8px; min-height: 26px; font-size: 12.5px; }
+.ll-row .ll-box { position: static; display: inline-flex; align-items: center; justify-content: center; height: 20px; min-width: 30px; padding: 0 3px; border-radius: 4px; font-size: 10.5px; font-weight: 700; }
+.ll-row .ll-dates { color: var(--ink); white-space: nowrap; }
+.ll-row .ll-days { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; }
+.ll-row .ll-state { color: var(--ink-3); }
+.ll-row .ll-state.pend { color: var(--adv); }
+.lwday .win-step { min-width: 28px; }
+.ll-row .ll-cs { display: inline-block; min-width: 56px; padding: 2px 6px; border-radius: 4px; background: var(--panel-2); color: var(--ink); font-weight: 700; font-size: 11.5px; }

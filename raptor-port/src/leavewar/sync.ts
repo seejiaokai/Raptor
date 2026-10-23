@@ -38,6 +38,7 @@ import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
 import { setDaysWin, setInpEdit, setOilList } from '../ui/pops'
+import { puck } from '../ui/html'
 import type { DayWhatIf } from './engine/whatif'
 import { lwSyncTurn } from './state/store'
 import {
@@ -2679,3 +2680,10 @@ export { DocField } from '../ui/inputedit'
 export { tillOfISO } from '../engine/inputs'
 export { rowDocIds }
 export { docGet } from '../state/docs'
+
+/* THE SCHEDULE'S OWN PUCK, for the war's day panel and its one-line leave row (M3 6.3 — his lesson 25: never a look-alike) */
+export function puckHtml(id: string, callsign = ''): string {
+  const h = puck(id, false, true, false).replace(' tabindex="0"', '')
+  /* a war person the roster no longer draws (a demo row, one deleted since) still reads as his callsign */
+  return h || `<span class="ll-cs">${String(callsign).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c])}</span>`
+}

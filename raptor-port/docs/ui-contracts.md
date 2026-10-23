@@ -11478,3 +11478,14 @@ type filter heads each family with "All leave", "All medical", "All duty & commi
 body for the list, its calendar and the day); a leave or medical row with none reads a quiet "No document" in the
 paperclip's place (the desktop list; the phone's cards not yet). A documents-only change prints nowhere on the schedule
 (`inpDetailKey` reads no document), so a published day stays as it was.
+
+**The day panel (batch 6 — D1143, D1198):** a tap (a click) on a date's heading opens that day — one listener on the heading
+row, the grid's and the frozen copy's, the date off the heading's `data-d`; today's heading (else the first drawn) takes
+Tab and Enter opens it. The app's floating window (`ui/DayPanel.tsx`, `FloatWin` with `rests`), up from the foot on a phone,
+floating on a desktop, the grid working behind it; ‹ › step a day, across months and periods. Top to bottom: "No leave
+period covers this date" (and dashes) or "Not open for bidding"; the day's events; Required P, Available P, Required W,
+Available W, then every Manning row, each name and figure apart, in its amber or red; "Away · N", one line a person in the
+page order (`ui/LeaveLine.tsx`: the schedule's own puck — his callsign where the roster draws none — the box as the grid
+draws it, the run's dates ("10 – 12 Feb"), its days (.5 for a half), Approved / Pending). Never a remark. Read only.
+Its open day is its own listener set — opening, stepping, or a bid placed with it open repaints no month of the grid
+(`matrix-rows-memo.test.tsx`).

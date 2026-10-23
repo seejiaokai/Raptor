@@ -40,6 +40,7 @@ import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
 import { availRowNames, availVerdictAt, bidDayLine, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
+import { DayPanelHost, openDayPanel } from './DayPanel'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -2193,8 +2194,21 @@ export function Matrix() {
     </tr>
   )
 
+  /* A TAP ON A DATE'S HEADING OPENS THAT DAY (D1143; M3 6.1): one listener on the heading row — the grid's and the frozen
+     copy's — the date read off the heading's `data-d`, never a button in each of 365 headings (performance.md §E). One
+     heading takes the keyboard: today's where it is drawn, else the first; Enter opens it, and the panel's ‹ › step on. */
+  const onHeadTap = (e: React.MouseEvent) => {
+    const th = (e.target as HTMLElement).closest<HTMLElement>('th.day[data-d]')
+    if (th) openDayPanel(th.dataset.d!)
+  }
+  const onHeadKey = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return
+    const th = (e.target as HTMLElement).closest<HTMLElement>('th.day[data-d]')
+    if (th) { e.preventDefault(); openDayPanel(th.dataset.d!) }
+  }
+  const headTab = drawnDays.some(d => d.date === memberToday()) ? memberToday() : drawnDays[0]?.date
   const headerRow = (testids: boolean, drawer = false) => (
-    <tr>
+    <tr onClick={onHeadTap} onKeyDown={onHeadKey}>
       {/* CS/Name (owner, 26 Aug 26): the column holds aircrew callsigns AND
           ground-crew names, and the short form fits the phone's 76px frozen
           column; the Quals page's Personnel view says the long form
@@ -2224,6 +2238,8 @@ export function Matrix() {
           <th
             key={d.date}
             data-testid={testids ? `head-${d.date}` : undefined}
+            data-d={d.date}
+            tabIndex={testids && d.date === headTab ? 0 : undefined}
             className={`day${d.blocked ? ' blocked' : ''}${isWeekend(d.date) ? ' weekend' : ''}${evKind.has(d.date) ? ` ${evKind.get(d.date)}` : ''}${lockedDate(d.date) ? ' locked' : ''}${d.date === focusDate ? ' focus' : ''}`}
             title={[d.blocked ? d.blockedReason : '', d.events.filter(Boolean).join(' / ')]
               .filter(Boolean)
@@ -3563,6 +3579,8 @@ export function Matrix() {
             Legend, the same for everyone (`StageBar`, Chrome.tsx). ⚙ went up to the tab row's right end and OIL became a
             tab (Chrome.tsx `Topbar`); Rearrange moved into ⚙ (its "Done" rides this bar while it is on). The zoom pair
             went when pinch to zoom replaced it ([LW-PHONE-PINCH-ZOOM], D1228, D1276). */}
+        {/* the day panel (M3 batch 6): its open day is its own (DayPanel.tsx) — this grid never repaints for it */}
+        <DayPanelHost />
         <div className="card-hd">
           {bubble && !bubble.foot && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble.text}</div>}
           {/* D1277: the Manning button out of view when it was raised — the same words at the foot of the screen, with Show */}

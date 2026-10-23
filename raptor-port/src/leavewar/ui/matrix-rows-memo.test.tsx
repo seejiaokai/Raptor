@@ -26,6 +26,7 @@ import { initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
+import { closeDayPanel } from './DayPanel'
 
 beforeEach(() => { initStore(memoryBackend()); elevenCounters(); act(() => { setRole('admin') }) })
 
@@ -45,5 +46,17 @@ describe('[LW-ROWS-SPLIT] opening an unrelated sheet repaints no row and no mont
     /* (no month ran either — but that is the ROW's memo at work: a month is reached only through its row. The month's
        own memo is not pinned by any test — `OUTSTANDING.md` `[LW-MONTH-MEMO-UNPINNED]`) */
     expect(count.month, 'no month ran again').toBe(0)
+  })
+
+  /* THE DAY PANEL (M3 batch 6 — performance.md §E): its open day is its own, never a field the rows read */
+  it('opening the day panel from a date heading, and stepping it, draws no row again and no month', () => {
+    render(<Matrix />)
+    count.month = 0; count.row = 0
+    fireEvent.click(screen.getByTestId('head-2026-02-11'))
+    expect(screen.getByTestId('win-lwday')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('lwday-next'))
+    expect(count.row, 'no row ran again').toBe(0)
+    expect(count.month, 'no month ran again').toBe(0)
+    act(() => { closeDayPanel() })
   })
 })
