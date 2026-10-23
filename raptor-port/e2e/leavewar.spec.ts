@@ -6288,11 +6288,14 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
     await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
     const z = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
     if (z > 1) {
-      const gap = await page.evaluate(() => {
+      /* the rule itself, not a number of pixels (the letters' height differs by machine): the strip cell is no taller
+         than the desktop's one-row strip, 44 on the screen, or its buttons and a little room — before the fix it was
+         44 of the GRID's pixels, 62 on the screen at 1.4 */
+      const m = await page.evaluate(() => {
         const cell = document.querySelector('#page-leavewar td.mstick')!.getBoundingClientRect(), row = document.querySelector('#page-leavewar .mstrow')!.getBoundingClientRect()
-        return Math.round(cell.bottom - row.bottom)
+        return { cell: cell.height, need: row.bottom - cell.top + 6 }
       })
-      expect(gap, 'zoomed in, no tall empty band under the month buttons (the floor is the desktop strip, 44 on the screen; 33 of empty band before the fix)').toBeLessThanOrEqual(16)
+      expect(m.cell, `zoomed in, no tall empty band under the month buttons (${JSON.stringify(m)})`).toBeLessThanOrEqual(Math.max(44, m.need) + 1.5)
     }
   })
 
