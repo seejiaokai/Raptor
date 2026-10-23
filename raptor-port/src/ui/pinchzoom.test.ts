@@ -157,6 +157,13 @@ describe('pinch to zoom', () => {
     expect(held.style.transform).toBe('')
     off(); outside.remove()
   })
+  it('the floor is read once, as the pinch begins — read again from a stretched grid it would creep (the walk, 23 Oct 26)', () => {
+    let calls = 0
+    const t = setup({ min: () => (++calls === 1 ? 0.5 : 0.1) })   // what a floor measured off the stretched picture did
+    pinch(t.surface, 300, 20)
+    expect(t.z()).toBeCloseTo(0.5, 5)
+    t.off()
+  })
   describe('Ctrl+scroll (a desktop, D1228)', () => {
     const wheel = (el: Element, deltaY: number, ctrlKey = true) => {
       const e = new WheelEvent('wheel', { deltaY, ctrlKey, bubbles: true, cancelable: true, clientX: 100, clientY: 100 })
