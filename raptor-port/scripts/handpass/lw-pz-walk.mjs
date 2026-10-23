@@ -298,19 +298,78 @@ if (run('P12')) { // Rearrange: a row held by its grip is let go when a pinch st
   const before = await order(), z0 = (await read(page)).z
   const grip = page.locator('#page-leavewar .mx-wrap tr[data-testid^="row-"] [data-testid^="drag-"]').nth(2)
   const gb = await grip.boundingBox()
+  let held = false
   if (gb) {
     const gx = gb.x + gb.width / 2, gy = gb.y + gb.height / 2
     await touch(cdp, 'touchStart', [[gx, gy]]); await sleep(250)
     await touch(cdp, 'touchMove', [[gx, gy + 40]]); await sleep(60)
+    held = await page.evaluate(() => { const f = document.querySelector('#page-leavewar [data-testid="lift-frame"]'); return !!f && f.getBoundingClientRect().height > 0 && getComputedStyle(f).display !== 'none' && getComputedStyle(f).opacity !== '0' })
     await touch(cdp, 'touchStart', [[gx, gy + 40], [gx + 160, gy + 40]]); await sleep(30)
     for (let i = 1; i <= 8; i++) { await touch(cdp, 'touchMove', [[gx, gy + 40 + i * 4], [gx + 160 + i * 12, gy + 40 + i * 4]]); await sleep(16) }
     await touch(cdp, 'touchEnd', []); await sleep(600)
   }
   const after = await order(), z1 = (await read(page)).z
   const dragging = await page.evaluate(() => !!document.querySelector('#page-leavewar .dragging, #page-leavewar tr.drag-over'))
-  rec('P12', !!gb && after === before && !dragging, 'in Rearrange, a row held by its grip is let go when a pinch starts: nothing moved', { grip: !!gb, before, after, z0, z1, dragging })
+  rec('P12', !!gb && held && after === before && !dragging && z1 !== z0, 'in Rearrange, a row held by its grip (its lift frame up) is let go when a pinch starts: nothing moved, the grid zoomed', { grip: !!gb, held, before, after, z0, z1, dragging })
   await shot(page, 'p12-rearrange-pinch')
   rec('P12-errs', errs.length === 0, 'no error in Rearrange', { errs })
+  await ctx.close()
+}
+
+if (run('P14')) { // the roll-call's three: the open-dates outline, the figures drawer, a pinch over a day's window
+  const { ctx, page, cdp, errs } = await phone()
+  probePage = page
+  // open October and November for bidding, as the admin does
+  await page.tap(T('open-chip')); await page.waitForSelector(T('open-dates')).catch(() => {}); await sleep(500)
+  for (const k of ['2026-10', '2026-11']) { const m = page.locator(T(`od-month-${k}`)); if ((await m.getAttribute('data-state')) !== 'open') { await m.tap(); await sleep(250) } }
+  await page.tap(T('open-dates-close')); await sleep(700)
+  await page.tap(T('month-OCT')); await sleep(800)
+  const a = await read(page)
+  await pinch(cdp, 220, 600, 100, 150)
+  const b1 = await read(page)
+  rec('P14a', a.bidDx !== null && Math.abs(b1.bidDx) <= 2 && b1.z > a.z, 'with October and November open, the green open-dates outline stands on its first date after a pinch in', { before: a.bidDx, after: b1.bidDx, z: b1.z })
+  await pinch(cdp, 220, 600, 180, 110)
+  const b2 = await read(page)
+  rec('P14b', Math.abs(b2.bidDx) <= 2, '…and after a pinch out', { bidDx: b2.bidDx, z: b2.z })
+  await shot(page, 'p14-open-dates-outline')
+  // the figures drawer, if the grid still offers it
+  const fig = page.locator(T('figures-toggle'))
+  if (await fig.count()) {
+    await fig.first().tap(); await sleep(700)
+    const rows = () => page.evaluate(() => {
+      const d = document.querySelector('#page-leavewar [data-testid="figdrawer"]')
+      if (!d) return null
+      let worst = 0, n = 0
+      for (const r of d.querySelectorAll('tr[data-drawer-key]')) {
+        const real = document.querySelector(`#page-leavewar .mx-wrap [data-testid="${r.dataset.drawerKey}"]`)
+        if (!real) continue
+        const a = real.getBoundingClientRect(), c = r.getBoundingClientRect()
+        if (a.bottom < 0 || a.top > innerHeight) continue
+        n++; worst = Math.max(worst, Math.abs(a.top - c.top))
+      }
+      return { n, worst: Math.round(worst) }
+    })
+    const r0 = await rows()
+    await pinch(cdp, 220, 600, 100, 150)
+    const r1 = await rows()
+    rec('P14c', !!r1 && (r1.n === 0 || r1.worst <= 2), 'with the figures drawer open, its rows stand on the rows of the grid after a pinch', { before: r0, after: r1 })
+    await shot(page, 'p14-figures-drawer')
+    await fig.first().tap().catch(() => {}); await sleep(400)
+  } else rec('P14c', true, 'the figures drawer: no toggle on the grid (nothing to walk)', {})
+  // a pinch over a day's window at the foot: the grid zooms behind it, the window keeps its size, the page never zooms
+  await page.evaluate(() => window.scrollTo(0, 0)); await sleep(300)
+  const cell = page.locator('#page-leavewar .mx-wrap td[data-testid^="cell-"]').nth(40)
+  await cell.tap(); await sleep(600)
+  const sheet = page.locator('#page-leavewar .bidsheet').first()
+  const sb0 = await sheet.boundingBox(), z0 = (await read(page)).z
+  if (sb0) {
+    await pinch(cdp, 200, sb0.y + Math.min(80, sb0.height / 2), 100, 160)
+    const sb1 = await sheet.boundingBox(), s1 = await read(page)
+    rec('P14d', !!sb1 && Math.round(sb1.height) === Math.round(sb0.height) && s1.vv === 1 && s1.z > z0 && opened.length === 0, 'a pinch over the window of a day zooms the grid behind it; the window keeps its size and stays; the page never zooms', { z0, z: s1.z, h0: Math.round(sb0.height), h1: sb1 ? Math.round(sb1.height) : null, vv: s1.vv })
+    await shot(page, 'p14-pinch-over-a-window')
+  } else rec('P14d', false, 'the window of a day did not open to pinch over', {})
+  rec('P14-errs', errs.length === 0, 'no error with open dates, the drawer and a window', { errs })
+  probePage = null
   await ctx.close()
 }
 
