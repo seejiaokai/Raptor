@@ -6266,6 +6266,34 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
     expect(await page.evaluate(() => (document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.transform), 'laid out sharp at the lift').toBe('')
   })
 
+  test('while the fingers move the frozen dates stretch with the grid, over the same columns; after the lift the lit month is the one in view and the strip no taller than its buttons need', async ({ page }) => {
+    await page.locator('[data-testid="month-OCT"]').click(); await page.waitForTimeout(500)
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    await touch('touchStart', [[170, 500]]); await page.waitForTimeout(30)
+    await touch('touchStart', [[170, 500], [270, 500]]); await page.waitForTimeout(30)
+    for (let i = 1; i <= 6; i++) { await touch('touchMove', [[170 - 5 * i, 500], [270 + 5 * i, 500]]); await page.waitForTimeout(16) }
+    /* mid-pinch: both are stretched pictures; the frozen copy's date cells must be drawn where the grid's are */
+    expect(await frozenOffColumns(page), 'mid-pinch, the frozen dates stand over the stretched columns').toEqual([])
+    await touch('touchEnd', []); await page.waitForTimeout(600)
+    await cdp.detach()
+    expect(await frozenOffColumns(page), 'after the lift').toEqual([])
+    /* the lit month is the month under the frozen edge — a wrong width estimate after a zoom once lit DEC over October */
+    const lit = await page.locator('#page-leavewar .mjump.on').innerText()
+    expect(lit, 'the lit month after a pinch in over October').toBe('OCT')
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const z = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+    if (z > 1) {
+      const gap = await page.evaluate(() => {
+        const cell = document.querySelector('#page-leavewar td.mstick')!.getBoundingClientRect(), row = document.querySelector('#page-leavewar .mstrow')!.getBoundingClientRect()
+        return Math.round(cell.bottom - row.bottom)
+      })
+      expect(gap, 'zoomed in, no tall empty band under the month buttons (the floor is the desktop strip, 44 on the screen; 33 of empty band before the fix)').toBeLessThanOrEqual(16)
+    }
+  })
+
   test('turned sideways while zoomed, and back, the frozen dates stand over their columns', async ({ page }) => {
     await lwPinch(page, 220, 560, 100, 150)
     await page.setViewportSize({ width: 844, height: 390 }); await page.waitForTimeout(800)
