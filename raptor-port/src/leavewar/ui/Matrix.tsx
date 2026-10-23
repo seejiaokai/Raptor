@@ -1992,6 +1992,19 @@ export function Matrix() {
   // time the page scrolls it into view, and a plain effect placed the thumb one
   // painted frame late — at the start of the year, then a jump.
   useLayoutEffect(() => { if (hbar) syncHbar() }, [hbar])
+  /* ON A PHONE THE TAPPED CELL STAYS IN SIGHT (red-team fix A5, the phone half — M3 5.7): a bid window opening over the
+     cell tapped first scrolls the page so the cell sits just above the window's top edge. Only as it opens (Undo leaves
+     the grid where it is — D672); a cell already clear of it does not move; the desktop's window blocks nothing (D641). */
+  useLayoutEffect(() => {
+    if (!open || !phone) return
+    const cell = document.querySelector<HTMLElement>(`#page-leavewar [data-testid="cell-${open.id}-${open.date}"]`)
+    const sheet = document.querySelector<HTMLElement>('[data-testid="bid-picker"]')
+    if (!cell || !sheet) return
+    const c = cell.getBoundingClientRect(), w = sheet.getBoundingClientRect()
+    if (!c.height || !w.height || c.bottom <= w.top - 4) return
+    window.scrollBy(0, c.bottom - w.top + 8)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open?.id, open?.date])
 
   // Show / hide / size the bottom scrollbar on vertical page scroll and on
   // resize. Re-bound on the layout signals that change the grid's scroll width
