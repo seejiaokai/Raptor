@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1294 | 24 Oct 26 | In the Leave War's "Open for bidding" window on a phone a quick sideways swipe across the month buttons picks the months it passes, as a slow drag does; no rest of the finger is needed first. |
 | D1292 | 24 Oct 26 | In the Leave War's windows a document chip opens what it holds when tapped — a picture or a PDF shown in the app's document viewer — straight after it is added as well as later; its ✕ still takes it off. |
 | D1291 | 24 Oct 26 | On the Leave War an OIL taken (time off spent) and an FO or HO (OIL given by hand) are drawn in different colours, so a box that spends OIL is never read as one that gives it; which keeps the green, and the other's colour, is put to him with pictures. |
 | D1290 | 24 Oct 26 | On a phone, when the Leave War's bid window opens over the day just tapped or the days just picked, the grid scrolls by itself so they stand in view just above the window; days already in view do not move. |

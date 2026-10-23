@@ -93,6 +93,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Leave War**
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
+- [LW-OPEN-MONTHS-QUICK-SWIPE] — a quick sideways swipe across the "Open for bidding" months picks them, with no hold first (his D1294).
 - [INP-LIST-PHONE-WIDTH] — on a phone the Inputs list's day headings and cards use the full width, as the filters above them do (his D1293).
 - [LW-OVERHAUL] — the Leave War's major overhaul, taking the good things from a colleague's app (D1140) — planning: his answers, round by round.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
@@ -231,6 +232,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ### [INP-LIST-PHONE-WIDTH] The Inputs list on a phone uses the full width (his D1293, 24 Oct 26)
 **Seen (his iPhone, pull request 569's preview):** in List view the day headings and input cards stand inset from the screen's edges, narrower than the filters and search box above. **To do:** the same side margin as the filters; check the Inputs calendar's day panel and the Medical tab's cards for the same inset. **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave` (pull request 569); a picture before and after.
+
+### [LW-OPEN-MONTHS-QUICK-SWIPE] A quick sideways swipe picks the open-for-bidding months (his D1294, 24 Oct 26)
+**Seen (his iPhone, pull request 569):** a quick swipe across OCT–DEC picks nothing; only a slow one works. **Cause:** `raptor-port/src/leavewar/ui/OpenDatesSheet.tsx` — on a touch, a drag arms only after HOLD_MS (180) and a finger moving more than 8 points before that ends it as a scroll. **To do:** a move mostly sideways (|dx| > |dy|) past the 8 points arms the drag at once, from the month first touched; a move mostly up or down still lets the window scroll; a tap still toggles one month; a test of each (a quick swipe, a slow one, a vertical scroll, a tap). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave`.
 
 ### [LW-PICK-HELD-MARK] The tapped day stays marked and in view while its bid window is open (his D1289, D1290 — 24 Oct 26, his look at pull request 569)
 **What:** on the Leave War a day tapped to open its bid window wears the grid's cyan selection mark (`matrix.css .selcell`, the drag-selection's look) until the window closes or the leave is placed (D1289); on a phone, when the window opens over what was picked, the grid scrolls so it stands just above the window (D1290). **And his question the same message:** can the one-day bid window be less tall — put to him with pictures of ways to do it, each naming the ruling it would change (D1144's day line, D1212's rows). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave` (pull request 569), after his answer on the pictures; the design guide's lesson 45.
