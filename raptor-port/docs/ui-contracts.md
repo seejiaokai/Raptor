@@ -11425,7 +11425,8 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   a Manning, Available P or Available W row is RED — `sync.ts manningRedDays`; amber never; gone at 0 — D1243) · the open
   dates · … · the zoom pair (until pinch to zoom, [LW-PHONE-PINCH-ZOOM], D1228) · Legend. Rearrange is a line in ⚙
   ("⇅ Rearrange the grid"); while it is on the bar carries "⇅ Done", the one way out. On a phone it reads "⇅ Done" in words and the − / + step
-  aside while Rearrange is on, so the bar stays one line (D1275 — to build, [LW-REARRANGE-DONE-WORD]). The − / + go for good
+  aside while Rearrange is on, so the bar stays one line (D1275 — built 23 Oct 26: the word's own class `.rtword`, never the
+  phone-hidden `.rtlbl`; the pair carries `aside` while Rearrange is on, hidden at 700 and under; a browser test at 390 and 360). The − / + go for good
   only once pinch to zoom works with the frozen date bar; else they stay (D1276, [LW-PHONE-PINCH-ZOOM]).
 - **The Leave War's ⚙ Settings window fits a phone's width (D1270, 23 Oct 26):** on a phone nothing in it scrolls sideways — its
   words wrap, its group rows and trays keep inside the window, only up and down scrolls; pinned at a phone's width by a
@@ -11437,4 +11438,4 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   person on that device (`lw:manning:<viewer>`, a view convenience in the browser's own storage — never a record); a
   desktop opens them. When a bid placed through a bid window turns a Manning or Available row amber or red on a day it was
   not, they open by themselves and a bubble under the Manning button names each row ("This bid turns IP amber, Available P
-  red."), gone at the next tap — read as the difference of the verdicts between the window's opening and its closing. The same bubble on a desktop (D1272), where the rows are already open. A Move or a drag of a bid raises it too (D1274 — to build, [LW-BUBBLE-MOVE]). With the Manning button scrolled out of view the bubble sits at the foot of the screen, "… Show ›" taking him up to the rows (D1277 — to build, [LW-BUBBLE-OFFSCREEN]).
+  red."), gone at the next tap — read as the difference of the verdicts between the window's opening and its closing. The same bubble on a desktop (D1272), where the rows are already open. A Move or a drag of a bid raises it too (D1274 — built 23 Oct 26: every grid move lands in `commitMove`, which takes the "before"; one comparison for a placed and a moved bid, only a worsening). With the Manning button out of view when it is raised (its box against the visible screen, the keyboard and the top bar counted) the same words sit at the foot of the screen (`.mn-foot` — the screen's width less 12px on a phone, 560px centred on a desktop) with "Show ›", which opens the rows, scrolls the Manning button into view and puts the keyboard on it; a press on Show and Tab on the way to it do not end it, any other tap or key does (D1277 — built 23 Oct 26; `bidbubble.test.tsx`).

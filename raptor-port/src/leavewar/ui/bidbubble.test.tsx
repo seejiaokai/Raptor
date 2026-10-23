@@ -13,10 +13,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ruleHave } from '../engine'
-import { getState, initStore, lwHistInit, saveManningRule, setRole } from '../state/store'
+import { getState, initStore, lwHistInit, lwUndo, saveManningRule, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
-import { Matrix } from './Matrix'
+import { Matrix, worsenedRows, type BubbleFlags } from './Matrix'
 
 // Seed: ASICS has a pending half day of LL on 23 Jan (moveone.test.tsx's chip).
 const PENDING = 'cell-asics-2026-01-23'
@@ -63,6 +63,15 @@ describe('the bid bubble (D1227, D1272)', () => {
     expect(bubble()).toBeTruthy()
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
     fireEvent.pointerDown(document.body)
+    expect(bubble()).toBeNull()
+    /* …and at the next key (the read's note: this test pressed only): the bid undone, placed again, a key */
+    act(() => { lwUndo() })
+    expect(getState().grid.dusk?.[TARGET]).toBeFalsy()
+    fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    fireEvent.click(screen.getByTestId('bid-LL'))
+    expect(bubble()).toBeTruthy()
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+    fireEvent.keyDown(document.body, { key: 'a' })
     expect(bubble()).toBeNull()
   })
 })
@@ -171,5 +180,29 @@ describe('with the Manning button out of view, the note sits at the foot of the 
     await land(`cell-asics-${TARGET}`)
     expect(screen.getByTestId('manning-bubble-text').textContent).toBe('This bid turns Test crew red.')
     expect(bubble()).toBeNull()
+  })
+})
+
+/* THE CODE READ'S FINDING (23 Oct 26, a fresh Opus reader): the two Available rows are read over the days DRAWN, and a
+   month drawn while a bid window was open (the page behind a window still scrolls) had no "before" — a day already amber
+   there counted as newly turned, and a bid that made nothing worse said "This bid turns Available P amber". A day that
+   was not drawn when the "before" was taken is never counted as turned. Red first. */
+describe('a day drawn only after the "before" is never "turned" (the code read)', () => {
+  const flags = (entries: [string, string, number][], drawn: string[]): BubbleFlags =>
+    ({ m: new Map(entries.map(([k, label, lv]) => [k, { label, lv }])), drawn: new Set(drawn) })
+  it('an Available row already amber on a month drawn since: not reported', () => {
+    const before = flags([], ['2026-01-13'])
+    const now = flags([['availp|2026-02-10', 'Available P', 1]], ['2026-01-13', '2026-02-10'])
+    expect([...worsenedRows(before, now)]).toEqual([])
+  })
+  it('an Available row the bid turned on a day drawn both times: reported', () => {
+    const before = flags([], ['2026-01-13'])
+    const now = flags([['availp|2026-01-13', 'Available P', 2]], ['2026-01-13'])
+    expect([...worsenedRows(before, now)]).toEqual([['Available P', 'red']])
+  })
+  it('a Manning row (read on every day, drawn or not) is still compared as before', () => {
+    const before = flags([['ip|2026-02-10', 'IP', 1]], [])
+    const now = flags([['ip|2026-02-10', 'IP', 2]], ['2026-02-10'])
+    expect([...worsenedRows(before, now)]).toEqual([['IP', 'red']])
   })
 })

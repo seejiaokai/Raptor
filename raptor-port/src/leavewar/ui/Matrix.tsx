@@ -151,6 +151,23 @@ function sameStuck(
    them) — only the on-grid editor is gone. */
 
 
+/** The bid bubble's reading of the grid at one moment (D1227): each flagged row-day at its level (1 amber, 2 red), and the
+ *  days drawn then — the two Available rows are read over the drawn days only. */
+export type BubbleFlags = { m: Map<string, { label: string; lv: number }>; drawn: Set<string> }
+/** The rows a bid made WORSE between two readings — a row-day to amber or red, or amber to red — each at its worst.
+ *  Exported for its unit test (bidbubble.test.tsx). */
+export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string, 'amber' | 'red'> {
+  const worst = new Map<string, 'amber' | 'red'>()
+  for (const [k, { label, lv }] of now.m) {
+    /* an Available row's day not drawn when the "before" was read has no "before" — a month drawn while a bid window was
+       open (the page behind it scrolls) is never "turned" by the bid (the code read of 23 Oct 26) */
+    if ((k.startsWith('availp|') || k.startsWith('availw|')) && !before.drawn.has(k.slice(7))) continue
+    if (lv <= (before.m.get(k)?.lv ?? 0)) continue
+    if (worst.get(label) !== 'red') worst.set(label, lv === 2 ? 'red' : 'amber')
+  }
+  return worst
+}
+
 export function Matrix() {
   /* kept in a name (not just subscribed) so store-reading memos below can
      re-derive on every store change — `movers` reads live grid state, and a
@@ -1265,10 +1282,10 @@ export function Matrix() {
      difference between the grid's verdicts when the window opened and when it closed — the window that placed the bid
      is the gesture, so a change made elsewhere (another device, a setting) never raises it. */
   const sheetUp = !!open || !!sel
-  const beforeRef = useRef<Map<string, { label: string; lv: number }> | null>(null)
+  const beforeRef = useRef<BubbleFlags | null>(null)
   /* `foot`: the Manning button was out of view when it was raised, so the words sit at the foot of the screen (D1277) */
   const [bubble, setBubble] = useState<{ text: string; foot: boolean } | null>(null)
-  const flaggedNow = () => {
+  const flaggedNow = (): BubbleFlags => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
        never reported as turned amber (the scenario designer's find, 23 Oct 26) */
     const m = new Map<string, { label: string; lv: number }>()
@@ -1293,7 +1310,7 @@ export function Matrix() {
         if (v) m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1 })
       }
     }
-    return m
+    return { m, drawn: new Set(drawnDates) }
   }
   /* the latest render's reading, for the move machine — wired once per move, its callbacks would otherwise read the
      verdicts of the render that wired them */
@@ -1301,12 +1318,8 @@ export function Matrix() {
   flaggedRef.current = flaggedNow
   /* compare a "before" with the grid as it is now; only a WORSENING raises the bubble (a row to amber or red, or amber
      to red, on a day) — one rule for a bid placed and a bid moved */
-  const raiseIfWorse = (before: Map<string, { label: string; lv: number }>) => {
-    const worst = new Map<string, 'amber' | 'red'>()
-    for (const [k, { label, lv }] of flaggedNow()) {
-      if (lv <= (before.get(k)?.lv ?? 0)) continue
-      if (worst.get(label) !== 'red') worst.set(label, lv === 2 ? 'red' : 'amber')
-    }
+  const raiseIfWorse = (before: BubbleFlags) => {
+    const worst = worsenedRows(before, flaggedNow())
     if (!worst.size) return
     setCountsOpen(true)
     setBubble({ text: `This bid turns ${[...worst].map(([l, v]) => `${l} ${v}`).join(', ')}.`, foot: !manningInView() })
@@ -1351,7 +1364,7 @@ export function Matrix() {
      a tap or a Confirm on a day — lands in one place (`commitMove`), which takes the "before" just ahead of the move and
      leaves it here; the render that follows the landing compares, as a closed bid window does. A move refused, or onto
      its own day, leaves nothing. */
-  const moveBeforeRef = useRef<Map<string, { label: string; lv: number }> | null>(null)
+  const moveBeforeRef = useRef<BubbleFlags | null>(null)
   useEffect(() => {
     const before = moveBeforeRef.current
     if (!before) return

@@ -11,7 +11,13 @@ const { T, tap, vis, txt } = L
 const here = path.dirname(fileURLToPath(import.meta.url))
 const OUT = path.resolve(here, '../../docs/img/handpass/2026-10-23-lw-m2-looks', process.env.WALK_OUT || 'pm')
 mkdirSync(OUT, { recursive: true })
-const shot = (w, name, opts = {}) => w.page.screenshot({ path: path.join(OUT, name + '.png'), ...opts })
+/* MARK=1: the pictures for his look carry a pink outline round what each is about (his D1222 — the place marked) */
+const shot = async (w, name, opts = {}) => {
+  const { mark, ...o } = opts
+  if (process.env.MARK && mark) await w.page.evaluate(sel => { for (const e of document.querySelectorAll(sel)) { e.dataset.lookMark = e.style.outline; e.style.outline = '3px solid #ff3d9a'; e.style.outlineOffset = '2px' } }, mark)
+  await w.page.screenshot({ path: path.join(OUT, name + '.png'), ...o })
+  if (process.env.MARK && mark) await w.page.evaluate(sel => { for (const e of document.querySelectorAll(sel)) { e.style.outline = e.dataset.lookMark || ''; e.style.outlineOffset = '' } }, mark)
+}
 const only = process.argv.slice(2).map(Number)
 const want = n => !only.length || only.includes(n)
 const results = [], errsAll = []
@@ -79,14 +85,14 @@ await run(1, async () => {
   await L.finger(w, c.x + c.width / 2, c.y + c.height / 2); await w.page.waitForSelector(T('bid-picker'))
   await placeLL(w)
   const f = await foot(w), b = await bubble(w)
-  await shot(w, 'pm1-foot-note')
+  await shot(w, 'pm1-foot-note', { mark: '[data-testid="manning-bubble-foot"]' })
   const onScreen = f && f.top >= 0 && f.bottom <= f.vh && f.left >= 0 && f.right <= f.vw
   // Show
   let after = null
   if (f) {
     await tap(w, T('manning-bubble-show')); await w.page.waitForTimeout(900)
     after = { inView: await btnInView(w), open: await manningOpen(w), foot: !!(await foot(w)), focused: await w.page.evaluate(() => document.activeElement?.getAttribute('data-testid')) }
-    await shot(w, 'pm1-after-show')
+    await shot(w, 'pm1-after-show', { mark: '[data-testid="counts-toggle"], [data-testid="avail-p-2026-01-13"]' })
   }
   const ok = !inView0 && f && /This bid turns Available P red\./.test(f.text) && f.show === 'Show ›' && !b && onScreen && after && after.inView && after.open && !after.foot && after.focused === 'counts-toggle'
   rec(1, 'phone390 admin', ok ? 'PASS' : 'FAIL', `Available P on 13 Jan free ${avB}, Required set to it; scrolled: Manning button in view=${inView0}; bid on ${cell}: foot note ${JSON.stringify(f)}, bubble under the button "${b}"; after Show: ${JSON.stringify(after)}`, ['pm1-scrolled.png', 'pm1-foot-note.png', 'pm1-after-show.png'])
@@ -109,7 +115,7 @@ await run(2, async () => {
   if (staged) { await tap(w, T('move-confirm')); await w.page.waitForTimeout(900) }
   const moved = await L.has(w.page, `${T(L.cellId('bane', B))} .c`)
   const b = await bubble(w), open = await manningOpen(w), inView = await btnInView(w)
-  await shot(w, 'pm2-move-bubble')
+  await shot(w, 'pm2-move-bubble', { mark: '[data-testid="manning-bubble"]' })
   const ok = b0 === null && staged && bStaged === null && moved && /This bid turns Available P red\./.test(b || '') && open
   rec(2, 'phone390 member', ok ? 'PASS' : 'FAIL', `bid on 19 Jan (bubble then "${b0}"); Move, tap 13 Jan: staged=${staged} (bubble while staged "${bStaged}"); Confirm: moved=${moved}; bubble "${b}", Manning open=${open}, button in view=${inView}`, ['pm2-move-bubble.png'])
   w.errs.forEach(x => errsAll.push('2: ' + x)); await w.ctx.close()
@@ -157,7 +163,7 @@ await run(4, async () => {
   await w.page.locator(T(cell)).click(); await w.page.waitForSelector(T('bid-picker'))
   await placeLL(w)
   const f = await foot(w)
-  await shot(w, 'pm4-desk-foot-note')
+  await shot(w, 'pm4-desk-foot-note', { mark: '[data-testid="manning-bubble-foot"]' })
   let tabs = 0, onShow = false
   for (; tabs < 60 && !onShow; tabs++) { await w.page.keyboard.press('Tab'); onShow = await w.page.evaluate(() => document.activeElement?.getAttribute('data-testid') === 'manning-bubble-show') }
   const stillUp = !!(await foot(w))
@@ -216,7 +222,7 @@ await run(6, async () => {
       const mid = id => { const r = q(id)?.getBoundingClientRect(); return r && r.width ? Math.round(r.top + r.height / 2) : null }
       return { done: q('roster-arrange')?.innerText.replace(/\s+/g, ' ').trim(), zoomShown: !!q('lw-zoom') && getComputedStyle(q('lw-zoom')).display !== 'none', mids: ['counts-toggle', 'open-chip', 'roster-arrange', 'legend-open'].map(mid) }
     })
-    await shot(w, `pm6-${width}-rearranging`, { clip: { x: 0, y: 0, width, height: 330 } })
+    await shot(w, `pm6-${width}-rearranging`, { clip: { x: 0, y: 0, width, height: 330 }, mark: '#page-leavewar [data-testid="roster-arrange"]' })
     await tap(w, T('roster-arrange')); await w.page.waitForTimeout(500)
     const back = await w.page.evaluate(() => { const z = document.querySelector('#page-leavewar [data-testid="lw-zoom"]'); return !!z && getComputedStyle(z).display !== 'none' && !document.querySelector('#page-leavewar [data-testid="roster-arrange"]') })
     await shot(w, `pm6-${width}-after-done`, { clip: { x: 0, y: 0, width, height: 330 } })
@@ -233,7 +239,7 @@ await run(7, async () => {
     await signIn(w, who, { wide })
     const h = await w.page.evaluate(() => { const pg = document.querySelector('#page-leavewar'); const ht = s => Math.round(pg.querySelector(s).getBoundingClientRect().height * 10) / 10; return { tabs: ht(':scope > .lw-top'), view: ht(':scope > .lw-viewline'), myLeave: ht('[data-testid="my-leave"]'), pageOver: document.documentElement.scrollWidth - document.documentElement.clientWidth } })
     const name = `pm7-${who}${wide ? '-wide' : ''}`
-    await shot(w, name, { clip: { x: 0, y: 0, width: 390, height: 300 } })
+    await shot(w, name, { clip: { x: 0, y: 0, width: 390, height: 300 }, mark: '#page-leavewar > .lw-top, #page-leavewar > .lw-viewline' })
     rec(`7-${who}${wide ? '-wide' : ''}`, `phone390 ${who}`, h.tabs <= 54 && h.view <= 43 && h.pageOver <= 1 ? 'PASS' : 'FAIL', `tab row ${h.tabs}px (drawing ~53), View line ${h.view}px (drawing ~42), My leave ${h.myLeave}px; sideways overflow ${h.pageOver}`, [name + '.png'])
     w.errs.forEach(x => errsAll.push('7: ' + x)); await w.ctx.close()
   }
@@ -274,6 +280,18 @@ await run(9, async () => {
   const ok = days.every(([, , s], i) => cells[i].text === s && cells[i].cut === false && Math.abs(after[i] - before[i]) < 0.75)
   rec(9, 'phone390 admin wide', ok ? 'PASS' : 'FAIL', `day widths before ${JSON.stringify(before)} after ${JSON.stringify(after)}; cells ${JSON.stringify(cells)}`, ['pm9-events-wide.png'])
   w.errs.forEach(x => errsAll.push('9: ' + x)); await w.ctx.close()
+})
+
+/* 10, 11 — pictures for the questions put to him (MARK=1 only; not checks): the phone's grid bar on two lines with a red
+   day ("Manning | 1 red ›"), and the two tabs, Grid and OIL, each half the row */
+if (process.env.MARK) await run(10, async () => {
+  const w = await L.newWorld('phone')
+  await fixture(w)
+  await signIn(w, 'admin', { plain: true })
+  await shot(w, 'q-bar-two-lines', { clip: { x: 0, y: 0, width: 390, height: 300 }, mark: '#page-leavewar .card-hd .lw-gridbar' })
+  await shot(w, 'q-tabs-wide', { clip: { x: 0, y: 0, width: 390, height: 300 }, mark: '#page-leavewar > .lw-top .lw-tabs' })
+  rec(10, 'phone390 admin', 'PICTURES', 'for his questions', ['q-bar-two-lines.png', 'q-tabs-wide.png'])
+  await w.ctx.close()
 })
 
 writeFileSync(path.join(OUT, 'walk4.out.json'), JSON.stringify({ results, errs: errsAll }, null, 1))

@@ -6393,3 +6393,21 @@ so your bid can’t go back on it." and, after the fresh Opus read's F1, is pass
 the button. Tests red first (the D1263 block); walked on a phone, W1–W5 (`scripts/handpass/lw-d1263-walk.mjs`); the
 evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBid row), D1263's full row.
 
+
+*Moved here 2026-10-23 by backlog-archive.mjs ([LW-BUBBLE-MOVE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-BUBBLE-MOVE] A moved bid raises the bubble too (his D1274, 23 Oct 26)
+**What:** D1227's bubble ("This bid turns Available P red.") today reads the verdicts between a bid window's opening and closing (`raptor-port/src/leavewar/ui/Matrix.tsx`, `flaggedNow` and the `sheetUp` effect), so a Move — the window's Move, then a tap on the target day — or a drag of a bid raises nothing, though it can turn a row red (walker 3, scenario 58; picture `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q2-move-no-bubble.png`). **To do:** take the "before" when a move or drag begins (the grid's move mode and the drag), compare when it lands, the same words and the same rule (only a worsening); a unit test in the bubble's file (`availform.test.tsx`) red first, and a look on a phone and a desktop. **Place:** M2, before its merge live, if the chat has room; else the next chat.
+
+
+*Moved here 2026-10-23 by backlog-archive.mjs ([LW-BUBBLE-OFFSCREEN]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-BUBBLE-OFFSCREEN] The bid bubble at the foot of the screen when its place is out of view (his D1277, 23 Oct 26)
+**What:** D1227's bubble is drawn under the Manning button (`.mn-bubble`, `raptor-port/src/leavewar/ui/Matrix.tsx` and `ui/chrome.css`); scrolled down, it appears off screen and nothing he is looking at changes (walker 3, scenario 61; picture `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q1b-today-scrolled.png`). His answer, as drawn in `q1b-proposed-scrolled.png`: when the Manning button is out of view the same words sit at the foot of the screen, in the bubble's amber, with "Show ›", which scrolls up to the Manning rows (opened); gone at the next tap or key; with the button in view nothing changes. **To do:** decide "in view" at the moment the bubble is raised (the button's rect against the visible screen, the keyboard and the safe area counted), the foot note fixed above the screen's foot (`env(safe-area-inset-bottom)`), read out to a screen reader; with [LW-BUBBLE-MOVE] in one change — a test red first, a look on a phone and a desktop. **Place:** M2, before its merge live.
+
+
+*Moved here 2026-10-23 by backlog-archive.mjs ([LW-REARRANGE-DONE-WORD]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-REARRANGE-DONE-WORD] "⇅ Done" in words on a phone while rearranging (his D1275, 23 Oct 26)
+**What:** today on a phone the bar's way out of Rearrange is the ⇅ icon alone (the phone's short words, D1019 — `.rtlbl` hidden). His answer: the word "Done" shows, and the − / + zoom pair (`[data-testid="lw-zoom"]`, `raptor-port/src/leavewar/ui/Matrix.tsx`) is not drawn while Rearrange is on, so the bar stays one line — as drawn in `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q3c-done-zoom-aside.png` (made by `scripts/handpass/lw-m2-q3-done.mjs`, which measured one line at 390 with both). **To do:** the word on the Done button only (the other short words stay), the zoom pair out while `arranging`; a test red first, and a look at 390 and 360 with a wider font forced (Linux's and the iPhone's letters are wider). **Place:** M2, before its merge live.
+

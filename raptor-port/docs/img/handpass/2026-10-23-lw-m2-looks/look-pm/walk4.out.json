@@ -1,0 +1,15 @@
+{
+ "results": [
+  {
+   "id": 10,
+   "size": "phone390 admin",
+   "verdict": "PICTURES",
+   "said": "for his questions",
+   "pics": [
+    "q-bar-two-lines.png",
+    "q-tabs-wide.png"
+   ]
+  }
+ ],
+ "errs": []
+}
