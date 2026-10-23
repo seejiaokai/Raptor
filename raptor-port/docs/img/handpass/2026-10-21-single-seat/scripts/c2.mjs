@@ -1,0 +1,13 @@
+import { L, snap, sideWarn } from './h.mjs'
+console.log('c2 v1')
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900, state: 'C:/Users/User/AppData/Local/Temp/claude/job3/walk/state-pub.json' })
+await L.board(page, 4)
+await page.locator('[data-planmenu="4"]:visible').click(); await page.waitForTimeout(400)
+await page.getByText('Original', { exact: false }).filter({ hasText: 'read-only' }).first().click()
+await page.waitForTimeout(800)
+await page.screenshot({ path: process.env.HP_SHOTS + '/c2a.png' })
+const n = await page.locator('#schedBoard .itxt:has-text("RCP empty")').count()
+console.log('RCP empty texts', n)
+await snap(page, 'dbg-c2', { scrollTo: '#schedBoard .itxt:has-text("RCP empty")', marks: [] })
+console.log(errors)
+await browser.close()

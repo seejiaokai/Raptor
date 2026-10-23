@@ -1,0 +1,11 @@
+import { L, snap } from './h.mjs'
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900 })
+await L.go(page, 'inputs'); await page.waitForTimeout(800)
+await page.locator('#inSansMode').click(); await page.waitForTimeout(800)
+await page.locator('[data-testid="sc-day-2026-10-22"]').click(); await page.waitForTimeout(800)
+console.log(await page.evaluate(() => document.querySelector('.sansday').innerHTML.slice(0, 2500)))
+console.log(await page.evaluate(() => document.querySelector('[data-testid="sc-day-2026-10-22"]').innerHTML.slice(0, 1500)))
+await page.locator('#page-inputs button[aria-label*="ettings"], #page-inputs button:has-text("⚙")').first().click().catch(e => console.log('gear fail'))
+await page.waitForTimeout(600)
+await page.screenshot({ path: process.env.HP_SHOTS + '/d8a.png' })
+await browser.close()

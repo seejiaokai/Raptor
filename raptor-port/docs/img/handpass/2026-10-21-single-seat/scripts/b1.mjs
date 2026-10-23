@@ -1,0 +1,12 @@
+import { L, snap, sideWarn } from './h.mjs'
+console.log('b1 v1')
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900, state: 'C:/Users/User/AppData/Local/Temp/claude/job3/walk/state-a3.json' })
+console.log('lines present:', await page.evaluate(() => JSON.stringify(window.DAYS[4].waves.map(w => w.formations.map(f => f.aircraft.map(a => a.p + '/' + a.w))))))
+await L.board(page, 4)
+console.log(JSON.stringify(await L.signState(page, 4)))
+const r = await L.publish(page, 4)
+console.log('publish', JSON.stringify(r))
+console.log(JSON.stringify(await L.signState(page, 4)))
+await page.screenshot({ path: process.env.HP_SHOTS + '/b1a.png' })
+console.log(errors)
+await browser.close()

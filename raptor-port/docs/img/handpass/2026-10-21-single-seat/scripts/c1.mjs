@@ -1,0 +1,11 @@
+import { L, snap, sideWarn } from './h.mjs'
+console.log('c1 v1')
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900, state: 'C:/Users/User/AppData/Local/Temp/claude/job3/walk/state-a3.json' })
+await L.board(page, 4)
+console.log('publish', JSON.stringify(await L.publish(page, 4)))
+await page.locator('[data-planmenu="4"]:visible').click(); await page.waitForTimeout(500)
+await page.screenshot({ path: process.env.HP_SHOTS + '/c1a.png' })
+console.log(await page.evaluate(() => [...document.querySelectorAll('[role=menu] *, .planmenu *, [data-planitem], [data-plan]')].filter(e=>e.offsetParent).map(e => e.tagName+' '+(e.innerText||'').trim().slice(0,40)+' '+[...e.attributes].map(a=>a.name+'='+a.value.slice(0,20)).join(' ')).slice(0,30).join('\n')))
+console.log(errors)
+await ctx.storageState({ path: 'C:/Users/User/AppData/Local/Temp/claude/job3/walk/state-pub.json' })
+await browser.close()

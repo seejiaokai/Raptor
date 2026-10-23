@@ -12,6 +12,8 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1104 | 21 Oct 26 | An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged by the weekly usage figure, not a token count, and no work is cut to save allowance (D1033). |
+| D1103 | 21 Oct 26 | On an overnight run each job is built and checked in a fresh session of its own, started by the night's chat one after another, which only coordinates, checks each result and writes the morning report; if it works, the overnight guide is changed to say so, read before he approves it. |
 | D1281 | 23 Oct 26 | Every bug check of a screen adds two checks: on a phone a picture right after each tap, holding the touched state an iPhone keeps, besides the settled one; and a standing test that pressing each dense screen's controls on a phone never turns a pinned cell see-through. |
 | D1273 | 23 Oct 26 | Pictures are split as they are: the Sonnet walkers take them and look at the bulk, the host opens every picture that decides something (D1271); and the host saves tokens by cropping a picture to the area that matters before opening it, never by handing a deciding picture to Sonnet. |
 | D1271 | 23 Oct 26 | Saving tokens never costs the quality of finding a fault or of checking one: the host keeps every look at a picture that decides whether something is wrong or right — a fault's cause, a fix's check, a finding before it enters the evidence sheet — and hands Sonnet only the looks whose answer the host does not rely on alone. |

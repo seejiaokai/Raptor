@@ -1265,8 +1265,9 @@ buttons, and Publish AL is hidden under a preview (A3). RETIRED by this redesign
 `verSelHTML`/`dverSelectHTML`/`verSelBoardHTML`, the `<select data-dver>` on edit
 surfaces, the green `.livebtn` "Live copy" pill, the `.ddraft` "Publishes …"
 chip, and the week-status banner text (`Shell.tsx` `banner()` keeps only the AL
-roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner holds only the rules modified
-stamp (marked 24 Sep 26, register AM22)*). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
+roll — *stale: the AL roll went too, 15 Sep 26 follow-up 2; the banner held only the rules modified
+stamp (marked 24 Sep 26, register AM22), and that stamp goes from View and Edit Schedule too (D1098, 21 Oct 26 —
+changing the rules is normal for a squadron; the Logic page keeps its own strip)*). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
 letter); deleting down to ONE clears the day's plans back to "Live working copy"
 (B1). **The VIEW page keeps its own pickers unchanged** (`viewDraftSelHTML`
 `data-dver` + the `d:` frozen preview, and `viewVerSelHTML` `data-vwork`) — the
@@ -6557,6 +6558,12 @@ picker (`#viewAs`) and the drawer's View-as chips (`#drawerViewAs`) stay GONE (D
 section said the chip "is an inert `<span>` for everyone" — D166 (3)'s "no preview as a member", replaced by D292.)*
 Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 
+## Rulings of 21 Oct 26 to build (D1106, D1107, D1108)
+
+- **A window over the Scheduler Board opens below the board's bar (D1106):** a window not yet moved — the changes window, the ALL AVAIL window and the other windows that open below the top bar — opens just below the board's own bar, as elsewhere below the app's top bar, so the bell, Insights and ✓ Done stay in reach; to build on `claude/look-keys-1021` (pull request 558), [FLOATWIN-BOARD-BAR].
+- **The board's desktop layout on a phone pinches, and its drag follows the edge (D1107):** pinch to zoom in and out; a puck carried to the edge of what is on screen scrolls the board that way (the design guide §5A, D895). Its design questions go to him with pictures first; [BOARD-PHONE-PINCH-ZOOM].
+- **Quals on a phone pinches too (D1108):** its wide table zooms in and out, its pinned heading row and name column kept in line (D993); the same round of questions and the same job, [BOARD-PHONE-PINCH-ZOOM].
+
 ## A posting out — four chips, one line, "Post out" (`[POST-OUT-OUTCOMES]`, 27 Sep 26 — D229, D294, D298, D300)
 
 The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
@@ -6568,7 +6575,7 @@ suspended." — the account named only when he has one; "archived on Quals" unti
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
 asks twice** (D287 (3)): the bid sheet's button turns into "Tap again to delete <callsign>"; on the Post out sheet (which
 commits on each change) the Delete chip arms a second button, `postout-delete-go`, and tapping the armed chip again
-backs out without changing the posting. A deleted man (`gone` on the war) has no posting door — his posting is final.
+backs out without changing the posting. **The date that sets a Delete off asks twice too (D1102, 21 Oct 26):** on the Post out sheet, moving the date of a posting whose outcome is Delete to today or earlier asks the same tap-twice question before the date is saved; a future date is saved at once. **The Delete outcome says it is automatic (D1105, 21 Oct 26 — to build):** its line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck.", and until the date his row reads "posting out <date> · auto delete"; the button stays "Delete" (D298). A deleted man (`gone` on the war) has no posting door — his posting is final.
 **On the date** (`leavewar/sync.ts runPoOutcomes`, the calendar date — the one clock): Overseas Sqn → archived (Admin →
 Users' Archived group) and his account suspended; Delete → his person and account deleted (the hidden mark; days he flew keep his puck); SANS →
 ticked SANS (D283: with "Show SANS" OFF the war keeps his row in its old group, posted out, untracked; with it ON his

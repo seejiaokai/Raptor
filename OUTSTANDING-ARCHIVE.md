@@ -6411,3 +6411,23 @@ evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBi
 ### [LW-REARRANGE-DONE-WORD] "⇅ Done" in words on a phone while rearranging (his D1275, 23 Oct 26)
 **What:** today on a phone the bar's way out of Rearrange is the ⇅ icon alone (the phone's short words, D1019 — `.rtlbl` hidden). His answer: the word "Done" shows, and the − / + zoom pair (`[data-testid="lw-zoom"]`, `raptor-port/src/leavewar/ui/Matrix.tsx`) is not drawn while Rearrange is on, so the bar stays one line — as drawn in `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q3c-done-zoom-aside.png` (made by `scripts/handpass/lw-m2-q3-done.mjs`, which measured one line at 390 with both). **To do:** the word on the Done button only (the other short words stay), the zoom pair out while `arranging`; a test red first, and a look at 390 and 360 with a wider font forced (Linux's and the iPhone's letters are wider). **Place:** M2, before its merge live.
 
+*Moved here 2026-10-21 by backlog-archive.mjs ([DOCSIZE-MERGE-CEILING]). Forward facts: `raptor-port/scripts/docsize.mjs`, `raptor-port/scripts/docsize-selftest.mjs`.*
+
+### [DOCSIZE-MERGE-CEILING] The document check's ceiling rule fires on a MERGE of `main` that carried a ceiling move (found 29 Sep 26)
+`npm run docsize` on `claude/small-fixes-batch-d223f6` (after `main` #464 was taken in) fails: "a ceiling in raptor-port/scripts/docsize.mjs
+changed in commit 593c357e, which also touches raptor-port/src". 593c357e is the MERGE of `main` #459–#462; the ceiling moved on
+`main` in the guide step's own docs-only commit (D391), and the merge merely carried it beside the Tracker's code. The rule
+(`docsize.mjs` `ceilingMovedWithCode`) walks `git log BASE..HEAD -- docsize.mjs` and compares each commit with its FIRST parent, so
+a merge reads as a commit that moved the ceiling with code. The same HEAD passed the Docs guard on GitHub (72cf61e7), so it did
+not block the PR. **To do:** skip merge commits in that walk (`--no-merges`: every ceiling move is judged in the commit that made
+it, on whichever side) with a self-test — in a docs-only change of its own, never inside a code PR (the gate is not edited to pass
+the PR that trips it). **Place:** low; with the next document-gate change.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([BOARD-PHONE-PINCH-ZOOM]). Forward facts: `raptor-port/docs/file-map.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-PHONE-PINCH-ZOOM] The board's desktop layout on a phone: pinch to zoom, and a drag that follows the edge (his word, 21 Oct 26 — D1107)
+**And Quals (D1108, the same morning):** on a phone Quals pinches to zoom too — its wide table, the pinned heading row and name column kept in line (D993); asked in the same round, built in the same job.
+**What:** on a phone, with the Scheduler Board in its desktop layout, a pinch zooms the board in and out; a puck dragged to the edge of what is on screen scrolls the board that way so it can land anywhere (design guide §5A, D895). His picture: the board wider than his iPhone's screen, the crew list at the right. **First:** what a pinch zooms (the board only, not the top bar), how far, whether the zoom is kept — put to him with pictures (D541, D853), in one round; the phone layout is untouched (D548). **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP, §7.8 and §7.9 — his iPhone sends touches Safari's way). **Place:** the next job, in a fresh chat (his word).
+**BUILT and merged 21 Oct 26 (pull request 561, `claude/board-pinch-zoom`):** the board's desktop layout on a phone and Quals pinch to zoom, the edge scroll — D1107–D1110; archived 24 Oct 26 when these records were brought level with `main`.
+
