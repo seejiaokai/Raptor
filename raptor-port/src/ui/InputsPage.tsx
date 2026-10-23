@@ -735,7 +735,8 @@ export function InputsPage() {
                   const when = cardWhen(r, b0 != null ? isoOfOrd(b0) : g.iso, g.iso)
                   /* the card is handed the input's ONE record, as a list of one (ui/inputcard-model.ts) */
                   return <InputCard key={r.iid} id={r.iid} tid="inl" row facts={cardOf([r], undefined, when)} when={when}
-                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={isLit(r)} onOpen={() => openInput(r)} />
+                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={isLit(r)} onOpen={() => openInput(r)}
+                    onDoc={() => { setDocView({ row: r }); notify() }} />
                 })}
               </Fragment>
             ))}

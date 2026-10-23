@@ -91,7 +91,7 @@ for (const size of SIZES) {
     const setFilter = async v => { if (w.phone && !(await L.vis(w.page, '#inFType'))) { await L.press(w, '#inFiltersBtn'); await sleep(w, 400) } await w.page.locator('#inFType').selectOption(v); await sleep(w, 800) }
     const listRead = () => w.page.evaluate(() => [...document.querySelectorAll('#page-inputs tr[data-iid], #page-inputs .icard[data-iid]')].map(r => ({ kind: (r.querySelector('.icard-kind, .intag')?.innerText || '').replace(/\s+/g, ' ').trim().toUpperCase(), nodoc: r.querySelectorAll('.in-nodoc').length, clip: r.querySelectorAll('.rclip').length, text: r.innerText.replace(/\s+/g, ' ').trim().slice(0, 50) })))
     const title = () => w.page.evaluate(() => (document.querySelector('#page-inputs .ib-top')?.innerText || '').replace(/\s+/g, ' '))
-    const barRead = () => w.page.evaluate(() => [...document.querySelectorAll('#page-inputs .ib-bar')].filter(e => e.getBoundingClientRect().width > 0).map(e => (e.innerText.split('·').pop() || '').replace(/\s+/g, ' ').trim().toUpperCase()))
+    const barRead = () => w.page.evaluate(() => [...document.querySelectorAll('#page-inputs .ib-bar')].filter(e => e.getBoundingClientRect().width > 0).map(e => ((e.title || e.innerText).split('·')[1] || '').replace(/\s+/g, ' ').trim().toUpperCase()))
     const allList = await listRead()
     S.say('the unfiltered list has ' + allList.length + ' rows; kinds: ' + [...new Set(allList.map(r => r.kind))].join(', '))
     for (const [fam, val, set, label] of [['leave', 'grp:leave', LEAVE, 'All leave'], ['medical', 'grp:med', MED, 'All medical'], ['duty', 'grp:other', OTHER, 'All duty & commitments']]) {
@@ -108,9 +108,9 @@ for (const size of SIZES) {
       await L.shot(w, 's18-list-' + fam + '-' + tag); S.pic('s18-list-' + fam + '-' + tag)
       // the calendar follows the same value
       await L.press(w, '#inCalBtn'); await sleep(w, 900)
-      for (let i = 0; i < 14 && !/JANUARY 2026/i.test(await title()); i++) { await L.press(w, '#icPrev'); await sleep(w, 250) }
+      for (let i = 0; i < 14 && !/JAN(UARY)? 2026/i.test(await title()); i++) { await L.press(w, '#icPrev'); await sleep(w, 250) }
       const bars = await barRead()
-      S.ok(/JANUARY 2026/i.test(await title()) && bars.length > 0 && bars.every(b => set.has(b)), 'the calendar (' + ((await title()).match(/[A-Z]+ 20\d\d/i) || [''])[0] + ') with "' + label + '" shows only ' + fam + ' bars: ' + bars.length + ' bars, kinds ' + [...new Set(bars)].join(', '))
+      S.ok(/JAN(UARY)? 2026/i.test(await title()) && bars.length > 0 && bars.every(b => set.has(b)), 'the calendar (' + ((await title()).match(/[A-Z]+ 20\d\d/i) || [''])[0] + ') with "' + label + '" shows only ' + fam + ' bars: ' + bars.length + ' bars, kinds ' + [...new Set(bars)].join(', '))
       await L.shot(w, 's18-cal-' + fam + '-' + tag); S.pic('s18-cal-' + fam + '-' + tag)
       await L.press(w, '#inListBtn'); await sleep(w, 700)
     }

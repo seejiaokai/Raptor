@@ -46,7 +46,7 @@ import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
 import { fmt, fmtDay, inputTone, newInputSeed, removeInput, upchitDeleteAsk, sharedRefusal, commitInput, draftOf, oilSignDay, oilSignNote } from './inputedit'
-import { INPEDIT, setInpEdit, setMedMove } from './pops'
+import { INPEDIT, setDocView, setInpEdit, setMedMove } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
@@ -1120,7 +1120,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                   const when = cardWhen(r, it.b, iso)
                   return (
                     <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when} flash={lit.includes(it.key)}
-                      late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
+                      late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}
+                      onDoc={() => { setDocView({ row: r }); notify() }}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>

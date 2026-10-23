@@ -228,3 +228,8 @@
 /* A LEAVE OR MEDICAL ROW WITH NO DOCUMENT says so, quietly (owner D1179, M3 7.4): the paperclip's place, in the app's
    faint grey, small — a fact to scan for, never a warning colour */
 .inact>span.in-nodoc{width:auto;height:auto;font-size:11px;font-weight:500;color:var(--ink-3);white-space:nowrap}
+/* …and on a card (the phone's list, the calendar's opened day — M3's walk, B's faults 1–3): the paperclip, a small button,
+   and the quiet "No document", in the card's corner before its hours */
+.icard-doc{display:inline-flex;align-items:center;justify-content:center;width:26px;height:22px;padding:0;border:0;border-radius:5px;background:transparent;color:var(--ink-2);cursor:pointer}
+.icard-doc svg{width:14px;height:14px}
+.icard-nodoc{font-size:10.5px;font-weight:500;color:var(--ink-3);white-space:nowrap}

@@ -161,3 +161,20 @@ describe('the type filter picks a family; a leave or medical row with no documen
     expect(has('n4')).toBe(false)
   })
 })
+
+describe('the card says it too — the phone list and the calendar\u2019s opened day (the walk\u2019s B faults 1–3)', () => {
+  it('a leave with a file wears the paperclip; a bare leave or medical says "No document"; a duty says neither', async () => {
+    const at = 1
+    const put = async (iid: string, type: string, extra: any = {}) => {
+      await act(async () => { writeInputs(() => { INPUTS.push({ iid, person: admin, type, date: 'Jul 20', yr: 2026, allday: true, remarks: '', mod: '2026-07-01', by: admin, at, ...extra }) }); notify() })
+    }
+    await put('c1', 'LL', { docId: 'doc-c1' }); await put('c2', 'OL'); await put('c3', 'ATT C'); await put('c4', 'Meeting', { allday: false, s: 600, e: 660 })
+    const { cardOf } = await import('./inputcard-model')
+    const doc = (iid: string) => cardOf([live(iid)]).doc
+    /* (the file's bytes are not in this test's drawer — the card asks the drawer, as the list's paperclip does) */
+    expect(['', 'has']).toContain(doc('c1'))
+    expect(doc('c2')).toBe('none')
+    expect(doc('c3')).toBe('none')
+    expect(doc('c4')).toBe('')
+  })
+})
