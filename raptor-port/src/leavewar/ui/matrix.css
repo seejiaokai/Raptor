@@ -822,17 +822,18 @@ touch-action: pan-x pan-y;
 :is(.mx td, .leg-box) .c.wide:not(.whole) { font-size: 6.5px; letter-spacing: -.02em; }
 
 /* the kinds — each a hue (`--h`), an ink for the filled box and a fill strength, as look F has them */
-.c.k-ll   { --h: 242, 200, 110; --ink: #FFF1CF; --fill: .22; }
-.c.k-ol   { --h: 226, 146, 38;  --ink: #FFE7C7; --fill: .48; }
-.c.k-oil  { --h: 70, 196, 108;  --ink: #DDF8E6; --fill: .38; }
-.c.k-care { --h: 138, 150, 255; --ink: #DCE0FF; --fill: .32; }
-.c.k-cse  { --h: 184, 142, 240; --ink: #EEE2FF; --fill: .32; }
-.c.k-od   { --h: 160, 170, 182; --ink: #E6EBF0; --fill: .26; }
-.c.k-med  { --h: 236, 104, 140; --ink: #FFD0DD; --fill: .26; }
+.c.k-ll, .tchip.lv.k-ll   { --h: 242, 200, 110; --ink: #FFF1CF; --fill: .22; }
+.c.k-ol, .tchip.lv.k-ol   { --h: 226, 146, 38;  --ink: #FFE7C7; --fill: .48; }
+.c.k-oil, .tchip.lv.k-oil  { --h: 70, 196, 108;  --ink: #DDF8E6; --fill: .38; }
+.c.k-care, .tchip.lv.k-care { --h: 138, 150, 255; --ink: #DCE0FF; --fill: .32; }
+.c.k-cse, .tchip.lv.k-cse  { --h: 184, 142, 240; --ink: #EEE2FF; --fill: .32; }
+.c.k-od, .tchip.lv.k-od   { --h: 160, 170, 182; --ink: #E6EBF0; --fill: .26; }
+.c.k-med, .tchip.lv.k-med  { --h: 236, 104, 140; --ink: #FFD0DD; --fill: .26; }
 
-/* the fills */
-.c.s-a { background: rgba(var(--h), var(--fill)); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(var(--h), .85); }
-.c.s-w { background: transparent; color: rgb(var(--h)); outline: 1px dashed rgba(var(--h), .95); outline-offset: -1px; }
+/* the fills — the bid windows' leave buttons take the same kinds and fills (M3 5.3, 5.4 — D1183, red-team fix A8:
+   a button looks like the box it places; LeaveButtons.tsx), from this one map, never a copy of its colours */
+.c.s-a, .tchip.lv.s-a { background: rgba(var(--h), var(--fill)); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(var(--h), .85); }
+.c.s-w, .tchip.lv.s-w { background: transparent; color: rgb(var(--h)); outline: 1px dashed rgba(var(--h), .95); outline-offset: -1px; }
 .c.s-r { background: transparent; color: #7d8894; box-shadow: inset 0 0 0 1px #4a5560; text-decoration: line-through; }
 
 /* Out-of-squadron cells: shaded grey diagonal lines rather than a flat block.

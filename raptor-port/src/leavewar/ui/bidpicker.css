@@ -1632,3 +1632,24 @@
 .bidsheet-dayline .dl-amber .dl-name, .bidsheet-dayline .dl-amber .dl-fig { color: var(--adv); }
 .bidsheet-dayline .dl-red .dl-name, .bidsheet-dayline .dl-red .dl-fig { color: var(--hard); }
 .bidsheet-dayline .dl-calm { grid-column: 1 / -1; display: block; color: var(--ink-3); }
+
+/* THE LEAVE BUTTONS (M3 5.2–5.6 — LeaveButtons.tsx): two even rows of four on every width (his design lesson 28), each
+   in its kind's colour and fill (matrix.css's one map), its code and what is left beside it. */
+.bidsheet .lv-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.bidsheet .tchip.lv {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  border-color: transparent;
+}
+.bidsheet .tchip.lv .lv-fig { font-weight: 500; font-variant-numeric: tabular-nums; opacity: .9; }
+.bidsheet .tchip.lv .lv-neg { color: var(--hard); opacity: 1; }
+.bidsheet .tchip.lv.lv-dim { opacity: .55; }

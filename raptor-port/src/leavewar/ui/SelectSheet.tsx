@@ -45,6 +45,7 @@ import type { Selection } from './select'
 import './bidpicker.css'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
+import { LeaveButtons } from './LeaveButtons'
 import { getState } from '../state/store'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
@@ -269,12 +270,10 @@ export function SelectSheet({
 
           <div className="bidsheet-row">
             <span className="lab">Which leave</span>
-            {LEAVE_TYPES.map(t => (
-              <button key={t.type} data-testid={`sel-${t.type}`} className="tchip" title={t.label}
-                onClick={() => fill(formatCell({ type: t.type, portion }))}>
-                {formatCell({ type: t.type, portion })}
-              </button>
-            ))}
+            {/* the one-day window's buttons (M3 5.2–5.6): his figures where the drag holds one man, none across several
+                (the below-zero ask still names each — the agent's reading, M3 §7.2) */}
+            <LeaveButtons portion={portion} onPick={fill} filled={false} testPrefix="sel"
+              figure={wouldLeave && nPeople === 1 ? code => wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code)?.before ?? null : undefined} />
             {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
           </div>
 

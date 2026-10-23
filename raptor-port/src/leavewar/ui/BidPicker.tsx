@@ -31,6 +31,7 @@ import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
 import type { DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
+import { LeaveButtons } from './LeaveButtons'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -552,19 +553,9 @@ export function BidPicker({
             place. Duty, medical and courses are absent by construction —
             they are not leave types, and offering them here would invite a
             scheduler's data to be typed in as if it were a bid. */}
-        {LEAVE_TYPES.map(t => (
-          <button
-            key={t.type}
-            data-testid={`bid-${t.type}`}
-            className="tchip"
-            title={t.label}
-            onClick={() => write(formatCell({ type: t.type, portion }))}
-          >
-            {/* the chip says what the BOX will say — `<LL`, `LL>` — while the
-                write still speaks the stored grammar */}
-            {displayCell(formatCell({ type: t.type, portion }))}
-          </button>
-        ))}
+        {/* the eight in two rows of four, each its kind's colour and what is left of it (M3 5.2–5.6 — LeaveButtons.tsx) */}
+        <LeaveButtons portion={portion} onPick={write} filled={false}
+          figure={wouldLeave ? code => wouldLeave(code, [date])?.before ?? null : undefined} />
         {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>
 
