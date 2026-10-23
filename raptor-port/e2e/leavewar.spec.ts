@@ -6195,9 +6195,11 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   // Setting the mirror's OWN scrollLeft now leaves the grid exactly where it is
   // (checked last, since it deliberately desyncs the mirror). No re-sync fires
   // because the pump only runs while the GRID is being scrolled.
+  // (the pinches above moved the grid's own scroll, to keep the day under the fingers — so where it is NOW is the mark)
+  const gridAt = await page.evaluate(() => document.querySelector('.mx-wrap')!.scrollLeft)
   await page.evaluate(() => { document.querySelector('.mxfixed-scroll')!.scrollLeft = 50 })
   await page.waitForTimeout(150)
-  expect(await page.evaluate(() => document.querySelector('.mx-wrap')!.scrollLeft)).toBe(400)
+  expect(await page.evaluate(() => document.querySelector('.mx-wrap')!.scrollLeft)).toBe(gridAt)
   // scrolling back up thaws it
   await page.evaluate(() => window.scrollTo(0, 0))
   await page.waitForTimeout(250)
@@ -6274,8 +6276,8 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
     const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
     await touch('touchStart', [[170, 500]]); await page.waitForTimeout(30)
     await touch('touchStart', [[170, 500], [270, 500]]); await page.waitForTimeout(30)
-    for (let i = 1; i <= 6; i++) { await touch('touchMove', [[170 - 5 * i, 500], [270 + 5 * i, 500]]); await page.waitForTimeout(16) }
-    /* mid-pinch: both are stretched pictures; the frozen copy's date cells must be drawn where the grid's are */
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', [[170 - 5 * i, 500], [270 + 5 * i, 500]]); await page.waitForTimeout(16) }
+    /* mid-pinch (the zoom 0.8 → ~1.4 when it lands, far enough for a wrong width estimate to show): both are stretched pictures; the frozen copy's date cells must be drawn where the grid's are */
     expect(await frozenOffColumns(page), 'mid-pinch, the frozen dates stand over the stretched columns').toEqual([])
     await touch('touchEnd', []); await page.waitForTimeout(600)
     await cdp.detach()
@@ -6292,6 +6294,31 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
       })
       expect(gap, 'zoomed in, no tall empty band under the month buttons (the floor is the desktop strip, 44 on the screen; 33 of empty band before the fix)').toBeLessThanOrEqual(16)
     }
+  })
+
+  test('a big pinch out where the grid opens, at the top of the page: the month buttons hold their size mid-pinch, and the day under the fingers does not move across from the stretched picture to a beat after the lift', async ({ page }) => {
+    /* where the grid opens. Measured against the PICTURE, not the fingers: at the year's start (this test world opens on
+       1 January) or the page's top the grid cannot scroll to keep the day under the fingers, and the picture is held
+       there too (`edges`) — what must never happen is a move after the lift (the walk's W3: the year slid 1,600 px) */
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const X = 260, Y = 640
+    const under = await page.evaluate(([x, y]) => [...document.querySelectorAll('#page-leavewar .mx-wrap [data-testid^="head-"]')].find(c => { const q = c.getBoundingClientRect(); return x >= q.left && x < q.right })?.getAttribute('data-testid') ?? null, [X, Y])
+    expect(under).toBeTruthy()
+    const mon = () => page.locator('[data-testid="month-MAR"]').boundingBox()
+    const m0 = (await mon())!
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    await touch('touchStart', [[X - 110, Y]]); await page.waitForTimeout(30)
+    await touch('touchStart', [[X - 110, Y], [X + 110, Y]]); await page.waitForTimeout(30)
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', [[X - 110 + 6 * i, Y], [X + 110 - 6 * i, Y]]); await page.waitForTimeout(16) }
+    const m1 = (await mon())!
+    expect(Math.abs(m1.width - m0.width), 'mid-pinch, the month buttons keep their size (D1282)').toBeLessThan(1.5)
+    const at = () => page.evaluate(id => { const q = document.querySelector(`[data-testid="${id}"]`)!.getBoundingClientRect(); return q.left + q.width / 2 }, under!)
+    const pic = await at()
+    await touch('touchEnd', []); await page.waitForTimeout(900)
+    await cdp.detach()
+    const x = await at()
+    expect(Math.abs(x - pic), `the day under the fingers (${under}) does not move across after the lift`).toBeLessThan(12)
   })
 
   test('turned sideways while zoomed, and back, the frozen dates stand over their columns', async ({ page }) => {

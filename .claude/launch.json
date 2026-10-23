@@ -833,6 +833,21 @@
         "--strictPort"
       ],
       "port": 4266
+    },
+    {
+      "name": "lw-pz-break",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--port",
+        "4280",
+        "--strictPort"
+      ],
+      "port": 4280
     }
   ]
 }
