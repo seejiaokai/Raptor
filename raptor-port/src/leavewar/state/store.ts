@@ -1494,7 +1494,7 @@ function lwRegisterCommands(): void {
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
   /* [ARCH-STACK] step 4 — the war gestures. The role gates live in the writers
      (canDecide / canEditRow), exactly as lw.edit's do. */
-  for (const t of ['lw.decide', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
+  for (const t of ['lw.decide', 'lw.placeApproved', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
   /* D352 narrowed by D1177: opening or closing dates is its own command so Undo can name it ("Undid: opening bidding
      1 Apr – 30 Apr"); its authority is perms.ts COMMAND_OPS (admin-only), as every war command's */
   cmdDefinePermission('lw.open', cmdAnyone)
@@ -3209,6 +3209,36 @@ function warEditable(personId: string, date: string): boolean {
  *  shown request is decided (approving turns it into an Input through the
  *  door), a shown war-approved leave is un-approved back into a request. One
  *  gesture, one envelope; a cell with nothing decidable is skipped. */
+/** "APPROVE WHAT I ENTER" (owner D1147, D1186, D1187; M3 5.5): an admin places leave and it is approved as it is placed —
+ *  ONE command, ONE Undo (`lw.placeApproved`). The write is the store's own (`writeMany` — every refusal stays the one
+ *  rule: closed days, posted out, occupied); then exactly the requests it left of that code on those days go through the
+ *  absence door's approve, as a Decide's Approve does. A day the approval refuses (a locked week, leave or a medical
+ *  already there) keeps its bid, pending, and is returned in `pending` for the window to name — never a whole failure. */
+export function placeApproved(cells: { personId: string; date: string }[], code: string): { written: number; skipped: number; approved: number; pending: Array<{ personId: string; date: string }> } {
+  const clean = code.trim().toUpperCase()
+  if (!canDecide(state.role) || !clean) return { written: 0, skipped: cells.length, approved: 0, pending: [] }
+  let written = 0, skipped = 0, approved = 0
+  const pending: Array<{ personId: string; date: string }> = []
+  gesture('lw.placeApproved', () => {
+    const w = writeMany(cells, clean)
+    written = w.written; skipped = w.skipped
+    const portion = portionOfCode(clean)
+    const toApprove: Array<{ personId: string; date: string; recId: string }> = []
+    for (const { personId, date } of cells) {
+      for (const r of liveRequestsOn(listAt(personId, date), portion)) {
+        if (r.code === clean && r.state === 'pending') toApprove.push({ personId, date, recId: r.id })
+      }
+    }
+    if (!toApprove.length) return
+    const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length }
+    approved = r.done
+    for (const a of toApprove) {
+      if (liveRequestsOn(listAt(a.personId, a.date), portion).some(x => x.id === a.recId)) pending.push({ personId: a.personId, date: a.date })
+    }
+  })
+  return { written, skipped, approved, pending }
+}
+
 export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number } {
   if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0 }
   /* `already` (the absence-record re-test, AB7, 26 Sep 26 — Fable F7, reproduced by W3): an Approve over a leave that

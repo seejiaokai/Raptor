@@ -425,6 +425,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.move': op(T.bid, 'U', 'optional'),
   'lw.ack': op(T.bid, 'U', 'optional'),
   'lw.decide': op(T.bid, 'U'),
+  /* an admin places leave and approves it in one step (D1147 — "Approve what I enter", M3 5.5): one command, one Undo */
+  'lw.placeApproved': op(T.bid, 'U'),
   'lw.approve': op(T.bid, 'U'),
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
