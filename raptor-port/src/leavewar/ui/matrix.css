@@ -9,6 +9,12 @@
    reason. Do not unwrap, and never fix a cross-page bleed by editing
    scheduler.css — add the explicit property here instead. */
 #page-leavewar {
+/* PINCH TO ZOOM ZOOMS THE GRID, NEVER THE PAGE (owner D1282, 23 Oct 26): the browser's own pinch and double-tap zoom
+   are held off on the whole Leave War page, so the frozen date row can never be thrown off its columns by a page zoom
+   again (his recording, 23 Oct 26). One finger still scrolls both ways. Two fingers are the grid's (Matrix.tsx, the
+   pinch's wiring), the same reason Quals and the Scheduler Board carry this. */
+touch-action: pan-x pan-y;
+
 /* The matrix — Raptor's chip-and-card idiom. The .card/.stage wrapper this
    table sits inside lives in chrome.css. */
 
@@ -1822,17 +1828,7 @@
 @media (hover: hover) {
   .rtbtn.gear:hover { border-color: var(--accent); }
 }
-/* The grid ZOOM pair, − and +, after OIL in the top row at both widths (owner,
-   6 Sep 26). Narrow so the phone row still holds one line: Manning · ⚙ · ⇅ ·
-   OIL · − · + measured within 360px. A disabled end of the range dims. */
-.card-hd .lwzoom { display: inline-flex; gap: 6px; }
-.rtbtn.zoom { min-width: 30px; padding: 5px 7px; font-size: 13px; line-height: 1; text-align: center; }
-.rtbtn.zoom:disabled { opacity: .4; cursor: default; }
-/* This one exists only to CANCEL `.rtbtn:hover` on a dead end of the range, so
-   it belongs behind the same gate — there is nothing to cancel without one. */
-@media (hover: hover) {
-  .rtbtn.zoom:disabled:hover { border-color: var(--edge-2); }
-}
+/* The grid's − / + zoom pair is gone: the grid is pinched (a desktop: Ctrl+scroll) — owner D1228, D1276, 23 Oct 26. */
 
 /* The on-grid REARRANGE BAR (3 Sep – 6 Sep 26: an accent strip under the header
    with "Rearranging — drag people…", Auto-sort and Done) is GONE (owner, 6 Sep
@@ -2367,6 +2363,10 @@
   transform: translateZ(0);
 }
 
+/* WHILE A PINCH STRETCHES THE GRID ([LW-PHONE-PINCH-ZOOM], Matrix.tsx): the frozen row's contents grow with it, so its
+   box clips only sideways — the screen's edges, as at rest — and lets them grow down over the rows under it, which the
+   row at its new size covers anyway once the fingers lift. Only while the fingers are down. */
+.mxfixed.lw-pinching { overflow-x: clip; overflow-y: visible; }
 .mxfixed-scroll {
   /* The frozen header FOLLOWS the grid and is never dragged itself (owner,
      20 Aug 26). It stays a real scroller (`overflow-x: auto`) because that is

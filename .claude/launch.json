@@ -801,6 +801,23 @@
       "port": 4265
     },
     {
+      "name": "lw-pz-walk",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-pz7",
+        "--port",
+        "4274",
+        "--strictPort"
+      ],
+      "port": 4274
+    },
+    {
       "name": "lw-m2-e2e",
       "runtimeExecutable": "npx",
       "runtimeArgs": [

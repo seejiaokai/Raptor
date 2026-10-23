@@ -124,4 +124,88 @@ describe('pinch to zoom', () => {
   it('scaleOf is 1 where nothing is laid out (jsdom)', () => {
     expect(scaleOf(document.createElement('div'))).toBe(1)
   })
+
+  /* The Leave War's pinch (owner D1282, 23 Oct 26 — [LW-PHONE-PINCH-ZOOM]) adds three things to the one body; the board and
+     Quals pass none of them, so they are unchanged. */
+  const pinchSliding = (el: Element) => {
+    fire(el, 'touchstart', [[100, 100]])
+    fire(el, 'touchstart', [[50, 100], [150, 100]])
+    fire(el, 'touchmove', [[25, 120], [175, 120]])   // 1.5 apart as much, and slid 20 down
+  }
+  it('a box stretched about the fingers on both axes moves as part of the one picture (the frozen names, the outline)', () => {
+    const over = document.createElement('div'); document.body.appendChild(over)
+    const t = setup({ alsoXY: () => [over, null] })
+    pinchSliding(t.surface)
+    expect(t.target.style.transform).toBe('translate(0px, 20px) scale(1.5)')
+    expect(over.style.transform).toBe('translate(0px, 20px) scale(1.5)')
+    fire(t.surface, 'touchend', [])
+    expect(over.style.transform).toBe('')
+    expect(over.style.transformOrigin).toBe('')
+    t.off(); over.remove()
+  })
+  it('a box held inside the zoomed thing is given the exact inverse of its stretch (the month buttons keep their size)', () => {
+    const t = setup()
+    t.off()
+    const held = document.createElement('div'); t.target.appendChild(held)
+    const outside = document.createElement('div'); document.body.appendChild(outside)
+    const off = wirePinch({ surface: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply: () => {}, keep: () => [held, outside] })
+    pinchSliding(t.surface)
+    // the target: translate(0, 20) scale(1.5); the held box: translate(0, −20 / 1.5) scale(1 / 1.5) — together nothing
+    expect(held.style.transform).toBe(`translate(0px, ${-20 / 1.5}px) scale(${1 / 1.5})`)
+    expect(outside.style.transform).toBe('')   // a box not inside the target is never held
+    fire(t.surface, 'touchend', [])
+    expect(held.style.transform).toBe('')
+    off(); outside.remove()
+  })
+  describe('Ctrl+scroll (a desktop, D1228)', () => {
+    const wheel = (el: Element, deltaY: number, ctrlKey = true) => {
+      const e = new WheelEvent('wheel', { deltaY, ctrlKey, bubbles: true, cancelable: true, clientX: 100, clientY: 100 })
+      el.dispatchEvent(e)
+      return e
+    }
+    it('stretches the zoomed thing as the notches come, and lays the zoom out once they stop', () => {
+      vi.useFakeTimers()
+      const t = setup({ wheel: undefined })
+      t.off()
+      const apply = vi.fn()
+      const off = wirePinch({ surface: t.surface, wheel: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply })
+      expect(wheel(t.surface, -100).defaultPrevented).toBe(true)   // the page's own zoom never runs
+      wheel(t.surface, -100)
+      expect(t.target.style.transform).toMatch(/scale\(1\.49/)       // two notches in: e^0.4
+      expect(apply).not.toHaveBeenCalled()
+      vi.advanceTimersByTime(250)
+      expect(apply).toHaveBeenCalledTimes(1)
+      expect(apply.mock.calls[0]![0]).toBeCloseTo(Math.exp(0.4), 5)
+      expect(t.target.style.transform).toBe('')
+      off(); vi.useRealTimers()
+    })
+    it('keeps to the same limits as a pinch', () => {
+      vi.useFakeTimers()
+      const t = setup(); t.off()
+      const apply = vi.fn()
+      const off = wirePinch({ surface: t.surface, wheel: t.surface, target: () => t.target, get: () => 1, min: () => 0.4, max: 1.4, apply })
+      wheel(t.surface, -5000); vi.advanceTimersByTime(250)
+      expect(apply.mock.calls[0]![0]).toBe(1.4)
+      wheel(t.surface, 5000); vi.advanceTimersByTime(250)
+      expect(apply.mock.calls[1]![0]).toBe(0.4)
+      off(); vi.useRealTimers()
+    })
+    it('a plain scroll, without Ctrl, is the page\'s own and is left alone; and nothing where no wheel surface is given', () => {
+      const t = setup(); t.off()
+      const apply = vi.fn()
+      const off = wirePinch({ surface: t.surface, wheel: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply })
+      expect(wheel(t.surface, -100, false).defaultPrevented).toBe(false)
+      expect(t.target.style.transform).toBe('')
+      off()
+      const off2 = wirePinch({ surface: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply })
+      expect(wheel(t.surface, -100).defaultPrevented).toBe(false)   // the board and Quals: no Ctrl+scroll of theirs
+      off2()
+    })
+    it('not where the caller says no pinch may start', () => {
+      const t = setup(); t.off()
+      const off = wirePinch({ surface: t.surface, wheel: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply: () => {}, canStart: () => false })
+      expect(wheel(t.surface, -100).defaultPrevented).toBe(false)
+      off()
+    })
+  })
 })

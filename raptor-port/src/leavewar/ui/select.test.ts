@@ -601,18 +601,73 @@ describe('wireSelect ignores pointers that are not the gesture\'s own', () => {
     return ev.defaultPrevented
   }
 
-  it('a second finger landing and lifting mid-drag neither disarms nor commits', () => {
+  /* WAS "a second finger landing and lifting mid-drag neither disarms nor commits". CHANGED by the overhaul's fix A7a
+     (22 Oct 26, the build plan D1250 approved) and his D1282 (23 Oct 26 — "a pinch never arms a selection or opens a
+     day"): a second finger is a pinch, so it lets go of a hold that is arming or armed, selecting nothing; and no
+     finger of that pinch starts a hold of its own until they have all lifted. */
+  it('a second finger landing lets go of an ARMED drag: nothing commits, and neither finger starts a new hold (A7a)', () => {
     cell.dispatchEvent(new PointerEvent('pointerdown',
       { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
     vi.advanceTimersByTime(200)              // hold → armed
     expect(touchmovePrevented()).toBe(true)
     cell.dispatchEvent(new PointerEvent('pointerdown',
       { bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 60, clientY: 40, button: 0 }))
+    expect(touchmovePrevented()).toBe(false) // let go: the page scrolls again, the pinch has the fingers
+    vi.advanceTimersByTime(400)              // the second finger held: it arms nothing
+    expect(touchmovePrevented()).toBe(false)
     window.dispatchEvent(new PointerEvent('pointerup',
       { bubbles: true, pointerId: 2, pointerType: 'touch', button: 0 }))
-    expect(touchmovePrevented()).toBe(true)  // the drag is still live
-    expect(selections).toHaveLength(0)       // and nothing committed
-    // the OWNING finger's lift commits exactly once
+    window.dispatchEvent(new PointerEvent('pointerup',
+      { bubbles: true, pointerId: 1, pointerType: 'touch', button: 0 }))
+    expect(selections).toHaveLength(0)
+    // once every finger is up, a fresh hold works as before
+    cell.dispatchEvent(new PointerEvent('pointerdown',
+      { bubbles: true, pointerId: 3, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(200)
+    expect(touchmovePrevented()).toBe(true)
+    window.dispatchEvent(new PointerEvent('pointerup',
+      { bubbles: true, pointerId: 3, pointerType: 'touch', button: 0 }))
+    expect(selections).toHaveLength(1)
+  })
+
+  it('a second finger landing ANYWHERE while the first is still holding (not yet armed) means it never arms (A7a)', () => {
+    cell.dispatchEvent(new PointerEvent('pointerdown',
+      { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(60)               // still holding, under the 180 ms
+    document.body.dispatchEvent(new PointerEvent('pointerdown',   // off the grid: the bar above it, say
+      { bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 200, clientY: 10, button: 0 }))
+    vi.advanceTimersByTime(300)
+    expect(touchmovePrevented()).toBe(false) // never armed
+    window.dispatchEvent(new PointerEvent('pointerup',
+      { bubbles: true, pointerId: 1, pointerType: 'touch', button: 0 }))
+    expect(selections).toHaveLength(0)
+  })
+
+  it('a pinch whose FIRST finger lands off the grid (on a name, the bar) never starts the grid\'s hold with its second (the walk, 23 Oct 26)', () => {
+    document.body.dispatchEvent(new PointerEvent('pointerdown',   // the first finger: not a day — no hold of this grid's
+      { bubbles: true, pointerId: 11, pointerType: 'touch', clientX: 20, clientY: 5, button: 0 }))
+    cell.dispatchEvent(new PointerEvent('pointerdown',            // the second lands on a day
+      { bubbles: true, pointerId: 12, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(400)
+    expect(touchmovePrevented()).toBe(false) // it never armed
+    window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 12, pointerType: 'touch', button: 0 }))
+    window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 11, pointerType: 'touch', button: 0 }))
+    expect(selections).toHaveLength(0)
+    // every finger up: a hold works again
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 13, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(200)
+    expect(touchmovePrevented()).toBe(true)
+    window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 13, pointerType: 'touch', button: 0 }))
+    expect(selections).toHaveLength(1)
+  })
+
+  it('a mouse is never a second finger: a click elsewhere mid-hold leaves a finger\'s hold alone', () => {
+    cell.dispatchEvent(new PointerEvent('pointerdown',
+      { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    document.body.dispatchEvent(new PointerEvent('pointerdown',
+      { bubbles: true, pointerId: 9, pointerType: 'mouse', clientX: 200, clientY: 10, button: 0 }))
+    vi.advanceTimersByTime(200)
+    expect(touchmovePrevented()).toBe(true)
     window.dispatchEvent(new PointerEvent('pointerup',
       { bubbles: true, pointerId: 1, pointerType: 'touch', button: 0 }))
     expect(selections).toHaveLength(1)

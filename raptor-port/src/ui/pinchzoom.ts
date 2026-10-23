@@ -24,6 +24,12 @@
 
 export const PINCH_MAX = 2
 
+/** How much one pixel of Ctrl+scroll (or a trackpad pinch, which a desktop browser sends as a Ctrl+scroll) zooms: a
+ *  mouse wheel's notch of 100 is about a fifth, as a browser's own page zoom steps. */
+export const WHEEL_RATE = 0.002
+/** A Ctrl+scroll burst ends, and its zoom is laid out, once no notch has come for this long. */
+export const WHEEL_IDLE_MS = 180
+
 /** How many screen pixels one of `el`'s own pixels is drawn as (1 outside any zoom). */
 export function scaleOf(el: Element): number {
   const h = el as HTMLElement
@@ -87,12 +93,39 @@ export type PinchOpts = {
   /** other boxes drawn over the zoomed thing that must stretch with it while the fingers move — Quals' pinned heading
    *  row (unzoomed boxes, stretched about the same screen point, from their own top) */
   also?: () => (HTMLElement | null)[]
+  /** other boxes drawn over the zoomed thing that stretch with it about the fingers on BOTH axes — the Leave War's frozen
+   *  names copy, its open-dates outline and its figures drawer (unzoomed boxes; each follows the grid as one picture) */
+  alsoXY?: () => (HTMLElement | null)[]
+  /** boxes INSIDE the zoomed thing, in its own units, held at their size and place while the fingers move — the Leave
+   *  War's month buttons, which the grid's zoom never changes (D1282) */
+  keep?: () => (HTMLElement | null)[]
+  /** where Ctrl+scroll (a desktop's trackpad pinch included) zooms the same way, the stretch laid out once the burst
+   *  ends (D1228) — none where it is not given */
+  wheel?: HTMLElement
+  /** the picture never goes where the lift's scroll cannot follow: zoomed out with the page at its top (or the scroller at
+   *  its start), the zoomed thing's top and left edges stay where they are, rather than floating down and right under
+   *  the fingers and jumping back at the lift — the Leave War's grid, which sits near the top of a phone's page */
+  edges?: boolean
+  /** which drawn things carry the spot under the fingers through the relayout at the lift — one across, one down —
+   *  where the element under the fingers would not (the Leave War: a group's heading pins itself to the left, so the
+   *  day column and the row under the fingers are used instead). Without it, the element under the fingers does both. */
+  anchor?: (x: number, y: number) => { x: Element | null; y: Element | null } | null
 }
 
 type Live = {
   z0: number; d0: number; sx: number; sy: number; cx: number; cy: number; k: number
-  anchor: Element | null; fx: number; fy: number; ox: number; oy: number
+  anchor: Element | null; anchorY: Element | null; fx: number; fy: number; ox: number; oy: number
   spacer: HTMLElement | null; also: { el: HTMLElement; ox: number }[]
+  xy: { el: HTMLElement; ox: number; oy: number; s: number }[]
+  keep: { el: HTMLElement; cx: number; cy: number }[]
+  /** a Ctrl+scroll burst, not two fingers */
+  wheel: boolean
+  /** with `edges`: the target's top-left on screen at the start, and how far the scrollers around it can still carry the
+   *  content down and right at the lift (screen pixels) */
+  edge: { top: number; left: number; roomX: number; roomY: number; keepH: number; bottom: number; minBottom: number; right: number; minRight: number } | null
+  /** the smallest zoom, read ONCE as the pinch begins: read again while the picture is stretched, a floor measured off the
+   *  drawn grid would measure the stretch (every box is drawn scaled), and creep as the fingers move */
+  lo: number
 }
 
 /** Wire a pinch on `opts.surface`. Returns the clean-up. */
@@ -108,12 +141,43 @@ export function wirePinch(opts: PinchOpts): () => void {
   const stretch = () => {
     const t = opts.target(); if (!t || !live) return
     const s = live.z0   // the transform's lengths are the box's own pixels, drawn at its zoom
-    /* the spot first under the fingers, scaled about itself and carried to where the fingers are now */
+    /* the spot first under the fingers, scaled about itself and carried to where the fingers are now (screen pixels) */
+    let dx = live.cx - live.sx, dy = live.cy - live.sy
+    /* …but no further down or right than the lift's scroll can bring it back (`edges`): the picture's top-left is
+       S + k(R − S) + d for the start point S, its old corner R and the carry d */
+    const e = live.edge
+    if (e) {
+      /* zoomed out near the page's foot (or the year's end), the lift's scroll cannot go past the end: the picture's bottom
+         and right edges stay no higher and no further left than the page and the scroller will let them settle — then
+         the top and left, which win where the two meet (a grid smaller than the screen sits at its top) */
+      const under = e.minBottom - (live.sy + live.k * (e.bottom - live.sy) + dy)
+      if (under > 0) dy += under
+      const underX = e.minRight - (live.sx + live.k * (e.right - live.sx) + dx)
+      if (underX > 0) dx += underX
+      const over = live.sy + live.k * (e.top - live.sy) + dy - (e.top + e.roomY)
+      /* held at its top, what lies below a held box (the month buttons, which keep their size) settles that box's lost
+         height lower than a pure stretch would put it: drawn there now, so it does not drop at the lift */
+      if (over > 0) dy -= over - e.keepH * (1 - live.k)
+      const overX = live.sx + live.k * (e.left - live.sx) + dx - (e.left + e.roomX)
+      if (overX > 0) dx -= overX
+    }
     t.style.transformOrigin = `${live.ox}px ${live.oy}px`
-    t.style.transform = `translate(${(live.cx - live.sx) / s}px, ${(live.cy - live.sy) / s}px) scale(${live.k})`
+    t.style.transform = `translate(${dx / s}px, ${dy / s}px) scale(${live.k})`
     for (const a of live.also) {
       a.el.style.transformOrigin = `${a.ox}px 0px`
-      a.el.style.transform = `translateX(${live.cx - live.sx}px) scale(${live.k})`
+      a.el.style.transform = `translateX(${dx}px) scale(${live.k})`
+    }
+    /* a box beside the zoomed thing that moves as part of the same picture: scaled about the same screen point and
+       carried the same way (in its own units: a box inside a zoom divides by its scale, as the target does) */
+    for (const a of live.xy) {
+      a.el.style.transformOrigin = `${a.ox}px ${a.oy}px`
+      a.el.style.transform = `translate(${dx / a.s}px, ${dy / a.s}px) scale(${live.k})`
+    }
+    /* a box inside the zoomed thing held as it is: the exact inverse of the target's stretch, about the same point given
+       in the box's own place — the target's translate d and scale k undone by translate(-d/k) scale(1/k) */
+    for (const c of live.keep) {
+      c.el.style.transformOrigin = `${live.ox - c.cx}px ${live.oy - c.cy}px`
+      c.el.style.transform = `translate(${-dx / s / live.k}px, ${-dy / s / live.k}px) scale(${1 / live.k})`
     }
   }
   /* THE SIDEWAYS SCROLL HELD STILL WHILE THE PICTURE SHRINKS (the code read's finding 4, 21 Oct 26): a transform counts in
@@ -137,46 +201,82 @@ export function wirePinch(opts: PinchOpts): () => void {
     const t = opts.target()
     if (t) { t.style.transform = ''; t.style.transformOrigin = ''; t.style.willChange = '' }
     for (const a of l.also) { a.el.style.transform = ''; a.el.style.transformOrigin = '' }
+    for (const a of l.xy) { a.el.style.transform = ''; a.el.style.transformOrigin = '' }
+    for (const c of l.keep) { c.el.style.transform = ''; c.el.style.transformOrigin = '' }
     l.spacer?.remove()
+    if (wheelTimer) { clearTimeout(wheelTimer); wheelTimer = null }
     document.removeEventListener('touchend', end, true)
     document.removeEventListener('touchcancel', cancel, true)
     opts.onEnd?.()
   }
-  const start = (e: TouchEvent) => {
-    if (e.touches.length !== 2 || live) return
-    if (!may()) return
-    const t = opts.target(); if (!t) return
+  /* the pinch begins about the screen point (x, y), two fingers d apart (a Ctrl+scroll: 1, its zoom read from the notches) */
+  const begin = (p: { x: number; y: number; d: number }, wheel: boolean): boolean => {
+    const t = opts.target(); if (!t) return false
+    const lo = opts.min()   // before anything is stretched (Live.lo)
     opts.onStart?.()
-    const p = two(e)
     const z0 = opts.get()
     const r = t.getBoundingClientRect()
     /* the spot under the fingers, remembered as a place inside the element drawn there — the element survives the
        relayout at the lift and still says where that spot went, whatever scrolled in between */
-    let anchor: Element | null = null, fx = 0.5, fy = 0.5
+    let fx = 0.5, fy = 0.5
     const hit = typeof document.elementFromPoint === 'function' ? document.elementFromPoint(p.x, p.y) : null
-    if (hit && t.contains(hit)) {
-      anchor = hit
-      const q = hit.getBoundingClientRect()
-      fx = q.width ? (p.x - q.left) / q.width : 0.5
-      fy = q.height ? (p.y - q.top) / q.height : 0.5
-    }
+    const picked = opts.anchor ? opts.anchor(p.x, p.y) : null
+    const anchor: Element | null = picked ? picked.x : hit && t.contains(hit) ? hit : null
+    const anchorY: Element | null = picked ? picked.y : anchor
+    if (anchor) { const q = anchor.getBoundingClientRect(); fx = q.width ? (p.x - q.left) / q.width : 0.5 }
+    if (anchorY) { const q = anchorY.getBoundingClientRect(); fy = q.height ? (p.y - q.top) / q.height : 0.5 }
     const also = (opts.also ? opts.also() : []).filter((x): x is HTMLElement => !!x).map(el => ({ el, ox: p.x - el.getBoundingClientRect().left }))
-    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also }
+    const xy = (opts.alsoXY ? opts.alsoXY() : []).filter((x): x is HTMLElement => !!x).map(el => {
+      const q = el.getBoundingClientRect(), s = scaleOf(el)
+      return { el, ox: (p.x - q.left) / s, oy: (p.y - q.top) / s, s }
+    })
+    /* where each held box sits inside the target, in the target's own units */
+    const keep = (opts.keep ? opts.keep() : []).filter((x): x is HTMLElement => !!x && t.contains(x)).map(el => {
+      const q = el.getBoundingClientRect()
+      return { el, cx: (q.left - r.left) / z0, cy: (q.top - r.top) / z0 }
+    })
+    let edge: Live['edge'] = null
+    if (opts.edges) {
+      let roomX = 0, roomY = window.scrollY || 0, minRight = -Infinity
+      for (let n = t.parentElement; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+        const cs = getComputedStyle(n)
+        if (cs.overflowX === 'auto' || cs.overflowX === 'scroll') {
+          roomX += n.scrollLeft * scaleOf(n)
+          /* the nearest sideways scroller: a target wider than it settles with its right edge no left of the scroller's */
+          if (minRight === -Infinity && n.scrollWidth > n.clientWidth) minRight = n.getBoundingClientRect().left + n.clientLeft + n.clientWidth * scaleOf(n)
+        }
+        if (cs.overflowY === 'auto' || cs.overflowY === 'scroll') roomY += n.scrollTop * scaleOf(n)
+      }
+      /* the page: whatever lies below the target keeps its height, so the target's bottom settles no higher than the
+         screen's foot less that — when the page is taller than the screen at all */
+      const se = document.scrollingElement || document.documentElement
+      const below = se.scrollHeight - (window.scrollY || 0) - r.bottom
+      const minBottom = se.scrollHeight > window.innerHeight ? window.innerHeight - below : -Infinity
+      const keepH = keep.reduce((a, c) => { const q = c.el.getBoundingClientRect(); return q.bottom <= p.y ? a + q.height : a }, 0)
+      edge = { top: r.top, left: r.left, roomX, roomY, keepH, bottom: r.bottom, minBottom, right: r.right, minRight }
+    }
+    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, anchorY, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also, xy, keep, wheel, edge, lo }
     t.style.willChange = 'transform'
     /* a finger that landed off the surface lifts off it too: its touchend goes there, so the pinch listens on the page
        until it ends (the code read's finding 6) */
     document.addEventListener('touchend', end, true)
     document.addEventListener('touchcancel', cancel, true)
+    return true
+  }
+  const start = (e: TouchEvent) => {
+    if (e.touches.length !== 2 || live) return
+    if (!may()) return
+    if (!begin(two(e), false)) return
     if (e.cancelable) e.preventDefault()
   }
   const move = (e: TouchEvent) => {
     /* the second finger landed off the surface (the page's margin beside Quals' table, say): its touchstart went there, so
        the pinch starts on the first move of the two instead */
     if (!live && e.touches.length === 2) start(e)
-    if (live && e.touches.length >= 2) {
+    if (live && !live.wheel && e.touches.length >= 2) {
       if (e.cancelable) e.preventDefault()
       const p = two(e)
-      const z = clamp(live.z0 * (p.d / live.d0), opts.min(), max)
+      const z = clamp(live.z0 * (p.d / live.d0), live.lo, max)
       live.k = z / live.z0
       live.cx = p.x; live.cy = p.y
       stretch()
@@ -192,21 +292,42 @@ export function wirePinch(opts: PinchOpts): () => void {
     if (!l) return
     unstretch(l)
     if (!opts.target()) return
-    const z1 = clamp(l.z0 * l.k, opts.min(), max)
+    const z1 = clamp(l.z0 * l.k, l.lo, max)
     if (Math.abs(z1 - l.z0) >= 0.001) opts.apply(z1)
     /* bring the remembered spot back under where the fingers lifted — at a limit too, where the zoom did not change but
        the fingers carried the picture (the code read's finding 5) */
     if (l.anchor && l.anchor.isConnected) {
       const q = l.anchor.getBoundingClientRect()
       scrollChain(l.anchor, 'x', q.left + l.fx * q.width - l.cx)
-      const q2 = l.anchor.getBoundingClientRect()
-      scrollChain(l.anchor, 'y', q2.top + l.fy * q2.height - l.cy)
+    }
+    if (l.anchorY && l.anchorY.isConnected) {
+      const q2 = l.anchorY.getBoundingClientRect()
+      scrollChain(l.anchorY, 'y', q2.top + l.fy * q2.height - l.cy)
     }
   }
   function end(e: TouchEvent) {
-    if (live && e.touches.length < 2) finish()
+    if (live && !live.wheel && e.touches.length < 2) finish()
   }
-  function cancel() { if (live) finish() }
+  function cancel() { if (live && !live.wheel) finish() }
+  /* CTRL+SCROLL, a desktop's zoom over the zoomed thing (D1228): the same stretch about the pointer, each notch
+     multiplying it, laid out once the notches stop. Without Ctrl it is an ordinary scroll, left alone. */
+  let wheelTimer: ReturnType<typeof setTimeout> | null = null
+  const onWheel = (e: WheelEvent) => {
+    if (!e.ctrlKey) return
+    if (live && !live.wheel) { e.preventDefault(); return }   // two fingers already own it
+    if (!live) {
+      if (!may()) return
+      if (!begin({ x: e.clientX, y: e.clientY, d: 1 }, true)) return
+    }
+    e.preventDefault()
+    const l = live!
+    const px = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1
+    const z = clamp(l.z0 * l.k * Math.exp(-e.deltaY * px * WHEEL_RATE), l.lo, max)
+    l.k = z / l.z0
+    stretch()
+    if (wheelTimer) clearTimeout(wheelTimer)
+    wheelTimer = setTimeout(() => { wheelTimer = null; if (live && live.wheel) finish() }, WHEEL_IDLE_MS)
+  }
   /* iPhone: Safari's own pinch rides gesture events as well as touches — held off where the pinch is this page's */
   const gesture = (e: Event) => { if (may() || (opts.blockTwo && opts.blockTwo())) e.preventDefault() }
 
@@ -217,7 +338,9 @@ export function wirePinch(opts: PinchOpts): () => void {
   s.addEventListener('touchcancel', cancel)
   s.addEventListener('gesturestart', gesture as any)
   s.addEventListener('gesturechange', gesture as any)
+  opts.wheel?.addEventListener('wheel', onWheel, { passive: false })
   return () => {
+    opts.wheel?.removeEventListener('wheel', onWheel)
     if (live) { unstretch(live); live = null }
     s.removeEventListener('touchstart', start)
     s.removeEventListener('touchmove', move)
