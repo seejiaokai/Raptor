@@ -140,6 +140,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
 - [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them. The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"); its three low leftovers stay open.
+- [BOARD-ESCAPE-CLOSE] — Escape does not close the Scheduler Board, though the design guide says Escape closes what opened last (found by the walk of 24 Oct 26; older).
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
@@ -1982,6 +1983,9 @@ A published Tuesday; a man seated on a new line and a leave filed for him afterw
 not reproduced or explained by the host; nothing about a warning. **To do:** find which count the look's head prints and
 whether a pending chip belongs on a look at an issued version at all. **Place:** low — with the next change to the
 changes window or the version look.
+
+### [BOARD-ESCAPE-CLOSE] Escape does not close the Scheduler Board (found 24 Oct 26 by the walk of the windows-and-Escape batch; older)
+**Seen (the built app, 1440, walker A's B1):** with no window over it, Escape on the Scheduler Board does nothing; only ✓ Done closes it (D349 — "✓ Done only"). A comment in `raptor-port/src/ui/SchedBoard.tsx` said Escape and a tap on the scrim still closed it; it was corrected the same day. The design guide §2 (D812): Escape closes what opened last — the board is what opened last when no window is over it. **To do:** Escape closes the board as ✓ Done does, but only with the keyboard nowhere or on a button of the board — Escape in one of the board's own boxes still puts the old time or words back first (D1011), and a window over the board still answers first (`ui/sheetfocus.ts useEscClose`). **Place:** with the next keyboard batch, a test first.
 
 ### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
 The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the

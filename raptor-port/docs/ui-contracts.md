@@ -625,7 +625,9 @@ give it back when they close (`sheetfocus.ts`) — and since 24 Oct 26 so do the
 window opened from the schedule, Week insights, the document viewer and the four template and plan windows (Duty templates, Day
 templates, Flying waves, Plans); those last four and Insights close on Escape, heard before the Scheduler Board's own Escape and
 only while the window is the topmost sheet, and a window opened from a menu item gives the keyboard back to the menu's button
-(`useEscClose`, `noteOpener` — [BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS]). **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
+(`useEscClose`, `noteOpener` — [BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS]); a request's window leaves Escape to a sheet of
+another's over it (the document viewer) — one Escape closes the front one only (`topSheet`). The Scheduler Board itself does not
+close on Escape — only ✓ Done (D349); filed [BOARD-ESCAPE-CLOSE]. **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
 stored words too): a box whose stored words hold a doubled space is not written by a click or a Tab through it.
 **After a day's last box with no button below it** the caret stays in that box (D597 — the paragraph above; it ended on
 nothing until 6 Oct 26, the stack check's W14).

@@ -644,7 +644,8 @@ export function SchedBoard() {
               wave is created now, and it is reachable on desktop too. */}
           <button className="abtn primary" id="sbDone" onClick={() => closeScheduler()}><span className="bi">✓</span><span className="bl"> Done</span></button>
           {/* ✕ CLOSE IS GONE (owner D349, 28 Sep 26 — "What does tick or close do? is it the same function?"; told yes,
-              he approved "✓ Done only"): ✓ Done is the one way out. Escape and a tap on the scrim still close the board. */}
+              he approved "✓ Done only"): ✓ Done is the one way out. (Escape does NOT close the board — found by the walk of
+              24 Oct 26; this line used to say it did. Filed: OUTSTANDING.md [BOARD-ESCAPE-CLOSE].) */}
         </div>
         {/* THE HIGHLIGHT CHIPS STRIP (owner, 23 Aug 26) — the same HlChips the
             two week pages render, so a chip lit here is lit there. Rendered
