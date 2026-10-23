@@ -67,6 +67,8 @@ function moveReason(r: Exclude<MoveResult, 'moved'>): string {
     case 'occupied': return `That lands on ${r.at ? shortDate(r.at) : 'a day'} which is already booked — pick another day.`
     case 'raptor': return 'One of those is filed on the Inputs page and cannot be moved here.'
     case 'window': return 'That lands outside what you can edit — pick another day.'
+    /* a member's landing on a day closed for him (M3 §4 (4) — the agent's words, shown at his look, his to change) */
+    case 'closed': return 'That day is closed for bidding. Pick an open day.'
     default: return 'Nothing to move.'
   }
 }
@@ -210,8 +212,9 @@ export function Matrix() {
       else if (k === 'nolv') m.set(d.date, 'evnolv')
     }
     return m
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version])
+    /* keyed on what it reads — the period and the event types — never on every store change: a bid leaves both the same
+       objects, and a new Map each write made every month of every row draw again ([LW-MONTH-MEMO-UNPINNED], M3 §4) */
+  }, [period, eventDefs])
 
   // Which cell is open, not which sheet is open: what the sheet OFFERS is
   // derived from the stage and the role, so a period that moves on — or a
@@ -1018,13 +1021,13 @@ export function Matrix() {
     const from = months[colWin.lo]!.first.slice(0, 7), to = months[colWin.hi]!.first.slice(0, 7)
     return period.days.filter(d => { const k = d.date.slice(0, 7); return k >= from && k <= to })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colWin?.lo, colWin?.hi, version])
+  }, [colWin?.lo, colWin?.hi, period])   // the period, not every store change ([LW-MONTH-MEMO-UNPINNED])
   const drawnDates = useMemo(() => drawnDays.map(d => d.date), [drawnDays])
   // The drawn days SLICED BY MONTH, each slice keeping its identity for as long
   // as the war's days do (the cache lives with `version`, like drawnDays):
   // PersonMonth is memoised on the slice, so a window step re-renders only the
   // month it adds and every other month's cells bail out at the memo.
-  const monthDaysCache = useMemo(() => new Map<string, DayInfo[]>(), [version])
+  const monthDaysCache = useMemo(() => new Map<string, DayInfo[]>(), [period])   // lives with the war's days ([LW-MONTH-MEMO-UNPINNED])
   const drawnMonthDays = useMemo(() => {
     const keys: string[] = []
     for (const d of drawnDays) { const k = d.date.slice(0, 7); if (keys[keys.length - 1] !== k) keys.push(k) }
@@ -3508,8 +3511,10 @@ export function Matrix() {
       if (!on) out.add(d.date)
     }
     return out
+    /* keyed on what it reads — the period (its open dates), the role and today (D1266: a new day replaces it) — never on
+       every store change ([LW-MONTH-MEMO-UNPINNED], M3 §4) */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, role])
+  }, [period, role, memberToday()])
   const lockedDate = (date: string): boolean => lockedCols.has(date)
 
   // Feed the drag-select controller live state. A member drags on his own row at any time since the stages went

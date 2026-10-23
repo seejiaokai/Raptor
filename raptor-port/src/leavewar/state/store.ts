@@ -4880,7 +4880,9 @@ export function stayingIn(
   return out
 }
 
-export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window'; at?: string }
+/* 'closed' (M3 §4 (4) — M1's code read): a landing day in the war but closed for this person — his own words, apart from a
+   landing outside the war's dates ('window') */
+export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window' | 'closed'; at?: string }
 
 /** The validation half of `moveRecords`, held apart so the grid's landing preview asks the SAME rule the commit
  *  applies. Null when clear. Each record is asked again here (the store's own gate, not the caller's word). */
@@ -4905,7 +4907,7 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
   for (const r of reqs) {
     const to = addDays(r.date, dayDelta)
     if (!held(to)) return { reason: 'window', at: to }
-    if (!dayWritable(to)) return { reason: 'window', at: to }
+    if (!dayWritable(to)) return { reason: 'closed', at: to }
     const landing = listAt(r.personId, to).filter(x => !moving.has(x as RequestRec))
     const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
     /* the selection's own approved leave sliding away frees its landing too — THAT DAY of it only (the final reads, Fable 1

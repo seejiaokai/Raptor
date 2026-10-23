@@ -19,7 +19,7 @@ import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, cle
 import { DocField } from '../sync'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
-import { dayLabel, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
+import { dayLabel, enteredDay, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
 import { halfWord } from './awardwords'
 import { HalfPick } from './CreditForm'
 import './bidpicker.css'
@@ -301,7 +301,7 @@ export function DayListSheet({
             {award && rec.enteredName && (
               <div className="bidsheet-row">
                 <span className="lab">Entered by</span>
-                <span className="note" data-testid={`oil-detail-entered-${rec.id}`}>{rec.enteredName}{rec.enteredAt ? ` · ${shortDate(rec.enteredAt.slice(0, 10))}` : ''}</span>
+                <span className="note" data-testid={`oil-detail-entered-${rec.id}`}>{rec.enteredName}{enteredDay(rec.enteredAt) ? ` · ${enteredDay(rec.enteredAt)}` : ''}</span>
               </div>
             )}
             {editing_ && (

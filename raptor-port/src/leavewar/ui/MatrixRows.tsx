@@ -360,6 +360,29 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
 
 // One month of a person's day cells. `version` is a memo input only: every
 // store change still repaints every cell through it, exactly as the row did.
+/* A MONTH DRAWS AGAIN ONLY WHEN ITS OWN PERSON'S DAYS CHANGE ([LW-MONTH-MEMO-UNPINNED], M3 §4 — measured: one bid placed
+   redrew every month of every drawn row, 5,840 month-draws for 16 rows, because the whole war's grid, states and views
+   are handed down fresh on every write). A write leaves every other person's slice the same object (the store's lists
+   are rebuilt per person — checked), so the month compares THIS person's three slices and the rest by identity; the
+   store's `version` is not compared — everything a month draws arrives in these props (the closed days through
+   `lockedCols` and `period`, which a new day or new open dates replace). Pinned: matrix-rows-memo.test.tsx. */
+function sameMonth(a: PersonMonthProps, b: PersonMonthProps): boolean {
+  const id = a.p.id
+  return a.p === b.p && a.period === b.period && a.days === b.days && a.role === b.role && a.viewer === b.viewer &&
+    a.deciding === b.deciding && a.movedShown === b.movedShown && a.evKind === b.evKind && a.lockedCols === b.lockedCols &&
+    a.api === b.api && sameDays(a, b, id)
+}
+/* …and where his slice did change (a bid of his), only the days of THIS month are asked — a cell reads its own day and
+   nothing of its neighbours (checked: no day of a month reads another day's record), so a bid redraws its own month alone */
+function sameDays(a: PersonMonthProps, b: PersonMonthProps, id: string): boolean {
+  const ag = a.grid[id], bg = b.grid[id], as = a.states[id], bs = b.states[id], av = a.views[id], bv = b.views[id]
+  if (ag === bg && as === bs && av === bv) return true
+  /* a day's view the merge rebuilt with the same content (it rebuilds every dated record of his on a write — measured) is
+     the same day: compared by content, only where the object changed */
+  const same = (x: unknown, y: unknown) => x === y || (x != null && y != null && JSON.stringify(x) === JSON.stringify(y))
+  for (const d of a.days) if (!same(ag?.[d.date], bg?.[d.date]) || !same(as?.[d.date], bs?.[d.date]) || !same(av?.[d.date], bv?.[d.date])) return false
+  return true
+}
 export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, views, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
   return (
     <>
@@ -562,4 +585,4 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
       })}
     </>
   )
-})
+}, sameMonth)

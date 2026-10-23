@@ -22,7 +22,7 @@ vi.mock('./FigureCell', async orig => {
   return { ...real, FigureCell: (p: any) => { if (String(p.testid || '').startsWith('bal-')) count.row++; return createElement(real.FigureCell, p) } }
 })
 
-import { initStore, setRole } from '../state/store'
+import { initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
@@ -58,5 +58,18 @@ describe('[LW-ROWS-SPLIT] opening an unrelated sheet repaints no row and no mont
     expect(count.row, 'no row ran again').toBe(0)
     expect(count.month, 'no month ran again').toBe(0)
     act(() => { closeDayPanel() })
+  })
+})
+
+/* [LW-MONTH-MEMO-UNPINNED] (M3 §4): one cell written redraws only the month that holds it — not every month of every
+   drawn row (5,840 month-draws for 16 rows when this was filed). A month's memo lost fails this. */
+describe('[LW-MONTH-MEMO-UNPINNED] one bid redraws only its own month', () => {
+  it('a bid written on one day draws again no month but its own row’s', () => {
+    render(<Matrix />)
+    count.month = 0; count.row = 0
+    act(() => { setCell('ramp', '2026-02-11', 'LL') })
+    /* the counter counts DAY cells drawn (lastDayIn runs once a cell): February's 28 alone — it was 5,840, every day of
+       every drawn row */
+    expect(count.month, 'only the month holding the bid drew again').toBe(28)
   })
 })
