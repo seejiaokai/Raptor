@@ -33,10 +33,10 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
   pending: readonly RequestRec[]
   onClose: () => void
 }) {
-  /* his one pending bid's words, while he types (a change is saved as it is made — ReqWords.tsx) */
-  const [edit, setEdit] = useState<ReqDraft | null>(null)
-  const one = pending.length === 1 ? pending[0]! : null
-  const end = one ? (heldRequest(personId, date)?.end ?? date) : date
+  /* each pending bid's words while he types, by its id (a change is saved as it is made — ReqWords.tsx). EVERY pending bid
+     of his there gets its rows — a morning and an afternoon each their own (the roll-call's find: with two, none were drawn) */
+  const [edit, setEdit] = useState<Record<string, ReqDraft>>({})
+  const end = heldRequest(personId, date)?.end ?? date
   return (
     <Sheet testid="closed-note" label={pending.length ? 'Your pending bid' : 'Bidding is closed'} onClose={onClose}>
       <div className="bidsheet-hd">
@@ -55,15 +55,16 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
             </div>
           ))}
           <p className="cn-note" data-testid="pending-note">{PENDING_NOTE}</p>
-          {one && (
-            <ReqWordsRows testPrefix="closed" start={date} end={end} value={edit ?? draftOf(one)}
+          {pending.map((r, i) => (
+            <ReqWordsRows key={r.id} testPrefix={i === 0 ? 'closed' : `closed-${r.id}`} start={date} end={pending.length === 1 ? end : date}
+              value={edit[r.id] ?? draftOf(r)}
               onChange={(next, how) => {
-                if (how === 'type') return setEdit(next)
-                const patch = patchOf(draftOf(one), next)
-                if (patch) setRequestWords(personId, date, one.id, patch)
-                setEdit(null)
+                if (how === 'type') return setEdit(e => ({ ...e, [r.id]: next }))
+                const patch = patchOf(draftOf(r), next)
+                if (patch) setRequestWords(personId, date, r.id, patch)
+                setEdit(e => { const { [r.id]: _gone, ...rest } = e; return rest })
               }} />
-          )}
+          ))}
           <div className="bidsheet-row">
             <span className="lab">Selected</span>
             <DeleteChip
