@@ -19,6 +19,7 @@ import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
 import { clickedOutside } from './outside'
+import { useSheetFocus, useEscClose } from './sheetfocus'
 
 /* what each "For wave" answer DOES, in the app's own words — instruction, not
    apology (owner, 25 Aug 26). Kept beside the control so a change to the rule
@@ -36,13 +37,19 @@ export function DutyTplModal() {
   /* the value a time cell held when it was focused, so a rejected commit can
      put it back rather than clear it (only one cell is focused at a time) */
   const timeBuf = useRef('')
+  /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
+     opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); before the early return, as hooks must be */
+  const boxRef = useRef<HTMLDivElement>(null)
+  const open = TPLEDIT && !(SESSION && !isAdmin())
+  useSheetFocus(boxRef, open)
+  useEscClose(boxRef, open, () => { setTplEdit(false); notify() })
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
      31 Aug 26 — point-2 authority sweep): TPLEDIT is not cleared by toggleRole's
      admin→member peek (the old toggleRole's peek, gone with [ACCOUNTS]; its successor since D292, 27 Sep 26, is the admin's switch to the member view — state/store.ts switchRoleView, which does not close this sheet either), so without this an admin who opened the duty-template
      editor and flipped to member view kept a live editor whose store mutators
      (addTpl/setTplRow/delTpl/dutyTplReset) carry no write-path gate. The test is
      `SESSION && role !== 'admin'`, so a sessionless test/boot is not a member. */
-  if (!TPLEDIT || (SESSION && !isAdmin())) return <div className="modal" id="tplModal" hidden />
+  if (!open) return <div className="modal" id="tplModal" hidden />
 
   /* the selected id can go stale — a delete elsewhere, or the modal opening
      for the first time — so every render falls back to the first template
@@ -73,7 +80,7 @@ export function DutyTplModal() {
 
   return (
     <div className="modal" id="tplModal" onClick={e => { if (clickedOutside(e, 'tplModal')) close() }}>
-      <div className="modal-box" style={{ width: 460 }}>
+      <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 460, outline: 'none' }}>
         <div className="modal-head"><b>Duty templates</b><button className="x" id="tplClose" onClick={close}>✕</button></div>
         <div className="modal-body">
           <div className="tpl-tabs">

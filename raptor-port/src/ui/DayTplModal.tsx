@@ -13,7 +13,7 @@
        be a second, narrower copy of surfaces that already exist, so this
        modal only manages the LIBRARY entries — title and lifecycle — and
        shows a read-only summary of what each one holds. */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { notify } from '../state/store'
 import {
   DAYTPL_CFG, renameDayTpl, delDayTpl, dayTplSave, dayTplReset, dayTplSummary,
@@ -24,6 +24,7 @@ import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
 import { clickedOutside } from './outside'
+import { useSheetFocus, useEscClose } from './sheetfocus'
 
 export function DayTplModal() {
   useVersion()
@@ -35,13 +36,19 @@ export function DayTplModal() {
   useEffect(() => {
     if (typeof DAYTPLEDIT === 'string') setSel(DAYTPLEDIT)
   }, [DAYTPLEDIT])
+  /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
+     opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); before the early return, as hooks must be */
+  const boxRef = useRef<HTMLDivElement>(null)
+  const open = !!DAYTPLEDIT && !(SESSION && !isAdmin())
+  useSheetFocus(boxRef, open)
+  useEscClose(boxRef, open, () => { setDayTplEdit(false); notify() })
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
      31 Aug 26 — point-2 authority sweep): DAYTPLEDIT survives toggleRole's
      admin→member peek (the old toggleRole's peek, gone with [ACCOUNTS]; its successor since D292, 27 Sep 26, is the admin's switch to the member view — state/store.ts switchRoleView, which does not close this sheet either), so without this an admin who opened the day-template
      manager and flipped to member view kept live rename/delete/reset controls
      (renameDayTpl/delDayTpl/dayTplReset) that carry no write-path gate. The test
      is `SESSION && role !== 'admin'`, so a sessionless test/boot is not a member. */
-  if (!DAYTPLEDIT || (SESSION && !isAdmin())) return <div className="modal" id="daytplModal" hidden />
+  if (!open) return <div className="modal" id="daytplModal" hidden />
 
   /* the selected id can go stale — a delete elsewhere, the modal opening for
      the first time, or a library that has nothing in it at all yet */
@@ -52,7 +59,7 @@ export function DayTplModal() {
 
   return (
     <div className="modal" id="daytplModal" onClick={e => { if (clickedOutside(e, 'daytplModal')) close() }}>
-      <div className="modal-box" style={{ width: 460 }}>
+      <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 460, outline: 'none' }}>
         <div className="modal-head"><b>Day templates</b><button className="x" id="daytplClose" onClick={close}>✕</button></div>
         <div className="modal-body">
           {DAYTPL_CFG.length

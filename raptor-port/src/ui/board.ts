@@ -37,6 +37,7 @@ import { resolveMissionRole } from '../engine/mission-role'
 import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
+import { noteOpener } from './sheetfocus'
 import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
@@ -1638,7 +1639,7 @@ export function blockMenu(anchor: HTMLElement, di: any) {
     + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}${t.wave ? ` · ${String(t.wave).toUpperCase()} desk` : ''}</span></button>`).join('')
     + `<button class="wm" data-blktpl="">Empty block</button></div>`
   popMenu(anchor, html, (e, close) => {
-    if (e.target.closest('[data-blkedit]')) { close(); setTplEdit(true); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-blkedit]')) { close(); noteOpener(anchor); setTplEdit(true); notify(); e.stopPropagation(); return }
     const b = e.target.closest('[data-blktpl]'); if (!b) return
     const id = b.dataset.blktpl
     const blk = id === '' ? { label: 'DUTY', rows: [{ role: '', id: '', str: '', end: '' }] } : blockFromTpl(id)
@@ -1675,7 +1676,7 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
     + `<button class="wm" data-daytplsave="1">+ Save this day as a template</button></div>`
     + `<div class="wm-note"><button class="wm-edit" data-daytpledit="1">${penSvg()}Manage templates</button></div>`
   popMenu(anchor, html, (e, close) => {
-    if (e.target.closest('[data-daytpledit]')) { close(); setDayTplEdit(true); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-daytpledit]')) { close(); noteOpener(anchor); setDayTplEdit(true); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-daytplsave]')) {
       close()
       const t = addDayTpl(di)
@@ -1684,7 +1685,7 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
       /* opens the manage modal PRE-SELECTED on what was just captured, so the
          owner can rename it off the default "Template N" straight away
          instead of having to find it among however many already exist */
-      setDayTplEdit(t.id); notify()
+      noteOpener(anchor); setDayTplEdit(t.id); notify()
       toast(`Saved as "${t.title}"`)
       e.stopPropagation(); return
     }
@@ -1834,8 +1835,8 @@ export function planMenu(anchor: HTMLElement, di: any) {
     + (list.length && !ro ? `<div class="wm-note"><button class="wm-edit" data-planmanage="1">${penSvg()}Manage plans</button></div>` : '')
   popMenu(anchor, html, (e, close) => {
     const pencil = e.target.closest('[data-planedit]')
-    if (pencil) { close(); setDraftsEdit({ di, id: pencil.dataset.planedit }); notify(); e.stopPropagation(); return }
-    if (e.target.closest('[data-planmanage]')) { close(); setDraftsEdit({ di }); notify(); e.stopPropagation(); return }
+    if (pencil) { close(); noteOpener(anchor); setDraftsEdit({ di, id: pencil.dataset.planedit }); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-planmanage]')) { close(); noteOpener(anchor); setDraftsEdit({ di }); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-plangolive]')) { close(); view.setDayPreview(di, null); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-plandup]')) {
       close()
