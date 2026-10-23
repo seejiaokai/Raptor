@@ -157,6 +157,73 @@ describe('pinch to zoom', () => {
     expect(held.style.transform).toBe('')
     off(); outside.remove()
   })
+  /* HIS iPHONE PICTURES MID-PINCH (owner D1287, 23 Oct 26): the pinned parts stay pinned while the fingers move. In jsdom
+     every box stands at the screen's corner (0, 0); the fingers start about (100, 100), end 1.5 times as far apart and
+     20 lower, so the picture would carry that corner to (−50, −30) */
+  it('a pinned cell inside the zoomed thing is held at its place on its pinned axes, in its own units, and let go at the lift (D1287)', () => {
+    const t = setup()
+    t.off()
+    const both = document.createElement('div'), down = document.createElement('div'), outside = document.createElement('div')
+    t.target.append(both, down); document.body.appendChild(outside)
+    const off = wirePinch({ surface: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply: () => {},
+      pin: () => [{ el: both, x: true, y: true }, { el: down, x: false, y: true }, { el: outside, x: true, y: true }] })
+    pinchSliding(t.surface)
+    // moved back by (50, 30) on the screen — inside a stretch of 1.5, (50 / 1.5, 30 / 1.5) of its own
+    expect(both.style.translate).toBe(`${50 / 1.5}px ${30 / 1.5}px`)
+    expect(down.style.translate).toBe(`0px ${30 / 1.5}px`)   // held down the screen only: across it moves with the days
+    expect(outside.style.translate).toBe('')   // a cell not inside the zoomed thing is never held
+    fire(t.surface, 'touchend', [])
+    expect(both.style.translate).toBe('')
+    expect(down.style.translate).toBe('')
+    off(); outside.remove()
+  })
+  it('pinned cells grow and shrink about the pinned block’s corner, so two pinned columns side by side stay together (D1287)', () => {
+    const t = setup()
+    t.off()
+    const a = document.createElement('div'); t.target.appendChild(a)
+    /* jsdom puts the cell at (0, 0); the block's corner given at (−40, −10): the cell belongs at A + k(P − A) = (20, 5),
+       where the picture would carry it to (−50, −30) — moved by (70, 35) on the screen, (70 / 1.5, 35 / 1.5) of its own */
+    const off = wirePinch({ surface: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply: () => {},
+      pin: () => [{ el: a, x: true, y: true }], pinAt: () => ({ x: -40, y: -10 }) })
+    pinchSliding(t.surface)
+    expect(a.style.translate).toBe(`${70 / 1.5}px ${35 / 1.5}px`)
+    fire(t.surface, 'touchend', [])
+    expect(a.style.translate).toBe('')
+    off()
+  })
+  it('a cell held only from rising follows the picture down, and is held where the picture would carry it up (D1287)', () => {
+    const t = setup()
+    t.off()
+    const up = document.createElement('div'), down = document.createElement('div')
+    t.target.append(up, down)
+    /* the picture carries the cell from 0 to −30 (up): held at 0. With the block's corner at 100 the cell belongs at
+       100 + 1.5 × (0 − 100) = −50, above the picture's −30: it is never raised, so it follows the picture */
+    const off = wirePinch({ surface: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply: () => {},
+      pin: () => [{ el: up, x: false, y: 'up' }] })
+    pinchSliding(t.surface)
+    expect(up.style.translate).toBe(`0px ${30 / 1.5}px`)
+    fire(t.surface, 'touchend', []); off()
+    const off2 = wirePinch({ surface: t.surface, target: () => t.target, get: () => 1, min: () => 0.34, apply: () => {},
+      pin: () => [{ el: down, x: false, y: 'up' }], pinAt: () => ({ x: 0, y: 100 }) })
+    pinchSliding(t.surface)
+    expect(down.style.translate).toBe('0px 0px')
+    fire(t.surface, 'touchend', []); off2()
+  })
+  it('a box pinned to the left edge stretches with the rows from its own left, is never drawn above the floor, and is put back at the lift (D1287)', () => {
+    const band = document.createElement('div'), corner = document.createElement('div')
+    document.body.append(band, corner)
+    const t = setup({ alsoY: () => [band, null], alsoTL: () => [corner, null], floor: () => 40 })
+    pinchSliding(t.surface)
+    expect(band.style.transformOrigin).toBe('0px 100px')   // the fingers' height, its own left
+    expect(band.style.transform).toBe('translate(0px, 20px) scale(1.5)')
+    // its own line 100 + (20 − 100) / 1.5 is drawn at 40 on the screen: nothing above it
+    expect(band.style.clipPath).toBe(`inset(${100 + (20 - 100) / 1.5}px 0px 0px 0px)`)
+    expect(corner.style.transformOrigin).toBe('0px 0px')
+    expect(corner.style.transform).toBe('scale(1.5)')
+    fire(t.surface, 'touchend', [])
+    expect([band.style.transform, band.style.transformOrigin, band.style.clipPath, corner.style.transform]).toEqual(['', '', '', ''])
+    t.off(); band.remove(); corner.remove()
+  })
   it('the floor is read once, as the pinch begins — read again from a stretched grid it would creep (the walk, 23 Oct 26)', () => {
     let calls = 0
     const t = setup({ min: () => (++calls === 1 ? 0.5 : 0.1) })   // what a floor measured off the stretched picture did

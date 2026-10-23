@@ -299,6 +299,24 @@ export function OilTracker({ person, onClose, onGranted }: {
       },
       apply: z => { const v = roundZoom(z); zoomRef.current = v; flushSync(() => setZoom(v)) },
       blockTwo: () => true,
+      /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — the grid's lesson, held here as
+         there): the heading rows keep their place down the screen and the name columns theirs across, the corners both
+         ways; only the credits stretch about the fingers. Each still grows and shrinks with the table. */
+      pin: () => {
+        const t = table(); if (!t) return []
+        const out: { el: HTMLElement; x: boolean; y: boolean }[] = []
+        for (const th of t.querySelectorAll<HTMLElement>(':scope > thead th')) out.push({ el: th, x: th.classList.contains('f'), y: true })
+        /* every one, not only those in sight: a pinch out draws in rows that were out of sight as it began */
+        /* (they grow and shrink about the table's top-left as it stood — `pinAt`) */
+        for (const el of t.querySelectorAll<HTMLElement>(':scope > tbody td.f, :scope > tbody tr.oil-grp td .gl')) out.push({ el, x: true, y: false })
+        return out
+      },
+      /* the pinned block's corner: the table's box at its left, its first heading row at its top — read off a heading
+         CELL, which is what sticks to the box's top; the row itself stays where it would be unscrolled */
+      pinAt: () => {
+        const h = table()?.querySelector<HTMLElement>(':scope > thead tr.yrs th')?.getBoundingClientRect()
+        return { x: wrap.getBoundingClientRect().left, y: h ? h.top : wrap.getBoundingClientRect().top }
+      },
       /* THE SPOT UNDER THE FINGERS IS A LANE AND A ROW (the fresh code read, F1 — the grid's W8 again): across, the year
          lane whose heading spans the fingers (pinned only to the top, so it says where the credits went sideways);
          down, the person's row that does. The element under the fingers would not do: the names, BAL and the heading

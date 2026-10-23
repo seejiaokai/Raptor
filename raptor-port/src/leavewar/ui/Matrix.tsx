@@ -1310,13 +1310,53 @@ export function Matrix() {
         window.dispatchEvent(new Event('lw-zoomstart'))
         const a = anim(); if (a) a.style.animationPlayState = 'paused'
         outer.querySelector('.mxfixed')?.classList.add('lw-pinching')
+        outer.classList.add('lw-pinching')
       },
       onEnd: () => {
         const a = anim(); if (a) a.style.animationPlayState = ''
         outer.querySelector('.mxfixed')?.classList.remove('lw-pinching')
+        outer.classList.remove('lw-pinching')
       },
-      also: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-scroll, :scope > .mxfixed > .mxfixed-frozen')],
-      alsoXY: () => [bandRef.current, drawerRef.current, ...(wrapRef.current?.querySelectorAll<HTMLElement>(':scope > .lw-bidbox') ?? [])],
+      /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — his iPhone pictures mid-pinch:
+         the names column and the corner had stood in from the grid's left edge with days on their left, the date row had
+         grown up over the month buttons, and the month buttons' own cell — the names' width — had stood boxed behind
+         JAN–MAR while the rest of its row moved away). Only the days stretch about the fingers:
+         · the date row's cells follow the rows down the screen but never rise over the month buttons; the corner stays at
+           the left edge with them; every other pinned name, counter and group heading keeps its place across (`pin`);
+         · the phone's frozen names copy and the figures drawer stretch with the rows but from the grid's left edge, and
+           are never drawn above the date row's foot (`alsoY`, `floor`); the frozen date row's copy of the corner grows
+           from its own corner (`alsoTL`); the frozen date row's days and the open-dates outline stretch sideways about the
+           fingers from their own top (`also`), as the date row does;
+         · the month buttons keep their size and place (`keep`), and while the fingers are down their row is one band
+           (matrix.css `.mx-outer.lw-pinching`), drawn over the date row, which is drawn over the rows. */
+      pin: () => {
+        const table = wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')
+        if (!table) return []
+        const out: { el: HTMLElement; x: boolean; y: boolean | 'up' }[] = []
+        /* the date row scrolls with the page at rest, so it follows the rows down — never up over the month buttons */
+        for (const th of table.querySelectorAll<HTMLElement>(':scope > tbody.mxhead th')) {
+          out.push({ el: th, x: th.classList.contains('who') || th.classList.contains('bal'), y: 'up' })
+        }
+        /* every pinned one, not only those in sight: a pinch out draws in rows that were off the screen as it began */
+        const rows = ':scope > tbody:not(.mxhead):not(.mstripe) > tr'
+        for (const el of table.querySelectorAll<HTMLElement>(`${rows} > .who, ${rows} > .bal, ${rows} > td.grphd`)) {
+          if (getComputedStyle(el).position !== 'sticky') continue   // the phone's roster: its frozen copy is the band
+          out.push({ el, x: true, y: false })
+        }
+        return out
+      },
+      /* the pinned block's corner: the grid's left edge, and the date row's top */
+      pinAt: () => ({
+        x: wrapRef.current?.getBoundingClientRect().left ?? 0,
+        y: wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().top ?? 0,
+      }),
+      /* the frozen date row's days: where the row follows the grid by the browser (`lw-sda`) its days stretch inside the
+         row's box, which keeps both edges of the screen; elsewhere the row's box stretches, as before */
+      also: () => [...(outer.classList.contains('lw-sda') ? [] : outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-scroll')), ...(wrapRef.current?.querySelectorAll<HTMLElement>(':scope > .lw-bidbox') ?? [])],
+      alsoIn: () => (outer.classList.contains('lw-sda') ? [anim()] : []),
+      alsoTL: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-frozen')],
+      alsoY: () => [bandRef.current, drawerRef.current],
+      floor: () => wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().bottom ?? -Infinity,
       keep: () => [mstickRef.current],
       edges: true,
       /* THE SPOT UNDER THE FINGERS IS A DAY AND A ROW (the walk, 23 Oct 26): across, the date column whose heading

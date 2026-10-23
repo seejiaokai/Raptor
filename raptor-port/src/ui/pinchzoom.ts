@@ -99,6 +99,32 @@ export type PinchOpts = {
   /** boxes INSIDE the zoomed thing, in its own units, held at their size and place while the fingers move — the Leave
    *  War's month buttons, which the grid's zoom never changes (D1282) */
   keep?: () => (HTMLElement | null)[]
+  /** cells INSIDE the zoomed thing that are pinned in place — on one axis or both — and stay pinned while the fingers
+   *  move: they still grow and shrink with the picture, but where it would carry them off their place on a pinned axis
+   *  they are held there (owner D1287, 23 Oct 26 — "Some untidiness … This is a mid pinch zoom picture": the Leave War's
+   *  names column had stood in from the grid's left edge, its date row had grown up over the month buttons). The Leave
+   *  War's names, counters and corner (left), its date row (top); the OIL tab's headings and names. `y: 'up'` holds it
+   *  only from rising — it follows the picture down — for a row that is not pinned at rest but must never be carried up
+   *  over what stands above it (the Leave War's date row, under the month buttons). Read once, as the pinch begins. */
+  pin?: () => { el: HTMLElement; x: boolean; y: boolean | 'up' }[]
+  /** the screen point the pinned cells grow and shrink about — the pinned block's own corner (the Leave War: the grid's
+   *  left edge and its date row's top), so two pinned columns side by side shrink together and never part to let a day
+   *  show between them. Without it each pinned cell keeps its own place. Read once. */
+  pinAt?: () => { x: number; y: number }
+  /** boxes drawn over the zoomed thing that stretch with it about the fingers DOWN only, their left edge held — the
+   *  Leave War's frozen names copy and figures drawer, pinned to the grid's left edge (D1287); unzoomed boxes */
+  alsoY?: () => (HTMLElement | null)[]
+  /** boxes drawn over the zoomed thing stretched from their own top-left corner, held in place — the frozen date row's
+   *  copy of the pinned corner (D1287); unzoomed boxes */
+  alsoTL?: () => (HTMLElement | null)[]
+  /** drawings INSIDE a box that stays, stretched sideways about the fingers from their own top — the frozen date row's
+   *  days, so the row still reaches both edges of the screen while the fingers move (stretching the row's box instead
+   *  left its far end empty on a pinch out — D1287). Any transform of their own (the row's follow of the grid's scroll,
+   *  paused while pinching) is kept: the stretch rides the individual `scale` and `translate`. */
+  alsoIn?: () => (HTMLElement | null)[]
+  /** a screen line nothing of `alsoY` is drawn above while the fingers move — the Leave War's date row's foot, so its
+   *  names copy, growing up on a pinch in, never covers the pinned date row or the month buttons (D1287). Read once. */
+  floor?: () => number
   /** where Ctrl+scroll (a desktop's trackpad pinch included) zooms the same way, the stretch laid out once the burst
    *  ends (D1228) — none where it is not given */
   wheel?: HTMLElement
@@ -118,6 +144,12 @@ type Live = {
   spacer: HTMLElement | null; also: { el: HTMLElement; ox: number }[]
   xy: { el: HTMLElement; ox: number; oy: number; s: number }[]
   keep: { el: HTMLElement; cx: number; cy: number }[]
+  /** pinned cells (`pin`): where each stood on screen as the pinch began */
+  pin: { el: HTMLElement; x: boolean; y: boolean | 'up'; l0: number; t0: number; px: number; py: number }[]
+  ys: { el: HTMLElement; oy: number; s: number; top: number }[]
+  tl: HTMLElement[]
+  ins: { el: HTMLElement; o: number; z: number }[]
+  floor: number
   /** a Ctrl+scroll burst, not two fingers */
   wheel: boolean
   /** with `edges`: the target's top-left on screen at the start, and how far the scrollers around it can still carry the
@@ -179,6 +211,36 @@ export function wirePinch(opts: PinchOpts): () => void {
       c.el.style.transformOrigin = `${live.ox - c.cx}px ${live.oy - c.cy}px`
       c.el.style.transform = `translate(${-dx / s / live.k}px, ${-dy / s / live.k}px) scale(${1 / live.k})`
     }
+    /* A PINNED CELL STAYS PINNED (D1287): the picture would carry its edge from where it stood, P, to S + k(P − S) + d;
+       pinned, it belongs at A + k(P − A), grown about the pinned block's corner A — so it is moved by the difference, in
+       its own units, which the target's zoom and the stretch both scale (an individual `translate`, so a transform of its
+       own is left alone) */
+    const ks = live.k * s
+    for (const c of live.pin) {
+      const tx = c.x ? (c.px + live.k * (c.l0 - c.px) - (live.sx + live.k * (c.l0 - live.sx) + dx)) / ks : 0
+      const wantY = c.y ? (c.py + live.k * (c.t0 - c.py) - (live.sy + live.k * (c.t0 - live.sy) + dy)) / ks : 0
+      const ty = c.y === 'up' ? Math.max(0, wantY) : wantY
+      c.el.style.translate = `${tx}px ${ty}px`
+    }
+    /* a box pinned to the left edge: stretched about the fingers' height only, from its own left — and, with a floor,
+       never drawn above it (a clip in its own units, worked back through its stretch) */
+    for (const a of live.ys) {
+      a.el.style.transformOrigin = `0px ${a.oy}px`
+      a.el.style.transform = `translate(0px, ${dy / a.s}px) scale(${live.k})`
+      if (live.floor > -Infinity) {
+        const cut = a.oy + ((live.floor - dy - a.top) / a.s - a.oy) / live.k
+        a.el.style.clipPath = cut > 0 ? `inset(${cut}px 0px 0px 0px)` : ''
+      }
+    }
+    for (const el of live.tl) {
+      el.style.transformOrigin = '0px 0px'
+      el.style.transform = `scale(${live.k})`
+    }
+    for (const a of live.ins) {
+      a.el.style.transformOrigin = `${a.o}px 0px`
+      a.el.style.scale = `${live.k}`
+      a.el.style.translate = `${dx / a.z}px 0px`
+    }
   }
   /* THE SIDEWAYS SCROLL HELD STILL WHILE THE PICTURE SHRINKS (the code read's finding 4, 21 Oct 26): a transform counts in
      the scroll box's width, so a pinch out near the right end shrank the box under the fingers and the browser pulled the
@@ -203,6 +265,10 @@ export function wirePinch(opts: PinchOpts): () => void {
     for (const a of l.also) { a.el.style.transform = ''; a.el.style.transformOrigin = '' }
     for (const a of l.xy) { a.el.style.transform = ''; a.el.style.transformOrigin = '' }
     for (const c of l.keep) { c.el.style.transform = ''; c.el.style.transformOrigin = '' }
+    for (const c of l.pin) c.el.style.translate = ''
+    for (const a of l.ys) { a.el.style.transform = ''; a.el.style.transformOrigin = ''; a.el.style.clipPath = '' }
+    for (const el of l.tl) { el.style.transform = ''; el.style.transformOrigin = '' }
+    for (const a of l.ins) { a.el.style.scale = ''; a.el.style.translate = ''; a.el.style.transformOrigin = '' }
     l.spacer?.remove()
     if (wheelTimer) { clearTimeout(wheelTimer); wheelTimer = null }
     document.removeEventListener('touchend', end, true)
@@ -235,6 +301,26 @@ export function wirePinch(opts: PinchOpts): () => void {
       const q = el.getBoundingClientRect()
       return { el, cx: (q.left - r.left) / z0, cy: (q.top - r.top) / z0 }
     })
+    const at = opts.pinAt ? opts.pinAt() : null
+    const pin = (opts.pin ? opts.pin() : []).filter(c => t.contains(c.el)).map(c => {
+      const q = c.el.getBoundingClientRect()
+      return { ...c, l0: q.left, t0: q.top, px: at ? at.x : q.left, py: at ? at.y : q.top }
+    })
+    const ys = (opts.alsoY ? opts.alsoY() : []).filter((x): x is HTMLElement => !!x).map(el => {
+      const q = el.getBoundingClientRect(), s = scaleOf(el)
+      return { el, oy: (p.y - q.top) / s, s, top: q.top }
+    })
+    const tl = (opts.alsoTL ? opts.alsoTL() : []).filter((x): x is HTMLElement => !!x)
+    /* the fingers' point in each drawing's own box, before its own transform: its box stands where it is drawn less
+       that transform's shift (the frozen row's follow, a sideways translate), and the origin of a stretch is read in
+       the box's own units */
+    const ins = (opts.alsoIn ? opts.alsoIn() : []).filter((x): x is HTMLElement => !!x).map(el => {
+      const z = scaleOf(el), q = el.getBoundingClientRect()
+      let shift = 0
+      try { const tf = getComputedStyle(el).transform; if (tf && tf !== 'none' && typeof DOMMatrixReadOnly === 'function') shift = new DOMMatrixReadOnly(tf).m41 } catch { shift = 0 }
+      return { el, z, o: (p.x - (q.left - shift * z)) / z }
+    })
+    const floor = opts.floor ? opts.floor() : -Infinity
     let edge: Live['edge'] = null
     if (opts.edges) {
       let roomX = 0, roomY = window.scrollY || 0, minRight = -Infinity
@@ -255,7 +341,7 @@ export function wirePinch(opts: PinchOpts): () => void {
       const keepH = keep.reduce((a, c) => { const q = c.el.getBoundingClientRect(); return q.bottom <= p.y ? a + q.height : a }, 0)
       edge = { top: r.top, left: r.left, roomX, roomY, keepH, bottom: r.bottom, minBottom, right: r.right, minRight }
     }
-    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, anchorY, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also, xy, keep, wheel, edge, lo }
+    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, anchorY, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also, xy, keep, pin, ys, tl, ins, floor, wheel, edge, lo }
     t.style.willChange = 'transform'
     /* a finger that landed off the surface lifts off it too: its touchend goes there, so the pinch listens on the page
        until it ends (the code read's finding 6) */

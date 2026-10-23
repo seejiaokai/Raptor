@@ -2367,6 +2367,33 @@ touch-action: pan-x pan-y;
    box clips only sideways — the screen's edges, as at rest — and lets them grow down over the rows under it, which the
    row at its new size covers anyway once the fingers lift. Only while the fingers are down. */
 .mxfixed.lw-pinching { overflow-x: clip; overflow-y: visible; }
+/* …and its days stretch inside the row's own box (D1287): it clips sideways only, and its band is see-through while the
+   fingers move, so on a pinch out the rows show under the shrunken date row rather than an empty band, and no shadow
+   is left standing at the old foot */
+.mxfixed.lw-pinching { background: transparent; box-shadow: none; }
+.lw-sda .mxfixed.lw-pinching .mxfixed-track { overflow-x: clip; overflow-y: visible; }
+
+/* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26; Matrix.tsx `pin`): the date row's
+   cells are held under the month buttons while the rows stretch about the fingers, so on a pinch in the rows above the
+   fingers slide UNDER the date row, and the date row under the month buttons — each drawn over what passes beneath it.
+   The month buttons' cell is held at its size and place, and spans only the names' width: its row's other cell moves
+   with the stretch, so while the fingers are down the held cell draws the row's band across the whole screen, or the
+   buttons past MAR would stand on whatever slid beneath (his picture: a box behind JAN–MAR). Only while pinching —
+   position: relative on the date cells creates a layer each, and at rest they need none. */
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th:not(.who):not(.bal) { position: relative; z-index: 6; }
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.who,
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.bal { z-index: 7; }
+.mx-outer.lw-pinching .mstripe td.mstick { z-index: 8; }
+.mx-outer.lw-pinching .mstripe td.mstick::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  /* the screen's width in the grid's own units (its zoom divided out), so the band reaches past DEC at any zoom */
+  width: calc(100vw / var(--lwz, 1));
+  background: var(--panel);
+}
 .mxfixed-scroll {
   /* The frozen header FOLLOWS the grid and is never dragged itself (owner,
      20 Aug 26). It stays a real scroller (`overflow-x: auto`) because that is

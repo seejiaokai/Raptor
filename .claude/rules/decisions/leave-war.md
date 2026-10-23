@@ -56,11 +56,12 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1287 | 23 Oct 26 | While the fingers pinch the Leave War grid, its pinned parts stay pinned: the names column at the grid's left edge, the frozen date row under the month buttons and the corner where they meet; only the days stretch, and nothing is drawn over the month buttons. |
 | D1286 | 23 Oct 26 | No keyboard key zooms the Leave War grid or its OIL tab on a desktop: the grid zooms by Ctrl+scroll or a trackpad pinch only, and the browser's own Ctrl + / − zooms the whole page, as anywhere. |
 | D1285 | 23 Oct 26 | The Leave War's OIL tab pinches to zoom on a phone, and zooms by Ctrl+scroll or a trackpad pinch on a desktop, as the grid does; its own − / + go together with the grid's, under the same condition (D1276). |
 | D1284 | 23 Oct 26 | The Leave War grid zooms in no further than today's + goes, 1.4 of normal — about 6 days and 15 people on his iPhone held upright — not to twice normal as the Scheduler Board and Quals do. |
 | D1283 | 23 Oct 26 | The Leave War grid zooms out until a whole month fits across a phone held upright — about 0.4 of normal, about 30 days and 51 people on his iPhone's 402 wide; the same limit holds turned sideways (about two and a half months). |
-| D1282 | 23 Oct 26 | On a phone a pinch on the Leave War zooms the grid only, the frozen date row and names column with it, staying over their columns; a pinch that starts anywhere on the page zooms the grid, never the whole page; the top bar, tab row, View row, the grid's own bar and the month buttons stay their size. |
+| D1282 | 23 Oct 26 | On a phone a pinch on the Leave War zooms the grid only, the frozen date row and names column with it, staying over their columns; a pinch that starts anywhere on the page zooms the grid, never the whole page; the top bar, tab row, View row, the grid's own bar and the month buttons stay their size. — changed by D1287 |
 | D1279 | 23 Oct 26 | On a phone the View row's green period picker and black My leave box are one height and share one centre line, side by side. |
 | D1278 | 23 Oct 26 | On a phone the Leave War's two top rows — the Grid / OIL tab row with ⚙, and the View / period picker / My leave row — are drawn as low and compact as the approved round-19 drawing: no taller than it, My leave sized to its two lines rather than held at a 44px minimum. |
 | D1277 | 23 Oct 26 | When the Manning button is out of view, the bid bubble sits at the foot of the screen instead — "This bid turns Available P amber. Show ›" — and Show takes him up to the Manning rows, opened; it goes at his next tap or key, as the bubble does. |

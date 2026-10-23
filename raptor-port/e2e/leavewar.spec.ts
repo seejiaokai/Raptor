@@ -6299,6 +6299,96 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
     }
   })
 
+  /* HIS iPHONE PICTURES, MID-PINCH (owner D1287, 23 Oct 26 — "Some untidiness … This is a mid pinch zoom picture"): with
+     the fingers still down the names column and the corner stood in from the grid's left edge with days on their left,
+     the date row grew up over the month buttons, and the month buttons' own cell stood boxed behind JAN–MAR. The walk had
+     the first in its own picture and passed it; it measured the names' rows top to bottom, never their left edge. Each
+     case is read with the fingers DOWN — after the lift the zoom's layout put all of it right, which is why only a picture
+     mid-gesture shows it. */
+  test('while the fingers are down the pinned parts stay pinned: the names and the corner at the left edge, the date row under the month buttons, the month buttons clear (D1287)', async ({ page }) => {
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    /** two fingers about (cx, cy), d0 → d1 apart; reads the screen with them still down, then lifts */
+    const midPinch = async (cx: number, cy: number, d0: number, d1: number) => {
+      const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[cx - d / 2, cy], [cx + d / 2, cy]] }
+      await touch('touchStart', [at(0)[0]!]); await page.waitForTimeout(30)
+      await touch('touchStart', at(0)); await page.waitForTimeout(30)
+      for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await page.waitForTimeout(16) }
+      await page.waitForTimeout(80)
+      const m = await readPinned()
+      await touch('touchEnd', []); await page.waitForTimeout(700)
+      return m
+    }
+    const readPinned = () => page.evaluate(() => {
+      const q = (s: string) => document.querySelector<HTMLElement>(s)
+      const R = (el: Element | null | undefined) => el ? el.getBoundingClientRect() : null
+      const wrap = q('#page-leavewar .mx-wrap')!.getBoundingClientRect()
+      const strip = R(q('#page-leavewar .mstrow'))!
+      const corner = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who'))!
+      const lve = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.bal'))!
+      /* the date row's foot against the first row under it: no gap opens, nothing slides over it */
+      const headB = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who'))!.bottom
+      const firstRow = R(q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead + tbody > tr > td.who'))
+      const band = q('#page-leavewar [data-testid="frozen-cols"]')
+      const bandR = band && getComputedStyle(band).visibility !== 'hidden' ? R(band) : null
+      /* a Manning row's pinned name, on screen */
+      const counter = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap > table.mx > tbody.counts td.who')].map(c => c.getBoundingClientRect()).find(r => r.bottom > 0 && r.top < innerHeight) ?? null
+      /* between the month buttons, past MAR: what is drawn there must be the strip's own band */
+      const btn = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mstrow .mjump')]
+      const gaps = btn.slice(3, 11).map((b, i) => { const a = b.getBoundingClientRect(), n = btn[i + 4]!.getBoundingClientRect(); return [(a.right + n.left) / 2, a.top + a.height / 2] })
+      /* the first thing under the buttons' own row there: the strip's cell, never a cell of the grid sliding beneath */
+      const offStrip = gaps.filter(([x, y]) => { const first = document.elementsFromPoint(x!, y!).find(e => !e.closest('.mstrow')); return !(first && first.closest('td.mstick')) }).length
+      const mirror = q('#page-leavewar [data-testid="sticky-head"]')
+      const mf = R(mirror?.querySelector('.mxfixed-frozen')), mb = R(mirror)
+      /* the frozen date row reaches the screen's right edge: a date is drawn there, not the row's empty box */
+      const mirrorRight = mb ? !!document.elementFromPoint(wrap.right - 3, mb.top + 6)?.closest('[data-testid="sticky-head"] th') : null
+      return {
+        wrapL: wrap.left, stripB: strip.bottom, cornerL: corner.left, cornerT: corner.top, cornerGap: lve.left - corner.right, headGap: firstRow ? firstRow.top - headB : null, bandL: bandR?.left ?? null, bandT: bandR?.top ?? null,
+        counterL: counter?.left ?? null, offStrip, mirrorFrozenL: mf?.left ?? null, mirrorL: mb?.left ?? null, mirrorRight,
+        transformed: !!(q('#page-leavewar .mx-wrap > table.mx')!.style.transform),
+      }
+    })
+    /* his first picture: September, Manning open, a pinch out at the top of the page */
+    await page.locator('[data-testid="counts-toggle"]').click(); await page.waitForTimeout(400)
+    await page.locator('[data-testid="month-SEP"]').click(); await page.waitForTimeout(700)
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const rest = await readPinned()
+    const out = await midPinch(230, 620, 220, 120)
+    expect(out.transformed, 'read mid-pinch, the grid stretched as a picture').toBe(true)
+    expect(Math.abs(out.cornerL - out.wrapL), `pinching out, the corner stays at the left edge (${JSON.stringify(out)})`).toBeLessThan(1.5)
+    expect(Math.abs(out.cornerT - rest.cornerT), 'pinching out, the date row stays under the month buttons').toBeLessThan(1.5)
+    expect(Math.abs(out.cornerGap - rest.cornerGap), 'pinching out, the names and LVE columns stay side by side, no day between them').toBeLessThan(1.5)
+    expect(out.bandL === null ? 0 : Math.abs(out.bandL - out.wrapL), 'pinching out, the names stay at the left edge').toBeLessThan(1.5)
+    expect(out.counterL === null ? 0 : Math.abs(out.counterL - out.wrapL), 'pinching out, a Manning row\'s name stays at the left edge').toBeLessThan(1.5)
+    expect(out.offStrip, 'pinching out, nothing but the strip between the month buttons').toBe(0)
+    /* the page part-way down, the date row still in sight: pinching out, the date row follows the rows down — no empty
+       band opens under it (the re-walk's own find, 23 Oct 26) */
+    await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)
+    const restP = await readPinned()
+    const part = await midPinch(230, 500, 220, 120)
+    expect(Math.abs((part.headGap ?? 0) - (restP.headGap ?? 0)), `part-way down, no gap under the date row (${JSON.stringify(part)})`).toBeLessThan(1.5)
+    expect(part.cornerT, 'part-way down, the date row never over the month buttons').toBeGreaterThanOrEqual(part.stripB - 1)
+    expect(Math.abs(part.cornerL - part.wrapL), 'part-way down, the corner at the left edge').toBeLessThan(1.5)
+    /* his third picture: a pinch in at the top of the page */
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const rest2 = await readPinned()
+    const inn = await midPinch(230, 470, 120, 220)
+    expect(Math.abs(inn.cornerL - inn.wrapL), `pinching in, the corner stays at the left edge (${JSON.stringify(inn)})`).toBeLessThan(1.5)
+    expect(Math.abs(inn.cornerT - rest2.cornerT), 'pinching in, the date row does not grow up over the month buttons').toBeLessThan(1.5)
+    expect(inn.cornerT, 'pinching in, the corner below the month buttons').toBeGreaterThanOrEqual(inn.stripB - 1)
+    expect(Math.abs(inn.cornerGap - rest2.cornerGap), 'pinching in, the names and LVE columns stay side by side').toBeLessThan(1.5)
+    expect(inn.bandL === null ? 0 : Math.abs(inn.bandL - inn.wrapL), 'pinching in, the names stay at the left edge').toBeLessThan(1.5)
+    expect(inn.offStrip, 'pinching in, nothing but the strip between the month buttons').toBe(0)
+    /* the page scrolled, the dates frozen under the top bar: the frozen row's corner stays at its left */
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const fr = await midPinch(230, 520, 220, 130)
+    expect(fr.mirrorFrozenL === null || fr.mirrorL === null ? 0 : Math.abs(fr.mirrorFrozenL - fr.mirrorL), `the frozen dates' corner stays at the left (${JSON.stringify(fr)})`).toBeLessThan(1.5)
+    expect(fr.bandL === null ? 0 : Math.abs(fr.bandL - fr.wrapL), 'the names stay at the left edge').toBeLessThan(1.5)
+    expect(fr.mirrorRight, 'the frozen dates still reach the screen’s right edge').toBe(true)
+    await cdp.detach()
+  })
+
   test('a big pinch out where the grid opens, at the top of the page: the month buttons hold their size mid-pinch, and the day under the fingers does not move across from the stretched picture to a beat after the lift', async ({ page }) => {
     /* where the grid opens. Measured against the PICTURE, not the fingers: at the year's start (this test world opens on
        1 January) or the page's top the grid cannot scroll to keep the day under the fingers, and the picture is held
@@ -6376,6 +6466,46 @@ test('the OIL tracker pinches (D1285): no − / +; a phone opens it one step out
   const t1 = (await tools())!
   expect(Math.round(t1.height), 'the tools row kept its size').toBe(Math.round(t0.height))
   expect(await page.evaluate(() => visualViewport ? visualViewport.scale : 1)).toBe(1)
+  await page.locator('[data-testid="oil-close"]').click()
+})
+
+/* The grid's lesson on the OIL tab (owner D1287, 23 Oct 26 — the readings: the same holds here): with the fingers still
+   down, its name columns stay at the table's left edge and its heading rows at their place; only the credits stretch. */
+test('while the fingers are down the OIL tab\'s names and headings stay pinned (D1287)', async ({ page }) => {
+  test.skip(!isPhone(), 'a pinch is a touch screen\'s')
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const read = () => page.evaluate(() => {
+    const list = document.querySelector<HTMLElement>('[data-testid="oil-list"]')!
+    const box = list.getBoundingClientRect()
+    const name = list.querySelector<HTMLElement>('table.oil-grid thead th.f.c1')!.getBoundingClientRect()
+    const bal = list.querySelector<HTMLElement>('table.oil-grid thead th.f.c2')!.getBoundingClientRect()
+    const yrs = list.querySelector<HTMLElement>('table.oil-grid thead tr.yrs th:not(.f)')!.getBoundingClientRect()
+    const head = list.querySelector<HTMLElement>('table.oil-grid thead tr.cols th:not(.f)')!.getBoundingClientRect()
+    const row = [...list.querySelectorAll<HTMLElement>('table.oil-grid tbody td.f.c1')].map(c => c.getBoundingClientRect()).find(r => r.top > box.top + 60 && r.bottom < box.bottom)!
+    return { boxL: box.left, nameL: name.left, nameT: name.top, yrsT: yrs.top, colsGap: head.top - yrs.bottom, rowL: row.left, balGap: bal.left - name.right, tf: !!list.querySelector<HTMLElement>('table.oil-grid')!.style.transform }
+  })
+  const cdp = await page.context().newCDPSession(page)
+  const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+  for (const [d0, d1] of [[100, 180], [200, 120]] as const) {
+    const rest = await read()
+    const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[240 - d / 2, 560], [240 + d / 2, 560]] }
+    await touch('touchStart', [at(0)[0]!]); await page.waitForTimeout(30)
+    await touch('touchStart', at(0)); await page.waitForTimeout(30)
+    for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await page.waitForTimeout(16) }
+    await page.waitForTimeout(80)
+    const m = await read()
+    await touch('touchEnd', []); await page.waitForTimeout(700)
+    const what = d1 > d0 ? 'pinching in' : 'pinching out'
+    expect(m.tf, `${what}: read mid-pinch`).toBe(true)
+    expect(Math.abs(m.nameL - rest.nameL), `${what}: the names' heading stays at the left (${JSON.stringify({ rest, m })})`).toBeLessThan(1.5)
+    expect(Math.abs(m.nameT - rest.nameT), `${what}: …and at its place down the screen`).toBeLessThan(1.5)
+    expect(Math.abs(m.yrsT - rest.yrsT), `${what}: the first heading row stays at its place`).toBeLessThan(1.5)
+    expect(Math.abs(m.colsGap - rest.colsGap), `${what}: the second stays right under it`).toBeLessThan(1.5)
+    expect(Math.abs(m.rowL - rest.nameL), `${what}: a person's name stays at the left`).toBeLessThan(1.5)
+    expect(Math.abs(m.balGap - rest.balGap), `${what}: the name and BAL columns stay side by side`).toBeLessThan(1.5)
+  }
+  await cdp.detach()
   await page.locator('[data-testid="oil-close"]').click()
 })
 
