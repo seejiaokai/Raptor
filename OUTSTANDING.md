@@ -1370,7 +1370,7 @@ still shows it (Opus H1 step 4) — say it only once the command lands. (3) **�
 lock, outline and chip read his today when the store last changed, so they stay a day behind until the next change (Fable
 scenario 7, Opus 10) — re-read today on the page's next show or a timer at midnight. (4) **A member's Move refused on a
 closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
-for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch (M2), each small.
+for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch, each small — M2 went live on 23 Oct 26 without (1), (2) and (4), so M3.
 
 ### [LW-HARNESS-VIEWER-PIN] In the Leave War browser tests, switching the role quietly undoes the pinned viewer (filed 27 Sep 26)
 Found by the `[LW-MOVE-CI-RED]` investigation, confirmed in the running bundle: the test bridge's `raptorRole()` →
