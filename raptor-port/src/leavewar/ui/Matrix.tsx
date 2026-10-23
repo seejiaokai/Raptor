@@ -2200,8 +2200,20 @@ export function Matrix() {
   /* A TAP ON A DATE'S HEADING OPENS THAT DAY (D1143; M3 6.1): one listener on the heading row — the grid's and the frozen
      copy's — the date read off the heading's `data-d`, never a button in each of 365 headings (performance.md §E). One
      heading takes the keyboard: today's where it is drawn, else the first; Enter opens it, and the panel's ‹ › step on. */
+  /* THE DATE IS READ WHERE THE FINGER WENT DOWN (M3's re-walk, F1): a phone's browser aims a tap at the nearest element it
+     thinks is pressable — the one heading that takes the keyboard (today's, else the first) — so a tap on 2 Jan's left part,
+     or on the corner cell, reached 1 Jan. The press's own point (pointer events are not re-aimed) decides; the click's
+     target only where no press was seen (a keyboard's Enter is handled below). */
+  const headDown = useRef<{ x: number; y: number; t: number } | null>(null)
+  const onHeadDown = (e: React.PointerEvent) => { headDown.current = { x: e.clientX, y: e.clientY, t: e.timeStamp } }
   const onHeadTap = (e: React.MouseEvent) => {
-    const th = (e.target as HTMLElement).closest<HTMLElement>('th.day[data-d]')
+    const d = headDown.current
+    headDown.current = null
+    let th: HTMLElement | null = null
+    if (d && e.timeStamp - d.t < 1500) {
+      for (const el of document.elementsFromPoint(d.x, d.y)) { const h = (el as HTMLElement).closest?.('th.day[data-d]') as HTMLElement | null; if (h) { th = h; break } if ((el as HTMLElement).closest?.('th')) break }
+      if (!th) return                       // the press was on no date (the corner, a placeholder): nothing opens
+    } else th = (e.target as HTMLElement).closest<HTMLElement>('th.day[data-d]')
     if (th) openDayPanel(th.dataset.d!)
   }
   const onHeadKey = (e: React.KeyboardEvent) => {
@@ -2211,7 +2223,7 @@ export function Matrix() {
   }
   const headTab = drawnDays.some(d => d.date === memberToday()) ? memberToday() : drawnDays[0]?.date
   const headerRow = (testids: boolean, drawer = false) => (
-    <tr onClick={onHeadTap} onKeyDown={onHeadKey}>
+    <tr onPointerDown={onHeadDown} onClick={onHeadTap} onKeyDown={onHeadKey}>
       {/* CS/Name (owner, 26 Aug 26): the column holds aircrew callsigns AND
           ground-crew names, and the short form fits the phone's 76px frozen
           column; the Quals page's Personnel view says the long form
