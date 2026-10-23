@@ -1930,3 +1930,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In the mockups reference, under "Showing It" or a new "His own evidence" line: a recording he sends is read first, frames pulled with the repo's `scripts/handpass/video-frames.mjs` (visible Chrome, HEVC on), and its key frames — turned and cropped to the place, marked — go on the page as his own pictures beside the drawn ones; ask him to describe it only if that fails. Wait for the upload path rather than searching the disk.
 
 **Principle:** Before asking a person to describe evidence they sent, try the ordinary tool they used to make it (their phone's format in a full browser); a headless or minimal player failing is not the file failing.
+
+### Observation 683: A ring on a top-cropped picture is placed against the crop, not the whole picture
+
+**Status:** OPEN
+**Date:** 2026-10-23
+**Session context:** the Leave War pinch look card, an Artifact page of walk pictures with marked places (D921, D1222)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** marking the place on a picture shown cropped
+
+**Issue:** A tall phone picture was shown cut to its top (a box of 804x1100 over a 1748-tall picture, the picture covering it from the top) and the ring round the date row was first placed in percentages of the whole picture, so it would have sat about a third too high and too short.
+
+**Suggested improvement:** In the mock-up guide, one line: when a picture is cropped by its box, a ring placed in percent takes the BOX as its measure (pixels from the top / the box height in picture pixels), or the ring is drawn onto the picture itself.
+
+**Principle:** A mark placed in relative units is relative to the element that holds it; once a crop makes that element differ from the source, convert every coordinate to the crop.
