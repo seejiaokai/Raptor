@@ -810,7 +810,7 @@
         "preview",
         "raptor-port",
         "--outDir",
-        "dist-pz7",
+        "dist-pz8",
         "--port",
         "4274",
         "--strictPort"

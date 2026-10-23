@@ -1303,6 +1303,11 @@ export function Matrix() {
          clipped at its old height, a pinch in cut the date numbers in half until the lift (the walk's picture) */
       onStart: () => {
         dragCleanup.current?.()
+        /* the small pop-ups placed on the screen over a cell close, as a press outside them would (the fresh code read,
+           F4 — a desktop's Ctrl+scroll presses nothing): the event peek, a chip's quals, and the Required / Available
+           rows' boxes (FlyRows, FlyEdit — they hear `lw-zoomstart`) */
+        setQualPop(null); setEvPeek(null)
+        window.dispatchEvent(new Event('lw-zoomstart'))
         const a = anim(); if (a) a.style.animationPlayState = 'paused'
         outer.querySelector('.mxfixed')?.classList.add('lw-pinching')
       },
@@ -2490,6 +2495,9 @@ export function Matrix() {
        width guessed for the new zoom, and the year slid 1,600 px sideways a beat after the lift. Treated as a jump
        (jumpAtRef, set with it), the months drawn after it are anchored at rest like a month button's. */
     if (now - pinchAtRef.current < PINCH_SCROLL_MS) {
+      /* ONE event only (the fresh code read, F3): the lift's scroll is written in one task, so it arrives as one; a finger
+         left down after the other lifted may scroll on at once, and that scroll is a real one */
+      pinchAtRef.current = 0
       const sp = scrollSpeedRef.current
       sp.v = 0; sp.t = now; sp.sl = wrapRef.current?.scrollLeft ?? 0
     } else {

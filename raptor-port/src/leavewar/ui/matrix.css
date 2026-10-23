@@ -2271,7 +2271,7 @@ touch-action: pan-x pan-y;
 /* ONE line of twelve months on a phone too (owner, 6 Sep 26 — "shift the
    months to be fitted to 1 row instead, since the +- is moved to another
    area"). The zoom pair that shared this strip moved to the counter block's
-   top row, so the strip has the whole width: the buttons split it EQUALLY
+   top row, and is gone since pinch to zoom (D1276), so the strip has the whole width: the buttons split it EQUALLY
    (`flex: 1 1 0`, no min-width) with a hair of gap, and the label tightens to
    9px with almost no tracking — twelve 3-letter labels then fit 360px with air
    (measured in the built app). The row falls back to its 44px desktop height

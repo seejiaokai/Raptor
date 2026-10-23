@@ -16,6 +16,8 @@ export const LW_ZOOM_MAX = 1.4
 export const LW_ZOOM_MIN_FALLBACK = 0.4
 /** his iPhone's width held upright, for a desktop (no phone to hold) */
 const UPRIGHT_PX = 402
+/** the phone page's margin around the grid, measured on his iPhone's size (402 wide, the grid 380) */
+const PHONE_GUTTER_PX = 22
 /** a month at its longest */
 const MONTH_DAYS = 31
 
@@ -24,8 +26,12 @@ const coarse = () => typeof window.matchMedia === 'function' && window.matchMedi
 /** The width a phone held upright gives the grid: the screen's short side, less what the page around the grid takes
  *  (its margins) — measured now, whichever way the phone is held. */
 function uprightWidth(wrap: HTMLElement | null): number {
-  const gutter = wrap ? Math.max(0, window.innerWidth - wrap.clientWidth) : 0
-  const side = coarse() && window.screen ? Math.min(window.screen.width, window.screen.height) : UPRIGHT_PX
+  /* a desktop has no phone to hold: his iPhone's width less the phone page's margin around the grid (measured 402 → 380),
+     not the desktop's own wider one (the fresh code read, F5 — that put its floor ~10% under the phone's) */
+  if (!coarse() || !window.screen) return UPRIGHT_PX - PHONE_GUTTER_PX
+  const side = Math.min(window.screen.width, window.screen.height)
+  /* the margin measured only while the phone IS upright — turned, the page may take its wider layout's margins */
+  const gutter = wrap && window.innerWidth <= side + 1 ? Math.max(0, window.innerWidth - wrap.clientWidth) : PHONE_GUTTER_PX
   return Math.max(200, side - gutter)
 }
 

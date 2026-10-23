@@ -284,6 +284,28 @@ if (run('P11')) { // the OIL tab pinches too (D1285): the table only
   await pinch(cdp, 200, 500, 60, 400); await pinch(cdp, 200, 500, 60, 400)
   const d1 = await tz()
   rec('P11d', Math.abs(d1.z - 1.4) < 0.002, 'the OIL table goes in to 1.4 and no further', d1)
+  // the code read's F1: scrolled down the list, a pinch whose fingers rest on the tools row, then on a pinned name —
+  // the person's row first in sight stays where it was, across the lift
+  const rowAt = () => page.evaluate(() => {
+    const w = document.querySelector('[data-testid="oil-list"]'), wr = w.getBoundingClientRect()
+    const r = [...w.querySelectorAll('table.oil-grid > tbody > tr')].find(r => r.getBoundingClientRect().bottom > wr.top + 40)
+    return r ? { id: r.getAttribute('data-testid') || r.dataset.oilrow || r.textContent.slice(0, 12), top: Math.round(r.getBoundingClientRect().top) } : null
+  })
+  const rowById = id => page.evaluate(id => { const w = document.querySelector('[data-testid="oil-list"]'); const r = [...w.querySelectorAll('table.oil-grid > tbody > tr')].find(r => (r.getAttribute('data-testid') || r.dataset.oilrow || r.textContent.slice(0, 12)) === id); return r ? Math.round(r.getBoundingClientRect().top) : null }, id)
+  await page.evaluate(() => { document.querySelector('[data-testid="oil-list"]').scrollTop = 600 }); await sleep(400)
+  const e0 = await rowAt()
+  const tb2 = await page.locator('.oil-tools').boundingBox()
+  await pinch(cdp, 200, tb2.y + tb2.height / 2, 200, 120)
+  const e1 = e0 ? await rowById(e0.id) : null
+  rec('P11e', !!e0 && e1 !== null && Math.abs(e1 - e0.top) <= 24, 'scrolled down the OIL list, a pinch out on its tools row: the row first in sight stays in sight where it was', { row: e0?.id, before: e0?.top, after: e1 })
+  const name = page.locator('[data-testid="oil-list"] table.oil-grid tbody td.f.c1').nth(6)
+  const nm = await name.boundingBox()
+  const own = await name.evaluate(td => { const r = td.closest('tr'); return r.getAttribute('data-testid') || r.dataset.oilrow || r.textContent.slice(0, 12) })
+  const fy = nm ? nm.y + nm.height / 2 : 0
+  if (nm) await pinch(cdp, nm.x + nm.width / 2, fy, 120, 190)
+  const after = await page.evaluate(id => { const w = document.querySelector('[data-testid="oil-list"]'); const r = [...w.querySelectorAll('table.oil-grid > tbody > tr')].find(r => (r.getAttribute('data-testid') || r.dataset.oilrow || r.textContent.slice(0, 12)) === id); if (!r) return null; const q = r.getBoundingClientRect(); return { top: Math.round(q.top), bottom: Math.round(q.bottom) } }, own)
+  rec('P11f', !!nm && !!after && after.top <= fy + 2 && after.bottom >= fy - 2, 'a pinch in on a pinned name: that name stays under the fingers', { row: own, fingersY: Math.round(fy), after })
+  await shot(page, 'p11-oil-after-anchor-pinches')
   await shot(page, 'p11-oil-at-1.4')
   rec('P11-errs', errs.length === 0, 'no error on the OIL tab', { errs })
   await ctx.close()

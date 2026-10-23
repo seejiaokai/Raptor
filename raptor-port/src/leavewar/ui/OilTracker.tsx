@@ -299,6 +299,28 @@ export function OilTracker({ person, onClose, onGranted }: {
       },
       apply: z => { const v = roundZoom(z); zoomRef.current = v; flushSync(() => setZoom(v)) },
       blockTwo: () => true,
+      /* THE SPOT UNDER THE FINGERS IS A LANE AND A ROW (the fresh code read, F1 — the grid's W8 again): across, the year
+         lane whose heading spans the fingers (pinned only to the top, so it says where the credits went sideways);
+         down, the person's row that does. The element under the fingers would not do: the names, BAL and the heading
+         rows are pinned, and the tools row and the sheet's head are not the table at all. */
+      anchor: (x, y) => {
+        const t = table(); if (!t) return null
+        let ax: Element | null = null, ay: Element | null = null
+        /* the one under the fingers; failing that (the fingers on the names, or above the table on its tools row) the first
+           one in sight past them — kept at the same distance from the fingers, so the list stands still */
+        const w = wrap.getBoundingClientRect()
+        for (const c of t.querySelectorAll<HTMLElement>('thead tr.yrs th.yl')) {
+          const q = c.getBoundingClientRect()
+          if (x >= q.left && x < q.right) { ax = c; break }
+          if (!ax && q.right > Math.max(x, w.left)) ax = c
+        }
+        for (const r of t.querySelectorAll<HTMLElement>(':scope > tbody > tr')) {
+          const q = r.getBoundingClientRect()
+          if (y >= q.top && y < q.bottom) { ay = r; break }
+          if (!ay && q.bottom > Math.max(y, w.top)) ay = r
+        }
+        return { x: ax, y: ay }
+      },
       edges: true,
     })
   }, [view])

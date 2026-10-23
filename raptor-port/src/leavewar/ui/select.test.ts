@@ -661,6 +661,17 @@ describe('wireSelect ignores pointers that are not the gesture\'s own', () => {
     expect(selections).toHaveLength(1)
   })
 
+  it('a finger whose pointer the browser cancelled (it took the finger to scroll) is still on the glass: a second landing starts no hold (the fresh code read, F2)', () => {
+    document.body.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 21, pointerType: 'touch', clientX: 20, clientY: 5, button: 0 }))
+    window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 21, pointerType: 'touch' }))   // the browser's own scroll took it
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 22, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(400)
+    expect(touchmovePrevented()).toBe(false)
+    window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 22, pointerType: 'touch', button: 0 }))
+    expect(selections).toHaveLength(0)
+    document.dispatchEvent(new TouchEvent('touchend', { bubbles: true }))   // the last finger leaves the glass
+  })
+
   it('a mouse is never a second finger: a click elsewhere mid-hold leaves a finger\'s hold alone', () => {
     cell.dispatchEvent(new PointerEvent('pointerdown',
       { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
