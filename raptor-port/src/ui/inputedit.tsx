@@ -3256,7 +3256,10 @@ export function InputEditor() {
           dismisses so the filer can attach a certificate and save again */}
       {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel} leave={!!docConf.leave}
         onUpload={() => setDocConf(null)}
-        onNoDoc={() => { setDocConf(null); save(true) }} />}
+        /* the keyboard back inside the window before the save closes it, so the window hands it on to the button that opened
+           it (FloatWindow.tsx returns focus only from inside itself — M3's browser check: a new leave's "No document" left it
+           nowhere) */
+        onNoDoc={() => { setDocConf(null); document.getElementById('inpEditSave')?.focus(); save(true) }} />}
   </>)
   /* A CANCELLED INPUT'S OWN WINDOW SAYS SO (owner D771, 12 Oct 26 — "Yes for both"): the card's own small red CX tag and
      the reason in red, beside the window's title, in both of its shapes — FOLLOWING the title, not standing by the ✕
