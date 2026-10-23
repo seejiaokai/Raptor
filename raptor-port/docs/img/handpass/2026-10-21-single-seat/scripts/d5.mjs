@@ -1,0 +1,10 @@
+import { L, snap } from './h.mjs'
+console.log('d5 v1')
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900 })
+await L.go(page, 'inputs'); await page.waitForTimeout(800)
+await page.locator('#inSansMode').click(); await page.waitForTimeout(1000)
+await page.locator('[data-testid="sc-day-2026-10-22"]').click(); await page.waitForTimeout(1000)
+await page.screenshot({ path: process.env.HP_SHOTS + '/d5a.png' })
+console.log(await page.evaluate(() => [...document.querySelectorAll('[role=dialog], .sans-day, .sd-sheet, [class*=sansday]')].map(e => e.tagName+'.'+e.className+' '+(e.innerText||'').slice(0,600).replace(/\s+/g,' ')).join('\n')))
+console.log(errors)
+await browser.close()

@@ -1,0 +1,5 @@
+const L = await import('file:///C:/Users/User/projects/Raptor/.claude/worktrees/overnight-backlog-review-92da33/raptor-port/scripts/handpass/lib.mjs')
+const { browser, page } = await L.open({ width: 1400, height: 900 })
+const P = await page.evaluate(() => Object.entries(window.PEOPLE).filter(([k,v]) => v.seat==='FCP').map(([k,v]) => `${k}:${v.cs}:${v.q}:daar=${v.quals&&v.quals.daar}:imc=${v.quals&&v.quals.imc}`))
+console.log(P.join('\n'))
+await browser.close()

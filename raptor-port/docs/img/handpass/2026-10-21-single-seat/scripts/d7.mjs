@@ -1,0 +1,13 @@
+import { L, snap } from './h.mjs'
+console.log('d7 v1')
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900 })
+await L.go(page, 'admin'); await page.waitForTimeout(800)
+const rows = () => page.locator('#page-admin button:has-text("WSO"):not(:has-text("Archived"))')
+console.log('WSO rows', await rows().count())
+await rows().first().click(); await page.waitForTimeout(400)
+await page.getByRole('button', { name: 'Archive', exact: true }).click(); await page.waitForTimeout(700)
+await page.screenshot({ path: process.env.HP_SHOTS + '/d7a.png' })
+console.log('WSO rows after', await rows().count())
+console.log(await page.evaluate(() => (document.querySelector('#page-admin')?.innerText||'').slice(0,700)))
+console.log(errors)
+await browser.close()
