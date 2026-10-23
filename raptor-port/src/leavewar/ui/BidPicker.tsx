@@ -17,7 +17,8 @@ import { useMemo, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
+import { awardsIn, cellProblem, clearCells, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
+import { draftOf, emptyDraft, heldRequest, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -280,6 +281,11 @@ export function BidPicker({
   /* where the sheet's one note is drawn: under the Selected row for a Delete's confirm, under the leave chips for a
      leave's (the negative-balance ask, a refused write) — beside the button that raised it */
   const [noteAt, setNoteAt] = useState<'sel' | 'leave'>('leave')
+  /* A REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1210, D1226, D1159): on a day holding one bid (and no range picked)
+     the rows speak for THAT bid and save to it as they change (`lw.reqmeta`); otherwise they hold the words of the bid
+     about to be placed, and the leave tap writes them with it. Not on an approved leave — its Note opens its remarks. */
+  const [draft, setDraft] = useState<ReqDraft>(emptyDraft)
+  const [heldEdit, setHeldEdit] = useState<ReqDraft | null>(null)
   /** The cells a range covers, for the store's questions about them. */
   const spanCells = (r: Range) => {
     const out: { personId: string; date: string }[] = []
@@ -301,6 +307,19 @@ export function BidPicker({
      Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
      (`decidableIn` — `setBidStates`'s own eligibility, the admin at any time — D1177). */
   const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)
+  const held = !range ? heldRequest(personId, date) : null
+  const showWords = !!held || !onNote
+  const words = held ? (heldEdit ?? draftOf(held.rec)) : draft
+  const onWords = (next: ReqDraft, how: 'type' | 'commit') => {
+    if (!held) return setDraft(next)
+    if (how === 'type') return setHeldEdit(next)
+    const patch = patchOf(draftOf(held.rec), next)
+    if (patch) setRequestWords(personId, date, held.rec.id, patch)
+    setHeldEdit(null)
+  }
+  /* the words a new bid is written with: the window's own on a new bid; on a held one its own carry over by themselves
+     (5.11 — the store keeps a re-typed bid's words) */
+  const newWords = held ? undefined : wordsOf(draft)
   /* the day line: read again only when what it reads changes — the days, the half, the war (a write replaces the state) */
   const st = getState()
   const lineDays = useMemo(
@@ -353,7 +372,7 @@ export function BidPicker({
     if (code && approving) {
       const why1 = !range ? cellProblem(personId, date, code) : null
       if (why1) return setNote(why1)
-      const r = placeApproved(selCells(), code)
+      const r = placeApproved(selCells(), code, newWords)
       if (r.written > 0) onWrote?.(code)
       if (!r.pending.length && !r.skipped) return onClose()
       const parts: string[] = []
@@ -385,7 +404,7 @@ export function BidPicker({
       }
       const why = cellProblem(personId, date, code)
       if (why) return setNote(why)
-      setCell(personId, date, code)
+      setCell(personId, date, code, newWords)
       onWrote?.(code)
       return onClose()
     }
@@ -397,7 +416,7 @@ export function BidPicker({
        code written over each day strips only the war's own records, so a leave the WAR approved inside the span stayed,
        unsaid, and the sheet closed as done. `clearCells` removes it through the absence door (or counts it where it may
        not go — a published war's finished paperwork), exactly as the one-day Clear and a dragged block's Delete do. */
-    const { written, skipped } = code ? setCellRange(personId, range.from, range.to, code)
+    const { written, skipped } = code ? setCellRange(personId, range.from, range.to, code, newWords)
       : clearCells(spanCells(range), clearAsked ? clearIds : awardsIn(spanCells(range)).map(a => a.id))
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
@@ -411,6 +430,37 @@ export function BidPicker({
         : `${written} day${written === 1 ? '' : 's'} ${verb}. ${skipped} skipped: ${why}.`,
     )
   }
+
+  /* the Duration row — under Date on an empty day, as drawn; under Remarks where Decide and Selected stand (§1) */
+  const emptyDay = !(canDecideHere || canMoveHere || canDeleteHere || !!onNote)
+  const duration = (
+        <div className="bidsheet-row">
+          <span className="lab">Duration</span>
+          {/* Item D: with one half already spoken for by the Inputs page, the
+              other choices are not dimmed, they are ABSENT — the house rule for
+              a control that could not work (a disabled chip invites a tap and
+              then refuses it). The line under it says what holds the other half
+              and where it is changed, so the lock is explained rather than just
+              enforced. */}
+          {PORTIONS.filter(p => !onlyPortion || p.portion === onlyPortion).map(p => (
+            <button
+              key={p.portion}
+              data-testid={p.testid}
+              className={`pchip${portion === p.portion ? ' on' : ''}`}
+              aria-pressed={portion === p.portion}
+              onClick={() => { setPortion(p.portion); setConfirming(null) }}
+            >
+              {p.label}
+            </button>
+          ))}
+          {onlyPortion && (
+            <span className="note" data-testid="bid-heldhalf">
+              The {onlyPortion === 'pm' ? 'morning' : 'afternoon'} is {heldBy || 'already taken'},
+              filed on the Inputs page — change that there.
+            </span>
+          )}
+        </div>
+  )
 
   return (
     <Sheet testid="bid-picker" label="Place a bid" onClose={onClose}>
@@ -482,6 +532,8 @@ export function BidPicker({
         </div>
       )}
 
+      {emptyDay && duration}
+
       {/* DECIDE — the admin's three answers to an input, on the same window in
           every stage (owner, 21 Sep 26). All three stay live on an
           already-decided bid: management tries one, watches the manning rows
@@ -546,32 +598,8 @@ export function BidPicker({
         <div className="bidsheet-row"><span className="note warn" data-testid="span-note">{note}</span></div>
       )}
 
-      <div className="bidsheet-row">
-        <span className="lab">Duration</span>
-        {/* Item D: with one half already spoken for by the Inputs page, the
-            other choices are not dimmed, they are ABSENT — the house rule for
-            a control that could not work (a disabled chip invites a tap and
-            then refuses it). The line under it says what holds the other half
-            and where it is changed, so the lock is explained rather than just
-            enforced. */}
-        {PORTIONS.filter(p => !onlyPortion || p.portion === onlyPortion).map(p => (
-          <button
-            key={p.portion}
-            data-testid={p.testid}
-            className={`pchip${portion === p.portion ? ' on' : ''}`}
-            aria-pressed={portion === p.portion}
-            onClick={() => { setPortion(p.portion); setConfirming(null) }}
-          >
-            {p.label}
-          </button>
-        ))}
-        {onlyPortion && (
-          <span className="note" data-testid="bid-heldhalf">
-            The {onlyPortion === 'pm' ? 'morning' : 'afternoon'} is {heldBy || 'already taken'},
-            filed on the Inputs page — change that there.
-          </span>
-        )}
-      </div>
+      {showWords && <ReqWordsRows value={words} onChange={onWords} start={range ? range.from : date} end={range ? range.to : held ? held.end : date} />}
+      {!emptyDay && duration}
 
       <div className="bidsheet-row">
         <span className="lab">Which leave</span>

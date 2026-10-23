@@ -1668,3 +1668,19 @@
 }
 .bidsheet-hd .bp-approve + .x { margin-left: 4px; }
 .bidsheet-hd .bp-approve input { margin: 0; accent-color: var(--accent); }
+
+/* A REQUEST'S REMARKS BOX AND ITS "till <date>" (M3 5.9 — D1210, D1226): the Inputs page's own box and tick
+   (`.inped-rmk`, `.inped-tl`, `.inped-till` in scheduler/14-input-editors.css), sized for the bid window: the box takes
+   the row's room, the date stays on one line after it */
+.bidsheet .bp-rmk { flex: 1 1 220px; }
+.bidsheet .bp-rmk input[type='text'] {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 9px;
+  font: 600 13px inherit;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+}
+.bidsheet .bp-rmk input[type='text']:focus { outline: none; border-color: var(--accent); }

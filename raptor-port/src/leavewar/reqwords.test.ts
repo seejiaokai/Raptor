@@ -142,6 +142,15 @@ describe('approval carries them onto the leave, and back (7.2)', () => {
     expect(leave.remarks).toBe('Seoul')
     expect(rowDocIds(leave)).toEqual(['doc-h'])
   })
+  it('a request unticked by hand does not join a ticked leave beside it — its choice is kept', () => {
+    setCell('ammo', '2026-02-17', 'LL')
+    setBidStates([{ personId: 'ammo', date: '2026-02-17' }], 'approved')
+    setCell('ammo', '2026-02-18', 'LL', { till: false })
+    setBidStates([{ personId: 'ammo', date: '2026-02-18' }], 'approved')
+    const rows = leaveOf('ammo') as any[]
+    expect(rows).toHaveLength(2)
+    expect(rows.map(r => r.till).sort()).toEqual([false, undefined])
+  })
   it('a leave approved next to one with other papers joins it and keeps both papers', () => {
     setCell('ammo', '2026-02-17', 'LL', { docIds: ['doc-1'] })
     setBidStates([{ personId: 'ammo', date: '2026-02-17' }], 'approved')

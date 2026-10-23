@@ -452,7 +452,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
          extension never swallows the run's own carried remark (Fable #7) */
       const body = (x: any) => remarksTyped(x.remarks, x)
       const same = (x: any) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
-        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r) && tillShown(x) === tillShown(r)
+        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r) &&
+        /* a request that carries its own till choice (M3 7.2) joins only a leave that shows the same; one with none takes
+           its neighbour's, as before (D953) */
+        (typeof r.till !== 'boolean' || tillShown(x) === r.till)
       const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
       /* …and a day that would BRIDGE a leave whose till date is unticked and one whose is not joins the one before only:
          one record holds one tick, so a bridge would drop one of the two choices (owner D953 — the scenario designer's 8,
@@ -2668,3 +2671,9 @@ export function flyAnswer(iso: string): DayAnswer {
 export function flyMonth(y: number, m: number): Record<string, DayAnswer> {
   return monthAnswers(y, m, getFlyPlan(), dayFacts, iso => sansFly(iso), getTones())
 }
+
+/* A LEAVE REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1159, D1226): the bid windows draw the app's one Document
+   button and the Inputs page's own "till <date>" — reached through this seam, never imported across it (a rider on the
+   inputs wire, as the published remarks editor's is) */
+export { DocField } from '../ui/inputedit'
+export { tillOfISO } from '../engine/inputs'
