@@ -13,7 +13,7 @@
 // There is no login, so a bid is placed against whichever row was clicked
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
@@ -29,6 +29,8 @@ import { belowZeroAsk, goesBelow } from './belowzero'
 import './bidpicker.css'
 import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
+import type { DayWhatIf } from '../engine/whatif'
+import { DayLine, dayLineCode } from './DayLine'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -64,6 +66,7 @@ export function BidPicker({
   dates,
   onWrote,
   wouldLeave,
+  dayLine,
   onPostOut,
   hasAccount,
   blockedFor,
@@ -95,6 +98,9 @@ export function BidPicker({
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
   wouldLeave?: (code: string, dates: readonly string[]) => { counter: CounterName; before: number; after: number } | null
+  /** What the bid would do to manning on these days (D1144, D1213 — the day line at the window's top): the store's answer,
+   *  supplied by the matrix as `wouldLeave` is (`sync.ts bidDayLine`). */
+  dayLine?: (dates: readonly string[], code: string) => DayWhatIf[]
   /** Admin-only: post this person OUT (owner, 18 Aug 26; reworked 19 Aug 26
    *  — any date, not just the tapped day, and the "Archive on PO date"
    *  switch). Present only for an admin; the matrix wires it to the store and
@@ -289,6 +295,13 @@ export function BidPicker({
      Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
      (`decidableIn` — `setBidStates`'s own eligibility, the admin at any time — D1177). */
   const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)
+  /* the day line: read again only when what it reads changes — the days, the half, the war (a write replaces the state) */
+  const st = getState()
+  const lineDays = useMemo(
+    () => (dayLine ? dayLine(selCells().map(c => c.date), dayLineCode(portion)) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [!!dayLine, personId, date, range?.from, range?.to, portion, st],
+  )
 
   const write = (code: string) => {
     /* CLEAR NAMES THE OIL AWARD IT TAKES, AND ASKS ONCE (owner, D260, 27 Sep 26 — "B"; the absence-record re-test, AB1).
@@ -390,6 +403,7 @@ export function BidPicker({
           ✕
         </button>
       </div>
+      <DayLine days={lineDays} />
 
       {/* ONE FORMAT AND LOOK FOR THE TWO SHEETS (owner, D264 — "There should be a standardised format and look"; his order,
           D331 "1 A"): the one-day sheet and the drag-selection sheet show the same rows in the same order — what is

@@ -1612,3 +1612,23 @@
 #page-leavewar .cf-row.cf-pt .lab { flex: 0 0 auto; }
 #page-leavewar .cf-row.cf-pt .mth-in.cf-ptin { width: 72px; min-width: 72px; max-width: 72px; flex: none; }
 
+
+/* THE DAY LINE (owner D1144, D1213; M3 — DayLine.tsx): what the bid does to manning, at the window's top, under its
+   title bar. Each row a name and a figure, lined up down the window (his design lessons 20 and 29), in the row's colour
+   where it turns amber or red; one calm grey line where none does. No box of its own: a quiet band of the window. */
+.bidsheet-dayline {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 12px;
+  row-gap: 2px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet-dayline .dl-when { grid-column: 1 / -1; color: var(--ink-3); font-size: 11px; }
+.bidsheet-dayline .dl-row { display: contents; }
+.bidsheet-dayline .dl-name { color: var(--ink-2); }
+.bidsheet-dayline .dl-fig { color: var(--ink); }
+.bidsheet-dayline .dl-amber .dl-name, .bidsheet-dayline .dl-amber .dl-fig { color: var(--adv); }
+.bidsheet-dayline .dl-red .dl-name, .bidsheet-dayline .dl-red .dl-fig { color: var(--hard); }
+.bidsheet-dayline .dl-calm { grid-column: 1 / -1; display: block; color: var(--ink-3); }
