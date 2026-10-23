@@ -80,14 +80,20 @@ describe('the grid card\'s bar (D1254)', () => {
   })
 
   /* WAS "the toggle reads ⇅ with the word on a droppable tail — icon-only on a phone" (Rearrange → Rearranging). Since
-     D1254 the bar's button is the way out only: ⇅ and the word "Done" on the same droppable tail. */
-  it('Done reads ⇅ with its word on a droppable tail — icon-only on a phone', () => {
+     D1254 the bar's button is the way out only. RE-EXPRESSED by D1275 (23 Oct 26): "⇅ Done" in words on a phone too — the
+     word is never on the droppable tail the phone hides — and while it is on, the − / + are marked to step aside (the
+     phone's stylesheet hides them; the browser test "while rearranging, the bar reads ⇅ Done" measures it). */
+  it('Done reads "⇅ Done", its word never on the droppable tail; the − / + step aside while it is on (D1275)', () => {
     setRole('admin')
     render(<Matrix />)
+    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(false)
     startRearrange()
     const btn = screen.getByTestId('roster-arrange')
-    expect(btn.textContent!.trim().startsWith('⇅')).toBe(true)
-    expect(btn.querySelector('.rtlbl')!.textContent!.trim()).toBe('Done')
+    expect(btn.textContent!.replace(/\s+/g, ' ').trim()).toBe('⇅ Done')
+    expect(btn.querySelector('.rtlbl')).toBeNull()
+    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(true)
+    fireEvent.click(btn)
+    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(false)
   })
 })
 

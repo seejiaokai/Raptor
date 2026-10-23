@@ -657,6 +657,11 @@
   .card-hd .rtlbl {
     display: none;
   }
+  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden) and the − / +
+     step aside until it is off, so the bar keeps one line as drawn (questions/q3c-done-zoom-aside.png) */
+  .card-hd .lwzoom.aside {
+    display: none;
+  }
 }
 
 @media (max-width: 700px) {
@@ -1211,5 +1216,52 @@
     border-left: 1px solid rgba(229, 168, 59, .7);
     border-top: 1px solid rgba(229, 168, 59, .7);
     transform: rotate(45deg);
+  }
+  /* D1277: the same words at the foot of the screen when the Manning button is out of view — as drawn
+     (`docs/img/handpass/2026-10-23-lw-m2-looks/questions/q1b-proposed-scrolled.png`): the bubble's amber, the screen's
+     width less a margin on a phone (D828), "Show ›" at its right end; clear of the phone's home bar and of the desktop's
+     scrollbar fixed at the foot. */
+  .mn-foot {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 55;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 8px 6px 14px;
+    border: 1px solid rgba(229, 168, 59, .7);
+    border-radius: 10px;
+    background: #2a2210;
+    color: #F2C879;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .mn-foot .mn-show {
+    flex: 0 0 auto;
+    min-height: 32px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #F2C879;
+    font: inherit;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .mn-foot .mn-show:hover { background: rgba(229, 168, 59, .14); }
+  .mn-foot .mn-show:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  @media (min-width: 701px) {
+    .mn-foot {
+      left: 50%;
+      right: auto;
+      bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+      width: min(560px, calc(100vw - 48px));
+      transform: translateX(-50%);
+    }
   }
 }

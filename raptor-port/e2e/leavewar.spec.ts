@@ -3292,6 +3292,46 @@ test('nothing in the callsign column is cut off', async ({ page }) => {
   expect(count).toBeGreaterThan(10)
 })
 
+/** THE GRID'S OWN BAR, LINE BY LINE (23 Oct 26): one line whenever it fits, a second only when the next control truly has
+ *  no room beside the last — never a chip cut to make it fit (walker 2, M2's walk), nothing past the screen, in order,
+ *  at most two lines. Wider letters than his PC's (GitHub's Linux machines, his iPhone; LW_WIDE_LETTERS=1 here) can need
+ *  the second line at 390 wide. Returns each control's box by id. */
+async function expectBarLines(page: Page, ids: string[]) {
+  const m = await page.evaluate(ids => {
+    const gb = document.querySelector('#page-leavewar .card-hd .lw-gridbar') as HTMLElement
+    const gcs = getComputedStyle(gb), gr = gb.getBoundingClientRect()
+    const right = gr.right - parseFloat(gcs.paddingRight) - parseFloat(gcs.borderRightWidth)
+    const gap = parseFloat(gcs.columnGap) || 0
+    return {
+      right, gap, vw: innerWidth,
+      boxes: ids.map(id => {
+        const el = gb.querySelector(`[data-testid="${id}"]`) as HTMLElement
+        const r = el.getBoundingClientRect()
+        return { id, x: r.left, r: r.right, w: r.width, mid: r.top + r.height / 2, cut: el.scrollWidth > el.clientWidth + 1 }
+      }),
+    }
+  }, ids)
+  const lines: (typeof m.boxes)[] = []
+  for (const b of m.boxes) {
+    const line = lines[lines.length - 1]
+    if (line && Math.abs(line[0]!.mid - b.mid) < 4) line.push(b)
+    else lines.push([b])
+  }
+  const where = m.boxes.map(b => `${b.id} x ${b.x.toFixed(0)} w ${b.w.toFixed(0)} mid ${b.mid.toFixed(0)}`).join('; ')
+  expect(lines.length, `the grid's bar takes more than two lines (${where})`).toBeLessThanOrEqual(2)
+  for (const line of lines) for (let i = 1; i < line.length; i++)
+    expect(line[i]!.x, `${line[i]!.id} is not right of ${line[i - 1]!.id} (${where})`).toBeGreaterThan(line[i - 1]!.x)
+  for (let l = 1; l < lines.length; l++) {
+    const prev = lines[l - 1]![lines[l - 1]!.length - 1]!, first = lines[l]![0]!
+    expect(prev.r + m.gap + first.w, `${first.id} went to a line of its own though it fits beside ${prev.id} (${where})`).toBeGreaterThan(m.right - 0.5)
+  }
+  for (const b of m.boxes) {
+    expect(b.cut, `${b.id} is cut to fit (${where})`).toBe(false)
+    expect(b.r, `${b.id} runs past the screen (${where})`).toBeLessThanOrEqual(m.vw)
+  }
+  return Object.fromEntries(m.boxes.map(b => [b.id, b]))
+}
+
 // The counter block's top controls sit on ONE row (owner, 5 Sep 26 — "all in 1
 // row to minimise row height space"): Manning · ⚙ · Rearrange lead, OIL right
 // AFTER rearrange (no spring to the far edge). jsdom can't see the single line;
@@ -3325,39 +3365,8 @@ test('the counter controls sit on one row, in order, OIL right after rearrange, 
      31 Mar" leaves a 390-wide phone ~20px short, and Legend takes the second line (GitHub's run of d0ff2c633; reproduced
      here with LW_WIDE_LETTERS=1). So: in order, line by line; at most two lines; each line break forced by the width. */
   const BAR_IDS = ['counts-toggle', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open']
-  const m = await page.evaluate(ids => {
-    const gb = document.querySelector('#page-leavewar .card-hd .lw-gridbar') as HTMLElement
-    const gcs = getComputedStyle(gb), gr = gb.getBoundingClientRect()
-    const right = gr.right - parseFloat(gcs.paddingRight) - parseFloat(gcs.borderRightWidth)
-    const gap = parseFloat(gcs.columnGap) || 0
-    return {
-      right, gap, vw: innerWidth,
-      boxes: ids.map(id => {
-        const el = gb.querySelector(`[data-testid="${id}"]`) as HTMLElement
-        const r = el.getBoundingClientRect()
-        return { id, x: r.left, r: r.right, w: r.width, mid: r.top + r.height / 2, cut: el.scrollWidth > el.clientWidth + 1 }
-      }),
-    }
-  }, BAR_IDS)
-  const bar = Object.fromEntries(m.boxes.map(b => [b.id, b]))
-  const lines: (typeof m.boxes)[] = []
-  for (const b of m.boxes) {
-    const line = lines[lines.length - 1]
-    if (line && Math.abs(line[0]!.mid - b.mid) < 4) line.push(b)
-    else lines.push([b])
-  }
-  const where = m.boxes.map(b => `${b.id} x ${b.x.toFixed(0)} w ${b.w.toFixed(0)} mid ${b.mid.toFixed(0)}`).join('; ')
-  expect(lines.length, `the grid's bar takes more than two lines (${where})`).toBeLessThanOrEqual(2)
-  for (const line of lines) for (let i = 1; i < line.length; i++)
-    expect(line[i]!.x, `${line[i]!.id} is not right of ${line[i - 1]!.id} (${where})`).toBeGreaterThan(line[i - 1]!.x)
-  for (let l = 1; l < lines.length; l++) {
-    const prev = lines[l - 1]![lines[l - 1]!.length - 1]!, first = lines[l]![0]!
-    expect(prev.r + m.gap + first.w, `${first.id} went to a line of its own though it fits beside ${prev.id} (${where})`).toBeGreaterThan(m.right - 0.5)
-  }
-  for (const b of m.boxes) {
-    expect(b.cut, `${b.id} is cut to fit (${where})`).toBe(false)
-    expect(b.r, `${b.id} runs past the screen (${where})`).toBeLessThanOrEqual(m.vw)
-  }
+  const bar = await expectBarLines(page, BAR_IDS)
+  const where = Object.values(bar).map(b => `${b.id} x ${b.x.toFixed(0)} mid ${b.mid.toFixed(0)}`).join('; ')
   // the zoom pair is a pair: − then + one gap apart on one line, not spread
   expect(Math.abs(bar['lw-zoom-in']!.mid - bar['lw-zoom-out']!.mid), `the − and + are split (${where})`).toBeLessThan(4)
   expect(bar['lw-zoom-in']!.x - (bar['lw-zoom-out']!.x + bar['lw-zoom-out']!.w)).toBeLessThan(24)
@@ -3367,6 +3376,34 @@ test('the counter controls sit on one row, in order, OIL right after rearrange, 
   for (const id of ['settings-open', 'oil-tracker', 'roster-arrange']) await expect(page.locator(`#page-leavewar .card-hd [data-testid="${id}"]`)).toHaveCount(0)
   // the "… · 365 days · 50 people" line is gone
   await expect(page.locator('.card-hd')).not.toContainText('people')
+})
+
+/* D1275 (23 Oct 26 — Q3, "as recommended"): on a phone, while Rearrange is on, its way out reads "⇅ Done" in words (the
+   phone's short words, D1019, stay for every other button) and the − / + step aside until it is off, so the bar keeps
+   to one line as drawn (questions/q3c-done-zoom-aside.png). Off again, the − / + come back. On a desktop the − / + stay.
+   Measured at 390 and 360; with wider letters (LW_WIDE_LETTERS=1) the bar keeps the rule above — one line whenever it
+   fits. [LW-REARRANGE-DONE-WORD], red first. */
+test('while rearranging, the bar reads "⇅ Done" in words, and on a phone the − / + step aside (D1275)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="settings-open"]').click()
+  await page.locator('[data-testid="settings-rearrange"]').click()
+  const done = page.locator('#page-leavewar [data-testid="roster-arrange"]')
+  const zoom = page.locator('#page-leavewar [data-testid="lw-zoom"]')
+  await expect(done).toBeVisible()
+  for (const width of isPhone() ? [390, 360] : [1440]) {
+    await page.setViewportSize({ width, height: isPhone() ? 664 : 900 })
+    await page.waitForTimeout(200)
+    expect((await done.innerText()).replace(/\s+/g, ' ').trim(), `${width}: the word is drawn`).toBe('⇅ Done')
+    if (isPhone()) {
+      await expect(zoom, `${width}: the − / + step aside while Rearrange is on`).toBeHidden()
+      await expectBarLines(page, ['counts-toggle', 'open-chip', 'roster-arrange', 'legend-open'])
+    } else {
+      await expect(zoom, 'a desktop keeps the − / +').toBeVisible()
+    }
+  }
+  await done.click()
+  await expect(done).toHaveCount(0)
+  await expect(zoom, 'Rearrange off: the − / + are back').toBeVisible()
 })
 
 // A member's counter bar is just Manning · OIL, adjacent (owner, 5 Sep 26 — "in

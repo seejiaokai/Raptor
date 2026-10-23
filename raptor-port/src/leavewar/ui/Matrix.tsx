@@ -779,9 +779,10 @@ export function Matrix() {
     const w = wrapRef.current
     if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
     if (onItsOwnDay(targetDate)) { if (w) clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
+    const before = flaggedRef.current()                     // D1274: the rows as they stood, for the bubble
     const r = moveRecords(movers, daysBetween(moveAnchor, targetDate))
     if (w) clearLanding(w)
-    if (r === 'moved') { setMoveSel(null); setMovePreview(null); setMoveErr('') }
+    if (r === 'moved') { moveBeforeRef.current = before; setMoveSel(null); setMovePreview(null); setMoveErr('') }
     else { setMoveErr(moveReason(r)); setMovePreview(null) }   // keep the mode, say why
   }
   useEffect(() => {
@@ -1265,7 +1266,8 @@ export function Matrix() {
      is the gesture, so a change made elsewhere (another device, a setting) never raises it. */
   const sheetUp = !!open || !!sel
   const beforeRef = useRef<Map<string, { label: string; lv: number }> | null>(null)
-  const [bubble, setBubble] = useState<string | null>(null)
+  /* `foot`: the Manning button was out of view when it was raised, so the words sit at the foot of the screen (D1277) */
+  const [bubble, setBubble] = useState<{ text: string; foot: boolean } | null>(null)
   const flaggedNow = () => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
        never reported as turned amber (the scenario designer's find, 23 Oct 26) */
@@ -1293,11 +1295,13 @@ export function Matrix() {
     }
     return m
   }
-  useEffect(() => {
-    if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
-    const before = beforeRef.current
-    beforeRef.current = null
-    if (!before) return
+  /* the latest render's reading, for the move machine — wired once per move, its callbacks would otherwise read the
+     verdicts of the render that wired them */
+  const flaggedRef = useRef(flaggedNow)
+  flaggedRef.current = flaggedNow
+  /* compare a "before" with the grid as it is now; only a WORSENING raises the bubble (a row to amber or red, or amber
+     to red, on a day) — one rule for a bid placed and a bid moved */
+  const raiseIfWorse = (before: Map<string, { label: string; lv: number }>) => {
     const worst = new Map<string, 'amber' | 'red'>()
     for (const [k, { label, lv }] of flaggedNow()) {
       if (lv <= (before.get(k)?.lv ?? 0)) continue
@@ -1305,16 +1309,66 @@ export function Matrix() {
     }
     if (!worst.size) return
     setCountsOpen(true)
-    setBubble(`This bid turns ${[...worst].map(([l, v]) => `${l} ${v}`).join(', ')}.`)
+    setBubble({ text: `This bid turns ${[...worst].map(([l, v]) => `${l} ${v}`).join(', ')}.`, foot: !manningInView() })
+  }
+  /* IS THE MANNING BUTTON IN VIEW? (D1277 — "how does the notification look on a phone if the counters are out of view and
+     the user scrolls down"; his "Yes to the bid note as recommended"). Decided once, when the bubble is raised: the
+     button's box against the visible screen — the keyboard counted (the visual viewport) — and not under whatever is
+     drawn on top of it there (the app's top bar, which stays as the page scrolls). A screen with no layout (the unit
+     tests) counts as in view, so nothing changes there. */
+  const manningInView = (): boolean => {
+    const btn = cardRef.current?.querySelector('[data-testid="counts-toggle"]') as HTMLElement | null
+    if (!btn) return false
+    const r = btn.getBoundingClientRect()
+    if (!r.width && !r.height) return true
+    const vv = window.visualViewport
+    const top = vv ? vv.offsetTop : 0, bottom = vv ? vv.offsetTop + vv.height : window.innerHeight
+    if (r.bottom <= top || r.top >= bottom) return false
+    if (typeof document.elementFromPoint !== 'function') return true
+    const y = Math.min(Math.max(r.top + r.height / 2, top + 1), bottom - 1)
+    const hit = document.elementFromPoint(r.left + r.width / 2, y)
+    return !hit || btn.contains(hit)
+  }
+  /* Show: up to the Manning rows (opened when the bubble was raised), the keyboard on the Manning button, the note gone */
+  const showManning = () => {
+    setCountsOpen(true)
+    const btn = cardRef.current?.querySelector('[data-testid="counts-toggle"]') as HTMLElement | null
+    if (btn) {
+      const still = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      btn.scrollIntoView({ block: 'center', behavior: still ? 'auto' : 'smooth' })
+      btn.focus({ preventScroll: true })
+    }
+    setBubble(null)
+  }
+  useEffect(() => {
+    if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
+    const before = beforeRef.current
+    beforeRef.current = null
+    if (before) raiseIfWorse(before)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sheetUp])
+  /* A MOVED BID RAISES IT TOO (D1274, 23 Oct 26 — "Q2 yes"): the grid's move — the window's Move or a picked block's, then
+     a tap or a Confirm on a day — lands in one place (`commitMove`), which takes the "before" just ahead of the move and
+     leaves it here; the render that follows the landing compares, as a closed bid window does. A move refused, or onto
+     its own day, leaves nothing. */
+  const moveBeforeRef = useRef<Map<string, { label: string; lv: number }> | null>(null)
+  useEffect(() => {
+    const before = moveBeforeRef.current
+    if (!before) return
+    moveBeforeRef.current = null
+    raiseIfWorse(before)
+  })
   /* gone at his next tap, anywhere */
   useEffect(() => {
     if (!bubble) return
-    const off = () => setBubble(null)
-    /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) */
-    const t = window.setTimeout(() => { document.addEventListener('pointerdown', off, { once: true }); document.addEventListener('keydown', off, { once: true }) }, 0)
-    return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', off); document.removeEventListener('keydown', off) }
+    /* a press on the foot note's own Show is not "a tap elsewhere" (D1277) — Show's click does its work and ends it */
+    const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble-foot"]')
+    const onDown = (e: Event) => { if (!inNote(e)) setBubble(null) }
+    /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) — but Tab (and Shift with it), the
+       way to Show, and a key pressed on Show itself leave it up */
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e)) return; setBubble(null) }
+    const t = window.setTimeout(() => { document.addEventListener('pointerdown', onDown); document.addEventListener('keydown', onKey) }, 0)
+    return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey) }
   }, [bubble])
   /* …and a change of WIDTH across the phone line after the page opened (a desktop window narrowed under 700, a phone
      turned on its side and back — the M2 code read's F6): the fold is decided again by the same rule, folded on a phone
@@ -3322,7 +3376,14 @@ export function Matrix() {
             tab (Chrome.tsx `Topbar`); Rearrange moved into ⚙ (its "Done" rides this bar while it is on). The zoom pair
             stays at the bar's right end until pinch to zoom replaces it — its own job, [LW-PHONE-PINCH-ZOOM] (D1228). */}
         <div className="card-hd">
-          {bubble && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble}</div>}
+          {bubble && !bubble.foot && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble.text}</div>}
+          {/* D1277: the Manning button out of view when it was raised — the same words at the foot of the screen, with Show */}
+          {bubble?.foot && (
+            <div className="mn-foot" role="status" data-testid="manning-bubble-foot">
+              <span data-testid="manning-bubble-text">{bubble.text}</span>
+              <button type="button" className="mn-show" data-testid="manning-bubble-show" onClick={showManning}>Show ›</button>
+            </div>
+          )}
           <StageBar
             manningOpen={countsOpen || (arranging && role === 'admin')}
             onManning={toggleManning}
@@ -3339,10 +3400,14 @@ export function Matrix() {
                     title="Finish rearranging — tap to leave"
                     onClick={() => setArranging(false)}
                   >
-                    ⇅<span className="rtlbl"> Done</span>
+                    {/* "Done" in words at every width (D1275 — on a phone too, narrowing D1019's short words for this one
+                        button): its own class, never the droppable `.rtlbl` the phone hides */}
+                    ⇅<span className="rtword"> Done</span>
                   </button>
                 )}
-                <span className="lwzoom" data-testid="lw-zoom">
+                {/* while Rearrange is on, the − / + step aside on a phone so the bar keeps one line (D1275; chrome.css
+                    `.lwzoom.aside`); a desktop keeps them. They go for good only once the pinch works (D1276). */}
+                <span className={`lwzoom${arranging && role === 'admin' ? ' aside' : ''}`} data-testid="lw-zoom">
                   <button
                     className="rtbtn zoom"
                     data-testid="lw-zoom-out"
