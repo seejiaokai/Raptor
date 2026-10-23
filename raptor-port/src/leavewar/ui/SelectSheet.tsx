@@ -28,7 +28,7 @@
 // still cancels the MOVE (D262) — that is the move, not this panel. The war's other windows keep blocking
 // (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`).
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
@@ -43,6 +43,9 @@ import { useCloseOnCellClick } from './gridclick'
 import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
 import './bidpicker.css'
+import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
+import { DayLine, dayLineCode } from './DayLine'
+import { getState } from '../state/store'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'sel-portion-full' },
@@ -54,6 +57,7 @@ export function SelectSheet({
   sel,
   people,
   wouldLeave,
+  dayLine,
   role,
   canDecide,
   onDone,
@@ -68,6 +72,8 @@ export function SelectSheet({
   /** What one person's balance would read after this leave is written on these of his days, or `null` for leave that
    *  spends nothing — the matrix's `balanceAfter`, the one-day sheet's own question (D418) */
   wouldLeave?: (personId: string, dates: readonly string[], code: string) => BalanceAfter | null
+  /** What the leave would do to manning on one person's days (D1144, D1213 — the day line): the matrix's `bidDayLine` */
+  dayLine?: (personId: string, dates: readonly string[], code: string) => DayWhatIf[]
   role: 'admin' | 'member'
   /** admin && closed — the batch Decide row */
   canDecide: boolean
@@ -85,6 +91,21 @@ export function SelectSheet({
   onClose: () => void
 }) {
   const [portion, setPortion] = useState<Portion>('full')
+  /* THE DAY LINE across a drag: each man's days read on their own, then the worst person-day of them all — his callsign
+     before the date where the drag holds several men (the agent's reading, M3 §7.1) */
+  const st = getState()
+  const line = useMemo(() => {
+    if (!dayLine) return { days: [] as DayWhatIf[], label: undefined as string | undefined }
+    const whose = new Map<DayWhatIf, string>()
+    const all: DayWhatIf[] = []
+    for (const pid of sel.people) {
+      const ds = sel.cells.filter(c => c.personId === pid).map(c => c.date)
+      for (const d of dayLine(pid, ds, dayLineCode(portion))) { whose.set(d, pid); all.push(d) }
+    }
+    const w = worstWhatIf(all)
+    return { days: w ? [w, ...(all.length > 1 ? [all.find(d => d !== w)!] : [])] : [], label: w && sel.people.length > 1 ? people(whose.get(w)!) : undefined }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!dayLine, sel, portion, st])
   const [note, setNote] = useState('')
   const [confirmDel, setConfirmDel] = useState(false)
   /* what the below-zero ask SAID — the leave and each man's figure (D418) — the same leave tapped again goes ahead only
@@ -204,6 +225,7 @@ export function SelectSheet({
         <span className="dt" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
         <button className="x" data-testid="sel-cancel" onClick={onClose} aria-label="Cancel">✕</button>
       </div>
+      <DayLine days={line.days} label={line.label} />
 
       {/* ONE FORMAT AND LOOK FOR THE TWO SHEETS (owner, D264; his order, D331 "1 A"): the same rows in the same order as
           the one-day sheet — what is already there first (Decide, then Selected: Move · Delete), then placing new leave

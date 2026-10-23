@@ -63,3 +63,17 @@ describe('the day line', () => {
     expect(half[0]! - half[1]!).toBe(0.5)
   })
 })
+
+describe('the day line in the drag-selection window', () => {
+  it('a drag across two men names the man and the day it hurts most', async () => {
+    const { SelectSheet } = await import('./SelectSheet')
+    const sel = { people: ['a', 'b'], from: '2026-02-10', to: '2026-02-11', cells: [
+      { personId: 'a', date: '2026-02-10' }, { personId: 'b', date: '2026-02-11' }] }
+    const read = (pid: string, dates: readonly string[]) => dates.map(d => day({
+      date: d, avail: { seat: 'p', label: 'Available P', before: 25, after: pid === 'b' ? 22 : 24, level: pid === 'b' ? 'red' : null }, turned: [] }))
+    render(<SelectSheet sel={sel as any} people={id => (id === 'a' ? 'Anvil' : 'Blade')} dayLine={read} role="admin" canDecide={false}
+      onDone={() => {}} onMove={() => {}} onClose={() => {}} />)
+    expect(screen.getByTestId('bid-dayline-when').textContent).toMatch(/^Blade · /)
+    expect(screen.getByTestId('bid-dayline-avail').textContent).toContain('25 → 22 · red')
+  })
+})

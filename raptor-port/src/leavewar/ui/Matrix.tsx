@@ -4207,6 +4207,7 @@ export function Matrix() {
           people={csOf}
           /* the ask before a fill takes anyone below zero (D418) */
           wouldLeave={balanceAfter}
+          dayLine={bidDayLine}
           role={role}
           canDecide={canDecide(role)}
           /* never on a deleted man (his posting is final — [POST-OUT-OUTCOMES], Fable F3) */
