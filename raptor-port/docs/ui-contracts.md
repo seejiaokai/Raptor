@@ -11501,3 +11501,4 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The day line on a day already holding the bid (D1296):** it shows the day's manning as it now stands, the bid counted ("Available P 27 · red"), never the calm line while a row is amber or red.
 - **A date clicked behind a new input's window (D1298):** on the Inputs calendar it never lights as picked while the window keeps its old date; what it does is his to choose.
 - **The Medical tab's "+ Medical" and its window on the right (D1300):** on a desktop, clear of the cards; a new card wears the just-added cyan ring.
+- **The admin's "Approve what I enter" remembered, a toggle (D1302):** left off it stays off in every bid window until he turns it on; a small toggle in the title bar.

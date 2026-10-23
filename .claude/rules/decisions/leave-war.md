@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1302 | 24 Oct 26 | The admin's "Approve what I enter" is remembered: left off, it stays off in every bid window he opens until he turns it on again, and the reverse; and it is drawn as a small toggle, not a tick, in the same place in the title bar. |
 | D1301 | 24 Oct 26 | The Leave War's open design questions are put to him in the order in which one answer shapes the next: first the colour of each kind, then how an OD and a CRS look in a window, then how the window is made shorter, then the rest. |
 | D1299 | 24 Oct 26 | His intent, to be designed with him before anything is built: an overseas duty (OD) and a course (CRS) can be filed on the Leave War as leave is, so people enter them far ahead while bidding is open, because both lower manning (D998) and people seldom think to file them early on the Inputs page. |
 | D1296 | 24 Oct 26 | A bid window opened on a day that already holds the bid shows that day's manning as it now stands, the bid counted — "Available P 27 · red" and each Manning row now amber or red — never "No manning row turns amber or red" while a row is amber or red. |
@@ -156,8 +157,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D1190 | 21 Oct 26 | The Available P and Available W rows get an amber point he sets in a setting. |
 | D1189 | 21 Oct 26 | In the Leave War's Approvals list each line's figures stand in columns that line up from line to line — how long, the balance, the lowest Available, when it was placed — not run together in one sentence in the middle. |
 | D1188 | 21 Oct 26 | A button stands in the same place on a phone as on a desktop — not on the left of one and the right of the other — so question 10's Approvals is redrawn in one place on both. |
-| D1187 | 21 Oct 26 | In the admin's bid window the "Approve what I enter" tick sits in the window's title bar, at its right end before ✕, as drawn in 9a's B. |
-| D1186 | 21 Oct 26 | The admin's "Approve what I enter" tick is on by default, so what he places is approved as he places it unless he unticks it (ticked each time the window opens — the agent's reading). |
+| D1187 | 21 Oct 26 | In the admin's bid window the "Approve what I enter" switch, a small toggle (D1302), sits in the window's title bar, at its right end before ✕, as drawn in 9a's B. — changed by D1302 |
+| D1186 | 21 Oct 26 | The admin's "Approve what I enter" starts on, so what he places is approved unless he turns it off; his choice is then remembered until he changes it (D1302). — changed by D1302 |
 | D1185 | 21 Oct 26 | No second balances list on the Leave War: the grid's "Figures" drawer, once named "Balances", goes (D1245) — its columns live on the Balances tab; the person window's line is called "Balances". — changed by D1245 |
 | D1184 | 21 Oct 26 | The Approvals list's date choices cover the whole Leave War period on view — the one he created, usually a year — not only a few months. |
 | D1183 | 21 Oct 26 | In the Leave War's bid windows each leave button wears its kind's colour of look F (D1175) — LL light amber, OL deep amber, OIL green, the other leave blue — so the button and the box it places on the grid look alike. |
