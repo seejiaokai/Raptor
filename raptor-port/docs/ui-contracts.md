@@ -11498,3 +11498,4 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The Leave War's document chips open the viewer (D1292):** a chip, tapped, shows its picture or PDF in the app's document viewer, straight after it is added too; its ✕ still takes it off.
 - **The Inputs list on a phone uses the full width (D1293):** its day headings and cards take the screen's width less the margin the filters above them have.
 - **A quick sideways swipe picks months (D1294):** in the "Open for bidding" window on a phone a mostly sideways move across the month buttons arms the drag at once, with no hold; up and down still scrolls.
+- **The day line on a day already holding the bid (D1296):** it shows the day's manning as it now stands, the bid counted ("Available P 27 · red"), never the calm line while a row is amber or red.
