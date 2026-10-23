@@ -587,7 +587,8 @@ appointment, duty, SANS availability.
 into it and is the source of truth for what a type means.
 
 Relationships: n–1 `Person`, n–1 `InputType`; n–n `Attachment` through
-`InputAttachment` (`inputId`, `attachmentId`) — today `docId` / `docIds`;
+`InputAttachment` (`inputId`, `attachmentId`) — today `docId` / `docIds`; every kind of input may carry documents since
+the Leave War overhaul's M3 7.4 (owner D1150 — a medical's is still the one asked and guarded; a new leave asks too, never a stop);
 0–1 `LeaveBid` per covered day.
 From today: `INPUTS[]` — one stored row per request since 30 Sep 26 (`raptor:inputs/<iid>`, with `ord` — the `sortIndex`; `[DB-READINESS]` group A, phase 2; `inputs/all` until then), addressed by `iid`.
 App change: inputs stay global rather than week-scoped, as they already are.

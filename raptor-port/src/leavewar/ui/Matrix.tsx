@@ -38,7 +38,8 @@ import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
-import { availRowNames, availVerdictAt, bidDayLine, flyMonth, leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
+
+import { availRowNames, availVerdictAt, bidDayLine, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -4162,6 +4163,8 @@ export function Matrix() {
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
+          /* its documents, read only (M3 7.3 — D1150): changed on the Inputs page, where it was filed */
+          docNames={rowDocIds(leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])).map(id => docGet(id)?.name ?? 'document')}
           code={grid[open.id]?.[open.date] ?? ''}
           /* An OIL credit the app earned opens here too, and it is not leave
              from the Inputs page — the sheet says which it is, and reads the

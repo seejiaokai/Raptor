@@ -11,11 +11,12 @@
 // check — the buttons are only offered where it would succeed.
 import { useState, type ReactElement } from 'react'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
-import { canDecide, codeOf, displayCell, type Period, type Role } from '../engine'
+import { canDecide, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
-import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, type OilShown } from '../state/store'
+import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
+import { DocField } from '../sync'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
 import { dayLabel, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
@@ -166,6 +167,11 @@ export function DayListSheet({
       }
       actions.push(...moveBtn(c.id))
       if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
+      /* ITS DOCUMENTS (M3 7.3 — D1150, D1159): the app's one Document button, for whoever may change this bid (his own, an
+         admin any), on a closed day too; a pick or a ✕ is saved to the bid at once (`lw.reqmeta`, one Undo) */
+      if (src && canEditRow(role, viewer, personId)) actions.push(
+        <span key="doc" data-testid={`dl-doc-${c.id}`}><DocField ids={src.docIds ?? []} onIds={ids => act(() => setRequestWords(personId, date, c.id, { docIds: ids }))} /></span>,
+      )
       const cls = c.state === 'refused' ? 'ref' : ''
       return { key: `r-${c.id}`, cls, text, sub: '', actions }
     }

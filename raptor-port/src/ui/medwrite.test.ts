@@ -147,9 +147,13 @@ describe('docGate — the one decision every editor runs for the document prompt
     expect(docGate({ type: 'ATT C', docIds: ['d1'] }, null)).toBe('ok')
     expect(docGate({ type: 'HL', docId: 'd1' }, null)).toBe('ok')
   })
-  it('does NOT ask for a non-medical type', () => {
-    expect(docGate({ type: 'LL' }, null)).toBe('ok')
+  /* CHANGED BY D1150 (M3 7.4): a NEW leave asks too, never as a stop; a leave already saved and edited never asks */
+  it('does NOT ask for a duty or other commitment; asks a NEW leave, never an edited one', () => {
     expect(docGate({ type: 'Meeting' }, null)).toBe('ok')
+    expect(docGate({ type: 'LL' }, null), 'a new leave').toBe('ask')
+    expect(docGate({ type: 'LL' }, { type: 'Meeting' }), 'retyped into leave').toBe('ask')
+    expect(docGate({ type: 'LL' }, { type: 'OL' }), 'a leave edited').toBe('ok')
+    expect(docGate({ type: 'LL', docIds: ['d1'] }, null), 'a new leave with its document').toBe('ok')
   })
   it('does NOT nag an already-medical row — the commit\'s strip-guard covers the has-doc case', () => {
     // had a doc, now none → 'ok' here; normalizeInputDraft refuses the strip at commit
@@ -226,10 +230,13 @@ describe('the overnight-pass guards (27 Aug 26)', () => {
     expect(commitNewInput(newDraft({ type: 'Upchit', start: '', end: '' }))).toBe(false)
     expect(TOASTS.join(' ')).toContain('Pick the date')
   })
-  it('a document does not ride a type switch onto a non-medical row', () => {
+  /* CHANGED BY D1150 (M3 7.4 — "I should allow all inputs to have the option to attach photo/PDF"): every kind keeps its
+     documents, and the window draws the Document row for every kind, so a file the draft carries is the one the filer
+     sees beside the leave — kept, his ✕ to take off; it used to be dropped silently on a switch away from medical */
+  it('a document the window shows is kept on a leave too', () => {
     expect(commitNewInput(newDraft({ type: 'LL', start: '2026-07-10', end: '2026-07-11' }))).toBe(true)
     const r = INPUTS.find((x: any) => holds(x, 'bane') && x.type === 'LL')
-    expect(r && r.docId, 'the stray certificate id was dropped').toBeUndefined()
+    expect(r && r.docId, 'the document shown is kept').toBeTruthy()
   })
 })
 

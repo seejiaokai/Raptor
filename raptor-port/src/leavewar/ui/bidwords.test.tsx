@@ -147,3 +147,19 @@ describe('the drag-selection window', () => {
     expect(screen.queryByTestId('sel-doc-row')).toBeNull()
   })
 })
+
+describe('the day\u2019s list — each bid line carries its documents (7.3)', () => {
+  it('a file picked on one bid\u2019s line is saved on that bid alone', () => {
+    setCell('dusk', '2026-02-11', '*LL')
+    setCell('dusk', '2026-02-11', 'OL*')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    const sheet = screen.getByTestId('daylist-sheet')
+    const [am, pm] = reqs('dusk', '2026-02-11')
+    const box = within(sheet).getByTestId(`dl-doc-${am!.id}`)
+    fireEvent.change(box.querySelector('input[type="file"]')!, { target: { files: [new File(['x'], 'form.pdf', { type: 'application/pdf' })] } })
+    const now = reqs('dusk', '2026-02-11')
+    expect(now.find(r => r.id === am!.id)?.docIds).toHaveLength(1)
+    expect(now.find(r => r.id === pm!.id)?.docIds).toBeUndefined()
+  })
+})

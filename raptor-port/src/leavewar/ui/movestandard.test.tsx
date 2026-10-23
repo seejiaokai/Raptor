@@ -230,7 +230,8 @@ describe('a bid beside an OIL award — the day’s list (D265, D266)', () => {
     const bid = bidsAt(P, '2026-02-11')[0]!
     const line = screen.getByTestId(`dl-r-${bid.id}`)
     const names = within(line).getAllByRole('button').map(b => b.textContent)
-    expect(names).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete'])   // Ack gone from the list's line (D1158)
+    // Ack gone from the list's line (D1158); the bid's Document button after them since M3 7.3 (D1150, D1159)
+    expect(names).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete', 'Document'])
     isMoveChip(within(line).getByTestId(`dl-move-${bid.id}`))
     isDeleteChip(within(line).getByTestId(`dl-clear-${bid.id}`))
     const award = awardsOnDay(P, '2026-02-11')[0]!

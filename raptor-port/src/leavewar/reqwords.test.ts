@@ -13,7 +13,7 @@ import { setMe, setSession } from '../state/auth'
 import { rowDocIds } from '../state/docs'
 import { projectPeople } from './state/raptorRoster'
 import {
-  closeDates, initStore, isDayOpen, lwHistInit, placeApproved, recordsAt, setBidStates, setCell, setCellRange, setPeople,
+  clearCells, closeDates, initStore, isDayOpen, lwHistInit, movableRecords, moveRecords, placeApproved, recordsAt, setBidStates, setCell, setCellRange, setPeople,
   setRequestWords, setRole, setViewer,
 } from './state/store'
 import type { RequestRec } from './engine/warrecs'
@@ -159,5 +159,45 @@ describe('approval carries them onto the leave, and back (7.2)', () => {
     const rows = leaveOf('ammo')
     expect(rows).toHaveLength(1)
     expect(rowDocIds(rows[0]).sort()).toEqual(['doc-1', 'doc-2'])
+  })
+})
+
+/* B9 — A RECORD NEVER LOSES ITS LIST (M3 7.2): the files stay in the drawer whatever happens; what must not happen is a
+   leave or a request dropping its documents when it is cut, put back, deleted in part or moved. */
+describe('documents survive every cut and move (7.2, B9)', () => {
+  const days = ['2026-02-16', '2026-02-17', '2026-02-18']
+  const span = days.map(date => ({ personId: 'ammo', date }))
+  const approved3 = () => {
+    setCellRange('ammo', '2026-02-16', '2026-02-18', 'LL', { docIds: ['doc-p'], till: false })
+    setBidStates(span, 'approved')
+    const rows = leaveOf('ammo') as any[]
+    expect(rows).toHaveLength(1)
+    expect(rowDocIds(rows[0])).toEqual(['doc-p'])
+    expect(rows[0].till).toBe(false)
+  }
+  it('one day put back: its request holds the file, and the leave left on the other days keeps it', () => {
+    approved3()
+    setBidStates([{ personId: 'ammo', date: '2026-02-17' }], 'pending')
+    expect(reqs('ammo', '2026-02-17')[0]?.docIds).toEqual(['doc-p'])
+    const rows = leaveOf('ammo') as any[]
+    expect(rows).toHaveLength(2)
+    for (const r of rows) expect(rowDocIds(r)).toEqual(['doc-p'])
+  })
+  it('one day deleted: the rest of the leave keeps it', () => {
+    approved3()
+    clearCells([{ personId: 'ammo', date: '2026-02-18' }])
+    const rows = leaveOf('ammo') as any[]
+    expect(rows).toHaveLength(1)
+    expect(rowDocIds(rows[0])).toEqual(['doc-p'])
+  })
+  it('the approved leave moved: kept; a request moved: kept', () => {
+    approved3()
+    expect(moveRecords(movableRecords(span), 7)).toBe('moved')
+    const rows = leaveOf('ammo') as any[]
+    expect(rows.length).toBeGreaterThan(0)
+    for (const r of rows) expect(rowDocIds(r)).toEqual(['doc-p'])
+    setCell('ammo', '2026-03-10', 'LL', { docIds: ['doc-q'] })
+    expect(moveRecords(movableRecords([{ personId: 'ammo', date: '2026-03-10' }]), 1)).toBe('moved')
+    expect(reqs('ammo', '2026-03-11')[0]?.docIds).toEqual(['doc-q'])
   })
 })

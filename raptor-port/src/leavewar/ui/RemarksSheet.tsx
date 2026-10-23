@@ -17,6 +17,7 @@ import { useState } from 'react'
 import { Sheet } from './Sheet'
 import { inputDayLabel } from './dates'
 import { setLeaveRemarks } from '../../ui/inputedit'
+import { DocField, rowDocIds } from '../sync'
 
 export function RemarksSheet({
   callsign,
@@ -37,10 +38,13 @@ export function RemarksSheet({
 }) {
   /* the typed words only — the leave's date is printed from its dates (D948) */
   const [remarks, setRemarks] = useState<string>(remarksTyped(row?.remarks, row))
+  /* ITS DOCUMENTS (M3 7.3 — D1150: "added or seen at any time, even after its dates are locked"; D1159: the app's one
+     Document button): saved with the remarks, by the same one save */
+  const [docIds, setDocIds] = useState<string[]>(rowDocIds(row))
   // The leave's own span, read off the row — a click on any day of a 13–15 Jul
   // run edits the one note for the whole run (owner's example).
   const span = row?.endDate ? `${inputDayLabel(row.date)} → ${inputDayLabel(row.endDate)}` : inputDayLabel(row?.date)   // day-first ([LW-ISO-DATES])
-  const save = () => { if (setLeaveRemarks(row, remarks, personId)) onClose() }
+  const save = () => { if (setLeaveRemarks(row, remarks, personId, docIds)) onClose() }
   return (
     <Sheet testid="remarks-sheet" label="Edit the note on this leave" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -48,6 +52,10 @@ export function RemarksSheet({
         <span className="dt">{span}</span>
         <span className="cur">{displayCell(code)}</span>
         <button className="x" data-testid="remarks-cancel" onClick={onClose} aria-label="Close">✕</button>
+      </div>
+      <div className="bidsheet-row" data-testid="remarks-doc-row">
+        <span className="lab">Document</span>
+        <DocField ids={docIds} onIds={setDocIds} />
       </div>
       <div className="bidsheet-row rmk-row">
         <span className="lab">Remarks</span>

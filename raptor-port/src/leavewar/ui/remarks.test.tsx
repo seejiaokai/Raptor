@@ -116,3 +116,26 @@ describe('the remarks editor', () => {
     expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
   })
 })
+
+/* ITS DOCUMENTS (M3 7.3 — D1150, D1159): the remarks window carries the app's one Document button; a file added is saved
+   on the leave by the same one save, the leave's war mark (`lw`) kept and its words untouched. */
+describe('the remarks window\u2019s Document row', () => {
+  it('a file added on his own war-approved leave is saved on it; its words and its war mark stay', () => {
+    const lw = getState().currentId
+    INPUTS[0].lw = lw
+    syncAbsences()
+    closeAll()
+    setRole('member'); setViewer(PERSON)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    const row = screen.getByTestId('remarks-doc-row')
+    const pick = row.querySelector('input[type="file"]') as HTMLInputElement
+    fireEvent.change(pick, { target: { files: [new File(['%PDF-1.4'], 'approval.pdf', { type: 'application/pdf' })] } })
+    expect(row.textContent).toContain('approval.pdf')
+    fireEvent.click(screen.getByTestId('remarks-save'))
+    const saved = INPUTS.find((r: any) => r.iid === 'rmk-test')
+    expect(saved.docId).toBeTruthy()
+    expect(saved.lw).toBe(lw)
+    expect(saved.remarks).toBe('Bali')
+  })
+})

@@ -55,6 +55,8 @@ const setWin = async (sel: string, v: string) => act(async () => {
   Object.getOwnPropertyDescriptor((isSel ? window.HTMLSelectElement : window.HTMLInputElement).prototype, 'value')!.set!.call(el, v)
   el.dispatchEvent(new Event(isSel ? 'change' : 'input', { bubbles: true }))
 })
+/* a NEW leave with no document asks first since D1150 (M3 7.4) — never a stop; these filers answer "No document" */
+const noDocAsk = async () => { const b = document.querySelector('[data-testid="docconf-nodoc"]'); if (b) await click(b) }
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
@@ -75,7 +77,7 @@ const cancelNew = async () => { if (W()) await click(D('#inpEditCancel')) }
 const calDay = (iso: string) => D(`#inpEdCal [data-iso="${iso}"]`)
 /* the window's type list, for the tests that need a type with (or without) the AM/PM span picker */
 const setType = async (v: string) => setWin('#inpEditType', v)
-const addNow = async () => click(D('#inpEditSave'))
+const addNow = async () => { await click(D('#inpEditSave')); await noDocAsk() }
 
 /* The table opens on a today → +2-months window (owner, Aug 5). The seeded
    demo inputs are July 2026, so with the default window every assertion about
@@ -737,7 +739,7 @@ describe('editing an input from its own line', () => {
     await openRow(0)
     expect($('#inBody tr.ined'), 'no row turns into fields any more').toBeFalsy()
     await setWin('#inpEditRmk', 'EDITED IN ITS WINDOW')
-    await click(D('#inpEditSave'))
+    await click(D('#inpEditSave')); await noDocAsk()
     expect(W(), 'saved: the window closed').toBeFalsy()
     expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe('EDITED IN ITS WINDOW')
     await act(async () => { undo() })
@@ -795,7 +797,7 @@ beforeAll(async () => {
 
     await openRow(0)
     await setWin('#inpEditType', 'Appointment')
-    await click(D('#inpEditSave'))
+    await click(D('#inpEditSave')); await noDocAsk()
 
     expect(inp.type).toBe('Appointment')
     expect(DAYS[0].ground.length, 'no duplicate row left behind').toBe(nGround)
@@ -818,7 +820,7 @@ beforeAll(async () => {
       const { writeInputs } = await import('../state/store')
       writeInputs(() => INPUTS.unshift({ person: 'yeti', date: 'Jul 14', allday: true, type: 'LL', remarks: 'jumped the queue', mod: '' }))
     })
-    await click(D('#inpEditSave'))
+    await click(D('#inpEditSave')); await noDocAsk()
     expect(INPUTS.find((x: any) => x.iid === target.iid).remarks).toBe('STAYS ON TARGET')
     expect(INPUTS[0].remarks).toBe('jumped the queue')   // the interloper is untouched
     if (wasOther) expect(INPUTS.find((x: any) => x.remarks === wasOther.remarks)).toBeTruthy()
@@ -841,7 +843,7 @@ describe('accepted rows are never stranded', () => {
     expect(before).toBe(1)
 
     await openRow(0)
-    await click(D('#inpEditSave'))                                 // change nothing
+    await click(D('#inpEditSave')); await noDocAsk()                                 // change nothing
 
     const after = groundRows().filter(r => r.src === inpId(inp))
     expect(after.length, 'still exactly one row').toBe(1)
@@ -879,7 +881,7 @@ describe('accepted rows are never stranded', () => {
        fired mid-way, so the first Undo landed on old fields that were already
        un-accepted, a state the user never created */
     const depth = HIST.stack.length
-    await click(D('#inpEditSave'))
+    await click(D('#inpEditSave')); await noDocAsk()
     expect(INPUTS[0].remarks).toBe('CHANGED')
     expect(HIST.stack.length - depth, 'one action, one undo step').toBe(1)
     await act(async () => { undo() })
@@ -999,7 +1001,7 @@ describe('the picked date stands after the Remarks box, never in it (D948)', () 
     await click(D('#inpEdCal [data-iso="2026-07-13"]'))
     await click(D('#inpEdCal [data-iso="2026-07-16"]'))
     expect([rm().value, till()], 'picking moves only the date').toEqual(['Bangkok', 'till 16 Jul'])
-    await click(D('#inpEditSave'))
+    await click(D('#inpEditSave')); await noDocAsk()
     const saved = INPUTS.find((x: any) => x.iid === target.iid)
     expect([saved.date, saved.endDate]).toEqual(['Jul 13', 'Jul 16'])
     expect([saved.remarks, remarksShown(saved)]).toEqual(['Bangkok', 'Bangkok till 16 Jul'])
@@ -1352,7 +1354,7 @@ describe('success toasts (owner audit — a tap with no feedback)', () => {
     expect(toasts, 'an add says so').toContain('Input added')
     await withToast(async () => {
       await openRow(0)
-      await click(D('#inpEditSave'))
+      await click(D('#inpEditSave')); await noDocAsk()
     })
     expect(toasts, 'a save says so').toContain('Input updated')
     await withToast(async () => { await delRow(0) })

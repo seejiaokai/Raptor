@@ -17,7 +17,7 @@ import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -473,9 +473,11 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
    that could drift; a group whose every type is filtered out is skipped
    rather than left as an empty heading. No filter = the full list, which is
    what every EDIT and the Inputs page keep. */
-export const typeOptions = (allow?: (t: string) => boolean) => TYPE_GROUPS.map((g: any) => {
+/* `families` (owner D1179, M3 7.4): the Inputs page's FILTER heads each group with a choice for the whole family —
+   "All leave", "All medical", "All duty & commitments" (engine/inputs.ts typeMatches); an input's own kind list never */
+export const typeOptions = (allow?: (t: string) => boolean, families = false) => TYPE_GROUPS.map((g: any) => {
   const ts = INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k && (!allow || allow(t)))
-  return ts.length ? <optgroup key={g.k} label={g.t}>{ts.map((t: string) => <option key={t}>{t}</option>)}</optgroup> : null
+  return ts.length ? <optgroup key={g.k} label={g.t}>{families && <option value={`grp:${g.k}`}>{TYPE_FAMILY_LABEL[g.k]}</option>}{ts.map((t: string) => <option key={t}>{t}</option>)}</optgroup> : null
 })
 
 /* The draft is held apart from the model so Cancel is a real cancel. */
@@ -516,11 +518,14 @@ export const draftOf = (r: any) => ({
    own, in the same command (engine/inputown.ts ownInputOf), and the remark is written on THAT — the others' leave is
    untouched, and the man himself may do it (the piece is his one-person input). The same shape as `saveFromRow`'s
    one-man branch. Pinned in leavewar/onerecord-write.test.ts. */
-export function setLeaveRemarks(row: any, remarks: string, person?: any): boolean {
+/* …and its documents, where the caller hands them (the Leave War's remarks window — M3 7.3, D1150, D1159): one save,
+   the same gate; a documents-only change prints nowhere on the schedule (inpDetailKey reads no document) */
+export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?: string[]): boolean {
+  const withDocs = (d: any) => (docIds ? { ...d, remarks, docIds: [...docIds] } : { ...d, remarks })
   if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
-    return ownPartSave(row, person, own => commitInputEdit(own, { ...draftOf(own), remarks }))
+    return ownPartSave(row, person, own => commitInputEdit(own, withDocs(draftOf(own))))
   }
-  return commitInputEdit(row, { ...draftOf(row), remarks })
+  return commitInputEdit(row, withDocs(draftOf(row)))
 }
 /* ONE MAN'S PART IS CHANGED, OR NOTHING IS (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 4, reproduced
    red in leavewar/trialread.test.ts). Both one-man doors — a box typed on his row of the Unavailable list, the Leave
@@ -714,10 +719,14 @@ export function normalizeInputDraft(draft: any, except: any):
               prompt nags an existing medical row.
    The five certificate types are exactly `needsDoc` (ATT C / ATT B / HL / OML /
    Upchit). rowDocIds reads the draft's list and the bare docId alike. */
+/* …AND A NEW LEAVE ASKS FOR ITS DOCUMENT (owner D1150, M3 7.4 — "something similar to medical where it asks a question
+   for a document to attach. But its not a hard stop"): a NEW leave, or one retyped INTO leave, with none, asks the same
+   [Upload] / [No document]; a leave already saved and edited never asks. */
 export function docGate(draft: any, except: any): 'ok' | 'ask' {
-  if (!draft || !needsDoc(draft.type) || rowDocIds(draft).length) return 'ok'
-  if (except && needsDoc(except.type)) return 'ok'
-  return 'ask'
+  if (!draft || rowDocIds(draft).length) return 'ok'
+  if (needsDoc(draft.type)) return except && needsDoc(except.type) ? 'ok' : 'ask'
+  if (isLeave(draft.type)) return except && isLeave(except.type) ? 'ok' : 'ask'
+  return 'ok'
 }
 
 /* THE OIL ASK GATE (owner, 28 Aug 26) — one decision body for every save
@@ -1018,11 +1027,11 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
     /* the supporting documents' ids only — the blobs stay in state/docs, so
-       history snapshots (JSON of INPUTS) never copy a file. Gated on the type
-       actually needing one: a certificate uploaded under a medical pick and
-       left behind by a switch to leave must not ride onto the leave row and
-       draw a paperclip nothing explains. */
-    ...(needsDoc(draft.type) ? docFields(rowDocIds(draft)) : {}),
+       history snapshots (JSON of INPUTS) never copy a file. EVERY KIND keeps them since the Leave War overhaul's M3 7.4
+       (owner D1150 — "I should allow all inputs to have the option to attach photo/PDF"): the window draws the Document
+       row for every kind, so what it holds is what the filer sees (it used to be gated on a medical type, which a
+       certificate left behind by a switch to leave relied on — the row now shows it, and its ✕ takes it off). */
+    ...docFields(rowDocIds(draft)),
   }
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
@@ -1260,7 +1269,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        Only on a type that KEEPS documents — the family guard above stops a
        medical row leaving the group, so this bites only on stray ids a
        dialog carried while the type was flipped among non-medical picks. */
-    if (needsDoc(draft.type) && rowDocIds(draft).length) {
+    /* …for EVERY kind since M3 7.4 (D1150): a leave's or a duty's ✕ that empties its list takes the files off the record;
+       a medical's list never goes empty here (the replace-don't-strip refusal above). A draft that carries no list at all
+       (a caller that never drew the Document row) leaves the record's as it is. */
+    if (Array.isArray(draft.docIds) && (!needsDoc(draft.type) || rowDocIds(draft).length)) {
+      delete (r as any).docId
       delete (r as any).docIds
       Object.assign(r, docFields(rowDocIds(draft)))
     }
@@ -2715,6 +2728,7 @@ export function InputEditor() {
       setDocConf({
         who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
         typeLabel: draft.type,
+        leave: isLeave(draft.type),
       })
       return
     }
@@ -3019,10 +3033,12 @@ export function InputEditor() {
               exactly the types whose commit demands one (needsDoc is the one
               body for both), so the button never appears where the file is
               not wanted and never hides where it is */}
-          {needsDoc(draft.type) && <div className="inped-f">
+          {/* …FOR EVERY KIND since M3 7.4 (owner D1150): a leave shows it was applied for and approved in the official
+              leave system; a medical's is still the one asked and guarded (needsDoc) */}
+          <div className="inped-f">
             <span className="inped-k">Document</span>
             <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />
-          </div>}
+          </div>
           {/* THE REMARKS BOX HOLDS ONLY WHAT A PERSON TYPES (owner D948, 16 Oct 26 — his D946: "a dedicated remarks box just
               for free text that is empty and easy to select and the editable till date is always after the remarks"):
               the "till <date>" stands after the box in grey, from the dates in the window the moment it opens — a day
@@ -3234,7 +3250,7 @@ export function InputEditor() {
       {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
           the SAME save through the rest of the pipeline (skipDoc); "Upload"
           dismisses so the filer can attach a certificate and save again */}
-      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
+      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel} leave={!!docConf.leave}
         onUpload={() => setDocConf(null)}
         onNoDoc={() => { setDocConf(null); save(true) }} />}
   </>)

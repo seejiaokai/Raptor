@@ -913,11 +913,14 @@ export function RaptorSheet({
   date,
   code,
   creditShown,
+  docNames = [],
   onClose,
 }: {
   callsign: string
   date: string
   code: string
+  /** the documents the Inputs-page record carries — named, read only (M3 7.3, D1150) */
+  docNames?: string[]
   /** OIL the APP earned on this day, if that is what the cell holds (owner,
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
@@ -966,6 +969,12 @@ export function RaptorSheet({
               : 'Filed on the Inputs page — change it there, not here.'}
         </span>
       </div>
+      {!creditShown && docNames.length > 0 && (
+        <div className="bidsheet-row" data-testid="raptor-docs">
+          <span className="lab">Document</span>
+          <span className="docfield">{docNames.map((n, i) => <span key={i} className="docchip"><span className="docname">{n}</span></span>)}</span>
+        </div>
+      )}
       {/* The same three lines the day window gives for OIL, because the
           question is the same one however the day happens to open. */}
       {creditShown && <OilDetailRows c={creditShown} auto />}

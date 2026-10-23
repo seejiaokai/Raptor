@@ -225,3 +225,6 @@
 /* the Inputs page's top row — the three tabs, the Calendar | List switch, the filters — is 25-inputs-calendar.css
    (the mode pair and the view trio they replaced went with their buttons, D620 / D626) */
 .inputs-workspace [hidden]{display:none!important}
+/* A LEAVE OR MEDICAL ROW WITH NO DOCUMENT says so, quietly (owner D1179, M3 7.4): the paperclip's place, in the app's
+   faint grey, small — a fact to scan for, never a warning colour */
+.inact>span.in-nodoc{width:auto;height:auto;font-size:11px;font-weight:500;color:var(--ink-3);white-space:nowrap}

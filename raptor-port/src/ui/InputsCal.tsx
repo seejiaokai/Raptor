@@ -31,7 +31,7 @@
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -110,7 +110,7 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   /* one body with the List and the month (ui/inputscal-model.ts): an input passes when ANY of its people does, or its
      placeholder — it is one record with the list of its people (owner D756; the one-rule plan §4.5) */
   inputs = inputs.filter((r: any) => inputPassesPerson(f.fPerson, r))
-  if (f.fType !== 'all') inputs = inputs.filter((r: any) => r.type === f.fType)
+  if (f.fType !== 'all') inputs = inputs.filter((r: any) => typeMatches(f.fType, r.type))
   /* …and by its NAME — its own title, or its kind — as the List and the month do: a bar found by its title opened a
      day that then hid it ([INPUT-OWN-TITLE], Sol's read of the plan — 5); and by the callsign of anyone in it */
   if (f.fSearch) inputs = inputs.filter((r: any) => inputMatchesSearch(r, f.fSearch))

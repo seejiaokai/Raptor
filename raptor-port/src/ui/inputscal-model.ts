@@ -16,7 +16,7 @@
    bars, and who is in one is the record's own list, read through engine/inputs.ts (namedOf / placeholderOf) — never
    `person`, never how many records. A record stored before that build (one `person`) reads as the one-person input it
    is; one that still carries an old group id is one man's input too (D759 reading 10 — nothing is converted). */
-import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit, namedOf, placeholderOf , remarksShown } from '../engine/inputs'
+import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit, namedOf, placeholderOf , remarksShown, typeMatches } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import type { DayAnswer } from '../state/flyplan-model'
 
@@ -148,7 +148,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
   const out: BarItem[] = []
   for (const r of (inputs || [])) {
     if (!r || isSansAvail(r.type)) continue
-    if (f.fType !== 'all' && r.type !== f.fType) continue
+    if (!typeMatches(f.fType, r.type)) continue
     if (!inputPassesPerson(f.fPerson, r, people) || !inputMatchesSearch(r, f.fSearch, people)) continue
     const who = peopleAZ(r, people)
     const ph = placeholderOf(r)

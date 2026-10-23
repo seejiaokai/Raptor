@@ -589,6 +589,13 @@ export const INPUT_TYPES=Object.keys(INPUT_META);
 export const TYPE_GROUPS:any=[
   {k:'leave',t:'Leave'},{k:'med',t:'Medical'},{k:'other',t:'Duty & other commitments'}];
 export function typeGroup(t:any){const m=inpMeta(t); return !m?'other':m.grp==='leave'?'leave':(m.grp==='med'||m.grp==='upchit')?'med':'other';}
+/* THE TYPE FILTER PICKS A WHOLE FAMILY TOO (owner D1179, M3 7.4 — "select leave to show all kinds of leave, likewise for
+   medical"): a filter value 'grp:<family>' matches every kind of that family, 'all' everything, else the one kind. ONE body
+   for the Inputs list, its calendar and the calendar's day, so the three cannot disagree. */
+export const TYPE_FAMILY_LABEL:any={leave:'All leave',med:'All medical',other:'All duty & commitments'};
+export function typeMatches(f:any,t:any):boolean{if(!f||f==='all')return true;if(String(f).startsWith('grp:'))return typeGroup(t)===String(f).slice(4);return t===f;}
+/* what a filter value reads as, in the list of filters applied */
+export function typeFilterLabel(f:any):string{return String(f).startsWith('grp:')?(TYPE_FAMILY_LABEL[String(f).slice(4)]||String(f)):String(f);}
 /* The two halves of the day's input blocks, and the ONLY place the split is
    decided — the week and the board both used to carry their own copy of this
    regex and could drift apart.

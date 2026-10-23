@@ -11440,3 +11440,41 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   desktop opens them. When a bid placed through a bid window turns a Manning or Available row amber or red on a day it was
   not, they open by themselves and a bubble under the Manning button names each row ("This bid turns IP amber, Available P
   red."), gone at the next tap — read as the difference of the verdicts between the window's opening and its closing. The same bubble on a desktop (D1272), where the rows are already open. A Move or a drag of a bid raises it too (D1274 — built 23 Oct 26: every grid move lands in `commitMove`, which takes the "before"; one comparison for a placed and a moved bid, only a worsening). With the Manning button out of view when it is raised (its box against the visible screen, the keyboard and the top bar counted) the same words sit at the foot of the screen (`.mn-foot` — the screen's width less 12px on a phone, 560px centred on a desktop) with "Show ›", which opens the rows, scrolls the Manning button into view and puts the keyboard on it; a press on Show and Tab on the way to it do not end it, any other tap or key does (D1277 — built 23 Oct 26; `bidbubble.test.tsx`).
+
+## The bid windows after M3 — placing leave (the overhaul's M3, the night of 23–24 Oct 26)
+
+The build list: `docs/superpowers/plans/2026-10-24-lw-m3-build-spec.md`. One order for the one-day window (`BidPicker`) and
+the drag-selection window (`SelectSheet`), a row with nothing to act on not drawn (D264, D331): the title bar (who · the
+date or span · an admin's ☑ "Approve what I enter" · ✕) → the day line → Date → Decide → Selected → Document → Remarks →
+Duration → Which leave → Also (the admin's +OIL · PO · PI). On an empty day Duration stands under Date, as drawn.
+- **The day line** (D1144, D1213; `ui/DayLine.tsx`, the store's answer `engine/whatif.ts` through `sync.ts bidDayLine`):
+  his seat's Available row before → after, then each Manning row the bid turns amber or red, a line each, names and figures
+  in two columns, halves ".5"; one calm line where none turns; a range or a drag names its worst day (across people, the
+  worst person-day, the callsign first). It follows Duration and the range, never the kind of leave (D998).
+- **The leave buttons** (`ui/LeaveButtons.tsx`): two rows of four in the catalogue's order; each its kind's colour of look F,
+  hollow and dashed while the bid would wait, filled while "Approve what I enter" is ticked; each with what is left of the
+  balance it spends (the balance column's own figure), dimmed at 0 or below and still pressable, a negative in red.
+- **"Approve what I enter"** (D1147, D1186, D1187): ticked each time the window opens; a placing then approves as it places —
+  `store.ts placeApproved`, ONE command `lw.placeApproved`, one Undo; a day its approval refuses keeps its bid, named.
+- **Document and Remarks** (D1210, D1226, D1150, D1159; `ui/ReqWords.tsx`): the app's one Document button and the Inputs
+  page's own remarks box with its grey "till <date>" and tick. On an empty day (or a picked range) they hold the words of the
+  bid about to be placed and the leave tap writes them with it; on a day holding ONE bid they speak for that bid and save as
+  they change — a file, a ✕ and the tick at once, the typed words when the box is left or Enter pressed — each one
+  `lw.reqmeta` command (`store.ts setRequestWords`, the bid's whole run). A re-typed bid keeps its words (5.11). Not on an
+  approved leave: its Note opens the remarks window, which carries a Document row too (`RemarksSheet.tsx`, saved by the
+  Inputs page's one save, `setLeaveRemarks`). The drag-selection window draws them for ONE person only; the member's
+  closed-day window for his one pending bid there (`ClosedNoteSheet.tsx` — the commit lets exactly this change through on a
+  closed day, `perms.ts onlyChangesWords`). The day's list gives each bid line its Document button (`DayList.tsx`). A leave
+  filed on the Inputs page, opened from the grid, names its documents, read only (`RaptorSheet`).
+- **Approval carries them** (7.2, `sync.ts doorApprove` / `doorDecideApproved`): onto the leave on the Inputs page and back
+  at a put-back; a run joins only days with the same words, tick and documents; a join keeps every paper; a request that
+  carries its own unticked till joins only a leave showing the same (one with none takes its neighbour's — D953).
+- **On a phone** a window opening over a low cell first scrolls the cell just above the window (5.7, `Matrix.tsx`).
+
+**The Inputs page, the same night (7.4 — D1150, D1179):** the input window draws its Document row for every kind; a NEW leave
+(or one retyped into leave) with none asks "No document — <callsign>, <kind>" / "Attach the approval from the leave app now,
+or file it and attach it later." ([Upload] / [No document]) — never a stop; a leave already saved never asks (`docGate`). The
+type filter heads each family with "All leave", "All medical", "All duty & commitments" (`engine/inputs.ts typeMatches` — one
+body for the list, its calendar and the day); a leave or medical row with none reads a quiet "No document" in the
+paperclip's place (the desktop list; the phone's cards not yet). A documents-only change prints nowhere on the schedule
+(`inpDetailKey` reads no document), so a published day stays as it was.

@@ -2677,3 +2677,5 @@ export function flyMonth(y: number, m: number): Record<string, DayAnswer> {
    inputs wire, as the published remarks editor's is) */
 export { DocField } from '../ui/inputedit'
 export { tillOfISO } from '../engine/inputs'
+export { rowDocIds }
+export { docGet } from '../state/docs'

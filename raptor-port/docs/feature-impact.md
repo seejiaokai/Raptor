@@ -1504,3 +1504,13 @@ its three doors, Admin → Data's two forms, the upchit's date, the Leave War's 
   "Jump to a date" and the upchit's own default use the schedule's planning day. Step one keeps each as it was.
 - **A box cannot be emptied.** A form that must be able to go without a date offers that choice itself ("No end"). A
   writer still refuses a missing date; no screen can send one any more.
+
+## A leave request's words and papers (the Leave War overhaul's M3, 23–24 Oct 26 — D1210, D1226, D1150, D1159)
+
+A request on the war now carries its own remarks, "till <date>" tick and documents (`engine/warrecs.ts RequestRec`). The
+surfaces that write or show them: the one-day window, the drag-selection window (one person), the member's closed-day
+window, the day's list (`ui/ReqWords.tsx`, `DayList.tsx`); approval carries them onto the leave on the Inputs page and a
+put-back carries them back (`sync.ts doorApprove` / `doorDecideApproved` — the drift-seam: a field added to a request must
+be copied there and in `store.ts setCell` / `moveRecords`); the leave then shows them wherever an input's remark and
+documents show (the Inputs list and calendar, the input window, the schedule's rows print the remark and its till). One new
+command, `lw.reqmeta` (`perms.ts` — a member's own pending request's words change on a closed day, nothing else there).
