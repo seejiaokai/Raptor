@@ -287,8 +287,14 @@ await run(9, async () => {
 if (process.env.MARK) await run(10, async () => {
   const w = await L.newWorld('phone')
   await fixture(w)
-  await signIn(w, 'admin', { plain: true })
-  await shot(w, 'q-bar-two-lines', { clip: { x: 0, y: 0, width: 390, height: 300 }, mark: '#page-leavewar .card-hd .lw-gridbar' })
+  await signIn(w, 'admin', { plain: true }); await tap(w, T('month-JAN')); await w.page.waitForTimeout(900)
+  /* a pilot's bid on 13 Jan turns Available P red: the bar's Manning carries "1 red ›" */
+  const cell = await visibleEmptyCell(w, B, 0)
+  const c = await w.page.locator(T(cell)).boundingBox()
+  await L.finger(w, c.x + c.width / 2, c.y + c.height / 2); await w.page.waitForSelector(T('bid-picker'))
+  await placeLL(w); await L.finger(w, 5, 600); await w.page.waitForTimeout(300)
+  await w.page.evaluate(() => window.scrollTo(0, 0)); await w.page.waitForTimeout(300)
+  await shot(w, 'q-bar-two-lines', { clip: { x: 0, y: 0, width: 390, height: 360 }, mark: '#page-leavewar .card-hd .lw-gridbar' })
   await shot(w, 'q-tabs-wide', { clip: { x: 0, y: 0, width: 390, height: 300 }, mark: '#page-leavewar > .lw-top .lw-tabs' })
   rec(10, 'phone390 admin', 'PICTURES', 'for his questions', ['q-bar-two-lines.png', 'q-tabs-wide.png'])
   await w.ctx.close()
