@@ -2089,6 +2089,47 @@ test('a pressed month never tints the strip, and no pinned heading turns see-thr
   expect(alphaOf(await head.evaluate(el => getComputedStyle(el).backgroundColor)), 'a group heading turned see-through').toBe(1)
 })
 
+/* THE STANDING CHECK OF D1281 (23 Oct 26 — his "Yes", after "Why is the blue background not picked up by your checks?").
+   An iPhone keeps what a finger tapped "hovered" until the next tap; the test browser drops it within a quarter of a second,
+   so a pinned cell turned see-through by a hover rule showed only on his phone (the month strip, from 19 Aug 26 to 23 Oct 26).
+   Here every control a person presses on the Leave War's grid is pressed on a phone and the pointer LEFT on it, as the
+   iPhone leaves it, and every pinned (sticky) cell of the grid must stay fully opaque — the empty placeholder column
+   (`.lwph`) aside, which paints nothing by design. The bug-check order §7.10 names this test. */
+test("pressing the Leave War's controls on a phone never turns a pinned cell see-through (D1281)", async ({ page }) => {
+  test.skip(!isPhone(), "an iPhone's kept hover is a touch screen's")
+  await lwRole(page, 'admin')
+  const seeThrough = () => page.evaluate(() => {
+    const out: string[] = []
+    for (const e of document.querySelectorAll<HTMLElement>('#page-leavewar td, #page-leavewar th')) {
+      const c = getComputedStyle(e)
+      if (c.position !== 'sticky' || e.classList.contains('lwph') || !e.getBoundingClientRect().width) continue
+      const p = c.backgroundColor.match(/[\d.]+/g)!
+      if (p.length >= 4 && Number(p[3]) < 1) out.push(`${e.tagName.toLowerCase()}.${[...e.classList].join('.')} ${c.backgroundColor}`)
+    }
+    return out
+  })
+  expect(await seeThrough(), 'at rest').toEqual([])
+  const press = async (sel: string, what: string, close = false) => {
+    const el = page.locator(sel).first()
+    await el.scrollIntoViewIfNeeded()
+    await el.click()
+    await page.waitForTimeout(80)
+    expect(await seeThrough(), `${what} pressed, the pointer left on it`).toEqual([])
+    if (close) { await page.keyboard.press('Escape'); await page.waitForTimeout(120) }
+  }
+  for (const m of ['JAN', 'FEB', 'MAR', 'JUN', 'DEC']) await press(`[data-testid="month-${m}"]`, `month ${m}`)
+  await press('[data-testid="counts-toggle"]', 'Manning (open)')
+  await press('[data-testid="counts-toggle"]', 'Manning (fold)')
+  await press('[data-testid="lw-zoom-out"]', 'zoom out')
+  await press('[data-testid="lw-zoom-in"]', 'zoom in')
+  await press('[data-testid="legend-open"]', 'Legend', true)
+  await press('[data-testid="month-JAN"]', 'back to January')
+  await press('[data-testid^="event-0-2026-01-1"]', 'an Event cell', true)
+  await press('[data-testid="cell-slipway-2026-01-20"]', "a person's day", true)
+  await press('#page-leavewar tr.grp td.grphd', 'a group heading (fold)')
+  await press('#page-leavewar tr.grp td.grphd', 'a group heading (open)')
+})
+
 // The space arithmetic, checked against a real browser rather than read off
 // the stylesheet. The estimate that justified this design was WRONG — it
 // assumed 30px day columns from `min-width`, where the rendered width is

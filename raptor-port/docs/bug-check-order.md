@@ -702,6 +702,22 @@ it; Chromium retargets them), and add a synthetic check per difference: dispatch
 directly on the element it would reach. Name in the evidence sheet every line only a real device can prove,
 and put it on the owner's look card.
 
+**7.10 The moment after a press, and the drawing beside the build (owner D1281, 23 Oct 26).** Three faults he found on
+his iPhone in one day had passed every walk, each a state no step looked at. So, for every walk of a screen:
+- **A picture right after the press.** On a phone, a step that taps takes one picture within about 100 ms of the
+  lift, with the pointer left where it pressed, as well as the settled one — an iPhone keeps what was tapped
+  "hovered" until the next tap, where the test browser drops it in a quarter of a second, so a tint or a see-through
+  cell that lives in that state showed only on his phone (the month strip's dirty block, in the app since 19 Aug 26).
+  The walker opens it beside the settled picture and names any tint, see-through cell or shifted box that only the
+  pressed one shows.
+- **No pinned cell turns see-through.** Each dense screen keeps a standing browser test that presses its controls on
+  a phone, the pointer left on each, and asserts every pinned (sticky) cell stays fully opaque (a cell that paints nothing by design aside). The Leave War has it
+  (`e2e/leavewar.spec.ts`, "pressing the Leave War's controls on a phone never turns a pinned cell see-through");
+  the Scheduler Board, the week, Quals and the Tracker get theirs when each is next worked on, not swept now.
+- **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
+  iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
+  (his lessons 42 and 43, `docs/design-practices.md` §9).
+
 ---
 
 ## 8. Making the checks FIND rather than CONFIRM
