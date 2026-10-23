@@ -412,7 +412,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const last = runs[runs.length - 1]
     const prev = last?.[last.length - 1]
     if (prev && prev.personId === p.personId && prev.warId === p.warId && prev.rec.code === p.rec.code &&
-      (prev.rec.carried?.remarks ?? '') === (p.rec.carried?.remarks ?? '') && addDays(prev.date, 1) === p.date) last!.push(p)
+      (prev.rec.remarks ?? '') === (p.rec.remarks ?? '') && addDays(prev.date, 1) === p.date) last!.push(p)
     else runs.push([p])
   }
   const rows = runs.map(run => {
@@ -425,7 +425,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const row = inputRowFor({
       person: first.personId, code: first.rec.code, from: first.date, to: last.date, lw: first.warId,
       /* the request's own words only — its "till <last day>" is printed from its dates (owner D948) */
-      remarks: remarksTyped(first.rec.carried?.remarks ?? '', { start: first.date, end: last.date }),
+      remarks: remarksTyped(first.rec.remarks ?? '', { start: first.date, end: last.date }),
       lwMoved: moved, mod: nowStamp(),
     })
     inpId(row)
@@ -574,9 +574,10 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
-      carried: { ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
+      ...(row.lwMoved?.[it.date] ? { carried: { lwMoved: { [it.date]: row.lwMoved[it.date] } } } : {}),
+      /* a put-back carries the leave's words back to the request (M3 7.1 / 7.2, B9) */
+      ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}),
     }
-    if (!rec.carried!.remarks && !rec.carried!.lwMoved) delete rec.carried
     adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)

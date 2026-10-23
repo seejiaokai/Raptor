@@ -41,9 +41,22 @@ export interface RequestRec extends Placed {
   /** the date a closed-bidding move took it from (the dotted mark) */
   shiftedFrom?: string
   /** what an un-approval carried back from the Input, consumed by the next
-   *  approval: the member's remark and the moved marks (design §2.2, FB3-03) */
+   *  approval: the moved marks (design §2.2, FB3-03) — the remark is the request's own `remarks` since M3 */
   carried?: Carried
+  /** THE REQUEST'S OWN WORDS AND PAPERS (owner D1210, D1226, D1150, D1159; M3 7.1): its remarks (as an input's), the
+   *  "till <date>" tick where his hand choice differs from the default (D953), and its documents — ids in the document
+   *  drawer (`state/docs`), carried into the Input on approval and back on a put-back (B9) */
+  remarks?: string
+  till?: boolean
+  docIds?: string[]
 }
+
+/** the words and papers a request carries, copied wherever a request is rebuilt (a move, a put-back, a re-typed bid) */
+export function requestWords(r: Pick<RequestRec, 'remarks' | 'till' | 'docIds'>): Pick<RequestRec, 'remarks' | 'till' | 'docIds'> {
+  return { ...(r.remarks ? { remarks: r.remarks } : {}), ...(r.till !== undefined ? { till: r.till } : {}), ...(r.docIds?.length ? { docIds: [...r.docIds] } : {}) }
+}
+/** at most this many documents on one request */
+export const MAX_REQ_DOCS = 20
 export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
 
 /** WHO GAVE THIS OIL, in the words the squadron reads (owner, 21 Sep 26).
@@ -312,7 +325,15 @@ function readRecBody(x: unknown): WarRec | null {
     const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: (x.state === 'acknowledged' ? 'pending' : x.state) as RequestState }
     if (typeof x.shiftedFrom === 'string' && ISO.test(x.shiftedFrom)) r.shiftedFrom = x.shiftedFrom
     const c = readCarried(x.carried)
-    if (c) r.carried = c
+    if (c?.lwMoved) r.carried = { lwMoved: c.lwMoved }
+    /* its words: its own, or — an older saved shape (D401) — the remark an un-approval carried */
+    if (typeof x.remarks === 'string' && x.remarks.trim()) r.remarks = x.remarks.slice(0, MAX_CARRIED_REMARK)
+    else if (c?.remarks) r.remarks = c.remarks
+    if (typeof x.till === 'boolean') r.till = x.till
+    if (Array.isArray(x.docIds)) {
+      const ids = [...new Set((x.docIds as unknown[]).filter((d): d is string => typeof d === 'string' && !!d.trim() && d.length <= 120))].slice(0, MAX_REQ_DOCS)
+      if (ids.length) r.docIds = ids
+    }
     return r
   }
   if (x.kind === 'credit') {

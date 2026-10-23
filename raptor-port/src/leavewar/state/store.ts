@@ -98,6 +98,7 @@ import {
   type Recs,
   type WarRec,
   type RequestRec,
+  requestWords,
   type CreditRec,
   type NoticeRec,
   type RequestState,
@@ -4925,6 +4926,7 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
           id: r.rec.id, kind: 'request', code: r.rec.code, state: 'pending',
           ...(r.rec.shiftedFrom ? { shiftedFrom: r.rec.shiftedFrom } : {}),
           ...(r.rec.carried ? { carried: r.rec.carried } : {}),
+          ...requestWords(r.rec),
         }
         putList(r.personId, r.to, [...listAt(r.personId, r.to), landed])
       }
