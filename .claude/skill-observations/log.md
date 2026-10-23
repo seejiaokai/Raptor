@@ -1945,3 +1945,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In the mock-up guide, one line: when a picture is cropped by its box, a ring placed in percent takes the BOX as its measure (pixels from the top / the box height in picture pixels), or the ring is drawn onto the picture itself.
 
 **Principle:** A mark placed in relative units is relative to the element that holds it; once a crop makes that element differ from the source, convert every coordinate to the crop.
+
+### Observation 686: A FULL walk read a window's top line in its "new bid" state only; the owner found it wrong in the "bid already placed" state
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** his iPhone look at the Leave War M3 build (pull request 569) the morning after its FULL bug check. Numbered past 682–685 on `claude/night-records-1021` (unmerged).
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.4) / walk briefs
+**Type:** internal
+**Phase/Area:** scenario design — the state table
+
+**Issue:** The bid window has two states, a new bid and a bid already on the day ("NOW LL"). The walk read the day line before a bid that turns Available P red (PASS) and the bubble after it (PASS); it reopened placed bids several times, but only on calm days and to check documents and remarks. Nobody listed "reopened on the day it turned red × the day line", and the day line there said "No manning row turns amber or red" (his D1296). The code read missed it too.
+
+**Suggested improvement:** in the sizing step and the walk brief, for every window with more than one state, write a table of state × every reading the window shows (day line, figures, buttons) and give each cell a scenario or a named test — the §7.4 state table applied to readings, not only to presses.
+
+**Principle:** A reading that is right in one state of a surface is unproved in its other states; list each state against each thing it shows, not only against each action.
