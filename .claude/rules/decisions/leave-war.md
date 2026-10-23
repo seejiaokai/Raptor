@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1279 | 23 Oct 26 | On a phone the View row's green period picker and black My leave box are one height and share one centre line, side by side. |
 | D1278 | 23 Oct 26 | On a phone the Leave War's two top rows — the Grid / OIL tab row with ⚙, and the View / period picker / My leave row — are drawn as low and compact as the approved round-19 drawing: no taller than it, My leave sized to its two lines rather than held at a 44px minimum. |
 | D1277 | 23 Oct 26 | When the Manning button is out of view, the bid bubble sits at the foot of the screen instead — "This bid turns Available P amber. Show ›" — and Show takes him up to the Manning rows, opened; it goes at his next tap or key, as the bubble does. |
 | D1276 | 23 Oct 26 | The Leave War's − / + zoom buttons go only once pinch to zoom works with the frozen date bar; if the pinch cannot be made to work with it, the − / + stay. |

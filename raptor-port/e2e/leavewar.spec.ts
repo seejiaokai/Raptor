@@ -736,8 +736,14 @@ test('on a phone the two top rows are no taller than the drawing: the tab row, a
       const h = await page.evaluate(() => {
         const pg = document.querySelector('#page-leavewar')!
         const ht = (sel: string) => (pg.querySelector(sel) as HTMLElement).getBoundingClientRect().height
-        return { tabs: ht(':scope > .lw-top'), view: ht(':scope > .lw-viewline'), myLeave: ht('[data-testid="my-leave"]') }
+        const box = (sel: string) => (pg.querySelector(sel) as HTMLElement).getBoundingClientRect()
+        const pk = box('[data-testid="war-picker"]'), ml = box('[data-testid="my-leave"]')
+        return { tabs: ht(':scope > .lw-top'), view: ht(':scope > .lw-viewline'), myLeave: ht('[data-testid="my-leave"]'),
+          pickerH: pk.height, pickerMid: pk.top + pk.height / 2, myLeaveMid: ml.top + ml.height / 2 }
       })
+      /* D1279: the green picker and My leave one height, one centre line */
+      expect(Math.abs(h.pickerH - h.myLeave), `${role}, ${width}: the picker is ${h.pickerH}px beside My leave's ${h.myLeave}px`).toBeLessThan(0.75)
+      expect(Math.abs(h.pickerMid - h.myLeaveMid), `${role}, ${width}: the two are not on one centre line`).toBeLessThan(0.75)
       expect(h.tabs, `${role}, ${width}: the tab row is taller than drawn`).toBeLessThanOrEqual(54)
       expect(h.view, `${role}, ${width}: the View line is taller than drawn`).toBeLessThanOrEqual(43)
       expect(h.myLeave, `${role}, ${width}: My leave is held taller than its two lines`).toBeLessThan(40)

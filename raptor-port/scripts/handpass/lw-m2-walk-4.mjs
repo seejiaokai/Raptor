@@ -240,6 +240,8 @@ await run(7, async () => {
     const h = await w.page.evaluate(() => { const pg = document.querySelector('#page-leavewar'); const ht = s => Math.round(pg.querySelector(s).getBoundingClientRect().height * 10) / 10; return { tabs: ht(':scope > .lw-top'), view: ht(':scope > .lw-viewline'), myLeave: ht('[data-testid="my-leave"]'), pageOver: document.documentElement.scrollWidth - document.documentElement.clientWidth } })
     const name = `pm7-${who}${wide ? '-wide' : ''}`
     await shot(w, name, { clip: { x: 0, y: 0, width: 390, height: 300 }, mark: '#page-leavewar > .lw-top, #page-leavewar > .lw-viewline' })
+    /* D1279: the green picker and My leave, one height on one centre line — the two boxes ringed */
+    if (who === 'admin' && !wide) await shot(w, 'pm7-pair', { clip: { x: 0, y: 90, width: 390, height: 120 }, mark: '#page-leavewar [data-testid="war-picker"], #page-leavewar [data-testid="my-leave"]' })
     rec(`7-${who}${wide ? '-wide' : ''}`, `phone390 ${who}`, h.tabs <= 54 && h.view <= 43 && h.pageOver <= 1 ? 'PASS' : 'FAIL', `tab row ${h.tabs}px (drawing ~53), View line ${h.view}px (drawing ~42), My leave ${h.myLeave}px; sideways overflow ${h.pageOver}`, [name + '.png'])
     w.errs.forEach(x => errsAll.push('7: ' + x)); await w.ctx.close()
   }

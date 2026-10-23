@@ -1159,6 +1159,9 @@
     /* the picker keeps its whole name ("JAN - DEC 26", as drawn); My leave takes what is left */
     .lw-viewline .lw-view { flex: 0 0 auto; }
     .lw-viewline .warpick { max-width: 44vw; }
+    /* the green picker and My leave one height on one centre line (D1279): both take the line's height, which My leave's
+       two lines set — never a fixed number, so wider letters keep them equal */
+    .lw-viewline .lw-view, .lw-viewline .warpick { align-self: stretch; }
     .lw-viewline .myleave {
       position: relative;
       flex: 1 1 auto;
