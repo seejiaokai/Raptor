@@ -1,9 +1,9 @@
-import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type RefCallback, type TouchEvent } from 'react'
+import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
-import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
+import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
 import { OilTracker } from './OilTracker'
@@ -15,7 +15,7 @@ import { FlyRows, type FlyPickApi } from './FlyRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
-import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { clampWin, leftGrowAbsorbable, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import type { PostOutcome } from '../engine'
 import { outcomeOf, bandAt, classifyEvent, dayEvent, dayEventKind, EVENT_KIND_WORDS } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
@@ -27,12 +27,15 @@ import { edgeAutoScroll } from '../../ui/edgescroll'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
+import { StageBar } from './Chrome'
+import { askLw, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
+import { usePhone } from './phone'
 import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
-import { leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem } from '../sync'
+import { availRowNames, availVerdictAt, flyMonth, leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -148,6 +151,23 @@ function sameStuck(
    them) — only the on-grid editor is gone. */
 
 
+/** The bid bubble's reading of the grid at one moment (D1227): each flagged row-day at its level (1 amber, 2 red), and the
+ *  days drawn then — the two Available rows are read over the drawn days only. */
+export type BubbleFlags = { m: Map<string, { label: string; lv: number }>; drawn: Set<string> }
+/** The rows a bid made WORSE between two readings — a row-day to amber or red, or amber to red — each at its worst.
+ *  Exported for its unit test (bidbubble.test.tsx). */
+export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string, 'amber' | 'red'> {
+  const worst = new Map<string, 'amber' | 'red'>()
+  for (const [k, { label, lv }] of now.m) {
+    /* an Available row's day not drawn when the "before" was read has no "before" — a month drawn while a bid window was
+       open (the page behind it scrolls) is never "turned" by the bid (the code read of 23 Oct 26) */
+    if ((k.startsWith('availp|') || k.startsWith('availw|')) && !before.drawn.has(k.slice(7))) continue
+    if (lv <= (before.m.get(k)?.lv ?? 0)) continue
+    if (worst.get(label) !== 'red') worst.set(label, lv === 2 ? 'red' : 'amber')
+  }
+  return worst
+}
+
 export function Matrix() {
   /* kept in a name (not just subscribed) so store-reading memos below can
      re-derive on every store change — `movers` reads live grid state, and a
@@ -259,15 +279,17 @@ export function Matrix() {
   // and a fresh array every render would defeat them.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const figures = useMemo(() => visibleFigures(), [version])
-  const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
-  const [picking, setPicking] = useState(false)
   // The figures DRAWER (owner, 6 Sep 26): every figure at once, popped out
   // beside the names over the days. Open on a desktop, closed on a phone — a
   // view preference, session-only, either role. Decided once at mount from the
   // same width query the phone flag uses; jsdom (no matchMedia) opens closed so
   // the unit suite sees the grid it always saw.
-  const [figuresOpen, setFiguresOpen] = useState(() =>
-    typeof window.matchMedia === 'function' && !window.matchMedia('(max-width: 700px)').matches)
+  /* THE GRID'S BALANCES FOLD GOES (D1245, 22 Oct 26 — "n5 as recommended"; narrowing D1185): every balance column is to
+     live on the Balances tab (the overhaul's M5) and on the grid each name keeps only its LVE figure, so no two things on
+     the page share the name "Balances". Its switch stood in the month band row, which goes too (D1257). Until M5 a
+     person's every figure is a tap on his name (his person window). The drawer's code stays switched off here — it goes
+     whole with M5's Balances page, which replaces it ([LW-OVERHAUL] — the build plan's M5). */
+  const [figuresOpen, setFiguresOpen] = useState(false)
   // Where the drawer sits and how wide it came out: the real header row's top
   // inside `.mx-outer`, the names column's right edge, the header row's height
   // and the drawer's own measured widths (its right edge and its columns feed
@@ -297,6 +319,18 @@ export function Matrix() {
   // write to light the credit it had just made; the write-opens-the-tracker
   // route was reversed the same day, so both the field and the prop are gone.
   const [oilTracker, setOilTracker] = useState<{ person: string | null } | null>(null)
+  /* THE TOP ROW'S ASKS (ui/lwnav.ts — D1254): its tabs, ⚙ and My leave open the windows this grid owns, as their buttons
+     did when they sat on the grid card's bar. Taken once; the OIL tab reads as chosen while the tracker is up. */
+  const navSeq = useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
+  useEffect(() => {
+    const a = takeLwAsk()
+    if (!a) return
+    if (a.kind === 'grid') setOilTracker(null)
+    else if (a.kind === 'oil') setOilTracker({ person: null })
+    else if (a.kind === 'settings') setSettings(true)
+    else if (a.kind === 'person') setWhoOpen(a.id)
+  }, [navSeq])
+  useEffect(() => { setOilUp(!!oilTracker) }, [oilTracker])
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
@@ -532,21 +566,11 @@ export function Matrix() {
      Astra's code read 5, 27 Sep 26: Edit aircrew — gone since D461 — and the counter form stayed open with live controls), so switching back
      never reopens a stale draft either */
   useEffect(() => { if (role !== 'admin') setCounterEdit(false) }, [role])
-  // Falls back to the first visible figure when `shownId` names one an admin
-  // has since hidden (or a stale saved id) — `shownIx` is then DERIVED from
-  // `shown`, not the other way round, so the dots and the cycle never point
-  // past the figure actually on screen.
-  const shown = figures.find(f => f.id === shownId) ?? figures[0]!
-  const shownIx = figures.indexOf(shown)
-  /** Put a figure in the column — the ONE gated way in (6 Sep 26 review).
-   *
-   *  A hidden figure never becomes the column's: an admin who hid it should not
-   *  have the column jump to something the picker, the drawer and the cycle no
-   *  longer offer. That rule was written on the leave-just-entered snap and
-   *  nowhere else, so the two OIL paths (a tracker grant, an admin's hand-typed
-   *  OIL day) walked straight past it and could park the column on a figure the
-   *  dots did not contain. One body now, so a fourth caller cannot miss it. */
-  const showFigure = (id: string) => { if (figures.some(f => f.id === id)) setShownId(id) }
+  /* THE COLUMN BESIDE THE NAMES IS LVE ALONE (D1245, 22 Oct 26 — "each name keeps only its LVE figure beside it"; the
+     M2 code read's F2). Every other balance lives on the Balances tab (D1242, M5) and in a person's window (a tap on his
+     name). So the column no longer picks: no picker in its heading, no swipe across it, no jump to OIL or CCL after a
+     write — and an admin's hidden-figures list, which orders the person window's figures, never takes LVE off it. */
+  const shown = FIGURES.find(f => f.id === DEFAULT_FIGURE_ID)!
   // Everything a figure needs to read a person's number — the store's one
   // builder, so this column, the sheets and the tracker read the same OIL
   // policy and the same "today" (a hand-built literal here used to drift).
@@ -558,36 +582,7 @@ export function Matrix() {
      the drag-selection sheet, which asks too since his ruling D418 (29 Sep 26 — "Drag asks too"). The store answers it
      (`balanceAfterFill`) from the balance column's own figure, read of the wars as the fill would leave them. */
   const balanceAfter = (personId: string, dates: readonly string[], code: string) => balanceAfterFill(personId, dates, code)
-  const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
-  // Swipe across the counter column to cycle it — the fast path, beside the
-  // sheet's guaranteed one. Bound on the wrapper rather than on each cell so
-  // one pair of listeners covers a column of twenty-odd, and filtered to
-  // touches that START on a `.bal` cell so a swipe anywhere else still
-  // scrolls the grid, which is what a horizontal drag must go on doing.
-  const swipe = useRef<{ x: number; y: number } | null>(null)
-  // `figArmed` is the figure select's own flag, declared with that gesture's
-  // block further down (search FIGURE SELECT): it says a hold-and-drag took
-  // this touch, and these two handlers are the only readers.
-  const onTouchStart = (e: TouchEvent) => {
-    figArmed.current = false
-    const on = (e.target as HTMLElement).closest?.('.bal')
-    swipe.current = on ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null
-  }
-  const onTouchEnd = (e: TouchEvent) => {
-    const from = swipe.current
-    swipe.current = null
-    // A hold-and-drag that ARMED a figure selection during this touch is not a
-    // swipe, however far the finger travelled: the select owns it (6 Sep 26).
-    if (figArmed.current) { figArmed.current = false; return }
-    if (!from) return
-    const dx = e.changedTouches[0].clientX - from.x
-    const dy = e.changedTouches[0].clientY - from.y
-    // Horizontal, and decisively so: 40px across and more sideways than up,
-    // or every scroll of the rows would flip the counter under the thumb.
-    if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) return
-    cycle(dx < 0 ? 1 : -1)
-  }
 
   // Jumping to a month is how a year-long war is navigable at all: 365
   // columns is roughly 13,600px, and nobody finds September by dragging.
@@ -666,11 +661,6 @@ export function Matrix() {
   // effect runs after mount either way.
   const [figSel, setFigSel] = useState<FigureSelection | null>(null)
   const figSelCtxRef = useRef<FigureSelectCtx | null>(null)
-  // Set the instant a figure drag ARMS during a touch: the counter column's
-  // swipe-to-cycle (onTouchEnd) must stand down for that touch, or a slow
-  // hold-and-drag that travelled 40px sideways would flip the column under
-  // the selection it just made.
-  const figArmed = useRef(false)
   useEffect(() => {
     const o = mxOuterRef.current
     if (!o) return
@@ -678,7 +668,7 @@ export function Matrix() {
       order: () => figSelCtxRef.current?.order() ?? [],
       selectable: id => figSelCtxRef.current?.selectable(id) ?? false,
       enabled: () => figSelCtxRef.current?.enabled() ?? false,
-      onArm: () => { figArmed.current = true },
+      onArm: () => {},
       onSelect: s => figSelCtxRef.current?.onSelect(s),
     })
   }, [])
@@ -806,9 +796,10 @@ export function Matrix() {
     const w = wrapRef.current
     if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
     if (onItsOwnDay(targetDate)) { if (w) clearLanding(w); setMovePreview(null); setMoveErr(ownDayWords()); return }
+    const before = flaggedRef.current()                     // D1274: the rows as they stood, for the bubble
     const r = moveRecords(movers, daysBetween(moveAnchor, targetDate))
     if (w) clearLanding(w)
-    if (r === 'moved') { setMoveSel(null); setMovePreview(null); setMoveErr('') }
+    if (r === 'moved') { moveBeforeRef.current = before; setMoveSel(null); setMovePreview(null); setMoveErr('') }
     else { setMoveErr(moveReason(r)); setMovePreview(null) }   // keep the mode, say why
   }
   useEffect(() => {
@@ -982,8 +973,18 @@ export function Matrix() {
   // still the ones it was measured with, which is what `gen` records (see
   // `widthGen` below). A month never drawn falls back to an estimate (the
   // average day width × its days) — see colwindow.ts for why that estimate is
-  // never swapped for the real month LEFT of the view while the scroll is moving.
+  // never swapped for the real month LEFT of the view while the scroll is moving
+  // — unless the error can go to the left placeholder (`padErrRef` below).
   const monthPxRef = useRef<{ key: string; px: (number | null)[]; gen: (object | null)[] }>({ key: '', px: [], gen: [] })
+  // WHAT THE LEFT PLACEHOLDER IS SHORT OF, OR OVER, ITS ESTIMATE (his video, 23 Oct 26 — a fling from December back to
+  // January left the months striped until rest). A month drawn LEFT mid-fling over an estimated width lands at its real
+  // width; the difference would push every column to its right — the ones on screen — so the same commit takes it off
+  // the left placeholder instead (layout px, added up: a month drawn wider takes more off). The placeholder stands for
+  // months nobody can see, so nothing visible moves. Squared when the war's first month is drawn (the placeholder is
+  // gone then) and on a new war or zoom (every width is re-read). `absorbRef` is the drawn month the step is measured
+  // against: its left edge before the step, in the scroller's content px.
+  const padErrRef = useRef(0)
+  const absorbRef = useRef<{ month: number; left: number } | null>(null)
   // Is the Leave War tab on screen right now? A ref, not React state, so the
   // fill loop below can read it every idle beat without a re-render, and
   // flipping it (state/screen.ts) never repaints the ~25k-node grid. Seeded from
@@ -1262,7 +1263,152 @@ export function Matrix() {
   // viewing, click to open or close"). A view preference, session-only like the
   // zoom above; forced open while an admin is Rearranging so the row reorder /
   // hide controls stay reachable.
-  const [countsOpen, setCountsOpen] = useState(true)
+  /* THE MANNING ROWS' FOLD (D1258, widening D1227): on a PHONE they open folded for everyone, admins too, and his choice is
+     remembered — per person, on this device (a view convenience, never a record: `lw:manning:<viewer>` in the browser's
+     own storage, read and written inside a try, the grid drawing as ruled without it); on a DESKTOP they open as today. A
+     bid that turns a row amber or red still opens them (D1227's bubble). */
+  const phoneNow = usePhone()
+  /* read where it is used — the first draw can come before the person signed in is known, and a key with no person in it
+     would be one memory for everyone on the device (the scenario designer's find, 23 Oct 26; D1258 "per person") */
+  const manningKey = () => { const v = getState().viewer; return v ? `lw:manning:${v}` : null }
+  const [countsOpen, setCountsOpen] = useState(() => {
+    if (!phoneNow) return true
+    try { const k = manningKey(); return !!k && localStorage.getItem(k) === 'open' } catch { return false }
+  })
+  /* D1227's BUBBLE (22 Oct 26 — "Only when the input reduces the counter to hit amber or red. The manning bar will appear
+     and a bubble will notify the user that this input cause what"; on any phone since D1258). When a bid placed through a
+     bid window turns a Manning row amber or red on a day where it was not, the Manning rows open by themselves and a short
+     bubble under the Manning button names each row and how far it went; it is gone at his next tap. Read as the
+     difference between the grid's verdicts when the window opened and when it closed — the window that placed the bid
+     is the gesture, so a change made elsewhere (another device, a setting) never raises it. */
+  const sheetUp = !!open || !!sel
+  const beforeRef = useRef<BubbleFlags | null>(null)
+  /* `foot`: the Manning button was out of view when it was raised, so the words sit at the foot of the screen (D1277) */
+  const [bubble, setBubble] = useState<{ text: string; foot: boolean } | null>(null)
+  const flaggedNow = (): BubbleFlags => {
+    /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
+       never reported as turned amber (the scenario designer's find, 23 Oct 26) */
+    const m = new Map<string, { label: string; lv: number }>()
+    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}`, { label: r.label, lv: r.verdict === 'red' ? 2 : 1 })
+    /* …and the two Available rows at their amber or red points (D1190, D1202 — the same verdict their cells wear,
+       `sync.ts availVerdictAt`), over the days drawn: a bid is placed on a day in view */
+    const names = availRowNames()
+    /* the plan's answers read a MONTH at a time (`flyMonth`, as the red count does) — not one resolver call per drawn
+       date and seat, ~730 on a desktop with the year drawn, on every opening and closing of a bid window (the M2 code
+       read's F5) */
+    const months = new Map<string, Record<string, DayAnswer>>()
+    const answer = (iso: string): DayAnswer | undefined => {
+      const k = iso.slice(0, 7)
+      let mo = months.get(k)
+      if (!mo) { mo = flyMonth(+k.slice(0, 4), +k.slice(5, 7)); months.set(k, mo) }
+      return mo[iso]
+    }
+    for (const d of drawnDates) {
+      const a = answer(d)
+      for (const seat of ['p', 'w'] as const) {
+        const v = availVerdictAt(d, seat, a)
+        if (v) m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1 })
+      }
+    }
+    return { m, drawn: new Set(drawnDates) }
+  }
+  /* the latest render's reading, for the move machine — wired once per move, its callbacks would otherwise read the
+     verdicts of the render that wired them */
+  const flaggedRef = useRef(flaggedNow)
+  flaggedRef.current = flaggedNow
+  /* compare a "before" with the grid as it is now; only a WORSENING raises the bubble (a row to amber or red, or amber
+     to red, on a day) — one rule for a bid placed and a bid moved */
+  const raiseIfWorse = (before: BubbleFlags) => {
+    const worst = worsenedRows(before, flaggedNow())
+    if (!worst.size) return
+    setCountsOpen(true)
+    setBubble({ text: `This bid turns ${[...worst].map(([l, v]) => `${l} ${v}`).join(', ')}.`, foot: !manningInView() })
+  }
+  /* IS THE MANNING BUTTON IN VIEW? (D1277 — "how does the notification look on a phone if the counters are out of view and
+     the user scrolls down"; his "Yes to the bid note as recommended"). Decided once, when the bubble is raised: the
+     button's box against the visible screen — the keyboard counted (the visual viewport) — and not under whatever is
+     drawn on top of it there (the app's top bar, which stays as the page scrolls). A screen with no layout (the unit
+     tests) counts as in view, so nothing changes there. */
+  const manningInView = (): boolean => {
+    const btn = cardRef.current?.querySelector('[data-testid="counts-toggle"]') as HTMLElement | null
+    if (!btn) return false
+    const r = btn.getBoundingClientRect()
+    if (!r.width && !r.height) return true
+    const vv = window.visualViewport
+    const top = vv ? vv.offsetTop : 0, bottom = vv ? vv.offsetTop + vv.height : window.innerHeight
+    if (r.bottom <= top || r.top >= bottom) return false
+    if (typeof document.elementFromPoint !== 'function') return true
+    const y = Math.min(Math.max(r.top + r.height / 2, top + 1), bottom - 1)
+    const hit = document.elementFromPoint(r.left + r.width / 2, y)
+    return !hit || btn.contains(hit)
+  }
+  /* Show: up to the Manning rows (opened when the bubble was raised), the keyboard on the Manning button, the note gone */
+  const showManning = () => {
+    setCountsOpen(true)
+    const btn = cardRef.current?.querySelector('[data-testid="counts-toggle"]') as HTMLElement | null
+    if (btn) {
+      const still = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      btn.scrollIntoView({ block: 'center', behavior: still ? 'auto' : 'smooth' })
+      btn.focus({ preventScroll: true })
+    }
+    setBubble(null)
+  }
+  useEffect(() => {
+    if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
+    const before = beforeRef.current
+    beforeRef.current = null
+    if (before) raiseIfWorse(before)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sheetUp])
+  /* A MOVED BID RAISES IT TOO (D1274, 23 Oct 26 — "Q2 yes"): the grid's move — the window's Move or a picked block's, then
+     a tap or a Confirm on a day — lands in one place (`commitMove`), which takes the "before" just ahead of the move and
+     leaves it here; the render that follows the landing compares, as a closed bid window does. A move refused, or onto
+     its own day, leaves nothing. */
+  const moveBeforeRef = useRef<BubbleFlags | null>(null)
+  useEffect(() => {
+    const before = moveBeforeRef.current
+    if (!before) return
+    moveBeforeRef.current = null
+    raiseIfWorse(before)
+  })
+  /* gone at his next tap, anywhere */
+  useEffect(() => {
+    if (!bubble) return
+    /* a press on the foot note's own Show is not "a tap elsewhere" (D1277) — Show's click does its work and ends it */
+    const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble-foot"]')
+    const onDown = (e: Event) => { if (!inNote(e)) setBubble(null) }
+    /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) — but Tab (and Shift with it), the
+       way to Show, and a key pressed on Show itself leave it up */
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e)) return; setBubble(null) }
+    const t = window.setTimeout(() => { document.addEventListener('pointerdown', onDown); document.addEventListener('keydown', onKey) }, 0)
+    return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey) }
+  }, [bubble])
+  /* …and a change of WIDTH across the phone line after the page opened (a desktop window narrowed under 700, a phone
+     turned on its side and back — the M2 code read's F6): the fold is decided again by the same rule, folded on a phone
+     unless he opened it there, open on a desktop (D1258). Not on the first draw — the state's own start decided that. */
+  const seenPhone = useRef(phoneNow)
+  useEffect(() => {
+    if (seenPhone.current === phoneNow) return
+    seenPhone.current = phoneNow
+    if (!phoneNow) { setCountsOpen(true); return }
+    try { const k = manningKey(); setCountsOpen(!!k && localStorage.getItem(k) === 'open') } catch { setCountsOpen(false) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phoneNow])
+  const viewerNow = getState().viewer
+  const seenViewer = useRef(viewerNow)
+  useEffect(() => {
+    if (seenViewer.current === viewerNow) return
+    seenViewer.current = viewerNow
+    if (!phoneNow) return
+    try { const k = manningKey(); setCountsOpen(!!k && localStorage.getItem(k) === 'open') } catch { setCountsOpen(false) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [viewerNow])
+  const toggleManning = () => setCountsOpen(o => {
+    const next = !o
+    const k = manningKey()
+    if (phoneNow && k) { try { localStorage.setItem(k, next ? 'open' : 'shut') } catch { /* a view convenience only */ } }
+    return next
+  })
 
   /* WHICH CATEGORY GROUPS ARE FOLDED AWAY (owner, 28 Aug 26 — "allow me to
      minimise categories on leave war"). Same doctrine as the manning collapse
@@ -1921,38 +2067,13 @@ export function Matrix() {
           <FigureTitle figure={f} />
         </th>
       ))}
-      {/* The counter selector lives in the column header, which is the only
-          place a 40px-wide column has room for a control. The WHOLE header is
-          the control (the two 13px arrows were too small to hit from a
-          phone): tapping anywhere on it opens the full-width counter sheet,
-          and swiping across the column (handled on `.mx-wrap`) is the fast
-          path. The column is frozen beside the callsign so the figure stays
-          on screen however far the grid scrolls. */}
-      {!drawer && <th className="bal" data-testid={testids ? 'counter-head' : undefined}>
-        <button
-          className="cpick"
-          data-testid={testids ? 'counter-pick' : undefined}
-          aria-label={`Showing ${shown.label}. Choose what this column shows`}
-          onClick={() => setPicking(true)}
-        >
+      {/* The column's heading: LVE, the one figure it shows (D1245). Frozen beside the callsign, so the figure stays on
+          screen however far the grid scrolls. */}
+      {/* the spoken name on the heading CELL, which a screen reader honours (a plain span's aria-label may be skipped) */}
+      {!drawer && <th className="bal" data-testid={testids ? 'counter-head' : undefined} aria-label={`${shown.label} balance`}>
+        <span className="cpick">
           <span className="cname" data-testid={testids ? 'counter-name' : undefined}>{shown.title}</span>
-          <span className="cdots" aria-hidden="true">
-            {figures.map((f, i) => (
-              <span key={f.id} className={`cdot${i === shownIx ? ' on' : ''}`} />
-            ))}
-          </span>
-          {/* A tap hint (owner, 18 Aug 26): the whole header has been the
-              control since the arrows were pulled, but on a phone nothing
-              SAID so; this little finger does. aria-hidden — the button's own
-              label already tells a screen reader it is tappable. */}
-          <span className="ctap" aria-hidden="true">
-            <svg viewBox="0 0 20 20" width="12" height="12" fill="none"
-              stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M7.5 9V4.4a1.5 1.5 0 0 1 3 0V8.5" />
-              <path d="M10.5 8.6V7.2a1.4 1.4 0 0 1 2.8 0v3.9c0 2.7-1.8 4.4-4.3 4.4-1.7 0-3-.8-3.8-2.2L4 11.1a1.25 1.25 0 0 1 2.1-1.3l1 1.4" />
-            </svg>
-          </span>
-        </button>
+        </span>
       </th>}
       {padL && <th className="lwph lwph-l" ref={phL} />}
       {drawnDays.map(d => {
@@ -2123,7 +2244,7 @@ export function Matrix() {
   // width; a new war is a new set of months) — started fresh when the key moves.
   const monthPxCache = () => {
     const key = `${period.id}|${zoom}`
-    if (monthPxRef.current.key !== key) monthPxRef.current = { key, px: months.map(() => null), gen: months.map(() => null) }
+    if (monthPxRef.current.key !== key) { monthPxRef.current = { key, px: months.map(() => null), gen: months.map(() => null) }; padErrRef.current = 0 }
     return monthPxRef.current
   }
   // A month's width in LAYOUT px (the table's own space, zoom divided out — the
@@ -2160,6 +2281,9 @@ export function Matrix() {
     if (win) {
       for (let m = 0; m < win.lo; m++) l += monthPx(m)
       for (let m = win.hi + 1; m < months.length; m++) r += monthPx(m)
+      // the error a mid-fling left draw handed it (padErrRef); none once the first month is drawn — no placeholder is left
+      if (win.lo === 0) padErrRef.current = 0
+      l = Math.max(0, l - padErrRef.current)
     }
     const next = { l: `${l.toFixed(2)}px`, r: `${r.toFixed(2)}px` }
     const prev = phWRef.current
@@ -2266,8 +2390,20 @@ export function Matrix() {
   // quiet before drawing a month, so a fill draw never lands under a moving
   // scroll (which is the very freeze this whole thing exists to avoid).
   const lastScrollTsRef = useRef(0)
+  // How fast the grid is scrolling sideways (px a millisecond), smoothed over the last few scroll events — the fill
+  // draws a month LEFT of the view mid-scroll only under DRAW_LEFT_MAX_SPEED (colwindow.ts). Pure arithmetic on the
+  // event: no layout read, no render.
+  const scrollSpeedRef = useRef({ v: 0, t: 0, sl: 0 })
   const onWrapScroll = () => {
-    lastScrollTsRef.current = Date.now()
+    const now = Date.now()
+    {
+      const sp = scrollSpeedRef.current, sl = wrapRef.current?.scrollLeft ?? 0
+      const dt = now - sp.t
+      const inst = dt > 0 && dt < 200 ? Math.abs(sl - sp.sl) / dt : 0
+      sp.v = dt >= 200 ? inst : sp.v * 0.5 + inst * 0.5
+      sp.t = now; sp.sl = sl
+    }
+    lastScrollTsRef.current = now
     // The frozen-column overlay sits ON TOP of the real columns. At rest
     // (scrollLeft 0) it must let a tap fall THROUGH to the real cell beneath —
     // that cell still carries the handler, the testid and the focus seat — so
@@ -2427,7 +2563,9 @@ export function Matrix() {
       const inMotion = moving()
       // `widthExact`, not "measured once": a month measured while other rows
       // showed is not the width it will draw at now ([LW-MONTHJUMP-PHONE]).
-      if (inMotion && !stepAllowedInMotion(win, next, widthExact)) {
+      const sl = wrapRef.current?.scrollLeft ?? 1
+      const speed = scrollSpeedRef.current.v
+      if (inMotion && !stepAllowedInMotion(win, next, widthExact, m => leftGrowAbsorbable(m, sl, speed))) {
         // Not safe under a moving scroll: look again once the moving window has
         // passed. The scroll-rest kick itself lands INSIDE that window (it fires
         // 120 ms after the last scroll event, the window is 160), so it cannot be
@@ -2445,7 +2583,16 @@ export function Matrix() {
       // altogether, because the `scrollLeft` write that would fix a stray pixel
       // is exactly what kills a fling (the 30 Aug history). A rightward step
       // writes none.
-      if (next.lo !== win.lo && !(inMotion && coarsePointer())) {
+      // A left month over an ESTIMATED width drawn mid-fling hands its error to the left placeholder (padErrRef): measured
+      // against the drawn month that was the window's left edge, in the commit that draws it. The war's first month has no
+      // placeholder left of it and is drawn in motion only at the very start of the scroll, where nothing is anchored —
+      // the reader is at January's first day and stays there.
+      const absorbing = next.lo < win.lo && inMotion && !widthExact(next.lo)
+      if (absorbing && next.lo > 0) {
+        const g = stripGeoRef.current
+        absorbRef.current = g && g.spans[win.lo] ? { month: win.lo, left: g.spans[win.lo]!.left } : null
+      }
+      if (next.lo !== win.lo && !(inMotion && coarsePointer()) && !absorbing) {
         const wrap = wrapRef.current
         if (wrap) { anchorRef.current = anchorNow(wrap); colShiftRef.current = true }
       }
@@ -2517,6 +2664,16 @@ export function Matrix() {
     const remeasure = () => { applyPlaceholders(); measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
     remeasureRef.current = remeasure
     remeasure()
+    // A left month drawn mid-fling over an estimate (padErrRef): how far it pushed the month that was the window's left
+    // edge is taken off the left placeholder, and the strip re-read — all before this frame paints, so no column on
+    // screen ever moved.
+    const ab = absorbRef.current
+    absorbRef.current = null
+    const span = ab ? stripGeoRef.current?.spans[ab.month] : undefined
+    if (ab && span) {
+      const d = span.left - ab.left
+      if (Math.abs(d) > 0.5) { padErrRef.current += d / zoom; remeasure() }
+    }
     window.addEventListener('resize', remeasure)
     return () => window.removeEventListener('resize', remeasure)
     // The window's EDGES are deps, not only the drawn-day count: two windows a
@@ -3227,100 +3384,63 @@ export function Matrix() {
             the right. The old "JAN – DEC 26 · 365 days · 50 people" line was
             dropped (owner, same day); the war's NAME still lives in the Period
             picker in the page chrome above, so nothing is stranded. */}
+        {/* THE GRID'S OWN BAR (D1254 — the navigation as drawn in round 19): [▸ Manning | 1 red ›] · the open dates · … ·
+            Legend, the same for everyone (`StageBar`, Chrome.tsx). ⚙ went up to the tab row's right end and OIL became a
+            tab (Chrome.tsx `Topbar`); Rearrange moved into ⚙ (its "Done" rides this bar while it is on). The zoom pair
+            stays at the bar's right end until pinch to zoom replaces it — its own job, [LW-PHONE-PINCH-ZOOM] (D1228). */}
         <div className="card-hd">
-          {/* Manning LEADS the row, sitting directly above the counter rows it
-              shows/hides (owner, 5 Sep 26 — "move the manning to be infused with
-              the counter rows … still with a drop down"). EITHER role (owner,
-              19 Aug 26); a plain view toggle, above the scroll so it does not
-              ride the grid it hides. */}
-          <button
-            className="rtbtn countstoggle"
-            data-testid="counts-toggle"
-            aria-expanded={countsOpen}
-            title={countsOpen ? 'Hide the manning counts' : 'Show the manning counts'}
-            onClick={() => setCountsOpen(o => !o)}
-          >
-            {countsOpen ? '▾' : '▸'} Manning
-          </button>
-          {role === 'admin' && (
-            <>
-              {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26). Every admin CONFIG
-                  control — counters, event rows, Show SANS, the roster groups —
-                  folds into the sheet it opens. */}
-              <button
-                className="rtbtn gear"
-                data-testid="settings-open"
-                title="Settings — counters, event rows and roster groups"
-                aria-label="Settings — counters, event rows and roster groups"
-                onClick={() => setSettings(true)}
-              >
-                ⚙
-              </button>
-              {/* REARRANGE toggle — moved here from the grid corner (owner, 5 Sep
-                  26 — "the rearrange button goes after [settings]"). The actual
-                  rearranging is HANDS-ON-GRID: this only turns the on-grid drag
-                  handles on and off, and it is the ONE way in and out (owner,
-                  6 Sep 26 — "delete this whole blue section … when I click on it,
-                  it exits the rearrange mode"): the old strip under the header
-                  (Auto-sort + Done) is gone. Lights accent (`.on`) while live so
-                  it is obvious the handles are on and that tapping again leaves.
-                  On a phone it is the ⇅ icon alone (the word rides `.rtlbl`,
-                  hidden ≤700px since D1019 — "just show an arrow up and down icon"); desktop
-                  keeps the word. Admin only. */}
-              <button
-                className={`rtbtn${arranging ? ' on' : ''}`}
-                data-testid="roster-arrange"
-                aria-pressed={arranging}
-                aria-label={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster'}
-                title={arranging ? 'Finish rearranging — tap again to leave' : 'Rearrange the roster — drag people and category blocks'}
-                onClick={() => setArranging(a => !a)}
-              >
-                ⇅<span className="rtlbl"> {arranging ? 'Rearranging' : 'Rearrange'}</span>
-              </button>
-            </>
+          {bubble && !bubble.foot && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble.text}</div>}
+          {/* D1277: the Manning button out of view when it was raised — the same words at the foot of the screen, with Show */}
+          {bubble?.foot && (
+            <div className="mn-foot" role="status" data-testid="manning-bubble-foot">
+              <span data-testid="manning-bubble-text">{bubble.text}</span>
+              <button type="button" className="mn-show" data-testid="manning-bubble-show" onClick={showManning}>Show ›</button>
+            </div>
           )}
-          {/* The OIL TRACKER (owner, 2 Sep 26): every person's OIL balance, the
-              ledger behind each, and the admin's crediting. BOTH roles — a member
-              reads, an admin edits; the sheet decides which controls to draw and
-              the store refuses a member's write. It sits RIGHT AFTER the last
-              control, not pushed to the far edge (owner, 5 Sep 26 — "the oil
-              tracker can be right of rearrange … in normal user it's just right
-              of manning"): no spring, so admin reads Manning · ⚙ · Rearrange · OIL
-              and a member reads Manning · OIL, each cluster left. "tracker" drops
-              on a phone (`.rtlbl`) so the row still holds one line. */}
-          <button
-            className="rtbtn"
-            data-testid="oil-tracker"
-            title="OIL balances, credits and history"
-            onClick={() => setOilTracker({ person: null })}
-          >
-            ◷ OIL<span className="rtlbl"> tracker</span>
-          </button>
-          {/* The grid ZOOM, − then +, right after OIL at BOTH widths (owner,
-              6 Sep 26 — "put the zoom + - button after oil/oil tracker. But
-              make sure it's still 1 row on the mobile"). Both roles — it is a
-              view control. Moved here from the end of the month strip, where
-              it was phone-only; the strip's tests and readers treat every
-              button there as a month, so it never belonged among them. A
-              phone opens one step out (see `zoom`). */}
-          <span className="lwzoom" data-testid="lw-zoom">
-            <button
-              className="rtbtn zoom"
-              data-testid="lw-zoom-out"
-              aria-label="Zoom out"
-              title="Zoom out"
-              disabled={zoom === ZOOMS[0]}
-              onClick={() => zoomStep(-1)}
-            >−</button>
-            <button
-              className="rtbtn zoom"
-              data-testid="lw-zoom-in"
-              aria-label="Zoom in"
-              title="Zoom in"
-              disabled={zoom === ZOOMS[ZOOMS.length - 1]}
-              onClick={() => zoomStep(1)}
-            >＋</button>
-          </span>
+          <StageBar
+            manningOpen={countsOpen || (arranging && role === 'admin')}
+            onManning={toggleManning}
+            extra={
+              <>
+                {arranging && role === 'admin' && (
+                  /* THE ONE WAY OUT OF REARRANGE (owner, 6 Sep 26 — the toggle is the way in and out; D1254 put the way in
+                     inside ⚙): lit while the drag handles are on, a tap leaves */
+                  <button
+                    className="rtbtn on"
+                    data-testid="roster-arrange"
+                    aria-pressed="true"
+                    aria-label="Finish rearranging the roster"
+                    title="Finish rearranging — tap to leave"
+                    onClick={() => setArranging(false)}
+                  >
+                    {/* "Done" in words at every width (D1275 — on a phone too, narrowing D1019's short words for this one
+                        button): its own class, never the droppable `.rtlbl` the phone hides */}
+                    ⇅<span className="rtword"> Done</span>
+                  </button>
+                )}
+                {/* while Rearrange is on, the − / + step aside on a phone so the bar keeps one line (D1275; chrome.css
+                    `.lwzoom.aside`); a desktop keeps them. They go for good only once the pinch works (D1276). */}
+                <span className={`lwzoom${arranging && role === 'admin' ? ' aside' : ''}`} data-testid="lw-zoom">
+                  <button
+                    className="rtbtn zoom"
+                    data-testid="lw-zoom-out"
+                    aria-label="Zoom out"
+                    title="Zoom out"
+                    disabled={zoom === ZOOMS[0]}
+                    onClick={() => zoomStep(-1)}
+                  >−</button>
+                  <button
+                    className="rtbtn zoom"
+                    data-testid="lw-zoom-in"
+                    aria-label="Zoom in"
+                    title="Zoom in"
+                    disabled={zoom === ZOOMS[ZOOMS.length - 1]}
+                    onClick={() => zoomStep(1)}
+                  >＋</button>
+                </span>
+              </>
+            }
+          />
         </div>
         {/* The on-grid REARRANGE BAR (3 Sep 26: "⠿ Rearranging — drag people…",
             Auto-sort, Done) is GONE (owner, 6 Sep 26 — "delete this whole blue
@@ -3347,8 +3467,6 @@ export function Matrix() {
           className="mx-wrap"
           ref={wrapRef}
           onScroll={onWrapScroll}
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
         >
           <table className="mx" style={zoomStyle}>
             {/* THE ROW ORDER IS THE OWNER'S (18 Aug 26, arrows on a
@@ -3360,42 +3478,6 @@ export function Matrix() {
             {/* Collapsed away on the view toggle, but always shown while an
                 admin is Rearranging — that is where the per-row reorder / delete
                 controls live, and hiding the block would hide them too. */}
-            {(countsOpen || (arranging && role === 'admin')) && (
-              <CountRows
-                verdicts={verdicts}
-                dates={drawnDates}
-                order={manningBlockOrder()}
-                arranging={arranging}
-                admin={role === 'admin'}
-                onInfo={setManningInfo}
-                onRowDragStart={(e, ruleId) => startRowDrag(e, ruleId, MANNING_DRAG)}
-                draggingId={draggingId}
-                dragOver={dragOver}
-                dragAfter={dragAfter}
-                padL={padL}
-                padR={padR}
-                phL={phL}
-                phR={phR}
-                onRowsChange={onArchiveChange}
-                /* THE FOUR FIXED ROWS OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs / SANS
-                   redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to the
-                   plan's and the war's signals; a figure that widens a day column asks for the same re-measure the
-                   Archive rows did — which also re-places the Figures drawer and the open-bidding outline, both
-                   measured off the dates BELOW this block (the two things he circled on the hand-drawn picture: the
-                   gate e2e/leavewar.spec.ts checks both in a real browser).
-                     AND THE COUNTERS STAND AMONG THEM WHERE THE ADMIN PUTS THEM (D674, 8 Oct 26): CountRows hands its
-                   rows over in runs and FlyRows draws each run above, between or below its four. In Rearrange each of
-                   the four is a place to drop (the same `data-mrow` the counters carry, so MANNING_DRAG hit-tests
-                   them with no second machine) and shows the landing bar from the drag state below. */
-                fixed={runs => (
-                  <FlyRows
-                    days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR}
-                    onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail}
-                    runs={runs} arranging={arranging && role === 'admin'} dragOver={draggingId ? dragOver : null} dragAfter={dragAfter}
-                  />
-                )}
-              />
-            )}
             {/* The month strip, now a row of the grid so it sits between the
                 counts and the header (owner's arrows). The buttons live in a
                 sticky two-column cell and overflow visibly across the fill
@@ -3436,9 +3518,47 @@ export function Matrix() {
               </tr>
             </tbody>
             <tbody className="mxhead" ref={headRef}>
-              {bracketRow(true)}
               {headerRow(true)}
             </tbody>
+            {/* THE MANNING ROWS STRAIGHT UNDER THE DATES (D1256, 22 Oct 26 — "G1 as recommended"): every Manning figure reads
+                straight down from its date; the Event rows, then the people, follow. They stood above the month buttons until
+                M2 (the owner's arrows of 18 Aug 26); D665's four rows stay at the block's foot. */}
+            {(countsOpen || (arranging && role === 'admin')) && (
+              <CountRows
+                verdicts={verdicts}
+                dates={drawnDates}
+                order={manningBlockOrder()}
+                arranging={arranging}
+                admin={role === 'admin'}
+                onInfo={setManningInfo}
+                onRowDragStart={(e, ruleId) => startRowDrag(e, ruleId, MANNING_DRAG)}
+                draggingId={draggingId}
+                dragOver={dragOver}
+                dragAfter={dragAfter}
+                padL={padL}
+                padR={padR}
+                phL={phL}
+                phR={phR}
+                onRowsChange={onArchiveChange}
+                /* THE FOUR FIXED ROWS OF THE MANNING BLOCK — Required P and W, Available P and W (the Inputs / SANS
+                   redesign, plan §3.3; owner D665, 8 Oct 26: "I'm going with B"). They subscribe THEMSELVES to the
+                   plan's and the war's signals; a figure that widens a day column asks for the same re-measure the
+                   Archive rows did — which also re-places the Figures drawer and the open-bidding outline, both
+                   measured off the dates BELOW this block (the two things he circled on the hand-drawn picture: the
+                   gate e2e/leavewar.spec.ts checks both in a real browser).
+                     AND THE COUNTERS STAND AMONG THEM WHERE THE ADMIN PUTS THEM (D674, 8 Oct 26): CountRows hands its
+                   rows over in runs and FlyRows draws each run above, between or below its four. In Rearrange each of
+                   the four is a place to drop (the same `data-mrow` the counters carry, so MANNING_DRAG hit-tests
+                   them with no second machine) and shows the landing bar from the drag state below. */
+                fixed={runs => (
+                  <FlyRows
+                    days={drawnDays} admin={role === 'admin'} padL={padL} padR={padR} phL={phL} phR={phR}
+                    onWiden={onArchiveChange} pickApi={flyPickRef} onEditAvail={editAvail}
+                    runs={runs} arranging={arranging && role === 'admin'} dragOver={draggingId ? dragOver : null} dragAfter={dragAfter}
+                  />
+                )}
+              />
+            )}
             {/* Above the roster, below the header — an event is the REASON a
                 day is thin, so it reads right under the date it explains. */}
             <EventRows
@@ -3647,7 +3767,6 @@ export function Matrix() {
                   ))}
                 </colgroup>
                 <tbody className="mxhead">
-                  {bracketRow(false, drawer)}
                   {headerRow(false, drawer)}
                 </tbody>
               </table>
@@ -3896,6 +4015,7 @@ export function Matrix() {
               giver: creditGiver({ auto: true, ...(openAnyCredit.via ? { via: openAnyCredit.via } : {}) }),
               spans: openAnyCredit.spans,
               via: openAnyCredit.via,
+              ...(openAnyCredit.half ? { half: openAnyCredit.half } : {}),     // an HO's half (D1164)
             }
             : null}
           onClose={close}
@@ -3908,7 +4028,7 @@ export function Matrix() {
         <AwardSheet
           callsign={open.callsign}
           date={open.date}
-          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: openCredit.givenBy ?? '', entered: openCredit.enteredName }}
+          award={{ code: openCredit.code, days: openCredit.days, note: openCredit.note, giver: openCredit.givenBy ?? '', entered: openCredit.enteredName, ...(openCredit.half ? { half: openCredit.half } : {}) }}
           onClose={close}
         />
       )}
@@ -4062,9 +4182,6 @@ export function Matrix() {
           wins on a cell that holds a bid, because that is what the stage is
           for; the picker still opens on an empty one, so an admin can add
           leave to a closed sheet without a second control. */}
-      {picking && (
-        <CounterSheet shownId={shown.id} onPick={setShownId} onClose={() => setPicking(false)} />
-      )}
       {/* The tapped person's breakdown of one figure — the column's shown
           one from a counter-cell tap, or whichever row was tapped in the
           person-figures sheet. Guarded on the person still existing — an
@@ -4155,10 +4272,6 @@ export function Matrix() {
           key={oilTracker.person ?? '*'}
           person={oilTracker.person}
           onClose={() => setOilTracker(null)}
-          /* A credit lands → the column shows +OIL (owner, 2 Sep 26; id
-             renamed 6 Sep 26 when OIL BAL and OIL USED merged into one
-             balance figure, 'oil'). */
-          onGranted={() => showFigure('oil')}
         />
       )}
       {eventEdit && role === 'admin' && (
@@ -4202,6 +4315,7 @@ export function Matrix() {
           onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
           // Days… opens the scheduler's Days window on the month the grid is showing (the month strip's lit one),
           // through the war's one seam (sync.ts openDays); the sheet closes so it does not cover the window
+          onRearrange={() => { setSettings(false); setArranging(true) }}
           onDays={() => {
             setSettings(false)
             const shown = months.find(m => m.label === inViewRef.current) || months[0]
@@ -4253,7 +4367,7 @@ export function Matrix() {
              other time box in the app is (`08:00`, `8:00`, `0800`, `800`);
              blank means the whole day. */
           credit={role === 'admin' && openCredit
-            ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy }
+            ? { code: openCredit.code, days: openCredit.days, note: openCredit.note, givenBy: openCredit.givenBy, ...(openCredit.half ? { half: openCredit.half } : {}) }
             : null}
           /* a day holding SEVERAL awards: the +OIL panel changes none of them — the day's list carries each */
           awardCount={role === 'admin' ? openAwards.length : 0}
@@ -4290,52 +4404,25 @@ export function Matrix() {
               spans: openAnyCredit.spans,
               via: openAnyCredit.via,
               ...(openAnyCredit.award && openAnyCredit.enteredName ? { entered: openAnyCredit.enteredName } : {}),
+              ...(openAnyCredit.half ? { half: openAnyCredit.half } : {}),     // an HO's half (D1164)
             }
             : null}
           onCreditClear={role === 'admin' && openCredit
             ? () => { clearRecordById(open.id, open.date, openCredit.id); close() }
             : undefined}
           onCredit={role === 'admin'
-            ? (_code, days, note, givenBy) => {
-              /* the AMOUNT is the award (FO / HO is only its label); a blank box is a day, as the panel shows */
+            ? (_code, days, note, givenBy, half) => {
+              /* the AMOUNT is the award (FO / HO is only its label); a blank box is a day, as the panel shows; the half
+                 the panel picked rides along and counts only on half a day (D1164) */
               const raw = days.trim()
               const n = raw ? Number(raw) : 1
               if (!Number.isFinite(n)) return 'Type how many days'
-              const problem = setDayAward(open.id, open.date, n, { note, givenBy })
-              if (!problem) showFigure('oil')
-              return problem
+              return setDayAward(open.id, open.date, n, { note, givenBy, half })
             }
             : undefined}
           /* No medical here: medical is member-filed only (owner, 13 Sep 26).
              Everyone files a medical input with its certificate on Raptor's
              Inputs page; the war displays it read-only, never creates it. */
-          /* The column follows the leave just entered, to the BALANCE it
-             comes off (owner, 6 Sep 26) — ask for OIL and it snaps to +OIL.
-             The owner's ask, and it makes the figure answer the question the
-             bidder is holding in their head at that moment. `figureForLeave`
-             (counters.ts) is the one map: LL/OL both come off LVE, every
-             other balance-bearing type snaps to its own, ATT C/HL/OML feed
-             MED TOT, and a type with no figure (EL, ATT B) simply returns
-             null and does not snap. Through `showFigure`, which is where the
-             "must still be VISIBLE" gate now lives for every caller. */
-          onWrote={code => {
-            const cell = parseCell(code)
-            const earns = (codeOf(code)?.earnsOil ?? 0) > 0
-            if (cell) {
-              const id = figureForLeave(cell.type)
-              if (id) showFigure(id)
-            }
-            /* A write on the grid keeps you ON the grid (owner, 6 Sep 26 —
-               "it should never bring me to the oil tracker page"), reversing
-               the 2 Sep rule that sent an admin's manual OIL straight to the
-               tracker to type a reason. Being thrown off the grid mid-pass
-               cost more than the reason was worth, and the tracker is one tap
-               away on the OIL button when he does want it. What survives is
-               the COLUMN: an FO/HO day EARNS oil, so the figure that just grew
-               is the one left on screen — the balance answers for the write
-               without moving the reader. */
-            if (earns) showFigure('oil')
-          }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative — the shared body above. */
           wouldLeave={(code, dates) => balanceAfter(open.id, dates, code)}

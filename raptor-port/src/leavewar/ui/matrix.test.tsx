@@ -276,40 +276,45 @@ describe('Matrix', () => {
     expect(feb1.querySelector('.mon')?.textContent).toBe('FEB')
   })
 
-  it('gives a duty cell the sc chip class and a non-bid code the info chip class', () => {
+  /* WAS "gives a duty cell the sc chip class and a non-bid code the info chip class". Look F (D1175): a box's colour
+     is its KIND and its fill where it stands; what nobody bids for (a credit, a medical, a course, overseas duty) is
+     drawn filled. So the FO credit is OIL green filled (`k-oil s-a`) and the ATT C medical rose filled (`k-med s-a`). */
+  it('gives a credit and a medical their kind, drawn filled (look F — D1175)', () => {
     render(<Matrix />)
     // Seed: TATA is on FO (a duty code) on 1 Jan; SPLICE is on ATTC (a medical
-    // marker) on 5 Jan. This asserted TATA's OIL on 9 Jan as the `.info` case
-    // until bid states landed — OIL is leave someone asked for, so it now
-    // carries a bid colour instead. `.info` is what remains: the codes nobody
-    // bids for, which is medical (ATT C / HL / OML), courses and overseas duty.
+    // marker) on 5 Jan.
     const dutyCell = screen.getByTestId('cell-tata-2026-01-01')
-    expect(dutyCell.querySelector('.c.sc')?.textContent).toBe('FO')
+    expect(dutyCell.querySelector('.c.k-oil.s-a')?.textContent).toBe('FO')
     const ordinaryCell = screen.getByTestId('cell-splice-2026-01-05')
-    // Stored ATTC, PRINTED as the owner's bare C since 17 Aug 26
-    // (displayCell) — the info class is unchanged.
-    expect(ordinaryCell.querySelector('.c.info')?.textContent).toBe('C')
+    // Stored ATTC, PRINTED as the owner's bare C since 17 Aug 26 (boxText, D1160)
+    expect(ordinaryCell.querySelector('.c.k-med.s-a')?.textContent).toBe('C')
   })
 
-  it('carries the am/pm portion class on the chip, derived from the stored asterisk', () => {
+  /* WAS "carries the am/pm portion class on the chip". Look F (D1160, D1145): the half is WHERE the box sits — the
+     morning the top half (`top`), the afternoon the bottom (`bot`), a whole day the whole cell (`whole`) — and the
+     letters are the bare code, no arrow. Still derived from the stored asterisk, still on the box itself. */
+  it('places the box by its half — top, bottom or whole — derived from the stored asterisk', () => {
     setCell('ramp', '2026-01-20', '*LL')
     setCell('ramp', '2026-01-21', 'LL*')
     setCell('ramp', '2026-01-22', 'LL')
     render(<Matrix />)
-    // Assert on the chip element itself, not the `<td>` — the portion class
+    // Assert on the chip element itself, not the `<td>` — the place class
     // decorates `.c`, and a `<td>`-level assertion would pass even if the
     // class landed on the wrong element.
+    const place = (c: Element) => ['top', 'bot', 'whole'].filter(x => c.classList.contains(x))
     const morning = screen.getByTestId('cell-ramp-2026-01-20').querySelector('.c')!
-    expect(morning.className).toContain('am')
-    expect(morning.className).not.toContain('pm')
+    expect(place(morning)).toEqual(['top'])
+    expect(morning.textContent).toBe('LL')
 
     const afternoon = screen.getByTestId('cell-ramp-2026-01-21').querySelector('.c')!
-    expect(afternoon.className).toContain('pm')
-    expect(afternoon.className).not.toContain('am')
+    expect(place(afternoon)).toEqual(['bot'])
+    expect(afternoon.textContent).toBe('LL')
 
     const wholeDay = screen.getByTestId('cell-ramp-2026-01-22').querySelector('.c')!
-    expect(wholeDay.className).not.toContain('am')
-    expect(wholeDay.className).not.toContain('pm')
+    expect(place(wholeDay)).toEqual(['whole'])
+    expect(wholeDay.textContent).toBe('LL')
+    // the old half classes are gone from the box
+    for (const c of [morning, afternoon, wholeDay]) for (const old of ['am', 'pm']) expect(c.classList.contains(old)).toBe(false)
   })
 
   it('shows both the blocked reason and the day\'s events when both exist', () => {
@@ -337,73 +342,76 @@ describe('weekend banding', () => {
 })
 
 describe('bid state on a cell', () => {
-  // The owner's colour rule, restated 10 Aug 26: an input nobody has answered
-  // carries NO colour, purple means management has acknowledged it, green
-  // approved, red refused. Purple used to mean "typed", which made a bid in
-  // management's hands look identical to one nobody had touched.
-  it('paints approved green, acknowledged purple, refused red, and pending not at all', () => {
+  // The owner's colour rule of 10 Aug 26 (no colour pending, purple acknowledged,
+  // green approved, red refused) was replaced by look F (D1175) and Ack's going (D1158).
+  /* WAS "paints approved green, acknowledged purple, refused red, and pending not at all". Look F (D1175): the FILL
+     says where a bid stands — filled approved (`s-a`), hollow and dashed pending (`s-w`), grey and struck refused
+     (`s-r`) — and Ack is gone (D1158): ASICS's 24 Feb OIL, the seed's acknowledged bid, is pending now. The old
+     classes appr / tbc / ref are gone from the grid's box. */
+  const FILLS = ['s-a', 's-w', 's-r']
+  const fillOf = (id: string) => FILLS.filter(f => screen.getByTestId(id).querySelector('.c')!.classList.contains(f))
+  it('fills approved, draws pending hollow and refused struck (look F — D1175, D1158)', () => {
     render(<Matrix />)
-    expect(screen.getByTestId('cell-jaguar-2026-01-16').querySelector('.c')!.className).toContain('appr')
-    expect(screen.getByTestId('cell-asics-2026-02-24').querySelector('.c')!.className).toContain('tbc')
+    expect(fillOf('cell-jaguar-2026-01-16')).toEqual(['s-a'])
+    expect(fillOf('cell-asics-2026-02-24')).toEqual(['s-w'])
     /* CROSS's 10 Mar: JAGUAR's refused 19 Jan now sits behind the seed's OIL award drawn on that day (D402) */
-    expect(screen.getByTestId('cell-cross-2026-03-10').querySelector('.c')!.className).toContain('ref')
-
-    const pending = screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
-    for (const painted of ['appr', 'tbc', 'ref']) expect(pending).not.toContain(painted)
+    expect(fillOf('cell-cross-2026-03-10')).toEqual(['s-r'])
+    expect(fillOf('cell-asics-2026-01-23')).toEqual(['s-w'])
+    for (const id of ['cell-jaguar-2026-01-16', 'cell-asics-2026-02-24', 'cell-cross-2026-03-10', 'cell-asics-2026-01-23']) {
+      const c = screen.getByTestId(id).querySelector('.c')!
+      for (const old of ['appr', 'tbc', 'ref']) expect(c.classList.contains(old)).toBe(false)
+    }
   })
 
-  it('leaves a code nobody bids for as plain information', () => {
+  /* WAS "leaves a code nobody bids for as plain information" (`sc`, `info`). Look F (D1175): what nobody bids for is
+     drawn filled, in its kind's colour — the FO credit OIL green, the course lilac. */
+  it('draws a code nobody bids for filled, in its kind', () => {
     render(<Matrix />)
-    expect(screen.getByTestId('cell-tata-2026-01-01').querySelector('.c')!.className).toContain('sc')
-    expect(screen.getByTestId('cell-pipper-2026-01-12').querySelector('.c')!.className).toContain('info')
+    const tata = screen.getByTestId('cell-tata-2026-01-01').querySelector('.c')!
+    expect(tata.classList.contains('k-oil') && tata.classList.contains('s-a')).toBe(true)
+    const pipper = screen.getByTestId('cell-pipper-2026-01-12').querySelector('.c')!
+    expect(pipper.classList.contains('k-cse') && pipper.classList.contains('s-a')).toBe(true)
   })
 
-  // Neither duty nor medical may ever take a bid colour: one is a man at
+  // Neither duty nor medical may ever take a bid's fill: one is a man at
   // work, the other is a man who did not ask for anything. Both are pinned
-  // against every bid class rather than just for their own, so a cascade
-  // that added `tbc` alongside `sc` would fail here.
+  // against every fill rather than just for their own, so a cascade that
+  // added `s-w` alongside `s-a` would fail here (look F — D1175).
   //
-  // This does NOT prove the branch ORDER in Matrix.tsx — duty codes carry
+  // This does NOT prove the branch ORDER in MatrixRows — duty codes carry
   // `bid: false`, so `isDuty` and `isBiddable` are disjoint and reordering
   // them changes nothing. Reading duty first is for the reader, not a guard.
-  it('never lets duty or medical take a bid colour', () => {
+  it('never lets duty or medical take a bid’s fill', () => {
     render(<Matrix />)
-    for (const [id, cls] of [['cell-skin-2026-01-03', 'sc'], ['cell-splice-2026-01-05', 'info']] as const) {
-      const name = screen.getByTestId(id).querySelector('.c')!.className
-      expect(name).toContain(cls)
-      for (const bidClass of ['appr', 'tbc', 'ref']) expect(name).not.toContain(bidClass)
-    }
+    for (const id of ['cell-skin-2026-01-03', 'cell-splice-2026-01-05']) expect(fillOf(id)).toEqual(['s-a'])
+    expect(screen.getByTestId('cell-splice-2026-01-05').querySelector('.c')!.classList.contains('k-med')).toBe(true)
   })
 
   // A bid with no decision recorded is pending — the seed leaves splice's
   // LL unstated precisely so this path renders on first run — and pending
-  // now means NO colour. Asserted against all three painted classes rather
-  // than for one, so a cascade that reintroduced any of them fails here.
-  it('reads a bid with no decision recorded as pending, and paints it plain', () => {
+  // is the hollow, dashed box (look F — D1175; it was "no colour" until then).
+  it('reads a bid with no decision recorded as pending, and draws it hollow', () => {
     render(<Matrix />)
-    const cls = screen.getByTestId('cell-splice-2026-01-08').querySelector('.c')!.className
-    for (const painted of ['appr', 'tbc', 'ref']) expect(cls).not.toContain(painted)
+    expect(fillOf('cell-splice-2026-01-08')).toEqual(['s-w'])
   })
 
   it('re-paints when a decision is recorded', () => {
     render(<Matrix />)
-    const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
-    expect(cls()).not.toContain('appr')
+    expect(fillOf('cell-asics-2026-01-23')).toEqual(['s-w'])
     act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'approved') })
-    expect(cls()).toContain('appr')
+    expect(fillOf('cell-asics-2026-01-23')).toEqual(['s-a'])   // look F: filled is approved (D1175), where it was `appr`
   })
 
-  // Acknowledging is the step the owner added: it is not a decision, it says
-  // management has the bid in hand. A plain input becomes purple, and the
-  // counts do not move — an acknowledged bid still removes the person,
-  // exactly as a pending one does.
-  it('turns a plain pending input purple when it is acknowledged, without moving the counts', () => {
+  /* Ack is gone (D1158) and a box's colour is its kind, its fill where it stands (look F, D1175): a pending bid is the
+     hollow, dashed box; approving fills it — and moves no count, since a pending bid already counts as away */
+  it('draws a pending input hollow and fills it when approved, without moving the counts', () => {
     render(<Matrix />)
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
-    expect(cls()).not.toContain('tbc')
+    expect(cls()).toContain('s-w')
+    expect(cls()).toContain('k-ll')
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'acknowledged') })
-    expect(cls()).toContain('tbc')
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('asics', '2026-01-23', 'approved') })
+    expect(cls()).toContain('s-a')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
   })
 
@@ -421,24 +429,23 @@ describe('bid state on a cell', () => {
 /* The 18 Aug 26 layout order (owner's arrows on a screenshot): counts →
    month buttons → callsign/dates header → event rows → roster. */
 describe('the grid row order', () => {
-  it('draws counts, then the month strip, then the header, then events, then people', () => {
+  /* the grid's order since D1256: the month buttons, the dates, the Manning rows straight under them, the events, people */
+  it('draws the month strip, then the header, then the counts, then events, then people', () => {
     render(<Matrix />)
     const table = screen.getByTestId('month-strip').closest('table')!
     const sections = Array.from(table.children).map(el => el.className || el.tagName.toLowerCase())
     // The roster body is `.mxbody` now (20 Aug 26) — the frozen-column overlay
     // measures it by that name and draws a second copy of its two lead columns.
-    expect(sections).toEqual(['counts', 'mstripe', 'mxhead', 'events', 'mxbody'])
+    expect(sections).toEqual(['mstripe', 'mxhead', 'counts', 'events', 'mxbody'])
   })
 
-  it('brackets every month above the dates, spanning its own days', () => {
+  /* the month band row over the dates goes (D1257): each month's first date names it */
+  it('has no month band row over the dates; the header is the dates alone', () => {
     render(<Matrix />)
-    const jan = screen.getByTestId('bracket-2026-01')
-    expect(jan.getAttribute('colspan')).toBe('31')
-    expect(jan.textContent).toBe('JAN')
-    expect(screen.getByTestId('bracket-2026-02').getAttribute('colspan')).toBe('28')
-    // the bracket row sits directly above the header row, inside one tbody
-    const head = jan.closest('tbody')!
-    expect(head.className).toBe('mxhead')
+    expect(screen.queryByTestId('month-bracket')).toBeNull()
+    expect(screen.queryByTestId('bracket-2026-01')).toBeNull()
+    const head = screen.getByTestId('month-strip').closest('table')!.querySelector('tbody.mxhead')!
+    expect(head.querySelectorAll('tr')).toHaveLength(1)
     expect(head.querySelector('[data-testid="counter-head"]')).toBeTruthy()
   })
 

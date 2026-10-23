@@ -83,6 +83,12 @@ export interface LedgerEntry {
   enteredBy?: string
   /** WHEN IT WAS ENTERED — an ISO date-time, stamped with `enteredBy`. */
   enteredAt?: string
+  /** WHICH HALF OF ITS DAY AN HO TAKES (owner, D1164, 21 Oct 26 — an HO is drawn in a half of its day, the morning or
+   *  the afternoon, as a half day's leave is). Meaningful only on an OIL award worth exactly half a day; an FO, a
+   *  correction and every other pool never carry it. An HO stored without it — every award given before D1164 —
+   *  reads as the MORNING ("the morning unless he picks the afternoon"; `warrecs.ts awardHalf`), so an old record
+   *  still loads (D401). */
+  half?: 'am' | 'pm'
 }
 
 export type Ledger = LedgerEntry[]

@@ -65,27 +65,53 @@ describe('the colour/mark legend', () => {
   // Owner, 27 Aug 26: a pop-out key for the grid's colours and marks. Open to
   // everyone (it explains the grid, it does not change it) and self-consistent
   // with the cells — the swatches carry the grid's own state/edge classes.
-  it('opens a key explaining the states, the edge marks and the half-day *', () => {
+  /* WAS "opens a key explaining the states, the edge marks and the half-day *". The Legend is redrawn for look F
+     (D1175, D1158, D1160, D1167): the colour is the kind, the fill where it stands (Approved / Pending a decision /
+     Refused — Ack is gone, D1158), the size how much of the day (the "*" half-day section went with the arrows, D1160);
+     every swatch is the grid's own box (`.leg-box .c`, the cell's classes). */
+  const rowBox = (leg: HTMLElement, words: string) => {
+    const row = Array.from(leg.querySelectorAll('.leg-row')).find(r => r.querySelector('.leg-t')?.textContent === words)
+    expect(row, `a legend row "${words}"`).toBeTruthy()
+    return Array.from(row!.querySelectorAll('.leg-box .c'))
+  }
+  it('opens a key explaining the colour, the fill, the size and the edge marks (look F)', () => {
     render(<StageBar />)
     expect(screen.queryByTestId('legend')).toBeNull()
     fireEvent.click(screen.getByTestId('legend-open'))
     const leg = screen.getByTestId('legend')
     const text = leg.textContent || ''
-    expect(text).toContain('Approved')
-    // "Ack" since 21 Sep 26 — the owner renamed his own 27 Aug "Pending", and
-    // the legend has to say what the button says or the key explains a word
-    // that is no longer on any screen.
-    expect(text).toContain('Ack')
-    expect(text).toContain('Refused')
+    const secs = Array.from(leg.querySelectorAll('.leg-sec')).map(s => s.textContent)
+    expect(secs.slice(0, 5)).toEqual(['The colour: what kind', 'The fill: where it stands', 'The size: how much of the day', 'The dates', 'The left edge: where it came from'])
+    // the colour: one box per kind, each its own kind and filled
+    const kinds = [['Local leave', 'k-ll'], ['Overseas leave', 'k-ol'], ['Course', 'k-cse'], ['Overseas duty', 'k-od'], ['Medical: B, C, OML, HL', 'k-med'], ['Other leave: CCL, FCL, PL, CL, EL', 'k-care']]
+    for (const [words, k] of kinds) {
+      const [box] = rowBox(leg, words!)
+      expect(box!.classList.contains(k!) && box!.classList.contains('s-a'), `${words} is ${k}, filled`).toBe(true)
+    }
+    expect(text).toContain('Off in lieu (OIL')
+    // the fill: approved filled, pending hollow, refused struck — and no Ack (D1158)
+    expect(rowBox(leg, 'Approved')[0]!.classList.contains('s-a')).toBe(true)
+    expect(rowBox(leg, 'Pending a decision')[0]!.classList.contains('s-w')).toBe(true)
+    expect(rowBox(leg, 'Refused')[0]!.classList.contains('s-r')).toBe(true)
+    expect(text).not.toContain('Ack')
+    // the size: whole, top, bottom — and two entries side by side (D1167)
+    expect(rowBox(leg, 'A whole day')[0]!.classList.contains('whole')).toBe(true)
+    expect(rowBox(leg, 'Morning (AM)')[0]!.classList.contains('top')).toBe(true)
+    expect(rowBox(leg, 'Afternoon (PM)')[0]!.classList.contains('bot')).toBe(true)
+    const two = rowBox(leg, 'Two entries on one day')
+    expect(two.map(b => [b.classList.contains('left'), b.classList.contains('right')])).toEqual([[true, false], [false, true]])
+    // the "*" half-day section is gone with the arrows (D1160)
+    expect(text).not.toContain('AM (before the code)')
+    expect(text).not.toContain('PM (after the code)')
     expect(text).toContain('Filed on the Inputs page')
-    expect(text).toContain('AM (before the code)')
-    expect(text).toContain('PM (after the code)')
     // The moved row ALWAYS shows since the stages went (D1177's reading: the dotted "moved" mark shows on any move of
     // a leave already approved, so the grid can wear it whatever is open). Its own test is below.
     expect(text).toContain('Moved here from another day')
-    // the swatches reuse the grid's own classes, so the key cannot drift from
-    // the cells (the blue 'raptor' edge mark; the dotted-orange 'moved' below)
-    expect(leg.querySelector('.leg-sw.raptor')).toBeTruthy()
+    // the swatches ARE the grid's own box, so the key cannot drift from the cells (the blue 'raptor' edge mark; the
+    // dotted 'moved' below)
+    expect(rowBox(leg, 'Filed on the Inputs page: change it there, not here')[0]!.classList.contains('raptor')).toBe(true)
+    // none of the old swatch classes is left in the colour/fill/size key
+    for (const old of ['appr', 'tbc', 'ref']) expect(leg.querySelector(`.leg-box .c.${old}`)).toBeNull()
   })
 
   /* ESCAPE CLOSES IT (bug sweep, 28 Aug 26). The legend and the under-manned
@@ -125,13 +151,14 @@ describe('the colour/mark legend', () => {
   it('the moved row is in the key whatever is open', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('legend-open'))
+    // its swatch is the grid's own box wearing the moved edge (`.leg-box .c.moved` — look F's LegBox, D1175)
     expect(screen.getByTestId('legend').textContent).toContain('Moved here from another day')
-    expect(screen.getByTestId('legend').querySelector('.leg-sw.moved')).toBeTruthy()
+    expect(screen.getByTestId('legend').querySelector('.leg-box .c.moved')).toBeTruthy()
     act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31') })
     expect(getState().period.open).toEqual([])
     const leg = screen.getByTestId('legend')
     expect(leg.textContent).toContain('Moved here from another day')
-    expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()
+    expect(leg.querySelector('.leg-box .c.moved')).toBeTruthy()
   })
 
   // Owner, 28 Aug 26: the legend must also explain the LETTERS — above all
@@ -145,41 +172,84 @@ describe('the colour/mark legend', () => {
     expect(text).toContain('full day OIL'.replace(/^./, c => c.toUpperCase()))
     expect(text).toContain('half day OIL'.replace(/^./, c => c.toUpperCase()))
     expect(text).toContain('off in lieu')
-    // flagged as the group that lives only here, and given the grid's duty colour
+    // flagged as the group that lives only here, and given the colour the grid gives it — look F (D1175): FO is OIL's
+    // kind, green, and filled (`k-oil s-a`), where it wore the grid's old duty class `sc`
     expect(text).toContain('not on the Inputs page')
     expect(leg.querySelector('.leg-sec-here')).toBeTruthy()
-    const fo = Array.from(leg.querySelectorAll('.leg-sw')).find(s => s.textContent === 'FO')
+    const swatches = Array.from(leg.querySelectorAll('.leg-box .c'))
+    const fo = swatches.find(s => s.textContent === 'FO')
     expect(fo, 'FO has a swatch').toBeTruthy()
-    expect(fo!.classList.contains('sc'), 'FO wears the grid duty colour').toBe(true)
+    expect(fo!.classList.contains('k-oil') && fo!.classList.contains('s-a'), 'FO wears the grid’s OIL colour, filled').toBe(true)
     // the medical shorthand the grid shows (B / C) and the leave codes are keyed too
-    expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'B')).toBe(true)
-    expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'LL')).toBe(true)
+    const b = swatches.find(s => s.textContent === 'B')
+    expect(b && b.classList.contains('k-med')).toBe(true)
+    expect(swatches.some(s => s.textContent === 'LL' && s.classList.contains('k-ll'))).toBe(true)
     expect(text).toContain('Local leave')
   })
 
-  // The figures section (owner, 6 Sep 26): the same colours the boxes wear,
-  // then every column read off the FIGURES catalogue — one source, so this
-  // can never drift from the grid or the picker.
-  it('explains the figures — the colours and each column', () => {
+  /* EVERY GLOSSARY SWATCH WEARS THE COLOUR THE GRID GIVES ITS CODE (look F — D1175: "ONE map, read by the grid's box
+     and its Legend"). The grid draws an app-credited FO as `FO*` in OIL green (`kindOf('FO')`, the star only in its
+     text — `boxText`). LEFT FAILING ON PURPOSE at 5042a50e4: the Legend's FO* row passes the string 'FO*' to
+     `kindOf`, which `parseCell` cannot read, so the swatch is drawn duty grey (`k-od`). */
+  it('the FO* swatch is OIL green, as the grid draws an app-credited FO (D1175)', () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const star = Array.from(screen.getByTestId('legend').querySelectorAll('.leg-box .c')).find(s => s.textContent === 'FO*')
+    expect(star, 'FO* has a swatch').toBeTruthy()
+    expect(star!.className).toContain('k-oil')
+  })
+
+  /* NO ARROWS ON THE GRID, SO NONE IN ITS KEY (D1160, D1145 — "the split cell replaces today's <LL and LL> marks"; the
+     brief: the "*" half-day section is gone): the half is said by "The size: how much of the day". LEFT FAILING ON
+     PURPOSE at 5042a50e4: the code glossary (`CODE_GLOSSARY`, engine/codes.ts) still carries its "Half days" group —
+     `<LL` "The arrow points at the half of the day…" and `LL>` — drawn as grey boxes with the arrow in their letters. */
+  it('the key explains no half-day arrow the grid no longer prints (D1160)', () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const leg = screen.getByTestId('legend')
+    expect(Array.from(leg.querySelectorAll('.leg-box .c')).map(s => s.textContent).filter(t => /[<>]/.test(t ?? ''))).toEqual([])
+    expect(leg.textContent).not.toContain('The arrow points at the half')
+  })
+
+  /* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — the Legend teaches that one
+     column, no longer every balance the old drawer and picker carried (walker 1's fault 65, the code read's F2). */
+  /* walker 1's #64 (the code read's F4): the corner rows are the grid's own box with the grid's own tiles — "+1", the
+     amber "!" and the PO tag — never the old text swatch, so the key cannot show a mark the grid does not paint */
+  it("draws the corner rows with the grid's own box and tiles", () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    for (const [id, tile] of [['leg-corner-more', '.mk.more'], ['leg-corner-warn', '.mk.warn'], ['leg-corner-po', '.potag']] as const) {
+      const box = screen.getByTestId(id)
+      expect(box.className).toBe('leg-box')
+      expect(box.querySelector('.c.k-ll.s-a.whole')?.textContent).toBe('LL')
+      expect(box.querySelector(tile)).toBeTruthy()
+    }
+    expect(screen.getByTestId('legend-open').ownerDocument.querySelector('.leg-sw.legmk')).toBeNull()
+  })
+
+  it('explains the one figure beside each name — LVE — and no other balance column', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('legend-open'))
     const sec = screen.getByTestId('legend-figures')
-    expect(sec.textContent).toContain('white')
-    expect(sec.textContent).toContain('amber')
-    expect(sec.textContent).toContain('+LVE')
-    expect(sec.textContent).toContain('Medical days: ATT C + HL + OML')
+    expect(sec.textContent).toContain('LVE left')
+    expect(sec.textContent).toContain('below zero')
+    expect(sec.textContent).not.toContain('+OIL')
+    expect(sec.textContent).not.toContain('Medical days')
+    expect(sec.textContent).not.toContain('each column')
   })
 })
 
 describe('the viewer badge (owner, 28 Aug 26)', () => {
   // The whole page answers for the viewing person; the badge says so out loud,
   // at the top, so nobody wonders whose numbers the counter column shows.
-  it('names whose page this is, prominently, when a viewer is set', () => {
+  /* The "Viewing as" chip goes (D1173, 21 Oct 26): the person signed in knows who he is, and My leave (D1141) carries
+     his own figures — so a viewer set shows My leave, never the chip. */
+  it('shows My leave for the person signed in, and no "Viewing as" chip (D1173, D1141)', () => {
     act(() => setViewer('ramp'))
     render(<Topbar />)
-    const chip = screen.getByTestId('lw-viewing')
-    expect(chip.textContent).toContain('Viewing as')
-    expect(chip.textContent).toContain('RAMP')
+    expect(screen.queryByTestId('lw-viewing')).toBeNull()
+    expect(screen.getByTestId('my-leave').textContent).toContain('My leave')
+    expect(screen.getByTestId('my-leave-lve').textContent).toMatch(/^LVE -?\d+(\.5)?$/)
   })
 
   // Nobody in the roster being viewed → no "you" to name, so the badge is
@@ -197,10 +267,11 @@ describe('the leave war picker', () => {
     // "JAN - DEC 26" on its own does not say it is the period being bid for,
     // and the picker is the first thing on the screen. The stage strip below
     // labels every one of its chips this way; this one was the odd one out.
-    expect(screen.getByTestId('period-label').textContent).toBe('Period')
+    /* the word is "View" since D1174 ("View JAN – DEC 26"), on a desktop and a phone alike */
+    expect(screen.getByTestId('period-label').textContent).toBe('View')
     // The label has to name the control for a screen reader too, not just
     // sit beside it — `aria-label` was carrying a different word entirely.
-    expect(screen.getByTestId('war-picker').getAttribute('aria-label')).toContain('Period')
+    expect(screen.getByTestId('war-picker').getAttribute('aria-label')).toContain('View')
   })
 })
 

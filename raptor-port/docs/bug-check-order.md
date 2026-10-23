@@ -340,7 +340,12 @@ reader reported a line a break test had cut out for one minute).
 **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
 are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
 chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
-and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Sonnet never reads
+and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Saving tokens never
+costs this (owner, D1271, 23 Oct 26 — "I don't want u to loose quality for debugging or quality check"):** a look at a picture that
+decides whether something is wrong or right — a fault's cause, a fix's check, a finding — stays the host's; only a look
+whose answer the host does not rely on alone (picking pictures to send him) may go to Sonnet. **The host saves tokens by
+cropping instead (owner, D1273, 23 Oct 26):** a picture is cut to the area being judged — the fault and what is beside it
+— before the host opens it; a whole screen only when the question is about the whole screen. **Sonnet never reads
 code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
 false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. Two trials led here (D476, D480 — both run — and the one check made before the reset, D508; their text:
 `docs/archive/codex-arrangement-2026-10-07.md`). Following the second, on a build with five known faults, the agent kept
@@ -696,6 +701,22 @@ those events (Safari can send a touch's later events to the element it landed on
 it; Chromium retargets them), and add a synthetic check per difference: dispatch the other engine's sequence
 directly on the element it would reach. Name in the evidence sheet every line only a real device can prove,
 and put it on the owner's look card.
+
+**7.10 The moment after a press, and the drawing beside the build (owner D1281, 23 Oct 26).** Three faults he found on
+his iPhone in one day had passed every walk, each a state no step looked at. So, for every walk of a screen:
+- **A picture right after the press.** On a phone, a step that taps takes one picture within about 100 ms of the
+  lift, with the pointer left where it pressed, as well as the settled one — an iPhone keeps what was tapped
+  "hovered" until the next tap, where the test browser drops it in a quarter of a second, so a tint or a see-through
+  cell that lives in that state showed only on his phone (the month strip's dirty block, in the app since 19 Aug 26).
+  The walker opens it beside the settled picture and names any tint, see-through cell or shifted box that only the
+  pressed one shows.
+- **No pinned cell turns see-through.** Each dense screen keeps a standing browser test that presses its controls on
+  a phone, the pointer left on each, and asserts every pinned (sticky) cell stays fully opaque (a cell that paints nothing by design aside). The Leave War has it
+  (`e2e/leavewar.spec.ts`, "pressing the Leave War's controls on a phone never turns a pinned cell see-through");
+  the Scheduler Board, the week, Quals and the Tracker get theirs when each is next worked on, not swept now.
+- **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
+  iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
+  (his lessons 42 and 43, `docs/design-practices.md` §9).
 
 ---
 

@@ -207,7 +207,8 @@ describe('bids', () => {
   it('resets the decision when the bid is changed to different leave', () => {
     setCell('ramp', '2026-02-06', 'LL')
     setRole('admin')
-    setBidState('ramp', '2026-02-06', 'acknowledged')
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    setBidState('ramp', '2026-02-06', 'refused')
     setCell('ramp', '2026-02-06', 'OL')
     expect(getState().states.ramp['2026-02-06']?.state).toBe('pending')
   })
@@ -234,12 +235,13 @@ describe('bids', () => {
     setRole('admin')
     setBidState('ramp', '2026-02-07', 'approved')           // admin, open — now lands
     expect(getState().states.ramp['2026-02-07']?.state).toBe('approved')
-    setBidState('ramp', '2026-02-07', 'acknowledged')       // and is changeable back
-    expect(getState().states.ramp['2026-02-07']?.state).toBe('acknowledged')
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    setBidState('ramp', '2026-02-07', 'refused')            // and is changeable back
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('refused')
     closeDates('2026-01-01', '2026-12-31')                  // the admin closes the whole period
     setRole('member')
     setBidState('ramp', '2026-02-07', 'approved')           // member, closed
-    expect(getState().states.ramp['2026-02-07']?.state).toBe('acknowledged')
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('refused')
     setRole('admin')
     setBidState('ramp', '2026-02-07', 'approved')           // admin, closed
     expect(getState().states.ramp['2026-02-07']?.state).toBe('approved')
@@ -423,7 +425,7 @@ describe('shifting a bid', () => {
   it('lands pending, with no moved trail — a waiting bid was never approved', () => {
     setRole('admin')
     setCell('dusk', '2026-02-11', 'LL')
-    setBidState('dusk', '2026-02-11', 'acknowledged')
+    /* Ack is gone (D1158): re-expressed with the decisions that remain: the bid simply waits */
     moveBidVia('dusk', '2026-02-11', '2026-02-18')
     expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending', source: 'bid' })
     expect(getState().states.dusk?.['2026-02-11']).toBeUndefined()
@@ -2050,8 +2052,9 @@ describe('undo / redo', () => {
   it('undoes an admin decision on a bid', () => {
     setCell('ramp', '2026-01-20', 'LL')
     setRole('admin')                          // the admin decides at any time (D1177)
-    setBidState('ramp', '2026-01-20', 'acknowledged')
-    expect(getState().states.ramp['2026-01-20'].state).toBe('acknowledged')
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    setBidState('ramp', '2026-01-20', 'refused')
+    expect(getState().states.ramp['2026-01-20'].state).toBe('refused')
 
     lwUndo()
     expect(getState().states.ramp['2026-01-20'].state).toBe('pending')

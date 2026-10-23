@@ -99,6 +99,9 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   after it: a row that slid under the sticky bar reads as a new defect. Measure the claim, then picture it.
 - **A script writes only under its own checkout**, every path resolved from the script itself (`import.meta.url`) —
   never an absolute path into a worktree: worktree folders are reused by other chats.
+- **On a phone, a tap gets a picture right after it (owner D1281):** within about 100 ms of the lift, the pointer left
+  where it pressed, besides the settled picture — an iPhone keeps the tapped thing "hovered", the test browser does
+  not, and a fault that lives in that state is otherwise never pictured (the bug-check order §7.10).
 - **One run, one folder.** A script that numbers its pictures empties its folder first, or writes a folder per run:
   two runs' pictures under interleaved numbers are no evidence.
 

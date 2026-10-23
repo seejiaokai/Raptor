@@ -34,7 +34,9 @@ import { codeOf } from './codes'
  * absence of news, and it is the right absence: an input nobody has answered
  * should not be shouting.
  */
-export type BidState = 'pending' | 'acknowledged' | 'approved' | 'refused'
+/* Ack is gone (D1158, 21 Oct 26 — "Ack goes"): the purple 'acknowledged' state above is history; a bid waits until it
+   is approved or refused, and a stored 'acknowledged' reads as pending. */
+export type BidState = 'pending' | 'approved' | 'refused'
 
 /** Which system last wrote this cell.
  *

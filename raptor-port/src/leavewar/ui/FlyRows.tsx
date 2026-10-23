@@ -4,8 +4,10 @@
 // WHERE THEY SIT — D665 (8 Oct 26). His first answer was "Under the event rows" (D637), and they were built there;
 // shown both placements side by side on the running build he chose the Manning block: the last rows of it, under the
 // squadron's own counts and above the Archive bar. So they fold away with the Manning button, and in Rearrange they
-// carry no grip and no eye — the SANS calendar reads them, so they are never dragged elsewhere or hidden. No day is
-// judged by them (they are not Manning RULES: no amber, no red of their own, nothing towards "under-manned").
+// carry no grip and no eye — the SANS calendar reads them, so they are never dragged elsewhere or hidden. They are not
+// Manning RULES (`manningRowIds` leaves them out) — but since the Leave War overhaul an Available row has an amber and
+// a red point of its own, each a number plus or minus that day's Required (D1190, D1191, D1202), and a day with one at
+// red counts among the days breaking a manning rule (D1243; sync.ts manningRedDays).
 //
 // AND A COUNTER MAY STAND AMONG THEM — D674 (8 Oct 26: "Can rearrange allow newly created counter rows be allowed to
 // moved to anywhere in between the fixed blue dot rows? Even to below the 4 as well."). The four are no longer always
@@ -23,13 +25,19 @@
 //   · A REQUIRED cell shows the one resolver's figure for the day (sync.ts flyMonth → state/flyplan-model.ts planFor):
 //     the number, "NF" on a no-fly day, or a dash where no figure applies. The day a RUNNING figure starts wears a
 //     small corner mark, its title saying "16 from Tue 6 Jan onward".
-//   · An AVAILABLE cell shows the war's own count for the seat (engine/availrows.ts — never a SANS man), red where it
-//     is under its Required. A tap opens the WORKING — required, available, SANS committed to fly, still needed —
+//   · An AVAILABLE cell shows the war's own count for the seat (engine/availrows.ts — never a SANS man), red under its
+//     red point and amber under its amber point, each that day's Required plus or minus the row's own number
+//     (engine/availrows.ts availVerdict, the one answer — "+ 0" red and no amber until an admin sets them: red under
+//     Required, as it always was). A tap opens the WORKING — required, available, SANS committed to fly, still needed —
 //     read only, for everyone.
 //   · A member sees all four rows, read only.
-//   · THE NAMES. Required P and Required W are FIXED (D668). Available P and Available W are the squadron's to rename
-//     and re-define (D640): for an admin the name is a button that opens the counter form for that row, as a count
-//     row's name opens its sheet (Matrix owns the form — `onEditAvail`).
+//   · THE NAMES. All four are the squadron's to rename. Available P and Available W are also re-defined (D640): for an
+//     admin the name is a button that opens the counter form for that row, as a count row's name opens its sheet
+//     (Matrix owns the form — `onEditAvail`). Required P and Required W take a name only (D1193, narrowing D668 — the
+//     figures stay typed in their cells): their name opens a small window of its own, kept here (ReqNameForm).
+//   · THE PAIRS ARE TINTED FAINTLY (D1194): Required P with Available P in the pilots' olive, the W pair in the WSOs'
+//     green — the name bars' own seat colours — so each Required row reads as the pair of its Available row. A counter
+//     standing among them (D674) is a row of its own and wears no tint.
 //
 // TWO STORES, HEARD HERE. The figures are the scheduler's records and the counts are the war's, so this component
 // subscribes ITSELF to both signals (`usePlanVersion`, `useWarFacts`) — Matrix and its memo firewall are not touched,
@@ -44,14 +52,16 @@
 
 import { Fragment, memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type ReactNode, type RefCallback } from 'react'
 import { createPortal } from 'react-dom'
-import { FIXED_ROWS, type DayInfo } from '../engine'
+import { FIXED_ROWS, REQ_NAMES_ORIGINAL, availPointsOf, availVerdict, type AvailPoints, type DayInfo } from '../engine'
+import { availRules } from '../state/store'
 import {
-  availRowNames, dayFacts, flyAnswer, flyMonth, sansFly, usePlanVersion, useWarFacts,
+  availRowNames, dayFacts, flyAnswer, flyMonth, reqRowNames, sansFly, usePlanVersion, useWarFacts,
   type DayAnswer,
 } from '../sync'
 import { dayLabel } from './dates'
 import { popAt } from './popat'
-import { FlyEditor, REQ_NAME, type FlyEditAt, type ReqRow } from './FlyEdit'
+import { FlyEditor, type FlyEditAt, type ReqRow } from './FlyEdit'
+import { ReqNameForm } from './ReqNameForm'
 import { ReqPanel } from './ReqPanel'
 import { planPick } from './reqpick'
 import type { ReqSelection } from './select'
@@ -80,8 +90,9 @@ const show = (n: number) => String(Math.round(n * 10) / 10)
 
 interface CellView { iso: string; text: string; cls: string; title?: string }
 
-/* What one cell of a row shows on a day, from the resolver's answer and the war's count. */
-function cellOf(row: (typeof ROWS)[number], iso: string, a: DayAnswer, admin: boolean): CellView {
+/* What one cell of a row shows on a day, from the resolver's answer, the war's count and — on an Available row — the
+   row's own amber and red points. */
+function cellOf(row: (typeof ROWS)[number], iso: string, a: DayAnswer, admin: boolean, points: Record<Seat, AvailPoints>): CellView {
   const s = row.seat
   if (row.kind === 'req') {
     const from = a.reqFrom[s]
@@ -99,10 +110,11 @@ function cellOf(row: (typeof ROWS)[number], iso: string, a: DayAnswer, admin: bo
   const f = dayFacts(iso)
   const avail = s === 'p' ? f.availP : f.availW
   if (avail === null) return { iso, text: '–', cls: ' none' }
-  /* red where it is UNDER its Required (the design note: "the Available figure turns red when it is under Required,
-     and the SANS calendar carries what is still needed") — a no-fly day requires nobody, so it is never red */
-  const req = a.req[s]
-  return { iso, text: show(avail), cls: req !== null && avail < req ? ' under' : '' }
+  /* red under its red point, amber under its amber point — each that day's Required plus or minus the row's own number
+     (D1190, D1191, D1202; red "+ 0" by default: under Required, as it always was). A no-fly day requires nobody, so it
+     shows neither. The class is part of what the month's memo compares, so a changed point repaints the row. */
+  const v = availVerdict(avail, a.reqFrom[s] === 'nf' ? null : a.req[s], points[s])
+  return { iso, text: show(avail), cls: v === 'red' ? ' under' : v === 'amber' ? ' amb' : '' }
 }
 
 /** One drawn month of one row's cells. Re-rendered only when what it SHOWS has changed (`sig`). */
@@ -177,10 +189,12 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
 
   const names = useMemo(() => {
     const av = availRowNames()
+    /* the Required rows' names are the squadron's too since D1193 (narrowing D668) — the war's settings, heard on the
+       war's signal */
+    const rq = reqRowNames()
     return {
-      /* the Required rows' names are FIXED (D668): never read from a store */
-      'req-p': { name: REQ_NAME['req-p'], std: true },
-      'req-w': { name: REQ_NAME['req-w'], std: true },
+      'req-p': { name: rq.p, std: rq.p === REQ_NAMES_ORIGINAL.p },
+      'req-w': { name: rq.w, std: rq.w === REQ_NAMES_ORIGINAL.w },
       'avail-p': { name: av.p, std: av.p === AVAIL_DEFAULTS.p },
       'avail-w': { name: av.w, std: av.w === AVAIL_DEFAULTS.w },
     } as Record<RowId, { name: string; std: boolean }>
@@ -195,6 +209,9 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
      the press before it (a click itself does not say). With no press seen (a keyboard, a test) the screen's own kind
      decides. */
   const [edit, setEdit] = useState<FlyEditAt | null>(null)
+  /* THE RENAME WINDOW of a Required row (D1193) — an admin's tap on its name; one at a time */
+  const [naming, setNaming] = useState<Seat | null>(null)
+  useEffect(() => { if (!admin) setNaming(null) }, [admin])
   const lastPtr = useRef('')
   const adminRef = useRef(admin)
   adminRef.current = admin
@@ -272,9 +289,13 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
     /* the cells of a picked block that will take the number — `reqpick.ts`, the same answer Apply writes from */
     const lit = new Set<string>()
     if (pick) for (const iso of planPick(pick.sel.dates, flyAnswer, pick.include).take) for (const r of pick.sel.rows) lit.add(`req-${r}-${iso}`)
+    /* the Available rows' points, read once per change — they live in the war's settings, so a change moves the war's
+       signal and with it `months` (sync.ts warFactsVersion) */
+    const av = availRules()
+    const points: Record<Seat, AvailPoints> = { p: availPointsOf(av.p), w: availPointsOf(av.w) }
     return ROWS.map(row => months.map(m => {
       const cells = m.dates.map(iso => {
-        const c = cellOf(row, iso, m.answers[iso] ?? flyAnswer(iso), admin)
+        const c = cellOf(row, iso, m.answers[iso] ?? flyAnswer(iso), admin, points)
         return lit.has(`${row.id}-${iso}`) ? { ...c, cls: c.cls + ' pick' } : c
       })
       return { key: m.key, cells, sig: cells.map(c => `${c.iso}${c.text}${c.cls}${c.title ?? ''}`).join('|') }
@@ -299,18 +320,27 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
         return (
         <Fragment key={row.id}>
         {runs?.[ri]}
-        <tr className={`flyrow ${row.kind}${over}`} data-testid={`fly-row-${row.id}`} data-mrow={arranging ? token : undefined}>
+        <tr className={`flyrow ${row.kind} pair-${row.seat}${over}`} data-testid={`fly-row-${row.id}`} data-mrow={arranging ? token : undefined}>
           <td className="who" title={names[row.id].name}>
             {(() => {
               const text = names[row.id].std
                 ? <><span className="frl-long">{names[row.id].name}</span><span className="frl-short">{SHORT[row.id]}</span></>
                 : names[row.id].name
-              /* an Available row's name is the way to its form, for an admin (D640); a Required row's never is (D668) */
-              if (row.kind !== 'avail' || !admin || !onEditAvail) return text
+              if (!admin) return text
+              /* a Required row's name opens its rename window, for an admin (D1193 — the name only) */
+              if (row.kind === 'req') return (
+                <button
+                  type="button" className="flyname" data-testid={`fly-name-${row.id}`}
+                  title={`Rename ${names[row.id].name}`}
+                  onClick={() => setNaming(row.seat)}
+                >{text}</button>
+              )
+              /* an Available row's name is the way to its form, for an admin (D640) */
+              if (!onEditAvail) return text
               return (
                 <button
                   type="button" className="flyname" data-testid={`fly-name-${row.id}`}
-                  title={`Rename ${names[row.id].name}, or change who it counts`}
+                  title={`Rename ${names[row.id].name}, change who it counts, or set its amber and red`}
                   onClick={() => onEditAvail(row.id === 'avail-p' ? 'availp' : 'availw')}
                 >{text}</button>
               )
@@ -332,6 +362,10 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
       )}
       {pick && createPortal(
         <ReqPanel pick={pick.sel} include={pick.include} onInclude={setInclude.current} onClose={closePick.current} />,
+        document.getElementById('page-leavewar') ?? document.body,
+      )}
+      {naming && admin && createPortal(
+        <ReqNameForm key={naming} seat={naming} onClose={() => setNaming(null)} />,
         document.getElementById('page-leavewar') ?? document.body,
       )}
     </>

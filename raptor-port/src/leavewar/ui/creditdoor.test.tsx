@@ -17,13 +17,18 @@
 // man worked with no schedule behind it — which is exactly why it carries a
 // reason and who said so, and why it DOES move his OIL balance.
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf, isWeekend } from '../engine'
 import { creditGiver, readRec } from '../engine/warrecs'
 import { awardsOnDay, getState, ingestDutyCredit, initStore, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* the OIL tracker opens from the OIL tab of the top row since D1254 (Chrome.tsx `Topbar`): the grid rendered alone is
+   asked as the tab's press asks it (ui/lwnav.ts). */
+const openOil = () => act(() => { askLw({ kind: 'oil' }) })
 
 const P = 'slammed'
 const TUE = '2026-01-13'      // an ordinary weekday
@@ -214,7 +219,7 @@ describe('who said so is RECORDED and VISIBLE', () => {
   it('shows on the OIL tracker row and can be changed there', () => {
     expect(setDayAward(P, TUE, 1, { note: 'Recall', givenBy: 'OC Ops' })).toBeNull()
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('oil-tracker'))
+    openOil()
     const id = creditOn(P, TUE)!.id
     const row = screen.getByTestId(`oil-entry-${id}`)
     expect(row.textContent).toContain('OC Ops')
@@ -262,7 +267,7 @@ describe('the OIL on a day, read back on one click', () => {
     open(TUE)
     expect(screen.getByTestId('oil-detail-why').textContent).toBe('Not given')
     expect(screen.getByTestId('oil-detail-given').textContent).toBe('Not given')
-    expect(screen.getByTestId('oil-detail-days').textContent).toBe('half a day')
+    expect(screen.getByTestId('oil-detail-days').textContent).toBe('half a day, morning')   // an HO names its half (D1164)
   })
 
   it('OIL the app earned names the WEEKEND as its giver, and the hours behind it', () => {

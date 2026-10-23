@@ -28,7 +28,9 @@ export const AM: Win = [0, 720]
 export const PM: Win = [721, 1439]
 export const FULL: Win = [0, 1439]
 
-export type RequestState = 'pending' | 'acknowledged' | 'refused'
+/* Ack is gone (D1158, 21 Oct 26): a bid waits until it is approved or refused. A stored 'acknowledged' is read as
+   pending (`warrecs.ts readRecBody`). */
+export type RequestState = 'pending' | 'refused'
 
 /** One thing on a person's day. `id` is the Input's iid for an absence and
  *  the war record's own id otherwise — the tap list acts on it. */
@@ -39,11 +41,16 @@ export interface Contrib {
    *  ATTB, CSE, OD, FO, HO. A notice carries the REPLACED bid's code. */
   code: string
   /** The part of this date it takes — for a credit worked in several
-   *  stretches, the envelope from first start to last end (what it shows as). */
+   *  stretches, the envelope from first start to last end (what it shows as).
+   *  An HO's is the half it is drawn in, AM or PM (owner, D1164): an award's
+   *  the half the admin picked, the schedule's the half its work fell in
+   *  (`warrecs.ts awardHalf`, `creditHalf`). */
   win: Win
   /** credit only: the separate work stretches, when there are several. Every
    *  overlap test reads these, so leave in a GAP between two stretches is not a
-   *  clash (Fable inspection #2, 20 Sep 26). */
+   *  clash (Fable inspection #2, 20 Sep 26). An automatic HO always carries
+   *  them — its `win` is the HALF it is drawn in (D1164), its real hours are
+   *  here (a medical's real hours ride the same way, `absences.ts`). */
   wins?: readonly Win[]
   /** request only */
   state?: RequestState
@@ -80,6 +87,15 @@ export const isSickCode = (code: string) => SICK.has(code)
 export const isAwayDutyCode = (code: string) => AWAY_DUTY.has(code)
 export const isCreditCode = (code: string) => CREDIT.has(code)
 const isAnnual = (code: string) => code === 'LL' || code === 'OL'
+/* the codes the war never changes, even approved on it — medical, a course, overseas duty (design §5.4, owner §13 Q1) */
+const OFF_WAR = new Set(['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD'])
+/** Whether ONE record is changed off the war: an absence filed on the Inputs page (not approved on the war, or a
+ *  medical, a course, overseas duty), or a credit the app worked out itself. It is the blue edge THAT record's own box
+ *  wears — asked of each entry, never of the day, so leave approved on the war keeps a plain box beside a course filed
+ *  on the Inputs page (walker 1's #11, 23 Oct 26). Whether the war may write the DAY is a wider question — any record
+ *  on it changed off the war locks it — and stays `state/merge.ts projRecord`'s, which asks this first. */
+export const offWar = (c: Contrib): boolean =>
+  c.kind === 'absence' ? !c.lw || OFF_WAR.has(c.code) : c.kind === 'credit' && !!c.auto
 
 /* Two windows clash only when they share time: an end and a start at the same
    minute (LL 08:00–10:00, OL 10:00–11:00) sit back to back and do NOT clash —
@@ -209,7 +225,7 @@ export interface DayView {
   /** the stored notation of the main code: `LL`, `*LL` (morning), `LL*` */
   code: string | null
   /** the main code's colour state: an absence or credit reads approved */
-  state: 'pending' | 'acknowledged' | 'approved' | 'refused' | null
+  state: 'pending' | 'approved' | 'refused' | null
   /** the corner mark: '!' when an admin must look, '+n' for more records, '' */
   mark: string
   amber: boolean

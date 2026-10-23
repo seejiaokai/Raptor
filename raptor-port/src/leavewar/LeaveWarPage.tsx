@@ -28,7 +28,7 @@
    duplicates. Every remaining Leave War stylesheet is scoped under
    #page-leavewar — see the comment at the top of each. */
 import { memo, useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { StageBar, Topbar } from './ui/Chrome'
+import { Topbar } from './ui/Chrome'
 import { Matrix } from './ui/Matrix'
 import { WarSheet } from './ui/WarSheet'
 import { setLwOnScreen } from './state/screen'
@@ -54,7 +54,7 @@ const LwFull = memo(function LwFull() {
   return (
     <>
       <Topbar />
-      <StageBar />
+      {/* the grid's own bar now stands on the grid card (Matrix renders StageBar — D1254) */}
       <Matrix />
     </>
   )

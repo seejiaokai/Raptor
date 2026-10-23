@@ -250,6 +250,17 @@ export function displayCell(raw: string, auto = false): string {
   return auto ? `${half}*` : half
 }
 
+/* LOOK F — A BOX'S COLOUR IS ITS KIND (D1175, confirming D1165 and D1161; 21 Oct 26): local leave light amber, overseas
+   leave deep amber, OIL / FO / HO green, the other leave (CCL FCL PL CL EL) blue, a course lilac, overseas duty grey,
+   medical (B C OML HL) rose. ONE map, read by the grid's box and its Legend (and, with the bid windows and Approvals in
+   later merges, theirs) — so the button and the box it places can never disagree. An unknown code reads as duty grey. */
+export type Kind = 'll' | 'ol' | 'oil' | 'care' | 'cse' | 'od' | 'med'
+const KIND: Record<string, Kind> = { B: 'med', C: 'med', LL: 'll', OL: 'ol', OIL: 'oil', FO: 'oil', HO: 'oil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'cse', OD: 'od', ATTB: 'med', ATTC: 'med', OML: 'med', HL: 'med' }
+export function kindOf(raw: string): Kind { const r = raw.replace(/[*<>]/g, ''); const c = parseCell(r); return KIND[c ? c.type : r] ?? 'od' }
+/** The letters a box prints (D1160): the code bare — its half is said by where the box sits, so the arrows of
+ *  `displayCell` are not printed on the grid; ATT B / ATT C as the owner's B / C; an app-credited OIL keeps its star. */
+export function boxText(raw: string, auto = false): string { const c = parseCell(raw); const short = c ? (MEDICAL_SHORT[c.type] ?? c.type) : raw; return auto ? `${short}*` : short }
+
 export interface DayCode {
   code: string
   label: string
@@ -370,14 +381,8 @@ export const CODE_GLOSSARY: GlossaryGroup[] = [
     group: 'Medical',
     rows: MEDICAL_TYPES.map(m => ({ show: displayCell(m.type), mean: cap(m.label.replace(/^medical — /, '')) })),
   },
-  {
-    group: 'Half days',
-    onlyHere: true,
-    rows: [
-      { show: '<LL', mean: 'The arrow points at the half of the day — this one is the MORNING.' },
-      { show: 'LL>', mean: 'And this one is the AFTERNOON. A code with no arrow is the whole day.' },
-    ],
-  },
+  /* the "Half days" group (the arrows <LL, LL>) went with D1160: the grid says a half by where the box sits, and the
+     Legend's "The size" section shows it */
   {
     group: 'Leave',
     rows: LEAVE_TYPES.map(t => ({ show: t.type, mean: cap(t.label) })),

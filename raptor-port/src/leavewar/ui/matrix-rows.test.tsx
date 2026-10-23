@@ -58,10 +58,10 @@ describe('[LW-ROWS-SPLIT] the rows of the Leave War are drawn exactly as they we
     await expect(rows(container)).toMatchFileSnapshot('./__rows__/open-member.html')
   })
 
-  it('every date closed, with one bid approved, one acknowledged and one refused — as an admin and as a member', async () => {
+  it('every date closed, with one bid approved, one pending and one refused — as an admin and as a member', async () => {
     act(() => {
       setRole('admin'); closeDates('2026-01-01', '2026-12-31')
-      setBidState('asics', '2026-01-23', 'approved'); setBidState('asics', '2026-01-26', 'refused'); setBidState('ramp', '2026-01-22', 'acknowledged')
+      setBidState('asics', '2026-01-23', 'approved'); setBidState('asics', '2026-01-26', 'refused') // Ack is gone (D1158): ramp's bid stays pending
     })
     const a = render(<Matrix />)
     await expect(rows(a.container)).toMatchFileSnapshot('./__rows__/closed-admin.html')

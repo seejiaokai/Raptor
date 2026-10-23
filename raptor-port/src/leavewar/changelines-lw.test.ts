@@ -54,12 +54,13 @@ describe('a decision on the Leave War', () => {
     expect(rowTouches(war()[0]!, '2026-02-02')).toBe(true)
   })
 
-  it('refuse and acknowledge: one line each, in plain words', () => {
+  it('refuse, then back to pending: one line each', () => {
     setBidState(pid, '2026-02-02', 'refused')
     expect(war().map(r => r.lbl)).toEqual([expect.stringContaining('refused')])
     elogClear()
-    setBidState(pid, '2026-02-02', 'acknowledged')
-    expect(war().map(r => r.lbl)).toEqual([expect.stringContaining('acknowledged')])
+    /* Ack is gone (D1158): re-expressed with the decisions that remain */ 
+    setBidState(pid, '2026-02-02', 'pending')
+    expect(war()).toHaveLength(1)
   })
 
   it('back to a bid after an approval: ONE line', () => {

@@ -748,6 +748,74 @@
         "--strictPort"
       ],
       "port": 4258
+    },
+    {
+      "name": "lw-m1-base",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor--claude-worktrees-leave-war-overhaul-e11c0a/41598151-b62f-4130-886a-f6dcd3903085/scratchpad/m1dist",
+        "--port",
+        "4262",
+        "--strictPort"
+      ],
+      "port": 4262
+    },
+    {
+      "name": "lw-m2-scroll",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-scroll",
+        "--port",
+        "4264",
+        "--strictPort"
+      ],
+      "port": 4264
+    },
+    {
+      "name": "lw-m2-fix",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-fix2",
+        "--port",
+        "4265",
+        "--strictPort"
+      ],
+      "port": 4265
+    },
+    {
+      "name": "lw-m2-e2e",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "dist-e2e",
+        "--port",
+        "4266",
+        "--strictPort"
+      ],
+      "port": 4266
     }
   ]
 }

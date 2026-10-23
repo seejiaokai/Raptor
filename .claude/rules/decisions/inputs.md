@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1280 | 23 Oct 26 | On a phone the Inputs page's tab row (Inputs · SANS · Medical) sits 4px under the app's top bar, as the Leave War's does — the smaller gap — so the tabs stand in the same place on both pages. |
 | D1179 | 21 Oct 26 | The Inputs page's type filter can pick a whole family — every kind of leave at once, and every kind of medical — so in one view an admin sees which inputs carry their document and which do not. |
 | D1139 | 21 Oct 26 | On a desktop the Inputs list's "+ Input" and dates button are 36 tall, as on a phone and as the rest of the Inputs page; nothing moves and the words stay. |
 | D1137 | 21 Oct 26 | On the Medical tab "+ Medical" stands first, at the left of its row, where "+ Input" stands on the Inputs list; the frame round the Medical tab goes, its three sections keeping their own boxes; and the Inputs list's dates button wears the app's line calendar in place of the 📅 emoji. |

@@ -20,6 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-m2-looks -->
+### `claude/lw-m2-looks` — the Leave War overhaul's M2 (how it looks): his "merge live" given 23 Oct 26 afternoon — merging; written 23 Oct 26 — verify before use
+- **Where it stands:** M2 built and checked (evidence sheet `raptor-port/docs/handpass/2026-10-23-lw-m2-looks.md` §1–§16, `Walk:` line in §16), his look on his iPhone through the afternoon, every fault he found fixed red first and walked: D1278 (the phone's two top rows as low as the drawing), D1279 (the picker and My leave one height), the month strip's dirty blue block after a tap (older — in the app since 19 Aug 26), D1280 (the Inputs page's tabs 4px under the top bar, as the Leave War's), D1281 (two new checks in the bug-check order §7.10 and walk-scripts §5, the Leave War's standing pinned-cell test built and proven). GitHub's full run green on `480e97ac4`. **His "merge live" given** (D1088): this block is the closing records' push; the merge follows that run's green.
+- **Branch / pull request:** `claude/lw-m2-looks`, pull request 567 into main. Look page https://claude.ai/artifact/92nxg66R9zDcQfFJefYzcZ.
+- **If this block is read and pull request 567 is NOT merged:** check its head is this branch's head and its run green, then merge and confirm the live app (Vercel's Production deployment for main's merge commit Ready; if none started, he presses Promote to Production on the branch's top preview row — his PC).
+- **Left for later (filed):** `[LW-M1-READ-LEFTOVERS]` (1), (2), (4) — now with M3; `[LW-ENTERED-DATE-UTC]` — M3; the pinned-cell test for the Scheduler Board, the week, Quals and the Tracker when each is next worked on (D1281); his QA / QB settled by the round-19 drawing (the − / + go with the pinch job, D1276; Approvals and Balances fill the tab row in M4 / M5).
+- **Owed:** no ChatGPT reader (`[NO-ASTRA-LIST]` carries M2).
+- **Next job recommended:** `[LW-PHONE-PINCH-ZOOM]` (his pinch drift is filed there; it also lets the − / + go and the grid's bar fit one line on a phone).
+- **Opening line for the next chat (a new job):** Start from main: git fetch origin, git switch --detach origin/main. Then read HANDOFF.md and OUTSTANDING.md [LW-PHONE-PINCH-ZOOM], and plan the Leave War's pinch to zoom on a phone (D1117, D1228, D1276): its questions to me first, with pictures.
+<!-- /now -->
 <!-- now:claude/lw-m1-open-dates -->
 ### `claude/lw-m1-open-dates` — the Leave War overhaul's M1, open dates (D1250's plan, batch 1), with D1263 and his look's fixes built: awaiting his look and "merge live", written 23 Oct 26 — verify before use
 - **Where it started:** M1 built, walked, read and fixed in the chat before (evidence sheet §1–§14). This chat: pushed its last commits, built D1263 (§15), then took his look on his iPhone (22–23 Oct 26, §16).

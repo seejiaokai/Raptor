@@ -18,9 +18,14 @@ beforeEach(() => {
   fileAbsence('splice', 'OML', '2026-01-06')
 })
 
-/** Open the counter sheet and choose one. The whole column header is the
- *  control now — the two arrows it replaced were 13px glyphs in a 44px
- *  column, which the owner could not hit on a phone. */
+/* THE COLUMN BESIDE THE NAMES IS LVE ALONE (D1245, 22 Oct 26 — "on the grid each name keeps only its LVE figure beside
+   it"; every other balance lives on the Balances tab, M5). Its heading is a plain label now: no picker, no dots, no swipe,
+   no jump to the balance just written. The tests below that only proved the picker (choosing a figure, the counter
+   sheet opened from the grid, the snap after a write) are skipped, not deleted — the picker's code leaves whole with M5,
+   and these go with it. A figure's numbers, its breakdown and the store's gates are still live, and are re-expressed
+   through what the grid still offers: the person's window (a tap on his name) and his LVE cell. */
+
+/** Open the counter sheet and choose one — only the skipped picker tests (D1245) still call it. */
 function pick(counter: string) {
   fireEvent.click(screen.getByTestId('counter-pick'))
   fireEvent.click(screen.getByTestId(`counter-${counter}`))
@@ -78,7 +83,8 @@ describe('the counter column', () => {
 
   // The reason the panel cycles figures rather than showing all of them: every
   // row has to change together, or row 1 shows +LVE while row 2 shows −OIL.
-  it('changes every row at once when the figure changes', () => {
+  // Gone by D1245: the column no longer changes figure (the picker's code leaves whole with M5).
+  it.skip('changes every row at once when the figure changes', () => {
     render(<Matrix />)
     const before = getState().people.map(p => top(p.id))
     pick('oil')
@@ -90,7 +96,8 @@ describe('the counter column', () => {
   // Every figure is reachable, and each is ONE tap from any other. That is
   // the point of the sheet: the arrows it replaced made the last figure many
   // taps away, on a control the owner could not reliably hit even once.
-  it('offers every figure, in order, each a single tap away', () => {
+  // Gone by D1245: nothing on the grid opens the counter sheet (the picker's code leaves whole with M5).
+  it.skip('offers every figure, in order, each a single tap away', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
@@ -103,7 +110,8 @@ describe('the counter column', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
   })
 
-  it('marks which figure is already showing', () => {
+  // Gone by D1245: there is one figure, and no counter sheet from the grid to mark it in (leaves whole with M5).
+  it.skip('marks which figure is already showing', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect(screen.getByTestId('counter-lve').getAttribute('aria-pressed')).toBe('true')
@@ -113,7 +121,8 @@ describe('the counter column', () => {
   // The key is stated once, and every row's caption is the owner's own words
   // (`Figure.desc`) — the one source the title pop-up, this sheet and the
   // page Legend all read, so the three can never disagree (owner, 6 Sep 26).
-  it('states the key once and each column\'s meaning under its row', () => {
+  // Gone by D1245: the counter sheet that carried these captions is no longer opened from the grid (leaves with M5).
+  it.skip('states the key once and each column\'s meaning under its row', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect(screen.getByTestId('counter-legend').textContent).toBe('+ balance left · − days used · LL amber · OL red')
@@ -124,7 +133,8 @@ describe('the counter column', () => {
   // The figure is what makes the list answerable: each row previews the
   // VIEWING person's number so "which counter" can be settled by looking for
   // the one running out.
-  it('shows the viewing person\'s number beside each counter', () => {
+  // Gone by D1245: a preview for choosing the column, and the column no longer chooses (leaves whole with M5).
+  it.skip('shows the viewing person\'s number beside each counter', () => {
     setViewer('ramp')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
@@ -133,7 +143,8 @@ describe('the counter column', () => {
     expect(oil).toMatch(/-?\d/)
   })
 
-  it('shows a dash, not a squadron-wide sum, when no one is being viewed (owner, 18 Aug 26)', () => {
+  // Gone by D1245: the counter sheet's preview, no longer opened from the grid (the picker's code leaves whole with M5).
+  it.skip('shows a dash, not a squadron-wide sum, when no one is being viewed (owner, 18 Aug 26)', () => {
     // The owner does not want a squadron total here — the number answers "how
     // much do I have left", which has no meaning without a person, and a
     // squadron sum only mixed aircrew with ground crew. With nobody viewed the
@@ -182,11 +193,15 @@ describe('the counter column', () => {
     expect(screen.getByTestId('counter-count-ip').textContent).toBe('')
   })
 
+  // Re-expressed for D1245: the heading is no longer a control, so it no longer says "choose" — but it still names its
+  // figure in words, not only in the chip, and offers no picker.
   it('names the figure for a screen reader, not just in the chip', () => {
     render(<Matrix />)
-    const label = screen.getByTestId('counter-pick').getAttribute('aria-label')!
+    const head = screen.getByTestId('counter-head')
+    const label = head.getAttribute('aria-label')!   // on the heading cell, which a screen reader honours
     expect(label).toContain('LVE')
-    expect(label.toLowerCase()).toContain('choose')
+    expect(head.querySelector('button')).toBeNull()
+    expect(screen.queryByTestId('counter-pick')).toBeNull()
   })
 
   // §Counters: a balance is allowed to run negative, and negative shows red — with its minus — and is never
@@ -257,7 +272,9 @@ describe('the counter follows the leave just entered — to the balance it comes
   // instead of showing a pool they were not thinking about. LL and OL both
   // come off the ONE LVE balance now (its two used lines, not two figures),
   // so entering either lands on the same +LVE.
-  it('switches to LVE for LL and OL, OIL for OIL', () => {
+  // Gone by D1245 ("no jump to OIL or CCL after a write" — the M2 code read's F2): the column stays LVE whatever is
+  // written (bidding.test.tsx and oiltracker.test.tsx pin that it stays). Skipped; the picker's code leaves whole with M5.
+  it.skip('switches to LVE for LL and OL, OIL for OIL', () => {
     // The medical case is gone: medical is member-filed only now (owner,
     // 13 Sep 26), so there is no war picker to enter a medical mark and snap
     // the column to MED TOT. LL/OL → +LVE and OIL → +OIL still apply.
@@ -272,7 +289,8 @@ describe('the counter follows the leave just entered — to the balance it comes
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
   })
 
-  it('snaps for a half day exactly as for a whole one', () => {
+  // Gone by D1245: there is no snap, for a half day or a whole one.
+  it.skip('snaps for a half day exactly as for a whole one', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('portion-am'))
@@ -292,8 +310,9 @@ describe('the counter follows the leave just entered — to the balance it comes
     expect(screen.queryByTestId('bid-OFF')).toBeNull()
     expect(screen.getByTestId('bid-EL')).toBeTruthy()
     expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    expect(screen.queryByTestId('counter-off')).toBeNull()
+    // Re-expressed for D1245: the last check opened the counter sheet to find no OFF figure there; that sheet is no
+    // longer opened from the grid, so it reads the figure catalogue the sheet listed from instead.
+    expect(FIGURES.some(f => f.id === 'off')).toBe(false)
   })
 
   /* Delete (the old Clear, D332) is drawn only where there is something to delete, so the day holds a bid first — one
@@ -325,8 +344,9 @@ describe('the counter follows the leave just entered — to the balance it comes
      by figure id for exactly this reason (FigureCell), and the contract is
      stated in three docs — so it is pinned here rather than left to be
      rediscovered. The existing test proves a flash HAPPENS; this proves the
-     other half. */
-  it('flashes NO row when the picker merely switches the figure', () => {
+     other half.
+     Gone by D1245: the column's figure no longer switches, so there is nothing for it to flash on (leaves with M5). */
+  it.skip('flashes NO row when the picker merely switches the figure', () => {
     render(<Matrix />)
     const before = getState().people.map(p => top(p.id))
     pick('oil')
@@ -362,11 +382,16 @@ describe('reordering the figures', () => {
   // not have authority to change the leave war column arrangement") — every
   // reorder test runs as admin, and the member case pins the gate.
   beforeEach(() => setRole('admin'))
+  /* The reorder and hide controls lived in the counter sheet, which the grid no longer opens (D1245). The tests that
+     only drove those controls are skipped (the picker's code leaves whole with M5); the store's own gate and its saving
+     are still live, and are re-expressed through the store. */
 
+  // Re-expressed for D1245: no reorder control is reachable for a member (none is opened from the grid at all), and the
+  // store — the real gate — still refuses the write.
   it('offers a member no reorder controls, and the store refuses the write anyway', () => {
     setRole('member')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.queryByTestId('counter-pick')).toBeNull()
     expect(screen.queryByTestId('figdown-lve')).toBeNull()
     expect(screen.queryByTestId('counter-reset')).toBeNull()
     // The write path is the real gate — the interface only hides it.
@@ -378,7 +403,8 @@ describe('reordering the figures', () => {
   // The admin eye (owner, 6 Sep 26 — "admin should also be able to
   // customise" which figures show at all): hiding a figure in the picker
   // drops it from the column's cycle at once — the dots are `visibleFigures`.
-  it('offers an admin an eye per figure; hiding one drops it from the column\'s cycle', () => {
+  // Gone by D1245: no eye, no cycle and no dots on the grid (the picker's code leaves whole with M5).
+  it.skip('offers an admin an eye per figure; hiding one drops it from the column\'s cycle', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
@@ -389,14 +415,16 @@ describe('reordering the figures', () => {
     // the column cycles seven now
     expect(screen.getByTestId('counter-head').querySelectorAll('.cdot')).toHaveLength(7)
   })
-  it('offers a member no eye', () => {
+  // Gone by D1245: the eye was the counter sheet's, no longer opened from the grid (leaves whole with M5).
+  it.skip('offers a member no eye', () => {
     setRole('member')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect(screen.queryByTestId('figeye-pl')).toBeNull()
   })
 
-  it('moves a figure down, and the column follows the new order', () => {
+  // Gone by D1245: the counter sheet's arrows, and a column that has no order to follow (leaves whole with M5).
+  it.skip('moves a figure down, and the column follows the new order', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     // LVE is first; nudging it down puts OIL at the top of the list.
@@ -407,14 +435,16 @@ describe('reordering the figures', () => {
     expect(getState().figureOrder[0]).toBe('oil')
   })
 
-  it('clamps at the ends — the first cannot go up, the last cannot go down', () => {
+  // Gone by D1245: the counter sheet's arrows, no longer opened from the grid (leaves whole with M5).
+  it.skip('clamps at the ends — the first cannot go up, the last cannot go down', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect((screen.getByTestId('figup-lve') as HTMLButtonElement).disabled).toBe(true)
     expect((screen.getByTestId('figdown-medtot') as HTMLButtonElement).disabled).toBe(true)
   })
 
-  it('resets to the catalogue order', () => {
+  // Gone by D1245: the counter sheet's Reset button (the store's reset is pinned below, "Reset puts the order back").
+  it.skip('resets to the catalogue order', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
     fireEvent.click(screen.getByTestId('figdown-lve'))
@@ -423,7 +453,8 @@ describe('reordering the figures', () => {
     expect(getState().figureOrder[0]).toBe('lve')
   })
 
-  it('keeps the SAME figure shown across a reorder, not the same slot', () => {
+  // Gone by D1245: the column shows LVE alone, so there is no figure "shown" to keep (leaves whole with M5).
+  it.skip('keeps the SAME figure shown across a reorder, not the same slot', () => {
     render(<Matrix />)
     // Show OIL, then move it down. The column must still show OIL.
     pick('oil')
@@ -433,14 +464,14 @@ describe('reordering the figures', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
   })
 
+  // Re-expressed for D1245: the reorder is the store's write (its arrows left the grid with the counter sheet); what is
+  // pinned is unchanged — the order is saved and a fresh boot reads it back.
   it('persists the order through the backend', () => {
     const backend = memoryBackend()
     initStore(backend)
     // initStore resets the role (never persisted); re-arm the admin.
     setRole('admin')
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    fireEvent.click(screen.getByTestId('figdown-lve'))
+    expect(moveFigure('lve', 1)).toBe(true)
     // A fresh boot on the same backend reads the saved order back.
     initStore(backend)
     expect(getState().figureOrder[0]).toBe('oil')
@@ -522,11 +553,14 @@ describe('going negative is asked about, never refused', () => {
 })
 
 describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
-  it('opens from a tap on a person’s counter cell and breaks MED TOT into its three markers', () => {
+  // Re-expressed for D1245: the column can no longer be turned to MED TOT, so MED TOT's breakdown is opened the way the
+  // grid still offers it — his name, then the MED TOT row of his window. (A tap on his counter cell opens LVE's, pinned
+  // next.) The breakdown asserted is unchanged.
+  it('opens MED TOT\'s breakdown from the person\'s window and breaks it into its three markers', () => {
     render(<Matrix />)
-    pick('medtot')
     // splice's seed medical: one ATT C (5 Jan) and one OML (6 Jan).
-    fireEvent.click(screen.getByTestId('bal-splice'))
+    fireEvent.click(screen.getByTestId('person-splice'))
+    fireEvent.click(screen.getByTestId('pfig-medtot').querySelector('.crow')!)
     const sheet = screen.getByTestId('figure-breakdown')
     expect(sheet.textContent).toContain('SPLICE')
     expect(sheet.textContent).toContain('MED TOT')
@@ -552,7 +586,10 @@ describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
   // longer restates as a single line — every one of the eight figures now
   // defines its own parts (engine/counters.test.ts pins the fallback branch
   // against a stand-in figure instead, since no real one still takes it).
-  it('breaks OIL into opening, earned, awarded and taken, and still sums to the balance (D400)', () => {
+  // Gone by D1245: OIL's breakdown was opened by turning the column to +OIL and tapping a cell; the column is LVE alone,
+  // and the person window's +OIL row opens the OIL tracker instead. The parts themselves stay pinned in
+  // engine/counters.test.ts and engine/oiltracker.test.ts (D400); this goes whole with the picker in M5.
+  it.skip('breaks OIL into opening, earned, awarded and taken, and still sums to the balance (D400)', () => {
     render(<Matrix />)
     pick('oil')
     fireEvent.click(screen.getByTestId('bal-ramp'))
@@ -563,7 +600,9 @@ describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
     expect(rows).toEqual(['opening figure3', 'earned by weekend/PH work0', 'awarded1', 'OIL taken-0.5', 'Total3.5'])
   })
 
-  it('a correction on OIL is its own row, itemised apart from the awards', () => {
+  // Gone by D1245, as the one above: no way on the grid opens OIL's breakdown now (engine/oiltracker.test.ts pins the
+  // correction apart from the awards, D400).
+  it.skip('a correction on OIL is its own row, itemised apart from the awards', () => {
     setRole('admin')
     grantTo(['ramp'], 'oil', -0.5, '2026-09-07', 'Double entry')
     render(<Matrix />)
@@ -580,31 +619,38 @@ describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
      why, and the bar is the first way a plain pool has ever been credited. The
      rows under "granted" itemise the ledger entries behind it — oldest first,
      the reason shown when there is one — so the number is traceable from the
-     same tap that shows it. */
+     same tap that shows it.
+     Re-expressed for D1245: the column can no longer be turned to +CCL or +OIL. CCL's breakdown is opened from the
+     person's window (his name, then the CCL row), with the same itemised line. OIL's breakdown has no way in from the
+     grid now — his window's +OIL row opens the OIL tracker — so the OIL grant is traced there instead: its box carries
+     the amount and the reason. */
   it('itemises the grants under "granted": amount, date, approver — and the reason when there is one', () => {
     setRole('admin')
     grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')
     grantTo(['ramp'], 'oil', 1.5, '2026-09-06', 'Det recovery')
     render(<Matrix />)
 
-    pick('ccl')
-    fireEvent.click(screen.getByTestId('bal-ramp'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('pfig-ccl').querySelector('.crow')!)
     const ccl = [...screen.getByTestId('breakdown-grants').querySelectorAll('[data-testid^="grant-ol-"]')]
     expect(ccl.map(r => r.textContent)).toEqual(['+2 · 6 Sep 26 · by admin'])
     fireEvent.click(screen.getByTestId('breakdown-close'))
 
-    pick('oil')
-    fireEvent.click(screen.getByTestId('bal-ramp'))
-    const oil = [...screen.getByTestId('breakdown-grants').querySelectorAll('[data-testid^="grant-ol-"]')]
-    expect(oil.map(r => r.textContent)).toEqual(['+1.5 · 6 Sep 26 · by admin · Det recovery'])
+    const oilGrant = getState().ledger.find(e => e.personId === 'ramp' && e.counter === 'oil' && e.reason === 'Det recovery')!
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('pfig-oil').querySelector('.crow')!)
+    const box = screen.getByTestId(`oil-entry-${oilGrant.id}`)
+    expect(box.textContent).toContain('1.5')
+    expect(box.textContent).toContain('Det recovery')
   })
 
   // A pool nobody has been credited on shows no list at all — an empty
   // container under "granted 0" would read as a missing row, not as nothing.
+  // Re-expressed for D1245: CCL's breakdown is opened from the person's window, the column being LVE alone.
   it('shows no grants list where there is nothing granted', () => {
     render(<Matrix />)
-    pick('ccl')
-    fireEvent.click(screen.getByTestId('bal-ramp'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('pfig-ccl').querySelector('.crow')!)
     expect(screen.getByTestId('part-granted').textContent).toBe('granted0')
     expect(screen.queryByTestId('breakdown-grants')).toBeNull()
   })
@@ -615,7 +661,9 @@ describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)',
   // balance on top, its used lines under it — rather than plain "26 left"
   // text (owner, 6 Sep 26). "yours" stays gone from the rows: the VIEWING AS
   // header already says whose numbers these are, once (28 Aug 26).
-  it('shows the viewing person\'s box on each row — balance and used', () => {
+  // Gone by D1245 (both tests here): the counter sheet's preview, no longer opened from the grid — a person's own
+  // numbers are in his window (pinned under "a callsign opens the all-figures sheet"). Leaves whole with M5.
+  it.skip('shows the viewing person\'s box on each row — balance and used', () => {
     setViewer('ramp')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
@@ -629,7 +677,7 @@ describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)',
     expect(screen.getByTestId('counter-viewer').textContent).toContain('RAMP')
   })
 
-  it('shows a dash, not a squadron-wide sum, when nobody (or an unknown id) is viewing', () => {
+  it.skip('shows a dash, not a squadron-wide sum, when nobody (or an unknown id) is viewing', () => {
     setViewer('nobody-here')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
@@ -747,8 +795,11 @@ describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to cus
      admin's control, so the dimmed row with its eye is his way back and it
      stays. A member cannot un-hide anything, so a dimmed row he taps and
      nothing happens is an inert control on a production surface — he is not
-     shown it at all. */
-  it('shows an admin the hidden row, dimmed, with its eye lit', () => {
+     shown it at all.
+     The first two below are gone by D1245 — the dimmed row and its eye were the counter sheet's, no longer opened from
+     the grid (the picker's code leaves whole with M5). The third is re-expressed: a hidden figure is still hidden from
+     a member in the person's window. */
+  it.skip('shows an admin the hidden row, dimmed, with its eye lit', () => {
     setRole('admin')
     toggleFigure('pl')
     render(<Matrix />)
@@ -759,7 +810,7 @@ describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to cus
       .toEqual(['LVE', 'OIL', 'CCL', 'FCL', 'CL', 'PL', 'LVE TOT', 'MED TOT'])
   })
 
-  it('an admin\'s tap on the hidden row un-hides it AND picks it — one gesture', () => {
+  it.skip('an admin\'s tap on the hidden row un-hides it AND picks it — one gesture', () => {
     setRole('admin')
     toggleFigure('pl')
     render(<Matrix />)
@@ -776,10 +827,9 @@ describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to cus
     toggleFigure('pl')
     setRole('member')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    expect([...screen.getByTestId('person-figures').querySelectorAll('.crow .cn')].map(e => e.textContent))
       .toEqual(['LVE', 'OIL', 'CCL', 'FCL', 'CL', 'LVE TOT', 'MED TOT'])
-    expect(screen.queryByTestId('figrow-pl')).toBeNull()
-    expect(screen.queryByTestId('counter-pl')).toBeNull()
+    expect(screen.queryByTestId('pfig-pl')).toBeNull()
   })
 })

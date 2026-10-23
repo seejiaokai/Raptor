@@ -24,7 +24,7 @@
 
 import { parseCell, type Portion } from './codes'
 import type { LedgerEntry } from './counters'
-import { AM, PM, FULL, type Contrib, type RequestState, type Win } from './dayview'
+import { AM, PM, FULL, isLeaveCode, isSickCode, portionOf, type Contrib, type RequestState, type Win } from './dayview'
 
 /** ITS PLACE AT ITS ADDRESS ([DB-READINESS] group A, phase 3 — plan §8 P3-CELL-DIFF; the design's `LeaveBid.sortIndex`).
  *  Every record is its own stored row now, so the order of the list at a person/date rides on each record: minted by
@@ -100,7 +100,7 @@ export interface NoticeRec extends Placed {
   /** the REPLACED bid's notation */
   code: string
   /** what it was when replaced */
-  was: 'pending' | 'acknowledged'
+  was: 'pending'
   /** what replaced it, in the app's words: `ATT C`, `published schedule` */
   byType: string
   /** who did it, frozen at the time: a callsign, or `the published schedule` */
@@ -154,6 +154,50 @@ export function creditWins(c: CreditRec): Win[] {
   return c.spans && c.spans.length ? c.spans.map(([s, e]) => [s, e] as Win) : [FULL]
 }
 
+/* ---- the half an HO takes (owner, D1164, 21 Oct 26) ---------------------- */
+/** "An HO — half a day of OIL credited — is drawn in a half of its day's cell, the morning or the afternoon, as a half
+ *  day's leave is"; an FO stays a whole-day box. The half rides in the contribution's `win` (AM or PM) — what the grid
+ *  draws from — while every overlap test keeps reading the real hours in `wins` (the medical's pattern,
+ *  `absences.ts contribsOfInput`), so no clash, charge or manning figure moves with the drawing. */
+export type Half = 'am' | 'pm'
+export const halfWin = (h: Half): Win => (h === 'pm' ? PM : AM)
+
+/** AN AWARD'S HALF — the half the admin picked, the morning unless he picked the afternoon (D1164). Only an HO (an
+ *  award worth exactly half a day) has one; a stored HO without it — given before D1164 — reads as the morning, so it
+ *  still loads (D401). Null for an FO. */
+export function awardHalf(e: { amount: number; half?: Half }): Half | null {
+  return e.amount === 0.5 ? (e.half === 'pm' ? 'pm' : 'am') : null
+}
+
+/** AN AUTOMATIC HO'S HALF — the half the work fell in. THE RULE is the reading said to him with D1164's picture, "work
+ *  starting before noon, the morning": the earliest work stretch starting before 12:00 puts it in the morning, one
+ *  starting at 12:00 or later in the afternoon. (An HO is at most six hours of work, so a stretch across noon — 10:00 to
+ *  14:00 — goes by where it started; the stretch itself still clashes by its real hours.) A credit the schedule
+ *  reported no hours for reads as the morning, the same default as an award. Null for an FO, which stays a whole day. */
+export function creditHalf(c: Pick<CreditRec, 'code' | 'spans'>): Half | null {
+  if (c.code !== 'HO') return null
+  if (!c.spans?.length) return 'am'
+  return Math.min(...c.spans.map(s => s[0])) < 720 ? 'am' : 'pm'
+}
+
+/** THE HALF A NEW HO TAKES BY DEFAULT (D1164's reading — "an HO sharing its day with a half day's leave takes the other
+ *  half"): where exactly one half of the day already holds a half-day box — a half day's leave, a medical or ATT B in a
+ *  half, or another HO — the other half; otherwise the morning. A refused bid, a notice and a tail from the day before
+ *  are not boxes on this day; a whole-day entry holds no one half (D1167 draws an HO beside it). `exceptId` leaves out
+ *  the award being changed, so its own half never pushes it away. The admin may still pick either. */
+export function freeHalfFor(all: readonly Contrib[], exceptId?: string): Half {
+  let am = false, pm = false
+  for (const c of all) {
+    if (c.id === exceptId || c.kind === 'notice' || c.spill || c.state === 'refused') continue
+    const halfBox = c.kind === 'credit' ? c.code === 'HO' : isLeaveCode(c.code) || isSickCode(c.code) || c.code === 'ATTB'
+    if (!halfBox) continue
+    const p = portionOf(c.win)
+    if (p === 'am') am = true
+    else if (p === 'pm') pm = true
+  }
+  return am && !pm ? 'pm' : 'am'
+}
+
 /** A request's portion. */
 export const portionOfCode = (code: string): Portion => parseCell(code)?.portion ?? 'full'
 const halvesOf = (p: Portion): Array<'am' | 'pm'> => (p === 'full' ? ['am', 'pm'] : [p])
@@ -170,7 +214,13 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
          envelope is what the box shows, the stretches are what clashes read */
       const ws = creditWins(r)
       const env: Win = [Math.min(...ws.map(w => w[0])), Math.max(...ws.map(w => w[1]))]
-      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), auto: true, ...(r.via ? { via: r.via } : {}), ...(r.note ? { note: r.note } : {}) })
+      /* AN HO IS DRAWN IN THE HALF ITS WORK FELL IN (D1164): the box takes the half, and its real hours — every
+         stretch, however many, or the whole day where none was reported — ride in `wins`, which every clash reads, so
+         an HO worked in the morning beside an afternoon's leave stays no clash and one on the same hours stays one,
+         exactly as before. An FO keeps its envelope. */
+      const h = creditHalf(r)
+      const box: Pick<Contrib, 'win' | 'wins'> = h ? { win: halfWin(h), wins: ws } : { win: env, ...(ws.length > 1 ? { wins: ws } : {}) }
+      out.push({ id: r.id, kind: 'credit', code: r.code, ...box, auto: true, ...(r.via ? { via: r.via } : {}), ...(r.note ? { note: r.note } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }
@@ -186,10 +236,12 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
  *  labelled — HO for half a day, FO for anything else (Astra, plan read F05).
  *  No `auto`, no `via`, no hours: an award is not an attendance record (N13),
  *  so it clashes with nothing (D80), stands nobody down and counts on no
- *  manning. */
+ *  manning. Its window is only where it is DRAWN (D1164): an HO in the half the admin picked (`awardHalf`), anything
+ *  else the whole day. */
 export function awardContrib(e: LedgerEntry): Contrib {
+  const h = awardHalf(e)
   return {
-    id: e.id, kind: 'credit', code: e.amount === 0.5 ? 'HO' : 'FO', win: FULL, days: e.amount,
+    id: e.id, kind: 'credit', code: h ? 'HO' : 'FO', win: h ? halfWin(h) : FULL, days: e.amount,
     ...(e.reason ? { note: e.reason } : {}), ...(e.givenBy ? { givenBy: e.givenBy } : {}),
   }
 }
@@ -256,7 +308,8 @@ function readRecBody(x: unknown): WarRec | null {
   if (!isObj(x) || typeof x.id !== 'string' || !x.id || 'source' in x) return null
   if (x.kind === 'request') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || typeof x.state !== 'string' || !REQ_STATES.has(x.state)) return null
-    const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: x.state as RequestState }
+    /* a stored Ack reads as waiting (D1158 — Ack goes; D401 — an old shape still loads, nothing converted) */
+    const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: (x.state === 'acknowledged' ? 'pending' : x.state) as RequestState }
     if (typeof x.shiftedFrom === 'string' && ISO.test(x.shiftedFrom)) r.shiftedFrom = x.shiftedFrom
     const c = readCarried(x.carried)
     if (c) r.carried = c
@@ -288,7 +341,7 @@ function readRecBody(x: unknown): WarRec | null {
   if (x.kind === 'notice') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || (x.was !== 'pending' && x.was !== 'acknowledged')) return null
     if (typeof x.byType !== 'string' || typeof x.byWho !== 'string' || typeof x.seq !== 'number' || typeof x.at !== 'string') return null
-    return { id: x.id, kind: 'notice', code: x.code, was: x.was, byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
+    return { id: x.id, kind: 'notice', code: x.code, was: 'pending', byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
   }
   return null
 }

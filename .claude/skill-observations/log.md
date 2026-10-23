@@ -737,10 +737,13 @@ through a here-document is the trap: the code edit goes through the Edit tool, o
 Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit script inserting a test wrote each `\\b` of a regex as a BACKSPACE byte and each escaped apostrophe as a bare one — the file first failed to parse, then every `\b` assertion matched nothing; two more inline fixes (`sed` replacements) mangled it again before a script written with the file tool put it right. The guard is the one already proposed and approved to build — `[SHELL-SCRIPT-GUARD]` (D811): a script is written to a file, always.
 
 **Met again 15 Oct 26 (the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4`):** three more shell here-document / stdin hangs in one night — `cat > file` with no input waited on stdin; a stray `python - <<'PY'` with `< /dev/null` dropped into Python's interactive prompt and looped on a Windows console error until stopped; each cost a two-to-five-minute stall. What held: every edit script WRITTEN WITH THE WRITE TOOL to the scratch folder and run as `python <file> < /dev/null`. The guard this entry proposes (scripts always a file, never a here-document) is the fix.
+**Met again 23 Oct 26 (the night's /overnight run, `claude/lw-m2-looks`):** twice more — an empty `python - … < /dev/null <<'PY'` placeholder left in a command and a stray `python - x.mjs <<'EOF'` each hung two minutes until stopped. The rule written down was known and still broken under load: only a guard in the shell (a hook that refuses a here-document feeding an interpreter) would hold.
 
 **Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`, D994's schedule fixes):** four more — two edit scripts passed to Python through a here-document lost a `\n` (written as a real line break, the file then failed to parse) and an escaped apostrophe; a `sed` fix of a test line lost its `\n` the same way; and one script was written with a relative path one folder too high, landing OUTSIDE the worktree. Each was put right by a script written with the file tool into the scratch folder. The guard proposed here ([SHELL-SCRIPT-GUARD], D811) would have stopped all four.
 
 **Met again 17 Oct 26 ([TRK-SCROLL-GLIDE], round 1):** a `cat >> file <<EOF` holding the question page (prose full of apostrophes) failed the same way; redone through the file tool. The guard stays unbuilt: an unconditional default (pages and scripts always go through the file tool) would have cost nothing here.
+
+Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writing the evidence sheet's new section (prose full of apostrophes) failed the same way; redone through the file tool. The guard proposed above (scripts always written to a file) still stands.
 
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
@@ -1882,3 +1885,33 @@ different feature that merely pass through it.
 **Suggested improvement:** In systematic-debugging's fix step (or the bug-check order's §5 "a fix is new code"), add one line: when a fix turns a refusal into a skip / block / permanent state, enumerate (a) every direction or twin path (undo AND redo, add AND remove), and (b) every step that can sit BEHIND the blocked one and still pick it — and write a test for each before calling the fix complete.
 
 **Principle:** A stuck-control fix is only complete when every path that can select the stuck item — both directions, and the items queued behind it — has been checked; fixing the one path the finding named leaves its mirror broken.
+
+### Observation 680: A geometry test that fails only on the CI's Linux machines is reproduced locally by forcing a wider font, not by reading the CI log
+
+**Status:** OPEN
+**Date:** 23 Oct 26
+**Session context:** The Leave War's M2 — three browser geometry tests red on GitHub's Linux run, green on the owner's Windows PC
+**Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md`) and `raptor-port/docs/gates-and-deploy.md` (the CI's traps)
+**Type:** open-source
+**Phase/Area:** reproducing a CI-only failure before fixing it
+
+**Issue:** Three layout tests passed locally and failed in CI by 1–47px. The app loads no font of its own, so each machine draws its system font — Linux's DejaVu Sans is much wider than Windows' Segoe UI (and the owner's iPhone sits between). An opt-in switch (`LW_WIDE_LETTERS=1`) that injects `font-family: Verdana, "DejaVu Sans"` into every page from the first paint (an init script, not a style tag added after load — the app measures some text as it loads) reproduced all three failures on the PC at once, plus a fourth the CI had not reached; every fix was then proved red-then-green both ways before pushing. A style tag added after load reproduced only one of them, and a script that loaded the page at the target width (instead of narrowing a wide window, as the test does) missed another.
+
+**Suggested improvement:** In gates-and-deploy's CI traps: "a geometry test red on Linux only — rerun it locally with wider letters forced from the first paint (the spec's LW_WIDE_LETTERS switch, or the same init script) before reading logs; reproduce the test's own order of resizes". In the bug-check order's walk section: layout fixes are walked once with wider letters too.
+
+**Principle:** When a failure depends on the environment, make the local environment adopt the failing property on demand (font, timezone, speed) and reproduce the exact sequence the test follows; a fix proven only against the environment that never failed is not proven.
+
+### Observation 681: The walks pictured every screen after it settled, so a fault that lives in the moment after a tap — and stays on an iPhone — was never seen
+
+**Status:** OPEN
+**Date:** 23 Oct 26
+**Session context:** The Leave War's M2 — the owner, on his iPhone, found a dirty blue block over the month strip after tapping a month; three walkers, a re-walk and the host's own walk had pressed those buttons and passed
+**Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7) and `raptor-port/docs/walk-scripts.md`
+**Type:** open-source
+**Phase/Area:** the walk — when a picture is taken, and what a touch screen keeps after a tap
+
+**Issue:** The grid's row-hover tint reached a row whose pinned cell must stay opaque; the cell went see-through. In the test browser the hover state cleared within a quarter of a second, and every walk script waited 300–900 ms after a tap before its picture, so every picture showed the settled, clean state. On an iPhone a tap leaves the element "hovered" until the next tap, so the fault stayed on his screen. The fault had been in the app since 19 Aug 26 — two months of walks pressed the same buttons. The same day he also caught two layout mismatches against the approved drawing (row heights, two boxes of different heights side by side) that no step measured. Each is a property no step looked at, not a step done badly.
+
+**Suggested improvement:** (1) walk-scripts.md: on a touch-screen walk, take a picture within 100 ms of each tap as well as after it settles, and keep the hover state (iOS keeps it) — or force `:hover` on the pressed element before the settled picture. (2) A standing browser test per dense screen: press each control on a phone and assert every pinned (sticky) cell stays fully opaque. (3) The bug-check order's walk: a built screen from an approved drawing is measured beside it (heights and side-by-side boxes), as his lesson 42 now says.
+
+**Principle:** A check finds only the states it is pointed at. When a device keeps a state the test browser drops (hover after a tap, wider letters, a slow frame), make the test hold that state on purpose; pictures taken only after everything settles prove only the settled screen.

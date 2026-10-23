@@ -11,6 +11,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import {
   initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, openDates, closeDates,
   setStretch, setBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
+  setAvailPoints, saveAvailRow, setReqName, availRules,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { allows, cmdAuthorize, COMMAND_OPS, T, type Act, type Role } from '../state/perms'
@@ -53,6 +54,14 @@ const CASES: { what: string; table: string; letter: Act; owner: string | null; r
   { what: 'an event deleted from the Event sheet', table: T.war, letter: 'U', owner: null, run: () => {
       const was = getState().role; setRole('admin'); setDayEvent('2026-05-13', 0, 'Visit'); setRole(was)
       return deleteEvent(0, '2026-05-13') } },
+  /* the Manning block's settings (the Leave War overhaul, batch 3): a Setting, the admin's — held to the row by what
+     each writer did, not only by its answer */
+  { what: 'an Available row\'s amber and red points (D1190, D1191, D1202)', table: T.setting, letter: 'U', owner: null,
+    run: () => setAvailPoints('availp', { amber: 2, red: -1 }) && availRules().p.points?.amber === 2 },
+  { what: 'an Available row saved from its window', table: T.setting, letter: 'U', owner: null,
+    run: () => saveAvailRow({ ...availRules().w, label: 'WSOs here', points: { red: 1 } }) && availRules().w.label === 'WSOs here' },
+  { what: 'a Required row\'s name (D1193)', table: T.setting, letter: 'U', owner: null,
+    run: () => setReqName('p', 'Pilots to fly') && getState().reqNames.p === 'Pilots to fly' },
 ]
 
 describe('D200 (3): the Leave War\'s writers agree with the permissions matrix (§11)', () => {
@@ -75,6 +84,17 @@ describe('D200 (3): the Leave War\'s writers agree with the permissions matrix (
     for (const w of WHO) {
       const actor = { id: w.viewer || 'guest', role: w.role, personId: identity(w), session: {} } as any
       expect(cmdAuthorize('lw.open', actor), w.label).toBe(allows(w.role, T.war, 'U', null, identity(w)))
+    }
+  })
+
+  /* the batch-3 settings' two commands map to the Setting row's U — the admin's — as their writers are held to it */
+  it('the command gate maps lw.availrow and lw.reqname to the Setting row', () => {
+    for (const t of ['lw.availrow', 'lw.reqname']) {
+      expect(COMMAND_OPS[t], t).toMatchObject({ table: T.setting, act: 'U' })
+      for (const w of WHO) {
+        const actor = { id: w.viewer || 'guest', role: w.role, personId: identity(w), session: {} } as any
+        expect(cmdAuthorize(t, actor), `${t} — ${w.label}`).toBe(allows(w.role, T.setting, 'U', null, identity(w)))
+      }
     }
   })
 })

@@ -15,7 +15,8 @@
 // Since [OIL-AWARD-IS-A-GRANT] (29 Sep 26) the award is a ledger entry — the one kind of hand-given OIL — and its
 // worth is its AMOUNT; FO / HO is only how the grid labels it.
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { askLw } from './lwnav'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceOf } from '../engine'
 import { awardsOnDay, editAward, getState, HALF_STEP_MSG, ingestDutyCredit, initStore, rawState, setCell, setDayAward, setRole } from '../state/store'
@@ -111,7 +112,7 @@ describe('the quantity in the OIL tracker', () => {
     expect(setDayAward(P, TUE, 3, { note: 'Exercise', givenBy: 'OC Ops' })).toBeNull()
     const id = creditOn(P, TUE)!.id
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('oil-tracker'))
+    act(() => askLw({ kind: 'oil' }))   // OIL is the top row's tab since D1254 — the grid opens the tracker on its ask
     expect(screen.getByTestId(`oil-entry-${id}`).textContent).toContain('+3')
     fireEvent.click(screen.getByTestId(`oil-entry-${id}`))
     expect((screen.getByTestId('oil-edit-amt') as HTMLInputElement).value).toBe('3')
@@ -125,7 +126,7 @@ describe('the quantity in the OIL tracker', () => {
     expect(setDayAward(P, TUE, 1, { note: 'Exercise' })).toBeNull()
     const id = creditOn(P, TUE)!.id
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('oil-tracker'))
+    act(() => askLw({ kind: 'oil' }))   // OIL is the top row's tab since D1254 — the grid opens the tracker on its ask
     fireEvent.click(screen.getByTestId(`oil-entry-${id}`))
     fireEvent.change(screen.getByTestId('oil-edit-amt'), { target: { value: 'lots' } })
     fireEvent.click(screen.getByTestId('oil-edit-save'))
@@ -195,10 +196,17 @@ describe('tapping an OIL day shows what is on it', () => {
 })
 
 describe('the marks on the box', () => {
-  it('an arrow points at the half, and a star means the app put it there', () => {
+  /* WAS "an arrow points at the half": `<LL` on the grid. Look F (D1160, D1145): the half is WHERE the box sits — the
+     morning in the top half — and the letters are the bare code, no arrow; the star an app credit wears stays. */
+  it('the half is where the box sits — no arrow — and a star means the app put it there', () => {
     expect(setCell(P, TUE, '*LL')).toBe(true)
+    ingestDutyCredit(P, '2026-01-14', 'FO', 'Duty', [[480, 1080]])
     render(<Matrix />)
-    expect(screen.getByTestId(`cell-${P}-${TUE}`).textContent).toContain('<LL')
+    const box = screen.getByTestId(`cell-${P}-${TUE}`).querySelector('.c')!
+    expect(box.textContent).toBe('LL')
+    expect(box.classList.contains('top')).toBe(true)
+    expect(screen.getByTestId(`cell-${P}-${TUE}`).textContent).not.toContain('<')
+    expect(screen.getByTestId(`cell-${P}-2026-01-14`).querySelector('.c')!.textContent).toBe('FO*')
   })
 })
 

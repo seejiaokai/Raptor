@@ -5,6 +5,10 @@ import { memoryBackend } from '../state/storage'
 import { Topbar } from './Chrome'
 import { Matrix } from './Matrix'
 
+/* "+ New period" is the period list's last line since D1244 — no "+ New" button on the row: choosing it opens the
+   new-period window. */
+const chooseNewPeriod = () => fireEvent.change(screen.getByTestId('war-picker'), { target: { value: '\u0000new' } })
+
 beforeEach(() => {
   initStore(memoryBackend())
 })
@@ -95,7 +99,7 @@ describe('creating a leave war', () => {
   it('creates a war over the span given, and lists it', () => {
     setRole('admin')
     render(<Topbar />)
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'JUL 28' } })
     pickSpan('war', '2028-07-01', '2028-07-31')
     fireEvent.click(screen.getByTestId('war-create'))
@@ -108,7 +112,7 @@ describe('creating a leave war', () => {
   it('closes the sheet once the war is made', () => {
     setRole('admin')
     render(<Topbar />)
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'JUL 28' } })
     pickSpan('war', '2028-07-01', '2028-07-31')
     fireEvent.click(screen.getByTestId('war-create'))
@@ -119,7 +123,7 @@ describe('creating a leave war', () => {
   it('refuses dates that clash with a war that exists, and keeps the sheet open', () => {
     setRole('admin')
     render(<Topbar />)
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'CLASH' } })
     pickSpan('war', '2026-03-15', '2026-05-15')
     fireEvent.click(screen.getByTestId('war-create'))
@@ -136,7 +140,7 @@ describe('creating a leave war', () => {
   it('names the war it clashed with, and the span that war covers', () => {
     setRole('admin')
     render(<Topbar />)
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'JUL - SEP 27' } })
     pickSpan('war', '2027-04-30', '2027-08-31')
     fireEvent.click(screen.getByTestId('war-create'))
@@ -158,7 +162,7 @@ describe('creating a leave war', () => {
   it('cannot be driven into a backwards range at all', () => {
     setRole('admin')
     render(<Topbar />)
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'BACK' } })
     pickSpan('war', '2028-07-31', '2028-07-01')
     expect(screen.getByTestId('war-selection').textContent).toBe('1 Jul 28')
@@ -170,7 +174,7 @@ describe('creating a leave war', () => {
   it('cannot be created until it has a name and both dates', () => {
     setRole('admin')
     render(<Topbar />)
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     expect(screen.getByTestId('war-create').hasAttribute('disabled')).toBe(true)
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'JUL 28' } })
     expect(screen.getByTestId('war-create').hasAttribute('disabled')).toBe(true)
@@ -187,7 +191,7 @@ describe('creating a leave war', () => {
     setRole('admin')
     render(<Topbar />)
     const before = getState().currentId
-    fireEvent.click(screen.getByTestId('war-new'))
+    chooseNewPeriod()
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'JUL 28' } })
     pickSpan('war', '2028-07-01', '2028-07-31')
     fireEvent.click(screen.getByTestId('war-create'))

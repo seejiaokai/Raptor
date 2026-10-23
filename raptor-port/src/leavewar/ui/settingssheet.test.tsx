@@ -5,95 +5,113 @@ import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { LIFT_LAND_MS } from '../../ui/lift'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
+   asked as the ⚙ press asks it (ui/lwnav.ts). */
+const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
+/* Rearrange's way in is a line in ⚙ since D1254 ("⇅ Rearrange the grid"); the bar's "⇅ Done" is only the way out. */
+const startRearrange = () => { openSettings(); fireEvent.click(screen.getByTestId('settings-rearrange')) }
 
 beforeEach(() => {
   initStore(memoryBackend())
   elevenCounters()   // the app starts with NO counters (D669); these tests are about counters, so they make the old eleven — testkit
 })
 
-/* The counter block's ONE-ROW top bar (owner, 5 Sep 26 — "all in 1 row to
-   minimise row height space"): Manning · ⚙ · Rearrange lead, OIL tracker trails,
-   the old "JAN – DEC 26 · 365 days · 50 people" line dropped, and the Rearrange
-   toggle moved up from the grid corner into this row. jsdom can't see the single
-   line, but it pins the DOM: which controls live in the header, in order, by
-   role, and that the date/size text is gone. */
-describe('the counter top bar', () => {
-  it('is Manning · ⚙ · Rearrange · OIL · − · + in the header for an admin, with no date/size line', () => {
+/* The grid card's ONE-ROW bar (owner, 5 Sep 26 — "all in 1 row to minimise row height space"; the old "JAN – DEC 26 ·
+   365 days · 50 people" line dropped). WAS "Manning · ⚙ · Rearrange · OIL · − · +". CHANGED by D1254 (22 Oct 26 — the
+   navigation as drawn in round 19): the bar is [Manning | n red ›] · the open dates · … · − + · Legend, the same for
+   everyone; ⚙ went up to the top row's right end, OIL became a tab there, and Rearrange's way in is a line in ⚙ — the bar
+   carries only its "⇅ Done" while it is on. jsdom can't see the single line, but it pins the DOM: which controls live in
+   the bar, in order, by role, and that the date/size text is gone. */
+describe('the grid card\'s bar (D1254)', () => {
+  const BAR = ['counts-toggle', 'undermanned', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open']
+  const inBar = (hd: Element) => [...hd.querySelectorAll('[data-testid]')].map(el => el.getAttribute('data-testid'))
+
+  it('is Manning | n red · the open dates · − + · Legend for an admin, with no ⚙, OIL or Rearrange and no date/size line', () => {
     setRole('admin')
     const { container } = render(<Matrix />)
     const hd = container.querySelector('.card-hd')!
     expect(hd).toBeTruthy()
     // the "… · 365 days · 50 people" line is gone
     expect(hd.textContent).not.toMatch(/days ·|· \d+ people/)
-    // all six controls live in this one header row, left-to-right in order —
-    // the zoom pair right after OIL (owner, 6 Sep 26), moved off the month strip
-    const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker', 'lw-zoom-out', 'lw-zoom-in']
-    const found = [...hd.querySelectorAll('[data-testid]')]
-      .map(el => el.getAttribute('data-testid'))
-      .filter(id => ids.includes(id!))
-    expect(found).toEqual(ids)
-    // the rearrange trigger moved OUT of the grid header into the card header
-    const arrange = screen.getByTestId('roster-arrange')
-    expect(arrange.closest('.card-hd')).toBe(hd)
-    expect(arrange.closest('.mxhead')).toBeNull()
+    // D1254: the controls in this one row, left to right in order (the test roster has red days, so "n red ›" is drawn — D1243)
+    expect(inBar(hd).filter(id => BAR.includes(id!))).toEqual(BAR)
+    // D1254: ⚙ and OIL are the top row's (Chrome.tsx `Topbar`), and Rearrange's way in is ⚙'s — none of them on this bar
+    for (const id of ['settings-open', 'oil-tracker', 'roster-arrange']) expect(hd.querySelector(`[data-testid="${id}"]`), id).toBeNull()
   })
 
-  it('gives a member only Manning and the OIL tracker — no config, no rearrange', () => {
+  it('is the same bar for a member — the view controls only', () => {
     render(<Matrix />)   // default role is member
     const hd = document.querySelector('.card-hd')!
-    expect(hd.querySelector('[data-testid="counts-toggle"]')).toBeTruthy()
-    expect(hd.querySelector('[data-testid="oil-tracker"]')).toBeTruthy()
+    // D1254: "the same for everyone"
+    expect(inBar(hd).filter(id => BAR.includes(id!))).toEqual(BAR)
     expect(hd.querySelector('[data-testid="settings-open"]')).toBeNull()
     expect(hd.querySelector('[data-testid="roster-arrange"]')).toBeNull()
-    // …plus the zoom pair, a view control for both roles
-    expect(hd.querySelector('[data-testid="lw-zoom-out"]')).toBeTruthy()
-    expect(hd.querySelector('[data-testid="lw-zoom-in"]')).toBeTruthy()
     // the zoom no longer rides the month strip
     expect(screen.getByTestId('month-strip').querySelector('[data-testid="lw-zoom"]')).toBeNull()
   })
 
-  it('the header ⇅ toggle turns arrange mode on — the grips appear, the column widens, no bar', () => {
+  it('⚙ → "⇅ Rearrange the grid" turns arrange mode on — the sheet closes, the grips appear, the column widens, the bar carries Done', () => {
     setRole('admin')
     render(<Matrix />)
     const outer = () => document.querySelector('.mx-outer')!
     expect(screen.queryByTestId('manning-drag-sets')).toBeNull()
     expect(outer().classList.contains('mx-arranging')).toBe(false)
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    // D1254: the way in is a line in ⚙, and it closes the sheet so the grid is in reach
+    openSettings()
+    expect(screen.getByTestId('settings-rearrange').textContent!.trim()).toBe('⇅ Rearrange the grid')
+    fireEvent.click(screen.getByTestId('settings-rearrange'))
+    expect(screen.queryByTestId('settings-sheet')).toBeNull()
     expect(screen.getByTestId('manning-drag-sets')).toBeTruthy()
     expect(outer().classList.contains('mx-arranging')).toBe(true)
-    expect(screen.getByTestId('roster-arrange').classList.contains('on')).toBe(true)
+    // D1254: while it is on, the bar carries "⇅ Done", lit, in the bar before the zoom pair
+    const done = screen.getByTestId('roster-arrange')
+    expect(done.classList.contains('on')).toBe(true)
+    expect(done.getAttribute('aria-pressed')).toBe('true')
+    expect(done.closest('.card-hd')).toBeTruthy()
+    expect(done.closest('.mxhead')).toBeNull()
+    const ids = inBar(document.querySelector('.card-hd')!)
+    expect(ids.indexOf('roster-arrange')).toBeLessThan(ids.indexOf('lw-zoom-out'))
     // the old strip under the header (Auto-sort / Done) is gone (owner, 6 Sep 26)
     expect(screen.queryByTestId('rearrange-bar')).toBeNull()
     expect(screen.queryByTestId('roster-autosort')).toBeNull()
     expect(screen.queryByTestId('roster-arrange-done')).toBeNull()
   })
 
-  it('the toggle reads ⇅ with the word on a droppable tail — icon-only on a phone', () => {
+  /* WAS "the toggle reads ⇅ with the word on a droppable tail — icon-only on a phone" (Rearrange → Rearranging). Since
+     D1254 the bar's button is the way out only. RE-EXPRESSED by D1275 (23 Oct 26): "⇅ Done" in words on a phone too — the
+     word is never on the droppable tail the phone hides — and while it is on, the − / + are marked to step aside (the
+     phone's stylesheet hides them; the browser test "while rearranging, the bar reads ⇅ Done" measures it). */
+  it('Done reads "⇅ Done", its word never on the droppable tail; the − / + step aside while it is on (D1275)', () => {
     setRole('admin')
     render(<Matrix />)
+    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(false)
+    startRearrange()
     const btn = screen.getByTestId('roster-arrange')
-    expect(btn.textContent!.trim().startsWith('⇅')).toBe(true)
-    expect(btn.querySelector('.rtlbl')!.textContent).toMatch(/Rearrange/)
+    expect(btn.textContent!.replace(/\s+/g, ' ').trim()).toBe('⇅ Done')
+    expect(btn.querySelector('.rtlbl')).toBeNull()
+    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(true)
     fireEvent.click(btn)
-    expect(btn.querySelector('.rtlbl')!.textContent).toMatch(/Rearranging/)
+    expect(screen.getByTestId('lw-zoom').classList.contains('aside')).toBe(false)
   })
 })
 
-/* The one ⚙ SETTINGS button (owner, 3 Sep 26): every admin config control folds
-   into the sheet it opens, off the top row. Rearranging is NOT in the sheet — it
-   is its own toggle in the top row (owner, 5 Sep 26 — moved there from the grid
-   corner), and the actual rearranging still happens hands-on-grid. */
+/* The one ⚙ SETTINGS button (owner, 3 Sep 26): every admin config control folds into the sheet it opens. WAS "Rearranging
+   is NOT in the sheet — it is its own toggle in the top row (owner, 5 Sep 26)". CHANGED by D1254: Rearrange's way in is a
+   line in the sheet; the rearranging itself still happens hands-on-grid. */
 describe('the ⚙ Settings sheet', () => {
   it('is admin-only, and folds the config controls into one sheet', () => {
-    // a member has neither the button nor any of the controls it holds
+    // a member has no sheet, and none of the controls it holds — even asked for (⚙ is an admin's only, D1254)
     const member = render(<Matrix />)
-    expect(screen.queryByTestId('settings-open')).toBeNull()
+    openSettings()
+    expect(screen.queryByTestId('settings-sheet')).toBeNull()
     expect(screen.queryByTestId('counter-add')).toBeNull()
     member.unmount()
 
     setRole('admin')
     const { rerender } = render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     rerender(<Matrix />)
     expect(screen.getByTestId('settings-sheet')).toBeTruthy()
     // counters & rows live here now
@@ -103,14 +121,15 @@ describe('the ⚙ Settings sheet', () => {
     expect(screen.queryByTestId('counter-reset-all')).toBeNull()   // "Reset counters" left with the built-in counters (D669)
     // the groups editor is folded in
     expect(screen.getByTestId('group-reset')).toBeTruthy()
-    // …but rearranging is NOT in the sheet — no Auto-sort here
+    // D1254: Rearrange's way in is here now — still no Auto-sort
+    expect(screen.getByTestId('settings-rearrange')).toBeTruthy()
     expect(screen.queryByTestId('roster-autosort')).toBeNull()
   })
 
   it('Show SANS adds the SANS group row, whose ✕ hides SANS again', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     // no SANS group row until the switch is on
     expect(screen.queryByTestId('grow-SANS')).toBeNull()
     fireEvent.click(screen.getByTestId('sans-toggle'))
@@ -125,38 +144,41 @@ describe('the ⚙ Settings sheet', () => {
   it('keeps the who-wins list tucked behind a disclosure', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     expect(screen.queryByTestId('group-priority')).toBeNull()
     fireEvent.click(screen.getByTestId('who-wins-toggle'))
     expect(screen.getByTestId('group-priority')).toBeTruthy()
   })
 })
 
-/* Rearranging happens ON THE GRID (owner, 3 Sep 26 — "I thought the rearrange
-   could be done on the grid main page itself"): the header ⇅ turns it on, and
-   the SAME ⇅ turns it off (owner, 6 Sep 26 — "when I click on it, it exits the
-   rearrange mode"); the strip with Auto-sort + Done that used to sit under the
-   header is gone. */
+/* Rearranging happens ON THE GRID (owner, 3 Sep 26 — "I thought the rearrange could be done on the grid main page
+   itself"); the strip with Auto-sort + Done that used to sit under the header is gone. WAS "the header ⇅ turns it on, and
+   the SAME ⇅ turns it off (owner, 6 Sep 26)". CHANGED by D1254: the way in is ⚙'s line, and the bar's "⇅ Done" — drawn
+   only while it is on — is the one way out, as that ⇅ was. */
 describe('on-grid rearrange', () => {
-  it('the ⇅ toggle turns rearrange mode on, and the same ⇅ ends it', () => {
+  it('⚙\'s line turns rearrange mode on, and the bar\'s Done ends it — and goes with it', () => {
     setRole('admin')
     const { rerender } = render(<Matrix />)
     const grips = () => document.querySelectorAll('[data-testid^="drag-"]').length
     expect(grips()).toBe(0)
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    expect(screen.queryByTestId('roster-arrange')).toBeNull()          // D1254: no Done while it is off
+    startRearrange()
     rerender(<Matrix />)
     expect(grips()).toBeGreaterThan(0)
     expect(screen.getByTestId('roster-arrange').getAttribute('aria-pressed')).toBe('true')
     fireEvent.click(screen.getByTestId('roster-arrange'))
     rerender(<Matrix />)
     expect(grips()).toBe(0)
-    expect(screen.getByTestId('roster-arrange').getAttribute('aria-pressed')).toBe('false')
+    expect(screen.queryByTestId('roster-arrange')).toBeNull()          // D1254: Done leaves with the mode
     expect(document.querySelector('.mx-outer')!.classList.contains('mx-arranging')).toBe(false)
   })
 
-  it('a member has no rearrange corner', () => {
+  it('a member has no way into Rearrange', () => {
     render(<Matrix />)
     expect(screen.queryByTestId('roster-arrange')).toBeNull()
+    // D1254: the way in is ⚙'s line — a member asking for ⚙ gets no sheet
+    openSettings()
+    expect(screen.queryByTestId('settings-rearrange')).toBeNull()
   })
 })
 
@@ -169,7 +191,7 @@ describe('group colours in ⚙', () => {
   it('adding a qualification group opens its palette; a dot picks the colour', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
     fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
     expect(screen.getByTestId(`grow-${SCD}`)).toBeTruthy()
@@ -196,7 +218,7 @@ describe('group colours in ⚙', () => {
   it('a click outside the open palette closes it', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
     expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
     // a press inside the palette leaves it open
@@ -213,7 +235,7 @@ describe('group colours in ⚙', () => {
   it('Escape closes the open palette and leaves the sheet up; a second Escape closes the sheet', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
     expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
     fireEvent.keyDown(document.body, { key: 'Escape' })
@@ -226,7 +248,7 @@ describe('group colours in ⚙', () => {
   it('a stored pick in lower-case still rings its dot', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
     ;(getState() as any).groupColors[SCD] = '#7bc043'
     fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))   // close
@@ -237,7 +259,7 @@ describe('group colours in ⚙', () => {
   it('a built-in category has no colour button — it wears its CAT colour', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     expect(screen.queryByTestId('gcolor-SXO')).toBeNull()
     expect(screen.getByTestId('grow-SXO').querySelector('.set-sw.g-sxo')).toBeTruthy()
   })
@@ -255,7 +277,7 @@ describe('drag to reorder in ⚙', () => {
   it('dragging IP above SXO puts IP first on the page', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     expect(groupsInOrder().map(d => d.id).slice(0, 2)).toEqual(['SXO', 'IP'])
     // jsdom has no layout: the hit-test answers with the row the pointer "is over"
     document.elementFromPoint = () => screen.getByTestId('grow-SXO')
@@ -276,7 +298,7 @@ describe('drag to reorder in ⚙', () => {
   it('the lower half of a row draws the bar on the top of the row below — one bar a gap', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     const rows = growRows()
     expect(rows.length).toBeGreaterThanOrEqual(3)
     const [a, b, c] = rows as [HTMLElement, HTMLElement, HTMLElement]
@@ -296,7 +318,7 @@ describe('drag to reorder in ⚙', () => {
   it('the last movable row keeps its bar on its foot — nothing it can land before follows it', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     const rows = growRows()
     const last = rows[rows.length - 1]!, first = rows[0]!
     expect(last.nextElementSibling?.hasAttribute('data-grow') ?? false).toBe(false)  // the case
@@ -311,7 +333,7 @@ describe('drag to reorder in ⚙', () => {
   it('the SANS row has no grip — it is always at the foot', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     fireEvent.click(screen.getByTestId('sans-toggle'))
     expect(screen.queryByTestId('gsdrag-SANS')).toBeNull()
     expect(screen.getByTestId('gsdrag-IP')).toBeTruthy()
@@ -345,7 +367,7 @@ describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
     vi.useFakeTimers()
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     // arm on the Groups list's second row (IP), hover the fourth row's
     // (IWSO) lower half, release — drops IP just after IWSO.
     const iwso = screen.getByTestId('grow-IWSO')
@@ -370,7 +392,7 @@ describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
     vi.useFakeTimers()
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     fireEvent.click(screen.getByTestId('who-wins-toggle'))   // tucked behind a disclosure
     const iwso = screen.getByTestId('gprio-IWSO')
     document.elementFromPoint = () => iwso
@@ -390,7 +412,7 @@ describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
   it('the who-wins list draws one bar a gap — a row’s lower half marks the top of the row below', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     fireEvent.click(screen.getByTestId('who-wins-toggle'))
     const rows = [...document.querySelectorAll('[data-testid="group-priority"] [data-gprio]')] as HTMLElement[]
     const [a, b, c] = rows as [HTMLElement, HTMLElement, HTMLElement]
@@ -408,7 +430,7 @@ describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
   it('a pointercancel leaves neither class behind', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     pointer('pointerdown', screen.getByTestId('gsdrag-IP'), { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
     expect(screen.getByTestId('grow-IP').className).toMatch(/\bdragging\b/)
     pointer('pointercancel', window, { pointerType: 'mouse', pointerId: 1 })
@@ -427,7 +449,7 @@ describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
 describe('⚙ Settings — Reset order', () => {
   /* the role first: a hand order is an admin's write, and the store refuses it from anyone else */
   beforeEach(() => { setRole('admin') })
-  const open = () => { render(<Matrix />); fireEvent.click(screen.getByTestId('settings-open')) }
+  const open = () => { render(<Matrix />); openSettings() }
   const btn = () => screen.getByTestId('roster-reset-order') as HTMLButtonElement
   it('is in the sheet, greyed while the roster follows the default, and says so', () => {
     open()
@@ -463,7 +485,7 @@ describe('⚙ Settings — Reset order', () => {
     fireEvent.click(btn())
     expect(btn().textContent).toBe('Really reset?')
     fireEvent.click(screen.getByTestId('settings-close'))
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     expect(btn().textContent).toMatch(/Reset order/)
     expect(getState().rosterOrder).toEqual(['ramp', 'ace'])
   })

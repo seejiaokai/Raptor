@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
 import { closeDates, getState, initStore, setRole, setViewer } from '../state/store'
@@ -6,6 +6,10 @@ import { memoryBackend } from '../state/storage'
 import { syncAbsences } from '../sync'
 import { StageBar, Topbar } from './Chrome'
 import { Matrix } from './Matrix'
+
+/* "+ New period" is the period list's last line since D1244 — no "+ New" button on the row: choosing it opens the
+   new-period window. */
+const chooseNewPeriod = () => fireEvent.change(screen.getByTestId('war-picker'), { target: { value: '\u0000new' } })
 
 /* these open the admin sheets (decision, counter, person), and closing the
    dates to reach them is admin-only (owner, 27 Aug 26, carried to the open
@@ -20,13 +24,17 @@ const scrim = () => screen.getByTestId('sheet-scrim')
 // than one test each, because the point is that NO sheet is missing the
 // behaviour — a per-sheet test would pass happily while an eighth sheet was
 // written without one.
-const SHEETS: { name: string; testid: string; open: () => void }[] = [
+const SHEETS: { name: string; testid: string; open: () => void; gone?: true }[] = [
+  /* GONE BY D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the column's heading is a
+     plain LVE label, so nothing on the grid opens the counter sheet any more. Its entry stays, skipped (`gone`), so the
+     sheet's behaviour is on record; the picker's code leaves whole with M5. */
   {
     name: 'the counter sheet',
     testid: 'counter-sheet',
+    gone: true,
     open: () => {
       render(<Matrix />)
-      fireEvent.click(screen.getByTestId('counter-pick'))
+      fireEvent.click(screen.getByTestId('person-ramp'))
     },
   },
   {
@@ -71,7 +79,7 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
     open: () => {
       setRole('admin')
       render(<Topbar />)
-      fireEvent.click(screen.getByTestId('war-new'))
+      chooseNewPeriod()
     },
   },
   /* was the bidding-window sheet — the stages' one window went for the "Open for bidding" window (D1177) */
@@ -108,7 +116,9 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
    pass while an eighth sheet shipped without it. */
 describe('Escape closes a sheet', () => {
   for (const sheet of SHEETS) {
-    it(`closes ${sheet.name}`, () => {
+    // a sheet the grid no longer opens (D1245) is skipped, never dropped
+    const test = sheet.gone ? it.skip : it
+    test(`closes ${sheet.name}`, () => {
       sheet.open()
       expect(screen.getByTestId(sheet.testid)).toBeTruthy()
       fireEvent.keyDown(document, { key: 'Escape' })
@@ -133,11 +143,13 @@ describe('Escape closes a sheet', () => {
 
   /* And no listener outlives its sheet: an Escape with nothing open must not
      reach into the grid or throw. */
+  // Re-expressed for D1245: the grid's proof of life was the column's picker, gone with the picker; it is the column's
+  // plain LVE heading now.
   it('does nothing when no sheet is open', () => {
     render(<Matrix />)
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
-    expect(screen.getByTestId('counter-pick')).toBeTruthy()
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
   })
 
   /* KEPT-MOUNTED guard (bug-hunt fix, 1 Sep 26). Inside Raptor the tab stays
@@ -165,38 +177,43 @@ describe('Escape closes a sheet', () => {
 
 describe('clicking outside a sheet closes it', () => {
   for (const sheet of SHEETS) {
-    it(`closes ${sheet.name}`, () => {
+    // a sheet the grid no longer opens (D1245) is skipped, never dropped
+    const test = sheet.gone ? it.skip : it
+    test(`closes ${sheet.name}`, () => {
       sheet.open()
       expect(screen.getByTestId(sheet.testid)).toBeTruthy()
       fireEvent.click(scrim())
       expect(screen.queryByTestId(sheet.testid)).toBeNull()
     })
 
-    it(`puts a scrim behind ${sheet.name} rather than leaving it unreachable`, () => {
+    test(`puts a scrim behind ${sheet.name} rather than leaving it unreachable`, () => {
       sheet.open()
       expect(screen.queryByTestId('sheet-scrim')).toBeTruthy()
     })
   }
 
+  // Re-expressed for D1245: the sheet opened is the person's window (a tap on his name) — the counter sheet it used to
+  // open is no longer reachable from the grid.
   it('leaves no scrim behind once every sheet is shut', () => {
     render(<Matrix />)
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
-    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
     fireEvent.click(scrim())
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
   })
 
   // The scrim must not swallow a click meant for the sheet itself. Clicking a
-  // control inside has to keep doing what it does — the counter sheet's rows
-  // choose a counter, and choosing one closes the sheet by picking, not by
-  // being dismissed.
+  // control inside has to keep doing what it does. Re-expressed for D1245: the
+  // counter sheet (whose rows chose a counter) is no longer opened from the grid,
+  // so the person's window stands in — a tap on one of its rows hands over to
+  // that figure's breakdown, closing the window by choosing, not by dismissal.
   it('does not intercept a click on the sheet itself', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    fireEvent.click(screen.getByTestId('counter-oil'))
-    expect(screen.queryByTestId('counter-sheet')).toBeNull()
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('pfig-lve').querySelector('.crow')!)
+    expect(screen.queryByTestId('person-figures')).toBeNull()
     // The choice landed, which a swallowed click would not have done.
-    expect(screen.getByTestId('counter-pick').textContent).toContain('OIL')
+    expect(screen.getByTestId('figure-breakdown')).toBeTruthy()
   })
 
   // Dismissing is not deciding. A bid left pending must still be pending after
@@ -215,27 +232,30 @@ describe('clicking outside a sheet closes it', () => {
 // The grid keeps scrolling sideways while a sheet is up (owner, 28 Aug 26).
 // A horizontal DRAG on the scrim forwards onto the grid and leaves the sheet
 // up; only a plain TAP (no movement) still dismisses.
+// Re-expressed for D1245 here and in the next block: these opened the counter
+// sheet from the column's picker, which is gone; the sheet under test is now the
+// person's window (a tap on his name) — the same Sheet, scrim and title strip.
 describe('a sideways drag scrolls the grid, it does not dismiss', () => {
   it('keeps the sheet up when the scrim is dragged left-right', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    expect(screen.getByTestId('counter-sheet')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    expect(screen.getByTestId('person-figures')).toBeTruthy()
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 260, clientY: 300, pointerId: 1 })
     fireEvent.pointerMove(s, { clientX: 160, clientY: 302, pointerId: 1 }) // 100px left, ~horizontal
     fireEvent.pointerUp(s, { clientX: 160, clientY: 302, pointerId: 1 })
     fireEvent.click(s) // the trailing click a mouse drag produces
-    expect(screen.queryByTestId('counter-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('person-figures')).toBeTruthy()
   })
 
   it('still closes on a plain tap with no drag', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 260, clientY: 300, pointerId: 1 })
     fireEvent.pointerUp(s, { clientX: 260, clientY: 300, pointerId: 1 })
     fireEvent.click(s)
-    expect(screen.queryByTestId('counter-sheet')).toBeNull()
+    expect(screen.queryByTestId('person-figures')).toBeNull()
   })
 
   it('forwards the drag distance onto the grid scroller', () => {
@@ -246,7 +266,7 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     let sl = 0
     Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
     wrap.scrollLeft = 500
-    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1 })
     fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1 }) // dragged 100px left
@@ -265,12 +285,12 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     let sl = 0
     Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
     wrap.scrollLeft = 6500
-    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
     const s = scrim()
     fireEvent.pointerMove(s, { clientX: 900, clientY: 300, pointerId: 1, pointerType: 'mouse' })
     fireEvent.pointerMove(s, { clientX: 700, clientY: 320, pointerId: 1, pointerType: 'mouse' })
     expect(wrap.scrollLeft).toBe(6500)
-    expect(screen.queryByTestId('counter-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('person-figures')).toBeTruthy()
   })
 
   it('stops panning once the mouse button has been released elsewhere', () => {
@@ -279,7 +299,7 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     let sl = 0
     Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
     wrap.scrollLeft = 500
-    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
     fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
@@ -297,15 +317,15 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
 describe('the page stays live behind a sheet, and the panel moves', () => {
   it('never locks the page scroll behind the sheet', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('person-ramp'))
     // The old lock added this body class; removing it is the reversal.
     expect(document.body.classList.contains('lw-sheet-lock')).toBe(false)
   })
 
   it('slides the panel when its title strip is dragged', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const panel = screen.getByTestId('counter-sheet')
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    const panel = screen.getByTestId('person-figures')
     const hd = panel.querySelector('.bidsheet-hd') as HTMLElement
     expect(hd).toBeTruthy()
     // jsdom reports every rect 0×0, so the panel starts at (0,0) and the clamp
@@ -320,11 +340,11 @@ describe('the page stays live behind a sheet, and the panel moves', () => {
 
   it('does not start a drag from a control on the title strip', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const panel = screen.getByTestId('counter-sheet')
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    const panel = screen.getByTestId('person-figures')
     // Pressing the ✕ (a button in the strip) must not move the panel — it
     // closes. A press that begins on a button is ignored by the drag handler.
-    const x = screen.getByTestId('counter-cancel')
+    const x = screen.getByTestId('pfig-close')
     fireEvent.pointerDown(x, { clientX: 100, clientY: 100, pointerId: 3 })
     fireEvent.pointerMove(x, { clientX: 180, clientY: 140, pointerId: 3 })
     expect(panel.style.getPropertyValue('--lw-dx')).toBe('')

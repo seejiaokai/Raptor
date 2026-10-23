@@ -930,6 +930,28 @@
   flex-basis: 100%;
 }
 
+/* AN AVAILABLE ROW'S AMBER AND RED POINTS (ui/CounterForm.tsx; the Leave War overhaul — D1190, D1191, D1202; drawn
+   r7-26): the label, a small dot in the colour it sets, "when under Required" and a short box for the number above or
+   below it — on one line, the box sized for "− 12", not the form's full-width field. */
+.bidsheet .cf-pt { flex-wrap: nowrap; }
+.bidsheet .cf-ptdot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.bidsheet .cf-ptdot.amb { background: var(--adv, #E5A83B); }
+.bidsheet .cf-ptdot.red { background: var(--hard, #F0555F); }
+.bidsheet .cf-ptwhen { font-size: 13px; color: var(--ink); white-space: nowrap; }
+.bidsheet .mth-in.cf-ptin {
+  width: 72px;
+  flex: none;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet .mth-in.cf-ptin.bad { border-color: var(--hard, #F0555F); }
+
 .bidsheet .cf-row .cf-hint:not(:first-child) {
   flex-basis: auto;
 }
@@ -1166,7 +1188,9 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  margin: 8px 2px 2px;
+  /* No side margin (D1270, 23 Oct 26): with the full width, the old 2px either side made the window's contents 4px
+     wider than the window, and an iPhone let the whole window be dragged sideways. */
+  margin: 8px 0 2px;
   padding: 9px 11px;
   background: var(--panel-2);
   border: 1px solid var(--edge);
@@ -1582,3 +1606,9 @@
   border-radius: 5px;
   color: #F2C879;
 }
+/* THE AVAILABLE ROW'S TWO POINTS ON ONE LINE, as drawn (r7-26: "AMBER ● when under Required [+ 2]") — walker 2 found the
+   boxes full width on a line of their own: the window is not always a .bidsheet, so the rules are scoped to the row */
+#page-leavewar .cf-row.cf-pt { flex-wrap: nowrap; align-items: center; }
+#page-leavewar .cf-row.cf-pt .lab { flex: 0 0 auto; }
+#page-leavewar .cf-row.cf-pt .mth-in.cf-ptin { width: 72px; min-width: 72px; max-width: 72px; flex: none; }
+

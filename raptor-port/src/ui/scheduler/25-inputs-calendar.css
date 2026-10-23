@@ -117,7 +117,8 @@
   /* THE PAGE'S SIDE MARGIN ON A PHONE: the Inputs page ran edge to edge there (a fault seen while drawing the mock-ups —
      the plan §3.6); every tab's screen now stands in from the edge of the screen. A desktop keeps the page as it was. */
   .inputs-workspace{padding:0 8px}
-  .inputs-top{gap:5px;margin:8px 0 6px}
+  /* the tab row 4px under the app's top bar, as the Leave War's (owner D1280 — "choose the one that uses less vertical space") */
+  .inputs-top{gap:5px;margin:4px 0 6px}
   .inputs-tabs{flex:1 0 100%}
   .intab{flex:1 1 0;padding:4px 6px}
   /* narrower, and drawn as tall as a tab — the press area stays a finger's size (D698; see the head of this file) */

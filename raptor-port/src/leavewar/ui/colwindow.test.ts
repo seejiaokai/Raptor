@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clampWin, inWindow, isFullYear, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS } from './colwindow'
+import { clampWin, DRAW_LEFT_MAX_SPEED, inWindow, isFullYear, leftGrowAbsorbable, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS } from './colwindow'
 
 // The column window's arithmetic, proved here because jsdom lays nothing out:
 // the browser gate (e2e/leavewar.spec.ts) proves the measuring and the
@@ -101,6 +101,33 @@ describe('stepAllowedInMotion', () => {
     expect(stepAllowedInMotion({ lo: 2, hi: 9 }, { lo: 3, hi: 9 }, known)).toBe(false)
     expect(stepAllowedInMotion({ lo: 4, hi: 11 }, { lo: 4, hi: 10 }, known)).toBe(false)
     expect(stepAllowedInMotion({ lo: 4, hi: 6 }, { lo: 4, hi: 6 }, known)).toBe(false)  // no step at all
+  })
+})
+
+// His video, 23 Oct 26: a fling from December back to January left every month it passed striped, and January a second
+// after it stopped. A left month over an estimated width is drawn mid-fling when its error can go to the left placeholder
+// (Matrix padErrRef) — any month but the war's first, and the first once the scroll is at the very start.
+describe('a left month drawn mid-fling over an estimate (his fling back to January)', () => {
+  it('is allowed when its error can be absorbed, and still held when it cannot', () => {
+    const unknown = () => false
+    expect(stepAllowedInMotion({ lo: 7, hi: 11 }, { lo: 6, hi: 11 }, unknown, m => leftGrowAbsorbable(m, 4000))).toBe(true)
+    expect(stepAllowedInMotion({ lo: 7, hi: 11 }, { lo: 6, hi: 11 }, unknown)).toBe(false)   // no absorber: held, as before
+  })
+  it('gives any month but the first to the left placeholder; the first only at the very start of the scroll', () => {
+    expect(leftGrowAbsorbable(5, 3000)).toBe(true)
+    expect(leftGrowAbsorbable(1, 600)).toBe(true)
+    expect(leftGrowAbsorbable(0, 240)).toBe(false)   // January still off to the left: it waits for rest
+    expect(leftGrowAbsorbable(0, 0)).toBe(true)      // the fling has reached January's first day
+    expect(leftGrowAbsorbable(0, 0.6)).toBe(true)
+  })
+  it('waits while a fast fling outruns the draw, and draws as it slows to a drag', () => {
+    expect(leftGrowAbsorbable(5, 3000, 4.8)).toBe(false)                      // a fast fling: as before, held
+    expect(leftGrowAbsorbable(5, 3000, 0.72)).toBe(true)                      // a steady drag
+    expect(leftGrowAbsorbable(5, 3000, DRAW_LEFT_MAX_SPEED)).toBe(true)
+    expect(leftGrowAbsorbable(0, 0, 4.8)).toBe(true)                          // January at the very start, however fast
+  })
+  it('never lets a prune through mid-scroll, absorber or not', () => {
+    expect(stepAllowedInMotion({ lo: 2, hi: 9 }, { lo: 3, hi: 9 }, () => false, () => true)).toBe(false)
   })
 })
 

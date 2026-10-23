@@ -111,6 +111,10 @@ import {
   newRecId,
   isCredit,
   isOilAward,
+  awardHalf,
+  creditHalf,
+  freeHalfFor,
+  type Half,
   liveRequestsOn,
   portionOfCode,
   requestWin,
@@ -154,6 +158,11 @@ import {
   blockOrder,
   isFixedRow,
   orderToSave,
+  readAvailPoints,
+  readReqNames,
+  reqNameToKeep,
+  type AvailPoints,
+  type ReqNames,
 } from '../engine'
 import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
@@ -316,6 +325,11 @@ interface State {
    *  it to projectPeople on every notify, so flipping it re-projects at once. */
   showSans: boolean
 
+  /** The Required P and Required W rows' names, where an admin has renamed one (D1193, 21 Oct 26, narrowing D668 — the
+   *  name only; their figures stay typed in their cells). A seat absent reads its original name
+   *  (engine/fixedrows.ts REQ_NAMES_ORIGINAL). Squadron-wide config, persisted `reqnames`, admin-gated (`setReqName`). */
+  reqNames: ReqNames
+
   /** The day the matrix has been asked to bring into view, or null. */
   focusDate: string | null
   /** Bumped on every request, including a repeat of the same date. The matrix
@@ -425,6 +439,7 @@ function blank(): State {
     groupColors: {},
     eventRows: DEFAULT_EVENT_ROWS,
     showSans: false,
+    reqNames: {},
     // The squadron is the common case, so the app opens as one. An admin
     // says so deliberately rather than arriving with the locks already off.
     role: 'member',
@@ -490,6 +505,11 @@ function readLedger(x: unknown): Ledger | null {
     const { enteredBy, enteredAt } = e as { enteredBy?: unknown; enteredAt?: unknown }
     if (typeof enteredBy === 'string' && enteredBy) entry.enteredBy = enteredBy
     if (typeof enteredAt === 'string' && !Number.isNaN(Date.parse(enteredAt))) entry.enteredAt = enteredAt
+    /* AN HO'S HALF (owner, D1164) survives a reload — only on an OIL award worth half a day, the only entry that has
+       one; a bad or misplaced one is dropped with the entry kept, as `givenBy` is. None at all — every award given
+       before D1164 — reads as the morning (`awardHalf`); nothing is converted (D401). */
+    const { half } = e as { half?: unknown }
+    if (counter === 'oil' && amount === 0.5 && (half === 'am' || half === 'pm')) entry.half = half
     out.push(entry)
   }
   return out
@@ -587,6 +607,9 @@ function readManningRule(x: unknown): ManningRule | null {
   if (!threshold || !count) return null
   const out: ManningRule = { id: x.id, label: x.label, count, threshold }
   if (typeof x.desc === 'string' && x.desc.length <= 2000) out.desc = x.desc
+  /* the Available rows' amber and red points (D1190, D1191, D1202) — read on those two rows only; a pair that will not
+     read is left out, and the row reads as it always did (red under Required, no amber) */
+  if (isAvailId(x.id) && x.points !== undefined) { const p = readAvailPoints(x.points); if (p) out.points = p }
   return out
 }
 
@@ -603,7 +626,8 @@ function readManningRules(x: unknown): ManningRule[] | null {
     if (!rule || seen.has(rule.id)) continue
     if (isAvailId(rule.id)) {
       /* a stored Available row that is not a people count is left out — the built-in one serves — and one that is
-         carries no amber or red, whatever was stored */
+         has its threshold held at 0, whatever was stored: its amber and red are its points against the day's Required
+         (D1190, D1191, D1202), never a threshold */
       rule = cleanAvailRule(rule)
       if (!rule) { dropped++; continue }
     }
@@ -1084,6 +1108,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
   const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
+  const reqNames = readStored('reqnames', readReqNames) ?? {}
   const postOuts = stored ? stored.postOuts : {}
 
   /* The role is neither read nor persisted since the Raptor merge: it is
@@ -1100,7 +1125,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
      back is what Leave War owns about a person (8 Sep 26): the posting-out
      windows, laid onto the projection by setPeople. (The admin's identity
      overrides it read beside them are gone — D460, D461.) */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, postOuts })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, reqNames, postOuts })
   /* every list's order on its records — the seed's, and a stored record not yet placed (command/ord.ts) */
   state = placeRecords(null, state)
   /* the committed world is this one: a command the test hook below runs diffs against it, not the last world */
@@ -1331,7 +1356,7 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
       manningOrder: s.manningOrder, manningHidden: s.manningHidden,
       figureHidden: s.figureHidden, groupDefs: s.groupDefs, groupPriority: s.groupPriority,
       groupPriorityCustom: s.groupPriorityCustom, groupColors: s.groupColors,
-      requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
+      requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans, reqNames: s.reqNames,
     },
   })
   return m
@@ -1412,6 +1437,8 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
         figureHidden: v.figureHidden, groupDefs: v.groupDefs, groupPriority: v.groupPriority,
         groupPriorityCustom: v.groupPriorityCustom, groupColors: v.groupColors,
         requirements: v.requirements, eventRows: v.eventRows, showSans: v.showSans,
+        /* a config record from before D1193 carries no names: both rows read their originals */
+        reqNames: v.reqNames ?? {},
       })
       return
     }
@@ -1478,6 +1505,10 @@ function lwRegisterCommands(): void {
      say "a public holiday on 9 Aug"; admin only, by perms.ts COMMAND_OPS and by the writers themselves — and the
      Event sheet's Save and Delete (saveEvent / deleteEvent), for the same two reasons */
   for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove', 'lw.event.save', 'lw.event.remove']) cmdDefinePermission(t, cmdAnyone)
+  /* the Manning block's two settings of the overhaul's batch 3, each its own command so the gate asks the Setting row
+     (perms.ts COMMAND_OPS — the admin's): an Available row's Save — its name, who it counts and its amber and red points
+     (D1190, D1191, D1202) — and a Required row's name (D1193) */
+  for (const t of ['lw.availrow', 'lw.reqname']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   /* [DB-READINESS] group A, phase 3 — THE WAR'S ROWS, WRITTEN FROM THE COMMAND STREAM (state/rows.ts): every command's
      changes to the war, mapped to the rows they land in and written through the war's own door at phase 9 — inside the
@@ -1642,7 +1673,7 @@ function historySnap(): string {
     figureOrder: s.figureOrder, rosterOrder: s.rosterOrder, persLabels: s.persLabels,
     manningOrder: s.manningOrder, manningHidden: s.manningHidden, figureHidden: s.figureHidden,
     groupDefs: s.groupDefs, groupPriority: s.groupPriority, groupPriorityCustom: s.groupPriorityCustom,
-    requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
+    requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans, reqNames: s.reqNames,
   })
 }
 
@@ -1710,7 +1741,7 @@ function historyApply(i: number): void {
   const snap = JSON.parse(HIST.stack[i]) as Pick<State,
     'wars' | 'openings' | 'ledger' | 'oilPolicy' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
     | 'persLabels' | 'manningOrder' | 'manningHidden' | 'figureHidden' | 'groupDefs'
-    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans'>
+    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans' | 'reqNames'>
   HIST.ix = i
   historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
   locked(() => {
@@ -3120,6 +3151,8 @@ export interface OilShown {
   spans?: Array<[number, number]>
   enteredName?: string
   enteredAt?: string
+  /** an HO's half of the day (owner, D1164) — an award's as picked, the schedule's where its work fell; absent on an FO */
+  half?: Half
 }
 /** Every OIL credit on one day — the schedule's first, then each award (ONE reader for the tap list, the bid sheet and
  *  the member's own award sheet, so none can see a different set — [OIL-AWARD-IS-A-GRANT]). */
@@ -3127,19 +3160,31 @@ export function oilOnDay(personId: string, date: string): OilShown[] {
   const out: OilShown[] = []
   for (const r of listAt(personId, date)) {
     if (r.kind !== 'credit') continue
-    out.push({ id: r.id, award: false, code: r.code, days: creditWorth({ code: r.code, auto: true }), ...(r.note ? { note: r.note } : {}), ...(r.via ? { via: r.via } : {}), ...(r.spans ? { spans: r.spans } : {}) })
+    const half = creditHalf(r)
+    out.push({ id: r.id, award: false, code: r.code, days: creditWorth({ code: r.code, auto: true }), ...(r.note ? { note: r.note } : {}), ...(r.via ? { via: r.via } : {}), ...(r.spans ? { spans: r.spans } : {}), ...(half ? { half } : {}) })
   }
   for (const e of awardsOnDay(personId, date)) out.push(awardShown(e))
   return out
 }
 export function awardShown(e: LedgerEntry): OilShown {
   const name = (e.enteredBy && state.people.find(p => p.id === e.enteredBy)?.callsign) || e.approvedBy
+  const half = awardHalf(e)
   return {
     id: e.id, award: true, code: e.amount === 0.5 ? 'HO' : 'FO', days: e.amount,
     ...(e.reason ? { note: e.reason } : {}), ...(e.givenBy ? { givenBy: e.givenBy } : {}),
     ...(name ? { enteredName: name } : {}), ...(e.enteredAt ? { enteredAt: e.enteredAt } : {}),
+    ...(half ? { half } : {}),
   }
 }
+
+/** THE HALF AN HO GIVEN ON THIS DAY TAKES UNLESS THE ADMIN PICKS (owner, D1164): the other half beside a half-day box,
+ *  else the morning (`freeHalfFor`). What the +OIL panel and the OIL tracker's form open on, and what a write that
+ *  names no half stores. `exceptId` leaves out the award being changed. */
+export function defaultAwardHalf(personId: string, date: string, exceptId?: string): Half {
+  return freeHalfFor(viewAt(personId, date)?.all ?? [], exceptId)
+}
+/* a half a caller passed, kept only when it is one — anything else is "none picked" */
+const pickedHalf = (h: unknown): Half | undefined => (h === 'am' || h === 'pm' ? h : undefined)
 
 /** An approved absence the war may change: every absence on the address was
  *  approved on the war, none is medical / course / OD, and it is not a cell
@@ -4025,8 +4070,10 @@ const ledgerType = (counter: CounterName, amount: number): string => (isOilAward
  * here, as it always was (a direct blank call is refused — Astra's plan read F08).
  * Returns the error sentence for the form, or null on success.
  * One command for the whole batch → one persist, one undo step.
+ * An HO (an OIL award of half a day) takes `half` — the half the admin picked (D1164); none picked, each person's own
+ * default (`defaultAwardHalf`: the other half beside a half-day box, else the morning). Every other entry ignores it.
  */
-export function grantTo(personIds: string[], counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
+export function grantTo(personIds: string[], counter: CounterName, amount: number, date: string, reason: string, givenBy = '', half?: Half): string | null {
   if (state.role !== 'admin') return `Only an admin can credit ${counterLabel(counter)}`
   const ids = [...new Set(personIds)].filter(id => state.people.some(p => p.id === id))
   if (!ids.length) return 'Pick at least one person'
@@ -4035,9 +4082,11 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
   const approvedBy = approverName()
   const by = givenBy.trim()
   const who = entered()
+  const ho = counter === 'oil' && amount === 0.5      // an HO award — the one entry with a half
   const entries: Ledger = ids.map(personId => ({
     id: ledgerId(), personId, counter, amount, date, reason: reason.trim(), approvedBy,
     ...(by ? { givenBy: by } : {}), ...who,
+    ...(ho ? { half: pickedHalf(half) ?? defaultAwardHalf(personId, date) } : {}),
   }))
   gesture(ledgerType(counter, amount), () => {
     state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
@@ -4048,8 +4097,8 @@ export function grantTo(personIds: string[], counter: CounterName, amount: numbe
 
 /** The OIL case of `grantTo` — kept so the tracker and its tests read as they
  *  always did. */
-export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
-  return grantTo(personIds, 'oil', amount, date, reason, givenBy)
+export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = '', half?: Half): string | null {
+  return grantTo(personIds, 'oil', amount, date, reason, givenBy, half)
 }
 
 /** Edit a ledger entry in place — amount, date, reason or given by. The approver and who entered it stay; the change
@@ -4060,8 +4109,11 @@ export function grantOil(personIds: string[], amount: number, date: string, reas
  *  - AN OIL ENTRY KEEPS ITS SIGN: an award never becomes a correction or back, or an award could be re-dated in three
  *    steps (Fable's round-2 read, N2).
  *  - ITS REASON: an award keeps one if it had one, and never has to invent one it never had (given on the grid with
- *    none); a correction always needs one; every other pool keeps its own rule (Astra's round-2 read, R2-05). */
-export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string }): string | null {
+ *    none); a correction always needs one; every other pool keeps its own rule (Astra's round-2 read, R2-05).
+ *  - ITS HALF (D1164): an award that is (or becomes) an HO takes the half named; none named, an HO keeps the one it has
+ *    (an old HO with none still reads as the morning) and an FO turned HO takes the day's default (`defaultAwardHalf`).
+ *    One that stops being half a day drops it. */
+export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string; half?: Half }): string | null {
   // The ENTRY first, then the role — so the refusal can name the pool it is
   // about (review, 6 Sep 26). An id that names nothing answers "That entry is
   // gone" first, which is true for a member and an admin alike.
@@ -4080,14 +4132,20 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
   const requireReason = award ? cur.reason.trim() !== '' : reasonRequired(cur.counter)
   const problem = ledgerProblem(cur.counter, amount, date, reason, givenBy, requireReason)
   if (problem) return problem
-  if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '')) return null
+  /* an FO turned HO takes the default of the day the entry ENDS on (`date`), never the one it had (the scenario designer's
+     M4, 23 Oct 26). An award never changes its day today — refused above (D260) — so the two are the same date; read
+     from the new one, the default stays right if that rule is ever relaxed. */
+  const half: Half | undefined = award && amount === 0.5
+    ? pickedHalf(patch.half) ?? (cur.amount === 0.5 ? cur.half : defaultAwardHalf(cur.personId, date, cur.id))
+    : undefined
+  if (amount === cur.amount && date === cur.date && reason.trim() === cur.reason && givenBy === (cur.givenBy ?? '') && half === cur.half) return null
   gesture(ledgerType(cur.counter, cur.amount), () => {
     state = withCurrent({
       ...state,
       ledger: state.ledger.map(e => {
         if (e.id !== id) return e
-        const { givenBy: _g, ...rest } = e
-        return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}) }
+        const { givenBy: _g, half: _h, ...rest } = e
+        return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}), ...(half ? { half } : {}) }
       }),
     })
     persistNotify()
@@ -4311,7 +4369,8 @@ export function resetManning(): void {
 export function setManningThreshold(id: string, amber: number, red: number): boolean {
   if (state.role !== 'admin') return false
   if (!Number.isFinite(amber) || amber < 0 || !Number.isFinite(red) || red < 0) return false
-  /* the two Available rows carry no amber or red of their own — their red comes from the Required row above them */
+  /* the two Available rows carry no threshold: their amber and red are points against the day's Required (D1191),
+     set by setAvailPoints / saveAvailRow */
   if (isAvailId(id)) return false
   const rules = state.requirements.default.rules
   if (!rules.some(r => r.id === id)) return false
@@ -4336,7 +4395,8 @@ export function saveManningRule(rule: ManningRule): boolean {
   let clean = readManningRule(rule)
   if (!clean) return false
   /* one of the two Available rows (engine/availrows.ts — D640): renamed and re-defined like any counter, but it stays a
-     count of PEOPLE (a "teams" count is refused) and its amber and red are held at 0 */
+     count of PEOPLE (a "teams" count is refused), its threshold held at 0 and its amber and red kept as its points
+     against the day's Required (D1191 — its own window saves through saveAvailRow, one command) */
   if (isAvailId(clean.id)) {
     clean = cleanAvailRule(clean)
     if (!clean) return false
@@ -4355,6 +4415,40 @@ export function saveManningRule(rule: ManningRule): boolean {
   state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: next } } })
   persistNotify()
   return true
+}
+
+/** AN AVAILABLE ROW'S SAVE — its name, who it counts and its amber and red points (D1190, D1191, D1202 — each a number
+ *  plus or minus that day's Required), all from the row's own window, as ONE command (`lw.availrow`): the command gate
+ *  asks the Setting row (the admin's — perms.ts COMMAND_OPS) and one Undo takes the whole Save back. The body is
+ *  `saveManningRule`'s, so the row is made safe the one way (engine/availrows.ts cleanAvailRule). ADMIN-gated. */
+export function saveAvailRow(rule: ManningRule): boolean {
+  if (state.role !== 'admin' || !rule || !isAvailId(rule.id)) return false
+  return gesture('lw.availrow', () => saveManningRule(rule)) === true
+}
+
+/** One Available row's amber and red points alone, the rest of the row kept — the same command as its Save. A pair that
+ *  is not one (engine/availrows.ts readAvailPoints) is refused; negatives are allowed. ADMIN-gated. */
+export function setAvailPoints(id: string, points: AvailPoints): boolean {
+  if (state.role !== 'admin' || !isAvailId(id)) return false
+  const p = readAvailPoints(points)
+  if (!p) return false
+  return saveAvailRow({ ...availRuleOf(state.requirements.default.rules, id), points: p })
+}
+
+/** RENAME A REQUIRED ROW (D1193, 21 Oct 26, narrowing D668): the name only — the figures stay typed in their cells. A
+ *  blank name, or the original typed back, puts the original back (engine/fixedrows.ts reqNameToKeep), so a phone shows
+ *  its short form again. Its own command (`lw.reqname`), the Setting row's — the admin's. Returns whether it holds. */
+export function setReqName(seat: 'p' | 'w', name: string): boolean {
+  if (state.role !== 'admin' || (seat !== 'p' && seat !== 'w') || typeof name !== 'string') return false
+  const keep = reqNameToKeep(seat, name)
+  const next: ReqNames = { ...state.reqNames }
+  if (keep === null) delete next[seat]; else next[seat] = keep
+  if (next.p === state.reqNames.p && next.w === state.reqNames.w) return true   // already so: nothing to save
+  return gesture('lw.reqname', () => {
+    state = withCurrent({ ...state, reqNames: next })
+    persistNotify()
+    return true
+  }) === true
 }
 
 /** Why a counter cannot be deleted, as a sentence for the sheet — null when it can. The two Available rows cannot: the
@@ -4511,7 +4605,10 @@ export const OIL_DOOR_MSG = 'OIL is given from the day’s +OIL panel or the OIL
  * truth: not an admin, no war on that date, days that are not halves. Never refused for clashing with leave: an award
  * clashes with nothing (D80) and adds to a worked day (D82).
  */
-export function setDayAward(personId: string, date: string, days: number, opts: { note?: string; givenBy?: string } = {}): string | null {
+/* AN HO TAKES A HALF OF THE DAY (owner, D1164): `opts.half`, the half the admin picked on the panel; none picked, a new
+   HO takes the day's default (`defaultAwardHalf` — the other half beside a half-day box, else the morning) and a
+   changed one keeps its own (`updateLedgerEntry`). */
+export function setDayAward(personId: string, date: string, days: number, opts: { note?: string; givenBy?: string; half?: Half } = {}): string | null {
   if (state.role !== 'admin') return 'Only an admin can enter OIL'
   if (!warHolding(state.wars, date)) return 'That day is in no war'
   if (!Number.isFinite(days) || days <= 0) return 'Type how many days'
@@ -4521,12 +4618,14 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
   const givenBy = (opts.givenBy ?? '').trim()
   const here = awardsOnDay(personId, date)
   if (here.length > 1) return `This day holds ${here.length} OIL awards — change them from the day’s list`
-  if (here.length === 1) return updateLedgerEntry(here[0]!.id, { amount: days, reason: note, givenBy })
+  const half = pickedHalf(opts.half)
+  if (here.length === 1) return updateLedgerEntry(here[0]!.id, { amount: days, reason: note, givenBy, ...(half ? { half } : {}) })
   const problem = ledgerProblem('oil', days, date, note, givenBy, false)
   if (problem) return problem
   const entry: LedgerEntry = {
     id: ledgerId(), personId, counter: 'oil', amount: days, date, reason: note, approvedBy: approverName(),
     ...(givenBy ? { givenBy } : {}), ...entered(),
+    ...(days === 0.5 ? { half: half ?? defaultAwardHalf(personId, date) } : {}),
   }
   gesture('lw.award', () => {
     state = withCurrent({ ...state, ledger: [...state.ledger, entry] })
@@ -4541,7 +4640,7 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
  * before anything is written. `null` days is refused — an award is worth what it says (the old "blank means the code's
  * own worth" went with the code). Returns null when done, else the reason in the sheet's words.
  */
-export function editAward(id: string, patch: { note?: string; givenBy?: string; days?: number }): string | null {
+export function editAward(id: string, patch: { note?: string; givenBy?: string; days?: number; half?: Half }): string | null {
   const cur = state.ledger.find(e => e.id === id)
   if (!cur || !isOilAward(cur)) return 'There is no OIL award there'
   if (patch.days !== undefined && patch.days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
@@ -4549,6 +4648,7 @@ export function editAward(id: string, patch: { note?: string; givenBy?: string; 
     ...(patch.days !== undefined ? { amount: patch.days } : {}),
     ...(patch.note !== undefined ? { reason: patch.note } : {}),
     ...(patch.givenBy !== undefined ? { givenBy: patch.givenBy } : {}),
+    ...(patch.half !== undefined ? { half: patch.half } : {}),
   })
 }
 

@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { elevenCounters, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
+import { elevenCounters, openManning, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
 
 /** Open the figure picker. The whole column header is the control — the two
  *  arrows it replaced were 13px glyphs the owner could not hit on a phone.
@@ -102,6 +102,24 @@ async function settleGrid(page: Page) {
   })
 }
 
+/* WIDE LETTERS ON DEMAND (23 Oct 26). GitHub's Linux machines draw this app's letters wider than his PC does (the app
+   loads no font of its own), and so does his iPhone: three of M2's geometry tests passed here and failed there. Run with
+   LW_WIDE_LETTERS=1 and every page of the run is drawn in Verdana — as wide as Linux's DejaVu Sans — so a width fault
+   that only GitHub would see is reproduced on his PC first. Off by default: the tests' own numbers are his PC's. */
+if (process.env.LW_WIDE_LETTERS) {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      const add = () => {
+        const s = document.createElement('style')
+        s.textContent = '*, *::before, *::after { font-family: Verdana, "DejaVu Sans", sans-serif !important }'
+        document.head.appendChild(s)
+      }
+      if (document.head) add()
+      else document.addEventListener('DOMContentLoaded', add)
+    })
+  })
+}
+
 test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
   /* THE FIGURES DRAWER STARTS PUT AWAY FOR EVERY TEST BUT ITS OWN (6 Sep 26).
@@ -123,6 +141,9 @@ test.beforeEach(async ({ page }) => {
  *  a desktop comes back with it OUT and over the grid the test is driving. */
 async function putDrawerAway(page: Page) {
   const bar = page.locator('[data-testid="figures-toggle"]')
+  // The drawer is switched off since the overhaul's M2 (D1245 — the Balances fold goes; its code leaves whole with M5):
+  // no toggle, nothing to put away.
+  if ((await bar.count()) === 0) return
   if ((await bar.getAttribute('aria-expanded')) === 'true') await bar.click()
 }
 
@@ -377,7 +398,10 @@ test('the page itself never scrolls sideways — only the grid does', async ({ p
 // of a 390px screen inside a row that scrolled sideways. The row then wrapped, the chip on a line of its own (D365);
 // since D678 (8 Oct 26) a phone's row is ONE line again with the chip at its right — what gives is the callsign, which
 // ends in "…" (the two-line tests further down). This test's three rules hold through both.
-test('the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways', async ({ page }) => {
+// SKIPPED, D1173 (21 Oct 26 — built in the overhaul's M2): the "Viewing as" chip is gone, on a desktop and a phone (the
+// person signed in knows who he is; My leave carries his figures). Its third rule — the top's rows never scroll
+// sideways — is held for every row of the new top by the tests below (`expectTopLines`, and the desktop's).
+test.skip('the VIEWING AS chip stays inside the screen, its words whole, and the top row never scrolls sideways', async ({ page }) => {
   await lwView(page, 'slipway')   // the harness runs unscoped; a sign-in always names its person (D166 (4)), and the chip names him
   const chip = page.locator('[data-testid="lw-viewing"]')
   await expect(chip).toBeVisible()
@@ -477,6 +501,79 @@ async function expectTwoLines(page: Page, line1: string[], line2: string[], what
 }
 const PHONES: [number, number][] = [[390, 844], [360, 740]]
 
+/* ---- THE TOP SINCE THE OVERHAUL'S M2 (D1254, 22 Oct 26 — the navigation as drawn in round 19, narrowing D678, D679 and
+   D1141). The helpers above measured the D678 top — the period, "+" and "Viewing as" on line 1, the open dates,
+   under-manned and Legend on line 2 — and are kept for the two tests of the "Viewing as" chip, skipped by D1173. Now:
+   · the page's TAB ROW — Grid · OIL (Approvals and Balances join with their pages) — with ⚙ at its right end, an admin's;
+   · then "View" (never "Period" — D1174), the period picker ("+ New period" its last line, an admin's — D1244) and My leave
+     (D1141 — only for a person with a row on the war): on a phone a second line under the tabs, on a desktop the same row;
+   · the grid's OWN BAR on the grid card — [▸ Manning | n red ›] · the open dates · … · the zoom pair · Legend — the same for
+     everyone; the red count is gone at 0 (D1243). On a phone it takes a second line rather than cut a chip (M2's walk).
+   No "Viewing as" (D1173). ---- */
+const TABS_ADMIN = ['lw-tab-grid', 'oil-tracker', 'settings-open'], TABS_MEMBER = ['lw-tab-grid', 'oil-tracker']
+const VIEW_LINE = ['war-picker', 'my-leave'], BAR = ['counts-toggle', 'open-chip', 'legend-open']
+const TOP_IDS = ['lw-tab-grid', 'oil-tracker', 'settings-open', 'war-picker', 'my-leave', 'lw-viewing', 'counts-toggle', 'undermanned', 'open-chip', 'lw-zoom', 'legend-open']
+/** The top as it is painted since M2: the controls' boxes, the label words in sight, how far any of the three rows runs
+ *  sideways, the period list's last line, and which of the grid bar's chips are cut. */
+async function topNow(page: Page) {
+  return page.evaluate(ids => {
+    const pg = document.querySelector('#page-leavewar')!
+    const tb = pg.querySelector(':scope > .topbar') as HTMLElement
+    const vl = pg.querySelector(':scope > .lw-viewline') as HTMLElement | null
+    const gb = pg.querySelector('.card-hd .lw-gridbar') as HTMLElement
+    const boxes: Record<string, { l: number; t: number; r: number; b: number; text: string; tag: string }> = {}
+    for (const id of ids) {
+      const el = pg.querySelector(`[data-testid="${id}"]`) as HTMLElement | null
+      if (!el) continue
+      const r = el.getBoundingClientRect()
+      if (!r.width || !r.height) continue
+      boxes[id] = { l: r.left, t: r.top, r: r.right, b: r.bottom, text: (el.textContent || '').trim(), tag: el.tagName }
+    }
+    const rows = [tb, vl, gb].filter(Boolean) as HTMLElement[]
+    const picker = pg.querySelector('[data-testid="war-picker"]') as HTMLSelectElement
+    return {
+      boxes, vw: innerWidth, vh: innerHeight,
+      labs: rows.flatMap(r => [...r.querySelectorAll('.lab')]).filter(el => (el as HTMLElement).getBoundingClientRect().width > 0).map(el => (el.textContent || '').trim()),
+      viewLine: !!vl,
+      rowOver: Math.max(...rows.map(r => r.scrollWidth - r.clientWidth)),
+      pageOver: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      lastOption: (picker.options[picker.options.length - 1]?.textContent || '').trim(),
+      cut: ['counts-toggle', 'undermanned', 'open-chip', 'legend-open'].filter(id => {
+        const el = gb.querySelector(`[data-testid="${id}"]`) as HTMLElement | null
+        return !!el && el.scrollWidth > el.clientWidth + 1
+      }),
+    }
+  }, TOP_IDS)
+}
+/** The phone's top as D1254 draws it, for whoever is looking: the tab row, the View line under it, the grid card's bar
+ *  under that; nothing over anything, nothing past the screen, nothing scrolling sideways, no chip of the bar cut.
+ *  `bar` names the bar's controls that must share one line (null on a phone at 360, where it may take a second). */
+async function expectTopLines(page: Page, line1: string[], line2: string[], bar: string[] | null, what: string) {
+  const m = await topNow(page)
+  expect(m.labs, `${what}: the one label word is "View" (D1174)`).toEqual(['View'])
+  expect(m.viewLine, `${what}: a phone's View line is a line of its own`).toBe(true)
+  expectOneLine(m.boxes, line1, `${what}, the tab row`); expectApart(m.boxes, line1, `${what}, the tab row`)
+  expectOneLine(m.boxes, line2, `${what}, the View line`); expectApart(m.boxes, line2, `${what}, the View line`)
+  const foot1 = Math.max(...line1.map(id => m.boxes[id]!.b)), top2 = Math.min(...line2.map(id => m.boxes[id]!.t))
+  expect(top2, `${what}: the View line is not under the tab row`).toBeGreaterThanOrEqual(foot1)
+  for (const id of BAR) expect(m.boxes[id], `${what}: "${id}" is not on the grid's bar`).toBeTruthy()
+  const foot2 = Math.max(...line2.map(id => m.boxes[id]!.b)), topBar = Math.min(...BAR.map(id => m.boxes[id]!.t))
+  expect(topBar, `${what}: the grid's bar is not under the View line`).toBeGreaterThanOrEqual(foot2)
+  if (bar) { expectOneLine(m.boxes, bar, `${what}, the grid's bar`); expectApart(m.boxes, bar, `${what}, the grid's bar`) }
+  /* Manning at the bar's left, Legend at its right end (D1254), whatever line Legend lands on */
+  expect(m.boxes['counts-toggle']!.l, `${what}: Manning starts the grid's bar`).toBeLessThan(m.boxes['open-chip']!.l)
+  expect(m.cut, `${what}: a chip of the grid's bar is cut — it takes a second line instead`).toEqual([])
+  for (const [id, b] of Object.entries(m.boxes)) {
+    expect(b.l, `${what}: "${id}" starts off the screen`).toBeGreaterThanOrEqual(0)
+    expect(b.r, `${what}: "${id}" runs past the screen's edge`).toBeLessThanOrEqual(m.vw + 0.5)
+  }
+  expect(m.rowOver, `${what}: a row scrolls sideways`).toBeLessThanOrEqual(1)
+  expect(m.pageOver, `${what}: the page scrolls sideways`).toBeLessThanOrEqual(1)
+  expect(m.boxes['lw-viewing'], `${what}: "Viewing as" is gone (D1173)`).toBeUndefined()
+  return m
+}
+
+// RE-EXPRESSED, D1254 (the overhaul's M2): the two lines are now the tab row (⚙ at its end) and the View line; the open dates, red count and Legend are on the grid card's bar.
 test('the top of the Leave War on a phone is two lines, nothing overlapping or off the screen at 390 and 360 wide', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678); the desktop has its own test below (D679)')
   await lwRole(page, 'admin')
@@ -486,53 +583,65 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
      would show here or at 431 in the desktop's test. */
   /* D1000, D1016 (18 Oct 26): up to about 700 wide — the biggest iPhones at 440, a small tablet at 600 — the top takes
      the same two lines, and from 431 its edge stays the grid card's 20px so the two line up */
+  /* RE-EXPRESSED FOR THE OVERHAUL'S M2 (D1254, 22 Oct 26): the two lines are now the tab row (Grid · OIL, ⚙ at its right
+     end) and the View line (View, the period picker, My leave); the open dates, the red count and Legend moved to the grid
+     card's own bar, under them (`expectTopLines`). Every rule below still stands, in its new place. */
   for (const [width, height] of [...PHONES, [430, 932], [440, 956], [600, 960], [700, 900]] as [number, number][]) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
-    const m = await expectTwoLines(page, LINE1, LINE2, `admin, ${width} wide`)
+    /* the grid's bar may take a second line on a phone rather than cut a chip; from 431 to 700 its buttons stay on one
+       line (D1019 — "−" and "+" on the head's one line) */
+    const m = await expectTopLines(page, TABS_ADMIN, VIEW_LINE, width > 430 ? [...BAR, 'lw-zoom'] : null, `admin, ${width} wide`)
     if (width > 430) {
+      /* D1016 (18 Oct 26, not changed by D1254): from 431 to 700 the top keeps the grid card's 20px edge so the two line
+         up. Soft, so the rest of the widths are still measured if it does not hold. */
       const edge = await page.evaluate(() => {
         const pg = document.querySelector('#page-leavewar')!
         const cs = (sel: string) => getComputedStyle(pg.querySelector(sel)!)
-        return [cs(':scope > .topbar').paddingLeft, cs(':scope > .filters').paddingLeft]
+        return [cs(':scope > .topbar').paddingLeft, cs(':scope > .lw-viewline').paddingLeft]
       })
-      expect(edge, `${width}: the top's edge lines up with the grid card's 20px (D1016)`).toEqual(['20px', '20px'])
-      /* the top only (D1000): the grid card keeps its padding — but its buttons take the phone's short words up to 700
-         (D1019, 18 Oct 26): "⇅" and "◷ OIL", so "−" and "+" stay on the head's one line */
+      expect.soft(edge, `${width}: the top's edge lines up with the grid card's 20px (D1016)`).toEqual(['20px', '20px'])
+      /* the top only (D1000): the grid card keeps the wider screens' padding. Its buttons whose words D1019 shortened — "⇅"
+         and "◷ OIL" — left its bar (OIL is a tab, Rearrange a line in ⚙ — D1254); what stays is that its buttons sit on
+         one line (the bar's one line, above). */
       const card = await page.evaluate(() => {
         const pg = document.querySelector('#page-leavewar')!
-        const tail = pg.querySelector('.card-hd .rtlbl') as HTMLElement | null
         const stage = pg.querySelector('.stage') as HTMLElement | null
         const hd = pg.querySelector('.card-hd') as HTMLElement | null
         /* each button's middle — buttons a hair apart in height sit a pixel apart at the top on the same line */
         const tops = hd ? [...hd.querySelectorAll<HTMLElement>('.rtbtn')].filter(b => b.offsetParent).map(b => { const r = b.getBoundingClientRect(); return Math.round(r.top + r.height / 2) }) : []
-        return { tail: tail ? getComputedStyle(tail).display : 'absent', stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent', tops }
+        return { stagePad: stage ? getComputedStyle(stage).paddingLeft : 'absent', tops }
       })
-      expect(card.tail, `${width}: the grid card's button words are the phone's short ones (D1019)`).toBe('none')
       expect(Math.max(...card.tops) - Math.min(...card.tops), `${width}: the grid card's buttons are on one line (their middles ${JSON.stringify(card.tops)})`).toBeLessThanOrEqual(2)
       expect(card.stagePad, `${width}: the grid card's padding is the wider screens'`).not.toBe('10px')
     }
-    /* the words, as he was shown them — the dates in the phone's short words, with no year (D678, D1177) */
-    expect(m.boxes['war-new']!.text).toBe('+')
+    /* the words, as he was shown them — the dates in the phone's short words, with no year (D678, D1177); "+ New period"
+       the period list's last line (D1244); no red day in the seed, so no red count (D1243 — gone at 0) */
+    expect(m.lastOption).toBe('+ New period')
     expect(m.boxes['open-chip']!.text).toBe('Open 1 Jan – 31 Mar')
     expect(m.boxes['open-chip']!.tag, 'the open dates are a button — they open the window').toBe('BUTTON')
-    expect(m.boxes['undermanned']!.text).toBe('Under 0 days')
+    expect(m.boxes['undermanned'], `${width}: no red day, no red count (D1243)`).toBeUndefined()
     expect(m.boxes['legend-open']!.text).toBe('Legend')
-    await expect(page.locator('[data-testid="lw-viewing"]')).toContainText('Viewing as')
-    expect(m.whoCut, `${width}: an ordinary callsign is cut short`).toBe(false)
+    expect(m.boxes['my-leave']!.text).toContain('My leave')
     /* the stage, its two moves and its menu are not on the strip, nor anywhere — they went with the stages */
     await expectNoStage(page, `${width} wide`)
-    /* Legend ends the line at the right; "Viewing as" ends the line above it there — at the phone's 10px edge, or from
-       431 to 700 at the grid card's 20px (D1016) */
+    /* ⚙ ends the tab row at the right; My leave ends the View line there — at the phone's edge, or from 431 to 700 at
+       the grid card's 20px (D1016); Legend ends the grid's bar, right of everything else on it */
     const edge = m.vw > 430 ? 24 : 14
-    expect(m.boxes['legend-open']!.r).toBeGreaterThan(m.vw - edge)
-    expect(m.boxes['lw-viewing']!.r).toBeGreaterThan(m.vw - edge)
-    /* the three chips of line 2 are one height — the open chip no taller than its neighbours */
-    const tall = LINE2.map(id => Math.round((m.boxes[id]!.b - m.boxes[id]!.t) * 2) / 2)
-    expect(new Set(tall).size, `${width}: line 2's chips are of different heights (${tall.join(', ')})`).toBe(1)
+    expect(m.boxes['settings-open']!.r).toBeGreaterThan(m.vw - edge)
+    expect(m.boxes['my-leave']!.r).toBeGreaterThan(m.vw - edge)
+    /* at 360 the bar takes a second line and Legend lands on it, under the zoom pair, right-aligned with it */
+    for (const id of ['counts-toggle', 'open-chip', 'lw-zoom']) {
+      expect(m.boxes['legend-open']!.r, `${width}: Legend ends the bar, at its right`).toBeGreaterThanOrEqual(m.boxes[id]!.r - 0.5)
+      expect(m.boxes['legend-open']!.t, `${width}: Legend is on the bar's last line`).toBeGreaterThanOrEqual(m.boxes[id]!.t - 3)
+    }
+    /* the bar's chips are one height — the open chip no taller than Legend */
+    const tall = ['open-chip', 'legend-open'].map(id => Math.round((m.boxes[id]!.b - m.boxes[id]!.t) * 2) / 2)
+    expect(new Set(tall).size, `${width}: the bar's chips are of different heights (${tall.join(', ')})`).toBe(1)
   }
 })
 
+// RE-EXPRESSED, D1254 (the overhaul's M2): the window's own steps unchanged; the top it leaves behind is measured as M2 draws it (`expectTopLines`).
 test('on a phone the open chip opens the "Open for bidding" window as a full page from the top (D1264); its ✕ and Escape close it and change nothing; a month is one tap each way', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size control (D678, D1177)')
   await lwRole(page, 'admin')
@@ -594,10 +703,11 @@ test('on a phone the open chip opens the "Open for bidding" window as a full pag
     await expect(page.locator('[data-testid="od-month-2026-03"]')).toHaveAttribute('data-state', 'closed')
     await closeDatesWindow(page)
     await expect(chip).toHaveText('Open 1 Jan – 28 Feb')
-    await expectTwoLines(page, ['war-picker', 'war-new'], LINE2, `March closed, ${width} wide`)
-    /* everything shut: "Bidding closed", still one line */
+    /* the top as M2 draws it (D1254): the tab row, the View line (the war unscoped here, so no My leave), the grid's bar */
+    await expectTopLines(page, TABS_ADMIN, ['war-picker'], null, `March closed, ${width} wide`)
+    /* everything shut: "Bidding closed", nothing cut, nothing off the screen */
     await closeBidding(page)
-    await expectTwoLines(page, ['war-picker', 'war-new'], LINE2, `bidding closed, ${width} wide`)
+    await expectTopLines(page, TABS_ADMIN, ['war-picker'], null, `bidding closed, ${width} wide`)
     /* and the three months opened again, one tap each */
     await openMonths(page, ['2026-01', '2026-02', '2026-03'])
     await expect(chip).toHaveText('Open 1 Jan – 31 Mar')
@@ -610,22 +720,93 @@ test('on a phone the open chip opens the "Open for bidding" window as a full pag
    third line — the pull request's own check on GitHub's machines failed exactly so, 9 Oct 26. The one thing on the
    line that gives way is the open chip's dates (the stage's name was, until the stages went — D1177): cut with "…",
    and the line holds. Wide letters are forced here so this PC sees what another device would. */
+// RE-EXPRESSED, D1254 (the overhaul's M2): the tab row and View line hold with wide letters; the grid's bar may take a second line, never cutting a chip.
+/* HIS REPORT, 23 Oct 26 12:16 — "When I select the months why I see unclean blue background": a press on a month button
+   painted the phone's own tap highlight (Safari's grey-blue, Chrome's rgba(51,181,229,.4)) over the strip and the corner
+   of the header for a moment. Nothing on the Leave War may carry that flash — the press shows itself (the month lights,
+   the grid moves). Checked on the month button, the cells and rows under it and the page's top rows. */
+test("no tap on the Leave War flashes the phone's blue tap highlight (his report of the month buttons)", async ({ page }) => {
+  test.skip(!isPhone(), "the tap highlight is a touch screen's")
+  await lwRole(page, 'admin')
+  await lwView(page, 'slipway')   // My leave shows for the person viewed
+  const colours = await page.evaluate(() => {
+    const pg = document.querySelector('#page-leavewar')!
+    const sels = ['[data-testid="month-FEB"]', '[data-testid="month-strip"]', '.mstick', 'table.mx', '.mx-wrap', '.card',
+      '[data-testid="counts-toggle"]', '[data-testid="war-picker"]', '[data-testid="my-leave"]', '[data-testid="lw-tab-grid"]', 'td[data-testid^="cell-"]']
+    return sels.map(s => { const e = pg.querySelector(s) as HTMLElement | null; return [s, e ? getComputedStyle(e).webkitTapHighlightColor : 'missing'] })
+  })
+  for (const [sel, c] of colours) expect(c, `${sel} flashes the tap highlight`).toBe('rgba(0, 0, 0, 0)')
+})
+
+/* D1280 (23 Oct 26 — "choose the one that uses less vertical space"): on a phone the Inputs page's tab row sits 4px under
+   the app's top bar, as the Leave War's does, so the tabs stand in the same place on both pages — on every tab of the
+   Inputs page (the calendar, SANS, Medical). The bars themselves are alike (44px); only the gap above was 8px there. */
+test('on a phone the Inputs page\'s tabs stand where the Leave War\'s do — 4px under the top bar (D1280)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone\'s tab rows (D1280); the desktop lays its tabs in one longer row')
+  const tabsTop = (pg: string) => page.evaluate(id => (document.querySelector(`#page-${id} .inputs-tabs`) as HTMLElement).getBoundingClientRect().top, pg)
+  await page.evaluate(() => window.scrollTo(0, 0))
+  const lw = await tabsTop('leavewar')
+  await page.evaluate(() => (window as any).go('inputs'))
+  await expect(page.locator('#page-inputs .inputs-tabs')).toBeVisible()
+  for (const tab of [null, 'SANS', 'Medical']) {
+    if (tab) await page.locator('#page-inputs .intab', { hasText: tab }).first().click()
+    await page.waitForTimeout(300)
+    await page.evaluate(() => window.scrollTo(0, 0))
+    expect(Math.abs((await tabsTop('inputs')) - lw), `the Inputs page's ${tab ?? 'calendar'} tab row is not where the Leave War's is`).toBeLessThan(0.75)
+  }
+})
+
+/* D1278 (his correction, 23 Oct 26 — "seems quite tall and big on the phone the top 2 row of the view and grid/oil. See the
+   mock up u created"): on a phone the two top lines are as low as the round-19 drawing (r19-nav-admin-phone.png at 390
+   wide: the tab row ~53px, the View line ~42px). They had been ~60 and ~61 — padding and My leave's 44px floor. Measured
+   at his iPhone's 390 and at 360, for an admin (⚙ on the tab row) and a member; with LW_WIDE_LETTERS too. */
+test('on a phone the two top rows are no taller than the drawing: the tab row, and View with My leave (D1278)', async ({ page }) => {
+  test.skip(!isPhone(), "the phone's two top lines (D1278); the desktop is one row")
+  for (const role of ['admin', 'member'] as const) {
+    await lwRole(page, role)
+    await lwView(page, 'slipway')
+    for (const width of [390, 360]) {
+      await page.setViewportSize({ width, height: 664 })
+      await page.waitForTimeout(200)
+      const h = await page.evaluate(() => {
+        const pg = document.querySelector('#page-leavewar')!
+        const ht = (sel: string) => (pg.querySelector(sel) as HTMLElement).getBoundingClientRect().height
+        const box = (sel: string) => (pg.querySelector(sel) as HTMLElement).getBoundingClientRect()
+        const pk = box('[data-testid="war-picker"]'), ml = box('[data-testid="my-leave"]')
+        return { tabs: ht(':scope > .lw-top'), view: ht(':scope > .lw-viewline'), myLeave: ht('[data-testid="my-leave"]'),
+          pickerH: pk.height, pickerMid: pk.top + pk.height / 2, myLeaveMid: ml.top + ml.height / 2 }
+      })
+      /* D1279: the green picker and My leave one height, one centre line */
+      expect(Math.abs(h.pickerH - h.myLeave), `${role}, ${width}: the picker is ${h.pickerH}px beside My leave's ${h.myLeave}px`).toBeLessThan(0.75)
+      expect(Math.abs(h.pickerMid - h.myLeaveMid), `${role}, ${width}: the two are not on one centre line`).toBeLessThan(0.75)
+      expect(h.tabs, `${role}, ${width}: the tab row is taller than drawn`).toBeLessThanOrEqual(54)
+      expect(h.view, `${role}, ${width}: the View line is taller than drawn`).toBeLessThanOrEqual(43)
+      expect(h.myLeave, `${role}, ${width}: My leave is held taller than its two lines`).toBeLessThan(40)
+    }
+  }
+})
+
 test('with wide letters the top of the Leave War on a phone is still two lines: the open dates give way, nothing wraps or leaves the screen', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'admin')
   await lwView(page, 'slipway')
   await page.addStyleTag({ content: '#page-leavewar, #page-leavewar * { font-family: Verdana, "DejaVu Sans", sans-serif !important }' })
+  /* RE-EXPRESSED FOR THE OVERHAUL'S M2 (D1254): the two lines are the tab row and the View line (`expectTopLines`); the
+     open dates moved to the grid card's own bar, which since M2's walk takes a second line rather than cut a chip (walker
+     2: "Bidding cl…" beside a red count). So with wide letters the two lines still hold, the bar may wrap, no chip is
+     cut, and nothing runs off the screen or scrolls sideways. */
   for (const [width, height] of PHONES) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
-    const m = await expectTwoLines(page, LINE1, LINE2, `admin, wide letters, ${width} wide`)
-    expect(m.boxes['open-chip']!.text, 'the words are all there for a reader; only their drawing is cut').toBe('Open 1 Jan – 31 Mar')
+    const m = await expectTopLines(page, TABS_ADMIN, VIEW_LINE, null, `admin, wide letters, ${width} wide`)
+    expect(m.boxes['open-chip']!.text, 'the words are all there for a reader').toBe('Open 1 Jan – 31 Mar')
   }
   await lwRole(page, 'member')
   await page.waitForTimeout(200)
-  await expectTwoLines(page, ['war-picker', 'lw-viewing'], LINE2, 'a member, wide letters, 360 wide')
+  await expectTopLines(page, TABS_MEMBER, VIEW_LINE, null, 'a member, wide letters, 360 wide')
 })
 
+// RE-EXPRESSED, D1254, D1244 (the overhaul's M2): a member's tab row has no ⚙, his period list no "+ New period"; the window's steps unchanged.
 test('a member on a phone has the same two lines with no "+", and the open chip opens the dates to read, with nothing to press', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'member')
@@ -633,8 +814,11 @@ test('a member on a phone has the same two lines with no "+", and the open chip 
   for (const [width, height] of PHONES) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
+    /* no "+ New period" in his list (D1244 — an admin's only), and no ⚙ on his tab row (D1254) */
     await expect(page.locator('[data-testid="war-new"]')).toHaveCount(0)
-    const m = await expectTwoLines(page, ['war-picker', 'lw-viewing'], LINE2, `member, ${width} wide`)
+    await expect(page.locator('[data-testid="settings-open"]')).toHaveCount(0)
+    /* the top as M2 draws it (D1254): the tab row, the View line with his My leave, the grid's bar */
+    const m = await expectTopLines(page, TABS_MEMBER, VIEW_LINE, null, `member, ${width} wide`)
     expect(m.boxes['open-chip']!.tag, 'a button for him too — it opens the dates for him to read (D1177)').toBe('BUTTON')
     expect(m.boxes['open-chip']!.text).toBe('Open 1 Jan – 31 Mar')
     await expectNoStage(page, `member, ${width} wide`)
@@ -651,7 +835,9 @@ test('a member on a phone has the same two lines with no "+", and the open chip 
   }
 })
 
-test('on a phone a long callsign in "Viewing as" ends in "…": the words stay whole, the period keeps its name, nothing leaves the screen', async ({ page }) => {
+// SKIPPED, D1173 (21 Oct 26 — built in the overhaul's M2): the "Viewing as" chip is gone, so no callsign stands on the top
+// to give way; My leave carries the signed-in person's own figures, with no callsign in it.
+test.skip('on a phone a long callsign in "Viewing as" ends in "…": the words stay whole, the period keeps its name, nothing leaves the screen', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size rule (D678)')
   await lwRole(page, 'admin')
   await lwView(page, 'slipway')
@@ -681,53 +867,61 @@ test('on a phone a long callsign in "Viewing as" ends in "…": the words stay w
    overrides. (They are the stylesheet's, so they hold on any machine; a box's width in pixels would not, the app
    loads no font of its own.) The measured boxes before and after the build were compared whole, once, by
    scripts/handpass/lw-phone-head-measure.mjs — the bug check's evidence sheet has the result. */
+// RE-EXPRESSED, D679 as narrowed by D1254 (the overhaul's M2): one row — tabs, View, My leave, ⚙ — over the grid's own bar; no phone rule reaches 768 or 701.
 test('on a tablet and a desktop the top of the Leave War is as it was: its labels, "+ New", the open dates in their longer words', async ({ page }) => {
   test.skip(isPhone(), 'the wider sizes (D679); the phone has its own tests above (D678)')
   await lwRole(page, 'admin')
   await lwView(page, 'slipway')
+  /* RE-EXPRESSED FOR THE OVERHAUL'S M2 (D679 as narrowed by D1254, D1174, D1244, D1173, D1243): on a tablet and a desktop
+     the top is ONE row — the tabs, View and the period picker, My leave, ⚙ at its right end — and the grid card's own bar
+     carries Manning, the open dates in their longer words, the zoom pair and Legend. The paddings and type sizes "as they
+     were" are now those of the desktop's own 1440 (read there first): a phone rule reaching 768 or 701 would change them. */
+  const paintOf = () => page.evaluate(() => {
+    const pg = document.querySelector('#page-leavewar')!
+    const cs = (sel: string) => getComputedStyle(pg.querySelector(sel)!)
+    const one = (sel: string) => { const c = cs(sel); return `${c.paddingTop} ${c.paddingRight} ${c.paddingBottom} ${c.paddingLeft} / ${c.fontSize}` }
+    return {
+      topbar: one(':scope > .topbar'), gridbar: one('.card-hd .lw-gridbar'), topbarWrap: cs(':scope > .topbar').flexWrap,
+      /* not the tabs' side padding: the tab row is the Inputs page's own (D1254 — one look for the two pages), and that look
+         narrows its tabs up to 820 wide on both pages (25-inputs-calendar.css) — the Inputs page's rule, not the Leave War's
+         phone layout, which ends at 700 (D1000) */
+      tabFont: cs('[data-testid="lw-tab-grid"]').fontSize, picker: one('[data-testid="war-picker"]'), myLeave: one('[data-testid="my-leave"]'),
+      gear: one('[data-testid="settings-open"]'), open: one('[data-testid="open-chip"]'), manning: one('[data-testid="counts-toggle"]'),
+      legend: one('[data-testid="legend-open"]'), label: cs('[data-testid="period-label"]').fontSize,
+      /* the open dates stand on the grid card's own bar (D1254), not the page's top */
+      openOnBar: !!pg.querySelector('[data-testid="open-chip"]')!.closest('.card-hd .lw-gridbar'),
+    }
+  })
+  let desk: Awaited<ReturnType<typeof paintOf>> | null = null
   for (const [width, height] of [[1440, 900], [768, 1024], [701, 900]] as const) {
     await page.setViewportSize({ width, height })
     await page.waitForTimeout(200)
-    const m = await head(page)
-    expect(m.labs, `${width}: the label words`).toEqual(['Period', 'Under-manned'])
-    expect(m.boxes['war-new']!.text, `${width}`).toBe('+ New')
+    const m = await topNow(page)
+    expect(m.labs, `${width}: the label words`).toEqual(['View'])
+    expect(m.viewLine, `${width}: no View line of its own — View sits in the one row`).toBe(false)
+    expect(m.lastOption, `${width}: "+ New period" is the period list's last line (D1244)`).toBe('+ New period')
     expect(m.boxes['open-chip']!.tag, `${width}: the open dates are a button`).toBe('BUTTON')
     expect(m.boxes['open-chip']!.text, `${width}`).toBe('Open for bidding 1 Jan – 31 Mar')
-    expect(m.boxes['undermanned']!.text, `${width}`).toBe('0 days')
+    expect(m.boxes['undermanned'], `${width}: no red day, no red count (D1243)`).toBeUndefined()
+    expect(m.boxes['lw-viewing'], `${width}: "Viewing as" is gone (D1173)`).toBeUndefined()
     expect(m.pageOver, `${width}: the page scrolls sideways`).toBeLessThanOrEqual(1)
     await expectNoStage(page, `${width} wide`)
-    /* the paddings and type sizes of today, control by control */
-    const paint = await page.evaluate(() => {
-      const pg = document.querySelector('#page-leavewar')!
-      const cs = (sel: string) => getComputedStyle(pg.querySelector(sel)!)
-      const one = (sel: string) => { const c = cs(sel); return `${c.paddingTop} ${c.paddingRight} ${c.paddingBottom} ${c.paddingLeft} / ${c.fontSize}` }
-      return {
-        topbar: one(':scope > .topbar'), filters: one(':scope > .filters'),
-        topbarWrap: cs(':scope > .topbar').flexWrap, springWrap: cs(':scope > .topbar .spring').flexWrap,
-        picker: one('[data-testid="war-picker"]'), plus: one('[data-testid="war-new"]'), plusWidth: cs('[data-testid="war-new"]').width,
-        viewing: one('[data-testid="lw-viewing"]'), open: one('[data-testid="open-chip"]'),
-        under: one('[data-testid="undermanned"]'), legend: one('[data-testid="legend-open"]'),
-        legendPush: cs('[data-testid="legend-open"]').marginLeft, label: cs(':scope > .filters > .lab').fontSize,
-        openParent: (pg.querySelector('[data-testid="open-chip"]')!.parentElement as HTMLElement).className,
-      }
-    })
-    expect(paint, `${width}: a phone rule reached this size`).toMatchObject({
-      topbar: '12px 20px 12px 20px / 13px', filters: '8px 20px 8px 20px / 13px',
-      topbarWrap: 'wrap', springWrap: 'wrap',
-      picker: '6px 32px 6px 14px / 12px', plus: '6px 11px 6px 11px / 12px',
-      viewing: '5px 11px 5px 11px / 13px', open: '6px 11px 6px 11px / 12px',
-      under: '6px 11px 6px 11px / 12px', legend: '6px 11px 6px 11px / 12px',
-      legendPush: '0px', label: '10px', openParent: 'filters',
-    })
-    expect(parseFloat(paint.plusWidth), `${width}: "+ New" was squeezed to the phone's square`).toBeGreaterThan(40)
+    /* ONE row (D679 as narrowed), and the grid's bar one line, at every one of these sizes; nothing past the screen */
+    expectOneLine(m.boxes, [...TABS_ADMIN, 'war-picker', 'my-leave'], `${width}, the one row`)
+    expectApart(m.boxes, [...TABS_ADMIN, 'war-picker', 'my-leave'], `${width}, the one row`)
+    expectOneLine(m.boxes, [...BAR, 'lw-zoom'], `${width}, the grid's bar`)
+    for (const [id, b] of Object.entries(m.boxes)) {
+      expect(b.l, `${width}: "${id}" starts off the screen`).toBeGreaterThanOrEqual(0)
+      expect(b.r, `${width}: "${id}" runs past the screen's edge`).toBeLessThanOrEqual(m.vw + 0.5)
+    }
+    /* the paddings and type sizes, control by control: the desktop's own at 1440, and the same at the smaller two */
+    const paint = await paintOf()
+    expect(paint.openOnBar, `${width}: the open dates are on the grid's bar`).toBe(true)
+    if (!desk) desk = paint
+    else expect(paint, `${width}: a phone rule reached this size`).toEqual(desk)
     /* a press on the dates opens the window at this size too, and its ✕ closes it */
     await openDatesWindow(page)
     await closeDatesWindow(page)
-    /* on the desktop itself each of the two lines IS one line, as it was */
-    if (width === 1440) {
-      expectOneLine(m.boxes, ['war-picker', 'war-new', 'lw-viewing'], 'desktop, the Period line')
-      expectOneLine(m.boxes, ['open-chip', 'undermanned', 'legend-open'], 'desktop, the dates line')
-    }
   }
   /* and a month closed in the window changes the chip's words at once; opened again, they come back */
   await page.setViewportSize({ width: 1440, height: 900 })
@@ -766,35 +960,30 @@ test('a blocked day that falls on a weekend still paints amber, not grey', async
   expect(bg).toBe(BLOCKED_BG)
 })
 
-// jsdom (the unit-test DOM) never computes an element's cascade, so it can
-// prove the `.am`/`.pm` class landed on the right chip but not that the
-// divider it triggers is actually painted — that only a real browser's
-// `getComputedStyle(el, '::after')` can answer. Seed (re-keyed): slipway carries `*OIL`
-// on 2026-02-10 (morning, half day), and OL on 2026-01-01 (whole day, no
-// divider).
-test('the half-day divider is painted on a half-day chip and absent on a whole-day chip', async ({ page }) => {
-  const half = page.locator('[data-testid="cell-slipway-2026-02-10"] .c')
-  const halfAfter = await half.evaluate(el => {
-    const s = getComputedStyle(el, '::after')
-    return { width: s.width, background: s.backgroundColor }
+// jsdom (the unit-test DOM) never lays anything out, so it can prove the
+// place class landed on the right box but not that the box is drawn where
+// that class says — only a real browser's layout can answer. WAS "the half-day
+// divider is painted on a half-day chip and absent on a whole-day chip" (the
+// `.am`/`.pm` divider). Look F (D1160, D1145): the divider is gone — a half day's
+// box FILLS its half of the cell (the morning the top half), a whole day's box
+// fills the cell, the rows keeping their height. Seed (re-keyed): slipway carries
+// `*OIL` on 2026-02-10 (morning, half day), and OL on 2026-01-01 (whole day).
+test('a half day fills its half of the cell — the morning the top — and a whole day the cell', async ({ page }) => {
+  const geo = (id: string) => page.locator(`[data-testid="${id}"]`).evaluate(td => {
+    const c = td.getBoundingClientRect(), b = td.querySelector('.c')!.getBoundingClientRect()
+    return { cellTop: c.top, cellH: c.height, top: b.top, h: b.height, text: td.querySelector('.c')!.textContent }
   })
-  expect(parseFloat(halfAfter.width)).toBeGreaterThan(0)
-  expect(halfAfter.background).not.toBe('rgba(0, 0, 0, 0)')
+  const half = await geo('cell-slipway-2026-02-10')
+  expect(half.text).toBe('OIL')                                   // the bare code, no arrow (D1160)
+  expect(half.h).toBeGreaterThan(half.cellH * 0.3)
+  expect(half.h).toBeLessThan(half.cellH * 0.6)                   // half the cell, not the whole
+  expect(half.top - half.cellTop).toBeLessThan(half.cellH * 0.25) // in the TOP half — the morning
 
-  // A whole-day chip carries no `::after` rule at all, so the browser
-  // reports it with no generated box: `content: none` and a computed width
-  // of `auto` rather than `0px` — `parseFloat('auto')` is `NaN`, not `0`, so
-  // this checks the same "nothing painted" fact via content and background
-  // instead of width.
-  const whole = page.locator('[data-testid="cell-slipway-2026-01-01"] .c')
-  const wholeAfter = await whole.evaluate(el => {
-    const s = getComputedStyle(el, '::after')
-    return { content: s.content, background: s.backgroundColor }
-  })
-  expect(wholeAfter.content).toBe('none')
-  expect(wholeAfter.background).toBe('rgba(0, 0, 0, 0)')
+  const whole = await geo('cell-slipway-2026-01-01')
+  expect(whole.h).toBeGreaterThan(whole.cellH * 0.75)             // the whole cell
 })
 
+// RE-EXPRESSED, D1245 (the overhaul's M2): the two ceilings stand; the drawer's half becomes "no drawer is drawn".
 test('the matrix stays within a sane DOM size', async ({ page }) => {
   // 16 people x 90 days plus counts and headers. Measured 2227 nodes on
   // 2026-08-09, before the Raptor restyle. The chip-span wrapper the
@@ -909,27 +1098,14 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // 31700-class ceiling plus the sheet's few dozen nodes.
   expect(all).toBeLessThan(31900)
 
-  // ...and once more with the FIGURES DRAWER out, which is the desktop's own
-  // resting state and one tap away on a phone. Measured on the built bundle,
-  // 6 Sep 26: the drawer's own subtree is 958 nodes on BOTH projects (it draws
-  // one box per person per figure, so it scales with the roster and the figure
-  // list, never with the screen — and one of the 958 is its own `table.mx`
-  // wrapper, see the ceiling note above), taking `.mx` to 12054 on the phone
-  // and 28794 on the desktop — the largest this grid gets, and what the ceiling
-  // above is set from. The drawer's own count is asserted separately because
-  // the whole-grid figure moves with the column window's runway and this one
-  // does not.
+  // The third half measured the grid with the FIGURES DRAWER out (958 nodes of
+  // its own, 6 Sep 26). The drawer is switched off since the overhaul's M2
+  // (D1245 — beside each name the grid shows LVE alone; the drawer's code leaves
+  // whole with M5), so there is no drawer to open: what stands in its place is
+  // that neither it nor its toggle is drawn, and the ceilings above stand.
   await page.locator('[data-testid="bid-cancel"]').click()
-  const bar = page.locator('[data-testid="figures-toggle"]')
-  if ((await bar.getAttribute('aria-expanded')) === 'false') await bar.click()
-  await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
-  const withDrawer = await page.evaluate(() => ({
-    mx: document.querySelectorAll('.mx *').length,
-    drawer: document.querySelectorAll('.mxdrawer *').length,
-  }))
-  expect(withDrawer.drawer).toBeGreaterThan(700)
-  expect(withDrawer.drawer).toBeLessThan(1100)
-  expect(withDrawer.mx).toBeLessThan(31700)
+  await expect(page.locator('[data-testid="figures-toggle"]')).toHaveCount(0)
+  expect(await page.locator('.mxdrawer').count(), 'no figures drawer is drawn (D1245)').toBe(0)
 })
 
 // A year is ~13,600px of grid. Reaching September by dragging is not a thing
@@ -1024,46 +1200,58 @@ test('the whole month strip is on screen at phone width', async ({ page }) => {
   }
 })
 
-// The owner's colour rule, restated 10 Aug 26: a bid nobody has answered
-// carries no colour at all, purple means management has acknowledged it,
-// green approved, red refused. jsdom can prove which class was emitted and
-// nothing about what was painted — only a browser computes the cascade.
-test('the four bid states read as three colours and one plain cell', async ({ page }) => {
-  const bg = (sel: string) => page.locator(sel).evaluate(el => getComputedStyle(el).backgroundColor)
-  const appr = await bg('[data-testid="cell-dj-2026-01-16"] .c')
-  const ack = await bg('[data-testid="cell-bruise-2026-02-24"] .c')
-  const ref = await bg('[data-testid="cell-dj-2026-01-19"] .c')
-  expect(new Set([appr, ack, ref]).size).toBe(3)
-  for (const c of [appr, ack, ref]) expect(c).not.toBe('rgba(0, 0, 0, 0)')
+/* WAS "the four bid states read as three colours and one plain cell" (the owner's rule of 10 Aug 26: pending no
+   colour, purple acknowledged, green approved, red refused). Replaced by look F (D1175) and Ack's going (D1158): the
+   colour is the KIND and the FILL says where a bid stands — filled approved, hollow and dashed pending, grey and struck
+   refused. jsdom can prove which class was emitted and nothing about what was painted — only a browser computes the
+   cascade. Seed (re-keyed): dj's approved OL of 16 Jan; bruise's pending *LL of 23 Jan and its OIL of 24 Feb
+   (acknowledged until Ack went — pending now); dj's refused OL of 19 Jan — its day holds the seed's OIL award too, so
+   since D1167 it is the day's second box, drawn beside the award (`.c.k-ol`; the old `.c` read the award's box). */
+test('the three bid states read as filled, hollow and dashed, and grey and struck', async ({ page }) => {
+  const look = (sel: string) => page.locator(sel).evaluate(el => {
+    const s = getComputedStyle(el)
+    return { bg: s.backgroundColor, outline: s.outlineStyle, line: s.textDecorationLine, color: s.color }
+  })
+  const appr = await look('[data-testid="cell-dj-2026-01-16"] .c')
+  const pending = await look('[data-testid="cell-bruise-2026-01-23"] .c')
+  const wasAck = await look('[data-testid="cell-bruise-2026-02-24"] .c')
+  const ref = await look('[data-testid="cell-dj-2026-01-19"] .c.k-ol')
 
-  // Pending is the absence of news, so it must be the absence of paint —
-  // asserted against all three answered colours, not merely "not purple".
-  const pending = await bg('[data-testid="cell-bruise-2026-01-23"] .c')
-  expect(pending).toBe('rgba(0, 0, 0, 0)')
-  for (const c of [appr, ack, ref]) expect(pending).not.toBe(c)
+  // approved: filled, solid, not struck
+  expect(appr.bg).not.toBe('rgba(0, 0, 0, 0)')
+  expect(appr.outline).not.toBe('dashed')
+  expect(appr.line).not.toContain('line-through')
 
-  // Plain must still be READABLE. A cell with no background is only correct
-  // if its text keeps the ordinary ink — an invisible bid would be worse
-  // than a wrongly coloured one.
-  const ink = await page.locator('[data-testid="cell-bruise-2026-01-23"] .c')
-    .evaluate(el => getComputedStyle(el).color)
-  const body = await page.evaluate(() => getComputedStyle(document.body).color)
-  expect(ink).toBe(body)
+  // pending: no fill, a dashed outline — the stored Ack among them (D1158)
+  for (const p of [pending, wasAck]) {
+    expect(p.bg).toBe('rgba(0, 0, 0, 0)')
+    expect(p.outline).toBe('dashed')
+    expect(p.line).not.toContain('line-through')
+  }
+
+  // refused: no fill, struck through, no dashed outline
+  expect(ref.bg).toBe('rgba(0, 0, 0, 0)')
+  expect(ref.line).toContain('line-through')
+  expect(ref.outline).not.toBe('dashed')
+
+  // a box with no fill must still be READABLE — its letters carry ink, never none
+  for (const c of [pending, wasAck, ref]) expect(c.color).not.toBe('rgba(0, 0, 0, 0)')
 })
 
-// A bid lands PENDING, which since 10 Aug 26 means plain — no colour class
-// at all. It used to assert `tbc`, which is now the acknowledged colour: the
-// squadron must be able to tell a bid nobody has looked at from one already
-// in management's hands, and a freshly typed bid is the former.
-test('a bid can be placed, and lands plain because nobody has answered it', async ({ page }) => {
+/* WAS "a bid can be placed, and lands plain because nobody has answered it". A bid lands PENDING, which under look F
+   (D1175) is the hollow, dashed box — `s-w`, no fill — and Ack is gone (D1158), so nothing else waits between it and
+   a decision. */
+test('a bid can be placed, and lands hollow and dashed because nobody has answered it', async ({ page }) => {
   await lwView(page, 'ammo')   // a member bids on his OWN row ([ACCOUNTS] — the one-person-writes-his-own check)
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-LL"]').click()
   const chip = page.locator('[data-testid="cell-ammo-2026-02-11"] .c')
   await expect(chip).toBeVisible()
-  const cls = (await chip.getAttribute('class'))!
-  for (const painted of ['tbc', 'appr', 'ref']) expect(cls).not.toContain(painted)
+  const cls = (await chip.getAttribute('class'))!.split(' ')
+  expect(cls).toEqual(expect.arrayContaining(['k-ll', 's-w', 'whole']))
+  for (const other of ['s-a', 's-r']) expect(cls).not.toContain(other)
   expect(await chip.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
+  expect(await chip.evaluate(el => getComputedStyle(el).outlineStyle)).toBe('dashed')
 })
 
 // Leave War persists per browser since the storage seam: its store boots on the
@@ -1166,15 +1354,24 @@ test('opening the bid sheet never makes the page scroll sideways', async ({ page
   expect(overflow).toBeLessThanOrEqual(1)
 })
 
-// A cell Raptor owns must be indistinguishable in COLOUR from an approved
-// bid — the squadron's colour convention is that green means approved, and
-// where the approval happened does not change that. Only a real browser
-// computes which of the two rules on the chip actually won.
-test('a cell Raptor owns is the same green as an approved bid', async ({ page }) => {
+// A cell Raptor owns must be indistinguishable in COLOUR from the same kind
+// approved on the war — where the approval happened does not change the
+// colour; the left edge says that. Only a real browser computes which of the
+// rules on the box actually won. Look F (D1175): the colour is the KIND and
+// filled is approved, so the Raptor-owned OIL (prowler, 9 Jan) is compared with
+// an OIL-green box filled on the war — the FO credit of 1 Jan — where it was
+// compared with an approved OL, which is now another kind's colour.
+test('a cell Raptor owns is the same colour as the same kind approved on the war', async ({ page }) => {
   const bg = (sel: string) => page.locator(sel).evaluate(el => getComputedStyle(el).backgroundColor)
+  const raptorBox = page.locator('[data-testid="cell-prowler-2026-01-09"] .c')
+  const warBox = page.locator('[data-testid="cell-prowler-2026-01-01"] .c')
+  await expect(raptorBox).toHaveClass(/(^|\s)k-oil(\s|$)/)
+  await expect(raptorBox).toHaveClass(/(^|\s)raptor(\s|$)/)
+  await expect(warBox).toHaveClass(/(^|\s)k-oil(\s|$)/)
+  await expect(warBox).not.toHaveClass(/(^|\s)raptor(\s|$)/)
   const raptor = await bg('[data-testid="cell-prowler-2026-01-09"] .c')
-  const bid = await bg('[data-testid="cell-dj-2026-01-16"] .c')
-  expect(raptor).toBe(bid)
+  const onWar = await bg('[data-testid="cell-prowler-2026-01-01"] .c')
+  expect(raptor).toBe(onWar)
   expect(raptor).not.toBe('rgba(0, 0, 0, 0)')
 })
 
@@ -1182,9 +1379,11 @@ test('a cell Raptor owns is the same green as an approved bid', async ({ page })
 // than merely being a class jsdom can see. If this ever reads as damage on a
 // real device the rule is meant to be deleted, so it is asserted as a
 // deliberate decision and not left to rot unnoticed.
+/* look F (D1175): the box is placed absolutely in its cell, so its left-edge marks are drawn by a `::before` strip
+   laid over the box's left edge — read there, where they were the box's own border-left */
 test('the Raptor mark is painted, and an ordinary bid carries none', async ({ page }) => {
   const edge = (sel: string) => page.locator(sel).evaluate(el => {
-    const s = getComputedStyle(el)
+    const s = getComputedStyle(el, '::before')
     return { width: s.borderLeftWidth, style: s.borderLeftStyle }
   })
   const raptor = await edge('[data-testid="cell-prowler-2026-01-09"] .c')
@@ -1249,11 +1448,13 @@ test('an admin moves a bid to another date, and it lands pending there', async (
   const moved = page.locator('[data-testid="cell-bruise-2026-01-30"] .c')
   await expect(moved).toBeVisible()
   // A shift lands PENDING — a move is a proposal, and someone still has to
-  // approve the date it moved to — so the chip is plain, not purple. A bid that
-  // only waits keeps no trail when it moves (D1177: the dotted `moved` edge is an
-  // APPROVED leave's, any time — the test above), so it carries no moved mark.
-  const cls = (await moved.getAttribute('class'))!
-  for (const painted of ['tbc', 'appr', 'ref']) expect(cls).not.toContain(painted)
+  // approve the date it moved to — so the box is hollow and dashed (look F,
+  // D1175: `s-w`; Ack is gone, D1158). A bid that only waits keeps no trail when
+  // it moves (D1177: the dotted `moved` edge is an APPROVED leave's, any time —
+  // the test above), so it carries no moved mark.
+  const cls = (await moved.getAttribute('class'))!.split(' ')
+  expect(cls).toContain('s-w')
+  for (const other of ['s-a', 's-r']) expect(cls).not.toContain(other)
   expect(cls).not.toContain('moved')
 })
 
@@ -1554,7 +1755,10 @@ test('a drag-select parked at the counter column auto-scrolls the grid left', as
   expect(parked, 'the year ran left under the parked cursor').toBeLessThan(before)
 })
 
-test('with the figures drawer open the band starts at the DRAWER\'s edge', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('with the figures drawer open the band starts at the DRAWER\'s edge', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -1564,19 +1768,20 @@ test('with the figures drawer open the band starts at the DRAWER\'s edge', async
 
 /* The phone's own path: a REAL touch through CDP (the hold-then-drag recipe —
    Playwright's mouse cannot arm the 180ms hold, and DOM touch events scroll
-   nothing). The drawer is open, which is the case that mattered on his iPhone:
-   the drawer covers most of the width there, so the days start well inside the
-   wrap and the old band was unreachable by a wide margin. */
+   nothing). It was proved with the drawer open, the case that mattered on his
+   iPhone (the days started well inside the wrap). The drawer is switched off
+   since the overhaul's M2 (D1245 — beside each name the grid shows LVE alone),
+   so the band now starts at the frozen pair's edge — the names and LVE — and the
+   held finger is proved against that edge, every other step as it was. */
+// RE-EXPRESSED, D1245 (the overhaul's M2): no drawer to open — the held finger is proved at the frozen names-and-LVE edge.
 test('a held finger dragged to the drawer\'s edge auto-scrolls the grid left', async ({ page }) => {
   test.skip(!isPhone(), 'the CDP touch path')
   await lwRole(page, 'admin')
-  await openDrawer(page)
   const before = await parkMidYear(page)
   const [p1] = await threeInARow(page)
   const edge = await dayAreaLeft(page, p1!)
   // Clear of the LEFT band by construction: a press INSIDE it would be held
-  // (the 2 Sep rule) and could never scroll, and the drawer leaves only ~115px
-  // of day area on this viewport — so the press goes in its right-hand third.
+  // (the 2 Sep rule) and could never scroll — so the press goes 80px past it.
   const box = (await page.locator(`[data-testid="${await cellRightOf(page, edge + 80)}"]`).boundingBox())!
   const y = box.y + box.height / 2
   const x0 = box.x + box.width / 2, x1 = edge + 20
@@ -1662,7 +1867,11 @@ test('the frozen bar is in step with the grid the moment it appears', async ({ p
 // localhost probe, and named for what it proves: ANY content change that widens
 // a column, not the bid gesture itself. Desktop, where the whole year is drawn
 // first — so no later month draw can re-measure the bar for us.
-test('a column that widens while the dates are frozen re-measures the frozen bar', async ({ page }) => {
+// SKIPPED, D1175 (look F — built in the overhaul's M2): a cell holding a box is the box's fixed frame (the old chip's width),
+// so a three-letter code no longer widens its column — "*OIL" leaves March's column as it was (measured 28.7 before and
+// after, 23 Oct 26). No change of a cell's content widens a column while the dates are frozen; the bar's re-measures on a
+// zoom, a resize and a scroll are pinned by the frozen-bar tests around this one.
+test.skip('a column that widens while the dates are frozen re-measures the frozen bar', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await page.locator('[data-testid="month-MAR"]').click()
@@ -1709,37 +1918,49 @@ test('a column that widens while the dates are frozen re-measures the frozen bar
 // (It was the manning ARCHIVE opening that pushed the header down. The Archive went with the eye — D669, 8 Oct 26 — and
 // what changes the rows above the dates now is a counter deleted with the cross, or made; the outline must follow
 // just the same. The app starts with no counters, so the test makes the eleven it then deletes one of.)
+// RE-EXPRESSED, D1254 and D1256 (the overhaul's M2): Rearrange is reached through ⚙; the Manning rows sit under the dates, so the outline's foot follows them.
 test('the open-bidding outline moves with the rows when a counter is deleted in Rearrange', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await elevenCounters(page)
   await expect.poll(() => page.evaluate(() => new Set([...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
     .map(e => e.dataset.testid!.slice(5, 12))).size), { timeout: 9000 }).toBe(12)
-  await page.locator('[data-testid="roster-arrange"]').click()
+  /* Rearrange is a line in ⚙ since the overhaul's M2 (D1254 — "⇅ Rearrange the grid"; the grid's bar then carries
+     "⇅ Done", the one way out), no longer a toggle on the grid card's bar */
+  await page.locator('[data-testid="settings-open"]').click()
+  await page.locator('[data-testid="settings-rearrange"]').click()
   await expect(page.locator('[data-testid="manning-delete-ip"]')).toBeVisible()
   await expect(page.locator('[data-testid="manning-archive"], [data-testid^="manning-hide-"]')).toHaveCount(0)
-  // where the outline's top sits against the dates header's (0 = on it)
+  /* SINCE THE GRID'S ORDER CHANGED (D1256, 22 Oct 26 — the overhaul's M2) the Manning rows sit straight UNDER the dates,
+     so a counter deleted no longer pushes the header: it shortens what lies below it. The outline runs from the dates
+     header to the roster's foot, so the edge that must follow the rows is now its FOOT — its top stays on the header. */
+  // where the outline's top sits against the dates header's, and its foot against the grid's own foot (0 = on it)
   const gap = () => page.evaluate(() => {
     const box = document.querySelector('[data-testid="bid-box"]')?.getBoundingClientRect()
     const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')?.getBoundingClientRect()
-    return box && head ? box.top - head.top : null
+    const table = document.querySelector('#page-leavewar .mx-wrap table.mx')?.getBoundingClientRect()
+    return box && head && table ? { top: box.top - head.top, foot: box.bottom - table.bottom } : null
   })
   const before = await gap()
   expect(before, 'the war is open for bidding, so the outline is drawn').not.toBeNull()
-  expect(Math.abs(before!)).toBeLessThanOrEqual(1)
-  const headTop = () => page.evaluate(() => document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect().top)
-  const top0 = await headTop()
+  expect(Math.abs(before!.top)).toBeLessThanOrEqual(1)
+  expect(Math.abs(before!.foot)).toBeLessThanOrEqual(1)
+  const footOf = () => page.evaluate(() => document.querySelector('#page-leavewar .mx-wrap table.mx')!.getBoundingClientRect().bottom)
+  const foot0 = await footOf()
   await page.locator('[data-testid="manning-delete-ip"]').click()                 // the cross: no question asked
   await expect(page.locator('[data-testid="count-ip"]')).toHaveCount(0)
-  expect(await headTop(), 'the header moved up by the deleted row').toBeLessThan(top0 - 5)
+  expect(await footOf(), 'the grid lost the deleted row').toBeLessThan(foot0 - 5)
   const after = await gap()
   expect(after).not.toBeNull()
-  expect(Math.abs(after!), 'the outline follows the header up').toBeLessThanOrEqual(1)
+  expect(Math.abs(after!.top), 'the outline stays on the header').toBeLessThanOrEqual(1)
+  expect(Math.abs(after!.foot), 'the outline\'s foot follows the rows up').toBeLessThanOrEqual(1)
   /* and Undo brings the counter back — which is why the cross asks nothing — the outline following it down again */
   await page.locator('#undoBtn').click()
   await expect(page.locator('[data-testid="count-ip"]')).toBeVisible()
-  expect(Math.abs((await headTop()) - top0)).toBeLessThanOrEqual(1)
-  expect(Math.abs((await gap())!), 'the outline follows the header down').toBeLessThanOrEqual(1)
+  expect(Math.abs((await footOf()) - foot0)).toBeLessThanOrEqual(1)
+  const back = (await gap())!
+  expect(Math.abs(back.top), 'the outline stays on the header').toBeLessThanOrEqual(1)
+  expect(Math.abs(back.foot), 'the outline\'s foot follows the rows down').toBeLessThanOrEqual(1)
 })
 
 // Remarks editing on an approved leave (owner, 27 Aug 26 — it was the published stage's). Since the stages went
@@ -1847,6 +2068,68 @@ test('the balance column is opaque — day cells never show through it', async (
   expect(await bg(sibling)).not.toBe(siblingAtRest)
 })
 
+// HIS REPORT, 23 Oct 26 12:16 — "When I select the months why I see unclean blue background". The month strip is a row
+// of the grid, so the row-hover tint above reached it: a tap on a month (on a phone a tap leaves the pointer "over" what
+// it pressed) turned the strip's pinned left cell see-through, rgba(59,198,232,.05), and the grid showed through it as
+// a dirty block. The same tint reached the pinned group headings ("SXO · 12") and the desktop's sub-headings. No pinned
+// cell may take it, and the strip row takes none at all; a person's row still lights as before (the test above).
+test('a pressed month never tints the strip, and no pinned heading turns see-through (his report)', async ({ page }) => {
+  const alphaOf = (css: string) => { const p = css.match(/[\d.]+/g)!; return p.length < 4 ? 1 : Number(p[3]) }
+  const bgOf = (sel: string) => page.locator(sel).first().evaluate(el => getComputedStyle(el).backgroundColor)
+  await page.mouse.move(0, 0)
+  const fillAtRest = await bgOf('#page-leavewar .mstripe td.mfill')
+  await page.locator('[data-testid="month-FEB"]').hover()
+  expect(alphaOf(await bgOf('#page-leavewar .mstripe td.mstick')), 'the strip\'s pinned cell is see-through').toBe(1)
+  expect(await bgOf('#page-leavewar .mstripe td.mfill'), 'the strip row lit up').toBe(fillAtRest)
+  await page.locator('[data-testid="month-FEB"]').click()
+  expect(alphaOf(await bgOf('#page-leavewar .mstripe td.mstick')), 'pressed: the strip\'s pinned cell is see-through').toBe(1)
+  // a group heading hovered: its pinned cell stays solid
+  const head = page.locator('#page-leavewar tr.grp td.grphd').first()
+  await head.hover()
+  expect(alphaOf(await head.evaluate(el => getComputedStyle(el).backgroundColor)), 'a group heading turned see-through').toBe(1)
+})
+
+/* THE STANDING CHECK OF D1281 (23 Oct 26 — his "Yes", after "Why is the blue background not picked up by your checks?").
+   An iPhone keeps what a finger tapped "hovered" until the next tap; the test browser drops it within a quarter of a second,
+   so a pinned cell turned see-through by a hover rule showed only on his phone (the month strip, from 19 Aug 26 to 23 Oct 26).
+   Here every control a person presses on the Leave War's grid is pressed on a phone and the pointer LEFT on it, as the
+   iPhone leaves it, and every pinned (sticky) cell of the grid must stay fully opaque — the empty placeholder column
+   (`.lwph`) aside, which paints nothing by design. The bug-check order §7.10 names this test. */
+test("pressing the Leave War's controls on a phone never turns a pinned cell see-through (D1281)", async ({ page }) => {
+  test.skip(!isPhone(), "an iPhone's kept hover is a touch screen's")
+  await lwRole(page, 'admin')
+  const seeThrough = () => page.evaluate(() => {
+    const out: string[] = []
+    for (const e of document.querySelectorAll<HTMLElement>('#page-leavewar td, #page-leavewar th')) {
+      const c = getComputedStyle(e)
+      if (c.position !== 'sticky' || e.classList.contains('lwph') || !e.getBoundingClientRect().width) continue
+      const p = c.backgroundColor.match(/[\d.]+/g)!
+      if (p.length >= 4 && Number(p[3]) < 1) out.push(`${e.tagName.toLowerCase()}.${[...e.classList].join('.')} ${c.backgroundColor}`)
+    }
+    return out
+  })
+  expect(await seeThrough(), 'at rest').toEqual([])
+  const press = async (sel: string, what: string, close = false) => {
+    const el = page.locator(sel).first()
+    await el.scrollIntoViewIfNeeded()
+    await el.click()
+    await page.waitForTimeout(80)
+    expect(await seeThrough(), `${what} pressed, the pointer left on it`).toEqual([])
+    if (close) { await page.keyboard.press('Escape'); await page.waitForTimeout(120) }
+  }
+  for (const m of ['JAN', 'FEB', 'MAR', 'JUN', 'DEC']) await press(`[data-testid="month-${m}"]`, `month ${m}`)
+  await press('[data-testid="counts-toggle"]', 'Manning (open)')
+  await press('[data-testid="counts-toggle"]', 'Manning (fold)')
+  await press('[data-testid="lw-zoom-out"]', 'zoom out')
+  await press('[data-testid="lw-zoom-in"]', 'zoom in')
+  await press('[data-testid="legend-open"]', 'Legend', true)
+  await press('[data-testid="month-JAN"]', 'back to January')
+  await press('[data-testid^="event-0-2026-01-1"]', 'an Event cell', true)
+  await press('[data-testid="cell-slipway-2026-01-20"]', "a person's day", true)
+  await press('#page-leavewar tr.grp td.grphd', 'a group heading (fold)')
+  await press('#page-leavewar tr.grp td.grphd', 'a group heading (open)')
+})
+
 // The space arithmetic, checked against a real browser rather than read off
 // the stylesheet. The estimate that justified this design was WRONG — it
 // assumed 30px day columns from `min-width`, where the rendered width is
@@ -1876,7 +2159,10 @@ test('the counter column does not eat the grid on a phone', async ({ page }) => 
   expect((m.who + m.bal) / m.wrap).toBeLessThan(0.4)
 })
 
-test('the counter column changes every row at once', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the counter column changes every row at once', async ({ page }) => {
   // The header chip wears the figure's SIGNED title now (6 Sep 26): `+` a
   // balance, `−` a total. The box under it is TWO LINES, so a cell's own
   // textContent runs the balance and its used numbers together — the top
@@ -1925,7 +2211,10 @@ test('the date headers are square, the .day leak overridden', async ({ page }) =
 // and EVERY row's make-up in the figure's own words (6 Sep 26 — the thirteen
 // figures captioned only the two aggregates; the eight caption all of them,
 // out of the one catalogue the column titles and the page Legend also read).
-test('the figure picker doubles as the legend, every figure spelled out', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the figure picker doubles as the legend, every figure spelled out', async ({ page }) => {
   await openPicker(page)
   const key = page.locator('[data-testid="counter-legend"]')
   await expect(key).toContainText('balance left')
@@ -1942,7 +2231,10 @@ test('the figure picker doubles as the legend, every figure spelled out', async 
 // The figures reorder through the ▲▼ each row carries — management's alone
 // since 17 Aug 26 ("normal user should not have authority to change the
 // leave war column arrangement") — and Reset restores the catalogue order.
-test('the figures reorder, and Reset restores the default order', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the figures reorder, and Reset restores the default order', async ({ page }) => {
   // A member sees no reorder controls at all.
   await openPicker(page)
   await expect(page.locator('[data-testid="figrow-lve"]')).toBeVisible()
@@ -1974,7 +2266,10 @@ async function openDrawer(page: Page) {
   await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
 }
 
-test('the drawer opens closed on a phone and open on a desktop', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the drawer opens closed on a phone and open on a desktop', async ({ page }) => {
   // Re-opened from scratch, because the shared beforeEach deliberately puts the
   // drawer away and this is the one test that has to see the state the page
   // OPENS in. A desktop has room for eight columns AND the days; a phone does
@@ -1987,7 +2282,10 @@ test('the drawer opens closed on a phone and open on a desktop', async ({ page }
   else await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
 })
 
-test('the drawer sits beside the names, its rows level with the days, and closing restores the header', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the drawer sits beside the names, its rows level with the days, and closing restores the header', async ({ page }) => {
   const bar = figBar(page)
   const headRow = page.locator('.mx-wrap .mxhead tr:last-child')
   const headBefore = (await headRow.boundingBox())!
@@ -2041,7 +2339,10 @@ test('the drawer sits beside the names, its rows level with the days, and closin
   expect(Math.abs(headAfter.height - headBefore.height)).toBeLessThan(1.5)
 })
 
-test('a drawer box opens that person\'s breakdown of that figure; a title says what it counts', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a drawer box opens that person\'s breakdown of that figure; a title says what it counts', async ({ page }) => {
   await openDrawer(page)
   const drawer = page.locator('[data-testid="figdrawer"]')
   // THE TITLE POP-UP GOES FIRST, and that order is load-bearing. The pop-up is
@@ -2064,7 +2365,10 @@ test('a drawer box opens that person\'s breakdown of that figure; a title says w
   await expect(page.locator('[data-testid="figure-breakdown"]')).toHaveCount(0)
 })
 
-test('the stuck header carries the drawer titles, the switch and the month once the roster has scrolled', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the stuck header carries the drawer titles, the switch and the month once the roster has scrolled', async ({ page }) => {
   await openDrawer(page)
   await page.evaluate(() => window.scrollBy(0, 700))
   await page.waitForTimeout(300)
@@ -2118,7 +2422,11 @@ test('the stuck header carries the drawer titles, the switch and the month once 
   }
 })
 
-test('the corner switch fills its cell — the whole corner is the tap target', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The corner's switch was the drawer's way in and out.
+test.skip('the corner switch fills its cell — the whole corner is the tap target', async ({ page }) => {
   // The type is small on purpose; the TARGET must not be. In flow the button
   // was its own 15px line inside a 22px cell, so a third of the corner did
   // nothing when pressed — and on a phone that corner is the only way in and
@@ -2135,7 +2443,11 @@ test('the corner switch fills its cell — the whole corner is the tap target', 
   expect(bb.width).toBeGreaterThan(cb.width - 2)
 })
 
-test('the corner covers the month rail all the way to the drawer\'s edge', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The month rail over the dates went too (D1257).
+test.skip('the corner covers the month rail all the way to the drawer\'s edge', async ({ page }) => {
   // The month BRACKET's top edge belongs to the month whose first columns now
   // sit UNDER the drawer, and the frozen corner is only the name + counter
   // columns wide — so with the figures open a length of rail ran across the
@@ -2161,7 +2473,11 @@ test('the corner covers the month rail all the way to the drawer\'s edge', async
   expect(hit.corner, 'the corner reaches to the drawer\'s edge').toBe(true)
 })
 
-test('a month jump lands the month clear of the drawer, not under it', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The plain month-jump tests still pin the jump itself.
+test.skip('a month jump lands the month clear of the drawer, not under it', async ({ page }) => {
   // The jump measures a "frozen width" to know where the visible day strip
   // begins, and with the drawer out the frozen part IS the drawer — eight
   // columns, not one. Reading the closed pair instead put 1 September nine
@@ -2182,7 +2498,10 @@ test('a month jump lands the month clear of the drawer, not under it', async ({ 
   expect(head.x + head.width).toBeLessThanOrEqual(wrapBox.x + wrapBox.width + 1)
 })
 
-test('a day beside the open drawer still takes a tap', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a day beside the open drawer still takes a tap', async ({ page }) => {
   // "The days keep working beside it" (the design's own words) is a claim about
   // the days being USABLE, not merely visible — and usable is the half that
   // broke: 24 of the 28 desktop failures this suite opened with were taps
@@ -2214,7 +2533,10 @@ test('a day beside the open drawer still takes a tap', async ({ page }) => {
   await expect(figBar(page)).toHaveAttribute('aria-expanded', 'true')
 })
 
-test('the month strip reads from the drawer\'s edge, not the closed column\'s', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the month strip reads from the drawer\'s edge, not the closed column\'s', async ({ page }) => {
   // The strip answers "which month is most of what I can see", and it measures
   // from the FROZEN EDGE — which the drawer moves. That number is CACHED
   // (`stripGeoRef.current.frozen`) and re-measured only by the layout effect
@@ -2287,7 +2609,10 @@ test('the month strip reads from the drawer\'s edge, not the closed column\'s', 
   await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
 })
 
-test('the month strip follows the drawer WIDENING while it is already out', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the month strip follows the drawer WIDENING while it is already out', async ({ page }) => {
   // The sibling above proves the cached frozen edge follows the drawer opening
   // and closing. This one proves it follows the drawer CHANGING WIDTH with
   // `figuresOpen` never moving — which is the case a dep list of hand-named
@@ -2338,7 +2663,11 @@ test('the month strip follows the drawer WIDENING while it is already out', asyn
   await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
 })
 
-test('the column follows the leave just entered to the balance it comes off', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The column stays on LVE: it no longer jumps to the balance a write comes off.
+test.skip('the column follows the leave just entered to the balance it comes off', async ({ page }) => {
   await lwRole(page, 'admin')
   await pickCounter(page, 'medtot')
   await expect(page.locator('[data-testid="counter-name"]')).toHaveText('−MED TOT')
@@ -2364,7 +2693,10 @@ test('the box whose number changed flashes, once', async ({ page }) => {
   ).toBe('lw-figflash')
 })
 
-test('an admin hides a figure and the drawer loses that column; a member has no eye', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('an admin hides a figure and the drawer loses that column; a member has no eye', async ({ page }) => {
   await openPicker(page)
   await expect(page.locator('[data-testid="figeye-pl"]')).toHaveCount(0)
   await page.locator('[data-testid="counter-cancel"]').click()
@@ -2378,13 +2710,15 @@ test('an admin hides a figure and the drawer loses that column; a member has no 
   await expect(drawer.locator('th.fig[data-fig="pl"]')).toHaveCount(0)
 })
 
+// M2 (D1245): re-expressed — the key now teaches the one column beside the names, LVE; the fit on the screen stands.
 test('the Legend pop-out carries the figures key, and fits the screen', async ({ page }) => {
   await page.locator('[data-testid="legend-open"]').click()
   const leg = page.locator('[data-testid="legend"]')
   await expect(leg).toBeVisible()
   const figs = page.locator('[data-testid="legend-figures"]')
-  await expect(figs).toContainText('balance left')
-  await expect(figs).toContainText('All leave taken')
+  await expect(figs).toContainText('LVE left')
+  await expect(figs).toContainText('below zero')
+  await expect(figs).not.toContainText('All leave taken')
   // The pop-out was widened 272 -> 312 for the eight figures' captions; that
   // number is only checkable in a browser. Measured 6 Sep 26 on the phone
   // project: 312 wide, 310 of client width, nothing scrolling sideways inside
@@ -2442,7 +2776,11 @@ async function threeInARow(page: Page): Promise<string[]> {
 const drawerBox = (page: Page, fig: string, person: string) =>
   page.locator(`[data-testid="figdrawer"] td.figbox[data-fig="${fig}"][data-person="${person}"]`)
 
-test('a drag down a drawer column lights the run, on that pool only', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// A run of people was picked down a drawer column; with no drawer there is no run to pick.
+test.skip('a drag down a drawer column lights the run, on that pool only', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2460,7 +2798,10 @@ test('a drag down a drawer column lights the run, on that pool only', async ({ p
   expect(await page.evaluate(() => window.scrollY)).toBe(0)
 })
 
-test('a drag on a total, or by a member, lights nothing', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a drag on a total, or by a member, lights nothing', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2491,7 +2832,10 @@ test('a drag on a total, or by a member, lights nothing', async ({ page }) => {
   await expect(page.locator('[data-testid="figure-breakdown"]')).toBeVisible()
 })
 
-test('the band lets a press through to the drawer once the grid has scrolled', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('the band lets a press through to the drawer once the grid has scrolled', async ({ page }) => {
   test.skip(!isPhone(), 'the band is a phone-only creature')
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2524,7 +2868,10 @@ test('the band lets a press through to the drawer once the grid has scrolled', a
   expect(onName).toBe(true)
 })
 
-test('a finger\'s hold-and-drag down the drawer lights the run and does not scroll the page', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+test.skip('a finger\'s hold-and-drag down the drawer lights the run and does not scroll the page', async ({ page }) => {
   test.skip(!isPhone(), 'the touch gesture')
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2586,7 +2933,11 @@ async function keyAmount(page: Page, amount: string) {
   await amt.press('Enter')
 }
 
-test('the bar takes one number for the run, the boxes flash, and one Undo takes it all back', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('the bar takes one number for the run, the boxes flash, and one Undo takes it all back', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2629,7 +2980,11 @@ test('the bar takes one number for the run, the boxes flash, and one Undo takes 
   }
 })
 
-test('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2660,7 +3015,11 @@ test('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ p
   }
 })
 
-test('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column; an OIL credit is made in the OIL tracker (the OIL tab).
+test.skip('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2696,7 +3055,11 @@ test('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
   await expect(row).toContainText('Det')
 })
 
-test('a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2747,7 +3110,11 @@ test('a member never sees the bar', async ({ page }) => {
   expect(await page.locator('[data-figsel]').count()).toBe(0)
 })
 
-test('on a phone the bar comes up whole, clear of the bottom edge', async ({ page }) => {
+// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
+// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
+// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
+// The balance bar opened from a run picked down a drawer column.
+test.skip('on a phone the bar comes up whole, clear of the bottom edge', async ({ page }) => {
   test.skip(!isPhone(), 'the touch gesture')
   await lwRole(page, 'admin')
   await openDrawer(page)
@@ -2784,12 +3151,16 @@ test('on a phone the bar comes up whole, clear of the bottom edge', async ({ pag
 // list had no visible way out (owner, 17 Aug 26, from the deployed page).
 // The header is stuck to the sheet's top now: scroll to the floor of the
 // list and the close button still sits inside the viewport, clickable.
+// It was proved on the figure picker's sheet; the picker is gone since the overhaul's M2 (D1245 — beside each name the
+// grid shows LVE alone), so it is proved on the figure sheet that stays: a person's every figure, opened from his name —
+// the same sheet chassis, the same stuck header and ✕.
+// RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('a scrolled sheet keeps its header and its close button', async ({ page }) => {
-  await openPicker(page)
-  const sheet = page.locator('[data-testid="counter-sheet"]')
+  await page.locator('[data-testid="person-slipway"]').click()
+  const sheet = page.locator('[data-testid="person-figures"]')
   await expect(sheet).toBeVisible()
   await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
-  const x = page.locator('[data-testid="counter-cancel"]')
+  const x = page.locator('[data-testid="pfig-close"]')
   await expect(x).toBeVisible()
   const box = (await x.boundingBox())!
   const vp = page.viewportSize()!
@@ -2809,10 +3180,11 @@ test('a scrolled sheet keeps its header and its close button', async ({ page }) 
 // `overscroll-behavior: contain` in bidpicker.css — unchanged, not re-asserted
 // here since it only bites when the list overflows, which a fitting sheet does
 // not.)
+// RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('the page scrolls behind an open sheet, and the panel stays put', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 0))
-  await openPicker(page)
-  const sheet = page.locator('[data-testid="counter-sheet"]')
+  await page.locator('[data-testid="person-slipway"]').click()
+  const sheet = page.locator('[data-testid="person-figures"]')
   await expect(sheet).toBeVisible()
   const topBefore = (await sheet.boundingBox())!.y
 
@@ -2953,10 +3325,11 @@ test('a finger behind an open sheet scrolls the grid itself; a tap on a cell clo
 /* And on a fine pointer the scrim is still what a press lands on: the mouse
    drag-to-pan and the click-to-dismiss the desktop has had since 28 Aug go
    through it, and a hover never reaches the grid. Desktop project only. */
+// RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('on a desktop the scrim stays in the way of the mouse', async ({ page }) => {
   test.skip(isPhone(), 'the fine-pointer half')
-  await openPicker(page)
-  await expect(page.locator('[data-testid="counter-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="person-slipway"]').click()
+  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
   expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(false)
   const under = await page.evaluate(() => {
     const el = document.elementFromPoint(200, 300)
@@ -2965,6 +3338,7 @@ test('on a desktop the scrim stays in the way of the mouse', async ({ page }) =>
   expect(under).toEqual({ scrim: true, scrimPE: 'auto' })
 })
 
+// M2: re-expressed — the "Viewing as" badge and the title sheet are gone (D1173, D1245); My leave answers instead (D1141).
 // The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
 // the grid, the title sheet answers with THEIR numbers, and any callsign
 // opens that person's all-figures sheet, member included (owner, 17 Aug 26).
@@ -2980,19 +3354,15 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   const other = await page.locator('[data-testid="row-prowler"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
   expect(bg).not.toBe(other)
 
-  // The persistent viewer badge names whose page this is (owner, 28 Aug 26).
-  await expect(page.locator('[data-testid="lw-viewing"]')).toContainText('Ranger')
-
-  await openPicker(page)
-  // The picker leads with VIEWING AS <callsign> (28 Aug 26), not a grey aside.
-  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('VIEWING AS')
-  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('Ranger')
-  // The row still answers with the viewer's OWN number, drawn as the same
-  // two-line box the grid shows (6 Sep 26 — the per-row "N left, yours" words
-  // went when the box arrived; the key at the top of the sheet says what the
-  // lines mean). A dash here would mean the sheet lost the viewer.
-  await expect(page.locator('[data-testid="counter-lve"] .fb')).toHaveText(/^-?[\d.]+$/)
-  await page.locator('[data-testid="counter-cancel"]').click()
+  // RE-EXPRESSED FOR M2: the "Viewing as" badge is gone (D1173) and so is the title sheet — the column's figure
+  // picker (D1245, the column beside the names is LVE alone). What answers with the viewer's OWN numbers now is
+  // "My leave" on the top row (D1141): his LVE, OIL and days pending — and its LVE is the very figure his row shows.
+  await expect(page.locator('[data-testid="lw-viewing"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="counter-pick"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="my-leave-lve"]')).toHaveText(/^LVE -?[\d.]+$/)
+  await expect(page.locator('[data-testid="my-leave-oil"]')).toHaveText(/^OIL -?[\d.]+$/)
+  const rowLve = (await page.locator('[data-testid="bal-bane"] .fb').textContent())!.trim()
+  await expect(page.locator('[data-testid="my-leave-lve"]')).toHaveText(`LVE ${rowLve}`)
 
   await page.locator('[data-testid="person-prowler"]').click()
   const figs = page.locator('[data-testid="person-figures"]')
@@ -3025,57 +3395,155 @@ test('nothing in the callsign column is cut off', async ({ page }) => {
   expect(count).toBeGreaterThan(10)
 })
 
+/** THE GRID'S OWN BAR, LINE BY LINE (23 Oct 26): one line whenever it fits, a second only when the next control truly has
+ *  no room beside the last — never a chip cut to make it fit (walker 2, M2's walk), nothing past the screen, in order,
+ *  at most two lines. Wider letters than his PC's (GitHub's Linux machines, his iPhone; LW_WIDE_LETTERS=1 here) can need
+ *  the second line at 390 wide. Returns each control's box by id. */
+async function expectBarLines(page: Page, ids: string[]) {
+  const m = await page.evaluate(ids => {
+    const gb = document.querySelector('#page-leavewar .card-hd .lw-gridbar') as HTMLElement
+    const gcs = getComputedStyle(gb), gr = gb.getBoundingClientRect()
+    const right = gr.right - parseFloat(gcs.paddingRight) - parseFloat(gcs.borderRightWidth)
+    const gap = parseFloat(gcs.columnGap) || 0
+    return {
+      right, gap, vw: innerWidth,
+      boxes: ids.map(id => {
+        const el = gb.querySelector(`[data-testid="${id}"]`) as HTMLElement
+        const r = el.getBoundingClientRect()
+        return { id, x: r.left, r: r.right, w: r.width, mid: r.top + r.height / 2, cut: el.scrollWidth > el.clientWidth + 1 }
+      }),
+    }
+  }, ids)
+  const lines: (typeof m.boxes)[] = []
+  for (const b of m.boxes) {
+    const line = lines[lines.length - 1]
+    if (line && Math.abs(line[0]!.mid - b.mid) < 4) line.push(b)
+    else lines.push([b])
+  }
+  const where = m.boxes.map(b => `${b.id} x ${b.x.toFixed(0)} w ${b.w.toFixed(0)} mid ${b.mid.toFixed(0)}`).join('; ')
+  expect(lines.length, `the grid's bar takes more than two lines (${where})`).toBeLessThanOrEqual(2)
+  for (const line of lines) for (let i = 1; i < line.length; i++)
+    expect(line[i]!.x, `${line[i]!.id} is not right of ${line[i - 1]!.id} (${where})`).toBeGreaterThan(line[i - 1]!.x)
+  for (let l = 1; l < lines.length; l++) {
+    const prev = lines[l - 1]![lines[l - 1]!.length - 1]!, first = lines[l]![0]!
+    expect(prev.r + m.gap + first.w, `${first.id} went to a line of its own though it fits beside ${prev.id} (${where})`).toBeGreaterThan(m.right - 0.5)
+  }
+  for (const b of m.boxes) {
+    expect(b.cut, `${b.id} is cut to fit (${where})`).toBe(false)
+    expect(b.r, `${b.id} runs past the screen (${where})`).toBeLessThanOrEqual(m.vw)
+  }
+  return Object.fromEntries(m.boxes.map(b => [b.id, b]))
+}
+
 // The counter block's top controls sit on ONE row (owner, 5 Sep 26 — "all in 1
 // row to minimise row height space"): Manning · ⚙ · Rearrange lead, OIL right
 // AFTER rearrange (no spring to the far edge). jsdom can't see the single line;
 // this is the browser-measured gate the perf checklist asks for, run at BOTH
 // widths (phone and desktop are different CSS paths).
+// M2: re-expressed — the grid's own bar is [Manning] · the open dates · … · − + · Legend (D1254); ⚙ moved to the tab
+// row's right end, OIL became a tab beside Grid, and Rearrange went into ⚙ (D1254). Still one row, in that order, on
+// the screen, at both widths.
 test('the counter controls sit on one row, in order, OIL right after rearrange, zoom after OIL', async ({ page }) => {
   await lwRole(page, 'admin')
-  const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker', 'lw-zoom-out', 'lw-zoom-in']
-  const box: Record<string, { x: number; y: number; w: number }> = {}
-  for (const id of ids) {
-    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
-    box[id] = { x: b.x, y: b.y, w: b.width }
+  const rowOf = async (ids: string[]) => {
+    const box: Record<string, { x: number; y: number; w: number }> = {}
+    for (const id of ids) {
+      const b = (await page.locator(`#page-leavewar [data-testid="${id}"]`).boundingBox())!
+      box[id] = { x: b.x, y: b.y + b.height / 2, w: b.width }
+    }
+    // one row: every control shares a middle within a few px
+    const mids = ids.map(id => box[id]!.y)
+    expect(Math.max(...mids) - Math.min(...mids), `${ids.join(' · ')} are not one row (${ids.map(id => `${id} x ${box[id]!.x.toFixed(0)} w ${box[id]!.w.toFixed(0)} mid ${box[id]!.y.toFixed(0)}`).join('; ')})`).toBeLessThan(4)
+    // left to right, in the order given
+    for (let i = 1; i < ids.length; i++) expect(box[ids[i]!]!.x, `${ids[i]} is not right of ${ids[i - 1]}`).toBeGreaterThan(box[ids[i - 1]!]!.x)
+    // the whole row fits the viewport (the phone is the real guard)
+    const last = box[ids[ids.length - 1]!]!
+    expect(last.x + last.w).toBeLessThanOrEqual(page.viewportSize()!.width)
+    return box
   }
-  // one row: every control shares a top within a few px
-  const tops = ids.map(id => box[id].y)
-  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(4)
-  // left-to-right: Manning, settings, rearrange, OIL, −, +
-  for (let i = 1; i < ids.length; i++) expect(box[ids[i]!].x).toBeGreaterThan(box[ids[i - 1]!].x)
-  // the whole row fits the viewport (the phone is the real guard)
-  const last = box['lw-zoom-in']!
-  expect(last.x + last.w).toBeLessThanOrEqual(page.viewportSize()!.width)
-  // OIL sits right after rearrange — one inter-button gap, not a spring to the edge
-  expect(box['oil-tracker']!.x - (box['roster-arrange']!.x + box['roster-arrange']!.w)).toBeLessThan(24)
+  /* the grid's own bar, as the page opens (no red day, so Manning is whole — D1243). ONE LINE WHENEVER IT FITS, and a
+     second line only when the next control truly has no room — never a chip cut to make it fit (walker 2, M2's walk:
+     "Bidding cl…" beside a red count; the phone's stylesheet lets the bar wrap). Re-expressed 23 Oct 26: this asserted
+     one line outright, which held with his PC's letters only — with Linux's and his iPhone's wider ones "Open 1 Jan –
+     31 Mar" leaves a 390-wide phone ~20px short, and Legend takes the second line (GitHub's run of d0ff2c633; reproduced
+     here with LW_WIDE_LETTERS=1). So: in order, line by line; at most two lines; each line break forced by the width. */
+  const BAR_IDS = ['counts-toggle', 'open-chip', 'lw-zoom-out', 'lw-zoom-in', 'legend-open']
+  const bar = await expectBarLines(page, BAR_IDS)
+  const where = Object.values(bar).map(b => `${b.id} x ${b.x.toFixed(0)} mid ${b.mid.toFixed(0)}`).join('; ')
+  // the zoom pair is a pair: − then + one gap apart on one line, not spread
+  expect(Math.abs(bar['lw-zoom-in']!.mid - bar['lw-zoom-out']!.mid), `the − and + are split (${where})`).toBeLessThan(4)
+  expect(bar['lw-zoom-in']!.x - (bar['lw-zoom-out']!.x + bar['lw-zoom-out']!.w)).toBeLessThan(24)
+  // the tab row: Grid, OIL right after it, ⚙ at its right end
+  await rowOf(['lw-tab-grid', 'oil-tracker', 'settings-open'])
+  // nothing of the old bar is left on the grid card: no ⚙, no OIL, no Rearrange toggle
+  for (const id of ['settings-open', 'oil-tracker', 'roster-arrange']) await expect(page.locator(`#page-leavewar .card-hd [data-testid="${id}"]`)).toHaveCount(0)
   // the "… · 365 days · 50 people" line is gone
   await expect(page.locator('.card-hd')).not.toContainText('people')
 })
 
+/* D1275 (23 Oct 26 — Q3, "as recommended"): on a phone, while Rearrange is on, its way out reads "⇅ Done" in words (the
+   phone's short words, D1019, stay for every other button) and the − / + step aside until it is off, so the bar keeps
+   to one line as drawn (questions/q3c-done-zoom-aside.png). Off again, the − / + come back. On a desktop the − / + stay.
+   Measured at 390 and 360; with wider letters (LW_WIDE_LETTERS=1) the bar keeps the rule above — one line whenever it
+   fits. [LW-REARRANGE-DONE-WORD], red first. */
+test('while rearranging, the bar reads "⇅ Done" in words, and on a phone the − / + step aside (D1275)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="settings-open"]').click()
+  await page.locator('[data-testid="settings-rearrange"]').click()
+  const done = page.locator('#page-leavewar [data-testid="roster-arrange"]')
+  const zoom = page.locator('#page-leavewar [data-testid="lw-zoom"]')
+  await expect(done).toBeVisible()
+  for (const width of isPhone() ? [390, 360] : [1440]) {
+    await page.setViewportSize({ width, height: isPhone() ? 664 : 900 })
+    await page.waitForTimeout(200)
+    expect((await done.innerText()).replace(/\s+/g, ' ').trim(), `${width}: the word is drawn`).toBe('⇅ Done')
+    if (isPhone()) {
+      await expect(zoom, `${width}: the − / + step aside while Rearrange is on`).toBeHidden()
+      await expectBarLines(page, ['counts-toggle', 'open-chip', 'roster-arrange', 'legend-open'])
+    } else {
+      await expect(zoom, 'a desktop keeps the − / +').toBeVisible()
+    }
+  }
+  await done.click()
+  await expect(done).toHaveCount(0)
+  await expect(zoom, 'Rearrange off: the − / + are back').toBeVisible()
+})
+
 // A member's counter bar is just Manning · OIL, adjacent (owner, 5 Sep 26 — "in
 // normal user it's just right of manning"). Runs as the default member role.
+// M2: re-expressed — OIL is a tab on the page's tab row now, for a member as for an admin (D1254), so the member's bar
+// is the grid's own bar, the same for everyone: Manning, the open dates right after it, then the zoom pair and Legend.
 test('a member counter bar is Manning then OIL, adjacent, one row', async ({ page }) => {
   await expect(page.locator('[data-testid="settings-open"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="settings-rearrange"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
   const m = (await page.locator('[data-testid="counts-toggle"]').boundingBox())!
-  const o = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
-  expect(o.x).toBeGreaterThan(m.x)                       // OIL right of Manning
-  expect(Math.abs(o.y - m.y)).toBeLessThan(4)            // same row
+  const o = (await page.locator('[data-testid="open-chip"]').boundingBox())!
+  const mid = (b: { y: number; height: number }) => b.y + b.height / 2
+  expect(o.x).toBeGreaterThan(m.x)                       // the open dates right of Manning
+  expect(Math.abs(mid(o) - mid(m))).toBeLessThan(4)      // same row
   expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
-  // the zoom pair follows OIL on the same row, for a member too (6 Sep 26)
+  // the zoom pair follows on the same row, for a member too (6 Sep 26)
   const z = (await page.locator('[data-testid="lw-zoom-in"]').boundingBox())!
   expect(z.x).toBeGreaterThan(o.x)
-  expect(Math.abs(z.y - m.y)).toBeLessThan(4)
+  expect(Math.abs(mid(z) - mid(m))).toBeLessThan(4)
+  // and OIL is the member's tab, right after Grid on the tab row
+  const g = (await page.locator('[data-testid="lw-tab-grid"]').boundingBox())!
+  const t = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
+  expect(t.x).toBeGreaterThan(g.x)
+  expect(Math.abs(mid(t) - mid(g))).toBeLessThan(4)
+  expect(t.x - (g.x + g.width)).toBeLessThan(24)
 })
 
 // In Rearrange the reorder grip shares the frozen NAME cell, to the LEFT of the
 // label (owner, 5 Sep 26). This is the gate that finally VISITS Rearrange: the
 // existing clip test runs in normal view, where the grip is not drawn, so it
 // could never have caught the grip pushing "Crew sets" past the 76px phone cell.
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done"; the counters are opened by Manning first on a phone (D1258, in elevenCounters).
 test('in Rearrange the counter grip is left of the name and nothing clips', async ({ page }) => {
   await lwRole(page, 'admin')
   await elevenCounters(page)   // the app starts with no counters (D669); this is about a counter's row
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   const clipped = await page.evaluate(() =>
     [...document.querySelectorAll('.mx tbody.counts .who')]
       .map(el => el as HTMLElement)
@@ -3115,6 +3583,7 @@ test('in Rearrange the counter grip is left of the name and nothing clips', asyn
 // shortened. Instead extend the horizontal space required to show their name.
 // Same as before rearrange was selected." The frozen name column grows by the
 // grip's footprint in Rearrange, so the callsign keeps the width it had at rest.
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done".
 test('in Rearrange the name column grows by the grip: callsigns keep their width, the frozen pair stays joined', async ({ page }) => {
   await lwRole(page, 'admin')
   const row = '.mx tbody.mxbody tr[data-testid^="row-"]'
@@ -3131,7 +3600,7 @@ test('in Rearrange the name column grows by the grip: callsigns keep their width
   }, row)
   const restClipped = await clippedNames()
   const rest = await geo()
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   const arr = await geo()
   expect(arr.whoW).toBeGreaterThan(rest.whoW)
   expect(arr.gap).toBeLessThan(1)
@@ -3164,6 +3633,13 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
   expect(before).toBe('-2')
 })
 
+/** "+ New period" is the period list's last line since the overhaul's M2, an admin's only (D1244) — no "+ New" button on
+ *  the row any more: the new-period window is opened by choosing that line, the way a person does. */
+async function newPeriod(page: Page) {
+  await page.selectOption('[data-testid="war-picker"]', { label: '+ New period' })
+}
+
+// M2: re-expressed — the window opens from "+ New period", the period list's last line (D1244).
 // The create sheet renders OUTSIDE `.topbar` because that element carries
 // `backdrop-filter`, which makes it the containing block for any
 // `position: fixed` descendant — the sheet would otherwise resolve its
@@ -3172,7 +3648,7 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
 // layout at all. This is the test that caught it.
 test('the new-leave-war sheet is anchored to the viewport, not the topbar', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="war-new"]').click()
+  await newPeriod(page)
 
   const sheet = page.locator('[data-testid="war-sheet"]')
   await expect(sheet).toBeVisible()
@@ -3189,36 +3665,47 @@ test('the new-leave-war sheet is anchored to the viewport, not the topbar', asyn
   expect(view.height - (box.y + box.height)).toBeLessThan(40)
 
   const bar = (await page.locator('#page-leavewar .topbar').boundingBox())!
-  expect(box.y).toBeGreaterThan(bar.y + bar.height)
+  // The fault itself: inside the bar, the sheet was drawn in the bar's own box at the top of the page. Since M2 the tab
+  // row is taller (its 36-tall tabs, D1254), and on a phone this tall sheet reaches a little over the row's lower edge —
+  // a sheet over the page, as every sheet is — so "its top is under the bar" no longer says anything about the fault
+  // there. What is pinned on a phone: it is not the bar's child, and its foot is at the screen's foot, far below the bar.
+  if (isPhone()) {
+    expect(await sheet.evaluate(el => !!el.closest('.topbar'))).toBe(false)
+    expect(box.y + box.height).toBeGreaterThan(bar.y + bar.height + 200)
+  } else expect(box.y).toBeGreaterThan(bar.y + bar.height)
 })
 
 // A single month, deliberately: the owner settled that a period is any range
 // they choose, down to one month, and this is the short end of that. The
 // dates are in 2028 because the two seeded wars now cover the whole of 2026
 // and 2027 — with year-long wars there is no free month any nearer.
+// M2: re-expressed — opened from "+ New period", which stays the period list's last line (D1244).
 test('an admin creates a leave war, and it joins the picker', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="war-new"]').click()
+  await newPeriod(page)
   await page.fill('[data-testid="war-name"]', 'JUL 28')
   await pickSpan(page, 'war', '2028-07-01', '2028-07-31')
   await page.locator('[data-testid="war-create"]').click()
 
   await expect(page.locator('[data-testid="war-sheet"]')).toHaveCount(0)
+  // the new period joins the list, and "+ New period" stays its last line (D1244)
   await expect(page.locator('[data-testid="war-picker"] option')).toHaveText([
-    'JAN - DEC 26', 'JAN - DEC 27', 'JUL 28',
+    'JAN - DEC 26', 'JAN - DEC 27', 'JUL 28', '+ New period',
   ])
 })
 
+// M2: re-expressed — opened from "+ New period" (D1244); the periods are counted without that line.
 test('overlapping dates are refused, with the reason on screen', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="war-new"]').click()
+  await newPeriod(page)
   await page.fill('[data-testid="war-name"]', 'CLASH')
   await pickSpan(page, 'war', '2026-05-01', '2026-08-31')
   await page.locator('[data-testid="war-create"]').click()
 
   await expect(page.locator('[data-testid="war-problem"]')).toBeVisible()
   await expect(page.locator('[data-testid="war-sheet"]')).toBeVisible()
-  await expect(page.locator('[data-testid="war-picker"] option')).toHaveCount(2)
+  // still the two periods — the list's last line is "+ New period", not a period (D1244)
+  await expect(page.locator('[data-testid="war-picker"] option:not([data-testid="war-new"])')).toHaveCount(2)
 })
 
 // The bidding window is the answer to the owner's "the admin can select which
@@ -3487,7 +3974,9 @@ test('every date column names its weekday', async ({ page }) => {
 // the view for the leave counter is too small." They were — two 13px glyphs
 // inside a 44px column. This is the size question, and only a browser can
 // answer it.
+// M2: skipped — the figure picker is gone (D1245, the column beside the names is LVE alone).
 test('the counter control is a real tap target on a phone', async ({ page }) => {
+  test.skip(true, 'D1245 — the column beside the names is LVE alone since M2: no figure picker, so no control to size')
   await page.setViewportSize({ width: 390, height: 760 })
   const head = (await page.locator('[data-testid="counter-pick"]').boundingBox())!
   // The whole column header is the button now, so it is as wide as the
@@ -3512,7 +4001,9 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
   }
 })
 
+// M2: skipped — the figure picker is gone (D1245, the column beside the names is LVE alone).
 test('the counter sheet changes the column, and every row with it', async ({ page }) => {
+  test.skip(true, 'D1245 — the column beside the names is LVE alone since M2: no sheet to change it')
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
   expect(await shown()).toBe('+LVE')
   const top = () => page.locator('[data-testid="bal-slipway"] .fb').textContent()
@@ -3534,7 +4025,10 @@ test('the counter sheet changes the column, and every row with it', async ({ pag
 // `'phone'`, which no project has been called since the Leave War suite moved
 // into raptor-port's own config (`lw-phone`/`lw-desktop`, 16 Aug 26) — so they
 // skipped everywhere and proved nothing for three weeks. Named correctly now.
+// M2: skipped — D1245: the column beside the names is LVE alone, so a swipe across it cycles nothing (the picker's code
+// leaves whole with M5); the unit test of the hold-and-drag (figselect.test.tsx) pins that a flick no longer changes it.
 test('swiping across the counter column cycles it', async ({ page }, testInfo) => {
+  test.skip(true, 'D1245 — the column is LVE alone')
   test.skip(testInfo.project.name !== 'lw-phone', 'needs touch emulation')
   const shown = () => page.locator('[data-testid="counter-name"]').textContent()
   expect(await shown()).toBe('+LVE')
@@ -3685,9 +4179,11 @@ test('no event widens its day: the grid prints a short form, the Event row stays
 // day's cell sits exactly under its date and over the roster's cell for that day, at phone and desktop size; a figure
 // in them moves no column and adds no sideways scroll to the page; and what they show is what a browser PAINTS — the
 // Required figure in the accent, an Available under its Required in red. None of it is visible to jsdom.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('the four rows at the foot of the Manning block keep every day column in line, and paint what they mean', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const rows = ['req-p', 'req-w', 'avail-p', 'avail-w']
   for (const r of rows) await expect(page.locator(`[data-testid="fly-row-${r}"]`)).toBeVisible()
   const box = (sel: string) => page.locator(sel).evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, w: b.width, h: b.height } })
@@ -3759,9 +4255,11 @@ test('the four rows at the foot of the Manning block keep every day column in li
 // exactly over its cell, the strip under the four rows and on the screen, no day column moved by any of it — and on a
 // phone that NO input takes the focus (so the phone's keyboard never comes up and the page never zooms), with the
 // app's own pad docked at the foot of the screen, clear of the cell being typed, every key big enough for a thumb.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('a Required figure is typed straight into its cell: one box on a desktop, the app’s own number pad on a phone', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const cell = (r: string, d: string) => page.locator(`[data-testid="${r}-${d}"]`)
   const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
   const days = ['2026-01-07', '2026-01-08', '2026-01-09']
@@ -3871,9 +4369,28 @@ test('a Required figure is typed straight into its cell: one box on a desktop, t
 // phone date's ONE button is big enough for a thumb; on a phone the window starts under the app's top bar (Undo stays
 // in reach) and runs to the foot of the screen; the Leave War's own Required row — the page BEHIND the window — changes
 // at the press, with the window still up; and on a desktop the grid behind still takes a click.
+// HIS PICTURE, 23 Oct 26 (D1270): on his iPhone the ⚙ Settings window dragged sideways. Its contents were 4px wider than
+// the window (the "Who wins" fold: full width plus a margin either side), and a phone lets any such window be dragged.
+// Nothing in it may be wider than the window — the fold closed and open, at a phone's width and a desktop's.
+test('the Settings window never scrolls sideways: nothing in it is wider than the window (D1270)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await raptorRole(page, 'admin')
+  const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
+  const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
+  await press(tid('settings-open'))
+  const sheet = tid('settings-sheet')
+  await expect(sheet).toBeVisible()
+  const spill = () => sheet.evaluate(el => el.scrollWidth - el.clientWidth)
+  expect(await spill(), 'the window with every fold closed').toBeLessThanOrEqual(0)
+  await press(sheet.locator('.set-disc'))
+  expect(await spill(), 'the window with "Who wins" open').toBeLessThanOrEqual(0)
+})
+
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('Days opens from the Leave War’s settings: the month sets a date’s class, and the grid behind it follows at once', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // the grid behind Days is read through the Required rows, folded on a phone since M2 (D1258)
   const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
   const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
   const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
@@ -3977,9 +4494,11 @@ test('Days opens from the Leave War’s settings: the month sets a date’s clas
 // the month it is about; on a phone the bottom panel, with Save on the screen even when "A date" adds a box; the
 // heading it came from big enough for a thumb; and that a saved rule reaches the month AND the war's rows behind both
 // windows — a whole weekday at once — and comes back out with Remove.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('a weekday’s heading on Days sets every such day from a date onward, and the war’s rows follow', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // the war's rows behind Days are the Required rows, folded on a phone since M2 (D1258)
   const tid = (id: string) => page.locator(`[data-testid="${id}"]`)
   const rect = (l: Locator) => l.evaluate(el => { const b = el.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom } })
   const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
@@ -4405,9 +4924,11 @@ test('Undo and Redo leave the grid where it is when the changed day is on screen
 // or opening the typing box on the drag's own trailing click; that the panel sits wholly on the screen with nothing
 // drawn over the page; that the page behind it really takes a press while it is up; and that its number box is big
 // enough not to make a phone zoom the page.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('several Required cells are picked with a drag and given one number, and the panel leaves the grid behind it working', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await page.evaluate(() => { (window as any).setFlyDays([{ iso: '2026-01-07', cls: 'nf' }]) })
   const cell = (r: string, d: string) => page.locator(`[data-testid="${r}-${d}"]`)
   await expect(cell('req-p', '2026-01-07')).toHaveText('NF')
@@ -4499,9 +5020,11 @@ test('several Required cells are picked with a drag and given one number, and th
 // And rename it with free text"). jsdom proves what the form offers and saves (availform.test.tsx); the browser says
 // the name button sits on its row without making it taller or clipping in the frozen column, that the form opens
 // wholly on the screen at phone size, and that the renamed row and its new figure are what the grid then draws.
+// M2: re-expressed — on a phone the Manning rows are opened by their button first (D1258).
 test('an Available row’s name opens the counter form for it — renamed and told to leave out OCU, the row follows', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const press = (l: Locator) => (isPhone() ? l.tap() : l.click())
   const name = page.locator('[data-testid="fly-name-avail-p"]')
   await expect(name).toBeVisible()
@@ -4580,22 +5103,26 @@ test('the people’s-days panel stays up with no veil: a new drag replaces what 
 // box is incorrect" (the open-bidding outline cutting through the Available rows instead of sitting round the
 // dates). Both were the hand drawing's — nothing re-measured after the rows were moved in the page — but neither is
 // taken on trust: this is the built grid, in a real browser, at phone and desktop size, Figures panel open and shut.
+// M2: re-expressed — the grid's order is months, dates, Manning (D1256), the outline starts at the dates, the Figures drawer is gone (D1245), the rows opened first on a phone (D1258).
 test('in the Manning block the four rows cover no month button, and the open-bidding outline stays round the dates', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await page.evaluate(() => { (window as any).setFlyRun('2026-01-02', { p: 16, w: 16 }) })
   await expect(page.locator('[data-testid="req-p-2026-01-02"]')).toHaveText('16')
   await elevenCounters(page)   // the squadron's own counts, for the four rows to sit under (the app starts with none — D669)
   const rect = (sel: string) => page.locator(sel).first().evaluate(el => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } })
 
-  /* the order down the page: the squadron's counts, the four rows, the month buttons, the dates */
+  /* the order down the page since M2 (D1256): the month buttons, the dates, then the Manning block straight under them —
+     the squadron's counts, then the four rows */
+  const firstCount = await rect('.mx tbody.counts > tr')
   const lastCount = await rect('[data-testid="count-scn"]')
-  const first = await rect('[data-testid="fly-row-req-p"]'), last = await rect('[data-testid="fly-row-avail-w"]')
+  const first = await rect('[data-testid="fly-row-req-p"]')
   const strip = await rect('[data-testid="month-strip"]')
   const head = await rect('[data-testid="head-2026-01-02"]')
-  expect(first.top).toBeGreaterThanOrEqual(lastCount.bottom - 1)
-  expect(strip.top).toBeGreaterThanOrEqual(last.bottom - 1)
   expect(head.top).toBeGreaterThanOrEqual(strip.bottom - 1)
+  expect(firstCount.top).toBeGreaterThanOrEqual(head.bottom - 1)
+  expect(first.top).toBeGreaterThanOrEqual(lastCount.bottom - 1)
 
   /* (the check below must not pass for want of anything to check: the strip really holds the year's twelve buttons) */
   expect(await page.locator('[data-testid="month-strip"] button').count()).toBeGreaterThanOrEqual(12)
@@ -4612,18 +5139,16 @@ test('in the Manning block the four rows cover no month button, and the open-bid
       const d = await rect('[data-testid="figdrawer"]'), s = await rect('[data-testid="month-strip"]')
       expect(d.top, `${state}: the Figures panel reaches above the month buttons`).toBeGreaterThanOrEqual(s.bottom - 1.5)
     }
-    /* 3. the green open-bidding outline starts under the month buttons, at the dates — it crosses none of the four rows */
-    const box = await rect('#page-leavewar .lw-bidbox'), s = await rect('[data-testid="month-strip"]'), l = await rect('[data-testid="fly-row-avail-w"]')
+    /* 3. the green open-bidding outline starts under the month buttons, AT the dates. Since M2 the four rows stand under
+       the dates (D1256), inside the dates' own columns, so the outline's top is the dates' top — never above it, and
+       never down in the Manning block (the phone's fault he circled: the outline cutting through the Available rows) */
+    const box = await rect('#page-leavewar .lw-bidbox'), s = await rect('[data-testid="month-strip"]'), h = await rect('[data-testid="head-2026-01-02"]')
     expect(box.top, `${state}: the bidding outline starts above the month buttons`).toBeGreaterThanOrEqual(s.top - 1.5)
-    expect(box.top, `${state}: the bidding outline cuts through the four rows`).toBeGreaterThanOrEqual(l.bottom - 1.5)
+    expect(Math.abs(box.top - h.top), `${state}: the bidding outline does not start at the dates`).toBeLessThanOrEqual(1.5)
   }
   await check('as it opens')
-  /* the Figures panel the other way round from how this size opens (shut on a phone, open on a desktop) */
-  await figBar(page).click()
-  await settleGrid(page)
-  await check('with the Figures panel switched')
+  /* (the Figures panel's other state is not asked again: the drawer is switched off since M2 — D1245) */
   /* and after the block is folded away and brought back: the rows return to the same place, the outline with them */
-  await figBar(page).click()
   await page.locator('[data-testid="counts-toggle"]').click()
   await expect(page.locator('[data-testid="fly-row-req-p"]')).toHaveCount(0)
   await page.locator('[data-testid="counts-toggle"]').click()
@@ -4640,6 +5165,7 @@ test('in the Manning block the four rows cover no month button, and the open-bid
 // four: every row of the block still stands in line under the dates, nothing covers a month button, and the green
 // open-bidding outline still starts at the dates. Then that the order is the squadron's: Undo takes the last drop
 // back, and a reload — signed in as a member — shows the same order.
+// M2: re-expressed — months, dates, then the block (D1256); the outline starts at the dates; Rearrange from ⚙ (D1254); the rows opened first on a phone (D1258).
 test('a counter row is dragged between the fixed rows and below all four, and the grid stays whole', async ({ page }) => {
   await lwRole(page, 'admin')
   await raptorRole(page, 'admin')
@@ -4647,13 +5173,15 @@ test('a counter row is dragged between the fixed rows and below all four, and th
   const refused = await page.evaluate(() => [['ca', 'CA', 'pilot'], ['cb', 'CB', 'wso'], ['cc', 'CC', 'pilot']]
     .filter(([id, label, seat]) => !(window as any).lwSaveManningRule({ id, label, count: { kind: 'people', filter: { seats: [seat] } }, threshold: { amber: 0, red: 0 } })).length)
   expect(refused).toBe(0)
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await page.waitForSelector('[data-testid="count-cc"]')
   const FLY = ['fly-row-req-p', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w']
   const order = () => page.$$eval('.mx tbody.counts > tr', els => els.map(e => e.getAttribute('data-testid')))
   expect(await order()).toEqual(['count-ca', 'count-cb', 'count-cc', ...FLY])
 
+  /* in from ⚙ (D1254); the bar's "⇅ Done" is the way out */
   const toggle = page.locator('[data-testid="roster-arrange"]')
-  await toggle.click()
+  await rearrangeOn(page)
   await settleGrid(page)
   /* in Rearrange the four carry no grip and no cross — a counter does */
   await expect(page.locator('.mx tbody.counts tr.flyrow .drag, .mx tbody.counts tr.flyrow .mrow-btn')).toHaveCount(0)
@@ -4730,13 +5258,15 @@ test('a counter row is dragged between the fixed rows and below all four, and th
       expect(Math.abs(row.cell!.left - g.head.left), `${state}: ${row.id} is out of line with the dates`).toBeLessThan(1)
       expect(Math.abs(row.cell!.width - g.head.width), `${state}: ${row.id}'s day is not as wide as the date above it`).toBeLessThan(1)
     }
-    const last = g.rows[g.rows.length - 1]!
-    expect(g.strip.top, `${state}: the month buttons are not under the block's last row`).toBeGreaterThanOrEqual(last.bottom - 1)
+    /* the grid's order since M2 (D1256): the month buttons, the dates, then the block straight under the dates */
+    const firstRow = g.rows[0]!
     expect(g.head.top, `${state}: the dates are not under the month buttons`).toBeGreaterThanOrEqual(g.strip.bottom - 1)
+    expect(firstRow.top, `${state}: the block's first row is not under the dates`).toBeGreaterThanOrEqual(g.head.bottom - 1)
     expect(g.covered, `${state}: something covers these month buttons`).toEqual([])
     expect(g.box, `${state}: the open-bidding outline is drawn`).not.toBeNull()
     expect(g.box!.top, `${state}: the bidding outline starts above the month buttons`).toBeGreaterThanOrEqual(g.strip.top - 1.5)
-    expect(g.box!.top, `${state}: the bidding outline cuts through the block's rows`).toBeGreaterThanOrEqual(last.bottom - 1.5)
+    /* the outline starts AT the dates — the block's rows stand inside the dates' columns now, under them (D1256) */
+    expect(Math.abs(g.box!.top - g.head.top), `${state}: the bidding outline does not start at the dates`).toBeLessThanOrEqual(1.5)
   }
   await whole('in Rearrange')
   await toggle.click()
@@ -4765,8 +5295,10 @@ test('a counter row is dragged between the fixed rows and below all four, and th
   await page.reload()
   await openLeaveWar(page)
   await putDrawerAway(page)
+  await openManning(page)   // a fresh page on a phone opens them folded again (D1258)
   expect(await order()).toEqual(moved)
   await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="settings-rearrange"]')).toHaveCount(0)
 })
 
 test('a member reads the events and cannot type into them', async ({ page }) => {
@@ -4817,32 +5349,40 @@ test('an off day is green, a no-leave day orange, and a work word red', async ({
 // The counter picker was a rounded floating pill that crowded the events; the
 // owner asked to square it off. Pin that it reads as a contained, squared
 // control — a small radius and a real border — which jsdom cannot measure.
-test('the counter picker is a contained, squared control', async ({ page }) => {
-  const pick = page.locator('[data-testid="counter-pick"]')
-  const radius = parseFloat(await pick.evaluate(el => getComputedStyle(el).borderTopLeftRadius))
-  expect(radius).toBeLessThanOrEqual(4)
-  const border = parseFloat(await pick.evaluate(el => getComputedStyle(el).borderTopWidth))
-  expect(border).toBeGreaterThan(0)
+// M2 (D1245): re-expressed — no picker any more; the heading is a plain label, so it wears no box that would say it can
+// be pressed, and it keeps its height (the header row does not move).
+test('the column heading beside the names is a plain LVE label, not a control', async ({ page }) => {
+  await expect(page.locator('[data-testid="counter-pick"]')).toHaveCount(0)
+  const head = page.locator('[data-testid="counter-head"]')
+  await expect(head.locator('[data-testid="counter-name"]')).toHaveText('+LVE')
+  await expect(head.locator('button')).toHaveCount(0)
+  const label = head.locator('.cpick')
+  expect(parseFloat(await label.evaluate(el => getComputedStyle(el).borderTopWidth))).toBe(0)
+  expect(await label.evaluate(el => getComputedStyle(el).cursor)).not.toBe('pointer')
 })
 
 // ---- the period label, the contrast, and the under-manned list -----------
 // All three from the owner's review of 10 Aug 26.
 
+// M2: re-expressed — the word is "View", not "Period", and it stands beside the picker on a phone too (D1174).
 test('the period picker says what it is', async ({ page }) => {
-  // On a phone the word beside the picker is gone (owner, D678, 8 Oct 26 — the top of the page is two lines there);
-  // a tablet and a desktop keep it (D679). The picker's own name, below, says "Period" at every size.
-  if (isPhone()) await expect(page.locator('[data-testid="period-label"]')).toHaveCount(0)
-  else await expect(page.locator('[data-testid="period-label"]')).toHaveText('Period')
+  await expect(page.locator('[data-testid="period-label"]')).toHaveText('View')
+  // beside the picker, on its line, before it
+  const lab = (await page.locator('[data-testid="period-label"]').boundingBox())!
+  const pick = (await page.locator('[data-testid="war-picker"]').boundingBox())!
+  expect(lab.x + lab.width).toBeLessThanOrEqual(pick.x + 1)
+  expect(Math.abs((lab.y + lab.height / 2) - (pick.y + pick.height / 2))).toBeLessThan(4)
   // The visible label has to name the control for a screen reader too, not
   // merely sit next to it.
   expect(await page.locator('[data-testid="war-picker"]').getAttribute('aria-label'))
-    .toContain('Period')
+    .toContain('View')
 })
 
 // The complaint was green ink on a green field. Luminance contrast never
 // caught it — the old pair measured ~10.9:1 — so this pins what actually
 // broke: ink that is a tint of its own background's hue gives the eye no
 // edge. A near-neutral ink is the fix, and this is what holds it.
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the tinted chips are not ink in their own background hue', async ({ page }) => {
   /* The `.undermanned` class only exists while some day is red, and on the
      projected 58-man roster the demo breaks no rule — so the red chip needs
@@ -4884,17 +5424,18 @@ test('the picker options are neutral, not the chip green', async ({ page }) => {
    truth (0 days, chip disabled); the three list tests that follow seed a
    red-day fixture of their own through storage, because the list cannot be
    opened otherwise. */
+// M2: re-expressed — the count is the Manning button's right half now, red days only, and it is GONE at 0 (D1243): the
+// button reads "Manning" alone, rather than a disabled "0 days".
 test('the under-manned chip reads 0 days on the projected roster, and is disabled', async ({ page }) => {
   const chip = page.locator('[data-testid="undermanned"]')
-  /* on a phone the label beside the count is gone and the count carries its one word (D678): "Under 0 days" */
-  const zero = isPhone() ? 'Under 0 days' : '0 days'
+  const manning = page.locator('[data-testid="counts-toggle"]')
   /* as the app opens — NO counters, so nothing can be under-manned (D669) */
-  await expect(chip).toHaveText(zero)
-  await expect(chip).toBeDisabled()
+  await expect(chip).toHaveCount(0)
+  await expect(manning).toHaveText(/^\W*Manning$/)
   /* and still 0 once the eleven counters the app used to start with are made: the demo roster breaks none of them */
   await elevenCounters(page)
-  await expect(chip).toHaveText(zero)
-  await expect(chip).toBeDisabled()
+  await expect(chip).toHaveCount(0)
+  await expect(manning).toHaveText(/^\W*Manning$/)
   await expect(page.locator('[data-testid="undermanned-list"]')).toHaveCount(0)
 })
 
@@ -4944,6 +5485,7 @@ async function seedRedDays(page: Page) {
   }, RED_DAYS)
 }
 
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the under-manned chip opens the days that caused it', async ({ page }) => {
   await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
@@ -4957,6 +5499,7 @@ test('the under-manned chip opens the days that caused it', async ({ page }) => 
 // 0x0, so the unit suite proves the right column was MARKED and nothing about
 // whether 365 columns actually moved. 10 Feb is the last red day and sits far
 // off the right edge on both projects.
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('choosing a day jumps the grid to it, clear of the frozen columns', async ({ page }) => {
   await seedRedDays(page)
   const wrap = page.locator('.mx-wrap')
@@ -4983,6 +5526,7 @@ test('choosing a day jumps the grid to it, clear of the frozen columns', async (
   expect(box.hr).toBeLessThanOrEqual(box.wr + 1)
 })
 
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the jumped-to day is visibly marked', async ({ page }) => {
   await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
@@ -4997,6 +5541,7 @@ test('the jumped-to day is visibly marked', async ({ page }) => {
 // The list is positioned from JS precisely so this cannot happen. On a phone
 // the chip sits far enough right that a list anchored to its left edge runs
 // past the viewport and stops being clickable at all.
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('the under-manned list stays on screen and its rows are reachable', async ({ page }) => {
   await seedRedDays(page)
   await page.locator('[data-testid="undermanned"]').click()
@@ -5184,11 +5729,12 @@ test('a decision made before the reopen survives it', async ({ page }) => {
   await page.locator('[data-testid="cell-bruise-2026-01-23"]').click()
   await page.locator('[data-testid="decide-refuse"]').click()
   const chip = page.locator('[data-testid="cell-bruise-2026-01-23"] .c')
-  expect(await chip.getAttribute('class')).toContain('ref')
+  // look F (D1175): refused is the grey, struck box — `s-r`, where it was `ref`
+  await expect(chip).toHaveClass(/(^|\s)s-r(\s|$)/)
 
   await openMonths(page, ['2026-01', '2026-02', '2026-03'])
   await expect(openChip(page)).toContainText('1 Jan – 31 Mar')
-  expect(await chip.getAttribute('class')).toContain('ref')
+  await expect(chip).toHaveClass(/(^|\s)s-r(\s|$)/)
 })
 
 // ---- the categorised roster (owner, 18 Aug 26) --------------------------
@@ -5221,6 +5767,7 @@ test('CAT sub-headings split the ops groups on desktop and fold away on a phone'
   else await expect(sub).toBeHidden()   // rendered but display:none — the owner's "just colour code it" on mobile
 })
 
+// M2: re-expressed — in from ⚙'s "⇅ Rearrange the grid", out by the bar's "⇅ Done", which goes when Rearrange ends (D1254).
 test('an admin hand-drags the roster from the ⇅ toggle, which is also the way out; a member gets no tool', async ({ page }) => {
   await lwRole(page, 'admin')
   const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid').slice(4)))
@@ -5228,9 +5775,12 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
   const toggle = page.locator('[data-testid="roster-arrange"]')
   const gone = page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')
 
+  /* since M2 the way in is ⚙'s "⇅ Rearrange the grid" (D1254); the lit "⇅ Done" on the grid's bar is the way out, and
+     is drawn only while Rearrange is on */
+  await expect(toggle).toHaveCount(0)
   if (page.viewportSize()!.width >= 700) {
     // Pointer drag (works on touch too): move the top row down past the fifth.
-    await page.locator('[data-testid="roster-arrange"]').click()
+    await rearrangeOn(page)
     const h = (await page.locator(`[data-testid="drag-${before[0]}"]`).boundingBox())!
     const tgt = (await page.locator(`[data-testid="row-${before[5]}"]`).boundingBox())!
     await page.mouse.move(h.x + 5, h.y + 5)
@@ -5262,12 +5812,12 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
     await expect(gone).toHaveCount(0)
     await expect(toggle).toHaveClass(/\bon\b/)
     await toggle.click()
-    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(toggle).toHaveCount(0)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   } else {
-    // On a phone the toggle is the ⇅ icon alone (the word is hidden), lit while
-    // on; in and out through the same button, nothing else appears.
-    await toggle.click()
+    // On a phone "Done" is the ⇅ icon alone (the word is hidden), lit while
+    // on; in from ⚙, out through Done, nothing else appears.
+    await rearrangeOn(page)
     await expect(toggle).toHaveClass(/\bon\b/)
     await expect(gone).toHaveCount(0)
     const lbl = toggle.locator('.rtlbl')
@@ -5275,13 +5825,15 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
     expect((await toggle.textContent())!.trim().startsWith('⇅')).toBe(true)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(1)
     await toggle.click()
-    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(toggle).toHaveCount(0)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   }
 
   await lwRole(page, 'member')
   await expect(gone).toHaveCount(0)
   await expect(toggle).toHaveCount(0)
+  // a member has no ⚙, so no way in either
+  await expect(page.locator('[data-testid="settings-open"], [data-testid="settings-rearrange"]')).toHaveCount(0)
 })
 
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26). During a Rearrange drag exactly one
@@ -5291,11 +5843,12 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
    after the drop the same frame flashes once on the row where it LANDED and
    is gone within a second. The phone drives a real CDP touch (the machine arms
    on pointerdown, no hold); the desktop a mouse. */
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254).
 test('a picked-up row wears one frame the width of the visible grid, and the row it lands on flashes once', async ({ page }) => {
   await lwRole(page, 'admin')
   const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid')!.slice(4)))
   const before = await ids()
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   const src = before[1]!, dst = before[5]!
   /* The drop point has to be ON SCREEN before the gesture starts: the phone's
      viewport is 390x664 and the sixth roster row sits ~700px down, and a touch
@@ -5384,6 +5937,7 @@ test('a picked-up row wears one frame the width of the visible grid, and the row
   await expect(page.locator('.lift-frame.lift-land')).toHaveCount(0, { timeout: 1500 })
 })
 
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done".
 test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {
   // The free-text label editor was REMOVED (owner, 28 Aug 26 — "i can edit
   // personnel, dont need to show that, just leave it as the callsign/name").
@@ -5391,7 +5945,7 @@ test('a personnel row shows its callsign, with no edit box, in Rearrange', async
   // Rearrange too — no edit box in either mode, at every width.
   await lwRole(page, 'admin')
   await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
   // the callsign is what the name column shows
   await expect(page.locator('[data-testid="row-torque"] .cs')).toHaveText('Ratchet')
@@ -5401,39 +5955,49 @@ test('a personnel row shows its callsign, with no edit box, in Rearrange', async
 /* ---- the 18 Aug 26 layout rework: row order, bracket, frozen header, zoom.
    Browser-gated because every one of these is geometry jsdom cannot see. */
 
+// M2: re-expressed — the grid reads months, dates, Manning, events, roster now (D1256).
 test('the grid reads counts, months, header, events, roster — top to bottom', async ({ page }) => {
   await elevenCounters(page)   // a count row to measure (the app starts with none — D669); the four rows are checked below
+  /* since M2 (D1256): the month buttons, the dates, the Manning rows straight under them, the Event rows, the people */
   const groups = page.locator('#page-leavewar table.mx > *')
-  await expect(groups.nth(0)).toHaveClass('counts')
-  await expect(groups.nth(1)).toHaveClass('mstripe')
-  await expect(groups.nth(2)).toHaveClass('mxhead')
+  await expect(groups.nth(0)).toHaveClass('mstripe')
+  await expect(groups.nth(1)).toHaveClass('mxhead')
+  await expect(groups.nth(2)).toHaveClass('counts')
   await expect(groups.nth(3)).toHaveClass('events')
   // and the order is PAINTED that way, not merely in the DOM
+  const strip = (await page.locator('[data-testid="month-strip"]').boundingBox())!
   const counts = (await page.locator('[data-testid="count-sets"]').boundingBox())!
   const head = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  const event = (await page.locator('[data-testid="event-row-1"]').boundingBox())!
   const firstRow = (await page.locator('[data-testid="group-SXO"]').boundingBox())!
-  expect(counts.y).toBeLessThan(head.y)
-  expect(head.y).toBeLessThan(firstRow.y)
-  /* the four Required / Available rows are the block's LAST rows, above the month buttons */
+  expect(strip.y).toBeLessThan(head.y)
+  expect(head.y + head.height).toBeLessThanOrEqual(counts.y + 1)
+  /* the four Required / Available rows are the block's LAST rows, above the Event rows */
   const lastFly = (await page.locator('[data-testid="fly-row-avail-w"]').boundingBox())!
   expect(counts.y).toBeLessThan(lastFly.y)
-  expect(lastFly.y + lastFly.height).toBeLessThanOrEqual((await page.locator('[data-testid="month-strip"]').boundingBox())!.y + 1)
+  expect(lastFly.y + lastFly.height).toBeLessThanOrEqual(event.y + 1)
+  expect(event.y).toBeLessThan(firstRow.y)
 })
 
 // AS THE APP OPENS (owner, D669, 8 Oct 26): the Manning block comes with NO count rows of its own — only the four
 // Required / Available rows — and the grid is still counts, months, header, events, roster. In a real browser, because
 // a block with nothing but those four rows is a new shape for the frozen columns, the month strip and the outline.
+// M2: re-expressed — months, dates, then the four rows (D1256); the outline starts at the dates; opened first on a phone (D1258); Rearrange from ⚙ (D1254).
 test('with no counters the Manning block is the four rows alone, and the grid still reads top to bottom', async ({ page }) => {
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   await expect(page.locator('#page-leavewar [data-testid^="count-"]')).toHaveCount(0)
+  /* since M2 (D1256): the month buttons, the dates, then the block straight under them */
   const groups = page.locator('#page-leavewar table.mx > *')
-  await expect(groups.nth(0)).toHaveClass('counts')
+  await expect(groups.nth(0)).toHaveClass('mstripe')
+  await expect(groups.nth(1)).toHaveClass('mxhead')
+  await expect(groups.nth(2)).toHaveClass('counts')
   await expect(page.locator('#page-leavewar tbody.counts > tr')).toHaveCount(4)
   const rect = (sel: string) => page.locator(sel).first().evaluate(el => { const b = el.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right } })
   const first = await rect('[data-testid="fly-row-req-p"]'), last = await rect('[data-testid="fly-row-avail-w"]')
   const strip = await rect('[data-testid="month-strip"]'), head = await rect('#page-leavewar .mx .mxhead th.who')
   expect(first.top).toBeLessThan(last.top)
-  expect(strip.top).toBeGreaterThanOrEqual(last.bottom - 1)
   expect(head.top).toBeGreaterThanOrEqual(strip.bottom - 1)
+  expect(first.top).toBeGreaterThanOrEqual(head.bottom - 1)
   /* every row of the four sits under its date, as wide as it — the column contract holds with nothing above them */
   for (const d of ['2026-01-05', '2026-01-09']) {
     const h = await rect(`[data-testid="head-${d}"]`)
@@ -5448,8 +6012,8 @@ test('with no counters the Manning block is the four rows alone, and the grid st
     .filter(b => { const r = b.getBoundingClientRect(); if (r.right <= 0 || r.left >= innerWidth || !r.width) return false
       const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !(at && (at === b || b.contains(at))) })
     .map(b => b.textContent))).toEqual([])
-  const box = await rect('#page-leavewar .lw-bidbox')
-  expect(box.top).toBeGreaterThanOrEqual(last.bottom - 1.5)
+  const box = await rect('#page-leavewar .lw-bidbox'), date = await rect('[data-testid="head-2026-01-05"]')
+  expect(Math.abs(box.top - date.top), 'the outline starts at the dates (the four rows stand under them — D1256)').toBeLessThanOrEqual(1.5)
   /* folded away and back with the Manning button, for a member */
   await page.locator('[data-testid="counts-toggle"]').click()
   await expect(page.locator('[data-testid="fly-row-req-p"]')).toHaveCount(0)
@@ -5457,12 +6021,14 @@ test('with no counters the Manning block is the four rows alone, and the grid st
   await expect(page.locator('[data-testid="fly-row-avail-w"]')).toBeVisible()
   /* an admin in Rearrange: no grip, no cross, no Archive — there is nothing of the squadron's own to move or delete */
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   await expect(page.locator('[data-testid^="manning-"]')).toHaveCount(0)
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(1)
 })
 
+// M2: skipped — the month band row over the dates is gone (D1257): the lit month button and each month's first date name it.
 test('every month wears a bracket spanning exactly its days', async ({ page }) => {
+  test.skip(true, 'D1257 — no month band row (no bracket) over the dates since M2')
   const jan = page.locator('[data-testid="bracket-2026-01"]')
   await expect(jan).toHaveText('JAN')
   const bb = (await jan.boundingBox())!
@@ -5477,16 +6043,20 @@ test('every month wears a bracket spanning exactly its days', async ({ page }) =
 // fixed 72px was too short, so NOV/DEC spilled onto the bracket bar below
 // (owner, 19 Aug 26). The cell now measures the strip and reserves its real
 // height, so the last row must sit clear of the bracket.
+// M2: re-expressed — the bracket bar is gone (D1257); the row under the month buttons is the dates now (D1256), so the
+// strip's reserved height is proved against the dates' header.
 test('the month strip fits its wrapped rows and clears the bracket bar below', async ({ page }) => {
   for (const m of ['JAN', 'JUN', 'DEC']) await expect(page.locator(`[data-testid="month-${m}"]`)).toBeVisible()
+  await expect(page.locator('[data-testid="month-bracket"]')).toHaveCount(0)
   const dec = (await page.locator('[data-testid="month-DEC"]').boundingBox())!
-  const bracket = (await page.locator('[data-testid="month-bracket"]').boundingBox())!
-  expect(dec.y + dec.height).toBeLessThanOrEqual(bracket.y + 1)
+  const dates = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  expect(dec.y + dec.height).toBeLessThanOrEqual(dates.y + 1)
 })
 
 // The manning counts block collapses on a header toggle, for EITHER role — the
 // default login is a member, so this proves a normal user can hide it (owner,
 // 19 Aug 26).
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('a member can collapse and reopen the manning counts', async ({ page }) => {
   await elevenCounters(page)   // the app starts with no counters (D669)
   await expect(page.locator('[data-testid="count-sets"]')).toBeVisible()
@@ -5908,6 +6478,7 @@ test('the roster does not reflow mid-scroll, only once the scroll settles', asyn
 // form, and it reads real numbers on the real grid. The form is the tallest
 // sheet in the app — the whole-viewport assertion is the point of running
 // this in a browser, on the phone project especially.
+// M2: re-expressed — on a phone the Manning rows are opened by their button to see the new row (D1258).
 test('an admin builds a counter in the form, and the new row counts', async ({ page }) => {
   await lwRole(page, 'admin')
   await page.locator('[data-testid="settings-open"]').click()
@@ -5926,6 +6497,7 @@ test('an admin builds a counter in the form, and the new row counts', async ({ p
   await page.locator('[data-testid="cform-name"]').fill('SXO CREW')
   await page.locator('[data-testid="cf-qual-sxo"]').click()
   await page.locator('[data-testid="cform-save"]').click()
+  await openManning(page)   // on a phone the Manning rows open folded since M2 (D1258)
   const row = page.locator('[data-testid="count-sxo-crew"]')
   await expect(row).toHaveCount(1)
   // The seeded world has SXOs on its roster, so the new row shows a real
@@ -5934,6 +6506,7 @@ test('an admin builds a counter in the form, and the new row counts', async ({ p
   await expect(first).not.toHaveText('0')
 })
 
+// M2: unchanged — passes again once elevenCounters opens the Manning rows on a phone (D1258).
 test('deleting a counter takes its row off the grid', async ({ page }) => {
   await lwRole(page, 'admin')
   await elevenCounters(page)   // the app starts with no counters (D669)
@@ -5965,6 +6538,7 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
 // sheet (counters & rows); the on-grid rearrange bar is gone (6 Sep 26) — so this
 // checks each in its place on BOTH projects (the phone is the real guard, the
 // desktop proves it costs nothing).
+// M2: re-expressed — ⚙ and OIL on the tab row, "+ New period" in the period list, Rearrange inside ⚙ and "⇅ Done" on the bar (D1254, D1244).
 test('every admin control is reachable within the viewport', async ({ page }) => {
   await lwRole(page, 'admin')
   const vw = page.viewportSize()!.width
@@ -5975,17 +6549,18 @@ test('every admin control is reachable within the viewport', async ({ page }) =>
     expect(box.x, `${id} starts off the left edge`).toBeGreaterThanOrEqual(0)
     expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
   }
-  // the top row: the OIL tracker, the ⚙ settings entry and the ⇅ rearrange toggle
+  // the top row: the OIL tab and the ⚙ settings entry at its right end (D1254); "+ New period" is a line of the period
+  // list (D1244), which is itself on the screen
   await within('oil-tracker')
   await within('settings-open')
-  await within('roster-arrange')
-  // config controls, folded into ⚙ Settings
+  await within('war-picker')
+  // config controls, folded into ⚙ Settings — Rearrange among them since M2 (D1254)
   await page.locator('[data-testid="settings-open"]').click()
-  for (const id of ['event-add', 'sans-toggle', 'counter-add']) await within(id)
+  for (const id of ['event-add', 'sans-toggle', 'counter-add', 'settings-rearrange']) await within(id)
   await expect(page.locator('[data-testid="counter-reset-all"]')).toHaveCount(0)   // "Reset counters" left with the built-in counters (D669)
   await page.locator('[data-testid="settings-close"]').click()
-  // rearranging adds no control of its own — the lit toggle is the only one
-  await page.locator('[data-testid="roster-arrange"]').click()
+  // rearranging adds one control of its own — "⇅ Done" on the grid's bar, the way out
+  await rearrangeOn(page)
   await within('roster-arrange')
   await expect(page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')).toHaveCount(0)
   await page.locator('[data-testid="roster-arrange"]').click()
@@ -6208,6 +6783,7 @@ test('a green box frames each open stretch, and clears when bidding closes', asy
 // the left green border vanishes while the far right edge stays clear (owner,
 // 7 Sep 26, from the preview). jsdom computes no layout, so only a browser can
 // prove it moved. Pins the `arranging` dep added to measureBidBox.
+// M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done".
 test('the open-bidding box keeps its left edge on 1 Jan through Rearrange', async ({ page }) => {
   await openLeaveWar(page, 'a')   // admin, so Rearrange is available
   await putDrawerAway(page)
@@ -6217,7 +6793,7 @@ test('the open-bidding box keeps its left edge on 1 Jan through Rearrange', asyn
     document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().left)
   const janRest = await jan1Left()
   expect(Math.abs(await boxLeft() - janRest)).toBeLessThanOrEqual(4)  // aligned at rest
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   // Rearrange grows the frozen name column, so 1 Jan shifts right...
   const janArr = await jan1Left()
   expect(janArr).toBeGreaterThan(janRest)
@@ -6345,6 +6921,53 @@ test('the grid draws a window of months over year-wide placeholders, keeps every
   if (!jump.janWasDrawn) expect(jump.decWithJan, 'the jump drew January and dropped December in the same draw').toBe(false)
   else expect((await read()).months.length).toBe(12)   // the fill finished the year first: the jump only scrolled
   expect((await read()).misaligned).toBe(0)
+})
+
+// HIS VIDEO, 23 Oct 26 (05:36, the live app on his iPhone): a fling from December back to January left every month it
+// passed striped, and January striped for a second after the grid stopped. A month LEFT of the view whose width was only
+// an estimate was never drawn while the scroll moved (colwindow.ts stepAllowedInMotion — it would have hopped the
+// columns on screen). Now it is drawn mid-scroll and its error goes to the left placeholder (Matrix padErrRef), so no
+// column on screen moves. The scroll is moved frame by frame (this browser's touch gesture does not fling the grid), slow
+// enough that the view stays next to the drawn window: then the only path that can draw the month is the in-motion one.
+test('a month left of the view is drawn while the scroll is still moving, and no column on screen moves', async ({ page }) => {
+  test.skip(!isPhone(), "the phone's rolling window — the desktop draws the whole year")
+  await page.locator('[data-testid="month-DEC"]').click()
+  await gridAtRest(page, '2026-12-01')
+  // the rolling window settles at rest, the months left of it undrawn
+  const drawn = () => page.evaluate(() => [...new Set([...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')]
+    .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12)))].sort())
+  let prev = ''
+  await expect.poll(async () => { const d = JSON.stringify(await drawn()); const same = d === prev; prev = d; return same }, { timeout: 0, intervals: [400] }).toBe(true)
+  expect((await drawn())[0]! > '2026-04', 'the window at rest leaves the spring undrawn').toBe(true)
+  // Now scroll left 12px a frame — a steady drag, ~720px a second — for four seconds' worth of frames, never stopping.
+  // Every frame: how long a placeholder stripe has stood in the view without a break, and whether any day column on
+  // screen sits anywhere but where it sat the first time it was seen (in the scroller's own content px).
+  const r = await page.evaluate(() => new Promise<{ longestStripe: number; hop: number; moved: number; frames: number }>(res => {
+    const w = document.querySelector<HTMLElement>('.mx-wrap')!
+    const head = () => w.querySelector('tbody.mxhead tr:last-child')!
+    const frozen = () => { let x = 0; for (const th of head().children) { if (th.classList.contains('lwph') || th.classList.contains('day')) break; x = Math.max(x, th.getBoundingClientRect().right) } return x }
+    const seen = new Map<string, number>()
+    const sl0 = w.scrollLeft
+    let run = 0, longestStripe = 0, hop = 0, n = 0
+    const step = () => {
+      const wr = w.getBoundingClientRect(), L = frozen(), R = wr.right
+      let stripe = false
+      for (const ph of head().querySelectorAll('.lwph')) { const q = ph.getBoundingClientRect(); if (Math.min(q.right, R) - Math.max(q.left, L) > 2) stripe = true }
+      run = stripe ? run + 1 : 0; longestStripe = Math.max(longestStripe, run)
+      for (const th of head().querySelectorAll<HTMLElement>('th.day')) {
+        const q = th.getBoundingClientRect(); if (q.right < L || q.left > R) continue
+        const id = th.dataset.testid!, x = q.left - wr.left + w.scrollLeft
+        const was = seen.get(id); if (was == null) seen.set(id, x); else hop = Math.max(hop, Math.abs(x - was))
+      }
+      if (n++ < 240 && w.scrollLeft > 0) { w.scrollLeft -= 12; requestAnimationFrame(step) } else res({ longestStripe, hop, moved: sl0 - w.scrollLeft, frames: n })
+    }
+    requestAnimationFrame(step)
+  }))
+  expect(r.moved, 'the scroll really moved, over several undrawn months').toBeGreaterThan(2000)
+  // A month takes a beat to draw, so a stripe may show for a few frames as it comes into view — never for the whole pass
+  // over a month (about 50 frames at this speed), which is what the old rule did: it waited for the scroll to stop.
+  expect(r.longestStripe, 'no stripe stood in the view for the pass over a month').toBeLessThanOrEqual(15)
+  expect(r.hop, 'no day column on screen moved when a month was drawn beside it').toBeLessThanOrEqual(1)
 })
 
 // ---- the year-wide bottom scrollbar, and the background fill (owner, 4 Sep 26)
@@ -6600,6 +7223,9 @@ const daySheetFor = async (page: Page, who: string) => {
   await expect(sheet.locator('[data-testid^="dl-approve-"]'), 'the sheet where the bid is decided').toBeVisible()
 }
 
+// M2 (D1254): the grid's bar stands on the grid card now, and the note is drawn in that card's head row — a line of its own
+// under the bar, edge to edge across the CARD (D827's slim line, where the bar now is). List B's run found it a box
+// beside the bar, 227 of 390 wide, its words run together; fixed in chrome.css (.card-hd > .clashnote).
 test('on a phone the clash note is a slim line under the two lines of buttons; it opens its list in place, in aligned columns, and a tap opens that day for that person', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size design (D827); the desktop keeps its strip — the test below (D679)')
   await page.setViewportSize({ width: 390, height: 844 })
@@ -6616,6 +7242,7 @@ test('on a phone the clash note is a slim line under the two lines of buttons; i
     })
     return {
       inFilters: filters.contains(n), next: filters.nextElementSibling === n, left: Math.round(r.left), width: Math.round(r.width), vw: innerWidth,
+      card: (() => { const el = n.closest('.card-hd')!.parentElement as HTMLElement, c = el.getBoundingClientRect(); return [Math.round(c.left + el.clientLeft), Math.round(el.clientWidth)] })(),   // inside the card's frame
       line: (line.textContent || '').replace(/\s+/g, ' ').trim(), lineH: Math.round(line.getBoundingClientRect().height), expanded: line.getAttribute('aria-expanded'),
       filtersH: Math.round(filters.getBoundingClientRect().height), gridTop: Math.round(pg.querySelector('.stage')!.getBoundingClientRect().top),
       rows, innerScroll: !!list && list.scrollHeight > list.clientHeight + 1, sideways: document.documentElement.scrollWidth > innerWidth,
@@ -6624,7 +7251,8 @@ test('on a phone the clash note is a slim line under the two lines of buttons; i
   let m = await read()
   expect(m.inFilters, 'never inside the second line of buttons').toBe(false)
   expect(m.next, 'straight after the two lines').toBe(true)
-  expect([m.left, m.width], 'the width of the screen').toEqual([0, m.vw])
+  expect([m.left, m.width], 'edge to edge across the grid card, on a line of its own').toEqual(m.card)
+  expect(m.width, 'nearly the screen').toBeGreaterThan(m.vw - 30)
   expect(m.line).toBe('⚠ 2 clashes with the schedule Show')
   expect(m.expanded, 'several clashes start closed').toBe('false')
   expect(m.lineH, 'a slim line — the schedule’s own styles must not reach it (it stood 46 tall when one did)').toBeLessThanOrEqual(34)

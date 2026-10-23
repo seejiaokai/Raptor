@@ -7246,15 +7246,37 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   (`ui/figdrawer.test.tsx` states the rule whole).
 - **A Required cell** shows the ONE resolver's figure (`sync.ts flyMonth`): the number in the accent, "NF" on a no-fly
   day, a dash where no figure applies; the day a running figure starts wears a corner mark, its title "16 from Tue 6 Jan
-  onward". **An Available cell** shows the war's own count for the seat (never a SANS man), red where it is UNDER its
-  Required; a tap opens the working — required, available, SANS committed to fly, still needed — a small read-only menu
-  for everyone (a press outside, Escape, a scroll or a second tap closes it).
-- **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W are FIXED — D668
-  (8 Oct 26: "1 as recommended")**: no control renames them, and the saved name step 1 had made room for (`flynames`, its
-  command, permission row, reader, writer and Undo's words) was taken out on 8 Oct 26 — the rows read `REQ_NAME`
-  (`ui/FlyEdit.tsx`), never a store; a record that build left behind is read by nothing (`ui/flyrows.test.tsx`,
-  `state/flyplan.test.ts`). While a name is still the one it started with, a
-  phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W).
+  onward". **An Available cell** shows the war's own count for the seat (never a SANS man), RED under its red point and
+  AMBER under its amber point — each that day's Required plus or minus the row's own number, set in the row's window
+  (the Leave War overhaul, D1190, D1191, D1202 — below); red "+ 0" and no amber until an admin sets them, which is the
+  rule the rows always had: red where it is UNDER its Required. Red wins where both hold; a no-fly day or a day with no
+  Required shows neither; the figure takes the colour, never a filled box (a Manning row's look) —
+  `engine/availrows.ts availVerdict`, the ONE answer every later screen reads too (the bid window, the day panel,
+  Approvals). A tap opens the working — required, available, SANS committed to fly, still needed — a small read-only
+  menu for everyone (a press outside, Escape, a scroll or a second tap closes it). Pins: `ui/flyrows.test.tsx`,
+  `ui/reqname.test.tsx`, `engine/availpoints.test.ts`.
+- **The pairs tinted faintly (D1194, 21 Oct 26):** Required P and Available P wear one faint tint, the pilots' olive;
+  Required W and Available W another, the WSOs' green — the name bars' own seat hues, laid as a background image over
+  each cell's own colour (`tr.flyrow.pair-p` / `.pair-w`, `ui/matrix.css`), so the amber and red figures stay
+  readable on them. A counter standing among the four (D674) is a row of its own and wears none. Pins:
+  `ui/reqname.test.tsx`.
+- **An Available row at RED counts among the days breaking a manning rule (D1243, narrowing D1213):** the under-manned
+  count and its list ("Days breaking a manning rule") take a day with Available P or W under its red point, naming the
+  row and its figure as a Manning row is named; a day with one only at amber is never counted. The rows are judged
+  BESIDE the Manning verdicts, never made Manning rows (`manningRowIds` is unchanged): `engine/evaluate.ts redDays`
+  merges them, and `sync.ts manningRedDays(dates, verdicts)` hands in each day's Required from the one resolver — so
+  the strip also hears the plan's signal. Pins: `ui/redcount.test.tsx`, `availsettings.test.ts`.
+- **Names:** Available P / W are the two count rows' own names — his to change (D640). **Required P / W may be renamed
+  too since D1193 (21 Oct 26, narrowing D668 — the name only; their figures stay typed in their cells).** For an admin
+  the row's name is a button (`fly-name-req-p` / `-w`) that opens a small window of its own (`ui/ReqNameForm.tsx`,
+  drawn r7-27): the name, Save, Cancel; a blank name or the original typed back puts the original back. The name is the
+  war's own setting (`reqnames`, `state/store.ts setReqName`, one command `lw.reqname` — the Setting row's, the
+  admin's); every place that names the row reads it (`sync.ts reqRowNames`: the rows, the typing box and its pad,
+  the Required panel), and the calendars' signal moves on a rename. The SANS calendar's opened day names neither row —
+  its lines read "Required to fly" and "Available" for both seats (D626) — so it does not change. The old Raptor-side
+  `flynames` record step 1 left (taken out 8 Oct 26 under D668) is still read by nothing (`ui/flyrows.test.tsx`). While a
+  name is still the one it started with, a phone (≤430px) shows its short form (Req P, Req W, Avail P, Avail W). Pins:
+  `ui/reqname.test.tsx`, `availsettings.test.ts`.
 - **Repaint:** the component subscribes itself to the scheduler's signal and to `useWarFacts()`; Matrix and its memo
   firewall are untouched. Each drawn month's cells are memoised on a signature of what they SHOW, built from the
   resolver's answers — so a run or a weekday rule that began before the month still repaints it. After a change is
@@ -7327,16 +7349,25 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   something"); a tap opens the counter form the war already has (`CounterForm.tsx`, Matrix's `counterEdit` = `availp` /
   `availw`) in a MODE for these two rows, which shows what holds for them and nothing the store would refuse:
   the name and who it counts (crew, CAT with "is not", qualifications held or lacked) — and NO "Sets / teams" choice
-  (they count people), NO amber / red boxes (their red comes from the Required row above), NO Delete (the SANS
-  calendar reads them), and no "SANS" qualification chip (a SANS man is never counted here, so it could decide
-  nothing). One line says so: "SANS people are never counted here. The SANS calendar reads this row, so it cannot be
-  deleted." Its live sample ("On this war's first day that counts N") is summed the row's OWN way
+  (they count people), NO fixed amber / red numbers, NO Delete (the SANS calendar reads them), and no "SANS"
+  qualification chip (a SANS man is never counted here, so it could decide nothing). One line says so: "SANS people are
+  never counted here. The SANS calendar reads this row, so it cannot be deleted." **In place of the fixed numbers, the
+  row's AMBER and RED POINTS (the Leave War overhaul — D1190, D1191, D1202; drawn r7-26):** "Amber · when under Required
+  [+ 2]" and "Red · when under Required [+ 0]", each a number plus or minus that day's Required, negatives allowed (a
+  bare number reads as plus; "−" or "-" as minus); red opens at "+ 0", amber blank ("none"). Typed like the counters'
+  numbers — one tap then typing replaces (D1080, the `.mth-in` boxes). A point that is not a number keeps Save off and
+  says "Enter each as a number above or below Required, like + 2 or − 1."; where red is set at or above amber the window
+  says "Red is set at or above amber, so amber never shows." One more line says how the SANS calendar follows what the
+  row counts (D1154), by the rows' own names: "On the SANS calendar, still needed is Required P less Available P, less
+  the SANS committed to fly." The Save — name, count and points — is ONE command (`state/store.ts saveAvailRow`,
+  `lw.availrow`, the Setting row's), so one Undo takes it back; the points are kept on the row
+  (`manningdefs`, the rule's `points`), never as a threshold. Its live sample ("On this war's first day that counts N") is summed the row's OWN way
   (`engine/availrows.ts availHave` — never a SANS man), so the form cannot promise a number the grid does not show.
   The row is read with `availRuleOf` (the squadron's own where its list holds one, else the built-in) — it is not IN
   the list until first changed, so a search of the list would open an empty "New counter". A new counter can never
   take one of the two ids (`mintId` holds them as taken — a counter named "availp" was otherwise saved over the row).
-  A member's name is plain text. The Required rows' names open nothing (D668). The store's own refusals — delete, a
-  teams count, thresholds held at 0 — are `dayfacts.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
+  A member's name is plain text. A Required row's name opens its own rename window since D1193 (above). The store's own
+  refusals — delete, a teams count, thresholds held at 0 — are `dayfacts.test.ts`; the points', `availsettings.test.ts`. Gate: `e2e/leavewar.spec.ts` "an Available row's name
   opens the counter form for it…" (phone and desktop). Pins: `ui/availform.test.tsx`.
 - **The "Days…" line in ⚙ Settings (the last piece of step 2 — built 8 Oct 26 with Days' month).** At the head of the
   sheet: a "Calendar…" button (its on-screen name since D675; "Days…" until then) with "Day flying, night flying or no fly for each date, and the year's holidays." under it. It closes the sheet and
@@ -8887,7 +8918,8 @@ The contract, in the order a reader meets it:
   average day width × its days, `avgDayWRef`). Why this is safe where the 3
   Sep "no spacers" rule (22 distinct day-column widths) said it wasn't: an
   estimate's error only matters LEFT of the view, and such a month is never
-  drawn there mid-scroll (next bullet). Every row carries the SAME cells as
+  drawn there mid-scroll (next bullet) — *since 23 Oct 26 it may be, its error given to the left placeholder so
+  nothing on screen moves (next bullet)*. Every row carries the SAME cells as
   the header — the 20 Aug column virtualisation that misaligned on iOS gave
   some rows colSpan spacers over full header columns; no row here differs.
   This container has no WebKit, so the owner's iPhone is the gate for that.
@@ -8897,7 +8929,14 @@ The contract, in the order a reader meets it:
   measured under the rows on screen now (`widthExact` — the swap is then
   width-for-width, so nothing hops); a prune,
   and a left grow over an estimated width, wait for scroll REST (the 120 ms
-  idle), where the anchor correction (`anchorRef`) hides the shift. On a
+  idle), where the anchor correction (`anchorRef`) hides the shift. **Since 23 Oct 26 (M2 — his video: a fling
+  from December back to January left the months striped, January a second after the stop):** a left grow over an
+  estimate is drawn mid-scroll too while the scroll moves at a drag's speed (`DRAW_LEFT_MAX_SPEED`, 1.5 px a ms):
+  the commit that draws it measures how far the month that was the window's left edge moved and takes that off the
+  LEFT placeholder (`padErrRef`, squared when January is drawn), so no column on screen moves; a fast fling still
+  waits (a month's draw cannot keep up, and only made its frames heavier); January — no placeholder left of it — is
+  drawn in motion once the scroll is at its very start (`leftGrowAbsorbable`). Pinned: `colwindow.test.ts` and
+  the browser test "a month left of the view is drawn while the scroll is still moving, and no column on screen moves". On a
   touch screen the in-motion left grow skips the anchor altogether — the
   `scrollLeft` write that would fix a stray pixel is what kills a fling. A
   view parked nowhere near the drawn window (a scrubber drag, a long fling
@@ -9494,6 +9533,19 @@ a flex sibling and squeezed in beside the number it explains.
   dated in no war shows on no cell; a correction is never drawn. Several awards may share a day (two tracker credits on
   one date): the tap list shows each, and the bid sheet's +OIL panel then changes none of them — its button reads "N OIL
   awards" and it says "change them from the day's list".
+- **An HO belongs to a half of its day (owner, D1164, 21 Oct 26 — built 23 Oct 26, M2).** Its day-view window is the
+  half it is drawn in (`Contrib.win` AM or PM — what the grid draws from); an FO stays the whole day. An award's half is
+  the one the admin picked (`LedgerEntry.half`), the morning when none is stored (every HO before D1164 — D401); the
+  schedule's own HO takes the half its earliest work started in — before 12:00 the morning, from 12:00 the afternoon,
+  no hours reported the morning (`warrecs.ts creditHalf`) — and its real hours ride in `wins`, so its clashes are
+  unchanged (a morning HO beside an afternoon's leave is no clash, one on the same hours still is); an award still
+  clashes with nothing (D80); no charge, manning or balance figure reads the half. The picking: the +OIL panel's
+  **Half** row (AM / PM, under Days, once the amount is 0.5), the OIL tracker's form and editor and the day's list editor
+  (the same chips, `CreditForm.tsx HalfPick`); each opens on the award's own half, else the day's default — **the other
+  half beside a half-day leave, medical or HO, else the morning** (`warrecs.ts freeHalfFor`, `store.ts
+  defaultAwardHalf`) — and the admin may pick either. Unpicked, the store writes that default per person. Every
+  read-back names it: "half a day, afternoon" on the day's detail and the member's own award window, "HO — OIL award,
+  morning" on the day's list, the date's "AM" / "PM" on the tracker's line.
 - **Its date is fixed (D260's reading):** an award never moves; one on the wrong day is deleted and given again. The
   tracker's editor shows the date read only on an award (a correction keeps its date editor), and the store refuses a
   changed date — and a change of sign (an award never becomes a correction).
@@ -10577,6 +10629,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 ## The Inputs calendar — its tabs, its month of bars, its day, its gear, the editor as a window (the Inputs / SANS job, step 5, 8 Oct 26; D620, D621, D626, D627, D629, D632, D639, D641, D646, D653, D664, D672)
 
 **Its top row on a desktop (owner D1125, 21 Oct 26):** the tabs, then ‹ month › and Today — in the same place as on the SANS calendar — then at the right end the Calendar / List switch, the filters and the gear; the switch stands there on the Calendar and on the List alike, so it never moves (D687), as on the phone (D705); the row's buttons drawn 36 tall. Where a line below puts the switch first on a desktop, this one wins.
+**On a phone its tab row sits 4px under the app's top bar (owner D1280, 23 Oct 26 — "choose the one that uses less vertical space"),** as the Leave War's does, so the tabs stand in the same place on both pages; every tab of the page (the calendar, the list, SANS, Medical) shares it (`25-inputs-calendar.css`, `.inputs-top` at 820 and under).
 
 `ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx`; styles
 `ui/scheduler/25-inputs-calendar.css`. The plan: `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.6–§3.9.
@@ -11332,3 +11385,58 @@ board's ⋯ menu hangs from its button's right edge when the left-hung menu woul
 - **Device caveat:** on an iPhone, pulling the page down past its top lets the bar bounce while a fixed note stays —
   the band may part from the bar for the length of the bounce (the floating note did the same). Not measured on his
   phone.
+
+## The Leave War's look F, its top rows and its grid order (the overhaul's M2, the night of 23 Oct 26)
+
+Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-07-legend-phone`, `r19-nav-*`,
+`r21-rows-*`) and the build plan's M2 (`docs/superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md`).
+- **The box (D1175, D1158, D1160, D1145, D1146, D1167, D1164):** a cell holding something is the box's frame (`td.hasc`,
+  `position: relative`, the old chip's content width — a three-letter code no longer widens its column); the box is
+  `<span class="c k-<kind> s-<fill> <place>">` absolutely placed inside it. Kind from `engine/codes.ts kindOf` (ll, ol,
+  oil, care, cse, od, med — look F's colours, value for value from `full-cells4.mjs`); fill `a` filled (approved and
+  everything nobody bids for), `w` hollow dashed (pending — Ack is gone, D1158), `r` grey struck (refused); place `whole`,
+  `top` (morning), `bot` (afternoon), and on a two-entry day `left`/`right` or a whole beside a half `right-am`/`right-pm`
+  (`MatrixRows.tsx pairPlaces`). An HO takes its half by the day view's window (an award's stored half, the app's own by
+  where its work started — `engine/warrecs.ts creditHalf`); an FO is always whole (`placeOf`). Letters bare
+  (`boxText` — the half is said by where the box sits; B and C for ATT B / C; an app-credited OIL keeps its star). Three or
+  more entries keep one box and "+n"; two drawn drop a "+1"; an amber "!" always stays. The Inputs-page edge and the moved
+  edge are drawn inside the box (`::before`), above a pending box's dashed outline. One element a box — no node added
+  per cell (`docs/performance.md` §E).
+- **Each box's edge is its own entry's, and no corner tile covers letters (walker 1's #8, #9, #11 — 23 Oct 26):** the
+  Inputs-page edge is asked of each entry (`engine/dayview.ts offWar` — filed on the Inputs page, a medical, a course,
+  overseas duty, or the app's own credit), never of the day, so leave approved on the war stays plain beside a course;
+  the day as a whole is still locked to the war when any of its records is (`raptorOwns`). The mark ("!", "+n") keeps
+  the top-right and the PO tag the bottom-right unless a box's letters sit there (a morning box or a morning HO's quarter
+  under the mark; an afternoon one under the tag): then the tile takes the other right-hand corner if it is free
+  (`mklo`, `pohi` on the cell), else that box's letters step aside, the box keeping its place and size
+  (`boxcorners-css.test.ts`).
+- **The Legend (r7-07):** the colour (what kind), the fill (where it stands), the size (how much of the day), the dates
+  (open, not open), the left edge, the corner, the figures, the letters — every swatch `Chrome.tsx LegBox`, the grid's own
+  box in a cell-sized frame, so the key cannot show a colour the grid does not paint.
+- **The top (D1254, narrowing D1196, D1231, D678, D679, D1141):** the page's tab row is the Inputs page's own
+  (`.inputs-tabs` / `.intab`) — Grid · OIL now; Approvals joins with its list (M4) and Balances with its page (M5), never a
+  tab with nothing behind it. OIL opens the OIL tracker and reads as the chosen tab while it is up (`ui/lwnav.ts` carries
+  the top row's asks to the grid, which owns the windows). Then "View" and the period picker (D1174; "+ New period" its
+  last line, an admin's only — D1244), My leave (D1141 — LVE, OIL, days pending, next leave; `ui/myleave.ts`; a tap opens
+  his person window), ⚙ at the row's right end for an admin. Desktop: one row. Phone: the tabs (and ⚙) on line 1, View,
+  the picker and My leave on line 2 — each line as low as the round-19 drawing (`docs/mock/lw-overhaul/full/r19-nav-admin-phone.png`),
+  no taller: the tab row about 53px, the View line about 42px, My leave sized to its two lines, never held at 44px, and the green picker beside it the same height on
+  one centre line (D1279) (D1278, his correction of 23 Oct 26; pinned by the browser test "on a phone the two top rows are no taller than the drawing"). No "Viewing as" (D1173).
+- **The grid's own bar (on the grid card, the same for everyone):** [▸ Manning | n red ›] (the right half counts the days
+  a Manning, Available P or Available W row is RED — `sync.ts manningRedDays`; amber never; gone at 0 — D1243) · the open
+  dates · … · the zoom pair (until pinch to zoom, [LW-PHONE-PINCH-ZOOM], D1228) · Legend. Rearrange is a line in ⚙
+  ("⇅ Rearrange the grid"); while it is on the bar carries "⇅ Done", the one way out. On a phone it reads "⇅ Done" in words and the − / + step
+  aside while Rearrange is on, so the bar stays one line (D1275 — built 23 Oct 26: the word's own class `.rtword`, never the
+  phone-hidden `.rtlbl`; the pair carries `aside` while Rearrange is on, hidden at 700 and under; a browser test at 390 and 360). The − / + go for good
+  only once pinch to zoom works with the frozen date bar; else they stay (D1276, [LW-PHONE-PINCH-ZOOM]).
+- **The Leave War's ⚙ Settings window fits a phone's width (D1270, 23 Oct 26):** on a phone nothing in it scrolls sideways — its
+  words wrap, its group rows and trays keep inside the window, only up and down scrolls; pinned at a phone's width by a
+  browser test that the window's content is no wider than the window.
+- **The grid's order (D1256, D1257):** the month buttons, then the dates (the header and its frozen copy), then the
+  Manning rows straight under them, then the Event rows, then the people. The month band row is gone (each month's first
+  date names it) and with it the Balances fold (D1245 — its drawer's code is switched off and goes whole with M5).
+- **The Manning fold (D1258, D1227):** on a phone the rows open folded, for everyone, and his choice is remembered per
+  person on that device (`lw:manning:<viewer>`, a view convenience in the browser's own storage — never a record); a
+  desktop opens them. When a bid placed through a bid window turns a Manning or Available row amber or red on a day it was
+  not, they open by themselves and a bubble under the Manning button names each row ("This bid turns IP amber, Available P
+  red."), gone at the next tap — read as the difference of the verdicts between the window's opening and its closing. The same bubble on a desktop (D1272), where the rows are already open. A Move or a drag of a bid raises it too (D1274 — built 23 Oct 26: every grid move lands in `commitMove`, which takes the "before"; one comparison for a placed and a moved bid, only a worsening). With the Manning button out of view when it is raised (its box against the visible screen, the keyboard and the top bar counted) the same words sit at the foot of the screen (`.mn-foot` — the screen's width less 12px on a phone, 560px centred on a desktop) with "Show ›", which opens the rows, scrolls the Manning button into view and puts the keyboard on it; a press on Show and Tab on the way to it do not end it, any other tap or key does (D1277 — built 23 Oct 26; `bidbubble.test.tsx`).

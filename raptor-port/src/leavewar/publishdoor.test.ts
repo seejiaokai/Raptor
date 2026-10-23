@@ -110,12 +110,12 @@ describe('publishing weekend work FLAGS a clashing leave bid (owner, 20 Sep 26)'
     expect(recs('plasma', SAT).filter(r => r.kind === 'request')).toHaveLength(1)
   })
 
-  it('an acknowledged bid is kept too; a refused one is neither touched nor mentioned', () => {
+  it('a pending bid is kept too; a refused one is neither touched nor mentioned', () => {
     setRole('admin')
     expect(setCell('plasma', SAT, 'LL')).toBe(true)
     expect(setCell('rocky', SAT, 'OL')).toBe(true)
     // the admin decides at any time — no stage to close first (D1177; D418 narrowed)
-    setBidState('plasma', SAT, 'acknowledged')
+    /* Ack is gone (D1158): re-expressed with the decisions that remain: plasma's bid simply stays pending */
     setBidState('rocky', SAT, 'refused')
     said = []
     publish(5)

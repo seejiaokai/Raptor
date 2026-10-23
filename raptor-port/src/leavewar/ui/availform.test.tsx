@@ -5,23 +5,30 @@
 
    Available P and Available W are ordinary count rows an admin renames and re-defines "with the form the war already
    has". They are reached by a tap on the row's own NAME — as every count row's name opens its sheet — and the form
-   then shows what holds for these two and nothing that does not: NO amber / red boxes (their red comes from the
-   Required row above them), NO "Sets / teams" choice (they count people), NO Delete (the SANS calendar reads them),
-   a live sample summed the same SANS-less way the row itself is, and one line saying "SANS people are never counted
-   here". The store's own three refusals (delete, a teams count, thresholds held at 0) are dayfacts.test.ts; this is
-   the screen, which must not offer what the store would refuse. The Required rows keep their names (D668): they open
-   nothing. */
+   then shows what holds for these two and nothing that does not: NO fixed amber / red numbers — in their place the
+   row's amber and red POINTS against the day's Required (the Leave War overhaul, D1190, D1191, D1202) — NO "Sets /
+   teams" choice (they count people), NO Delete (the SANS calendar reads them), a live sample summed the same SANS-less
+   way the row itself is, one line saying "SANS people are never counted here" and one saying how the SANS calendar
+   follows the row (D1154). The store's own refusals (delete, a teams count, thresholds held at 0) are dayfacts.test.ts
+   and availsettings.test.ts; this is the screen, which must not offer what the store would refuse. A Required row's name
+   opens its own rename window since D1193 (narrowing D668) — reqname.test.tsx. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { storeBackend } from '../../engine/hooks'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
 import { availHave, effectiveCat, ruleHave } from '../engine'
-import { availRules, getState, initStore as lwInitStore, saveManningRule, setPeople, setQualCatalog, setRole } from '../state/store'
+import { availRules, getState, initStore as lwInitStore, saveManningRule, setPeople, setQualCatalog, setReqName, setRole } from '../state/store'
+import { setFlyDays } from '../../state/flyplan'
 import { memoryBackend } from '../state/storage'
 import { projectPeople } from '../state/raptorRoster'
 import { dayFacts } from '../sync'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
+   asked as the ⚙ press asks it (ui/lwnav.ts). */
+const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
 
 const mem = new Map<string, string>()
 beforeEach(() => {
@@ -58,7 +65,8 @@ describe('the way in: a tap on an Available row’s name', () => {
     render(<Matrix />)
     const b = screen.getByTestId('fly-name-avail-p')
     expect(b.tagName).toBe('BUTTON')
-    expect(b.getAttribute('title')).toBe('Rename Available P, or change who it counts')
+    /* (changed on purpose, D1190: the window now sets the row's amber and red too, and the title says so) */
+    expect(b.getAttribute('title')).toBe('Rename Available P, change who it counts, or set its amber and red')
     /* and it keeps both forms of the name: the long one, and a phone's short one */
     expect(b.querySelector('.frl-long')!.textContent).toBe('Available P')
     expect(b.querySelector('.frl-short')!.textContent).toBe('Avail P')
@@ -71,19 +79,23 @@ describe('the way in: a tap on an Available row’s name', () => {
     expect(q('counter-form')).toBeNull()
     expect(nameOf('avail-p').textContent).toContain('Available P')
   })
-  it('the Required rows keep their names (D668): an admin’s press on one opens nothing', () => {
+  /* (changed on purpose, D1193 narrowing D668: a Required row may be renamed now — its name opens its own small rename
+     window, never the counter form; reqname.test.tsx is that window) */
+  it('a Required row’s name opens its rename window, never the counter form', () => {
     render(<Matrix />)
     for (const row of ['req-p', 'req-w']) {
-      expect(q(`fly-name-${row}`)).toBeNull()
-      expect(nameOf(row).querySelector('button')).toBeNull()
-      fireEvent.click(nameOf(row))
+      fireEvent.click(screen.getByTestId(`fly-name-${row}`))
       expect(q('counter-form')).toBeNull()
+      expect(screen.getByTestId('req-name-form')).toBeTruthy()
+      fireEvent.click(screen.getByTestId('reqname-cancel'))
     }
   })
 })
 
 describe('the form shows what holds for these two rows, and nothing the store would refuse', () => {
-  it('no amber / red boxes, no "Sets / teams" choice, no Delete — and one line says SANS people are never counted here', () => {
+  /* (narrowed on purpose, D1190, D1191, D1202: the counters' fixed amber and red numbers are still not offered, but the
+     row's own amber and red POINTS are — availpoints-form below) */
+  it('no fixed amber / red numbers, no "Sets / teams" choice, no Delete — and one line says SANS people are never counted here', () => {
     render(<Matrix />)
     openForm('avail-p')
     for (const gone of ['cform-amber', 'cform-red', 'cform-mode-team', 'cform-mode-people', 'cform-delete', 'cform-slot-add'])
@@ -152,6 +164,88 @@ describe('the form shows what holds for these two rows, and nothing the store wo
   })
 })
 
+/* THE ROW'S AMBER AND RED POINTS (the Leave War overhaul — D1190, D1191, D1202; drawn r7-26): each "when under Required",
+   plus or minus a number; red "+ 0" to start (today's rule), amber blank (none). Typed like the counters' numbers — one
+   tap then typing replaces (D1080: the .mth-in boxes). One line says when red hides amber; one says how the SANS calendar
+   follows what the row counts (D1154). */
+describe('its amber and red points', () => {
+  const amberBox = () => screen.getByTestId('cform-amber-pt') as HTMLInputElement
+  const redBox = () => screen.getByTestId('cform-red-pt') as HTMLInputElement
+  const save = () => screen.getByTestId('cform-save') as HTMLButtonElement
+  it('open as today\'s rule — red "+ 0", amber none — and a Save that changes neither stores no points', () => {
+    render(<Matrix />)
+    openForm('avail-p')
+    expect(redBox().value).toBe('+ 0')
+    expect(amberBox().value).toBe('')
+    expect(amberBox().placeholder).toBe('none')
+    for (const b of [amberBox(), redBox()]) expect(b.classList.contains('mth-in')).toBe(true)   // one tap then typing replaces (D1080)
+    fireEvent.click(save())
+    expect(availRules().p.points).toBeUndefined()
+  })
+  it('amber "+ 2" saved, the grid turns that day amber, and the window shows it again', () => {
+    const have = dayFacts(TUE).availP!
+    setFlyDays([{ iso: TUE, p: have - 1 }])                           // one to spare: not red, but under Required + 2
+    render(<Matrix />)
+    expect(screen.getByTestId(`avail-p-${TUE}`).className).not.toContain('amb')
+    openForm('avail-p')
+    fireEvent.change(amberBox(), { target: { value: '+2' } })
+    fireEvent.click(save())
+    expect(availRules().p.points).toEqual({ amber: 2, red: 0 })
+    expect(screen.getByTestId(`avail-p-${TUE}`).className).toContain('amb')
+    expect(screen.getByTestId(`avail-p-${TUE}`).className).not.toContain('under')
+    openForm('avail-p')
+    expect(amberBox().value).toBe('+ 2')
+    expect(redBox().value).toBe('+ 0')
+  })
+  it('negatives — the true minus or a hyphen — and a bare number reads as plus', () => {
+    render(<Matrix />)
+    openForm('avail-w')
+    fireEvent.change(redBox(), { target: { value: '−1' } })
+    fireEvent.change(amberBox(), { target: { value: '1' } })
+    fireEvent.click(save())
+    expect(availRules().w.points).toEqual({ amber: 1, red: -1 })
+    openForm('avail-w')
+    expect(redBox().value).toBe('− 1')
+    fireEvent.change(redBox(), { target: { value: '-2' } })
+    fireEvent.click(save())
+    expect(availRules().w.points).toEqual({ amber: 1, red: -2 })
+  })
+  it('says when red hides amber, and only then', () => {
+    render(<Matrix />)
+    openForm('avail-p')
+    expect(q('cform-amber-hidden')).toBeNull()                         // no amber: nothing hidden
+    fireEvent.change(amberBox(), { target: { value: '+1' } })
+    fireEvent.change(redBox(), { target: { value: '+1' } })
+    expect(screen.getByTestId('cform-amber-hidden').textContent).toBe('Red is set at or above amber, so amber never shows.')
+    fireEvent.change(amberBox(), { target: { value: '+2' } })
+    expect(q('cform-amber-hidden')).toBeNull()
+  })
+  it('a point that is not a number cannot be saved, and the window says how to write one', () => {
+    render(<Matrix />)
+    openForm('avail-p')
+    fireEvent.change(redBox(), { target: { value: '' } })
+    expect(save().disabled).toBe(true)
+    expect(screen.getByTestId('cform-pt-bad').textContent).toBe('Enter each as a number above or below Required, like + 2 or − 1.')
+    fireEvent.change(redBox(), { target: { value: '+ 0' } })
+    fireEvent.change(amberBox(), { target: { value: 'lots' } })
+    expect(save().disabled).toBe(true)
+    fireEvent.change(amberBox(), { target: { value: '' } })
+    expect(save().disabled).toBe(false)
+    expect(q('cform-pt-bad')).toBeNull()
+  })
+  it('says how the SANS calendar follows what the row counts (D1154), by the rows\' own names', () => {
+    render(<Matrix />)
+    openForm('avail-p')
+    expect(screen.getByTestId('cform-avail-sans').textContent)
+      .toBe('On the SANS calendar, still needed is Required P less Available P, less the SANS committed to fly.')
+    fireEvent.click(screen.getByTestId('cform-close'))
+    setReqName('w', 'WSOs to fly')
+    openForm('avail-w')
+    expect(screen.getByTestId('cform-avail-sans').textContent)
+      .toBe('On the SANS calendar, still needed is WSOs to fly less Available W, less the SANS committed to fly.')
+  })
+})
+
 describe('an ordinary counter’s form is what it was', () => {
   it('still has the amber / red boxes, the "Sets / teams" choice and Delete — and no line about SANS', () => {
     saveManningRule({ id: 'pilots', label: 'PILOTS', count: { kind: 'people', filter: { seats: ['pilot'] } }, threshold: { amber: 3, red: 2 } })
@@ -161,12 +255,13 @@ describe('an ordinary counter’s form is what it was', () => {
     for (const kept of ['cform-amber', 'cform-red', 'cform-mode-team', 'cform-mode-people', 'cform-delete'])
       expect(q(kept), kept).toBeTruthy()
     expect(q('cform-avail-note')).toBeNull()
+    for (const gone of ['cform-amber-pt', 'cform-red-pt', 'cform-avail-sans']) expect(q(gone), gone).toBeNull()   // the points are the Available rows' alone
     expect(q('cf-qual-san')).toBeTruthy()                               // an ordinary counter may count SANS holders
     expect(screen.getByTestId('cform-save').textContent).toBe('Save counter')
   })
   it('and a NEW counter can never be saved over one of the two rows: its id is its own', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open')); fireEvent.click(screen.getByTestId('counter-add'))
+    openSettings(); fireEvent.click(screen.getByTestId('counter-add'))
     fireEvent.change(screen.getByTestId('cform-name'), { target: { value: 'availp' } })
     fireEvent.click(screen.getByTestId('cform-save'))
     const made = getState().requirements.default.rules

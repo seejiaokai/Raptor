@@ -14,16 +14,17 @@
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
 import { useState } from 'react'
-import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Portion, type PostOutcome } from '../engine'
+import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, decidableIn, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
+import { awardsIn, cellProblem, clearCells, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { awardDays, awardsClause } from './awardwords'
+import { awardDays, awardsClause, halfWord } from './awardwords'
+import { HalfPick } from './CreditForm'
 import { belowZeroAsk, goesBelow } from './belowzero'
 import './bidpicker.css'
 import './oiltracker.css'
@@ -117,14 +118,14 @@ export function BidPicker({
    *  20 Sep 26 — "the admin can also credit OIL on the leave sheet for
    *  convenience. We should enable that even on any day"). Present only for an
    *  admin; the matrix wires it to the store and closes the sheet. */
-  onCredit?: (code: 'FO' | 'HO', days: string, note: string, givenBy: string) => string | null
+  onCredit?: (code: 'FO' | 'HO', days: string, note: string, givenBy: string, half: Half) => string | null
   /** The OIL already on this day, when a person granted it (owner, 20 Sep 26 —
    *  "when I click on FO or HO on the leave war, i should be able to see the
    *  reason and given by who if applicable and quantity"). The sheet names it
    *  and opens its controls already filled in, so reading it and changing it
    *  are the same tap. Absent when the day has none, or when the APP earned it
    *  off the published schedule — that one is the schedule's to change. */
-  credit?: { code: 'FO' | 'HO'; days?: number; note?: string; givenBy?: string } | null
+  credit?: { code: 'FO' | 'HO'; days?: number; note?: string; givenBy?: string; half?: Half } | null
   /** How many OIL awards the day holds (admin). SEVERAL — two credits from the tracker on one date — and the +OIL panel
    *  changes none of them: it says so, and the day's list carries each ([OIL-AWARD-IS-A-GRANT]). */
   awardCount?: number
@@ -134,7 +135,7 @@ export function BidPicker({
    *  kinds: an award, which `credit` above also lets an admin edit, and one
    *  the app credited itself, which is read-only because the OIL pass owns it
    *  and would overwrite anything typed onto it. */
-  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]>; via?: 'schedule' | 'input'; entered?: string } | null
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; auto?: boolean; spans?: Array<[number, number]>; via?: 'schedule' | 'input'; entered?: string; half?: Half } | null
   /** THE FOUR THINGS AN ADMIN DOES TO AN INPUT — Ack, Approve, Refuse, Move
    *  — IN EVERY STAGE (owner, 21 Sep 26: "even a single click on an input, i
    *  should be able to click on a move button to move the input just like how
@@ -228,6 +229,9 @@ export function BidPicker({
   const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '1')
   const oilN = Number(oilDays.trim())
   const oilCode: 'FO' | 'HO' = Number.isFinite(oilN) && oilN > 0 && oilN < 1 ? 'HO' : 'FO'
+  /* WHICH HALF AN HO TAKES (owner, D1164): the award's own half when the day holds one; else the day's default — the
+     other half beside a half-day leave, else the morning (the store's `defaultAwardHalf`). The admin may pick either. */
+  const [oilHalf, setOilHalf] = useState<Half>(credit?.half ?? defaultAwardHalf(personId, date))
   /* the reason a refused Move gives — a Move button that simply did nothing would read as broken */
   const [moveErr, setMoveErr] = useState('')
 
@@ -251,7 +255,7 @@ export function BidPicker({
   }
   const [oilErr, setOilErr] = useState('')
   const grantOil = () => {
-    const problem = onCredit!(oilCode, oilDays, oilNote, oilGiven)
+    const problem = onCredit!(oilCode, oilDays, oilNote, oilGiven, oilHalf)
     if (problem) { setOilErr(problem); return }
     onClose()
   }
@@ -446,19 +450,7 @@ export function BidPicker({
       {canDecideHere && (
         <div className="bidsheet-row">
           <span className="lab">Decide</span>
-          {/* ACK, not "Pending" (owner, 21 Sep 26). It means SEEN, NOT YET
-              ANSWERED — the state between a bid arriving and a verdict — and
-              it is what turns the cell purple. The STATE TOKEN is untouched:
-              still 'acknowledged' in storage, still `decide-ack`. */}
-          <button
-            className="dchip ack"
-            data-testid="decide-ack"
-            aria-pressed={!range && decide?.state === 'acknowledged'}
-            title="Acknowledged — seen, not yet decided"
-            onClick={() => answer('acknowledged')}
-          >
-            Ack
-          </button>
+          {/* Approve · Refuse — Ack is gone (D1158, 21 Oct 26): a bid simply waits until it is decided. */}
           <button
             className="dchip approve"
             data-testid="decide-approve"
@@ -642,7 +634,7 @@ export function BidPicker({
           {credit && (
             <div className="bidsheet-row postout">
               <span className="note" data-testid="oil-current">
-                {creditWorthText({ ...credit, auto: false })} of OIL{credit.note ? ` — ${credit.note}` : ''}
+                {creditWorthText({ ...credit, auto: false })} of OIL{credit.half ? `, ${halfWord(credit.half)}` : ''}{credit.note ? ` — ${credit.note}` : ''}
                 {credit.givenBy ? `, given by ${credit.givenBy}` : ''}.
               </span>
               {onCreditClear && (
@@ -680,6 +672,15 @@ export function BidPicker({
             </button>
             {oilErr && <span className="note warn" data-testid="oil-err">{oilErr}</span>}
           </div>
+          {/* WHICH HALF, FOR HALF A DAY (owner, D1164 — an HO is drawn in the morning or the afternoon, as a half day's
+              leave is). A row of its own UNDER the days, so nothing above moves while he types; the label names the
+              thing it sets, in one word (design lesson 31), and the chips are the window's own AM / PM. */}
+          {oilCode === 'HO' && (
+            <div className="bidsheet-row postout">
+              <span className="lab">Half</span>
+              <HalfPick testid="oil-half" value={oilHalf} onPick={h => { setOilErr(''); setOilHalf(h) }} />
+            </div>
+          )}
         </>
       )}
 
@@ -823,6 +824,8 @@ export function BidPicker({
             <span className="lab">Days</span>
             <span className="note" data-testid="oil-detail-days">
               {creditWorthText(creditShown)}
+              {/* which half an HO is (D1164) — said in words as the grid draws it */}
+              {creditShown.half ? `, ${halfWord(creditShown.half)}` : ''}
               {creditShown.auto && creditShown.spans?.length
                 ? ` — worked ${creditShown.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
                 : ''}
@@ -857,7 +860,7 @@ export function RaptorSheet({
   /** OIL the APP earned on this day, if that is what the cell holds (owner,
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
-  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; via?: 'schedule' | 'input' } | null
+  creditShown?: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; via?: 'schedule' | 'input'; half?: Half } | null
   onClose: () => void
 }) {
   /* WHICH EVIDENCE BACKS THIS CREDIT decides where the reader is sent (Astra,
@@ -914,7 +917,7 @@ export function RaptorSheet({
  *  schedule earned it (its reason defaults to the work, and the hours it was measured over are shown); else an award,
  *  whose reason is whatever the admin typed. */
 function OilDetailRows({ c, auto }: {
-  c: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; entered?: string }
+  c: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; spans?: Array<[number, number]>; entered?: string; half?: Half }
   auto: boolean
 }) {
   return (
@@ -938,6 +941,7 @@ function OilDetailRows({ c, auto }: {
         <span className="lab">Days</span>
         <span className="note" data-testid="oil-detail-days">
           {creditWorthText({ ...c, auto })}
+          {c.half ? `, ${halfWord(c.half)}` : ''}
           {auto && c.spans?.length
             ? ` — worked ${c.spans.map(([a, b]) => `${hhmm(a)}–${hhmm(b)}`).join(', ')}`
             : ''}
@@ -962,7 +966,7 @@ export function AwardSheet({
 }: {
   callsign: string
   date: string
-  award: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; entered?: string }
+  award: { code: 'FO' | 'HO'; days?: number; note?: string; giver?: string; entered?: string; half?: Half }
   onClose: () => void
 }) {
   return (
