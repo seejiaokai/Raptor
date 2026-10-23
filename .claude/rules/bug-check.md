@@ -30,6 +30,11 @@ order is in force:
    **Sizing never means no walk, and a test that changes the data directly never stands in for pressing a control
    on screen** (the order's §7.0 — D607, D608).
 
+## A fault he finds that the walk missed (D1297, 24 Oct 26)
+
+Learn from it by yourself, the same day, without asking him: fix it red-first, write why the walk missed it as a lesson
+in the order's §7.11, and from then on every sizing step and walker's brief checks its scenarios against that list.
+
 ## The three that get skipped under pressure — do not
 
 - **A code review plus green tests is NOT a bug check.** Two frontier models passed the OIL build;

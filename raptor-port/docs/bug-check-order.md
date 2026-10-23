@@ -720,6 +720,22 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
 
 ---
 
+**7.11 The faults he found that a walk missed — and what each teaches (owner D1297, 24 Oct 26).** Whenever he finds a
+fault a bug check's walk let through, the same day and without asking him: the fault is fixed red-first, and WHY the walk
+missed it is written here as a lesson about the KIND of gap, newest first. **Every sizing step (§7.0) and every walker's
+brief reads this list and says, for each lesson, which scenario or named test covers it for the change in hand** — or why
+it cannot apply. One fresh reader checks each lesson; the closing report names the lessons added; he may strike any.
+1. **A reading checked in one state only (D1296, the Leave War M3, 24 Oct 26).** The bid window's day line was read before a
+   bid that turns a row red, never in the window reopened on that bid — where it said "No manning row turns amber or red"
+   with Available P red. **Lesson:** a surface with more than one state (new / already placed, empty / full, open / closed)
+   gets a table of state × every reading it shows (each line, figure and word), each cell a scenario or a named test (§7.4).
+2. **A gesture at one speed only (D1294, the same look).** The "Open for bidding" months were dragged slowly; a quick
+   sideways swipe, as a person makes it, picked nothing (the hold before a drag read it as a scroll). **Lesson:** every drag
+   and swipe is driven at a person's ordinary speed as well as slowly — a quick flick, a short hold — on the phone.
+3. **Feedback never looked for (D1289, D1295, the same look).** No step asked whether the tapped day showed it was picked,
+   or whether a list said more was below its foot. **Lesson:** after every press, the walk asks what tells the person it
+   happened and what is out of sight, and pictures that (the design guide's lessons 45, 46).
+
 ## 8. Making the checks FIND rather than CONFIRM
 
 1. **Tests loop over the roll-call, never over one fixture.** A test of a mark walks every KIND of
