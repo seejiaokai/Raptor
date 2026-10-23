@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1299 | 24 Oct 26 | His intent, to be designed with him before anything is built: an overseas duty (OD) and a course (CRS) can be filed on the Leave War as leave is, so people enter them far ahead while bidding is open, because both lower manning (D998) and people seldom think to file them early on the Inputs page. |
 | D1296 | 24 Oct 26 | A bid window opened on a day that already holds the bid shows that day's manning as it now stands, the bid counted — "Available P 27 · red" and each Manning row now amber or red — never "No manning row turns amber or red" while a row is amber or red. |
 | D1295 | 24 Oct 26 | When the Leave War's day panel lists more than it shows, its foot says so — a down arrow and how many more are below ("↓ 10 more") — and the cue goes once the list is scrolled to its end. |
 | D1294 | 24 Oct 26 | In the Leave War's "Open for bidding" window on a phone a quick sideways swipe across the month buttons picks the months it passes, as a slow drag does; no rest of the finger is needed first. |

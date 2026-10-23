@@ -735,6 +735,10 @@ it cannot apply. One fresh reader checks each lesson; the closing report names t
 3. **Feedback never looked for (D1289, D1295, the same look).** No step asked whether the tapped day showed it was picked,
    or whether a list said more was below its foot. **Lesson:** after every press, the walk asks what tells the person it
    happened and what is out of sight, and pictures that (the design guide's lessons 45, 46).
+4. **A press on the page behind an open window (D1298, the Inputs calendar, 24 Oct 26).** With a new input's window open (it
+   leaves the page working, D641), a click on another date lit it as picked while the window kept its date. **Lesson:** for
+   every window that leaves the page behind it working, the walk presses the page behind it — another date, another row —
+   and asks whether what lights matches what the window then says.
 
 ## 8. Making the checks FIND rather than CONFIRM
 

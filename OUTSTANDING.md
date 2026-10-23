@@ -94,6 +94,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Leave War**
 - [LW-DAYLINE-PLACED-BID] — FAULT of M3, first: a window reopened on a day holding the bid says "No manning row turns amber or red" while Available P is red (his D1296).
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
+- [LW-FILE-OD-CRS] — an overseas duty and a course filed on the Leave War, early while bidding is open (his D1299); his questions first.
+- [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs calendar a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
 - [LW-OPEN-MONTHS-QUICK-SWIPE] — a quick sideways swipe across the "Open for bidding" months picks them, with no hold first (his D1294).
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [INP-LIST-PHONE-WIDTH] — on a phone the Inputs list's day headings and cards use the full width, as the filters above them do (his D1293).
@@ -243,6 +245,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ### [LW-DAYLINE-PLACED-BID] The day line on a day already holding the bid tells the truth (his D1296, 24 Oct 26 — a fault of M3)
 **Seen (his iPhone, pull request 569):** Saber's LL on Wed 2 Dec turns Available P red (27 under 28 required); the window reopened on it reads "No manning row turns amber or red". **Cause:** `raptor-port/src/leavewar/ui/DayLine.tsx` draws `engine/whatif.ts`'s answer to "what would a new bid change"; on a day holding the bid nothing changes, so the calm line shows. **To do:** where the day holds the bid (the window's held / heldEdit state, BidPicker and SelectSheet), the line shows the day as it stands — the Available row's figure and level, each Manning row now amber or red — and the calm line only where none is; a test red first (his case: required 28, the bid placed, reopened). **Place:** first of the M3 follow-ups on `claude/lw-m3-placing-leave`, before "merge live".
+
+### [INP-CAL-CLICK-BEHIND-NEW] A date clicked behind a new input's window (his D1298, 24 Oct 26)
+**Seen (his desktop, pull request 569):** "New input · Jul 8" open; a click on 9 Jul outlines 9 Jul and nothing else changes. **To do:** his choice first (recommended: the new input takes the clicked date, keeping what was typed); then a test and a walk (the bug-check order §7.11, lesson 4). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave`.
+
+### [LW-FILE-OD-CRS] An overseas duty and a course filed on the Leave War (his D1299, 24 Oct 26)
+**His intent:** people enter an OD and a CRS on the Leave War far ahead, while bidding is open, since both lower manning and the Inputs page is seldom used for them early. **First:** his answers, at most four questions with pictures (decided as a bid or filed straight; open dates only; his own only; a document asked for) — the overhaul spec's last section. **Place:** his to place after the M3 follow-ups.
 
 ### [LW-PICK-HELD-MARK] The tapped day stays marked and in view while its bid window is open (his D1289, D1290 — 24 Oct 26, his look at pull request 569)
 **What:** on the Leave War a day tapped to open its bid window wears the grid's cyan selection mark (`matrix.css .selcell`, the drag-selection's look) until the window closes or the leave is placed (D1289); on a phone, when the window opens over what was picked, the grid scrolls so it stands just above the window (D1290). **And his question the same message:** can the one-day bid window be less tall — put to him with pictures of ways to do it, each naming the ruling it would change (D1144's day line, D1212's rows). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave` (pull request 569), after his answer on the pictures; the design guide's lesson 45.

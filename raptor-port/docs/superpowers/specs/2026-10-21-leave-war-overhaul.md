@@ -665,3 +665,8 @@ Round 8 — the screen:
 The page ends with every Leave War screen as it will be built — every ruling and §10.2's fixes in, each question of
 §10.3 drawn with its recommended answer and marked "your answer first". Pictures `full/r7-*.png`, scripts
 `full-r7-*.mjs`.
+
+
+## Next: an overseas duty and a course filed on the Leave War (his D1299, 24 Oct 26 — not designed)
+
+His intent: people file an OD and a CRS on the Leave War, far ahead while bidding is open, because both lower manning (D998) and nobody thinks to file them early on the Inputs page. Questions for him first, with pictures: decided as a bid is, or filed straight; open dates only or any; a member's own only; a document asked for. [LW-FILE-OD-CRS].
