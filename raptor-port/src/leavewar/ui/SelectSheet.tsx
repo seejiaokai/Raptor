@@ -32,7 +32,7 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, deletableIn, movableCells, placeApproved, postingBlocked, setBidStates, setCells } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { skipWhy } from './BidPicker'
@@ -92,6 +92,9 @@ export function SelectSheet({
   onClose: () => void
 }) {
   const [portion, setPortion] = useState<Portion>('full')
+  /* "APPROVE WHAT I ENTER" (D1147, D1187's reading: the drag-selection window too) — ticked each time it opens */
+  const [approve, setApprove] = useState(true)
+  const approving = role === 'admin' && approve
   /* THE DAY LINE across a drag: each man's days read on their own, then the worst person-day of them all — his callsign
      before the date where the drag holds several men (the agent's reading, M3 §7.1) */
   const st = getState()
@@ -181,6 +184,16 @@ export function SelectSheet({
       return
     }
     setConfirming(null)
+    if (code && approving) {
+      const r = placeApproved(sel.cells, code)
+      if (!r.skipped && !r.pending.length) { onDone(r.written > 0); return }
+      const parts: string[] = []
+      if (r.skipped) parts.push(skipNote('written', r.written, r.skipped).replace(/\.$/, ''))
+      if (r.pending.length) parts.push(`${r.pending.length} day${r.pending.length === 1 ? '' : 's'} kept pending — not approved (a locked week, or leave or a medical already there)`)
+      setNote(parts.join('. ') + '.')
+      if (r.written > 0) onDone(true, true)
+      return
+    }
     const { written, skipped } = code ? setCells(sel.cells, code) : clearCells(sel.cells)
     if (skipped === 0) { onDone(written > 0); return }
     setNote(skipNote(code ? 'written' : 'cleared', written, skipped))
@@ -224,6 +237,12 @@ export function SelectSheet({
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
         <span className="dt" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
+        {role === 'admin' && (
+          <label className="bp-approve" data-testid="sel-approve-tick-label">
+            <input type="checkbox" data-testid="sel-approve-tick" checked={approve} onChange={e => { setApprove(e.target.checked); setConfirming(null) }} />
+            Approve what I enter
+          </label>
+        )}
         <button className="x" data-testid="sel-cancel" onClick={onClose} aria-label="Cancel">✕</button>
       </div>
       <DayLine days={line.days} label={line.label} />
@@ -272,7 +291,7 @@ export function SelectSheet({
             <span className="lab">Which leave</span>
             {/* the one-day window's buttons (M3 5.2–5.6): his figures where the drag holds one man, none across several
                 (the below-zero ask still names each — the agent's reading, M3 §7.2) */}
-            <LeaveButtons portion={portion} onPick={fill} filled={false} testPrefix="sel"
+            <LeaveButtons portion={portion} onPick={fill} filled={approving} testPrefix="sel"
               figure={wouldLeave && nPeople === 1 ? code => wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code)?.before ?? null : undefined} />
             {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
           </div>

@@ -60,6 +60,8 @@ describe('a half filed on the Inputs page leaves the other half biddable', () =>
     fileMorning()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
+    /* the bid itself, pending: the admin's "Approve what I enter" (D1186) unticked */
+    fireEvent.click(screen.getByTestId('bid-approve-tick'))
     fireEvent.click(screen.getByTestId('bid-OL'))
     const v = getState().views[P]?.[D]
     expect(v?.all.filter(c => c.kind === 'request')).toHaveLength(1)

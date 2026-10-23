@@ -17,7 +17,7 @@ import { useMemo, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
+import { awardsIn, cellProblem, clearCells, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -171,6 +171,11 @@ export function BidPicker({
   // day for every cell opened. A picker that remembered the last choice
   // would silently write a half day on the next cell the bidder touched.
   const [portion, setPortion] = useState<Portion>(onlyPortion ?? 'full')
+  /* "APPROVE WHAT I ENTER" (D1147, D1186, D1187; M3 5.5): an admin's tick in the title bar, ticked each time the window
+     opens (this window is drawn anew for each opening, so the state starts ticked); an untick lasts while it is open */
+  const isAdmin = getState().role === 'admin'
+  const [approve, setApprove] = useState(true)
+  const approving = isAdmin && approve
   // The range, if the bidder has asked for one. `null` means this one day —
   // the common case, and the one that must stay a single tap.
   const [range, setRange] = useState<Range | null>(null)
@@ -343,6 +348,20 @@ export function BidPicker({
     }
     setConfirming(null)
 
+    /* ticked: placed and approved in one command, one Undo (`placeApproved`); a day its approval refuses keeps its bid,
+       pending, and is named here — never a whole-window failure */
+    if (code && approving) {
+      const why1 = !range ? cellProblem(personId, date, code) : null
+      if (why1) return setNote(why1)
+      const r = placeApproved(selCells(), code)
+      if (r.written > 0) onWrote?.(code)
+      if (!r.pending.length && !r.skipped) return onClose()
+      const parts: string[] = []
+      if (r.skipped) parts.push(`${r.skipped} day${r.skipped === 1 ? '' : 's'} not written: ${skipWhy('written', getState().role)}`)
+      if (r.pending.length) parts.push(`${r.pending.map(p => shortDate(p.date)).join(', ')} kept pending — not approved (a locked week, or leave or a medical already there)`)
+      return setNote(parts.join('. ') + '.')
+    }
+
     if (!range) {
       /* A refused single-day write used to close the sheet as though it had
          worked: no leave, no message, nothing ([S4-BUGHUNT], 20 Sep 26). Ask
@@ -400,6 +419,12 @@ export function BidPicker({
         <span className="dt">{dayLabel(date)}</span>
         {/* the box's own voice — "<LL", not the stored "*LL" (W5-F5, 26 Sep 26) */}
         {current && <span className="cur">now {displayCell(current)}</span>}
+        {isAdmin && (
+          <label className="bp-approve" data-testid="bid-approve-tick-label">
+            <input type="checkbox" data-testid="bid-approve-tick" checked={approve} onChange={e => { setApprove(e.target.checked); setConfirming(null) }} />
+            Approve what I enter
+          </label>
+        )}
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
           ✕
         </button>
@@ -554,7 +579,7 @@ export function BidPicker({
             they are not leave types, and offering them here would invite a
             scheduler's data to be typed in as if it were a bid. */}
         {/* the eight in two rows of four, each its kind's colour and what is left of it (M3 5.2–5.6 — LeaveButtons.tsx) */}
-        <LeaveButtons portion={portion} onPick={write} filled={false}
+        <LeaveButtons portion={portion} onPick={write} filled={approving}
           figure={wouldLeave ? code => wouldLeave(code, [date])?.before ?? null : undefined} />
         {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>

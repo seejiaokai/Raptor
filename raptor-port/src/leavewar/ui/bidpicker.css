@@ -1653,3 +1653,18 @@
 .bidsheet .tchip.lv .lv-fig { font-weight: 500; font-variant-numeric: tabular-nums; opacity: .9; }
 .bidsheet .tchip.lv .lv-neg { color: var(--hard); opacity: 1; }
 .bidsheet .tchip.lv.lv-dim { opacity: .55; }
+
+/* "APPROVE WHAT I ENTER" (D1147, D1187 — in the title bar, at its right end before ✕; M3 5.5): a quiet tick, the
+   title bar's small words; it pushes itself and the ✕ to the right together. */
+.bidsheet-hd .bp-approve {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.bidsheet-hd .bp-approve + .x { margin-left: 4px; }
+.bidsheet-hd .bp-approve input { margin: 0; accent-color: var(--accent); }

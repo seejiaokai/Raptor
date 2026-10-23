@@ -59,6 +59,9 @@ describe('the bid bubble (D1227, D1272)', () => {
     rowRedPastOneMore(TARGET)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    /* a pending bid, as a member places it: the admin's "Approve what I enter" (D1186, ticked each time it opens) is
+       unticked, so the Leave War's own Undo below can take the bid back (an approved leave lives on the Inputs page) */
+    fireEvent.click(screen.getByTestId('bid-approve-tick'))
     fireEvent.click(screen.getByTestId('bid-LL'))
     expect(bubble()).toBeTruthy()
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
@@ -68,6 +71,8 @@ describe('the bid bubble (D1227, D1272)', () => {
     act(() => { lwUndo() })
     expect(getState().grid.dusk?.[TARGET]).toBeFalsy()
     fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    expect((screen.getByTestId('bid-approve-tick') as HTMLInputElement).checked, 'ticked again on opening (D1186)').toBe(true)
+    fireEvent.click(screen.getByTestId('bid-approve-tick'))
     fireEvent.click(screen.getByTestId('bid-LL'))
     expect(bubble()).toBeTruthy()
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
