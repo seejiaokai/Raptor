@@ -172,7 +172,7 @@ const SPANS: Array<[Span, string, string]> = [
   ['custom', 'Custom', 'Type your own start and end time'],
 ]
 export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
-  return <div className="spanpick" id={id} role="group" aria-label="How much of the day">
+  return <div className="spanpick" id={id} role="group" aria-label="Duration">
     {SPANS.map(([m, label, title]) =>
       <button key={m} type="button" className={'spanbtn' + (span === m ? ' on' : '')}
         aria-pressed={span === m} title={title} data-span={m}
@@ -2992,7 +2992,8 @@ export function InputEditor() {
           {/* an upchit has no hours — the date above is the whole record, so
               the When row would only offer controls that mean nothing */}
           {!isUpchit(draft.type) && <div className="inped-f">
-            <span className="inped-k">When</span>
+            {/* "Duration" — the Leave War's windows and this one ask it in the same word (D1212) */}
+            <span className="inped-k">Duration</span>
             <div className="inped-when">
               {hasHalf(draft.type)
                 ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {

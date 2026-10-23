@@ -52,3 +52,24 @@ describe('the leave buttons', () => {
     expect(within(sheet).getByTestId('bid-LL-left').textContent).toBe(String(want).replace('-', '−'))
   })
 })
+
+describe('the window\'s row names (D1212) and the Also row (A9)', () => {
+  it('the one-day window asks "Date" and "Duration"; an admin\'s extra actions stand on a row labelled Also', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    const sheet = screen.getByTestId('bid-picker')
+    const labs = [...sheet.querySelectorAll('.bidsheet-row > .lab')].map(l => l.textContent)
+    expect(labs).toContain('Date')
+    expect(labs).toContain('Duration')
+    expect(labs).not.toContain('How many')
+    expect(labs).not.toContain('How much')
+    expect(within(sheet).getByTestId('bid-also').textContent).toBe('Also')
+  })
+  it('a member has no Also row', () => {
+    setRole('member')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    const sheet = screen.queryByTestId('bid-picker')
+    if (sheet) expect(within(sheet).queryByTestId('bid-also')).toBeNull()
+  })
+})

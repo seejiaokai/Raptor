@@ -276,7 +276,7 @@ export function SelectSheet({
       {canFill && (
         <>
           <div className="bidsheet-row">
-            <span className="lab">How much</span>
+            <span className="lab">Duration</span>
             {PORTIONS.map(p => (
               <button key={p.portion} data-testid={p.testid}
                 className={`pchip${portion === p.portion ? ' on' : ''}`}
@@ -306,6 +306,7 @@ export function SelectSheet({
           reading, uncorrected — D331). */}
       {onPostOut && nPeople === 1 && !poOpen && (
         <div className="bidsheet-row postout">
+          <span className="lab" data-testid="sel-also">Also</span>
           <button className="dchip po" data-testid="sel-postout" title="Post out — their last day in the squadron" aria-label="Post out" onClick={() => { setPoOpen(true); setConfirming(null) }}>PO</button>
         </div>
       )}

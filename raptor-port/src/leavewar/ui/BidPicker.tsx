@@ -443,7 +443,8 @@ export function BidPicker({
           cells. "Just this day" stays the default and stays a single tap —
           the range is the exception, so it costs the extra tap. */}
       <div className="bidsheet-row">
-        <span className="lab">How many</span>
+        {/* "Date" and "Duration" — the one pair of words wherever these two things are asked (D1212) */}
+        <span className="lab">Date</span>
         <button
           data-testid="span-one"
           className={`pchip${range ? '' : ' on'}`}
@@ -546,7 +547,7 @@ export function BidPicker({
       )}
 
       <div className="bidsheet-row">
-        <span className="lab">How much</span>
+        <span className="lab">Duration</span>
         {/* Item D: with one half already spoken for by the Inputs page, the
             other choices are not dimmed, they are ABSENT — the house rule for
             a control that could not work (a disabled chip invites a tap and
@@ -607,6 +608,8 @@ export function BidPicker({
           desktop they sit on one. */}
       {!oilOpen && !poOpen && !piOpen && (onCredit || onPostOut || onPostIn) && (
         <div className="bidsheet-row postout">
+          {/* labelled "Also", on its own row under the leave (red-team fix A9 — M3 5.6) */}
+          <span className="lab" data-testid="bid-also">Also</span>
           {/* SHORT LABELS, MEANING ON HOVER (owner, 20 Sep 26). These three are
               the admin's management actions and he knows them by their
               initials; spelling them out cost a third of the sheet's width for
