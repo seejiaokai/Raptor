@@ -1,0 +1,92 @@
+// M3 walk, walker B, part 3 — scenarios 15, 16 (a bid's file into the approved leave and the Inputs list; one day put back / deleted; moved; re-typed)
+// Run: node scripts/handpass/lw-m3-walk-b3.mjs [15,16]   (SIZES=desk,phone env to narrow)
+import { L, T, switchTo, fresh, setDoc, placeLeave, sleep, makeRunner, finish, chips, winText, rowHasFile, placeRange, inputsList, listRows, toWar } from './lw-m3-walk-b-h.mjs'
+console.log('lw-m3-walk-b3 v1 — build addf330a5 on :4302')
+const run = makeRunner(process.argv[2] ? new Set(process.argv[2].split(',')) : null)
+const tq = async (w, sel, name) => { if (w.phone) { await L.tapQuick(w, sel, name); await sleep(w, 400) } else await L.press(w, sel) }
+const SIZES = process.env.SIZES ? process.env.SIZES.split(',') : ['desk', 'phone']
+
+for (const size of SIZES) {
+  console.log(`\n=== ${size} chromium ===`)
+  const tag = `${size}-cr`
+  const w = await fresh(size, 'admin')
+  await run(15, size, w, async (w, S) => {
+    await L.gotoMonth(w, 'JAN')
+    // A: a three-day LL with a file and a remark, ticked → approved
+    S.ok(await placeRange(w, '2026-01-20', '2026-01-22', { remark: 'rmk15', doc: 'walk-b.png' }), 'admin placed LL 20–22 Jan with a file and a remark (ticked)')
+    for (const d of ['20', '21', '22']) { const i = await L.cellInfo(w.page, 'bane', `2026-01-${d}`); S.ok(/s-a/.test(i?.boxes?.[0]?.cls || ''), `Jan ${d}: ${i?.boxes?.[0]?.cls}`) }
+    await L.cellShot(w, 'bane', '2026-01-21', `s15-approved-${tag}`); S.pic(`s15-approved-${tag}`)
+    // B: the Inputs list
+    await inputsList(w)
+    let rows = await listRows(w)
+    const mine = rows.filter(r => /20 Jan/.test(r.text) && /22 Jan/.test(r.text))
+    S.ok(mine.length === 1, `one Inputs row for Ranger 20–22 Jan: ${JSON.stringify(rows.map(r => r.text))}`)
+    S.ok(!!mine[0]?.clip, `that row shows the paperclip (doc id ${mine[0]?.doc})`)
+    S.ok(/rmk15/.test(mine[0]?.text || ''), `and the remark: "${mine[0]?.text}"`)
+    await L.shot(w, `s15-inputs-list-${tag}`); S.pic(`s15-inputs-list-${tag}`)
+    // open the paperclip → the file
+    if (mine[0].clip) await w.page.locator(`[data-iid="${mine[0].iid}"] .rclip`).click()
+    else { S.say('no paperclip on this size, so the file is looked for through the card: its window'); await w.page.locator(`[data-iid="${mine[0].iid}"] [data-testid="inl-open"]`).click(); await sleep(w, 900); const iw = await w.page.evaluate(() => (document.querySelector('.floatwin, .sheet, [role=dialog]')?.innerText || '').replace(/s+/g, ' ').slice(0, 200)); S.say('the card opens: ' + iw); await L.shot(w, `s15-card-window-${tag}`); S.pic(`s15-card-window-${tag}`); await w.page.locator('.inped-doc').first().click().catch(() => {}); await sleep(w, 900) }
+    await sleep(w, 800)
+    const dv = await w.page.evaluate(() => { const h = [...document.querySelectorAll('*')].find(e => e.children.length === 0 && /Ranger · LL · Jan 20/.test(e.textContent)); if (!h) return null; const r = h.getBoundingClientRect(); let c = h; for (let k = 0; k < 6 && c.parentElement && c.getBoundingClientRect().height < 300; k++) c = c.parentElement; return { head: h.textContent, imgs: c.querySelectorAll('img').length, frames: c.querySelectorAll('iframe,embed,object').length, imgW: c.querySelector('img') ? c.querySelector('img').naturalWidth : 0, h: Math.round(c.getBoundingClientRect().height) } })
+    S.ok(!!dv, `the paperclip opens a viewer: ${JSON.stringify(dv)}`)
+    await L.shot(w, `s15-viewer-${tag}`); S.pic(`s15-viewer-${tag}`)
+    await w.page.keyboard.press('Escape'); await sleep(w, 400)
+    // C: put the middle day back (Refuse on the single-record window; the day list's "Back to bid" is walked below)
+    await toWar(w, 'JAN')
+    await L.openCell(w, 'bane', '2026-01-21')
+    await tq(w, T('decide-refuse'), `s15-refuse-${tag}`); await sleep(w, 700)
+    const i21 = await L.cellInfo(w.page, 'bane', '2026-01-21')
+    S.ok(/s-r/.test(i21?.boxes?.[0]?.cls || ''), `Jan 21 is now refused: ${i21?.boxes?.[0]?.cls}`)
+    await L.openCell(w, 'bane', '2026-01-21'); await sleep(w, 300)
+    const wt = await winText(w); const c21 = await chips(w)
+    S.ok(c21.some(t => /walk-b.(pdf|png)/.test(t)), `that day's request shows the file: ${JSON.stringify(c21)} — window "${(wt || '').slice(0, 120)}"`)
+    await L.shot(w, `s15-refused-day-${tag}`); S.pic(`s15-refused-day-${tag}`)
+    await L.closeAny(w)
+    await inputsList(w)
+    rows = await listRows(w)
+    const left = rows.filter(r => /LL/.test(r.text) && /Jan/.test(r.text) && !/Jul|Appoint/.test(r.text))
+    S.say(`after Jan 21 was refused the Inputs rows are: ${JSON.stringify(left.map(r => r.text + ' clip=' + r.clip))}`)
+    const lk = []; for (const r of left) lk.push(await rowHasFile(w, r))
+    S.ok(left.length >= 1 && lk.every(Boolean), `every remaining piece of the leave keeps its file (${JSON.stringify(lk)}): ${JSON.stringify(left.map(r => r.text + ' clip=' + r.clip))}`)
+    await L.shot(w, `s15-inputs-after-refuse-${tag}`); S.pic(`s15-inputs-after-refuse-${tag}`)
+    // D: delete one day of an approved leave (26–28 Jan, delete the 27th) → the others keep the file
+    await toWar(w, 'JAN')
+    S.ok(await placeRange(w, '2026-01-26', '2026-01-28'), 'admin placed LL 26–28 Jan with a file')
+    await L.openCell(w, 'bane', '2026-01-27'); await tq(w, T('bid-clear'), `s15-delete-${tag}`); await sleep(w, 700)
+    await L.closeAny(w)
+    const i27 = await L.cellInfo(w.page, 'bane', '2026-01-27')
+    S.ok(!i27?.boxes?.length, `Jan 27 holds no box after Delete: ${JSON.stringify(i27?.boxes?.map(b => b.cls))}`)
+    await inputsList(w)
+    rows = await listRows(w)
+    const r26 = rows.filter(r => /^Ranger 2[68] Jan/.test(r.text) || /2[68] Jan/.test(r.text))
+    const lk2 = []; for (const r of r26) lk2.push(await rowHasFile(w, r))
+    S.ok(r26.length === 2 && lk2.every(Boolean), `26 and 28 Jan each keep the file (${JSON.stringify(lk2)}): ${JSON.stringify(r26.map(r => r.text + ' clip=' + r.clip))}`)
+    await L.shot(w, `s15-inputs-after-delete-${tag}`); S.pic(`s15-inputs-after-delete-${tag}`)
+    // E: the day list's "Back to bid" — a day with an approved AM LL (with a file) and an approved PM OL
+    await toWar(w, 'JAN')
+    S.ok(await placeRange(w, '2026-01-12', '2026-01-12', { portion: 'am' }), 'admin placed AM LL on 12 Jan with a file')
+    await L.openCell(w, 'bane', '2026-01-12'); await sleep(w, 300)
+    S.ok(await (async () => { await L.press(w, T('portion-pm')); return placeLeave(w, 'OL') })(), 'admin placed PM OL on 12 Jan (no file)')
+    await L.openCell(w, 'bane', '2026-01-12'); await sleep(w, 400)
+    const dl = await L.sheetDump(w.page)
+    S.ok(dl?.id === 'daylist', `the day with two records opens the day list: ${dl?.id} — ${(dl?.text || '').slice(0, 200)}`)
+    await L.shot(w, `s15-daylist-${tag}`); S.pic(`s15-daylist-${tag}`)
+    const back = (dl?.tids || []).find(t => /^dl-unapprove-/.test(t))
+    S.ok(!!back, `the day list offers "Back to bid": ${(dl?.tids || []).filter(t => /unapprove|refuse|remove|doc/.test(t)).join(', ')}`)
+    if (back) {
+      // press the first one (the AM LL is listed first in the day)
+      const llBack = await w.page.evaluate(() => { const li = [...document.querySelectorAll('[data-testid="daylist"] li')].find(l => /local leave/.test(l.innerText)); return li?.querySelector('[data-testid^="dl-unapprove-"]')?.dataset.testid || null })
+      S.ok(!!llBack, `the LL line has its own Back to bid: ${llBack}`)
+      await tq(w, T(llBack || back), `s15-backtobid-${tag}`); await sleep(w, 800)
+      const dl2 = await L.sheetDump(w.page)
+      S.say(`after Back to bid the day list reads: ${(dl2?.text || '').slice(0, 300)}`)
+      await L.shot(w, `s15-daylist-after-back-${tag}`); S.pic(`s15-daylist-after-back-${tag}`)
+      const withDoc = await w.page.evaluate(() => [...document.querySelectorAll('[data-testid="daylist"] li')].map(li => ({ text: li.innerText.replace(/\s+/g, ' ').slice(0, 120), hasFile: /walk-b\.pdf/.test(li.innerText) })))
+      S.ok(withDoc.some(l => l.hasFile && /pending|waiting|bid/i.test(l.text)), `the put-back request's line shows the file: ${JSON.stringify(withDoc)}`)
+    }
+    await L.closeAny(w)
+  })
+  finish('b3-' + tag)
+  await L.closeBrowser()
+}

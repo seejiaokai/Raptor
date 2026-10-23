@@ -221,8 +221,9 @@ function useSheetDrag(enabled = true) {
       panel.style.setProperty('--lw-dy', `${dy}px`)
     }
     const down = (e: PointerEvent) => {
-      // The ✕ and any control on the header keep doing their own job.
-      if ((e.target as HTMLElement).closest('button')) return
+      // The ✕ and any control on the header keep doing their own job — a tick and its words too ("Approve what I enter",
+      // M3's walk, fault A1: the drag captured the press, so a mouse click or a Safari tap never reached the tick).
+      if ((e.target as HTMLElement).closest('button, label, input, select, textarea, a')) return
       dragging = true
       px = e.clientX; py = e.clientY; dx0 = dx; dy0 = dy
       rect0 = panel.getBoundingClientRect()
