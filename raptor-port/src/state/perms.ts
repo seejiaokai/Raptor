@@ -427,6 +427,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.decide': op(T.bid, 'U'),
   /* an admin places leave and approves it in one step (D1147 — "Approve what I enter", M3 5.5): one command, one Undo */
   'lw.placeApproved': op(T.bid, 'U'),
+  /* a request's own words and papers — its remarks, till tick, documents (M3 5.9, 5.10; D1210, D1150): his own row, as
+     lw.edit; on a day closed for him the commit lets exactly this through (onlyChangesWords) */
+  'lw.reqmeta': op(T.bid, 'U', 'optional'),
   'lw.approve': op(T.bid, 'U'),
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
@@ -664,6 +667,26 @@ export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] |
   for (const c of changes) if (c.collection === 'lw.cell' && !LW_DAY_OPEN(c.id)) out.push(`${c.collection}/${c.id}`)
   return out
 }
+/* HIS OWN PENDING REQUEST'S WORDS AND PAPERS CHANGE ON A CLOSED DAY (owner D1150 — "added or seen at any time, even after
+   its dates are locked"; D1210; M3 5.10). Only that: the same records, in the same order, each the same but for the
+   `remarks`, `till` and `docIds` of an undecided request. A code, a state, a record added or taken is not this. Whatever
+   the command calls itself — his Undo or Redo of such a change is the same change, and a Redo that would put a bid back
+   is not one (D1263's check still answers it). */
+function onlyChangesWords(before: unknown, after: unknown): boolean {
+  const b: any[] = Array.isArray(before) ? before : []
+  const a: any[] = Array.isArray(after) ? after : []
+  if (!b.length || a.length !== b.length) return false
+  const bare = (r: any) => { const { remarks: _r, till: _t, docIds: _d, ...rest } = r ?? {}; return JSON.stringify(rest) }
+  let changed = false
+  for (let i = 0; i < b.length; i++) {
+    const was = b[i], now = a[i]
+    if (JSON.stringify(was) === JSON.stringify(now)) continue
+    if (was?.kind !== 'request' || (was.state !== 'pending' && was.state !== 'acknowledged')) return false
+    if (bare(was) !== bare(now)) return false
+    changed = true
+  }
+  return changed
+}
 function onlyTakesPending(before: unknown, after: unknown): boolean {
   const b: any[] = Array.isArray(before) ? before : []
   const a: any[] = Array.isArray(after) ? after : []
@@ -818,7 +841,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
            for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a
            restore puts nothing back on a closed day. (Taking his own pending bid away passes above, Undo or not.) */
         const after = c.op === 'delete' ? [] : c.after
-        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after)) {
+        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after) && !onlyChangesWords(c.before, after)) {
           if (warRestore === undefined) warRestore = env.origin === 'restore' && LW_RESTORE ? LW_RESTORE(env) : null
           if (!(warRestore && warRestore(c))) return `a war day not open for bidding (${where})`
         }

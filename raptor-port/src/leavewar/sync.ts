@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -141,7 +141,8 @@ import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
 import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
-import { MAX_CARRIED_REMARK } from './engine/warrecs'
+import { MAX_CARRIED_REMARK, MAX_REQ_DOCS } from './engine/warrecs'
+import { docFields, rowDocIds } from '../state/docs'
 import { codeWorth } from './engine/credit'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
@@ -405,14 +406,15 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     picks.push({ ...it, rec, warId: war.period.id })
   }
   if (!picks.length) return { done: 0, skipped, why }
-  /* runs: same person, war, code, carried remark, consecutive dates */
+  /* runs: same person, war, code, remark, till tick and documents (M3 7.2 — one leave holds one of each), consecutive dates */
   picks.sort((a, b) => cmpISO(a.personId, b.personId) || cmpISO(a.date, b.date))
   const runs: Pick[][] = []
   for (const p of picks) {
     const last = runs[runs.length - 1]
     const prev = last?.[last.length - 1]
     if (prev && prev.personId === p.personId && prev.warId === p.warId && prev.rec.code === p.rec.code &&
-      (prev.rec.remarks ?? '') === (p.rec.remarks ?? '') && addDays(prev.date, 1) === p.date) last!.push(p)
+      (prev.rec.remarks ?? '') === (p.rec.remarks ?? '') && prev.rec.till === p.rec.till &&
+      (prev.rec.docIds ?? []).join('|') === (p.rec.docIds ?? []).join('|') && addDays(prev.date, 1) === p.date) last!.push(p)
     else runs.push([p])
   }
   const rows = runs.map(run => {
@@ -428,6 +430,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       remarks: remarksTyped(first.rec.remarks ?? '', { start: first.date, end: last.date }),
       lwMoved: moved, mod: nowStamp(),
     })
+    /* ITS TILL TICK AND ITS DOCUMENTS GO WITH IT (owner D1226, D1150; M3 7.2): the Inputs page shows the leave as the
+       request said — a tick kept only where it differs from the leave's default (D953), the papers as the input's own */
+    if (typeof first.rec.till === 'boolean' && first.rec.till !== tillDefault(row)) row.till = first.rec.till
+    if (first.rec.docIds?.length) Object.assign(row, docFields(first.rec.docIds))
     inpId(row)
     /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
     stampPlaced(row)
@@ -446,7 +452,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
          extension never swallows the run's own carried remark (Fable #7) */
       const body = (x: any) => remarksTyped(x.remarks, x)
       const same = (x: any) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
-        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r)
+        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r) && tillShown(x) === tillShown(r)
       const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
       /* …and a day that would BRIDGE a leave whose till date is unticked and one whose is not joins the one before only:
          one record holds one tick, so a bridge would drop one of the two choices (owner D953 — the scenario designer's 8,
@@ -459,6 +465,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const keep = before ?? after
       const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
       merged.remarks = remarksTyped(keep.remarks, keep)
+      /* …the papers of every piece it joins (M3 7.2): none is lost to a join */
+      const papers = [...new Set([...rowDocIds(keep), ...rowDocIds(r), ...(before && after ? rowDocIds(after) : [])])]
+      delete merged.docId; delete merged.docIds
+      Object.assign(merged, docFields(papers))
       merged.mod = nowStamp()
       /* an approval that EXTENDS a leave is still an approval: placed by this approver, now (the plan §3.8) */
       stampPlaced(merged)
@@ -577,6 +587,8 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
       ...(row.lwMoved?.[it.date] ? { carried: { lwMoved: { [it.date]: row.lwMoved[it.date] } } } : {}),
       /* a put-back carries the leave's words back to the request (M3 7.1 / 7.2, B9) */
       ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}),
+      ...(typeof row.till === 'boolean' ? { till: row.till } : {}),
+      ...(rowDocIds(row).length ? { docIds: rowDocIds(row).slice(0, MAX_REQ_DOCS) } : {}),
     }
     adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
     const set = cuts.get(it.iid) ?? new Set<string>()

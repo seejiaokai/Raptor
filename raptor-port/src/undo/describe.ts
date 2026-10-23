@@ -79,6 +79,7 @@ const TYPE_PHRASE: Record<string, string> = {
   /* the Leave War's gestures (the one-absence commands, [ARCH-STACK] step 4) */
   'lw.decide': 'a decision on a bid',
   'lw.placeApproved': 'placing and approving leave',
+  'lw.reqmeta': 'a leave request’s remarks or documents',
   'lw.approve': 'approving leave',
   'lw.move': 'moving a bid',
   'lw.decideApproved': 'taking back an approval',
