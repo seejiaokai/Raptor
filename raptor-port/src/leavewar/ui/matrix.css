@@ -960,7 +960,12 @@
    a tap leaves the row hovered until something else is tapped, so the column
    simply stays broken. `.who` was already exempt, which is why only the
    counter showed it. Pinned by the geometry gate; jsdom cannot see it. */
-.mx tbody tr:hover td:not(.who):not(.bal):not(.lwph) {
+/* …and the same for EVERY pinned cell, and never the month strip (his report, 23 Oct 26 12:16 — "When I select the
+   months why I see unclean blue background"): the strip is a row of the grid, so a press on a month lit its row and its
+   pinned left cell went see-through, the grid showing through it as a dirty block; the group headings' and the desktop
+   sub-headings' pinned cells did the same. Spared through `:where()`, which adds no weight, so the rule wins and loses
+   against every other rule exactly as before. */
+.mx tbody:where(:not(.mstripe)) tr:hover td:not(.who):not(.bal):not(.lwph):where(:not(.grphd, .catsub-in)) {
   background: rgba(59, 198, 232, .05);
 }
 

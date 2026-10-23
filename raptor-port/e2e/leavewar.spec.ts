@@ -721,6 +721,23 @@ test('on a phone the open chip opens the "Open for bidding" window as a full pag
    line that gives way is the open chip's dates (the stage's name was, until the stages went — D1177): cut with "…",
    and the line holds. Wide letters are forced here so this PC sees what another device would. */
 // RE-EXPRESSED, D1254 (the overhaul's M2): the tab row and View line hold with wide letters; the grid's bar may take a second line, never cutting a chip.
+/* HIS REPORT, 23 Oct 26 12:16 — "When I select the months why I see unclean blue background": a press on a month button
+   painted the phone's own tap highlight (Safari's grey-blue, Chrome's rgba(51,181,229,.4)) over the strip and the corner
+   of the header for a moment. Nothing on the Leave War may carry that flash — the press shows itself (the month lights,
+   the grid moves). Checked on the month button, the cells and rows under it and the page's top rows. */
+test("no tap on the Leave War flashes the phone's blue tap highlight (his report of the month buttons)", async ({ page }) => {
+  test.skip(!isPhone(), "the tap highlight is a touch screen's")
+  await lwRole(page, 'admin')
+  await lwView(page, 'slipway')   // My leave shows for the person viewed
+  const colours = await page.evaluate(() => {
+    const pg = document.querySelector('#page-leavewar')!
+    const sels = ['[data-testid="month-FEB"]', '[data-testid="month-strip"]', '.mstick', 'table.mx', '.mx-wrap', '.card',
+      '[data-testid="counts-toggle"]', '[data-testid="war-picker"]', '[data-testid="my-leave"]', '[data-testid="lw-tab-grid"]', 'td[data-testid^="cell-"]']
+    return sels.map(s => { const e = pg.querySelector(s) as HTMLElement | null; return [s, e ? getComputedStyle(e).webkitTapHighlightColor : 'missing'] })
+  })
+  for (const [sel, c] of colours) expect(c, `${sel} flashes the tap highlight`).toBe('rgba(0, 0, 0, 0)')
+})
+
 /* D1278 (his correction, 23 Oct 26 — "seems quite tall and big on the phone the top 2 row of the view and grid/oil. See the
    mock up u created"): on a phone the two top lines are as low as the round-19 drawing (r19-nav-admin-phone.png at 390
    wide: the tab row ~53px, the View line ~42px). They had been ~60 and ~61 — padding and My leave's 44px floor. Measured
@@ -2031,6 +2048,27 @@ test('the balance column is opaque — day cells never show through it', async (
   // simply deleted the rule does not pass. `alpha < 1` would not do here
   // either: an untinted cell is transparent, which is translucent too.
   expect(await bg(sibling)).not.toBe(siblingAtRest)
+})
+
+// HIS REPORT, 23 Oct 26 12:16 — "When I select the months why I see unclean blue background". The month strip is a row
+// of the grid, so the row-hover tint above reached it: a tap on a month (on a phone a tap leaves the pointer "over" what
+// it pressed) turned the strip's pinned left cell see-through, rgba(59,198,232,.05), and the grid showed through it as
+// a dirty block. The same tint reached the pinned group headings ("SXO · 12") and the desktop's sub-headings. No pinned
+// cell may take it, and the strip row takes none at all; a person's row still lights as before (the test above).
+test('a pressed month never tints the strip, and no pinned heading turns see-through (his report)', async ({ page }) => {
+  const alphaOf = (css: string) => { const p = css.match(/[\d.]+/g)!; return p.length < 4 ? 1 : Number(p[3]) }
+  const bgOf = (sel: string) => page.locator(sel).first().evaluate(el => getComputedStyle(el).backgroundColor)
+  await page.mouse.move(0, 0)
+  const fillAtRest = await bgOf('#page-leavewar .mstripe td.mfill')
+  await page.locator('[data-testid="month-FEB"]').hover()
+  expect(alphaOf(await bgOf('#page-leavewar .mstripe td.mstick')), 'the strip\'s pinned cell is see-through').toBe(1)
+  expect(await bgOf('#page-leavewar .mstripe td.mfill'), 'the strip row lit up').toBe(fillAtRest)
+  await page.locator('[data-testid="month-FEB"]').click()
+  expect(alphaOf(await bgOf('#page-leavewar .mstripe td.mstick')), 'pressed: the strip\'s pinned cell is see-through').toBe(1)
+  // a group heading hovered: its pinned cell stays solid
+  const head = page.locator('#page-leavewar tr.grp td.grphd').first()
+  await head.hover()
+  expect(alphaOf(await head.evaluate(el => getComputedStyle(el).backgroundColor)), 'a group heading turned see-through').toBe(1)
 })
 
 // The space arithmetic, checked against a real browser rather than read off

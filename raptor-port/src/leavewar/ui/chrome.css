@@ -9,6 +9,11 @@
    reason. Do not unwrap, and never fix a cross-page bleed by editing
    scheduler.css — add the explicit property here instead. */
 #page-leavewar {
+/* NO TAP HIGHLIGHT ANYWHERE ON THE LEAVE WAR (his report, 23 Oct 26 12:16 — "When I select the months why I see unclean
+   blue background"): a phone paints its own translucent blue (Safari grey-blue, Chrome rgba(51,181,229,.4)) over what a
+   finger pressed, and on the month strip it covered the strip and the header's corner for a moment. The property is
+   inherited, so the page sets it once; every press here shows itself (a month lights, a window opens, a cell changes). */
+& { -webkit-tap-highlight-color: transparent; }
 /* Topbar, nav mark and period/stage chips — selectors and values copied
    from Raptor's scheduler.css (.topbar, .mark, .nav, .wk, .filters, .fchip)
    verbatim, not from the comp's slightly different re-derivation of them. */
