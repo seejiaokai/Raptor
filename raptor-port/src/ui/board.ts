@@ -1924,7 +1924,7 @@ export function waveMenu(anchor: HTMLElement, di: any) {
     + hiddenLine
   let day = (di == null) ? 0 : di
   const box = popMenu(anchor, html, (e: any, close: () => void) => {
-    if (e.target.closest('[data-wvedit]')) { close(); setWaveEdit(true); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-wvedit]')) { close(); noteOpener(anchor); setWaveEdit(true); notify(); e.stopPropagation(); return }
     const dbtn = e.target.closest('[data-wmday]')
     if (dbtn) {
       day = +dbtn.dataset.wmday

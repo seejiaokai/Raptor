@@ -11,6 +11,8 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { SBDAY } from '../state/view'
+import { INPUTS } from '../engine/inputs'
+import { setInpEdit, setDocView, INPEDIT } from './pops'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -116,5 +118,60 @@ describe('the Plans window', () => {
     expect(($('#draftsModal') as any).hidden).toBe(false)
     await key('Escape')
     expect(($('#draftsModal') as any).hidden).toBe(true)
+  })
+})
+
+/* [WINDOWS-KEEP-KEYS]: the larger windows took no keyboard and held none — Tab went on into the schedule behind them */
+const holdsTab = async (box: HTMLElement) => {
+  expect(box.contains(document.activeElement), 'the keyboard is in the window').toBe(true)
+  for (let i = 0; i < 40; i++) {
+    await key('Tab')
+    expect(box.contains(document.activeElement), 'Tab stays in the window').toBe(true)
+  }
+  for (let i = 0; i < 5; i++) {
+    await key('Tab', true)
+    expect(box.contains(document.activeElement), 'Shift+Tab stays in the window').toBe(true)
+  }
+}
+
+describe('the other windows keep the keyboard', () => {
+  it('Week insights over the board: takes and holds it, Escape closes it and not the board, the keyboard back on its button', async () => {
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
+    expect(SBDAY).toBe(0)
+    const opener = $('#sbInsights')
+    await pressKeyed(opener)
+    await holdsTab($('#insightModal .modal-box'))
+    await key('Escape')
+    expect($('#insightModal').hidden).toBe(true)
+    expect(SBDAY).toBe(0)
+    expect(document.activeElement).toBe(opener)
+  })
+
+  it('Flying waves (the "+ Wave" menu’s ⚙): holds it, Escape closes it, the keyboard back on "+ Wave"', async () => {
+    const opener = $('#sbBoard [data-wvadd="0"]')
+    await pressKeyed(opener)
+    await click($('.wavemenu [data-wvedit]'))
+    await holdsTab($('#waveTplModal .modal-box'))
+    await key('Escape')
+    expect($('#waveTplModal').hidden).toBe(true)
+    expect(SBDAY).toBe(0)
+    expect(document.activeElement).toBe(opener)
+    await click($('#sbDone'))
+  })
+
+  it('a request’s own window opened from the schedule: takes and holds it', async () => {
+    const r = INPUTS[0]
+    expect(r).toBeTruthy()
+    await act(async () => { setInpEdit(r); notify() })
+    await holdsTab($('#inpEditPop .inpedbox'))
+    await act(async () => { setInpEdit(null); notify() })
+    expect(INPEDIT).toBe(null)
+  })
+
+  it('the document viewer: takes and holds it', async () => {
+    await act(async () => { setDocView({ row: { person: 'bane', type: 'OML', date: 'Jul 10' }, up: false }); notify() })
+    await holdsTab($('#docViewPop .docviewbox'))
+    await key('Escape')
+    expect($('#docViewPop').hidden).toBe(true)
   })
 })
