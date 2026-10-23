@@ -9,7 +9,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { initStore, setSession, notify } from '../state/store'
+import { initStore, setSession, notify, setPage } from '../state/store'
 import { SBDAY } from '../state/view'
 import { INPUTS } from '../engine/inputs'
 import { setInpEdit, setDocView, INPEDIT } from './pops'
@@ -173,5 +173,37 @@ describe('the other windows keep the keyboard', () => {
     await holdsTab($('#docViewPop .docviewbox'))
     await key('Escape')
     expect($('#docViewPop').hidden).toBe(true)
+  })
+})
+
+/* THE WALK'S TWO FINDS (24 Oct 26, walker A — older behaviour in the same family, fixed with the batch) */
+describe('what the walk found', () => {
+  it('D13: the board\u2019s cancel-reason dialog gives the keyboard back to the CX button that opened it', async () => {
+    await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
+    expect(SBDAY).toBe(0)
+    const cx = $('#sbBoard [data-lcx="0.0.0.0"]')
+    await pressKeyed(cx)
+    expect($('#cxPop').hidden).toBe(false)
+    expect($('#cxPop .airpop-box').contains(document.activeElement)).toBe(true)
+    await click($('#cxPop .x'))
+    expect($('#cxPop').hidden).toBe(true)
+    const now = document.activeElement as HTMLElement
+    expect(now.dataset.lcx).toBe('0.0.0.0')
+    await click($('#sbDone'))
+  })
+
+  it('D12: on the Inputs page, Escape with the document viewer over a request\u2019s window closes the viewer only', async () => {
+    await act(async () => { setPage('inputs'); notify() })
+    const r = INPUTS[0]
+    await act(async () => { setInpEdit(r); notify() })
+    expect(INPEDIT).toBe(r)
+    await act(async () => { setDocView({ row: r }); notify() })
+    expect($('#docViewPop').hidden).toBe(false)
+    await key('Escape')
+    expect($('#docViewPop').hidden).toBe(true)
+    expect(INPEDIT, 'the request window behind it stays open').toBe(r)
+    await key('Escape')                                  // the next Escape is the window's
+    expect(INPEDIT).toBe(null)
+    await act(async () => { setPage('editsched'); notify() })
   })
 })

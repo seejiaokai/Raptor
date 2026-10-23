@@ -94,6 +94,12 @@ export function noteOpener(el: HTMLElement | null): void {
   }
 }
 
+/* the topmost sheet holding the keyboard, if any — a window with its own Escape asks it before closing under one */
+export function topSheet(): HTMLElement | null {
+  const el = sheets[sheets.length - 1]
+  return el && el.isConnected ? el : null
+}
+
 /* ESCAPE CLOSES THE WINDOW (the design guide §2 — Escape closes what opened last; [BOARD-MODALS-ESCAPE]). Heard on the
    document before the page's own keys (the Scheduler Board closes on Escape too, and must not go with it), and only while
    this window is the topmost sheet: a question sheet raised over it answers its own Escape first. */

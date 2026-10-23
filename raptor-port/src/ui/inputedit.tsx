@@ -62,7 +62,7 @@ import { RangeCal } from './RangeCal'
 import { DateBox } from './DateBox'
 import { TypeLegend } from './TypeLegend'
 import { clickedOutside } from './outside'
-import { useSheetFocus } from './sheetfocus'
+import { useSheetFocus, topSheet } from './sheetfocus'
 
 /* THE ROSTER LIST, one place — the Inputs page's add form, its own row
    editor and this dialog's new Person field must never disagree on who is
@@ -2511,6 +2511,15 @@ export function InputEditor() {
        all are deps so the handler never closes the dialog under a sheet */
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* A SHEET OF ANOTHER'S OVER IT ANSWERS FIRST (the walk of 24 Oct 26, D12): with the document viewer opened from this
+         window, one Escape closed the viewer AND this window behind it — this handler runs before the viewer's, on the
+         same document. With none of its own questions up, it leaves Escape alone while the topmost keyboard-holding sheet
+         is not this window (ui/sheetfocus.ts topSheet); the next Escape is its own. */
+      if (!docConf && !upConf && !medConf && !oilConf) {
+        const top = topSheet()
+        const own = box.current && (box.current.closest('.floatwin') || box.current)
+        if (top && own && !own.contains(top)) return
+      }
       /* as a window it does not own the page: Escape typed in a box on the page BEHIND it is that box's own (a cell
          being edited puts its text back on Escape) — the shell's own rule, ui/FloatWindow.tsx */
       if (win) {
