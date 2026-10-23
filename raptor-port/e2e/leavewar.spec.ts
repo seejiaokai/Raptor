@@ -738,6 +738,24 @@ test("no tap on the Leave War flashes the phone's blue tap highlight (his report
   for (const [sel, c] of colours) expect(c, `${sel} flashes the tap highlight`).toBe('rgba(0, 0, 0, 0)')
 })
 
+/* D1280 (23 Oct 26 — "choose the one that uses less vertical space"): on a phone the Inputs page's tab row sits 4px under
+   the app's top bar, as the Leave War's does, so the tabs stand in the same place on both pages — on every tab of the
+   Inputs page (the calendar, SANS, Medical). The bars themselves are alike (44px); only the gap above was 8px there. */
+test('on a phone the Inputs page\'s tabs stand where the Leave War\'s do — 4px under the top bar (D1280)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone\'s tab rows (D1280); the desktop lays its tabs in one longer row')
+  const tabsTop = (pg: string) => page.evaluate(id => (document.querySelector(`#page-${id} .inputs-tabs`) as HTMLElement).getBoundingClientRect().top, pg)
+  await page.evaluate(() => window.scrollTo(0, 0))
+  const lw = await tabsTop('leavewar')
+  await page.evaluate(() => (window as any).go('inputs'))
+  await expect(page.locator('#page-inputs .inputs-tabs')).toBeVisible()
+  for (const tab of [null, 'SANS', 'Medical']) {
+    if (tab) await page.locator('#page-inputs .intab', { hasText: tab }).first().click()
+    await page.waitForTimeout(300)
+    await page.evaluate(() => window.scrollTo(0, 0))
+    expect(Math.abs((await tabsTop('inputs')) - lw), `the Inputs page's ${tab ?? 'calendar'} tab row is not where the Leave War's is`).toBeLessThan(0.75)
+  }
+})
+
 /* D1278 (his correction, 23 Oct 26 — "seems quite tall and big on the phone the top 2 row of the view and grid/oil. See the
    mock up u created"): on a phone the two top lines are as low as the round-19 drawing (r19-nav-admin-phone.png at 390
    wide: the tab row ~53px, the View line ~42px). They had been ~60 and ~61 — padding and My leave's 44px floor. Measured

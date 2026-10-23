@@ -29,13 +29,17 @@ const measure = pageId => page.evaluate(id => {
   return { row: r(row), tabs: r(tabs), tab: r(tab), rowPad: getComputedStyle(row).padding, next: next ? { cls: next.className.slice(0, 40), ...r(next) } : null }
 }, pageId)
 const out = {}
-for (const id of ['inputs', 'leavewar']) {
+// the Inputs page's three tabs share its row: the calendar first, then SANS and Medical by their tabs (D1280)
+const tabsFor = { inputs: null, 'inputs-sans': 'SANS', 'inputs-medical': 'Medical', leavewar: null }
+for (const key of Object.keys(tabsFor)) {
+  const id = key.startsWith('inputs') ? 'inputs' : key
   await page.evaluate(i => window.go(i), id)
+  if (tabsFor[key]) { await page.waitForTimeout(500); await page.locator(`#page-inputs .intab`, { hasText: tabsFor[key] }).first().click() }
   await page.waitForTimeout(1200)
   await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200)
-  out[id] = await measure(id)
+  out[key] = await measure(id)
   await page.evaluate(i => { const t = document.querySelector(`#page-${i} .inputs-tabs`); t.style.outline = '3px solid #ff3d9a'; t.style.outlineOffset = '2px' }, id)
-  await page.screenshot({ path: path.join(OUT, `${id}-tabs.png`), clip: { x: 0, y: 0, width: 390, height: 230 } })
+  await page.screenshot({ path: path.join(OUT, `${key}-tabs${process.env.TAG ? '-' + process.env.TAG : ''}.png`), clip: { x: 0, y: 0, width: 390, height: 230 } })
   await page.evaluate(i => { const t = document.querySelector(`#page-${i} .inputs-tabs`); t.style.outline = '' }, id)
 }
 console.log(JSON.stringify(out, null, 1))

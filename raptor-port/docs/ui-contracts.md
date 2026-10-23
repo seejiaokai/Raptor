@@ -10629,6 +10629,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 ## The Inputs calendar — its tabs, its month of bars, its day, its gear, the editor as a window (the Inputs / SANS job, step 5, 8 Oct 26; D620, D621, D626, D627, D629, D632, D639, D641, D646, D653, D664, D672)
 
 **Its top row on a desktop (owner D1125, 21 Oct 26):** the tabs, then ‹ month › and Today — in the same place as on the SANS calendar — then at the right end the Calendar / List switch, the filters and the gear; the switch stands there on the Calendar and on the List alike, so it never moves (D687), as on the phone (D705); the row's buttons drawn 36 tall. Where a line below puts the switch first on a desktop, this one wins.
+**On a phone its tab row sits 4px under the app's top bar (owner D1280, 23 Oct 26 — "choose the one that uses less vertical space"),** as the Leave War's does, so the tabs stand in the same place on both pages; every tab of the page (the calendar, the list, SANS, Medical) shares it (`25-inputs-calendar.css`, `.inputs-top` at 820 and under).
 
 `ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx`; styles
 `ui/scheduler/25-inputs-calendar.css`. The plan: `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.6–§3.9.

@@ -1900,3 +1900,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In gates-and-deploy's CI traps: "a geometry test red on Linux only — rerun it locally with wider letters forced from the first paint (the spec's LW_WIDE_LETTERS switch, or the same init script) before reading logs; reproduce the test's own order of resizes". In the bug-check order's walk section: layout fixes are walked once with wider letters too.
 
 **Principle:** When a failure depends on the environment, make the local environment adopt the failing property on demand (font, timezone, speed) and reproduce the exact sequence the test follows; a fix proven only against the environment that never failed is not proven.
+
+### Observation 681: The walks pictured every screen after it settled, so a fault that lives in the moment after a tap — and stays on an iPhone — was never seen
+
+**Status:** OPEN
+**Date:** 23 Oct 26
+**Session context:** The Leave War's M2 — the owner, on his iPhone, found a dirty blue block over the month strip after tapping a month; three walkers, a re-walk and the host's own walk had pressed those buttons and passed
+**Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7) and `raptor-port/docs/walk-scripts.md`
+**Type:** open-source
+**Phase/Area:** the walk — when a picture is taken, and what a touch screen keeps after a tap
+
+**Issue:** The grid's row-hover tint reached a row whose pinned cell must stay opaque; the cell went see-through. In the test browser the hover state cleared within a quarter of a second, and every walk script waited 300–900 ms after a tap before its picture, so every picture showed the settled, clean state. On an iPhone a tap leaves the element "hovered" until the next tap, so the fault stayed on his screen. The fault had been in the app since 19 Aug 26 — two months of walks pressed the same buttons. The same day he also caught two layout mismatches against the approved drawing (row heights, two boxes of different heights side by side) that no step measured. Each is a property no step looked at, not a step done badly.
+
+**Suggested improvement:** (1) walk-scripts.md: on a touch-screen walk, take a picture within 100 ms of each tap as well as after it settles, and keep the hover state (iOS keeps it) — or force `:hover` on the pressed element before the settled picture. (2) A standing browser test per dense screen: press each control on a phone and assert every pinned (sticky) cell stays fully opaque. (3) The bug-check order's walk: a built screen from an approved drawing is measured beside it (heights and side-by-side boxes), as his lesson 42 now says.
+
+**Principle:** A check finds only the states it is pointed at. When a device keeps a state the test browser drops (hover after a tap, wider letters, a slow frame), make the test hold that state on purpose; pictures taken only after everything settles prove only the settled screen.
