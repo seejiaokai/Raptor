@@ -92,6 +92,11 @@ await swipe(250, 700, 250, 300)
 await shot('r5-scrolled-down')
 await pinch(230, 500, 220, 120, 'r5m-mid-pinch-out-scrolled')
 await shot('r6-after-scrolled')
+/* part-way down the page and with the dates frozen (D1288): a pinch out opens no band */
+await page.evaluate(() => window.scrollTo(0, 110)); await sleep(400)
+await pinch(230, 520, 220, 120, 'r10m-partway-mid-pinch-out')
+await page.evaluate(() => window.scrollTo(0, 260)); await sleep(400)
+await pinch(230, 620, 220, 120, 'r11m-frozen-mid-pinch-out')
 /* the OIL tab, the same rule (D1287): mid-pinch in, then out */
 await page.evaluate(() => window.scrollTo(0, 0)); await sleep(300)
 await page.locator('[data-testid="oil-tracker"]').tap(); await sleep(900)

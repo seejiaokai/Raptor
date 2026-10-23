@@ -209,6 +209,33 @@ describe('pinch to zoom', () => {
     expect(down.style.translate).toBe('0px 0px')
     fire(t.surface, 'touchend', []); off2()
   })
+  it('a box on the date row’s top goes down with the picture, never up, sideways about the fingers (the fix read, finding 1)', () => {
+    const box = document.createElement('div'); document.body.appendChild(box)
+    const t = setup({ alsoTop: () => [box, null] })
+    /* a pinch OUT to half, slid 20 down: the picture carries the box's top (0) to 100 + 0.5 × (0 − 100) + 20 = 70 */
+    fire(t.surface, 'touchstart', [[100, 100]])
+    fire(t.surface, 'touchstart', [[50, 100], [150, 100]])
+    fire(t.surface, 'touchmove', [[75, 120], [125, 120]])
+    expect(box.style.transformOrigin).toBe('100px 0px')
+    expect(box.style.transform).toBe('translate(0px, 70px) scale(0.5)')
+    fire(t.surface, 'touchend', [])
+    expect([box.style.transform, box.style.transformOrigin]).toEqual(['', ''])
+    /* a pinch IN (1.5, slid 20 down) would carry it to −30, up: it stays */
+    pinchSliding(t.surface)
+    expect(box.style.transform).toBe('translate(0px, 0px) scale(1.5)')
+    fire(t.surface, 'touchend', [])
+    t.off(); box.remove()
+  })
+  it('the lift never scrolls the page behind a window fixed over it (the OIL tab — the fix read, finding 5)', async () => {
+    const { scrollChain } = await import('./pinchzoom')
+    const el = document.createElement('div'); document.body.appendChild(el)
+    const by = vi.spyOn(window, 'scrollBy').mockImplementation(() => {})
+    expect(scrollChain(el, 'y', 50, true)).toBe(50)   // nothing moved it, and the page was not asked
+    expect(by).not.toHaveBeenCalled()
+    scrollChain(el, 'y', 50)
+    expect(by).toHaveBeenCalledWith(0, 50)
+    by.mockRestore(); el.remove()
+  })
   it('a box pinned to the left edge stretches with the rows from its own left, is never drawn above the floor, and is put back at the lift (D1287)', () => {
     const band = document.createElement('div'), corner = document.createElement('div')
     document.body.append(band, corner)

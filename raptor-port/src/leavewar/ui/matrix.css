@@ -2370,8 +2370,15 @@ touch-action: pan-x pan-y;
 /* …and its days stretch inside the row's own box (D1287): it clips sideways only, and its band is see-through while the
    fingers move, so on a pinch out the rows show under the shrunken date row rather than an empty band, and no shadow
    is left standing at the old foot */
-.mxfixed.lw-pinching { background: transparent; box-shadow: none; }
+.lw-sda .mxfixed.lw-pinching { background: transparent; box-shadow: none; }
 .lw-sda .mxfixed.lw-pinching .mxfixed-track { overflow-x: clip; overflow-y: visible; }
+/* …the frozen row's own table keeps the box's colour under its cells, so its tinted dates (a holiday, a no-leave day,
+   a closed date, which are see-through tints) never show the rows through them (the fix read, finding 2) */
+.mxfixed.lw-pinching .mx { background: var(--panel-2); }
+/* the JS-mirror path (no scroll-driven animations): its scroller's own corner cells stretch with it; the opaque corner
+   copy over them is the one held at the left edge, so the scroller's are not drawn while pinching (finding 4) */
+.mx-outer:not(.lw-sda) .mxfixed.lw-pinching .mxfixed-scroll .who,
+.mx-outer:not(.lw-sda) .mxfixed.lw-pinching .mxfixed-scroll .bal { visibility: hidden; }
 
 /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26; Matrix.tsx `pin`): the date row's
    cells are held under the month buttons while the rows stretch about the fingers, so on a pinch in the rows above the
@@ -2381,6 +2388,19 @@ touch-action: pan-x pan-y;
    buttons past MAR would stand on whatever slid beneath (his picture: a box behind JAN–MAR). Only while pinching —
    position: relative on the date cells creates a layer each, and at rest they need none. */
 .mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th:not(.who):not(.bal) { position: relative; z-index: 6; }
+/* the tinted dates are see-through tints, laid at rest on nothing; held over the rows while pinching they would show
+   the rows through them, so each is laid on the date row's own colour (the fix read, finding 2) — the same tint on top;
+   a closed date's dim is drawn as a darkening rather than a see-through, for the same reason */
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.blocked,
+.mxfixed.lw-pinching .mxhead th.blocked { background: linear-gradient(rgba(229, 168, 59, .22), rgba(229, 168, 59, .22)), var(--panel-2); }
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.day.evoff,
+.mxfixed.lw-pinching .mxhead th.day.evoff { background: linear-gradient(rgba(74, 201, 126, .24), rgba(74, 201, 126, .24)), var(--panel-2); }
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.day.evnolv,
+.mxfixed.lw-pinching .mxhead th.day.evnolv { background: linear-gradient(rgba(242, 139, 46, .26), rgba(242, 139, 46, .26)), var(--panel-2); }
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.day.evfree,
+.mxfixed.lw-pinching .mxhead th.day.evfree { background: linear-gradient(rgba(180, 190, 200, .2), rgba(180, 190, 200, .2)), var(--panel-2); }
+.mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.locked { opacity: 1; filter: brightness(.45); }
+.mxfixed.lw-pinching .mxhead th.locked { opacity: 1; filter: brightness(.45); }
 .mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.who,
 .mx-outer.lw-pinching > .mx-wrap > table.mx > tbody.mxhead th.bal { z-index: 7; }
 .mx-outer.lw-pinching .mstripe td.mstick { z-index: 8; }
@@ -2390,8 +2410,9 @@ touch-action: pan-x pan-y;
   left: 0;
   top: 0;
   bottom: 0;
-  /* the screen's width in the grid's own units (its zoom divided out), so the band reaches past DEC at any zoom */
-  width: calc(100vw / var(--lwz, 1));
+  /* at least the screen's width in the grid's own units at any zoom, whether or not this engine scales `vw` by the grid's
+     zoom (the fix read's unverified risk); the grid's box clips the rest */
+  width: calc(100vw * max(1, 1 / var(--lwz, 1)));
   background: var(--panel);
 }
 .mxfixed-scroll {

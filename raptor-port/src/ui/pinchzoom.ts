@@ -42,8 +42,9 @@ export function scaleOf(el: Element): number {
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 
 /** Move whatever scrolls `from` on one axis by `delta` SCREEN pixels: the nearest scroller first, what it cannot take
- *  handed on to the next one out, the page last (up and down). Returns what could not be moved. */
-export function scrollChain(from: Element, axis: 'x' | 'y', delta: number): number {
+ *  handed on to the next one out, the page last (up and down) — never the page with `notPage` (a window fixed over it).
+ *  Returns what could not be moved. */
+export function scrollChain(from: Element, axis: 'x' | 'y', delta: number, notPage = false): number {
   let left = delta
   for (let n: Element | null = from; n && left !== 0; n = n.parentElement) {
     if (n === document.body || n === document.documentElement) break
@@ -61,7 +62,7 @@ export function scrollChain(from: Element, axis: 'x' | 'y', delta: number): numb
     left -= (now - was) * s
     if (Math.abs(left) < 0.5) left = 0
   }
-  if (left !== 0 && axis === 'y') {
+  if (left !== 0 && axis === 'y' && !notPage) {
     const before = window.scrollY
     window.scrollBy(0, left)
     left -= window.scrollY - before
@@ -122,6 +123,14 @@ export type PinchOpts = {
    *  left its far end empty on a pinch out — D1287). Any transform of their own (the row's follow of the grid's scroll,
    *  paused while pinching) is kept: the stretch rides the individual `scale` and `translate`. */
   alsoIn?: () => (HTMLElement | null)[]
+  /** boxes in the page that stand on the date row's top — stretched sideways about the fingers from their own top, and
+   *  carried down with the picture but never up, as the date row is (`y: 'up'`) — the Leave War's open-dates outline,
+   *  which runs from the date row's top to the grid's foot (the fix read's finding 1); unzoomed boxes */
+  alsoTop?: () => (HTMLElement | null)[]
+  /** with `edges`: the page itself scrolls with the pinch as far as the lift's scroll would take it, so what stands above
+   *  the zoomed thing moves with it while the fingers move — no band opens between the month buttons and the date row
+   *  part-way down the page (owner D1288, 23 Oct 26). Never where the zoomed thing sits in a window fixed over the page. */
+  scrollPage?: boolean
   /** a screen line nothing of `alsoY` is drawn above while the fingers move — the Leave War's date row's foot, so its
    *  names copy, growing up on a pinch in, never covers the pinned date row or the month buttons (D1287). Read once. */
   floor?: () => number
@@ -149,12 +158,15 @@ type Live = {
   ys: { el: HTMLElement; oy: number; s: number; top: number }[]
   tl: HTMLElement[]
   ins: { el: HTMLElement; o: number; z: number }[]
+  tops: { el: HTMLElement; ox: number; top: number }[]
   floor: number
+  /** the zoomed thing sits in a window fixed over the page (the OIL tab): the page behind it never scrolls for it */
+  fixed: boolean
   /** a Ctrl+scroll burst, not two fingers */
   wheel: boolean
   /** with `edges`: the target's top-left on screen at the start, and how far the scrollers around it can still carry the
    *  content down and right at the lift (screen pixels) */
-  edge: { top: number; left: number; roomX: number; roomY: number; keepH: number; bottom: number; minBottom: number; right: number; minRight: number } | null
+  edge: { top: number; left: number; roomX: number; roomY: number; keepH: number; bottom: number; minBottom: number; right: number; minRight: number; winRoom: number; y0: number } | null
   /** the smallest zoom, read ONCE as the pinch begins: read again while the picture is stretched, a floor measured off the
    *  drawn grid would measure the stretch (every box is drawn scaled), and creep as the fingers move */
   lo: number
@@ -193,8 +205,20 @@ export function wirePinch(opts: PinchOpts): () => void {
       const overX = live.sx + live.k * (e.left - live.sx) + dx - (e.left + e.roomX)
       if (overX > 0) dx -= overX
     }
+    /* THE PAGE SCROLLS WITH THE PINCH (D1288): the picture's top comes down by what the lift's scroll will bring back; as
+       much of that as the page's own scroll can take is scrolled now, so the month buttons and all above move with the
+       grid. Everything in the page is then drawn by what is left (`dyp`); boxes fixed over the page keep the whole carry. */
+    let S = 0
+    if (e && opts.scrollPage && e.winRoom > 0) {
+      /* less the height a held box above the fingers keeps (the month buttons): the real layout puts what is under it
+         that much higher than a pure stretch, so the page is scrolled that much less — or the rows slide under the date row */
+      const want = clamp(live.sy + live.k * (e.top - live.sy) + dy - e.top - e.keepH * (1 - live.k), 0, e.winRoom)
+      if (Math.abs(window.scrollY - (e.y0 - want)) >= 0.5) window.scrollTo(window.scrollX, e.y0 - want)
+      S = e.y0 - window.scrollY
+    }
+    const dyp = dy - S
     t.style.transformOrigin = `${live.ox}px ${live.oy}px`
-    t.style.transform = `translate(${dx / s}px, ${dy / s}px) scale(${live.k})`
+    t.style.transform = `translate(${dx / s}px, ${dyp / s}px) scale(${live.k})`
     for (const a of live.also) {
       a.el.style.transformOrigin = `${a.ox}px 0px`
       a.el.style.transform = `translateX(${dx}px) scale(${live.k})`
@@ -203,13 +227,19 @@ export function wirePinch(opts: PinchOpts): () => void {
        carried the same way (in its own units: a box inside a zoom divides by its scale, as the target does) */
     for (const a of live.xy) {
       a.el.style.transformOrigin = `${a.ox}px ${a.oy}px`
-      a.el.style.transform = `translate(${dx / a.s}px, ${dy / a.s}px) scale(${live.k})`
+      a.el.style.transform = `translate(${dx / a.s}px, ${dyp / a.s}px) scale(${live.k})`
+    }
+    /* a box on the date row's top: its top goes where the date row goes — down with the picture, never up */
+    for (const a of live.tops) {
+      const ty = Math.max(0, live.sy + live.k * (a.top - live.sy) + dy - a.top - S)
+      a.el.style.transformOrigin = `${a.ox}px 0px`
+      a.el.style.transform = `translate(${dx}px, ${ty}px) scale(${live.k})`
     }
     /* a box inside the zoomed thing held as it is: the exact inverse of the target's stretch, about the same point given
        in the box's own place — the target's translate d and scale k undone by translate(-d/k) scale(1/k) */
     for (const c of live.keep) {
       c.el.style.transformOrigin = `${live.ox - c.cx}px ${live.oy - c.cy}px`
-      c.el.style.transform = `translate(${-dx / s / live.k}px, ${-dy / s / live.k}px) scale(${1 / live.k})`
+      c.el.style.transform = `translate(${-dx / s / live.k}px, ${-dyp / s / live.k}px) scale(${1 / live.k})`
     }
     /* A PINNED CELL STAYS PINNED (D1287): the picture would carry its edge from where it stood, P, to S + k(P − S) + d;
        pinned, it belongs at A + k(P − A), grown about the pinned block's corner A — so it is moved by the difference, in
@@ -218,7 +248,8 @@ export function wirePinch(opts: PinchOpts): () => void {
     const ks = live.k * s
     for (const c of live.pin) {
       const tx = c.x ? (c.px + live.k * (c.l0 - c.px) - (live.sx + live.k * (c.l0 - live.sx) + dx)) / ks : 0
-      const wantY = c.y ? (c.py + live.k * (c.t0 - c.py) - (live.sy + live.k * (c.t0 - live.sy) + dy)) / ks : 0
+      /* (a pinned place moves down with the page's own scroll, S) */
+      const wantY = c.y ? (c.py + live.k * (c.t0 - c.py) + S - (live.sy + live.k * (c.t0 - live.sy) + dy)) / ks : 0
       const ty = c.y === 'up' ? Math.max(0, wantY) : wantY
       c.el.style.translate = `${tx}px ${ty}px`
     }
@@ -226,9 +257,9 @@ export function wirePinch(opts: PinchOpts): () => void {
        never drawn above it (a clip in its own units, worked back through its stretch) */
     for (const a of live.ys) {
       a.el.style.transformOrigin = `0px ${a.oy}px`
-      a.el.style.transform = `translate(0px, ${dy / a.s}px) scale(${live.k})`
+      a.el.style.transform = `translate(0px, ${dyp / a.s}px) scale(${live.k})`
       if (live.floor > -Infinity) {
-        const cut = a.oy + ((live.floor - dy - a.top) / a.s - a.oy) / live.k
+        const cut = a.oy + ((live.floor - dyp - a.top) / a.s - a.oy) / live.k
         a.el.style.clipPath = cut > 0 ? `inset(${cut}px 0px 0px 0px)` : ''
       }
     }
@@ -269,6 +300,7 @@ export function wirePinch(opts: PinchOpts): () => void {
     for (const a of l.ys) { a.el.style.transform = ''; a.el.style.transformOrigin = ''; a.el.style.clipPath = '' }
     for (const el of l.tl) { el.style.transform = ''; el.style.transformOrigin = '' }
     for (const a of l.ins) { a.el.style.scale = ''; a.el.style.translate = ''; a.el.style.transformOrigin = '' }
+    for (const a of l.tops) { a.el.style.transform = ''; a.el.style.transformOrigin = '' }
     l.spacer?.remove()
     if (wheelTimer) { clearTimeout(wheelTimer); wheelTimer = null }
     document.removeEventListener('touchend', end, true)
@@ -320,10 +352,21 @@ export function wirePinch(opts: PinchOpts): () => void {
       try { const tf = getComputedStyle(el).transform; if (tf && tf !== 'none' && typeof DOMMatrixReadOnly === 'function') shift = new DOMMatrixReadOnly(tf).m41 } catch { shift = 0 }
       return { el, z, o: (p.x - (q.left - shift * z)) / z }
     })
+    const tops = (opts.alsoTop ? opts.alsoTop() : []).filter((x): x is HTMLElement => !!x).map(el => {
+      const q = el.getBoundingClientRect()
+      return { el, ox: p.x - q.left, top: q.top }
+    })
+    /* a window fixed over the page (the OIL tab): the page's scroll can neither carry it nor bring it back (the fix read's
+       finding 5) */
+    let fixed = false
+    for (let n: HTMLElement | null = t; n && n !== document.body; n = n.parentElement) {
+      if (getComputedStyle(n).position === 'fixed') { fixed = true; break }
+    }
     const floor = opts.floor ? opts.floor() : -Infinity
     let edge: Live['edge'] = null
     if (opts.edges) {
-      let roomX = 0, roomY = window.scrollY || 0, minRight = -Infinity
+      const winRoom = fixed ? 0 : window.scrollY || 0
+      let roomX = 0, roomY = winRoom, minRight = -Infinity
       for (let n = t.parentElement; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
         const cs = getComputedStyle(n)
         if (cs.overflowX === 'auto' || cs.overflowX === 'scroll') {
@@ -339,9 +382,9 @@ export function wirePinch(opts: PinchOpts): () => void {
       const below = se.scrollHeight - (window.scrollY || 0) - r.bottom
       const minBottom = se.scrollHeight > window.innerHeight ? window.innerHeight - below : -Infinity
       const keepH = keep.reduce((a, c) => { const q = c.el.getBoundingClientRect(); return q.bottom <= p.y ? a + q.height : a }, 0)
-      edge = { top: r.top, left: r.left, roomX, roomY, keepH, bottom: r.bottom, minBottom, right: r.right, minRight }
+      edge = { top: r.top, left: r.left, roomX, roomY, keepH, bottom: r.bottom, minBottom, right: r.right, minRight, winRoom, y0: window.scrollY || 0 }
     }
-    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, anchorY, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also, xy, keep, pin, ys, tl, ins, floor, wheel, edge, lo }
+    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, anchorY, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also, xy, keep, pin, ys, tl, ins, tops, floor, fixed, wheel, edge, lo }
     t.style.willChange = 'transform'
     /* a finger that landed off the surface lifts off it too: its touchend goes there, so the pinch listens on the page
        until it ends (the code read's finding 6) */
@@ -388,7 +431,7 @@ export function wirePinch(opts: PinchOpts): () => void {
     }
     if (l.anchorY && l.anchorY.isConnected) {
       const q2 = l.anchorY.getBoundingClientRect()
-      scrollChain(l.anchorY, 'y', q2.top + l.fy * q2.height - l.cy)
+      scrollChain(l.anchorY, 'y', q2.top + l.fy * q2.height - l.cy, l.fixed)
     }
   }
   function end(e: TouchEvent) {

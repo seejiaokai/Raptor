@@ -1339,7 +1339,7 @@ export function Matrix() {
         }
         /* every pinned one, not only those in sight: a pinch out draws in rows that were off the screen as it began */
         const rows = ':scope > tbody:not(.mxhead):not(.mstripe) > tr'
-        for (const el of table.querySelectorAll<HTMLElement>(`${rows} > .who, ${rows} > .bal, ${rows} > td.grphd`)) {
+        for (const el of table.querySelectorAll<HTMLElement>(`${rows} > .who, ${rows} > .bal, ${rows} > td.grphd, ${rows} > td.catsub-in`)) {
           if (getComputedStyle(el).position !== 'sticky') continue   // the phone's roster: its frozen copy is the band
           out.push({ el, x: true, y: false })
         }
@@ -1352,7 +1352,11 @@ export function Matrix() {
       }),
       /* the frozen date row's days: where the row follows the grid by the browser (`lw-sda`) its days stretch inside the
          row's box, which keeps both edges of the screen; elsewhere the row's box stretches, as before */
-      also: () => [...(outer.classList.contains('lw-sda') ? [] : outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-scroll')), ...(wrapRef.current?.querySelectorAll<HTMLElement>(':scope > .lw-bidbox') ?? [])],
+      also: () => (outer.classList.contains('lw-sda') ? [] : [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-scroll')]),
+      /* the open-dates outline runs from the date row's top: it goes where the date row goes (the fix read, finding 1) */
+      alsoTop: () => [...(wrapRef.current?.querySelectorAll<HTMLElement>(':scope > .lw-bidbox') ?? [])],
+      /* part-way down the page the page itself scrolls with the pinch, so no band opens above the date row (D1288) */
+      scrollPage: true,
       alsoIn: () => (outer.classList.contains('lw-sda') ? [anim()] : []),
       alsoTL: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-frozen')],
       alsoY: () => [bandRef.current, drawerRef.current],
@@ -3927,7 +3931,9 @@ export function Matrix() {
               <div className={`mxfixed-scroll${sdaActive ? ' mxfixed-track' : ''}`} ref={mirrorRef}>
                 {table(sdaActive ? 'mxfixed-anim' : '')}
               </div>
-              {/* The bar's frozen LEFT columns, in the scroll-driven path only.
+              {/* The bar's frozen LEFT columns. Drawn in the scroll-driven path; in the JS-mirror path too since D1287 (the
+                  fix read's finding 4), where its scroller keeps sticky corner cells of its own — this copy stands over them,
+                  the same pixels at rest, and is what a pinch holds at the left edge while that scroller stretches.
                   A translated table cannot keep `position: sticky`, so the
                   callsign + counter columns are drawn as a static copy pinned
                   over the left and clipped to their own width; the day columns
@@ -3936,7 +3942,7 @@ export function Matrix() {
                   who/bal are made pointer-events:none in matrix.css so taps land
                   here, and this copy is aria-hidden so the scrolling layer stays
                   the single accessible one. */}
-              {sdaActive && (
+              {(
                 <div
                   className="mxfixed-frozen"
                   aria-hidden="true"

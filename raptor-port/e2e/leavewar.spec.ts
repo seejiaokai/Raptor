@@ -6469,6 +6469,149 @@ test('the OIL tracker pinches (D1285): no − / +; a phone opens it one step out
   await page.locator('[data-testid="oil-close"]').click()
 })
 
+/* MID-PINCH HELPERS (D1287, D1288 and the fix read's findings, 23 Oct 26): two fingers about (cx, cy), d0 → d1 apart,
+   the screen read by `read` with them still down, then lifted. */
+async function lwMidPinch<T>(page: Page, cx: number, cy: number, d0: number, d1: number, read: () => Promise<T>): Promise<T> {
+  const cdp = await page.context().newCDPSession(page)
+  const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+  const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[cx - d / 2, cy], [cx + d / 2, cy]] }
+  await touch('touchStart', [at(0)[0]!]); await page.waitForTimeout(30)
+  await touch('touchStart', at(0)); await page.waitForTimeout(30)
+  for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await page.waitForTimeout(16) }
+  await page.waitForTimeout(80)
+  const m = await read()
+  await touch('touchEnd', []); await page.waitForTimeout(700)
+  await cdp.detach()
+  return m
+}
+/** points down one column, from under the top bar to the fingers, where nothing of the grid is drawn — the bare box
+ *  behind it (the band of his picture, D1288) */
+const lwBandHits = (page: Page, x: number, yTo: number) => page.evaluate(([x, yTo]) => {
+  const bar = document.querySelector<HTMLElement>('.topbar')?.getBoundingClientRect().bottom ?? 0
+  const bare: number[] = []
+  for (let y = Math.ceil(bar) + 2; y < yTo; y += 6) {
+    const hit = document.elementFromPoint(x!, y)
+    if (hit && hit.matches('#page-leavewar .mx-wrap, #page-leavewar .mx-outer, #page-leavewar .mx-wrap > table.mx, #page-leavewar .mxfixed, #page-leavewar .mxfixed-scroll')) bare.push(Math.round(y))
+  }
+  return bare
+}, [x, yTo] as const)
+
+test.describe('mid-pinch, the page moves with the grid and the pinned parts stay whole (D1288; the fix read, 23 Oct 26)', () => {
+  test.beforeEach(() => { test.skip(!isPhone(), 'two fingers are a touch screen\'s') })
+
+  test('part-way down the page, a pinch out opens no band between the month buttons and the date row (D1288)', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)
+    const bare = await lwMidPinch(page, 230, 520, 220, 120, () => lwBandHits(page, 300, 500))
+    expect(bare, 'mid-pinch, nothing bare between the top bar and the fingers').toEqual([])
+  })
+
+  test('with the dates frozen under the top bar, a pinch out shows no second date row with a band above it (his picture)', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 260)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const bare = await lwMidPinch(page, 230, 620, 220, 120, () => lwBandHits(page, 300, 600))
+    expect(bare, 'mid-pinch, nothing bare between the top bar and the fingers').toEqual([])
+  })
+
+  test('the tinted dates — a holiday, a no-leave day, a closed date — stay solid mid-pinch, never showing the rows through them', async ({ page }) => {
+    /* a no-leave day in sight, made by the app's own controls (the tint test's way) */
+    await lwRole(page, 'admin')
+    await page.locator('[data-testid="month-JAN"]').click(); await page.waitForTimeout(700)
+    await page.locator('[data-testid="event-1-2026-01-21"]').click()
+    await page.locator('[data-testid="event-text"]').fill('Standby crew')
+    await page.locator('[data-testid="event-tag-nolv"]').click()
+    await page.locator('[data-testid="event-apply"]').click(); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="head-2026-01-21"]')).toHaveClass(/evnolv/)
+    await page.locator('[data-testid="head-2026-01-21"]').scrollIntoViewIfNeeded()
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300)
+    const solid = () => page.evaluate(() => {
+      const see: string[] = []
+      for (const th of document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.day, #page-leavewar [data-testid="sticky-head"] th.day')) {
+        const r = th.getBoundingClientRect(); if (r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) continue
+        const cs = getComputedStyle(th), a = cs.backgroundColor.match(/rgba\([^)]*,\s*([\d.]+)\)/)
+        if ((a && parseFloat(a[1]!) < 1) || parseFloat(cs.opacity) < 1) see.push(`${th.dataset.testid} ${cs.backgroundColor} ${cs.opacity}`)
+      }
+      return see
+    })
+    expect(await lwMidPinch(page, 230, 470, 120, 200, solid), 'pinching in at the top, every date heading in sight is solid').toEqual([])
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    expect(await lwMidPinch(page, 230, 520, 200, 130, solid), 'with the dates frozen, every frozen date heading is solid').toEqual([])
+  })
+})
+
+test('on a desktop, a Ctrl+scroll holds the CAT headings at the left edge with the names, mid-burst (the fix read, finding 3)', async ({ page }) => {
+  test.skip(isPhone(), 'the CAT headings are a desktop\'s')
+  await page.locator('[data-testid="month-SEP"]').click(); await page.waitForTimeout(700)
+  const sub = page.locator('#page-leavewar .mx-wrap td.catsub-in').first()
+  await sub.scrollIntoViewIfNeeded(); await page.waitForTimeout(300)
+  const box = (await sub.boundingBox())!
+  await page.mouse.move(700, box.y + 40)
+  await page.keyboard.down('Control')
+  await page.mouse.wheel(0, 200); await page.waitForTimeout(40)
+  const m = await page.evaluate(() => {
+    const w = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect()
+    const c = document.querySelector('#page-leavewar .mx-wrap td.catsub-in')!.getBoundingClientRect()
+    const n = [...document.querySelectorAll('#page-leavewar .mx-wrap .mxbody td.who')].map(e => e.getBoundingClientRect()).find(r => r.top > 0)!
+    return { wrapL: w.left, catL: c.left, nameL: n.left, tf: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
+  })
+  await page.keyboard.up('Control'); await page.waitForTimeout(500)
+  expect(m.tf, 'read mid-burst').toBe(true)
+  expect(Math.abs(m.nameL - m.wrapL), `the names at the left edge (${JSON.stringify(m)})`).toBeLessThan(1.5)
+  expect(Math.abs(m.catL - m.wrapL), 'the CAT heading at the left edge with them').toBeLessThan(1.5)
+})
+
+test.describe('where the browser cannot move the frozen dates by itself (the fix read, finding 4)', () => {
+  test.beforeEach(async ({ page }) => {
+    test.skip(!isPhone(), 'two fingers are a touch screen\'s')
+    /* the older browsers' path: no scroll-driven animations (Matrix.tsx `sdaActive`) — the page is loaded again with them
+       reported missing */
+    await page.addInitScript(() => {
+      const real = CSS.supports.bind(CSS)
+      ;(CSS as any).supports = (...a: any[]) => (String(a[0]).includes('timeline') ? false : (real as any)(...a))
+    })
+    await page.reload(); await page.waitForSelector('#vWeek .day, #luser')
+  })
+  test('mid-pinch the frozen dates\' corner stays at the left edge, in one piece', async ({ page }) => {
+    if (await page.locator('#luser').count()) {
+      await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a'); await page.click('#loginForm button[type=submit]')
+      await page.waitForSelector('#vWeek .day')
+    }
+    await page.evaluate(() => (window as any).go('leavewar')); await page.waitForSelector('#page-leavewar .mx-wrap [data-testid^="head-"]')
+    expect(await page.evaluate(() => document.querySelector('#page-leavewar .mx-outer')!.classList.contains('lw-sda')), 'the older browsers\' path').toBe(false)
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const m = await lwMidPinch(page, 230, 520, 220, 130, () => page.evaluate(() => {
+      const head = document.querySelector('#page-leavewar [data-testid="sticky-head"]')!
+      const box = head.getBoundingClientRect(), copy = head.querySelector('.mxfixed-frozen')?.getBoundingClientRect() ?? null
+      /* what is drawn at the corner's own spot: the frozen copy, opaque */
+      const hit = document.elementFromPoint(box.left + 8, box.top + 8)
+      return { boxL: box.left, copyL: copy ? copy.left : null, atCorner: !!hit?.closest('.mxfixed-frozen') }
+    }))
+    expect(m.copyL, `the corner drawn as its own copy (${JSON.stringify(m)})`).not.toBeNull()
+    expect(Math.abs((m.copyL ?? 0) - m.boxL), 'at the left edge').toBeLessThan(1.5)
+    expect(m.atCorner, 'and it is what shows there').toBe(true)
+  })
+})
+
+test('the OIL tab opened over a scrolled page: a pinch out opens no gap under its heading rows (the fix read, finding 5)', async ({ page }) => {
+  test.skip(!isPhone(), 'two fingers are a touch screen\'s')
+  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const read = () => page.evaluate(() => {
+    const list = document.querySelector<HTMLElement>('[data-testid="oil-list"]')!
+    const head = list.querySelector<HTMLElement>('table.oil-grid thead tr.cols th:not(.f)')!.getBoundingClientRect()
+    const row = [...list.querySelectorAll<HTMLElement>('table.oil-grid tbody tr')].map(r => r.getBoundingClientRect()).find(r => r.top >= head.bottom - 2)!
+    return { gap: row.top - head.bottom, sy: scrollY }
+  })
+  const rest = await read()
+  const m = await lwMidPinch(page, 240, 560, 200, 120, read)
+  expect(Math.abs(m.gap - rest.gap), `mid-pinch no gap opens under the headings (${JSON.stringify({ rest, m })})`).toBeLessThan(1.5)
+  /* (opening the OIL tab holds the page still — scrollY reads its own value then; what matters is that the pinch moves nothing behind it) */
+  expect(m.sy, 'and the page behind the OIL tab did not scroll').toBe(rest.sy)
+  expect(await page.evaluate(() => scrollY), '…nor at the lift').toBe(rest.sy)
+  await page.locator('[data-testid="oil-close"]').click()
+})
+
 /* The grid's lesson on the OIL tab (owner D1287, 23 Oct 26 — the readings: the same holds here): with the fingers still
    down, its name columns stay at the table's left edge and its heading rows at their place; only the credits stretch. */
 test('while the fingers are down the OIL tab\'s names and headings stay pinned (D1287)', async ({ page }) => {
