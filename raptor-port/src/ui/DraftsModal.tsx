@@ -10,7 +10,7 @@
    REFUSES empty and duplicate names, and refusing mid-keystroke would make
    the box fight the typist — so the draft keeps its old name until a valid
    one is committed, and a refusal says why in a toast. */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { notify } from '../state/store'
 import { schedWriteValue, SCHED_TYPES } from '../state/sched-commit'
 import { DAYS } from '../engine/data'
@@ -24,6 +24,7 @@ import { SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
 import { CURPAGE } from '../state/view'
 import { clickedOutside } from './outside'
+import { useSheetFocus, useEscClose } from './sheetfocus'
 
 export function DraftsModal() {
   useVersion()
@@ -37,6 +38,13 @@ export function DraftsModal() {
     if (open && open.id) setSel(open.id)
     setNm(null)
   }, [open && open.di, open && open.id])
+  /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
+     opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); a name half typed is dropped, as Escape does in every box;
+     before the early return, as hooks must be */
+  const boxRef = useRef<HTMLDivElement>(null)
+  const up = !!open && !(SESSION && !isAdmin()) && CURPAGE === 'editsched'
+  useSheetFocus(boxRef, up)
+  useEscClose(boxRef, up, () => { setNm(null); setDraftsEdit(null); notify() })
   /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
      31 Aug 26 — point-2 authority sweep): DRAFTSEDIT survives toggleRole's
      admin→member peek (the old toggleRole's peek, gone with [ACCOUNTS]; its successor since D292, 27 Sep 26, is the admin's switch to the member view — state/store.ts switchRoleView, which does not close this sheet either), so without this an admin who opened the drafts manager
@@ -47,7 +55,7 @@ export function DraftsModal() {
      round trip lands on View-only Sched, where the editor used to come back with a Select that
      could not act (switchDraft needs the edit page) and said nothing ([HUMAN-RETEST] walk W2-F8,
      24 Sep 26). Hidden there, it returns with its context when he goes back to Edit Schedule. */
-  if (!open || (SESSION && !isAdmin()) || CURPAGE !== 'editsched') return <div className="modal" id="draftsModal" hidden />
+  if (!up || !open) return <div className="modal" id="draftsModal" hidden />
 
   const di = open.di
   const d: any = DAYS[di]
@@ -80,7 +88,7 @@ export function DraftsModal() {
 
   return (
     <div className="modal" id="draftsModal" onClick={e => { if (clickedOutside(e, 'draftsModal')) close() }}>
-      <div className="modal-box" style={{ width: 460 }}>
+      <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 460, outline: 'none' }}>
         <div className="modal-head"><b>Plans — {d ? d.dow : ''}</b><button className="x" id="draftsClose" onClick={close}>✕</button></div>
         <div className="modal-body">
           {list.length

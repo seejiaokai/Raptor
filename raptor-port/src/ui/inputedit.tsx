@@ -62,6 +62,7 @@ import { RangeCal } from './RangeCal'
 import { DateBox } from './DateBox'
 import { TypeLegend } from './TypeLegend'
 import { clickedOutside } from './outside'
+import { useSheetFocus, topSheet } from './sheetfocus'
 
 /* THE ROSTER LIST, one place — the Inputs page's add form, its own row
    editor and this dialog's new Person field must never disagree on who is
@@ -2295,6 +2296,10 @@ export function InputEditor() {
      a field he has not touched takes the live value silently, and a field changed BOTH ways is put to him (`clash`).
      `shown` is the record the window holds, for the one-editor-at-a-time question (`swap`). */
   const win = open && CURPAGE === 'inputs'
+  /* OPENED FROM THE SCHEDULE IT TAKES AND KEEPS THE KEYBOARD ([WINDOWS-KEEP-KEYS], reader D2's second pass, 6 Oct 26): Tab
+     used to walk on into the schedule behind the dialog, where a box saved on leaving. On the Inputs page it is a window
+     the page behind still works with (D641), so it holds nothing there. Its question sheets stack on top (ui/sheetfocus.ts). */
+  useSheetFocus(box, open && !win)
   /* THE BLOCKING DIALOG HOLDS A FINGER TOO ([SCHED-INPUT-WINDOW-PHONE], 18 Oct 26 — owner D686: a finger on a window never
      scrolls the page behind it). Opened from the board or the week, a swipe on it used to scroll the schedule behind; the
      same guard as the window on the Inputs page (floatwin.ts holdPageScroll), on the whole dialog, its dimmed edge
@@ -2506,6 +2511,15 @@ export function InputEditor() {
        all are deps so the handler never closes the dialog under a sheet */
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* A SHEET OF ANOTHER'S OVER IT ANSWERS FIRST (the walk of 24 Oct 26, D12): with the document viewer opened from this
+         window, one Escape closed the viewer AND this window behind it — this handler runs before the viewer's, on the
+         same document. With none of its own questions up, it leaves Escape alone while the topmost keyboard-holding sheet
+         is not this window (ui/sheetfocus.ts topSheet); the next Escape is its own. */
+      if (!docConf && !upConf && !medConf && !oilConf) {
+        const top = topSheet()
+        const own = box.current && (box.current.closest('.floatwin') || box.current)
+        if (top && own && !own.contains(top)) return
+      }
       /* as a window it does not own the page: Escape typed in a box on the page BEHIND it is that box's own (a cell
          being edited puts its text back on Escape) — the shell's own rule, ui/FloatWindow.tsx */
       if (win) {
@@ -3290,7 +3304,7 @@ export function InputEditor() {
   return (
     <div className="airpop" id="inpEditPop" hidden={!open} ref={pop}
       onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
-      <div className="airpop-box inpedbox" ref={box}>
+      <div className="airpop-box inpedbox" ref={box} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head">
           <b id="inpEditTitle">{isNew ? 'New input' : who}{when ? ' · ' + when : ''}</b>
           {cxMark}

@@ -5,7 +5,7 @@ import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
 import { inputLinesOn, inputReadPass, isAway, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
-import { esc, ARM, ROSDAY } from '../state/view'
+import { esc, ARM, ROSDAY, slotTitle } from '../state/view'
 import { puck, puckMarks } from './html'
 
 export function paletteDay(){ return ARM&&ARM.di>=0?ARM.di:(DAYS[ROSDAY]?ROSDAY:0); }
@@ -95,10 +95,14 @@ export function armStripHTML(){
   if(!ARM)return '';
   /* an SC slot says which shift it is and that the list has been cut to the crew
      holding that currency — otherwise the missing names look like a bug */
-  const r=slotRules(String(ARM.key).replace(/\.\+$/,''));
+  const base=String(ARM.key).replace(/\.\+$/,'');
+  const r=slotRules(base);
   const note=r.sc?`<span class="scnote">${r.sc==='day'?'SC DAY':'SC NIGHT'} current only`
       +(r.scStart!=null&&r.scEnd!=null?` · shift ${hm24(r.scStart)}–${hm24(r.scEnd)}`:'')+`</span>`:'';
-  return `<div class="ros-arm"><span>Planning <b>${ARM.title}</b>${note}</span>`
+  /* the line as it is NOW, read at every paint: a callsign or mission typed after the seat was picked shows at once
+     ([ARM-STRIP-STALE-TITLE] — the title stored when it was picked went stale); the stored one only if the place is gone */
+  const title=slotTitle(base)||ARM.title;
+  return `<div class="ros-arm"><span>Planning <b>${title}</b>${note}</span>`
     +`<button class="x" data-disarm="1" title="Cancel">✕</button></div>`;
 }
 /* the shared body of both palettes */

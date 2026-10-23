@@ -19,6 +19,7 @@ import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
 import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll, AIRKEY, setAirKey } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
+import { useSheetFocus, useEscClose } from './sheetfocus'
 
 export function DayPop() {
   useVersion()
@@ -193,11 +194,16 @@ export function AirPop() {
 
 export function InsightsModal() {
   useVersion()
+  /* it takes and keeps the keyboard while it is up and Escape closes it ([WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts): Tab
+     used to walk on into the schedule behind it; the keyboard goes back to the button that opened it */
+  const boxRef = useRef<HTMLDivElement>(null)
+  useSheetFocus(boxRef, !!INSIGHTS)
+  useEscClose(boxRef, !!INSIGHTS, () => { setInsights(false); notify() })
   if (!INSIGHTS) return <div className="modal" id="insightModal" hidden />
   const close = () => { setInsights(false); notify() }
   return (
     <div className="modal" id="insightModal" onClick={e => { if (clickedOutside(e, 'insightModal')) close() }}>
-      <div className="modal-box" style={{ width: 600 }}>
+      <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 600, outline: 'none' }}>
         <div className="modal-head"><b>Week insights · {DAYS[0].dt} – {DAYS[DAYS.length - 1].dt}</b><button className="x" id="insightClose" onClick={close}>✕</button></div>
         <div className="modal-body" id="insightBody" onClick={e=>{if((e.target as HTMLElement).closest('[data-insights-all]')) {setInsightsAll(!INSIGHTS_ALL);notify()}}} dangerouslySetInnerHTML={{ __html: insightsHTML() }} />
       </div>
