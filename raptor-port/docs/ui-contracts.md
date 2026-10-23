@@ -11489,3 +11489,11 @@ page order (`ui/LeaveLine.tsx`: the schedule's own puck — his callsign where t
 draws it, the run's dates ("10 – 12 Feb"), its days (.5 for a half), Approved / Pending). Never a remark. Read only.
 Its open day is its own listener set — opening, stepping, or a bid placed with it open repaints no month of the grid
 (`matrix-rows-memo.test.tsx`).
+
+
+## The Leave War's next look changes, ruled 24 Oct 26 and not yet built ([LW-PICK-HELD-MARK])
+
+- **The tapped day keeps the cyan selection mark while its bid window is open (D1289)**, and on a phone the window never hides what was picked (D1290 — built for the one-day window in M3, the red-team fix A5 in `leavewar/ui/Matrix.tsx`; not yet for the drag-selection's window).
+- **The Leave War's OIL taken and FO / HO colours (D1291):** an OIL taken and an FO / HO given are no longer one green (D1175 narrowed); which keeps the green is his to pick from pictures.
+- **The Leave War's document chips open the viewer (D1292):** a chip, tapped, shows its picture or PDF in the app's document viewer, straight after it is added too; its ✕ still takes it off.
+- **The Inputs list on a phone uses the full width (D1293):** its day headings and cards take the screen's width less the margin the filters above them have.
