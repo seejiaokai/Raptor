@@ -315,7 +315,10 @@ const RULING_BYTES = [
      + SANS, the URHO). The overhaul's build retires what it replaces; until then none is trimmed (D136). */
   /* leave-war 66000 -> 72000 (22 Oct 26, afternoon): about 66,000 bytes with D1242-D1246 (his answers on the overhaul's
      navigation and balances page); live rulings are never trimmed (D136, D390) and the overhaul's questions are still open */
-  ['.claude/rules/decisions/leave-war.md', 2, 72000],
+  /* leave-war 72000 -> 80000 (23 Oct 26): 73,999 bytes on main with D1263-D1279 (M1's and M2's answers at his look, merged
+     with pull requests 566 and 567 while the size check was deferred for code riding along); every line a live ruling, none
+     spent or restated in full yet, and the pinch-zoom job's answers are next. Raised, not trimmed (D136, D141). */
+  ['.claude/rules/decisions/leave-war.md', 2, 80000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);

@@ -1,0 +1,163 @@
+<title>Leave War Pinch Zoom</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each question a block with its pictures side by side, wrapping to one column on a phone. */
+:root {
+  --bg: #f3f5f8; --panel: #ffffff; --fg: #141a22; --muted: #5b6676; --line: #d6dce4;
+  --accent: #0e7fa8; --ok: #1f8a55; --warn: #b3660a; --chip: #e7eef5;
+  --f-body: -apple-system, "Segoe UI", system-ui, sans-serif;
+  --f-label: ui-monospace, "SF Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b0f14; --panel: #131a22; --fg: #e6edf3; --muted: #93a1b1; --line: #26313d;
+  --accent: #4cc3ea; --ok: #7ee2a8; --warn: #ffb454; --chip: #1b2530; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0b0f14; --panel: #131a22; --fg: #e6edf3; --muted: #93a1b1; --line: #26313d;
+  --accent: #4cc3ea; --ok: #7ee2a8; --warn: #ffb454; --chip: #1b2530; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--f-body); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 20px 60px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1 { font-size: 24px; margin: 0 0 4px; text-wrap: balance; }
+h2 { font-size: 19px; margin: 0 0 6px; text-wrap: balance; }
+h3 { font-size: 15px; margin: 14px 0 4px; }
+p { margin: 6px 0; max-width: 68ch; }
+.sub { color: var(--muted); margin-bottom: 18px; }
+.now { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; margin-bottom: 26px; }
+.now h2 { margin-bottom: 2px; }
+.now ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.rec { color: var(--ok); font-weight: 700; }
+.lbl { font: 600 11px/1.2 var(--f-label); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+section { border-top: 1px solid var(--line); padding-top: 18px; margin-top: 22px; }
+.opts { display: grid; gap: 6px; margin: 8px 0 4px; padding: 0; list-style: none; }
+.opts li { background: var(--chip); border-radius: 8px; padding: 8px 10px; }
+.opts li.pick { outline: 2px solid var(--ok); }
+.shots { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 12px; }
+.shots.wide { grid-template-columns: 1fr; }
+figure { margin: 0; min-width: 0; }
+figure button { all: unset; cursor: zoom-in; display: block; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
+figure button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+figcaption b { color: var(--fg); }
+.drawn { font: 600 10px/1 var(--f-label); color: var(--warn); letter-spacing: .05em; text-transform: uppercase; }
+.readings { display: grid; gap: 6px; padding-left: 20px; margin: 6px 0; }
+.box { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: grid; place-items: center; z-index: 50; overflow: auto;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); }
+.box img { max-width: 100%; max-height: 92vh; width: auto; height: auto; }
+.box button { position: fixed; top: max(10px, env(safe-area-inset-top, 0px)); right: max(10px, env(safe-area-inset-right, 0px)); font: 700 16px var(--f-body); background: #fff; color: #000; border: 0; border-radius: 8px; padding: 8px 12px; }
+@media (prefers-reduced-motion: no-preference) { figure button img { transition: opacity .15s; } figure button:hover img { opacity: .9; } }
+</style>
+
+<div class="wrap">
+  <h1>Pinch to zoom on the Leave War</h1>
+  <p class="sub">Four questions before it is built. Pictures are your iPhone's size (402 wide), taken on the current app. Tap any picture to see it full size.</p>
+
+  <div class="now">
+    <h2>Look at now</h2>
+    <p><b>Nothing open.</b> Answered 23 Oct 26: all as recommended (rulings D1282–D1285). The build is next.</p>
+    <ol>
+      <li><b>Q1 What a pinch zooms</b>: the grid only, and a pinch anywhere on the page zooms the grid, never the whole page. <span class="rec">Recommended: A.</span> <a href="#q1">Pictures</a></li>
+      <li><b>Q2 How far out</b>: until a whole month fits across the phone held upright. <span class="rec">Recommended: C.</span> <a href="#q2">Pictures</a></li>
+      <li><b>Q3 How far in</b>: as far as the + goes today (about 6 days on screen). <span class="rec">Recommended: A.</span> <a href="#q3">Pictures</a></li>
+      <li><b>Q4 The OIL tab</b>: it pinches too, and its own − / + go with the grid's. <span class="rec">Recommended: yes.</span> <a href="#q4">Pictures</a></li>
+    </ol>
+    <p>You can answer with one line, for example "1A 2C 3A 4 yes", or "as recommended".</p>
+  </div>
+
+  <section id="rec">
+    <h2>What your recording shows</h2>
+    <p>On the phone today, a pinch is Safari's own zoom of the whole page. The frozen date row is fixed to the page's top edge, and it keeps the column widths it measured before the zoom. So after the pinch its dates no longer stand over their columns, and then it slides up out of sight.</p>
+    <div class="shots wide">
+      <figure><button type="button"><img src="rec-1-before.png" alt="Frame from your recording, landscape: the frozen date row lined up with the grid"></button><figcaption><b>1.</b> Before the pinch (landscape): MON 07 … SAT 03 stand over their columns.</figcaption></figure>
+    </div>
+    <div class="shots">
+      <figure><button type="button"><img src="rec-2-after-drift.png" alt="Frame from your recording after the pinch: the frozen dates sit off their columns, half under the top bar"></button><figcaption><b>2.</b> After your pinch: 07 sits over the third column, and the row is half under the top bar.</figcaption></figure>
+      <figure><button type="button"><img src="rec-3-after-gone.png" alt="Frame from your recording a moment later: only the amber edge of the frozen row shows"></button><figcaption><b>3.</b> A moment later: only the row's amber edge is left at the top.</figcaption></figure>
+    </div>
+    <p><b>The fix:</b> the pinch becomes the app's own, as on Quals and the Scheduler Board. The grid is zoomed, not the page, and the frozen date row is zoomed with it. Quals' frozen heading row already does exactly this, live since 21 Oct.</p>
+  </section>
+
+  <section id="q1">
+    <span class="lbl">Question 1</span>
+    <h2>What does a pinch zoom, and where can it start?</h2>
+    <ul class="opts">
+      <li class="pick"><b>A (recommended).</b> The grid only: dates, Event rows, Manning rows, names with their LVE figure, and every cell. The top bar, the Grid / OIL tabs, the View row, the grid's bar (Manning, Bidding, Legend) and the month buttons stay their size. A pinch that starts anywhere on the Leave War, the bars included, zooms the grid. The whole page never zooms, so the frozen date row can't be thrown off again.</li>
+      <li><b>B.</b> The grid only, but only a pinch that starts on the grid. A pinch on the bars above still zooms the whole page, as Safari does today. The frozen row would then need a second fix for a page zoom, and the bars would still grow off the screen.</li>
+    </ul>
+    <div class="shots">
+      <figure><button type="button"><img src="q1-a-what-zooms-top.png" alt="The Leave War on a phone: green outline round the grid, grey dashes round the bars above it"></button><figcaption><b>Green:</b> zooms. <b>Grey dashes:</b> stays its size. Real screen, the outlines drawn on top.</figcaption></figure>
+      <figure><button type="button"><img src="q1-b-what-zooms-frozen-row.png" alt="Scrolled down: the frozen date row under the top bar, outlined green"></button><figcaption>Scrolled down: the frozen date row zooms with the grid and stays over its columns, as the names column does.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q2">
+    <span class="lbl">Question 2</span>
+    <h2>How far can it zoom out?</h2>
+    <p>The board and Quals zoom out until their whole width fits. The Leave War is a whole year wide, so that rule would shrink it to dots. It needs its own limit. Counted on the phone held upright:</p>
+    <ul class="opts">
+      <li><b>A.</b> As far as the − goes today: about 18 days and 35 people on screen.</li>
+      <li><b>B.</b> A little further: about 22 days and 42 people.</li>
+      <li class="pick"><b>C (recommended).</b> Until a whole month fits across: about 30 days and 51 people. The letters are small, but each leave's colour and code still read, and it is the most useful overview. Turned sideways, the same zoom shows about two and a half months.</li>
+    </ul>
+    <div class="shots">
+      <figure><button type="button"><img src="q2-a-out-060-today.png" alt="The grid zoomed out as far as today's minus button goes"></button><figcaption><b>A.</b> Today's furthest (real).</figcaption></figure>
+      <figure><button type="button"><img src="q2-b-out-050.png" alt="The grid zoomed out a little further"></button><figcaption><b>B.</b> A little further. <span class="drawn">Drawn</span></figcaption></figure>
+      <figure><button type="button"><img src="q2-c-out-041-month.png" alt="The grid zoomed out so that 1 to 30 July fit across"></button><figcaption><b>C.</b> A whole month: 1 to 30 July across. <span class="drawn">Drawn</span></figcaption></figure>
+    </div>
+    <p class="sub">The July leave in these pictures is sample leave added for the pictures only, so you can judge a busy month. "Drawn" means the zoom was set by hand, since today's − cannot reach it.</p>
+  </section>
+
+  <section id="q3">
+    <span class="lbl">Question 3</span>
+    <h2>How far can it zoom in?</h2>
+    <p>The names column grows with the zoom, so zooming in a long way leaves little room for days.</p>
+    <ul class="opts">
+      <li class="pick"><b>A (recommended).</b> As far as the + goes today: about 6 days and 15 people on screen.</li>
+      <li><b>B.</b> Twice normal, as on the board and Quals: under 3 days on screen. The names column takes about two thirds of the width.</li>
+    </ul>
+    <div class="shots">
+      <figure><button type="button"><img src="q3-a-in-140-today.png" alt="The grid zoomed in as far as today's plus button goes"></button><figcaption><b>A.</b> Today's furthest (real).</figcaption></figure>
+      <figure><button type="button"><img src="q3-b-in-200.png" alt="The grid zoomed to twice normal: under three days show"></button><figcaption><b>B.</b> Twice normal. <span class="drawn">Drawn</span> (the empty band under the months is from drawing it by hand).</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q4">
+    <span class="lbl">Question 4</span>
+    <h2>Does the OIL tab pinch too?</h2>
+    <p>The OIL tab has its own − / +, separate from the grid's. Your ruling to remove the buttons named the grid.</p>
+    <ul class="opts">
+      <li class="pick"><b>Yes (recommended).</b> A pinch zooms the OIL table the same way, Ctrl+scroll on a desktop, and its − / + go together with the grid's, so the Leave War zooms one way everywhere.</li>
+      <li><b>No.</b> The OIL tab keeps its − / + and no pinch, as it is today.</li>
+    </ul>
+    <div class="shots">
+      <figure><button type="button"><img src="q4-oil-tab-zoom-buttons.png" alt="The OIL tab on a phone, its own minus and plus outlined"></button><figcaption>The OIL tab's own − / + (outlined). Real screen.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="settled">
+    <h2>Already settled, so not asked</h2>
+    <ul class="readings">
+      <li><b>The − / + on the grid's bar:</b> they go only once the pinch works with the frozen date row (your D1276). The test is your look on your iPhone, held upright, turned sideways, and turned while zoomed in. If the dates drift, the − / + come back before anything goes live.</li>
+      <li><b>Desktop:</b> Ctrl+scroll or a trackpad pinch over the grid zooms the grid only (D1228). It uses the same limits as the phone.</li>
+      <li><b>Opening size:</b> a phone still opens one step out, and a desktop at normal size (D159).</li>
+      <li><b>Kept while the app is open:</b> the zoom stays when you leave the Leave War and come back, as the − / + does today. Signing in again starts at the opening size.</li>
+      <li><b>One finger is unchanged:</b> it still scrolls. A pinch never picks a block of days or opens a day, even when the first finger was held down (fix A7a from the overhaul's red team).</li>
+    </ul>
+    <figure style="max-width:420px"><button type="button"><img src="q0-zoom-buttons-bar.png" alt="The grid's bar with the minus and plus outlined"></button><figcaption>The − / + that go once the pinch holds.</figcaption></figure>
+  </section>
+</div>
+
+<script>
+  /* tap a picture: see it full size; tap again or Close to go back */
+  document.querySelectorAll('figure button').forEach(b => b.addEventListener('click', () => {
+    const img = b.querySelector('img')
+    const box = document.createElement('div'); box.className = 'box'
+    box.innerHTML = '<button type="button">Close</button>'
+    const big = document.createElement('img'); big.src = img.src; big.alt = img.alt
+    box.appendChild(big)
+    const shut = () => { box.remove(); b.focus() }
+    box.addEventListener('click', e => { if (e.target === box || e.target.tagName === 'BUTTON' || e.target === big) shut() })
+    document.addEventListener('keydown', function esc(e) { if (e.key === 'Escape') { shut(); document.removeEventListener('keydown', esc) } })
+    document.body.appendChild(box); box.querySelector('button').focus()
+  }))
+</script>

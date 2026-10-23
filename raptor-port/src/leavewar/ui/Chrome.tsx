@@ -238,7 +238,7 @@ function nextLabel(iso: string): string {
 /** THE GRID'S OWN BAR (D1254, D1196 as narrowed, D1243): [▸ Manning | 1 red ›] · the open dates · … · Legend — the same for
  *  everyone, standing on the grid card above the month buttons (`full/r19-nav-*`, `full/r21-rows-*`). The grid hands it
  *  the Manning fold (its own state — the counts it hides are the grid's rows) and anything that rides the bar's right end
- *  before Legend (the zoom pair until pinch to zoom replaces it — [LW-PHONE-PINCH-ZOOM], D1228; "Done" while rearranging). */
+ *  before Legend ("Done" while rearranging; the zoom pair went when pinch to zoom replaced it — [LW-PHONE-PINCH-ZOOM], D1228, D1276). */
 export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen?: boolean; onManning?: () => void; extra?: ReactNode } = {}) {
   const sv = useVersion()
   /* The clash list lives in the sync module, not the store — it is a view of

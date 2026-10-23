@@ -662,11 +662,8 @@
   .card-hd .rtlbl {
     display: none;
   }
-  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden) and the − / +
-     step aside until it is off, so the bar keeps one line as drawn (questions/q3c-done-zoom-aside.png) */
-  .card-hd .lwzoom.aside {
-    display: none;
-  }
+  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden); the − / +
+     that stepped aside for it went with the pinch (D1276) */
 }
 
 @media (max-width: 700px) {

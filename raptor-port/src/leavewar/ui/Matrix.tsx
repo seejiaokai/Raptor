@@ -24,6 +24,9 @@ import { creditGiver } from '../engine/warrecs'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
 import { edgeAutoScroll } from '../../ui/edgescroll'
+import { wirePinch } from '../../ui/pinchzoom'
+import { flushSync } from 'react-dom'
+import { LW_ZOOM_MAX, lwMonthFitZoom, roundZoom } from './lwzoom'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
@@ -1232,24 +1235,25 @@ export function Matrix() {
   const jumpAtRef = useRef(0)
 
   // The grid ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
-  // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
-  // own page zoom and the frozen columns, and a button cannot half-work.
-  // `zoom` (not transform) so layout, scroll width and the sticky offsets all
-  // scale together. View state, session-only, like the counter choice.
-  // A PHONE OPENS ONE STEP OUT (owner, 6 Sep 26 — "can this be the default
-  // zoom? Like zoom 1 click out"): 0.8 there, 1 on a desktop, read once at
+  // war"). `zoom` (not transform) so layout, scroll width and the sticky offsets
+  // all scale together. View state, kept while the app is open, like the counter
+  // choice. A PHONE OPENS ONE STEP OUT (owner, 6 Sep 26 — "can this be the default
+  // zoom? Like zoom 1 click out"): 0.8 there, 1 on a desktop (D159), read once at
   // mount from the same 700px query the phone flag uses (no layout yet, so
   // this is the only place the initial value can come from; jsdom has no
-  // matchMedia and stays at 1). The buttons live in the counter block's top
-  // row at BOTH widths since the same day (they used to ride the month strip,
-  // phone-only) — a desktop can step too now.
-  const ZOOMS = [0.6, 0.8, 1, 1.2, 1.4]
+  // matchMedia and stays at 1).
+  //   PINCHED, NOT STEPPED (owner D1282–D1285, 23 Oct 26 — `[LW-PHONE-PINCH-ZOOM]`): the − / + went once the pinch
+  // could carry the frozen date row with the grid (D1276). Two fingers anywhere on the Leave War zoom the grid — never
+  // the page, whose zoom is what threw the frozen row off its columns in his recording — and Ctrl+scroll over the grid
+  // does on a desktop (D1228); in to 1.4, out until a month fits a phone held upright (lwzoom.ts). The wiring is the
+  // effect below `zoomStyle`.
   const [zoom, setZoom] = useState(() =>
     typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
-  const zoomStep = (by: number) => {
-    const i = ZOOMS.indexOf(zoom)
-    setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
-  }
+  const zoomRef = useRef(zoom)
+  zoomRef.current = zoom
+  // When a pinch last laid its zoom out: the scroll it writes straight after (the day under the fingers brought back
+  // under them) is a JUMP, not a fling — see onWrapScroll and the pinch's wiring below.
+  const pinchAtRef = useRef(0)
   // The grid tables' zoom, plus `--lwz` (6 Sep 26) so a control that must keep
   // a REAL tap size at any zoom can divide it back out (the counter picker's
   // `min-height: calc(40px / var(--lwz))`, matrix.css): a phone opens at 0.8
@@ -1257,6 +1261,128 @@ export function Matrix() {
   // complaint set. On the TABLE, not an ancestor, and it changes only when the
   // zoom steps — a restyle the zoom itself already costs, never per frame.
   const zoomStyle = zoom !== 1 ? ({ zoom, '--lwz': zoom } as import('react').CSSProperties) : undefined
+
+  /* PINCH TO ZOOM THE GRID (owner D1282, D1283, D1284, 23 Oct 26 — `[LW-PHONE-PINCH-ZOOM]`), the app's one pinch body
+     (ui/pinchzoom.ts — the Scheduler Board's and Quals' too). While the fingers move the grid is stretched as a picture,
+     nothing laid out again; at the lift the zoom is written once, through the same `zoom` the old − / + set — the path
+     his iPhone showed keeps the frozen date row the grid's size and over its columns (his check, 23 Oct 26) — and the
+     scrollers are moved so the day under his fingers stays under them.
+       · WHERE IT STARTS: anywhere on the screen while the Leave War is in front (D1282 — the bars above the grid
+         included), so the browser's own page zoom never runs here; the stylesheet holds it off on the page too
+         (matrix.css `#page-leavewar`). Over a full-page window (the OIL tab, the "Open for bidding" page) the grid
+         behind is not zoomed — the OIL tab has its own pinch (OilTracker.tsx) — but the page is still kept from zooming.
+       · WHAT STRETCHES WITH IT while the fingers move: the frozen date row (its contents, from its own top, as Quals'
+         pinned row), the phone's frozen names copy, the open-dates outline and the figures drawer (about the fingers,
+         as one picture); the month buttons are held at their size (D1282 — they cancel the grid's zoom at rest too).
+       · THE FROZEN ROW'S BROWSER FOLLOW is paused while the fingers move: the stretch widens the grid's scroll range
+         while its scroll stands still, which would slide the row's timeline-driven follow off its columns (Quals' lesson).
+       · WHAT IT CANCELS: a row held in Rearrange is let go (it moves nothing); a day held to select is let go by the
+         selection itself the moment a second finger lands (select.ts — fix A7a), so a pinch never selects or opens a day.
+     Ctrl+scroll over the grid zooms it the same way on a desktop, a trackpad's pinch included (D1228). */
+  useEffect(() => {
+    const outer = mxOuterRef.current
+    if (!outer) return
+    const fullPage = () => !!document.querySelector('.bidsheet.full, .bidsheet.fullpage')
+    const anim = () => outer.querySelector<HTMLElement>('.mxfixed-anim')
+    return wirePinch({
+      surface: document.documentElement,
+      wheel: outer,
+      target: () => wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx') ?? null,
+      get: () => zoomRef.current,
+      /* never above the zoom it starts at, so a pinch out never zooms in (a phone turned with the grid at its floor) */
+      min: () => Math.min(zoomRef.current, lwMonthFitZoom(headRef.current, wrapRef.current, zoomRef.current)),
+      max: LW_ZOOM_MAX,
+      apply: z => {
+        const v = roundZoom(z); zoomRef.current = v
+        pinchAtRef.current = jumpAtRef.current = Date.now()   // the lift's scroll is a jump (onWrapScroll)
+        flushSync(() => setZoom(v))
+      },
+      canStart: () => isLwOnScreen() && outer.isConnected && !fullPage(),
+      blockTwo: () => isLwOnScreen(),
+      /* the frozen row's box lets its stretched contents grow DOWN while the fingers move (matrix.css .lw-pinching):
+         clipped at its old height, a pinch in cut the date numbers in half until the lift (the walk's picture) */
+      onStart: () => {
+        dragCleanup.current?.()
+        /* the small pop-ups placed on the screen over a cell close, as a press outside them would (the fresh code read,
+           F4 — a desktop's Ctrl+scroll presses nothing): the event peek, a chip's quals, and the Required / Available
+           rows' boxes (FlyRows, FlyEdit — they hear `lw-zoomstart`) */
+        setQualPop(null); setEvPeek(null)
+        window.dispatchEvent(new Event('lw-zoomstart'))
+        const a = anim(); if (a) a.style.animationPlayState = 'paused'
+        outer.querySelector('.mxfixed')?.classList.add('lw-pinching')
+        outer.classList.add('lw-pinching')
+      },
+      onEnd: () => {
+        const a = anim(); if (a) a.style.animationPlayState = ''
+        outer.querySelector('.mxfixed')?.classList.remove('lw-pinching')
+        outer.classList.remove('lw-pinching')
+      },
+      /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — his iPhone pictures mid-pinch:
+         the names column and the corner had stood in from the grid's left edge with days on their left, the date row had
+         grown up over the month buttons, and the month buttons' own cell — the names' width — had stood boxed behind
+         JAN–MAR while the rest of its row moved away). Only the days stretch about the fingers:
+         · the date row's cells follow the rows down the screen but never rise over the month buttons; the corner stays at
+           the left edge with them; every other pinned name, counter and group heading keeps its place across (`pin`);
+         · the phone's frozen names copy and the figures drawer stretch with the rows but from the grid's left edge, and
+           are never drawn above the date row's foot (`alsoY`, `floor`); the frozen date row's copy of the corner grows
+           from its own corner (`alsoTL`); the frozen date row's days and the open-dates outline stretch sideways about the
+           fingers from their own top (`also`), as the date row does;
+         · the month buttons keep their size and place (`keep`), and while the fingers are down their row is one band
+           (matrix.css `.mx-outer.lw-pinching`), drawn over the date row, which is drawn over the rows. */
+      pin: () => {
+        const table = wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')
+        if (!table) return []
+        const out: { el: HTMLElement; x: boolean; y: boolean | 'up' }[] = []
+        /* the date row scrolls with the page at rest, so it follows the rows down — never up over the month buttons */
+        for (const th of table.querySelectorAll<HTMLElement>(':scope > tbody.mxhead th')) {
+          out.push({ el: th, x: th.classList.contains('who') || th.classList.contains('bal'), y: 'up' })
+        }
+        /* every pinned one, not only those in sight: a pinch out draws in rows that were off the screen as it began */
+        const rows = ':scope > tbody:not(.mxhead):not(.mstripe) > tr'
+        for (const el of table.querySelectorAll<HTMLElement>(`${rows} > .who, ${rows} > .bal, ${rows} > td.grphd, ${rows} > td.catsub-in`)) {
+          if (getComputedStyle(el).position !== 'sticky') continue   // the phone's roster: its frozen copy is the band
+          out.push({ el, x: true, y: false })
+        }
+        return out
+      },
+      /* the pinned block's corner: the grid's left edge, and the date row's top */
+      pinAt: () => ({
+        x: wrapRef.current?.getBoundingClientRect().left ?? 0,
+        y: wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().top ?? 0,
+      }),
+      /* the frozen date row's days: where the row follows the grid by the browser (`lw-sda`) its days stretch inside the
+         row's box, which keeps both edges of the screen; elsewhere the row's box stretches, as before */
+      also: () => (outer.classList.contains('lw-sda') ? [] : [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-scroll')]),
+      /* the open-dates outline runs from the date row's top: it goes where the date row goes (the fix read, finding 1) */
+      alsoTop: () => [...(wrapRef.current?.querySelectorAll<HTMLElement>(':scope > .lw-bidbox') ?? [])],
+      /* part-way down the page the page itself scrolls with the pinch, so no band opens above the date row (D1288) */
+      scrollPage: true,
+      alsoIn: () => (outer.classList.contains('lw-sda') ? [anim()] : []),
+      alsoTL: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-frozen')],
+      alsoY: () => [bandRef.current, drawerRef.current],
+      floor: () => wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().bottom ?? -Infinity,
+      keep: () => [mstickRef.current],
+      edges: true,
+      /* THE SPOT UNDER THE FINGERS IS A DAY AND A ROW (the walk, 23 Oct 26): across, the date column whose heading
+         spans the fingers; down, the grid row that does. The element under the fingers would not do — a group's
+         heading and the names are pinned to the left, so they never say where the year went, and on a phone the
+         fingers often rest on the frozen names' copy, which is not the grid at all. */
+      anchor: (x, y) => {
+        const table = wrapRef.current?.querySelector<HTMLTableElement>(':scope > table.mx')
+        if (!table) return null
+        let ax: Element | null = null, ay: Element | null = null
+        for (const c of headRef.current?.querySelectorAll<HTMLElement>('[data-testid^="head-"]') ?? []) {
+          const q = c.getBoundingClientRect()
+          if (x >= q.left && x < q.right) { ax = c; break }
+        }
+        for (const tr of table.rows) {
+          const q = tr.getBoundingClientRect()
+          if (y >= q.top && y < q.bottom) { ay = tr; break }
+        }
+        return { x: ax, y: ay }
+      },
+    })
+  }, [])
 
   // The manning counts block (CREW SETS … SXO) collapses on a tap, for EITHER
   // role (owner, 19 Aug 26 — "allow both admin and norm user to hide it when
@@ -1717,7 +1843,9 @@ export function Matrix() {
   // war+zoom — the ESTIMATE a placeholder uses for a month never yet drawn (see
   // `applyPlaceholders`). Only a new war or a zoom step re-measures. Taken from
   // whatever is drawn at first measure; two months is plenty representative.
-  const avgDayWRef = useRef<{ key: string; avg: number; frozen: number } | null>(null)
+  // `zoom` is the zoom `avg` was measured at: `avg` is in screen px, so it is divided by THAT zoom, never the one on
+  // screen now ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26 — see `monthPx`).
+  const avgDayWRef = useRef<{ key: string; avg: number; frozen: number; zoom: number } | null>(null)
 
   useEffect(() => {
     setStuck(null)
@@ -2238,7 +2366,7 @@ export function Matrix() {
     const key = `${period.id}|${zoom}`
     if (avgDayWRef.current?.key === key) return
     const avg = (drawn[drawn.length - 1]!.right - drawn[0]!.left) / n
-    if (avg > 0) avgDayWRef.current = { key, avg, frozen }
+    if (avg > 0) avgDayWRef.current = { key, avg, frozen, zoom }
   }
   // The per-month width cache for this war+zoom (a zoom step changes every
   // width; a new war is a new set of months) — started fresh when the key moves.
@@ -2256,8 +2384,14 @@ export function Matrix() {
   const monthPx = (m: number): number => {
     const cached = monthPxCache().px[m]
     if (cached != null) return cached
+    /* THE ESTIMATE IS IN THE GRID'S OWN PX AT ANY ZOOM ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26). Right after a zoom
+       change the average still on hand is the old zoom's (it is re-measured for the new one within the same commit);
+       it was divided by the NEW zoom, so every undrawn month's placeholder came out as wrong as the two zooms are
+       apart — at 0.8 → 1.4 the months left of the view stood ~2,800 px too narrow, the lit month button then read
+       DEC over October, and each old + / − step threw the view back a month or more. A day's width in the grid's own
+       px barely moves with the zoom, so the measured one, divided by the zoom it was measured at, is the estimate. */
     const a = avgDayWRef.current
-    return (a ? a.avg / zoom : 30) * (yearMonths.monthDays[m] ?? 30)
+    return (a ? a.avg / a.zoom : 30) * (yearMonths.monthDays[m] ?? 30)
   }
   // Will drawing month `m` in place of its placeholder move nothing? Only when
   // its width was measured under the rows on screen NOW (`widthGen`) — the one
@@ -2385,6 +2519,9 @@ export function Matrix() {
   // resetting, so the heavy row-window work fires exactly once, the instant
   // the scroll comes to rest — never under a moving finger.
   const SCROLL_REST_MS = 120
+  /** how long after a pinch's lift a scroll is still the pinch's own (it is written in the same task; its event comes a
+   *  frame later — no finger can start a fling that soon after two have lifted) */
+  const PINCH_SCROLL_MS = 150
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   // When the grid was last scrolled — the background fill waits for this to go
   // quiet before drawing a month, so a fill draw never lands under a moving
@@ -2396,14 +2533,25 @@ export function Matrix() {
   const scrollSpeedRef = useRef({ v: 0, t: 0, sl: 0 })
   const onWrapScroll = () => {
     const now = Date.now()
-    {
+    /* THE PINCH'S OWN SCROLL IS NOT A FLING ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26): at the lift the pinch scrolls
+       the year — often thousands of pixels, the zoom having moved every column — to put the day under the fingers back
+       under them. Counted as a scroll in motion, it let the fill draw the month left of the view "mid-fling" over a
+       width guessed for the new zoom, and the year slid 1,600 px sideways a beat after the lift. Treated as a jump
+       (jumpAtRef, set with it), the months drawn after it are anchored at rest like a month button's. */
+    if (now - pinchAtRef.current < PINCH_SCROLL_MS) {
+      /* ONE event only (the fresh code read, F3): the lift's scroll is written in one task, so it arrives as one; a finger
+         left down after the other lifted may scroll on at once, and that scroll is a real one */
+      pinchAtRef.current = 0
+      const sp = scrollSpeedRef.current
+      sp.v = 0; sp.t = now; sp.sl = wrapRef.current?.scrollLeft ?? 0
+    } else {
       const sp = scrollSpeedRef.current, sl = wrapRef.current?.scrollLeft ?? 0
       const dt = now - sp.t
       const inst = dt > 0 && dt < 200 ? Math.abs(sl - sp.sl) / dt : 0
       sp.v = dt >= 200 ? inst : sp.v * 0.5 + inst * 0.5
       sp.t = now; sp.sl = sl
+      lastScrollTsRef.current = now
     }
-    lastScrollTsRef.current = now
     // The frozen-column overlay sits ON TOP of the real columns. At rest
     // (scrollLeft 0) it must let a tap fall THROUGH to the real cell beneath —
     // that cell still carries the handler, the testid and the focus seat — so
@@ -2661,7 +2809,15 @@ export function Matrix() {
     // everything after it); measureStripGeo writes them again once it has cached
     // the widths it just measured. measureHbar/syncHbar too: the proxy spacer
     // tracks the grid's scroll width and the thumb its position.
-    const remeasure = () => { applyPlaceholders(); measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
+    /* a first measure at a new war or zoom swaps estimates for measured widths, which can move the drawn months under
+       the geometry it just took — taken once more then, so the month readout and the fill read where the months ARE */
+    const remeasure = () => {
+      applyPlaceholders()
+      const k0 = avgDayWRef.current?.key
+      measureStripGeo()
+      if (avgDayWRef.current?.key !== k0) measureStripGeo()
+      measureStrip(); measureHbar(); syncHbar()
+    }
     remeasureRef.current = remeasure
     remeasure()
     // A left month drawn mid-fling over an estimate (padErrRef): how far it pushed the month that was the window's left
@@ -2785,7 +2941,12 @@ export function Matrix() {
       // breathing room, divided back out of the table zoom the cell sits in.
       // Floored at the desktop one-row height so a single-row strip never
       // shrinks the cell below what it was.
-      setStripH(Math.max(44, (sr.bottom - cr.top + 6) / (zoom || 1)))
+      //   The floor is 44 of the grid's own px at normal size and below, as it always was — but zoomed IN it is 44 on
+      // the SCREEN ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26): the strip cancels the grid's zoom, so a floor in the
+      // grid's units grew with the zoom and left a tall empty band under the month buttons (62 px at 1.4, where the
+      // buttons need 41) — reached by the old + too, everyday once the grid is pinched.
+      const z = zoom || 1
+      setStripH(Math.max(z > 1 ? 44 / z : 44, (sr.bottom - cr.top + 6) / z))
     }
     measure()
     window.addEventListener('resize', measure)
@@ -3387,7 +3548,7 @@ export function Matrix() {
         {/* THE GRID'S OWN BAR (D1254 — the navigation as drawn in round 19): [▸ Manning | 1 red ›] · the open dates · … ·
             Legend, the same for everyone (`StageBar`, Chrome.tsx). ⚙ went up to the tab row's right end and OIL became a
             tab (Chrome.tsx `Topbar`); Rearrange moved into ⚙ (its "Done" rides this bar while it is on). The zoom pair
-            stays at the bar's right end until pinch to zoom replaces it — its own job, [LW-PHONE-PINCH-ZOOM] (D1228). */}
+            went when pinch to zoom replaced it ([LW-PHONE-PINCH-ZOOM], D1228, D1276). */}
         <div className="card-hd">
           {bubble && !bubble.foot && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble.text}</div>}
           {/* D1277: the Manning button out of view when it was raised — the same words at the foot of the screen, with Show */}
@@ -3418,26 +3579,9 @@ export function Matrix() {
                     ⇅<span className="rtword"> Done</span>
                   </button>
                 )}
-                {/* while Rearrange is on, the − / + step aside on a phone so the bar keeps one line (D1275; chrome.css
-                    `.lwzoom.aside`); a desktop keeps them. They go for good only once the pinch works (D1276). */}
-                <span className={`lwzoom${arranging && role === 'admin' ? ' aside' : ''}`} data-testid="lw-zoom">
-                  <button
-                    className="rtbtn zoom"
-                    data-testid="lw-zoom-out"
-                    aria-label="Zoom out"
-                    title="Zoom out"
-                    disabled={zoom === ZOOMS[0]}
-                    onClick={() => zoomStep(-1)}
-                  >−</button>
-                  <button
-                    className="rtbtn zoom"
-                    data-testid="lw-zoom-in"
-                    aria-label="Zoom in"
-                    title="Zoom in"
-                    disabled={zoom === ZOOMS[ZOOMS.length - 1]}
-                    onClick={() => zoomStep(1)}
-                  >＋</button>
-                </span>
+                {/* No − / + here any more: the grid is pinched (a desktop: Ctrl+scroll), owner D1276 / D1228 — they went
+                    once the pinch carried the frozen date row with the grid. Should his iPhone look find the frozen row
+                    off its columns after a pinch, they come back before merge (D1282's reading). */}
               </>
             }
           />
@@ -3787,7 +3931,9 @@ export function Matrix() {
               <div className={`mxfixed-scroll${sdaActive ? ' mxfixed-track' : ''}`} ref={mirrorRef}>
                 {table(sdaActive ? 'mxfixed-anim' : '')}
               </div>
-              {/* The bar's frozen LEFT columns, in the scroll-driven path only.
+              {/* The bar's frozen LEFT columns. Drawn in the scroll-driven path; in the JS-mirror path too since D1287 (the
+                  fix read's finding 4), where its scroller keeps sticky corner cells of its own — this copy stands over them,
+                  the same pixels at rest, and is what a pinch holds at the left edge while that scroller stretches.
                   A translated table cannot keep `position: sticky`, so the
                   callsign + counter columns are drawn as a static copy pinned
                   over the left and clipped to their own width; the day columns
@@ -3796,7 +3942,7 @@ export function Matrix() {
                   who/bal are made pointer-events:none in matrix.css so taps land
                   here, and this copy is aria-hidden so the scrolling layer stays
                   the single accessible one. */}
-              {sdaActive && (
+              {(
                 <div
                   className="mxfixed-frozen"
                   aria-hidden="true"

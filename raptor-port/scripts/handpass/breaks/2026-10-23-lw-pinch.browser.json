@@ -1,0 +1,10 @@
+{ "spec": "e2e/leavewar.spec.ts", "grep": "Leave War grid pinches|or Ctrl.scroll .desktop. zooms|OIL tracker pinches|header freezes", "port": 4280,
+  "breaks": [
+  { "n": 1, "name": "the frozen date row no longer stretches with the grid while the fingers move", "file": "src/leavewar/ui/Matrix.tsx", "find": "      also: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-scroll, :scope > .mxfixed > .mxfixed-frozen')],", "put": "      also: () => [],"},
+  { "n": 2, "name": "the undrawn months' estimate divided by the zoom on screen again (the old fault)", "file": "src/leavewar/ui/Matrix.tsx", "find": "    return (a ? a.avg / a.zoom : 30) * (yearMonths.monthDays[m] ?? 30)", "put": "    return (a ? a.avg / zoom : 30) * (yearMonths.monthDays[m] ?? 30)"},
+  { "n": 3, "name": "the month strip's floor in the grid's units again", "file": "src/leavewar/ui/Matrix.tsx", "find": "      setStripH(Math.max(z > 1 ? 44 / z : 44, (sr.bottom - cr.top + 6) / z))", "put": "      setStripH(Math.max(44, (sr.bottom - cr.top + 6) / z))"},
+  { "n": 4, "name": "the grid's pinch never starts", "file": "src/leavewar/ui/Matrix.tsx", "find": "      canStart: () => isLwOnScreen() && outer.isConnected && !fullPage(),", "put": "      canStart: () => false,"},
+  { "n": 5, "name": "the OIL tab's pinch writes no zoom", "file": "src/leavewar/ui/OilTracker.tsx", "find": "      apply: z => { const v = roundZoom(z); zoomRef.current = v; flushSync(() => setZoom(v)) },", "put": "      apply: z => { void z },"},
+  { "n": 6, "name": "the lift's scroll counted as a fling again", "file": "src/leavewar/ui/Matrix.tsx", "find": "    if (now - pinchAtRef.current < PINCH_SCROLL_MS) {", "put": "    if (now - pinchAtRef.current < 0) {"},
+  { "n": 7, "name": "the month buttons no longer held at their size mid-pinch", "file": "src/leavewar/ui/Matrix.tsx", "find": "      keep: () => [mstickRef.current],", "put": "      keep: () => [],"}
+  ] }

@@ -1,0 +1,72 @@
+[
+ {
+  "n": 1,
+  "name": "the shared finger record never sees another finger (a pinch's second finger may start a hold)",
+  "file": "src/leavewar/ui/select.ts",
+  "find": "    if (k !== id) return true",
+  "put": "    if (k !== id && false) return true",
+  "tests": [
+   "src/leavewar/ui/select.test.ts"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "a second finger no longer lets go of a held selection (A7a)",
+  "file": "src/leavewar/ui/select.ts",
+  "find": "  const onSecond = (e: PointerEvent) => {",
+  "put": "  const onSecond = (e: PointerEvent) => { if (e) return;",
+  "tests": [
+   "src/leavewar/ui/select.test.ts"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "a held box (the month buttons) is no longer held",
+  "file": "src/ui/pinchzoom.ts",
+  "find": "    for (const c of live.keep) {",
+  "put": "    for (const c of [] as typeof live.keep) {",
+  "tests": [
+   "src/ui/pinchzoom.test.ts"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "boxes beside the grid no longer stretch on both axes",
+  "file": "src/ui/pinchzoom.ts",
+  "find": "    for (const a of live.xy) {",
+  "put": "    for (const a of [] as typeof live.xy) {",
+  "tests": [
+   "src/ui/pinchzoom.test.ts"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "Ctrl+scroll is never listened for",
+  "file": "src/ui/pinchzoom.ts",
+  "find": "  opts.wheel?.addEventListener('wheel', onWheel, { passive: false })",
+  "put": "",
+  "tests": [
+   "src/ui/pinchzoom.test.ts"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "the floor is read again at the lift (from the grid as it is then)",
+  "file": "src/ui/pinchzoom.ts",
+  "find": "    const z1 = clamp(l.z0 * l.k, l.lo, max)",
+  "put": "    const z1 = clamp(l.z0 * l.k, opts.min(), max)",
+  "tests": [
+   "src/ui/pinchzoom.test.ts"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "the floor is read again on every move",
+  "file": "src/ui/pinchzoom.ts",
+  "find": "      const z = clamp(live.z0 * (p.d / live.d0), live.lo, max)",
+  "put": "      const z = clamp(live.z0 * (p.d / live.d0), opts.min(), max)",
+  "tests": [
+   "src/ui/pinchzoom.test.ts"
+  ]
+ }
+]
