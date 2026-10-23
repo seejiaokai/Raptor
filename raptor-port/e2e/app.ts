@@ -476,3 +476,11 @@ export async function answerNoDocument(page: Page): Promise<void> {
   const b = page.locator('[data-testid="docconf-nodoc"]')
   await b.waitFor({ state: 'visible', timeout: 1500 }).then(() => b.click(), () => {})
 }
+
+/** An admin's bid windows open with "Approve what I enter" ticked (owner D1186, the Leave War overhaul's M3 5.5): a test
+ *  that means to place a PENDING bid as an admin unticks it first — by a press on the tick, as he would. 'bid' for the
+ *  one-day window, 'sel' for the drag-selection window. */
+export async function untickApprove(page: Page, prefix: 'bid' | 'sel'): Promise<void> {
+  const t = page.locator(`[data-testid="${prefix}-approve-tick"]`)
+  if (await t.count() && await t.isChecked()) await t.uncheck()
+}

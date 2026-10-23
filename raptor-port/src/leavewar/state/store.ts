@@ -2959,7 +2959,16 @@ export function setCell(personId: string, date: string, code: string, words?: Re
   /* ITS WORDS AND PAPERS (M3 5.9, 5.10): the window's remarks, till tick and documents written with the bid, in the same
      command; and A RE-TYPED BID KEEPS ITS WORDS (5.11): LL changed to OL keeps the remark and the documents of the bid it
      replaces — a new code never loses a paper */
-  const carry = words ? requestWords(words) : replaced.length === 1 ? requestWords(replaced[0]!) : {}
+  /* (the fresh read's 4) every document of every bid it replaces, with the window's own — a whole day typed over two halves,
+     or a range with a typed remark over an existing run, never drops a paper; the words and the tick the window did not give
+     are the replaced bid's */
+  const old = replaced as RequestRec[]
+  const papers = [...new Set([...(words?.docIds ?? []), ...old.flatMap(r => r.docIds ?? [])])].slice(0, MAX_REQ_DOCS)
+  const carry = requestWords({
+    remarks: words?.remarks ?? old.find(r => r.remarks)?.remarks,
+    till: typeof words?.till === 'boolean' ? words.till : old.find(r => typeof r.till === 'boolean')?.till,
+    docIds: papers,
+  })
   const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending', ...carry }
   return putList(personId, date, [...list.filter(r => !replaced.includes(r as RequestRec)), rec])
 }
@@ -2994,10 +3003,14 @@ export function setRequestWords(personId: string, date: string, recId: string, p
     return out
   }
   if (key(apply(rec)) === same) return false
-  return gesture('lw.reqmeta', () => {
+  const want = key(apply(rec))
+  gesture('lw.reqmeta', () => {
     for (const p of run) putList(personId, p.date, listAt(personId, p.date).map(r => (r === p.rec ? apply(p.rec) : r)))
     return true
   })
+  /* (the fresh read's 6) what the store holds after the command — a command the commit refused rolled back, and says false */
+  const now = listAt(personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId)
+  return !!now && key(now) === want
 }
 
 /** What a range write did. `skipped` counts days it was not allowed to touch,
@@ -3263,9 +3276,16 @@ export function placeApproved(cells: { personId: string; date: string }[], code:
   let written = 0, skipped = 0, approved = 0
   const pending: Array<{ personId: string; date: string }> = []
   gesture('lw.placeApproved', () => {
-    const w = writeMany(cells, clean, undefined, words)
-    written = w.written; skipped = w.skipped
     const portion = portionOfCode(clean)
+    /* (the fresh read's 2) a day already holding this very pending bid: re-typing it writes nothing (setCell keeps it), so it
+       is not "not written" — it is approved with the rest, and carries the window's words */
+    const held = cells.filter(c => liveRequestsOn(listAt(c.personId, c.date), portion).some(r => r.code === clean && r.state === 'pending'))
+    const w = writeMany(cells, clean, undefined, words)
+    written = w.written + held.length; skipped = Math.max(0, w.skipped - held.length)
+    if (words) for (const c of held) {
+      const r = liveRequestsOn(listAt(c.personId, c.date), portion).find(x => x.code === clean && x.state === 'pending')
+      if (r) setRequestWords(c.personId, c.date, r.id, { ...(words.remarks ? { remarks: words.remarks } : {}), ...(typeof words.till === 'boolean' ? { till: words.till } : {}), ...(words.docIds?.length ? { docIds: [...new Set([...(r.docIds ?? []), ...words.docIds])] } : {}) })
+    }
     const toApprove: Array<{ personId: string; date: string; recId: string }> = []
     for (const { personId, date } of cells) {
       for (const r of liveRequestsOn(listAt(personId, date), portion)) {

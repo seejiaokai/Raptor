@@ -37,12 +37,17 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
      of his there gets its rows — a morning and an afternoon each their own (the roll-call's find: with two, none were drawn) */
   const [edit, setEdit] = useState<Record<string, ReqDraft>>({})
   const end = heldRequest(personId, date)?.end ?? date
+  /* words typed and not yet saved are saved as it closes (the fresh read's 5) */
+  const closeKeeping = () => {
+    for (const r of pending) { const e = edit[r.id]; const p = e && patchOf(draftOf(r), e); if (p) setRequestWords(personId, date, r.id, p) }
+    onClose()
+  }
   return (
-    <Sheet testid="closed-note" label={pending.length ? 'Your pending bid' : 'Bidding is closed'} onClose={onClose}>
+    <Sheet testid="closed-note" label={pending.length ? 'Your pending bid' : 'Bidding is closed'} onClose={closeKeeping}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{dayLabel(date)}</span>
-        <button className="x" data-testid="closed-note-close" onClick={onClose} aria-label="Close">✕</button>
+        <button className="x" data-testid="closed-note-close" onClick={closeKeeping} aria-label="Close">✕</button>
       </div>
       {pending.length ? (
         <>

@@ -83,3 +83,15 @@ describe('bidWhatIf', () => {
     expect(worstWhatIf([])).toBeNull()
   })
 })
+
+/* the fresh read's 1: a run's line names the day it hurts most by how bad it is first — never a calm day with the lowest
+   figure over a day where a row turns red */
+describe('worstWhatIf — how bad first', () => {
+  it('a day turning a row red wins over a calm day with a lower Available figure', async () => {
+    const { worstWhatIf } = await import('../engine/whatif')
+    const calm = { date: '2026-02-10', avail: { seat: 'p' as const, label: 'Available P', before: 20, after: 19, level: null }, turned: [] }
+    const red = { date: '2026-02-11', avail: { seat: 'p' as const, label: 'Available P', before: 25, after: 24, level: null }, turned: [{ ruleId: 'ip', label: 'IP', before: 3, after: 2, level: 'red' as const }] }
+    expect(worstWhatIf([calm, red])?.date).toBe('2026-02-11')
+    expect(worstWhatIf([red, calm])?.date).toBe('2026-02-11')
+  })
+})

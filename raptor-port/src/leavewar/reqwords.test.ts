@@ -201,3 +201,38 @@ describe('documents survive every cut and move (7.2, B9)', () => {
     expect(reqs('ammo', '2026-03-11')[0]?.docIds).toEqual(['doc-q'])
   })
 })
+
+/* the fresh Opus read's findings 2, 4 and 6 */
+describe('the read\u2019s findings', () => {
+  it('2: "Approve what I enter" over the same pending bid approves it, counts it written, and gives it the window\u2019s words', () => {
+    setCell('ammo', '2026-02-18', 'LL')
+    const r = placeApproved([{ personId: 'ammo', date: '2026-02-18' }], 'LL', { remarks: 'now approved', docIds: ['doc-r2'] })
+    expect(r.skipped).toBe(0)
+    expect(r.approved).toBe(1)
+    const leave = leaveOf('ammo')[0] as any
+    expect(leave.remarks).toBe('now approved')
+    expect(rowDocIds(leave)).toEqual(['doc-r2'])
+  })
+  it('4: a whole day typed over two halves keeps both halves\u2019 documents; a window\u2019s remark over a run keeps its papers', () => {
+    setCell('ammo', '2026-02-18', '*LL', { docIds: ['doc-am'] })
+    setCell('ammo', '2026-02-18', 'OL*', { docIds: ['doc-pm'] })
+    expect(setCell('ammo', '2026-02-18', 'LL')).toBe(true)
+    expect(reqs('ammo', '2026-02-18')).toHaveLength(1)
+    expect([...(reqs('ammo', '2026-02-18')[0]!.docIds ?? [])].sort()).toEqual(['doc-am', 'doc-pm'])
+    setCell('ammo', '2026-02-19', 'LL', { docIds: ['doc-old'] })
+    setCell('ammo', '2026-02-19', 'OL', { remarks: 'typed anew' })
+    expect(reqs('ammo', '2026-02-19')[0]).toMatchObject({ code: 'OL', remarks: 'typed anew', docIds: ['doc-old'] })
+  })
+  it('6: a member\u2019s change to his REFUSED bid on a closed day is refused by the commit and says false', () => {
+    const pid = 'bane'
+    asMember(pid)
+    setCell(pid, '2026-02-10', 'LL')
+    asAdmin()
+    setBidStates([{ personId: pid, date: '2026-02-10' }], 'refused')
+    closeDates('2026-02-01', '2026-02-28')
+    asMember(pid)
+    const id = reqs(pid, '2026-02-10')[0]!.id
+    expect(setRequestWords(pid, '2026-02-10', id, { docIds: ['doc-x'] })).toBe(false)
+    expect(reqs(pid, '2026-02-10')[0]?.docIds).toBeUndefined()
+  })
+})

@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo, answerNoDocument } from './app'
+import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo, answerNoDocument, untickApprove } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -253,6 +253,7 @@ test('approve a 5-day bid, delete its middle day, undo, redo', async ({ page }) 
   const P = 'slipway', days = ['2026-02-09', '2026-02-10', '2026-02-11', '2026-02-12', '2026-02-13']
   await showMonth(page, days[0]!)
   await dragSelect(page, P, days[0]!, days[4]!)
+  await untickApprove(page, 'sel')             // placed pending, then approved below (D1186: the tick starts on)
   await page.locator('[data-testid="sel-LL"]').click()
   await closeBidding(page)
   await dragSelect(page, P, days[0]!, days[4]!)
@@ -288,6 +289,7 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   const P = 'ammo', D = '2026-02-11'
   await showMonth(page, D)
   await tap(page, P, D)
+  await untickApprove(page, 'bid')             // a pending bid (D1186: the admin's tick starts on)
   await page.locator('[data-testid="bid-LL"]').click()
   await expect(chip(page, P, D)).toHaveText('LL')
   await expect(chip(page, P, D)).toHaveClass(PENDING)   // a bid lands pending — hollow, dashed (look F, D1175)

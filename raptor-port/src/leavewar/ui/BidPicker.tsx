@@ -320,6 +320,12 @@ export function BidPicker({
   /* the words a new bid is written with: the window's own on a new bid; on a held one its own carry over by themselves
      (5.11 — the store keeps a re-typed bid's words) */
   const newWords = held ? undefined : wordsOf(draft)
+  /* (the fresh read's 5) words typed on a held bid and not yet saved — the box not left — are saved as the window closes,
+     as its documents already were the moment they were picked: Escape, ✕ or a tap outside never loses them */
+  const closeKeeping = () => {
+    if (held && heldEdit) { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p) }
+    onClose()
+  }
   /* the day line: read again only when what it reads changes — the days, the half, the war (a write replaces the state) */
   const st = getState()
   const lineDays = useMemo(
@@ -463,7 +469,7 @@ export function BidPicker({
   )
 
   return (
-    <Sheet testid="bid-picker" label="Place a bid" onClose={onClose}>
+    <Sheet testid="bid-picker" label="Place a bid" onClose={closeKeeping}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{dayLabel(date)}</span>
@@ -475,7 +481,7 @@ export function BidPicker({
             Approve what I enter
           </label>
         )}
-        <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
+        <button className="x" data-testid="bid-cancel" onClick={closeKeeping} aria-label="Cancel">
           ✕
         </button>
       </div>

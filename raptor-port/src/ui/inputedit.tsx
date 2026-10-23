@@ -1185,6 +1185,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      of weeks nobody was looking at too. That clear is gone — the refusal is ignored on read (engine/oilev.ts
      pruneHandedOverDecisions, by the request's `hand` below) — so no week is written, and one Undo still puts back the
      assignment and the refusal together: the count rides the request. */
+  /* A DOCUMENT ADDED OR TAKEN OFF IS NOT A CHANGE TO WHAT WAS FILED (the M3 fresh read's 3; D1150 — "they can apply first but
+     upload after"): the late mark measures the input's last change (`mod`), and a file attached after the cut-off made an
+     on-time leave read LATE. Where the draft differs from the record by its documents alone, its time is left as it was. */
+  const docsOnly = (() => { try { return JSON.stringify({ ...draftOf(r), docIds: [] }) === JSON.stringify({ ...draft, docIds: [] }) } catch { return false } })()
   const ok = writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
@@ -1237,7 +1241,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     const wasDateD999 = r.date, wasEndD999 = r.endDate, wasYrD999 = r.yr
     r.s = s; r.e = e; r.date = date; r.remarks = rem
     /* the date the late mark reads — left as it is by a scheduler's change made from a row on the schedule (D741, D742) */
-    if (!sched) r.mod = nowStamp()
+    if (!sched && !docsOnly) r.mod = nowStamp()
     /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
        was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
        keeps the name of the Event it used to be. A draft that does not STATE a title (no `title` key at all — a

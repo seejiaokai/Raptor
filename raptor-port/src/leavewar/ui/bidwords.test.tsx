@@ -182,3 +182,15 @@ describe('a closed day holding two pending halves of his (the roll-call’s find
     expect(reqs('dusk', '2026-02-11').find(r => r.id === a!.id)?.docIds).toBeUndefined()
   })
 })
+
+describe('words typed on a held bid survive the window closing (the fresh read\u2019s 5)', () => {
+  it('typed, then ✕ without leaving the box: saved', () => {
+    setCell('dusk', '2026-02-11', 'LL')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    const sheet = screen.getByTestId('bid-picker')
+    fireEvent.change(within(sheet).getByTestId('bid-remarks'), { target: { value: 'kept on close' } })
+    fireEvent.click(within(sheet).getByTestId('bid-cancel'))
+    expect(reqs('dusk', '2026-02-11')[0]?.remarks).toBe('kept on close')
+  })
+})

@@ -178,3 +178,17 @@ describe('the card says it too — the phone list and the calendar\u2019s opened
     expect(doc('c4')).toBe('')
   })
 })
+
+describe('a document added later is not a change to what was filed (the fresh read\u2019s 3)', () => {
+  it('commitInputEdit with only its documents changed keeps the input\u2019s time, so it never turns LATE', async () => {
+    const { commitInputEdit, draftOf } = await import('./inputedit')
+    await act(async () => { writeInputs(() => { INPUTS.push({ iid: 'mt1', person: admin, type: 'LL', date: 'Jul 20', yr: 2026, allday: true, remarks: '', mod: '2026-07-01', by: admin, at: 1 }) }); notify() })
+    const row = live('mt1')
+    expect(commitInputEdit(row, { ...draftOf(row), docIds: ['doc-late'] })).toBe(true)
+    expect(live('mt1').mod).toBe('2026-07-01')
+    expect(rowDocIds(live('mt1'))).toEqual(['doc-late'])
+    const row2 = live('mt1')
+    expect(commitInputEdit(row2, { ...draftOf(row2), remarks: 'changed' })).toBe(true)
+    expect(live('mt1').mod).not.toBe('2026-07-01')
+  })
+})

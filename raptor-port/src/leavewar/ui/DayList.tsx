@@ -169,7 +169,9 @@ export function DayListSheet({
       if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
       /* ITS DOCUMENTS (M3 7.3 — D1150, D1159): the app's one Document button, for whoever may change this bid (his own, an
          admin any), on a closed day too; a pick or a ✕ is saved to the bid at once (`lw.reqmeta`, one Undo) */
-      if (src && canEditRow(role, viewer, personId)) actions.push(
+      /* only where the save can land (the fresh read's 6): an admin, an open day, or his own pending bid on a closed one — never
+         his refused bid on a closed day, which the commit refuses */
+      if (src && canEditRow(role, viewer, personId) && (deciding || editable || pendingHere.has(c.id))) actions.push(
         <span key="doc" data-testid={`dl-doc-${c.id}`}><DocField ids={src.docIds ?? []} onIds={ids => act(() => setRequestWords(personId, date, c.id, { docIds: ids }))} /></span>,
       )
       const cls = c.state === 'refused' ? 'ref' : ''

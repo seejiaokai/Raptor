@@ -71,15 +71,18 @@ export function dayWhatIf(
   return { date, avail, turned }
 }
 
-/** A run of days (a range, a drag): the day the bid hurts most — the lowest Available figure after it, then the most
- *  rows turned, then the earliest — so the window's one line names the day that matters (the agent's reading, M3 §7.1). */
+/** A run of days (a range, a drag): the day the bid hurts most — first by how bad it is (a row or his Available turned red,
+ *  then amber, then none), then the most rows turned, then the lowest Available figure after it, then the earliest — so the
+ *  window's one line never reads calm while another day of the run turns red (the fresh read's 1: D1144 "where none would,
+ *  the line says so" — the lowest figure used to win over a red row). */
 export function worstWhatIf(days: readonly DayWhatIf[]): DayWhatIf | null {
+  const sev = (d: DayWhatIf) => Math.max(d.avail?.level === 'red' ? 2 : d.avail?.level === 'amber' ? 1 : 0, ...d.turned.map(t => (t.level === 'red' ? 2 : 1)))
   let best: DayWhatIf | null = null
-  const score = (d: DayWhatIf) => [d.avail ? d.avail.after : Infinity, -(d.turned.length)]
   for (const d of days) {
     if (!best) { best = d; continue }
-    const [a1, t1] = score(d), [a0, t0] = score(best)
-    if (a1 < a0 || (a1 === a0 && t1 < t0)) best = d
+    const k1 = [sev(d), d.turned.length, -(d.avail ? d.avail.after : Infinity)]
+    const k0 = [sev(best), best.turned.length, -(best.avail ? best.avail.after : Infinity)]
+    for (let i = 0; i < 3; i++) { if (k1[i]! > k0[i]!) { best = d; break } if (k1[i]! < k0[i]!) break }
   }
   return best
 }
