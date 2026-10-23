@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo } from './app'
+import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo, answerNoDocument } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -189,6 +189,7 @@ async function fileOnInputsPage(page: Page, f: Filing) {
   await clearToast(page)
   const before = await page.evaluate(() => (window as any).INPUTS.length as number)
   await page.locator('#inpEditSave').click()
+  await answerNoDocument(page)
   /* The add decides inside the click, one of three ways: a medical with no
      certificate ASKS first, or it files, or it is refused on the toast. Wait
      for whichever it was. (A fixed 150ms look for the question used to sit

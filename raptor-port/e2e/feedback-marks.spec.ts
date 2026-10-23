@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, answerNoDocument } from './app'
 
 /* THE LEFTOVERS OF 14 OCT 26, IN THE BUILT APP ([BATCH-14OCT-LEFTOVERS] — owner D849, D851, D854; the design guide's §1,
    D850). What only a real browser can say: that a mark is PAINTED and in view, that no note is drawn, where a tag stands
@@ -69,7 +69,7 @@ test('D851, D854 — a day opened on the calendar: the new input’s card wears 
   await page.locator('#inpCal [data-icday="2026-10-22"]').click()
   await page.locator('#icPopAdd').click()
   await page.locator('#inpEditRmk').fill('weekly sync')
-  await page.locator('#inpEditSave').click()
+  await page.locator('#inpEditSave').click(); await answerNoDocument(page)
   const id = await newest(page), card = `[data-testid="win-inputsday"] [data-testid="idy-row-${id}"]`
   await expect(page.locator(card)).toHaveClass(/\binnew\b/)
   const m = await markOf(page, card)
@@ -85,7 +85,7 @@ test('D851, D854 — a day opened on the calendar: the new input’s card wears 
   await page.waitForTimeout(2600)
   await page.locator(`${card} [data-testid="idy-open"]`).click()
   await page.locator('#inpEditRmk').fill('weekly sync, room 2')
-  await page.locator('#inpEditSave').click()
+  await page.locator('#inpEditSave').click(); await answerNoDocument(page)
   await expect.poll(() => page.evaluate(id => (window as any).INPUTS.find((r: any) => String(r.iid) === id).remarks, id)).toBe('weekly sync, room 2')
   await expect(page.locator(card)).toHaveClass(/\binnew\b/)
   expect((await markOf(page, card))!.painted).toBe(true)
@@ -107,7 +107,7 @@ test('D851 — the desktop List, a second input added four seconds after the fir
      other's box. With the first one gone from the list the second row was a new one anyway, and this stayed green on
      a build broken that way (the browser break test of 14 Oct 26). */
   await page.locator('#inRangeBtn').click(); await page.locator('#inRangeAll').click()
-  const add = async (nth: number) => { await page.locator('#inNew').click(); await page.locator('#inpEdCal [data-iso]').nth(nth).click(); await page.locator('#inpEditSave').click(); return newest(page) }
+  const add = async (nth: number) => { await page.locator('#inNew').click(); await page.locator('#inpEdCal [data-iso]').nth(nth).click(); await page.locator('#inpEditSave').click(); await answerNoDocument(page); return newest(page) }
   const a = await add(14)
   await expect(page.locator(`#inBody tr[data-iid="${a}"]`)).toHaveClass(/\binnew\b/)
   await page.waitForTimeout(4000)
@@ -128,7 +128,7 @@ test('D854 — the month with no day open: a changed input’s bar wears the mar
   await page.evaluate(who => (window as any).fileInput({ iid: 'fm-bar', person: who, type: 'Meeting', date: 'Oct 21', yr: 2026, allday: false, s: 600, e: 660 }), who)
   await page.locator('[data-testid="ib-bar-fm-bar"]').first().click()
   await page.locator('#inpEditRmk').fill('moved to room 2')
-  await page.locator('#inpEditSave').click()
+  await page.locator('#inpEditSave').click(); await answerNoDocument(page)
   const bar = '.ib-bar.innew[data-iid="fm-bar"]'
   await expect(page.locator(bar).first()).toBeVisible()
   const m = await markOf(page, bar)
@@ -144,7 +144,7 @@ test('D850, D851 — the desktop List with less motion asked for: every cell of 
   await page.locator('#inListBtn').click()
   await page.locator('#inNew').click()
   await page.locator('#inpEdCal [data-iso]').nth(14).click()
-  await page.locator('#inpEditSave').click()
+  await page.locator('#inpEditSave').click(); await answerNoDocument(page)
   const id = await newest(page), row = `#inBody tr[data-iid="${id}"]`
   await expect(page.locator(row)).toHaveClass(/\binnew\b/)
   await page.waitForTimeout(700)                 // the page comes to the row
@@ -162,7 +162,7 @@ test('D851 — a phone: the List’s new card wears the mark and no note is draw
     await page.locator('#inListBtn').tap()
     await page.locator('#inNew').tap()
     await page.locator('#inpEdCal [data-iso]').nth(14).tap()
-    await page.locator('#inpEditSave').tap()
+    await page.locator('#inpEditSave').tap(); await answerNoDocument(page)
     const id = await newest(page), card = `#inList [data-iid="${id}"]`
     await expect(page.locator(card)).toHaveClass(/\binnew\b/)
     await page.waitForTimeout(700)
@@ -178,7 +178,7 @@ test('the note is still said where no mark is drawn: an input added from the Sch
   await page.locator('#eWeek [data-sbday="1"]').first().click()
   await page.locator('#schedBoard [data-inpadd="1.g"]').first().click()
   await page.selectOption('#inpEditPop #inpEditType', 'Meeting')
-  await page.locator('#inpEditSave').click()
+  await page.locator('#inpEditSave').click(); await answerNoDocument(page)
   await expect(page.locator('#toastEl')).toHaveText('Input added to the Ground Programme')
   /* …and the board's ✓ Done says nothing (D854 — it read "Schedule updated") */
   await expect.poll(() => noteNow(page), { timeout: 12000 }).toBe('')
@@ -261,7 +261,7 @@ test('D849 (3) — the medical-clash and the upchit questions: their answers sit
     await page.selectOption('#inpEditPop #inpEditType', type)
     await page.selectOption('#inpEditPop #inpEditPerson', who)
     if (to) await page.locator(`#inpEdCal [data-iso="${to}"]`).click()
-    await page.locator('#inpEditSave').click()
+    await page.locator('#inpEditSave').click(); await answerNoDocument(page)
     const doc = page.locator('[data-testid="docconf-nodoc"]')
     await expect(doc.or(page.locator('[data-testid="medclash"], [data-testid="upconf"]')).first()).toBeVisible()
     if (await doc.count()) await doc.click()
@@ -313,7 +313,7 @@ test('D860 — the input marks wear the board’s plain ring, no glow: the opene
   await page.locator('#inpCal [data-icday="2026-10-22"]').click()
   await page.locator('#icPopAdd').click()
   await page.locator('#inpEditRmk').fill('ring check')
-  await page.locator('#inpEditSave').click()
+  await page.locator('#inpEditSave').click(); await answerNoDocument(page)
   const id = await newest(page)
   const card = `[data-testid="win-inputsday"] [data-testid="idy-row-${id}"]`
   await expect(page.locator(card)).toHaveClass(/\binnew\b/)

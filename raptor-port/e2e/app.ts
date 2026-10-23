@@ -469,3 +469,10 @@ export async function pickDate(page: Page, sel: string, iso: string, touch = fal
   await tapCalendarDate(page, iso, touch)
   await expect(box).toHaveAttribute('data-value', iso)
 }
+
+/** A NEW leave saved with no document asks first since D1150 (the Leave War overhaul's M3 7.4) — never a stop: answer it
+ *  "No document", as a filer who has none yet does. Does nothing where no ask opens (a duty, a leave with a file). */
+export async function answerNoDocument(page: Page): Promise<void> {
+  const b = page.locator('[data-testid="docconf-nodoc"]')
+  await b.waitFor({ state: 'visible', timeout: 1500 }).then(() => b.click(), () => {})
+}
