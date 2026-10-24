@@ -346,7 +346,9 @@ export function BidPicker({
   }
   /* the words a new bid is written with: the window's own on a new bid; on a held one its own carry over by themselves
      (5.11 — the store keeps a re-typed bid's words) */
-  const newWords = held ? undefined : wordsOf(draft)
+  /* …except a REFUSED bid bid again: the store carries words only from a live bid it replaces, so the words in its box ride
+     with the new bid here (the fresh read's R2 — they stayed on the refused record) */
+  const newWords = !held ? wordsOf(draft) : held.rec.state === 'refused' ? wordsOf(words) : undefined
   /* (the fresh read's 5) words typed on a held bid and not yet saved — the box not left — are saved as the window closes,
      as its documents already were the moment they were picked: Escape, ✕ or a tap outside never loses them */
   /* …AND BEFORE ANY ACTION (round 3's FULL check — the scenario designer's S15): an iPhone keeps the box focused when a
