@@ -9,12 +9,17 @@
 import * as L from './lw-declutter-lib.mjs'
 import { transform, reorder } from './lw-declutter-mock.mjs'
 import path from 'node:path'
-console.log('lw-round2-odcrs v1')
+/* UNA's colour (his "What's its own colour? Can show me", 24 Oct 26): UNA=ivory | teal | lime (the first drawing) */
+const UNAS = { lime: { h: '186, 214, 72', ink: '#F3FFD2', fill: .34 }, ivory: { h: '236, 232, 222', ink: '#15191E', fill: .85 }, teal: { h: '20, 130, 130', ink: '#D6FFFB', fill: .70 } }
+const UKEY = process.env.UNA || 'lime'
+const UNA = UNAS[UKEY]
+const TAG = UKEY === 'lime' ? '' : '-una-' + UKEY
+console.log('lw-round2-odcrs v2', UKEY)
 const OUT = path.resolve('docs/img/handpass/2026-10-24-lw-declutter')
-const SETC = `.bidsheet .tchip.lv.k-oil.mock-taken { --h: 226, 96, 196 !important; --ink: #FFDDF4 !important; --fill: .34 !important; }
-.bidsheet .tchip.lv.k-cse { --h: 160, 100, 240 !important; --ink: #EBDDFF !important; --fill: .36 !important; }
+const SETC = `.bidsheet .tchip.lv.k-cse { --h: 160, 100, 240 !important; --ink: #EBDDFF !important; --fill: .36 !important; }
 .bidsheet .tchip.lv.k-od { --h: 128, 142, 160 !important; --ink: #F2F5F8 !important; --fill: .58 !important; }
-.bidsheet .tchip.lv.mock-una { --h: 186, 214, 72 !important; --ink: #F3FFD2 !important; --fill: .34 !important; }
+.bidsheet .tchip.lv.mock-una { --h: ${UNA.h} !important; --ink: ${UNA.ink} !important; --fill: ${UNA.fill} !important; }
+.bidsheet .tchip.lv.k-oil.mock-taken { --h: 170, 230, 40 !important; --ink: #F1FFD0 !important; --fill: .30 !important; }
 .bidsheet .mock-odrow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; flex: 1 1 100%; margin-top: 2px; }`
 /* the row of three, cloned from the window's own CCL button (its size, its look), recoloured by kind, filled, no figure */
 const addRow = (P, after) => P.evaluate(({ css, after }) => {
@@ -45,7 +50,8 @@ const who = await P.evaluate(() => Object.entries(window.PEOPLE || {}).find(([, 
 await L.openCellR(w, who, '2026-11-02')
 await transform(P, { p: 'bid', admin: true }); await reorder(P, 'bid')
 await addRow(P)
-await take(P, 'r2-admin-empty')
+await take(P, 'r2-admin-empty' + TAG)
+if (TAG) { await L.closeBrowser(); process.exit(0) }
 await L.closeAny(w)
 console.log('errors', JSON.stringify(w.errs))
 await w.ctx.close()
