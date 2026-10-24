@@ -56,6 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1308 | 24 Oct 26 | In the Leave War's bid windows the Remarks box is drawn as a dark box, standing out from the window, so people see at once that it is there to fill in — as the input window's boxes on the Inputs page are. |
+| D1307 | 24 Oct 26 | A Leave War bid window opened on an approved leave shows its Document and Remarks rows straight away, for everyone who opens it — the member whose leave it is and an admin alike — in place of the "Note" button that opened them in a window of their own. |
+| D1306 | 24 Oct 26 | On the Leave War an FO or HO the published schedule credited keeps its star as a letter after its code — "FO*", "HO*" — as built; it is not turned into a corner mark. |
 | D1303 | 24 Oct 26 | His intent, designed with OD and CRS (D1299, D1301 step 2): the Leave War gets one more kind for an unforeseen reason a person is out of the manning, under a name that cannot be confused with the Inputs page's "Other", which does not take anyone off the manning. |
 | D1302 | 24 Oct 26 | The admin's "Approve what I enter" is remembered: left off, it stays off in every bid window he opens until he turns it on again, and the reverse; and it is drawn as a small toggle, not a tick, in the same place in the title bar. |
 | D1301 | 24 Oct 26 | The Leave War's open design questions are put to him in the order in which one answer shapes the next: first the colour of each kind, then how an OD and a CRS look in a window, then how the window is made shorter, then the rest. |
