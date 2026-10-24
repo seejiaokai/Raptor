@@ -619,4 +619,20 @@ describe('round 3 — the fresh read’s finds', () => {
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-10`))
     expect(within(sheet()).getByTestId('bid-tilldate').textContent).toMatch(/11 Feb/)
   })
+  it('N3: a refused bid in the list keeps Refuse in its place, pressed — a second tap changes nothing (D1330)', () => {
+    INPUTS.length = 0
+    const ll = fileAbsence(P, 'LL', D, D, { lw: true })
+    expect(setDayAward(P, D, 0.5, { note: 'Walk', givenBy: 'OC', half: 'am' })).toBeNull()
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(screen.getByTestId(`dl-refuse-${ll.iid}`))
+    const req = rawState().wars[0]!.recs[P]![D]!.find((x: any) => x.kind === 'request')!
+    const btn = screen.getByTestId(`dl-refuse-${req.id}`)
+    expect(btn.getAttribute('aria-pressed')).toBe('true')
+    const row = btn.parentElement!
+    expect([...row.children].indexOf(btn), 'Refuse in its place, second').toBe(1)
+    fireEvent.click(btn)
+    expect(rawState().wars[0]!.recs[P]![D]!.find((x: any) => x.kind === 'request')).toMatchObject({ state: 'refused' })
+    expect(screen.getAllByTestId(/^dl-[a-z]-/).length, 'both entries still there').toBe(2)
+  })
 })

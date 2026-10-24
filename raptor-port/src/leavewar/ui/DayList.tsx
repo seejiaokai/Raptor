@@ -233,7 +233,10 @@ export function DayListSheet({
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
         actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
-        if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'refused')) }}>Refuse</button>)
+        /* Refuse always in its place (his D1330: one row wherever it opens — the narrow read's N3: on a refused bid it was left
+           out, and the next button slid under a repeated tap); pressed on a refused bid, a tap then changing nothing, as the
+           one-day window's does */
+        actions.push(<button key="rf" className="dchip refuse" aria-pressed={c.state === 'refused'} data-testid={`dl-refuse-${c.id}`} onClick={() => { if (c.state === 'refused') return; flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'refused')) }}>Refuse</button>)
       }
       actions.push(...moveBtn(c.id))
       if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
