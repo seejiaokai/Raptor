@@ -615,9 +615,10 @@ export function BidPicker({
           // chose their start by opening this cell; asking for it again would
           // be the extra work this control exists to remove.
           /* …and tapped again it closes the calendar, the range picked kept (round 3's FULL check: "Just this day" had closed it,
-             and with it gone the calendar stayed open with only the window's ✕ to shut it) */
+             and with it gone the calendar stayed open with only the window's ✕ to shut it); a pick of one day closed unfinished
+             goes back to the day tapped, as "Just this day" did (the fresh read's R6) */
           aria-expanded={showCal}
-          onClick={() => { if (showCal) { setShowCal(false); return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
+          onClick={() => { if (showCal) { setShowCal(false); if (range && range.from === range.to) setRange(null); return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
         >
           {span ? shortSpan(span.from, span.to) : 'Pick a range'}
         </button>

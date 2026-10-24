@@ -586,4 +586,13 @@ describe('round 3 — the fresh read’s finds', () => {
     expect(live).toHaveLength(1)
     expect(live[0]).toMatchObject({ remarks: 'Wedding, again' })
   })
+  it('R6: the calendar closed over a one-day pick on another day goes back to the day tapped', () => {
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(within(sheet()).getByTestId('span-range'))
+    fireEvent.click(within(sheet()).getByTestId('span-day-2026-02-09'))
+    fireEvent.click(within(sheet()).getByTestId('span-range'))
+    expect(within(sheet()).getByTestId('span-range').textContent).toBe('Pick a range')
+    expect(within(sheet()).getByTestId('span-range').getAttribute('aria-pressed')).toBe('false')
+  })
 })
