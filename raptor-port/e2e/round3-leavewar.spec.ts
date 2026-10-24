@@ -74,6 +74,11 @@ test('the one-day window on a pending bid: one row of four actions, Remarks and 
   expect(doc.y, 'Document beside the box, not under it').toBeLessThan(rmk.y + rmk.height)
   expect(till.y, 'the till beside the box').toBeLessThan(rmk.y + rmk.height)
   expect(doc.x, 'Document at the right of the box').toBeGreaterThan(rmk.x + rmk.width)
+  /* the box writes in the app's own letters, as the window does — never the browser's typewriter face a bare box
+     falls back to (its FULL check: `font: 600 13px/1.3 inherit` is not a font, and the browser dropped the line) */
+  const fonts = await page.locator(T('bid-remarks')).evaluate(e => ({ box: getComputedStyle(e).fontFamily, win: getComputedStyle(e.closest('.bidsheet')!).fontFamily, size: getComputedStyle(e).fontSize }))
+  expect(fonts.box, 'the Remarks box in the window\'s letters').toBe(fonts.win)
+  expect(fonts.size).toBe('13px')
   await moreInPlace(page, 'bid-picker', 'bid-more', 'bid-CL', 'bid-postout')
   await expect(page.locator(T('po-confirm'))).toBeVisible()  // Post out's own panel, opened from the menu
 })
