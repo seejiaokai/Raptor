@@ -11,7 +11,7 @@ import { INPUTS } from '../../engine/inputs'
 import { closeDates, initStore, lwHistInit, placeApproved, recordsAt, setBidState, setCell, setPeople, setRemarksOn, setRole, setViewer } from '../state/store'
 import { globalUndo } from '../../undo'
 import { initStore as raptorInitStore } from '../../state/store'
-import { setSession } from '../../state/auth'
+import { setMe, setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
 import { wireLeaveWarSync } from '../sync'
 import { _resetTimeline } from '../../undo/timeline'
@@ -144,6 +144,7 @@ describe('the drag window\'s typed words are kept, replacing the days\' own (D13
     expect(setCell(P, D2, 'OL')).toBe(true)
     setBidState(P, D2, 'refused')
     closeDates(D2, D2)
+    setSession({ user: 'dk', role: 'member' }); setMe(P)   // the commit's actor is the session's (the last read, T1)
     setRole('member'); setViewer(P)
     expect(setRemarksOn([{ personId: P, date: D1 }, { personId: P, date: D2 }], { remarks: 'Back Monday' })).toBeGreaterThan(0)
     expect(reqs(D1)[0]?.remarks).toBe('Back Monday')
@@ -157,6 +158,7 @@ describe('the drag window\'s typed words are kept, replacing the days\' own (D13
     setBidState(P, D1, 'refused'); setBidState(P, D2, 'refused')
     expect(setCell(P, D3, 'LL')).toBe(true)
     closeDates(D1, D1)
+    setSession({ user: 'dk', role: 'member' }); setMe(P)   // the commit's actor is the session's (the last read, T1)
     setRole('member'); setViewer(P)
     setRemarksOn([{ personId: P, date: D2 }, { personId: P, date: D3 }], { remarks: 'Back Monday' })
     expect(reqs(D3)[0]?.remarks).toBe('Back Monday')
