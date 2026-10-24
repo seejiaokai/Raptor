@@ -30,8 +30,12 @@ closed day).
 ## The agent's readings (told to him; each his to strike)
 
 1. **Who and when (D1318):** a member files on his own row only, an admin on any row; any date — open for bidding or not,
-   and a day before today, as the Inputs page allows. A day the man is not in the squadron (before his post-in, after his
-   post-out) is skipped and said.
+   and a day before today, as the Inputs page allows. *(Corrected in round 2's FULL check, 24 Oct 26 — the designer's G1:
+   this said a day the man is not in the squadron, before his post-in or after his post-out, is skipped and said. The
+   store's own rule for leave lets it be dated there — owner, 20 Sep 26, answer C, `store.ts leaveDateOk` — and an OD or
+   a course is filed the same way, so such a day is filed.)* A day that already holds the same kind for him is left as
+   it is and said (the designer's G2); a weekend or holiday asks its OIL question at once, as the Inputs page does
+   (D804, D660 — the designer's G3).
 2. **Whole days:** none of the three has halves on the Inputs page, so a tap files whole days whatever Duration shows.
 3. **Its words:** the Remarks and till typed in the window go with it; a document attached goes too — never asked for.
 4. **Once filed it is an Inputs-page input:** the war never changes a course or an overseas duty (design §5.4, owner §13
