@@ -165,3 +165,44 @@ if (!only || only === 'q2') { await q2('phone', 'member'); await q2('desk', 'adm
 if (!only || only === 'q3') { await q3('phone'); await q3('desk') }
 if (!only || only === 'q4') { await q4('desk') }
 await closeBrowser()
+
+/* Q5 (his "Then they start planning a lot of things that is OTH on the leave war", 24 Oct 26): the suggestion drawn —
+   not an input at all, but an admin's quiet mark on the war: "Leave out of manning" in the bid window's ⋯ menu (a clone
+   of its "Post out" item), and the cell wearing a faint hatch only admins see. */
+async function q5(size) {
+  const w = await newCtx(size)
+  const { page } = w
+  await signIn(w, 'admin')
+  await page.evaluate(() => window.go('leavewar'))
+  await page.waitForSelector('[data-testid="row-stiff"]')
+  await page.waitForTimeout(600)
+  const cell = d => page.locator(`[data-testid="cell-slipway-${d}"]`)
+  await press(w, '[data-testid^="month-FEB"]'); await page.waitForTimeout(500)
+  await cell('2026-02-11').scrollIntoViewIfNeeded(); await press(w, '[data-testid="cell-slipway-2026-02-11"]')
+  await page.waitForSelector('[data-testid="bid-picker"]')
+  await press(w, '[data-testid="bid-more"]'); await page.waitForSelector('.bp-menu')
+  await page.evaluate(() => {
+    const po = document.querySelector('[data-testid="bid-postout"]')
+    const b = po.cloneNode(true); b.removeAttribute('data-testid'); b.textContent = 'Leave out of manning'
+    b.style.outline = '2px dashed rgba(59,198,232,.9)'; b.style.outlineOffset = '2px'
+    po.before(b)
+  })
+  await page.waitForTimeout(200)
+  await page.locator('[data-testid="bid-picker"]').screenshot({ path: path.join(OUT, `q5-menu-${size}.png`), scale: w.phone ? 'device' : 'css' })
+  await page.keyboard.press('Escape'); await page.keyboard.press('Escape'); await page.waitForTimeout(300)
+  // the mark: three days left out of manning, a faint grey hatch (drawn in), no code, no colour of a kind
+  await page.evaluate(() => {
+    for (const d of ['2026-02-16', '2026-02-17', '2026-02-18']) {
+      const td = document.querySelector(`[data-testid="cell-slipway-${d}"]`)
+      td.style.backgroundImage = 'repeating-linear-gradient(135deg, rgba(160,170,185,.30) 0 2px, transparent 2px 7px)'
+    }
+  })
+  const b = await cell('2026-02-17').boundingBox()
+  const pad = w.phone ? 60 : 110
+  await page.screenshot({ path: path.join(OUT, `q5-cells-${size}.png`), scale: w.phone ? 'device' : 'css',
+    clip: { x: Math.max(0, b.x - pad * 2.5), y: Math.max(0, b.y - pad), width: pad * 5, height: pad * 2 } })
+  console.log('   q5-' + size)
+  if (w.errs.length) console.log(w.errs.join('\n'))
+  await w.ctx.close()
+}
+if (only === 'q5') { await q5('phone'); await closeBrowser() }
