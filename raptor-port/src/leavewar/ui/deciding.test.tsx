@@ -34,7 +34,8 @@ beforeEach(() => {
 const PENDING = 'cell-asics-2026-01-23'
 
 /** The words of the one-day window's Decide row, in order (D1158: Approve · Refuse — Ack is gone). */
-const decideRow = () => [...screen.getByTestId('decide-approve').parentElement!.querySelectorAll('button')].map(b => b.textContent)
+/* the admin's answers — Approve · Refuse — at the head of round 3's one row of actions (D1330), Move and Delete after them */
+const decideRow = () => [...screen.getByTestId('decide-approve').parentElement!.querySelectorAll('button.approve, button.refuse')].map(b => b.textContent)
 
 describe('deciding a bid', () => {
   it('offers the SAME answers while bidding is still open', () => {
@@ -243,8 +244,9 @@ describe('the one input window', () => {
     expect(getState().states.asics['2026-01-23']?.state).toBe('refused')
   })
 
-  /* M1's code read (L6): that window carries the admin's Note — the remarks of the approved leave, as the day's list has */
-  it('the admin’s Note on one approved leave opens its remarks; a pending bid has no Note', () => {
+  /* WAS "the admin's Note on one approved leave opens its remarks" (M1's code read, L6). HIS D1307: the window on an approved
+     leave shows its Remarks and Document at once — "Note" went; the decide row stays beside them */
+  it('the admin’s window on one approved leave shows its Remarks and Document at once — no Note', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
@@ -252,9 +254,10 @@ describe('the one input window', () => {
     fireEvent.click(screen.getByTestId('decide-approve'))
     closeAll()
     fireEvent.click(screen.getByTestId(PENDING))
-    fireEvent.click(screen.getByTestId('decide-note'))
-    expect(screen.getByTestId('remarks-sheet')).toBeTruthy()
-    expect(screen.queryByTestId('decide-approve')).toBeNull()
+    expect(screen.queryByTestId('decide-note')).toBeNull()
+    expect(screen.getByTestId('bid-remarks')).toBeTruthy()
+    expect(screen.getByTestId('bid-doc-row')).toBeTruthy()
+    expect(screen.getByTestId('decide-approve').className).toContain('lit')
   })
 
   it('an input NOT yet approved on a closed day is still the admin’s to change', () => {

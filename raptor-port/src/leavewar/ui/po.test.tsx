@@ -17,6 +17,7 @@ import { getState, initStore, setAccountLookup, setPostingBlockLookup, setPostOu
 import { countsFor, inSquadron } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -92,7 +93,7 @@ describe('placing and managing PO from the grid', () => {
     // (owner, 19 Aug 26 — "show this toggle when the admin clicks PO").
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
     expect(screen.queryByTestId('po-confirm')).toBeNull()
-    fireEvent.click(screen.getByTestId('bid-postout'))
+    fireEvent.click(more('bid-postout'))
     // The date seeds with the tapped day; "Overseas Sqn" — the old "Archive on PO date" — is chosen by default
     // ([POST-OUT-OUTCOMES], D229, D294: the four chips; D300: the button just "Post out").
     expect(boxValue(screen.getByTestId('po-date'))).toBe(day)
@@ -130,7 +131,7 @@ describe('placing and managing PO from the grid', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
-    fireEvent.click(screen.getByTestId('bid-postout'))
+    fireEvent.click(more('bid-postout'))
     pickDate(screen.getByTestId('po-date'), '2026-09-01')
     fireEvent.click(screen.getByTestId('po-overseas'))         // un-chosen: the custom case, nothing but the posting
     fireEvent.click(screen.getByTestId('po-confirm'))
@@ -145,7 +146,7 @@ describe('placing and managing PO from the grid', () => {
     render(<Matrix />)
     expect(screen.queryByTestId(`polast-${id}`)).toBeNull()
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
-    fireEvent.click(screen.getByTestId('bid-postout'))
+    fireEvent.click(more('bid-postout'))
     fireEvent.click(screen.getByTestId('po-confirm'))
     // The tag sits on the last day IN (June 14), not on the first day gone.
     const tag = screen.getByTestId(`polast-${id}`)
@@ -160,6 +161,7 @@ describe('placing and managing PO from the grid', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
     expect(screen.queryByTestId('bid-postout')).toBeNull()
+    expect(screen.queryByTestId('bid-more')).toBeNull()   // no ⋯ for a member (round 3, D1326)
   })
 })
 
@@ -189,7 +191,7 @@ describe('the Post out sheet, its date moved past the day that opened it', () =>
 describe('the four posting chips', () => {
   const open = (id: string, day: string) => {
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
-    fireEvent.click(screen.getByTestId('bid-postout'))
+    fireEvent.click(more('bid-postout'))
   }
   it('the bid sheet: one line per chip, Transfer not pressable, SANS stored as SANS', () => {
     const id = anId()
@@ -248,7 +250,7 @@ describe('the four posting chips', () => {
     try {
       render(<Matrix />)
       fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
-      fireEvent.click(screen.getByTestId('bid-postout'))
+      fireEvent.click(more('bid-postout'))
       expect(screen.queryByTestId('po-blocked'), 'Overseas Sqn: nothing held back').toBeNull()
       fireEvent.click(screen.getByTestId('po-delete'))
       expect(screen.getByTestId('po-blocked').textContent).toMatch(/last admin/)
@@ -261,7 +263,7 @@ describe('the four posting chips', () => {
     try {
       render(<Matrix />)
       fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
-      fireEvent.click(screen.getByTestId('bid-postout'))
+      fireEvent.click(more('bid-postout'))
       expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived, account suspended.')
       fireEvent.click(screen.getByTestId('po-delete'))
       expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: deleted with his account. Days he flew keep his puck.')

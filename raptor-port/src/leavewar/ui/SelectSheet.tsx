@@ -32,7 +32,8 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, deletableIn, movableCells, placeApproved, postingBlocked, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, decidableIn, deletableIn, movableCells, placeApproved, postingBlocked, setBidStates, setCells } from '../state/store'
+import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { skipWhy } from './BidPicker'
@@ -40,7 +41,6 @@ import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './be
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
 import { useCloseOnCellClick } from './gridclick'
-import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
 import './bidpicker.css'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
@@ -93,8 +93,9 @@ export function SelectSheet({
   onClose: () => void
 }) {
   const [portion, setPortion] = useState<Portion>('full')
-  /* "APPROVE WHAT I ENTER" (D1147, D1187's reading: the drag-selection window too) — ticked each time it opens */
-  const [approve, setApprove] = useState(true)
+  /* "APPROVE WHAT I ENTER" (D1147, D1187's reading: the drag-selection window too) — the one-day window's switch and its
+     one memory: left off in either window, it opens off in both (D1302, BidBits.tsx) */
+  const [approve, setApprove] = useApproveMemory()
   const approving = role === 'admin' && approve
   /* THE DAY LINE across a drag: each man's days read on their own, then the worst person-day of them all — his callsign
      before the date where the drag holds several men (the agent's reading, M3 §7.1) */
@@ -140,7 +141,9 @@ export function SelectSheet({
     : nPeople <= 3
       ? sel.people.map(people).join(', ')
       : `${nPeople} people`
-  const span = sel.from === sel.to ? shortDate(sel.from) : shortSpan(sel.from, sel.to)   // one day in its range's own voice ([LW-ISO-DATES])
+  /* the dates in the title's short voice — "9–11 Nov", as round 3 drew it (today "9 Nov 26 – 11 Nov 26"), the one-day
+     window's "Tue 3 Nov" carrying no year either (BidBits.tsx compactSpan) */
+  const span = compactSpan(sel.from, sel.to)
   // Delete and Move only make sense when the box actually holds a movable bid —
   // a purely-empty selection (Fill only) hides them, so Move never opens on
   // nothing to move (owner, 27 Aug 26).
@@ -148,6 +151,10 @@ export function SelectSheet({
   /* Delete only where it would change something (D332; the house rule for a control that could not work) — the same
      gates the Delete itself runs (`deletableIn` mirrors `clearCells`) */
   const canDelete = deletableIn(sel.cells) > 0
+  /* DECIDE ONLY WHERE THE DAYS HOLD A BID (round 3's drawing): over days with nothing to decide Approve and Refuse only
+     said so when pressed — the house rule for a control that could not work. `decidableIn` is `setBidStates`'s own
+     eligibility, as the one-day window's range asks it. */
+  const decideHere = canDecide && decidableIn(sel.cells) > 0
   /* THE AWARDS THE DELETE WILL TAKE (owner, D260, 27 Sep 26 — "B": it removes everything in the block, awards included,
      and the confirm names each award first). Read before anything goes, from the store's own question (`awardsIn` —
      the admin's awards; a member's Delete takes none). A block of awards alone now offers Delete too: it is not an
@@ -241,12 +248,7 @@ export function SelectSheet({
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
         <span className="dt" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
-        {role === 'admin' && (
-          <label className="bp-approve" data-testid="sel-approve-tick-label">
-            <input type="checkbox" data-testid="sel-approve-tick" checked={approve} onChange={e => { setApprove(e.target.checked); setConfirming(null) }} />
-            Approve what I enter
-          </label>
-        )}
+        {role === 'admin' && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
         <button className="x" data-testid="sel-cancel" onClick={onClose} aria-label="Cancel">✕</button>
       </div>
       <DayLine days={line.days} label={line.label} />
@@ -255,22 +257,10 @@ export function SelectSheet({
           the one-day sheet — what is already there first (Decide, then Selected: Move · Delete), then placing new leave
           (How much, Which leave) — and the same two buttons for Move and Delete (SheetActions.tsx). The drag IS this
           sheet's selection, so it has no How many (the one-day sheet's, D335). */}
-      {canDecide && (
-        <div className="bidsheet-row">
-          <span className="lab">Decide</span>
-          <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>
-          <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>
-        </div>
-      )}
-
-      {/* Move and Delete act on what the selection holds, so they show only where they would do something (a loose box
-          of empties is Fill-only). Move: every record in the box this role may move (D265 — a bid beside an OIL award
-          moves alone; the award, leave filed on the Inputs page, a medical stay, and the move banner says so); never an
-          award (D260). Delete: every day it would change (D332's one word) — confirms on a second tap, naming every award
-          it takes (D260). Move hands off to the matrix's ghost/tap-to-place mode. */}
-      {(hasBids || canDelete) && (
-        <div className="bidsheet-row">
-          <span className="lab">Selected</span>
+      {(decideHere || hasBids || canDelete) && (
+        <div className="bidsheet-row bp-acts" data-testid="sel-actions" role="group" aria-label="Actions">
+          {decideHere && <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>}
+          {decideHere && <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>}
           {hasBids && <MoveChip testid="sel-move" onClick={() => { onClose(); onMove(sel) }} />}
           {canDelete && <DeleteChip testid="sel-delete" armed={confirmDel} onClick={del} />}
         </div>
@@ -279,9 +269,8 @@ export function SelectSheet({
 
       {canFill && (
         <>
-          {nPeople === 1 && <ReqWordsRows value={words} onChange={w => setWords(w)} start={sel.from} end={sel.to} testPrefix="sel" />}
-          <div className="bidsheet-row">
-            <span className="lab">Duration</span>
+          {nPeople === 1 && <ReqWordsRows compact value={words} onChange={w => setWords(w)} start={sel.from} end={sel.to} testPrefix="sel" />}
+          <div className="bidsheet-row bp-dur" role="group" aria-label="Duration">
             {PORTIONS.map(p => (
               <button key={p.portion} data-testid={p.testid}
                 className={`pchip${portion === p.portion ? ' on' : ''}`}
@@ -292,8 +281,7 @@ export function SelectSheet({
             ))}
           </div>
 
-          <div className="bidsheet-row">
-            <span className="lab">Which leave</span>
+          <div className="bidsheet-row" role="group" aria-label="Which leave">
             {/* the one-day window's buttons (M3 5.2–5.6): his figures where the drag holds one man, none across several
                 (the below-zero ask still names each — the agent's reading, M3 §7.2) */}
             <LeaveButtons portion={portion} onPick={fill} filled={approving} testPrefix="sel"
@@ -309,10 +297,11 @@ export function SelectSheet({
       {/* PO only for a single person (posting several out from one drag is too
           heavy an act for one tap; the PO flow picks its own date anyway). "PO", as on the one-day sheet (the mock-up's
           reading, uncorrected — D331). */}
+      {/* behind the ⋯ in the fourth place of the row under the leaves, as on the one-day window (his D1326) */}
       {onPostOut && nPeople === 1 && !poOpen && (
-        <div className="bidsheet-row postout">
-          <span className="lab" data-testid="sel-also">Also</span>
-          <button className="dchip po" data-testid="sel-postout" title="Post out — their last day in the squadron" aria-label="Post out" onClick={() => { setPoOpen(true); setConfirming(null) }}>PO</button>
+        <div className="bidsheet-row bp-extra" data-testid="sel-extra-row">
+          <MoreButton testid="sel-more" items={[{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
+            onPick: () => { setPoOpen(true); setConfirming(null) } }]} />
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (

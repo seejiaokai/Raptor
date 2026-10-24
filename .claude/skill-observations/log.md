@@ -745,6 +745,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 
 Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writing the evidence sheet's new section (prose full of apostrophes) failed the same way; redone through the file tool. The guard proposed above (scripts always written to a file) still stands.
 
+**Met again 24 Oct 26:** building [LW-ROUND3-BUILD] (round 3 of the Leave War's bid windows) — twice more, a Python here-document of test edits holding apostrophes; redone through the file tool each time. Still the conditional habit; the unconditional default proposed above stands.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** OPEN

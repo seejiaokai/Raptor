@@ -18,19 +18,22 @@ function openEmpty(pid = 'dusk', date = '2026-02-11') {
   fireEvent.click(screen.getByTestId(`cell-${pid}-${date}`))
   const sheet = screen.getByTestId('bid-picker')
   const tick = within(sheet).queryByTestId('bid-approve-tick')
-  if (tick && (tick as HTMLInputElement).checked) fireEvent.click(tick)
+  if (tick && tick.getAttribute('aria-checked') === 'true') fireEvent.click(tick)   // the switch (D1302)
   return sheet
 }
 
 describe('the rows on an empty day (5.9, 5.10)', () => {
-  it('Date, Duration, Document, Remarks, Which leave — in that order', () => {
+  /* WAS "Date, Duration, Document, Remarks, Which leave — in that order", read off the row labels. Round 3 (D1332): no labels;
+     Remarks and Document share one row, the box first, above Duration and the leave, on an empty day as on any */
+  it('one row of Remarks then Document, above Duration and the leave', () => {
     const sheet = openEmpty()
-    const labs = [...sheet.querySelectorAll('.bidsheet-row > .lab')].map(l => l.textContent)
-    const at = (w: string) => labs.indexOf(w)
-    expect(at('Date')).toBeLessThan(at('Duration'))
-    expect(at('Duration')).toBeLessThan(at('Document'))
-    expect(at('Document')).toBeLessThan(at('Remarks'))
-    expect(at('Remarks')).toBeLessThan(at('Which leave'))
+    const words = within(sheet).getByTestId('bid-rmk-row')
+    expect(words.contains(within(sheet).getByTestId('bid-doc-row'))).toBe(true)
+    expect(within(sheet).getByTestId('bid-remarks').compareDocumentPosition(within(sheet).getByTestId('bid-doc-row')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    const dur = within(sheet).getByTestId('portion-full').closest('.bidsheet-row')!
+    const leave = within(sheet).getByTestId('bid-LL').closest('.bidsheet-row')!
+    expect(words.compareDocumentPosition(dur) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(dur.compareDocumentPosition(leave) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('the box is empty, and the grey "till" date stands after it, ticked', () => {
@@ -70,14 +73,14 @@ describe('the rows on an empty day (5.9, 5.10)', () => {
 })
 
 describe('on a day holding a bid — the rows speak for that bid, saved as they change', () => {
-  it('shows its words, saves a changed remark when the box is left, the tick at once; Document then Remarks before Duration', () => {
+  it('shows its words, saves a changed remark when the box is left, the tick at once; under the actions, above Duration', () => {
     setCell('dusk', '2026-02-11', 'LL', { remarks: 'Bali' })
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.getByTestId('bid-picker')
-    const labs = [...sheet.querySelectorAll('.bidsheet-row > .lab')].map(l => l.textContent)
-    expect(labs.indexOf('Selected')).toBeLessThan(labs.indexOf('Document'))
-    expect(labs.indexOf('Remarks')).toBeLessThan(labs.indexOf('Duration'))
+    const words = within(sheet).getByTestId('bid-rmk-row')
+    expect(within(sheet).getByTestId('bid-actions').compareDocumentPosition(words) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(words.compareDocumentPosition(within(sheet).getByTestId('portion-full')) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     const box = within(sheet).getByTestId('bid-remarks') as HTMLInputElement
     expect(box.value).toBe('Bali')
     fireEvent.change(box, { target: { value: 'Bali, then Lombok' } })
@@ -94,7 +97,7 @@ describe('on a day holding a bid — the rows speak for that bid, saved as they 
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.getByTestId('bid-picker')
     const tick = within(sheet).queryByTestId('bid-approve-tick')
-    if (tick && (tick as HTMLInputElement).checked) fireEvent.click(tick)
+    if (tick && tick.getAttribute('aria-checked') === 'true') fireEvent.click(tick)   // the switch (D1302)
     fireEvent.click(within(sheet).getByTestId('bid-OL'))
     expect(reqs('dusk', '2026-02-11')[0]).toMatchObject({ code: 'OL', remarks: 'Tokyo', docIds: ['doc-x'] })
   })
@@ -132,7 +135,7 @@ describe('the drag-selection window', () => {
     const { unmount } = render(<SelectSheet sel={one as any} people={() => 'Dusk'} role="admin" canDecide={false}
       onDone={() => {}} onMove={() => {}} onClose={() => {}} />)
     const tick = screen.queryByTestId('sel-approve-tick')
-    if (tick && (tick as HTMLInputElement).checked) fireEvent.click(tick)
+    if (tick && tick.getAttribute('aria-checked') === 'true') fireEvent.click(tick)   // the switch (D1302)
     expect(screen.getByTestId('sel-tilldate').textContent).toMatch(/^till 11 Feb/)
     fireEvent.change(screen.getByTestId('sel-remarks'), { target: { value: 'Perth' } })
     fireEvent.click(screen.getByTestId('sel-LL'))
@@ -156,7 +159,7 @@ describe('the day\u2019s list — each bid line carries its documents (7.3)', ()
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.getByTestId('daylist-sheet')
     const [am, pm] = reqs('dusk', '2026-02-11')
-    const box = within(sheet).getByTestId(`dl-doc-${am!.id}`)
+    const box = within(sheet).getByTestId(`dl-${am!.id}-doc-row`)   // its words row's Document (round 3, D1315)
     fireEvent.change(box.querySelector('input[type="file"]')!, { target: { files: [new File(['x'], 'form.pdf', { type: 'application/pdf' })] } })
     const now = reqs('dusk', '2026-02-11')
     expect(now.find(r => r.id === am!.id)?.docIds).toHaveLength(1)
@@ -175,8 +178,8 @@ describe('a closed day holding two pending halves of his (the roll-call’s find
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.getByTestId('daylist-sheet')
     const [a, b] = reqs('dusk', '2026-02-11')
-    expect(within(sheet).getByTestId(`dl-doc-${a!.id}`)).toBeTruthy()
-    const box = within(sheet).getByTestId(`dl-doc-${b!.id}`)
+    expect(within(sheet).getByTestId(`dl-${a!.id}-doc-row`)).toBeTruthy()
+    const box = within(sheet).getByTestId(`dl-${b!.id}-doc-row`)
     fireEvent.change(box.querySelector('input[type="file"]')!, { target: { files: [new File(['x'], 'pm.pdf', { type: 'application/pdf' })] } })
     expect(reqs('dusk', '2026-02-11').find(r => r.id === b!.id)?.docIds).toHaveLength(1)
     expect(reqs('dusk', '2026-02-11').find(r => r.id === a!.id)?.docIds).toBeUndefined()
@@ -192,5 +195,18 @@ describe('words typed on a held bid survive the window closing (the fresh read\u
     fireEvent.change(within(sheet).getByTestId('bid-remarks'), { target: { value: 'kept on close' } })
     fireEvent.click(within(sheet).getByTestId('bid-cancel'))
     expect(reqs('dusk', '2026-02-11')[0]?.remarks).toBe('kept on close')
+  })
+
+  /* round 3 (D1315): the day's list carries a Remarks box per entry now — words typed there and not yet saved go with the
+     list's closing too, as the window's do */
+  it('typed in the day\u2019s list, then ✕: saved onto that bid', () => {
+    setCell('dusk', '2026-02-11', '*LL')
+    setCell('dusk', '2026-02-11', 'OL*')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    const [am] = reqs('dusk', '2026-02-11')
+    fireEvent.change(screen.getByTestId(`dl-${am!.id}-remarks`), { target: { value: 'kept on the list closing' } })
+    fireEvent.click(screen.getByTestId('daylist-close'))
+    expect(reqs('dusk', '2026-02-11').find(r => r.id === am!.id)?.remarks).toBe('kept on the list closing')
   })
 })

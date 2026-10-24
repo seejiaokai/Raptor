@@ -12,7 +12,11 @@
    the leave tap writes; on a day holding a bid each change is saved to it at once — a pick, a ✕, the tick — and the
    typed words when the box is left or Enter pressed (`commit`), one `lw.reqmeta` command each. */
 
-import { DocField, tillOfISO } from '../sync'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { remarksTyped, tillShown } from '../../engine/inputs'
+import { setLeaveRemarks } from '../../ui/inputedit'
+import { inputDates } from '../absences'
+import { DocField, rowDocIds, tillOfISO } from '../sync'
 import { recordsAt, type ReqWords, type ReqWordsPatch } from '../state/store'
 import { addDays, type RequestRec } from '../engine'
 
@@ -40,7 +44,67 @@ export function patchOf(was: ReqDraft, now: ReqDraft): ReqWordsPatch | null {
   return Object.keys(p).length ? p : null
 }
 
-export function ReqWordsRows({ value, onChange, start, end, testPrefix = 'bid' }: {
+/* THE BOX GROWS WITH ITS WORDS (his D1333): one line tall to start; as the words wrap it grows a line at a time, so a long
+   remark is read whole, never hidden in one line that scrolls sideways. Measured after each change of the words (the
+   height set back to auto first, so it shrinks again too). */
+function useGrow(value: string) {
+  const ref = useRef<HTMLTextAreaElement>(null)
+  useLayoutEffect(() => {
+    const t = ref.current
+    if (!t) return
+    t.style.height = 'auto'
+    if (t.scrollHeight > 0) t.style.height = `${t.scrollHeight + (t.offsetHeight - t.clientHeight)}px`
+  }, [value])
+  return ref
+}
+
+/** ROUND 3's ONE ROW (his D1311, approved D1332): the dark Remarks box (D1308), the words "Remarks" inside it until he types
+ *  (no label beside it), its "till <date>", then the app's one Document button — the bid windows' and the day's list's.
+ *  Enter saves the words, as before; it never starts a new line (a remark is one run of words that wraps — D1333). */
+export function WordsRow({ value, onChange, till, tillOn, onTill, testPrefix = 'bid', readOnlyDocs = false }: {
+  value: { remarks: string; docIds: string[] }
+  onChange: (next: { remarks: string; docIds: string[] }, how: 'type' | 'commit') => void
+  /** "till <date>" — '' where the entry prints none */
+  till: string
+  tillOn: boolean
+  onTill?: (on: boolean) => void
+  testPrefix?: string
+  readOnlyDocs?: boolean
+}) {
+  const ref = useGrow(value.remarks)
+  return (
+    <div className="bidsheet-row bp-words" data-testid={`${testPrefix}-rmk-row`} role="group" aria-label="Remarks and document">
+      <span className="inped-rmk bp-rmk dark">
+        <textarea
+          ref={ref}
+          id={`${testPrefix}-remarks`}
+          data-testid={`${testPrefix}-remarks`}
+          aria-label="Remarks"
+          placeholder="Remarks"
+          rows={1}
+          maxLength={200}
+          autoComplete="off"
+          value={value.remarks}
+          onChange={e => onChange({ ...value, remarks: e.target.value.replace(/\n/g, ' ') }, 'type')}
+          onBlur={() => onChange(value, 'commit')}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); onChange(value, 'commit') } }}
+        />
+        {till && (
+          <label className="inped-ad inped-tl" data-testid={`${testPrefix}-tl`}>
+            <input type="checkbox" data-testid={`${testPrefix}-till`} checked={tillOn} disabled={!onTill}
+              onChange={e => onTill?.(e.target.checked)} />
+            <span className={'inped-till' + (tillOn ? '' : ' off')} data-testid={`${testPrefix}-tilldate`}>{till}</span>
+          </label>
+        )}
+      </span>
+      <span className="bp-doc" data-testid={`${testPrefix}-doc-row`}>
+        <DocField ids={value.docIds} onIds={ids => { if (!readOnlyDocs) onChange({ ...value, docIds: ids }, 'commit') }} />
+      </span>
+    </div>
+  )
+}
+
+export function ReqWordsRows({ value, onChange, start, end, testPrefix = 'bid', compact = false }: {
   value: ReqDraft
   /** `commit`: a change to save now on a held request (a file, a ✕, the tick, the box left or Enter); `type`: a keystroke */
   onChange: (next: ReqDraft, how: 'type' | 'commit') => void
@@ -48,9 +112,18 @@ export function ReqWordsRows({ value, onChange, start, end, testPrefix = 'bid' }
   start: string
   end?: string
   testPrefix?: string
+  /** round 3's one row (the bid windows and the day's list); the closed-day window keeps its two labelled rows */
+  compact?: boolean
 }) {
   const till = tillOfISO('LL', start, end)
   const on = typeof value.till === 'boolean' ? value.till : TILL_DEFAULT
+  if (compact) {
+    return (
+      <WordsRow testPrefix={testPrefix} value={value} till={till} tillOn={on}
+        onChange={(next, how) => onChange({ ...value, ...next }, how)}
+        onTill={v => { const { till: _drop, ...rest } = value; onChange(v === TILL_DEFAULT ? rest : { ...rest, till: v }, 'commit') }} />
+    )
+  }
   return (
     <>
       <div className="bidsheet-row" data-testid={`${testPrefix}-doc-row`}>
@@ -102,4 +175,45 @@ export function heldRequest(personId: string, date: string): { rec: RequestRec; 
   let end = date
   for (let d = addDays(date, 1); recordsAt(personId, d).some(r => r.kind === 'request' && same(r)); d = addDays(d, 1)) end = d
   return { rec, end }
+}
+
+/** AN APPROVED LEAVE'S OWN ROW (his D1307 — shown straight away, for whoever may change it, in place of "Note"; D1308 the
+ *  dark box; D1333 it wraps): the words, the till tick and the documents of the Raptor INPUT the leave is, saved onto that
+ *  input through the one remarks save (`ui/inputedit.ts setLeaveRemarks` → commitInputEdit, which carries the member-own /
+ *  admin-any gate) — a remark typed when the box is left or Enter pressed, a file, a ✕ or the tick at once. On one man's
+ *  cell of a leave filed for several the remark is his alone, as the remarks window always made it (setLeaveRemarks). */
+export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused }: {
+  /** the Raptor input the cell derives from (`sync.ts leaveInputAt`) */
+  row: any
+  personId: string
+  testPrefix?: string
+  /** a save the one gate refused says why (a control that silently does nothing is the worst of the three outcomes) */
+  onRefused?: (why: string) => void
+}) {
+  const typed = remarksTyped(row?.remarks, row)
+  const docIds = rowDocIds(row)
+  const [edit, setEdit] = useState<string | null>(null)
+  /* words typed and not yet saved go with the window's closing — ✕, Escape, a tap outside — as a held bid's do (the bid
+     window's fresh read, 5): the latest of them kept here, saved once as the row leaves the screen */
+  const pending = useRef<{ text: string; save: () => void } | null>(null)
+  useEffect(() => () => { pending.current?.save() }, [])
+  const dates = inputDates(row)
+  const till = dates.length ? tillOfISO(row?.type ?? 'LL', dates[0], dates[dates.length - 1]) : ''
+  const save = (remarks: string, ids: string[], tillTo?: boolean) => {
+    if (!setLeaveRemarks(row, remarks, personId, ids, tillTo)) onRefused?.('That could not be saved — change it on the Inputs page.')
+  }
+  return (
+    <WordsRow testPrefix={testPrefix} till={till} tillOn={tillShown(row)}
+      value={{ remarks: edit ?? typed, docIds }}
+      onChange={(next, how) => {
+        if (how === 'type') {
+          pending.current = next.remarks.trim() !== typed.trim() ? { text: next.remarks, save: () => save(next.remarks.trim(), docIds) } : null
+          return setEdit(next.remarks)
+        }
+        pending.current = null
+        setEdit(null)
+        if (next.remarks.trim() !== typed.trim() || next.docIds.join('|') !== docIds.join('|')) save(next.remarks.trim(), next.docIds)
+      }}
+      onTill={v => { pending.current = null; save(edit ?? typed, docIds, v) }} />
+  )
 }

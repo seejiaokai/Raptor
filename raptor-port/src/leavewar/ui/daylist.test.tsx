@@ -68,8 +68,11 @@ describe('the tap list', () => {
     const list = screen.getByTestId('daylist')
     const lines = within(list).getAllByRole('listitem')
     expect(lines).toHaveLength(2)
-    expect(lines[0]!.textContent).toContain('<LL — local leave, morning · approved')
-    expect(lines[1]!.textContent).toContain('OIL> ')
+    /* round 3 (D1327, D1328): each line led by its box, only its half and state beside it */
+    expect(lines[0]!.querySelector('.dl-main')!.textContent).toBe('Morning · approved')
+    expect(lines[0]!.querySelector('.dl-box .c')!.textContent).toBe('LL')
+    expect(lines[1]!.querySelector('.dl-main')!.textContent).toBe('Afternoon · approved')
+    expect(lines[1]!.querySelector('.dl-box .c')!.textContent).toBe('OIL')
   })
 
   it('an admin can send one of two approved leaves back to a bid from its own line', () => {
@@ -79,7 +82,7 @@ describe('the tap list', () => {
     act(() => { closeDates('2026-01-01', '2026-12-31') })       // every date closed — the admin decides at any time (D1177)
     render(<Matrix />)
     fireEvent.click(cell())
-    fireEvent.click(screen.getByTestId(`dl-unapprove-${am.iid}`))
+    fireEvent.click(screen.getByTestId(`dl-approve-${am.iid}`))   // the lit Approve's second tap (D1330 — "Back to bid" went)
     expect(INPUTS.some((r: any) => r.iid === am.iid)).toBe(false)
     const list = rawState().wars[0]!.recs[P]![D]!
     expect(list.find(r => r.kind === 'request')).toMatchObject({ code: '*LL', state: 'pending' })
@@ -98,20 +101,20 @@ describe('the tap list', () => {
     act(() => { closeDates('2026-01-01', '2026-12-31') })     // nothing open at all
     const r = render(<Matrix />)
     fireEvent.click(cell())
-    expect(screen.getByTestId(`dl-unapprove-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-approve-${am.iid}`).className).toContain('lit')   // sends it back (D1330)
     expect(screen.getByTestId(`dl-refuse-${am.iid}`)).toBeTruthy()
     expect(screen.getByTestId(`dl-remove-${am.iid}`)).toBeTruthy()
     expect(screen.getByTestId(`dl-move-${am.iid}`)).toBeTruthy()
-    expect(screen.getByTestId(`dl-note-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-${am.iid}-remarks`)).toBeTruthy()   // its Remarks at once — "Note" went (D1307)
     r.unmount()
     act(() => { setRole('member'); setViewer(P) })
     render(<Matrix />)
     fireEvent.click(cell())
-    expect(screen.queryByTestId(`dl-unapprove-${am.iid}`)).toBeNull()
+    expect(screen.queryByTestId(`dl-approve-${am.iid}`)).toBeNull()
     expect(screen.queryByTestId(`dl-refuse-${am.iid}`)).toBeNull()
     expect(screen.queryByTestId(`dl-remove-${am.iid}`)).toBeNull()
     expect(screen.queryByTestId(`dl-move-${am.iid}`)).toBeNull()
-    expect(screen.getByTestId(`dl-note-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-${am.iid}-remarks`)).toBeTruthy()   // his own leave's Remarks to change (D1307)
   })
 
   it('leave filed on the Inputs page says so and offers no war action', () => {
@@ -121,8 +124,8 @@ describe('the tap list', () => {
     act(() => { closeDates('2026-01-01', '2026-12-31') })
     render(<Matrix />)
     fireEvent.click(cell())
-    expect(screen.queryByTestId(`dl-unapprove-${a.iid}`)).toBeNull()
-    expect(screen.getByTestId('daylist').textContent).toContain('Change it on the Inputs page.')
+    expect(screen.queryByTestId(`dl-approve-${a.iid}`)).toBeNull()
+    expect(screen.getByTestId('daylist').textContent).toContain('change it on the Inputs page')   // its short words (D1328)
   })
 
   it('a replaced-bid notice: amber !, its line, and "OK, seen" clears it', () => {

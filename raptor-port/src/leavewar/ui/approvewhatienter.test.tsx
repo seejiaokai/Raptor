@@ -12,15 +12,17 @@ beforeEach(() => { initStore(memoryBackend()) })
 const CELL = 'cell-dusk-2026-02-11'
 
 describe('Approve what I enter', () => {
-  it('an admin\'s window carries it in the title bar, before ✕, ticked; the buttons filled; unticked, hollow', () => {
+  /* since round 3 the app's switch (his D1302), its state in aria-checked, remembered (round3.test.tsx) */
+  it('an admin\'s window carries it in the title bar, before ✕, on; the buttons filled; off, hollow', () => {
+    try { localStorage.clear() } catch { /* none */ }
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     const sheet = screen.getByTestId('bid-picker')
-    const tick = within(sheet).getByTestId('bid-approve-tick') as HTMLInputElement
-    expect(tick.checked).toBe(true)
+    const tick = within(sheet).getByTestId('bid-approve-tick')
+    expect(tick.getAttribute('aria-checked')).toBe('true')
     expect(tick.closest('.bidsheet-hd')).toBeTruthy()
-    expect(tick.closest('label')!.nextElementSibling?.getAttribute('data-testid')).toBe('bid-cancel')
+    expect(tick.nextElementSibling?.getAttribute('data-testid')).toBe('bid-cancel')
     expect(within(sheet).getByTestId('bid-LL').className).toContain('s-a')
     fireEvent.click(tick)
     expect(within(sheet).getByTestId('bid-LL').className).toContain('s-w')

@@ -1709,7 +1709,96 @@
 .lwday .win-step { min-width: 36px; min-height: 32px; padding: 0 8px; font-size: 16px; line-height: 1; }
 .ll-row .ll-cs { display: inline-block; min-width: 56px; padding: 2px 6px; border-radius: 4px; background: var(--panel-2); color: var(--ink); font-weight: 700; font-size: 11.5px; }
 
-/* AS DRAWN (r9-remarks-bid-phone, r7-12 — M3's walk, A's observation 1; his lessons 42, 43: the built screen beside its
-   drawing): the day line in its own rounded box across the window, and "Which leave" beside its two rows of buttons */
-.bidsheet-dayline { border: 1px solid var(--edge); border-radius: 10px; padding: 7px 12px; background: var(--panel-2); }
-.bidsheet .lv-grid { flex: 1 1 0; }
+/* ROUND 3 OF THE BID WINDOWS AND THE DAY'S LIST ([LW-ROUND3-BUILD] — his D1311, approved whole D1332 / D1334; the drawings
+   scripts/handpass/lw-declutter-look.mjs, lw-declutter-mock.mjs, lw-twoday-look.mjs, lw-q7-sideways.mjs). It replaces the
+   M3 walk's "as drawn" pair that stood here (the day line in its own box — Q2 A took it out of the box; "Which leave"
+   beside its buttons — the row labels went). Measured beside the drawings at his iPhone's 402 (lesson 42). */
+
+/* the day line out of its box (change 2), its pairs side by side (D1313), each whole on its line */
+.bidsheet-dayline { display: block; border: 0; padding: 0 2px; background: none; margin: 0 0 4px; }
+.bidsheet-dayline .dl-when { margin-bottom: 1px; }
+.bidsheet-dayline .dl-pairs { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 7px; row-gap: 2px; }
+.bidsheet-dayline .dl-pairwrap { display: inline-flex; align-items: baseline; column-gap: 7px; white-space: nowrap; }
+.bidsheet-dayline .dl-row { display: inline; }
+.bidsheet-dayline .dl-dot { color: var(--ink-3); }
+.bidsheet-dayline .dl-calm { display: inline; color: var(--ink-3); }
+
+/* the rows: no labels (change 1) — the leave buttons take the row's full width (change 6, D1334) */
+.bidsheet .lv-grid { flex: 1 1 100%; }
+
+/* ONE ROW OF ACTIONS (change 3, D1330): four even columns, Approve · Refuse · Move · Delete — the same in the one-day
+   window, the drag window and the day's list; a row with fewer keeps their places from the left */
+.bidsheet .bp-acts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.bidsheet .bp-acts > .dchip { min-width: 0; padding-left: 4px; padding-right: 4px; white-space: nowrap; text-align: center; justify-content: center; }
+.bidsheet .bp-acts > .bp-wide { grid-column: 1 / -1; }
+/* Approve LIT on an approved leave (D1330 — drawn by lw-twoday-look.mjs): the fill stronger, its edge solid green — the
+   look an approved leave's Approve had never had */
+.bidsheet .dchip.approve.lit,
+.bidsheet .dl-acts .dchip.approve.lit { background: rgba(87, 201, 122, .45); color: #F2FFF5; border-color: rgba(87, 201, 122, 1); }
+
+/* REMARKS AND DOCUMENT ON ONE ROW (change 4): the box takes the room, then its "till", then the Document button */
+.bidsheet .bp-words { flex-wrap: nowrap; align-items: flex-start; }
+.bidsheet .bp-words .bp-rmk { flex: 1 1 auto; min-width: 0; align-items: center; }
+.bidsheet .bp-words .bp-doc { flex: 0 0 auto; }
+.bidsheet .bp-words .bp-doc .docfield { justify-content: flex-end; }
+/* THE DARK BOX (D1308, lesson 48) that wraps and grows (D1333): the Inputs page's own box colours, darker than the window */
+.bidsheet .bp-rmk.dark textarea {
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 8px 10px;
+  font: 600 13px/1.3 inherit;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--edge-2);
+  border-radius: 8px;
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bidsheet .bp-rmk.dark textarea::placeholder { color: var(--ink-3); font-weight: 500; }
+.bidsheet .bp-rmk.dark textarea:focus { outline: none; border-color: var(--accent); }
+
+/* DURATION with "Pick a range" at its end (change 5) */
+.bidsheet .bp-dur .bp-range { margin-left: auto; }
+.bidsheet .bp-dur .bp-wide { flex: 1 1 100%; order: 5; }
+
+/* the day's own leave LIT (change 7): the window's cyan ring round its button, its own colour kept inside */
+.bidsheet .tchip.lv.lit { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bidsheet .tchip.lv.s-w.lit { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* "APPROVE WHAT I ENTER" AS THE APP'S SWITCH (change 8, D1302): the Inputs window's "Several people" switch, sized to the
+   title bar's small words, standing before ✕ */
+.bidsheet-hd .bp-sw { margin-left: auto; min-height: 0; border: 0; background: none; padding: 0; gap: 5px; font-size: 11px; color: var(--ink-2); align-self: center; }
+.bidsheet-hd .bp-sw + .x { margin-left: 4px; }
+.bidsheet-hd .bp-sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
+
+/* THE ROW UNDER THE LEAVES and its ⋯ in the fourth place (D1326) — the leave grid's own columns, so it stands under CL */
+.bidsheet .bp-extra { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.bidsheet .bp-extra .bp-more-wrap { position: relative; display: flex; }
+.bidsheet .bp-extra .bp-more-wrap.col4 { grid-column: 4; }
+.bidsheet .bp-more { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 1px; line-height: 1; }
+.bidsheet .bp-more[aria-expanded='true'] { border-color: rgba(59, 198, 232, .55); color: var(--accent); }
+/* its menu opens UPWARD over the window, its right edge on the ⋯'s */
+.bidsheet .bp-menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: grid; gap: 6px; min-width: 150px; padding: 8px;
+  background: var(--panel); border: 1px solid var(--edge-2); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .45); }
+.bidsheet .bp-menu .bp-menu-item { justify-content: flex-start; text-align: left; white-space: nowrap; background: var(--panel-2); color: var(--ink-2); border: 1px solid var(--edge); }
+/* Grant OIL in OIL given's green (D1320) — the FO and HO boxes' own colours */
+.bidsheet .bp-menu .bp-menu-item.oil-give { background: rgba(70, 196, 108, .2); color: #DDF8E6; border-color: rgba(70, 196, 108, .7); }
+
+/* THE DAY'S LIST, ROUND 3 (D1315, D1327–D1330): the list's outer frame gone, each entry the window's full width, led by its
+   box as the grid draws it, its short words beside it, then one row of actions and its words row */
+.bidsheet .daylist.flat { border: 0; border-radius: 0; margin-top: 2px; overflow: visible; }
+.bidsheet .daylist.flat .dl-line { border-left: 0; padding-left: 0; padding-right: 0; }
+.bidsheet .dl-line.dl-card { flex-direction: column; align-items: stretch; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+.bidsheet .dl-line.dl-card:first-child { padding-top: 4px; }
+.bidsheet .dl-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bidsheet .dl-head .dl-text { flex: 1 1 auto; }
+.bidsheet .dl-head .dl-box { zoom: 1.25; }
+.bidsheet .dl-line.dl-card .dl-main { font-size: 13.5px; }
+.bidsheet .dl-acts.bp-acts .dchip { padding-left: 4px; padding-right: 4px; white-space: nowrap; text-align: center; }
+.bidsheet .dl-line.dl-card > .bidsheet-row { margin-top: 0; }
+.bidsheet .dl-ro { gap: 8px; font-size: 13px; color: var(--ink-2); margin-top: 0; }
+.bidsheet .dl-ro .docchip { cursor: default; }

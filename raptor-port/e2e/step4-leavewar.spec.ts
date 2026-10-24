@@ -305,9 +305,10 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
 
   await tap(page, P, D)
   const lines = await listLines(page)
-  expect(lines.some(l => /filed on the Inputs page/.test(l))).toBe(true)
+  /* round 3 (D1328): beside each entry's box only its half and state — "change it on the Inputs page" for one filed there */
+  expect(lines.some(l => /change it on the Inputs page/.test(l))).toBe(true)
   expect(lines.some(l => /LL bid was replaced by LL/.test(l))).toBe(true)
-  expect(lines.some(l => /bid pending/.test(l))).toBe(false)   // the bid is gone ("bid pending" where it said "bid, not decided yet" — D1158, D1217)
+  expect(lines.some(l => /pending/i.test(l))).toBe(false)   // the bid is gone ("pending" — D1158, D1217; the words short since D1328)
   await page.locator('[data-testid^="dl-seen-"]').click()
   await expect(mark(page, P, D)).toHaveCount(0)
   await closeList(page)
@@ -555,7 +556,7 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
   await both()
   await tap(page, W, D)
   const lines = await listLines(page)
-  expect(lines.some(l => /bid pending/.test(l))).toBe(true)
+  expect(lines.some(l => /pending/i.test(l))).toBe(true)
   expect(lines.some(l => /bid was replaced/.test(l))).toBe(false)   // nothing was taken
   await closeList(page)
 
@@ -577,9 +578,11 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
   await showMonth(page, D)
   await both()
   await tap(page, W, D)
-  expect((await listLines(page)).some(l => /bid pending/.test(l))).toBe(true)
+  expect((await listLines(page)).some(l => /pending/i.test(l))).toBe(true)
 })
 
+/* round 3 (D1328, D1330): each line says only its half and state beside its box; the approved leave's Approve is lit and a
+   second tap on it sends it back to a bid — "Back to bid" went */
 test('the tap list: approve one half, refuse the other, un-approve back to a bid — each undoable', async ({ page }) => {
   await openWar(page)
   const P = 'slipway', D = '2026-02-11'
@@ -600,23 +603,23 @@ test('the tap list: approve one half, refuse the other, un-approve back to a bid
   await tap(page, P, D)
   await page.locator('[data-testid^="dl-approve-"]').first().click()
   expect(await listLines(page)).toEqual([
-    '<LL — local leave, morning · approved',
-    'OIL> — off in lieu, afternoon · bid pending',
+    'Morning · approved',
+    'Afternoon · pending',
   ])
   expect(await inputsOf(page, P)).toContain('LL Feb 11 am0-720')
   await page.locator('[data-testid^="dl-refuse-"]').last().click()
-  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid refused')
+  expect((await listLines(page))[1]).toBe('Afternoon · refused')
   await closeList(page)
 
   await undo(page)                                  // the refusal
   await tap(page, P, D)
-  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid pending')
+  expect((await listLines(page))[1]).toBe('Afternoon · pending')
   await closeList(page)
   await redo(page)
 
   await tap(page, P, D)
-  await page.locator('[data-testid^="dl-unapprove-"]').click()
-  expect((await listLines(page))[0]).toBe('<LL — local leave, morning · bid pending')
+  await page.locator('[data-testid="daylist"] .dl-acts .dchip.approve.lit').click()
+  expect((await listLines(page))[0]).toBe('Morning · pending')
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await closeList(page)
   await undo(page)

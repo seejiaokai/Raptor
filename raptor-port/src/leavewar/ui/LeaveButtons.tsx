@@ -14,13 +14,16 @@ import { kindOf } from '../engine/codes'
 
 const fig = (n: number) => String(Math.round(n * 2) / 2).replace('-', '−')
 
-export function LeaveButtons({ portion, onPick, figure, filled, testPrefix = 'bid' }: {
+export function LeaveButtons({ portion, onPick, figure, filled, lit = null, testPrefix = 'bid' }: {
   portion: Portion
   onPick: (code: string) => void
   /** what is left of the balance this leave spends, now — null where it spends nothing (or the window names no one man) */
   figure?: (code: string) => number | null
   /** the approved look (an admin placing with "Approve what I enter" ticked) — else the pending look */
   filled: boolean
+  /** the leave the day already holds (round 3's change 7, his Q6): its button wears the window's ring, the cyan of a
+   *  chosen thing — a ring, so its own colour still says its kind */
+  lit?: string | null
   /** the windows' own test names: `bid-LL` on the one-day window, `sel-LL` on the drag-selection window */
   testPrefix?: string
 }) {
@@ -33,7 +36,8 @@ export function LeaveButtons({ portion, onPick, figure, filled, testPrefix = 'bi
           <button
             key={t.type}
             data-testid={`${testPrefix}-${t.type}`}
-            className={`tchip lv k-${kindOf(t.type)} ${filled ? 's-a' : 's-w'}${f !== null && f <= 0 ? ' lv-dim' : ''}`}
+            className={`tchip lv k-${kindOf(t.type)} ${filled ? 's-a' : 's-w'}${f !== null && f <= 0 ? ' lv-dim' : ''}${lit === t.type ? ' lit' : ''}`}
+            aria-current={lit === t.type ? 'true' : undefined}
             title={t.label}
             onClick={() => onPick(code)}
           >

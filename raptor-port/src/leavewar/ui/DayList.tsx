@@ -9,14 +9,16 @@
 // list, one line per record, each with ITS OWN actions, so no record can ever
 // hide under another. What each line may do is the store's own permission
 // check — the buttons are only offered where it would succeed.
-import { useState, type ReactElement } from 'react'
+import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
 import { canDecide, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
-import { AM, FULL, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
+import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
 import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
-import { DocField } from '../sync'
+import { docGet, rowDocIds } from '../sync'
+import { EntryBox } from './BidBits'
+import { draftOf, LeaveWords, patchOf, ReqWordsRows, type ReqDraft } from './ReqWords'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
 import { dayLabel, enteredDay, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
@@ -56,8 +58,56 @@ const nameOf = (code: string) => {
   return lab.split(' — ').filter(part => part !== shown(bare)).join(' — ')
 }
 
+/* ROUND 3 OF THE DAY'S LIST (his D1315, D1327–D1330; drawn by scripts/handpass/lw-twoday-look.mjs): each entry leads with
+   its code drawn as its coloured box, as the grid draws it (D1327) — its kind's colour, its fill (approved filled, pending
+   hollow, refused struck), its half (the morning the top, the afternoon the bottom), the Inputs page's edge — and beside it
+   only what the box does not say: its half, its state, and where an entry filed on the Inputs page is changed (D1328),
+   never the kind's long description, which the Legend holds. */
+const placeOfWin = (w: Win): 'whole' | 'top' | 'bot' => (same(w, AM) ? 'top' : same(w, PM) ? 'bot' : 'whole')
+const fillOf = (c: Contrib): 'a' | 'w' | 'r' => (c.kind === 'request' ? (c.state === 'refused' ? 'r' : 'w') : 'a')
+const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1)
+/** "Morning · approved", "Pending", "09:00–12:00 · change it on the Inputs page" */
+const said = (part: string, state: string) => cap([part, state].filter(Boolean).join(' · '))
+
+/** A pending or refused bid's own Remarks and Document row in the list — the bid windows' one row, saved onto the bid as it
+ *  changes (the box when it is left or Enter pressed), one `lw.reqmeta` each (setRequestWords) */
+function BidWords({ personId, date, rec, onDone }: { personId: string; date: string; rec: RequestRec; onDone: (fn: () => boolean | string | null | number) => void }) {
+  const [edit, setEdit] = useState<ReqDraft | null>(null)
+  const held = draftOf(rec)
+  /* words typed and not yet saved go with the list's closing (the bid window's fresh read, 5) */
+  const pending = useRef<(() => void) | null>(null)
+  useEffect(() => () => { pending.current?.() }, [])
+  return (
+    <ReqWordsRows compact testPrefix={`dl-${rec.id}`} value={edit ?? held} start={date}
+      onChange={(next, how) => {
+        if (how === 'type') {
+          const p = patchOf(held, next)
+          pending.current = p ? () => { setRequestWords(personId, date, rec.id, p) } : null
+          return setEdit(next)
+        }
+        pending.current = null
+        setEdit(null)
+        const patch = patchOf(held, next)
+        if (patch) onDone(() => setRequestWords(personId, date, rec.id, patch))
+      }} />
+  )
+}
+/** an entry's remarks and documents, read only — what the Inputs page holds for one filed there (D1315), or another man's:
+ *  the typed words as every screen prints them, the "till <date>" after them (D948) — nothing where none were typed */
+function readOnly(id: string, row: any, raw = false): ReactElement | null {
+  const words = raw ? String(row.remarks ?? '').trim() : remarksTyped(row.remarks, row) ? remarksShown(row) : ''
+  const docs = rowDocIds(row)
+  if (!words && !docs.length) return null
+  return (
+    <div className="bidsheet-row dl-ro" data-testid={`dl-ro-${id}`}>
+      {words && <span className="dl-ro-words">“{words}”</span>}
+      {docs.map(d => <span key={d} className="docchip"><span className="docname">{docGet(d)?.name ?? 'document'}</span></span>)}
+    </div>
+  )
+}
+
 export function DayListSheet({
-  personId, callsign, date, view, role, viewer, period, onEditRemark, onMove, onClose,
+  personId, callsign, date, view, role, viewer, period, onMove, onClose,
 }: {
   personId: string
   callsign: string
@@ -66,8 +116,6 @@ export function DayListSheet({
   role: Role
   viewer: string | null
   period: Period
-  /** open the remarks editor on this Input */
-  onEditRemark: (row: any) => void
   /** Pick ONE record up into the grid's move mode (owner, D266 — "instead of date box it should also be the same move
    *  modality and I can choose what to move"): the matrix closes the list and carries exactly this record, by its id. */
   onMove?: (rec: { personId: string; date: string; id: string }) => void
@@ -118,7 +166,6 @@ export function DayListSheet({
        read "12:01–14:00" where the Inputs page says 12:00. The input's own stored start puts the minute back. */
     const shownWin: Win = row0 && row0.allday === false && row0.s === 720 && c.win[0] === 721 ? [720, c.win[1]] : c.win
     const part = partOf(shownWin)
-    const partTxt = part ? `, ${part}` : ''
     if (c.kind === 'absence') {
       const row = row0
       const isLeave = codeOf(c.code)?.spends != null
@@ -126,30 +173,32 @@ export function DayListSheet({
       /* an approved leave the war moved says where from (D1177: the moved mark is an approved leave's now — a bid that only
          waits carries none), as the grid's dotted edge does */
       const movedAbs = (c as { movedFrom?: string }).movedFrom ? ` · moved from ${shortDate((c as { movedFrom?: string }).movedFrom!)}` : ''
-      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${warOwned ? 'approved' : 'filed on the Inputs page'}${movedAbs}`
+      const text = said(part, warOwned ? `approved${movedAbs}` : 'change it on the Inputs page')
       const actions: ReactElement[] = []
       /* NOTHING IS FROZEN NOW (D1177 — the published stage went): the admin sends a leave the war approved back, refuses,
-         moves or deletes it at any time, here as on the single-record window. */
+         moves or deletes it at any time, here as on the single-record window. ONE ROW OF ACTIONS, THE WINDOW'S OWN (his
+         D1330): Approve shows lit on the approved leave and a second tap sends it back to waiting — "Back to bid" went —
+         then Refuse, Move (this one leave into the move mode, no date box — D266) and Delete. */
       if (warOwned && isLeave && deciding) {
-        /* the sheets' order (D264): the decisions, then Move, then Delete — Move picks this one leave up into the move
-           mode, no date box (D266) */
         actions.push(
-          <button key="p" className="dchip" data-testid={`dl-unapprove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Back to bid</button>,
+          <button key="p" className="dchip approve lit" aria-pressed="true" title="Approved — tap again to send it back to waiting"
+            data-testid={`dl-approve-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Approve</button>,
           <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'refused'))}>Refuse</button>,
           ...moveBtn(c.id),
           <DeleteChip key="d" testid={`dl-remove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'removed'))} />,
         )
       }
-      /* its NOTE at any time (D418 narrowed by D1177: a member's approved leave offers its remarks any time; the admin's
-         Note on any man's) */
-      if (row && isLeave && (role === 'admin' || own)) {
-        actions.push(<button key="n" className="dchip" data-testid={`dl-note-${c.id}`} onClick={() => onEditRemark(row)}>Note</button>)
-      }
-      return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', text, sub: !warOwned ? 'Change it on the Inputs page.' : row && remarksTyped(row.remarks, row) ? remarksShown(row) : '', actions }
+      /* ITS REMARKS AND DOCUMENT (his D1315, D1307 — "Note" went): a leave the war approved, for whoever may change its words
+         (D418 narrowed by D1177: the member his own, an admin any), saved onto the leave on the Inputs page; anything else —
+         filed on the Inputs page, or another man's — its remarks and documents read only */
+      const words = row && isLeave && warOwned && (role === 'admin' || own)
+        ? <LeaveWords row={row} personId={personId} testPrefix={`dl-${c.id}`} onRefused={setMsg} />
+        : row ? readOnly(c.id, row) : null
+      const box = <EntryBox code={c.code} fill={fillOf(c)} place={placeOfWin(c.win)} marks={[offWar(c) ? 'raptor' : '', (c as { movedFrom?: string }).movedFrom ? 'moved' : ''].filter(Boolean).join(' ')} />
+      return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', box, text, sub: '', actions, words }
     }
     if (c.kind === 'request') {
       /* Ack is gone (D1158): a bid is pending until it is approved or refused (D1217's word) */
-      const st = c.state === 'refused' ? 'bid refused' : 'bid pending'
       /* WHERE IT WAS MOVED FROM, on its own line (Fable's scenario S4): the grid's dotted "moved" mark and the one-day
          sheet's "moved from" read the day's TOP record, so a bid moved once bidding had closed onto a day holding an
          award (now possible from every door, D265) left no trace anywhere. The same rule as the mark: shown wherever the
@@ -158,7 +207,7 @@ export function DayListSheet({
       /* a date INSIDE a sentence reads day-first with its year, as the bid sheet's own "moved from" does — the list's
          header keeps the one-day voice (Fable's final read F3: the same phrase read two ways, one tap apart) */
       const movedFrom = src?.shiftedFrom ? ` · moved from ${shortDate(src.shiftedFrom)}` : ''
-      const text = `${shown(notation(c))} — ${nameOf(c.code) || shown(c.code)}${partTxt} · ${st}${movedFrom}`
+      const text = said(part, `${c.state === 'refused' ? 'refused' : 'pending'}${movedFrom}`)
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
@@ -167,15 +216,17 @@ export function DayListSheet({
       }
       actions.push(...moveBtn(c.id))
       if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
-      /* ITS DOCUMENTS (M3 7.3 — D1150, D1159): the app's one Document button, for whoever may change this bid (his own, an
-         admin any), on a closed day too; a pick or a ✕ is saved to the bid at once (`lw.reqmeta`, one Undo) */
-      /* only where the save can land (the fresh read's 6): an admin, an open day, or his own pending bid on a closed one — never
-         his refused bid on a closed day, which the commit refuses */
-      if (src && canEditRow(role, viewer, personId) && (deciding || editable || pendingHere.has(c.id))) actions.push(
-        <span key="doc" data-testid={`dl-doc-${c.id}`}><DocField ids={src.docIds ?? []} onIds={ids => act(() => setRequestWords(personId, date, c.id, { docIds: ids }))} /></span>,
-      )
+      /* ITS REMARKS AND DOCUMENT (M3 7.3 — D1150, D1159; round 3 — D1315): the window's one row, for whoever may change this
+         bid (his own, an admin any), on a closed day too; a pick, a ✕ or the tick is saved to the bid at once, the words when
+         the box is left (`lw.reqmeta`, one Undo) — only where the save can land (the fresh read's 6): an admin, an open day,
+         or his own pending bid on a closed one, never his refused bid on a closed day, which the commit refuses */
+      const canWords = !!src && canEditRow(role, viewer, personId) && (deciding || editable || pendingHere.has(c.id))
+      const words = canWords
+        ? <BidWords key={`w-${c.id}`} personId={personId} date={date} rec={src!} onDone={act} />
+        : src && (src.remarks || src.docIds?.length) ? readOnly(c.id, { remarks: src.remarks ?? '', docIds: src.docIds ?? [] }, true) : null
       const cls = c.state === 'refused' ? 'ref' : ''
-      return { key: `r-${c.id}`, cls, text, sub: '', actions }
+      const box = <EntryBox code={c.code} fill={fillOf(c)} place={placeOfWin(c.win)} marks={src?.shiftedFrom ? 'moved' : ''} />
+      return { key: `r-${c.id}`, cls, box, text, sub: '', actions, words }
     }
     if (c.kind === 'credit') {
       const rec = oilRecs.find(r => r.id === c.id)
@@ -193,7 +244,10 @@ export function DayListSheet({
       const kind = rec && !rec.award ? 'OIL earned' : 'OIL award'
       /* an HO says which half it is in (D1164), as a half day's leave on this list does */
       const half = rec?.half ? `, ${halfWord(rec.half)}` : ''
-      const text = `${c.code} — ${kind}${half}${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
+      /* led by its box too (D1327) — the FO / HO as the grid draws it, the app's own with its star (D1306); beside it what
+         the box does not say: an award or earned, its half (D1164), its reason, the hours, who gave it */
+      const text = `${cap(kind)}${half}${rec?.note ? ` (${rec.note})` : ''}${times ? `, worked ${times}` : ''}${giver ? ` · given by ${giver}` : ''}`
+      const box = <EntryBox code={c.code} fill="a" place={rec?.half === 'am' ? 'top' : rec?.half === 'pm' ? 'bot' : 'whole'} auto={!!c.auto} marks={offWar(c) ? 'raptor' : ''} />
       const actions: ReactElement[] = []
       if (rec?.award && role === 'admin') {
         /* AN AWARD IS EDITABLE WHEREVER IT OPENS (owner, [LW-OIL-DETAIL]).
@@ -208,7 +262,7 @@ export function DayListSheet({
       const from = !rec || rec.award ? ''
         : rec.via === 'input' ? 'From a duty input that was accepted.'
           : 'From the published schedule.'
-      return { key: `c-${c.id}`, cls: 'sc', text, sub: from, actions }
+      return { key: `c-${c.id}`, cls: 'sc', box, text, sub: from, actions, words: null }
     }
     // a replaced-bid notice
     const n = raw.find(r => r.id === c.id) as NoticeRec | undefined
@@ -216,7 +270,7 @@ export function DayListSheet({
     const text = `${whose} ${shown(n?.code ?? c.code)} bid was replaced by ${n?.byType ?? 'another entry'}${n?.byWho ? ` (${n.byWho})` : ''}`
     const actions: ReactElement[] = []
     if (n && (role === 'admin' || own)) actions.push(<button key="ok" className="dchip ack" data-testid={`dl-seen-${c.id}`} onClick={() => act(() => ackReplacement(personId, n.id))}>OK, seen</button>)
-    return { key: `n-${c.id}`, cls: 'warn', text, sub: '', actions }
+    return { key: `n-${c.id}`, cls: 'warn', box: null, text, sub: '', actions, words: null }
   })
 
   /* THE TAIL THAT RAISES THE AMBER (the absence-record re-test, AB6, 26 Sep 26 — Fable F6, confirmed by the phone
@@ -226,7 +280,7 @@ export function DayListSheet({
      it is changed on the day it belongs to. */
   const hm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
   const tailLines = (view.clashTails ?? []).map(c => ({
-    key: `t-${c.id}`, cls: 'warn', actions: [] as ReactElement[], sub: 'It runs on from the day before — change it there.',
+    key: `t-${c.id}`, cls: 'warn', box: null, words: null, actions: [] as ReactElement[], sub: 'It runs on from the day before — change it there.',
     text: `${shown(c.code)} — ${nameOf(c.code) || shown(c.code)}, from the day before till ${hm(c.win[1])}`,
   }))
   return (
@@ -257,14 +311,19 @@ export function DayListSheet({
           </span>
         </div>
       )}
-      <ul className="daylist" data-testid="daylist">
+      {/* the list's outer frame went (round 3): each entry takes the window's full width, a hairline between them */}
+      <ul className="daylist flat" data-testid="daylist">
         {[...lines, ...tailLines].map(l => (
-          <li key={l.key} className={`dl-line${l.cls ? ` ${l.cls}` : ''}`} data-testid={`dl-${l.key}`}>
-            <div className="dl-text">
-              <span className="dl-main">{l.text}</span>
-              {l.sub && <span className="dl-sub">{l.sub}</span>}
+          <li key={l.key} className={`dl-line${l.box ? ' dl-card' : ''}${l.cls ? ` ${l.cls}` : ''}`} data-testid={`dl-${l.key}`}>
+            <div className="dl-head">
+              {l.box}
+              <div className="dl-text">
+                <span className="dl-main">{l.text}</span>
+                {l.sub && <span className="dl-sub">{l.sub}</span>}
+              </div>
             </div>
-            {l.actions.length > 0 && <div className="dl-acts">{l.actions}</div>}
+            {l.actions.length > 0 && <div className={`dl-acts${l.box ? ' bp-acts' : ''}`}>{l.actions}</div>}
+            {l.words}
           </li>
         ))}
       </ul>

@@ -12,6 +12,7 @@ import { memoryBackend } from '../state/storage'
 import { AwardSheet } from './BidPicker'
 import { Matrix } from './Matrix'
 import { askLw } from './lwnav'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 /* the OIL tracker opens from the OIL tab of the top row since D1254 (Chrome.tsx `Topbar`): the grid rendered alone is
    asked as the tab's press asks it (ui/lwnav.ts). */
@@ -31,7 +32,7 @@ describe('the bid window’s +OIL panel', () => {
   const openOil = () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${TUE}`))
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
   }
   const days = (v: string) => fireEvent.change(screen.getByTestId('oil-days'), { target: { value: v } })
 
@@ -92,7 +93,8 @@ describe('an award opened read only says which half', () => {
     fireEvent.click(screen.getByTestId(`cell-${P}-${TUE}`))
     const id = awardsOnDay(P, TUE)[0]!.id
     expect(screen.getByTestId(`oil-detail-days-${id}`).textContent).toBe('half a day, morning')
-    expect(screen.getByTestId('daylist-sheet').textContent).toContain('HO — OIL award, morning')
+    expect(screen.getByTestId('daylist-sheet').textContent).toContain('OIL award, morning')   // beside its HO box (round 3, D1327)
+    expect(screen.getByTestId('daylist-sheet').querySelector('.dl-box .c.k-oil')!.textContent).toBe('HO')
     fireEvent.click(screen.getByTestId(`dl-oil-edit-${id}`))
     expect(screen.getByTestId(`oil-edit-half-${id}-am`).getAttribute('aria-pressed')).toBe('true')
     fireEvent.click(screen.getByTestId(`oil-edit-half-${id}-pm`))

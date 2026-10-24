@@ -1,6 +1,6 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
@@ -228,8 +228,6 @@ export function Matrix() {
      from the bid sheet closes that sheet — the next tap on the greyed day opens the Post out sheet). */
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string; posting?: 'po' | 'pi' } | null>(null)
   const close = () => { setOpen(null); setPlaceAt(null) }
-  /* the published note editor opened FROM the tap list, for one Input */
-  const [listRemark, setListRemark] = useState<{ at: string; row: any } | null>(null)
   // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
   // and the sheet it opens. `moveSel` is the selection currently being MOVED
   // (Task E) — sheet closed, waiting for a drop. Both cleared on a stage/war
@@ -3436,9 +3434,8 @@ export function Matrix() {
   const remarkRow = open && role !== 'admin' && open.id === viewer
     ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
     : null
-  /* THE ADMIN'S NOTE ON ONE APPROVED LEAVE (M1's code read, L6): his tap opens the decide window, so its remarks are
-     reached there, by the same Note the day's list gives him on a busier day (D418 narrowed by D1177) */
-  const noteAt = open ? `${open.id}|${open.date}` : ''
+  /* THE ADMIN'S APPROVED LEAVE (M1's code read, L6; his D1307): his tap opens the decide window, which shows the leave's
+     Remarks and Document at once — the input they are saved onto (D418 narrowed by D1177) */
   const adminNoteRow = open && role === 'admin' && states[open.id]?.[open.date]?.state === 'approved'
     ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
     : null
@@ -4147,7 +4144,7 @@ export function Matrix() {
           first's portion choice across. */}
       {/* A member's remarks editor wins FIRST where it applies (his own approved leave, any day — D418 narrowed) — even
           over the Raptor sheet, because the note lives on the same Raptor row the read-only sheet would only point at. */}
-      {open && listOpen && !(listRemark && listRemark.at === `${open.id}|${open.date}`) && (
+      {open && listOpen && (
         <DayListSheet
           key={`dl-${open.id}-${open.date}`}
           personId={open.id}
@@ -4157,7 +4154,6 @@ export function Matrix() {
           role={role}
           viewer={viewer}
           period={period}
-          onEditRemark={row => setListRemark({ at: `${open.id}|${open.date}`, row })}
           /* ONE RECORD, PICKED BY ITS ID (owner, D266 — "the same move modality and I can choose what to move"): the list
              closes and the grid's move mode carries exactly that record — no date box — by the same machine and landing
              rules as a single chip and a block (D262) */
@@ -4168,16 +4164,6 @@ export function Matrix() {
             setMoveSel({ people: [rec.personId], from: rec.date, to: rec.date, cells: [{ personId: rec.personId, date: rec.date }], only: [rec] })
           }}
           onClose={close}
-        />
-      )}
-      {open && listRemark && listRemark.at === `${open.id}|${open.date}` && (
-        <RemarksSheet
-          key={`dlrmk-${open.id}-${open.date}`}
-          callsign={open.callsign}
-          personId={open.id}
-          row={listRemark.row}
-          code={grid[open.id]?.[open.date] ?? ''}
-          onClose={() => setListRemark(null)}
         />
       )}
       {open && canRemark && (
@@ -4528,11 +4514,12 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && !(listRemark && listRemark.at === noteAt) && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
         && canBidOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
-          onNote={adminNoteRow ? () => setListRemark({ at: noteAt, row: adminNoteRow }) : undefined}
+          /* the approved leave's Remarks and Document, shown at once (his D1307 — "Note" went) */
+          approvedRow={adminNoteRow}
           callsign={open.callsign}
           personId={open.id}
           date={open.date}
@@ -4541,7 +4528,7 @@ export function Matrix() {
           /* Item D: only the free half is on offer, and the sheet says what
              holds the other one. */
           onlyPortion={openFreeHalf}
-          heldBy={openFreeHalf ? displayCell(grid[open.id]?.[open.date] ?? '') : undefined}
+          heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,

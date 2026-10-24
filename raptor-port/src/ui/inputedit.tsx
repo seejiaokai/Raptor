@@ -520,8 +520,11 @@ export const draftOf = (r: any) => ({
    one-man branch. Pinned in leavewar/onerecord-write.test.ts. */
 /* …and its documents, where the caller hands them (the Leave War's remarks window — M3 7.3, D1150, D1159): one save,
    the same gate; a documents-only change prints nowhere on the schedule (inpDetailKey reads no document) */
-export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?: string[]): boolean {
-  const withDocs = (d: any) => (docIds ? { ...d, remarks, docIds: [...docIds] } : { ...d, remarks })
+/* …and its "till <date>" tick, where the caller hands one (the Leave War's bid windows and day's list show the leave's
+   Remarks row whole — round 3, D1307: the box, the tick and the Document button; D953's hand choice, settled by the one
+   input write as every save is) */
+export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?: string[], till?: boolean): boolean {
+  const withDocs = (d: any) => ({ ...d, remarks, ...(docIds ? { docIds: [...docIds] } : {}), ...(typeof till === 'boolean' ? { till } : {}) })
   if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
     return ownPartSave(row, person, own => commitInputEdit(own, withDocs(draftOf(own))))
   }

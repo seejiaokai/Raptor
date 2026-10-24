@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { elevenCounters, login, openManning, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
+import { elevenCounters, login, openManning, pressMore, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
 
 /** Open the figure picker. The whole column header is the control — the two
  *  arrows it replaced were 13px glyphs the owner could not hit on a phone.
@@ -6891,7 +6891,7 @@ test('posting out tags the last day, and the row leaves the months after it', as
   // a reader does, by the month strip, then the cell exists to tap.
   await page.locator('[data-testid="month-JUN"]').click()
   await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
-  await page.locator('[data-testid="bid-postout"]').click()
+  await pressMore(page, 'bid-postout')     // behind the ⋯ since round 3 (D1326)
   // "Overseas Sqn" is chosen by default ([POST-OUT-OUTCOMES] — the old "Archive on PO date"); this test un-chooses
   // it (the custom case: off the manpower, nothing else) — the store side is pinned in the unit suite.
   await expect(page.locator('[data-testid="po-overseas"]')).toHaveAttribute('aria-pressed', 'true')
@@ -7589,7 +7589,7 @@ test('a post-out dated in July keeps his July row, after the war was first shown
   await page.locator('[data-testid="month-JUL"]').click()
   await gridAtRest(page, '2026-07-01')
   await page.locator('[data-testid="cell-slipway-2026-07-14"]').click()
-  await page.locator('[data-testid="bid-postout"]').click()
+  await pressMore(page, 'bid-postout')     // behind the ⋯ since round 3 (D1326)
   await pickDate(page, '[data-testid="po-date"]', '2026-07-15', isPhone())
   await page.locator('[data-testid="po-confirm"]').click()
   await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
@@ -7622,7 +7622,7 @@ test('the posting dates are the app’s own date boxes: the calendar opens on to
   const sheet = page.locator('[data-testid="bid-picker"]')
 
   /* PI from — on the one-day sheet */
-  await page.locator('[data-testid="bid-postin"]').click()
+  await pressMore(page, 'bid-postin')      // behind the ⋯ since round 3 (D1326)
   expect(await page.locator('.bidsheet input[type="date"]').count(), 'the phone’s own date box is still on the sheet').toBe(0)
   await fits('[data-testid="pi-date"]', 'PI from')
   await tapOn('[data-testid="pi-date"]')
@@ -7636,7 +7636,7 @@ test('the posting dates are the app’s own date boxes: the calendar opens on to
   await page.keyboard.press('Escape')
   await expect(sheet).toHaveCount(0)
   await page.locator('[data-testid="cell-slipway-2026-07-14"]').click()
-  await page.locator('[data-testid="bid-postout"]').click()
+  await pressMore(page, 'bid-postout')     // behind the ⋯ since round 3 (D1326)
   await fits('[data-testid="po-date"]', 'PO from')
   expect(await dateBoxValue(page, '[data-testid="po-date"]'), 'it opens on the day tapped').toBe('2026-07-14')
   await tapOn('[data-testid="po-date"]')

@@ -6,7 +6,8 @@
    grid's own rules); this only draws it. It follows Duration and the range, not the kind of leave — every leave lowers
    manning the same (D998). On a day that already holds him away — the window reopened on his bid — nothing would change,
    so the line reads the day as it stands, the bid counted: "Available P 27 · red", no arrow, and each Manning row now
-   amber or red (his D1296). */
+   amber or red (his D1296). ROUND 3 (his D1313, D1314): only what is amber or red is named, the Available row included,
+   side by side on one line — "Available P 28 → 26 · amber · OPSP 12 → 11 · amber" — else the calm line alone. */
 
 import type { Portion } from '../engine'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
@@ -29,26 +30,31 @@ export function DayLine({ days, label }: {
   const many = days.length > 1
   /* a day as it stands shows one figure; a bid's change shows before → after */
   const figs = (before: number, after: number) => (w.standing ? fig(after) : `${fig(before)} → ${fig(after)}`)
+  /* ONLY WHAT IS AMBER OR RED (his D1314, "A strict"): the Available row of his seat named only where it ends amber or
+     red, as any Manning row — a row above its amber point needs no attention. SIDE BY SIDE (his D1313, lesson 50): the
+     pairs on one line, a dot between them, each pair kept whole and wrapping to the next line only where the width runs
+     out (`white-space: nowrap` per pair, bidpicker.css). Where nothing is, the calm line alone. */
+  const pairs: { id: string; level: 'amber' | 'red'; name: string; fig: string }[] = []
+  if (w.avail?.level) pairs.push({ id: 'avail', level: w.avail.level, name: w.avail.label, fig: `${figs(w.avail.before, w.avail.after)} · ${w.avail.level}` })
+  for (const t of w.turned) pairs.push({ id: t.ruleId, level: t.level, name: t.label, fig: `${figs(t.before, t.after)} · ${t.level}` })
   return (
     <div className="bidsheet-dayline" data-testid="bid-dayline">
       {(many || label) && (
         <div className="dl-when" data-testid="bid-dayline-when">{[label, many ? dayLabel(w.date) : ''].filter(Boolean).join(' · ')}</div>
       )}
-      {w.avail && (
-        <div className={`dl-row${w.avail.level ? ` dl-${w.avail.level}` : ''}`} data-testid="bid-dayline-avail">
-          <span className="dl-name">{w.avail.label}</span>
-          <span className="dl-fig">{figs(w.avail.before, w.avail.after)}{w.avail.level ? ` · ${w.avail.level}` : ''}</span>
-        </div>
-      )}
-      {w.turned.map(t => (
-        <div key={t.ruleId} className={`dl-row dl-${t.level}`} data-testid={`bid-dayline-${t.ruleId}`}>
-          <span className="dl-name">{t.label}</span>
-          <span className="dl-fig">{figs(t.before, t.after)} · {t.level}</span>
-        </div>
-      ))}
-      {!w.turned.length && !w.avail?.level && (
-        <div className="dl-row dl-calm" data-testid="bid-dayline-calm">{w.standing ? 'No manning row is amber or red' : 'No manning row turns amber or red'}</div>
-      )}
+      <div className="dl-pairs">
+        {pairs.map((p, i) => (
+          <span key={p.id} className="dl-pairwrap">
+            {i > 0 && <span className="dl-dot" aria-hidden="true">·</span>}
+            <span className={`dl-row dl-${p.level}`} data-testid={`bid-dayline-${p.id}`}>
+              <span className="dl-name">{p.name}</span> <span className="dl-fig">{p.fig}</span>
+            </span>
+          </span>
+        ))}
+        {!pairs.length && (
+          <span className="dl-row dl-calm" data-testid="bid-dayline-calm">{w.standing ? 'No manning row is amber or red' : 'No manning row turns amber or red'}</span>
+        )}
+      </div>
     </div>
   )
 }

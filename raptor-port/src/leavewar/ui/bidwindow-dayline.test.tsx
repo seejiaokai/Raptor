@@ -6,9 +6,9 @@ import { Matrix } from './Matrix'
 import { DayLine, dayLineCode } from './DayLine'
 import type { DayWhatIf } from '../engine/whatif'
 
-/* THE BID WINDOWS' DAY LINE (owner D1144, D1213; M3, batch 5): at the window's top, what the bid does to manning — his
-   seat's Available row before → after, then each Manning row it turns amber or red, each on its own line, the name and
-   the figure in separate cells (his design lessons 20 and 29); a calm line where none turns. */
+/* THE BID WINDOWS' DAY LINE (owner D1144, D1213; M3, batch 5; round 3 — his D1313, D1314): at the window's top, what the
+   bid does to manning — only what is amber or red, his seat's Available row included, side by side on one line, each pair
+   its name and its figure (his design lessons 29, 50); the calm line alone where nothing is. */
 
 beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
 
@@ -20,7 +20,7 @@ const day = (over: Partial<DayWhatIf> = {}): DayWhatIf => ({
 })
 
 describe('the day line', () => {
-  it('draws the Available row first, then each turned row, names and figures apart, halves as .5', () => {
+  it('draws the Available row first where it is amber or red, then each turned row, side by side, halves as .5', () => {
     render(<DayLine days={[day()]} />)
     const line = screen.getByTestId('bid-dayline')
     const rows = [...line.querySelectorAll('.dl-row')]
@@ -30,12 +30,23 @@ describe('the day line', () => {
     expect(rows[1]!.querySelector('.dl-fig')!.textContent).toBe('3 → 2 · amber')
     expect(line.textContent).not.toContain('½')
     expect(screen.queryByTestId('bid-dayline-calm')).toBeNull()
+    /* on ONE line (D1313): every pair in the one run of pairs, a dot between them */
+    expect(rows.every(r => r.closest('.dl-pairs') === line.querySelector('.dl-pairs'))).toBe(true)
+    expect(line.querySelectorAll('.dl-dot')).toHaveLength(1)
   })
 
-  it('says so in one calm line where no row turns', () => {
+  /* WAS "says so in one calm line where no row turns" with the Available row before → after always shown (D1144). HIS
+     D1314 ("A strict"): an Available row above its amber point is not named — the calm line alone. */
+  it('names nothing but the calm line where no row is amber or red — the Available row above its amber point included', () => {
     render(<DayLine days={[day({ avail: { seat: 'p', label: 'Available P', before: 26, after: 25, level: null }, turned: [] })]} />)
-    expect(screen.getByTestId('bid-dayline-avail').textContent).toContain('26 → 25')
-    expect(screen.getByTestId('bid-dayline-calm').textContent).toBe('No manning row turns amber or red')
+    expect(screen.queryByTestId('bid-dayline-avail')).toBeNull()
+    expect(screen.getByTestId('bid-dayline').textContent).toBe('No manning row turns amber or red')
+  })
+
+  it('names a Manning row turned amber while his Available row stays above its point — the row alone', () => {
+    render(<DayLine days={[day({ avail: { seat: 'p', label: 'Available P', before: 28, after: 27, level: null }, turned: [{ ruleId: 'opsp', label: 'OPSP', before: 12, after: 11, level: 'amber' }] })]} />)
+    expect(screen.queryByTestId('bid-dayline-avail')).toBeNull()
+    expect(screen.getByTestId('bid-dayline').textContent).toBe('OPSP 12 → 11 · amber')
   })
 
   it('a range names the day it hurts most, its date first', () => {
@@ -47,7 +58,11 @@ describe('the day line', () => {
     expect([dayLineCode('full'), dayLineCode('am'), dayLineCode('pm')]).toEqual(['LL', '*LL', 'LL*'])
   })
 
-  it('the one-day window carries it at its top, and a morning lowers his row by a half', () => {
+  /* WAS "…and a morning lowers his row by a half" read off the line's Available figure, always shown (D1144). Since D1314
+     the line names that row only at amber or red, so the half is pinned where the line's answer is worked out (the store's
+     bidDayLine, which the window draws) and the window itself is pinned to its calm line here. */
+  it('the one-day window carries it at its top; a morning asks for — and lowers his row by — a half', async () => {
+    const { bidDayLine } = await import('../sync')
     render(<Matrix />)
     const pilot = getState().people.find(p => p.seat === 'pilot' && !p.san && getState().grid[p.id]?.['2026-02-11'] === undefined)!
     fireEvent.click(screen.getByTestId(`cell-${pilot.id}-2026-02-11`))
@@ -55,12 +70,11 @@ describe('the day line', () => {
     const line = within(sheet).getByTestId('bid-dayline')
     /* first under the title bar */
     expect(line.previousElementSibling?.className).toContain('bidsheet-hd')
-    const whole = within(line).getByTestId('bid-dayline-avail').textContent!
-    const [b, a] = whole.match(/[\d.]+/g)!.map(Number)
-    expect(b! - a!).toBe(1)
-    fireEvent.click(within(sheet).getByTestId('portion-am'))
-    const half = within(sheet).getByTestId('bid-dayline-avail').textContent!.match(/[\d.]+/g)!.map(Number)
-    expect(half[0]! - half[1]!).toBe(0.5)
+    const whole = bidDayLine(pilot.id, ['2026-02-11'], dayLineCode('full'))[0]!.avail!
+    const half = bidDayLine(pilot.id, ['2026-02-11'], dayLineCode('am'))[0]!.avail!
+    expect(whole.before - whole.after).toBe(1)
+    expect(half.before - half.after).toBe(0.5)
+    if (!whole.level) expect(line.textContent).toBe('No manning row turns amber or red')
   })
 })
 
@@ -88,10 +102,10 @@ describe('the day line on a day holding the bid (D1296)', () => {
     expect(screen.queryByTestId('bid-dayline-calm')).toBeNull()
   })
 
-  it('where nothing is amber or red it says so in the present tense', () => {
+  it('where nothing is amber or red it says so in the present tense, and names no row (D1314)', () => {
     render(<DayLine days={[day({ standing: true, avail: { seat: 'p', label: 'Available P', before: 30, after: 30, level: null }, turned: [] })]} />)
-    expect(screen.getByTestId('bid-dayline-avail').querySelector('.dl-fig')!.textContent).toBe('30')
-    expect(screen.getByTestId('bid-dayline-calm').textContent).toBe('No manning row is amber or red')
+    expect(screen.queryByTestId('bid-dayline-avail')).toBeNull()
+    expect(screen.getByTestId('bid-dayline').textContent).toBe('No manning row is amber or red')
   })
 })
 
@@ -103,9 +117,14 @@ describe('the one-day window reopened on his bid (D1296, his case)', () => {
     expect(setCell(pilot.id, '2026-02-11', 'LL')).toBe(true)
     fireEvent.click(screen.getByTestId(`cell-${pilot.id}-2026-02-11`))
     const line = within(screen.getByTestId('bid-picker')).getByTestId('bid-dayline')
-    const fig = within(line).getByTestId('bid-dayline-avail').querySelector('.dl-fig')!.textContent!
-    expect(fig).not.toContain('→')
-    expect(fig).toMatch(/^\d+(\.5)?( · (amber|red))?$/)
+    /* his Available row is named only at amber or red (D1314); where it is, one figure and no arrow */
+    const av = within(line).queryByTestId('bid-dayline-avail')
+    if (av) {
+      const fig = av.querySelector('.dl-fig')!.textContent!
+      expect(fig).not.toContain('→')
+      expect(fig).toMatch(/^\d+(\.5)? · (amber|red)$/)
+    }
+    expect(line.textContent).not.toContain('→')
     expect(line.textContent).not.toContain('turns')
   })
 })

@@ -54,22 +54,25 @@ describe('the leave buttons', () => {
 })
 
 describe('the window\'s row names (D1212) and the Also row (A9)', () => {
-  it('the one-day window asks "Date" and "Duration"; an admin\'s extra actions stand on a row labelled Also', () => {
+  /* WAS "asks Date and Duration; an admin's extra actions stand on a row labelled Also" (D1212, A9). Round 3 (D1332): the
+     row labels went — the Duration row keeps D1212's word as its name for a screen reader, "Pick a range" ends it (the Date
+     row went), and the admin's three extra actions stand behind the ⋯ in the row under the leaves (D1326) */
+  it('the one-day window\'s Duration row keeps its word for a screen reader; an admin\'s extra actions are behind the ⋯', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.getByTestId('bid-picker')
-    const labs = [...sheet.querySelectorAll('.bidsheet-row > .lab')].map(l => l.textContent)
-    expect(labs).toContain('Date')
-    expect(labs).toContain('Duration')
-    expect(labs).not.toContain('How many')
-    expect(labs).not.toContain('How much')
-    expect(within(sheet).getByTestId('bid-also').textContent).toBe('Also')
+    expect(sheet.querySelectorAll('.bidsheet-row > .lab')).toHaveLength(0)
+    expect(within(sheet).getByTestId('portion-full').closest('.bidsheet-row')!.getAttribute('aria-label')).toBe('Duration')
+    expect(sheet.textContent).not.toContain('How many')
+    expect(sheet.textContent).not.toContain('How much')
+    expect(within(sheet).queryByTestId('bid-also')).toBeNull()
+    expect(within(sheet).getByTestId('bid-more')).toBeTruthy()
   })
-  it('a member has no Also row', () => {
+  it('a member has no ⋯', () => {
     setRole('member')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.queryByTestId('bid-picker')
-    if (sheet) expect(within(sheet).queryByTestId('bid-also')).toBeNull()
+    if (sheet) expect(within(sheet).queryByTestId('bid-more')).toBeNull()
   })
 })

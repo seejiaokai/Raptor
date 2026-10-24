@@ -25,6 +25,7 @@ import { awardsOnDay, getState, ingestDutyCredit, initStore, rawState, setCell, 
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { askLw } from './lwnav'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 /* the OIL tracker opens from the OIL tab of the top row since D1254 (Chrome.tsx `Topbar`): the grid rendered alone is
    asked as the tab's press asks it (ui/lwnav.ts). */
@@ -125,13 +126,13 @@ describe('the OIL control on the day sheet', () => {
   const openSheet = (date: string) => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
   }
 
   it('is folded behind one button, because it is the opposite fact to the rows above it', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${TUE}`))
-    expect(screen.getByTestId('bid-oil')).toBeTruthy()
+    expect(more('bid-oil')).toBeTruthy()
     expect(screen.queryByTestId('oil-fo')).toBeNull()
   })
 
@@ -160,6 +161,7 @@ describe('the OIL control on the day sheet', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${TUE}`))
     expect(screen.queryByTestId('bid-oil')).toBeNull()
+    expect(screen.queryByTestId('bid-more')).toBeNull()   // no ⋯ for a member (round 3, D1326)
   })
 })
 
@@ -195,7 +197,7 @@ describe('placing leave on a day outside the posting dates', () => {
     const day = '2026-09-08'
     fireEvent.click(screen.getByTestId(`cell-${P}-${day}`))
     fireEvent.click(screen.getByTestId('postout-place'))
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Clearing' } })
     fireEvent.click(screen.getByTestId('oil-give'))
     expect(creditOn(P, day)?.note).toBe('Clearing')
@@ -401,7 +403,7 @@ describe('a day the schedule has already earned on', () => {
     expect(screen.getByTestId('raptor-note').textContent).toContain('published schedule')
     expect(screen.getByTestId('oil-detail-days').textContent).toContain('half a day')
 
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '3' } })
     fireEvent.change(screen.getByTestId('oil-why'), { target: { value: 'Exercise recovery' } })
     fireEvent.click(screen.getByTestId('oil-give'))

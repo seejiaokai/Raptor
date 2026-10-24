@@ -482,10 +482,18 @@ export async function answerNoDocument(page: Page): Promise<void> {
   await b.waitFor({ state: 'visible', timeout: 1500 }).then(() => b.click(), () => {})
 }
 
-/** An admin's bid windows open with "Approve what I enter" ticked (owner D1186, the Leave War overhaul's M3 5.5): a test
- *  that means to place a PENDING bid as an admin unticks it first — by a press on the tick, as he would. 'bid' for the
- *  one-day window, 'sel' for the drag-selection window. */
+/** An admin's bid windows open with "Approve what I enter" on (owner D1186, the Leave War overhaul's M3 5.5) — a switch
+ *  remembered on the device since round 3 (D1302): a test that means to place a PENDING bid as an admin turns it off
+ *  first — by a press on the switch, as he would — where it is on. 'bid' for the one-day window, 'sel' for the
+ *  drag-selection window. */
 export async function untickApprove(page: Page, prefix: 'bid' | 'sel'): Promise<void> {
   const t = page.locator(`[data-testid="${prefix}-approve-tick"]`)
-  if (await t.count() && await t.isChecked()) await t.uncheck()
+  if (await t.count() && (await t.getAttribute('aria-checked')) === 'true') await t.click()
+}
+
+/** The admin's Grant OIL, Post out and Post in stand behind the ⋯ in the row under the leaves since round 3 (D1326): open
+ *  it, as he would, and press the one named. `prefix` 'bid' (the one-day window) or 'sel' (the drag-selection window). */
+export async function pressMore(page: Page, item: string, prefix: 'bid' | 'sel' = 'bid'): Promise<void> {
+  await page.locator(`[data-testid="${prefix}-more"]`).click()
+  await page.locator(`[data-testid="${item}"]`).click()
 }
