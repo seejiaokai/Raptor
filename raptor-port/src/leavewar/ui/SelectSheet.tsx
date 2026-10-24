@@ -48,7 +48,7 @@ import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState } from '../state/store'
-import { leaveInputAt } from '../sync'
+import { leaveInputsAt } from '../sync'
 import { setLeaveRemarks } from '../../ui/inputedit'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
@@ -134,7 +134,8 @@ export function SelectSheet({
   /* a request's Document and Remarks (M3 5.9, 5.10): written with the fill, where the drag holds ONE person — across
      several, each man's paper is his own (the agent's reading, M3 §7 point 2) */
   const [words, setWords] = useState<ReqDraft>(emptyDraft)
-  useCloseOnCellClick(onClose)
+  /* a tap on a grid day closes it — keeping the typed words, as ✕ and Escape do (`closeKeeping`, below) */
+  useCloseOnCellClick(() => closeKeeping())
 
   const nPeople = sel.people.length
   const nDays = new Set(sel.cells.map(c => c.date)).size
@@ -263,12 +264,18 @@ export function SelectSheet({
     setRemarksOn(sel.cells, t)
     const seen = new Set<string>()
     for (const c of sel.cells) {
-      const row = leaveInputAt(pid, c.date)
-      if (!row || seen.has(String(row.iid))) continue
-      seen.add(String(row.iid))
-      if ((row.remarks ?? '') !== t) setLeaveRemarks(row, t, pid)
+      for (const row of leaveInputsAt(pid, c.date)) {
+        if (seen.has(String(row.iid))) continue
+        seen.add(String(row.iid))
+        if ((row.remarks ?? '') !== t) setLeaveRemarks(row, t, pid)
+      }
     }
   }
+
+  /* …and on closing too — ✕, Escape, a tap behind — as the one-day window keeps a held bid's words when it closes ("never
+     dropped", D1339; the night's scenario designer, gap 7): words typed over days holding entries are kept on them; over
+     empty days (a NEW leave's words, nothing placed) there is nothing to keep them on */
+  const closeKeeping = () => { keepWords(); onClose() }
 
   const decide = (bid: BidState) => {
     setConfirming(null)
@@ -288,12 +295,12 @@ export function SelectSheet({
   const canFill = true
 
   return (
-    <Sheet testid="select-sheet" label="Selected days" onClose={onClose} modal={false}>
+    <Sheet testid="select-sheet" label="Selected days" onClose={closeKeeping} modal={false}>
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
         <span className="dt" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
         {role === 'admin' && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
-        <button className="x" data-testid="sel-cancel" onClick={onClose} aria-label="Cancel">✕</button>
+        <button className="x" data-testid="sel-cancel" onClick={closeKeeping} aria-label="Cancel">✕</button>
       </div>
       <DayLine days={line.days} label={line.label} />
 

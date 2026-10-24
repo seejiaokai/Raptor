@@ -2148,3 +2148,17 @@ different feature that merely pass through it.
 **Suggested improvement:** Add to the order's §7.9 or walk-scripts §9: when a walk in another engine finds a layout fault, identify the metric that differs and inject it in the suite's own engine to make the red test, stating the rule in its engine-independent form.
 
 **Principle:** A fault that depends on an environment the suite lacks is pinned by reproducing the environment's difference, not the environment.
+
+### Observation 699: Drawings he asks for "now, so I can answer tonight" should reach him as each lands
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** /overnight 12 on the Leave War branch; he asked for four outstanding drawings to answer before sleeping
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 1, step 6 (a design question carries a picture)
+
+**Issue:** He asked for the outstanding drawings so he could answer them before the night started. Six helpers were sent at once (good), but the page was to be written only when all had returned; the slowest took about 20 minutes, and he went to sleep ("Nvm u work on overnight I'll sleep") before any picture reached him. Two looks were ready ten minutes earlier.
+
+**Suggested improvement:** In Part 1, when he is waiting up for drawings, publish the questions page with the first finished question and add each further question as its helper returns (one republish each), telling him in one line each time; never hold the page for the slowest drawing.
+
+**Principle:** When a person is waiting for several answers before a deadline (sleep, a meeting), deliver each as it is ready; batching for completeness costs the answers that were ready first.

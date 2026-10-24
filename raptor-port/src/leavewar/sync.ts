@@ -351,6 +351,16 @@ export function leaveInputAt(personId: string, iso: string, code?: string): any 
   if (!pick) return null
   return INPUTS.find((r: any) => String(r.iid) === pick.id) ?? null
 }
+/** EVERY Raptor leave input behind a war cell — a morning and an afternoon are two entries on the Inputs page — each
+ *  once (the drag window's typed words go onto every one of them: his D1341 "Replace them all"; the night's scenario
+ *  designer, gap 5, 25 Oct 26 — `leaveInputAt` alone gave the first found). */
+export function leaveInputsAt(personId: string, iso: string): any[] {
+  const war = warHolding(getState().wars, iso)
+  const v = war ? (war as any).views?.[personId]?.[iso] : null
+  if (!v) return []
+  const ids = [...new Set((v.all as Contrib[]).filter(c => c.kind === 'absence' && isLeave(INPUT_TYPE_FOR[c.code] ?? c.code)).map(c => String(c.id)))]
+  return ids.map(id => INPUTS.find((r: any) => String(r.iid) === id)).filter(Boolean)
+}
 const INPUT_TYPE_FOR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
 
 /* ---- THE ABSENCE DOOR: the war's changes to approved leave ---------------

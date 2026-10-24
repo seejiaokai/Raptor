@@ -2738,19 +2738,24 @@ function tellHolidays(before: State): void {
 }
 
 /* WHAT WAS LAST PLACED, for the manning bubble's words (his D1351, 25 Oct 26 — after a filing the bubble names what was
-   filed, "This overseas duty turns Available P red."; a bid keeps "This bid"). Every gesture counts one; a filing notes
-   its kind at the count it ended on, so the bubble reads "the latest act was this filing" — a bid placed after it counts
-   again and is a bid. A view aid only: nothing is saved. */
+   filed, "This overseas duty turns Available P red."; a bid keeps "This bid"). Every gesture that PLACES something — a
+   bid written or cleared, a leave approved as placed, a decision, a move, a filing, a UNA — counts one; a filing notes its
+   kind at the count it ended on, so the bubble reads "the latest act was this filing" — a bid placed after it counts again
+   and is a bid. A save of words alone (`lw.reqmeta`) is not counted, so words saved with the closing of a window that
+   filed never make the filing a bid (the night's scenario designer, gap 1); nor is a counter's setting, so a change made
+   behind an open window, with nothing placed, raises no bubble (gap 3 — `actCount` unchanged since the "before"). A view
+   aid only: nothing is saved. */
+const PLACING: ReadonlySet<string> = new Set(['lw.edit', 'lw.placeApproved', 'lw.decide', 'lw.move', 'lw.file', 'lw.una'])
 let actSeq = 0
 let lastFiled: { kind: 'CSE' | 'OD' | 'UNA'; at: number } | null = null
-/** The count of the war's gestures so far — the bubble's "before" keeps it. */
+/** The count of the war's placing gestures so far — the bubble's "before" keeps it. */
 export function actCount(): number { return actSeq }
 /** The kind filed by the latest gesture, if that gesture was a filing made after `since` — else null (a bid). */
 export function filedSince(since: number): 'CSE' | 'OD' | 'UNA' | null {
   return lastFiled && lastFiled.at === actSeq && actSeq > since ? lastFiled.kind : null
 }
 function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
-  actSeq++
+  if (PLACING.has(type)) actSeq++
   if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
   let out!: T
   const r = cmdCommit({
@@ -3008,6 +3013,8 @@ export function setCell(personId: string, date: string, code: string, words?: Re
     docIds: papers,
   })
   const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending', ...carry }
+  /* a bid written here is a placing act for the bubble's count (`actCount` — this write is no gesture of its own) */
+  actSeq++
   return putList(personId, date, [...list.filter(r => !replaced.includes(r as RequestRec)), rec])
 }
 

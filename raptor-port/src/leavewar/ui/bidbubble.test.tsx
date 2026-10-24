@@ -13,7 +13,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ruleHave } from '../engine'
-import { getState, initStore, lwHistInit, lwUndo, saveManningRule, setRole } from '../state/store'
+import { actCount, filedSince, getState, initStore, lwHistInit, lwUndo, placeUna, recordsAt, saveManningRule, setCell, setRequestWords, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { bubbleWords, Matrix, worsenedRows, type BubbleFlags } from './Matrix'
@@ -291,6 +291,34 @@ describe('his report: red when red, and every lowering raises it (D1344, D1345, 
     await tapAway()
     bidOn('asics')
     expect(bubble()?.textContent).toBe('This bid takes Test crew lower, still red.')
+  })
+
+  /* the night's scenario designer, gap 3: the bubble speaks for what was placed here — a window opened and closed with
+     nothing placed raises nothing, even when a row got worse behind it (a counter changed while it stood open) */
+  it('a window opened and closed with nothing placed raises nothing, though a row got worse behind it', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    act(() => {
+      const s = getState()
+      const count = { kind: 'people' as const, filter: {} }
+      const have = ruleHave(count, s.people, s.grid, s.states, TARGET)
+      expect(saveManningRule({ id: 'test-bubble', label: 'Test crew', count, threshold: { amber: have + 1, red: have + 1 } })).toBe(true)
+    })
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(bubble()).toBeNull()
+    expect(foot()).toBeNull()
+  })
+
+  /* gap 1: words saved after a filing (a window's closing saves them) are not a placing act — the filing stays the latest */
+  it('words saved after a filing leave the filing named', () => {
+    const before = actCount()
+    expect(placeUna([{ personId: 'dusk', date: TARGET }], 'full').done).toBe(1)
+    const rec = recordsAt('asics', '2026-01-23').find(r => r.kind === 'request')!
+    expect(setRequestWords('asics', '2026-01-23', rec.id, { remarks: 'form attached' })).toBe(true)
+    expect(filedSince(before)).toBe('UNA')
+    expect(setCell('asics', TARGET, 'LL')).toBe(true)
+    expect(filedSince(before), 'a bid placed after it is a bid').toBeNull()
   })
 
   it('a bid that makes a row better or leaves it as it was raises nothing', async () => {

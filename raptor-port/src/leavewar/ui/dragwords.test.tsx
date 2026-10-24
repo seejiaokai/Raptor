@@ -8,7 +8,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { initStore, lwHistInit, recordsAt, setCell, setPeople, setRole } from '../state/store'
+import { initStore, lwHistInit, placeApproved, recordsAt, setCell, setPeople, setRole } from '../state/store'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
@@ -86,6 +86,33 @@ describe('the drag window\'s typed words are kept, replacing the days\' own (D13
     expect(filed.length, 'the bids became inputs').toBeGreaterThan(0)
     for (const r of filed) expect((r as any).remarks, (r as any).type).toBe('Exercise')
     expect(reqs(D1), 'no bid left behind').toHaveLength(0)
+  })
+
+  /* "never dropped" (D1339): closed with ✕ — as the one-day window keeps a held bid's words on closing — the typed words
+     still go onto the days' bids (the night's scenario designer, gap 7) */
+  it('✕ with words typed: they are kept on every dragged bid, as the one-day window keeps them', () => {
+    twoBids()
+    mount()
+    type('Exercise')
+    fireEvent.click(screen.getByTestId('sel-cancel'))
+    expect(reqs(D1)[0]?.remarks).toBe('Exercise')
+    expect(reqs(D2)[0]?.remarks).toBe('Exercise')
+    expect(reqs(D1)[0]?.state, 'nothing decided').toBe('pending')
+  })
+
+  /* the night's scenario designer, gap 5: a day holding two approved leaves — a morning and an afternoon, two entries on
+     the Inputs page — gives the typed words to both, not only the first found */
+  it('two approved half-day leaves on one dragged day both take the words', () => {
+    const one = [{ personId: P, date: D1 }]
+    expect(placeApproved(one, '*LL').approved, 'the morning approved').toBe(1)
+    expect(placeApproved(one, 'OL*').approved, 'the afternoon approved').toBe(1)
+    const mine = () => INPUTS.filter((r: any) => holds(r, P) && (r.type === 'LL' || r.type === 'OL') && !ISNAP.includes(`"iid":${JSON.stringify(r.iid)}`))
+    expect(mine()).toHaveLength(2)
+    render(<SelectSheet sel={{ people: [P], from: D1, to: D1, cells: one } as any} people={() => 'Dusk'} role="admin" canDecide
+      onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} />)
+    type('Exercise')
+    fireEvent.click(screen.getByTestId('sel-cancel'))
+    for (const r of mine()) expect((r as any).remarks, (r as any).type).toBe('Exercise')
   })
 
   it('nothing typed: each bid keeps its own words', () => {

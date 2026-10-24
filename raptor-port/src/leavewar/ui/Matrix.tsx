@@ -1485,6 +1485,9 @@ export function Matrix() {
      to red, on a day — or, D1345, a row already amber or red taken lower) — one rule for a bid placed, a filing and a
      bid moved */
   const raiseIfWorse = (before: BubbleFlags) => {
+    /* nothing placed since the "before" — a window opened and closed, a counter changed behind it — raises nothing: the
+       bubble speaks for a bid, a filing or a move made here (D1227's "the window that placed the bid is the gesture") */
+    if (before.seq !== undefined && actCount() <= before.seq) return
     const worst = worsenedRows(before, flaggedNow())
     if (!worst.size) return
     setCountsOpen(true)
