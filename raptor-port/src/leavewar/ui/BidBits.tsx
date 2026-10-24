@@ -65,13 +65,21 @@ export function MoreButton({ items, testid, place = 'col4' }: { items: MoreItem[
     /* a press outside the menu and the ⋯ closes it (owner, 4 Sep 26 — the popup rule) — and ONLY closes it: the click that
        follows that press is caught here and goes no further, as a tap behind a window only closes the window (its scrim).
        Round 3's FULL check: with the menu open, a tap on LL beside it closed the menu AND placed a leave. Caught once, and
-       let go after a moment, so a press that never became a click cannot swallow a later one. */
+       let go by that press's own end — its click, its cancel (a press that became a scroll) or the next press — never by a
+       timer (the fresh read's R9: a press held longer than the timer still clicked through, a scroll's could eat a tap). */
     const down = (e: PointerEvent) => {
       const t = e.target as Node | null
       if (t && (menu.current?.contains(t) || btn.current?.contains(t))) return
-      const swallow = (c: MouseEvent) => { c.stopPropagation(); c.preventDefault(); document.removeEventListener('click', swallow, true) }
+      const off = () => {
+        document.removeEventListener('click', swallow, true)
+        document.removeEventListener('pointercancel', off, true)
+        document.removeEventListener('pointerdown', off, true)
+      }
+      const swallow = (c: MouseEvent) => { c.stopPropagation(); c.preventDefault(); off() }
       document.addEventListener('click', swallow, true)
-      window.setTimeout(() => document.removeEventListener('click', swallow, true), 700)
+      document.addEventListener('pointercancel', off, true)
+      /* the next press lets it go — listened for once this press has passed */
+      window.setTimeout(() => document.addEventListener('pointerdown', off, true), 0)
       close(false)
     }
     window.addEventListener('keydown', key, true)

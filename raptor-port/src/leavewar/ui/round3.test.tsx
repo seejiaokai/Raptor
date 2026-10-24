@@ -595,4 +595,21 @@ describe('round 3 — the fresh read’s finds', () => {
     expect(within(sheet()).getByTestId('span-range').textContent).toBe('Pick a range')
     expect(within(sheet()).getByTestId('span-range').getAttribute('aria-pressed')).toBe('false')
   })
+  it('R9: a long press outside the open ⋯ menu still only closes it; a press that became a scroll eats no later tap', async () => {
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(within(sheet()).getByTestId('bid-more'))
+    const ll = within(sheet()).getByTestId('bid-LL')
+    fireEvent.pointerDown(ll)
+    await new Promise(r => setTimeout(r, 900))   // held longer than a moment
+    fireEvent.click(ll)
+    expect(screen.queryByTestId('bid-picker'), 'a long press placed nothing').toBeTruthy()
+    /* the menu again; this press becomes a scroll (cancelled) — the next tap is a tap */
+    fireEvent.click(within(sheet()).getByTestId('bid-more'))
+    fireEvent.pointerDown(ll)
+    fireEvent(ll, new Event('pointercancel', { bubbles: true }))
+    fireEvent.pointerDown(ll)
+    fireEvent.click(ll)
+    expect(screen.queryByTestId('bid-picker'), 'the tap after a cancelled press places').toBeNull()
+  })
 })
