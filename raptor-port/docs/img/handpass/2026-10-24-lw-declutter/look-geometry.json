@@ -1,0 +1,265 @@
+{
+ "geo": {
+  "a-pending-today": {
+   "h": 461,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "a-pending-proposed": {
+   "h": 286,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "a-pending-menu": {
+   "h": 286,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "b-approved-today": {
+   "h": 370,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "b-approved-proposed": {
+   "h": 286,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "c-empty-today": {
+   "h": 367,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "c-empty-proposed": {
+   "h": 248,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "q7-a-today-rule": {
+   "h": 248,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "q7-b-every-row": {
+   "h": 266,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "d-select-today": {
+   "h": 400,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "d-select-proposed": {
+   "h": 279,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "a-pending-today-desk": {
+   "h": 461,
+   "vp": {
+    "width": 1440,
+    "height": 900
+   }
+  },
+  "a-pending-proposed-desk": {
+   "h": 286,
+   "vp": {
+    "width": 1440,
+    "height": 900
+   }
+  },
+  "e-member-today": {
+   "h": 338,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  },
+  "e-member-proposed": {
+   "h": 248,
+   "vp": {
+    "width": 402,
+    "height": 874
+   }
+  }
+ },
+ "notes": {
+  "widerA": {
+   "rows": [
+    {
+     "t": "Approve Refuse ⇄Move Delete",
+     "lines": 1
+    },
+    {
+     "t": "till 3 Nov Document",
+     "lines": 1
+    },
+    {
+     "t": "Whole day AM PM Pick a range",
+     "lines": 1
+    },
+    {
+     "t": "LL 24 OL 24 OIL 4 CCL 5 FCL 0 PL 0 EL 0 ",
+     "lines": 0
+    }
+   ],
+   "titleLines": 2
+  },
+  "titleA": {
+   "normal": {
+    "overRight": 0,
+    "lines": 2,
+    "gap": 0
+   },
+   "wider": {
+    "overRight": 0,
+    "lines": 2,
+    "gap": 0
+   }
+  },
+  "widerB": {
+   "rows": [
+    {
+     "t": "Approve Refuse ⇄Move Delete",
+     "lines": 1
+    },
+    {
+     "t": "till 3 Nov Document",
+     "lines": 1
+    },
+    {
+     "t": "Whole day AM PM Pick a range",
+     "lines": 1
+    },
+    {
+     "t": "LL 24 OL 24 OIL 4 CCL 5 FCL 0 PL 0 EL 0 ",
+     "lines": 0
+    }
+   ],
+   "titleLines": 2
+  },
+  "q7": {
+   "before": {
+    "sets": {
+     "have": "18",
+     "cls": "",
+     "label": "Crew sets"
+    },
+    "ip": {
+     "have": "16",
+     "cls": "",
+     "label": "IP"
+    },
+    "iwso": {
+     "have": "7",
+     "cls": "",
+     "label": "IWSO"
+    },
+    "opsp": {
+     "have": "12",
+     "cls": "",
+     "label": "OPSP"
+    },
+    "opsw": {
+     "have": "11",
+     "cls": "",
+     "label": "OPSW"
+    },
+    "sxo": {
+     "have": "12",
+     "cls": "",
+     "label": "SXO"
+    }
+   },
+   "after": {
+    "sets": {
+     "have": "18",
+     "cls": "",
+     "label": "Crew sets"
+    },
+    "ip": {
+     "have": "16",
+     "cls": "",
+     "label": "IP"
+    },
+    "iwso": {
+     "have": "7",
+     "cls": "",
+     "label": "IWSO"
+    },
+    "opsp": {
+     "have": "11",
+     "cls": "",
+     "label": "OPSP"
+    },
+    "opsw": {
+     "have": "11",
+     "cls": "",
+     "label": "OPSW"
+    },
+    "sxo": {
+     "have": "11",
+     "cls": "",
+     "label": "SXO"
+    }
+   },
+   "moved": [
+    "opsp",
+    "sxo"
+   ],
+   "undoneClean": true
+  },
+  "widerD": {
+   "rows": [
+    {
+     "t": "till 11 Nov Document",
+     "lines": 1
+    },
+    {
+     "t": "Whole day AM PM",
+     "lines": 1
+    },
+    {
+     "t": "LL 24 OL 24 OIL 4 CCL 5 FCL 0 PL 0 EL 0 ",
+     "lines": 0
+    }
+   ],
+   "titleLines": 2
+  },
+  "titleD": {
+   "normal": {
+    "overRight": 0,
+    "lines": 3,
+    "gap": 0
+   },
+   "wider": {
+    "overRight": 0,
+    "lines": 3,
+    "gap": 0
+   }
+  }
+ }
+}

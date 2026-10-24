@@ -1,0 +1,140 @@
+<title>Leave War bid window round</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; at the top the short list of what to look at now (D1237), then one section per item,
+   each a pair of pictures (today beside the drawing) that a tap opens full size. */
+:root {
+  --bg: #f4f6f8; --panel: #ffffff; --ink: #14181d; --ink-2: #4b5560; --edge: #d9dee4;
+  --accent: #0f7f99; --rec: #0d6b3b; --rec-bg: #e5f4ea; --q: #8a5a00;
+  --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-head: "Archivo", "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1216; --panel: #161c22; --ink: #e8edf2; --ink-2: #9aa6b2; --edge: #2a333c;
+  --accent: #3bc6e8; --rec: #7fdc9f; --rec-bg: #12281b; --q: #f0b54a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1216; --panel: #161c22; --ink: #e8edf2; --ink-2: #9aa6b2; --edge: #2a333c;
+  --accent: #3bc6e8; --rec: #7fdc9f; --rec-bg: #12281b; --q: #f0b54a; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+main { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1 { font: 800 22px/1.2 var(--f-head); margin: 0; text-wrap: balance; }
+h2 { font: 800 17px/1.25 var(--f-head); margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.sub { color: var(--ink-2); }
+.now { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.now h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.now ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.rec { color: var(--rec); font-weight: 700; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 12px; }
+.tag { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--q); }
+.recbox { background: var(--rec-bg); border-radius: 10px; padding: 10px 12px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; align-items: start; }
+figure { margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+figure a { display: block; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; background: #000; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { font-size: 13px; color: var(--ink-2); }
+figcaption b { color: var(--ink); }
+.changes { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.changes li { max-width: 72ch; }
+.h { font-variant-numeric: tabular-nums; font-weight: 700; }
+.reply { font: 600 14px/1.4 ui-monospace, "SF Mono", Menlo, monospace; background: var(--panel); border: 1px dashed var(--edge); border-radius: 8px; padding: 10px 12px; }
+table { border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+th, td { text-align: left; padding: 4px 14px 4px 0; border-bottom: 1px solid var(--edge); }
+th { font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); }
+</style>
+<main>
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>Round 3: the bid window with less clutter</h1>
+    <p class="sub">Saturday 24 Oct 26 · pull request 569 · drawn on the real app at your iPhone's size, with the demo's six new manning rows in place. Tap any picture to see it full size.</p>
+  </header>
+
+  <div class="now">
+    <h2>Look at now</h2>
+    <ol>
+      <li><b>Q7 (your question, newest):</b> with six manning rows and two or three counting this man, should the day line show them all? <span class="rec">Recommend B: every row his leave lowers</span>, before → after, coloured only where it ends amber or red; rows that don't count him are left out. <a href="#q7">Pictures</a></li>
+      <li><b>Round 3, the window redrawn (D1311):</b> eight changes, below. The busiest window (a pending bid) drops from <span class="h">461</span> to <span class="h">286</span> points tall. <span class="rec">Recommend: all eight, as drawn.</span> <a href="#r3">Pictures</a></li>
+      <li><b>Change 6 needs your word on its own:</b> the leave buttons get wider (same height) because the row labels are gone. You ruled that button sizes don't change without your word (D487). <span class="rec">Recommend: yes.</span></li>
+      <li><b>Done since your last message:</b> the demo now starts with six manning rows: Crew sets, IP, IWSO, OPSP, OPSW, SXO (D1312). A real squadron's app still starts with none.</li>
+      <li><b>Still open from round 1:</b> colour set <b>C or D</b> (<span class="rec">recommend C</span>), <b>Q3</b> (the Inputs calendar's bars take each kind's Leave War colour; duties and other commitments a slate: <span class="rec">recommend yes</span>), <b>Q6</b> (the day's leave lit). Q6 is now drawn as change 7 below. <a href="https://claude.ai/artifact/PSEDKEcTFzwG5FMhAsu7Rf">Round 1's page</a></li>
+    </ol>
+    <p class="reply">To answer, reply with e.g. “Q7 B, round 3 all, 6 yes, C, Q3 yes”.</p>
+  </div>
+
+  <section id="q7">
+    <span class="tag">Q7 · your question</span>
+    <h2>Which manning rows does the day line name?</h2>
+    <p>Drifter (an ops pilot who is also SXO-qualified) on Mon 2 Nov. Of the six rows, his leave lowers two: <b>OPSP 12 → 11</b> and <b>SXO 12 → 11</b>. The other four don't count him, so his leave can't move them. Measured on the real grid: a leave placed, the rows read, then taken back with Undo.</p>
+    <div class="pair">
+      <figure><a href="q7-a-today-rule.png"><img src="q7-a-today-rule.png" alt="Day line: Available P 28 to 27, then No manning row turns amber or red"></a><figcaption><b>A (today's rule):</b> his seat's Available row, then only rows that turn amber or red. Here none do, so you get the line "No manning row turns amber or red" and OPSP and SXO aren't shown.</figcaption></figure>
+      <figure><a href="q7-b-every-row.png"><img src="q7-b-every-row.png" alt="Day line: Available P 28 to 27, OPSP 12 to 11, SXO 12 to 11"></a><figcaption><b>B (recommended):</b> Available P, then every row his leave lowers. A row that ends amber or red wears that colour; the others stay plain. The "No manning row…" sentence goes, because the rows say it. Drawn in the redesigned window.</figcaption></figure>
+    </div>
+    <p class="recbox"><span class="rec">Why B:</span> it shows exactly what this leave costs and nothing it doesn't. In A, a manning row sitting one above amber gives no warning until the next person's leave turns it. The cost is one line per row that counts him: realistically two or three, about 18 points each.</p>
+  </section>
+
+  <section id="r3">
+    <span class="tag">Round 3 · D1311</span>
+    <h2>The window, redrawn: eight changes</h2>
+    <ol class="changes">
+      <li><b>The row labels go</b> (Date, Decide, Selected, Document, Remarks, Duration, Which leave, Also). Each row's buttons already say what they are; a screen reader still hears the names.</li>
+      <li><b>The day line leaves its box</b> (Q2 A on this morning's pictures page): the same words, no frame around them.</li>
+      <li><b>Decide and Selected become one row:</b> Approve · Refuse · Move · Delete. <b>"Note" goes</b>: on an approved leave the Remarks box is simply there (your D1307).</li>
+      <li><b>Document and Remarks share one row:</b> the Remarks box, now <b>dark</b> (your D1308), with "Remarks" inside it until you type; then its "till" date and the app's one Document button.</li>
+      <li><b>"Just this day" goes</b> (it is always the default); <b>"Pick a range"</b> moves to the end of the Duration row.</li>
+      <li><b>The leave buttons take the row's full width</b>: same height, wider, easier to hit. A size change, so your word (D487).</li>
+      <li><b>The day's own leave is lit</b> (your Q6): a ring on the LL button on an LL day. The title's "NOW LL" goes, as the ring says it.</li>
+      <li><b>"Approve what I enter" becomes the app's switch</b> (your D1302, remembered until changed), and <b>Grant OIL, Post out and Post in</b> move behind one <b>⋯</b> in the title bar (they were the "Also" row, used rarely).</li>
+    </ol>
+    <div class="tw"><table>
+      <tr><th>Window</th><th>Today</th><th>Drawn</th></tr>
+      <tr><td>A pending bid (admin)</td><td>461</td><td>286</td></tr>
+      <tr><td>An approved leave (admin)</td><td>370</td><td>286</td></tr>
+      <tr><td>An empty day (admin)</td><td>367</td><td>248</td></tr>
+      <tr><td>Three days picked by a drag (admin)</td><td>400</td><td>279</td></tr>
+      <tr><td>A member's own open day</td><td>338</td><td>248</td></tr>
+    </table></div>
+    <p class="sub">Heights in points on a 402-wide iPhone screen. With an iPhone's wider letters every row still fits on one line, the title bar included (<a href="a-title-wider.png">picture</a>).</p>
+
+    <h2>A pending bid</h2>
+    <div class="pair">
+      <figure><a href="a-pending-today.png"><img src="a-pending-today.png" alt="Today's window on a pending LL"></a><figcaption><b>Today</b>: 461 tall.</figcaption></figure>
+      <figure><a href="a-pending-proposed.png"><img src="a-pending-proposed.png" alt="Drawn window on a pending LL"></a><figcaption><b>Drawn</b>: 286. The LL button wears the ring, as this is an LL day.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="a-pending-menu.png"><img src="a-pending-menu.png" alt="The dots menu open: Grant OIL, Post out, Post in"></a><figcaption><b>The ⋯ opened</b>: Grant OIL, Post out, Post in, in the Also buttons' own look. They open exactly what they open today.</figcaption></figure>
+    </div>
+
+    <h2>An approved leave</h2>
+    <div class="pair">
+      <figure><a href="b-approved-today.png"><img src="b-approved-today.png" alt="Today's window on an approved LL, with a Note button"></a><figcaption><b>Today</b>: no Remarks, only "Note".</figcaption></figure>
+      <figure><a href="b-approved-proposed.png"><img src="b-approved-proposed.png" alt="Drawn window on an approved LL with Remarks and Document"></a><figcaption><b>Drawn</b>: Remarks and Document shown at once, for everyone (D1307); shorter even so.</figcaption></figure>
+    </div>
+
+    <h2>An empty day</h2>
+    <div class="pair">
+      <figure><a href="c-empty-today.png"><img src="c-empty-today.png" alt="Today's window on an empty day"></a><figcaption><b>Today</b></figcaption></figure>
+      <figure><a href="c-empty-proposed.png"><img src="c-empty-proposed.png" alt="Drawn window on an empty day"></a><figcaption><b>Drawn</b>: no actions row, as there is nothing on the day to act on.</figcaption></figure>
+    </div>
+
+    <h2>Three days picked by a drag</h2>
+    <div class="pair">
+      <figure><a href="d-select-today.png"><img src="d-select-today.png" alt="Today's drag-selection window"></a><figcaption><b>Today</b>: it offers Approve and Refuse over three empty days, where there is nothing to decide (pressing either says so).</figcaption></figure>
+      <figure><a href="d-select-proposed.png"><img src="d-select-proposed.png" alt="Drawn drag-selection window"></a><figcaption><b>Drawn</b>: Decide only where the days hold a bid; the title's dates shortened to "9–11 Nov · 3 days" (today "9 Nov 26 – 11 Nov 26 · 3 days").</figcaption></figure>
+    </div>
+
+    <h2>A member's own day</h2>
+    <div class="pair">
+      <figure><a href="e-member-today.png"><img src="e-member-today.png" alt="Today's member window"></a><figcaption><b>Today</b></figcaption></figure>
+      <figure><a href="e-member-proposed.png"><img src="e-member-proposed.png" alt="Drawn member window"></a><figcaption><b>Drawn</b>: a member has no switch and no ⋯.</figcaption></figure>
+    </div>
+
+    <h2>On a desktop</h2>
+    <div class="pair">
+      <figure><a href="a-pending-today-desk.png"><img src="a-pending-today-desk.png" alt="Today's window on a desktop"></a><figcaption><b>Today</b>, a pending bid.</figcaption></figure>
+      <figure><a href="a-pending-proposed-desk.png"><img src="a-pending-proposed-desk.png" alt="Drawn window on a desktop"></a><figcaption><b>Drawn</b>: the same rows, in the same places as on a phone.</figcaption></figure>
+    </div>
+    <p class="sub">Keyboard: the ⋯ is reached with Tab like ✕; Escape closes its menu first, then the window. Nothing else changes in how the window is used.</p>
+  </section>
+</main>
