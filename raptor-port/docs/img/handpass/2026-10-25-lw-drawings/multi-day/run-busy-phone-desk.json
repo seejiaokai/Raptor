@@ -1,0 +1,166 @@
+{
+ "log": [
+  {
+   "size": "phone/mid",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|whole\",\"14\":\"\",\"15\":\"\",\"16\":\"LL|k-ll|s-a|top\",\"17\":\"LL|k-ll|s-a|top + HO|k-oil|s-a|bot\",\"18\":\"LL|k-ll|s-a|top\",\"19\":\"\"}"
+  },
+  {
+   "size": "phone/mid",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvmzmqizbpql0g\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"},{\"iid\":\"imvmzmwmu9uuwjd\",\"type\":\"LL\",\"date\":\"Nov 16\",\"endDate\":\"Nov 18\",\"half\":\"am\",\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "phone/mid",
+   "said": "case 3: 1 LL input over 16–18 Nov (half am); 17 Nov LL|k-ll|s-a|top + HO|k-oil|s-a|bot"
+  },
+  {
+   "size": "phone/mid",
+   "said": "scrolled the grid 142px sideways for 9–13 Nov"
+  },
+  {
+   "size": "phone/mid",
+   "said": "scrolled the grid 144px sideways for 16–18 Nov"
+  },
+  {
+   "size": "phone/mid",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "phone/end",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"14\":\"\"}"
+  },
+  {
+   "size": "phone/end",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvmzni33h0jkgk\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "phone/end",
+   "said": "scrolled the grid 142px sideways for 9–13 Nov"
+  },
+  {
+   "size": "phone/end",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "desk/mid",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|whole\",\"14\":\"\",\"15\":\"\",\"16\":\"LL|k-ll|s-a|top\",\"17\":\"LL|k-ll|s-a|top + HO|k-oil|s-a|bot\",\"18\":\"LL|k-ll|s-a|top\",\"19\":\"\"}"
+  },
+  {
+   "size": "desk/mid",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvmzo3nfu7sg7l\",\"type\":\"LL\",\"date\":\"Nov 16\",\"endDate\":\"Nov 18\",\"half\":\"am\",\"yr\":2026,\"lw\":\"y2026\"},{\"iid\":\"imvmznyekzc336e\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "desk/mid",
+   "said": "case 3: 1 LL input over 16–18 Nov (half am); 17 Nov LL|k-ll|s-a|top + HO|k-oil|s-a|bot"
+  },
+  {
+   "size": "desk/mid",
+   "said": "scrolled the grid 176px sideways for 9–13 Nov"
+  },
+  {
+   "size": "desk/mid",
+   "said": "scrolled the grid 139px sideways for 16–18 Nov; at the period's end, 2026-11-15 stays 40px short of the names' edge, so the picture leaves the names out"
+  },
+  {
+   "size": "desk/mid",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "desk/end",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"14\":\"\"}"
+  },
+  {
+   "size": "desk/end",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvmzolsfwqkbgs\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "desk/end",
+   "said": "scrolled the grid 176px sideways for 9–13 Nov"
+  },
+  {
+   "size": "desk/end",
+   "said": "errors: none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "busy1-today-phone.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the middle day, 11 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "busy1-a-phone.png",
+   "label": "Drawn A: the bar runs through 11 Nov; the FO is behind the \"+1\" corner (a tap shows the day's list)"
+  },
+  {
+   "file": "busy1-b-phone.png",
+   "label": "Drawn B: the bar breaks round 11 Nov, which shows both as today; the piece after it says LL again"
+  },
+  {
+   "file": "busy3-today-phone.png",
+   "label": "Today: Drifter's approved morning LL 16–18 Nov and an afternoon HO on 17 Nov"
+  },
+  {
+   "file": "busy3-a-phone.png",
+   "label": "Drawn A: the morning bar runs through 17 Nov; the HO is behind the \"+1\" corner"
+  },
+  {
+   "file": "busy3-b-phone.png",
+   "label": "Drawn B: the bar breaks round 17 Nov; with one day each side it looks as today, but for square ends"
+  },
+  {
+   "file": "busy3-c-phone.png",
+   "label": "Drawn C: the morning bar runs through and the afternoon HO keeps its own half — nothing hidden"
+  },
+  {
+   "file": "busy2-today-phone.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the last day, 13 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "busy2-a-phone.png",
+   "label": "Drawn A: the bar runs to its end on 13 Nov; the FO is behind the \"+1\" corner (a tap shows the day's list)"
+  },
+  {
+   "file": "busy2-b-phone.png",
+   "label": "Drawn B: the bar stops at 12 Nov; 13 Nov shows both as today"
+  },
+  {
+   "file": "busy1-today-desk.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the middle day, 11 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "busy1-a-desk.png",
+   "label": "Drawn A: the bar runs through 11 Nov; the FO is behind the \"+1\" corner (a tap shows the day's list)"
+  },
+  {
+   "file": "busy1-b-desk.png",
+   "label": "Drawn B: the bar breaks round 11 Nov, which shows both as today; the piece after it says LL again"
+  },
+  {
+   "file": "busy3-today-desk.png",
+   "label": "Today: Drifter's approved morning LL 16–18 Nov and an afternoon HO on 17 Nov"
+  },
+  {
+   "file": "busy3-a-desk.png",
+   "label": "Drawn A: the morning bar runs through 17 Nov; the HO is behind the \"+1\" corner"
+  },
+  {
+   "file": "busy3-b-desk.png",
+   "label": "Drawn B: the bar breaks round 17 Nov; with one day each side it looks as today, but for square ends"
+  },
+  {
+   "file": "busy3-c-desk.png",
+   "label": "Drawn C: the morning bar runs through and the afternoon HO keeps its own half — nothing hidden"
+  },
+  {
+   "file": "busy2-today-desk.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the last day, 13 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "busy2-a-desk.png",
+   "label": "Drawn A: the bar runs to its end on 13 Nov; the FO is behind the \"+1\" corner (a tap shows the day's list)"
+  },
+  {
+   "file": "busy2-b-desk.png",
+   "label": "Drawn B: the bar stops at 12 Nov; 13 Nov shows both as today"
+  }
+ ]
+}

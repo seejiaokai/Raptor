@@ -49,6 +49,36 @@ the red." (other words); C "This bid turns IP amber and Available P red."; D "Th
 | `td-quick-phone.png` | Today, right after the tap | The whole phone screen about 0.1 s after the tap on OD: the bubble is up. |
 | `d-drawn-mid-phone.png`, `d-drawn-mid-desk.png` | Drawn (D) | The same bubble, red, "This overseas duty turns Available P red." |
 
+## Several rows amber, with the figures (multi-*, 25 Oct 26, on the BUILT bubble)
+
+His question: "How would B1 look for multiple manning yellow? Is it tough to show the counters from what to what? Like
+12->11". Same script, `PART=multi` (`PART=multi LW_PORT=4180 LW_OUT=2026-10-25-lw-drawings/bubble node
+scripts/handpass/lw-1025-bubble.mjs`); notes in `run-multi-phone.json` and `run-multi-desk.json`.
+
+**Fixtures.** Wed 9 Dec: IP 16, SXO 12. Each row's amber point typed in its own window (the explainer its name opens:
+Amber below, Save): IP 3 → 16, SXO 1 → 12, so the day's figure stays fine and one fewer is amber. Then a pending LL for
+Anvil (an SXO who is an IP): IP 16 → 15 and SXO 12 → 11, both amber; Available P 28 → 27, still fine (no Required set).
+The red case: Tue 15 Dec, Required P = Available P (28), a pending LL for Ace (28 → 27, red), then one for Saint
+(27 → 26); both ops pilots, so IP and SXO do not move.
+
+**Drawn on the bubble's own node** (its words replaced; nothing else changed). A: a sentence. B: "This bid:" then the bid
+window's day line pairs: each name and figure in the colour the day line gives its level, read off the real day line
+(amber `rgb(229, 168, 59)`, the app's `--adv`; a red pair, which that window does not show, takes the day line's rule
+for red, `--hard` `#f0555f`); a grey dot between pairs (`rgb(138, 150, 163)`); a 7px gap; each pair kept whole on its
+line. The bubble keeps its own size and weight. The real day line also writes each level after its figure ("IP 16 → 15 ·
+amber"); B leaves that word out and lets the colour say it, as asked.
+
+| Picture | Real or drawn | What it shows |
+|---|---|---|
+| `multi-ref-dayline-phone.png`, `multi-ref-dayline-desk.png` | Today | Anvil's bid window on 9 Dec before the bid: its day line reads "IP 16 → 15 · amber · SXO 12 → 11 · amber". The look B copies. |
+| `multi-amber-today-phone.png`, `multi-amber-today-desk.png` | Today | The bid placed: the built bubble, amber, "This bid turns IP amber and SXO amber." Marked: the bubble and the two amber cells. |
+| `multi-amber-quick-phone.png` | Today, right after the tap | The whole phone screen about 0.1 s after the tap that placed the bid: the bubble is up. |
+| `multi-amber-a-phone.png`, `multi-amber-a-desk.png` | Drawn (A) | "This bid turns IP amber (16 → 15) and SXO amber (12 → 11)." |
+| `multi-amber-b-phone.png`, `multi-amber-b-desk.png` | Drawn (B) | "This bid:  IP 16 → 15  ·  SXO 12 → 11", the pairs in the day line's amber. |
+| `multi-red-today-phone.png`, `multi-red-today-desk.png` | Today | Saint's bid on 15 Dec: the built bubble, red, "This bid takes Available P lower, still red." (27 → 26). |
+| `multi-red-quick-phone.png` | Today, right after the tap | The whole phone screen about 0.1 s after the tap: the red bubble is up. |
+| `multi-red-b-phone.png`, `multi-red-b-desk.png` | Drawn (B, red) | "This bid:  Available P 27 → 26", the pair in the day line's red. |
+
 **Seen while drawing.** The foot bubble works on the desktop too: the page itself scrolls there, so the Manning button
 leaves the view as on a phone. On the desktop the Manning rows read "REQUIRED P" and "AVAILABLE P", on a phone "REQ P"
 and "AVAIL P"; the bubble says "Available P" at both. The bubble under the button sits over the month buttons (today too).

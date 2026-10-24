@@ -23,8 +23,13 @@ import path from 'node:path'
 import { readdirSync, unlinkSync, writeFileSync } from 'node:fs'
 console.log('lw-1025-bubble', L.OUT, 'port', L.PORT)
 const SIZES = (process.env.SIZES || 'phone,desk').split(',')
+/* PART=multi (25 Oct 26, his question on the BUILT bubble — "How would B1 look for multiple manning yellow? Is it tough to
+   show the counters from what to what? Like 12->11"): one bid turning two Manning rows amber, drawn with each row's
+   figures before → after, as a sentence (A) and as the bid window's day line pairs (B); B again for the red case. Its
+   pictures are named multi-*; the first set is left as it is. */
+const PART = process.env.PART || 'first'
 const T = L.T
-for (const f of readdirSync(L.OUT)) if (f.endsWith('.png') && SIZES.some(s => f.includes(`-${s}`))) unlinkSync(path.join(L.OUT, f))
+for (const f of readdirSync(L.OUT)) if (f.endsWith('.png') && SIZES.some(s => f.includes(`-${s}`)) && (PART === 'multi') === f.startsWith('multi-')) unlinkSync(path.join(L.OUT, f))
 
 const RED_EDGE = 'rgba(240, 85, 95, .7)', RED_INK = '#FFAAB0', RED_FILL = '#2e1418'
 const WORDS = {
@@ -83,7 +88,7 @@ async function setManningView(w, inView) {
    (they cannot be pressed: pointer-events none). On a desktop a plain click. */
 async function tapQ(w, sel, name, label) {
   const P = w.page
-  if (!w.phone) { await L.press(w, sel); return null }
+  if (!w.phone || !name) { await L.press(w, sel); return null }
   const c = await L.centre(P, sel)
   await P.evaluate(label => {
     const panel = document.querySelector('#page-leavewar') || document.body, cs = getComputedStyle(panel)
@@ -201,6 +206,129 @@ const drawnCheck = (P, words) => async () => P.evaluate(([words, edge]) => {
 }, [words, RED_EDGE])
 const DRAWN = '[data-drawn="clone"], [data-drawn="bubble"]'
 
+/* ============ PART=multi: one bid, two Manning rows amber; the figures before → after ============ */
+const DM = '2026-12-09'
+/* a counter's amber point typed in its own window — the explainer its name opens (an admin's Amber below, then Save) */
+async function setAmberPoint(w, id, n) {
+  const P = w.page
+  await P.evaluate(() => window.scrollTo(0, 0)); await P.waitForTimeout(200)
+  await L.press(w, T(`manning-info-${id}`))
+  await P.waitForSelector(T('thresh-amber'), { timeout: 5000 })
+  const was = await P.locator(T('thresh-amber')).inputValue()
+  await P.locator(T('thresh-amber')).fill(String(n))
+  await L.press(w, T('thresh-save')); await P.waitForTimeout(400)
+  if (await L.vis(P, T('manning-info-close'))) { await L.press(w, T('manning-info-close')); await P.waitForTimeout(300) }
+  return was
+}
+/* the bid window's day line as drawn: its words, and each part's colour, weight and size, read off the real one */
+const readDayLine = P => P.evaluate(() => {
+  const root = document.querySelector('[data-testid="bid-dayline"]'); if (!root) return null
+  const st = e => { if (!e) return null; const c = getComputedStyle(e); return { color: c.color, weight: c.fontWeight, size: c.fontSize } }
+  const row = lv => { const r = root.querySelector(`.dl-${lv}`); return r && { name: st(r.querySelector('.dl-name')), fig: st(r.querySelector('.dl-fig')) } }
+  const pr = getComputedStyle(document.querySelector('#page-leavewar') || document.body)
+  return { text: root.innerText.replace(/\s+/g, ' ').trim(), amber: row('amber'), red: row('red'), dot: st(root.querySelector('.dl-dot')), gap: getComputedStyle(root.querySelector('.dl-pairs') || root).columnGap, adv: pr.getPropertyValue('--adv').trim(), hard: pr.getPropertyValue('--hard').trim() }
+})
+/* A: the real bubble's own node, its words replaced */
+const sayReal = (P, words) => P.evaluate(t => { const e = document.querySelector('[data-testid="manning-bubble"]'); if (!e) return 'no real bubble up'; e.dataset.drawn = 'bubble'; e.textContent = t; return null }, words)
+/* B: the real bubble's own node, its words replaced by "This bid:" and the day line's pairs — each pair's name and figure
+   in the colour the day line gives its level (read off the real day line; a red pair, which the amber window does not
+   show, takes the day line's rule for red: the app's --hard), a grey dot between, each pair kept whole as the day line
+   keeps it. The bubble keeps its own size and weight. */
+const paintPairs = (P, lead, pairs, dl) => P.evaluate(([lead, pairs, dl]) => {
+  const e = document.querySelector('[data-testid="manning-bubble"]')
+  if (!e) return 'no real bubble up'
+  e.dataset.drawn = 'bubble'; e.textContent = ''
+  const gap = dl.gap && dl.gap !== 'normal' ? dl.gap : '7px'
+  const box = document.createElement('span'); Object.assign(box.style, { display: 'inline-flex', flexWrap: 'wrap', alignItems: 'baseline', columnGap: gap, rowGap: '2px' })
+  const ld = document.createElement('span'); ld.textContent = lead; box.appendChild(ld)
+  pairs.forEach((p, i) => {
+    const wrap = document.createElement('span'); Object.assign(wrap.style, { display: 'inline-flex', alignItems: 'baseline', columnGap: gap, whiteSpace: 'nowrap' })
+    if (i > 0) { const d = document.createElement('span'); d.textContent = '·'; d.style.color = dl.dot?.color ?? ''; wrap.appendChild(d) }
+    const c = dl[p.level] ? { n: dl[p.level].name.color, f: dl[p.level].fig.color } : { n: p.level === 'red' ? dl.hard : dl.adv, f: p.level === 'red' ? dl.hard : dl.adv }
+    const n = document.createElement('span'); n.textContent = p.name; n.style.color = c.n
+    const f = document.createElement('span'); f.textContent = p.fig; f.style.color = c.f
+    const r = document.createElement('span'); r.append(n, ' ', f); wrap.appendChild(r)
+    box.appendChild(wrap)
+  })
+  e.appendChild(box)
+  return null
+}, [lead, pairs, dl])
+/* the premise of an A or B picture: the drawn node up, its edge the level's colour, its words as drawn */
+const levelCheck = (P, words, level) => async () => P.evaluate(([words, level]) => {
+  const e = document.querySelector('[data-drawn="bubble"]')
+  if (!e || !e.getBoundingClientRect().height) return 'the drawn bubble is not on screen'
+  const c = getComputedStyle(e).borderTopColor
+  if (!(level === 'red' ? /240, 85, 95/ : /229, 168, 59/).test(c)) return 'edge ' + c
+  return e.textContent.replace(/\s+/g, '') === words.replace(/\s+/g, '') ? null : `words "${e.textContent}"`
+}, [words, level])
+
+async function multiPart(w, size, ids, sc) {
+  const P = w.page
+  const anvil = ids.Anvil, ace = ids.Ace, saint = ids.Saint
+  console.log(size, { anvil, ace, saint })
+  let dl = null
+  /* ============ 9 Dec: one bid (Anvil, an SXO who is an IP) turns IP and SXO amber; Available P stays fine ============ */
+  await sc('multi-amber', async () => {
+    await P.evaluate(() => window.scrollTo(0, 0)); await P.waitForTimeout(300)
+    const av0 = await availP(w, DM)
+    const fig = async id => Number((await P.locator(T(`count-${id}-${DM}`)).first().innerText()).trim())
+    const lvl = id => P.evaluate(sel => document.querySelector(sel)?.className ?? '', T(`count-${id}-${DM}`))
+    const ip0 = await fig('ip'), sxo0 = await fig('sxo')
+    /* each row's amber point set to the day's own figure: the figure stays fine ("amber below"), one fewer is amber */
+    const wasIp = await setAmberPoint(w, 'ip', ip0), wasSxo = await setAmberPoint(w, 'sxo', sxo0)
+    await availP(w, DM)
+    note('multi', size, `9 Dec: IP ${ip0}, SXO ${sxo0}, Available P ${av0}; amber points IP ${wasIp} → ${ip0}, SXO ${wasSxo} → ${sxo0}; cells "${await lvl('ip')}", "${await lvl('sxo')}"`)
+    if (/\b(amber|red)\b/.test(await lvl('ip') + ' ' + await lvl('sxo'))) throw new Error('a row is already amber before the bid')
+    /* the bid window's day line: read (the look B copies) and pictured, then the window cancelled */
+    await L.openCellR(w, anvil, DM)
+    await P.waitForSelector(T('bid-picker'), { timeout: 5000 })
+    dl = await readDayLine(P)
+    note('multi', size, `Anvil's bid window on 9 Dec, its day line: "${dl?.text}" — ${JSON.stringify({ amber: dl?.amber, red: dl?.red, dot: dl?.dot, gap: dl?.gap, adv: dl?.adv, hard: dl?.hard })}`)
+    if (!dl || !dl.amber) throw new Error('the day line names no amber row: ' + dl?.text)
+    await frame(w, 'multi-ref-dayline', { marks: [T('bid-dayline')], around: ['[data-testid="bid-picker"] .bidsheet-hd', T('bid-dayline')], label: 'Today, the bid window before the bid: its day line (the look B copies)' })
+    await L.press(w, T('bid-cancel')); await P.waitForTimeout(300)
+    /* the bid */
+    const r = await bidLL(w, anvil, DM, { inView: true, quick: 'multi-amber-quick', quickLabel: 'Today, right after the tap on LL (one bid, two rows amber)' })
+    const b = await bubbleNow(P)
+    await P.evaluate(() => window.scrollTo(0, 0)); await P.waitForTimeout(250)
+    const ip1 = await fig('ip'), sxo1 = await fig('sxo'), av1 = await availNow(P, DM)
+    const avCls = await P.evaluate(sel => document.querySelector(sel)?.className ?? '', T(`avail-p-${DM}`))
+    note('multi', size, `Anvil's pending LL ${JSON.stringify(r.k)}: IP ${ip0} → ${ip1} ("${await lvl('ip')}"), SXO ${sxo0} → ${sxo1} ("${await lvl('sxo')}"), Available P ${av0} → ${av1} ("${avCls}"); bubble ${JSON.stringify(b)}`)
+    if (b.where !== 'mid') throw new Error('no bubble under the Manning button: ' + JSON.stringify(b))
+    if (/\b(under|amber|red)\b/.test(avCls)) throw new Error('Available P is not fine: ' + avCls)
+    const marks = [DRAWN, T(`count-ip-${DM}`), T(`count-sxo-${DM}`)]
+    const around = [T('counts-toggle'), T(`count-ip-${DM}`), T(`count-sxo-${DM}`), T('count-ip-2026-12-13')]
+    await frame(w, 'multi-amber-today', { marks: [T('manning-bubble'), ...marks.slice(1)], around, label: `Today: one bid turns two rows amber, IP ${ip0} → ${ip1} and SXO ${sxo0} → ${sxo1}` })
+    const A = `This bid turns IP amber (${ip0} → ${ip1}) and SXO amber (${sxo0} → ${sxo1}).`
+    const whyA = await sayReal(P, A); if (whyA) throw new Error(whyA)
+    await frame(w, 'multi-amber-a', { marks, around, label: 'Drawn A: a sentence, each row’s figures in brackets', check: levelCheck(P, A, 'amber') })
+    const pairs = [{ level: 'amber', name: 'IP', fig: `${ip0} → ${ip1}` }, { level: 'amber', name: 'SXO', fig: `${sxo0} → ${sxo1}` }]
+    const whyB = await paintPairs(P, 'This bid:', pairs, dl); if (whyB) throw new Error(whyB)
+    await frame(w, 'multi-amber-b', { marks, around, label: 'Drawn B: the bid window’s day line pairs, led by “This bid:”', check: levelCheck(P, `This bid: IP ${ip0} → ${ip1} · SXO ${sxo0} → ${sxo1}`, 'amber') })
+    await dropDrawn(P)
+  })
+  /* ============ 15 Dec: the red case, a row taken lower (Ace, then Saint: ops pilots, neither IP nor SXO) ============ */
+  await sc('multi-red', async () => {
+    if (!dl) throw new Error('no day line was read')
+    await P.evaluate(() => window.scrollTo(0, 0)); await P.waitForTimeout(300)
+    const a0 = await availP(w, D1)
+    const req = await setReq(w, D1, Number(a0))
+    await bidLL(w, ace, D1, { inView: true, quick: null })
+    const a1 = await availNow(P, D1)
+    const r = await bidLL(w, saint, D1, { inView: true, quick: 'multi-red-quick', quickLabel: 'Today, right after the tap on LL (a second bid on a red day)' })
+    const b = await bubbleNow(P)
+    await P.evaluate(() => window.scrollTo(0, 0)); await P.waitForTimeout(250)
+    const a2 = await availNow(P, D1)
+    note('multi', size, `15 Dec: Required P ${req}; Ace's bid ${a0} → ${a1}; Saint's ${JSON.stringify(r.k)} ${a1} → ${a2}; bubble ${JSON.stringify(b)}`)
+    if (b.where !== 'mid') throw new Error('no bubble under the Manning button: ' + JSON.stringify(b))
+    const around = [T('counts-toggle'), T(`avail-p-${D1}`), T('avail-p-2026-12-19')]
+    await frame(w, 'multi-red-today', { marks: [T('manning-bubble'), T(`avail-p-${D1}`)], around, label: `Today: a second bid takes Available P ${a1} → ${a2}, still red` })
+    const whyB = await paintPairs(P, 'This bid:', [{ level: 'red', name: 'Available P', fig: `${a1} → ${a2}` }], dl); if (whyB) throw new Error(whyB)
+    await frame(w, 'multi-red-b', { marks: [DRAWN, T(`avail-p-${D1}`)], around, label: 'Drawn B, the red case: the day line’s pair, led by “This bid:”', check: levelCheck(P, `This bid: Available P ${a1} → ${a2}`, 'red') })
+    await dropDrawn(P)
+  })
+}
+
 const D1 = '2026-12-15', D2 = '2026-12-16', D3 = '2026-12-17'
 for (const size of SIZES) {
   const w = await L.newCtx(size)
@@ -213,6 +341,8 @@ for (const size of SIZES) {
   const sc = async (id, fn) => { console.log(`-- ${id} [${size}]`); try { await fn() } catch (e) { note(id, size, 'NOT DONE — ' + String(e).slice(0, 300)); await dropDrawn(P).catch(() => {}); await L.closeAny(w); await P.keyboard.press('Escape').catch(() => {}) } }
   const saved = {}
 
+  if (PART === 'multi') await multiPart(w, size, ids, sc)
+  else {
   /* ============ 15 Dec: Required P set to Available P; a first bid, then a second ============ */
   await sc('mid', async () => {
     const a0 = await availP(w, D1)
@@ -320,11 +450,12 @@ for (const size of SIZES) {
     await frame(w, 'd-drawn-mid', { marks: [DRAWN, T(`avail-p-${D3}`)], around, label: 'Drawn: the bubble names the overseas duty, in red', check: drawnCheck(P, WORDS.D) })
     await dropDrawn(P)
   })
+  }
 
   if (w.errs.length) note('errors', size, w.errs.slice(0, 8).join(' || '))
   else note('errors', size, 'none (console, page, 4xx)')
   await w.ctx.close()
 }
 await L.closeBrowser()
-writeFileSync(path.join(L.OUT, `run-${SIZES.join('-')}.json`), JSON.stringify({ log, pics, colours: { RED_EDGE, RED_INK, RED_FILL }, words: WORDS }, null, 1))
+writeFileSync(path.join(L.OUT, `run-${PART === 'multi' ? 'multi-' : ''}${SIZES.join('-')}.json`), JSON.stringify({ log, pics, colours: { RED_EDGE, RED_INK, RED_FILL }, words: WORDS }, null, 1))
 console.log('DONE', pics.length, 'pictures;', log.filter(l => /NOT DONE/.test(l.said)).length, 'not done')

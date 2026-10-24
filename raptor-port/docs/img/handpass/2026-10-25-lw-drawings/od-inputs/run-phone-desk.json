@@ -1,0 +1,531 @@
+{
+ "greyA": {
+  "h": "184, 190, 198",
+  "ink": "#0b1116",
+  "fill": 1,
+  "name": "light grey, dark words"
+ },
+ "log": [
+  {
+   "id": "leavewar",
+   "size": "phone",
+   "said": "the five days: {\"od\":[\"OD|k-od|s-a|whole\"],\"una\":[\"UNA|k-una|s-a|whole\"],\"ref\":[\"LL|k-ll|s-r|whole\"],\"unaAm\":[\"UNA|k-una|s-a|top\"],\"ll\":[\"LL|k-ll|s-a|whole\"]}"
+  },
+  {
+   "id": "leavewar",
+   "size": "phone",
+   "said": "OD fill #535C69 edge #798798 words #F2F5F8 (6.2:1) · UNA teal fill #146264 edge #147D7D words #D6FFFB · ΔE OD–UNA teal 17.6"
+  },
+  {
+   "id": "leavewar",
+   "size": "phone",
+   "said": "grey (a) UNA fill #B8BEC6 edge #B8BEC6 words #0B1116 (10.1:1) · ΔE OD–grey(a) fill 34.5, edge 17.7, words 91.5 · ΔE grey(a)–refused fill 62.5"
+  },
+  {
+   "id": "inputs-cal",
+   "size": "phone",
+   "said": "ib-week-2: 2 bars — [Drifter | red kd k-od | Drifter · OD · 14 Dec\nPlaced by Saber for Drifter · 25 Oct 26, 06:23] [Drifter | red kd k-ll | Drifter · LL · 18 Dec\nPlaced by Saber for Drifter · 25 Oct 26, 06:24]"
+  },
+  {
+   "id": "inputs-cal",
+   "size": "phone",
+   "said": "Drifter's bars: Drifter (k-od), Drifter (k-ll) · his approved LL shown · a UNA bar of his: none, as ruled"
+  },
+  {
+   "id": "inputs-cal",
+   "size": "phone",
+   "said": "OD bar: words \"Drifter\" fill #535C69 edge #7B899A words #FFFFFF (6.7:1) over #14181D"
+  },
+  {
+   "id": "inputs-day",
+   "size": "phone",
+   "said": "14 Dec opened: 1 cards — All day DrifterOD By Saber"
+  },
+  {
+   "id": "inputs-day",
+   "size": "phone",
+   "said": "the OD card: box #1A1F26 edge #2A313A · its small square #F0555F · kind words \"OD\" #8A96A3 (5.5:1)"
+  },
+  {
+   "id": "inputs-day",
+   "size": "phone",
+   "said": "15 Dec opened: head \"⠿ | Tue 15 Dec\" · 0 cards  · empty line: No inputs on this day. Tap + Input to add one. · a Drifter card: false · the word UNA anywhere: false"
+  },
+  {
+   "id": "inputs-list",
+   "size": "phone",
+   "said": "the OD's card: \"All day DrifterOD By Saber\" · coloured parts: icard-sq · a UNA of Drifter in the list: false"
+  },
+  {
+   "id": "inputs-list",
+   "size": "phone",
+   "said": "card box #1A1F26 edge #2A313A · square #F0555F · kind words \"OD\" #8A96A3"
+  },
+  {
+   "id": "compare",
+   "size": "phone",
+   "said": "{\"lwOD_vs_lwUNAgreyA\":{\"fillDE\":34.5,\"edgeDE\":17.7,\"wordsDE\":91.5},\"lwOD_vs_lwUNAteal\":{\"fillDE\":17.6,\"edgeDE\":21,\"wordsDE\":13.6},\"lwUNAgreyA_vs_lwRefused\":{\"fillDE\":62.5,\"edgeDE\":38.4,\"wordsDE\":40.1},\"inCalOD_vs_lwUNAgreyA\":{\"fillDE\":34.5,\"edgeDE\":16.9,\"wordsDE\":93.7},\"inCalOD_vs_lwOD\":{\"fillDE\":0,\"edgeDE\":0.9,\"wordsDE\":2.8},\"inCalOD_vs_inCalLL\":{\"fillDE\":23.1,\"edgeDE\":39.3,\"wordsDE\":0}}"
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  },
+  {
+   "id": "leavewar",
+   "size": "desk",
+   "said": "the five days: {\"od\":[\"OD|k-od|s-a|whole\"],\"una\":[\"UNA|k-una|s-a|whole\"],\"ref\":[\"LL|k-ll|s-r|whole\"],\"unaAm\":[\"UNA|k-una|s-a|top\"],\"ll\":[\"LL|k-ll|s-a|whole\"]}"
+  },
+  {
+   "id": "leavewar",
+   "size": "desk",
+   "said": "OD fill #535C69 edge #798798 words #F2F5F8 (6.2:1) · UNA teal fill #146264 edge #147D7D words #D6FFFB · ΔE OD–UNA teal 17.6"
+  },
+  {
+   "id": "leavewar",
+   "size": "desk",
+   "said": "grey (a) UNA fill #B8BEC6 edge #B8BEC6 words #0B1116 (10.1:1) · ΔE OD–grey(a) fill 34.5, edge 17.7, words 91.5 · ΔE grey(a)–refused fill 62.5"
+  },
+  {
+   "id": "inputs-cal",
+   "size": "desk",
+   "said": "ib-week-2: 2 bars — [Drifter · OD | red kd k-od | Drifter · OD · 14 Dec\nPlaced by Saber for Drifter · 25 Oct 26, 06:24] [Drifter · LL | red kd k-ll | Drifter · LL · 18 Dec\nPlaced by Saber for Drifter · 25 Oct 26, 06:24]"
+  },
+  {
+   "id": "inputs-cal",
+   "size": "desk",
+   "said": "Drifter's bars: Drifter · OD (k-od), Drifter · LL (k-ll) · his approved LL shown · a UNA bar of his: none, as ruled"
+  },
+  {
+   "id": "inputs-cal",
+   "size": "desk",
+   "said": "OD bar: words \"Drifter · OD\" fill #535C69 edge #7B899A words #FFFFFF (6.7:1) over #14181D"
+  },
+  {
+   "id": "inputs-day",
+   "size": "desk",
+   "said": "14 Dec opened: 1 cards — All day DrifterOD By Saber"
+  },
+  {
+   "id": "inputs-day",
+   "size": "desk",
+   "said": "the OD card: box #1A1F26 edge #2A313A · its small square #F0555F · kind words \"OD\" #8A96A3 (5.5:1)"
+  },
+  {
+   "id": "inputs-day",
+   "size": "desk",
+   "said": "15 Dec opened: head \"⠿ | Tue 15 Dec\" · 0 cards  · empty line: No inputs on this day. Tap + Input to add one. · a Drifter card: false · the word UNA anywhere: false"
+  },
+  {
+   "id": "inputs-list",
+   "size": "desk",
+   "said": "the OD's row: \"Drifter 14 Dec OD By Saber now \" · coloured parts: intag · a UNA of Drifter in the list: false"
+  },
+  {
+   "id": "inputs-list",
+   "size": "desk",
+   "said": "the row's left edge: [{\"el\":\"TR.in-red\",\"borderLeft\":\"0px none rgb(241, 244, 247)\",\"shadow\":\"none\",\"before\":null},{\"el\":\"TD.\",\"borderLeft\":\"0px none rgb(241, 244, 247)\",\"shadow\":\"rgb(240, 85, 95) 3px 0px 0px 0px inset\",\"before\":null}]"
+  },
+  {
+   "id": "inputs-list",
+   "size": "desk",
+   "said": "row #0B0D10 words #F1F4F7 · type pill \"OD\" fill #1A1F26 edge #2A313A words #B6C0CB"
+  },
+  {
+   "id": "compare",
+   "size": "desk",
+   "said": "{\"lwOD_vs_lwUNAgreyA\":{\"fillDE\":34.5,\"edgeDE\":17.7,\"wordsDE\":91.5},\"lwOD_vs_lwUNAteal\":{\"fillDE\":17.6,\"edgeDE\":21,\"wordsDE\":13.6},\"lwUNAgreyA_vs_lwRefused\":{\"fillDE\":62.5,\"edgeDE\":38.4,\"wordsDE\":40.1},\"inCalOD_vs_lwUNAgreyA\":{\"fillDE\":34.5,\"edgeDE\":16.9,\"wordsDE\":93.7},\"inCalOD_vs_lwOD\":{\"fillDE\":0,\"edgeDE\":0.9,\"wordsDE\":2.8},\"inCalOD_vs_inCalLL\":{\"fillDE\":23.1,\"edgeDE\":39.3,\"wordsDE\":0}}"
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "1-leavewar-today-phone.png",
+   "label": "Today, Drifter 14–18 Dec: OD (slate) · UNA (teal) · refused LL · UNA morning · LL — the OD and the UNAs boxed"
+  },
+  {
+   "file": "2-leavewar-drawn-grey-a-phone.png",
+   "label": "Drawn: UNA in grey (a) — the OD's slate #535C69 beside the grey UNA #B8BEC6"
+  },
+  {
+   "file": "3-inputs-calendar-phone.png",
+   "label": "Today: an overseas duty on the Inputs calendar — UNA is never shown here"
+  },
+  {
+   "file": "4a-inputs-day-14dec-phone.png",
+   "label": "Today: 14 Dec opened on the Inputs calendar — Drifter's overseas duty, boxed"
+  },
+  {
+   "file": "4b-inputs-day-15dec-phone.png",
+   "label": "Today: 15 Dec opened — Drifter's whole-day UNA is not on the Inputs page (UNA lives on the Leave War only)"
+  },
+  {
+   "file": "5-inputs-list-phone.png",
+   "label": "Today: the Inputs list — Drifter's overseas duty on 14 Dec, boxed"
+  },
+  {
+   "file": "1-leavewar-today-desk.png",
+   "label": "Today, Drifter 14–18 Dec: OD (slate) · UNA (teal) · refused LL · UNA morning · LL — the OD and the UNAs boxed"
+  },
+  {
+   "file": "2-leavewar-drawn-grey-a-desk.png",
+   "label": "Drawn: UNA in grey (a) — the OD's slate #535C69 beside the grey UNA #B8BEC6"
+  },
+  {
+   "file": "3-inputs-calendar-desk.png",
+   "label": "Today: an overseas duty on the Inputs calendar — UNA is never shown here"
+  },
+  {
+   "file": "4a-inputs-day-14dec-desk.png",
+   "label": "Today: 14 Dec opened on the Inputs calendar — Drifter's overseas duty, boxed"
+  },
+  {
+   "file": "4b-inputs-day-15dec-desk.png",
+   "label": "Today: 15 Dec opened — Drifter's whole-day UNA is not on the Inputs page (UNA lives on the Leave War only)"
+  },
+  {
+   "file": "5-inputs-list-desk.png",
+   "label": "Today: the Inputs list — Drifter's overseas duty on 14 Dec, boxed"
+  }
+ ],
+ "measures": [
+  {
+   "size": "phone",
+   "lwOD": {
+    "under": "#14181D",
+    "fill": "#535C69",
+    "edge": "#798798",
+    "words": "#F2F5F8",
+    "contrast": 6.2,
+    "struck": false,
+    "text": "OD",
+    "cls": "c k-od s-a whole raptor"
+   },
+   "lwUNAteal": {
+    "under": "#14181D",
+    "fill": "#146264",
+    "edge": "#147D7D",
+    "words": "#D6FFFB",
+    "contrast": 6.6,
+    "struck": false,
+    "text": "UNA",
+    "cls": "c k-una s-a whole wide"
+   },
+   "lwRefused": {
+    "under": "#14181D",
+    "fill": "#14181D",
+    "edge": "#4A5560",
+    "words": "#7D8894",
+    "contrast": 4.9,
+    "struck": true,
+    "text": "LL",
+    "cls": "c k-ll s-r whole"
+   },
+   "lwUNAgreyA": {
+    "under": "#14181D",
+    "fill": "#B8BEC6",
+    "edge": "#B8BEC6",
+    "words": "#0B1116",
+    "contrast": 10.1,
+    "struck": false,
+    "text": "UNA",
+    "cls": "c k-una s-a whole wide"
+   },
+   "lwUNAamGreyA": {
+    "under": "#14181D",
+    "fill": "#B8BEC6",
+    "edge": "#B8BEC6",
+    "words": "#0B1116",
+    "contrast": 10.1,
+    "struck": false,
+    "text": "UNA",
+    "cls": "c k-una s-a top wide"
+   },
+   "inCalOD": {
+    "under": "#14181D",
+    "fill": "#535C69",
+    "edge": "#7B899A",
+    "words": "#FFFFFF",
+    "contrast": 6.7,
+    "struck": false,
+    "text": "Drifter",
+    "cls": "ib-bar red kd k-od"
+   },
+   "inCalLL": {
+    "under": "#14181D",
+    "fill": "#6D5E3D",
+    "edge": "#E5BD69",
+    "words": "#FFFFFF",
+    "contrast": 6.3,
+    "struck": false,
+    "text": "Drifter",
+    "cls": "ib-bar red kd k-ll"
+   },
+   "inDayCard": {
+    "under": "#14181D",
+    "fill": "#1A1F26",
+    "edge": "#2A313A",
+    "words": "#F1F4F7",
+    "contrast": 15,
+    "struck": false,
+    "text": "All dayDrifterODBy Saber",
+    "cls": "icard red"
+   },
+   "inDaySquare": {
+    "under": "#1A1F26",
+    "fill": "#F0555F",
+    "edge": "none",
+    "words": "#F1F4F7",
+    "contrast": 3.1,
+    "struck": false,
+    "text": "",
+    "cls": "icard-sq"
+   },
+   "inDayKindWords": {
+    "under": "#1A1F26",
+    "fill": "#1A1F26",
+    "edge": "none",
+    "words": "#8A96A3",
+    "contrast": 5.5,
+    "struck": false,
+    "text": "OD",
+    "cls": "icard-kind"
+   },
+   "inListCard": {
+    "under": "#0B0D10",
+    "fill": "#1A1F26",
+    "edge": "#2A313A",
+    "words": "#F1F4F7",
+    "contrast": 15,
+    "struck": false,
+    "text": "All dayDrifterODBy Saber",
+    "cls": "icard red"
+   },
+   "inListSquare": {
+    "under": "#1A1F26",
+    "fill": "#F0555F",
+    "edge": "none",
+    "words": "#F1F4F7",
+    "contrast": 3.1,
+    "struck": false,
+    "text": "",
+    "cls": "icard-sq"
+   },
+   "inListKindWords": {
+    "under": "#1A1F26",
+    "fill": "#1A1F26",
+    "edge": "none",
+    "words": "#8A96A3",
+    "contrast": 5.5,
+    "struck": false,
+    "text": "OD",
+    "cls": "icard-kind"
+   },
+   "pairs": {
+    "lwOD_vs_lwUNAgreyA": {
+     "fillDE": 34.5,
+     "edgeDE": 17.7,
+     "wordsDE": 91.5
+    },
+    "lwOD_vs_lwUNAteal": {
+     "fillDE": 17.6,
+     "edgeDE": 21,
+     "wordsDE": 13.6
+    },
+    "lwUNAgreyA_vs_lwRefused": {
+     "fillDE": 62.5,
+     "edgeDE": 38.4,
+     "wordsDE": 40.1
+    },
+    "inCalOD_vs_lwUNAgreyA": {
+     "fillDE": 34.5,
+     "edgeDE": 16.9,
+     "wordsDE": 93.7
+    },
+    "inCalOD_vs_lwOD": {
+     "fillDE": 0,
+     "edgeDE": 0.9,
+     "wordsDE": 2.8
+    },
+    "inCalOD_vs_inCalLL": {
+     "fillDE": 23.1,
+     "edgeDE": 39.3,
+     "wordsDE": 0
+    }
+   }
+  },
+  {
+   "size": "desk",
+   "lwOD": {
+    "under": "#14181D",
+    "fill": "#535C69",
+    "edge": "#798798",
+    "words": "#F2F5F8",
+    "contrast": 6.2,
+    "struck": false,
+    "text": "OD",
+    "cls": "c k-od s-a whole raptor"
+   },
+   "lwUNAteal": {
+    "under": "#14181D",
+    "fill": "#146264",
+    "edge": "#147D7D",
+    "words": "#D6FFFB",
+    "contrast": 6.6,
+    "struck": false,
+    "text": "UNA",
+    "cls": "c k-una s-a whole wide"
+   },
+   "lwRefused": {
+    "under": "#14181D",
+    "fill": "#14181D",
+    "edge": "#4A5560",
+    "words": "#7D8894",
+    "contrast": 4.9,
+    "struck": true,
+    "text": "LL",
+    "cls": "c k-ll s-r whole"
+   },
+   "lwUNAgreyA": {
+    "under": "#14181D",
+    "fill": "#B8BEC6",
+    "edge": "#B8BEC6",
+    "words": "#0B1116",
+    "contrast": 10.1,
+    "struck": false,
+    "text": "UNA",
+    "cls": "c k-una s-a whole wide"
+   },
+   "lwUNAamGreyA": {
+    "under": "#14181D",
+    "fill": "#B8BEC6",
+    "edge": "#B8BEC6",
+    "words": "#0B1116",
+    "contrast": 10.1,
+    "struck": false,
+    "text": "UNA",
+    "cls": "c k-una s-a top wide"
+   },
+   "inCalOD": {
+    "under": "#14181D",
+    "fill": "#535C69",
+    "edge": "#7B899A",
+    "words": "#FFFFFF",
+    "contrast": 6.7,
+    "struck": false,
+    "text": "Drifter · OD",
+    "cls": "ib-bar red kd k-od"
+   },
+   "inCalLL": {
+    "under": "#14181D",
+    "fill": "#6D5E3D",
+    "edge": "#E5BD69",
+    "words": "#FFFFFF",
+    "contrast": 6.3,
+    "struck": false,
+    "text": "Drifter · LL",
+    "cls": "ib-bar red kd k-ll"
+   },
+   "inDayCard": {
+    "under": "#14181D",
+    "fill": "#1A1F26",
+    "edge": "#2A313A",
+    "words": "#F1F4F7",
+    "contrast": 15,
+    "struck": false,
+    "text": "All dayDrifterODBy Saber",
+    "cls": "icard red"
+   },
+   "inDaySquare": {
+    "under": "#1A1F26",
+    "fill": "#F0555F",
+    "edge": "none",
+    "words": "#F1F4F7",
+    "contrast": 3.1,
+    "struck": false,
+    "text": "",
+    "cls": "icard-sq"
+   },
+   "inDayKindWords": {
+    "under": "#1A1F26",
+    "fill": "#1A1F26",
+    "edge": "none",
+    "words": "#8A96A3",
+    "contrast": 5.5,
+    "struck": false,
+    "text": "OD",
+    "cls": "icard-kind"
+   },
+   "inListRow": {
+    "under": "#0B0D10",
+    "fill": "#0B0D10",
+    "edge": "#F0555F",
+    "words": "#F1F4F7",
+    "contrast": 17.6,
+    "struck": false,
+    "text": "Drifter",
+    "cls": ""
+   },
+   "inListStripe": {
+    "0": {
+     "el": "TR.in-red",
+     "borderLeft": "0px none rgb(241, 244, 247)",
+     "shadow": "none",
+     "before": null
+    },
+    "1": {
+     "el": "TD.",
+     "borderLeft": "0px none rgb(241, 244, 247)",
+     "shadow": "rgb(240, 85, 95) 3px 0px 0px 0px inset",
+     "before": null
+    }
+   },
+   "inListTag": {
+    "under": "#0B0D10",
+    "fill": "#1A1F26",
+    "edge": "#2A313A",
+    "words": "#B6C0CB",
+    "contrast": 9,
+    "struck": false,
+    "text": "OD",
+    "cls": "intag"
+   },
+   "pairs": {
+    "lwOD_vs_lwUNAgreyA": {
+     "fillDE": 34.5,
+     "edgeDE": 17.7,
+     "wordsDE": 91.5
+    },
+    "lwOD_vs_lwUNAteal": {
+     "fillDE": 17.6,
+     "edgeDE": 21,
+     "wordsDE": 13.6
+    },
+    "lwUNAgreyA_vs_lwRefused": {
+     "fillDE": 62.5,
+     "edgeDE": 38.4,
+     "wordsDE": 40.1
+    },
+    "inCalOD_vs_lwUNAgreyA": {
+     "fillDE": 34.5,
+     "edgeDE": 16.9,
+     "wordsDE": 93.7
+    },
+    "inCalOD_vs_lwOD": {
+     "fillDE": 0,
+     "edgeDE": 0.9,
+     "wordsDE": 2.8
+    },
+    "inCalOD_vs_inCalLL": {
+     "fillDE": 23.1,
+     "edgeDE": 39.3,
+     "wordsDE": 0
+    }
+   }
+  }
+ ]
+}

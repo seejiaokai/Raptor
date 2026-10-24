@@ -1,0 +1,66 @@
+{
+ "log": [
+  {
+   "id": "multi",
+   "size": "desk",
+   "said": "9 Dec: IP 16, SXO 12, Available P 28; amber points IP 3 → 16, SXO 1 → 12; cells \"\", \"\""
+  },
+  {
+   "id": "multi",
+   "size": "desk",
+   "said": "Anvil's bid window on 9 Dec, its day line: \"IP 16 → 15 · amber · SXO 12 → 11 · amber\" — {\"amber\":{\"name\":{\"color\":\"rgb(229, 168, 59)\",\"weight\":\"400\",\"size\":\"12px\"},\"fig\":{\"color\":\"rgb(229, 168, 59)\",\"weight\":\"400\",\"size\":\"12px\"}},\"red\":null,\"dot\":{\"color\":\"rgb(138, 150, 163)\",\"weight\":\"400\",\"size\":\"12px\"},\"gap\":\"7px\",\"adv\":\"#e5a83b\",\"hard\":\"#f0555f\"}"
+  },
+  {
+   "id": "multi",
+   "size": "desk",
+   "said": "Anvil's pending LL [\"LL|k-ll|s-w\"]: IP 16 → 15 (\"amber\"), SXO 12 → 11 (\"amber\"), Available P 28 → 27 (\"fr avail tap\"); bubble {\"where\":\"mid\",\"text\":\"This bid turns IP amber and SXO amber.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":35,\"y\":195,\"width\":237.765625,\"height\":32.1875}}"
+  },
+  {
+   "id": "multi",
+   "size": "desk",
+   "said": "15 Dec: Required P 28; Ace's bid 28 → 27; Saint's [\"LL|k-ll|s-w\"] 27 → 26; bubble {\"where\":\"mid\",\"text\":\"This bid takes Available P lower, still red.\",\"border\":\"rgba(240, 85, 95, 0.7)\",\"bg\":\"rgb(46, 20, 24)\",\"color\":\"rgb(255, 170, 176)\",\"rect\":{\"x\":35,\"y\":196,\"width\":240.0625,\"height\":32.1875}}"
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "multi-ref-dayline-desk.png",
+   "label": "Today, the bid window before the bid: its day line (the look B copies)"
+  },
+  {
+   "file": "multi-amber-today-desk.png",
+   "label": "Today: one bid turns two rows amber, IP 16 → 15 and SXO 12 → 11"
+  },
+  {
+   "file": "multi-amber-a-desk.png",
+   "label": "Drawn A: a sentence, each row’s figures in brackets"
+  },
+  {
+   "file": "multi-amber-b-desk.png",
+   "label": "Drawn B: the bid window’s day line pairs, led by “This bid:”"
+  },
+  {
+   "file": "multi-red-today-desk.png",
+   "label": "Today: a second bid takes Available P 27 → 26, still red"
+  },
+  {
+   "file": "multi-red-b-desk.png",
+   "label": "Drawn B, the red case: the day line’s pair, led by “This bid:”"
+  }
+ ],
+ "colours": {
+  "RED_EDGE": "rgba(240, 85, 95, .7)",
+  "RED_INK": "#FFAAB0",
+  "RED_FILL": "#2e1418"
+ },
+ "words": {
+  "B1": "This bid takes Available P lower, still red.",
+  "B2": "This bid takes Available P further into the red.",
+  "C": "This bid turns IP amber and Available P red.",
+  "D": "This overseas duty turns Available P red."
+ }
+}
