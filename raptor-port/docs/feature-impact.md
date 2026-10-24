@@ -1533,8 +1533,10 @@ CSE · OD (and, until D1338, UNA) stand in the row under the leaves of the one-d
 closed-day window (`ui/LeaveButtons.tsx DutyButtons`); a tap files the input straight (`store.ts fileStraight` → the absence door's `file`,
 `sync.ts doorFile` → the Inputs door, its clash rules included) — no bid, one new command `lw.file` (`perms.ts`, asked as an
 Inputs-page filing is). From there it is an ordinary input: the Inputs list and calendar, the schedule's Unavailable, the
-war's grid and manning all read it. **UNA is a new input kind** (`engine/inputs.ts`, the overseas duty's flags): a
-drift-seam across every hand-kept list of kinds — `engine/schema.ts`, the reference's mirror (`testing/refwin.ts`), the
-war's `absences.ts warVisible`, `engine/dayview.ts` (AWAY_DUTY, OFF_WAR), `engine/codes.ts` (label, kind), the colours
-(`--k-una`, `matrix.css`, `scheduler/25-inputs-calendar.css`, `ui/inputscal-model.ts`) and the Legend. Its one rule apart
-from OD's is the LATE mark (`isLateInput`). The design note: `docs/superpowers/specs/2026-10-24-lw-file-od-cse-una.md`.
+war's grid and manning all read it. A day that already holds the same kind for him is left as it is and said (round 2's FULL
+check — the designer's G2); a weekend or a holiday asks its OIL question at once, as the Inputs page does (D804, D660 — G3):
+one input opens its own question in its own window over the war, several (a drag over several men) open the one list of
+those days for a scheduler (D782) — `sync.ts askFiledOil`, a deferred effect of the filing. *(Until D1338, 24 Oct 26, UNA
+was a new input kind here, a drift-seam across every hand-kept list of kinds; since D1338 it is the war's own record — the
+paragraph above — and every list of input kinds is back as it was, pinned by `engine/unagone.test.ts`.)* The design note:
+`docs/superpowers/specs/2026-10-24-lw-file-od-cse-una.md`.
