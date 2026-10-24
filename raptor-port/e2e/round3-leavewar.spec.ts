@@ -106,6 +106,19 @@ test('two documents with long names: the box keeps its room, the files on a line
   expect(over, 'nothing in the row runs past its edge').toBeLessThanOrEqual(0)
 })
 
+/* THE BOX FITS ITS WORDS WHEN ITS WIDTH CHANGES (the fresh read's R4, D1333): a long remark, a file added (the box takes the
+   row) and taken off again (the box shares it with Document, narrower) — every line still shown */
+test('a long remark typed beside a file stays whole when the file is taken off', async ({ page }) => {
+  await openDay(page)
+  await page.locator(`${T('bid-doc-row')} input[type=file]`).first().setInputFiles({ name: 'approval.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4\n%%EOF\n') })
+  await expect(page.locator(`${T('bid-doc-row')} .docchip`)).toHaveCount(1)
+  /* typed while the box is wide (a file attached — the box takes the row), then the file taken off: the box narrows */
+  await page.locator(T('bid-remarks')).fill('A long remark for the check: the member has not yet sent the approval from the leave app and asks for the afternoon kept free')
+  await page.locator(`${T('bid-doc-row')} .docchip button`).first().click()
+  await expect(page.locator(`${T('bid-doc-row')} .docchip`)).toHaveCount(0)
+  await expect.poll(() => page.locator(T('bid-remarks')).evaluate(e => e.scrollHeight - e.clientHeight), { message: 'no line of the remark hidden' }).toBeLessThanOrEqual(0)
+})
+
 test('the drag-selection window: the same rows — its ⋯ in the fourth place, its menu inside the window', async ({ page }) => {
   /* a drag across two days of one man, as a person makes it */
   const a = (await boxOf(page, `cell-${P}-${D}`)), b = (await boxOf(page, `cell-${P}-${D2}`))

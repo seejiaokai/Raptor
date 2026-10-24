@@ -49,12 +49,24 @@ export function patchOf(was: ReqDraft, now: ReqDraft): ReqWordsPatch | null {
    height set back to auto first, so it shrinks again too). */
 function useGrow(value: string) {
   const ref = useRef<HTMLTextAreaElement>(null)
-  useLayoutEffect(() => {
+  const fit = () => {
     const t = ref.current
     if (!t) return
     t.style.height = 'auto'
     if (t.scrollHeight > 0) t.style.height = `${t.scrollHeight + (t.offsetHeight - t.clientHeight)}px`
-  }, [value])
+  }
+  useLayoutEffect(fit, [value])
+  /* …and whenever its WIDTH changes — a file added or taken off moves the box to a row of its own and back, a phone turned
+     (the fresh read's R4: a long remark typed beside a file lost its last lines when the file was taken off). Watched on
+     the width alone, so the height it sets cannot set it off again. */
+  useEffect(() => {
+    const t = ref.current
+    if (!t || typeof ResizeObserver === 'undefined') return
+    let w = t.clientWidth
+    const ro = new ResizeObserver(() => { if (t.clientWidth !== w) { w = t.clientWidth; fit() } })
+    ro.observe(t)
+    return () => ro.disconnect()
+  }, [])
   return ref
 }
 
