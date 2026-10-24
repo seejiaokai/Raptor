@@ -13,7 +13,7 @@
 // There is no login, so a bid is placed against whichever row was clicked
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
@@ -354,8 +354,13 @@ export function BidPicker({
      them. Saved first, they ride with what the action does — onto the leave a bid becomes, back onto the bid a leave
      becomes again (the store carries a bid's words both ways, 7.2); the approved leave's own box the same (`leaveFlush`). */
   const leaveFlush = useRef<(() => void) | null>(null)
+  /* …and as the window leaves the screen by ANY road — the ⋯'s panels close it themselves (Give FO, Remove, Post out's and
+     Post in's confirm): the fresh read's R7. Kept in a ref, saved once: a save already made clears it. */
+  const heldSave = useRef<(() => void) | null>(null)
+  heldSave.current = held && heldEdit ? () => { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p) } : null
+  useEffect(() => () => { heldSave.current?.() }, [])
   const flushWords = () => {
-    if (held && heldEdit) { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p); setHeldEdit(null) }
+    if (heldSave.current) { heldSave.current(); heldSave.current = null; setHeldEdit(null) }
     leaveFlush.current?.()
   }
   const closeKeeping = () => {
