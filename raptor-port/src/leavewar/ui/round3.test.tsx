@@ -552,4 +552,15 @@ describe('round 3 — the fresh read’s finds', () => {
     expect(INPUTS.find((x: any) => x.iid === row.iid).remarks).toBe('Clinic')
     expect(rawState().wars[0]!.recs[P]![D]!.find(x => x.kind === 'request')).toMatchObject({ remarks: 'Afternoon trip' })
   })
+  it('R3: the list keeps its order when a leave beside a half-day award is refused — a quick second tap never lands on the award', () => {
+    INPUTS.length = 0
+    const ll = fileAbsence(P, 'LL', D, D, { lw: true })
+    expect(setDayAward(P, D, 0.5, { note: 'Walk', givenBy: 'OC', half: 'am' })).toBeNull()
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const first = () => screen.getByTestId('daylist').querySelector(':scope > li .dl-main')!.textContent ?? ''
+    expect(first()).toMatch(/approved/i)
+    fireEvent.click(screen.getByTestId(`dl-refuse-${ll.iid}`))
+    expect(first()).toMatch(/^Refused/)
+  })
 })

@@ -175,7 +175,11 @@ export function DayListSheet({
      the first tap turned the morning leave into a bid, the list re-ordered approved leave before bids, and the second tap
      landed on the afternoon's Approve). The list reads by the day's own order — the morning before the afternoon — so an
      action changes an entry's words, never where it stands; the store's own order breaks a tie. */
-  const ordered = view.all.map((c, i) => ({ c, i })).sort((a, b) => ((a.c.win?.[0] ?? 0) - (b.c.win?.[0] ?? 0)) || a.i - b.i).map(x => x.c)
+  /* …by the window's start, then the longer first (a whole day before a half that starts with it), then the code — none of
+     which an action changes; the store's order (which ranks by kind and state) last. The fresh read's R3: with a tie on the
+     start alone, a leave refused beside a half-day award dropped below it, and a quick second tap deleted the award. */
+  const ordered = view.all.map((c, i) => ({ c, i })).sort((a, b) => ((a.c.win?.[0] ?? 0) - (b.c.win?.[0] ?? 0))
+    || ((b.c.win?.[1] ?? 0) - (a.c.win?.[1] ?? 0)) || String(a.c.code).localeCompare(String(b.c.code)) || a.i - b.i).map(x => x.c)
   const lines = ordered.map(c => {
     const row0 = c.kind === 'absence' ? INPUTS.find((r: any) => String(r.iid) === c.id) : null
     /* PRINTED AS FILED (the absence-record re-test, W1-F4, 26 Sep 26): N1 starts a window filed at exactly 12:00 at
