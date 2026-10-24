@@ -1,0 +1,79 @@
+[
+ {
+  "id": "S2 switch off: the buttons hollow, the LL placed waits",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "switch off true; LL button solid rgb(42, 49, 58); placed true; cell LL [LL|c k-ll s-w whole|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none]",
+  "pics": [
+   "s2-switch-off-phone-wk"
+  ]
+ },
+ {
+  "id": "S3 geometry beside the drawing",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "height 293 (the drawing before D1314 / D1326: 286, +7); every row one line, side by side one height — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:14/1L | Actions:30/1L side h±0.3 c±0 | Remarks and document:30/1L side h±0 c±0 | Duration:28/1L side h±0 c±0 | Which leave:62/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S3 pending bid: Approve not lit, LL lit, Whole day lit; switch still off (remembered); on a phone the day stands above the window (D1290)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "Approve {\"lit\":false,\"pressed\":\"false\"}; LL {\"lit\":true,\"pressed\":null}; Whole day true; switch off true; day line \"No manning row is amber or red\"; tapped day 42px above the window, cell class \" act hasc\"",
+  "pics": [
+   "s3-pending-phone-wk"
+  ]
+ },
+ {
+  "id": "S4 a remark typed then ✕ (the box not left): kept on the bid",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "reopened box \"Walk remark one\"",
+  "pics": [
+   "s4-typed-phone-wk",
+   "s4-reopened-phone-wk"
+  ]
+ },
+ {
+  "id": "S5 geometry beside the drawing",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "height 293 (the drawing before D1314 / D1326: 286, +7); every row one line, side by side one height — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:14/1L | Actions:30/1L side h±0.3 c±0 | Remarks and document:30/1L side h±0 c±0 | Duration:28/1L side h±0 c±0 | Which leave:62/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S5 approved: the cell filled; reopened, Approve lit; the remark carried onto the leave (Inputs record)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "cell s-a; Approve {\"lit\":true,\"pressed\":\"true\"}; box \"Walk remark one\"; the Inputs leave {\"remarks\":\"Walk remark one\",\"till\":null,\"docs\":0}",
+  "pics": [
+   "s5-approved-phone-wk"
+  ]
+ },
+ {
+  "id": "S6 the approved leave's remark typed, ✕: saved onto the leave",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "Inputs leave {\"remarks\":\"Walk remark two\",\"till\":null,\"docs\":0}; reopened box \"Walk remark two\"",
+  "pics": [
+   "s6-leave-remark-phone-wk"
+  ]
+ },
+ {
+  "id": "S7 the lit Approve tapped again: back to waiting, the leave gone from the Inputs page, its words on the bid; Undo approves, Redo sends back",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "after: cell s-w, Inputs leave null; reopened Approve {\"lit\":false,\"pressed\":\"false\"}, box \"Walk remark two\"; Undo s-a; Redo s-w",
+  "pics": [
+   "s7-sentback-cell-phone-wk",
+   "s7-sentback-phone-wk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
