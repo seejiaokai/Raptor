@@ -26,7 +26,7 @@ describe('the corner mark', () => {
     const boxes = [...cell().querySelectorAll('.c')]
     expect(boxes.map(b => b.textContent)).toEqual(['LL', 'OIL'])
     expect(boxes[0]!.className).toBe('c k-ll s-a top')
-    expect(boxes[1]!.className).toBe('c k-oil s-a bot wide')
+    expect(boxes[1]!.className).toBe('c k-oilt s-a bot wide')   // an OIL taken, its own colour (D1291, D1323)
     expect(cell().className).toContain('hasc')
     expect(screen.queryByTestId(`mark-${P}-${D}`)).toBeNull()
   })

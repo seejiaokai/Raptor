@@ -254,8 +254,11 @@ export function displayCell(raw: string, auto = false): string {
    leave deep amber, OIL / FO / HO green, the other leave (CCL FCL PL CL EL) blue, a course lilac, overseas duty grey,
    medical (B C OML HL) rose. ONE map, read by the grid's box and its Legend (and, with the bid windows and Approvals in
    later merges, theirs) — so the button and the box it places can never disagree. An unknown code reads as duty grey. */
-export type Kind = 'll' | 'ol' | 'oil' | 'care' | 'cse' | 'od' | 'med'
-const KIND: Record<string, Kind> = { B: 'med', C: 'med', LL: 'll', OL: 'ol', OIL: 'oil', FO: 'oil', HO: 'oil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'cse', OD: 'od', ATTB: 'med', ATTC: 'med', OML: 'med', HL: 'med' }
+/* …AND SINCE HIS D1291 / D1323 (24 Oct 26) AN OIL TAKEN (time off spent) IS ITS OWN KIND, `oilt`, chartreuse, apart from the
+   OIL given (FO, HO — `oil`, green), so a box that spends OIL is never read as one that gives it; set C's colours (D1316) are
+   the app's one set (`--k-*`, scheduler/00-foundation-login.css). */
+export type Kind = 'll' | 'ol' | 'oil' | 'oilt' | 'care' | 'cse' | 'od' | 'med'
+const KIND: Record<string, Kind> = { B: 'med', C: 'med', LL: 'll', OL: 'ol', OIL: 'oilt', FO: 'oil', HO: 'oil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'cse', OD: 'od', ATTB: 'med', ATTC: 'med', OML: 'med', HL: 'med' }
 export function kindOf(raw: string): Kind { const r = raw.replace(/[*<>]/g, ''); const c = parseCell(r); return KIND[c ? c.type : r] ?? 'od' }
 /** The letters a box prints (D1160): the code bare — its half is said by where the box sits, so the arrows of
  *  `displayCell` are not printed on the grid; ATT B / ATT C as the owner's B / C; an app-credited OIL keeps its star. */

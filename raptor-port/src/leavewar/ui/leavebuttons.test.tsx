@@ -29,7 +29,7 @@ describe('the leave buttons', () => {
     const { rerender } = render(<LeaveButtons portion="full" onPick={() => {}} filled={false} />)
     expect(screen.getByTestId('bid-LL').className).toMatch(/\bk-ll\b.*\bs-w\b/)
     expect(screen.getByTestId('bid-OL').className).toContain('k-ol')
-    expect(screen.getByTestId('bid-OIL').className).toContain('k-oil')
+    expect(screen.getByTestId('bid-OIL').className).toContain('k-oilt')   // the OIL taken's own colour (D1323)
     expect(screen.getByTestId('bid-CCL').className).toContain('k-care')
     rerender(<LeaveButtons portion="full" onPick={() => {}} filled />)
     expect(screen.getByTestId('bid-LL').className).toContain('s-a')

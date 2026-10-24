@@ -428,7 +428,7 @@ describe('a cell Raptor owns', () => {
   it('paints green, and marks where it came from', () => {
     render(<Matrix />)
     const chip = screen.getByTestId(RAPTOR).querySelector('.c')!
-    expect(chip.classList.contains('k-oil')).toBe(true)
+    expect(chip.classList.contains('k-oilt')).toBe(true)   // an OIL TAKEN — chartreuse since D1323, apart from FO / HO's green
     expect(chip.classList.contains('s-a')).toBe(true)
     expect(chip.classList.contains('raptor')).toBe(true)
   })

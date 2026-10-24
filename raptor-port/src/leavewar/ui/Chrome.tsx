@@ -508,7 +508,9 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <div className="leg-sec">The colour: what kind</div>
               <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Local leave</span></div>
               <div className="leg-row"><LegBox code="OL" /><span className="leg-t">Overseas leave</span></div>
-              <div className="leg-row"><LegBox code="OIL" /><span className="leg-t">Off in lieu (OIL; FO a day credited, HO half a day; a star, the app credited it)</span></div>
+              {/* an OIL taken and an OIL given in colours of their own (his D1291, D1323 — drawn by lw-colours-c-d.mjs) */}
+              <div className="leg-row"><LegBox code="OIL" /><span className="leg-t">OIL taken: time off spent</span></div>
+              <div className="leg-row"><LegBox code="FO" /><span className="leg-t">OIL given: FO a day, HO half a day; a star, the app credited it</span></div>
               <div className="leg-row"><LegBox code="CCL" /><span className="leg-t">Other leave: CCL, FCL, PL, CL, EL</span></div>
               <div className="leg-row"><LegBox code="CSE" /><span className="leg-t">Course</span></div>
               <div className="leg-row"><LegBox code="OD" /><span className="leg-t">Overseas duty</span></div>

@@ -824,14 +824,16 @@ touch-action: pan-x pan-y;
 :is(.mx td, .leg-box) .c:is(.right-am, .right-pm) { font-size: 6.5px; letter-spacing: 0; }
 :is(.mx td, .leg-box) .c.wide:not(.whole) { font-size: 6.5px; letter-spacing: -.02em; }
 
-/* the kinds — each a hue (`--h`), an ink for the filled box and a fill strength, as look F has them */
-.c.k-ll, .tchip.lv.k-ll   { --h: 242, 200, 110; --ink: #FFF1CF; --fill: .22; }
-.c.k-ol, .tchip.lv.k-ol   { --h: 226, 146, 38;  --ink: #FFE7C7; --fill: .48; }
-.c.k-oil, .tchip.lv.k-oil  { --h: 70, 196, 108;  --ink: #DDF8E6; --fill: .38; }
-.c.k-care, .tchip.lv.k-care { --h: 138, 150, 255; --ink: #DCE0FF; --fill: .32; }
-.c.k-cse, .tchip.lv.k-cse  { --h: 184, 142, 240; --ink: #EEE2FF; --fill: .32; }
-.c.k-od, .tchip.lv.k-od   { --h: 160, 170, 182; --ink: #E6EBF0; --fill: .26; }
-.c.k-med, .tchip.lv.k-med  { --h: 236, 104, 140; --ink: #FFD0DD; --fill: .26; }
+/* the kinds — each a hue (`--h`), an ink for the filled box and a fill strength — read from the app's one set of kind
+   colours (`--k-*`, scheduler/00-foundation-login.css): set C (D1316), the OIL taken apart from FO / HO (D1291, D1323) */
+.c.k-ll, .tchip.lv.k-ll   { --h: var(--k-ll); --ink: var(--k-ll-ink); --fill: var(--k-ll-fill); }
+.c.k-ol, .tchip.lv.k-ol   { --h: var(--k-ol); --ink: var(--k-ol-ink); --fill: var(--k-ol-fill); }
+.c.k-oil, .tchip.lv.k-oil  { --h: var(--k-oil); --ink: var(--k-oil-ink); --fill: var(--k-oil-fill); }
+.c.k-oilt, .tchip.lv.k-oilt { --h: var(--k-oilt); --ink: var(--k-oilt-ink); --fill: var(--k-oilt-fill); }
+.c.k-care, .tchip.lv.k-care { --h: var(--k-care); --ink: var(--k-care-ink); --fill: var(--k-care-fill); }
+.c.k-cse, .tchip.lv.k-cse  { --h: var(--k-cse); --ink: var(--k-cse-ink); --fill: var(--k-cse-fill); }
+.c.k-od, .tchip.lv.k-od   { --h: var(--k-od); --ink: var(--k-od-ink); --fill: var(--k-od-fill); }
+.c.k-med, .tchip.lv.k-med  { --h: var(--k-med); --ink: var(--k-med-ink); --fill: var(--k-med-fill); }
 
 /* the fills — the bid windows' leave buttons take the same kinds and fills (M3 5.3, 5.4 — D1183, red-team fix A8:
    a button looks like the box it places; LeaveButtons.tsx), from this one map, never a copy of its colours */

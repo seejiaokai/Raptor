@@ -1361,7 +1361,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                      of leave"; 25-inputs-calendar.css) */
                   /* `innew`: just saved, changed or brought back — the just-added mark, on the month only while no day is
                      open over it (then the day's card wears it, and the bar behind does not light too) */
-                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '') + (barLit(sg.item.key) ? ' innew' : '')}
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.col ? ' kd k-' + sg.item.col : ' duty') + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '') + (barLit(sg.item.key) ? ' innew' : '')}
                     data-iid={sg.item.key} data-fresh={barLit(sg.item.key) ? sg.item.key : undefined} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
                     style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
                 ))}
