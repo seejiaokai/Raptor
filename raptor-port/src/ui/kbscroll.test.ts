@@ -77,6 +77,35 @@ describe('keepAboveKeyboard', () => {
     keepAboveKeyboard(b, vvUp)
     expect(b.getBoundingClientRect().bottom).toBe(350 - GAP)
   })
+  /* HIS REPORT, 25 Oct 26 07:06 (the input window, "Other", Remarks tapped on his iPhone — Document, then Cancel / Add, no
+     Remarks): a window's buttons pinned to the foot of its scrolling body cover that foot, and the body says so by its
+     scroll-padding-bottom (the input window's 64px, 25-inputs-calendar.css). The box was lifted to the body's very foot —
+     behind the buttons. */
+  it('a panel whose foot its own pinned buttons cover (its scroll padding) brings the box above them, not behind them', () => {
+    document.body.innerHTML = '<div id="fx" style="position:fixed"><div id="p" style="scroll-padding-bottom:64px"><input id="b"></div></div>'
+    const p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement
+    panel(p, 100, 250, 500)                                    // the panel ends at 350, above the keys; its buttons 286–350
+    place(b, 400, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(350 - 64 - GAP)
+  })
+  it('a pinned button row it does not declare (Holidays) is measured and cleared too', () => {
+    document.body.innerHTML = '<div id="fx" style="position:fixed"><div id="p"><div><input id="b"><div id="acts" style="position:sticky;bottom:0"></div></div></div></div>'
+    const p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement, acts = document.getElementById('acts')!
+    panel(p, 100, 250, 500)                                    // the panel ends at 350; its buttons 280–350, 70 tall
+    acts.getBoundingClientRect = () => ({ top: 280, bottom: 350, left: 0, right: 100, width: 100, height: 70, x: 0, y: 280, toJSON() {} }) as DOMRect
+    place(b, 400, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(350 - 70 - GAP)
+  })
+  it('and where that foot is under the keys, the keys are the floor, as before', () => {
+    document.body.innerHTML = '<div id="fx" style="position:fixed"><div id="p" style="scroll-padding-bottom:64px"><input id="b"></div></div>'
+    const p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement
+    panel(p, 0, H, 1000)                                       // the panel's foot (and its buttons) under the keys
+    place(b, 700, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+  })
 })
 
 describe('room below the page (walker A: A11)', () => {

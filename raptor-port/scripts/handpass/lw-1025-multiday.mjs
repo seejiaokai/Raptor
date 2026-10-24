@@ -22,7 +22,13 @@
 //   the busy day wears the grid's own "+1" corner over its other entry), busy<n>-b (the bar breaks round the busy day, which
 //   draws as today; the ends beside the break stay square; the piece after the break shows its code again at its start),
 //   busy3-c (the morning bar runs through and the afternoon entry keeps its own half).
-// Usage (from raptor-port/): node scripts/handpass/lw-1025-multiday.mjs   [SIZES=phone,desk] [DRAG=grey,bar] [PART=main|busy]
+// PART=half — his question on option B: "Why not the bar stops at the half day of 13 Nov? And the bar is still connected. What if
+//   the 13 of Nov is a HO?" Fixtures (Drifter, a clean context each): the approved LL 9–13 Nov by one drag, then an OIL award from
+//   the bid window's ⋯ → Grant OIL: half1 an FO on the last day 13 Nov · half2 a MORNING HO on 13 Nov · half3 an AFTERNOON HO on
+//   13 Nov · half4 an FO on the FIRST day 9 Nov. Pictures half<n>-today (real) and half<n>-c (the bar runs into the leave's half of
+//   the end day and stops at its middle, the other entry keeps its place; on the first day the sides swap and the bar starts at the
+//   middle). Writes only half* pictures and run-half-<sizes>.json.
+// Usage (from raptor-port/): node scripts/handpass/lw-1025-multiday.mjs   [SIZES=phone,desk] [DRAG=grey,bar] [PART=main|busy|half]
 process.env.LW_PORT ||= '4180'
 process.env.LW_OUT ||= '2026-10-25-lw-drawings/multi-day'
 const L = await import('./lw-r3-lib.mjs')
@@ -33,7 +39,7 @@ const SIZES = (process.env.SIZES || 'phone,desk').split(',')
 const DRAG = (process.env.DRAG || 'grey,bar').split(',')
 const T = L.T
 const PART = process.env.PART || 'main'
-const PFX = PART === 'busy' ? 'busy' : 'md'
+const PFX = PART === 'busy' ? 'busy' : PART === 'half' ? 'half' : 'md'
 for (const f of readdirSync(L.OUT)) if (f.startsWith(PFX) && f.endsWith('.png') && SIZES.some(s => f.endsWith(`-${s}.png`))) unlinkSync(path.join(L.OUT, f))
 
 const log = []
@@ -548,6 +554,166 @@ if (PART === 'busy') for (const size of SIZES) {
     await w.ctx.close()
   }
 }
+/* ================= PART=half — the bar runs INTO the half of the end day that holds a second entry ================= */
+/* THE DRAWING. Last day (cases 1–3): the leave's box on 13 Nov already is the left half of the cell (the grid's own `left`
+   place, full height, the other entry on the right), so the bar's last-day rule (`left: 0`, rounded right end) is all it
+   needs: the bar runs unbroken from 12 Nov into that half and ends, rounded, at the middle of the cell; the other entry keeps
+   its place exactly as today. First day (case 4): the two sides swap — the leave's box takes the RIGHT half, reaching over
+   the day line to the rest of the bar, with the code written there; the other entry's box takes the left half.
+   Classes on the cells the row already draws and one injected stylesheet; no node added. */
+const halfCss = bw => `
+#page-leavewar .mx[data-mrun="bar"] td.mrun-s.mrun-half:not(.selcell) .c.mrun-box { left: calc(50% + .5px); right: -${bw}; top: 2px; bottom: 2px; border-radius: 4px 0 0 4px; font-size: 9px; letter-spacing: .02em; }
+#page-leavewar .mx[data-mrun="bar"] td.mrun-s.mrun-half:not(.selcell) .c:not(.mrun-box) { left: 2px; right: calc(50% + .5px); top: 2px; bottom: 2px; border-radius: 4px 2px 2px 4px; }
+`
+/* the bar over `run`, always on the LEAVE's own box (a day holding two entries keeps the other one out of the bar); firstHalf =
+   the first day's sides swap */
+const drawHalf = async (P, who, run, firstHalf) => {
+  await draw(P, who, [run], 'bar')
+  return P.evaluate(({ who, run, firstHalf, css }) => {
+    let st = document.getElementById('mock-mrun-half'); if (!st) { st = document.createElement('style'); st.id = 'mock-mrun-half'; document.head.appendChild(st) } st.textContent = css
+    for (const e of document.querySelectorAll('td.mrun-half')) e.classList.remove('mrun-half')
+    for (const e of document.querySelectorAll('.c.mrun-box')) e.classList.remove('mrun-box')
+    const cell = iso => document.querySelector(`[data-testid="cell-${who}-${iso}"]`)
+    for (const iso of run) [...cell(iso).querySelectorAll('.c')].find(c => c.classList.contains('k-ll'))?.classList.add('mrun-box')
+    if (firstHalf) cell(run[0]).classList.add('mrun-half')
+  }, { who, run, firstHalf, css: halfCss(BW) })
+}
+const clearHalf = P => P.evaluate(() => { for (const e of document.querySelectorAll('td.mrun-half')) e.classList.remove('mrun-half') })
+/* right before a drawn picture: the bar's box and the other entry sit where the drawing says */
+const halfOk = (P, who, run, firstHalf) => async () => P.evaluate(({ who, run, firstHalf }) => {
+  const e = document.querySelector(`[data-testid="cell-${who}-${firstHalf ? run[0] : run[run.length - 1]}"]`)
+  const r = e.getBoundingClientRect(), mid = r.left + r.width / 2, tol = 2
+  const bs = [...e.querySelectorAll('.c')].map(c => ({ bar: c.classList.contains('mrun-box'), r: c.getBoundingClientRect(), shown: getComputedStyle(c).display !== 'none' && c.getBoundingClientRect().width > 0 }))
+  const bar = bs.find(b => b.bar), other = bs.find(b => !b.bar)
+  if (!bar || !other || !other.shown) return 'the day does not show both the bar and the other entry'
+  if (firstHalf) {
+    if (Math.abs(bar.r.left - mid) > tol) return `the bar starts ${Math.round(bar.r.left - mid)}px from the middle`
+    if (bar.r.right < r.right - 0.5) return 'the bar does not reach the first day\'s right edge'
+    if (other.r.right > mid + tol || other.r.left < r.left - 0.5) return 'the other entry is not in the left half'
+  } else {
+    if (Math.abs(bar.r.left - r.left) > tol) return `the bar starts ${Math.round(bar.r.left - r.left)}px from the day's left edge`
+    if (Math.abs(bar.r.right - mid) > tol) return `the bar ends ${Math.round(bar.r.right - mid)}px from the middle`
+    if (other.r.left < mid - tol) return 'the other entry reaches into the left half'
+  }
+  return null
+}, { who, run, firstHalf })
+
+/* the grid's cut and its sideways scroll for a case — as the busy part's, kept apart so that part stays as it ran */
+function viewHelpers(w, { who, above, below, D, geo, tag }) {
+  const P = w.page
+  const sel = s => T(L.cellId(who, s))
+  const cut = (a, z) => ({ marks: [[sel(D(a)), sel(D(z))]], around: [T(L.cellId(above[0], D(a - 1))), T(L.cellId(below[1], D(z + 1)))] })
+  const withHead = async (c, a, z) => {
+    let still = 0, pinned = false
+    const sl0 = await P.evaluate(() => Math.round(document.querySelector('.mx-wrap')?.scrollLeft ?? 0))
+    for (let i = 0; i < 14 && still < 3 && !pinned; i++) {
+      const r0 = await P.evaluate(([who, first, edge, setIt]) => {
+        const fc = document.querySelector(`[data-testid="cell-${who}-${first}"]`)
+        let sc = fc.parentElement; while (sc && !(sc.scrollWidth > sc.clientWidth + 4 && /(auto|scroll)/.test(getComputedStyle(sc).overflowX))) sc = sc.parentElement
+        if (!sc) return { dx: 0, max: false }
+        const dx = Math.round(fc.getBoundingClientRect().left - edge)
+        const max = dx > 0 && sc.scrollLeft >= sc.scrollWidth - sc.clientWidth - 1
+        if (setIt && Math.abs(dx) >= 2 && !max) sc.scrollLeft += dx
+        return { dx: Math.abs(dx) >= 2 ? dx : 0, max }
+      }, [who, D(a - 1), geo.edge, w.phone])
+      if (r0.max) { pinned = r0.dx; break }
+      if (r0.dx && !w.phone) {
+        const r = await P.locator(T(L.cellId(below[0], D(a)))).first().boundingBox()
+        await P.mouse.move(r.x + r.width / 2, r.y + r.height / 2)
+        await P.mouse.wheel(r0.dx, 0)
+      }
+      if (r0.dx) still = 0; else still++
+      await P.waitForTimeout(1200)
+    }
+    if (!w.phone) { await P.mouse.move(1435, 895); await P.waitForTimeout(200) } // no hover tint left on a day in the picture
+    const moved = (await P.evaluate(() => Math.round(document.querySelector('.mx-wrap')?.scrollLeft ?? 0))) - sl0
+    note(tag, `scrolled the grid ${moved}px sideways for ${a}–${z} Nov${pinned ? `; at the period's end, ${D(a - 1)} stays ${pinned}px short of the names' edge, so the picture leaves the names out` : ''}`)
+    const h = await P.evaluate(() => { const e = [...document.querySelectorAll('[data-testid="sticky-head"]')].find(e => e.getBoundingClientRect().height > 0).getBoundingClientRect(); return { left: e.left, top: e.top, height: e.height } })
+    const x0 = pinned ? (await P.locator(T(L.cellId(above[0], D(a - 1)))).first().boundingBox()).x : h.left + 1
+    return { ...c, around: [{ x: x0, y: h.top, width: 1, height: h.height }, ...c.around], first: D(a - 1), want: pinned ? geo.edge + pinned : geo.edge }
+  }
+  const atEdge = c => async () => P.evaluate(([who, first, want]) => { const l = document.querySelector(`[data-testid="cell-${who}-${first}"]`).getBoundingClientRect().left; return Math.abs(l - want) < 3 ? null : `${first} moved ${Math.round(l - want)}px since it was placed` }, [who, c.first, c.want])
+  return { sel, cut, withHead, atEdge }
+}
+
+/* the four cases: the second entry's day, what it is, where the real grid puts it, and the words on the pictures */
+const HALF_CASES = [
+  { n: 1, day: 13, oil: { days: '1', why: 'Weekend work' }, kind: 'FO', place: 'right', first: false,
+    today: 'Today: Drifter\'s approved LL 9–13 Nov and an FO on the last day, 13 Nov — that day shows both, side by side',
+    drawn: 'Drawn: the bar runs to the middle of 13 Nov; the FO keeps its half' },
+  { n: 2, day: 13, oil: { days: '0.5', half: 'am', why: 'Exercise' }, kind: 'HO', place: 'right-am', first: false,
+    today: 'Today: Drifter\'s approved LL 9–13 Nov and a morning HO on the last day, 13 Nov — the HO takes the top-right quarter',
+    drawn: 'Drawn: a morning HO on the last day — the bar still runs to the middle' },
+  { n: 3, day: 13, oil: { days: '0.5', half: 'pm', why: 'Exercise' }, kind: 'HO', place: 'right-pm', first: false,
+    today: 'Today: Drifter\'s approved LL 9–13 Nov and an afternoon HO on the last day, 13 Nov — the HO takes the bottom-right quarter',
+    drawn: 'Drawn: an afternoon HO on the last day' },
+  { n: 4, day: 9, oil: { days: '1', why: 'Weekend work' }, kind: 'FO', place: 'right', first: true,
+    today: 'Today: Drifter\'s approved LL 9–13 Nov and an FO on the first day, 9 Nov — that day shows both, side by side',
+    drawn: 'Drawn: on the first day the leave takes the half next to the rest — the FO the other half' },
+]
+const placeOf2 = cls => (cls.match(/\b(right-am|right-pm|top|bot|left|right|whole)\b/) || [null, '?'])[1]
+const todayVerdicts = []
+
+if (PART === 'half') for (const size of SIZES) {
+  for (const hc of HALF_CASES) {
+    const w = await L.newCtx(size)
+    const P = w.page
+    await L.signInPlain(w, 'admin')
+    await hideTransient(P)
+    const ids = await P.evaluate(() => Object.fromEntries(Object.entries(window.PEOPLE || {}).map(([k, v]) => [v.cs, k])))
+    const who = ids.Drifter
+    const above = [ids.Sidewinder, ids.Warden], below = [ids.Ridge, ids.Basher]
+    const D = d => `2026-11-${String(d).padStart(2, '0')}`
+    const tag = `${size}/half${hc.n}`
+    const days = [8, 9, 10, 11, 12, 13, 14]
+    const run = [9, 10, 11, 12, 13].map(D)
+    await L.reachCell(w, who, D(9))
+    const full = []
+    for (const d of days) { const k = await kinds(w, who, D(d)); if (k.length) full.push(`${d} ${k}`) }
+    if (full.length) throw new Error('Drifter\'s November days are not empty: ' + full.join('; '))
+    /* an approved LL over 9–13 Nov, one drag */
+    if (!(await dragCells(w, [who, D(9)], [who, D(13)]))) throw new Error('no drag window over 9–13 Nov')
+    await setSwitch(w, true, 'sel')
+    if (await L.vis(P, T('sel-portion-full'))) await L.press(w, T('sel-portion-full'))
+    if (!(await selPress(w, 'sel-LL'))) throw new Error('9–13 Nov not placed: ' + (await L.sheetDump(P))?.text?.slice(0, 200))
+    /* the second entry, from the bid window's ⋯ → Grant OIL */
+    await grantOil(w, who, D(hc.day), hc.oil)
+    await P.waitForTimeout(500)
+
+    /* WHAT THE APP HOLDS, and what it draws today on that day (the leave's place, the other entry's place) */
+    const cells = {}
+    for (const d of days) cells[d] = (await L.cellInfo(P, who, D(d)))?.boxes.map(b => `${b.text}|${(b.cls.match(/k-\w+/) || [''])[0]}|${(b.cls.match(/s-[awr]/) || [''])[0]}|${placeOf2(b.cls)}`).join(' + ')
+    note(tag, 'Drifter\'s boxes: ' + JSON.stringify(cells))
+    const inputs = await inputsOf(P, who)
+    note(tag, 'the Inputs page\'s November records: ' + JSON.stringify(inputs))
+    const llIn = inputs.filter(i => i.type === 'LL' && i.date === 'Nov 9' && i.endDate === 'Nov 13')
+    const info = await L.cellInfo(P, who, D(hc.day))
+    const lv = info?.boxes.find(b => /\bk-ll\b/.test(b.cls)), ot = info?.boxes.find(b => !/\bk-ll\b/.test(b.cls))
+    if (llIn.length !== 1 || info?.boxes.length !== 2 || !lv || !ot || !ot.text.startsWith(hc.kind)) throw new Error(`fixture: ${llIn.length} LL inputs over 9–13 Nov; ${hc.day} Nov reads ${cells[hc.day]}`)
+    const fr = (v, t) => +(v / t).toFixed(2)
+    const g = { td: [info.tdw, info.tdh], leave: { place: placeOf2(lv.cls), x: fr(lv.x, info.tdw), y: fr(lv.y, info.tdh), w: fr(lv.w, info.tdw), h: fr(lv.h, info.tdh) }, other: { text: ot.text, place: placeOf2(ot.cls), x: fr(ot.x, info.tdw), y: fr(ot.y, info.tdh), w: fr(ot.w, info.tdw), h: fr(ot.h, info.tdh) } }
+    const asDescribed = g.leave.place === 'left' && g.other.place === hc.place && g.leave.x < 0.15 && g.leave.w > 0.35 && g.leave.w < 0.6 && g.leave.h > 0.8
+      && g.other.x > 0.4 && (hc.place === 'right' ? g.other.h > 0.8 : hc.place === 'right-am' ? g.other.y < 0.15 && g.other.h > 0.3 && g.other.h < 0.6 : g.other.y > 0.4 && g.other.h > 0.3 && g.other.h < 0.6)
+    note(tag, `today on ${hc.day} Nov, shares of the cell: ${JSON.stringify(g)} — ${asDescribed ? 'AS DESCRIBED (leave left half full height, the other entry on the right)' : 'NOT AS DESCRIBED'}`)
+    todayVerdicts.push({ tag, asDescribed, g })
+
+    const geo = await toView(w, above[0])
+    /* the desktop draws the rest of the year while the page is idle, which moves the columns: let it finish first */
+    await P.waitForTimeout(3000)
+    BW = geo.border
+    const V = viewHelpers(w, { who, above, below, D, geo, tag })
+    const C = await V.withHead(V.cut(9, 13), 9, 13)
+    await draw(P, who, [], null)
+    await frame(w, `half${hc.n}-today`, { ...C, label: hc.today, check: V.atEdge(C) })
+    await drawHalf(P, who, run, hc.first)
+    await frame(w, `half${hc.n}-c`, { ...C, label: hc.drawn, check: async () => (await V.atEdge(C)()) ?? (await drawnOk(P, who, [run], 'bar')()) ?? (await halfOk(P, who, run, hc.first)()) })
+    await clearHalf(P)
+    await draw(P, who, [], null)
+    if (w.errs.length) note(tag, 'errors: ' + w.errs.slice(0, 8).join(' || '))
+    else note(tag, 'errors: none (console, page, 4xx)')
+    await w.ctx.close()
+  }
+}
 await L.closeBrowser()
-writeFileSync(path.join(L.OUT, PART === 'busy' ? `run-busy-${SIZES.join('-')}.json` : `run-${SIZES.join('-')}.json`), JSON.stringify({ log, pics }, null, 1))
+writeFileSync(path.join(L.OUT, PART === 'busy' ? `run-busy-${SIZES.join('-')}.json` : PART === 'half' ? `run-half-${SIZES.join('-')}.json` : `run-${SIZES.join('-')}.json`), JSON.stringify({ log, pics }, null, 1))
 console.log('DONE', pics.length, 'pictures;', log.filter(l => /NOT DONE/.test(l.said)).length, 'not done')

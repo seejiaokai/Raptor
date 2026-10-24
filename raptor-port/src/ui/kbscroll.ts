@@ -75,6 +75,26 @@ const scrolls = (a: Element) => {
   const oy = getComputedStyle(a).overflowY
   return (oy === 'auto' || oy === 'scroll' || oy === 'overlay') && a.scrollHeight > a.clientHeight + 1
 }
+/* WHAT A PANEL KEEPS CLEAR AT ITS FOOT AND ITS TOP (his report, 25 Oct 26 07:06 — the input window on his iPhone, "Other"
+   picked, Remarks tapped: Document, then Cancel / Add, and no Remarks — "The page seems to be too small"). A window whose
+   buttons are pinned to the foot of its own scrolling body (the input window's Cancel / Add, Holidays' buttons) covers that
+   foot, and says by how much in the standard way, its scroll padding — the margin the browser itself keeps clear when it
+   scrolls a thing into view there (25-inputs-calendar.css, 23-days.css). The lift measured the panel's bare edge, so a box
+   brought to the panel's foot sat exactly behind the buttons — whenever the whole window stood above the keys: held to the
+   room left (raise, below), or a browser that shortens the page for the keys. In screen pixels, as the panel's box is. */
+function keptClear(a: Element): { top: number, bottom: number } {
+  const cs = getComputedStyle(a), k = scaleOf(a)
+  const px = (v: string) => (parseFloat(v) || 0) * k
+  /* and a pinned foot it does not declare, measured as it stands: its last child, or that child's own last child (three
+     deep at most), held sticky to its foot — so a button row that wraps to two lines on an iPhone's wider letters is
+     cleared whole */
+  let foot = 0
+  for (let f = a.lastElementChild, d = 0; f && d < 3; f = f.lastElementChild, d++) {
+    const s = getComputedStyle(f)
+    if (s.position === 'sticky' && s.bottom !== 'auto') { foot = f.getBoundingClientRect().height; break }
+  }
+  return { top: px(cs.scrollPaddingTop || cs.getPropertyValue('scroll-padding-top')), bottom: Math.max(foot, px(cs.scrollPaddingBottom || cs.getPropertyValue('scroll-padding-bottom'))) }
+}
 /* scroll `sc` so `el`'s bottom sits at `bot` or above, never taking its top above `top` */
 function lift(sc: Element, el: HTMLElement, bot: number, top: number): number {
   const r = el.getBoundingClientRect()
@@ -197,8 +217,8 @@ function panelRoom(el: HTMLElement, layer: Element, visTop: number, visBot: numb
   let p = el.parentElement
   while (p && p !== layer && !scroller(p)) p = p.parentElement
   if (!p || p === layer) return 0
-  const r = el.getBoundingClientRect(), pr = p.getBoundingClientRect()
-  const bot = Math.min(pr.bottom, visBot) - GAP, top = Math.max(pr.top, visTop) + GAP
+  const r = el.getBoundingClientRect(), pr = p.getBoundingClientRect(), kc = keptClear(p)
+  const bot = Math.min(pr.bottom - kc.bottom, visBot) - GAP, top = Math.max(pr.top + kc.top, visTop) + GAP
   const want = Math.min(r.bottom - bot, r.top - top)
   if (want <= 0.5) return 0
   const base = ROOMED.has(p) ? parseFloat(p.style.getPropertyValue('--kbroom')) || 0 : parseFloat(getComputedStyle(p).paddingBottom) || 0
@@ -239,8 +259,8 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   const panels = () => {
     for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
       if (!scrolls(a)) continue
-      const ar = a.getBoundingClientRect()
-      moved += lift(a, el, Math.min(ar.bottom, visBot) - GAP, Math.max(ar.top, visTop) + GAP)
+      const ar = a.getBoundingClientRect(), kc = keptClear(a)
+      moved += lift(a, el, Math.min(ar.bottom - kc.bottom, visBot) - GAP, Math.max(ar.top + kc.top, visTop) + GAP)
     }
   }
   const page = document.scrollingElement || document.documentElement

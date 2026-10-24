@@ -126,6 +126,34 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     expect(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'its title on the screen').toBeGreaterThanOrEqual(0)
   })
 
+  /* KS3d — his report, 25 Oct 26 07:06: the input window on his iPhone, "Other" picked, Remarks tapped — Document, then
+     Cancel / Add, and no Remarks ("The page seems to be too small"). Held to the room the keys leave, the window's Cancel /
+     Add stand pinned at the foot of its scrolling body, and the box was lifted to that foot — behind them. KS3c never saw
+     it: it checked the box against the keys, not against the window's own buttons. */
+  test('KS3d the input window held to the room: Remarks of an "Other" comes to rest above Cancel / Add, never behind them', async ({ page }) => {
+    await login(page); await go(page, 'inputs')
+    await page.click('#inListBtn'); await page.click('#inNew')
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    await page.evaluate(() => {
+      const s = [...document.querySelectorAll('[data-testid="win-inputedit"] select')].find(s => [...(s as HTMLSelectElement).options].some(o => o.text.trim() === 'Other'))
+      s!.setAttribute('data-kind-sel', '')
+    })
+    await win.locator('select[data-kind-sel]').selectOption({ label: 'Other' })
+    const box = page.locator('#inpEditRmk'), foot = win.locator('.airpop-foot')
+    await box.evaluate(e => e.scrollIntoView({ block: 'nearest' }))
+    /* keys tall enough that the window's own scroll cannot bring Remarks up: the window is held to the room (raise) */
+    const kb = 540
+    await page.waitForTimeout(600)
+    await tap(page, box); await expect(box).toBeFocused()
+    await keysUp(page, kb)
+    await expect.poll(() => win.evaluate(e => (e as HTMLElement).dataset.kbcap != null), { message: 'the fixture: the window is held to the room' }).toBe(true)
+    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - kb - GAP + 1)
+    const fTop = await foot.evaluate(e => Math.round(e.getBoundingClientRect().top))
+    expect(await bottomOf(box), 'Remarks above Cancel / Add, not behind them').toBeLessThanOrEqual(fTop)
+    expect(await box.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'Remarks inside the window').toBeGreaterThanOrEqual(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)))
+  })
+
   /* KS6 — D1081 (his recordings: the board a frame or three out of place as the keys closed, first when it followed the
      visible screen on its events, still when it followed frame by frame). The board is no longer placed by script at all:
      it keeps the layout's full size whatever the visible screen does, so it moves with the iPhone's own scroll. And a

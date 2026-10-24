@@ -1,0 +1,346 @@
+{
+ "log": [
+  {
+   "id": "1-member-kinds",
+   "size": "phone",
+   "said": "a member is offered 23 kinds: Leave > LL · Leave > OL · Leave > OIL · Leave > CCL · Leave > PL · Leave > FCL · Leave > EL · Leave > CL · Medical > HL · Medical > OML · Medical > ATT C · Medical > ATT B · Medical > Upchit · Duty & other commitments > Training · Duty & other commitments > CSE · Duty & other commitments > Meeting · Duty & other commitments > Fly with · Duty & other commitments > Personal · Duty & other commitments > Appointment · Duty & other commitments > Duty · Duty & other commitments > Event · Duty & other commitments > OD · Duty & other commitments > Other — person fixed to Ranger"
+  },
+  {
+   "id": "1-member-kinds",
+   "size": "phone",
+   "said": "Other's row in the list: {\"r\":[38,566,326,16],\"s\":[28,154,346,460]}"
+  },
+  {
+   "id": "1-member-kinds",
+   "size": "phone",
+   "said": "the \"?\" list says of Other: \"Other\" (group Duty & other commitments: cannot be planned, but may still stand an SC SPARE; across an SC MAIN shift this is a Warning — a real commitment, not academics)"
+  },
+  {
+   "id": "0-baseline",
+   "size": "phone",
+   "said": "before filing — Available P {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"} · Drifter's boxes {\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]}"
+  },
+  {
+   "id": "file-other",
+   "size": "phone",
+   "said": "a new Other opens with title \"Other\", all day false, times 06:00–18:00"
+  },
+  {
+   "id": "file-other",
+   "size": "phone",
+   "said": "filed: [{\"iid\":\"imvn0k8rqcfwuyk\",\"people\":[\"slipway\"],\"date\":\"Jul 14\",\"endDate\":\"\",\"acc\":\"g\",\"rmk\":\"Under investigation\",\"allday\":true,\"s\":0,\"e\":1439}]"
+  },
+  {
+   "id": "5a-leavewar-today",
+   "size": "phone",
+   "said": "after filing — Available P {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"} · Drifter's boxes {\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]}"
+  },
+  {
+   "id": "2a-today-schedule-edit",
+   "size": "phone",
+   "said": "the day card: \"Tuesday Jul 14 Templates Live working co\""
+  },
+  {
+   "id": "2a-today-schedule-edit",
+   "size": "phone",
+   "said": "Ground Programme row: {\"text\":\"OTHER C Drifter A + ADD LATE Under investigation\",\"btns\":[],\"allRows\":5} · Personal Inputs row: {\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":2}"
+  },
+  {
+   "id": "2b-today-schedule-view",
+   "size": "phone",
+   "said": "member's View-only Sched, Tue 14 Jul — Ground Programme row: {\"text\":\"OTHER C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":5} · sections: allhands.sec.sec-prog :: COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 3 N || sub.plist.sec.sec-duty :: DUTIES NAME START PEOPLE RMKS 1ST WAVE SDO 05:30 1 || sub.plist.sec.sec-sim :: SIMS NAME START PEOPLE RMKS AMT BRIEF 14:00 BOX 14 || sub.plist.one.sec.sec-grnd :: GROUND PROGRAMME NAME START PEOPLE RMKS OPS BRIEFE || sub.plist.one.sec.sec-unav :: UNAVAILABLE NAME START PEOPLE RMKS LL all day Quil"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "phone",
+   "said": "buttons on the Other before: x:Reject"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "phone",
+   "said": "after Reject, the Other offers: g:→ Ground, u:→ Unavail"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "phone",
+   "said": "\"→ Unavail\" asked no OIL question (nothing opened)"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "phone",
+   "said": "the Other is now: {\"iid\":\"imvn0k8rqcfwuyk\",\"people\":[\"slipway\"],\"date\":\"Jul 14\",\"endDate\":\"\",\"acc\":\"u\",\"rmk\":\"Under investigation\",\"allday\":true,\"s\":0,\"e\":1439}"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "phone",
+   "said": "Unavailable row: {\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":4}"
+  },
+  {
+   "id": "3b-drawn-unavail-view",
+   "size": "phone",
+   "said": "member's Unavailable row: {\"text\":\"Other all day C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":4}"
+  },
+  {
+   "id": "3b-drawn-unavail-view",
+   "size": "phone",
+   "said": "member's Ground Programme still holds an Other: false"
+  },
+  {
+   "id": "4a-inputs-calendar",
+   "size": "phone",
+   "said": "ib-week-2: 14 bars — [Grit · ATT C | red kd k-med | Grit · ATT C · 13 Jul – 17 Jul\nPlaced by Grit · 12 Jul 26, 1] [Vector | red kd k-med | Vector · OML · 13 Jul\nPlaced by Vector · 12 Jul 26, 08:00] [Gambit | amb duty | Gambit · Fly with · 13 Jul\nPlaced by Gambit · 20 Jun 26, 15:] [Zenith | amb duty timed | Zenith · Meeting · 13 Jul · 09:00–17:00\nPlaced by Saber for ] [Bolt | amb duty timed | Bolt · Appointment · 13 Jul · 10:00–11:00\nPlaced by Bolt · 6] [Quill | red kd k-ll | Quill · LL · 14 Jul\nPlaced by Quill · 30 Jun 26, 12:28] [Wisp | red kd k-oilt | Wisp · OIL · 14 Jul\nPlaced by Wisp · 2 Jul 26, 13:35] [Drifter | amb duty | Drifter · Other · 14 Jul\nPlaced by Saber for Drifter · 25 Oc] [Saint | amb duty timed | Saint · Appointment · 14 Jul · 14:00–16:00\nPlaced by Saint ·] [Nomad · OD | red kd k-od | Nomad · OD · 15 Jul – 17 Jul\nPlaced by Nomad · 18 Jun 26, 08] [Cobra | red kd k-ol | Cobra · OL · 15 Jul\nPlaced by Saber for Cobra · 22 Jun 26, 1] [Gambit | red kd k-oilt | Gambit · OIL · 15 Jul] [Gambit | red kd k-oilt | Gambit · OIL · 16 Jul] [Ranger | amb duty timed | Ranger · Appointment · 16 Jul · 17:00–18:30\nPlaced by Ranger]"
+  },
+  {
+   "id": "4a-inputs-calendar",
+   "size": "phone",
+   "said": "the Other's bar: words \"Drifter\" · class \"ib-bar amb duty\" · hover \"Drifter · Other · 14 Jul\nPlaced by Saber for Drifter · 25 Oct 26, 07:12\""
+  },
+  {
+   "id": "4b-inputs-day",
+   "size": "phone",
+   "said": "the day opened: 5 cards — till 17 Jul GritATT C Medically down || LATE No document All day QuillLL Local leave || LATE No document All day WispOIL OIL — CO approved, post-detachment || LATE All day DrifterOTHER Under investigation By Saber || LATE 14:00–16:00 SaintAPPOINTMENT Dental appt"
+  },
+  {
+   "id": "5b-leavewar-drawn",
+   "size": "phone",
+   "said": "UNA placed on 2026-07-15: Drifter's boxes {\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[\"UNA|k-una\"],\"2026-07-16\":[],\"2026-07-17\":[]} · Available P {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"} → {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"24\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"}"
+  },
+  {
+   "id": "5b-leavewar-drawn",
+   "size": "phone",
+   "said": "Manning counters on 2026-07-15 that changed with the UNA: [{\"id\":\"opsp\",\"from\":\"10\",\"to\":\"9\"},{\"id\":\"sxo\",\"from\":\"12\",\"to\":\"11\"}] (Drifter's Other on 2026-07-14 changed none: true)"
+  },
+  {
+   "id": "5b-leavewar-drawn",
+   "size": "phone",
+   "said": "letters changed on 1 box(es); the box reads \"OTH\""
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  },
+  {
+   "id": "summary",
+   "size": "phone",
+   "said": "{\"memberKinds\":[\"Leave > LL\",\"Leave > OL\",\"Leave > OIL\",\"Leave > CCL\",\"Leave > PL\",\"Leave > FCL\",\"Leave > EL\",\"Leave > CL\",\"Medical > HL\",\"Medical > OML\",\"Medical > ATT C\",\"Medical > ATT B\",\"Medical > Upchit\",\"Duty & other commitments > Training\",\"Duty & other commitments > CSE\",\"Duty & other commitments > Meeting\",\"Duty & other commitments > Fly with\",\"Duty & other commitments > Personal\",\"Duty & other commitments > Appointment\",\"Duty & other commitments > Duty\",\"Duty & other commitments > Event\",\"Duty & other commitments > OD\",\"Duty & other commitments > Other\"],\"before\":{\"avail\":{\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"},\"cells\":{\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]},\"counts\":{\"2026-07-14\":{\"sets\":\"15\",\"ip\":\"16\",\"iwso\":\"6\",\"opsp\":\"12\",\"opsw\":\"9\",\"sxo\":\"12\"},\"2026-07-15\":{\"sets\":\"17\",\"ip\":\"15\",\"iwso\":\"7\",\"opsp\":\"10\",\"opsw\":\"10\",\"sxo\":\"12\"}}},\"otherDefaults\":{\"title\":\"Other\",\"allday\":false,\"start\":\"06:00\",\"end\":\"18:00\"},\"filedAcc\":\"g\",\"afterOther\":{\"avail\":{\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"},\"cells\":{\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]},\"counts\":{\"2026-07-14\":{\"sets\":\"15\",\"ip\":\"16\",\"iwso\":\"6\",\"opsp\":\"12\",\"opsw\":\"9\",\"sxo\":\"12\"},\"2026-07-15\":{\"sets\":\"17\",\"ip\":\"15\",\"iwso\":\"7\",\"opsp\":\"10\",\"opsw\":\"10\",\"sxo\":\"12\"}}},\"groundRow\":{\"text\":\"OTHER C Drifter A + ADD LATE Under investigation\",\"btns\":[],\"allRows\":5},\"personalRow\":{\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":2},\"viewGround\":{\"text\":\"OTHER C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":5},\"unavailAsk\":[],\"unavailRow\":{\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":4},\"viewUnavail\":{\"text\":\"Other all day C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":4},\"calBar\":{\"key\":\"imvn0k8rqcfwuyk\",\"cls\":\"ib-bar amb duty\",\"text\":\"Drifter\",\"title\":\"Drifter · Other · 14 Jul\\nPlaced by Saber for Drifter · 25 Oct 26, 07:12\"},\"una\":{\"before\":\"25\",\"after\":\"24\",\"counters\":[{\"id\":\"opsp\",\"from\":\"10\",\"to\":\"9\"},{\"id\":\"sxo\",\"from\":\"12\",\"to\":\"11\"}]}}"
+  },
+  {
+   "id": "results",
+   "size": "phone",
+   "said": "1-member-kinds:ok 0-baseline:ok file-other:ok 5a-leavewar-today:ok 2a-today-schedule-edit:ok 2b-today-schedule-view:ok 3a-drawn-unavail-edit:ok 3b-drawn-unavail-view:ok 4a-inputs-calendar:ok 4b-inputs-day:ok 5b-leavewar-drawn:ok"
+  },
+  {
+   "id": "1-member-kinds",
+   "size": "desk",
+   "said": "a member is offered 23 kinds: Leave > LL · Leave > OL · Leave > OIL · Leave > CCL · Leave > PL · Leave > FCL · Leave > EL · Leave > CL · Medical > HL · Medical > OML · Medical > ATT C · Medical > ATT B · Medical > Upchit · Duty & other commitments > Training · Duty & other commitments > CSE · Duty & other commitments > Meeting · Duty & other commitments > Fly with · Duty & other commitments > Personal · Duty & other commitments > Appointment · Duty & other commitments > Duty · Duty & other commitments > Event · Duty & other commitments > OD · Duty & other commitments > Other — person fixed to Ranger"
+  },
+  {
+   "id": "1-member-kinds",
+   "size": "desk",
+   "said": "Other's row in the list: {\"r\":[1020,638,378,16],\"s\":[1010,226,398,460]}"
+  },
+  {
+   "id": "1-member-kinds",
+   "size": "desk",
+   "said": "the \"?\" list says of Other: \"Other\" (group Duty & other commitments: cannot be planned, but may still stand an SC SPARE; across an SC MAIN shift this is a Warning — a real commitment, not academics)"
+  },
+  {
+   "id": "0-baseline",
+   "size": "desk",
+   "said": "before filing — Available P {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"} · Drifter's boxes {\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]}"
+  },
+  {
+   "id": "file-other",
+   "size": "desk",
+   "said": "a new Other opens with title \"Other\", all day false, times 06:00–18:00"
+  },
+  {
+   "id": "file-other",
+   "size": "desk",
+   "said": "filed: [{\"iid\":\"imvn0lm3acwar9y\",\"people\":[\"slipway\"],\"date\":\"Jul 14\",\"endDate\":\"\",\"acc\":\"g\",\"rmk\":\"Under investigation\",\"allday\":true,\"s\":0,\"e\":1439}]"
+  },
+  {
+   "id": "5a-leavewar-today",
+   "size": "desk",
+   "said": "after filing — Available P {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"} · Drifter's boxes {\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]}"
+  },
+  {
+   "id": "2a-today-schedule-edit",
+   "size": "desk",
+   "said": "the day card: \"Tuesday Jul 14 Templates Live working co\""
+  },
+  {
+   "id": "2a-today-schedule-edit",
+   "size": "desk",
+   "said": "Ground Programme row: {\"text\":\"OTHER C Drifter A + ADD LATE Under investigation\",\"btns\":[],\"allRows\":5} · Personal Inputs row: {\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":2}"
+  },
+  {
+   "id": "2b-today-schedule-view",
+   "size": "desk",
+   "said": "member's View-only Sched, Tue 14 Jul — Ground Programme row: {\"text\":\"OTHER C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":5} · sections: allhands.sec.sec-prog :: COMMON PROGRAMME ORDERS: FLYING ORDERS SECTION 3 N || sub.plist.sec.sec-duty :: DUTIES NAME START END PEOPLE RMKS 1ST WAVE SDO 05: || sub.plist.sec.sec-sim :: SIMS NAME START END PEOPLE RMKS AMT BRIEF 14:00 BO || sub.plist.one.sec.sec-grnd :: GROUND PROGRAMME NAME START END PEOPLE RMKS OPS BR || sub.plist.one.sec.sec-unav :: UNAVAILABLE NAME START END PEOPLE RMKS LL all day "
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "desk",
+   "said": "buttons on the Other before: x:Reject"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "desk",
+   "said": "after Reject, the Other offers: g:→ Ground, u:→ Unavail"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "desk",
+   "said": "\"→ Unavail\" asked no OIL question (nothing opened)"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "desk",
+   "said": "the Other is now: {\"iid\":\"imvn0lm3acwar9y\",\"people\":[\"slipway\"],\"date\":\"Jul 14\",\"endDate\":\"\",\"acc\":\"u\",\"rmk\":\"Under investigation\",\"allday\":true,\"s\":0,\"e\":1439}"
+  },
+  {
+   "id": "3a-drawn-unavail-edit",
+   "size": "desk",
+   "said": "Unavailable row: {\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":4}"
+  },
+  {
+   "id": "3b-drawn-unavail-view",
+   "size": "desk",
+   "said": "member's Unavailable row: {\"text\":\"Other all day C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":4}"
+  },
+  {
+   "id": "3b-drawn-unavail-view",
+   "size": "desk",
+   "said": "member's Ground Programme still holds an Other: false"
+  },
+  {
+   "id": "4a-inputs-calendar",
+   "size": "desk",
+   "said": "ib-week-2: 14 bars — [Grit · ATT C | red kd k-med | Grit · ATT C · 13 Jul – 17 Jul\nPlaced by Grit · 12 Jul 26, 1] [Vector · OML | red kd k-med | Vector · OML · 13 Jul\nPlaced by Vector · 12 Jul 26, 08:00] [Gambit · Fly with | amb duty | Gambit · Fly with · 13 Jul\nPlaced by Gambit · 20 Jun 26, 15:] [Zenith · Meeting | amb duty timed | Zenith · Meeting · 13 Jul · 09:00–17:00\nPlaced by Saber for ] [Bolt · Appointment | amb duty timed | Bolt · Appointment · 13 Jul · 10:00–11:00\nPlaced by Bolt · 6] [Quill · LL | red kd k-ll | Quill · LL · 14 Jul\nPlaced by Quill · 30 Jun 26, 12:28] [Wisp · OIL | red kd k-oilt | Wisp · OIL · 14 Jul\nPlaced by Wisp · 2 Jul 26, 13:35] [Drifter · Other | amb duty | Drifter · Other · 14 Jul\nPlaced by Saber for Drifter · 25 Oc] [Saint · Appointment | amb duty timed | Saint · Appointment · 14 Jul · 14:00–16:00\nPlaced by Saint ·] [Nomad · OD | red kd k-od | Nomad · OD · 15 Jul – 17 Jul\nPlaced by Nomad · 18 Jun 26, 08] [Cobra · OL | red kd k-ol | Cobra · OL · 15 Jul\nPlaced by Saber for Cobra · 22 Jun 26, 1] [Gambit · OIL | red kd k-oilt | Gambit · OIL · 15 Jul] [Gambit · OIL | red kd k-oilt | Gambit · OIL · 16 Jul] [Ranger · Appointment | amb duty timed | Ranger · Appointment · 16 Jul · 17:00–18:30\nPlaced by Ranger]"
+  },
+  {
+   "id": "4a-inputs-calendar",
+   "size": "desk",
+   "said": "the Other's bar: words \"Drifter · Other\" · class \"ib-bar amb duty\" · hover \"Drifter · Other · 14 Jul\nPlaced by Saber for Drifter · 25 Oct 26, 07:13\""
+  },
+  {
+   "id": "4b-inputs-day",
+   "size": "desk",
+   "said": "the day opened: 5 cards — till 17 Jul GritATT C Medically down || LATE No document All day QuillLL Local leave || LATE No document All day WispOIL OIL — CO approved, post-detachment || LATE All day DrifterOTHER Under investigation By Saber || LATE 14:00–16:00 SaintAPPOINTMENT Dental appt"
+  },
+  {
+   "id": "5b-leavewar-drawn",
+   "size": "desk",
+   "said": "UNA placed on 2026-07-15: Drifter's boxes {\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[\"UNA|k-una\"],\"2026-07-16\":[],\"2026-07-17\":[]} · Available P {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"} → {\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"24\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"}"
+  },
+  {
+   "id": "5b-leavewar-drawn",
+   "size": "desk",
+   "said": "Manning counters on 2026-07-15 that changed with the UNA: [{\"id\":\"opsp\",\"from\":\"10\",\"to\":\"9\"},{\"id\":\"sxo\",\"from\":\"12\",\"to\":\"11\"}] (Drifter's Other on 2026-07-14 changed none: true)"
+  },
+  {
+   "id": "5b-leavewar-drawn",
+   "size": "desk",
+   "said": "letters changed on 1 box(es); the box reads \"OTH\""
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "none (console, page, 4xx)"
+  },
+  {
+   "id": "summary",
+   "size": "desk",
+   "said": "{\"memberKinds\":[\"Leave > LL\",\"Leave > OL\",\"Leave > OIL\",\"Leave > CCL\",\"Leave > PL\",\"Leave > FCL\",\"Leave > EL\",\"Leave > CL\",\"Medical > HL\",\"Medical > OML\",\"Medical > ATT C\",\"Medical > ATT B\",\"Medical > Upchit\",\"Duty & other commitments > Training\",\"Duty & other commitments > CSE\",\"Duty & other commitments > Meeting\",\"Duty & other commitments > Fly with\",\"Duty & other commitments > Personal\",\"Duty & other commitments > Appointment\",\"Duty & other commitments > Duty\",\"Duty & other commitments > Event\",\"Duty & other commitments > OD\",\"Duty & other commitments > Other\"],\"before\":{\"avail\":{\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"},\"cells\":{\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]},\"counts\":{\"2026-07-14\":{\"sets\":\"15\",\"ip\":\"16\",\"iwso\":\"6\",\"opsp\":\"12\",\"opsw\":\"9\",\"sxo\":\"12\"},\"2026-07-15\":{\"sets\":\"17\",\"ip\":\"15\",\"iwso\":\"7\",\"opsp\":\"10\",\"opsw\":\"10\",\"sxo\":\"12\"}}},\"otherDefaults\":{\"title\":\"Other\",\"allday\":false,\"start\":\"06:00\",\"end\":\"18:00\"},\"filedAcc\":\"g\",\"afterOther\":{\"avail\":{\"2026-07-13\":\"28\",\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\",\"2026-07-17\":\"27\"},\"cells\":{\"2026-07-13\":[],\"2026-07-14\":[],\"2026-07-15\":[],\"2026-07-16\":[],\"2026-07-17\":[]},\"counts\":{\"2026-07-14\":{\"sets\":\"15\",\"ip\":\"16\",\"iwso\":\"6\",\"opsp\":\"12\",\"opsw\":\"9\",\"sxo\":\"12\"},\"2026-07-15\":{\"sets\":\"17\",\"ip\":\"15\",\"iwso\":\"7\",\"opsp\":\"10\",\"opsw\":\"10\",\"sxo\":\"12\"}}},\"groundRow\":{\"text\":\"OTHER C Drifter A + ADD LATE Under investigation\",\"btns\":[],\"allRows\":5},\"personalRow\":{\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":2},\"viewGround\":{\"text\":\"OTHER C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":5},\"unavailAsk\":[],\"unavailRow\":{\"text\":\"Other C Drifter A LATE Under investigation REJECT\",\"btns\":[\"Reject\"],\"allRows\":4},\"viewUnavail\":{\"text\":\"Other all day C Drifter A LATE Under investigation\",\"btns\":[],\"allRows\":4},\"calBar\":{\"key\":\"imvn0lm3acwar9y\",\"cls\":\"ib-bar amb duty\",\"text\":\"Drifter · Other\",\"title\":\"Drifter · Other · 14 Jul\\nPlaced by Saber for Drifter · 25 Oct 26, 07:13\"},\"una\":{\"before\":\"25\",\"after\":\"24\",\"counters\":[{\"id\":\"opsp\",\"from\":\"10\",\"to\":\"9\"},{\"id\":\"sxo\",\"from\":\"12\",\"to\":\"11\"}]}}"
+  },
+  {
+   "id": "results",
+   "size": "desk",
+   "said": "1-member-kinds:ok 0-baseline:ok file-other:ok 5a-leavewar-today:ok 2a-today-schedule-edit:ok 2b-today-schedule-view:ok 3a-drawn-unavail-edit:ok 3b-drawn-unavail-view:ok 4a-inputs-calendar:ok 4b-inputs-day:ok 5b-leavewar-drawn:ok"
+  }
+ ],
+ "pics": [
+  {
+   "file": "1a-today-inputs-kinds-phone.png",
+   "label": "Today: a member can file \"Other\""
+  },
+  {
+   "file": "1b-today-inputs-kinds-legend-phone.png",
+   "label": "Today: what \"Other\" means in the list a member sees"
+  },
+  {
+   "file": "5a-today-leavewar-phone.png",
+   "label": "Today: an Other is not on the Leave War (Drifter, Tue 14 Jul). Available P stays 28."
+  },
+  {
+   "file": "2a-today-schedule-edit-phone.png",
+   "label": "Today: an Other lands as a commitment he is doing"
+  },
+  {
+   "file": "2b-today-schedule-view-phone.png",
+   "label": "Today: an Other lands as a commitment he is doing"
+  },
+  {
+   "file": "3a-drawn-unavail-edit-phone.png",
+   "label": "Your OTH: under Unavailable, its remarks shown to everyone"
+  },
+  {
+   "file": "3b-drawn-unavail-view-phone.png",
+   "label": "Your OTH: under Unavailable, its remarks shown to everyone"
+  },
+  {
+   "file": "4a-inputs-calendar-phone.png",
+   "label": "On the Inputs page: shown as today"
+  },
+  {
+   "file": "4b-inputs-day-phone.png",
+   "label": "On the Inputs page: shown as today"
+  },
+  {
+   "file": "5b-drawn-leavewar-phone.png",
+   "label": "Drawn: on the Leave War it reads OTH and takes him out of the manning (Available P 25 → 24; OPSP 10 → 9, SXO 12 → 11)"
+  },
+  {
+   "file": "1a-today-inputs-kinds-desk.png",
+   "label": "Today: a member can file \"Other\""
+  },
+  {
+   "file": "1b-today-inputs-kinds-legend-desk.png",
+   "label": "Today: what \"Other\" means in the list a member sees"
+  },
+  {
+   "file": "5a-today-leavewar-desk.png",
+   "label": "Today: an Other is not on the Leave War (Drifter, Tue 14 Jul). Available P stays 28."
+  },
+  {
+   "file": "2a-today-schedule-edit-desk.png",
+   "label": "Today: an Other lands as a commitment he is doing"
+  },
+  {
+   "file": "2b-today-schedule-view-desk.png",
+   "label": "Today: an Other lands as a commitment he is doing"
+  },
+  {
+   "file": "3a-drawn-unavail-edit-desk.png",
+   "label": "Your OTH: under Unavailable, its remarks shown to everyone"
+  },
+  {
+   "file": "3b-drawn-unavail-view-desk.png",
+   "label": "Your OTH: under Unavailable, its remarks shown to everyone"
+  },
+  {
+   "file": "4a-inputs-calendar-desk.png",
+   "label": "On the Inputs page: shown as today"
+  },
+  {
+   "file": "4b-inputs-day-desk.png",
+   "label": "On the Inputs page: shown as today"
+  },
+  {
+   "file": "5b-drawn-leavewar-desk.png",
+   "label": "Drawn: on the Leave War it reads OTH and takes him out of the manning (Available P 25 → 24; OPSP 10 → 9, SXO 12 → 11)"
+  }
+ ]
+}

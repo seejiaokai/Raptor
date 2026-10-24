@@ -1,0 +1,230 @@
+{
+ "log": [
+  {
+   "size": "phone/half1",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"14\":\"\"}"
+  },
+  {
+   "size": "phone/half1",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0f8g9ohwjyp\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "phone/half1",
+   "said": "today on 13 Nov, shares of the cell: {\"td\":[21,21],\"leave\":{\"place\":\"left\",\"x\":0.1,\"y\":0.1,\"w\":0.38,\"h\":0.81},\"other\":{\"text\":\"FO\",\"place\":\"right\",\"x\":0.48,\"y\":0.1,\"w\":0.38,\"h\":0.81}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "phone/half1",
+   "said": "scrolled the grid 142px sideways for 9–13 Nov"
+  },
+  {
+   "size": "phone/half1",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "phone/half2",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + HO|k-oil|s-a|right-am\",\"14\":\"\"}"
+  },
+  {
+   "size": "phone/half2",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0fp6zhj47j3\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "phone/half2",
+   "said": "today on 13 Nov, shares of the cell: {\"td\":[21,21],\"leave\":{\"place\":\"left\",\"x\":0.1,\"y\":0.1,\"w\":0.38,\"h\":0.81},\"other\":{\"text\":\"HO\",\"place\":\"right-am\",\"x\":0.48,\"y\":0.1,\"w\":0.38,\"h\":0.38}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "phone/half2",
+   "said": "scrolled the grid 142px sideways for 9–13 Nov"
+  },
+  {
+   "size": "phone/half2",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "phone/half3",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + HO|k-oil|s-a|right-pm\",\"14\":\"\"}"
+  },
+  {
+   "size": "phone/half3",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0g6gqg33m90\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "phone/half3",
+   "said": "today on 13 Nov, shares of the cell: {\"td\":[21,21],\"leave\":{\"place\":\"left\",\"x\":0.1,\"y\":0.1,\"w\":0.38,\"h\":0.81},\"other\":{\"text\":\"HO\",\"place\":\"right-pm\",\"x\":0.48,\"y\":0.52,\"w\":0.38,\"h\":0.38}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "phone/half3",
+   "said": "scrolled the grid 142px sideways for 9–13 Nov"
+  },
+  {
+   "size": "phone/half3",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "phone/half4",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|whole\",\"14\":\"\"}"
+  },
+  {
+   "size": "phone/half4",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0gnjiz9sm95\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "phone/half4",
+   "said": "today on 9 Nov, shares of the cell: {\"td\":[22,21],\"leave\":{\"place\":\"left\",\"x\":0.09,\"y\":0.1,\"w\":0.41,\"h\":0.81},\"other\":{\"text\":\"FO\",\"place\":\"right\",\"x\":0.5,\"y\":0.1,\"w\":0.41,\"h\":0.81}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "phone/half4",
+   "said": "scrolled the grid 142px sideways for 9–13 Nov"
+  },
+  {
+   "size": "phone/half4",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "desk/half1",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"14\":\"\"}"
+  },
+  {
+   "size": "desk/half1",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0h3wu5cg3oz\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "desk/half1",
+   "said": "today on 13 Nov, shares of the cell: {\"td\":[26,27],\"leave\":{\"place\":\"left\",\"x\":0.08,\"y\":0.07,\"w\":0.38,\"h\":0.81},\"other\":{\"text\":\"FO\",\"place\":\"right\",\"x\":0.5,\"y\":0.07,\"w\":0.38,\"h\":0.81}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "desk/half1",
+   "said": "scrolled the grid 176px sideways for 9–13 Nov"
+  },
+  {
+   "size": "desk/half1",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "desk/half2",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + HO|k-oil|s-a|right-am\",\"14\":\"\"}"
+  },
+  {
+   "size": "desk/half2",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0hk8tjc7ibn\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "desk/half2",
+   "said": "today on 13 Nov, shares of the cell: {\"td\":[26,27],\"leave\":{\"place\":\"left\",\"x\":0.08,\"y\":0.07,\"w\":0.38,\"h\":0.81},\"other\":{\"text\":\"HO\",\"place\":\"right-am\",\"x\":0.5,\"y\":0.07,\"w\":0.38,\"h\":0.37}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "desk/half2",
+   "said": "scrolled the grid 176px sideways for 9–13 Nov"
+  },
+  {
+   "size": "desk/half2",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "desk/half3",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|whole\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|left + HO|k-oil|s-a|right-pm\",\"14\":\"\"}"
+  },
+  {
+   "size": "desk/half3",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0i0r8vqt5pb\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "desk/half3",
+   "said": "today on 13 Nov, shares of the cell: {\"td\":[26,27],\"leave\":{\"place\":\"left\",\"x\":0.08,\"y\":0.07,\"w\":0.38,\"h\":0.81},\"other\":{\"text\":\"HO\",\"place\":\"right-pm\",\"x\":0.5,\"y\":0.48,\"w\":0.38,\"h\":0.37}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "desk/half3",
+   "said": "scrolled the grid 176px sideways for 9–13 Nov"
+  },
+  {
+   "size": "desk/half3",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "desk/half4",
+   "said": "Drifter's boxes: {\"8\":\"\",\"9\":\"LL|k-ll|s-a|left + FO|k-oil|s-a|right\",\"10\":\"LL|k-ll|s-a|whole\",\"11\":\"LL|k-ll|s-a|whole\",\"12\":\"LL|k-ll|s-a|whole\",\"13\":\"LL|k-ll|s-a|whole\",\"14\":\"\"}"
+  },
+  {
+   "size": "desk/half4",
+   "said": "the Inputs page's November records: [{\"iid\":\"imvn0ih87oxipj9\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 13\",\"half\":null,\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "desk/half4",
+   "said": "today on 9 Nov, shares of the cell: {\"td\":[27,27],\"leave\":{\"place\":\"left\",\"x\":0.07,\"y\":0.07,\"w\":0.41,\"h\":0.81},\"other\":{\"text\":\"FO\",\"place\":\"right\",\"x\":0.52,\"y\":0.07,\"w\":0.41,\"h\":0.81}} — AS DESCRIBED (leave left half full height, the other entry on the right)"
+  },
+  {
+   "size": "desk/half4",
+   "said": "scrolled the grid 176px sideways for 9–13 Nov"
+  },
+  {
+   "size": "desk/half4",
+   "said": "errors: none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "half1-today-phone.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the last day, 13 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "half1-c-phone.png",
+   "label": "Drawn: the bar runs to the middle of 13 Nov; the FO keeps its half"
+  },
+  {
+   "file": "half2-today-phone.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and a morning HO on the last day, 13 Nov — the HO takes the top-right quarter"
+  },
+  {
+   "file": "half2-c-phone.png",
+   "label": "Drawn: a morning HO on the last day — the bar still runs to the middle"
+  },
+  {
+   "file": "half3-today-phone.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an afternoon HO on the last day, 13 Nov — the HO takes the bottom-right quarter"
+  },
+  {
+   "file": "half3-c-phone.png",
+   "label": "Drawn: an afternoon HO on the last day"
+  },
+  {
+   "file": "half4-today-phone.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the first day, 9 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "half4-c-phone.png",
+   "label": "Drawn: on the first day the leave takes the half next to the rest — the FO the other half"
+  },
+  {
+   "file": "half1-today-desk.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the last day, 13 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "half1-c-desk.png",
+   "label": "Drawn: the bar runs to the middle of 13 Nov; the FO keeps its half"
+  },
+  {
+   "file": "half2-today-desk.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and a morning HO on the last day, 13 Nov — the HO takes the top-right quarter"
+  },
+  {
+   "file": "half2-c-desk.png",
+   "label": "Drawn: a morning HO on the last day — the bar still runs to the middle"
+  },
+  {
+   "file": "half3-today-desk.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an afternoon HO on the last day, 13 Nov — the HO takes the bottom-right quarter"
+  },
+  {
+   "file": "half3-c-desk.png",
+   "label": "Drawn: an afternoon HO on the last day"
+  },
+  {
+   "file": "half4-today-desk.png",
+   "label": "Today: Drifter's approved LL 9–13 Nov and an FO on the first day, 9 Nov — that day shows both, side by side"
+  },
+  {
+   "file": "half4-c-desk.png",
+   "label": "Drawn: on the first day the leave takes the half next to the rest — the FO the other half"
+  }
+ ]
+}

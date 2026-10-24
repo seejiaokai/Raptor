@@ -739,6 +739,12 @@ it cannot apply. One fresh reader checks each lesson; the closing report names t
    leaves the page working, D641), a click on another date lit it as picked while the window kept its date. **Lesson:** for
    every window that leaves the page behind it working, the walk presses the page behind it — another date, another row —
    and asks whether what lights matches what the window then says.
+5. **A box brought into sight, never checked against what stands over it (his report, the input window on his iPhone,
+   25 Oct 26).** The keyboard walk of 19 Oct 26 checked that a tapped box ended above the keys, never that nothing of the
+   window's own covered it: held to the room the keys leave, the window's pinned Cancel / Add stood exactly where Remarks
+   was lifted. **Lesson:** wherever a box or row is moved into sight (a scroll, a lift, a jump to it), the walk checks it at
+   its resting place against everything that can stand over it — the keys, and the window's own pinned bars and buttons,
+   a banner, a bubble, a sticky heading — and pictures it there.
 
 ## 8. Making the checks FIND rather than CONFIRM
 

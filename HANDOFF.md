@@ -23,6 +23,7 @@ the later merge keeps both (D78).
 <!-- now:claude/lw-m3-placing-leave -->
 ### `claude/lw-m3-placing-leave` — THE NIGHT OF 25 OCT 26 DONE: three builds FULL-checked and closed, the drawings on his page; next: his answers (N1–N5), then build them — written 25 Oct 26, 05:30 — verify before use
 - **After a compaction:** re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.
+- **Compacted 25 Oct 26, 06:58** (the morning, his follow-ups drawn); after it: the OTH question’s pictures being taken (`2026-10-25-lw-drawings/oth/`, script `lw-1025-oth.mjs`), the answer put to him with them.
 - **His word:** /overnight 12; then "The rest of the questions as recommended" (recorded D1350–D1355); asked for the drawings to answer before sleeping, then "Nvm u work on overnight I'll sleep" — so the night runs the recommended jobs, and the looks he has not yet seen in a picture wait for his morning answers (a skipped question is never a yes).
 - **Branch:** `claude/lw-m3-placing-leave` (upstream `origin/claude/lw-m3-placing-leave`), pull request 569, open, not merged; it carries 568 merged in. "Merge live" is his; 568 first (D78). Nothing merges tonight; nothing touches `main`.
 - **The night, in order (one branch, one FULL check of the builds — D485):**
