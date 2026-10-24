@@ -1,0 +1,36 @@
+[
+ {
+  "id": "B4a",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "300 characters pasted (with a line break, <script>alert(1)</script>, an <img onerror> and an emoji): the box holds 200 characters, one line: true (scrollHeight 188, clientHeight 188); after Approve the saved words: 200 characters, no line break: true, <script> kept literally: true, a broken emoji half at the end: false; both days the same: true; 1 Dec's window shows the same words: true; the Inputs page row text: [], script elements there: 0, img elements: 0; alert dialogs raised: 0 []; window.__xss: null",
+  "pics": [
+   "b4-ph-01-pasted",
+   "b4-ph-03-window",
+   "b4-ph-04-inputs"
+  ]
+ },
+ {
+  "id": "B4b",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "199 letters then an emoji then \"tail\" pasted: the box kept 199 units (ends [\"61\",\"61\",\"61\"]), lone half of an emoji: false; saved [{\"len\":199,\"lone\":false}]",
+  "pics": []
+ },
+ {
+  "id": "B4c",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "two men dragged: Remarks boxes 0, Remarks row visible false",
+  "pics": [
+   "b4-ph-05-two-men"
+  ]
+ },
+ {
+  "id": "4-errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx in tab A)",
+  "pics": []
+ }
+]

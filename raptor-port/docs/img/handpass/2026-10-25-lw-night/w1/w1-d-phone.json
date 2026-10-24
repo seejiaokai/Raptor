@@ -1,0 +1,144 @@
+[
+ {
+  "id": "S10 overseas duty from the one-day window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 red; right after the tap: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s10-phone-od-after-tap.png",
+   "s10-phone-od-settled.png",
+   "s10-phone-od-cell.png"
+  ]
+ },
+ {
+  "id": "S10 course from the one-day window, same day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 26 red; right after: under the Manning button, level red, \"This course takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 258×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This course takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 258×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s10-phone-cse-after-tap.png",
+   "s10-phone-cse-settled.png"
+  ]
+ },
+ {
+  "id": "S10 the OD on the Inputs page",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Inputs page text mentions Drifter and OD/Overseas: false; first rows: ",
+  "pics": [
+   "s10-phone-inputs-page.png"
+  ]
+ },
+ {
+  "id": "S11 UNA whole day on a red day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 26 red; right after: under the Manning button, level red, \"This UNA takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 248×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This UNA takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 248×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s11-phone-una-whole-after-tap.png",
+   "s11-phone-una-whole-settled.png"
+  ]
+ },
+ {
+  "id": "S11 UNA morning (lower by .5)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 26 red → 25.5 red; right after: under the Manning button, level red, \"This UNA takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 248×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This UNA takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 248×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s11-phone-una-am-after-tap.png",
+   "s11-phone-una-am-settled.png"
+  ]
+ },
+ {
+  "id": "S11 UNA beside his approved afternoon leave (whole day away)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 25 red → 24.5 red; right after: under the Manning button, level red, \"This UNA takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 248×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This UNA takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 248×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s11-phone-una-beside-leave-after-tap.png",
+   "s11-phone-una-beside-leave-settled.png"
+  ]
+ },
+ {
+  "id": "S11 then a bid in the next window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 24.5 red → 23.5 red; right after: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s11-phone-bid-after-una-after-tap.png"
+  ]
+ },
+ {
+  "id": "S12 one man, a range holding a red day: course",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 red; under the Manning button, level red, \"This course turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 201×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s12-phone-cse-one-after-tap.png",
+   "s12-phone-cse-one-settled.png"
+  ]
+ },
+ {
+  "id": "S12 three men: course",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 → 25 red; under the Manning button, level red, \"This course turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 201×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s12-phone-cse-three-after-tap.png",
+   "s12-phone-cse-three-settled.png"
+  ]
+ },
+ {
+  "id": "S12 overseas duty over Thu 3 – Mon 7 Dec (a weekend inside)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "range 3–7 Dec · 5 days; cells [\"OD\",\"OD\",\"OD\",\"OD\",\"OD\"]; Available P 28 → 27 red; at the foot, level red, \"This overseas duty turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 12,816 378×46 inside the 402×874 screen, centre hit is oilconf (pointer-events auto)",
+  "pics": [
+   "s12-phone-od-range-after-tap.png",
+   "s12-phone-od-range-settled.png"
+  ]
+ },
+ {
+  "id": "S12 OD over a weekend: where the bubble stands while the OIL question is up",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "the Manning button is IN view; the OIL question (weekend days) is up over the input window; the bubble stands AT THE FOOT with \"Show ›\" although the button is in view, behind the OIL question’s scrim (the element at its centre is \"oilconf\"). D1277: the foot note is for a button out of view. A tap anywhere (the OIL question’s own buttons included) ends it, so it is seen only dimmed behind the dialog.",
+  "pics": [
+   "s12-phone-od-range-after-tap.png"
+  ]
+ },
+ {
+  "id": "S12 OD over a weekend: the OIL question answered",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "cleared by: [\"oilconf No OIL + Save\"]; bubble after: no bubble",
+  "pics": []
+ },
+ {
+  "id": "S12 UNA on three men",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Piston, Ranger, Saber; Available P 28 → 25 red; under the Manning button, level red, \"This UNA turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 191×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s12-phone-una-three-after-tap.png",
+   "s12-phone-una-three-settled.png"
+  ]
+ },
+ {
+  "id": "S12 a range with a day outside his stint (posted out from 29 Dec; OD 28–30 Dec)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "posting \"On 29 Dec: archived.\" closed=true; window closed; cells 28/29/30 Dec: [\"OD\",\"PO\",\"PO\"]; bubble while open: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); after ✕: n/a. RIGHT (if a day is skipped): the window stays with its note, no bubble, ✕ then the bubble naming the filing: \"This overseas duty turns Available P red.\"",
+  "pics": [
+   "s12-phone-od-stint-after-tap.png",
+   "s12-phone-od-stint-window.png"
+  ]
+ },
+ {
+  "id": "errors-d",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

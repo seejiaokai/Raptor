@@ -1,0 +1,58 @@
+[
+ {
+  "id": "22a",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "typed \"Family trip to KL\" over 1–3 Dec · 3 days, Refuse: cells [[\"LL|ll|r|whole\"],[\"LL|ll|r|whole\"],[\"OL|ol|r|whole\"]]; saved words [[\"LL/refused/\\\"Family trip to KL\\\"\"],[\"LL/refused/\\\"Family trip to KL\\\"\"],[\"OL/refused/\\\"Family trip to KL\\\"\"]]; the window closed; changes saved by the one press: 2",
+  "pics": [
+   "s22-ph-01-typed",
+   "s22-ph-02-refuse-q"
+  ]
+ },
+ {
+  "id": "22b",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the one-day windows read: [{\"d\":\"12-01\",\"sheet\":\"bid-picker\",\"remarks\":\"Family trip to KL\",\"lit\":[]},{\"d\":\"12-02\",\"sheet\":\"bid-picker\",\"remarks\":\"Family trip to KL\",\"lit\":[]},{\"d\":\"12-03\",\"sheet\":\"bid-picker\",\"remarks\":\"Family trip to KL\",\"lit\":[]}]",
+  "pics": [
+   "s22-ph-03-window-01",
+   "s22-ph-03-window-02",
+   "s22-ph-03-window-03"
+  ]
+ },
+ {
+  "id": "22c",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Undo after the Refuse with words: 2 press(es) to bring the three days back to their first state (reached). Press by press (the words the button carried; the three days then): #1 \"Undo — a decision on a bid\" → {\"01\":\"LL/pending/\\\"Family trip to KL\\\"\",\"02\":\"LL/pending/\\\"Family trip to KL\\\"\",\"03\":\"OL/pending/\\\"Family trip to KL\\\"\"} | #2 \"Undo — a leave request’s remarks or documents\" → {\"01\":\"LL/pending/\\\"Dentist\\\"\",\"02\":\"LL/pending/\\\"\\\"\",\"03\":\"OL/pending/\\\"Trip\\\"\"}",
+  "pics": [
+   "s22-ph-04-undo1",
+   "s22-ph-04-undo2"
+  ]
+ },
+ {
+  "id": "22d",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Redo x2 brought back: {\"01\":\"LL/refused/\\\"Family trip to KL\\\"\",\"02\":\"LL/refused/\\\"Family trip to KL\\\"\",\"03\":\"OL/refused/\\\"Family trip to KL\\\"\"}; after a reload (signed in again) the saved words are [[\"LL/refused/\\\"Family trip to KL\\\"\"],[\"LL/refused/\\\"Family trip to KL\\\"\"],[\"OL/refused/\\\"Family trip to KL\\\"\"]]; 2 Dec's window reads \"Family trip to KL\" (bid-picker)",
+  "pics": [
+   "s22-ph-05-after-reload-window-02"
+  ]
+ },
+ {
+  "id": "22e",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "4 Dec (a morning LL \"Am\" and an afternoon OL \"Pm\"), dragged 4–5 Dec, words, Refuse: saved [\"OL*/refused/\\\"Family trip to KL\\\"\",\"*LL/refused/\\\"Family trip to KL\\\"\"]; the day's list (daylist-sheet) reads: Ridge Fri 4 Dec ✕ LL Morning · refused Approve Refuse ⇄Move Delete till 4 Dec Document OL Afternoon · refused Approve Refuse ⇄Move Delete till 4 Dec Document || boxes: [\"Family trip to KL\",\"Family trip to KL\"]",
+  "pics": [
+   "s22-ph-06-daylist"
+  ]
+ },
+ {
+  "id": "22-errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

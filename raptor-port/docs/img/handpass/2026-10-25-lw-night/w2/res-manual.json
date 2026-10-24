@@ -1,0 +1,53 @@
+[
+ {
+  "id": "29f2",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "On the phone the Inputs list card of a ONE-day leave prints no \"till\" either way (its top line reads \"All day\", the date stands in the day heading), so the Inputs-page half of this check cannot be read there. The saved value was checked: untick → saved till false; tick again → saved till back to its default (null). The Inputs-page half (a unticked till prints nothing, a ticked one \"till 16 Dec\") passed on the desktop.",
+  "pics": [
+   "s28x-ph-inputs-unticked",
+   "s28x-ph-inputs-reticked"
+  ]
+ },
+ {
+  "id": "29f2",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "Same as the phone row: the saved value toggles correctly (false, then null) on the iPhone engine; the card prints no till for a one-day leave, so the Inputs-page half is read on the desktop only.",
+  "pics": [
+   "s28x-wk-inputs-unticked",
+   "s28x-wk-inputs-reticked"
+  ]
+ },
+ {
+  "id": "INC-1",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Not one of my scenarios — met while building fixtures. A day already holds a pending MORNING bid with words (\"Am\"). Tap the day: the one-day window opens with AM and LL lit and the Remarks box reading \"Am\". Press PM, type \"Pm\" → the box reads \"AmPm\"; place OL → the morning bid now holds \"AmPm\" and the new afternoon bid holds nothing. The words typed for the afternoon bid go onto the morning one. (Reproduced as admin with Ridge on 4 Dec; the one-day window is the surface D1315 and D1353 touched.)",
+  "pics": [
+   "inc1-am-window-open",
+   "inc1-pm-typed"
+  ]
+ },
+ {
+  "id": "27-locked",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "A LOCKED week (published by an older version of the app and quarantined, the sentence \"This week is locked…\") cannot be made through the app's own controls: no door writes one. Not walked. The nearest real states were walked instead: a PUBLISHED day (27p) and a leave deleted underneath an open drag window (S27).",
+  "pics": []
+ },
+ {
+  "id": "B5/B6/S34-phone",
+  "size": "phone",
+  "verdict": "NOT DONE",
+  "said": "Break tests 5 and 6 and scenario 34 need two tabs signed in as two people; the phone driver runs one touch session through one browser tab, so they were walked on the desktop only.",
+  "pics": []
+ },
+ {
+  "id": "25e-h-phone",
+  "size": "phone",
+  "verdict": "NOT DONE",
+  "said": "Scenario 25 (e) to (h) were walked on the desktop only (they need the Inputs page's New input window and a second man on one entry); (a), (c) and (d) were walked on the phone as well.",
+  "pics": []
+ }
+]

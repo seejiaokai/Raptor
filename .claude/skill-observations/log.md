@@ -255,6 +255,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Suggested improvement:** In the project guide's Token discipline or Build & verify, one line: "while iterating, the type check is the BUILD's own (`npm run build`, or its type-check half) — a bare `tsc --noEmit -p .` uses a different set-up and passes what the build refuses." And in the executor's guide: run the build once before taking the lock for the full set.
 
+**Met again 25 Oct 26 (the night run on the Leave War branch):** the bubble fix passed its unit file and was pushed; GitHub's build refused one type (a figure that can be blank). The guard this calls for: an unconditional default in place of a judgement — "every push that touches `raptor-port/src` is preceded by `npm run build` on this PC" — best enforced by the push guard ([PUSH-LOCK-GUARD]) refusing such a push when the last build is older than the last source edit.
+
 **Principle:** A faster stand-in for a gate is only worth running if it refuses what the gate refuses. Check which configuration the real gate uses before trusting a shortcut to it.
 
 ### Observation 571: Putting a file back with `git checkout --` after a hand-run break test also threw away two edits not yet committed

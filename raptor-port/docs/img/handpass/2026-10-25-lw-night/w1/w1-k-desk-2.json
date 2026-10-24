@@ -1,0 +1,32 @@
+[
+ {
+  "id": "B2 the foot note across a turn / a narrowing window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1100×900 foot 270,826→830,872; 900×900 foot 170,826→730,872; 760×900 foot 100,826→660,872; 720×900 foot 80,826→640,872; 701×900 foot 71,826→631,872; 700×900 foot 12,842→688,888; 699×900 foot 12,842→687,888; 640×900 foot 12,842→628,888; 500×900 foot 12,842→488,888; 402×900 foot 12,842→390,888; 1440×900 foot 440,826→1000,872",
+  "pics": [
+   "b2-desk-resize-1-1100x900.png",
+   "b2-desk-resize-2-900x900.png",
+   "b2-desk-resize-3-760x900.png",
+   "b2-desk-resize-4-720x900.png",
+   "b2-desk-resize-5-701x900.png",
+   "b2-desk-resize-6-700x900.png"
+  ]
+ },
+ {
+  "id": "B2 Show pressed twice fast",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "FAILED: the second press opened no window on the grid under the vanished note (saw [\"bid-picker (RuneSun 13 DecApprove what I e)\"]) — two presses ~90 ms apart; 25 scroll events; scrollY 951 → 0; windows open afterwards: [\"bid-picker (RuneSun 13 DecApprove what I e)\"]",
+  "pics": [
+   "b2-desk-show-twice.png"
+  ]
+ },
+ {
+  "id": "errors-B2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

@@ -1,0 +1,27 @@
+[
+ {
+  "id": "S34",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "NOT WALKED as asked: the war does not carry tab B's bid across to tab A (tab A's cell for Drifter on 15 Dec: {\"text\":\"\",\"boxes\":[]}, Available P 28; tab B reads 27). Tab A then opened Ridge's 15 Dec window (bid-picker) and closed it: bubble in tab A \"null\"",
+  "pics": [
+   "b34-dk-01-tab-B-bid",
+   "b34-dk-02-tab-A-after-B",
+   "b34-dk-03-tab-A-after-open-close"
+  ]
+ },
+ {
+  "id": "S34b",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "then tab A placed an LL for Ridge on 16 Dec: tab B's bid on 15 Dec is still stored [\"LL/pending\"]",
+  "pics": []
+ },
+ {
+  "id": "34-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx in tab A)",
+  "pics": []
+ }
+]

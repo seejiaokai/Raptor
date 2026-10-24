@@ -1,0 +1,48 @@
+[
+ {
+  "id": "S17 a long range 26 Oct 26 – 16 Dec 26 over the red day 2026-12-16",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "month lit at the start: [\"month-OCT\"]; range \"26 Oct 26 – 16 Dec 26\"; ask \"That takes Ridge to -52 LVE. Tap the same leave again to go ahead. \"; Available P 16 Dec 28 → 27 red; right after: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s17-phone-after-tap.png",
+   "s17-phone-settled.png",
+   "s17-phone-settled-full.png"
+  ]
+ },
+ {
+  "id": "S17b the same from August: 3 Aug 26 – 17 Dec 26 over the red day 2026-12-17 (four months ahead)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "right after: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s17-phone-aug-after-tap.png",
+   "s17-phone-aug-settled.png"
+  ]
+ },
+ {
+  "id": "errors-17",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ },
+ {
+  "id": "S17 a long range 26 Oct 26 – 16 Dec 26 over the red day 2026-12-16",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "month lit at the start: [\"month-OCT\"]; range \"26 Oct 26 – 16 Dec 26\"; ask \"That takes Ridge to -52 LVE. Tap the same leave again to go ahead. \"; Available P 16 Dec 28 → 27 red; right after: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s17-desk-after-tap.png",
+   "s17-desk-settled.png",
+   "s17-desk-settled-full.png"
+  ]
+ },
+ {
+  "id": "errors-17",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

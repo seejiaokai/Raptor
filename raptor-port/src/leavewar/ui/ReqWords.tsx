@@ -16,7 +16,8 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { remarksTyped, tillShown } from '../../engine/inputs'
 import { setLeaveRemarks } from '../../ui/inputedit'
 import { inputDates } from '../absences'
-import { DocField, rowDocIds, tillOfISO } from '../sync'
+import { DocField, rowDocIds, tillOfISO, usePlanVersion } from '../sync'
+import { INPUTS } from '../../engine/inputs'
 import { recordsAt, reqRunKey, type ReqWords, type ReqWordsPatch } from '../state/store'
 import { addDays, type RequestRec } from '../engine'
 
@@ -224,6 +225,11 @@ export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused, flush
   /** the window's way to save words typed and not yet saved before an action (`useFlush`) */
   flushRef?: FlushRef
 }) {
+  /* THE INPUT AS IT NOW STANDS (the night's walk, W1): a remarks or document save leaves the war's cells as they were, so
+     nothing above redraws this row — it listens to the Inputs' own change signal and reads the input afresh by its id; a
+     document removed or a till ticked again then shows at once, not only after the window is opened again */
+  usePlanVersion()
+  row = (row && INPUTS.find((r: any) => String(r.iid) === String(row.iid))) || row
   const typed = remarksTyped(row?.remarks, row)
   const docIds = rowDocIds(row)
   const [edit, setEdit] = useState<string | null>(null)

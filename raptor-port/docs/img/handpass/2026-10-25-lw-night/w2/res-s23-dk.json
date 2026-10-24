@@ -1,0 +1,56 @@
+[
+ {
+  "id": "23a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "drag \"9–14 Dec · 6 days\", typed \"New words\", Approve (window stayed open: 3 decided. 1 already approved. 2 skipped (no bid, or Raptor-owned).). Days after: 7: req: LL/pending/\"New words\" | input: - ; 8: req: LL/pending/\"New words\" | input: - ; 9: req: - | input: LL 12-09..12-11/\"New words\" ; 10: req: - | input: LL 12-09..12-11/\"New words\" ; 11: req: - | input: LL 12-09..12-11/\"New words\" ; 14: req: - | input: LL 12-14/\"New words\" ; 15: req: - | input: -. Ranger's entries on the Inputs page from Dec: [\"LL 12-09..12-11 \\\"New words\\\"\",\"LL 12-14..12-14 \\\"New words\\\"\"]; 9–11 one entry: true; 14 Dec reads \"New words\": true; 14 separate from 9–11: true; 7–8 still pending with the words: true; 15 Dec untouched: true",
+  "pics": [
+   "s23-dk-01-typed",
+   "s23-dk-02-approved"
+  ]
+ },
+ {
+  "id": "23b",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "the Inputs page (list, All dates, Ranger) rows from Dec: [\"Ranger 9 Dec 11 Dec LL New words till 11 DecBy Saber now No document\",\"Ranger 14 Dec LL New words till 14 DecBy Saber now No document\"]",
+  "pics": [
+   "s23-dk-03-inputs-page"
+  ]
+ },
+ {
+  "id": "23c",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Undo after Approve with words: 3 press(es) to the fixture state (reached); Ranger's Inputs entries then equal the fixture ones. Press by press: #1 \"Undo — a decision on a bid\" → \"7: req: LL/pending/\\\"New words\\\" | input: - ; 8: req: LL/pending/\\\"New words\\\" | input: - ; 9: req: LL/pending/\\\"New words\\\" | input: - ; 10: req: LL/pending/\\\"New words\\\" | input: - ; 11: req: LL/pending/\\\"New words\\\" | input: - ; 14: req: - | input: LL 12-14/\\\"New words\\\" ; 15: req: - | input: -\" | #2 \"Undo — a personal input\" → \"7: req: LL/pending/\\\"New words\\\" | input: - ; 8: req: LL/pending/\\\"New words\\\" | input: - ; 9: req: LL/pending/\\\"New words\\\" | input: - ; 10: req: LL/pending/\\\"New words\\\" | input: - ; 11: req: LL/pending/\\\"New words\\\" | input: - ; 14: req: - | input: LL 12-14/\\\"Family\\\" ; 15: req: - | input: -\" | #3 \"Undo — a leave request’s remarks or documents\" → \"7: req: LL/pending/\\\"Old\\\" | input: - ; 8: req: LL/pending/\\\"Old\\\" | input: - ; 9: req: LL/pending/\\\"Old\\\" | input: - ; 10: req: LL/pending/\\\"Old\\\" | input: - ; 11: req: LL/pending/\\\"Old\\\" | input: - ; 14: req: - | input: LL 12-14/\\\"Family\\\" ; 15: req: - | input: -\"",
+  "pics": [
+   "s23-dk-04-undo1",
+   "s23-dk-04-undo2",
+   "s23-dk-04-undo3"
+  ]
+ },
+ {
+  "id": "23d",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Redo x3 and a reload: 7: req: LL/pending/\"New words\" | input: - ; 8: req: LL/pending/\"New words\" | input: - ; 9: req: - | input: LL 12-09..12-11/\"New words\" ; 10: req: - | input: LL 12-09..12-11/\"New words\" ; 11: req: - | input: LL 12-09..12-11/\"New words\" ; 14: req: - | input: LL 12-14/\"New words\" ; 15: req: - | input: - — the same as right after Approve",
+  "pics": []
+ },
+ {
+  "id": "23e",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "7 Dec's window (bid-picker) reads \"New words\"; 14 Dec's (bid-picker) reads \"New words\"",
+  "pics": [
+   "s23-dk-05-7dec-window",
+   "s23-dk-05-14dec-window"
+  ]
+ },
+ {
+  "id": "23-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

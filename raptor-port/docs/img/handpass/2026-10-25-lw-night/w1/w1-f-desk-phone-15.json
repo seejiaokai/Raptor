@@ -1,0 +1,48 @@
+[
+ {
+  "id": "S15 admin: three pending days moved a week later onto three F1 days",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "banner \"Tap a day to move 3 entries Cancel\"; right after the tap: at the foot, level red, \"This bid turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 440,826 560×46 inside the 1440×900 screen, centre hit is the bubble (pointer-events auto); settled: at the foot, level red, \"This bid turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 440,826 560×46 inside the 1440×900 screen, centre hit is the bubble (pointer-events auto)",
+  "pics": [
+   "s15-desk-after-tap.png",
+   "s15-desk-settled.png"
+  ]
+ },
+ {
+  "id": "errors-15-desk",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ },
+ {
+  "id": "S15 Ranger on his phone: his own run held, dragged, moved onto red open days",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "banner \"Tap a day to move 3 entries Cancel\", staged \"Move 3 entries here? Confirm Cancel\"; right after the destination tap: no bubble; right after Confirm: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s15-phone-after-tap.png",
+   "s15-phone-after-tap-confirm.png",
+   "s15-phone-settled.png",
+   "s15-phone-settled-full.png"
+  ]
+ },
+ {
+  "id": "S15 Ranger: a move onto a day closed for him is refused, no bubble",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the screen said: \"That day is closed for bidding. Pick an open day. Cancel\"; staged after the tap: That day is closed for bidding. Pick an open day. Cancel",
+  "pics": [
+   "s15-phone-refused-after-tap.png",
+   "s15-phone-refused-settled.png"
+  ]
+ },
+ {
+  "id": "errors-15-phone",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

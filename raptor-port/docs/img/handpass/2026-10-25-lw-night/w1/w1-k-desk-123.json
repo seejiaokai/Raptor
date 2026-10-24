@@ -1,0 +1,100 @@
+[
+ {
+  "id": "B1 hostile long name, three rows at once",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P renamed \"VeryLongPilotsFreeToday<b>&amp;</b>Zzzzzzzz\"; under the Manning button, level amber, \"This bid takes IP, SXO and VeryLongPilotsFreeToday<b>&amp;</b>Zzzzzzzz lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 530×32 inside the 1440×900 screen, centre hit is month-JUL (pointer-events none); box height 32",
+  "pics": [
+   "b1-desk-after-tap.png",
+   "b1-desk-settled.png",
+   "b1-desk-settled-full.png"
+  ]
+ },
+ {
+  "id": "B1 a mouse press on the bubble itself ends it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pressed at its centre (300, 211); it sits over \"month-JUL\" (pointer-events none); the grid's first date head [\"head-2026-11-09\"] → [\"head-2026-06-27\"] (the press also moved the grid: it went through to the month button under the bubble)",
+  "pics": []
+ },
+ {
+  "id": "errors-B1",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ },
+ {
+  "id": "B2 the foot note across a turn / a narrowing window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1100×900 foot 270,826→830,872; 900×900 foot 170,826→730,872; 760×900 foot 100,826→660,872; 720×900 foot 80,826→640,872; 701×900 foot 71,826→631,872; 700×900 foot 12,842→688,888; 699×900 foot 12,842→687,888; 640×900 foot 12,842→628,888; 500×900 foot 12,842→488,888; 402×900 foot 12,842→390,888; 1440×900 foot 440,826→1000,872",
+  "pics": [
+   "b2-desk-resize-1-1100x900.png",
+   "b2-desk-resize-2-900x900.png",
+   "b2-desk-resize-3-760x900.png",
+   "b2-desk-resize-4-720x900.png",
+   "b2-desk-resize-5-701x900.png",
+   "b2-desk-resize-6-700x900.png"
+  ]
+ },
+ {
+  "id": "B2 Show pressed twice fast",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "two presses ~90 ms apart; 28 scroll events; scrollY 951 → 0",
+  "pics": [
+   "b2-desk-show-twice.png"
+  ]
+ },
+ {
+  "id": "errors-B2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ },
+ {
+  "id": "B3 Escape at the below-zero ask",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Undo \"Undo — Hunter’s bid\"",
+  "pics": [
+   "b3-desk-escape-ask-tap.png"
+  ]
+ },
+ {
+  "id": "B3 a move dropped on its own day, then cancelled by Escape",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Undo \"Undo — Ridge’s bid\"",
+  "pics": [
+   "b3-desk-own-day-tap.png"
+  ]
+ },
+ {
+  "id": "B3 a whole-day UNA’s day opened again (RECORD)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "the day opens \"daylist-sheet\"; a whole-day UNA's day opens the day's list, which has no UNA button, so it cannot be placed again that way; cells UNA|k-una|s-a|whole → UNA|k-una|s-a|whole; Undo \"Undo — a UNA\"; bubble no bubble",
+  "pics": [
+   "b3-desk-una-first-after-tap.png"
+  ]
+ },
+ {
+  "id": "B3 the same morning UNA with the same words placed again (RECORD)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "a day holding a morning UNA opens \"daylist-sheet\" (the day's list), not a bid window for the free half (D1353 reads \"opens the bid window for the free half\" — held as a question this night, not built); so the same UNA could not be placed again from that tap; the first UNA raised: under the Manning button, level red, \"This UNA takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 248×32 inside the 1440×900 screen, centre hit is month-strip (pointer-events none); cells UNA|k-una|s-a|top → UNA|k-una|s-a|top; Undo \"Undo — a UNA\"; no bubble after: no bubble",
+  "pics": [
+   "b3-desk-am-una-first-after-tap.png"
+  ]
+ },
+ {
+  "id": "errors-B3",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

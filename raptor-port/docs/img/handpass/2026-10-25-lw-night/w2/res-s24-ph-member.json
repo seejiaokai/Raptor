@@ -1,0 +1,21 @@
+[
+ {
+  "id": "24c",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Ranger on his phone: his drag over 8–9 Dec (Remarks row present), typed \"Kept words\", Move (banner up: Tap a day to move 2 entries Cancel; confirm: Confirm), landed on 15 Dec. After: 8 Dec: - ; 9 Dec: - ; 15 Dec: LL/pending/\"Kept words\" ; 16 Dec: LL/pending/\"Kept words\"",
+  "pics": [
+   "s24-ph-member-01-typed",
+   "s24-ph-member-02-move-q",
+   "s24-ph-member-03-banner",
+   "s24-ph-member-05-landed"
+  ]
+ },
+ {
+  "id": "24-errors-member",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

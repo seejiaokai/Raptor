@@ -1,0 +1,36 @@
+[
+ {
+  "id": "33b",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the badge read \"SABER · ADMIN\", after the switch \"SABER · MEMBER\"; the admin's tap on his own approved 14 Dec leave opens remarks-sheet {\"text\":\"Saber 14 Dec LL ✕ till 14 Dec Document\",\"box\":{\"t\":843,\"b\":873,\"l\":453,\"r\":784,\"h\":30,\"w\":331},\"tick\":{\"t\":849,\"b\":868,\"l\":792,\"r\":874,\"h\":19,\"w\":82},\"doc\":{\"t\":843,\"b\":873,\"l\":880,\"r\":987,\"h\":30,\"w\":107},\"saveBtn\":false,\"labels\":[]}; the box held \"Mine\"; typed \"Mine changed\" + Enter: saved \"Mine changed\"",
+  "pics": [
+   "s33-dk-33b-window"
+  ]
+ },
+ {
+  "id": "33a",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Ranger's Inputs-filed LL on 20 Nov (\"Filed on Inputs\", the blue edge): his tap opens remarks-sheet — {\"text\":\"Ranger 20 Nov LL ✕ till 20 Nov Document\",\"box\":{\"t\":843,\"b\":873,\"l\":453,\"r\":782,\"h\":30,\"w\":329},\"tick\":{\"t\":849,\"b\":868,\"l\":790,\"r\":874,\"h\":19,\"w\":84},\"doc\":{\"t\":843,\"b\":873,\"l\":880,\"r\":987,\"h\":30,\"w\":107},\"saveBtn\":false,\"labels\":[]}; the box held \"Filed on Inputs\"; typed \"Edited here\" + Enter: saved \"Edited here\" — the same editable one row as an approved leave filed on the war",
+  "pics": [
+   "s33-dk-33a-window"
+  ]
+ },
+ {
+  "id": "33a2",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "the day 24 Nov (his Inputs-filed morning LL \"Filed AM\" and the war's afternoon OL): his tap opens daylist-sheet: {\"text\":\"Ranger Tue 24 Nov ✕ LL Morning · change it on the Inputs page “Filed AM till 24 Nov” OL Afternoon · approved till 24 Nov Document\",\"boxes\":[{\"val\":\"\",\"ro\":false}],\"readOnlyWords\":[\"till 24 Nov Document\"]} — whether the Inputs-filed words are an editable box there or read only is what the list's own boxes say (ro = read only)",
+  "pics": [
+   "s33-dk-33a-daylist"
+  ]
+ },
+ {
+  "id": "33-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

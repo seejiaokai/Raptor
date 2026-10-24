@@ -1,0 +1,76 @@
+[
+ {
+  "id": "S14 a bid moved from a fine day onto a red day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "staged: \"Move 1 entry here? Confirm Cancel\"; right after the destination tap: no bubble; right after Confirm: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s14-phone-1-after-tap-confirm.png",
+   "s14-phone-1-settled.png"
+  ]
+ },
+ {
+  "id": "S14 a bid moved from a red day onto a day that turns red",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "staged: \"Move 1 entry here? Confirm Cancel\"; Available P 15 Dec 27 red, 16 Dec 27 red; right after: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s14-phone-2-after-tap-confirm.png",
+   "s14-phone-2-settled.png"
+  ]
+ },
+ {
+  "id": "S14 a bid moved from a red day onto a fine day: no bubble",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "staged: \"Move 1 entry here? Confirm Cancel\"; settled: no bubble",
+  "pics": [
+   "s14-phone-3-after-tap-confirm.png"
+  ]
+ },
+ {
+  "id": "S14 a move onto its own day: no bubble, the reason said",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after the tap on its own day: banner/said \"It is already on that day — pick another day. Cancel\" (stage \"It is already on that day — pick another day. Cancel\"); banner still up true",
+  "pics": [
+   "s14-phone-4-own-day.png",
+   "s14-phone-4-own-day-settled.png"
+  ]
+ },
+ {
+  "id": "S14 a move cancelled by an empty tap: no bubble",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after an empty tap: banner \"null\"; no bubble",
+  "pics": [
+   "s14-phone-4-cancel-empty.png"
+  ]
+ },
+ {
+  "id": "S14 a move cancelled by Escape: no bubble",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after Escape: banner \"null\"; no bubble",
+  "pics": [
+   "s14-phone-4-escape.png"
+  ]
+ },
+ {
+  "id": "S14 a move onto a day he already holds an OD (the refusal case)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cells 17 Dec / 18 Dec: [\"\",\"OD|k-od|s-a|left+LL|k-ll|s-w|right\"]; the words the screen gave: banner/problem \"\" (stage \"Move 1 entry here? Confirm Cancel\"); bubble no bubble. The bid WAS moved onto the OD day (no refusal arose).",
+  "pics": [
+   "s14-phone-4-refused.png",
+   "s14-phone-4-refused-settled.png"
+  ]
+ },
+ {
+  "id": "errors-14",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

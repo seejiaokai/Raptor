@@ -1,0 +1,43 @@
+[
+ {
+  "id": "S19f Post out from the one-day window, on a date that turns Available P red",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Available P 28 → 27 red; Diesel's cell [\"PO|||whole\"]; posting line \"On 14 Dec: archived.\", right after the confirm tap: no bubble; settled: no bubble. A bubble must never say \"This bid\" for it: it does not.",
+  "pics": []
+ },
+ {
+  "id": "S19f Post out from the drag window, on a date that turns Available P red",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Available P 27 → 26 red; Vandal's cell [\"PO|||whole\"]; window still open false; line \"On 15 Dec: archived.\"; right after the confirm tap: no bubble; settled: no bubble. \"This bid\" for it: no.",
+  "pics": [
+   "s19f-desk-sel-postout-after-tap.png",
+   "s19f-desk-sel-postout-settled.png"
+  ]
+ },
+ {
+  "id": "S19f",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "script stopped: TimeoutError: page.waitForSelector: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"bid-picker\"]') to be visible\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "S19g the drag window open, a higher Required P typed behind it, then ✕",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window still open after the typed figure: false; no bubble",
+  "pics": [
+   "s19g-desk-window-open-after-typing.png",
+   "s19g-desk-settled.png"
+  ]
+ },
+ {
+  "id": "errors-19",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

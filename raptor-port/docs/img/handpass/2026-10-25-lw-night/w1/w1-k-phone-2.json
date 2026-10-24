@@ -1,0 +1,30 @@
+[
+ {
+  "id": "B2 the foot note across a turn / a narrowing window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "874×402 foot 157,328→717,374; 402×874 foot 12,816→390,862; 874×402 foot 157,328→717,374; 402×874 foot 12,816→390,862",
+  "pics": [
+   "b2-phone-resize-1-874x402.png",
+   "b2-phone-resize-2-402x874.png",
+   "b2-phone-resize-3-874x402.png",
+   "b2-phone-resize-4-402x874.png"
+  ]
+ },
+ {
+  "id": "B2 Show pressed twice fast",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "FAILED: the second press opened no window on the grid under the vanished note (saw [\"bid-picker (ForgeSat 5 DecApprove what I e)\"]); the page went up to the Manning button once and rests there (saw scrollY 192 → 284; button in view false) — two presses ~90 ms apart; 8 scroll events; scrollY 192 → 284; windows open afterwards: [\"bid-picker (ForgeSat 5 DecApprove what I e)\"]",
+  "pics": [
+   "b2-phone-show-twice.png"
+  ]
+ },
+ {
+  "id": "errors-B2",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

@@ -265,7 +265,9 @@ export function SelectSheet({
     const seen = new Set<string>()
     for (const c of sel.cells) {
       for (const row of leaveInputsAt(pid, c.date)) {
-        if (seen.has(String(row.iid))) continue
+        /* a leave filed on the Inputs page keeps its words there — its own window says they are changed on that page
+           (D1177's reading; the night's walk, W4): only a leave approved on the war takes the drag window's words */
+        if (!row.lw || seen.has(String(row.iid))) continue
         seen.add(String(row.iid))
         if ((row.remarks ?? '') !== t) setLeaveRemarks(row, t, pid)
       }

@@ -1,0 +1,20 @@
+[
+ {
+  "id": "32a",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "three saves in one session (14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"Undo C\"). Undo x3, each: #1 \"Undo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"\"[the day it changes, 12-01/12-02/12-03, was in view before and is in view after; the screen stayed] | #2 \"Undo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Old words\" ; 1: LL/pending/\"\"[the day it changes, 12-10, was out of view (10:out) before and is in view after; the screen moved: {\"win\":[0,0],\"els\":[\"mx-wrap:6769,0\"]} → {\"win\":[0,0],\"els\":[\"mx-wrap:7034,0\"]}] | #3 \"Undo — a personal input\" → 14 Dec leave \"Approved words\" ; 10: LL/pending/\"Old words\" ; 1: LL/pending/\"\"[the day it changes, 12-14, was in view before and is in view after; the screen stayed]. Redo x3: #1 \"Redo — a personal input\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Old words\" ; 1: LL/pending/\"\"[the day it changes, 12-14, was in view before and is in view after; the screen stayed] | #2 \"Redo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"\"[the day it changes, 12-10, was in view before and is in view after; the screen stayed] | #3 \"Redo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"Undo C\"[the day it changes, 12-01/12-02/12-03, was out of view (01:out 02:out 03:out) before and is in view after; the screen moved: {\"win\":[0,0],\"els\":[\"mx-wrap:7034,0\"]} → {\"win\":[0,0],\"els\":[\"mx-wrap:6852,0\"]} (cells before: names -6962, grid 11..391, 01: -74..-53, 02: -53..-32, 03: -32..-12)]",
+  "pics": [
+   "s31-wk-32a-undo1-q",
+   "s31-wk-32a-undo2-q",
+   "s31-wk-32a-undo3-q"
+  ]
+ },
+ {
+  "id": "31-errors",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

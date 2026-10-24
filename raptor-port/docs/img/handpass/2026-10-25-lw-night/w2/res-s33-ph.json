@@ -1,0 +1,39 @@
+[
+ {
+  "id": "33b",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the badge read \"Saber · Admin\", after the switch \"Saber · Member\"; the admin's tap on his own approved 14 Dec leave opens remarks-sheet {\"text\":\"Saber 14 Dec LL ✕ till 14 Dec Document\",\"box\":{\"t\":817,\"b\":847,\"l\":25,\"r\":174,\"h\":30,\"w\":149},\"tick\":{\"t\":823,\"b\":842,\"l\":182,\"r\":264,\"h\":19,\"w\":82},\"doc\":{\"t\":817,\"b\":847,\"l\":270,\"r\":377,\"h\":30,\"w\":107},\"saveBtn\":false,\"labels\":[]}; the box held \"Mine\"; typed \"Mine changed\" + Enter: saved \"Mine changed\"",
+  "pics": [
+   "s33-ph-33b-window",
+   "s33-ph-33b-tap-q"
+  ]
+ },
+ {
+  "id": "33a",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Ranger's Inputs-filed LL on 20 Nov (\"Filed on Inputs\", the blue edge): his tap opens remarks-sheet — {\"text\":\"Ranger 20 Nov LL ✕ till 20 Nov Document\",\"box\":{\"t\":817,\"b\":847,\"l\":25,\"r\":172,\"h\":30,\"w\":147},\"tick\":{\"t\":823,\"b\":842,\"l\":180,\"r\":264,\"h\":19,\"w\":84},\"doc\":{\"t\":817,\"b\":847,\"l\":270,\"r\":377,\"h\":30,\"w\":107},\"saveBtn\":false,\"labels\":[]}; the box held \"Filed on Inputs\"; typed \"Edited here\" + Enter: saved \"Edited here\" — the same editable one row as an approved leave filed on the war",
+  "pics": [
+   "s33-ph-33a-window",
+   "s33-ph-33a-tap-q"
+  ]
+ },
+ {
+  "id": "33a2",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "the day 24 Nov (his Inputs-filed morning LL \"Filed AM\" and the war's afternoon OL): his tap opens daylist-sheet: {\"text\":\"Ranger Tue 24 Nov ✕ LL Morning · change it on the Inputs page “Filed AM till 24 Nov” OL Afternoon · approved till 24 Nov Document\",\"boxes\":[{\"val\":\"\",\"ro\":false}],\"readOnlyWords\":[\"till 24 Nov Document\"]} — whether the Inputs-filed words are an editable box there or read only is what the list's own boxes say (ro = read only)",
+  "pics": [
+   "s33-ph-33a-daylist",
+   "s33-ph-33a2-tap-q"
+  ]
+ },
+ {
+  "id": "33-errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

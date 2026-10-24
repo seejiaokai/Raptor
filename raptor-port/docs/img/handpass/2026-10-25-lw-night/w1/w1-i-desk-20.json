@@ -1,0 +1,109 @@
+[
+ {
+  "id": "S20 counter sets (row \"Crew sets\") amber, one bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row label as drawn: {\"text\":\"Crew sets\",\"visible\":[]}; 18 → 17 (amber) by Echo; right after: under the Manning button, level amber, \"This bid takes Crew sets lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 248×32 inside the 1440×900 screen, centre hit is month-strip (pointer-events none); settled: under the Manning button, level amber, \"This bid takes Crew sets lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 248×32 inside the 1440×900 screen, centre hit is month-strip (pointer-events none)",
+  "pics": [
+   "s20-desk-sets-after-tap.png",
+   "s20-desk-sets-settled.png"
+  ]
+ },
+ {
+  "id": "S20 counter ip (row \"IP\") amber, one bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row label as drawn: {\"text\":\"IP\",\"visible\":[]}; 16 → 15 (amber) by Hunter; right after: under the Manning button, level amber, \"This bid takes IP lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 208×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes IP lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 208×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s20-desk-ip-after-tap.png",
+   "s20-desk-ip-settled.png"
+  ]
+ },
+ {
+  "id": "S20 counter iwso (row \"IWSO\") amber, one bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row label as drawn: {\"text\":\"IWSO\",\"visible\":[]}; 7 → 6 (amber) by Basher; right after: under the Manning button, level amber, \"This bid takes IWSO lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 228×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes IWSO lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 228×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s20-desk-iwso-after-tap.png",
+   "s20-desk-iwso-settled.png"
+  ]
+ },
+ {
+  "id": "S20 counter opsp (row \"OPSP\") amber, one bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row label as drawn: {\"text\":\"OPSP\",\"visible\":[]}; 12 → 11 (amber) by Gambit; right after: under the Manning button, level amber, \"This bid takes OPSP lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 227×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes OPSP lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 227×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s20-desk-opsp-after-tap.png",
+   "s20-desk-opsp-settled.png"
+  ]
+ },
+ {
+  "id": "S20 counter opsw (row \"OPSW\") amber, one bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row label as drawn: {\"text\":\"OPSW\",\"visible\":[]}; 11 → 10 (amber) by Cutter; right after: under the Manning button, level amber, \"This bid takes OPSW lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 231×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes OPSW lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 231×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s20-desk-opsw-after-tap.png",
+   "s20-desk-opsw-settled.png"
+  ]
+ },
+ {
+  "id": "S20 counter sxo (row \"SXO\") amber, one bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row label as drawn: {\"text\":\"SXO\",\"visible\":[]}; 12 → 11 (amber) by Anvil; right after: under the Manning button, level amber, \"This bid takes SXO lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 220×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes SXO lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 220×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s20-desk-sxo-after-tap.png",
+   "s20-desk-sxo-settled.png"
+  ]
+ },
+ {
+  "id": "S20 counter ip red, one bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "16 red → 15 red; under the Manning button, level red, \"This bid takes IP lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 192×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s20-desk-ip-red-after-tap.png",
+   "s20-desk-ip-red-settled.png"
+  ]
+ },
+ {
+  "id": "S20 Available P amber, one pilot bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "28 → 27; right after: under the Manning button, level amber, \"This bid takes Available P lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 256×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes Available P lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 256×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s20-desk-availp-after-tap.png",
+   "s20-desk-availp-settled.png"
+  ]
+ },
+ {
+  "id": "S20 Available W amber, one WSO bid lowers it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "18 → 17; right after: under the Manning button, level amber, \"This bid takes Available W lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 261×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes Available W lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 261×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s20-desk-availw-after-tap.png",
+   "s20-desk-availw-settled.png"
+  ]
+ },
+ {
+  "id": "S20 Available P renamed: the bubble uses the new name",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row label as drawn on the desk: {\"text\":\"Pilots on the ground\",\"visible\":[]}; bubble: under the Manning button, level amber, \"This bid takes Pilots on the ground lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 308×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s20-desk-renamed-after-tap.png",
+   "s20-desk-renamed-settled.png"
+  ]
+ },
+ {
+  "id": "errors-20",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

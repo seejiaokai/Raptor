@@ -1,0 +1,19 @@
+[
+ {
+  "id": "25g-bell",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "after the drag window's words split Ranger off the leave he shared with Ridge (Ranger's entries now [\"LL 12-08 [bane] \\\"Mine only\\\"\",\"LL 12-07 [bane] \\\"Mine only\\\"\"]): the admin's bell (notifyBell) reads [\"142 RAPTOR Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMIN Grid OIL VIEW JAN - DEC 26 JAN - DEC 27 + New period MY LEAVE LVE 0 · OIL 0 · 0 pending › ▾ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC CS/Name +LVE JAN THU 01 FRI 02 SAT 03 SUN 04 MON 05 TUE 06 WED 07 THU 08 FRI 09 SAT 10 SUN 11 MON 12 TUE 13 WED 14 THU 15 FRI 16 SAT 17 SUN 18 MON 19 TUE 20 WED 21 THU 22 FRI 23 SAT 24 SUN 25 MON 26 TUE 27 W\",\"Nothing new\"]; Ranger's own bell (notifyBell) reads [\"142 RAPTOR View-only Sched Inputs Quals Logic Leave War Tracker Help ↶ ↷ Insights Logout RANGER · MEMBER Grid OIL VIEW JAN - DEC 26 JAN - DEC 27 MY LEAVE · next 7 Dec LVE -2 · OIL 0 · 0 pending › ▾ Manning Bidding closed Legend JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC CS/Name +LVE JAN THU 01 FRI 02 SAT 03 SUN 04 MON 05 TUE 06 WED 07 THU 08 FRI 09 SAT 10 SUN 11 MON 12 TUE 13 WED 14 THU 15 FRI 16 SAT 17 SUN 18 MON 19 TUE 20 WED 21 THU 22 FRI 23 SAT 24 SUN 25 MON 26 TUE 27 WED 28 THU 29 FRI \",\"LLMon 7 Dec Remark changed · Saber now LLMon 7 Dec You were added · Saber now Mark all read\"]; Ridge has no sign-in to read",
+  "pics": [
+   "s25g-dk-admin-bell",
+   "s25g-dk-ranger-bell"
+  ]
+ },
+ {
+  "id": "25g-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

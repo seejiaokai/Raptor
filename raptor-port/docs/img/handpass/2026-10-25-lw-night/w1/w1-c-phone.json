@@ -1,0 +1,71 @@
+[
+ {
+  "id": "S8 placed approved on a red day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 → 26 red; settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s08-phone-approved-after-tap.png",
+   "s08-phone-approved-settled.png"
+  ]
+ },
+ {
+  "id": "S8b kept pending: window stays, no bubble; ✕ then the bubble",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window note: \" 1 day not written: already holding leave or a medical. \"; after ✕: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); (a locked week itself cannot be made on screen — this is the nearest reachable pending day)",
+  "pics": [
+   "s08-phone-b-after-tap.png",
+   "s08-phone-b-window-open.png",
+   "s08-phone-b-after-x.png"
+  ]
+ },
+ {
+  "id": "S9 one man, Mon 14 – Fri 18 Dec (15 Dec F2, 16 Dec F1)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "asked=true; under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); Available P 15 Dec 27 red → 26 red, 16 Dec 28 ok → 27 red",
+  "pics": [
+   "s09-phone-one-man-after-tap.png",
+   "s09-phone-one-man-settled.png"
+  ]
+ },
+ {
+  "id": "S9 three men on one day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "who: Reaper, Anvil, Cinch; asked=true; under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); Available P 28 → 25 red",
+  "pics": [
+   "s09-phone-three-men-after-tap.png",
+   "s09-phone-three-men-settled.png"
+  ]
+ },
+ {
+  "id": "S9 the below-zero ask in the drag window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "ask: \"That takes Vapor to -2 LVE. Tap the same leave again to go ahead.\"; after the second tap: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); Available P 28 → 27 red",
+  "pics": [
+   "s09-phone-ask-first-tap.png",
+   "s09-phone-ask-second-tap.png"
+  ]
+ },
+ {
+  "id": "S9 a fill with a day skipped: window stays, no bubble; ✕ then the bubble",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "FAILED: 1 Jan kept its OL, 2 Jan took the LL (saw [\"OL|k-ol|s-a|whole\",\"LL|k-ll|s-a|whole\"]); a bubble is up (saw none); words \"This bid turns Available P red.\" (saw undefined); data-level red (saw undefined); red border / fill / words (saw undefined undefined undefined); box inside the screen (saw undefined); no sideways page scroll (saw overflow undefined scrollX undefined) — window note: \"Nothing could be written. Those cells are already holding leave or a medical.\"; after ✕: no bubble; (a skipped day made by an approved OL already on 1 Jan; the posted-out variant is recorded separately)",
+  "pics": [
+   "s09-phone-skip-after-tap.png",
+   "s09-phone-skip-window-open.png",
+   "s09-phone-skip-after-x.png"
+  ]
+ },
+ {
+  "id": "errors-c",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

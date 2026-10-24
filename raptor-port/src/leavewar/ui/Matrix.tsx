@@ -1499,6 +1499,11 @@ export function Matrix() {
      button's box against the visible screen — the keyboard counted (the visual viewport) — and not under whatever is
      drawn on top of it there (the app's top bar, which stays as the page scrolls). A screen with no layout (the unit
      tests) counts as in view, so nothing changes there. */
+  /* A WINDOW DRAWN OVER THE PAGE (the night's walk, F1 — a weekend filing opens the OIL question at once): it does not take
+     the Manning button out of view, and a tap inside it is not his next tap on the page — the bubble waits under the
+     button for the window to close (`.airpop` the app's pop-ups, `[role="dialog"]` its windows) */
+  const overPage = (el: EventTarget | Element | null): boolean =>
+    el instanceof Element && !!el.closest('.airpop, [role="dialog"]')
   const manningInView = (): boolean => {
     const btn = cardRef.current?.querySelector('[data-testid="counts-toggle"]') as HTMLElement | null
     if (!btn) return false
@@ -1510,7 +1515,7 @@ export function Matrix() {
     if (typeof document.elementFromPoint !== 'function') return true
     const y = Math.min(Math.max(r.top + r.height / 2, top + 1), bottom - 1)
     const hit = document.elementFromPoint(r.left + r.width / 2, y)
-    return !hit || btn.contains(hit)
+    return !hit || btn.contains(hit) || overPage(hit)
   }
   /* Show: up to the Manning rows (opened when the bubble was raised), the keyboard on the Manning button, the note gone */
   const showManning = () => {
@@ -1522,7 +1527,17 @@ export function Matrix() {
       btn.focus({ preventScroll: true })
     }
     setBubble(null)
+    /* a second quick press lands where the note stood — on the grid — and opened that day's window (the night's walk, F2):
+       the clicks of the next moment are swallowed, the press that moved him up being the one he meant */
+    unswallowRef.current?.()
+    const swallow = (e: Event) => { e.stopPropagation(); e.preventDefault() }
+    document.addEventListener('click', swallow, true)
+    const t = window.setTimeout(() => unswallowRef.current?.(), 450)
+    unswallowRef.current = () => { window.clearTimeout(t); document.removeEventListener('click', swallow, true); unswallowRef.current = null }
   }
+  /* the guard ends with the grid, never outliving it */
+  const unswallowRef = useRef<(() => void) | null>(null)
+  useEffect(() => () => unswallowRef.current?.(), [])
   useEffect(() => {
     if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
     const before = beforeRef.current
@@ -1546,7 +1561,7 @@ export function Matrix() {
     if (!bubble) return
     /* a press on the foot note's own Show is not "a tap elsewhere" (D1277) — Show's click does its work and ends it */
     const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble-foot"]')
-    const onDown = (e: Event) => { if (!inNote(e)) setBubble(null) }
+    const onDown = (e: Event) => { if (!inNote(e) && !overPage(e.target)) setBubble(null) }
     /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) — but Tab (and Shift with it), the
        way to Show, and a key pressed on Show itself leave it up */
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e)) return; setBubble(null) }

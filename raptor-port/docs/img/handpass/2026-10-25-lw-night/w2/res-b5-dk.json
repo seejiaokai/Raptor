@@ -1,0 +1,33 @@
+[
+ {
+  "id": "B5b",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "two lines pasted in his window (\"line one\" / \"line two\"), Enter: the box reads \"line one line two\"; saved \"line one line two\"",
+  "pics": []
+ },
+ {
+  "id": "B5a",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "the admin deleted Ranger's 14 Dec leave in tab A (stored then: gone; tab A's cell: {\"text\":\"\",\"boxes\":[]}); in tab B his window was still open: typed \"Late words\" + Enter → what he sees: toasts/notes []; the window stays open: \"Ranger 14 Dec LL ✕ till 14 Dec Document\". Stored on 14 Dec after his Enter: [\"LL \\\"Late words\\\"\"]; after he closes the window: [\"LL \\\"Late words\\\"\"]. The window says it could not be saved: false",
+  "pics": [
+   "b5-dk-01-his-window-open",
+   "b5-dk-02-after-late-enter"
+  ]
+ },
+ {
+  "id": "B5-badges",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "after the second tab signed in: tab A reads \"SABER · ADMIN\", tab B \"RANGER · MEMBER\"",
+  "pics": []
+ },
+ {
+  "id": "5-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx in tab A)",
+  "pics": []
+ }
+]
