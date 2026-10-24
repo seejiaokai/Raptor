@@ -5,10 +5,11 @@
    replace whatever remarks those days held, so the dragged days end with one remark. Nothing typed leaves each entry's own
    words. Before this, the box held the words of a NEW leave only: typed over days that already held bids, then Approve,
    Refuse or Move pressed, they went nowhere (round 3's Q3 picture, `q3-today-typed-*.png`). Red first. */
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { initStore, lwHistInit, placeApproved, recordsAt, setCell, setPeople, setRole } from '../state/store'
+import { closeDates, initStore, lwHistInit, placeApproved, recordsAt, setBidState, setCell, setPeople, setRemarksOn, setRole, setViewer } from '../state/store'
+import { globalUndo } from '../../undo'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
@@ -113,6 +114,39 @@ describe('the drag window\'s typed words are kept, replacing the days\' own (D13
     type('Exercise')
     fireEvent.click(screen.getByTestId('sel-cancel'))
     for (const r of mine()) expect((r as any).remarks, (r as any).type).toBe('Exercise')
+  })
+
+  /* the night's code read, R1: one press, one Undo — the words and the decision together */
+  it('Refuse with words typed: one Undo takes the press back whole, the days’ own words with it', () => {
+    twoBids()
+    mount()
+    type('Exercise')
+    fireEvent.click(screen.getByTestId('sel-refuse'))
+    expect(reqs(D1)[0]?.remarks).toBe('Exercise')
+    act(() => { globalUndo() })
+    expect(reqs(D1)[0]?.state).toBe('pending')
+    expect(reqs(D1)[0]?.remarks, 'one Undo').toBe('Wedding')
+  })
+
+  /* R2: the window's till choice goes with the press too, not only the words */
+  it('the till unticked in the drag window is kept on the bids, with no words typed', () => {
+    twoBids()
+    mount()
+    fireEvent.click(screen.getByTestId('sel-till'))
+    fireEvent.click(screen.getByTestId('sel-cancel'))
+    expect(reqs(D1)[0]?.till).toBe(false)
+    expect(reqs(D1)[0]?.remarks, 'its words untouched').toBe('Wedding')
+  })
+
+  /* R3: a member's refused bid on a day closed for him is passed over — his pending bid still takes the words */
+  it('a member: a refused bid on a closed day does not refuse the words on his open day', () => {
+    expect(setCell(P, D1, 'LL')).toBe(true)
+    expect(setCell(P, D2, 'OL')).toBe(true)
+    setBidState(P, D2, 'refused')
+    closeDates(D2, D2)
+    setRole('member'); setViewer(P)
+    expect(setRemarksOn([{ personId: P, date: D1 }, { personId: P, date: D2 }], { remarks: 'Back Monday' })).toBeGreaterThan(0)
+    expect(reqs(D1)[0]?.remarks).toBe('Back Monday')
   })
 
   it('nothing typed: each bid keeps its own words', () => {

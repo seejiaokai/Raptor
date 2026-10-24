@@ -69,6 +69,8 @@ describe('the bubble and a window over the page (F1), Show pressed twice (F2)', 
     document.body.appendChild(pop)
     fireEvent.pointerDown(btn)
     expect(bubble(), 'a tap in the OIL question is not his next tap on the page').toBeTruthy()
+    fireEvent.keyDown(btn, { key: 'Enter' })
+    expect(bubble(), 'nor a key pressed in it (the code read, R5)').toBeTruthy()
     fireEvent.pointerDown(document.body)
     expect(bubble()).toBeNull()
   })
@@ -104,8 +106,12 @@ describe('the bubble and a window over the page (F1), Show pressed twice (F2)', 
       expect(foot()).toBeTruthy()
       fireEvent.click(screen.getByTestId('manning-bubble-show'))
       expect(foot()).toBeNull()
+      /* a key's click (detail 0) on the Manning button at once goes through (the code read, R6) */
+      const before = toggle.getAttribute('aria-expanded')
+      fireEvent.click(toggle)
+      expect(toggle.getAttribute('aria-expanded'), 'the key press folds the rows').not.toBe(before)
       /* the second press, ~90 ms later, lands on whatever now stands where the note was — a grid day */
-      fireEvent.click(screen.getByTestId('cell-asics-2026-01-29'))
+      fireEvent.click(screen.getByTestId('cell-asics-2026-01-29'), { detail: 1 })   // a finger's or a mouse's click
       expect(screen.queryByTestId('bid-picker'), 'no stray window').toBeNull()
       await act(async () => { await new Promise(r => setTimeout(r, 600)) })
       fireEvent.click(screen.getByTestId('cell-asics-2026-01-29'))

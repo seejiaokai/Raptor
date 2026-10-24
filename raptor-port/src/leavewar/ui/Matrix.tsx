@@ -262,6 +262,11 @@ export function Matrix() {
   // (Task E) — sheet closed, waiting for a drop. Both cleared on a stage/war
   // change so a stale block cannot act on the wrong screen.
   const [sel, setSel] = useState<Selection | null>(null)
+  /* the selection as it now stands, for the select machine wired once; and the drag window's way to keep its typed words
+     when a NEW drag replaces it (the night's code read, R4) */
+  const selRef = useRef<Selection | null>(null)
+  selRef.current = sel
+  const selFlushRef = useRef<(() => void) | null>(null)
   const [moveSel, setMoveSel] = useState<Selection | null>(null)
   const [moveErr, setMoveErr] = useState('')
   // Phone move-mode: the day a tap has STAGED, awaiting a Confirm (there is no
@@ -1530,7 +1535,11 @@ export function Matrix() {
     /* a second quick press lands where the note stood — on the grid — and opened that day's window (the night's walk, F2):
        the clicks of the next moment are swallowed, the press that moved him up being the one he meant */
     unswallowRef.current?.()
-    const swallow = (e: Event) => { e.stopPropagation(); e.preventDefault() }
+    /* only a pointer's click on the grid (the second touch of F2) — a key's click (detail 0) and a click on the top bar
+       or a pop-up go through (the night's code read, R6) */
+    const swallow = (e: Event) => {
+      if (e instanceof MouseEvent && e.detail > 0 && e.target instanceof Element && e.target.closest('.mx')) { e.stopPropagation(); e.preventDefault() }
+    }
     document.addEventListener('click', swallow, true)
     const t = window.setTimeout(() => unswallowRef.current?.(), 450)
     unswallowRef.current = () => { window.clearTimeout(t); document.removeEventListener('click', swallow, true); unswallowRef.current = null }
@@ -1564,7 +1573,7 @@ export function Matrix() {
     const onDown = (e: Event) => { if (!inNote(e) && !overPage(e.target)) setBubble(null) }
     /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) — but Tab (and Shift with it), the
        way to Show, and a key pressed on Show itself leave it up */
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e)) return; setBubble(null) }
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e) || overPage(e.target)) return; setBubble(null) }
     const t = window.setTimeout(() => { document.addEventListener('pointerdown', onDown); document.addEventListener('keydown', onKey) }, 0)
     return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey) }
   }, [bubble])
@@ -3600,7 +3609,7 @@ export function Matrix() {
       .filter(id => canEditRow(role, viewer, id)),
     dates: () => drawnDates,
     enabled: () => !arranging && !moveSel && !eventMoveSel,
-    onSelect: s => { flyPickRef.current?.close(); setSel(s) },
+    onSelect: s => { flyPickRef.current?.close(); if (selRef.current) selFlushRef.current?.(); setSel(s) },
     // Events are the admin's (the store refuses a member write anyway); a drag
     // along one event line opens the event sheet pre-set to that date span
     // (owner, 27 Aug 26). from === to (a one-cell drag) opens on the single day.
@@ -4295,6 +4304,7 @@ export function Matrix() {
           `open`; a drag never sets `open`. */}
       {sel && (
         <SelectSheet
+          flushRef={selFlushRef}
           /* a NEW drag while the panel is up replaces what it acts on (D642) — and starts it afresh: a Delete armed
              for the old block, or a below-zero ask, must not carry over to the new one */
           key={`${sel.from}|${sel.to}|${sel.people.join(',')}`}

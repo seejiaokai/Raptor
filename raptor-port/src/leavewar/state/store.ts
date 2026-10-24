@@ -3064,23 +3064,41 @@ export function setRequestWords(personId: string, date: string, recId: string, p
 }
 
 /** THE DRAG WINDOW'S TYPED WORDS ON THE DAYS DRAGGED (his D1339, D1341 — 25 Oct 26: "1 remarks will apply to all that 3
- *  days"; "Replace them all"). The remark is written on every bid of every dragged day the person may change, replacing
- *  what each held — each bid's whole run takes it (`setRequestWords`: one entry, one remark) — in ONE command, one Undo.
- *  The caller runs it before the press it rides with (Approve, Refuse, Move), so an approval files the leave with these
- *  words. An empty remark is never written here: an empty box typed nothing. Returns how many runs changed. */
-export function setRemarksOn(cells: { personId: string; date: string }[], remarks: string): number {
-  const t = String(remarks ?? '').slice(0, MAX_CARRIED_REMARK)
-  if (!t.trim()) return 0
+ *  days"; "Replace them all"). Written on every bid of every dragged day the person may change — each bid's whole run takes
+ *  them (`setRequestWords`: one entry, one remark) — in ONE command: the remark REPLACES what each held; a document ADDS to
+ *  each bid's own, never taking one away (a new code never loses a paper); the till only where the window holds an
+ *  explicit choice (the night's code read, R2 — the window's Document and till were dropped). An empty remark is never
+ *  written: an empty box typed nothing. For anyone but an admin a refused bid on a day closed for him is passed over — the
+ *  commit lets him change words there only on a pending bid, and one refusal would refuse the whole command (R3).
+ *  Returns how many runs changed. */
+export function setRemarksOn(cells: { personId: string; date: string }[], patch: { remarks?: string; docIds?: string[]; till?: boolean }): number {
+  const t = String(patch.remarks ?? '').slice(0, MAX_CARRIED_REMARK).trim()
+  const docs = (patch.docIds ?? []).map(String).filter(Boolean)
+  const till = typeof patch.till === 'boolean' ? patch.till : undefined
+  if (!t && !docs.length && till === undefined) return 0
+  const admin = canDecide(state.role)
   let n = 0
   gesture('lw.reqmeta', () => {
     for (const { personId, date } of cells) {
       if (!canEditRow(state.role, state.viewer, personId)) continue
       for (const r of listAt(personId, date)) {
-        if (r.kind === 'request' && (r.remarks ?? '') !== t && setRequestWords(personId, date, r.id, { remarks: t })) n++
+        if (r.kind !== 'request') continue
+        if (!admin && r.state !== 'pending' && !dayWritable(date)) continue
+        const p: ReqWordsPatch = {}
+        if (t && (r.remarks ?? '') !== t) p.remarks = t
+        if (docs.length) { const ids = [...new Set([...(r.docIds ?? []), ...docs])]; if (ids.length !== (r.docIds ?? []).length) p.docIds = ids }
+        if (till !== undefined && r.till !== till) p.till = till
+        if (Object.keys(p).length && setRequestWords(personId, date, r.id, p)) n++
       }
     }
   })
   return n
+}
+/** A drag window's press and the words typed with it as ONE command, one Undo (the night's code read, R1: the words, the
+ *  approved leaves' words and the decision had been three commands — one Undo took the decision back and left the days'
+ *  remarks replaced). The nested commands run inside it (`gesture` runs a call made while committing inline). */
+export function inOneWarCommand<T>(type: 'lw.reqmeta' | 'lw.decide', fn: () => T): T {
+  return gesture(type, fn)
 }
 
 /** What a range write did. `skipped` counts days it was not allowed to touch,

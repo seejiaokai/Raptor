@@ -32,7 +32,7 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, placeUna, postingBlocked, setBidStates, setCells, setRemarksOn } from '../state/store'
+import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, placeUna, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
 import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
@@ -48,7 +48,8 @@ import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState } from '../state/store'
-import { leaveInputsAt } from '../sync'
+import { leaveInputsAt, rowDocIds } from '../sync'
+import { remarksTyped } from '../../engine/inputs'
 import { setLeaveRemarks } from '../../ui/inputedit'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
@@ -69,6 +70,7 @@ export function SelectSheet({
   onPostOut,
   hasAccount,
   onClose,
+  flushRef,
 }: {
   sel: Selection
   /** callsign per person id, for the header when the selection is small */
@@ -93,6 +95,8 @@ export function SelectSheet({
   /** whether that one person has an account (the posting's line names it only then) */
   hasAccount?: (personId: string) => boolean
   onClose: () => void
+  /** the grid's way to keep the typed words when a NEW drag replaces this window (the night's code read, R4) */
+  flushRef?: { current: (() => void) | null }
 }) {
   const [portion, setPortion] = useState<Portion>('full')
   /* "APPROVE WHAT I ENTER" (D1147, D1187's reading: the drag-selection window too) — the one-day window's switch and its
@@ -258,21 +262,30 @@ export function SelectSheet({
      save (`setLeaveRemarks`, as its own window saves them). An empty box typed nothing and changes nothing. */
   const keepWords = () => {
     if (nPeople !== 1) return
-    const t = words.remarks
-    if (!t.trim()) return
+    /* the whole draft (the night's code read, R2): the remark, trimmed as every other window trims it, the documents, and
+       the till where the window holds a choice — nothing at all, nothing written */
+    const t = words.remarks.trim()
+    const docs = words.docIds
+    const till = typeof words.till === 'boolean' ? words.till : undefined
+    if (!t && !docs.length && till === undefined) return
     const pid = sel.people[0]!
-    setRemarksOn(sel.cells, t)
-    const seen = new Set<string>()
-    for (const c of sel.cells) {
-      for (const row of leaveInputsAt(pid, c.date)) {
-        /* a leave filed on the Inputs page keeps its words there — its own window says they are changed on that page
-           (D1177's reading; the night's walk, W4): only a leave approved on the war takes the drag window's words */
-        if (!row.lw || seen.has(String(row.iid))) continue
-        seen.add(String(row.iid))
-        if ((row.remarks ?? '') !== t) setLeaveRemarks(row, t, pid)
+    inOneWarCommand('lw.reqmeta', () => {
+      setRemarksOn(sel.cells, { ...(t ? { remarks: t } : {}), ...(docs.length ? { docIds: docs } : {}), ...(till !== undefined ? { till } : {}) })
+      const seen = new Set<string>()
+      for (const c of sel.cells) {
+        for (const row of leaveInputsAt(pid, c.date)) {
+          /* a leave filed on the Inputs page keeps its words there — its own window says they are changed on that page
+             (D1177's reading; the night's walk, W4): only a leave approved on the war takes the drag window's words */
+          if (!row.lw || seen.has(String(row.iid))) continue
+          seen.add(String(row.iid))
+          const was = remarksTyped(row.remarks, row)
+          const ids = [...new Set([...rowDocIds(row), ...docs])]
+          if ((t && t !== was) || ids.length !== rowDocIds(row).length || till !== undefined) setLeaveRemarks(row, t || was, pid, ids, till)
+        }
       }
-    }
+    })
   }
+  if (flushRef) flushRef.current = keepWords
 
   /* …and on closing too — ✕, Escape, a tap behind — as the one-day window keeps a held bid's words when it closes ("never
      dropped", D1339; the night's scenario designer, gap 7): words typed over days holding entries are kept on them; over
@@ -282,8 +295,8 @@ export function SelectSheet({
   const decide = (bid: BidState) => {
     setConfirming(null)
     setNoteAt('end')
-    keepWords()
-    const { decided, skipped, already } = setBidStates(sel.cells, bid)
+    /* the words and the decision in ONE command, one Undo (the night's code read, R1) */
+    const { decided, skipped, already } = inOneWarCommand('lw.decide', () => { keepWords(); return setBidStates(sel.cells, bid) })
     if (skipped === 0 && !already) return onDone(decided > 0)
     /* an already-approved leave is said as such, never counted as a decision (AB7) */
     const was = already ? ` ${already} already approved.` : ''
