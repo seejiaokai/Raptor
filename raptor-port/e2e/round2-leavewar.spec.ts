@@ -47,6 +47,21 @@ test('the row under the leaves: CSE · OD · UNA under LL · OL · OIL, as wide,
   expect(await paint('bid-file-CSE')).toBe('rgba(160, 100, 240, 0.36)')
 })
 
+/* ROUND 2's FULL check, the walk in Safari's engine (H1, WebKit — his iPhone): the row under the leaves stood 30 tall under
+   leave buttons 28 tall. Safari sets the chips' 12px words on a shorter line than Chrome does, and the ⋯ — its 16px glyph on
+   its own line height plus the chips' padding — then set the row's height. The row is to stand as tall as the leave rows
+   above it whatever line the fonts give: here the chips are given Safari's line, which Chrome alone never shows. */
+test('the row under the leaves stands as tall as the leave buttons above it, on Safari’s shorter line too', async ({ page }) => {
+  await openDay(page)
+  await page.addStyleTag({ content: '.bidsheet .tchip.lv { line-height: 14px; }' })
+  await page.waitForTimeout(100)
+  const ll = await boxOf(page, 'bid-LL')
+  for (const id of ['bid-file-CSE', 'bid-file-OD', 'bid-una', 'bid-more']) {
+    const b = await boxOf(page, id)
+    expect(Math.abs(b.height - ll.height), `${id} as tall as LL (${b.height} vs ${ll.height})`).toBeLessThan(1)
+  }
+})
+
 test('an admin’s tap on UNA places it at once (D1338): the window closes and the day shows its teal box', async ({ page }) => {
   await openDay(page)
   await page.locator(T('bid-una')).click()

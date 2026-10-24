@@ -1801,7 +1801,10 @@
 .bidsheet .bp-extra { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; align-items: stretch; }
 .bidsheet .bp-extra .bp-more-wrap { position: relative; display: flex; }
 .bidsheet .bp-extra .bp-more-wrap.col4 { grid-column: 4; }
-.bidsheet .bp-more { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 1px; line-height: 1; }
+/* no padding above or below its glyph (round 2's FULL check — the walk in Safari's engine): with the chips' 6px its 16px
+   line stood 30 tall, so on Safari's shorter line for the chips' words (28) the ⋯ set the whole row 2px taller than the
+   leave buttons above it. Now the chips set the row's height and the ⋯ stretches to it, centred, in every engine. */
+.bidsheet .bp-more { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 1px; line-height: 1; padding-top: 0; padding-bottom: 0; }
 .bidsheet .bp-more[aria-expanded='true'] { border-color: rgba(59, 198, 232, .55); color: var(--accent); }
 /* its menu opens UPWARD over the window, its right edge on the ⋯'s */
 .bidsheet .bp-menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: grid; gap: 6px; min-width: 150px; padding: 8px;
