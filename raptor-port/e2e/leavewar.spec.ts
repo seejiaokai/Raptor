@@ -1434,18 +1434,28 @@ test('opening the bid sheet never makes the page scroll sideways', async ({ page
 // colour; the left edge says that. Only a real browser computes which of the
 // rules on the box actually won. Look F (D1175): the colour is the KIND and
 // filled is approved, so the Raptor-owned OIL (prowler, 9 Jan) is compared with
-// an OIL-green box filled on the war — the FO credit of 1 Jan — where it was
-// compared with an approved OL, which is now another kind's colour.
+// an OIL taken approved on the war itself. Since D1323 an OIL taken is a kind of
+// its own (chartreuse, `k-oilt`), apart from an FO credit's green, so the war's
+// box is placed and approved here — 13 Jan, through the window's Approve.
 test('a cell Raptor owns is the same colour as the same kind approved on the war', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const W = '2026-01-13'
+  expect(await page.evaluate(d => { const w = window as any; w.lwSetCell('prowler', d, ''); return w.lwSetCell('prowler', d, 'OIL') }, W)).toBe(true)
+  const warCell = page.locator(`[data-testid="cell-prowler-${W}"]`)
+  await warCell.scrollIntoViewIfNeeded()
+  await warCell.click()
+  await page.locator('[data-testid="decide-approve"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
   const bg = (sel: string) => page.locator(sel).evaluate(el => getComputedStyle(el).backgroundColor)
   const raptorBox = page.locator('[data-testid="cell-prowler-2026-01-09"] .c')
-  const warBox = page.locator('[data-testid="cell-prowler-2026-01-01"] .c')
-  await expect(raptorBox).toHaveClass(/(^|\s)k-oil(\s|$)/)
+  const warBox = warCell.locator('.c')
+  await expect(raptorBox).toHaveClass(/(^|\s)k-oilt(\s|$)/)
   await expect(raptorBox).toHaveClass(/(^|\s)raptor(\s|$)/)
-  await expect(warBox).toHaveClass(/(^|\s)k-oil(\s|$)/)
+  await expect(warBox).toHaveClass(/(^|\s)k-oilt(\s|$)/)
+  await expect(warBox).toHaveClass(/(^|\s)s-a(\s|$)/)
   await expect(warBox).not.toHaveClass(/(^|\s)raptor(\s|$)/)
   const raptor = await bg('[data-testid="cell-prowler-2026-01-09"] .c')
-  const onWar = await bg('[data-testid="cell-prowler-2026-01-01"] .c')
+  const onWar = await bg(`[data-testid="cell-prowler-${W}"] .c`)
   expect(raptor).toBe(onWar)
   expect(raptor).not.toBe('rgba(0, 0, 0, 0)')
 })

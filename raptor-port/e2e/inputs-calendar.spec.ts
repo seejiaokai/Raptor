@@ -1276,7 +1276,7 @@ const vetWorld = (p: Page) => file(p, [
 ])
 /* how bright a painted colour is, 0–255, whichever way the browser writes it ("rgb(…)" or "color(srgb …)") */
 const LUM = `(c => { const m = c.match(/[\\d.]+/g).map(Number); const k = /srgb/.test(c) ? 255 : 1; return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) * k })`
-test('the month: a timed bar is painted lighter than an all-day one, with a solid edge at its left; a shared bar reads its count first (D729)', async ({ page }) => {
+test('the month: a timed bar is painted lighter than an all-day one, with a solid edge at its left; a shared bar reads its count first (D729, D1321)', async ({ page }) => {
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   const [day, timed] = await vetWorld(page)
   const paint = (iid: string) => page.locator(`.ib-bar[data-iid="${iid}"]`).first().evaluate((el, LUM) => {
@@ -1284,14 +1284,17 @@ test('the month: a timed bar is painted lighter than an all-day one, with a soli
     return { bg: cs.backgroundColor, lum: (0, eval)(LUM)(cs.backgroundColor) as number, shadow: cs.boxShadow }
   }, LUM)
   const solid = await paint(day!), light = await paint(timed!)
-  expect(solid.shadow, 'an all-day bar has no edge of its own').toBe('none')
+  /* D1321 (his approved drawing): an absence's bar is filled in its kind's colour inside a thin ring of it, a duty's bar
+     outlined; only a timed bar wears the solid edge down its left side */
+  expect(solid.shadow, 'an all-day bar has no left edge of its own').not.toMatch(/3px 0px 0px 0px/)
   expect(light.shadow, 'a timed bar wears a solid edge inside its left side').toMatch(/inset/)
   expect(light.shadow).toMatch(/3px 0px 0px 0px/)
   expect(light.bg, 'and a different fill').not.toBe(solid.bg)
-  /* on this dark page "lighter" is the weaker fill — nearer the panel behind it: measured against a solid bar of the
-     timed bar's own colour */
-  const amber = await page.evaluate(LUM => { const b = document.createElement('div'); b.className = 'ib-bar amb'; document.querySelector('.ib-lanes')!.appendChild(b); const c = getComputedStyle(b).backgroundColor; b.remove(); return (0, eval)(LUM)(c) as number }, LUM)
-  expect(light.lum, 'the timed amber is weaker than the solid amber').toBeLessThan(amber - 8)
+  /* on this dark page "lighter" is the weaker fill — nearer the panel behind it: the timed duty measured against an
+     all-day bar of its own kind, by how much of its colour the fill lets through */
+  const alpha = (c: string) => { const m = c.match(/[\d.]+/g)!.map(Number); return m.length > 3 ? m[3]! : 1 }
+  const allDay = await page.evaluate(() => { const b = document.createElement('div'); b.className = 'ib-bar duty'; document.querySelector('.ib-lanes')!.appendChild(b); const c = getComputedStyle(b).backgroundColor; b.remove(); return c })
+  expect(alpha(light.bg), 'the timed duty is a fainter fill than an all-day duty').toBeLessThan(alpha(allDay))
   await expect(page.locator('.ib-bar', { hasText: /^9 · Squadron photo$/ }), 'the shared bar: how many, then what').toHaveCount(1)
   await expect(page.locator('.ib-bar', { hasText: /\+\d/ }), 'no bar hides people behind "+N"').toHaveCount(0)
   await expect(page.locator('[data-testid="ib-legend"]')).toHaveText(/absence\s*duty$/)

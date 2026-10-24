@@ -74,7 +74,7 @@ async function showMonth(page: Page, iso: string) {
 const cell = (page: Page, p: string, d: string) => page.locator(`[data-testid="cell-${p}-${d}"]`)
 const chip = (page: Page, p: string, d: string) => cell(page, p, d).locator('.c')
 /* LOOK F (D1175, D1160, D1146, D1167): a day with exactly two entries draws TWO boxes, so `chip` matches both there —
-   such a day's box is found by its kind (`k-ll`, `k-oil`, `k-med`, `k-cse` …). The fill says where it stands, where the
+   such a day's box is found by its kind (`k-ll`, `k-oil` for FO / HO, `k-oilt` for an OIL taken — D1323, `k-med`, `k-cse` …). The fill says where it stands, where the
    old classes said appr / tbc / ref: filled `s-a` approved, hollow and dashed `s-w` pending, struck `s-r` refused. */
 const box = (page: Page, p: string, d: string, kind: string) => cell(page, p, d).locator(`.c.k-${kind}`)
 const FILLED = /(^|\s)s-a(\s|$)/
@@ -595,9 +595,9 @@ test('the tap list: approve one half, refuse the other, un-approve back to a bid
   await expect(box(page, P, D, 'll')).toHaveText('LL')
   await expect(box(page, P, D, 'll')).toHaveClass(place('top'))
   await expect(box(page, P, D, 'll')).toHaveClass(PENDING)
-  await expect(box(page, P, D, 'oil')).toHaveText('OIL')
-  await expect(box(page, P, D, 'oil')).toHaveClass(place('bot'))
-  await expect(box(page, P, D, 'oil')).toHaveClass(PENDING)
+  await expect(box(page, P, D, 'oilt')).toHaveText('OIL')
+  await expect(box(page, P, D, 'oilt')).toHaveClass(place('bot'))
+  await expect(box(page, P, D, 'oilt')).toHaveClass(PENDING)
   await expect(mark(page, P, D)).toHaveCount(0)
 
   await tap(page, P, D)
@@ -626,7 +626,7 @@ test('the tap list: approve one half, refuse the other, un-approve back to a bid
   // the morning LL approved again — filled; the afternoon OIL stays refused — struck (look F, D1175: `s-a` / `s-r`
   // where the one box was `appr`)
   await expect(box(page, P, D, 'll')).toHaveClass(FILLED)
-  await expect(box(page, P, D, 'oil')).toHaveClass(REFUSED)
+  await expect(box(page, P, D, 'oilt')).toHaveClass(REFUSED)
   expect(await inputsOf(page, P)).toContain('LL Feb 11 am0-720')
   await redo(page)
   await expect(box(page, P, D, 'll')).toHaveClass(PENDING)
