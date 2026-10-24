@@ -24,7 +24,7 @@ import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
 import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe } from '../state/perms'
-import { SESSION } from '../state/auth'
+import { SESSION, canEditSched } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
@@ -37,7 +37,7 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
-import { setDaysWin, setInpEdit, setOilList } from '../ui/pops'
+import { setDaysWin, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
 import { puck } from '../ui/html'
 import type { DayWhatIf } from './engine/whatif'
 import { lwSyncTurn } from './state/store'
@@ -500,6 +500,12 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
   const picks: Array<{ personId: string; date: string }> = []
   for (const it of items) {
     if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not filed`); continue }
+    /* A DAY THAT ALREADY HOLDS THE SAME KIND FOR HIM is left as it is (round 2's FULL check — the scenario designer's G2): a
+       range or a drag over an OD filed earlier made a second OD on that day, two inputs of one kind over one day. The days
+       around it are filed; a run is split there, so nothing overlaps. */
+    if (absencesAt(it.personId, it.date).some(o => o.code === code)) {
+      skipped++; why.push(`${shortDate(it.date)} already holds ${code === 'OD' ? 'an OD' : `a ${code}`} — left as it is`); continue
+    }
     picks.push(it)
   }
   if (!picks.length) return { done: 0, skipped, why }
@@ -521,7 +527,33 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
   })
   if (!doorWrite(() => { for (const r of rows) INPUTS.push(r) })) return { done: 0, skipped: skipped + picks.length, why }
   refreshAbsencesAndRepaint()
+  askFiledOil(rows.map(r => String(r.iid)), picks[0]!.date, picks.reduce((m, p) => (p.date > m ? p.date : m), picks[0]!.date))
   return { done: picks.length, skipped, why }
+}
+
+/** THE OIL QUESTION OF WHAT WAS JUST FILED FROM THE WAR (round 2's FULL check — the scenario designer's G3): an OD or a
+ *  course on a weekend or a holiday asks it at the save, as the Inputs page does — owner D804 ("asked … wherever it is
+ *  filed"), D660 (the filer answers, at the save, so nobody is left to his own bell). One input: its own question, in its
+ *  own window, over the war (the bell's way in — ui/topbits.tsx). Several (a drag over several men): a scheduler gets the
+ *  ONE list of those days (D782), never a window per man; anyone else — a member files one input, his own — the first.
+ *  Raised once the filing has gone through (a deferred effect), never for one refused. */
+function askFiledOil(iids: string[], from: string, to: string): void {
+  const mine = new Set(iids)
+  const open = oilOpenOn(from, to).filter(o => mine.has(o.iid))
+  if (!open.length) return
+  const raise = () => {
+    if (open.length > 1 && canEditSched()) {
+      const days = open.flatMap(o => o.days).sort()
+      setOilList({ from: days[0]!, to: days[days.length - 1]!, name: '', plain: true })
+    } else {
+      const row = INPUTS.find((x: any) => String(x.iid) === open[0]!.iid)
+      if (!row) return
+      setOilAsk(open[0]!.iid)
+      setInpEdit(row)
+    }
+    raptorNotify()
+  }
+  if (!cmdDeferEffect(raise)) raise()
 }
 
 /* the dates an Input covers and a copy of it limited to [from, to] — the one

@@ -23,6 +23,7 @@ import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
 import { StageBar } from './Chrome'
+import { INPEDIT, OILASK, OILLIST, setInpEdit, setOilAsk, setOilList } from '../../ui/pops'
 
 const ISNAP = JSON.stringify(INPUTS)
 const P = 'dusk'
@@ -231,6 +232,42 @@ describe('round 2 — filed straight, signed in, with the one Undo', () => {
     expect(mine()[0].endDate).toBe('Feb 12')
     act(() => { expect(globalUndo().ok).toBe(true) })
     expect(mine()).toHaveLength(0)
+  })
+  /* THE DESIGNER'S G3 (round 2's FULL check): an OD or a course filed from the war on a weekend or a holiday never asked
+     its OIL question — the Inputs page asks it at the save (D804 "wherever it is filed"; D660 the filer answers, at the
+     save), so the war's filing left it to the man's bell and the "OIL?" tag */
+  it('a weekend filed from the war asks its OIL question at once, over the war, as the Inputs page does', () => {
+    setOilAsk(null); setInpEdit(null); setOilList(null)
+    expect(fileStraight([{ personId: P, date: '2026-02-14' }], 'OD').done).toBe(1)
+    const row = filed('OD').find((x: any) => x.date === 'Feb 14')
+    expect(row, 'filed').toBeTruthy()
+    expect(OILASK, 'its question is up').toBe(String(row.iid))
+    expect(INPEDIT?.iid, 'in the input’s own window').toBe(row.iid)
+  })
+  it('a weekday files and asks nothing', () => {
+    setOilAsk(null); setInpEdit(null); setOilList(null)
+    expect(fileStraight([{ personId: P, date: '2026-02-11' }], 'OD').done).toBe(1)
+    expect(OILASK).toBeNull()
+    expect(INPEDIT).toBeNull()
+  })
+  it('two men over a weekend: the one list of that weekend’s questions opens for the admin (D782)', () => {
+    setOilAsk(null); setInpEdit(null); setOilList(null)
+    const days = ['2026-02-13', '2026-02-14', '2026-02-15']
+    expect(fileStraight([P, 'ramp'].flatMap(p => days.map(date => ({ personId: p, date }))), 'CSE').done).toBe(6)
+    expect(OILASK, 'no single window for two inputs').toBeNull()
+    expect(OILLIST, 'the weekend’s two days — the Friday asks nothing').toMatchObject({ from: '2026-02-14', to: '2026-02-15', plain: true })
+  })
+  /* THE DESIGNER'S G2: a range or a drag over a day that already holds the same kind for him filed it twice — two
+     overlapping inputs of one kind on one day. The day is left as it is and said; the days around it are filed. */
+  it('a range over a day already holding an OD files the days around it and leaves that day as it is, saying so', () => {
+    const tue = '2026-02-10'
+    expect(fileStraight([{ personId: P, date: tue }], 'OD').done).toBe(1)
+    const r = fileStraight(['2026-02-09', tue, '2026-02-11'].map(date => ({ personId: P, date })), 'OD')
+    expect(r.done).toBe(2)
+    expect(r.skipped).toBe(1)
+    expect(r.why.join(' ')).toMatch(/10 Feb.*already holds an OD/)
+    const covering = filed('OD').filter((x: any) => [x.date, x.endDate].includes('Feb 10') || (x.date === 'Feb 9' && x.endDate === 'Feb 11'))
+    expect(covering, 'one OD on Tue 10 Feb, not two').toHaveLength(1)
   })
   it('a member signed in files on his own row; never on another man’s', () => {
     setSession({ user: 'dk', role: 'member' }); setMe(P)
