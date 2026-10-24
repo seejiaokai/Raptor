@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1311 | 24 Oct 26 | His direction: the Leave War's bid windows are redesigned to carry less clutter — fewer rows, labels and buttons on view, every action still reachable — drawn for him with the design skill on the real app before anything is built. |
 | D1309 | 24 Oct 26 | Every kind on the Leave War has a colour clearly its own, told apart from every other kind at a glance on a phone — an OIL taken, the other leave and an overseas duty above all; no two kinds share a colour. |
 | D1308 | 24 Oct 26 | In the Leave War's bid windows the Remarks box is drawn as a dark box, standing out from the window, so people see at once that it is there to fill in — as the input window's boxes on the Inputs page are. |
 | D1307 | 24 Oct 26 | A Leave War bid window opened on an approved leave shows its Document and Remarks rows straight away, for everyone who opens it — the member whose leave it is and an admin alike — in place of the "Note" button that opened them in a window of their own. |
