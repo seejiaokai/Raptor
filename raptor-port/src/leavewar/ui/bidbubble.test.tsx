@@ -320,6 +320,10 @@ describe('the bubble\'s words (bubbleWords — D1345, D1351)', () => {
       .toBe('This bid turns FCP amber and takes Available P lower, still red.')
     expect(bubbleWords(w([['IP', 'red', 'lower'], ['Available P', 'red', 'lower']]), null))
       .toBe('This bid takes IP and Available P lower, still red.')
+    expect(bubbleWords(w([['IP', 'amber', 'turns'], ['Available P', 'red', 'turns']]), null))
+      .toBe('This bid turns IP amber and Available P red.')
+    expect(bubbleWords(w([['IP', 'amber', 'turns'], ['FCP', 'red', 'turns'], ['Available P', 'red', 'lower']]), null))
+      .toBe('This bid turns IP amber, FCP red and takes Available P lower, still red.')
   })
 })
 

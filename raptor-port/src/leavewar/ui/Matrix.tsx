@@ -193,12 +193,14 @@ export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string,
 export function bubbleWords(worse: Map<string, Worse>, filed: 'CSE' | 'OD' | 'UNA' | null): string {
   const what = filed === 'OD' ? 'This overseas duty' : filed === 'CSE' ? 'This course' : filed === 'UNA' ? 'This UNA' : 'This bid'
   const turned = [...worse].filter(([, w]) => w.how === 'turns').map(([l, w]) => `${l} ${w.lv}`)
+  const lowers = (['red', 'amber'] as const).map(lv => ({ lv, names: [...worse].filter(([, w]) => w.how === 'lower' && w.lv === lv).map(([l]) => l) })).filter(x => x.names.length)
+  /* a list said as a person says it — "IP amber and Available P red" — where it is the sentence's only part; beside
+     another part its items take commas, so "and" joins only the parts (as drawn, docs/img/handpass/2026-10-25-lw-drawings/bubble/) */
+  const alone = (turned.length ? 1 : 0) + lowers.length === 1
+  const list = (xs: string[]) => (alone && xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs.join(', '))
   const parts: string[] = []
-  if (turned.length) parts.push(`turns ${turned.join(', ')}`)
-  for (const lv of ['red', 'amber'] as const) {
-    const names = [...worse].filter(([, w]) => w.how === 'lower' && w.lv === lv).map(([l]) => l)
-    if (names.length) parts.push(`takes ${names.join(' and ')} lower, still ${lv}`)
-  }
+  if (turned.length) parts.push(`turns ${list(turned)}`)
+  for (const { lv, names } of lowers) parts.push(`takes ${list(names)} lower, still ${lv}`)
   return `${what} ${parts.join(' and ')}.`
 }
 
