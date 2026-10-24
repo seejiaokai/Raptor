@@ -11458,7 +11458,12 @@ Duration → Which leave → Also (the admin's +OIL · PO · PI). On an empty da
   **His D1313 (24 Oct 26 — "can u instead show the data horizontally? So u save vertical space"), not built yet:** the
   rows run side by side on one line, a dot between pairs, a pair wrapping whole only when the line runs out of width —
   in place of a line each (D1144 narrowed); which rows it names (only those turned amber or red, or every row his leave
-  lowers — his Q7) is put to him with pictures.
+  lowers — his Q7) is answered by **his D1314 ("A7 Strict. means only show anything that hits amber or red")**: only what
+  is amber or red, his seat's Available row included; where nothing is, only "No manning row turns amber or red". Not
+  built — [LW-DAYLINE-AMBER-ONLY].
+  **His D1315 ("if that day selected has 2 inputs etc. make sure u reflect it too"):** what a window shows about what a day
+  already holds — the lit leave, its code, Remarks, Document — is shown for each entry where the day holds two; such a
+  day opens the day's list (a card per entry), which takes round 3's changes too. Not built.
 - **The leave buttons** (`ui/LeaveButtons.tsx`): two rows of four in the catalogue's order; each its kind's colour of look F,
   hollow and dashed while the bid would wait, filled while "Approve what I enter" is ticked; each with what is left of the
   balance it spends (the balance column's own figure), dimmed at 0 or below and still pressable, a negative in red.

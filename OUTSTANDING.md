@@ -97,6 +97,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INPUT-COLOURS] — his question on every kind's colour, answered with a picture page (https://claude.ai/artifact/1526et5fddT78gkus6ipPu); his picks first.
 - [LW-FILE-OD-CRS] — an overseas duty and a course filed on the Leave War, early while bidding is open (his D1299); his questions first.
 - [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs and SANS calendars a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
+- [LW-DAYLINE-AMBER-ONLY] — the bid windows' day line names only what is amber or red, Available P included, side by side on one line (his D1313, D1314); built with round 3.
 - [LW-REMARKS-ALWAYS] — the bid window on an approved leave shows Document and Remarks at once, for everyone, and the Remarks box is dark so it stands out (his D1307, D1308).
 - [INP-CARD-COLUMNS] — on the Inputs list's cards, LATE, "No document" and the hours line up from card to card (his D1305); his pick from pictures first.
 - [INP-ADD-RIGHT] — the Inputs list's "+ Input" on a desktop at the right where its window opens, as "+ Medical" now is (D1300's reading, lesson 47) — his choice, with a picture.
@@ -2091,6 +2092,15 @@ design guide). **To do:** check its press area (a stretched hit box may already 
 and the hours stand wherever the words before them end, so they wander from card to card. **His pick (D1310): A** — three columns (LATE, the document, the hours), drawn by `scripts/handpass/inp-card-columns-look.mjs` (columns 3.7em / 7.4em / 5.6em, gap .6em, held with wider letters). **To do:** build it on the card (`ui/InputCard.tsx`,
 `scheduler/25-inputs-calendar.css`), checked on an opened day's cards too, at 390 and 402 and with an iPhone's wider letters.
 **Place:** with M3's follow-ups on `claude/lw-m3-placing-leave` if he wants it before the merge, else the next Inputs batch.
+
+### [LW-DAYLINE-AMBER-ONLY] The day line: only amber or red, side by side (his D1313, D1314, 24 Oct 26)
+**Today:** the bid windows' day line always shows his seat's Available row before → after, then each Manning row the bid
+turns amber or red, one under another, or the calm line (`ui/DayLine.tsx`, `engine/whatif.ts`). **To do:** name only
+what is (or would be) amber or red — the Available row included — side by side on one line, a dot between pairs, a pair
+wrapping whole only at the line's end; where nothing is, only "No manning row turns amber or red" ("…is amber or red" on a
+day already holding the bid, D1296). The one-day and the drag windows alike. Drawn: `docs/img/handpass/2026-10-24-lw-declutter/q7s-a-*.png`
+(`scripts/handpass/lw-q7-sideways.mjs`). Tests first (`bidwindow-dayline.test.tsx`, `whatif.test.ts`); a WALK check. **Place:**
+with round 3 of the bid windows (D1311) on `claude/lw-m3-placing-leave`.
 
 ### [LW-REMARKS-ALWAYS] Remarks shown on an approved leave, and a dark Remarks box (his D1307, D1308, 24 Oct 26)
 **Seen (his picture of pull request 569's preview):** the window on a pending bid shows Document and Remarks; the window on an
