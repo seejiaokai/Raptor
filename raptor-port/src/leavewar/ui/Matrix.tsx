@@ -1448,7 +1448,7 @@ export function Matrix() {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
        never reported as turned amber (the scenario designer's find, 23 Oct 26); and its figure, so a row already amber or
        red that a bid takes lower is reported too (D1345) */
-    const m = new Map<string, { label: string; lv: number; have: number }>()
+    const m = new Map<string, { label: string; lv: number; have?: number }>()
     for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}`, { label: r.label, lv: r.verdict === 'red' ? 2 : 1, have: r.have })
     /* …and the two Available rows at their amber or red points (D1190, D1202 — the same verdict their cells wear,
        `sync.ts availVerdictAt`), over the days drawn: a bid is placed on a day in view */
@@ -1470,7 +1470,9 @@ export function Matrix() {
         const v = availVerdictAt(d, seat, a)
         if (!v) continue
         f ??= dayFacts(d)
-        m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1, have: seat === 'p' ? f.availP : f.availW })
+        /* a figure the day does not have (null) is left out — that row-day is then compared by its level alone */
+        const have = seat === 'p' ? f.availP : f.availW
+        m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1, ...(typeof have === 'number' ? { have } : {}) })
       }
     }
     return { m, drawn: new Set(drawnDates), seq: actCount() }

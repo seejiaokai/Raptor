@@ -6442,3 +6442,10 @@ evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBi
 ### [MED-ADD-RIGHT-FLASH] "+ Medical" and its window on the right; the new card marked (his D1300, 24 Oct 26)
 **Seen (his desktop):** "+ Medical" at the left; its window opens over the cards, so a new card is hidden as it arrives, and nothing marks it. **To do:** on a desktop the button at the right of its row and the window opened at the right; the new card wears the just-added ring (D860) and is scrolled into view; the Inputs tab's "+ Input" checked for the same. **Place:** with the M3 follow-ups.
 
+
+*Moved here 2026-10-25 by backlog-archive.mjs ([LW-ENTERED-DATE-UTC]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-24-lw-m3-build-spec.md`.*
+
+### [LW-ENTERED-DATE-UTC] An OIL award's "entered" date is the world date, not his (found 23 Oct 26 by M2's walk, walker 2; older)
+**DONE — found stale on the night of 25 Oct 26:** built with M3 (commit 08b5936ee — `raptor-port/src/leavewar/ui/dates.ts enteredDay`, the day's list's one printer of the date; pinned by `ui/entereddate.test.ts`); the item had never been closed.
+**Seen (the built app, 03:xx on 23 Oct 26):** the award's window and the day's list print "Entered by Saber · 22 Oct 26" — the date the award was entered taken from the world (UTC) date, so between midnight and 8 a.m. in his time zone it reads the day before. Picture: `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/w2/s19-desk-b-after-save-list.png` (bottom right of the window); the walker's note: `raptor-port/docs/handpass/parts/lw-m2-w2.md`. Code going forward, so not D56's. **To do:** find where the entered date is stamped or printed (the OIL ledger entry's time, the award sheet and `ui/DayList.tsx`) and read it in local time, as every other date on the war is (the Leave War suite runs under a hostile time zone — pin it there). **Place:** small, with the next Leave War batch (M3).
+
