@@ -56,6 +56,12 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1355 | 25 Oct 26 | A refused bid's windows show its state as an approved leave's do: in the one-day bid window and in the day's list Refuse is lit in its red and the refused leave's button ringed; the lit look's colours are the ones he picks from the contrast redraw (D1348). |
+| D1354 | 25 Oct 26 | A member's tap on his own approved leave, and on his day already closed, opens a window with round 3's one Remarks row — the dark box that wraps, its till date, Document — saved as it changes, in place of the older labelled rows, light box and Save; the closed day keeps its Delete. |
+| D1353 | 25 Oct 26 | A tap on a Leave War day holding a half-day UNA does what a tap on a day holding a half-day leave does: it opens the bid window for the free half, never only the day's list, for an admin and a member alike. |
+| D1352 | 25 Oct 26 | A UNA on the Leave War lowers its Available row, and so raises the SANS calendar's "still needed" for that day, as built: the man is out of the manning (D1338); UNA itself is still named nowhere outside the Leave War. |
+| D1351 | 25 Oct 26 | The manning bubble raised by a filing on the Leave War names what was filed — "This overseas duty turns Available P red.", a course "This course …", a UNA "This UNA …" — and a bid keeps "This bid …"; its colour and when it is raised are D1344's and D1345's. |
+| D1350 | 25 Oct 26 | An overseas duty or a course filed from the Leave War's bid window is filed as whole days, as built, even where the window opens with a half lit because the day holds a half-day leave: neither has halves on the Inputs page. |
 | D1349 | 25 Oct 26 | His direction, drawn for him before anything is built: UNA drawn grey, and its button moved into the bid window's ⋯ menu, while Grant OIL (+OIL), which is commonly used, takes UNA's third place in the row under the leaves. |
 | D1348 | 25 Oct 26 | In the bid windows and the day's list a lit Approve or Refuse — the entry's state — stands out plainly from the unlit buttons beside it, more than in the Q1 drawing; it is redrawn with stronger contrast and put to him before Q1 is built. |
 | D1347 | 25 Oct 26 | Over two or more separate entries with different remarks, the Leave War's drag window lists each entry's remark read only — one grey line each, with its dates — above the Remarks box, and words typed there replace them all (D1341); the entries stay separate. |
