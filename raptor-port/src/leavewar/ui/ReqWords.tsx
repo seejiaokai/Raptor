@@ -17,7 +17,7 @@ import { remarksTyped, tillShown } from '../../engine/inputs'
 import { setLeaveRemarks } from '../../ui/inputedit'
 import { inputDates } from '../absences'
 import { DocField, rowDocIds, tillOfISO } from '../sync'
-import { recordsAt, type ReqWords, type ReqWordsPatch } from '../state/store'
+import { recordsAt, reqRunKey, type ReqWords, type ReqWordsPatch } from '../state/store'
 import { addDays, type RequestRec } from '../engine'
 
 /** what the rows hold: the words as typed, the tick only where it was turned, the files */
@@ -189,9 +189,9 @@ export function heldRequest(personId: string, date: string): { rec: RequestRec; 
  *  for its "till <date>": the one-day window's and the day's list's alike (round 3's FULL check: the list read the day
  *  opened, "till 8 Dec", where the window on the run's first day read "till 9 Dec") */
 export function runEnd(personId: string, date: string, rec: RequestRec): string {
-  const same = (r: RequestRec) => r.code === rec.code && r.state === rec.state && (r.remarks ?? '') === (rec.remarks ?? '')
+  const k = reqRunKey(rec)   // the store's own run (R8)
   let end = date
-  for (let d = addDays(date, 1); recordsAt(personId, d).some(r => r.kind === 'request' && same(r)); d = addDays(d, 1)) end = d
+  for (let d = addDays(date, 1); recordsAt(personId, d).some(r => r.kind === 'request' && reqRunKey(r as RequestRec) === k); d = addDays(d, 1)) end = d
   return end
 }
 

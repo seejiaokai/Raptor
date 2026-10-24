@@ -3001,11 +3001,16 @@ export interface ReqWordsPatch { remarks?: string; till?: boolean | null; docIds
  *  (`canEditRow`): his own, or an admin any. ONE request is one bid of the window — a fortnight's run, its days in a
  *  row with the same code, state and words (the same run `doorApprove` makes one leave of), takes the change on every
  *  day, so one bid carries one set of words. One command, one Undo; false where nothing changed. */
+/** WHAT MAKES DAYS ONE RUN OF A BID — its kind, its state, its words, its till tick and its documents: the run a change of its
+ *  words is saved across (setRequestWords) and the bid windows' "till <date>" reads (ReqWords runEnd — the fresh read's R8:
+ *  the window matched fewer of them and named a last day the save then left out). */
+export const reqRunKey = (r: RequestRec): string => JSON.stringify([r.code, r.state, r.remarks ?? '', r.till ?? null, r.docIds ?? []])
+
 export function setRequestWords(personId: string, date: string, recId: string, patch: ReqWordsPatch): boolean {
   if (!canEditRow(state.role, state.viewer, personId)) return false
   const rec = listAt(personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId)
   if (!rec) return false
-  const key = (r: RequestRec) => JSON.stringify([r.code, r.state, r.remarks ?? '', r.till ?? null, r.docIds ?? []])
+  const key = reqRunKey
   const same = key(rec)
   const twin = (d: string) => listAt(personId, d).find((r): r is RequestRec => r.kind === 'request' && key(r) === same)
   const run: Array<{ date: string; rec: RequestRec }> = [{ date, rec }]

@@ -612,4 +612,11 @@ describe('round 3 — the fresh read’s finds', () => {
     fireEvent.click(ll)
     expect(screen.queryByTestId('bid-picker'), 'the tap after a cancelled press places').toBeNull()
   })
+  it('R8: the window’s "till" ends where the store’s own run of the bid ends — a day without its document is not in it', () => {
+    setCellRange(P, '2026-02-10', '2026-02-11', 'LL', { docIds: ['d-walk'] })
+    setCell(P, '2026-02-12', 'LL')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-10`))
+    expect(within(sheet()).getByTestId('bid-tilldate').textContent).toMatch(/11 Feb/)
+  })
 })
