@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1339 | 25 Oct 26 | A leave placed over several days at once, by a drag or a picked range, is one entry with one remark for all its days: a tap on any of its days shows that remark, a change there changes it for all, and Remarks typed in the drag window apply to every day dragged, whatever is pressed. |
 | D1338 | 24 Oct 26 | UNA stays, on the Leave War only: an admin alone places it, for a whole day, a morning or an afternoon, and it takes the man out of the war’s manning by 1 or 0.5; everyone sees its deep teal box and can read its remarks; it is nowhere else in the app, not an input kind, not on the Inputs page, the schedule or the bell. |
 | D1334 | 24 Oct 26 | In the bid windows the leave buttons take the row's full width, the same height as today, now that the "WHICH LEAVE" label is gone — round 3's change 6, his word for that size change (D487). |
 | D1333 | 24 Oct 26 | In the Leave War's bid windows and the day's list, a Remarks box whose words run past one line wraps them and grows taller to show them all, never hiding them in one line that scrolls sideways; remarks shown read only wrap the same way. |
