@@ -2103,3 +2103,48 @@ different feature that merely pass through it.
 **Suggested improvement:** For any new member of a discriminated union in this app, run (in parallel with the build) a read-only audit of every branch on that discriminant, each line answered "falls through correctly" or "needs this change", and fold the list into the roll-call.
 
 **Principle:** A new case in a discriminated union is a change at every site that branches on it; enumerate the sites mechanically before trusting tests written for the new case.
+
+### Observation 696: A walk script that reads SAVED records must take its key from the built app's storage, proven on one known write
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's FULL check — the walk script v2 read the war's saved records to assert what a gesture stored
+**Skill:** walk scripts (`raptor-port/docs/walk-scripts.md` §4) / bug-check order §7
+**Type:** open-source
+**Phase/Area:** walk script — reading results from storage
+
+**Issue:** The script read `leavewar:rec:` keys — the war's own storage seam's name, as its unit tests see it — but the built site stores through the app's whiteboard, `raptor:leavewar/rec:…`, with the person and date beside each record as `pid` / `date`. Every read returned nothing: seven checks across both sizes failed at once ("stored []"), while the grid showed the records plainly. The guide already says a locator that reads a result is copied from the markup that draws it; storage had no such line.
+
+**Suggested improvement:** Add to walk-scripts §4: a step that reads a stored record takes its key and field names from the BUILT app's storage path (the adapter, not the module's own seam), and the script proves the read once on a write it has just made before any step relies on it.
+
+**Principle:** A read of persisted state in an end-to-end check must use the production storage path's naming, validated against one known write — a module's own test seam is a different world.
+
+### Observation 697: Word matching over textContent fails where the page runs words together; match an element whose own text is the word
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's FULL check — the walk's Inputs-list check (H8) at phone and desktop size
+**Skill:** walk scripts (`raptor-port/docs/walk-scripts.md` §4)
+**Type:** open-source
+**Phase/Area:** walk script — reading words off a page
+
+**Issue:** Four tries failed before one held: `innerText` read while scrolling missed the card; a `\bOD\b` regex over a card's `textContent` failed because the card reads "DrifterOD" (no space between the name and the kind), and over the desktop row because it reads "…ODLATE…". The picture showed the right words every time.
+
+**Suggested improvement:** Add to walk-scripts §4 beside "the words a person SEES": to assert a word is shown, find a drawn element whose OWN trimmed text equals the word (and its container for the other part), never a word-boundary regex over a container's concatenated text.
+
+**Principle:** Concatenated DOM text has no reliable word boundaries; assert on the element that draws the word.
+
+### Observation 698: An engine-only layout fault can be pinned red in a single-engine suite by injecting the other engine's metric
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's FULL check — the walk in WebKit found the row under the leaves 30 tall under leave buttons 28 tall (Chromium: both 30)
+**Skill:** bug-check order §7.9 / §8 item 4 (red first in the medium it runs in); walk scripts §9
+**Type:** open-source
+**Phase/Area:** pinning a fault the test suite's engine cannot show
+
+**Issue:** The browser suite runs Chromium only, where the fault does not occur, so a plain test could never be red. The cause was a font metric (Safari sets 12px text on a shorter line). The test injected that metric (`line-height: 14px` on the chips) and asserted the rule in its general form ("as tall as the leave buttons, whatever line the fonts give"): red before the fix in both projects, green after.
+
+**Suggested improvement:** Add to the order's §7.9 or walk-scripts §9: when a walk in another engine finds a layout fault, identify the metric that differs and inject it in the suite's own engine to make the red test, stating the rule in its engine-independent form.
+
+**Principle:** A fault that depends on an environment the suite lacks is pinned by reproducing the environment's difference, not the environment.

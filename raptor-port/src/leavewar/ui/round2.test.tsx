@@ -257,6 +257,15 @@ describe('round 2 — filed straight, signed in, with the one Undo', () => {
     expect(OILASK, 'no single window for two inputs').toBeNull()
     expect(OILLIST, 'the weekend’s two days — the Friday asks nothing').toMatchObject({ from: '2026-02-14', to: '2026-02-15', plain: true })
   })
+  /* the designer's S1, carried here (the walk drove the range and its words — H2): an unticked "till" and a document typed
+     in the window go with the input, as a leave's do when it is approved (doorApprove) */
+  it('a range filed with its till unticked and a document keeps both on the input', () => {
+    const days = ['2026-02-16', '2026-02-17', '2026-02-18']
+    expect(fileStraight(days.map(date => ({ personId: P, date })), 'OD', { remarks: 'Exercise', till: false, docIds: ['doc-s1'] }).done).toBe(3)
+    const row = filed('OD').find((x: any) => x.date === 'Feb 16')
+    expect(row).toMatchObject({ endDate: 'Feb 18', remarks: 'Exercise', till: false })
+    expect(JSON.stringify(row), 'its document').toContain('doc-s1')
+  })
   /* THE DESIGNER'S G2: a range or a drag over a day that already holds the same kind for him filed it twice — two
      overlapping inputs of one kind on one day. The day is left as it is and said; the days around it are filed. */
   it('a range over a day already holding an OD files the days around it and leaves that day as it is, saying so', () => {
