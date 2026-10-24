@@ -14,7 +14,7 @@ import { docAdd } from '../state/docs'
 import { DOCVIEW, setDocView, INPEDIT, setInpEdit } from './pops'
 import { me } from '../state/perms'
 import { setMe } from '../state/auth'
-import { setMedAsOf } from '../state/view'
+import { revealMedInput, setMedAsOf } from '../state/view'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
@@ -78,11 +78,13 @@ describe('the Medical view', () => {
      (e2e/inputs-calendar.spec.ts, "D927"). */
   /* RESTATED 21 Oct 26 (owner D1137, round 3 of the consistency look): "+ Medical" now stands first, where "+ Input"
      stands on the Inputs list (D729), and the as-of button right after it */
-  it('D927 D1137 the row under the tabs has no heading: "+ Medical" leads it, the as-of button next', () => {
+  /* (no layout here, so this is a desktop: "+ Medical" stands at the row's right end since D1300, 24 Oct 26 — first on a
+     phone, D1137, which the browser test measures, e2e/medical.spec.ts) */
+  it('D927 D1300 the row under the tabs has no heading: the as-of button leads it, "+ Medical" at its right end on a desktop', () => {
     const head = $('#medView .ic-head')
     expect(head.querySelector('.med-title'), 'the heading is gone').toBeNull()
-    expect(head.firstElementChild?.id, '"+ Medical" stands first in the row (D1137)').toBe('medNew')
-    expect(head.firstElementChild?.nextElementSibling?.id, 'the as-of button stands next').toBe('medCalBtn')
+    expect(head.firstElementChild?.id, 'the as-of button stands first on a desktop').toBe('medCalBtn')
+    expect([...head.children].filter(c => c.tagName === 'BUTTON').pop()?.id, '"+ Medical" is the last button of the row on a desktop (D1300)').toBe('medNew')
     /* the one "Medical" the row carries is its own door, "+ Medical" (D963, D965 — which took the place of a title) */
     expect((head.textContent || '').replace($('#medCalBtn').textContent || '', '').replace($('#medNew').textContent || '', ''), 'no other word "Medical" in the row').not.toMatch(/Medical/)
   })
@@ -236,7 +238,7 @@ describe('the Medical view', () => {
     const head = $('#medView .ic-head'), btn = $('#medNew')
     expect(btn.textContent).toBe('+ Medical')
     expect(btn.classList.contains('primary'), "filled, the row's one main button").toBe(true)
-    expect(head.firstElementChild, "first, at the row's left (D1137 — it stood at the right end until 21 Oct 26)").toBe(btn)
+    expect([...head.children].filter(c => c.tagName === 'BUTTON').pop(), "on a desktop at the row's right end (D1300 — first on a phone, D1137)").toBe(btn)
     const adminMe = me()
     const member = Object.keys(PEOPLE).find(k => PEOPLE[k].cs && !PEOPLE[k].archived && !PEOPLE[k].special && k !== adminMe)!
     try {
@@ -254,6 +256,29 @@ describe('the Medical view', () => {
       await act(async () => { setSession({ user: 'a', role: 'admin' }); setMe(adminMe as any); setInpEdit(null); notify() })
     }
     expect($('#medView'), 'still on the Medical tab').toBeTruthy()
+  })
+  /* HIS D1300 (24 Oct 26): on a desktop the sections make room for the input's window while it is open, and the card of a
+     medical input just saved from this tab wears the just-added mark (the app's one — .innew, D851, D860), held six
+     seconds as the List holds it. (The window's place and the card in sight are the browser's — e2e/medical.spec.ts.) */
+  it('D1300 the sections make room while the window is open, and the card just saved wears the just-added mark', async () => {
+    expect($('#medView').classList.contains('med-room'), 'no room while no window is open').toBe(false)
+    await click($('#medNew'))
+    expect($('#medView').classList.contains('med-room'), 'room for the window, on a desktop').toBe(true)
+    await act(async () => { setInpEdit(null); notify() })
+    expect($('#medView').classList.contains('med-room')).toBe(false)
+    const card = document.querySelector('.medsec.med-down .medcard') as HTMLElement
+    const iid = card.getAttribute('data-medcard')!
+    const row = INPUTS.find((r: any) => r.iid === iid)
+    vi.useFakeTimers()
+    try {
+      await act(async () => { expect(revealMedInput(row)).toBe(true); notify() })
+      const lit = document.querySelector(`.medcard[data-medcard="${iid}"]`) as HTMLElement
+      expect(lit.classList.contains('innew'), 'the card just saved wears the mark').toBe(true)
+      expect(lit.getAttribute('data-fresh'), 'and is found by the note that is left unsaid where it is seen (ui/seen.ts)').toBe(iid)
+      expect(document.querySelectorAll('.medcard.innew').length, 'only that card').toBe(1)
+      await act(async () => { vi.advanceTimersByTime(6100) })
+      expect(document.querySelector('.medcard.innew'), 'gone after six seconds').toBeNull()
+    } finally { vi.useRealTimers() }
   })
   /* Medical is a TAB of the Inputs page since the three tabs (D620, D626): it has no close cross of its own, and is
      left by choosing another tab */

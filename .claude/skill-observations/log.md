@@ -868,6 +868,8 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`): twice a command began `cat > <file>` with no input (once `cat > /tmp/x.test.ts 2>/dev/null; mkdir …`) — each stalled two minutes and was moved to the background before it was stopped. The same proposal stands: never begin a command with `cat >`; close input with `< /dev/null`.
 
+Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit scripts written inline in the shell broke — a template literal's backticks inside a `node -e "…"` were run by bash as commands (two picture names came out blank), a `\\[` in a heredoc reached the regex unescaped, a `"\\n"` became a real line break. Each was redone with the file-writing tool and ran first time. The guard stands as proposed: every multi-line or quote-bearing script goes through the file tool, unconditionally.
+
 ### Observation 610: Before/after pictures of the live app need no second checkout or server
 
 **Status:** OPEN
@@ -1960,3 +1962,19 @@ different feature that merely pass through it.
 **Suggested improvement:** in the sizing step and the walk brief, for every window with more than one state, write a table of state × every reading the window shows (day line, figures, buttons) and give each cell a scenario or a named test — the §7.4 state table applied to readings, not only to presses.
 
 **Principle:** A reading that is right in one state of a surface is unproved in its other states; list each state against each thing it shows, not only against each action.
+
+### Observation 687: A unit-test world without the real door could not reach the state the default control makes
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** M3's follow-ups — fixing the bid window's day line on a day already holding the bid (D1296), red test first
+**Skill:** existing — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.4 / §7.11), not a skill
+**Type:** open-source
+**Phase/Area:** the state table of a reading; which world a red test runs in
+
+**Issue:** The red-first tests for the fix ran in the store alone, where a bid placed stays a PENDING request. In the app the admin's "Approve what I enter" is ticked by default, so his bid lands APPROVED, becomes a leave on another page, and a second write over it is refused — a different code path. The fixed line drew nothing there; only the walk, driving the default control, found it. The owner's own report was the pending case, which the tests did cover.
+
+**Suggested improvement:** In §7.4's state table (and §7.11 lesson 1), name the column "the state the DEFAULT controls produce for each role" explicitly, and require that the red test of a fix runs at least once through the real door that produces that state (here, the absence door with both stores), not only a store-only fixture.
+
+**Principle:** A fix proven only in a fixture that skips the real write path is proven for the fixture's state; the state a default setting produces must be in the test's world too.
+

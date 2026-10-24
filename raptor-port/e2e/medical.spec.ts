@@ -275,11 +275,57 @@ test.describe('the medical view renders and fits', () => {
     expect((await month.textContent())!.trim(), 'the calendar kept its month through Undo and Redo').toBe(before)
   })
 
+  /* HIS D1300 (24 Oct 26 — "perhaps the medical input button can be put on the right so that when i click on that the window
+     that pops up doesnt block the main bulk of the data behind and the user can also immediately see the data they input
+     show … it should also flash for a few seconds with cyan border on that input"). On a desktop, at his PC's size too
+     (1536 at 125% — about 1229 × 600 of page): the window opens at the right with every card clear of it; a medical input
+     filed there lands in sight wearing the just-added mark, and no "Input added" note is raised over it. */
+  for (const vp of [DESK, { width: 1229, height: 600 }])
+    test(`D1300 on a desktop the window of "+ Medical" stands at the right, clear of every card, and the card filed wears the just-added mark — ${vp.width}×${vp.height}`, async ({ page }) => {
+      await page.setViewportSize(vp)
+      await login(page)
+      await go(page, 'inputs')
+      await page.click('#inMedBtn')
+      const ids = () => page.locator('.medcard').evaluateAll(els => els.map(e => (e as HTMLElement).dataset.medcard!))
+      const had = await ids()
+      await page.click('#medNew')
+      const win = page.locator('[data-testid="win-inputedit"]')
+      await expect(win).toBeVisible()
+      const clear = await page.evaluate(() => {
+        const w = document.querySelector('[data-testid="win-inputedit"]')!.getBoundingClientRect()
+        return { r: w.right, vw: innerWidth, under: [...document.querySelectorAll('.medcard, .medsec')].filter(c => c.getBoundingClientRect().right > w.left - 4).map(c => (c as HTMLElement).className) }
+      })
+      expect(clear.r, 'the window stands at the right').toBeGreaterThan(clear.vw - 40)
+      expect(clear.under, 'nothing of the sections stands under the window').toEqual([])
+      for (let i = 0; i < 24 && !(await page.locator('#inpEdCal [data-iso="2026-07-12"]').count()); i++) {
+        const t = (await page.locator('#inpEdCal .dcal-title').first().textContent()) || ''
+        await page.locator(`#inpEdCal button[aria-label="${/2027|Aug|Sep|Oct|Nov|Dec/.test(t) ? 'Previous' : 'Next'} month"]`).click()
+      }
+      await page.locator('#inpEdCal [data-iso="2026-07-12"]').click()
+      await page.locator('#inpEdCal [data-iso="2026-07-15"]').click()
+      await win.locator('.docfield input[type=file]').first().setInputFiles([{ name: 'cert.pdf', mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.1 %%EOF') }])
+      await page.locator('#inpEditSave').click()
+      await expect(win).toHaveCount(0)
+      await expect.poll(async () => (await ids()).filter(id => !had.includes(id)).length, 'one new card').toBe(1)
+      const fresh = (await ids()).find(id => !had.includes(id))!
+      const card = page.locator(`.medcard[data-medcard="${fresh}"]`)
+      await expect(card, 'the new card wears the just-added mark').toHaveClass(/innew/)
+      await expect(card).toBeInViewport()
+      expect(await card.evaluate(e => getComputedStyle(e).boxShadow), 'the plain blue ring').toContain('30, 134, 255')
+      await page.waitForTimeout(1500)
+      /* the mark is the feedback: no passing note on screen (#toastEl), and a screen reader is told the words (#srSay) */
+      const note = await page.evaluate(() => { const t = document.getElementById('toastEl'); return t ? { text: t.textContent || '', op: getComputedStyle(t).opacity } : null })
+      expect(!note || note.op === '0' || !/Input added/.test(note.text), `the mark is the feedback: no note (${JSON.stringify(note)})`).toBe(true)
+      await expect(page.locator('#srSay'), 'a screen reader is told in words').toHaveText(/Input added/)
+      await page.waitForTimeout(5000)
+      await expect(card, 'gone after six seconds').not.toHaveClass(/innew/)
+    })
+
   /* "+ MEDICAL" (owner D963, D965 — 17 Oct 26): a filled button at the right end of the "as of" row, the row's 36 tall, a
      finger's 44 on a phone; it opens the Inputs tab's own window set to a medical kind — by mouse and by keyboard (Tab to
      it, Enter opens, Escape closes and the keyboard is back on the button) — for an admin and for a member. */
   for (const [name, viewport, who] of [['phone admin', PHONE, 'a'], ['phone member', PHONE, 'user'], ['desktop admin', DESK, 'a'], ['desktop member', DESK, 'user']] as const)
-    test(`D965 D1137 "+ Medical", first in its row, opens the input window on a medical kind — ${name}`, async ({ page }) => {
+    test(`D965 D1137 D1300 "+ Medical", first in its row on a phone and at its right end on a desktop, opens the input window on a medical kind — ${name}`, async ({ page }) => {
       await page.setViewportSize(viewport)
       await login(page, who)
       await go(page, 'inputs')
@@ -289,14 +335,21 @@ test.describe('the medical view renders and fits', () => {
       const geo = await page.evaluate(() => {
         const b = document.querySelector('#medNew')!.getBoundingClientRect(), c = document.querySelector('#medCalBtn')!.getBoundingClientRect()
         const head = document.querySelector('#medView .ic-head') as HTMLElement, hr = head.getBoundingClientRect()
-        /* D1137 (21 Oct 26): first, on the tabs' left edge where "+ Input" stands, "as of" after it */
+        /* D1137 (21 Oct 26): on a phone first, on the tabs' left edge where "+ Input" stands, "as of" after it; D1300
+           (24 Oct 26): on a desktop at the row's right end, over the place its window opens */
         const tabs = document.querySelector('.inputs-tabs')!.getBoundingClientRect()
-        return { h: Math.round(b.height), mid: Math.abs((b.top + b.height / 2) - (c.top + c.height / 2)), leftGap: Math.round(Math.abs(b.left - tabs.left)), before: b.right <= c.left, inRow: b.right <= hr.right + 0.5 }
+        return { h: Math.round(b.height), mid: Math.abs((b.top + b.height / 2) - (c.top + c.height / 2)), leftGap: Math.round(Math.abs(b.left - tabs.left)), rightGap: Math.round(Math.abs(hr.right - b.right)), before: b.right <= c.left, after: b.left >= c.right, inRow: b.right <= hr.right + 0.5 }
       })
+      const phone = viewport === PHONE
       expect(geo.h, 'the row height').toBe(36)
       expect(geo.mid, 'one row with "as of"').toBeLessThanOrEqual(1)
-      expect(geo.leftGap, 'first, on the tabs\' left edge (D1137 — it stood at the right end until 21 Oct 26)').toBeLessThanOrEqual(1)
-      expect(geo.before, 'before "as of"').toBe(true)
+      if (phone) {
+        expect(geo.leftGap, 'first, on the tabs\' left edge (D1137)').toBeLessThanOrEqual(1)
+        expect(geo.before, 'before "as of"').toBe(true)
+      } else {
+        expect(geo.rightGap, 'at the right end of the row on a desktop (D1300)').toBeLessThanOrEqual(1)
+        expect(geo.after, 'after "as of"').toBe(true)
+      }
       expect(geo.inRow, 'inside the row').toBe(true)
       /* by mouse */
       await btn.click()
@@ -306,10 +359,11 @@ test.describe('the medical view renders and fits', () => {
       await page.keyboard.press('Escape')
       await expect(win).toHaveCount(0)
       await expect(page.locator('#medView'), 'still on the Medical tab').toBeVisible()
-      /* by keyboard: it stands before "as of" since D1137, so the keys reach it in that order — Shift+Tab from "as of";
-         Enter opens; Escape closes and gives the keyboard back to it */
+      /* by keyboard: the keys reach it where it stands — on a phone before "as of" (Shift+Tab from it), on a desktop after
+         it (Tab, past Today where it shows); Enter opens; Escape closes and gives the keyboard back to it */
       await page.locator('#medCalBtn').focus()
-      await page.keyboard.press('Shift+Tab')
+      await page.keyboard.press(phone ? 'Shift+Tab' : 'Tab')
+      if (!phone && await page.evaluate(() => document.activeElement?.id === 'medToday')) await page.keyboard.press('Tab')
       expect(await page.evaluate(() => document.activeElement && document.activeElement.id)).toBe('medNew')
       await page.keyboard.press('Enter')
       await expect(win).toBeVisible()

@@ -73,11 +73,24 @@ export function dayWhatIf(
   }
   if (avail || turned.length) return { date, avail, turned }
   /* NOTHING MOVES — but is that because he is already away that day (his D1296: the window reopened on a day holding the
-     bid read "No manning row turns amber or red" while Available P stood red)? Asked by taking his day off the war: where
-     that raises a row, the day already counts him out, and the line shows the day as it stands — his row's figure and
-     level, and every Manning row now amber or red. Where it raises nothing (a SANS man, ground crew), the plain answer. */
+     bid read "No manning row turns amber or red" while Available P stood red)? Then the day as it stands; where he is not
+     away (a SANS man, ground crew), the plain answer. */
+  return standingWhatIf(war, personId, date, judge) ?? { date, avail, turned }
+}
+
+/** THE DAY AS IT STANDS, where the war already counts him away on it (his D1296): his seat's Available row's figure and
+ *  level (before = after), and every Manning row now amber or red — or null where he is not away that day. "Away" is
+ *  asked by taking his day off the war: where that raises his seat's Available row, the day already counts him out — a bid
+ *  of his waiting there, or an approved leave on the Inputs page (the window over it, where a second write is refused). */
+export function standingWhatIf(
+  war: WhatIfWar,
+  personId: string,
+  date: string,
+  judge: (seat: 'p' | 'w', have: number, date: string) => '' | WhatIfLevel,
+): DayWhatIf | null {
   const { [date]: _gone, ...restOfRow } = war.views[personId] ?? {}
   const without: Views = { ...war.views, [personId]: restOfRow }
+  let avail: DayWhatIf['avail'] = null
   for (const seat of ['p', 'w'] as const) {
     const rule = war.avail[seat]
     const have = availHave(rule, war.people, war.grid, war.states, date, war.views)
@@ -85,8 +98,9 @@ export function dayWhatIf(
     avail = { seat, label: rule.label, before: have, after: have, level: judge(seat, have, date) || null }
     break
   }
-  if (!avail) return { date, avail: null, turned }
-  for (const r of was.results) {
+  if (!avail) return null
+  const turned: DayWhatIf['turned'] = []
+  for (const r of evaluateDay(war.people, war.grid, war.states, war.requirements, date, war.views).results) {
     if (r.verdict === 'ok') continue
     turned.push({ ruleId: r.ruleId, label: r.label, before: r.have, after: r.have, level: r.verdict })
   }

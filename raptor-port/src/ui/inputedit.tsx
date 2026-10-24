@@ -53,7 +53,7 @@ import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
-import { CURPAGE, INPVIEW, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
+import { CURPAGE, INPVIEW, revealInput, revealMedInput, OILWAIT, type OilWaitKind } from '../state/view'
 import { toastHeld } from './toast'
 import { noteUnlessSeen } from './seen'
 import { holdForOil } from './oilwait'
@@ -2587,9 +2587,11 @@ export function InputEditor() {
   /* NOT FROM THE MEDICAL TAB (the code read of [MEDICAL-CARDS-3], 17 Oct 26 — finding 4): asked to show a saved input,
      the page turns the Inputs and SANS calendars to its month; from the Medical tab ("+ Medical", D963) neither calendar
      is in view, so a filing for July turned his November away unseen. There the new card is the feedback and the note
-     is said (nothing there wears the just-added mark). */
+     is said (nothing there wears the just-added mark).
+     …UNTIL HIS D1300 (24 Oct 26): the new card wears it now — the Medical tab is asked to show the input (its own reveal,
+     which turns no calendar), and where the card can be seen the note is left unsaid, as on the List. */
   const onMedTab = () => CURPAGE === 'inputs' && INPVIEW === 'med'
-  const show = (row: any, want: boolean) => want && !!row && !onMedTab() && revealInput(row) && CURPAGE === 'inputs'
+  const show = (row: any, want: boolean) => want && !!row && (onMedTab() ? revealMedInput(row) : revealInput(row) && CURPAGE === 'inputs')
   const saidSaved = (row: any, shown: boolean, words: string) => {
     if (!shown || toastHeld()) HOOKS.toast(words, 'ok')
     else noteUnlessSeen(String(inpId(row)), words, 'ok')

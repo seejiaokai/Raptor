@@ -1494,3 +1494,32 @@ for (const height of [844, 667, 568]) {
     } finally { await context.close() }
   })
 }
+
+/* ON A PHONE THE LIST TAKES THE PAGE'S WIDTH (owner D1293, 24 Oct 26 — his iPhone: the day headings and cards stood about
+   20px inside the toolbar's edges): every card's left and right edge is the row of buttons' own — "+ Input" at the left,
+   the gear at the right — and the Medical tab's sections the same. AND A WINDOW STANDS IN THE MIDDLE: the opened day,
+   which kept its desktop width and stopped 8px short of the right edge (found checking the same item). At two widths. */
+for (const width of [390, 402]) {
+  test(`a phone ${width} wide: the Inputs list and the Medical tab use the page's width, and the opened day stands in the middle (D1293)`, async ({ browser, baseURL }) => {
+    const { context, page } = await phone(browser, baseURL, 844, width)
+    const box = (sel: string) => page.locator(sel).first().evaluate(e => { const r = e.getBoundingClientRect(); return { l: r.left, r: innerWidth - r.right } })
+    await page.click('#inListBtn')
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    await expect(page.locator('#inList [data-iid]').first()).toBeVisible()
+    const left = (await box('#inNew')).l, right = (await box('#inGear')).r
+    for (const sel of ['#inList [data-iid]', '#inList [data-testid="inl-day"]']) {
+      const b = await box(sel)
+      expect(Math.abs(b.l - left), `${width}: ${sel} left edge ${b.l} against the toolbar's ${left}`).toBeLessThanOrEqual(3)
+      expect(Math.abs(b.r - right), `${width}: ${sel} right edge ${b.r} against the toolbar's ${right}`).toBeLessThanOrEqual(3)
+    }
+    await page.click('#inMedBtn')
+    const med = await box('.medsec'), medNew = await box('#medNew')
+    expect(Math.abs(med.l - medNew.l), `${width}: the Medical sections' left edge against "+ Medical"`).toBeLessThanOrEqual(1)
+    expect(Math.abs(med.r - right), `${width}: the Medical sections' right edge against the page's`).toBeLessThanOrEqual(3)
+    await page.click('#inMemberMode'); await page.click('#inCalBtn')
+    await cell(page, '2026-10-13').click({ position: { x: 8, y: 8 } })
+    const win = await box('[data-testid="win-inputsday"]')
+    expect(Math.abs(win.l - win.r), `${width}: the opened day stands ${win.l} from the left and ${win.r} from the right`).toBeLessThanOrEqual(1)
+    await context.close()
+  })
+}

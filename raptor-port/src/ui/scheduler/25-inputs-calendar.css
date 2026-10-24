@@ -282,7 +282,10 @@ body.in-cal{padding-bottom:0}
    family; what is its own is said here. On a desktop it opens beside the month and the page makes room for it until
    he drags it away (the same `:has()` rule, Safari 15.4 and later).
    ============================================================================================================ */
-.floatwin.inputsday{width:min(430px,calc(100vw - 32px))}
+/* the phone's own 12px sides (22-float-windows.css: left and right 12): "- 32px" left these windows 8px short of the right
+   edge on a phone, off-centre (found checking D1293, 24 Oct 26) — the same on the SANS day, the Calendar window, its
+   "Every" window, the SANS settings and an input's own window */
+.floatwin.inputsday{width:min(430px,calc(100vw - 24px))}
 .floatwin.inputsday .win-body{padding:0;overflow:hidden;display:flex;flex-direction:column}
 .inputsday .sd-top{flex:0 0 auto;padding:8px 12px 10px;border-bottom:1px solid var(--edge);display:flex;flex-direction:column;gap:8px}
 .inputsday .sd-top .sd-acts{margin-top:0}
@@ -451,7 +454,7 @@ body.in-cal{padding-bottom:0}
    runs up to a thin strip at the top of the screen (owner D537 — no large gap above a tall window) and scrolls inside.
    The two questions it can put — unsaved changes, and a field changed both ways — sit at the head of the form.
    ============================================================================================================ */
-.floatwin.inpedwin{width:min(430px,calc(100vw - 32px))}
+.floatwin.inpedwin{width:min(430px,calc(100vw - 24px))}
 .floatwin.inpedwin .win-body{padding:0}
 .inped-win{display:flex;flex-direction:column;min-height:0}
 /* ITS BUTTONS STAY IN SIGHT ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26). An input is changed in this window now (the list's

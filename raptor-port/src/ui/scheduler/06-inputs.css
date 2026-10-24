@@ -221,6 +221,13 @@
    so the rules that restyled each table row into a card there (18 and 22 Aug 26), and the inline editor's phone
    layout, went with the table's pencil. `.inlist` is the cards' box. */
 .inlist{padding:0 2px 24px}
+/* …AND IT TAKES THE PAGE'S WIDTH (owner D1293, 24 Oct 26 — his iPhone: the day headings and cards stood inset from the
+   screen's edges, narrower than the filters and search box above them). The cards' edges are the toolbar's — the page's
+   own margin, nothing added: the desktop table's 20px sides (.inwrap above) are not the phone list's. */
+@media (max-width:820px){
+  .inwrap{padding-left:0;padding-right:0}
+  .inlist{padding-left:0;padding-right:0}
+}
 
 /* the Inputs page's top row — the three tabs, the Calendar | List switch, the filters — is 25-inputs-calendar.css
    (the mode pair and the view trio they replaced went with their buttons, D620 / D626) */

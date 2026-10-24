@@ -6,7 +6,7 @@
 // command it runs in — state/rows.ts), bumps the version and notifies. A write
 // that skips these is invisible and unsaved.
 
-import { dayWhatIf, type DayWhatIf, type WhatIfLevel, type WhatIfWar } from '../engine/whatif'
+import { dayWhatIf, standingWhatIf, type DayWhatIf, type WhatIfLevel, type WhatIfWar } from '../engine/whatif'
 import {
   addDays,
   isNonWorkingDay,
@@ -4060,15 +4060,22 @@ export function balanceAfterFill(personId: string, dates: readonly string[], cod
 /** WHAT A BID WOULD DO TO MANNING — the bid windows' day line (D1144, D1213; M3): each day of `dates` the store would
  *  write (`cellProblem` refuses the rest, as `balanceAfterFill` does), read off the war on screen as the fill would leave
  *  it (engine/whatif.ts — the grid's own rules). `judge` says where an Available figure stands that day (leavewar/sync.ts
- *  `bidDayLine` hands in the day's Required and the row's points). [] where no day would be written. */
+ *  `bidDayLine` hands in the day's Required and the row's points). A day the store would NOT write still gets the day as it
+ *  stands where he is already away on it — his approved leave, which a second write may not go over (his D1296; the
+ *  batch's walk, 24 Oct 26: the admin's window on his own approved LL drew no line at all); any other refused day is left
+ *  out. [] where no day is left. */
 export function bidWhatIf(personId: string, dates: readonly string[], code: string, judge: (seat: 'p' | 'w', have: number, date: string) => '' | WhatIfLevel): DayWhatIf[] {
-  const writes = dates.filter(d => !cellProblem(personId, d, code))
-  if (!writes.length) return []
+  if (!dates.length) return []
   /* the MERGED war on screen — approved leave lives in the Inputs and reaches the war's views only through getState()
      (as figureCtxOf reads it) */
   const st = getState()
   const war: WhatIfWar = { people: st.people, grid: st.grid, states: st.states, requirements: st.requirements, views: st.views, avail: availRules() }
-  return writes.map(d => dayWhatIf(war, personId, d, code, judge))
+  const out: DayWhatIf[] = []
+  for (const d of dates) {
+    const w = cellProblem(personId, d, code) ? standingWhatIf(war, personId, d, judge) : dayWhatIf(war, personId, d, code, judge)
+    if (w) out.push(w)
+  }
+  return out
 }
 
 export function setOilPolicy(patch: Partial<OilPolicy>): boolean {

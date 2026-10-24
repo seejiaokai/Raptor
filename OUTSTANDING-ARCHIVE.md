@@ -6418,3 +6418,27 @@ evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBi
 **Owed (D138, D941):** the overhaul design chats and M1 left, each in its handoff block (both merged), "one fresh reader of D1231–D1255's short lines against their full rows and of lessons 33–39 and the §8 line, with D1208–D1220 and lesson 31" and "one reader of D1264–D1268's short lines against their full rows". Taken here whole, widened to D1269 and lesson 40 (M1's), and to D1282–D1285 (the pinch-zoom answers, 23 Oct 26 — the rulings script's UNREAD list). **To do:** one fresh, blind reader compares each short line in `.claude/rules/decisions/leave-war.md` (D1208–D1220, D1231–D1269, D1282–D1285) with its full row in `.claude/decisions-full/leave-war.md`, and each lesson (31, 33–40) and the design guide's §8 line with his words; fixes go in one documents-only change. **Place:** Documents and guides — a reader's job, with the next Leave War documents change.
 **DONE 24 Oct 26 (the night of 23–24 Oct, job 3), on `claude/lw-m3-placing-leave`:** one fresh, blind Opus reader read all 66 (56 short lines, lessons 31 and 33–40, the §8 line) — 61 OK, 5 fixed as it wrote them, each checked by the host first: D1241's line and full row (the Pending figure amber, D1251, D1252), D1282's line (the pinned parts, D1287), lesson 31 (the Inputs window's "Duration" is part of D1212, built), lesson 36 (narrowed by lesson 39), the §8 line (mock-up pages; the rest the agent's readings). The report: `raptor-port/docs/superpowers/briefs/2026-10-24-lw-ruling-lines-read.md`.
 
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([LW-DAYLINE-PLACED-BID]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [LW-DAYLINE-PLACED-BID] The day line on a day already holding the bid tells the truth (his D1296, 24 Oct 26 — a fault of M3)
+**Seen (his iPhone, pull request 569):** Saber's LL on Wed 2 Dec turns Available P red (27 under 28 required); the window reopened on it reads "No manning row turns amber or red". **Cause:** `raptor-port/src/leavewar/ui/DayLine.tsx` draws `engine/whatif.ts`'s answer to "what would a new bid change"; on a day holding the bid nothing changes, so the calm line shows. **To do:** where the day holds the bid (the window's held / heldEdit state, BidPicker and SelectSheet), the line shows the day as it stands — the Available row's figure and level, each Manning row now amber or red — and the calm line only where none is; a test red first (his case: required 28, the bid placed, reopened). **Place:** first of the M3 follow-ups on `claude/lw-m3-placing-leave`, before "merge live".
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([LW-OPEN-MONTHS-QUICK-SWIPE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [LW-OPEN-MONTHS-QUICK-SWIPE] A quick sideways swipe picks the open-for-bidding months (his D1294, 24 Oct 26)
+**Seen (his iPhone, pull request 569):** a quick swipe across OCT–DEC picks nothing; only a slow one works. **Cause:** `raptor-port/src/leavewar/ui/OpenDatesSheet.tsx` — on a touch, a drag arms only after HOLD_MS (180) and a finger moving more than 8 points before that ends it as a scroll. **To do:** a move mostly sideways (|dx| > |dy|) past the 8 points arms the drag at once, from the month first touched; a move mostly up or down still lets the window scroll; a tap still toggles one month; a test of each (a quick swipe, a slow one, a vertical scroll, a tap). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave`.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([INP-LIST-PHONE-WIDTH]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [INP-LIST-PHONE-WIDTH] The Inputs list on a phone uses the full width (his D1293, 24 Oct 26)
+**Seen (his iPhone, pull request 569's preview):** in List view the day headings and input cards stand inset from the screen's edges, narrower than the filters and search box above. **To do:** the same side margin as the filters; check the Inputs calendar's day panel and the Medical tab's cards for the same inset. **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave` (pull request 569); a picture before and after.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([MED-ADD-RIGHT-FLASH]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [MED-ADD-RIGHT-FLASH] "+ Medical" and its window on the right; the new card marked (his D1300, 24 Oct 26)
+**Seen (his desktop):** "+ Medical" at the left; its window opens over the cards, so a new card is hidden as it arrives, and nothing marks it. **To do:** on a desktop the button at the right of its row and the window opened at the right; the new card wears the just-added ring (D860) and is scrolled into view; the Inputs tab's "+ Input" checked for the same. **Place:** with the M3 follow-ups.
+
