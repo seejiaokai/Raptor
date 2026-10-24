@@ -113,6 +113,11 @@ describe('the member’s closed day (D1150, D1225)', () => {
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.getByTestId('closed-note')
     expect(testids(sheet)).toContain('closed-doc-row')
+    /* his D1354 (25 Oct 26, round 3's Q2): round 3's one row — the dark box, its till, Document on one line, no labels */
+    expect(within(sheet).getByTestId('closed-rmk-row').contains(within(sheet).getByTestId('closed-doc-row'))).toBe(true)
+    expect(within(sheet).getByTestId('closed-rmk-row').querySelector('.bp-rmk.dark')).toBeTruthy()
+    expect([...sheet.querySelectorAll('.bidsheet-row > .lab')].map(l => l.textContent)).not.toContain('Remarks')
+    expect([...sheet.querySelectorAll('.bidsheet-row > .lab')].map(l => l.textContent)).not.toContain('Document')
     const box = within(sheet).getByTestId('closed-remarks')
     fireEvent.change(box, { target: { value: 'form attached' } })
     fireEvent.keyDown(box, { key: 'Enter' })

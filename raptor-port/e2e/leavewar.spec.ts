@@ -2060,12 +2060,15 @@ test("a member's own approved leave opens its note editor at any time, and the n
   const cell = page.locator('[data-testid="cell-prowler-2026-01-09"]')  // his leave, filed on the Inputs page
   await cell.click()
   await expect(page.locator('[data-testid="remarks-sheet"]')).toBeVisible()
-  await page.locator('[data-testid="remarks-field"]').fill('checked by e2e')
-  await page.locator('[data-testid="remarks-save"]').click()
+  // his D1354 (25 Oct 26): round 3's one row, saved as it changes — Enter saves, no Save button
+  await page.locator('[data-testid="remarks-remarks"]').fill('checked by e2e')
+  await page.locator('[data-testid="remarks-remarks"]').press('Enter')
+  await expect(page.locator('[data-testid="remarks-save"]')).toHaveCount(0)
+  await page.locator('[data-testid="remarks-cancel"]').click()
   await expect(page.locator('[data-testid="remarks-sheet"]')).toHaveCount(0)
   // reopen — the note survived the round trip through the Raptor input
   await cell.click()
-  await expect(page.locator('[data-testid="remarks-field"]')).toHaveValue('checked by e2e')
+  await expect(page.locator('[data-testid="remarks-remarks"]')).toHaveValue('checked by e2e')
 })
 
 // ---- the frozen counter column ----

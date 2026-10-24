@@ -11,13 +11,14 @@
 // not move — only the note the Inputs page reads is rewritten. That commit
 // path also carries the member-own / scheduler-any gate, so this sheet's own
 // role check and the write path's cannot drift.
-import { remarksTyped } from '../../engine/inputs'
+//
+// ROUND 3's ONE ROW (his D1354, 25 Oct 26 — round 3's Q2 "as recommended"): the window carries the bid windows' one row —
+// the dark box that wraps, its till, Document (`ReqWords.tsx LeaveWords`) — saved as it changes, in place of the older
+// labelled Document and Remarks rows, the light box and its own Save; words typed and not yet saved go with the closing.
 import { displayCell } from '../engine'
-import { useState } from 'react'
 import { Sheet } from './Sheet'
 import { inputDayLabel } from './dates'
-import { setLeaveRemarks } from '../../ui/inputedit'
-import { DocField, rowDocIds } from '../sync'
+import { LeaveWords } from './ReqWords'
 
 export function RemarksSheet({
   callsign,
@@ -36,15 +37,11 @@ export function RemarksSheet({
   code: string
   onClose: () => void
 }) {
-  /* the typed words only — the leave's date is printed from its dates (D948) */
-  const [remarks, setRemarks] = useState<string>(remarksTyped(row?.remarks, row))
   /* ITS DOCUMENTS (M3 7.3 — D1150: "added or seen at any time, even after its dates are locked"; D1159: the app's one
-     Document button): saved with the remarks, by the same one save */
-  const [docIds, setDocIds] = useState<string[]>(rowDocIds(row))
+     Document button) and its typed words only — the leave's date is printed from its dates (D948): the one row's */
   // The leave's own span, read off the row — a click on any day of a 13–15 Jul
   // run edits the one note for the whole run (owner's example).
   const span = row?.endDate ? `${inputDayLabel(row.date)} → ${inputDayLabel(row.endDate)}` : inputDayLabel(row?.date)   // day-first ([LW-ISO-DATES])
-  const save = () => { if (setLeaveRemarks(row, remarks, personId, docIds)) onClose() }
   return (
     <Sheet testid="remarks-sheet" label="Edit the note on this leave" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -53,24 +50,7 @@ export function RemarksSheet({
         <span className="cur">{displayCell(code)}</span>
         <button className="x" data-testid="remarks-cancel" onClick={onClose} aria-label="Close">✕</button>
       </div>
-      <div className="bidsheet-row" data-testid="remarks-doc-row">
-        <span className="lab">Document</span>
-        <DocField ids={docIds} onIds={setDocIds} />
-      </div>
-      <div className="bidsheet-row rmk-row">
-        <span className="lab">Remarks</span>
-        <textarea
-          className="rmk-field"
-          data-testid="remarks-field"
-          maxLength={200}
-          value={remarks}
-          placeholder="Where you are, why — read on the Inputs page"
-          onChange={e => setRemarks(e.target.value)}
-        />
-      </div>
-      <div className="bidsheet-row rmk-actions">
-        <button className="dchip approve" data-testid="remarks-save" onClick={save}>Save</button>
-      </div>
+      <LeaveWords row={row} personId={personId} testPrefix="remarks" />
     </Sheet>
   )
 }

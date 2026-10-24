@@ -55,12 +55,30 @@ describe('the remarks editor', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     expect(screen.getByTestId('remarks-sheet')).toBeTruthy()
-    const field = screen.getByTestId('remarks-field') as HTMLTextAreaElement
+    /* WAS the older window's labelled rows, a light box and its own Save. CHANGED by his D1354 (25 Oct 26, round 3's Q2 "as
+       recommended"): round 3's one row — the dark box that wraps, its till, Document — saved as it changes, no Save */
+    expect(screen.queryByTestId('remarks-save'), 'no Save: it saves as it changes').toBeNull()
+    expect(screen.getByTestId('remarks-sheet').querySelectorAll('.bidsheet-row > .lab'), 'no row labels').toHaveLength(0)
+    const row = screen.getByTestId('remarks-rmk-row')
+    expect(row.querySelector('.bp-rmk.dark'), 'the dark box (D1308)').toBeTruthy()
+    expect(row.contains(screen.getByTestId('remarks-doc-row')), 'Document on the same row').toBe(true)
+    const field = screen.getByTestId('remarks-remarks') as HTMLTextAreaElement
     /* the box holds the typed words only — the date is printed from the leave's dates (owner D948) */
     expect(field.value).toBe('Bali')
     fireEvent.change(field, { target: { value: 'Phuket instead' } })
-    fireEvent.click(screen.getByTestId('remarks-save'))
+    fireEvent.keyDown(field, { key: 'Enter' })
     expect(INPUTS.find((r: any) => r.iid === 'rmk-test').remarks).toBe('Phuket instead')
+  })
+
+  it('words typed and not saved yet are saved as the window closes (D1354)', () => {
+    closeAll()
+    setRole('member'); setViewer(PERSON)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    fireEvent.change(screen.getByTestId('remarks-remarks'), { target: { value: 'Krabi' } })
+    fireEvent.click(screen.getByTestId('remarks-cancel'))
+    expect(screen.queryByTestId('remarks-sheet')).toBeNull()
+    expect(INPUTS.find((r: any) => r.iid === 'rmk-test').remarks).toBe('Krabi')
   })
 
   /* WAS "does not open before the war is published" (a tap was then the read-only Raptor sheet). REVERSED by D1177's
@@ -132,7 +150,7 @@ describe('the remarks window\u2019s Document row', () => {
     const pick = row.querySelector('input[type="file"]') as HTMLInputElement
     fireEvent.change(pick, { target: { files: [new File(['%PDF-1.4'], 'approval.pdf', { type: 'application/pdf' })] } })
     expect(row.textContent).toContain('approval.pdf')
-    fireEvent.click(screen.getByTestId('remarks-save'))
+    /* saved at once, as the one row saves a file (D1354 — the Save went) */
     const saved = INPUTS.find((r: any) => r.iid === 'rmk-test')
     expect(saved.docId).toBeTruthy()
     expect(saved.lw).toBe(lw)
