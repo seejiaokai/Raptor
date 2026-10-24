@@ -535,3 +535,21 @@ describe('round 3 — a member’s own refused bid lights no leave', () => {
     expect(within(s).getByTestId('portion-full').getAttribute('aria-pressed')).toBe('true')
   })
 })
+
+/* ROUND 3's FULL CHECK — the fresh code read's finds (docs/handpass/parts/lw-r3/code-read.md), each red first */
+describe('round 3 — the fresh read’s finds', () => {
+  const offSwitch = () => { const t = within(sheet()).queryByTestId('bid-approve-tick'); if (t?.getAttribute('aria-checked') === 'true') fireEvent.click(t) }
+  it('R1: the free half beside a leave filed on the Inputs page holds the NEW bid’s words, never the filed leave’s', () => {
+    INPUTS.length = 0
+    const row = fileAbsence(P, '*LL', D, D, { remarks: 'Clinic' })
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const box = within(sheet()).getByTestId('bid-remarks') as HTMLTextAreaElement
+    expect(box.value, 'the box is the new bid’s, empty').toBe('')
+    offSwitch()
+    fireEvent.change(box, { target: { value: 'Afternoon trip' } })
+    fireEvent.click(within(sheet()).getByTestId('bid-OL'))
+    expect(INPUTS.find((x: any) => x.iid === row.iid).remarks).toBe('Clinic')
+    expect(rawState().wars[0]!.recs[P]![D]!.find(x => x.kind === 'request')).toMatchObject({ remarks: 'Afternoon trip' })
+  })
+})

@@ -335,7 +335,7 @@ export function BidPicker({
   const canDecideHere = !!decide || (!!span && decidableIn(selCells()) > 0)
   const held = !span ? heldRequest(personId, date) : null
   /* the approved leave's own row speaks for the day only while no range widens it (a range's words go with the fill) */
-  const leaveRow = !span && !held ? approvedRow : null
+  const leaveRow = !span && !held && !onlyPortion ? approvedRow : null   // never the free half's (the fresh read's R1)
   const words = held ? (heldEdit ?? draftOf(held.rec)) : draft
   const onWords = (next: ReqDraft, how: 'type' | 'commit') => {
     if (!held) return setDraft(next)

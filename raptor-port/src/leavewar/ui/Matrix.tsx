@@ -4519,7 +4519,9 @@ export function Matrix() {
         <BidPicker
           key={`${open.id}-${open.date}`}
           /* the approved leave's Remarks and Document, shown at once (his D1307 — "Note" went) */
-          approvedRow={adminNoteRow}
+          /* never on the free half beside a leave filed on the Inputs page: its words are the NEW bid's, and that leave is
+             changed on the Inputs page (the fresh read's R1, round 3's check) */
+          approvedRow={openFreeHalf ? null : adminNoteRow}
           callsign={open.callsign}
           personId={open.id}
           date={open.date}
