@@ -9,7 +9,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { getState, initStore, rawState, setBidStates, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
+import { awardsOnDay, getState, initStore, lwHistInit, lwUndo, rawState, setBidStates, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
 import { setMemberTodayForTests } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
@@ -634,5 +634,37 @@ describe('round 3 — the fresh read’s finds', () => {
     fireEvent.click(btn)
     expect(rawState().wars[0]!.recs[P]![D]!.find((x: any) => x.kind === 'request')).toMatchObject({ state: 'refused' })
     expect(screen.getAllByTestId(/^dl-[a-z]-/).length, 'both entries still there').toBe(2)
+  })
+  it('N1: the calendar closed over another day’s armed Delete leaves nothing armed — this day’s Delete asks for its own award', () => {
+    expect(setDayAward(P, '2026-02-09', 1, { note: 'Recall' })).toBeNull()
+    expect(setDayAward(P, D, 0.5, { note: 'Walk', half: 'am' })).toBeNull()
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(within(sheet()).getByTestId('span-range'))
+    fireEvent.click(within(sheet()).getByTestId('span-day-2026-02-09'))
+    fireEvent.click(within(sheet()).getByTestId('bid-clear'))           // armed for 9 Feb's award
+    expect(within(sheet()).getByTestId('span-note').textContent).toMatch(/OIL award \(1 day\)/)
+    fireEvent.click(within(sheet()).getByTestId('span-range'))           // closed: the window is 11 Feb's again
+    expect(within(sheet()).queryByTestId('span-note'), 'no note left from the other day').toBeNull()
+    fireEvent.click(within(sheet()).getByTestId('bid-clear'))
+    expect(within(sheet()).getByTestId('span-note').textContent, 'it asks for this day’s award').toMatch(/OIL award \(½ day|0\.5 day|half a day/)
+    expect(awardsOnDay(P, D)).toHaveLength(1)
+    fireEvent.click(within(sheet()).getByTestId('bid-clear'))
+    expect(awardsOnDay(P, D), 'this day’s award gone').toHaveLength(0)
+    expect(awardsOnDay(P, '2026-02-09'), 'the other day’s kept').toHaveLength(1)
+  })
+  it('N2: words typed, then an award given through the ⋯ — one Undo takes the award and leaves the words on the bid', () => {
+    setCell(P, D, 'LL')
+    lwHistInit()
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.change(within(sheet()).getByTestId('bid-remarks'), { target: { value: 'typed then an award' } })
+    fireEvent.click(within(sheet()).getByTestId('bid-more'))
+    fireEvent.click(within(sheet()).getByTestId('bid-oil'))
+    fireEvent.click(within(sheet()).getByTestId('oil-give'))
+    expect(awardsOnDay(P, D)).toHaveLength(1)
+    act(() => lwUndo())
+    expect(awardsOnDay(P, D), 'the award taken back first').toHaveLength(0)
+    expect(rawState().wars[0]!.recs[P]![D]!.find(x => x.kind === 'request')).toMatchObject({ remarks: 'typed then an award' })
   })
 })

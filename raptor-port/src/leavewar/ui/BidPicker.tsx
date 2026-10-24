@@ -294,6 +294,7 @@ export function BidPicker({
   }
   const [oilErr, setOilErr] = useState('')
   const grantOil = () => {
+    flushWords()   // the words first, so one Undo takes the award and leaves them (the narrow read's N2)
     const problem = onCredit!(oilCode, oilDays, oilNote, oilGiven, oilHalf)
     if (problem) { setOilErr(problem); return }
     onClose()
@@ -618,7 +619,7 @@ export function BidPicker({
              and with it gone the calendar stayed open with only the window's ✕ to shut it); a pick of one day closed unfinished
              goes back to the day tapped, as "Just this day" did (the fresh read's R6) */
           aria-expanded={showCal}
-          onClick={() => { if (showCal) { setShowCal(false); if (range && range.from === range.to) setRange(null); return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
+          onClick={() => { if (showCal) { setShowCal(false); if (range && range.from === range.to) { setRange(null); setNote(''); setClearAsked(false); setClearIds([]); setMoveErr(''); setConfirming(null) } return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
         >
           {span ? shortSpan(span.from, span.to) : 'Pick a range'}
         </button>
@@ -683,7 +684,7 @@ export function BidPicker({
                 {credit.givenBy ? `, given by ${credit.givenBy}` : ''}.
               </span>
               {onCreditClear && (
-                <button className="tchip clear" data-testid="oil-clear" onClick={onCreditClear}>Remove</button>
+                <button className="tchip clear" data-testid="oil-clear" onClick={() => { flushWords(); onCreditClear() }}>Remove</button>
               )}
             </div>
           )}
@@ -758,7 +759,7 @@ export function BidPicker({
               className="dchip po"
               data-testid="pi-confirm"
               disabled={!piDate}
-              onClick={() => { const why = onPostIn(piDate); setPostErr(why || '') }}
+              onClick={() => { flushWords(); const why = onPostIn(piDate); setPostErr(why || '') }}
             >
               {/* D300 (the agent's reading, stated to him): "Post in", the date already in its own box */}
               Post in
@@ -803,7 +804,7 @@ export function BidPicker({
               disabled={!poDate}
               onClick={() => {
                 if (poOutcome === 'delete' && !delArmed) { setDelArmed(true); return }
-                const why = onPostOut(poDate, poOutcome); setPostErr(why || ''); setDelArmed(false)
+                flushWords(); const why = onPostOut(poDate, poOutcome); setPostErr(why || ''); setDelArmed(false)
               }}
             >
               {delArmed ? `Tap again to delete ${callsign}` : 'Post out'}
