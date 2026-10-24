@@ -56,7 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1342 | 25 Oct 26 | Two separate entries on next-door days stay two entries: nothing on the Leave War joins them by itself; to make one entry of them a person deletes one and extends the other, or deletes both and places one new entry over both dates. |
+| D1343 | 25 Oct 26 | D1342 is withdrawn: his words about joining two separate entries were a question to the agent, not a ruling; how two next-door entries become one stays open until he answers the agent's suggestion. |
 | D1341 | 25 Oct 26 | Words typed in the Leave War's drag window replace the remarks of every day dragged over, so the dragged days end with one remark, even where some held words of their own. |
 | D1340 | 25 Oct 26 | On the Leave War grid a leave placed over several days reads as one entry at a glance — his idea a faint grey, white or black box over its days — drawn for him with options before anything is built; a drag-selection's cyan marks still show over it as they do today. |
 | D1339 | 25 Oct 26 | A leave placed over several days at once, by a drag or a picked range, is one entry with one remark for all its days: a tap on any of its days shows that remark, a change there changes it for all, and Remarks typed in the drag window apply to every day dragged, whatever is pressed. — changed by D1341 |
