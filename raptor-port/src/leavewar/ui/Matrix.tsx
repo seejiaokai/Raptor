@@ -4563,6 +4563,9 @@ export function Matrix() {
              An admin, and a cell that actually holds a bid to answer — a
              course, a medical, an OIL credit and an empty day are not things
              anybody asked for. The admin decides at any time (D1177). */
+          /* THE DAY'S BID STATE FOR EVERY ROLE (round 3's FULL check — the designer's S1, X1): the window lights the day's own
+             leave, never a refused bid; it read that only from the admin's decide, so a member's own refused bid opened lit */
+          dayState={isBiddable(grid[open.id]?.[open.date]) ? stateOf(states, open.id, open.date) : undefined}
           decide={canDecide(role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
             ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
             : null}

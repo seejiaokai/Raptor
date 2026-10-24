@@ -93,6 +93,7 @@ export function BidPicker({
   onlyPortion,
   heldBy,
   approvedRow,
+  dayState,
   onClose,
 }: {
   callsign: string
@@ -177,6 +178,8 @@ export function BidPicker({
    *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
    *  first given the window that Note). */
   approvedRow?: any
+  /** the day's bid state, for every role — what is lit reads it (a refused bid lights no leave), the admin's decide aside */
+  dayState?: BidState
   onClose: () => void
 }) {
   // Deliberately not seeded from `current`: the portion resets to a whole
@@ -185,7 +188,7 @@ export function BidPicker({
   /* …BUT A HALF DAY OPENS ON ITS OWN HALF (his D1331, round 3): on a day holding half a day of leave the Duration row
      opens with that half lit, AM for a morning, PM for an afternoon, so the window says it is a morning — and a leave
      changed from it keeps its half. A whole day, and every other day, still opens on "Whole day". */
-  const dayLeave = !onlyPortion ? leaveOn(current, decide?.state) : null
+  const dayLeave = !onlyPortion ? leaveOn(current, decide?.state ?? dayState) : null
   const [portion, setPortion] = useState<Portion>(onlyPortion ?? dayLeave?.portion ?? 'full')
   /* "APPROVE WHAT I ENTER" (D1147, D1186; D1302): an admin's switch in the title bar, remembered on this device until he
      changes it — on where he never has (BidBits.tsx useApproveMemory) */

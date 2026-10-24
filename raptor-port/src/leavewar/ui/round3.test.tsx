@@ -9,7 +9,8 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { getState, initStore, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
+import { getState, initStore, rawState, setBidStates, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
+import { setMemberTodayForTests } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { Matrix } from './Matrix'
@@ -514,5 +515,23 @@ describe('round 3 — the calendar opened by "Pick a range" closes by it too', (
     fireEvent.click(within(sheet()).getByTestId('span-range'))
     expect(within(sheet()).queryByTestId('span-picker')).toBeNull()
     expect(within(sheet()).getByTestId('span-range').getAttribute('aria-expanded')).toBe('false')
+  })
+})
+
+/* ROUND 3's FULL CHECK — the scenario designer's S1, seen by the re-walk (X1) at both sizes: a member's own REFUSED bid opened
+   with its leave lit, as if the day held his leave. The window lit the day's leave from its code, excluding a refused bid only
+   by the admin's decide state — which a member's window is never given. */
+describe('round 3 — a member’s own refused bid lights no leave', () => {
+  afterEach(() => setMemberTodayForTests(null))
+  it('his window on it: no leave lit, Whole day lit — as the admin’s window on it', () => {
+    setMemberTodayForTests('2026-01-01')
+    setCell(P, D, 'LL')
+    setBidStates([{ personId: P, date: D }], 'refused')
+    setRole('member'); setViewer(P)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const s = sheet()
+    expect(s.querySelector('.tchip.lv.lit'), 'no leave lit on a refused bid').toBeNull()
+    expect(within(s).getByTestId('portion-full').getAttribute('aria-pressed')).toBe('true')
   })
 })

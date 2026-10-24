@@ -287,10 +287,15 @@ for (const size of SIZES) {
     await L.press(w, T(`span-day-${end}`)); await P.waitForTimeout(300)
     const chip1 = await L.txt(P, T('span-range')), line1 = await L.dayline(P)
     await L.shot(w, `s13-range-${tg}`)
+    /* F11: "Pick a range" tapped again closes the calendar (the door "Just this day" had), the range kept; again, it reopens */
+    await L.press(w, T('span-range'), q('s13-close')); await P.waitForTimeout(250)
+    const closed = !(await L.vis(P, T('span-picker'))), keptChip = await L.txt(P, T('span-range'))
+    await L.shot(w, `s13-closed-${tg}`)
     await L.press(w, T('span-range')); await P.waitForTimeout(250)
     if (await L.vis(P, T(`span-day-${D.rng}`))) { await L.press(w, T(`span-day-${D.rng}`)); await P.waitForTimeout(150); await L.press(w, T(`span-day-${D.rng}`)); await P.waitForTimeout(300) }
     const chip2 = await L.txt(P, T('span-range'))
     await L.shot(w, `s13-back-${tg}`)
+    L.rec('S13b "Pick a range" tapped again closes the calendar, the range kept on its chip (F11)', w.tag, closed && /16/.test(keptChip || '') ? 'PASS' : 'FAIL', `calendar closed ${closed}; chip "${keptChip}"`, [`s13-closed-${tg}`])
     L.rec('S13 a range picked reads on its chip; picked back to the day tapped the chip reads "Pick a range" again', w.tag, /16/.test(chip1 || '') && /18/.test(chip1 || '') && chip2 === 'Pick a range' ? 'PASS' : 'FAIL',
       `range chip "${chip1}", day line "${line1}"; back: "${chip2}"`, [`s13-cal-${tg}`, `s13-range-${tg}`, `s13-back-${tg}`])
     await L.closeAny(w)
