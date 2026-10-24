@@ -92,6 +92,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
+- [LW-NIGHT1025-OLDER] — older faults the night's walk met: words typed for an afternoon bid land on the morning bid (fix first, tests first), two tabs, a posted-out man's gone days, a double tap's second tap.
 - [LW-R2R3-ANSWERS-BUILD] — his answers to rounds 2 and 3 of the bid windows (D1339–D1355): the drag window's words kept, the bubble red and raised by every lowering, the refused bid lit, his own leave's one row, the half-day UNA's free half — built with one FULL check, after his answers on the drawings.
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
 - [LW-APPROVE-TOGGLE] — the admin's "Approve what I enter" remembered until changed, drawn as a small toggle (his D1302).
@@ -239,6 +240,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [LW-NIGHT1025-OLDER] Older faults the night's walk met in passing (25 Oct 26) — none caused by its builds
+Found by the walkers of `raptor-port/docs/handpass/2026-10-25-lw-night.md` (reports `parts/lw-night/w1.md`, `w2.md`, with steps and pictures). (a) **Words go to the wrong bid** (w2 INC-1): on a day holding a pending morning bid with words, the one-day window opens with those words in its Remarks box; PM pressed, words typed, OL placed — the words land on the morning bid ("Am" became "AmPm") and the new afternoon bid has none. Code going forward, so not D56's: a fault to fix, tests first (`BidPicker.tsx`'s held request's words against the new bid's). (b) **Two tabs** (w2 FAIL 4): a window left open in a second tab saves onto a leave deleted in the first and writes it back, silently — the war carries no change across tabs; with the database step ([GLOBAL-UNDO]'s multi-user leftovers). (c) **A posted-out man's gone days** (w1 S9): a drag fill writes pending bids on them; an OD over them files the first day and skips the rest with no note. (d) **A double tap on a leave button** (w1 S21): the second tap falls through to the grid behind the closed window (a CAT pop-up, the man's figures). (e) **As built, the agent's reading:** on the closed-day window, words typed then Delete — the first Undo brings the bid back with the typed words, each save its own Undo step (w2 FAIL 3); on a phone a second touch on "Show ›" stops the page's smooth scroll part-way (the browser's own). **Place:** (a) with the next Leave War batch, first; (c), (d) with it; (b) the database step.
 
 ### [LW-R2R3-ANSWERS-BUILD] Build his answers to rounds 2 and 3 of the bid windows (his D1339–D1355, 25 Oct 26)
 **To build on `claude/lw-m3-placing-leave` (pull request 569), one check (D485):** the drag window's typed words saved onto every
