@@ -32,7 +32,7 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, placeUna, postingBlocked, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, placeUna, postingBlocked, setBidStates, setCells, setRemarksOn } from '../state/store'
 import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
@@ -48,6 +48,8 @@ import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState } from '../state/store'
+import { leaveInputAt } from '../sync'
+import { setLeaveRemarks } from '../../ui/inputedit'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'sel-portion-full' },
@@ -247,9 +249,31 @@ export function SelectSheet({
     if (written > 0) onDone(true, true)
   }
 
+  /* THE TYPED WORDS GO WITH THE PRESS (his D1339, D1341 — 25 Oct 26): words typed in the Remarks box over days that
+     already hold entries are written on every one of them before Approve, Refuse or Move acts — replacing what each held,
+     so the dragged days end with one remark — never dropped. One man's drag only (across several, each man's words are
+     his own — M3 §7 point 2). The bids take them in one command (`store.ts setRemarksOn`, before an approval, so the leave
+     is filed with them); an approved leave among the days takes them on its Inputs-page entry, through the one remarks
+     save (`setLeaveRemarks`, as its own window saves them). An empty box typed nothing and changes nothing. */
+  const keepWords = () => {
+    if (nPeople !== 1) return
+    const t = words.remarks
+    if (!t.trim()) return
+    const pid = sel.people[0]!
+    setRemarksOn(sel.cells, t)
+    const seen = new Set<string>()
+    for (const c of sel.cells) {
+      const row = leaveInputAt(pid, c.date)
+      if (!row || seen.has(String(row.iid))) continue
+      seen.add(String(row.iid))
+      if ((row.remarks ?? '') !== t) setLeaveRemarks(row, t, pid)
+    }
+  }
+
   const decide = (bid: BidState) => {
     setConfirming(null)
     setNoteAt('end')
+    keepWords()
     const { decided, skipped, already } = setBidStates(sel.cells, bid)
     if (skipped === 0 && !already) return onDone(decided > 0)
     /* an already-approved leave is said as such, never counted as a decision (AB7) */
@@ -281,7 +305,7 @@ export function SelectSheet({
         <div className="bidsheet-row bp-acts" data-testid="sel-actions" role="group" aria-label="Actions">
           {decideHere && <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>}
           {decideHere && <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>}
-          {hasBids && <MoveChip testid="sel-move" onClick={() => { onClose(); onMove(sel) }} />}
+          {hasBids && <MoveChip testid="sel-move" onClick={() => { keepWords(); onClose(); onMove(sel) }} />}
           {canDelete && <DeleteChip testid="sel-delete" armed={confirmDel} onClick={del} />}
         </div>
       )}

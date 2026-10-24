@@ -3056,6 +3056,26 @@ export function setRequestWords(personId: string, date: string, recId: string, p
   return !!now && key(now) === want
 }
 
+/** THE DRAG WINDOW'S TYPED WORDS ON THE DAYS DRAGGED (his D1339, D1341 — 25 Oct 26: "1 remarks will apply to all that 3
+ *  days"; "Replace them all"). The remark is written on every bid of every dragged day the person may change, replacing
+ *  what each held — each bid's whole run takes it (`setRequestWords`: one entry, one remark) — in ONE command, one Undo.
+ *  The caller runs it before the press it rides with (Approve, Refuse, Move), so an approval files the leave with these
+ *  words. An empty remark is never written here: an empty box typed nothing. Returns how many runs changed. */
+export function setRemarksOn(cells: { personId: string; date: string }[], remarks: string): number {
+  const t = String(remarks ?? '').slice(0, MAX_CARRIED_REMARK)
+  if (!t.trim()) return 0
+  let n = 0
+  gesture('lw.reqmeta', () => {
+    for (const { personId, date } of cells) {
+      if (!canEditRow(state.role, state.viewer, personId)) continue
+      for (const r of listAt(personId, date)) {
+        if (r.kind === 'request' && (r.remarks ?? '') !== t && setRequestWords(personId, date, r.id, { remarks: t })) n++
+      }
+    }
+  })
+  return n
+}
+
 /** What a range write did. `skipped` counts days it was not allowed to touch,
  *  which is a fact the person deserves rather than a silent shortfall. */
 export interface RangeWrite {
