@@ -56,8 +56,10 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1323 | 24 Oct 26 | An OIL taken is drawn in chartreuse (170,230,40) on the Leave War grid, in the bid window and on the Inputs calendar — not pink (D1322); FO and HO keep their green. |
+| D1324 | 24 Oct 26 | The unforeseen absence (UNA) is filed on the Leave War as an overseas duty is (D1318): no approval, any date, a member may file it, no document. |
 | D1321 | 24 Oct 26 | On the Inputs calendar the bars of duties and other commitments are outlined — a dark bar, a light edge, light words — while every absence is a filled bar in its kind's colour (Q3, option 1 as drawn). |
-| D1322 | 24 Oct 26 | No kind is drawn in pink: an OIL taken leaves set C's magenta for another colour, on the Leave War grid and the Inputs calendar alike, still clearly its own (D1309) — redrawn for him to pick. |
+| D1322 | 24 Oct 26 | No kind is drawn in pink: an OIL taken leaves set C's magenta for another colour, on the Leave War grid and the Inputs calendar alike, still clearly its own (D1309) — redrawn for him to pick. — changed by D1323 |
 | D1319 | 24 Oct 26 | The bid window's way to Grant OIL, Post out and Post in looks plainly like something to press, not a bare ⋯ glyph — redrawn for him before it is built. |
 | D1320 | 24 Oct 26 | In the bid window, "Grant OIL" is drawn in the green of OIL given — the FO and HO boxes' green — not the grey of the posting buttons beside it. |
 | D1318 | 24 Oct 26 | An overseas duty (OD) and a course (CSE) filed on the Leave War need no approval — they stand at once, as an input filed on the Inputs page does; they can be filed on any date, open for bidding or not; a member may file them, and an admin; and they ask for no document. |
