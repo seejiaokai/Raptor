@@ -56,7 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1327 | 24 Oct 26 | Wherever a Leave War window lists what a day holds — first the day's list of a day with two entries — each entry leads with its code drawn as its coloured box, as the grid draws it, never as plain words; and the same wherever else the app names a kind of entry in words. |
+| D1329 | 24 Oct 26 | In the Leave War's day list each entry's row of actions fits one line on a phone, with an iPhone's wider letters — never a button's words broken over two lines; the approved leave's "Back to bid" is shortened to fit, drawn for him to pick how. |
+| D1328 | 24 Oct 26 | In the Leave War's day list an entry led by its coloured box says beside it only what the box does not — its half of the day, its state, and where an entry filed on the Inputs page is changed — never the kind's long description, which the Legend holds; a drawing made with the design skill cuts words as well as boxes. |
+| D1327 | 24 Oct 26 | Wherever a Leave War window lists what a day holds — first the day's list of a day with two entries — each entry leads with its code drawn as its coloured box, as the grid draws it, never as plain words; and the same wherever else the app names a kind of entry in words. — changed by D1328 |
 | D1326 | 24 Oct 26 | In the bid window the way to Grant OIL, Post out and Post in is a "⋯" button in the fourth place of the CSE · OD · UNA row, the size of the buttons beside it — not in the title bar, not a fold at the foot. |
 | D1325 | 24 Oct 26 | The unforeseen absence (UNA) wears a deep teal of its own (20,130,130, filled .70, light words #D6FFFB) — on the Leave War grid, in the bid window's button and on the Inputs calendar — not the overseas duty's slate. |
 | D1323 | 24 Oct 26 | An OIL taken is drawn in chartreuse (170,230,40) on the Leave War grid, in the bid window and on the Inputs calendar — not pink (D1322); FO and HO keep their green. |

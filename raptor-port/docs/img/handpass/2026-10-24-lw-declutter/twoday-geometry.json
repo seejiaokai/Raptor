@@ -1,0 +1,58 @@
+{
+ "a": {
+  "normal": [
+   {
+    "lines": 1,
+    "broken": []
+   }
+  ],
+  "wider": [
+   {
+    "lines": 1,
+    "broken": []
+   }
+  ]
+ },
+ "twoday-a-drawn-b": {
+  "normal": [
+   {
+    "lines": 2,
+    "broken": []
+   }
+  ],
+  "wider": [
+   {
+    "lines": 2,
+    "broken": []
+   }
+  ]
+ },
+ "b": {
+  "normal": [
+   {
+    "lines": 1,
+    "broken": []
+   }
+  ],
+  "wider": [
+   {
+    "lines": 1,
+    "broken": []
+   }
+  ]
+ },
+ "twoday-own-drawn": {
+  "normal": [
+   {
+    "lines": 1,
+    "broken": []
+   }
+  ],
+  "wider": [
+   {
+    "lines": 1,
+    "broken": []
+   }
+  ]
+ }
+}

@@ -1843,6 +1843,8 @@ different feature that merely pass through it.
 
 **Principle:** A description of current behaviour is a claim about the running thing; check it at the source before it reaches the person deciding, or label it unverified.
 
+*Met again 24 Oct 26 (the Leave War round 3 page, Q6 (b)): a caption said the lit button would read "the grid box's own code, <LL" — the grid draws a lone morning as "LL" in the top half; caught by the drawing chat on re-checking before re-asking him, the option withdrawn on the page. Guard proposed: a caption naming what another surface shows is written from a measured node (its innerHTML) in the drawing script, never from the notation in the code's comments.*
+
 ### Observation 677: A design study draws every option on one shared data set, the earlier option redrawn too
 
 **Status:** OPEN
@@ -1993,3 +1995,19 @@ different feature that merely pass through it.
 **Suggested improvement:** after editing a file on Windows, compare `git diff --numstat` with `git diff --numstat --ignore-space-at-eol` for every changed file. Where they differ, put the original bytes back and re-insert the change with a byte-preserving script (the file's own line ending). Worth a line in `docs/gates-and-deploy.md` or a memory note.
 
 **Principle:** A diff much larger than the change made is a signal to stop and find out why before committing. Compare the diff with and without end-of-line whitespace, because tools differ on line endings and the shell's own counters can hide a carriage return.
+
+### Observation 689: A drawing made with the design skill kept the old words beside the new boxes
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** Leave War — drawing the day list of a day with two entries (D1327: each entry led by its coloured box)
+**Skill:** impeccable (reference/shape.md — the brief); brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** shape brief → drawing
+
+**Issue:** The brief added a coloured box in front of each entry but kept the entry's long description beside it ("Medical — ATT B, no flying but may still work, afternoon · filed on the Inputs page", then "Change it on the Inputs page."). The owner, seeing the first picture on his phone: "that's a lot of words … I thought the design skill will cut down" (D1328), and then circled a row whose button words broke over two lines (D1329). The shape step treated the words as content to carry over, not as part of the design.
+
+**Suggested improvement:** In shape's brief (and the mock-up method), when a new visual element takes over what words used to say, the brief lists the words it makes redundant and cuts them in the same drawing; and a row of buttons is measured for one line at the target device's width with wider letters before the picture is shown.
+
+**Principle:** Adding a visual carrier for a meaning should remove the words that carried it; a redesign that only adds is not a declutter.
+
