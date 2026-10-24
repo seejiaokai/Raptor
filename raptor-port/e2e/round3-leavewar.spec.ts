@@ -130,3 +130,29 @@ test('the drag-selection window: the same rows — its ⋯ in the fourth place, 
   await moreInPlace(page, 'select-sheet', 'sel-more', 'sel-CL', 'sel-postout')
   await expect(page.locator(T('sel-po-confirm'))).toBeVisible()
 })
+
+/* ROUND 2's FULL check — the picture helper's find (24 Oct 26): on a phone the day's list's entries had their actions row
+   and their Remarks · Document row ending 8 px past the line the entries and the title's ✕ end on (rows 359.6 wide in
+   entries 352). Every row of an entry ends where the entry ends. */
+test('the day\'s list: every row of an entry ends where the entry ends', async ({ page }) => {
+  await openDay(page)
+  await page.locator(T('portion-am')).click()
+  await page.locator(T('bid-LL')).click()
+  if (await page.locator(T('bid-picker')).isVisible()) await page.locator(T('bid-LL')).click()
+  /* the afternoon, pending (the helper's fixture): the window on an approved morning offers PM */
+  await openDay(page)
+  await page.locator(T('portion-pm')).click()
+  const tick = page.locator(T('bid-approve-tick'))
+  if ((await tick.count()) && (await tick.getAttribute('aria-checked')) === 'true') await tick.click()
+  await page.locator(T('bid-LL')).click()
+  if (await page.locator(T('bid-picker')).isVisible()) await page.locator(T('bid-LL')).click()
+  await expect(page.locator(T('bid-picker'))).toHaveCount(0)
+  await page.locator(T(`cell-${P}-${D}`)).click()
+  await expect(page.locator('.bidsheet .daylist .dl-line.dl-card').first()).toBeVisible()
+  const over = await page.locator('.bidsheet .daylist .dl-line.dl-card').evaluateAll(cards => cards.flatMap(c => {
+    const r = c.getBoundingClientRect()
+    return [...c.children].map(k => { const b = k.getBoundingClientRect(); const cs = getComputedStyle(k); return { cls: String(k.className).slice(0, 50), by: Math.round((b.right - r.right) * 10) / 10, w: Math.round(b.width * 10) / 10, cw: Math.round(r.width * 10) / 10, ml: cs.marginLeft, mr: cs.marginRight } })
+  }))
+  expect(over.length).toBeGreaterThan(0)
+  expect(over.filter(o => o.by >= 0.6), JSON.stringify(over)).toEqual([])
+})

@@ -1817,7 +1817,10 @@
    box as the grid draws it, its short words beside it, then one row of actions and its words row */
 .bidsheet .daylist.flat { border: 0; border-radius: 0; margin-top: 2px; overflow: visible; }
 .bidsheet .daylist.flat .dl-line { border-left: 0; padding-left: 0; padding-right: 0; }
-.bidsheet .dl-line.dl-card { flex-direction: column; align-items: stretch; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+/* nowrap (round 2's FULL check — the picture helper's find on a phone): `.dl-line`'s wrap made this column a multi-line
+   flex box, whose one line is as wide as its widest row's own content — so on a phone every row of an entry stood 8 to
+   24 px past the entry's edge and the ✕ above. Single-line, each row is the entry's width and its content fits inside. */
+.bidsheet .dl-line.dl-card { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
 .bidsheet .dl-line.dl-card:first-child { padding-top: 4px; }
 .bidsheet .dl-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
 .bidsheet .dl-head .dl-text { flex: 1 1 auto; }
