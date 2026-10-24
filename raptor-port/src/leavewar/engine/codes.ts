@@ -123,6 +123,8 @@ export const MEDICAL_TYPES: readonly { type: string; label: string }[] = Object.
 const NON_LEAVE_LABELS: Record<string, string> = {
   CSE: 'course',
   OD: 'overseas duty',
+  /* the unforeseen absence (D1303, D1324, D1325 — round 2): an input kind of its own, deep teal */
+  UNA: 'unavailable',
 }
 
 // OIL credit: at work, but off the flying programme. This is a different
@@ -257,8 +259,8 @@ export function displayCell(raw: string, auto = false): string {
 /* …AND SINCE HIS D1291 / D1323 (24 Oct 26) AN OIL TAKEN (time off spent) IS ITS OWN KIND, `oilt`, chartreuse, apart from the
    OIL given (FO, HO — `oil`, green), so a box that spends OIL is never read as one that gives it; set C's colours (D1316) are
    the app's one set (`--k-*`, scheduler/00-foundation-login.css). */
-export type Kind = 'll' | 'ol' | 'oil' | 'oilt' | 'care' | 'cse' | 'od' | 'med'
-const KIND: Record<string, Kind> = { B: 'med', C: 'med', LL: 'll', OL: 'ol', OIL: 'oilt', FO: 'oil', HO: 'oil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'cse', OD: 'od', ATTB: 'med', ATTC: 'med', OML: 'med', HL: 'med' }
+export type Kind = 'll' | 'ol' | 'oil' | 'oilt' | 'care' | 'cse' | 'od' | 'una' | 'med'
+const KIND: Record<string, Kind> = { B: 'med', C: 'med', LL: 'll', OL: 'ol', OIL: 'oilt', FO: 'oil', HO: 'oil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'cse', OD: 'od', UNA: 'una', ATTB: 'med', ATTC: 'med', OML: 'med', HL: 'med' }
 export function kindOf(raw: string): Kind { const r = raw.replace(/[*<>]/g, ''); const c = parseCell(r); return KIND[c ? c.type : r] ?? 'od' }
 /** The letters a box prints (D1160): the code bare — its half is said by where the box sits, so the arrows of
  *  `displayCell` are not printed on the grid; ATT B / ATT C as the owner's B / C; an app-credited OIL keeps its star. */

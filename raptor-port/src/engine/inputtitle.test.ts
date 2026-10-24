@@ -16,9 +16,9 @@ import { requestRowFields, srcvOf } from './overlay'
 const inp = (o: any) => ({ iid: 'i1', person: 'split', date: '15 Jul', yr: 2026, s: 480, e: 600, ...o })
 
 describe('which kinds take a title (D716 (1))', () => {
-  it('exactly the ten "Duty & other commitments" kinds — never leave, medical, an upchit or SANS availability', () => {
+  it('exactly the eleven "Duty & other commitments" kinds (UNA with them since round 2, D1324) — never leave, medical, an upchit or SANS availability', () => {
     expect(INPUT_TYPES.filter((t: string) => titledKind(t))).toEqual(
-      ['Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Event', 'OD', 'Other'])
+      ['Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Event', 'OD', 'UNA', 'Other'])
   })
   it('every titled kind sits under "Duty & other commitments" in the Type list, and no leave or medical kind does', () => {
     for (const t of INPUT_TYPES) if (titledKind(t)) expect(typeGroup(t)).toBe('other')

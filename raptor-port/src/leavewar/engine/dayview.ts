@@ -80,7 +80,8 @@ export interface Contrib {
 
 const LEAVE = new Map<string, CounterName | null>(LEAVE_TYPES.map(t => [t.type, t.counter]))
 const SICK = new Set(['ATTC', 'HL', 'OML'])
-const AWAY_DUTY = new Set(['OD', 'CSE'])
+/* UNA (D1303, D1324 — round 2): the overseas duty's twin — off the manning, never changed on the war */
+const AWAY_DUTY = new Set(['OD', 'CSE', 'UNA'])
 const CREDIT = new Set(['FO', 'HO'])
 export const isLeaveCode = (code: string) => LEAVE.has(code)
 export const isSickCode = (code: string) => SICK.has(code)
@@ -88,7 +89,7 @@ export const isAwayDutyCode = (code: string) => AWAY_DUTY.has(code)
 export const isCreditCode = (code: string) => CREDIT.has(code)
 const isAnnual = (code: string) => code === 'LL' || code === 'OL'
 /* the codes the war never changes, even approved on it — medical, a course, overseas duty (design §5.4, owner §13 Q1) */
-const OFF_WAR = new Set(['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD'])
+const OFF_WAR = new Set(['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD', 'UNA'])
 /** Whether ONE record is changed off the war: an absence filed on the Inputs page (not approved on the war, or a
  *  medical, a course, overseas duty), or a credit the app worked out itself. It is the blue edge THAT record's own box
  *  wears — asked of each entry, never of the day, so leave approved on the war keeps a plain box beside a course filed

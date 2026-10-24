@@ -1497,7 +1497,7 @@ function lwRegisterCommands(): void {
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
   /* [ARCH-STACK] step 4 — the war gestures. The role gates live in the writers
      (canDecide / canEditRow), exactly as lw.edit's do. */
-  for (const t of ['lw.decide', 'lw.placeApproved', 'lw.reqmeta', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
+  for (const t of ['lw.decide', 'lw.placeApproved', 'lw.file', 'lw.reqmeta', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
   /* D352 narrowed by D1177: opening or closing dates is its own command so Undo can name it ("Undid: opening bidding
      1 Apr – 30 Apr"); its authority is perms.ts COMMAND_OPS (admin-only), as every war command's */
   cmdDefinePermission('lw.open', cmdAnyone)
@@ -2666,6 +2666,9 @@ export interface AbsenceDoor {
   removeApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] }
   /** slide approved leave days by `delta` (`lw.moveApproved`); null = clear, else the refusal */
   moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null
+  /** file a course, an overseas duty or the unforeseen absence straight as Inputs (`lw.file` — round 2, D1318): one
+   *  input a man a run of days, no bid, no approval */
+  file(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] }
 }
 let DOOR: AbsenceDoor | null = null
 export function setAbsenceDoor(d: AbsenceDoor | null): void { DOOR = d }
@@ -3321,6 +3324,26 @@ export function placeApproved(cells: { personId: string; date: string }[], code:
     }
   })
   return { written, skipped, approved, pending }
+}
+
+/** FILED STRAIGHT (his D1318 — "OD and course doesnt need an approval, its directly approved like an input. it can go
+ *  anytime. member can file it too. dont need document"; D1324 — UNA the same; round 2, [LW-FILE-OD-CRS]). A course, an
+ *  overseas duty or the unforeseen absence placed on the war stands at once as the input it is: no bid, nothing to
+ *  approve, on ANY day the war holds — open for bidding or not, a day before today too, as the Inputs page allows — by a
+ *  member on his own row or an admin on any (`canEditRow`). ONE command, one Undo (`lw.file`); the absence door writes
+ *  the Inputs, through the Inputs door's own rules. */
+export const FILED_STRAIGHT: readonly string[] = ['CSE', 'OD', 'UNA']
+export function fileStraight(cells: { personId: string; date: string }[], code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
+  const clean = code.trim().toUpperCase()
+  if (!FILED_STRAIGHT.includes(clean)) return { done: 0, skipped: cells.length, why: [] }
+  const ok = cells.filter(c => !!warHolding(state.wars, c.date) && canEditRow(state.role, state.viewer, c.personId))
+  let out = { done: 0, skipped: cells.length - ok.length, why: [] as string[] }
+  if (!ok.length || !DOOR) return { ...out, skipped: cells.length }
+  gesture('lw.file', () => {
+    const r = DOOR!.file(ok, clean, words)
+    out = { done: r.done, skipped: out.skipped + r.skipped, why: r.why }
+  })
+  return out
 }
 
 export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number } {

@@ -1514,3 +1514,15 @@ put-back carries them back (`sync.ts doorApprove` / `doorDecideApproved` — the
 be copied there and in `store.ts setCell` / `moveRecords`); the leave then shows them wherever an input's remark and
 documents show (the Inputs list and calendar, the input window, the schedule's rows print the remark and its till). One new
 command, `lw.reqmeta` (`perms.ts` — a member's own pending request's words change on a closed day, nothing else there).
+
+## A course, an overseas duty and the unforeseen absence filed on the Leave War (round 2, 24 Oct 26 — D1318, D1324, D1325)
+
+CSE · OD · UNA stand in the row under the leaves of the one-day window, the drag window and a member's closed-day window
+(`ui/LeaveButtons.tsx DutyButtons`); a tap files the input straight (`store.ts fileStraight` → the absence door's `file`,
+`sync.ts doorFile` → the Inputs door, its clash rules included) — no bid, one new command `lw.file` (`perms.ts`, asked as an
+Inputs-page filing is). From there it is an ordinary input: the Inputs list and calendar, the schedule's Unavailable, the
+war's grid and manning all read it. **UNA is a new input kind** (`engine/inputs.ts`, the overseas duty's flags): a
+drift-seam across every hand-kept list of kinds — `engine/schema.ts`, the reference's mirror (`testing/refwin.ts`), the
+war's `absences.ts warVisible`, `engine/dayview.ts` (AWAY_DUTY, OFF_WAR), `engine/codes.ts` (label, kind), the colours
+(`--k-una`, `matrix.css`, `scheduler/25-inputs-calendar.css`, `ui/inputscal-model.ts`) and the Legend. Its one rule apart
+from OD's is the LATE mark (`isLateInput`). The design note: `docs/superpowers/specs/2026-10-24-lw-file-od-cse-una.md`.

@@ -99,6 +99,7 @@ import {
   setRefusalHook,
   setHolidayTell,
   type HolidayRun,
+  type ReqWords,
   clearRaptorCell,
   createWar,
   selectWar,
@@ -250,7 +251,7 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
 
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
-  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved, file: doorFile })
   /* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8): the permissions module asks, of a member's war record
      (`war:person:date`), whether that day is open for HIM — the one rule (`canEditCell`), asked of the period holding
      the date, with a member's today (D1211). Read from the right: a war id may carry a colon. */
@@ -483,6 +484,42 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
   })
   if (!ok) return { done: 0, skipped: skipped + picks.length, why }
   lwEditLists(picks.map(p => ({ personId: p.personId, date: p.date, drop: [p.rec.id], add: [] })))
+  refreshAbsencesAndRepaint()
+  return { done: picks.length, skipped, why }
+}
+
+/** FILED STRAIGHT (round 2 — his D1318, D1324; `store.ts fileStraight`): a course, an overseas duty or the unforeseen
+ *  absence written as the Inputs they are — one input a man a run of consecutive days, whole days (none of the three has
+ *  halves on the Inputs page), the window's words and papers with it, placed by whoever filed it now (D629). No `lw`
+ *  provenance: the war never changes these kinds (dayview OFF_WAR — design §5.4, owner §13 Q1), so once filed it is the
+ *  Inputs page's, exactly as one filed there. The Inputs door's own rules run (a course or an OD never replaces a bid). */
+function doorFile(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
+  const why: string[] = []
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  let skipped = 0
+  const picks: Array<{ personId: string; date: string }> = []
+  for (const it of items) {
+    if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not filed`); continue }
+    picks.push(it)
+  }
+  if (!picks.length) return { done: 0, skipped, why }
+  picks.sort((a, b) => cmpISO(a.personId, b.personId) || cmpISO(a.date, b.date))
+  const runs: Array<typeof picks> = []
+  for (const p of picks) {
+    const last = runs[runs.length - 1], prev = last?.[last.length - 1]
+    if (prev && prev.personId === p.personId && addDays(prev.date, 1) === p.date) last!.push(p)
+    else if (!(prev && prev.personId === p.personId && prev.date === p.date)) runs.push([p])
+  }
+  const rows = runs.map(run => {
+    const first = run[0]!, last = run[run.length - 1]!
+    const row = inputRowFor({ person: first.personId, code, from: first.date, to: last.date, remarks: remarksTyped(words?.remarks ?? '', { start: first.date, end: last.date }), mod: nowStamp() })
+    if (typeof words?.till === 'boolean' && words.till !== tillDefault(row)) row.till = words.till
+    if (words?.docIds?.length) Object.assign(row, docFields(words.docIds))
+    inpId(row)
+    stampPlaced(row)
+    return toPeople(row)
+  })
+  if (!doorWrite(() => { for (const r of rows) INPUTS.push(r) })) return { done: 0, skipped: skipped + picks.length, why }
   refreshAbsencesAndRepaint()
   return { done: picks.length, skipped, why }
 }

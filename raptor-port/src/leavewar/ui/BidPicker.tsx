@@ -17,7 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
+import { awardsIn, cellProblem, clearCells, fileStraight, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
 import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { ApproveSwitch, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
@@ -33,7 +33,7 @@ import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
 import type { DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
-import { LeaveButtons } from './LeaveButtons'
+import { DutyButtons, LeaveButtons } from './LeaveButtons'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -350,6 +350,16 @@ export function BidPicker({
   /* …except a REFUSED bid bid again: the store carries words only from a live bid it replaces, so the words in its box ride
      with the new bid here (the fresh read's R2 — they stayed on the refused record) */
   const newWords = !held ? wordsOf(draft) : held.rec.state === 'refused' ? wordsOf(words) : undefined
+  /* ROUND 2 (his D1318, D1324 — [LW-FILE-OD-CRS]): a course, an overseas duty or the unforeseen absence filed straight for the
+     day or the picked range — no bid, nothing to approve — with the words typed for something new (never a held bid's own,
+     which its box speaks for); the window closes on it, as a leave placed does. Where nothing could be filed it says why. */
+  const fileDuty = (code: string) => {
+    flushWords()
+    const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined)
+    if (r.done > 0) return onClose()
+    setNoteAt('leave')
+    setNote(r.why[0] ?? 'Nothing was filed: these days are not yours to change.')
+  }
   /* (the fresh read's 5) words typed on a held bid and not yet saved — the box not left — are saved as the window closes,
      as its documents already were the moment they were picked: Escape, ✕ or a tap outside never loses them */
   /* …AND BEFORE ANY ACTION (round 3's FULL check — the scenario designer's S15): an iPhone keeps the box focused when a
@@ -662,9 +672,11 @@ export function BidPicker({
           and Post in, rarely used, behind one button — they were the "Also" row. Each is the opposite fact to placing leave
           and is folded, so none can be hit by reflex; the row steps aside while a panel it opened is up. A member has none
           of the three. */}
-      {!panelOpen && moreItems.length > 0 && (
+      {!panelOpen && (
         <div className="bidsheet-row bp-extra" data-testid="bid-extra-row">
-          <MoreButton testid="bid-more" items={moreItems} />
+          {/* CSE · OD · UNA in the first three places (round 2), the ⋯ the fourth — a member's fourth place stays empty */}
+          <DutyButtons onFile={fileDuty} />
+          {moreItems.length > 0 && <MoreButton testid="bid-more" items={moreItems} />}
         </div>
       )}
       {onCredit && oilOpen && awardCount > 1 && (

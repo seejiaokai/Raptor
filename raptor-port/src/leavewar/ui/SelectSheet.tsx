@@ -32,7 +32,7 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, decidableIn, deletableIn, movableCells, placeApproved, postingBlocked, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells } from '../state/store'
 import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
@@ -45,7 +45,7 @@ import type { Selection } from './select'
 import './bidpicker.css'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
-import { LeaveButtons } from './LeaveButtons'
+import { DutyButtons, LeaveButtons } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState } from '../state/store'
 
@@ -211,6 +211,16 @@ export function SelectSheet({
     if (written > 0) onDone(true, true) // refresh counts but keep the sheet to show the note
   }
 
+  /* ROUND 2 (his D1318, D1324): a course, an overseas duty or the unforeseen absence filed straight on every day of every man
+     picked — no bid, nothing to approve; one man's words go with it, as with a leave. A day not his to change is named. */
+  const fileDuty = (code: string) => {
+    setConfirmDel(false); setConfirming(null); setNoteAt('leave')
+    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined)
+    if (!r.skipped) { onDone(r.done > 0); return }
+    setNote(r.why[0] ?? skipNote('written', r.done, r.skipped))
+    if (r.done > 0) onDone(true, true)
+  }
+
   const del = () => {
     setConfirming(null)
     setNoteAt('sel')
@@ -298,10 +308,12 @@ export function SelectSheet({
           heavy an act for one tap; the PO flow picks its own date anyway). "PO", as on the one-day sheet (the mock-up's
           reading, uncorrected — D331). */}
       {/* behind the ⋯ in the fourth place of the row under the leaves, as on the one-day window (his D1326) */}
-      {onPostOut && nPeople === 1 && !poOpen && (
+      {!poOpen && (
         <div className="bidsheet-row bp-extra" data-testid="sel-extra-row">
-          <MoreButton testid="sel-more" items={[{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
-            onPick: () => { setPoOpen(true); setConfirming(null) } }]} />
+          {/* CSE · OD · UNA in the first three places (round 2), the ⋯ the fourth where Post out is offered */}
+          <DutyButtons onFile={fileDuty} testPrefix="sel" />
+          {onPostOut && nPeople === 1 && <MoreButton testid="sel-more" items={[{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
+            onPick: () => { setPoOpen(true); setConfirming(null) } }]} />}
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (

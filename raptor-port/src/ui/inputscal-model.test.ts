@@ -288,6 +288,7 @@ describe('the colour a bar wears (D1304, D1321)', () => {
   it('leave, OIL taken, the other leave, medical, a course and an overseas duty each their kind; a duty none', () => {
     const cases: Array<[string, string | null]> = [['LL', 'll'], ['OL', 'ol'], ['OIL', 'oilt'], ['CCL', 'care'], ['FCL', 'care'], ['PL', 'care'],
       ['CL', 'care'], ['EL', 'care'], ['HL', 'med'], ['OML', 'med'], ['ATT B', 'med'], ['ATT C', 'med'], ['Upchit', 'med'], ['CSE', 'cse'], ['OD', 'od'],
+      ['UNA', 'una'],   // the unforeseen absence, its own deep teal (D1325 — round 2)
       ['Training', null], ['Meeting', null], ['Fly with', null], ['Personal', null], ['Appointment', null], ['Duty', null], ['Event', null], ['Other', null]]
     for (const [t, c] of cases) expect(colourOf(t), t).toBe(c)
   })

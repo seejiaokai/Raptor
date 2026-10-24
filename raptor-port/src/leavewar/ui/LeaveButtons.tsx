@@ -50,3 +50,31 @@ export function LeaveButtons({ portion, onPick, figure, filled, lit = null, test
     </div>
   )
 }
+
+/* ROUND 2 — A COURSE, AN OVERSEAS DUTY, THE UNFORESEEN ABSENCE (his D1299, D1303, D1318, D1324, D1325, D1326; drawn by
+   scripts/handpass/lw-round2-odcrs.mjs): the first three places of the row under the leaves, the ⋯ the fourth. Each is
+   filed straight as the input it is (`store.ts fileStraight`), so it wears the filled look and no figure — it stands at
+   once and spends nothing. A member sees them on his own row too, open for bidding or not (D1318 "it can go anytime"). */
+export const DUTY_KINDS: readonly { code: string; title: string }[] = [
+  { code: 'CSE', title: 'Course' },
+  { code: 'OD', title: 'Overseas duty' },
+  { code: 'UNA', title: 'Unavailable: an unforeseen absence' },
+]
+export function DutyButtons({ onFile, testPrefix = 'bid' }: { onFile: (code: string) => void; testPrefix?: string }) {
+  return (
+    <>
+      {DUTY_KINDS.map(k => (
+        <button
+          key={k.code}
+          type="button"
+          data-testid={`${testPrefix}-file-${k.code}`}
+          className={`tchip lv k-${kindOf(k.code)} s-a`}
+          title={`${k.title}: filed at once, as on the Inputs page`}
+          onClick={() => onFile(k.code)}
+        >
+          <span className="lv-code">{k.code}</span>
+        </button>
+      ))}
+    </>
+  )
+}

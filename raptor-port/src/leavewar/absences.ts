@@ -4,7 +4,7 @@
 // copy of it; it DERIVES what each person/date shows from the Inputs, here,
 // on read (design §1, §3). This module is the one statement of "which Inputs
 // show on the war, on which dates, over which part of the day":
-//   - war-visible types = leave ∪ medical ∪ course (CSE) ∪ overseas duty (OD)
+//   - war-visible types = leave ∪ medical ∪ course (CSE) ∪ overseas duty (OD) ∪ unavailable (UNA, D1303)
 //     (clash check B2, owner Q8);
 //   - each covered date gets the Input's daily window in minutes; an overnight
 //     window also leaves a SPILL tail on the next date, which counts for
@@ -106,7 +106,8 @@ export function warCodeOf(rawType: unknown): string {
 export function warVisible(type: unknown): boolean {
   if (isLeave(type) || isDownchit(type)) return true
   const t = String(type ?? '').trim().toUpperCase()
-  return t === 'CSE' || t === 'OD'
+  /* …and UNA, the unforeseen absence (D1303 — round 2): it takes him off the manning, as an overseas duty does */
+  return t === 'CSE' || t === 'OD' || t === 'UNA'
 }
 
 const halfWin = (p: Portion): Win => (p === 'am' ? AM : p === 'pm' ? PM : FULL)

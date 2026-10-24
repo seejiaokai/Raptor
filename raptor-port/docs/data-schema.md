@@ -184,7 +184,7 @@ local, ground, half, shiftHard` flags):
 - `med`: `HL` hospitalisation, `OML` ordinary medical, `ATT C` medically down — cannot report, `ATT B` medically down — no flying, may work
 - `upchit`: `Upchit` — fit to fly again
 - `act`: `Training`, `CSE`, `Meeting`, `Fly with`, `Personal`, `Appointment`, `Duty`, `Event` (D713, 9 Oct 26 — Duty's flags), `Other`
-- `duty`: `OD` overseas duty
+- `duty`: `OD` overseas duty, `UNA` unavailable — an unforeseen absence (D1303, D1324 — round 2, 24 Oct 26: the overseas duty's flags; the LATE mark skips it)
 - `sans`: `SANS Availability`
 
 ### A schedule day — `DAYS[0..6]`, `src/engine/data.ts`

@@ -396,6 +396,15 @@ export const INPUT_META:any={
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
+  /* UNAVAILABLE — AN UNFORESEEN ABSENCE (owner D1303, D1324, D1325, 24 Oct 26 — round 2, [LW-FILE-OD-CRS]): "the ability
+     to add in things that are unforeseen … to indicate that this person is not part of the manning", named apart from
+     'Other' below, which leaves him in it; "UNA can use the same as OD" — so OD's flags to the letter, and every rule
+     follows from them: out of reach, under Unavailable, the OIL question on a weekend, a title. Its one exception is
+     the LATE mark (isLateInput): unforeseen, so never filed before a deadline. Placed straight after OD, so the leave /
+     medical indices the suite pins stay put. DRIFT SEAM, walked with this row: testing/refwin.ts (reinput's `un`,
+     reirest's two sets), engine/schema.ts, the war's own lists (leavewar/absences.ts warVisible, engine/dayview.ts,
+     engine/codes.ts). Pinned by unakind.test.ts. */
+  'UNA':        {name:'unavailable',              grp:'duty',  work:false, local:false, ground:false, half:false},
   'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* SANS AVAILABILITY (owner, 14 Aug 26) — SANS aircrew filing POSITIVE
      availability for Fly / AMT / OFT, not an absence. grp:'sans' keeps it
@@ -1147,7 +1156,8 @@ export function inputStampISO(inp:any){
 export function isLateInput(inp:any){
   /* an upchit is exempt with the downchits and by the same ruling — going up
      is decided by the medical officer, never in advance of a deadline */
-  if(!inp||isDownchit(inp.type)||isUpchit(inp.type))return false;
+  /* and UNA, an unforeseen absence (D1303), by the same reason: nobody files the unforeseen before a deadline */
+  if(!inp||isDownchit(inp.type)||isUpchit(inp.type)||inpType(inp.type)==='UNA')return false;
   const s=inputStampISO(inp), due=inputOwnDueISO(inp);
   return !!s&&!!due&&s>due;
 }

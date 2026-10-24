@@ -137,9 +137,9 @@ export const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 
  *  which the Leave War's boxes read too. Leave, an OIL taken, the other leave, medical (an upchit with them, as the approved
  *  drawing painted it — scripts/handpass/lw-q3-duties.mjs), a course and an overseas duty are filled bars; every other duty
  *  and commitment is null — an outlined bar. */
-export type BarColour = 'll' | 'ol' | 'oilt' | 'care' | 'med' | 'cse' | 'od'
+export type BarColour = 'll' | 'ol' | 'oilt' | 'care' | 'med' | 'cse' | 'od' | 'una'
 const COLOUR: Record<string, BarColour> = { LL: 'll', OL: 'ol', OIL: 'oilt', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care',
-  HL: 'med', OML: 'med', 'ATT B': 'med', 'ATT C': 'med', UPCHIT: 'med', CSE: 'cse', CRS: 'cse', OD: 'od' }
+  HL: 'med', OML: 'med', 'ATT B': 'med', 'ATT C': 'med', UPCHIT: 'med', CSE: 'cse', CRS: 'cse', OD: 'od', UNA: 'una' }
 export const colourOf = (t: any): BarColour | null => COLOUR[String(t ?? '').trim().toUpperCase()] ?? null
 
 /** HOW MANY AN INPUT OF SEVERAL HOLDS, in words — for the question a delete asks and the note that answers it: "4

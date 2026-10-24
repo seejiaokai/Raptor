@@ -179,6 +179,8 @@ export const SEED_ABSENCES: readonly SeedAbsence[] = Object.freeze([
   { person: 'jaguar', code: 'OL', date: '2026-01-16', endDate: '2026-01-17', lw: true },
   { person: 'asics', code: 'LL', date: '2026-01-08', lw: true },
   { person: 'pipper', code: 'CSE', date: '2026-01-12', endDate: '2026-01-13', lw: false },
+  // the unforeseen absence (D1303, D1325 — round 2): a kind of its own, deep teal, filed as an OD is
+  { person: 'pipper', code: 'UNA', date: '2026-01-14', lw: false },
   { person: 'roulette', code: 'CCL', date: '2026-01-15', lw: true },
   { person: 'dusk', code: 'OIL', date: '2027-05-04', lw: false },
 ])

@@ -427,6 +427,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.decide': op(T.bid, 'U'),
   /* an admin places leave and approves it in one step (D1147 — "Approve what I enter", M3 5.5): one command, one Undo */
   'lw.placeApproved': op(T.bid, 'U'),
+  /* a course, an overseas duty or the unforeseen absence filed on the war straight as the INPUT it is (round 2 — D1318,
+     D1324): no bid, no approval; it writes Inputs only, so it is asked as an Inputs-page filing is — his own, an admin any */
+  'lw.file': op(T.input, 'U', 'optional'),
   /* a request's own words and papers — its remarks, till tick, documents (M3 5.9, 5.10; D1210, D1150): his own row, as
      lw.edit; on a day closed for him the commit lets exactly this through (onlyChangesWords) */
   'lw.reqmeta': op(T.bid, 'U', 'optional'),

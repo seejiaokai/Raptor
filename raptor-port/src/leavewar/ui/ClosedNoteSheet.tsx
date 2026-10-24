@@ -13,7 +13,8 @@
 
 import { useState } from 'react'
 import { displayCell, type RequestRec } from '../engine'
-import { setCell, setRequestWords } from '../state/store'
+import { fileStraight, setCell, setRequestWords } from '../state/store'
+import { DutyButtons } from './LeaveButtons'
 import { draftOf, heldRequest, patchOf, ReqWordsRows, type ReqDraft } from './ReqWords'
 import { openInputsPage } from '../sync'
 import { DeleteChip } from './SheetActions'
@@ -37,6 +38,20 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
      of his there gets its rows — a morning and an afternoon each their own (the roll-call's find: with two, none were drawn) */
   const [edit, setEdit] = useState<Record<string, ReqDraft>>({})
   const end = heldRequest(personId, date)?.end ?? date
+  /* ROUND 2 (his D1318 — "it can go anytime. member can file it too"; drawn r2-member-closed): a course, an overseas duty or
+     the unforeseen absence is filed here too, closed for bidding or not — straight, as the input it is */
+  const [fileErr, setFileErr] = useState('')
+  const fileDuty = (code: string) => {
+    const r = fileStraight([{ personId, date }], code)
+    if (r.done > 0) return closeKeeping()
+    setFileErr(r.why[0] ?? 'Nothing was filed on this day.')
+  }
+  const dutyRow = (
+    <>
+      <div className="bidsheet-row bp-extra" data-testid="closed-extra-row"><DutyButtons onFile={fileDuty} testPrefix="closed" /></div>
+      {fileErr && <div className="bidsheet-row"><span className="note warn" data-testid="closed-file-err">{fileErr}</span></div>}
+    </>
+  )
   /* words typed and not yet saved are saved as it closes (the fresh read's 5) */
   const closeKeeping = () => {
     for (const r of pending) { const e = edit[r.id]; const p = e && patchOf(draftOf(r), e); if (p) setRequestWords(personId, date, r.id, p) }
@@ -82,10 +97,12 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
               }}
             />
           </div>
+          {dutyRow}
         </>
       ) : (
         <>
           <p className="cn-note" data-testid="closed-note-text">{CLOSED_NOTE}</p>
+          {dutyRow}
           <div className="cn-foot">
             <button type="button" className="dchip plain" data-testid="closed-inputs" onClick={() => { openInputsPage(); onClose() }}>
               Open the Inputs page

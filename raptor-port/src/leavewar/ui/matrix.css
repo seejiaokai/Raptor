@@ -833,6 +833,8 @@ touch-action: pan-x pan-y;
 .c.k-care, .tchip.lv.k-care { --h: var(--k-care); --ink: var(--k-care-ink); --fill: var(--k-care-fill); }
 .c.k-cse, .tchip.lv.k-cse  { --h: var(--k-cse); --ink: var(--k-cse-ink); --fill: var(--k-cse-fill); }
 .c.k-od, .tchip.lv.k-od   { --h: var(--k-od); --ink: var(--k-od-ink); --fill: var(--k-od-fill); }
+/* the unforeseen absence, deep teal (his D1325 — round 2) */
+.c.k-una, .tchip.lv.k-una { --h: var(--k-una); --ink: var(--k-una-ink); --fill: var(--k-una-fill); }
 .c.k-med, .tchip.lv.k-med  { --h: var(--k-med); --ink: var(--k-med-ink); --fill: var(--k-med-fill); }
 
 /* the fills — the bid windows' leave buttons take the same kinds and fills (M3 5.3, 5.4 — D1183, red-team fix A8:

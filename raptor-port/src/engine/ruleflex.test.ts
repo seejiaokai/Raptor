@@ -190,6 +190,7 @@ describe('which input types bear crew rest (owner, 21 Aug 26)', () => {
   const RESTS: any = {
     Training: true, CSE: true, Meeting: true, 'Fly with': true,
     Appointment: true, Duty: true, OD: true, Other: true,
+    UNA: true,     // D1324, 24 Oct 26: the overseas duty's twin — refwin.ts reirest carries it too
     Event: true,   // D713, 9 Oct 26: "its work" — a commitment like the others; refwin.ts reirest carries it too
     Personal: false, 'SANS Availability': false,
   }
