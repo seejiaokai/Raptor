@@ -1,0 +1,21 @@
+[
+ {
+  "id": "R3 a member’s drag over his open pending bid and his refused bid on a closed day, words typed, ✕",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "before: 30 Nov LL/pending/\"\"; 1 Dec LL/refused/\"\"; Ranger dragged 30 Nov → 1 Dec (\"30 Nov – 1 Dec · 2 days\", Ranger), typed \"Back Monday\", ✕. After: 30 Nov LL/pending/\"Back Monday\"; 1 Dec LL/refused/\"\"; 30 Nov's one-day window then reads \"Back Monday\"",
+  "pics": [
+   "r3-ph-2-typed.png",
+   "r3-ph-3-x-q.png",
+   "r3-ph-3-x.png",
+   "r3-ph-4-nov30-window.png"
+  ]
+ },
+ {
+  "id": "errors-r3",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

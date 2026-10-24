@@ -1,0 +1,112 @@
+[
+ {
+  "id": "W4 ✕ over an Inputs-page leave and a war-approved leave",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "Basher: an LL filed on the Inputs page for 4 Dec (\"From inputs\") and a war-approved LL on 7 Dec (\"Mine\"); dragged 4–7 Dec, typed \"Typed\", ✕. After: 4 Dec req: - | input: LL[inputs] 12-04/\"From inputs\"; 7 Dec req: - | input: LL 12-07/\"Typed\". Inputs page rows — 4 Dec [\"Basher 4 Dec LL From inputs till 4 DecBy Saber now No document\"]; 7 Dec [\"Basher 7 Dec LL Typed till 7 DecBy Saber now No document\"]",
+  "pics": [
+   "dk-w4-1-typed.png",
+   "dk-w4-2-x.png",
+   "dk-w4-3-inputs-page.png"
+  ]
+ },
+ {
+  "id": "R1A Approve with words typed, then ONE Undo",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "before 10 Dec: req: LL/pending/\"Wedding\" | input: - ; 11 Dec: req: LL/pending/\"\" | input: -; typed \"Exercise\" over 10–11 Dec, approve: 10 Dec: req: - | input: LL 12-10..12-11/\"Exercise\" ; 11 Dec: req: - | input: LL 12-10..12-11/\"Exercise\" (window closed) (Undo button read \"Undo — Anvil’s bid\" → \"Undo — a decision on a bid\"); ONE Undo press (\"Undo — a decision on a bid\") → 10 Dec: req: LL/pending/\"Wedding\" | input: - ; 11 Dec: req: LL/pending/\"\" | input: -; the Undo button then reads \"Undo — Anvil’s bid\"",
+  "pics": [
+   "dk-r1a-1-typed.png",
+   "dk-r1a-2-approve.png",
+   "dk-r1a-3-after-approve.png",
+   "dk-r1a-4-undo1.png",
+   "dk-r1a-5-after-one-undo.png"
+  ]
+ },
+ {
+  "id": "R1B Refuse with words typed, then ONE Undo",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "before 10 Dec: req: LL/pending/\"Wedding\" | input: - ; 11 Dec: req: LL/pending/\"\" | input: -; typed \"Exercise\" over 10–11 Dec, refuse: 10 Dec: req: LL/refused/\"Exercise\" | input: - ; 11 Dec: req: LL/refused/\"Exercise\" | input: - (window closed) (Undo button read \"Undo — Cinch’s bid\" → \"Undo — a decision on a bid\"); ONE Undo press (\"Undo — a decision on a bid\") → 10 Dec: req: LL/pending/\"Wedding\" | input: - ; 11 Dec: req: LL/pending/\"\" | input: -; the Undo button then reads \"Undo — Cinch’s bid\"",
+  "pics": [
+   "dk-r1b-1-typed.png",
+   "dk-r1b-2-refuse.png",
+   "dk-r1b-3-after-refuse.png",
+   "dk-r1b-4-undo1.png",
+   "dk-r1b-5-after-one-undo.png"
+  ]
+ },
+ {
+  "id": "R1C Approve with words typed over a war-approved leave too, then ONE Undo",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "before 10 Dec: req: LL/pending/\"Wedding\" | input: - ; 11 Dec: req: LL/pending/\"\" | input: - ; 12 Dec: req: - | input: LL 12-12/\"Mine\"; typed \"Exercise\" over 10–12 Dec, approve: 10 Dec: req: - | input: LL 12-10..12-12/\"Exercise\" ; 11 Dec: req: - | input: LL 12-10..12-12/\"Exercise\" ; 12 Dec: req: - | input: LL 12-10..12-12/\"Exercise\" (window still open) (Undo button read \"Undo — placing and approving leave\" → \"Undo — a decision on a bid\"); ONE Undo press (\"Undo — a decision on a bid\") → 10 Dec: req: LL/pending/\"Wedding\" | input: - ; 11 Dec: req: LL/pending/\"\" | input: - ; 12 Dec: req: - | input: LL 12-12/\"Mine\"; the Undo button then reads \"Undo — placing and approving leave\"",
+  "pics": [
+   "dk-r1c-1-typed.png",
+   "dk-r1c-2-approve.png",
+   "dk-r1c-3-after-approve.png",
+   "dk-r1c-4-undo1.png",
+   "dk-r1c-5-after-one-undo.png"
+  ]
+ },
+ {
+  "id": "R2a a document added in the drag window, no words, ✕",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "before 14 Dec: LL/pending/\"\"+1doc ; 15 Dec: LL/pending/\"\"; drag 14–15 Dec, a document added (chips in the drag window 1, box \"\"), ✕: 14 Dec: LL/pending/\"\"+2doc ; 15 Dec: LL/pending/\"\"+1doc; 14 Dec's one-day window shows 2 chips",
+  "pics": [
+   "dk-r2a-1-doc-added.png",
+   "dk-r2a-2-x.png",
+   "dk-r2a-3-day14-window.png"
+  ]
+ },
+ {
+  "id": "R2b the till tick turned off in the drag window, no words, ✕",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "before 14 Dec: LL/pending/\"\" ; 15 Dec: LL/pending/\"\"; drag 14–15 Dec, till tick true → false (\"till 15 Dec\"), ✕: 14 Dec LL/pending/\"\" till-off; 15 Dec LL/pending/\"\" till-off",
+  "pics": [
+   "dk-r2b-1-till-off.png",
+   "dk-r2b-2-x.png"
+  ]
+ },
+ {
+  "id": "R2c a document and the till tick off in the drag window, no words, Refuse",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "Warden's two pending bids 14–15 Dec; a document added and the till tick turned off, no words, Refuse: 14 Dec LL/refused/\"\"+1doc till-off; 15 Dec LL/refused/\"\"+1doc till-off",
+  "pics": [
+   "dk-r2c-1-doc-and-till.png",
+   "dk-r2c-2-refuse.png"
+  ]
+ },
+ {
+  "id": "R4A one man, a different block of his row: typed words, then a new drag of a different block",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "block 1 and block 2 on the same row: fixture 3 Dec: LL/pending/\"\" ; 4 Dec: LL/pending/\"\" | 8 Dec: LL/pending/\"Other\" ; 9 Dec: LL/pending/\"\"; dragged 3–4 Dec (\"3–4 Dec · 2 days\"), typed \"Exercise\", then dragged 8–9 Dec (window \"8–9 Dec · 2 days\", its box \"\"). First block now: 3 Dec: LL/pending/\"Exercise\" ; 4 Dec: LL/pending/\"Exercise\"; second block: 8 Dec: LL/pending/\"Other\" ; 9 Dec: LL/pending/\"\"; after ✕ on the second window: 8 Dec: LL/pending/\"Other\" ; 9 Dec: LL/pending/\"\"",
+  "pics": [
+   "dk-r4a-1-typed.png",
+   "dk-r4a-2-after-second-drag.png",
+   "dk-r4a-3-x-second-window.png"
+  ]
+ },
+ {
+  "id": "R4B one man, then another man’s block: typed words, then a new drag of a different block",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "block 1 and block 2 on another man’s row (Blade): fixture 3 Dec: LL/pending/\"\" ; 4 Dec: LL/pending/\"\" | 8 Dec: LL/pending/\"Other\" ; 9 Dec: LL/pending/\"\"; dragged 3–4 Dec (\"3–4 Dec · 2 days\"), typed \"Exercise\", then dragged 8–9 Dec (window \"8–9 Dec · 2 days\", its box \"\"). First block now: 3 Dec: LL/pending/\"Exercise\" ; 4 Dec: LL/pending/\"Exercise\"; second block: 8 Dec: LL/pending/\"Other\" ; 9 Dec: LL/pending/\"\"; after ✕ on the second window: 8 Dec: LL/pending/\"Other\" ; 9 Dec: LL/pending/\"\"",
+  "pics": [
+   "dk-r4b-1-typed.png",
+   "dk-r4b-2-after-second-drag.png",
+   "dk-r4b-3-x-second-window.png"
+  ]
+ },
+ {
+  "id": "errors-drag",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

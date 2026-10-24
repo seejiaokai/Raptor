@@ -1,0 +1,32 @@
+[
+ {
+  "id": "W1a a document added, then its chip’s ✕",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "before {\"chips\":0,\"chipNames\":[],\"btn\":\"Document\"}; added → {\"chips\":1,\"chipNames\":[\"rw-pic.png\"],\"btn\":\"Add\"} (saved docs 1); ✕ → at once {\"chips\":0,\"chipNames\":[],\"btn\":\"Document\"}, 0.65 s {\"chips\":0,\"chipNames\":[],\"btn\":\"Document\"}, 1.5 s {\"chips\":0,\"chipNames\":[],\"btn\":\"Document\"}; saved after [{\"remarks\":\"\",\"docs\":0,\"span\":\"12-25..12-25\",\"lw\":\"y2026\"}]",
+  "pics": [
+   "w1-ph-a-1-added.png",
+   "w1-ph-a-2-x-after-tap.png",
+   "w1-ph-a-3-after-x-settled.png"
+  ]
+ },
+ {
+  "id": "W1b the till tick off, then on again",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "start {\"checked\":true,\"text\":\"till 28 Dec\",\"struck\":false}; tick pressed → {\"checked\":false,\"text\":\"till 28 Dec\",\"struck\":true} saved till [false]; pressed again → at once {\"checked\":true,\"text\":\"till 28 Dec\",\"struck\":false}, 0.8 s later {\"checked\":true,\"text\":\"till 28 Dec\",\"struck\":false}, saved till [null] at 0.25 s, [null] at 1.05 s, [null] at 2.55 s",
+  "pics": [
+   "w1-ph-b-1-unticked.png",
+   "w1-ph-b-1-untick-after-tap.png",
+   "w1-ph-b-2-retick-after-tap.png",
+   "w1-ph-b-2-reticked.png"
+  ]
+ },
+ {
+  "id": "errors-w1",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

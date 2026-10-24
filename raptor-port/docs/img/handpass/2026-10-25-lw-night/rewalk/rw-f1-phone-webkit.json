@@ -1,0 +1,41 @@
+[
+ {
+  "id": "F1 tap: 1 filing → bubble under the Manning button while the OIL question is up",
+  "size": "phone/WebKit",
+  "verdict": "PASS",
+  "said": "range 3–7 Dec · 5 days; Required P 28 = Available P 28; right after the tap: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is oilconf (pointer-events none); settled with the question up: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is oilconf (pointer-events none); Manning button {\"in\":true,\"bottom\":185}",
+  "pics": [
+   "f1-phw-tap-1-od-after-tap.png",
+   "f1-phw-tap-1-oil-up-settled.png"
+  ]
+ },
+ {
+  "id": "F1 tap: 2 the bubble after answering the OIL question with taps",
+  "size": "phone/WebKit",
+  "verdict": "PASS",
+  "said": "tap on No OIL: right after under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is oilconf (pointer-events none); settled under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is oilconf (pointer-events none) (question up true). Tap on Save: right after under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none) (question up false)",
+  "pics": [
+   "f1-phw-tap-2-oilnone-after-tap.png",
+   "f1-phw-tap-2-oilnone-settled.png",
+   "f1-phw-tap-3-save-after-tap.png",
+   "f1-phw-tap-3-save-settled.png"
+  ]
+ },
+ {
+  "id": "F1 tap: 3 a tap on the page ends the bubble",
+  "size": "phone/WebKit",
+  "verdict": "PASS",
+  "said": "before the tap: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); tap at (128, 173): right after no bubble; settled no bubble; leftovers cleared: []",
+  "pics": [
+   "f1-phw-tap-4-page-tap-after.png",
+   "f1-phw-tap-4-page-tap-settled.png"
+  ]
+ },
+ {
+  "id": "errors-f1",
+  "size": "phone/WebKit",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

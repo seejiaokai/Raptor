@@ -1,0 +1,29 @@
+[
+ {
+  "id": "F2a Show pressed twice ~90 ms apart",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "foot note up first (This bid turns Available P red. + \"Show ›\"); two presses 77 ms apart (clicks seen by the page: [{\"t\":11993,\"d\":1,\"tgt\":\"manning-bubble-show\"},{\"t\":12070,\"d\":2,\"tgt\":\"cell-pain-2026-12-24\"}]); 20 scroll events; scrollY 555 → 0; windows open afterwards: []; Manning rows open: true",
+  "pics": [
+   "f2-ph-a-2-100ms-after-second.png",
+   "f2-ph-a-3-settled.png"
+  ]
+ },
+ {
+  "id": "F2c a quick click on the top bar’s Undo right after Show",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "the foot note up (Diesel's pending LL); Show pressed, Undo pressed ~60 ms later (top bar position styles [\"sticky\"]); the cell [\"LL|k-ll|s-w|whole\"] → []; Undo \"Undo — Diesel’s bid\" → \"Undo — Vapor’s bid\"; page at the Manning button; Available P now 27 red",
+  "pics": [
+   "f2-ph-c-1-after-undo-tap-150ms.png",
+   "f2-ph-c-2-settled.png"
+  ]
+ },
+ {
+  "id": "errors-f2",
+  "size": "phone/Chromium",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]
