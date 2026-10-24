@@ -17,7 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
+import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, placeUna, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
 import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { ApproveSwitch, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
@@ -33,7 +33,7 @@ import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
 import type { DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
-import { DutyButtons, LeaveButtons } from './LeaveButtons'
+import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -360,6 +360,15 @@ export function BidPicker({
     setNoteAt('leave')
     setNote(r.why[0] ?? 'Nothing was filed: these days are not yours to change.')
   }
+  /* UNA (his D1338): an admin's, for the day or the picked range, on the half the Duration row says, with the words typed
+     for something new; the window closes on it, as a leave placed does */
+  const fileUna = () => {
+    flushWords()
+    const r = placeUna(selCells(), portion, !held ? { remarks: wordsOf(draft)?.remarks } : undefined)
+    if (r.done > 0) return onClose()
+    setNoteAt('leave')
+    setNote('Nothing was placed: no leave period holds these days.')
+  }
   /* (the fresh read's 5) words typed on a held bid and not yet saved — the box not left — are saved as the window closes,
      as its documents already were the moment they were picked: Escape, ✕ or a tap outside never loses them */
   /* …AND BEFORE ANY ACTION (round 3's FULL check — the scenario designer's S15): an iPhone keeps the box focused when a
@@ -674,8 +683,10 @@ export function BidPicker({
           of the three. */}
       {!panelOpen && (
         <div className="bidsheet-row bp-extra" data-testid="bid-extra-row">
-          {/* CSE · OD · UNA in the first three places (round 2), the ⋯ the fourth — a member's fourth place stays empty */}
+          {/* CSE · OD in the first two places (round 2), UNA the third — an admin's alone (D1338) — the ⋯ the fourth; a
+              member's third and fourth places stay empty */}
           <DutyButtons onFile={fileDuty} />
+          {isAdmin && <UnaButton onPlace={fileUna} />}
           {moreItems.length > 0 && <MoreButton testid="bid-more" items={moreItems} />}
         </div>
       )}

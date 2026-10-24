@@ -11458,10 +11458,12 @@ none on an empty day) → ONE row Remarks · till · Document, the box dark (D13
 leave its own, saved onto the leave on the Inputs page (D1307, `ReqWords.tsx LeaveWords` → `setLeaveRemarks`, the till tick
 too); Note gone → Duration, "Pick a range" at its end ("Just this day" gone; a range picked back to the day tapped is the one
 day again); a half day opens on its own half (D1331) → the leave buttons, the row's full width (D1334), the day's own leave
-lit with the cyan ring → the row under the leaves: CSE · OD · UNA in its first three places (round 2, BUILT 24 Oct 26 — D1318,
-D1324, D1325: filled in their kinds' colours, no figure; a tap files the input straight for the day or the picked range, the
-window's new words with it, and closes — `LeaveButtons.tsx DutyButtons`, `store.ts fileStraight`; the drag window's row and a
-member's closed-day window carry them too), the ⋯ in its fourth place (D1326) opening upward Grant OIL (OIL given's
+lit with the cyan ring → the row under the leaves: CSE · OD in its first two places (round 2, BUILT 24 Oct 26 — D1318:
+filled in their kinds' colours, no figure; a tap files the input straight for the day or the picked range, the window's new
+words with it, and closes — `LeaveButtons.tsx DutyButtons`, `store.ts fileStraight`; the drag window's row and a member's
+closed-day window carry them too), UNA in its third — an ADMIN's alone (D1338: the Leave War's own record, never an input;
+deep teal, filled; a tap places it at once on the day, the range or every cell picked, on the Duration's half, with the
+window's new words, and closes — `LeaveButtons.tsx UnaButton`, `store.ts placeUna`; a member's third place is empty), the ⋯ in its fourth place (D1326) opening upward Grant OIL (OIL given's
 green, D1320) · Post out · Post in; a member has none of the three — his fourth place stays empty. No row carries a label; each keeps its name for a screen
 reader (`aria-label`). The switch is remembered per admin on the device (D1302, `BidBits.tsx useApproveMemory`, `lw:approve:<viewer>`
 — a view convenience, never a record). The drag window: the same rows; Decide only where the days hold a bid; its dates short

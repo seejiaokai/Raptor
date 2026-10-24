@@ -18,8 +18,9 @@ export interface AwayLine {
   callsign: string
   /** the stored notation of what takes him away: `LL`, `*LL` a morning, `LL*` an afternoon */
   code: string
-  /** approved (an absence — leave, a medical, a course, an overseas duty) or a bid still pending */
-  state: 'approved' | 'pending'
+  /** approved (an absence — leave, a medical, a course, an overseas duty), a bid still pending, or a UNA (D1338 — an
+   *  admin's, out of the manning: its box says it, so no word is printed beside it) */
+  state: 'approved' | 'pending' | 'una'
   /** the run it belongs to: its first and last day */
   from: string
   to: string
@@ -42,9 +43,11 @@ export interface DayPanelData {
 const lvl = (v: Verdict): '' | 'amber' | 'red' => (v === 'ok' ? '' : v)
 const halfOf = (code: string) => (code.startsWith('*') || code.endsWith('*') ? 0.5 : 1)
 
-/** what takes a man away on a day: his top absence, else his top bid not refused — never a credit or a notice */
+/** what takes a man away on a day: his top absence, else a UNA (D1338), else his top bid not refused — never a credit or
+ *  a notice */
 function awayRecord(v: DayView): Contrib | null {
-  return v.all.find(c => c.kind === 'absence') ?? v.all.find(c => c.kind === 'request' && c.state !== 'refused') ?? null
+  return v.all.find(c => c.kind === 'absence') ?? v.all.find(c => c.kind === 'una')
+    ?? v.all.find(c => c.kind === 'request' && c.state !== 'refused') ?? null
 }
 const notation = (c: Contrib) => (c.win[0] === 0 && c.win[1] === 720 ? `*${c.code}` : c.win[0] === 721 ? `${c.code}*` : c.code)
 
@@ -56,6 +59,7 @@ function runOf(war: MergedWar, personId: string, date: string, c: Contrib): { fr
     const o = v ? awayRecord(v) : null
     if (!o) return null
     if (c.kind === 'absence') return o.kind === 'absence' && o.id === c.id ? o : null
+    if (c.kind === 'una') return o.kind === 'una' && o.code === c.code ? o : null
     return o.kind === 'request' && o.code === c.code && o.state === c.state ? o : null
   }
   let from = date, to = date, days = halfOf(notation(c))
@@ -84,7 +88,7 @@ export function dayPanelData(iso: string): DayPanelData {
     const c = awayRecord(v)
     if (!c) continue
     const run = runOf(war, p.id, iso, c)
-    away.push({ personId: p.id, callsign: p.callsign, code: notation(c), state: c.kind === 'absence' ? 'approved' : 'pending', ...run })
+    away.push({ personId: p.id, callsign: p.callsign, code: notation(c), state: c.kind === 'absence' ? 'approved' : c.kind === 'una' ? 'una' : 'pending', ...run })
   }
   return { iso, covered: true, open, events, manning, away }
 }

@@ -514,8 +514,8 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <div className="leg-row"><LegBox code="CCL" /><span className="leg-t">Other leave: CCL, FCL, PL, CL, EL</span></div>
               <div className="leg-row"><LegBox code="CSE" /><span className="leg-t">Course</span></div>
               <div className="leg-row"><LegBox code="OD" /><span className="leg-t">Overseas duty</span></div>
-              {/* the unforeseen absence (his D1303, D1325 — round 2): named apart from the Inputs page's "Other" */}
-              <div className="leg-row"><LegBox code="UNA" /><span className="leg-t">Unavailable: an unforeseen absence</span></div>
+              {/* UNA (his D1338): an admin has put him out of the manning — the war's own record, nowhere else */}
+              <div className="leg-row"><LegBox code="UNA" /><span className="leg-t">Unavailable: out of the manning</span></div>
               <div className="leg-row"><LegBox code="ATTC" text="C" /><span className="leg-t">Medical: B, C, OML, HL</span></div>
               <div className="leg-sec">The fill: where it stands</div>
               <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Approved</span></div>

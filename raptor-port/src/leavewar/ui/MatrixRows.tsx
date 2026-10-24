@@ -143,7 +143,9 @@ export function cellOpenable(states: States, role: Role, viewer: string | null, 
     // CHEAP — no date question here, because this runs for every drawn cell; which sheet opens is decided once, when
     // the cell is opened (Matrix).
     canEditRow(role, viewer, personId) ||
-    (deciding && isBiddable(grid[personId]?.[date]))
+    (deciding && isBiddable(grid[personId]?.[date])) ||
+    /* A UNA OPENS FOR EVERYONE (D1338 — "members can read its remarks too"): another man's included, read only */
+    !!view?.all.some(c => c.kind === 'una')
 }
 
 type PersonRowProps = {

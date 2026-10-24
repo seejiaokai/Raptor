@@ -103,6 +103,9 @@ import {
   MAX_CARRIED_REMARK,
   type CreditRec,
   type NoticeRec,
+  type UnaRec,
+  MAX_UNA_BY,
+  formatCell,
   type RequestState,
   type Contrib,
   readRecs,
@@ -139,6 +142,7 @@ import {
   type Person,
   type Stint,
   type PostOutcome,
+  type Portion,
   POST_OUTCOMES,
   outcomeOf,
   type Requirements,
@@ -1497,7 +1501,7 @@ function lwRegisterCommands(): void {
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
   /* [ARCH-STACK] step 4 — the war gestures. The role gates live in the writers
      (canDecide / canEditRow), exactly as lw.edit's do. */
-  for (const t of ['lw.decide', 'lw.placeApproved', 'lw.file', 'lw.reqmeta', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
+  for (const t of ['lw.decide', 'lw.placeApproved', 'lw.file', 'lw.una', 'lw.reqmeta', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
   /* D352 narrowed by D1177: opening or closing dates is its own command so Undo can name it ("Undid: opening bidding
      1 Apr – 30 Apr"); its authority is perms.ts COMMAND_OPS (admin-only), as every war command's */
   cmdDefinePermission('lw.open', cmdAnyone)
@@ -2954,8 +2958,10 @@ export function setCell(personId: string, date: string, code: string, words?: Re
   if (!clean) {
     /* clear: the requests at the address, and — for an admin — the day's OIL awards, which are ledger entries now
        ([OIL-AWARD-IS-A-GRANT]; D260: a Clear takes the award with the rest). A generated credit belongs to the
-       schedule; a notice to its "OK, seen". ONE command for both stores (Fable's plan read F2). */
-    const next = list.filter(r => r.kind !== 'request')
+       schedule; a notice to its "OK, seen". ONE command for both stores (Fable's plan read F2). An admin's Clear takes
+       the day's UNA with the rest (D1338 — his alone; D260's "everything in it"); a member's never touches one. */
+    const admin = canDecide(state.role)
+    const next = list.filter(r => r.kind !== 'request' && !(admin && r.kind === 'una'))
     const awards = awardIdsAt(personId, date)
     if (next.length === list.length && !awards.length) return false
     return gesture(awards.length ? 'lw.clear' : 'lw.edit', () => {
@@ -3069,7 +3075,7 @@ function writeMany(cells: { personId: string; date: string }[], code: string, wh
       for (const { personId, date } of cells) {
         /* clearing an EMPTY cell is neither a write nor a refusal — a loose
            delete-box sweeps up empties around the bids */
-        if (clearing && !listAt(personId, date).some(r => r.kind === 'request' || r.kind === 'credit') && !awardIdsAt(personId, date).length) continue
+        if (clearing && !listAt(personId, date).some(r => r.kind === 'request' || r.kind === 'credit' || (r.kind === 'una' && canDecide(state.role))) && !awardIdsAt(personId, date).length) continue
         const person = find(personId)
         if (person && !leaveDateOk(person, date)) { skipped++; continue }
         if (setCell(personId, date, code, words)) written++
@@ -3161,7 +3167,8 @@ function clearRequestsAt(personId: string, date: string, awards = false): boolea
     return pend.length > 0 && putList(personId, date, listAt(personId, date).filter(r => !pend.includes(r as RequestRec)))
   }
   const list = listAt(personId, date)
-  const next = list.filter(r => r.kind !== 'request')
+  /* (an admin's block Delete takes the day's UNA too — D1338, as the one-day Clear does above) */
+  const next = list.filter(r => r.kind !== 'request' && !(awards && canDecide(state.role) && r.kind === 'una'))
   const ids = awards ? awardIdsAt(personId, date) : []
   if (next.length === list.length && !ids.length) return false
   if (next.length !== list.length) putList(personId, date, next)
@@ -3327,12 +3334,12 @@ export function placeApproved(cells: { personId: string; date: string }[], code:
 }
 
 /** FILED STRAIGHT (his D1318 — "OD and course doesnt need an approval, its directly approved like an input. it can go
- *  anytime. member can file it too. dont need document"; D1324 — UNA the same; round 2, [LW-FILE-OD-CRS]). A course, an
- *  overseas duty or the unforeseen absence placed on the war stands at once as the input it is: no bid, nothing to
+ *  anytime. member can file it too. dont need document"; round 2, [LW-FILE-OD-CRS]). A course or an
+ *  overseas duty placed on the war stands at once as the input it is: no bid, nothing to
  *  approve, on ANY day the war holds — open for bidding or not, a day before today too, as the Inputs page allows — by a
  *  member on his own row or an admin on any (`canEditRow`). ONE command, one Undo (`lw.file`); the absence door writes
  *  the Inputs, through the Inputs door's own rules. */
-export const FILED_STRAIGHT: readonly string[] = ['CSE', 'OD', 'UNA']
+export const FILED_STRAIGHT: readonly string[] = ['CSE', 'OD']
 export function fileStraight(cells: { personId: string; date: string }[], code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
   const clean = code.trim().toUpperCase()
   if (!FILED_STRAIGHT.includes(clean)) return { done: 0, skipped: cells.length, why: [] }
@@ -3344,6 +3351,64 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
     out = { done: r.done, skipped: out.skipped + r.skipped, why: r.why }
   })
   return out
+}
+
+/** UNA — OUT OF THE MANNING (his D1338, 24 Oct 26 — "this person is under investigation for example and he’s put out of
+ *  manning. And for people to see on the leave war so they don’t get confused on the counting … But nowhere else", then
+ *  "its admin input only"). An ADMIN places it on any man's row, on any day a leave period holds, for the whole day, the
+ *  morning or the afternoon, with the window's remarks; it names him (`by`). It is the war's own record and nothing else's:
+ *  no Input, no bid, nothing to approve, no document, no question. A UNA already on a half it takes is REPLACED (one a
+ *  half — `listProblem`); the same UNA with the same words again changes nothing. Every cell in ONE command, one Undo.
+ *  A member is refused here and, whatever his command, at the commit (perms.ts — `lw.una` and the lw.cell check). */
+export function placeUna(cells: { personId: string; date: string }[], portion: Portion, words?: { remarks?: string }): { done: number; skipped: number } {
+  if (!canDecide(state.role)) return { done: 0, skipped: cells.length }
+  const code = formatCell({ type: 'UNA', portion })
+  const typed = String(words?.remarks ?? '').slice(0, MAX_CARRIED_REMARK)
+  const remarks = typed.trim() ? typed : ''
+  const by = approverName().slice(0, MAX_UNA_BY)
+  const want = new Set(halvesOfPortion(portion))
+  let done = 0, skipped = 0
+  gesture('lw.una', () => {
+    const wasQuiet = quiet
+    quiet = true
+    try {
+      for (const { personId, date } of cells) {
+        if (!warHolding(state.wars, date)) { skipped++; continue }
+        const list = listAt(personId, date)
+        const replaced = list.filter((r): r is UnaRec => r.kind === 'una' && halvesOfPortion(portionOfCode(r.code)).some(h => want.has(h)))
+        if (replaced.length === 1 && replaced[0]!.code === code && (replaced[0]!.remarks ?? '') === remarks) { done++; continue }
+        const rec: UnaRec = { id: newRecId('u'), kind: 'una', code, ...(remarks ? { remarks } : {}), by }
+        if (putList(personId, date, [...list.filter(r => !replaced.includes(r as UnaRec)), rec])) done++
+        else skipped++
+      }
+    } finally { quiet = wasQuiet }
+    if (done > 0 && !quiet) persistNotify()
+  })
+  return { done, skipped }
+}
+const halvesOfPortion = (p: Portion): Array<'am' | 'pm'> => (p === 'full' ? ['am', 'pm'] : [p])
+
+/** A UNA's remarks changed (D1338): an admin's alone; one Undo. False where nothing changed. */
+export function setUnaRemarks(personId: string, date: string, recId: string, remarks: string): boolean {
+  if (!canDecide(state.role)) return false
+  const list = listAt(personId, date)
+  const rec = list.find((r): r is UnaRec => r.kind === 'una' && r.id === recId)
+  if (!rec) return false
+  const typed = String(remarks ?? '').slice(0, MAX_CARRIED_REMARK)
+  const next: UnaRec = { ...rec }
+  if (typed.trim()) next.remarks = typed; else delete next.remarks
+  if ((next.remarks ?? '') === (rec.remarks ?? '')) return false
+  gesture('lw.una', () => putList(personId, date, list.map(r => (r === rec ? next : r))))
+  return listAt(personId, date).some(r => r.kind === 'una' && r.id === recId && (r.remarks ?? '') === (next.remarks ?? ''))
+}
+
+/** A UNA taken away (D1338): an admin's alone; one Undo. */
+export function removeUna(personId: string, date: string, recId: string): boolean {
+  if (!canDecide(state.role)) return false
+  const list = listAt(personId, date)
+  if (!list.some(r => r.kind === 'una' && r.id === recId)) return false
+  gesture('lw.una', () => putList(personId, date, list.filter(r => !(r.kind === 'una' && r.id === recId))))
+  return !listAt(personId, date).some(r => r.kind === 'una' && r.id === recId)
 }
 
 export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number } {
@@ -3434,6 +3499,8 @@ export function clearRecordById(personId: string, date: string, recId: string): 
   }
   const list = listAt(personId, date)
   const r = list.find(x => x.id === recId)
+  /* a UNA (D1338): an admin's to take — its own command */
+  if (r?.kind === 'una') return removeUna(personId, date, recId)
   if (!r || r.kind !== 'request') return false
   if (!canEditRow(state.role, state.viewer, personId)) return false
   /* a day closed for him: only his own PENDING bid (D1225) */
@@ -4928,9 +4995,9 @@ export function movableCells(cells: { personId: string; date: string }[]): { per
  *  A medical, a course, the schedule's own OIL and a notice are never a move's business and go unsaid. */
 export function stayingIn(
   cells: readonly { personId: string; date: string }[], movers: readonly MoveRec[],
-): Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' }> {
+): Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' | 'una' }> {
   const moving = new Set(movers.map(m => `${m.personId}|${m.date}|${m.id}`))
-  const out: Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' }> = []
+  const out: Array<{ personId: string; date: string; what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' | 'una' }> = []
   const seen = new Set<string>()
   for (const { personId, date } of cells) {
     const key = `${personId}|${date}`
@@ -4942,6 +5009,8 @@ export function stayingIn(
       if (moving.has(`${key}|${r.id}`)) continue
       /* a refused bid staying behind is said too (Astra's final read, 3): history the move does not carry */
       if (r.kind === 'request') out.push({ personId, date, what: r.state === 'refused' ? 'refused' : 'bid' })
+      /* a UNA never moves (D1338 — as an award, D260) and says it stays */
+      else if (r.kind === 'una') out.push({ personId, date, what: 'una' })
     }
     for (const a of absencesAt(personId, date)) {
       if (moving.has(`${key}|${a.id}`) || !isLeaveCode(a.code)) continue
@@ -5119,8 +5188,10 @@ export function deletableIn(cells: readonly { personId: string; date: string }[]
     const writable = dayWritable(date) && canEditRow(state.role, state.viewer, personId)
     /* an award only-day offers Delete to the admin (D260 (c)) — the award is a ledger entry, asked of the ledger */
     const own = writable && (listAt(personId, date).some(r => r.kind === 'request') || awardIdsAt(personId, date).length > 0)
+    /* …and a UNA, an admin's (D1338): his Delete takes it with the rest */
+    const una = canDecide(state.role) && listAt(personId, date).some(r => r.kind === 'una')
     const approved = canDecide(state.role) && warEditable(personId, date)
-    if (own || approved || ownPendingOnClosedDay(personId, date).length) n++
+    if (own || una || approved || ownPendingOnClosedDay(personId, date).length) n++
   }
   return n
 }

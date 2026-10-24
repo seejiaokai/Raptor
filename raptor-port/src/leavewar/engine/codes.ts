@@ -123,9 +123,13 @@ export const MEDICAL_TYPES: readonly { type: string; label: string }[] = Object.
 const NON_LEAVE_LABELS: Record<string, string> = {
   CSE: 'course',
   OD: 'overseas duty',
-  /* the unforeseen absence (D1303, D1324, D1325 — round 2): an input kind of its own, deep teal */
+  /* UNA — UNAVAILABLE, OUT OF THE MANNING (his D1338, 24 Oct 26): the Leave War's own record, an admin's alone, never an
+     input; deep teal (D1325's colour). The one non-leave marker that comes in halves (below). */
   UNA: 'unavailable',
 }
+/* THE NON-LEAVE MARKERS THAT COME IN HALVES — only UNA, which an admin places for a whole day, the morning or the
+   afternoon (D1338: "1 or 0.5"); a course, an overseas duty and an OIL credit still never take a portion. */
+const HALVED_MARKS: Record<string, true> = { UNA: true }
 
 // OIL credit: at work, but off the flying programme. This is a different
 // axis from leave entirely — the codes arrive from Raptor's schedule (and,
@@ -176,7 +180,7 @@ export function parseCell(raw: string | undefined | null): Cell | null {
   const type = MEDICAL_ALIAS[typed] ?? typed
 
   if (portion !== 'full') {
-    return LEAVE_TYPE_BY_CODE[type] || MEDICAL_LABELS[type] ? { type, portion } : null
+    return LEAVE_TYPE_BY_CODE[type] || MEDICAL_LABELS[type] || HALVED_MARKS[type] ? { type, portion } : null
   }
 
   const known = LEAVE_TYPE_BY_CODE[type] || MEDICAL_LABELS[type] || NON_LEAVE_LABELS[type] || SC_DUTY_LABELS[type]
@@ -197,7 +201,7 @@ export function parseCell(raw: string | undefined | null): Cell | null {
  * bad `Cell` was formatted turns that into a stack trace instead.
  */
 export function formatCell(cell: Cell): string {
-  if (cell.portion !== 'full' && !LEAVE_TYPE_BY_CODE[cell.type] && !MEDICAL_LABELS[cell.type]) {
+  if (cell.portion !== 'full' && !LEAVE_TYPE_BY_CODE[cell.type] && !MEDICAL_LABELS[cell.type] && !HALVED_MARKS[cell.type]) {
     throw new Error(`formatCell: '${cell.type}' cannot carry a portion — only leave and medical come in halves`)
   }
   if (cell.portion === 'am') return `*${cell.type}`
@@ -327,7 +331,10 @@ function dayCodeFor(cell: Cell): DayCode {
 
   const nonLeaveLabel = NON_LEAVE_LABELS[type]
   if (nonLeaveLabel) {
-    return { code: type, label: nonLeaveLabel, removes: 1, spends: null, earnsOil: 0, bid: false, duty: false }
+    /* a UNA takes the half it covers (D1338): a morning removes half a man, as a half day's leave does */
+    const halved = !!HALVED_MARKS[type]
+    const suffix = halved ? (portion === 'am' ? ' (AM)' : portion === 'pm' ? ' (PM)' : '') : ''
+    return { code: halved ? formatCell(cell) : type, label: `${nonLeaveLabel}${suffix}`, removes: (halved ? portionAmount(portion) : 1) as 0.5 | 1, spends: null, earnsOil: 0, bid: false, duty: false }
   }
 
   // Only FO/HO remain, guaranteed by parseCell already having rejected
@@ -380,6 +387,8 @@ export const CODE_GLOSSARY: GlossaryGroup[] = [
       { show: 'FO', mean: cap(SC_DUTY_LABELS.FO) + ' — a full day off in lieu. An admin grants it here or on the OIL tracker, for any reason.' },
       { show: 'HO', mean: cap(SC_DUTY_LABELS.HO) + ' — half a day off in lieu, granted the same way.' },
       { show: 'FO*', mean: 'The star means the APP put it there, not a person — credited automatically from the published schedule for a weekend or public holiday actually worked.' },
+      /* UNA (D1338): the war's own record, an admin's — nowhere else */
+      { show: 'UNA', mean: 'Unavailable — an admin has put him out of the manning, for the whole day or a half. Everyone can read why.' },
     ],
   },
   {
@@ -394,6 +403,6 @@ export const CODE_GLOSSARY: GlossaryGroup[] = [
   },
   {
     group: 'Other duty',
-    rows: Object.entries(NON_LEAVE_LABELS).map(([code, label]) => ({ show: code, mean: cap(label) })),
+    rows: Object.entries(NON_LEAVE_LABELS).filter(([code]) => code !== 'UNA').map(([code, label]) => ({ show: code, mean: cap(label) })),
   },
 ]

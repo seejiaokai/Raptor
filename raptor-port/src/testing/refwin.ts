@@ -509,7 +509,7 @@ function reinput(html: string): string {
     ["const dn=isDownchit(inp.type), lv=isLeave(inp.type);\n        if(!dn&&!lv)return;",
      "if(/^\\s*ATT\\s*B\\s*$/i.test(String(inp.type||''))&&e.kind!=='shift')return;"
      + "const dn=isDownchit(inp.type), lv=isLeave(inp.type);"
-     + "const un=dn||lv||/^\\s*(OD|UNA)\\s*$/i.test(String(inp.type||''));"
+     + "const un=dn||lv||/^\\s*OD\\s*$/i.test(String(inp.type||''));"
      + "const soft=/^\\s*MEETING\\s*$/i.test(String(inp.type||''));"
      + "if(!un&&e.kind==='shift'&&soft){"
      + "if(!overlap(e.s,e.e,inp.s,inp.e))return;"
@@ -734,8 +734,8 @@ function reirest(html: string): string {
   const swaps: Array<[string, string]> = [
     ["prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });",
      "prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });"
-     + "const _rt=/^(training|cse|meeting|fly with|appointment|duty|event|od|una|other)$/i;"
-     + "const _tk=/^(training|cse|meeting|fly with|personal|appointment|duty|event|od|una|other)$/i;"
+     + "const _rt=/^(training|cse|meeting|fly with|appointment|duty|event|od|other)$/i;"
+     + "const _tk=/^(training|cse|meeting|fly with|personal|appointment|duty|event|od|other)$/i;"
      + "const _il=i=>{const ty=String(i.type||''),t=String(i.title==null?'':i.title).replace(/\\s+/g,' ').trim().slice(0,40).trim();"
      + "return _tk.test(ty.trim())&&t&&t.toLowerCase()!==ty.trim().toLowerCase()?t:ty;};"
      + "ev[idx-1].input.forEach(i=>{"

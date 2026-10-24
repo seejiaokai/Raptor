@@ -79,7 +79,9 @@ const TYPE_PHRASE: Record<string, string> = {
   /* the Leave War's gestures (the one-absence commands, [ARCH-STACK] step 4) */
   'lw.decide': 'a decision on a bid',
   'lw.placeApproved': 'placing and approving leave',
-  'lw.file': 'filing a course, an overseas duty or an absence',
+  'lw.file': 'filing a course or an overseas duty',
+  /* UNA, out of the manning (D1338) — an admin's alone */
+  'lw.una': 'a UNA',
   'lw.reqmeta': 'a leave request’s remarks or documents',
   'lw.approve': 'approving leave',
   'lw.move': 'moving a bid',
@@ -208,7 +210,7 @@ function lwCellLabel(entry: UndoEntry): string | null {
   if (!cells.length) return null
   const pid = (() => { const p = cells[0].id.split(':'); return p.length >= 3 ? p[p.length - 2] : '' })()
   const who = cells.every(c => { const p = c.id.split(':'); return p[p.length - 2] === pid }) ? nameOf(pid) : null
-  let added = { req: 0, cred: 0 }, removed = { req: 0, cred: 0 }
+  let added = { req: 0, cred: 0, una: 0 }, removed = { req: 0, cred: 0, una: 0 }
   for (const c of cells) {
     const b = listOf(c.before), a = listOf(c.after)
     const ids = (l: any[], k: string) => new Set(l.filter(r => r && r.kind === k).map(r => r.id))
@@ -217,7 +219,13 @@ function lwCellLabel(entry: UndoEntry): string | null {
     for (const id of bR) if (!aR.has(id)) removed.req++
     for (const id of aC) if (!bC.has(id)) added.cred++
     for (const id of bC) if (!aC.has(id)) removed.cred++
+    const bU = ids(b, 'una'), aU = ids(a, 'una')
+    for (const id of aU) if (!bU.has(id)) added.una++
+    for (const id of bU) if (!aU.has(id)) removed.una++
   }
+  /* a UNA (D1338) names itself — before the bid rules, which would call it leave */
+  if (added.una && !added.req && !removed.req) return who ? `${who}’s UNA` : 'a UNA'
+  if (removed.una && !added.req && !removed.req && !added.una) return who ? `removing ${who}’s UNA` : 'removing a UNA'
   if (added.cred && !added.req && !removed.req) return who ? `${who}’s OIL award` : 'an OIL award'
   if (removed.cred && !added.req && !removed.req && !added.cred) return who ? `removing ${who}’s OIL award` : 'removing an OIL award'
   if (added.req && !removed.req) return who ? `${who}’s bid` : 'a bid'

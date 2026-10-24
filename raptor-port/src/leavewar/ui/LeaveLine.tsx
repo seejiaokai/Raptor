@@ -20,7 +20,7 @@ export function LeaveLine({ personId, callsign = '', code, state, from, to, days
   /** his callsign, where the roster draws no puck for him */
   callsign?: string
   code: string
-  state: 'approved' | 'pending'
+  state: 'approved' | 'pending' | 'una'
   from: string
   to: string
   days: number
@@ -29,10 +29,11 @@ export function LeaveLine({ personId, callsign = '', code, state, from, to, days
   return (
     <div className="ll-row" data-testid={testid}>
       <span className="ll-puck" aria-hidden="true" dangerouslySetInnerHTML={{ __html: puckHtml(personId, callsign) }} />
-      <span className={`c k-${kindOf(code)} s-${state === 'approved' ? 'a' : 'w'} ll-box`}>{boxText(code)}</span>
+      <span className={`c k-${kindOf(code)} s-${state === 'pending' ? 'w' : 'a'} ll-box`}>{boxText(code)}</span>
       <span className="ll-dates">{runWords(from, to)}</span>
       <span className="ll-days">{fig(days)}</span>
-      <span className={`ll-state${state === 'pending' ? ' pend' : ''}`}>{state === 'approved' ? 'Approved' : 'Pending'}</span>
+      {/* a UNA's box says what it is (D1338); no state word beside it */}
+      <span className={`ll-state${state === 'pending' ? ' pend' : ''}`}>{state === 'approved' ? 'Approved' : state === 'pending' ? 'Pending' : ''}</span>
     </div>
   )
 }

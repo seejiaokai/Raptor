@@ -90,6 +90,8 @@ export function legacyViews(grid: Grid, states: States): Views {
          drawn on the grid) reads as the drawn award, which earns nothing here (D400) */
       if (cell.type === 'FO' || cell.type === 'HO') c = { id: date, kind: 'credit', code: cell.type, win, ...(rec?.source === 'bid' ? {} : { auto: true }), ...(rec?.note ? { note: rec.note } : {}) }
       else if (isBiddable(code) && st !== 'approved') c = { id: date, kind: 'request', code: cell.type, win, state: st ?? 'pending' }
+      /* a UNA cell (D1338) is the war's own UNA, never an absence */
+      else if (cell.type === 'UNA') c = { id: date, kind: 'una', code: 'UNA', win }
       else c = { id: date, kind: 'absence', code: cell.type, win, lw: rec?.source !== 'raptor' }
       if (rec?.shiftedFrom) c.movedFrom = rec.shiftedFrom
       out[date] = dayView([c])

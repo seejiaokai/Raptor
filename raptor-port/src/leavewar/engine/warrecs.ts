@@ -12,6 +12,12 @@
 //     by `state/merge.ts`) — the way it draws an absence from the Inputs.
 //   - NOTICES — "your LL bid was replaced by ATT C (filed by …)", kept until the
 //     person or an admin taps "OK, seen" (catalogue owner rule + clash check B6).
+//   - UNA — "unavailable": an admin has put the man out of the manning for a
+//     whole day, the morning or the afternoon (his D1338, 24 Oct 26 — "this
+//     person is under investigation for example and he’s put out of manning …
+//     for people to see on the leave war … But nowhere else … its admin input
+//     only"). Everyone sees it and reads its remarks; only an admin places,
+//     changes or removes it. It lives here and NOWHERE ELSE — never an Input.
 // Several can sit on one person/date (a morning bid and an afternoon bid, a
 // worked morning beside an afternoon bid, a refused bid kept as history), so a
 // date holds a LIST. What the box shows is derived (`dayview.ts`), never stored.
@@ -20,9 +26,10 @@
 //   - at most one UNDECIDED request per half (a full-day one takes both);
 //   - at most one refused request per half (a newer refusal replaces the older);
 //   - at most one (automatic) credit;
+//   - at most one UNA per half (a full-day one takes both);
 //   - notices unlimited.
 
-import { parseCell, type Portion } from './codes'
+import { formatCell, parseCell, type Portion } from './codes'
 import type { LedgerEntry } from './counters'
 import { AM, PM, FULL, isLeaveCode, isSickCode, portionOf, type Contrib, type RequestState, type Win } from './dayview'
 
@@ -123,7 +130,22 @@ export interface NoticeRec extends Placed {
   at: string
 }
 
-export type WarRec = RequestRec | CreditRec | NoticeRec
+/** UNA — OUT OF THE MANNING (his D1338): the war's own record, an admin's alone. Its notation carries its half as leave's
+ *  does (`UNA`, `*UNA`, `UNA*`); it charges nothing, is never approved or refused, and clashes with nothing. */
+export interface UnaRec extends Placed {
+  id: string
+  kind: 'una'
+  /** `UNA` (the whole day), `*UNA` (the morning), `UNA*` (the afternoon) */
+  code: string
+  /** its remarks — everyone may read them (D1338, "members can read its remarks too") */
+  remarks?: string
+  /** the callsign of the admin who placed it, frozen when placed (a tap says who) */
+  by?: string
+}
+/** the most characters of who placed a UNA — a callsign, as a notice's `byWho` */
+export const MAX_UNA_BY = 60
+
+export type WarRec = RequestRec | CreditRec | NoticeRec | UnaRec
 /** personId → date → records. Sparse. */
 export type Recs = Record<string, Record<string, WarRec[]>>
 
@@ -155,6 +177,7 @@ export function recsAt(recs: Recs, personId: string, date: string): readonly War
 export const isRequest = (r: WarRec): r is RequestRec => r.kind === 'request'
 export const isCredit = (r: WarRec): r is CreditRec => r.kind === 'credit'
 export const isNotice = (r: WarRec): r is NoticeRec => r.kind === 'notice'
+export const isUna = (r: WarRec): r is UnaRec => r.kind === 'una'
 
 /** The window a request's notation takes. */
 export function requestWin(code: string): Win {
@@ -234,6 +257,9 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
       const h = creditHalf(r)
       const box: Pick<Contrib, 'win' | 'wins'> = h ? { win: halfWin(h), wins: ws } : { win: env, ...(ws.length > 1 ? { wins: ws } : {}) }
       out.push({ id: r.id, kind: 'credit', code: r.code, ...box, auto: true, ...(r.via ? { via: r.via } : {}), ...(r.note ? { note: r.note } : {}) })
+    } else if (r.kind === 'una') {
+      /* UNA (D1338): its half is where it is drawn AND the time it takes — it has no hours of its own */
+      out.push({ id: r.id, kind: 'una', code: 'UNA', win: requestWin(r.code), ...(r.remarks ? { remarks: r.remarks } : {}), ...(r.by ? { by: r.by } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }
@@ -266,7 +292,7 @@ export const isOilAward = (e: { counter: string; amount: number }): boolean => e
 /* ---- the per-address rules ---------------------------------------------- */
 /** Why a list breaks the per-address rules, or null when it is sound. */
 export function listProblem(list: readonly WarRec[]): string | null {
-  const live = { am: 0, pm: 0 }, refused = { am: 0, pm: 0 }
+  const live = { am: 0, pm: 0 }, refused = { am: 0, pm: 0 }, unas = { am: 0, pm: 0 }
   /* ONE EARNED CREDIT PER DAY. The award that could sit beside it (N16) is a
      ledger entry now ([OIL-AWARD-IS-A-GRANT]) and never reaches this list.
      A rejection here makes `readRecs` answer null and `readWars` throw away
@@ -279,6 +305,11 @@ export function listProblem(list: readonly WarRec[]): string | null {
     ids.add(r.id)
     if (r.kind === 'credit') {
       if (++credits > 1) return 'two earned credits'
+      continue
+    }
+    /* one UNA a half (D1338): an admin placing one over another REPLACES it (the store), so two on one half is corruption */
+    if (r.kind === 'una') {
+      for (const h of halvesOf(portionOfCode(r.code))) if (++unas[h] > 1) return `two UNA on the ${h === 'am' ? 'morning' : 'afternoon'}`
       continue
     }
     if (r.kind !== 'request') continue
@@ -357,6 +388,16 @@ function readRecBody(x: unknown): WarRec | null {
       const sp = (x.spans as unknown[]).filter(isSpan) as Array<[number, number]>
       if (sp.length) r.spans = sp
     }
+    return r
+  }
+  /* UNA (D1338): its code must be UNA with at most one half mark; its words are cut, never a reason to refuse — a war is
+     thrown away whole for one unreadable record (readRecs), so only the code can make it unreadable */
+  if (x.kind === 'una') {
+    const cell = typeof x.code === 'string' ? parseCell(x.code) : null
+    if (!cell || cell.type !== 'UNA') return null
+    const r: UnaRec = { id: x.id, kind: 'una', code: formatCell(cell) }
+    if (typeof x.remarks === 'string' && x.remarks.trim()) r.remarks = x.remarks.slice(0, MAX_CARRIED_REMARK)
+    if (typeof x.by === 'string' && x.by.trim()) r.by = x.by.trim().slice(0, MAX_UNA_BY)
     return r
   }
   if (x.kind === 'notice') {

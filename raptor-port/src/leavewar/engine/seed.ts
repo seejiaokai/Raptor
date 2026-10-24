@@ -168,6 +168,9 @@ export function seedRecs(): Recs {
     // a closed-war fact, owner 27 Aug 26).
     miles: { '2026-02-02': rq('LL', 'pending'), '2026-02-03': rq('LL*', 'pending') },
     cross: { '2026-03-10': rq('LL', 'refused') },
+    /* PIPPER is out of the manning for a day (his D1338 — UNA, an admin's, on the Leave War only): the demo shows one */
+    /* its own id, outside the requests' run, so every seeded request keeps its number (and its saved row's place) */
+    pipper: { '2026-01-14': [{ id: 'seedu1', kind: 'una', code: 'UNA', remarks: 'Board of inquiry', by: 'SABER' }] },
   }
 }
 
@@ -179,8 +182,6 @@ export const SEED_ABSENCES: readonly SeedAbsence[] = Object.freeze([
   { person: 'jaguar', code: 'OL', date: '2026-01-16', endDate: '2026-01-17', lw: true },
   { person: 'asics', code: 'LL', date: '2026-01-08', lw: true },
   { person: 'pipper', code: 'CSE', date: '2026-01-12', endDate: '2026-01-13', lw: false },
-  // the unforeseen absence (D1303, D1325 — round 2): a kind of its own, deep teal, filed as an OD is
-  { person: 'pipper', code: 'UNA', date: '2026-01-14', lw: false },
   { person: 'roulette', code: 'CCL', date: '2026-01-15', lw: true },
   { person: 'dusk', code: 'OIL', date: '2027-05-04', lw: false },
 ])

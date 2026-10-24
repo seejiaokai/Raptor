@@ -47,7 +47,7 @@ export function patchOf(was: ReqDraft, now: ReqDraft): ReqWordsPatch | null {
 /* THE BOX GROWS WITH ITS WORDS (his D1333): one line tall to start; as the words wrap it grows a line at a time, so a long
    remark is read whole, never hidden in one line that scrolls sideways. Measured after each change of the words (the
    height set back to auto first, so it shrinks again too). */
-function useGrow(value: string) {
+export function useGrow(value: string) {
   const ref = useRef<HTMLTextAreaElement>(null)
   const fit = () => {
     const t = ref.current

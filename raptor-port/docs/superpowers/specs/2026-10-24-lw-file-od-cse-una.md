@@ -44,6 +44,20 @@ closed day).
    **One exception, by his own reason for the medical kinds:** the LATE mark skips UNA as it skips a downchit — an
    unforeseen absence cannot be filed before a deadline.
 
+## Round 2b — UNA on the Leave War only (D1338): what is built (24 Oct 26)
+
+Everything above about UNA as an input kind is REPLACED. UNA is the war's own record (`engine/warrecs.ts UnaRec`): an admin
+places it from the third place of the row under the leaves (the one-day and drag windows; a member's third place is empty),
+on the Duration's half, with the window's remarks, naming himself (`store.ts placeUna`, command `lw.una`); one a half (a UNA
+on a half it takes is replaced). It takes the man out of the manning by 0.5 or 1 (`dayview.ts`), charges nothing, clashes with
+nothing, asks nothing. A day holding one opens the day's list for everyone (another man's too): its box, "out of the manning ·
+placed by …", its remarks read only — an admin's box to change them and his Delete (`setUnaRemarks`, `removeUna`). An admin's
+one-day Clear and block Delete take it with the rest; a Move leaves it and says so. The day panel's Away list names it, with
+no state word. The commit refuses any member's command that adds, changes or takes one (`perms.ts ownershipViolation`). The
+Inputs page, the schedule, the bell and the OIL work never see it. **Not done, by D1338's "nowhere else":** no line in the
+changes window's history (that history is the schedule's and the inputs'; the Undo names it, "a UNA"). Tests:
+`src/leavewar/una.test.ts`, `src/engine/unagone.test.ts`, `ui/round2.test.tsx`, `e2e/round2-leavewar.spec.ts`.
+
 ## Where it lives
 
 The kind: `src/engine/inputs.ts` (INPUT_META, `isLateInput`), `src/engine/schema.ts`, the reference's mirror

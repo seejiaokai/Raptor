@@ -1515,10 +1515,22 @@ be copied there and in `store.ts setCell` / `moveRecords`); the leave then shows
 documents show (the Inputs list and calendar, the input window, the schedule's rows print the remark and its till). One new
 command, `lw.reqmeta` (`perms.ts` — a member's own pending request's words change on a closed day, nothing else there).
 
-## A course, an overseas duty and the unforeseen absence filed on the Leave War (round 2, 24 Oct 26 — D1318, D1324, D1325)
+## A course and an overseas duty filed on the Leave War (round 2, 24 Oct 26 — D1318), and UNA, the war's own (D1338)
 
-CSE · OD · UNA stand in the row under the leaves of the one-day window, the drag window and a member's closed-day window
-(`ui/LeaveButtons.tsx DutyButtons`); a tap files the input straight (`store.ts fileStraight` → the absence door's `file`,
+**UNA since D1338 (24 Oct 26) is NOT an input** — the paragraph below about it as a new input kind is history: it is the
+Leave War's OWN record (`engine/warrecs.ts UnaRec`, kind `una`), an admin's alone (`store.ts placeUna` / `setUnaRemarks` /
+`removeUna`, one command `lw.una`, admin-only in `perms.ts`, and the commit refuses any member's command that adds, changes
+or takes one — `ownershipViolation`'s lw.cell check). It reaches: the grid (its box, a half by its notation `*UNA` / `UNA*`,
+`engine/codes.ts` HALVED_MARKS), the manning (`dayview.ts` — `away` 0.5 or 1, no charge, no clash), the day's list (its line,
+read by everyone, its remarks box and Delete an admin's — `ui/DayList.tsx`; a day holding one opens the list, `Matrix.tsx
+listOpen`, and opens for a member on any row, `MatrixRows.tsx cellOpenable`), the day panel's Away list (`state/daypanel.ts`),
+the Legend and the code glossary, a block Delete (an admin's takes it — D260's "everything in it"), a Move (it stays and the
+banner says so), the Undo label (`undo/describe.ts`), the save rows (`rec:` — `readRec`; an unreadable record would make the
+war re-seed, so only its code can make it unreadable). NOWHERE ELSE: never the Inputs page, the schedule, the bell, the OIL
+work, Approvals or the person window's leave list (M4, M5 must leave it out when built).
+
+CSE · OD (and, until D1338, UNA) stand in the row under the leaves of the one-day window, the drag window and a member's
+closed-day window (`ui/LeaveButtons.tsx DutyButtons`); a tap files the input straight (`store.ts fileStraight` → the absence door's `file`,
 `sync.ts doorFile` → the Inputs door, its clash rules included) — no bid, one new command `lw.file` (`perms.ts`, asked as an
 Inputs-page filing is). From there it is an ordinary input: the Inputs list and calendar, the schedule's Unavailable, the
 war's grid and manning all read it. **UNA is a new input kind** (`engine/inputs.ts`, the overseas duty's flags): a

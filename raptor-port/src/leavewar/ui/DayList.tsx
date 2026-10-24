@@ -14,11 +14,11 @@ import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
 import { canDecide, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
-import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
-import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
+import { creditGiver, type Half, type NoticeRec, type RequestRec, type UnaRec } from '../engine/warrecs'
+import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, setUnaRemarks, type OilShown } from '../state/store'
 import { docGet, rowDocIds } from '../sync'
 import { EntryBox } from './BidBits'
-import { draftOf, LeaveWords, patchOf, ReqWordsRows, runEnd, type FlushRef, type ReqDraft } from './ReqWords'
+import { draftOf, LeaveWords, patchOf, ReqWordsRows, runEnd, useGrow, type FlushRef, type ReqDraft } from './ReqWords'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
 import { dayLabel, enteredDay, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
@@ -97,6 +97,36 @@ function BidWords({ personId, date, rec, onDone, flushRef }: { personId: string;
         const patch = patchOf(held, next)
         if (patch) onDone(() => setRequestWords(personId, date, rec.id, patch))
       }} />
+  )
+}
+/** A UNA's REMARKS, AN ADMIN'S TO CHANGE (D1338): the bid windows' dark Remarks box, saved when it is left or Enter is
+ *  pressed (`setUnaRemarks`, one Undo), and before the entry's Delete runs (an iPhone keeps the box focused) */
+function UnaWords({ personId, date, rec, onDone, flushRef }: { personId: string; date: string; rec: UnaRec; onDone: (fn: () => boolean | string | null | number) => void; flushRef?: FlushRef }) {
+  const [text, setText] = useState<string | null>(null)
+  const grow = useGrow(text ?? rec.remarks ?? '')
+  const pending = useRef<(() => void) | null>(null)
+  useEffect(() => () => { pending.current?.() }, [])
+  useEffect(() => {
+    if (!flushRef) return
+    const flush = () => { const p = pending.current; pending.current = null; if (p) { p(); setText(null) } }
+    flushRef.current = flush
+    return () => { if (flushRef.current === flush) flushRef.current = null }
+  }, [flushRef])
+  const save = () => {
+    pending.current = null
+    if (text !== null && text !== (rec.remarks ?? '')) onDone(() => setUnaRemarks(personId, date, rec.id, text))
+    setText(null)
+  }
+  return (
+    <div className="bidsheet-row bp-words" data-testid={`dl-una-words-${rec.id}`} role="group" aria-label="Remarks">
+      <span className="inped-rmk bp-rmk dark">
+        <textarea ref={grow} rows={1} aria-label="Remarks" placeholder="Remarks" autoComplete="off" data-testid={`dl-una-rmk-${rec.id}`}
+          maxLength={200} value={text ?? rec.remarks ?? ''}
+          onChange={e => { const v = e.target.value.split(String.fromCharCode(10)).join(' '); setText(v); pending.current = () => { if (v !== (rec.remarks ?? '')) setUnaRemarks(personId, date, rec.id, v) } }}
+          onBlur={save}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save() } }} />
+      </span>
+    </div>
   )
 }
 /** an entry's remarks and documents, read only — what the Inputs page holds for one filed there (D1315), or another man's:
@@ -287,6 +317,19 @@ export function DayListSheet({
         : rec.via === 'input' ? 'From a duty input that was accepted.'
           : 'From the published schedule.'
       return { key: `c-${c.id}`, cls: 'sc', box, text, sub: from, actions, words: null }
+    }
+    /* UNA — OUT OF THE MANNING (D1338): led by its box, filled, in its half; beside it who placed it; its remarks for
+       everyone to read; an admin changes them and takes it away (never moved — it stays where it is placed) */
+    if (c.kind === 'una') {
+      const u = raw.find(r => r.id === c.id) as UnaRec | undefined
+      const text = said(part, `out of the manning${c.by ? ` · placed by ${c.by}` : ''}`)
+      const box = <EntryBox code={c.code} fill="a" place={placeOfWin(c.win)} />
+      const actions: ReactElement[] = []
+      if (deciding && u) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => { flushOf(c.id); act(() => clearRecordById(personId, date, c.id)) }} />)
+      const words = deciding && u
+        ? <UnaWords key={`w-${c.id}`} personId={personId} date={date} rec={u} onDone={act} flushRef={fr(c.id)} />
+        : c.remarks ? readOnly(c.id, { remarks: c.remarks, docIds: [] }, true) : null
+      return { key: `u-${c.id}`, cls: '', box, text, sub: '', actions, words }
     }
     // a replaced-bid notice
     const n = raw.find(r => r.id === c.id) as NoticeRec | undefined

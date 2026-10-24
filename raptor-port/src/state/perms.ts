@@ -427,12 +427,15 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.decide': op(T.bid, 'U'),
   /* an admin places leave and approves it in one step (D1147 — "Approve what I enter", M3 5.5): one command, one Undo */
   'lw.placeApproved': op(T.bid, 'U'),
-  /* a course, an overseas duty or the unforeseen absence filed on the war straight as the INPUT it is (round 2 — D1318,
-     D1324): no bid, no approval; it writes Inputs only, so it is asked as an Inputs-page filing is — his own, an admin any */
+  /* a course or an overseas duty filed on the war straight as the INPUT it is (round 2 — D1318): no bid, no approval; it writes Inputs only, so it is asked as an Inputs-page filing is — his own, an admin any */
   'lw.file': op(T.input, 'U', 'optional'),
   /* a request's own words and papers — its remarks, till tick, documents (M3 5.9, 5.10; D1210, D1150): his own row, as
      lw.edit; on a day closed for him the commit lets exactly this through (onlyChangesWords) */
   'lw.reqmeta': op(T.bid, 'U', 'optional'),
+  /* UNA — out of the manning (his D1338, 24 Oct 26 — "its admin input only"): an admin places, changes or takes it away on
+     any man's row; a member never, not on his own row either (ownershipViolation's lw.cell check below holds that for
+     every command he runs) */
+  'lw.una': op(T.bid, 'U'),
   'lw.approve': op(T.bid, 'U'),
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
@@ -675,6 +678,13 @@ export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] |
    `remarks`, `till` and `docIds` of an undecided request. A code, a state, a record added or taken is not this. Whatever
    the command calls itself — his Undo or Redo of such a change is the same change, and a Redo that would put a bid back
    is not one (D1263's check still answers it). */
+/* the UNA records at one war address, as one comparable string — their place in the list (ord) aside, which a member's
+   own bid beside them may re-mint (D1338) */
+function unasOf(list: unknown): string {
+  const l: any[] = Array.isArray(list) ? list : []
+  return JSON.stringify(l.filter(r => r?.kind === 'una').map(({ ord: _o, ...r }: any) => r)
+    .sort((a, b) => String(a.id).localeCompare(String(b.id))))
+}
 function onlyChangesWords(before: unknown, after: unknown): boolean {
   const b: any[] = Array.isArray(before) ? before : []
   const a: any[] = Array.isArray(after) ? after : []
@@ -839,6 +849,9 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'lw.cell': {
         const parts = c.id.split(':')
         if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
+        /* AN ADMIN'S UNA (D1338 — "its admin input only"): whatever a member's command is called — a bid, a clear, his Undo —
+           every UNA at the address stands after it exactly as before it, on his own row too */
+        if (unasOf(c.before) !== unasOf(c.op === 'delete' ? [] : c.after)) return `an admin's UNA (${where})`
         /* …and his Undo of such a step puts back exactly what it took (the walk's B-F1, 22 Oct 26: the Undo was refused) —
            but ONLY that (D1263): an Undo the timeline vouches for, of his own step made on the day already closed, image
            for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a

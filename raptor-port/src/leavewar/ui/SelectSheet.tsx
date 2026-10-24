@@ -32,7 +32,7 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, placeUna, postingBlocked, setBidStates, setCells } from '../state/store'
 import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
@@ -45,7 +45,7 @@ import type { Selection } from './select'
 import './bidpicker.css'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
-import { DutyButtons, LeaveButtons } from './LeaveButtons'
+import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState } from '../state/store'
 
@@ -221,6 +221,16 @@ export function SelectSheet({
     if (r.done > 0) onDone(true, true)
   }
 
+  /* UNA (his D1338): an admin's, on every day of every man picked, on the half the Duration row says; one man's words go
+     with it, as with a leave */
+  const fileUna = () => {
+    setConfirmDel(false); setConfirming(null); setNoteAt('leave')
+    const r = placeUna(sel.cells, portion, nPeople === 1 ? { remarks: wordsOf(words)?.remarks } : undefined)
+    if (!r.skipped) { onDone(r.done > 0); return }
+    setNote(skipNote('written', r.done, r.skipped))
+    if (r.done > 0) onDone(true, true)
+  }
+
   const del = () => {
     setConfirming(null)
     setNoteAt('sel')
@@ -310,8 +320,10 @@ export function SelectSheet({
       {/* behind the ⋯ in the fourth place of the row under the leaves, as on the one-day window (his D1326) */}
       {!poOpen && (
         <div className="bidsheet-row bp-extra" data-testid="sel-extra-row">
-          {/* CSE · OD · UNA in the first three places (round 2), the ⋯ the fourth where Post out is offered */}
+          {/* CSE · OD in the first two places (round 2), UNA the third — an admin's alone (D1338) — the ⋯ the fourth where
+              Post out is offered */}
           <DutyButtons onFile={fileDuty} testPrefix="sel" />
+          {role === 'admin' && <UnaButton onPlace={fileUna} testPrefix="sel" />}
           {onPostOut && nPeople === 1 && <MoreButton testid="sel-more" items={[{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
             onPick: () => { setPoOpen(true); setConfirming(null) } }]} />}
         </div>
