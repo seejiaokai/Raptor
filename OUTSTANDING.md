@@ -2128,6 +2128,7 @@ lw-declutter-look.mjs`, `lw-declutter-mock.mjs` (the window transform), `lw-twod
 `claude/lw-m3-placing-leave` (pull request 569), before its "merge live".
 
 ### [LW-READS-OWED-1024] Fresh reads owed from 24 Oct 26
+**25 Oct 26 (the night): the reader of D1305–D1355 and lessons 45–54 RAN** — `raptor-port/docs/handpass/parts/lw-1025/reads-1305-1355.md`; its short-line and full-row findings and lesson 54 fixed the same night. **Left:** lessons 49, 50 and 52 (each claims a little more than he said — the fix worded in that file), and D1297's sweep of earlier evidence sheets with its reader.
 One fresh, blind Opus reader of the short lines of D1305–D1334 against their full rows (D138) and of design lessons 45–53
 against his words (D941); and D1297's sweep — each earlier evidence sheet's "found at his look" fault given a §7.11 lesson where
 the walk missed it, then one fresh reader of §7.11's lessons. **Place:** with [LW-ROUND3-BUILD]'s code read, or before it.
