@@ -7206,9 +7206,13 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   `e2e/leavewar.spec.ts` "in the Manning block the four rows cover no month button…", phone and desktop.
 - **The block's own rows — D669 (8 Oct 26: "should there be a default counter? I think there shouldn't be and the user
   can create what they want. Instead of hide (eye) we should replace it with a delete cross"), BUILT the same night.**
-  The Manning block comes with NO count rows of its own (`engine/seed.ts seedRequirements` is empty, for the demo
-  squadron too) — a squadron makes the ones it wants with ⚙ → "+ Counter" — so these four are ALL it shows until a
-  counter is made, and `CountRows` draws its `tbody` for them even with no count row. It replaced the same evening's
+  The Manning block comes with NO count rows of its own (`engine/seed.ts seedRequirements` is empty) — a squadron makes
+  the ones it wants with ⚙ → "+ Counter" — so these four are ALL it shows until a counter is made, and `CountRows` draws
+  its `tbody` for them even with no count row. **The demo world is the one exception (his D1312, 24 Oct 26 — "add more
+  manning counters like 6 rows so our mock ups caters for it"):** a fresh demo boot lays on six counters — Crew sets,
+  IP, IWSO, OPSP, OPSW, SXO, word for word from `leavewar/testing/eleven.ts` (`state/demoworld.ts DEMO_COUNTERS`, through
+  the store's boot-only `installDemoCounters`) — so the drawings and his preview show a busy block; a stored world and a
+  shared store get none. It replaced the same evening's
   first answer, D666 (five rows to start). What follows from it, each told to him:
   - **In Rearrange a count row's eye is a delete cross** (`manning-delete-<id>`, in the balance box where the eye
     sat; 26×16px). **It is red — D676 (8 Oct 26: "Yeah cross should be red")**: the counter window's own red (D673) — a

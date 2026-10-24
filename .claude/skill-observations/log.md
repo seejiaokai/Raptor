@@ -1978,3 +1978,18 @@ different feature that merely pass through it.
 
 **Principle:** A fix proven only in a fixture that skips the real write path is proven for the fixture's state; the state a default setting produces must be in the test's world too.
 
+
+### Observation 688: The Edit tool evens out a file's mixed line endings, turning a 16-line change into 218
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War — adding the demo's six counters (D1312); one Edit inserted 16 lines into `src/leavewar/state/store.ts`
+**Skill:** New skill candidate: none — a repo working note (beside the memory note "Python edits turn LF into CRLF")
+**Type:** internal
+**Phase/Area:** editing source files on Windows
+
+**Issue:** `store.ts` holds mostly CRLF lines with a few LF-only ones. One Edit call rewrote the LF-only lines as CRLF, so `git diff --stat` showed 117 insertions and 101 deletions for a 16-line addition. `grep -c $'\r'` in Git Bash reported 0 for both versions and hid the cause; only a byte compare in Python found it. Unnoticed, the commit would have shown a reader a hundred unchanged lines as changed.
+
+**Suggested improvement:** after editing a file on Windows, compare `git diff --numstat` with `git diff --numstat --ignore-space-at-eol` for every changed file. Where they differ, put the original bytes back and re-insert the change with a byte-preserving script (the file's own line ending). Worth a line in `docs/gates-and-deploy.md` or a memory note.
+
+**Principle:** A diff much larger than the change made is a signal to stop and find out why before committing. Compare the diff with and without end-of-line whitespace, because tools differ on line endings and the shell's own counters can hide a carriage return.

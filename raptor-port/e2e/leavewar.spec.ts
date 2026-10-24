@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { elevenCounters, openManning, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
+import { elevenCounters, login, openManning, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
 
 /** Open the figure picker. The whole column header is the control — the two
  *  arrows it replaced were 13px glyphs the owner could not hit on a phone.
@@ -6039,6 +6039,25 @@ test('the grid reads counts, months, header, events, roster — top to bottom', 
   expect(counts.y).toBeLessThan(lastFly.y)
   expect(lastFly.y + lastFly.height).toBeLessThanOrEqual(event.y + 1)
   expect(event.y).toBeLessThan(firstRow.y)
+})
+
+// THE DEMO OPENS WITH SIX COUNTERS (his D1312, 24 Oct 26 — "add more manning counters like 6 rows so our mock ups caters
+// for it"): the demo world, as his preview opens it, carries Crew sets, IP, IWSO, OPSP, OPSW and SXO above the four
+// Required / Available rows. Every other test here starts from the empty block a real squadron gets (D669 — openLeaveWar
+// takes the six off, and the browser keeps that), so this one opens the app in a browser of its own and reads the block
+// before anything touches it.
+test('the demo opens with six counters above the four rows (D1312)', async ({ page, browser }) => {
+  const ctx = await browser.newContext(test.info().project.use as any)
+  const fresh = await ctx.newPage()
+  await login(fresh, 'user')
+  await go(fresh, 'leavewar')
+  await fresh.waitForSelector('[data-testid="row-slipway"]')
+  await openManning(fresh)
+  const order = await fresh.$$eval('#page-leavewar .mx tbody.counts > tr', els => els.map(e => e.getAttribute('data-testid')))
+  expect(order).toEqual(['count-sets', 'count-ip', 'count-iwso', 'count-opsp', 'count-opsw', 'count-sxo',
+    'fly-row-req-p', 'fly-row-req-w', 'fly-row-avail-p', 'fly-row-avail-w'])
+  await ctx.close()
+  void page
 })
 
 // AS THE APP OPENS (owner, D669, 8 Oct 26): the Manning block comes with NO count rows of its own — only the four

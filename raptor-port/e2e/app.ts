@@ -253,6 +253,11 @@ export async function puckSize(page: Page) {
    passes 'a', and mid-test switches go through w.lwSetRole (the toggle the
    standalone app drew was removed at the merge — the role rides the login). */
 export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user', viewAs: string | null = null) {
+  /* THE MANNING BLOCK AS THESE TESTS WERE WRITTEN FOR IT — EMPTY (his D1312, 24 Oct 26: the demo world now starts with
+     six counters, for his drawings and preview; a real squadron's store still starts with none — D669). Set before the
+     page loads, so the demo boot never lays them (state/demoworld.ts): nothing to delete, no Undo step, and a re-open
+     keeps whatever the test made. A test that is about counters makes its own (elevenCounters). */
+  await page.addInitScript(() => { (window as any).__lwNoDemoCounters = true })
   await login(page, who)
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')

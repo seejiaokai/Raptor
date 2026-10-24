@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1312 | 24 Oct 26 | The demo world starts with six manning counters of its own, so the drawings and his preview show a busy Manning block and a bid window's day line with several rows; a real squadron's store still starts with none (D669). |
 | D1311 | 24 Oct 26 | His direction: the Leave War's bid windows are redesigned to carry less clutter — fewer rows, labels and buttons on view, every action still reachable — drawn for him with the design skill on the real app before anything is built. |
 | D1309 | 24 Oct 26 | Every kind on the Leave War has a colour clearly its own, told apart from every other kind at a glance on a phone — an OIL taken, the other leave and an overseas duty above all; no two kinds share a colour. |
 | D1308 | 24 Oct 26 | In the Leave War's bid windows the Remarks box is drawn as a dark box, standing out from the window, so people see at once that it is there to fill in — as the input window's boxes on the Inputs page are. |
@@ -229,7 +230,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D674 | 8 Oct 26 | In Rearrange a counter row can be dropped anywhere among the four fixed rows (required P and W, available P and W) — above them, between any two of them, or below all four. |
 | D673 | 8 Oct 26 | On a counter's own window, "Delete counter" is red and "Save counter" is the app's filled Save button — the three buttons no longer look alike. — changed by D676 |
 | D670 | 8 Oct 26 | On the Leave War, undo and redo leave the grid where it is when the day they change is already on screen; the grid jumps to that day only when it is out of view. — changed by D672 |
-| D669 | 8 Oct 26 | The Leave War's manning block comes with no count rows of its own — a squadron makes the ones it wants; and in Rearrange a count row's eye (hide) is replaced by a cross that deletes it. |
+| D669 | 8 Oct 26 | The Leave War's manning block comes with no count rows of its own — a squadron makes the ones it wants; and in Rearrange a count row's eye (hide) is replaced by a cross that deletes it. — changed by D1312 |
 | D461 | 30 Sep 26 | The Leave War has no "Edit person": a man's seat, band and SXO are changed only on Quals, and the war shows what Quals says. |
 | D460 | 30 Sep 26 | The SXO tick he keeps on Quals is the one source the app reads (his setting, not a claim about the official qualification): the Leave War cannot make anyone SXO — it shows what Quals says, read only, and counts him as SXO only if Quals does; nothing on the war (its person sheet, a move into a category) ticks SXO. — changed by D461 |
 | D418 | 29 Sep 26 | The Leave War stays as built on three counts — an approved leave reaches inputs at approve; the admin decides bids (at any time once the stages go, D1177); a member's approved leave offers only its remarks (any time; the leave itself he changes on the Inputs page, D1166) — and a drag that goes below zero must ask first, as a one-day bid does. — changed by D1177 |

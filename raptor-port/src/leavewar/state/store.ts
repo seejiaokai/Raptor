@@ -2608,6 +2608,22 @@ export function installDemoOil(extra: { recs: Recs; ledger: Ledger }): void {
   notify()
 }
 
+/**
+ * THE DEMO'S SIX COUNTERS (his D1312, 24 Oct 26 — "add more manning counters like 6 rows so our mock ups caters for
+ * it"): the third boot-only writer beside `installDemoOil` and `remapPersonKeys`, under the same contract — no persist
+ * (`persistBootWorld` saves the dressed world), no undo step, deterministic. Each goes through the one reader the
+ * "+ Counter" save uses, so a demo counter is an ordinary counter an admin may change or delete; an id the list already
+ * holds is left as it is. A real squadron's store still starts with none (D669) — the caller lays these on a fresh demo
+ * boot only.
+ */
+export function installDemoCounters(rules: readonly ManningRule[]): void {
+  const have = state.requirements.default.rules
+  const add = rules.map(r => readManningRule(r)).filter((r): r is ManningRule => !!r && !have.some(h => h.id === r.id))
+  if (!add.length) return
+  state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: [...have, ...add] } } })
+  notify()
+}
+
 /** Set which role the interface is being used as. Since the Raptor merge the
  *  one production caller is resetSession (../../state/store.ts), which
  *  derives it from the Raptor login on every login and logout — the
