@@ -1508,7 +1508,7 @@ export function Matrix() {
      the Manning button out of view, and a tap inside it is not his next tap on the page — the bubble waits under the
      button for the window to close (`.airpop` the app's pop-ups, `[role="dialog"]` its windows) */
   const overPage = (el: EventTarget | Element | null): boolean =>
-    el instanceof Element && !!el.closest('.airpop, [role="dialog"]')
+    el instanceof Element && !!el.closest('.airpop, [role="dialog"]') && !el.closest('.lwday, .bidsheet.nonmodal')   // the war's own windows that leave the grid working are the page (the narrow read, N2)
   const manningInView = (): boolean => {
     const btn = cardRef.current?.querySelector('[data-testid="counts-toggle"]') as HTMLElement | null
     if (!btn) return false

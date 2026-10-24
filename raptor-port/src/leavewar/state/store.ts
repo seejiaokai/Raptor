@@ -3083,7 +3083,15 @@ export function setRemarksOn(cells: { personId: string; date: string }[], patch:
       if (!canEditRow(state.role, state.viewer, personId)) continue
       for (const r of listAt(personId, date)) {
         if (r.kind !== 'request') continue
-        if (!admin && r.state !== 'pending' && !dayWritable(date)) continue
+        /* any day of its run, not only the one dragged: the run is written whole (the narrow read, N1) */
+        if (!admin && r.state !== 'pending') {
+          const k = reqRunKey(r)
+          const twin = (d: string) => listAt(personId, d).some(q => q.kind === 'request' && reqRunKey(q as RequestRec) === k)
+          let open = dayWritable(date)
+          for (let d = addDays(date, -1); open && twin(d); d = addDays(d, -1)) open = dayWritable(d)
+          for (let d = addDays(date, 1); open && twin(d); d = addDays(d, 1)) open = dayWritable(d)
+          if (!open) continue
+        }
         const p: ReqWordsPatch = {}
         if (t && (r.remarks ?? '') !== t) p.remarks = t
         if (docs.length) { const ids = [...new Set([...(r.docIds ?? []), ...docs])]; if (ids.length !== (r.docIds ?? []).length) p.docIds = ids }

@@ -49,7 +49,7 @@ import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState } from '../state/store'
 import { leaveInputsAt, rowDocIds } from '../sync'
-import { remarksTyped } from '../../engine/inputs'
+import { remarksTyped, tillShown } from '../../engine/inputs'
 import { setLeaveRemarks } from '../../ui/inputedit'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
@@ -280,7 +280,8 @@ export function SelectSheet({
           seen.add(String(row.iid))
           const was = remarksTyped(row.remarks, row)
           const ids = [...new Set([...rowDocIds(row), ...docs])]
-          if ((t && t !== was) || ids.length !== rowDocIds(row).length || till !== undefined) setLeaveRemarks(row, t || was, pid, ids, till)
+          /* only a real change — every save stamps "changed by … · now" (the narrow read, N4) */
+          if ((t && t !== was) || ids.length !== rowDocIds(row).length || (till !== undefined && tillShown(row) !== till)) setLeaveRemarks(row, t || was, pid, ids, till)
         }
       }
     })
@@ -296,7 +297,10 @@ export function SelectSheet({
     setConfirming(null)
     setNoteAt('end')
     /* the words and the decision in ONE command, one Undo (the night's code read, R1) */
-    const { decided, skipped, already } = inOneWarCommand('lw.decide', () => { keepWords(); return setBidStates(sel.cells, bid) })
+    /* the counts kept outside the command, so a refusal thrown inside it leaves the window its note (the narrow read, N3) */
+    let res = { decided: 0, skipped: 0, already: 0 }
+    inOneWarCommand('lw.decide', () => { keepWords(); res = setBidStates(sel.cells, bid) })
+    const { decided, skipped, already } = res
     if (skipped === 0 && !already) return onDone(decided > 0)
     /* an already-approved leave is said as such, never counted as a decision (AB7) */
     const was = already ? ` ${already} already approved.` : ''

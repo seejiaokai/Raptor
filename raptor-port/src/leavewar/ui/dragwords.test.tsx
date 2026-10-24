@@ -149,6 +149,19 @@ describe('the drag window\'s typed words are kept, replacing the days\' own (D13
     expect(reqs(D1)[0]?.remarks).toBe('Back Monday')
   })
 
+  /* the narrow read, N1: a refused run that crosses onto a closed day is passed over whole — his pending bid still takes the words */
+  it('a member: a refused run reaching a closed day does not refuse the words on his pending bid', () => {
+    const D3 = '2026-02-12'
+    expect(setCell(P, D1, 'OL')).toBe(true)
+    expect(setCell(P, D2, 'OL')).toBe(true)
+    setBidState(P, D1, 'refused'); setBidState(P, D2, 'refused')
+    expect(setCell(P, D3, 'LL')).toBe(true)
+    closeDates(D1, D1)
+    setRole('member'); setViewer(P)
+    setRemarksOn([{ personId: P, date: D2 }, { personId: P, date: D3 }], { remarks: 'Back Monday' })
+    expect(reqs(D3)[0]?.remarks).toBe('Back Monday')
+  })
+
   it('nothing typed: each bid keeps its own words', () => {
     twoBids()
     mount()
