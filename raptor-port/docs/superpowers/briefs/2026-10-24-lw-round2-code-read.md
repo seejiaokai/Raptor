@@ -23,9 +23,47 @@ Another chat keeps building in this checkout while you read, so read every file 
 - The design note with the builder's readings (each the owner's to strike — do not report a reading as a defect unless it
   breaks one of his rulings): `raptor-port/docs/superpowers/specs/2026-10-24-lw-file-od-cse-una.md`.
 - The evidence sheet: `raptor-port/docs/handpass/2026-10-24-lw-round2.md` — the roll-call, the walk's findings.
-- The owner's rulings: D1299, D1303, D1318, D1324, D1325, D1326, D998, D1166, D1211, D1225 — one line each in
+- The owner's rulings: D1338 (UNA — it replaced D1335, D1336, D1337 and narrows D1324, D1326, D998), D1299, D1303, D1318,
+  D1325, D1326, D998, D1166, D1211, D1225, D804, D660, D782, D952 — one line each in
   `.claude/rules/decisions/leave-war.md`; open a ruling's full row with the shell before relying on its detail:
   `grep -h '^| D1318 |' .claude/decisions-full/*.md`.
+
+## Widened for round 2b and the check's fixes (24 Oct 26) — READ THIS FIRST
+
+UNA is NO LONGER an input kind. His D1338 (24 Oct 26 — open its full row with the shell): UNA stays, on the Leave War only;
+an admin alone places it (whole day, AM or PM — 1 or 0.5 off the manning); everyone sees its deep teal box and reads its
+remarks; it is nowhere else in the app — not an input kind, not on the Inputs page, the schedule, the bell or the OIL work.
+Everything above that treats UNA as an input (`inputs.ts` INPUT_META 'UNA', reinput, the LATE mark's exception, the Inputs
+calendar's teal) is GONE — `src/engine/unagone.test.ts` pins it gone. Read UNA as the war's own record:
+
+- The record: `src/leavewar/engine/warrecs.ts` (`UnaRec`, `readRecBody`'s UNA branch — an unreadable record throws the
+  WHOLE war away at load, `listProblem`'s one-a-half rule, `recContribs`), `engine/codes.ts` (`HALVED_MARKS`, `parseCell`,
+  `formatCell`, `dayCodeFor`, `CODE_GLOSSARY`), `engine/dayview.ts` (`levelOf`, `notation`, the manning's `removing`),
+  `engine/charge.ts legacyViews`, `state/merge.ts projRecord`, `state/daypanel.ts`.
+- Who may change it — held in TWO layers: the store (`state/store.ts placeUna`, `setUnaRemarks`, `removeUna` — admin
+  only; the one-day Clear in `setCell`, the block Delete in `clearRequestsAt`, `deletableIn`, `clearRecordById`, `stayingIn`
+  for the Move) and the commit (`src/state/perms.ts` — `'lw.una'` in COMMAND_OPS, `unasOf` and `ownershipViolation`'s
+  `lw.cell` check, which refuses ANY member command that changes a UNA at an address, his own row included, whatever the
+  command is called — his Undo and Redo too).
+- The screens: `ui/LeaveButtons.tsx UnaButton`, `BidPicker.tsx fileUna`, `SelectSheet.tsx fileUna`, `DayList.tsx`
+  (`UnaWords`, the UNA entry — read only for a member), `Matrix.tsx` (`listOpen` — a UNA day opens the day's list for
+  everyone; `stayWords`), `ui/Chrome.tsx` (the Legend), `ui/matrix.css`, `ui/LeaveLine.tsx`; `src/undo/describe.ts`.
+- The tests: `src/leavewar/una.test.ts` (with a reload), `ui/round2.test.tsx`, `e2e/round2-leavewar.spec.ts`.
+
+The check's own fixes, each red first — read them as new code: `61a4ffa6f` (`sync.ts doorFile` leaves a day already holding
+the same kind for him as it is and says so — the designer's G2; `askFiledOil` raises a weekend's OIL question at once after
+filing from the war — one input its own window, several the one list (D782) — owner D804, D660, the designer's G3) and
+`d144d61f7` (`ui/bidpicker.css .bp-more` — the row under the leaves stands as tall as the leave buttons in Safari).
+
+**Look hardest at, for UNA:** every place that branches on a record's `kind` (`'request'`, `'credit'`, `'notice'`) — a
+`switch`, an `if … else` that falls through, a filter — and what a UNA does there: counted as a bid? charged? approved?
+listed in Approvals, My leave, the person window, Balances, the OIL tracker, the clash note, the bell? moved by a Move,
+taken by a member's Delete, copied by a posting out, read back by a reload, written as a row by the command stream
+(`state/rows.ts`)? A member's every route to an address holding an admin's UNA: a bid on the free half, a drag's Delete,
+his Undo of his own bid beside it. An admin's: a second UNA on the same half (replaced), a UNA over leave or a medical.
+
+**What the walk already saw** (the sheet, §The walk — round 2b): 85 / 85 in Chromium at both sizes after the script's own
+mistakes, 35 + 1 in WebKit (the fix above). Its RECORD lines are readings, not faults.
 
 ## The brief (the checking order's §4, verbatim)
 
