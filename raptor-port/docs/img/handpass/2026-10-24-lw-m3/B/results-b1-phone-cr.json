@@ -1,0 +1,95 @@
+{
+ "all": [
+  {
+   "id": 12,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: A: Document picked before LL — the window's Document row reads [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: A: LL placed (window closed)",
+    "ok: A: reopened — the bid's Document row reads [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: A: the window says NOW LL: \"Ranger | Wed 14 Jan | NOW LL | ✕ | No manning row turns amber or red | DATE | Just this da\"",
+    "ok: B: LL placed with no file",
+    "ok: B: before adding, the Document row reads [\"Document\",\"Document\"] (no file)",
+    "ok: B: after Document on the placed bid, the row reads [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: B: closed and reopened — the same bid still has it: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]"
+   ],
+   "fails": [],
+   "pics": [
+    "s12a-picked-desk-cr.png",
+    "s12a-placed-desk-cr.png",
+    "s12a-reopened-desk-cr.png",
+    "s12b-added-desk-cr.png",
+    "s12b-reopened-desk-cr.png",
+    "s12-cell14-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 13,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: file picked: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: the chip has a ✕",
+    "ok: after ✕ the Document row reads [\"Document\",\"Document\"]",
+    "ok: LL placed",
+    "ok: the placed bid's Document row reads [\"Document\",\"Document\"] (no file)"
+   ],
+   "fails": [],
+   "pics": [
+    "s13-removed-desk-cr.png",
+    "s13-bid-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 12,
+   "size": "phone",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: A: Document picked before LL — the window's Document row reads [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: A: LL placed (window closed)",
+    "ok: A: reopened — the bid's Document row reads [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: A: the window says NOW LL: \"Ranger | Wed 14 Jan | NOW LL | ✕ | No manning row turns amber or red | DATE | Just this da\"",
+    "ok: B: LL placed with no file",
+    "ok: B: before adding, the Document row reads [\"Document\",\"Document\"] (no file)",
+    "ok: B: after Document on the placed bid, the row reads [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: B: closed and reopened — the same bid still has it: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]"
+   ],
+   "fails": [],
+   "pics": [
+    "s12a-picked-phone-cr.png",
+    "s12a-placed-phone-cr.png",
+    "s12a-reopened-phone-cr.png",
+    "s12b-added-phone-cr.png",
+    "s12b-reopened-phone-cr.png",
+    "s12-cell14-phone-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 13,
+   "size": "phone",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: file picked: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: the chip has a ✕",
+    "ok: after ✕ the Document row reads [\"Document\",\"Document\"]",
+    "ok: LL placed",
+    "ok: the placed bid's Document row reads [\"Document\",\"Document\"] (no file)"
+   ],
+   "fails": [],
+   "pics": [
+    "s13-removed-phone-cr.png",
+    "s13-bid-phone-cr.png"
+   ],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

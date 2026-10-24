@@ -396,6 +396,10 @@ export const INPUT_META:any={
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
+  /* (UNA — round 2's unforeseen absence — stood here for a day as an input kind. Since his D1338, 24 Oct 26 — "Maybe put
+     UNA instead? But nowhere else … its admin input only" — it is the LEAVE WAR's own record, an admin's alone
+     (leavewar/engine/warrecs.ts UnaRec), never an input: the Inputs page, the schedule and the OIL work never see it.
+     Pinned gone from here by unagone.test.ts.) */
   'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* SANS AVAILABILITY (owner, 14 Aug 26) — SANS aircrew filing POSITIVE
      availability for Fly / AMT / OFT, not an absence. grp:'sans' keeps it
@@ -589,6 +593,13 @@ export const INPUT_TYPES=Object.keys(INPUT_META);
 export const TYPE_GROUPS:any=[
   {k:'leave',t:'Leave'},{k:'med',t:'Medical'},{k:'other',t:'Duty & other commitments'}];
 export function typeGroup(t:any){const m=inpMeta(t); return !m?'other':m.grp==='leave'?'leave':(m.grp==='med'||m.grp==='upchit')?'med':'other';}
+/* THE TYPE FILTER PICKS A WHOLE FAMILY TOO (owner D1179, M3 7.4 — "select leave to show all kinds of leave, likewise for
+   medical"): a filter value 'grp:<family>' matches every kind of that family, 'all' everything, else the one kind. ONE body
+   for the Inputs list, its calendar and the calendar's day, so the three cannot disagree. */
+export const TYPE_FAMILY_LABEL:any={leave:'All leave',med:'All medical',other:'All duty & commitments'};
+export function typeMatches(f:any,t:any):boolean{if(!f||f==='all')return true;if(String(f).startsWith('grp:'))return typeGroup(t)===String(f).slice(4);return t===f;}
+/* what a filter value reads as, in the list of filters applied */
+export function typeFilterLabel(f:any):string{return String(f).startsWith('grp:')?(TYPE_FAMILY_LABEL[String(f).slice(4)]||String(f)):String(f);}
 /* The two halves of the day's input blocks, and the ONLY place the split is
    decided — the week and the board both used to carry their own copy of this
    regex and could drift apart.

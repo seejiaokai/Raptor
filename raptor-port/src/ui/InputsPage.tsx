@@ -12,7 +12,7 @@
 import { MONTHS } from './daysfmt'
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
-import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown } from '../engine/inputs'
+import { INPUTS, inputLines, inpLabel, inpKindTag, isLateInput, lateNote, isSansAvail, sansLetters, baseYear, dateOrd, nowStamp, idsOf, facesOf, remarksShown, typeMatches, typeFilterLabel, typeGroup } from '../engine/inputs'
 import { OilConfirm } from './OilConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -430,7 +430,7 @@ export function InputsPage() {
      how many are IN the record (`several`), never how many records. */
   const several = (r: any) => idsOf(r).length > 1
   rows = rows.filter((r: any) => inputPassesPerson(fPerson, r))
-  if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
+  if (fType !== 'all') rows = rows.filter((r: any) => typeMatches(fType, r.type))
   if (fSearch) rows = rows.filter((r: any) => inputMatchesSearch(r, fSearch))
   rows = rows.filter((r: any) => inWindow(r, range.from, range.to))
   {
@@ -540,7 +540,7 @@ export function InputsPage() {
   const sansUp = tab === 'sans'
   const listUp = tab === 'inputs' && INPVIEW === 'table'
   const calUp = tab === 'inputs' && INPVIEW === 'cal'
-  const appliedFilters = tab !== 'inputs' ? [] : [fPerson!==EVERYONE?(PEOPLE[personFilterId(fPerson)]?.cs??fPerson):'',fType!=='all'?fType:'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
+  const appliedFilters = tab !== 'inputs' ? [] : [fPerson!==EVERYONE?(PEOPLE[personFilterId(fPerson)]?.cs??fPerson):'',fType!=='all'?typeFilterLabel(fType):'',fSearch.trim()?`Search: ${fSearch.trim()}`:''].filter(Boolean)
 
   /* the tabs: a tab list in the usual manner — one tab stop, the arrow keys move along it and round its ends, and the
      keyboard goes with the tab it chose */
@@ -617,7 +617,7 @@ export function InputsPage() {
         <ArchivedGroup /><DeletedGroup />
       </select></label>
       <label><select id="inFType" aria-label="Type" value={fType} onChange={e => { unpin(); setFType(e.target.value); notify() }}>
-        <option value="all">All types</option>{typeOptions(notSans)}
+        <option value="all">All types</option>{typeOptions(notSans, true)}
       </select></label>
       <label className="inputs-search searchbox"><SrchIcon /><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
     </div>
@@ -735,7 +735,8 @@ export function InputsPage() {
                   const when = cardWhen(r, b0 != null ? isoOfOrd(b0) : g.iso, g.iso)
                   /* the card is handed the input's ONE record, as a list of one (ui/inputcard-model.ts) */
                   return <InputCard key={r.iid} id={r.iid} tid="inl" row facts={cardOf([r], undefined, when)} when={when}
-                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={isLit(r)} onOpen={() => openInput(r)} />
+                    late={lateNoteOf([r], lateWord)} oil={oilSignNote(oilSignDay(r))} flash={isLit(r)} onOpen={() => openInput(r)}
+                    onDoc={() => { setDocView({ row: r }); notify() }} />
                 })}
               </Fragment>
             ))}
@@ -876,6 +877,10 @@ export function InputsPage() {
                         size (D487: 06-inputs.css `.inact>button`), each with a name of its own. */}
                     {rowDocIds(r).some(docHas) && <button type="button" className="rclip" data-doc={inx} title="View the document" aria-label="View the document"
                       onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></button>}
+                    {/* …AND ITS ABSENCE, QUIETLY, ON A LEAVE OR A MEDICAL (owner D1179, M3 7.4 — "in 1 view the admin can see who
+                        didnt upload the screen shot"): never on a duty or other commitment, which asks for no paper */}
+                    {!rowDocIds(r).length && (typeGroup(r.type) === 'leave' || typeGroup(r.type) === 'med') && !isSansAvail(r.type) &&
+                      <span className="in-nodoc" data-testid="in-nodoc">No document</span>}
                     {/* Edit and delete are the owner's OWN-INPUT rights for a
                         member (owner, 27 Aug 26): a scheduler works every row,
                         a member only their own — someone else's row is view

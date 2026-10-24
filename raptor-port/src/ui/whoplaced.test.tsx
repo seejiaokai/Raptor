@@ -20,6 +20,8 @@ import { setPage } from '../state/view'
 let host: HTMLDivElement
 let root: Root
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
+/* a NEW leave with no document asks first since D1150 (M3 7.4) — never a stop; these filers answer "No document" */
+const noDocAsk = async () => { const b = document.querySelector('[data-testid="docconf-nodoc"]'); if (b) await click(b) }
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
@@ -91,7 +93,7 @@ describe('the Inputs List (§3.8 rows 2, 3 and 4)', () => {
     await click($('#inNew'))
     await click($('#inpEdCal [data-iso="2026-07-14"]'))
     const n = INPUTS.length
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(INPUTS.length, 'one input filed').toBe(n + 1)
     expect(stamps(INPUTS[0])).toEqual(placed('stiff', t1))
     expect(INPUTS[0].mod, 'the late rule\'s date is written as before').toBe(nowStamp())
@@ -106,7 +108,7 @@ describe('the Inputs List (§3.8 rows 2, 3 and 4)', () => {
     const t2 = T(10)
     await click($(`tr[data-iid="${r.iid}"] [data-testid="in-open"]`))
     await setV($('#inpEditRmk'), 'room changed')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(r.remarks).toBe('room changed')
     expect(stamps(r)).toEqual({ by: 'bane', at: T0, modBy: 'casper', modAt: t2 })
     expect(r.mod).toBe(nowStamp())
@@ -143,7 +145,7 @@ describe('the editor\'s OIL sheet (§3.8 row 4)', () => {
     await as('bane')
     const t1 = T(9)
     await act(async () => { setInpEdit({ _new: true, person: 'bane', allday: true, remarks: 'whoplaced new', yr: 2026, type: 'Duty', date: 'Jul 18' }); notify() })
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     await click($('[data-testid="oil-yes"]'))
     await click($('[data-testid="oilconf-save"]'))
     const r = INPUTS.find((x: any) => /whoplaced new/.test(x.remarks || ''))

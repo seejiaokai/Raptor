@@ -1,0 +1,108 @@
+[
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide and as tall, no word broken",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-una\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 30 vs 30; bid-file-OD: dx 0, dw 0, h 30 vs 30; bid-una: dx 0, dw 0, h 30 vs 30; bid-more: dx 0, dw 0, h 30 vs 30; broken []",
+  "pics": [
+   "h1-window-phone"
+  ]
+ },
+ {
+  "id": "H1b a tap on OD files it: the window closes, the day holds one filled slate OD box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h1-filed-phone"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day says where it is changed: \"Change it on the Inputs page, not here.\" (F1 fixed)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "note: Change it on the Inputs page, not here.",
+  "pics": [
+   "h1-reopen-phone"
+  ]
+ },
+ {
+  "id": "H8 the Inputs list names Drifter's overseas duties; UNA nowhere on the page (D1338)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Drifter's OD card: LATEAll dayDrifterOD; UNA on the page false",
+  "pics": [
+   "h8-list-phone",
+   "h8-od-card-phone"
+  ]
+ },
+ {
+  "id": "U14 \"+ Input\": the kinds offered hold no UNA",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "— name —|Ace|Anvil|Basher|Blade|Bolt|Cinch|Cinder|Cobra|Comet|Cotter|Cutter|Dash|Diesel|Drifter|Echo|Fable|Forge|Gambit|Ghost|Grit|Havoc|Hex|Hunter|Jester|Kraken|Ledger|Marlin|Nomad|Otter|Outlaw|Piston|Pixel|Quill|Ranger|Ratchet|Reaper|Rebe",
+  "pics": [
+   "h8-new-phone"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide and as tall, no word broken",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-una\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 30 vs 30; bid-file-OD: dx 0, dw 0, h 30 vs 30; bid-una: dx 0, dw 0, h 30 vs 30; bid-more: dx 0, dw 0, h 30 vs 30; broken []",
+  "pics": [
+   "h1-window-desk"
+  ]
+ },
+ {
+  "id": "H1b a tap on OD files it: the window closes, the day holds one filled slate OD box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"OD|k-od|s-a|y 2 h 22|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h1-filed-desk"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day says where it is changed: \"Change it on the Inputs page, not here.\" (F1 fixed)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "note: Change it on the Inputs page, not here.",
+  "pics": [
+   "h1-reopen-desk"
+  ]
+ },
+ {
+  "id": "H8 the Inputs list names Drifter's overseas duties; UNA nowhere on the page (D1338)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Drifter's OD card: Drifter2 NovODLATEBy Sabernow; UNA on the page false",
+  "pics": [
+   "h8-list-desk",
+   "h8-od-card-desk"
+  ]
+ },
+ {
+  "id": "U14 \"+ Input\": the kinds offered hold no UNA",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "— name —|Ace|Anvil|Basher|Blade|Bolt|Cinch|Cinder|Cobra|Comet|Cotter|Cutter|Dash|Diesel|Drifter|Echo|Fable|Forge|Gambit|Ghost|Grit|Havoc|Hex|Hunter|Jester|Kraken|Ledger|Marlin|Nomad|Otter|Outlaw|Piston|Pixel|Quill|Ranger|Ratchet|Reaper|Rebe",
+  "pics": [
+   "h8-new-desk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

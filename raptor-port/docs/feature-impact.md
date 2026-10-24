@@ -1504,3 +1504,39 @@ its three doors, Admin → Data's two forms, the upchit's date, the Leave War's 
   "Jump to a date" and the upchit's own default use the schedule's planning day. Step one keeps each as it was.
 - **A box cannot be emptied.** A form that must be able to go without a date offers that choice itself ("No end"). A
   writer still refuses a missing date; no screen can send one any more.
+
+## A leave request's words and papers (the Leave War overhaul's M3, 23–24 Oct 26 — D1210, D1226, D1150, D1159)
+
+A request on the war now carries its own remarks, "till <date>" tick and documents (`engine/warrecs.ts RequestRec`). The
+surfaces that write or show them: the one-day window, the drag-selection window (one person), the member's closed-day
+window, the day's list (`ui/ReqWords.tsx`, `DayList.tsx`); approval carries them onto the leave on the Inputs page and a
+put-back carries them back (`sync.ts doorApprove` / `doorDecideApproved` — the drift-seam: a field added to a request must
+be copied there and in `store.ts setCell` / `moveRecords`); the leave then shows them wherever an input's remark and
+documents show (the Inputs list and calendar, the input window, the schedule's rows print the remark and its till). One new
+command, `lw.reqmeta` (`perms.ts` — a member's own pending request's words change on a closed day, nothing else there).
+
+## A course and an overseas duty filed on the Leave War (round 2, 24 Oct 26 — D1318), and UNA, the war's own (D1338)
+
+**UNA since D1338 (24 Oct 26) is NOT an input** — the paragraph below about it as a new input kind is history: it is the
+Leave War's OWN record (`engine/warrecs.ts UnaRec`, kind `una`), an admin's alone (`store.ts placeUna` / `setUnaRemarks` /
+`removeUna`, one command `lw.una`, admin-only in `perms.ts`, and the commit refuses any member's command that adds, changes
+or takes one — `ownershipViolation`'s lw.cell check). It reaches: the grid (its box, a half by its notation `*UNA` / `UNA*`,
+`engine/codes.ts` HALVED_MARKS), the manning (`dayview.ts` — `away` 0.5 or 1, no charge, no clash), the day's list (its line,
+read by everyone, its remarks box and Delete an admin's — `ui/DayList.tsx`; a day holding one opens the list, `Matrix.tsx
+listOpen`, and opens for a member on any row, `MatrixRows.tsx cellOpenable`), the day panel's Away list (`state/daypanel.ts`),
+the Legend and the code glossary, a block Delete (an admin's takes it — D260's "everything in it"), a Move (it stays and the
+banner says so), the Undo label (`undo/describe.ts`), the save rows (`rec:` — `readRec`; an unreadable record would make the
+war re-seed, so only its code can make it unreadable). NOWHERE ELSE: never the Inputs page, the schedule, the bell, the OIL
+work, Approvals or the person window's leave list (M4, M5 must leave it out when built).
+
+CSE · OD (and, until D1338, UNA) stand in the row under the leaves of the one-day window, the drag window and a member's
+closed-day window (`ui/LeaveButtons.tsx DutyButtons`); a tap files the input straight (`store.ts fileStraight` → the absence door's `file`,
+`sync.ts doorFile` → the Inputs door, its clash rules included) — no bid, one new command `lw.file` (`perms.ts`, asked as an
+Inputs-page filing is). From there it is an ordinary input: the Inputs list and calendar, the schedule's Unavailable, the
+war's grid and manning all read it. A day that already holds the same kind for him is left as it is and said (round 2's FULL
+check — the designer's G2); a weekend or a holiday asks its OIL question at once, as the Inputs page does (D804, D660 — G3):
+one input opens its own question in its own window over the war, several (a drag over several men) open the one list of
+those days for a scheduler (D782) — `sync.ts askFiledOil`, a deferred effect of the filing. *(Until D1338, 24 Oct 26, UNA
+was a new input kind here, a drift-seam across every hand-kept list of kinds; since D1338 it is the war's own record — the
+paragraph above — and every list of input kinds is back as it was, pinned by `engine/unagone.test.ts`.)* The design note:
+`docs/superpowers/specs/2026-10-24-lw-file-od-cse-una.md`.

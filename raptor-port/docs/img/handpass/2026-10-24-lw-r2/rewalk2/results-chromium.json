@@ -1,0 +1,146 @@
+[
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide and as tall, no word broken",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-una\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 30 vs 30; bid-file-OD: dx 0, dw 0, h 30 vs 30; bid-una: dx 0, dw 0, h 30 vs 30; bid-more: dx 0, dw 0, h 30 vs 30; broken []",
+  "pics": [
+   "h1-window-phone"
+  ]
+ },
+ {
+  "id": "H1b a tap on OD files it: the window closes, the day holds one filled slate OD box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h1-filed-phone"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day says where it is changed: \"Change it on the Inputs page, not here.\" (F1 fixed)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "note: Change it on the Inputs page, not here.",
+  "pics": [
+   "h1-reopen-phone"
+  ]
+ },
+ {
+  "id": "H3 a pending LL, then CSE: the bid stays and the day holds both, each its own box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\",\"LL|k-ll|s-w|y 2 h 17|bg rgba(0, 0, 0, 0)\"]",
+  "pics": [
+   "h3-pending-phone",
+   "h3-both-phone"
+  ]
+ },
+ {
+  "id": "H3b the LL approved beside the course: both stand (RECORD — S22, the Inputs page allows the pair)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "list daylist; approve [\"dl-approve-rmvmk92y11gl48\"]; boxes after [\"LL|k-ll|s-a|y 2 h 17|bg rgba(242, 200, 110, 0.22)\",\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": [
+   "h3-list-phone",
+   "h3-approved-phone"
+  ]
+ },
+ {
+  "id": "H12 a range over a day already holding an OD: that day keeps ONE OD, the days around it filed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "ODs covering 24 Nov 1; boxes [[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]]",
+  "pics": [
+   "h12-after-phone"
+  ]
+ },
+ {
+  "id": "H12b a quick double tap on OD files ONE OD (RECORD what the second tap opened)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "ODs on 26 Nov: 1; open after: bid-picker",
+  "pics": [
+   "h12-double-phone"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide and as tall, no word broken",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-una\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 30 vs 30; bid-file-OD: dx 0, dw 0, h 30 vs 30; bid-una: dx 0, dw 0, h 30 vs 30; bid-more: dx 0, dw 0, h 30 vs 30; broken []",
+  "pics": [
+   "h1-window-desk"
+  ]
+ },
+ {
+  "id": "H1b a tap on OD files it: the window closes, the day holds one filled slate OD box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"OD|k-od|s-a|y 2 h 22|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h1-filed-desk"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day says where it is changed: \"Change it on the Inputs page, not here.\" (F1 fixed)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "note: Change it on the Inputs page, not here.",
+  "pics": [
+   "h1-reopen-desk"
+  ]
+ },
+ {
+  "id": "H3 a pending LL, then CSE: the bid stays and the day holds both, each its own box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|y 2 h 22|bg rgba(160, 100, 240, 0.36)\",\"LL|k-ll|s-w|y 2 h 22|bg rgba(0, 0, 0, 0)\"]",
+  "pics": [
+   "h3-pending-desk",
+   "h3-both-desk"
+  ]
+ },
+ {
+  "id": "H3b the LL approved beside the course: both stand (RECORD — S22, the Inputs page allows the pair)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "list daylist; approve [\"dl-approve-rmvmk9l6r128pb\"]; boxes after [\"LL|k-ll|s-a|y 2 h 22|bg rgba(242, 200, 110, 0.22)\",\"CSE|k-cse|s-a|y 2 h 22|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": [
+   "h3-list-desk",
+   "h3-approved-desk"
+  ]
+ },
+ {
+  "id": "H12 a range over a day already holding an OD: that day keeps ONE OD, the days around it filed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ODs covering 24 Nov 1; boxes [[\"OD|k-od|s-a|y 2 h 22|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 22|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 22|bg rgba(128, 142, 160, 0.58)\"]]",
+  "pics": [
+   "h12-after-desk"
+  ]
+ },
+ {
+  "id": "H12b a quick double tap on OD files ONE OD (RECORD what the second tap opened)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ODs on 26 Nov: 1; open after: bid-picker",
+  "pics": [
+   "h12-double-desk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

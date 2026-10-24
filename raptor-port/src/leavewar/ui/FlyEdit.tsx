@@ -222,9 +222,12 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
       e.stopPropagation()
       live.current.close()
     }
+    /* a pinch or Ctrl+scroll begins (Matrix.tsx): the box is left as a press outside it leaves it — the figure kept */
+    const onZoom = () => live.current.finish()
     document.addEventListener('pointerdown', onDown, true)
     window.addEventListener('keydown', onKey, true)
-    return () => { document.removeEventListener('pointerdown', onDown, true); window.removeEventListener('keydown', onKey, true) }
+    window.addEventListener('lw-zoomstart', onZoom)
+    return () => { document.removeEventListener('pointerdown', onDown, true); window.removeEventListener('keydown', onKey, true); window.removeEventListener('lw-zoomstart', onZoom) }
   }, [])
 
   const onKeyDown = (e: React.KeyboardEvent) => {

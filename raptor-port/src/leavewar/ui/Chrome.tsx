@@ -238,7 +238,7 @@ function nextLabel(iso: string): string {
 /** THE GRID'S OWN BAR (D1254, D1196 as narrowed, D1243): [▸ Manning | 1 red ›] · the open dates · … · Legend — the same for
  *  everyone, standing on the grid card above the month buttons (`full/r19-nav-*`, `full/r21-rows-*`). The grid hands it
  *  the Manning fold (its own state — the counts it hides are the grid's rows) and anything that rides the bar's right end
- *  before Legend (the zoom pair until pinch to zoom replaces it — [LW-PHONE-PINCH-ZOOM], D1228; "Done" while rearranging). */
+ *  before Legend ("Done" while rearranging; the zoom pair went when pinch to zoom replaced it — [LW-PHONE-PINCH-ZOOM], D1228, D1276). */
 export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen?: boolean; onManning?: () => void; extra?: ReactNode } = {}) {
   const sv = useVersion()
   /* The clash list lives in the sync module, not the store — it is a view of
@@ -508,10 +508,14 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <div className="leg-sec">The colour: what kind</div>
               <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Local leave</span></div>
               <div className="leg-row"><LegBox code="OL" /><span className="leg-t">Overseas leave</span></div>
-              <div className="leg-row"><LegBox code="OIL" /><span className="leg-t">Off in lieu (OIL; FO a day credited, HO half a day; a star, the app credited it)</span></div>
+              {/* an OIL taken and an OIL given in colours of their own (his D1291, D1323 — drawn by lw-colours-c-d.mjs) */}
+              <div className="leg-row"><LegBox code="OIL" /><span className="leg-t">OIL taken: time off spent</span></div>
+              <div className="leg-row"><LegBox code="FO" /><span className="leg-t">OIL given: FO a day, HO half a day; a star, the app credited it</span></div>
               <div className="leg-row"><LegBox code="CCL" /><span className="leg-t">Other leave: CCL, FCL, PL, CL, EL</span></div>
               <div className="leg-row"><LegBox code="CSE" /><span className="leg-t">Course</span></div>
               <div className="leg-row"><LegBox code="OD" /><span className="leg-t">Overseas duty</span></div>
+              {/* UNA (his D1338): an admin has put him out of the manning — the war's own record, nowhere else */}
+              <div className="leg-row"><LegBox code="UNA" /><span className="leg-t">Unavailable: out of the manning</span></div>
               <div className="leg-row"><LegBox code="ATTC" text="C" /><span className="leg-t">Medical: B, C, OML, HL</span></div>
               <div className="leg-sec">The fill: where it stands</div>
               <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Approved</span></div>

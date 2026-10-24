@@ -1,6 +1,6 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { addDays, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, displayCell, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
@@ -24,6 +24,9 @@ import { creditGiver } from '../engine/warrecs'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
 import { edgeAutoScroll } from '../../ui/edgescroll'
+import { wirePinch } from '../../ui/pinchzoom'
+import { flushSync } from 'react-dom'
+import { LW_ZOOM_MAX, lwMonthFitZoom, roundZoom } from './lwzoom'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
@@ -35,7 +38,9 @@ import { SelectSheet } from './SelectSheet'
 import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
-import { availRowNames, availVerdictAt, flyMonth, leaveInputAt, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
+
+import { availRowNames, availVerdictAt, bidDayLine, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
+import { DayPanelHost, openDayPanel } from './DayPanel'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
@@ -62,6 +67,8 @@ function moveReason(r: Exclude<MoveResult, 'moved'>): string {
     case 'occupied': return `That lands on ${r.at ? shortDate(r.at) : 'a day'} which is already booked — pick another day.`
     case 'raptor': return 'One of those is filed on the Inputs page and cannot be moved here.'
     case 'window': return 'That lands outside what you can edit — pick another day.'
+    /* a member's landing on a day closed for him (M3 §4 (4) — the agent's words, shown at his look, his to change) */
+    case 'closed': return 'That day is closed for bidding. Pick an open day.'
     default: return 'Nothing to move.'
   }
 }
@@ -69,7 +76,7 @@ function moveReason(r: Exclude<MoveResult, 'moved'>): string {
 /** WHAT A MOVE LEAVES BEHIND, in the banner's words (the mock-up's reading, uncorrected — D331: "in a block what can
  *  move goes; what can't stays, and the banner says what stays"). " · 1 OIL award stays", " · 2 OIL awards and 1 bid
  *  stay". Only what a person put there and might expect to travel (`stayingIn`); nothing when everything moves. */
-function stayWords(stays: ReadonlyArray<{ what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' }>): string {
+function stayWords(stays: ReadonlyArray<{ what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' | 'una' }>): string {
   if (!stays.length) return ''
   const label: Record<string, [string, string]> = {
     award: ['OIL award', 'OIL awards'],
@@ -77,8 +84,9 @@ function stayWords(stays: ReadonlyArray<{ what: 'award' | 'filed' | 'approved' |
     filed: ['leave filed on the Inputs page', 'leaves filed on the Inputs page'],
     bid: ['bid', 'bids'],
     refused: ['refused bid', 'refused bids'],
+    una: ['UNA', 'UNA'],
   }
-  const parts = (['award', 'approved', 'filed', 'bid', 'refused'] as const)
+  const parts = (['award', 'una', 'approved', 'filed', 'bid', 'refused'] as const)
     .map(k => { const n = stays.filter(x => x.what === k).length; return n ? `${n} ${label[k]![n === 1 ? 0 : 1]}` : '' })
     .filter(Boolean)
   return ` · ${parts.join(' and ')} ${stays.length === 1 ? 'stays' : 'stay'}`
@@ -205,8 +213,9 @@ export function Matrix() {
       else if (k === 'nolv') m.set(d.date, 'evnolv')
     }
     return m
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version])
+    /* keyed on what it reads — the period and the event types — never on every store change: a bid leaves both the same
+       objects, and a new Map each write made every month of every row draw again ([LW-MONTH-MEMO-UNPINNED], M3 §4) */
+  }, [period, eventDefs])
 
   // Which cell is open, not which sheet is open: what the sheet OFFERS is
   // derived from the stage and the role, so a period that moves on — or a
@@ -220,8 +229,6 @@ export function Matrix() {
      from the bid sheet closes that sheet — the next tap on the greyed day opens the Post out sheet). */
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string; posting?: 'po' | 'pi' } | null>(null)
   const close = () => { setOpen(null); setPlaceAt(null) }
-  /* the published note editor opened FROM the tap list, for one Input */
-  const [listRemark, setListRemark] = useState<{ at: string; row: any } | null>(null)
   // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
   // and the sheet it opens. `moveSel` is the selection currently being MOVED
   // (Task E) — sheet closed, waiting for a drop. Both cleared on a stage/war
@@ -1013,13 +1020,13 @@ export function Matrix() {
     const from = months[colWin.lo]!.first.slice(0, 7), to = months[colWin.hi]!.first.slice(0, 7)
     return period.days.filter(d => { const k = d.date.slice(0, 7); return k >= from && k <= to })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [colWin?.lo, colWin?.hi, version])
+  }, [colWin?.lo, colWin?.hi, period])   // the period, not every store change ([LW-MONTH-MEMO-UNPINNED])
   const drawnDates = useMemo(() => drawnDays.map(d => d.date), [drawnDays])
   // The drawn days SLICED BY MONTH, each slice keeping its identity for as long
   // as the war's days do (the cache lives with `version`, like drawnDays):
   // PersonMonth is memoised on the slice, so a window step re-renders only the
   // month it adds and every other month's cells bail out at the memo.
-  const monthDaysCache = useMemo(() => new Map<string, DayInfo[]>(), [version])
+  const monthDaysCache = useMemo(() => new Map<string, DayInfo[]>(), [period])   // lives with the war's days ([LW-MONTH-MEMO-UNPINNED])
   const drawnMonthDays = useMemo(() => {
     const keys: string[] = []
     for (const d of drawnDays) { const k = d.date.slice(0, 7); if (keys[keys.length - 1] !== k) keys.push(k) }
@@ -1232,24 +1239,25 @@ export function Matrix() {
   const jumpAtRef = useRef(0)
 
   // The grid ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
-  // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
-  // own page zoom and the frozen columns, and a button cannot half-work.
-  // `zoom` (not transform) so layout, scroll width and the sticky offsets all
-  // scale together. View state, session-only, like the counter choice.
-  // A PHONE OPENS ONE STEP OUT (owner, 6 Sep 26 — "can this be the default
-  // zoom? Like zoom 1 click out"): 0.8 there, 1 on a desktop, read once at
+  // war"). `zoom` (not transform) so layout, scroll width and the sticky offsets
+  // all scale together. View state, kept while the app is open, like the counter
+  // choice. A PHONE OPENS ONE STEP OUT (owner, 6 Sep 26 — "can this be the default
+  // zoom? Like zoom 1 click out"): 0.8 there, 1 on a desktop (D159), read once at
   // mount from the same 700px query the phone flag uses (no layout yet, so
   // this is the only place the initial value can come from; jsdom has no
-  // matchMedia and stays at 1). The buttons live in the counter block's top
-  // row at BOTH widths since the same day (they used to ride the month strip,
-  // phone-only) — a desktop can step too now.
-  const ZOOMS = [0.6, 0.8, 1, 1.2, 1.4]
+  // matchMedia and stays at 1).
+  //   PINCHED, NOT STEPPED (owner D1282–D1285, 23 Oct 26 — `[LW-PHONE-PINCH-ZOOM]`): the − / + went once the pinch
+  // could carry the frozen date row with the grid (D1276). Two fingers anywhere on the Leave War zoom the grid — never
+  // the page, whose zoom is what threw the frozen row off its columns in his recording — and Ctrl+scroll over the grid
+  // does on a desktop (D1228); in to 1.4, out until a month fits a phone held upright (lwzoom.ts). The wiring is the
+  // effect below `zoomStyle`.
   const [zoom, setZoom] = useState(() =>
     typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
-  const zoomStep = (by: number) => {
-    const i = ZOOMS.indexOf(zoom)
-    setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
-  }
+  const zoomRef = useRef(zoom)
+  zoomRef.current = zoom
+  // When a pinch last laid its zoom out: the scroll it writes straight after (the day under the fingers brought back
+  // under them) is a JUMP, not a fling — see onWrapScroll and the pinch's wiring below.
+  const pinchAtRef = useRef(0)
   // The grid tables' zoom, plus `--lwz` (6 Sep 26) so a control that must keep
   // a REAL tap size at any zoom can divide it back out (the counter picker's
   // `min-height: calc(40px / var(--lwz))`, matrix.css): a phone opens at 0.8
@@ -1257,6 +1265,128 @@ export function Matrix() {
   // complaint set. On the TABLE, not an ancestor, and it changes only when the
   // zoom steps — a restyle the zoom itself already costs, never per frame.
   const zoomStyle = zoom !== 1 ? ({ zoom, '--lwz': zoom } as import('react').CSSProperties) : undefined
+
+  /* PINCH TO ZOOM THE GRID (owner D1282, D1283, D1284, 23 Oct 26 — `[LW-PHONE-PINCH-ZOOM]`), the app's one pinch body
+     (ui/pinchzoom.ts — the Scheduler Board's and Quals' too). While the fingers move the grid is stretched as a picture,
+     nothing laid out again; at the lift the zoom is written once, through the same `zoom` the old − / + set — the path
+     his iPhone showed keeps the frozen date row the grid's size and over its columns (his check, 23 Oct 26) — and the
+     scrollers are moved so the day under his fingers stays under them.
+       · WHERE IT STARTS: anywhere on the screen while the Leave War is in front (D1282 — the bars above the grid
+         included), so the browser's own page zoom never runs here; the stylesheet holds it off on the page too
+         (matrix.css `#page-leavewar`). Over a full-page window (the OIL tab, the "Open for bidding" page) the grid
+         behind is not zoomed — the OIL tab has its own pinch (OilTracker.tsx) — but the page is still kept from zooming.
+       · WHAT STRETCHES WITH IT while the fingers move: the frozen date row (its contents, from its own top, as Quals'
+         pinned row), the phone's frozen names copy, the open-dates outline and the figures drawer (about the fingers,
+         as one picture); the month buttons are held at their size (D1282 — they cancel the grid's zoom at rest too).
+       · THE FROZEN ROW'S BROWSER FOLLOW is paused while the fingers move: the stretch widens the grid's scroll range
+         while its scroll stands still, which would slide the row's timeline-driven follow off its columns (Quals' lesson).
+       · WHAT IT CANCELS: a row held in Rearrange is let go (it moves nothing); a day held to select is let go by the
+         selection itself the moment a second finger lands (select.ts — fix A7a), so a pinch never selects or opens a day.
+     Ctrl+scroll over the grid zooms it the same way on a desktop, a trackpad's pinch included (D1228). */
+  useEffect(() => {
+    const outer = mxOuterRef.current
+    if (!outer) return
+    const fullPage = () => !!document.querySelector('.bidsheet.full, .bidsheet.fullpage')
+    const anim = () => outer.querySelector<HTMLElement>('.mxfixed-anim')
+    return wirePinch({
+      surface: document.documentElement,
+      wheel: outer,
+      target: () => wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx') ?? null,
+      get: () => zoomRef.current,
+      /* never above the zoom it starts at, so a pinch out never zooms in (a phone turned with the grid at its floor) */
+      min: () => Math.min(zoomRef.current, lwMonthFitZoom(headRef.current, wrapRef.current, zoomRef.current)),
+      max: LW_ZOOM_MAX,
+      apply: z => {
+        const v = roundZoom(z); zoomRef.current = v
+        pinchAtRef.current = jumpAtRef.current = Date.now()   // the lift's scroll is a jump (onWrapScroll)
+        flushSync(() => setZoom(v))
+      },
+      canStart: () => isLwOnScreen() && outer.isConnected && !fullPage(),
+      blockTwo: () => isLwOnScreen(),
+      /* the frozen row's box lets its stretched contents grow DOWN while the fingers move (matrix.css .lw-pinching):
+         clipped at its old height, a pinch in cut the date numbers in half until the lift (the walk's picture) */
+      onStart: () => {
+        dragCleanup.current?.()
+        /* the small pop-ups placed on the screen over a cell close, as a press outside them would (the fresh code read,
+           F4 — a desktop's Ctrl+scroll presses nothing): the event peek, a chip's quals, and the Required / Available
+           rows' boxes (FlyRows, FlyEdit — they hear `lw-zoomstart`) */
+        setQualPop(null); setEvPeek(null)
+        window.dispatchEvent(new Event('lw-zoomstart'))
+        const a = anim(); if (a) a.style.animationPlayState = 'paused'
+        outer.querySelector('.mxfixed')?.classList.add('lw-pinching')
+        outer.classList.add('lw-pinching')
+      },
+      onEnd: () => {
+        const a = anim(); if (a) a.style.animationPlayState = ''
+        outer.querySelector('.mxfixed')?.classList.remove('lw-pinching')
+        outer.classList.remove('lw-pinching')
+      },
+      /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — his iPhone pictures mid-pinch:
+         the names column and the corner had stood in from the grid's left edge with days on their left, the date row had
+         grown up over the month buttons, and the month buttons' own cell — the names' width — had stood boxed behind
+         JAN–MAR while the rest of its row moved away). Only the days stretch about the fingers:
+         · the date row's cells follow the rows down the screen but never rise over the month buttons; the corner stays at
+           the left edge with them; every other pinned name, counter and group heading keeps its place across (`pin`);
+         · the phone's frozen names copy and the figures drawer stretch with the rows but from the grid's left edge, and
+           are never drawn above the date row's foot (`alsoY`, `floor`); the frozen date row's copy of the corner grows
+           from its own corner (`alsoTL`); the frozen date row's days and the open-dates outline stretch sideways about the
+           fingers from their own top (`also`), as the date row does;
+         · the month buttons keep their size and place (`keep`), and while the fingers are down their row is one band
+           (matrix.css `.mx-outer.lw-pinching`), drawn over the date row, which is drawn over the rows. */
+      pin: () => {
+        const table = wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')
+        if (!table) return []
+        const out: { el: HTMLElement; x: boolean; y: boolean | 'up' }[] = []
+        /* the date row scrolls with the page at rest, so it follows the rows down — never up over the month buttons */
+        for (const th of table.querySelectorAll<HTMLElement>(':scope > tbody.mxhead th')) {
+          out.push({ el: th, x: th.classList.contains('who') || th.classList.contains('bal'), y: 'up' })
+        }
+        /* every pinned one, not only those in sight: a pinch out draws in rows that were off the screen as it began */
+        const rows = ':scope > tbody:not(.mxhead):not(.mstripe) > tr'
+        for (const el of table.querySelectorAll<HTMLElement>(`${rows} > .who, ${rows} > .bal, ${rows} > td.grphd, ${rows} > td.catsub-in`)) {
+          if (getComputedStyle(el).position !== 'sticky') continue   // the phone's roster: its frozen copy is the band
+          out.push({ el, x: true, y: false })
+        }
+        return out
+      },
+      /* the pinned block's corner: the grid's left edge, and the date row's top */
+      pinAt: () => ({
+        x: wrapRef.current?.getBoundingClientRect().left ?? 0,
+        y: wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().top ?? 0,
+      }),
+      /* the frozen date row's days: where the row follows the grid by the browser (`lw-sda`) its days stretch inside the
+         row's box, which keeps both edges of the screen; elsewhere the row's box stretches, as before */
+      also: () => (outer.classList.contains('lw-sda') ? [] : [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-scroll')]),
+      /* the open-dates outline runs from the date row's top: it goes where the date row goes (the fix read, finding 1) */
+      alsoTop: () => [...(wrapRef.current?.querySelectorAll<HTMLElement>(':scope > .lw-bidbox') ?? [])],
+      /* part-way down the page the page itself scrolls with the pinch, so no band opens above the date row (D1288) */
+      scrollPage: true,
+      alsoIn: () => (outer.classList.contains('lw-sda') ? [anim()] : []),
+      alsoTL: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-frozen')],
+      alsoY: () => [bandRef.current, drawerRef.current],
+      floor: () => wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().bottom ?? -Infinity,
+      keep: () => [mstickRef.current],
+      edges: true,
+      /* THE SPOT UNDER THE FINGERS IS A DAY AND A ROW (the walk, 23 Oct 26): across, the date column whose heading
+         spans the fingers; down, the grid row that does. The element under the fingers would not do — a group's
+         heading and the names are pinned to the left, so they never say where the year went, and on a phone the
+         fingers often rest on the frozen names' copy, which is not the grid at all. */
+      anchor: (x, y) => {
+        const table = wrapRef.current?.querySelector<HTMLTableElement>(':scope > table.mx')
+        if (!table) return null
+        let ax: Element | null = null, ay: Element | null = null
+        for (const c of headRef.current?.querySelectorAll<HTMLElement>('[data-testid^="head-"]') ?? []) {
+          const q = c.getBoundingClientRect()
+          if (x >= q.left && x < q.right) { ax = c; break }
+        }
+        for (const tr of table.rows) {
+          const q = tr.getBoundingClientRect()
+          if (y >= q.top && y < q.bottom) { ay = tr; break }
+        }
+        return { x: ax, y: ay }
+      },
+    })
+  }, [])
 
   // The manning counts block (CREW SETS … SXO) collapses on a tap, for EITHER
   // role (owner, 19 Aug 26 — "allow both admin and norm user to hide it when
@@ -1717,7 +1847,9 @@ export function Matrix() {
   // war+zoom — the ESTIMATE a placeholder uses for a month never yet drawn (see
   // `applyPlaceholders`). Only a new war or a zoom step re-measures. Taken from
   // whatever is drawn at first measure; two months is plenty representative.
-  const avgDayWRef = useRef<{ key: string; avg: number; frozen: number } | null>(null)
+  // `zoom` is the zoom `avg` was measured at: `avg` is in screen px, so it is divided by THAT zoom, never the one on
+  // screen now ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26 — see `monthPx`).
+  const avgDayWRef = useRef<{ key: string; avg: number; frozen: number; zoom: number } | null>(null)
 
   useEffect(() => {
     setStuck(null)
@@ -1864,6 +1996,19 @@ export function Matrix() {
   // time the page scrolls it into view, and a plain effect placed the thumb one
   // painted frame late — at the start of the year, then a jump.
   useLayoutEffect(() => { if (hbar) syncHbar() }, [hbar])
+  /* ON A PHONE THE TAPPED CELL STAYS IN SIGHT (red-team fix A5, the phone half — M3 5.7): a bid window opening over the
+     cell tapped first scrolls the page so the cell sits just above the window's top edge. Only as it opens (Undo leaves
+     the grid where it is — D672); a cell already clear of it does not move; the desktop's window blocks nothing (D641). */
+  useLayoutEffect(() => {
+    if (!open || !phone) return
+    const cell = document.querySelector<HTMLElement>(`#page-leavewar [data-testid="cell-${open.id}-${open.date}"]`)
+    const sheet = document.querySelector<HTMLElement>('[data-testid="bid-picker"]')
+    if (!cell || !sheet) return
+    const c = cell.getBoundingClientRect(), w = sheet.getBoundingClientRect()
+    if (!c.height || !w.height || c.bottom <= w.top - 4) return
+    window.scrollBy(0, c.bottom - w.top + 8)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open?.id, open?.date])
 
   // Show / hide / size the bottom scrollbar on vertical page scroll and on
   // resize. Re-bound on the layout signals that change the grid's scroll width
@@ -2051,8 +2196,33 @@ export function Matrix() {
     </tr>
   )
 
+  /* A TAP ON A DATE'S HEADING OPENS THAT DAY (D1143; M3 6.1): one listener on the heading row — the grid's and the frozen
+     copy's — the date read off the heading's `data-d`, never a button in each of 365 headings (performance.md §E). One
+     heading takes the keyboard: today's where it is drawn, else the first; Enter opens it, and the panel's ‹ › step on. */
+  /* THE DATE IS READ WHERE THE FINGER WENT DOWN (M3's re-walk, F1): a phone's browser aims a tap at the nearest element it
+     thinks is pressable — the one heading that takes the keyboard (today's, else the first) — so a tap on 2 Jan's left part,
+     or on the corner cell, reached 1 Jan. The press's own point (pointer events are not re-aimed) decides; the click's
+     target only where no press was seen (a keyboard's Enter is handled below). */
+  const headDown = useRef<{ x: number; y: number; t: number } | null>(null)
+  const onHeadDown = (e: React.PointerEvent) => { headDown.current = { x: e.clientX, y: e.clientY, t: e.timeStamp } }
+  const onHeadTap = (e: React.MouseEvent) => {
+    const d = headDown.current
+    headDown.current = null
+    let th: HTMLElement | null = null
+    if (d && e.timeStamp - d.t < 1500) {
+      for (const el of document.elementsFromPoint(d.x, d.y)) { const h = (el as HTMLElement).closest?.('th.day[data-d]') as HTMLElement | null; if (h) { th = h; break } if ((el as HTMLElement).closest?.('th')) break }
+      if (!th) return                       // the press was on no date (the corner, a placeholder): nothing opens
+    } else th = (e.target as HTMLElement).closest<HTMLElement>('th.day[data-d]')
+    if (th) openDayPanel(th.dataset.d!)
+  }
+  const onHeadKey = (e: React.KeyboardEvent) => {
+    if (e.key !== 'Enter' && e.key !== ' ') return
+    const th = (e.target as HTMLElement).closest<HTMLElement>('th.day[data-d]')
+    if (th) { e.preventDefault(); openDayPanel(th.dataset.d!) }
+  }
+  const headTab = drawnDays.some(d => d.date === memberToday()) ? memberToday() : drawnDays[0]?.date
   const headerRow = (testids: boolean, drawer = false) => (
-    <tr>
+    <tr onPointerDown={onHeadDown} onClick={onHeadTap} onKeyDown={onHeadKey}>
       {/* CS/Name (owner, 26 Aug 26): the column holds aircrew callsigns AND
           ground-crew names, and the short form fits the phone's 76px frozen
           column; the Quals page's Personnel view says the long form
@@ -2082,6 +2252,8 @@ export function Matrix() {
           <th
             key={d.date}
             data-testid={testids ? `head-${d.date}` : undefined}
+            data-d={d.date}
+            tabIndex={testids && d.date === headTab ? 0 : undefined}
             className={`day${d.blocked ? ' blocked' : ''}${isWeekend(d.date) ? ' weekend' : ''}${evKind.has(d.date) ? ` ${evKind.get(d.date)}` : ''}${lockedDate(d.date) ? ' locked' : ''}${d.date === focusDate ? ' focus' : ''}`}
             title={[d.blocked ? d.blockedReason : '', d.events.filter(Boolean).join(' / ')]
               .filter(Boolean)
@@ -2238,7 +2410,7 @@ export function Matrix() {
     const key = `${period.id}|${zoom}`
     if (avgDayWRef.current?.key === key) return
     const avg = (drawn[drawn.length - 1]!.right - drawn[0]!.left) / n
-    if (avg > 0) avgDayWRef.current = { key, avg, frozen }
+    if (avg > 0) avgDayWRef.current = { key, avg, frozen, zoom }
   }
   // The per-month width cache for this war+zoom (a zoom step changes every
   // width; a new war is a new set of months) — started fresh when the key moves.
@@ -2256,8 +2428,14 @@ export function Matrix() {
   const monthPx = (m: number): number => {
     const cached = monthPxCache().px[m]
     if (cached != null) return cached
+    /* THE ESTIMATE IS IN THE GRID'S OWN PX AT ANY ZOOM ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26). Right after a zoom
+       change the average still on hand is the old zoom's (it is re-measured for the new one within the same commit);
+       it was divided by the NEW zoom, so every undrawn month's placeholder came out as wrong as the two zooms are
+       apart — at 0.8 → 1.4 the months left of the view stood ~2,800 px too narrow, the lit month button then read
+       DEC over October, and each old + / − step threw the view back a month or more. A day's width in the grid's own
+       px barely moves with the zoom, so the measured one, divided by the zoom it was measured at, is the estimate. */
     const a = avgDayWRef.current
-    return (a ? a.avg / zoom : 30) * (yearMonths.monthDays[m] ?? 30)
+    return (a ? a.avg / a.zoom : 30) * (yearMonths.monthDays[m] ?? 30)
   }
   // Will drawing month `m` in place of its placeholder move nothing? Only when
   // its width was measured under the rows on screen NOW (`widthGen`) — the one
@@ -2385,6 +2563,9 @@ export function Matrix() {
   // resetting, so the heavy row-window work fires exactly once, the instant
   // the scroll comes to rest — never under a moving finger.
   const SCROLL_REST_MS = 120
+  /** how long after a pinch's lift a scroll is still the pinch's own (it is written in the same task; its event comes a
+   *  frame later — no finger can start a fling that soon after two have lifted) */
+  const PINCH_SCROLL_MS = 150
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   // When the grid was last scrolled — the background fill waits for this to go
   // quiet before drawing a month, so a fill draw never lands under a moving
@@ -2396,14 +2577,25 @@ export function Matrix() {
   const scrollSpeedRef = useRef({ v: 0, t: 0, sl: 0 })
   const onWrapScroll = () => {
     const now = Date.now()
-    {
+    /* THE PINCH'S OWN SCROLL IS NOT A FLING ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26): at the lift the pinch scrolls
+       the year — often thousands of pixels, the zoom having moved every column — to put the day under the fingers back
+       under them. Counted as a scroll in motion, it let the fill draw the month left of the view "mid-fling" over a
+       width guessed for the new zoom, and the year slid 1,600 px sideways a beat after the lift. Treated as a jump
+       (jumpAtRef, set with it), the months drawn after it are anchored at rest like a month button's. */
+    if (now - pinchAtRef.current < PINCH_SCROLL_MS) {
+      /* ONE event only (the fresh code read, F3): the lift's scroll is written in one task, so it arrives as one; a finger
+         left down after the other lifted may scroll on at once, and that scroll is a real one */
+      pinchAtRef.current = 0
+      const sp = scrollSpeedRef.current
+      sp.v = 0; sp.t = now; sp.sl = wrapRef.current?.scrollLeft ?? 0
+    } else {
       const sp = scrollSpeedRef.current, sl = wrapRef.current?.scrollLeft ?? 0
       const dt = now - sp.t
       const inst = dt > 0 && dt < 200 ? Math.abs(sl - sp.sl) / dt : 0
       sp.v = dt >= 200 ? inst : sp.v * 0.5 + inst * 0.5
       sp.t = now; sp.sl = sl
+      lastScrollTsRef.current = now
     }
-    lastScrollTsRef.current = now
     // The frozen-column overlay sits ON TOP of the real columns. At rest
     // (scrollLeft 0) it must let a tap fall THROUGH to the real cell beneath —
     // that cell still carries the handler, the testid and the focus seat — so
@@ -2661,7 +2853,15 @@ export function Matrix() {
     // everything after it); measureStripGeo writes them again once it has cached
     // the widths it just measured. measureHbar/syncHbar too: the proxy spacer
     // tracks the grid's scroll width and the thumb its position.
-    const remeasure = () => { applyPlaceholders(); measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
+    /* a first measure at a new war or zoom swaps estimates for measured widths, which can move the drawn months under
+       the geometry it just took — taken once more then, so the month readout and the fill read where the months ARE */
+    const remeasure = () => {
+      applyPlaceholders()
+      const k0 = avgDayWRef.current?.key
+      measureStripGeo()
+      if (avgDayWRef.current?.key !== k0) measureStripGeo()
+      measureStrip(); measureHbar(); syncHbar()
+    }
     remeasureRef.current = remeasure
     remeasure()
     // A left month drawn mid-fling over an estimate (padErrRef): how far it pushed the month that was the window's left
@@ -2785,7 +2985,12 @@ export function Matrix() {
       // breathing room, divided back out of the table zoom the cell sits in.
       // Floored at the desktop one-row height so a single-row strip never
       // shrinks the cell below what it was.
-      setStripH(Math.max(44, (sr.bottom - cr.top + 6) / (zoom || 1)))
+      //   The floor is 44 of the grid's own px at normal size and below, as it always was — but zoomed IN it is 44 on
+      // the SCREEN ([LW-PHONE-PINCH-ZOOM], the walk of 23 Oct 26): the strip cancels the grid's zoom, so a floor in the
+      // grid's units grew with the zoom and left a tall empty band under the month buttons (62 px at 1.4, where the
+      // buttons need 41) — reached by the old + too, everyday once the grid is pinched.
+      const z = zoom || 1
+      setStripH(Math.max(z > 1 ? 44 / z : 44, (sr.bottom - cr.top + 6) / z))
     }
     measure()
     window.addEventListener('resize', measure)
@@ -3230,9 +3435,8 @@ export function Matrix() {
   const remarkRow = open && role !== 'admin' && open.id === viewer
     ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
     : null
-  /* THE ADMIN'S NOTE ON ONE APPROVED LEAVE (M1's code read, L6): his tap opens the decide window, so its remarks are
-     reached there, by the same Note the day's list gives him on a busier day (D418 narrowed by D1177) */
-  const noteAt = open ? `${open.id}|${open.date}` : ''
+  /* THE ADMIN'S APPROVED LEAVE (M1's code read, L6; his D1307): his tap opens the decide window, which shows the leave's
+     Remarks and Document at once — the input they are saved onto (D418 narrowed by D1177) */
   const adminNoteRow = open && role === 'admin' && states[open.id]?.[open.date]?.state === 'approved'
     ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
     : null
@@ -3242,7 +3446,9 @@ export function Matrix() {
      actions (design §25 OA10-001). It comes before every single-record sheet
      below, which stay exactly as they were for a one-record day. */
   const openView = open ? views[open.id]?.[open.date] : undefined
-  const listOpen = !!open && !!openView && (openView.mark !== '' ||
+  /* …AND A DAY HOLDING A UNA (D1338): everyone may read it — its half, who placed it, its remarks — and an admin takes it
+     away there; the list is the one window that shows every entry of a day on its own line, so a UNA alone opens it too */
+  const listOpen = !!open && !!openView && (openView.mark !== '' || openView.all.some(c => c.kind === 'una') ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
      half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
@@ -3317,8 +3523,10 @@ export function Matrix() {
       if (!on) out.add(d.date)
     }
     return out
+    /* keyed on what it reads — the period (its open dates), the role and today (D1266: a new day replaces it) — never on
+       every store change ([LW-MONTH-MEMO-UNPINNED], M3 §4) */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, role])
+  }, [period, role, memberToday()])
   const lockedDate = (date: string): boolean => lockedCols.has(date)
 
   // Feed the drag-select controller live state. A member drags on his own row at any time since the stages went
@@ -3387,7 +3595,9 @@ export function Matrix() {
         {/* THE GRID'S OWN BAR (D1254 — the navigation as drawn in round 19): [▸ Manning | 1 red ›] · the open dates · … ·
             Legend, the same for everyone (`StageBar`, Chrome.tsx). ⚙ went up to the tab row's right end and OIL became a
             tab (Chrome.tsx `Topbar`); Rearrange moved into ⚙ (its "Done" rides this bar while it is on). The zoom pair
-            stays at the bar's right end until pinch to zoom replaces it — its own job, [LW-PHONE-PINCH-ZOOM] (D1228). */}
+            went when pinch to zoom replaced it ([LW-PHONE-PINCH-ZOOM], D1228, D1276). */}
+        {/* the day panel (M3 batch 6): its open day is its own (DayPanel.tsx) — this grid never repaints for it */}
+        <DayPanelHost />
         <div className="card-hd">
           {bubble && !bubble.foot && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble.text}</div>}
           {/* D1277: the Manning button out of view when it was raised — the same words at the foot of the screen, with Show */}
@@ -3418,26 +3628,9 @@ export function Matrix() {
                     ⇅<span className="rtword"> Done</span>
                   </button>
                 )}
-                {/* while Rearrange is on, the − / + step aside on a phone so the bar keeps one line (D1275; chrome.css
-                    `.lwzoom.aside`); a desktop keeps them. They go for good only once the pinch works (D1276). */}
-                <span className={`lwzoom${arranging && role === 'admin' ? ' aside' : ''}`} data-testid="lw-zoom">
-                  <button
-                    className="rtbtn zoom"
-                    data-testid="lw-zoom-out"
-                    aria-label="Zoom out"
-                    title="Zoom out"
-                    disabled={zoom === ZOOMS[0]}
-                    onClick={() => zoomStep(-1)}
-                  >−</button>
-                  <button
-                    className="rtbtn zoom"
-                    data-testid="lw-zoom-in"
-                    aria-label="Zoom in"
-                    title="Zoom in"
-                    disabled={zoom === ZOOMS[ZOOMS.length - 1]}
-                    onClick={() => zoomStep(1)}
-                  >＋</button>
-                </span>
+                {/* No − / + here any more: the grid is pinched (a desktop: Ctrl+scroll), owner D1276 / D1228 — they went
+                    once the pinch carried the frozen date row with the grid. Should his iPhone look find the frozen row
+                    off its columns after a pinch, they come back before merge (D1282's reading). */}
               </>
             }
           />
@@ -3787,7 +3980,9 @@ export function Matrix() {
               <div className={`mxfixed-scroll${sdaActive ? ' mxfixed-track' : ''}`} ref={mirrorRef}>
                 {table(sdaActive ? 'mxfixed-anim' : '')}
               </div>
-              {/* The bar's frozen LEFT columns, in the scroll-driven path only.
+              {/* The bar's frozen LEFT columns. Drawn in the scroll-driven path; in the JS-mirror path too since D1287 (the
+                  fix read's finding 4), where its scroller keeps sticky corner cells of its own — this copy stands over them,
+                  the same pixels at rest, and is what a pinch holds at the left edge while that scroller stretches.
                   A translated table cannot keep `position: sticky`, so the
                   callsign + counter columns are drawn as a static copy pinned
                   over the left and clipped to their own width; the day columns
@@ -3796,7 +3991,7 @@ export function Matrix() {
                   who/bal are made pointer-events:none in matrix.css so taps land
                   here, and this copy is aria-hidden so the scrolling layer stays
                   the single accessible one. */}
-              {sdaActive && (
+              {(
                 <div
                   className="mxfixed-frozen"
                   aria-hidden="true"
@@ -3952,7 +4147,7 @@ export function Matrix() {
           first's portion choice across. */}
       {/* A member's remarks editor wins FIRST where it applies (his own approved leave, any day — D418 narrowed) — even
           over the Raptor sheet, because the note lives on the same Raptor row the read-only sheet would only point at. */}
-      {open && listOpen && !(listRemark && listRemark.at === `${open.id}|${open.date}`) && (
+      {open && listOpen && (
         <DayListSheet
           key={`dl-${open.id}-${open.date}`}
           personId={open.id}
@@ -3962,7 +4157,6 @@ export function Matrix() {
           role={role}
           viewer={viewer}
           period={period}
-          onEditRemark={row => setListRemark({ at: `${open.id}|${open.date}`, row })}
           /* ONE RECORD, PICKED BY ITS ID (owner, D266 — "the same move modality and I can choose what to move"): the list
              closes and the grid's move mode carries exactly that record — no date box — by the same machine and landing
              rules as a single chip and a block (D262) */
@@ -3973,16 +4167,6 @@ export function Matrix() {
             setMoveSel({ people: [rec.personId], from: rec.date, to: rec.date, cells: [{ personId: rec.personId, date: rec.date }], only: [rec] })
           }}
           onClose={close}
-        />
-      )}
-      {open && listRemark && listRemark.at === `${open.id}|${open.date}` && (
-        <RemarksSheet
-          key={`dlrmk-${open.id}-${open.date}`}
-          callsign={open.callsign}
-          personId={open.id}
-          row={listRemark.row}
-          code={grid[open.id]?.[open.date] ?? ''}
-          onClose={() => setListRemark(null)}
         />
       )}
       {open && canRemark && (
@@ -4003,6 +4187,8 @@ export function Matrix() {
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
+          /* its documents, read only (M3 7.3 — D1150): changed on the Inputs page, where it was filed */
+          docNames={rowDocIds(leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])).map(id => docGet(id)?.name ?? 'document')}
           code={grid[open.id]?.[open.date] ?? ''}
           /* An OIL credit the app earned opens here too, and it is not leave
              from the Inputs page — the sheet says which it is, and reads the
@@ -4061,6 +4247,7 @@ export function Matrix() {
           people={csOf}
           /* the ask before a fill takes anyone below zero (D418) */
           wouldLeave={balanceAfter}
+          dayLine={bidDayLine}
           role={role}
           canDecide={canDecide(role)}
           /* never on a deleted man (his posting is final — [POST-OUT-OUTCOMES], Fable F3) */
@@ -4330,11 +4517,14 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && !(listRemark && listRemark.at === noteAt) && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
         && canBidOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
-          onNote={adminNoteRow ? () => setListRemark({ at: noteAt, row: adminNoteRow }) : undefined}
+          /* the approved leave's Remarks and Document, shown at once (his D1307 — "Note" went) */
+          /* never on the free half beside a leave filed on the Inputs page: its words are the NEW bid's, and that leave is
+             changed on the Inputs page (the fresh read's R1, round 3's check) */
+          approvedRow={openFreeHalf ? null : adminNoteRow}
           callsign={open.callsign}
           personId={open.id}
           date={open.date}
@@ -4343,7 +4533,7 @@ export function Matrix() {
           /* Item D: only the free half is on offer, and the sheet says what
              holds the other one. */
           onlyPortion={openFreeHalf}
-          heldBy={openFreeHalf ? displayCell(grid[open.id]?.[open.date] ?? '') : undefined}
+          heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,
@@ -4378,6 +4568,9 @@ export function Matrix() {
              An admin, and a cell that actually holds a bid to answer — a
              course, a medical, an OIL credit and an empty day are not things
              anybody asked for. The admin decides at any time (D1177). */
+          /* THE DAY'S BID STATE FOR EVERY ROLE (round 3's FULL check — the designer's S1, X1): the window lights the day's own
+             leave, never a refused bid; it read that only from the admin's decide, so a member's own refused bid opened lit */
+          dayState={isBiddable(grid[open.id]?.[open.date]) ? stateOf(states, open.id, open.date) : undefined}
           decide={canDecide(role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
             ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
             : null}
@@ -4426,6 +4619,7 @@ export function Matrix() {
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative — the shared body above. */
           wouldLeave={(code, dates) => balanceAfter(open.id, dates, code)}
+          dayLine={(dates, code) => bidDayLine(open.id, dates, code)}
           onClose={close}
         />
       )}

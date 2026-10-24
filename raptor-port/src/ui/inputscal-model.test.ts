@@ -7,7 +7,7 @@
    three; and the tag a date wears (a public holiday, an Off day, a no-fly day — never a sun or a moon here, D627). */
 import { describe, expect, it } from 'vitest'
 import { EMPTY_PLAN, planFor, type DayFacts, type FlyPlan } from '../state/flyplan-model'
-import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
+import { barText, colourOf, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem } from './inputscal-model'
 
 const PEOPLE: Record<string, any> = {
   p1: { cs: 'Saber', seat: 'FCP' }, p2: { cs: 'Ranger', seat: 'FCP' }, p3: { cs: 'Wisp', seat: 'RCP' },
@@ -279,5 +279,20 @@ describe('the bar a pointer is asked about', () => {
   it('each item keeps its first and last day, for a drag that moves it by days', () => {
     const [it0] = items([inp('p1', 'LL', 'Jul 6', 'Jul 10')]) as BarItem[]
     expect([it0.a, it0.b]).toEqual(['2026-07-06', '2026-07-10'])
+  })
+})
+
+/* EACH KIND THE LEAVE WAR'S COLOUR (his D1304, D1309; set C D1316, D1321, D1323 — drawn by scripts/handpass/lw-q3-duties.mjs,
+   option 1): an absence's bar filled in its kind's colour, a duty's or another commitment's outlined (no colour) */
+describe('the colour a bar wears (D1304, D1321)', () => {
+  it('leave, OIL taken, the other leave, medical, a course and an overseas duty each their kind; a duty none', () => {
+    const cases: Array<[string, string | null]> = [['LL', 'll'], ['OL', 'ol'], ['OIL', 'oilt'], ['CCL', 'care'], ['FCL', 'care'], ['PL', 'care'],
+      ['CL', 'care'], ['EL', 'care'], ['HL', 'med'], ['OML', 'med'], ['ATT B', 'med'], ['ATT C', 'med'], ['Upchit', 'med'], ['CSE', 'cse'], ['OD', 'od'],
+      ['Training', null], ['Meeting', null], ['Fly with', null], ['Personal', null], ['Appointment', null], ['Duty', null], ['Event', null], ['Other', null]]
+    for (const [t, c] of cases) expect(colourOf(t), t).toBe(c)
+  })
+  it('a bar item carries it', () => {
+    const items = monthItems([{ iid: 'c1', person: 'p1', type: 'OIL', date: 'Jul 13', yr: 2026, allday: true }], { fType: 'all', fPerson: 'all', fSearch: '' } as any, PEOPLE)
+    expect(items[0]?.col).toBe('oilt')
   })
 })

@@ -120,6 +120,9 @@ function projRecord(v: DayView): BidRecord | undefined {
     if (m.movedFrom) r.shiftedFrom = m.movedFrom
     return r
   }
+  /* UNA (D1338): the war's own record, standing as placed — never Raptor's, never a bid; its own branch so no reader takes
+     it for leave the war approved */
+  if (m.kind === 'una') return { state: 'approved', source: 'bid' }
   if (m.kind === 'credit') {
     const r: BidRecord = { state: 'approved', source: m.auto ? 'raptor' : 'bid' }
     if (m.note) r.note = m.note

@@ -56,22 +56,22 @@ describe('the one-day sheet, in order A (D331, D335)', () => {
   beforeEach(() => { setCell(P, '2026-02-11', 'LL') })
 
   /* the Decide row is found by its Approve where it was found by its Ack — Ack is gone (D1158) */
-  it('How many → Decide → Selected (Move · Delete) → How much → Which leave → +OIL / PO / PI', () => {
+  /* WAS "How many → Decide → Selected (Move · Delete) → How much → Which leave → +OIL / PO / PI" (D331, D335). ROUND 3 (his
+     D1330, D1332): Approve · Refuse · Move · Delete on ONE row, then Remarks and Document, then Duration (with "Pick a range"
+     at its end — the How many row went), then the leave, then the ⋯ (D1326) — and the row labels went */
+  it('one row Approve · Refuse · Move · Delete → Remarks and Document → Duration → Which leave → the ⋯', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
     expect(screen.queryByTestId('decide-ack')).toBeNull()
-    expect(within(rowOf('decide-approve')).getAllByRole('button').map(b => b.textContent)).toEqual(['Approve', 'Refuse'])
-    expect(above('span-one', 'decide-approve')).toBe(true)
-    expect(above('decide-approve', 'decide-shift')).toBe(true)
-    expect(above('decide-shift', 'portion-full')).toBe(true)
+    expect(within(rowOf('decide-approve')).getAllByRole('button').map(b => b.textContent)).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete'])
+    expect(rowOf('decide-shift')).toBe(rowOf('decide-approve'))
+    expect(rowOf('bid-clear')).toBe(rowOf('decide-approve'))
+    expect(above('decide-approve', 'bid-remarks')).toBe(true)
+    expect(above('bid-remarks', 'portion-full')).toBe(true)
+    expect(rowOf('span-range')).toBe(rowOf('portion-full'))
     expect(above('portion-full', `bid-LL`)).toBe(true)
-    expect(above('bid-LL', 'bid-postout')).toBe(true)
-    // Move and Delete share the Selected row; Move is no longer on the decision row, Delete no longer a leave chip
-    expect(rowOf('decide-shift')).toBe(rowOf('bid-clear'))
-    expect(rowOf('decide-shift')).not.toBe(rowOf('decide-approve'))
+    expect(above('bid-LL', 'bid-more')).toBe(true)
     expect(rowOf('bid-clear')).not.toBe(rowOf('bid-LL'))
-    expect(within(rowOf('decide-shift')).getByText('Selected')).toBeTruthy()
-    expect(within(rowOf('decide-approve')).getByText('Decide')).toBeTruthy()
   })
 
   it('Move is the one Move look, Delete the one Delete look', () => {
@@ -230,7 +230,8 @@ describe('a bid beside an OIL award — the day’s list (D265, D266)', () => {
     const bid = bidsAt(P, '2026-02-11')[0]!
     const line = screen.getByTestId(`dl-r-${bid.id}`)
     const names = within(line).getAllByRole('button').map(b => b.textContent)
-    expect(names).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete'])   // Ack gone from the list's line (D1158)
+    // Ack gone from the list's line (D1158); the bid's Document button after them since M3 7.3 (D1150, D1159)
+    expect(names).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete', 'Document'])
     isMoveChip(within(line).getByTestId(`dl-move-${bid.id}`))
     isDeleteChip(within(line).getByTestId(`dl-clear-${bid.id}`))
     const award = awardsOnDay(P, '2026-02-11')[0]!
@@ -272,17 +273,19 @@ describe('the drag-selection sheet, in order A (D331)', () => {
   }
   beforeEach(() => { setCell(P, '2026-02-11', 'LL') })
 
-  it('Decide → Selected (Move · Delete) → How much → Which leave → PO', () => {
+  /* WAS "Decide → Selected (Move · Delete) → How much → Which leave → PO" (D331). ROUND 3: one row of actions, Duration, the
+     leave, Post out behind the ⋯ (D1326) */
+  it('one row Approve · Refuse · Move · Delete → Duration → Which leave → the ⋯ with Post out', () => {
     render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide={true} onDone={() => {}} onMove={() => {}} onPostOut={() => {}} onClose={() => {}} />)
-    expect(above('sel-approve', 'sel-move')).toBe(true)
+    expect(rowOf('sel-approve')).toBe(rowOf('sel-move'))
     expect(rowOf('sel-move')).toBe(rowOf('sel-delete'))
     expect(above('sel-move', 'sel-portion-full')).toBe(true)
     expect(above('sel-portion-full', 'sel-LL')).toBe(true)
-    expect(above('sel-LL', 'sel-postout')).toBe(true)
-    expect(within(rowOf('sel-move')).getByText('Selected')).toBeTruthy()
+    expect(above('sel-LL', 'sel-more')).toBe(true)
     isMoveChip(screen.getByTestId('sel-move'))
     isDeleteChip(screen.getByTestId('sel-delete'))
-    expect(screen.getByTestId('sel-postout').textContent).toBe('PO')
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.getByTestId('sel-postout').textContent).toBe('Post out')
   })
 })
 

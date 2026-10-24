@@ -296,7 +296,7 @@ describe('a cut leave says its own last day (AB3)', () => {
    A, phase 7). Approving a bid writes its remark onto the leave WITH its date ("… on 18 Feb"), which can carry a
    200-letter remark past 200; taking the approval back stored that whole text on the request, and the store's reader
    cuts a carried remark at MAX_CARRIED_REMARK — so the record in memory and the record after a reload differed, and the
-   date came back cut mid-word. The writer now keeps the reader's length. */
+   date came back cut mid-word. The writer now keeps the reader's length. (Since M3 7.1 the remark is the request's own `remarks`, no longer in `carried`.) */
 describe('a carried remark is stored at the length a reload keeps', () => {
   it('approve → take back → approve → take back: the request never holds more than the reader keeps', () => {
     setRole('admin')
@@ -308,13 +308,13 @@ describe('a carried remark is stored at the length a reload keeps', () => {
     expect(writeInputs(() => { (rowsOf('ammo', 'LL')[0] as any).remarks = 'B'.repeat(200) })).toBe(true)
     setBidStates(cell, 'pending')                              // taken back: a request carrying that remark
     const req = () => recsAt('ammo', '2026-02-18').find((r: any) => r.kind === 'request') as any
-    expect(req()?.carried?.remarks, 'carried whole — 200 letters').toBe('B'.repeat(200))
+    expect(req()?.remarks, 'carried whole — 200 letters').toBe('B'.repeat(200))
     setBidStates(cell, 'approved')                             // back to a leave: its date is printed, never written in (D948)
     const leave = rowsOf('ammo', 'LL')[0] as any
     expect(String(leave.remarks), 'the typed words alone').toBe('B'.repeat(200))
     expect(remarksShown(leave).endsWith('till 18 Feb'), 'its date printed from its dates').toBe(true)
     setBidStates(cell, 'pending')
-    expect(String(req()?.carried?.remarks).length, 'what is stored is what a reload reads').toBeLessThanOrEqual(MAX_CARRIED_REMARK)
+    expect(String(req()?.remarks).length, 'what is stored is what a reload reads').toBeLessThanOrEqual(MAX_CARRIED_REMARK)
   })
 })
 

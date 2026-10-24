@@ -1,0 +1,266 @@
+<title>Leave War bid window round</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; at the top the short list of what to look at now (D1237), then one section per item,
+   each a pair of pictures (today beside the drawing) that a tap opens full size. */
+:root {
+  --bg: #f4f6f8; --panel: #ffffff; --ink: #14181d; --ink-2: #4b5560; --edge: #d9dee4;
+  --accent: #0f7f99; --rec: #0d6b3b; --rec-bg: #e5f4ea; --q: #8a5a00;
+  --f-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-head: "Archivo", "Inter", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1216; --panel: #161c22; --ink: #e8edf2; --ink-2: #9aa6b2; --edge: #2a333c;
+  --accent: #3bc6e8; --rec: #7fdc9f; --rec-bg: #12281b; --q: #f0b54a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1216; --panel: #161c22; --ink: #e8edf2; --ink-2: #9aa6b2; --edge: #2a333c;
+  --accent: #3bc6e8; --rec: #7fdc9f; --rec-bg: #12281b; --q: #f0b54a; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+main { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+h1 { font: 800 22px/1.2 var(--f-head); margin: 0; text-wrap: balance; }
+h2 { font: 800 17px/1.25 var(--f-head); margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+.sub { color: var(--ink-2); }
+.now { background: var(--panel); border: 1px solid var(--edge); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+.now h2 { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.now ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; }
+.rec { color: var(--rec); font-weight: 700; }
+a { color: var(--accent); }
+section { display: flex; flex-direction: column; gap: 12px; }
+.tag { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--q); }
+.recbox { background: var(--rec-bg); border-radius: 10px; padding: 10px 12px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; align-items: start; }
+figure { margin: 0; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+figure a { display: block; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; background: #000; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { font-size: 13px; color: var(--ink-2); }
+figcaption b { color: var(--ink); }
+.changes { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+.changes li { max-width: 72ch; }
+.h { font-variant-numeric: tabular-nums; font-weight: 700; }
+.reply { font: 600 14px/1.4 ui-monospace, "SF Mono", Menlo, monospace; background: var(--panel); border: 1px dashed var(--edge); border-radius: 8px; padding: 10px 12px; }
+table { border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.tw { overflow-x: auto; }
+th, td { text-align: left; padding: 4px 14px 4px 0; border-bottom: 1px solid var(--edge); }
+th { font-size: 12px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-2); }
+</style>
+<main>
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>Round 3: the bid window with less clutter</h1>
+    <p class="sub">Saturday 24 Oct 26 · pull request 569 · drawn on the real app at your iPhone's size, with the demo's six new manning rows in place. Tap any picture to see it full size.</p>
+  </header>
+
+  <div class="now">
+    <h2>Look at now</h2>
+    <ol>
+      <li><b>A day holding LL and ATT B (your question, newest):</b> each entry leads with its own box, drawn as the grid draws it (D1327). Beside it, only what the box can't say: "Morning · approved", "Afternoon · change it on the Inputs page" (your D1328). Remarks and Document show for each entry, and "Note" is gone. <a href="#twoday">Pictures</a></li>
+      <li><b>Answered, A (D1330):</b> one row of buttons wherever an entry opens. On an approved leave Approve shows lit; tap it again and the leave goes back to waiting.</li>
+      <li><b>Answered, Q6 (c) (D1331):</b> a half day's window opens with its own half lit (AM or PM) beside the lit leave. <a href="#q6c">Picture</a></li>
+      <li><b>Answered (D1332, D1333, D1334):</b> round 3 approved whole, change 6 included (<a href="change6.png">picture</a>). A long remark wraps and its box grows taller. Next: the build.</li>
+    </ol>
+    <p class="reply">Nothing left to answer on this page.</p>
+    <h2 style="margin-top:6px">Answered</h2>
+    <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;color:var(--ink-2)">
+      <li>UNA deep teal (D1325), filed as OD is (D1324). The ⋯ is a button in the fourth place of the CSE · OD · UNA row (D1326). Grant OIL is green (D1320).</li>
+      <li>OIL taken chartreuse (D1323). Colour set C, with no pink (D1316, D1322). Duties outlined on the Inputs calendar (D1321).</li>
+      <li>Q7, A strict (D1314): the day line names only what is amber or red, side by side (D1313).</li>
+      <li>The demo starts with six manning rows (D1312).</li>
+    </ul>
+  </div>
+
+  <section id="twoday">
+    <span class="tag">Your Q6 follow-up · D1315, D1327, D1328, D1329</span>
+    <h2>A day holding a morning LL and an afternoon ATT B</h2>
+    <p>Drifter, Mon 9 Nov. The LL was placed in the window. The ATT B was filed the way the Inputs page files it, with a remark and a document. Today such a day opens its list. Drawn: each entry leads with the grid's own box, from the day itself (the morning in the top half, the afternoon in the bottom, with the Inputs page's blue edge). The list's outer frame goes, so each entry gets the window's full width. The box's fill already shows approved or pending.</p>
+    <div class="pair">
+      <figure><a href="twoday-cell.png"><img src="twoday-cell.png" alt="The grid cell: LL in the top half, B in the bottom half"></a><figcaption><b>The day on the grid</b>, which the list now copies.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="twoday-a-today.png"><img src="twoday-a-today.png" alt="Today's list: two lines of words, Note button"></a><figcaption><b>Today</b>, an admin, the LL approved: 256 points tall. No remark or document shown for either entry.</figcaption></figure>
+      <figure><a href="twoday-a-drawn.png"><img src="twoday-a-drawn.png" alt="Drawn list: boxes, short words, one row of buttons"></a><figcaption><b>Drawn, A (recommended)</b>: 324 tall, because each entry now shows its Remarks and Document (D1315). Approve is lit: this leave is approved.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="twoday-a-drawn-b.png"><img src="twoday-a-drawn-b.png" alt="Unapprove pushes Delete to a second line"></a><figcaption><b>B</b>: "Unapprove" in place of "Back to bid". Delete still drops to a second line.</figcaption></figure>
+      <figure><a href="twoday-b-drawn.png"><img src="twoday-b-drawn.png" alt="The LL pending: hollow box, Approve Refuse Move Delete"></a><figcaption><b>The LL still waiting</b> (an admin): its box hollow, "Morning · pending". The same row as the window: 288 tall (today 256).</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="twoday-own-drawn.png"><img src="twoday-own-drawn.png" alt="The man's own view: Move and Delete only"></a><figcaption><b>The man's own view</b>: Move and Delete only (Approve and Refuse are an admin's). Drawn from the admin's list with those two taken out.</figcaption></figure>
+      <figure><a href="twoday-b-today.png"><img src="twoday-b-today.png" alt="Today's list for the waiting LL"></a><figcaption><b>Today</b>, the LL waiting.</figcaption></figure>
+    </div>
+    <p class="sub">What is drawn in: the boxes, the Remarks and Document row (copied whole from the bid window), the ATT B's remark and document read only, and the lit Approve. That lit look is new: today an approved leave's Approve looks the same as one still waiting. Everything else is the app as it is.</p>
+  </section>
+
+  <section id="q6c">
+    <span class="tag">Q6 · redrawn</span>
+    <h2>A half day in the bid window: the day's own half lit</h2>
+    <p>Drifter, Fri 6 Nov, a morning LL. Today the window opens with "Whole day" lit, as if the day held a whole day. Drawn (c): it opens with AM lit, picked with the app's own button. The leave buttons then read "&lt;LL", "&lt;OL", as they do today whenever AM is picked. The ring sits on LL. Nothing is added to the title.</p>
+    <div class="pair">
+      <figure><a href="q6-half-ring.png"><img src="q6-half-ring.png" alt="Ring on LL, Whole day lit"></a><figcaption><b>Round 3 as drawn</b>: the ring alone, with "Whole day" lit. You can't tell it's a morning.</figcaption></figure>
+      <figure><a href="q6-half-am.png"><img src="q6-half-am.png" alt="Ring on LL, AM lit, buttons read <LL"></a><figcaption><b>(c) Recommended</b>: AM lit, so the window says it's a morning.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="una">
+    <span class="tag">UNA's colour</span>
+    <h2>A colour of its own for the unforeseen absence</h2>
+    <p>Drawn in the redrawn window with your chartreuse OIL and set C. Every other free colour was measured too: bronze, brown and sand sit too close to OL or LL, and steel or navy blue too close to the other leaves or the course.</p>
+    <div class="pair">
+      <figure><a href="r2-admin-empty-una-teal.png"><img src="r2-admin-empty-una-teal.png" alt="UNA in deep teal beside OD's slate"></a><figcaption><b>Deep teal (recommended):</b> looks like the other filled kinds, and is clearly apart from OD's slate and FO/HO's green.</figcaption></figure>
+      <figure><a href="r2-admin-empty-una-ivory.png"><img src="r2-admin-empty-una-ivory.png" alt="UNA in ivory with dark letters"></a><figcaption><b>Ivory:</b> the only light box with dark letters. Impossible to miss, but louder than anything else on the grid.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="nopink">
+    <span class="tag">Your D1322 · no pink</span>
+    <h2>An OIL taken, without pink</h2>
+    <p>Colours tried were measured for how far they sit from every other kind's colour, as the eye sees them on the dark grid. Set C's magenta stood only about 15 from its nearest kind; LL and OL stand about 12 apart. <b>Chartreuse</b> stands about 24 from its nearest, FO/HO's green: the farthest of everything tried. Teal and sky blue were left out because they sit about 10 from the cyan edge a box filed on the Inputs page wears.</p>
+    <div class="pair">
+      <figure><a href="np-grid-a.png"><img src="np-grid-a.png" alt="Leave War grid: OIL taken chartreuse, FO green"></a><figcaption><b>A (recommended), the Leave War grid:</b> Drifter's OIL taken in chartreuse, Blade's FO in green below. "Spent" and "given" no longer look alike.</figcaption></figure>
+      <figure><a href="np-inputs-a.png"><img src="np-inputs-a.png" alt="Inputs calendar: OIL chartreuse, duties outlined"></a><figcaption><b>A, the Inputs calendar:</b> with your outlined duties and set C.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="np-grid-b.png"><img src="np-grid-b.png" alt="Leave War grid: OIL taken ivory"></a><figcaption><b>B, ivory, the grid.</b></figcaption></figure>
+      <figure><a href="np-inputs-b.png"><img src="np-inputs-b.png" alt="Inputs calendar: OIL ivory"></a><figcaption><b>B, the Inputs calendar:</b> it reads as grey, too close to the outlined duties and the overseas duty. Not recommended.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="r2">
+    <span class="tag">Round 2 · OD, course, UNA (D1299, D1303, D1318)</span>
+    <h2>Filing an overseas duty, a course or an unforeseen absence on the Leave War</h2>
+    <p>The redrawn window with your set C colours. The three sit in a row of their own under the leaves. They are always <b>filled</b> (they stand at once, like an approved leave) and show <b>no balance figure</b> (nothing is spent). For a member the leaves stay hollow until approved, so the difference shows at a glance. They file the Inputs-page input they are, seen on the Inputs calendar and the schedule. The Document button is for leave only; an OD or course never asks for one.</p>
+    <div class="pair">
+      <figure><a href="r2-admin-empty.png"><img src="r2-admin-empty.png" alt="Admin window with CSE, OD and UNA under the leaves"></a><figcaption><b>An admin, an empty day.</b></figcaption></figure>
+      <figure><a href="r2-member-open.png"><img src="r2-member-open.png" alt="Member window: hollow leaves, filled CSE, OD, UNA"></a><figcaption><b>A member, an open day:</b> leaves hollow (they wait for approval), the three filled.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="r2-member-closed-today.png"><img src="r2-member-closed-today.png" alt="Today: bidding closed note"></a><figcaption><b>A member, a closed day, today:</b> a note only.</figcaption></figure>
+      <figure><a href="r2-member-closed.png"><img src="r2-member-closed.png" alt="Closed day with CSE, OD, UNA under the note"></a><figcaption><b>Drawn:</b> "any date" means the three can still be filed here, under the note.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="more">
+    <span class="tag">Your D1319, D1320</span>
+    <h2>A clearer way to Grant OIL, Post out and Post in</h2>
+    <p>Both drawn with set C, so the OIL leave button is magenta and Grant OIL's green (OIL given, like FO and HO) is its own.</p>
+    <div class="pair">
+      <figure><a href="more-a-closed.png"><img src="more-a-closed.png" alt="The dots as a bordered button"></a><figcaption><b>A (recommended), closed:</b> the ⋯ is a bordered button, like the window's others. The title still fits on one line with an iPhone's wider letters.</figcaption></figure>
+      <figure><a href="more-a-open.png"><img src="more-a-open.png" alt="The menu open, Grant OIL green"></a><figcaption><b>A, open:</b> Grant OIL green, Post out and Post in as today.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="more-b-closed.png"><img src="more-b-closed.png" alt="A More fold at the foot"></a><figcaption><b>B, closed:</b> a "More ▸" fold at the foot, in the Manning button's look. It costs a row (about 30 points).</figcaption></figure>
+      <figure><a href="more-b-open.png"><img src="more-b-open.png" alt="More opened: Grant OIL, Post out, Post in in a row"></a><figcaption><b>B, open:</b> the three in a row.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q3">
+    <span class="tag">Q3 · redrawn after your point (D1317)</span>
+    <h2>The duty and commitment bars on the Inputs calendar</h2>
+    <p>July on the Inputs calendar, every other bar in your set C. The round 1 slate measures about 8 to 1 for its white words, a pass on paper. It still reads faint because the bar has no colour and its bright edge outshines the small words. Words on each option, measured: <b>1</b> about 14 to 1, <b>2</b> about 10 to 1, <b>3</b> about 10 to 1.</p>
+    <div class="pair">
+      <figure><a href="q3d-R-desk.png"><img src="q3d-R-desk.png" alt="Round 1's slate duty bars"></a><figcaption><b>Round 1 as drawn:</b> the look you found faint.</figcaption></figure>
+      <figure><a href="q3d-1-desk.png"><img src="q3d-1-desk.png" alt="Duties outlined"></a><figcaption><b>1 (recommended): outlined.</b> Clear words, and the form says it: filled = away, outlined = still in the manning. The month stays calm, since duties are the commonest bar.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="q3d-2-desk.png"><img src="q3d-2-desk.png" alt="Duties a darker slate with a left edge"></a><figcaption><b>2: a darker slate, its colour on the left edge.</b> Readable, but too close to the overseas duty's slate ("Nomad · OD").</figcaption></figure>
+      <figure><a href="q3d-3-desk.png"><img src="q3d-3-desk.png" alt="Duties a light slate with dark words"></a><figcaption><b>3: a light slate, dark words.</b> Readable, but the commonest kind becomes the loudest bar on the month.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="q3d-R-phone.png"><img src="q3d-R-phone.png" alt="Round 1's slate on a phone"></a><figcaption><b>On your iPhone, round 1 as drawn.</b></figcaption></figure>
+      <figure><a href="q3d-1-phone.png"><img src="q3d-1-phone.png" alt="Duties outlined on a phone"></a><figcaption><b>On your iPhone, option 1.</b> The small key under the month ("absence", "duty") changes with it: a filled square and an outlined one.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q6">
+    <span class="tag">Q6 · first drawing (redrawn above)</span>
+    <h2>Is the word "NOW" needed?</h2>
+    <p>No. The lit button (round 3's change 7) already says which leave the day holds, so "NOW LL" can go. The one thing the ring alone can't tell is a <b>half day</b>: a morning LL lights the same LL button as a whole day. Drifter, Fri 6 Nov, a morning LL:</p>
+    <div class="pair">
+      <figure><a href="q6-half-today.png"><img src="q6-half-today.png" alt="Today: the title reads NOW <LL"></a><figcaption><b>Today:</b> "NOW &lt;LL" in the title.</figcaption></figure>
+      <figure><a href="q6-half-code.png"><img src="q6-half-code.png" alt="The code kept in the title pushes the close cross off the edge"></a><figcaption><b>(a) The word gone, "&lt;LL" kept in the title:</b> it doesn't fit on a phone. The ✕ is pushed off the edge.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="q6-half-button.png"><img src="q6-half-button.png" alt="The lit button reads <LL 24.5"></a><figcaption><b>(b) withdrawn:</b> I said the grid box reads "&lt;LL 24.5" for a morning, "LL&gt;" for an afternoon, plain "LL" for a whole day. It doesn't: the grid draws a morning as "LL" in the top half. See (c) above.</figcaption></figure>
+      <figure><a href="q6-two-today.png"><img src="q6-two-today.png" alt="Today's list for a day with a morning LL and an afternoon HO"></a><figcaption><b>A day holding two entries</b> (Casper, Thu 5 Feb: a morning LL and an afternoon HO award) opens its own list today, a card per entry. Your D1315: it gets round 3's changes too (Note gone, Remarks shown and dark, each entry's own code), drawn before the build.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q7">
+    <span class="tag">Q7 · answered: A strict (D1314)</span>
+    <h2>The day line side by side: every row, or only amber and red?</h2>
+    <p>Drifter on Mon 2 Nov, in the redrawn window. His leave lowers two of the six rows: OPSP and SXO. For the amber pictures, OPSP's amber point is set to 12 (the demo's own is 4), so 12 → 11 turns it amber on the real grid. Each picture shows only the top of the window.</p>
+    <div class="pair">
+      <figure><a href="q7s-a-calm.png"><img src="q7s-a-calm.png" alt="Available P 28 to 27, no manning row turns amber or red"></a><figcaption><b>A, a calm day (recommended):</b> one line.</figcaption></figure>
+      <figure><a href="q7s-a-amber.png"><img src="q7s-a-amber.png" alt="Available P 28 to 27, OPSP 12 to 11 amber"></a><figcaption><b>A, a row turns amber:</b> only that row joins the line, in amber.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="q7s-b-calm.png"><img src="q7s-b-calm.png" alt="Available P 28 to 27, OPSP 12 to 11, SXO 12 to 11"></a><figcaption><b>B, a calm day:</b> every row his leave lowers, plain.</figcaption></figure>
+      <figure><a href="q7s-b-amber.png"><img src="q7s-b-amber.png" alt="Available P 28 to 27, OPSP 12 to 11 amber, SXO 12 to 11"></a><figcaption><b>B, a row turns amber:</b> that row in amber, the others plain. With an iPhone's wider letters this wraps to a second line.</figcaption></figure>
+    </div>
+    <p class="recbox"><span class="rec">Why A (I've changed my recommendation from B):</span> the amber point is the squadron's own "getting close" warning, set on each row. A row still above it needs no attention, so showing it only adds numbers to read on every bid. A stays one line on a calm day and names exactly the rows to worry about. It is also what you first picked for this line in round 1.</p>
+  </section>
+
+  <section id="r3">
+    <span class="tag">Round 3 · D1311</span>
+    <h2>The window, redrawn: eight changes</h2>
+    <ol class="changes">
+      <li><b>The row labels go</b> (Date, Decide, Selected, Document, Remarks, Duration, Which leave, Also). Each row's buttons already say what they are; a screen reader still hears the names.</li>
+      <li><b>The day line leaves its box</b> (Q2 A on this morning's pictures page): the same words, no frame around them.</li>
+      <li><b>Decide and Selected become one row:</b> Approve · Refuse · Move · Delete. <b>"Note" goes</b>: on an approved leave the Remarks box is simply there (your D1307).</li>
+      <li><b>Document and Remarks share one row:</b> the Remarks box, now <b>dark</b> (your D1308), with "Remarks" inside it until you type; then its "till" date and the app's one Document button.</li>
+      <li><b>"Just this day" goes</b> (it is always the default); <b>"Pick a range"</b> moves to the end of the Duration row.</li>
+      <li><b>The leave buttons take the row's full width</b>: same height, wider, easier to hit. A size change, so your word (D487).</li>
+      <li><b>The day's own leave is lit</b> (your Q6): a ring on the LL button on an LL day. The title's "NOW LL" goes, as the ring says it.</li>
+      <li><b>"Approve what I enter" becomes the app's switch</b> (your D1302, remembered until changed), and <b>Grant OIL, Post out and Post in</b> move behind one <b>⋯</b> (they were the "Also" row, used rarely). <i>Since then (D1326): the ⋯ is a button in the fourth place of the CSE · OD · UNA row, not in the title bar.</i></li>
+    </ol>
+    <div class="tw"><table>
+      <tr><th>Window</th><th>Today</th><th>Drawn</th></tr>
+      <tr><td>A pending bid (admin)</td><td>461</td><td>286</td></tr>
+      <tr><td>An approved leave (admin)</td><td>370</td><td>286</td></tr>
+      <tr><td>An empty day (admin)</td><td>367</td><td>248</td></tr>
+      <tr><td>Three days picked by a drag (admin)</td><td>400</td><td>279</td></tr>
+      <tr><td>A member's own open day</td><td>338</td><td>248</td></tr>
+    </table></div>
+    <p class="sub">Heights in points on a 402-wide iPhone screen. With an iPhone's wider letters every row still fits on one line, the title bar included (<a href="a-title-wider.png">picture</a>).</p>
+
+    <h2>A pending bid</h2>
+    <div class="pair">
+      <figure><a href="a-pending-today.png"><img src="a-pending-today.png" alt="Today's window on a pending LL"></a><figcaption><b>Today</b>: 461 tall.</figcaption></figure>
+      <figure><a href="a-pending-proposed.png"><img src="a-pending-proposed.png" alt="Drawn window on a pending LL"></a><figcaption><b>Drawn</b>: 286. The LL button wears the ring, as this is an LL day.</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><a href="a-pending-menu.png"><img src="a-pending-menu.png" alt="The dots menu open: Grant OIL, Post out, Post in"></a><figcaption><b>The ⋯ opened</b>: Grant OIL, Post out, Post in, in the Also buttons' own look. They open exactly what they open today.</figcaption></figure>
+    </div>
+
+    <h2>An approved leave</h2>
+    <div class="pair">
+      <figure><a href="b-approved-today.png"><img src="b-approved-today.png" alt="Today's window on an approved LL, with a Note button"></a><figcaption><b>Today</b>: no Remarks, only "Note".</figcaption></figure>
+      <figure><a href="b-approved-proposed.png"><img src="b-approved-proposed.png" alt="Drawn window on an approved LL with Remarks and Document"></a><figcaption><b>Drawn</b>: Remarks and Document shown at once, for everyone (D1307); shorter even so.</figcaption></figure>
+    </div>
+
+    <h2>An empty day</h2>
+    <div class="pair">
+      <figure><a href="c-empty-today.png"><img src="c-empty-today.png" alt="Today's window on an empty day"></a><figcaption><b>Today</b></figcaption></figure>
+      <figure><a href="c-empty-proposed.png"><img src="c-empty-proposed.png" alt="Drawn window on an empty day"></a><figcaption><b>Drawn</b>: no actions row, as there is nothing on the day to act on.</figcaption></figure>
+    </div>
+
+    <h2>Three days picked by a drag</h2>
+    <div class="pair">
+      <figure><a href="d-select-today.png"><img src="d-select-today.png" alt="Today's drag-selection window"></a><figcaption><b>Today</b>: it offers Approve and Refuse over three empty days, where there is nothing to decide (pressing either says so).</figcaption></figure>
+      <figure><a href="d-select-proposed.png"><img src="d-select-proposed.png" alt="Drawn drag-selection window"></a><figcaption><b>Drawn</b>: Decide only where the days hold a bid; the title's dates shortened to "9–11 Nov · 3 days" (today "9 Nov 26 – 11 Nov 26 · 3 days").</figcaption></figure>
+    </div>
+
+    <h2>A member's own day</h2>
+    <div class="pair">
+      <figure><a href="e-member-today.png"><img src="e-member-today.png" alt="Today's member window"></a><figcaption><b>Today</b></figcaption></figure>
+      <figure><a href="e-member-proposed.png"><img src="e-member-proposed.png" alt="Drawn member window"></a><figcaption><b>Drawn</b>: a member has no switch and no ⋯.</figcaption></figure>
+    </div>
+
+    <h2>On a desktop</h2>
+    <div class="pair">
+      <figure><a href="a-pending-today-desk.png"><img src="a-pending-today-desk.png" alt="Today's window on a desktop"></a><figcaption><b>Today</b>, a pending bid.</figcaption></figure>
+      <figure><a href="a-pending-proposed-desk.png"><img src="a-pending-proposed-desk.png" alt="Drawn window on a desktop"></a><figcaption><b>Drawn</b>: the same rows, in the same places as on a phone.</figcaption></figure>
+    </div>
+    <p class="sub">Keyboard: the ⋯ is reached with Tab like ✕; Escape closes its menu first, then the window. Nothing else changes in how the window is used.</p>
+  </section>
+</main>

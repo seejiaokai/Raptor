@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1297 | 24 Oct 26 | Every fault he finds that a bug check's walk missed is learned from by itself, the same day, without asking him: why the walk missed it is written as a lesson in the bug-check order's list of missed faults (§7.11), every later walk's sizing step and brief check their scenarios against that list, and the fault is fixed red-first as usual. |
 | D1281 | 23 Oct 26 | Every bug check of a screen adds two checks: on a phone a picture right after each tap, holding the touched state an iPhone keeps, besides the settled one; and a standing test that pressing each dense screen's controls on a phone never turns a pinned cell see-through. |
 | D1273 | 23 Oct 26 | Pictures are split as they are: the Sonnet walkers take them and look at the bulk, the host opens every picture that decides something (D1271); and the host saves tokens by cropping a picture to the area that matters before opening it, never by handing a deciding picture to Sonnet. |
 | D1271 | 23 Oct 26 | Saving tokens never costs the quality of finding a fault or of checking one: the host keeps every look at a picture that decides whether something is wrong or right — a fault's cause, a fix's check, a finding before it enters the evidence sheet — and hands Sonnet only the looks whose answer the host does not rely on alone. |

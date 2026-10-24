@@ -25,7 +25,7 @@
 // a hand-typed cell, or the seed.
 
 import { chargedDays, viewsOf, type CountCtx, type LeaveSource } from './charge'
-import { AM, dayView, FULL, overlaps, PM, portionOf, type Contrib, type Win } from './dayview'
+import { AM, dayView, FULL, overlaps, PM, portionOf, type Contrib, type DayView, type Win } from './dayview'
 import { codeOf, LEAVE_TYPES, parseCell, type CounterName } from './codes'
 import { DEFAULT_OIL_POLICY, oilLedgerFor, type OilOmit, type OilPolicy } from './oiltracker'
 import { localToday } from './period'
@@ -199,21 +199,29 @@ export function balanceOf(
  * store would accept (`cellProblem`).
  */
 export function withFill(sources: LeaveSource[], personId: string, dates: readonly string[], code: string): LeaveSource[] {
-  const cell = parseCell(code)
-  if (!cell || !dates.length) return sources
-  const win: Win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL
-  const add: Contrib = { id: 'fill', kind: 'request', code: cell.type, win, state: 'pending' }
+  if (!parseCell(code) || !dates.length) return sources
   return sources.map(src => {
     const held = src.period ? dates.filter(d => d >= src.period!.start && d <= src.period!.end) : []
     if (!held.length) return src
     const views = viewsOf(src)
-    const row = { ...(views[personId] ?? {}) }
-    for (const d of held) {
-      const kept = (row[d]?.all ?? []).filter(c => !(c.kind === 'request' && c.state !== 'refused' && overlaps(c.win, win)))
-      row[d] = dayView([...kept, add])
-    }
-    return { ...src, views: { ...views, [personId]: row } }
+    return { ...src, views: { ...views, [personId]: fillRow(views[personId] ?? {}, held, code) } }
   })
+}
+
+/** ONE person's days as a fill of `code` would leave them — the body `withFill` rebuilds each war's row with, and the
+ *  bid window's day line reads the war's views through (engine/whatif.ts), so the two never differ: the undecided
+ *  requests on the half (or halves) the new one takes are replaced, everything else on the day stays. */
+export function fillRow(row: Readonly<Record<string, DayView>>, dates: readonly string[], code: string): Record<string, DayView> {
+  const cell = parseCell(code)
+  const out = { ...row }
+  if (!cell) return out
+  const win: Win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL
+  const add: Contrib = { id: 'fill', kind: 'request', code: cell.type, win, state: 'pending' }
+  for (const d of dates) {
+    const kept = (out[d]?.all ?? []).filter(c => !(c.kind === 'request' && c.state !== 'refused' && overlaps(c.win, win)))
+    out[d] = dayView([...kept, add])
+  }
+  return out
 }
 
 // ── The counter column's figures ────────────────────────────────────────────

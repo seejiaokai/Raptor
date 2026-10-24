@@ -168,6 +168,9 @@ export function seedRecs(): Recs {
     // a closed-war fact, owner 27 Aug 26).
     miles: { '2026-02-02': rq('LL', 'pending'), '2026-02-03': rq('LL*', 'pending') },
     cross: { '2026-03-10': rq('LL', 'refused') },
+    /* PIPPER is out of the manning for a day (his D1338 — UNA, an admin's, on the Leave War only): the demo shows one */
+    /* its own id, outside the requests' run, so every seeded request keeps its number (and its saved row's place) */
+    pipper: { '2026-01-14': [{ id: 'seedu1', kind: 'una', code: 'UNA', remarks: 'Board of inquiry', by: 'SABER' }] },
   }
 }
 

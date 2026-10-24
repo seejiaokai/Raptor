@@ -425,6 +425,17 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.move': op(T.bid, 'U', 'optional'),
   'lw.ack': op(T.bid, 'U', 'optional'),
   'lw.decide': op(T.bid, 'U'),
+  /* an admin places leave and approves it in one step (D1147 — "Approve what I enter", M3 5.5): one command, one Undo */
+  'lw.placeApproved': op(T.bid, 'U'),
+  /* a course or an overseas duty filed on the war straight as the INPUT it is (round 2 — D1318): no bid, no approval; it writes Inputs only, so it is asked as an Inputs-page filing is — his own, an admin any */
+  'lw.file': op(T.input, 'U', 'optional'),
+  /* a request's own words and papers — its remarks, till tick, documents (M3 5.9, 5.10; D1210, D1150): his own row, as
+     lw.edit; on a day closed for him the commit lets exactly this through (onlyChangesWords) */
+  'lw.reqmeta': op(T.bid, 'U', 'optional'),
+  /* UNA — out of the manning (his D1338, 24 Oct 26 — "its admin input only"): an admin places, changes or takes it away on
+     any man's row; a member never, not on his own row either (ownershipViolation's lw.cell check below holds that for
+     every command he runs) */
+  'lw.una': op(T.bid, 'U'),
   'lw.approve': op(T.bid, 'U'),
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
@@ -662,6 +673,38 @@ export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] |
   for (const c of changes) if (c.collection === 'lw.cell' && !LW_DAY_OPEN(c.id)) out.push(`${c.collection}/${c.id}`)
   return out
 }
+/* HIS OWN PENDING REQUEST'S WORDS AND PAPERS CHANGE ON A CLOSED DAY (owner D1150 — "added or seen at any time, even after
+   its dates are locked"; D1210; M3 5.10). Only that: the same records, in the same order, each the same but for the
+   `remarks`, `till` and `docIds` of an undecided request. A code, a state, a record added or taken is not this. Whatever
+   the command calls itself — his Undo or Redo of such a change is the same change, and a Redo that would put a bid back
+   is not one (D1263's check still answers it). */
+/* the UNA records at one war address, as one comparable string — their place in the list (ord) aside, which a member's
+   own bid beside them may re-mint (D1338) */
+/* …and any record whose CODE is UNA, whatever it calls itself (round 2's FULL check — the fresh code read's F4: a forged
+   member command writing a bid with the code UNA passed, and drew a teal UNA box on his row) */
+const UNA_CODE = /^[*<>]?UNA[*<>]?$/
+function unasOf(list: unknown): string {
+  const l: any[] = Array.isArray(list) ? list : []
+  /* the code read as the stored record's reader reads it — trimmed, upper-cased (the narrow read's N1: 'una' passed, then
+     read back as UNA after a reload) */
+  return JSON.stringify(l.filter(r => r?.kind === 'una' || UNA_CODE.test(String(r?.code ?? '').trim().toUpperCase())).map(({ ord: _o, ...r }: any) => r)
+    .sort((a, b) => String(a.id).localeCompare(String(b.id))))
+}
+function onlyChangesWords(before: unknown, after: unknown): boolean {
+  const b: any[] = Array.isArray(before) ? before : []
+  const a: any[] = Array.isArray(after) ? after : []
+  if (!b.length || a.length !== b.length) return false
+  const bare = (r: any) => { const { remarks: _r, till: _t, docIds: _d, ...rest } = r ?? {}; return JSON.stringify(rest) }
+  let changed = false
+  for (let i = 0; i < b.length; i++) {
+    const was = b[i], now = a[i]
+    if (JSON.stringify(was) === JSON.stringify(now)) continue
+    if (was?.kind !== 'request' || (was.state !== 'pending' && was.state !== 'acknowledged')) return false
+    if (bare(was) !== bare(now)) return false
+    changed = true
+  }
+  return changed
+}
 function onlyTakesPending(before: unknown, after: unknown): boolean {
   const b: any[] = Array.isArray(before) ? before : []
   const a: any[] = Array.isArray(after) ? after : []
@@ -811,12 +854,15 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'lw.cell': {
         const parts = c.id.split(':')
         if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
+        /* AN ADMIN'S UNA (D1338 — "its admin input only"): whatever a member's command is called — a bid, a clear, his Undo —
+           every UNA at the address stands after it exactly as before it, on his own row too */
+        if (unasOf(c.before) !== unasOf(c.op === 'delete' ? [] : c.after)) return `an admin's UNA (${where})`
         /* …and his Undo of such a step puts back exactly what it took (the walk's B-F1, 22 Oct 26: the Undo was refused) —
            but ONLY that (D1263): an Undo the timeline vouches for, of his own step made on the day already closed, image
            for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a
            restore puts nothing back on a closed day. (Taking his own pending bid away passes above, Undo or not.) */
         const after = c.op === 'delete' ? [] : c.after
-        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after)) {
+        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after) && !onlyChangesWords(c.before, after)) {
           if (warRestore === undefined) warRestore = env.origin === 'restore' && LW_RESTORE ? LW_RESTORE(env) : null
           if (!(warRestore && warRestore(c))) return `a war day not open for bidding (${where})`
         }

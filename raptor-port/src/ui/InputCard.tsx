@@ -33,8 +33,9 @@
    beside it on a phone the corner is wider, so a long list of names wraps a line sooner — as his picture shows. */
 import { useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import type { CardFacts } from './inputcard-model'
+import { ClipIcon } from './icons'
 
-export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey, flash, action, children }: {
+export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onDoc, onKey, flash, action, children }: {
   /** the input's address — its record's id */
   id: string
   facts: CardFacts
@@ -52,6 +53,8 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey,
    *  and two elements answering to one id would send that look-up to the wrong one. */
   row?: boolean
   onOpen: () => void
+  /** its paperclip's press: the document viewer (the desktop list's own) — where absent, no paperclip is drawn */
+  onDoc?: () => void
   /** a key on the card's button that is not Enter or Space — the day's Delete */
   onKey?: (e: ReactKeyboardEvent) => void
   /** just saved, changed or brought back: it wears the app's one just-added mark for its six seconds (`.innew`), on the
@@ -75,6 +78,8 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onKey,
           {late && <button type="button" className="sd-late" data-testid={`${tid}-late`} aria-expanded={lateOpen} title={late}
             onClick={() => setLateOpen(o => !o)}>LATE</button>}
           {oil && <span className="oiltag" data-testid={`${tid}-oil`} title={oil}>OIL?</span>}
+          {facts.doc === 'has' && onDoc && <button type="button" className="icard-doc" data-testid={`${tid}-doc`} title="View the document" aria-label="View the document" onClick={onDoc}><ClipIcon /></button>}
+          {facts.doc === 'none' && <span className="icard-nodoc" data-testid={`${tid}-nodoc`}>No document</span>}
           <span className="icard-hrs" data-testid={`${tid}-when`}>{when}</span>
         </span>
         <span className="icard-open" role="button" tabIndex={0} data-testid={`${tid}-open`} aria-label={label}

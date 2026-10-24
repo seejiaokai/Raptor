@@ -20,6 +20,9 @@ beforeEach(() => {
   /* A MEMBER NEVER BIDS BEFORE TODAY (D1211) — and the suite's bids sit on fixed 2026 dates that the real calendar has
      passed. Pinned far back, so "today" decides nothing unless a test sets it on purpose (the D1211 tests do). */
   setMemberTodayForTests('2000-01-01')
+  /* the browser's own storage holds view conveniences a test may set — the Manning fold, the admin's "Approve what I
+     enter" (D1258, D1302): each test starts with none, as a fresh device does */
+  try { localStorage.clear() } catch { /* none here */ }
   INPUTS.length = 0
   for (const r of JSON.parse(PRISTINE)) INPUTS.push(r)
   for (const a of SEED_ABSENCES) {

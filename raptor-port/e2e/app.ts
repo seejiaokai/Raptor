@@ -253,6 +253,11 @@ export async function puckSize(page: Page) {
    passes 'a', and mid-test switches go through w.lwSetRole (the toggle the
    standalone app drew was removed at the merge — the role rides the login). */
 export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user', viewAs: string | null = null) {
+  /* THE MANNING BLOCK AS THESE TESTS WERE WRITTEN FOR IT — EMPTY (his D1312, 24 Oct 26: the demo world now starts with
+     six counters, for his drawings and preview; a real squadron's store still starts with none — D669). Set before the
+     page loads, so the demo boot never lays them (state/demoworld.ts): nothing to delete, no Undo step, and a re-open
+     keeps whatever the test made. A test that is about counters makes its own (elevenCounters). */
+  await page.addInitScript(() => { (window as any).__lwNoDemoCounters = true })
   await login(page, who)
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')
@@ -468,4 +473,27 @@ export async function pickDate(page: Page, sel: string, iso: string, touch = fal
   await expect(page.locator('[data-testid="dcal-card"]')).toBeVisible()
   await tapCalendarDate(page, iso, touch)
   await expect(box).toHaveAttribute('data-value', iso)
+}
+
+/** A NEW leave saved with no document asks first since D1150 (the Leave War overhaul's M3 7.4) — never a stop: answer it
+ *  "No document", as a filer who has none yet does. Does nothing where no ask opens (a duty, a leave with a file). */
+export async function answerNoDocument(page: Page): Promise<void> {
+  const b = page.locator('[data-testid="docconf-nodoc"]')
+  await b.waitFor({ state: 'visible', timeout: 1500 }).then(() => b.click(), () => {})
+}
+
+/** An admin's bid windows open with "Approve what I enter" on (owner D1186, the Leave War overhaul's M3 5.5) — a switch
+ *  remembered on the device since round 3 (D1302): a test that means to place a PENDING bid as an admin turns it off
+ *  first — by a press on the switch, as he would — where it is on. 'bid' for the one-day window, 'sel' for the
+ *  drag-selection window. */
+export async function untickApprove(page: Page, prefix: 'bid' | 'sel'): Promise<void> {
+  const t = page.locator(`[data-testid="${prefix}-approve-tick"]`)
+  if (await t.count() && (await t.getAttribute('aria-checked')) === 'true') await t.click()
+}
+
+/** The admin's Grant OIL, Post out and Post in stand behind the ⋯ in the row under the leaves since round 3 (D1326): open
+ *  it, as he would, and press the one named. `prefix` 'bid' (the one-day window) or 'sel' (the drag-selection window). */
+export async function pressMore(page: Page, item: string, prefix: 'bid' | 'sel' = 'bid'): Promise<void> {
+  await page.locator(`[data-testid="${prefix}-more"]`).click()
+  await page.locator(`[data-testid="${item}"]`).click()
 }

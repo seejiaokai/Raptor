@@ -19,12 +19,12 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
 import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe } from '../state/perms'
-import { SESSION } from '../state/auth'
+import { SESSION, canEditSched } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
@@ -37,7 +37,9 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
-import { setDaysWin, setInpEdit, setOilList } from '../ui/pops'
+import { setDaysWin, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
+import { puck } from '../ui/html'
+import type { DayWhatIf } from './engine/whatif'
 import { lwSyncTurn } from './state/store'
 import {
   addDays,
@@ -92,10 +94,12 @@ import {
 import {
   absencesChanged,
   availRules,
+  bidWhatIf,
   getVersion,
   setRefusalHook,
   setHolidayTell,
   type HolidayRun,
+  type ReqWords,
   clearRaptorCell,
   createWar,
   selectWar,
@@ -139,7 +143,8 @@ import { stampPlaced, stampChanged } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
 import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
-import { MAX_CARRIED_REMARK } from './engine/warrecs'
+import { MAX_CARRIED_REMARK, MAX_REQ_DOCS } from './engine/warrecs'
+import { docFields, rowDocIds } from '../state/docs'
 import { codeWorth } from './engine/credit'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
@@ -246,7 +251,7 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
 
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
-  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved })
+  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved, file: doorFile })
   /* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8): the permissions module asks, of a member's war record
      (`war:person:date`), whether that day is open for HIM — the one rule (`canEditCell`), asked of the period holding
      the date, with a member's today (D1211). Read from the right: a war id may carry a colon. */
@@ -403,14 +408,15 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     picks.push({ ...it, rec, warId: war.period.id })
   }
   if (!picks.length) return { done: 0, skipped, why }
-  /* runs: same person, war, code, carried remark, consecutive dates */
+  /* runs: same person, war, code, remark, till tick and documents (M3 7.2 — one leave holds one of each), consecutive dates */
   picks.sort((a, b) => cmpISO(a.personId, b.personId) || cmpISO(a.date, b.date))
   const runs: Pick[][] = []
   for (const p of picks) {
     const last = runs[runs.length - 1]
     const prev = last?.[last.length - 1]
     if (prev && prev.personId === p.personId && prev.warId === p.warId && prev.rec.code === p.rec.code &&
-      (prev.rec.carried?.remarks ?? '') === (p.rec.carried?.remarks ?? '') && addDays(prev.date, 1) === p.date) last!.push(p)
+      (prev.rec.remarks ?? '') === (p.rec.remarks ?? '') && prev.rec.till === p.rec.till &&
+      (prev.rec.docIds ?? []).join('|') === (p.rec.docIds ?? []).join('|') && addDays(prev.date, 1) === p.date) last!.push(p)
     else runs.push([p])
   }
   const rows = runs.map(run => {
@@ -423,9 +429,13 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const row = inputRowFor({
       person: first.personId, code: first.rec.code, from: first.date, to: last.date, lw: first.warId,
       /* the request's own words only — its "till <last day>" is printed from its dates (owner D948) */
-      remarks: remarksTyped(first.rec.carried?.remarks ?? '', { start: first.date, end: last.date }),
+      remarks: remarksTyped(first.rec.remarks ?? '', { start: first.date, end: last.date }),
       lwMoved: moved, mod: nowStamp(),
     })
+    /* ITS TILL TICK AND ITS DOCUMENTS GO WITH IT (owner D1226, D1150; M3 7.2): the Inputs page shows the leave as the
+       request said — a tick kept only where it differs from the leave's default (D953), the papers as the input's own */
+    if (typeof first.rec.till === 'boolean' && first.rec.till !== tillDefault(row)) row.till = first.rec.till
+    if (first.rec.docIds?.length) Object.assign(row, docFields(first.rec.docIds))
     inpId(row)
     /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
     stampPlaced(row)
@@ -444,7 +454,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
          extension never swallows the run's own carried remark (Fable #7) */
       const body = (x: any) => remarksTyped(x.remarks, x)
       const same = (x: any) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
-        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r)
+        !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r) &&
+        /* a request that carries its own till choice (M3 7.2) joins only a leave that shows the same; one with none takes
+           its neighbour's, as before (D953) */
+        (typeof r.till !== 'boolean' || tillShown(x) === r.till)
       const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
       /* …and a day that would BRIDGE a leave whose till date is unticked and one whose is not joins the one before only:
          one record holds one tick, so a bridge would drop one of the two choices (owner D953 — the scenario designer's 8,
@@ -457,6 +470,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const keep = before ?? after
       const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
       merged.remarks = remarksTyped(keep.remarks, keep)
+      /* …the papers of every piece it joins (M3 7.2): none is lost to a join */
+      const papers = [...new Set([...rowDocIds(keep), ...rowDocIds(r), ...(before && after ? rowDocIds(after) : [])])]
+      delete merged.docId; delete merged.docIds
+      Object.assign(merged, docFields(papers))
       merged.mod = nowStamp()
       /* an approval that EXTENDS a leave is still an approval: placed by this approver, now (the plan §3.8) */
       stampPlaced(merged)
@@ -469,6 +486,74 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
   lwEditLists(picks.map(p => ({ personId: p.personId, date: p.date, drop: [p.rec.id], add: [] })))
   refreshAbsencesAndRepaint()
   return { done: picks.length, skipped, why }
+}
+
+/** FILED STRAIGHT (round 2 — his D1318, D1324; `store.ts fileStraight`): a course, an overseas duty or the unforeseen
+ *  absence written as the Inputs they are — one input a man a run of consecutive days, whole days (none of the three has
+ *  halves on the Inputs page), the window's words and papers with it, placed by whoever filed it now (D629). No `lw`
+ *  provenance: the war never changes these kinds (dayview OFF_WAR — design §5.4, owner §13 Q1), so once filed it is the
+ *  Inputs page's, exactly as one filed there. The Inputs door's own rules run (a course or an OD never replaces a bid). */
+function doorFile(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
+  const why: string[] = []
+  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  let skipped = 0
+  const picks: Array<{ personId: string; date: string }> = []
+  for (const it of items) {
+    if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not filed`); continue }
+    /* A DAY THAT ALREADY HOLDS THE SAME KIND FOR HIM is left as it is (round 2's FULL check — the scenario designer's G2): a
+       range or a drag over an OD filed earlier made a second OD on that day, two inputs of one kind over one day. The days
+       around it are filed; a run is split there, so nothing overlaps. */
+    if (absencesAt(it.personId, it.date).some(o => o.code === code)) {
+      skipped++; why.push(`${shortDate(it.date)} already holds ${code === 'OD' ? 'an OD' : `a ${code}`} — left as it is`); continue
+    }
+    picks.push(it)
+  }
+  if (!picks.length) return { done: 0, skipped, why }
+  picks.sort((a, b) => cmpISO(a.personId, b.personId) || cmpISO(a.date, b.date))
+  const runs: Array<typeof picks> = []
+  for (const p of picks) {
+    const last = runs[runs.length - 1], prev = last?.[last.length - 1]
+    if (prev && prev.personId === p.personId && addDays(prev.date, 1) === p.date) last!.push(p)
+    else if (!(prev && prev.personId === p.personId && prev.date === p.date)) runs.push([p])
+  }
+  const rows = runs.map(run => {
+    const first = run[0]!, last = run[run.length - 1]!
+    const row = inputRowFor({ person: first.personId, code, from: first.date, to: last.date, remarks: remarksTyped(words?.remarks ?? '', { start: first.date, end: last.date }), mod: nowStamp() })
+    if (typeof words?.till === 'boolean' && words.till !== tillDefault(row)) row.till = words.till
+    if (words?.docIds?.length) Object.assign(row, docFields(words.docIds))
+    inpId(row)
+    stampPlaced(row)
+    return toPeople(row)
+  })
+  if (!doorWrite(() => { for (const r of rows) INPUTS.push(r) })) return { done: 0, skipped: skipped + picks.length, why }
+  refreshAbsencesAndRepaint()
+  askFiledOil(rows.map(r => String(r.iid)), picks[0]!.date, picks.reduce((m, p) => (p.date > m ? p.date : m), picks[0]!.date))
+  return { done: picks.length, skipped, why }
+}
+
+/** THE OIL QUESTION OF WHAT WAS JUST FILED FROM THE WAR (round 2's FULL check — the scenario designer's G3): an OD or a
+ *  course on a weekend or a holiday asks it at the save, as the Inputs page does — owner D804 ("asked … wherever it is
+ *  filed"), D660 (the filer answers, at the save, so nobody is left to his own bell). One input: its own question, in its
+ *  own window, over the war (the bell's way in — ui/topbits.tsx). Several (a drag over several men): a scheduler gets the
+ *  ONE list of those days (D782), never a window per man; anyone else — a member files one input, his own — the first.
+ *  Raised once the filing has gone through (a deferred effect), never for one refused. */
+function askFiledOil(iids: string[], from: string, to: string): void {
+  const mine = new Set(iids)
+  const open = oilOpenOn(from, to).filter(o => mine.has(o.iid))
+  if (!open.length) return
+  const raise = () => {
+    if (open.length > 1 && canEditSched()) {
+      const days = open.flatMap(o => o.days).sort()
+      setOilList({ from: days[0]!, to: days[days.length - 1]!, name: '', plain: true })
+    } else {
+      const row = INPUTS.find((x: any) => String(x.iid) === open[0]!.iid)
+      if (!row) return
+      setOilAsk(open[0]!.iid)
+      setInpEdit(row)
+    }
+    raptorNotify()
+  }
+  if (!cmdDeferEffect(raise)) raise()
 }
 
 /* the dates an Input covers and a copy of it limited to [from, to] — the one
@@ -572,9 +657,12 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
-      carried: { ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}), ...(row.lwMoved?.[it.date] ? { lwMoved: { [it.date]: row.lwMoved[it.date] } } : {}) },
+      ...(row.lwMoved?.[it.date] ? { carried: { lwMoved: { [it.date]: row.lwMoved[it.date] } } } : {}),
+      /* a put-back carries the leave's words back to the request (M3 7.1 / 7.2, B9) */
+      ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}),
+      ...(typeof row.till === 'boolean' ? { till: row.till } : {}),
+      ...(rowDocIds(row).length ? { docIds: rowDocIds(row).slice(0, MAX_REQ_DOCS) } : {}),
     }
-    if (!rec.carried!.remarks && !rec.carried!.lwMoved) delete rec.carried
     adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)
@@ -2560,6 +2648,17 @@ export function availVerdictAt(iso: string, seat: 'p' | 'w', a: DayAnswer = flyA
   const rule = availRules()[seat]
   return availVerdict(seat === 'p' ? f.availP : f.availW, a.reqFrom[seat] === 'nf' ? null : a.req[seat], availPointsOf(rule))
 }
+/** THE BID WINDOWS' DAY LINE (D1144, D1213; M3): what a bid of `code` on `dates` would do to manning, each day the store
+ *  would write — his seat's Available row judged against that day's Required by its own points (the same judge as
+ *  `availVerdictAt`, on the figure the bid would leave), and the Manning rows it would turn amber or red. */
+export function bidDayLine(personId: string, dates: readonly string[], code: string): DayWhatIf[] {
+  const rules = availRules()
+  return bidWhatIf(personId, dates, code, (seat, have, iso) => {
+    const a = flyAnswer(iso)
+    return availVerdict(have, a.reqFrom[seat] === 'nf' ? null : a.req[seat], availPointsOf(rules[seat]))
+  })
+}
+
 /** The Available rows at RED on one day, each named with its figure (P, then W) — never at amber (D1243). */
 export function availRedAt(iso: string, a: DayAnswer = flyAnswer(iso)): RedLine[] {
   const f = dayFacts(iso)
@@ -2615,6 +2714,11 @@ export function openInputWindow(iid: string): boolean {
   return true
 }
 
+/** A PASSING NOTE FROM THE WAR'S OWN WINDOWS (round 2's FULL check — the fresh code read's F2): a press that did less than
+ *  it was asked — a day of a range left out — said where the window that would have said it has closed (the design
+ *  guide, D850). A rider on this seam, as `openInputsPage` is: the app's passing note, reached from the war's screens. */
+export function sayOnWar(text: string): void { HOOKS.toast(text, 'warn') }
+
 /** THE CLOSED NOTE'S "Open the Inputs page" (D1176, D1166 — "seek management's approval, then file it on the Inputs
  *  page"; drawn r7-08): the Inputs page brought to the front, nothing opened on it. Only a flag is reached, as `openDays`. */
 export function openInputsPage(): void {
@@ -2641,4 +2745,19 @@ export function flyAnswer(iso: string): DayAnswer {
  *  or a weekday rule that began months earlier moves these, so a memo built from them cannot miss it */
 export function flyMonth(y: number, m: number): Record<string, DayAnswer> {
   return monthAnswers(y, m, getFlyPlan(), dayFacts, iso => sansFly(iso), getTones())
+}
+
+/* A LEAVE REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1159, D1226): the bid windows draw the app's one Document
+   button and the Inputs page's own "till <date>" — reached through this seam, never imported across it (a rider on the
+   inputs wire, as the published remarks editor's is) */
+export { DocField } from '../ui/inputedit'
+export { tillOfISO } from '../engine/inputs'
+export { rowDocIds }
+export { docGet } from '../state/docs'
+
+/* THE SCHEDULE'S OWN PUCK, for the war's day panel and its one-line leave row (M3 6.3 — his lesson 25: never a look-alike) */
+export function puckHtml(id: string, callsign = ''): string {
+  const h = puck(id, false, true, false).replace(' tabindex="0"', '')
+  /* a war person the roster no longer draws (a demo row, one deleted since) still reads as his callsign */
+  return h || `<span class="ll-cs">${String(callsign).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c])}</span>`
 }

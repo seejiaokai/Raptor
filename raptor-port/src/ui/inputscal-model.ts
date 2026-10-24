@@ -16,7 +16,7 @@
    bars, and who is in one is the record's own list, read through engine/inputs.ts (namedOf / placeholderOf) — never
    `person`, never how many records. A record stored before that build (one `person`) reads as the one-person input it
    is; one that still carries an old group id is one man's input too (D759 reading 10 — nothing is converted). */
-import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit, namedOf, placeholderOf , remarksShown } from '../engine/inputs'
+import { dateOrd, inpLabel, inpKindTag, isSansAvail, isUnavail, isUpchit, namedOf, placeholderOf , remarksShown, typeMatches } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
 import type { DayAnswer } from '../state/flyplan-model'
 
@@ -34,6 +34,8 @@ export interface BarItem {
   b: string
   /** red for an absence, amber for a duty or a commitment — the List's own row colours */
   tone: 'red' | 'amb'
+  /** the Leave War's colour for its kind (D1304) — a filled bar; null, a duty or another commitment, drawn outlined (D1321) */
+  col: BarColour | null
   /** the first callsign of `people` */
   who: string
   /** how many more are in it — `people.length - 1`; "several people" is this, never how many records */
@@ -130,6 +132,15 @@ const isoOfOrd = (o: number) => `${Math.floor(o / 10000)}-${two(Math.floor(o / 1
 const TONE_ORDER = { red: 0, amb: 1 } as const
 /** red for an absence, amber for a duty or a commitment (an upchit too) — the month's bar and the input card read it */
 export const toneOf = (t: any): 'red' | 'amb' => !isUpchit(t) && isUnavail(t) ? 'red' : 'amb'
+/** THE LEAVE WAR'S COLOUR FOR AN INPUT'S KIND (his D1304, D1309; set C D1316; D1321; the OIL taken D1323): the class its bar
+ *  wears on the Inputs month — the colours themselves are the app's one set (`--k-*`, scheduler/00-foundation-login.css),
+ *  which the Leave War's boxes read too. Leave, an OIL taken, the other leave, medical (an upchit with them, as the approved
+ *  drawing painted it — scripts/handpass/lw-q3-duties.mjs), a course and an overseas duty are filled bars; every other duty
+ *  and commitment is null — an outlined bar. */
+export type BarColour = 'll' | 'ol' | 'oilt' | 'care' | 'med' | 'cse' | 'od'
+const COLOUR: Record<string, BarColour> = { LL: 'll', OL: 'ol', OIL: 'oilt', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care',
+  HL: 'med', OML: 'med', 'ATT B': 'med', 'ATT C': 'med', UPCHIT: 'med', CSE: 'cse', CRS: 'cse', OD: 'od' }
+export const colourOf = (t: any): BarColour | null => COLOUR[String(t ?? '').trim().toUpperCase()] ?? null
 
 /** HOW MANY AN INPUT OF SEVERAL HOLDS, in words — for the question a delete asks and the note that answers it: "4
  *  people"; with a placeholder among them the count is of the NAMED people and the placeholder is said beside it, as on
@@ -148,7 +159,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
   const out: BarItem[] = []
   for (const r of (inputs || [])) {
     if (!r || isSansAvail(r.type)) continue
-    if (f.fType !== 'all' && r.type !== f.fType) continue
+    if (!typeMatches(f.fType, r.type)) continue
     if (!inputPassesPerson(f.fPerson, r, people) || !inputMatchesSearch(r, f.fSearch, people)) continue
     const who = peopleAZ(r, people)
     const ph = placeholderOf(r)
@@ -158,7 +169,7 @@ export function monthItems(inputs: readonly any[], f: CalFilter, people: Record<
     const b = b0 != null && b0 > a ? b0 : a
     out.push({
       key: String(r.iid), rows: [r], people: who, ph: ph && ph.p != null ? cs(ph.p) : '',
-      a: isoOfOrd(a), b: isoOfOrd(b), tone: toneOf(r.type),
+      a: isoOfOrd(a), b: isoOfOrd(b), tone: toneOf(r.type), col: colourOf(r.type),
       who: who.length ? cs(who[0]) : '', more: Math.max(0, who.length - 1), word: inpLabel(r), kind: inpKindTag(r), allday: !!r.allday, s: r.allday ? 0 : (r.s ?? 0),
       cx: !!r.cx,
     })

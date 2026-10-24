@@ -13,11 +13,13 @@
 // There is no login, so a bid is placed against whichever row was clicked
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
-import { useState } from 'react'
-import { addDays, displayCell, formatCell, LEAVE_TYPES, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange } from '../state/store'
+import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, placeUna, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
+import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
+import { ApproveSwitch, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -29,6 +31,10 @@ import { belowZeroAsk, goesBelow } from './belowzero'
 import './bidpicker.css'
 import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
+import type { DayWhatIf } from '../engine/whatif'
+import { DayLine, dayLineCode } from './DayLine'
+import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
+import { sayOnWar } from '../sync'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -56,6 +62,15 @@ export function skipWhy(verb: string, role: 'admin' | 'member'): string {
   return role === 'member' ? 'closed for bidding, before today, or already holding leave or a medical' : 'already holding leave or a medical'
 }
 
+/** THE LEAVE A DAY HOLDS, for the window's lit button and its half (round 3's change 7, his D1331): its kind and its half
+ *  where the day's code is a leave not refused — a pending bid or an approved leave — else null. */
+function leaveOn(current: string, state?: BidState): { type: string; portion: Portion } | null {
+  if (!current || state === 'refused') return null
+  const c = parseCell(current)
+  if (!c || !LEAVE_TYPES.some(t => t.type === c.type)) return null
+  return { type: c.type, portion: c.portion }
+}
+
 export function BidPicker({
   callsign,
   personId,
@@ -64,6 +79,7 @@ export function BidPicker({
   dates,
   onWrote,
   wouldLeave,
+  dayLine,
   onPostOut,
   hasAccount,
   blockedFor,
@@ -77,7 +93,8 @@ export function BidPicker({
   awardCount = 0,
   onlyPortion,
   heldBy,
-  onNote,
+  approvedRow,
+  dayState,
   onClose,
 }: {
   callsign: string
@@ -95,6 +112,9 @@ export function BidPicker({
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
   wouldLeave?: (code: string, dates: readonly string[]) => { counter: CounterName; before: number; after: number } | null
+  /** What the bid would do to manning on these days (D1144, D1213 — the day line at the window's top): the store's answer,
+   *  supplied by the matrix as `wouldLeave` is (`sync.ts bidDayLine`). */
+  dayLine?: (dates: readonly string[], code: string) => DayWhatIf[]
   /** Admin-only: post this person OUT (owner, 18 Aug 26; reworked 19 Aug 26
    *  — any date, not just the tapped day, and the "Archive on PO date"
    *  switch). Present only for an admin; the matrix wires it to the store and
@@ -155,18 +175,33 @@ export function BidPicker({
   /** What is already on the day, in the words the box shows, so the sheet can
    *  name the half it is NOT offering. */
   heldBy?: string
-  /** Open the remarks of the approved leave on this day — the admin's Note, as the day's list has it (M1's code read,
-   *  L6: his tap on a single approved leave opens this window, which had no way to its remarks). */
-  onNote?: () => void
+  /** THE APPROVED LEAVE ON THIS DAY — the Raptor input it is (`sync.ts leaveInputAt`), for its Remarks and Document row,
+   *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
+   *  first given the window that Note). */
+  approvedRow?: any
+  /** the day's bid state, for every role — what is lit reads it (a refused bid lights no leave), the admin's decide aside */
+  dayState?: BidState
   onClose: () => void
 }) {
   // Deliberately not seeded from `current`: the portion resets to a whole
   // day for every cell opened. A picker that remembered the last choice
   // would silently write a half day on the next cell the bidder touched.
-  const [portion, setPortion] = useState<Portion>(onlyPortion ?? 'full')
+  /* …BUT A HALF DAY OPENS ON ITS OWN HALF (his D1331, round 3): on a day holding half a day of leave the Duration row
+     opens with that half lit, AM for a morning, PM for an afternoon, so the window says it is a morning — and a leave
+     changed from it keeps its half. A whole day, and every other day, still opens on "Whole day". */
+  const dayLeave = !onlyPortion ? leaveOn(current, decide?.state ?? dayState) : null
+  const [portion, setPortion] = useState<Portion>(onlyPortion ?? dayLeave?.portion ?? 'full')
+  /* "APPROVE WHAT I ENTER" (D1147, D1186; D1302): an admin's switch in the title bar, remembered on this device until he
+     changes it — on where he never has (BidBits.tsx useApproveMemory) */
+  const isAdmin = getState().role === 'admin'
+  const [approve, setApprove] = useApproveMemory()
+  const approving = isAdmin && approve
   // The range, if the bidder has asked for one. `null` means this one day —
   // the common case, and the one that must stay a single tap.
   const [range, setRange] = useState<Range | null>(null)
+  /* WHAT THE WINDOW ACTS ON: the range picked — or this one day, where none is, or where the range picked is only the day
+     tapped (round 3: "Just this day" went, so a range picked back to the one day is the one day again — D1332) */
+  const span: Range | null = range && !(range.from === date && range.to === date) ? range : null
   const [showCal, setShowCal] = useState(false)
   const [note, setNote] = useState('')
   // Which code the sheet has warned about. A second tap on the SAME leave is
@@ -242,19 +277,25 @@ export function BidPicker({
      `decide` only where a decision can land); this is the second line, because
      a control that silently does nothing is the worst of the three outcomes. */
   const answer = (bid: BidState) => {
-    // Tapping the answer it already holds is a NO-OP, not a failure (Fable,
+    flushWords()   // words still in a box ride with the answer (round 3's FULL check)
+    /* THE LIT APPROVE TAPPED AGAIN SENDS THE LEAVE BACK TO WAITING (his D1330, round 3): on an approved leave Approve
+       shows lit, and a second tap on it is what "Back to bid" was — the leave a pending bid again (D1177: the admin
+       decides at any time). Only for the ONE day: over a picked range the days may hold other answers (D335). */
+    const again = !span && decide?.state === bid
+    if (again && bid === 'approved') bid = 'pending'
+    // Tapping any other answer it already holds is a NO-OP, not a failure (Fable,
     // 21 Sep 26): the store returns "nothing decided" for it, which the line
-    // below would otherwise report as a refusal. Only for the ONE day — over a
-    // picked range the other days may hold other answers (D335).
-    if (!range && decide?.state === bid) return onClose()
+    // below would otherwise report as a refusal.
+    else if (again) return onClose()
     const { decided } = setBidStates(selCells(), bid)
     if (decided > 0) return onClose()
-    setMoveErr(range
+    setMoveErr(span
       ? 'None of those days holds a bid this screen can decide.'
       : 'That could not be recorded — this day is not this screen’s to decide.')
   }
   const [oilErr, setOilErr] = useState('')
   const grantOil = () => {
+    flushWords()   // the words first, so one Undo takes the award and leaves them (the narrow read's N2)
     const problem = onCredit!(oilCode, oilDays, oilNote, oilGiven, oilHalf)
     if (problem) { setOilErr(problem); return }
     onClose()
@@ -268,6 +309,11 @@ export function BidPicker({
   /* where the sheet's one note is drawn: under the Selected row for a Delete's confirm, under the leave chips for a
      leave's (the negative-balance ask, a refused write) — beside the button that raised it */
   const [noteAt, setNoteAt] = useState<'sel' | 'leave'>('leave')
+  /* A REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1210, D1226, D1159): on a day holding one bid (and no range picked)
+     the rows speak for THAT bid and save to it as they change (`lw.reqmeta`); otherwise they hold the words of the bid
+     about to be placed, and the leave tap writes them with it. Not on an approved leave — its Note opens its remarks. */
+  const [draft, setDraft] = useState<ReqDraft>(emptyDraft)
+  const [heldEdit, setHeldEdit] = useState<ReqDraft | null>(null)
   /** The cells a range covers, for the store's questions about them. */
   const spanCells = (r: Range) => {
     const out: { personId: string; date: string }[] = []
@@ -277,7 +323,7 @@ export function BidPicker({
   /** WHAT THE SHEET ACTS ON (D335 — "5 keep": the one-day sheet keeps How many, and a picked range widens the
    *  selection): the day tapped, or every day of the range. Decide, Move and Delete all read this, as a drag across
    *  those days would (the drag-selection sheet's own selection). */
-  const selCells = () => (range ? spanCells(range) : [{ personId, date }])
+  const selCells = () => (span ? spanCells(span) : [{ personId, date }])
   /* The Selected row's two buttons are drawn only where they would do something — the house rule for a control that
      could not work (a disabled chip invites a tap and then refuses it). Move: a record on these days this role may move
      (the store's one rule, D333 — so a member's own bid offers it while bidding is open); Delete: a day a Delete would
@@ -288,9 +334,81 @@ export function BidPicker({
      drawn from the tapped day alone, so a range holding bids around an empty tapped day offered Move and Delete but no
      Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
      (`decidableIn` — `setBidStates`'s own eligibility, the admin at any time — D1177). */
-  const canDecideHere = !!decide || (!!range && decidableIn(selCells()) > 0)
+  const canDecideHere = !!decide || (!!span && decidableIn(selCells()) > 0)
+  const held = !span ? heldRequest(personId, date) : null
+  /* the approved leave's own row speaks for the day only while no range widens it (a range's words go with the fill) */
+  const leaveRow = !span && !held && !onlyPortion ? approvedRow : null   // never the free half's (the fresh read's R1)
+  const words = held ? (heldEdit ?? draftOf(held.rec)) : draft
+  const onWords = (next: ReqDraft, how: 'type' | 'commit') => {
+    if (!held) return setDraft(next)
+    if (how === 'type') return setHeldEdit(next)
+    const patch = patchOf(draftOf(held.rec), next)
+    if (patch) setRequestWords(personId, date, held.rec.id, patch)
+    setHeldEdit(null)
+  }
+  /* the words a new bid is written with: the window's own on a new bid; on a held one its own carry over by themselves
+     (5.11 — the store keeps a re-typed bid's words) */
+  /* …except a REFUSED bid bid again: the store carries words only from a live bid it replaces, so the words in its box ride
+     with the new bid here (the fresh read's R2 — they stayed on the refused record) */
+  const newWords = !held ? wordsOf(draft) : held.rec.state === 'refused' ? wordsOf(words) : undefined
+  /* ROUND 2 (his D1318, D1324 — [LW-FILE-OD-CRS]): a course, an overseas duty or the unforeseen absence filed straight for the
+     day or the picked range — no bid, nothing to approve — with the words typed for something new (never a held bid's own,
+     which its box speaks for); the window closes on it, as a leave placed does. Where nothing could be filed it says why. */
+  const fileDuty = (code: string) => {
+    flushWords()
+    const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined)
+    /* …and where a day of a range was left out (it already held the same kind, a locked week) it is said (round 2's FULL
+       check — the fresh code read's F2): as a passing note, since the window closes — the day tapped now holds the input,
+       and the grid opens that input's own window for it (the design guide: a press that did less than expected, D850) */
+    if (r.done > 0) {
+      if (r.skipped) sayOnWar(`${r.done} day${r.done === 1 ? '' : 's'} filed. ${r.why[0] ?? `${r.skipped} day${r.skipped === 1 ? ' was' : 's were'} not yours to change`}.`)
+      return onClose()
+    }
+    setNoteAt('leave')
+    setNote(r.why[0] ?? 'Nothing was filed: these days are not yours to change.')
+  }
+  /* UNA (his D1338): an admin's, for the day or the picked range, on the half the Duration row says, with the words typed
+     for something new; the window closes on it, as a leave placed does */
+  const fileUna = () => {
+    flushWords()
+    const r = placeUna(selCells(), portion, !held ? { remarks: wordsOf(draft)?.remarks } : undefined)
+    if (r.done > 0) {
+      if (r.skipped) sayOnWar(`${r.done} day${r.done === 1 ? '' : 's'} placed. ${r.skipped} day${r.skipped === 1 ? ' is' : 's are'} in no leave period: not placed.`)
+      return onClose()
+    }
+    setNoteAt('leave')
+    setNote('Nothing was placed: no leave period holds these days.')
+  }
+  /* (the fresh read's 5) words typed on a held bid and not yet saved — the box not left — are saved as the window closes,
+     as its documents already were the moment they were picked: Escape, ✕ or a tap outside never loses them */
+  /* …AND BEFORE ANY ACTION (round 3's FULL check — the scenario designer's S15): an iPhone keeps the box focused when a
+     button is tapped, so Approve, Refuse, Move, Delete or a leave pressed with words still in the box went ahead without
+     them. Saved first, they ride with what the action does — onto the leave a bid becomes, back onto the bid a leave
+     becomes again (the store carries a bid's words both ways, 7.2); the approved leave's own box the same (`leaveFlush`). */
+  const leaveFlush = useRef<(() => void) | null>(null)
+  /* …and as the window leaves the screen by ANY road — the ⋯'s panels close it themselves (Give FO, Remove, Post out's and
+     Post in's confirm): the fresh read's R7. Kept in a ref, saved once: a save already made clears it. */
+  const heldSave = useRef<(() => void) | null>(null)
+  heldSave.current = held && heldEdit ? () => { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p) } : null
+  useEffect(() => () => { heldSave.current?.() }, [])
+  const flushWords = () => {
+    if (heldSave.current) { heldSave.current(); heldSave.current = null; setHeldEdit(null) }
+    leaveFlush.current?.()
+  }
+  const closeKeeping = () => {
+    flushWords()
+    onClose()
+  }
+  /* the day line: read again only when what it reads changes — the days, the half, the war (a write replaces the state) */
+  const st = getState()
+  const lineDays = useMemo(
+    () => (dayLine ? dayLine(selCells().map(c => c.date), dayLineCode(portion)) : []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [!!dayLine, personId, date, span?.from, span?.to, portion, st],
+  )
 
   const write = (code: string) => {
+    flushWords()   // words still in a box ride with the write (round 3's FULL check)
     /* CLEAR NAMES THE OIL AWARD IT TAKES, AND ASKS ONCE (owner, D260, 27 Sep 26 — "B"; the absence-record re-test, AB1).
        A Clear removes the admin's award on the day with everything else (that stands — his ruling), but it used to do
        it silently and the man's OIL dropped. On a day — or a picked range — holding an award, the first tap names each
@@ -301,7 +419,7 @@ export function BidPicker({
        day's list's. What it takes and how it asks are unchanged (D260). */
     setNoteAt(code ? 'leave' : 'sel')
     if (!code) {
-      const cells = range ? spanCells(range) : [{ personId, date }]
+      const cells = span ? spanCells(span) : [{ personId, date }]
       const awards = awardsIn(cells)
       if (awards.length && !clearAsked) {
         setClearAsked(true)
@@ -329,7 +447,21 @@ export function BidPicker({
     }
     setConfirming(null)
 
-    if (!range) {
+    /* ticked: placed and approved in one command, one Undo (`placeApproved`); a day its approval refuses keeps its bid,
+       pending, and is named here — never a whole-window failure */
+    if (code && approving) {
+      const why1 = !span ? cellProblem(personId, date, code) : null
+      if (why1) return setNote(why1)
+      const r = placeApproved(selCells(), code, newWords)
+      if (r.written > 0) onWrote?.(code)
+      if (!r.pending.length && !r.skipped) return onClose()
+      const parts: string[] = []
+      if (r.skipped) parts.push(`${r.skipped} day${r.skipped === 1 ? '' : 's'} not written: ${skipWhy('written', getState().role)}`)
+      if (r.pending.length) parts.push(`${r.pending.map(p => shortDate(p.date)).join(', ')} kept pending — not approved (a locked week, or leave or a medical already there)`)
+      return setNote(parts.join('. ') + '.')
+    }
+
+    if (!span) {
       /* A refused single-day write used to close the sheet as though it had
          worked: no leave, no message, nothing ([S4-BUGHUNT], 20 Sep 26). Ask
          WHY first, and say it. */
@@ -352,7 +484,7 @@ export function BidPicker({
       }
       const why = cellProblem(personId, date, code)
       if (why) return setNote(why)
-      setCell(personId, date, code)
+      setCell(personId, date, code, newWords)
       onWrote?.(code)
       return onClose()
     }
@@ -364,8 +496,8 @@ export function BidPicker({
        code written over each day strips only the war's own records, so a leave the WAR approved inside the span stayed,
        unsaid, and the sheet closed as done. `clearCells` removes it through the absence door (or counts it where it may
        not go — a published war's finished paperwork), exactly as the one-day Clear and a dragged block's Delete do. */
-    const { written, skipped } = code ? setCellRange(personId, range.from, range.to, code)
-      : clearCells(spanCells(range), clearAsked ? clearIds : awardsIn(spanCells(range)).map(a => a.id))
+    const { written, skipped } = code ? setCellRange(personId, span.from, span.to, code, newWords)
+      : clearCells(spanCells(span), clearAsked ? clearIds : awardsIn(spanCells(span)).map(a => a.id))
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
     const verb = code ? 'written' : 'deleted'
@@ -379,134 +511,108 @@ export function BidPicker({
     )
   }
 
+  /* THE ⋯'s MENU (his D1326, D1320 — round 3's change 8): Grant OIL, Post out and Post in, the admin's three management
+     actions, behind one button in the fourth place of the row under the leaves; each opens the panel it always opened.
+     A day holding SEVERAL OIL awards names them, and its panel says they are changed from the day's list. */
+  const moreItems: MoreItem[] = [
+    ...(onCredit ? [{
+      key: 'oil', testid: 'bid-oil', cls: 'oil-give',
+      label: awardCount > 1 ? `${awardCount} OIL awards` : credit ? `${credit.code} · ${creditWorthText({ ...credit, auto: false })}` : 'Grant OIL',
+      title: awardCount > 1 ? "This day holds several OIL awards — change them from the day's list"
+        : credit ? 'The OIL on this day — its reason, who gave it and how many days' : 'Grant OIL — a day or half a day off in lieu, for any reason',
+      onPick: () => setOilOpen(true),
+    }] : []),
+    ...(onPostOut ? [{ key: 'po', testid: 'bid-postout', label: 'Post out', title: 'Post out — their last day in the squadron', onPick: () => setPoOpen(true) }] : []),
+    ...(onPostIn ? [{ key: 'pi', testid: 'bid-postin', label: 'Post in', title: 'Post in — their first day in the squadron', onPick: () => setPiOpen(true) }] : []),
+  ]
+  const panelOpen = oilOpen || poOpen || piOpen
+  /* the day's own leave, lit (round 3's change 7, his Q6): its button wears the ring — never on a free half beside leave
+     filed on the Inputs page, where the leave named is the other half's */
+  const lit = dayLeave?.type ?? null
+
   return (
-    <Sheet testid="bid-picker" label="Place a bid" onClose={onClose}>
+    <Sheet testid="bid-picker" label="Place a bid" onClose={closeKeeping}>
+      {/* THE TITLE BAR (round 3): the name, the day, the admin's switch and ✕ — "now LL" went (change 7: the lit button
+          says which leave the day holds, D1331 its half) */}
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt">{dayLabel(date)}</span>
-        {/* the box's own voice — "<LL", not the stored "*LL" (W5-F5, 26 Sep 26) */}
-        {current && <span className="cur">now {displayCell(current)}</span>}
-        <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Cancel">
+        {isAdmin && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
+        <button className="x" data-testid="bid-cancel" onClick={closeKeeping} aria-label="Cancel">
           ✕
         </button>
       </div>
+      <DayLine days={lineDays} />
 
-      {/* ONE FORMAT AND LOOK FOR THE TWO SHEETS (owner, D264 — "There should be a standardised format and look"; his order,
-          D331 "1 A"): the one-day sheet and the drag-selection sheet show the same rows in the same order — what is
-          already there first (Decide, then Selected: Move · Delete), then placing new leave (How much, Which leave) —
-          and the actions on what is there are the same buttons, in the same place, looking the same (SheetActions.tsx).
-          This sheet keeps How many at its top (D335 "5 keep"): it names the days the rest acts on, as the drag does for
-          a block. A row with nothing to act on is not drawn, so an empty day opens on the leave, as it always did. */}
+      {/* ROUND 3 OF THE WINDOW (his D1311, approved whole — D1332, D1334): its rows carry no labels — each row's buttons say
+          what they are, and a screen reader still hears each row's name; the rows stand in one order on every day — what
+          is there (one row of actions), its words (Remarks and Document), then placing leave (Duration, then the leave).
+          ONE FORMAT AND LOOK FOR THE TWO SHEETS (owner, D264): the drag-selection window draws the same rows in the same
+          order, with the same buttons (SheetActions.tsx, BidBits.tsx). A row with nothing to act on is not drawn. */}
 
-      {/* How many DAYS, before how much of one. The owner's ask: a fortnight
-          of leave should be one selection, not fourteen taps on fourteen
-          cells. "Just this day" stays the default and stays a single tap —
-          the range is the exception, so it costs the extra tap. */}
-      <div className="bidsheet-row">
-        <span className="lab">How many</span>
-        <button
-          data-testid="span-one"
-          className={`pchip${range ? '' : ' on'}`}
-          aria-pressed={!range}
-          onClick={() => { setRange(null); setShowCal(false); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
-        >
-          Just this day
-        </button>
-        <button
-          data-testid="span-range"
-          className={`pchip${range ? ' on' : ''}`}
-          aria-pressed={!!range}
-          // Seeded with the day already tapped, so the calendar opens on the
-          // right month AND the very next tap completes the span. The bidder
-          // chose their start by opening this cell; asking for it again would
-          // be the extra work this control exists to remove.
-          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
-        >
-          {range ? shortSpan(range.from, range.to) : 'Pick a range'}
-        </button>
-      </div>
-
-      {showCal && (
-        <div className="bidsheet-row">
-          {/* Bounded by the war, so a range cannot run off the end of the
-              sheet it belongs to. Opens on the day that was tapped, which is
-              the start the bidder already chose by opening this cell. */}
-          <RangePicker
-            testid="span"
-            min={dates[0]}
-            max={dates[dates.length - 1]}
-            value={range}
-            onChange={r => { setRange(r); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
-          />
-        </div>
-      )}
-
-      {/* DECIDE — the admin's three answers to an input, on the same window in
-          every stage (owner, 21 Sep 26). All three stay live on an
-          already-decided bid: management tries one, watches the manning rows
-          move, and changes it back — a decision that could not be undone would
-          make that a one-way door. Over a picked range they answer every day of
-          it (D335), as the drag-selection's Decide does. */}
-      {canDecideHere && (
-        <div className="bidsheet-row">
-          <span className="lab">Decide</span>
-          {/* Approve · Refuse — Ack is gone (D1158, 21 Oct 26): a bid simply waits until it is decided. */}
-          <button
-            className="dchip approve"
-            data-testid="decide-approve"
-            aria-pressed={!range && decide?.state === 'approved'}
-            onClick={() => answer('approved')}
-          >
-            Approve
-          </button>
-          <button
-            className="dchip refuse"
-            data-testid="decide-refuse"
-            aria-pressed={!range && decide?.state === 'refused'}
-            onClick={() => answer('refused')}
-          >
-            Refuse
-          </button>
-          {decide?.movedFrom && (
-            <span className="note" data-testid="decide-movedfrom">moved from {decide.movedFrom ? shortDate(decide.movedFrom) : ''}</span>
+      {/* THE ACTIONS — Approve · Refuse · Move · Delete on one row (round 3's change 3, his D1330): Decide and Selected
+          were two rows. The admin's answers stay live on an already-decided bid: management tries one, watches the
+          manning rows move, and changes it back. On an approved leave Approve shows lit and a second tap sends it back to
+          waiting. Over a picked range they answer every day of it (D335). ONE CHIP, ONE MOVE (owner, D262): Move picks
+          the records up into the grid's own move mode — no date box; every record on these days this role may move goes
+          (D265), for a member too on his own bid while bidding is open (D333). Delete was this sheet's Clear (D332).
+          "Note" went (D1307): an approved leave's Remarks and Document stand in the row under this one. */}
+      {(canDecideHere || canMoveHere || canDeleteHere) && (
+        <div className="bidsheet-row bp-acts" data-testid="bid-actions" role="group" aria-label="Actions">
+          {canDecideHere && (
+            <>
+              {/* Approve · Refuse — Ack is gone (D1158, 21 Oct 26): a bid simply waits until it is decided. */}
+              <button
+                className={`dchip approve${!span && decide?.state === 'approved' ? ' lit' : ''}`}
+                data-testid="decide-approve"
+                aria-pressed={!span && decide?.state === 'approved'}
+                title={!span && decide?.state === 'approved' ? 'Approved — tap again to send it back to waiting' : undefined}
+                onClick={() => answer('approved')}
+              >
+                Approve
+              </button>
+              <button
+                className="dchip refuse"
+                data-testid="decide-refuse"
+                aria-pressed={!span && decide?.state === 'refused'}
+                onClick={() => answer('refused')}
+              >
+                Refuse
+              </button>
+            </>
           )}
-        </div>
-      )}
-
-      {/* SELECTED — what to do with what is already there: Move, then Delete, the
-          same two buttons on every Leave War sheet (D264, D332, D334).
-          ONE CHIP, ONE MOVE (owner, D262): Move is never greyed out and has no
-          date box — it PICKS THE RECORDS UP. The sheet closes and the grid's own
-          move mode carries them (the drag-selection's, Matrix `moveSel`): they
-          land on the day clicked — a phone stages it for Confirm — by the landing
-          rules as they were; the month buttons keep it; an empty spot outside the
-          grid ends it. Every record on these days this role may move goes (D265 —
-          a bid beside an OIL award moves alone), for a member too on his own bid
-          while bidding is open (D333). Delete was this sheet's Clear, a leave chip
-          at the end of Which leave (D332). */}
-      {(canMoveHere || canDeleteHere || !!onNote) && (
-        <div className="bidsheet-row">
-          <span className="lab">Selected</span>
           {canMoveHere && (
             <MoveChip testid="decide-shift" onClick={() => {
+              flushWords()   // the words saved before the records are picked up (round 3's FULL check)
               const why = onMove?.(selCells())
               if (why) setMoveErr(why)
             }} />
           )}
           {canDeleteHere && <DeleteChip testid="bid-clear" armed={clearAsked} onClick={() => write('')} />}
-          {onNote && <button type="button" className="dchip plain" data-testid="decide-note" onClick={onNote}>Note</button>}
-          {moveErr && <span className="note warn" data-testid="shift-problem">{moveErr}</span>}
+          {decide?.movedFrom && (
+            <span className="note bp-wide" data-testid="decide-movedfrom">moved from {decide.movedFrom ? shortDate(decide.movedFrom) : ''}</span>
+          )}
+          {moveErr && <span className="note warn bp-wide" data-testid="shift-problem">{moveErr}</span>}
         </div>
       )}
-      {!(canMoveHere || canDeleteHere) && moveErr && (
+      {!(canDecideHere || canMoveHere || canDeleteHere) && moveErr && (
         <div className="bidsheet-row"><span className="note warn" data-testid="shift-problem">{moveErr}</span></div>
       )}
       {note && noteAt === 'sel' && (
         <div className="bidsheet-row"><span className="note warn" data-testid="span-note">{note}</span></div>
       )}
 
-      <div className="bidsheet-row">
-        <span className="lab">How much</span>
+      {/* REMARKS AND DOCUMENT ON ONE ROW (round 3's change 4): the dark box (D1308) that wraps and grows (D1333), its "till"
+          date, the app's one Document button — the held bid's own, the approved leave's own (D1307, saved onto the leave on
+          the Inputs page), or the words of the bid about to be placed */}
+      {leaveRow
+        ? <LeaveWords row={leaveRow} personId={personId} flushRef={leaveFlush} onRefused={why => { setNoteAt('leave'); setNote(why) }} />
+        : <ReqWordsRows compact value={words} onChange={onWords} start={span ? span.from : date} end={span ? span.to : held ? held.end : date} />}
+
+      {/* DURATION, with "Pick a range" at its end (round 3's change 5): "Just this day" went — it is always the default,
+          and a range picked back to the day tapped is the one day again. The range stays the exception, one extra tap
+          (the owner's ask: a fortnight of leave is one selection, not fourteen taps). */}
+      <div className="bidsheet-row bp-dur" role="group" aria-label="Duration">
         {/* Item D: with one half already spoken for by the Inputs page, the
             other choices are not dimmed, they are ABSENT — the house rule for
             a control that could not work (a disabled chip invites a tap and
@@ -525,32 +631,53 @@ export function BidPicker({
           </button>
         ))}
         {onlyPortion && (
-          <span className="note" data-testid="bid-heldhalf">
+          <span className="note bp-wide" data-testid="bid-heldhalf">
             The {onlyPortion === 'pm' ? 'morning' : 'afternoon'} is {heldBy || 'already taken'},
             filed on the Inputs page — change that there.
           </span>
         )}
+        <button
+          data-testid="span-range"
+          className={`pchip bp-range${span ? ' on' : ''}`}
+          aria-pressed={!!span}
+          // Seeded with the day already tapped, so the calendar opens on the
+          // right month AND the very next tap completes the span. The bidder
+          // chose their start by opening this cell; asking for it again would
+          // be the extra work this control exists to remove.
+          /* …and tapped again it closes the calendar, the range picked kept (round 3's FULL check: "Just this day" had closed it,
+             and with it gone the calendar stayed open with only the window's ✕ to shut it); a pick of one day closed unfinished
+             goes back to the day tapped, as "Just this day" did (the fresh read's R6) */
+          aria-expanded={showCal}
+          onClick={() => { if (showCal) { setShowCal(false); if (range && range.from === range.to) { setRange(null); setNote(''); setClearAsked(false); setClearIds([]); setMoveErr(''); setConfirming(null) } return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
+        >
+          {span ? shortSpan(span.from, span.to) : 'Pick a range'}
+        </button>
       </div>
 
-      <div className="bidsheet-row">
-        <span className="lab">Which leave</span>
+      {showCal && (
+        <div className="bidsheet-row">
+          {/* Bounded by the war, so a range cannot run off the end of the
+              sheet it belongs to. Opens on the day that was tapped, which is
+              the start the bidder already chose by opening this cell. */}
+          <RangePicker
+            testid="span"
+            min={dates[0]}
+            max={dates[dates.length - 1]}
+            value={range}
+            onChange={r => { setRange(r); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
+          />
+        </div>
+      )}
+
+      <div className="bidsheet-row" role="group" aria-label="Which leave">
         {/* Straight off the catalogue, so the eight types stay defined in one
             place. Duty, medical and courses are absent by construction —
             they are not leave types, and offering them here would invite a
             scheduler's data to be typed in as if it were a bid. */}
-        {LEAVE_TYPES.map(t => (
-          <button
-            key={t.type}
-            data-testid={`bid-${t.type}`}
-            className="tchip"
-            title={t.label}
-            onClick={() => write(formatCell({ type: t.type, portion }))}
-          >
-            {/* the chip says what the BOX will say — `<LL`, `LL>` — while the
-                write still speaks the stored grammar */}
-            {displayCell(formatCell({ type: t.type, portion }))}
-          </button>
-        ))}
+        {/* the eight in two rows of four, each its kind's colour and what is left of it (M3 5.2–5.6 — LeaveButtons.tsx),
+            the row's full width now its label went (round 3's change 6, his D1334) */}
+        <LeaveButtons portion={portion} onPick={write} filled={approving} lit={lit}
+          figure={wouldLeave ? code => wouldLeave(code, [date])?.before ?? null : undefined} />
         {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>
 
@@ -560,65 +687,17 @@ export function BidPicker({
           on Raptor's Inputs page and it syncs in read-only — the war displays
           it, never creates it. The old admin medical row is gone. */}
 
-      {/* RECORD THAT HE WORKED — an OIL credit typed by hand (owner, 20 Sep 26).
-          ANY DAY, on purpose: the weekend/public-holiday rule belongs to the
-          AUTOMATIC pass, which reads the published schedule. This is the
-          squadron saying a man worked when no schedule says so, which is why
-          it takes a reason and who said it. Set apart below the leave rows and
-          folded behind one button, because it is the opposite fact to
-          everything above it and must not be hit by reflex. */}
-      {/* THE ADMIN'S THREE MANAGEMENT ACTIONS SHARE ONE ROW. They were three
-          stacked rows until the OIL one was added on 20 Sep 26, and the third
-          row made the sheet tall enough on a phone that the strip of grid left
-          above it stopped being reachable — a browser test that scrolls the
-          grid with a finger above the sheet caught it, which no unit test
-          could. They belong together anyway: three sibling admin actions, each
-          folded, none of them a bid. On a phone they wrap to two lines; on a
-          desktop they sit on one. */}
-      {!oilOpen && !poOpen && !piOpen && (onCredit || onPostOut || onPostIn) && (
-        <div className="bidsheet-row postout">
-          {/* SHORT LABELS, MEANING ON HOVER (owner, 20 Sep 26). These three are
-              the admin's management actions and he knows them by their
-              initials; spelling them out cost a third of the sheet's width for
-              words he reads past. `title` is the desktop hover; it is also
-              what a screen reader announces, which is why the aria-label
-              carries the long form rather than the short one. A phone has no
-              hover — nothing is lost there, because a phone has no room for
-              the long form either. */}
-          {onCredit && awardCount > 1 && (
-            <button
-              className="dchip po" data-testid="bid-oil"
-              title="This day holds several OIL awards — change them from the day's list"
-              aria-label={`${awardCount} OIL awards`}
-              onClick={() => setOilOpen(true)}
-            >{`${awardCount} OIL awards`}</button>
-          )}
-          {onCredit && awardCount <= 1 && (
-            <button
-              className="dchip po" data-testid="bid-oil"
-              title={credit
-                ? 'The OIL on this day — its reason, who gave it and how many days'
-                : 'Grant OIL — a day or half a day off in lieu, for any reason'}
-              aria-label={credit ? 'The OIL on this day' : 'Grant OIL'}
-              onClick={() => setOilOpen(true)}
-            >{credit ? `${credit.code} · ${creditWorthText({ ...credit, auto: false })}` : '+OIL'}</button>
-          )}
-          {onPostOut && (
-            <button
-              className="dchip po" data-testid="bid-postout"
-              title="Post out — their last day in the squadron"
-              aria-label="Post out"
-              onClick={() => setPoOpen(true)}
-            >PO</button>
-          )}
-          {onPostIn && (
-            <button
-              className="dchip po" data-testid="bid-postin"
-              title="Post in — their first day in the squadron"
-              aria-label="Post in"
-              onClick={() => setPiOpen(true)}
-            >PI</button>
-          )}
+      {/* THE ROW UNDER THE LEAVES, the ⋯ in its fourth place (his D1326): Grant OIL (in OIL given's green, D1320), Post out
+          and Post in, rarely used, behind one button — they were the "Also" row. Each is the opposite fact to placing leave
+          and is folded, so none can be hit by reflex; the row steps aside while a panel it opened is up. A member has none
+          of the three. */}
+      {!panelOpen && (
+        <div className="bidsheet-row bp-extra" data-testid="bid-extra-row">
+          {/* CSE · OD in the first two places (round 2), UNA the third — an admin's alone (D1338) — the ⋯ the fourth; a
+              member's third and fourth places stay empty */}
+          <DutyButtons onFile={fileDuty} />
+          {isAdmin && <UnaButton onPlace={fileUna} />}
+          {moreItems.length > 0 && <MoreButton testid="bid-more" items={moreItems} />}
         </div>
       )}
       {onCredit && oilOpen && awardCount > 1 && (
@@ -638,7 +717,7 @@ export function BidPicker({
                 {credit.givenBy ? `, given by ${credit.givenBy}` : ''}.
               </span>
               {onCreditClear && (
-                <button className="tchip clear" data-testid="oil-clear" onClick={onCreditClear}>Remove</button>
+                <button className="tchip clear" data-testid="oil-clear" onClick={() => { flushWords(); onCreditClear() }}>Remove</button>
               )}
             </div>
           )}
@@ -713,7 +792,7 @@ export function BidPicker({
               className="dchip po"
               data-testid="pi-confirm"
               disabled={!piDate}
-              onClick={() => { const why = onPostIn(piDate); setPostErr(why || '') }}
+              onClick={() => { flushWords(); const why = onPostIn(piDate); setPostErr(why || '') }}
             >
               {/* D300 (the agent's reading, stated to him): "Post in", the date already in its own box */}
               Post in
@@ -758,7 +837,7 @@ export function BidPicker({
               disabled={!poDate}
               onClick={() => {
                 if (poOutcome === 'delete' && !delArmed) { setDelArmed(true); return }
-                const why = onPostOut(poDate, poOutcome); setPostErr(why || ''); setDelArmed(false)
+                flushWords(); const why = onPostOut(poDate, poOutcome); setPostErr(why || ''); setDelArmed(false)
               }}
             >
               {delArmed ? `Tap again to delete ${callsign}` : 'Post out'}
@@ -852,11 +931,14 @@ export function RaptorSheet({
   date,
   code,
   creditShown,
+  docNames = [],
   onClose,
 }: {
   callsign: string
   date: string
   code: string
+  /** the documents the Inputs-page record carries — named, read only (M3 7.3, D1150) */
+  docNames?: string[]
   /** OIL the APP earned on this day, if that is what the cell holds (owner,
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
@@ -902,9 +984,19 @@ export function RaptorSheet({
               : 'Earned off the published schedule — change the schedule and the OIL follows.'
             : leave
               ? 'Filed on the Inputs page, so it is already approved — change it there, not here.'
-              : 'Filed on the Inputs page — change it there, not here.'}
+              /* a course, an overseas duty or the unforeseen absence may now be filed HERE too (round 2, D1318) and still be
+                 the Inputs page's to change — so its line says where it is changed, never where it was filed (the walk's H1c) */
+              : FILED_STRAIGHT.includes(code.replace(/[*<>]/g, ''))
+                ? 'Change it on the Inputs page, not here.'
+                : 'Filed on the Inputs page — change it there, not here.'}
         </span>
       </div>
+      {!creditShown && docNames.length > 0 && (
+        <div className="bidsheet-row" data-testid="raptor-docs">
+          <span className="lab">Document</span>
+          <span className="docfield">{docNames.map((n, i) => <span key={i} className="docchip"><span className="docname">{n}</span></span>)}</span>
+        </div>
+      )}
       {/* The same three lines the day window gives for OIL, because the
           question is the same one however the day happens to open. */}
       {creditShown && <OilDetailRows c={creditShown} auto />}

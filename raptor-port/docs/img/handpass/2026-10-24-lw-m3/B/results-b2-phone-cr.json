@@ -1,0 +1,73 @@
+{
+ "all": [
+  {
+   "id": 14,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: member placed a pending LL on Tue 10 Mar",
+    "ok: the March month button state after the tap: closed",
+    "ok: the day opens the closed-day note with his pending bid: closed-note — Ranger | Tue 10 Mar | ✕ | YOUR BID | LL Whole day · pending | Your bid is pending a decision. Delete it if you no longer want it. | DOCUMENT | Documen",
+    "ok: Document picked on the closed day: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: closed and reopened: Document [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"], Remarks \"walk remark 14\"",
+    "after Undo 1: {\"file\":true,\"remark\":\"\",\"id\":\"closed-note\"}; after Undo 2: {\"file\":false,\"remark\":\"\",\"id\":\"closed-note\"}",
+    "ok: after Undo (twice) the file is taken back: {\"file\":false,\"remark\":\"\",\"id\":\"closed-note\"}",
+    "ok: after Undo (twice) the remark is taken back: {\"file\":false,\"remark\":\"\",\"id\":\"closed-note\"}",
+    "ok: after Redo (twice) the file and remark are back: {\"file\":true,\"remark\":\"walk remark 14\",\"id\":\"closed-note\"}",
+    "ok: after Delete the Mar 10 cell holds no box: []",
+    "ok: a closed empty day (11 Mar) offers no leave buttons: closed-note — Ranger | Wed 11 Mar | ✕ | Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here"
+   ],
+   "fails": [],
+   "pics": [
+    "s14-opendates-desk-cr.png",
+    "s14-march-closed-desk-cr.png",
+    "s14-closednote-desk-cr.png",
+    "s14-doc-desk-cr.png",
+    "s14-remark-desk-cr.png",
+    "s14-reopened-desk-cr.png",
+    "s14-after-undo1-desk-cr.png",
+    "s14-after-undo2-desk-cr.png",
+    "s14-after-redo-desk-cr.png",
+    "s14-deleted-desk-cr.png",
+    "s14-newbid-refused-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 14,
+   "size": "phone",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: member placed a pending LL on Tue 10 Mar",
+    "ok: the March month button state after the tap: closed",
+    "ok: the day opens the closed-day note with his pending bid: closed-note — Ranger | Tue 10 Mar | ✕ | YOUR BID | LL Whole day · pending | Your bid is pending a decision. Delete it if you no longer want it. | DOCUMENT | Documen",
+    "ok: Document picked on the closed day: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: closed and reopened: Document [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"], Remarks \"walk remark 14\"",
+    "after Undo 1: {\"file\":true,\"remark\":\"\",\"id\":\"closed-note\"}; after Undo 2: {\"file\":false,\"remark\":\"\",\"id\":\"closed-note\"}",
+    "ok: after Undo (twice) the file is taken back: {\"file\":false,\"remark\":\"\",\"id\":\"closed-note\"}",
+    "ok: after Undo (twice) the remark is taken back: {\"file\":false,\"remark\":\"\",\"id\":\"closed-note\"}",
+    "ok: after Redo (twice) the file and remark are back: {\"file\":true,\"remark\":\"walk remark 14\",\"id\":\"closed-note\"}",
+    "ok: after Delete the Mar 10 cell holds no box: []",
+    "ok: a closed empty day (11 Mar) offers no leave buttons: closed-note — Ranger | Wed 11 Mar | ✕ | Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here"
+   ],
+   "fails": [],
+   "pics": [
+    "s14-opendates-phone-cr.png",
+    "s14-march-closed-phone-cr.png",
+    "s14-closednote-phone-cr.png",
+    "s14-doc-phone-cr.png",
+    "s14-remark-phone-cr.png",
+    "s14-reopened-phone-cr.png",
+    "s14-after-undo1-phone-cr.png",
+    "s14-after-undo2-phone-cr.png",
+    "s14-after-redo-phone-cr.png",
+    "s14-deleted-phone-cr.png",
+    "s14-newbid-refused-phone-cr.png"
+   ],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

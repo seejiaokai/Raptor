@@ -1276,7 +1276,7 @@ const vetWorld = (p: Page) => file(p, [
 ])
 /* how bright a painted colour is, 0–255, whichever way the browser writes it ("rgb(…)" or "color(srgb …)") */
 const LUM = `(c => { const m = c.match(/[\\d.]+/g).map(Number); const k = /srgb/.test(c) ? 255 : 1; return (0.2126 * m[0] + 0.7152 * m[1] + 0.0722 * m[2]) * k })`
-test('the month: a timed bar is painted lighter than an all-day one, with a solid edge at its left; a shared bar reads its count first (D729)', async ({ page }) => {
+test('the month: a timed bar is painted lighter than an all-day one, with a solid edge at its left; a shared bar reads its count first (D729, D1321)', async ({ page }) => {
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   const [day, timed] = await vetWorld(page)
   const paint = (iid: string) => page.locator(`.ib-bar[data-iid="${iid}"]`).first().evaluate((el, LUM) => {
@@ -1284,14 +1284,17 @@ test('the month: a timed bar is painted lighter than an all-day one, with a soli
     return { bg: cs.backgroundColor, lum: (0, eval)(LUM)(cs.backgroundColor) as number, shadow: cs.boxShadow }
   }, LUM)
   const solid = await paint(day!), light = await paint(timed!)
-  expect(solid.shadow, 'an all-day bar has no edge of its own').toBe('none')
+  /* D1321 (his approved drawing): an absence's bar is filled in its kind's colour inside a thin ring of it, a duty's bar
+     outlined; only a timed bar wears the solid edge down its left side */
+  expect(solid.shadow, 'an all-day bar has no left edge of its own').not.toMatch(/3px 0px 0px 0px/)
   expect(light.shadow, 'a timed bar wears a solid edge inside its left side').toMatch(/inset/)
   expect(light.shadow).toMatch(/3px 0px 0px 0px/)
   expect(light.bg, 'and a different fill').not.toBe(solid.bg)
-  /* on this dark page "lighter" is the weaker fill — nearer the panel behind it: measured against a solid bar of the
-     timed bar's own colour */
-  const amber = await page.evaluate(LUM => { const b = document.createElement('div'); b.className = 'ib-bar amb'; document.querySelector('.ib-lanes')!.appendChild(b); const c = getComputedStyle(b).backgroundColor; b.remove(); return (0, eval)(LUM)(c) as number }, LUM)
-  expect(light.lum, 'the timed amber is weaker than the solid amber').toBeLessThan(amber - 8)
+  /* on this dark page "lighter" is the weaker fill — nearer the panel behind it: the timed duty measured against an
+     all-day bar of its own kind, by how much of its colour the fill lets through */
+  const alpha = (c: string) => { const m = c.match(/[\d.]+/g)!.map(Number); return m.length > 3 ? m[3]! : 1 }
+  const allDay = await page.evaluate(() => { const b = document.createElement('div'); b.className = 'ib-bar duty'; document.querySelector('.ib-lanes')!.appendChild(b); const c = getComputedStyle(b).backgroundColor; b.remove(); return c })
+  expect(alpha(light.bg), 'the timed duty is a fainter fill than an all-day duty').toBeLessThan(alpha(allDay))
   await expect(page.locator('.ib-bar', { hasText: /^9 · Squadron photo$/ }), 'the shared bar: how many, then what').toHaveCount(1)
   await expect(page.locator('.ib-bar', { hasText: /\+\d/ }), 'no bar hides people behind "+N"').toHaveCount(0)
   await expect(page.locator('[data-testid="ib-legend"]')).toHaveText(/absence\s*duty$/)
@@ -1492,5 +1495,34 @@ for (const height of [844, 667, 568]) {
       await expect(page.locator('#inRangePop')).toHaveCount(0)
       await expect(page.locator('#inRangeBtn')).toContainText('All dates')
     } finally { await context.close() }
+  })
+}
+
+/* ON A PHONE THE LIST TAKES THE PAGE'S WIDTH (owner D1293, 24 Oct 26 — his iPhone: the day headings and cards stood about
+   20px inside the toolbar's edges): every card's left and right edge is the row of buttons' own — "+ Input" at the left,
+   the gear at the right — and the Medical tab's sections the same. AND A WINDOW STANDS IN THE MIDDLE: the opened day,
+   which kept its desktop width and stopped 8px short of the right edge (found checking the same item). At two widths. */
+for (const width of [390, 402]) {
+  test(`a phone ${width} wide: the Inputs list and the Medical tab use the page's width, and the opened day stands in the middle (D1293)`, async ({ browser, baseURL }) => {
+    const { context, page } = await phone(browser, baseURL, 844, width)
+    const box = (sel: string) => page.locator(sel).first().evaluate(e => { const r = e.getBoundingClientRect(); return { l: r.left, r: innerWidth - r.right } })
+    await page.click('#inListBtn')
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    await expect(page.locator('#inList [data-iid]').first()).toBeVisible()
+    const left = (await box('#inNew')).l, right = (await box('#inGear')).r
+    for (const sel of ['#inList [data-iid]', '#inList [data-testid="inl-day"]']) {
+      const b = await box(sel)
+      expect(Math.abs(b.l - left), `${width}: ${sel} left edge ${b.l} against the toolbar's ${left}`).toBeLessThanOrEqual(3)
+      expect(Math.abs(b.r - right), `${width}: ${sel} right edge ${b.r} against the toolbar's ${right}`).toBeLessThanOrEqual(3)
+    }
+    await page.click('#inMedBtn')
+    const med = await box('.medsec'), medNew = await box('#medNew')
+    expect(Math.abs(med.l - medNew.l), `${width}: the Medical sections' left edge against "+ Medical"`).toBeLessThanOrEqual(1)
+    expect(Math.abs(med.r - right), `${width}: the Medical sections' right edge against the page's`).toBeLessThanOrEqual(3)
+    await page.click('#inMemberMode'); await page.click('#inCalBtn')
+    await cell(page, '2026-10-13').click({ position: { x: 8, y: 8 } })
+    const win = await box('[data-testid="win-inputsday"]')
+    expect(Math.abs(win.l - win.r), `${width}: the opened day stands ${win.l} from the left and ${win.r} from the right`).toBeLessThanOrEqual(1)
+    await context.close()
   })
 }

@@ -31,7 +31,7 @@
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -46,7 +46,7 @@ import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
 import { fmt, fmtDay, inputTone, newInputSeed, removeInput, upchitDeleteAsk, sharedRefusal, commitInput, draftOf, oilSignDay, oilSignNote } from './inputedit'
-import { INPEDIT, setInpEdit, setMedMove } from './pops'
+import { INPEDIT, setDocView, setInpEdit, setMedMove } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
@@ -110,7 +110,7 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   /* one body with the List and the month (ui/inputscal-model.ts): an input passes when ANY of its people does, or its
      placeholder — it is one record with the list of its people (owner D756; the one-rule plan §4.5) */
   inputs = inputs.filter((r: any) => inputPassesPerson(f.fPerson, r))
-  if (f.fType !== 'all') inputs = inputs.filter((r: any) => r.type === f.fType)
+  if (f.fType !== 'all') inputs = inputs.filter((r: any) => typeMatches(f.fType, r.type))
   /* …and by its NAME — its own title, or its kind — as the List and the month do: a bar found by its title opened a
      day that then hid it ([INPUT-OWN-TITLE], Sol's read of the plan — 5); and by the callsign of anyone in it */
   if (f.fSearch) inputs = inputs.filter((r: any) => inputMatchesSearch(r, f.fSearch))
@@ -1120,7 +1120,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                   const when = cardWhen(r, it.b, iso)
                   return (
                     <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when} flash={lit.includes(it.key)}
-                      late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
+                      late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}
+                      onDoc={() => { setDocView({ row: r }); notify() }}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
@@ -1360,7 +1361,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                      of leave"; 25-inputs-calendar.css) */
                   /* `innew`: just saved, changed or brought back — the just-added mark, on the month only while no day is
                      open over it (then the day's card wears it, and the bar behind does not light too) */
-                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '') + (barLit(sg.item.key) ? ' innew' : '')}
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.col ? ' kd k-' + sg.item.col : ' duty') + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '') + (barLit(sg.item.key) ? ' innew' : '')}
                     data-iid={sg.item.key} data-fresh={barLit(sg.item.key) ? sg.item.key : undefined} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
                     style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
                 ))}

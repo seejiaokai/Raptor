@@ -38,6 +38,20 @@
   --lift-box:inset 0 0 0 2px var(--accent);
   --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
   --flight:#3BC6E8;
+  /* EACH KIND OF ENTRY ITS OWN COLOUR (his D1309; set C D1316, no pink D1322, the OIL taken chartreuse D1323, the unforeseen
+     absence deep teal D1325) — one home for the numbers: the Leave War's boxes and buttons (leavewar/ui/matrix.css "the
+     kinds") and the Inputs calendar's bars (D1304, 25-inputs-calendar.css) read these, so the two pages cannot drift.
+     Each is an rgb triple, its ink the words on a filled box, its fill the filled box's strength; drawn first in
+     scripts/handpass/lw-oil-nopink.mjs and lw-round2-odcrs.mjs. */
+  --k-ll:242,200,110;  --k-ll-ink:#FFF1CF; --k-ll-fill:.22;
+  --k-ol:226,146,38;   --k-ol-ink:#FFE7C7; --k-ol-fill:.48;
+  --k-oil:70,196,108;  --k-oil-ink:#DDF8E6; --k-oil-fill:.38;     /* OIL given: FO, HO */
+  --k-oilt:170,230,40; --k-oilt-ink:#F1FFD0; --k-oilt-fill:.30;   /* OIL taken (D1291, D1323) */
+  --k-care:138,150,255; --k-care-ink:#DCE0FF; --k-care-fill:.32;  /* CCL FCL PL CL EL */
+  --k-cse:160,100,240; --k-cse-ink:#EBDDFF; --k-cse-fill:.36;
+  --k-od:128,142,160;  --k-od-ink:#F2F5F8; --k-od-fill:.58;
+  --k-med:238,82,82;   --k-med-ink:#FFD6D6; --k-med-fill:.30;
+  --k-una:20,130,130;  --k-una-ink:#D6FFFB; --k-una-fill:.70;     /* the unforeseen absence (round 2) */
   /* seat colours (kept from the working file) */
   --fcp:#6E6A2E; --fcp-ink:#FBFAF0; --rcp:#1F6E52; --rcp-ink:#EAFBF3;
   /* personnel (ground crew) puck: white, dark ink, a muted line so it reads as

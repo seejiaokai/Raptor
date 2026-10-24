@@ -1,0 +1,35 @@
+{
+ "all": [
+  {
+   "id": 19,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "opened without ?fresh=1: http://localhost:4302/",
+    "ok: 15: admin placed an approved LL with a file and a remark on 20 Jan",
+    "ok: 12: member placed a pending LL with a file and the remark \"mem19\" on 14 Jan",
+    "ok: 14: member placed a pending LL on 10 Mar",
+    "ok: 14: 10 Mar is now closed for him (the closed-day note opens)",
+    "member, before the reload: {\"jan14\":{\"chips\":[\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"],\"remark\":\"mem19\",\"win\":\"Ranger | Wed 14 Jan | NOW LL | ✕ | No manning row turns ambe\"},\"mar10\":{\"id\":\"closed-note\",\"chips\":[\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"],\"remark\":\"closed19\"}}",
+    "ok: before the reload the member sees all four (12, 14)",
+    "admin, before the reload: {\"row\":\"Ranger 20 Jan LL LATErmk19 till 20 JanBy Saber now\",\"hasFile\":true,\"remarkOnRow\":true,\"img\":{\"w\":240,\"h\":140}}",
+    "ok: before the reload the admin sees the Inputs row with its file and remark, and the file opens (15)",
+    "reloaded; the sign-in page is back: http://localhost:4302/",
+    "member, after the reload: {\"jan14\":{\"chips\":[\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"],\"remark\":\"mem19\",\"win\":\"Ranger | Wed 14 Jan | NOW LL | ✕ | No manning row turns ambe\"},\"mar10\":{\"id\":\"closed-note\",\"chips\":[\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"],\"remark\":\"closed19\"}}",
+    "ok: 12: after the reload the pending bid on 14 Jan still has its file: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"]",
+    "ok: 12: and its remark: \"mem19\"",
+    "ok: 14: after the reload the closed-day bid on 10 Mar still has its file: {\"id\":\"closed-note\",\"chips\":[\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"],\"remark\":\"closed19\"}",
+    "ok: 14: and its remark: \"closed19\"",
+    "admin, after the reload: {\"row\":\"Ranger 20 Jan LL LATErmk19 till 20 JanBy Saber now\",\"hasFile\":true,\"remarkOnRow\":true,\"img\":{\"w\":240,\"h\":140}}",
+    "ok: 15: after the reload the approved leave's Inputs row still has its file: Ranger 20 Jan LL LATErmk19 till 20 JanBy Saber now",
+    "ok: 15: and its remark \"rmk19\": Ranger 20 Jan LL LATErmk19 till 20 JanBy Saber now",
+    "ok: 15: and the file still opens as the same picture (240 wide): {\"w\":240,\"h\":140}"
+   ],
+   "fails": [],
+   "pics": [],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

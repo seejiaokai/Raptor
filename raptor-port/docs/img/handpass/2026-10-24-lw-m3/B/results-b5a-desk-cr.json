@@ -1,0 +1,41 @@
+{
+ "all": [
+  {
+   "id": 17,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "Ranger 20 Jul on the war before filing: []| act",
+    "ok: a new LL with no document raises the ask",
+    "ok: the ask's head reads \"No document — Ranger, LL\": \"No document — Ranger, LL ✕ Attach the approval from the leave app now, or file it and attach it later. No document Upload\"",
+    "ok: the ask's words: \"No document — Ranger, LL ✕ Attach the approval from the leave app now, or file it and attach it later. No document Upload\"",
+    "ok: the ask has [Upload] and [No document]",
+    "ok: the ask is gone after \"No document\"",
+    "ok: the leave is filed: [\"Ranger 16 Jul 17:00–18:30 APPOINTMENT Medical / PHA 29 Jun 26\",\"Ranger 20 Jul LL LATEtill 20 JulBy Saber now No document\",\"Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight afety briefBy Saber 25 Jun 26\"]",
+    "ok: its row reads a quiet \"No document\": \"Ranger 20 Jul LL LATEtill 20 JulBy Saber now No document\"",
+    "Ranger 20 Jul on the war after filing: [[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 3px rgb(255, 241, 207)\",\"rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset\"]]| act hasc",
+    "bells after the filing — Ranger: {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"}; Saber: {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"}",
+    "ok: the window shows the new file chip (1)",
+    "ok: saving an edit of a saved leave raises no ask",
+    "ok: the window closed (saved)",
+    "ok: the row now has the file and no \"No document\": \"Ranger 20 Jul LL LATEtill 20 JulBy Saber now\" file=true",
+    "ok: the war's cell is unchanged by the documents-only edit: before \"[[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 3px rgb(255, 241, 207)\",\"rgba(24\" after \"[[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 3px rgb(255, 241, 207)\",\"rgba(24\"",
+    "ok: Ranger's bell is unchanged by the documents-only edit: before {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"} after {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"}",
+    "ok: Saber's bell is unchanged: before {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"} after {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"}"
+   ],
+   "fails": [],
+   "pics": [
+    "s17-new-window-desk-cr.png",
+    "s17-ask-desk-cr.png",
+    "s17-filed-desk-cr.png",
+    "s17-war-cell-filed-desk-cr.png",
+    "s17-edit-window-desk-cr.png",
+    "s17-added-desk-cr.png",
+    "s17-war-cell-doc-desk-cr.png"
+   ],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

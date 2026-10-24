@@ -17,7 +17,7 @@ import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -53,7 +53,7 @@ import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
 import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
-import { CURPAGE, INPVIEW, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
+import { CURPAGE, INPVIEW, revealInput, revealMedInput, OILWAIT, type OilWaitKind } from '../state/view'
 import { toastHeld } from './toast'
 import { noteUnlessSeen } from './seen'
 import { holdForOil } from './oilwait'
@@ -172,7 +172,7 @@ const SPANS: Array<[Span, string, string]> = [
   ['custom', 'Custom', 'Type your own start and end time'],
 ]
 export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
-  return <div className="spanpick" id={id} role="group" aria-label="How much of the day">
+  return <div className="spanpick" id={id} role="group" aria-label="Duration">
     {SPANS.map(([m, label, title]) =>
       <button key={m} type="button" className={'spanbtn' + (span === m ? ' on' : '')}
         aria-pressed={span === m} title={title} data-span={m}
@@ -473,9 +473,11 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
    that could drift; a group whose every type is filtered out is skipped
    rather than left as an empty heading. No filter = the full list, which is
    what every EDIT and the Inputs page keep. */
-export const typeOptions = (allow?: (t: string) => boolean) => TYPE_GROUPS.map((g: any) => {
+/* `families` (owner D1179, M3 7.4): the Inputs page's FILTER heads each group with a choice for the whole family —
+   "All leave", "All medical", "All duty & commitments" (engine/inputs.ts typeMatches); an input's own kind list never */
+export const typeOptions = (allow?: (t: string) => boolean, families = false) => TYPE_GROUPS.map((g: any) => {
   const ts = INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k && (!allow || allow(t)))
-  return ts.length ? <optgroup key={g.k} label={g.t}>{ts.map((t: string) => <option key={t}>{t}</option>)}</optgroup> : null
+  return ts.length ? <optgroup key={g.k} label={g.t}>{families && <option value={`grp:${g.k}`}>{TYPE_FAMILY_LABEL[g.k]}</option>}{ts.map((t: string) => <option key={t}>{t}</option>)}</optgroup> : null
 })
 
 /* The draft is held apart from the model so Cancel is a real cancel. */
@@ -516,11 +518,17 @@ export const draftOf = (r: any) => ({
    own, in the same command (engine/inputown.ts ownInputOf), and the remark is written on THAT — the others' leave is
    untouched, and the man himself may do it (the piece is his one-person input). The same shape as `saveFromRow`'s
    one-man branch. Pinned in leavewar/onerecord-write.test.ts. */
-export function setLeaveRemarks(row: any, remarks: string, person?: any): boolean {
+/* …and its documents, where the caller hands them (the Leave War's remarks window — M3 7.3, D1150, D1159): one save,
+   the same gate; a documents-only change prints nowhere on the schedule (inpDetailKey reads no document) */
+/* …and its "till <date>" tick, where the caller hands one (the Leave War's bid windows and day's list show the leave's
+   Remarks row whole — round 3, D1307: the box, the tick and the Document button; D953's hand choice, settled by the one
+   input write as every save is) */
+export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?: string[], till?: boolean): boolean {
+  const withDocs = (d: any) => ({ ...d, remarks, ...(docIds ? { docIds: [...docIds] } : {}), ...(typeof till === 'boolean' ? { till } : {}) })
   if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
-    return ownPartSave(row, person, own => commitInputEdit(own, { ...draftOf(own), remarks }))
+    return ownPartSave(row, person, own => commitInputEdit(own, withDocs(draftOf(own))))
   }
-  return commitInputEdit(row, { ...draftOf(row), remarks })
+  return commitInputEdit(row, withDocs(draftOf(row)))
 }
 /* ONE MAN'S PART IS CHANGED, OR NOTHING IS (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 4, reproduced
    red in leavewar/trialread.test.ts). Both one-man doors — a box typed on his row of the Unavailable list, the Leave
@@ -714,10 +722,14 @@ export function normalizeInputDraft(draft: any, except: any):
               prompt nags an existing medical row.
    The five certificate types are exactly `needsDoc` (ATT C / ATT B / HL / OML /
    Upchit). rowDocIds reads the draft's list and the bare docId alike. */
+/* …AND A NEW LEAVE ASKS FOR ITS DOCUMENT (owner D1150, M3 7.4 — "something similar to medical where it asks a question
+   for a document to attach. But its not a hard stop"): a NEW leave, or one retyped INTO leave, with none, asks the same
+   [Upload] / [No document]; a leave already saved and edited never asks. */
 export function docGate(draft: any, except: any): 'ok' | 'ask' {
-  if (!draft || !needsDoc(draft.type) || rowDocIds(draft).length) return 'ok'
-  if (except && needsDoc(except.type)) return 'ok'
-  return 'ask'
+  if (!draft || rowDocIds(draft).length) return 'ok'
+  if (needsDoc(draft.type)) return except && needsDoc(except.type) ? 'ok' : 'ask'
+  if (isLeave(draft.type)) return except && isLeave(except.type) ? 'ok' : 'ask'
+  return 'ok'
 }
 
 /* THE OIL ASK GATE (owner, 28 Aug 26) — one decision body for every save
@@ -1018,11 +1030,11 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
     /* the supporting documents' ids only — the blobs stay in state/docs, so
-       history snapshots (JSON of INPUTS) never copy a file. Gated on the type
-       actually needing one: a certificate uploaded under a medical pick and
-       left behind by a switch to leave must not ride onto the leave row and
-       draw a paperclip nothing explains. */
-    ...(needsDoc(draft.type) ? docFields(rowDocIds(draft)) : {}),
+       history snapshots (JSON of INPUTS) never copy a file. EVERY KIND keeps them since the Leave War overhaul's M3 7.4
+       (owner D1150 — "I should allow all inputs to have the option to attach photo/PDF"): the window draws the Document
+       row for every kind, so what it holds is what the filer sees (it used to be gated on a medical type, which a
+       certificate left behind by a switch to leave relied on — the row now shows it, and its ✕ takes it off). */
+    ...docFields(rowDocIds(draft)),
   }
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
@@ -1176,6 +1188,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      of weeks nobody was looking at too. That clear is gone — the refusal is ignored on read (engine/oilev.ts
      pruneHandedOverDecisions, by the request's `hand` below) — so no week is written, and one Undo still puts back the
      assignment and the refusal together: the count rides the request. */
+  /* A DOCUMENT ADDED OR TAKEN OFF IS NOT A CHANGE TO WHAT WAS FILED (the M3 fresh read's 3; D1150 — "they can apply first but
+     upload after"): the late mark measures the input's last change (`mod`), and a file attached after the cut-off made an
+     on-time leave read LATE. Where the draft differs from the record by its documents alone, its time is left as it was. */
+  const docsOnly = (() => { try { return JSON.stringify({ ...draftOf(r), docIds: [] }) === JSON.stringify({ ...draft, docIds: [] }) } catch { return false } })()
   const ok = writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
@@ -1228,7 +1244,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     const wasDateD999 = r.date, wasEndD999 = r.endDate, wasYrD999 = r.yr
     r.s = s; r.e = e; r.date = date; r.remarks = rem
     /* the date the late mark reads — left as it is by a scheduler's change made from a row on the schedule (D741, D742) */
-    if (!sched) r.mod = nowStamp()
+    if (!sched && !docsOnly) r.mod = nowStamp()
     /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
        was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
        keeps the name of the Event it used to be. A draft that does not STATE a title (no `title` key at all — a
@@ -1260,7 +1276,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        Only on a type that KEEPS documents — the family guard above stops a
        medical row leaving the group, so this bites only on stray ids a
        dialog carried while the type was flipped among non-medical picks. */
-    if (needsDoc(draft.type) && rowDocIds(draft).length) {
+    /* …for EVERY kind since M3 7.4 (D1150): a leave's or a duty's ✕ that empties its list takes the files off the record;
+       a medical's list never goes empty here (the replace-don't-strip refusal above). A draft that carries no list at all
+       (a caller that never drew the Document row) leaves the record's as it is. */
+    if (Array.isArray(draft.docIds) && (!needsDoc(draft.type) || rowDocIds(draft).length)) {
+      delete (r as any).docId
       delete (r as any).docIds
       Object.assign(r, docFields(rowDocIds(draft)))
     }
@@ -2570,9 +2590,11 @@ export function InputEditor() {
   /* NOT FROM THE MEDICAL TAB (the code read of [MEDICAL-CARDS-3], 17 Oct 26 — finding 4): asked to show a saved input,
      the page turns the Inputs and SANS calendars to its month; from the Medical tab ("+ Medical", D963) neither calendar
      is in view, so a filing for July turned his November away unseen. There the new card is the feedback and the note
-     is said (nothing there wears the just-added mark). */
+     is said (nothing there wears the just-added mark).
+     …UNTIL HIS D1300 (24 Oct 26): the new card wears it now — the Medical tab is asked to show the input (its own reveal,
+     which turns no calendar), and where the card can be seen the note is left unsaid, as on the List. */
   const onMedTab = () => CURPAGE === 'inputs' && INPVIEW === 'med'
-  const show = (row: any, want: boolean) => want && !!row && !onMedTab() && revealInput(row) && CURPAGE === 'inputs'
+  const show = (row: any, want: boolean) => want && !!row && (onMedTab() ? revealMedInput(row) : revealInput(row) && CURPAGE === 'inputs')
   const saidSaved = (row: any, shown: boolean, words: string) => {
     if (!shown || toastHeld()) HOOKS.toast(words, 'ok')
     else noteUnlessSeen(String(inpId(row)), words, 'ok')
@@ -2715,6 +2737,7 @@ export function InputEditor() {
       setDocConf({
         who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
         typeLabel: draft.type,
+        leave: isLeave(draft.type),
       })
       return
     }
@@ -2992,7 +3015,8 @@ export function InputEditor() {
           {/* an upchit has no hours — the date above is the whole record, so
               the When row would only offer controls that mean nothing */}
           {!isUpchit(draft.type) && <div className="inped-f">
-            <span className="inped-k">When</span>
+            {/* "Duration" — the Leave War's windows and this one ask it in the same word (D1212) */}
+            <span className="inped-k">Duration</span>
             <div className="inped-when">
               {hasHalf(draft.type)
                 ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {
@@ -3018,10 +3042,12 @@ export function InputEditor() {
               exactly the types whose commit demands one (needsDoc is the one
               body for both), so the button never appears where the file is
               not wanted and never hides where it is */}
-          {needsDoc(draft.type) && <div className="inped-f">
+          {/* …FOR EVERY KIND since M3 7.4 (owner D1150): a leave shows it was applied for and approved in the official
+              leave system; a medical's is still the one asked and guarded (needsDoc) */}
+          <div className="inped-f">
             <span className="inped-k">Document</span>
             <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />
-          </div>}
+          </div>
           {/* THE REMARKS BOX HOLDS ONLY WHAT A PERSON TYPES (owner D948, 16 Oct 26 — his D946: "a dedicated remarks box just
               for free text that is empty and easy to select and the editable till date is always after the remarks"):
               the "till <date>" stands after the box in grey, from the dates in the window the moment it opens — a day
@@ -3233,9 +3259,12 @@ export function InputEditor() {
       {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
           the SAME save through the rest of the pipeline (skipDoc); "Upload"
           dismisses so the filer can attach a certificate and save again */}
-      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
+      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel} leave={!!docConf.leave}
         onUpload={() => setDocConf(null)}
-        onNoDoc={() => { setDocConf(null); save(true) }} />}
+        /* the keyboard back inside the window before the save closes it, so the window hands it on to the button that opened
+           it (FloatWindow.tsx returns focus only from inside itself — M3's browser check: a new leave's "No document" left it
+           nowhere) */
+        onNoDoc={() => { setDocConf(null); document.getElementById('inpEditSave')?.focus(); save(true) }} />}
   </>)
   /* A CANCELLED INPUT'S OWN WINDOW SAYS SO (owner D771, 12 Oct 26 — "Yes for both"): the card's own small red CX tag and
      the reason in red, beside the window's title, in both of its shapes — FOLLOWING the title, not standing by the ✕

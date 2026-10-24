@@ -1,0 +1,284 @@
+[
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide, one line, no word broken",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-file-UNA\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 30 vs 30; bid-file-OD: dx 0, dw 0, h 30 vs 30; bid-file-UNA: dx 0, dw 0, h 30 vs 30; bid-more: dx 0, dw 0, h 30 vs 30; broken []",
+  "pics": [
+   "h1-window-phone"
+  ]
+ },
+ {
+  "id": "H1b a tap on UNA files it: the window closes, the day holds a filled teal UNA box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"UNA|k-una|s-a|bg rgba(20, 130, 130, 0.7)\"]",
+  "pics": [
+   "h1-filed-phone"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day: the window an input filed on the Inputs page opens (RECORD — reading 4)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "raptor-sheet: Drifter | Mon 2 Nov | UNA | ✕ | INPUTS PAGE | Filed on the Inputs page — change it there, not here.",
+  "pics": [
+   "h1-reopen-phone"
+  ]
+ },
+ {
+  "id": "H2 a range 3–5 Nov and OD: three filled slate boxes; one input, its words with it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "boxes [[\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"]]; stored [[\"Nov 3\",\"Nov 5\",\"Exercise Pitch Black\",true]]",
+  "pics": [
+   "h2-range-phone",
+   "h2-filed-phone"
+  ]
+ },
+ {
+  "id": "H3 a pending LL, then CSE: the bid stays and the day holds both, each its own box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|bg rgba(160, 100, 240, 0.36)\",\"LL|k-ll|s-w|bg rgba(0, 0, 0, 0)\"]",
+  "pics": [
+   "h3-pending-phone",
+   "h3-both-phone"
+  ]
+ },
+ {
+  "id": "H4 a drag over two men and two days: CSE · OD · UNA (no ⋯ — a posting is one man's); UNA fills all four",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "sheet true; row [\"sel-file-CSE\",\"sel-file-OD\",\"sel-file-UNA\"]; boxes [[],[\"UNA|k-una|s-a|bg rgba(20, 130, 130, 0.7)\"],[],[\"UNA|k-una|s-a|bg rgba(20, 130, 130, 0.7)\"]]",
+  "pics": [
+   "h4-drag-phone",
+   "h4-filed-phone"
+  ]
+ },
+ {
+  "id": "H5 Undo takes the OD back, Redo puts it again",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "filed [\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"]; undone []; redone [\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h5-undone-phone"
+  ]
+ },
+ {
+  "id": "H6 UNA takes him off the day's manning: Available P on 19 Nov one lower (RECORD if the row is not found)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Available P null → null",
+  "pics": []
+ },
+ {
+  "id": "H7 the Legend: \"Unavailable: an unforeseen absence\" in its own teal",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"t\":\"UNA\\nUnavailable: an unforeseen absence\",\"bg\":\"rgba(20, 130, 130, 0.7)\"}",
+  "pics": [
+   "h7-legend-phone"
+  ]
+ },
+ {
+  "id": "H8 the Inputs list shows Drifter's UNA and OD (RECORD — their rows)",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "",
+  "pics": [
+   "h8-list-phone"
+  ]
+ },
+ {
+  "id": "H8b the Inputs calendar: UNA's bar deep teal, filled .70",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"bg\":\"rgba(20, 130, 130, 0.7)\",\"t\":\"Drifter\"}",
+  "pics": [
+   "h8-calendar-phone"
+  ]
+ },
+ {
+  "id": "H9 the schedule: Drifter under Unavailable with UNA on Tue 14 Jul (RECORD — read from the picture too)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "[\"UNA C Drifter A\"]",
+  "pics": [
+   "h9-schedule-phone"
+  ]
+ },
+ {
+  "id": "H10 member, a day before his today: the closed note, then CSE · OD · UNA",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "closed-note; row [\"closed-file-CSE\",\"closed-file-OD\",\"closed-file-UNA\"]",
+  "pics": [
+   "h10-closed-phone"
+  ]
+ },
+ {
+  "id": "H10b his tap on CSE files it there: the window closes, the day holds his course",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": [
+   "h10-filed-phone"
+  ]
+ },
+ {
+  "id": "H10c member, another man's day: no window offers the three (RECORD)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "nothing opened",
+  "pics": []
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide, one line, no word broken",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-file-UNA\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 30 vs 30; bid-file-OD: dx 0, dw 0, h 30 vs 30; bid-file-UNA: dx 0, dw 0, h 30 vs 30; bid-more: dx 0, dw 0, h 30 vs 30; broken []",
+  "pics": [
+   "h1-window-desk"
+  ]
+ },
+ {
+  "id": "H1b a tap on UNA files it: the window closes, the day holds a filled teal UNA box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"UNA|k-una|s-a|bg rgba(20, 130, 130, 0.7)\"]",
+  "pics": [
+   "h1-filed-desk"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day: the window an input filed on the Inputs page opens (RECORD — reading 4)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "raptor-sheet: Drifter | Mon 2 Nov | UNA | ✕ | INPUTS PAGE | Filed on the Inputs page — change it there, not here.",
+  "pics": [
+   "h1-reopen-desk"
+  ]
+ },
+ {
+  "id": "H2 a range 3–5 Nov and OD: three filled slate boxes; one input, its words with it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "boxes [[\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"]]; stored [[\"Nov 3\",\"Nov 5\",\"Exercise Pitch Black\",true]]",
+  "pics": [
+   "h2-range-desk",
+   "h2-filed-desk"
+  ]
+ },
+ {
+  "id": "H3 a pending LL, then CSE: the bid stays and the day holds both, each its own box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|bg rgba(160, 100, 240, 0.36)\",\"LL|k-ll|s-w|bg rgba(0, 0, 0, 0)\"]",
+  "pics": [
+   "h3-pending-desk",
+   "h3-both-desk"
+  ]
+ },
+ {
+  "id": "H4 a drag over two men and two days: CSE · OD · UNA (no ⋯ — a posting is one man's); UNA fills all four",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "sheet true; row [\"sel-file-CSE\",\"sel-file-OD\",\"sel-file-UNA\"]; boxes [[],[\"UNA|k-una|s-a|bg rgba(20, 130, 130, 0.7)\"],[],[\"UNA|k-una|s-a|bg rgba(20, 130, 130, 0.7)\"]]",
+  "pics": [
+   "h4-drag-desk",
+   "h4-filed-desk"
+  ]
+ },
+ {
+  "id": "H5 Undo takes the OD back, Redo puts it again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "filed [\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"]; undone []; redone [\"OD|k-od|s-a|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h5-undone-desk"
+  ]
+ },
+ {
+  "id": "H6 UNA takes him off the day's manning: Available P on 19 Nov one lower (RECORD if the row is not found)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27",
+  "pics": []
+ },
+ {
+  "id": "H7 the Legend: \"Unavailable: an unforeseen absence\" in its own teal",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"t\":\"UNA\\nUnavailable: an unforeseen absence\",\"bg\":\"rgba(20, 130, 130, 0.7)\"}",
+  "pics": [
+   "h7-legend-desk"
+  ]
+ },
+ {
+  "id": "H8 the Inputs list shows Drifter's UNA and OD (RECORD — their rows)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "in-red :: Drifter 2 Nov UNA By Saber now || in-red :: Drifter 3 Nov 5 Nov OD LATEExercise Pitch Black till 5 NovBy Saber now || in-red :: Drifter 17 Nov UNA By Saber now || in-red :: Drifter 18 Nov OD By Saber now || in-red :: Drifter 19 Nov UNA By Saber now",
+  "pics": [
+   "h8-list-desk"
+  ]
+ },
+ {
+  "id": "H8b the Inputs calendar: UNA's bar deep teal, filled .70",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"bg\":\"rgba(20, 130, 130, 0.7)\",\"t\":\"Drifter · UNA\"}",
+  "pics": [
+   "h8-calendar-desk"
+  ]
+ },
+ {
+  "id": "H9 the schedule: Drifter under Unavailable with UNA on Tue 14 Jul (RECORD — read from the picture too)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "[\"UNA C Drifter A\"]",
+  "pics": [
+   "h9-schedule-desk"
+  ]
+ },
+ {
+  "id": "H10 member, a day before his today: the closed note, then CSE · OD · UNA",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "closed-note; row [\"closed-file-CSE\",\"closed-file-OD\",\"closed-file-UNA\"]",
+  "pics": [
+   "h10-closed-desk"
+  ]
+ },
+ {
+  "id": "H10b his tap on CSE files it there: the window closes, the day holds his course",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": [
+   "h10-filed-desk"
+  ]
+ },
+ {
+  "id": "H10c member, another man's day: no window offers the three (RECORD)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "nothing opened",
+  "pics": []
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

@@ -22,6 +22,7 @@ import { balanceOf } from '../engine'
 import { awardsOnDay, editAward, getState, HALF_STEP_MSG, ingestDutyCredit, initStore, rawState, setCell, setDayAward, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 const P = 'slammed'
 const TUE = '2026-01-13'
@@ -146,13 +147,13 @@ describe('tapping an OIL day shows what is on it', () => {
   it('the button names it instead of offering to add one', () => {
     expect(setDayAward(P, TUE, 3, { note: 'Exercise', givenBy: 'OC Ops' })).toBeNull()
     openDay()
-    expect(screen.getByTestId('bid-oil').textContent).toBe('FO · 3 days')
+    expect(more('bid-oil').textContent).toBe('FO · 3 days')
   })
 
   it('opens already filled in, and says it in words above the boxes', () => {
     expect(setDayAward(P, TUE, 0.5, { note: 'Exercise', givenBy: 'OC Ops' })).toBeNull()
     openDay()
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
     expect(screen.getByTestId('oil-current').textContent).toContain('half a day of OIL')
     expect(screen.getByTestId('oil-current').textContent).toContain('Exercise')
     expect(screen.getByTestId('oil-current').textContent).toContain('OC Ops')
@@ -163,7 +164,7 @@ describe('tapping an OIL day shows what is on it', () => {
   it('changing it writes over the same record rather than adding a second', () => {
     expect(setDayAward(P, TUE, 3, { note: 'Exercise' })).toBeNull()
     openDay()
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
     fireEvent.change(screen.getByTestId('oil-days'), { target: { value: '1' } })
     fireEvent.click(screen.getByTestId('oil-give'))
     expect(awardsOnDay(P, TUE)).toHaveLength(1)
@@ -173,7 +174,7 @@ describe('tapping an OIL day shows what is on it', () => {
   it('Remove takes it off the day', () => {
     expect(setDayAward(P, TUE, 1, { note: 'Exercise' })).toBeNull()
     openDay()
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
     fireEvent.click(screen.getByTestId('oil-clear'))
     expect(creditOn(P, TUE)).toBeUndefined()
   })
@@ -215,7 +216,7 @@ describe('how many days the sheet asks for', () => {
   const openOil = (date: string) => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
-    fireEvent.click(screen.getByTestId('bid-oil'))
+    fireEvent.click(more('bid-oil'))
   }
   const days = (v: string) => fireEvent.change(screen.getByTestId('oil-days'), { target: { value: v } })
 

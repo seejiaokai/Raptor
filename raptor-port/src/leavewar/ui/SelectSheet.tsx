@@ -28,11 +28,12 @@
 // still cancels the MOVE (D262) — that is the move, not this panel. The war's other windows keep blocking
 // (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`).
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, deletableIn, movableCells, postingBlocked, setBidStates, setCells } from '../state/store'
+import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, placeUna, postingBlocked, setBidStates, setCells } from '../state/store'
+import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
 import { skipWhy } from './BidPicker'
@@ -40,9 +41,13 @@ import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './be
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
 import { useCloseOnCellClick } from './gridclick'
-import { shortDate, shortSpan } from './dates'
 import type { Selection } from './select'
 import './bidpicker.css'
+import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
+import { DayLine, dayLineCode } from './DayLine'
+import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
+import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
+import { getState } from '../state/store'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'sel-portion-full' },
@@ -54,6 +59,7 @@ export function SelectSheet({
   sel,
   people,
   wouldLeave,
+  dayLine,
   role,
   canDecide,
   onDone,
@@ -68,6 +74,8 @@ export function SelectSheet({
   /** What one person's balance would read after this leave is written on these of his days, or `null` for leave that
    *  spends nothing — the matrix's `balanceAfter`, the one-day sheet's own question (D418) */
   wouldLeave?: (personId: string, dates: readonly string[], code: string) => BalanceAfter | null
+  /** What the leave would do to manning on one person's days (D1144, D1213 — the day line): the matrix's `bidDayLine` */
+  dayLine?: (personId: string, dates: readonly string[], code: string) => DayWhatIf[]
   role: 'admin' | 'member'
   /** admin && closed — the batch Decide row */
   canDecide: boolean
@@ -85,6 +93,25 @@ export function SelectSheet({
   onClose: () => void
 }) {
   const [portion, setPortion] = useState<Portion>('full')
+  /* "APPROVE WHAT I ENTER" (D1147, D1187's reading: the drag-selection window too) — the one-day window's switch and its
+     one memory: left off in either window, it opens off in both (D1302, BidBits.tsx) */
+  const [approve, setApprove] = useApproveMemory()
+  const approving = role === 'admin' && approve
+  /* THE DAY LINE across a drag: each man's days read on their own, then the worst person-day of them all — his callsign
+     before the date where the drag holds several men (the agent's reading, M3 §7.1) */
+  const st = getState()
+  const line = useMemo(() => {
+    if (!dayLine) return { days: [] as DayWhatIf[], label: undefined as string | undefined }
+    const whose = new Map<DayWhatIf, string>()
+    const all: DayWhatIf[] = []
+    for (const pid of sel.people) {
+      const ds = sel.cells.filter(c => c.personId === pid).map(c => c.date)
+      for (const d of dayLine(pid, ds, dayLineCode(portion))) { whose.set(d, pid); all.push(d) }
+    }
+    const w = worstWhatIf(all)
+    return { days: w ? [w, ...(all.length > 1 ? [all.find(d => d !== w)!] : [])] : [], label: w && sel.people.length > 1 ? people(whose.get(w)!) : undefined }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!dayLine, sel, portion, st])
   const [note, setNote] = useState('')
   const [confirmDel, setConfirmDel] = useState(false)
   /* what the below-zero ask SAID — the leave and each man's figure (D418) — the same leave tapped again goes ahead only
@@ -102,6 +129,9 @@ export function SelectSheet({
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* a request's Document and Remarks (M3 5.9, 5.10): written with the fill, where the drag holds ONE person — across
+     several, each man's paper is his own (the agent's reading, M3 §7 point 2) */
+  const [words, setWords] = useState<ReqDraft>(emptyDraft)
   useCloseOnCellClick(onClose)
 
   const nPeople = sel.people.length
@@ -111,7 +141,9 @@ export function SelectSheet({
     : nPeople <= 3
       ? sel.people.map(people).join(', ')
       : `${nPeople} people`
-  const span = sel.from === sel.to ? shortDate(sel.from) : shortSpan(sel.from, sel.to)   // one day in its range's own voice ([LW-ISO-DATES])
+  /* the dates in the title's short voice — "9–11 Nov", as round 3 drew it (today "9 Nov 26 – 11 Nov 26"), the one-day
+     window's "Tue 3 Nov" carrying no year either (BidBits.tsx compactSpan) */
+  const span = compactSpan(sel.from, sel.to)
   // Delete and Move only make sense when the box actually holds a movable bid —
   // a purely-empty selection (Fill only) hides them, so Move never opens on
   // nothing to move (owner, 27 Aug 26).
@@ -119,6 +151,10 @@ export function SelectSheet({
   /* Delete only where it would change something (D332; the house rule for a control that could not work) — the same
      gates the Delete itself runs (`deletableIn` mirrors `clearCells`) */
   const canDelete = deletableIn(sel.cells) > 0
+  /* DECIDE ONLY WHERE THE DAYS HOLD A BID (round 3's drawing): over days with nothing to decide Approve and Refuse only
+     said so when pressed — the house rule for a control that could not work. `decidableIn` is `setBidStates`'s own
+     eligibility, as the one-day window's range asks it. */
+  const decideHere = canDecide && decidableIn(sel.cells) > 0
   /* THE AWARDS THE DELETE WILL TAKE (owner, D260, 27 Sep 26 — "B": it removes everything in the block, awards included,
      and the confirm names each award first). Read before anything goes, from the store's own question (`awardsIn` —
      the admin's awards; a member's Delete takes none). A block of awards alone now offers Delete too: it is not an
@@ -159,10 +195,40 @@ export function SelectSheet({
       return
     }
     setConfirming(null)
-    const { written, skipped } = code ? setCells(sel.cells, code) : clearCells(sel.cells)
+    if (code && approving) {
+      const r = placeApproved(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined)
+      if (!r.skipped && !r.pending.length) { onDone(r.written > 0); return }
+      const parts: string[] = []
+      if (r.skipped) parts.push(skipNote('written', r.written, r.skipped).replace(/\.$/, ''))
+      if (r.pending.length) parts.push(`${r.pending.length} day${r.pending.length === 1 ? '' : 's'} kept pending — not approved (a locked week, or leave or a medical already there)`)
+      setNote(parts.join('. ') + '.')
+      if (r.written > 0) onDone(true, true)
+      return
+    }
+    const { written, skipped } = code ? setCells(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined) : clearCells(sel.cells)
     if (skipped === 0) { onDone(written > 0); return }
     setNote(skipNote(code ? 'written' : 'cleared', written, skipped))
     if (written > 0) onDone(true, true) // refresh counts but keep the sheet to show the note
+  }
+
+  /* ROUND 2 (his D1318, D1324): a course, an overseas duty or the unforeseen absence filed straight on every day of every man
+     picked — no bid, nothing to approve; one man's words go with it, as with a leave. A day not his to change is named. */
+  const fileDuty = (code: string) => {
+    setConfirmDel(false); setConfirming(null); setNoteAt('leave')
+    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined)
+    if (!r.skipped) { onDone(r.done > 0); return }
+    setNote(r.why[0] ?? skipNote('written', r.done, r.skipped))
+    if (r.done > 0) onDone(true, true)
+  }
+
+  /* UNA (his D1338): an admin's, on every day of every man picked, on the half the Duration row says; one man's words go
+     with it, as with a leave */
+  const fileUna = () => {
+    setConfirmDel(false); setConfirming(null); setNoteAt('leave')
+    const r = placeUna(sel.cells, portion, nPeople === 1 ? { remarks: wordsOf(words)?.remarks } : undefined)
+    if (!r.skipped) { onDone(r.done > 0); return }
+    setNote(skipNote('written', r.done, r.skipped))
+    if (r.done > 0) onDone(true, true)
   }
 
   const del = () => {
@@ -202,29 +268,19 @@ export function SelectSheet({
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
         <span className="dt" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
+        {role === 'admin' && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
         <button className="x" data-testid="sel-cancel" onClick={onClose} aria-label="Cancel">✕</button>
       </div>
+      <DayLine days={line.days} label={line.label} />
 
       {/* ONE FORMAT AND LOOK FOR THE TWO SHEETS (owner, D264; his order, D331 "1 A"): the same rows in the same order as
           the one-day sheet — what is already there first (Decide, then Selected: Move · Delete), then placing new leave
           (How much, Which leave) — and the same two buttons for Move and Delete (SheetActions.tsx). The drag IS this
           sheet's selection, so it has no How many (the one-day sheet's, D335). */}
-      {canDecide && (
-        <div className="bidsheet-row">
-          <span className="lab">Decide</span>
-          <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>
-          <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>
-        </div>
-      )}
-
-      {/* Move and Delete act on what the selection holds, so they show only where they would do something (a loose box
-          of empties is Fill-only). Move: every record in the box this role may move (D265 — a bid beside an OIL award
-          moves alone; the award, leave filed on the Inputs page, a medical stay, and the move banner says so); never an
-          award (D260). Delete: every day it would change (D332's one word) — confirms on a second tap, naming every award
-          it takes (D260). Move hands off to the matrix's ghost/tap-to-place mode. */}
-      {(hasBids || canDelete) && (
-        <div className="bidsheet-row">
-          <span className="lab">Selected</span>
+      {(decideHere || hasBids || canDelete) && (
+        <div className="bidsheet-row bp-acts" data-testid="sel-actions" role="group" aria-label="Actions">
+          {decideHere && <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>}
+          {decideHere && <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>}
           {hasBids && <MoveChip testid="sel-move" onClick={() => { onClose(); onMove(sel) }} />}
           {canDelete && <DeleteChip testid="sel-delete" armed={confirmDel} onClick={del} />}
         </div>
@@ -233,8 +289,8 @@ export function SelectSheet({
 
       {canFill && (
         <>
-          <div className="bidsheet-row">
-            <span className="lab">How much</span>
+          {nPeople === 1 && <ReqWordsRows compact value={words} onChange={w => setWords(w)} start={sel.from} end={sel.to} testPrefix="sel" />}
+          <div className="bidsheet-row bp-dur" role="group" aria-label="Duration">
             {PORTIONS.map(p => (
               <button key={p.portion} data-testid={p.testid}
                 className={`pchip${portion === p.portion ? ' on' : ''}`}
@@ -245,14 +301,11 @@ export function SelectSheet({
             ))}
           </div>
 
-          <div className="bidsheet-row">
-            <span className="lab">Which leave</span>
-            {LEAVE_TYPES.map(t => (
-              <button key={t.type} data-testid={`sel-${t.type}`} className="tchip" title={t.label}
-                onClick={() => fill(formatCell({ type: t.type, portion }))}>
-                {formatCell({ type: t.type, portion })}
-              </button>
-            ))}
+          <div className="bidsheet-row" role="group" aria-label="Which leave">
+            {/* the one-day window's buttons (M3 5.2–5.6): his figures where the drag holds one man, none across several
+                (the below-zero ask still names each — the agent's reading, M3 §7.2) */}
+            <LeaveButtons portion={portion} onPick={fill} filled={approving} testPrefix="sel"
+              figure={wouldLeave && nPeople === 1 ? code => wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code)?.before ?? null : undefined} />
             {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
           </div>
 
@@ -264,9 +317,15 @@ export function SelectSheet({
       {/* PO only for a single person (posting several out from one drag is too
           heavy an act for one tap; the PO flow picks its own date anyway). "PO", as on the one-day sheet (the mock-up's
           reading, uncorrected — D331). */}
-      {onPostOut && nPeople === 1 && !poOpen && (
-        <div className="bidsheet-row postout">
-          <button className="dchip po" data-testid="sel-postout" title="Post out — their last day in the squadron" aria-label="Post out" onClick={() => { setPoOpen(true); setConfirming(null) }}>PO</button>
+      {/* behind the ⋯ in the fourth place of the row under the leaves, as on the one-day window (his D1326) */}
+      {!poOpen && (
+        <div className="bidsheet-row bp-extra" data-testid="sel-extra-row">
+          {/* CSE · OD in the first two places (round 2), UNA the third — an admin's alone (D1338) — the ⋯ the fourth where
+              Post out is offered */}
+          <DutyButtons onFile={fileDuty} testPrefix="sel" />
+          {role === 'admin' && <UnaButton onPlace={fileUna} testPrefix="sel" />}
+          {onPostOut && nPeople === 1 && <MoreButton testid="sel-more" items={[{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
+            onPick: () => { setPoOpen(true); setConfirming(null) } }]} />}
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (

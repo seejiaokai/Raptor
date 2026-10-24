@@ -22,10 +22,10 @@
 // and re-keying it would corrupt it.
 
 import { INPUTS, inpId } from '../../engine/inputs'
-import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type Recs } from '../engine'
+import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type ManningRule, type Recs } from '../engine'
 import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
-import { getState, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
+import { getState, installDemoCounters, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
 
 /**
  * Seed person -> Raptor person. HAND-PICKED so that every mapped Raptor
@@ -134,6 +134,21 @@ const DEMO_OIL_TAKEN: Array<[string, string]> = [
   ['slammed', '2026-01-14'],
 ]
 
+/* THE DEMO'S SIX COUNTERS (his D1312, 24 Oct 26 — "Demo data can u add more man more manning counters like 6 rows so
+   our mock ups caters for it and we see"): six of the eleven the Manning block carried until D669, word for word from
+   `leavewar/testing/eleven.ts` (D138), so the drawings and his preview show a busy Manning block and a bid window's day
+   line with several rows. Laid on at a fresh demo boot only (installDemoWorld below); a real squadron's store still
+   starts with none (D669). The browser tests boot without them (the switch below) and make their own (testing/eleven.ts). */
+const DEMO_INSTR_CATS = ['FI', 'IR', 'IP', 'IW']
+export const DEMO_COUNTERS: readonly ManningRule[] = [
+  { id: 'sets', label: 'Crew sets', count: { kind: 'team', slots: [{ count: 1, filter: { seats: ['pilot'] } }, { count: 1, filter: { seats: ['wso'] } }] }, threshold: { amber: 5, red: 4.5 }, desc: 'One set is one pilot plus one WSO — a jet you can crew. The day\'s number is whichever seat runs out first.' },
+  { id: 'ip', label: 'IP', count: { kind: 'people', filter: { seats: ['pilot'], cats: DEMO_INSTR_CATS } }, threshold: { amber: 3, red: 2 }, desc: 'Instructor pilots available.' },
+  { id: 'iwso', label: 'IWSO', count: { kind: 'people', filter: { seats: ['wso'], cats: DEMO_INSTR_CATS } }, threshold: { amber: 3, red: 2 }, desc: 'Instructor WSOs available.' },
+  { id: 'opsp', label: 'OPSP', count: { kind: 'people', filter: { seats: ['pilot'], notCats: DEMO_INSTR_CATS } }, threshold: { amber: 4, red: 3 }, desc: 'Ops pilots (CAT A–D, OCU included) available.' },
+  { id: 'opsw', label: 'OPSW', count: { kind: 'people', filter: { seats: ['wso'], notCats: DEMO_INSTR_CATS } }, threshold: { amber: 4, red: 3 }, desc: 'Ops WSOs (CAT A–D, OCU included) available.' },
+  { id: 'sxo', label: 'SXO', count: { kind: 'people', filter: { quals: ['sxo'] } }, threshold: { amber: 1, red: 1 }, desc: 'SXO-qualified crew available, counted on top of their own category.' },
+]
+
 export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
   // opening 3, FO 3 Jan seeded: the opening figure is used up by June
   // (archived), the January day part-drawn, the March grant and April half
@@ -223,6 +238,8 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
      the demo OIL story goes in first, so the re-key dresses it too. */
   if (demo) {
     installDemoOil(DEMO_OIL)
+    /* the browser tests' switch (e2e/app.ts openLeaveWar): they stand on the empty block a real squadron gets (D669) */
+    if (!(typeof window !== 'undefined' && (window as any).__lwNoDemoCounters === true)) installDemoCounters(DEMO_COUNTERS)
     installDemoOil(DEMO_WALK)
     remapPersonKeys(DEMO_MAP)
     /* save the DRESSED world now — setPeople above saved the undressed seed, and the next boot, finding a

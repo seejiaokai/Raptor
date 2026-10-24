@@ -1,0 +1,28 @@
+// M3 follow-ups — S13 re-driven: a quick swipe then a tap in "Open for bidding", the window closed by its ✕, one Undo
+import * as L from './lw-m3-follow-lib.mjs'
+const w = await L.newCtx('phone'); const P = w.page
+await L.signInPlain(w, 'admin')
+await L.press(w, L.T('open-chip')); await P.waitForTimeout(500)
+const mid = k => P.locator(`[data-testid="od-month-${k}"]`).evaluate(e => { const r = e.getBoundingClientRect(); return { x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) } })
+const st = () => P.locator('[data-testid^="od-month-"]').evaluateAll(els => els.filter(e => !e.disabled).map(e => `${e.dataset.testid.slice(9)}:${e.dataset.state}`).join(' '))
+const a = await mid('2026-10'), b = await mid('2026-12')
+await w.cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...a, id: 1 }] })
+for (let i = 1; i <= 5; i++) { await w.cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: Math.round(a.x + (b.x - a.x) * i / 5), y: a.y, id: 1 }] }); await P.waitForTimeout(16) }
+await w.cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await P.waitForTimeout(500)
+console.log('after swipe', await st())
+const n = await mid('2026-11'); await L.finger(w, n.x, n.y); await P.waitForTimeout(400)
+console.log('after tap', await st())
+const x = await L.centre(P, '[data-testid="open-dates-close"]'); console.log('close at', JSON.stringify(x))
+await L.press(w, '[data-testid="open-dates-close"]'); await P.waitForTimeout(500)
+console.log('window open after ✕?', await L.vis(P, '[data-testid="open-dates"]'))
+await L.press(w, '#undoBtn'); await P.waitForTimeout(600)
+await L.press(w, L.T('open-chip')); await P.waitForTimeout(500)
+console.log('after one Undo', await st())
+await L.shot(w, 's13b-undo')
+await L.press(w, '[data-testid="open-dates-close"]'); await P.waitForTimeout(400)
+await L.press(w, '#undoBtn'); await P.waitForTimeout(600)
+await L.press(w, L.T('open-chip')); await P.waitForTimeout(500)
+console.log('after a second Undo (the swipe, whole)', await st())
+await L.shot(w, 's13b-undo2')
+console.log('ERRS', w.errs.join('\n') || 'none')
+await L.closeBrowser()

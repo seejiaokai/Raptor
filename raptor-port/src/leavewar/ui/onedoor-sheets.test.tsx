@@ -92,6 +92,9 @@ describe('the grid, a locked man\'s own day', () => {
     setPostingLockLookup(x => (x === id ? 'Hex was archived on Admin → Users — restore him there' : null))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
+    /* the ⋯ still holds Grant OIL (round 3, D1326) — and nothing of the postings */
+    fireEvent.click(screen.getByTestId('bid-more'))
+    expect(screen.getByTestId('bid-oil')).toBeTruthy()
     expect(screen.queryByTestId('bid-postout')).toBeNull()
     expect(screen.queryByTestId('bid-postin')).toBeNull()
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
