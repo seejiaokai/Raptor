@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1304 | 24 Oct 26 | The Inputs calendar's bars take the Leave War's colour for each kind, so a leave, an OIL, a course, an overseas duty or a medical looks the same on both pages; duties and other commitments get a colour of their own, apart from leave's amber. |
 | D1300 | 24 Oct 26 | On a desktop the Medical tab's "+ Medical" stands at the right of its row, and the window it opens stands at the right, clear of the cards, so what is added can be seen arriving; the new medical input's card wears the just-added mark — the Scheduler Board's plain cyan ring, for a few seconds (D851, D860). |
 | D1298 | 24 Oct 26 | A date clicked on the Inputs or the SANS calendar while a new input's window is open never looks picked while doing nothing: the click must change something the person can see, or nothing must light. |
 | D1293 | 24 Oct 26 | On a phone the Inputs list's day headings and input cards take the screen's full width less the same margin the filters and search box above them have, so the list uses all the room it can. |
