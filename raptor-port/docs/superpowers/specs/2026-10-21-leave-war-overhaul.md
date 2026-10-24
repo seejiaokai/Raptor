@@ -669,6 +669,6 @@ The page ends with every Leave War screen as it will be built — every ruling a
 
 ## Next: an overseas duty and a course filed on the Leave War (his D1299, 24 Oct 26 — not designed)
 
-His intent: people file an OD and a CRS on the Leave War, far ahead while bidding is open, because both lower manning (D998) and nobody thinks to file them early on the Inputs page. Questions for him first, with pictures: decided as a bid is, or filed straight; open dates only or any; a member's own only; a document asked for. [LW-FILE-OD-CRS].
+His intent: people file an OD and a CRS on the Leave War, far ahead while bidding is open, because both lower manning (D998) and nobody thinks to file them early on the Inputs page. Questions for him first, with pictures: decided as a bid is, or filed straight; open dates only or any; a member's own only; a document asked for. [LW-FILE-OD-CRS]. **His answers (D1318, 24 Oct 26):** filed straight, no approval, as an input is; any date; a member may file them (his own), an admin any; no document.
 
 Also his intent (D1303): one more kind for an unforeseen reason a person is out of the manning, named apart from the Inputs page's "Other" (which leaves him in it) — recommended "Unavailable" (UNA), the schedule's own word for a person off work; designed with OD and CRS.

@@ -56,6 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1319 | 24 Oct 26 | The bid window's way to Grant OIL, Post out and Post in looks plainly like something to press, not a bare ⋯ glyph — redrawn for him before it is built. |
+| D1320 | 24 Oct 26 | In the bid window, "Grant OIL" is drawn in the green of OIL given — the FO and HO boxes' green — not the grey of the posting buttons beside it. |
+| D1318 | 24 Oct 26 | An overseas duty (OD) and a course (CSE) filed on the Leave War need no approval — they stand at once, as an input filed on the Inputs page does; they can be filed on any date, open for bidding or not; a member may file them, and an admin; and they ask for no document. |
 | D1316 | 24 Oct 26 | The Leave War's kinds take colour set C: medical red (238,82,82), OIL taken magenta (226,96,196), course purple (160,100,240), overseas duty a solid slate (128,142,160, filled .58); the leaves and FO / HO keep their colours as built. |
 | D1317 | 24 Oct 26 | On the Inputs calendar the bars of duties and other commitments get a look whose words read clearly against it — not the grey slate with white words drawn for Q3 — and stay told apart from every leave, absence and the overseas duty's slate; redrawn with the design skill and put to him with pictures before anything is built. |
 | D1315 | 24 Oct 26 | Whatever the bid windows show about what a day already holds — the lit leave button, its code, Remarks and Document — is shown for every entry when the day holds two (a morning and an afternoon), never for only one of them; round 3's changes carry to the window such a day opens. |
