@@ -685,7 +685,9 @@ export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] |
 const UNA_CODE = /^[*<>]?UNA[*<>]?$/
 function unasOf(list: unknown): string {
   const l: any[] = Array.isArray(list) ? list : []
-  return JSON.stringify(l.filter(r => r?.kind === 'una' || UNA_CODE.test(String(r?.code ?? ''))).map(({ ord: _o, ...r }: any) => r)
+  /* the code read as the stored record's reader reads it — trimmed, upper-cased (the narrow read's N1: 'una' passed, then
+     read back as UNA after a reload) */
+  return JSON.stringify(l.filter(r => r?.kind === 'una' || UNA_CODE.test(String(r?.code ?? '').trim().toUpperCase())).map(({ ord: _o, ...r }: any) => r)
     .sort((a, b) => String(a.id).localeCompare(String(b.id))))
 }
 function onlyChangesWords(before: unknown, after: unknown): boolean {

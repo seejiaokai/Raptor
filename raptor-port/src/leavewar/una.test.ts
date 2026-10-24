@@ -219,7 +219,9 @@ describe('D1338 — the commit refuses a member’s command that touches a UNA, 
   /* round 2's FULL check — the fresh code read's F4: a forged member command writing a REQUEST whose code is UNA passed the
      commit (it looked only at records of kind 'una') and drew a teal UNA box on his row, a bid out of the manning */
   it('a bid of his whose code is UNA, in any half, is refused too', () => {
-    for (const code of ['UNA', '*UNA', 'UNA*']) {
+    /* …in any case or spacing too (the narrow read's N1): the stored record's reader trims and upper-cases a bid's code, so
+       'una' would read back as UNA after a reload */
+    for (const code of ['UNA', '*UNA', 'UNA*', 'una', ' UNA', '*una', 'Una*']) {
       expect(ownershipViolation(env([], [{ id: 'q1', kind: 'request', code, state: 'pending' } as unknown as WarRec])), code).toMatch(/UNA/)
     }
   })
