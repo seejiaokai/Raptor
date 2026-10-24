@@ -604,7 +604,10 @@ export function BidPicker({
           // right month AND the very next tap completes the span. The bidder
           // chose their start by opening this cell; asking for it again would
           // be the extra work this control exists to remove.
-          onClick={() => { setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
+          /* …and tapped again it closes the calendar, the range picked kept (round 3's FULL check: "Just this day" had closed it,
+             and with it gone the calendar stayed open with only the window's ✕ to shut it) */
+          aria-expanded={showCal}
+          onClick={() => { if (showCal) { setShowCal(false); return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
         >
           {span ? shortSpan(span.from, span.to) : 'Pick a range'}
         </button>

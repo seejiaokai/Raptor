@@ -501,3 +501,18 @@ describe('round 3 — the walk’s finds', () => {
     expect(cell().textContent).toContain('LL')
   })
 })
+
+/* ROUND 3's FULL CHECK — a door the removed "Just this day" took with it: it closed the calendar. "Pick a range" now opens
+   it and, tapped again, closes it (the range picked kept), so the calendar is never left open with only ✕ to shut it */
+describe('round 3 — the calendar opened by "Pick a range" closes by it too', () => {
+  it('a second tap on "Pick a range" closes the calendar', () => {
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(within(sheet()).getByTestId('span-range'))
+    expect(within(sheet()).queryByTestId('span-picker')).toBeTruthy()
+    expect(within(sheet()).getByTestId('span-range').getAttribute('aria-expanded')).toBe('true')
+    fireEvent.click(within(sheet()).getByTestId('span-range'))
+    expect(within(sheet()).queryByTestId('span-picker')).toBeNull()
+    expect(within(sheet()).getByTestId('span-range').getAttribute('aria-expanded')).toBe('false')
+  })
+})

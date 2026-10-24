@@ -99,6 +99,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs and SANS calendars a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
 - [LW-ROUND3-BUILD] — round 3 of the bid windows and the day's list, approved whole (his D1311, D1315, D1326–D1334): build it, tests first, a WALK check.
 - [LW-READS-OWED-1024] — one fresh reader of D1305–D1334's short lines against their full rows, and of design lessons 45–53 (D138, D941); D1297's lesson sweep of earlier evidence sheets.
+- [CSS-FONT-INHERIT] — eight boxes and buttons on the schedule and the Inputs pages show the browser’s own letters: their font line is not a font and is dropped (found in round 3’s check, 24 Oct 26); a picture to him first.
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [LW-DAYLINE-AMBER-ONLY] — the bid windows' day line names only what is amber or red, Available P included, side by side on one line (his D1313, D1314); built with round 3.
 - [LW-REMARKS-ALWAYS] — the bid window on an approved leave shows Document and Remarks at once, for everyone, and the Remarks box is dark so it stands out (his D1307, D1308).
@@ -2121,6 +2122,15 @@ Put to him on https://claude.ai/artifact/CaQkNnknq7J57JvDKMj5Gg as Q3 (drawn by 
 recommended red when any row turns red, a row a line, before → after. Not answered. Since then his D1313 / D1314 put the day
 line's rows side by side and only amber or red (design lesson 50 names the bubble as a place it would apply), so it is redrawn
 with those in place before it is asked again (D1301's step 4). **Place:** after [LW-ROUND3-BUILD].
+
+### [CSS-FONT-INHERIT] Font lines the browser drops (found 24 Oct 26, round 3's check)
+`font: 600 13px inherit` is not a font (a family cannot be "inherit" inside the shorthand), so the browser drops the whole
+line and the element keeps its own default letters, size and weight. Round 3's Remarks box had it (a textarea's default is a
+typewriter face — fixed there, 0cca37160). Eight more, older: `raptor-port/src/ui/scheduler/07-inputs-calendar.css` (line
+298), `12-schedule-editing.css` (173, 196), `14-input-editors.css` (277 — the Inputs window's boxes, 349), `25-inputs-calendar.css`
+(491, 504, 572, 592). Each written out as `font-family: inherit` plus its size and weight would show the app's letters at
+the weight meant — a look change on screens he uses daily, so a before / after picture first (D541). **Place:** with the
+next Inputs or schedule batch (D490).
 
 ### [LW-DAYLINE-AMBER-ONLY] The day line: only amber or red, side by side (his D1313, D1314, 24 Oct 26)
 **Today:** the bid windows' day line always shows his seat's Available row before → after, then each Manning row the bid
