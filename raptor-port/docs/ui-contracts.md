@@ -11455,6 +11455,10 @@ Duration → Which leave → Also (the admin's +OIL · PO · PI). On an empty da
   his seat's Available row before → after, then each Manning row the bid turns amber or red, a line each, names and figures
   in two columns, halves ".5"; one calm line where none turns; a range or a drag names its worst day (across people, the
   worst person-day, the callsign first). It follows Duration and the range, never the kind of leave (D998).
+  **His D1313 (24 Oct 26 — "can u instead show the data horizontally? So u save vertical space"), not built yet:** the
+  rows run side by side on one line, a dot between pairs, a pair wrapping whole only when the line runs out of width —
+  in place of a line each (D1144 narrowed); which rows it names (only those turned amber or red, or every row his leave
+  lowers — his Q7) is put to him with pictures.
 - **The leave buttons** (`ui/LeaveButtons.tsx`): two rows of four in the catalogue's order; each its kind's colour of look F,
   hollow and dashed while the bid would wait, filled while "Approve what I enter" is ticked; each with what is left of the
   balance it spends (the balance column's own figure), dimmed at 0 or below and still pressable, a negative in red.
