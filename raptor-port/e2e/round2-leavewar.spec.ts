@@ -34,8 +34,11 @@ test('the row under the leaves: CSE · OD · UNA under LL · OL · OIL, as wide,
     expect(Math.abs(m.x - u.x), `${mine} under ${under}`).toBeLessThan(1.5)
     expect(Math.abs(m.width - u.width), `${mine} as wide as ${under}`).toBeLessThan(1.5)
   }
-  const ys = await Promise.all(['bid-file-CSE', 'bid-file-OD', 'bid-file-UNA', 'bid-more'].map(async id => (await boxOf(page, id)).y))
-  for (const y of ys) expect(Math.abs(y - ys[0]!), 'one line').toBeLessThan(1)
+  const boxes = await Promise.all(['bid-file-CSE', 'bid-file-OD', 'bid-file-UNA', 'bid-more'].map(id => boxOf(page, id)))
+  for (const b of boxes) expect(Math.abs(b.y - boxes[0]!.y), 'one line').toBeLessThan(1)
+  /* one height too: the ⋯'s glyph and the chips' words differ in height under Linux's fonts, and centred in the row they
+     stood a pixel apart on GitHub's run while his PC's fonts hid it — the row stretches each to its full height */
+  for (const b of boxes) expect(Math.abs(b.height - boxes[0]!.height), 'one height').toBeLessThan(1)
   /* the colours his drawings painted (set C, D1316; D1325) — each kind's own, filled */
   const paint = (id: string) => page.locator(T(id)).evaluate(e => getComputedStyle(e).backgroundColor)
   expect(await paint('bid-file-UNA')).toBe('rgba(20, 130, 130, 0.7)')

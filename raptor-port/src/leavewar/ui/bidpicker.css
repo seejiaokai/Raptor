@@ -1796,7 +1796,9 @@
 .bidsheet-hd .bp-sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
 
 /* THE ROW UNDER THE LEAVES and its ⋯ in the fourth place (D1326) — the leave grid's own columns, so it stands under CL */
-.bidsheet .bp-extra { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+/* stretch, not the row's centre: the ⋯ (16px at line-height 1) and the chips (12px at the normal line-height) differ by a
+   pixel or two in height under Linux's fonts, and centred they stood a pixel apart (GitHub's run of 8622cdcaf) */
+.bidsheet .bp-extra { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; align-items: stretch; }
 .bidsheet .bp-extra .bp-more-wrap { position: relative; display: flex; }
 .bidsheet .bp-extra .bp-more-wrap.col4 { grid-column: 4; }
 .bidsheet .bp-more { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 1px; line-height: 1; }
