@@ -79,8 +79,31 @@ test('the one-day window on a pending bid: one row of four actions, Remarks and 
   const fonts = await page.locator(T('bid-remarks')).evaluate(e => ({ box: getComputedStyle(e).fontFamily, win: getComputedStyle(e.closest('.bidsheet')!).fontFamily, size: getComputedStyle(e).fontSize }))
   expect(fonts.box, 'the Remarks box in the window\'s letters').toBe(fonts.win)
   expect(fonts.size).toBe('13px')
+  /* side by side, one height on one centre line (his lessons 42, 43 — the drawing's box and Document button are one size) */
+  const btn = await boxOf(page, 'bid-doc-row')
+  const docBtn = (await page.locator(`${T('bid-doc-row')} button`).first().boundingBox())!
+  expect(Math.abs(rmk.height - docBtn.height), 'the box as tall as the Document button').toBeLessThan(1.5)
+  expect(Math.abs((rmk.y + rmk.height / 2) - (docBtn.y + docBtn.height / 2)), 'on one centre line').toBeLessThan(1.5)
+  expect(btn.width).toBeGreaterThan(0)
   await moreInPlace(page, 'bid-picker', 'bid-more', 'bid-CL', 'bid-postout')
   await expect(page.locator(T('po-confirm'))).toBeVisible()  // Post out's own panel, opened from the menu
+})
+
+/* TWO LONG-NAMED FILES (round 3's FULL check, the walk's X3 — on a phone the box shrank to 22 wide and the row ran 25 past the
+   window): with a file attached its chips and Add stand on a line under the box, as drawn (twoday-a-drawn-b), the box
+   keeping the row's room */
+test('two documents with long names: the box keeps its room, the files on a line under it, the row inside the window', async ({ page }) => {
+  await openDay(page)
+  for (const name of ['approval-from-the-leave-app-for-february-local-leave.pdf', 'second-scan-of-the-signed-form-for-the-squadron.pdf']) {
+    await page.locator(`${T('bid-doc-row')} input[type=file]`).first().setInputFiles({ name, mimeType: 'application/pdf', buffer: Buffer.from('%PDF-1.4\n%%EOF\n') })
+    await expect(page.locator(`${T('bid-doc-row')} .docchip`).filter({ hasText: name.slice(0, 12) })).toHaveCount(1)
+  }
+  const win = await boxOf(page, 'bid-picker'), row = await boxOf(page, 'bid-rmk-row'), rmk = await boxOf(page, 'bid-remarks'), doc = await boxOf(page, 'bid-doc-row')
+  expect(rmk.width, 'the box keeps at least half the row').toBeGreaterThan(row.width / 2)
+  expect(doc.y, 'the files on a line under the box').toBeGreaterThanOrEqual(rmk.y + rmk.height - 0.5)
+  expect(row.x + row.width, 'the row inside the window').toBeLessThanOrEqual(win.x + win.width + 0.5)
+  const over = await page.locator(T('bid-rmk-row')).evaluate(e => e.scrollWidth - e.clientWidth)
+  expect(over, 'nothing in the row runs past its edge').toBeLessThanOrEqual(0)
 })
 
 test('the drag-selection window: the same rows — its ⋯ in the fourth place, its menu inside the window', async ({ page }) => {

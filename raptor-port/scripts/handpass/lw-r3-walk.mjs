@@ -18,6 +18,7 @@ const run = id => !ONLY || ONLY.has(id)
 const D = { empty: '2026-11-02', pend: '2026-11-03', half: '2026-11-05', free: '2026-11-06', two: '2026-11-09', ref: '2026-11-10', oil: '2026-11-11', long: '2026-11-12', rng: '2026-11-16', drag: '2026-11-23', mem: '2026-11-17', memA: '2026-11-18' }
 const DRAWN = { empty: 248, pending: 286, approved: 286, drag: 279, member: 248 }
 const T = L.T
+async function signOut(P) { if (await L.vis(P, '#logout')) { await P.click('#logout') } else { await P.click('#burger'); await P.waitForTimeout(300); await P.click('#drawerLogout') } await P.waitForSelector('#luser') }
 
 /* ---- reading the open window ---- */
 const winRows = (P, sel) => P.evaluate(sel => {
@@ -36,14 +37,16 @@ const wider = async (P, sel) => { await P.evaluate(sel => { document.querySelect
 const rowsSay = g => g ? g.rows.map(r => `${r.name}:${r.h}/${r.lines}L${r.side ? ` side h±${r.side.hSpread} c±${r.side.cSpread}` : ''}${r.overX > 0 ? ` overX${r.overX}` : ''}`).join(' | ') : 'no window'
 /* the rows expected one line each (the leave grid two) — the name of every row that broke */
 const lineFaults = g => g.rows.filter(r => !/bidsheet-hd/.test(r.name) && r.lines > (/Which leave/.test(r.name) ? 2 : /bid-dayline|bidsheet-dayline/.test(r.name) ? 9 : 1)).map(r => `${r.name} ${r.lines} lines`)
-const sideFaults = g => g.rows.filter(r => r.side && (r.side.hSpread > 1.5 || r.side.cSpread > 1.5)).map(r => `${r.name} h±${r.side.hSpread} c±${r.side.cSpread}`)
+/* the title bar's switch and ✕ are not boxes (a word with its dot, a glyph): only their centre line is judged there */
+const sideFaults = g => g.rows.filter(r => r.side && ((!/bidsheet-hd/.test(r.name) && r.side.hSpread > 1.5) || r.side.cSpread > 1.5)).map(r => `${r.name} h±${r.side.hSpread} c±${r.side.cSpread}`)
 /* one window measured: its height against the drawn one, lines and side by side, normal and wider letters */
 async function measure(w, sel, drawnKey, id) {
   const g = await winRows(w.page, sel), gw = await wider(w.page, sel)
   const drawn = DRAWN[drawnKey]
   const faults = [...lineFaults(g), ...sideFaults(g), ...g.broken.map(b => `broken words: ${b}`), ...lineFaults(gw).map(f => `wider: ${f}`), ...gw.broken.map(b => `wider broken: ${b}`)]
   const dh = drawn ? g.win.h - drawn : null
-  const sizeNote = drawn ? `height ${g.win.h} (drawn ${drawn}, ${dh >= 0 ? '+' : ''}${dh})` : `height ${g.win.h}`
+  /* the whole height is REPORTED, not judged: the drawings of 24 Oct 26 predate D1314 (the day line's calm line alone) and D1326 (the ⋯'s own row, round 2's row before round 2 is built) — each row is judged beside its drawn row instead (lines, one height side by side) */
+  const sizeNote = drawn ? `height ${g.win.h} (the drawing before D1314 / D1326: ${drawn}, ${dh >= 0 ? '+' : ''}${dh})` : `height ${g.win.h}`
   L.rec(`${id} geometry beside the drawing`, w.tag, faults.length ? 'FAIL' : 'PASS', `${sizeNote}; ${faults.join('; ') || 'every row one line, side by side one height'} — ${rowsSay(g)}`, [])
   return g
 }
@@ -391,7 +394,7 @@ for (const size of SIZES) {
   /* S22/S23 — §7.11 lesson 4: with the one-day window open, a press on the grid behind it — what happens (RECORD) */
   await sc('S23', async () => {
     await L.openCellR(w, who, D.empty)
-    const other = await P.evaluate(([who]) => { const td = [...document.querySelectorAll(`[data-testid^="cell-${who}-2026-11-0"]`)].map(e => ({ id: e.dataset.testid, r: e.getBoundingClientRect() })).find(x => x.r.bottom < document.querySelector('[data-testid="bid-picker"]').getBoundingClientRect().top - 4 && x.r.top > 120 && x.r.left > 60); return td ? { id: td.id, x: td.r.left + td.r.width / 2, y: td.r.top + td.r.height / 2 } : null }, [who])
+    const other = await P.evaluate(([who]) => { const td = [...document.querySelectorAll(`[data-testid^="cell-${who}-2026-11-"]`)].map(e => ({ id: e.dataset.testid, el: e, r: e.getBoundingClientRect() })).find(x => { if (x.r.width < 4 || x.r.top < 120 || x.r.left < 60 || x.r.bottom > innerHeight - 4) return false; const h = document.elementFromPoint(x.r.left + x.r.width / 2, x.r.top + x.r.height / 2); return !!h && (h === x.el || x.el.contains(h) || h.classList.contains('sheetscrim')) }); return td ? { id: td.id, x: td.r.left + td.r.width / 2, y: td.r.top + td.r.height / 2 } : null }, [who])
     if (other) { if (w.phone) await L.finger(w, other.x, other.y, 0, `s23-behind-${tg}-q`); else { await P.mouse.click(other.x, other.y); await P.waitForTimeout(400) } }
     await L.shot(w, `s23-behind-${tg}`)
     const now = await P.evaluate(() => ({ win: !!document.querySelector('[data-testid="bid-picker"]'), title: document.querySelector('.bidsheet .bidsheet-hd')?.innerText.replace(/\s+/g, ' ') }))
@@ -523,8 +526,9 @@ for (const size of SIZES) {
     await L.openCellR(w, me, memR); await setSwitch(w, false); await L.placeLeave(w, 'LL')
     await L.openCellR(w, me, memR); await L.press(w, T('decide-refuse')); await P.waitForTimeout(400); await L.closeAny(w)
     await L.openCellR(w, me, memA); await setSwitch(w, true); await L.placeLeave(w, 'LL'); await L.closeAny(w)
-    await P.evaluate(me => { window.raptorRole('member'); window.lwSetRole('member'); window.lwSetViewer && window.lwSetViewer(me) }, me)
-    await P.waitForTimeout(500)
+    /* signed in as the member for real (the bridge's role switch reverted to the admin mid-walk on the first run) */
+    await signOut(P); await P.fill('#luser', 'us'); await P.fill('#lpass', 'us'); await P.click('#loginForm button[type=submit]'); await P.waitForSelector('#vWeek .day')
+    await P.evaluate(() => window.go('leavewar')); await P.waitForSelector('[data-testid="row-bane"]'); await P.waitForTimeout(800)
     await L.openCellR(w, me, D.mem, q('s20-member'))
     await L.shot(w, `s20-member-empty-${tg}`)
     const g = await measure(w, T('bid-picker'), 'member', 'S20')
@@ -557,7 +561,6 @@ for (const size of SIZES) {
     const d = await L.sheetDump(P)
     L.rec('S21 member, a day before today: the closed-day window (RECORD — must not carry round 3\'s rows)', w.tag, 'RECORD', `${d?.id}: ${d?.text?.slice(0, 200)}`, [`s21-member-closed-${tg}`])
     await L.closeAny(w)
-    await P.evaluate(() => { window.raptorRole('admin'); window.lwSetRole('admin') })
   })
 
   if (w.errs.length) L.rec('errors seen', w.tag, 'FAIL', w.errs.slice(0, 8).join(' || '), [])

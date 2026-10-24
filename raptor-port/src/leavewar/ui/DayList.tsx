@@ -18,7 +18,7 @@ import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engi
 import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
 import { docGet, rowDocIds } from '../sync'
 import { EntryBox } from './BidBits'
-import { draftOf, LeaveWords, patchOf, ReqWordsRows, type ReqDraft } from './ReqWords'
+import { draftOf, LeaveWords, patchOf, ReqWordsRows, runEnd, type FlushRef, type ReqDraft } from './ReqWords'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
 import { dayLabel, enteredDay, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
@@ -71,14 +71,21 @@ const said = (part: string, state: string) => cap([part, state].filter(Boolean).
 
 /** A pending or refused bid's own Remarks and Document row in the list — the bid windows' one row, saved onto the bid as it
  *  changes (the box when it is left or Enter pressed), one `lw.reqmeta` each (setRequestWords) */
-function BidWords({ personId, date, rec, onDone }: { personId: string; date: string; rec: RequestRec; onDone: (fn: () => boolean | string | null | number) => void }) {
+function BidWords({ personId, date, rec, onDone, flushRef }: { personId: string; date: string; rec: RequestRec; onDone: (fn: () => boolean | string | null | number) => void; flushRef?: FlushRef }) {
   const [edit, setEdit] = useState<ReqDraft | null>(null)
   const held = draftOf(rec)
-  /* words typed and not yet saved go with the list's closing (the bid window's fresh read, 5) */
+  /* words typed and not yet saved go with the list's closing (the bid window's fresh read, 5) — and before an action on
+     this entry (round 3's FULL check: an iPhone tap on a button leaves the box focused, so no blur saves them first) */
   const pending = useRef<(() => void) | null>(null)
   useEffect(() => () => { pending.current?.() }, [])
+  useEffect(() => {
+    if (!flushRef) return
+    const flush = () => { const p = pending.current; pending.current = null; if (p) { p(); setEdit(null) } }
+    flushRef.current = flush
+    return () => { if (flushRef.current === flush) flushRef.current = null }
+  }, [flushRef])
   return (
-    <ReqWordsRows compact testPrefix={`dl-${rec.id}`} value={edit ?? held} start={date}
+    <ReqWordsRows compact testPrefix={`dl-${rec.id}`} value={edit ?? held} start={date} end={runEnd(personId, date, rec)}
       onChange={(next, how) => {
         if (how === 'type') {
           const p = patchOf(held, next)
@@ -140,7 +147,7 @@ export function DayListSheet({
      same button as the one-day and drag-selection sheets; an award, leave filed on the Inputs page, a medical never. */
   const movableIds = new Set(movableRecords([{ personId, date }]).map(m => m.id))
   const moveBtn = (id: string) => (onMove && movableIds.has(id)
-    ? [<MoveChip key="mv" testid={`dl-move-${id}`} onClick={() => onMove({ personId, date, id })} />]
+    ? [<MoveChip key="mv" testid={`dl-move-${id}`} onClick={() => { flushOf(id); onMove({ personId, date, id }) }} />]
     : [])
   /* The reader's OWN undecided bids on this day, in the words the box uses —
      what the clash line names so a member can see his leave is still there. A
@@ -148,6 +155,11 @@ export function DayListSheet({
   const liveBids = view.all
     .filter(c => c.kind === 'request' && c.state !== 'refused')
     .map(c => `${shown(notation(c))}${partOf(c.win) ? ` (${partOf(c.win)})` : ''}`)
+  /* EACH ENTRY'S WORDS SAVED BEFORE ITS ACTION (round 3's FULL check): its words row hands this list a ref; every button of
+     the entry's row runs it first, so words still in the box ride with the approval, the send-back, the refusal or the move */
+  const flushers = useRef<Record<string, FlushRef>>({})
+  const fr = (id: string): FlushRef => (flushers.current[id] ||= { current: null })
+  const flushOf = (id: string) => { flushers.current[id]?.current?.() }
   const act = (fn: () => boolean | string | null | number, fail = "Couldn’t change that") => {
     const r = fn()
     if (r === false || r === 0) setMsg(fail)
@@ -159,7 +171,12 @@ export function DayListSheet({
      many (a day may hold several awards since they are ledger entries — [OIL-AWARD-IS-A-GRANT]). `oilOnDay` is the
      one reader: an award's worth is its amount, never worked back from its FO / HO label. */
   const oilRecs: OilShown[] = oilOnDay(personId, date)
-  const lines = view.all.map(c => {
+  /* EACH ENTRY KEEPS ITS PLACE (round 3's FULL check — a quick double tap on the list's lit Approve sent BOTH leaves back:
+     the first tap turned the morning leave into a bid, the list re-ordered approved leave before bids, and the second tap
+     landed on the afternoon's Approve). The list reads by the day's own order — the morning before the afternoon — so an
+     action changes an entry's words, never where it stands; the store's own order breaks a tie. */
+  const ordered = view.all.map((c, i) => ({ c, i })).sort((a, b) => ((a.c.win?.[0] ?? 0) - (b.c.win?.[0] ?? 0)) || a.i - b.i).map(x => x.c)
+  const lines = ordered.map(c => {
     const row0 = c.kind === 'absence' ? INPUTS.find((r: any) => String(r.iid) === c.id) : null
     /* PRINTED AS FILED (the absence-record re-test, W1-F4, 26 Sep 26): N1 starts a window filed at exactly 12:00 at
        12:01, so it cannot touch the morning — the minute decides the HALF, it is not what the man filed, and this list
@@ -182,17 +199,17 @@ export function DayListSheet({
       if (warOwned && isLeave && deciding) {
         actions.push(
           <button key="p" className="dchip approve lit" aria-pressed="true" title="Approved — tap again to send it back to waiting"
-            data-testid={`dl-approve-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'pending'))}>Approve</button>,
-          <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'refused'))}>Refuse</button>,
+            data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'pending')) }}>Approve</button>,
+          <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'refused')) }}>Refuse</button>,
           ...moveBtn(c.id),
-          <DeleteChip key="d" testid={`dl-remove-${c.id}`} onClick={() => act(() => changeAbsenceById(personId, date, c.id, 'removed'))} />,
+          <DeleteChip key="d" testid={`dl-remove-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'removed')) }} />,
         )
       }
       /* ITS REMARKS AND DOCUMENT (his D1315, D1307 — "Note" went): a leave the war approved, for whoever may change its words
          (D418 narrowed by D1177: the member his own, an admin any), saved onto the leave on the Inputs page; anything else —
          filed on the Inputs page, or another man's — its remarks and documents read only */
       const words = row && isLeave && warOwned && (role === 'admin' || own)
-        ? <LeaveWords row={row} personId={personId} testPrefix={`dl-${c.id}`} onRefused={setMsg} />
+        ? <LeaveWords row={row} personId={personId} testPrefix={`dl-${c.id}`} onRefused={setMsg} flushRef={fr(c.id)} />
         : row ? readOnly(c.id, row) : null
       const box = <EntryBox code={c.code} fill={fillOf(c)} place={placeOfWin(c.win)} marks={[offWar(c) ? 'raptor' : '', (c as { movedFrom?: string }).movedFrom ? 'moved' : ''].filter(Boolean).join(' ')} />
       return { key: `a-${c.id}`, cls: isLeave ? 'appr' : '', box, text, sub: '', actions, words }
@@ -211,8 +228,8 @@ export function DayListSheet({
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
-        actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time')}>Approve</button>)
-        if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => act(() => decideRequestById(personId, date, c.id, 'refused'))}>Refuse</button>)
+        actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
+        if (c.state !== 'refused') actions.push(<button key="rf" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'refused')) }}>Refuse</button>)
       }
       actions.push(...moveBtn(c.id))
       if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)
@@ -222,7 +239,7 @@ export function DayListSheet({
          or his own pending bid on a closed one, never his refused bid on a closed day, which the commit refuses */
       const canWords = !!src && canEditRow(role, viewer, personId) && (deciding || editable || pendingHere.has(c.id))
       const words = canWords
-        ? <BidWords key={`w-${c.id}`} personId={personId} date={date} rec={src!} onDone={act} />
+        ? <BidWords key={`w-${c.id}`} personId={personId} date={date} rec={src!} onDone={act} flushRef={fr(c.id)} />
         : src && (src.remarks || src.docIds?.length) ? readOnly(c.id, { remarks: src.remarks ?? '', docIds: src.docIds ?? [] }, true) : null
       const cls = c.state === 'refused' ? 'ref' : ''
       const box = <EntryBox code={c.code} fill={fillOf(c)} place={placeOfWin(c.win)} marks={src?.shiftedFrom ? 'moved' : ''} />

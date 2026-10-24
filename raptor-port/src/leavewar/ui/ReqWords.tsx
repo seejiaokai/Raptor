@@ -73,7 +73,7 @@ export function WordsRow({ value, onChange, till, tillOn, onTill, testPrefix = '
 }) {
   const ref = useGrow(value.remarks)
   return (
-    <div className="bidsheet-row bp-words" data-testid={`${testPrefix}-rmk-row`} role="group" aria-label="Remarks and document">
+    <div className={`bidsheet-row bp-words${value.docIds.length ? ' has-docs' : ''}`} data-testid={`${testPrefix}-rmk-row`} role="group" aria-label="Remarks and document">
       <span className="inped-rmk bp-rmk dark">
         <textarea
           ref={ref}
@@ -171,10 +171,16 @@ export function heldRequest(personId: string, date: string): { rec: RequestRec; 
   const reqs = recordsAt(personId, date).filter((r): r is RequestRec => r.kind === 'request')
   if (reqs.length !== 1) return null
   const rec = reqs[0]!
+  return { rec, end: runEnd(personId, date, rec) }
+}
+/** THE LAST DAY OF A BID'S RUN from this day on — the days after it holding the same bid (its kind, its state, its words) —
+ *  for its "till <date>": the one-day window's and the day's list's alike (round 3's FULL check: the list read the day
+ *  opened, "till 8 Dec", where the window on the run's first day read "till 9 Dec") */
+export function runEnd(personId: string, date: string, rec: RequestRec): string {
   const same = (r: RequestRec) => r.code === rec.code && r.state === rec.state && (r.remarks ?? '') === (rec.remarks ?? '')
   let end = date
   for (let d = addDays(date, 1); recordsAt(personId, d).some(r => r.kind === 'request' && same(r)); d = addDays(d, 1)) end = d
-  return { rec, end }
+  return end
 }
 
 /** AN APPROVED LEAVE'S OWN ROW (his D1307 — shown straight away, for whoever may change it, in place of "Note"; D1308 the
@@ -182,21 +188,38 @@ export function heldRequest(personId: string, date: string): { rec: RequestRec; 
  *  input through the one remarks save (`ui/inputedit.ts setLeaveRemarks` → commitInputEdit, which carries the member-own /
  *  admin-any gate) — a remark typed when the box is left or Enter pressed, a file, a ✕ or the tick at once. On one man's
  *  cell of a leave filed for several the remark is his alone, as the remarks window always made it (setLeaveRemarks). */
-export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused }: {
+/** WORDS TYPED AND NOT YET SAVED, SAVED BEFORE AN ACTION (round 3's FULL check, 24 Oct 26 — the scenario designer's S15): an
+ *  iPhone keeps the box focused when a button is tapped, so no blur saves the words first, and an action that closes the
+ *  window — or turns the bid into a leave, or a leave back into a bid — went ahead without them. A words row hands its
+ *  window this ref; the window calls it before it acts, so the words ride with what the action does. */
+export type FlushRef = { current: (() => void) | null }
+function useFlush(flushRef: FlushRef | undefined, pending: { current: { save: () => void } | null }) {
+  useEffect(() => {
+    if (!flushRef) return
+    const flush = () => { const p = pending.current; pending.current = null; p?.save() }
+    flushRef.current = flush
+    return () => { if (flushRef.current === flush) flushRef.current = null }
+  }, [flushRef, pending])
+}
+
+export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused, flushRef }: {
   /** the Raptor input the cell derives from (`sync.ts leaveInputAt`) */
   row: any
   personId: string
   testPrefix?: string
   /** a save the one gate refused says why (a control that silently does nothing is the worst of the three outcomes) */
   onRefused?: (why: string) => void
+  /** the window's way to save words typed and not yet saved before an action (`useFlush`) */
+  flushRef?: FlushRef
 }) {
   const typed = remarksTyped(row?.remarks, row)
   const docIds = rowDocIds(row)
   const [edit, setEdit] = useState<string | null>(null)
   /* words typed and not yet saved go with the window's closing — ✕, Escape, a tap outside — as a held bid's do (the bid
-     window's fresh read, 5): the latest of them kept here, saved once as the row leaves the screen */
+     window's fresh read, 5): the latest of them kept here, saved once as the row leaves the screen, or before an action */
   const pending = useRef<{ text: string; save: () => void } | null>(null)
   useEffect(() => () => { pending.current?.save() }, [])
+  useFlush(flushRef, pending)
   const dates = inputDates(row)
   const till = dates.length ? tillOfISO(row?.type ?? 'LL', dates[0], dates[dates.length - 1]) : ''
   const save = (remarks: string, ids: string[], tillTo?: boolean) => {
@@ -207,7 +230,7 @@ export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused }: {
       value={{ remarks: edit ?? typed, docIds }}
       onChange={(next, how) => {
         if (how === 'type') {
-          pending.current = next.remarks.trim() !== typed.trim() ? { text: next.remarks, save: () => save(next.remarks.trim(), docIds) } : null
+          pending.current = next.remarks.trim() !== typed.trim() ? { text: next.remarks, save: () => { setEdit(null); save(next.remarks.trim(), docIds) } } : null
           return setEdit(next.remarks)
         }
         pending.current = null

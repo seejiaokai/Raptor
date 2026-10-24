@@ -1748,19 +1748,27 @@
 .bidsheet .bp-words .bp-rmk { flex: 1 1 auto; min-width: 0; align-items: center; }
 .bidsheet .bp-words .bp-doc { flex: 0 0 auto; }
 .bidsheet .bp-words .bp-doc .docfield { justify-content: flex-end; }
+/* …WITH A FILE ATTACHED, its chips and Add take a line under the box, as drawn (twoday-a-drawn-b): the box keeps the row's
+   room — round 3's FULL check found two long-named files squeezing it to 22 wide on a phone, the row 25 past the window */
+.bidsheet .bp-words.has-docs { flex-wrap: wrap; }
+.bidsheet .bp-words.has-docs .bp-rmk,
+.bidsheet .bp-words.has-docs .bp-doc { flex: 1 1 100%; }
+.bidsheet .bp-words.has-docs .bp-doc .docfield { justify-content: flex-start; flex-wrap: wrap; }
 /* THE DARK BOX (D1308, lesson 48) that wraps and grows (D1333): the Inputs page's own box colours, darker than the window */
 .bidsheet .bp-rmk.dark textarea {
   flex: 1 1 auto;
   min-width: 0;
   box-sizing: border-box;
-  min-height: 34px;
-  padding: 8px 10px;
+  /* one line as tall as the Document button beside it, on its centre line (his lessons 42, 43 — round 3's FULL check
+     measured the box 35 beside the button's 30): 16 + 2 × 6 + the two borders */
+  min-height: 30px;
+  padding: 6px 10px;
   /* written out: `font: 600 13px/1.3 inherit` is not a font (a family cannot be "inherit" inside the shorthand), so the
      browser dropped the line and the box wrote in its own typewriter face (round 3's FULL check) */
   font-family: inherit;
   font-size: 13px;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 16px;
   color: var(--ink);
   background: var(--bg);
   border: 1px solid var(--edge-2);

@@ -62,10 +62,16 @@ export function MoreButton({ items, testid, place = 'col4' }: { items: MoreItem[
     /* Escape takes the menu first, then (a second press) the window: caught on the WINDOW in its capture phase, which runs
        before the window's own listener on the document (Sheet.tsx), and stopped there */
     const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); close(true) } }
-    /* a press outside the menu and the ⋯ closes it (owner, 4 Sep 26 — the popup rule) */
+    /* a press outside the menu and the ⋯ closes it (owner, 4 Sep 26 — the popup rule) — and ONLY closes it: the click that
+       follows that press is caught here and goes no further, as a tap behind a window only closes the window (its scrim).
+       Round 3's FULL check: with the menu open, a tap on LL beside it closed the menu AND placed a leave. Caught once, and
+       let go after a moment, so a press that never became a click cannot swallow a later one. */
     const down = (e: PointerEvent) => {
       const t = e.target as Node | null
       if (t && (menu.current?.contains(t) || btn.current?.contains(t))) return
+      const swallow = (c: MouseEvent) => { c.stopPropagation(); c.preventDefault(); document.removeEventListener('click', swallow, true) }
+      document.addEventListener('click', swallow, true)
+      window.setTimeout(() => document.removeEventListener('click', swallow, true), 700)
       close(false)
     }
     window.addEventListener('keydown', key, true)

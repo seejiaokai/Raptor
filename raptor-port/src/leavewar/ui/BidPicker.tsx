@@ -13,7 +13,7 @@
 // There is no login, so a bid is placed against whichever row was clicked
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
@@ -273,6 +273,7 @@ export function BidPicker({
      `decide` only where a decision can land); this is the second line, because
      a control that silently does nothing is the worst of the three outcomes. */
   const answer = (bid: BidState) => {
+    flushWords()   // words still in a box ride with the answer (round 3's FULL check)
     /* THE LIT APPROVE TAPPED AGAIN SENDS THE LEAVE BACK TO WAITING (his D1330, round 3): on an approved leave Approve
        shows lit, and a second tap on it is what "Back to bid" was — the leave a pending bid again (D1177: the admin
        decides at any time). Only for the ONE day: over a picked range the days may hold other answers (D335). */
@@ -345,8 +346,17 @@ export function BidPicker({
   const newWords = held ? undefined : wordsOf(draft)
   /* (the fresh read's 5) words typed on a held bid and not yet saved — the box not left — are saved as the window closes,
      as its documents already were the moment they were picked: Escape, ✕ or a tap outside never loses them */
+  /* …AND BEFORE ANY ACTION (round 3's FULL check — the scenario designer's S15): an iPhone keeps the box focused when a
+     button is tapped, so Approve, Refuse, Move, Delete or a leave pressed with words still in the box went ahead without
+     them. Saved first, they ride with what the action does — onto the leave a bid becomes, back onto the bid a leave
+     becomes again (the store carries a bid's words both ways, 7.2); the approved leave's own box the same (`leaveFlush`). */
+  const leaveFlush = useRef<(() => void) | null>(null)
+  const flushWords = () => {
+    if (held && heldEdit) { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p); setHeldEdit(null) }
+    leaveFlush.current?.()
+  }
   const closeKeeping = () => {
-    if (held && heldEdit) { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p) }
+    flushWords()
     onClose()
   }
   /* the day line: read again only when what it reads changes — the days, the half, the war (a write replaces the state) */
@@ -358,6 +368,7 @@ export function BidPicker({
   )
 
   const write = (code: string) => {
+    flushWords()   // words still in a box ride with the write (round 3's FULL check)
     /* CLEAR NAMES THE OIL AWARD IT TAKES, AND ASKS ONCE (owner, D260, 27 Sep 26 — "B"; the absence-record re-test, AB1).
        A Clear removes the admin's award on the day with everything else (that stands — his ruling), but it used to do
        it silently and the man's OIL dropped. On a day — or a picked range — holding an award, the first tap names each
@@ -532,6 +543,7 @@ export function BidPicker({
           )}
           {canMoveHere && (
             <MoveChip testid="decide-shift" onClick={() => {
+              flushWords()   // the words saved before the records are picked up (round 3's FULL check)
               const why = onMove?.(selCells())
               if (why) setMoveErr(why)
             }} />
@@ -554,7 +566,7 @@ export function BidPicker({
           date, the app's one Document button — the held bid's own, the approved leave's own (D1307, saved onto the leave on
           the Inputs page), or the words of the bid about to be placed */}
       {leaveRow
-        ? <LeaveWords row={leaveRow} personId={personId} onRefused={why => { setNoteAt('leave'); setNote(why) }} />
+        ? <LeaveWords row={leaveRow} personId={personId} flushRef={leaveFlush} onRefused={why => { setNoteAt('leave'); setNote(why) }} />
         : <ReqWordsRows compact value={words} onChange={onWords} start={span ? span.from : date} end={span ? span.to : held ? held.end : date} />}
 
       {/* DURATION, with "Pick a range" at its end (round 3's change 5): "Just this day" went — it is always the default,

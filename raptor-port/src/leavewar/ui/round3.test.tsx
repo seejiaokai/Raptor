@@ -9,7 +9,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { getState, initStore, rawState, setCell, setRole, setViewer } from '../state/store'
+import { getState, initStore, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { Matrix } from './Matrix'
@@ -383,5 +383,121 @@ describe('round 3 — the day\'s list of a day with two entries (D1315, D1327–
     fireEvent.change(box, { target: { value: 'Mine' } })
     fireEvent.blur(box)
     expect(INPUTS.find((x: any) => x.iid === ll.iid).remarks).toBe('Mine')
+  })
+})
+
+/* ROUND 3's FULL CHECK (24 Oct 26 — the scenario designer's S15): words typed and the box NOT left, then an action pressed.
+   An iPhone keeps the box focused when a button is tapped (a button takes no focus there), so no blur saves the words
+   first — the tests press without one, as fireEvent does. Whatever the action, the words typed are never lost: they ride
+   with the bid, onto the leave it becomes, or back onto the bid a leave becomes again. */
+describe('round 3 — words typed, then an action, the box never left', () => {
+  const reqAt = (d = D) => rawState().wars[0]!.recs[P]![d]!.find(x => x.kind === 'request') as any
+  const leaveOf = () => INPUTS.find((x: any) => x.lw && ((x.people || []).some((p: any) => p.p === P) || x.person === P))
+  const typeIn = (testid: string, text: string) => fireEvent.change(screen.getByTestId(testid), { target: { value: text } })
+  const switchOff = () => { const t = within(sheet()).queryByTestId('bid-approve-tick'); if (t?.getAttribute('aria-checked') === 'true') fireEvent.click(t) }
+
+  it('Approve: the words ride onto the approved leave', () => {
+    setCell(P, D, 'LL')
+    render(<Matrix />); fireEvent.click(cell())
+    typeIn('bid-remarks', 'typed then approved')
+    fireEvent.click(within(sheet()).getByTestId('decide-approve'))
+    expect(leaveOf()?.remarks).toBe('typed then approved')
+  })
+
+  it('Refuse: the words stay on the refused bid', () => {
+    setCell(P, D, 'LL')
+    render(<Matrix />); fireEvent.click(cell())
+    typeIn('bid-remarks', 'typed then refused')
+    fireEvent.click(within(sheet()).getByTestId('decide-refuse'))
+    expect(reqAt()).toMatchObject({ state: 'refused', remarks: 'typed then refused' })
+  })
+
+  it('another leave tapped (the bid re-typed): the words stay on the bid', () => {
+    setCell(P, D, 'LL')
+    render(<Matrix />); fireEvent.click(cell())
+    switchOff()
+    typeIn('bid-remarks', 'typed then re-typed')
+    fireEvent.click(within(sheet()).getByTestId('bid-OL'))
+    expect(reqAt()).toMatchObject({ code: 'OL', remarks: 'typed then re-typed' })
+  })
+
+  it('Move: the words are saved before the bid is picked up', () => {
+    setCell(P, D, 'LL')
+    render(<Matrix />); fireEvent.click(cell())
+    typeIn('bid-remarks', 'typed then moved')
+    fireEvent.click(within(sheet()).getByTestId('decide-shift'))
+    expect(reqAt().remarks).toBe('typed then moved')
+  })
+
+  it('the lit Approve on an approved leave: the words typed go back with it onto the bid', () => {
+    INPUTS.length = 0
+    fileAbsence(P, 'LL', D, D, { lw: true, remarks: 'Bali' })
+    render(<Matrix />); fireEvent.click(cell())
+    typeIn('bid-remarks', 'Phuket instead')
+    fireEvent.click(within(sheet()).getByTestId('decide-approve'))
+    expect(reqAt()).toMatchObject({ state: 'pending', remarks: 'Phuket instead' })
+  })
+
+  it('the day\'s list: words typed on the approved leave, then its lit Approve — back on the bid with them', () => {
+    INPUTS.length = 0
+    const ll = fileAbsence(P, '*LL', D, D, { lw: true, remarks: 'Home' })
+    fileAbsence(P, 'ATTB*', D, D, { remarks: 'Clinic review' })
+    render(<Matrix />); fireEvent.click(cell())
+    typeIn(`dl-${ll.iid}-remarks`, 'Away instead')
+    fireEvent.click(screen.getByTestId(`dl-approve-${ll.iid}`))
+    expect(reqAt()).toMatchObject({ state: 'pending', remarks: 'Away instead' })
+  })
+
+  it('the day\'s list: words typed on a pending bid, then its Approve — on the approved leave', () => {
+    setCell(P, D, '*LL')
+    setCell(P, D, 'OL*')
+    render(<Matrix />); fireEvent.click(cell())
+    const am = rawState().wars[0]!.recs[P]![D]!.filter(x => x.kind === 'request')[0]!
+    typeIn(`dl-${am.id}-remarks`, 'morning words')
+    fireEvent.click(screen.getByTestId(`dl-approve-${am.id}`))
+    expect(leaveOf()?.remarks).toBe('morning words')
+  })
+})
+
+/* ROUND 3's FULL CHECK (24 Oct 26) — three faults its walk found, each pinned here red first */
+describe('round 3 — the walk’s finds', () => {
+  it('the day’s list reads a waiting run’s "till" from the run’s last day, not the day opened (X6)', () => {
+    setCellRange(P, '2026-02-10', '2026-02-12', 'LL')
+    expect(setDayAward(P, '2026-02-11', 0.5, { note: 'half a day', givenBy: 'OC' })).toBeNull()
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
+    const req = rawState().wars[0]!.recs[P]!['2026-02-11']!.find(x => x.kind === 'request')!
+    expect(screen.getByTestId(`dl-${req.id}-tilldate`).textContent).toMatch(/12 Feb/)
+  })
+
+  it('the day’s list keeps each entry in its place after an action — a quick second tap never lands on the other entry (X8)', () => {
+    INPUTS.length = 0
+    const am = fileAbsence(P, '*LL', D, D, { lw: true })
+    fileAbsence(P, 'PL*', D, D, { lw: true })
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const order = () => [...screen.getByTestId('daylist').querySelectorAll(':scope > li .dl-main')].map(e => e.textContent ?? '')
+    expect(order()[0]).toMatch(/^Morning/)
+    fireEvent.click(screen.getByTestId(`dl-approve-${am.iid}`))
+    expect(order()[0]).toMatch(/^Morning · pending/)
+    expect(order()[1]).toMatch(/^Afternoon · approved/)
+  })
+
+  it('a tap outside the open ⋯ menu only closes it — it never presses what it lands on (X9)', () => {
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(within(sheet()).getByTestId('bid-more'))
+    expect(screen.getByTestId('bid-more-menu')).toBeTruthy()
+    const ll = within(sheet()).getByTestId('bid-LL')
+    fireEvent.pointerDown(ll)
+    fireEvent.click(ll)
+    expect(screen.queryByTestId('bid-more-menu')).toBeNull()
+    expect(screen.queryByTestId('bid-picker'), 'nothing placed: the window still open').toBeTruthy()
+    expect(cell().textContent).toBe('')
+    /* the next tap is a tap again: LL places (approved, the switch on — the window closes) */
+    fireEvent.pointerDown(ll)
+    fireEvent.click(ll)
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(cell().textContent).toContain('LL')
   })
 })
