@@ -361,6 +361,11 @@ export function leaveInputsAt(personId: string, iso: string): any[] {
   const ids = [...new Set((v.all as Contrib[]).filter(c => c.kind === 'absence' && isLeave(INPUT_TYPE_FOR[c.code] ?? c.code)).map(c => String(c.id)))]
   return ids.map(id => INPUTS.find((r: any) => String(r.iid) === id)).filter(Boolean)
 }
+/** An input as it now stands, by its id — the record a window opened on, read afresh after a save (the one-row words of his
+ *  own leave, the night's walk W1). Null where it is gone. */
+export function inputById(iid: unknown): any | null {
+  return iid == null ? null : INPUTS.find((r: any) => String(r.iid) === String(iid)) ?? null
+}
 const INPUT_TYPE_FOR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
 
 /* ---- THE ABSENCE DOOR: the war's changes to approved leave ---------------
