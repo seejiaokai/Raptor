@@ -757,6 +757,38 @@ test('on a phone the open chip opens the "Open for bidding" window as a full pag
   }
 })
 
+/* HIS D1294 (24 Oct 26, his iPhone — [LW-OPEN-MONTHS-QUICK-SWIPE]): a QUICK sideways swipe across the month buttons
+   picks the months it passes, as a slow drag does — no rest of the finger first; a quick move up or down still scrolls and
+   opens nothing. A real finger through the browser's own touch pipeline, at a swipe's speed (16ms a step, no rest before
+   the move) — the walk lessons' "a gesture at one speed" (bug-check order §7.11). */
+test('on a phone a quick sideways swipe across the "Open for bidding" months opens every month it passes (D1294)', async ({ page }) => {
+  test.skip(!isPhone(), 'a finger on a phone')
+  await lwRole(page, 'admin')
+  await openDatesWindow(page)
+  const mid = (k: string) => page.locator(`[data-testid="od-month-${k}"]`).evaluate(e => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 } })
+  const cdp = await page.context().newCDPSession(page)
+  const finger = async (from: { x: number; y: number }, to: { x: number; y: number }) => {
+    const pt = (i: number) => [{ x: Math.round(from.x + (to.x - from.x) * i / 5), y: Math.round(from.y + (to.y - from.y) * i / 5), id: 1 }]
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: pt(0) })
+    for (let i = 1; i <= 5; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: pt(i) }); await page.waitForTimeout(16) }
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    await page.waitForTimeout(250)
+  }
+  const states = () => page.locator('[data-testid^="od-month-"]').evaluateAll(els => els.map(e => `${(e as HTMLElement).dataset.testid!.slice(9)}:${(e as HTMLElement).dataset.state}`))
+  const before = await states()
+  expect(before.filter(m => m.endsWith(':open'))).toEqual(['2026-01:open', '2026-02:open', '2026-03:open'])
+  /* up or down, quickly, from APR: a scroll — nothing opens */
+  const apr = await mid('2026-04')
+  await finger(apr, { x: apr.x + 4, y: apr.y + 70 })
+  expect(await states(), 'a quick move down opened a month').toEqual(before)
+  /* sideways, quickly, APR → JUN on the first row: all three open, as one stretch */
+  await finger(apr, await mid('2026-06'))
+  for (const k of ['2026-04', '2026-05', '2026-06'])
+    await expect(page.locator(`[data-testid="od-month-${k}"]`), `${k} after a quick swipe`).toHaveAttribute('data-state', 'open')
+  await expect(page.locator('[data-testid="od-month-2026-07"]')).toHaveAttribute('data-state', 'closed')
+  await cdp.detach()
+})
+
 /* …WHATEVER LETTERS THE DEVICE DRAWS THEM IN. The app loads no font of its own: the same words are drawn in the
    system's letters, and those differ in width (this PC's are narrow; GitHub's machines' are about a seventh wider, and
    a phone's are its maker's). With this PC's letters line 2 had 15px to spare, so on wider letters Legend fell to a
