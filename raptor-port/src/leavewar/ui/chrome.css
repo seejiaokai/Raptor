@@ -1259,6 +1259,13 @@
     cursor: pointer;
   }
   .mn-foot .mn-show:hover { background: rgba(229, 168, 59, .14); }
+  /* RED WHEN IT SAYS RED (his D1344, 25 Oct 26 — "this bid turns available P red. the box is in amber can u make it red"):
+     the bubble and the foot note wear the colour of the worst level they name — the amber above, or the red of a red
+     Manning cell (`matrix.css .counts td.red`: its edge, its words) on a dark red of the amber's depth; never a glow (D887). */
+  .mn-bubble.mnb-red, .mn-bubble.mnb-red::before,
+  .mn-foot.mnb-red { background: #2c1416; border-color: rgba(240, 85, 95, .7); color: #FFAAB0; }
+  .mn-foot.mnb-red .mn-show { color: #FFAAB0; }
+  .mn-foot.mnb-red .mn-show:hover { background: rgba(240, 85, 95, .14); }
   .mn-foot .mn-show:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   @media (min-width: 701px) {
     .mn-foot {

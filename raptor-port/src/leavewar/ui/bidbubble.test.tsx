@@ -16,7 +16,7 @@ import { ruleHave } from '../engine'
 import { getState, initStore, lwHistInit, lwUndo, saveManningRule, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
-import { Matrix, worsenedRows, type BubbleFlags } from './Matrix'
+import { bubbleWords, Matrix, worsenedRows, type BubbleFlags } from './Matrix'
 
 // Seed: ASICS has a pending half day of LL on 23 Jan (moveone.test.tsx's chip).
 const PENDING = 'cell-asics-2026-01-23'
@@ -188,6 +188,164 @@ describe('with the Manning button out of view, the note sits at the foot of the 
   })
 })
 
+/* HIS REPORT (25 Oct 26 — "this bid turns available P red. the box is in amber can u make it red. and why any other
+   subsequent inputs that put that further red does not show that bubble? And why when i scroll down and cant see the
+   manning bar theres no red bubble that show up at the bottom of my screen?"). D1344: the bubble wears the colour of the
+   worst level it names — red when it says red, amber when amber. D1345: every bid or filing that takes a row LOWER on a
+   day where it then stands amber or red raises it, not only the one that first turned it; a row already red that goes
+   further down raises it again — under the button, and at the foot of the screen when the button is out of view. D1351:
+   after a filing it names what was filed ("This UNA …", "This overseas duty …", "This course …"); a bid keeps "This bid".
+   Red first: the bubble was amber whatever it said, and a second bid on a red day raised nothing anywhere. */
+describe('his report: red when red, and every lowering raises it (D1344, D1345, D1351)', () => {
+  const foot = () => screen.queryByTestId('manning-bubble-foot')
+  const offTop = () => {
+    const btn = screen.getByTestId('counts-toggle')
+    btn.getBoundingClientRect = () => ({ top: -300, bottom: -273, left: 26, right: 106, width: 80, height: 27, x: 26, y: -300, toJSON: () => ({}) }) as DOMRect
+  }
+  const bidOn = (who: string) => {
+    fireEvent.click(screen.getByTestId(`cell-${who}-${TARGET}`))
+    fireEvent.click(screen.getByTestId('bid-LL'))
+  }
+  const tapAway = async () => {
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+    fireEvent.pointerDown(document.body)
+  }
+  /** a counter of everyone, amber the moment one more is off and red only far below (so it can stand amber) */
+  function rowAmberPastOneMore(day: string, label = 'Test crew') {
+    const s = getState()
+    const count = { kind: 'people' as const, filter: {} }
+    const have = ruleHave(count, s.people, s.grid, s.states, day)
+    expect(have).toBeGreaterThan(3)
+    expect(saveManningRule({ id: 'test-bubble', label, count, threshold: { amber: have, red: 1 } })).toBe(true)
+  }
+
+  it('a bubble that says red is drawn red (D1344)', () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    bidOn('dusk')
+    expect(bubble()?.textContent).toBe('This bid turns Test crew red.')
+    expect(bubble()?.getAttribute('data-level'), 'red, as it says').toBe('red')
+    expect(bubble()?.className).toContain('mnb-red')
+  })
+  it('…and one that says amber is drawn amber (D1344)', () => {
+    rowAmberPastOneMore(TARGET)
+    render(<Matrix />)
+    bidOn('dusk')
+    expect(bubble()?.textContent).toBe('This bid turns Test crew amber.')
+    expect(bubble()?.getAttribute('data-level')).toBe('amber')
+    expect(bubble()?.className).toContain('mnb-amber')
+  })
+
+  it('a second bid on a day already red raises it again, saying so (D1345)', async () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    bidOn('dusk')
+    expect(bubble()?.textContent).toBe('This bid turns Test crew red.')
+    await tapAway()
+    expect(bubble()).toBeNull()
+    bidOn('asics')
+    expect(getState().grid.asics?.[TARGET], 'the second bid was placed').toBeTruthy()
+    expect(bubble()?.textContent).toBe('This bid takes Test crew lower, still red.')
+    expect(bubble()?.getAttribute('data-level')).toBe('red')
+  })
+
+  it('a row already amber that goes lower and stays amber raises it too (D1345)', async () => {
+    rowAmberPastOneMore(TARGET)
+    render(<Matrix />)
+    bidOn('dusk')
+    await tapAway()
+    bidOn('asics')
+    expect(bubble()?.textContent).toBe('This bid takes Test crew lower, still amber.')
+    expect(bubble()?.getAttribute('data-level')).toBe('amber')
+  })
+
+  it('with the Manning button out of view, the second bid\'s note sits at the foot, in red (D1345, D1277)', async () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    offTop()
+    bidOn('dusk')
+    expect(screen.getByTestId('manning-bubble-text').textContent).toBe('This bid turns Test crew red.')
+    expect(foot()?.getAttribute('data-level')).toBe('red')
+    await tapAway()
+    expect(foot()).toBeNull()
+    bidOn('asics')
+    expect(foot(), 'a second bid on the red day: the note at the foot').toBeTruthy()
+    expect(screen.getByTestId('manning-bubble-text').textContent).toBe('This bid takes Test crew lower, still red.')
+    expect(foot()?.getAttribute('data-level')).toBe('red')
+    expect(bubble()).toBeNull()
+  })
+
+  it('a UNA placed from the bid window names itself (D1351)', () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    fireEvent.click(screen.getByTestId('bid-una'))
+    expect(bubble()?.textContent).toBe('This UNA turns Test crew red.')
+  })
+
+  it('a bid placed after a UNA in the same session is a bid again (D1351)', async () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    fireEvent.click(screen.getByTestId('bid-una'))
+    await tapAway()
+    bidOn('asics')
+    expect(bubble()?.textContent).toBe('This bid takes Test crew lower, still red.')
+  })
+
+  it('a bid that makes a row better or leaves it as it was raises nothing', async () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    bidOn('dusk')
+    await tapAway()
+    /* the bid's own window opened again and closed with nothing pressed: nothing went lower */
+    fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    expect(screen.queryByTestId('bid-picker'), 'the window closed').toBeNull()
+    expect(bubble()).toBeNull()
+    expect(foot()).toBeNull()
+  })
+})
+
+describe('the bubble\'s words (bubbleWords — D1345, D1351)', () => {
+  const w = (e: [string, 'amber' | 'red', 'turns' | 'lower'][]) => new Map(e.map(([l, lv, how]) => [l, { lv, how }]))
+  it('names what was filed', () => {
+    expect(bubbleWords(w([['Available P', 'red', 'turns']]), 'OD')).toBe('This overseas duty turns Available P red.')
+    expect(bubbleWords(w([['Available P', 'red', 'turns']]), 'CSE')).toBe('This course turns Available P red.')
+    expect(bubbleWords(w([['Available P', 'red', 'turns']]), 'UNA')).toBe('This UNA turns Available P red.')
+    expect(bubbleWords(w([['Available P', 'red', 'turns']]), null)).toBe('This bid turns Available P red.')
+  })
+  it('a row turned and a row taken lower, in one sentence', () => {
+    expect(bubbleWords(w([['FCP', 'amber', 'turns'], ['Available P', 'red', 'lower']]), null))
+      .toBe('This bid turns FCP amber and takes Available P lower, still red.')
+    expect(bubbleWords(w([['IP', 'red', 'lower'], ['Available P', 'red', 'lower']]), null))
+      .toBe('This bid takes IP and Available P lower, still red.')
+  })
+})
+
+describe('the rows a bid took lower (worsenedRows — D1345)', () => {
+  const flags = (entries: [string, string, number, number][], drawn: string[] = []): BubbleFlags =>
+    ({ m: new Map(entries.map(([k, label, lv, have]) => [k, { label, lv, have }])), drawn: new Set(drawn) })
+  it('a red row one lower: "lower", at red', () => {
+    const before = flags([['ip|2026-02-10', 'IP', 2, 5]])
+    const now = flags([['ip|2026-02-10', 'IP', 2, 4]])
+    expect([...worsenedRows(before, now)]).toEqual([['IP', { lv: 'red', how: 'lower' }]])
+  })
+  it('a red row at the same figure: nothing', () => {
+    const before = flags([['ip|2026-02-10', 'IP', 2, 5]])
+    expect([...worsenedRows(before, flags([['ip|2026-02-10', 'IP', 2, 5]]))]).toEqual([])
+  })
+  it('a row that turns red on one day and goes lower on another: "turns", at red', () => {
+    const before = flags([['ip|2026-02-10', 'IP', 2, 5]])
+    const now = flags([['ip|2026-02-10', 'IP', 2, 4], ['ip|2026-02-11', 'IP', 2, 3]])
+    expect([...worsenedRows(before, now)]).toEqual([['IP', { lv: 'red', how: 'turns' }]])
+  })
+  it('an amber row taken lower but still amber: "lower", at amber', () => {
+    const before = flags([['ip|2026-02-10', 'IP', 1, 6]])
+    expect([...worsenedRows(before, flags([['ip|2026-02-10', 'IP', 1, 5]]))]).toEqual([['IP', { lv: 'amber', how: 'lower' }]])
+  })
+})
+
 /* THE CODE READ'S FINDING (23 Oct 26, a fresh Opus reader): the two Available rows are read over the days DRAWN, and a
    month drawn while a bid window was open (the page behind a window still scrolls) had no "before" — a day already amber
    there counted as newly turned, and a bid that made nothing worse said "This bid turns Available P amber". A day that
@@ -203,11 +361,11 @@ describe('a day drawn only after the "before" is never "turned" (the code read)'
   it('an Available row the bid turned on a day drawn both times: reported', () => {
     const before = flags([], ['2026-01-13'])
     const now = flags([['availp|2026-01-13', 'Available P', 2]], ['2026-01-13'])
-    expect([...worsenedRows(before, now)]).toEqual([['Available P', 'red']])
+    expect([...worsenedRows(before, now)]).toEqual([['Available P', { lv: 'red', how: 'turns' }]])
   })
   it('a Manning row (read on every day, drawn or not) is still compared as before', () => {
     const before = flags([['ip|2026-02-10', 'IP', 1]], [])
     const now = flags([['ip|2026-02-10', 'IP', 2]], ['2026-02-10'])
-    expect([...worsenedRows(before, now)]).toEqual([['IP', 'red']])
+    expect([...worsenedRows(before, now)]).toEqual([['IP', { lv: 'red', how: 'turns' }]])
   })
 })

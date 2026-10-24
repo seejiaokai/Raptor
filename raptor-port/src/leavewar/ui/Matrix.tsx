@@ -1,7 +1,7 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
-import { awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
@@ -39,7 +39,7 @@ import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
-import { availRowNames, availVerdictAt, bidDayLine, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
+import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
 import { DayPanelHost, openDayPanel } from './DayPanel'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
@@ -159,21 +159,47 @@ function sameStuck(
    them) — only the on-grid editor is gone. */
 
 
-/** The bid bubble's reading of the grid at one moment (D1227): each flagged row-day at its level (1 amber, 2 red), and the
- *  days drawn then — the two Available rows are read over the drawn days only. */
-export type BubbleFlags = { m: Map<string, { label: string; lv: number }>; drawn: Set<string> }
-/** The rows a bid made WORSE between two readings — a row-day to amber or red, or amber to red — each at its worst.
- *  Exported for its unit test (bidbubble.test.tsx). */
-export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string, 'amber' | 'red'> {
-  const worst = new Map<string, 'amber' | 'red'>()
-  for (const [k, { label, lv }] of now.m) {
+/** The bid bubble's reading of the grid at one moment (D1227): each flagged row-day at its level (1 amber, 2 red) with its
+ *  figure (`have` — D1345), the days drawn then — the two Available rows are read over the drawn days only — and the
+ *  count of the war's gestures (`seq`, so the bubble can tell a filing made since from a bid — D1351). */
+export type BubbleFlags = { m: Map<string, { label: string; lv: number; have?: number }>; drawn: Set<string>; seq?: number }
+/** How a bid made a row worse: it TURNED it (to amber or red, or amber to red), or took it LOWER where it already stood
+ *  at that level (D1345). */
+export type Worse = { lv: 'amber' | 'red'; how: 'turns' | 'lower' }
+/** The rows a bid made WORSE between two readings, each at its worst — a row-day turned amber or red, or amber to red; or
+ *  (D1345, his report of 25 Oct 26) one already amber or red whose figure went lower. A row that turns on one day and
+ *  only goes lower on another reads as turned; red outranks amber. Exported for its unit test (bidbubble.test.tsx). */
+export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string, Worse> {
+  const worst = new Map<string, Worse>()
+  const rank = (w: Worse) => (w.lv === 'red' ? 2 : 0) + (w.how === 'turns' ? 1 : 0)
+  for (const [k, { label, lv, have }] of now.m) {
     /* an Available row's day not drawn when the "before" was read has no "before" — a month drawn while a bid window was
        open (the page behind it scrolls) is never "turned" by the bid (the code read of 23 Oct 26) */
     if ((k.startsWith('availp|') || k.startsWith('availw|')) && !before.drawn.has(k.slice(7))) continue
-    if (lv <= (before.m.get(k)?.lv ?? 0)) continue
-    if (worst.get(label) !== 'red') worst.set(label, lv === 2 ? 'red' : 'amber')
+    const was = before.m.get(k)
+    let how: Worse['how'] | null = null
+    if (lv > (was?.lv ?? 0)) how = 'turns'
+    else if (was && have !== undefined && was.have !== undefined && have < was.have) how = 'lower'
+    if (!how) continue
+    const w: Worse = { lv: lv === 2 ? 'red' : 'amber', how }
+    const had = worst.get(label)
+    if (!had || rank(w) > rank(had)) worst.set(label, w)
   }
   return worst
+}
+/** THE BUBBLE'S WORDS (D1227, D1345, D1351): what was placed — "This bid", or after a filing "This overseas duty", "This
+ *  course", "This UNA" — then the rows it turned ("turns FCP amber, IP red"), then the rows it took lower where they
+ *  already stood ("takes Available P lower, still red"), the two parts joined by "and". Exported for its unit test. */
+export function bubbleWords(worse: Map<string, Worse>, filed: 'CSE' | 'OD' | 'UNA' | null): string {
+  const what = filed === 'OD' ? 'This overseas duty' : filed === 'CSE' ? 'This course' : filed === 'UNA' ? 'This UNA' : 'This bid'
+  const turned = [...worse].filter(([, w]) => w.how === 'turns').map(([l, w]) => `${l} ${w.lv}`)
+  const parts: string[] = []
+  if (turned.length) parts.push(`turns ${turned.join(', ')}`)
+  for (const lv of ['red', 'amber'] as const) {
+    const names = [...worse].filter(([, w]) => w.how === 'lower' && w.lv === lv).map(([l]) => l)
+    if (names.length) parts.push(`takes ${names.join(' and ')} lower, still ${lv}`)
+  }
+  return `${what} ${parts.join(' and ')}.`
 }
 
 export function Matrix() {
@@ -1414,12 +1440,14 @@ export function Matrix() {
   const sheetUp = !!open || !!sel
   const beforeRef = useRef<BubbleFlags | null>(null)
   /* `foot`: the Manning button was out of view when it was raised, so the words sit at the foot of the screen (D1277) */
-  const [bubble, setBubble] = useState<{ text: string; foot: boolean } | null>(null)
+  /* `lv`: the worst level it names — the bubble wears that colour (his D1344: "the box is in amber can u make it red") */
+  const [bubble, setBubble] = useState<{ text: string; foot: boolean; lv: 'amber' | 'red' } | null>(null)
   const flaggedNow = (): BubbleFlags => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
-       never reported as turned amber (the scenario designer's find, 23 Oct 26) */
-    const m = new Map<string, { label: string; lv: number }>()
-    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}`, { label: r.label, lv: r.verdict === 'red' ? 2 : 1 })
+       never reported as turned amber (the scenario designer's find, 23 Oct 26); and its figure, so a row already amber or
+       red that a bid takes lower is reported too (D1345) */
+    const m = new Map<string, { label: string; lv: number; have: number }>()
+    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}`, { label: r.label, lv: r.verdict === 'red' ? 2 : 1, have: r.have })
     /* …and the two Available rows at their amber or red points (D1190, D1202 — the same verdict their cells wear,
        `sync.ts availVerdictAt`), over the days drawn: a bid is placed on a day in view */
     const names = availRowNames()
@@ -1435,24 +1463,29 @@ export function Matrix() {
     }
     for (const d of drawnDates) {
       const a = answer(d)
+      let f: ReturnType<typeof dayFacts> | null = null
       for (const seat of ['p', 'w'] as const) {
         const v = availVerdictAt(d, seat, a)
-        if (v) m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1 })
+        if (!v) continue
+        f ??= dayFacts(d)
+        m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1, have: seat === 'p' ? f.availP : f.availW })
       }
     }
-    return { m, drawn: new Set(drawnDates) }
+    return { m, drawn: new Set(drawnDates), seq: actCount() }
   }
   /* the latest render's reading, for the move machine — wired once per move, its callbacks would otherwise read the
      verdicts of the render that wired them */
   const flaggedRef = useRef(flaggedNow)
   flaggedRef.current = flaggedNow
   /* compare a "before" with the grid as it is now; only a WORSENING raises the bubble (a row to amber or red, or amber
-     to red, on a day) — one rule for a bid placed and a bid moved */
+     to red, on a day — or, D1345, a row already amber or red taken lower) — one rule for a bid placed, a filing and a
+     bid moved */
   const raiseIfWorse = (before: BubbleFlags) => {
     const worst = worsenedRows(before, flaggedNow())
     if (!worst.size) return
     setCountsOpen(true)
-    setBubble({ text: `This bid turns ${[...worst].map(([l, v]) => `${l} ${v}`).join(', ')}.`, foot: !manningInView() })
+    const lv = [...worst.values()].some(w => w.lv === 'red') ? 'red' : 'amber'
+    setBubble({ text: bubbleWords(worst, filedSince(before.seq ?? 0)), foot: !manningInView(), lv })
   }
   /* IS THE MANNING BUTTON IN VIEW? (D1277 — "how does the notification look on a phone if the counters are out of view and
      the user scrolls down"; his "Yes to the bid note as recommended"). Decided once, when the bubble is raised: the
@@ -3599,10 +3632,10 @@ export function Matrix() {
         {/* the day panel (M3 batch 6): its open day is its own (DayPanel.tsx) — this grid never repaints for it */}
         <DayPanelHost />
         <div className="card-hd">
-          {bubble && !bubble.foot && <div className="mn-bubble" role="status" data-testid="manning-bubble">{bubble.text}</div>}
+          {bubble && !bubble.foot && <div className={`mn-bubble mnb-${bubble.lv}`} data-level={bubble.lv} role="status" data-testid="manning-bubble">{bubble.text}</div>}
           {/* D1277: the Manning button out of view when it was raised — the same words at the foot of the screen, with Show */}
           {bubble?.foot && (
-            <div className="mn-foot" role="status" data-testid="manning-bubble-foot">
+            <div className={`mn-foot mnb-${bubble.lv}`} data-level={bubble.lv} role="status" data-testid="manning-bubble-foot">
               <span data-testid="manning-bubble-text">{bubble.text}</span>
               <button type="button" className="mn-show" data-testid="manning-bubble-show" onClick={showManning}>Show ›</button>
             </div>

@@ -2737,7 +2737,20 @@ function tellHolidays(before: State): void {
   if (runs.length) HOLIDAY_TELL(runs)
 }
 
+/* WHAT WAS LAST PLACED, for the manning bubble's words (his D1351, 25 Oct 26 — after a filing the bubble names what was
+   filed, "This overseas duty turns Available P red."; a bid keeps "This bid"). Every gesture counts one; a filing notes
+   its kind at the count it ended on, so the bubble reads "the latest act was this filing" — a bid placed after it counts
+   again and is a bid. A view aid only: nothing is saved. */
+let actSeq = 0
+let lastFiled: { kind: 'CSE' | 'OD' | 'UNA'; at: number } | null = null
+/** The count of the war's gestures so far — the bubble's "before" keeps it. */
+export function actCount(): number { return actSeq }
+/** The kind filed by the latest gesture, if that gesture was a filing made after `since` — else null (a bid). */
+export function filedSince(since: number): 'CSE' | 'OD' | 'UNA' | null {
+  return lastFiled && lastFiled.at === actSeq && actSeq > since ? lastFiled.kind : null
+}
 function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
+  actSeq++
   if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
   let out!: T
   const r = cmdCommit({
@@ -3350,6 +3363,7 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
     const r = DOOR!.file(ok, clean, words)
     out = { done: r.done, skipped: out.skipped + r.skipped, why: r.why }
   })
+  if (out.done > 0) lastFiled = { kind: clean as 'CSE' | 'OD', at: actSeq }
   return out
 }
 
@@ -3384,6 +3398,7 @@ export function placeUna(cells: { personId: string; date: string }[], portion: P
     } finally { quiet = wasQuiet }
     if (done > 0 && !quiet) persistNotify()
   })
+  if (done > 0) lastFiled = { kind: 'UNA', at: actSeq }
   return { done, skipped }
 }
 const halvesOfPortion = (p: Portion): Array<'am' | 'pm'> => (p === 'full' ? ['am', 'pm'] : [p])
