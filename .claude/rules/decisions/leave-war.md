@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1309 | 24 Oct 26 | Every kind on the Leave War has a colour clearly its own, told apart from every other kind at a glance on a phone — an OIL taken, the other leave and an overseas duty above all; no two kinds share a colour. |
 | D1308 | 24 Oct 26 | In the Leave War's bid windows the Remarks box is drawn as a dark box, standing out from the window, so people see at once that it is there to fill in — as the input window's boxes on the Inputs page are. |
 | D1307 | 24 Oct 26 | A Leave War bid window opened on an approved leave shows its Document and Remarks rows straight away, for everyone who opens it — the member whose leave it is and an admin alike — in place of the "Note" button that opened them in a window of their own. |
 | D1306 | 24 Oct 26 | On the Leave War an FO or HO the published schedule credited keeps its star as a letter after its code — "FO*", "HO*" — as built; it is not turned into a corner mark. |
