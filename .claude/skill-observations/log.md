@@ -2013,3 +2013,33 @@ different feature that merely pass through it.
 
 **Principle:** Adding a visual carrier for a meaning should remove the words that carried it; a redesign that only adds is not a declutter.
 
+
+### Observation 690: A field saved on blur, pressed past by a button — only a test without the blur sees an iPhone's loss
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** round 3's FULL check of the Leave War bid windows (branch claude/lw-m3-placing-leave)
+**Skill:** project method — `raptor-port/docs/walk-scripts.md` (§4) and the bug-check order's scenario design (not a skill file)
+**Type:** open-source
+**Phase/Area:** walk scenarios for text boxes that save "when the box is left"
+
+**Issue:** A Remarks box saves its words when it loses focus. Words typed, then Approve / Refuse / Move tapped: the walk in Chromium PASSED (the button takes focus, the box blurs and saves first), but on an iPhone a tapped button takes no focus, so no blur fires and the window closed without the words. Only the scenario designer's reading of the code named it; seven unit tests that type and press with no blur (as an iPhone does) went red.
+
+**Suggested improvement:** walk-scripts.md §4: for every box that saves on blur, each action that can follow it is ALSO tested with no blur in between (a unit test's fireEvent, or element.click() after focus in the browser) — a Chromium walk's PASS on that order proves nothing for an iPhone.
+
+**Principle:** When the walk's engine and the owner's device deliver focus differently, a pass in the walk's engine is not evidence; test the device's sequence directly.
+
+### Observation 691: CSS that loses silently — a scoping wrapper and an invalid shorthand, both caught only by a real browser
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** round 3's FULL check of the Leave War bid windows
+**Skill:** project method — the build's guards (`raptor-port/docs/gates-and-deploy.md`, a structural test) (not a skill file)
+**Type:** open-source
+**Phase/Area:** styles written for a new screen
+
+**Issue:** Two faults in one build, both invisible to unit tests (no stylesheet) and to a code read: (1) a block of new rules written after the file's `#page-leavewar { … }` wrapper closed lost to every older wrapped rule (the file's own head warned of exactly this); (2) `font: 600 13px/1.3 inherit` is not a font, so the browser dropped the line — and eight older copies of the same line sit in other stylesheets.
+
+**Suggested improvement:** a cheap structural test: no rule after a scoping wrapper's close in a wrapped file (or a list of allowed ones), and no `font:` shorthand naming `inherit`. A rule that only a comment states will be broken again.
+
+**Principle:** A rule that fails silently needs a mechanical guard, not a louder comment.
