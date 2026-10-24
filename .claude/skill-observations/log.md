@@ -2043,3 +2043,33 @@ different feature that merely pass through it.
 **Suggested improvement:** a cheap structural test: no rule after a scoping wrapper's close in a wrapped file (or a list of allowed ones), and no `font:` shorthand naming `inherit`. A rule that only a comment states will be broken again.
 
 **Principle:** A rule that fails silently needs a mechanical guard, not a louder comment.
+
+### Observation 692: A change of words on screen missed the older test that pinned the old words
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's check — GitHub's run of the branch head failed a unit test the previous chat never ran
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`, the fix step) and the debugging guide
+**Type:** open-source
+**Phase/Area:** fixing a finding red first, then running "the tests it touches"
+
+**Issue:** A finding was fixed red first: a new test was written for the new sentence, and it passed. But an older test file elsewhere asserted the old sentence for two of the same cases. "The tests it touches" was read as the test written for the fix, so the older file was never run, and it failed only on GitHub's full run after the handoff.
+
+**Suggested improvement:** In the fix step: when a fix changes words a person reads, search every test for the OLD words (and the old code of the thing renamed) before calling the fix done, and run each file that matches.
+
+**Principle:** A fix's blast radius includes every test that pinned the behaviour being replaced, not only the test written for the replacement — find those by searching for the old value.
+
+### Observation 693: A demo record seeded for a new feature broke an unrelated browser test by its date
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2 — a seeded entry of a new kind on 14 Jan raised its own window over the Holidays list in a phone test that makes 14–15 Jan a holiday
+**Skill:** raptor-executor (building) / walk-scripts (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** adding demo seed data for a new feature
+
+**Issue:** The new seed was placed on a convenient date beside the person's other seeded entries. A browser test elsewhere used the same date for something else; the seed's correct side effect (an OIL question when the day became a holiday) covered the control the test tapped, so the test timed out on GitHub. The local run of only the feature's own tests could not see it.
+
+**Suggested improvement:** Before seeding a demo record, search the tests for its date (and the person); pick a date no test uses, or run every test file that names it.
+
+**Principle:** Shared fixture data is shared state — a new fixture entry is checked against every test that reads the same keys, not only the feature's own tests.
