@@ -56,7 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1329 | 24 Oct 26 | In the Leave War's day list each entry's row of actions fits one line on a phone, with an iPhone's wider letters — never a button's words broken over two lines; the approved leave's "Back to bid" is shortened to fit, drawn for him to pick how. |
+| D1331 | 24 Oct 26 | On a day holding half a day of leave the bid window opens with that half lit in its Duration row — AM for a morning, PM for an afternoon — beside the lit leave button; the title carries no code ("NOW" goes, round 3's change 7), and a whole day keeps "Whole day" lit. |
+| D1330 | 24 Oct 26 | An entry's actions are one row wherever it opens — the bid window's Approve · Refuse · Move · Delete, in the day's list too; on an approved leave Approve shows lit, and a second tap on it sends the leave back to waiting, in both windows; the day's list loses its "Back to bid". |
+| D1329 | 24 Oct 26 | In the Leave War's day list each entry's row of actions fits one line on a phone, with an iPhone's wider letters — never a button's words broken over two lines; the approved leave's "Back to bid" is shortened to fit, drawn for him to pick how. — changed by D1330 |
 | D1328 | 24 Oct 26 | In the Leave War's day list an entry led by its coloured box says beside it only what the box does not — its half of the day, its state, and where an entry filed on the Inputs page is changed — never the kind's long description, which the Legend holds; a drawing made with the design skill cuts words as well as boxes. |
 | D1327 | 24 Oct 26 | Wherever a Leave War window lists what a day holds — first the day's list of a day with two entries — each entry leads with its code drawn as its coloured box, as the grid draws it, never as plain words; and the same wherever else the app names a kind of entry in words. — changed by D1328 |
 | D1326 | 24 Oct 26 | In the bid window the way to Grant OIL, Post out and Post in is a "⋯" button in the fourth place of the CSE · OD · UNA row, the size of the buttons beside it — not in the title bar, not a fold at the foot. |
