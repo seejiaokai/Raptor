@@ -1,0 +1,82 @@
+[
+ {
+  "id": "N1 the calendar closed over 24 Nov's armed Delete: no note left; Delete asks for 26 Nov's own award, then takes it; 24 Nov's stays",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "armed \"Delete also takes Drifter’s OIL award (1 day) — tap Delete again to go ahead.\"; after close \"null\"; asks \"Delete also takes Drifter’s OIL award (half a day) — tap Delete again to go ahead.\"; window open after the 2nd Delete false; 24 Nov \"FO\", 26 Nov \"\"",
+  "pics": [
+   "n1-armed-phone",
+   "n1-closed-phone",
+   "n1-asks-phone",
+   "n1-after-phone"
+  ]
+ },
+ {
+  "id": "N2 words typed, then an award given through the ⋯: one Undo takes the award, the words stay on the bid",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cell after the award \"FO LL\"; after one Undo \"LL\"; the box reopened \"typed then an award\"",
+  "pics": [
+   "n2-given-phone",
+   "n2-undone-phone",
+   "n2-reopened-phone"
+  ]
+ },
+ {
+  "id": "N3 the list's refused bid keeps Refuse second in its row, pressed; two more quick taps change nothing",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "list true; after Refuse {\"pressed\":\"true\",\"place\":1,\"lines\":[\"Morning · refused\",\"Afternoon · pending\"]}; after two more taps {\"pressed\":\"true\",\"place\":1,\"lines\":[\"Morning · refused\",\"Afternoon · pending\"]}",
+  "pics": [
+   "n3-refused-phone",
+   "n3-after-taps-phone"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "N1 the calendar closed over 24 Nov's armed Delete: no note left; Delete asks for 26 Nov's own award, then takes it; 24 Nov's stays",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "armed \"Delete also takes Drifter’s OIL award (1 day) — tap Delete again to go ahead.\"; after close \"null\"; asks \"Delete also takes Drifter’s OIL award (half a day) — tap Delete again to go ahead.\"; window open after the 2nd Delete false; 24 Nov \"FO\", 26 Nov \"\"",
+  "pics": [
+   "n1-armed-desk",
+   "n1-closed-desk",
+   "n1-asks-desk",
+   "n1-after-desk"
+  ]
+ },
+ {
+  "id": "N2 words typed, then an award given through the ⋯: one Undo takes the award, the words stay on the bid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cell after the award \"FO LL\"; after one Undo \"LL\"; the box reopened \"typed then an award\"",
+  "pics": [
+   "n2-given-desk",
+   "n2-undone-desk",
+   "n2-reopened-desk"
+  ]
+ },
+ {
+  "id": "N3 the list's refused bid keeps Refuse second in its row, pressed; two more quick taps change nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "list true; after Refuse {\"pressed\":\"true\",\"place\":1,\"lines\":[\"Morning · refused\",\"Afternoon · pending\"]}; after two more taps {\"pressed\":\"true\",\"place\":1,\"lines\":[\"Morning · refused\",\"Afternoon · pending\"]}",
+  "pics": [
+   "n3-refused-desk",
+   "n3-after-taps-desk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

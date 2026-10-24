@@ -56,6 +56,8 @@ order; the changed tests re-expressed, none weakened; the day line as D1313 / D1
   slides into its place under a repeated tap — Move picks the refused leave up, or Delete removes it with no ask. D1330: one row
   wherever it opens. Fix: for a role that decides, always draw Refuse — pressed on a refused bid, a tap then doing nothing, as
   the one-day window does. Test: R3's setup, Refuse → the row's second button still Refuse; tapping it leaves both in place.
+- **Disposition (host):** N1 and N2 fixed red first (ced9369ec), N3 (836901e05); all three re-walked at both sizes —
+  `docs/img/handpass/2026-10-24-lw-r3/rewalk3/`, PASS 8 of 8.
 - Negatives: R1's guard keeps the war's own approved half its words row; R2 correct; R7 no double save, no state set on close;
   R9 released by the press's own end; R4 fits (a "ResizeObserver loop" event once per narrowing, harmless, not an app error);
   R8 one key, the approval's join the same; R3's order stable over every change of state; no test weakened.

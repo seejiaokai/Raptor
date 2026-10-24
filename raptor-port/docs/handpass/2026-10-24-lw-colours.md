@@ -36,6 +36,12 @@ Legend (every kind; "OIL taken: time off spent" and "OIL given: FO a day, HO hal
 filled at .40, an overseas duty at .58, a duty outlined, a timed one a tint); no errors at either size. The script's first run
 found no bars — it had not reached November (its own); the month's own arrow driven, it passed.
 
+**GitHub's run** of e89c68b48 and 836901e05 failed three browser tests written to the colours before this change: the
+Raptor-owned OIL compared with FO's green (now an OIL taken is its own kind — the test compares it with an OIL taken
+approved on the war itself), the tap list's afternoon OIL looked for as FO's kind, and an all-day Inputs bar expected to
+have no edge (now ringed in its kind, D1321 — the test tells a timed bar by its left edge and fainter fill). The app was
+right; the tests were rewritten to the approved colours (4874739fb, 5 / 5 at both sizes).
+
 **Not walked:** the unforeseen absence's teal (D1325) — its kind arrives with round 2; the colour is in the one set already.
 **Readings to put to him:** an upchit's bar is medical red, as his approved drawing painted it, though an upchit is not an
 absence; the Legend keeps "a star, the app credited it" on the OIL given line (D1306), which the drawing left out.
