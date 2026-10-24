@@ -40,3 +40,22 @@ savers keyed by record id; the list's Delete of a request harmless; the send-bac
 outside press, the drag window's cell press and the keyboard; the CSS inside the wrapper, the font lines written out; the
 one-day window's state table; `runEnd` over a two-entry day, a refused run and a moved run; nothing else reads the list's
 order; the changed tests re-expressed, none weakened; the day line as D1313 / D1314 rule.
+
+## The fixes' own narrow read (§5 — one fresh Opus reader of the eight fix commits, at e89c68b48)
+
+- **N1 (low-medium; R6's fix).** Closing the calendar sends a one-day pick back to the day tapped but leaves a Delete armed for
+  the OTHER day: its ask, its award ids, the note, the move error and the confirm stay — the next Delete then skips this day's
+  own award's ask and refuses ("Nothing here can be deleted…"), or removes a bid with no ask. Fix: in that close branch also
+  `setNote(''); setClearAsked(false); setClearIds([]); setMoveErr(''); setConfirming(null)`. Test: awards on 9 and 11 Feb;
+  11 Feb's window, Pick a range, 9 Feb, Delete (armed), close → no note; Delete asks for 11 Feb's award; again → gone.
+- **N2 (low; R7's fix).** Through the ⋯'s panels (Give FO, Remove, Post in / Post out confirm) the typed words are saved by the
+  unmount save, AFTER the panel's own command — so Undo takes the remark first, the award second. Fix: `flushWords()` first in
+  `grantOil`, the Remove button, `pi-confirm`, `po-confirm`; the unmount save stays the backstop. Test: R7's setup, one Undo →
+  the award gone, the remark still on the bid.
+- **N3 (low; what R3 leaves).** The list's row of a refused bid has no Refuse (pushed only when not refused), so the next button
+  slides into its place under a repeated tap — Move picks the refused leave up, or Delete removes it with no ask. D1330: one row
+  wherever it opens. Fix: for a role that decides, always draw Refuse — pressed on a refused bid, a tap then doing nothing, as
+  the one-day window does. Test: R3's setup, Refuse → the row's second button still Refuse; tapping it leaves both in place.
+- Negatives: R1's guard keeps the war's own approved half its words row; R2 correct; R7 no double save, no state set on close;
+  R9 released by the press's own end; R4 fits (a "ResizeObserver loop" event once per narrowing, harmless, not an app error);
+  R8 one key, the approval's join the same; R3's order stable over every change of state; no test weakened.
