@@ -2073,3 +2073,33 @@ different feature that merely pass through it.
 **Suggested improvement:** Before seeding a demo record, search the tests for its date (and the person); pick a date no test uses, or run every test file that names it.
 
 **Principle:** Shared fixture data is shared state — a new fixture entry is checked against every test that reads the same keys, not only the feature's own tests.
+
+### Observation 694: A file committed with Windows line endings in most lines defeats exact-match edit scripts
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2b — edit scripts (node, exact-string anchors) against `raptor-port/src/leavewar/state/store.ts`
+**Skill:** raptor-executor (building) — the project's edit-script habit
+**Type:** open-source
+**Phase/Area:** mechanical edits by script on Windows
+
+**Issue:** The store file is committed with CRLF on about 5,160 of its 5,290 lines (LF only in a recently added region). Every multi-line anchor written with "\n" missed, reported as "anchor not unique or missing"; a quick `grep -c $'\r'` in Git Bash said 0, which hid the cause. A line-ending-aware helper (try the anchor as written, else with CRLF, and write the replacement with the same endings) fixed it.
+
+**Suggested improvement:** The edit-script template every chat copies matches each spot's own line endings by default (an unconditional default, not a condition to remember), and never mixes endings into a region. Count CR per line with node, not grep, when checking.
+
+**Principle:** On Windows, a text-matching edit must match the file's own line endings at the spot it edits; make that the default of the edit helper rather than a check to remember.
+
+### Observation 695: Before adding a new kind to a discriminated union, audit every branch on the kind in parallel
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2b — UNA became a new kind of the war's own record (a new member of the record and day-view unions)
+**Skill:** raptor-executor / bug-check order (roll-call)
+**Type:** open-source
+**Phase/Area:** design of a data-model change
+
+**Issue:** About 120 lines across 28 files branch on the record's kind with `===` / `!==`; TypeScript flags none of them when a new member is added. A read-only helper audited every branch against the new kind's rules while the main session built the record and its store. It found ten places where falling through was wrong — the record read back as unreadable (which would have reset the whole war on reload), a member-visible "Your UNA bid was replaced" line, a Delete refused, a day panel missing the man, a no-op button — none of which the tests written first would have caught.
+
+**Suggested improvement:** For any new member of a discriminated union in this app, run (in parallel with the build) a read-only audit of every branch on that discriminant, each line answered "falls through correctly" or "needs this change", and fold the list into the roll-call.
+
+**Principle:** A new case in a discriminated union is a change at every site that branches on it; enumerate the sites mechanically before trusting tests written for the new case.
