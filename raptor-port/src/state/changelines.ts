@@ -98,7 +98,14 @@ const same = (a: any, b: any) => JSON.stringify(a ?? null) === JSON.stringify(b 
 const docsWords = (n: number) => (n ? `${n} document${n === 1 ? '' : 's'}` : 'none')
 const offerWords = (inp: any) => (inp && isSansAvail(inp.type) ? sansLetters(inp) : '')
 
-function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
+/* A COURSE OR AN OVERSEAS DUTY IS NEVER A WAR DECISION (round 2's FULL check — the fresh code read's F1): the war files it
+   straight as the input it is (`lw.file`, his D1318 — "doesnt need an approval … directly approved like an input") and
+   never approves, moves or takes one back (dayview OFF_WAR), so a Leave War command's line for it is an input's own —
+   "added", "deleted" — never "approved on the Leave War" */
+const FILED_ON_WAR = new Set(['CSE', 'OD'])
+const warsOwn = (x: any): boolean => !(x && FILED_ON_WAR.has(String(x.type)))
+function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
+  const war = warCmd && warsOwn(c.after || c.before)
   const b: any = c.before, a: any = c.after, iid = String(c.id)
   const why = REASONS.get(iid)
   const tail = why ? ` — ${why}` : ''
@@ -288,6 +295,8 @@ function warInputLines(env: CommitEnvelope): WarInputs {
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.id === '__order') continue
     const ref: any = c.after || c.before
+    /* a course or an overseas duty filed on the war is no decision of the war's (F1, above): it keeps its own line */
+    if (!warsOwn(ref)) continue
     /* whose leave it is: the record's one person, in either stored shape (leave is always one person's) */
     const man = ref ? leadOf(ref) : null
     if (man == null || man === '') continue

@@ -34,6 +34,7 @@ import { creditWorthText } from '../engine/credit'
 import type { DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
+import { sayOnWar } from '../sync'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -356,7 +357,13 @@ export function BidPicker({
   const fileDuty = (code: string) => {
     flushWords()
     const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined)
-    if (r.done > 0) return onClose()
+    /* …and where a day of a range was left out (it already held the same kind, a locked week) it is said (round 2's FULL
+       check — the fresh code read's F2): as a passing note, since the window closes — the day tapped now holds the input,
+       and the grid opens that input's own window for it (the design guide: a press that did less than expected, D850) */
+    if (r.done > 0) {
+      if (r.skipped) sayOnWar(`${r.done} day${r.done === 1 ? '' : 's'} filed. ${r.why[0] ?? `${r.skipped} day${r.skipped === 1 ? ' was' : 's were'} not yours to change`}.`)
+      return onClose()
+    }
     setNoteAt('leave')
     setNote(r.why[0] ?? 'Nothing was filed: these days are not yours to change.')
   }
@@ -365,7 +372,10 @@ export function BidPicker({
   const fileUna = () => {
     flushWords()
     const r = placeUna(selCells(), portion, !held ? { remarks: wordsOf(draft)?.remarks } : undefined)
-    if (r.done > 0) return onClose()
+    if (r.done > 0) {
+      if (r.skipped) sayOnWar(`${r.done} day${r.done === 1 ? '' : 's'} placed. ${r.skipped} day${r.skipped === 1 ? ' is' : 's are'} in no leave period: not placed.`)
+      return onClose()
+    }
     setNoteAt('leave')
     setNote('Nothing was placed: no leave period holds these days.')
   }

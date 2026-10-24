@@ -23,6 +23,7 @@ import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
 import { StageBar } from './Chrome'
+import { HOOKS } from '../../engine/hooks'
 import { INPEDIT, OILASK, OILLIST, setInpEdit, setOilAsk, setOilList } from '../../ui/pops'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -107,6 +108,23 @@ describe('round 2 — the row under the leaves (D1326, D1338)', () => {
     fireEvent.click(cell())
     const note = screen.getByTestId('raptor-note').textContent ?? ''
     expect(note).toBe('Change it on the Inputs page, not here.')
+  })
+  /* the fresh code read's F2: a picked range of which a day was left out (it already held an OD — the designer's G2, "left
+     as it is AND said") closed the window in silence; the drag window says it, and so does this one now */
+  it('a range of which a day is left out says why, in a passing note, as the window closes on the day now filed', () => {
+    const said: string[] = []
+    const was = HOOKS.toast
+    HOOKS.toast = ((t: string) => { said.push(t) }) as any
+    try {
+      act(() => { fileStraight([{ personId: P, date: '2026-02-12' }], 'OD') })
+      render(<Matrix />)
+      fireEvent.click(cell())
+      fireEvent.click(within(sheet()).getByTestId('span-range'))
+      fireEvent.click(within(sheet()).getByTestId('span-day-2026-02-13'))
+      fireEvent.click(within(sheet()).getByTestId('bid-file-OD'))
+    } finally { HOOKS.toast = was }
+    expect(said.join(' | ')).toMatch(/2 days filed\. 12 Feb.*already holds an OD/)
+    expect(filed('OD').filter((r: any) => r.date === 'Feb 11' || r.date === 'Feb 13'), 'the days around it filed').toHaveLength(2)
   })
   it('a picked range files every day of it', () => {
     render(<Matrix />)

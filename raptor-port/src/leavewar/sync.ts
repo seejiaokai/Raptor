@@ -2714,6 +2714,11 @@ export function openInputWindow(iid: string): boolean {
   return true
 }
 
+/** A PASSING NOTE FROM THE WAR'S OWN WINDOWS (round 2's FULL check — the fresh code read's F2): a press that did less than
+ *  it was asked — a day of a range left out — said where the window that would have said it has closed (the design
+ *  guide, D850). A rider on this seam, as `openInputsPage` is: the app's passing note, reached from the war's screens. */
+export function sayOnWar(text: string): void { HOOKS.toast(text, 'warn') }
+
 /** THE CLOSED NOTE'S "Open the Inputs page" (D1176, D1166 — "seek management's approval, then file it on the Inputs
  *  page"; drawn r7-08): the Inputs page brought to the front, nothing opened on it. Only a flag is reached, as `openDays`. */
 export function openInputsPage(): void {

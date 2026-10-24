@@ -680,9 +680,12 @@ export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] |
    is not one (D1263's check still answers it). */
 /* the UNA records at one war address, as one comparable string — their place in the list (ord) aside, which a member's
    own bid beside them may re-mint (D1338) */
+/* …and any record whose CODE is UNA, whatever it calls itself (round 2's FULL check — the fresh code read's F4: a forged
+   member command writing a bid with the code UNA passed, and drew a teal UNA box on his row) */
+const UNA_CODE = /^[*<>]?UNA[*<>]?$/
 function unasOf(list: unknown): string {
   const l: any[] = Array.isArray(list) ? list : []
-  return JSON.stringify(l.filter(r => r?.kind === 'una').map(({ ord: _o, ...r }: any) => r)
+  return JSON.stringify(l.filter(r => r?.kind === 'una' || UNA_CODE.test(String(r?.code ?? ''))).map(({ ord: _o, ...r }: any) => r)
     .sort((a, b) => String(a.id).localeCompare(String(b.id))))
 }
 function onlyChangesWords(before: unknown, after: unknown): boolean {
