@@ -17,7 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, fileStraight, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
+import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
 import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { ApproveSwitch, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
@@ -963,7 +963,11 @@ export function RaptorSheet({
               : 'Earned off the published schedule — change the schedule and the OIL follows.'
             : leave
               ? 'Filed on the Inputs page, so it is already approved — change it there, not here.'
-              : 'Filed on the Inputs page — change it there, not here.'}
+              /* a course, an overseas duty or the unforeseen absence may now be filed HERE too (round 2, D1318) and still be
+                 the Inputs page's to change — so its line says where it is changed, never where it was filed (the walk's H1c) */
+              : FILED_STRAIGHT.includes(code.replace(/[*<>]/g, ''))
+                ? 'Change it on the Inputs page, not here.'
+                : 'Filed on the Inputs page — change it there, not here.'}
         </span>
       </div>
       {!creditShown && docNames.length > 0 && (

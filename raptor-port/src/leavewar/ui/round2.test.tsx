@@ -96,6 +96,16 @@ describe('round 2 — the row under the leaves (D1326)', () => {
     expect(filed('OD')[0]).toMatchObject({ remarks: 'Exercise', allday: true })
     expect(cell().querySelector('.c.k-od'), 'the grid shows it').toBeTruthy()
   })
+  /* the walk's H1c (round 2's check): a tap on the day afterwards opened the window for an entry the Inputs page owns, which
+     said "Filed on the Inputs page" — untrue for one filed here. A course, an OD or UNA is changed there wherever it was filed */
+  it('a tap on the filed day says where it is changed, never that it was filed on the Inputs page', () => {
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(within(sheet()).getByTestId('bid-file-UNA'))
+    fireEvent.click(cell())
+    const note = screen.getByTestId('raptor-note').textContent ?? ''
+    expect(note).toBe('Change it on the Inputs page, not here.')
+  })
   it('a picked range files every day of it', () => {
     render(<Matrix />)
     fireEvent.click(cell())

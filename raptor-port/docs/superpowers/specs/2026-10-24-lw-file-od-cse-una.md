@@ -1,5 +1,9 @@
 # Round 2 — a course, an overseas duty and the unforeseen absence filed on the Leave War (24 Oct 26)
 
+> **D1335 (24 Oct 26) — UNA REMOVED, "Other" in its place.** His words, in round 2's check: *"I think we should remove UNA. And change to OTH. Because they both mean the same. It's an open ended unavailable remarks. Perhaps when filed on the inputs, ask if this affect manning on leave war for full day AM or PM or some sort. From the leave war this can be put as well with the remarks indicated"*. So: an unforeseen absence is an "Other" (OTH), its remarks saying what it is; filed on the Inputs page it asks whether it takes him off the Leave War's manning (no, a whole day, AM or PM); one that does shows on the war and lowers its manning; the war's third button files one, with its remarks. Everything below about UNA as a kind of its own (the readings 5, its colour, its Legend line) is REPLACED and is to be reworked — [LW-OTH-MANNING]; the course and the overseas duty stand as written.
+>
+> **D1336 (24 Oct 26):** *"And the leave war will count if it’s 0.5 or 1 for manning"* — an OTH off the manning counts 0.5 or 1 on the war, by the half or halves it covers, whatever its exact hours (the war counts every absence by halves).
+
 [LW-FILE-OD-CRS]. His rulings: D1299 (his intent — file them far ahead while bidding is open, because they lower manning),
 D1303 (one more kind for an unforeseen absence, named apart from the Inputs page's "Other"), D1318 (filed straight, no
 approval, any date, a member too, no document), D1324 (UNA filed as an OD is), D1325 (UNA deep teal), D1326 (the ⋯ in the
