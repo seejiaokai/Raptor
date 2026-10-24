@@ -1712,7 +1712,12 @@
 /* ROUND 3 OF THE BID WINDOWS AND THE DAY'S LIST ([LW-ROUND3-BUILD] — his D1311, approved whole D1332 / D1334; the drawings
    scripts/handpass/lw-declutter-look.mjs, lw-declutter-mock.mjs, lw-twoday-look.mjs, lw-q7-sideways.mjs). It replaces the
    M3 walk's "as drawn" pair that stood here (the day line in its own box — Q2 A took it out of the box; "Which leave"
-   beside its buttons — the row labels went). Measured beside the drawings at his iPhone's 402 (lesson 42). */
+   beside its buttons — the row labels went). Measured beside the drawings at his iPhone's 402 (lesson 42).
+   INSIDE THE PAGE'S OWN WRAPPER, as the file's head asks: written after the wrapper's close (as first built), every rule
+   here lost to the wrapped `.bidsheet-row` (flex, wrapping) and `.dchip` rules — the actions row stayed a wrapping line,
+   the ⋯ sat at the window's left edge 36 wide with its menu off the window, unpressable (its FULL check, 24 Oct 26 —
+   GitHub's run of pull request 569). Pinned by `e2e/round3-leavewar.spec.ts`. */
+#page-leavewar {
 
 /* the day line out of its box (change 2), its pairs side by side (D1313), each whole on its line */
 .bidsheet-dayline { display: block; border: 0; padding: 0 2px; background: none; margin: 0 0 4px; }
@@ -1802,3 +1807,5 @@
 .bidsheet .dl-line.dl-card > .bidsheet-row { margin-top: 0; }
 .bidsheet .dl-ro { gap: 8px; font-size: 13px; color: var(--ink-2); margin-top: 0; }
 .bidsheet .dl-ro .docchip { cursor: default; }
+
+}

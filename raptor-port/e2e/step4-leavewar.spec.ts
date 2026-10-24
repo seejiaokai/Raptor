@@ -306,7 +306,7 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   await tap(page, P, D)
   const lines = await listLines(page)
   /* round 3 (D1328): beside each entry's box only its half and state — "change it on the Inputs page" for one filed there */
-  expect(lines.some(l => /change it on the Inputs page/.test(l))).toBe(true)
+  expect(lines.some(l => /change it on the Inputs page/i.test(l))).toBe(true)   // a whole day's line starts with it: "Change it…"
   expect(lines.some(l => /LL bid was replaced by LL/.test(l))).toBe(true)
   expect(lines.some(l => /pending/i.test(l))).toBe(false)   // the bid is gone ("pending" — D1158, D1217; the words short since D1328)
   await page.locator('[data-testid^="dl-seen-"]').click()
@@ -490,8 +490,8 @@ test('move an approved leave while its dates are open: dotted moved mark, undo, 
   await tap(page, P, from)
   await page.locator('[data-testid="bid-LL"]').click()
   await expect(page.locator('[data-testid="open-chip"]'), 'nothing closed first').toContainText('1 Jan – 31 Mar')
-  await tap(page, P, from)
-  await page.locator('[data-testid="decide-approve"]').click()
+  /* the admin's switch starts on (D1186), so the leave is approved as it is placed — a tap on its Approve, now lit, would
+     send it back to waiting (his D1330, round 3), so the old "approve it" step is gone */
   await expect(chip(page, P, from)).toHaveClass(FILLED)
 
   await tap(page, P, from)
