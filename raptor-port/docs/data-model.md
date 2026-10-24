@@ -765,7 +765,7 @@ plus the Inputs on read.
 | `tillShown` | bool | no | the "till <date>" tick where it differs from the default (D1226, D953 — app field `till`); carried as the remarks are |
 | `note` | string | no | a credit's reason |
 | `replacedBy` / `replacedWho` / `groupSeq` / `at` | string / string / int / datetime | notice only | what replaced the bid, who (frozen label), the command that did it ("OK, seen" clears the group) |
-| `placedBy` | string | UNA only | the callsign of the admin who placed it, frozen (app field `by`, ≤ 60); its `remarks` above, which every member reads (D1338) |
+| `placedBy` | string | UNA only (*[D1356, 25 Oct 26: UNA goes — an "Other" under Unavailable takes its place on the Leave War, the schedule and the Inputs page alike; to be built, filed as [LW-OTHER-UNAVAIL].]*) | the callsign of the admin who placed it, frozen (app field `by`, ≤ 60); its `remarks` above, which every member reads (D1338) |
 | `sortIndex` | decimal | yes | its place among the records at its (`warId`, `personId`, `date`); they read back by (`sortIndex`, key) (`ord`, `[DB-READINESS]` group A, phase 3) |
 | `isDeleted` | bool | yes | |
 

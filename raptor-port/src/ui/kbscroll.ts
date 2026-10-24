@@ -326,19 +326,31 @@ export function refit() {
 /** Follows the focus and the visual viewport from now on (called once, from main.tsx). Returns the way to stop. */
 export function installKbScroll(): () => void {
   if (typeof window === 'undefined' || typeof document === 'undefined') return () => {}
-  let box: HTMLElement | null = null, at = 0, raf = 0
+  let box: HTMLElement | null = null, at = 0, raf = 0, onlyWindow = false
   const place = () => {
     raf = 0
     const vv = window.visualViewport
     if (!box || document.activeElement !== box || !box.isConnected || !keyboardUp(vv)) return
+    /* a pan long after the focus: the window follows the visible screen, and nothing inside it is scrolled — a box he
+       scrolled away from in it stays where he put it */
+    if (onlyWindow) { onlyWindow = false; const l = layerOf(box); if (l) raise(l, box, vv!.offsetTop, vv!.offsetTop + vv!.height); return }
     keepAboveKeyboard(box, vv!)
   }
   /* two frames on: the board and the sheets re-fit themselves to the same resize first (their own listeners), and the
      box is measured where they left it */
-  const soon = () => {
+  const soon = (windowOnly = false) => {
     if (raf) cancelAnimationFrame(raf)
+    onlyWindow = windowOnly
     raf = requestAnimationFrame(() => { raf = requestAnimationFrame(place) })
   }
+  /* A WINDOW RAISED OR HELD FOR THE KEYS FOLLOWS THE VISIBLE SCREEN FOR AS LONG AS THEY ARE UP (his recording, 25 Oct 26
+     07:40 — the input window, "Other", Remarks tapped: held to the room, then the iPhone's password bar rose over the keys and
+     the phone panned the visible screen some 170 points down, later than the focus window below; the window stayed where it
+     had been pinned — its top off the screen, an empty band between its foot and the keys). The focus window is for the page
+     and its panels, where a late resize is Safari's own bars folding as he scrolls; a window lifted for the keys stands in a
+     fixed layer that no scroll of his moves, so where the visible screen goes, it goes: a late pan moves the window alone; a
+     late change of the room (the bar rising) holds it to the new room and keeps its box in sight. */
+  const lifted = () => !!box && [...LIFTED].some(l => l.contains(box!))
   const focusin = (e: FocusEvent) => {
     dropLifts(e.target as Element)
     if (!isTypingBox(e.target)) { box = null; return }
@@ -359,14 +371,18 @@ export function installKbScroll(): () => void {
        window back nor takes the room below the page away; a zoomed frame itself changes nothing */
     if (!vv || Math.max(window.innerHeight, BASE.w === window.innerWidth ? BASE.h : 0) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
     if (vv.scale > 1.01) return
-    if (box && Date.now() - at < FOCUS_WINDOW) soon()
+    if (box && (Date.now() - at < FOCUS_WINDOW || lifted())) soon()
   }
   /* THE LIFT WAITS FOR THE PHONE'S OWN PAN TO END (Fable, 19 Oct 26). An iPhone scrolls the page to show the box over the
      frames the keys take to rise, and tells of each step by the visual viewport's `scroll`. A lift measured while that pan
      is still running adds its own move to one the phone has not finished — the screen then rises by more than the keys
      did (his recordings). Each step of the pan sets the measuring back two frames, so the box is measured once the screen
      has come to rest, against where the phone left it: most often nothing is left to do, or the GAP alone. */
-  const scroll = () => { if (box && Date.now() - at < FOCUS_WINDOW && keyboardUp(window.visualViewport)) soon() }
+  const scroll = () => {
+    if (!box || !keyboardUp(window.visualViewport)) return
+    if (Date.now() - at < FOCUS_WINDOW) soon()
+    else if (lifted()) soon(true)
+  }
   const follow = () => {
     const vv = window.visualViewport
     if (vv === vvNow) return

@@ -1517,6 +1517,8 @@ command, `lw.reqmeta` (`perms.ts` — a member's own pending request's words cha
 
 ## A course and an overseas duty filed on the Leave War (round 2, 24 Oct 26 — D1318), and UNA, the war's own (D1338)
 
+*[D1356, 25 Oct 26: UNA goes — an "Other" under Unavailable takes its place on the Leave War, the schedule and the Inputs page alike; to be built, filed as [LW-OTHER-UNAVAIL].]*
+
 **UNA since D1338 (24 Oct 26) is NOT an input** — the paragraph below about it as a new input kind is history: it is the
 Leave War's OWN record (`engine/warrecs.ts UnaRec`, kind `una`), an admin's alone (`store.ts placeUna` / `setUnaRemarks` /
 `removeUna`, one command `lw.una`, admin-only in `perms.ts`, and the commit refuses any member's command that adds, changes

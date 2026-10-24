@@ -184,7 +184,7 @@ local, ground, half, shiftHard` flags):
 - `med`: `HL` hospitalisation, `OML` ordinary medical, `ATT C` medically down — cannot report, `ATT B` medically down — no flying, may work
 - `upchit`: `Upchit` — fit to fly again
 - `act`: `Training`, `CSE`, `Meeting`, `Fly with`, `Personal`, `Appointment`, `Duty`, `Event` (D713, 9 Oct 26 — Duty's flags), `Other`
-- `duty`: `OD` overseas duty (UNA stood here as an input kind for a day in round 2; since D1338, 24 Oct 26, it is the Leave War's own record — World 2, `WarRec` — never an input)
+- `duty`: `OD` overseas duty (*[D1356, 25 Oct 26: UNA goes — an "Other" under Unavailable takes its place on the Leave War, the schedule and the Inputs page alike; to be built, filed as [LW-OTHER-UNAVAIL].]* UNA stood here as an input kind for a day in round 2; since D1338, 24 Oct 26, it is the Leave War's own record — World 2, `WarRec` — never an input)
 - `sans`: `SANS Availability`
 
 ### A schedule day — `DAYS[0..6]`, `src/engine/data.ts`

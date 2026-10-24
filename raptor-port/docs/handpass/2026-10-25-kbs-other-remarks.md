@@ -21,9 +21,17 @@ at its foot (its last child, three deep, measured as it stands, so a row that wr
 whole). Red first: `src/ui/kbscroll.test.ts` (two new cases failed — 342 for 278; the undeclared row's case failed with the
 measurement switched off) and `e2e/kbscroll.spec.ts` KS3d (the real input window, "Other", held to the room).
 
-**Not proved, filed:** his picture also shows the window's top cut off and an empty band under it — the look of the visible
-screen panned down after the window was placed. Chromium cannot pan as an iPhone does; the fix alone may cure it (the box he
-tapped now shows, so the phone has nothing to pan to). His look on his iPhone decides — `OUTSTANDING.md` [KBS-IOS-LATE-PAN].
+**The second fault, from his recording of 07:40 (on the bundle before the fix — his Safari had not reloaded):** frames every half
+second (`scripts/handpass/video-frames.mjs`) show the window held to the room the keys left, then — after the focus window —
+the iPhone's password bar (key, card, pin) rising and the phone panning the visible screen about 170 points down: the window,
+pinned where it had been, ended with its top off the screen and a band of about 95 points under it. The lift follows a pan or
+a resize only within 1.5s of the focus (for the page, where a late resize is Safari's bars folding as he scrolls). **The fix:**
+a window raised or held for the keys follows the visible screen while they are up and its box has the focus — a late pan moves
+the window alone, a late change of the room holds it to the new room and keeps the box in sight. Red first: two cases in
+`kbscroll.test.ts` (the window stayed at 8 when the screen panned to 170; the hold stayed 444 when the room shrank to 364), and
+KS3e in the browser test. One old assertion said a late pan moves nothing — the fault itself, its box left 100 under the keys
+— and now says the window follows, its reason written beside it. (Typing with "Training" worked in his recording because that
+window was not held: its body scrolled instead.)
 
 ## Tier: WALK
 
@@ -56,15 +64,19 @@ cover.
 | Other, Training, LL | 762 / 500 (held) | 148–181 | 204 | 0 (was 33) |
 | Other, Training, LL | 874 / 540 (held) | 220–253 | 276 | 0 |
 | Holidays' lowest box | 762 / 500 and 762 / 372 shortened | 206–248 | 660 / 289 | 0 |
+| Other, then a pan of 170 two seconds later | 762 / 500 (held) | 148–181 on screen | 204 | 0 — the title 8 from the top, no band |
+| Other, the same | 874 / 540 (held) | 220–253 on screen | 276 | 0 — the title 8 from the top, no band |
 
 Looked at (opened, cropped): Other and LL held at 874 / 540 — Remarks whole above Cancel / Add, the window's title on screen.
 No console or page errors in any run.
 
 ## Gates
 
-- `src/ui/kbscroll.test.ts` — 32 / 32 (three new).
-- `e2e/kbscroll.spec.ts` (raptor) — 11 / 11, KS3d new; it built the bundle the walk drove (under the check lock).
+- `src/ui/kbscroll.test.ts` — 34 / 34 (five new, one corrected), with `src/ui/amendbatch-app.test.tsx` 41 / 41 together.
+- `e2e/kbscroll.spec.ts` (raptor) — 12 / 12, KS3d and KS3e new; each run built the bundle the walk drove (under the check lock).
+- Looked at: `kbs/other-latepan-visible-phone.png` — the visible screen after the pan, cut to it: the title, Remarks, Cancel / Add.
 - The pull request's GitHub run — read after the push.
 
 **Walk:** WALK — the input window (Other, Training, LL) at four keyboards and Holidays' form, phone 402, Chromium with a
-stand-in keyboard; 14 runs, every picture taken after the tap; 0 left under the buttons (was 33px of 33); his iPhone not yet.
+stand-in keyboard; 14 runs, every picture taken after the tap; 0 left under the buttons (was 33px of 33); then his recording's
+late pan, replayed at two sizes on the fixed build — the window follows, no band, the title in sight; his iPhone not yet.

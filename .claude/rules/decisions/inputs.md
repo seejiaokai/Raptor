@@ -64,7 +64,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 file whole, by the script, none reworded. **A ruling that governs BOTH an Inputs page and the schedule stayed in
 `scheduler.md`** — this file points at it, never the other way round — so:
 
-**Also read** — in `scheduler.md` (it loads with every file under `raptor-port/src/ui`, so with nearly every file this
+**Also read** — in `leave-war.md`: **D1356** (UNA goes: whoever files an Other picks the Ground Programme or Unavailable, and an Other under Unavailable shows on the Leave War and counts him out, its remarks shown on the schedule, the Inputs page and the Leave War). In `scheduler.md` (it loads with every file under `raptor-port/src/ui`, so with nearly every file this
 one loads with): the one rule of a row that came from an input — **D755, D756, D757, D759** (a row that came from an
 input IS the input; one record with its people), **D734–D745, D748, D776** (the schedule's one row for a shared input:
 its pucks are its people, its time and remark are the input's, a tap opens the input's own window), **D760** (a CX on

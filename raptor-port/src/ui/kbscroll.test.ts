@@ -316,6 +316,41 @@ describe('installKbScroll', () => {
     vv.scale = 1; vv.height = H; vv.dispatchEvent(new Event('resize'))
     expect(w.style.translate, 'the keys down: put back').toBe('')
   })
+  /* HIS RECORDING, 25 Oct 26 07:40 (the input window, "Other", Remarks tapped on his iPhone): the window was held to the room
+     the keys left, then — later than the focus window — the iPhone's password bar rose and the phone panned the visible screen
+     some 170 points down; the held window stayed where it had been pinned, its top above the screen, an empty band under it.
+     A window held or raised for the keys follows the visible screen for as long as the keys are up and its box has the focus. */
+  const heldWin = () => {
+    document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
+    const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    place(bd, 0, H)
+    let st = 0
+    w.style.overflowY = 'auto'
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 600)
+    Object.defineProperty(w, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(600 - wh(), v)) } })
+    Object.defineProperty(w, 'scrollHeight', { configurable: true, get: () => 600 })
+    Object.defineProperty(w, 'clientHeight', { configurable: true, get: () => wh() })
+    w.getBoundingClientRect = () => { const top = 300 - +(w.dataset.kblift || 0); return { top, bottom: top + wh(), left: 0, right: 100, width: 100, height: wh(), x: 0, y: top, toJSON() {} } as DOMRect }
+    place(b, 860, 30)
+    return { w, b }
+  }
+  it('a held window follows a late pan of the visible screen: its top at the screen\'s top again, no band under it', () => {
+    const { w, b } = heldWin()
+    b.focus(); keysUp(); frames()
+    expect([w.dataset.kbcap, w.getBoundingClientRect().top], 'the fixture: held, pinned at the top').toEqual(['', GAP])
+    vi.advanceTimersByTime(3000)                               // long after the focus
+    vv.offsetTop = 170; vv.dispatchEvent(new Event('scroll')); frames()
+    expect(w.getBoundingClientRect().top, 'pinned to the visible screen as it now stands').toBe(170 + GAP)
+    expect(b.getBoundingClientRect().bottom, 'the box still in sight').toBeLessThanOrEqual(170 + H - KB - GAP)
+  })
+  it('and a late shrink of the room (the password bar over the keys) holds it to the smaller room, its box kept in sight', () => {
+    const { w, b } = heldWin()
+    b.focus(); keysUp(); frames()
+    vi.advanceTimersByTime(3000)
+    vv.height = H - KB - 80; vv.dispatchEvent(new Event('resize')); frames()
+    expect(w.style.getPropertyValue('--kbcap')).toBe(`${H - KB - 80 - 2 * GAP}px`)
+    expect(b.getBoundingClientRect().bottom).toBeLessThanOrEqual(H - KB - 80 - GAP)
+  })
   it('a raised window goes back down when the keys do', () => {
     document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
     const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
@@ -360,7 +395,7 @@ describe('installKbScroll', () => {
     b.blur(); frames()
     expect(bd.dataset.kbfull).toBeUndefined()
   })
-  it("a window raised for the keys comes back down by what the phone's own pan then brought it; a pan long after the focus is left alone", () => {
+  it("a window raised for the keys comes back down by what the phone's own pan then brought it; a pan long after the focus moves the window with it", () => {
     document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
     const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
     place(bd, 0, H); place(w, 300, 300); place(b, 560, 30)
@@ -371,9 +406,13 @@ describe('installKbScroll', () => {
     vv.offsetTop = 100; vv.dispatchEvent(new Event('scroll')); frames()
     expect(w.style.translate, 'down again by the pan: the box stays GAP above the keys, moved once in all').toBe(`0 -${raised - 100}px`)
     expect(b.getBoundingClientRect().bottom - vv.offsetTop).toBe(H - KB - GAP)
+    /* a pan long after the focus: the window follows it, so its box stays GAP above the keys (his recording, 25 Oct 26
+       07:40 — this line used to say "nothing", and the window left behind put the box under the keys or a band under it);
+       nothing inside the window is scrolled, so a box he scrolled away from in it would stay where he put it */
     vi.advanceTimersByTime(3000)
     vv.offsetTop = 0; vv.dispatchEvent(new Event('scroll')); frames()
-    expect(w.style.translate, 'a pan long after the focus: nothing').toBe(`0 -${raised - 100}px`)
+    expect(w.style.translate, 'a pan long after the focus: the window follows').toBe(`0 -${raised}px`)
+    expect(b.getBoundingClientRect().bottom - vv.offsetTop).toBe(H - KB - GAP)
   })
 })
 

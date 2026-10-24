@@ -839,7 +839,11 @@ bottom sits 8px above the keys — then the page, unless the box is in a fixed l
 content of its own, below), where the page behind never moves (D686). A box still under the keys in a fixed layer raises its window (the CSS `translate`
 property — on a full-screen backdrop, the window on it), never past the visible top; a window taller than the room is held
 to the visible screen's height while the keys are up (an inline `max-height`, never over one the window set itself) and its
-own body scrolls the box into sight. **A panel's own pinned foot is kept clear (his report, 25 Oct 26 07:06 — the input
+own body scrolls the box into sight. **A window raised or held for the keys follows the visible screen for as long as
+they are up and its box has the focus (his recording, 25 Oct 26 07:40 — the iPhone's password bar rose and the phone panned
+the screen some 170 points down after the focus window below; the held window stayed behind, its top off the screen, a band
+under it):** a late pan moves the window alone, nothing inside it scrolled; a late change of the room holds it to the new
+room and keeps its box in sight. **A panel's own pinned foot is kept clear (his report, 25 Oct 26 07:06 — the input
 window on his iPhone, "Other", Remarks tapped: Document, then Cancel / Add, no Remarks):** the floor a box is lifted to in a
 scrolling panel stands above what the panel covers at its edges — its `scroll-padding` (the input window's 64px) and a button
 row it holds sticky at its foot (its last child, three deep, measured as it stands — Holidays' buttons) — so a window held
@@ -867,7 +871,7 @@ the measuring back two frames, so the lift never adds to a pan the phone is stil
 itself — on his iPhone a focus given at the end of the touch never took (his recording of 19 Oct 26 16:59); the tap is the
 browser's. The keys count
 as up against the tallest visible screen seen at this width with nothing typed in (never one read taller than the layout). Pinned: `ui/kbscroll.test.ts`,
-`ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS8 and KS3d (the pinned foot) (a stand-in visual viewport —
+`ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS8, KS3d (the pinned foot) and KS3e (a late pan) (a stand-in visual viewport —
 Chromium cannot raise an iPhone keyboard).
 
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press
@@ -11465,7 +11469,7 @@ day again); a half day opens on its own half (D1331) → the leave buttons, the 
 lit with the cyan ring → the row under the leaves: CSE · OD in its first two places (round 2, BUILT 24 Oct 26 — D1318:
 filled in their kinds' colours, no figure; a tap files the input straight for the day or the picked range, the window's new
 words with it, and closes — `LeaveButtons.tsx DutyButtons`, `store.ts fileStraight`; the drag window's row and a member's
-closed-day window carry them too), UNA in its third — an ADMIN's alone (D1338: the Leave War's own record, never an input;
+closed-day window carry them too), UNA in its third — an ADMIN's alone (D1338 — *[D1356, 25 Oct 26: UNA goes — an "Other" under Unavailable takes its place on the Leave War, the schedule and the Inputs page alike; to be built, filed as [LW-OTHER-UNAVAIL].]* — the Leave War's own record, never an input;
 deep teal, filled; a tap places it at once on the day, the range or every cell picked, on the Duration's half, with the
 window's new words, and closes — `LeaveButtons.tsx UnaButton`, `store.ts placeUna`; a member's third place is empty), the ⋯ in its fourth place (D1326) opening upward Grant OIL (OIL given's
 green, D1320) · Post out · Post in; a member has none of the three — his fourth place stays empty. No row carries a label; each keeps its name for a screen
