@@ -77,3 +77,35 @@ describe('the day line in the drag-selection window', () => {
     expect(screen.getByTestId('bid-dayline-avail').textContent).toContain('25 → 22 · red')
   })
 })
+
+/* HIS D1296: on a day already holding the bid the line reads the day as it stands — "Available P 27 · red", no arrow —
+   and the calm line only where no row is amber or red */
+describe('the day line on a day holding the bid (D1296)', () => {
+  it('draws the figure as it stands, with its level, and no calm line while a row is red', () => {
+    render(<DayLine days={[day({ standing: true, avail: { seat: 'p', label: 'Available P', before: 27, after: 27, level: 'red' }, turned: [{ ruleId: 'ip', label: 'IP', before: 2, after: 2, level: 'amber' }] })]} />)
+    expect(screen.getByTestId('bid-dayline-avail').querySelector('.dl-fig')!.textContent).toBe('27 · red')
+    expect(screen.getByTestId('bid-dayline-ip').querySelector('.dl-fig')!.textContent).toBe('2 · amber')
+    expect(screen.queryByTestId('bid-dayline-calm')).toBeNull()
+  })
+
+  it('where nothing is amber or red it says so in the present tense', () => {
+    render(<DayLine days={[day({ standing: true, avail: { seat: 'p', label: 'Available P', before: 30, after: 30, level: null }, turned: [] })]} />)
+    expect(screen.getByTestId('bid-dayline-avail').querySelector('.dl-fig')!.textContent).toBe('30')
+    expect(screen.getByTestId('bid-dayline-calm').textContent).toBe('No manning row is amber or red')
+  })
+})
+
+describe('the one-day window reopened on his bid (D1296, his case)', () => {
+  it('reads the day as it stands — one figure, no arrow, never "turns"', async () => {
+    const { setCell } = await import('../state/store')
+    render(<Matrix />)
+    const pilot = getState().people.find(p => p.seat === 'pilot' && !p.san && getState().grid[p.id]?.['2026-02-11'] === undefined)!
+    expect(setCell(pilot.id, '2026-02-11', 'LL')).toBe(true)
+    fireEvent.click(screen.getByTestId(`cell-${pilot.id}-2026-02-11`))
+    const line = within(screen.getByTestId('bid-picker')).getByTestId('bid-dayline')
+    const fig = within(line).getByTestId('bid-dayline-avail').querySelector('.dl-fig')!.textContent!
+    expect(fig).not.toContain('→')
+    expect(fig).toMatch(/^\d+(\.5)?( · (amber|red))?$/)
+    expect(line.textContent).not.toContain('turns')
+  })
+})

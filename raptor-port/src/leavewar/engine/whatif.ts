@@ -37,6 +37,9 @@ export interface DayWhatIf {
   avail: { seat: 'p' | 'w'; label: string; before: number; after: number; level: WhatIfLevel | null } | null
   /** each Manning row the bid makes WORSE — to amber or red, or amber to red — at its level after; the bubble's rule */
   turned: Array<{ ruleId: string; label: string; before: number; after: number; level: WhatIfLevel }>
+  /** the day already holds him away, so the bid changes nothing there (his D1296 — the window reopened on a day holding
+   *  the bid): `avail` is his row as it stands (before = after) and `turned` every Manning row now amber or red */
+  standing?: true
 }
 
 const RANK: Record<Verdict, number> = { ok: 0, amber: 1, red: 2 }
@@ -68,7 +71,26 @@ export function dayWhatIf(
     avail = { seat, label: rule.label, before, after: a, level: level || null }
     break
   }
-  return { date, avail, turned }
+  if (avail || turned.length) return { date, avail, turned }
+  /* NOTHING MOVES — but is that because he is already away that day (his D1296: the window reopened on a day holding the
+     bid read "No manning row turns amber or red" while Available P stood red)? Asked by taking his day off the war: where
+     that raises a row, the day already counts him out, and the line shows the day as it stands — his row's figure and
+     level, and every Manning row now amber or red. Where it raises nothing (a SANS man, ground crew), the plain answer. */
+  const { [date]: _gone, ...restOfRow } = war.views[personId] ?? {}
+  const without: Views = { ...war.views, [personId]: restOfRow }
+  for (const seat of ['p', 'w'] as const) {
+    const rule = war.avail[seat]
+    const have = availHave(rule, war.people, war.grid, war.states, date, war.views)
+    if (availHave(rule, war.people, war.grid, war.states, date, without) === have) continue
+    avail = { seat, label: rule.label, before: have, after: have, level: judge(seat, have, date) || null }
+    break
+  }
+  if (!avail) return { date, avail: null, turned }
+  for (const r of was.results) {
+    if (r.verdict === 'ok') continue
+    turned.push({ ruleId: r.ruleId, label: r.label, before: r.have, after: r.have, level: r.verdict })
+  }
+  return { date, avail, turned, standing: true }
 }
 
 /** A run of days (a range, a drag): the day the bid hurts most — first by how bad it is (a row or his Available turned red,

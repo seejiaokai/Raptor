@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { availRules, bidWhatIf, getState, initStore, setCell, setRole } from './store'
+import { availRules, bidWhatIf, getState, initStore, saveManningRule, setCell, setRole } from './store'
 import { memoryBackend } from './storage'
 import { evaluateDay } from '../engine/evaluate'
 import { availHave } from '../engine/availrows'
@@ -93,5 +93,59 @@ describe('worstWhatIf — how bad first', () => {
     const red = { date: '2026-02-11', avail: { seat: 'p' as const, label: 'Available P', before: 25, after: 24, level: null }, turned: [{ ruleId: 'ip', label: 'IP', before: 3, after: 2, level: 'red' as const }] }
     expect(worstWhatIf([calm, red])?.date).toBe('2026-02-11')
     expect(worstWhatIf([red, calm])?.date).toBe('2026-02-11')
+  })
+})
+
+/* HIS D1296 (24 Oct 26, his iPhone, [LW-DAYLINE-PLACED-BID]): the window reopened on a day that already holds the bid read
+   "No manning row turns amber or red" while Available P stood red — a second bid on that day changes nothing, so the
+   what-if answered "nothing turns". On such a day the line shows the day as it stands, the bid counted. */
+describe('a day already holding the bid (D1296)', () => {
+  const judgeRedUnder = (req: number) => (seat: 'p' | 'w', have: number) => (seat === 'p' && have < req ? 'red' as const : '' as const)
+
+  it('shows his Available row as it now stands, at its level, the bid counted', () => {
+    const pilot = getState().people.find(p => p.seat === 'pilot' && !p.san)!
+    const date = '2026-02-11'
+    const before = now(date).p
+    expect(setCell(pilot.id, date, 'LL')).toBe(true)
+    const standing = now(date).p
+    expect(standing).toBe(before - 1)
+    /* his case: required one above what the war now has — Available P red */
+    const [w] = bidWhatIf(pilot.id, [date], 'LL', judgeRedUnder(standing + 1))
+    expect(w, 'the reopened window still has a line').toBeTruthy()
+    expect(w!.standing).toBe(true)
+    expect(w!.avail).toMatchObject({ seat: 'p', before: standing, after: standing, level: 'red' })
+  })
+
+  it('names every Manning row now amber or red on that day, and none where all are fine', () => {
+    const pilot = getState().people.find(p => p.seat === 'pilot' && !p.san)!
+    const date = '2026-02-11'
+    /* two Manning rows the day breaks — a pilots row at red and a WSOs row at amber — so the answer has rows to name */
+    expect(saveManningRule({ id: 'tp', label: 'Pilots', count: { kind: 'people', filter: { seats: ['pilot'] } }, threshold: { amber: 999, red: 998 } })).toBe(true)
+    expect(saveManningRule({ id: 'tw', label: 'WSOs', count: { kind: 'people', filter: { seats: ['wso'] } }, threshold: { amber: 999, red: 0 } })).toBe(true)
+    expect(setCell(pilot.id, date, 'LL')).toBe(true)
+    const [w] = bidWhatIf(pilot.id, [date], 'LL', () => '')
+    const bad = now(date).v.results.filter(r => r.verdict !== 'ok')
+    expect(bad.map(r => r.ruleId).sort()).toEqual(['tp', 'tw'])
+    expect(w!.turned.map(t => t.ruleId).sort()).toEqual(bad.map(r => r.ruleId).sort())
+    for (const t of w!.turned) {
+      const r = bad.find(x => x.ruleId === t.ruleId)!
+      expect([t.before, t.after, t.level]).toEqual([r.have, r.have, r.verdict])
+    }
+  })
+
+  it('another kind of leave picked on the held day reads the same — the day as it stands', () => {
+    const pilot = getState().people.find(p => p.seat === 'pilot' && !p.san)!
+    const date = '2026-02-11'
+    expect(setCell(pilot.id, date, 'LL')).toBe(true)
+    const [w] = bidWhatIf(pilot.id, [date], 'OL', () => '')
+    expect(w!.standing).toBe(true)
+    expect(w!.avail!.after).toBe(now(date).p)
+  })
+
+  it('a new bid on a free day is still a before → after answer, not a standing one', () => {
+    const pilot = getState().people.find(p => p.seat === 'pilot' && !p.san)!
+    const [w] = bidWhatIf(pilot.id, ['2026-02-11'], 'LL', () => '')
+    expect(w!.standing).toBeFalsy()
+    expect(w!.avail!.before - w!.avail!.after).toBe(1)
   })
 })
