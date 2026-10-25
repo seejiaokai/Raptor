@@ -30,7 +30,8 @@ import { setLeaveRemarks } from '../../ui/inputedit'
 const ISNAP = JSON.stringify(INPUTS)
 const TARGET = '2026-01-30'
 const bubble = () => screen.queryByTestId('manning-bubble')
-const foot = () => screen.queryByTestId('manning-bubble-foot')
+/* since D1358 the one note is at the foot always; its Show › stands only while the Manning rows are out of view */
+const show = () => screen.queryByTestId('manning-bubble-show')
 
 function wired() {
   INPUTS.length = 0
@@ -75,7 +76,7 @@ describe('the bubble and a window over the page (F1), Show pressed twice (F2)', 
     expect(bubble()).toBeNull()
   })
 
-  it('the Manning button covered by a window over the page counts as in view: the bubble under it, not at the foot', () => {
+  it('the Manning button covered by a window over the page counts as in view: the note with no Show (D1358)', () => {
     redPastOneMore()
     render(<Matrix />)
     const toggle = screen.getByTestId('counts-toggle')
@@ -89,7 +90,7 @@ describe('the bubble and a window over the page (F1), Show pressed twice (F2)', 
       fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
       fireEvent.click(screen.getByTestId('bid-LL'))
       expect(bubble()).toBeTruthy()
-      expect(foot()).toBeNull()
+      expect(show()).toBeNull()
     } finally { (document as any).elementFromPoint = was }
   })
 
@@ -103,9 +104,9 @@ describe('the bubble and a window over the page (F1), Show pressed twice (F2)', 
     try {
       fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
       fireEvent.click(screen.getByTestId('bid-LL'))
-      expect(foot()).toBeTruthy()
+      expect(show()).toBeTruthy()
       fireEvent.click(screen.getByTestId('manning-bubble-show'))
-      expect(foot()).toBeNull()
+      expect(bubble()).toBeNull()
       /* a key's click (detail 0) on the Manning button at once goes through (the code read, R6) */
       const before = toggle.getAttribute('aria-expanded')
       fireEvent.click(toggle)

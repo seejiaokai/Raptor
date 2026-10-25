@@ -160,20 +160,23 @@ function sameStuck(
    them) — only the on-grid editor is gone. */
 
 
-/** The bid bubble's reading of the grid at one moment (D1227): each flagged row-day at its level (1 amber, 2 red) with its
- *  figure (`have` — D1345), the days drawn then — the two Available rows are read over the drawn days only — and the
- *  count of the war's gestures (`seq`, so the bubble can tell a filing made since from a bid — D1351). */
+/** The bid bubble's reading of the grid at one moment (D1227): each row-day at its level (0 clear, 1 amber, 2 red) with its
+ *  figure (`have` — D1345, D1364), the days drawn then — the two Available rows are read over the drawn days only — and the
+ *  count of the war's gestures (`seq`, so the bubble can tell a filing made since from a bid — D1351). A row-day still
+ *  clear is read too, with its figure, so a row a bid turns amber or red can say what it stood at before (D1364). */
 export type BubbleFlags = { m: Map<string, { label: string; lv: number; have?: number }>; drawn: Set<string>; seq?: number }
 /** How a bid made a row worse: it TURNED it (to amber or red, or amber to red), or took it LOWER where it already stood
- *  at that level (D1345). */
-export type Worse = { lv: 'amber' | 'red'; how: 'turns' | 'lower' }
+ *  at that level (D1345) — with the figures of the row-day it hurt most, before and after (D1364), where both are known. */
+export type Worse = { lv: 'amber' | 'red'; how: 'turns' | 'lower'; before?: number; after?: number }
 /** The rows a bid made WORSE between two readings, each at its worst — a row-day turned amber or red, or amber to red; or
  *  (D1345, his report of 25 Oct 26) one already amber or red whose figure went lower. A row that turns on one day and
- *  only goes lower on another reads as turned; red outranks amber. Exported for its unit test (bidbubble.test.tsx). */
+ *  only goes lower on another reads as turned; red outranks amber; on a tie the day it went lowest speaks. Exported for its
+ *  unit test (bidbubble.test.tsx). */
 export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string, Worse> {
   const worst = new Map<string, Worse>()
   const rank = (w: Worse) => (w.lv === 'red' ? 2 : 0) + (w.how === 'turns' ? 1 : 0)
   for (const [k, { label, lv, have }] of now.m) {
+    if (lv < 1) continue
     /* an Available row's day not drawn when the "before" was read has no "before" — a month drawn while a bid window was
        open (the page behind it scrolls) is never "turned" by the bid (the code read of 23 Oct 26) */
     if ((k.startsWith('availp|') || k.startsWith('availw|')) && !before.drawn.has(k.slice(7))) continue
@@ -182,27 +185,33 @@ export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string,
     if (lv > (was?.lv ?? 0)) how = 'turns'
     else if (was && have !== undefined && was.have !== undefined && have < was.have) how = 'lower'
     if (!how) continue
-    const w: Worse = { lv: lv === 2 ? 'red' : 'amber', how }
+    const figs = was?.have !== undefined && have !== undefined ? { before: was.have, after: have } : have !== undefined ? { after: have } : {}
+    const w: Worse = { lv: lv === 2 ? 'red' : 'amber', how, ...figs }
     const had = worst.get(label)
-    if (!had || rank(w) > rank(had)) worst.set(label, w)
+    if (!had || rank(w) > rank(had) || (rank(w) === rank(had) && (w.after ?? Infinity) < (had.after ?? Infinity))) worst.set(label, w)
   }
   return worst
 }
-/** THE BUBBLE'S WORDS (D1227, D1345, D1351): what was placed — "This bid", or after a filing "This overseas duty", "This
- *  course", "This UNA" — then the rows it turned ("turns FCP amber, IP red"), then the rows it took lower where they
- *  already stood ("takes Available P lower, still red"), the two parts joined by "and". Exported for its unit test. */
-export function bubbleWords(worse: Map<string, Worse>, filed: 'CSE' | 'OD' | 'UNA' | null): string {
-  const what = filed === 'OD' ? 'This overseas duty' : filed === 'CSE' ? 'This course' : filed === 'UNA' ? 'This UNA' : 'This bid'
-  const turned = [...worse].filter(([, w]) => w.how === 'turns').map(([l, w]) => `${l} ${w.lv}`)
-  const lowers = (['red', 'amber'] as const).map(lv => ({ lv, names: [...worse].filter(([, w]) => w.how === 'lower' && w.lv === lv).map(([l]) => l) })).filter(x => x.names.length)
-  /* a list said as a person says it — "IP amber and Available P red" — where it is the sentence's only part; beside
-     another part its items take commas, so "and" joins only the parts (as drawn, docs/img/handpass/2026-10-25-lw-drawings/bubble/) */
-  const alone = (turned.length ? 1 : 0) + lowers.length === 1
-  const list = (xs: string[]) => (alone && xs.length > 1 ? `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}` : xs.join(', '))
-  const parts: string[] = []
-  if (turned.length) parts.push(`turns ${list(turned)}`)
-  for (const { lv, names } of lowers) parts.push(`takes ${list(names)} lower, still ${lv}`)
-  return `${what} ${parts.join(' and ')}.`
+/** What was placed or filed, as the bubble names it (D1351, D1356): a bid, a course, an overseas duty, an Other. */
+export type FiledKind = 'CSE' | 'OD' | 'OTH' | null
+/** THE BUBBLE'S PARTS (D1360, D1364 — his "Day-line pairs" and "Yes, figures everywhere", 25 Oct 26, narrowing D1345's and
+ *  D1351's words): what was placed — "This bid", or after a filing "This overseas duty", "This course", "This Other" — then
+ *  each row it lowered with its figures in the bid window's day-line form, "Available P 27 → 26", each pair in its colour;
+ *  where the figure before is not known (a row read only now) its figure alone. Exported for its unit test. */
+export function bubbleParts(worse: Map<string, Worse>, filed: FiledKind): { lead: string; pairs: { label: string; fig: string; lv: 'amber' | 'red' }[] } {
+  const lead = filed === 'OD' ? 'This overseas duty' : filed === 'CSE' ? 'This course' : filed === 'OTH' ? 'This Other' : 'This bid'
+  /* the bid window's own figures: halves ".5" (D1246) */
+  const f = (n: number) => String(Math.round(n * 2) / 2)
+  const pairs = [...worse].map(([label, w]) => ({
+    label, lv: w.lv,
+    fig: w.before !== undefined && w.after !== undefined ? `${f(w.before)} → ${f(w.after)}` : w.after !== undefined ? f(w.after) : w.lv,
+  }))
+  return { lead, pairs }
+}
+/** The bubble in words — "This bid: IP 16 → 15 · SXO 12 → 11" (D1360) — for a screen reader and the tests. */
+export function bubbleWords(worse: Map<string, Worse>, filed: FiledKind): string {
+  const { lead, pairs } = bubbleParts(worse, filed)
+  return `${lead}: ${pairs.map(p => `${p.label} ${p.fig}`).join(' · ')}`
 }
 
 export function Matrix() {
@@ -1447,15 +1456,18 @@ export function Matrix() {
      is the gesture, so a change made elsewhere (another device, a setting) never raises it. */
   const sheetUp = !!open || !!sel
   const beforeRef = useRef<BubbleFlags | null>(null)
-  /* `foot`: the Manning button was out of view when it was raised, so the words sit at the foot of the screen (D1277) */
-  /* `lv`: the worst level it names — the bubble wears that colour (his D1344: "the box is in amber can u make it red") */
-  const [bubble, setBubble] = useState<{ text: string; foot: boolean; lv: 'amber' | 'red' } | null>(null)
+  /* ALWAYS AT THE FOOT OF THE SCREEN (his D1358, 25 Oct 26 — "why don't just make it always at the foot?"), on a phone and a
+     desktop: `show` — "Show ›" is offered only while the Manning rows are out of view (read when it is raised, and again
+     as the page scrolls); `lv`: the worst level it names — the bubble wears that colour (his D1344); its words are each
+     row's figures (D1360, D1364 — `bubbleParts`) */
+  const [bubble, setBubble] = useState<{ lead: string; pairs: { label: string; fig: string; lv: 'amber' | 'red' }[]; text: string; show: boolean; lv: 'amber' | 'red' } | null>(null)
   const flaggedNow = (): BubbleFlags => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
        never reported as turned amber (the scenario designer's find, 23 Oct 26); and its figure, so a row already amber or
        red that a bid takes lower is reported too (D1345) */
     const m = new Map<string, { label: string; lv: number; have?: number }>()
-    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) if (r.verdict !== 'ok') m.set(`${r.ruleId}|${d}`, { label: r.label, lv: r.verdict === 'red' ? 2 : 1, have: r.have })
+    /* …a row-day still clear too, at level 0 with its figure, so a row a bid turns can say what it stood at (D1364) */
+    for (const d of Object.keys(verdicts)) for (const r of verdicts[d]!.results) m.set(`${r.ruleId}|${d}`, { label: r.label, lv: r.verdict === 'red' ? 2 : r.verdict === 'amber' ? 1 : 0, have: r.have })
     /* …and the two Available rows at their amber or red points (D1190, D1202 — the same verdict their cells wear,
        `sync.ts availVerdictAt`), over the days drawn: a bid is placed on a day in view */
     const names = availRowNames()
@@ -1473,12 +1485,13 @@ export function Matrix() {
       const a = answer(d)
       let f: ReturnType<typeof dayFacts> | null = null
       for (const seat of ['p', 'w'] as const) {
-        const v = availVerdictAt(d, seat, a)
-        if (!v) continue
+        const v = availVerdictAt(d, seat, a)   // reads the day's facts itself (kept per day — sync.ts dayFacts)
         f ??= dayFacts(d)
-        /* a figure the day does not have (null) is left out — that row-day is then compared by its level alone */
+        /* a figure the day does not have (null) is left out — that row-day is then compared by its level alone; a clear
+           row-day is kept at level 0 for its figure (D1364) */
         const have = seat === 'p' ? f.availP : f.availW
-        m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : 1, ...(typeof have === 'number' ? { have } : {}) })
+        if (!v && typeof have !== 'number') continue
+        m.set(`avail${seat}|${d}`, { label: names[seat], lv: v === 'red' ? 2 : v ? 1 : 0, ...(typeof have === 'number' ? { have } : {}) })
       }
     }
     return { m, drawn: new Set(drawnDates), seq: actCount() }
@@ -1498,7 +1511,8 @@ export function Matrix() {
     if (!worst.size) return
     setCountsOpen(true)
     const lv = [...worst.values()].some(w => w.lv === 'red') ? 'red' : 'amber'
-    setBubble({ text: bubbleWords(worst, filedSince(before.seq ?? 0)), foot: !manningInView(), lv })
+    const filed = filedSince(before.seq ?? 0)
+    setBubble({ ...bubbleParts(worst, filed), text: bubbleWords(worst, filed), show: !manningInView(), lv })
   }
   /* IS THE MANNING BUTTON IN VIEW? (D1277 — "how does the notification look on a phone if the counters are out of view and
      the user scrolls down"; his "Yes to the bid note as recommended"). Decided once, when the bubble is raised: the
@@ -1573,14 +1587,26 @@ export function Matrix() {
   useEffect(() => {
     if (!bubble) return
     /* a press on the foot note's own Show is not "a tap elsewhere" (D1277) — Show's click does its work and ends it */
-    const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble-foot"]')
+    const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble"]')
     const onDown = (e: Event) => { if (!inNote(e) && !overPage(e.target)) setBubble(null) }
     /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) — but Tab (and Shift with it), the
        way to Show, and a key pressed on Show itself leave it up */
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e) || overPage(e.target)) return; setBubble(null) }
     const t = window.setTimeout(() => { document.addEventListener('pointerdown', onDown); document.addEventListener('keydown', onKey) }, 0)
-    return () => { window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey) }
-  }, [bubble])
+    /* Show › follows the Manning rows in and out of view while it stands (D1358 — "only while those rows are out of view"):
+       read again on a scroll, once a frame at most, never a repaint of the grid (the bubble is this grid's own state, so
+       only its box redraws, and only when the answer changes) */
+    let raf = 0
+    const onScroll = () => {
+      if (raf) return
+      raf = window.requestAnimationFrame(() => { raf = 0; const want = !manningInView(); setBubble(b => (b && b.show !== want ? { ...b, show: want } : b)) })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    return () => {
+      window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey)
+      window.removeEventListener('scroll', onScroll, { capture: true }); if (raf) window.cancelAnimationFrame(raf)
+    }
+  }, [bubble ? bubble.text : null])
   /* …and a change of WIDTH across the phone line after the page opened (a desktop window narrowed under 700, a phone
      turned on its side and back — the M2 code read's F6): the fold is decided again by the same rule, folded on a phone
      unless he opened it there, open on a desktop (D1258). Not on the first draw — the state's own start decided that. */
@@ -3667,12 +3693,21 @@ export function Matrix() {
         {/* the day panel (M3 batch 6): its open day is its own (DayPanel.tsx) — this grid never repaints for it */}
         <DayPanelHost />
         <div className="card-hd">
-          {bubble && !bubble.foot && <div className={`mn-bubble mnb-${bubble.lv}`} data-level={bubble.lv} role="status" data-testid="manning-bubble">{bubble.text}</div>}
-          {/* D1277: the Manning button out of view when it was raised — the same words at the foot of the screen, with Show */}
-          {bubble?.foot && (
-            <div className={`mn-foot mnb-${bubble.lv}`} data-level={bubble.lv} role="status" data-testid="manning-bubble-foot">
-              <span data-testid="manning-bubble-text">{bubble.text}</span>
-              <button type="button" className="mn-show" data-testid="manning-bubble-show" onClick={showManning}>Show ›</button>
+          {/* THE BUBBLE, ALWAYS AT THE FOOT OF THE SCREEN (his D1358): in the colour of the worst level it names (D1344), its
+              rows in the bid window's day-line form, each pair in its colour (D1360, D1364 — "This bid: Available P 27 →
+              26"), with Show › only while the Manning rows are out of view; a screen reader hears the same words */}
+          {bubble && (
+            <div className={`mn-foot mnb-${bubble.lv}`} data-level={bubble.lv} role="status" aria-label={bubble.text} data-testid="manning-bubble">
+              <span className="mn-words" data-testid="manning-bubble-text" aria-hidden="true">
+                <span className="mn-lead">{bubble.lead}:</span>{' '}
+                {bubble.pairs.map((p, i) => (
+                  <span key={p.label} className="mn-pairwrap">
+                    {i > 0 && <span className="dl-dot" aria-hidden="true"> · </span>}
+                    <span className={`mn-pair mnp-${p.lv}`} data-testid="manning-bubble-pair">{p.label} {p.fig}</span>
+                  </span>
+                ))}
+              </span>
+              {bubble.show && <button type="button" className="mn-show" data-testid="manning-bubble-show" onClick={showManning}>Show ›</button>}
             </div>
           )}
           <StageBar
