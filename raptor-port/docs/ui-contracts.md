@@ -11571,9 +11571,12 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   a drag nothing is lit. Pinned by `leavewar/ui/litdecide.test.tsx`.
 - **The manning bubble (D1358, D1360, D1364):** one note, always at the foot of the screen (`.mn-foot`, testid
   `manning-bubble`), in the colour of the worst level it names; its words "This bid: Available P 27 → 26 · IP 16 → 15",
-  each pair in its colour, a filing named ("This overseas duty", "This course", "This Other"); "Show ›" only while the
-  Manning rows are out of view, read again as the page scrolls; above a resting day panel on a phone it stands just over
-  the panel's top. Gone at the next tap or key. Pinned by `bidbubble.test.tsx`, `nightwalk.test.tsx`.
+  each pair in its colour, a filing named ("This overseas duty", "This course", "This Other", "This Attach"); "Show ›"
+  only while the Manning rows are out of view — a row on screen, read at the middle of its on-screen part and not under the
+  top bar or the frozen dates, counts as in view as the Manning button does — read again as the page scrolls and once the
+  frame after it is raised (the bid opens folded rows); above a resting day panel on a phone it stands just over the
+  panel's top. Gone at the next TAP (a press lifted within 10px of where it went down — a finger scroll never takes it) or
+  key. Pinned by `bidbubble.test.tsx`, `nightwalk.test.tsx`.
 - **The row under the leaves (D1349, D1356, D1365, D1378–D1380):** CSE · OD · Grant OIL (an admin's, OIL given's green,
   one line) · ⋯ — the ⋯ holding Attach first (everyone's: an Attach input straight under the schedule's Unavailable list on
   the window's Duration, no approval, its "To" left to the Inputs page), Other (an admin's: filed the same way), Post out
@@ -11589,11 +11592,16 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The joined bar (D1359):** next-door boxes of one entry (one input, or a bid run with one set of words) carry `jl` /
   `jr` and meet over the day line, the code once at each piece's start; a middle day holding a second entry breaks it; a
   half-day run joins top to top; a day the drag selects is drawn as before. `MatrixRows.tsx joinClasses`,
-  `joinedbar.test.tsx`.
+  `joinedbar.test.tsx`. Its rules (and D1370's outline) name `#page-leavewar` — written after `matrix.css`'s wrapper they
+  lost to it and nothing was ever painted (the M3 build's FULL check); what is painted is pinned in a real browser,
+  `e2e/round2-leavewar.spec.ts` "a leave over three days…". An Attach's day in the day's list and the held-half line name
+  where he is attached ("ATCH · 145 Sqn · change it on the Inputs page").
 - **The drag window's remarks (D1347, D1362):** over one man's separate entries with different remarks, a grey line each
   ("“Wedding” · 9–10 Feb") above an empty box; an entry with none is not listed; over one entry the box opens with its
   words. `dragremarks.test.tsx`.
 - **The Inputs window (D1368, D1369, D1373):** an Other asks "Goes to" — Ground Programme (amber) or Unavailable (red),
   the picked one solid with dark words, ordinary letters, 36 tall, a grey line under it; an Attach asks "To". A course and
   an Attach are filed under Unavailable by themselves (D1372, D1374). On the schedule every commitment offers "→ Ground ·
-  → Unavail" after a Reject (D1357). `ui/inputtitle.test.tsx`.
+  → Unavail" after a Reject (D1357). A rejected Other's window picks neither and reads "Rejected by a scheduler"; only a
+  scheduler moves it (the designer's G5). Goes to is not offered once ALL AVAIL / ALL is among the people picked (G3), and
+  such an Other lands on the programme. `ui/inputtitle.test.tsx`, `leavewar/otherunavail.test.tsx`.
