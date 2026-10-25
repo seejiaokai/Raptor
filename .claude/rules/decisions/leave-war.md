@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1391 | 26 Oct 26 | When an admin grants OIL by hand, he is not asked whether an HO is the morning or the afternoon — which half a granted HO is does not matter; it is still drawn in a half of its day's cell (D1164), the morning unless the morning is already held. |
 | D1390 | 26 Oct 26 | An overseas duty a scheduler rejects counts him back in on the Leave War, as a rejected course does (D1381): it no longer lowers the manning, the Available rows or the SANS calendar's need. |
 | D1389 | 26 Oct 26 | A course or an overseas duty that a scheduler rejects and then moves onto the Ground Programme counts him in on the Leave War, as every commitment on the Ground Programme does: only a commitment under the schedule's Unavailable list counts him out. |
 | D1388 | 26 Oct 26 | Once a scheduler has moved a member's Other — onto the Ground Programme or under Unavailable — only a scheduler changes where it goes; the member's own window shows where it now sits and does not let him pick again. |
@@ -240,7 +241,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 | D1167 | 21 Oct 26 | Two whole-day entries on one Leave War day are drawn side by side, each the full height of the cell, each in its own colour and letters; with a full day of leave and an HO, the HO takes its own half of the right side (the top for a morning, the bottom for an afternoon). |
 | D1166 | 21 Oct 26 | The Leave War's closed dates (days not open for bidding — D1177) stop only bidding on the Leave War; leave filed or changed on the Inputs page is never stopped by them and lands approved — once his dates are closed, a member gets management's verbal approval, then files or edits his leave there himself, and the Leave War follows. — changed by D1177 |
 | D1165 | 21 Oct 26 | A Leave War cell's colour says what kind of leave it is (question 2, look E): filled is approved, hollow and dashed is waiting, grey and struck through is refused; his colours are drawn for him to confirm — local leave and overseas leave two shades of amber, OIL green. |
-| D1164 | 21 Oct 26 | An HO — half a day of OIL credited — is drawn in a half of its day's cell, the morning or the afternoon, as a half day's leave is, not as a whole-day box; an FO stays a whole-day box (D1160). |
+| D1164 | 21 Oct 26 | An HO — half a day of OIL credited — is drawn in a half of its day's cell, the morning or the afternoon, as a half day's leave is, not as a whole-day box; an FO stays a whole-day box (D1160). — changed by D1391 |
 | D1163 | 21 Oct 26 | The colleague's app's SC is not taken over: OIL earned is already credited as FO (a whole day) and HO (half a day). |
 | D1162 | 21 Oct 26 | On the Leave War OD means overseas duty, as the app already has it; the colleague's app's meaning of OD, other duty, is not taken over. |
 | D1161 | 21 Oct 26 | To him a Leave War grid where every leave is the same green is boring and mundane to see; question 2 (what a cell's colour says) is drawn again with a colour for each kind of leave, as the colleague's app he showed does, and put to him with a recommendation; his answer: E, with his colours (D1165). — changed by D1165 |
