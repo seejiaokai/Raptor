@@ -15,7 +15,7 @@
 //     that do not overlap are allowed).
 // Everything that decides what the combination MEANS is `engine/dayview.ts`.
 
-import { dateOrd, inpType, inpWin, isDownchit, isLeave, isPersonal } from '../engine/inputs'
+import { dateOrd, inpType, inpWin, inputSilent, isDownchit, isLeave, isPersonal } from '../engine/inputs'
 import { addDays } from './engine'
 import { AM, PM, FULL, type Contrib, type Win } from './engine/dayview'
 import type { Portion } from './engine'
@@ -124,7 +124,9 @@ export function warVisible(type: unknown): boolean {
 export function warCounts(row: any): boolean {
   if (!row || typeof row !== 'object') return false
   if (warVisible(row.type)) return true
-  return row.acc === 'u' && isPersonal(row.type)
+  /* …unless it is cancelled or information only: silent everywhere else — no warning, no OIL, free for ALL AVAIL — so on
+     the war too (the code read's F2) */
+  return row.acc === 'u' && isPersonal(row.type) && !inputSilent(row)
 }
 
 const halfWin = (p: Portion): Win => (p === 'am' ? AM : p === 'pm' ? PM : FULL)

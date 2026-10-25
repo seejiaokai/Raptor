@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
+import { dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -103,7 +103,8 @@ const offerWords = (inp: any) => (inp && isSansAvail(inp.type) ? sansLetters(inp
    never approves, moves or takes one back (dayview OFF_WAR), so a Leave War command's line for it is an input's own —
    "added", "deleted" — never "approved on the Leave War" */
 const FILED_ON_WAR = new Set(['CSE', 'OD'])
-const warsOwn = (x: any): boolean => !(x && FILED_ON_WAR.has(String(x.type)))
+/* …and an Other or an Attach filed from the war (the code read's F4) — only a leave is ever the war's decision */
+const warsOwn = (x: any): boolean => !!x && isLeave(x.type) && !FILED_ON_WAR.has(String(x.type))
 function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
   const war = warCmd && warsOwn(c.after || c.before)
   const b: any = c.before, a: any = c.after, iid = String(c.id)
@@ -123,7 +124,7 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
   const accNow = (x: any) => (live ? live.acc : x && x.acc)
   if (!b && a) {
     const s = sa
-    logAction(null, `${whoOf(a)} · ${inpLabel(a)} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${accNow(a) === 'g' ? ' (on the programme)' : ''}${tail}`,
+    logAction(null, `${whoOf(a)} · ${inpLabel(a)} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${accNow(a) === 'g' ? ' (on the programme)' : accNow(a) === 'u' ? ' (under Unavailable)' : ''}${tail}`,
       at({ date: s && s.date, end: s && s.end }))
     return
   }
@@ -160,6 +161,8 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
      Duty) said "Event → Duty" and nothing of the title. Two untitled kinds still write the kind's line alone: their
      names moved because the kind did, and no title changed. */
   if (!same(titleOf(b.type, b.title), titleOf(a.type, a.title))) logAction(null, `${who} · ${spanWords(sa)} · title`, base({ from: inpLabel(b), to: inpLabel(a) }))
+  /* where an Attach is to (D1373 — the code read's F3: a To changed wrote no line, as every change to an input does — D263) */
+  if (isFly(a.type) && toOf(b.to) !== toOf(a.to)) logAction(null, `${who} · ${spanWords(sa)} · to`, base({ from: toOf(b.to) || '—', to: toOf(a.to) || '—' }))
   /* the typed words (D948): a remark saved with its date in it before the build, re-saved without, is no change of remarks */
   if (!same(remarksTyped(b.remarks, b), remarksTyped(a.remarks, a))) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: remarksTyped(b.remarks, b) || '—', to: remarksTyped(a.remarks, a) || '—' }))
   /* its till-date tick (owner D953; D263 — every change to an input is a line): ticked or unticked by hand. A date or kind

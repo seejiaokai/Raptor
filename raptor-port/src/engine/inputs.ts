@@ -208,6 +208,8 @@ export function inpDetailKey(inp:any):string{
        published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
        input's key is byte-for-byte what it was. */
     ...(titleOf(inp.type,inp.title)?{title:titleOf(inp.type,inp.title)}:{}),
+    /* …and where an Attach is to (his D1373), drawn in its name beside the title (the code read's F3): named only where set */
+    ...(isFly(inp.type)&&toOf(inp.to)?{to:toOf(inp.to)}:{}),
     /* THE SCHEDULER'S MARKS ON IT ARE PART OF WHAT IT SAYS (step 4 of the one-rule build — owner D760: a CX on the row
        cancels the INPUT; reading 3: "on a published day a CX put on or taken off reads as a change waiting"). NORMALISED
        (Fable's read of the plan, F14): a CX put on and taken off leaves `cx:false` where a record never cancelled has

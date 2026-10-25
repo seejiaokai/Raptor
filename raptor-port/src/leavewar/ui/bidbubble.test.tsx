@@ -479,6 +479,21 @@ describe('above a resting day panel ((g))', () => {
       expect(bubble()?.style.bottom).toBe('312px')
     } finally { panel.remove() }
   })
+  /* the code read's F5: on a desktop the day panel floats at the top right (top 96), never at the foot — the note was lifted
+     to the top of the screen. It stands above a panel only where the panel reaches the foot */
+  it('a day panel floating near the top (a desktop): the note keeps its place at the foot (F5)', () => {
+    rowRedPastOneMore(TARGET)
+    const panel = document.createElement('div')
+    panel.dataset.testid = 'win-lwday'
+    panel.getBoundingClientRect = () => ({ top: 96, bottom: 496, left: 1000, right: 1400, width: 400, height: 400, x: 1000, y: 96, toJSON: () => ({}) }) as DOMRect
+    document.body.appendChild(panel)
+    try {
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+      fireEvent.click(screen.getByTestId('bid-LL'))
+      expect(bubble()?.style.bottom).toBe('')
+    } finally { panel.remove() }
+  })
   it('with no panel up it keeps its own place', () => {
     rowRedPastOneMore(TARGET)
     render(<Matrix />)

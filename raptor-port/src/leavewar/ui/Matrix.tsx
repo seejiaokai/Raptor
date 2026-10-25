@@ -1477,7 +1477,9 @@ export function Matrix() {
     const w = document.querySelector('[data-testid="win-lwday"]') as HTMLElement | null
     if (!w) return 0
     const r = w.getBoundingClientRect()
-    return r.height > 0 && r.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - r.top)) : 0
+    /* only a panel resting at the foot (a phone's): on a desktop it floats near the top and the note keeps the foot (the code
+       read's F5) */
+    return r.height > 0 && r.top < window.innerHeight && r.bottom >= window.innerHeight - 2 ? Math.max(0, Math.round(window.innerHeight - r.top)) : 0
   }
   const flaggedNow = (): BubbleFlags => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is

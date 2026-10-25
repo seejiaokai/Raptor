@@ -100,7 +100,9 @@ function common(b: any, a: any, him: string): NoticePart[] {
      everything else, so an Other filed with "→ Unavail" told its man "Back on the programme", and taken out again
      "Taken off the programme" — it was on neither. Asked FIRST; the two lines below keep their meaning. */
   if (a.acc === 'u' && b.acc !== 'u') out.push({ k: 'unav' })
-  else if (b.acc === 'u' && a.acc === 'r') out.push({ k: 'unavoff' })
+  /* …taken out however it is taken out: a Reject, or an Other's Goes to moved back to the programme (the code read's F6 —
+     D815's reading that no button does it was overtaken by D1356's Goes to) */
+  else if (b.acc === 'u' && a.acc !== 'u') out.push({ k: 'unavoff' })
   else if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })
   else if (b.acc === 'r' && a.acc !== 'r') out.push({ k: 'on' })
   const days = firstDay(b) !== firstDay(a) || lastDay(b) !== lastDay(a)

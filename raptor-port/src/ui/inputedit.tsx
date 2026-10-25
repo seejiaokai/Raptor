@@ -1035,9 +1035,11 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     ...(isFly(draft.type) && toOf(draft.to) ? { to: toOf(draft.to) } : {}),
     /* FILED UNDER UNAVAILABLE BY ITSELF (his D1372 a course, D1374 an Attach) or by its filer's "Goes to" (an Other — D1356):
        the same `acc:'u'` a scheduler's "→ Unavail" writes, so the schedule draws it under Unavailable and the Leave War
-       counts him out (D1357). Never for the board's Ground "+ Inputs" (a scheduler's own placement on the programme), nor
-       for ALL AVAIL / ALL, which is never under Unavailable (placeholderProblem). */
-    ...(!toGround && filingOf(draft.type, draft.goes) && !isSpecial(draft.person) ? { acc: 'u' } : {}),
+       counts him out (D1357) — from the board's Ground "+ Inputs" too (the code read's F1: there a one-man Other with Goes
+       to Unavailable, and an Attach, landed on the programme, the war counting him in, while the same window for two men
+       filed both under Unavailable; the filing wins, so one man and several agree) — never for ALL AVAIL / ALL, which is
+       never under Unavailable (placeholderProblem). */
+    ...(filingOf(draft.type, draft.goes) && !isSpecial(draft.person) ? { acc: 'u' } : {}),
     /* the till-date tick, where it was turned against its default (D953) — one that matches the saved dates' default is
        dropped by the write itself (state/store.ts runInputWrite → tillSettle) */
     ...(typeof draft.till === 'boolean' ? { till: draft.till } : {}),
@@ -1076,7 +1078,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
        day before — the upchit day is a fit day (owner, 27 Aug 26) — planned
        pure, applied here so the add and its trims are ONE undo step */
     if (medPlan) applyMedPlan(medPlan)
-    if (toGround) {
+    if (toGround && row.acc !== 'u') {
       /* the board's Ground "+ Inputs" is a DELIBERATE scheduler act — it lands
          the row on the programme whatever the day's publish state (an ordinary
          AL on a published day), and reports the one duplicate-content-key
@@ -2669,7 +2671,8 @@ export function InputEditor() {
       if (ok) {
         const shown = show(savedRow, r._calendar || CURPAGE === 'inputs')
         /* the place it is drawn: an input for ALL / ALL AVAIL stands on the Common Programme (owner D955) */
-        if (ctx === 'g') HOOKS.toast(`Input added to the ${progOf([...ppl, draft && draft.person])}`, 'ok'); else saidSaved(savedRow, shown, 'Input added')
+        /* …and from the Ground panel an input filed under Unavailable says so (the code read's F1) */
+        if (ctx === 'g') HOOKS.toast(savedRow && savedRow.acc === 'u' ? 'Input filed under Unavailable' : `Input added to the ${progOf([...ppl, draft && draft.person])}`, 'ok'); else saidSaved(savedRow, shown, 'Input added')
         close()
       }
       return
