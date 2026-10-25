@@ -619,7 +619,8 @@ describe('round 3 — the fresh read’s finds', () => {
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-10`))
     expect(within(sheet()).getByTestId('bid-tilldate').textContent).toMatch(/11 Feb/)
   })
-  it('N3: a refused bid in the list keeps Refuse in its place, pressed — a second tap changes nothing (D1330)', () => {
+  /* …since his D1361 (25 Oct 26) the second tap on that lit Refuse sends the bid back to waiting, as a lit Approve does */
+  it('N3: a refused bid in the list keeps Refuse in its place, pressed — a second tap sends it back to waiting (D1330, D1361)', () => {
     INPUTS.length = 0
     const ll = fileAbsence(P, 'LL', D, D, { lw: true })
     expect(setDayAward(P, D, 0.5, { note: 'Walk', givenBy: 'OC', half: 'am' })).toBeNull()
@@ -632,7 +633,7 @@ describe('round 3 — the fresh read’s finds', () => {
     const row = btn.parentElement!
     expect([...row.children].indexOf(btn), 'Refuse in its place, second').toBe(1)
     fireEvent.click(btn)
-    expect(rawState().wars[0]!.recs[P]![D]!.find((x: any) => x.kind === 'request')).toMatchObject({ state: 'refused' })
+    expect(rawState().wars[0]!.recs[P]![D]!.find((x: any) => x.kind === 'request')).toMatchObject({ state: 'pending' })
     expect(screen.getAllByTestId(/^dl-[a-z]-/).length, 'both entries still there').toBe(2)
   })
   it('N1: the calendar closed over another day’s armed Delete leaves nothing armed — this day’s Delete asks for its own award', () => {

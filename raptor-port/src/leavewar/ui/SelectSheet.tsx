@@ -329,8 +329,10 @@ export function SelectSheet({
           sheet's selection, so it has no How many (the one-day sheet's, D335). */}
       {(decideHere || hasBids || canDelete) && (
         <div className="bidsheet-row bp-acts" data-testid="sel-actions" role="group" aria-label="Actions">
-          {decideHere && <button className="dchip approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>}
-          {decideHere && <button className="dchip refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>}
+          {/* grey at rest, their words in their colours (his D1361) — over a drag nothing is lit: its days may hold
+              different answers */}
+          {decideHere && <button className="dchip dec approve" data-testid="sel-approve" onClick={() => decide('approved')}>Approve</button>}
+          {decideHere && <button className="dchip dec refuse" data-testid="sel-refuse" onClick={() => decide('refused')}>Refuse</button>}
           {hasBids && <MoveChip testid="sel-move" onClick={() => { keepWords(); onClose(); onMove(sel) }} />}
           {canDelete && <DeleteChip testid="sel-delete" armed={confirmDel} onClick={del} />}
         </div>

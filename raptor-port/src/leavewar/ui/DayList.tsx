@@ -232,9 +232,10 @@ export function DayListSheet({
          then Refuse, Move (this one leave into the move mode, no date box — D266) and Delete. */
       if (warOwned && isLeave && deciding) {
         actions.push(
-          <button key="p" className="dchip approve lit" aria-pressed="true" title="Approved — tap again to send it back to waiting"
-            data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'pending')) }}>Approve</button>,
-          <button key="r" className="dchip refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'refused')) }}>Refuse</button>,
+          /* the decided one solid and saying so (his D1361): "Approved" */
+          <button key="p" className="dchip dec approve lit" aria-pressed="true" title="Approved — tap again to send it back to waiting"
+            data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'pending')) }}>Approved</button>,
+          <button key="r" className="dchip dec refuse" data-testid={`dl-refuse-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'refused')) }}>Refuse</button>,
           ...moveBtn(c.id),
           <DeleteChip key="d" testid={`dl-remove-${c.id}`} onClick={() => { flushOf(c.id); act(() => changeAbsenceById(personId, date, c.id, 'removed')) }} />,
         )
@@ -262,11 +263,13 @@ export function DayListSheet({
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
-        actions.push(<button key="ap" className="dchip approve" data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
+        actions.push(<button key="ap" className="dchip dec approve" data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
         /* Refuse always in its place (his D1330: one row wherever it opens — the narrow read's N3: on a refused bid it was left
-           out, and the next button slid under a repeated tap); pressed on a refused bid, a tap then changing nothing, as the
-           one-day window's does */
-        actions.push(<button key="rf" className="dchip refuse" aria-pressed={c.state === 'refused'} data-testid={`dl-refuse-${c.id}`} onClick={() => { if (c.state === 'refused') return; flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'refused')) }}>Refuse</button>)
+           out, and the next button slid under a repeated tap). ON A REFUSED BID IT IS LIT (his D1355, D1361): solid red,
+           "Refused", and a second tap sends the bid back to waiting, as the lit Approve does */
+        const refused = c.state === 'refused'
+        actions.push(<button key="rf" className={`dchip dec refuse${refused ? ' lit' : ''}`} aria-pressed={refused} title={refused ? 'Refused — tap again to send it back to waiting' : undefined}
+          data-testid={`dl-refuse-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, refused ? 'pending' : 'refused')) }}>{refused ? 'Refused' : 'Refuse'}</button>)
       }
       actions.push(...moveBtn(c.id))
       if (editable || pendingHere.has(c.id)) actions.push(<DeleteChip key="cl" testid={`dl-clear-${c.id}`} onClick={() => act(() => clearRecordById(personId, date, c.id))} />)

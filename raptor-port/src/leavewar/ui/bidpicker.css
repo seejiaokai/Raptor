@@ -1716,8 +1716,19 @@
 .bidsheet .bp-acts > .bp-wide { grid-column: 1 / -1; }
 /* Approve LIT on an approved leave (D1330 — drawn by lw-twoday-look.mjs): the fill stronger, its edge solid green — the
    look an approved leave's Approve had never had */
-.bidsheet .dchip.approve.lit,
-.bidsheet .dl-acts .dchip.approve.lit { background: rgba(87, 201, 122, .45); color: #F2FFF5; border-color: rgba(87, 201, 122, 1); }
+/* …REDRAWN (his D1361, 25 Oct 26 — "Solid + word", answering D1348's "the contrast … is not that obvious"; drawn by
+   scripts/handpass/lw-1025-contrast.mjs, its README the measures): the decide buttons (`.dec` — Approve and Refuse in the
+   bid windows and the day's list, never the OIL panel's green "Give FO") rest grey, as Move does, their words in their
+   colours; the decided one is solid in its colour with dark words — 9.1 : 1 green, 5.6 : 1 red — and its word is the
+   state ("Approved", "Refused"). The solid colours are the chips' own green and red at full strength. */
+.bidsheet .dchip.dec.approve,
+.bidsheet .dl-acts .dchip.dec.approve { background: var(--panel-2); color: #8FE0A8; border-color: var(--edge); }
+.bidsheet .dchip.dec.refuse,
+.bidsheet .dl-acts .dchip.dec.refuse { background: var(--panel-2); color: #FFA6AD; border-color: var(--edge); }
+.bidsheet .dchip.dec.approve.lit,
+.bidsheet .dl-acts .dchip.dec.approve.lit { background: #57C97A; color: #0b1116; border-color: #57C97A; }
+.bidsheet .dchip.dec.refuse.lit,
+.bidsheet .dl-acts .dchip.dec.refuse.lit { background: #F0555F; color: #0b1116; border-color: #F0555F; }
 
 /* REMARKS AND DOCUMENT ON ONE ROW (change 4): the box takes the room, then its "till", then the Document button */
 .bidsheet .bp-words { flex-wrap: nowrap; align-items: flex-start; }

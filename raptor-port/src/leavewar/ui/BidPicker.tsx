@@ -281,12 +281,10 @@ export function BidPicker({
     /* THE LIT APPROVE TAPPED AGAIN SENDS THE LEAVE BACK TO WAITING (his D1330, round 3): on an approved leave Approve
        shows lit, and a second tap on it is what "Back to bid" was — the leave a pending bid again (D1177: the admin
        decides at any time). Only for the ONE day: over a picked range the days may hold other answers (D335). */
+    /* …AND SO DOES THE LIT REFUSE (his D1361, 25 Oct 26 — "a second tap on a lit Refuse sends the bid back to waiting, as a
+       second tap on a lit Approve does") */
     const again = !span && decide?.state === bid
-    if (again && bid === 'approved') bid = 'pending'
-    // Tapping any other answer it already holds is a NO-OP, not a failure (Fable,
-    // 21 Sep 26): the store returns "nothing decided" for it, which the line
-    // below would otherwise report as a refusal.
-    else if (again) return onClose()
+    if (again) bid = 'pending'
     const { decided } = setBidStates(selCells(), bid)
     if (decided > 0) return onClose()
     setMoveErr(span
@@ -528,7 +526,12 @@ export function BidPicker({
   const panelOpen = oilOpen || poOpen || piOpen
   /* the day's own leave, lit (round 3's change 7, his Q6): its button wears the ring — never on a free half beside leave
      filed on the Inputs page, where the leave named is the other half's */
-  const lit = dayLeave?.type ?? null
+  /* …and a REFUSED bid's leave wears it too (his D1355): the window says which leave was refused, as an approved leave's
+     says which was approved — its half is not lit (a refused bid holds no half of the day). Only beside the lit Refuse (an
+     admin's window): a member's window on his own refused bid has no Refuse, and a ring alone there read as leave he
+     holds (round 3's FULL check, the designer's S1 — `round3.test.tsx`) */
+  const refusedType = !onlyPortion && decide?.state === 'refused' ? parseCell(current)?.type ?? null : null
+  const lit = dayLeave?.type ?? (refusedType && LEAVE_TYPES.some(t => t.type === refusedType) ? refusedType : null)
 
   return (
     <Sheet testid="bid-picker" label="Place a bid" onClose={closeKeeping}>
@@ -561,23 +564,27 @@ export function BidPicker({
         <div className="bidsheet-row bp-acts" data-testid="bid-actions" role="group" aria-label="Actions">
           {canDecideHere && (
             <>
-              {/* Approve · Refuse — Ack is gone (D1158, 21 Oct 26): a bid simply waits until it is decided. */}
+              {/* Approve · Refuse — Ack is gone (D1158, 21 Oct 26): a bid simply waits until it is decided. THE DECIDED ONE
+                  SAYS SO (his D1361, D1355): both rest grey, their words in their colours; the entry's state is solid green
+                  or red with dark words and reads "Approved" or "Refused" — a change in kind, never a stronger shade (design
+                  lesson 54) — and a second tap on it sends the bid back to waiting. */}
               <button
-                className={`dchip approve${!span && decide?.state === 'approved' ? ' lit' : ''}`}
+                className={`dchip dec approve${!span && decide?.state === 'approved' ? ' lit' : ''}`}
                 data-testid="decide-approve"
                 aria-pressed={!span && decide?.state === 'approved'}
                 title={!span && decide?.state === 'approved' ? 'Approved — tap again to send it back to waiting' : undefined}
                 onClick={() => answer('approved')}
               >
-                Approve
+                {!span && decide?.state === 'approved' ? 'Approved' : 'Approve'}
               </button>
               <button
-                className="dchip refuse"
+                className={`dchip dec refuse${!span && decide?.state === 'refused' ? ' lit' : ''}`}
                 data-testid="decide-refuse"
                 aria-pressed={!span && decide?.state === 'refused'}
+                title={!span && decide?.state === 'refused' ? 'Refused — tap again to send it back to waiting' : undefined}
                 onClick={() => answer('refused')}
               >
-                Refuse
+                {!span && decide?.state === 'refused' ? 'Refused' : 'Refuse'}
               </button>
             </>
           )}
