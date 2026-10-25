@@ -77,6 +77,19 @@ No console or page errors in any run.
 - Looked at: `kbs/other-latepan-visible-phone.png` — the visible screen after the pan, cut to it: the title, Remarks, Cancel / Add.
 - The pull request's GitHub run — read after the push.
 
+## The third round — his recordings of 08:05 (the fixed build)
+
+"Sometimes it works": with the iPhone's key/card/pin bar over the keys the window behaved; with its ˄ ˅ ✓ form bar ("Other"
+and OD, the window opened from a calendar day) it was held short, its title off the top, a band of some 110 points under it,
+Remarks behind Cancel / Add. Read from the frames: the phone had panned the visible screen down past the window's own place as
+the keys came; the hold pinned a window by raising it only (a shift never below zero), so it stayed where it stood. **Fix:** the
+pin moves a window up or down to the visible top, and a window that fits comes down to it too — below its own place only when
+the phone panned past that place (a full-screen panel at the top is left where it is: two older cases caught a first, wider
+version). Red first: two cases (`a window the phone panned past`) failed on the previous code; KS3f in the browser (OD, the keys
+and a pan of 186 together). `?kbdebug` added to read his phone's numbers if anything is left. Gates: `kbscroll.test.ts` 36 / 36,
+`amendbatch-app.test.tsx` with it 43 / 43, `e2e/kbscroll.spec.ts` 13 / 13 (built under the lock). Looked at:
+`kbs/other-kbdebug-visible-phone.png` — the readout's lines and the window following the pan.
+
 **Walk:** WALK — the input window (Other, Training, LL) at four keyboards and Holidays' form, phone 402, Chromium with a
 stand-in keyboard; 14 runs, every picture taken after the tap; 0 left under the buttons (was 33px of 33); then his recording's
 late pan, replayed at two sizes on the fixed build — the window follows, no band, the title in sight; his iPhone not yet.

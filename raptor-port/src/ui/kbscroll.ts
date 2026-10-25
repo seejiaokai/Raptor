@@ -130,8 +130,10 @@ function lift(sc: Element, el: HTMLElement, bot: number, top: number): number {
 const LIFTED = new Set<HTMLElement>()
 const shiftOf = (l: HTMLElement) => +(l.dataset.kblift || 0)
 const held = (l: HTMLElement) => l.dataset.kbcap != null
+/* `s` up the screen; below zero, down it — a window the phone's own pan left above the visible screen comes down to it
+   (his recordings of 25 Oct 26 08:05, below at pin) */
 function setShift(l: HTMLElement, s: number) {
-  if (s > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l); return }
+  if (Math.abs(s) > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l); return }
   l.style.translate = ''; delete l.dataset.kblift
   if (!held(l)) LIFTED.delete(l)
 }
@@ -168,10 +170,16 @@ export function dropLifts(keep?: Element | null) {
   for (const l of [...FULL]) if (!keep || !l.contains(keep)) unholdFull(l)
   if (!keep && SPACER) { SPACER.remove(); SPACER = null }
 }
-/* a held window: held to the room again (the room may have changed), its top at the top */
+/* a held window: held to the room again (the room may have changed), its top at the top — UP OR DOWN (his recordings of
+   25 Oct 26 08:05, "Other" and OD, Remarks tapped: the iPhone had panned the visible screen down past where the window's own
+   place puts it, and the hold, which only ever raised a window, left it there — its title off the screen, a band of some 110
+   points between its foot and the keys, Remarks at its foot behind Cancel / Add) */
 function pin(l: HTMLElement, s0: number, visTop: number, visBot: number) {
   cap(l, visBot - visTop - 2 * GAP)
-  setShift(l, Math.max(0, s0 + l.getBoundingClientRect().top - (visTop + GAP)))
+  /* where the window's own place is (its top, less the shift it wears); below it only when the phone panned past it */
+  const own = l.getBoundingClientRect().top + s0
+  const s = own - (visTop + GAP)
+  setShift(l, own < visTop - 0.5 ? s : Math.max(0, s))
 }
 function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: number): number {
   const fr = fixedEl.getBoundingClientRect()
@@ -196,9 +204,13 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: nu
     pin(layer, s0, visTop, visBot)
     return 1
   }
-  const d = need > 0 ? Math.min(need, room) : Math.max(need, -s0)
+  let d = need > 0 ? Math.min(need, room) : Math.max(need, -s0)
+  /* a window that fits, its top left above the visible screen by the phone's own pan (his recordings of 25 Oct 26 08:05):
+     down to the visible top, past where it stands if need be — only then; otherwise never below where it stood */
+  const below = lr.top + s0 < visTop - 0.5 && lr.top - d < visTop + GAP - 0.5
+  if (below) d = lr.top - (visTop + GAP)
   if (Math.abs(d) < 0.5) return 0
-  setShift(layer, Math.max(0, s0 + d))
+  setShift(layer, below ? s0 + d : Math.max(0, s0 + d))
   return Math.abs(shiftOf(layer) - s0)
 }
 
@@ -333,9 +345,12 @@ export function installKbScroll(): () => void {
     if (!box || document.activeElement !== box || !box.isConnected || !keyboardUp(vv)) return
     /* a pan long after the focus: the window follows the visible screen, and nothing inside it is scrolled — a box he
        scrolled away from in it stays where he put it */
-    if (onlyWindow) { onlyWindow = false; const l = layerOf(box); if (l) raise(l, box, vv!.offsetTop, vv!.offsetTop + vv!.height); return }
+    if (onlyWindow) { onlyWindow = false; const l = layerOf(box); if (l) raise(l, box, vv!.offsetTop, vv!.offsetTop + vv!.height); placed('placed-win'); return }
     keepAboveKeyboard(box, vv!)
+    placed('placed')
   }
+  /* the readout's line after each placing (below); a no-op without ?kbdebug */
+  let placed: (ev: string) => void = () => {}
   /* two frames on: the board and the sheets re-fit themselves to the same resize first (their own listeners), and the
      box is measured where they left it */
   const soon = (windowOnly = false) => {
@@ -390,6 +405,35 @@ export function installKbScroll(): () => void {
     vvNow = vv; vvNow?.addEventListener('resize', resize); vvNow?.addEventListener('scroll', scroll)
   }
   follow(); noteFullHeight()
+  /* THE PHONE'S OWN NUMBERS ON SCREEN, ON ASKING (his recordings of 25 Oct 26 — Chromium cannot raise an iPhone's keyboard,
+     so what his phone does is read off his screen): with `?kbdebug` in the address, a small box at the top of the visible
+     screen shows the layout's height, the visible screen's height and pan, whether the keys count as up, and the window of
+     the box typed in — its top and foot, its hold and shift — line by line as each event comes. Nothing without it. */
+  const debug = typeof location !== 'undefined' && /[?&]kbdebug\b/.test(location.search)
+  let dbgEl: HTMLElement | null = null
+  const dbgLines: string[] = []
+  const dbg = (ev: string) => {
+    if (!debug) return
+    if (!dbgEl) {
+      dbgEl = document.createElement('div'); dbgEl.setAttribute('aria-hidden', 'true')
+      Object.assign(dbgEl.style, { position: 'fixed', left: '0', zIndex: '2147483647', pointerEvents: 'none', font: '10px/1.3 monospace', color: '#7CFC7C', background: 'rgba(0,0,0,.8)', padding: '2px 4px', whiteSpace: 'pre', maxWidth: '100vw' })
+      document.body.appendChild(dbgEl)
+    }
+    const vv = window.visualViewport
+    const l = box ? layerOf(box) : null, r = l?.getBoundingClientRect()
+    const t = box ? Date.now() - at : 0
+    dbgLines.push(`${t}ms ${ev} iH${Math.round(window.innerHeight)} vv${vv ? Math.round(vv.height) + '@' + Math.round(vv.offsetTop) : '-'} ${keyboardUp(vv) ? 'UP' : 'dn'}` +
+      (r ? ` win${Math.round(r.top)}-${Math.round(r.bottom)} cap${l!.style.getPropertyValue('--kbcap') || '-'} sh${l!.dataset.kblift || 0}` : ''))
+    while (dbgLines.length > 9) dbgLines.shift()
+    dbgEl.textContent = dbgLines.join('\n')
+    dbgEl.style.top = Math.round(vv ? vv.offsetTop : 0) + 'px'
+  }
+  if (debug) {
+    placed = dbg
+    for (const [tgt, ev] of [[document, 'focusin'], [window, 'resize']] as const) tgt.addEventListener(ev, () => requestAnimationFrame(() => dbg(ev)), true)
+    window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(() => dbg('vv-resize')))
+    window.visualViewport?.addEventListener('scroll', () => requestAnimationFrame(() => dbg('vv-scroll')))
+  }
   const focusAlso = (e: FocusEvent) => { follow(); focusin(e) }
   document.addEventListener('focusin', focusAlso, true)
   document.addEventListener('focusout', focusout, true)

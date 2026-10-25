@@ -22,14 +22,21 @@ await page.addInitScript(() => {
   Object.defineProperty(window, 'visualViewport', { configurable: true, get: () => f })
   window.__vv = f
 })
-await page.goto(`http://localhost:${PORT}/`)
+await page.goto(`http://localhost:${PORT}/${process.env.KBDEBUG ? '?kbdebug' : ''}`)
 await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
 await page.click('#loginForm button[type=submit]')
 await page.waitForSelector('#vWeek .day', { state: 'attached' })
 await page.evaluate(() => window.go('inputs')); await page.waitForTimeout(600)
 /* the stand-in starts from the size the page had before its width was set; give it the real screen, as a phone's is */
 await page.evaluate(() => { const v = window.__vv; v.height = innerHeight; v.width = innerWidth; v.dispatchEvent(new Event('resize')) })
-await page.click('#inListBtn'); await page.click('#inNew')
+if (process.env.FROM === 'day') {
+  /* his recordings of 08:05: the window opened from a calendar day's panel ("+ Input"), the day panel left open behind it */
+  await page.click('#inCalBtn'); await page.waitForTimeout(400)
+  const cell = page.locator('[data-icday]').nth(10)
+  const cb = await cell.boundingBox(); await page.touchscreen.tap(cb.x + cb.width / 2, cb.y + cb.height / 2)
+  await page.locator('[data-testid="win-inputsday"]').waitFor()
+  await page.locator('#icPopAdd').click()
+} else { await page.click('#inListBtn'); await page.click('#inNew') }
 const win = page.locator('[data-testid="win-inputedit"]')
 await win.waitFor()
 /* the Type box: the window's select that offers the kind (the first select can be the person's) */
@@ -50,7 +57,9 @@ const geo = async tag => {
     const covered = (() => { const f = w.querySelector('.airpop-foot'); if (!f || !r) return null; const a = r.getBoundingClientRect(), b = f.getBoundingClientRect(); return Math.round(Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top))) })()
     const foot = w.querySelector('.airpop-foot')
     return { win: R(w), body: body ? R(body) : null, bodyScroll: body ? [Math.round(body.scrollTop), body.scrollHeight, body.clientHeight] : null, rmk: R(r), foot: foot ? R(foot) : null,
-      translate: w.style.translate, kbcap: w.style.getPropertyValue('--kbcap'), maxH: getComputedStyle(w).maxHeight, vv: [window.__vv.offsetTop, window.__vv.height], focused: document.activeElement === r, rmkUnderFoot: covered }
+      translate: w.style.translate, kbcap: w.style.getPropertyValue('--kbcap'), maxH: getComputedStyle(w).maxHeight, vv: [window.__vv.offsetTop, window.__vv.height], focused: document.activeElement === r, rmkUnderFoot: covered,
+      day: (() => { const d = document.querySelector('[data-testid="win-inputsday"]'); return d ? R(d) : null })(),
+      chain: (() => { const out = []; for (let a = r.parentElement; a && a !== document.body; a = a.parentElement) { const cs = getComputedStyle(a); if (cs.position === 'fixed' || cs.transform !== 'none' || a.dataset.kbcap != null || a.dataset.kblift) out.push((a.getAttribute('data-testid') || a.className.toString().slice(0, 30)) + ':' + cs.position + (cs.transform !== 'none' ? ':T' : '') + (a.dataset.kbcap != null ? ':held' : '') + (a.dataset.kblift ? ':lift' + a.dataset.kblift : '')) } return out.join(' > ') })() }
   })
   console.log(tag, JSON.stringify(g))
   return g
@@ -65,7 +74,7 @@ if (process.env.SHRINK) await page.setViewportSize({ width: 402, height: H - KB 
 await page.evaluate(([kb, h]) => { const v = window.__vv; v.height = h - kb; v.dispatchEvent(new Event('resize')) }, [KB, H])
 await page.waitForTimeout(500)
 await geo('keys up')
-await page.screenshot({ path: `${OUT}/${KIND.toLowerCase()}-${MODE}-h${H}${process.env.SHRINK ? '-shrink' : ''}-1-keysup.png` })
+await page.screenshot({ path: `${OUT}/${KIND.toLowerCase()}-${MODE}-h${H}${process.env.SHRINK ? '-shrink' : ''}${process.env.FROM ? '-' + process.env.FROM : ''}-1-keysup.png` })
 if (MODE === 'pan') {
   /* the phone's own pan: it scrolls the visible screen down so the focused box (where it lies in the layout) shows above the keys */
   if (PAN_MS) await page.waitForTimeout(PAN_MS)
@@ -76,7 +85,7 @@ if (MODE === 'pan') {
   }, PAN)
   await page.waitForTimeout(500)
   await geo('after pan')
-  await page.screenshot({ path: `${OUT}/${KIND.toLowerCase()}-${MODE}-h${H}${process.env.SHRINK ? '-shrink' : ''}-2-afterpan.png` })
+  await page.screenshot({ path: `${OUT}/${KIND.toLowerCase()}-${MODE}-h${H}${process.env.SHRINK ? '-shrink' : ''}${process.env.FROM ? '-' + process.env.FROM : ''}-2-afterpan.png` })
 }
 await page.keyboard.type('a'); await page.waitForTimeout(300)
 await geo('after a key')

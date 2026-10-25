@@ -843,7 +843,13 @@ own body scrolls the box into sight. **A window raised or held for the keys foll
 they are up and its box has the focus (his recording, 25 Oct 26 07:40 — the iPhone's password bar rose and the phone panned
 the screen some 170 points down after the focus window below; the held window stayed behind, its top off the screen, a band
 under it):** a late pan moves the window alone, nothing inside it scrolled; a late change of the room holds it to the new
-room and keeps its box in sight. **A panel's own pinned foot is kept clear (his report, 25 Oct 26 07:06 — the input
+room and keeps its box in sight. **And it comes DOWN to the visible screen when the phone panned past its own place (his
+recordings of 25 Oct 26 08:05, "Other" and OD with the ˄ ˅ ✓ bar):** the hold used to raise a window only, so a window whose
+own place lay above the visible screen stayed there — its title off the top, a band under it; now it is pinned to the visible
+top up or down, and a window that fits is brought down to it — below its own place only then. **`?kbdebug` in the address**
+shows the phone's own numbers in a small box at the top of the visible screen (the layout's height, the visible screen's height
+and pan, the keys up or down, the window's top, foot, hold and shift, event by event) — for reading a fault off his recording.
+**A panel's own pinned foot is kept clear (his report, 25 Oct 26 07:06 — the input
 window on his iPhone, "Other", Remarks tapped: Document, then Cancel / Add, no Remarks):** the floor a box is lifted to in a
 scrolling panel stands above what the panel covers at its edges — its `scroll-padding` (the input window's 64px) and a button
 row it holds sticky at its foot (its last child, three deep, measured as it stands — Holidays' buttons) — so a window held
@@ -871,7 +877,7 @@ the measuring back two frames, so the lift never adds to a pan the phone is stil
 itself — on his iPhone a focus given at the end of the touch never took (his recording of 19 Oct 26 16:59); the tap is the
 browser's. The keys count
 as up against the tallest visible screen seen at this width with nothing typed in (never one read taller than the layout). Pinned: `ui/kbscroll.test.ts`,
-`ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS8, KS3d (the pinned foot) and KS3e (a late pan) (a stand-in visual viewport —
+`ui/amendbatch-app.test.tsx` (the board as page content), `e2e/kbscroll.spec.ts` KS1–KS8, KS3d (the pinned foot), KS3e (a late pan) and KS3f (a pan past the window) (a stand-in visual viewport —
 Chromium cannot raise an iPhone keyboard).
 
 **A button pressed straight after a changed box does its job (`[EDIT-BUTTON-AFTER-CHANGE]`, 19 Oct 26).** The press

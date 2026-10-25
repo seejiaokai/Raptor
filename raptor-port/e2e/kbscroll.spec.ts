@@ -186,6 +186,35 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     expect(bBot, 'and above the keys').toBeLessThanOrEqual(H - kb - GAP + 1)
   })
 
+  /* KS3f — his recordings of 25 Oct 26 08:05 ("Other", OD, the ˄ ˅ ✓ bar): the phone panned the visible screen down past the
+     window's own place as the keys came, and the hold — which only ever raised a window — left its title off the screen and
+     a band between its foot and the keys. */
+  test('KS3f the phone pans past the window as the keys come: the held window comes down to the visible top, no band, Remarks shown', async ({ page }) => {
+    await login(page); await go(page, 'inputs')
+    await page.click('#inListBtn'); await page.click('#inNew')
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    await page.evaluate(() => {
+      const s = [...document.querySelectorAll('[data-testid="win-inputedit"] select')].find(s => [...(s as HTMLSelectElement).options].some(o => o.text.trim() === 'OD'))
+      s!.setAttribute('data-kind-sel', '')
+    })
+    await win.locator('select[data-kind-sel]').selectOption({ label: 'OD' })
+    const box = page.locator('#inpEditRmk'), foot = win.locator('.airpop-foot')
+    await box.evaluate(e => e.scrollIntoView({ block: 'nearest' }))
+    await page.waitForTimeout(600)
+    await tap(page, box); await expect(box).toBeFocused()
+    const kb = 460, PAN = 186
+    /* the keys and the phone's own pan together, as his recording shows them */
+    await page.evaluate(([k, p]) => { const v = (window as any).__vv; v.height = innerHeight - k; v.offsetTop = p; v.pageTop = p; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) }, [kb, PAN])
+    await expect.poll(() => win.evaluate((e, p) => Math.round(e.getBoundingClientRect().top - p), PAN), { message: 'its title at the visible top' }).toBeGreaterThanOrEqual(0)
+    const winBot = await win.evaluate((e, p) => Math.round(e.getBoundingClientRect().bottom - p), PAN)
+    expect(winBot, 'no band left between the window and the keys').toBeGreaterThanOrEqual(H - kb - 3 * GAP)
+    const bBot = await box.evaluate((e, p) => Math.round(e.getBoundingClientRect().bottom - p), PAN)
+    const fTop = await foot.evaluate((e, p) => Math.round(e.getBoundingClientRect().top - p), PAN)
+    expect(bBot, 'Remarks above Cancel / Add').toBeLessThanOrEqual(fTop)
+    expect(bBot, 'and above the keys').toBeLessThanOrEqual(H - kb - GAP + 1)
+  })
+
   /* KS6 — D1081 (his recordings: the board a frame or three out of place as the keys closed, first when it followed the
      visible screen on its events, still when it followed frame by frame). The board is no longer placed by script at all:
      it keeps the layout's full size whatever the visible screen does, so it moves with the iPhone's own scroll. And a

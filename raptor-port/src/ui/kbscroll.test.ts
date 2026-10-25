@@ -235,6 +235,43 @@ describe('a window that cannot scroll is raised instead', () => {
   })
 })
 
+/* HIS RECORDINGS, 25 Oct 26 08:05 — "Other" and OD, Remarks tapped, the iPhone's ˄ ˅ ✓ bar over the keys: the phone had
+   panned the visible screen down (offsetTop 186) past where the window's own place puts it (its top at 12), and the hold,
+   which only ever raised a window, left it there: its title off the screen, a band between its foot and the keys. */
+describe('a window the phone panned past', () => {
+  const vvPanned = { height: 416, offsetTop: 186, scale: 1 }   // the visible screen: 186–602 of the layout
+  afterEach(() => dropLifts())
+  const tall = (h: number) => {
+    document.body.innerHTML = '<div id="w" style="position:fixed"><input id="b"></div>'
+    const w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    let st = 0
+    w.style.overflowY = 'auto'
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : h)
+    Object.defineProperty(w, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(Math.max(0, 700 - wh()), v)) } })
+    Object.defineProperty(w, 'scrollHeight', { configurable: true, get: () => Math.max(700, wh()) })
+    Object.defineProperty(w, 'clientHeight', { configurable: true, get: () => wh() })
+    w.getBoundingClientRect = () => { const top = 12 - +(w.dataset.kblift || 0); return { top, bottom: top + wh(), left: 0, right: 100, width: 100, height: wh(), x: 0, y: top, toJSON() {} } as DOMRect }
+    return { w, b }
+  }
+  it('a window taller than the room: held to it and brought DOWN to the visible top — no band, the title in sight, the box shown', () => {
+    const { w, b } = tall(700)
+    place(b, 470, 30)                                          // in sight of the visible screen (186–602) already
+    keepAboveKeyboard(b, vvPanned)
+    expect(w.style.getPropertyValue('--kbcap')).toBe(`${416 - 2 * GAP}px`)
+    expect(w.getBoundingClientRect().top, 'its title at the visible top').toBe(186 + GAP)
+    expect(w.getBoundingClientRect().bottom, 'its foot at the keys, no band').toBe(186 + 416 - GAP)
+    expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(186 + GAP)
+    expect(b.getBoundingClientRect().bottom).toBeLessThanOrEqual(186 + 416 - GAP)
+  })
+  it('a window that fits, its top above the visible screen: brought down to the visible top, not held', () => {
+    const { w, b } = tall(300)
+    place(b, 200, 30)
+    keepAboveKeyboard(b, vvPanned)
+    expect(w.dataset.kbcap).toBeUndefined()
+    expect(w.getBoundingClientRect().top).toBe(186 + GAP)
+  })
+})
+
 describe('keyboardUp', () => {
   it('reads a keyboard from a visible screen much shorter than the layout, never while pinch-zoomed', () => {
     expect(keyboardUp(vvUp)).toBe(true)
