@@ -2,7 +2,7 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { inputLinesOn, inputReadPass, isAway, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
+import { inputLinesOn, inputReadPass, isAway, isPersonal, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
 import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { esc, ARM, ROSDAY } from '../state/view'
@@ -114,6 +114,12 @@ function paletteHTMLBody(di:any,opts?:any){
   const armKey=ARM?String(ARM.key):'';
   /* a man only standing by is not "tasked" in this list (owner D1120) — dayEngaged asked to leave standby rows out */
   const eng0=d.dow?dayEngaged(d,true):new Set(), off=d.dow?dayOff(d):new Set();
+  /* A COMMITMENT UNDER UNAVAILABLE WITH HOURS READS AS TASKED (the walk of the M3 code read's Q2, 25 Oct 26). On the
+     Ground Programme its row faded him here; under Unavailable (D1372 a course by itself, D1357 one a scheduler moves
+     there) it has no row, and with nothing picked only a WHOLE-DAY absence is crossed out (`off`) — so a course filed with
+     its hours stood in full colour as free. Faded as already tasked, as its row did; a picked seat still judges its
+     hours (slotBar), and an all-day one is crossed out through `off`. isAway already leaves out a cancelled one. */
+  if(d.dow)inputLinesOn(d.dt).forEach((i:any)=>{if(isAway(i)&&isPersonal(i.type)&&!awayAllDay(i)&&PEOPLE[i.person]&&!PEOPLE[i.person].special)eng0.add(i.person);});
   const sby0=d.dow?dayStandby(d):new Map();
   /* AN ARMED SLOT CHANGES WHAT THE PALETTE IS SAYING.
      Ordinarily the pucks are faded by whether the man is tasked anywhere on the
