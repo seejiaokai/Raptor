@@ -68,6 +68,24 @@ describe('the drag window\'s typed words are kept, replacing the days\' own (D13
     }
   })
 
+  /* POST IN AND POST OUT KEEP THEM TOO (the night of 26 Oct 26 — the code read's F2): the window closed on the posting
+     before its words were written; the one-day window writes them first (BidPicker flushWords) */
+  it('Post in and Post out: the typed words are saved on every dragged bid before the posting', () => {
+    for (const [press, confirm] of [['sel-postin', 'sel-pi-confirm'], ['sel-postout', 'sel-po-confirm']] as const) {
+      twoBids()
+      const done = render(<SelectSheet sel={sel as any} people={() => 'Dusk'} role="admin" canDecide
+        onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} onPostIn={() => undefined} />)
+      type('Exercise')
+      fireEvent.click(screen.getByTestId('sel-more'))
+      fireEvent.click(screen.getByTestId(press))
+      fireEvent.click(screen.getByTestId(confirm))
+      expect(reqs(D1)[0]?.remarks, press).toBe('Exercise')
+      expect(reqs(D2)[0]?.remarks, press).toBe('Exercise')
+      done.unmount()
+      setCell(P, D1, ''); setCell(P, D2, '')
+    }
+  })
+
   it('Move: the typed words are saved on every dragged bid before the move starts', () => {
     twoBids()
     mount()

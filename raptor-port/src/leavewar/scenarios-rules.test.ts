@@ -51,6 +51,7 @@ let n = 0
 const file = (person: string, type: string, date: string, extra: Record<string, any> = {}) => {
   const row: any = { iid: `q${++n}`, person, type, date, yr: 2026, allday: true, remarks: '', mod: '2026-02-01', ...extra }
   if (row.allday === false) delete row.allday
+  if (type === 'CSE' && !('acc' in extra)) row.acc = 'u'   // a course is filed under Unavailable by itself (D1372)
   const ok = writeInputs(() => { INPUTS.unshift(row) })
   return { ok, row }
 }

@@ -7,7 +7,7 @@
 // second initStore, exactly as the app's persisted Inputs do.
 import { beforeEach } from 'vitest'
 import '../testing/marks-guard'   // every validate() this suite runs is checked too ([WARN-HIDE-KEPT])
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, filingOf, inpId } from '../engine/inputs'
 import { SEED_ABSENCES, seedWars, setMemberTodayForTests, warHolding } from './engine'
 import { inputRowFor } from './absences'
 import { _setInitHook } from './state/store'
@@ -28,6 +28,7 @@ beforeEach(() => {
   for (const a of SEED_ABSENCES) {
     const war = warHolding(wars, a.date)
     const row = inputRowFor({ person: a.person, code: a.code, from: a.date, to: a.endDate ?? a.date, lw: a.lw && war ? war.period.id : undefined, mod: '2026-01-01' })
+    if (filingOf(row.type, 'u')) row.acc = 'u'   // filed where its kind lands, as the app's demo world files it (D1372)
     inpId(row)
     INPUTS.push(row)
   }

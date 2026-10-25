@@ -21,7 +21,7 @@
 // database to come. The memory backend is now the dev/test path only
 // and re-keying it would corrupt it.
 
-import { INPUTS, inpId } from '../../engine/inputs'
+import { INPUTS, filingOf, inpId } from '../../engine/inputs'
 import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type ManningRule, type Recs } from '../engine'
 import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
@@ -262,6 +262,9 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
       const person = DEMO_MAP[a.person] ?? a.person
       const war = warHolding(wars, a.date)
       const row = inputRowFor({ person, code: a.code, from: a.date, to: a.to, lw: a.lw && war ? war.period.id : undefined, mod: '2026-01-01' })
+      /* filed where its kind lands, as a course filed on the Inputs page or from the war is (D1372 — sync.ts): the demo's
+         course stands under Unavailable, so the war counts it (it asks only Unavailable, D1389 — the night's code read F1) */
+      if (filingOf(row.type, 'u')) row.acc = 'u'
       if (INPUTS.some((x: any) => x.person === row.person && x.date === row.date && x.yr === row.yr && x.type === row.type)) continue
       inpId(row)
       INPUTS.push(row)

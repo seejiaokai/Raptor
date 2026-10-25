@@ -129,11 +129,19 @@ function isAwayKind(type: unknown): boolean {
 export function warCounts(row: any): boolean {
   if (!row || typeof row !== 'object') return false
   /* A COURSE OR AN OVERSEAS DUTY A SCHEDULER TOOK OUT OF UNAVAILABLE COUNTS HIM BACK IN (his D1381, D1389, D1390 —
-     26 Oct 26): rejected ('r'), or rejected and then put on the Ground Programme ('g'), it no longer lowers the manning,
-     the Available rows or the SANS calendar's need — only Unavailable counts him out, as for every other commitment. Filed
-     (under Unavailable by itself, 'u', or an overseas duty sitting there by its kind with no mark) it still does. Leave
-     and medical are not filed this way and count wherever they sit. */
-  if (isAwayKind(row.type) && (row.acc === 'r' || row.acc === 'g')) return false
+     26 Oct 26): only Unavailable counts him out, as for every other commitment. The war asks what the schedule asks
+     (engine/inputs.ts isAway — the night's code read, F1):
+       - a COURSE is a commitment: out only while it stands under Unavailable ('u', where it lands by itself, D1372) and is
+         neither cancelled nor information only. Rejected ('r'), on the Ground Programme ('g') — or with NO mark, which is
+         what a course on the Ground Programme carries while its week is not on screen (state/holderbase.ts works 'g' out
+         for the week on screen only) — it counts him in; reading "no mark" as filed counted him out again the moment the
+         scheduler looked at another week.
+       - an OVERSEAS DUTY sits under Unavailable by its kind, mark or none: out unless a scheduler took it out ('r', 'g').
+     Leave and medical are not filed this way and count wherever they sit. */
+  if (isAwayKind(row.type)) {
+    if (String(row.type).trim().toUpperCase() === 'CSE') return row.acc === 'u' && !inputSilent(row)
+    return row.acc !== 'r' && row.acc !== 'g'
+  }
   if (warVisible(row.type)) return true
   /* …unless it is cancelled or information only: silent everywhere else — no warning, no OIL, free for ALL AVAIL — so on
      the war too (the code read's F2) */

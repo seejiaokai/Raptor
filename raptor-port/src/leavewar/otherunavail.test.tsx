@@ -54,10 +54,20 @@ describe('the war counts every commitment under Unavailable (D1357), and only th
   it('a course or an overseas duty: filed, out; rejected or moved onto the Ground Programme, in (D1381, D1389, D1390)', () => {
     for (const type of ['CSE', 'OD']) {
       expect(warCounts(row({ type, acc: 'u' })), `${type} under Unavailable`).toBe(true)
-      expect(warCounts(row({ type })), `${type} with no filing mark`).toBe(true)
       expect(warCounts(row({ type, acc: 'r' })), `${type} rejected`).toBe(false)
       expect(warCounts(row({ type, acc: 'g' })), `${type} rejected, then on the Ground Programme`).toBe(false)
     }
+  })
+  /* …AND THE WAR ASKS WHAT THE SCHEDULE ASKS (the night's code read, F1): a course is a commitment — out only under
+     Unavailable, as engine/inputs.ts isAway reads it. Its "on the Ground Programme" mark is worked out for the week on
+     screen only (state/holderbase.ts), so off that week a course a scheduler put there carries NO mark: it must not count
+     him out again. An overseas duty sits under Unavailable by its kind, mark or none. A cancelled or information-only
+     course is silent, as on the schedule. */
+  it('a course with no mark (on the Ground Programme, its week not on screen) or cancelled counts him in; an overseas duty with no mark out', () => {
+    expect(warCounts(row({ type: 'CSE' })), 'a course with no mark').toBe(false)
+    expect(warCounts(row({ type: 'CSE', acc: 'u', cx: true })), 'a cancelled course under Unavailable').toBe(false)
+    expect(warCounts(row({ type: 'CSE', acc: 'u', info: true })), 'an information-only course under Unavailable').toBe(false)
+    expect(warCounts(row({ type: 'OD' })), 'an overseas duty with no mark').toBe(true)
   })
   it('each kind its letters — OTH an Other, ATCH an Attach (D1375); a course keeps CSE', () => {
     expect(warCodeOf('Other')).toBe('OTH')
@@ -155,6 +165,9 @@ describe('the Inputs page files them (the one save)', () => {
     expect(viewOn()?.all.some(c => c.code === 'CSE') ?? false, 'rejected: no CSE box on the war').toBe(false)
     r.acc = 'g'; raptorNotify()
     expect(viewOn()?.away ?? 0, 'on the Ground Programme: in').toBe(0)
+    /* the schedule on another week: its "on the Ground Programme" mark is gone (state/holderbase.ts) — still in (F1) */
+    delete r.acc; raptorNotify()
+    expect(viewOn()?.away ?? 0, 'on the Ground Programme, its week not on screen: still in').toBe(0)
     r.acc = 'u'; raptorNotify()
     expect(viewOn()?.away, 'under Unavailable again: out').toBe(1)
   })

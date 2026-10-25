@@ -444,6 +444,8 @@ export function SelectSheet({
             <button className="dchip po" data-testid="sel-pi-confirm" disabled={!piDate}
               onClick={() => {
                 /* a refused posting keeps the window and says why, as Post out's does (AB5) */
+                /* the words typed in the box go with the press, as the one-day window's flushWords (D1339; the code read's F2) */
+                keepWords()
                 const why = onPostIn(sel.people[0], piDate)
                 if (why) { setNoteAt('end'); setNote(why); return }
                 onDone(true)
@@ -477,6 +479,7 @@ export function SelectSheet({
               onClick={() => {
                 if (poOutcome === 'delete' && !delArmed) { setDelArmed(true); return }
                 /* a refused posting keeps the sheet and says why (AB5) — it used to report done whatever the store said */
+                keepWords()   // the typed words go with the press (D1339; the code read's F2)
                 const why = onPostOut(sel.people[0], poDate, poOutcome)
                 setDelArmed(false)
                 if (why) { setNoteAt('end'); setNote(why); return }
