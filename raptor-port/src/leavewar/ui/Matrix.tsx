@@ -1470,7 +1470,15 @@ export function Matrix() {
      desktop: `show` — "Show ›" is offered only while the Manning rows are out of view (read when it is raised, and again
      as the page scrolls); `lv`: the worst level it names — the bubble wears that colour (his D1344); its words are each
      row's figures (D1360, D1364 — `bubbleParts`) */
-  const [bubble, setBubble] = useState<{ lead: string; pairs: { label: string; fig: string; lv: 'amber' | 'red' }[]; text: string; show: boolean; lv: 'amber' | 'red' } | null>(null)
+  const [bubble, setBubble] = useState<{ lead: string; pairs: { label: string; fig: string; lv: 'amber' | 'red' }[]; text: string; show: boolean; lv: 'amber' | 'red'; lift?: number } | null>(null)
+  /* ABOVE A RESTING DAY PANEL ([LW-NIGHT1025-OLDER] (g) — on a phone the day panel rests at the foot, over where the note
+     sat): the note is lifted to stand just above the panel's top while one is up, read when raised and as the page scrolls */
+  const panelLift = (): number => {
+    const w = document.querySelector('[data-testid="win-lwday"]') as HTMLElement | null
+    if (!w) return 0
+    const r = w.getBoundingClientRect()
+    return r.height > 0 && r.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - r.top)) : 0
+  }
   const flaggedNow = (): BubbleFlags => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
        never reported as turned amber (the scenario designer's find, 23 Oct 26); and its figure, so a row already amber or
@@ -1522,7 +1530,7 @@ export function Matrix() {
     setCountsOpen(true)
     const lv = [...worst.values()].some(w => w.lv === 'red') ? 'red' : 'amber'
     const filed = filedSince(before.seq ?? 0)
-    setBubble({ ...bubbleParts(worst, filed), text: bubbleWords(worst, filed), show: !manningInView(), lv })
+    setBubble({ ...bubbleParts(worst, filed), text: bubbleWords(worst, filed), show: !manningInView(), lv, lift: panelLift() })
   }
   /* IS THE MANNING BUTTON IN VIEW? (D1277 — "how does the notification look on a phone if the counters are out of view and
      the user scrolls down"; his "Yes to the bid note as recommended"). Decided once, when the bubble is raised: the
@@ -1609,7 +1617,7 @@ export function Matrix() {
     let raf = 0
     const onScroll = () => {
       if (raf) return
-      raf = window.requestAnimationFrame(() => { raf = 0; const want = !manningInView(); setBubble(b => (b && b.show !== want ? { ...b, show: want } : b)) })
+      raf = window.requestAnimationFrame(() => { raf = 0; const want = !manningInView(), lift = panelLift(); setBubble(b => (b && (b.show !== want || (b.lift ?? 0) !== lift) ? { ...b, show: want, lift } : b)) })
     }
     window.addEventListener('scroll', onScroll, { passive: true, capture: true })
     return () => {
@@ -3711,7 +3719,8 @@ export function Matrix() {
               rows in the bid window's day-line form, each pair in its colour (D1360, D1364 — "This bid: Available P 27 →
               26"), with Show › only while the Manning rows are out of view; a screen reader hears the same words */}
           {bubble && (
-            <div className={`mn-foot mnb-${bubble.lv}`} data-level={bubble.lv} role="status" aria-label={bubble.text} data-testid="manning-bubble">
+            <div className={`mn-foot mnb-${bubble.lv}`} data-level={bubble.lv} role="status" aria-label={bubble.text} data-testid="manning-bubble"
+              style={bubble.lift ? { bottom: `${bubble.lift + 12}px` } : undefined}>
               <span className="mn-words" data-testid="manning-bubble-text" aria-hidden="true">
                 <span className="mn-lead">{bubble.lead}:</span>{' '}
                 {bubble.pairs.map((p, i) => (

@@ -414,3 +414,28 @@ describe('a day drawn only after the "before" is never "turned" (the code read)'
     expect([...worsenedRows(before, now)]).toEqual([['IP', { lv: 'red', how: 'turns' }]])
   })
 })
+
+/* [LW-NIGHT1025-OLDER] (g): on a phone the day panel rests at the foot of the screen, and the note lay under it. With a
+   panel up the note stands just above the panel's top. Red first. */
+describe('above a resting day panel ((g))', () => {
+  it('a day panel 300 tall at the foot: the note stands 312 from the foot', () => {
+    rowRedPastOneMore(TARGET)
+    const panel = document.createElement('div')
+    panel.dataset.testid = 'win-lwday'
+    panel.getBoundingClientRect = () => ({ top: window.innerHeight - 300, bottom: window.innerHeight, left: 0, right: 400, width: 400, height: 300, x: 0, y: window.innerHeight - 300, toJSON: () => ({}) }) as DOMRect
+    document.body.appendChild(panel)
+    try {
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+      fireEvent.click(screen.getByTestId('bid-LL'))
+      expect(bubble()?.style.bottom).toBe('312px')
+    } finally { panel.remove() }
+  })
+  it('with no panel up it keeps its own place', () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    fireEvent.click(screen.getByTestId('bid-LL'))
+    expect(bubble()?.style.bottom).toBe('')
+  })
+})
