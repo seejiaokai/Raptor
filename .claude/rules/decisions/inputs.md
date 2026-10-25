@@ -92,6 +92,8 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1368 | 25 Oct 26 | No separate "War manning reduced" tick: the Inputs page's window for an Other asks once where it goes — Ground Programme or Unavailable, the buttons amber and red (D1367) — and a grey line under the choice says what the Leave War does with it. |
+| D1367 | 25 Oct 26 | In the Inputs page's window for an Other, the two buttons that choose where it goes wear the schedule's own colours for those lists: Ground Programme amber, Unavailable red. — changed by D1368 |
 | D1310 | 24 Oct 26 | On the Inputs list's cards the top line's right end is three columns — LATE (or OIL?), the document, the hours or "till <date>" — each in the same place on every card, an empty column keeping its room, sized to the letters so they never touch with an iPhone's wider letters; no card grows taller. |
 | D1305 | 24 Oct 26 | His direction: on the Inputs list's cards, what stands on a card's top line at the right — LATE, "No document", the hours or "till <date>" — is lined up from card to card, each in the same place on every card, so the list reads as neat columns. |
 | D1304 | 24 Oct 26 | The Inputs calendar's bars take the Leave War's colour for each kind, so a leave, an OIL, a course, an overseas duty or a medical looks the same on both pages; duties and other commitments are outlined bars, not filled, apart from leave's amber (D1321). — changed by D1321 |

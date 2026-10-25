@@ -75,4 +75,8 @@ door's `file` (`sync.ts doorFile`) → the Inputs door (the clash rules run as f
 `ui/LeaveButtons.tsx DutyButtons`, in `BidPicker`, `SelectSheet`, `ClosedNoteSheet`. The Inputs calendar's colour:
 `src/ui/inputscal-model.ts`, `scheduler/25-inputs-calendar.css`.
 
+**25 Oct 26, D1368:** no separate "War manning reduced" tick (Q1 as recommended): the window asks once where an Other goes, and a grey line under the choice says what the Leave War does with it — "Counted as away on the Leave War" (Unavailable) / "Still counted in the Leave War's manning" (Ground Programme).
+
+**25 Oct 26, D1367:** in the Inputs page's window for an Other, the two buttons that choose where it goes wear the schedule's colours for those lists — Ground Programme amber (#E5A83B), Unavailable red (#F0555F): at rest grey with their words in their colour, the picked one solid with dark words, as the lit Approve and Refuse (D1361). Drawn for him on the questions page, version 7 (Q1).
+
 **25 Oct 26, D1365:** an Other filed from the Leave War's bid window goes straight under Unavailable — no choice there — with the window's Duration (whole day, AM, PM); any other time is changed in its input on the Inputs page. The choice of Ground Programme or Unavailable (D1356) is the Inputs page's.

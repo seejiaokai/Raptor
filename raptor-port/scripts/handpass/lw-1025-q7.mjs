@@ -417,6 +417,16 @@ for (const size of SIZES) {
           + `<button type="button" class="spanbtn${pick === 'u' ? ' on' : ''}" aria-pressed="${pick === 'u'}">Unavailable</button></div>`
           + `<span class="inped-hint" style="color:var(--mut,#8b97a5);font-size:12px">${lines[pick]}</span></div>`
         tr.after(row)
+        /* his D1367: the two buttons wear the schedule's own colours for those lists (04-pucks-sections.css — Ground
+           Programme #E5A83B, Unavailable #F0555F); at rest grey with the words in the colour, the picked one solid with dark
+           words, as the lit Approve and Refuse (D1361) */
+        const col = ['229,168,59', '240,85,95']
+        row.querySelectorAll('.spanbtn').forEach((btn, i) => {
+          const on = btn.classList.contains('on')
+          Object.assign(btn.style, on
+            ? { background: `rgb(${col[i]})`, color: '#0b1116', borderColor: `rgb(${col[i]})` }
+            : { background: 'rgba(255,255,255,.04)', color: `rgb(${col[i]})`, borderColor: 'rgba(255,255,255,.12)' })
+        })
         return row.getBoundingClientRect().height
       }, { typeRow, pick })
       const goesOk = () => P.evaluate(() => document.querySelector('[data-drawn="q1-goes"]') ? null : 'the drawn row is gone')
@@ -424,7 +434,7 @@ for (const size of SIZES) {
         const h = await addGoes(pick)
         note('q1', size, `drawn A (${pick}): the row is ${Math.round(h)} tall`)
         await frame(w, `q1-a-${pick === 'u' ? 'unavail' : 'ground'}`, { marks: ['[data-drawn="q1-goes"]'], around: area, check: goesOk,
-          label: pick === 'u' ? 'Drawn A (recommended): "Goes to", Unavailable picked — the grey line says what the Leave War does' : 'Drawn A: Ground Programme picked — the line follows the pick' })
+          label: pick === 'u' ? 'Drawn A, your colours: "Goes to", Unavailable picked (red) — the grey line says what the Leave War does' : 'Drawn A, your colours: Ground Programme picked (amber) — the line follows the pick' })
       }
       /* DRAWN B: his tick alone — a clone of the window's "all day" tick, on its own row */
       const addTick = (withGoes) => P.evaluate(({ typeRow, whenRow, withGoes }) => {
