@@ -1558,8 +1558,12 @@ export function Matrix() {
       if (r.bottom <= top || r.top >= bottom) return false
       if (typeof document.elementFromPoint !== 'function') return true
       const y = Math.min(Math.max(r.top + r.height / 2, top + 1), bottom - 1)
-      const hit = document.elementFromPoint(r.left + Math.min(r.width / 2, 40), y)
-      return !hit || el.contains(hit) || overPage(hit)
+      /* read at the middle of the part on screen: a Manning row is the whole year wide, its left edge months off the screen
+         when the grid stands on December (the re-walk of W1 8 — a point there hit nothing and counted as seen) */
+      const x = (Math.max(r.left, 0) + Math.min(r.right, window.innerWidth)) / 2
+      const hit = document.elementFromPoint(x, y)
+      if (!hit) return el === btn
+      return el.contains(hit) || overPage(hit)
     }
     /* THE ROWS, NOT ONLY THE BUTTON (the walk's W1 7, 8 — D1358: "Show › … only while those rows are out of view"): the
        button scrolled off the top while the Manning rows still stood on screen drew Show over rows he could see */
@@ -1643,6 +1647,9 @@ export function Matrix() {
       raf = window.requestAnimationFrame(() => { raf = 0; const want = !manningInView(), lift = panelLift(); setBubble(b => (b && (b.show !== want || (b.lift ?? 0) !== lift) ? { ...b, show: want, lift } : b)) })
     }
     window.addEventListener('scroll', onScroll, { passive: true, capture: true })
+    /* …and once the frame after it is raised (the re-walk of W1 7, 8): a bid that turns a row red opens the folded Manning
+       rows as it raises the note, so Show was decided before the rows it is about were drawn */
+    onScroll()
     return () => {
       window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey)
       document.removeEventListener('pointerup', onUp)

@@ -2,8 +2,8 @@
 // Sets the port and the picture folder BEFORE lw-r3-lib.mjs is read (it reads them at import). Nothing here touches the app's source.
 import { mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-process.env.LW_PORT = '4180'
-process.env.LW_OUT = '2026-10-25-lw-m3-build/w2'
+process.env.LW_PORT ||= '4180'
+process.env.LW_OUT ||= '2026-10-25-lw-m3-build/w2'   // a re-walk sets its own folder (walk-scripts §6)
 export const L = await import('./lw-r3-lib.mjs')
 export const T = L.T
 export const OUT = L.OUT

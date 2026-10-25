@@ -1,7 +1,7 @@
 // WALKER 1 of the M3 build's FULL check (25 Oct 26) — shared helpers for lw-m3b-w1-*.mjs.
 // Port 4180, pictures under docs/img/handpass/2026-10-25-lw-m3-build/w1/. Built on lw-r3-lib.mjs + lw-night-w1-lib.mjs.
-process.env.LW_PORT = '4180'
-process.env.LW_OUT = '2026-10-25-lw-m3-build/w1'
+process.env.LW_PORT ||= '4180'
+process.env.LW_OUT ||= '2026-10-25-lw-m3-build/w1'   // a re-walk sets its own folder (walk-scripts §6)
 const N = await import('./lw-night-w1-lib.mjs')
 export const L = N.L
 export const T = L.T
