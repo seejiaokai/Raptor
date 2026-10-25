@@ -146,6 +146,13 @@ describe('the Inputs page files them (the one save)', () => {
     expect(commitInputEdit(r, { ...draftOf(r), type: 'Meeting' })).toBe(true)
     expect(r.acc).not.toBe('u')
   })
+  it('an Other under Unavailable retyped to a Training lands on the Ground Programme (D1357; the designer's G4)', () => {
+    const r = add('Other', { goes: 'u' })
+    expect(r.acc).toBe('u')
+    expect(commitInputEdit(r, { ...draftOf(r), type: 'Training' })).toBe(true)
+    expect(r.acc).not.toBe('u')
+    expect(viewOn()?.away ?? 0).toBe(0)
+  })
   it('the schedule offers every commitment "→ Ground" and "→ Unavail" (D1357), a course too once rejected', () => {
     const m = add('Meeting')
     const html = accCtl(2, { ...m, acc: undefined })

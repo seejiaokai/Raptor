@@ -1393,6 +1393,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
       else if (r.type !== wasType && landsUnavail(wasType) && r.acc === 'u' && !(isOther(r.type) && goesNow === 'u')) delete r.acc
       else if (isOther(r.type) && 'goes' in draft && goesNow !== goesWas) { if (goesNow === 'u') r.acc = 'u'; else delete r.acc }
       else if (r.type !== wasType && isOther(r.type) && goesNow === 'u') r.acc = 'u'
+      /* an Other its filer had under Unavailable, retyped to another commitment, lands where that kind lands — the Ground
+         Programme until a scheduler moves it (D1357; the scenario designer's G4) */
+      else if (r.type !== wasType && isOther(wasType) && !isOther(r.type) && r.acc === 'u') delete r.acc
     }
     /* …and except an input turned into a PLACEHOLDER's ([INPUT-ALL-AVAIL]; Astra's read of the code, 9 Oct 26): an input
        filed for ALL AVAIL / ALL is never under Unavailable (engine/inputs.ts placeholderProblem) — it goes back onto
