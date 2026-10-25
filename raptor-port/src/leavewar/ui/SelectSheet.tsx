@@ -249,8 +249,8 @@ export function SelectSheet({
      picked — no bid, nothing to approve; one man's words go with it, as with a leave. A day not his to change is named. */
   const fileDuty = (code: string) => {
     setConfirmDel(false); setConfirming(null); setNoteAt('leave')
-    /* an Other takes the window's Duration (his D1365); a course and an overseas duty whole days */
-    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined, code === 'OTH' ? portion : 'full')
+    /* an Other and an Attach take the window's Duration (his D1365, D1380); a course and an overseas duty whole days */
+    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined, code === 'OTH' || code === 'ATCH' ? portion : 'full')
     if (!r.skipped) { onDone(r.done > 0); return }
     setNote(r.why[0] ?? skipNote('written', r.done, r.skipped))
     if (r.done > 0) onDone(true, true)
@@ -402,11 +402,13 @@ export function SelectSheet({
               drag); the ⋯ the fourth — Other (an admin's, his D1356 / D1365: filed under Unavailable on the Duration
               picked) and, for one man, Post out */}
           <DutyButtons onFile={fileDuty} testPrefix="sel" />
-          {role === 'admin' && <MoreButton testid="sel-more" items={[
-            { key: 'oth', testid: 'sel-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked', onPick: () => fileDuty('OTH') },
-            ...(onPostOut && nPeople === 1 ? [{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
+          {/* Attach first, for everyone (his D1378, D1379) — a member's ⋯ holds it alone */}
+          <MoreButton testid="sel-more" items={[
+            { key: 'atch', testid: 'sel-file-ATCH', label: 'Attach', title: 'Attach: attached to another squadron, a job or an exercise — filed under Unavailable on the schedule, for the Duration picked; where to is added on the Inputs page', onPick: () => fileDuty('ATCH') },
+            ...(role === 'admin' ? [{ key: 'oth', testid: 'sel-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked', onPick: () => fileDuty('OTH') }] : []),
+            ...(role === 'admin' && onPostOut && nPeople === 1 ? [{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
               onPick: () => { setPoOpen(true); setConfirming(null) } }] : []),
-          ]} />}
+          ]} />
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (

@@ -70,3 +70,13 @@ test('an admin’s Other from the ⋯ files at once: the window closes and the d
   await expect(page.locator(T('bid-picker'))).toHaveCount(0)
   await expect(page.locator(`${T(`cell-${P}-${D}`)} .c.k-unav`)).toHaveCount(1)
 })
+
+/* AN ATTACH FROM THE ⋯ (his D1378–D1380): first in the ⋯, straight under Unavailable, on the window's Duration — ATCH outlined */
+test('an admin’s Attach from the ⋯ files at once: the window closes and the day shows the outlined ATCH', async ({ page }) => {
+  await openDay(page)
+  await page.locator(T('bid-more')).click()
+  await expect(page.locator(`${T('bid-more-menu')} [role=menuitem]`).first()).toHaveText('Attach')
+  await page.locator(T('bid-file-ATCH')).click()
+  await expect(page.locator(T('bid-picker'))).toHaveCount(0)
+  await expect(page.locator(`${T(`cell-${P}-${D}`)} .c.k-unav`)).toHaveText('ATCH')
+})

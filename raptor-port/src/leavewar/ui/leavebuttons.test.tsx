@@ -68,11 +68,13 @@ describe('the window\'s row names (D1212) and the Also row (A9)', () => {
     expect(within(sheet).queryByTestId('bid-also')).toBeNull()
     expect(within(sheet).getByTestId('bid-more')).toBeTruthy()
   })
-  it('a member has no ⋯', () => {
+  it('a member’s ⋯ holds Attach alone — no Other, no posting (D1379)', () => {
     setRole('member')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const sheet = screen.queryByTestId('bid-picker')
-    if (sheet) expect(within(sheet).queryByTestId('bid-more')).toBeNull()
+    if (!sheet) return
+    fireEvent.click(within(sheet).getByTestId('bid-more'))
+    expect([...screen.getByTestId('bid-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
   })
 })

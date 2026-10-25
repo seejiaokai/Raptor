@@ -246,7 +246,7 @@ export function absenceSignature(row: any): string {
 
 /* ---- the other direction: a war leave → the one Input ------------------- */
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const INPUT_FOR_WAR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C', OTH: 'Other' }
+const INPUT_FOR_WAR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C', OTH: 'Other', ATCH: 'Attach' }
 
 /** '2026-07-15' → the Input's label + its anchor year ('Jul 15', 2026). The
  *  year rides `yr`, so the label never needs a suffix and never re-anchors

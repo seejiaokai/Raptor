@@ -89,7 +89,7 @@ export function MoreButton({ items, testid, place = 'col4' }: { items: MoreItem[
   if (!items.length) return null
   return (
     <span className={`bp-more-wrap ${place}`}>
-      <button ref={btn} type="button" className="tchip bp-more" data-testid={testid} aria-label="More" title="Grant OIL, Post out, Post in"
+      <button ref={btn} type="button" className="tchip bp-more" data-testid={testid} aria-label="More" title={items.map(i => i.label).join(', ')}
         aria-haspopup="menu" aria-expanded={open} onClick={() => setOpen(o => !o)}>⋯</button>
       {open && (
         <div ref={menu} className="bp-menu" role="menu" data-testid={`${testid}-menu`}>

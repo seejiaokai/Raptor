@@ -11562,7 +11562,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The Inputs list's cards line up their right-hand marks (D1305; his pick A, D1310 — three columns sized to the letters, no card taller):** on a card's top line LATE, "No document" and the hours (or "till <date>") each stand in the same place on every card, so the list reads as columns; drawn for him first, not yet built (filed as [INP-CARD-COLUMNS]).
 - **The Inputs calendar's bars take the Leave War's kind colours (D1304):** one colour per kind on both pages; duties a colour of their own; decided with [INPUT-COLOURS]. **His D1317:** the duty and commitment bars' words must read clearly against them — the grey slate with white words drawn for Q3 does not — and stay apart from the overseas duty's slate; redrawn with the design skill first. **His D1321: outlined** — a dark bar, a light edge, light words; every absence filled. *BUILT 24 Oct 26:* `inputscal-model.ts colourOf` (an upchit with medical, as drawn), the bar's `kd k-<kind>` or `duty` class, `scheduler/25-inputs-calendar.css` — a timed bar a tint with its left edge (D729).
 
-## The Leave War after the M3 build of 25 Oct 26 — as built (D1355–D1375)
+## The Leave War after the M3 build of 25 Oct 26 — as built (D1355–D1380)
 
 - **The decided Approve / Refuse (D1361, D1355):** in the one-day bid window, the drag window and the day's list both rest
   grey (`.dchip.dec`), their words green and red; the entry's state is solid — #57C97A / #F0555F, words #0b1116 — and reads
@@ -11574,9 +11574,12 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   each pair in its colour, a filing named ("This overseas duty", "This course", "This Other"); "Show ›" only while the
   Manning rows are out of view, read again as the page scrolls; above a resting day panel on a phone it stands just over
   the panel's top. Gone at the next tap or key. Pinned by `bidbubble.test.tsx`, `nightwalk.test.tsx`.
-- **The row under the leaves (D1349, D1356, D1365):** CSE · OD · Grant OIL (an admin's, OIL given's green, one line) · ⋯
-  — the ⋯ holding Other (an admin's: filed straight under the schedule's Unavailable list on the window's Duration),
-  Post out and Post in; the drag window's ⋯ holds Other and, for one man, Post out. A member's row: CSE · OD.
+- **The row under the leaves (D1349, D1356, D1365, D1378–D1380):** CSE · OD · Grant OIL (an admin's, OIL given's green,
+  one line) · ⋯ — the ⋯ holding Attach first (everyone's: an Attach input straight under the schedule's Unavailable list on
+  the window's Duration, no approval, its "To" left to the Inputs page), Other (an admin's: filed the same way), Post out
+  and Post in; the drag window's ⋯ holds Attach, Other and, for one man, Post out. A member's row: CSE · OD · (empty) · ⋯,
+  his ⋯ holding Attach alone — in the bid window, the drag window and the closed day's note (there a whole day, as it has
+  no Duration row). The ⋯'s hover names what it holds.
 - **A commitment under Unavailable on the grid (D1357, D1370, D1375):** any input the schedule draws under Unavailable
   (`acc:'u'`) is shown by its kind's letters — OTH, ATCH, TRG, MTG, PERS, APPT, DTY, EVT — outlined (`.k-unav`: fill
   rgba(232,237,242,.05), edge 1.5px rgba(200,212,228,.78), words #E8EDF2), four letters a step smaller (`.w4`), and counts

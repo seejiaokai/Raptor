@@ -141,7 +141,10 @@ describe('what stays as it was', () => {
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
     expect(screen.getByTestId('oil-detail-why').textContent).toBe('SIM')
     expect(screen.queryByTestId('bid-oil')).toBeNull()          // no +OIL for a member
-    expect(screen.queryByTestId('bid-more')).toBeNull()         // …and no ⋯ to hold one (round 3, D1326)
+    /* a member's ⋯ holds Attach alone (D1379) — no Grant OIL, no Other, no posting (round 3, D1326) */
+    fireEvent.click(screen.getByTestId('bid-more'))
+    expect([...screen.getByTestId('bid-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
+    fireEvent.click(screen.getByTestId('bid-more'))
     expect(screen.queryByTestId('award-sheet')).toBeNull()
   })
 

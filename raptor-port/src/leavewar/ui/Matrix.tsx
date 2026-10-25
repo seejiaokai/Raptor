@@ -193,14 +193,14 @@ export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string,
   }
   return worst
 }
-/** What was placed or filed, as the bubble names it (D1351, D1356): a bid, a course, an overseas duty, an Other. */
-export type FiledKind = 'CSE' | 'OD' | 'OTH' | null
+/** What was placed or filed, as the bubble names it (D1351, D1356, D1378): a bid, a course, an overseas duty, an Other, an Attach. */
+export type FiledKind = 'CSE' | 'OD' | 'OTH' | 'ATCH' | null
 /** THE BUBBLE'S PARTS (D1360, D1364 — his "Day-line pairs" and "Yes, figures everywhere", 25 Oct 26, narrowing D1345's and
  *  D1351's words): what was placed — "This bid", or after a filing "This overseas duty", "This course", "This Other" — then
  *  each row it lowered with its figures in the bid window's day-line form, "Available P 27 → 26", each pair in its colour;
  *  where the figure before is not known (a row read only now) its figure alone. Exported for its unit test. */
 export function bubbleParts(worse: Map<string, Worse>, filed: FiledKind): { lead: string; pairs: { label: string; fig: string; lv: 'amber' | 'red' }[] } {
-  const lead = filed === 'OD' ? 'This overseas duty' : filed === 'CSE' ? 'This course' : filed === 'OTH' ? 'This Other' : 'This bid'
+  const lead = filed === 'OD' ? 'This overseas duty' : filed === 'CSE' ? 'This course' : filed === 'OTH' ? 'This Other' : filed === 'ATCH' ? 'This Attach' : 'This bid'
   /* the bid window's own figures: halves ".5" (D1246) */
   const f = (n: number) => String(Math.round(n * 2) / 2)
   const pairs = [...worse].map(([label, w]) => ({

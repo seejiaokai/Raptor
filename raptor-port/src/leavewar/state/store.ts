@@ -2745,11 +2745,11 @@ function tellHolidays(before: State): void {
    aid only: nothing is saved. */
 const PLACING: ReadonlySet<string> = new Set(['lw.edit', 'lw.placeApproved', 'lw.decide', 'lw.move', 'lw.file'])
 let actSeq = 0
-let lastFiled: { kind: 'CSE' | 'OD' | 'OTH'; at: number } | null = null
+let lastFiled: { kind: 'CSE' | 'OD' | 'OTH' | 'ATCH'; at: number } | null = null
 /** The count of the war's placing gestures so far — the bubble's "before" keeps it. */
 export function actCount(): number { return actSeq }
 /** The kind filed by the latest gesture, if that gesture was a filing made after `since` — else null (a bid). */
-export function filedSince(since: number): 'CSE' | 'OD' | 'OTH' | null {
+export function filedSince(since: number): 'CSE' | 'OD' | 'OTH' | 'ATCH' | null {
   return lastFiled && lastFiled.at === actSeq && actSeq > since ? lastFiled.kind : null
 }
 function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
@@ -3400,17 +3400,20 @@ export function placeApproved(cells: { personId: string; date: string }[], code:
  *  approve, on ANY day the war holds — open for bidding or not, a day before today too, as the Inputs page allows — by a
  *  member on his own row or an admin on any (`canEditRow`). ONE command, one Undo (`lw.file`); the absence door writes
  *  the Inputs, through the Inputs door's own rules. */
-export const FILED_STRAIGHT: readonly string[] = ['CSE', 'OD', 'OTH']
+export const FILED_STRAIGHT: readonly string[] = ['CSE', 'OD', 'OTH', 'ATCH']
 /* …AND AN OTHER, STRAIGHT UNDER UNAVAILABLE (his D1365, 25 Oct 26 — "The leave war OTH goes directly to unavailable. If the
    user wants to change the timing instead of AM PM, it can be changed in the inputs section"; D1356, in UNA's place): an
    admin's, from the bid window's ⋯, on the window's Duration — whole day, AM or PM — with its words; filed as the Inputs
    page's "Other" under the schedule's Unavailable list, so it counts him out (1 or 0.5). A course and an overseas duty
-   still take no half (D1350). */
+   still take no half (D1350).
+   …AND AN ATTACH (his D1378–D1380, 25 Oct 26 — "Yes all as recommended"): straight under Unavailable too (D1374), on the
+   window's Duration as an Other, by an admin or a member on his own row (`canEditRow`), as a course or an overseas duty
+   (D1318); where he is attached (its "To") is added on the Inputs page. */
 export function fileStraight(cells: { personId: string; date: string }[], code: string, words?: ReqWords, portion: Portion = 'full'): { done: number; skipped: number; why: string[] } {
   const clean = code.trim().toUpperCase()
   if (!FILED_STRAIGHT.includes(clean)) return { done: 0, skipped: cells.length, why: [] }
   if (clean === 'OTH' && !canDecide(state.role)) return { done: 0, skipped: cells.length, why: [] }
-  const filed = clean === 'OTH' ? formatCell({ type: 'OTH', portion }) : clean
+  const filed = clean === 'OTH' || clean === 'ATCH' ? formatCell({ type: clean, portion }) : clean
   const ok = cells.filter(c => !!warHolding(state.wars, c.date) && canEditRow(state.role, state.viewer, c.personId))
   let out = { done: 0, skipped: cells.length - ok.length, why: [] as string[] }
   if (!ok.length || !DOOR) return { ...out, skipped: cells.length }
@@ -3418,7 +3421,7 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
     const r = DOOR!.file(ok, filed, words)
     out = { done: r.done, skipped: out.skipped + r.skipped, why: r.why }
   })
-  if (out.done > 0) lastFiled = { kind: clean as 'CSE' | 'OD' | 'OTH', at: actSeq }
+  if (out.done > 0) lastFiled = { kind: clean as 'CSE' | 'OD' | 'OTH' | 'ATCH', at: actSeq }
   return out
 }
 

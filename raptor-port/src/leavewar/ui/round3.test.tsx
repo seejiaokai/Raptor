@@ -230,8 +230,8 @@ describe('round 3 — "Approve what I enter" as a switch, remembered (D1302)', (
 })
 
 describe('round 3 — the ⋯ in the row under the leaves (D1326)', () => {
-  /* since D1349 / D1356 (25 Oct 26): Grant OIL stands in the row's third place; the ⋯ opens Other, Post out and Post in */
-  it('stands in the fourth place of the row under the leaves and opens Other, Post out and Post in', () => {
+  /* since D1349 / D1356 (25 Oct 26): Grant OIL stands in the row's third place; the ⋯ opens Attach (D1378), Other, Post out and Post in */
+  it('stands in the fourth place of the row under the leaves and opens Attach, Other, Post out and Post in', () => {
     render(<Matrix />)
     fireEvent.click(cell())
     const s = sheet()
@@ -244,7 +244,7 @@ describe('round 3 — the ⋯ in the row under the leaves (D1326)', () => {
     expect(row.contains(within(s).getByTestId('bid-oil')), 'Grant OIL in the row itself').toBe(true)
     fireEvent.click(more)
     const menu = within(s).getByTestId('bid-more-menu')
-    expect([...menu.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Other', 'Post out', 'Post in'])
+    expect([...menu.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach', 'Other', 'Post out', 'Post in'])
     expect(within(menu).queryByTestId('bid-oil')).toBeNull()
     fireEvent.click(within(menu).getByTestId('bid-postout'))
     expect(within(s).getByTestId('po-date')).toBeTruthy()
@@ -262,14 +262,15 @@ describe('round 3 — the ⋯ in the row under the leaves (D1326)', () => {
     expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 
-  it('a member has no switch and no ⋯', () => {
+  it('a member has no switch, and his ⋯ holds Attach alone (D1379)', () => {
     setRole('member'); setViewer(P)
     render(<Matrix />)
     fireEvent.click(cell())
     const s = screen.queryByTestId('bid-picker')
     if (!s) return   // not open for him: the open dates' own tests cover it
     expect(within(s).queryByTestId('bid-approve-tick')).toBeNull()
-    expect(within(s).queryByTestId('bid-more')).toBeNull()
+    fireEvent.click(within(s).getByTestId('bid-more'))
+    expect([...screen.getByTestId('bid-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
   })
 })
 

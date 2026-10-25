@@ -8,11 +8,11 @@
    Programme; (2) a course and an Attach are filed under Unavailable by themselves, an Other where its "Goes to" says;
    (3) "Fly with" is "Attach", with a "To" shown in its name; (4) an admin files an Other from the bid window's ⋯, straight
    under Unavailable on the window's Duration; (5) the row under the leaves reads CSE · OD · Grant OIL · ⋯. */
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS, inpLabel, filingOf, landsUnavail, INPUT_TYPES } from '../engine/inputs'
 import { commitInput, commitInputEdit, commitNewInput, draftOf } from '../ui/inputedit'
-import { fileStraight, getState, setCell, initStore, lwHistInit, rawState, setPeople, setRole, setViewer } from './state/store'
+import { closeDates, fileStraight, getState, openDates, setCell, initStore, lwHistInit, rawState, setPeople, setRole, setViewer } from './state/store'
 import { memoryBackend } from './state/storage'
 import { initStore as raptorInitStore, notify as raptorNotify } from '../state/store'
 import { setMe, setSession } from '../state/auth'
@@ -24,6 +24,8 @@ import { COMMIT_CODE, contribsOfInput, warCodeOf, warCounts, warVisible } from '
 import { dayView } from './engine/dayview'
 import { isRetiredUna, readRecs } from './engine/warrecs'
 import { kindOf, parseCell } from './engine/codes'
+import { setMemberTodayForTests } from './engine'
+import { SelectSheet } from './ui/SelectSheet'
 import { accCtl } from '../ui/html'
 import { Matrix } from './ui/Matrix'
 import type { MergedWar } from './state/merge'
@@ -225,7 +227,7 @@ describe('the bid window’s row under the leaves (D1349, D1356)', () => {
     try { localStorage.clear() } catch { /* none */ }
   })
   afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
-  it('an admin’s: CSE · OD · Grant OIL · ⋯, and the ⋯ holds Other, Post out, Post in', () => {
+  it('an admin’s: CSE · OD · Grant OIL · ⋯, and the ⋯ holds Attach, Other, Post out, Post in (D1378)', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${who()}-${D}`))
     const rowEl = screen.getByTestId('bid-extra-row')
@@ -234,7 +236,7 @@ describe('the bid window’s row under the leaves (D1349, D1356)', () => {
     expect(screen.queryByTestId('bid-una')).toBeNull()
     fireEvent.click(screen.getByTestId('bid-more'))
     const menu = screen.getByTestId('bid-more-menu')
-    expect([...menu.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Other', 'Post out', 'Post in'])
+    expect([...menu.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach', 'Other', 'Post out', 'Post in'])
   })
   it('Other in the ⋯, the Duration on PM: an afternoon Other, under Unavailable', () => {
     render(<Matrix />)
@@ -246,6 +248,91 @@ describe('the bid window’s row under the leaves (D1349, D1356)', () => {
     expect(o).toHaveLength(1)
     expect(o[0]).toMatchObject({ acc: 'u', half: 'pm' })
     expect(screen.queryByTestId('bid-picker'), 'the window closes, as a leave placed does').toBeNull()
+  })
+})
+
+/* AN ATTACH FROM THE WAR (his D1378–D1380, 25 Oct 26 — "Yes all as recommended"; drawn attach-built/att-drawn-more-phone.png):
+   the ⋯ offers Attach first, above Other; it files an Attach input straight under Unavailable, no approval, counting him out;
+   an admin and a member alike (a member's ⋯ holds Attach alone); on the window's Duration; its "To" left to the Inputs page */
+describe('an Attach filed from the war (D1378–D1380)', () => {
+  const who = () => getState().people[0]!.id
+  const attaches = (p = who()) => INPUTS.filter((r: any) => r.type === 'Attach' && ((r.people ?? []).some((x: any) => x.p === p) || r.person === p))
+  beforeEach(() => {
+    INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
+    setSession({ user: 'ad', role: 'admin' })
+    raptorInitStore()
+    initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
+    _resetTimeline(); lwHistInit(); installGlobalUndo()
+    try { localStorage.clear() } catch { /* none */ }
+  })
+  afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
+  it('the store: an Attach on a morning, under Unavailable, its words, no "To"; half a man out; the same half again left as it is', () => {
+    const r = fileStraight([{ personId: who(), date: D }], 'ATCH', { remarks: 'Exercise support' }, 'am')
+    expect(r.done).toBe(1)
+    expect(attaches()).toHaveLength(1)
+    expect(attaches()[0]).toMatchObject({ acc: 'u', half: 'am', remarks: 'Exercise support' })
+    expect(attaches()[0].to, 'where he is attached is added on the Inputs page (D1380)').toBeUndefined()
+    expect(viewOn(D, who())?.away).toBe(0.5)
+    const again = fileStraight([{ personId: who(), date: D }], 'ATCH', undefined, 'am')
+    expect(again.done).toBe(0)
+    expect(again.why[0]).toMatch(/already holds an Attach/)
+  })
+  it('a member files one on his own row, never on another man’s (D1379)', () => {
+    const [mine, other] = [getState().people[0]!.id, getState().people[1]!.id]
+    act(() => { setRole('member'); setViewer(mine) })
+    expect(fileStraight([{ personId: mine, date: D }], 'ATCH', undefined, 'full').done).toBe(1)
+    expect(fileStraight([{ personId: other, date: D }], 'ATCH', undefined, 'full').done).toBe(0)
+    expect(attaches(mine)).toHaveLength(1)
+    expect(attaches(other)).toHaveLength(0)
+  })
+  it('the bid window: Attach first in the ⋯; picked on PM, an afternoon Attach under Unavailable; the window closes', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${who()}-${D}`))
+    fireEvent.click(within(screen.getByTestId('bid-picker')).getByTestId('portion-pm'))
+    fireEvent.click(screen.getByTestId('bid-more'))
+    fireEvent.click(screen.getByTestId('bid-file-ATCH'))
+    expect(attaches()).toHaveLength(1)
+    expect(attaches()[0]).toMatchObject({ acc: 'u', half: 'pm' })
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+  })
+  it('a member’s bid window: a ⋯ holding Attach alone (D1379)', () => {
+    act(() => { openDates('2026-01-01', '2026-12-31') })
+    setMemberTodayForTests('2026-01-01')
+    act(() => { setRole('member'); setViewer(who()) })
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${who()}-${D}`))
+    const s = screen.getByTestId('bid-picker')
+    fireEvent.click(within(s).getByTestId('bid-more'))
+    expect([...screen.getByTestId('bid-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
+    fireEvent.click(screen.getByTestId('bid-file-ATCH'))
+    expect(attaches()).toHaveLength(1)
+    expect(attaches()[0].acc).toBe('u')
+  })
+  it('a member’s closed day: CSE · OD · ⋯, the ⋯ holding Attach — a whole day (D1379)', () => {
+    act(() => { closeDates('2026-01-01', '2026-12-31') })
+    act(() => { setRole('member'); setViewer(who()) })
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${who()}-${D}`))
+    const s = screen.getByTestId('closed-note')
+    fireEvent.click(within(s).getByTestId('closed-more'))
+    expect([...screen.getByTestId('closed-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
+    fireEvent.click(screen.getByTestId('closed-file-ATCH'))
+    expect(attaches()).toHaveLength(1)
+    expect(attaches()[0]).toMatchObject({ acc: 'u', allday: true })
+  })
+  it('the drag window: Attach first in the ⋯ for an admin; a member’s ⋯ holds it alone', () => {
+    const sel = { people: [who()], from: D, to: '2026-02-12', cells: [D, '2026-02-12'].map(date => ({ personId: who(), date })) }
+    const { unmount } = render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} />)
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect([...screen.getByTestId('sel-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach', 'Other', 'Post out'])
+    unmount()
+    act(() => { setRole('member'); setViewer(who()) })
+    render(<SelectSheet sel={sel} people={id => id} role="member" canDecide={false} onDone={() => {}} onMove={() => {}} onClose={() => {}} />)
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect([...screen.getByTestId('sel-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
+    fireEvent.click(screen.getByTestId('sel-file-ATCH'))
+    expect(attaches()).toHaveLength(1)
+    expect(attaches()[0].endDate, 'one input over the two days').toMatch(/12/)
   })
 })
 

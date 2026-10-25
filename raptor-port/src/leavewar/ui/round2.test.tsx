@@ -130,7 +130,7 @@ describe('round 2 — the row under the leaves (D1326, D1338)', () => {
     expect(filed('CSE')).toHaveLength(1)
     expect(filed('CSE')[0].endDate).toMatch(/13/)
   })
-  it('a member’s window: CSE and OD, no UNA and no ⋯ (D1338 — UNA is an admin’s)', () => {
+  it('a member’s window: CSE and OD, no UNA; his ⋯ holds Attach alone (D1379, 25 Oct 26 — no Other, no posting)', () => {
     setMemberTodayForTests('2026-01-01')
     act(() => { setRole('member'); setViewer(P) })
     render(<Matrix />)
@@ -139,7 +139,8 @@ describe('round 2 — the row under the leaves (D1326, D1338)', () => {
     if (!s) return   // a day not open for him: the closed window's test below
     expect(within(s).getByTestId('bid-file-OD')).toBeTruthy()
     expect(within(s).queryByTestId('bid-una')).toBeNull()
-    expect(within(s).queryByTestId('bid-more')).toBeNull()
+    fireEvent.click(within(s).getByTestId('bid-more'))
+    expect([...screen.getByTestId('bid-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
   })
   it('a member’s closed day: the note, then CSE and OD — a tap files it; no UNA', () => {
     act(() => { closeDates('2026-01-01', '2026-12-31') })

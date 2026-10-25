@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { displayCell, type RequestRec } from '../engine'
 import { fileStraight, setCell, setRequestWords } from '../state/store'
 import { DutyButtons } from './LeaveButtons'
+import { MoreButton } from './BidBits'
 import { draftOf, heldRequest, patchOf, ReqWordsRows, type ReqDraft } from './ReqWords'
 import { openInputsPage } from '../sync'
 import { DeleteChip } from './SheetActions'
@@ -48,7 +49,10 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
   }
   const dutyRow = (
     <>
-      <div className="bidsheet-row bp-extra" data-testid="closed-extra-row"><DutyButtons onFile={fileDuty} testPrefix="closed" /></div>
+      {/* …and an Attach, from a ⋯ in the fourth place as in the bid window (his D1378, D1379) — a whole day here: this window
+          has no Duration row; any other time is set on the Inputs page (D1380) */}
+      <div className="bidsheet-row bp-extra" data-testid="closed-extra-row"><DutyButtons onFile={fileDuty} testPrefix="closed" />
+        <MoreButton testid="closed-more" items={[{ key: 'atch', testid: 'closed-file-ATCH', label: 'Attach', title: 'Attach: attached to another squadron, a job or an exercise — filed under Unavailable on the schedule; where to is added on the Inputs page', onPick: () => fileDuty('ATCH') }]} /></div>
       {fileErr && <div className="bidsheet-row"><span className="note warn" data-testid="closed-file-err">{fileErr}</span></div>}
     </>
   )

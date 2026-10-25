@@ -524,7 +524,7 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
     const bare = code.replace(/\*/g, ''), half = code.startsWith('*') ? 'am' : code.endsWith('*') ? 'pm' : 'full'
     const takes = (w: [number, number]) => half === 'full' || (half === 'am' ? w[0] <= 720 : w[1] >= 721)
     if (absencesAt(it.personId, it.date).some(o => o.code === bare && takes(o.win as [number, number]))) {
-      skipped++; why.push(`${shortDate(it.date)} already holds ${bare === 'OD' ? 'an OD' : bare === 'OTH' ? 'an Other' : `a ${bare}`} — left as it is`); continue
+      skipped++; why.push(`${shortDate(it.date)} already holds ${bare === 'OD' ? 'an OD' : bare === 'OTH' ? 'an Other' : bare === 'ATCH' ? 'an Attach' : `a ${bare}`} — left as it is`); continue
     }
     picks.push(it)
   }
@@ -541,7 +541,8 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
     const row = inputRowFor({ person: first.personId, code, from: first.date, to: last.date, remarks: remarksTyped(words?.remarks ?? '', { start: first.date, end: last.date }), mod: nowStamp() })
     if (typeof words?.till === 'boolean' && words.till !== tillDefault(row)) row.till = words.till
     if (words?.docIds?.length) Object.assign(row, docFields(words.docIds))
-    /* filed where its kind lands: an Other straight under Unavailable (D1365); a course too, by itself (D1372) */
+    /* filed where its kind lands: an Other straight under Unavailable (D1365); a course and an Attach too, by themselves
+       (D1372, D1374 — an Attach from the war, D1378) */
     if (filingOf(row.type, 'u')) row.acc = 'u'
     inpId(row)
     stampPlaced(row)

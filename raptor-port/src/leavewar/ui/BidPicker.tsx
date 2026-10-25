@@ -367,8 +367,9 @@ export function BidPicker({
      which its box speaks for); the window closes on it, as a leave placed does. Where nothing could be filed it says why. */
   const fileDuty = (code: string) => {
     flushWords()
-    /* an Other takes the window's Duration (his D1365 — whole day, AM or PM); a course and an overseas duty whole days */
-    const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined, code === 'OTH' ? portion : 'full')
+    /* an Other and an Attach take the window's Duration (his D1365, D1380 — whole day, AM or PM); a course and an overseas
+       duty whole days */
+    const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined, code === 'OTH' || code === 'ATCH' ? portion : 'full')
     /* …and where a day of a range was left out (it already held the same kind, a locked week) it is said (round 2's FULL
        check — the fresh code read's F2): as a passing note, since the window closes — the day tapped now holds the input,
        and the grid opens that input's own window for it (the design guide: a press that did less than expected, D850) */
@@ -523,6 +524,8 @@ export function BidPicker({
       : credit ? 'The OIL on this day — its reason, who gave it and how many days' : 'Grant OIL — a day or half a day off in lieu, for any reason',
   } : null
   const moreItems: MoreItem[] = [
+    /* Attach first, for everyone who may file on this row (his D1378, D1379) — a member's ⋯ holds it alone */
+    { key: 'atch', testid: 'bid-file-ATCH', label: 'Attach', title: 'Attach: attached to another squadron, a job or an exercise — filed under Unavailable on the schedule, for the Duration picked; where to is added on the Inputs page', onPick: () => fileDuty('ATCH') },
     ...(isAdmin ? [{ key: 'oth', testid: 'bid-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked; any other time is set on the Inputs page', onPick: () => fileDuty('OTH') }] : []),
     ...(onPostOut ? [{ key: 'po', testid: 'bid-postout', label: 'Post out', title: 'Post out — their last day in the squadron', onPick: () => setPoOpen(true) }] : []),
     ...(onPostIn ? [{ key: 'pi', testid: 'bid-postin', label: 'Post in', title: 'Post in — their first day in the squadron', onPick: () => setPiOpen(true) }] : []),

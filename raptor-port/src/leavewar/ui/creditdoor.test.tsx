@@ -161,7 +161,10 @@ describe('the OIL control on the day sheet', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${TUE}`))
     expect(screen.queryByTestId('bid-oil')).toBeNull()
-    expect(screen.queryByTestId('bid-more')).toBeNull()   // no ⋯ for a member (round 3, D1326)
+    /* a member's ⋯ holds Attach alone (D1379) — no Grant OIL, no Other, no posting (round 3, D1326) */
+    fireEvent.click(screen.getByTestId('bid-more'))
+    expect([...screen.getByTestId('bid-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
+    fireEvent.click(screen.getByTestId('bid-more'))
   })
 })
 
