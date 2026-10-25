@@ -238,3 +238,11 @@ graph in C's strips); he called the Tracker better with it there. Filed in [KBS-
 
 **Walk:** WALK — his measured slides played on five windows, up and down, both builds (`kbs-slide-walk.mjs`): 5 / 5 fail
 on the build he tested, 5 / 5 pass on the fix; pictures opened. **Owed: his iPhone look** (the tab closed and reopened).
+
+## After the sixth round — his look, and the fault handed to Fable (25 Oct 26, D1366)
+
+His iPhone look at round 6 (12:57): *"Still similar bug"* — the page behind the input window still shows above it as the
+keys come. Six Opus rounds have passed the stand-in keyboard and failed on his phone, so by his call (D903) the fault goes to
+Fable after his weekly reset (Mon 26 Oct 26, evening), from a fresh recording he saves for it and the brief
+`raptor-port/docs/superpowers/briefs/2026-10-25-kbs-fable-brief.md` (D1366), which asks Fable to weigh going back to the
+behaviour before round 5's glide beside a seventh fix. No seventh round is built until then.

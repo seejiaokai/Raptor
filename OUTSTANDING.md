@@ -92,7 +92,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: six rounds built on `claude/lw-m3-placing-leave`; round 6 (the window dipping, the page behind showing) walked and held still; his iPhone look owed.
+- [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: six Opus rounds; his look at round 6 "still similar bug" — handed to Fable after his weekly reset (Mon 26 Oct 26, evening), his recording saved for it (D1366).
 - [LW-NIGHT1025-OLDER] — older faults the night's walk met: words typed for an afternoon bid land on the morning bid (fix first, tests first), two tabs, a posted-out man's gone days, a double tap's second tap.
 - [LW-R2R3-ANSWERS-BUILD] — his answers to rounds 2 and 3 of the bid windows (D1339–D1355): the drag window's words kept, the bubble red and raised by every lowering, the refused bid lit, his own leave's one row, the half-day UNA's free half — built with one FULL check, after his answers on the drawings.
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
@@ -256,7 +256,7 @@ came, the day panel's "+ Input" showing above it; the glide ran on a curve of it
 screen (up: ease-in-out, 250ms, told ~30ms in; down: .3,.58,.2,1, 330ms) and the glide now runs on them
 (`SLIDE_UP` / `SLIDE_DOWN`); walked on five windows, up and down, both builds (`kbs-slide-walk.mjs`: 5 / 5 failing before,
 5 / 5 holding still after); KS3j, KS3k; the sheet's §The sixth round. His word on the Tracker: "seems better now". **Open:**
-his iPhone look at round 6 (the tab closed and reopened). **Seen, not changed (older):** as the keys start, a held window
+his iPhone look at round 6 — **his answer (25 Oct 26, 12:57): "Still similar bug"; by his call the fault goes to Fable after his weekly reset (Mon 26 Oct 26, evening), from the brief `raptor-port/docs/superpowers/briefs/2026-10-25-kbs-fable-brief.md` and a fresh recording he saves for it (D1366); no seventh round before then.** **Seen, not changed (older):** as the keys start, a held window
 shortens at once to its final room, so for about a tenth of a second the page behind shows in the band between its foot and
 the rising keys — put to him only if he sees it (the cure: the foot riding the keys, the window's height driven each frame).
 Not swept: the Leave War's sheets place themselves (`leavewar/ui/Sheet.tsx followVisible`) and may jump the same way.
