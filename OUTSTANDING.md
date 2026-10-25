@@ -96,6 +96,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-ATTACH] — "Fly with" becomes "Attach" with a "To" box, under Unavailable by itself, ATCH on the war (D1373–D1376): to build now on `claude/lw-m3-placing-leave` with [LW-OTHER-UNAVAIL], one FULL check.
 - [LW-ATTACH-BUTTON] — an Attach filed from the Leave War’s bid window, first in its ⋯, admin and member, on the Duration (D1378–D1380): to build now on `claude/lw-m3-placing-leave`, inside its FULL check.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
+- [LW-TAP-HELD-DAY] — his question 26 Oct 26: a short tap on a day holding a course (or another entry filed on the Inputs page) only says to change it there; should it open the bid window so more can be added (Grant OIL…)? Recommended yes — draw it for him.
+- [LW-DRAG-MORE-MENU] — his report 26 Oct 26: the drag window's ⋯ offers Attach, Other, Post out, but not Grant OIL or Post in as the one-day window does — find whether by design, fix or explain.
 - [LW-DELETE-SURE-FIT] — his D1387: the bid window's "Delete — sure?" runs past its button — a fix drawn with the design skill, then built.
 - [LW-GRANT-HO-VISIBLE] — his question 26 Oct 26 ("Why I can only grant FO oil? Not HO?"): an HO is given by typing 0.5 in Days, which nothing on screen says — draw a plain FO / HO choice for him.
 - [INP-CAL-EXPAND] — his D1386: an expand control on the Inputs calendar shows every input of each day, the weeks growing taller, the page scrolling — designed with the design skill and drawn for him first.
@@ -273,6 +275,14 @@ his iPhone look at round 6 — **his answer (25 Oct 26, 12:57): "Still similar b
 shortens at once to its final room, so for about a tenth of a second the page behind shows in the band between its foot and
 the rising keys — put to him only if he sees it (the cure: the foot riding the keys, the window's height driven each frame).
 Not swept: the Leave War's sheets place themselves (`leavewar/ui/Sheet.tsx followVisible`) and may jump the same way.
+
+### [LW-TAP-HELD-DAY] A short tap on a day holding a course (his question, 26 Oct 26)
+
+**His words:** *"On CSE when I long press to put another input. Firstly if I don't long press it will just tell me to go to inputs page to change the input. But for e.g what if I wanna give OIL to this person. Would it be better that a short press allows me to add additional input from there?"* — pictures `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-cse-tap.png` (a tap on Saber's CSE: "Change it on the Inputs page, not here."), `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-drag-window.png` (a long press on it opens the drag window). **To do:** draw a short tap opening the one-day bid window with one line for the held entry (as D1371 does for a half-day Other), its ⋯ offering Grant OIL and the rest; put to him with a recommendation (yes). A question, not a ruling yet.
+
+### [LW-DRAG-MORE-MENU] The drag window's ⋯ lacks Grant OIL and Post in (his report, 26 Oct 26)
+
+**His words:** *"why does the long press or drag to select multiple days are missing the updated grant OIL. Doesn't show post in"* — picture `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-drag-more-menu.png` (the drag window's ⋯: Attach, Other, Post out). **To do:** search the rulings (D1349's Grant OIL place, D1326, D1378) for whether the drag window should carry them; if a gap, build red-first and walk; if by design, tell him why with the picture.
 
 ### [LW-DELETE-SURE-FIT] "Delete — sure?" runs past its button (his D1387, 26 Oct 26)
 
