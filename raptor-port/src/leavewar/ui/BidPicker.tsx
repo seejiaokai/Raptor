@@ -333,7 +333,16 @@ export function BidPicker({
      Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
      (`decidableIn` — `setBidStates`'s own eligibility, the admin at any time — D1177). */
   const canDecideHere = !!decide || (!!span && decidableIn(selCells()) > 0)
-  const held = !span ? heldRequest(personId, date) : null
+  /* THE BOX SPEAKS FOR THE HELD BID ONLY ON ITS OWN HALF ([LW-NIGHT1025-OLDER] (a), the night's walker 2, INC-1): on a day
+     holding a morning bid, PM pressed and words typed went onto the MORNING bid ("Am" became "AmPm") and the new afternoon
+     bid had none. While Duration covers the held bid's half (its own half, or the whole day, which replaces it and carries
+     its words) the box is the held bid's; on the other half it is the new bid's, empty to start. */
+  const heldAny = !span ? heldRequest(personId, date) : null
+  const covers = (p: Portion) => {
+    const h = heldAny ? parseCell(heldAny.rec.code)?.portion ?? 'full' : 'full'
+    return p === 'full' || h === 'full' || h === p
+  }
+  const held = heldAny && covers(portion) ? heldAny : null
   /* the approved leave's own row speaks for the day only while no range widens it (a range's words go with the fill) */
   const leaveRow = !span && !held && !onlyPortion ? approvedRow : null   // never the free half's (the fresh read's R1)
   const words = held ? (heldEdit ?? draftOf(held.rec)) : draft
@@ -632,7 +641,11 @@ export function BidPicker({
             data-testid={p.testid}
             className={`pchip${portion === p.portion ? ' on' : ''}`}
             aria-pressed={portion === p.portion}
-            onClick={() => { setPortion(p.portion); setConfirming(null) }}
+            onClick={() => {
+              /* words typed on the held bid are saved onto it before the box turns to the other half's new bid */
+              if (held && !covers(p.portion)) flushWords()
+              setPortion(p.portion); setConfirming(null)
+            }}
           >
             {p.label}
           </button>
