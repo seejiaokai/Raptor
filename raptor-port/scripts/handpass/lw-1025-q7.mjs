@@ -524,6 +524,94 @@ for (const size of SIZES) {
     await w.ctx.close()
   }
 
+  /* ================= ATT — his idea, "Fly with" becomes "Attach" (A1–A3, as recommended), drawn =================
+     1 the Inputs page's window: the kind reads Attach (the select's own option, its words changed) and a "To" row is cloned
+       from the window's own Title row, "145 Sqn" typed; 2 Edit Schedule: a real "Fly with" filed for Drifter on Thu 16 Jul
+       through that window, its Ground Programme row moved whole to the foot of Unavailable and its name read
+       "Attach · 145 Sqn"; 3 the Leave War: Drifter Tue 15 – Wed 16 Dec placed through the bid window's UNA (the war's one
+       counted-out record today), its letters read ATCH in C1's look A, the Available P row in the picture (it drops by one). */
+  if (SETS.includes('att')) {
+    const w = await fresh(); const P = w.page
+    await sc('att-window', w, async () => {
+      await newInputWindow(w, 'Drifter', 'Fly with')
+      const typeRow = '[data-testid="win-inputedit"] .inped-f:has(#inpEditType)'
+      const r = await P.evaluate(typeRow => {
+        const sel = document.querySelector('#inpEditType'); const o = [...sel.options].find(o => o.value === 'Fly with'); o.textContent = 'Attach'
+        const t = document.querySelector('#inpEditOwnTitle'); t.value = 'Attach'
+        const titleRow = t.closest('.inped-f')
+        const to = titleRow.cloneNode(true); to.dataset.drawn = 'att-to'
+        to.querySelector('.inped-k').textContent = 'To'
+        const inp = to.querySelector('input'); inp.removeAttribute('id'); inp.value = '145 Sqn'; inp.placeholder = 'Squadron, job or exercise'
+        to.querySelector('.inped-pen')?.remove()
+        document.querySelector(typeRow).after(to)
+        return { to: to.getBoundingClientRect().height }
+      }, typeRow)
+      note('att', size, 'drawn window: ' + JSON.stringify(r))
+      await P.locator(typeRow).first().evaluate(e => e.scrollIntoView({ block: 'center' })); await P.waitForTimeout(300)
+      await frame(w, 'att-window', { marks: [typeRow, '[data-drawn="att-to"]'], around: [typeRow, '[data-testid="win-inputedit"] .inped-f:has(#inpEditRmk)'],
+        check: () => P.evaluate(() => document.querySelector('[data-drawn="att-to"]') ? null : 'gone'), label: 'Drawn A1: "Fly with" becomes "Attach", with one "To" box for where' })
+      /* file the real Fly with on Thu 16 Jul for the schedule picture */
+      await P.evaluate(() => document.querySelector('[data-drawn="att-to"]')?.remove())
+      await P.locator('#inpEditOwnTitle').fill('Fly with')
+      if (!(await P.evaluate(() => document.querySelector('#inpEditAllday')?.checked))) { await L.press(w, '#inpEditAllday'); await P.waitForTimeout(300) }
+      await P.locator('#inpEditRmk').fill('Exercise support')
+      await L.press(w, '[data-testid="inpEdCal-day-2026-07-16"]'); await P.waitForTimeout(500)
+      await L.press(w, '#inpEditSave'); await P.waitForTimeout(1000)
+      await answerAsks(w, 'att')
+      await P.evaluate(() => window.go('editsched')); await P.waitForTimeout(1500)
+      const D = dayScope('editsched', 3)
+      await P.waitForSelector(D, { timeout: 8000 })
+      const g = await tagRow(P, D, 'sec-grnd', 'data-qg', 'fly with|exercise support')
+      note('att', size, 'today on the Ground Programme: ' + JSON.stringify(g))
+      if (!g.text) throw new Error('no Fly with row')
+      const mv = await P.evaluate(D => {
+        const row = document.querySelector('[data-qg="1"]'), last = [...document.querySelectorAll(`${D} .sec-unav .pl-row`)].pop()
+        if (!row || !last) return null
+        const c = row.cloneNode(true); c.removeAttribute('data-qg'); c.dataset.drawn = 'att'
+        const walk = document.createTreeWalker(c, NodeFilter.SHOW_TEXT); let n
+        while ((n = walk.nextNode())) if (/fly with/i.test(n.textContent)) n.textContent = n.textContent.replace(/fly with/i, 'Attach · 145 Sqn')
+        last.after(c); row.style.display = 'none'
+        return c.innerText.replace(/\s+/g, ' ').trim()
+      }, D)
+      note('att', size, 'drawn row: ' + JSON.stringify(mv))
+      if (!mv || !/attach/i.test(mv)) throw new Error('the row was not drawn: ' + mv)
+      await centreOn(P, ['[data-drawn="att"]', `${D} .sec-unav`])
+      await frame(w, 'att-schedule', { marks: ['[data-drawn="att"]'], around: [`${D} .sec-unav`], pad: 6,
+        check: () => P.evaluate(() => document.querySelector('[data-drawn="att"]') ? null : 'gone'), label: 'Drawn A2: an attachment lands under Unavailable by itself, where he is attached named' })
+    })
+    await w.ctx.close()
+    const v = await fresh(); const VP = v.page
+    await sc('att-war', v, async () => {
+      const who = await VP.evaluate(() => Object.entries(window.PEOPLE || {}).find(([, x]) => x.cs === 'Drifter')?.[0])
+      const days = ['2026-12-14', '2026-12-15', '2026-12-16', '2026-12-17']
+      for (const d of days) { const k = await kinds(v, who, d); if (k.length) throw new Error(d + ' not empty: ' + JSON.stringify(k)) }
+      const availOf = () => VP.evaluate(ds => Object.fromEntries(ds.map(d => [d, document.querySelector(`[data-testid="avail-p-${d}"]`)?.textContent?.trim()])), days)
+      await L.reachCell(v, who, days[0])
+      if (!(await L.vis(VP, T('avail-p-' + days[1])))) { await VP.evaluate(() => window.scrollTo(0, 0)); await L.press(v, T('counts-toggle')); await VP.waitForTimeout(700); await L.reachCell(v, who, days[0]) }
+      const before = await availOf()
+      for (const d of days.slice(1, 3)) { await L.openCellR(v, who, d); await L.press(v, T('bid-una')); await VP.waitForTimeout(600) }
+      await L.closeAny(v)
+      const after = await availOf()
+      note('att', size, `Available P ${JSON.stringify(before)} → ${JSON.stringify(after)}`)
+      for (const d of days.slice(1, 3)) if (+after[d] !== +before[d] - 1) throw new Error(`Available P on ${d} did not drop by one`)
+      await VP.waitForTimeout(6500)
+      await alignGrid(VP, who, days[0])
+      const dy = await VP.evaluate(iso => { const h = [...document.querySelectorAll(`[data-testid="head-${iso}"]`)].find(e => e.getBoundingClientRect().width > 0); return h ? h.getBoundingClientRect().top - 112 : null }, days[0])
+      if (dy !== null && Math.abs(dy) > 3) { await VP.evaluate(dy => window.scrollBy(0, dy), dy); await VP.waitForTimeout(400) }
+      await setLook(VP, 'A')
+      const n = await VP.evaluate(() => { let n = 0; for (const e of document.querySelectorAll('.c.k-una')) for (const t of [...e.childNodes]) if (t.nodeType === 3 && /UNA/.test(t.textContent)) { t.textContent = t.textContent.replace('UNA', 'ATCH'); n++ } return n })
+      if (n < 2) throw new Error('letters changed on ' + n)
+      const names = `${T('row-' + who)} td.who`
+      const around = [T('head-' + days[0]), T('head-' + days[3]), T('avail-p-' + days[3]), names, ...days.map(d => T(L.cellId(who, d)))]
+      await frame(v, 'att-war', { marks: [T(L.cellId(who, days[1])), T(L.cellId(who, days[2])), T('avail-p-' + days[1]), T('avail-p-' + days[2])], around, pad: 6,
+        check: () => VP.evaluate(() => /ATCH/.test(document.querySelector('.c.k-una')?.textContent || '') ? null : 'letters gone'),
+        label: `Drawn A2, A3: on the Leave War it reads ATCH (C1's outlined look) and counts him out: Available P ${before[days[1]]} → ${after[days[1]]}` })
+    })
+    if (v.errs.length) note('att-errors', size, v.errs.slice(0, 6).join(' || '))
+    await v.ctx.close()
+  }
+
+
   /* ================= Q2 — a course under Unavailable ================= */
   if (SETS.includes('q2')) {
     const DAY = '2026-07-16', DI = 3
