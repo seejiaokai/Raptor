@@ -8,7 +8,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { closeDates, fileStraight, initStore, lwHistInit, placeUna, rawState, setRole, setViewer } from '../state/store'
+import { closeDates, fileStraight, initStore, lwHistInit, rawState, setRole, setViewer } from '../state/store'
 import { installGlobalUndo } from '../../state/undo-wire'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setMe, setSession } from '../../state/auth'
@@ -42,14 +42,8 @@ beforeEach(() => {
 })
 afterEach(() => { INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)); setMemberTodayForTests(null) })
 
-describe('round 2 — UNA, the war’s own (his D1338: on the Leave War only, an admin’s)', () => {
-  it('reads as its own kind and is a code the war knows — but the war never reads it off the Inputs', () => {
-    expect(kindOf('UNA')).toBe('una')
-    expect(parseCell('UNA')).not.toBeNull()
-    expect(warVisible('UNA'), 'not an input kind (D1338)').toBe(false)
-  })
-})
-
+/* (UNA, the war's own record of D1338, went with D1356 on 25 Oct 26 — an Other under Unavailable in its place, pinned by
+   leavewar/otherunavail.test.tsx) */
 describe('round 2 — filed straight (the store)', () => {
   it('an admin files an overseas duty: one input, whole day, no bid, nothing to approve', () => {
     const r = fileStraight([{ personId: P, date: D }], 'OD')
@@ -78,13 +72,14 @@ describe('round 2 — filed straight (the store)', () => {
 })
 
 describe('round 2 — the row under the leaves (D1326, D1338)', () => {
-  it('an admin’s one-day window: CSE · OD in places 1–2, UNA third, the ⋯ fourth', () => {
+  /* since D1349 / D1356 (25 Oct 26) the third place is Grant OIL, UNA gone */
+  it('an admin’s one-day window: CSE · OD in places 1–2, Grant OIL third, the ⋯ fourth', () => {
     render(<Matrix />)
     fireEvent.click(cell())
     const row = within(sheet()).getByTestId('bid-extra-row')
     const ids = [...row.querySelectorAll('button')].map(b => b.getAttribute('data-testid'))
-    expect(ids.slice(0, 4)).toEqual(['bid-file-CSE', 'bid-file-OD', 'bid-una', 'bid-more'])
-    for (const [id, c, k] of [['bid-file-CSE', 'CSE', 'cse'], ['bid-file-OD', 'OD', 'od'], ['bid-una', 'UNA', 'una']]) {
+    expect(ids.slice(0, 4)).toEqual(['bid-file-CSE', 'bid-file-OD', 'bid-oil', 'bid-more'])
+    for (const [id, c, k] of [['bid-file-CSE', 'CSE', 'cse'], ['bid-file-OD', 'OD', 'od'], ['bid-oil', 'Grant OIL', 'oil']]) {
       const b = within(sheet()).getByTestId(id!)
       expect(b.className, `${c} in its kind's colour, filled`).toMatch(new RegExp(`k-${k}\\b.*s-a|s-a.*k-${k}\\b`))
       expect(b.textContent).toBe(c)
@@ -164,72 +159,24 @@ describe('round 2 — the row under the leaves (D1326, D1338)', () => {
     let done = false
     render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide onDone={() => { done = true }} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} />)
     const ids = [...screen.getByTestId('sel-extra-row').querySelectorAll('button')].map(b => b.getAttribute('data-testid'))
-    /* two men: no Post out, so no ⋯ — its place stays empty (a posting is one man's, the drag window's own rule) */
-    expect(ids).toEqual(['sel-file-CSE', 'sel-file-OD', 'sel-una'])
+    /* two men: the ⋯ holds Other alone (D1356 — no Post out: a posting is one man's, the drag window's own rule) */
+    expect(ids).toEqual(['sel-file-CSE', 'sel-file-OD', 'sel-more'])
     fireEvent.click(screen.getByTestId('sel-file-OD'))
     expect(done).toBe(true)
     expect(filed('OD', P)).toHaveLength(1)
     expect(filed('OD', 'ramp')).toHaveLength(1)
   })
-  it('the Legend names UNA as "Unavailable: out of the manning", in its own teal box, after the overseas duty', () => {
+  it('the Legend names the commitments under Unavailable, in the outlined box, after the overseas duty (D1370)', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('legend-open'))
     const rows = Array.from(screen.getByTestId('legend').querySelectorAll('.leg-row'))
-    const at = rows.findIndex(r => r.querySelector('.leg-t')?.textContent === 'Unavailable: out of the manning')
-    expect(at, 'a row for UNA').toBeGreaterThan(-1)
+    const at = rows.findIndex(r => /^Under Unavailable on the schedule/.test(r.querySelector('.leg-t')?.textContent ?? ''))
+    expect(at, 'a row for them').toBeGreaterThan(-1)
     expect(rows[at - 1]!.querySelector('.leg-t')!.textContent).toBe('Overseas duty')
-    expect(rows[at]!.querySelector('.leg-box .c')!.className).toMatch(/(^|\s)k-una(\s|$)/)
+    expect(rows[at]!.querySelector('.leg-box .c')!.className).toMatch(/(^|\s)k-unav(\s|$)/)
   })
 })
 
-describe('D1338 — UNA in the windows: an admin places it, everyone reads it', () => {
-  const unas = (d = D, p = P) => recsOn(d, p).filter((r: any) => r.kind === 'una') as any[]
-  it('an admin picks AM, types why and taps UNA: the morning is his, the words with it, the window closes, the box sits in the morning', () => {
-    render(<Matrix />)
-    fireEvent.click(cell())
-    fireEvent.click(within(sheet()).getByTestId('portion-am'))
-    fireEvent.change(within(sheet()).getByTestId('bid-remarks'), { target: { value: 'Under investigation' } })
-    fireEvent.click(within(sheet()).getByTestId('bid-una'))
-    expect(screen.queryByTestId('bid-picker')).toBeNull()
-    expect(unas()).toHaveLength(1)
-    expect(unas()[0]).toMatchObject({ code: '*UNA', remarks: 'Under investigation' })
-    expect(INPUTS, 'never an input').toHaveLength(0)
-    const box = cell().querySelector('.c.k-una')
-    expect(box, 'the grid draws it').toBeTruthy()
-  })
-  it('a tap on a UNA day opens the day’s list: its box, who placed it, its words — an admin changes them and deletes it', () => {
-    act(() => { placeUna([{ personId: P, date: D }], 'full', { remarks: 'Board of inquiry' }) })
-    render(<Matrix />)
-    fireEvent.click(cell())
-    const list = screen.getByTestId('daylist-sheet')
-    const id = unas()[0].id
-    expect(within(list).getByTestId(`dl-u-${id}`).textContent).toMatch(/out of the manning/i)
-    expect(within(list).getByTestId(`dl-u-${id}`).textContent).toMatch(/placed by/i)
-    const box = within(list).getByTestId(`dl-una-rmk-${id}`) as HTMLTextAreaElement
-    expect(box.value).toBe('Board of inquiry')
-    fireEvent.change(box, { target: { value: 'Board of inquiry, week 2' } })
-    fireEvent.blur(box)
-    expect(unas()[0].remarks).toBe('Board of inquiry, week 2')
-    fireEvent.click(within(list).getByTestId(`dl-clear-${id}`))
-    expect(unas()).toHaveLength(0)
-  })
-  it('a member taps ANOTHER man’s UNA day: the list opens, read only — the words and who placed it, no box to type in, no Delete', () => {
-    act(() => { placeUna([{ personId: 'ramp', date: D }], 'full', { remarks: 'Board of inquiry' }) })
-    const id = unas(D, 'ramp')[0].id
-    setMemberTodayForTests('2026-01-01')
-    act(() => { setRole('member'); setViewer(P) })
-    render(<Matrix />)
-    fireEvent.click(cell(D, 'ramp'))
-    const list = screen.getByTestId('daylist-sheet')
-    expect(within(list).getByTestId(`dl-u-${id}`).textContent).toMatch(/placed by/i)
-    expect(within(list).getByTestId(`dl-ro-${id}`).textContent).toContain('Board of inquiry')
-    expect(within(list).queryByTestId(`dl-una-rmk-${id}`)).toBeNull()
-    expect(within(list).queryByTestId(`dl-clear-${id}`)).toBeNull()
-  })
-})
-
-/* the app as signed in: the session the Inputs door asks, the war wired to it, and the top bar's one Undo (D347) — the
-   setup the inputs gate's own tests use (inputgate.test.ts) */
 describe('round 2 — filed straight, signed in, with the one Undo', () => {
   beforeEach(() => {
     INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))   // the seed, before the store reads it

@@ -146,7 +146,11 @@ describe('the selection sheet', () => {
       cells: [cell('ramp', '2026-01-06'), cell('dusk', '2026-01-06')],
     }
     mount(twoPeople, { onPostOut })
-    expect(screen.queryAllByTestId('sel-more')).toHaveLength(1) // only the first mount's ⋯ (round 3, D1326)
+    /* both mounts draw a ⋯ since D1356 (it holds Other for an admin); Post out stays the one man's */
+    const mores = screen.queryAllByTestId('sel-more')
+    expect(mores).toHaveLength(2)
+    fireEvent.click(mores[1]!)
+    expect(screen.getAllByTestId('sel-more-menu').some(m => !m.querySelector('[data-testid="sel-postout"]'))).toBe(true)
   })
 })
 

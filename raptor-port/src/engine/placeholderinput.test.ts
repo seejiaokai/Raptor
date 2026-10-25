@@ -2,7 +2,7 @@
 
    Owner: D700 ("Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments"),
    D702 (it stands for whoever is free), D711 (not for an overseas duty or a course; one day at a time), D712 (not for
-   "Fly with" or "Personal"), D713 (the new kind Event may be filed for it).
+   "Attach" or "Personal"), D713 (the new kind Event may be filed for it).
 
    So a placeholder input is (a) of an allowed kind — Training, Meeting, Appointment, Duty, Event, Other; (b) ONE day.
    `placeholderProblem` says what is wrong in a sentence, and every door and the save boundary's hard check ask IT (the
@@ -27,7 +27,7 @@ const KINDS = 'Training, Meeting, Personal, Appointment, Duty, Event and Other'
 
 describe('D700, D711 (2), D712, D713 — the kinds an ALL / ALL AVAIL input may be', () => {
   /* SEVEN SINCE D778 (12 Oct 26 — "So all avail all can go on personal"): it read "exactly six", without Personal
-     (D712, which stands for "Fly with") */
+     (D712, which stands for "Attach") */
   it('exactly seven: Training, Meeting, Personal, Appointment, Duty, Event, Other', () => {
     expect([...PLACEHOLDER_KINDS]).toEqual(['Training', 'Meeting', 'Personal', 'Appointment', 'Duty', 'Event', 'Other'])
     for (const t of INPUT_TYPES) expect(placeholderKind(t), t).toBe(PLACEHOLDER_KINDS.includes(t))

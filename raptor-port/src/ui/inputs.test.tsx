@@ -216,7 +216,7 @@ describe('the Inputs page (tfin)', () => {
     /* every timed "Duty & other commitments" type opens with the plain tick
        UP and UNCHECKED — the whole group bar SANS (the record a timed window
        actually lands from is pinned in boardaddinput.test.tsx's Meeting add) */
-    for (const t of ['Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'OD', 'Other']) {
+    for (const t of ['Training', 'CSE', 'Meeting', 'Attach', 'Personal', 'Appointment', 'Duty', 'OD', 'Other']) {
       await setType(t)
       expect(D('#inpEditSpan'), `${t} takes the plain tick, not the span picker`).toBeFalsy()
       expect((D('#inpEditAllday') as HTMLInputElement).checked, `${t} opens unticked`).toBe(false)

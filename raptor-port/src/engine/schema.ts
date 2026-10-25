@@ -221,6 +221,8 @@ export type Input = {
   /** The input's own name ([INPUT-OWN-TITLE], owner D715, D716 — 9 Oct 26): present only where its filer typed one that
    *  differs from its kind's name, on a kind that takes a title (inputs.ts titledKind, titleOf) — demo seed; screen. */
   title?: string
+  /** Where an Attach is attached (his D1373, 25 Oct 26 — "Attach · 145 Sqn"): free words, at most 40, present only where typed (inputs.ts toOf) — screen. */
+  to?: string
   /** Last-modified stamp for the lateness mark: ISO 'yyyy-mm-dd', or the literal 'now' the Inputs page writes — seed; screen. */
   mod: string
   /** Landing state — engine (slots.ts acceptInput / unacceptInput). */

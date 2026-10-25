@@ -401,7 +401,7 @@ two 10 Aug additions took one:
 - **The All day tick opens OFF for a "Duty & other commitments" type, ON for
   everything else** (owner, 22 Aug 26). A brand-new input re-seeds its All day
   state from `defaultAllday(type)` on every type change: the timed group
-  (Training, CSE, Meeting, Fly with, Personal, Appointment, Duty, Event, OD, Other)
+  (Training, CSE, Meeting, Attach, Personal, Appointment, Duty, Event, OD, Other)
   starts UNTICKED with the 06:00–18:00 window live, because those are
   commitments the aircrew states real hours for; leave, medical and **SANS
   Availability** keep All day ON. It is a default only — a user is free to
@@ -2282,7 +2282,7 @@ and publish in the Amendments panel but paint no unrelated cell.
 
 **Accepting is now the DEFAULT for an activity input (owner, Aug 26 — "by
 default all inputs are accepted").** An activity input (Meeting, Appointment,
-Training, Fly with, Duty, Personal, Other) drops onto the ground programme the
+Training, Attach, Duty, Personal, Other) drops onto the ground programme the
 moment it is filed, through the one gate `engine/slots.ts:autoAcceptInput`:
 isPersonal + an EDITABLE (not-yet-published) day → `acceptInput(di,row,'g')`.
 Every creation path calls it — the two board `+ Add` dialogs (via
@@ -6479,7 +6479,7 @@ on it; the answer rides `keepTail` into the write.
 user if the duty and commitment deserves an applicable OIL") is the third
 sibling in this recipe — same `.upconf-*` layer classes plus `.oilconf-pop`.
 Saving a duty-&-commitments input (`oilAsks` — exactly the `restsInput`
-set — eight until 9 Oct 26, nine with Event (D713): Training, CSE, Meeting, Fly with, Appointment, Duty, Event, OD,
+set — eight until 9 Oct 26, nine with Event (D713): Training, CSE, Meeting, Attach, Appointment, Duty, Event, OD,
 Other; Personal and SANS Availability excluded) whose span covers a weekend or
 public holiday opens it from all three form paths — `InputEditor.save()`,
 `InputsPage.add()` and `InputsPage.saveEdit()` — through ONE gate body,
@@ -11132,7 +11132,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   a person (`howMany`): "for 2 people and ALL AVAIL".
 - **"ALL AVAIL" and "ALL" under "Several people" (step 3 — D750, D753):** the two are pucks of their own in the
   picker (`ui/PeoplePick.tsx`, `data-ppgroup="ph"`), ONE of them, beside named people. Where the input is longer than
-  a day or not one of the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* they are drawn greyed with the reason under them (`phWhy` — the window's answer,
+  a day or not one of the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Attach"]* they are drawn greyed with the reason under them (`phWhy` — the window's answer,
   `inputedit.tsx placeholderWhy`): "ALL AVAIL is for one day" / "ALL AVAIL is for Training, Meeting, Appointment,
   Duty, Event and Other". One already picked stays lit, with the sentence and "Take ALL AVAIL out"; a second one, or
   ALL beside ALL AVAIL: "This input already has ALL AVAIL". The count line reads "2 picked + ALL AVAIL". A reader is
@@ -11170,7 +11170,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   was (the view week is compared with the reference). A remark is said under the day card's line whatever the input is
   called — the old "an Other is named by its remark, do not say it twice" test is gone. Search (the List, the month,
   the opened day) matches the title as well as the remarks.
-- *[12 Oct 26 — D778: the two pucks are offered for a one-day PERSONAL input too (D712 narrowed to "Fly with"); and
+- *[12 Oct 26 — D778: the two pucks are offered for a one-day PERSONAL input too (D712 narrowed to "Attach"); and
   D776: a Personal input's row takes a dropped puck as any input's does — he joins on "+ add", replaces or swaps on the
   one person's puck. D777: an input's CARD (the opened day; the List on a phone — `ui/InputCard.tsx`) wears a small
   outlined "OIL?" tag after LATE and left of the hours where nobody has answered its OIL question, and the desktop
@@ -11180,7 +11180,7 @@ in `ui/inputedit.tsx`. A screen that draws inputs reads the record; one that dra
   Every Person list that can hold one draws the ONE group `PeoplePick.tsx PlaceholderGroup` — an `<optgroup
   label="Whoever is free that day" data-ph>` with ALL AVAIL then ALL (D702: both stand for whoever is free; neither
   takes ground crew, D52): the picker's one-person list (the editor window and the List's Add form), the board's Add / *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
-  edit dialog and the List's pencil editor. Offered for the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
+  edit dialog and the List's pencil editor. Offered for the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Attach"]* `engine/inputs.ts PLACEHOLDER_KINDS`, to whoever
   may pick another person for that kind (an admin; a member while the members' switch is on), never on the SANS
   calendar, never as a puck under "Several people". **A placeholder already chosen is ALWAYS listed, whatever the kind
   becomes** — with no option the box drew the first man on the list over an ALL AVAIL input. The picker's own line
@@ -11475,7 +11475,7 @@ day again); a half day opens on its own half (D1331) → the leave buttons, the 
 lit with the cyan ring → the row under the leaves: CSE · OD in its first two places (round 2, BUILT 24 Oct 26 — D1318:
 filled in their kinds' colours, no figure; a tap files the input straight for the day or the picked range, the window's new
 words with it, and closes — `LeaveButtons.tsx DutyButtons`, `store.ts fileStraight`; the drag window's row and a member's
-closed-day window carry them too), UNA in its third — an ADMIN's alone (D1338 — *[D1356, 25 Oct 26: UNA goes — an "Other" under Unavailable takes its place on the Leave War, the schedule and the Inputs page alike; to be built, filed as [LW-OTHER-UNAVAIL].]* — the Leave War's own record, never an input;
+closed-day window carry them too), UNA in its third — an ADMIN's alone (D1338 — *[D1356, 25 Oct 26: UNA goes — an "Other" under Unavailable takes its place on the Leave War, the schedule and the Inputs page alike; BUILT 25 Oct 26 on `claude/lw-m3-placing-leave` ([LW-OTHER-UNAVAIL]): the war reads any commitment under Unavailable (`absences.ts warCounts`), drawn outlined by its letters (OTH, ATCH…); a stored UNA is dropped on read (`warrecs.ts isRetiredUna`).]* — the Leave War's own record, never an input;
 deep teal, filled; a tap places it at once on the day, the range or every cell picked, on the Duration's half, with the
 window's new words, and closes — `LeaveButtons.tsx UnaButton`, `store.ts placeUna`; a member's third place is empty), the ⋯ in its fourth place (D1326) opening upward Grant OIL (OIL given's
 green, D1320) · Post out · Post in; a member has none of the three — his fourth place stays empty. No row carries a label; each keeps its name for a screen

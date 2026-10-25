@@ -230,7 +230,8 @@ describe('round 3 — "Approve what I enter" as a switch, remembered (D1302)', (
 })
 
 describe('round 3 — the ⋯ in the row under the leaves (D1326)', () => {
-  it('stands in the fourth place of the row under the leaves and opens Grant OIL, Post out and Post in', () => {
+  /* since D1349 / D1356 (25 Oct 26): Grant OIL stands in the row's third place; the ⋯ opens Other, Post out and Post in */
+  it('stands in the fourth place of the row under the leaves and opens Other, Post out and Post in', () => {
     render(<Matrix />)
     fireEvent.click(cell())
     const s = sheet()
@@ -240,11 +241,11 @@ describe('round 3 — the ⋯ in the row under the leaves (D1326)', () => {
     expect(row.contains(more)).toBe(true)
     expect(rowOf(within(s).getByTestId('bid-LL')).compareDocumentPosition(row) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(more.closest('.bp-more-wrap')!.className).toContain('col4')
-    expect(within(s).queryByTestId('bid-oil')).toBeNull()
+    expect(row.contains(within(s).getByTestId('bid-oil')), 'Grant OIL in the row itself').toBe(true)
     fireEvent.click(more)
     const menu = within(s).getByTestId('bid-more-menu')
-    expect([...menu.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Grant OIL', 'Post out', 'Post in'])
-    expect(within(menu).getByTestId('bid-oil').className).toContain('oil-give')
+    expect([...menu.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Other', 'Post out', 'Post in'])
+    expect(within(menu).queryByTestId('bid-oil')).toBeNull()
     fireEvent.click(within(menu).getByTestId('bid-postout'))
     expect(within(s).getByTestId('po-date')).toBeTruthy()
     expect(within(s).queryByTestId('bid-more-menu')).toBeNull()
