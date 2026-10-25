@@ -71,7 +71,7 @@ describe('the bid bubble (D1227, D1272, D1364)', () => {
     fireEvent.click(screen.getByTestId('bid-LL'))
     expect(bubble()).toBeTruthy()
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
-    fireEvent.pointerDown(document.body)
+    fireEvent.pointerDown(document.body); fireEvent.pointerUp(document.body)   // a tap: pressed and lifted where it went down (W1 8)
     expect(bubble()).toBeNull()
     /* …and at the next key (the read's note: this test pressed only): the bid undone, placed again, a key */
     act(() => { lwUndo() })
@@ -157,6 +157,38 @@ describe('always at the foot; Show › only while the Manning rows are out of vi
     expect(screen.getByTestId('manning-bubble-show').textContent).toBe('Show ›')
   })
 
+  /* the walk's find (W1 7, 8): the button scrolled off the top while the Manning rows themselves stood on screen still drew
+     Show — it read the button, not the rows (D1358: "Show › … only while those rows are out of view") */
+  /* the walk's find (W1 8): a finger scroll — the way to the rows on a phone — took the note down at its first touch: a
+     press counted as his next tap before it was a tap. A tap is a press lifted where it went down; a scroll is not one */
+  it('a finger scroll leaves it up; a press that moves leaves it up; a tap takes it down (W1 8)', async () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    placeBid()
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+    fireEvent.pointerDown(document.body, { clientX: 200, clientY: 400 })
+    fireEvent.pointerCancel(document.body)                                // the browser took the touch for a scroll
+    expect(bubble(), 'a scroll is not a tap').toBeTruthy()
+    fireEvent.pointerDown(document.body, { clientX: 200, clientY: 400 })
+    fireEvent.pointerUp(document.body, { clientX: 200, clientY: 340 })
+    expect(bubble(), 'a press that moved is not a tap').toBeTruthy()
+    fireEvent.pointerDown(document.body, { clientX: 200, clientY: 400 })
+    fireEvent.pointerUp(document.body, { clientX: 202, clientY: 401 })
+    expect(bubble(), 'a tap').toBeNull()
+  })
+
+  it('the button off the top but a Manning row on screen: no Show (W1 7, 8)', () => {
+    rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    offTop()
+    const row = document.querySelector('tbody.counts tr') as HTMLElement
+    expect(row, 'a Manning row drawn').toBeTruthy()
+    row.getBoundingClientRect = () => ({ top: 120, bottom: 146, left: 0, right: 400, width: 400, height: 26, x: 0, y: 120, toJSON: () => ({}) }) as DOMRect
+    placeBid()
+    expect(bubble()).toBeTruthy()
+    expect(screen.queryByTestId('manning-bubble-show')).toBeNull()
+  })
+
   it('Show › follows the rows: scrolled into view it goes, out again it comes back', async () => {
     rowRedPastOneMore(TARGET)
     render(<Matrix />)
@@ -231,7 +263,7 @@ describe('his report: red when red, and every lowering raises it (D1344, D1345, 
   }
   const tapAway = async () => {
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
-    fireEvent.pointerDown(document.body)
+    fireEvent.pointerDown(document.body); fireEvent.pointerUp(document.body)   // a tap: pressed and lifted where it went down (W1 8)
   }
   /** a counter of everyone, amber the moment one more is off and red only far below (so it can stand amber) */
   function rowAmberPastOneMore(day: string, label = 'Test crew'): number {

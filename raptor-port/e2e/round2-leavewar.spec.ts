@@ -80,3 +80,33 @@ test('an admin’s Attach from the ⋯ files at once: the window closes and the 
   await expect(page.locator(T('bid-picker'))).toHaveCount(0)
   await expect(page.locator(`${T(`cell-${P}-${D}`)} .c.k-unav`)).toHaveText('ATCH')
 })
+
+/* THE JOINED BAR AND THE OUTLINED COMMITMENT, AS PAINTED (D1359, D1370 — the M3 build's FULL check, walker 1's F1): the
+   rules sat after this file set's #page-leavewar wrapper, so the wrapper's own rules beat them and every run of days drew
+   as separate boxes, and the outline as the generic edge. Only a real browser computes the cascade. */
+test('a leave over three days paints as one bar, its code once; a commitment under Unavailable wears D1370 outline', async ({ page }) => {
+  await page.locator(T('month-FEB')).click()
+  const days = ['2026-02-09', '2026-02-10', '2026-02-11']
+  for (const d of days) await page.locator(T(`cell-${P}-${d}`)).waitFor({ state: 'attached' })
+  await page.evaluate(([p, ds]) => { for (const d of ds as string[]) (window as any).lwSetCell(p, d, 'LL') }, [P, days] as const)
+  const read = (d: string) => page.locator(`${T(`cell-${P}-${d}`)} .c`).first().evaluate(e => {
+    const s = getComputedStyle(e)
+    return { cls: e.className, left: s.left, right: s.right, color: s.color, tr: s.borderTopRightRadius, tl: s.borderTopLeftRadius }
+  })
+  const [a, b, c] = [await read(days[0]!), await read(days[1]!), await read(days[2]!)]
+  expect(a.cls).toMatch(/\bjr\b/); expect(b.cls).toMatch(/\bjl\b.*\bjr\b|\bjr\b.*\bjl\b/); expect(c.cls).toMatch(/\bjl\b/)
+  expect(a.right, 'the first day reaches over the day line').toBe('-1px')
+  expect(a.tr).toBe('0px')
+  expect(b.left, 'the middle day starts at its cell\u2019s edge').toBe('0px')
+  expect(b.right).toBe('-1px')
+  expect(b.color, 'the code once, at the start').toBe('rgba(0, 0, 0, 0)')
+  expect(c.left).toBe('0px'); expect(c.tl).toBe('0px')
+  /* an Other filed straight under Unavailable: D1370's 1.5px edge at .78 */
+  await page.locator(T(`cell-${P}-2026-02-13`)).scrollIntoViewIfNeeded()
+  await page.locator(T(`cell-${P}-2026-02-13`)).click()
+  await page.locator(T('bid-more')).click()
+  await page.locator(T('bid-file-OTH')).click()
+  const sh = await page.locator(`${T(`cell-${P}-2026-02-13`)} .c.k-unav`).evaluate(e => getComputedStyle(e).boxShadow)
+  expect(sh).toContain('1.5px')
+  expect(sh).toContain('0.78')
+})

@@ -1545,18 +1545,27 @@ export function Matrix() {
   const manningInView = (): boolean => {
     const btn = cardRef.current?.querySelector('[data-testid="counts-toggle"]') as HTMLElement | null
     if (!btn) return false
-    const r = btn.getBoundingClientRect()
-    if (!r.width && !r.height) return true
     const vv = window.visualViewport
     /* the visible screen in the measure the button's box is given in (ui/kbscroll.ts screenBox — his iPhone, the keys up
        and the screen panned, gives every box from the visible top) */
     const sb = vv ? screenBox(vv) : null
     const top = sb ? sb.top : 0, bottom = sb ? sb.bottom : window.innerHeight
-    if (r.bottom <= top || r.top >= bottom) return false
-    if (typeof document.elementFromPoint !== 'function') return true
-    const y = Math.min(Math.max(r.top + r.height / 2, top + 1), bottom - 1)
-    const hit = document.elementFromPoint(r.left + r.width / 2, y)
-    return !hit || btn.contains(hit) || overPage(hit)
+    /* on screen and not under anything drawn over it (the app's top bar, the grid's frozen dates) — a box with no layout
+       answers null: it decides nothing */
+    const seen = (el: HTMLElement): boolean | null => {
+      const r = el.getBoundingClientRect()
+      if (!r.width && !r.height) return null
+      if (r.bottom <= top || r.top >= bottom) return false
+      if (typeof document.elementFromPoint !== 'function') return true
+      const y = Math.min(Math.max(r.top + r.height / 2, top + 1), bottom - 1)
+      const hit = document.elementFromPoint(r.left + Math.min(r.width / 2, 40), y)
+      return !hit || el.contains(hit) || overPage(hit)
+    }
+    /* THE ROWS, NOT ONLY THE BUTTON (the walk's W1 7, 8 — D1358: "Show › … only while those rows are out of view"): the
+       button scrolled off the top while the Manning rows still stood on screen drew Show over rows he could see */
+    const rows = cardRef.current?.querySelectorAll<HTMLElement>('tbody.counts tr') ?? []
+    for (const row of rows) if (seen(row)) return true
+    return seen(btn) ?? true
   }
   /* Show: up to the Manning rows (opened when the bubble was raised), the keyboard on the Manning button, the note gone */
   const showManning = () => {
@@ -1606,11 +1615,26 @@ export function Matrix() {
     if (!bubble) return
     /* a press on the foot note's own Show is not "a tap elsewhere" (D1277) — Show's click does its work and ends it */
     const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble"]')
-    const onDown = (e: Event) => { if (!inNote(e) && !overPage(e.target)) setBubble(null) }
+    /* A TAP, NOT A PRESS (the walk's W1 8): the note went at a finger's first touch, so a scroll — the way to the Manning
+       rows on a phone — took it down before Show could follow the rows. A tap is a press lifted within a few pixels of
+       where it went down; a press the browser takes for a scroll (pointercancel) or one that moves is not his next tap */
+    let start: { x: number; y: number } | null = null
+    const onDown = (e: Event) => { const p = e as PointerEvent; start = inNote(e) || overPage(e.target) ? null : { x: p.clientX ?? 0, y: p.clientY ?? 0 } }
+    const onUp = (e: Event) => {
+      const s = start, p = e as PointerEvent
+      start = null
+      if (!s || inNote(e) || overPage(e.target)) return
+      if (Math.hypot((p.clientX ?? 0) - s.x, (p.clientY ?? 0) - s.y) > 10) return
+      setBubble(null)
+    }
+    const onCancel = () => { start = null }
     /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) — but Tab (and Shift with it), the
        way to Show, and a key pressed on Show itself leave it up */
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e) || overPage(e.target)) return; setBubble(null) }
-    const t = window.setTimeout(() => { document.addEventListener('pointerdown', onDown); document.addEventListener('keydown', onKey) }, 0)
+    const t = window.setTimeout(() => {
+      document.addEventListener('pointerdown', onDown); document.addEventListener('pointerup', onUp); document.addEventListener('pointercancel', onCancel)
+      document.addEventListener('keydown', onKey)
+    }, 0)
     /* Show › follows the Manning rows in and out of view while it stands (D1358 — "only while those rows are out of view"):
        read again on a scroll, once a frame at most, never a repaint of the grid (the bubble is this grid's own state, so
        only its box redraws, and only when the answer changes) */
@@ -1622,6 +1646,7 @@ export function Matrix() {
     window.addEventListener('scroll', onScroll, { passive: true, capture: true })
     return () => {
       window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey)
+      document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onCancel)
       window.removeEventListener('scroll', onScroll, { capture: true }); if (raf) window.cancelAnimationFrame(raf)
     }
   }, [bubble ? bubble.text : null])

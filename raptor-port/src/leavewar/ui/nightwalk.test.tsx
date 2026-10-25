@@ -68,11 +68,11 @@ describe('the bubble and a window over the page (F1), Show pressed twice (F2)', 
     const btn = document.createElement('button')
     pop.appendChild(btn)
     document.body.appendChild(pop)
-    fireEvent.pointerDown(btn)
+    fireEvent.pointerDown(btn); fireEvent.pointerUp(btn)
     expect(bubble(), 'a tap in the OIL question is not his next tap on the page').toBeTruthy()
     fireEvent.keyDown(btn, { key: 'Enter' })
     expect(bubble(), 'nor a key pressed in it (the code read, R5)').toBeTruthy()
-    fireEvent.pointerDown(document.body)
+    fireEvent.pointerDown(document.body); fireEvent.pointerUp(document.body)   // a tap: pressed and lifted where it went down (W1 8)
     expect(bubble()).toBeNull()
   })
 
