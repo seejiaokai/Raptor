@@ -676,7 +676,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   carve-out, because HL/OML/ATT B/ATT C keep the man on the island but not fit
   to walk. Written against "a standalone spare" so the **AVALON rule the owner
   reserved** (10 Aug 26 — do NOT infer it) drops in without re-cutting.
-- `isAway` = `isUnavail` + an actioned `Attach`. Widened from `isOffType` on
+- `isAway` = `isUnavail` + an actioned `Attach` + **any commitment filed under Unavailable** (`acc:'u'` — the M3
+  code read's Q2, 25 Oct 26: his D1372 sends a course there by itself "so the schedule and the Leave War agree", and
+  D1357 has the war count every commitment there out; on the Ground Programme a course's row faded him as tasked, under
+  Unavailable he had no row and the crew list drew him free). A cancelled or information-only commitment, an `Attach`
+  included, is not away (`inputSilent` — the warning list ignores it already); one on the Ground Programme or taken back
+  out ('r') stays busy, not away. The ALL AVAIL crowd is unmoved (it keeps out every commitment, wherever filed). Pins:
+  `unavaway.test.ts`. Widened from `isOffType` on
   10 Aug 26: `Detachment` sat in `isUnavail` but never in `isAway`, so a
   detached man was neither hidden from the palette nor barred — he only raised
   a warning once you had already planted him. OD may not be planned for

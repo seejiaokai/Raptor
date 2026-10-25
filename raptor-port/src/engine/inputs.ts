@@ -543,7 +543,15 @@ export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'
 /* AN UPCHIT IS UNAVAIL BUT NOT AWAY either (owner, 27 Aug 26) — it says the
    man is fit AGAIN, so striking him from the palette would invert its meaning.
    Same carve-out shape as SANS, at this same one call site. */
-export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type))||(isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'));}
+/* A COMMITMENT UNDER UNAVAILABLE IS AWAY TOO (the M3 code read's Q2, 25 Oct 26 — his D1372 sends a course there by
+   itself "as an overseas duty does, so the schedule and the Leave War agree", and D1357 has the war count any commitment
+   filed there out). On the Ground Programme a course had a row, which faded him in the crew list as already tasked;
+   under Unavailable it has none, so the crew list drew him free. So `acc:'u'` on any commitment kind now reads away for
+   its hours, as an Attach there already did — the activity types on the programme, or taken back out ('r'), stay out as
+   above. A CANCELLED or information-only one is silent (inputSilent), an Attach included: the warning list ignores it
+   already, and a strike it no longer backs is the drift the picker must not have. The ALL AVAIL crowd is unmoved — it
+   already keeps out every commitment, wherever filed (leavewar/sync.ts availableFor). Pinned by unavaway.test.ts. */
+export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type))||(!inputSilent(inp)&&((isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'))||(isPersonal(inp.type)&&inp.acc==='u')));}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
