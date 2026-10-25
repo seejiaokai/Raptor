@@ -466,18 +466,26 @@ describe('a day drawn only after the "before" is never "turned" (the code read)'
 /* [LW-NIGHT1025-OLDER] (g): on a phone the day panel rests at the foot of the screen, and the note lay under it. With a
    panel up the note stands just above the panel's top. Red first. */
 describe('above a resting day panel ((g))', () => {
-  it('a day panel 300 tall at the foot: the note stands 312 from the foot', () => {
+  /* a phone's panel rests 12 above the foot (22-float-windows.css, bottom:12px) — the narrow read's R1: the F5 fix lifted only
+     above a panel reaching the foot, and on a phone the note lay under the panel again */
+  const asPhone = () => {
+    const was = window.matchMedia
+    window.matchMedia = ((q: string) => ({ matches: /max-width:\s*620px|max-width:\s*700px|max-width:\s*430px/.test(q), media: q, onchange: null, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent: () => false })) as any
+    return () => { window.matchMedia = was }
+  }
+  it('a day panel 300 tall resting at a phone\u2019s foot (12 above it): the note stands 312 from the foot', () => {
     rowRedPastOneMore(TARGET)
     const panel = document.createElement('div')
     panel.dataset.testid = 'win-lwday'
-    panel.getBoundingClientRect = () => ({ top: window.innerHeight - 300, bottom: window.innerHeight, left: 0, right: 400, width: 400, height: 300, x: 0, y: window.innerHeight - 300, toJSON: () => ({}) }) as DOMRect
+    panel.getBoundingClientRect = () => ({ top: window.innerHeight - 312, bottom: window.innerHeight - 12, left: 0, right: 400, width: 400, height: 300, x: 0, y: window.innerHeight - 312, toJSON: () => ({}) }) as DOMRect
     document.body.appendChild(panel)
+    const undoPhone = asPhone()
     try {
       render(<Matrix />)
       fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
       fireEvent.click(screen.getByTestId('bid-LL'))
-      expect(bubble()?.style.bottom).toBe('312px')
-    } finally { panel.remove() }
+      expect(bubble()?.style.bottom).toBe('324px')
+    } finally { panel.remove(); undoPhone() }
   })
   /* the code read's F5: on a desktop the day panel floats at the top right (top 96), never at the foot — the note was lifted
      to the top of the screen. It stands above a panel only where the panel reaches the foot */

@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { INPUTS, inpId, inpLabel, goneRequestName, titleOf, inputCoversDate, idsOf, placeholderOf, remarksShown } from '../engine/inputs'
+import { INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, placeholderOf, remarksShown } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -228,7 +228,8 @@ function inputWords(di: number, it: PendItem): Words {
   /* its own title (D715): "Event → Sports day" — compared by itself, the title each side stores (Astra's read of the
      code, 1: said only where the kind stood still, a kind and a title changed together lost the title). Two untitled
      kinds are the line above alone. */
-  if (titleOf(was.type, was.title) !== titleOf(now.type, now.title)) pair(inpLabel(was), inpLabel(now))
+  /* …and where an Attach is to, drawn in the same name (D1373 — the narrow read's R3) */
+  if (titleOf(was.type, was.title) !== titleOf(now.type, now.title) || (isFly(now.type) && toOf(was.to) !== toOf(now.to))) pair(inpLabel(was), inpLabel(now))
   /* no dates: whether it covers this day is filed / moved off; its far end is another day's business (Fable F1) */
   pair(winWords(was), winWords(now))
   /* as printed — the typed words and "till <its last day>" (D948): a leave stretched over a published day reads its new date here (D189) */

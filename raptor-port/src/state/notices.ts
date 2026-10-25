@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { dateOrd, inpLabel, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
+import { dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 
@@ -102,7 +102,9 @@ function common(b: any, a: any, him: string): NoticePart[] {
   if (a.acc === 'u' && b.acc !== 'u') out.push({ k: 'unav' })
   /* …taken out however it is taken out: a Reject, or an Other's Goes to moved back to the programme (the code read's F6 —
      D815's reading that no button does it was overtaken by D1356's Goes to) */
-  else if (b.acc === 'u' && a.acc !== 'u') out.push({ k: 'unavoff' })
+  /* …but not a retype into a kind the Unavailable list shows by itself — a leave, a medical, an overseas duty — which never
+     left it (the narrow read's R2) */
+  else if (b.acc === 'u' && a.acc !== 'u' && (a.acc === 'r' || !isUnavail(a.type))) out.push({ k: 'unavoff' })
   else if (b.acc !== 'r' && a.acc === 'r') out.push({ k: 'off' })
   else if (b.acc === 'r' && a.acc !== 'r') out.push({ k: 'on' })
   const days = firstDay(b) !== firstDay(a) || lastDay(b) !== lastDay(a)

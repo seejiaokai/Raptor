@@ -113,3 +113,15 @@ describe('F8 — the change history says a new input went under Unavailable', ()
     expect(lines().some(l => / added · .*\(under Unavailable\)/.test(l)), JSON.stringify(lines())).toBe(true)
   })
 })
+
+describe('the narrow read of the fixes — R2, R3', () => {
+  it('R2: an Other under Unavailable retyped to a leave tells him nothing of leaving Unavailable (it never left it)', () => {
+    expect(commitNewInput(draft({ remarks: 'r2', goes: 'u', start: '2026-07-17' }))).toBe(true)
+    const r = byRmk('r2')
+    const bell = () => NOTICES.filter((n: any) => n.to === 'bane').map((n: any) => JSON.stringify(n.what))
+    const n0 = bell().length
+    expect(commitInput(r, { ...draftOf(r), type: 'OL', goes: undefined }, ['bane'])).toBe(true)
+    expect(bell().slice(n0).join(' ')).not.toContain('"unavoff"')
+  })
+  /* R3 is pinned in ui/latepub.test.tsx, beside the title's waiting change */
+})
