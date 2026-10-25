@@ -1,0 +1,184 @@
+<title>Leave War night look</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* layout: one reading column; questions first as a numbered checklist, each with its pictures under it, today beside proposed */
+:root{
+  --bg:#F3F5F7; --panel:#FFFFFF; --ink:#16202B; --ink-2:#4A5866; --edge:#D5DCE3; --accent:#0F8FB0; --mark:#B8860B; --rec:#E7F6EA; --rec-ink:#1D6B33;
+  --f-body:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0E1318;--panel:#161D24;--ink:#E6ECF2;--ink-2:#9DABB8;--edge:#28323C;--accent:#3AC6E8;--mark:#FFD23F;--rec:#14301E;--rec-ink:#8FE0A6;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1318;--panel:#161D24;--ink:#E6ECF2;--ink-2:#9DABB8;--edge:#28323C;--accent:#3AC6E8;--mark:#FFD23F;--rec:#14301E;--rec-ink:#8FE0A6;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:16px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:24px;margin:0;text-wrap:balance}
+h2{font-size:19px;margin:0 0 6px;text-wrap:balance}
+p{margin:0}
+.sub{color:var(--ink-2)}
+.now{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px 16px}
+.now ol{margin:8px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:7px}
+.now a{color:var(--accent)}
+.rec{display:inline-block;background:var(--rec);color:var(--rec-ink);border-radius:6px;padding:0 6px;font-weight:700;font-size:14px}
+section.q{display:flex;flex-direction:column;gap:10px;scroll-margin-top:12px}
+.tag{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);letter-spacing:.04em}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+figure{margin:0;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{width:100%;height:auto;border-radius:6px;cursor:zoom-in;display:block}
+figcaption{font-size:14px;color:var(--ink-2)}
+figcaption b{color:var(--ink)}
+.drawn{color:var(--mark);font-weight:700}
+.built{border-top:1px solid var(--edge);padding-top:20px}
+ul.plain{margin:4px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:flex-start;justify-content:center;overflow:auto;z-index:20;padding:calc(12px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 12px max(12px,env(safe-area-inset-left,0px))}
+#zoom img{max-width:100%;height:auto;cursor:zoom-out}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<main>
+<header>
+  <h1>The Leave War — the night of 26 Oct 26</h1>
+  <p class="sub">Three fixes built and checked; two faults the code read found, fixed; and your seven design asks drawn on the real app at your iPhone's size. <span class="drawn">Dashed yellow</span> marks what is drawn in, not built. Tap a picture to see it full size.</p>
+</header>
+
+<nav class="now" aria-label="What to look at now">
+  <h2>Look at these now — newest first</h2>
+  <ol>
+    <li>An overseas duty has no Reject button on the schedule. <span class="rec">Recommended: add one</span> — <a href="#qa">pictures</a></li>
+    <li>Grant OIL over several dragged days: what should it do? <span class="rec">Recommended: one grant on each day</span> — <a href="#qb">pictures</a></li>
+    <li>"Delete — sure?" inside its button: A, B or C. <span class="rec">Recommended: C, two lines</span> — <a href="#q5">pictures</a></li>
+    <li>A visible FO / HO choice in Grant OIL. <span class="rec">Recommended: as drawn</span> — <a href="#q6">pictures</a></li>
+    <li>A short tap on a course day opens the bid window. <span class="rec">Recommended: yes, as drawn</span> — <a href="#q7">pictures</a></li>
+    <li>The expand button on the Inputs calendar. <span class="rec">Recommended: as drawn, on the legend row</span> — <a href="#q4">pictures</a></li>
+    <li>The opened day as wide as the list. <span class="rec">Recommended: as drawn</span> — <a href="#q3">pictures</a></li>
+    <li>Each card's square in its kind's colour. <span class="rec">Recommended: as drawn</span> — <a href="#q2">pictures</a></li>
+    <li>The day panel's figures in columns of four. <span class="rec">Recommended: as drawn</span> — <a href="#q1">pictures</a></li>
+  </ol>
+  <p class="sub" style="margin-top:10px">Reply with the numbers you agree with, or "all as recommended". Each design is built only after your yes.</p>
+</nav>
+
+<section class="q" id="qa">
+  <span class="tag">QUESTION · FOUND TONIGHT</span>
+  <h2>1. An overseas duty can't be taken out of Unavailable</h2>
+  <p>Your answer tonight says a rejected overseas duty counts him back in, as a course does. But the schedule offers a course a Reject button and an overseas duty none, so nothing can take one out yet. Add Reject (and → Ground) for an overseas duty, as a course has? Recommended: yes. The schedule's crew list would then count him free too, so the two agree.</p>
+  <div class="pics">
+    <figure><img src="cse/n5-1-schedule-overseas-duty.png" alt="The schedule's Unavailable list: the course has a Reject button, Nomad's overseas duty has none"><figcaption><b>Today.</b> The course (top) has Reject; Nomad's overseas duty (OD) has no button.</figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="qb">
+  <span class="tag">QUESTION · YOUR REPORT</span>
+  <h2>2. Grant OIL over several dragged days</h2>
+  <p>The drag window's ⋯ now has Post in beside Post out, as you asked. Grant OIL is still left out: a grant there means something new, so it's your call. Recommended: one grant on each day picked — FO for a whole-day Duration, HO for a morning or afternoon — with one reason for all. Drawn for you before it is built.</p>
+  <div class="pics">
+    <figure><img src="menu/m3-2-more-menu.png" alt="The drag window's menu: Attach, Other, Post out, Post in"><figcaption><b>Built tonight.</b> The drag window's ⋯: Attach · Other · Post out · Post in. Grant OIL waits on your answer.</figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="q5">
+  <span class="tag">D1387 · DRAWN</span>
+  <h2>3. "Delete — sure?" inside its button</h2>
+  <p>The row is four equal places (your D1330), so the button can't simply grow. A: it takes the next place too, only where that place is empty. B: it reads "Sure?" while it asks. C: the same words on two lines inside the same button. Recommended: C. It keeps your words and its place, and works in any of the four places.</p>
+  <div class="pics">
+    <figure><img src="draw/d5-phone-1-today.png" alt="Today: Delete — sure? runs past its edge"><figcaption><b>Today.</b> The words run past the dashed edge.</figcaption></figure>
+    <figure><img src="draw/d5-phone-2-option-a-grows.png" alt="Option A: the button spans two places"><figcaption><b>A.</b> Takes two places (fails when the row is full).</figcaption></figure>
+    <figure><img src="draw/d5-phone-3-option-b-short.png" alt="Option B: Sure?"><figcaption><b>B.</b> "Sure?"</figcaption></figure>
+    <figure><img src="draw/d5-phone-4-option-c-two-lines.png" alt="Option C: Delete — sure? on two lines"><figcaption><b>C (recommended).</b> Two lines, same place.</figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="q6">
+  <span class="tag">YOUR QUESTION · DRAWN</span>
+  <h2>4. A visible FO / HO choice</h2>
+  <p>Today an HO only comes by typing 0.5 in Days. Drawn: a "Give" row with two choices, FO · a day and HO · half a day. Picking HO sets half a day and brings the AM / PM row the app already has.</p>
+  <div class="pics">
+    <figure><img src="draw/d6-phone-1-today.png" alt="Today's Grant OIL panel"><figcaption><b>Today.</b> Days 1 · Give FO; nothing says how to give an HO.</figcaption></figure>
+    <figure><img src="draw/d6-phone-2-proposed-fo.png" alt="Proposed: FO picked"><figcaption><b>Proposed.</b> FO picked (the usual).</figcaption></figure>
+    <figure><img src="draw/d6-phone-3-proposed-ho.png" alt="Proposed: HO picked, AM / PM below"><figcaption><b>Proposed.</b> HO picked: half a day, AM or PM.</figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="q7">
+  <span class="tag">YOUR QUESTION · DRAWN</span>
+  <h2>5. A short tap on a day holding a course</h2>
+  <p>Today a tap only says "Change it on the Inputs page, not here." Drawn: the tap opens the ordinary bid window, with one line at its top for the course (its box, Whole day, its words, where it is changed). Everything under it works as usual, so you can grant OIL or add leave beside it.</p>
+  <div class="pics">
+    <figure><img src="draw/d7-phone-1-today.png" alt="Today: a tap on a course day"><figcaption><b>Today.</b> A tap on Comet's course.</figcaption></figure>
+    <figure><img src="draw/d7-phone-2-proposed.png" alt="Proposed: the bid window with the course line"><figcaption><b>Proposed.</b> The bid window, the course on its first line.</figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="q4">
+  <span class="tag">D1386 · DRAWN</span>
+  <h2>6. Expand the Inputs calendar</h2>
+  <p>One button, ⤢, at the end of the "How this works" row; the top row is full on a phone (put there, it pushed ⚙ to a second line). Pressed, every day shows all its inputs, a week grows only as tall as it needs, and the page scrolls. Pressed again (⤡), back to today's month. Remembered for each person.</p>
+  <div class="pics">
+    <figure><img src="draw/d4-phone-1-today.png" alt="Today: +2 more, +1 more"><figcaption><b>Today</b> (your iPhone's height): "+2 more", "+1 more".</figcaption></figure>
+    <figure><img src="draw/d4-phone-2-collapsed-with-control.png" alt="The expand button on the legend row"><figcaption><b>Proposed.</b> The ⤢ button, month as today.</figcaption></figure>
+    <figure><img src="draw/d4-phone-3-expanded.png" alt="Expanded: every input shown"><figcaption><b>Proposed, expanded.</b> No "+n more"; the week of 13 Jul grows.</figcaption></figure>
+    <figure><img src="draw/d4-desk-2-collapsed-with-control.png" alt="Desktop: the expand button"><figcaption><b>Desktop.</b> The same button, the same place.</figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="q3">
+  <span class="tag">D1385 · DRAWN</span>
+  <h2>7. The opened day as wide as the list</h2>
+  <p>On this phone the list's cards stand 8px from the screen's edges; the opened day's stand 25px in. Drawn: the day's window runs edge to edge and its cards stand at 8px, exactly as the list's. The cards' insides are unchanged.</p>
+  <div class="pics">
+    <figure><img src="draw/d3-phone-1-today.png" alt="Today: the opened day"><figcaption><b>Today.</b> Cards 25px in.</figcaption></figure>
+    <figure><img src="draw/d3-phone-2-proposed.png" alt="Proposed: cards 8px from the edges"><figcaption><b>Proposed.</b> Cards 8px in, as the list.</figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="q2">
+  <span class="tag">D1384 · DRAWN</span>
+  <h2>8. Each card's square in its kind's colour</h2>
+  <p>Today the square is red for every absence and amber for every duty. Drawn: OL amber, OIL green, medical red, an overseas duty slate, each the colour of its bar and its Leave War box; a duty or commitment outlined, as its bar is.</p>
+  <div class="pics">
+    <figure><img src="draw/d2-phone-1-day-today.png" alt="Today: red squares"><figcaption><b>Today</b>, an opened day.</figcaption></figure>
+    <figure><img src="draw/d2-phone-2-day-proposed.png" alt="Proposed: squares in each kind's colour"><figcaption><b>Proposed.</b></figcaption></figure>
+    <figure><img src="draw/d2-phone-3-list-today.png" alt="Today: the list"><figcaption><b>Today</b>, the list.</figcaption></figure>
+    <figure><img src="draw/d2-phone-4-list-proposed.png" alt="Proposed: the list"><figcaption><b>Proposed.</b></figcaption></figure>
+  </div>
+</section>
+
+<section class="q" id="q1">
+  <span class="tag">D1382 · DRAWN</span>
+  <h2>9. The day panel's figures in columns of four</h2>
+  <p>Ten figures down three columns of four, filled left, then middle, then right, in today's order. Every name and figure lines up; a long name would wrap.</p>
+  <div class="pics">
+    <figure><img src="draw/d1-phone-1-today.png" alt="Today: one column of ten"><figcaption><b>Today.</b> One column of ten.</figcaption></figure>
+    <figure><img src="draw/d1-phone-2-proposed.png" alt="Proposed: three columns of four"><figcaption><b>Proposed</b>, phone.</figcaption></figure>
+    <figure><img src="draw/d1-desk-2-proposed.png" alt="Proposed on a desktop"><figcaption><b>Proposed</b>, desktop.</figcaption></figure>
+  </div>
+</section>
+
+<section class="built">
+  <h2>Built and checked tonight (no answer needed)</h2>
+  <ul class="plain">
+    <li><b>A rejected course counts him back in</b> (your D1381, D1389). Filed: Available P 25 → 24. Rejected: back to 25, and the SANS calendar's "still needed" falls too. Put on the Ground Programme: still 25. Back under Unavailable: 24.</li>
+    <li><b>The code read found one more:</b> a course put on the Ground Programme counted him out again once the schedule showed another week. Fixed: he stays counted in on every week.</li>
+    <li><b>Signing in on a phone opens at the top</b>, today's heading in view. It used to open 120px down.</li>
+    <li><b>Post in in the drag window</b>, beside Post out, dated from the first day dragged. Words typed in the window's Remarks are kept, now for Post out too.</li>
+  </ul>
+  <p class="sub" style="margin-top:8px">One reading, as before: on a published day the war counts a Reject at once, while the issued schedule still shows the course until the next amendment.</p>
+  <div class="pics" style="margin-top:12px">
+    <figure><img src="cse/n2-2-schedule-after-reject.png" alt="After Reject: the course gone from Unavailable, Comet available"><figcaption><b>After Reject.</b> The course leaves Unavailable; Comet is in "Available all day".</figcaption></figure>
+    <figure><img src="menu/m3-4-postin-panel.png" alt="The drag window's Post in panel"><figcaption><b>Post in</b> from the drag window, on your iPhone's width.</figcaption></figure>
+  </div>
+</section>
+</main>
+
+<div id="zoom" hidden></div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'), zi=document.createElement('img'); z.appendChild(zi);
+  document.querySelectorAll('figure img').forEach(function(im){
+    im.tabIndex=0;
+    function open(){ zi.src=im.src; zi.alt=im.alt; z.hidden=false; }
+    im.addEventListener('click',open);
+    im.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+  });
+  z.addEventListener('click',function(){ z.hidden=true; });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') z.hidden=true; });
+})();
+</script>

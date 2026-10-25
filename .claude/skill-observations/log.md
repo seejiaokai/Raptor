@@ -1402,6 +1402,8 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 **Principle:** Allowance that resets unused is not saved; a stop rule for a budget should know when the budget refills.
 
+**Met again 26 Oct 26** (the night of 26 Oct 26, /overnight 12 on `claude/lw-m3-placing-leave`): the weekly figure stood at 92% before the first job, the reset 17 hours away — after the run would end. Read word for word, the guide started no job at all; D1033 ("work is not held back … to save allowance that would reset anyway") says the 8% left is to be used. The night ran, told to him plainly in the Part 1 message, and stops at its last saved point when the limit comes. The guard proposed: the stop rule reads "the weekly figure passes 90% — unless what is left resets before it could be used; then run until the limit, saving at every step (D1033)".
+
 ### Observation 644: A browser-test port held by another chat's old preview silently tests the wrong build
 
 **Status:** OPEN
@@ -2302,3 +2304,18 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Suggested improvement:** §6: for any change to where an input is filed or what counts as away, the roll-call carries one row per reader of availability — the crew list (nothing picked and a seat picked), the board's crew column, the day panel's counts, the free-crew strip, the ALL AVAIL crowd, the Leave War's count — each marked.
 
 **Principle:** A change to where a thing is filed changes every reader that asked the old place, not only the screens that draw the thing; list the readers as well as the drawers.
+
+### Observation 709: A count read from a mark the app works out for the view on screen must be walked across a change of view
+
+**Status:** OPEN
+**Date:** 26 Oct 26
+**Session context:** the night of 26 Oct 26 (/overnight) on `claude/lw-m3-placing-leave` — [LW-REJECTED-CSE], the Leave War counting a rejected course back in
+**Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.0, the sizing step) and `raptor-port/docs/walk-scripts.md`
+**Type:** internal
+**Phase/Area:** the walk's scenarios for a change that reads a stored mark
+
+**Issue:** The fix read an input's filing mark (`acc`) to decide whether the war counts a man. The walk pressed every real button (Reject, → Ground, → Unavail) on the course's own week and passed 5 / 5. The blind code read then found that the "on the Ground Programme" mark is worked out only for the week on screen and deleted off it, so the war counted him out again the moment the scheduler looked at another week. No walk scenario changed the week, because the sizing lines listed the surfaces that draw the count, not the conditions under which the mark it reads exists.
+
+**Suggested improvement:** In the sizing step, one line for a change that reads stored state: "what makes the field this reads appear, change or vanish other than the control under test (a week loaded, a sign-in, a reload, a page change)?" — and one scenario per answer. And in `walk-scripts.md`: a walk of a count driven by a filing presses the filing's buttons, then moves the view away and back before it reads the count again.
+
+**Principle:** A value that is recomputed per view is only proven by a walk that changes the view; reading it once where it was set confirms the setter, not the reader.
