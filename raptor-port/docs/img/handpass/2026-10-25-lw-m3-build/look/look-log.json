@@ -17,12 +17,12 @@
  {
   "id": "q4-moved",
   "size": "desk",
-  "said": "scheduler's → Unavail pressed false; stored acc g"
+  "said": "scheduler's → Unavail pressed true; stored acc u"
  },
  {
   "id": "q4-member",
   "size": "desk",
-  "said": "Goes to reads {\"row\":true,\"g\":\"true\",\"u\":\"false\",\"line\":\"Still counted in the Leave War’s manning\",\"gDisabled\":false,\"uDisabled\":false}; buttons [\"Ground Programme:live:true\",\"Unavailable:live:false\",\"Still counted in the Leave War’s manning:live:null\"]"
+  "said": "Goes to reads {\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false}; buttons [\"Ground Programme:live:false\",\"Unavailable:live:true\",\"Counted as away on the Leave War:live:null\"]"
  },
  {
   "id": "errors",

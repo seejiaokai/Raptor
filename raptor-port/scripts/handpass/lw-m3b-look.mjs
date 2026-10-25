@@ -41,10 +41,18 @@ note('q1-rejected', 'desk', await dayPanel('look-q1-5-war-after-reject'))
 const fo = await H.fileInput(w, { who: 'Ranger', type: 'Other', from: '2026-07-16', remarks: 'Squadron dinner prep', goes: 'g', tag: 'look-q4', oil: 'no' })
 await H.goEdit(w)
 const s3 = '#eWeek section.day[data-day="3"]'
-const toU = P.locator(`${s3} [data-acc="u"][data-acck="${fo.rec.iid}"]`)
-let moved = false
-for (let i = 0; i < await toU.count(); i++) if (await toU.nth(i).isVisible()) { await toU.nth(i).scrollIntoViewIfNeeded(); await toU.nth(i).click(); await P.waitForTimeout(900); await H.answerAsks(w, 'look-q4-u', { oil: 'no' }); moved = true; break }
-if (!moved) { const x = P.locator(`${s3} [data-acc="x"][data-acck="${fo.rec.iid}"]`).first(); if (await x.count()) { await x.click(); await P.waitForTimeout(700) } const tog = P.locator(`${s3} [data-pitog="3"]`).first(); const u2 = P.locator(`${s3} [data-acc="u"][data-acck="${fo.rec.iid}"]`).first(); if (!(await u2.isVisible().catch(() => false)) && await tog.count()) { await tog.scrollIntoViewIfNeeded(); await tog.click(); await P.waitForTimeout(500) } if (await u2.count()) { await u2.scrollIntoViewIfNeeded(); await u2.click(); await P.waitForTimeout(900); await H.answerAsks(w, 'look-q4-u2', { oil: 'no' }); moved = true } }
+async function pressAcc(scope, di, iid, dest) {
+  const sel = `${scope} [data-acc="${dest}"][data-acck="${iid}"]`
+  const vis = async () => { const n = await P.locator(sel).count(); for (let i = 0; i < n; i++) if (await P.locator(sel).nth(i).isVisible()) return i; return -1 }
+  let at = await vis()
+  if (at < 0) { const t = P.locator(`${scope} [data-pitog="${di}"]`).first(); if (await t.count()) { await t.scrollIntoViewIfNeeded().catch(() => {}); await t.click(); await P.waitForTimeout(500); at = await vis() } }
+  if (at < 0) return false
+  const b = P.locator(sel).nth(at); await b.scrollIntoViewIfNeeded().catch(() => {})
+  await b.click(); await P.waitForTimeout(1000)
+  await H.answerAsks(w, 'look-acc-' + dest, { oil: 'no' })
+  return true
+}
+const moved = (await pressAcc(s3, 3, fo.rec.iid, 'x')) && (await pressAcc(s3, 3, fo.rec.iid, 'u'))
 note('q4-moved', 'desk', `scheduler's → Unavail pressed ${moved}; stored acc ${(await H.inputById(P, fo.rec.iid))?.acc}`)
 await H.centreOn(P, [`${s3} .sec-unav`])
 await H.pic(w, 'look-q4-1-scheduler-filed-it-under-unavailable', [`${s3} .sec-unav`], { pad: 4, scale: 'device' })
