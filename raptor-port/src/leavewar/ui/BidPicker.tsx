@@ -178,7 +178,7 @@ export function BidPicker({
   heldBy?: string
   /** THE HELD HALF IS A COMMITMENT UNDER UNAVAILABLE (his D1371 — an Other, an Attach…): its code and remarks, for the one
    *  line that names it — its box, its half, its remarks and where it is changed — in place of the leave's sentence */
-  heldOther?: { code: string; remarks: string } | null
+  heldOther?: { code: string; remarks: string; to?: string } | null
   /** THE APPROVED LEAVE ON THIS DAY — the Raptor input it is (`sync.ts leaveInputAt`), for its Remarks and Document row,
    *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
    *  first given the window that Note). */
@@ -660,6 +660,7 @@ export function BidPicker({
           <span className="note bp-wide bp-heldline" data-testid="bid-heldhalf">
             <EntryBox code={heldOther.code} fill="a" place={onlyPortion === 'pm' ? 'top' : 'bot'} />
             <span>{onlyPortion === 'pm' ? 'Morning' : 'Afternoon'}</span>
+            {heldOther.to && <span>· {heldOther.to}</span>}
             {heldOther.remarks && <span className="bp-heldwords">“{heldOther.remarks}”</span>}
             <span>· change it on the Inputs page</span>
           </span>

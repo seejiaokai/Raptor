@@ -217,11 +217,11 @@ export function bubbleWords(worse: Map<string, Worse>, filed: FiledKind): string
 
 /** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371): its code and its typed remarks, for the free
  *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
-function heldCommitment(v: DayView | undefined): { code: string; remarks: string } | null {
+function heldCommitment(v: DayView | undefined): { code: string; remarks: string; to?: string } | null {
   const c = v?.all.find(x => x.kind === 'absence' && isCommitCode(x.code))
   if (!c) return null
   const row = INPUTS.find((r: any) => String(r.iid) === c.id)
-  return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '' }
+  return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '', ...(row && typeof row.to === 'string' && row.to.trim() ? { to: row.to.trim() } : {}) }
 }
 
 export function Matrix() {

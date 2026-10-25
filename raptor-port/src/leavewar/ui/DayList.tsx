@@ -194,7 +194,10 @@ export function DayListSheet({
       /* an approved leave the war moved says where from (D1177: the moved mark is an approved leave's now — a bid that only
          waits carries none), as the grid's dotted edge does */
       const movedAbs = (c as { movedFrom?: string }).movedFrom ? ` · moved from ${shortDate((c as { movedFrom?: string }).movedFrom!)}` : ''
-      const text = said(part, warOwned ? `approved${movedAbs}` : 'change it on the Inputs page')
+      /* an Attach says where he is attached (its "To", D1373), as the schedule's row and the Inputs card do — the box says
+         only ATCH (the walk's W2 18) */
+      const where = row && typeof row.to === 'string' ? row.to.trim() : ''
+      const text = said([where, part].filter(Boolean).join(' · '), warOwned ? `approved${movedAbs}` : 'change it on the Inputs page')
       const actions: ReactElement[] = []
       /* NOTHING IS FROZEN NOW (D1177 — the published stage went): the admin sends a leave the war approved back, refuses,
          moves or deletes it at any time, here as on the single-record window. ONE ROW OF ACTIONS, THE WINDOW'S OWN (his

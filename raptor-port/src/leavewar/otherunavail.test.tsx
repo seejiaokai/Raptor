@@ -320,6 +320,24 @@ describe('an Attach filed from the war (D1378–D1380)', () => {
     expect(attaches()).toHaveLength(1)
     expect(attaches()[0]).toMatchObject({ acc: 'u', allday: true })
   })
+  /* the walk's find (W2, scenario 18): the war's windows named an Attach by its box alone — where he is attached (its "To",
+     D1373) read on the schedule, the Inputs card and bar, never on the war */
+  it('the war names where an Attach is to: the day’s list and the held-half line (W2 18)', () => {
+    const id = who()
+    let made: any = null
+    expect(commitNewInput({ person: id, type: 'Attach', allday: true, start: D, end: '', sTime: '06:00', eTime: '18:00', remarks: 'Exercise', title: null, to: '145 Sqn' }, false, undefined, undefined, r => { made = r })).toBe(true)
+    const first = render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-${D}`))
+    expect(screen.getByTestId('daylist').textContent).toContain('145 Sqn')
+    first.unmount()
+    act(() => { INPUTS.splice(INPUTS.indexOf(made), 1); raptorNotify() })
+    expect(fileStraight([{ personId: id, date: '2026-02-12' }], 'ATCH', { remarks: 'Exercise' }, 'am').done).toBe(1)
+    const am: any = attaches().find((r: any) => r.date === 'Feb 12')
+    act(() => { am.to = '145 Sqn'; raptorNotify() })
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${id}-2026-02-12`))
+    expect(screen.getByTestId('bid-heldhalf').textContent).toContain('145 Sqn')
+  })
   it('the drag window: Attach first in the ⋯ for an admin; a member’s ⋯ holds it alone', () => {
     const sel = { people: [who()], from: D, to: '2026-02-12', cells: [D, '2026-02-12'].map(date => ({ personId: who(), date })) }
     const { unmount } = render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} />)
