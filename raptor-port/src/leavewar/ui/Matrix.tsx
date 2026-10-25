@@ -3593,8 +3593,6 @@ export function Matrix() {
      actions (design §25 OA10-001). It comes before every single-record sheet
      below, which stay exactly as they were for a one-record day. */
   const openView = open ? views[open.id]?.[open.date] : undefined
-  /* …AND A DAY HOLDING A UNA (D1338): everyone may read it — its half, who placed it, its remarks — and an admin takes it
-     away there; the list is the one window that shows every entry of a day on its own line, so a UNA alone opens it too */
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))

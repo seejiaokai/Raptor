@@ -109,4 +109,15 @@ test('a leave over three days paints as one bar, its code once; a commitment und
   const sh = await page.locator(`${T(`cell-${P}-2026-02-13`)} .c.k-unav`).evaluate(e => getComputedStyle(e).boxShadow)
   expect(sh).toContain('1.5px')
   expect(sh).toContain('0.78')
+  /* …and one over three days, joined: every day keeps D1370's 1.5px edge at .78, not the leave's 1px join (the code read's Q8) */
+  const od = ['2026-02-16', '2026-02-17', '2026-02-18']
+  await page.evaluate(p => (window as any).fileInput({ person: p, type: 'Other', date: 'Feb 16', endDate: 'Feb 18', yr: 2026, allday: true, acc: 'u', remarks: 'Board of inquiry' }), P)
+  for (const d of od) {
+    const cell = page.locator(`${T(`cell-${P}-${d}`)} .c.k-unav`).first()
+    await cell.waitFor({ state: 'attached' })
+    const got = await cell.evaluate(e => ({ cls: e.className, sh: getComputedStyle(e).boxShadow }))
+    expect(got.cls, `${d} is part of the joined bar`).toMatch(/\bj[lr]\b/)
+    expect(got.sh, `${d}`).toContain('1.5px')
+    expect(got.sh, `${d}`).toContain('0.78')
+  }
 })

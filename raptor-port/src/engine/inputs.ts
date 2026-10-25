@@ -405,9 +405,10 @@ export const INPUT_META:any={
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
   /* (UNA — round 2's unforeseen absence — stood here for a day as an input kind. Since his D1338, 24 Oct 26 — "Maybe put
-     UNA instead? But nowhere else … its admin input only" — it is the LEAVE WAR's own record, an admin's alone
-     (leavewar/engine/warrecs.ts UnaRec), never an input: the Inputs page, the schedule and the OIL work never see it.
-     Pinned gone from here by unagone.test.ts.) */
+     UNA instead? But nowhere else … its admin input only" — it became the Leave War's own record for a day, and since
+     his D1356, 25 Oct 26 — "UNA goes" — it is gone there too: an unforeseen absence is an Other its filer puts under
+     Unavailable, which the war counts out (D1357). A stored war UNA record is dropped on read (leavewar/engine/warrecs.ts
+     isRetiredUna). Pinned gone from here by unagone.test.ts.) */
   'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* SANS AVAILABILITY (owner, 14 Aug 26) — SANS aircrew filing POSITIVE
      availability for Fly / AMT / OFT, not an absence. grp:'sans' keeps it

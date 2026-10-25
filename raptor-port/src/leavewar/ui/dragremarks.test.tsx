@@ -36,4 +36,13 @@ describe('the drag window over separate entries (D1362)', () => {
     expect(screen.queryByTestId('sel-remarks-list')).toBeNull()
     expect((screen.getByTestId('sel-remarks') as HTMLTextAreaElement).value).toBe('Wedding')
   })
+  /* the M3 code read's Q11 (25 Oct 26): two separate entries with the SAME words drew no grey line (D1362 lists different
+     remarks) and an empty box — the words were nowhere. They are one set of words, so the box shows them, as over one entry */
+  it('two separate entries with the same words: the box shows them, and no line is drawn', () => {
+    setCell(P, '2026-02-09', 'LL', { remarks: 'Wedding' })
+    setCell(P, '2026-02-11', 'OL', { remarks: 'Wedding' })
+    mount(['2026-02-09', '2026-02-10', '2026-02-11'])
+    expect(screen.queryByTestId('sel-remarks-list')).toBeNull()
+    expect((screen.getByTestId('sel-remarks') as HTMLTextAreaElement).value).toBe('Wedding')
+  })
 })

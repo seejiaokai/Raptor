@@ -161,7 +161,10 @@ export function SelectSheet({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sel, st0])
   const listed = entries.length > 1 && new Set(entries.map(e => e.remark)).size > 1 ? entries.filter(e => e.remark) : []
-  const prefill = entries.length === 1 ? entries[0]!.remark : ''
+  /* over one entry its words; over several that all say the same, those words (the M3 code read's Q11 — no grey line is
+     drawn for one set of words, and the box stood empty, so they were nowhere); left as they opened they change nothing
+     and travel to no new filing (keepWords, fileDuty) */
+  const prefill = entries.length && entries.every(e => e.remark === entries[0]!.remark) ? entries[0]!.remark : ''
   /* a request's Document and Remarks (M3 5.9, 5.10): written with the fill, where the drag holds ONE person — across
      several, each man's paper is his own (the agent's reading, M3 §7 point 2) */
   const [words, setWords] = useState<ReqDraft>(() => ({ ...emptyDraft(), remarks: prefill }))
