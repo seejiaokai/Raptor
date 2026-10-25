@@ -154,3 +154,87 @@ the walk `kbs-his-measure.mjs` 4 / 4. **Not known:** when Safari's slide starts 
 against a model; his iPhone decides.
 
 **Walk:** WALK — his four cases again (`kbs-his-measure.mjs`), 4 / 4, and KS3i's frame-by-frame slide; his iPhone not yet.
+
+## The sixth round — his recordings of 11:49 and 11:54 (the fifth round's build)
+
+**His words:** *"The tracker edit syllabus portion seems better now Comparing to the previous. But this fix cause the input
+to look different when I click on the remarks. Like I can see the top of the background behind this window. The old one
+was like smoother. I don't see like the inputs button for a second at all."* (11:49: an older tab of the branch beside a
+fresh one; 11:54: the fresh one with `?kbdebug`, OL then "Other".) The fault against D1081 (nothing jumps as the keys
+open or close).
+
+**The cause, measured (60 frames a second, `video-frames.mjs` at 1/60 s).** The readout is fixed at the pan, so its place
+each frame is the phone's own slide. The keys coming up: the page slides on **cubic-bezier(.42,0,.58,1) over 250ms** —
+both openings within 1 point (rms 0.98 and 0.83; the round-5 glide's curve, .2,.8,.2,1, misses by 35–45) — and the app is
+told of the pan about **30ms after the slide began** (the readout's move first drawn 40 and 42ms in; OL: one `resize`
+carrying the pan; "Other": the keys' `resize` first with no pan, the pan's `scroll` 15ms later — his readout,
+"92ms vv-resize vv390@0", "107ms vv-scroll vv390@272"). The window's glide ran fast-out from the moment it was told: by
+the fourth frame some 90–145 points ahead of the slide, so the window stood that far below its place and the day panel
+behind it — its "+ Input" — showed above it for four frames (1.833–1.933 and 7.933–7.983 in the 11:54 recording; 4.133–
+4.200 in the fresh tab of 11:49), then rose back. The keys going down: **cubic-bezier(.3,.58,.2,1) over 330ms** — fitted
+to the old tab of 11:49, where nothing but the phone moved the window (rms 1.0), and holding on the first frames of both
+closings of 11:54 (rms 1.8, 2.7); the focus leaves ~30ms in. (A first reading of a "snap" on closing was the readout
+passing under the address bar — the scan began below it.)
+
+**Fix (`kbscroll.ts`).** `SLIDE_UP` / `SLIDE_DOWN` (curve, length, lead) replace `GLIDE_MS` / `GLIDE_EASE`; every glide
+runs on the phone's slide for its direction, its start set to when the phone began it (`compensate` at the pan's event
+less 30ms; `dropLifts` from a focus leaving less 30ms, from the keys' own `resize` less 60ms; a placing with no slide of
+the phone's own from now); a glide that takes over a running one (the placing two frames in) stays on its slide and its
+start; a FRESH glide starts as if begun with the slide, so its first frame stands where the slide puts it — the frames the
+phone slid before the app was told are not carried and drifted back (the first test of the keys going down: 48 points low
+at the first frame, drifting back over the slide). The readout logs `focusout` too.
+
+**Tier: WALK** — the eight questions: money no; the published record no; saved data no (nothing stored); **a shared drawer
+yes** (the one lift moves every window raised or held for the keys); a new gesture or surface no; roles no; the warning
+list no.
+
+**Roll-call — every window the glide moves:**
+
+| Where | Moves for the keys? | Walked |
+|---|---|---|
+| The input window from an Inputs calendar day (OL; "Other") | has it | A, A2 |
+| The input window from a SANS calendar day | has it | B |
+| The input window from the schedule (Edit Schedule, the board) | has it — the same window and the same lift as A | carried by A (same component, same layer) |
+| The Tracker's All events (a window taller than the screen) | has it | C |
+| A window on a backdrop (Admin → Duty templates, Wave templates) | has it — the box on the backdrop | E |
+| The Scheduler Board | must not, because it is page content carried by the phone's own scroll (D1081) — never raised, so never glided | KS1, KS7, KS8 (unchanged) |
+| The Leave War's sheets and bid windows | must not, because they place themselves by their own `top` (`Sheet.tsx followVisible`; `compensate` skips them) | not walked (unchanged; filed in [KBS-PHONE-SLIDE]) |
+
+**Sizing (D607):** (1) type E, motion of a window (layout or look) in a shared mechanism, and R (his reported fault);
+(2) only a walk shows his screen frame by frame — the tests prove the numbers, not what he sees; every window the lift
+moves, at its own pan; (3) the ledger's keyboard rows (this sheet's rounds) found each fault only on his phone or his
+measure — the stand-in must play his measured slide; (4) the host alone; five cases (A, A2, B, C, E), up and down,
+phone 402 Chromium, both builds (the one he tested, the fix), every frame's place recorded and his screen drawn; the
+schedule's input window carried by A; (5) the row added below.
+
+**Red first.** KS3j (OL), KS3k ("Other", the pan 15ms after the keys) and KS3i rewritten (the Tracker) play his measured
+slides — measured off his screen, not the app's own curve, which is what let round 5's KS3i pass: it played the glide's
+curve as the phone's. On the build he tested: the window's top 79, 118 and 130 points from still. On the fix: within 4.
+
+**The walk** (`scripts/handpass/kbs-slide-walk.mjs`; numbers `docs/img/handpass/2026-10-25-kbs-slide/walk-{before,after}.txt`,
+strips `before/` and `after/<case>-{up,down}.png`, the look card's picture `look-before-after.png`). Furthest the window's
+top strays from still (points), keys up / down:
+
+| Case | The build he tested | The fix |
+|---|---|---|
+| A input window, OL, Remarks | 77 / 45 | 0 / 0 |
+| A2 input window, "Other", Remarks | 115 / 70 | 0 / 0 |
+| B SANS day's input window, Remarks | 70 / 40 | 0 / 0 |
+| C Tracker All events, Name | 103 / 55 | 0 / 0 |
+| E Duty templates, last time box | 65 / 0 | 0 / 0 |
+
+On the fix the input windows' tops run 12 → 8 as the keys come and 8 → 12 as they go; the Tracker's panel and the Duty
+templates box move into place one way with the slide, never down and back. The pictures: Chromium's compositor draws a
+moving window between the page's own frames, a frame ahead of the page's clock, and its screencast's stamp lags further —
+each frame carries its own time on a 400ms sweep run by the compositor (the first pictures, on the page's clock, showed the
+fixed window 15–18 points low and were wrong; `walk-scripts.md` §5).
+
+**Seen, not changed (older, in both builds):** as the keys start, a held window shortens at once to the room it will have,
+so for about a tenth of a second the page behind shows in the band between its foot and the rising keys (the Tracker's
+graph in C's strips); he called the Tracker better with it there. Filed in [KBS-PHONE-SLIDE], to put to him if he sees it.
+
+**Gates:** `kbscroll.test.ts` 42 / 42 (the measured slides pinned point by point), with `freshbox.test.tsx` 61 / 61;
+`e2e/kbscroll.spec.ts` 18 / 18; `npm run build` green. GitHub's run of the pull request is the full set (D1086).
+
+**Walk:** WALK — his measured slides played on five windows, up and down, both builds (`kbs-slide-walk.mjs`): 5 / 5 fail
+on the build he tested, 5 / 5 pass on the fix; pictures opened. **Owed: his iPhone look** (the tab closed and reopened).

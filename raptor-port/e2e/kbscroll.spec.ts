@@ -377,6 +377,7 @@ test.describe('the input window on a phone that measures from the visible screen
     if (!w.__his) {
       w.__his = { pan: 0 }
       const real = Element.prototype.getBoundingClientRect
+      w.__realRect = real
       Element.prototype.getBoundingClientRect = function (this: Element) { const r = real.call(this); return new DOMRect(r.x, r.y - w.__his.pan, r.width, r.height) }
       const d = Object.getOwnPropertyDescriptor(window, 'innerHeight') || Object.getOwnPropertyDescriptor(Window.prototype, 'innerHeight')
       Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => d!.get!.call(window) - w.__his.pan })
@@ -429,13 +430,94 @@ test.describe('the input window on a phone that measures from the visible screen
     await check(page)
   })
 
+  /* HIS iPHONE'S SLIDES, PLAYED FRAME BY FRAME (his recordings of 25 Oct 26 11:49 and 11:54, read at sixty frames a
+     second — "I can see the top of the background behind this window … The old one was like smoother"). Measured off his
+     screen, not taken from the app: the keys coming up, the page slides on cubic-bezier(.42,0,.58,1) over 250ms, the pan
+     told of about 30ms after the slide began — in one `resize` with the keys (OL), or the keys' `resize` first and the
+     pan's `scroll` 15ms later ("Other"); the keys going down, cubic-bezier(.3,.58,.2,1) over 330ms, the focus leaving the
+     box about 30ms in and the keys' `resize` some 40ms after that. On his screen a window stands at its place in the
+     layout less the slide so far; each frame's place is recorded, sampled at the frame's own time, as the phone draws
+     both its slide and the window's glide. */
+  const UP = { c: [0.42, 0, 0.58, 1], ms: 250 }, DOWN = { c: [0.3, 0.58, 0.2, 1], ms: 330 }
+  const play = (page: Page, sel: string, dir: 1 | -1, P: number, VH: number, splitPan = false) => page.evaluate(([sel, dir, P, VH, splitPan, UP, DOWN]) => new Promise<number[]>(ok => {
+    const w = window as any, el = document.querySelector(sel) as HTMLElement
+    const bez = (p: number, [x1, y1, x2, y2]: number[]) => {
+      if (p <= 0) return 0
+      if (p >= 1) return 1
+      let lo = 0, hi = 1, u = p
+      for (let i = 0; i < 30; i++) { u = (lo + hi) / 2; const x = 3 * u * (1 - u) * (1 - u) * x1 + 3 * u * u * (1 - u) * x2 + u * u * u; if (x < p) lo = u; else hi = u }
+      return 3 * u * (1 - u) * (1 - u) * y1 + 3 * u * u * (1 - u) * y2 + u * u * u
+    }
+    const real = w.__realRect || Element.prototype.getBoundingClientRect
+    if (!w.__his) {
+      w.__his = { pan: 0 }; w.__realRect = real
+      Element.prototype.getBoundingClientRect = function (this: Element) { const r = real.call(this); return new DOMRect(r.x, r.y - w.__his.pan, r.width, r.height) }
+      const d = Object.getOwnPropertyDescriptor(window, 'innerHeight') || Object.getOwnPropertyDescriptor(Window.prototype, 'innerHeight')
+      Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => d!.get!.call(window) - w.__his.pan })
+    }
+    const v = w.__vv, out: number[] = [], full = innerHeight + w.__his.pan
+    let s0 = Infinity
+    const pan = (p: number) => { w.__his.pan = p; v.offsetTop = p; v.pageTop = p }
+    if (dir > 0) {
+      if (splitPan) {
+        v.height = VH; v.dispatchEvent(new Event('resize'))
+        setTimeout(() => { pan(P); s0 = performance.now() - 30; v.dispatchEvent(new Event('scroll')) }, 15)
+      } else { v.height = VH; pan(P); s0 = performance.now() - 30; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) }
+    } else {
+      s0 = performance.now() - 30; (document.activeElement as HTMLElement).blur()
+      setTimeout(() => { pan(0); v.height = full; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) }, 40)
+    }
+    const end = performance.now() + 600
+    /* read once every frame's own work is done (the app's frame callbacks run before the paint, in the order they were
+       asked for), at the time that frame's animations are drawn at */
+    const tick = () => setTimeout(() => {
+      const ts = Number(document.timeline.currentTime)
+      const slid = dir > 0 ? P * bez((ts - s0) / UP.ms, UP.c) : P * (1 - bez((ts - s0) / DOWN.ms, DOWN.c))
+      out.push(Math.round(real.call(el).top - slid))
+      if (ts < end) requestAnimationFrame(tick); else ok(out)
+    }, 0)
+    requestAnimationFrame(tick)
+  }), [sel, dir, P, VH, splitPan, UP, DOWN] as const)
+  /* a window that holds still on his screen: every frame between where it stood and where it rests, give or take a few
+     points (the frame's own timing) — never the 100 points below that showed the page behind it */
+  const holds = (tops: number[], from: number, to: number, what: string) => {
+    const lo = Math.min(from, to) - 10, hi = Math.max(from, to) + 10
+    expect(tops.filter(y => y < lo || y > hi), `${what}: the window holds still on his screen (its top each frame: ${tops.join(' ')})`).toEqual([])
+    expect(Math.abs(tops[tops.length - 1] - to), `${what}: it comes to rest where it should`).toBeLessThanOrEqual(3)
+  }
+  const openInputWin = async (page: Page, other: boolean) => {
+    await login(page); await go(page, 'inputs')
+    await page.click('#inCalBtn'); await page.waitForTimeout(300)
+    await tap(page, page.locator('[data-icday]').nth(10))
+    await page.locator('[data-testid="win-inputsday"]').waitFor()
+    await page.locator('#icPopAdd').click()
+    await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
+    if (other) await page.selectOption('#inpEditType', 'Other')
+    await page.waitForTimeout(600)
+    const box = page.locator('#inpEditRmk')
+    await tap(page, box); await expect(box).toBeFocused()
+  }
+  const topOf = (page: Page, sel: string) => page.evaluate(sel => Math.round(((window as any).__realRect || Element.prototype.getBoundingClientRect).call(document.querySelector(sel)).top), sel)
+
+  test('KS3j the input window from an Inputs calendar day (OL), Remarks tapped: it holds still on his screen as his phone slides, up and down', async ({ page }) => {
+    const W = '[data-testid="win-inputedit"]'
+    await openInputWin(page, false)
+    const rest = await topOf(page, W)
+    holds(await play(page, W, 1, PAN, VH), rest, GAP, 'the keys up')
+    holds(await play(page, W, -1, PAN, VH), GAP, rest, 'the keys down')
+  })
+  test('KS3k the input window, "Other": the keys first, the pan 15ms later — it holds still, up and down', async ({ page }) => {
+    const W = '[data-testid="win-inputedit"]'
+    await openInputWin(page, true)
+    const rest = await topOf(page, W)
+    holds(await play(page, W, 1, 272, 390, true), rest, GAP, 'the keys up')
+    holds(await play(page, W, -1, 272, 390), GAP, rest, 'the keys down')
+  })
+
   /* KS3i — HIS RECORDING OF 11:09 (the Tracker's All events, a box tapped, the keys put away, again): "a bit twitchy like
-     the page jumps weirdly". His iPhone slides the page over a quarter of a second as the keys open or close but gives the
-     end of the slide at once, so a window placed at once for the end stood a whole slide away from it for those frames —
-     300 low, then rising; 300 high, then falling. Here his slide is played frame by frame on the window's drawn place (its
-     place in the layout less the slide so far, along the same quarter-second curve) and no frame may jump. */
-  test('KS3i the Tracker\'s All events, the keys up then down: the window never jumps from one frame to the next while the phone slides', async ({ page }) => {
-    const P = 294, V2 = 390
+     the page jumps weirdly". A window placed at once for where the slide ENDS stood a whole slide away from it for those
+     frames. Here his measured slides are played (above) and the window holds still on his screen. */
+  test('KS3i the Tracker\'s All events, the keys up then down: the window holds still on his screen while the phone slides', async ({ page }) => {
     await login(page); await go(page, 'tracker'); await page.waitForTimeout(800)
     await page.locator('#showAllTab:visible, #showAllBtn:visible').first().click()
     await page.locator('#showAllPanel.on').waitFor()
@@ -445,45 +527,9 @@ test.describe('the input window on a phone that measures from the visible screen
     await page.evaluate(() => { const v = (window as any).__vv; v.height = innerHeight; v.dispatchEvent(new Event('resize')) })
     await page.waitForTimeout(500)
     await tap(page, name); await expect(name).toBeFocused()
-    /* frame by frame, the panel's drawn top on his phone: its place in the layout less the slide so far */
-    const watch = (dir: 1 | -1) => page.evaluate(([P, V2, dir]) => new Promise<number[]>(ok => {
-      const w = window as any, el = document.getElementById('showAllPanel')!
-      const bez = (t: number) => { // cubic-bezier(.2,.8,.2,1), the slide's curve as played
-        let lo = 0, hi = 1, x = 0, u = 0
-        for (let i = 0; i < 30; i++) { u = (lo + hi) / 2; x = 3 * u * (1 - u) * (1 - u) * 0.2 + 3 * u * u * (1 - u) * 0.2 + u * u * u; if (x < t) lo = u; else hi = u }
-        return 3 * u * (1 - u) * (1 - u) * 0.8 + 3 * u * u * (1 - u) + u * u * u
-      }
-      const real = w.__realRect || Element.prototype.getBoundingClientRect
-      if (!w.__his) {
-        w.__his = { pan: 0 }; w.__realRect = real
-        Element.prototype.getBoundingClientRect = function (this: Element) { const r = real.call(this); return new DOMRect(r.x, r.y - w.__his.pan, r.width, r.height) }
-        const d = Object.getOwnPropertyDescriptor(window, 'innerHeight') || Object.getOwnPropertyDescriptor(Window.prototype, 'innerHeight')
-        Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => d!.get!.call(window) - w.__his.pan })
-      }
-      const v = w.__vv, out: number[] = []
-      let t0 = 0
-      if (dir > 0) {
-        v.height = V2; v.dispatchEvent(new Event('resize'))
-        setTimeout(() => { w.__his.pan = P; v.offsetTop = P; v.pageTop = P; t0 = performance.now(); v.dispatchEvent(new Event('scroll')) }, 20)
-      } else {
-        w.__his.pan = 0; v.offsetTop = 0; v.pageTop = 0; v.height = innerHeight; t0 = performance.now(); v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll'))
-      }
-      const end = performance.now() + 500
-      /* sampled at each frame's own time, as the phone draws both its slide and the window's glide */
-      const tick = (ts: number) => {
-        const f = t0 ? Math.max(0, Math.min(1, (ts - t0) / 260)) : 0
-        const slide = dir > 0 ? P * bez(f) : P * (1 - bez(f))
-        out.push(Math.round(real.call(el).top - (t0 ? slide : (dir > 0 ? 0 : P))))
-        if (ts < end) requestAnimationFrame(tick); else ok(out)
-      }
-      requestAnimationFrame(tick)
-    }), [P, V2, dir] as const)
-    const up = await watch(1)
-    const jump = (a: number[]) => Math.max(...a.slice(1).map((y, i) => Math.abs(y - a[i])))
-    /* 60: the placing that takes over two frames into the slide can still step a sixth of the old jump (294) in one frame */
-    expect(jump(up), `the keys up: no frame jumps (drawn tops ${up.join(' ')})`).toBeLessThanOrEqual(60)
-    expect(up[up.length - 1], 'the keys up: the title comes to rest at the visible top').toBeLessThanOrEqual(GAP + 2)
-    const down = await watch(-1)
-    expect(jump(down), `the keys down: no frame jumps (drawn tops ${down.join(' ')})`).toBeLessThanOrEqual(60)
+    const rest = await topOf(page, '#showAllPanel')
+    const up = await play(page, '#showAllPanel', 1, 294, 390, true)
+    holds(up, rest, GAP, 'the keys up')
+    holds(await play(page, '#showAllPanel', -1, 294, 390), up[up.length - 1], rest, 'the keys down')
   })
 })

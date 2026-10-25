@@ -186,32 +186,55 @@ function cap(l: HTMLElement, h: number): boolean {
    open or close, but gives the visible screen's end at once — one `scroll` with the final pan, nothing after — so a window
    placed at once for where the page ENDS stood, for the length of the slide, a whole pan away from it: 300 points low as
    the keys came, then rising with the slide; 300 high as they went, then falling. Now a window the lift moves, holds or
-   puts back is drawn first where it stood and glides to its new place over the slide's own quarter second, from the
-   moment it moves (compensate, below, meets the slide at the phone's own word): on his phone the two motions meet and the window holds still while the
+   puts back is drawn first where it stood and glides to its new place on the phone's own slide — its curve and length
+   measured off his recordings, timed from when the phone began it (SLIDE_UP, SLIDE_DOWN, below; compensate meets the
+   slide at the phone's own word): on his phone the two motions meet and the window holds still while the
    page slides under it; where nothing slides (Chromium, a desktop) it moves there smoothly instead of at once. Only its
    own `translate` is animated, from where it is drawn — a glide still running included — and every measure the lift
    takes is of where the window ends (settleGlides first). Never for a reader who asked for less motion: at once, as before. */
-const GLIDE_MS = 260, GLIDE_EASE = 'cubic-bezier(.2,.8,.2,1)'
+/* HIS iPHONE'S OWN SLIDES, MEASURED (his recordings of 25 Oct 26 11:49 and 11:54, read at sixty frames a second — the
+   input window, Remarks tapped: "I can see the top of the background behind this window … The old one was like
+   smoother"). The keys coming up: the phone slides the page on the standard ease-in-out curve over a quarter of a second
+   — two openings, each within a point of it — and tells of the pan about 30ms after the slide began (the keys' own
+   `resize` can come first, with no pan, and the pan in a `scroll` 15ms later). The keys going down: a quick start and a
+   long tail over a third of a second — his old build's closing, where nothing but the phone moved the window, and the
+   first frames of two closings of this one, each within two or three points — the focus leaving the box about 30ms in,
+   the keys' `resize` later still. Round 5 glided on a curve of its own (fast out, .2,.8,.2,1, 260ms) from the moment it
+   was told: by the slide's fourth frame some 100 points ahead of it, so the window stood that far below its place and
+   the day panel behind it — its "+ Input" — showed above it, then the window rose back; on the way down it rose some 70
+   points too high, then fell. Each glide now runs on the phone's own curve for its direction, timed from when the slide
+   began: `lead` is how long before the app is told that the phone started it. */
+export type Slide = { ms: number, c: readonly [number, number, number, number], lead: number }
+export const SLIDE_UP: Slide = { ms: 250, c: [0.42, 0, 0.58, 1], lead: 30 }
+export const SLIDE_DOWN: Slide = { ms: 330, c: [0.3, 0.58, 0.2, 1], lead: 30 }
+/* the keys' `resize` as they go down comes later in the slide than the focus leaving (his 11:54 readout: some 45–80ms) */
+const DOWN_RESIZE_LEAD = 60
+const bezierOf = (c: Slide['c']) => `cubic-bezier(${c.join(',')})`
 const calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 /* the glides running now, one a window: an animation of its own `translate` from where it was drawn to where it stands,
-   which the window's own style already holds — so a glide stopped is the window at its end, exactly */
-const GLIDES = new Map<HTMLElement, Animation>()
+   which the window's own style already holds — so a glide stopped is the window at its end, exactly; with the slide it
+   follows and the moment that slide began, so a glide that takes over stays on the same slide */
+type Glide = { a: Animation, s: Slide, origin: number }
+const GLIDES = new Map<HTMLElement, Glide>()
 /* ends any glide still running, at its end, so what is measured next is where each window stands (a CSS transition was
    not stopped by taking it off: the next placing measured a window mid-glide and moved it 218 too far) */
-function settleGlides(ls: Iterable<HTMLElement>, into?: Map<HTMLElement, number>) {
+function settleGlides(ls: Iterable<HTMLElement>, into?: Map<HTMLElement, Glide>) {
   for (const l of ls) {
-    const a = GLIDES.get(l)
-    if (!a) continue
-    /* how far into its quarter second it was: a glide that takes over goes on from there, in step with the slide */
-    if (into) { const t = Number(a.currentTime); if (t > 0 && t < GLIDE_MS) into.set(l, t) }
-    a.cancel(); GLIDES.delete(l)
+    const g = GLIDES.get(l)
+    if (!g) continue
+    /* still inside its slide: a glide that takes over goes on from there, on the same slide */
+    if (into) { const t = Number(g.a.currentTime); if (t > 0 && t < g.s.ms) into.set(l, g) }
+    g.a.cancel(); GLIDES.delete(l)
   }
 }
-/* the glide's curve, cubic-bezier(.2,.8,.2,1): how far along it is a fraction `p` of the way through its time */
-function eased(p: number): number {
+/* how far along a slide's curve it is, a fraction `p` of the way through its time */
+export function eased(p: number, c: Slide['c']): number {
+  if (p <= 0) return 0
+  if (p >= 1) return 1
+  const [x1, y1, x2, y2] = c
   let lo = 0, hi = 1, u = p
-  for (let i = 0; i < 24; i++) { u = (lo + hi) / 2; const x = 3 * u * (1 - u) * (1 - u) * 0.2 + 3 * u * u * (1 - u) * 0.2 + u * u * u; if (x < p) lo = u; else hi = u }
-  return 3 * u * (1 - u) * (1 - u) * 0.8 + 3 * u * u * (1 - u) + u * u * u
+  for (let i = 0; i < 26; i++) { u = (lo + hi) / 2; const x = 3 * u * (1 - u) * (1 - u) * x1 + 3 * u * u * (1 - u) * x2 + u * u * u; if (x < p) lo = u; else hi = u }
+  return 3 * u * (1 - u) * (1 - u) * y1 + 3 * u * u * (1 - u) * y2 + u * u * u
 }
 /* the tops of `ls` as drawn now — the start of a glide */
 function topsOf(ls: Iterable<HTMLElement>): Map<HTMLElement, number> {
@@ -219,26 +242,42 @@ function topsOf(ls: Iterable<HTMLElement>): Map<HTMLElement, number> {
   for (const l of ls) if (l.isConnected) m.set(l, l.getBoundingClientRect().top)
   return m
 }
-/* each window of `before` that the lift moved, held or put back glides from where it was drawn to where it now stands */
-function glide(before: Map<HTMLElement, number>, moved: Set<HTMLElement>, into?: Map<HTMLElement, number>) {
+/* the moment now on the clock the glides run on (the document's own timeline — what an animation's start is set in) */
+const clockNow = () => {
+  const t = typeof document !== 'undefined' && document.timeline ? Number(document.timeline.currentTime) : NaN
+  return Number.isFinite(t) ? t : performance.now()
+}
+/* the slide a glide follows, and when it began: a placing with no slide of the phone's own glides from now */
+export type When = { s: Slide, origin: number }
+const fromNow = (): When => ({ s: SLIDE_UP, origin: clockNow() })
+/* each window of `before` that the lift moved, held or put back glides from where it was drawn to where it now stands,
+   on the phone's slide `w` — or, taking over a glide still running (`into`), on that glide's slide */
+function glide(before: Map<HTMLElement, number>, moved: Set<HTMLElement>, w: When = fromNow(), into?: Map<HTMLElement, Glide>) {
   if (calm()) return
   for (const [l, top0] of before) {
     if (!moved.has(l) || !l.isConnected || typeof l.animate !== 'function') continue
     const d = top0 - l.getBoundingClientRect().top
     if (Math.abs(d) < 1) continue
     const s = shiftOf(l), end = `0px ${-Math.round(s)}px`
-    /* taking over a glide `t` into its time (a placing after the slide began): the new one starts from a point chosen so
-       that, `t` into the same curve, it passes exactly where the window is drawn now, and goes on from `t` — so the two
-       glides make one, in step with the phone's slide, never a fresh steep start */
-    const t = into?.get(l) || 0, e = t ? eased(t / GLIDE_MS) : 0
-    const from = t && e < 0.9 ? (d - s - e * -s) / (1 - e) : d - s
-    const a = l.animate([{ translate: `0px ${Math.round(from)}px` }, { translate: end }], { duration: GLIDE_MS, easing: GLIDE_EASE, fill: 'backwards' })
-    /* started now, as the phone's slide is — left to itself an animation waits for the next frame, and the window slipped
-       one frame's worth of the slide (64 points) before it caught up; started at the frame's own beginning, it ran ahead */
-    try { a.startTime = performance.now() - (t && e < 0.9 ? t : 0) } catch { /* an older browser: it starts a frame late */ }
+    /* TAKING OVER a glide still running (a placing two frames into the slide): the new one starts from a point chosen so
+       that, `t` into the same curve, it passes exactly where the window is drawn now — the running glide drew it in
+       step with the slide — and goes on from `t`, so the two glides make one. A FRESH glide on a slide the phone began
+       before the app was told: from where the window stood, as if begun with the slide, so from its first frame it
+       stands where the slide puts it — the frames the phone slid before it was told are not carried on and drifted
+       back (the test's first frames of the keys going down: 48 points low, drifting back over the slide). Nearly at its
+       end, a fresh glide from where it is drawn. */
+    const g0 = into?.get(l)
+    let { s: sl, origin } = g0 || w
+    let t = clockNow() - origin, e = eased(t / sl.ms, sl.c)
+    if (e >= 0.9) { ({ s: sl, origin } = fromNow()); t = 0; e = 0 }
+    const from = g0 && t > 0 ? (d - s - e * -s) / (1 - e) : d - s
+    const a = l.animate([{ translate: `0px ${Math.round(from)}px` }, { translate: end }], { duration: sl.ms, easing: bezierOf(sl.c), fill: 'backwards' })
+    /* on the slide's own clock — left to itself an animation waits for the next frame and starts from there, a frame and
+       the phone's lead behind the slide */
+    try { a.startTime = origin } catch { /* an older browser: it starts a frame late */ }
     /* (`backwards`: a frame drawn a hair before that start shows where it starts, never — for one frame — where it ends) */
-    GLIDES.set(l, a)
-    a.onfinish = () => { if (GLIDES.get(l) === a) GLIDES.delete(l) }
+    GLIDES.set(l, { a, s: sl, origin })
+    a.onfinish = () => { if (GLIDES.get(l)?.a === a) GLIDES.delete(l) }
   }
 }
 /* THE SLIDE MET THE MOMENT THE PHONE TELLS OF IT (the same recording, frame by frame): the placing comes two frames after
@@ -247,7 +286,7 @@ function glide(before: Map<HTMLElement, number>, moved: Set<HTMLElement>, into?:
    keys — is moved by the pan's change, gliding with the slide, and holds still on his screen; the placing then corrects it
    from where it is. Never the Scheduler Board (page content, carried by the phone's own scroll — D1081) nor a sheet that
    places itself by its own `top` (the Leave War's sheets, followVisible). */
-function compensate(dy: number, box: HTMLElement, sb: ScreenBox) {
+function compensate(dy: number, box: HTMLElement, sb: ScreenBox, at: number) {
   if (Math.abs(dy) < 0.5 || calm()) return
   const ls = new Set<HTMLElement>(LIFTED)
   const l0 = layerOf(box)
@@ -259,7 +298,8 @@ function compensate(dy: number, box: HTMLElement, sb: ScreenBox) {
   const before = topsOf(ls)
   settleGlides(ls)
   for (const l of ls) setShift(l, shiftOf(l) - dy)
-  glide(before, ls)
+  /* on the keys' own slide, begun some 30ms before the phone told of the pan (SLIDE_UP — a late pan too) */
+  glide(before, ls, { s: SLIDE_UP, origin: at - SLIDE_UP.lead })
 }
 /* what may move in one placing: every window already moved for the keys, and every element round the box (the one the
    lift will move is among them) */
@@ -272,11 +312,12 @@ function aroundBox(el: Element | null): Set<HTMLElement> {
 function gliding<T>(el: Element | null, run: () => T): T {
   const cand = aroundBox(el)
   const before = topsOf(cand)
-  const was = new Set(LIFTED), into = new Map<HTMLElement, number>()
+  const was = new Set(LIFTED), into = new Map<HTMLElement, Glide>()
   settleGlides(cand, into)
   const out = run()
   const moved = new Set<HTMLElement>([...was, ...LIFTED])
-  glide(before, moved, into)
+  /* a glide still running goes on on its own slide; a window moved with no slide running glides from now */
+  glide(before, moved, fromNow(), into)
   return out
 }
 
@@ -301,13 +342,14 @@ function roomBelow(px: number) {
   SPACER.style.height = Math.ceil((parseFloat(SPACER.style.height) || 0) + px) + 'px'
 }
 /** Puts back every window raised for the keys, but the one that holds `keep`; the room below the page only when the
-    typing has ended (no `keep`) — taken away between two boxes, the page would jump back and forth. */
-export function dropLifts(keep?: Element | null) {
+    typing has ended (no `keep`) — taken away between two boxes, the page would jump back and forth. `w`: the phone's
+    slide it goes back on (the keys going down — SLIDE_DOWN, from when it began); none, a glide from now. */
+export function dropLifts(keep?: Element | null, w?: When) {
   /* each window put back glides there with the phone's own slide (glide, above), never jumps ahead of it */
   const back = [...LIFTED].filter(l => !keep || !l.contains(keep))
   const before = topsOf(back)
   for (const l of back) putBack(l)
-  glide(before, new Set(back))
+  glide(before, new Set(back), w)
   for (const p of [...ROOMED]) if (!keep || !p.contains(keep)) unroom(p)
   for (const l of [...FULL]) if (!keep || !l.contains(keep)) unholdFull(l)
   if (!keep && SPACER) { SPACER.remove(); SPACER = null }
@@ -543,8 +585,13 @@ export function installKbScroll(): () => void {
     if (layer && layer.hasAttribute('data-kblayer')) holdFull(layer)
     soon()
   }
-  /* the typing ended (the focus went to nothing, as a tap on blank page does): a raised window goes back */
-  const focusout = (e: FocusEvent) => { if (!e.relatedTarget) requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts() }) }
+  /* the typing ended (the focus went to nothing, as a tap on blank page does): a raised window goes back — on the keys'
+     slide down, which the phone began some 30ms before the focus left (SLIDE_DOWN) */
+  const focusout = (e: FocusEvent) => {
+    if (e.relatedTarget) return
+    const origin = performance.now() - SLIDE_DOWN.lead
+    requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts(null, { s: SLIDE_DOWN, origin }) })
+  }
   /* read fresh each time: the walk stands a stand-in viewport in after the page has loaded */
   let vvNow: VisualViewport | null = null
   /* how far the visible screen's pan moved since the phone last told of it (compensate) */
@@ -553,12 +600,13 @@ export function installKbScroll(): () => void {
   const resize = () => {
     noteFullHeight()
     const vv = window.visualViewport
-    const dy = moved(vv)
+    const dy = moved(vv), now = performance.now()
     /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
-       window back nor takes the room below the page away; a zoomed frame itself changes nothing */
-    if (!vv || fullHeight(vv) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
+       window back nor takes the room below the page away; a zoomed frame itself changes nothing. A window still raised
+       (the focus went to a button, not to nothing) goes back on the keys' slide down, already well begun */
+    if (!vv || fullHeight(vv) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(null, { s: SLIDE_DOWN, origin: now - DOWN_RESIZE_LEAD }); return }
     if (vv.scale > 1.01) return
-    if (box && keyboardUp(vv)) compensate(dy, box, screenBox(vv))
+    if (box && keyboardUp(vv)) compensate(dy, box, screenBox(vv), now)
     if (box && (Date.now() - at < FOCUS_WINDOW || lifted())) soon()
   }
   /* THE LIFT WAITS FOR THE PHONE'S OWN PAN TO END (Fable, 19 Oct 26). An iPhone scrolls the page to show the box over the
@@ -567,9 +615,9 @@ export function installKbScroll(): () => void {
      did (his recordings). Each step of the pan sets the measuring back two frames, so the box is measured once the screen
      has come to rest, against where the phone left it: most often nothing is left to do, or the GAP alone. */
   const scroll = () => {
-    const dy = moved(window.visualViewport)
+    const dy = moved(window.visualViewport), now = performance.now()
     if (!box || !keyboardUp(window.visualViewport)) return
-    compensate(dy, box, screenBox(window.visualViewport!))
+    compensate(dy, box, screenBox(window.visualViewport!), now)
     if (Date.now() - at < FOCUS_WINDOW) soon()
     else if (lifted()) soon(true)
   }
@@ -607,7 +655,8 @@ export function installKbScroll(): () => void {
   }
   if (debug) {
     placed = dbg
-    for (const [tgt, ev] of [[document, 'focusin'], [window, 'resize']] as const) tgt.addEventListener(ev, () => requestAnimationFrame(() => dbg(ev)), true)
+    /* the focus leaving too: the keys' slide down is timed from it (SLIDE_DOWN) */
+    for (const [tgt, ev] of [[document, 'focusin'], [document, 'focusout'], [window, 'resize']] as const) tgt.addEventListener(ev, () => requestAnimationFrame(() => dbg(ev)), true)
     window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(() => dbg('vv-resize')))
     window.visualViewport?.addEventListener('scroll', () => requestAnimationFrame(() => dbg('vv-scroll')))
   }

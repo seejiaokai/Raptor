@@ -3,7 +3,7 @@
    layout, so every box is given a stand-in place: an element's top is its place on the page less every scroll above
    it; the visual viewport is a stand-in object, as the walk's is. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, dropLifts, noteFullHeight, GAP } from './kbscroll'
+import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, dropLifts, noteFullHeight, GAP, SLIDE_UP, SLIDE_DOWN, eased } from './kbscroll'
 
 const H = 800, KB = 340                                   // the layout's height; the keys' height
 const vvUp = { height: H - KB, offsetTop: 0, scale: 1 }   // the visible screen with the keys up
@@ -567,5 +567,26 @@ describe('the Scheduler Board: the page first, then its list', () => {
     keepAboveKeyboard(b, vvUp)
     expect([pageST, p.scrollTop]).toEqual([100, 730 - (H - KB - GAP) - 100])
     expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+  })
+})
+
+/* HIS iPHONE'S SLIDES, MEASURED ([KBS-PHONE-SLIDE] — his recordings of 25 Oct 26 11:49 and 11:54, read at sixty frames a
+   second): a window moved for the keys follows these, so it holds still while the page slides under it. The points are
+   his phone's own, as fractions of the slide: change the curves only from a new recording of his. */
+describe("the keys' slides, as his iPhone draws them", () => {
+  it('up: ease-in-out over a quarter of a second, the pan told of some 30ms in — his first opening frame by frame', () => {
+    expect([SLIDE_UP.ms, [...SLIDE_UP.c], SLIDE_UP.lead]).toEqual([250, [0.42, 0, 0.58, 1], 30])
+    /* his 11:54 recording, the OL window: the pan (of 184) at each sixtieth of a second from the slide's start */
+    const seen: [number, number][] = [[23, 4], [40, 10], [57, 20], [73, 34], [90, 51], [107, 69], [123, 90], [140, 111], [157, 134], [173, 148], [190, 162], [207, 173], [223, 180], [240, 183]]
+    for (const [t, p] of seen) expect(Math.abs(184 * eased(t / SLIDE_UP.ms, SLIDE_UP.c) - p), `at ${t}ms`).toBeLessThanOrEqual(5)
+  })
+  it("down: a quick start and a long tail over a third of a second — his old build's closing, the window carried by the phone alone", () => {
+    expect([SLIDE_DOWN.ms, [...SLIDE_DOWN.c], SLIDE_DOWN.lead]).toEqual([330, [0.3, 0.58, 0.2, 1], 30])
+    /* his 11:49 recording: the window's foot carried 272 down, at each sixtieth of a second */
+    const seen: [number, number][] = [[11, 19], [28, 48], [44, 83], [61, 120], [78, 153], [94, 181], [111, 204], [128, 221], [144, 234], [161, 244], [178, 252], [194, 257], [211, 262], [228, 264]]
+    for (const [t, d] of seen) expect(Math.abs(272 * eased(t / SLIDE_DOWN.ms, SLIDE_DOWN.c) - d), `at ${t}ms`).toBeLessThanOrEqual(6)
+  })
+  it('the curve reads 0 before its start and 1 after its end', () => {
+    expect([eased(-0.2, SLIDE_UP.c), eased(0, SLIDE_UP.c), eased(1, SLIDE_UP.c), eased(1.4, SLIDE_DOWN.c)]).toEqual([0, 0, 1, 1])
   })
 })

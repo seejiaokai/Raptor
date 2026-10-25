@@ -92,7 +92,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: five rounds built on `claude/lw-m3-placing-leave`; his "still some bug for the scroll" (25 Oct 26, 11:50) — what and where unknown, his recording first.
+- [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: six rounds built on `claude/lw-m3-placing-leave`; round 6 (the window dipping, the page behind showing) walked and held still; his iPhone look owed.
 - [LW-NIGHT1025-OLDER] — older faults the night's walk met: words typed for an afternoon bid land on the morning bid (fix first, tests first), two tabs, a posted-out man's gone days, a double tap's second tap.
 - [LW-R2R3-ANSWERS-BUILD] — his answers to rounds 2 and 3 of the bid windows (D1339–D1355): the drag window's words kept, the bubble red and raised by every lowering, the refused bid lit, his own leave's one row, the half-day UNA's free half — built with one FULL check, after his answers on the drawings.
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
@@ -250,10 +250,16 @@ a window brought down to the visible top, his iPhone's measure from the visible 
 the Leave War's sheets and bar, the board's pick-list, the History bubble and the two calendars' fit), and the window gliding
 with the phone's slide (`glide`, `compensate`). Evidence: `raptor-port/docs/handpass/2026-10-25-kbs-other-remarks.md`
 (rounds 1–5); walk `raptor-port/scripts/handpass/kbs-his-measure.mjs`; tests `src/ui/kbscroll.test.ts`, `e2e/kbscroll.spec.ts`
-KS3d–KS3i. **Open:** his word of 25 Oct 26, 11:50, "there's still some bug for the scroll" — which screen and what it does is
-not yet known: ask him, and for a recording with `?kbdebug` in the address (the readout's `L` figure says where his phone
-puts the layout's top). The slide's timing on Safari is tuned against a model (KS3i). Not swept: the Leave War's sheets place
-themselves (`leavewar/ui/Sheet.tsx followVisible`) and may jump the same way.
+KS3d–KS3i. **Round 6 (25 Oct 26, his recordings of 11:49 and 11:54):** "I can see the top of the background behind this
+window … The old one was like smoother" — the input window, Remarks tapped, dipped 90–145 points for four frames as the keys
+came, the day panel's "+ Input" showing above it; the glide ran on a curve of its own. His phone's slides measured off his
+screen (up: ease-in-out, 250ms, told ~30ms in; down: .3,.58,.2,1, 330ms) and the glide now runs on them
+(`SLIDE_UP` / `SLIDE_DOWN`); walked on five windows, up and down, both builds (`kbs-slide-walk.mjs`: 5 / 5 failing before,
+5 / 5 holding still after); KS3j, KS3k; the sheet's §The sixth round. His word on the Tracker: "seems better now". **Open:**
+his iPhone look at round 6 (the tab closed and reopened). **Seen, not changed (older):** as the keys start, a held window
+shortens at once to its final room, so for about a tenth of a second the page behind shows in the band between its foot and
+the rising keys — put to him only if he sees it (the cure: the foot riding the keys, the window's height driven each frame).
+Not swept: the Leave War's sheets place themselves (`leavewar/ui/Sheet.tsx followVisible`) and may jump the same way.
 
 ### [LW-NIGHT1025-OLDER] Older faults the night's walk met in passing (25 Oct 26) — none caused by its builds
 Found by the walkers of `raptor-port/docs/handpass/2026-10-25-lw-night.md` (reports `parts/lw-night/w1.md`, `w2.md`, with steps and pictures). (a) **Words go to the wrong bid** (w2 INC-1): on a day holding a pending morning bid with words, the one-day window opens with those words in its Remarks box; PM pressed, words typed, OL placed — the words land on the morning bid ("Am" became "AmPm") and the new afternoon bid has none. Code going forward, so not D56's: a fault to fix, tests first (`BidPicker.tsx`'s held request's words against the new bid's). (b) **Two tabs** (w2 FAIL 4): a window left open in a second tab saves onto a leave deleted in the first and writes it back, silently — the war carries no change across tabs; with the database step ([GLOBAL-UNDO]'s multi-user leftovers). (c) **A posted-out man's gone days** (w1 S9): a drag fill writes pending bids on them; an OD over them files the first day and skips the rest with no note. (d) **A double tap on a leave button** (w1 S21): the second tap falls through to the grid behind the closed window (a CAT pop-up, the man's figures). (e) **As built, the agent's reading:** on the closed-day window, words typed then Delete — the first Undo brings the bid back with the typed words, each save its own Undo step (w2 FAIL 3); on a phone a second touch on "Show ›" stops the page's smooth scroll part-way (the browser's own). (f) **A refused war command puts the war's role and viewer back to the last saved state** (the last narrow read, its reading 1 — `parts/lw-night/read-fixes-2.md`): `setRole` / `setViewer` do not move the baseline a rollback restores, so an admin who switched to the member view and then made a refused change would see an admin's controls under a member badge; its fix is worded there (keep role and viewer on a restore); not walked. (g) **On a phone the bubble's foot note lies under a resting day panel** (z-index 55 against 410) — read from the stylesheets, not seen. **Place:** (a) with the next Leave War batch, first; (c), (d), (f), (g) with it; (b) the database step.

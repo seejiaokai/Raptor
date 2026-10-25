@@ -2181,3 +2181,18 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Suggested improvement:** where a guide or a habit chains the document check before a commit, test the check's own exit code (`npm run docsize > log && …`, or `grep -q "docsize OK"`), never a grep that matches either outcome; and a block rewrite re-reads which rulings name `HANDOFF.md` as a home before dropping a line.
 
 **Principle:** a check in a chain must fail the chain on failure — match the success marker alone, or use the exit code.
+
+### Observation 701: A test's stand-in for an outside system's behaviour was built from the code under test, so it could only pass
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** A phone keyboard fix (a window moved in step with the phone's own slide as the keys open). Round 5 added a browser test that "played the phone's slide frame by frame" — but played it on the very easing curve and duration the app itself animated on. The test passed; on the owner's phone the window ran 90–145 points ahead of the real slide and the page behind it showed. Measuring the real slide off his screen recording (60 frames a second, a debug readout fixed at the pan) gave a different curve (ease-in-out, 250ms, the app told 30ms late); the rewritten test failed on the shipped code, 79–130 points, and passed on the fix.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test — stand-ins for things outside the code (a device, a browser, a service)
+
+**Issue:** A stand-in that models an outside system (here, how a phone animates its viewport) was given the implementation's own constants. Any test comparing the implementation against that stand-in compares the code with itself, and "red first" never happened in a way that could have caught the fault.
+
+**Suggested improvement:** In the "write the failing test" step, add: when the test needs a stand-in for behaviour outside the code under test, take its numbers from a measurement of the real thing (a recording, a log, a captured response) and cite the measurement in the test; never import or copy the constants the implementation uses. Check it by running the new test against the code BEFORE the fix — it must fail for the reason the user reported.
+
+**Principle:** A stand-in for the outside world must come from the outside world. If its numbers came from the code being tested, the test can only agree with the code.
