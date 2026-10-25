@@ -74,3 +74,5 @@ The kind: `src/engine/inputs.ts` (INPUT_META, `isLateInput`), `src/engine/schema
 door's `file` (`sync.ts doorFile`) → the Inputs door (the clash rules run as for any input). The buttons:
 `ui/LeaveButtons.tsx DutyButtons`, in `BidPicker`, `SelectSheet`, `ClosedNoteSheet`. The Inputs calendar's colour:
 `src/ui/inputscal-model.ts`, `scheduler/25-inputs-calendar.css`.
+
+**25 Oct 26, D1365:** an Other filed from the Leave War's bid window goes straight under Unavailable — no choice there — with the window's Duration (whole day, AM, PM); any other time is changed in its input on the Inputs page. The choice of Ground Programme or Unavailable (D1356) is the Inputs page's.

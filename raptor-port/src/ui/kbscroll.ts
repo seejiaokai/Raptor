@@ -180,8 +180,109 @@ function cap(l: HTMLElement, h: number): boolean {
   l.style.setProperty('--kbcap', Math.round(h) + 'px'); LIFTED.add(l)
   return true
 }
+/* A WINDOW MOVED FOR THE KEYS MOVES WITH THE PHONE'S OWN SLIDE, NEVER AHEAD OF IT (his recording of 25 Oct 26 11:09 — the
+   Tracker's All events, a box tapped, the keys put away, the next box tapped, again and again: "this section looks abit
+   twitchy like the page jumps weirdly slightly"). His iPhone slides the page over about a quarter of a second as the keys
+   open or close, but gives the visible screen's end at once — one `scroll` with the final pan, nothing after — so a window
+   placed at once for where the page ENDS stood, for the length of the slide, a whole pan away from it: 300 points low as
+   the keys came, then rising with the slide; 300 high as they went, then falling. Now a window the lift moves, holds or
+   puts back is drawn first where it stood and glides to its new place over the slide's own quarter second, from the
+   moment it moves (compensate, below, meets the slide at the phone's own word): on his phone the two motions meet and the window holds still while the
+   page slides under it; where nothing slides (Chromium, a desktop) it moves there smoothly instead of at once. Only its
+   own `translate` is animated, from where it is drawn — a glide still running included — and every measure the lift
+   takes is of where the window ends (settleGlides first). Never for a reader who asked for less motion: at once, as before. */
+const GLIDE_MS = 260, GLIDE_EASE = 'cubic-bezier(.2,.8,.2,1)'
+const calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
+/* the glides running now, one a window: an animation of its own `translate` from where it was drawn to where it stands,
+   which the window's own style already holds — so a glide stopped is the window at its end, exactly */
+const GLIDES = new Map<HTMLElement, Animation>()
+/* ends any glide still running, at its end, so what is measured next is where each window stands (a CSS transition was
+   not stopped by taking it off: the next placing measured a window mid-glide and moved it 218 too far) */
+function settleGlides(ls: Iterable<HTMLElement>, into?: Map<HTMLElement, number>) {
+  for (const l of ls) {
+    const a = GLIDES.get(l)
+    if (!a) continue
+    /* how far into its quarter second it was: a glide that takes over goes on from there, in step with the slide */
+    if (into) { const t = Number(a.currentTime); if (t > 0 && t < GLIDE_MS) into.set(l, t) }
+    a.cancel(); GLIDES.delete(l)
+  }
+}
+/* the glide's curve, cubic-bezier(.2,.8,.2,1): how far along it is a fraction `p` of the way through its time */
+function eased(p: number): number {
+  let lo = 0, hi = 1, u = p
+  for (let i = 0; i < 24; i++) { u = (lo + hi) / 2; const x = 3 * u * (1 - u) * (1 - u) * 0.2 + 3 * u * u * (1 - u) * 0.2 + u * u * u; if (x < p) lo = u; else hi = u }
+  return 3 * u * (1 - u) * (1 - u) * 0.8 + 3 * u * u * (1 - u) + u * u * u
+}
+/* the tops of `ls` as drawn now — the start of a glide */
+function topsOf(ls: Iterable<HTMLElement>): Map<HTMLElement, number> {
+  const m = new Map<HTMLElement, number>()
+  for (const l of ls) if (l.isConnected) m.set(l, l.getBoundingClientRect().top)
+  return m
+}
+/* each window of `before` that the lift moved, held or put back glides from where it was drawn to where it now stands */
+function glide(before: Map<HTMLElement, number>, moved: Set<HTMLElement>, into?: Map<HTMLElement, number>) {
+  if (calm()) return
+  for (const [l, top0] of before) {
+    if (!moved.has(l) || !l.isConnected || typeof l.animate !== 'function') continue
+    const d = top0 - l.getBoundingClientRect().top
+    if (Math.abs(d) < 1) continue
+    const s = shiftOf(l), end = `0px ${-Math.round(s)}px`
+    /* taking over a glide `t` into its time (a placing after the slide began): the new one starts from a point chosen so
+       that, `t` into the same curve, it passes exactly where the window is drawn now, and goes on from `t` — so the two
+       glides make one, in step with the phone's slide, never a fresh steep start */
+    const t = into?.get(l) || 0, e = t ? eased(t / GLIDE_MS) : 0
+    const from = t && e < 0.9 ? (d - s - e * -s) / (1 - e) : d - s
+    const a = l.animate([{ translate: `0px ${Math.round(from)}px` }, { translate: end }], { duration: GLIDE_MS, easing: GLIDE_EASE, fill: 'backwards' })
+    /* started now, as the phone's slide is — left to itself an animation waits for the next frame, and the window slipped
+       one frame's worth of the slide (64 points) before it caught up; started at the frame's own beginning, it ran ahead */
+    try { a.startTime = performance.now() - (t && e < 0.9 ? t : 0) } catch { /* an older browser: it starts a frame late */ }
+    /* (`backwards`: a frame drawn a hair before that start shows where it starts, never — for one frame — where it ends) */
+    GLIDES.set(l, a)
+    a.onfinish = () => { if (GLIDES.get(l) === a) GLIDES.delete(l) }
+  }
+}
+/* THE SLIDE MET THE MOMENT THE PHONE TELLS OF IT (the same recording, frame by frame): the placing comes two frames after
+   the phone's word (`soon`, below — so the board and the sheets have re-fitted first), and for those frames a window would
+   ride the start of the slide. So at the word itself the window that holds the box — and any window already moved for the
+   keys — is moved by the pan's change, gliding with the slide, and holds still on his screen; the placing then corrects it
+   from where it is. Never the Scheduler Board (page content, carried by the phone's own scroll — D1081) nor a sheet that
+   places itself by its own `top` (the Leave War's sheets, followVisible). */
+function compensate(dy: number, box: HTMLElement, sb: ScreenBox) {
+  if (Math.abs(dy) < 0.5 || calm()) return
+  const ls = new Set<HTMLElement>(LIFTED)
+  const l0 = layerOf(box)
+  if (l0 && !l0.hasAttribute('data-kblayer') && !l0.style.top && !l0.closest('.bidsheet')) {
+    const w = windowIn(l0, box, sb)
+    if (w) ls.add(w)
+  }
+  if (!ls.size) return
+  const before = topsOf(ls)
+  settleGlides(ls)
+  for (const l of ls) setShift(l, shiftOf(l) - dy)
+  glide(before, ls)
+}
+/* what may move in one placing: every window already moved for the keys, and every element round the box (the one the
+   lift will move is among them) */
+function aroundBox(el: Element | null): Set<HTMLElement> {
+  const s = new Set<HTMLElement>(LIFTED)
+  for (let a = el?.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) s.add(a)
+  return s
+}
+/* runs one placing of the lift with its glide: measured before, settled, placed, then glided from where it was drawn */
+function gliding<T>(el: Element | null, run: () => T): T {
+  const cand = aroundBox(el)
+  const before = topsOf(cand)
+  const was = new Set(LIFTED), into = new Map<HTMLElement, number>()
+  settleGlides(cand, into)
+  const out = run()
+  const moved = new Set<HTMLElement>([...was, ...LIFTED])
+  glide(before, moved, into)
+  return out
+}
+
 /** Puts one window back where it stood, unheld — also for a window about to be dragged by its bar (floatwin.ts). */
 export function putBack(l: HTMLElement) {
+  settleGlides([l])
   l.style.translate = ''; delete l.dataset.kblift
   l.style.removeProperty('--kbcap'); delete l.dataset.kbcap
   LIFTED.delete(l)
@@ -202,7 +303,11 @@ function roomBelow(px: number) {
 /** Puts back every window raised for the keys, but the one that holds `keep`; the room below the page only when the
     typing has ended (no `keep`) — taken away between two boxes, the page would jump back and forth. */
 export function dropLifts(keep?: Element | null) {
-  for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) putBack(l)
+  /* each window put back glides there with the phone's own slide (glide, above), never jumps ahead of it */
+  const back = [...LIFTED].filter(l => !keep || !l.contains(keep))
+  const before = topsOf(back)
+  for (const l of back) putBack(l)
+  glide(before, new Set(back))
   for (const p of [...ROOMED]) if (!keep || !p.contains(keep)) unroom(p)
   for (const l of [...FULL]) if (!keep || !l.contains(keep)) unholdFull(l)
   if (!keep && SPACER) { SPACER.remove(); SPACER = null }
@@ -217,6 +322,17 @@ function pin(l: HTMLElement, s0: number, visTop: number, visBot: number) {
   const own = l.getBoundingClientRect().top + s0
   const s = own - (visTop + GAP)
   setShift(l, own < visTop - 0.5 ? s : Math.max(0, s))
+}
+/* the window a fixed layer holds the box in: the layer itself, or — a backdrop exactly on the layout — its child that holds
+   the box (raise, below) */
+function windowIn(fixedEl: HTMLElement, el: HTMLElement, sb: ScreenBox): HTMLElement | null {
+  const fr = fixedEl.getBoundingClientRect()
+  if (Math.abs(fr.top - sb.layTop) <= 1 && Math.abs(fr.height - sb.layH) <= 2) {
+    let c: Element | null = el
+    while (c && c.parentElement !== fixedEl) c = c.parentElement
+    return c as HTMLElement | null
+  }
+  return fixedEl
 }
 function raise(fixedEl: HTMLElement, el: HTMLElement, sb: ScreenBox): number {
   const visTop = sb.top, visBot = sb.bottom
@@ -395,8 +511,10 @@ export function installKbScroll(): () => void {
     if (!box || document.activeElement !== box || !box.isConnected || !keyboardUp(vv)) return
     /* a pan long after the focus: the window follows the visible screen, and nothing inside it is scrolled — a box he
        scrolled away from in it stays where he put it */
-    if (onlyWindow) { onlyWindow = false; const l = layerOf(box); if (l) raise(l, box, screenBox(vv!)); placed('placed-win'); return }
-    keepAboveKeyboard(box, vv!)
+    /* each placing glides what it moves with the phone's own slide (glide, above) */
+    const b = box
+    if (onlyWindow) { onlyWindow = false; const l = layerOf(b); if (l) gliding(b, () => raise(l, b, screenBox(vv!))); placed('placed-win'); return }
+    gliding(b, () => keepAboveKeyboard(b, vv!))
     placed('placed')
   }
   /* the readout's line after each placing (below); a no-op without ?kbdebug */
@@ -429,13 +547,18 @@ export function installKbScroll(): () => void {
   const focusout = (e: FocusEvent) => { if (!e.relatedTarget) requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts() }) }
   /* read fresh each time: the walk stands a stand-in viewport in after the page has loaded */
   let vvNow: VisualViewport | null = null
+  /* how far the visible screen's pan moved since the phone last told of it (compensate) */
+  let lastOff = window.visualViewport ? window.visualViewport.offsetTop : 0
+  const moved = (vv: VisualViewport | null) => { if (!vv) return 0; const d = vv.offsetTop - lastOff; lastOff = vv.offsetTop; return d }
   const resize = () => {
     noteFullHeight()
     const vv = window.visualViewport
+    const dy = moved(vv)
     /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
        window back nor takes the room below the page away; a zoomed frame itself changes nothing */
     if (!vv || fullHeight(vv) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
     if (vv.scale > 1.01) return
+    if (box && keyboardUp(vv)) compensate(dy, box, screenBox(vv))
     if (box && (Date.now() - at < FOCUS_WINDOW || lifted())) soon()
   }
   /* THE LIFT WAITS FOR THE PHONE'S OWN PAN TO END (Fable, 19 Oct 26). An iPhone scrolls the page to show the box over the
@@ -444,7 +567,9 @@ export function installKbScroll(): () => void {
      did (his recordings). Each step of the pan sets the measuring back two frames, so the box is measured once the screen
      has come to rest, against where the phone left it: most often nothing is left to do, or the GAP alone. */
   const scroll = () => {
+    const dy = moved(window.visualViewport)
     if (!box || !keyboardUp(window.visualViewport)) return
+    compensate(dy, box, screenBox(window.visualViewport!))
     if (Date.now() - at < FOCUS_WINDOW) soon()
     else if (lifted()) soon(true)
   }

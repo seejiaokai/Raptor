@@ -137,3 +137,20 @@ C the Tracker's All events → Edit → Name, D the Leave War's one-day window �
 heights, Chromium measuring as his phone does; every picture taken after the tap and the pan, cut to what his screen shows;
 4 / 4: the window held at the visible top (8), the box above the keys and above Cancel / Add, nothing inside the window moved.
 Looked at: `docs/img/handpass/2026-10-25-kbs-his-measure/A-2-his-screen.png` … `D-2-his-screen.png`. His iPhone not yet.
+
+## The fifth round — his recording of 11:09 ("this section looks abit twitchy", the Tracker's All events)
+
+Read at 30 frames a second: each time the keys came up the panel jumped about 140–300 points down, then rose with the
+phone's slide; each time they went, it jumped up, then fell. His iPhone slides the page over about a quarter of a second but
+tells of it once, with the final pan, so a window placed at once for the end stood a whole slide away for those frames.
+**Fix (`kbscroll.ts`):** a window the lift moves, holds or puts back glides from where it was drawn to its new place over a
+quarter second (an animation of its own `translate`, stopped exactly when the next placing measures — a CSS transition was
+not, and the next placing moved the panel 218 too far); at the phone's own word the window holding the box is moved by the
+pan's change at once (`compensate`), so it holds still while the page slides; a placing that takes over mid-slide goes on
+along the same curve; a reader who asked for less motion gets the old instant move. Red first: KS3i (his slide played frame
+by frame on the window's drawn place) — steps of 294 before; after, 7 runs in 8 under 40 and the eighth 44 (one frame where
+the second placing takes over), the test failing above 60. Gates: `kbscroll.test.ts` 39 / 39; the browser set 140 / 140;
+the walk `kbs-his-measure.mjs` 4 / 4. **Not known:** when Safari's slide starts against its event, and its curve — tuned
+against a model; his iPhone decides.
+
+**Walk:** WALK — his four cases again (`kbs-his-measure.mjs`), 4 / 4, and KS3i's frame-by-frame slide; his iPhone not yet.

@@ -428,4 +428,62 @@ test.describe('the input window on a phone that measures from the visible screen
     await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
     await check(page)
   })
+
+  /* KS3i — HIS RECORDING OF 11:09 (the Tracker's All events, a box tapped, the keys put away, again): "a bit twitchy like
+     the page jumps weirdly". His iPhone slides the page over a quarter of a second as the keys open or close but gives the
+     end of the slide at once, so a window placed at once for the end stood a whole slide away from it for those frames —
+     300 low, then rising; 300 high, then falling. Here his slide is played frame by frame on the window's drawn place (its
+     place in the layout less the slide so far, along the same quarter-second curve) and no frame may jump. */
+  test('KS3i the Tracker\'s All events, the keys up then down: the window never jumps from one frame to the next while the phone slides', async ({ page }) => {
+    const P = 294, V2 = 390
+    await login(page); await go(page, 'tracker'); await page.waitForTimeout(800)
+    await page.locator('#showAllTab:visible, #showAllBtn:visible').first().click()
+    await page.locator('#showAllPanel.on').waitFor()
+    const row = page.locator('#showAllPanel .sarow', { hasText: 'ST-05' }).first()
+    await row.scrollIntoViewIfNeeded(); await row.locator('.sedit').click()
+    const name = page.locator('#showAllPanel .saedit input').first()
+    await page.evaluate(() => { const v = (window as any).__vv; v.height = innerHeight; v.dispatchEvent(new Event('resize')) })
+    await page.waitForTimeout(500)
+    await tap(page, name); await expect(name).toBeFocused()
+    /* frame by frame, the panel's drawn top on his phone: its place in the layout less the slide so far */
+    const watch = (dir: 1 | -1) => page.evaluate(([P, V2, dir]) => new Promise<number[]>(ok => {
+      const w = window as any, el = document.getElementById('showAllPanel')!
+      const bez = (t: number) => { // cubic-bezier(.2,.8,.2,1), the slide's curve as played
+        let lo = 0, hi = 1, x = 0, u = 0
+        for (let i = 0; i < 30; i++) { u = (lo + hi) / 2; x = 3 * u * (1 - u) * (1 - u) * 0.2 + 3 * u * u * (1 - u) * 0.2 + u * u * u; if (x < t) lo = u; else hi = u }
+        return 3 * u * (1 - u) * (1 - u) * 0.8 + 3 * u * u * (1 - u) + u * u * u
+      }
+      const real = w.__realRect || Element.prototype.getBoundingClientRect
+      if (!w.__his) {
+        w.__his = { pan: 0 }; w.__realRect = real
+        Element.prototype.getBoundingClientRect = function (this: Element) { const r = real.call(this); return new DOMRect(r.x, r.y - w.__his.pan, r.width, r.height) }
+        const d = Object.getOwnPropertyDescriptor(window, 'innerHeight') || Object.getOwnPropertyDescriptor(Window.prototype, 'innerHeight')
+        Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => d!.get!.call(window) - w.__his.pan })
+      }
+      const v = w.__vv, out: number[] = []
+      let t0 = 0
+      if (dir > 0) {
+        v.height = V2; v.dispatchEvent(new Event('resize'))
+        setTimeout(() => { w.__his.pan = P; v.offsetTop = P; v.pageTop = P; t0 = performance.now(); v.dispatchEvent(new Event('scroll')) }, 20)
+      } else {
+        w.__his.pan = 0; v.offsetTop = 0; v.pageTop = 0; v.height = innerHeight; t0 = performance.now(); v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll'))
+      }
+      const end = performance.now() + 500
+      /* sampled at each frame's own time, as the phone draws both its slide and the window's glide */
+      const tick = (ts: number) => {
+        const f = t0 ? Math.max(0, Math.min(1, (ts - t0) / 260)) : 0
+        const slide = dir > 0 ? P * bez(f) : P * (1 - bez(f))
+        out.push(Math.round(real.call(el).top - (t0 ? slide : (dir > 0 ? 0 : P))))
+        if (ts < end) requestAnimationFrame(tick); else ok(out)
+      }
+      requestAnimationFrame(tick)
+    }), [P, V2, dir] as const)
+    const up = await watch(1)
+    const jump = (a: number[]) => Math.max(...a.slice(1).map((y, i) => Math.abs(y - a[i])))
+    /* 60: the placing that takes over two frames into the slide can still step a sixth of the old jump (294) in one frame */
+    expect(jump(up), `the keys up: no frame jumps (drawn tops ${up.join(' ')})`).toBeLessThanOrEqual(60)
+    expect(up[up.length - 1], 'the keys up: the title comes to rest at the visible top').toBeLessThanOrEqual(GAP + 2)
+    const down = await watch(-1)
+    expect(jump(down), `the keys down: no frame jumps (drawn tops ${down.join(' ')})`).toBeLessThanOrEqual(60)
+  })
 })
