@@ -352,6 +352,28 @@ describe('an Attach filed from the war (D1378–D1380)', () => {
     expect(attaches()).toHaveLength(1)
     expect(attaches()[0].endDate, 'one input over the two days').toMatch(/12/)
   })
+  /* THE ONE ENTRY'S WORDS DO NOT TRAVEL TO A NEW FILING (the M3 code read's Q6, 25 Oct 26): over one entry the drag
+     window opens with its words (D1362) — "Wedding" on a leave — and pressing Attach (or a course, an overseas duty, an
+     Other) over the same drag filed the new commitment with "Wedding". Words he did not type are the entry's, not the
+     filing's; words he typed still go on it (D1341). */
+  it('the drag window: a leave’s words shown in the box are not filed onto an Attach; words typed are', () => {
+    const id = who()
+    setCell(id, '2026-02-10', 'LL', { remarks: 'Wedding' })
+    const sel = { people: [id], from: '2026-02-10', to: D, cells: ['2026-02-10', D].map(date => ({ personId: id, date })) }
+    const first = render(<SelectSheet sel={sel} people={x => x} role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} />)
+    expect((screen.getByTestId('sel-remarks') as HTMLTextAreaElement).value, 'the one entry’s words in the box (D1362)').toBe('Wedding')
+    fireEvent.click(screen.getByTestId('sel-more'))
+    fireEvent.click(screen.getByTestId('sel-file-ATCH'))
+    expect(attaches().length).toBeGreaterThan(0)
+    for (const r of attaches()) expect(String(r.remarks ?? ''), 'the leave’s words stay the leave’s').not.toMatch(/Wedding/)
+    first.unmount()
+    act(() => { for (const r of attaches()) INPUTS.splice(INPUTS.indexOf(r), 1); raptorNotify() })
+    render(<SelectSheet sel={sel} people={x => x} role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} />)
+    fireEvent.change(screen.getByTestId('sel-remarks'), { target: { value: 'Exercise support' } })
+    fireEvent.click(screen.getByTestId('sel-more'))
+    fireEvent.click(screen.getByTestId('sel-file-ATCH'))
+    expect(attaches().some((r: any) => r.remarks === 'Exercise support'), 'typed words are filed').toBe(true)
+  })
 })
 
 /* A HALF-DAY OTHER HELD (his D1353, D1371 — drawn by lw-1025-q7.mjs SET c2): a tap on the day opens the bid window on the

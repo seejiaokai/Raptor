@@ -502,8 +502,9 @@ export const draftOf = (r: any) => ({
   /* an Attach's "To" (his D1373) — where he is attached; '' where none */
   to: r.to || '',
   /* an Other's "Goes to" (his D1356): 'u' while it stands under Unavailable, 'r' while a scheduler has rejected it (the
-     scenario designer's G5 — it read "Ground Programme"), else 'g' — the window's choice */
-  goes: goesOf(r),
+     scenario designer's G5 — it read "Ground Programme"), else 'g' — the window's choice. A NEW one opened from the
+     Unavailable list's "+ Add" starts on Unavailable (the M3 code read's Q3) — the list it was added from */
+  goes: r && r._new && r._ctx === 'u' ? 'u' : goesOf(r),
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
   sans: r.sans ? { ...r.sans } : null,
   /* the supporting documents' ids (medical types) — the blobs live in
@@ -891,7 +892,10 @@ export const TYPE_ALLOW: any = {
   /* Upchit is excluded like SANS — it is not an absence, so the Unavailable
      panel's + Add must not offer it; it is filed on the Inputs page or from
      the Medical view's pending card */
-  u: (t: any) => isUnavail(t) && !isSansAvail(t) && !isUpchit(t),
+  /* …and, since his D1372 / D1374, a course and an Attach, which land there by themselves, and an Other, which goes there
+     on its "Goes to" (D1356 — opened from here it starts on Unavailable, draftOf): the M3 code read's Q3 — a scheduler
+     adding one from this list was offered none of them */
+  u: (t: any) => (isUnavail(t) && !isSansAvail(t) && !isUpchit(t)) || landsUnavail(t) || isOther(t),
   s: (t: any) => isSansAvail(t),
   /* the Inputs tab's own "+ Input": everything but SANS availability, which is filed on the SANS calendar and nowhere
      else (owner D620, 7 Oct 26) */

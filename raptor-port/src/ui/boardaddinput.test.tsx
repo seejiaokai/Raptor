@@ -164,7 +164,7 @@ describe('commitNewInput', () => {
 
 /* ---- (c) the dialog's context-bound shapes -------------------------------- */
 describe('the dialog opened from each add', () => {
-  it('Unavailable: leave/medical/OD types only, a range calendar, the till date after the remarks box (D948)', async () => {
+  it('Unavailable: leave/medical/OD and what lands there (a course, an Attach, an Other), a range calendar, the till date after the remarks box (D948)', async () => {
     await act(async () => { openScheduler(0); notify() })
     await click($('#schedBoard .unav .sb-addinp'))
     expect($('#inpEditTitle').textContent).toContain('New input')
@@ -172,7 +172,10 @@ describe('the dialog opened from each add', () => {
     expect($('#inpEditSave').textContent).toBe('Add')
     const opts = optionsOf($('#inpEditType'))
     expect(opts.length).toBeGreaterThan(0)
-    expect(opts.every(t => isUnavail(t) && !isSansAvail(t)), 'no activity types and no SANS here').toBe(true)
+    /* the absences, and since the M3 code read's Q3 (D1372, D1374, D1356) the three that land under Unavailable — a course
+       and an Attach by themselves, an Other on its Goes to; no other activity type and no SANS */
+    expect(opts.every(t => (isUnavail(t) && !isSansAvail(t)) || ['CSE', 'Attach', 'Other'].includes(t)), 'no other activity type and no SANS here').toBe(true)
+    expect(['CSE', 'Attach', 'Other'].every(t => opts.includes(t)), 'a course, an Attach and an Other are offered').toBe(true)
     expect($('#inpEdCal'), 'the two-click range calendar is in the dialog').toBeTruthy()
     /* an absence still opens all-day — leave/medical keep the ON default */
     expect(($('#inpEditSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'an Unavailable add opens all-day').toBe('true')

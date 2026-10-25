@@ -2696,7 +2696,10 @@ moved to the Ground Programme (owner, 19 Aug 26).
   person|date|type|start already promoted) — the input still lands, unaccepted,
   and the toast says so. Single day, the open day.
 - **Unavailable → "+ Add"** (`data-inpadd="di.u"`). Types: leave, medical and
-  OD only (`isUnavail && !isSansAvail`). The dialog carries a **date RANGE** —
+  OD (`isUnavail && !isSansAvail`) — and, since the M3 code read's Q3 (25 Oct 26), the three that land under
+  Unavailable: a course and an Attach by themselves (D1372, D1374, `landsUnavail`), an Other on its "Goes to" (D1356),
+  which opens from here on Unavailable (`draftOf` — `_new` with `_ctx 'u'`); no other activity type (pin
+  `boardaddinput.test.tsx`, `unavadd.test.ts`). The dialog carries a **date RANGE** —
   the same two-click `RangeCal` the Inputs page uses; its "till <date>" stands
   in grey after the Remarks box from the picked dates (D948 — never written into
   the remark; a single day reads "till <that day>"). The seed is a COMPLETED one-day range on the open day

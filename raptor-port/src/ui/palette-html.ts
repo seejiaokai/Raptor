@@ -2,9 +2,9 @@
    the placeholder row, verbatim. */
 import { DAYS } from '../engine/data'
 import { PEOPLE, SPECIALS, scQualOK } from '../engine/people'
-import { inputLinesOn, inputReadPass, isAway, isPersonal, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
+import { inputLinesOn, inputReadPass, isAway, offWord, awayAllDay, canWork, sansBadge, sansAvailOn } from '../engine/inputs'
 import { hm24 } from '../engine/time'
-import { dayEngaged, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
+import { dayTasked, dayOff, dayStandby, slotBar, slotRules } from '../engine/avail'
 import { esc, ARM, ROSDAY } from '../state/view'
 import { puck, puckMarks } from './html'
 
@@ -88,7 +88,10 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
    day is gone, which reads as a bug in the rule rather than in the sentence. */
 export function offReason(id:any,di:any){
   const d=DAYS[di]; if(!d)return '';
-  const x=inputLinesOn(d.dt).find((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id);
+  /* the absence that crosses him out, not an ATT B beside it (the narrow read of the Q2 fixes): an ATT B man is crossed
+     out only when something else closes his day — an all-day course, a leave — so that is what the reason names */
+  const xs=inputLinesOn(d.dt).filter((i:any)=>isAway(i)&&awayAllDay(i)&&i.person===id);
+  const x=xs.find((i:any)=>!canWork(i.type))||xs[0];
   return x?offWord(x):'';
 }
 export function armStripHTML(){
@@ -113,13 +116,8 @@ function paletteHTMLBody(di:any,opts?:any){
      strips the `.+` itself, and nothing else here reads more than whether a slot is armed */
   const armKey=ARM?String(ARM.key):'';
   /* a man only standing by is not "tasked" in this list (owner D1120) — dayEngaged asked to leave standby rows out */
-  const eng0=d.dow?dayEngaged(d,true):new Set(), off=d.dow?dayOff(d):new Set();
-  /* A COMMITMENT UNDER UNAVAILABLE WITH HOURS READS AS TASKED (the walk of the M3 code read's Q2, 25 Oct 26). On the
-     Ground Programme its row faded him here; under Unavailable (D1372 a course by itself, D1357 one a scheduler moves
-     there) it has no row, and with nothing picked only a WHOLE-DAY absence is crossed out (`off`) — so a course filed with
-     its hours stood in full colour as free. Faded as already tasked, as its row did; a picked seat still judges its
-     hours (slotBar), and an all-day one is crossed out through `off`. isAway already leaves out a cancelled one. */
-  if(d.dow)inputLinesOn(d.dt).forEach((i:any)=>{if(isAway(i)&&isPersonal(i.type)&&!awayAllDay(i)&&PEOPLE[i.person]&&!PEOPLE[i.person].special)eng0.add(i.person);});
+  const eng0=d.dow?dayTasked(d,true):new Set(), off=d.dow?dayOff(d):new Set();
+  /* (a commitment under Unavailable with hours reads as tasked — engine/avail.ts dayTasked, the walk of the code read's Q2) */
   const sby0=d.dow?dayStandby(d):new Map();
   /* AN ARMED SLOT CHANGES WHAT THE PALETTE IS SAYING.
      Ordinarily the pucks are faded by whether the man is tasked anywhere on the

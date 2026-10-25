@@ -249,8 +249,12 @@ export function SelectSheet({
      picked — no bid, nothing to approve; one man's words go with it, as with a leave. A day not his to change is named. */
   const fileDuty = (code: string) => {
     setConfirmDel(false); setConfirming(null); setNoteAt('leave')
-    /* an Other and an Attach take the window's Duration (his D1365, D1380); a course and an overseas duty whole days */
-    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined, code === 'OTH' || code === 'ATCH' ? portion : 'full')
+    /* an Other and an Attach take the window's Duration (his D1365, D1380); a course and an overseas duty whole days.
+       The ONE entry's words the box opened with (D1362) are that entry's, not a new filing's (the M3 code read's Q6 — a
+       leave's "Wedding" was filed onto a course over the same drag): left as they opened, they are not sent; words he
+       typed are (D1341). */
+    const own = prefill && words.remarks.trim() === prefill ? { ...words, remarks: '' } : words
+    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(own) : undefined, code === 'OTH' || code === 'ATCH' ? portion : 'full')
     if (!r.skipped) { onDone(r.done > 0); return }
     setNote(r.why[0] ?? skipNote('written', r.done, r.skipped))
     if (r.done > 0) onDone(true, true)

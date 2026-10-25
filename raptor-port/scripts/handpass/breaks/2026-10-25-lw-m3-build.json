@@ -257,5 +257,36 @@
   "tests": [
    "src/leavewar/otherunavail.test.tsx"
   ]
+ },
+ {
+  "n": 27,
+  "name": "Q2: a commitment under Unavailable is away (isAway)",
+  "file": "src/engine/inputs.ts",
+  "find": "||(isPersonal(inp.type)&&inp.acc==='u')",
+  "put": "",
+  "tests": [
+   "src/engine/unavaway.test.ts",
+   "src/ui/crewunav.test.ts"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "Q2: a cancelled commitment is never away (isAway's inputSilent)",
+  "file": "src/engine/inputs.ts",
+  "find": "||(!inputSilent(inp)&&(",
+  "put": "||(true&&(",
+  "tests": [
+   "src/engine/unavaway.test.ts"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "Q2 walk: one with hours fades him as tasked (crew list eng0)",
+  "file": "src/ui/palette-html.ts",
+  "find": "if(d.dow)inputLinesOn(d.dt).forEach(",
+  "put": "if(false)inputLinesOn(d.dt).forEach(",
+  "tests": [
+   "src/ui/crewunav.test.ts"
+  ]
  }
 ]

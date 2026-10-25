@@ -16,7 +16,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, versionFaceWarn, withVersionWarn } from '../engine/validate'
-import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
+import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
@@ -2487,7 +2487,7 @@ export function dayInfoHTML(di:any){
   /* an input filed for ALL / ALL AVAIL counts where it is drawn — the Common Programme (owner D955, onCommon) */
   const grd=(d.ground||[]).filter((g:any)=>!g.cx&&!onCommon(g)).length;
   const prog=(d.allhands||[]).filter((x:any)=>!x.cx).length+(d.ground||[]).filter((g:any)=>!g.cx&&onCommon(g)).length;
-  const eng=dayEngaged(d).size, off=dayOff(d).size;
+  const eng=dayTasked(d).size, off=dayOff(d).size;
   const A=availByWave(d), freeAll=A.anyWave.length;
   const row=(k:any,v:any)=>`<div class="dip-r"><span class="k">${k}</span><span class="v">${v}</span></div>`;
   const alRecs=SCHED.als.filter((a:any)=>+a.di===di).slice().sort((a:any,b:any)=>+a.seq-+b.seq);

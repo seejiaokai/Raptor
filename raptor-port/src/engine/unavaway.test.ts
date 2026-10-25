@@ -8,7 +8,7 @@
    cancelled one is silent everywhere (inputSilent), an Attach included — the warning list ignores it already. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { dayOff, availByWave, slotBar } from './avail'
+import { dayOff, availByWave, slotBar, dayTasked } from './avail'
 import { makeStandalone } from './waves'
 import { INPUTS, isAway } from './inputs'
 import { validate } from './validate'
@@ -103,5 +103,42 @@ describe('a commitment under Unavailable is away in the crew list', () => {
     const spare = `0.${wi}.0.2.` + (PEOPLE[who].seat === 'RCP' ? 'w' : 'p')   // the shift's SPARE row, his own seat
     expect(slotBar(who, spare)).not.toContain('course')
     expect(slotBar(who, ownSeat(who)), 'and the same man IS struck from a flying seat').toContain('course')
+  })
+})
+
+/* THE NARROW READ OF THE Q2 FIXES (25 Oct 26) — R1: across an SC MAIN shift a Meeting is the warning list's amber advisory
+   (a soft kind, inputs.ts shiftHard), so the crew list must not cross him out for one under Unavailable; a course stays
+   struck (hard, as the validator says). R2: the day panel's "Aircrew tasked" and the free-crew strip read the same
+   tasked set as the crew list (dayTasked) — a course with hours under Unavailable counts him tasked, as its Ground row did. */
+describe('the narrow read of the Q2 fixes', () => {
+  it('R1: an SC MAIN seat — a Meeting under Unavailable inside the shift is not struck; a course is', () => {
+    const who = freeMan()
+    DAYS[0].waves.push(makeStandalone('sc'))
+    const wi = DAYS[0].waves.length - 1
+    const main = `0.${wi}.0.0.` + (PEOPLE[who].seat === 'RCP' ? 'w' : 'p')
+    INPUTS.push(commit(who, 'Meeting', { acc: 'u', allday: false, s: 540, e: 600 }))
+    validate()
+    expect(slotBar(who, main)).not.toMatch(/meeting/i)
+    INPUTS.pop(); INPUTS.push(commit(who, 'CSE', { acc: 'u', allday: false, s: 540, e: 600 }))
+    validate()
+    expect(slotBar(who, main)).toMatch(/course/i)
+  })
+  it('R2: a course with hours under Unavailable is in the day’s tasked set; one on no day’s list is not', () => {
+    const who = freeMan()
+    expect(dayTasked(DAYS[0]).has(who)).toBe(false)
+    INPUTS.push(commit(who, 'CSE', { acc: 'u', allday: false, s: 360, e: 1080 }))
+    validate()
+    expect(dayTasked(DAYS[0]).has(who)).toBe(true)
+    expect(dayTasked(DAYS[0], true).has(who)).toBe(true)
+  })
+  it('R2: on a day with no waves he is not "free all day" while a course with hours holds him', () => {
+    const di = DAYS.findIndex((d: any) => !(d.waves || []).length)
+    expect(di, 'a day with no waves in the seed').toBeGreaterThanOrEqual(0)
+    const d = DAYS[di]
+    const who = availByWave(d).anyWave.find((id: string) => !INPUTS.some((i: any) => i.person === id && i.date === d.dt))!
+    expect(who).toBeTruthy()
+    INPUTS.push({ ...commit(who, 'CSE', { acc: 'u', allday: false, s: 360, e: 1080 }), date: d.dt })
+    validate()
+    expect(availByWave(d).anyWave).not.toContain(who)
   })
 })
