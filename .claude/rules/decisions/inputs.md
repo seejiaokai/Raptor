@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1377 | 25 Oct 26 | An Attach keeps D1374 as built: it lands under the schedule’s Unavailable list by itself and counts him out on the Leave War (1, or 0.5 for half a day), with its "To" box; it is more than a new name for "Fly with", which never counted on the war. |
 | D1376 | 25 Oct 26 | "Attach" is built with this batch on `claude/lw-m3-placing-leave`, one FULL check with the "Other" work. |
 | D1374 | 25 Oct 26 | An Attach lands under the schedule's Unavailable list by itself, as an overseas duty does, so it counts him out on the Leave War (1, or 0.5 for half a day); its filer is not asked where it goes. |
 | D1373 | 25 Oct 26 | The input kind "Fly with" is renamed "Attach" (attached to another squadron, a job or an exercise), and its window gets one short "To" box for where he is attached, shown in its name on the schedule — "Attach · 145 Sqn". |

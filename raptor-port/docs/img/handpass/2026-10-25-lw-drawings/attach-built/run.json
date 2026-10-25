@@ -1,0 +1,37 @@
+[
+ {
+  "id": "filed",
+  "size": "phone",
+  "said": "[{\"date\":\"Jul 15\",\"endDate\":\"Jul 16\",\"acc\":\"u\",\"to\":\"145 Sqn\"}]"
+ },
+ {
+  "id": "war",
+  "size": "phone",
+  "said": "cell [\"ATCH c k-unav s-a whole wide w4 jr raptor\"]; Available P 25 → 24"
+ },
+ {
+  "id": "tap",
+  "size": "phone",
+  "said": "opened: daylist-sheet, daylist-close, daylist"
+ },
+ {
+  "id": "tap",
+  "size": "phone",
+  "said": "window: Drifter Wed 15 Jul ✕ ATCH 06:00–18:00 · change it on the Inputs page “Exercise support till 16 Jul”"
+ },
+ {
+  "id": "more",
+  "size": "phone",
+  "said": "row: CSE OD Grant OIL ⋯ Other Post out Post in · ⋯ holds: Other, Post out, Post in"
+ },
+ {
+  "id": "member",
+  "size": "phone",
+  "said": "free day 2026-07-01"
+ },
+ {
+  "id": "member",
+  "size": "phone",
+  "said": "no bid window opened (the day may be closed for bidding)"
+ }
+]
