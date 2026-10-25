@@ -481,6 +481,9 @@ export const typeOptions = (allow?: (t: string) => boolean, families = false) =>
 })
 
 /* The draft is held apart from the model so Cancel is a real cancel. */
+/** WHERE AN INPUT STANDS, as an Other's "Goes to" reads it: 'u' under Unavailable, 'r' rejected by a scheduler (the
+ *  scenario designer's G5), else 'g' — the programme. One reading for the window, the save and its "anything changed?" */
+export const goesOf = (r: any): 'g' | 'u' | 'r' => (r && r.acc === 'u' ? 'u' : r && r.acc === 'r' ? 'r' : 'g')
 export const draftOf = (r: any) => ({
   person: leadOf(r), type: r.type, allday: !!r.allday, half: r.half || '',
   start: unfmt(r.date, r.yr), end: r.endDate ? unfmt(r.endDate, r.yr) : '',
@@ -498,8 +501,9 @@ export const draftOf = (r: any) => ({
   title: r.title || null,
   /* an Attach's "To" (his D1373) — where he is attached; '' where none */
   to: r.to || '',
-  /* an Other's "Goes to" (his D1356): 'u' while it stands under Unavailable, else 'g' — the window's choice */
-  goes: r.acc === 'u' ? 'u' : 'g',
+  /* an Other's "Goes to" (his D1356): 'u' while it stands under Unavailable, 'r' while a scheduler has rejected it (the
+     scenario designer's G5 — it read "Ground Programme"), else 'g' — the window's choice */
+  goes: goesOf(r),
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
   sans: r.sans ? { ...r.sans } : null,
   /* the supporting documents' ids (medical types) — the blobs live in
@@ -1387,11 +1391,13 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        the programme, worked out on read), unless it became an Other whose filer picked Unavailable; and an Other's
        "Goes to" changed in the window moves it. A scheduler's own filing of any other kind is left as it is (D1357). */
     {
-      const goesNow = 'goes' in draft ? draft.goes : (r.acc === 'u' ? 'u' : 'g')
-      const goesWas = r.acc === 'u' ? 'u' : 'g'
+      const goesWas = goesOf(r)
+      /* a scheduler's Reject stands until a scheduler changes it (G5): a member's edit never moves a rejected Other, as his
+         edit of a rejected request's time never revives it */
+      const goesNow = 'goes' in draft && (goesWas !== 'r' || canEditSched()) ? draft.goes : goesWas
       if (r.type !== wasType && landsUnavail(r.type)) r.acc = 'u'
       else if (r.type !== wasType && landsUnavail(wasType) && r.acc === 'u' && !(isOther(r.type) && goesNow === 'u')) delete r.acc
-      else if (isOther(r.type) && 'goes' in draft && goesNow !== goesWas) { if (goesNow === 'u') r.acc = 'u'; else delete r.acc }
+      else if (isOther(r.type) && 'goes' in draft && goesNow !== goesWas) { if (goesNow === 'u') r.acc = 'u'; else if (goesNow === 'g') delete r.acc }
       else if (r.type !== wasType && isOther(r.type) && goesNow === 'u') r.acc = 'u'
       /* an Other its filer had under Unavailable, retyped to another commitment, lands where that kind lands — the Ground
          Programme until a scheduler moves it (D1357; the scenario designer's G4) */
@@ -2042,7 +2048,7 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     || (rec.half || '') !== (first.half || '') || remarksTyped(rec.remarks, rec) !== remarksTyped(draft.remarks, draft)
     || String(rec.title || '') !== titleOf(draft.type, draft.title === undefined ? rec.title : draft.title)
     || (isFly(draft.type) && String(rec.to || '') !== toOf(draft.to === undefined ? rec.to : draft.to))
-    || (isOther(draft.type) && 'goes' in draft && (rec.acc === 'u' ? 'u' : 'g') !== draft.goes)
+    || (isOther(draft.type) && 'goes' in draft && goesOf(rec) !== draft.goes)
     || ('till' in draft && (typeof rec.till === 'boolean' ? rec.till : undefined) !== (typeof draft.till === 'boolean' ? draft.till : undefined))
     || (isSansAvail(draft.type) && sansKey(rec.sans) !== sansKey(draft.sans)))
   const answers = !!opts && !!opts.oil && (!rec || JSON.stringify(rec.oil || {}) !== JSON.stringify(opts.oil))
@@ -3050,11 +3056,12 @@ export function InputEditor() {
               <div className="goespick" role="group" aria-label="Goes to">
                 {([['g', 'Ground Programme'], ['u', 'Unavailable']] as const).map(([k, words]) => (
                   <button key={k} type="button" className={`goesbtn goes-${k}${(draft.goes ?? 'g') === k ? ' on' : ''}`} data-testid={`inpEdit-goes-${k}`}
-                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
+                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || (draft.goes === 'r' && !canEditSched())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
                 ))}
               </div>
+              {/* …a rejected one says so and picks neither; only a scheduler moves it (G5) */}
               <span className="inped-goesline" data-testid="inpEdit-goes-line">
-                {(draft.goes ?? 'g') === 'u' ? 'Counted as away on the Leave War' : 'Still counted in the Leave War’s manning'}
+                {draft.goes === 'r' ? 'Rejected by a scheduler' : (draft.goes ?? 'g') === 'u' ? 'Counted as away on the Leave War' : 'Still counted in the Leave War’s manning'}
               </span>
             </div>
           </div>}

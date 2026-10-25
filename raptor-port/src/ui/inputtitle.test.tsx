@@ -681,4 +681,27 @@ describe('the window — an Other\u2019s Goes to, an Attach\u2019s To (D1356, D1
     await click($('#inpEditSave')); await noDocAsk()
     expect(newest()).toMatchObject({ type: 'Attach', to: '145 Sqn', acc: 'u' })
   })
+  /* the scenario designer's G5: a scheduler's Reject read in the window as "Ground Programme", and the member's flip to
+     Unavailable put it back on the schedule, over the scheduler's decision. A rejected Other now says so; only a scheduler
+     changes where it goes (his Reject stands, as a member's edit of a rejected request's time never revives it) */
+  it('a rejected Other: the window says so, picks neither; a member cannot move it, a scheduler can (G5)', async () => {
+    const r = await filed({ person: member, by: member, type: 'Other', acc: 'r', remarks: 'Board' })
+    await act(async () => { setSession({ user: member, role: 'main' }); setMe(member); notify() })
+    await openOn(r)
+    const g = $('[data-testid="inpEdit-goes-g"]') as HTMLButtonElement, u = $('[data-testid="inpEdit-goes-u"]') as HTMLButtonElement
+    expect(g.getAttribute('aria-pressed')).toBe('false'); expect(u.getAttribute('aria-pressed')).toBe('false')
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Rejected by a scheduler')
+    expect(u.disabled, 'a member does not undo the scheduler’s Reject').toBe(true)
+    await type('#inpEditRmk', 'Board of inquiry')
+    await click($('#inpEditSave'))
+    expect(live(r.iid)).toMatchObject({ remarks: 'Board of inquiry', acc: 'r' })
+    await act(async () => { setSession({ user: admin, role: 'admin' }); setMe(admin); notify() })
+    await openOn(live(r.iid))
+    const u2 = $('[data-testid="inpEdit-goes-u"]') as HTMLButtonElement
+    expect(u2.disabled).toBe(false)
+    await click(u2)
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Counted as away on the Leave War')
+    await click($('#inpEditSave'))
+    expect(live(r.iid).acc, 'the scheduler files it under Unavailable').toBe('u')
+  })
 })
