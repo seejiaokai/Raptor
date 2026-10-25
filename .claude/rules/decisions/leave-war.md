@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1392 | 26 Oct 26 | Grant OIL gives any amount on one day — half a day, a day, or more than a day (1½, 2 …) — and its design keeps every amount easy to give, half a day included. |
 | D1391 | 26 Oct 26 | When an admin grants OIL by hand, he is not asked whether an HO is the morning or the afternoon — which half a granted HO is does not matter; it is still drawn in a half of its day's cell (D1164), the morning unless the morning is already held. |
 | D1390 | 26 Oct 26 | An overseas duty a scheduler rejects counts him back in on the Leave War, as a rejected course does (D1381): it no longer lowers the manning, the Available rows or the SANS calendar's need. |
 | D1389 | 26 Oct 26 | A course or an overseas duty that a scheduler rejects and then moves onto the Ground Programme counts him in on the Leave War, as every commitment on the Ground Programme does: only a commitment under the schedule's Unavailable list counts him out. |

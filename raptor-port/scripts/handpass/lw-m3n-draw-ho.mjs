@@ -23,6 +23,7 @@ async function grantPanel() {
 }
 async function close() { await P.keyboard.press('Escape').catch(() => {}); await P.waitForTimeout(400) }
 
+if (process.env.ONLY !== 'h') {
 /* ---------- E: his order — Give, then AM / PM, then Days ---------- */
 await grantPanel()
 await P.locator(T('oil-days')).fill('0.5'); await P.waitForTimeout(300)   // the app's own Half row comes for half a day
@@ -91,6 +92,36 @@ for (const ho of [false, true]) {
   await P.waitForTimeout(200)
   await H.pic(w, ho ? 'd6g-phone-2-ho' : 'd6g-phone-1-fo', [T('bid-picker')], { pad: 4, scale: 'device' })
   note('d6g', 'draw', `${ho ? 'HO' : 'FO'} drawn ${okG}`)
+  await close()
+}
+}
+/* ---------- H (his D1392 — any amount on one day — and his "some text … make it obvious that's editable or add in a quick
+   select function for HO"): ONE Days row — two quick picks, "HO · ½" and "FO · 1", then the box for any other amount,
+   its placeholder saying so ("other: 1½, 2…"), then the button naming what it gives ---------- */
+if (!process.env.ONLY || process.env.ONLY === 'h') for (const [state, typed] of [['ho', ''], ['two', '2']]) {
+  await grantPanel()
+  if (typed) { await P.locator(T('oil-days')).fill(typed); await P.waitForTimeout(300) }
+  const okH = await P.evaluate(([state, ring]) => {
+    const daysRow = document.querySelector('[data-testid="oil-days"]')?.closest('.bidsheet-row')
+    const box = document.querySelector('[data-testid="oil-days"]')
+    const chipSrc = document.querySelector('[data-testid="portion-am"]')
+    const give = document.querySelector('[data-testid="oil-give"]')
+    const halfRow = document.querySelector('[data-testid="oil-half-am"]')?.closest('.bidsheet-row')
+    if (!daysRow || !box || !chipSrc || !give) return false
+    if (halfRow) halfRow.style.display = 'none'            // the half does not matter (D1391)
+    const picks = document.createElement('span'); picks.style.cssText = 'display:inline-flex;gap:6px'
+    for (const [t, on] of [['HO · ½', state === 'ho'], ['FO · 1', false]]) { const c = chipSrc.cloneNode(false); c.removeAttribute('data-testid'); c.textContent = t; c.className = 'pchip' + (on ? ' on' : ''); picks.appendChild(c) }
+    box.before(picks)
+    if (state === 'ho') box.value = ''
+    box.placeholder = 'other: 1½, 2…'
+    box.style.cssText += ';border-style:dashed;min-width:0;width:118px'
+    give.textContent = state === 'ho' ? 'Give HO' : 'Give FO · 2 days'
+    daysRow.style.cssText += ';flex-wrap:wrap;row-gap:8px;' + ring
+    return true
+  }, [state, RING])
+  await P.waitForTimeout(200)
+  await H.pic(w, state === 'ho' ? 'd6h-phone-1-ho-picked' : 'd6h-phone-2-two-typed', [T('bid-picker')], { pad: 4, scale: 'device' })
+  note('d6h', 'draw', `${state} drawn ${okH}`)
   await close()
 }
 H.saveLog('draw-log-ho.json')
