@@ -32,7 +32,7 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, placeUna, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
+import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
 import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
@@ -45,7 +45,7 @@ import type { Selection } from './select'
 import './bidpicker.css'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
-import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
+import { DutyButtons, LeaveButtons } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState } from '../state/store'
 import { leaveInputsAt, rowDocIds } from '../sync'
@@ -222,21 +222,13 @@ export function SelectSheet({
      picked — no bid, nothing to approve; one man's words go with it, as with a leave. A day not his to change is named. */
   const fileDuty = (code: string) => {
     setConfirmDel(false); setConfirming(null); setNoteAt('leave')
-    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined)
+    /* an Other takes the window's Duration (his D1365); a course and an overseas duty whole days */
+    const r = fileStraight(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined, code === 'OTH' ? portion : 'full')
     if (!r.skipped) { onDone(r.done > 0); return }
     setNote(r.why[0] ?? skipNote('written', r.done, r.skipped))
     if (r.done > 0) onDone(true, true)
   }
 
-  /* UNA (his D1338): an admin's, on every day of every man picked, on the half the Duration row says; one man's words go
-     with it, as with a leave */
-  const fileUna = () => {
-    setConfirmDel(false); setConfirming(null); setNoteAt('leave')
-    const r = placeUna(sel.cells, portion, nPeople === 1 ? { remarks: wordsOf(words)?.remarks } : undefined)
-    if (!r.skipped) { onDone(r.done > 0); return }
-    setNote(skipNote('written', r.done, r.skipped))
-    if (r.done > 0) onDone(true, true)
-  }
 
   const del = () => {
     setConfirming(null)
@@ -372,12 +364,15 @@ export function SelectSheet({
       {/* behind the ⋯ in the fourth place of the row under the leaves, as on the one-day window (his D1326) */}
       {!poOpen && (
         <div className="bidsheet-row bp-extra" data-testid="sel-extra-row">
-          {/* CSE · OD in the first two places (round 2), UNA the third — an admin's alone (D1338) — the ⋯ the fourth where
-              Post out is offered */}
+          {/* CSE · OD in the first two places (round 2); the third is the one-day window's Grant OIL (not offered over a
+              drag); the ⋯ the fourth — Other (an admin's, his D1356 / D1365: filed under Unavailable on the Duration
+              picked) and, for one man, Post out */}
           <DutyButtons onFile={fileDuty} testPrefix="sel" />
-          {role === 'admin' && <UnaButton onPlace={fileUna} testPrefix="sel" />}
-          {onPostOut && nPeople === 1 && <MoreButton testid="sel-more" items={[{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
-            onPick: () => { setPoOpen(true); setConfirming(null) } }]} />}
+          {role === 'admin' && <MoreButton testid="sel-more" items={[
+            { key: 'oth', testid: 'sel-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked', onPick: () => fileDuty('OTH') },
+            ...(onPostOut && nPeople === 1 ? [{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
+              onPick: () => { setPoOpen(true); setConfirming(null) } }] : []),
+          ]} />}
         </div>
       )}
       {onPostOut && nPeople === 1 && poOpen && (

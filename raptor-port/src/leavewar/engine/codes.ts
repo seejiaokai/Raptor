@@ -123,13 +123,21 @@ export const MEDICAL_TYPES: readonly { type: string; label: string }[] = Object.
 const NON_LEAVE_LABELS: Record<string, string> = {
   CSE: 'course',
   OD: 'overseas duty',
-  /* UNA — UNAVAILABLE, OUT OF THE MANNING (his D1338, 24 Oct 26): the Leave War's own record, an admin's alone, never an
-     input; deep teal (D1325's colour). The one non-leave marker that comes in halves (below). */
-  UNA: 'unavailable',
+  /* A COMMITMENT UNDER THE SCHEDULE'S UNAVAILABLE LIST (his D1357, D1356, D1374, 25 Oct 26 — in place of UNA, the war's own
+     record of D1338, which went): an Inputs-page input the war shows and counts out, by its kind's letters
+     (`absences.ts COMMIT_CODE`) — OTH an Other, ATCH an Attach (D1375), the rest the agent's short forms */
+  OTH: 'other — under Unavailable',
+  ATCH: 'attached to another squadron, a job or an exercise',
+  TRG: 'training — under Unavailable',
+  MTG: 'meeting — under Unavailable',
+  PERS: 'personal — under Unavailable',
+  APPT: 'appointment — under Unavailable',
+  DTY: 'duty — under Unavailable',
+  EVT: 'event — under Unavailable',
 }
-/* THE NON-LEAVE MARKERS THAT COME IN HALVES — only UNA, which an admin places for a whole day, the morning or the
-   afternoon (D1338: "1 or 0.5"); a course, an overseas duty and an OIL credit still never take a portion. */
-const HALVED_MARKS: Record<string, true> = { UNA: true }
+/* THE NON-LEAVE MARKERS THAT COME IN HALVES — the commitments under Unavailable, filed for a whole day, the morning or the
+   afternoon (D1357: "by 1 or 0.5 for a half day"); a course, an overseas duty and an OIL credit still never take a portion. */
+const HALVED_MARKS: Record<string, true> = { OTH: true, ATCH: true, TRG: true, MTG: true, PERS: true, APPT: true, DTY: true, EVT: true }
 
 // OIL credit: at work, but off the flying programme. This is a different
 // axis from leave entirely — the codes arrive from Raptor's schedule (and,
@@ -263,8 +271,11 @@ export function displayCell(raw: string, auto = false): string {
 /* …AND SINCE HIS D1291 / D1323 (24 Oct 26) AN OIL TAKEN (time off spent) IS ITS OWN KIND, `oilt`, chartreuse, apart from the
    OIL given (FO, HO — `oil`, green), so a box that spends OIL is never read as one that gives it; set C's colours (D1316) are
    the app's one set (`--k-*`, scheduler/00-foundation-login.css). */
-export type Kind = 'll' | 'ol' | 'oil' | 'oilt' | 'care' | 'cse' | 'od' | 'una' | 'med'
-const KIND: Record<string, Kind> = { B: 'med', C: 'med', LL: 'll', OL: 'ol', OIL: 'oilt', FO: 'oil', HO: 'oil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'cse', OD: 'od', UNA: 'una', ATTB: 'med', ATTC: 'med', OML: 'med', HL: 'med' }
+/* …AND A COMMITMENT UNDER UNAVAILABLE IS ITS OWN KIND, `unav` — drawn OUTLINED, as the Inputs calendar draws a commitment
+   (his D1370 — fill rgba(232,237,242,.05), edge 1.5px rgba(200,212,228,.78), words #E8EDF2; matrix.css `.k-unav`) */
+export type Kind = 'll' | 'ol' | 'oil' | 'oilt' | 'care' | 'cse' | 'od' | 'unav' | 'med'
+const KIND: Record<string, Kind> = { B: 'med', C: 'med', LL: 'll', OL: 'ol', OIL: 'oilt', FO: 'oil', HO: 'oil', CCL: 'care', FCL: 'care', PL: 'care', CL: 'care', EL: 'care', CSE: 'cse', OD: 'od', ATTB: 'med', ATTC: 'med', OML: 'med', HL: 'med',
+  OTH: 'unav', ATCH: 'unav', TRG: 'unav', MTG: 'unav', PERS: 'unav', APPT: 'unav', DTY: 'unav', EVT: 'unav' }
 export function kindOf(raw: string): Kind { const r = raw.replace(/[*<>]/g, ''); const c = parseCell(r); return KIND[c ? c.type : r] ?? 'od' }
 /** The letters a box prints (D1160): the code bare — its half is said by where the box sits, so the arrows of
  *  `displayCell` are not printed on the grid; ATT B / ATT C as the owner's B / C; an app-credited OIL keeps its star. */
@@ -331,7 +342,7 @@ function dayCodeFor(cell: Cell): DayCode {
 
   const nonLeaveLabel = NON_LEAVE_LABELS[type]
   if (nonLeaveLabel) {
-    /* a UNA takes the half it covers (D1338): a morning removes half a man, as a half day's leave does */
+    /* a commitment under Unavailable takes the half it covers (D1357): a morning removes half a man, as a half day's leave does */
     const halved = !!HALVED_MARKS[type]
     const suffix = halved ? (portion === 'am' ? ' (AM)' : portion === 'pm' ? ' (PM)' : '') : ''
     return { code: halved ? formatCell(cell) : type, label: `${nonLeaveLabel}${suffix}`, removes: (halved ? portionAmount(portion) : 1) as 0.5 | 1, spends: null, earnsOil: 0, bid: false, duty: false }
@@ -387,8 +398,6 @@ export const CODE_GLOSSARY: GlossaryGroup[] = [
       { show: 'FO', mean: cap(SC_DUTY_LABELS.FO) + ' — a full day off in lieu. An admin grants it here or on the OIL tracker, for any reason.' },
       { show: 'HO', mean: cap(SC_DUTY_LABELS.HO) + ' — half a day off in lieu, granted the same way.' },
       { show: 'FO*', mean: 'The star means the APP put it there, not a person — credited automatically from the published schedule for a weekend or public holiday actually worked.' },
-      /* UNA (D1338): the war's own record, an admin's — nowhere else */
-      { show: 'UNA', mean: 'Unavailable — an admin has put him out of the manning, for the whole day or a half. Everyone can read why.' },
     ],
   },
   {
@@ -403,6 +412,11 @@ export const CODE_GLOSSARY: GlossaryGroup[] = [
   },
   {
     group: 'Other duty',
-    rows: Object.entries(NON_LEAVE_LABELS).filter(([code]) => code !== 'UNA').map(([code, label]) => ({ show: code, mean: cap(label) })),
+    rows: Object.entries(NON_LEAVE_LABELS).filter(([code]) => !HALVED_MARKS[code]).map(([code, label]) => ({ show: code, mean: cap(label) })),
+  },
+  /* the commitments under the schedule's Unavailable list (D1357, D1370): outlined, out of the manning */
+  {
+    group: 'Under Unavailable on the schedule — out of the manning',
+    rows: Object.entries(NON_LEAVE_LABELS).filter(([code]) => HALVED_MARKS[code]).map(([code, label]) => ({ show: code, mean: cap(label.replace(/ — under Unavailable$/, '')) })),
   },
 ]

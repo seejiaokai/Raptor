@@ -2211,3 +2211,18 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Suggested improvement:** In systematic-debugging's "3+ fixes failed" rule, add a device clause: when a fix passes its stand-in and fails on the real device twice, stop and put three options to the user before another round — revert to the last build the user called better, a guardrail that hides the symptom whatever the platform does, or a fresh model/reader — and say the stand-in has not predicted the device.
 
 **Principle:** Two passes on the model and two fails on the device mean the model is wrong, not the last fix; change the approach or the solver, not the constants.
+
+### Observation 703: Checkpoint (lw-m3 build, three pieces done)
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** building the five Leave War items of the M3 handoff
+**Skill:** task-observer
+**Type:** internal
+**Phase/Area:** checkpoint marker
+
+**Issue:** no observations at this checkpoint (the third plan step done).
+
+**Suggested improvement:** none.
+
+**Principle:** a checkpoint write keeps the log honest when nothing new turned up.

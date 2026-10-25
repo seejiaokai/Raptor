@@ -17,7 +17,7 @@ import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -496,6 +496,10 @@ export const draftOf = (r: any) => ({
      stays empty for him to type in, rather than snapping back to the kind's name under his cursor). Nothing is stored
      until what was typed differs from the kind's own name (engine/inputs.ts titleOf). */
   title: r.title || null,
+  /* an Attach's "To" (his D1373) — where he is attached; '' where none */
+  to: r.to || '',
+  /* an Other's "Goes to" (his D1356): 'u' while it stands under Unavailable, else 'g' — the window's choice */
+  goes: r.acc === 'u' ? 'u' : 'g',
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
   sans: r.sans ? { ...r.sans } : null,
   /* the supporting documents' ids (medical types) — the blobs live in
@@ -1023,6 +1027,13 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     s, e, date, yr: baseYear(), remarks: remarksTyped(draft.remarks, draft), mod: nowStamp(),
     /* its own title, only where one was typed and its kind takes one (D715, D716 — titleOf is the one normaliser) */
     ...(titleOf(draft.type, draft.title) ? { title: titleOf(draft.type, draft.title) } : {}),
+    /* where an Attach is to (his D1373 — free words, optional) */
+    ...(isFly(draft.type) && toOf(draft.to) ? { to: toOf(draft.to) } : {}),
+    /* FILED UNDER UNAVAILABLE BY ITSELF (his D1372 a course, D1374 an Attach) or by its filer's "Goes to" (an Other — D1356):
+       the same `acc:'u'` a scheduler's "→ Unavail" writes, so the schedule draws it under Unavailable and the Leave War
+       counts him out (D1357). Never for the board's Ground "+ Inputs" (a scheduler's own placement on the programme), nor
+       for ALL AVAIL / ALL, which is never under Unavailable (placeholderProblem). */
+    ...(!toGround && filingOf(draft.type, draft.goes) && !isSpecial(draft.person) ? { acc: 'u' } : {}),
     /* the till-date tick, where it was turned against its default (D953) — one that matches the saved dates' default is
        dropped by the write itself (state/store.ts runInputWrite → tillSettle) */
     ...(typeof draft.till === 'boolean' ? { till: draft.till } : {}),
@@ -1251,6 +1262,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        hand-made call; every door of the app seeds one through draftOf, where NULL says "none") leaves the record's
        own where its kind still takes one: silence is not an instruction to wipe a name. */
     { const tt = titleOf(draft.type, draft.title === undefined ? r.title : draft.title); if (tt) r.title = tt; else delete r.title }
+    /* …AND SO DOES AN ATTACH'S "TO" (his D1373), on the same terms: a draft that states it writes it; a kind that is not
+       an Attach keeps none */
+    { const to = isFly(draft.type) ? toOf(draft.to === undefined ? r.to : draft.to) : ''; if (to) r.to = to; else delete r.to }
     /* …AND SO DOES THE TILL-DATE TICK (owner D953), on the same terms: a draft that states one (every door of the app
        seeds `till` through draftOf, undefined meaning "as its dates say") writes it; a hand-made call with no `till` key
        leaves the record's own. A choice the new dates overtook is dropped by the write itself (runInputWrite). */
@@ -1368,6 +1382,18 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        that kind, as the loaded week's relink always left it. One rule on and off the loaded week now (P2-QREV/Fable-9 had
        the off-week edit re-derive on any type change). */
     if (r.acc === 'u' && r.type !== wasType && isUnavail(r.type)) delete r.acc
+    /* WHERE IT IS FILED FOLLOWS ITS KIND AND ITS "GOES TO" (his D1356, D1372, D1374): a retype INTO a kind that lands
+       under Unavailable by itself files it there; a retype OUT of one takes it off again (to where its new kind lands —
+       the programme, worked out on read), unless it became an Other whose filer picked Unavailable; and an Other's
+       "Goes to" changed in the window moves it. A scheduler's own filing of any other kind is left as it is (D1357). */
+    {
+      const goesNow = 'goes' in draft ? draft.goes : (r.acc === 'u' ? 'u' : 'g')
+      const goesWas = r.acc === 'u' ? 'u' : 'g'
+      if (r.type !== wasType && landsUnavail(r.type)) r.acc = 'u'
+      else if (r.type !== wasType && landsUnavail(wasType) && r.acc === 'u' && !(isOther(r.type) && goesNow === 'u')) delete r.acc
+      else if (isOther(r.type) && 'goes' in draft && goesNow !== goesWas) { if (goesNow === 'u') r.acc = 'u'; else delete r.acc }
+      else if (r.type !== wasType && isOther(r.type) && goesNow === 'u') r.acc = 'u'
+    }
     /* …and except an input turned into a PLACEHOLDER's ([INPUT-ALL-AVAIL]; Astra's read of the code, 9 Oct 26): an input
        filed for ALL AVAIL / ALL is never under Unavailable (engine/inputs.ts placeholderProblem) — it goes back onto
        the programme, where its row, its crowd and its OIL are (state/holderbase.ts lands it after this command). */
@@ -2012,6 +2038,8 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     || unfmt(rec.date, rec.yr) !== draft.start || (rec.endDate ? unfmt(rec.endDate, rec.yr) : '') !== wantEnd
     || (rec.half || '') !== (first.half || '') || remarksTyped(rec.remarks, rec) !== remarksTyped(draft.remarks, draft)
     || String(rec.title || '') !== titleOf(draft.type, draft.title === undefined ? rec.title : draft.title)
+    || (isFly(draft.type) && String(rec.to || '') !== toOf(draft.to === undefined ? rec.to : draft.to))
+    || (isOther(draft.type) && 'goes' in draft && (rec.acc === 'u' ? 'u' : 'g') !== draft.goes)
     || ('till' in draft && (typeof rec.till === 'boolean' ? rec.till : undefined) !== (typeof draft.till === 'boolean' ? draft.till : undefined))
     || (isSansAvail(draft.type) && sansKey(rec.sans) !== sansKey(draft.sans)))
   const answers = !!opts && !!opts.oil && (!rec || JSON.stringify(rec.oil || {}) !== JSON.stringify(opts.oil))

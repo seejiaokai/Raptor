@@ -814,6 +814,9 @@ touch-action: pan-x pan-y;
 
 :is(.mx td, .leg-box) .c.whole { inset: 2px; }
 :is(.mx td, .leg-box) .c.whole.wide { font-size: 8.5px; letter-spacing: -.01em; }
+/* FOUR LETTERS FIT THE SAME BOX (his D1375 — ATCH "made to fit a phone's day box without a smaller box"; PERS, APPT too): a
+   step smaller and closer set, so the box stays the size of every other */
+:is(.mx td, .leg-box) .c.wide.w4 { font-size: 7.5px; letter-spacing: -.04em; }
 :is(.mx td, .leg-box) .c.top { left: 2px; right: 2px; top: 2px; bottom: calc(50% + .5px); border-radius: 4px 4px 2px 2px; }
 :is(.mx td, .leg-box) .c.bot { left: 2px; right: 2px; top: calc(50% + .5px); bottom: 2px; border-radius: 2px 2px 4px 4px; }
 :is(.mx td, .leg-box) .c.left { top: 2px; bottom: 2px; left: 2px; right: calc(50% + .5px); border-radius: 4px 2px 2px 4px; }
@@ -833,8 +836,11 @@ touch-action: pan-x pan-y;
 .c.k-care, .tchip.lv.k-care { --h: var(--k-care); --ink: var(--k-care-ink); --fill: var(--k-care-fill); }
 .c.k-cse, .tchip.lv.k-cse  { --h: var(--k-cse); --ink: var(--k-cse-ink); --fill: var(--k-cse-fill); }
 .c.k-od, .tchip.lv.k-od   { --h: var(--k-od); --ink: var(--k-od-ink); --fill: var(--k-od-fill); }
-/* the unforeseen absence, deep teal (his D1325 — round 2) */
-.c.k-una, .tchip.lv.k-una { --h: var(--k-una); --ink: var(--k-una-ink); --fill: var(--k-una-fill); }
+/* A COMMITMENT UNDER UNAVAILABLE, OUTLINED (his D1370, 25 Oct 26 — C1 look A, as the Inputs calendar draws a commitment,
+   D1321: fill rgba(232,237,242,.05), edge 1.5px rgba(200,212,228,.78), words #E8EDF2 — 13.5 to 1). Its own rule after the
+   fills below, so it wears this look whatever its fill class says: it is filed, never pending or refused. (UNA's deep teal
+   went with UNA, D1356.) */
+.c.k-unav, .tchip.lv.k-unav { --h: 200, 212, 228; --ink: #E8EDF2; --fill: .05; }
 .c.k-med, .tchip.lv.k-med  { --h: var(--k-med); --ink: var(--k-med-ink); --fill: var(--k-med-fill); }
 
 /* the fills — the bid windows' leave buttons take the same kinds and fills (M3 5.3, 5.4 — D1183, red-team fix A8:
@@ -2996,3 +3002,4 @@ touch-action: pan-x pan-y;
   from { transform: translateY(12px); opacity: 0; }
   to { transform: none; opacity: 1; }
 }
+.c.k-unav.s-a, .tchip.lv.k-unav.s-a, .c.k-unav.s-w, .c.k-unav.s-r { background: rgba(232, 237, 242, .05); color: #E8EDF2; box-shadow: inset 0 0 0 1.5px rgba(200, 212, 228, .78); outline: none; border: 0; text-decoration: none; }

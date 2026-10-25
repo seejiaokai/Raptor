@@ -24,7 +24,7 @@ function LegBox({ code, text, fill = 'a', place = 'whole', mark }: { code: strin
   const t = text ?? boxText(code)
   return (
     <span className="leg-box">
-      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.replace('*', '').length > 2 ? ' wide' : ''}${mark ? ` ${mark}` : ''}`}>{t}</span>
+      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.replace('*', '').length > 3 ? ' wide w4' : t.replace('*', '').length > 2 ? ' wide' : ''}${mark ? ` ${mark}` : ''}`}>{t}</span>
     </span>
   )
 }
@@ -514,8 +514,9 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <div className="leg-row"><LegBox code="CCL" /><span className="leg-t">Other leave: CCL, FCL, PL, CL, EL</span></div>
               <div className="leg-row"><LegBox code="CSE" /><span className="leg-t">Course</span></div>
               <div className="leg-row"><LegBox code="OD" /><span className="leg-t">Overseas duty</span></div>
-              {/* UNA (his D1338): an admin has put him out of the manning — the war's own record, nowhere else */}
-              <div className="leg-row"><LegBox code="UNA" /><span className="leg-t">Unavailable: out of the manning</span></div>
+              {/* A COMMITMENT UNDER UNAVAILABLE (his D1357, D1370 — UNA went, D1356): outlined, out of the manning — OTH an
+                  Other, ATCH an Attach, the rest by their kind's letters */}
+              <div className="leg-row"><LegBox code="OTH" /><span className="leg-t">Under Unavailable on the schedule: OTH, ATCH and the rest, out of the manning</span></div>
               <div className="leg-row"><LegBox code="ATTC" text="C" /><span className="leg-t">Medical: B, C, OML, HL</span></div>
               <div className="leg-sec">The fill: where it stands</div>
               <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Approved</span></div>

@@ -1,5 +1,6 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
+import { isCommitCode } from '../engine/dayview'
 import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
@@ -77,7 +78,7 @@ function moveReason(r: Exclude<MoveResult, 'moved'>): string {
 /** WHAT A MOVE LEAVES BEHIND, in the banner's words (the mock-up's reading, uncorrected — D331: "in a block what can
  *  move goes; what can't stays, and the banner says what stays"). " · 1 OIL award stays", " · 2 OIL awards and 1 bid
  *  stay". Only what a person put there and might expect to travel (`stayingIn`); nothing when everything moves. */
-function stayWords(stays: ReadonlyArray<{ what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' | 'una' }>): string {
+function stayWords(stays: ReadonlyArray<{ what: 'award' | 'filed' | 'approved' | 'bid' | 'refused' }>): string {
   if (!stays.length) return ''
   const label: Record<string, [string, string]> = {
     award: ['OIL award', 'OIL awards'],
@@ -85,9 +86,8 @@ function stayWords(stays: ReadonlyArray<{ what: 'award' | 'filed' | 'approved' |
     filed: ['leave filed on the Inputs page', 'leaves filed on the Inputs page'],
     bid: ['bid', 'bids'],
     refused: ['refused bid', 'refused bids'],
-    una: ['UNA', 'UNA'],
   }
-  const parts = (['award', 'una', 'approved', 'filed', 'bid', 'refused'] as const)
+  const parts = (['award', 'approved', 'filed', 'bid', 'refused'] as const)
     .map(k => { const n = stays.filter(x => x.what === k).length; return n ? `${n} ${label[k]![n === 1 ? 0 : 1]}` : '' })
     .filter(Boolean)
   return ` · ${parts.join(' and ')} ${stays.length === 1 ? 'stays' : 'stay'}`
@@ -3542,7 +3542,7 @@ export function Matrix() {
   const openView = open ? views[open.id]?.[open.date] : undefined
   /* …AND A DAY HOLDING A UNA (D1338): everyone may read it — its half, who placed it, its remarks — and an admin takes it
      away there; the list is the one window that shows every entry of a day on its own line, so a UNA alone opens it too */
-  const listOpen = !!open && !!openView && (openView.mark !== '' || openView.all.some(c => c.kind === 'una') ||
+  const listOpen = !!open && !!openView && (openView.mark !== '' || openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code)) ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
      half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for

@@ -52,22 +52,20 @@ export function LeaveButtons({ portion, onPick, figure, filled, lit = null, test
 }
 
 /* ROUND 2 — A COURSE AND AN OVERSEAS DUTY (his D1299, D1318, D1326; drawn by scripts/handpass/lw-round2-odcrs.mjs): the
-   first two places of the row under the leaves, UNA the third (an admin's — below), the ⋯ the fourth. Each is filed
+   first two places of the row under the leaves, Grant OIL the third (an admin's — below, D1349), the ⋯ the fourth. Each is filed
    straight as the input it is (`store.ts fileStraight`), so it wears the filled look and no figure — it stands at once
    and spends nothing. A member sees them on his own row too, open for bidding or not (D1318 "it can go anytime"). */
 export const DUTY_KINDS: readonly { code: string; title: string }[] = [
   { code: 'CSE', title: 'Course' },
   { code: 'OD', title: 'Overseas duty' },
 ]
-/* UNA — OUT OF THE MANNING (his D1338, 24 Oct 26 — "its admin input only"): the THIRD place of the row, an admin's alone (a
-   member's third place is empty), filled deep teal like the box it places, no figure. A tap places it at once — the
-   window's Duration (whole day, AM or PM) and Remarks, on the day, the range or every cell picked — as the war's own
-   record (`store.ts placeUna`), never an input. */
-export function UnaButton({ onPlace, testPrefix = 'bid' }: { onPlace: () => void; testPrefix?: string }) {
+/* GRANT OIL — THE THIRD PLACE (his D1349, 25 Oct 26 — "+OIL is swapping places with UNA since +OIL is commonly used"; UNA
+   went with D1356): an admin's, in OIL given's green (D1320), the size of the buttons beside it; a tap opens the window's
+   OIL panel, as the ⋯'s item did. A day holding an award names it ("FO · 1 day"). */
+export function GrantOilButton({ label, title, onPick }: { label: string; title: string; onPick: () => void }) {
   return (
-    <button type="button" data-testid={`${testPrefix}-una`} className="tchip lv k-una s-a"
-      title="UNA: unavailable, out of the manning — placed at once" onClick={onPlace}>
-      <span className="lv-code">UNA</span>
+    <button type="button" data-testid="bid-oil" className="tchip lv k-oil s-a bp-grant" title={title} onClick={onPick}>
+      <span className="lv-code">{label}</span>
     </button>
   )
 }

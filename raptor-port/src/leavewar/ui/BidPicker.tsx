@@ -17,7 +17,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, placeUna, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
+import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
 import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { ApproveSwitch, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
@@ -33,7 +33,7 @@ import './oiltracker.css'
 import { creditWorthText } from '../engine/credit'
 import type { DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
-import { DutyButtons, LeaveButtons, UnaButton } from './LeaveButtons'
+import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
 import { sayOnWar } from '../sync'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
@@ -363,7 +363,8 @@ export function BidPicker({
      which its box speaks for); the window closes on it, as a leave placed does. Where nothing could be filed it says why. */
   const fileDuty = (code: string) => {
     flushWords()
-    const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined)
+    /* an Other takes the window's Duration (his D1365 — whole day, AM or PM); a course and an overseas duty whole days */
+    const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined, code === 'OTH' ? portion : 'full')
     /* …and where a day of a range was left out (it already held the same kind, a locked week) it is said (round 2's FULL
        check — the fresh code read's F2): as a passing note, since the window closes — the day tapped now holds the input,
        and the grid opens that input's own window for it (the design guide: a press that did less than expected, D850) */
@@ -373,18 +374,6 @@ export function BidPicker({
     }
     setNoteAt('leave')
     setNote(r.why[0] ?? 'Nothing was filed: these days are not yours to change.')
-  }
-  /* UNA (his D1338): an admin's, for the day or the picked range, on the half the Duration row says, with the words typed
-     for something new; the window closes on it, as a leave placed does */
-  const fileUna = () => {
-    flushWords()
-    const r = placeUna(selCells(), portion, !held ? { remarks: wordsOf(draft)?.remarks } : undefined)
-    if (r.done > 0) {
-      if (r.skipped) sayOnWar(`${r.done} day${r.done === 1 ? '' : 's'} placed. ${r.skipped} day${r.skipped === 1 ? ' is' : 's are'} in no leave period: not placed.`)
-      return onClose()
-    }
-    setNoteAt('leave')
-    setNote('Nothing was placed: no leave period holds these days.')
   }
   /* (the fresh read's 5) words typed on a held bid and not yet saved — the box not left — are saved as the window closes,
      as its documents already were the moment they were picked: Escape, ✕ or a tap outside never loses them */
@@ -521,14 +510,16 @@ export function BidPicker({
   /* THE ⋯'s MENU (his D1326, D1320 — round 3's change 8): Grant OIL, Post out and Post in, the admin's three management
      actions, behind one button in the fourth place of the row under the leaves; each opens the panel it always opened.
      A day holding SEVERAL OIL awards names them, and its panel says they are changed from the day's list. */
+  /* …SINCE HIS D1349 / D1356 (25 Oct 26): Grant OIL, which is commonly used, takes the THIRD place of the row as a button of
+     its own (`GrantOilButton`); the ⋯ holds Other — an admin's, filed straight under Unavailable on the window's Duration
+     (D1365) — then Post out and Post in */
+  const grant = onCredit ? {
+    label: awardCount > 1 ? `${awardCount} OIL awards` : credit ? `${credit.code} · ${creditWorthText({ ...credit, auto: false })}` : 'Grant OIL',
+    title: awardCount > 1 ? "This day holds several OIL awards — change them from the day's list"
+      : credit ? 'The OIL on this day — its reason, who gave it and how many days' : 'Grant OIL — a day or half a day off in lieu, for any reason',
+  } : null
   const moreItems: MoreItem[] = [
-    ...(onCredit ? [{
-      key: 'oil', testid: 'bid-oil', cls: 'oil-give',
-      label: awardCount > 1 ? `${awardCount} OIL awards` : credit ? `${credit.code} · ${creditWorthText({ ...credit, auto: false })}` : 'Grant OIL',
-      title: awardCount > 1 ? "This day holds several OIL awards — change them from the day's list"
-        : credit ? 'The OIL on this day — its reason, who gave it and how many days' : 'Grant OIL — a day or half a day off in lieu, for any reason',
-      onPick: () => setOilOpen(true),
-    }] : []),
+    ...(isAdmin ? [{ key: 'oth', testid: 'bid-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked; any other time is set on the Inputs page', onPick: () => fileDuty('OTH') }] : []),
     ...(onPostOut ? [{ key: 'po', testid: 'bid-postout', label: 'Post out', title: 'Post out — their last day in the squadron', onPick: () => setPoOpen(true) }] : []),
     ...(onPostIn ? [{ key: 'pi', testid: 'bid-postin', label: 'Post in', title: 'Post in — their first day in the squadron', onPick: () => setPiOpen(true) }] : []),
   ]
@@ -713,10 +704,10 @@ export function BidPicker({
           of the three. */}
       {!panelOpen && (
         <div className="bidsheet-row bp-extra" data-testid="bid-extra-row">
-          {/* CSE · OD in the first two places (round 2), UNA the third — an admin's alone (D1338) — the ⋯ the fourth; a
-              member's third and fourth places stay empty */}
+          {/* CSE · OD in the first two places (round 2), Grant OIL the third (his D1349 — an admin's), the ⋯ the fourth
+              (Other, Post out, Post in); a member's third and fourth places stay empty */}
           <DutyButtons onFile={fileDuty} />
-          {isAdmin && <UnaButton onPlace={fileUna} />}
+          {grant && <GrantOilButton label={grant.label} title={grant.title} onPick={() => setOilOpen(true)} />}
           {moreItems.length > 0 && <MoreButton testid="bid-more" items={moreItems} />}
         </div>
       )}

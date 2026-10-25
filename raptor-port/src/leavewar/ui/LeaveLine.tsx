@@ -20,7 +20,7 @@ export function LeaveLine({ personId, callsign = '', code, state, from, to, days
   /** his callsign, where the roster draws no puck for him */
   callsign?: string
   code: string
-  state: 'approved' | 'pending' | 'una'
+  state: 'approved' | 'pending' | 'unav'
   from: string
   to: string
   days: number
@@ -32,7 +32,7 @@ export function LeaveLine({ personId, callsign = '', code, state, from, to, days
       <span className={`c k-${kindOf(code)} s-${state === 'pending' ? 'w' : 'a'} ll-box`}>{boxText(code)}</span>
       <span className="ll-dates">{runWords(from, to)}</span>
       <span className="ll-days">{fig(days)}</span>
-      {/* a UNA's box says what it is (D1338); no state word beside it */}
+      {/* a commitment under Unavailable: its outlined box says what it is (D1357, D1370); no state word beside it */}
       <span className={`ll-state${state === 'pending' ? ' pend' : ''}`}>{state === 'approved' ? 'Approved' : state === 'pending' ? 'Pending' : ''}</span>
     </div>
   )

@@ -10,7 +10,7 @@ import { shortDate } from './dates'
 import { addDays, boxText, canEditRow, catClass, catText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
 import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow } from '../state/store'
 import { FigureCell, show } from './FigureCell'
-import { offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
+import { isCommitCode, offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { outcomeOf } from '../engine'
 import type { Views } from '../engine/dayview'
@@ -144,8 +144,9 @@ export function cellOpenable(states: States, role: Role, viewer: string | null, 
     // the cell is opened (Matrix).
     canEditRow(role, viewer, personId) ||
     (deciding && isBiddable(grid[personId]?.[date])) ||
-    /* A UNA OPENS FOR EVERYONE (D1338 — "members can read its remarks too"): another man's included, read only */
-    !!view?.all.some(c => c.kind === 'una')
+    /* A COMMITMENT UNDER UNAVAILABLE OPENS FOR EVERYONE (his D1356 — its remarks shown "on the Leave War alike", as UNA's
+       were, D1338): another man's included, read only — it is changed on the Inputs page (D1365) */
+    !!view?.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
 }
 
 type PersonRowProps = {
@@ -468,7 +469,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         const entries = live && view ? view.all.filter(c => c.kind !== 'notice') : NO_ENTRIES
         const two = entries.length === 2 ? pairPlaces(portion, entries[1]!) : null
         const where = two ? two[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
-        const wide = text.replace('*', '').length > 2 ? ' wide' : ''
+        const wide = text.replace('*', '').length > 3 ? ' wide w4' : text.replace('*', '').length > 2 ? ' wide' : ''   // four letters (ATCH — D1375) a step smaller still
         const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
         const portionClass = ''
         const second = two ? entries[1]! : null
@@ -548,7 +549,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
               /* the second box wears its own edges too (the scenario designer's find): the Inputs page's by the same one rule
                  as the main box (`offWar` — filed there, or the app's own credit, as it wears alone), the dotted one for
                  leave moved here */
-              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 2 ? ' wide' : ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
+              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 3 ? ' wide w4' : boxText(second.code).length > 2 ? ' wide' : ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
                 {boxText(second.code, !!second.auto)}
               </span>
             )}

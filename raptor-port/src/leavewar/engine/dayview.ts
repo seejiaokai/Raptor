@@ -36,7 +36,7 @@ export type RequestState = 'pending' | 'refused'
  *  the war record's own id otherwise — the tap list acts on it. */
 export interface Contrib {
   id: string
-  kind: 'absence' | 'request' | 'credit' | 'notice' | 'una'
+  kind: 'absence' | 'request' | 'credit' | 'notice'
   /** Leave War notation type, no portion marks: LL, OL, OIL, ATTC, HL, OML,
    *  ATTB, CSE, OD, FO, HO. A notice carries the REPLACED bid's code. */
   code: string
@@ -76,15 +76,17 @@ export interface Contrib {
   /** an overnight record's tail from the day before: it counts for clashes
    *  here but is displayed and charged on its own date (clash-check H6) */
   spill?: boolean
-  /** UNA only (D1338): its remarks, which everyone may read */
-  remarks?: string
-  /** UNA only: the callsign of the admin who placed it */
-  by?: string
 }
 
 const LEAVE = new Map<string, CounterName | null>(LEAVE_TYPES.map(t => [t.type, t.counter]))
 const SICK = new Set(['ATTC', 'HL', 'OML'])
-const AWAY_DUTY = new Set(['OD', 'CSE'])
+/* A COMMITMENT UNDER UNAVAILABLE (his D1357, D1356, D1374 — 25 Oct 26; `absences.ts warCounts`): an Other, an Attach and
+   every other commitment kind the schedule draws under Unavailable count him out as a course or an overseas duty does,
+   by their own letters (`absences.ts COMMIT_CODE`). UNA, the war's own record it replaces (D1338), went with it. */
+export const COMMIT_CODES: readonly string[] = ['OTH', 'ATCH', 'TRG', 'MTG', 'PERS', 'APPT', 'DTY', 'EVT']
+const COMMIT = new Set(COMMIT_CODES)
+export const isCommitCode = (code: string) => COMMIT.has(code)
+const AWAY_DUTY = new Set(['OD', 'CSE', ...COMMIT_CODES])
 const CREDIT = new Set(['FO', 'HO'])
 export const isLeaveCode = (code: string) => LEAVE.has(code)
 export const isSickCode = (code: string) => SICK.has(code)
@@ -92,7 +94,7 @@ export const isAwayDutyCode = (code: string) => AWAY_DUTY.has(code)
 export const isCreditCode = (code: string) => CREDIT.has(code)
 const isAnnual = (code: string) => code === 'LL' || code === 'OL'
 /* the codes the war never changes, even approved on it — medical, a course, overseas duty (design §5.4, owner §13 Q1) */
-const OFF_WAR = new Set(['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD'])
+const OFF_WAR = new Set(['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD', ...COMMIT_CODES])   // …and a commitment under Unavailable (D1365: changed on the Inputs page)
 /** Whether ONE record is changed off the war: an absence filed on the Inputs page (not approved on the war, or a
  *  medical, a course, overseas duty), or a credit the app worked out itself. It is the blue edge THAT record's own box
  *  wears — asked of each entry, never of the day, so leave approved on the war keeps a plain box beside a course filed
@@ -127,8 +129,6 @@ export function levelOf(c: Contrib): number {
   if (c.kind === 'notice') return 99            // never the main code
   if (c.kind === 'request') return c.state === 'refused' ? 7 : 6
   if (c.kind === 'credit') return 3
-  /* UNA (D1338) stands with a course and an overseas duty: under leave, medical and a credit, over ATT B and a bid */
-  if (c.kind === 'una') return 4
   if (LEAVE.has(c.code)) return 1
   if (SICK.has(c.code)) return 2
   if (AWAY_DUTY.has(c.code)) return 4
@@ -268,7 +268,8 @@ const EMPTY: DayView = Object.freeze({
    (`codes.ts parseCell`); a course, OD or credit prints bare whatever part of
    the day it takes — its window still counts for manning and clashes */
 function notation(code: string, w: Win): string {
-  if (!LEAVE.has(code) && !SICK.has(code) && code !== 'ATTB' && code !== 'UNA') return code
+  /* …and a commitment under Unavailable, which may be half a day (D1357: "by 1 or 0.5 for a half day") */
+  if (!LEAVE.has(code) && !SICK.has(code) && code !== 'ATTB' && !COMMIT.has(code)) return code
   const p = portionOf(w)
   return p === 'am' ? `*${code}` : p === 'pm' ? `${code}*` : code
 }
@@ -322,9 +323,7 @@ export function dayView(input: readonly Contrib[]): DayView {
      credit is DUTY: at work, off the flying programme). */
   const removing = shown.filter(c =>
     (c.kind === 'absence' && c.code !== 'ATTB' && levelOf(c) < 8) ||
-    (c.kind === 'request' && c.state !== 'refused') ||
-    /* UNA (D1338): out of the manning for its half or halves — 0.5 or 1 */
-    c.kind === 'una')
+    (c.kind === 'request' && c.state !== 'refused'))
   const amAway = removing.some(c => touchesAM(c.win))
   const pmAway = removing.some(c => touchesPM(c.win))
   const away = (amAway ? 0.5 : 0) + (pmAway ? 0.5 : 0)

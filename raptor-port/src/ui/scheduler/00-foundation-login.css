@@ -51,7 +51,6 @@
   --k-cse:160,100,240; --k-cse-ink:#EBDDFF; --k-cse-fill:.36;
   --k-od:128,142,160;  --k-od-ink:#F2F5F8; --k-od-fill:.58;
   --k-med:238,82,82;   --k-med-ink:#FFD6D6; --k-med-fill:.30;
-  --k-una:20,130,130;  --k-una-ink:#D6FFFB; --k-una-fill:.70;     /* the unforeseen absence (round 2) */
   /* seat colours (kept from the working file) */
   --fcp:#6E6A2E; --fcp-ink:#FBFAF0; --rcp:#1F6E52; --rcp-ink:#EAFBF3;
   /* personnel (ground crew) puck: white, dark ink, a muted line so it reads as

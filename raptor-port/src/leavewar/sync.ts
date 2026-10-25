@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent } from '../engine/inputs'
+import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -149,7 +149,7 @@ import { codeWorth } from './engine/credit'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
-  labelToISO, warVisible, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
+  labelToISO, warVisible, warCounts, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
   type AbsenceIndex,
 } from './absences'
 
@@ -193,8 +193,8 @@ export function refreshAbsences(force = false): boolean {
   const byPerson = new Map<string, any[]>()
   /* one LINE a named person of each input ([ALL-AVAIL-AS-MEMBER] step 1 — engine/inputs.ts inputLines): the index is
      one man's absences, so a leave filed for three is three men's, and an input for ALL AVAIL is nobody's */
-  for (const row of inputLines(INPUTS.filter((r: any) => r && warVisible(r.type)))) {   // only the kinds the war shows are copied — this runs on every repaint
-    if (!row || !warVisible(row.type) || !row.person) continue
+  for (const row of inputLines(INPUTS.filter((r: any) => r && warCounts(r)))) {   // only the kinds the war shows are copied — this runs on every repaint
+    if (!row || !warCounts(row) || !row.person) continue
     const p = String(row.person)
     const list = byPerson.get(p)
     if (list) list.push(row)
@@ -245,7 +245,7 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
   const touched = new Set(ins.map(ch => String(ch.id)))
   const rows = INPUTS.filter((r: any) => r && !touched.has(String(r.iid)))
   for (const ch of ins) if (ch.op !== 'delete' && ch.after && typeof ch.after === 'object') rows.push(ch.after)
-  const ix = buildAbsenceIndex(inputLines(rows).filter((r: any) => r && r.person && warVisible(r.type)))
+  const ix = buildAbsenceIndex(inputLines(rows).filter((r: any) => r && r.person && warCounts(r)))
   return (personId, date) => ix.get(personId)?.get(date) ?? []
 }
 
@@ -503,9 +503,11 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
   return { done: picks.length, skipped, why }
 }
 
-/** FILED STRAIGHT (round 2 — his D1318, D1324; `store.ts fileStraight`): a course, an overseas duty or the unforeseen
- *  absence written as the Inputs they are — one input a man a run of consecutive days, whole days (none of the three has
- *  halves on the Inputs page), the window's words and papers with it, placed by whoever filed it now (D629). No `lw`
+/** FILED STRAIGHT (round 2 — his D1318, D1324; `store.ts fileStraight`): a course, an overseas duty or — since his D1365 —
+ *  an Other written as the Inputs they are — one input a man a run of consecutive days, a course and an overseas duty whole
+ *  days (neither has halves on the Inputs page), an Other on the window's half and filed under the schedule's Unavailable
+ *  list (`acc:'u'` — D1356, D1365, so it counts him out), the window's words and papers with it, placed by whoever filed
+ *  it now (D629). No `lw`
  *  provenance: the war never changes these kinds (dayview OFF_WAR — design §5.4, owner §13 Q1), so once filed it is the
  *  Inputs page's, exactly as one filed there. The Inputs door's own rules run (a course or an OD never replaces a bid). */
 function doorFile(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
@@ -518,8 +520,11 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
     /* A DAY THAT ALREADY HOLDS THE SAME KIND FOR HIM is left as it is (round 2's FULL check — the scenario designer's G2): a
        range or a drag over an OD filed earlier made a second OD on that day, two inputs of one kind over one day. The days
        around it are filed; a run is split there, so nothing overlaps. */
-    if (absencesAt(it.personId, it.date).some(o => o.code === code)) {
-      skipped++; why.push(`${shortDate(it.date)} already holds ${code === 'OD' ? 'an OD' : `a ${code}`} — left as it is`); continue
+    /* (an Other on a half: the same kind on a half it takes — the morning's beside an afternoon's is no duplicate) */
+    const bare = code.replace(/\*/g, ''), half = code.startsWith('*') ? 'am' : code.endsWith('*') ? 'pm' : 'full'
+    const takes = (w: [number, number]) => half === 'full' || (half === 'am' ? w[0] <= 720 : w[1] >= 721)
+    if (absencesAt(it.personId, it.date).some(o => o.code === bare && takes(o.win as [number, number]))) {
+      skipped++; why.push(`${shortDate(it.date)} already holds ${bare === 'OD' ? 'an OD' : bare === 'OTH' ? 'an Other' : `a ${bare}`} — left as it is`); continue
     }
     picks.push(it)
   }
@@ -536,6 +541,8 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
     const row = inputRowFor({ person: first.personId, code, from: first.date, to: last.date, remarks: remarksTyped(words?.remarks ?? '', { start: first.date, end: last.date }), mod: nowStamp() })
     if (typeof words?.till === 'boolean' && words.till !== tillDefault(row)) row.till = words.till
     if (words?.docIds?.length) Object.assign(row, docFields(words.docIds))
+    /* filed where its kind lands: an Other straight under Unavailable (D1365); a course too, by itself (D1372) */
+    if (filingOf(row.type, 'u')) row.acc = 'u'
     inpId(row)
     stampPlaced(row)
     return toPeople(row)

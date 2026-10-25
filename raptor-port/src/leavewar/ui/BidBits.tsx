@@ -116,7 +116,7 @@ export function EntryBox({ code, fill, place, auto = false, marks = '' }: {
   const t = boxText(code, auto)
   return (
     <span className="leg-box dl-box" aria-hidden="true">
-      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.replace('*', '').length > 2 ? ' wide' : ''}${marks ? ` ${marks}` : ''}`}>{t}</span>
+      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.replace('*', '').length > 3 ? ' wide w4' : t.replace('*', '').length > 2 ? ' wide' : ''}${marks ? ` ${marks}` : ''}`}>{t}</span>
     </span>
   )
 }

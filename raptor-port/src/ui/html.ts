@@ -2398,11 +2398,16 @@ export function accCtl(di:any,inp:any){
     /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
        ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */
     /* …and its row stands on the Common Programme, so the button names it there (owner D955, D958 — "Short word Common") */
-    +(/^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
-      ? (idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
+    /* EVERY COMMITMENT MAY BE MOVED UNDER UNAVAILABLE (his D1357, 25 Oct 26 — "should anything a scheduler moves under
+       Unavailable count him out on the Leave War? … yes"): the pair "→ Ground · → Unavail" was an Other's alone; it is every
+       commitment's now (the rest "land on the Ground Programme until a scheduler moves one"), a course and an Attach — which
+       land under Unavailable by themselves (D1372, D1374) — taken out and put back the same way. One holding ALL AVAIL / ALL
+       is never under Unavailable: its Other keeps "→ Common", every other kind "Accept", as before. */
+    +(isPersonal(inp.type)&&!isSpecial(inp.person)&&!idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
+      ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
+      : /^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
         ? b('g','→ Common','Accept onto the Common Programme')
-        : b('g','→ Ground','Accept into the ground programme'))+b('u','→ Unavail','File under Unavailable')
-      : b('g','Accept','Accept into the ground programme'))
+        : b('g','Accept','Accept into the ground programme'))
     +`</span>`;
 }
 /* the strip that lives in one day's header. `full` is the roomy board version. */
