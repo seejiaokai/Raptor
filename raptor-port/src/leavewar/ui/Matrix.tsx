@@ -4412,6 +4412,8 @@ export function Matrix() {
           canDecide={canDecide(role)}
           /* never on a deleted man (his posting is final — [POST-OUT-OUTCOMES], Fable F3) */
           onPostOut={role === 'admin' && !sel.people.some(id => people.find(p => p.id === id)?.gone || postingLocked(id)) ? (pid, from, outcome) => postOutOr(pid, from, outcome) : undefined}
+          /* …and Post in, its twin, on the same terms as the one-day window's ([LW-DRAG-MORE-MENU], his D1326) */
+          onPostIn={role === 'admin' && !sel.people.some(id => people.find(p => p.id === id)?.gone || postingLocked(id)) ? (pid, from) => postInOr(pid, from) : undefined}
           hasAccount={hasAccount}
           onMove={s => { setEventMoveSel(null); setEventMovePreview(null); setMoveSel(s) }}
           /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,

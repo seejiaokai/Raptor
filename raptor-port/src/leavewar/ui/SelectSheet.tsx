@@ -70,6 +70,7 @@ export function SelectSheet({
   onDone,
   onMove,
   onPostOut,
+  onPostIn,
   hasAccount,
   onClose,
   flushRef,
@@ -94,6 +95,9 @@ export function SelectSheet({
   onMove: (sel: Selection) => void
   /** admin, single-person selections only: post that one person out */
   onPostOut?: (personId: string, fromDate: string, outcome: PostOutcome) => string | void
+  /** admin, single-person selections only: post that one person in — Post out's twin, as on the one-day window (his
+   *  D1326; [LW-DRAG-MORE-MENU]); the reason, where it is refused */
+  onPostIn?: (personId: string, fromDate: string) => string | void
   /** whether that one person has an account (the posting's line names it only then) */
   hasAccount?: (personId: string) => boolean
   onClose: () => void
@@ -137,6 +141,9 @@ export function SelectSheet({
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* POST IN, dated from the drag's first day as Post out is ([LW-DRAG-MORE-MENU], his report of 26 Oct 26) */
+  const [piOpen, setPiOpen] = useState(false)
+  const [piDate, setPiDate] = useState(sel.from)
   /* THE ENTRIES THE DRAG COVERS AND THEIR REMARKS (his D1347, D1362 — "A grey line each", 25 Oct 26; drawn in
      docs/img/handpass/2026-10-25-lw-drawings/drag-remarks/): over one man's days, each separate entry — a run of bids
      with one set of words (the store's own run, `reqRunKey`), or one leave approved on the war (one input) — with its
@@ -408,7 +415,7 @@ export function SelectSheet({
           heavy an act for one tap; the PO flow picks its own date anyway). "PO", as on the one-day sheet (the mock-up's
           reading, uncorrected — D331). */}
       {/* behind the ⋯ in the fourth place of the row under the leaves, as on the one-day window (his D1326) */}
-      {!poOpen && (
+      {!poOpen && !piOpen && (
         <div className="bidsheet-row bp-extra" data-testid="sel-extra-row">
           {/* CSE · OD in the first two places (round 2); the third is the one-day window's Grant OIL (not offered over a
               drag); the ⋯ the fourth — Other (an admin's, his D1356 / D1365: filed under Unavailable on the Duration
@@ -420,8 +427,35 @@ export function SelectSheet({
             ...(role === 'admin' ? [{ key: 'oth', testid: 'sel-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked', onPick: () => fileDuty('OTH') }] : []),
             ...(role === 'admin' && onPostOut && nPeople === 1 ? [{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
               onPick: () => { setPoOpen(true); setConfirming(null) } }] : []),
+            /* …and its twin, Post in, as the one-day window's ⋯ holds them (his D1326; [LW-DRAG-MORE-MENU]) */
+            ...(role === 'admin' && onPostIn && nPeople === 1 ? [{ key: 'pi', testid: 'sel-postin', label: 'Post in', title: 'Post in — their first day in the squadron',
+              onPick: () => { setPiOpen(true); setConfirming(null) } }] : []),
           ]} />
         </div>
+      )}
+      {onPostIn && nPeople === 1 && piOpen && (
+        <>
+          <div className="bidsheet-row postout">
+            <span className="lab">PI from</span>
+            {/* the app's own date box, as the one-day window's "PI from" (owner D796, D797) */}
+            <DateBox className="dateinput" testid="sel-pi-date" label={`Post ${people(sel.people[0])} in from`} value={piDate} onChange={v => { setNote(''); setPiDate(v) }} />
+          </div>
+          <div className="bidsheet-row postout">
+            <button className="dchip po" data-testid="sel-pi-confirm" disabled={!piDate}
+              onClick={() => {
+                /* a refused posting keeps the window and says why, as Post out's does (AB5) */
+                const why = onPostIn(sel.people[0], piDate)
+                if (why) { setNoteAt('end'); setNote(why); return }
+                onDone(true)
+              }}>
+              Post in
+            </button>
+            <span className="note">
+              Their first day in the squadron. Days before it are blank and count nobody —
+              leave can still be dated there.
+            </span>
+          </div>
+        </>
       )}
       {onPostOut && nPeople === 1 && poOpen && (
         <>

@@ -154,6 +154,45 @@ describe('the selection sheet', () => {
   })
 })
 
+/* [LW-DRAG-MORE-MENU] (his report, 26 Oct 26 — "Doesn't show post in"): the drag window's ⋯ carried Post out but not its
+   twin, Post in, which the one-day window's ⋯ holds beside it (his D1326). For one man, an admin's, dated from the drag's
+   first day; refused, the window stays and says why, as Post out's does. */
+describe('the drag window posts one man in', () => {
+  it('offers Post in beside Post out for one man, dated from the drag’s first day, and posts him in', () => {
+    const onPostIn = vi.fn(() => undefined)
+    const onDone = vi.fn()
+    mount(rampTwo, { onPostOut: vi.fn(), onPostIn, onDone })
+    const pi = more('sel-postin')
+    expect(pi?.textContent).toBe('Post in')
+    fireEvent.click(pi!)
+    expect(boxValue(screen.getByTestId('sel-pi-date'))).toBe('2026-01-06')
+    fireEvent.click(screen.getByTestId('sel-pi-confirm'))
+    expect(onPostIn).toHaveBeenCalledWith('ramp', '2026-01-06')
+    expect(onDone).toHaveBeenCalledWith(true)
+  })
+  it('not across several men, and not for a member', () => {
+    const twoPeople: Selection = {
+      people: ['ramp', 'dusk'], from: '2026-01-06', to: '2026-01-06',
+      cells: [cell('ramp', '2026-01-06'), cell('dusk', '2026-01-06')],
+    }
+    mount(twoPeople, { onPostIn: vi.fn() })
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.queryByTestId('sel-postin')).toBeNull()
+    cleanup()
+    mount(rampTwo, { onPostIn: vi.fn(), role: 'member' })
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.queryByTestId('sel-postin')).toBeNull()
+  })
+  it('a refused posting in keeps the window and says why', () => {
+    const onDone = vi.fn()
+    mount(rampTwo, { onPostIn: () => 'Ramp is already in the squadron on that day', onDone })
+    fireEvent.click(more('sel-postin')!)
+    fireEvent.click(screen.getByTestId('sel-pi-confirm'))
+    expect(screen.getByTestId('sel-note').textContent).toContain('already in the squadron')
+    expect(onDone).not.toHaveBeenCalled()
+  })
+})
+
 /* THE DRAG-SELECTION'S POST OUT SAYS WHY IT WAS REFUSED (AB5, 26 Sep 26): its confirm called onDone(true) whatever
    the store answered, so a posting that would close before it opens vanished with the sheet. */
 describe('a refused post-out on the selection sheet', () => {
