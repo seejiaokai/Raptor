@@ -645,7 +645,7 @@ state nobody drew.
   record holds is on the page by its number, or under "considered and left" with its reason; the report states both
   counts — the record's gaps and the page's — and a script compares them, never the eye (13 Oct 26: a gap in the key
   record was reasoned away and left off the page; a second reader found it).
-- **What he should look at stands at the top of the page (D1237, 22 Oct 26 — "I can't find the no grade answer").** Every mock-up page put to him opens with one short list: each open question or answer in one line with its recommendation and a link to its pictures, newest first; answered and older rounds go below it. *(That a look's page does the same, and that a question he asked is answered there in words, are the agent's readings.)*
+- **What he should look at stands at the top of the page (D1237, 22 Oct 26 — "I can't find the no grade answer").** Every mock-up page put to him opens with one short list: each open question or answer in one line with its recommendation and a link to its pictures, newest first; answered and older rounds go below it — **narrowed 25 Oct 26 by D1363 ("Yes, every page"): a questions page shows only what is still open, newest first; answered and replaced questions leave the page, kept in the project.** *(That a look's page does the same, and that a question he asked is answered there in words, are the agent's readings.)*
 - **Nothing is changed by a look.** Findings go to him, in rounds of at most four with a recommended answer each (D541).
 
 ## 9. His design lessons (D941)
