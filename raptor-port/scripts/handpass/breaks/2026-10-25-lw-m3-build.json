@@ -217,5 +217,45 @@
   "tests": [
    "src/leavewar/otherunavail.test.tsx"
   ]
+ },
+ {
+  "n": 22,
+  "name": "Show reads the Manning rows (W1 7)",
+  "file": "src/leavewar/ui/Matrix.tsx",
+  "find": "    for (const row of rows) if (seen(row)) return true\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/bidbubble.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "the bubble goes at a tap, not a press that moved (W1 8)",
+  "file": "src/leavewar/ui/Matrix.tsx",
+  "find": "      if (Math.hypot((p.clientX ?? 0) - s.x, (p.clientY ?? 0) - s.y) > 10) return\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/bidbubble.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "the day’s list names where an Attach is to (W2 18)",
+  "file": "src/leavewar/ui/DayList.tsx",
+  "find": "const where = row && typeof row.to === 'string' ? row.to.trim() : ''",
+  "put": "const where = ''",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "the held-half line names where an Attach is to (W2 18)",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "            {heldOther.to && <span>· {heldOther.to}</span>}\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
  }
 ]

@@ -1617,7 +1617,7 @@ export function Matrix() {
     const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble"]')
     /* A TAP, NOT A PRESS (the walk's W1 8): the note went at a finger's first touch, so a scroll — the way to the Manning
        rows on a phone — took it down before Show could follow the rows. A tap is a press lifted within a few pixels of
-       where it went down; a press the browser takes for a scroll (pointercancel) or one that moves is not his next tap */
+       where it went down; a press the browser takes for a scroll (it sends no lift, only a cancel) or one that moves is not his next tap */
     let start: { x: number; y: number } | null = null
     const onDown = (e: Event) => { const p = e as PointerEvent; start = inNote(e) || overPage(e.target) ? null : { x: p.clientX ?? 0, y: p.clientY ?? 0 } }
     const onUp = (e: Event) => {
@@ -1627,12 +1627,11 @@ export function Matrix() {
       if (Math.hypot((p.clientX ?? 0) - s.x, (p.clientY ?? 0) - s.y) > 10) return
       setBubble(null)
     }
-    const onCancel = () => { start = null }
     /* …or his next key, so a keyboard user is not left with it (walker 3, scenario 60) — but Tab (and Shift with it), the
        way to Show, and a key pressed on Show itself leave it up */
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Tab' || e.key === 'Shift' || inNote(e) || overPage(e.target)) return; setBubble(null) }
     const t = window.setTimeout(() => {
-      document.addEventListener('pointerdown', onDown); document.addEventListener('pointerup', onUp); document.addEventListener('pointercancel', onCancel)
+      document.addEventListener('pointerdown', onDown); document.addEventListener('pointerup', onUp)
       document.addEventListener('keydown', onKey)
     }, 0)
     /* Show › follows the Manning rows in and out of view while it stands (D1358 — "only while those rows are out of view"):
@@ -1646,7 +1645,7 @@ export function Matrix() {
     window.addEventListener('scroll', onScroll, { passive: true, capture: true })
     return () => {
       window.clearTimeout(t); document.removeEventListener('pointerdown', onDown); document.removeEventListener('keydown', onKey)
-      document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onCancel)
+      document.removeEventListener('pointerup', onUp)
       window.removeEventListener('scroll', onScroll, { capture: true }); if (raf) window.cancelAnimationFrame(raf)
     }
   }, [bubble ? bubble.text : null])

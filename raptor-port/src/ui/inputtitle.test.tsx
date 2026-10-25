@@ -670,6 +670,16 @@ describe('the window — an Other\u2019s Goes to, an Attach\u2019s To (D1356, D1
     await click($('#inpEditSave')); await noDocAsk()
     expect(newest()).toMatchObject({ type: 'Other', acc: 'u' })
   })
+  /* the designer's G3 (and the break test 15): with ALL AVAIL among the people picked the row goes — such an input is
+     never under Unavailable */
+  it('an Other for a man and ALL AVAIL: no Goes to row', async () => {
+    await openNew({ type: 'Other' })
+    expect($('[data-testid="inpEdit-goes-g"]'), 'one man: asked').toBeTruthy()
+    await click($('[data-testid="pp-several"]'))
+    await click($('[data-ph="allavail"]'))
+    expect($('[data-testid="pp-count"]')?.textContent ?? '').toContain('ALL AVAIL')
+    expect($('[data-testid="inpEdit-goes-g"]')).toBeNull()
+  })
   it('no other kind asks it', async () => {
     await openNew({ type: 'Meeting' })
     expect($('[data-testid="inpEdit-goes-g"]')).toBeNull()
@@ -692,6 +702,11 @@ describe('the window — an Other\u2019s Goes to, an Attach\u2019s To (D1356, D1
     expect(g.getAttribute('aria-pressed')).toBe('false'); expect(u.getAttribute('aria-pressed')).toBe('false')
     expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Rejected by a scheduler')
     expect(u.disabled, 'a member does not undo the scheduler’s Reject').toBe(true)
+    /* …and the save behind the buttons keeps it too (the break test 12): a draft that says Unavailable, from a member */
+    let ok = false
+    await act(async () => { ok = commitInputEdit(live(r.iid), { ...draftOf(live(r.iid)), goes: 'u' }) })
+    expect(ok).toBe(true)
+    expect(live(r.iid).acc, 'the Reject stands').toBe('r')
     await type('#inpEditRmk', 'Board of inquiry')
     await click($('#inpEditSave'))
     expect(live(r.iid)).toMatchObject({ remarks: 'Board of inquiry', acc: 'r' })

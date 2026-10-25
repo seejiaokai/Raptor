@@ -396,6 +396,7 @@ describe('the bubble\'s words (bubbleParts, bubbleWords — D1351, D1360, D1364)
     expect(bubbleWords(w([['Available P', 'red', 'turns', 27, 26]]), 'OD')).toBe('This overseas duty: Available P 27 → 26')
     expect(bubbleWords(w([['Available P', 'red', 'turns', 27, 26]]), 'CSE')).toBe('This course: Available P 27 → 26')
     expect(bubbleWords(w([['Available P', 'red', 'turns', 27, 26]]), 'OTH')).toBe('This Other: Available P 27 → 26')
+    expect(bubbleWords(w([['Available P', 'red', 'turns', 27, 26]]), 'ATCH'), 'an Attach from the war (D1378; the break test 10)').toBe('This Attach: Available P 27 → 26')
     expect(bubbleWords(w([['Available P', 'red', 'turns', 27, 26]]), null)).toBe('This bid: Available P 27 → 26')
   })
   it('several rows side by side in the day-line form, each in its colour (D1360)', () => {
