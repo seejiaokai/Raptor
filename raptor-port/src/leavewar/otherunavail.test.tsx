@@ -221,3 +221,31 @@ describe('the bid window’s row under the leaves (D1349, D1356)', () => {
     expect(screen.queryByTestId('bid-picker'), 'the window closes, as a leave placed does').toBeNull()
   })
 })
+
+/* A HALF-DAY OTHER HELD (his D1353, D1371 — drawn by lw-1025-q7.mjs SET c2): a tap on the day opens the bid window on the
+   free half, with one line for the held half — the Other's box, "Morning", its remarks, and where it is changed */
+describe('the free half beside a half-day Other (D1353, D1371)', () => {
+  beforeEach(() => {
+    INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
+    setSession({ user: 'ad', role: 'admin' })
+    raptorInitStore()
+    initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
+    _resetTimeline(); lwHistInit(); installGlobalUndo()
+  })
+  afterEach(() => { _resetTimeline(); setSession(null); setMe('bane'); INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i)) })
+  it('the window opens on PM; its held-half line names the morning Other by its box and its words', () => {
+    const who = getState().people[0]!.id
+    expect(fileStraight([{ personId: who, date: D }], 'OTH', { remarks: 'Board of inquiry' }, 'am').done).toBe(1)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${who}-${D}`))
+    const opened = [...document.querySelectorAll('[data-testid$="-sheet"], [data-testid="bid-picker"], [data-testid="raptor-sheet"]')].map(e => e.getAttribute('data-testid'))
+    expect(opened, 'what the tap opened').toContain('bid-picker')
+    const s = screen.getByTestId('bid-picker')
+    expect(within(s).getByTestId('portion-pm').getAttribute('aria-pressed')).toBe('true')
+    const line = within(s).getByTestId('bid-heldhalf')
+    expect(line.textContent).toContain('Morning')
+    expect(line.textContent).toContain('“Board of inquiry”')
+    expect(line.textContent).toContain('change it on the Inputs page')
+    expect(line.querySelector('.c.k-unav')?.textContent).toBe('OTH')
+  })
+})

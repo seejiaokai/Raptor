@@ -1,6 +1,7 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { isCommitCode } from '../engine/dayview'
+import { isCommitCode, type DayView } from '../engine/dayview'
+import { INPUTS, remarksTyped } from '../../engine/inputs'
 import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
@@ -212,6 +213,15 @@ export function bubbleParts(worse: Map<string, Worse>, filed: FiledKind): { lead
 export function bubbleWords(worse: Map<string, Worse>, filed: FiledKind): string {
   const { lead, pairs } = bubbleParts(worse, filed)
   return `${lead}: ${pairs.map(p => `${p.label} ${p.fig}`).join(' · ')}`
+}
+
+/** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371): its code and its typed remarks, for the free
+ *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
+function heldCommitment(v: DayView | undefined): { code: string; remarks: string } | null {
+  const c = v?.all.find(x => x.kind === 'absence' && isCommitCode(x.code))
+  if (!c) return null
+  const row = INPUTS.find((r: any) => String(r.iid) === c.id)
+  return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '' }
 }
 
 export function Matrix() {
@@ -3542,7 +3552,11 @@ export function Matrix() {
   const openView = open ? views[open.id]?.[open.date] : undefined
   /* …AND A DAY HOLDING A UNA (D1338): everyone may read it — its half, who placed it, its remarks — and an admin takes it
      away there; the list is the one window that shows every entry of a day on its own line, so a UNA alone opens it too */
-  const listOpen = !!open && !!openView && (openView.mark !== '' || openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code)) ||
+  /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
+     half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
+  const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
+    && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
+  const listOpen = !!open && !!openView && (openView.mark !== '' || commitHeld ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
      half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
@@ -4637,7 +4651,8 @@ export function Matrix() {
           /* Item D: only the free half is on offer, and the sheet says what
              holds the other one. */
           onlyPortion={openFreeHalf}
-          heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
+          heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}
+          heldOther={openFreeHalf ? heldCommitment(openView) : null}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,

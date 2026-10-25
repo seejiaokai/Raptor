@@ -1819,3 +1819,10 @@
 .bidsheet .dl-ro .docchip { cursor: default; }
 
 }
+
+/* THE HELD HALF'S ONE LINE (his D1371): an Other's box, its half, its remarks, where it is changed — one wrapping line */
+.bidsheet .bp-heldline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bidsheet .bp-heldline .bp-heldwords { color: var(--ink); }
+/* THE DRAG WINDOW'S REMARK LINES (his D1347, D1362): one grey line an entry, its dates after, above the empty box */
+.bidsheet .sel-rmks { flex-direction: column; align-items: flex-start; gap: 2px; }
+.bidsheet .sel-rmk-line { color: var(--ink-3); font-size: 12.5px; }

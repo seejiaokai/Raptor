@@ -19,7 +19,7 @@ import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
 import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
 import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
-import { ApproveSwitch, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
+import { ApproveSwitch, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -93,6 +93,7 @@ export function BidPicker({
   awardCount = 0,
   onlyPortion,
   heldBy,
+  heldOther,
   approvedRow,
   dayState,
   onClose,
@@ -175,6 +176,9 @@ export function BidPicker({
   /** What is already on the day, in the words the box shows, so the sheet can
    *  name the half it is NOT offering. */
   heldBy?: string
+  /** THE HELD HALF IS A COMMITMENT UNDER UNAVAILABLE (his D1371 — an Other, an Attach…): its code and remarks, for the one
+   *  line that names it — its box, its half, its remarks and where it is changed — in place of the leave's sentence */
+  heldOther?: { code: string; remarks: string } | null
   /** THE APPROVED LEAVE ON THIS DAY — the Raptor input it is (`sync.ts leaveInputAt`), for its Remarks and Document row,
    *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
    *  first given the window that Note). */
@@ -641,10 +645,20 @@ export function BidPicker({
             {p.label}
           </button>
         ))}
-        {onlyPortion && (
+        {onlyPortion && !heldOther && (
           <span className="note bp-wide" data-testid="bid-heldhalf">
             The {onlyPortion === 'pm' ? 'morning' : 'afternoon'} is {heldBy || 'already taken'},
             filed on the Inputs page — change that there.
+          </span>
+        )}
+        {/* A HALF-DAY OTHER HELD (his D1371 — drawn by scripts/handpass/lw-1025-q7.mjs, SET c2): one line — its box in its
+            outlined look, "Morning" or "Afternoon", its remarks, and where it is changed — the same for an admin and a member */}
+        {onlyPortion && heldOther && (
+          <span className="note bp-wide bp-heldline" data-testid="bid-heldhalf">
+            <EntryBox code={heldOther.code} fill="a" place={onlyPortion === 'pm' ? 'top' : 'bot'} />
+            <span>{onlyPortion === 'pm' ? 'Morning' : 'Afternoon'}</span>
+            {heldOther.remarks && <span className="bp-heldwords">“{heldOther.remarks}”</span>}
+            <span>· change it on the Inputs page</span>
           </span>
         )}
         <button

@@ -47,7 +47,9 @@ import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, LeaveButtons } from './LeaveButtons'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
-import { getState } from '../state/store'
+import { getState, recordsAt, reqRunKey } from '../state/store'
+import { addDays } from '../engine'
+import type { RequestRec } from '../engine/warrecs'
 import { leaveInputsAt, rowDocIds } from '../sync'
 import { remarksTyped, tillShown } from '../../engine/inputs'
 import { setLeaveRemarks } from '../../ui/inputedit'
@@ -135,9 +137,34 @@ export function SelectSheet({
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* THE ENTRIES THE DRAG COVERS AND THEIR REMARKS (his D1347, D1362 — "A grey line each", 25 Oct 26; drawn in
+     docs/img/handpass/2026-10-25-lw-drawings/drag-remarks/): over one man's days, each separate entry — a run of bids
+     with one set of words (the store's own run, `reqRunKey`), or one leave approved on the war (one input) — with its
+     remark and its dates. Where they hold different remarks, each is listed read only as a grey line above an empty box,
+     an entry with no remark left out; over ONE entry the box opens with its words. Typing still replaces them all (D1341). */
+  const st0 = getState()
+  const entries = useMemo(() => {
+    if (sel.people.length !== 1) return [] as { key: string; remark: string; from: string; to: string }[]
+    const pid = sel.people[0]!
+    const out: { key: string; remark: string; from: string; to: string }[] = []
+    for (const d of [...new Set(sel.cells.map(c => c.date))].sort()) {
+      const here: { key: string; remark: string }[] = []
+      for (const r of recordsAt(pid, d)) if (r.kind === 'request' && r.state !== 'refused') here.push({ key: `b${reqRunKey(r as RequestRec)}`, remark: String((r as RequestRec).remarks ?? '').trim() })
+      for (const row of leaveInputsAt(pid, d)) if (row.lw) here.push({ key: `a${row.iid}`, remark: String(remarksTyped(row.remarks, row) ?? '').trim() })
+      for (const h of here) {
+        const last = [...out].reverse().find(e => e.key === h.key)
+        if (last && addDays(last.to, 1) === d) last.to = d
+        else out.push({ ...h, from: d, to: d })
+      }
+    }
+    return out
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sel, st0])
+  const listed = entries.length > 1 && new Set(entries.map(e => e.remark)).size > 1 ? entries.filter(e => e.remark) : []
+  const prefill = entries.length === 1 ? entries[0]!.remark : ''
   /* a request's Document and Remarks (M3 5.9, 5.10): written with the fill, where the drag holds ONE person — across
      several, each man's paper is his own (the agent's reading, M3 §7 point 2) */
-  const [words, setWords] = useState<ReqDraft>(emptyDraft)
+  const [words, setWords] = useState<ReqDraft>(() => ({ ...emptyDraft(), remarks: prefill }))
   /* a tap on a grid day closes it — keeping the typed words, as ✕ and Escape do (`closeKeeping`, below) */
   useCloseOnCellClick(() => closeKeeping())
 
@@ -260,6 +287,8 @@ export function SelectSheet({
     const docs = words.docIds
     const till = typeof words.till === 'boolean' ? words.till : undefined
     if (!t && !docs.length && till === undefined) return
+    /* the one entry's own words, opened in the box and left as they were, change nothing (D1362) */
+    if (t === prefill && !docs.length && till === undefined) return
     const pid = sel.people[0]!
     inOneWarCommand('lw.reqmeta', () => {
       setRemarksOn(sel.cells, { ...(t ? { remarks: t } : {}), ...(docs.length ? { docIds: docs } : {}), ...(till !== undefined ? { till } : {}) })
@@ -333,6 +362,11 @@ export function SelectSheet({
 
       {canFill && (
         <>
+          {listed.length > 0 && (
+            <div className="bidsheet-row sel-rmks" data-testid="sel-remarks-list">
+              {listed.map(e => <span key={`${e.key}-${e.from}`} className="dl-ro-words sel-rmk-line" data-testid="sel-remark-line">“{e.remark}” · {compactSpan(e.from, e.to)}</span>)}
+            </div>
+          )}
           {nPeople === 1 && <ReqWordsRows compact value={words} onChange={w => setWords(w)} start={sel.from} end={sel.to} testPrefix="sel" />}
           <div className="bidsheet-row bp-dur" role="group" aria-label="Duration">
             {PORTIONS.map(p => (
