@@ -11586,7 +11586,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The row under the leaves (D1349, D1356, D1365, D1378–D1380):** CSE · OD · Grant OIL (an admin's, OIL given's green,
   one line) · ⋯ — the ⋯ holding Attach first (everyone's: an Attach input straight under the schedule's Unavailable list on
   the window's Duration, no approval, its "To" left to the Inputs page), Other (an admin's: filed the same way), Post out
-  and Post in; the drag window's ⋯ holds Attach, Other and, for one man, Post out. A member's row: CSE · OD · (empty) · ⋯,
+  and Post in; the drag window's ⋯ holds Attach, Other and, for one man, Post out and Post in (Post in added the night of 26 Oct 26 — [LW-DRAG-MORE-MENU], dated from the drag's first day; Grant OIL over a drag waits on his answer). A member's row: CSE · OD · (empty) · ⋯,
   his ⋯ holding Attach alone — in the bid window, the drag window and the closed day's note (there a whole day, as it has
   no Duration row). The ⋯'s hover names what it holds.
 - **A commitment under Unavailable on the grid (D1357, D1370, D1375):** any input the schedule draws under Unavailable

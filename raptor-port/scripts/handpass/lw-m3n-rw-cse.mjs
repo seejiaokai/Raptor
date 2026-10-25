@@ -40,7 +40,7 @@ async function sansNeedNow(w) {
 }
 async function warNow(w, who, name) {
   await H.warOpen(w, who, iso)
-  const a = await H.availP(w.page, iso)
+  const a = Number(await H.availP(w.page, iso))
   await H.warStrips(w, name, who, [iso])
   return { cell: await H.cellBoxes(w, who, iso), avail: a }
 }
@@ -51,13 +51,15 @@ const w = await H.deskCtx(); const P = w.page
 await L.signInPlain(w, 'admin')
 note('bundle', 'desk', await H.bundleName(P))
 const comet = await H.idOf(P, 'Comet')
+/* a Required P typed on the war, so the SANS calendar has a figure to move (as the M3 walk did) */
+note('required', 'desk', 'typed ' + await L.setRequired(w, 'p', iso, 30))
 const before = await warNow(w, comet, 'n1-0-war-before')
 const needBefore = await sansNeedNow(w)
 
 const fc = await H.fileInput(w, { who: 'Comet', type: 'CSE', from: iso, remarks: 'Instructor course', tag: 'n1', oil: 'no' })
 const filed = await warNow(w, comet, 'n1-1-war-course-filed')
 const needFiled = await sansNeedNow(w)
-judge('N1', filed.avail === before.avail - 1 && hasCse(filed.cell) && fc.rec.acc === 'u',
+judge('N1', filed.avail === before.avail - 1 && hasCse(filed.cell) && fc.rec.acc === 'u' && needFiled !== needBefore,
   `Available P ${before.avail} → ${filed.avail}; Comet's cell ${JSON.stringify(filed.cell)}; filed acc ${fc.rec.acc}; SANS still needed ${needBefore} → ${needFiled}`)
 
 await H.goEdit(w)
