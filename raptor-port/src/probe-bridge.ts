@@ -9,7 +9,7 @@ import { DAYS } from './engine/data'
 import { posKey } from './engine/rowids'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, isPersonnel, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { NOTICES } from './state/notices'
-import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, oilNeverEarns, oilSilent, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
+import { INPUTS, filingOf, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, oilNeverEarns, oilSilent, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode, upchitTrimPlan, newMedTrimPlan, ordShift, ordLabel } from './engine/medical'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } from './engine/editlog'
@@ -208,7 +208,9 @@ export function installProbeBridge() {
      screenshot scenarios plant a filed leave / medical without driving the
      whole Inputs form each time. */
   if (isLocalHost()) {
-    w.fileInput = (row: any) => writeInputs(() => { INPUTS.unshift({ remarks: '', mod: '2026-01-01', ...row }) })
+    /* …filed where its kind lands, as the Inputs page files it (D1372: a course under Unavailable by itself — filingOf); the
+       war counts a course only there (D1389 — the night of 26 Oct 26's code read, F1). A row that names its own acc keeps it. */
+    w.fileInput = (row: any) => writeInputs(() => { INPUTS.unshift({ remarks: '', mod: '2026-01-01', ...(!('acc' in (row || {})) && filingOf(row?.type, row?.goes) ? { acc: 'u' } : {}), ...row }) })
     w.INPUTS = INPUTS
     w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)
     w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)
