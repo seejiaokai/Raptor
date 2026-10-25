@@ -11561,3 +11561,36 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The admin's "Approve what I enter" remembered, a toggle (D1302):** *BUILT 24 Oct 26 — §The bid windows after M3, round 3.* left off it stays off in every bid window until he turns it on; a small toggle in the title bar.
 - **The Inputs list's cards line up their right-hand marks (D1305; his pick A, D1310 — three columns sized to the letters, no card taller):** on a card's top line LATE, "No document" and the hours (or "till <date>") each stand in the same place on every card, so the list reads as columns; drawn for him first, not yet built (filed as [INP-CARD-COLUMNS]).
 - **The Inputs calendar's bars take the Leave War's kind colours (D1304):** one colour per kind on both pages; duties a colour of their own; decided with [INPUT-COLOURS]. **His D1317:** the duty and commitment bars' words must read clearly against them — the grey slate with white words drawn for Q3 does not — and stay apart from the overseas duty's slate; redrawn with the design skill first. **His D1321: outlined** — a dark bar, a light edge, light words; every absence filled. *BUILT 24 Oct 26:* `inputscal-model.ts colourOf` (an upchit with medical, as drawn), the bar's `kd k-<kind>` or `duty` class, `scheduler/25-inputs-calendar.css` — a timed bar a tint with its left edge (D729).
+
+## The Leave War after the M3 build of 25 Oct 26 — as built (D1355–D1375)
+
+- **The decided Approve / Refuse (D1361, D1355):** in the one-day bid window, the drag window and the day's list both rest
+  grey (`.dchip.dec`), their words green and red; the entry's state is solid — #57C97A / #F0555F, words #0b1116 — and reads
+  "Approved" or "Refused"; a second tap on either sends the bid back to waiting. A refused bid's leave button wears the
+  window's ring beside the lit Refuse (an admin's window; a member's own refused bid lights nothing). Over a picked range or
+  a drag nothing is lit. Pinned by `leavewar/ui/litdecide.test.tsx`.
+- **The manning bubble (D1358, D1360, D1364):** one note, always at the foot of the screen (`.mn-foot`, testid
+  `manning-bubble`), in the colour of the worst level it names; its words "This bid: Available P 27 → 26 · IP 16 → 15",
+  each pair in its colour, a filing named ("This overseas duty", "This course", "This Other"); "Show ›" only while the
+  Manning rows are out of view, read again as the page scrolls; above a resting day panel on a phone it stands just over
+  the panel's top. Gone at the next tap or key. Pinned by `bidbubble.test.tsx`, `nightwalk.test.tsx`.
+- **The row under the leaves (D1349, D1356, D1365):** CSE · OD · Grant OIL (an admin's, OIL given's green, one line) · ⋯
+  — the ⋯ holding Other (an admin's: filed straight under the schedule's Unavailable list on the window's Duration),
+  Post out and Post in; the drag window's ⋯ holds Other and, for one man, Post out. A member's row: CSE · OD.
+- **A commitment under Unavailable on the grid (D1357, D1370, D1375):** any input the schedule draws under Unavailable
+  (`acc:'u'`) is shown by its kind's letters — OTH, ATCH, TRG, MTG, PERS, APPT, DTY, EVT — outlined (`.k-unav`: fill
+  rgba(232,237,242,.05), edge 1.5px rgba(200,212,228,.78), words #E8EDF2), four letters a step smaller (`.w4`), and counts
+  him out 1 or 0.5. A whole-day one opens the day's list for everyone, its remarks read only; a half-day one opens the
+  bid window on the free half with one line — its box, "Morning" / "Afternoon", its words, "change it on the Inputs page"
+  (D1371). The Legend's line: "Under Unavailable on the schedule…". Pinned by `leavewar/otherunavail.test.tsx`.
+- **The joined bar (D1359):** next-door boxes of one entry (one input, or a bid run with one set of words) carry `jl` /
+  `jr` and meet over the day line, the code once at each piece's start; a middle day holding a second entry breaks it; a
+  half-day run joins top to top; a day the drag selects is drawn as before. `MatrixRows.tsx joinClasses`,
+  `joinedbar.test.tsx`.
+- **The drag window's remarks (D1347, D1362):** over one man's separate entries with different remarks, a grey line each
+  ("“Wedding” · 9–10 Feb") above an empty box; an entry with none is not listed; over one entry the box opens with its
+  words. `dragremarks.test.tsx`.
+- **The Inputs window (D1368, D1369, D1373):** an Other asks "Goes to" — Ground Programme (amber) or Unavailable (red),
+  the picked one solid with dark words, ordinary letters, 36 tall, a grey line under it; an Attach asks "To". A course and
+  an Attach are filed under Unavailable by themselves (D1372, D1374). On the schedule every commitment offers "→ Ground ·
+  → Unavail" after a Reject (D1357). `ui/inputtitle.test.tsx`.
