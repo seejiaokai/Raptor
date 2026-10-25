@@ -194,6 +194,10 @@ Each to be drawn on the real app with lettered options and a worked example befo
 
 ## 5. His answers
 
+**26 Oct 26, D1387:** a button's words stand inside it in every state — the bid window's "Delete — sure?" ran past its edge; the fix drawn first. Filed as [LW-DELETE-SURE-FIT].
+
+**26 Oct 26, D1382:** the day panel's figures stand in columns of at most four rows — left first, then middle, then right — a long name wrapping and its row growing, names and figures lined up across and down (narrows D1198). Filed as [LW-DAYPANEL-COLUMNS].
+
 *(Written here as he gives them, each recorded as a ruling first — D13. This chat's numbers: D1140–D1159.)*
 
 **Round 1 (21 Oct 26):**

@@ -95,6 +95,15 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: six Opus rounds; his look at round 6 "still similar bug" — handed to Fable after his weekly reset (Mon 26 Oct 26, evening), his recording saved for it (D1366).
 - [INP-ATTACH] — "Fly with" becomes "Attach" with a "To" box, under Unavailable by itself, ATCH on the war (D1373–D1376): to build now on `claude/lw-m3-placing-leave` with [LW-OTHER-UNAVAIL], one FULL check.
 - [LW-ATTACH-BUTTON] — an Attach filed from the Leave War’s bid window, first in its ⋯, admin and member, on the Duration (D1378–D1380): to build now on `claude/lw-m3-placing-leave`, inside its FULL check.
+- [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
+- [LW-DELETE-SURE-FIT] — his D1387: the bid window's "Delete — sure?" runs past its button — a fix drawn with the design skill, then built.
+- [LW-GRANT-HO-VISIBLE] — his question 26 Oct 26 ("Why I can only grant FO oil? Not HO?"): an HO is given by typing 0.5 in Days, which nothing on screen says — draw a plain FO / HO choice for him.
+- [INP-CAL-EXPAND] — his D1386: an expand control on the Inputs calendar shows every input of each day, the weeks growing taller, the page scrolling — designed with the design skill and drawn for him first.
+- [INP-CARD-SQUARE-COLOURS] — his D1384: each input card's left square on the Inputs calendar's day and the Inputs list wears its kind's colour, matching the bars and the Leave War — a picture first, then build.
+- [INP-DAY-WIDTH] — his D1385: on a phone a day opened on the Inputs calendar widened so its cards stand as far from the screen's edges as the Inputs list's — a picture first, then build.
+- [LW-DAYPANEL-COLUMNS] — his D1382: the Leave War's day panel's figures in columns of at most four rows, left then middle then right, long names wrapping, all lined up — built on `claude/lw-m3-placing-leave` with D1381, a picture first.
+- [LOGIN-NOT-AT-TOP] — his report 26 Oct 26: after signing in on his iPhone the page does not open at its top (the day's heading and sign-off are scrolled off) — find why, red-first.
+- [LW-REJECTED-CSE] — his D1381: a course a scheduler rejects counts him back in on the Leave War (today it still counts him out) — build red-first on `claude/lw-m3-placing-leave`, with his answer to the look page's question 2.
 - [LW-TWO-BOX-LETTERS] — two whole-day boxes side by side (D1167) clip three-letter codes ("FO*" beside "TRG"); common now that a weekend duty under Unavailable shows its FO* beside it — how to draw it, a question for him with pictures.
 - [SCHED-UNAV-PENDING-MARK] — on a published day an input under the Unavailable list carries no "waiting to go out" mark on its row, where a Ground Programme row does (the count and the changes window do say it) — older than the M3 build; found by its FULL check.
 - [LW-NIGHT1025-OLDER] — older faults the night's walk met: words typed for an afternoon bid land on the morning bid (fix first, tests first), two tabs, a posted-out man's gone days, a double tap's second tap.
@@ -264,6 +273,42 @@ his iPhone look at round 6 — **his answer (25 Oct 26, 12:57): "Still similar b
 shortens at once to its final room, so for about a tenth of a second the page behind shows in the band between its foot and
 the rising keys — put to him only if he sees it (the cure: the foot riding the keys, the window's height driven each frame).
 Not swept: the Leave War's sheets place themselves (`leavewar/ui/Sheet.tsx followVisible`) and may jump the same way.
+
+### [LW-DELETE-SURE-FIT] "Delete — sure?" runs past its button (his D1387, 26 Oct 26)
+
+**His words and picture:** D1387's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-delete-sure.png`. **To do:** with the design skill, a fix that keeps the asking state inside the button (wider button, shorter words, or the question on the line below beside the warning) drawn at his iPhone's width, put to him, then built; the same check on every Delete that asks again.
+
+### [LW-GRANT-HO-VISIBLE] Granting an HO is hidden behind typing 0.5 (his question, 26 Oct 26)
+
+**His words:** *"Why I can only grant FO oil? Not HO?"* — picture `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-grant-fo-only.png` (the ⋯ → Grant OIL panel: Days 1, "Give FO"). **What the app does:** Days 0.5 turns the button into "Give HO" and asks morning or afternoon (`raptor-port/src/leavewar/ui/BidPicker.tsx` `oilCode`); nothing says so. **To do:** draw a visible FO / HO choice (or a hint) for him with a recommendation; a question, not a ruling yet.
+
+### [INP-CAL-EXPAND] Expand the Inputs calendar to show every input (his D1386, 26 Oct 26)
+
+**His words and picture:** D1386's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-month-more.png`. **To do:** design it with the design skill (Impeccable, D819 — he asked for it by name), drawn on the real app at his iPhone's width and a desktop's, put to him with a recommendation before it is built (D853, D1222).
+
+### [INP-CARD-SQUARE-COLOURS] Each input card's square in its kind's colour (his D1384, 26 Oct 26)
+
+**His words and pictures:** D1384's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-day-squares.png`, `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-list-edges.png`. **To build:** the square at the left of each card on the Inputs calendar's opened day and on the Inputs list takes its kind's colour from the one table the bars and the Leave War use (filled for an absence, outlined for a commitment — D1304, D1321); a picture to him at his iPhone's width before it is built (D853).
+
+### [INP-DAY-WIDTH] A day opened on the Inputs calendar as wide as the list (his D1385, 26 Oct 26)
+
+**His words and pictures:** D1385's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-day-edges.png` beside `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-list-edges.png`. **To build:** on a phone the opened day's window and its padding narrowed so its cards stand as far from the screen's edges as the list's cards (D1293); the SANS calendar's opened day alike; a picture first.
+
+### [LW-DAYPANEL-COLUMNS] The day panel's figures in columns of four (his D1382, 26 Oct 26)
+
+**His words and picture:** D1382's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-daypanel-space.jpg`. **To build:** the day panel (`raptor-port/src/leavewar/ui/DayPanel.tsx`, `lwday-figs`) lays its figures in columns of at most four rows, filling left, then middle, then right; a long name wraps and its row grows; names and figures line up across and down. A picture of it at his iPhone's width and a desktop's goes to him before it is built (D541, D853), with the readings in D1382's row.
+
+### [LOGIN-NOT-AT-TOP] After signing in the page does not open at its top (his report, 26 Oct 26)
+
+**His words:** *"Why everytime I login I don't see the top of the page?"* — picture `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-login-not-top.png`: Edit Schedule on his iPhone, opened with the day's heading and sign-off scrolled under the top bar, "4 changes" the first thing in view. **To do:** reproduce at his iPhone's size, find the cause, fix red-first, walk it; a bug report, so the bug-check order fires.
+
+### [LOGIN-OPENS-TODAY] Signing in opens on today's date — before testing (his D1383, 26 Oct 26)
+
+**His ruling:** D1383. Not now — the demo data is what is worked on; due before the app is put out for testing.
+
+### [LW-REJECTED-CSE] A rejected course still counts him out on the Leave War (his D1381, 26 Oct 26)
+
+**His answer:** *"1 yes"* to "When a scheduler rejects a course, the man counts back in on the Leave War" (the M3 look page's question 1, pictures `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/look/look-q1-*`). **To build:** `raptor-port/src/leavewar/absences.ts warVisible` stops counting a course a scheduler has rejected (acc 'r'), so the grid, the day panel, the Available rows and the SANS calendar's need count him in; red first, then a short walk (the picture script `raptor-port/scripts/handpass/lw-m3b-look.mjs` Q1 re-run as an assertion). **To put to him with it:** a course a scheduler, after rejecting it, moves onto the Ground Programme — counted out ("wherever it sits") or in (as every other commitment on the programme)? Also waiting: the look page's question 2 (a member's Goes to after a scheduler's move), which he has not yet answered.
 
 ### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
 
