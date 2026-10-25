@@ -3003,3 +3003,17 @@ touch-action: pan-x pan-y;
   to { transform: none; opacity: 1; }
 }
 .c.k-unav.s-a, .tchip.lv.k-unav.s-a, .c.k-unav.s-w, .c.k-unav.s-r { background: rgba(232, 237, 242, .05); color: #E8EDF2; box-shadow: inset 0 0 0 1.5px rgba(200, 212, 228, .78); outline: none; border: 0; text-decoration: none; }
+
+/* THE JOINED BAR (his D1359, 25 Oct 26 — drawn as md5 / busy B / C in docs/img/handpass/2026-10-25-lw-drawings/multi-day/):
+   next-door boxes of one entry (`MatrixRows.tsx joinClasses`) meet over the day line — `jr` reaches past its cell's right
+   edge, `jl` starts at its cell's left edge — the corners where they meet square, the code shown once, at the piece's
+   start; the approved box's edge drawn on its outer sides only, the pending one's dashed outline kept. A day the drag
+   selects is drawn as today (its own box, its code, the cyan). */
+:is(.mx td) .c.jr { right: -1px; border-top-right-radius: 0; border-bottom-right-radius: 0; }
+:is(.mx td) .c.jl { left: 0; border-top-left-radius: 0; border-bottom-left-radius: 0; color: transparent; }
+:is(.mx td) .c.jl::before { display: none; }
+:is(.mx td) .c.s-a.jl, :is(.mx td) .c.s-a.jr { box-shadow: inset 0 1px 0 rgba(var(--h), .85), inset 0 -1px 0 rgba(var(--h), .85); }
+:is(.mx td) .c.s-a.jr:not(.jl) { box-shadow: inset 0 1px 0 rgba(var(--h), .85), inset 0 -1px 0 rgba(var(--h), .85), inset 1px 0 0 rgba(var(--h), .85); }
+:is(.mx td) .c.s-a.jl:not(.jr) { box-shadow: inset 0 1px 0 rgba(var(--h), .85), inset 0 -1px 0 rgba(var(--h), .85), inset -1px 0 0 rgba(var(--h), .85); }
+.mx td.selcell .c.jl, .mx td.selcell .c.jr { left: revert-layer; right: revert-layer; border-radius: 4px; color: revert-layer; }
+.mx td.selcell .c.jl { color: inherit; }
