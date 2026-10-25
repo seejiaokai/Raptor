@@ -1,0 +1,37 @@
+lw-m3b-w2-f C:\Users\User\projects\Raptor\.claude\worktrees\lw-m3-placing-leave-d1c063\raptor-port\docs\img\handpass\2026-10-25-lw-m3-build\w2 sets 30,41,32
+-- 30
+   bundle [desk] index-BayEj7kB.js
+   30 [desk] a question opened after the save: oilconf
+   30-filed [desk] acc g; oil {"2026-07-18":1}; asked ["oilconf"]
+   30-published [desk] publish {"published":true,"version":"ORIG","signSelects":4}; war ["FO*|k-oil|s-a|whole|plain|fs10px|w21h22|tw17.9"] Available P 28 → 28; OIL row "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"
+   30-move [desk] Reject "REJECT" (windows []); "→ Unavail" "→ UNAVAIL" (windows []); acc now u
+   30-moved [desk] row now on Unavailable; war ["FO*|k-oil|s-a|left|plain|fs7.5px|w10h22|tw13|OVERFLOW2","TRG|k-unav|s-a|right|outlined|fs6.5px|w10h22|tw12.2|OVERFLOW1"] Available P 27; OIL row "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"
+PASS?  30 [desk]  Training on Sat 18 Jul, OIL Yes (asked ["oilconf"]), weekend published (ORIG): war ["FO*|k-oil|s-a|whole|plain|fs10px|w21h22|tw17.9"], Available P 28 → 28, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"; after Reject → Unavail (question on the move: []): row on Unavailable, war ["FO*|k-oil|s-a|left|plain|fs7.5px|w10h22|tw13|OVERFLOW2","TRG|k-unav|s-a|right|outlined|fs6.5px|w10h22|tw12.2|OVERFLOW1"], Available P 27, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left" (unchanged)  [f-30-oil-question, f-30-war-published, f-30-oil-before, f-30-war-moved, f-30-oil-after, f-30-edit-moved]
+   errors-30 [desk] []
+-- 41
+   41-cse [desk] a question opened after the save: oilconf
+   41-course [desk] a course on Sat 18 Jul: asked ["oilconf"]; question words: OIL: Ranger, CSE ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add; acc u
+PASS?  41-course [desk]  a course (CSE) for Ranger filed on Saturday 18 Jul from the Inputs window: questions raised at the save ["oilconf"]; words "OIL: Ranger, CSE ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add"; landed acc u  [f-41-course-question]
+   41-filed [desk] Meeting on Wed 15: acc g; oil undefined; asked []
+   41-holiday [desk] event sheet: EVENT 2 15 Jul 26 Edit presets ✕ PRESETS PH Off day No Leave SC Other… Public holiday · work on it earns OIL NAME ON GRID This day A range Save
+   41-holiday [desk] after saving the holiday, OIL windows: [] · all windows:  · visible dialogs: win-oilday: ⠿ OIL — Wed 15 Jul Public holiday ✕ Wed 15 Jul is now a public holiday. 2 TO ANSWER Yes to all No to all till 17 Jul NomadOD Overseas duty — exercise, off island Yes · FO No All day RangerMEETING Hol 
+   41-holiday [desk] Meeting's OIL record after the holiday: undefined; acc g
+   41-start [desk] on Wed 15: buttons []; war [] Available P 25 → 25
+   41-reject [desk] Reject "REJECT": windows []; buttons now ["g:→ Ground","u:→ Unavail"]
+   41-unavail [desk] "→ Unavail" "→ UNAVAIL": windows ["oilconf"]; question words "OIL: Ranger, Meeting ✕ Filing Ranger's Meeting under Unavailable This input falls on Wed 15 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Don’t file File"; acc while the question is up r; war [] Available P 25
+   41-answer [desk] after the answer: acc r; war [] Available P 25
+FAIL?  41 [desk]  (the Saturday cannot be filed without an answer — the question has only Yes / No OIL / Back — so the day was made a holiday afterwards through the war's Event row, preset PH) Meeting on Wed 15 (oil undefined); Reject → windows []; "→ Unavail" → windows ["oilconf"] ("OIL: Ranger, Meeting ✕ Filing Ranger's Meeting under Unavailable This input falls on Wed 15 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day "), acc while open r, war []; after answering Yes: acc r, war [] Available P 25  [f-41-after-holiday, f-41-start-ground, f-41-unavail-question, f-41-war-after-answer]
+   errors-41 [desk] []
+-- 32
+   32-base [desk] Available P Mon 28, Tue 28
+   32-Appointment [desk] {"cs":"Ranger","kind":"Appointment","times":"600-660","acc":"u","monCell":["APPT|k-unav|s-a|top|outlined|fs6.5px|w24h10|tw15.9"],"tueCell":[],"monAvail":"27.5","tueAvail":"28"}
+   32-Meeting [desk] {"cs":"Drifter","kind":"Meeting","times":"540-1020","acc":"u","monCell":["MTG|k-unav|s-a|whole|outlined|fs8.5px|w24h22|tw18.6"],"tueCell":[],"monAvail":"26.5","tueAvail":"28"}
+   32-Duty [desk] {"cs":"Hunter","kind":"Duty","times":"1320-120","acc":"u","monCell":["DTY|k-unav|s-a|bot|outlined|fs6.5px|w22h10|tw12.1"],"tueCell":[],"monAvail":"26","tueAvail":"28"}
+RECORD  32 [desk]  Available P Mon 28 / Tue 28 at the start. After the Appointment 10:00–11:00 (Ranger): Mon 27.5, Tue 28; + the Meeting 09:00–17:00 (Drifter): Mon 26.5, Tue 28; + the overnight Duty 22:00–02:00 (Hunter): Mon 26, Tue 28. Cells — Ranger Mon ["APPT|k-unav|s-a|top|outlined|fs6.5px|w24h10|tw15.9"]; Drifter Mon ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w24h22|tw18.6"]; Hunter Mon ["DTY|k-unav|s-a|bot|outlined|fs6.5px|w22h10|tw12.1"] Tue []  [f-32-war-ranger, f-32-war-drifter, f-32-war-hunter, f-32-edit-unav]
+   errors-32 [desk] []
+RESULTS
+PASS? 30 | Training on Sat 18 Jul, OIL Yes (asked ["oilconf"]), weekend published (ORIG): war ["FO*|k-oil|s-a|whole|plain|fs10px|w21h22|tw17.9"], Available P 28 → 28, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"; after Reject → Unavail (question on the move: []): row on Unavailable, war ["FO*|k-oil|s-a|left|plain|fs7.5px|w10h22|tw13|OVERFLOW2","TRG|k-unav|s-a|right|outlined|fs6.5px|w10h22|tw12.2|OVERFLOW1"], Available P 27, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left" (unchanged)
+PASS? 41-course | a course (CSE) for Ranger filed on Saturday 18 Jul from the Inputs window: questions raised at the save ["oilconf"]; words "OIL: Ranger, CSE ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add"; landed acc u
+FAIL? 41 | (the Saturday cannot be filed without an answer — the question has only Yes / No OIL / Back — so the day was made a holiday afterwards through the war's Event row, preset PH) Meeting on Wed 15 (oil undefined); Reject → windows []; "→ Unavail" → windows ["oilconf"] ("OIL: Ranger, Meeting ✕ Filing Ranger's Meeting under Unavailable This input falls on Wed 15 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day "), acc while open r, war []; after answering Yes: acc r, war [] Available P 25
+RECORD 32 | Available P Mon 28 / Tue 28 at the start. After the Appointment 10:00–11:00 (Ranger): Mon 27.5, Tue 28; + the Meeting 09:00–17:00 (Drifter): Mon 26.5, Tue 28; + the overnight Duty 22:00–02:00 (Hunter): Mon 26, Tue 28. Cells — Ranger Mon ["APPT|k-unav|s-a|top|outlined|fs6.5px|w24h10|tw15.9"]; Drifter Mon ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w24h22|tw18.6"]; Hunter Mon ["DTY|k-unav|s-a|bot|outlined|fs6.5px|w22h10|tw12.1"] Tue []
+exit 0
