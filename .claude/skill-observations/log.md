@@ -1758,6 +1758,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
 
 - Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding a regex with a doubled backslash lost one backslash on the way (and this very note lost another when written by a script), and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
+- **Met again 25 Oct 26** (M3 FULL check, the read's Q8 test): `/\bj[lr]\b/` written into an e2e test through a Python string in a here-doc came out with backspaces; the test failed on its pattern, not the app, and a `python -c` fix through bash did the same again. The guard proposed: edit test and source files with the Edit tool, never a shell-quoted script, whenever the new text holds a backslash.
 
 ### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
 
@@ -2271,3 +2272,33 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Suggested improvement:** walk-scripts.md §4: a judge for "X is absent" is written as absence, never through X's own fields; every scroll step asserts the scroll position moved; "in view" is read with `elementFromPoint` at the visible part's middle, not from the box alone.
 
 **Principle:** A step whose gesture did nothing, or whose judge cannot express the right answer, produces a FAIL the app did not earn — assert the gesture's effect and judge absence directly.
+
+### Observation 707: A walk judged a typed remark by the panel's page text, which leaves out what stands in a box
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the M3 build's FULL check — the walk of the code read's Q3 (a course added from the board's Unavailable "+ Add")
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md §4)
+**Type:** open-source
+**Phase/Area:** a walk step's judge
+
+**Issue:** The step looked for "Weapons course" in the Unavailable panel's `innerText`; the remark stands in the row's own input box, whose words are its `value`, not page text, so the step FAILED while the picture showed the course on the list. The same session met the older form of this (innerText counting a button's screen-reader words, observation in walk-scripts §4).
+
+**Suggested improvement:** walk-scripts §4: a judge that looks for words a person typed reads the boxes' values too (`input, textarea` `.value`) beside the text.
+
+**Principle:** Read words where the page keeps them: what a person typed lives in the box's value, not in the page's text.
+
+### Observation 708: The roll-call missed the crew list for a change to who counts as away
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the M3 build's FULL check — the code read's Q2 found Edit Schedule's crew list drawing a man on a course free; no roll-call row named the crew list
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §6, the roll-call)
+**Type:** internal
+**Phase/Area:** roll-call — downstream readers of an availability change
+
+**Issue:** The build moved a course (and any commitment a scheduler moves) from the Ground Programme to Unavailable. Its roll-call listed every place that draws the new box or name, but not the places that read "is he free?" — the crew list, the board's crew column, the day panel's tasked count, the free-crew strip. Under Unavailable the course had no row, so all four drew him free; only the code read saw it, and the walk of the fix then found a second gap (a course with hours).
+
+**Suggested improvement:** §6: for any change to where an input is filed or what counts as away, the roll-call carries one row per reader of availability — the crew list (nothing picked and a seat picked), the board's crew column, the day panel's counts, the free-crew strip, the ALL AVAIL crowd, the Leave War's count — each marked.
+
+**Principle:** A change to where a thing is filed changes every reader that asked the old place, not only the screens that draw the thing; list the readers as well as the drawers.
