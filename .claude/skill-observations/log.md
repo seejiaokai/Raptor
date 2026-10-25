@@ -2164,3 +2164,18 @@ different feature that merely pass through it.
 **Suggested improvement:** In Part 1, when he is waiting up for drawings, publish the questions page with the first finished question and add each further question as its helper returns (one republish each), telling him in one line each time; never hold the page for the slowest drawing.
 
 **Principle:** When a person is waiting for several answers before a deadline (sleep, a meeting), deliver each as it is ready; batching for completeness costs the answers that were ready first.
+
+### Observation 700: A gate chained with `grep -E "FAIL|OK" && …` lets a failure through
+
+**Status:** OPEN
+**Date:** 25 Oct 26
+**Session context:** the keyboard fix's third round on claude/lw-m3-placing-leave; a handoff-block rewrite committed and pushed in one chained command
+**Skill:** session-handoff (and every chained commit-and-push of records)
+**Type:** internal
+**Phase/Area:** the document check before a commit
+
+**Issue:** `npm run docsize | grep -E "FAIL|docsize OK" && git add … && git commit … && git push` — grep succeeds when it matches FAIL, so the commit and the push went ahead on a failing document check (a rewritten HANDOFF block had dropped a ruling's home mention). The push then had to wait for the run it started before the fix could follow (D151, the push guard).
+
+**Suggested improvement:** where a guide or a habit chains the document check before a commit, test the check's own exit code (`npm run docsize > log && …`, or `grep -q "docsize OK"`), never a grep that matches either outcome; and a block rewrite re-reads which rulings name `HANDOFF.md` as a home before dropping a line.
+
+**Principle:** a check in a chain must fail the chain on failure — match the success marker alone, or use the exit code.
