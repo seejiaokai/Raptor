@@ -56,6 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1380 | 25 Oct 26 | An Attach filed from the Leave War takes the bid window’s Duration — whole day, AM or PM — as an Other does; where he is attached (its "To") is not asked on the Leave War and is added on the Inputs page. |
+| D1379 | 25 Oct 26 | An admin and a member alike may file an Attach from the Leave War, as an overseas duty or a course (D1318); a member’s bid window gets a ⋯ in the row under the leaves holding only Attach. |
+| D1378 | 25 Oct 26 | The Leave War’s bid window offers Attach as the first line of its ⋯, above Other: it files an Attach input straight under the schedule’s Unavailable list, with no approval, as an Other from the war is (D1365), counting him out at once (D1374). |
 | D1375 | 25 Oct 26 | An Attach shows on the Leave War grid as ATCH, in C1's outlined look (D1370), since ATT is the medical codes (ATT B, ATT C). |
 | D1371 | 25 Oct 26 | A tap on a day holding a half-day Other opens the bid window on the free half with one line for the held half: the Other's box in its look, "Morning" or "Afternoon", its remarks, and "change it on the Inputs page" — the same for an admin and a member, in place of today's sentence. |
 | D1370 | 25 Oct 26 | An Other under Unavailable — and every commitment under Unavailable the war counts (D1357), an Attach included — is drawn on the Leave War grid outlined, as the Inputs calendar draws a commitment (D1321): fill rgba(232,237,242,.05), edge 1.5px rgba(200,212,228,.78), words #E8EDF2. |

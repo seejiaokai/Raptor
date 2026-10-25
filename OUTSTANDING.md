@@ -94,6 +94,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Leave War**
 - [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: six Opus rounds; his look at round 6 "still similar bug" — handed to Fable after his weekly reset (Mon 26 Oct 26, evening), his recording saved for it (D1366).
 - [INP-ATTACH] — "Fly with" becomes "Attach" with a "To" box, under Unavailable by itself, ATCH on the war (D1373–D1376): to build now on `claude/lw-m3-placing-leave` with [LW-OTHER-UNAVAIL], one FULL check.
+- [LW-ATTACH-BUTTON] — an Attach filed from the Leave War’s bid window, first in its ⋯, admin and member, on the Duration (D1378–D1380): to build now on `claude/lw-m3-placing-leave`, inside its FULL check.
 - [LW-NIGHT1025-OLDER] — older faults the night's walk met: words typed for an afternoon bid land on the morning bid (fix first, tests first), two tabs, a posted-out man's gone days, a double tap's second tap.
 - [LW-R2R3-ANSWERS-BUILD] — his answers to rounds 2 and 3 of the bid windows (D1339–D1355): the drag window's words kept, the bubble red and raised by every lowering, the refused bid lit, his own leave's one row, the half-day UNA's free half — built with one FULL check, after his answers on the drawings.
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
@@ -261,6 +262,15 @@ his iPhone look at round 6 — **his answer (25 Oct 26, 12:57): "Still similar b
 shortens at once to its final room, so for about a tenth of a second the page behind shows in the band between its foot and
 the rising keys — put to him only if he sees it (the cure: the foot riding the keys, the window's height driven each frame).
 Not swept: the Leave War's sheets place themselves (`leavewar/ui/Sheet.tsx followVisible`) and may jump the same way.
+
+### [LW-ATTACH-BUTTON] An Attach filed from the Leave War (his D1378–D1380, 25 Oct 26)
+
+**His words:** *"Sounds like A but now with an Attach input. How does it look like in the leave war? Is there a button for it?"*,
+then *"Yes all as recommended"* to three questions with pictures (`raptor-port/docs/img/handpass/2026-10-25-lw-drawings/attach-built/`
+— the built ATCH on the grid, its day window, the bid window's ⋯ today, and Attach drawn first in it). **To build:** the ⋯ offers
+Attach above Other, filed straight under Unavailable with no approval (D1378); an admin and a member alike, a member's window
+getting a ⋯ that holds only Attach (D1379); on the window's Duration, its "To" added on the Inputs page (D1380). Built on
+`claude/lw-m3-placing-leave`, its check the branch's FULL check.
 
 ### [INP-ATTACH] "Fly with" becomes "Attach" — attached to another job or squadron (his idea, 25 Oct 26)
 **His words:** *"I'm also thinking of change the word fly with to Attach. Like this person can be attached to anywhere. More options. Any recommendation on how it should behave? E.g this person can be attached to another job or another Sqn"*. **Today** (checked on the built bundle, 25 Oct 26 — `raptor-port/scripts/handpass/lw-1025-flywith.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-25-lw-drawings/q7/att-today-*`): the input window asks a title, an "all day" tick or times, a document and remarks; it lands on the Ground Programme ("FLY WITH"); the Leave War never counts it (`leavewar/absences.ts`, catalogue rule 6); ALL / ALL AVAIL is not offered for it (D712). **Put to him on the questions page, version 7 (https://claude.ai/artifact/AuALCgzEgpoxooyyGX7EM6), with recommendations:** A1 renamed "Attach" with one "To" box for where (the schedule reading "Attach · 145 Sqn"); A2 under Unavailable by itself, counting him out on the Leave War (1 or 0.5), as Q2's course; A3 its Leave War letters ATCH, since ATT is the medical codes; A4 built with this batch, one check with [LW-OTHER-UNAVAIL]. **His answer (25 Oct 26): "All as recommended" — D1373 (Attach, a "To" box), D1374 (under Unavailable by itself, counts him out), D1375 (ATCH, outlined, made to fit a phone's day box), D1376 (built with this batch).** Drawn 25 Oct 26 on his "where's the attach mock up" (the window, Edit Schedule, the Leave War — `q7/att-window-*`, `att-schedule-*`, `att-war-*`); found drawing it: ATCH only just fits a day's box on a phone.
