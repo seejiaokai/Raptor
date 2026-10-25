@@ -28,21 +28,21 @@ test.beforeEach(async ({ page }) => {
   await lwRole(page, 'admin')
 })
 
-test('the row under the leaves: CSE · OD · UNA under LL · OL · OIL, as wide, the ⋯ under CL; each its kind\'s colour', async ({ page }) => {
+/* since D1349 / D1356 (25 Oct 26) the third place is Grant OIL, in OIL given's green (D1320); UNA went */
+test('the row under the leaves: CSE · OD · Grant OIL under LL · OL · OIL, as wide, the ⋯ under CL; each its kind\'s colour', async ({ page }) => {
   await openDay(page)
-  for (const [mine, under] of [['bid-file-CSE', 'bid-LL'], ['bid-file-OD', 'bid-OL'], ['bid-una', 'bid-OIL'], ['bid-more', 'bid-CL']]) {
+  for (const [mine, under] of [['bid-file-CSE', 'bid-LL'], ['bid-file-OD', 'bid-OL'], ['bid-oil', 'bid-OIL'], ['bid-more', 'bid-CL']]) {
     const m = await boxOf(page, mine!), u = await boxOf(page, under!)
     expect(Math.abs(m.x - u.x), `${mine} under ${under}`).toBeLessThan(1.5)
     expect(Math.abs(m.width - u.width), `${mine} as wide as ${under}`).toBeLessThan(1.5)
   }
-  const boxes = await Promise.all(['bid-file-CSE', 'bid-file-OD', 'bid-una', 'bid-more'].map(id => boxOf(page, id)))
+  const boxes = await Promise.all(['bid-file-CSE', 'bid-file-OD', 'bid-oil', 'bid-more'].map(id => boxOf(page, id)))
   for (const b of boxes) expect(Math.abs(b.y - boxes[0]!.y), 'one line').toBeLessThan(1)
   /* one height too: the ⋯'s glyph and the chips' words differ in height under Linux's fonts, and centred in the row they
      stood a pixel apart on GitHub's run while his PC's fonts hid it — the row stretches each to its full height */
   for (const b of boxes) expect(Math.abs(b.height - boxes[0]!.height), 'one height').toBeLessThan(1)
   /* the colours his drawings painted (set C, D1316; D1325) — each kind's own, filled */
   const paint = (id: string) => page.locator(T(id)).evaluate(e => getComputedStyle(e).backgroundColor)
-  expect(await paint('bid-una')).toBe('rgba(20, 130, 130, 0.7)')
   expect(await paint('bid-file-OD')).toBe('rgba(128, 142, 160, 0.58)')
   expect(await paint('bid-file-CSE')).toBe('rgba(160, 100, 240, 0.36)')
 })
@@ -56,15 +56,17 @@ test('the row under the leaves stands as tall as the leave buttons above it, on 
   await page.addStyleTag({ content: '.bidsheet .tchip.lv { line-height: 14px; }' })
   await page.waitForTimeout(100)
   const ll = await boxOf(page, 'bid-LL')
-  for (const id of ['bid-file-CSE', 'bid-file-OD', 'bid-una', 'bid-more']) {
+  for (const id of ['bid-file-CSE', 'bid-file-OD', 'bid-oil', 'bid-more']) {
     const b = await boxOf(page, id)
     expect(Math.abs(b.height - ll.height), `${id} as tall as LL (${b.height} vs ${ll.height})`).toBeLessThan(1)
   }
 })
 
-test('an admin’s tap on UNA places it at once (D1338): the window closes and the day shows its teal box', async ({ page }) => {
+/* AN OTHER FROM THE ⋯ (his D1365): straight under Unavailable, on the window's Duration — the day shows its outlined box */
+test('an admin’s Other from the ⋯ files at once: the window closes and the day shows the outlined OTH', async ({ page }) => {
   await openDay(page)
-  await page.locator(T('bid-una')).click()
+  await page.locator(T('bid-more')).click()
+  await page.locator(T('bid-file-OTH')).click()
   await expect(page.locator(T('bid-picker'))).toHaveCount(0)
-  await expect(page.locator(`${T(`cell-${P}-${D}`)} .c.k-una`)).toHaveCount(1)
+  await expect(page.locator(`${T(`cell-${P}-${D}`)} .c.k-unav`)).toHaveCount(1)
 })
