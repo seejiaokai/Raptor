@@ -3022,6 +3022,35 @@ export function InputEditor() {
               {!readOnly && <span className="inped-pen" aria-hidden="true"><PenIcon solo /></span>}
             </span>
           </label>}
+          {/* AN ATTACH SAYS WHERE TO (his D1373 — "Attach · 145 Sqn"; drawn by scripts/handpass/lw-1025-q7.mjs, SET att): one
+              short box, free words, optional, shown in its name on the schedule */}
+          {isFly(draft.type) && ctx !== 's' && ctx !== 'up' && <label className="inped-f">
+            <span className="inped-k">To</span>
+            <span className="inped-title">
+              <input id="inpEditTo" aria-label="Attached to" maxLength={TITLE_MAX} autoComplete="off" placeholder="Squadron, job or exercise"
+                value={draft.to ?? ''} disabled={readOnly}
+                onChange={e => setDraft({ ...draft, to: e.target.value })}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
+            </span>
+          </label>}
+          {/* AN OTHER ASKS WHERE IT GOES (his D1356, D1367–D1369; drawn by lw-1025-q7.mjs, SET q1n look C): Ground Programme
+              (amber, the schedule's colour for it) or Unavailable (red) — the picked one solid with dark words, ordinary
+              letters, 36 tall — and one grey line saying what the Leave War does with it (D1368, no separate tick). Not for
+              ALL AVAIL / ALL, which is never under Unavailable. */}
+          {isOther(draft.type) && !isSpecial(draft.person) && ctx !== 's' && ctx !== 'up' && <div className="inped-f">
+            <span className="inped-k">Goes to</span>
+            <div className="inped-goes">
+              <div className="goespick" role="group" aria-label="Goes to">
+                {([['g', 'Ground Programme'], ['u', 'Unavailable']] as const).map(([k, words]) => (
+                  <button key={k} type="button" className={`goesbtn goes-${k}${(draft.goes ?? 'g') === k ? ' on' : ''}`} data-testid={`inpEdit-goes-${k}`}
+                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
+                ))}
+              </div>
+              <span className="inped-goesline" data-testid="inpEdit-goes-line">
+                {(draft.goes ?? 'g') === 'u' ? 'Counted as away on the Leave War' : 'Still counted in the Leave War’s manning'}
+              </span>
+            </div>
+          </div>}
           {/* an upchit is ONE date (the write path refuses a range), picked
               plainly — defaulting to today, editable for a certificate
               signed a day or two back (owner, 27 Aug 26) */}

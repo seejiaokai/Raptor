@@ -126,8 +126,8 @@ describe('the window — a Title box under Type (D715)', () => {
     expect(box()!.value).toBe('Meeting')
     await choose('#inpEditType', 'Event')
     expect(box()!.value).toBe('Event')
-    await choose('#inpEditType', 'Fly with')
-    expect(box()!.value).toBe('Fly with')
+    await choose('#inpEditType', 'Attach')
+    expect(box()!.value).toBe('Attach')
   })
 
   it('a typed title is kept when the kind changes to another that takes one, and dropped for one that does not', async () => {
@@ -650,5 +650,35 @@ describe('opened from its row in the List, retyped to a leave and SAVED (Sol’s
     const now = live(t.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
     expect(now, 'the retyped record').toBeTruthy()
     expect(now.type).toBe('LL'); expect('title' in now).toBe(false)
+  })
+})
+
+/* AN OTHER'S "GOES TO" AND AN ATTACH'S "TO" (his D1356, D1367–D1369, D1373; drawn by scripts/handpass/lw-1025-q7.mjs,
+   SETS q1n look C and att): the window asks once where an Other goes — Ground Programme or Unavailable, with a grey line
+   saying what the Leave War does — and an Attach where he is attached. Red first: neither row existed. */
+describe('the window — an Other\u2019s Goes to, an Attach\u2019s To (D1356, D1369, D1373)', () => {
+  it('an Other shows Goes to, Ground Programme picked; Unavailable picked, the line says away, and it saves under Unavailable', async () => {
+    await openNew({ type: 'Other' })
+    const g = $('[data-testid="inpEdit-goes-g"]'), u = $('[data-testid="inpEdit-goes-u"]')
+    expect(g?.textContent).toBe('Ground Programme')
+    expect(u?.textContent).toBe('Unavailable')
+    expect(g?.getAttribute('aria-pressed')).toBe('true')
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Still counted in the Leave War\u2019s manning')
+    await click(u)
+    expect(u?.getAttribute('aria-pressed')).toBe('true')
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Counted as away on the Leave War')
+    await click($('#inpEditSave')); await noDocAsk()
+    expect(newest()).toMatchObject({ type: 'Other', acc: 'u' })
+  })
+  it('no other kind asks it', async () => {
+    await openNew({ type: 'Meeting' })
+    expect($('[data-testid="inpEdit-goes-g"]')).toBeNull()
+  })
+  it('an Attach shows its To box and saves where he is attached; the name carries it', async () => {
+    await openNew({ type: 'Attach' })
+    expect(($('#inpEditTo') as HTMLInputElement).placeholder).toBe('Squadron, job or exercise')
+    await type('#inpEditTo', '145 Sqn')
+    await click($('#inpEditSave')); await noDocAsk()
+    expect(newest()).toMatchObject({ type: 'Attach', to: '145 Sqn', acc: 'u' })
   })
 })
