@@ -95,6 +95,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: six Opus rounds; his look at round 6 "still similar bug" — handed to Fable after his weekly reset (Mon 26 Oct 26, evening), his recording saved for it (D1366).
 - [INP-ATTACH] — "Fly with" becomes "Attach" with a "To" box, under Unavailable by itself, ATCH on the war (D1373–D1376): to build now on `claude/lw-m3-placing-leave` with [LW-OTHER-UNAVAIL], one FULL check.
 - [LW-ATTACH-BUTTON] — an Attach filed from the Leave War’s bid window, first in its ⋯, admin and member, on the Duration (D1378–D1380): to build now on `claude/lw-m3-placing-leave`, inside its FULL check.
+- [LW-TWO-BOX-LETTERS] — two whole-day boxes side by side (D1167) clip three-letter codes ("FO*" beside "TRG"); common now that a weekend duty under Unavailable shows its FO* beside it — how to draw it, a question for him with pictures.
+- [SCHED-UNAV-PENDING-MARK] — on a published day an input under the Unavailable list carries no "waiting to go out" mark on its row, where a Ground Programme row does (the count and the changes window do say it) — older than the M3 build; found by its FULL check.
 - [LW-NIGHT1025-OLDER] — older faults the night's walk met: words typed for an afternoon bid land on the morning bid (fix first, tests first), two tabs, a posted-out man's gone days, a double tap's second tap.
 - [LW-R2R3-ANSWERS-BUILD] — his answers to rounds 2 and 3 of the bid windows (D1339–D1355): the drag window's words kept, the bubble red and raised by every lowering, the refused bid lit, his own leave's one row, the half-day UNA's free half — built with one FULL check, after his answers on the drawings.
 - [LW-PICK-HELD-MARK] — the tapped day keeps the cyan selection mark while its bid window is open, and on a phone the grid scrolls it into view above the window (his D1289, D1290); and whether the one-day window can be shorter — pictures to him first.
@@ -262,6 +264,23 @@ his iPhone look at round 6 — **his answer (25 Oct 26, 12:57): "Still similar b
 shortens at once to its final room, so for about a tenth of a second the page behind shows in the band between its foot and
 the rising keys — put to him only if he sees it (the cure: the foot riding the keys, the window's height driven each frame).
 Not swept: the Leave War's sheets place themselves (`leavewar/ui/Sheet.tsx followVisible`) and may jump the same way.
+
+### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
+
+A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on
+a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture
+`raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a
+leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How
+to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second
+entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.
+
+### [SCHED-UNAV-PENDING-MARK] No pending mark on an Unavailable row of a published day (found 25 Oct 26, W2 15)
+
+On a published day, an input filed under Unavailable — a leave filed after publishing (D177), and now an Other's Goes to, a
+"→ Unavail" — reads "1 pending" on the day and in the changes window, but its row on the Unavailable list wears no mark,
+where a Ground Programme row's name is underlined as waiting (pictures `…/w2/e-15-1-ground-edit.png` beside
+`…/w2/e-15-2-unavail-edit.png`). The Unavailable list is drawn from the inputs, not from the schedule's rows, so no mark ever
+reached it. Older than the M3 build; to put to him whether its rows should wear the mark.
 
 ### [LW-ATTACH-BUTTON] An Attach filed from the Leave War (his D1378–D1380, 25 Oct 26)
 
