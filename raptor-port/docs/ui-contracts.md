@@ -2688,7 +2688,10 @@ moved to the Ground Programme (owner, 19 Aug 26).
 
 - **Ground Programme → "+ Inputs"** (`data-inpadd="di.g"`, beside the bare-row
   "+ Item"). Types: the activity set only (`isPersonal` — Meeting, CSE,
-  Training…), because those are what the programme can carry. Save ACCEPTS the
+  Training…), because those are what the programme can carry. A course or an Attach, and an Other whose "Goes to" is
+  Unavailable, are FILED UNDER UNAVAILABLE from here too (the M3 code read's F1, 25 Oct 26 — D1372, D1374, D1356: the
+  filing wins, one man and several alike; `inputedit.tsx` `filingOf` → `acc:'u'`; pin `m3read.test.tsx` F1). Every other
+  kind: Save ACCEPTS the
   new row straight onto the open day's ground programme (`commitNewInput`'s
   `toGround` — `acceptInput(di,row,'g')` inside the same `writeInputsBatch`,
   so add-plus-accept is ONE undo step): the button puts the item where the
