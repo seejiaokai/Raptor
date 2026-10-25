@@ -92,8 +92,13 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1376 | 25 Oct 26 | "Attach" is built with this batch on `claude/lw-m3-placing-leave`, one FULL check with the "Other" work. |
+| D1374 | 25 Oct 26 | An Attach lands under the schedule's Unavailable list by itself, as an overseas duty does, so it counts him out on the Leave War (1, or 0.5 for half a day); its filer is not asked where it goes. |
+| D1373 | 25 Oct 26 | The input kind "Fly with" is renamed "Attach" (attached to another squadron, a job or an exercise), and its window gets one short "To" box for where he is attached, shown in its name on the schedule — "Attach · 145 Sqn". |
+| D1372 | 25 Oct 26 | A course (CSE) filed on the Inputs page lands under the schedule's Unavailable list by itself, as an overseas duty does, so the schedule and the Leave War (which already counts a course away) agree. |
+| D1369 | 25 Oct 26 | The Goes to buttons for an Other are drawn as look C: the picked one solid in its colour (Ground Programme amber, Unavailable red) with dark words, the other its words in its colour, both in ordinary letters, not the Duration buttons' small capitals, at the same 36px height. |
 | D1368 | 25 Oct 26 | No separate "War manning reduced" tick: the Inputs page's window for an Other asks once where it goes — Ground Programme or Unavailable, the buttons amber and red (D1367) — and a grey line under the choice says what the Leave War does with it. |
-| D1367 | 25 Oct 26 | In the Inputs page's window for an Other, the two buttons that choose where it goes wear the schedule's own colours for those lists: Ground Programme amber, Unavailable red. — changed by D1368 |
+| D1367 | 25 Oct 26 | In the Inputs page's window for an Other, the two buttons that choose where it goes wear the schedule's own colours for those lists: Ground Programme amber, Unavailable red. — changed by D1369, D1368 |
 | D1310 | 24 Oct 26 | On the Inputs list's cards the top line's right end is three columns — LATE (or OIL?), the document, the hours or "till <date>" — each in the same place on every card, an empty column keeping its room, sized to the letters so they never touch with an iPhone's wider letters; no card grows taller. |
 | D1305 | 24 Oct 26 | His direction: on the Inputs list's cards, what stands on a card's top line at the right — LATE, "No document", the hours or "till <date>" — is lined up from card to card, each in the same place on every card, so the list reads as neat columns. |
 | D1304 | 24 Oct 26 | The Inputs calendar's bars take the Leave War's colour for each kind, so a leave, an OIL, a course, an overseas duty or a medical looks the same on both pages; duties and other commitments are outlined bars, not filled, apart from leave's amber (D1321). — changed by D1321 |
