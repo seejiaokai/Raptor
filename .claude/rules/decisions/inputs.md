@@ -92,9 +92,10 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
-| D1386 | 26 Oct 26 | The Inputs calendar gets an expand control that shows every input of each day in the month itself, the weeks growing taller as they need and the page scrolling down, in place of a day's "+n more"; its design is drawn for him before it is built. |
-| D1385 | 26 Oct 26 | On a phone a day opened on the Inputs calendar is widened so its input cards stand the same distance from the screen's edges as the Inputs list's cards do. |
-| D1384 | 26 Oct 26 | On the Inputs calendar's opened day and on the Inputs list, the small square at the left of each input's card wears its kind's own colour, the same as that kind's bar on the Inputs calendar and its box on the Leave War, so every mark of a kind matches. |
+| D1396 | 26 Oct 26 | The Inputs pages' three designs of the 26 Oct 26 look page are built as drawn: ⤢ at the end of the calendar's "How this works" row, weeks as tall as their inputs need, remembered per person; on a phone the opened day edge to edge, its cards where the list's are; each card's square in its kind's colour, outlined for a commitment. |
+| D1386 | 26 Oct 26 | The Inputs calendar gets an expand control that shows every input of each day in the month itself, the weeks growing taller as they need and the page scrolling down, in place of a day's "+n more"; its design is drawn for him before it is built. — changed by D1396 |
+| D1385 | 26 Oct 26 | On a phone a day opened on the Inputs calendar is widened so its input cards stand the same distance from the screen's edges as the Inputs list's cards do. — changed by D1396 |
+| D1384 | 26 Oct 26 | On the Inputs calendar's opened day and on the Inputs list, the small square at the left of each input's card wears its kind's own colour, the same as that kind's bar on the Inputs calendar and its box on the Leave War, so every mark of a kind matches. — changed by D1396 |
 | D1377 | 25 Oct 26 | An Attach keeps D1374 as built: it lands under the schedule’s Unavailable list by itself and counts him out on the Leave War (1, or 0.5 for half a day), with its "To" box; it is more than a new name for "Fly with", which never counted on the war. |
 | D1376 | 25 Oct 26 | "Attach" is built with this batch on `claude/lw-m3-placing-leave`, one FULL check with the "Other" work. |
 | D1374 | 25 Oct 26 | An Attach lands under the schedule's Unavailable list by itself, as an overseas duty does, so it counts him out on the Leave War (1, or 0.5 for half a day); its filer is not asked where it goes. |
