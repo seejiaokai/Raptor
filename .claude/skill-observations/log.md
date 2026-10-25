@@ -2226,3 +2226,48 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Suggested improvement:** none.
 
 **Principle:** a checkpoint write keeps the log honest when nothing new turned up.
+
+### Observation 704: A new style rule appended after a scoped stylesheet's wrapper loses silently — only a real browser sees it
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the Leave War M3 build's FULL check (`claude/lw-m3-placing-leave`) — the joined bar (D1359) and the outlined commitment look (D1370)
+**Skill:** brainstorming (build steps) / bug-check order
+**Type:** open-source
+**Phase/Area:** building a visual change; the walk
+
+**Issue:** The new rules were appended at the end of `matrix.css`, after the closing brace of the file's `#page-leavewar { … }` nesting. Every unit test (class names in jsdom) passed and the drawings matched; the walk found that nothing was ever painted — the wrapper's own id-scoped rules out-ranked the bare ones. Proved by reading computed styles and the matching rules in the page.
+
+**Suggested improvement:** In the build guidance for a visual change: a rule added to a file that wraps itself in an id scope goes INSIDE the wrapper or names the id; and a visual rule's acceptance is a real-browser test that reads the computed style it sets (`getComputedStyle`), proved red on the old build.
+
+**Principle:** A test that checks the class is present proves the markup, not the look; a style change is proved only by reading what the browser computed.
+
+### Observation 705: A walk helper that sets its output folder with "=" overwrites the first walk's evidence on the re-walk
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the same FULL check's re-walk
+**Skill:** bug-check order (walk-scripts.md §6)
+**Type:** open-source
+**Phase/Area:** the re-walk
+
+**Issue:** The walkers' shared helper files set `process.env.LW_OUT = '<first walk folder>'` (not `||=`), so a re-walk run with its own folder still wrote into the first walk's folder — twice, the second time because the host forgot the variable. The first walk's pictures were saved only because they had been committed (restored with git). A shell `sed` meant to change `=` into `||=` also failed silently on the `|` delimiter.
+
+**Suggested improvement:** walk-scripts.md §6 already says "take the folder from the environment only when none is set": add a mechanical check the host runs before any re-walk — `grep -n "LW_OUT =\|HP_SHOTS =" scripts/handpass/<walk>-*.mjs` must print nothing — and a re-walk runs from a script FILE that exports the folder first, never typed per command.
+
+**Principle:** A rule written in a guide is not in force at the moment a reused script runs; the check must be a command run before the run.
+
+### Observation 706: A walker's judge line can fail its own scenario, and a scripted touch scroll may not scroll the page
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the same FULL check — scenarios 7 and 8 (the bubble's Show ›)
+**Skill:** bug-check order (walk-scripts.md §4, §7)
+**Type:** open-source
+**Phase/Area:** reading a walker's FAIL
+
+**Issue:** (a) A judge written `!!b.show && b.show.visible === !rowsInView` reports WRONG exactly when the right result is "Show absent". (b) `Input.synthesizeScrollGesture` with a touch source left `window.scrollY` unchanged on the Leave War grid, so "scroll the rows into view" never happened and the step reported the old state. (c) The walker's "rows in view" read the box's vertical bounds only, ignoring the app bar and frozen header drawn over it. Each read as an app fault until the host probed the page itself (`scripts/handpass/lw-m3b-showprobe.mjs`).
+
+**Suggested improvement:** walk-scripts.md §4: a judge for "X is absent" is written as absence, never through X's own fields; every scroll step asserts the scroll position moved; "in view" is read with `elementFromPoint` at the visible part's middle, not from the box alone.
+
+**Principle:** A step whose gesture did nothing, or whose judge cannot express the right answer, produces a FAIL the app did not earn — assert the gesture's effect and judge absence directly.
