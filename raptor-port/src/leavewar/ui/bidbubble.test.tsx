@@ -14,7 +14,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { ruleHave } from '../engine'
-import { actCount, filedSince, fileStraight, getState, initStore, lwHistInit, lwUndo, recordsAt, saveManningRule, setCell, setRequestWords, setRole } from '../state/store'
+import { actCount, filedSince, fileStraight, getState, initStore, lwHistInit, lwUndo, recordsAt, saveManningRule, setBidStates, setCell, setRequestWords, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { bubbleParts, bubbleWords, Matrix, worsenedRows, type BubbleFlags } from './Matrix'
@@ -272,6 +272,21 @@ describe('his report: red when red, and every lowering raises it (D1344, D1345, 
     expect(getState().grid.asics?.[TARGET], 'the second bid was placed').toBeTruthy()
     expect(said()).toBe(one('This bid', h - 1, h - 2))
     expect(bubble()?.getAttribute('data-level')).toBe('red')
+  })
+
+  /* the scenario designer's G6: a refused bid counts nobody out (D998); a second tap on its lit Refuse sends it back to
+     waiting (D1361), and a bid waiting counts — so the row goes lower, and the window that did it raises the bubble */
+  it('a refused bid sent back to waiting, taking a row red, raises it as the window closes (D1345, D1361; G6)', () => {
+    act(() => { setCell('dusk', TARGET, 'LL') })
+    act(() => { setBidStates([{ personId: 'dusk', date: TARGET }], 'refused') })
+    const h = rowRedPastOneMore(TARGET)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+    const refuse = screen.getByTestId('decide-refuse')
+    expect(refuse.textContent).toBe('Refused')
+    fireEvent.click(refuse)
+    if (screen.queryByTestId('bid-picker')) fireEvent.click(screen.getByTestId('bid-cancel'))
+    expect(said()).toBe(one('This bid', h, h - 1))
   })
 
   it('a row already amber that goes lower and stays amber raises it too (D1345)', async () => {
