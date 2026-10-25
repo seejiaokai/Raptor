@@ -2196,3 +2196,18 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Suggested improvement:** In the "write the failing test" step, add: when the test needs a stand-in for behaviour outside the code under test, take its numbers from a measurement of the real thing (a recording, a log, a captured response) and cite the measurement in the test; never import or copy the constants the implementation uses. Check it by running the new test against the code BEFORE the fix — it must fail for the reason the user reported.
 
 **Principle:** A stand-in for the outside world must come from the outside world. If its numbers came from the code being tested, the test can only agree with the code.
+
+### Observation 702: A device-only fault that passes every stand-in round should trigger the "stop steering" question early, not at round six
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** The keyboard fault on the owner's iPhone (the page behind a window showing as the keys rise). Six rounds in one day, each red-then-green against a stand-in keyboard tuned from his recordings, each still failing on his phone; after round 5 he said "the old one was smoother". At round 6's failure he asked whether to call another model.
+**Skill:** systematic-debugging (and the project's bug-check order)
+**Type:** open-source
+**Phase/Area:** when a fix verified only by a model of an outside system fails on the real system again
+
+**Issue:** Each round treated the miss as a calibration gap in the stand-in and tuned further, adding motion code each time. Nobody asked, before round 6, whether steering against a platform animation the code cannot observe in time was the wrong approach — the guardrail option (cover the gap; go back to the smoother earlier build) only appeared in the hand-off brief. The owner, not the agent, raised escalation.
+
+**Suggested improvement:** In systematic-debugging's "3+ fixes failed" rule, add a device clause: when a fix passes its stand-in and fails on the real device twice, stop and put three options to the user before another round — revert to the last build the user called better, a guardrail that hides the symptom whatever the platform does, or a fresh model/reader — and say the stand-in has not predicted the device.
+
+**Principle:** Two passes on the model and two fails on the device mean the model is wrong, not the last fix; change the approach or the solver, not the constants.
