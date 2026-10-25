@@ -1636,6 +1636,8 @@ different feature that merely pass through it.
 
 **Principle:** A proxy environment is calibrated against known outcomes of the real one before its verdict on a new case is believed.
 
+Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four rounds): the stand-in keyboard moved only `offsetTop`, playing Chromium's measure; his iPhone, once panned, gives every box from the visible top and the layout's height less the pan. Three fixes passed every check on the stand-in and failed on his phone; the stand-in had never reproduced the fault he first reported. Guard proposed: a stand-in for a device is first made to reproduce the device's recorded failure (red on the old build), and only then believed on the fix — `docs/walk-scripts.md` §3 now says so for the keyboard; the general rule belongs in the bug-check order's walk section.
+
 ### Observation 663: A part moved out of its box in a mock-up loses the box's styles
 
 **Status:** OPEN

@@ -359,3 +359,73 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
   })
 
 })
+
+/* KS3g, KS3h — HIS ?kbdebug RECORDINGS, 25 Oct 26 10:10 and 10:18 (the input window opened from an Inputs calendar day,
+   OL; from a SANS calendar day, SANS Availability; Remarks tapped). Once the keys were up and the phone had panned the
+   visible screen 184, his iPhone measured everything from the top of the VISIBLE screen and gave the layout's height as
+   what was left below it (684 − 184 = 500) — a desktop browser and Chromium measure from the layout's top. The lift read
+   his numbers the other way, took the window for a full-screen backdrop and brought the form down 280 inside it: an
+   empty band under its title, Remarks under the keys. Chromium is made to measure as his phone did: every box less the
+   pan, the layout's height less the pan — and what his screen shows is that, so the checks read the boxes as given. */
+test.describe('the input window on a phone that measures from the visible screen (his iPhone, 25 Oct 26)', () => {
+  const LAY = 684, VH = 393, PAN = 184
+  test.use({ viewport: { width: 402, height: LAY }, isMobile: true, hasTouch: true })
+  test.beforeEach(async ({ page }) => { await stubVV(page) })
+  /* from now on, measure as his phone does once the screen has panned `p` */
+  const hisMeasure = (page: Page, p: number) => page.evaluate(p => {
+    const w = window as any
+    if (!w.__his) {
+      w.__his = { pan: 0 }
+      const real = Element.prototype.getBoundingClientRect
+      Element.prototype.getBoundingClientRect = function (this: Element) { const r = real.call(this); return new DOMRect(r.x, r.y - w.__his.pan, r.width, r.height) }
+      const d = Object.getOwnPropertyDescriptor(window, 'innerHeight') || Object.getOwnPropertyDescriptor(Window.prototype, 'innerHeight')
+      Object.defineProperty(window, 'innerHeight', { configurable: true, get: () => d!.get!.call(window) - w.__his.pan })
+    }
+    w.__his.pan = p
+  }, p)
+  const check = async (page: Page) => {
+    const win = page.locator('[data-testid="win-inputedit"]'), box = page.locator('#inpEditRmk'), foot = win.locator('.airpop-foot')
+    await page.waitForTimeout(600)
+    await tap(page, box); await expect(box).toBeFocused()
+    /* the keys, then his phone's own pan a frame or two later, as his readout shows them */
+    await page.evaluate(h => { const v = (window as any).__vv; v.height = h; v.dispatchEvent(new Event('resize')) }, VH)
+    await page.waitForTimeout(60)
+    await hisMeasure(page, PAN)
+    await page.evaluate(p => { const v = (window as any).__vv; v.offsetTop = p; v.pageTop = p; v.dispatchEvent(new Event('scroll')) }, PAN)
+    await page.waitForTimeout(400)
+    const g = await page.evaluate(() => {
+      const w = document.querySelector('[data-testid="win-inputedit"]') as HTMLElement
+      const R = (e: Element) => { const q = e.getBoundingClientRect(); return [Math.round(q.top), Math.round(q.bottom)] }
+      /* anything inside the window the lift moved or held — only the window itself may be */
+      const inner = [...w.querySelectorAll<HTMLElement>('*')].filter(e => e.style.translate || e.dataset.kblift || e.dataset.kbcap != null).map(e => e.className.toString().slice(0, 30))
+      return { win: R(w), rmk: R(document.getElementById('inpEditRmk')!), foot: R(w.querySelector('.airpop-foot')!), inner, held: w.dataset.kbcap != null }
+    })
+    expect(g.inner, 'the form inside the window is never moved or held').toEqual([])
+    expect(g.held, 'the window itself held to the room').toBe(true)
+    expect(g.win[0], 'the title at the visible top').toBeGreaterThanOrEqual(0)
+    expect(g.win[0]).toBeLessThanOrEqual(GAP + 2)
+    expect(g.win[1], 'no band between the window and the keys').toBeGreaterThanOrEqual(VH - 3 * GAP)
+    expect(g.win[1], 'the window above the keys').toBeLessThanOrEqual(VH)
+    expect(g.rmk[1], 'Remarks above Cancel / Add').toBeLessThanOrEqual(g.foot[0])
+    expect(g.rmk[0], 'Remarks below the title').toBeGreaterThan(g.win[0])
+    await expect(foot).toBeVisible()
+  }
+  test('KS3g from an Inputs calendar day (OL): the window held to the room at the visible top, Remarks above Cancel / Add, the form never pushed down', async ({ page }) => {
+    await login(page); await go(page, 'inputs')
+    await page.click('#inCalBtn'); await page.waitForTimeout(300)
+    const cell = page.locator('[data-icday]').nth(10)
+    await tap(page, cell)
+    await page.locator('[data-testid="win-inputsday"]').waitFor()
+    await page.locator('#icPopAdd').click()
+    await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
+    await check(page)
+  })
+  test('KS3h from a SANS calendar day (SANS Availability): the same', async ({ page }) => {
+    await login(page); await go(page, 'inputs')
+    await page.click('#inSansMode'); await expect(page.locator('[data-testid="sanscal"]')).toBeVisible()
+    await tap(page, page.locator('[data-icday]').nth(10))
+    await page.locator('[data-testid="sd-add"]').click()
+    await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
+    await check(page)
+  })
+})

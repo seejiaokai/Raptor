@@ -272,6 +272,87 @@ describe('a window the phone panned past', () => {
   })
 })
 
+/* HIS ?kbdebug RECORDINGS, 25 Oct 26 10:10 and 10:18 — the input window opened from a calendar day (OL; the SANS
+   calendar's SANS Availability), Remarks tapped, the keys up and the screen panned 184: his iPhone measured everything
+   from the top of the VISIBLE screen — the window that stands 12 from the layout's top read −172, the layout's height
+   684 − 184 = 500 — where the lift took the visible screen to start at the pan (184–577). So the window, read as standing
+   above it and as tall as the "layout" left, was taken for a full-screen backdrop, and the form inside it was brought
+   down 280 instead of the window: an empty band under the window's title, Remarks under the keys. A mark the app keeps
+   fixed at the layout's top and foot says where the layout stands in the phone's own measure. */
+describe('a phone that measures from the top of the visible screen (his iPhone, 25 Oct 26 10:10)', () => {
+  const PAN = 184, LAY = 684, VH = 393
+  const vvHis = { height: VH, offsetTop: PAN, scale: 1 }
+  const rect = (top: number, h: number) => ({ top, bottom: top + h, left: 0, right: 100, width: 100, height: h, x: 0, y: top, toJSON() {} }) as DOMRect
+  afterEach(() => dropLifts())
+  const build = () => {
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: LAY - PAN })
+    document.body.innerHTML = '<div data-kbprobe></div><div id="w" style="position:fixed"><div id="bar"></div><div id="bd"><input id="b"></div></div>'
+    const probe = document.querySelector('[data-kbprobe]') as HTMLElement
+    probe.getBoundingClientRect = () => rect(-PAN, LAY)
+    const w = document.getElementById('w')!, bd = document.getElementById('bd')!, b = document.getElementById('b') as HTMLInputElement
+    /* the window centres itself on the layout, 12 from its edges, as tall as it is held to (660 unheld) */
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 660)
+    const wTop = () => 12 + (LAY - 24 - wh()) / 2 - PAN - +(w.dataset.kblift || 0)
+    w.getBoundingClientRect = () => rect(wTop(), wh())
+    /* its body under a 44 bar, scrolling 800 of form */
+    let st = 0
+    bd.style.overflowY = 'auto'
+    const bh = () => wh() - 44
+    Object.defineProperty(bd, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(800 - bh(), v)) } })
+    Object.defineProperty(bd, 'scrollHeight', { configurable: true, get: () => 800 })
+    Object.defineProperty(bd, 'clientHeight', { configurable: true, get: () => bh() })
+    const bdTop = () => wTop() + 44 - +(bd.dataset.kblift || 0)
+    bd.getBoundingClientRect = () => rect(bdTop(), bh())
+    b.getBoundingClientRect = () => rect(bdTop() + 309 - st, 31)   // Remarks: 353 down the window
+    return { w, bd, b }
+  }
+  it('the window itself is held to the room and brought to the visible top; the form inside it never moves; Remarks shown', () => {
+    const { w, bd, b } = build()
+    keepAboveKeyboard(b, vvHis)
+    expect(bd.style.translate, 'the form inside the window not moved').toBe('')
+    expect(bd.dataset.kbcap, 'nor held').toBeUndefined()
+    expect(w.style.getPropertyValue('--kbcap'), 'the window held to the room').toBe(`${VH - 2 * GAP}px`)
+    expect(Math.abs(w.getBoundingClientRect().top - GAP), 'its title at the visible top').toBeLessThanOrEqual(1)
+    expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(w.getBoundingClientRect().top + 44)
+    expect(b.getBoundingClientRect().bottom, 'Remarks above the keys').toBeLessThanOrEqual(VH - GAP)
+  })
+  it('a window a little taller than the screen, centred on it (the Tracker\'s All events, his recording of 10:30): a window, never a backdrop — held and brought down whole, its body never moved', () => {
+    const P2 = 294, V2 = 390
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: LAY - P2 })
+    document.body.innerHTML = '<div data-kbprobe></div><div id="w" style="position:fixed"><div id="hd"></div><div id="bd"><input id="b"></div></div>'
+    ;(document.querySelector('[data-kbprobe]') as HTMLElement).getBoundingClientRect = () => rect(-P2, LAY)
+    const w = document.getElementById('w')!, bd = document.getElementById('bd')!, b = document.getElementById('b') as HTMLInputElement
+    /* centred on the layout by its middle (top 50%, translate −50%): 696 tall unheld, 6 above the layout's top */
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 696)
+    const wTop = () => LAY / 2 - wh() / 2 - P2 - +(w.dataset.kblift || 0)
+    w.getBoundingClientRect = () => rect(wTop(), wh())
+    let st = 0
+    bd.style.overflowY = 'auto'
+    const bh = () => wh() - 50
+    Object.defineProperty(bd, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(2000 - bh(), v)) } })
+    Object.defineProperty(bd, 'scrollHeight', { configurable: true, get: () => 2000 })
+    Object.defineProperty(bd, 'clientHeight', { configurable: true, get: () => bh() })
+    const bdTop = () => wTop() + 50 - +(bd.dataset.kblift || 0)
+    bd.getBoundingClientRect = () => rect(bdTop(), bh())
+    b.getBoundingClientRect = () => rect(bdTop() + 700 - st, 30)        // the event's Name box, well down the list
+    keepAboveKeyboard(b, { height: V2, offsetTop: P2, scale: 1 })
+    expect([bd.style.translate, bd.dataset.kbcap], 'the list inside the window never moved or held').toEqual(['', undefined])
+    expect(w.dataset.kbcap, 'the window itself held').toBe('')
+    expect(Math.abs(w.getBoundingClientRect().top - GAP), 'its title at the visible top').toBeLessThanOrEqual(1)
+    expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(w.getBoundingClientRect().top + 50)
+    expect(b.getBoundingClientRect().bottom, 'the box above the keys').toBeLessThanOrEqual(V2 - GAP)
+  })
+  it('the same numbers read the classic way (the layout measured from its own top): unchanged — the visible screen starts at the pan', () => {
+    const { w, b } = build()
+    /* a browser measuring from the layout's top: the mark at 0, the window where its place puts it */
+    ;(document.querySelector('[data-kbprobe]') as HTMLElement).getBoundingClientRect = () => rect(0, LAY)
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: LAY })
+    w.getBoundingClientRect = () => { const h = w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 660; return rect(12 + (LAY - 24 - h) / 2 - +(w.dataset.kblift || 0), h) }
+    keepAboveKeyboard(b, vvHis)
+    expect(Math.abs(w.getBoundingClientRect().top - (PAN + GAP)), 'its title at the visible top, in the layout\'s measure').toBeLessThanOrEqual(1)
+  })
+})
+
 describe('keyboardUp', () => {
   it('reads a keyboard from a visible screen much shorter than the layout, never while pinch-zoomed', () => {
     expect(keyboardUp(vvUp)).toBe(true)

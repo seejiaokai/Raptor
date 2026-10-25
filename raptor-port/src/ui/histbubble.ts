@@ -9,6 +9,7 @@ import { PEOPLE, whoId } from '../engine/people'
 import { inpById, inpLabel, idsOf, isUnavail } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
+import { screenBox } from './kbscroll'
 
 /* THE HISTORY BUBBLE (owner, 11 Aug 26) — with History on, one detail tells
    you what it was, who changed it and when.
@@ -451,7 +452,11 @@ function place(b: HTMLDivElement, el: HTMLElement) {
      it while position:fixed keeps meaning LAYOUT coordinates, which is how a
      bubble ends up above the part of the page the user can actually see */
   const vv = window.visualViewport
-  const vx = vv ? vv.offsetLeft : 0, vy = vv ? vv.offsetTop : 0
+  /* the visible slice in the measure the cell's box is given in, and the layout's corner in it (kbscroll.ts screenBox —
+     his iPhone, the keys up and the screen panned, gives every box from the visible top): worked out in that measure,
+     written back in the layout's, as `left` and `top` are */
+  const sb = vv ? screenBox(vv) : null
+  const vx = sb ? sb.left : 0, vy = sb ? sb.top : 0, lx = sb ? sb.layLeft : 0, ly = sb ? sb.layTop : 0
   const vw = vv ? vv.width : window.innerWidth, vh = vv ? vv.height : window.innerHeight
   /* an anchor entirely outside the viewport has nowhere truthful to point from —
      HIDDEN, not torn down: a pinned jump scrolls its cell in AFTER pinning, and
@@ -459,8 +464,8 @@ function place(b: HTMLDivElement, el: HTMLElement) {
   b.style.visibility = (r.bottom < vy || r.top > vy + vh) ? 'hidden' : ''
   const above = r.top - h - 8
   const want = above >= vy + 6 ? above : r.bottom + 8
-  b.style.left = Math.round(Math.max(vx + 6, Math.min(vx + vw - w - 6, r.left))) + 'px'
-  b.style.top = Math.round(Math.max(vy + 6, Math.min(vy + vh - h - 6, want))) + 'px'
+  b.style.left = Math.round(Math.max(vx + 6, Math.min(vx + vw - w - 6, r.left)) - lx) + 'px'
+  b.style.top = Math.round(Math.max(vy + 6, Math.min(vy + vh - h - 6, want)) - ly) + 'px'
 }
 
 /* THE GOLD DOTS ([HIST-PHONE-HIDE], 28 Sep 26 — D339, D345: "a small gold dot on every detail with a history while

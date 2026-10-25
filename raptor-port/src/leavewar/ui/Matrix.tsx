@@ -25,6 +25,7 @@ import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
 import { edgeAutoScroll } from '../../ui/edgescroll'
 import { wirePinch } from '../../ui/pinchzoom'
+import { screenBox } from '../../ui/kbscroll'
 import { flushSync } from 'react-dom'
 import { LW_ZOOM_MAX, lwMonthFitZoom, roundZoom } from './lwzoom'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
@@ -1515,7 +1516,10 @@ export function Matrix() {
     const r = btn.getBoundingClientRect()
     if (!r.width && !r.height) return true
     const vv = window.visualViewport
-    const top = vv ? vv.offsetTop : 0, bottom = vv ? vv.offsetTop + vv.height : window.innerHeight
+    /* the visible screen in the measure the button's box is given in (ui/kbscroll.ts screenBox — his iPhone, the keys up
+       and the screen panned, gives every box from the visible top) */
+    const sb = vv ? screenBox(vv) : null
+    const top = sb ? sb.top : 0, bottom = sb ? sb.bottom : window.innerHeight
     if (r.bottom <= top || r.top >= bottom) return false
     if (typeof document.elementFromPoint !== 'function') return true
     const y = Math.min(Math.max(r.top + r.height / 2, top + 1), bottom - 1)

@@ -16,6 +16,7 @@ import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import './bidpicker.css'
 import { followVisible } from '../../ui/vvfollow'
 import { holdPageScroll } from '../../ui/floatwin'
+import { screenBox } from '../../ui/kbscroll'
 import { usePhone } from './phone'
 
 /* THE PAGE STAYS FULLY SCROLLABLE UNDER A SHEET (owner, 28 Aug 26 — "enable
@@ -244,7 +245,10 @@ function useSheetDrag(enabled = true) {
       const KEEP = 48
       const topbar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
       const vv = window.visualViewport
-      const vLeft = vv ? vv.offsetLeft : 0, vTop = vv ? vv.offsetTop : 0
+      /* the visible slice in the measure the panel's box is given in (ui/kbscroll.ts screenBox — his iPhone, the keys up
+         and the screen panned, measures from the visible top) */
+      const sb = vv ? screenBox(vv) : null
+      const vLeft = sb ? sb.left : 0, vTop = sb ? sb.top : 0
       const vw = vv ? vv.width : window.innerWidth, vh = vv ? vv.height : window.innerHeight
       const left0 = rect0.left, top0 = rect0.top
       const minLeft = vLeft + KEEP - rect0.width, maxLeft = vLeft + vw - KEEP
@@ -299,7 +303,11 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
     if (!vv || !panel) return
     const GAP = 8
     const place = () => {
-      if (window.innerHeight - vv.height <= KEYBOARD_MIN) {
+      /* the layout's full height from the fixed mark (ui/kbscroll.ts screenBox), not the window's: his iPhone gives the
+         window's as what is left below the visible top once the keys have panned the screen (684 − 184 = 500), which read
+         as no keyboard at all and dropped the sheet back to its foot, under the keys (his recordings of 25 Oct 26) */
+      const sb = screenBox(vv)
+      if (sb.layH - vv.height <= KEYBOARD_MIN) {
         // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
         // take back over.
         panel.style.top = ''
@@ -313,7 +321,8 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
       panel.style.setProperty('--lw-dy', '0px')
       // Sit just below the app top bar, but never above the visible slice's
       // own top (a pinch-zoom pan moves it down); cap the height to the slice.
-      const bar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      /* the bar's foot measured, then given in the layout's own measure, as the panel's `top` is */
+      const bar = (document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? sb.layTop) - sb.layTop
       const top = Math.round(Math.max(vv.offsetTop + GAP, bar + GAP))
       panel.style.top = `${top}px`
       panel.style.bottom = 'auto'

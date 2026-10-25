@@ -49,6 +49,13 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   its record and the failure is blamed on the app.
 - **What an action created is named by the difference** between the ids before and after it, never by position: one
   door puts a new record at the top of a list, another at the bottom.
+- **A stand-in keyboard is set at the page's own height first, and plays his iPhone's measure as well as Chromium's.**
+  The stand-in visible screen starts at the size the page had before its width was set (1668 on a 684 screen) — give it
+  the real screen before the tap, or the app never learns the full height. And once the keys are up and the screen has
+  panned, his iPhone gives every box from the top of the VISIBLE screen and the layout's height as what is left below
+  it: a stand-in that only moves `offsetTop` tests a phone he does not have (four rounds of the keyboard fix passed
+  every check on Chromium's measure — his `?kbdebug` recordings of 25 Oct 26 showed the other; the way to play his is
+  `scripts/handpass/kbs-his-measure.mjs` and `e2e/kbscroll.spec.ts` KS3g).
 
 ## 4. Steps, and what they assert
 

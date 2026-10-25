@@ -67,8 +67,45 @@ export function noteFullHeight() {
 }
 export function keyboardUp(vv: VV | null | undefined): boolean {
   if (!vv || vv.scale > 1.01) return false
-  const full = Math.max(window.innerHeight, BASE.w === window.innerWidth ? BASE.h : 0)
-  return full - vv.height > KEYBOARD_MIN
+  return fullHeight(vv) - vv.height > KEYBOARD_MIN
+}
+/* the screen's full height: the layout's, the tallest seen with nothing typed in (BASE), and the fixed mark's (screenBox,
+   below) — his iPhone gives the layout's as what is left below the visible top once the keys have panned the screen
+   (684 − 184 = 500), which alone read as the keys gone down */
+function fullHeight(vv: { height: number, offsetTop: number }): number {
+  return Math.max(window.innerHeight, BASE.w === window.innerWidth ? BASE.h : 0, typeof document !== 'undefined' ? screenBox(vv).layH : 0)
+}
+
+/* THE VISIBLE SCREEN, IN THE MEASURE THE PAGE'S OWN BOXES ARE GIVEN IN (his ?kbdebug recordings of 25 Oct 26 10:10, 10:18
+   and 10:30 — the input window opened from an Inputs or a SANS calendar day, and the Tracker's event editor, a box tapped:
+   the form pushed down inside its window, an empty band under the title, the box under the keys). With the keys up and
+   the screen panned, his iPhone gives every box's place from the top of the VISIBLE screen — the window that stands 12
+   from the layout's top read −172 with the screen panned 184 — and the layout's height as what is left below that top
+   (684 − 184 = 500). A desktop, Chromium and the iPhones before gave a box's place from the top of the layout, the
+   visible screen then starting at the pan (offsetTop). The lift read his numbers the second way: the visible screen
+   184–577 where everything it measured was 0–393 — so the window, read as standing above the screen and as tall as the
+   "layout" left, was taken for a full-screen backdrop and the form inside it brought down 280 instead of the window.
+   A mark the app keeps fixed at the layout's top and foot, never seen, says where the layout stands in whatever measure
+   the browser gives: the visible screen starts at its top plus the pan, the layout's full height is its height, and a
+   place measured from the layout is a measured box less its top (`layTop`). On a desktop, in Chromium and on the older
+   phones the mark stands at 0, as tall as the layout, so every reading is what it always was. */
+let PROBE: HTMLElement | null = null
+export type ScreenBox = { top: number, bottom: number, left: number, layTop: number, layLeft: number, layH: number }
+export function screenBox(vv: { height: number, offsetTop: number, offsetLeft?: number }): ScreenBox {
+  if (!PROBE || !PROBE.isConnected) {
+    PROBE = document.querySelector('[data-kbprobe]') as HTMLElement | null
+    if (!PROBE) {
+      PROBE = document.createElement('div')
+      PROBE.setAttribute('data-kbprobe', ''); PROBE.setAttribute('aria-hidden', 'true')
+      Object.assign(PROBE.style, { position: 'fixed', top: '0', bottom: '0', left: '0', width: '0', visibility: 'hidden', pointerEvents: 'none' })
+      document.body.appendChild(PROBE)
+    }
+  }
+  const r = PROBE.getBoundingClientRect()
+  /* no layout (jsdom): the mark measures nothing, and the layout is the window's own height */
+  const layH = r.height > 0 ? r.height : window.innerHeight
+  const top = r.top + vv.offsetTop
+  return { top, bottom: top + vv.height, left: r.left + (vv.offsetLeft || 0), layTop: r.top, layLeft: r.left, layH }
 }
 
 const scrolls = (a: Element) => {
@@ -181,11 +218,17 @@ function pin(l: HTMLElement, s0: number, visTop: number, visBot: number) {
   const s = own - (visTop + GAP)
   setShift(l, own < visTop - 0.5 ? s : Math.max(0, s))
 }
-function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: number): number {
+function raise(fixedEl: HTMLElement, el: HTMLElement, sb: ScreenBox): number {
+  const visTop = sb.top, visBot = sb.bottom
   const fr = fixedEl.getBoundingClientRect()
-  /* a backdrop as tall as the layout: raise the window on it, the backdrop's child that holds the box */
+  /* a backdrop as tall as the layout: raise the window on it, the backdrop's child that holds the box — the layout read
+     by the fixed mark (screenBox), never by the window's own height, which his iPhone gives as what is left below the
+     visible top while the screen is panned (a window 12 from the layout's top, 660 tall, then read as a backdrop). A
+     backdrop stands exactly on the layout, its top on the layout's top and as tall: a window a little TALLER than the
+     screen, centred on it (the Tracker's All events, 88% of a tall screen: 6 above the layout's top, 696 tall — his
+     recording of 25 Oct 26 10:30), is a window, held and brought down as one, never a backdrop whose body is moved */
   let layer = fixedEl
-  if (fr.top <= 1 && fr.height >= window.innerHeight - 2) {
+  if (Math.abs(fr.top - sb.layTop) <= 1 && Math.abs(fr.height - sb.layH) <= 2) {
     let c: Element | null = el
     while (c && c.parentElement !== fixedEl) c = c.parentElement
     if (!c) return 0
@@ -199,7 +242,12 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, visTop: number, visBot: nu
   /* up by what the box needs, never past the visible top; down again (towards where it stood) when it is higher than it
      need be — a box further up the same window */
   const room = lr.top - (visTop + GAP)
-  if (need > room + 0.5 && cap(layer, visBot - visTop - 2 * GAP)) {
+  /* a window the phone's own pan left above the visible screen, too tall for the room under it: held to the room as well,
+     not only brought down — brought down alone, its foot (Cancel / Add) would stand under the keys. Whether the box itself
+     happened to need it turned on a few points of the window's own scroll (his recordings of 25 Oct 26 10:10). */
+  const span = visBot - visTop - 2 * GAP
+  const pannedTall = lr.top + s0 < visTop - 0.5 && lr.height > span + 0.5
+  if ((need > room + 0.5 || pannedTall) && cap(layer, span)) {
     /* held to the room, measured again (a window centred on its backdrop re-centres as it shrinks): its top to the top */
     pin(layer, s0, visTop, visBot)
     return 1
@@ -265,7 +313,9 @@ const layerOf = (el: HTMLElement): HTMLElement | null => {
     In the Scheduler Board the page comes first (above), then its list. Returns how far it moved things in all (0: it was
     already in sight). */
 export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
-  const visTop = vv.offsetTop, visBot = vv.offsetTop + vv.height
+  /* the visible screen in the measure the boxes are given in (screenBox — his iPhone measures from the visible top) */
+  const sb = screenBox(vv)
+  const visTop = sb.top, visBot = sb.bottom
   let moved = 0
   const layer = layerOf(el)
   const panels = () => {
@@ -285,7 +335,7 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   }
   panels()
   if (layer) {
-    const r = raise(layer, el, visTop, visBot)
+    const r = raise(layer, el, sb)
     /* a window raised, or held to the room, may now scroll its own body: the panels once more */
     if (r) { moved += r; panels() }
     return moved
@@ -345,7 +395,7 @@ export function installKbScroll(): () => void {
     if (!box || document.activeElement !== box || !box.isConnected || !keyboardUp(vv)) return
     /* a pan long after the focus: the window follows the visible screen, and nothing inside it is scrolled — a box he
        scrolled away from in it stays where he put it */
-    if (onlyWindow) { onlyWindow = false; const l = layerOf(box); if (l) raise(l, box, vv!.offsetTop, vv!.offsetTop + vv!.height); placed('placed-win'); return }
+    if (onlyWindow) { onlyWindow = false; const l = layerOf(box); if (l) raise(l, box, screenBox(vv!)); placed('placed-win'); return }
     keepAboveKeyboard(box, vv!)
     placed('placed')
   }
@@ -384,7 +434,7 @@ export function installKbScroll(): () => void {
     const vv = window.visualViewport
     /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
        window back nor takes the room below the page away; a zoomed frame itself changes nothing */
-    if (!vv || Math.max(window.innerHeight, BASE.w === window.innerWidth ? BASE.h : 0) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
+    if (!vv || fullHeight(vv) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
     if (vv.scale > 1.01) return
     if (box && (Date.now() - at < FOCUS_WINDOW || lifted())) soon()
   }
@@ -422,7 +472,9 @@ export function installKbScroll(): () => void {
     const vv = window.visualViewport
     const l = box ? layerOf(box) : null, r = l?.getBoundingClientRect()
     const t = box ? Date.now() - at : 0
-    dbgLines.push(`${t}ms ${ev} iH${Math.round(window.innerHeight)} vv${vv ? Math.round(vv.height) + '@' + Math.round(vv.offsetTop) : '-'} ${keyboardUp(vv) ? 'UP' : 'dn'}` +
+    /* L: where the layout's top stands in the page's measure (screenBox) — 0 on a desktop, minus the pan on his iPhone */
+    const lay = vv ? screenBox(vv).layTop : 0
+    dbgLines.push(`${t}ms ${ev} iH${Math.round(window.innerHeight)} vv${vv ? Math.round(vv.height) + '@' + Math.round(vv.offsetTop) : '-'} L${Math.round(lay)} ${keyboardUp(vv) ? 'UP' : 'dn'}` +
       (r ? ` win${Math.round(r.top)}-${Math.round(r.bottom)} cap${l!.style.getPropertyValue('--kbcap') || '-'} sh${l!.dataset.kblift || 0}` : ''))
     while (dbgLines.length > 9) dbgLines.shift()
     dbgEl.textContent = dbgLines.join('\n')

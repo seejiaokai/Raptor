@@ -93,3 +93,47 @@ and a pan of 186 together). `?kbdebug` added to read his phone's numbers if anyt
 **Walk:** WALK — the input window (Other, Training, LL) at four keyboards and Holidays' form, phone 402, Chromium with a
 stand-in keyboard; 14 runs, every picture taken after the tap; 0 left under the buttons (was 33px of 33); then his recording's
 late pan, replayed at two sizes on the fixed build — the window follows, no band, the title in sight; his iPhone not yet.
+
+## The fourth round — his ?kbdebug recordings of 10:10, 10:18 and 10:30 (the third round's build)
+
+**What he saw.** The input window opened from an Inputs calendar day (OL) and from a SANS calendar day (SANS Availability), and
+the Tracker's All events → Edit (ST-12): a box tapped, the keys up — the form pushed down inside its window, an empty band under
+the window's title, the box under the keys; "Check the rest of the app for this bug".
+
+**What his numbers said** (frames read with `video-frames.mjs`, 30 a second around the tap; every figure below off his
+readout). Once the keys were up and the phone had panned the visible screen, his iPhone gave every box's place from the top of
+the VISIBLE screen and the layout's height as what was left below that top: the window standing 12 from the layout's top read
+−172 with a pan of 184, −162 at 174, −152 at 164; the layout 684 read 500, 510, 520; the Tracker's All events (6 above the
+layout's top, 696 tall) read −300 at a pan of 294, the layout 390. Chromium, a desktop and the older iPhones give a box's place
+from the layout's top, the visible screen starting at the pan — the only measure the lift knew, and the only one the three
+earlier rounds' stand-in played. Read his way, the lift took the visible screen for 184–577 where everything it measured was
+0–393: the window, read as standing above the screen and as tall as the "layout" left, passed the test for a full-screen
+backdrop, so the lift held and moved the window's BODY — down 280 inside it (the band, the box under the keys). One frame at
+1.10 s shows it: the window's title still at the top, the readout dropped to the pan, the form 242 points lower. The Tracker's
+panel passed that test on any phone, being a window a little taller than the screen.
+
+**Fix.** The visible screen is read in the measure the boxes are given in: a fixed mark at the layout's top and foot, never
+seen (`kbscroll.ts screenBox`), says where the layout stands — 0 everywhere but his phone, −pan there — and how tall it is; the
+keys-up test reads the full height from it too (his layout read 500 had the keys read as gone). A backdrop is only a layer
+exactly on the layout; a window the pan left above the screen and too tall for the room is held as well as brought down.
+**The sweep he asked for** — every place that reads the visible screen: the Leave War's sheets (the keys-up test, which his
+500 would have read as no keyboard, dropping the sheet under the keys; the top bar's foot; the drag's clamp), its bubble bar
+(placed from the layout's height — under the keys on his phone), its "Manning rows in view" check, the board's duty-role
+pick-list, the History bubble, and the Inputs and SANS months' fit (his 500 read as no keyboard, so the month shrank behind
+the window and grew back) — each now reads the same mark. Positions written as `top: offsetTop` (the readout's own) land at
+the visible top in both measures and are left as they are; the drags' edge scrolls and the pop-ups placed from the layout's
+height run with no keyboard up and are left too.
+
+**Red first.** `kbscroll.test.ts`: "the window itself is held …" (the form moved down 320) and the Tracker's "a window a little
+taller …" (its list moved) failed on the code before; KS3g and KS3h in the browser (Chromium made to measure as his phone does)
+failed — the window's title left at −172.
+
+**Gates (this PC, the lock taken):** `kbscroll.test.ts` 39 / 39; the touched unit files 575 / 575 and the Leave War's screens
+1389 / 1389; `npm run build` clean; the browser set — `kbscroll`, `changeswin`, `inputs-calendar`, `inputs-sans-calendar`,
+`sched-phone` (raptor) and `round2-` / `round3-leavewar` (lw-phone) — 139 / 139.
+
+**Walk:** WALK — his four cases (`scripts/handpass/kbs-his-measure.mjs`: A the Inputs day's input window OL, B the SANS day's,
+C the Tracker's All events → Edit → Name, D the Leave War's one-day window → Remarks), phone 402 × 684, his pans and visible
+heights, Chromium measuring as his phone does; every picture taken after the tap and the pan, cut to what his screen shows;
+4 / 4: the window held at the visible top (8), the box above the keys and above Cancel / Add, nothing inside the window moved.
+Looked at: `docs/img/handpass/2026-10-25-kbs-his-measure/A-2-his-screen.png` … `D-2-his-screen.png`. His iPhone not yet.

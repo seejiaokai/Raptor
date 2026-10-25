@@ -62,7 +62,7 @@ import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { PenIcon } from './icons'
 import { useMedia } from './usemedia'
-import { KEYBOARD_MIN } from './kbscroll'
+import { KEYBOARD_MIN, screenBox } from './kbscroll'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December']
@@ -632,8 +632,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       /* the visible screen, as the browser's bars leave it — but not as a keyboard leaves it: a month that shrank for the
          keys and grew back as they went jumped twice, behind the box being typed in (D1081); with the keys up the page
          scrolls to the box instead (kbscroll.ts) */
-      const h = vv && window.innerHeight - vv.height <= KEYBOARD_MIN ? vv.height : window.innerHeight
-      const top = el.getBoundingClientRect().top + (window.scrollY || 0)
+      /* the layout's full height, and its top, from the fixed mark (kbscroll.ts screenBox): his iPhone, the keys up and the
+         screen panned, gives the window's height as what is left below the visible top and every box from that top */
+      const sb = vv ? screenBox(vv) : null
+      const lay = sb ? sb.layH : window.innerHeight
+      const h = vv && lay - vv.height <= KEYBOARD_MIN ? vv.height : lay
+      const top = el.getBoundingClientRect().top - (sb ? sb.layTop : 0) + (window.scrollY || 0)
       const next = fitLanes(h - top - 12, weeks.length, sizes)
       setFit(f => (f.row === next.row && f.lanes === next.lanes ? f : next))
     }
