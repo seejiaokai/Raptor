@@ -2,9 +2,9 @@
    docs/img/handpass/2026-10-25-lw-drawings/drag-remarks/): over one man's days holding separate entries with different
    remarks, each entry's remark is a grey line with its dates above an empty box; an entry with no remark is not listed;
    over one entry the box shows its words. Red first. */
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { initStore, setCell, setRole } from '../state/store'
+import { initStore, recordsAt, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { SelectSheet } from './SelectSheet'
 
@@ -44,5 +44,24 @@ describe('the drag window over separate entries (D1362)', () => {
     mount(['2026-02-09', '2026-02-10', '2026-02-11'])
     expect(screen.queryByTestId('sel-remarks-list')).toBeNull()
     expect((screen.getByTestId('sel-remarks') as HTMLTextAreaElement).value).toBe('Wedding')
+  })
+  /* the second narrow read of the code read's fixes (its question 1): over two SEPARATE entries the shared words are shown,
+     not sent — a leave pressed over the drag must not write them onto the free days between, which would make the two one
+     run (D1346 — entries never join by themselves); typed words still go everywhere (D1341) */
+  it('two separate entries with the same words, LL pressed over the drag: the days between get no words; typed words do', () => {
+    setCell(P, '2026-02-09', 'LL', { remarks: 'Family' })
+    setCell(P, '2026-02-12', 'LL', { remarks: 'Family' })
+    const first = mount(['2026-02-09', '2026-02-10', '2026-02-11', '2026-02-12'])
+    if (screen.getByTestId('sel-approve-tick').getAttribute('aria-checked') === 'true') fireEvent.click(screen.getByTestId('sel-approve-tick'))
+    fireEvent.click(screen.getByTestId('sel-LL'))
+    const between = recordsAt(P, '2026-02-10').filter(r => r.kind === 'request') as any[]
+    expect(between.length).toBe(1)
+    expect(String(between[0].remarks ?? ''), 'the shared words stay the two entries’').toBe('')
+    first.unmount()
+    mount(['2026-02-13', '2026-02-14'])
+    fireEvent.change(screen.getByTestId('sel-remarks'), { target: { value: 'Trip' } })
+    if (screen.getByTestId('sel-approve-tick').getAttribute('aria-checked') === 'true') fireEvent.click(screen.getByTestId('sel-approve-tick'))
+    fireEvent.click(screen.getByTestId('sel-LL'))
+    expect(String((recordsAt(P, '2026-02-14').find(r => r.kind === 'request') as any)?.remarks ?? '')).toBe('Trip')
   })
 })

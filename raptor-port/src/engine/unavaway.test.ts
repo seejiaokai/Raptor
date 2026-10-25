@@ -123,6 +123,22 @@ describe('the narrow read of the Q2 fixes', () => {
     validate()
     expect(slotBar(who, main)).toMatch(/course/i)
   })
+  /* the second narrow read's F1: an SC line whose START and END are cleared still judges a Meeting as the soft advisory in
+     the warning list (validate.ts blankShift), so the picker must not cross him out there either */
+  it('R3: an SC MAIN seat on a line with no times — an all-day Meeting under Unavailable is not struck; a course is', () => {
+    const who = freeMan()
+    DAYS[0].waves.push(makeStandalone('sc'))
+    const wi = DAYS[0].waves.length - 1
+    const f = DAYS[0].waves[wi].formations[0]
+    f.to = ''; f.ld = ''
+    const main = `0.${wi}.0.0.` + (PEOPLE[who].seat === 'RCP' ? 'w' : 'p')
+    INPUTS.push(commit(who, 'Meeting', { acc: 'u' }))
+    validate()
+    expect(slotBar(who, main)).not.toMatch(/meeting/i)
+    INPUTS.pop(); INPUTS.push(commit(who, 'CSE', { acc: 'u' }))
+    validate()
+    expect(slotBar(who, main)).toMatch(/course/i)
+  })
   it('R2: a course with hours under Unavailable is in the day’s tasked set; one on no day’s list is not', () => {
     const who = freeMan()
     expect(dayTasked(DAYS[0]).has(who)).toBe(false)

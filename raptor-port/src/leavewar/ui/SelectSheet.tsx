@@ -165,6 +165,11 @@ export function SelectSheet({
      drawn for one set of words, and the box stood empty, so they were nowhere); left as they opened they change nothing
      and travel to no new filing (keepWords, fileDuty) */
   const prefill = entries.length && entries.every(e => e.remark === entries[0]!.remark) ? entries[0]!.remark : ''
+  /* WHAT A LEAVE FILL SENDS (the second narrow read of the code read's fixes, its question 1): over ONE entry its words
+     go with the fill as they always did — the entry stretched keeps its words; over SEVERAL entries their shared words are
+     only shown (Q11), so left as they opened they are not written onto the days between — that would make two separate
+     entries one run, and entries never join by themselves (D1346); typed words go everywhere (D1341) */
+  const fillWords = () => (entries.length > 1 && prefill && words.remarks.trim() === prefill ? { ...words, remarks: '' } : words)
   /* a request's Document and Remarks (M3 5.9, 5.10): written with the fill, where the drag holds ONE person — across
      several, each man's paper is his own (the agent's reading, M3 §7 point 2) */
   const [words, setWords] = useState<ReqDraft>(() => ({ ...emptyDraft(), remarks: prefill }))
@@ -233,7 +238,7 @@ export function SelectSheet({
     }
     setConfirming(null)
     if (code && approving) {
-      const r = placeApproved(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined)
+      const r = placeApproved(sel.cells, code, nPeople === 1 ? wordsOf(fillWords()) : undefined)
       if (!r.skipped && !r.pending.length) { onDone(r.written > 0); return }
       const parts: string[] = []
       if (r.skipped) parts.push(skipNote('written', r.written, r.skipped).replace(/\.$/, ''))
@@ -242,7 +247,7 @@ export function SelectSheet({
       if (r.written > 0) onDone(true, true)
       return
     }
-    const { written, skipped } = code ? setCells(sel.cells, code, nPeople === 1 ? wordsOf(words) : undefined) : clearCells(sel.cells)
+    const { written, skipped } = code ? setCells(sel.cells, code, nPeople === 1 ? wordsOf(fillWords()) : undefined) : clearCells(sel.cells)
     if (skipped === 0) { onDone(written > 0); return }
     setNote(skipNote(code ? 'written' : 'cleared', written, skipped))
     if (written > 0) onDone(true, true) // refresh counts but keep the sheet to show the note

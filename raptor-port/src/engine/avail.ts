@@ -176,7 +176,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,avKind:null,scDesk:false,infoRow:false,saExempt:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scLine:false,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,avKind:null,scDesk:false,infoRow:false,saExempt:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -297,6 +297,9 @@ export function slotRules(key:any){
         const it=seatIntime(wv,f,st);
         out.sansStart=it!=null?Math.min(it,out.slotStart):out.slotStart; } }
     if(wv&&f&&isStandalone(wv)&&(wv.kind==='sc'||flyRow)){
+      /* an SC line even with its times blank (the second narrow read's F1): `sc` names the shift only once both times are
+         typed, and the SC currency check reads it, so the soft-kind rule (slotBarNow scSoft) reads this flag beside it */
+      out.scLine=true;
       const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null&&en!=null){ if(en<st)en+=1440; out.sc=scShiftKind(st,en); out.scEnd=en; }
       /* a SPARE is standing by, not tasked: he may fly, sit a sim or stand a
@@ -515,7 +518,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     /* ACROSS AN SC MAIN SHIFT A SOFT COMMITMENT IS AN ADVISORY, NOT A BAR (the narrow read of the Q2 fixes, R1): a
        commitment under Unavailable is away (inputs.ts isAway), but a Meeting is the warning list's amber across the shift
        (shiftHardInput, validate.ts's soft branch), so it must not cross him out here; a course and every hard kind still do */
-    const scSoft=(x:any)=>!(r.sc&&!r.scSpare&&isPersonal(x.type)&&!shiftHardInput(x.type));
+    const scSoft=(x:any)=>!((r.sc||r.scLine)&&!r.scSpare&&isPersonal(x.type)&&!shiftHardInput(x.type));
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=inputLinesOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
