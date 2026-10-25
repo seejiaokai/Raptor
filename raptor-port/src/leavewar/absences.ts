@@ -109,10 +109,15 @@ export function warCodeOf(rawType: unknown): string {
 }
 
 /** Does this Input type show on the war BY ITS KIND? Leave, medical, course, overseas duty (clash check B2) — wherever it
- *  sits on the schedule. Upchit and SANS never do (catalogue rule 6, owner Q15). The other commitments show by WHERE they
+ *  sits on the schedule, except a course or an overseas duty a scheduler took out of Unavailable (`warCounts`, D1389). Upchit and SANS never do (catalogue rule 6, owner Q15). The other commitments show by WHERE they
  *  are filed, not by kind — `warCounts`. */
 export function warVisible(type: unknown): boolean {
   if (isLeave(type) || isDownchit(type)) return true
+  const t = String(type ?? '').trim().toUpperCase()
+  return t === 'CSE' || t === 'OD'
+}
+/** A course or an overseas duty — the two kinds the war shows by kind that a scheduler can take out of Unavailable. */
+function isAwayKind(type: unknown): boolean {
   const t = String(type ?? '').trim().toUpperCase()
   return t === 'CSE' || t === 'OD'
 }
@@ -123,6 +128,12 @@ export function warVisible(type: unknown): boolean {
  *  kind … by 1 or 0.5 for a half day"), D1356, D1374. One on the Ground Programme, or taken back out (Reject), does not. */
 export function warCounts(row: any): boolean {
   if (!row || typeof row !== 'object') return false
+  /* A COURSE OR AN OVERSEAS DUTY A SCHEDULER TOOK OUT OF UNAVAILABLE COUNTS HIM BACK IN (his D1381, D1389, D1390 —
+     26 Oct 26): rejected ('r'), or rejected and then put on the Ground Programme ('g'), it no longer lowers the manning,
+     the Available rows or the SANS calendar's need — only Unavailable counts him out, as for every other commitment. Filed
+     (under Unavailable by itself, 'u', or an overseas duty sitting there by its kind with no mark) it still does. Leave
+     and medical are not filed this way and count wherever they sit. */
+  if (isAwayKind(row.type) && (row.acc === 'r' || row.acc === 'g')) return false
   if (warVisible(row.type)) return true
   /* …unless it is cancelled or information only: silent everywhere else — no warning, no OIL, free for ALL AVAIL — so on
      the war too (the code read's F2) */

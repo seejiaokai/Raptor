@@ -44,9 +44,20 @@ describe('the war counts every commitment under Unavailable (D1357), and only th
       expect(warCounts(row({ type })), `${type} not yet landed`).toBe(false)
     }
   })
-  it('leave, medical, a course and an overseas duty count wherever they sit, as built', () => {
-    for (const type of ['LL', 'ATT C', 'CSE', 'OD']) expect(warCounts(row({ type, acc: 'g' }))).toBe(true)
+  it('leave and medical count wherever they sit, as built', () => {
+    for (const type of ['LL', 'ATT C']) expect(warCounts(row({ type, acc: 'g' }))).toBe(true)
     expect(warVisible('Other')).toBe(false)
+  })
+  /* HIS D1381, D1389, D1390 (26 Oct 26): a course or an overseas duty a scheduler rejects counts him back in, and so does
+     one he then moves onto the Ground Programme — only Unavailable counts him out. Filed (under Unavailable by itself, or an
+     overseas duty that sits there by its kind with no filing mark) it still counts him out. */
+  it('a course or an overseas duty: filed, out; rejected or moved onto the Ground Programme, in (D1381, D1389, D1390)', () => {
+    for (const type of ['CSE', 'OD']) {
+      expect(warCounts(row({ type, acc: 'u' })), `${type} under Unavailable`).toBe(true)
+      expect(warCounts(row({ type })), `${type} with no filing mark`).toBe(true)
+      expect(warCounts(row({ type, acc: 'r' })), `${type} rejected`).toBe(false)
+      expect(warCounts(row({ type, acc: 'g' })), `${type} rejected, then on the Ground Programme`).toBe(false)
+    }
   })
   it('each kind its letters — OTH an Other, ATCH an Attach (D1375); a course keeps CSE', () => {
     expect(warCodeOf('Other')).toBe('OTH')
@@ -135,6 +146,17 @@ describe('the Inputs page files them (the one save)', () => {
     const r = add('CSE')
     expect(r.acc).toBe('u')
     expect(viewOn()?.away).toBe(1)
+  })
+  it('a course a scheduler rejects counts him back in; moved onto the Ground Programme, still in; → Unavail, out again (D1381, D1389)', () => {
+    const r = add('CSE')
+    expect(viewOn()?.away).toBe(1)
+    r.acc = 'r'; raptorNotify()
+    expect(viewOn()?.away ?? 0, 'rejected: back in').toBe(0)
+    expect(viewOn()?.all.some(c => c.code === 'CSE') ?? false, 'rejected: no CSE box on the war').toBe(false)
+    r.acc = 'g'; raptorNotify()
+    expect(viewOn()?.away ?? 0, 'on the Ground Programme: in').toBe(0)
+    r.acc = 'u'; raptorNotify()
+    expect(viewOn()?.away, 'under Unavailable again: out').toBe(1)
   })
   it('an Attach is filed under Unavailable with its To; the war shows ATCH and counts him out', () => {
     const r = add('Attach', { to: '145 Sqn' })
