@@ -11,10 +11,10 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS, inpLabel, filingOf, landsUnavail, INPUT_TYPES } from '../engine/inputs'
-import { commitInputEdit, commitNewInput, draftOf } from '../ui/inputedit'
-import { fileStraight, getState, initStore, lwHistInit, rawState, setPeople, setRole, setViewer } from './state/store'
+import { commitInput, commitInputEdit, commitNewInput, draftOf } from '../ui/inputedit'
+import { fileStraight, getState, setCell, initStore, lwHistInit, rawState, setPeople, setRole, setViewer } from './state/store'
 import { memoryBackend } from './state/storage'
-import { initStore as raptorInitStore } from '../state/store'
+import { initStore as raptorInitStore, notify as raptorNotify } from '../state/store'
 import { setMe, setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
@@ -109,6 +109,26 @@ describe('the Inputs page files them (the one save)', () => {
     expect(ok, `${type} saved`).toBe(true)
     return made
   }
+  it('a leave bid beside a commitment under Unavailable stands, as beside a course (the designer’s G2): two entries', () => {
+    for (const [type, extra] of [['CSE', {}], ['Training', {}], ['Other', { goes: 'u' }]] as Array<[string, Record<string, unknown>]>) {
+      INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
+      initStore(memoryBackend()); setRole('admin'); setPeople(projectPeople()); wireLeaveWarSync()
+      const r = add(type, extra)
+      if (type === 'Training') { r.acc = 'u'; raptorNotify() }
+      expect(setCell(P, D, 'LL'), `a bid beside the ${type}`).toBe(true)
+      const codes = viewOn()?.all.map(c => c.code) ?? []
+      expect(codes, `${type}: both on the day`).toContain('LL')
+      expect(codes.length, type).toBe(2)
+      expect(INPUTS.includes(r), `the ${type} stays`).toBe(true)
+    }
+  })
+  it('an Other for a named man and ALL AVAIL, Goes to Unavailable, is saved on the Ground Programme, never refused (G3)', () => {
+    const n = INPUTS.length
+    expect(commitInput(null, { person: P, type: 'Other', allday: true, start: D, end: '', sTime: '06:00', eTime: '18:00', remarks: 'Why', title: null, goes: 'u' }, [P, 'allavail'])).toBe(true)
+    expect(INPUTS.length).toBe(n + 1)
+    const r: any = INPUTS[INPUTS.length - 1]
+    expect(r.acc, 'never under Unavailable with ALL AVAIL in it').not.toBe('u')
+  })
   it('a course is filed under Unavailable; the war counts him out', () => {
     const r = add('CSE')
     expect(r.acc).toBe('u')
@@ -146,7 +166,7 @@ describe('the Inputs page files them (the one save)', () => {
     expect(commitInputEdit(r, { ...draftOf(r), type: 'Meeting' })).toBe(true)
     expect(r.acc).not.toBe('u')
   })
-  it('an Other under Unavailable retyped to a Training lands on the Ground Programme (D1357; the designer's G4)', () => {
+  it('an Other under Unavailable retyped to a Training lands on the Ground Programme (D1357; the designer’s G4)', () => {
     const r = add('Other', { goes: 'u' })
     expect(r.acc).toBe('u')
     expect(commitInputEdit(r, { ...draftOf(r), type: 'Training' })).toBe(true)

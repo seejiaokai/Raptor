@@ -2073,6 +2073,10 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
       if (!r) {
         if (!commitNewInput({ ...draft, person: next[0] }, false, undefined, undefined, x => { r = x }) || !r) stop()
         for (const p of next.slice(1)) r.people.push({ p, ...(r.by != null ? { by: r.by } : {}), ...(r.at != null ? { at: r.at } : {}) })
+        /* an Other its filer sent under Unavailable, filed with ALL AVAIL / ALL among its people, lands on the programme
+           instead — a placeholder is never under Unavailable (placeholderProblem; the scenario designer's G3: it was
+           refused whole, after the window had offered "Goes to") */
+        if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
       } else {
         if (says && !commitInputEdit(r, { ...draft, person: leadOf(r), docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
         /* who filed it passes on with its filer (state/perms.ts byAfterLeaving — Fable F13): to the scheduler who takes
@@ -3039,8 +3043,8 @@ export function InputEditor() {
           {/* AN OTHER ASKS WHERE IT GOES (his D1356, D1367–D1369; drawn by lw-1025-q7.mjs, SET q1n look C): Ground Programme
               (amber, the schedule's colour for it) or Unavailable (red) — the picked one solid with dark words, ordinary
               letters, 36 tall — and one grey line saying what the Leave War does with it (D1368, no separate tick). Not for
-              ALL AVAIL / ALL, which is never under Unavailable. */}
-          {isOther(draft.type) && !isSpecial(draft.person) && ctx !== 's' && ctx !== 'up' && <div className="inped-f">
+              ALL AVAIL / ALL, which is never under Unavailable — nor where either is among the people picked (G3). */}
+          {isOther(draft.type) && !isSpecial(draft.person) && !(several && ppl.some(p => isSpecial(p))) && ctx !== 's' && ctx !== 'up' && <div className="inped-f">
             <span className="inped-k">Goes to</span>
             <div className="inped-goes">
               <div className="goespick" role="group" aria-label="Goes to">
