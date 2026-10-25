@@ -462,6 +462,68 @@ for (const size of SIZES) {
     await w.ctx.close()
   }
 
+  /* ================= Q1n — "can make it nicer" (his /impeccable, 25 Oct 26): the Goes to choice redrawn =================
+     A is the drawing he saw (solid, the Duration buttons' capitals). B (recommended): the window's own picked look — a tint
+     of the colour with an edge of it, as the Duration buttons show a pick in blue (14-input-editors.css .spanbtn.on) — in
+     amber or red, the words in ordinary letters, the unpicked one's words in its colour. C: solid as A, ordinary letters.
+     Same 36px height as the Duration buttons; the grey line kept. Contrast of the words on each button measured. */
+  if (SETS.includes('q1n')) {
+    const w = await fresh(); const P = w.page
+    await sc('q1n', w, async () => {
+      await newInputWindow(w, 'Drifter', 'Other')
+      await P.locator('#inpEditRmk').fill('Under investigation')
+      if (!(await P.evaluate(() => document.querySelector('#inpEditAllday').checked))) { await L.press(w, '#inpEditAllday'); await P.waitForTimeout(300) }
+      const typeRow = '[data-testid="win-inputedit"] .inped-f:has(#inpEditType)'
+      const area = [typeRow, '[data-testid="win-inputedit"] .inped-f:has(#inpEditAllday)']
+      await P.locator(typeRow).first().evaluate(e => e.scrollIntoView({ block: 'center' })); await P.waitForTimeout(300)
+      const draw = (look, pick) => P.evaluate(({ typeRow, look, pick }) => {
+        document.querySelectorAll('[data-drawn^="q1"]').forEach(e => e.remove())
+        const tr = document.querySelector(typeRow)
+        const row = document.createElement('div'); row.className = 'inped-f'; row.dataset.drawn = 'q1-goes'
+        const lines = { g: 'Still counted in the Leave War’s manning', u: 'Counted as away on the Leave War' }
+        row.innerHTML = '<span class="inped-k">Goes to</span><div style="display:grid;gap:4px;min-width:0"><div class="spanpick" role="group" aria-label="Goes to">'
+          + `<button type="button" class="spanbtn${pick === 'g' ? ' on' : ''}" aria-pressed="${pick === 'g'}">Ground Programme</button>`
+          + `<button type="button" class="spanbtn${pick === 'u' ? ' on' : ''}" aria-pressed="${pick === 'u'}">Unavailable</button></div>`
+          + `<span class="inped-hint" style="color:var(--mut,#8b97a5);font-size:12px">${lines[pick]}</span></div>`
+        tr.after(row)
+        const col = ['229,168,59', '240,85,95'], hi = ['#F0BE5E', '#F57C85']
+        const btns = [...row.querySelectorAll('.spanbtn')]
+        btns.forEach((btn, i) => {
+          const on = btn.classList.contains('on')
+          const type = look === 'A' ? {} : { textTransform: 'none', letterSpacing: '0', fontFamily: "'Inter Tight', 'Segoe UI', system-ui, sans-serif", fontSize: '14px', fontWeight: on ? '700' : '600' }
+          let paint
+          if (look === 'B') paint = on ? { background: `rgba(${col[i]},.18)`, borderColor: `rgba(${col[i]},.7)`, color: hi[i] } : { background: 'var(--panel-2)', borderColor: 'var(--edge)', color: `rgba(${col[i]},.8)` }
+          else paint = on ? { background: `rgb(${col[i]})`, borderColor: `rgb(${col[i]})`, color: '#0b1116' } : { background: 'rgba(255,255,255,.04)', color: `rgb(${col[i]})`, borderColor: 'rgba(255,255,255,.12)' }
+          Object.assign(btn.style, type, paint)
+        })
+        /* the picked one owns both its edges (the window's own rule for .spanbtn.on + .spanbtn) */
+        if (pick === 'g') btns[1].style.borderLeftColor = btns[0].style.borderColor
+        /* contrast of each button's words on its own fill, over the window behind it */
+        const rgb = s => (s.match(/[d.]+/g) || []).map(Number)
+        const lin = v => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4 }
+        const L = c => 0.2126 * lin(c[0]) + 0.7152 * lin(c[1]) + 0.0722 * lin(c[2])
+        const under = rgb(getComputedStyle(row.closest('.win') || document.querySelector('[data-testid="win-inputedit"]')).backgroundColor)
+        const mix = (top, bot) => { const a = top.length > 3 ? top[3] : 1; return [0, 1, 2].map(k => top[k] * a + bot[k] * (1 - a)) }
+        const out = btns.map(b => { const cs = getComputedStyle(b); const fill = mix(rgb(cs.backgroundColor), under.length >= 3 ? under : [22, 27, 34]); const ink = mix(rgb(cs.color), fill); const x = L(ink), y = L(fill); return { text: b.textContent, on: b.classList.contains('on'), ratio: Math.round((Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05) * 10) / 10, h: Math.round(b.getBoundingClientRect().height), overflow: b.scrollWidth > b.clientWidth } })
+        return out
+      }, { typeRow, look, pick })
+      const ok = () => P.evaluate(() => document.querySelector('[data-drawn="q1-goes"]') ? null : 'gone')
+      for (const [look, pick, label] of [
+        ['B', 'u', 'Drawn B: a tint of the colour and its edge, as the window shows a pick; ordinary letters. Unavailable picked'],
+        ['B', 'g', 'Drawn B: Ground Programme picked'],
+        ['C', 'u', 'Drawn C (recommended): solid as before, ordinary letters. Unavailable picked'],
+        ['C', 'g', 'Drawn C: Ground Programme picked'],
+      ]) {
+        const m = await draw(look, pick)
+        note('q1n', size, `${look}/${pick}: ${JSON.stringify(m)}`)
+        measures.push({ size, set: 'q1n', look, pick, buttons: m })
+        await frame(w, `q1n-${look.toLowerCase()}-${pick === 'u' ? 'unavail' : 'ground'}`, { marks: ['[data-drawn="q1-goes"]'], around: area, check: ok, label })
+      }
+    })
+    if (w.errs.length) note('q1n-errors', size, w.errs.slice(0, 6).join(' || '))
+    await w.ctx.close()
+  }
+
   /* ================= Q2 — a course under Unavailable ================= */
   if (SETS.includes('q2')) {
     const DAY = '2026-07-16', DI = 3
