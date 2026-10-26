@@ -99,6 +99,32 @@ each fixed in the script and looked at on its picture first, not app faults.)
 **Seen, older, not this change:** after any load the sign-off box reads "4 to sign" — the sign-offs fell with the change
 waiting (D103) and are signed again for the next amendment; the same in PR 572's W7 picture.
 
+**The re-walk on the read's fixes** (§5 — a separate folder, `docs/img/handpass/2026-10-26-lw-load-reland-rid/rewalk/`;
+bundle index-DvP9EvcH.js): `Walk: 6 PASS, 0 FAIL` — R1 and R2 again, and **R3** added for the read's F2: a two-day course
+(Thu 16 – Fri 17) filed before Thursday went out, Reject and → Ground on the week, one other edit (a Common Programme end
+time on the board): "2 pending"; the load of the Original arms "Discard 1 edit"; confirmed, the note reads "Thursday is back
+to the Original. Viewers still see the Original. 1 input moved onto the programme since publishing stays there, pending." —
+no "off Friday"; the course back on Thursday's programme, 1 pending (`rewalk/r3-after-the-load`, `rewalk/r3-note-crop`). The
+re-walk met four more faults of the script's own (a board check fooled by the board kept in memory on the Inputs page, a
+door off screen, a control character an edit script wrote into a check) — each looked at and fixed in the script, none the
+app's.
+
 ## The code read
 
-*(below, once it has run)*
+One fresh, blind Opus reader (D790, D903 — no ChatGPT readers until about 1 Nov 26: the job is on [NO-ASTRA-LIST]), given
+the commit, this sheet and the rule that stored demo data is not a finding (D56), asked for absences first.
+
+| Finding | What it was | Disposition |
+|---|---|---|
+| F1 (reproduced) | → Ground named its row past the SCREEN's names only, while the working-out names past every name the SAVED week holds — a dead row of the request on an earlier day (left by a re-date) still held `r`+id; the saved week's first-seen-wins then renamed the new row at random, and the load read "Discard 2 edits" for good on that path | FIXED red-first — `state/holderbase.ts baseRowIds` (installed as `HOOKS.baseRowIds`) gives the saved names to `acceptInput` and to the count's dry run (`drafts.ts dayAsLoadLeaves`, through `viewOfWeek`'s new `ctx.taken`); `odreject.test.tsx` "the code read's F1" (red without each half) |
+| F2 (reproduced) | the load's note named a request from the moved list taken straight after its reconcile, but the working-out then lands an unfiled activity again: a course read "off Thursday and Friday too" beside "moved onto the programme … stays there" | FIXED red-first — `drafts.ts loadMovedNow`, read after the pass, says only what is still so; tests for a course (not named) and the overseas duty (still named off Thursday and Friday); walked R3 |
+| F3 (reproduced, older) | a load of Thursday that cannot put a three-day course back lands it on its start day, Wednesday — another published day (AM1, D175); the note said "off Wednesday and Friday" | FILED for him — [LOAD-MOVES-ROW-DAY] (what such a load should do is a product choice, with pictures, D994); meanwhile the note names it truly — "… is on Wednesday again too" (`loadMovedNow`, test "the code read's F3"), never silent |
+
+**Absences the reader checked and found fine:** the Ground Programme's "+ Inputs" door; Accept back onto a day whose
+version held the row (keeps the issued id); random ids against `r`+id; Undo and Redo; another week's copy; an id held in AL1,
+removed in AL2, re-added (every comparison is one day against its current version); the dry run against the load case by
+case (a request both put back and unfiled, the reconcile's other direction, locked inputs, 'u' and 'r', an overseas duty the
+version had on the programme, an activity landing again, a `kept` row); the note's new sentence for a shared input and for
+a version with no frozen inputs.
+
+**The fix commit's own narrow read** (§5 — "a fix is new code"): *(below, once it has run)*
