@@ -970,6 +970,9 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     const has=(d:any)=>!!d&&inputCoversDate(inp,d.dt)&&((d.ground)||[]).some((g:any)=>g&&g.src===id&&!g.kept);
     const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
     if(want==='g'?!landed:landed){left.push(id);return;}
+    /* AN OVERSEAS DUTY WHOSE ROW STANDS IN ANOTHER WEEK (D1393 — the third read's find): its Ground mark is one value for
+       every week, so taking it off here takes its row off there; one day's load never moves another (AM1) — left as filed */
+    if(isOD(inp.type)&&inp.odGround&&!inp.acc&&want!=='g'&&rowElsewhere(id,inp)!==null){left.push(id);return;}
     /* the version's OWN row for it stands on this very day: "on the programme" is then the fact, whatever other day the
        request also covers — leaving it "taken off" beside its standing row would be the dangling state P2-REV2-05
        forbids the other way round, and the next AL would freeze it (Fable's code read, #1). The other day reads it too;

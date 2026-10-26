@@ -578,7 +578,10 @@ body.in-cal{padding-bottom:0}
 .inputsday .ic-note .ic-poppuck-edit{flex:1 1 0;min-width:0;width:auto;min-height:28px;height:28px}
 .inputsday .ic-note .ic-secpucks{flex:1 0 100%;min-width:0;display:block;min-height:0}
 .inputsday .ic-note .ic-secpk-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%;align-items:stretch}
-.inputsday .ic-note .ic-secpk{min-width:0;display:flex}
+/* each puck CENTRED in its quarter (D694 kept under D1385): the opened day now runs edge to edge on a phone, its quarters wider
+   than a puck — at their left the fourth stood 19px from the border and the first 9px (GitHub's run, 26 Oct 26) */
+.inputsday .ic-note .ic-secpk{min-width:0;display:flex;justify-content:center}
+.inputsday .ic-note .ic-secpk .seat{display:flex;justify-content:center}
 .inputsday .ic-note .ic-secpk .seat,.inputsday .ic-note .ic-secpk .puck{min-width:0;max-width:100%;width:100%}
 .inputsday .ic-note .ic-pkadd{min-height:var(--puck-h);height:auto;width:100%;padding:0;font:700 14px/1 inherit;border:1px dashed var(--edge-2);border-radius:5px;
   background:transparent;color:var(--ink-2);cursor:pointer}
@@ -654,5 +657,5 @@ body.in-cal{padding-bottom:0}
 
 /* ⤢ AT THE END OF THE "HOW THIS WORKS" ROW (his D1386, D1396 — drawn lw-m3n-draw.mjs d4): the month's own arrow button, the
    row's height; lit while every input is shown */
-.ib-sub .ib-expand{flex:none;width:34px;height:30px;min-width:0;padding:0;font-size:16px;line-height:1}
+.ib-sub .ib-expand{flex:none;width:34px;height:28px;min-width:0;padding:0;font-size:16px;line-height:1}
 .ib-sub .ib-expand[aria-pressed="true"]{color:var(--accent);border-color:currentColor}
