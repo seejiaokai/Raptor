@@ -4873,6 +4873,42 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
 }
 
 /**
+ * GRANT OIL OVER A DRAG (his D1394, 26 Oct 26 — "one grant on each day picked … one reason for all of them"): every
+ * person-day the drag window covers gets ONE new award of `days` — the amount control's (D1392, D1395 H), which opens on
+ * half a day for a morning or afternoon Duration and a day for a whole one — with one reason and one giver for all. A day
+ * that already holds an award keeps it and gains this one: awards add up (D82), as the tracker's grant to several does.
+ * Everything is checked before anything is written; ONE command, ONE undo step. An HO takes each day's default half
+ * (`defaultAwardHalf` — the morning unless it is held; which half does not matter, D1391).
+ */
+export function grantOilDays(cells: readonly { personId: string; date: string }[], days: number, opts: { note?: string; givenBy?: string } = {}): string | null {
+  if (state.role !== 'admin') return 'Only an admin can enter OIL'
+  if (!Number.isFinite(days) || days <= 0) return 'Type how many days'
+  if (!isHalfStep(days)) return HALF_STEP_MSG
+  if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+  const note = (opts.note ?? '').trim()
+  const givenBy = (opts.givenBy ?? '').trim()
+  const seen = new Set<string>()
+  const todo = cells.filter(c => { const k = `${c.personId}|${c.date}`; if (seen.has(k)) return false; seen.add(k); return !!c.personId })   // the cells come from the grid, as setDayAward's day does
+  if (!todo.length) return 'Pick at least one day'
+  for (const c of todo) {
+    if (!warHolding(state.wars, c.date)) return 'A day picked is in no war'
+    const problem = ledgerProblem('oil', days, c.date, note, givenBy, false)
+    if (problem) return problem
+  }
+  const approvedBy = approverName(), who = entered()
+  const entries: LedgerEntry[] = todo.map(c => ({
+    id: ledgerId(), personId: c.personId, counter: 'oil', amount: days, date: c.date, reason: note, approvedBy,
+    ...(givenBy ? { givenBy } : {}), ...who,
+    ...(days === 0.5 ? { half: defaultAwardHalf(c.personId, c.date) } : {}),
+  }))
+  gesture('lw.award', () => {
+    state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
+    persistNotify()
+  })
+  return null
+}
+
+/**
  * CHANGE AN AWARD'S REASON, ITS GIVER AND ITS DAYS — AS ONE THING (Astra, 21 Sep 26): the tap list's Edit… and the day
  * window. Addressed by the award's own id (a day may hold several). One command, one undo step; everything is checked
  * before anything is written. `null` days is refused — an award is worth what it says (the old "blank means the code's

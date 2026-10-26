@@ -161,7 +161,8 @@ describe('round 2 — the row under the leaves (D1326, D1338)', () => {
     render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide onDone={() => { done = true }} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} />)
     const ids = [...screen.getByTestId('sel-extra-row').querySelectorAll('button')].map(b => b.getAttribute('data-testid'))
     /* two men: the ⋯ holds Other alone (D1356 — no Post out: a posting is one man's, the drag window's own rule) */
-    expect(ids).toEqual(['sel-file-CSE', 'sel-file-OD', 'sel-more'])
+    /* …and Grant OIL in the third place, an admin's, as on the one-day window (his D1394) */
+    expect(ids).toEqual(['sel-file-CSE', 'sel-file-OD', 'sel-oil', 'sel-more'])
     fireEvent.click(screen.getByTestId('sel-file-OD'))
     expect(done).toBe(true)
     expect(filed('OD', P)).toHaveLength(1)

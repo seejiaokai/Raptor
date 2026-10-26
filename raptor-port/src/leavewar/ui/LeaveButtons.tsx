@@ -62,9 +62,9 @@ export const DUTY_KINDS: readonly { code: string; title: string }[] = [
 /* GRANT OIL — THE THIRD PLACE (his D1349, 25 Oct 26 — "+OIL is swapping places with UNA since +OIL is commonly used"; UNA
    went with D1356): an admin's, in OIL given's green (D1320), the size of the buttons beside it; a tap opens the window's
    OIL panel, as the ⋯'s item did. A day holding an award names it ("FO · 1 day"). */
-export function GrantOilButton({ label, title, onPick }: { label: string; title: string; onPick: () => void }) {
+export function GrantOilButton({ label, title, onPick, testid = 'bid-oil' }: { label: string; title: string; onPick: () => void; testid?: string }) {
   return (
-    <button type="button" data-testid="bid-oil" className="tchip lv k-oil s-a bp-grant" title={title} onClick={onPick}>
+    <button type="button" data-testid={testid} className="tchip lv k-oil s-a bp-grant" title={title} onClick={onPick}>
       <span className="lv-code">{label}</span>
     </button>
   )

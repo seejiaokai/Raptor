@@ -32,7 +32,7 @@ import { useMemo, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
+import { grantOilDays, MAX_GIVEN_BY, MAX_REASON, awardsIn, clearCells, decidableIn, deletableIn, fileStraight, movableCells, placeApproved, postingBlocked, setBidStates, setCells, setRemarksOn, inOneWarCommand } from '../state/store'
 import { ApproveSwitch, compactSpan, MoreButton, useApproveMemory } from './BidBits'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { awardsClause } from './awardwords'
@@ -45,7 +45,8 @@ import type { Selection } from './select'
 import './bidpicker.css'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
-import { DutyButtons, LeaveButtons } from './LeaveButtons'
+import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
+import { OilAmount, oilAmountText, oilNumber, type OilPick } from './OilAmount'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { getState, recordsAt, reqRunKey } from '../state/store'
 import { addDays } from '../engine'
@@ -144,6 +145,23 @@ export function SelectSheet({
   /* POST IN, dated from the drag's first day as Post out is ([LW-DRAG-MORE-MENU], his report of 26 Oct 26) */
   const [piOpen, setPiOpen] = useState(false)
   const [piDate, setPiDate] = useState(sel.from)
+  /* GRANT OIL OVER THE DRAG (his D1394, 26 Oct 26): one grant on each day picked, one reason for all — an admin's, the
+     third place of the row under the leaves as on the one-day window (D1349). Its amount is the one control (D1392, D1395
+     H — OilAmount.tsx), opening on half a day for a morning or afternoon Duration and a day for a whole one (D1394). */
+  const [oilOpen, setOilOpen] = useState(false)
+  const [oilPick, setOilPick] = useState<OilPick>('1')
+  const [oilOther, setOilOther] = useState('')
+  const [oilNote, setOilNote] = useState('')
+  const [oilGiven, setOilGiven] = useState('')
+  const [oilErr, setOilErr] = useState('')
+  const openOil = () => { setOilPick(portion === 'full' ? '1' : '0.5'); setOilOther(''); setOilErr(''); setConfirming(null); setOilOpen(true) }
+  const giveOil = () => {
+    const raw = oilAmountText(oilPick, oilOther), n = raw.trim() ? oilNumber(raw) : 1
+    if (!Number.isFinite(n)) { setOilErr('Type how many days'); return }
+    const problem = grantOilDays(sel.cells, n, { note: oilNote, givenBy: oilGiven })
+    if (problem) { setOilErr(problem); return }
+    onDone(true)
+  }
   /* THE ENTRIES THE DRAG COVERS AND THEIR REMARKS (his D1347, D1362 — "A grey line each", 25 Oct 26; drawn in
      docs/img/handpass/2026-10-25-lw-drawings/drag-remarks/): over one man's days, each separate entry — a run of bids
      with one set of words (the store's own run, `reqRunKey`), or one leave approved on the war (one input) — with its
@@ -415,12 +433,13 @@ export function SelectSheet({
           heavy an act for one tap; the PO flow picks its own date anyway). "PO", as on the one-day sheet (the mock-up's
           reading, uncorrected — D331). */}
       {/* behind the ⋯ in the fourth place of the row under the leaves, as on the one-day window (his D1326) */}
-      {!poOpen && !piOpen && (
+      {!poOpen && !piOpen && !oilOpen && (
         <div className="bidsheet-row bp-extra" data-testid="sel-extra-row">
           {/* CSE · OD in the first two places (round 2); the third is the one-day window's Grant OIL (not offered over a
               drag); the ⋯ the fourth — Other (an admin's, his D1356 / D1365: filed under Unavailable on the Duration
               picked) and, for one man, Post out */}
           <DutyButtons onFile={fileDuty} testPrefix="sel" />
+          {role === 'admin' && <GrantOilButton testid="sel-oil" label="Grant OIL" title="Grant OIL — one grant on each day picked, one reason for all" onPick={openOil} />}
           {/* Attach first, for everyone (his D1378, D1379) — a member's ⋯ holds it alone */}
           <MoreButton testid="sel-more" items={[
             { key: 'atch', testid: 'sel-file-ATCH', label: 'Attach', title: 'Attach: attached to another squadron, a job or an exercise — filed under Unavailable on the schedule, for the Duration picked; where to is added on the Inputs page', onPick: () => fileDuty('ATCH') },
@@ -432,6 +451,20 @@ export function SelectSheet({
               onPick: () => { setPiOpen(true); setConfirming(null) } }] : []),
           ]} />
         </div>
+      )}
+      {role === 'admin' && oilOpen && (
+        <>
+          <div className="bidsheet-row postout">
+            <input className="oil-text" maxLength={MAX_REASON} data-testid="sel-oil-why" aria-label="Reason" placeholder="why — any reason"
+              value={oilNote} onChange={e => { setOilErr(''); setOilNote(e.target.value) }} />
+            <input className="oil-text given" maxLength={MAX_GIVEN_BY} data-testid="sel-oil-given-by" aria-label="Given by" placeholder="given by (optional)"
+              value={oilGiven} onChange={e => { setOilErr(''); setOilGiven(e.target.value) }} />
+          </div>
+          <OilAmount testPrefix="sel-oil" pick={oilPick} other={oilOther} err={oilErr}
+            onPick={p => { setOilErr(''); setOilPick(p); setOilOther('') }}
+            onOther={v => { setOilErr(''); setOilOther(v) }}
+            onGive={giveOil} />
+        </>
       )}
       {onPostIn && nPeople === 1 && piOpen && (
         <>

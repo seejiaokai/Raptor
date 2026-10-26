@@ -1,4 +1,4 @@
-// THE TWO WINDOWS WHERE AN HO'S HALF IS PICKED (owner, D1164 — an HO is drawn in the morning or the afternoon of its
+// THE TWO WINDOWS WHERE AN HO'S HALF IS SHOWN (owner, D1164; the bid window's pick went with D1391 — below — an HO is drawn in the morning or the afternoon of its
 // day, the half the admin picks, the morning unless he picks the afternoon; beside a half day's leave, the other half).
 //
 // The bid window's +OIL panel and the OIL tracker's grant form each offer the window's own AM / PM chips once the award
@@ -36,41 +36,51 @@ describe('the bid window’s +OIL panel', () => {
   }
   const days = (v: string) => fireEvent.change(screen.getByTestId('oil-days'), { target: { value: v } })
 
-  it('offers the half only for half a day, opening on the morning, and saves the half picked', () => {
+  /* SINCE HIS D1391 AND D1395 H (26 Oct 26): the admin is not asked which half a granted HO is ("it doesn't matter") —
+     the Days row is HO · ½ and FO · 1 to pick, a box for any other amount; the HO is still drawn in a half (D1164): the
+     morning unless the morning is held. These replace the three that pinned the Half row he took away. */
+  const lit = (id: string) => pressed(id) === 'true'
+  it('opens on FO · 1; HO · ½ gives half a day in the morning, and no half is asked', () => {
     openOil()
-    expect(screen.queryByTestId('oil-half-am'), 'a whole day has no half').toBeNull()
-    days('0.5')
-    expect(pressed('oil-half-am')).toBe('true')
-    expect(pressed('oil-half-pm')).toBe('false')
-    fireEvent.click(screen.getByTestId('oil-half-pm'))
-    expect(pressed('oil-half-pm')).toBe('true')
-    days('1')
-    expect(screen.queryByTestId('oil-half-pm'), 'gone again for a whole day').toBeNull()
-    days('0.5')
+    expect(lit('oil-pick-fo') && !lit('oil-pick-ho')).toBe(true)
+    expect((screen.getByTestId('oil-days') as HTMLInputElement).value, 'the box is for any OTHER amount').toBe('')
+    fireEvent.click(screen.getByTestId('oil-pick-ho'))
+    expect(lit('oil-pick-ho') && !lit('oil-pick-fo')).toBe(true)
+    expect(screen.queryByTestId('oil-half-am'), 'no Half row (D1391)').toBeNull()
+    expect(screen.getByTestId('oil-give').textContent).toBe('Give HO')
     fireEvent.click(screen.getByTestId('oil-give'))
-    expect(awardsOnDay(P, TUE)[0]).toMatchObject({ amount: 0.5, half: 'pm' })
+    expect(awardsOnDay(P, TUE)[0]).toMatchObject({ amount: 0.5, half: 'am' })
   })
 
-  it('beside a morning leave it opens on the afternoon — and the morning can still be picked', () => {
+  it('beside a morning leave the HO takes the afternoon by itself', () => {
     expect(setCell(P, TUE, '*LL')).toBe(true)
     openOil()
-    days('0.5')
-    expect(pressed('oil-half-pm')).toBe('true')
-    fireEvent.click(screen.getByTestId('oil-half-am'))
+    fireEvent.click(screen.getByTestId('oil-pick-ho'))
     fireEvent.click(screen.getByTestId('oil-give'))
-    expect(awardsOnDay(P, TUE)[0]!.half).toBe('am')
+    expect(awardsOnDay(P, TUE)[0]!.half).toBe('pm')
   })
 
-  it('an HO already on the day opens on its own half, says it in words, and its half can be changed', () => {
+  it('an HO already on the day opens on HO · ½, says its half in words, and keeps it', () => {
     expect(setDayAward(P, TUE, 0.5, { half: 'pm', note: 'Recall' })).toBeNull()
     openOil()
     expect(screen.getByTestId('oil-current').textContent).toContain('half a day of OIL, afternoon')
     expect(screen.getByTestId('oil-detail-days').textContent).toContain('half a day, afternoon')
-    expect(pressed('oil-half-pm')).toBe('true')
-    fireEvent.click(screen.getByTestId('oil-half-am'))
+    expect(lit('oil-pick-ho')).toBe(true)
     fireEvent.click(screen.getByTestId('oil-give'))
     expect(awardsOnDay(P, TUE)).toHaveLength(1)
-    expect(awardsOnDay(P, TUE)[0]).toMatchObject({ half: 'am', reason: 'Recall' })
+    expect(awardsOnDay(P, TUE)[0]).toMatchObject({ half: 'pm', reason: 'Recall' })
+  })
+
+  it('any other amount (D1392): typed, the picks go dark and the button names it — "1½" read as 1.5', () => {
+    openOil()
+    days('2')
+    expect(lit('oil-pick-fo') || lit('oil-pick-ho')).toBe(false)
+    expect(screen.getByTestId('oil-give').textContent).toBe('Give FO · 2 days')
+    days('1½')
+    expect(screen.getByTestId('oil-give').textContent).toBe('Give FO · 1.5 days')
+    fireEvent.click(screen.getByTestId('oil-give'))
+    expect(awardsOnDay(P, TUE)[0]).toMatchObject({ amount: 1.5 })
+    expect(awardsOnDay(P, TUE)[0]!.half).toBeUndefined()
   })
 
   it('an FO says no half', () => {

@@ -1830,3 +1830,9 @@
    words wrapped and the row stood 42 tall under 28 (GitHub's browser run, 25 Oct 26) */
 .bidsheet .tchip.lv.bp-grant { min-width: 0; }
 .bidsheet .tchip.lv.bp-grant .lv-code { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* GRANT OIL'S ONE AMOUNT CONTROL (his D1392, D1395 H — OilAmount.tsx): HO · ½ and FO · 1 to pick, then a dashed box for any
+   other amount, then the button naming what it gives; the row wraps rather than squeeze on a phone (drawn: lw-m3n-draw-ho.mjs) */
+.bidsheet .oil-amount { flex-wrap: wrap; row-gap: 8px; }
+.bidsheet .oil-picks { display: inline-flex; gap: 6px; }
+.bidsheet .oil-amount .oil-other { border-style: dashed; min-width: 0; width: 118px; }

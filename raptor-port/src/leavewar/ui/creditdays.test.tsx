@@ -220,9 +220,12 @@ describe('how many days the sheet asks for', () => {
   }
   const days = (v: string) => fireEvent.change(screen.getByTestId('oil-days'), { target: { value: v } })
 
-  it('shows 1 rather than an empty box — the ordinary grant, said out loud', () => {
+  /* since his D1395 H the ordinary grant is said by its lit pick, FO · 1, and the box is for any other amount */
+  it('opens on FO · 1 lit — the ordinary grant, said out loud — and an empty box for any other amount', () => {
     openOil(TUE)
-    expect((screen.getByTestId('oil-days') as HTMLInputElement).value).toBe('1')
+    expect(screen.getByTestId('oil-pick-fo').getAttribute('aria-pressed')).toBe('true')
+    expect((screen.getByTestId('oil-days') as HTMLInputElement).value).toBe('')
+    expect(screen.getByTestId('oil-days').getAttribute('placeholder')).toBe('other: 1½, 2…')
   })
 
   it('there is ONE button, and it says what the day will READ as', () => {

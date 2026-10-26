@@ -20,13 +20,13 @@ import '../../ui/postout.css'
 import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
 import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
 import { ApproveSwitch, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
+import { OilAmount, oilAmountText, oilNumber, oilStart, type OilPick } from './OilAmount'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { awardDays, awardsClause, halfWord } from './awardwords'
-import { HalfPick } from './CreditForm'
 import { belowZeroAsk, goesBelow } from './belowzero'
 import './bidpicker.css'
 import './oiltracker.css'
@@ -265,12 +265,17 @@ export function BidPicker({
 
      The AUTOMATIC credit is untouched: the published schedule still decides
      FO or HO by the six-hour rule, and knows nothing about this box. */
-  const [oilDays, setOilDays] = useState(credit?.days != null ? String(credit.days) : '1')
-  const oilN = Number(oilDays.trim())
+  /* the one amount control (his D1392, D1395 H — OilAmount.tsx): a lit pick, or any other amount typed */
+  const start = oilStart(credit?.days)
+  const [oilPick, setOilPick] = useState<OilPick>(start.pick)
+  const [oilOther, setOilOther] = useState(start.other)
+  const oilDays = oilAmountText(oilPick, oilOther)
+  const oilN = oilNumber(oilDays)
   const oilCode: 'FO' | 'HO' = Number.isFinite(oilN) && oilN > 0 && oilN < 1 ? 'HO' : 'FO'
   /* WHICH HALF AN HO TAKES (owner, D1164): the award's own half when the day holds one; else the day's default — the
-     other half beside a half-day leave, else the morning (the store's `defaultAwardHalf`). The admin may pick either. */
-  const [oilHalf, setOilHalf] = useState<Half>(credit?.half ?? defaultAwardHalf(personId, date))
+     other half beside a half-day leave, else the morning (the store's `defaultAwardHalf`). Not asked since his D1391 (which
+     half a granted HO is does not matter): no Half row, the half only drawn. */
+  const [oilHalf] = useState<Half>(credit?.half ?? defaultAwardHalf(personId, date))
   /* the reason a refused Move gives — a Move button that simply did nothing would read as broken */
   const [moveErr, setMoveErr] = useState('')
 
@@ -298,7 +303,7 @@ export function BidPicker({
   const [oilErr, setOilErr] = useState('')
   const grantOil = () => {
     flushWords()   // the words first, so one Undo takes the award and leaves them (the narrow read's N2)
-    const problem = onCredit!(oilCode, oilDays, oilNote, oilGiven, oilHalf)
+    const problem = onCredit!(oilCode, Number.isFinite(oilN) ? String(oilN) : oilDays, oilNote, oilGiven, oilHalf)
     if (problem) { setOilErr(problem); return }
     onClose()
   }
@@ -762,33 +767,12 @@ export function BidPicker({
               value={oilGiven} onChange={e => { setOilErr(''); setOilGiven(e.target.value) }}
             />
           </div>
-          <div className="bidsheet-row postout">
-            {/* "Days", not "How many" — the row above already asks How many,
-                about DATES, and two of the same question on one sheet reads as
-                a mistake. */}
-            <span className="lab">Days</span>
-            {/* The one control. It opens at 1 — the ordinary grant, said out
-                loud rather than implied — and the button beside it shows what
-                the day will READ as before it is pressed. */}
-            <input
-              type="text" inputMode="decimal" className="oil-num" maxLength={6}
-              data-testid="oil-days" aria-label="How many days" placeholder="days"
-              value={oilDays} onChange={e => { setOilErr(''); setOilDays(e.target.value) }}
-            />
-            <button className="dchip approve" data-testid="oil-give" onClick={grantOil}>
-              Give {oilCode}
-            </button>
-            {oilErr && <span className="note warn" data-testid="oil-err">{oilErr}</span>}
-          </div>
-          {/* WHICH HALF, FOR HALF A DAY (owner, D1164 — an HO is drawn in the morning or the afternoon, as a half day's
-              leave is). A row of its own UNDER the days, so nothing above moves while he types; the label names the
-              thing it sets, in one word (design lesson 31), and the chips are the window's own AM / PM. */}
-          {oilCode === 'HO' && (
-            <div className="bidsheet-row postout">
-              <span className="lab">Half</span>
-              <HalfPick testid="oil-half" value={oilHalf} onPick={h => { setOilErr(''); setOilHalf(h) }} />
-            </div>
-          )}
+          {/* THE ONE AMOUNT CONTROL (his D1392, D1395 H): HO · ½ and FO · 1 to pick, a box for any other amount, the button
+              naming what it gives; no morning / afternoon row (D1391) */}
+          <OilAmount pick={oilPick} other={oilOther} err={oilErr}
+            onPick={p => { setOilErr(''); setOilPick(p); setOilOther('') }}
+            onOther={v => { setOilErr(''); setOilOther(v) }}
+            onGive={grantOil} />
         </>
       )}
 
