@@ -131,7 +131,11 @@ narrows D655 "for an Other's Goes to only" — but within the ruling's purpose: 
 their tests and the re-walk carry them. After the fixes: the 191 affected unit-test files again, under the lock (see
 Tests).
 
-## Questions waiting for him
+## His answers
+
+**26 Oct 26, "Ok everything as recommended"** (after asking what is locked and which inputs): Q1 → D1398 (the lock for every kind a scheduler can move), Q2 → D1399 (a member's retype never revives a rejected input), Q3 → D1400 (the words stand), Q4 → D1401 (a load is not a scheduler's move).
+
+## The questions as put to him
 
 Put to him 26 Oct 26 on the look page https://claude.ai/artifact/4GWeaEyr7NkCMKD2rjQip1 (newest first, each with its pictures), with the preview https://raptor-git-claude-lw-other-goes-to-lock-kai-e2f5.vercel.app (Ready at the pushed commit).
 
