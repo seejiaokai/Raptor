@@ -634,3 +634,11 @@ body.in-cal{padding-bottom:0}
 /* THE TYPE BOX KEEPS ITS WIDTH (M3 7.4 — D1179): its family choices ("All duty & commitments") would widen it and wrap the
    row onto a second line on a desktop (D687's one line); a long choice is cut in the closed box, read whole in the list */
 .inputs-top .inputs-filterfields #inFType{max-width:8.5em;text-overflow:ellipsis}   /* (8.5em: GitHub's Linux letters are wider — 11.5 still wrapped there) */
+
+/* EACH CARD'S SQUARE IN ITS KIND'S COLOUR (his D1384, D1396 — drawn lw-m3n-draw.mjs d2): the same colours as the month's bars
+   and the Leave War's boxes (--k-*); an absence filled, a duty or other commitment outlined as its bar is (D1321). After the
+   red / amber squares above, which these replace. */
+.icard .icard-sq.kd{background:rgba(var(--kc),.9);box-shadow:inset 0 0 0 1px rgba(var(--kc),1)}
+.icard .icard-sq.k-ll{--kc:var(--k-ll)} .icard .icard-sq.k-ol{--kc:var(--k-ol)} .icard .icard-sq.k-oilt{--kc:var(--k-oilt)} .icard .icard-sq.k-care{--kc:var(--k-care)}
+.icard .icard-sq.k-med{--kc:var(--k-med)} .icard .icard-sq.k-cse{--kc:var(--k-cse)} .icard .icard-sq.k-od{--kc:var(--k-od)}
+.icard .icard-sq.duty{background:rgba(232,237,242,.05);box-shadow:inset 0 0 0 1.5px rgba(200,212,228,.78)}

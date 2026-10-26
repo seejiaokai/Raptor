@@ -87,7 +87,8 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onDoc,
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); return }
             if (onKey) onKey(e)
           }}>
-          <span className="icard-sq" aria-hidden="true" />
+          {/* in its kind's colour, filled for an absence, outlined for a commitment (his D1384, D1396) */}
+          <span className={'icard-sq ' + (facts.colour ? 'kd k-' + facts.colour : 'duty')} aria-hidden="true" />
           <b className="icard-who" data-testid={`${tid}-who`}>{names}</b>
         </span>
         <span className={'icard-kind' + (cx && !title ? ' is-cx' : '')} data-testid={`${tid}-kind`}>{kind}</span>
