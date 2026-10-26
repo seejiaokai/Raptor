@@ -2491,7 +2491,7 @@ its value and never in innerText.
 
 ### Observation 720: A scroll-bar hunt needs the bars switched back on, and the phone's own bars only show in his recording
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — written into the bug-check order as §7.11 lesson 6 (what only the real phone draws; `--hide-scrollbars` taken off for a walk that judges bars)
 **Date:** 2026-10-27
 **Session context:** The Tracker's stray scroll bars (D1405): listing every box that scrolls and every bar drawn, desktop and phone.
 **Skill:** New skill candidate: none — the walk-scripts guide (`raptor-port/docs/walk-scripts.md`)

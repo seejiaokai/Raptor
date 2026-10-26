@@ -745,6 +745,12 @@ it cannot apply. One fresh reader checks each lesson; the closing report names t
    Cancel / Add, pinned to its foot, stood exactly where Remarks was lifted. **Lesson:** wherever a box or row is moved into sight (a scroll, a lift, a jump to it), the walk checks it at
    its resting place against everything that can stand over it — the keys, and the window's own pinned bars and buttons,
    a banner, a bubble, a sticky heading — and pictures it there.
+6. **Something only the real phone draws (D1405, the Tracker's chart, 27 Oct 26).** Handing the chart's scrolling to the
+   iPhone (D992) brought the iPhone's own fading scroll bars, drawn mid-chart and at the top left during a pinch; the walk
+   ran in a desktop browser, which never draws them — and a test browser hides even a desktop's bars unless told not to.
+   **Lesson:** when a change hands anything to the phone itself (its scrolling, its keyboard, its bounce), the sizing step
+   names what only the real phone draws and asks him for a look or a recording on his iPhone before merge; a walk that
+   judges scroll bars launches with the test browser's `--hide-scrollbars` taken off.
 
 ## 8. Making the checks FIND rather than CONFIRM
 
