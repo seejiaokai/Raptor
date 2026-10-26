@@ -307,6 +307,6 @@
 
 /* ON A PHONE THE OPENED DAY RUNS EDGE TO EDGE, as the Inputs calendar's day does (his D1385, D1396 — 25-inputs-calendar.css) */
 @media (max-width:620px){
-  .floatwin.sansday.rests{left:0;right:0;max-width:none;border-left-width:0;border-right-width:0}
+  .floatwin.sansday.rests{left:0;right:0;width:auto;max-width:none;border-left-width:0;border-right-width:0}
   .sansday .sd-list{padding-left:8px;padding-right:8px}
 }

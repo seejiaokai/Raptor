@@ -15,7 +15,7 @@ describe('the opened day edge to edge on a phone (D1385)', () => {
     it(`${cls}: no side gap or border, the list padded 8px`, () => {
       const b = phoneBlock(css(file), cls)
       expect(b, 'inside the phone rule').toContain('@media (max-width:620px){')
-      expect(b).toContain('max-width:none;border-left-width:0;border-right-width:0')
+      expect(b).toContain('width:auto;max-width:none;border-left-width:0;border-right-width:0')   // width:auto, or the window's own min(430px, 100vw - 24px) leaves a gap on the right (the walk's find)
       expect(b).toContain(`.${cls} .sd-list{padding-left:8px;padding-right:8px}`)
     })
   }

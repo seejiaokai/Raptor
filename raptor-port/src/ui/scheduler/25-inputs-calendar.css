@@ -648,7 +648,7 @@ body.in-cal{padding-bottom:0}
    list's side padding is the Inputs list's 8px, so its cards stand where the list's do; the cards' insides are unchanged.
    The SANS calendar's day alike (24-sans-calendar.css). */
 @media (max-width:620px){
-  .floatwin.inputsday.rests{left:0;right:0;max-width:none;border-left-width:0;border-right-width:0}
+  .floatwin.inputsday.rests{left:0;right:0;width:auto;max-width:none;border-left-width:0;border-right-width:0}   /* width:auto beats the window's own min(430px, 100vw - 24px) — the walk's find */
   .inputsday .sd-list{padding-left:8px;padding-right:8px}
 }
 
