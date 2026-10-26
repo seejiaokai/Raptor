@@ -37,10 +37,10 @@ describe('the bid window’s +OIL panel', () => {
   const days = (v: string) => fireEvent.change(screen.getByTestId('oil-days'), { target: { value: v } })
 
   /* SINCE HIS D1391 AND D1395 H (26 Oct 26): the admin is not asked which half a granted HO is ("it doesn't matter") —
-     the Days row is HO · ½ and FO · 1 to pick, a box for any other amount; the HO is still drawn in a half (D1164): the
+     the Days row is HO · 0.5 and FO · 1 to pick, a box for any other amount; the HO is still drawn in a half (D1164): the
      morning unless the morning is held. These replace the three that pinned the Half row he took away. */
   const lit = (id: string) => pressed(id) === 'true'
-  it('opens on FO · 1; HO · ½ gives half a day in the morning, and no half is asked', () => {
+  it('opens on FO · 1; HO · 0.5 gives half a day in the morning, and no half is asked', () => {
     openOil()
     expect(lit('oil-pick-fo') && !lit('oil-pick-ho')).toBe(true)
     expect((screen.getByTestId('oil-days') as HTMLInputElement).value, 'the box is for any OTHER amount').toBe('')
@@ -60,7 +60,7 @@ describe('the bid window’s +OIL panel', () => {
     expect(awardsOnDay(P, TUE)[0]!.half).toBe('pm')
   })
 
-  it('an HO already on the day opens on HO · ½, says its half in words, and keeps it', () => {
+  it('an HO already on the day opens on HO · 0.5, says its half in words, and keeps it', () => {
     expect(setDayAward(P, TUE, 0.5, { half: 'pm', note: 'Recall' })).toBeNull()
     openOil()
     expect(screen.getByTestId('oil-current').textContent).toContain('half a day of OIL, afternoon')

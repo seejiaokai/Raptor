@@ -65,7 +65,7 @@ describe('Grant OIL in the drag window (D1394)', () => {
     expect(awardsOnDay(P, D1).length + awardsOnDay(P, D2).length, 'one Undo takes them all').toBe(0)
   })
 
-  it('a morning Duration opens on HO · ½: half a day on each, drawn in the morning (D1391)', () => {
+  it('a morning Duration opens on HO · 0.5: half a day on each, drawn in the morning (D1391)', () => {
     mount()
     fireEvent.click(screen.getByTestId('sel-portion-am'))
     fireEvent.click(screen.getByTestId('sel-oil'))

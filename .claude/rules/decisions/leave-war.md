@@ -56,10 +56,11 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1395 | 26 Oct 26 | The Leave War's four designs of the 26 Oct 26 look page are built as drawn: "Delete — sure?" on two lines in its button (C); Grant OIL's Days row with HO · ½ and FO · 1 picks, a box for any amount, the button naming it (H); a tap on a course day opens the bid window, the course's line on top; the day panel in columns of four. |
+| D1397 | 26 Oct 26 | Grant OIL's half-day pick reads "HO · 0.5", never "HO · ½", and the box for any other amount hints "other: 1.5, 2…"; a half in Grant OIL is written in figures as everywhere on the Leave War (D1246). |
+| D1395 | 26 Oct 26 | The Leave War's four designs of the 26 Oct 26 look page are built as drawn: "Delete — sure?" on two lines in its button (C); Grant OIL's Days row with HO · 0.5 (D1397) and FO · 1 picks, a box for any amount, the button naming it (H); a tap on a course day opens the bid window, the course's line on top; the day panel in columns of four. — changed by D1397 |
 | D1394 | 26 Oct 26 | Grant OIL from the drag window gives one grant on each day picked — an FO for a whole-day Duration, an HO for a morning or afternoon — with one reason for all of them. |
 | D1393 | 26 Oct 26 | A scheduler can take an overseas duty out of Unavailable as he can a course — Reject, then → Ground or → Unavail — and the schedule's crew list then counts him as the Leave War does. |
-| D1392 | 26 Oct 26 | Grant OIL gives any amount on one day — half a day, a day, or more than a day (1½, 2 …) — and its design keeps every amount easy to give, half a day included. |
+| D1392 | 26 Oct 26 | Grant OIL gives any amount on one day — half a day, a day, or more than a day (1.5, 2 …) — and its design keeps every amount easy to give, half a day included. — changed by D1397 |
 | D1391 | 26 Oct 26 | When an admin grants OIL by hand, he is not asked whether an HO is the morning or the afternoon — which half a granted HO is does not matter; it is still drawn in a half of its day's cell (D1164), the morning unless the morning is already held. |
 | D1390 | 26 Oct 26 | An overseas duty a scheduler rejects counts him back in on the Leave War, as a rejected course does (D1381): it no longer lowers the manning, the Available rows or the SANS calendar's need. — changed by D1393 |
 | D1389 | 26 Oct 26 | A course or an overseas duty that a scheduler rejects and then moves onto the Ground Programme counts him in on the Leave War, as every commitment on the Ground Programme does: only a commitment under the schedule's Unavailable list counts him out. |

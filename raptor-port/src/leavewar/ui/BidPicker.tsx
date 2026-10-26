@@ -783,7 +783,7 @@ export function BidPicker({
               value={oilGiven} onChange={e => { setOilErr(''); setOilGiven(e.target.value) }}
             />
           </div>
-          {/* THE ONE AMOUNT CONTROL (his D1392, D1395 H): HO · ½ and FO · 1 to pick, a box for any other amount, the button
+          {/* THE ONE AMOUNT CONTROL (his D1392, D1395 H, D1397): HO · 0.5 and FO · 1 to pick, a box for any other amount, the button
               naming what it gives; no morning / afternoon row (D1391) */}
           <OilAmount pick={oilPick} other={oilOther} err={oilErr}
             onPick={p => { setOilErr(''); setOilPick(p); setOilOther('') }}
