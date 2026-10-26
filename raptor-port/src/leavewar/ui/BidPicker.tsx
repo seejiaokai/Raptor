@@ -25,6 +25,7 @@ import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
+import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { awardDays, awardsClause, halfWord } from './awardwords'
 import { belowZeroAsk, goesBelow } from './belowzero'
@@ -232,6 +233,15 @@ export function BidPicker({
      tap arms it (D287 (3): it asks twice) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* a "Tap again to delete" left armed is taken back when the Leave War leaves the screen — the page is kept mounted, so
+     this sheet can wait open across a page switch for a tap from someone who no longer knows it was the second (the
+     reason D1102's date ask is taken back there too) */
+  /* [LW-ARMS-PAGE-LEAVE-REST] (27 Oct 26): every armed second tap here is taken back when the Leave War leaves the screen — the
+       page is kept mounted, so the question could wait across a page switch for a tap from someone who no longer knows it
+       was the second (the reason the posting doors' asks are taken back too, D1102) */
+  /* the code read's F1 and F2: the one-day window's own "Delete — sure?" (clearAsked, clearIds) is taken back too, and the
+     question's words with it */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirming(null); setClearAsked(false); setClearIds([]); setNote('') } }), [])
   // The post-IN controls, folded the same way and for the same reason. No
   // archive switch: arriving has no counterpart to it — the Quals archive is
   // something a person LEAVES the roster into.
@@ -1125,6 +1135,8 @@ export function PostOutSheet({
   hasAccount,
   blockedFor,
   lockedWhy,
+  deletesNow,
+  refusedAt,
   onChange,
   onUndo,
   onPlace,
@@ -1143,6 +1155,12 @@ export function PostOutSheet({
   hasAccount?: boolean
   /** why the posting would be held back on its date (the last admin), or null */
   blockedFor?: (outcome: PostOutcome) => string | null
+  /** would a posting dated this day run NOW — today or earlier (sync.ts postingRunsBy)? A Delete's date moved there
+   *  deletes him at once, so it asks twice first (D1102) */
+  deletesNow?: (poDate: string) => boolean
+  /** why a posting dated this day would be refused, or null — asked BEFORE the date question, so "Tap again to delete"
+   *  is never offered for a delete the save would refuse (the blind read's L1) */
+  refusedAt?: (poDate: string) => string | null
   /** Re-post with a new date and/or outcome. Commits on change — the
    *  sheet stays up so the admin can see the grid move behind it. */
   onChange: (fromDate: string, outcome: PostOutcome) => string | void
@@ -1157,6 +1175,20 @@ export function PostOutSheet({
   const [err, setErr] = useState('')
   /* a Delete chip does not commit on its own tap: it arms "Tap again to delete Hex" (D287 (3) — it asks twice) */
   const [delArm, setDelArm] = useState(false)
+  /* …and neither does the DATE of a posting that is already a Delete, moved to today or earlier — the tap that would
+     delete him at once (D1102, 21 Oct 26 — [PO-MOVE-DATE-DELETE-ASK]): the date picked waits here, shown in the box and
+     the line, until the same "Tap again to delete Hex" is pressed; backing out — a chip, the ✕, leaving the Leave War —
+     leaves the posting and its date as they were. A date still to come deletes no one now and is saved at once — picked
+     while the question waits too (D1102's reading (1)). */
+  const [askDate, setAskDate] = useState<string | null>(null)
+  const armed = delArm || askDate !== null
+  const shownFrom = askDate ?? poFrom
+  /* the Leave War is kept mounted, so this sheet survives a page switch: a question to delete is never left waiting for
+     one tap from someone who no longer knows it was the second ([LW-SETTINGS-SMALL]'s reason, met here too) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArm(false); setAskDate(null) } }), [])
+  /* …and when the posting under it changes — an Undo, another tab, the date or outcome moved — the question is about a
+     posting that no longer stands: it goes, never to delete at the date it was asked about */
+  useEffect(() => { setAskDate(null) }, [poFrom, outcome])
   const locked = !!lockedWhy
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
@@ -1174,8 +1206,17 @@ export function PostOutSheet({
             Reset): clearing a PO is the Undo button's job. A date picked is
             committed at once, as it always was. */}
         <DateBox className="dateinput" testid="postout-date" label={`Move ${callsign}'s post-out date`}
-          value={poFrom} disabled={locked}
-          onChange={v => { setDelArm(false); setErr(onChange(v, outcome) || '') }} />
+          value={shownFrom} disabled={locked}
+          onChange={v => {
+            setDelArm(false); setErr('')
+            if (outcome === 'delete' && deletesNow?.(v)) {
+              const why = v === poFrom ? null : refusedAt?.(v) ?? null
+              if (why) { setAskDate(null); setErr(why); return }   // refused: said at once, nothing asked, nothing saved
+              setAskDate(v === poFrom ? null : v); return
+            }
+            setAskDate(null)
+            if (v !== poFrom) setErr(onChange(v, outcome) || '')
+          }} />
       </div>
       {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-locked">{lockedWhy}</span></div>}
       {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): the four chips, committed on the tap as the date is — a Delete
@@ -1183,6 +1224,8 @@ export function PostOutSheet({
       {!locked && <><OutcomeChips value={delArm ? 'delete' : outcome} testid="postout"
         onChange={o => {
           setErr('')
+          /* a chip tapped while the date asks is "not that after all": the date goes back to the one that stands */
+          if (askDate !== null) { setAskDate(null); return }
           if (o === 'delete') { setDelArm(true); return }
           /* the armed Delete tapped again is "not that after all" — back to the posting as it stands, never a change to
              "nothing else" (the chips' un-choose would otherwise commit 'none' behind his back) */
@@ -1190,15 +1233,15 @@ export function PostOutSheet({
           setErr(onChange(poFrom, o) || '')
         }} />
       <div className="bidsheet-row postout">
-        <span className="note" data-testid="postout-line">{outcomeLine(delArm ? 'delete' : outcome, poFrom, !!hasAccount)}</span>
+        <span className="note" data-testid="postout-line">{outcomeLine(delArm ? 'delete' : outcome, shownFrom, !!hasAccount)}</span>
       </div></>}
       {!locked && blockedFor && blockedFor(delArm ? 'delete' : outcome) && (
         <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-blocked">{blockedFor(delArm ? 'delete' : outcome)}</span></div>
       )}
-      {delArm && (
+      {armed && (
         <div className="bidsheet-row postout">
           <button className="dchip po del-armed" data-testid="postout-delete-go"
-            onClick={() => { setDelArm(false); setErr(onChange(poFrom, 'delete') || '') }}>
+            onClick={() => { const at = shownFrom; setDelArm(false); setAskDate(null); setErr(onChange(at, 'delete') || '') }}>
             Tap again to delete {callsign}
           </button>
         </div>
@@ -1208,7 +1251,7 @@ export function PostOutSheet({
         <span className="note warn" data-testid="postout-err">{err}</span>
       </div>}
       <div className="bidsheet-row postout">
-        {!locked && <button className="dchip po" data-testid="postout-undo" onClick={() => { const why = onUndo(); if (why) setErr(why) }}>
+        {!locked && <button className="dchip po" data-testid="postout-undo" onClick={() => { setDelArm(false); setAskDate(null); const why = onUndo(); if (why) setErr(why) }}>
           Undo post out (PO)
         </button>}
         {/* THE WAY THROUGH TO PLACING LEAVE (owner, 20 Sep 26). An admin's tap

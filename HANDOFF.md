@@ -20,6 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/sync-main-handoff-fe9391 -->
+### `claude/sync-main-handoff-fe9391` — THE NIGHT OF 26–27 OCT 26 (/overnight, 12 hours): DONE — the six old pull requests LIVE; jobs 1 and 2 waiting for his look; job 3 on this branch — written 27 Oct 26, verify before use
+- **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time. (None happened; the chat reached about 91%.)
+- **The six (D1402, D1403) — ALL LIVE:** 560 (the night of 21 Oct's records: rulings D1098–D1108), 555 (the RULES MODIFIED tag off; the Traffic window keeps typing), 559 (GitHub's unit check split by measured time; the rulings pinned to LF), 570 (windows and Escape; the strip over the crew list), 557 (the Tracker's two pinch edges), 556 (the Leave War small fixes — its half-day arrows dropped as overtaken by the overhaul). Each checked against the later work, levelled with `main`, re-tested, re-walked with pictures, the hand-merged ones read by a fresh Opus reader (no findings), merged on green; `main` at 7e6544e8e, Vercel Production READY (https://raptor-pvckfiix6-kai-e2f5.vercel.app — his sign-in). 557's first run hung an hour in "tracker (smoke 2/2)" and was cancelled; its next run passed.
+- **Job 1 — pull request https://github.com/seejiaokai/Raptor/pull/575** (`claude/lw-small-1027`): D1105's Delete words and "· auto delete"; every armed second tap on the Leave War taken back on leaving it (the read's F1 — the one-day window's own Delete — and F2, the words, fixed red-first); [LW-GROUPS-STALE-AFTER-ARCHIVE] not a fault (the walk compared two months). Sheet `raptor-port/docs/handpass/2026-10-27-lw-small.md`. Auto-fix switched off (D1090).
+- **Job 2 — pull request https://github.com/seejiaokai/Raptor/pull/574** (`claude/trk-pinch-1027`): the Tracker pinch's three edges (a third finger, a mouse after a lost iPad lift, a sign-out mid-pinch); smoke 453/0; read clean. Sheet `raptor-port/docs/handpass/2026-10-27-trk-pinch.md`. Auto-fix switched off.
+- **Job 3 — on THIS branch:** the backlog tidy — sixteen items found live and archived, nine lines rewritten (`raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`); 555's re-walk note; rulings D1402–D1404; observations 714, 719. Its pull request carries these records — his "merge live".
+- **Questions waiting for him:** none.
+- **Next:** his look and "merge live" for 574, 575 and this branch's records; then the overhaul's **M4** in a fresh chat (D1404); [KBS-PHONE-SLIDE] waits for Fable and his recording (D1366).
+- **Opening line (M4):** Start from main: git fetch origin, git switch --detach origin/main. Then read HANDOFF.md and OUTSTANDING.md [LW-OVERHAUL], and the build plan raptor-port/docs/superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md (M4 — deciding), and plan the Leave War overhaul's M4 (D1404). Check Remote Control is on for this chat and switch it on if not.
+- **Notes:** ruling numbers to D1404; observations to 719; design lessons to 60.
+<!-- /now -->
 <!-- now:claude/lw-load-reland-rid -->
 ### `claude/lw-load-reland-rid` — the load's "Discard N edits" over a request moved onto the Ground Programme across days ([LW-LOAD-RELAND-RID]); FULL-checked, MERGED LIVE on his "Yes merge live" of 26 Oct 26 (PR 573) — written 26 Oct 26, verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.

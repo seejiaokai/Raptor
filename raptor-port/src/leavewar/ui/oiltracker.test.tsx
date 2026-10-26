@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { setLwOnScreen } from '../state/screen'
 
 import { balanceOf } from '../engine'
 import { awardsOnDay, getState, grantTo, ingestDutyCredit, setDayAward, initStore, setBalance, setCell, setDayEvent, setOilPolicy, setRole } from '../state/store'
@@ -263,6 +264,13 @@ describe('the credit boxes', () => {
     // to snap to +OIL on the edit; it is LVE alone now and stays so.
     expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
     fireEvent.click(screen.getByTestId('oil-entry-l4'))
+    fireEvent.click(screen.getByTestId('oil-del-l4'))
+    expect(screen.getByTestId('oil-del-l4').textContent).toBe('Really delete?')
+    /* [LW-ARMS-PAGE-LEAVE-REST]: taken back when the Leave War leaves the screen — the next tap asks again */
+    act(() => setLwOnScreen(true))
+    act(() => setLwOnScreen(false))                                  // another page in front
+    act(() => setLwOnScreen(true))                                   // and back
+    expect(screen.getByTestId('oil-del-l4').textContent).toBe('Delete')
     fireEvent.click(screen.getByTestId('oil-del-l4'))
     expect(screen.getByTestId('oil-del-l4').textContent).toBe('Really delete?')
     fireEvent.click(screen.getByTestId('oil-del-l4'))

@@ -1,0 +1,19 @@
+common.mjs v1
+traffic buttons visible: 8
+title: Traffic · WAVE 1 rows: 1
+shot B1-dk-traffic-open
+row0 value: 1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H
+before repaint: active=INPUT data-airi=0 value=1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H ABC caret=53/53 inAirBody=true
+shot B2-dk-traffic-typed-before-repaint
+second tab shows login? 1
+tab2 crewRest now 11h
+after switching back (route 1): active=INPUT data-airi=0 value=1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H ABC caret=53/53 inAirBody=true
+route 1 tab1 saw other tab change? {"crew":720,"sameNode":true,"val":"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H ABC"}
+after renderEditWeek() notify: active=INPUT data-airi=0 value=1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H ABC caret=53/53 inAirBody=true
+ mutations inside traffic window during repaint: 0 ; eWeek html length before/after 333997 333997
+ node kept: true is __airNode connected: true
+shot B3-dk-traffic-after-repaint
+after typing more: active=INPUT data-airi=0 value=1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H ABCXYZ caret=56/56 inAirBody=true
+shot B4-dk-traffic-kept-typing
+after 2 more notifies: active=INPUT data-airi=0 value=1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H ABCXYZ caret=56/56 inAirBody=true
+ERRORS []

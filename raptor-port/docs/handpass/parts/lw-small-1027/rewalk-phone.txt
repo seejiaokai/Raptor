@@ -1,0 +1,13 @@
+lws/lw1027-walk.mjs VERSION 4 — phone
+  picture n27-j1-phone-delete-line.png
+PASS  J1-phone  the line: "On 14 Dec the app deletes him automatically, with his account. Days he flew keep his puck."  [n27-j1-phone-delete-line.png]
+  picture n27-j2-phone-users-row.png
+PASS  J2-phone  deleted now false; Admin → Users: "posting out 14 Dec · auto delete"  [n27-j2-phone-users-row.png]
+  entries ["slipway-open:slipway","l7","dol-1","dol-5","slash-open:slash","dol-8","dol-3","l9","dol-6","dol-7","harpoon-open:harpoon","dol-4"]
+  picture n27-j3-phone-armed.png
+  picture n27-j3-phone-back.png
+PASS  J3-phone  grant l7: armed "Really delete?" → another page and back: "(the editor closed) → reopened: "Delete""; the grant still there true  [n27-j3-phone-armed.png, n27-j3-phone-back.png]
+  picture n27-j4-phone-armed.png
+  picture n27-j4-phone-after.png
+PASS  J4-phone  cell-ammo-2026-07-04: armed "Delete also takes Cinder’s OIL award (3 days) — tap Delete a" → back: note "(the window closed)"; Delete again: ""; award kept true  [n27-j4-phone-armed.png, n27-j4-phone-after.png]
+lws/lw1027-walk phone: 4 PASS, 0 FAIL

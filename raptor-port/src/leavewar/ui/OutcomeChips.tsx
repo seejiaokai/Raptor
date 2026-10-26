@@ -28,7 +28,9 @@ export function outcomeLine(outcome: PostOutcome, poDate: string, hasAccount: bo
   switch (outcome) {
     /* "archived", no longer "archived on Quals": Quals lost its archive to Admin → Users (D310, [ONE-DOOR]) */
     case 'overseas': return `On ${day}: archived${hasAccount ? ', account suspended' : ''}.`
-    case 'delete': return `On ${day}: deleted${hasAccount ? ' with his account' : ''}. Days he flew keep his puck.`
+    /* his D1105 (21 Oct 26 — "Perhaps it should show auto delete", then "A"): the Delete says the app does it by itself
+       on the date; the button stays "Delete" (D298) — [PO-AUTO-DELETE-WORDS] */
+    case 'delete': return `On ${day} the app deletes him automatically${hasAccount ? ', with his account' : ''}. Days he flew keep his puck.`
     case 'sans': return `On ${day}: becomes SANS.`
     default: return `On ${day}: off the manpower, nothing else.`
   }

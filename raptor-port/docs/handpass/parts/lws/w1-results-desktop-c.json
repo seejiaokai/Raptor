@@ -1,0 +1,54 @@
+{
+ "results": [
+  {
+   "id": 9,
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "asked with today (true); Undo post out: sheet gone=true, his day 2026-10-31 still struck=false, Hex deleted=false, Admin → Users line \"Hex | hex | · WSO · CAT C\" (no posting tag); the top-bar Undo is DISABLED afterwards — its tooltip: \"Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final.\" (so the scenario's \"top-bar Undo puts the posting back\" cannot be walked: by D350 a posting is not undone there); Delete posting rebuilt for the next scenarios: date 2026-10-31, outcome Delete",
+   "pic": "w1-desktop-s9-after-undo-post-out.png, w1-desktop-s9-topbar-undo.png"
+  },
+  {
+   "id": 14,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  },
+  {
+   "id": 17,
+   "size": "desktop",
+   "verdict": "OBSERVED",
+   "seen": "picked 2025-06-15: box \"Sat 31 Oct 26\n▾\", data-value 2026-10-31, ask \"null\", line \"On 31 Oct: deleted with his account. Days he flew keep his puck.\", err \"null\" calendar cannot reach 2025-06-15: Error: calendar has no day 2025-06-15; after tapping: n/a (no ask); Hex deleted=false",
+   "pic": "w1-desktop-s17-early-picked.png"
+  },
+  {
+   "id": 17,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  },
+  {
+   "id": 19,
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "signed in as us (member), same world; Hex's struck day 2026-10-31 (struck=true) tapped: Post out sheet false, PO controls []; his own row dragged over days: controls shown [\"bid-window\",\"polast-rocky\",\"bid-box\",\"select-sheet\",\"sel-who\",\"sel-span\",\"sel-cancel\",\"sel-portion-full\",\"sel-portion-am\",\"sel-portion-pm\",\"sel-LL\",\"sel-OL\",\"sel-OIL\",\"sel-CCL\",\"sel-FCL\",\"sel-PL\",\"sel-EL\",\"sel-CL\"] (no PO among them=true); page errors []",
+   "pic": "w1-desktop-s19-member-tap-hex, w1-desktop-s19-member-drag"
+  },
+  {
+   "id": 20,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  },
+  {
+   "id": 4,
+   "size": "desktop",
+   "verdict": "NOT WALKED",
+   "seen": "script stopped: TimeoutError: locator.click: Timeout 30000ms exceeded.",
+   "pic": ""
+  }
+ ],
+ "errors": []
+}

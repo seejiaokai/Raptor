@@ -113,6 +113,8 @@ describe('the colour/mark legend', () => {
     expect(rowBox(leg, 'Filed on the Inputs page: change it there, not here')[0]!.classList.contains('raptor')).toBe(true)
     // none of the old swatch classes is left in the colour/fill/size key
     for (const old of ['appr', 'tbc', 'ref']) expect(leg.querySelector(`.leg-box .c.${old}`)).toBeNull()
+    // the Legend never teaches the stored half-day codes "*LL" / "LL*", which nothing on screen shows (the blind read's L3, 21 Oct 26)
+    expect(text).not.toMatch(/\*LL|LL\*/)
   })
 
   /* ESCAPE CLOSES IT (bug sweep, 28 Aug 26). The legend and the under-manned

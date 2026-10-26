@@ -1,0 +1,39 @@
+{
+ "allResults": [
+  {
+   "id": "34-tap",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "tapping the archived man's row went to: {\"dayList\":\"Piston Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. HO — OIL earned (Duty\",\"oneDay\":null,\"dialogs\":[\"daylist-sheet: Piston Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. H\"],\"page\":\"leavewar\"}",
+   "pic": "w2-s34-phone-after-tap.png"
+  },
+  {
+   "id": "34-name-nov-view",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "Nov view (Piston drawn 0): names [\"Piston\",\"Saber\"]",
+   "pic": "w2-s34-phone-note-nov.png"
+  },
+  {
+   "id": "34-columns",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "list columns (who, day, instruction left edges): [[10,82,144],[10,82,144]]",
+   "pic": ""
+  },
+  {
+   "id": "34-setup",
+   "size": "phone",
+   "verdict": "OK",
+   "seen": "before the archive the note found 1: [{\"who\":\"Piston\",\"day\":\"Sat 18 Jul\",\"what\":\"Weekend/PH work earns *HO, but the day holds LL\",\"do\":\"Decide the bid ›\",\"whoX\":10,\"dayX\":82,\"doX\":144},{\"who\":\"Saber\",\"day\":\"Sat 18 Jul\",\"what\":\"Weekend/PH work earns *HO, but the day holds LL\",\"do\":\"Decide the bid ›\",\"whoX\":10,\"dayX\":82,\"doX\":144}]",
+   "pic": ""
+  },
+  {
+   "id": "34-name",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "after archiving Piston (his row drawn 1 in Jul): note found 1; names [\"Piston\",\"Saber\"]",
+   "pic": "w2-s34-phone-note-archived.png"
+  }
+ ]
+}
