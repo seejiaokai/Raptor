@@ -87,6 +87,10 @@ walk's finger drag carries it; (c) the Info half's check only guards a later cha
 by it: his iPhone (mid-pinch included — whether the top-left bar was the chart's, though no other box here can scroll),
 an iPhone older than iOS 18.2, an iPad, a real Android phone.
 
+## His look
+
+27 Oct 26, on his iPhone, on the branch's preview: *"For the tracker they are gone"* — the chart's bars no longer show.
+
 ## Gates
 
 While the repo is public, GitHub's run of the pull request is the gate set (D1086); on his PC: the new spec, red then green.
