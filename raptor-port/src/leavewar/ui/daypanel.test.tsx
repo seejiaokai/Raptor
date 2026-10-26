@@ -3,6 +3,7 @@
    days, state) — never a remark; ‹ › step across months and into a date no period holds. */
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import { closeDates, initStore, setCell, setCellRange, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { _resetFloatWins } from '../../ui/FloatWindow'
@@ -40,6 +41,15 @@ describe('the day panel', () => {
       expect(r.querySelector('.dl-fig')).toBeTruthy()
     }
     expect(figs.textContent).not.toContain('½')
+  })
+  /* his D1382, D1395: columns of four, filled down the left first, each row its name left and figure right (the layout is the
+     walk's to see; this pins the stylesheet that draws it) */
+  it('the figures run in columns of at most four rows, the left column first', () => {
+    const css = readFileSync('src/leavewar/ui/bidpicker.css', 'utf8').replace(/\r\n/g, '\n')
+    const rule = css.match(/\n\.lwday-figs \{[^}]*\}/)![0]
+    expect(rule).toContain('grid-template-rows: repeat(4, auto)')
+    expect(rule).toContain('grid-auto-flow: column')
+    expect(css).toMatch(/\.lwday-figs \.dl-row \{ display: flex;[^}]*justify-content: space-between/)
   })
 
   it('who is away: one line a person — the box, the run\u2019s dates, the days, the state — and never a remark', () => {

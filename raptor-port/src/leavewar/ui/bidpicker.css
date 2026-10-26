@@ -1674,10 +1674,14 @@
 .lwday-body { display: flex; flex-direction: column; gap: 10px; padding: 2px 0 8px; }
 .lwday-note { margin: 0; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
 .lwday-events { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; color: var(--ink); }
-.lwday-figs { display: grid; grid-template-columns: max-content max-content; column-gap: 18px; row-gap: 3px; font-size: 13px; font-variant-numeric: tabular-nums; }
-.lwday-figs .dl-row { display: contents; }
-.lwday-figs .dl-name { color: var(--ink-2); }
-.lwday-figs .dl-fig { color: var(--ink); font-weight: 600; }
+/* IN COLUMNS OF FOUR (his D1382, D1395 — 26 Oct 26: "max 4 rows … more will go to the middle then to the right column … text
+   that is too long will … wrap … aligned horizontal and vertically neat"; drawn lw-m3n-draw.mjs d1): the figures run down
+   the left column first, then the middle, then the right; each column's names stand left and its figures right; a long
+   name wraps and its row grows; rows line up across the columns. Narrows D1198's one column. */
+.lwday-figs { display: grid; grid-template-rows: repeat(4, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 16px; row-gap: 4px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.lwday-figs .dl-row { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; min-width: 0; }
+.lwday-figs .dl-name { color: var(--ink-2); min-width: 0; overflow-wrap: anywhere; }
+.lwday-figs .dl-fig { color: var(--ink); font-weight: 600; flex: none; }
 .lwday-figs .dl-amber .dl-name, .lwday-figs .dl-amber .dl-fig { color: var(--adv); }
 .lwday-figs .dl-red .dl-name, .lwday-figs .dl-red .dl-fig { color: var(--hard); }
 .lwday-away { display: flex; flex-direction: column; gap: 4px; }
