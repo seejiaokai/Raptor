@@ -103,6 +103,9 @@ onBeforeTrackerLogout(async show => {
 let sessionSerial = 0;
 function endSession() {
   sessionSerial++;
+  /* a pinch running at the sign-out ends here, laid out nowhere: its lift would otherwise mark the zoom as the next
+     person's ([TRK-PINCH-MORE-EDGES] (3)) */
+  if (endPinchForSession) endPinchForSession();
   undoStack = []; redoStack = [];
   dlgCancelAll();                     /* a half-answered question, and any waiting: cancelled */
   pop = null; popDoneDate = ''; popFailDate = ''; popMsg = null;
@@ -3721,9 +3724,19 @@ function takeBackFirstFinger() {
    pinch left it. It reads a little soft while zooming in, until the lift. Edit chart layout's pinch moves its own view
    (view.k), already a transform, and is as it was. */
 let pinching = false;
+export const isPinching = () => pinching;
+/* [TRK-PINCH-MORE-EDGES] (3): the session end's way into the chart's pinch — set by enablePinchZoom */
+let endPinchForSession = null;
 function enablePinchZoom(el) {
   if (!el || el.__pinch) return; el.__pinch = true;
   const pts = new Map(); let start = null;
+  endPinchForSession = () => {
+    const s = start; pts.clear(); start = null;
+    if (!pinching) return;
+    pinching = false;
+    if (s && s.w) { s.w.style.transform = ''; s.w.style.transformOrigin = ''; s.w.style.willChange = ''; }
+    releaseFirstFinger(); perfOff();
+  };
   const dist = a => Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);
   const mid = a => ({ x: (a[0].x + a[1].x) / 2, y: (a[0].y + a[1].y) / 2 });
   /* the pinch's end, outside Edit chart layout: the picture let go and the chart laid out at the zoom it reached */
@@ -3785,8 +3798,44 @@ function enablePinchZoom(el) {
   /* a finger landing anywhere means the touch that last had its id has ended — a phone that reuses ids (Android) would
      otherwise count a thumb off the chart as one of the chart's, after a lift lost to a redraw (the fix read's 2) */
   window.addEventListener('touchstart', e => { for (const t of Array.from(e.changedTouches || [])) if (!el.contains(t.target)) mine.delete(t.identifier); }, { capture: true, passive: true });
+  /* THE PINCH'S START, taken for the two fingers now down — at a second finger, and again when the pair changes (a third
+     finger landed, then one of the first two lifted: [TRK-PINCH-MORE-EDGES] (1) — the new pair carries on from the zoom
+     the old one reached, never measured against the old pair's spread and middle). `fresh` is a second finger landing:
+     only then is the first finger's action taken back (Edit chart layout) and the fingers' hold taken. */
+  function beginPinch(fresh) {
+    const a = [...pts.values()], m = mid(a);
+    pinching = true;
+    if (fresh && arrangeMode) takeBackFirstFinger();   /* may redraw the board, so before perfOn marks it */
+    /* the board holds both fingers from here on — it is never redrawn away, so
+       their moves and lifts reach it whatever became of what they landed on
+       (a pinch makes no click, so nothing is taken from a ball) */
+    for (const id of pts.keys()) { try { el.setPointerCapture(id); } catch (_) {} }
+    perfOn();
+    start = { d: dist(a) || 1, k: view.k, z: flowZoom, arrange: arrangeMode, flips: arrangeFlips };
+    if (arrangeMode) {
+      start.o = canvasOrigin();
+      start.p = canvasPointAt(m.x, m.y, start.o);
+    } else {
+      start.r = el.getBoundingClientRect();
+      start.c = chartPointAt(el, m.x - start.r.left, m.y - start.r.top);
+      start.m0 = start.m = m; start.zz = start.z;
+      const w = el.querySelector('.flowwrap');
+      if (w) {
+        /* how far one of the transform's pixels moves on screen — the wrap's own zoom scales it, and engines have
+           differed on how: measured here, not assumed. The stretch is about the spot under the fingers. */
+        const r0 = w.getBoundingClientRect();
+        w.style.transform = 'translateX(100px)';
+        const u = (w.getBoundingClientRect().left - r0.left) / 100 || 1;
+        w.style.transform = ''; w.style.willChange = 'transform';
+        w.style.transformOrigin = `${(m.x - r0.left) / u}px ${(m.y - r0.top) / u}px`;
+        start.w = w; start.u = u;
+      }
+    }
+  }
   el.addEventListener('pointerdown', e => {
-    if (e.pointerType === 'mouse') return;
+    /* a mouse or trackpad press is no finger: but one press after a lift lost on an iPad (Safari) must still end that
+       pinch first, or the chart ignores the mouse until the next touch ([TRK-PINCH-MORE-EDGES] (2)) */
+    if (e.pointerType === 'mouse') { if (pts.size) { const s = start; pts.clear(); start = null; if (pinching) endPinch(s); releaseFirstFinger(); } return; }
     /* A PRIMARY touch is the device saying no other finger is down: anything still
        counted is a lift that never arrived (Fable's final read F1 — Safari can send
        a lift to the element the finger landed on even after a redraw has removed it,
@@ -3799,36 +3848,7 @@ function enablePinchZoom(el) {
     const t0 = e.target;
     if (t0 && t0 !== el && t0.addEventListener) { t0.addEventListener('pointerup', drop, { once: true }); t0.addEventListener('pointercancel', drop, { once: true }); }
     if (pts.size === 1 && arrangeMode) holdFirstFinger();
-    if (pts.size === 2) {
-      const a = [...pts.values()], m = mid(a);
-      pinching = true;
-      if (arrangeMode) takeBackFirstFinger();   /* may redraw the board, so before perfOn marks it */
-      /* the board holds both fingers from here on — it is never redrawn away, so
-         their moves and lifts reach it whatever became of what they landed on
-         (a pinch makes no click, so nothing is taken from a ball) */
-      for (const id of pts.keys()) { try { el.setPointerCapture(id); } catch (_) {} }
-      perfOn();
-      start = { d: dist(a) || 1, k: view.k, z: flowZoom, arrange: arrangeMode, flips: arrangeFlips };
-      if (arrangeMode) {
-        start.o = canvasOrigin();
-        start.p = canvasPointAt(m.x, m.y, start.o);
-      } else {
-        start.r = el.getBoundingClientRect();
-        start.c = chartPointAt(el, m.x - start.r.left, m.y - start.r.top);
-        start.m0 = start.m = m; start.zz = start.z;
-        const w = el.querySelector('.flowwrap');
-        if (w) {
-          /* how far one of the transform's pixels moves on screen — the wrap's own zoom scales it, and engines have
-             differed on how: measured here, not assumed. The stretch is about the spot under the fingers. */
-          const r0 = w.getBoundingClientRect();
-          w.style.transform = 'translateX(100px)';
-          const u = (w.getBoundingClientRect().left - r0.left) / 100 || 1;
-          w.style.transform = ''; w.style.willChange = 'transform';
-          w.style.transformOrigin = `${(m.x - r0.left) / u}px ${(m.y - r0.top) / u}px`;
-          start.w = w; start.u = u;
-        }
-      }
-    }
+    if (pts.size === 2) beginPinch(true);
   }, { capture: true, passive: false });
   el.addEventListener('pointermove', e => {
     if (!pts.has(e.pointerId)) return;
@@ -3849,7 +3869,10 @@ function enablePinchZoom(el) {
     }
   }, { capture: true, passive: false });
   const drop = e => {
+    const was = pts.size;
     if (!pts.delete(e.pointerId)) return;   /* not a finger this board is counting */
+    /* three fingers down to two: the pinch so far settles, and the pair left begins a fresh one from there (1) */
+    if (was === 3 && pts.size === 2 && start) { const s = start; start = null; if (pinching) endPinch(s); beginPinch(false); return; }
     if (!pts.size) releaseFirstFinger();
     if (pts.size < 2) {
       const s = start; start = null;
