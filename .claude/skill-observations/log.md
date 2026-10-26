@@ -2395,3 +2395,18 @@ element that is the row's own (its id-carrying button or attribute), not by sear
 its value and never in innerText.
 
 **Principle:** Assert presence by identity (an element keyed to the thing), not by text that a rendering choice can hide.
+
+### Observation 714: Handoffs let six built, checked pull requests fall out of view
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** levelling a fresh chat with main and reading the merged block's "Pick up here"
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** writing the block — what is open
+
+**Issue:** Six pull requests built and checked on the nights of 21 and 23 Oct 26 (555, 556, 557, 559, 560, 570) were never merged, and every handoff block written since named only its own branch, so the "Pick up here" chain never mentioned them. They were found only by listing open pull requests; by then each clashed with main (317 to 668 commits behind) and the owner was surprised to learn the work was not live.
+
+**Suggested improvement:** in the session-handoff skill's block-writing step, run the open pull request list and name every open pull request not owned by this block in one line ("Also open, waiting for his merge live: …"), with how far behind main each is.
+
+**Principle:** A handoff that reports only its own work hides finished-but-unshipped work by others; the open-work list must come from the source of truth (the open pull requests), not from the writer's memory.

@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/sync-main-handoff-fe9391 -->
+### `claude/sync-main-handoff-fe9391` — the six old pull requests of 21–23 Oct 26, live one at a time (D1402) — written 26 Oct 26, verify before use
+- **Where it started:** levelled with `main` after PR 573; listing open pull requests found six built and checked on the nights of 21 and 23 Oct 26 that never merged (555 schedule pages, 556 Leave War small fixes, 557 Tracker, 559 the checks, 560 the night's records, 570 windows and Escape), each now clashing with `main` (317–668 commits behind). His "Merge live", then "merge one at a time see if they are still applicable since the leave war overhaul change" (D1402).
+- **Order:** 560 (records, documents only) → 555 → 557 → 559 → 570 → 556 (the one the Leave War's later work touches most). Each: what `main` already does dropped, the rest merged level with `main`, its tests and build, a re-walk of what the clashes touched, GitHub's run green, then merged.
+- **Done so far:** none.
+- **Pick up here:** the next pull request in the order above that is still open.
+- **Notes:** ruling numbers to D1402; observations to 714.
+<!-- /now -->
 <!-- now:claude/lw-load-reland-rid -->
 ### `claude/lw-load-reland-rid` — the load's "Discard N edits" over a request moved onto the Ground Programme across days ([LW-LOAD-RELAND-RID]); FULL-checked, MERGED LIVE on his "Yes merge live" of 26 Oct 26 (PR 573) — written 26 Oct 26, verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.

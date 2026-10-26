@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1402 | 26 Oct 26 | The six old pull requests of 21–23 Oct 26 go live one at a time on this "merge live": each is first checked for what still applies since the Leave War's later work, what main already does is dropped, the rest is brought level with main, re-checked, and merged once its new check is green. |
 | D1366 | 25 Oct 26 | The keyboard fault on his iPhone (the page behind a window showing as the keys come) is handed to Fable to fix after his weekly reset (Mon 26 Oct 26, evening), from a brief written now and a fresh recording he saves for it; until then no chat builds a seventh round, and the questions page and the build go on. |
 | D1363 | 25 Oct 26 | Every questions page put to him shows only what is still open, newest first; answered and replaced questions leave the page and are kept in the project. |
 | D1297 | 24 Oct 26 | Every fault he finds that a bug check's walk missed is learned from by itself, the same day, without asking him: why the walk missed it is written as a lesson in the bug-check order's list of missed faults (§7.11), every later walk's sizing step and brief check their scenarios against that list, and the fault is fixed red-first as usual. |
