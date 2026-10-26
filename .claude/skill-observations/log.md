@@ -1757,6 +1757,9 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 **Suggested improvement:** Make the default unconditional: script edits go through the Edit tool or a script file written with the Write tool, never a code string passed through a shell; when a helper "finds nothing", `cat -A` the line first.
 
+Met again 26 Oct 26 (M3 batch, items 1–3): a `sed -i` that wrote `'\\r\\n'` into an edit script left raw newlines inside a regex (a syntax error), and a `node -e` given a `/c/…` path read `C:\c\…`. Both cost a round trip; the Write/Edit-tool scripts beside them worked first time. The guard stands as proposed: a hook refusing `node -e`/`python -c` bodies with a backslash.
+Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` into real line breaks inside a test file (a transform error), and a one-line `sed -i` on the Leave War's `store.ts` (CRLF) wrote every line back with LF — a 5,400-line diff for a one-line change, found only by `git diff --numstat` before the code read. A cheap catch worth making standard: after any shell edit, `git diff --numstat` the file and stop when the count is far above the edit.
+
 **Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
 
 - Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding a regex with a doubled backslash lost one backslash on the way (and this very note lost another when written by a script), and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
