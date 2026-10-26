@@ -510,8 +510,7 @@ export function acceptInput(di:any,inp:any,dest:any){
      button is not drawn for one (ui/html.ts accBtns); this is the door behind it. */
   if(dest==='u'&&isPlaceholderInput(inp))return false;
   if(dest==='u'){ inp.acc='u'; delete inp.odGround; markEdit(); return true; }
-  /* an overseas duty's row on the Ground Programme is kept by a mark on the record (engine/inputs.ts odOut — D1393) */
-  if(isOD(inp.type))inp.odGround=true;
+
   /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
      was the content key inpKey). Content keys are not unique — two inputs
      agreeing on person·date·type·start-minute (twins) minted the same `src`, so
@@ -528,7 +527,7 @@ export function acceptInput(di:any,inp:any,dest:any){
        reading "taken off", and Accept did nothing. Accept now ADOPTS that row — the request is on the programme again,
        no second row. (A general re-file on the switch itself was refused: switching back would then wake a deliberate
        removal as a fresh, flagging request — Fable's plan read F1.) Any other filing: the row is already there. */
-    if(inp.acc==='r'){ inp.acc='g'; markEdit(); return true; }
+    if(inp.acc==='r'){ inp.acc='g'; if(isOD(inp.type))inp.odGround=true; markEdit(); return true; }
     return false;
   }
   /* …AND NOT A SECOND ROW ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26; D175 across weeks — Fable's G3). A request covering
@@ -536,6 +535,9 @@ export function acceptInput(di:any,inp:any,dest:any){
      Monday take a second one. It asks the saved weeks too (weekstash.ts rowElsewhere — read-only; the filing stays
      week-local), and refuses when it cannot read one (never a second row on an unknown). */
   if(rowElsewhere(key,inp))return false;
+  /* an overseas duty's row on the Ground Programme is kept by a mark on the record (engine/inputs.ts odOut — D1393), set only
+     here, where the landing is certain (the code read's F5: set before the refusals above it stayed on a refused press) */
+  if(isOD(inp.type))inp.odGround=true;
   d.ground=d.ground||[];
   /* PUTTING AN ISSUED LANDING BACK IS A ROUND TRIP, NOT A NEW ROW ([HUMAN-RETEST] the amendment
      system, walk W4-F2, 24 Sep 26; register AM20). On a published day whose CURRENT issued

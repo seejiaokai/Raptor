@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut, dayPendingItems } from './publish'
 import { inputProtected } from './quarantine'
-import { INPUTS, inputCoversDate, inpId, inpLabel, goneRequestName, idsOf } from './inputs'
+import { isOD, INPUTS, inputCoversDate, inpId, inpLabel, goneRequestName, idsOf } from './inputs'
 import { PEOPLE } from './people'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
@@ -679,7 +679,11 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
      away and back turned a deliberate removal into a fresh request that flags (Fable's earlier read). What cannot be
      put back without moving another day is left as filed and named (LOADLEFT, for the caller's message). */
   const plan = filingRestorePlan(di, snap.fil)
-  plan.put.forEach(({ inp, want }) => { if (want) inp.acc = want; else delete inp.acc })   // the plan already skips a quarantined request
+  plan.put.forEach(({ inp, want }) => {   // the plan already skips a quarantined request
+    if (want) inp.acc = want; else delete inp.acc
+    /* an overseas duty's Ground Programme is its mark too (D1393): set with 'g', gone with any other filing (the code read's F1) */
+    if (isOD(inp.type)) { if (want === 'g') inp.odGround = true; else delete inp.odGround }
+  })
   markKept(nd)   // against the filings as the load leaves them
   LOADLEFT = plan.left
   LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp), on: x.inp.acc === 'g',

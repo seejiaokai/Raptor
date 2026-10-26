@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
+import { isOD, dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -88,6 +88,9 @@ const hhmm = (m: any) => { const n = +m; return Number.isFinite(n) ? `${pad(Math
 const timeWords = (inp: any) => inp.allday ? (inp.half === 'am' ? 'morning' : inp.half === 'pm' ? 'afternoon' : 'all day') : `${hhmm(inp.s)}–${hhmm(inp.e)}`
 const FIL: Record<string, string> = { '': 'not on the programme', g: 'on the programme', u: 'under Unavailable', r: 'taken off the programme' }
 const filWords = (a: any) => FIL[String(a || '')] ?? String(a || '')
+/* an overseas duty's filing as words: no mark is under Unavailable, by its kind; its Ground mark is the programme (D1393 — the code
+   read's F4) */
+const filOf = (r: any, acc: any) => (isOD(r && r.type) && !acc ? (r.odGround ? 'g' : 'u') : acc)
 const oilWords = (o: any) => {
   if (!o || typeof o !== 'object') return 'not asked'
   const v = Object.values(o).map(Number)
@@ -170,7 +173,7 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
      held, or where the save turned it against the new default as well (stretched AND unticked in one save — the
      scenario designer's 3) — never a second line for what the dates alone did. */
   if (tillTurned(b, a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · till date`, base({ from: tillShown(b) ? 'shown' : 'hidden', to: tillShown(a) ? 'shown' : 'hidden' }))
-  if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
+  if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(filOf(b, b.acc)), to: filWords(filOf(a, accNow(a))) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
   /* its documents (a medical request's photos and PDFs — [BLOCK-NO-HISTORY-LINE], the group-A walk, 30 Sep 26): one added
      to or removed from a request already filed wrote no line; the pair is read only through rowDocIds (state/docs.ts) */

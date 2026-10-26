@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { rosterShown } from './faceattrs'
-import { inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
+import { goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -632,7 +632,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     const flying=String(key).indexOf(':')<0, dt=DAYS[r.di].dt;
     const own=/^[dsga]:/.test(String(key))?rowRef(String(key)[0],String(key).slice(2).split('.')):null;
     const whole=(x:any)=>{if(awayAllDay(x))return true; const w2=inpWin(x); return !!w2&&w2[0]<=0&&w2[1]>=1439;};
-    const x=inputLinesOn(dt).find((x:any)=>!isAway(x)&&isPersonal(x.type)&&inpShow(x,dt,undefined,true)&&x.person===id
+    const x=inputLinesOn(dt).find((x:any)=>!isAway(x)&&(isPersonal(x.type)||goesOnProg(x))&&inpShow(x,dt,undefined,true)&&x.person===id
       &&!(canWork(x.type)&&!flying)&&whole(x)&&!(own&&own.src&&own.src===x.iid));
     if(x)return `already on ${inpLabel(x)}`;
   }
@@ -666,7 +666,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
        (the validator's day.input carries the nx/pv tails). */
     const flying=String(key).indexOf(':')<0;
     const cand=(dt:any,pred:(x:any)=>boolean)=>inputLinesOn(dt).find((x:any)=>
-      !isAway(x)&&isPersonal(x.type)&&inpShow(x,dt)&&x.person===id
+      !isAway(x)&&(isPersonal(x.type)||goesOnProg(x))&&inpShow(x,dt)&&x.person===id
       &&!(canWork(x.type)&&!flying)&&pred(x));
     const iHit=(x:any,shift:number)=>{const w2=inpWin(x);
       return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};

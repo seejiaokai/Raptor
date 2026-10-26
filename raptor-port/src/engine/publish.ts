@@ -8,7 +8,7 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf } from './inputs'
+import { isOD, INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -953,7 +953,9 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
   if(dt==null)return {put,left};
   (INPUTS||[]).forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt))return;
-    const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
+    /* an overseas duty on the Ground Programme keeps that by a mark (D1393 — engine/inputs.ts odOut): its filing is 'g'
+       with or without the week's own mark (the fresh code read's F1) */
+    const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||(isOD(inp.type)&&inp.odGround?'g':''));
     if(filingSame(fil,id,cur))return;   // D174: a request the version never held, taken off since, stays taken off — never back to a fresh one that flags
     if(inputProtected(inp))return;   // a quarantined week's request is never touched — in the one plan both callers read (Fable's read, #2)
     /* ITS row — on a day it covers. A DEAD kept row (a version's row on a day the request no longer covers, D363) carries

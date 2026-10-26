@@ -6,7 +6,7 @@ import { rowPlaces, rowRef, slotVal } from '../engine/slots'
 import { rowItemKey } from '../engine/oil'
 import { DAYS } from '../engine/data'
 import { PEOPLE, whoId } from '../engine/people'
-import { inpById, inpLabel, idsOf, isUnavail } from '../engine/inputs'
+import { inpById, inpLabel, idsOf, listedUnavail } from '../engine/inputs'
 import type { ELogRow } from '../engine/editlog'
 import { HISTMODE, SBDAY, esc } from '../state/view'
 import { screenBox } from './kbscroll'
@@ -158,7 +158,7 @@ export function findHistCell(root: ParentNode, key: string): HTMLElement | null 
    so a line of the history about ONE person put in or taken out is kept to his own row only where each man HAS a row;
    the one line tells them all. (The mark that a line is one man's is stored since the one-rule job's check, 12 Oct 26 -
    engine/editlog.ts logAction - so this question is first asked now.) */
-const oneMansRow = (iid: string): boolean => { const inp: any = inpById(iid); return !!inp && (isUnavail(inp.type) || inp.acc === 'u') }
+const oneMansRow = (iid: string): boolean => { const inp: any = inpById(iid); return !!inp && listedUnavail(inp) }   // a rejected overseas duty is one line under Personal Inputs (D1393)
 export function findInputCell(root: ParentNode, key: string): HTMLElement | null {
   const p = iuParts(String(key))
   if (!p || !p.iid) return null

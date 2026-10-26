@@ -10,7 +10,10 @@ import { INPUTS, isAway, odOut, listedPersonal, listedUnavail } from '../engine/
 import { SCHED } from '../engine/publish'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
-import { dayOff } from '../engine/avail'
+import { dayOff, slotBar } from '../engine/avail'
+import { filingRestorePlan } from '../engine/publish'
+import { availableFor } from '../leavewar/sync'
+import { PEOPLE } from '../engine/people'
 import { initStore } from '../state/store'
 import { setSession } from '../state/auth'
 import { setPage } from '../state/view'
@@ -98,6 +101,30 @@ describe('Reject, then → Ground or → Unavail, as a course has (D1393)', () =
     expect(warCounts(x)).toBe(true)
     expect(listedUnavail(x)).toBe(true)
     expect(el(accCtl(WED, x)).textContent).toBe('Reject')
+  })
+  /* THE FRESH CODE READ'S FINDS (26 Oct 26) — an overseas duty on the Ground Programme everywhere a course there is read */
+  const oneDayOD = (who: string, extra: any = {}) => {
+    const r: any = { iid: 'od-mon-' + who, person: who, type: 'OD', date: 'Jul 13', yr: 2026, allday: true, remarks: '', mod: '', ...extra }
+    INPUTS.unshift(r); return r
+  }
+  const freeOnMon = () => Object.keys(PEOPLE).find(id => !PEOPLE[id].special && !PEOPLE[id].archived && !(PEOPLE[id] as any).pers
+    && !INPUTS.some((i: any) => i.date === 'Jul 13' && (i.person === id || (i.people || []).some((x: any) => x.p === id)))) as string
+  it('F1: a version loaded back puts it where the version had it — its Ground mark is its filing', () => {
+    const r = oneDayOD(freeOnMon(), { odGround: true })
+    const plan = filingRestorePlan(0, {})
+    expect(plan.put.find(p => p.inp === r), 'under Unavailable in the version: the load puts it back there').toMatchObject({ want: '' })
+  })
+  it('F2: on the Ground Programme he is kept out of the ALL AVAIL crowd, as a course there keeps him', () => {
+    const who = freeOnMon()
+    expect(availableFor('2026-07-13', [600, 660])).toContain(who)
+    oneDayOD(who, { acc: 'g', odGround: true })
+    expect(availableFor('2026-07-13', [600, 660])).not.toContain(who)
+  })
+  it('F3: the crew picker says he is already on it, as the warning list flags it', () => {
+    const who = freeOnMon()
+    oneDayOD(who, { acc: 'g', odGround: true })
+    validate()
+    expect(slotBar(who, '0.0.0.0.' + (PEOPLE[who].seat === 'RCP' ? 'w' : 'p'))).toContain('already on')
   })
   it('his bell says it as a filing: taken out of, and filed under, Unavailable', () => {
     const before = { ...od() }

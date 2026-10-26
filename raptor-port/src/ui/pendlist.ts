@@ -22,7 +22,7 @@
 import { DAYS } from '../engine/data'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { PEOPLE, whoId, isSpecial } from '../engine/people'
-import { INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, placeholderOf, remarksShown } from '../engine/inputs'
+import { isOD, INPUTS, inpId, inpLabel, goneRequestName, isFly, titleOf, toOf, inputCoversDate, idsOf, placeholderOf, remarksShown } from '../engine/inputs'
 import { officialSliceNow } from '../engine/validate'
 import { dayPendingItems, daySnapOf, dayCurVer, nextSeq, MOVE_LABELS, requestRow, warnMsgKey, warnCallsigns, peopleAttrsNow, faceRuleVals, faceRuleValsCompared, hidePending } from '../engine/publish'
 import type { PendItem } from '../engine/publish'
@@ -132,9 +132,11 @@ type Words = { where: string; from: string; to: string; who: string; when: strin
 function requestWords(e: any, row?: any, was?: any): { where: string, from: string, to: string } {
   const id = decodeURIComponent(String(e.addr || '').split('.').slice(1).join('.'))
   const inp = INPUTS.find((x: any) => inpId(x) === id)
-  const from = FIL[e.from || ''] || ''
+  /* an overseas duty with no mark stood under Unavailable, by its kind (D1393 — the code read's F4) */
+  const od = isOD((inp || was || {}).type), fil = (v: any) => FIL[(od && !v) ? 'u' : (v || '')] || ''
+  const from = fil(e.from)
   if (!inp) return { where: row ? requestName(null, row) : was ? requestName(was) : requestName(null), from, to: 'deleted' }
-  return { where: requestName(inp), from, to: FIL[e.to || ''] || '' }
+  return { where: requestName(inp), from, to: fil(e.to) }
 }
 /* whose · what — from the request while it exists, from its row once it is gone (the row carries who, the type and the
    remarks). ONE body for every line that names a request, so they cannot word it two ways. */

@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
+import { goesOnProg, INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -1180,7 +1180,8 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
        its row cancels the input itself): its people are free for whoever else needs them */
     if (inputSilent(inp)) return false
     const away = isAway(inp) && !canWork(inp.type)
-    const commit = isPersonal(inp.type)
+    /* …an overseas duty a scheduler put on the Ground Programme too (D1393 — the code read's F2) */
+    const commit = isPersonal(inp.type) || goesOnProg(inp)
     if (!away && !commit) return false
     return covers(inp) && hits(inp)
   })).map((l: any) => l.person))

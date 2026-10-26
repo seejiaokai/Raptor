@@ -29,7 +29,7 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { INPUTS, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId } from './inputs'
+import { goesOnProg, INPUTS, inputLinesOn, frozenInputDiffs, inputCoversDate, isPersonal, inputDormant, inputSilent, baseYear, inpId } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays, stashSched, stashGet } from './weekstash'
 import { getWorld, filingActive, filingHas } from './world'
@@ -150,7 +150,7 @@ function workedSet(day:any,ix:any,approved?:any){
   if(!signed){
     /* one line a named person of each input on the date (inputs.ts inputLinesOn) */
     inputLinesOn(day.dt).forEach((inp:any)=>{
-      if(!isPersonal(inp.type))return;
+      if(!isPersonal(inp.type)&&!goesOnProg(inp))return;   // an overseas duty on the Ground Programme is a day worked too (D1393 — the code read's F3)
       /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) never auto-lands. */
       if(inputDormant(inp))return;
       /* …nor does a CANCELLED or information-only one count as a day worked (D760 reading 1) */

@@ -1466,7 +1466,7 @@ export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
 export function lateMates(inp:any):any[]{
   /* (since the one-rule build: the people of the ONE record — its faces, each with his own late date where he has one;
      under Unavailable a row is one man's, and speaks for him alone) */
-  if(!inp||!isPersonal(inp.type)||inp.acc==='u')return [inp];
+  if(!inp||!listedPersonal(inp))return [inp];   // an overseas duty taken out of Unavailable is one line too (D1393)
   const f=facesOf(inp.several?(inputOnAny(inp.iid)||inp):inp);
   return f.length?f:[inp];}
 const lateOne=(inp:any):any=>inp?lateMates(inp).find((r:any)=>isLateInput(r)&&lateShown(r))||null:null;
