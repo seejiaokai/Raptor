@@ -127,4 +127,12 @@ case (a request both put back and unfiled, the reconcile's other direction, lock
 version had on the programme, an activity landing again, a `kept` row); the note's new sentence for a shared input and for
 a version with no frozen inputs.
 
-**The fix commit's own narrow read** (§5 — "a fix is new code"): *(below, once it has run)*
+**The fix commit's own narrow read** (§5 — "a fix is new code"; one fresh Opus reader, round 1 of at most about three): F1's
+name is now always outside every name the saved week and the screen hold, whichever side the dead row sits (its probe:
+a dead row on Friday, → Ground on Wednesday — count 0 before and after the load); the live check's extra names change a
+landed row's name, never whether it lands, so ordinary days are unchanged (probe: a wave-label edit, 1 / 0 with and without
+the hook); the other callers of the working-out pass no names; the timing of the note after the pass is right. **One
+finding, low, reproduced:** F3's note read "is on Wednesday again too" — untrue ("again": it never stood there; "too": it
+is no longer on Thursday). FIXED red-first: a move onto a day it never stood on is marked (`moved`) and reads "… is on
+Wednesday's programme now, pending there."; the rest of that case is [LOAD-MOVES-ROW-DAY]'s question. A wording fix of one
+line, carried by its test ("the code read's F3"); no further round.

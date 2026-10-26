@@ -1605,7 +1605,8 @@ export function routeClick(e: MouseEvent) {
       /* each request that came back onto (or went off) the programme with its row, by its own name, and the other days
          that read it too */
       + loadMovedNow().map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
-          return m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
+          /* landed by the working-out on a day it never stood on ([LOAD-MOVES-ROW-DAY], a question for him): "now", not "again" */
+          return m.moved ? ` ${what} is on ${dayList(m.days)}'s programme now, pending there.` : m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
       /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
       + rowsLeftSentences(ROWSLEFT)
       /* …and a member's input changed since the day was issued, which stays pending (a member's record is his — Fable F5) */

@@ -669,15 +669,15 @@ export let LOADMOVED: Array<{ id: string, on: boolean, days: string[] }> = []
    "moved onto the programme … stays there". Only a move that is still so is said — and where the working-out landed it on
    ANOTHER day (its start day: [LOAD-MOVES-ROW-DAY], a question for him), that day is named, never left silent (walker B3). */
 let LOADDAY = -1
-export function loadMovedNow(): Array<{ id: string, on: boolean, days: string[] }> {
-  const out: Array<{ id: string, on: boolean, days: string[] }> = []
+export function loadMovedNow(): Array<{ id: string, on: boolean, days: string[], moved?: boolean }> {
+  const out: Array<{ id: string, on: boolean, days: string[], moved?: boolean }> = []
   for (const m of LOADMOVED) {
     const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id)
     if (!x) continue
     if ((x.acc === 'g') === m.on) { out.push(m); continue }
     if (x.acc !== 'g') continue
     const on = DAYS.map((d: any, dj: number) => (dj !== LOADDAY && d && standsOn(d, m.id, x)) ? String(d.dow || '').slice(0, 3) : '').filter(Boolean)
-    if (on.length) out.push({ id: m.id, on: true, days: on })
+    if (on.length) out.push({ id: m.id, on: true, moved: true, days: on })   // never there before: "now", not "again" (the fix read's 1)
   }
   return out
 }

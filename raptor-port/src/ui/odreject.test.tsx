@@ -296,6 +296,6 @@ describe("a load over a request moved onto the Ground Programme across three day
     schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(THU, dayCurVer(THU)); afterSchedMutate() })
     expect(rowsOf(cse()).length, 'its row now stands on its start day').toBe(1)
     expect(DAYS[WED].ground.some((x: any) => x && x.src === 'cse5'), 'on Wednesday').toBe(true)
-    expect(loadMovedNow().filter(m => m.id === 'cse5').map(m => [m.on, m.days]), 'named: on Wednesday').toEqual([[true, ['Wed']]])
+    expect(loadMovedNow().filter(m => m.id === 'cse5').map(m => [m.on, m.moved, m.days]), 'named: on Wednesday now — never "again", it never stood there').toEqual([[true, true, ['Wed']]])
   })
 })
