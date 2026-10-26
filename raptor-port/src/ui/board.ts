@@ -24,7 +24,7 @@ import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, 
 import { HIST } from '../state/history'
 import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
-import { setInpField, howMany } from './inputedit'
+import { setInpField, howMany, markMoved } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -1215,6 +1215,8 @@ export function boardMbtn(e: MouseEvent) {
        stand on — D363) is his own to remove, by the plain delete below ([DB-READINESS] phase 6 (c); overlay.ts standsOn) */
     const inp = row && row.src && standsOn(DAYS[di], row.src) === row ? srcInput(row) : null
     if (inp && unacceptInput(di, inp)) {
+      /* his row removed is a Reject — a scheduler's move, marked before the command records it (his D1388) */
+      markMoved(inp)
       afterSchedMutate(); notify()
       /* said to him, not written as a line: the request's own filing line ("… filed: on the programme → taken off the
          programme", the change history's one writer) is this act's one line (D114 — one act, one change; Fable's final

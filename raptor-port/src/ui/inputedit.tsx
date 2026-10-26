@@ -17,7 +17,7 @@ import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf } from '../engine/inputs'
+import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf, placeOf } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -51,7 +51,7 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace } from '../state/perms'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
 import { CURPAGE, INPVIEW, revealInput, revealMedInput, OILWAIT, type OilWaitKind } from '../state/view'
 import { toastHeld } from './toast'
@@ -484,6 +484,15 @@ export const typeOptions = (allow?: (t: string) => boolean, families = false) =>
 /** WHERE AN INPUT STANDS, as an Other's "Goes to" reads it: 'u' under Unavailable, 'r' rejected by a scheduler (the
  *  scenario designer's G5), else 'g' — the programme. One reading for the window, the save and its "anything changed?" */
 export const goesOf = (r: any): 'g' | 'u' | 'r' => (r && r.acc === 'u' ? 'u' : r && r.acc === 'r' ? 'r' : 'g')
+/** A SCHEDULER'S MOVE IS MARKED ON THE INPUT (his D1388, 26 Oct 26 — [LW-OTHER-GOES-TO-LOCK]): from then on only a
+ *  scheduler changes where it stands (state/perms.ts mayMovePlace). Written by each of his doors, inside the command that
+ *  makes the move, so one Undo takes both back — Reject, → Ground, → Unavail (ui/interactions.ts), its Ground Programme
+ *  row removed (ui/board.ts), his window's Goes to or a retype that moves it (commitInputEdit). Never on his own
+ *  one-person input, which is nobody's to keep from him. Filing is not a move: one he files for a member under
+ *  Unavailable is the member's to pick again, as whoever files an Other picks (D1356). */
+export function markMoved(r: any) {
+  if (r && canEditSched() && !(idsOf(r).length <= 1 && isMe(leadOf(r)))) r.schedPlaced = true
+}
 export const draftOf = (r: any) => ({
   person: leadOf(r), type: r.type, allday: !!r.allday, half: r.half || '',
   start: unfmt(r.date, r.yr), end: r.endDate ? unfmt(r.endDate, r.yr) : '',
@@ -1187,6 +1196,15 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast(fileForOtherRefusal(draft.type), 'warn')
     return false
   }
+  /* WHERE A SCHEDULER PUT IT STAYS PUT (his D1388 — "the member could quietly move it back"): a member's save of one a
+     scheduler moved keeps it where it stands — its Goes to is not his, and a retype is put back there in the write below.
+     A kind that cannot stand there — a leave or a medical on the programme or parked, an overseas duty on the programme
+     with no move of its own — is refused here, with its reason, before anything is written. */
+  const held = !mayMovePlace(r)
+  if (held && draft.type !== r.type && placeOf({ ...r, type: draft.type }) !== placeOf(r)) {
+    HOOKS.toast(`A scheduler has moved this input, so only a scheduler can change it to ${inpType(draft.type)}`, 'warn')
+    return false
+  }
   const n = normalizeInputDraft(draft, r)
   if (!n) return false
   if (protectedInput(normDest(n, draft.yr))) return false   // refuse a move INTO a protected week (P2-REREVIEW-01/02)
@@ -1252,6 +1270,8 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        retyped to a kind never filed there. */
     /* captured for the filing rules below — the writes overwrite r.type */
     const wasDormant = r.acc === 'r', wasType = r.type, wasPerson = leadOf(r)
+    /* …and where it stood, for the scheduler's move (his D1388, below the filing rules) */
+    const accWas = r.acc, odWas = r.odGround, placeWas = placeOf(r)
     /* WHO IT IS FOR — its one person, replaced (a hand-over). A record that carries its people is written in its list
        (engine/inputown.ts swapPerson: the entry replaced, the holding moved on); one in the old shape, in `person`, as
        always. An input of SEVERAL is never re-pointed here: who is in it is changed by commitInput, below. */
@@ -1403,7 +1423,8 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
       const goesWas = goesOf(r)
       /* a scheduler's Reject stands until a scheduler changes it (G5): a member's edit never moves a rejected Other, as his
          edit of a rejected request's time never revives it */
-      const goesNow = 'goes' in draft && (goesWas !== 'r' || canEditSched()) ? draft.goes : goesWas
+      /* …nor, since his D1388, one a scheduler has moved: where it stands is then the scheduler's (held, above) */
+      const goesNow = 'goes' in draft && !held ? draft.goes : goesWas
       if (r.type !== wasType && landsUnavail(r.type)) r.acc = 'u'
       else if (r.type !== wasType && landsUnavail(wasType) && r.acc === 'u' && !(isOther(r.type) && goesNow === 'u')) delete r.acc
       else if (isOther(r.type) && 'goes' in draft && goesNow !== goesWas) { if (goesNow === 'u') r.acc = 'u'; else if (goesNow === 'g') delete r.acc }
@@ -1416,6 +1437,16 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        filed for ALL AVAIL / ALL is never under Unavailable (engine/inputs.ts placeholderProblem) — it goes back onto
        the programme, where its row, its crowd and its OIL are (state/holderbase.ts lands it after this command). */
     if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
+    /* WHERE A SCHEDULER PUT IT, A MEMBER'S SAVE LEAVES IT (his D1388): whatever the rules above did with his retype — an
+       Attach sent under Unavailable by itself, a rejected one revived by its new kind, one taken off Unavailable as another
+       commitment — it goes back where it stood (a kind that cannot stand there was refused before the write). A
+       scheduler's own save that moves it marks it moved. */
+    if (placeOf(r) !== placeWas) {
+      if (held) {
+        if (accWas === undefined) delete r.acc; else r.acc = accWas
+        if (odWas) r.odGround = odWas; else delete r.odGround
+      } else markMoved(r)
+    }
   })
   /* the funnel backstop rolled the batch back — report failure so the editor
      stays open and nothing typed is lost (P2-QREV-04) */
@@ -2038,6 +2069,11 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     return false
   }
   const first = norm.get(next[0])!
+  /* ALL AVAIL / ALL PUT INTO ONE A SCHEDULER MOVED UNDER UNAVAILABLE would take it off again (a placeholder is never under
+     Unavailable — below): where he put it is his to change (his D1388) */
+  if (rec && rec.acc === 'u' && next.some(p => isSpecial(p)) && !mayMovePlace(rec)) {
+    say('A scheduler has moved this input under Unavailable, so only a scheduler can put ALL AVAIL or ALL in it', 'warn'); return false
+  }
   /* WHAT ONE RECORD MAY HOLD — the same body the save boundary holds every command to (state/store.ts) */
   /* (an input under Unavailable that now holds a placeholder is taken back onto the programme by this save, below —
      so where it is filed TODAY is not held against the placeholder) */
@@ -2873,6 +2909,9 @@ export function InputEditor() {
      READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
   const canAll = rows.length ? mayEditInput(r) : true
   const readOnly = !isNew && !!r && !mayEditInput(r)
+  /* WHERE IT GOES IS A SCHEDULER'S once he has moved it (his D1388): the member's window shows where it stands, picked,
+     and offers neither button — as a rejected one already does (G5) */
+  const goesLocked = !isNew && !!r && !mayMovePlace(r)
   /* A MAN IN A SHARED INPUT WHO DID NOT FILE IT (D655, reading 2) reads it, and has exactly two things of his own: take
      himself out, and his own OIL answer. Anyone else only reads it. */
   /* (since the one-rule build: ONE thing of his own — take himself out. The OIL answer is the input's, given by
@@ -3066,12 +3105,14 @@ export function InputEditor() {
               <div className="goespick" role="group" aria-label="Goes to">
                 {([['g', 'Ground Programme'], ['u', 'Unavailable']] as const).map(([k, words]) => (
                   <button key={k} type="button" className={`goesbtn goes-${k}${(draft.goes ?? 'g') === k ? ' on' : ''}`} data-testid={`inpEdit-goes-${k}`}
-                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || (draft.goes === 'r' && !canEditSched())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
+                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || goesLocked || (draft.goes === 'r' && !canEditSched())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
                 ))}
               </div>
               {/* …a rejected one says so and picks neither; only a scheduler moves it (G5) */}
               <span className="inped-goesline" data-testid="inpEdit-goes-line">
-                {draft.goes === 'r' ? 'Rejected by a scheduler' : (draft.goes ?? 'g') === 'u' ? 'Counted as away on the Leave War' : 'Still counted in the Leave War’s manning'}
+                {draft.goes === 'r' ? 'Rejected by a scheduler'
+                  : goesLocked ? `A scheduler moved it here: ${(draft.goes ?? 'g') === 'u' ? 'counted as away on the Leave War' : 'still counted in the Leave War’s manning'}`
+                  : (draft.goes ?? 'g') === 'u' ? 'Counted as away on the Leave War' : 'Still counted in the Leave War’s manning'}
               </span>
             </div>
           </div>}

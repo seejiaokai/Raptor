@@ -567,6 +567,14 @@ export function goesOnProg(inp:any){return !!inp&&(isPersonal(inp.type)||(isOD(i
 /* is it LISTED in Personal Inputs / under Unavailable on the schedule (ui/html.ts, ui/board-html.ts — one body each) */
 export function listedPersonal(inp:any){return !!inp&&(isPersonal(inp.type)||odOut(inp))&&inp.acc!=='u';}
 export function listedUnavail(inp:any){return !!inp&&((isUnavail(inp.type)&&!odOut(inp))||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type);}
+/* WHERE IT STANDS ON THE SCHEDULE, as one answer (his D1388 — [LW-OTHER-GOES-TO-LOCK]): 'u' under Unavailable, 'g' on the
+   programme, 'r' parked by a scheduler's Reject — only a kind with a way back (an activity, an overseas duty — D1393); a
+   leave parked there would stay dormant for good (26 Aug 26) — or '' where it can stand in none of them. A member's save
+   of an input a scheduler moved must leave this answer as it was (ui/inputedit.tsx commitInputEdit, state/perms.ts). */
+export function placeOf(inp:any):'u'|'g'|'r'|''{if(!inp)return ''; if(inp.acc==='r')return isPersonal(inp.type)||isOD(inp.type)?'r':''; if(listedUnavail(inp))return 'u'; return goesOnProg(inp)?'g':'';}
+/* HAS A SCHEDULER DECIDED WHERE IT STANDS? — he moved it (`schedPlaced`, written by his doors: Reject, → Ground, → Unavail,
+   its Ground Programme row removed, the Goes to of his window), or it is parked by his Reject, which only he writes (G5) */
+export function placeHeld(inp:any){return !!inp&&(!!inp.schedPlaced||inp.acc==='r');}
 export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type)&&!odOut(inp))||(!inputSilent(inp)&&((isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'))||(isPersonal(inp.type)&&inp.acc==='u')));}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
