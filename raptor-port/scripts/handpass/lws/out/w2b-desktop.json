@@ -1,0 +1,32 @@
+{
+ "allResults": [
+  {
+   "id": "30-leave",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "armed: \"Really reset?\" -> left the page and came back (sheet kept up by the page: true): \"↺ Reset order\"",
+   "pic": "w2-s30-desktop-back.png"
+  },
+  {
+   "id": "30-one-tap",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "one tap on coming back: \"Really reset?\"; order unchanged: true",
+   "pic": ""
+  },
+  {
+   "id": "30-close-reopen",
+   "size": "desktop",
+   "verdict": "PASS",
+   "seen": "armed, closed, reopened: \"↺ Reset order\"",
+   "pic": ""
+  },
+  {
+   "id": "30-undo-redo",
+   "size": "desktop",
+   "verdict": "FAIL",
+   "seen": "armed \"Really reset?\"; via a script click on the covered Undo button (Ctrl+Z did nothing): order changed by undo true, back after redo true; text after Undo \"Really reset? (disabled)\", after Redo \"Really reset?\"",
+   "pic": "w2-s30-desktop-undo-redo.png"
+  }
+ ]
+}

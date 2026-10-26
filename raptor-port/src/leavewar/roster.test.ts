@@ -260,6 +260,14 @@ describe('roster order + labels are admin-gated writers', () => {
     expect(rosterFollowsDefault(), '…but it draws the default').toBe(true)
   })
 
+  it('[LW-SETTINGS-SMALL] judges only the men the grid draws: a hand order that moves only a man not on screen reads as the default', () => {
+    moveRosterRow('ops_d', 'ops_a')                                   // D above A — the only change
+    expect(rosterFollowsDefault(), 'over the whole roster it is a hand order').toBe(false)
+    const notD = (p: Person) => p.id !== 'ops_d'                     // the months on screen do not draw D (posted out before them)
+    expect(rosterFollowsDefault(notD), 'the grid draws exactly the default').toBe(true)
+    expect(rosterFollowsDefault(p => p.id !== 'ins_w'), 'a man the change did not move leaves it a hand order').toBe(false)
+  })
+
   it('resetRosterOrder is admin-only, and writes nothing when the roster already follows the default', () => {
     moveRosterRow('ops_c', 'ops_a')
     const hand = getState().rosterOrder.slice()
