@@ -131,6 +131,8 @@ narrows D655 "for an Other's Goes to only" — but within the ruling's purpose: 
 their tests and the re-walk carry them. After the fixes: the 191 affected unit-test files again, under the lock (see
 Tests).
 
+**The backlog items this check closed** (archived 26 Oct 26 on his "Merge live when green" — PR 572): [LW-OTHER-GOES-TO-LOCK] (its section in the backlog archive) and [LW-OD-DISCARD-COUNT] (a list line only; its record is this sheet). Left open: [LW-LOAD-RELAND-RID].
+
 ## His answers
 
 **26 Oct 26, "Ok everything as recommended"** (after asking what is locked and which inputs): Q1 → D1398 (the lock for every kind a scheduler can move), Q2 → D1399 (a member's retype never revives a rejected input), Q3 → D1400 (the words stand), Q4 → D1401 (a load is not a scheduler's move).

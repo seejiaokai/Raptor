@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/lw-other-goes-to-lock -->
-### `claude/lw-other-goes-to-lock` — only a scheduler moves an input he has moved (D1388) + the load's count for a request filed back off the programme ([LW-OD-DISCARD-COUNT]); BUILT, FULL-checked (walk 16/16, the read's two finds fixed) — PR 572, waiting for his look — written 26 Oct 26, verify before use
+### `claude/lw-other-goes-to-lock` — only a scheduler moves an input he has moved (D1388, D1398–D1401) + the load's count for a request filed back off the programme ([LW-OD-DISCARD-COUNT]); FULL-checked, MERGED LIVE on his "Merge live when green" of 26 Oct 26 (PR 572) — written 26 Oct 26, verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.
 - **Where it started:** levelled with `main` after PR 571 (D1397) merged live; its block left here (all its leftovers filed). The pick-up said "after his weekly reset"; started at once on D1033 (allowance is not held back).
 - **Built (red first):** a scheduler's move marks an input (`schedPlaced`) at every door — the week's and the board's Reject / → Ground / → Unavail, the board's Ground row ✕, his window's Goes to (`ui/inputedit.tsx markMoved`); the member's window shows it dead with "A scheduler moved it here: …"; his save keeps it where it is (a retype is put back; a kind that cannot stand there, and ALL AVAIL into one under Unavailable, are refused); `state/perms.ts mayMovePlace` + the commit gate; `data-model.md` §11, `data-schema.md`, `engine-rules.md` (the dormant park narrowed). The count: `engine/publish.ts dayDiscardCount` (overseas duty and course). Tests `ui/goesheld.test.tsx` (20), `ui/odreject.test.tsx` (+2).
@@ -29,8 +29,8 @@ the later merge keeps both (D78).
 - **Branch:** `claude/lw-other-goes-to-lock` (upstream its own); PR https://github.com/seejiaokai/Raptor/pull/572 — Auto-fix was switched on by the app and switched OFF (D1090).
 - **Gates:** GitHub's run of PR 572 is the full check (D1086).
 - **His answers:** "Ok everything as recommended" (26 Oct 26) → D1398 (the lock for every kind a scheduler can move), D1399 (a retype never revives a rejected input), D1400 (the words stand), D1401 (a load is not a move). Nothing open. Filed: [LW-LOAD-RELAND-RID].
-- **Pick up here:** his "merge live" once GitHub's run of the last pushed commit is green; on it, archive [LW-OTHER-GOES-TO-LOCK] and [LW-OD-DISCARD-COUNT] and push the closing records (D1088). After it: [LOGIN-OPENS-TODAY] waits for testing (D1383); [KBS-PHONE-SLIDE] is Fable's after his reset (D1366).
-- **Opening line:** Level this chat with the branch: git fetch origin, git switch claude/lw-other-goes-to-lock, git pull --ff-only. Then read HANDOFF.md — the claude/lw-other-goes-to-lock block under ## Now — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
+- **Pick up here:** this branch is merged — do not continue it; both items archived (the sheet names them). Next: his pick from the backlog — [LW-LOAD-RELAND-RID] (a three-day request's load count, small) is the nearest; [KBS-PHONE-SLIDE] is Fable's after his weekly reset (D1366); [LOGIN-OPENS-TODAY] waits for testing (D1383).
+- **Opening line:** Level this chat with main: git fetch origin, git merge --ff-only origin/main. Then read HANDOFF.md — the claude/lw-other-goes-to-lock block under ## Now (merged live) — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
 - **Notes:** ruling numbers to D1401 (D1398–D1401 this chat); design lessons to 59; observation 711.
 <!-- /now -->
 ## Next, in order
