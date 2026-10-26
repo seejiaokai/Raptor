@@ -1899,7 +1899,9 @@ export function postingPendingTag(id: string): string | null {
   const poDate = addDays(w.to, 1)
   const o = outcomeOf(w)
   if (poDate > effectiveToday()) {
-    const word = o && o !== 'none' ? ` · ${OUTCOME_WORD[o] || o}` : ''
+    /* a Delete still to come reads "auto delete" on his row (his D1105) — Admin → Users and the Leave War alike; the
+       other outcomes keep their word, and a delete that has run shows nothing (he is gone) */
+    const word = o === 'delete' ? ' · auto delete' : o && o !== 'none' ? ` · ${OUTCOME_WORD[o] || o}` : ''
     return `posting out ${dayMon(poDate)}${word}`
   }
   /* D326 (28 Sep 26 — "6 yes"): a posting that has RUN and left him on the roster — no outcome (D303), or SANS (D283) —
