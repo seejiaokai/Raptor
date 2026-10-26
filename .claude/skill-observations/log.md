@@ -1765,6 +1765,8 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 - Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding a regex with a doubled backslash lost one backslash on the way (and this very note lost another when written by a script), and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
 - **Met again 25 Oct 26** (M3 FULL check, the read's Q8 test): `/\bj[lr]\b/` written into an e2e test through a Python string in a here-doc came out with backspaces; the test failed on its pattern, not the app, and a `python -c` fix through bash did the same again. The guard proposed: edit test and source files with the Edit tool, never a shell-quoted script, whenever the new text holds a backslash.
 
+- Met again 26 Oct 26 (claude/lw-other-goes-to-lock), three times: a JS template literal written through a quoted here-doc lost the backslash before an apostrophe (two test files would not parse), and a node -e with nested template literals lost a whole argument (a walk step). Each fixed by the Write or Edit tool. The guard the entry proposes is still not in place.
+
 ### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
 
 **Status:** OPEN

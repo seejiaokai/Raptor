@@ -133,6 +133,8 @@ Tests).
 
 ## Questions waiting for him
 
+Put to him 26 Oct 26 on the look page https://claude.ai/artifact/4GWeaEyr7NkCMKD2rjQip1 (newest first, each with its pictures), with the preview https://raptor-git-claude-lw-other-goes-to-lock-kai-e2f5.vercel.app (Ready at the pushed commit).
+
 1. **The lock covers every input a scheduler moves, not only an Other** — a course, an Attach, a Meeting he rejected or
    moved: Ranger cannot move it back by retyping it. Recommended: yes, as built (the ruling's point — "the member could
    quietly move it back" — holds for every kind).
