@@ -2459,3 +2459,32 @@ its value and never in innerText.
 **Suggested improvement:** The overnight guide: after every pull request opens, `set_monitor auto_fix:false` at once (the helper may not have the tool — the coordinator does it when the event arrives). And put to the owner, while awake, whether the app's own setting can be switched off once (a setting change is his).
 
 **Principle:** A default the host re-applies per item needs a standing step at the moment each item is created, not a one-off fix.
+### Observation 714: Handoffs let six built, checked pull requests fall out of view
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** levelling a fresh chat with main and reading the merged block's "Pick up here"
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** writing the block — what is open
+
+**Issue:** Six pull requests built and checked on the nights of 21 and 23 Oct 26 (555, 556, 557, 559, 560, 570) were never merged, and every handoff block written since named only its own branch, so the "Pick up here" chain never mentioned them. They were found only by listing open pull requests; by then each clashed with main (317 to 668 commits behind) and the owner was surprised to learn the work was not live.
+
+**Suggested improvement:** in the session-handoff skill's block-writing step, run the open pull request list and name every open pull request not owned by this block in one line ("Also open, waiting for his merge live: …"), with how far behind main each is.
+
+**Principle:** A handoff that reports only its own work hides finished-but-unshipped work by others; the open-work list must come from the source of truth (the open pull requests), not from the writer's memory.
+
+### Observation 719: "Take their side" of a conflicted file takes the whole file, not the clashing lines
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** merging main into six old pull requests (D1402), one after another
+**Skill:** New skill candidate: merging-old-branches (or an addition to the session-handoff / bug-check guides)
+**Type:** open-source
+**Phase/Area:** conflict resolution in records files
+
+**Issue:** Resolving a one-hunk conflict in the backlog with `git checkout --theirs <file>` replaced the WHOLE file with main's copy, silently dropping the branch's own non-conflicting edits (a filed item and two "BUILT" notes). The document check passed, because it compares against main and the lost lines were only ever on the branch. Caught only by diffing the result against the branch's own HEAD; recovered with `git checkout -m <file>` and a hunk-only resolution.
+
+**Suggested improvement:** when merging into a branch, resolve conflicts hunk by hunk (a small script that rewrites only the marked regions), never with a whole-file `--ours`/`--theirs`; after resolving, always diff the file against the branch's own HEAD and read every removed line.
+
+**Principle:** A merge resolution is judged against both parents: a check that compares only with the target branch cannot see what the source branch lost.

@@ -1,0 +1,23 @@
+common.mjs v1
+shot A1-ph-viewsched-standard
+viewsched standard: tag none | legend DETAILS.legendbox top=90 h=28; prev=DIV.filters bottom=90 h=41
+crewRest box before: 12h
+crewRest box after: 10h
+strip: 1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps its printed B and its OIL until it is published again.
+shot A2-ph-logic-changed-strip
+strip after Done: 1 setting changed from the squadron standard. The schedule is checked against it now. A published day keeps its printed B and its OIL until it is published again.
+shot A2b-ph-logic-after-done
+shot A3-ph-viewsched-changed
+viewsched changed: tag none | legend DETAILS.legendbox top=90 h=28; prev=DIV.filters bottom=90 h=41
+shot A4-ph-editsched-changed
+editsched changed: tag none | legend DETAILS.legendbox top=94 h=28; prev=DIV.alpanel bottom=0 h=0
+board door count 1
+shot A5-ph-board-changed
+board changed: tag none
+reset visible: true
+confirm buttons: 0
+strip after reset: HIDDEN | box: ?
+shot A6-ph-logic-reset
+shot A7-ph-viewsched-reset
+viewsched reset: tag none | legend DETAILS.legendbox top=90 h=28; prev=DIV.filters bottom=90 h=41
+ERRORS []

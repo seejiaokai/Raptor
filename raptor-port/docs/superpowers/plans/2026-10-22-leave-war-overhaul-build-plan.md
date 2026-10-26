@@ -157,3 +157,5 @@ merges above qualifies whole** — each carries either a question of §2 or a lo
 final set, §10.4 of the design note, is drawn tonight for that look). The two faults in today's code the red team found
 were weighed: the year-end bid (B3) is latent (the range picker stops at the period's end) and halves-only on a balance
 (B6) needs a refusal on screen he has not seen — both go with their merges. Tonight builds nothing in the app.
+
+**Where it stands (27 Oct 26 — D1404):** M1, M2 and M3 are live; M4 is next, in a fresh chat of its own, then M5.
