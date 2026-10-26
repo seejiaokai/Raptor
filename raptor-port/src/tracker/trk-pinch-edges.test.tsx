@@ -138,3 +138,54 @@ describe('[TRK-PINCH-OLD-EDGES] — switched on and straight off again with the 
     expect(C.flowZoom, 'the zoom the switch back set stands').toBe(z)
   })
 })
+
+/* [TRK-PINCH-MORE-EDGES] (the night of 26–27 Oct 26) — three more older edges, met by that job's code read. */
+const mouse = (type: string, x: number, y: number) => {
+  const e = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y })
+  Object.defineProperty(e, 'pointerType', { value: 'mouse' }); Object.defineProperty(e, 'pointerId', { value: 1 }); Object.defineProperty(e, 'isPrimary', { value: true })
+  return e
+}
+describe('[TRK-PINCH-MORE-EDGES]', () => {
+  it('(1) a third finger, then one of the first two lifting: the new pair carries on from the zoom reached — no jump', async () => {
+    await act(async () => { C.resetFlowZoom() })
+    const fit = C.flowZoom
+    await send('pointerdown', 21, 100, 100, true)
+    await send('pointerdown', 22, 200, 100)
+    await send('pointermove', 22, 300, 100)          /* twice as far apart: the zoom reached is twice the fit */
+    const reached = Math.min(3, +(fit * 2).toFixed(3))
+    await send('pointerdown', 23, 310, 100)          /* a third finger lands beside the second */
+    await send('pointerup', 21, 100, 100, true)      /* the first lifts: the pair is now 22 and 23, 10 apart */
+    await send('pointermove', 23, 311, 100)          /* 11 apart — a tenth wider */
+    await send('pointerup', 22, 300, 100)
+    await send('pointerup', 23, 311, 100)
+    expect(C.flowZoom, 'the new pair stretched the zoom it found, a tenth more — never measured against the old pair').toBe(Math.min(3, +(reached * 1.1).toFixed(3)))
+    expect(errors).toEqual([])
+  })
+  it('(2) after a lift lost on an iPad, a mouse press ends the pinch, so the chart hears the mouse again', async () => {
+    await act(async () => { C.resetFlowZoom() })
+    const fit = C.flowZoom
+    await send('pointerdown', 31, 100, 100, true)
+    await send('pointerdown', 32, 200, 100)
+    await send('pointermove', 32, 300, 100)
+    const reached = Math.min(3, +(fit * 2).toFixed(3))
+    /* both lifts lost; the next press is the mouse's */
+    await act(async () => { board.dispatchEvent(mouse('pointerdown', 150, 150)) })
+    expect(C.flowZoom, 'the lost pinch settled at the zoom it reached').toBe(reached)
+    expect(C.isPinching(), 'and is over').toBe(false)
+  })
+  it('(3) a sign-out during a pinch ends it: its lift does not mark the zoom as the next person\'s', async () => {
+    await act(async () => { C.resetFlowZoom() })
+    const fit = C.flowZoom
+    await send('pointerdown', 41, 100, 100, true)
+    await send('pointerdown', 42, 200, 100)
+    await send('pointermove', 42, 300, 100)
+    await act(async () => { resetSession(null) })      /* signed out with two fingers down */
+    expect(C.isPinching(), 'the session end ended the pinch').toBe(false)
+    await send('pointerup', 41, 100, 100, true)
+    await send('pointerup', 42, 300, 100)
+    await act(async () => { resetSession({ user: 'ad', role: 'admin' }) })
+    await act(async () => { C.renderBoard() })
+    expect(C.flowZoom, 'the next person\'s board is fitted again, not left at the last person\'s pinch').toBe(fit)
+    expect(errors).toEqual([])
+  })
+})
