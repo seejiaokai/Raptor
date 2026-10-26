@@ -1,10 +1,10 @@
 /* GRANT OIL'S ONE AMOUNT CONTROL (his D1392, D1395 H — 26 Oct 26: "for a day that person can also be like granted more than
    1 day of oil", and his ask for a quick select for HO; drawn by scripts/handpass/lw-m3n-draw-ho.mjs, ONLY=h). One Days row:
-   two quick picks, "HO · ½" and "FO · 1", then a dashed box for any other amount ("other: 1½, 2…"), then the button naming
+   two quick picks, "HO · 0.5" and "FO · 1", then a dashed box for any other amount ("other: 1.5, 2…"), then the button naming
    what it gives — "Give HO", "Give FO", "Give FO · 2 days". No morning / afternoon row: which half a granted HO is does not
    matter (D1391); it is drawn in the morning unless the morning is held (store.ts defaultAwardHalf).
    Used by the one-day bid window and the drag window (D1394), so the two cannot drift. */
-/* a figure as the grid writes it: halves .5 (D1246) — the picks' own ½ is the drawing's, approved as drawn (D1395) */
+/* a figure as the grid writes it: halves .5 (D1246); the half-day pick reads "HO · 0.5", never ½ (his D1397) */
 const halfFigure = (n: number) => String(n)   // never rounded: the button says exactly what is typed
 
 export type OilPick = '0.5' | '1' | ''
@@ -48,13 +48,13 @@ export function OilAmount({ pick, other, onPick, onOther, onGive, testPrefix = '
       <span className="lab">Days</span>
       <span className="oil-picks" role="group" aria-label="Amount">
         <button type="button" className={`pchip${lit('0.5') ? ' on' : ''}`} data-testid={`${testPrefix}-pick-ho`}
-          aria-pressed={lit('0.5')} onClick={() => onPick('0.5')}>HO · ½</button>
+          aria-pressed={lit('0.5')} onClick={() => onPick('0.5')}>HO · 0.5</button>
         <button type="button" className={`pchip${lit('1') ? ' on' : ''}`} data-testid={`${testPrefix}-pick-fo`}
           aria-pressed={lit('1')} onClick={() => onPick('1')}>FO · 1</button>
       </span>
       <input
         type="text" inputMode="decimal" className="oil-num oil-other" maxLength={6}
-        data-testid={`${testPrefix}-days`} aria-label="Any other amount, in days" placeholder="other: 1½, 2…"
+        data-testid={`${testPrefix}-days`} aria-label="Any other amount, in days" placeholder="other: 1.5, 2…"
         value={other} onChange={e => onOther(e.target.value)}
       />
       <button className="dchip approve" data-testid={`${testPrefix}-give`} onClick={onGive}>{oilGiveWords(n)}</button>

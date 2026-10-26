@@ -2322,3 +2322,18 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 **Suggested improvement:** In the sizing step, one line for a change that reads stored state: "what makes the field this reads appear, change or vanish other than the control under test (a week loaded, a sign-in, a reload, a page change)?" — and one scenario per answer. And in `walk-scripts.md`: a walk of a count driven by a filing presses the filing's buttons, then moves the view away and back before it reads the count again.
 
 **Principle:** A value that is recomputed per view is only proven by a walk that changes the view; reading it once where it was set confirms the setter, not the reader.
+
+### Observation 710: A LOOK tier's before/after pictures came free from the batch walk's own step
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** a one-label change (Grant OIL's "HO · ½" → "HO · 0.5") right after the batch that built that control
+**Skill:** New skill candidate: none — the bug-check order's LOOK tier (project doc, not a skill)
+**Type:** internal
+**Phase/Area:** bug-check order §5, the LOOK tier's "one before/after picture at phone and desktop"
+
+**Issue:** The batch's walk script already pictured the control at both sizes in both windows that draw it. Re-running only that step (`ONLY=w2 LW_OUT=<new folder>`) on the new build gave the "after" set in about a minute, with its fit assertion; the batch walk's own folder was the "before". No new script, no hand-driven browser.
+
+**Suggested improvement:** In the order's LOOK row, add: "where an earlier walk script already pictures the surface, re-run that one step into a new folder — its old pictures are the before."
+
+**Principle:** A walk script written as assertions with a step filter is reusable evidence: the cheapest before/after is the old run's pictures beside the same step re-run.

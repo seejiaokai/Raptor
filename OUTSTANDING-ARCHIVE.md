@@ -6456,3 +6456,85 @@ evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBi
 
 His picture of 25 Oct 26 07:06 (the Inputs page's new-input window, "Other", Remarks tapped) showed two things. Remarks hidden behind Cancel / Add is fixed on `claude/lw-m3-placing-leave` (the keyboard lift now keeps clear of a window's pinned foot — `raptor-port/docs/handpass/2026-10-25-kbs-other-remarks.md`). The other — the window's top above the visible screen and an empty band between its foot and the keys — looks like the visible screen panned down after the window was placed and held to the room (`src/ui/kbscroll.ts` follows such a pan only within 1.5s of the focus). Chromium cannot pan as an iPhone does, so it is not reproduced. **Next:** his look on his iPhone at the fixed build; if the band is still there, the held window follows the visible screen for as long as the keys are up (re-pinned on every `scroll` of the visual viewport, not only in the first 1.5s), with a test that pans the stand-in viewport late.
 
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-OD-REJECT]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-OD-REJECT] An overseas duty has no route out of Unavailable (found the night of 26 Oct 26)
+
+**What the walk found:** the schedule's Unavailable list gives a course a Reject button and an overseas duty none (picture `raptor-port/docs/img/handpass/2026-10-26-lw-m3-night/cse/n5-1-schedule-overseas-duty.png`), so his D1390 (a rejected overseas duty counts him back in) has no way to be used; `acceptInput` refuses an overseas duty. **Put to him** on the look page (https://claude.ai/artifact/2qGUuMq8wB1Qpc1JT6oAee, Q1), recommended: give an overseas duty Reject and → Ground as a course has. **If yes:** `engine/inputs.ts isAway` changes in the same job (it calls an overseas duty away whatever its mark), or the crew list and the war disagree (the code read, `raptor-port/docs/handpass/parts/lw-m3-night/read-code.md`).
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-GRANT-HO-VISIBLE]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-GRANT-HO-VISIBLE] Granting an HO is hidden behind typing 0.5 (his question, 26 Oct 26)
+
+**His words:** *"Why I can only grant FO oil? Not HO?"* — picture `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-grant-fo-only.png` (the ⋯ → Grant OIL panel: Days 1, "Give FO"). **What the app does:** Days 0.5 turns the button into "Give HO" and asks morning or afternoon (`raptor-port/src/leavewar/ui/BidPicker.tsx` `oilCode`); nothing says so. **To do:** draw a visible FO / HO choice (or a hint) for him with a recommendation; a question, not a ruling yet.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-DRAG-GRANT-OIL]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-DRAG-GRANT-OIL] Grant OIL over several dragged days (his report, 26 Oct 26)
+
+**His words:** [LW-DRAG-MORE-MENU]. Post in is built; Grant OIL over a drag means something new. **Put to him** on the look page (Q2), recommended: one grant on each day picked — FO for a whole-day Duration, HO for a morning or afternoon — with one reason for all; drawn for him before it is built.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-DELETE-SURE-FIT]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-DELETE-SURE-FIT] "Delete — sure?" runs past its button (his D1387, 26 Oct 26)
+
+**His words and picture:** D1387's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-delete-sure.png`. **To do:** with the design skill, a fix that keeps the asking state inside the button (wider button, shorter words, or the question on the line below beside the warning) drawn at his iPhone's width, put to him, then built; the same check on every Delete that asks again.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-TAP-HELD-DAY]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-TAP-HELD-DAY] A short tap on a day holding a course (his question, 26 Oct 26)
+
+**His words:** *"On CSE when I long press to put another input. Firstly if I don't long press it will just tell me to go to inputs page to change the input. But for e.g what if I wanna give OIL to this person. Would it be better that a short press allows me to add additional input from there?"* — pictures `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-cse-tap.png` (a tap on Saber's CSE: "Change it on the Inputs page, not here."), `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-drag-window.png` (a long press on it opens the drag window). **To do:** draw a short tap opening the one-day bid window with one line for the held entry (as D1371 does for a half-day Other), its ⋯ offering Grant OIL and the rest; put to him with a recommendation (yes). A question, not a ruling yet.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-DAYPANEL-COLUMNS]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-DAYPANEL-COLUMNS] The day panel's figures in columns of four (his D1382, 26 Oct 26)
+
+**His words and picture:** D1382's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-daypanel-space.jpg`. **To build:** the day panel (`raptor-port/src/leavewar/ui/DayPanel.tsx`, `lwday-figs`) lays its figures in columns of at most four rows, filling left, then middle, then right; a long name wraps and its row grows; names and figures line up across and down. A picture of it at his iPhone's width and a desktop's goes to him before it is built (D541, D853), with the readings in D1382's row.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([INP-CAL-EXPAND]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [INP-CAL-EXPAND] Expand the Inputs calendar to show every input (his D1386, 26 Oct 26)
+
+**His words and picture:** D1386's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-month-more.png`. **To do:** design it with the design skill (Impeccable, D819 — he asked for it by name), drawn on the real app at his iPhone's width and a desktop's, put to him with a recommendation before it is built (D853, D1222).
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([INP-CARD-SQUARE-COLOURS]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [INP-CARD-SQUARE-COLOURS] Each input card's square in its kind's colour (his D1384, 26 Oct 26)
+
+**His words and pictures:** D1384's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-day-squares.png`, `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-list-edges.png`. **To build:** the square at the left of each card on the Inputs calendar's opened day and on the Inputs list takes its kind's colour from the one table the bars and the Leave War use (filled for an absence, outlined for a commitment — D1304, D1321); a picture to him at his iPhone's width before it is built (D853).
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([INP-DAY-WIDTH]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [INP-DAY-WIDTH] A day opened on the Inputs calendar as wide as the list (his D1385, 26 Oct 26)
+
+**His words and pictures:** D1385's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-day-edges.png` beside `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-list-edges.png`. **To build:** on a phone the opened day's window and its padding narrowed so its cards stand as far from the screen's edges as the list's cards (D1293); the SANS calendar's opened day alike; a picture first.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-PHONE-PINCH-ZOOM]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-23-lw-pinch.md`.*
+
+### [LW-PHONE-PINCH-ZOOM] On a phone the Leave War grid pinches to zoom (his word, 21 Oct 26 — D1117)
+**What:** as on the Scheduler Board's desktop layout and Quals (D1109, D1110, live with pull request 561), a pinch on a phone
+zooms the Leave War grid. **First:** what a pinch zooms (the grid only — not the war's top, the month strip, which already
+cancels the grid's zoom, or the pinned columns' alignment), how far, and whether the pinch and the − / + buttons share one
+zoom (recommended: one zoom, the buttons stepping it), with pictures at his iPhone's size. **How:** the one pinch body,
+`raptor-port/src/ui/pinchzoom.ts` (a stretch while the fingers move, laid out once at the lift); the grid's zoom today is
+`raptor-port/src/leavewar/ui/Matrix.tsx` (`zoom`, "Stepped +/− buttons rather than pinch" — that note is answered by the
+pinch body); the grid's window of months and its pinned rows (`raptor-port/docs/performance.md` §E) must follow a zoom
+change. **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP). **Place:** its own
+job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
+**From the overhaul's red team (22 Oct 26, fix A7a):** a pinch's first finger held 180 ms arms a selection today (`leavewar/ui/select.ts`, its hold and slow-slide timers) — a second finger must cancel a selection that is arming or armed; built with this job (the overhaul's build plan names it here).
+**23 Oct 26 — D1276 (narrowing D1228):** the − / + go only once this job proves the pinch works with the frozen date bar; if it cannot, they stay. **22 Oct 26 — D1228:** no − / + buttons on either; a pinch on a phone; on a desktop Ctrl+scroll or a trackpad pinch over the grid zooms the grid only; the opening sizes stay (D159).
+**23 Oct 26 — his look at the live app (after M1):** *"pinch to zoom the frozen top bar position goes off"* — on his iPhone, Safari's own pinch zooms the whole page, and the date row frozen at the top (the mirror, `raptor-port/src/leavewar/ui/Matrix.tsx` `stuck` / `pin`) keeps the column widths and the place it measured when it froze: its dates no longer stand over their columns, and in landscape the frozen copy is narrower than the grid, some dates shown twice. Pictures: `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/his-look/pinch-1-portrait.png`, `pinch-2-portrait.png`, `pinch-3-landscape.png`. Not patched in M2: this job's own pinch zooms the grid alone (the page no longer zooms on the grid), and the frozen row already re-measures on every zoom step — so the fix is this job; its walk checks the frozen row stands over its columns after a pinch, after a turn of the phone while zoomed, and in landscape. Recommended to him as the job right after M2.
+**23 Oct 26 — his iPhone look, mid-pinch (D1287, D1286):** the pinned parts now stay pinned while the fingers are down (the evidence sheet's H1–H6, fixed); no keyboard zoom on a desktop (D1286). **His answer on H7 (D1288):** build it before merge — part-way down the page the page scrolls with a pinch out (`raptor-port/src/ui/pinchzoom.ts` `edges`), so no band opens; with it the fresh read's five findings on the D1287 fix.
+**23 Oct 26 — the questions put to him (this job's first chat, branch `claude/lw-phone-pinch-zoom`):** his page https://claude.ai/artifact/Lb6KypdQGnGA167rVJY9M6 (source `raptor-port/docs/img/mock/lw-pinch/questions-page.html`, pictures beside it, script `raptor-port/scripts/handpass/lw-pz-questions.mjs`). His screen recording of 23 Oct 26 (8 s, landscape, then upright) shows it: Safari's own page zoom; the frozen row, fixed to the page's top edge with the widths it measured, slides off its columns and then up out of sight (frames `rec-1…3`; `video-frames.mjs` pulls frames from an iPhone recording). Measured at 402 x 874 (`lw-pz-measure.mjs`): zoom 0.6 ≈ 18 days and 35 people on screen, 0.8 (the opening) ≈ 14, 1.4 ≈ 6 days and 15 people; 0.41 ≈ a whole month and 51 people; 2 < 3 days (the names column ≈ two thirds of the width). **Q1** what a pinch zooms and where it may start (recommended A: the grid only — dates, Event and Manning rows, names with LVE, cells — and a pinch anywhere on the Leave War zooms the grid, the page never) · **Q2** how far out (recommended C: a whole month across, held upright, ≈ 0.4) · **Q3** how far in (recommended A: today's 1.4) · **Q4** the OIL tab pinches too and its own − / + go with the grid's (recommended yes). **Readings on the page, not asked:** the grid's − / + go only once his iPhone look proves the frozen row (D1276) — upright, sideways, turned while zoomed — else they come back before merge; a desktop's Ctrl+scroll uses the phone's limits (D1228); the opening sizes stay (D159); the zoom is kept while the app is open, as today; one finger still scrolls and a pinch never arms a selection (A7a). The older line above — "recommended: one zoom, the buttons stepping it" — is overtaken by D1228 and D1276. **His answers, 23 Oct 26 — "All as recommended": D1282 (Q1 A), D1283 (Q2 C), D1284 (Q3 A), D1285 (Q4 yes)** — the screen rules carry them (`raptor-port/docs/ui-contracts.md`, the Leave War grid pinches on a phone). **Next:** the build, in a fresh chat on this branch, the bug-check order in full (a gesture: WALK at least, real two-finger touch over CDP; the frozen row upright, sideways and turned while zoomed), then his iPhone look decides the − / + (D1276). **23 Oct 26 — BUILT (this branch; the as-built rules: `raptor-port/docs/ui-contracts.md`, the Leave War grid pinches on a phone):** walked by real fingers, 30 / 32 on the final build (`raptor-port/docs/img/handpass/2026-10-23-lw-pinch/final/walk-results.json`); the 2 are a known settle of up to 24 px after a big pinch out at the page's top. His check the same day: after − on the live app the frozen dates match their columns on his iPhone. Fixed on the way: the undrawn months' width estimate after a zoom (an old fault — the live app's + throws the view back a month), the month strip's band zoomed in, the second finger across the three selections. Next: break tests, a fresh Opus code read, the evidence sheet, his look (the − / +).
+

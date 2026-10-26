@@ -225,7 +225,7 @@ describe('how many days the sheet asks for', () => {
     openOil(TUE)
     expect(screen.getByTestId('oil-pick-fo').getAttribute('aria-pressed')).toBe('true')
     expect((screen.getByTestId('oil-days') as HTMLInputElement).value).toBe('')
-    expect(screen.getByTestId('oil-days').getAttribute('placeholder')).toBe('other: 1½, 2…')
+    expect(screen.getByTestId('oil-days').getAttribute('placeholder')).toBe('other: 1.5, 2…')
   })
 
   it('there is ONE button, and it says what the day will READ as', () => {
