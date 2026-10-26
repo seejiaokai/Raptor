@@ -62,6 +62,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
+- [RULES-TAG-OFF] — BUILT on pull request 555 (D1098): the tag off View and Edit Schedule; archive once it merges.
 - [ARM-STRIP-STALE-TITLE] — the "Planning …" strip keeps the title the line had when its seat was picked; a callsign typed after does not show (older; low).
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
@@ -131,6 +133,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-LOCKMARK] — the war still locks a day with an old marker; per-record checks replace it.
 - [LW-OFFER-ONLY-TAKEABLE] — two war sheets offer a choice the war then refuses — with [LW-LOCKMARK].
 - [LW-SEL-HALF-LABELS] — the drag-selection sheet shows half-day leave as "FCL*" where the one-day sheet shows "<FCL".
+- [PO-AUTO-DELETE-WORDS] — the Delete posting says the app deletes him by itself on the date: its line, and "· auto delete" on his row (D1105); with the next Leave War batch.
+- [LW-GROUPS-STALE-AFTER-ARCHIVE] — the war's groups keep archived men until a reload (found 21 Oct 26).
 - [LW-SETTINGS-SMALL] — two small ⚙ Settings edges: Reset order judges the whole roster; an armed "Really reset?" survives a page switch.
 - [LW-DOZE-GUARDS] — a check: do the war's measuring guards run while its page is asleep?
 - [LW-MONTH-MEMO-UNPINNED] — one cell changed redraws every month of every row, and no test pins the month's redraw guard.
@@ -181,15 +185,16 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Checks and tooling**
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
+- [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [LW-HARNESS-VIEWER-PIN] — in the Leave War browser tests a role switch quietly undoes the pinned viewer.
 - [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
-- [DOCSIZE-MERGE-CEILING] — the document check wrongly flags a merge of `main` that carried a size-marker move.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
+- [OVERNIGHT-SESSION-PER-JOB] — tried the night of 21 Oct 26 (D1103, D1104): a fresh helper per job, and the "Low or Medium?" question; if it worked, the overnight guide says so — written while he is awake, read before his approval.
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
@@ -202,7 +207,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OPUS-SECOND-READ-GUIDE] — the checking guide's line on when a second, blind Opus read is run: decided (D595), not written — it waits for Astra's and Sol's reads (D70) when ChatGPT is back, then his approval; and whether it still earns its place then.
 
 **Documents and guides**
-- [NIGHT-RECORDS-1021] — rulings D1098–D1108 and the board's pinch item sit only on an open records pull request (560), never merged — bring it level with main and put it to him.
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
@@ -250,6 +254,27 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
+**What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`. **Step 1 done (the night of 21 Oct 26):** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` — 44 places; three rules wrong for a real single-seat jet (AAR training, an IRT in one jet's remarks, OCU solo); the app cannot tell single-seat from a back seat not yet filled; 8 questions for him with marked pictures — put to him when he says (D994).
+
+### [RULES-TAG-OFF] Take the RULES MODIFIED tag off View and Edit Schedule (his word, 21 Oct 26 — D1098)
+**What:** when a Logic setting is changed from the squadron standard, a yellow RULES MODIFIED tag shows above the Legend
+on View Schedule and Edit Schedule. His word: every squadron changes the rules to fit its own, so the tag goes from both
+pages. **Where:** the tag is drawn by the schedule pages' banner (`Shell.tsx` sets the page mark; `scheduler/01-logic.css`
+draws the words; `scheduler/04-pucks-sections.css` shows the banner only for it) — the banner holds nothing else, so it
+goes too. **Stays:** the Logic page's own strip ("N settings changed from the squadron standard"), and the page mark if
+anything else reads it (check first). **Check:** the Logic tests that pin the mark; the walk scripts and the IT guide's
+picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
+desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
+
+### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
+**What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
+
+### [PO-AUTO-DELETE-WORDS] The Delete posting says it is automatic (his word, 21 Oct 26 — D1105)
+**What:** on the Post out sheet (every posting door), the Delete outcome's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck."; until the date his row reads "posting out <date> · auto delete" (the pending words, `leavewar/sync.ts` `postingPendingTag` / `OUTCOME_WORD` — Admin → Users and the Leave War); the button stays "Delete" (D298). **Check:** the line on every door, the row before and after the date, phone and desktop. **Place:** with the next Leave War batch (after pull request 556 merges). **Picture:** the sheet with the two places marked, sent to him 21 Oct 26.
+
+### [LW-GROUPS-STALE-AFTER-ARCHIVE] The Leave War's groups keep archived men until a reload (found 21 Oct 26 by the single-seat walk; low)
+With every WSO archived through Admin → Users, in the same session the Leave War still read IWSO 5 and OPS W 12; after a reload the empty groups were gone (an empty group draws no heading). The grid did not refresh its groups after the archives. **To do:** reproduce with one man archived; find why the roster projection does not regroup. **Place:** the agent's; with the next Leave War batch. **Evidence:** the night's single-seat check (`raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md`).
 ### [KBS-PHONE-SLIDE] The box being typed in, on his iPhone, as the keys open and the page slides (25 Oct 26) — OPEN
 Five rounds built and walked on `claude/lw-m3-placing-leave` (pull request 569): the pinned foot kept clear, a late pan followed,
 a window brought down to the visible top, his iPhone's measure from the visible top (`src/ui/kbscroll.ts screenBox`, used by
@@ -391,8 +416,8 @@ starts (D1150). The bell's notices already built are listed in it too. Kept by t
 needs one adds a line and names it in its closing report; he may strike any. **Where:** `raptor-port/docs/notifications-register.md`
 (its row in the project guide's map). **21 Oct 26:** written — 11 built, 1 ruled (D1142), 6 proposed by the full mock-up (P1–P6), put to him to strike; the item stays open while proposed lines wait.
 
-### [NIGHT-RECORDS-1021] Rulings D1098–D1108 are on an open records pull request, not on main (filed 23 Oct 26 from a handoff block)
-**Seen (23 Oct 26, the pinch-zoom questions chat, clearing merged handoff blocks):** the board's pinch-zoom block (pull request 561, live) said its rulings D1098–D1108 and the item `[BOARD-PHONE-PINCH-ZOOM]` "live on `claude/night-records-1021` (unmerged) — archive [BOARD-PHONE-PINCH-ZOOM] once both are on `main`". Checked: pull request 560 is OPEN, its branch is not in main, and main's rulings files carry no D1098–D1108 rows, though D1109 and D1110 (live) answer D1107 and D1108. **To do:** bring the branch level with main (renumbering any clash, D78), check the document check passes, put it to him for his "merge live" (documents only); then archive `[BOARD-PHONE-PINCH-ZOOM]` there. **Place:** Documents and guides — small, his word to merge.
+### [DESIGN-CHECK-GOLD-DOT] The design checker flags the gold history dot (filed 26 Oct 26 from the night of 21 Oct 26's handoff block)
+**Seen (21 Oct 26, the overnight run):** the design checker flags the gold history dot in `raptor-port/src/ui/scheduler/20-changes-quals.css` as a "grid background" — a false alarm. An ignore for that one file was added that night and taken out by job 5's helper; adding it needs his OK. **Place:** Checks and tooling — low, his word.
 
 ### [ARM-STRIP-STALE-TITLE] The strip over the crew list keeps an old title (found 21 Oct 26 by the blind read of [BOARD-SIDE-WIDTH]; older)
 **Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list.
@@ -627,6 +652,8 @@ person move between squadrons with data intact.
   app-wide; a future F-16 community reuses them, and its men may fly with us as guests (tagged "Viper · F-16",
   picked from a guest list, never by typing a bare callsign). **D289:** a community = the squadrons of one aircraft
   type; a guest always marked — on a puck an orange corner (D296, option A of `docs/mock/post-out.html` §8).
+- **D1100 (21 Oct 26) — one app for every squadron and aircraft type, detachments, lending a man:** an aircraft-type setting carrying its rules; a detachment with its own schedule and its people moved to it; the two F-15 squadrons sharing one app and lending a man for a day or a period (one squadron's morning, the other's afternoon); one shared system or split apart is his question (security classification). At the end, after the F-15 app's faults are fixed (`docs/architecture-direction.md` §3).
+- **D1101 (21 Oct 26) — split by aircraft type:** a deployment and a database for each type; the F-15 squadrons share theirs. A guest flyer from another type and a man moving between types cross two databases — his question at the database step.
 
 ### [TRK-DISK] Tracker migration/rename "safety check" reads memory, not disk — Decision A — OPEN
 On upgrade or a course/syllabus rename, the app copies records, checks the copy in
@@ -1336,15 +1363,6 @@ call; two are the owner's call because they change wording or feel. The ledger a
 `raptor-port/docs/performance.md` (Part 2; §Dead ends says what not to retry). **Place:** when a speed complaint
 or a board change comes near one of them; put the two that change wording or feel to him first.
 
-### [DOCSIZE-MERGE-CEILING] The document check's ceiling rule fires on a MERGE of `main` that carried a ceiling move (found 29 Sep 26)
-`npm run docsize` on `claude/small-fixes-batch-d223f6` (after `main` #464 was taken in) fails: "a ceiling in raptor-port/scripts/docsize.mjs
-changed in commit 593c357e, which also touches raptor-port/src". 593c357e is the MERGE of `main` #459–#462; the ceiling moved on
-`main` in the guide step's own docs-only commit (D391), and the merge merely carried it beside the Tracker's code. The rule
-(`docsize.mjs` `ceilingMovedWithCode`) walks `git log BASE..HEAD -- docsize.mjs` and compares each commit with its FIRST parent, so
-a merge reads as a commit that moved the ceiling with code. The same HEAD passed the Docs guard on GitHub (72cf61e7), so it did
-not block the PR. **To do:** skip merge commits in that walk (`--no-merges`: every ceiling move is judged in the commit that made
-it, on whichever side) with a self-test — in a docs-only change of its own, never inside a code PR (the gate is not edited to pass
-the PR that trips it). **Place:** low; with the next document-gate change.
 
 ### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
 **Also for the next re-shoot (12 Oct 26 — D773; Fable's second read of the one-rule job, finding 3):** the deck's "Print, export and data" slide still pictures the Inputs List's "Export to Excel", a button that is removed. Its sources are corrected (`raptor-port/scripts/itflow/j/export.mjs`, `content.mjs` — the shot is gone, the Admin → Data step is step 3); the built deck keeps the old slide until he asks for a re-shoot (D403).
@@ -1961,6 +1979,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | The night of 20 Oct 26 — the Tracker smoke in two, `[GATELOCK-STALE-PORT]`, the lazy pages loaded up front in three test files (D1092); LIVE on his advance word once green | one fresh, blind Opus reader of the finished branch (D790, D903); proved by the counts (the same 453 Tracker checks by name) and the tests | Astra's read of a checks-and-tooling change |
 | The OIL batch — `[UNPUB-WARN-AL-RESTORES]`, `[OIL-ZERO-SPAN-SORTIE]`, `[LW-OIL-DATECHIP-HIDDEN]` (D994); built 20 Oct 26 on `claude/oil-small-fixes-1020` (pull request 550) | a fresh, blind Opus scenario designer and one fresh, blind Opus reader of the finished code (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-oil-batch.md`) | Astra's scenario design (D353); Astra's and Sol 6.1's two code reads (OIL and the published record — rank 2) |
 | The Inputs batch — `[TILL-NEXT-YEAR]`, `[OIL-ASK-HEAD-SEVERAL]`, `[INP-TILL-STALE]`, `[CAL-UNDO-OTHERS]` (D994); built 20 Oct 26 on `claude/inputs-small-fixes` (pull request 553) | one fresh, blind Opus reader of the finished code, asked for missing scenarios too (D790, D903); walked and gated (`raptor-port/docs/handpass/2026-10-20-inputs-small-fixes.md`) | Astra's scenario design (D353); Sol 6.1's second read (the published record: the printed till date a published day compares) |
+| The night of 21 Oct 26 — the schedule pages ([RULES-TAG-OFF], [INNERHTML-REPAINT-SWEEP]), the Leave War small fixes, the Tracker small fixes, the look and keyboard small fixes, the checks themselves (D994, D1098, D1102) — each on its own branch | one fresh, blind Opus reader of each finished branch (D790, D903); each walked and checked by GitHub's run | Astra's and Sol 6.1's reads |
 | Round 2 of the consistency look — D1129–D1132 (Quals' Edit quals plain, the board's bar and highlighter mark, the Tracker's line icons); built 21 Oct 26 on `claude/consistency-round2` (pull request 563) | one fresh, blind Opus reader of the finished code (D790, D903); walked 100/100 (`raptor-port/docs/handpass/2026-10-21-consistency-round2.md`) | Astra's code read (a WALK-tier interface change: one reader) |
 | `[LW-OVERHAUL]` — the whole design's red team, the twelve questions and the build plan (the night of 21–22 Oct 26, branch `claude/leave-war-overhaul`; D1204) | two fresh, blind Opus readers, each blind to the other (A the design, B the what-ifs); one fresh Opus reader of the rulings' short lines (D138); one fresh, blind Opus reader of the build plan (ten findings, taken) | a ChatGPT reader of the plan — an important plan wants two providers (D590) |
 | The Leave War overhaul's M1 — open dates (22 Oct 26; branch `claude/lw-m1-open-dates`, pull request 566): permissions and saved data | a fresh, blind Opus read and Fable beside it, blind to each other (D790, D1260), after the walk | the two ChatGPT reads (D590) — `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` |
