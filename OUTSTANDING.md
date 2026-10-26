@@ -240,10 +240,10 @@ five small notes, a file and line for every claim, the summary opening with a co
 the bug-check order (after the first pass a reader reads only what changed; a fault is named by its kind so every copy is
 fixed; a finding already raised is never repeated) — a guide change, read before he approves it (D70); (3) notes-only
 pull requests merging by themselves (D1407): a check that lists the files and allows the merge only when every one is a
-note; (4) the secrets scan in GitHub's checks and one scan of the whole history (D1408); (5) the security read on
+note, running `npm run rulecheck`, the unit tests that read documents and the secrets scan on it (the gates skip notes), and the session-handoff skill's merge wording brought level with D1407 (a guide change, read before he approves it, D70 — until then shipping.md's newer rule wins, D90); (4) the secrets scan on every pull request, in a workflow with no skip list so notes-only ones are scanned too, and one scan of the whole history (D1408); (5) the security read on
 sign-in and permissions changes (D1411) in the bug-check order's tiers and the reader's brief, and the full security
 review placed before the database step; (6) the reader's test set from §7.11's six faults (D1410), the reader scored on
-it once; (7) the way back: putting the previous live version back on Vercel, checked on his plan, written for him.
+it once; (7) the way back: putting the previous live version back on Vercel, checked on his plan, written for him (the page's improvement 7 — not one of his five rulings; the agent's own step, as is its "circuit breaker", which is not built without his word).
 After four weeks, the scorecard against the baseline. **Place:** after the iPhone keyboard fault (D1366) and M4 (D1404)
 unless he says otherwise; Opus 5.5, high effort; a fresh chat.
 

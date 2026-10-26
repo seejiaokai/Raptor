@@ -175,7 +175,7 @@ never pay or money).
 | D67 | 23 Sep 26 | Opus 5.5 plans and builds; Astra reviews it, Sol 6.1 second where two readers are required, Fable on call (D590); when Codex plans or builds, Opus reviews; never their own artifact — but a fresh, blind Opus reader may read code Opus wrote (D790). — changed by D790, D590, D496, D353 |
 | D63 | 23 Sep 26 | The country-specific aircraft type goes: where a sentence describes the squadron or him it reads "fighter squadron"; where it names the aircraft or its documents, the bare "F-15" — the Tracker's event-box hint too (D64); its syllabus data is left (D62). — changed by D64 |
 | D62 | 23 Sep 26 | The Tracker's syllabus data is out of scope for every privacy or "what can a stranger read" sweep. Leave it; do not flag it again. |
-| D60 | 23 Sep 26 | Pushing a branch needs no permission; `main` always does. — changed by D1407 |
+| D60 | 23 Sep 26 | Pushing a branch needs no permission; `main` does, except a pull request of notes only, which merges by itself once green (D1407). — changed by D1407 |
 | D59 | 23 Sep 26 | The repo went private on 23 Sep 26 (done by him): GitHub Pages is gone, the publish job is off, the app is viewed on Vercel — made public again for a short period by D106, private again afterwards. — changed by D106 |
 | D58 | 23 Sep 26 | The bare number stays; the squadron abbreviation and the service abbreviation go, everywhere. |
 | D57 | 23 Sep 26 | The commander briefing deck (RAPTOR-Command-Brief.pptx, in the history) is his and stays — not a concern; never propose wiping it. |

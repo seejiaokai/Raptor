@@ -14,9 +14,8 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   arose because D59 took the repo private, which meters Actions minutes (D89: checks move to his PC). **Never push while a pull request's checks are running** (D151): any push restarts them and cancels the run in progress.
 - **Nothing reaches `main` without his explicit "merge live"** (owner, 2 Sep 26 — *"dont automatically push to
   live next time … then i will manually say merge live"*), whatever the change that touches the app. **Since D1407
-  (27 Oct 26 — "All as recommended"): a pull request that changes only notes** (documents, a walk's pictures, files under
-  `.claude/` but never its hooks, settings or skills, nothing under `.github/`) **goes live by itself once GitHub's run is
-  green** — the agent checks the file list, merges and says so in its report. It ended
+  (27 Oct 26 — "All as recommended"): a pull request that changes only notes** (the rulings files (`.claude/rules/decisions/`, `.claude/decisions-full/`, `DECISIONS*.md`), `HANDOFF.md`, `OUTSTANDING*.md`, evidence sheets and their pictures (`raptor-port/docs/handpass/`, the picture folders) and the other reference documents under `raptor-port/docs/` — never the unscoped `.claude/rules/*.md` (this merge rule among them), `.claude/hooks/`, `.claude/settings*.json`, `.claude/skills/`, `.claude/agents/`, `.claude/launch.json`, `AGENTS.md`, `raptor-port/CLAUDE.md` or anything under `.github/`) **goes live by itself once its run is green** — the agent
+  checks the file list, merges and says so in its report, and since a few checks read documents (the permissions table in `raptor-port/docs/data-model.md` §11, `engine-rules.md`, `remarks-vocabulary.md`, the behaviour registers) and the gates skip a notes-only pull request, the agent runs `npm run rulecheck` and the unit tests that read documents on his PC before such a merge until [REVIEW-LAYERS] builds the guard that does it, with the secrets scan. The 2 Sep 26 rule ended
   the old "auto-merge is the default" rule of 24 Aug 26. Parallel chats merge ONE AT A TIME, each on his word;
   the later one merges `main` in first and renumbers its own clashing rulings (D78).
 
@@ -86,7 +85,7 @@ half).
   based on another branch, starts no checks — so GitHub's
   run (about 6 minutes since D1089 — 5m53s measured 20 Oct 26 — the same set as his PC's: build, the original's 728, unit, browser, the Tracker's, the rule and
   document checks) goes while the app is walked. On his PC run only the tests of what you change and the build the walk
-  drives; no full gate run there. Nothing merges until GitHub's run is green and he has said "merge live"; a red run is
+  drives; no full gate run there. Nothing merges until GitHub's run is green and he has said "merge live" (a notes-only pull request: D1407); a red run is
   fixed before his look is asked for; its slowest checks are split across more machines, every area still run (D1089). GitHub's machines download the project without the walks' pictures, which no check reads (D1091). The run that counts is the one on the branch's last pushed commit; fixes found during
   the walk are batched and pushed only once the run in progress has finished (D151). Once the repo is private again (D106 ended), the full check is back on his PC (D89).
 - **A small follow-up fix on an open pull request whose whole set has already passed (D902, 15 Oct 26 — his "Ok")** runs only the
@@ -120,8 +119,8 @@ half).
 - **Docs-only changes skip the gates** (`paths-ignore` in `deploy.yml`: `**.md`, `.claude/**`, the document-gate
   scripts `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml`) — but the Docs guard
   (`docs-guard.yml`, two to three billed minutes) still runs on every PR and every push to `main`. **An exemption from
-  the GATES**; since D1407 a change of notes only merges by itself once its run is green, and any other docs change
-  (a hook, a setting, a working guide, a workflow) still merges only on his "merge live" (corrected 17 Sep 26, narrowed 27 Oct 26). A PR that mixes code and docs runs everything — and GitHub judges the WHOLE PR, so once it carries
+  the GATES**; since D1407 a change of notes only (the list above) merges by itself once its run is green, and any other docs change
+  (a rule that governs the agent, a hook, a setting, a working guide, a workflow) still merges only on his "merge live" (corrected 17 Sep 26, narrowed 27 Oct 26). A PR that mixes code and docs runs everything — and GitHub judges the WHOLE PR, so once it carries
   code even a notes-only push re-runs every gate (D151).
 
 ## Pull requests

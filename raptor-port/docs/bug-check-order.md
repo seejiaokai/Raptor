@@ -847,7 +847,7 @@ Any no, and the answer to "merge live" is no.
 
 Every two weeks the agent puts one page to him: the faults he found after a change went live, the changes undone or
 redone within two weeks, and the merges in those two weeks — each beside the two weeks before. Speed counts only while
-the first two hold; when they rise, the area's checks go up a tier until they fall. The first scorecard is the baseline,
+the first two hold. The first scorecard is the baseline,
 taken before [REVIEW-LAYERS] changes how work merges.
 
 ---
