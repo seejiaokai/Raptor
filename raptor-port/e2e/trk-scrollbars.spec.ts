@@ -40,6 +40,19 @@ test.describe('phone (a finger the only pointer)', () => {
   })
 })
 
+/* the rule is the pointer's, never the width's: a touch screen as wide as a desktop (an iPad on its side) loses the
+   chart's bars too — a rule narrowed to phone widths would pass the two cases above and fail here (the read's note) */
+test.describe('a wide touch screen (an iPad on its side)', () => {
+  test.use({ viewport: { width: 1180, height: 820 }, hasTouch: true, isMobile: true })
+
+  test('the chart draws no scroll bars at a desktop\'s width too (D1406)', async ({ page }) => {
+    await openTracker(page)
+    expect(await page.evaluate(() => matchMedia('(hover: none) and (pointer: coarse)').matches), 'a touch screen').toBe(true)
+    expect(await bars(page, '#board'), 'the chart box').toBe('none')
+    expect(await bars(page, '#side'), 'the Info panel').toBe('auto')
+  })
+})
+
 test.describe('desktop (a mouse)', () => {
   test.use({ viewport: { width: 1536, height: 730 } })
 

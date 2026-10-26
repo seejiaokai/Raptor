@@ -77,7 +77,15 @@ bars by the media query's reading of the primary pointer — the reader's note b
 
 ## The read
 
-A fresh, blind Opus read of the commit (D790) — its result and dispositions below.
+A fresh, blind Opus read of commit 22cacbcd2 (D790): **no findings.** Verified: the rule wins inside the `#page-tracker`
+wrapper (same weight, later); nothing else styles the chart's bars; the pinch makes no new scroll box (`.flowwrap` is
+not one, `.boardcol` clips it); WebKit's own source hides the iPhone's bars for `scrollbar-width:none` on a box that
+scrolls (iOS 18.2 and later); the test fails without the rule and runs in CI; D1406's short line matches its full row.
+Its notes on the test, and their dispositions: (a) a rule narrowed to phone widths would still pass — **taken**: a third
+case, a touch screen 1180 wide (an iPad on its side), green; (b) "still scrolls" set the scroll from code — left: the
+walk's finger drag carries it; (c) the Info half's check only guards a later change — left as that guard. Not verifiable
+by it: his iPhone (mid-pinch included — whether the top-left bar was the chart's, though no other box here can scroll),
+an iPhone older than iOS 18.2, an iPad, a real Android phone.
 
 ## Gates
 
