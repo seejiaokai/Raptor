@@ -43,6 +43,12 @@
    "said": "then to a Meeting: type Meeting, acc u (a Meeting he files lands on the programme; this one stays where the scheduler put it)"
   },
   {
+   "id": "W3c",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "retyped to LL and saved: type LL, acc undefined, under Unavailable true; said: Input updated"
+  },
+  {
    "id": "W4-window",
    "size": "desk",
    "verdict": "PASS",
@@ -95,7 +101,12 @@
   {
    "id": "bundle",
    "size": "desk",
-   "said": "index-BeF60EZP.js"
+   "said": "index-BJYvIbK5.js"
+  },
+  {
+   "id": "w3c-ll",
+   "size": "desk",
+   "said": "a question opened after the save: docconf"
   },
   {
    "id": "w4-ll",

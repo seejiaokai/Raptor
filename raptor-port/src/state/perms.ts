@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -752,11 +752,12 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
     if (mk(f) !== mk(src)) return `a scheduler's mark on an input`
     /* …AND SO IS WHERE A SCHEDULER PUT IT (his D1388): the mark that he moved it is his to set and clear, and while it
        stands — or his Reject does — a member's change leaves it where it is: under Unavailable, parked, or on the
-       Ground Programme (`odGround` for an overseas duty). The programme's own 'g', which the week works out and clears
-       by itself, is not compared. */
+       Ground Programme. Asked of WHERE IT STANDS (engine/inputs.ts placeOf — the one answer the save keeps), never of the
+       stored marks: a leave stands under Unavailable by its kind with no mark, an overseas duty retyped out of one leaves
+       its Ground mark behind, and the programme's own 'g' comes and goes with the week — none of those moves it (the code
+       read's F1, 26 Oct 26: comparing the marks rolled back a retype that left it where it was). */
     if (!!(src && src.schedPlaced) !== !!f.schedPlaced) return `a scheduler's move of an input`
-    const pk = (x: any) => JSON.stringify([x.acc === 'u' ? 'u' : x.acc === 'r' ? 'r' : '', !!x.odGround])
-    if (b && placeHeld(b) && pk(b) !== pk(f)) return `where a scheduler put an input` }
+    if (b && placeHeld(b) && placeOf(b) !== placeOf(f)) return `where a scheduler put an input` }
   /* HIS OWN PART is taking himself OUT (D755 (3)). Putting himself INTO an input that holds others is adding a person
      to it — its filer's or a scheduler's (owner D763) — except as his own Undo putting him back, which is a replay. */
   if (own && b && idsOf(f).length > 1 && !holds(b, pid) && holds(f, pid) && !filedForOther(pid, b, f)) return `a person added to another person's input`

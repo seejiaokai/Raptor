@@ -5,6 +5,7 @@
 //       the line says a scheduler moved it; the dead Ground Programme button changes nothing
 //   W3  Ranger retypes it to an Attach and saves: it stays under Unavailable (an Attach would land there anyway — and a
 //       Meeting must too); then retypes it to a Meeting: still under Unavailable
+//   W3c the board's held one, retyped by Ranger to a leave (it stands under Unavailable by its kind): saved
 //   W4  a second Other Ranger himself sent under Unavailable, which a scheduler moves onto the Ground Programme (Reject,
 //       → Ground): Ranger's window shows Ground Programme, dead; his retype to a leave (LL) is refused with its reason
 //   W1b the same on the Scheduler Board: its Ground Programme row's ✕, then → Unavail — each writes the mark
@@ -98,6 +99,13 @@ await M.locator('#inpEditType').selectOption('Meeting'); await M.waitForTimeout(
 await L.press(m, '#inpEditSave'); await M.waitForTimeout(1200); await H.answerAsks(m, 'w3-meeting', { oil: 'no' })
 const r3b = await H.inputById(M, o1.rec.iid)
 rec('W3-meeting', 'desk', r3b?.type === 'Meeting' && r3b?.acc === 'u', `then to a Meeting: type ${r3b?.type}, acc ${r3b?.acc} (a Meeting he files lands on the programme; this one stays where the scheduler put it)`)
+/* W3c (the code read's F1): the board's held one under Unavailable (W1b), retyped by Ranger to a leave — it stands there by its kind: saved */
+await H.openInputBy(m, o1b.rec.iid, 'list')
+await M.locator('#inpEditType').selectOption('LL'); await M.waitForTimeout(400)
+await L.press(m, '#inpEditSave'); await M.waitForTimeout(1200); await H.answerAsks(m, 'w3c-ll', { oil: 'no' })
+const r3c = await H.inputById(M, o1b.rec.iid)
+const unav3c = await M.evaluate(iid => { const r = (window.INPUTS || []).find(x => x.iid === iid); return !!r && (r.acc === 'u' || (!r.acc && /^(LL|OL|HL|ATT|OD)/.test(r.type))) }, o1b.rec.iid)
+rec('W3c', 'desk', r3c?.type === 'LL' && unav3c, `retyped to LL and saved: type ${r3c?.type}, acc ${r3c?.acc}, under Unavailable ${unav3c}; said: ${await said(M)}`)
 /* W4: the one on the programme */
 await H.openInputBy(m, o4.rec.iid, 'list')
 const g4 = await H.goesRead(M)

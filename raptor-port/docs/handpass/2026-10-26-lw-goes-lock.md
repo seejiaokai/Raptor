@@ -69,7 +69,7 @@ brought into sight — the phone's line inside the screen (W2-phone).
 
 ## The walk
 
-`Walk: 15 PASS, 0 FAIL — scripts/handpass/lw-lock-walk.mjs on the build of the branch's first commit (its
+`Walk: 15 PASS, 0 FAIL (first run); re-walk on the fixed build 16 PASS, 0 FAIL (W3c added for the read's F1) — scripts/handpass/lw-lock-walk.mjs on the build of the branch's first commit (its
 source unchanged since), desktop 1536 and phone 402 Chromium, browser errors none on either; pictures
 docs/img/handpass/2026-10-26-lw-goes-lock/ (13), results walk-results.json. The host opened w2, w4-refused-screen, w4b,
 w2p (after the tap and settled) and w7.`
@@ -82,6 +82,7 @@ w2p (after the tap and settled) and w7.`
 | W2 | Ranger's window: Unavailable picked, both buttons dead, "A scheduler moved it here: counted as away on the Leave War" |
 | W2-dead-press | a press on the dead Ground Programme button changes nothing |
 | W3 | his retype to an Attach, saved: still under Unavailable; then to a Meeting: still under Unavailable |
+| W3c | (the re-walk, the read's F1) the board's held one under Unavailable, retyped by Ranger to LL: saved, still under Unavailable (by its kind) |
 | W4 | the one on the programme: Ground Programme picked, dead, "…still counted in the Leave War's manning"; his retype to LL refused — "A scheduler has moved this input, so only a scheduler can change it to LL" — the window stays open |
 | W4b | "Several people" + ALL AVAIL into the one under Unavailable: refused — "…so only a scheduler can put ALL AVAIL or ALL in it" |
 | W5 | his own unmoved Other: both live, his Unavailable saved, no mark |
@@ -98,14 +99,37 @@ reads "Discard 2 edits" for a load that changes nothing (the row re-made under a
   2 (OD and course red before the count fix — run with the fix set aside, then green).
 - On his PC: the 191 unit-test files that touch the input window, the permissions module or the schedule's buttons —
   4091 passed (under the lock, before the count fix); the 21 files that check the load's count — 714 passed (after it);
-  the build; `rulecheck`; `docsize`.
+  the build; `rulecheck`; `docsize`. After the read's fixes: `goesheld` 25, the 191 files again under the lock — 4096
+  passed; the build again (the re-walk's).
 - GitHub's run of pull request 572 is the full gate set (D1086).
 
 ## The code read
 
 One fresh, blind Opus reader (D790, D903 — no ChatGPT readers until about 1 Nov 26: the job joins [NO-ASTRA-LIST]),
-handed the change, the walk's results and D56, asked first for what is missing. *(Its findings and their dispositions
-follow.)*
+handed the change, the walk's results and D56, asked first for what is missing. It ran its own probes; 31/31 of the
+branch's tests passed for it.
+
+| # | Finding | Disposition |
+|---|---|---|
+| F1 (medium, reproduced) | The commit gate compared the stored marks, not the place: a member's retype that LEAVES it where the scheduler put it was rolled back, silently — a held Other under Unavailable retyped to LL / ATT C / OD (each stands there by its kind, with no mark), and a held overseas duty on the programme retyped to a Training (it leaves its Ground mark) | FIXED red-first — the gate asks `placeOf` (the one answer the save keeps); `goesheld.test.tsx` "the code read's F1 and F2" (4 red before); re-walked W3c |
+| F2 (low, reproduced) | A scheduler's ALL AVAIL put into a member's Other under Unavailable moved it onto the programme, unmarked — its filer could send it back | FIXED red-first — `commitInput` marks it (`markMoved`); test as above |
+| Q1 | "Load onto working copy" puts a published filing back without the mark — is a load a scheduler's move? | A question for him (below, 4) |
+| Q2 | A member may delete a held input and file a new one with his own Goes to | As built: deleting his own input is his (D655), and a new filing is his to place (D1356) |
+| Q3 | The gate's source for a NEW record split from a held one could be the wrong record in a command that changes two of his inputs | No live route found; the same pattern the scheduler's other marks have used since 12 Oct 26 — not a finding (no concrete failure) |
+
+**Doors the reader checked and found right:** every scheduler door writes the mark in the same command (with and
+without the OIL question); the mark survives a week load, the after-command pass and Undo / Redo; pieces split off a held
+input carry the mark and the place, so a member taking himself out is not refused; a scheduler's "+ Inputs" (filing) never
+marks; an admin in the member view is asked as a member on both sides. **The count:** right for the overseas duty and the
+course; no under-count found (rows kept, a request standing on another day and ALL AVAIL rows checked).
+
+**Its view of the four readings:** (a) the lock for every kind is "a modest over-reach of the words" — the full row
+narrows D655 "for an Other's Goes to only" — but within the ruling's purpose: **his to confirm** (question 1); (b), (c),
+(d) consistent.
+
+**The fixes' own read (§5, "a fix is new code"):** both are one-line changes (a comparison, a mark), so no narrow read;
+their tests and the re-walk carry them. After the fixes: the 191 affected unit-test files again, under the lock (see
+Tests).
 
 ## Questions waiting for him
 
@@ -117,3 +141,7 @@ follow.)*
 3. **The refusal words**: "A scheduler has moved this input, so only a scheduler can change it to LL" and "…so only a
    scheduler can put ALL AVAIL or ALL in it"; the window's line "A scheduler moved it here: counted as away on the Leave
    War". Recommended: keep (pictures w4, w4b, w2).
+4. **Is "Load onto working copy" a scheduler's move?** It puts each request back where the published version had it;
+   today it does not mark it, so a member whose own pick it undid can pick again. Recommended: leave as built — the load
+   is putting the published day back, not deciding a man's input; a scheduler who wants it held uses Reject / → Ground /
+   → Unavail, which mark it.

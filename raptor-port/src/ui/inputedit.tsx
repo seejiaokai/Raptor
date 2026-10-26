@@ -2141,8 +2141,9 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
         if (st && !schedSide(opts)) { const today = nowStamp(); if (String(inputStampISO(r) || '') < today) st.mod = today }
         for (const p of added) putPerson(r, p, st)
         /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
-           same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) */
-        if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
+           same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) — a
+           scheduler's move, marked (his D1388; the code read's F2: unmarked, its filer could send it back) */
+        if (r.acc === 'u' && isPlaceholderInput(r)) { delete r.acc; markMoved(r) }
         /* THE ONE PERSON OF AN INPUT WHO MAKES IT AN INPUT OF SEVERAL IS WHO FILED THAT (state/perms.ts takesOn — as before
            the build, where the group he made named him its filer): so he can go on changing who is in it, and its OIL
            question comes to his bell. An admin's add leaves who filed it alone. */

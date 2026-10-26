@@ -178,6 +178,38 @@ describe('(3) the member\'s save leaves where it stands alone', () => {
   })
 })
 
+/* THE CODE READ OF 26 OCT 26 (a fresh, blind Opus reader — D790): F1, a retype that leaves it WHERE a scheduler put it was
+   rolled back by the commit gate, which compared the stored marks rather than the place (a leave stands under Unavailable
+   by its kind, with no mark; an overseas duty leaves its Ground mark when retyped out); F2, a scheduler's ALL AVAIL put
+   into a member's Other under Unavailable moved it onto the programme unmarked. Red first. */
+describe("the code read's F1 and F2", () => {
+  for (const type of ['LL', 'ATT C', 'OD']) {
+    it(`F1: a held one under Unavailable, retyped by the member to ${type} (it stands there by its kind): saved, still under Unavailable`, () => {
+      const id = other({ acc: 'r' }); press(id, 'u')
+      asMember()
+      expect(commitInputEdit(live(id), { ...draftOf(live(id)), type }), `${type} saved`).toBe(true)
+      expect(live(id).type).toBe(type)
+      expect(place(id) === 'u' || live(id).acc === undefined, 'under Unavailable (by its kind or its mark)').toBe(true)
+    })
+  }
+  it('F1: an overseas duty a scheduler moved onto the programme, retyped by the member to a Training: saved, still on the programme', () => {
+    const id = other({ type: 'OD', remarks: 'Exercise' })
+    press(id, 'x'); press(id, 'g')
+    expect(live(id)).toMatchObject({ odGround: true, schedPlaced: true })
+    asMember()
+    expect(commitInputEdit(live(id), { ...draftOf(live(id)), type: 'Training' })).toBe(true)
+    expect(live(id).type).toBe('Training')
+    expect(place(id)).toBe('g')
+  })
+  it("F2: a scheduler's ALL AVAIL put into a member's Other under Unavailable moves it onto the programme — marked moved", () => {
+    const id = other({ acc: 'u' })
+    expect(live(id).schedPlaced).toBeFalsy()
+    expect(commitInput(live(id), { ...draftOf(live(id)) }, [MEMBER, 'allavail'])).toBe(true)
+    expect(live(id).acc).not.toBe('u')
+    expect(live(id).schedPlaced, "a scheduler's move").toBe(true)
+  })
+})
+
 describe('(4) on one no scheduler has moved, his own Goes to and retype work as before', () => {
   it('Goes to moves it in and out; a retype off Unavailable lands where the kind lands', () => {
     const id = other()
