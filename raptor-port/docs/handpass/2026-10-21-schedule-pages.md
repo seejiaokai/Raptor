@@ -130,3 +130,18 @@ None in any walk run (console, page errors, 4xx).
 **Questions waiting for him:** none.
 
 `Walk: docs/handpass/2026-10-21-schedule-pages.md · 47 pictures · 6 surfaces · 11 orders · MISSING: none (3 low read findings fixed, 1 older filed)`
+
+## Re-walk after main was merged in (26 Oct 26, his D1402)
+
+Pull request 555 sat unmerged from 21 to 26 Oct 26 while main moved 668 commits on; main still drew the tag, so the change
+still applies. Main merged in: one code clash (the Logic page's opening comment and main's new import line, both kept);
+the design guide's lesson for D1098 renumbered 14 → 60. Tests (`app`, `editlog-writers`, `editweek`, `interact`, `logic`)
+135 / 135. The walker's scenarios A and B re-run unchanged but for their paths and port (copied to
+`scripts/handpass/sp-merge-rewalk/`) on the merged build served on 4338, desktop 1400 and phone 390: **A** — with crew rest
+changed on Logic, no "RULES MODIFIED" on View-only Sched, Edit Schedule or the Scheduler Board, the Legend straight under
+the row above it, the Logic strip shown and gone at Reset; **B** — the Traffic window keeps the line being typed through a
+repaint (same box, caret 53/53, no mutation inside the window), and typing goes on (56/56). **Both PASS at both sizes**, no
+page error. The host opened A4-dk (Edit Schedule, a setting changed: no tag, the Legend under the Amendments panel).
+Pictures `docs/img/handpass/2026-10-21-schedule-pages/merge-rewalk-1026/`; output `parts/sp-merge-rewalk-1026-*.txt`.
+
+Walk: 2 scenarios (A's seven steps, B's six) re-walked at two sizes on the merged build, 4 runs, all PASS — `parts/sp-merge-rewalk-1026-*.txt`.
