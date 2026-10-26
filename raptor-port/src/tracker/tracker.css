@@ -345,6 +345,15 @@ button.datebox.trpopdate.is-notyet .datebox-txt{color:var(--muted)}
 .board::-webkit-scrollbar-thumb{background:#4a5464;border-radius:7px;border:2px solid #12151b}
 .board::-webkit-scrollbar-thumb:hover{background:#5f6b7e}
 .board::-webkit-scrollbar-corner{background:#12151b}
+/* On a touch screen the chart draws no scroll bars (his D1406, 27 Oct 26). The phone's own fading bars showed down its
+   edge and along its foot whenever it moved, and mid-pinch were drawn in the wrong place: the pinch stretches the chart
+   as a picture (core.js beginPinch), and the iPhone, most likely placing its bars from that picture, drew one floating
+   mid-chart and one at the top left. The chart still scrolls; only the bars go. A screen with a mouse keeps them — they are how a mouse scrolls it —
+   and the Info half (.side) keeps its normal bar everywhere. */
+@media (hover:none) and (pointer:coarse){
+  .board{scrollbar-width:none}
+  .board::-webkit-scrollbar{display:none;width:0;height:0}
+}
 .board.dragging,.side.dragging{cursor:grabbing;user-select:none}
 /* The Info half's finger scroll is the phone's own, as the chart's is (D992), so the two halves feel the same; its end
    holds the scroll inside it, as the chart's does. A box inside it that scrolls itself (the Failures card's chips) does,
