@@ -1,0 +1,61 @@
+{
+ "results": [
+  {
+   "id": 1,
+   "size": "phone",
+   "verdict": "FAIL",
+   "seen": "before: date start 2026-10-31 no ask (pre true); picked today: box \"Wed 21 Oct 26\n▾\" data-value 2026-10-21, line \"On 21 Oct: deleted with his account. Days he flew keep his puck.\", button \"Tap again to delete Hex\", Hex deleted=false; after ✕ and reopen: date 2026-10-31, ask null; Admin → Users Hex line: [], archived list: null",
+   "pic": "w1-phone-s1-asked.png, w1-phone-s1-reopened.png, w1-phone-s1-admin-users.png"
+  },
+  {
+   "id": "11a",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "asked with today: true; after leaving the page and coming back: sheet gone after return; Hex deleted=false; reopened: date 2026-10-31, ask null",
+   "pic": "s11a-asked, w1-phone-s11a-back.png"
+  },
+  {
+   "id": "7a",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "asked with today (true); first Overseas tap: ask gone=true, box 2026-10-31, outcome still Delete (line \"On 31 Oct: deleted with his account. Days he flew keep his puck.\"); second tap: date 2026-10-31, outcome Overseas (line \"On 31 Oct: archived, account suspended.\")",
+   "pic": "w1-phone-s7a-overseas-while-asked.png, w1-phone-s7a-overseas-second-tap.png"
+  },
+  {
+   "id": "11b",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "Delete chip tapped on an Overseas posting: \"Tap again\" showed=true; after leaving the page and returning: sheet gone after return; Hex deleted=false; reopened: outcome Overseas, ask null",
+   "pic": "w1-phone-s11b-delete-armed.png, w1-phone-s11b-back.png"
+  },
+  {
+   "id": "20a",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "one-day sheet PO on Grit, Delete: Post out arms \"Tap again to delete Grit\"; date change disarms=true; re-armed=true; chip change disarms=true; re-armed=true; after leaving the page and coming back the button reads \"(sheet gone)\" (sheet still up: false); Grit deleted=false",
+   "pic": "w1-phone-s20a-leave-sheet-armed.png, w1-phone-s20a-after-date-change.png, w1-phone-s20a-after-chip-change.png, w1-phone-s20a-after-page-leave.png"
+  },
+  {
+   "id": "20b",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "drag selection PO on Grit: armed=\"true\", date change disarms=true, re-armed=true, chip change disarms=true, re-armed=true; after leaving the page and coming back the button reads \"Post out\" (sheet still up: true); Grit deleted=false",
+   "pic": "w1-phone-s20b-selection-sheet.png, w1-phone-s20b-selection-armed.png, w1-phone-s20b-after-page-leave.png"
+  },
+  {
+   "id": "20c",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "dragged from Grit 2026-10-21 to Hex 2026-10-22: controls shown [\"bid-window\",\"polast-rocky\",\"select-sheet\",\"sel-who\",\"sel-span\",\"sel-cancel\",\"sel-pending\",\"sel-approve\",\"sel-refuse\",\"sel-portion-full\",\"sel-portion-am\",\"sel-portion-pm\",\"sel-LL\",\"sel-OL\",\"sel-OIL\",\"sel-CCL\",\"sel-FCL\",\"sel-PL\",\"sel-EL\",\"sel-CL\"] — PO offered: false",
+   "pic": "w1-phone-s20c-two-men-selected.png"
+  },
+  {
+   "id": "4+5",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "asked with today (true), then yesterday (true); tapped \"Tap again to delete Hex\": sheet gone=true, Hex flags deleted=true archived=true; his row on the war: October still drawn, November gone; cell classes around the date {\"10-18\":\"weekend act\",\"10-19\":\"act pofin\",\"10-20\":\"gone act\",\"10-21\":\"gone act\",\"10-22\":\"gone act\",\"10-24\":\"gone weekend act\"}; Admin → Users active [], archived null; sign-in before true, after false; schedule week Jul 13,Jul 14,Jul 15,Jul 16,Jul 17,Jul 18,Jul 19: Hex id occurrences 4, pucks reading Hex on the Edit Schedule page 8; top-bar Undo disabled (nothing to undo): Hex deleted=true, Admin → Users []",
+   "pic": "w1-phone-s4-asked-today.png, w1-phone-s4-asked-final.png, w1-phone-s4-after-delete.png, w1-phone-s4-war-november.png, w1-phone-s4-admin-users.png, w1-phone-s4-schedule-week.png, w1-phone-s4-after-undo.png"
+  }
+ ],
+ "errors": []
+}

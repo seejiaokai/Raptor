@@ -6,7 +6,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { boxText, evaluatePeriod, FIGURES, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
-import { getClashes, getClashVersion, manningRedDays, openInputWindow, subscribeClashes, usePlanVersion, type ClashWayOut, type SyncClash } from '../sync'
+import { getClashes, getClashVersion, manningRedDays, openInputWindow, rosterCallsign, subscribeClashes, usePlanVersion, type ClashWayOut, type SyncClash } from '../sync'
 import { figureCtxOf, focusDay, getState, selectWar } from '../state/store'
 import { OpenDatesSheet } from './OpenDatesSheet'
 import { dayLabel, shortDate } from './dates'
@@ -266,7 +266,9 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
      the rule again — one open, several closed (D827). */
   useEffect(() => { if (clashes.length === 0) setClashPick(null) }, [clashes.length])
   const clashOpen = clashPick ?? clashes.length === 1
-  const whoOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
+  /* the war's row names him; a man with no row there is named by the roster's callsign, as everywhere else — never by his
+     hidden id ([BATCH-14OCT-LEFTOVERS] (c)) */
+  const whoOf = (id: string) => people.find(p => p.id === id)?.callsign ?? rosterCallsign(id) ?? id
   /* the day as the day's own sheets say it — "Sat 18 Jul" — with its year only where that is not the year on screen */
   const yearHere = period.days[0]?.date.slice(0, 4)
   const clashDay = (date: string) => `${dayLabel(date)}${date.slice(0, 4) !== yearHere ? ` ${date.slice(2, 4)}` : ''}`

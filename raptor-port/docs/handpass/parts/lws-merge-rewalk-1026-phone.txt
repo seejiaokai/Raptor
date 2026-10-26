@@ -1,0 +1,10 @@
+lws/merge-rewalk.mjs VERSION 2 — phone
+  picture mr-m2-phone-armed.png
+  picture mr-m2-phone-back.png
+PASS  M2-phone  armed "Tap again to delete Hex" → another page and back: "(the window closed)"; deleted false  [mr-m2-phone-armed.png, mr-m2-phone-back.png]
+  picture mr-m3-phone-legend.png
+PASS  M3-phone  the Legend opened (1858 letters), "*LL" / "LL*" nowhere; half-day lines: ""  [mr-m3-phone-legend.png]
+  picture mr-m4-phone-asked.png
+  picture mr-m4-phone-after-second-tap.png
+PASS  M4-phone  today 2026-10-26: first pick asked "Tap again to delete Hex", deleted after it false; after the second tap deleted true  [mr-m4-phone-asked.png, mr-m4-phone-after-second-tap.png]
+lws/merge-rewalk phone: 3 PASS, 0 FAIL

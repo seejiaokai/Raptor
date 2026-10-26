@@ -1,0 +1,95 @@
+{
+ "allResults": [
+  {
+   "id": "32-chips-am",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "drag sheet, How much am: chips [\"<LL\",\"<OL\",\"<OIL\",\"<CCL\",\"<FCL\",\"<PL\",\"<EL\",\"<CL\"]; expected [\"<LL\",\"<OL\",\"<OIL\",\"<CCL\",\"<FCL\",\"<PL\",\"<EL\",\"<CL\"]",
+   "pic": "w2-s32-phone-chips-am.png"
+  },
+  {
+   "id": "32-chips-pm",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "drag sheet, How much pm: chips [\"LL>\",\"OL>\",\"OIL>\",\"CCL>\",\"FCL>\",\"PL>\",\"EL>\",\"CL>\"]; expected [\"LL>\",\"OL>\",\"OIL>\",\"CCL>\",\"FCL>\",\"PL>\",\"EL>\",\"CL>\"]",
+   "pic": "w2-s32-phone-chips-pm.png"
+  },
+  {
+   "id": "32-chips-full",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "drag sheet, How much full: chips [\"LL\",\"OL\",\"OIL\",\"CCL\",\"FCL\",\"PL\",\"EL\",\"CL\"]; expected [\"LL\",\"OL\",\"OIL\",\"CCL\",\"FCL\",\"PL\",\"EL\",\"CL\"]",
+   "pic": "w2-s32-phone-chips-full.png"
+  },
+  {
+   "id": "32-oneday-same",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "one-day sheet AM [\"<LL\",\"<OL\",\"<OIL\",\"<CCL\",\"<FCL\",\"<PL\",\"<EL\",\"<CL\"] PM [\"LL>\",\"OL>\",\"OIL>\",\"CCL>\",\"FCL>\",\"PL>\",\"EL>\",\"CL>\"] Full [\"LL\",\"OL\",\"OIL\",\"CCL\",\"FCL\",\"PL\",\"EL\",\"CL\"]",
+   "pic": "w2-s32-phone-oneday-pm.png"
+  },
+  {
+   "id": "32-fill-same-look",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "drag-filled (Anvil 10 Nov) {\"text\":\"<LL\",\"cls\":\"act\"}, 11 Nov {\"text\":\"<LL\",\"cls\":\"act\"}, 12 Nov {\"text\":\"<LL\",\"cls\":\"act\"}; one-day-filled (Cinch 10 Nov) {\"text\":\"<LL\",\"cls\":\"act\"}",
+   "pic": "w2-s32-phone-cells.png"
+  },
+  {
+   "id": "32-reopen-same",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "one-day sheet reopened on the drag-filled cell: {\"portions\":[\"Just this day*on\",\"Pick a range\",\"Whole day*on\",\"AM\",\"PM\"],\"on\":[],\"sel\":[]}; on the one-day-filled cell: {\"portions\":[\"Just this day*on\",\"Pick a range\",\"Whole day*on\",\"AM\",\"PM\"],\"on\":[],\"sel\":[]}",
+   "pic": "w2-s32-phone-reopen-drag-filled.png"
+  },
+  {
+   "id": "32-block-sheet",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "drag across the half-day block: Move 1 Delete 1; chips [\"LL\",\"OL\",\"OIL\",\"CCL\",\"FCL\",\"PL\",\"EL\",\"CL\"]",
+   "pic": "w2-s32-phone-block-sheet.png"
+  },
+  {
+   "id": "32-move",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "after Move to 17 Nov: 17 {\"text\":\"<LL\",\"cls\":\"act\"} 18 {\"text\":\"<LL\",\"cls\":\"act\"} 19 {\"text\":\"<LL\",\"cls\":\"act\"}; 10 Nov {\"text\":\"\",\"cls\":\"act\"}; notes []",
+   "pic": "w2-s32-phone-moved.png"
+  },
+  {
+   "id": "32-delete",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "Delete: first tap \"Delete — sure?\" note \"Delete 3 days for Anvil? Tap Delete again.\"; after the second tap 17 Nov reads {\"text\":\"\",\"cls\":\"act\"}",
+   "pic": "w2-s32-phone-delete-asks.png"
+  },
+  {
+   "id": "32-below-zero-ask",
+   "size": "phone",
+   "verdict": "INFO",
+   "seen": "AM PL over 3 days: note \"That takes Anvil to -1.5 PL. Tap the same leave again to go ahead.\"; sheet still open 1",
+   "pic": "w2-s32-phone-below-zero-ask.png"
+  },
+  {
+   "id": "32m-chips-am",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "member on his own row, How much am: [\"<LL\",\"<OL\",\"<OIL\",\"<CCL\",\"<FCL\",\"<PL\",\"<EL\",\"<CL\"]",
+   "pic": "w2-s32m-phone-chips-am.png"
+  },
+  {
+   "id": "32m-chips-pm",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "member on his own row, How much pm: [\"LL>\",\"OL>\",\"OIL>\",\"CCL>\",\"FCL>\",\"PL>\",\"EL>\",\"CL>\"]",
+   "pic": "w2-s32m-phone-chips-pm.png"
+  },
+  {
+   "id": "32m-chips-full",
+   "size": "phone",
+   "verdict": "PASS",
+   "seen": "member on his own row, How much full: [\"LL\",\"OL\",\"OIL\",\"CCL\",\"FCL\",\"PL\",\"EL\",\"CL\"]",
+   "pic": ""
+  }
+ ]
+}

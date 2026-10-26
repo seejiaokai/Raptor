@@ -378,7 +378,7 @@ describe('bid state on a cell', () => {
   // against every fill rather than just for their own, so a cascade that
   // added `s-w` alongside `s-a` would fail here (look F — D1175).
   //
-  // This does NOT prove the branch ORDER in MatrixRows — duty codes carry
+  // This does NOT prove the branch ORDER in MatrixRows.tsx (`chipState`) — duty codes carry
   // `bid: false`, so `isDuty` and `isBiddable` are disjoint and reordering
   // them changes nothing. Reading duty first is for the reader, not a guard.
   it('never lets duty or medical take a bid’s fill', () => {
