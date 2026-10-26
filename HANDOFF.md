@@ -21,15 +21,15 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/lw-load-reland-rid -->
-### `claude/lw-load-reland-rid` — the load's "Discard N edits" over a request moved onto the Ground Programme across days ([LW-LOAD-RELAND-RID]); FULL-checked — written 26 Oct 26, verify before use
+### `claude/lw-load-reland-rid` — the load's "Discard N edits" over a request moved onto the Ground Programme across days ([LW-LOAD-RELAND-RID]); FULL-checked, MERGED LIVE on his "Yes merge live" of 26 Oct 26 (PR 573) — written 26 Oct 26, verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.
 - **Where it started:** levelled with `main` after PR 572 merged live (its block removed here — merged, nothing open but this item); his pick "Yes" to the count fix, 26 Oct 26.
 - **Built (red first):** measured, the load is not a no-op — the overseas duty goes back under Unavailable, so the right count is 1. Two faults made "Discard 2 edits": → Ground (`engine/slots.ts acceptInput`) named a new row with a fresh id where the working-out names it `r`+id (`overlay.ts landedRid`) — now the same; the count's dry run (`engine/publish.ts dayDiscardCount`) missed the load's reconcile — now mirrored. The load's note (`engine/drafts.ts inputsLeftSaid`) says "moved onto the programme since publishing" for an input the day went out with. Tests `ui/odreject.test.tsx` (+2), each fix red when taken out.
 - **Checked:** 184 affected unit files (4031) on his PC; the walk `scripts/handpass/lw-reland-walk.mjs` 5 PASS, re-walk 6 PASS (R3 for the read's F2) desk 1536 + phone 402 (port 4181); evidence sheet `raptor-port/docs/handpass/2026-10-26-lw-load-reland-rid.md`. The fresh Opus code read found 3: F1 (a dead row in the saved week — `holderbase.ts baseRowIds`) and F2 (the load's note after the working-out — `drafts.ts loadMovedNow`) fixed red-first; F3 filed for him as [LOAD-MOVES-ROW-DAY] (a load landing a course on another published day — a question, D994). The fix commit's narrow read found 1 (the note's "again") — fixed red-first.
 - **Branch:** `claude/lw-load-reland-rid` (upstream its own — it was cut tracking `origin/main`, unset at once); PR https://github.com/seejiaokai/Raptor/pull/573 — Auto-fix was switched on by the app and switched OFF (D1090).
 - **Gates:** GitHub's run of PR 573 is the full check (D1086).
-- **Pick up here:** his look and "merge live" for PR 573. Next after it: his pick from the backlog; [KBS-PHONE-SLIDE] is Fable's after his weekly reset (D1366); [LOGIN-OPENS-TODAY] waits for testing (D1383).
-- **Opening line:** Read HANDOFF.md — the claude/lw-load-reland-rid block under ## Now — and carry on from its "Pick up here": switch this chat to the branch claude/lw-load-reland-rid (git fetch origin, then git switch claude/lw-load-reland-rid; if the switch is refused because another worktree holds it, say so and stop). Check Remote Control is on for this chat and switch it on if not.
+- **Pick up here:** this branch is merged — do not continue it; [LW-LOAD-RELAND-RID] archived (the sheet names it). Next: his pick from the backlog; [KBS-PHONE-SLIDE] is Fable's after his weekly reset (D1366); [LOGIN-OPENS-TODAY] waits for testing (D1383).
+- **Opening line:** Level this chat with main: git fetch origin, git merge --ff-only origin/main. Then read HANDOFF.md — the claude/lw-load-reland-rid block under ## Now (merged live) — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
 - **Notes:** ruling numbers to D1401 (none this chat); design lessons to 59; observations to 713.
 <!-- /now -->
 ## Next, in order

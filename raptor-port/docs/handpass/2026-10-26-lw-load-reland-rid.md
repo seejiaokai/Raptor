@@ -136,3 +136,5 @@ finding, low, reproduced:** F3's note read "is on Wednesday again too" — untru
 is no longer on Thursday). FIXED red-first: a move onto a day it never stood on is marked (`moved`) and reads "… is on
 Wednesday's programme now, pending there."; the rest of that case is [LOAD-MOVES-ROW-DAY]'s question. A wording fix of one
 line, carried by its test ("the code read's F3"); no further round.
+
+**The backlog item this check closed** (archived 26 Oct 26 on his "Yes merge live" — PR 573): [LW-LOAD-RELAND-RID]. Left open, filed for him: [LOAD-MOVES-ROW-DAY].
