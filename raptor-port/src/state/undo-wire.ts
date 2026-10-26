@@ -42,7 +42,7 @@ import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
 import { restoreAbsencesOf } from '../leavewar/sync'
-import { warVisible } from '../leavewar/absences'
+import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
@@ -246,7 +246,7 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
   }
   if (m === 'inputs') {
     if (canEditSched() && inputDayOf(entry) != null) also.push('editsched')
-    if (fwd.some(c => c.collection === 'inputs' && inputRows(c).some(r => warVisible(r.type)))) also.push('leavewar')
+    if (fwd.some(c => c.collection === 'inputs' && inputRows(c).some(r => warCounts(r)) /* a commitment under Unavailable shows on the war too (D1357) */)) also.push('leavewar')
   }
   return primary || also.length ? { primary, also, then } : null
 }

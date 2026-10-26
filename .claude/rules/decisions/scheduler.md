@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1383 | 26 Oct 26 | Before the app is put out for testing, signing in always opens on today's date; until then it may open on the demo week's date, because the demo data is what is being worked on. |
 | D1107 | 21 Oct 26 | On a phone, the Scheduler Board's desktop layout can be pinched to zoom in and out, and a puck dragged to the edge of what is on screen scrolls the board that way, so it can be dropped anywhere — as the design guide's drag rule says (D895, §5A "Dragging"). — changed by D1109 |
 | D1106 | 21 Oct 26 | Over the Scheduler Board, a window that has not been moved (the changes window, the ALL AVAIL window and the other windows that open below the top bar) opens just below the board's own bar, as it opens below the app's top bar elsewhere, so the bell, Insights and ✓ Done stay in reach. |
 | D1099 | 21 Oct 26 | A flying line with only its front seat (FCP) filled works as fully as a two-seat line, its checks, marks, counts and pages included, so the app can serve F-16 squadrons (some jets single-seat) and F-35 squadrons (all single-seat); a switch hiding the back seat (RCP), one of the aircraft-type settings (D1100), is his idea, designed with him first. — changed by D1100 |

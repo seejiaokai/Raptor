@@ -1,0 +1,21 @@
+[
+ {
+  "id": "W4 ✕ over an Inputs-page leave and a war-approved leave",
+  "size": "phone/WebKit",
+  "verdict": "PASS",
+  "said": "Basher: an LL filed on the Inputs page for 4 Dec (\"From inputs\") and a war-approved LL on 7 Dec (\"Mine\"); dragged 4–7 Dec, typed \"Typed\", ✕. After: 4 Dec req: - | input: LL[inputs] 12-04/\"From inputs\"; 7 Dec req: - | input: LL 12-07/\"Typed\". Inputs page rows — 4 Dec [\"FRI 4 DEC :: No document All day BasherLL From inputs By Saber\"]; 7 Dec [\"MON 7 DEC :: No document All day BasherLL Typed By Saber\"]",
+  "pics": [
+   "phw-w4-1-typed.png",
+   "phw-w4-2-x-q.png",
+   "phw-w4-2-x.png",
+   "phw-w4-3-inputs-page.png"
+  ]
+ },
+ {
+  "id": "errors-drag",
+  "size": "phone/WebKit",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

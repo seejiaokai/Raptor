@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo } from './app'
+import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo, answerNoDocument, untickApprove } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -74,7 +74,7 @@ async function showMonth(page: Page, iso: string) {
 const cell = (page: Page, p: string, d: string) => page.locator(`[data-testid="cell-${p}-${d}"]`)
 const chip = (page: Page, p: string, d: string) => cell(page, p, d).locator('.c')
 /* LOOK F (D1175, D1160, D1146, D1167): a day with exactly two entries draws TWO boxes, so `chip` matches both there —
-   such a day's box is found by its kind (`k-ll`, `k-oil`, `k-med`, `k-cse` …). The fill says where it stands, where the
+   such a day's box is found by its kind (`k-ll`, `k-oil` for FO / HO, `k-oilt` for an OIL taken — D1323, `k-med`, `k-cse` …). The fill says where it stands, where the
    old classes said appr / tbc / ref: filled `s-a` approved, hollow and dashed `s-w` pending, struck `s-r` refused. */
 const box = (page: Page, p: string, d: string, kind: string) => cell(page, p, d).locator(`.c.k-${kind}`)
 const FILLED = /(^|\s)s-a(\s|$)/
@@ -189,6 +189,7 @@ async function fileOnInputsPage(page: Page, f: Filing) {
   await clearToast(page)
   const before = await page.evaluate(() => (window as any).INPUTS.length as number)
   await page.locator('#inpEditSave').click()
+  await answerNoDocument(page)
   /* The add decides inside the click, one of three ways: a medical with no
      certificate ASKS first, or it files, or it is refused on the toast. Wait
      for whichever it was. (A fixed 150ms look for the question used to sit
@@ -252,6 +253,7 @@ test('approve a 5-day bid, delete its middle day, undo, redo', async ({ page }) 
   const P = 'slipway', days = ['2026-02-09', '2026-02-10', '2026-02-11', '2026-02-12', '2026-02-13']
   await showMonth(page, days[0]!)
   await dragSelect(page, P, days[0]!, days[4]!)
+  await untickApprove(page, 'sel')             // placed pending, then approved below (D1186: the tick starts on)
   await page.locator('[data-testid="sel-LL"]').click()
   await closeBidding(page)
   await dragSelect(page, P, days[0]!, days[4]!)
@@ -287,6 +289,7 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
   const P = 'ammo', D = '2026-02-11'
   await showMonth(page, D)
   await tap(page, P, D)
+  await untickApprove(page, 'bid')             // a pending bid (D1186: the admin's tick starts on)
   await page.locator('[data-testid="bid-LL"]').click()
   await expect(chip(page, P, D)).toHaveText('LL')
   await expect(chip(page, P, D)).toHaveClass(PENDING)   // a bid lands pending — hollow, dashed (look F, D1175)
@@ -302,9 +305,10 @@ test('an admin files leave on the Inputs page over a pending bid: bid gone, ambe
 
   await tap(page, P, D)
   const lines = await listLines(page)
-  expect(lines.some(l => /filed on the Inputs page/.test(l))).toBe(true)
+  /* round 3 (D1328): beside each entry's box only its half and state — "change it on the Inputs page" for one filed there */
+  expect(lines.some(l => /change it on the Inputs page/i.test(l))).toBe(true)   // a whole day's line starts with it: "Change it…"
   expect(lines.some(l => /LL bid was replaced by LL/.test(l))).toBe(true)
-  expect(lines.some(l => /bid pending/.test(l))).toBe(false)   // the bid is gone ("bid pending" where it said "bid, not decided yet" — D1158, D1217)
+  expect(lines.some(l => /pending/i.test(l))).toBe(false)   // the bid is gone ("pending" — D1158, D1217; the words short since D1328)
   await page.locator('[data-testid^="dl-seen-"]').click()
   await expect(mark(page, P, D)).toHaveCount(0)
   await closeList(page)
@@ -486,8 +490,8 @@ test('move an approved leave while its dates are open: dotted moved mark, undo, 
   await tap(page, P, from)
   await page.locator('[data-testid="bid-LL"]').click()
   await expect(page.locator('[data-testid="open-chip"]'), 'nothing closed first').toContainText('1 Jan – 31 Mar')
-  await tap(page, P, from)
-  await page.locator('[data-testid="decide-approve"]').click()
+  /* the admin's switch starts on (D1186), so the leave is approved as it is placed — a tap on its Approve, now lit, would
+     send it back to waiting (his D1330, round 3), so the old "approve it" step is gone */
   await expect(chip(page, P, from)).toHaveClass(FILLED)
 
   await tap(page, P, from)
@@ -552,7 +556,7 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
   await both()
   await tap(page, W, D)
   const lines = await listLines(page)
-  expect(lines.some(l => /bid pending/.test(l))).toBe(true)
+  expect(lines.some(l => /pending/i.test(l))).toBe(true)
   expect(lines.some(l => /bid was replaced/.test(l))).toBe(false)   // nothing was taken
   await closeList(page)
 
@@ -574,9 +578,11 @@ test('publishing a weekend day KEEPS a pending bid for someone working it and fl
   await showMonth(page, D)
   await both()
   await tap(page, W, D)
-  expect((await listLines(page)).some(l => /bid pending/.test(l))).toBe(true)
+  expect((await listLines(page)).some(l => /pending/i.test(l))).toBe(true)
 })
 
+/* round 3 (D1328, D1330): each line says only its half and state beside its box; the approved leave's Approve is lit and a
+   second tap on it sends it back to a bid — "Back to bid" went */
 test('the tap list: approve one half, refuse the other, un-approve back to a bid — each undoable', async ({ page }) => {
   await openWar(page)
   const P = 'slipway', D = '2026-02-11'
@@ -589,38 +595,38 @@ test('the tap list: approve one half, refuse the other, un-approve back to a bid
   await expect(box(page, P, D, 'll')).toHaveText('LL')
   await expect(box(page, P, D, 'll')).toHaveClass(place('top'))
   await expect(box(page, P, D, 'll')).toHaveClass(PENDING)
-  await expect(box(page, P, D, 'oil')).toHaveText('OIL')
-  await expect(box(page, P, D, 'oil')).toHaveClass(place('bot'))
-  await expect(box(page, P, D, 'oil')).toHaveClass(PENDING)
+  await expect(box(page, P, D, 'oilt')).toHaveText('OIL')
+  await expect(box(page, P, D, 'oilt')).toHaveClass(place('bot'))
+  await expect(box(page, P, D, 'oilt')).toHaveClass(PENDING)
   await expect(mark(page, P, D)).toHaveCount(0)
 
   await tap(page, P, D)
   await page.locator('[data-testid^="dl-approve-"]').first().click()
   expect(await listLines(page)).toEqual([
-    '<LL — local leave, morning · approved',
-    'OIL> — off in lieu, afternoon · bid pending',
+    'Morning · approved',
+    'Afternoon · pending',
   ])
   expect(await inputsOf(page, P)).toContain('LL Feb 11 am0-720')
   await page.locator('[data-testid^="dl-refuse-"]').last().click()
-  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid refused')
+  expect((await listLines(page))[1]).toBe('Afternoon · refused')
   await closeList(page)
 
   await undo(page)                                  // the refusal
   await tap(page, P, D)
-  expect((await listLines(page))[1]).toBe('OIL> — off in lieu, afternoon · bid pending')
+  expect((await listLines(page))[1]).toBe('Afternoon · pending')
   await closeList(page)
   await redo(page)
 
   await tap(page, P, D)
-  await page.locator('[data-testid^="dl-unapprove-"]').click()
-  expect((await listLines(page))[0]).toBe('<LL — local leave, morning · bid pending')
+  await page.locator('[data-testid="daylist"] .dl-acts .dchip.approve.lit').click()
+  expect((await listLines(page))[0]).toBe('Morning · pending')
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await closeList(page)
   await undo(page)
   // the morning LL approved again — filled; the afternoon OIL stays refused — struck (look F, D1175: `s-a` / `s-r`
   // where the one box was `appr`)
   await expect(box(page, P, D, 'll')).toHaveClass(FILLED)
-  await expect(box(page, P, D, 'oil')).toHaveClass(REFUSED)
+  await expect(box(page, P, D, 'oilt')).toHaveClass(REFUSED)
   expect(await inputsOf(page, P)).toContain('LL Feb 11 am0-720')
   await redo(page)
   await expect(box(page, P, D, 'll')).toHaveClass(PENDING)

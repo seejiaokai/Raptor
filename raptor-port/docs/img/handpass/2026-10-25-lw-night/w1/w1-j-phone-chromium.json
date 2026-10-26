@@ -1,0 +1,38 @@
+[
+ {
+  "id": "S21.1 a quick next tap while the bubble is up",
+  "size": "phone-chromium",
+  "verdict": "PASS",
+  "said": "quick tap ~257 ms after the bubble was read; 100 ms after it: no bubble, window open; the new bubble: at the foot, level red, \"This bid turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 12,816 378×46 inside the 402×874 screen, centre hit is the bubble (pointer-events auto)",
+  "pics": [
+   "s21-phone-chromium-1-quick-tap-100ms.png",
+   "s21-phone-chromium-1-second-after-tap.png"
+  ]
+ },
+ {
+  "id": "S21.2 a double tap (~150 ms) on LL",
+  "size": "phone-chromium",
+  "verdict": "FAIL",
+  "said": "FAILED: one bubble, red, naming the row (saw 0 bubble node(s): no bubble) — two taps ~170 ms apart; 120 ms after: no bubble; settled: no bubble; Undo: {\"disabled\":false,\"title\":\"Undo — Hunter’s bid\"}; Available P 27 red → 26 red → (one Undo) 27 red",
+  "pics": [
+   "s21-phone-chromium-2-double-tap-after.png"
+  ]
+ },
+ {
+  "id": "S21.3 a tap on the month button the bubble covers (RECORD)",
+  "size": "phone-chromium",
+  "verdict": "RECORD",
+  "said": "the bubble covered \"month-strip\"; right after the finger lifted (~100 ms): no bubble; DEC drawn; the grid's first visible date heads after the tap: [\"head-2026-07-01\",\"head-2026-07-02\"] (the month button WAS pressed: the grid moved); 1.4 s after: no bubble",
+  "pics": [
+   "s21-phone-chromium-3-month-tap-100ms.png",
+   "s21-phone-chromium-3-month-tap-settled.png"
+  ]
+ },
+ {
+  "id": "errors-21",
+  "size": "phone-chromium",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

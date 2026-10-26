@@ -1,0 +1,55 @@
+{
+ "q7s-b-calm": {
+  "rows": [
+   {
+    "label": "OPSP",
+    "b": "12",
+    "a": "11",
+    "level": ""
+   },
+   {
+    "label": "SXO",
+    "b": "12",
+    "a": "11",
+    "level": ""
+   }
+  ],
+  "lineHeight": 16,
+  "widerLetters": 16
+ },
+ "q7s-a-calm": {
+  "rows": [],
+  "lineHeight": 16,
+  "widerLetters": 34
+ },
+ "q7s-b-amber": {
+  "rows": [
+   {
+    "label": "OPSP",
+    "b": "12",
+    "a": "11",
+    "level": "amber"
+   },
+   {
+    "label": "SXO",
+    "b": "12",
+    "a": "11",
+    "level": ""
+   }
+  ],
+  "lineHeight": 16,
+  "widerLetters": 34
+ },
+ "q7s-a-amber": {
+  "rows": [
+   {
+    "label": "OPSP",
+    "b": "12",
+    "a": "11",
+    "level": "amber"
+   }
+  ],
+  "lineHeight": 16,
+  "widerLetters": 16
+ }
+}

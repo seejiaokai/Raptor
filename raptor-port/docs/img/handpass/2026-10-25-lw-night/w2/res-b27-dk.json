@@ -1,0 +1,19 @@
+[
+ {
+  "id": "S27",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "tab A's drag window over Ranger's approved 14 Dec LL (\"Orig\") and his pending 15 Dec bid, \"Stale words\" typed; tab B deleted the 14 Dec leave first (stored then: gone); tab A closed its window with ✕: the leave on 14 Dec is now [\"LL \\\"Stale words\\\"\"], the 15 Dec bid [\"LL/pending/\\\"Stale words\\\"\"]; a message in tab A: none [] — the save was NOT refused: it wrote the deleted leave back, in silence",
+  "pics": [
+   "b27-dk-01-typed",
+   "b27-dk-02-after-close"
+  ]
+ },
+ {
+  "id": "27-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx in tab A)",
+  "pics": []
+ }
+]

@@ -1,0 +1,207 @@
+[
+ {
+  "id": "w1.reject-offered",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Pike's overseas duty under Unavailable: buttons [\"Reject\"]",
+  "pics": [
+   "w1-desk-1-under-unavailable"
+  ]
+ },
+ {
+  "id": "w1.reject",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Reject: {\"acc\":\"r\",\"odGround\":false}; Personal Inputs row buttons [\"→ Ground\",\"→ Unavail\"]",
+  "pics": [
+   "w1-desk-2-rejected-personal-inputs"
+  ]
+ },
+ {
+  "id": "w1.war-in",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P on 15 Jul: before 25, after Reject 26 (he counts back in)",
+  "pics": [
+   "w1-desk-3-war-counted-in"
+  ]
+ },
+ {
+  "id": "w1.ground",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "→ Ground: {\"acc\":\"g\",\"odGround\":true}, a row on the Ground Programme true; Personal Inputs buttons [\"Reject\"]",
+  "pics": [
+   "w1-desk-4-on-ground"
+  ]
+ },
+ {
+  "id": "w1.ground-war",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "on the Ground Programme, after a week away and back: Available P 26 (still counted in, as rejected: 26)",
+  "pics": []
+ },
+ {
+  "id": "w1.unavail",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Reject then → Unavail: {\"acc\":\"u\",\"odGround\":false}; under Unavailable again with [\"Reject\"]; Available P 25 (as at first, 25)",
+  "pics": [
+   "w1-desk-5-back-under-unavailable"
+  ]
+ },
+ {
+  "id": "w2.opens",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Grant OIL opens on FO · 1 lit (true); no Half row (true)",
+  "pics": [
+   "w2-desk-1-grant-panel"
+  ]
+ },
+ {
+  "id": "w2.words",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the button: \"Give HO\" for HO · ½, \"Give FO · 2 days\" for 2 typed; the row inside the window true",
+  "pics": [
+   "w2-desk-3-two-typed"
+  ]
+ },
+ {
+  "id": "w2.ho",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the day after Give HO: [\"HO|k-oil|s-a|top|plain|fs7.5px|w21h10|tw11.4\"]",
+  "pics": [
+   "w2-desk-4-ho-given"
+  ]
+ },
+ {
+  "id": "w2.drag",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "drag window: Grant OIL there true, opens on FO · 1 (true); an FO on each of 17–20 Jul: [true,true,true,true]",
+  "pics": [
+   "w2-desk-5-drag-grant",
+   "w2-desk-6-drag-given"
+  ]
+ },
+ {
+  "id": "w4.window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the window's top line: \"CSE Whole day “Instructor course” · change it on the Inputs page\"; Grant OIL true; the read-only sheet false",
+  "pics": [
+   "w4-desk-1-course-day"
+  ]
+ },
+ {
+  "id": "w1.reject-offered",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Pike's overseas duty under Unavailable: buttons [\"Reject\"]",
+  "pics": [
+   "w1-phone-1-under-unavailable"
+  ]
+ },
+ {
+  "id": "w1.reject",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after Reject: {\"acc\":\"r\",\"odGround\":false}; Personal Inputs row buttons [\"→ Ground\",\"→ Unavail\"]",
+  "pics": [
+   "w1-phone-2-rejected-personal-inputs"
+  ]
+ },
+ {
+  "id": "w1.war-in",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P on 15 Jul: before 25, after Reject 26 (he counts back in)",
+  "pics": [
+   "w1-phone-3-war-counted-in"
+  ]
+ },
+ {
+  "id": "w1.ground",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "→ Ground: {\"acc\":\"g\",\"odGround\":true}, a row on the Ground Programme true; Personal Inputs buttons [\"Reject\"]",
+  "pics": [
+   "w1-phone-4-on-ground"
+  ]
+ },
+ {
+  "id": "w1.ground-war",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "on the Ground Programme, after a week away and back: Available P 26 (still counted in, as rejected: 26)",
+  "pics": []
+ },
+ {
+  "id": "w1.unavail",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Reject then → Unavail: {\"acc\":\"u\",\"odGround\":false}; under Unavailable again with [\"Reject\"]; Available P 25 (as at first, 25)",
+  "pics": [
+   "w1-phone-5-back-under-unavailable"
+  ]
+ },
+ {
+  "id": "w2.opens",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Grant OIL opens on FO · 1 lit (true); no Half row (true)",
+  "pics": [
+   "w2-phone-1-grant-panel"
+  ]
+ },
+ {
+  "id": "w2.words",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the button: \"Give HO\" for HO · ½, \"Give FO · 2 days\" for 2 typed; the row inside the window true",
+  "pics": [
+   "w2-phone-3-two-typed"
+  ]
+ },
+ {
+  "id": "w2.ho",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the day after Give HO: [\"HO|k-oil|s-a|top|plain|fs7.5px|w17h8|tw9.2\"]",
+  "pics": [
+   "w2-phone-4-ho-given"
+  ]
+ },
+ {
+  "id": "w2.drag",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "drag window: Grant OIL there true, opens on FO · 1 (true); an FO on each of 17–20 Jul: [true,true,true,true]",
+  "pics": [
+   "w2-phone-5-drag-grant",
+   "w2-phone-6-drag-given"
+  ]
+ },
+ {
+  "id": "w4.window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the window's top line: \"CSE Whole day “Instructor course” · change it on the Inputs page\"; Grant OIL true; the read-only sheet false",
+  "pics": [
+   "w4-phone-1-course-day"
+  ]
+ },
+ {
+  "id": "w9.sansday",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the SANS day's window {\"l\":0,\"r\":0,\"listPad\":\"8px\"}",
+  "pics": [
+   "w9-phone-1-sans-day-edge"
+  ]
+ }
+]

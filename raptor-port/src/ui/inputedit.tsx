@@ -17,7 +17,7 @@ import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel } from '../engine/inputs'
+import { isOD, INPUTS, INPUT_TYPES, TYPE_GROUPS, TYPE_FAMILY_LABEL, TITLE_MAX, titledKind, titleOf, DATES, inpId, inpMeta, inpType, typeGroup, isoLabel, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, isLeave, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, remarksTyped, tillOfISO, tillDefaultISO, shortYear, oilAsks, oilNeverEarns, oilSilent, nowStamp, placeholderProblem, idsOf, leadOf, namedOf, holds, isPlaceholderInput, shapeProblem, inputStampISO, inpLabel, filingOf, landsUnavail, isOther, isFly, toOf, placeOf } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, upchitDeletePlan, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel, firstEndIso, firstEndOrd } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -51,9 +51,9 @@ import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { CURWEEK } from '../engine/waves'
 import { keyToIso, mondayOf } from './weeknav'
 import { canEditSched } from '../state/auth'
-import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving } from '../state/perms'
+import { me, isMe, mayEditInput, mayDeleteInput, mayFileInputFor, membersFileOn, memberFilesForOthers, filerSwitchedOff, filedWhole, byAfterLeaving, mayMovePlace } from '../state/perms'
 import { INPEDIT, INPEDIT_REFOUND, setInpEdit, OILASK, OILOWN, setOilAsk, setMedMove, setDocView } from './pops'
-import { CURPAGE, INPVIEW, revealInput, OILWAIT, type OilWaitKind } from '../state/view'
+import { CURPAGE, INPVIEW, revealInput, revealMedInput, OILWAIT, type OilWaitKind } from '../state/view'
 import { toastHeld } from './toast'
 import { noteUnlessSeen } from './seen'
 import { holdForOil } from './oilwait'
@@ -172,7 +172,7 @@ const SPANS: Array<[Span, string, string]> = [
   ['custom', 'Custom', 'Type your own start and end time'],
 ]
 export function SpanPicker({ id, span, onPick }: { id: string, span: Span, onPick: (m: Span) => void }) {
-  return <div className="spanpick" id={id} role="group" aria-label="How much of the day">
+  return <div className="spanpick" id={id} role="group" aria-label="Duration">
     {SPANS.map(([m, label, title]) =>
       <button key={m} type="button" className={'spanbtn' + (span === m ? ' on' : '')}
         aria-pressed={span === m} title={title} data-span={m}
@@ -473,12 +473,26 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
    that could drift; a group whose every type is filtered out is skipped
    rather than left as an empty heading. No filter = the full list, which is
    what every EDIT and the Inputs page keep. */
-export const typeOptions = (allow?: (t: string) => boolean) => TYPE_GROUPS.map((g: any) => {
+/* `families` (owner D1179, M3 7.4): the Inputs page's FILTER heads each group with a choice for the whole family —
+   "All leave", "All medical", "All duty & commitments" (engine/inputs.ts typeMatches); an input's own kind list never */
+export const typeOptions = (allow?: (t: string) => boolean, families = false) => TYPE_GROUPS.map((g: any) => {
   const ts = INPUT_TYPES.filter((t: string) => typeGroup(t) === g.k && (!allow || allow(t)))
-  return ts.length ? <optgroup key={g.k} label={g.t}>{ts.map((t: string) => <option key={t}>{t}</option>)}</optgroup> : null
+  return ts.length ? <optgroup key={g.k} label={g.t}>{families && <option value={`grp:${g.k}`}>{TYPE_FAMILY_LABEL[g.k]}</option>}{ts.map((t: string) => <option key={t}>{t}</option>)}</optgroup> : null
 })
 
 /* The draft is held apart from the model so Cancel is a real cancel. */
+/** WHERE AN INPUT STANDS, as an Other's "Goes to" reads it: 'u' under Unavailable, 'r' rejected by a scheduler (the
+ *  scenario designer's G5), else 'g' — the programme. One reading for the window, the save and its "anything changed?" */
+export const goesOf = (r: any): 'g' | 'u' | 'r' => (r && r.acc === 'u' ? 'u' : r && r.acc === 'r' ? 'r' : 'g')
+/** A SCHEDULER'S MOVE IS MARKED ON THE INPUT (his D1388, 26 Oct 26 — [LW-OTHER-GOES-TO-LOCK]): from then on only a
+ *  scheduler changes where it stands (state/perms.ts mayMovePlace). Written by each of his doors, inside the command that
+ *  makes the move, so one Undo takes both back — Reject, → Ground, → Unavail (ui/interactions.ts), its Ground Programme
+ *  row removed (ui/board.ts), his window's Goes to or a retype that moves it (commitInputEdit). Never on his own
+ *  one-person input, which is nobody's to keep from him. Filing is not a move: one he files for a member under
+ *  Unavailable is the member's to pick again, as whoever files an Other picks (D1356). */
+export function markMoved(r: any) {
+  if (r && canEditSched() && !(idsOf(r).length <= 1 && isMe(leadOf(r)))) r.schedPlaced = true
+}
 export const draftOf = (r: any) => ({
   person: leadOf(r), type: r.type, allday: !!r.allday, half: r.half || '',
   start: unfmt(r.date, r.yr), end: r.endDate ? unfmt(r.endDate, r.yr) : '',
@@ -494,6 +508,12 @@ export const draftOf = (r: any) => ({
      stays empty for him to type in, rather than snapping back to the kind's name under his cursor). Nothing is stored
      until what was typed differs from the kind's own name (engine/inputs.ts titleOf). */
   title: r.title || null,
+  /* an Attach's "To" (his D1373) — where he is attached; '' where none */
+  to: r.to || '',
+  /* an Other's "Goes to" (his D1356): 'u' while it stands under Unavailable, 'r' while a scheduler has rejected it (the
+     scenario designer's G5 — it read "Ground Programme"), else 'g' — the window's choice. A NEW one opened from the
+     Unavailable list's "+ Add" starts on Unavailable (the M3 code read's Q3) — the list it was added from */
+  goes: r && r._new && r._ctx === 'u' ? 'u' : goesOf(r),
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
   sans: r.sans ? { ...r.sans } : null,
   /* the supporting documents' ids (medical types) — the blobs live in
@@ -516,11 +536,17 @@ export const draftOf = (r: any) => ({
    own, in the same command (engine/inputown.ts ownInputOf), and the remark is written on THAT — the others' leave is
    untouched, and the man himself may do it (the piece is his one-person input). The same shape as `saveFromRow`'s
    one-man branch. Pinned in leavewar/onerecord-write.test.ts. */
-export function setLeaveRemarks(row: any, remarks: string, person?: any): boolean {
+/* …and its documents, where the caller hands them (the Leave War's remarks window — M3 7.3, D1150, D1159): one save,
+   the same gate; a documents-only change prints nowhere on the schedule (inpDetailKey reads no document) */
+/* …and its "till <date>" tick, where the caller hands one (the Leave War's bid windows and day's list show the leave's
+   Remarks row whole — round 3, D1307: the box, the tick and the Document button; D953's hand choice, settled by the one
+   input write as every save is) */
+export function setLeaveRemarks(row: any, remarks: string, person?: any, docIds?: string[], till?: boolean): boolean {
+  const withDocs = (d: any) => ({ ...d, remarks, ...(docIds ? { docIds: [...docIds] } : {}), ...(typeof till === 'boolean' ? { till } : {}) })
   if (person != null && person !== '' && idsOf(row).length > 1 && holds(row, person)) {
-    return ownPartSave(row, person, own => commitInputEdit(own, { ...draftOf(own), remarks }))
+    return ownPartSave(row, person, own => commitInputEdit(own, withDocs(draftOf(own))))
   }
-  return commitInputEdit(row, { ...draftOf(row), remarks })
+  return commitInputEdit(row, withDocs(draftOf(row)))
 }
 /* ONE MAN'S PART IS CHANGED, OR NOTHING IS (the one-rule job's check, 12 Oct 26 — the Opus trial read, claim 4, reproduced
    red in leavewar/trialread.test.ts). Both one-man doors — a box typed on his row of the Unavailable list, the Leave
@@ -714,10 +740,14 @@ export function normalizeInputDraft(draft: any, except: any):
               prompt nags an existing medical row.
    The five certificate types are exactly `needsDoc` (ATT C / ATT B / HL / OML /
    Upchit). rowDocIds reads the draft's list and the bare docId alike. */
+/* …AND A NEW LEAVE ASKS FOR ITS DOCUMENT (owner D1150, M3 7.4 — "something similar to medical where it asks a question
+   for a document to attach. But its not a hard stop"): a NEW leave, or one retyped INTO leave, with none, asks the same
+   [Upload] / [No document]; a leave already saved and edited never asks. */
 export function docGate(draft: any, except: any): 'ok' | 'ask' {
-  if (!draft || !needsDoc(draft.type) || rowDocIds(draft).length) return 'ok'
-  if (except && needsDoc(except.type)) return 'ok'
-  return 'ask'
+  if (!draft || rowDocIds(draft).length) return 'ok'
+  if (needsDoc(draft.type)) return except && needsDoc(except.type) ? 'ok' : 'ask'
+  if (isLeave(draft.type)) return except && isLeave(except.type) ? 'ok' : 'ask'
+  return 'ok'
 }
 
 /* THE OIL ASK GATE (owner, 28 Aug 26) — one decision body for every save
@@ -871,7 +901,10 @@ export const TYPE_ALLOW: any = {
   /* Upchit is excluded like SANS — it is not an absence, so the Unavailable
      panel's + Add must not offer it; it is filed on the Inputs page or from
      the Medical view's pending card */
-  u: (t: any) => isUnavail(t) && !isSansAvail(t) && !isUpchit(t),
+  /* …and, since his D1372 / D1374, a course and an Attach, which land there by themselves, and an Other, which goes there
+     on its "Goes to" (D1356 — opened from here it starts on Unavailable, draftOf): the M3 code read's Q3 — a scheduler
+     adding one from this list was offered none of them */
+  u: (t: any) => (isUnavail(t) && !isSansAvail(t) && !isUpchit(t)) || landsUnavail(t) || isOther(t),
   s: (t: any) => isSansAvail(t),
   /* the Inputs tab's own "+ Input": everything but SANS availability, which is filed on the SANS calendar and nowhere
      else (owner D620, 7 Oct 26) */
@@ -1011,6 +1044,15 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     s, e, date, yr: baseYear(), remarks: remarksTyped(draft.remarks, draft), mod: nowStamp(),
     /* its own title, only where one was typed and its kind takes one (D715, D716 — titleOf is the one normaliser) */
     ...(titleOf(draft.type, draft.title) ? { title: titleOf(draft.type, draft.title) } : {}),
+    /* where an Attach is to (his D1373 — free words, optional) */
+    ...(isFly(draft.type) && toOf(draft.to) ? { to: toOf(draft.to) } : {}),
+    /* FILED UNDER UNAVAILABLE BY ITSELF (his D1372 a course, D1374 an Attach) or by its filer's "Goes to" (an Other — D1356):
+       the same `acc:'u'` a scheduler's "→ Unavail" writes, so the schedule draws it under Unavailable and the Leave War
+       counts him out (D1357) — from the board's Ground "+ Inputs" too (the code read's F1: there a one-man Other with Goes
+       to Unavailable, and an Attach, landed on the programme, the war counting him in, while the same window for two men
+       filed both under Unavailable; the filing wins, so one man and several agree) — never for ALL AVAIL / ALL, which is
+       never under Unavailable (placeholderProblem). */
+    ...(filingOf(draft.type, draft.goes) && !isSpecial(draft.person) ? { acc: 'u' } : {}),
     /* the till-date tick, where it was turned against its default (D953) — one that matches the saved dates' default is
        dropped by the write itself (state/store.ts runInputWrite → tillSettle) */
     ...(typeof draft.till === 'boolean' ? { till: draft.till } : {}),
@@ -1018,11 +1060,11 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
     /* the supporting documents' ids only — the blobs stay in state/docs, so
-       history snapshots (JSON of INPUTS) never copy a file. Gated on the type
-       actually needing one: a certificate uploaded under a medical pick and
-       left behind by a switch to leave must not ride onto the leave row and
-       draw a paperclip nothing explains. */
-    ...(needsDoc(draft.type) ? docFields(rowDocIds(draft)) : {}),
+       history snapshots (JSON of INPUTS) never copy a file. EVERY KIND keeps them since the Leave War overhaul's M3 7.4
+       (owner D1150 — "I should allow all inputs to have the option to attach photo/PDF"): the window draws the Document
+       row for every kind, so what it holds is what the filer sees (it used to be gated on a medical type, which a
+       certificate left behind by a switch to leave relied on — the row now shows it, and its ✕ takes it off). */
+    ...docFields(rowDocIds(draft)),
   }
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
@@ -1049,7 +1091,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
        day before — the upchit day is a fit day (owner, 27 Aug 26) — planned
        pure, applied here so the add and its trims are ONE undo step */
     if (medPlan) applyMedPlan(medPlan)
-    if (toGround) {
+    if (toGround && row.acc !== 'u') {
       /* the board's Ground "+ Inputs" is a DELIBERATE scheduler act — it lands
          the row on the programme whatever the day's publish state (an ordinary
          AL on a published day), and reports the one duplicate-content-key
@@ -1154,6 +1196,15 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast(fileForOtherRefusal(draft.type), 'warn')
     return false
   }
+  /* WHERE A SCHEDULER PUT IT STAYS PUT (his D1388 — "the member could quietly move it back"): a member's save of one a
+     scheduler moved keeps it where it stands — its Goes to is not his, and a retype is put back there in the write below.
+     A kind that cannot stand there — a leave or a medical on the programme or parked, an overseas duty on the programme
+     with no move of its own — is refused here, with its reason, before anything is written. */
+  const held = !mayMovePlace(r)
+  if (held && draft.type !== r.type && placeOf({ ...r, type: draft.type }) !== placeOf(r)) {
+    HOOKS.toast(`A scheduler has moved this input, so only a scheduler can change it to ${inpType(draft.type)}`, 'warn')
+    return false
+  }
   const n = normalizeInputDraft(draft, r)
   if (!n) return false
   if (protectedInput(normDest(n, draft.yr))) return false   // refuse a move INTO a protected week (P2-REREVIEW-01/02)
@@ -1176,6 +1227,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
      of weeks nobody was looking at too. That clear is gone — the refusal is ignored on read (engine/oilev.ts
      pruneHandedOverDecisions, by the request's `hand` below) — so no week is written, and one Undo still puts back the
      assignment and the refusal together: the count rides the request. */
+  /* A DOCUMENT ADDED OR TAKEN OFF IS NOT A CHANGE TO WHAT WAS FILED (the M3 fresh read's 3; D1150 — "they can apply first but
+     upload after"): the late mark measures the input's last change (`mod`), and a file attached after the cut-off made an
+     on-time leave read LATE. Where the draft differs from the record by its documents alone, its time is left as it was. */
+  const docsOnly = (() => { try { return JSON.stringify({ ...draftOf(r), docIds: [] }) === JSON.stringify({ ...draft, docIds: [] }) } catch { return false } })()
   const ok = writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
@@ -1215,6 +1270,8 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        retyped to a kind never filed there. */
     /* captured for the filing rules below — the writes overwrite r.type */
     const wasDormant = r.acc === 'r', wasType = r.type, wasPerson = leadOf(r)
+    /* …and where it stood, for the scheduler's move (his D1388, below the filing rules) */
+    const accWas = r.acc, odWas = r.odGround, placeWas = placeOf(r)
     /* WHO IT IS FOR — its one person, replaced (a hand-over). A record that carries its people is written in its list
        (engine/inputown.ts swapPerson: the entry replaced, the holding moved on); one in the old shape, in `person`, as
        always. An input of SEVERAL is never re-pointed here: who is in it is changed by commitInput, below. */
@@ -1228,13 +1285,16 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     const wasDateD999 = r.date, wasEndD999 = r.endDate, wasYrD999 = r.yr
     r.s = s; r.e = e; r.date = date; r.remarks = rem
     /* the date the late mark reads — left as it is by a scheduler's change made from a row on the schedule (D741, D742) */
-    if (!sched) r.mod = nowStamp()
+    if (!sched && !docsOnly) r.mod = nowStamp()
     /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
        was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
        keeps the name of the Event it used to be. A draft that does not STATE a title (no `title` key at all — a
        hand-made call; every door of the app seeds one through draftOf, where NULL says "none") leaves the record's
        own where its kind still takes one: silence is not an instruction to wipe a name. */
     { const tt = titleOf(draft.type, draft.title === undefined ? r.title : draft.title); if (tt) r.title = tt; else delete r.title }
+    /* …AND SO DOES AN ATTACH'S "TO" (his D1373), on the same terms: a draft that states it writes it; a kind that is not
+       an Attach keeps none */
+    { const to = isFly(draft.type) ? toOf(draft.to === undefined ? r.to : draft.to) : ''; if (to) r.to = to; else delete r.to }
     /* …AND SO DOES THE TILL-DATE TICK (owner D953), on the same terms: a draft that states one (every door of the app
        seeds `till` through draftOf, undefined meaning "as its dates say") writes it; a hand-made call with no `till` key
        leaves the record's own. A choice the new dates overtook is dropped by the write itself (runInputWrite). */
@@ -1260,7 +1320,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        Only on a type that KEEPS documents — the family guard above stops a
        medical row leaving the group, so this bites only on stray ids a
        dialog carried while the type was flipped among non-medical picks. */
-    if (needsDoc(draft.type) && rowDocIds(draft).length) {
+    /* …for EVERY kind since M3 7.4 (D1150): a leave's or a duty's ✕ that empties its list takes the files off the record;
+       a medical's list never goes empty here (the replace-don't-strip refusal above). A draft that carries no list at all
+       (a caller that never drew the Document row) leaves the record's as it is. */
+    if (Array.isArray(draft.docIds) && (!needsDoc(draft.type) || rowDocIds(draft).length)) {
+      delete (r as any).docId
       delete (r as any).docIds
       Object.assign(r, docFields(rowDocIds(draft)))
     }
@@ -1348,10 +1412,41 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        that kind, as the loaded week's relink always left it. One rule on and off the loaded week now (P2-QREV/Fable-9 had
        the off-week edit re-derive on any type change). */
     if (r.acc === 'u' && r.type !== wasType && isUnavail(r.type)) delete r.acc
+    /* an overseas duty's way out of Unavailable (D1393, engine/inputs.ts odOut) is its own: retyped into or out of one, the
+       new kind stands where it stands by itself — no row kept on the programme by an old mark */
+    if (r.type !== wasType && (isOD(wasType) || isOD(r.type))) { delete r.odGround; if (isOD(r.type) && r.acc === 'g') delete r.acc }
+    /* WHERE IT IS FILED FOLLOWS ITS KIND AND ITS "GOES TO" (his D1356, D1372, D1374): a retype INTO a kind that lands
+       under Unavailable by itself files it there; a retype OUT of one takes it off again (to where its new kind lands —
+       the programme, worked out on read), unless it became an Other whose filer picked Unavailable; and an Other's
+       "Goes to" changed in the window moves it. A scheduler's own filing of any other kind is left as it is (D1357). */
+    {
+      const goesWas = goesOf(r)
+      /* a scheduler's Reject stands until a scheduler changes it (G5): a member's edit never moves a rejected Other, as his
+         edit of a rejected request's time never revives it */
+      /* …nor, since his D1388, one a scheduler has moved: where it stands is then the scheduler's (held, above) */
+      const goesNow = 'goes' in draft && !held ? draft.goes : goesWas
+      if (r.type !== wasType && landsUnavail(r.type)) r.acc = 'u'
+      else if (r.type !== wasType && landsUnavail(wasType) && r.acc === 'u' && !(isOther(r.type) && goesNow === 'u')) delete r.acc
+      else if (isOther(r.type) && 'goes' in draft && goesNow !== goesWas) { if (goesNow === 'u') r.acc = 'u'; else if (goesNow === 'g') delete r.acc }
+      else if (r.type !== wasType && isOther(r.type) && goesNow === 'u') r.acc = 'u'
+      /* an Other its filer had under Unavailable, retyped to another commitment, lands where that kind lands — the Ground
+         Programme until a scheduler moves it (D1357; the scenario designer's G4) */
+      else if (r.type !== wasType && isOther(wasType) && !isOther(r.type) && r.acc === 'u') delete r.acc
+    }
     /* …and except an input turned into a PLACEHOLDER's ([INPUT-ALL-AVAIL]; Astra's read of the code, 9 Oct 26): an input
        filed for ALL AVAIL / ALL is never under Unavailable (engine/inputs.ts placeholderProblem) — it goes back onto
        the programme, where its row, its crowd and its OIL are (state/holderbase.ts lands it after this command). */
     if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
+    /* WHERE A SCHEDULER PUT IT, A MEMBER'S SAVE LEAVES IT (his D1388): whatever the rules above did with his retype — an
+       Attach sent under Unavailable by itself, a rejected one revived by its new kind, one taken off Unavailable as another
+       commitment — it goes back where it stood (a kind that cannot stand there was refused before the write). A
+       scheduler's own save that moves it marks it moved. */
+    if (placeOf(r) !== placeWas) {
+      if (held) {
+        if (accWas === undefined) delete r.acc; else r.acc = accWas
+        if (odWas) r.odGround = odWas; else delete r.odGround
+      } else markMoved(r)
+    }
   })
   /* the funnel backstop rolled the batch back — report failure so the editor
      stays open and nothing typed is lost (P2-QREV-04) */
@@ -1974,6 +2069,11 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     return false
   }
   const first = norm.get(next[0])!
+  /* ALL AVAIL / ALL PUT INTO ONE A SCHEDULER MOVED UNDER UNAVAILABLE would take it off again (a placeholder is never under
+     Unavailable — below): where he put it is his to change (his D1388) */
+  if (rec && rec.acc === 'u' && next.some(p => isSpecial(p)) && !mayMovePlace(rec)) {
+    say('A scheduler has moved this input under Unavailable, so only a scheduler can put ALL AVAIL or ALL in it', 'warn'); return false
+  }
   /* WHAT ONE RECORD MAY HOLD — the same body the save boundary holds every command to (state/store.ts) */
   /* (an input under Unavailable that now holds a placeholder is taken back onto the programme by this save, below —
      so where it is filed TODAY is not held against the placeholder) */
@@ -1992,6 +2092,8 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
     || unfmt(rec.date, rec.yr) !== draft.start || (rec.endDate ? unfmt(rec.endDate, rec.yr) : '') !== wantEnd
     || (rec.half || '') !== (first.half || '') || remarksTyped(rec.remarks, rec) !== remarksTyped(draft.remarks, draft)
     || String(rec.title || '') !== titleOf(draft.type, draft.title === undefined ? rec.title : draft.title)
+    || (isFly(draft.type) && String(rec.to || '') !== toOf(draft.to === undefined ? rec.to : draft.to))
+    || (isOther(draft.type) && 'goes' in draft && goesOf(rec) !== draft.goes)
     || ('till' in draft && (typeof rec.till === 'boolean' ? rec.till : undefined) !== (typeof draft.till === 'boolean' ? draft.till : undefined))
     || (isSansAvail(draft.type) && sansKey(rec.sans) !== sansKey(draft.sans)))
   const answers = !!opts && !!opts.oil && (!rec || JSON.stringify(rec.oil || {}) !== JSON.stringify(opts.oil))
@@ -2022,6 +2124,10 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
       if (!r) {
         if (!commitNewInput({ ...draft, person: next[0] }, false, undefined, undefined, x => { r = x }) || !r) stop()
         for (const p of next.slice(1)) r.people.push({ p, ...(r.by != null ? { by: r.by } : {}), ...(r.at != null ? { at: r.at } : {}) })
+        /* an Other its filer sent under Unavailable, filed with ALL AVAIL / ALL among its people, lands on the programme
+           instead — a placeholder is never under Unavailable (placeholderProblem; the scenario designer's G3: it was
+           refused whole, after the window had offered "Goes to") */
+        if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
       } else {
         if (says && !commitInputEdit(r, { ...draft, person: leadOf(r), docIds: rowDocIds(r) }, undefined, undefined, opts)) stop()
         /* who filed it passes on with its filer (state/perms.ts byAfterLeaving — Fable F13): to the scheduler who takes
@@ -2035,8 +2141,9 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
         if (st && !schedSide(opts)) { const today = nowStamp(); if (String(inputStampISO(r) || '') < today) st.mod = today }
         for (const p of added) putPerson(r, p, st)
         /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
-           same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) */
-        if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc
+           same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) — a
+           scheduler's move, marked (his D1388; the code read's F2: unmarked, its filer could send it back) */
+        if (r.acc === 'u' && isPlaceholderInput(r)) { delete r.acc; markMoved(r) }
         /* THE ONE PERSON OF AN INPUT WHO MAKES IT AN INPUT OF SEVERAL IS WHO FILED THAT (state/perms.ts takesOn — as before
            the build, where the group he made named him its filer): so he can go on changing who is in it, and its OIL
            question comes to his bell. An admin's add leaves who filed it alone. */
@@ -2570,9 +2677,11 @@ export function InputEditor() {
   /* NOT FROM THE MEDICAL TAB (the code read of [MEDICAL-CARDS-3], 17 Oct 26 — finding 4): asked to show a saved input,
      the page turns the Inputs and SANS calendars to its month; from the Medical tab ("+ Medical", D963) neither calendar
      is in view, so a filing for July turned his November away unseen. There the new card is the feedback and the note
-     is said (nothing there wears the just-added mark). */
+     is said (nothing there wears the just-added mark).
+     …UNTIL HIS D1300 (24 Oct 26): the new card wears it now — the Medical tab is asked to show the input (its own reveal,
+     which turns no calendar), and where the card can be seen the note is left unsaid, as on the List. */
   const onMedTab = () => CURPAGE === 'inputs' && INPVIEW === 'med'
-  const show = (row: any, want: boolean) => want && !!row && !onMedTab() && revealInput(row) && CURPAGE === 'inputs'
+  const show = (row: any, want: boolean) => want && !!row && (onMedTab() ? revealMedInput(row) : revealInput(row) && CURPAGE === 'inputs')
   const saidSaved = (row: any, shown: boolean, words: string) => {
     if (!shown || toastHeld()) HOOKS.toast(words, 'ok')
     else noteUnlessSeen(String(inpId(row)), words, 'ok')
@@ -2606,7 +2715,8 @@ export function InputEditor() {
       if (ok) {
         const shown = show(savedRow, r._calendar || CURPAGE === 'inputs')
         /* the place it is drawn: an input for ALL / ALL AVAIL stands on the Common Programme (owner D955) */
-        if (ctx === 'g') HOOKS.toast(`Input added to the ${progOf([...ppl, draft && draft.person])}`, 'ok'); else saidSaved(savedRow, shown, 'Input added')
+        /* …and from the Ground panel an input filed under Unavailable says so (the code read's F1) */
+        if (ctx === 'g') HOOKS.toast(savedRow && savedRow.acc === 'u' ? 'Input filed under Unavailable' : `Input added to the ${progOf([...ppl, draft && draft.person])}`, 'ok'); else saidSaved(savedRow, shown, 'Input added')
         close()
       }
       return
@@ -2715,6 +2825,7 @@ export function InputEditor() {
       setDocConf({
         who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
         typeLabel: draft.type,
+        leave: isLeave(draft.type),
       })
       return
     }
@@ -2799,6 +2910,9 @@ export function InputEditor() {
      READ it (D211 — type, remarks, documents), with nothing offered that he cannot use. */
   const canAll = rows.length ? mayEditInput(r) : true
   const readOnly = !isNew && !!r && !mayEditInput(r)
+  /* WHERE IT GOES IS A SCHEDULER'S once he has moved it (his D1388): the member's window shows where it stands, picked,
+     and offers neither button — as a rejected one already does (G5) */
+  const goesLocked = !isNew && !!r && !mayMovePlace(r)
   /* A MAN IN A SHARED INPUT WHO DID NOT FILE IT (D655, reading 2) reads it, and has exactly two things of his own: take
      himself out, and his own OIL answer. Anyone else only reads it. */
   /* (since the one-rule build: ONE thing of his own — take himself out. The OIL answer is the input's, given by
@@ -2971,6 +3085,38 @@ export function InputEditor() {
               {!readOnly && <span className="inped-pen" aria-hidden="true"><PenIcon solo /></span>}
             </span>
           </label>}
+          {/* AN ATTACH SAYS WHERE TO (his D1373 — "Attach · 145 Sqn"; drawn by scripts/handpass/lw-1025-q7.mjs, SET att): one
+              short box, free words, optional, shown in its name on the schedule */}
+          {isFly(draft.type) && ctx !== 's' && ctx !== 'up' && <label className="inped-f">
+            <span className="inped-k">To</span>
+            <span className="inped-title">
+              <input id="inpEditTo" aria-label="Attached to" maxLength={TITLE_MAX} autoComplete="off" placeholder="Squadron, job or exercise"
+                value={draft.to ?? ''} disabled={readOnly}
+                onChange={e => setDraft({ ...draft, to: e.target.value })}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); save(false) } }} />
+            </span>
+          </label>}
+          {/* AN OTHER ASKS WHERE IT GOES (his D1356, D1367–D1369; drawn by lw-1025-q7.mjs, SET q1n look C): Ground Programme
+              (amber, the schedule's colour for it) or Unavailable (red) — the picked one solid with dark words, ordinary
+              letters, 36 tall — and one grey line saying what the Leave War does with it (D1368, no separate tick). Not for
+              ALL AVAIL / ALL, which is never under Unavailable — nor where either is among the people picked (G3). */}
+          {isOther(draft.type) && !isSpecial(draft.person) && !(several && ppl.some(p => isSpecial(p))) && ctx !== 's' && ctx !== 'up' && <div className="inped-f">
+            <span className="inped-k">Goes to</span>
+            <div className="inped-goes">
+              <div className="goespick" role="group" aria-label="Goes to">
+                {([['g', 'Ground Programme'], ['u', 'Unavailable']] as const).map(([k, words]) => (
+                  <button key={k} type="button" className={`goesbtn goes-${k}${(draft.goes ?? 'g') === k ? ' on' : ''}`} data-testid={`inpEdit-goes-${k}`}
+                    aria-pressed={(draft.goes ?? 'g') === k} disabled={readOnly || goesLocked || (draft.goes === 'r' && !canEditSched())} onClick={() => setDraft({ ...draft, goes: k })}>{words}</button>
+                ))}
+              </div>
+              {/* …a rejected one says so and picks neither; only a scheduler moves it (G5) */}
+              <span className="inped-goesline" data-testid="inpEdit-goes-line">
+                {draft.goes === 'r' ? 'Rejected by a scheduler'
+                  : goesLocked ? `A scheduler moved it here: ${(draft.goes ?? 'g') === 'u' ? 'counted as away on the Leave War' : 'still counted in the Leave War’s manning'}`
+                  : (draft.goes ?? 'g') === 'u' ? 'Counted as away on the Leave War' : 'Still counted in the Leave War’s manning'}
+              </span>
+            </div>
+          </div>}
           {/* an upchit is ONE date (the write path refuses a range), picked
               plainly — defaulting to today, editable for a certificate
               signed a day or two back (owner, 27 Aug 26) */}
@@ -2992,7 +3138,8 @@ export function InputEditor() {
           {/* an upchit has no hours — the date above is the whole record, so
               the When row would only offer controls that mean nothing */}
           {!isUpchit(draft.type) && <div className="inped-f">
-            <span className="inped-k">When</span>
+            {/* "Duration" — the Leave War's windows and this one ask it in the same word (D1212) */}
+            <span className="inped-k">Duration</span>
             <div className="inped-when">
               {hasHalf(draft.type)
                 ? <SpanPicker id="inpEditSpan" span={span} onPick={m => {
@@ -3018,10 +3165,12 @@ export function InputEditor() {
               exactly the types whose commit demands one (needsDoc is the one
               body for both), so the button never appears where the file is
               not wanted and never hides where it is */}
-          {needsDoc(draft.type) && <div className="inped-f">
+          {/* …FOR EVERY KIND since M3 7.4 (owner D1150): a leave shows it was applied for and approved in the official
+              leave system; a medical's is still the one asked and guarded (needsDoc) */}
+          <div className="inped-f">
             <span className="inped-k">Document</span>
             <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />
-          </div>}
+          </div>
           {/* THE REMARKS BOX HOLDS ONLY WHAT A PERSON TYPES (owner D948, 16 Oct 26 — his D946: "a dedicated remarks box just
               for free text that is empty and easy to select and the editable till date is always after the remarks"):
               the "till <date>" stands after the box in grey, from the dates in the window the moment it opens — a day
@@ -3233,9 +3382,12 @@ export function InputEditor() {
       {/* the medical-document ask (owner, [SYNC-INTEG]): "No document" resumes
           the SAME save through the rest of the pipeline (skipDoc); "Upload"
           dismisses so the filer can attach a certificate and save again */}
-      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel}
+      {docConf && <DocConfirm who={docConf.who} typeLabel={docConf.typeLabel} leave={!!docConf.leave}
         onUpload={() => setDocConf(null)}
-        onNoDoc={() => { setDocConf(null); save(true) }} />}
+        /* the keyboard back inside the window before the save closes it, so the window hands it on to the button that opened
+           it (FloatWindow.tsx returns focus only from inside itself — M3's browser check: a new leave's "No document" left it
+           nowhere) */
+        onNoDoc={() => { setDocConf(null); document.getElementById('inpEditSave')?.focus(); save(true) }} />}
   </>)
   /* A CANCELLED INPUT'S OWN WINDOW SAYS SO (owner D771, 12 Oct 26 — "Yes for both"): the card's own small red CX tag and
      the reason in red, beside the window's title, in both of its shapes — FOLLOWING the title, not standing by the ✕

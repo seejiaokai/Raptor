@@ -255,6 +255,8 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Suggested improvement:** In the project guide's Token discipline or Build & verify, one line: "while iterating, the type check is the BUILD's own (`npm run build`, or its type-check half) — a bare `tsc --noEmit -p .` uses a different set-up and passes what the build refuses." And in the executor's guide: run the build once before taking the lock for the full set.
 
+**Met again 25 Oct 26 (the night run on the Leave War branch):** the bubble fix passed its unit file and was pushed; GitHub's build refused one type (a figure that can be blank). The guard this calls for: an unconditional default in place of a judgement — "every push that touches `raptor-port/src` is preceded by `npm run build` on this PC" — best enforced by the push guard ([PUSH-LOCK-GUARD]) refusing such a push when the last build is older than the last source edit.
+
 **Principle:** A faster stand-in for a gate is only worth running if it refuses what the gate refuses. Check which configuration the real gate uses before trusting a shortcut to it.
 
 ### Observation 571: Putting a file back with `git checkout --` after a hand-run break test also threw away two edits not yet committed
@@ -745,6 +747,8 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 
 Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writing the evidence sheet's new section (prose full of apostrophes) failed the same way; redone through the file tool. The guard proposed above (scripts always written to a file) still stands.
 
+**Met again 24 Oct 26:** building [LW-ROUND3-BUILD] (round 3 of the Leave War's bid windows) — twice more, a Python here-document of test edits holding apostrophes; redone through the file tool each time. Still the conditional habit; the unconditional default proposed above stands.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** OPEN
@@ -867,6 +871,8 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 - met again 20 Oct 26 (removing a merged HANDOFF block): the same `cat > "$TMPDIR/x"` lead-in stalled two minutes, again with an apostrophe in the heredoc; redone through the file tool. Third time — the guard (input closed by default) is what stops it, not the note.
 
 Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`): twice a command began `cat > <file>` with no input (once `cat > /tmp/x.test.ts 2>/dev/null; mkdir …`) — each stalled two minutes and was moved to the background before it was stopped. The same proposal stands: never begin a command with `cat >`; close input with `< /dev/null`.
+
+Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit scripts written inline in the shell broke — a template literal's backticks inside a `node -e "…"` were run by bash as commands (two picture names came out blank), a `\\[` in a heredoc reached the regex unescaped, a `"\\n"` became a real line break. Each was redone with the file-writing tool and ran first time. The guard stands as proposed: every multi-line or quote-bearing script goes through the file tool, unconditionally.
 
 ### Observation 610: Before/after pictures of the live app need no second checkout or server
 
@@ -1396,6 +1402,8 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 **Principle:** Allowance that resets unused is not saved; a stop rule for a budget should know when the budget refills.
 
+**Met again 26 Oct 26** (the night of 26 Oct 26, /overnight 12 on `claude/lw-m3-placing-leave`): the weekly figure stood at 92% before the first job, the reset 17 hours away — after the run would end. Read word for word, the guide started no job at all; D1033 ("work is not held back … to save allowance that would reset anyway") says the 8% left is to be used. The night ran, told to him plainly in the Part 1 message, and stops at its last saved point when the limit comes. The guard proposed: the stop rule reads "the weekly figure passes 90% — unless what is left resets before it could be used; then run until the limit, saving at every step (D1033)".
+
 ### Observation 644: A browser-test port held by another chat's old preview silently tests the wrong build
 
 **Status:** OPEN
@@ -1630,6 +1638,8 @@ different feature that merely pass through it.
 
 **Principle:** A proxy environment is calibrated against known outcomes of the real one before its verdict on a new case is believed.
 
+Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four rounds): the stand-in keyboard moved only `offsetTop`, playing Chromium's measure; his iPhone, once panned, gives every box from the visible top and the layout's height less the pan. Three fixes passed every check on the stand-in and failed on his phone; the stand-in had never reproduced the fault he first reported. Guard proposed: a stand-in for a device is first made to reproduce the device's recorded failure (red on the old build), and only then believed on the fix — `docs/walk-scripts.md` §3 now says so for the keyboard; the general rule belongs in the bug-check order's walk section.
+
 ### Observation 663: A part moved out of its box in a mock-up loses the box's styles
 
 **Status:** OPEN
@@ -1747,9 +1757,15 @@ different feature that merely pass through it.
 
 **Suggested improvement:** Make the default unconditional: script edits go through the Edit tool or a script file written with the Write tool, never a code string passed through a shell; when a helper "finds nothing", `cat -A` the line first.
 
+Met again 26 Oct 26 (M3 batch, items 1–3): a `sed -i` that wrote `'\\r\\n'` into an edit script left raw newlines inside a regex (a syntax error), and a `node -e` given a `/c/…` path read `C:\c\…`. Both cost a round trip; the Write/Edit-tool scripts beside them worked first time. The guard stands as proposed: a hook refusing `node -e`/`python -c` bodies with a backslash.
+Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` into real line breaks inside a test file (a transform error), and a one-line `sed -i` on the Leave War's `store.ts` (CRLF) wrote every line back with LF — a 5,400-line diff for a one-line change, found only by `git diff --numstat` before the code read. A cheap catch worth making standard: after any shell edit, `git diff --numstat` the file and stop when the count is far above the edit.
+
 **Principle:** Every layer that reads escapes (shell, Python string, JS) can rewrite a backslash; text that must arrive byte for byte should cross no layer that interprets it.
 
 - Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding a regex with a doubled backslash lost one backslash on the way (and this very note lost another when written by a script), and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
+- **Met again 25 Oct 26** (M3 FULL check, the read's Q8 test): `/\bj[lr]\b/` written into an e2e test through a Python string in a here-doc came out with backspaces; the test failed on its pattern, not the app, and a `python -c` fix through bash did the same again. The guard proposed: edit test and source files with the Edit tool, never a shell-quoted script, whenever the new text holds a backslash.
+
+- Met again 26 Oct 26 (claude/lw-other-goes-to-lock), three times: a JS template literal written through a quoted here-doc lost the backslash before an apostrophe (two test files would not parse), and a node -e with nested template literals lost a whole argument (a walk step). Each fixed by the Write or Edit tool. The guard the entry proposes is still not in place.
 
 ### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
 
@@ -1841,6 +1857,8 @@ different feature that merely pass through it.
 
 **Principle:** A description of current behaviour is a claim about the running thing; check it at the source before it reaches the person deciding, or label it unverified.
 
+*Met again 24 Oct 26 (the Leave War round 3 page, Q6 (b)): a caption said the lit button would read "the grid box's own code, <LL" — the grid draws a lone morning as "LL" in the top half; caught by the drawing chat on re-checking before re-asking him, the option withdrawn on the page. Guard proposed: a caption naming what another surface shows is written from a measured node (its innerHTML) in the drawing script, never from the notation in the code's comments.*
+
 ### Observation 677: A design study draws every option on one shared data set, the earlier option redrawn too
 
 **Status:** OPEN
@@ -1916,7 +1934,469 @@ different feature that merely pass through it.
 
 **Principle:** A check finds only the states it is pointed at. When a device keeps a state the test browser drops (hover after a tap, wider letters, a slow frame), make the test hold that state on purpose; pictures taken only after everything settles prove only the settled screen.
 
-### Observation 682: An overnight run can hand each job to a fresh helper — a separate session cannot be started from the phone or from a woken turn
+### Observation 682: An iPhone screen recording can be read on a PC with no video tools — the installed Chrome, in a visible window, decodes it
+
+**Status:** OPEN
+**Date:** 23 Oct 26
+**Session context:** planning the Leave War's pinch to zoom; he attached a screen recording of the fault and said to ask him to describe it if it could not be opened
+**Skill:** brainstorming (its mockups-on-the-real-app reference)
+**Type:** open-source
+**Phase/Area:** taking in the owner's evidence before drawing
+
+**Issue:** The PC has no ffmpeg, and an iPhone records in HEVC: the headless test browser loaded the file but reported a 0 x 0 video and drew blank frames. A search of the disk for an attached file also cost a two-minute timeout before the upload's own path arrived in his next message. Opening the same file in the installed Chrome through Playwright with `headless: false` and the HEVC decoder feature on played it, and canvas captures every half second gave clear frames; turned upright and cropped, three of them became the before / after pictures of his question page.
+
+**Suggested improvement:** In the mockups reference, under "Showing It" or a new "His own evidence" line: a recording he sends is read first, frames pulled with the repo's `scripts/handpass/video-frames.mjs` (visible Chrome, HEVC on), and its key frames — turned and cropped to the place, marked — go on the page as his own pictures beside the drawn ones; ask him to describe it only if that fails. Wait for the upload path rather than searching the disk.
+
+**Principle:** Before asking a person to describe evidence they sent, try the ordinary tool they used to make it (their phone's format in a full browser); a headless or minimal player failing is not the file failing.
+
+### Observation 683: A ring on a top-cropped picture is placed against the crop, not the whole picture
+
+**Status:** OPEN
+**Date:** 2026-10-23
+**Session context:** the Leave War pinch look card, an Artifact page of walk pictures with marked places (D921, D1222)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** marking the place on a picture shown cropped
+
+**Issue:** A tall phone picture was shown cut to its top (a box of 804x1100 over a 1748-tall picture, the picture covering it from the top) and the ring round the date row was first placed in percentages of the whole picture, so it would have sat about a third too high and too short.
+
+**Suggested improvement:** In the mock-up guide, one line: when a picture is cropped by its box, a ring placed in percent takes the BOX as its measure (pixels from the top / the box height in picture pixels), or the ring is drawn onto the picture itself.
+
+**Principle:** A mark placed in relative units is relative to the element that holds it; once a crop makes that element differ from the source, convert every coordinate to the crop.
+
+### Observation 686: A FULL walk read a window's top line in its "new bid" state only; the owner found it wrong in the "bid already placed" state
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** his iPhone look at the Leave War M3 build (pull request 569) the morning after its FULL bug check. Numbered past 682–685 on `claude/night-records-1021` (unmerged).
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.4) / walk briefs
+**Type:** internal
+**Phase/Area:** scenario design — the state table
+
+**Issue:** The bid window has two states, a new bid and a bid already on the day ("NOW LL"). The walk read the day line before a bid that turns Available P red (PASS) and the bubble after it (PASS); it reopened placed bids several times, but only on calm days and to check documents and remarks. Nobody listed "reopened on the day it turned red × the day line", and the day line there said "No manning row turns amber or red" (his D1296). The code read missed it too.
+
+**Suggested improvement:** in the sizing step and the walk brief, for every window with more than one state, write a table of state × every reading the window shows (day line, figures, buttons) and give each cell a scenario or a named test — the §7.4 state table applied to readings, not only to presses.
+
+**Principle:** A reading that is right in one state of a surface is unproved in its other states; list each state against each thing it shows, not only against each action.
+
+### Observation 687: A unit-test world without the real door could not reach the state the default control makes
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** M3's follow-ups — fixing the bid window's day line on a day already holding the bid (D1296), red test first
+**Skill:** existing — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.4 / §7.11), not a skill
+**Type:** open-source
+**Phase/Area:** the state table of a reading; which world a red test runs in
+
+**Issue:** The red-first tests for the fix ran in the store alone, where a bid placed stays a PENDING request. In the app the admin's "Approve what I enter" is ticked by default, so his bid lands APPROVED, becomes a leave on another page, and a second write over it is refused — a different code path. The fixed line drew nothing there; only the walk, driving the default control, found it. The owner's own report was the pending case, which the tests did cover.
+
+**Suggested improvement:** In §7.4's state table (and §7.11 lesson 1), name the column "the state the DEFAULT controls produce for each role" explicitly, and require that the red test of a fix runs at least once through the real door that produces that state (here, the absence door with both stores), not only a store-only fixture.
+
+**Principle:** A fix proven only in a fixture that skips the real write path is proven for the fixture's state; the state a default setting produces must be in the test's world too.
+
+
+### Observation 688: The Edit tool evens out a file's mixed line endings, turning a 16-line change into 218
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War — adding the demo's six counters (D1312); one Edit inserted 16 lines into `src/leavewar/state/store.ts`
+**Skill:** New skill candidate: none — a repo working note (beside the memory note "Python edits turn LF into CRLF")
+**Type:** internal
+**Phase/Area:** editing source files on Windows
+
+**Issue:** `store.ts` holds mostly CRLF lines with a few LF-only ones. One Edit call rewrote the LF-only lines as CRLF, so `git diff --stat` showed 117 insertions and 101 deletions for a 16-line addition. `grep -c $'\r'` in Git Bash reported 0 for both versions and hid the cause; only a byte compare in Python found it. Unnoticed, the commit would have shown a reader a hundred unchanged lines as changed.
+
+**Suggested improvement:** after editing a file on Windows, compare `git diff --numstat` with `git diff --numstat --ignore-space-at-eol` for every changed file. Where they differ, put the original bytes back and re-insert the change with a byte-preserving script (the file's own line ending). Worth a line in `docs/gates-and-deploy.md` or a memory note.
+
+**Principle:** A diff much larger than the change made is a signal to stop and find out why before committing. Compare the diff with and without end-of-line whitespace, because tools differ on line endings and the shell's own counters can hide a carriage return.
+
+### Observation 689: A drawing made with the design skill kept the old words beside the new boxes
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** Leave War — drawing the day list of a day with two entries (D1327: each entry led by its coloured box)
+**Skill:** impeccable (reference/shape.md — the brief); brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** shape brief → drawing
+
+**Issue:** The brief added a coloured box in front of each entry but kept the entry's long description beside it ("Medical — ATT B, no flying but may still work, afternoon · filed on the Inputs page", then "Change it on the Inputs page."). The owner, seeing the first picture on his phone: "that's a lot of words … I thought the design skill will cut down" (D1328), and then circled a row whose button words broke over two lines (D1329). The shape step treated the words as content to carry over, not as part of the design.
+
+**Suggested improvement:** In shape's brief (and the mock-up method), when a new visual element takes over what words used to say, the brief lists the words it makes redundant and cuts them in the same drawing; and a row of buttons is measured for one line at the target device's width with wider letters before the picture is shown.
+
+**Principle:** Adding a visual carrier for a meaning should remove the words that carried it; a redesign that only adds is not a declutter.
+
+
+### Observation 690: A field saved on blur, pressed past by a button — only a test without the blur sees an iPhone's loss
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** round 3's FULL check of the Leave War bid windows (branch claude/lw-m3-placing-leave)
+**Skill:** project method — `raptor-port/docs/walk-scripts.md` (§4) and the bug-check order's scenario design (not a skill file)
+**Type:** open-source
+**Phase/Area:** walk scenarios for text boxes that save "when the box is left"
+
+**Issue:** A Remarks box saves its words when it loses focus. Words typed, then Approve / Refuse / Move tapped: the walk in Chromium PASSED (the button takes focus, the box blurs and saves first), but on an iPhone a tapped button takes no focus, so no blur fires and the window closed without the words. Only the scenario designer's reading of the code named it; seven unit tests that type and press with no blur (as an iPhone does) went red.
+
+**Suggested improvement:** walk-scripts.md §4: for every box that saves on blur, each action that can follow it is ALSO tested with no blur in between (a unit test's fireEvent, or element.click() after focus in the browser) — a Chromium walk's PASS on that order proves nothing for an iPhone.
+
+**Principle:** When the walk's engine and the owner's device deliver focus differently, a pass in the walk's engine is not evidence; test the device's sequence directly.
+
+### Observation 691: CSS that loses silently — a scoping wrapper and an invalid shorthand, both caught only by a real browser
+
+**Status:** OPEN
+**Date:** 24 Oct 26
+**Session context:** round 3's FULL check of the Leave War bid windows
+**Skill:** project method — the build's guards (`raptor-port/docs/gates-and-deploy.md`, a structural test) (not a skill file)
+**Type:** open-source
+**Phase/Area:** styles written for a new screen
+
+**Issue:** Two faults in one build, both invisible to unit tests (no stylesheet) and to a code read: (1) a block of new rules written after the file's `#page-leavewar { … }` wrapper closed lost to every older wrapped rule (the file's own head warned of exactly this); (2) `font: 600 13px/1.3 inherit` is not a font, so the browser dropped the line — and eight older copies of the same line sit in other stylesheets.
+
+**Suggested improvement:** a cheap structural test: no rule after a scoping wrapper's close in a wrapped file (or a list of allowed ones), and no `font:` shorthand naming `inherit`. A rule that only a comment states will be broken again.
+
+**Principle:** A rule that fails silently needs a mechanical guard, not a louder comment.
+
+### Observation 692: A change of words on screen missed the older test that pinned the old words
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's check — GitHub's run of the branch head failed a unit test the previous chat never ran
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`, the fix step) and the debugging guide
+**Type:** open-source
+**Phase/Area:** fixing a finding red first, then running "the tests it touches"
+
+**Issue:** A finding was fixed red first: a new test was written for the new sentence, and it passed. But an older test file elsewhere asserted the old sentence for two of the same cases. "The tests it touches" was read as the test written for the fix, so the older file was never run, and it failed only on GitHub's full run after the handoff.
+
+**Suggested improvement:** In the fix step: when a fix changes words a person reads, search every test for the OLD words (and the old code of the thing renamed) before calling the fix done, and run each file that matches.
+
+**Principle:** A fix's blast radius includes every test that pinned the behaviour being replaced, not only the test written for the replacement — find those by searching for the old value.
+
+### Observation 693: A demo record seeded for a new feature broke an unrelated browser test by its date
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2 — a seeded entry of a new kind on 14 Jan raised its own window over the Holidays list in a phone test that makes 14–15 Jan a holiday
+**Skill:** raptor-executor (building) / walk-scripts (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** adding demo seed data for a new feature
+
+**Issue:** The new seed was placed on a convenient date beside the person's other seeded entries. A browser test elsewhere used the same date for something else; the seed's correct side effect (an OIL question when the day became a holiday) covered the control the test tapped, so the test timed out on GitHub. The local run of only the feature's own tests could not see it.
+
+**Suggested improvement:** Before seeding a demo record, search the tests for its date (and the person); pick a date no test uses, or run every test file that names it.
+
+**Principle:** Shared fixture data is shared state — a new fixture entry is checked against every test that reads the same keys, not only the feature's own tests.
+
+### Observation 694: A file committed with Windows line endings in most lines defeats exact-match edit scripts
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2b — edit scripts (node, exact-string anchors) against `raptor-port/src/leavewar/state/store.ts`
+**Skill:** raptor-executor (building) — the project's edit-script habit
+**Type:** open-source
+**Phase/Area:** mechanical edits by script on Windows
+
+**Issue:** The store file is committed with CRLF on about 5,160 of its 5,290 lines (LF only in a recently added region). Every multi-line anchor written with "\n" missed, reported as "anchor not unique or missing"; a quick `grep -c $'\r'` in Git Bash said 0, which hid the cause. A line-ending-aware helper (try the anchor as written, else with CRLF, and write the replacement with the same endings) fixed it.
+
+**Suggested improvement:** The edit-script template every chat copies matches each spot's own line endings by default (an unconditional default, not a condition to remember), and never mixes endings into a region. Count CR per line with node, not grep, when checking.
+
+**Principle:** On Windows, a text-matching edit must match the file's own line endings at the spot it edits; make that the default of the edit helper rather than a check to remember.
+
+### Observation 695: Before adding a new kind to a discriminated union, audit every branch on the kind in parallel
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2b — UNA became a new kind of the war's own record (a new member of the record and day-view unions)
+**Skill:** raptor-executor / bug-check order (roll-call)
+**Type:** open-source
+**Phase/Area:** design of a data-model change
+
+**Issue:** About 120 lines across 28 files branch on the record's kind with `===` / `!==`; TypeScript flags none of them when a new member is added. A read-only helper audited every branch against the new kind's rules while the main session built the record and its store. It found ten places where falling through was wrong — the record read back as unreadable (which would have reset the whole war on reload), a member-visible "Your UNA bid was replaced" line, a Delete refused, a day panel missing the man, a no-op button — none of which the tests written first would have caught.
+
+**Suggested improvement:** For any new member of a discriminated union in this app, run (in parallel with the build) a read-only audit of every branch on that discriminant, each line answered "falls through correctly" or "needs this change", and fold the list into the roll-call.
+
+**Principle:** A new case in a discriminated union is a change at every site that branches on it; enumerate the sites mechanically before trusting tests written for the new case.
+
+### Observation 696: A walk script that reads SAVED records must take its key from the built app's storage, proven on one known write
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's FULL check — the walk script v2 read the war's saved records to assert what a gesture stored
+**Skill:** walk scripts (`raptor-port/docs/walk-scripts.md` §4) / bug-check order §7
+**Type:** open-source
+**Phase/Area:** walk script — reading results from storage
+
+**Issue:** The script read `leavewar:rec:` keys — the war's own storage seam's name, as its unit tests see it — but the built site stores through the app's whiteboard, `raptor:leavewar/rec:…`, with the person and date beside each record as `pid` / `date`. Every read returned nothing: seven checks across both sizes failed at once ("stored []"), while the grid showed the records plainly. The guide already says a locator that reads a result is copied from the markup that draws it; storage had no such line.
+
+**Suggested improvement:** Add to walk-scripts §4: a step that reads a stored record takes its key and field names from the BUILT app's storage path (the adapter, not the module's own seam), and the script proves the read once on a write it has just made before any step relies on it.
+
+**Principle:** A read of persisted state in an end-to-end check must use the production storage path's naming, validated against one known write — a module's own test seam is a different world.
+
+### Observation 697: Word matching over textContent fails where the page runs words together; match an element whose own text is the word
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's FULL check — the walk's Inputs-list check (H8) at phone and desktop size
+**Skill:** walk scripts (`raptor-port/docs/walk-scripts.md` §4)
+**Type:** open-source
+**Phase/Area:** walk script — reading words off a page
+
+**Issue:** Four tries failed before one held: `innerText` read while scrolling missed the card; a `\bOD\b` regex over a card's `textContent` failed because the card reads "DrifterOD" (no space between the name and the kind), and over the desktop row because it reads "…ODLATE…". The picture showed the right words every time.
+
+**Suggested improvement:** Add to walk-scripts §4 beside "the words a person SEES": to assert a word is shown, find a drawn element whose OWN trimmed text equals the word (and its container for the other part), never a word-boundary regex over a container's concatenated text.
+
+**Principle:** Concatenated DOM text has no reliable word boundaries; assert on the element that draws the word.
+
+### Observation 698: An engine-only layout fault can be pinned red in a single-engine suite by injecting the other engine's metric
+
+**Status:** OPEN
+**Date:** 2026-10-24
+**Session context:** Leave War round 2's FULL check — the walk in WebKit found the row under the leaves 30 tall under leave buttons 28 tall (Chromium: both 30)
+**Skill:** bug-check order §7.9 / §8 item 4 (red first in the medium it runs in); walk scripts §9
+**Type:** open-source
+**Phase/Area:** pinning a fault the test suite's engine cannot show
+
+**Issue:** The browser suite runs Chromium only, where the fault does not occur, so a plain test could never be red. The cause was a font metric (Safari sets 12px text on a shorter line). The test injected that metric (`line-height: 14px` on the chips) and asserted the rule in its general form ("as tall as the leave buttons, whatever line the fonts give"): red before the fix in both projects, green after.
+
+**Suggested improvement:** Add to the order's §7.9 or walk-scripts §9: when a walk in another engine finds a layout fault, identify the metric that differs and inject it in the suite's own engine to make the red test, stating the rule in its engine-independent form.
+
+**Principle:** A fault that depends on an environment the suite lacks is pinned by reproducing the environment's difference, not the environment.
+
+### Observation 699: Drawings he asks for "now, so I can answer tonight" should reach him as each lands
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** /overnight 12 on the Leave War branch; he asked for four outstanding drawings to answer before sleeping
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 1, step 6 (a design question carries a picture)
+
+**Issue:** He asked for the outstanding drawings so he could answer them before the night started. Six helpers were sent at once (good), but the page was to be written only when all had returned; the slowest took about 20 minutes, and he went to sleep ("Nvm u work on overnight I'll sleep") before any picture reached him. Two looks were ready ten minutes earlier.
+
+**Suggested improvement:** In Part 1, when he is waiting up for drawings, publish the questions page with the first finished question and add each further question as its helper returns (one republish each), telling him in one line each time; never hold the page for the slowest drawing.
+
+**Principle:** When a person is waiting for several answers before a deadline (sleep, a meeting), deliver each as it is ready; batching for completeness costs the answers that were ready first.
+
+### Observation 700: A gate chained with `grep -E "FAIL|OK" && …` lets a failure through
+
+**Status:** OPEN
+**Date:** 25 Oct 26
+**Session context:** the keyboard fix's third round on claude/lw-m3-placing-leave; a handoff-block rewrite committed and pushed in one chained command
+**Skill:** session-handoff (and every chained commit-and-push of records)
+**Type:** internal
+**Phase/Area:** the document check before a commit
+
+**Issue:** `npm run docsize | grep -E "FAIL|docsize OK" && git add … && git commit … && git push` — grep succeeds when it matches FAIL, so the commit and the push went ahead on a failing document check (a rewritten HANDOFF block had dropped a ruling's home mention). The push then had to wait for the run it started before the fix could follow (D151, the push guard).
+
+**Suggested improvement:** where a guide or a habit chains the document check before a commit, test the check's own exit code (`npm run docsize > log && …`, or `grep -q "docsize OK"`), never a grep that matches either outcome; and a block rewrite re-reads which rulings name `HANDOFF.md` as a home before dropping a line.
+
+**Principle:** a check in a chain must fail the chain on failure — match the success marker alone, or use the exit code.
+
+### Observation 701: A test's stand-in for an outside system's behaviour was built from the code under test, so it could only pass
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** A phone keyboard fix (a window moved in step with the phone's own slide as the keys open). Round 5 added a browser test that "played the phone's slide frame by frame" — but played it on the very easing curve and duration the app itself animated on. The test passed; on the owner's phone the window ran 90–145 points ahead of the real slide and the page behind it showed. Measuring the real slide off his screen recording (60 frames a second, a debug readout fixed at the pan) gave a different curve (ease-in-out, 250ms, the app told 30ms late); the rewritten test failed on the shipped code, 79–130 points, and passed on the fix.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test — stand-ins for things outside the code (a device, a browser, a service)
+
+**Issue:** A stand-in that models an outside system (here, how a phone animates its viewport) was given the implementation's own constants. Any test comparing the implementation against that stand-in compares the code with itself, and "red first" never happened in a way that could have caught the fault.
+
+**Suggested improvement:** In the "write the failing test" step, add: when the test needs a stand-in for behaviour outside the code under test, take its numbers from a measurement of the real thing (a recording, a log, a captured response) and cite the measurement in the test; never import or copy the constants the implementation uses. Check it by running the new test against the code BEFORE the fix — it must fail for the reason the user reported.
+
+**Principle:** A stand-in for the outside world must come from the outside world. If its numbers came from the code being tested, the test can only agree with the code.
+
+### Observation 702: A device-only fault that passes every stand-in round should trigger the "stop steering" question early, not at round six
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** The keyboard fault on the owner's iPhone (the page behind a window showing as the keys rise). Six rounds in one day, each red-then-green against a stand-in keyboard tuned from his recordings, each still failing on his phone; after round 5 he said "the old one was smoother". At round 6's failure he asked whether to call another model.
+**Skill:** systematic-debugging (and the project's bug-check order)
+**Type:** open-source
+**Phase/Area:** when a fix verified only by a model of an outside system fails on the real system again
+
+**Issue:** Each round treated the miss as a calibration gap in the stand-in and tuned further, adding motion code each time. Nobody asked, before round 6, whether steering against a platform animation the code cannot observe in time was the wrong approach — the guardrail option (cover the gap; go back to the smoother earlier build) only appeared in the hand-off brief. The owner, not the agent, raised escalation.
+
+**Suggested improvement:** In systematic-debugging's "3+ fixes failed" rule, add a device clause: when a fix passes its stand-in and fails on the real device twice, stop and put three options to the user before another round — revert to the last build the user called better, a guardrail that hides the symptom whatever the platform does, or a fresh model/reader — and say the stand-in has not predicted the device.
+
+**Principle:** Two passes on the model and two fails on the device mean the model is wrong, not the last fix; change the approach or the solver, not the constants.
+
+### Observation 703: Checkpoint (lw-m3 build, three pieces done)
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** building the five Leave War items of the M3 handoff
+**Skill:** task-observer
+**Type:** internal
+**Phase/Area:** checkpoint marker
+
+**Issue:** no observations at this checkpoint (the third plan step done).
+
+**Suggested improvement:** none.
+
+**Principle:** a checkpoint write keeps the log honest when nothing new turned up.
+
+### Observation 704: A new style rule appended after a scoped stylesheet's wrapper loses silently — only a real browser sees it
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the Leave War M3 build's FULL check (`claude/lw-m3-placing-leave`) — the joined bar (D1359) and the outlined commitment look (D1370)
+**Skill:** brainstorming (build steps) / bug-check order
+**Type:** open-source
+**Phase/Area:** building a visual change; the walk
+
+**Issue:** The new rules were appended at the end of `matrix.css`, after the closing brace of the file's `#page-leavewar { … }` nesting. Every unit test (class names in jsdom) passed and the drawings matched; the walk found that nothing was ever painted — the wrapper's own id-scoped rules out-ranked the bare ones. Proved by reading computed styles and the matching rules in the page.
+
+**Suggested improvement:** In the build guidance for a visual change: a rule added to a file that wraps itself in an id scope goes INSIDE the wrapper or names the id; and a visual rule's acceptance is a real-browser test that reads the computed style it sets (`getComputedStyle`), proved red on the old build.
+
+**Principle:** A test that checks the class is present proves the markup, not the look; a style change is proved only by reading what the browser computed.
+
+### Observation 705: A walk helper that sets its output folder with "=" overwrites the first walk's evidence on the re-walk
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the same FULL check's re-walk
+**Skill:** bug-check order (walk-scripts.md §6)
+**Type:** open-source
+**Phase/Area:** the re-walk
+
+**Issue:** The walkers' shared helper files set `process.env.LW_OUT = '<first walk folder>'` (not `||=`), so a re-walk run with its own folder still wrote into the first walk's folder — twice, the second time because the host forgot the variable. The first walk's pictures were saved only because they had been committed (restored with git). A shell `sed` meant to change `=` into `||=` also failed silently on the `|` delimiter.
+
+**Suggested improvement:** walk-scripts.md §6 already says "take the folder from the environment only when none is set": add a mechanical check the host runs before any re-walk — `grep -n "LW_OUT =\|HP_SHOTS =" scripts/handpass/<walk>-*.mjs` must print nothing — and a re-walk runs from a script FILE that exports the folder first, never typed per command.
+
+**Principle:** A rule written in a guide is not in force at the moment a reused script runs; the check must be a command run before the run.
+
+### Observation 706: A walker's judge line can fail its own scenario, and a scripted touch scroll may not scroll the page
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the same FULL check — scenarios 7 and 8 (the bubble's Show ›)
+**Skill:** bug-check order (walk-scripts.md §4, §7)
+**Type:** open-source
+**Phase/Area:** reading a walker's FAIL
+
+**Issue:** (a) A judge written `!!b.show && b.show.visible === !rowsInView` reports WRONG exactly when the right result is "Show absent". (b) `Input.synthesizeScrollGesture` with a touch source left `window.scrollY` unchanged on the Leave War grid, so "scroll the rows into view" never happened and the step reported the old state. (c) The walker's "rows in view" read the box's vertical bounds only, ignoring the app bar and frozen header drawn over it. Each read as an app fault until the host probed the page itself (`scripts/handpass/lw-m3b-showprobe.mjs`).
+
+**Suggested improvement:** walk-scripts.md §4: a judge for "X is absent" is written as absence, never through X's own fields; every scroll step asserts the scroll position moved; "in view" is read with `elementFromPoint` at the visible part's middle, not from the box alone.
+
+**Principle:** A step whose gesture did nothing, or whose judge cannot express the right answer, produces a FAIL the app did not earn — assert the gesture's effect and judge absence directly.
+
+### Observation 707: A walk judged a typed remark by the panel's page text, which leaves out what stands in a box
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the M3 build's FULL check — the walk of the code read's Q3 (a course added from the board's Unavailable "+ Add")
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md §4)
+**Type:** open-source
+**Phase/Area:** a walk step's judge
+
+**Issue:** The step looked for "Weapons course" in the Unavailable panel's `innerText`; the remark stands in the row's own input box, whose words are its `value`, not page text, so the step FAILED while the picture showed the course on the list. The same session met the older form of this (innerText counting a button's screen-reader words, observation in walk-scripts §4).
+
+**Suggested improvement:** walk-scripts §4: a judge that looks for words a person typed reads the boxes' values too (`input, textarea` `.value`) beside the text.
+
+**Principle:** Read words where the page keeps them: what a person typed lives in the box's value, not in the page's text.
+
+### Observation 708: The roll-call missed the crew list for a change to who counts as away
+
+**Status:** OPEN
+**Date:** 2026-10-25
+**Session context:** the M3 build's FULL check — the code read's Q2 found Edit Schedule's crew list drawing a man on a course free; no roll-call row named the crew list
+**Skill:** bug-check order (raptor-port/docs/bug-check-order.md §6, the roll-call)
+**Type:** internal
+**Phase/Area:** roll-call — downstream readers of an availability change
+
+**Issue:** The build moved a course (and any commitment a scheduler moves) from the Ground Programme to Unavailable. Its roll-call listed every place that draws the new box or name, but not the places that read "is he free?" — the crew list, the board's crew column, the day panel's tasked count, the free-crew strip. Under Unavailable the course had no row, so all four drew him free; only the code read saw it, and the walk of the fix then found a second gap (a course with hours).
+
+**Suggested improvement:** §6: for any change to where an input is filed or what counts as away, the roll-call carries one row per reader of availability — the crew list (nothing picked and a seat picked), the board's crew column, the day panel's counts, the free-crew strip, the ALL AVAIL crowd, the Leave War's count — each marked.
+
+**Principle:** A change to where a thing is filed changes every reader that asked the old place, not only the screens that draw the thing; list the readers as well as the drawers.
+
+### Observation 709: A count read from a mark the app works out for the view on screen must be walked across a change of view
+
+**Status:** OPEN
+**Date:** 26 Oct 26
+**Session context:** the night of 26 Oct 26 (/overnight) on `claude/lw-m3-placing-leave` — [LW-REJECTED-CSE], the Leave War counting a rejected course back in
+**Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.0, the sizing step) and `raptor-port/docs/walk-scripts.md`
+**Type:** internal
+**Phase/Area:** the walk's scenarios for a change that reads a stored mark
+
+**Issue:** The fix read an input's filing mark (`acc`) to decide whether the war counts a man. The walk pressed every real button (Reject, → Ground, → Unavail) on the course's own week and passed 5 / 5. The blind code read then found that the "on the Ground Programme" mark is worked out only for the week on screen and deleted off it, so the war counted him out again the moment the scheduler looked at another week. No walk scenario changed the week, because the sizing lines listed the surfaces that draw the count, not the conditions under which the mark it reads exists.
+
+**Suggested improvement:** In the sizing step, one line for a change that reads stored state: "what makes the field this reads appear, change or vanish other than the control under test (a week loaded, a sign-in, a reload, a page change)?" — and one scenario per answer. And in `walk-scripts.md`: a walk of a count driven by a filing presses the filing's buttons, then moves the view away and back before it reads the count again.
+
+**Principle:** A value that is recomputed per view is only proven by a walk that changes the view; reading it once where it was set confirms the setter, not the reader.
+
+### Observation 710: A LOOK tier's before/after pictures came free from the batch walk's own step
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** a one-label change (Grant OIL's "HO · ½" → "HO · 0.5") right after the batch that built that control
+**Skill:** New skill candidate: none — the bug-check order's LOOK tier (project doc, not a skill)
+**Type:** internal
+**Phase/Area:** bug-check order §5, the LOOK tier's "one before/after picture at phone and desktop"
+
+**Issue:** The batch's walk script already pictured the control at both sizes in both windows that draw it. Re-running only that step (`ONLY=w2 LW_OUT=<new folder>`) on the new build gave the "after" set in about a minute, with its fit assertion; the batch walk's own folder was the "before". No new script, no hand-driven browser.
+
+**Suggested improvement:** In the order's LOOK row, add: "where an earlier walk script already pictures the surface, re-run that one step into a new folder — its old pictures are the before."
+
+**Principle:** A walk script written as assertions with a step filter is reusable evidence: the cheapest before/after is the old run's pictures beside the same step re-run.
+
+### Observation 711: A filed code-read finding names one case — test its siblings by the same mechanism before building its fix
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** building [LW-OD-DISCARD-COUNT], a reviewer's filed finding ("an overseas duty … reads Discard 2 edits") with the fix spelled out for overseas duties only
+**Skill:** systematic-debugging (and the bug-check order's scenario design)
+**Type:** open-source
+**Phase/Area:** reproducing a finding before fixing it
+
+**Issue:** The finding and its prescribed fix named one input kind. Writing the red test for that kind alone would have shipped a fix that left a sibling kind (a course, which reaches the same state by the same buttons) miscounting by the identical mechanism. A second sibling (a multi-day record) miscounted for a different reason and was correctly filed rather than folded in. The first red test also used the seed's multi-day record, which is NOT the finding's case, and failed for the other reason — easy to misread as "the fix does not work".
+
+**Suggested improvement:** In systematic-debugging's reproduce step: before fixing a filed finding, (1) reproduce exactly the case it names, matching its shape (one day vs several, etc.); (2) list the siblings that reach the same state through the same mechanism and add each as a parametrised red case; (3) a sibling that fails for a different cause is filed as its own item, not folded into the fix.
+
+**Principle:** A finding is a sample of a defect class, not the class. Reproduce the named case precisely, then probe the siblings that share its mechanism; widen the fix only to those that fail for the same cause.
+
+### Observation 712: A filed fault's "the right answer is X" is a claim — measure it by running the real action before writing the red test
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** [LW-LOAD-RELAND-RID] — a filed fault said a confirm button read "Discard 2 edits" for a load "that discards nothing"
+**Skill:** systematic-debugging (the reproduce step), with the bug-check order's red-first rule
+**Type:** open-source
+**Phase/Area:** setting the expected value of the red test
+
+**Issue:** The filing named the cause (a row re-made under a new id) and the right answer (0). A red test written to that
+answer passed once the id was fixed — and was wrong: the count is a dry run of the load, and the real load (driven in the
+same test afterwards) took the item back off the programme, so the right answer was 1. The dry run and the action had
+drifted apart in a second place the filing never looked at. Only driving the real action and reading the state after it
+showed that.
+
+**Suggested improvement:** In systematic-debugging's reproduce step: where a fault is about a PREDICTION of an action (a
+count, a preview, a confirm's promise, a dry run), the red test also performs the action and asserts the prediction equals
+what the action did — never only the filed expected number.
+
+**Principle:** A predicted effect is checked against the effect itself: the test that pins a preview runs the thing it
+previews. A filed expected value is a hypothesis, however confident the filing.
+
+### Observation 713: A page-text read misses what sits inside editable boxes — check by the element, not its text
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** the walk of [LW-LOAD-RELAND-RID]: "is the overseas duty listed under Unavailable after the load?"
+**Skill:** the walk-scripts guide (`raptor-port/docs/walk-scripts.md`) — a project doc, not a skill
+**Type:** internal
+**Phase/Area:** a walk step's assertion
+
+**Issue:** The step searched the panel's innerText for the man's name and failed; the picture showed the item there. The
+panel draws its rows as editable boxes (and the name as a puck), and a box's words are its value, not text, so innerText
+never held them. One extra walk run went to finding that out.
+
+**Suggested improvement:** Add to walk-scripts.md beside the "words a person SEES" rule: a row's presence is checked by an
+element that is the row's own (its id-carrying button or attribute), not by searching a panel's text — a box's words are
+its value and never in innerText.
+
+**Principle:** Assert presence by identity (an element keyed to the thing), not by text that a rendering choice can hide.
+
+### Observation 715: An overnight run can hand each job to a fresh helper — a separate session cannot be started from the phone or from a woken turn
 
 **Status:** OPEN
 **Date:** 2026-10-21
@@ -1932,7 +2412,7 @@ different feature that merely pass through it.
 
 **Principle:** When a long unattended run must keep its main context small, delegate each self-contained job to a fresh worker with a complete brief and keep the main thread as a coordinator; check first which delegation mechanisms the host actually permits from an unattended turn.
 
-### Observation 683: `cd ..` from a worktree's root lands outside the repo, and a bare `git` there acts on the main checkout
+### Observation 716: `cd ..` from a worktree's root lands outside the repo, and a bare `git` there acts on the main checkout
 
 **Status:** OPEN
 **Date:** 2026-10-21
@@ -1948,7 +2428,7 @@ different feature that merely pass through it.
 
 **Principle:** In a nested checkout, relative navigation can silently change which repository a command acts on; name the repository explicitly on every state-changing command.
 
-### Observation 684: The push guard judges the project's main folder, not the worktree — push by explicit refspec
+### Observation 717: The push guard judges the project's main folder, not the worktree — push by explicit refspec
 
 **Status:** OPEN
 **Date:** 2026-10-21
@@ -1964,7 +2444,7 @@ different feature that merely pass through it.
 
 **Principle:** A guard that decides from a fixed project path misjudges commands run in another checkout; resolve the target from where the command acts.
 
-### Observation 685: The app turns Auto-fix on for every new pull request in the session
+### Observation 718: The app turns Auto-fix on for every new pull request in the session
 
 **Status:** OPEN
 **Date:** 2026-10-21

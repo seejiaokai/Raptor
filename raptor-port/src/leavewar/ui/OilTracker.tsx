@@ -99,6 +99,9 @@ import { CreditForm, DayChip, HalfPick } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
 import { wireRowSelect } from './select'
+import { wirePinch } from '../../ui/pinchzoom'
+import { flushSync } from 'react-dom'
+import { LW_ZOOM_MAX, lwMonthFitZoom, roundZoom } from './lwzoom'
 import { Sheet } from './Sheet'
 import { useVersion } from './useStore'
 import './bidpicker.css'
@@ -196,13 +199,13 @@ export function OilTracker({ person, onClose, onGranted }: {
   // and the sticky header scale with the boxes. A phone opens one step out
   // (0.8), a desktop at 1 — read once at mount from the grid's own 700px
   // query (jsdom has no matchMedia and stays at 1). Session-only view state.
-  const OIL_ZOOMS = [0.6, 0.8, 1, 1.2, 1.4]
+  //   PINCHED, NOT STEPPED (owner D1285, 23 Oct 26 — `[LW-PHONE-PINCH-ZOOM]`): the OIL tab zooms as the grid does — two
+  // fingers anywhere on it on a phone, Ctrl+scroll over the table on a desktop — and its − / + went with the grid's
+  // (D1276). The app's one pinch body (ui/pinchzoom.ts), wired in the effect below.
   const [zoom, setZoom] = useState(() =>
     typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
-  const zoomStep = (by: number) => {
-    const i = OIL_ZOOMS.indexOf(zoom)
-    setZoom(OIL_ZOOMS[Math.min(OIL_ZOOMS.length - 1, Math.max(0, i + by))]!)
-  }
+  const zoomRef = useRef(zoom)
+  zoomRef.current = zoom
   const [mode, setMode] = useState<RangeMode>(oilPolicy.historyMonths === null ? 'first' : 'months')
   const [pick, setPick] = useState<Range | null>(null)
   const [picking, setPicking] = useState(false)
@@ -263,6 +266,80 @@ export function OilTracker({ person, onClose, onGranted }: {
       order: () => selCtxRef.current.order(),
       enabled: () => selCtxRef.current.enabled(),
       onSelect: ids => selCtxRef.current.onSelect(ids),
+    })
+  }, [view])
+
+  /* PINCH TO ZOOM THE OIL TABLE (owner D1285, 23 Oct 26). Two fingers anywhere on the OIL tab zoom the table only — its
+     bar, the Show / Range row and the credit bar stay their size; Ctrl+scroll over the table on a desktop. Its limits
+     (the build's to set from its own width, D1285's reading): in to 1.4 as the grid; out no further than the table's
+     columns fit the screen, and never below the grid's own floor (lwzoom.ts — a month across a phone held upright).
+     The table's last column stretches to fill the screen, so "fit" is measured without it. A pinch never zooms in
+     because the table already fits: the floor is never above the zoom it starts at. Its sticky heading rows and name
+     columns live inside the one scroller, so the stretch carries them and nothing else has to follow. */
+  useEffect(() => {
+    const wrap = wrapRef.current
+    const sheet = wrap?.closest<HTMLElement>('.bidsheet')
+    if (!wrap || !sheet) return
+    const table = () => wrap.querySelector<HTMLElement>(':scope > table.oil-grid')
+    return wirePinch({
+      surface: sheet,
+      wheel: wrap,
+      target: table,
+      get: () => zoomRef.current,
+      max: LW_ZOOM_MAX,
+      min: () => {
+        const z = zoomRef.current, t = table()
+        const grid = document.querySelector<HTMLElement>('#page-leavewar .mx-wrap > table.mx')
+        const floor = lwMonthFitZoom(grid?.querySelector<HTMLElement>('.mxhead') ?? null, grid?.parentElement ?? null, parseFloat(grid?.style.zoom || '1') || 1)
+        if (!t) return Math.min(z, floor)
+        const fill = t.querySelector<HTMLElement>('thead tr.cols th.fill')
+        const cols = (t.getBoundingClientRect().width - (fill?.getBoundingClientRect().width ?? 0)) / z
+        const fit = cols > 0 ? Math.min(1, wrap.clientWidth / cols) : 1
+        return Math.min(z, Math.max(floor, fit))
+      },
+      apply: z => { const v = roundZoom(z); zoomRef.current = v; flushSync(() => setZoom(v)) },
+      blockTwo: () => true,
+      /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — the grid's lesson, held here as
+         there): the heading rows keep their place down the screen and the name columns theirs across, the corners both
+         ways; only the credits stretch about the fingers. Each still grows and shrinks with the table. */
+      pin: () => {
+        const t = table(); if (!t) return []
+        const out: { el: HTMLElement; x: boolean; y: boolean }[] = []
+        for (const th of t.querySelectorAll<HTMLElement>(':scope > thead th')) out.push({ el: th, x: th.classList.contains('f'), y: true })
+        /* every one, not only those in sight: a pinch out draws in rows that were out of sight as it began */
+        /* (they grow and shrink about the table's top-left as it stood — `pinAt`) */
+        for (const el of t.querySelectorAll<HTMLElement>(':scope > tbody td.f, :scope > tbody tr.oil-grp td .gl')) out.push({ el, x: true, y: false })
+        return out
+      },
+      /* the pinned block's corner: the table's box at its left, its first heading row at its top — read off a heading
+         CELL, which is what sticks to the box's top; the row itself stays where it would be unscrolled */
+      pinAt: () => {
+        const h = table()?.querySelector<HTMLElement>(':scope > thead tr.yrs th')?.getBoundingClientRect()
+        return { x: wrap.getBoundingClientRect().left, y: h ? h.top : wrap.getBoundingClientRect().top }
+      },
+      /* THE SPOT UNDER THE FINGERS IS A LANE AND A ROW (the fresh code read, F1 — the grid's W8 again): across, the year
+         lane whose heading spans the fingers (pinned only to the top, so it says where the credits went sideways);
+         down, the person's row that does. The element under the fingers would not do: the names, BAL and the heading
+         rows are pinned, and the tools row and the sheet's head are not the table at all. */
+      anchor: (x, y) => {
+        const t = table(); if (!t) return null
+        let ax: Element | null = null, ay: Element | null = null
+        /* the one under the fingers; failing that (the fingers on the names, or above the table on its tools row) the first
+           one in sight past them — kept at the same distance from the fingers, so the list stands still */
+        const w = wrap.getBoundingClientRect()
+        for (const c of t.querySelectorAll<HTMLElement>('thead tr.yrs th.yl')) {
+          const q = c.getBoundingClientRect()
+          if (x >= q.left && x < q.right) { ax = c; break }
+          if (!ax && q.right > Math.max(x, w.left)) ax = c
+        }
+        for (const r of t.querySelectorAll<HTMLElement>(':scope > tbody > tr')) {
+          const q = r.getBoundingClientRect()
+          if (y >= q.top && y < q.bottom) { ay = r; break }
+          if (!ay && q.bottom > Math.max(y, w.top)) ay = r
+        }
+        return { x: ax, y: ay }
+      },
+      edges: true,
     })
   }, [view])
 
@@ -653,12 +730,6 @@ export function OilTracker({ person, onClose, onGranted }: {
           <span className="ci" aria-hidden="true">📅</span>
           <span className="cl">Range</span>
         </button>
-        {/* − / + zoom, right beside RANGE (owner, 6 Sep 26). Both roles — a
-            view control; the ends of the range dim. */}
-        <span className="oil-zoom" data-testid="oil-zoom">
-          <button className="tchip zoom" data-testid="oil-zoom-out" aria-label="Zoom out" title="Zoom out" disabled={zoom === OIL_ZOOMS[0]} onClick={() => zoomStep(-1)}>−</button>
-          <button className="tchip zoom" data-testid="oil-zoom-in" aria-label="Zoom in" title="Zoom in" disabled={zoom === OIL_ZOOMS[OIL_ZOOMS.length - 1]} onClick={() => zoomStep(1)}>＋</button>
-        </span>
         <span className="oil-right">
           <button className={`tchip${legend ? ' on' : ''}`} data-testid="oil-legend" aria-expanded={legend} onClick={() => setLegend(l => !l)} title="What the boxes mean" aria-label="What the boxes mean">?</button>
           {admin && <button className="tchip oil-gear" data-testid="oil-settings" onClick={() => setView('settings')} title="Settings" aria-label="Settings">⚙</button>}

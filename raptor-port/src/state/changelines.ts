@@ -35,7 +35,7 @@ import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
-import { dateOrd, INPUTS, inpLabel, inpKindTag, titleOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
+import { isOD, dateOrd, INPUTS, inpLabel, inpKindTag, isFly, isLeave, titleOf, toOf, isSansAvail, sansLetters, idsOf, leadOf, namedOf, placeholderOf, remarksTyped, tillShown, tillTurned } from '../engine/inputs'
 import { parseVerId, dayIso } from '../engine/verid'
 import { qualCols } from '../engine/qualcols'
 import { actorIsAdmin } from './perms'
@@ -88,6 +88,9 @@ const hhmm = (m: any) => { const n = +m; return Number.isFinite(n) ? `${pad(Math
 const timeWords = (inp: any) => inp.allday ? (inp.half === 'am' ? 'morning' : inp.half === 'pm' ? 'afternoon' : 'all day') : `${hhmm(inp.s)}–${hhmm(inp.e)}`
 const FIL: Record<string, string> = { '': 'not on the programme', g: 'on the programme', u: 'under Unavailable', r: 'taken off the programme' }
 const filWords = (a: any) => FIL[String(a || '')] ?? String(a || '')
+/* an overseas duty's filing as words: no mark is under Unavailable, by its kind; its Ground mark is the programme (D1393 — the code
+   read's F4) */
+const filOf = (r: any, acc: any) => (isOD(r && r.type) && !acc ? (r.odGround ? 'g' : 'u') : acc)
 const oilWords = (o: any) => {
   if (!o || typeof o !== 'object') return 'not asked'
   const v = Object.values(o).map(Number)
@@ -98,7 +101,15 @@ const same = (a: any, b: any) => JSON.stringify(a ?? null) === JSON.stringify(b 
 const docsWords = (n: number) => (n ? `${n} document${n === 1 ? '' : 's'}` : 'none')
 const offerWords = (inp: any) => (inp && isSansAvail(inp.type) ? sansLetters(inp) : '')
 
-function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
+/* A COURSE OR AN OVERSEAS DUTY IS NEVER A WAR DECISION (round 2's FULL check — the fresh code read's F1): the war files it
+   straight as the input it is (`lw.file`, his D1318 — "doesnt need an approval … directly approved like an input") and
+   never approves, moves or takes one back (dayview OFF_WAR), so a Leave War command's line for it is an input's own —
+   "added", "deleted" — never "approved on the Leave War" */
+const FILED_ON_WAR = new Set(['CSE', 'OD'])
+/* …and an Other or an Attach filed from the war (the code read's F4) — only a leave is ever the war's decision */
+const warsOwn = (x: any): boolean => !!x && isLeave(x.type) && !FILED_ON_WAR.has(String(x.type))
+function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
+  const war = warCmd && warsOwn(c.after || c.before)
   const b: any = c.before, a: any = c.after, iid = String(c.id)
   const why = REASONS.get(iid)
   const tail = why ? ` — ${why}` : ''
@@ -116,7 +127,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
   const accNow = (x: any) => (live ? live.acc : x && x.acc)
   if (!b && a) {
     const s = sa
-    logAction(null, `${whoOf(a)} · ${inpLabel(a)} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${accNow(a) === 'g' ? ' (on the programme)' : ''}${tail}`,
+    logAction(null, `${whoOf(a)} · ${inpLabel(a)} ${war ? 'approved on the Leave War' : 'added'} · ${spanWords(s)}${accNow(a) === 'g' ? ' (on the programme)' : accNow(a) === 'u' ? ' (under Unavailable)' : ''}${tail}`,
       at({ date: s && s.date, end: s && s.end }))
     return
   }
@@ -153,6 +164,8 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
      Duty) said "Event → Duty" and nothing of the title. Two untitled kinds still write the kind's line alone: their
      names moved because the kind did, and no title changed. */
   if (!same(titleOf(b.type, b.title), titleOf(a.type, a.title))) logAction(null, `${who} · ${spanWords(sa)} · title`, base({ from: inpLabel(b), to: inpLabel(a) }))
+  /* where an Attach is to (D1373 — the code read's F3: a To changed wrote no line, as every change to an input does — D263) */
+  if (isFly(a.type) && toOf(b.to) !== toOf(a.to)) logAction(null, `${who} · ${spanWords(sa)} · to`, base({ from: toOf(b.to) || '—', to: toOf(a.to) || '—' }))
   /* the typed words (D948): a remark saved with its date in it before the build, re-saved without, is no change of remarks */
   if (!same(remarksTyped(b.remarks, b), remarksTyped(a.remarks, a))) logAction(null, `${who} · ${what} ${spanWords(sa)} · remarks`, base({ from: remarksTyped(b.remarks, b) || '—', to: remarksTyped(a.remarks, a) || '—' }))
   /* its till-date tick (owner D953; D263 — every change to an input is a line): ticked or unticked by hand. A date or kind
@@ -160,7 +173,7 @@ function inputLines(c: Change, env: CommitEnvelope, war: boolean): void {
      held, or where the save turned it against the new default as well (stretched AND unticked in one save — the
      scenario designer's 3) — never a second line for what the dates alone did. */
   if (tillTurned(b, a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · till date`, base({ from: tillShown(b) ? 'shown' : 'hidden', to: tillShown(a) ? 'shown' : 'hidden' }))
-  if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(b.acc), to: filWords(accNow(a)) }))
+  if (!same(b.acc || '', accNow(a) || '')) logAction(null, `${who} · ${what} ${spanWords(sa)} · filed`, base({ from: filWords(filOf(b, b.acc)), to: filWords(filOf(a, accNow(a))) }))
   if (!same(b.oil, a.oil)) logAction(null, `${who} · ${what} ${spanWords(sa)} · OIL`, base({ from: oilWords(b.oil), to: oilWords(a.oil) }))
   /* its documents (a medical request's photos and PDFs — [BLOCK-NO-HISTORY-LINE], the group-A walk, 30 Sep 26): one added
      to or removed from a request already filed wrote no line; the pair is read only through rowDocIds (state/docs.ts) */
@@ -288,6 +301,8 @@ function warInputLines(env: CommitEnvelope): WarInputs {
   for (const c of env.changes) {
     if (c.collection !== 'inputs' || c.id === '__order') continue
     const ref: any = c.after || c.before
+    /* a course or an overseas duty filed on the war is no decision of the war's (F1, above): it keeps its own line */
+    if (!warsOwn(ref)) continue
     /* whose leave it is: the record's one person, in either stored shape (leave is always one person's) */
     const man = ref ? leadOf(ref) : null
     if (man == null || man === '') continue

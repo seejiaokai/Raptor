@@ -6,6 +6,7 @@
 // command it runs in — state/rows.ts), bumps the version and notifies. A write
 // that skips these is invisible and unsaved.
 
+import { dayWhatIf, standingWhatIf, type DayWhatIf, type WhatIfLevel, type WhatIfWar } from '../engine/whatif'
 import {
   addDays,
   isNonWorkingDay,
@@ -97,8 +98,12 @@ import {
   type Recs,
   type WarRec,
   type RequestRec,
+  requestWords,
+  MAX_REQ_DOCS,
+  MAX_CARRIED_REMARK,
   type CreditRec,
   type NoticeRec,
+  formatCell,
   type RequestState,
   type Contrib,
   readRecs,
@@ -135,6 +140,7 @@ import {
   type Person,
   type Stint,
   type PostOutcome,
+  type Portion,
   POST_OUTCOMES,
   outcomeOf,
   type Requirements,
@@ -1493,7 +1499,7 @@ function lwRegisterCommands(): void {
   cmdDefinePermission('lw.edit', cmdAnyone)   // permissive at Step 2 (the real role gates are unchanged)
   /* [ARCH-STACK] step 4 — the war gestures. The role gates live in the writers
      (canDecide / canEditRow), exactly as lw.edit's do. */
-  for (const t of ['lw.decide', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
+  for (const t of ['lw.decide', 'lw.placeApproved', 'lw.file', 'lw.reqmeta', 'lw.move', 'lw.ack', 'lw.approve', 'lw.decideApproved', 'lw.removeApproved', 'lw.moveApproved']) cmdDefinePermission(t, cmdAnyone)
   /* D352 narrowed by D1177: opening or closing dates is its own command so Undo can name it ("Undid: opening bidding
      1 Apr – 30 Apr"); its authority is perms.ts COMMAND_OPS (admin-only), as every war command's */
   cmdDefinePermission('lw.open', cmdAnyone)
@@ -2604,6 +2610,22 @@ export function installDemoOil(extra: { recs: Recs; ledger: Ledger }): void {
   notify()
 }
 
+/**
+ * THE DEMO'S SIX COUNTERS (his D1312, 24 Oct 26 — "add more manning counters like 6 rows so our mock ups caters for
+ * it"): the third boot-only writer beside `installDemoOil` and `remapPersonKeys`, under the same contract — no persist
+ * (`persistBootWorld` saves the dressed world), no undo step, deterministic. Each goes through the one reader the
+ * "+ Counter" save uses, so a demo counter is an ordinary counter an admin may change or delete; an id the list already
+ * holds is left as it is. A real squadron's store still starts with none (D669) — the caller lays these on a fresh demo
+ * boot only.
+ */
+export function installDemoCounters(rules: readonly ManningRule[]): void {
+  const have = state.requirements.default.rules
+  const add = rules.map(r => readManningRule(r)).filter((r): r is ManningRule => !!r && !have.some(h => h.id === r.id))
+  if (!add.length) return
+  state = withCurrent({ ...state, requirements: { ...state.requirements, default: { rules: [...have, ...add] } } })
+  notify()
+}
+
 /** Set which role the interface is being used as. Since the Raptor merge the
  *  one production caller is resetSession (../../state/store.ts), which
  *  derives it from the Raptor login on every login and logout — the
@@ -2646,6 +2668,9 @@ export interface AbsenceDoor {
   removeApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] }
   /** slide approved leave days by `delta` (`lw.moveApproved`); null = clear, else the refusal */
   moveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null
+  /** file a course, an overseas duty or the unforeseen absence straight as Inputs (`lw.file` — round 2, D1318): one
+   *  input a man a run of days, no bid, no approval */
+  file(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] }
 }
 let DOOR: AbsenceDoor | null = null
 export function setAbsenceDoor(d: AbsenceDoor | null): void { DOOR = d }
@@ -2710,7 +2735,25 @@ function tellHolidays(before: State): void {
   if (runs.length) HOLIDAY_TELL(runs)
 }
 
+/* WHAT WAS LAST PLACED, for the manning bubble's words (his D1351, 25 Oct 26 — after a filing the bubble names what was
+   filed, "This overseas duty turns Available P red."; a bid keeps "This bid"). Every gesture that PLACES something — a
+   bid written or cleared, a leave approved as placed, a decision, a move, a filing — counts one; a filing notes its
+   kind at the count it ended on, so the bubble reads "the latest act was this filing" — a bid placed after it counts again
+   and is a bid. A save of words alone (`lw.reqmeta`) is not counted, so words saved with the closing of a window that
+   filed never make the filing a bid (the night's scenario designer, gap 1); nor is a counter's setting, so a change made
+   behind an open window, with nothing placed, raises no bubble (gap 3 — `actCount` unchanged since the "before"). A view
+   aid only: nothing is saved. */
+const PLACING: ReadonlySet<string> = new Set(['lw.edit', 'lw.placeApproved', 'lw.decide', 'lw.move', 'lw.file'])
+let actSeq = 0
+let lastFiled: { kind: 'CSE' | 'OD' | 'OTH' | 'ATCH'; at: number } | null = null
+/** The count of the war's placing gestures so far — the bubble's "before" keeps it. */
+export function actCount(): number { return actSeq }
+/** The kind filed by the latest gesture, if that gesture was a filing made after `since` — else null (a bid). */
+export function filedSince(since: number): 'CSE' | 'OD' | 'OTH' | 'ATCH' | null {
+  return lastFiled && lastFiled.at === actSeq && actSeq > since ? lastFiled.kind : null
+}
 function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
+  if (PLACING.has(type)) actSeq++
   if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
   let out!: T
   const r = cmdCommit({
@@ -2914,7 +2957,7 @@ function mainAt(personId: string, date: string): Contrib | null {
  *  no medical from the war (owner, 13 Sep 26) — plus the step-4 occupancy
  *  rule: a bid may not land on a time a filed absence, worked time or
  *  another undecided bid already holds. */
-export function setCell(personId: string, date: string, code: string): boolean {
+export function setCell(personId: string, date: string, code: string, words?: ReqWords): boolean {
   if (!canEditRow(state.role, state.viewer, personId)) return false
   const clean = code.trim().toUpperCase()
   if (!clean && !dayWritable(date)) {
@@ -2952,8 +2995,114 @@ export function setCell(personId: string, date: string, code: string): boolean {
   if (replaced.length === 1 && replaced[0]!.code === clean) return false
   const c: Contrib = { id: 'new', kind: 'request', code: parseCell(clean)!.type, win: requestWin(clean), state: 'pending' }
   if (occupiedFor(c, personId, date, replaced)) return false
-  const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending' }
+  /* ITS WORDS AND PAPERS (M3 5.9, 5.10): the window's remarks, till tick and documents written with the bid, in the same
+     command; and A RE-TYPED BID KEEPS ITS WORDS (5.11): LL changed to OL keeps the remark and the documents of the bid it
+     replaces — a new code never loses a paper */
+  /* (the fresh read's 4) every document of every bid it replaces, with the window's own — a whole day typed over two halves,
+     or a range with a typed remark over an existing run, never drops a paper; the words and the tick the window did not give
+     are the replaced bid's */
+  const old = replaced as RequestRec[]
+  const papers = [...new Set([...(words?.docIds ?? []), ...old.flatMap(r => r.docIds ?? [])])].slice(0, MAX_REQ_DOCS)
+  const carry = requestWords({
+    remarks: words?.remarks ?? old.find(r => r.remarks)?.remarks,
+    till: typeof words?.till === 'boolean' ? words.till : old.find(r => typeof r.till === 'boolean')?.till,
+    docIds: papers,
+  })
+  const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending', ...carry }
+  /* a bid written here is a placing act for the bubble's count (`actCount` — this write is no gesture of its own) */
+  actSeq++
   return putList(personId, date, [...list.filter(r => !replaced.includes(r as RequestRec)), rec])
+}
+
+/** A REQUEST'S OWN WORDS AND PAPERS (owner D1210, D1226, D1150, D1159; M3 5.9, 5.10): what a bid window writes with a
+ *  new bid — its remarks, its till tick (kept only where it differs from the default, D953) and its documents. */
+export type ReqWords = Pick<RequestRec, 'remarks' | 'till' | 'docIds'>
+/** a change to them: a key present is changed — `remarks: ''`, `till: null`, `docIds: []` take it away */
+export interface ReqWordsPatch { remarks?: string; till?: boolean | null; docIds?: string[] }
+
+/** CHANGE A HELD REQUEST'S WORDS AND PAPERS (`lw.reqmeta` — M3 5.9, 5.10): its remarks, till tick or documents, on
+ *  a day open or closed (D1150 — "even after its dates are locked"; the commit lets a member's change of his own pending
+ *  request's words through on a closed day, perms.ts `onlyChangesWords`, and nothing else). Gated by the row alone
+ *  (`canEditRow`): his own, or an admin any. ONE request is one bid of the window — a fortnight's run, its days in a
+ *  row with the same code, state and words (the same run `doorApprove` makes one leave of), takes the change on every
+ *  day, so one bid carries one set of words. One command, one Undo; false where nothing changed. */
+/** WHAT MAKES DAYS ONE RUN OF A BID — its kind, its state, its words, its till tick and its documents: the run a change of its
+ *  words is saved across (setRequestWords) and the bid windows' "till <date>" reads (ReqWords runEnd — the fresh read's R8:
+ *  the window matched fewer of them and named a last day the save then left out). */
+export const reqRunKey = (r: RequestRec): string => JSON.stringify([r.code, r.state, r.remarks ?? '', r.till ?? null, r.docIds ?? []])
+
+export function setRequestWords(personId: string, date: string, recId: string, patch: ReqWordsPatch): boolean {
+  if (!canEditRow(state.role, state.viewer, personId)) return false
+  const rec = listAt(personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId)
+  if (!rec) return false
+  const key = reqRunKey
+  const same = key(rec)
+  const twin = (d: string) => listAt(personId, d).find((r): r is RequestRec => r.kind === 'request' && key(r) === same)
+  const run: Array<{ date: string; rec: RequestRec }> = [{ date, rec }]
+  for (let d = addDays(date, -1), r = twin(d); r; d = addDays(d, -1), r = twin(d)) run.unshift({ date: d, rec: r })
+  for (let d = addDays(date, 1), r = twin(d); r; d = addDays(d, 1), r = twin(d)) run.push({ date: d, rec: r })
+  const apply = (r: RequestRec): RequestRec => {
+    const out: RequestRec = { ...r }
+    if ('remarks' in patch) { const t = String(patch.remarks ?? '').slice(0, MAX_CARRIED_REMARK); if (t.trim()) out.remarks = t; else delete out.remarks }
+    if ('till' in patch) { if (typeof patch.till === 'boolean') out.till = patch.till; else delete out.till }
+    if ('docIds' in patch) { const ids = [...new Set((patch.docIds ?? []).map(String).filter(Boolean))].slice(0, MAX_REQ_DOCS); if (ids.length) out.docIds = ids; else delete out.docIds }
+    return out
+  }
+  if (key(apply(rec)) === same) return false
+  const want = key(apply(rec))
+  gesture('lw.reqmeta', () => {
+    for (const p of run) putList(personId, p.date, listAt(personId, p.date).map(r => (r === p.rec ? apply(p.rec) : r)))
+    return true
+  })
+  /* (the fresh read's 6) what the store holds after the command — a command the commit refused rolled back, and says false */
+  const now = listAt(personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId)
+  return !!now && key(now) === want
+}
+
+/** THE DRAG WINDOW'S TYPED WORDS ON THE DAYS DRAGGED (his D1339, D1341 — 25 Oct 26: "1 remarks will apply to all that 3
+ *  days"; "Replace them all"). Written on every bid of every dragged day the person may change — each bid's whole run takes
+ *  them (`setRequestWords`: one entry, one remark) — in ONE command: the remark REPLACES what each held; a document ADDS to
+ *  each bid's own, never taking one away (a new code never loses a paper); the till only where the window holds an
+ *  explicit choice (the night's code read, R2 — the window's Document and till were dropped). An empty remark is never
+ *  written: an empty box typed nothing. For anyone but an admin a refused bid on a day closed for him is passed over — the
+ *  commit lets him change words there only on a pending bid, and one refusal would refuse the whole command (R3).
+ *  Returns how many runs changed. */
+export function setRemarksOn(cells: { personId: string; date: string }[], patch: { remarks?: string; docIds?: string[]; till?: boolean }): number {
+  const t = String(patch.remarks ?? '').slice(0, MAX_CARRIED_REMARK).trim()
+  const docs = (patch.docIds ?? []).map(String).filter(Boolean)
+  const till = typeof patch.till === 'boolean' ? patch.till : undefined
+  if (!t && !docs.length && till === undefined) return 0
+  const admin = canDecide(state.role)
+  let n = 0
+  gesture('lw.reqmeta', () => {
+    for (const { personId, date } of cells) {
+      if (!canEditRow(state.role, state.viewer, personId)) continue
+      for (const r of listAt(personId, date)) {
+        if (r.kind !== 'request') continue
+        /* any day of its run, not only the one dragged: the run is written whole (the narrow read, N1) */
+        if (!admin && r.state !== 'pending') {
+          const k = reqRunKey(r)
+          const twin = (d: string) => listAt(personId, d).some(q => q.kind === 'request' && reqRunKey(q as RequestRec) === k)
+          let open = dayWritable(date)
+          for (let d = addDays(date, -1); open && twin(d); d = addDays(d, -1)) open = dayWritable(d)
+          for (let d = addDays(date, 1); open && twin(d); d = addDays(d, 1)) open = dayWritable(d)
+          if (!open) continue
+        }
+        const p: ReqWordsPatch = {}
+        if (t && (r.remarks ?? '') !== t) p.remarks = t
+        if (docs.length) { const ids = [...new Set([...(r.docIds ?? []), ...docs])]; if (ids.length !== (r.docIds ?? []).length) p.docIds = ids }
+        if (till !== undefined && r.till !== till) p.till = till
+        if (Object.keys(p).length && setRequestWords(personId, date, r.id, p)) n++
+      }
+    }
+  })
+  return n
+}
+/** A drag window's press and the words typed with it as ONE command, one Undo (the night's code read, R1: the words, the
+ *  approved leaves' words and the decision had been three commands — one Undo took the decision back and left the days'
+ *  remarks replaced). The nested commands run inside it (`gesture` runs a call made while committing inline). */
+export function inOneWarCommand<T>(type: 'lw.reqmeta' | 'lw.decide', fn: () => T): T {
+  return gesture(type, fn)
 }
 
 /** What a range write did. `skipped` counts days it was not allowed to touch,
@@ -2968,16 +3117,16 @@ export interface RangeWrite {
  *  (posted out, outside the window, already holding something the bid cannot
  *  share) is skipped and counted, the rest written. ONE gesture — one save,
  *  one undo step. */
-export function setCellRange(personId: string, from: string, to: string, code: string): RangeWrite {
+export function setCellRange(personId: string, from: string, to: string, code: string, words?: ReqWords): RangeWrite {
   if (to < from) return { written: 0, skipped: 0 }
   const person = state.people.find(p => p.id === personId)
   const dates: string[] = []
   for (let d = from; d <= to; d = addDays(d, 1)) dates.push(d)
-  return writeMany(dates.map(date => ({ personId, date })), code, person ? () => person : undefined)
+  return writeMany(dates.map(date => ({ personId, date })), code, person ? () => person : undefined, words)
 }
 
 /* the shared body of the range and selection writers */
-function writeMany(cells: { personId: string; date: string }[], code: string, who?: (id: string) => Person | undefined): RangeWrite {
+function writeMany(cells: { personId: string; date: string }[], code: string, who?: (id: string) => Person | undefined, words?: ReqWords): RangeWrite {
   let written = 0, skipped = 0
   const find = who ?? ((id: string) => state.people.find(p => p.id === id))
   const clearing = !code.trim()
@@ -2991,7 +3140,7 @@ function writeMany(cells: { personId: string; date: string }[], code: string, wh
         if (clearing && !listAt(personId, date).some(r => r.kind === 'request' || r.kind === 'credit') && !awardIdsAt(personId, date).length) continue
         const person = find(personId)
         if (person && !leaveDateOk(person, date)) { skipped++; continue }
-        if (setCell(personId, date, code)) written++
+        if (setCell(personId, date, code, words)) written++
         else skipped++
       }
     } finally {
@@ -3012,8 +3161,8 @@ function leaveDateOk(_p: Person, date: string): boolean {
 
 /** Write one code across a hand-picked set of cells. `{written, skipped}` in
  *  the `setCellRange` shape. */
-export function setCells(cells: { personId: string; date: string }[], code: string): RangeWrite {
-  return writeMany(cells, code)
+export function setCells(cells: { personId: string; date: string }[], code: string, words?: ReqWords): RangeWrite {
+  return writeMany(cells, code, undefined, words)
 }
 
 /** Clear a set of cells — the empty-code path of `setCells`, named so the
@@ -3208,6 +3357,74 @@ function warEditable(personId: string, date: string): boolean {
  *  shown request is decided (approving turns it into an Input through the
  *  door), a shown war-approved leave is un-approved back into a request. One
  *  gesture, one envelope; a cell with nothing decidable is skipped. */
+/** "APPROVE WHAT I ENTER" (owner D1147, D1186, D1187; M3 5.5): an admin places leave and it is approved as it is placed —
+ *  ONE command, ONE Undo (`lw.placeApproved`). The write is the store's own (`writeMany` — every refusal stays the one
+ *  rule: closed days, posted out, occupied); then exactly the requests it left of that code on those days go through the
+ *  absence door's approve, as a Decide's Approve does. A day the approval refuses (a locked week, leave or a medical
+ *  already there) keeps its bid, pending, and is returned in `pending` for the window to name — never a whole failure. */
+export function placeApproved(cells: { personId: string; date: string }[], code: string, words?: ReqWords): { written: number; skipped: number; approved: number; pending: Array<{ personId: string; date: string }> } {
+  const clean = code.trim().toUpperCase()
+  if (!canDecide(state.role) || !clean) return { written: 0, skipped: cells.length, approved: 0, pending: [] }
+  let written = 0, skipped = 0, approved = 0
+  const pending: Array<{ personId: string; date: string }> = []
+  gesture('lw.placeApproved', () => {
+    const portion = portionOfCode(clean)
+    /* (the fresh read's 2) a day already holding this very pending bid: re-typing it writes nothing (setCell keeps it), so it
+       is not "not written" — it is approved with the rest, and carries the window's words */
+    const held = cells.filter(c => liveRequestsOn(listAt(c.personId, c.date), portion).some(r => r.code === clean && r.state === 'pending'))
+    const w = writeMany(cells, clean, undefined, words)
+    written = w.written + held.length; skipped = Math.max(0, w.skipped - held.length)
+    if (words) for (const c of held) {
+      const r = liveRequestsOn(listAt(c.personId, c.date), portion).find(x => x.code === clean && x.state === 'pending')
+      if (r) setRequestWords(c.personId, c.date, r.id, { ...(words.remarks ? { remarks: words.remarks } : {}), ...(typeof words.till === 'boolean' ? { till: words.till } : {}), ...(words.docIds?.length ? { docIds: [...new Set([...(r.docIds ?? []), ...words.docIds])] } : {}) })
+    }
+    const toApprove: Array<{ personId: string; date: string; recId: string }> = []
+    for (const { personId, date } of cells) {
+      for (const r of liveRequestsOn(listAt(personId, date), portion)) {
+        if (r.code === clean && r.state === 'pending') toApprove.push({ personId, date, recId: r.id })
+      }
+    }
+    if (!toApprove.length) return
+    const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length }
+    approved = r.done
+    for (const a of toApprove) {
+      if (liveRequestsOn(listAt(a.personId, a.date), portion).some(x => x.id === a.recId)) pending.push({ personId: a.personId, date: a.date })
+    }
+  })
+  return { written, skipped, approved, pending }
+}
+
+/** FILED STRAIGHT (his D1318 — "OD and course doesnt need an approval, its directly approved like an input. it can go
+ *  anytime. member can file it too. dont need document"; round 2, [LW-FILE-OD-CRS]). A course or an
+ *  overseas duty placed on the war stands at once as the input it is: no bid, nothing to
+ *  approve, on ANY day the war holds — open for bidding or not, a day before today too, as the Inputs page allows — by a
+ *  member on his own row or an admin on any (`canEditRow`). ONE command, one Undo (`lw.file`); the absence door writes
+ *  the Inputs, through the Inputs door's own rules. */
+export const FILED_STRAIGHT: readonly string[] = ['CSE', 'OD', 'OTH', 'ATCH']
+/* …AND AN OTHER, STRAIGHT UNDER UNAVAILABLE (his D1365, 25 Oct 26 — "The leave war OTH goes directly to unavailable. If the
+   user wants to change the timing instead of AM PM, it can be changed in the inputs section"; D1356, in UNA's place): an
+   admin's, from the bid window's ⋯, on the window's Duration — whole day, AM or PM — with its words; filed as the Inputs
+   page's "Other" under the schedule's Unavailable list, so it counts him out (1 or 0.5). A course and an overseas duty
+   still take no half (D1350).
+   …AND AN ATTACH (his D1378–D1380, 25 Oct 26 — "Yes all as recommended"): straight under Unavailable too (D1374), on the
+   window's Duration as an Other, by an admin or a member on his own row (`canEditRow`), as a course or an overseas duty
+   (D1318); where he is attached (its "To") is added on the Inputs page. */
+export function fileStraight(cells: { personId: string; date: string }[], code: string, words?: ReqWords, portion: Portion = 'full'): { done: number; skipped: number; why: string[] } {
+  const clean = code.trim().toUpperCase()
+  if (!FILED_STRAIGHT.includes(clean)) return { done: 0, skipped: cells.length, why: [] }
+  if (clean === 'OTH' && !canDecide(state.role)) return { done: 0, skipped: cells.length, why: [] }
+  const filed = clean === 'OTH' || clean === 'ATCH' ? formatCell({ type: clean, portion }) : clean
+  const ok = cells.filter(c => !!warHolding(state.wars, c.date) && canEditRow(state.role, state.viewer, c.personId))
+  let out = { done: 0, skipped: cells.length - ok.length, why: [] as string[] }
+  if (!ok.length || !DOOR) return { ...out, skipped: cells.length }
+  gesture('lw.file', () => {
+    const r = DOOR!.file(ok, filed, words)
+    out = { done: r.done, skipped: out.skipped + r.skipped, why: r.why }
+  })
+  if (out.done > 0) lastFiled = { kind: clean as 'CSE' | 'OD' | 'OTH' | 'ATCH', at: actSeq }
+  return out
+}
+
 export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number } {
   if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0 }
   /* `already` (the absence-record re-test, AB7, 26 Sep 26 — Fable F7, reproduced by W3): an Approve over a leave that
@@ -3963,6 +4180,27 @@ export function balanceAfterFill(personId: string, dates: readonly string[], cod
   return { counter, before, after: writes.length ? read(withFill(ctx.sources, personId, writes, code)) : before }
 }
 
+/** WHAT A BID WOULD DO TO MANNING — the bid windows' day line (D1144, D1213; M3): each day of `dates` the store would
+ *  write (`cellProblem` refuses the rest, as `balanceAfterFill` does), read off the war on screen as the fill would leave
+ *  it (engine/whatif.ts — the grid's own rules). `judge` says where an Available figure stands that day (leavewar/sync.ts
+ *  `bidDayLine` hands in the day's Required and the row's points). A day the store would NOT write still gets the day as it
+ *  stands where he is already away on it — his approved leave, which a second write may not go over (his D1296; the
+ *  batch's walk, 24 Oct 26: the admin's window on his own approved LL drew no line at all); any other refused day is left
+ *  out. [] where no day is left. */
+export function bidWhatIf(personId: string, dates: readonly string[], code: string, judge: (seat: 'p' | 'w', have: number, date: string) => '' | WhatIfLevel): DayWhatIf[] {
+  if (!dates.length) return []
+  /* the MERGED war on screen — approved leave lives in the Inputs and reaches the war's views only through getState()
+     (as figureCtxOf reads it) */
+  const st = getState()
+  const war: WhatIfWar = { people: st.people, grid: st.grid, states: st.states, requirements: st.requirements, views: st.views, avail: availRules() }
+  const out: DayWhatIf[] = []
+  for (const d of dates) {
+    const w = cellProblem(personId, d, code) ? standingWhatIf(war, personId, d, judge) : dayWhatIf(war, personId, d, code, judge)
+    if (w) out.push(w)
+  }
+  return out
+}
+
 export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
   if (state.role !== 'admin') return false
   // Through the untrusted reader on purpose: it is the one place the bounds
@@ -4635,6 +4873,42 @@ export function setDayAward(personId: string, date: string, days: number, opts: 
 }
 
 /**
+ * GRANT OIL OVER A DRAG (his D1394, 26 Oct 26 — "one grant on each day picked … one reason for all of them"): every
+ * person-day the drag window covers gets ONE new award of `days` — the amount control's (D1392, D1395 H), which opens on
+ * half a day for a morning or afternoon Duration and a day for a whole one — with one reason and one giver for all. A day
+ * that already holds an award keeps it and gains this one: awards add up (D82), as the tracker's grant to several does.
+ * Everything is checked before anything is written; ONE command, ONE undo step. An HO takes each day's default half
+ * (`defaultAwardHalf` — the morning unless it is held; which half does not matter, D1391).
+ */
+export function grantOilDays(cells: readonly { personId: string; date: string }[], days: number, opts: { note?: string; givenBy?: string } = {}): string | null {
+  if (state.role !== 'admin') return 'Only an admin can enter OIL'
+  if (!Number.isFinite(days) || days <= 0) return 'Type how many days'
+  if (!isHalfStep(days)) return HALF_STEP_MSG
+  if (days > MAX_GRANT_DAYS) return `That is more than ${MAX_GRANT_DAYS} days`
+  const note = (opts.note ?? '').trim()
+  const givenBy = (opts.givenBy ?? '').trim()
+  const seen = new Set<string>()
+  const todo = cells.filter(c => { const k = `${c.personId}|${c.date}`; if (seen.has(k)) return false; seen.add(k); return !!c.personId })   // the cells come from the grid, as setDayAward's day does
+  if (!todo.length) return 'Pick at least one day'
+  for (const c of todo) {
+    if (!warHolding(state.wars, c.date)) return 'A day picked is in no war'
+    const problem = ledgerProblem('oil', days, c.date, note, givenBy, false)
+    if (problem) return problem
+  }
+  const approvedBy = approverName(), who = entered()
+  const entries: LedgerEntry[] = todo.map(c => ({
+    id: ledgerId(), personId: c.personId, counter: 'oil', amount: days, date: c.date, reason: note, approvedBy,
+    ...(givenBy ? { givenBy } : {}), ...who,
+    ...(days === 0.5 ? { half: defaultAwardHalf(c.personId, c.date) } : {}),
+  }))
+  gesture('lw.award', () => {
+    state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
+    persistNotify()
+  })
+  return null
+}
+
+/**
  * CHANGE AN AWARD'S REASON, ITS GIVER AND ITS DAYS — AS ONE THING (Astra, 21 Sep 26): the tap list's Edit… and the day
  * window. Addressed by the award's own id (a day may hold several). One command, one undo step; everything is checked
  * before anything is written. `null` days is refused — an award is worth what it says (the old "blank means the code's
@@ -4792,7 +5066,9 @@ export function stayingIn(
   return out
 }
 
-export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window'; at?: string }
+/* 'closed' (M3 §4 (4) — M1's code read): a landing day in the war but closed for this person — his own words, apart from a
+   landing outside the war's dates ('window') */
+export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window' | 'closed'; at?: string }
 
 /** The validation half of `moveRecords`, held apart so the grid's landing preview asks the SAME rule the commit
  *  applies. Null when clear. Each record is asked again here (the store's own gate, not the caller's word). */
@@ -4817,7 +5093,7 @@ export function moveRecordsProblem(recs: readonly MoveRec[], dayDelta: number): 
   for (const r of reqs) {
     const to = addDays(r.date, dayDelta)
     if (!held(to)) return { reason: 'window', at: to }
-    if (!dayWritable(to)) return { reason: 'window', at: to }
+    if (!dayWritable(to)) return { reason: 'closed', at: to }
     const landing = listAt(r.personId, to).filter(x => !moving.has(x as RequestRec))
     const c: Contrib = { id: r.rec.id, kind: 'request', code: parseCell(r.rec.code)!.type, win: requestWin(r.rec.code), state: 'pending' }
     /* the selection's own approved leave sliding away frees its landing too — THAT DAY of it only (the final reads, Fable 1
@@ -4880,6 +5156,7 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
           id: r.rec.id, kind: 'request', code: r.rec.code, state: 'pending',
           ...(r.rec.shiftedFrom ? { shiftedFrom: r.rec.shiftedFrom } : {}),
           ...(r.rec.carried ? { carried: r.rec.carried } : {}),
+          ...requestWords(r.rec),
         }
         putList(r.personId, r.to, [...listAt(r.personId, r.to), landed])
       }

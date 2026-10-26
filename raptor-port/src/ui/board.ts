@@ -24,7 +24,7 @@ import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, 
 import { HIST } from '../state/history'
 import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
-import { setInpField, howMany } from './inputedit'
+import { setInpField, howMany, markMoved } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -52,6 +52,7 @@ import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 import { followVisible } from './vvfollow'
+import { screenBox } from './kbscroll'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -1214,6 +1215,8 @@ export function boardMbtn(e: MouseEvent) {
        stand on — D363) is his own to remove, by the plain delete below ([DB-READINESS] phase 6 (c); overlay.ts standsOn) */
     const inp = row && row.src && standsOn(DAYS[di], row.src) === row ? srcInput(row) : null
     if (inp && unacceptInput(di, inp)) {
+      /* his row removed is a Reject — a scheduler's move, marked before the command records it (his D1388) */
+      markMoved(inp)
       afterSchedMutate(); notify()
       /* said to him, not written as a line: the request's own filing line ("… filed: on the programme → taken off the
          programme", the change history's one writer) is this act's one line (D114 — one act, one change; Fable's final
@@ -1607,12 +1610,16 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
     if (!box.isConnected || !anchor.isConnected) { stop(); document.removeEventListener('scroll', place, true); return }
     const r = anchor.getBoundingClientRect(), vv = window.visualViewport
     const zoomed = !vv || vv.scale > 1.01
-    const visTop = zoomed ? 0 : vv!.offsetTop, visBot = zoomed ? window.innerHeight : vv!.offsetTop + vv!.height
+    /* the visible screen in the measure the box's own place is given in, and the layout's top in it (kbscroll.ts
+       screenBox — his iPhone, the keys up and the screen panned, gives every box from the visible top); the list's `top`
+       is written in the layout's own measure */
+    const sb = zoomed ? null : screenBox(vv!)
+    const visTop = sb ? sb.top : 0, visBot = sb ? sb.bottom : window.innerHeight, lay = sb ? sb.layTop : 0
     const h = box.offsetHeight
     let top = r.bottom + 6
     if (top + h > visBot - 8 && r.top - 6 - h >= visTop + 8) top = r.top - 6 - h
     box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
-    box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top))) + 'px'
+    box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top)) - lay) + 'px'
   }
   const stop = followVisible(place)
   document.addEventListener('scroll', place, true)

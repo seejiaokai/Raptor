@@ -209,3 +209,18 @@ describe('while the chip is picked up (D262)', () => {
     expect(screen.queryByTestId('move-banner')).toBeNull()
   })
 })
+
+/* A MEMBER'S MOVE ONTO A DAY CLOSED FOR HIM says so in its own words (M3 §4 (4) — M1's code read; the agent's words,
+   shown at his look): not "outside what you can edit", which is still said for a landing outside the war's dates. */
+describe('a member\u2019s move onto a closed day', () => {
+  it('reads "That day is closed for bidding. Pick an open day." and the move stays on', async () => {
+    act(() => { closeDates('2026-02-01', '2026-02-28') })
+    const { setViewer } = await import('../state/store')
+    act(() => { setRole('member'); setViewer('asics') })
+    render(<Matrix />)
+    pickUp()
+    await land('cell-asics-2026-02-03')
+    expect(screen.getByTestId('move-banner').textContent).toContain('That day is closed for bidding. Pick an open day.')
+    expect(getState().grid.asics['2026-01-23']).toBe('*LL')
+  })
+})

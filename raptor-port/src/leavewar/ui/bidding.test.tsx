@@ -148,7 +148,8 @@ describe('bidding over a range', () => {
   it('opens on just this day, and writes only that day', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
-    expect(screen.getByTestId('span-one').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.queryByTestId('span-one')).toBeNull()                                    // "Just this day" went (round 3)
+    expect(screen.getByTestId('span-range').getAttribute('aria-pressed')).toBe('false')   // the one day is the default
     expect(screen.queryByTestId('span-picker')).toBeNull()
     fireEvent.click(screen.getByTestId('bid-LL'))
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
@@ -212,7 +213,10 @@ describe('bidding over a range', () => {
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-09'))
     fireEvent.click(screen.getByTestId('span-range'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-20'))
-    fireEvent.click(screen.getByTestId('span-one'))
+    /* "Just this day" went (round 3, D1332): the range picked back to the day tapped is the one day again */
+    fireEvent.click(screen.getByTestId('span-day-2026-02-09'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-09'))
+    expect(screen.getByTestId('span-range').getAttribute('aria-pressed')).toBe('false')
     fireEvent.click(screen.getByTestId('bid-LL'))
     expect(getState().grid.dusk['2026-02-09']).toBe('LL')
     expect(getState().grid.dusk?.['2026-02-10']).toBeUndefined()

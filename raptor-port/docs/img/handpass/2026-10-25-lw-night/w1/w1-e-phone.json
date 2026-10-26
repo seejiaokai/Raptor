@@ -1,0 +1,59 @@
+[
+ {
+  "id": "S13 (A) closed day, nothing of his: OD",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 ok → 27 red; right after the tap: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s13-phone-A-after-tap.png",
+   "s13-phone-A-settled.png"
+  ]
+ },
+ {
+  "id": "S13 (B) morning pending LL on a red day, words typed (no Enter), then OD",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 26.5 red → 26 red; cells [\"OD|k-od|s-a|left\",\"LL|k-ll|s-w|right-am\"]; right after the tap: under the Manning button, level red, \"This overseas duty takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 297×32 inside the 402×874 screen, centre hit is month-strip (pointer-events none); settled: under the Manning button, level red, \"This overseas duty takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 297×32 inside the 402×874 screen, centre hit is month-strip (pointer-events none); reopened window words \"Dentist call\"",
+  "pics": [
+   "s13-phone-B-after-tap.png",
+   "s13-phone-B-settled.png",
+   "s13-phone-B-reopened.png"
+  ]
+ },
+ {
+  "id": "S13 (C) whole-day pending LL on a red day, OD (RECORD)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Available P 26 red → 26 red (unchanged; the Manning rows were still folded after the filing — opened by hand to read the figure); cells [\"OD|k-od|s-a|left\",\"LL|k-ll|s-w|right\"]; bubble: no bubble. Rule: unchanged → no bubble; if it moved, the bubble names the OD — holds",
+  "pics": [
+   "s13-phone-C-after-tap.png",
+   "s13-phone-C-settled.png"
+  ]
+ },
+ {
+  "id": "S16 the member’s own bid on an open day at F1",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 ok → 27 red; right after: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,205 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s16-phone-after-tap.png",
+   "s16-phone-settled.png"
+  ]
+ },
+ {
+  "id": "S16 reload: do the Manning rows open folded or open?",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "after a reload (signed in again) the Manning rows open FOLDED (his remembered choice = the bubble's opening, or folded as before); his bid is still there: [\"LL|k-ll|s-w|whole\"]",
+  "pics": [
+   "s16-phone-after-reload.png"
+  ]
+ },
+ {
+  "id": "errors-e",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

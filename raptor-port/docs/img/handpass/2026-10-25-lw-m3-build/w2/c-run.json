@@ -1,0 +1,82 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-BayEj7kB.js"
+ },
+ {
+  "id": "16-filed",
+  "size": "desk",
+  "said": "acc g, allday true, asked []"
+ },
+ {
+  "id": "16-start",
+  "size": "desk",
+  "said": "on Ground Programme; war cell [] Available P 25 → 25"
+ },
+ {
+  "id": "16-rejected",
+  "size": "desk",
+  "said": "pressed \"REJECT\"; on Personal Inputs only; buttons now [\"g:→ Ground\",\"u:→ Unavail\"]; war [] Available P 25"
+ },
+ {
+  "id": "16-unavail",
+  "size": "desk",
+  "said": "pressed \"→ UNAVAIL\"; on Unavailable; war [\"TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3\"] Available P 25 → 24"
+ },
+ {
+  "id": "16-changes",
+  "size": "desk",
+  "said": "changes window (All changes tab): ⠿ Changes · week of 13/7 3 changes this week ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · Input · Ranger · Training · 3 18:54 Training 15 Jul · filed taken off the programme → under Unavailable Saber · 25/10 18:54 Training 15 Jul · filed on the programme → taken off the programme Saber · 25/10 18:54 Training added · 15 Jul (on the programme) Saber · 25/10 18:54 Tap a change to go to it — the window stays open."
+ },
+ {
+  "id": "16-changes",
+  "size": "desk",
+  "said": "after its own cross the window reads: null"
+ },
+ {
+  "id": "16-bell",
+  "size": "desk",
+  "said": "bell: no list"
+ },
+ {
+  "id": "16-undo-redo",
+  "size": "desk",
+  "said": "Undo (\"Undo — a change to the schedule\"): {\"page\":\"editsched\",\"cell\":[],\"avail\":\"25\",\"acc\":\"r\"} · Redo (\"Redo — a change to the schedule\"): {\"page\":\"editsched\",\"cell\":[\"TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3\"],\"avail\":\"24\",\"acc\":\"u\"}"
+ },
+ {
+  "id": "16-ground",
+  "size": "desk",
+  "said": "after Reject: war [] Available P 25; \"→ GROUND\" → on Ground Programme; war [] Available P 25"
+ },
+ {
+  "id": "16-back",
+  "size": "desk",
+  "said": "back under Unavailable: war [\"TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3\"] Available P 24"
+ },
+ {
+  "id": "16b-board",
+  "size": "desk",
+  "said": "board buttons for it: [\"x:Reject\"]"
+ },
+ {
+  "id": "16b-board",
+  "size": "desk",
+  "said": "Reject pressed \"REJECT\"; buttons now [\"g:→ Ground\",\"u:→ Unavail\"]"
+ },
+ {
+  "id": "16b-board",
+  "size": "desk",
+  "said": "\"→ UNAVAIL\" pressed; board's Unavailable panel: ⠿ UNAVAILABLE + ADD ITEM START END PEOPLE RMKS Training LATE Ranger IP REJECT ATT C Grit C till 17 Jul OD Nomad C till 17 Jul"
+ },
+ {
+  "id": "16b-board",
+  "size": "desk",
+  "said": "Reject \"REJECT\" then \"→ GROUND\": Ground panel has it: true; war [] Available P 27"
+ },
+ {
+  "id": "errors-16",
+  "size": "desk",
+  "said": "[]"
+ }
+]

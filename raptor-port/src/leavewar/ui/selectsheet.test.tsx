@@ -6,6 +6,7 @@ import { memoryBackend } from '../state/storage'
 import { SelectSheet } from './SelectSheet'
 import { skipWhy } from './BidPicker'
 import type { Selection } from './select'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 // The batched selection sheet (owner, 27 Aug 26). The DRAG that opens it needs
 // a real browser and is covered by e2e; here the sheet is rendered directly to
@@ -102,11 +103,13 @@ describe('the selection sheet', () => {
 
   /* WAS "the acknowledge decision uses the app word — Ack". Ack is gone (D1158, 21 Oct 26): the drag-selection's
      Decide row is Approve · Refuse, the same as the one-day window's, and nothing records "seen". */
+  /* since round 3 Decide is drawn only where the days hold a bid (round3.test.tsx) — this test's days get one first */
   it('the Decide row is Approve · Refuse — no Ack (D1158)', () => {
+    setCell('ramp', '2026-01-06', 'LL')
     mount(rampTwo, { canDecide: true })
     expect(screen.queryByTestId('sel-pending')).toBeNull()
     const row = screen.getByTestId('sel-approve').closest('.bidsheet-row')!
-    expect([...row.querySelectorAll('button')].map(b => b.textContent)).toEqual(['Approve', 'Refuse'])
+    expect([...row.querySelectorAll('button.approve, button.refuse')].map(b => b.textContent)).toEqual(['Approve', 'Refuse'])
   })
 
   it('no Medical row for anyone, and no Decide row for a member', () => {
@@ -137,13 +140,56 @@ describe('the selection sheet', () => {
   it('offers Post-out only for a single-person selection', () => {
     const onPostOut = vi.fn()
     mount(rampTwo, { onPostOut })
-    expect(screen.getByTestId('sel-postout')).toBeTruthy()
+    expect(more('sel-postout')).toBeTruthy()
     const twoPeople: Selection = {
       people: ['ramp', 'dusk'], from: '2026-01-06', to: '2026-01-06',
       cells: [cell('ramp', '2026-01-06'), cell('dusk', '2026-01-06')],
     }
     mount(twoPeople, { onPostOut })
-    expect(screen.queryAllByTestId('sel-postout')).toHaveLength(1) // only the first mount's
+    /* both mounts draw a ⋯ since D1356 (it holds Other for an admin); Post out stays the one man's */
+    const mores = screen.queryAllByTestId('sel-more')
+    expect(mores).toHaveLength(2)
+    fireEvent.click(mores[1]!)
+    expect(screen.getAllByTestId('sel-more-menu').some(m => !m.querySelector('[data-testid="sel-postout"]'))).toBe(true)
+  })
+})
+
+/* [LW-DRAG-MORE-MENU] (his report, 26 Oct 26 — "Doesn't show post in"): the drag window's ⋯ carried Post out but not its
+   twin, Post in, which the one-day window's ⋯ holds beside it (his D1326). For one man, an admin's, dated from the drag's
+   first day; refused, the window stays and says why, as Post out's does. */
+describe('the drag window posts one man in', () => {
+  it('offers Post in beside Post out for one man, dated from the drag’s first day, and posts him in', () => {
+    const onPostIn = vi.fn(() => undefined)
+    const onDone = vi.fn()
+    mount(rampTwo, { onPostOut: vi.fn(), onPostIn, onDone })
+    const pi = more('sel-postin')
+    expect(pi?.textContent).toBe('Post in')
+    fireEvent.click(pi!)
+    expect(boxValue(screen.getByTestId('sel-pi-date'))).toBe('2026-01-06')
+    fireEvent.click(screen.getByTestId('sel-pi-confirm'))
+    expect(onPostIn).toHaveBeenCalledWith('ramp', '2026-01-06')
+    expect(onDone).toHaveBeenCalledWith(true)
+  })
+  it('not across several men, and not for a member', () => {
+    const twoPeople: Selection = {
+      people: ['ramp', 'dusk'], from: '2026-01-06', to: '2026-01-06',
+      cells: [cell('ramp', '2026-01-06'), cell('dusk', '2026-01-06')],
+    }
+    mount(twoPeople, { onPostIn: vi.fn() })
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.queryByTestId('sel-postin')).toBeNull()
+    cleanup()
+    mount(rampTwo, { onPostIn: vi.fn(), role: 'member' })
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.queryByTestId('sel-postin')).toBeNull()
+  })
+  it('a refused posting in keeps the window and says why', () => {
+    const onDone = vi.fn()
+    mount(rampTwo, { onPostIn: () => 'Ramp is already in the squadron on that day', onDone })
+    fireEvent.click(more('sel-postin')!)
+    fireEvent.click(screen.getByTestId('sel-pi-confirm'))
+    expect(screen.getByTestId('sel-note').textContent).toContain('already in the squadron')
+    expect(onDone).not.toHaveBeenCalled()
   })
 })
 
@@ -154,7 +200,7 @@ describe('a refused post-out on the selection sheet', () => {
     const onDone = vi.fn()
     const onPostOut = vi.fn(() => 'Posted in on 10 Jan 26 — the post-out has to be after that day.')
     mount(rampTwo, { onDone, onPostOut })
-    fireEvent.click(screen.getByTestId('sel-postout'))
+    fireEvent.click(more('sel-postout'))
     /* the date is picked on the app's own calendar ([ONE-DATE-CALENDAR], D796) — and is the date the posting is asked for */
     pickDate(screen.getByTestId('sel-po-date'), '2026-01-05')
     expect(boxValue(screen.getByTestId('sel-po-date'))).toBe('2026-01-05')

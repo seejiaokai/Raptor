@@ -24,6 +24,7 @@ import { countsFor, inSquadron } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { fileAbsence } from '../testkit'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -119,7 +120,7 @@ describe('placing and managing PI from the grid', () => {
 
     fireEvent.click(screen.getByTestId(`cell-${id}-${day}`))
     expect(screen.queryByTestId('pi-confirm')).toBeNull()   // folded behind one button
-    fireEvent.click(screen.getByTestId('bid-postin'))
+    fireEvent.click(more('bid-postin'))
     expect(boxValue(screen.getByTestId('pi-date'))).toBe(day)
     // the date sits in its own box, so the button says it once — just "Post in" (D300; register PO12)
     expect(screen.getByTestId('pi-confirm').textContent).toBe('Post in')
@@ -154,6 +155,7 @@ describe('placing and managing PI from the grid', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
     expect(screen.queryByTestId('bid-postin')).toBeNull()
+    expect(screen.queryByTestId('bid-more')).toBeNull()   // no ⋯ for a member (round 3, D1326)
   })
 })
 
@@ -168,7 +170,7 @@ describe('a posting that would close before it opens is refused with its reason'
     setPostIn(id, '2026-06-15')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
-    fireEvent.click(screen.getByTestId('bid-postout'))
+    fireEvent.click(more('bid-postout'))
     pickDate(screen.getByTestId('po-date'), '2026-06-01')
     fireEvent.click(screen.getByTestId('po-confirm'))
     expect(person(id).to).toBeNull()
@@ -182,7 +184,7 @@ describe('a posting that would close before it opens is refused with its reason'
     setPostOut(id, '2026-08-01')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-2026-07-01`))
-    fireEvent.click(screen.getByTestId('bid-postin'))
+    fireEvent.click(more('bid-postin'))
     pickDate(screen.getByTestId('pi-date'), '2026-09-01')
     fireEvent.click(screen.getByTestId('pi-confirm'))
     expect(person(id).from).toBeNull()

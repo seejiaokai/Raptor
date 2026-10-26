@@ -38,6 +38,8 @@ const cs = (id: any) => PEOPLE[id].cs as string
 const admin = 'stiff', member = 'bane'
 const others = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin && id !== member)
 const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
+/* a NEW leave with no document asks first since D1150 (M3 7.4) — never a stop; these filers answer "No document" */
+const noDocAsk = async () => { const b = document.querySelector('[data-testid="docconf-nodoc"]'); if (b) await click(b) }
 const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
 const choose = async (sel: string, v: string) => {
   const el = $(sel) as HTMLSelectElement
@@ -85,7 +87,7 @@ describe('the window’s Person list offers what the pencil’s did (Astra’s s
     expect(groupOf(), 'the group is there').toBeTruthy()
     expect([...groupOf()!.querySelectorAll('option')].map(o => o.getAttribute('value'))).toContain(gone)
     await choose('#inpEditPerson', gone)
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(r.iid).person, 'the input is his now').toBe(gone)
   })
   it('an input that already belongs to an archived man opens ON him — once, in that group — and a save of its remarks keeps him', async () => {
@@ -97,7 +99,7 @@ describe('the window’s Person list offers what the pencil’s did (Astra’s s
     expect(sel.value).toBe(gone)
     expect(sel.selectedOptions[0].textContent).toBe(cs(gone))
     expect([...sel.querySelectorAll(`option[value="${gone}"]`)], 'listed once').toHaveLength(1)
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(r.iid).person).toBe(gone)
   })
   it('an input of a DELETED man keeps HIS name as the list’s value — never the first man on the list — and is saved as his', async () => {
@@ -114,7 +116,7 @@ describe('the window’s Person list offers what the pencil’s did (Astra’s s
     expect(sel.selectedOptions[0].textContent).toBe(cs(gone))
     expect(groupOf(), 'the group is on the list').toBeTruthy()
     expect([...groupOf()!.querySelectorAll('option')].map(o => o.getAttribute('value')), 'a deleted man is offered to nobody').not.toContain(gone)
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(r.iid).person).toBe(gone)
   })
   /* RESTATED 10 Oct 26 (owner D729 — the design vet's V1). This said "a NEW input's window keeps the list it had: no
@@ -130,7 +132,7 @@ describe('the window’s Person list offers what the pencil’s did (Astra’s s
     expect([...groupOf()!.querySelectorAll('option')].map(o => o.getAttribute('value'))).toContain(gone)
     await choose('#inpEditPerson', gone)
     const had = new Set(INPUTS.map((r: any) => r.iid))
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
     /* a NEW input is written with its list of people (the one record — D756): he is the one person in it */
     expect(made.map(r => [idsOf(r), r.type]), 'the clearing leave is filed for him').toEqual([[[gone], 'LL']])

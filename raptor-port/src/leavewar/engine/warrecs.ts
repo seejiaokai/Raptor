@@ -12,6 +12,9 @@
 //     by `state/merge.ts`) — the way it draws an absence from the Inputs.
 //   - NOTICES — "your LL bid was replaced by ATT C (filed by …)", kept until the
 //     person or an admin taps "OK, seen" (catalogue owner rule + clash check B6).
+//   (UNA — the war's own "out of the manning" record of his D1338 — went on 25 Oct 26 with D1356: an Other filed under
+//     the schedule's Unavailable list takes its place, an Inputs-page input the war reads; a stored one is dropped on read,
+//     `isRetiredUna`.)
 // Several can sit on one person/date (a morning bid and an afternoon bid, a
 // worked morning beside an afternoon bid, a refused bid kept as history), so a
 // date holds a LIST. What the box shows is derived (`dayview.ts`), never stored.
@@ -22,7 +25,7 @@
 //   - at most one (automatic) credit;
 //   - notices unlimited.
 
-import { parseCell, type Portion } from './codes'
+import { formatCell, parseCell, type Portion } from './codes'
 import type { LedgerEntry } from './counters'
 import { AM, PM, FULL, isLeaveCode, isSickCode, portionOf, type Contrib, type RequestState, type Win } from './dayview'
 
@@ -41,9 +44,22 @@ export interface RequestRec extends Placed {
   /** the date a closed-bidding move took it from (the dotted mark) */
   shiftedFrom?: string
   /** what an un-approval carried back from the Input, consumed by the next
-   *  approval: the member's remark and the moved marks (design §2.2, FB3-03) */
+   *  approval: the moved marks (design §2.2, FB3-03) — the remark is the request's own `remarks` since M3 */
   carried?: Carried
+  /** THE REQUEST'S OWN WORDS AND PAPERS (owner D1210, D1226, D1150, D1159; M3 7.1): its remarks (as an input's), the
+   *  "till <date>" tick where his hand choice differs from the default (D953), and its documents — ids in the document
+   *  drawer (`state/docs`), carried into the Input on approval and back on a put-back (B9) */
+  remarks?: string
+  till?: boolean
+  docIds?: string[]
 }
+
+/** the words and papers a request carries, copied wherever a request is rebuilt (a move, a put-back, a re-typed bid) */
+export function requestWords(r: Pick<RequestRec, 'remarks' | 'till' | 'docIds'>): Pick<RequestRec, 'remarks' | 'till' | 'docIds'> {
+  return { ...(r.remarks ? { remarks: r.remarks } : {}), ...(r.till !== undefined ? { till: r.till } : {}), ...(r.docIds?.length ? { docIds: [...r.docIds] } : {}) }
+}
+/** at most this many documents on one request */
+export const MAX_REQ_DOCS = 20
 export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
 
 /** WHO GAVE THIS OIL, in the words the squadron reads (owner, 21 Sep 26).
@@ -312,7 +328,15 @@ function readRecBody(x: unknown): WarRec | null {
     const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: (x.state === 'acknowledged' ? 'pending' : x.state) as RequestState }
     if (typeof x.shiftedFrom === 'string' && ISO.test(x.shiftedFrom)) r.shiftedFrom = x.shiftedFrom
     const c = readCarried(x.carried)
-    if (c) r.carried = c
+    if (c?.lwMoved) r.carried = { lwMoved: c.lwMoved }
+    /* its words: its own, or — an older saved shape (D401) — the remark an un-approval carried */
+    if (typeof x.remarks === 'string' && x.remarks.trim()) r.remarks = x.remarks.slice(0, MAX_CARRIED_REMARK)
+    else if (c?.remarks) r.remarks = c.remarks
+    if (typeof x.till === 'boolean') r.till = x.till
+    if (Array.isArray(x.docIds)) {
+      const ids = [...new Set((x.docIds as unknown[]).filter((d): d is string => typeof d === 'string' && !!d.trim() && d.length <= 120))].slice(0, MAX_REQ_DOCS)
+      if (ids.length) r.docIds = ids
+    }
     return r
   }
   if (x.kind === 'credit') {
@@ -353,6 +377,9 @@ function readRecBody(x: unknown): WarRec | null {
  *  war, so it is skipped and everything beside it is kept. */
 export const isRetiredAward = (x: unknown): boolean =>
   isObj(x) && x.kind === 'credit' && x.oil === 'manual'
+/** …and a UNA, the war's own "out of the manning" record of D1338, retired with D1356 (25 Oct 26): demo data (D56), dropped
+ *  the same way, so a war that holds one still loads whole. */
+export const isRetiredUna = (x: unknown): boolean => isObj(x) && x.kind === 'una'
 
 /** A whole war's records, or null when anything is malformed or breaks the
  *  per-address rules — the caller then re-seeds the war blob (reset, don't
@@ -367,7 +394,7 @@ export function readRecs(x: unknown): Recs | null {
       if (!ISO.test(date) || !Array.isArray(list)) return null
       const read: WarRec[] = []
       for (const leaf of list) {
-        if (isRetiredAward(leaf)) continue
+        if (isRetiredAward(leaf) || isRetiredUna(leaf)) continue
         const r = readRec(leaf); if (!r) return null; read.push(r)
       }
       const recs = read

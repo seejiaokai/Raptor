@@ -76,7 +76,7 @@ describe('two entries on one day both show (D1146, D1167)', () => {
     fileAbsence(P, '*LL', D)
     expect(setCell(P, D, 'OIL*')).toBe(true)
     render(<Matrix />)
-    expect(boxes()).toEqual([['c k-ll s-a top', 'LL'], ['c k-oil s-w bot wide', 'OIL']])
+    expect(boxes()).toEqual([['c k-ll s-a top', 'LL'], ['c k-oilt s-w bot wide', 'OIL']])   // an OIL taken: its own kind (D1323)
     expect(screen.queryByTestId(`mark-${P}-${D}`)).toBeNull()
     expect(cell().classList.contains('mkd')).toBe(false)
   })

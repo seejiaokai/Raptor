@@ -1,0 +1,22 @@
+[
+ {
+  "id": "M1",
+  "s": "PASS drag window open true; ⋯ lists [\"Attach\",\"Other\",\"Post out\",\"Post in\"]; PI from 2026-11-02; closed after Post in true; 1 Nov's cell \"weekend act\" → \"gone weekend act\""
+ },
+ {
+  "id": "M2",
+  "s": "PASS two men: ⋯ lists [\"Attach\",\"Other\"]"
+ },
+ {
+  "id": "M3",
+  "s": "PASS phone: drag window open true; ⋯ lists [\"Attach\",\"Other\",\"Post out\",\"Post in\"]; PI from 2026-11-09; closed true; 8 Nov's cell \"weekend act\" → \"gone weekend act\""
+ },
+ {
+  "id": "M4",
+  "s": "PASS member: ⋯ lists [\"Attach\"]"
+ },
+ {
+  "id": "errors",
+  "s": "[]"
+ }
+]

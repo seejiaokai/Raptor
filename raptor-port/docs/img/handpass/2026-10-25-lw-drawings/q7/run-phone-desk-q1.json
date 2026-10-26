@@ -1,0 +1,87 @@
+{
+ "looks": {
+  "A": {
+   "name": "outlined, as the Inputs calendar draws a commitment",
+   "css": ".c.k-una.s-a, .tchip.lv.k-una.s-a { background: rgba(232,237,242,.05) !important; box-shadow: inset 0 0 0 1.5px rgba(200,212,228,.78) !important; color: #E8EDF2 !important; }"
+  },
+  "B": {
+   "name": "light grey, dark words (your UNA grey)",
+   "css": ".c.k-una, .tchip.lv.k-una { --h: 184, 190, 198 !important; --ink: #0b1116 !important; --fill: 1 !important; }"
+  }
+ },
+ "log": [
+  {
+   "id": "q1",
+   "size": "phone",
+   "said": "the Other window has: {\"allday\":true,\"span\":false}"
+  },
+  {
+   "id": "q1",
+   "size": "phone",
+   "said": "drawn A (u): the row is 77 tall"
+  },
+  {
+   "id": "q1",
+   "size": "phone",
+   "said": "drawn A (g): the row is 77 tall"
+  },
+  {
+   "id": "q1",
+   "size": "desk",
+   "said": "the Other window has: {\"allday\":true,\"span\":false}"
+  },
+  {
+   "id": "q1",
+   "size": "desk",
+   "said": "drawn A (u): the row is 77 tall"
+  },
+  {
+   "id": "q1",
+   "size": "desk",
+   "said": "drawn A (g): the row is 77 tall"
+  }
+ ],
+ "pics": [
+  {
+   "file": "q1-today-phone.png",
+   "label": "Today: an Other has no choice of where it goes (it lands on the Ground Programme)"
+  },
+  {
+   "file": "q1-a-unavail-phone.png",
+   "label": "Drawn A, your colours: \"Goes to\", Unavailable picked (red) — the grey line says what the Leave War does"
+  },
+  {
+   "file": "q1-a-ground-phone.png",
+   "label": "Drawn A, your colours: Ground Programme picked (amber) — the line follows the pick"
+  },
+  {
+   "file": "q1-b-tick-phone.png",
+   "label": "Drawn B: your tick as the only control — it says the war's effect, not that it goes under Unavailable"
+  },
+  {
+   "file": "q1-b2-clash-phone.png",
+   "label": "Drawn: the tick beside the choice can disagree — Ground Programme, yet \"manning reduced\""
+  },
+  {
+   "file": "q1-today-desk.png",
+   "label": "Today: an Other has no choice of where it goes (it lands on the Ground Programme)"
+  },
+  {
+   "file": "q1-a-unavail-desk.png",
+   "label": "Drawn A, your colours: \"Goes to\", Unavailable picked (red) — the grey line says what the Leave War does"
+  },
+  {
+   "file": "q1-a-ground-desk.png",
+   "label": "Drawn A, your colours: Ground Programme picked (amber) — the line follows the pick"
+  },
+  {
+   "file": "q1-b-tick-desk.png",
+   "label": "Drawn B: your tick as the only control — it says the war's effect, not that it goes under Unavailable"
+  },
+  {
+   "file": "q1-b2-clash-desk.png",
+   "label": "Drawn: the tick beside the choice can disagree — Ground Programme, yet \"manning reduced\""
+  }
+ ],
+ "measures": []
+}

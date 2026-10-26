@@ -33,6 +33,7 @@
 //
 // A restore (undo / redo) runs rule 2 only: it replays exact records.
 
+import { deferEffect as cmdDeferEffect } from '../command'
 import { CmdRefused } from '../command'
 import { HOOKS } from '../engine/hooks'
 import { INPUTS, inpId, isLeave, nowStamp, idsOf, namedOf, holds, leadOf, inputLines } from '../engine/inputs'
@@ -381,7 +382,13 @@ function apply(before: unknown): void {
      whole sentences and several of them can arrive at once. Nothing is
      refused here — the owner's doctrine is record it, flag it, let a human
      resolve — so the colour is the entire signal. */
-  if (msgs.length) HOOKS.toast(msgs.join(' · '), 'warn')
+  /* …SAID ONLY ONCE THE CHANGE LANDS ([LW-M1-READ-LEFTOVERS] (2), M3 §4): this runs inside the filing's command, before
+     the commit's own checks — a filing the commit then refused said "This replaces your LL bid" of a bid still there. The
+     note rides the command as a deferred effect, which a refused command throws away; outside a command it is said now. */
+  if (msgs.length) {
+    const say = () => HOOKS.toast(msgs.join(' · '), 'warn')
+    if (!cmdDeferEffect(say)) say()
+  }
   refreshAbsencesAndRepaint()
 }
 

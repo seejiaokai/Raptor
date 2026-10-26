@@ -1,0 +1,56 @@
+{
+ "log": [
+  {
+   "id": "fixtures",
+   "size": "phone",
+   "said": "{\"2026-12-08\":{\"k\":[\"LL|k-ll|s-w\"],\"state\":\"pending\",\"remarks\":\"Wedding\"},\"2026-12-09\":{\"k\":[\"LL|k-ll|s-w\"],\"state\":\"pending\",\"remarks\":\"Family trip\"},\"2026-12-10\":{\"k\":[\"LL|k-ll|s-w\"],\"state\":\"pending\",\"remarks\":\"Family trip\"},\"2026-12-11\":{\"k\":[\"LL|k-ll|s-w\"],\"state\":\"pending\",\"remarks\":\"\"}}"
+  },
+  {
+   "id": "A",
+   "size": "phone",
+   "said": "drag window \"8–10 Dec · 3 days\"; its Remarks box holds \"\""
+  },
+  {
+   "id": "A",
+   "size": "phone",
+   "said": "drawn: {\"lines\":[{\"t\":\"8 Dec · Wedding\",\"top\":628,\"h\":17},{\"t\":\"9–10 Dec · Family trip\",\"top\":650,\"h\":17}],\"font\":\"11.5px rgb(138, 150, 163)\",\"boxValue\":\"\",\"placeholder\":\"Remarks\"}"
+  },
+  {
+   "id": "B",
+   "size": "phone",
+   "said": "drag window \"9–10 Dec · 2 days\"; its Remarks box holds \"\""
+  },
+  {
+   "id": "C",
+   "size": "phone",
+   "said": "drag window \"8–11 Dec · 4 days\"; its Remarks box holds \"\""
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "a1-today-two-phone.png",
+   "label": "Today, over 8 Dec “Wedding” and 9–10 Dec “Family trip”: the Remarks box is empty"
+  },
+  {
+   "file": "a2-drawn-two-phone.png",
+   "label": "Drawn: each entry’s remark, read only, above an empty box — words typed there replace both"
+  },
+  {
+   "file": "b1-today-one-phone.png",
+   "label": "Today, over 9–10 Dec “Family trip”: the Remarks box is empty"
+  },
+  {
+   "file": "b2-drawn-one-phone.png",
+   "label": "Drawn: the days share one remark — the box shows it, no grey lines"
+  },
+  {
+   "file": "c1-drawn-noremark-phone.png",
+   "label": "Drawn, over 8–11 Dec: 11 Dec has no remark, so it is not listed"
+  }
+ ]
+}

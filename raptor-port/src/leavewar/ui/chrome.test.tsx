@@ -88,7 +88,8 @@ describe('the colour/mark legend', () => {
       const [box] = rowBox(leg, words!)
       expect(box!.classList.contains(k!) && box!.classList.contains('s-a'), `${words} is ${k}, filled`).toBe(true)
     }
-    expect(text).toContain('Off in lieu (OIL')
+    expect(text).toContain('OIL taken: time off spent')        // an OIL taken and an OIL given apart (D1291, D1323)
+    expect(text).toContain('OIL given: FO a day, HO half a day')
     // the fill: approved filled, pending hollow, refused struck — and no Ack (D1158)
     expect(rowBox(leg, 'Approved')[0]!.classList.contains('s-a')).toBe(true)
     expect(rowBox(leg, 'Pending a decision')[0]!.classList.contains('s-w')).toBe(true)

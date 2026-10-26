@@ -1,0 +1,99 @@
+[
+ {
+  "id": "31a",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "his tap on 2 Dec (closed for him, holding his pending bid): window \"Ranger Wed 2 Dec ✕ YOUR BID LL Whole day · pending Your bid is pending a decision. Delete it if you no longer want it. till 3 Dec Document SELECTED Delete CSE OD\"; ONE words row: {\"l\":25,\"t\":747,\"r\":377,\"b\":777,\"w\":352,\"h\":30} box {\"l\":25,\"t\":747,\"r\":185.1,\"b\":777,\"w\":160,\"h\":30} (rgb(11, 13, 16)) tick {\"l\":193.1,\"t\":753,\"r\":264.3,\"b\":771,\"w\":71,\"h\":18} Document {\"l\":270.3,\"t\":747,\"r\":377,\"b\":777,\"w\":107,\"h\":30}; on one line: true; labels inside the row: []; the window's other labels: [\"YOUR BID\",\"SELECTED\"]; a Save button: false; till \"till 3 Dec\" ticked true; buttons [\"✕\",\"Document\",\"Delete\",\"CSE\",\"OD\"]; the day's cell: {\"cls\":\" act hasc\",\"op\":\"1\"}; page scrolls sideways: false",
+  "pics": [
+   "s31-wk-31a-tap-q",
+   "s31-wk-31a-open"
+  ]
+ },
+ {
+  "id": "31b",
+  "size": "webkit",
+  "verdict": "RECORD",
+  "said": "typed \"Closed words\" in 2 Dec's row, Enter: saved 1: LL/pending/\"Closed words\" ; 2: LL/pending/\"Closed words\" ; 3: LL/pending/\"Closed words\"; the window stays open (a run of three pending days 1–3 Dec)",
+  "pics": [
+   "s31-wk-31b-after-enter"
+  ]
+ },
+ {
+  "id": "31b2",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "1 Dec's window reads \"Closed words\", 3 Dec's reads \"Closed words\"",
+  "pics": [
+   "s31-wk-31b-reopen-1",
+   "s31-wk-31b-reopen-3"
+  ]
+ },
+ {
+  "id": "31c",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "typed \"x-close words\" on 3 Dec, no Enter (saved so far: 1: LL/pending/\"Closed words\" ; 2: LL/pending/\"Closed words\" ; 3: LL/pending/\"Closed words\"), then ✕: saved 1: LL/pending/\"x-close words\" ; 2: LL/pending/\"x-close words\" ; 3: LL/pending/\"x-close words\"",
+  "pics": [
+   "s31-wk-31c-typed",
+   "s31-wk-31c-x-q"
+  ]
+ },
+ {
+  "id": "31d",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "a document added on 2 Dec's row: saved at once 1: LL/pending/\"x-close words\"+1doc ; 2: LL/pending/\"x-close words\"+1doc ; 3: LL/pending/\"x-close words\"+1doc; chips on screen 1; the row now {\"l\":25,\"t\":711,\"r\":377,\"b\":777,\"w\":352,\"h\":66} (one line: false)",
+  "pics": [
+   "s31-wk-31d-doc"
+  ]
+ },
+ {
+  "id": "31e",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "after a reload (signed in again): saved 1: LL/pending/\"x-close words\"+1doc ; 2: LL/pending/\"x-close words\"+1doc ; 3: LL/pending/\"x-close words\"+1doc; 2 Dec's window reads \"x-close words\" with 1 document chip(s)",
+  "pics": [
+   "s31-wk-31e-reload"
+  ]
+ },
+ {
+  "id": "31f",
+  "size": "webkit",
+  "verdict": "RECORD",
+  "said": "a member's tap on 8 Dec (closed for him, two pending bids [\"*LL\",\"OL*\"]) opens daylist-sheet, NOT the closed-day window: \"Ranger Tue 8 Dec ✕ LL Morning · pending Delete till 8 Dec Document OL Afternoon · pending Delete till 8 Dec Document\"; words boxes 2, buttons [\"✕\",\"Delete\",\"Document\",\"Delete\",\"Document\"]; typed in each + Enter: saved [\"*LL:\\\"first row words\\\"\",\"OL*:\\\"second row words\\\"\"] — each to its own bid: true",
+  "pics": [
+   "s31-wk-31f-open",
+   "s31-wk-31f-typed",
+   "s31-wk-31f-tap-q"
+  ]
+ },
+ {
+  "id": "31g",
+  "size": "webkit",
+  "verdict": "FAIL",
+  "said": "10 Dec held \"Old words\"; typed \"temp words\" (no Enter; saved so far: 10: LL/pending/\"Old words\"), then Delete: 10: - (window then: nothing); records anywhere holding \"temp words\": 0; one Undo (\"Undo — removing Ranger’s bid\"): 10: LL/pending/\"temp words\"; a second Undo (\"Undo — a leave request’s remarks or documents\"): 10: LL/pending/\"Old words\"",
+  "pics": [
+   "s31-wk-31g-typed",
+   "s31-wk-31g-delete-q",
+   "s31-wk-31g-undo-q"
+  ]
+ },
+ {
+  "id": "32a",
+  "size": "webkit",
+  "verdict": "FAIL",
+  "said": "three saves in one session (14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"Undo C\"+1doc). Undo x3, each: #1 \"Undo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"x-close words\"+1doc [screen stayed] | #2 \"Undo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Old words\" ; 1: LL/pending/\"x-close words\"+1doc [THE SCREEN MOVED: {\"win\":[0,0],\"els\":[\"mx-wrap:7034,0\"]}] | #3 \"Undo — a personal input\" → 14 Dec leave \"Approved words\" ; 10: LL/pending/\"Old words\" ; 1: LL/pending/\"x-close words\"+1doc [screen stayed]. Redo x3: #1 \"Redo — a personal input\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Old words\" ; 1: LL/pending/\"x-close words\"+1doc | #2 \"Redo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"x-close words\"+1doc | #3 \"Redo — a leave request’s remarks or documents\" → 14 Dec leave \"Undo A\" ; 10: LL/pending/\"Undo B\" ; 1: LL/pending/\"Undo C\"+1doc [THE SCREEN MOVED]",
+  "pics": [
+   "s31-wk-32a-undo1-q",
+   "s31-wk-32a-undo2-q",
+   "s31-wk-32a-undo3-q"
+  ]
+ },
+ {
+  "id": "31-errors",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]
