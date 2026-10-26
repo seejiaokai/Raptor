@@ -63,12 +63,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Schedule and amendments**
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
-- [RULES-TAG-OFF] — BUILT on pull request 555 (D1098): the tag off View and Edit Schedule; archive once it merges.
 - [ARM-STRIP-STALE-TITLE] — the "Planning …" strip keeps the title the line had when its seat was picked; a callsign typed after does not show (older; low).
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
-- [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
@@ -172,6 +170,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, a raw id in a clash note, notes a screen reader is not told, stale comments, a test on the real clock.
+- [TRAFFIC-WIN-COVERS-UNDO] — with the Traffic window open the top bar's Undo cannot be pressed (older; found 21 Oct 26).
 - [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them. The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"); its three low leftovers stay open.
 - [BOARD-ESCAPE-CLOSE] — Escape does not close the Scheduler Board, though the design guide says Escape closes what opened last (found by the walk of 24 Oct 26; older).
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
@@ -258,18 +257,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [TRAFFIC-WIN-COVERS-UNDO] With the Traffic window open, the top bar's Undo cannot be pressed (found 21 Oct 26 by the walk of the schedule pages; older; low)
+The airspace Traffic window's backdrop lies over the top bar, so a press on Undo / Redo does nothing while it is open (a real click timed out at both sizes) and Ctrl+Z inside the window does nothing either; Undo works after Done. Older behaviour, not caused by [INNERHTML-REPAINT-SWEEP]. **To do:** decide with the window rules (D641 — a window leaves the page behind it working) whether the top bar stays pressable over this window. **Place:** the agent's; with the next windows job. **Evidence:** `raptor-port/docs/handpass/2026-10-21-schedule-pages.md` §4.
 ### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
 **What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`. **Step 1 done (the night of 21 Oct 26):** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` — 44 places; three rules wrong for a real single-seat jet (AAR training, an IRT in one jet's remarks, OCU solo); the app cannot tell single-seat from a back seat not yet filled; 8 questions for him with marked pictures — put to him when he says (D994).
-
-### [RULES-TAG-OFF] Take the RULES MODIFIED tag off View and Edit Schedule (his word, 21 Oct 26 — D1098)
-**What:** when a Logic setting is changed from the squadron standard, a yellow RULES MODIFIED tag shows above the Legend
-on View Schedule and Edit Schedule. His word: every squadron changes the rules to fit its own, so the tag goes from both
-pages. **Where:** the tag is drawn by the schedule pages' banner (`Shell.tsx` sets the page mark; `scheduler/01-logic.css`
-draws the words; `scheduler/04-pucks-sections.css` shows the banner only for it) — the banner holds nothing else, so it
-goes too. **Stays:** the Logic page's own strip ("N settings changed from the squadron standard"), and the page mark if
-anything else reads it (check first). **Check:** the Logic tests that pin the mark; the walk scripts and the IT guide's
-picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
-desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
 
 ### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
 **What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
@@ -1393,6 +1384,7 @@ today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for 
 workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
 
 ### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
+**Also for the next re-shoot (21 Oct 26 — D1098):** J14's picture settings-4 framed the RULES MODIFIED tag on View-only Sched, which is gone; its script now frames the Logic page's strip and its words say so (`scripts/itflow/j/settings.mjs`, `content.mjs`) — the deck's picture is re-shot with the rest.
 **Also for the next re-shoot (12 Oct 26 — D773; Fable's second read of the one-rule job, finding 3):** the deck's "Print, export and data" slide still pictures the Inputs List's "Export to Excel", a button that is removed. Its sources are corrected (`raptor-port/scripts/itflow/j/export.mjs`, `content.mjs` — the shot is gone, the Admin → Data step is step 3); the built deck keeps the old slide until he asks for a re-shoot (D403).
 The IT flow guide (`raptor-port/docs/it-flow-guide/`, archived `[IT-FLOW-GUIDE]`) pictures the Leave War as it was on 29 Sep 26. The OIL
 award chat (`claude/award-earned-vs-granted-2ed66d`, `[OIL-AWARD-IS-A-GRANT]`, D402) changes the war's OIL words ("earned" / "awarded")
@@ -2119,15 +2111,6 @@ not caught as a drag, so the box may still be armed and the next key replace the
 box. **To do:** at his next iPhone look at a time box, ask him to try both; fix whichever arms wrongly (`interactions.ts`
 armFreshTime). **Place:** low — with the next iPhone look at the board.
 
-### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
-React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed
-on the built app, 19 Oct 26: the same Quals table set again on a repaint that changed nothing). A screen that writes
-`dangerouslySetInnerHTML={{ __html: … }}` therefore throws its markup away on every repaint, with any box being typed in
-inside it. Quals was fixed in [KEYBOARD-SCROLL] (the object made once per change — `QualsPage.tsx` `tableInner`, pinned
-by `quals.test.tsx`). The rest: `ALPanel`, `AvailWindow`, `ChangesWindow`, `InputsCal`, `LogicPage`, `MedicalView`,
-`Modals`, `PeoplePick`, `SansCal`, `SansDay`, `Shell` — most hold no box to type in; the walk met no lost caret on the
-Inputs calendar, the SANS day or the Logic page. **To do:** for each, does its markup hold a box to type in, and does it
-repaint while one has the caret; where both, make the object once per change. **Place:** low — a sweep of its own.
 ### [LOOK-PENDING-COUNT] The 👁 look at the Original shows "1 pending" in its head while the working copy shows "2 pending" (walker D, the D605 walk, 6 Oct 26 — OLD; low)
 A published Tuesday; a man seated on a new line and a leave filed for him afterwards: the working copy's head reads
 "2 pending" ("Vandal · LL filed", "WAVE 3 added"), and the 👁 look at the Original, opened at the same moment, reads
