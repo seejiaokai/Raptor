@@ -99,7 +99,10 @@ const FILES = [
   /* 80 -> 83, 13 Oct 26 (owner, D790 - "Yes option 2"): three lines beside the model line of D590 say who reads
      finished code while the ChatGPT readers are out - a fresh, blind Opus read on every job that needs one, Fable
      as well only on the riskiest. A live rule every chat needs before it chooses its readers. Nothing is spent. */
-  ['.claude/rules/bug-check.md',         0,   83],
+  /* 83 -> 88, 26 Oct 26 (the records of the night of 21 Oct 26, pull request 560, merged on his D1402): five lines of
+     his D1297 (24 Oct 26 - a fault he finds that the walk missed is learned from by itself, the same day), merged with a
+     code change while the size check was deferred (D29). A live rule every chat needs; nothing is spent. */
+  ['.claude/rules/bug-check.md',         0,   88],
   /* 60 -> 100, 23 Sep 26 ([DOCS-GUARD] step 1). The file had ALREADY grown to 95 with the ceiling
      unmoved — the D53 "read it before you ask him anything" rule, a genuinely live rule — and
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,
@@ -293,7 +296,10 @@ const RULING_BYTES = [
   /* inputs 37000 -> 42000 (17 Oct 26, the handoff after pull request 524): 39,350 bytes with the words pass round 3 and
      the Medical tab's cards (D959-D968) - live, none trimmed (D136); the one replaced row of them (D962) is archived.
      [RULINGS-SPENT-PASS] reads it for spent rows. Room, not a target. */
-  ['.claude/rules/decisions/inputs.md', 2, 42000],
+  /* inputs 42000 -> 46000 (26 Oct 26, pull request 560 on his D1402): 42,909 bytes on main with the Inputs pages' rulings
+     of the Leave War's M3 (D1367-D1396 - Other's two sections, Attach, the calendar's colours, widths and expand), merged
+     with code while the size check was deferred (D29); live, none trimmed (D136). Room, not a target. */
+  ['.claude/rules/decisions/inputs.md', 2, 46000],
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
@@ -321,7 +327,11 @@ const RULING_BYTES = [
   /* leave-war 72000 -> 80000 (23 Oct 26): 73,999 bytes on main with D1263-D1279 (M1's and M2's answers at his look, merged
      with pull requests 566 and 567 while the size check was deferred for code riding along); every line a live ruling, none
      spent or restated in full yet, and the pinch-zoom job's answers are next. Raised, not trimmed (D136, D141). */
-  ['.claude/rules/decisions/leave-war.md', 2, 80000],
+  /* leave-war 80000 -> 106000 (26 Oct 26, pull request 560 on his D1402): 99,086 bytes on main with D1282-D1401 (the
+     pinch to zoom, rounds 2 and 3 of the bid windows, the M3 build's answers), merged with code while the size check was
+     deferred (D29); the replaced ones are archived, the rest live; none is trimmed (D136, D141). The area's split, or the
+     archive of what the overhaul's build retires, is [RULINGS-SPENT-PASS]'s, not this change's. Room, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 106000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);
