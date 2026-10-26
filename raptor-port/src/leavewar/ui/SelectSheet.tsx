@@ -146,7 +146,10 @@ export function SelectSheet({
   /* a "Tap again to delete" left armed is taken back when the Leave War leaves the screen — the page is kept mounted, so
      this sheet can wait open across a page switch for a tap from someone who no longer knows it was the second (the
      reason D1102's date ask is taken back there too) */
-  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setDelArmed(false) }), [])
+  /* [LW-ARMS-PAGE-LEAVE-REST] (27 Oct 26): every armed second tap here is taken back when the Leave War leaves the screen — the
+       page is kept mounted, so the question could wait across a page switch for a tap from someone who no longer knows it
+       was the second (the reason the posting doors' asks are taken back too, D1102) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirmDel(false); setConfirming(null); setNote('') } }), [])   /* the words too (the code read's F2) */
   /* POST IN, dated from the drag's first day as Post out is ([LW-DRAG-MORE-MENU], his report of 26 Oct 26) */
   const [piOpen, setPiOpen] = useState(false)
   const [piDate, setPiDate] = useState(sel.from)

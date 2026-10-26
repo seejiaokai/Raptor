@@ -6713,4 +6713,22 @@ anything else reads it (check first). **Check:** the Logic tests that pin the ma
 picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
 desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
 **DONE 26 Oct 26 (pull request 555, merged on his D1402):** the tag and its banner holders are gone from View-only Sched and Edit Schedule; the Logic page's strip stays — evidence `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`, the design guide's Lesson 60.
+*Moved here 2026-10-27 by backlog-archive.mjs ([PO-AUTO-DELETE-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-27-lw-small.md`.*
+
+### [PO-AUTO-DELETE-WORDS] The Delete posting says it is automatic (his word, 21 Oct 26 — D1105)
+**What:** on the Post out sheet (every posting door), the Delete outcome's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck."; until the date his row reads "posting out <date> · auto delete" (the pending words, `leavewar/sync.ts` `postingPendingTag` / `OUTCOME_WORD` — Admin → Users and the Leave War); the button stays "Delete" (D298). **Check:** the line on every door, the row before and after the date, phone and desktop. **Place:** with the next Leave War batch (after pull request 556 merges). **Picture:** the sheet with the two places marked, sent to him 21 Oct 26.
+**DONE 27 Oct 26 (the night of 26–27 Oct 26, job 1, `claude/lw-small-1027`):** built red first, walked, read — `raptor-port/docs/handpass/2026-10-27-lw-small.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-GROUPS-STALE-AFTER-ARCHIVE]). Forward facts: `raptor-port/docs/handpass/2026-10-27-lw-small.md`.*
+
+### [LW-GROUPS-STALE-AFTER-ARCHIVE] The Leave War's groups keep archived men until a reload (found 21 Oct 26 by the single-seat walk; low)
+With every WSO archived through Admin → Users, in the same session the Leave War still read IWSO 5 and OPS W 12; after a reload the empty groups were gone (an empty group draws no heading). The grid did not refresh its groups after the archives. **To do:** reproduce with one man archived; find why the roster projection does not regroup. **Place:** the agent's; with the next Leave War batch. **Evidence:** the night's single-seat check (`raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md`).
+**DONE 27 Oct 26 (the night of 26–27 Oct 26, job 1, `claude/lw-small-1027`):** not a fault — the walk read two different months; a guard test, the walk guide's lesson — `raptor-port/docs/handpass/2026-10-27-lw-small.md`.
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-ARMS-PAGE-LEAVE-REST]). Forward facts: `raptor-port/docs/handpass/2026-10-27-lw-small.md`.*
+
+### [LW-ARMS-PAGE-LEAVE-REST] Four armed questions on the war still wait across a page switch (found 21 Oct 26 by the Leave War batch's scenario designer and code read) — OPEN
+The Leave War page is kept mounted, so a sheet left open survives a page switch, and an armed second tap waits there for someone who no longer knows it was the second. The batch took back the three that delete a person (the Post out sheet's, the one-day sheet's PO and the drag selection's PO) and Reset order's (`ui-contracts.md`, D1102's paragraph). Left, each undoable: the drag selection's "Delete — sure?" for records and OIL awards (`leavewar/ui/SelectSheet.tsx`), the below-zero "tap the same leave again" in both sheets (`leavewar/ui/belowzero.ts` callers), a counter's "Really delete?" (`leavewar/ui/CounterForm.tsx`) and the OIL tracker's delete (`leavewar/ui/OilTracker.tsx`). Not walked across a page switch (scenario 31 of `raptor-port/docs/handpass/parts/lws/scenarios.md`). **To do:** the same listener (`state/screen.ts subLwScreen`) in each, with a test each. **Place:** low, with the next Leave War batch.
+**DONE 27 Oct 26 (the night of 26–27 Oct 26, job 1, `claude/lw-small-1027`):** the four armed taps and the one-day window's Delete (the read's F1) taken back, their words too (F2) — built red first, walked, read — `raptor-port/docs/handpass/2026-10-27-lw-small.md`.
 

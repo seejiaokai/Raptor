@@ -301,6 +301,13 @@ describe('the walk design — what was missing', () => {
     const g = addAt('Groundy', '2026-07-10', 'GND')
     expect(postingPendingTag(g)).toBeNull()
   })
+
+  it('D1105: a Delete posting still to come reads "· auto delete" on his row; the other outcomes keep their word', () => {
+    expect(postOut('rocky', '2026-10-14', 'delete')).toBe(true)
+    expect(postingPendingTag('rocky')).toBe('posting out 14 Oct · auto delete')
+    expect(postOut('bane', '2026-10-15', 'overseas')).toBe(true)
+    expect(postingPendingTag('bane')).toBe('posting out 15 Oct · Overseas Sqn')
+  })
 })
 
 

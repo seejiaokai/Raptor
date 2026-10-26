@@ -214,7 +214,7 @@ describe('the four posting chips', () => {
     render(<Matrix />)
     open(id, '2026-06-15')
     fireEvent.click(screen.getByTestId('po-delete'))
-    expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: deleted. Days he flew keep his puck.')
+    expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun the app deletes him automatically. Days he flew keep his puck.')
     fireEvent.click(screen.getByTestId('po-confirm'))
     expect(screen.getByTestId('po-confirm').textContent).toBe(`Tap again to delete ${cs}`)
     expect(getState().people.find(x => x.id === id)!.to).toBeNull()
@@ -233,7 +233,7 @@ describe('the four posting chips', () => {
     expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun: archived.')
     fireEvent.click(screen.getByTestId('postout-delete'))            // the chip — arms, writes nothing
     expect(p().poOutcome).toBe('overseas')
-    expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun: deleted. Days he flew keep his puck.')
+    expect(screen.getByTestId('postout-line').textContent).toBe('On 15 Jun the app deletes him automatically. Days he flew keep his puck.')
     expect(screen.getByTestId('postout-delete-go')).toBeTruthy()
     fireEvent.click(screen.getByTestId('postout-delete'))            // the armed chip again: "not that after all"
     expect(screen.queryByTestId('postout-delete-go')).toBeNull()
@@ -266,7 +266,20 @@ describe('the four posting chips', () => {
       fireEvent.click(more('bid-postout'))
       expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: archived, account suspended.')
       fireEvent.click(screen.getByTestId('po-delete'))
-      expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun: deleted with his account. Days he flew keep his puck.')
+      /* his D1105 (21 Oct 26): the Delete says the app does it by itself on the date — [PO-AUTO-DELETE-WORDS] */
+      expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun the app deletes him automatically, with his account. Days he flew keep his puck.')
+    } finally { setAccountLookup(null) }
+  })
+  it('the Delete line without an account drops only "with his account" (D1105)', () => {
+    const id = anId()
+    setRole('admin')
+    setAccountLookup(() => false)
+    try {
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId(`cell-${id}-2026-06-15`))
+      fireEvent.click(more('bid-postout'))
+      fireEvent.click(screen.getByTestId('po-delete'))
+      expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun the app deletes him automatically. Days he flew keep his puck.')
     } finally { setAccountLookup(null) }
   })
 })

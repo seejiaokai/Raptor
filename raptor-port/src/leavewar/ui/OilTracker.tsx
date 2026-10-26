@@ -60,6 +60,7 @@
 // the house rule), and the store refuses a member's write regardless.
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { isLwOnScreen, subLwScreen } from '../state/screen'
 import {
   addMonths,
   assignGroup,
@@ -225,6 +226,10 @@ export function OilTracker({ person, onClose, onGranted }: {
   const [eHalf, setEHalf] = useState<Half | null>(null)
   const [eErr, setEErr] = useState('')
   const [armDel, setArmDel] = useState<string | null>(null)
+  /* [LW-ARMS-PAGE-LEAVE-REST] (27 Oct 26): every armed second tap here is taken back when the Leave War leaves the screen — the
+       page is kept mounted, so the question could wait across a page switch for a tap from someone who no longer knows it
+       was the second (the reason the posting doors' asks are taken back too, D1102) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setArmDel(null) }), [])
   const groupDefs = groupsInOrder()
   const priority = groupPriorityIds()
   const homeOf = (p: Person) => assignGroup(p, groupDefs, priority)
