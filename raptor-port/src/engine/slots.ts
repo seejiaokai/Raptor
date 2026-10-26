@@ -10,7 +10,7 @@ import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridWriteKey } from './rowids'
 import { rowElsewhere } from './weekstash'
-import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, asIssuedOrder } from './overlay'
+import { requestRowFields, srcvOf, standsOn, standingRow, requestOfBox, REQ_BOX, placeRequestRow, asIssuedOrder, landedRid } from './overlay'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -580,8 +580,12 @@ export function acceptInput(di:any,inp:any,dest:any){
      row the day never held goes where a request's new row goes: at the end, or — a record of a SHARED input whose entry
      already stands here — straight after the last of its rows, with their CX, red box and information-only
      (overlay.ts placeRequestRow, the one body a landing on read shares; [GROUP-INPUT-ONE-ROW], the plan §4.2) */
+  /* …and a row the day never held takes the name a landing on read gives it (overlay.ts landedRid: `r` + the request's
+     id), not a fresh one ([LW-LOAD-RELAND-RID], 26 Oct 26): a load that leaves its filing as filed lands the row again by
+     the working-out, and the confirm's count compares rows by that name — a fresh one read as one row taken off and one
+     added, "Discard 2 edits" for a load that throws nothing away. One request, one row, one name, however it got there. */
   if(rid){row.rid=rid; d.ground.splice(ri,0,row);}
-  else ri=placeRequestRow(d,row);
+  else{row.rid=landedRid(key,DAYS); ri=placeRequestRow(d,row);}
   inp.acc='g';
   if(rid){
     /* the restored row is the ISSUED one, not a draft addition: mark the edit (so the funnel's

@@ -163,10 +163,17 @@ export function inputsLeftSaid(di: any): string {
   const n = items.filter((x: any) => !!x.val && !x.inp).length
   /* …and an input filed since the day went out, which landed on the programme: a load puts its filing back "fresh" and
      it lands again, so it stays ([DISCARD-FILING-NOOP]) — "already at the Original" beside its "1 pending" says why */
-  const m = items.filter((x: any) => x.kind === 'add' && !!x.inp).length
+  /* …and one the day already held when it went out — under Unavailable, or parked — since moved onto the programme, which
+     a load leaves as filed when it covers another day too (filingRestorePlan; [LW-LOAD-RELAND-RID]): "filed since
+     publishing" was untrue of it. Told apart by the version's own list of the inputs it went out with (snap.inp). */
+  const ver = dayCurVer(+di), snap: any = ver != null ? daySnapOf(+di, ver) : null
+  const held = (x: any) => { const id = String((x.inp && x.inp.addr) || '').replace(/^inp:\d+\./, ''); return !!(id && snap && snap.inp && Object.prototype.hasOwnProperty.call(snap.inp, id)) }
+  const adds = items.filter((x: any) => x.kind === 'add' && !!x.inp)
+  const m = adds.filter((x: any) => !held(x)).length, mv = adds.length - m
   /* a sentence of its own (owner D863, 15 Oct 26 — the load's note is short plain sentences) */
   return (n ? ` ${n === 1 ? "1 change to a member's input stays" : n + " changes to members' inputs stay"} pending. A load never puts back a member's own input.` : '')
     + (m ? ` ${m === 1 ? '1 input filed since publishing stays' : m + ' inputs filed since publishing stay'} on the programme, pending.` : '')
+    + (mv ? ` ${mv === 1 ? '1 input moved onto the programme since publishing stays' : mv + ' inputs moved onto the programme since publishing stay'} there, pending.` : '')
 }
 /* A ROW LEFT OUT, AS A SENTENCE — for the load's note (owner D863, 15 Oct 26 — "Shorten it") and the plan switch's
    (owner D865, 15 Oct 26 — "the same way"); it replaced the older " · Bane · Meeting left out — …" clauses, whose last

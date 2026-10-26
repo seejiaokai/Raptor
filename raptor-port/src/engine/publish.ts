@@ -8,7 +8,7 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { isOD, INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf } from './inputs'
+import { isOD, INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -922,6 +922,21 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
      copy of the day; its row and its filing are then one edit, as the day head counts them (D109, D114). */
   const plan0=filingRestorePlan(di,snap.fil,asIssued);
   const offProg=new Set<string>(plan0.put.filter((p:any)=>{const w=String(p.want||'');return w==='u'||w==='r'||(w===''&&isOD(p.inp.type));}).map((p:any)=>String(inpId(p.inp))));
+  /* …AND EACH THE LOAD'S RECONCILE TAKES OFF THE PROGRAMME ([LW-LOAD-RELAND-RID], 26 Oct 26): a request on the programme
+     ('g') whose row no loaded day holds once the version's day is in is unfiled there (drafts.ts loadVersionToWorkingCopy →
+     slots.ts reconcileDayFiling — "on the programme with no row is a lie"), and an overseas duty loses its Ground mark with
+     it unless the version had it on the programme. One the plan leaves as filed — a three-day overseas duty, which covers
+     Thursday and Friday too — is unfiled all the same; where it can no longer stand on the programme it does not land
+     again, so its row goes with the load: one edit, never the 0 a landing simulated from its old filing gave (nor the 2 a
+     row re-landed under another name gave). An activity unfiled so lands again, fresh, and keeps its row. */
+  {const dt=(DAYS[di]||{}).dt; if(dt!=null)(INPUTS||[]).forEach((r:any)=>{
+    if(!r||r.acc!=='g'||!inputCoversDate(r,dt)||inputProtected(r))return;
+    const id=String(inpId(r));
+    if(DAYS.some((d0:any,j:number)=>!!standsOn(j===di?asIssued:d0,id,r)))return;
+    const was=String(((snap.fil||{})[id])||'');
+    const left={...r}; delete left.acc; if(isOD(r.type)&&was!=='g')delete left.odGround;
+    if(!goesOnProg(left))offProg.add(id);
+  });}
   const after=offProg.size&&after0&&Array.isArray(after0.ground)?{...after0,ground:after0.ground.filter((r:any)=>!(r&&!r.kept&&offProg.has(String(r.src))))}:after0;
   const units:any[]=canonicalUnits(after,DAYS[di],di);
   const filOf=(p:any)=>({addr:`inp:${di}.${inpId(p.inp)}`,kind:'input',from:String(p.want||''),to:String(p.inp.acc||'')});

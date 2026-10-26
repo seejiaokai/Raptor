@@ -22,6 +22,11 @@ import { warCounts } from '../leavewar/absences'
 import { dayHTML, accCtl } from './html'
 import { sbInputsGroupPanel, sbUnavailPanel } from './board-html'
 import { common as noticeParts } from '../state/notices'
+import { inputsLeftSaid, loadVersionToWorkingCopy } from '../engine/drafts'
+import { dayCurVer, daySnapOf } from '../engine/publish'
+import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
+import { afterSchedMutate } from '../state/view'
+import { baseReset, rederive } from '../state/holderbase'
 
 const WED = 2
 const el = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return d }
@@ -172,4 +177,59 @@ describe("the load's count for a request moved onto the Ground Programme after p
       expect(dayDiscardCount(MON), 'the load: Discard 1 edit').toBe(1)
     })
   }
+})
+
+/* [LW-LOAD-RELAND-RID] (found building [LW-OD-DISCARD-COUNT], 26 Oct 26): a request covering three days, Wednesday
+   published with it under Unavailable, then Reject and → Ground. The load of the Original read "Discard 2 edits". Two faults
+   made the 2. (1) → Ground gave the row a fresh hidden name while the working-out gives a request's row `r` + its id, so the
+   count, which compares rows by that name, read a row the working-out lands again as one row taken off and one added.
+   (2) The count's dry run of the load landed the row again from the request's filing as it stands, but the load's reconcile
+   first takes a request off the programme when the version holds no row for it (slots.ts reconcileDayFiling) — and an
+   overseas duty unfiled so is under Unavailable again and does not land. So: the overseas duty's load takes its row away
+   (1 edit), and a course's load lands it again, fresh, under the same name (nothing to throw away). */
+describe("a load over a request moved onto the Ground Programme across three days ([LW-LOAD-RELAND-RID])", () => {
+  const press = (di: number, r: any, dest: 'x' | 'g' | 'u') => {
+    const b = el(accCtl(di, r)).querySelector(`[data-acc="${dest}"]`) as HTMLElement
+    expect(b, `the "${dest}" button`).toBeTruthy()
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  const publish = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(di, true) }
+  const rowsOf = (r: any) => DAYS.flatMap((d: any) => (d.ground || []).filter((x: any) => x && x.src === r.iid))
+  const load = () => schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+  const moved = (r: () => any) => {
+    baseReset(); rederive({ live: false })   // the week as loaded: worked out after every command, as on screen
+    publish(WED)
+    expect(dayPendingItems(WED).length, 'nothing waiting once published').toBe(0)
+    press(WED, r(), 'x'); press(WED, r(), 'g')
+    const rows = rowsOf(r())
+    expect(rows.length, 'its one row on the programme').toBe(1)
+    expect(rows[0].rid, 'the row → Ground puts down carries the name the working-out gives a request row').toBe('r' + r().iid)
+    expect(dayPendingItems(WED).length, 'the day head: 1 pending').toBe(1)
+    expect(filingRestorePlan(WED, (daySnapOf(WED, dayCurVer(WED)) as any).fil).left, 'its filing covers Thursday and Friday too: the plan leaves it').toContain(r().iid)
+    return rows[0].rid
+  }
+  it("the seed's overseas duty: the load takes it back under Unavailable, so it discards 1 edit, not 2", () => {
+    moved(od)
+    expect(dayDiscardCount(WED), '"Discard 1 edit & load"').toBe(1)
+    load()
+    expect(rowsOf(od()).length, 'its row went with the load').toBe(0)
+    expect([od().acc, od().odGround], 'back under Unavailable by its kind, on all three days').toEqual([undefined, undefined])
+    expect(dayPendingItems(WED).length, 'nothing pending: the day is back to the Original').toBe(0)
+  })
+  it('a three-day course: it lands again, fresh, under the same name — the load throws nothing away', () => {
+    const who = Object.keys(PEOPLE).find(id => !PEOPLE[id].special && !PEOPLE[id].archived && !(PEOPLE[id] as any).pers
+      && !INPUTS.some((i: any) => ['Jul 15', 'Jul 16', 'Jul 17'].includes(i.date) && (i.person === id || (i.people || []).some((x: any) => x.p === id)))) as string
+    expect(writeInputs(() => { INPUTS.unshift({ iid: 'cse3', person: who, type: 'CSE', date: 'Jul 15', endDate: 'Jul 17', yr: 2026, allday: true, remarks: '', mod: '', acc: 'u' }) })).toBe(true)
+    const cse = () => INPUTS.find((x: any) => x.iid === 'cse3') as any
+    const rid0 = moved(cse)
+    expect(dayDiscardCount(WED), 'no "Discard 2 edits": nothing to throw away').toBe(0)
+    /* finding nothing to throw away, the load button says the day is already at the Original and why it still reads 1 —
+       never "filed since publishing": it was on the day when it went out, and was moved onto the programme since */
+    expect(inputsLeftSaid(WED)).toBe(' 1 input moved onto the programme since publishing stays there, pending.')
+    load()
+    expect(rowsOf(cse()).map((x: any) => x.rid), 'its one row, under the name it had').toEqual([rid0])
+    expect(dayPendingItems(WED).length, 'still 1 pending').toBe(1)
+    expect(dayDiscardCount(WED), 'and still nothing to throw away').toBe(0)
+  })
 })
