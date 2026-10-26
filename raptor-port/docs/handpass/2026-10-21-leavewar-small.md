@@ -212,3 +212,28 @@ Legend → "The arrow — a half day": "<LL" AM, "LL>" PM — **new words, his t
 
 ## Walk line
 `Walk: docs/handpass/2026-10-21-leavewar-small.md · 96 + 88 + 6 re-walk pictures · 16 surfaces · 22 orders · MISSING: 2 fixed before the walk (the other doors' arms, a stale question), 3 fixed from the read (a refused date asked, an arm over a greyed line, the Legend), 3 older filed · read: 3 low, fixed`
+
+## Re-walk after main was merged in (26 Oct 26, his D1402)
+
+Pull request 556 sat unmerged from 21 to 26 Oct 26 while the Leave War overhaul (M1–M3) went live on the same screens.
+Each item checked against main: still applies — Reset order and its take-back, the viewer pin, the Delete posting's date
+asking twice (D1102), every armed "Tap again to delete" taken back on leaving, the clash note's callsign, the row drawn
+when its month is. Overtaken and dropped at the merge — [LW-SEL-HALF-LABELS]: the drag window draws the one-day window's
+own leave buttons (`LeaveButtons.tsx`), and the Legend shows a half day by the box's size (D1160), so the "The arrow — a
+half day" section goes (its check that the Legend never shows "*LL" / "LL*" kept). Tests: the whole Leave War project
+under the PC lock, 3,537 passed, 2 failed — the two take-back tests pressed Post out where it stood before M3; they now
+open the window's ⋯ first (D1349), 12 / 12, and the drag window's take-back proved red without it. The old walk scripts
+drive the pre-overhaul screens, so the host wrote `scripts/handpass/lws/merge-rewalk.mjs` for the doors as they stand,
+on the merged build `index-D6vxtoix.js` served on 4338, desktop 1400 and phone 390 by touch:
+M2 a day's bid window → ⋯ → Post out → Delete → "Tap again to delete Hex", another page and back → not armed, nothing
+deleted; M3 the Legend opened, "*LL" / "LL*" nowhere; M4 Hex posted out on a December day as a Delete (by the real
+controls), then his posting window's date moved to today → "Tap again to delete Hex", not deleted; the second tap
+deletes him. **3 of 3 PASS at each size**, no page error. M1 (Reset order's take-back on leaving) is carried by
+`settingssheet.test.tsx` (the real ⚙ window, `setLwOnScreen` false then true): the demo roster opens in its default
+order, so Reset order is greyed and cannot arm without re-staging the roster by drag; SettingsSheet merged without a
+clash and the door was walked on 21 Oct 26 (W2 30). The clash note's callsign and the restored man's row are carried by
+their unit tests (`clashwayout.test.tsx`, `matrix.test.tsx`), their code merged without a clash. The host opened
+`mr-m4-phone-asked.png` (Hex's posting window, PO FROM Mon 26 Oct 26, Delete, "Tap again to delete Hex"). Pictures
+`docs/img/handpass/2026-10-21-leavewar-small/w2/mr-*`; output `parts/lws-merge-rewalk-1026-{desktop,phone}.txt`.
+
+Walk: 3 scenarios re-walked at two sizes on the merged build (6 runs), 6 PASS — `parts/lws-merge-rewalk-1026-desktop.txt`, `-phone.txt`.

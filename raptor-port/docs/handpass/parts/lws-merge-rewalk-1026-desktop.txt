@@ -1,0 +1,10 @@
+lws/merge-rewalk.mjs VERSION 2 — desktop
+  picture mr-m2-desktop-armed.png
+  picture mr-m2-desktop-back.png
+PASS  M2-desktop  armed "Tap again to delete Hex" → another page and back: "Post out"; deleted false  [mr-m2-desktop-armed.png, mr-m2-desktop-back.png]
+  picture mr-m3-desktop-legend.png
+PASS  M3-desktop  the Legend opened (1858 letters), "*LL" / "LL*" nowhere; half-day lines: ""  [mr-m3-desktop-legend.png]
+  picture mr-m4-desktop-asked.png
+  picture mr-m4-desktop-after-second-tap.png
+PASS  M4-desktop  today 2026-10-26: first pick asked "Tap again to delete Hex", deleted after it false; after the second tap deleted true  [mr-m4-desktop-asked.png, mr-m4-desktop-after-second-tap.png]
+lws/merge-rewalk desktop: 3 PASS, 0 FAIL
