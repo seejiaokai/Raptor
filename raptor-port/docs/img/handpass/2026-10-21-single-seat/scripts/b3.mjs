@@ -1,0 +1,10 @@
+import { L, snap, sideWarn } from './h.mjs'
+const { browser, ctx, page, errors } = await L.open({ width: 1400, height: 900, state: 'C:/Users/User/AppData/Local/Temp/claude/job3/walk/state-a3.json' })
+await page.getByRole('button', { name: 'View-only Sched' }).click(); await page.waitForTimeout(800)
+console.log('sbday in vWeek', await page.locator('#vWeek [data-sbday]').count())
+await page.locator('#vWeek [data-slot="4.0.0.0.p"]').first().scrollIntoViewIfNeeded()
+await page.waitForTimeout(400)
+await snap(page, 'dbg-vo', { clip: '#vWeek .go:has([data-slot="4.0.0.0.p"])' , pad: 20 })
+console.log(await page.evaluate(() => [...document.querySelectorAll('#vWeek *')].filter(e => e.hasAttribute && [...e.attributes].some(a => /board|sb/i.test(a.name))).slice(0,10).map(e => e.tagName + ' ' + [...e.attributes].map(a=>a.name+'='+a.value.slice(0,15)).join(' '))))
+console.log(errors)
+await browser.close()
