@@ -145,3 +145,23 @@ walk's size held.
 opened every picture it cites (D1273).
 
 Walk: docs/handpass/2026-10-24-windows-escape.md · 93 pictures · 14 surfaces · 6 orders · MISSING: 2 fixed (D13, D12), 0 ruled, 1 filed (B1)
+
+## Re-walk after main was merged in (26 Oct 26, his D1402)
+
+Pull request 570 sat unmerged from 24 to 26 Oct 26 while main moved 317 commits on — main changed a request's window
+(`ui/inputedit.tsx`) sixteen times, the board's code and the crew list's twice. Main was merged in: one code clash, the
+crew list's imports (main's `dayTasked` beside this branch's `slotTitle`); `inputedit.tsx` and `board.ts` merged by
+themselves. Tests: `windowkeys`, `armstrip`, `inputedit`, `board`, `modals` — 202 / 202. The walker's scripts of 24 Oct
+were never committed, so the host wrote `scripts/handpass/we-merge-rewalk.mjs` for the doors the merge could have moved,
+as assertions of the right behaviour, on the merged build served on 4338 (built under the PC lock):
+W1 Duty templates over the board (held, Escape closes only it, keyboard back on "+ Block"); W2 Week insights over the
+board; W3 a request's window from the week (held, Escape, back on its label); W4 a request's window on the Inputs page
+does NOT hold (D641 — the keyboard left it at Tab 18); W5 the board's CX dialog gives the keyboard back to its CX;
+W6 the strip over the crew list follows a callsign typed after the seat was picked ("VL BFM" → "ZZTOP BFM" — the seat
+emptied through the probe bridge's `setSlotVal` as SETUP, the pick and the typing by the real controls); P1 a phone tap on
+a request's label (no text box focused, the page not scrolled, ✕ closes). **7 of 7 PASS**, no page error (runs v1–v4
+failed on the script's own setup only — the Inputs page opens on today's month, the demo board's seats are all filled,
+the Inputs page's window is `#inpEditPop.inped-win`). The host opened W6-1 (the strip reads ZZTOP, the seat ringed).
+Pictures `docs/img/handpass/2026-10-24-windows-escape/merge-rewalk-1026/`; output `parts/we-merge-rewalk-1026.walk.txt`.
+
+Walk: 7 scenarios re-walked on the merged build (desktop 1440 and a phone 402 by touch), 7 PASS — `parts/we-merge-rewalk-1026.walk.txt`.

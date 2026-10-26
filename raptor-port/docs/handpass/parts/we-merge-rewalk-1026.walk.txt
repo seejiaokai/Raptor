@@ -1,0 +1,9 @@
+we-merge-rewalk v5 http://localhost:4338
+PASS  W1  open true, keyboard inside true, tab held, closed true, board open true, keyboard BUTTON class=mbtn add data-dwadd=0
+PASS  W2  keyboard inside true, tab held, closed true, board open true, keyboard BUTTON class=abtn sb-insights id=sbInsights
+PASS  W3  labels 21; open true, keyboard inside true, tab held, closed true, keyboard BUTTON class=sanscard data-inpedit=imvpevhnabz5ogt
+PASS  W4  opened by #page-inputs [data-iid]:visible; the keyboard left the window into the page at Tab 18 (BODY class=in-cal)
+PASS  W5  dialog true, keyboard inside true; before BUTTON class=mbtn data-lcx=0.0.0.0; after BUTTON class=mbtn data-lcx=0.0.0.0
+PASS  W6  seat 0.0.0.0.p; strip before "Planning FCP · VL BFM✕", after "Planning FCP · ZZTOP BFM✕"
+PASS  P1  open true, a text box focused false, scroll 3029 -> 3029, closed by ✕ true
+we-merge-rewalk v5: 7 PASS, 0 FAIL — pictures C:/Users/User/projects/Raptor/.claude/worktrees/sync-main-handoff-fe9391/raptor-port/docs/img/handpass/2026-10-24-windows-escape/merge-rewalk-1026
