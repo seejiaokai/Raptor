@@ -644,7 +644,8 @@ export function SchedBoard() {
               wave is created now, and it is reachable on desktop too. */}
           <button className="abtn primary" id="sbDone" onClick={() => closeScheduler()}><span className="bi">✓</span><span className="bl"> Done</span></button>
           {/* ✕ CLOSE IS GONE (owner D349, 28 Sep 26 — "What does tick or close do? is it the same function?"; told yes,
-              he approved "✓ Done only"): ✓ Done is the one way out. Escape and a tap on the scrim still close the board. */}
+              he approved "✓ Done only"): ✓ Done is the one way out. (Escape does NOT close the board — found by the walk of
+              24 Oct 26; this line used to say it did. Filed: OUTSTANDING.md [BOARD-ESCAPE-CLOSE].) */}
         </div>
         {/* THE HIGHLIGHT CHIPS STRIP (owner, 23 Aug 26) — the same HlChips the
             two week pages render, so a chip lit here is lit there. Rendered
@@ -734,10 +735,13 @@ export function CxDialog() {
   const on = open && !!CXT.o.cx
   const what = open ? (CXT.label || 'this line') : ''
   const canEdit = canEditSched()
-  useEffect(() => { if (open && inRef.current) { inRef.current.value = (CXT.o.cxr || ''); inRef.current.focus() } }, [open])
-  /* the dialog keeps the keyboard while it is up (RF2 — ui/sheetfocus.ts) */
+  /* the dialog keeps the keyboard while it is up (RF2 — ui/sheetfocus.ts), its keys landing in the reason box — and,
+     taken BEFORE the box below is focused, it knows the CX button the keys came from and gives them back to it when the
+     dialog closes (the walk of 24 Oct 26, D13: with the box focused first, the helper saw the keys already inside and
+     left them on the page when the dialog went) */
   const cxBox = useRef<HTMLDivElement>(null)
-  useSheetFocus(cxBox, open)
+  useSheetFocus(cxBox, open, () => inRef.current)
+  useEffect(() => { if (open && inRef.current) { inRef.current.value = (CXT.o.cxr || ''); inRef.current.focus() } }, [open])
   /* dropping edit mode when the dialog closes so it never reopens mid-edit */
   useEffect(() => { if (!open) { setEditing(false); setArmReset(false) } }, [open])
   const close = () => { setCxt(null); notify() }

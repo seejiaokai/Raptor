@@ -1,8 +1,12 @@
-# Build the React port and publish it to GitHub Pages on every push to main.
-# The same gates also run on every pull request into main, so a red PR is
-# caught BEFORE merge — previously they only ran after, and the PR's only
-# checks were Vercel's (owner ask, Aug 5). Publishing stays push-to-main only.
-# One-time setup in the repo: Settings → Pages → Source: "GitHub Actions".
+# THE CHECKS: build the React port and run every gate — on each pull request into main, so a red pull request is
+# caught BEFORE the merge (owner ask, 5 Aug 26), and on each push to main. This workflow PUBLISHES NOTHING: the live
+# app is Vercel's, which builds every push by itself (vercel.json at the repo root; "done" means live on Vercel — D143).
+# It once also published to GitHub Pages; that site is gone since the repo first went private (D59, 23 Sep 26) and is
+# not coming back (D343) — the `deploy` job at the end is that publish, switched off, kept with its story. The
+# workflow's `name:` and its concurrency group (`pages`, `pages-pr-<n>`) keep their Pages-era words on purpose:
+# GitHub and other places know the checks by them ([DEPLOY-DOCS], 21 Oct 26).
+# Where the gates run: on GitHub's machines while the repo is public (D106, D1086), on his own PC once it is private
+# again (the `pc` job — D89); `.claude/rules/shipping.md` §The checks, raptor-port/docs/gates-and-deploy.md.
 #
 # THE GATES RUN AS PARALLEL JOBS, NOT ONE SERIAL JOB (owner ask, 3 Sep 26).
 # Measured on the last single-job run (#354's publish, 17m26s end to end):
@@ -15,7 +19,7 @@
 # Playwright: raptor / lw-phone / lw-desktop) puts each suite on its own
 # runner (free while the repo was public — since D89 the default is ONE job
 # on the owner's own PC, the `pc` job below; these split legs are the way back). `deploy`
-# still waits on EVERY gate, so nothing publishes red. MEASURED on the first
+# waited on EVERY gate, so nothing published red (it is off now — see the end). MEASURED on the first
 # parallel PR run: 8m28s end to end (was 16m16s serial on the same tree) —
 # build 41s, unit raptor 4m38s, unit leavewar 8m24s, geometry 2m29s / 3m17s
 # / 3m07s. The Leave War unit leg was the long pole and slower than the
@@ -55,12 +59,21 @@
 # next night (above): twenty legs and the Docs guard - one over the plan's 20, so
 # one leg queues briefly; a further split should merge two legs first.
 # The PC job below is unchanged: its runner keeps its clone between runs.
+#
+# AND THE UNIT LEGS SPLIT BY TIME, 21 Oct 26 ([CI-UNIT-SHARE-2-6], under D1089). vitest's own `--shard` cuts
+# the file list into equal COUNTS by a hash of each path, so one share drew the heavy files: `unit (raptor 2/6)`
+# ran 5m28s and set the whole run's time while `unit (raptor 1/6)` ran 1m54s (run 39511779673). The same six and
+# four shares now split the files by their measured time on GitHub (raptor-port/src/testing/shard-plan.ts, read
+# through vitest's `sequence.sequencer` in vite.config.ts; the times in src/testing/unit-times.ts, written by
+# scripts/unit-times.mjs from a green run). A file the times do not know — a new one — goes to the share its
+# path's hash names; src/testing/shard-plan.test.ts proves every unit file lands in exactly one share of the
+# shares listed below. No shard (the PC job, `npm test`): every file, vitest's own order.
 name: Deploy to GitHub Pages
 
 # Docs-only changes skip the whole workflow (15 Aug 26): nothing under these
 # patterns reaches the built bundle (verified — no .md/.claude file is
 # imported anywhere in src/), so a session-handoff or HANDOFF.md edit merges
-# without a 5-minute gate and without a pointless Pages redeploy. The skip
+# without a full gate run (Vercel still builds its preview by itself). The skip
 # fires only when EVERY changed file matches; a PR mixing code and docs still
 # runs the full gates. The document gate's own files are skipped too (23 Sep 26,
 # [DOCS-GUARD]): they are run by docs-guard.yml, and nothing in src/ imports
@@ -97,9 +110,12 @@ on:
 permissions:
   contents: read
 
-# Main deploys keep the single serialized "pages" group. PR runs get a group
-# per PR instead of joining it — inside one shared group, cancel-in-progress
-# would let a PR run cancel a real deploy mid-flight.
+# A push to main runs in the single "pages" group (named when this workflow still
+# published to Pages; the name stays — see the header): a newer push to main CANCELS the
+# older main run still going (cancel-in-progress), it does not queue behind it — so of two
+# merges a minute apart only the second's main run finishes. Pull request runs get a
+# group per pull request instead of joining it, so a new push to one pull request
+# cancels only that pull request's older run, never main's.
 concurrency:
   group: ${{ github.event_name == 'pull_request' && format('pages-pr-{0}', github.event.pull_request.number) || 'pages' }}
   cancel-in-progress: true
@@ -227,8 +243,9 @@ jobs:
   # ---- GitHub's own machines: when CI_ON_GITHUB is `true`, or whenever the run
   # ---- is not the owner's own, in a private repo (the complement of `pc`) ----
 
-  # Type-check + bundle, the 728-assertion parity suite, and (on main) the
-  # artifact `deploy` publishes. Under a minute; the test jobs run beside it.
+  # Type-check + bundle and the 728-assertion parity suite. Under a minute; the
+  # test jobs run beside it. On a push to main it still uploads the Pages bundle
+  # the switched-off `deploy` job would publish — nothing reads it today.
   build:
     if: >-
       vars.CI_ON_GITHUB == 'true'
@@ -268,12 +285,13 @@ jobs:
         with:
           path: raptor-port/dist
 
-  # One runner per vitest project, and two for Leave War (see the header).
-  # `npm test` locally still runs everything; here `--project` selects the
-  # same two pools vite.config.ts defines (raptor 2541 tests, leavewar 1284 —
-  # 3825 together, the gate count in HANDOFF) and `--shard` halves the
-  # Leave War file list. fail-fast off so a red leg reports on its own
-  # instead of cancelling the others half way through.
+  # The two vitest projects, each in shares (see the header). `npm test` locally
+  # still runs everything; here `--project` selects one of the two pools
+  # vite.config.ts defines and `--shard=k/n` its k-th share, split by measured
+  # time (src/testing/shard-plan.ts — every file in exactly one share; a share
+  # added or removed below must keep each project's list 1/n to n/n, which
+  # src/testing/shard-plan.test.ts reads from this file and checks). fail-fast
+  # off so a red leg reports on its own instead of cancelling the others half way.
   unit:
     name: unit (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     if: >-
@@ -287,7 +305,8 @@ jobs:
       matrix:
         include:
           # four shards since 13 Oct 26 (D822): one runner took 17 to 19 minutes for 473 files; six since 20 Oct 26
-          # (D1089): the four ran 3 to 6 1/2 minutes of tests each, the slowest of the run's test legs
+          # (D1089): the four ran 3 to 6 1/2 minutes of tests each, the slowest of the run's test legs; split by time, not
+          # by a hash of the path, since 21 Oct 26 (see the header) — both projects
           - project: raptor
             shard: 1/6
           - project: raptor
