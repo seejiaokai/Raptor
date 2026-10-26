@@ -1,0 +1,3 @@
+trk-pinch-1027-walk v1 - http://localhost:4338
+PASS  P9  zoom 40% → two fingers twice as far apart → a third finger, the first lifts, the pair a tenth wider → 80% (expected about 88%, never a jump down)  [n27-trk-three-fingers.png, n27-trk-after.png]
+trk-pinch-1027-walk: 1 PASS, 0 FAIL
