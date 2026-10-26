@@ -11,7 +11,7 @@ import { onCommon } from './grouprows'
 import { HOOKS } from './hooks'
 import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 import { isoDayWords } from './weekstash'
-import { rowMayStand, viewOfWeek } from './overlay'
+import { rowMayStand, viewOfWeek, standsOn } from './overlay'
 import { CURWEEK } from './waves'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
@@ -132,11 +132,15 @@ export function dayAsLoadLeaves(di: number, snapDay: any): any {
   /* like with like: the count compares with the day ON SCREEN, which the app always shows worked out (the working-out is
      idempotent over it). A week never worked out — a unit test's hand-set week, no load or boot — keeps the count's old
      measure, the version's day with D175's leave-out only, rather than blame the load for rows the screen never had. */
+  /* …and with the names the SAVED week holds (the code read's F1, [LW-LOAD-RELAND-RID]): the after-command pass works from
+     the saved copy, where a dead row the screen drops still holds its name, so a row it lands is named past that one; these
+     copies of the screen must name it the same. After the load the saved copy of this day is the day the load installed. */
+  const base = HOOKS.baseRowIds ? HOOKS.baseRowIds() : undefined
   const live = DAYS.map((d: any) => clone(d))
-  viewOfWeek(String(CURWEEK), live, ctx)
+  viewOfWeek(String(CURWEEK), live, { ...ctx, taken: base })
   if (JSON.stringify(live[di]) !== JSON.stringify(DAYS[di])) return nd
   const days = DAYS.map((d: any, j: number) => (j === di ? nd : clone(d)))
-  viewOfWeek(String(CURWEEK), days, ctx)
+  viewOfWeek(String(CURWEEK), days, { ...ctx, taken: HOOKS.baseRowIds ? HOOKS.baseRowIds(di) : undefined })
   return days[di]
 }
 HOOKS.dayAsLoadLeaves = dayAsLoadLeaves
@@ -163,10 +167,17 @@ export function inputsLeftSaid(di: any): string {
   const n = items.filter((x: any) => !!x.val && !x.inp).length
   /* …and an input filed since the day went out, which landed on the programme: a load puts its filing back "fresh" and
      it lands again, so it stays ([DISCARD-FILING-NOOP]) — "already at the Original" beside its "1 pending" says why */
-  const m = items.filter((x: any) => x.kind === 'add' && !!x.inp).length
+  /* …and one the day already held when it went out — under Unavailable, or parked — since moved onto the programme, which
+     a load leaves as filed when it covers another day too (filingRestorePlan; [LW-LOAD-RELAND-RID]): "filed since
+     publishing" was untrue of it. Told apart by the version's own list of the inputs it went out with (snap.inp). */
+  const ver = dayCurVer(+di), snap: any = ver != null ? daySnapOf(+di, ver) : null
+  const held = (x: any) => { const id = String((x.inp && x.inp.addr) || '').replace(/^inp:\d+\./, ''); return !!(id && snap && snap.inp && Object.prototype.hasOwnProperty.call(snap.inp, id)) }
+  const adds = items.filter((x: any) => x.kind === 'add' && !!x.inp)
+  const m = adds.filter((x: any) => !held(x)).length, mv = adds.length - m
   /* a sentence of its own (owner D863, 15 Oct 26 — the load's note is short plain sentences) */
   return (n ? ` ${n === 1 ? "1 change to a member's input stays" : n + " changes to members' inputs stay"} pending. A load never puts back a member's own input.` : '')
     + (m ? ` ${m === 1 ? '1 input filed since publishing stays' : m + ' inputs filed since publishing stay'} on the programme, pending.` : '')
+    + (mv ? ` ${mv === 1 ? '1 input moved onto the programme since publishing stays' : mv + ' inputs moved onto the programme since publishing stay'} there, pending.` : '')
 }
 /* A ROW LEFT OUT, AS A SENTENCE — for the load's note (owner D863, 15 Oct 26 — "Shorten it") and the plan switch's
    (owner D865, 15 Oct 26 — "the same way"); it replaced the older " · Bane · Meeting left out — …" clauses, whose last
@@ -652,8 +663,27 @@ export let LOADLEFT: string[] = []
 /* …and the requests whose filing the load DID change although they cover another loaded day (their row went with the
    version), with those days' short names — the message names them */
 export let LOADMOVED: Array<{ id: string, on: boolean, days: string[] }> = []
+/* …AS THEY STAND ONCE THE DAY IS WORKED OUT — read AFTER the after-command pass, by the load's note ([LW-LOAD-RELAND-RID],
+   the code read's F2): the moved list is taken straight after the load's reconcile, but the working-out then lands an
+   activity the reconcile unfiled again, back on the programme — a course said "off Thursday and Friday too" beside its own
+   "moved onto the programme … stays there". Only a move that is still so is said — and where the working-out landed it on
+   ANOTHER day (its start day: [LOAD-MOVES-ROW-DAY], a question for him), that day is named, never left silent (walker B3). */
+let LOADDAY = -1
+export function loadMovedNow(): Array<{ id: string, on: boolean, days: string[], moved?: boolean }> {
+  const out: Array<{ id: string, on: boolean, days: string[], moved?: boolean }> = []
+  for (const m of LOADMOVED) {
+    const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id)
+    if (!x) continue
+    if ((x.acc === 'g') === m.on) { out.push(m); continue }
+    if (x.acc !== 'g') continue
+    const on = DAYS.map((d: any, dj: number) => (dj !== LOADDAY && d && standsOn(d, m.id, x)) ? String(d.dow || '').slice(0, 3) : '').filter(Boolean)
+    if (on.length) out.push({ id: m.id, on: true, moved: true, days: on })   // never there before: "now", not "again" (the fix read's 1)
+  }
+  return out
+}
 export function loadVersionToWorkingCopy(di: any, ver: any) {
   di = +di
+  LOADDAY = di
   ROWSLEFT = []
   if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
   const snap = daySnapOf(di, ver)

@@ -342,6 +342,9 @@ export type ViewCtx = {
   book?: { sign?: any; signBind?: any; drafts?: any }
   /* the year of the week's Monday — set by viewOfWeek: its rows print their "till" date in their own week's year */
   year?: number
+  /* row names held besides the days handed in — the saved week's, when the days are a copy of the screen
+     ([LW-LOAD-RELAND-RID], the code read's F1: drafts.ts dayAsLoadLeaves) */
+  taken?: Iterable<string>
 }
 
 /* ---- reconcile: each row with `src`, against its request (plan §3 (c) rules 1–7) ---- */
@@ -457,6 +460,7 @@ export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] 
   if (!Array.isArray(days)) return info
   const taken = new Set<string>()
   for (const d of days) for (const r of rowsOf(d || {})) if (r && r.rid) taken.add(String(r.rid))
+  for (const t of ctx.taken || []) taken.add(String(t))
   /* every row is written in its OWN week's year (D1095 — the fresh read's F1, 20 Oct 26): a week read while another is on
      screen comes out as it does when it is loaded itself */
   const own = { ...ctx, year: +String(v).split('/')[2] || undefined }

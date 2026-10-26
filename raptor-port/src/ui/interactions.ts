@@ -17,7 +17,7 @@ import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, loadMovedNow, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -1604,8 +1604,9 @@ export function routeClick(e: MouseEvent) {
       + (left ? ` ${left} request${left === 1 ? ' stays' : 's stay'} as filed because ${left === 1 ? 'it covers' : 'they cover'} another day.` : '')
       /* each request that came back onto (or went off) the programme with its row, by its own name, and the other days
          that read it too */
-      + LOADMOVED.map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
-          return m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
+      + loadMovedNow().map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
+          /* landed by the working-out on a day it never stood on ([LOAD-MOVES-ROW-DAY], a question for him): "now", not "again" */
+          return m.moved ? ` ${what} is on ${dayList(m.days)}'s programme now, pending there.` : m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
       /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
       + rowsLeftSentences(ROWSLEFT)
       /* …and a member's input changed since the day was issued, which stays pending (a member's record is his — Fable F5) */

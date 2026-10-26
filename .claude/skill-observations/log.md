@@ -2354,3 +2354,44 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 **Suggested improvement:** In systematic-debugging's reproduce step: before fixing a filed finding, (1) reproduce exactly the case it names, matching its shape (one day vs several, etc.); (2) list the siblings that reach the same state through the same mechanism and add each as a parametrised red case; (3) a sibling that fails for a different cause is filed as its own item, not folded into the fix.
 
 **Principle:** A finding is a sample of a defect class, not the class. Reproduce the named case precisely, then probe the siblings that share its mechanism; widen the fix only to those that fail for the same cause.
+
+### Observation 712: A filed fault's "the right answer is X" is a claim — measure it by running the real action before writing the red test
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** [LW-LOAD-RELAND-RID] — a filed fault said a confirm button read "Discard 2 edits" for a load "that discards nothing"
+**Skill:** systematic-debugging (the reproduce step), with the bug-check order's red-first rule
+**Type:** open-source
+**Phase/Area:** setting the expected value of the red test
+
+**Issue:** The filing named the cause (a row re-made under a new id) and the right answer (0). A red test written to that
+answer passed once the id was fixed — and was wrong: the count is a dry run of the load, and the real load (driven in the
+same test afterwards) took the item back off the programme, so the right answer was 1. The dry run and the action had
+drifted apart in a second place the filing never looked at. Only driving the real action and reading the state after it
+showed that.
+
+**Suggested improvement:** In systematic-debugging's reproduce step: where a fault is about a PREDICTION of an action (a
+count, a preview, a confirm's promise, a dry run), the red test also performs the action and asserts the prediction equals
+what the action did — never only the filed expected number.
+
+**Principle:** A predicted effect is checked against the effect itself: the test that pins a preview runs the thing it
+previews. A filed expected value is a hypothesis, however confident the filing.
+
+### Observation 713: A page-text read misses what sits inside editable boxes — check by the element, not its text
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** the walk of [LW-LOAD-RELAND-RID]: "is the overseas duty listed under Unavailable after the load?"
+**Skill:** the walk-scripts guide (`raptor-port/docs/walk-scripts.md`) — a project doc, not a skill
+**Type:** internal
+**Phase/Area:** a walk step's assertion
+
+**Issue:** The step searched the panel's innerText for the man's name and failed; the picture showed the item there. The
+panel draws its rows as editable boxes (and the name as a puck), and a box's words are its value, not text, so innerText
+never held them. One extra walk run went to finding that out.
+
+**Suggested improvement:** Add to walk-scripts.md beside the "words a person SEES" rule: a row's presence is checked by an
+element that is the row's own (its id-carrying button or attribute), not by searching a panel's text — a box's words are
+its value and never in innerText.
+
+**Principle:** Assert presence by identity (an element keyed to the thing), not by text that a rendering choice can hide.

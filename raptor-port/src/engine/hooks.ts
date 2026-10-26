@@ -72,6 +72,10 @@ export const HOOKS = {
      dayAsLoadLeaves installs it; publish.ts dayDiscardCount reads it — publish.ts cannot import drafts.ts at module level
      without a loop). Null → the count measures the version's day with D175's leave-out only, as before. */
   dayAsLoadLeaves: null as null | ((di: number, snapDay: any) => any),
+  /* EVERY ROW NAME THE SAVED WEEK HOLDS ([LW-LOAD-RELAND-RID], the code read's F1 — state/holderbase.ts installs it): the
+     working-out names a landed row past every one of them (overlay.ts landedRid's `taken`), a dead row the screen drops
+     included, so → Ground and the load's count must too. `skip` leaves one day's names out. Null → none known. */
+  baseRowIds: null as null | ((skip?: number) => Set<string>),
   /* THE DAY'S WARNINGS AS ISSUED ([LEAVE-LATE-PUBLISHED], D179 — publish.ts): the validator lends publishing its
      judgement — at issue, the day's slice of the official warnings to keep (`issuedWarn`), and on every read today's
      slice to compare it with (`warnNow`). engine/validate.ts sets both at load (publish.ts cannot import it — the
