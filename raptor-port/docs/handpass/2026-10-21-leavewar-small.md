@@ -237,3 +237,10 @@ their unit tests (`clashwayout.test.tsx`, `matrix.test.tsx`), their code merged 
 `docs/img/handpass/2026-10-21-leavewar-small/w2/mr-*`; output `parts/lws-merge-rewalk-1026-{desktop,phone}.txt`.
 
 Walk: 3 scenarios re-walked at two sizes on the merged build (6 runs), 6 PASS — `parts/lws-merge-rewalk-1026-desktop.txt`, `-phone.txt`.
+
+**The merge's code read (26 Oct 26):** a fresh, blind Opus reader read only the merge — the six fixes in the merged code
+beside the overhaul's — and found **nothing**: each fix is in place and still fits (Reset order filters with the rows'
+own window test; the viewer pin wraps every role switch; main added no new way to change a posting's date, its ⋯ items
+open the same Post out panel, which still asks twice; the take-backs watch the state the panels still use; the clash
+note's two names go through the roster; the row measure compares one list); what the merge dropped is overtaken and
+duplicated nowhere.
