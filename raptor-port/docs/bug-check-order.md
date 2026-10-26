@@ -444,6 +444,11 @@ database's security is built from) says the same; `perms-scan.test.ts` fails if 
 bug check no longer asks it by hand: it checks those two tests ran green, and the evidence sheet names any §11 row the
 change touched.
 
+**A security read on sign-in and permissions (his D1411, 27 Oct 26 — to build, [REVIEW-LAYERS]):** a change that touches
+sign-in, who may do or see what, or what one person can see of another gets one more fresh reader looking only for
+holes, whatever its tier; one full security review of the whole app is held before the database step. Most changes need
+neither.
+
 Note what this does to "display only": the green edge was display only, and three of its defects
 lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer is never LOOK.**
 
@@ -725,6 +730,8 @@ fault a bug check's walk let through, the same day and without asking him: the f
 missed it is written here as a lesson about the KIND of gap, newest first. **Every sizing step (§7.0) and every walker's
 brief reads this list and says, for each lesson, which scenario or named test covers it for the change in hand** — or why
 it cannot apply. One fresh reader checks each lesson; the closing report names the lessons added; he may strike any.
+**And each lesson's fault is a case in the code reader's test set (his D1410, 27 Oct 26 — to build, [REVIEW-LAYERS]):** when
+the reader's instructions or model change, it is run on every case and a change that catches fewer is not kept.
 1. **A reading checked in one state only (D1296, the Leave War M3, 24 Oct 26).** The bid window's day line was read before a
    bid that turns a row red, never in the window reopened on that bid — where it said "No manning row turns amber or red"
    with Available P red. **Lesson:** a surface with more than one state (new / already placed, empty / full, open / closed)
@@ -835,6 +842,13 @@ budget is a failure — that change IS the trim pass.
 5. Is there one red break test per wired surface?
 
 Any no, and the answer to "merge live" is no.
+
+## 9a. The scorecard (his D1409, 27 Oct 26)
+
+Every two weeks the agent puts one page to him: the faults he found after a change went live, the changes undone or
+redone within two weeks, and the merges in those two weeks — each beside the two weeks before. Speed counts only while
+the first two hold; when they rise, the area's checks go up a tier until they fall. The first scorecard is the baseline,
+taken before [REVIEW-LAYERS] changes how work merges.
 
 ---
 

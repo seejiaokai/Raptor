@@ -15,6 +15,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **A secrets scan joins the checks (his D1408, 27 Oct 26 — to build, [REVIEW-LAYERS]):** a pull request that adds a
+  password, key or access code to any file does not merge; the whole history is scanned once, and a key found there is
+  changed, not only deleted. The repo is public for now (D106).
 - **The checks run on HIS PC** (D89, 23 Sep 26): ONE job, `pc` in `.github/workflows/deploy.yml`, a Windows service.
   The way back to GitHub's own parallel jobs: the repo variable `CI_ON_GITHUB=true`. Take the runner OFF this repo
   before any collaborator is added (Astra SEC-101, `[REPO-PRIVATE]`). Where it lives and how it was set up:

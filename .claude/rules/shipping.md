@@ -13,7 +13,10 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   gated behind his **"merge live"**. "Push" and "merge live" are NOT synonyms. The question only
   arose because D59 took the repo private, which meters Actions minutes (D89: checks move to his PC). **Never push while a pull request's checks are running** (D151): any push restarts them and cancels the run in progress.
 - **Nothing reaches `main` without his explicit "merge live"** (owner, 2 Sep 26 — *"dont automatically push to
-  live next time … then i will manually say merge live"*), whatever the change — docs-only included. It ended
+  live next time … then i will manually say merge live"*), whatever the change that touches the app. **Since D1407
+  (27 Oct 26 — "All as recommended"): a pull request that changes only notes** (documents, a walk's pictures, files under
+  `.claude/` but never its hooks, settings or skills, nothing under `.github/`) **goes live by itself once GitHub's run is
+  green** — the agent checks the file list, merges and says so in its report. It ended
   the old "auto-merge is the default" rule of 24 Aug 26. Parallel chats merge ONE AT A TIME, each on his word;
   the later one merges `main` in first and renumbers its own clashing rulings (D78).
 
@@ -117,8 +120,8 @@ half).
 - **Docs-only changes skip the gates** (`paths-ignore` in `deploy.yml`: `**.md`, `.claude/**`, the document-gate
   scripts `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml`) — but the Docs guard
   (`docs-guard.yml`, two to three billed minutes) still runs on every PR and every push to `main`. **An exemption from
-  the GATES, never from his approval**: a docs-only change merges ONLY on his explicit "merge live" (corrected
-  17 Sep 26). A PR that mixes code and docs runs everything — and GitHub judges the WHOLE PR, so once it carries
+  the GATES**; since D1407 a change of notes only merges by itself once its run is green, and any other docs change
+  (a hook, a setting, a working guide, a workflow) still merges only on his "merge live" (corrected 17 Sep 26, narrowed 27 Oct 26). A PR that mixes code and docs runs everything — and GitHub judges the WHOLE PR, so once it carries
   code even a notes-only push re-runs every gate (D151).
 
 ## Pull requests
