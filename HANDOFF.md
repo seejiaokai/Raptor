@@ -20,17 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/lw-half-reads-0-5 -->
-### `claude/lw-half-reads-0-5` — Grant OIL's half-day pick reads "HO · 0.5" (D1397), LOOK-checked, MERGED LIVE on his "merge live" of 26 Oct 26 (PR 571) — written 26 Oct 26, verify before use
+<!-- now:claude/lw-other-goes-to-lock -->
+### `claude/lw-other-goes-to-lock` — only a scheduler moves an input he has moved (D1388) + the load's count for a request filed back off the programme ([LW-OD-DISCARD-COUNT]); BUILT, walked (FULL), code read IN PROGRESS — PR 572 — written 26 Oct 26, verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.
-- **Where it started:** levelled with `main` after PR 569 (the M3 batch) merged; PR 568 (pinch to zoom) found already MERGED, so both of their blocks left here. His answer mid-chat to [LW-HALF-GLYPH]: "Show 0.5 instead", "Not 1/2" → D1397.
-- **Shipped on this branch:** the pick reads "HO · 0.5", the box hints "other: 1.5, 2…" (`leavewar/ui/OilAmount.tsx`; tests oilhalf, draggrantoil, creditdays — 39 passed); D1397 recorded (narrows D1395 H, D1392's example), lesson 37 met again in the design guide, the spec §5. LOOK check: `raptor-port/docs/handpass/2026-10-26-lw-half-reads-0-5.md` — the M3 walk's Grant OIL step re-run, 8 PASS, pictures `raptor-port/docs/img/handpass/2026-10-26-lw-half/after/`. Also: the nine M3 items and [LW-PHONE-PINCH-ZOOM] archived (`backlog-archive.mjs`), their pointer in the M3 evidence sheet.
-- **Branch:** `claude/lw-half-reads-0-5` (upstream its own); PR https://github.com/seejiaokai/Raptor/pull/571 — Auto-fix switched off (D1090).
-- **Gates:** GitHub's run of PR 571 is the full check (D1086); on his PC only the touched tests and the build the walk drove.
-- **Open questions for him:** none on this job. Filed, not asked (D994): [LW-TWO-BOX-LETTERS], [SCHED-UNAV-PENDING-MARK].
-- **Pick up here:** this branch is merged — do not continue it; [LW-HALF-GLYPH] is closed (its backlog line removed; its record is D1397 and the evidence sheet above). Next, after his weekly reset (95% used when written, reset 26 Oct 26 evening): the filed leftovers — [LW-OTHER-GOES-TO-LOCK] (D1388 — a permissions change, so FULL tier), [LW-OD-DISCARD-COUNT], [LOGIN-OPENS-TODAY] (D1383) before testing.
-- **Opening line:** Level this chat with main: git fetch origin, git merge --ff-only origin/main. Then read HANDOFF.md — the claude/lw-half-reads-0-5 block under ## Now (merged live) — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
-- **Notes:** ruling numbers to D1397; design lessons to 59 (37 met again); the walk re-runs one step with `ONLY=w2 LW_OUT=<folder>`; the archive script takes about 15 s an item.
+- **Where it started:** levelled with `main` after PR 571 (D1397) merged live; its block left here (all its leftovers filed). The pick-up said "after his weekly reset"; started at once on D1033 (allowance is not held back).
+- **Built (red first):** a scheduler's move marks an input (`schedPlaced`) at every door — the week's and the board's Reject / → Ground / → Unavail, the board's Ground row ✕, his window's Goes to (`ui/inputedit.tsx markMoved`); the member's window shows it dead with "A scheduler moved it here: …"; his save keeps it where it is (a retype is put back; a kind that cannot stand there, and ALL AVAIL into one under Unavailable, are refused); `state/perms.ts mayMovePlace` + the commit gate; `data-model.md` §11, `data-schema.md`, `engine-rules.md` (the dormant park narrowed). The count: `engine/publish.ts dayDiscardCount` (overseas duty and course). Tests `ui/goesheld.test.tsx` (20), `ui/odreject.test.tsx` (+2).
+- **Checked:** 191 affected unit files (4091) and 21 load-count files (714), the build, rulecheck, docsize; the walk `scripts/handpass/lw-lock-walk.mjs` 15 PASS desk + phone (port 4180); evidence sheet `raptor-port/docs/handpass/2026-10-26-lw-goes-lock.md`. The fresh Opus code read was launched and its result is to be written into the sheet (`## The code read`); the walk-ledger row is owed.
+- **Branch:** `claude/lw-other-goes-to-lock` (upstream its own); PR https://github.com/seejiaokai/Raptor/pull/572 — Auto-fix was switched on by the app and switched OFF (D1090).
+- **Gates:** GitHub's run of PR 572 is the full check (D1086).
+- **Open questions for him:** the sheet's three (the lock for every kind; a Reject not revived by a retype; the refusal words) — recommended as built. Filed: [LW-LOAD-RELAND-RID] (a three-day request's load count).
+- **Pick up here:** finish the code read's dispositions (fix red-first, re-walk what a fix touches with `node scripts/handpass/lw-lock-walk.mjs` on a fresh build), add the walk-ledger row, push once no run is in progress (D151), then his look and "merge live". After it: [LOGIN-OPENS-TODAY] waits for testing (D1383); [KBS-PHONE-SLIDE] is Fable's after his reset (D1366).
+- **Opening line:** Level this chat with the branch: git fetch origin, git switch claude/lw-other-goes-to-lock, git pull --ff-only. Then read HANDOFF.md — the claude/lw-other-goes-to-lock block under ## Now — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
+- **Notes:** ruling numbers to D1397 (none new this chat); design lessons to 59; observation 711.
 <!-- /now -->
 ## Next, in order
 
