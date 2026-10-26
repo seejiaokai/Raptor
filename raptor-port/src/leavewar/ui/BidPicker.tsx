@@ -239,7 +239,9 @@ export function BidPicker({
   /* [LW-ARMS-PAGE-LEAVE-REST] (27 Oct 26): every armed second tap here is taken back when the Leave War leaves the screen — the
        page is kept mounted, so the question could wait across a page switch for a tap from someone who no longer knows it
        was the second (the reason the posting doors' asks are taken back too, D1102) */
-  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirming(null) } }), [])
+  /* the code read's F1 and F2: the one-day window's own "Delete — sure?" (clearAsked, clearIds) is taken back too, and the
+     question's words with it */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirming(null); setClearAsked(false); setClearIds([]); setNote('') } }), [])
   // The post-IN controls, folded the same way and for the same reason. No
   // archive switch: arriving has no counterpart to it — the Quals archive is
   // something a person LEAVES the roster into.

@@ -61,6 +61,7 @@ describe('a dragged block’s Delete names the awards and takes them (D260)', ()
     expect(screen.getByTestId('sel-note').textContent).toMatch(/OIL award/)
     act(() => setLwOnScreen(false))                                  // another page in front
     act(() => setLwOnScreen(true))                                   // and back
+    expect(screen.queryByTestId('sel-note')?.textContent ?? '', "the question's words go with it (the code read's F2)").not.toMatch(/OIL award/)
     fireEvent.click(screen.getByTestId('sel-delete'))
     expect(awardOn('ramp', '2026-01-06'), 'asked again, nothing gone').toBeTruthy()
   })
@@ -119,6 +120,20 @@ describe('the bid sheet’s Clear names the award and asks once (D260)', () => {
     expect(awardOn('ramp', '2026-01-06')).toBeTruthy()
     fireEvent.click(screen.getByTestId('bid-clear'))
     expect(awardOn('ramp', '2026-01-06')).toBeUndefined()
+  })
+
+  it("[LW-ARMS-PAGE-LEAVE-REST] the code read's F1: an armed Delete in the one-day window is taken back when the Leave War leaves the screen", () => {
+    setLwOnScreen(true)
+    setDayAward('ramp', '2026-01-06', 3, { note: 'Recall' })
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-ramp-2026-01-06'))
+    fireEvent.click(screen.getByTestId('bid-clear'))
+    expect(screen.getByTestId('span-note').textContent).toMatch(/OIL award/)
+    act(() => setLwOnScreen(false))
+    act(() => setLwOnScreen(true))
+    expect(screen.queryByTestId('span-note')?.textContent ?? '', "the question's words go with it (F2)").not.toMatch(/OIL award/)
+    fireEvent.click(screen.getByTestId('bid-clear'))
+    expect(awardOn('ramp', '2026-01-06'), 'asked again, nothing gone').toBeTruthy()
   })
 
   it('a range: Clear names every award in the span before it goes', () => {
