@@ -6648,3 +6648,165 @@ picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/set
 desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
 **DONE 26 Oct 26 (pull request 555, merged on his D1402):** the tag and its banner holders are gone from View-only Sched and Edit Schedule; the Logic page's strip stays — evidence `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`, the design guide's Lesson 60.
 
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([INP-ATTACH]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [INP-ATTACH] "Fly with" becomes "Attach" — attached to another job or squadron (his idea, 25 Oct 26)
+**His words:** *"I'm also thinking of change the word fly with to Attach. Like this person can be attached to anywhere. More options. Any recommendation on how it should behave? E.g this person can be attached to another job or another Sqn"*. **Today** (checked on the built bundle, 25 Oct 26 — `raptor-port/scripts/handpass/lw-1025-flywith.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-25-lw-drawings/q7/att-today-*`): the input window asks a title, an "all day" tick or times, a document and remarks; it lands on the Ground Programme ("FLY WITH"); the Leave War never counts it (`leavewar/absences.ts`, catalogue rule 6); ALL / ALL AVAIL is not offered for it (D712). **Put to him on the questions page, version 7 (https://claude.ai/artifact/AuALCgzEgpoxooyyGX7EM6), with recommendations:** A1 renamed "Attach" with one "To" box for where (the schedule reading "Attach · 145 Sqn"); A2 under Unavailable by itself, counting him out on the Leave War (1 or 0.5), as Q2's course; A3 its Leave War letters ATCH, since ATT is the medical codes; A4 built with this batch, one check with [LW-OTHER-UNAVAIL]. **His answer (25 Oct 26): "All as recommended" — D1373 (Attach, a "To" box), D1374 (under Unavailable by itself, counts him out), D1375 (ATCH, outlined, made to fit a phone's day box), D1376 (built with this batch).** Drawn 25 Oct 26 on his "where's the attach mock up" (the window, Edit Schedule, the Leave War — `q7/att-window-*`, `att-schedule-*`, `att-war-*`); found drawing it: ATCH only just fits a day's box on a phone.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([INP-ATTACH]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-ATTACH-BUTTON]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-ATTACH-BUTTON] An Attach filed from the Leave War (his D1378–D1380, 25 Oct 26)
+
+**His words:** *"Sounds like A but now with an Attach input. How does it look like in the leave war? Is there a button for it?"*,
+then *"Yes all as recommended"* to three questions with pictures (`raptor-port/docs/img/handpass/2026-10-25-lw-drawings/attach-built/`
+— the built ATCH on the grid, its day window, the bid window's ⋯ today, and Attach drawn first in it). **To build:** the ⋯ offers
+Attach above Other, filed straight under Unavailable with no approval (D1378); an admin and a member alike, a member's window
+getting a ⋯ that holds only Attach (D1379); on the window's Duration, its "To" added on the Inputs page (D1380). Built on
+`claude/lw-m3-placing-leave`, its check the branch's FULL check.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-ATTACH-BUTTON]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-OTHER-UNAVAIL]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-OTHER-UNAVAIL] "Other" in place of UNA — under Unavailable it counts him out on the Leave War (his D1356, 25 Oct 26)
+**Open before the build (25 Oct 26):** an Other's colour on the war (C1), how the free-half window shows a half-day Other (C2), his "War manning reduced" tick (Q1) and a course under Unavailable (Q2) — drawn and put to him on the questions page, version 7, as `raptor-port/docs/superpowers/briefs/2026-10-25-lw-questions-v7.md` says. **Put to him 25 Oct 26** (https://claude.ai/artifact/AuALCgzEgpoxooyyGX7EM6, version 7; pictures `raptor-port/docs/img/handpass/2026-10-25-lw-drawings/q7/`, script `raptor-port/scripts/handpass/lw-1025-q7.mjs`; version 6 kept at `page/v6/`). Found drawing Q2: a course offers the schedule only Reject (then Accept), no "→ Unavail" — its picture under Unavailable is drawn by moving its row on the page. **Then (25 Oct 26):** Q1 answered — no separate tick (D1368), the Goes to buttons amber and red (D1367); on his "/impeccable can make it nicer" (his picture of the first drawing) two looks drawn — C (recommended): solid, ordinary letters; B: a tint and an edge, as the Duration buttons — `q7/q1n-*`; his pick: C (D1369). **His answers to the rest (25 Oct 26, "All as recommended"):** C1 outlined (D1370), C2 one line for the held half (D1371), Q2 a course under Unavailable by itself (D1372). Nothing left open before the build.
+
+His "O1 yes" to the questions page (`raptor-port/docs/img/handpass/2026-10-25-lw-drawings/page/index.html`, version 6; pictures `oth/`). To build: (1) the Inputs page's input window, for an Other, asks where it goes — the Ground Programme or Unavailable — and saves it there (today it lands on the Ground Programme and only a scheduler moves it, Reject then → Unavail); (2) the Leave War reads an Other under Unavailable as an absence: its box on the grid (its colour his to pick, the grey drawn for UNA in D1349 put to him again for it), 1 or 0.5 off the manning by the halves it covers, the bubble naming it (D1351), the SANS calendar's "still needed" (D1352), the half-day tap (D1353); (3) the bid window's row under the leaves: CSE · OD · Grant OIL · ⋯, the ⋯ holding Other (an admin's, with the window's Duration and Remarks), Post out and Post in (D1349); (4) UNA goes — its record, button, colour, Legend line and seed (a UNA in a store is demo data, D56); (5) every commitment under Unavailable counts him out too, whatever its kind (his D1357) — a scheduler's move under Unavailable (Reject, then → Unavail) and back counts him out and in. One check with the rest of his answers ([LW-R2R3-ANSWERS-BUILD]). Rulings it changes: D1338 (replaced), D998, D1349, D1351, D1352, D1353.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-OTHER-UNAVAIL]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-BUBBLE-FOOT]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-BUBBLE-FOOT] The manning bubble always at the foot of the screen (his D1358, 25 Oct 26)
+
+His "3 yes", after *"why don't just make it always at the foot?"*: the bubble (`raptor-port/src/leavewar/ui/Matrix.tsx`, today under the Manning button, at the foot only when that button is out of view — D1277) sits at the foot always, on a phone and a desktop, in its colour, with Show › only while the Manning rows are out of view; gone at his next tap or key; on a phone the Manning rows still open with it. Its words wait on the questions page's B1b (the figures). Rulings it changes: D1272, D1274, D1277, D1227. One check with the rest of his answers ([LW-R2R3-ANSWERS-BUILD]).
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-BUBBLE-FOOT]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-R2R3-ANSWERS-BUILD]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-R2R3-ANSWERS-BUILD] Build his answers to rounds 2 and 3 of the bid windows (his D1339–D1355, 25 Oct 26)
+**To build on `claude/lw-m3-placing-leave` (pull request 569), one check (D485):** the drag window's typed words saved onto every
+dragged day on Approve, Refuse and Move, replacing their remarks (D1339, D1341; entries never join by themselves, D1346); over
+separate entries the drag window lists each one's remark (D1347, drawn first); a multi-day entry reads as one on the grid
+(D1340, drawn first); the bubble red when it says red and raised by every bid or filing that takes an amber or red row lower
+(D1344, D1345), naming what was filed (D1351); a tap on a half-day UNA's day opens the free half's window (D1353); his own
+approved leave and his closed day take round 3's one Remarks row (D1354); a refused bid's Refuse lit and its leave ringed
+(D1355) in the colours he picks from the contrast redraw (D1348, which covers the built lit Approve too); UNA grey into the ⋯
+with Grant OIL in its place (D1349, drawn first). Kept as built, nothing to do: D1350, D1352. Tests first; the tier is FULL
+(saved data — the remarks). **Place:** the night of 25 Oct 26, once he has answered the drawings.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-R2R3-ANSWERS-BUILD]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-REJECTED-CSE]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-REJECTED-CSE] A rejected course still counts him out on the Leave War (his D1381, 26 Oct 26)
+
+**His answer:** *"1 yes"* to "When a scheduler rejects a course, the man counts back in on the Leave War" (the M3 look page's question 1, pictures `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/look/look-q1-*`). **To build:** `raptor-port/src/leavewar/absences.ts warVisible` stops counting a course a scheduler has rejected (acc 'r'), so the grid, the day panel, the Available rows and the SANS calendar's need count him in; red first, then a short walk (the picture script `raptor-port/scripts/handpass/lw-m3b-look.mjs` Q1 re-run as an assertion). **His answers of 26 Oct 26 (D1389, D1390):** a rejected course then moved onto the Ground Programme counts him in; an overseas duty a scheduler rejects counts him back in too. The look page's question 2 is answered (D1388) and filed as [LW-OTHER-GOES-TO-LOCK].
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-REJECTED-CSE]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-DRAG-MORE-MENU]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-DRAG-MORE-MENU] The drag window's ⋯ lacks Grant OIL and Post in (his report, 26 Oct 26)
+
+**His words:** *"why does the long press or drag to select multiple days are missing the updated grant OIL. Doesn't show post in"* — picture `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-drag-more-menu.png` (the drag window's ⋯: Attach, Other, Post out). **To do:** search the rulings (D1349's Grant OIL place, D1326, D1378) for whether the drag window should carry them; if a gap, build red-first and walk; if by design, tell him why with the picture.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-DRAG-MORE-MENU]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-ROUND3-BUILD]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-ROUND3-BUILD] Round 3 of the bid windows and the day's list (his D1311, D1315, D1326–D1334, 24 Oct 26)
+**Approved whole** (D1332, D1334), drawn on his page https://claude.ai/artifact/AELqyfNh2nbqvPGQKkzFt5 (source
+`raptor-port/docs/img/handpass/2026-10-24-lw-declutter/page/index.html`). **To build (the agent's reading — the rulings' own
+words are the spec):** the bid windows — row labels gone, the day line out of its box ([LW-DAYLINE-AMBER-ONLY]), one action row
+Approve · Refuse · Move · Delete with Approve lit on an approved leave and a second tap sending it back to waiting (D1330), Note gone
+and the dark Remarks box beside Document ([LW-REMARKS-ALWAYS]) that wraps and grows (D1333), "Just this day" gone and "Pick a
+range" ending the Duration row, the leave buttons the row's full width (D1334), the day's leave lit and "NOW" gone, a half day's
+window opening with its half lit (D1331), the switch ([LW-APPROVE-TOGGLE]) and a ⋯ button in the CSE · OD · UNA row (D1326);
+the drag window's Decide only over a bid and its dates shortened. The day's list (a day of two entries): each entry led by the
+grid cell's own box (D1327), only its half and state beside it (D1328), one row of actions on one line (D1329, D1330), Remarks and
+Document per entry — an Inputs-page entry's read only — the list's outer frame gone. **Drawn by:** `raptor-port/scripts/handpass/
+lw-declutter-look.mjs`, `lw-declutter-mock.mjs` (the window transform), `lw-twoday-look.mjs` (the list), `lw-q6-half-am.mjs`.
+**Check:** tests first, a WALK check (the bug-check order), heights measured beside the drawings (lesson 42). **Place:**
+`claude/lw-m3-placing-leave` (pull request 569), before its "merge live".
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-ROUND3-BUILD]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-DAYLINE-AMBER-ONLY]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-DAYLINE-AMBER-ONLY] The day line: only amber or red, side by side (his D1313, D1314, 24 Oct 26)
+**Today:** the bid windows' day line always shows his seat's Available row before → after, then each Manning row the bid
+turns amber or red, one under another, or the calm line (`ui/DayLine.tsx`, `engine/whatif.ts`). **To do:** name only
+what is (or would be) amber or red — the Available row included — side by side on one line, a dot between pairs, a pair
+wrapping whole only at the line's end; where nothing is, only "No manning row turns amber or red" ("…is amber or red" on a
+day already holding the bid, D1296). The one-day and the drag windows alike. Drawn: `docs/img/handpass/2026-10-24-lw-declutter/q7s-a-*.png`
+(`scripts/handpass/lw-q7-sideways.mjs`). Tests first (`bidwindow-dayline.test.tsx`, `whatif.test.ts`); a WALK check. **Place:**
+with round 3 of the bid windows (D1311) on `claude/lw-m3-placing-leave`.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-DAYLINE-AMBER-ONLY]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-REMARKS-ALWAYS]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-REMARKS-ALWAYS] Remarks shown on an approved leave, and a dark Remarks box (his D1307, D1308, 24 Oct 26)
+**Seen (his picture of pull request 569's preview):** the window on a pending bid shows Document and Remarks; the window on an
+approved leave shows only "Note", which opens them in a window of its own. **To do:** on an approved leave the two rows show at
+once, for the member whose leave it is and for an admin (who may change them unchanged — D418, `perms.ts`), saved as now onto
+the leave on the Inputs page (`RemarksSheet`'s save, `setLeaveRemarks`); the Remarks box in every bid window drawn dark, as the
+Inputs page's input boxes are (`ui/ReqWords.tsx`, `bidpicker.css`). Tests first; a picture before and after. **Place:** with M3's
+follow-ups on `claude/lw-m3-placing-leave`, before its "merge live", unless he says later.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-REMARKS-ALWAYS]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-APPROVE-TOGGLE]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-APPROVE-TOGGLE] "Approve what I enter" remembered, and a toggle (his D1302, 24 Oct 26)
+**To do:** the choice kept per admin on the device until he changes it (on by default); a small toggle in the title bar in place of the tick; drawn for him with the window questions (D1301); tests of the remembering. **Place:** with the M3 follow-ups.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-APPROVE-TOGGLE]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-FILE-OD-CRS]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-FILE-OD-CRS] An overseas duty and a course filed on the Leave War (his D1299, 24 Oct 26)
+**His intent:** people enter an OD and a CRS on the Leave War far ahead, while bidding is open, since both lower manning and the Inputs page is seldom used for them early. **His answers (D1318):** filed straight with no approval, as an input is; any date; a member may file them; no document. **Next:** round 2 drawn in the round 3 window — a row of CSE · OD · UNA under the leaves, set C colours; UNA's filing asked with it. **And (D1303):** one more kind for an unforeseen absence out of the manning, named apart from the Inputs page's "Other" — recommended "Unavailable" (UNA). **BUILT 24 Oct 26** on `claude/lw-m3-placing-leave` (pull request 569), as drawn with D1324 / D1325 / D1326: CSE · OD · UNA in the row under the leaves of the one-day, drag and member's closed-day windows, filed straight; UNA a new input kind, the overseas duty's twin but for the LATE mark, deep teal. Its design note and the readings told to him: `raptor-port/docs/superpowers/specs/2026-10-24-lw-file-od-cse-una.md`. **Next:** its FULL check (sheet `raptor-port/docs/handpass/2026-10-24-lw-round2.md`), then his look and "merge live".
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-FILE-OD-CRS]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-OTH-MANNING]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [LW-OTH-MANNING] An unforeseen absence is an "Other" that may take him off the manning (his D1335, 24 Oct 26)
+**His words:** *"I think we should remove UNA. And change to OTH. Because they both mean the same … when filed on the inputs, ask if this affect manning on leave war for full day AM or PM or some sort. From the leave war this can be put as well with the remarks indicated"*. **What:** UNA (round 2, 8622cdcaf — the kind, its teal, its Legend line, its seed, the war's button) removed; the Inputs page's "Other" gains a question — does it take him off the Leave War's manning: no, a whole day, AM or PM — kept on the input; an "Other" that does shows on the war (its box, its colour) and lowers the manning for that part of the day; the war's row under the leaves reads CSE · OD · OTH, its OTH filing an "Other" that takes him off the manning for the Duration picked, with the window's remarks. **To put to him first, with pictures (D853):** the question's words and place in the input window; OTH's colour (UNA's approved deep teal recommended); whether an "Other" off the manning also bars him on the schedule; the readings in D1335's row. **Then:** the rework on `claude/lw-m3-placing-leave` with round 2's check (`raptor-port/docs/handpass/2026-10-24-lw-round2.md`). **His follow-ups the same minute:** the war counts an OTH as 0.5 or 1 for manning (D1336); his question whether an OTH placed from the war with a specific time is updated on the Inputs page or given a time option on the war — answered with a recommendation, his answer waited on. **Place:** next, before round 2 goes to his look.
+**24 Oct 26 — put to him, with pictures (`raptor-port/docs/img/handpass/2026-10-24-lw-r2/oth-q/`, script `scripts/handpass/lw-oth-look.mjs`):** (1) his "UNA Remove it. Put in OTH" read as keeping a button in the bid window, OTH in UNA's place — against the agent's advice (no button: it would cost no leave and need no approval beside the leave buttons; an unforeseen absence is found late; the war knows only halves) — confirm; (2) the manning question in the input window: 2A one tick "Off the manning" under Duration, its half from the window's times (recommended), or 2B four buttons No · All day · AM · PM; (3) OTH keeps UNA's deep teal (recommended); (4) an Other off the manning stands under Unavailable on the schedule, as an overseas duty does (recommended), not on the Ground Programme as an Other does today. **His answer (D1337):** UNA removed now, its place in the row kept empty; OTH waits — "I'm still thinking". **Waits on:** his four answers. **Then (D1338, the same evening):** no OTH — UNA stays, on the Leave War only, an admin's alone, everyone seeing its box and its remarks (picture `raptor-port/docs/img/handpass/2026-10-24-lw-r2/oth-q/una-war-only.png`). **BUILT 24 Oct 26** (round 2b — the design note's §Round 2b): UNA the war's own record (`engine/warrecs.ts UnaRec`), placed by an admin from the row's third place, read by everyone in the day's list, the Inputs side shut (`engine/unagone.test.ts`). **Next:** round 2's FULL check with UNA's scenarios (`raptor-port/docs/handpass/2026-10-24-lw-round2.md` §Still to do).
+**DONE — found live on 27 Oct 26 by the backlog tidy ([LW-OTH-MANNING]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([INPUT-COLOURS]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [INPUT-COLOURS] The colour of each kind of input (his question, 24 Oct 26)
+**Put to him** with pictures (`raptor-port/docs/img/handpass/2026-10-24-lw-colours/`, script `scripts/handpass/lw-colours-look.mjs`): (1) OIL taken the other leave's blue, FO / HO green (D1291); (2) other leave a truer blue, away from the course's lilac; (3) overseas duty slate and filled, not grey (grey also means refused); (4) the Inputs calendar wears the Leave War's colours per kind — today every absence is the app's error red and every duty its warning amber — and duties then need a colour of their own, since amber is leave's. **Also asked (his question):** how a half-day HO with the app's star looks — drawn (`ho-star.png`, script `scripts/handpass/lw-ho-star-look.mjs`): "HO*" fills its 21-point half box exactly, letters 7.5 high; with an iPhone's wider letters the star is the part cut. A way out to put to him: the star as a small corner mark on the box, not a letter. **His answer (D1306, round 1 Q4): keep "HO*" — no corner mark.** **His D1309 (on Q1 / Q2 as first drawn):** every kind a colour of its own — redrawn as sets C (recommended: medical red, OIL taken magenta, course purple, overseas duty solid slate) and D (OIL taken lime) on the page; his pick waited on. **His direction (D1304):** the Inputs calendar takes the Leave War's colours per kind, duties a colour of their own. **His colleague's colours, for ideas only — his words: "we dont need to follow just ideas"** (`raptor-port/docs/img/handpass/2026-10-24-lw-colours/colleague-colours.png`): a filled pastel box a kind (LL blue, OL purple, OIL teal, HO mint, SC yellow-green, CCL pink, M / MC orange-red, CRS · PL · OD · OTH greys, FCL amber), half days stacked AM over PM, a small dot for an attachment, hatched locked dates; its greys for course, overseas duty and others share our grey problem. **His follow-up (24 Oct 26): would a bluer box hide the cyan Inputs stripe?** Measured (the stripe #3BC6E8, 2px, against each box's fill on the panel): brightness holds at about 5:1 for every blue, but the hue gap to cyan falls from 42° (today's periwinkle) to 25° (the truer blue) and 14° (the slate overseas duty) — the stripe would blend by colour. **Revised recommendation:** keep the other leave's periwinkle and move the course's lilac warmer, toward violet, to part them; draw an overseas duty in a warm stone grey, filled (far from cyan and unlike the refused box's cool grey) — to be redrawn on the page before he picks. **His picks (24 Oct 26):** set C (D1316, "Q2 as recommended"); Q3 redrawn — the duty and commitment bars lacked contrast (D1317), with the design skill. **Waits on:** his pick of the duties' look.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([INPUT-COLOURS]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([BOARD-MODALS-ESCAPE]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [BOARD-MODALS-ESCAPE] Three of the Scheduler Board's windows do not close on Escape (found 21 Oct 26, the round 3 walk; older)
+**Seen (the built app, 1536):** the Duty templates window (the "+ Block" menu's pencil), the Day templates window (Templates →
+Manage templates) and the Plans window (the plans menu → Manage plans) stay open on Escape; each closes by its ✕ or Done. The
+design guide §2: Escape closes what opened last. **Place:** `raptor-port/src/ui/DutyTplModal.tsx`, `DayTplModal.tsx`,
+`DraftsModal.tsx` (no keydown handler). **To do:** Escape closes each, the keyboard back on the button that opened it — with
+the next keyboard batch. **BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** each closes on Escape (the Scheduler Board behind it stays open), takes and keeps the
+keyboard, and gives it back to the button that opened its menu (`ui/sheetfocus.ts` `useEscClose`, `noteOpener`; test
+`ui/windowkeys.test.tsx`). Archived once it is live.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([BOARD-MODALS-ESCAPE]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([ARM-STRIP-STALE-TITLE]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.*
+
+### [ARM-STRIP-STALE-TITLE] The strip over the crew list keeps an old title (found 21 Oct 26 by the blind read of [BOARD-SIDE-WIDTH]; older)
+**Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list. **BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** as
+said (`palette-html.ts armStripHTML`; test `ui/armstrip.test.tsx`). Archived once it is live.
+**DONE — found live on 27 Oct 26 by the backlog tidy ([ARM-STRIP-STALE-TITLE]; the night of 26–27 Oct 26, job 3):** the evidence for this item is its row in `raptor-port/docs/superpowers/plans/2026-10-27-backlog-tidy.md`.
+
