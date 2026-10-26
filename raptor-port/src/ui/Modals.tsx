@@ -156,6 +156,16 @@ export function AirPop() {
        traffic already exists. */
     const traffic = (g.traffic || []) as any[]
     const admin = isAdmin(), body = bodyRef.current!
+    /* [INNERHTML-REPAINT-SWEEP] (21 Oct 26): this effect runs on EVERY repaint, and writing innerHTML again threw
+       away the line being typed in — the caret and the box with it — whenever anything else repainted. The boxes
+       already on screen are left alone when they hold exactly the list (typing writes each keystroke into the list,
+       so they still do while he types); only another window's list, a row added or deleted, a change made behind
+       the window (an undo) or a switch to the member's read-only view writes the markup again. */
+    const boxes = body.querySelectorAll<HTMLInputElement>('[data-airi]')
+    if (admin && body.dataset.airkey === String(AIRKEY) && body.dataset.airadmin === '1' && boxes.length === traffic.length
+      && traffic.every((a: any, i: number) => boxes[i].value === String(a))) return
+    body.dataset.airkey = String(AIRKEY)
+    body.dataset.airadmin = admin ? '1' : '0'
     if (admin) {
       body.innerHTML = traffic.map((a: any, i: number) => `<div class="airrow"><span class="adot"></span>
       <input value="${esc(a)}" data-airi="${i}" aria-label="Airspace line ${i + 1}"><button class="del" data-airdel="${i}">✕</button></div>`).join('')
