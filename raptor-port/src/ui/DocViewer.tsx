@@ -9,7 +9,7 @@
    always. The object URL is minted here on open and revoked on close — the
    store (state/docs) never holds one, so nothing leaks per stored file. */
 import { placedLine } from './placedline'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PEOPLE } from '../engine/people'
 import { inpMeta, baseYear, leadOf, remarksTyped } from '../engine/inputs'
 import { fmt } from './inputedit'
@@ -21,6 +21,7 @@ import { notify } from '../state/store'
 import { DOCVIEW, setDocView, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
+import { useSheetFocus } from './sheetfocus'
 
 export function DocViewer() {
   useVersion()
@@ -67,6 +68,9 @@ export function DocViewer() {
   }, [r])
 
   const close = () => { setDocView(null); notify() }
+  /* it takes and keeps the keyboard while it is up ([WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); its own Escape is above */
+  const boxRef = useRef<HTMLDivElement>(null)
+  useSheetFocus(boxRef, !!r)
   /* a medical entry is ONE person's (D655 reading 4): its person is the first of its people — engine/inputs.ts leadOf,
      which answers for a record stored before the one-rule build (one `person`) and one after it alike */
   const pid = r ? leadOf(r) : undefined
@@ -91,7 +95,7 @@ export function DocViewer() {
   return (
     <div className="airpop" id="docViewPop" hidden={!r}
       onClick={e => { if (clickedOutside(e, 'docViewPop')) close() }}>
-      <div className="airpop-box docviewbox">
+      <div className="airpop-box docviewbox" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head">
           <b id="docViewTitle">{who}{r ? ` · ${r.type} · ${when}` : ''}</b>
           <button className="x" id="docViewClose" aria-label="Close" onClick={close}>✕</button>
