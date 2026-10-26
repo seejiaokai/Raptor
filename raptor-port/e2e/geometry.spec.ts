@@ -4548,7 +4548,7 @@ test.describe('the frozen callsign column', () => {
    gone. Measured in each state an admin meets — not editing, editing, Edit quals on (its "✕ Edit quals" the widest) —
    at his phone's width, a narrow tablet's and a desktop's; nothing past the row's right edge, no sideways page scroll,
    and on a phone every button still answers a finger (44). */
-/* AND (owner D937, 16 Oct 26 — "As recommended"): on a phone "Save changes" reads "Save" as Export does, so at the
+/* AND (owner D937, 16 Oct 26 — "As recommended"; since D1128 the button reads "Done" on every width): on a phone "Save changes" read "Save" as Export does, so at the
    smallest phones (320) the filter keeps room to type while editing; and Quals opens at its top — the row in sight —
    however it is opened (the arrival test below). */
 for (const [w, h] of [[320, 700], [390, 844], [600, 900], [1280, 800]]) test(`D935 D937 Quals at ${w}: one row at 36, in every editing state`, async ({ page }) => {
@@ -4589,9 +4589,8 @@ for (const [w, h] of [[320, 700], [390, 844], [600, 900], [1280, 800]]) test(`D9
   await check('editing', ['#qSave', '#qEditQuals', '#qExport'])
   await page.locator('#qEditQuals').click(); await expect(page.locator('#qEditQuals')).toHaveText('✕ Edit quals')
   await check('Edit quals on', ['#qSave', '#qEditQuals', '#qExport'])
-  const save = await page.locator('#qSave').evaluate(b => [...b.children].filter(e => e.getBoundingClientRect().width > 1).map(e => e.textContent).join(' ').trim())
-  expect(save, 'Save changes, as a person sees it').toBe(w <= 480 ? 'Save' : 'Save changes')
-  await expect(page.getByRole('button', { name: 'Save changes' }), 'its full words are still its name').toHaveCount(1)
+  /* D1128: "Done" on every width, Logic's word (D937's phone "Save" went with "Save changes") */
+  await expect(page.locator('#qSave'), 'Done, as a person sees it').toHaveText('Done')
   await page.locator('#qEditQuals').click(); await page.locator('#qSave').click()
 })
 

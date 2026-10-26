@@ -1,0 +1,507 @@
+{
+ "pass": 100,
+ "total": 100,
+ "results": [
+  {
+   "name": "pc Quals: while editing, Done and Edit quals both shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Quals: Done is the bright blue, Edit quals is not",
+   "pass": true,
+   "detail": "Done rgb(59, 198, 232) · Edit quals rgb(26, 31, 38)"
+  },
+  {
+   "name": "pc Quals: Edit quals is the plain grey of Export beside it",
+   "pass": true,
+   "detail": "rgb(26, 31, 38) / rgb(26, 31, 38)"
+  },
+  {
+   "name": "pc Quals: pressed, it reads \"✕ Edit quals\", still plain, and the mode is on",
+   "pass": true,
+   "detail": "\"✕ Edit quals\" rgb(26, 31, 38) pressed=true"
+  },
+  {
+   "name": "pc Quals: pressed again, the mode is off and the button still plain",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Quals: Done ends editing",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Quals: while editing, Done and Edit quals both shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Quals: Done is the bright blue, Edit quals is not",
+   "pass": true,
+   "detail": "Done rgb(59, 198, 232) · Edit quals rgb(26, 31, 38)"
+  },
+  {
+   "name": "phone Quals: Edit quals is the plain grey of Export beside it",
+   "pass": true,
+   "detail": "rgb(26, 31, 38) / rgb(26, 31, 38)"
+  },
+  {
+   "name": "phone Quals: pressed, it reads \"✕ Edit quals\", still plain, and the mode is on",
+   "pass": true,
+   "detail": "\"✕ Edit quals\" rgb(26, 31, 38) pressed=true"
+  },
+  {
+   "name": "phone Quals: pressed again, the mode is off and the button still plain",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Quals: Done ends editing",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1366 board sbUndo: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Undo\""
+  },
+  {
+   "name": "1366 board sbRedo: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Redo\""
+  },
+  {
+   "name": "1366 board sbHist: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Show the changes, and who chan\""
+  },
+  {
+   "name": "1366 board sync: its dot alone",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1366 board and top bar agree: Undo's word hidden on both, sync the same",
+   "pass": true,
+   "detail": "top: undo word false, sync false"
+  },
+  {
+   "name": "1366 board: its buttons stand on one line",
+   "pass": true,
+   "detail": "sbUndo:80/29 sbRedo:80/29 sbHist:80/30 sbSync:80/21 sbBell:80/30 sbDone:80/30"
+  },
+  {
+   "name": "1366 board: History, pressed as an icon, opens the changes window",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1366 board: History pressed again closes it",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1366 board: the sync dot still toggles fast sync and back",
+   "pass": true,
+   "detail": "fastsync → fastsync on → fastsync"
+  },
+  {
+   "name": "1536 board sbUndo: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Undo\""
+  },
+  {
+   "name": "1536 board sbRedo: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Redo\""
+  },
+  {
+   "name": "1536 board sbHist: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Show the changes, and who chan\""
+  },
+  {
+   "name": "1536 board sync: its dot alone",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1536 board and top bar agree: Undo's word hidden on both, sync the same",
+   "pass": true,
+   "detail": "top: undo word false, sync false"
+  },
+  {
+   "name": "1536 board: its buttons stand on one line",
+   "pass": true,
+   "detail": "sbUndo:80/29 sbRedo:80/29 sbHist:80/30 sbSync:80/21 sbBell:80/30 sbDone:80/30"
+  },
+  {
+   "name": "1536 board: History, pressed as an icon, opens the changes window",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1536 board: History pressed again closes it",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1536 board: the sync dot still toggles fast sync and back",
+   "pass": true,
+   "detail": "fastsync → fastsync on → fastsync"
+  },
+  {
+   "name": "1599 board sbUndo: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Undo\""
+  },
+  {
+   "name": "1599 board sbRedo: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Redo\""
+  },
+  {
+   "name": "1599 board sbHist: its icon only, 34 wide, its name on hover",
+   "pass": true,
+   "detail": "w=34 word=false title=\"Show the changes, and who chan\""
+  },
+  {
+   "name": "1599 board sync: its dot alone",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1599 board and top bar agree: Undo's word hidden on both, sync the same",
+   "pass": true,
+   "detail": "top: undo word false, sync false"
+  },
+  {
+   "name": "1599 board: its buttons stand on one line",
+   "pass": true,
+   "detail": "sbUndo:80/29 sbRedo:80/29 sbHist:80/30 sbSync:80/21 sbBell:80/30 sbDone:80/30"
+  },
+  {
+   "name": "1599 board: History, pressed as an icon, opens the changes window",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1599 board: History pressed again closes it",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1599 board: the sync dot still toggles fast sync and back",
+   "pass": true,
+   "detail": "fastsync → fastsync on → fastsync"
+  },
+  {
+   "name": "1600 board sbUndo: its word back, its name on hover",
+   "pass": true,
+   "detail": "w=76 word=true title=\"Undo\""
+  },
+  {
+   "name": "1600 board sbRedo: its word back, its name on hover",
+   "pass": true,
+   "detail": "w=76 word=true title=\"Redo\""
+  },
+  {
+   "name": "1600 board sbHist: its word back, its name on hover",
+   "pass": true,
+   "detail": "w=89 word=true title=\"Show the changes, and who chan\""
+  },
+  {
+   "name": "1600 board sync: its words back",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1600 board and top bar agree: Undo's word shown on both, sync the same",
+   "pass": true,
+   "detail": "top: undo word true, sync true"
+  },
+  {
+   "name": "1600 board: its buttons stand on one line",
+   "pass": true,
+   "detail": "sbUndo:80/29 sbRedo:80/29 sbHist:80/30 sbSync:80/26 sbBell:80/30 sbDone:80/30"
+  },
+  {
+   "name": "1600 board: History, pressed as an icon, opens the changes window",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1600 board: History pressed again closes it",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1600 board: the sync dot still toggles fast sync and back",
+   "pass": true,
+   "detail": "fastsync → fastsync on → fastsync"
+  },
+  {
+   "name": "1920 board sbUndo: its word back, its name on hover",
+   "pass": true,
+   "detail": "w=76 word=true title=\"Undo\""
+  },
+  {
+   "name": "1920 board sbRedo: its word back, its name on hover",
+   "pass": true,
+   "detail": "w=76 word=true title=\"Redo\""
+  },
+  {
+   "name": "1920 board sbHist: its word back, its name on hover",
+   "pass": true,
+   "detail": "w=89 word=true title=\"Show the changes, and who chan\""
+  },
+  {
+   "name": "1920 board sync: its words back",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1920 board and top bar agree: Undo's word shown on both, sync the same",
+   "pass": true,
+   "detail": "top: undo word true, sync true"
+  },
+  {
+   "name": "1920 board: its buttons stand on one line",
+   "pass": true,
+   "detail": "sbUndo:80/29 sbRedo:80/29 sbHist:80/30 sbSync:80/26 sbBell:80/30 sbDone:80/30"
+  },
+  {
+   "name": "1920 board: History, pressed as an icon, opens the changes window",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1920 board: History pressed again closes it",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1920 board: the sync dot still toggles fast sync and back",
+   "pass": true,
+   "detail": "fastsync → fastsync on → fastsync"
+  },
+  {
+   "name": "1366 board: the toggle by the search is gone (it folded nothing here)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1366 board: the mark leads the CAT / TYPE / QUALS row, on its line, left of CAT",
+   "pass": true,
+   "detail": "mark x=16 w=16 · CAT x=39"
+  },
+  {
+   "name": "1366 board: the mark wears the week's grey",
+   "pass": true,
+   "detail": "rgb(138, 150, 163)"
+  },
+  {
+   "name": "1366 board: CAT, pressed, opens its chips",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1366 board: a chip pressed lights",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1366 board: pressed again it goes off",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1536 board: the toggle by the search is gone (it folded nothing here)",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1536 board: the mark leads the CAT / TYPE / QUALS row, on its line, left of CAT",
+   "pass": true,
+   "detail": "mark x=16 w=16 · CAT x=39"
+  },
+  {
+   "name": "1536 board: the mark wears the week's grey",
+   "pass": true,
+   "detail": "rgb(138, 150, 163)"
+  },
+  {
+   "name": "1536 board: CAT, pressed, opens its chips",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1536 board: a chip pressed lights",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "1536 board: pressed again it goes off",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone board: the toggle is shown, the mark label is not",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone board: a tap on the toggle opens the CAT / TYPE / QUALS row",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone board: a second tap folds it away",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Tracker courseMenuBtn: a line icon, about the text's size, no typed mark",
+   "pass": true,
+   "detail": "icon 15px \"\""
+  },
+  {
+   "name": "pc Tracker sylMenuBtn: a line icon, about the text's size, no typed mark",
+   "pass": true,
+   "detail": "icon 15px \"\""
+  },
+  {
+   "name": "pc Tracker detailsBtn: a line icon, about the text's size, no typed mark",
+   "pass": true,
+   "detail": "icon 15px \"\""
+  },
+  {
+   "name": "pc Tracker showAllBtn: a line icon, about the text's size, no typed mark",
+   "pass": true,
+   "detail": "icon 15px \"Show All\""
+  },
+  {
+   "name": "pc Tracker fileMenuBtn: a line icon, about the text's size, no typed mark",
+   "pass": true,
+   "detail": "icon 15px \"File ▾\""
+  },
+  {
+   "name": "pc Tracker barHideBtn: a line icon, about the text's size, no typed mark",
+   "pass": true,
+   "detail": "icon 15px \"\""
+  },
+  {
+   "name": "pc Tracker: ⓘ, pressed, turns Info mode on",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Tracker: pressed again, off",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Tracker: File opens its menu — Import and Export",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Tracker: the syllabus pencil opens its menu",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Tracker: ^ hides the bar; the strip that brings it back wears the line chevron",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "pc Tracker: the strip brings the bar back",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "w1050 Tracker: the three view tabs sit in one bordered box",
+   "pass": true,
+   "detail": "{\"border\":\"1px\",\"radius\":\"11px\",\"tabs\":[\"Flow chart\",\"Info\",\"Show All\"]}"
+  },
+  {
+   "name": "w1050 Tracker: each tab wears a line icon, no typed mark or emoji",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "w1050 Tracker: Info, pressed, is the picked tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "w1050 Tracker: Flow chart, pressed, is picked again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "w1050 Tracker: Show All, pressed, opens its list",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker: the three view tabs sit in one bordered box",
+   "pass": true,
+   "detail": "{\"border\":\"1px\",\"radius\":\"11px\",\"tabs\":[\"Flow chart\",\"Info\",\"Show All\"]}"
+  },
+  {
+   "name": "phone Tracker: each tab wears a line icon, no typed mark or emoji",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker: Info, pressed, is the picked tab",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker: Flow chart, pressed, is picked again",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker: Show All, pressed, opens its list",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker courseMenuBtn: its line icon shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker sylMenuBtn: its line icon shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker detailsBtn: its line icon shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker fileMenuBtn: its line icon shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "phone Tracker barHideBtn: its line icon shown",
+   "pass": true,
+   "detail": ""
+  },
+  {
+   "name": "no page error, console error or failed request during the walk",
+   "pass": true,
+   "detail": ""
+  }
+ ],
+ "errors": []
+}

@@ -5,6 +5,7 @@
    and their words: ui/logic-html.ts. The admin's edit mode is as it was: a value is parsed, bounded and applied live,
    the clash grading toggles, "Reset to standard" puts them all back — and now each changed value carries its own
    Reset while editing (the mock-up's per-setting Reset). The RULES MODIFIED stamp on the schedule pages went in D1098 (21 Oct 26); the strip here is the only mark. */
+import { PenIcon, SrchIcon } from './icons'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { VCONF, SHIFT_HARD, RULE_SPEC, RULE_STD, KIND_LABEL, ruleFmt, ruleParse, ruleOff, kindOff, rulesOffCount, rulesCheckedOffCount, rulesSave, rulesReset } from '../engine/rules'
 import { WARN, validate, lgFired } from '../engine/validate'
@@ -396,7 +397,7 @@ export function LogicPage() {
     <>
       <div className="lgbar" ref={barRef}>
         <h1 className="lgttl">Logic</h1>
-        <div className="searchbox">🔍<input id="lgSearch" placeholder="Search" aria-label="Search the rules"
+        <div className="searchbox"><SrchIcon /><input id="lgSearch" placeholder="Search" aria-label="Search the rules"
           value={LGQ} onChange={e => setLGQ(e.target.value)} /></div>
         <span className="lgfilt">
           <button type="button" ref={fBtnRef} className={'abtn' + (LGF !== 'all' ? ' on' : '')} id="lgFilterBtn"
@@ -410,7 +411,7 @@ export function LogicPage() {
           </div>}
         </span>
         <button type="button" className="abtn" id="lgEdit" hidden={!admin || editing}
-          onClick={() => { setLgEdit(true); notify(); HOOKS.toast('Editing rules — the schedule rechecks as you type') }}>✎ Edit</button>
+          onClick={() => { setLgEdit(true); notify(); HOOKS.toast('Editing rules — the schedule rechecks as you type') }}><PenIcon />Edit</button>
         <button type="button" className="abtn primary" id="lgDone" hidden={!admin || !editing}
           onMouseDown={e => e.preventDefault()}
           onClick={() => { finishBox(); setLgEdit(false); notify() }}>Done</button>

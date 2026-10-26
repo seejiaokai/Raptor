@@ -1,0 +1,36 @@
+[
+ {
+  "id": "B4a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "300 characters pasted (with a line break, <script>alert(1)</script>, an <img onerror> and an emoji): the box holds 200 characters, one line: true (scrollHeight 92, clientHeight 92); after Approve the saved words: 200 characters, no line break: true, <script> kept literally: true, a broken emoji half at the end: false; both days the same: true; 1 Dec's window shows the same words: true; the Inputs page row text: [\"Drifter 1 Dec LL <script>alert(1)</script> <img src=x onerror=\\\"window.__xss=1\\\"> 😀 first line second line after a break \",\"Drifter 2 Dec OL <script>alert(1)</script> <img src=x onerror=\\\"window.__xss=1\\\"> 😀 first line second line after a break \"], script elements there: 0, img elements: 0; alert dialogs raised: 0 []; window.__xss: null",
+  "pics": [
+   "b4-dk-01-pasted",
+   "b4-dk-03-window",
+   "b4-dk-04-inputs"
+  ]
+ },
+ {
+  "id": "B4b",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "199 letters then an emoji then \"tail\" pasted: the box kept 199 units (ends [\"61\",\"61\",\"61\"]), lone half of an emoji: false; saved [{\"len\":199,\"lone\":false}]",
+  "pics": []
+ },
+ {
+  "id": "B4c",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "two men dragged: Remarks boxes 0, Remarks row visible false",
+  "pics": [
+   "b4-dk-05-two-men"
+  ]
+ },
+ {
+  "id": "4-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx in tab A)",
+  "pics": []
+ }
+]

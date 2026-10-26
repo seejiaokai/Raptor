@@ -1,0 +1,89 @@
+[
+ {
+  "id": "25a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "empty box (it held \"\"), Approve over 1–2 Dec (LL \"Aaa\", OL \"Bbb\"): 1 Dec: req: - | input: LL 12-01/\"Aaa\" ; 2 Dec: req: - | input: OL 12-02/\"Bbb\"",
+  "pics": [
+   "s25-dk-a-before",
+   "s25-dk-a-approve"
+  ]
+ },
+ {
+  "id": "25b",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "spaces only (the box held \"   \"), Approve over 1–2 Dec (LL \"Ccc\", OL \"Ddd\"): 1 Dec: req: - | input: LL 12-01/\"Ccc\" ; 2 Dec: req: - | input: OL 12-02/\"Ddd\"",
+  "pics": [
+   "s25-dk-b-before",
+   "s25-dk-b-approve"
+  ]
+ },
+ {
+  "id": "25c",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "two men dragged (\"Cinch, Piston\", 1–2 Dec · 2 days): Remarks row absent (boxes 0); Approve: Cinch 1 Dec: req: - | input: LL 12-01/\"Eee\" ; Piston 2 Dec: req: - | input: LL 12-02/\"Fff\"",
+  "pics": [
+   "s25-dk-c-before",
+   "s25-dk-c-approve"
+  ]
+ },
+ {
+  "id": "25d",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words equal to day 1's own (\"Same\"), day 2 held \"Other\", Approve: 1 Dec: req: - | input: LL 12-01/\"Same\" ; 2 Dec: req: - | input: OL 12-02/\"Same\"",
+  "pics": [
+   "s25-dk-d-before",
+   "s25-dk-d-approve"
+  ]
+ },
+ {
+  "id": "25e",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "Error: fixture e1: 3 Dec: req: - | input: OL-pm 12-03/\"\" ; LL-am 12-03/\"Am1Pm1\"",
+  "pics": []
+ },
+ {
+  "id": "25f",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "an Inputs-filed approved LL on 4 Dec (\"From inputs\") with a pending LL on 3 Dec (\"Pend\"), dragged 3–4 Dec, typed \"Typed\", Approve: the Inputs-filed entry's words CHANGED to \"Typed\". 3 Dec: req: - | input: LL 12-03/\"Typed\" ; 4 Dec: req: - | input: LL[inputs] 12-04/\"Typed\"",
+  "pics": [
+   "s25-dk-f-before",
+   "s25-dk-f-approve"
+  ]
+ },
+ {
+  "id": "25f2",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Basher's Inputs-filed 4 Dec leave, its window after: raptor-sheet reading \"undefined\"",
+  "pics": [
+   "s25-dk-f-window-4dec"
+  ]
+ },
+ {
+  "id": "25g",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "TimeoutError: locator.innerText: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#pp')\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "25h",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "TimeoutError: page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"bid-picker\"]') to be visible\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "25-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

@@ -21,11 +21,11 @@
 // database to come. The memory backend is now the dev/test path only
 // and re-keying it would corrupt it.
 
-import { INPUTS, inpId } from '../../engine/inputs'
-import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type Recs } from '../engine'
+import { INPUTS, filingOf, inpId } from '../../engine/inputs'
+import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type ManningRule, type Recs } from '../engine'
 import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
-import { getState, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
+import { getState, installDemoCounters, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
 
 /**
  * Seed person -> Raptor person. HAND-PICKED so that every mapped Raptor
@@ -134,6 +134,21 @@ const DEMO_OIL_TAKEN: Array<[string, string]> = [
   ['slammed', '2026-01-14'],
 ]
 
+/* THE DEMO'S SIX COUNTERS (his D1312, 24 Oct 26 — "Demo data can u add more man more manning counters like 6 rows so
+   our mock ups caters for it and we see"): six of the eleven the Manning block carried until D669, word for word from
+   `leavewar/testing/eleven.ts` (D138), so the drawings and his preview show a busy Manning block and a bid window's day
+   line with several rows. Laid on at a fresh demo boot only (installDemoWorld below); a real squadron's store still
+   starts with none (D669). The browser tests boot without them (the switch below) and make their own (testing/eleven.ts). */
+const DEMO_INSTR_CATS = ['FI', 'IR', 'IP', 'IW']
+export const DEMO_COUNTERS: readonly ManningRule[] = [
+  { id: 'sets', label: 'Crew sets', count: { kind: 'team', slots: [{ count: 1, filter: { seats: ['pilot'] } }, { count: 1, filter: { seats: ['wso'] } }] }, threshold: { amber: 5, red: 4.5 }, desc: 'One set is one pilot plus one WSO — a jet you can crew. The day\'s number is whichever seat runs out first.' },
+  { id: 'ip', label: 'IP', count: { kind: 'people', filter: { seats: ['pilot'], cats: DEMO_INSTR_CATS } }, threshold: { amber: 3, red: 2 }, desc: 'Instructor pilots available.' },
+  { id: 'iwso', label: 'IWSO', count: { kind: 'people', filter: { seats: ['wso'], cats: DEMO_INSTR_CATS } }, threshold: { amber: 3, red: 2 }, desc: 'Instructor WSOs available.' },
+  { id: 'opsp', label: 'OPSP', count: { kind: 'people', filter: { seats: ['pilot'], notCats: DEMO_INSTR_CATS } }, threshold: { amber: 4, red: 3 }, desc: 'Ops pilots (CAT A–D, OCU included) available.' },
+  { id: 'opsw', label: 'OPSW', count: { kind: 'people', filter: { seats: ['wso'], notCats: DEMO_INSTR_CATS } }, threshold: { amber: 4, red: 3 }, desc: 'Ops WSOs (CAT A–D, OCU included) available.' },
+  { id: 'sxo', label: 'SXO', count: { kind: 'people', filter: { quals: ['sxo'] } }, threshold: { amber: 1, red: 1 }, desc: 'SXO-qualified crew available, counted on top of their own category.' },
+]
+
 export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
   // opening 3, FO 3 Jan seeded: the opening figure is used up by June
   // (archived), the January day part-drawn, the March grant and April half
@@ -162,6 +177,32 @@ export const DEMO_OIL: { recs: Recs; ledger: Ledger } = {
     grant('dol-13', 'slammed', 1, '2026-01-10', 'FLT', 'SQNCDR'),
   ],
 }
+
+/* THE WALK'S OWN CASES (the Leave War overhaul's M2 — the bug-check order §7.1, "the case seeded in the demo data"), so a
+   fresh demo shows on first run the two-entry days look F draws, without anyone having to build them by hand. On days the
+   demo leaves EMPTY, and kept apart from the OIL story above so its baseline — captured before the award move
+   (oilaward-baseline.test.ts) — stays the story's alone. Keyed by SEED id, so DEMO_MAP dresses them with everyone else:
+   · DECAL (→ CASPER), Thu 5 Feb 26: a MORNING half-day leave, approved (filed below with the seed's approved leave), and
+     an HO award in the AFTERNOON — each in its own half of the one day (D1164).
+   · CAGE (→ SPACEMAN), Mon 23 Feb 26: two whole-day entries side by side — an FO award beside a refused OL bid, as the
+     approved drawing r7-04 shows ("two entries on one day"). JAGUAR's 19 Jan (a two-day award beside a refused OL) is
+     the seed's own example of the same shape.
+   The Available rows' amber points are left unset: the walk's admin sets them. The ids sort after the seed's ("seed1"…):
+   a saved war reads its records back in id order, and the first boot's seal check compares the world before and after a
+   reload as written (bootseal.test.ts). */
+export const DEMO_WALK: { recs: Recs; ledger: Ledger } = {
+  recs: {
+    cage: { '2026-02-23': [{ id: 'walk-1', kind: 'request', code: 'OL', state: 'refused' }] },
+  },
+  ledger: [
+    { ...grant('walk-2', 'decal', 0.5, '2026-02-05', 'SIM', 'SQNCDR'), half: 'pm' as const },
+    grant('walk-3', 'cage', 1, '2026-02-23', 'FLT', 'SQNCDR'),
+  ],
+}
+/* the walk's approved leave — an Input, as all approved leave is (seed ids; `*LL` is the morning) */
+const DEMO_WALK_LEAVE: Array<[string, string, string]> = [
+  ['decal', '*LL', '2026-02-05'],
+]
 
 /**
  * Boot-time projection + demo re-key. Called once from main.tsx, after
@@ -197,6 +238,9 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
      the demo OIL story goes in first, so the re-key dresses it too. */
   if (demo) {
     installDemoOil(DEMO_OIL)
+    /* the browser tests' switch (e2e/app.ts openLeaveWar): they stand on the empty block a real squadron gets (D669) */
+    if (!(typeof window !== 'undefined' && (window as any).__lwNoDemoCounters === true)) installDemoCounters(DEMO_COUNTERS)
+    installDemoOil(DEMO_WALK)
     remapPersonKeys(DEMO_MAP)
     /* save the DRESSED world now — setPeople above saved the undressed seed, and the next boot, finding a
        started store, never dresses it again ([DB-READINESS] group A phase 0; store.ts persistBootWorld) */
@@ -212,11 +256,15 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
     const seedRows = [
       ...SEED_ABSENCES.map(a => ({ ...a, to: a.endDate ?? a.date })),
       ...DEMO_OIL_TAKEN.map(([person, date]) => ({ person, code: 'OIL', date, to: date, lw: true })),
+      ...DEMO_WALK_LEAVE.map(([person, code, date]) => ({ person, code, date, to: date, lw: true })),
     ]
     for (const a of seedRows) {
       const person = DEMO_MAP[a.person] ?? a.person
       const war = warHolding(wars, a.date)
       const row = inputRowFor({ person, code: a.code, from: a.date, to: a.to, lw: a.lw && war ? war.period.id : undefined, mod: '2026-01-01' })
+      /* filed where its kind lands, as a course filed on the Inputs page or from the war is (D1372 — sync.ts): the demo's
+         course stands under Unavailable, so the war counts it (it asks only Unavailable, D1389 — the night's code read F1) */
+      if (filingOf(row.type, 'u')) row.acc = 'u'
       if (INPUTS.some((x: any) => x.person === row.person && x.date === row.date && x.yr === row.yr && x.type === row.type)) continue
       inpId(row)
       INPUTS.push(row)

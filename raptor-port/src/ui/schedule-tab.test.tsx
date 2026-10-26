@@ -318,7 +318,16 @@ describe('D556 schedule Tab production wiring', () => {
      week does when the day's shape changes (its first warning appears, its last one goes: ui/dayswap.ts). The check
      that followed the redraw asked for the ORIGINAL day element, found it gone, and left the caret on nothing — D597's
      fault back by another road. The day is looked up again and the box's twin takes the caret. */
+  /* D597 IS ABOUT A DAY WITH NO BUTTON BELOW ITS LAST BOX. The demo's Friday had none until an overseas duty under
+     Unavailable carried its own Reject (his D1393, 26 Oct 26) — a button below the last box, where Tab rightly goes
+     (D553). So these tests end Pike's overseas duty on the Thursday: Friday is again a day with no button below its last box. */
+  const noButtonBelowFriday = async () => {
+    const od: any = INPUTS.find((x: any) => x.type === 'OD' && x.person === 'pike')
+    if (od) od.endDate = 'Jul 16'
+    await act(async () => { validate(); notify() }); await tick()
+  }
   it('D597 when the redraw at that Tab replaces the whole day on screen, the caret still goes back into the last box', async () => {
+    await noButtonBelowFriday()
     /* Friday of the demo week carries no warning, so its first one adds a block to the day and the whole day is replaced */
     const day = () => host.querySelector<HTMLElement>('#eWeek > .day[data-day="4"]')!
     const fields = () => [...day().querySelectorAll<HTMLElement>('[contenteditable="true"]')]
@@ -396,6 +405,7 @@ describe('D556 schedule Tab production wiring', () => {
   })
   /* (2) the box has no twin after the redraw (its row went with the save): the caret falls back to the day's last box */
   it("D597 when the last box itself is gone after that Tab's redraw, the caret goes into the day's new last box", async () => {
+    await noButtonBelowFriday()
     const last = boxesOf(friday()).at(-1)!, was = marksOf(last)
     /* the day's last box is a request's remarks: the blur takes the request away, and its row with it */
     const iid = String(last.dataset.inp || '').split('.')[0]

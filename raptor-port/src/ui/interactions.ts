@@ -7,7 +7,7 @@ import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT } fr
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
+import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -17,13 +17,13 @@ import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, loadMovedNow, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
 import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
-import { oilCreditBidAgainst, createOilPeriodFor } from '../leavewar/sync'
+import { oilCreditBidAgainst, createOilPeriodFor, showPeriodOf } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
@@ -31,7 +31,7 @@ import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { iuParts } from '../engine/keys'
-import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho } from './inputedit'
+import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
@@ -44,6 +44,7 @@ import { hm24,parseHM } from '../engine/time'
 import { parseReportingLines,resolveReporting,REPORTING_LABEL } from '../engine/reporting'
 import { VCONF } from '../engine/rules'
 import { shiftWeek } from './weeknav'
+import { penSvg } from './pen'
 
 /* Focus a warning clicked from somewhere that is NOT an already-open day box —
    the board's issue list, or a chip on a puck. Both have to open the box
@@ -357,7 +358,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   let needPlace = false
   const paint = () => {
     box.innerHTML = `<h5>Stores configuration`
-      + `<button class="st-pen${pen ? ' on' : ''}" title="${pen ? 'Done editing the list' : 'Edit the list'}">✎</button></h5>`
+      + `<button class="st-pen${pen ? ' on' : ''}" title="${pen ? 'Done editing the list' : 'Edit the list'}">${penSvg(true)}</button></h5>`
       + (pen
         ? `<div class="st-elist">`
           + STORE_CFG.map(([k, lab], i) =>
@@ -999,6 +1000,8 @@ export function routeClick(e: MouseEvent) {
     const rowDay = dest === 'x' ? acceptedDay(inp) : -1
     /* …and WHERE it stood: on the ground programme ('g') or under Unavailable ('u') — the take-off says which it left */
     const was = inp.acc
+    /* an overseas duty with no mark stands under Unavailable by its kind (D1393 — the code read's F4) */
+    const wasUnav = was === 'u' || (isOD(inp.type) && !was && !inp.odGround)
     const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
     /* AN ARMED PLACE DOES NOT SURVIVE A ROW MOVING UNDER IT — here too. This door writes the day itself, BEFORE the
        after-command pass takes its own picture of the armed row (state/holderbase.ts), so a row an Accept put back
@@ -1028,6 +1031,8 @@ export function routeClick(e: MouseEvent) {
           const x = find()
           if (!x || !commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true, oil })) return false
           if (!acceptInput(di, find(), dest)) { HOOKS.toast(refusalWords(find() || x), 'warn'); throw new CmdRefused('the put-back was refused') }
+          /* a scheduler's move, marked in the same step (his D1388 — ui/inputedit.tsx markMoved) */
+          markMoved(find())
           /* …and the marks are settled inside the step: an issued row put back as it went out wears no "goes out" mark.
              Every other Accept ends in afterSchedMutate, whose epilogue does this; this one is its own command and
              has no such ending (the Opus read of the finished code, F1) */
@@ -1035,6 +1040,9 @@ export function routeClick(e: MouseEvent) {
           return true
         }).ok
       : dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
+    /* A SCHEDULER'S MOVE IS MARKED, before the command below records it (his D1388): from now on only a scheduler changes
+       where it stands — the member's window offers no Goes to, and his save leaves it here (ui/inputedit.tsx markMoved) */
+    if (ok && !oil) markMoved(inp)
     if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -1057,7 +1065,7 @@ export function routeClick(e: MouseEvent) {
          stood on ANOTHER day names that day ([REQ-DOOR-WORDS] 2), and one filed under Unavailable is "taken out of
          Unavailable" — it was never on the programme. */
       const said = dest === 'x'
-          ? was === 'u' ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
+          ? wasUnav ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
           : rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `${cs}'s ${inpLabel(inp)} taken off ${DAYS[rowDay].dow}'s programme`
           : `${cs}'s ${inpLabel(inp)} taken off the programme`
         : dest === 'u' ? `${cs}'s ${inpLabel(inp)} filed under Unavailable`
@@ -1596,8 +1604,9 @@ export function routeClick(e: MouseEvent) {
       + (left ? ` ${left} request${left === 1 ? ' stays' : 's stay'} as filed because ${left === 1 ? 'it covers' : 'they cover'} another day.` : '')
       /* each request that came back onto (or went off) the programme with its row, by its own name, and the other days
          that read it too */
-      + LOADMOVED.map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
-          return m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
+      + loadMovedNow().map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
+          /* landed by the working-out on a day it never stood on ([LOAD-MOVES-ROW-DAY], a question for him): "now", not "again" */
+          return m.moved ? ` ${what} is on ${dayList(m.days)}'s programme now, pending there.` : m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
       /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
       + rowsLeftSentences(ROWSLEFT)
       /* …and a member's input changed since the day was issued, which stays pending (a member's record is his — Fable F5) */
@@ -1725,9 +1734,9 @@ export function routeClick(e: MouseEvent) {
   /* THE MISSING LEAVE WAR PERIOD, CREATED FROM THE SCHEDULE (owner's ruling
      D19, 22 Sep 26). The day says a period for that year does not exist and
      that nothing can be paid for it; this is the way out sitting beside the
-     reason. It lands in DRAFT and takes him to the Leave War, because a period
-     carries bidding dates and a stage — opening it for bidding is his own act,
-     never something a schedule screen does behind him. */
+     reason. It is made with nothing open for bidding and takes him to the Leave War,
+     on the period just made (M1, A-F3) — opening its dates for bidding is his own
+     act, never something a schedule screen does behind him (D1177). */
   const mkp = t.closest('[data-mkperiod]') as HTMLElement | null
   if (mkp) {
     e.stopPropagation()
@@ -1735,7 +1744,8 @@ export function routeClick(e: MouseEvent) {
     const yr = String(mkp.dataset.mkperiod || '')
     const made = createOilPeriodFor(yr)
     if (made === 'created') {
-      HOOKS.toast(`The ${yr} leave war period is created. Set its bidding window here.`, 'ok')
+      HOOKS.toast(`The ${yr} leave war period is created. Open its dates for bidding here.`, 'ok')
+      showPeriodOf(`${yr}-01-01`)
       view.setPage('leavewar'); notify()
     } else if (made === 'overlap') {
       HOOKS.toast(`A leave war already covers part of ${yr}. Open the Leave War and extend it instead.`, 'warn')
@@ -2023,7 +2033,10 @@ export function routeClick(e: MouseEvent) {
     + '.fchip,.puck,.seat,.rpuck,.ros-tab,.ros-arm,.sb-slot,[data-fill],[data-slot],'
     + '.dwbox,.pillbtn,.sb-open,.dinfobtn,.airpop,.alpanel,'
     + '.sb-top,.hscroll,.week-nav,.modal,.drawer,'
-    + '[data-crewday],[data-dayinfo],.sgn')) {
+    /* the side column's two grips — its width (D1113) and the issues / crew split — are controls, not blank space: letting
+       go of a drag on them must not drop the seat being planned or the selection (the walk of 21 Oct 26 —
+       [BOARD-SIDE-WIDTH]; the split's grip had the same gap since it was built) */
+    + '[data-crewday],[data-dayinfo],.sgn,[data-sidegrip],[data-wsplit]')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
     if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) {

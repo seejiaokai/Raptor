@@ -55,6 +55,7 @@ export function SettingsSheet({
   onClose,
   onAddCounter,
   onDays,
+  onRearrange,
   onGroupDragStart,
   onPriorityDragStart,
   draggingId,
@@ -66,6 +67,9 @@ export function SettingsSheet({
   onAddCounter: () => void
   /** Open Days — the admin's window that says what kind of day each date is (Matrix closes this sheet first). */
   onDays: () => void
+  /** Turn the grid's Rearrange on — the drag handles on its rows (Matrix closes this sheet first). Rearrange moved here
+   *  from the grid card's bar (D1254). */
+  onRearrange?: () => void
   /** Drag in the groups list (display order — the same write as the grid's heading
    *  grip) and in the who-wins (priority) list — both wired by Matrix to the one
    *  drag machine. */
@@ -228,12 +232,17 @@ export function SettingsSheet({
           arranged by hand are real work — and is greyed, with a line saying so, while the roster already follows
           the default. The store clears the saved order (resetRosterOrder), so a man who joins later lands in his
           ranked place too; the one Undo brings the arrangement back. */}
-      <div className="gs-sec">
-        Roster order
-        <span className="gs-hint">people are rearranged on the grid with ⇅</span>
-      </div>
+      <div className="gs-sec">Roster order</div>
       <div className="set-tray">
         <div className="set-ctrls">
+          {/* REARRANGE, MOVED HERE FROM THE GRID CARD'S BAR (D1254 — the navigation as drawn in round 19: "Rearrange
+              into ⚙"). It turns the grid's drag handles on and closes this window; the grid's bar then carries "Done",
+              the one way out, as the old ⇅ toggle was (owner, 6 Sep 26). */}
+          {onRearrange && (
+            <button className="rtbtn" data-testid="settings-rearrange" title="Drag people and category blocks on the grid" onClick={onRearrange}>
+              ⇅ Rearrange the grid
+            </button>
+          )}
           <button
             className={`rtbtn set-danger set-order${armOrder ? ' arm' : ''}`}
             data-testid="roster-reset-order"

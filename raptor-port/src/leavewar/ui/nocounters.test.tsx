@@ -33,6 +33,13 @@ import { elevenCounters } from '../testkit'
 import { ELEVEN_COUNTERS } from '../testing/eleven'
 import { StageBar } from './Chrome'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
+   asked as the ⚙ press asks it (ui/lwnav.ts). */
+const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
+/* Rearrange's way in is a line in ⚙ since D1254 ("⇅ Rearrange the grid"); the bar's "⇅ Done" is only the way out. */
+const startRearrange = () => { act(() => { askLw({ kind: 'settings' }) }); fireEvent.click(screen.getByTestId('settings-rearrange')) }
 
 const mem = new Map<string, string>()
 beforeEach(() => {
@@ -76,7 +83,7 @@ describe('the app starts with no counters (reading 1)', () => {
   })
   it('in Rearrange, with no counters, the block shows no grip, no cross and no Archive bar', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    startRearrange()
     expect(rowsOfBlock()).toEqual(FLY)
     expect(document.querySelector('[data-testid^="manning-"]')).toBeNull()
   })
@@ -90,29 +97,34 @@ describe('the app starts with no counters (reading 1)', () => {
 
 describe('"under-manned" judges only counters that exist (reading 5)', () => {
   const verdictOf = (iso: string) => { const s = getState(); return evaluateDay(s.people, s.grid, s.states, s.requirements, iso, s.views) }
-  it('with none, no day is under-manned and the tally reads 0 days', () => {
+  /* WAS "the tally reads 0 days". The count is the Manning button's right half since D1243 — "n red ›", red days only —
+     and with no red day the half goes and the button reads "Manning" alone. */
+  it('with none, no day is under-manned and the Manning button carries no red count', () => {
     for (const d of getState().period.days.slice(0, 40)) {
       const v = verdictOf(d.date)
       expect(v.results).toEqual([]); expect(v.verdict, d.date).toBe('ok')
     }
     render(<StageBar />)
-    expect(screen.getByTestId('undermanned').textContent).toContain('0 days')
-    expect((screen.getByTestId('undermanned') as HTMLButtonElement).disabled).toBe(true)
+    // D1243: no red day — the right half is not drawn, and the button is "Manning" alone
+    expect(screen.queryByTestId('undermanned')).toBeNull()
+    expect(screen.getByTestId('counts-toggle').textContent!.trim()).toMatch(/Manning$/)
   })
   it('a counter someone makes is judged from then on — and stops being judged the moment it is deleted', () => {
     expect(saveManningRule(PILOTS)).toBe(true)                        // red below 98 pilots: every day is red
     expect(verdictOf(TUE).verdict).toBe('red')
     render(<StageBar />)
-    expect(screen.getByTestId('undermanned').textContent).not.toContain('0 days')
+    // D1243: every day of the period red, so the right half counts them all — "n red ›"
+    expect(screen.getByTestId('undermanned').textContent).toBe(`${getState().period.days.length} red ›`)
     act(() => { expect(deleteManningRule('pilots')).toBe(true) })
     expect(verdictOf(TUE).verdict).toBe('ok')
-    expect(screen.getByTestId('undermanned').textContent).toContain('0 days')
+    // D1243: back to no red day — the half goes
+    expect(screen.queryByTestId('undermanned')).toBeNull()
   })
 })
 
 describe('in Rearrange a count row carries a delete cross where the eye was (readings 2, 3, 6)', () => {
   beforeEach(() => { saveManningRule(PILOTS); saveManningRule({ ...PILOTS, id: 'wsos', label: 'WSOS', count: { kind: 'people', filter: { seats: ['wso'] } }, threshold: { amber: 0, red: 0 } }) })
-  const arrange = () => { render(<Matrix />); fireEvent.click(screen.getByTestId('roster-arrange')) }
+  const arrange = () => { render(<Matrix />); startRearrange() }
 
   it('each of the squadron’s own rows has a grip and a cross; there is no eye anywhere', () => {
     arrange()
@@ -137,6 +149,9 @@ describe('in Rearrange a count row carries a delete cross where the eye was (rea
     render(<Matrix />)
     expect(screen.getByTestId('count-pilots')).toBeTruthy()
     expect(screen.queryByTestId('roster-arrange')).toBeNull()
+    // D1254: Rearrange's way in is a line in ⚙ — a member asking for ⚙ gets no sheet, so no way in either
+    act(() => { askLw({ kind: 'settings' }) })
+    expect(screen.queryByTestId('settings-rearrange')).toBeNull()
     expect(document.querySelector('[data-testid^="manning-delete-"]')).toBeNull()
   })
   it('the cross deletes its counter at once — it asks nothing — and the rest keep their place', () => {
@@ -169,7 +184,7 @@ describe('in Rearrange a count row carries a delete cross where the eye was (rea
     lwInitStore(backend); setRole('admin'); setPeople(projectPeople())
     render(<Matrix />)
     expect(screen.getByTestId('count-pilots')).toBeTruthy()
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    startRearrange()
     expect(screen.queryByTestId('manning-archive')).toBeNull()
     expect(screen.getByTestId('manning-delete-pilots')).toBeTruthy()
   })
@@ -178,7 +193,7 @@ describe('in Rearrange a count row carries a delete cross where the eye was (rea
 describe('⚙ Settings (reading 4)', () => {
   it('still makes a counter with "+ Counter", and no longer offers "Reset counters"', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     expect(screen.getByTestId('counter-add')).toBeTruthy()
     expect(screen.queryByTestId('counter-reset-all')).toBeNull()
     expect(screen.getByTestId('settings-sheet').textContent).not.toMatch(/Reset counters/i)
@@ -210,7 +225,7 @@ describe('nothing stored is converted (reading 7), and what the tests stand on i
   })
   it('the counter FORM can express each of them: seats, the CAT ladder with "is not", the SXO and SC qualifications, a four-slot team', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open')); fireEvent.click(screen.getByTestId('counter-add'))
+    openSettings(); fireEvent.click(screen.getByTestId('counter-add'))
     for (const t of ['cf-seat-pilot', 'cf-seat-wso', 'cf-catmode', 'cf-qual-sxo', 'cf-qual-scDay', 'cf-qual-scNight']) expect(screen.getByTestId(t), t).toBeTruthy()
     for (const c of ['FI', 'IR', 'IP', 'IW', 'A', 'B']) expect(screen.getByTestId(`cf-cat-${c}`), c).toBeTruthy()
     fireEvent.click(screen.getByTestId('cform-mode-team'))

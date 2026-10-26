@@ -17,7 +17,7 @@ import { commandStream } from '../command'
 import { balanceOf, figureParts, FIGURES } from './engine'
 import { projectPeople } from './state/raptorRoster'
 import {
-  advanceStage, clearCells, getState, initStore as lwInitStore, rawState, setBidState, setCell, setPeople, setRole, moveCells,
+  clearCells, getState, initStore as lwInitStore, rawState, setBidState, setCell, setPeople, setRole, moveCells,
 } from './state/store'
 import { memoryBackend } from './state/storage'
 import { getClashes, leaveInputAt, syncAbsences } from './sync'
@@ -41,12 +41,11 @@ beforeEach(() => {
   syncAbsences()
 })
 
-/** Approve a run of days the way the app does: bid, close the war, decide. */
+/** Approve a run of days the way the app does: bid, then decide (the admin decides at any time — D1177). */
 function approve(person: string, dates: string[], code = 'LL') {
   const wasRole = getState().role
   setRole('admin')
   for (const d of dates) setCell(person, d, code)
-  if (getState().period.stage === 'open') advanceStage()
   for (const d of dates) setBidState(person, d, 'approved')
   setRole(wasRole)
 }
@@ -83,7 +82,6 @@ describe('approving turns the bids into the ONE Input', () => {
     const wasRole = getState().role
     setRole('admin')
     setCell('ammo', '2026-02-02', 'LL'); setCell('ammo', '2026-02-03', 'LL')
-    advanceStage()
     const before = commandStream().length
     setBidState('ammo', '2026-02-02', 'approved')
     setRole(wasRole)
@@ -96,7 +94,6 @@ describe('approving turns the bids into the ONE Input', () => {
   it('does not approve over leave already filed at the same time — skipped, the bid kept', () => {
     setRole('admin')
     setCell('ammo', '2026-02-02', 'LL')
-    advanceStage()
     // an OL filed on the Inputs page AFTER the bid (the Inputs-door rules would
     // replace the bid; here it is pushed raw to stage the approval preflight)
     INPUTS.push({ person: 'ammo', date: 'Feb 2', yr: 2026, allday: true, type: 'OL', remarks: '', mod: '2026-06-01', iid: 'olx' })

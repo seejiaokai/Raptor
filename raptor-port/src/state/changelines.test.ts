@@ -208,11 +208,11 @@ describe('an Undo or a Redo (Astra DP-04)', () => {
   })
 
   /* the change-recording re-test (28 Sep 26, plan §11.9 widened by walker A2-F5): an Undo line appears only where its
-     change wrote a line of its own — a Leave War ⚙ setting, a stage move or a Logic rule writes none, so its Undo wrote
+     change wrote a line of its own — a Leave War ⚙ setting, opening or closing its dates (D1177) or a Logic rule writes none, so its Undo wrote
      a lone "Undo —" dated today, in a week nobody opens */
   it('an undo of a change that wrote no line of its own writes none either (A2-F5)', async () => {
     logReversed({ label: 'a Leave War setting', forward: [{ op: 'put', collection: 'lw.config', id: 'all', before: {}, after: { sans: true } }] as any }, 'undo')
-    logReversed({ label: 'closing bidding', forward: [{ op: 'put', collection: 'lw.war', id: 'w1', before: { stage: 'open' }, after: { stage: 'closed' } }] as any }, 'redo')
+    logReversed({ label: 'closing bidding 1 Jan – 31 Mar', forward: [{ op: 'put', collection: 'lw.war', id: 'w1', before: { open: [{ from: '2026-01-01', to: '2026-03-31' }] }, after: { open: [] } }] as any }, 'redo')
     logReversed({ label: 'a rule on the Logic page', forward: [{ op: 'put', collection: 'settings', id: 'rules', before: null, after: { v: {} } }] as any }, 'undo')
     await turnEnds()
     expect(ELOG.rows).toHaveLength(0)

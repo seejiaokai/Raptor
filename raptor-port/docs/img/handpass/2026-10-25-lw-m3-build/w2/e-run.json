@@ -1,0 +1,52 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-BayEj7kB.js"
+ },
+ {
+  "id": "15-published",
+  "size": "desk",
+  "said": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4,\"chip\":\"ORIG\"}; edit head \"Wednesday Jul 15 Templates Live working copy ▾ ORIG 4 X 4 6 changes i Unpublish\"; Unavailable [\"Other Ranger IP LATE Pub other REJECT\"]; issued face Unavailable [\"Other all day Ranger IP LATE Pub other\"]; war [\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw17.3\"] Available P 24"
+ },
+ {
+  "id": "15-flip1",
+  "size": "desk",
+  "said": "edit head \"Wednesday Jul 15 Templates Live working copy ▾ ORIG Not yet signed 4 X 4 1 pending i Publish AL1 Unpublish\"; Ground [\"OTHER Ranger IP + ADD LATE Pub other\"]; Unavailable []; marks on the Ground row {\"dataAl\":[\"data-alp=\\\"1\\\"\",\"data-aln=\\\"1\\\"\"],\"altag\":[]}; issued face Unavailable [\"Other all day Ranger IP LATE Pub other\"] Ground []; war [] Available P 25"
+ },
+ {
+  "id": "15-flip1",
+  "size": "desk",
+  "said": "the pending list: ⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 ✕ New to you 0 All changes 7 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Ranger · Other Saber 25/10 19:05 under Unavailable → on the programme Tap a change to go to it. Tap a change to go to it."
+ },
+ {
+  "id": "15-AL1",
+  "size": "desk",
+  "said": "publish {\"published\":true,\"version\":\"AL1\",\"signSelects\":4,\"chip\":\"AL1\"}; edit head \"Wednesday Jul 15 Templates Live working copy ▾ AL1 4 X 4 12 changes i Unpublish\" (pending 0); issued face Unavailable [] Ground [\"OTHER Ranger IP LATE Pub other\"] head \"Wednesday Jul 15 AL1 4 X 4 AL1 — as issued Working draft — not issued i\"; war [] Available P 25"
+ },
+ {
+  "id": "15-flip2",
+  "size": "desk",
+  "said": "edit head \"Wednesday Jul 15 Templates Live working copy ▾ AL1 Not yet signed 4 X 4 1 pending i Publish AL2 Unpublish\"; Unavailable [\"Other Ranger IP LATE Pub other REJECT\"]; marks {\"dataAl\":[],\"altag\":[]}; issued face Unavailable [] Ground [\"OTHER Ranger IP LATE Pub other\"]; war [\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw17.3\"] Available P 24"
+ },
+ {
+  "id": "15-flip2",
+  "size": "desk",
+  "said": "the pending list: ⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL2 ✕ New to you 0 All changes 13 To go out · AL2 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL2 · 1 change Ranger · Other Saber 25/10 19:05 on the programme → under Unavailable Tap a change to go to it."
+ },
+ {
+  "id": "15-flip2",
+  "size": "desk",
+  "said": "whole Unavailable row html attributes: class,data-inpedit,data-inp,data-ph,data-inpseat,data-person,data-acc,data-accd,data-acck,data-inprow | classes: nm ntx inpedit t t-s txed inpt t-e ppl one seat puck sm role q-ins rmk has-late latetag accs accb undo pl-row"
+ },
+ {
+  "id": "15-AL2",
+  "size": "desk",
+  "said": "publish {\"published\":true,\"version\":\"AL2\",\"signSelects\":4,\"chip\":\"AL2\"}; edit head \"Wednesday Jul 15 Templates Live working copy ▾ AL2 4 X 4 18 changes i Unpublish\"; issued face Unavailable [\"Other all day Ranger IP LATE Pub other\"] Ground []; war [\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw17.3\"] Available P 24"
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "said": "[]"
+ }
+]

@@ -88,6 +88,16 @@ export interface ManningRule {
    *  absent and the sheet writes the words from the definition itself
    *  (`describeRule`), so the explanation can never drift from the rule. */
   desc?: string
+  /** The Available P and W rows' amber and red points (D1190, D1191, D1202) — each a number plus or minus that day's
+   *  Required, never an absolute figure; read only on those two rows (availrows.ts). Absent = today's rule. */
+  points?: AvailPoints
+}
+
+/** An Available row's two points, as offsets from the day's Required: red when under Required + `red` ("+ 0" by
+ *  default — under Required); amber, where set, when under Required + `amber` and not red. Negatives allowed. */
+export interface AvailPoints {
+  amber?: number
+  red: number
 }
 
 export interface Requirement {

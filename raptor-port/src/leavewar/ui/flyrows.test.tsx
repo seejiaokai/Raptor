@@ -21,6 +21,10 @@ import { projectPeople } from '../state/raptorRoster'
 import { dayFacts, flyAnswer } from '../sync'
 import { Matrix } from './Matrix'
 import { FLY_ROW_KEYS } from './FlyRows'
+import { askLw } from './lwnav'
+
+/* Rearrange's way in is a line in ⚙ since D1254 ("⇅ Rearrange the grid"); the bar's "⇅ Done" is only the way out. */
+const startRearrange = () => { act(() => { askLw({ kind: 'settings' }) }); fireEvent.click(screen.getByTestId('settings-rearrange')) }
 
 const mem = new Map<string, string>()
 beforeEach(() => {
@@ -73,7 +77,7 @@ describe('where they sit (D665, 8 Oct 26 — at the foot of the Manning block, n
      form — D640, availform.test.tsx.) */
   it('in Rearrange they stay put: no grip to drag one by, no cross to delete one with', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    startRearrange()
     expect(document.querySelectorAll('[data-testid^="manning-delete-"]').length).toBeGreaterThan(0)   // the squadron's own rows have them
     for (const id of ROWS) {
       expect(screen.getByTestId(id).querySelector('.drag, [data-testid^="manning-"]')).toBeNull()

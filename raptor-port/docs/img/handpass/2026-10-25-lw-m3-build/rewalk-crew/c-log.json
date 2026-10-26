@@ -1,0 +1,87 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-B0ORGm0s.js"
+ },
+ {
+  "id": "file-cse",
+  "size": "desk",
+  "said": "stored acc u date Jul 14"
+ },
+ {
+  "id": "file-trg",
+  "size": "desk",
+  "said": "stored acc g date Jul 14"
+ },
+ {
+  "id": "file-cse-allday",
+  "size": "desk",
+  "said": "stored acc u allday true"
+ },
+ {
+  "id": "file-trg2",
+  "size": "desk",
+  "said": "stored acc g date Jul 14 — left on the Ground Programme"
+ },
+ {
+  "id": "move-trg",
+  "size": "desk",
+  "said": "buttons []"
+ },
+ {
+  "id": "move-trg",
+  "size": "desk",
+  "said": "pressed REJECT · pressed → UNAVAIL; stored acc now u"
+ },
+ {
+  "id": "crew-day",
+  "size": "desk",
+  "said": "crew list on Tuesday true"
+ },
+ {
+  "id": "Q2-course",
+  "size": "PASS",
+  "said": "Ranger, course 06:00-18:00 under Unavailable (faded, already tasked, as its Ground row did): {\"cls\":\"busy\",\"why\":\"\",\"title\":\"Ranger — already tasked today, but you can still plan him\",\"shown\":\"\"}"
+ },
+ {
+  "id": "Q2-course-allday",
+  "size": "PASS",
+  "said": "Comet, all-day course under Unavailable (crossed out): {\"cls\":\"no\",\"why\":\"course (CSE) — Safety course\",\"title\":\"Comet — course (CSE) — Safety course\",\"shown\":\"\"}"
+ },
+ {
+  "id": "Q2-moved",
+  "size": "PASS",
+  "said": "Hunter, Training moved → Unavail: {\"cls\":\"busy\",\"why\":\"\",\"title\":\"Hunter — already tasked today, but you can still plan him\",\"shown\":\"\"}"
+ },
+ {
+  "id": "Q2-ground-control",
+  "size": "PASS",
+  "said": "Saber, Training on the Ground Programme (control — already tasked): {\"cls\":\"busy\",\"why\":\"\",\"title\":\"Saber — already tasked today, but you can still plan him\",\"shown\":\"\"}"
+ },
+ {
+  "id": "Q2-board",
+  "size": "PASS",
+  "said": "the board's crew list — Ranger: {\"cls\":\"busy\",\"why\":\"\",\"title\":\"Ranger — already tasked today, but you can still plan him\",\"shown\":\"\"}"
+ },
+ {
+  "id": "Q2-armed",
+  "size": "PASS",
+  "said": "the new line's front seat 1.0.2.0.p picked — Ranger {\"cls\":\"no\",\"why\":\"course (CSE) — Instructor course\",\"title\":\"Ranger — course (CSE) — Instructor course\",\"shown\":\"course (CSE) — Instructor course\"} · Comet {\"cls\":\"no\",\"why\":\"course (CSE) — Safety course\",\"title\":\"Comet — course (CSE) — Safety course\",\"shown\":\"course (CSE) — Safety course\"}"
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "said": "[]"
+ },
+ {
+  "id": "Q2-phone",
+  "size": "PASS",
+  "said": "phone board crew list — Ranger: {\"cls\":\"rpuck busy\",\"why\":\"\"}"
+ },
+ {
+  "id": "errors",
+  "size": "phone",
+  "said": "[]"
+ }
+]

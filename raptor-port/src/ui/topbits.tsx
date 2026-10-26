@@ -34,7 +34,9 @@ export const fastSync = (): boolean => FASTSYNC
 export function toggleFastSync(): void { FASTSYNC = !FASTSYNC; notify() }
 export function SyncChip({ id, lblId }: { id: string; lblId: string }) {
   return (
-    <button className={'fastsync' + (FASTSYNC ? ' on' : '')} id={id} title="Toggle 1-second sync (for publishing / meetings)"
+    /* aria-pressed (round 2's blind read, 21 Oct 26): where only the dot shows (821–1599, D1126, D1130) its colour was the
+       only sign of on / off — a screen reader is told too */
+    <button className={'fastsync' + (FASTSYNC ? ' on' : '')} id={id} aria-pressed={FASTSYNC} title="Toggle 1-second sync (for publishing / meetings)"
       onClick={toggleFastSync}><span className="dot"></span><span id={lblId} className="synclbl">{FASTSYNC ? 'Sync · 1 s' : 'Sync · slow'}</span></button>
   )
 }
@@ -251,12 +253,14 @@ export function trackerUndoEngine(): UndoEngine {
     redo: () => { if (t) t.doRedo() },
   }
 }
+/* aria-label (round 2's blind read, 21 Oct 26): from 821 to 1599 the word is hidden (D1126, D1130) and the button's
+   name would be the arrow alone — "Undo" / "Redo" is said whatever the width; the title stays the hover's detail */
 export function UndoPair({ eng, ids }: { eng: UndoEngine; ids: [string, string] }) {
   return (
     <>
-      <button className="abtn hbtn" id={ids[0]} title={eng.undoTitle} disabled={!eng.canUndo} onClick={() => eng.undo()}>
+      <button className="abtn hbtn" id={ids[0]} aria-label="Undo" title={eng.undoTitle} disabled={!eng.canUndo} onClick={() => eng.undo()}>
         <span className="bi">↶</span><span className="bl"> Undo</span></button>
-      <button className="abtn hbtn" id={ids[1]} title={eng.redoTitle} disabled={!eng.canRedo} onClick={() => eng.redo()}>
+      <button className="abtn hbtn" id={ids[1]} aria-label="Redo" title={eng.redoTitle} disabled={!eng.canRedo} onClick={() => eng.redo()}>
         <span className="bi">↷</span><span className="bl"> Redo</span></button>
     </>
   )

@@ -15,7 +15,7 @@
 //     that do not overlap are allowed).
 // Everything that decides what the combination MEANS is `engine/dayview.ts`.
 
-import { dateOrd, inpWin, isDownchit, isLeave } from '../engine/inputs'
+import { dateOrd, inpType, inpWin, inputSilent, isDownchit, isLeave, isPersonal } from '../engine/inputs'
 import { addDays } from './engine'
 import { AM, PM, FULL, type Contrib, type Win } from './engine/dayview'
 import type { Portion } from './engine'
@@ -95,18 +95,57 @@ export function medRowPortion(row: any): Portion {
 /* Raptor spells two medical types with a space; the war stores them
    spaceless so `parseCell` round-trips. Everything else maps through. */
 const LW_FOR_INPUT: Record<string, string> = { 'ATT B': 'ATTB', 'ATT C': 'ATTC' }
+/* A COMMITMENT UNDER UNAVAILABLE IS DRAWN BY ITS LETTERS (his D1356 an Other "OTH", D1375 an Attach "ATCH" — ATT is the
+   medical codes; the others the agent's own short forms, his to change): each kind its own few letters, in C1's outlined
+   look (D1370 — leavewar/engine/codes.ts `COMMIT_CODES`). A course keeps CSE, as it always had. */
+export const COMMIT_CODE: Record<string, string> = {
+  Other: 'OTH', Attach: 'ATCH', Training: 'TRG', Meeting: 'MTG', Personal: 'PERS', Appointment: 'APPT', Duty: 'DTY', Event: 'EVT',
+}
 export function warCodeOf(rawType: unknown): string {
+  const c = COMMIT_CODE[inpType(rawType)]
+  if (c) return c
   const t = String(rawType).trim().toUpperCase()
   return LW_FOR_INPUT[t] ?? t
 }
 
-/** Does this Input type show on the war? Leave, medical, course, overseas
- *  duty (clash check B2). Upchit, SANS, appointments, meetings, training,
- *  local Duty and "Fly with" never do (catalogue rule 6, owner Q15). */
+/** Does this Input type show on the war BY ITS KIND? Leave, medical, course, overseas duty (clash check B2) — wherever it
+ *  sits on the schedule, except a course or an overseas duty a scheduler took out of Unavailable (`warCounts`, D1389). Upchit and SANS never do (catalogue rule 6, owner Q15). The other commitments show by WHERE they
+ *  are filed, not by kind — `warCounts`. */
 export function warVisible(type: unknown): boolean {
   if (isLeave(type) || isDownchit(type)) return true
   const t = String(type ?? '').trim().toUpperCase()
   return t === 'CSE' || t === 'OD'
+}
+/** A course or an overseas duty — the two kinds the war shows by kind that a scheduler can take out of Unavailable. */
+function isAwayKind(type: unknown): boolean {
+  const t = String(type ?? '').trim().toUpperCase()
+  return t === 'CSE' || t === 'OD'
+}
+/** DOES THIS INPUT SHOW ON THE WAR, AND COUNT HIM OUT? What `warVisible` says of its kind — or, for any other commitment
+ *  (Training, Meeting, Attach, Duty, Event, Appointment, Personal, Other), whether it stands under the schedule's
+ *  Unavailable list (`acc:'u'` — filed there by itself, by its filer's "Goes to" or by a scheduler's "→ Unavail"): his
+ *  D1357 (25 Oct 26 — "any commitment under the schedule's Unavailable list counts him out on the Leave War, whatever its
+ *  kind … by 1 or 0.5 for a half day"), D1356, D1374. One on the Ground Programme, or taken back out (Reject), does not. */
+export function warCounts(row: any): boolean {
+  if (!row || typeof row !== 'object') return false
+  /* A COURSE OR AN OVERSEAS DUTY A SCHEDULER TOOK OUT OF UNAVAILABLE COUNTS HIM BACK IN (his D1381, D1389, D1390 —
+     26 Oct 26): only Unavailable counts him out, as for every other commitment. The war asks what the schedule asks
+     (engine/inputs.ts isAway — the night's code read, F1):
+       - a COURSE is a commitment: out only while it stands under Unavailable ('u', where it lands by itself, D1372) and is
+         neither cancelled nor information only. Rejected ('r'), on the Ground Programme ('g') — or with NO mark, which is
+         what a course on the Ground Programme carries while its week is not on screen (state/holderbase.ts works 'g' out
+         for the week on screen only) — it counts him in; reading "no mark" as filed counted him out again the moment the
+         scheduler looked at another week.
+       - an OVERSEAS DUTY sits under Unavailable by its kind, mark or none: out unless a scheduler took it out ('r', 'g').
+     Leave and medical are not filed this way and count wherever they sit. */
+  if (isAwayKind(row.type)) {
+    if (String(row.type).trim().toUpperCase() === 'CSE') return row.acc === 'u' && !inputSilent(row)
+    return row.acc !== 'r' && row.acc !== 'g' && !(row.odGround && row.acc !== 'u')
+  }
+  if (warVisible(row.type)) return true
+  /* …unless it is cancelled or information only: silent everywhere else — no warning, no OIL, free for ALL AVAIL — so on
+     the war too (the code read's F2) */
+  return row.acc === 'u' && isPersonal(row.type) && !inputSilent(row)
 }
 
 const halfWin = (p: Portion): Win => (p === 'am' ? AM : p === 'pm' ? PM : FULL)
@@ -170,7 +209,7 @@ export type AbsenceIndex = Map<string, Map<string, Contrib[]>>
 
 /** One Input's contributions, date by date. */
 export function contribsOfInput(row: any): Array<[string, Contrib]> {
-  if (!row || typeof row !== 'object' || !warVisible(row.type) || !row.person || !row.iid) return []
+  if (!row || typeof row !== 'object' || !warCounts(row) || !row.person || !row.iid) return []
   const { win, real, tail } = inputWindow(row)
   const code = warCodeOf(row.type)
   const moved: Record<string, string> = row.lwMoved && typeof row.lwMoved === 'object' ? row.lwMoved : {}
@@ -220,14 +259,15 @@ export function leaveKey(row: any): string {
  *  the index rebuilds on (design §4.1, FB2-08: remarks, docs, acc, mod … are
  *  deliberately out, so a remarks edit never rebuilds anything). */
 export function absenceSignature(row: any): string {
-  if (!row || !warVisible(row.type)) return ''
+  if (!row || !warCounts(row)) return ''
+  /* where a commitment is filed (`acc`) is in the signature: under Unavailable it is on the war, taken out it is not */
   return [row.iid, row.type, row.date, row.endDate ?? '', row.yr ?? '', row.allday ? 1 : 0,
-    row.half ?? '', row.s ?? '', row.e ?? '', row.lw ? 1 : 0, JSON.stringify(row.lwMoved ?? null)].join('|')
+    row.half ?? '', row.s ?? '', row.e ?? '', row.lw ? 1 : 0, JSON.stringify(row.lwMoved ?? null), row.acc ?? ''].join('|')
 }
 
 /* ---- the other direction: a war leave → the one Input ------------------- */
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const INPUT_FOR_WAR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
+const INPUT_FOR_WAR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C', OTH: 'Other', ATCH: 'Attach' }
 
 /** '2026-07-15' → the Input's label + its anchor year ('Jul 15', 2026). The
  *  year rides `yr`, so the label never needs a suffix and never re-anchors

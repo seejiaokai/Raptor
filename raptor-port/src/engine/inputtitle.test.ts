@@ -18,7 +18,7 @@ const inp = (o: any) => ({ iid: 'i1', person: 'split', date: '15 Jul', yr: 2026,
 describe('which kinds take a title (D716 (1))', () => {
   it('exactly the ten "Duty & other commitments" kinds — never leave, medical, an upchit or SANS availability', () => {
     expect(INPUT_TYPES.filter((t: string) => titledKind(t))).toEqual(
-      ['Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Event', 'OD', 'Other'])
+      ['Training', 'CSE', 'Meeting', 'Attach', 'Personal', 'Appointment', 'Duty', 'Event', 'OD', 'Other'])
   })
   it('every titled kind sits under "Duty & other commitments" in the Type list, and no leave or medical kind does', () => {
     for (const t of INPUT_TYPES) if (titledKind(t)) expect(typeGroup(t)).toBe('other')
@@ -38,7 +38,7 @@ describe('what is stored (the plan §3.1)', () => {
   it('a title left as the kind’s own name — in any case — stores nothing', () => {
     expect(titleOf('Event', 'Event')).toBe('')
     expect(titleOf('Event', ' EVENT ')).toBe('')
-    expect(titleOf('Fly with', 'fly  with')).toBe('')
+    expect(titleOf('Attach', 'attach')).toBe('')
   })
   it('an empty title stores nothing', () => {
     expect(titleOf('Duty', '')).toBe('')
@@ -124,7 +124,7 @@ describe('a request that is gone is named from the row it left', () => {
   })
   it('by its kind, written as a kind is, where it was named by its kind', () => {
     expect(goneRequestName({ src: 'i1', srcType: 'Event', prog: 'EVENT' })).toBe('Event')
-    expect(goneRequestName({ src: 'i1', srcType: 'Fly with', prog: '' })).toBe('Fly with')
+    expect(goneRequestName({ src: 'i1', srcType: 'Attach', prog: '' })).toBe('Attach')
   })
   it('by whatever the row says when it remembers no kind; nothing for no row', () => {
     expect(goneRequestName({ prog: 'SPORTS DAY' })).toBe('SPORTS DAY')

@@ -399,6 +399,15 @@ describe('the day row carries a search box and the highlight fold', () => {
     expect($('#sbHlStrip').className).not.toContain('open')
   })
 
+  /* D1131 (21 Oct 26): on a desktop the highlighter mark leads the strip as the week's does — the week's own quiet label,
+     first in the strip, before CAT / TYPE / QUALS (which width shows it, and hides #sbHl, is CSS: the walk checks it) */
+  it('D1131: the strip leads with the highlighter mark, the week\'s label', () => {
+    const first = $('#sbHlStrip').firstElementChild as HTMLElement
+    expect(first.classList.contains('hl-lab'), 'the first thing in the strip is the mark').toBe(true)
+    expect(first.querySelector('svg'), 'drawn, not typed').toBeTruthy()
+    expect(first.tagName, 'a label, not a button').toBe('SPAN')
+  })
+
   it('a chip inside the strip toggles the shared HLSET', async () => {
     const chip = $('#sbHlStrip .fchip[data-hl="SUP"]')
     expect(chip, 'the same HlChips set as the week pages').toBeTruthy()

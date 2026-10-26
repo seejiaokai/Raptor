@@ -14,10 +14,15 @@ import { setSession, setMe } from '../state/auth'
 import { commitNewInput } from '../ui/inputedit'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, clearCells, getState, initStore as lwInitStore, lwHistInit, moveCells,
+  ackReplacement, closeDates, clearCells, getState, initStore as lwInitStore, lwHistInit, moveCells,
   rawState, setBidState, setBidStates, setCell, setCells, setPeople, setPostOut, setRole, setViewer,
   loadWars, decideRequestById, figureCtxOf,
 } from './state/store'
+
+/* CLOSE BIDDING ON THE PERIOD ON SCREEN, as an admin does before deciding — the act that replaced "advance to Bidding
+   Closed" when the stages went (D1177). The admin may decide at any time now; closing first keeps these scenarios in the
+   setting they were written for (decided after the bids are in), it is not a requirement. */
+const closeBidding = () => { const p = getState().period; closeDates(p.start, p.end) }
 import { memoryBackend } from './state/storage'
 import { getClashes, runPoArchive, wireLeaveWarSync } from './sync'
 import { _resetTimeline } from '../undo/timeline'
@@ -46,6 +51,7 @@ let n = 0
 const file = (person: string, type: string, date: string, extra: Record<string, any> = {}) => {
   const row: any = { iid: `q${++n}`, person, type, date, yr: 2026, allday: true, remarks: '', mod: '2026-02-01', ...extra }
   if (row.allday === false) delete row.allday
+  if (type === 'CSE' && !('acc' in extra)) row.acc = 'u'   // a course is filed under Unavailable by itself (D1372)
   const ok = writeInputs(() => { INPUTS.unshift(row) })
   return { ok, row }
 }
@@ -142,7 +148,7 @@ describe('notices and the clash strip', () => {
 
 describe('member permissions at the doors', () => {
   it('a member cannot approve, and cannot clear someone else\'s bid', () => {
-    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); advanceStage()
+    setRole('admin'); setCell('ammo', '2026-02-10', 'LL'); closeBidding()
     setRole('member'); setViewer('rocky')
     const id = (recs('ammo', '2026-02-10')[0] as any).id
     expect(decideRequestById('ammo', '2026-02-10', id, 'approved')).toBe(false)
@@ -171,7 +177,7 @@ describe('records survive a save and reload', () => {
     setRole('admin')
     setCell('ammo', '2026-02-10', 'LL')
     file('ammo', 'ATT C', 'Feb 10')                    // leaves a notice
-    setCell('dusk', '2026-02-10', 'LL'); advanceStage(); setBidState('dusk', '2026-02-10', 'refused')
+    setCell('dusk', '2026-02-10', 'LL'); closeBidding(); setBidState('dusk', '2026-02-10', 'refused')
     const blob = JSON.stringify(rawState().wars)
     loadWars(JSON.parse(blob), rawState().currentId)
     expect(recs('ammo', '2026-02-10').some(r => r.kind === 'notice')).toBe(true)

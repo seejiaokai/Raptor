@@ -23,10 +23,13 @@ describe('the top bar: Edit Schedule’s tint and the phone’s sync dot are two
     expect(rule.length).toBeGreaterThan(0)
     for (const r of rule) expect(r).not.toMatch(/order:/)
   })
-  it('between a phone and a wide screen the pair goes icon-only and the Sync pill keeps its dot — no bar grows a line (B10.2)', () => {
-    const block = css.match(/@media \(min-width:821px\) and \(max-width:1499px\)\{([\s\S]*?)\n\}/)
+  it('between a phone and a wide screen — up to 1599, his PC’s 1536 inside it (D1126) — the pair goes icon-only and the Sync pill keeps its dot — no bar grows a line (B10.2)', () => {
+    const block = css.match(/@media \(min-width:821px\) and \(max-width:1599px\)\{([\s\S]*?)\n\}/)
     expect(block).not.toBe(null)
     expect(block![1]).toMatch(/\.topbar \.tb-hist \.bl\{display:none\}/)
     expect(block![1]).toMatch(/\.topbar\.has-undo \.fastsync \.synclbl\{display:none\}/)
+    /* narrower, never shorter: the sides only — `padding:0` stood the pair 17 tall beside the bar's 28 (found 21 Oct 26) */
+    expect(block![1]).toMatch(/\.hbtn\{[^}]*padding-left:0;padding-right:0/)
+    expect(block![1]).not.toMatch(/\.hbtn\{[^}]*padding:0[;}]/)
   })
 })

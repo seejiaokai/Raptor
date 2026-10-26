@@ -60,6 +60,8 @@ describe('a half filed on the Inputs page leaves the other half biddable', () =>
     fileMorning()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
+    /* the bid itself, pending: the admin's "Approve what I enter" (D1186) unticked */
+    fireEvent.click(screen.getByTestId('bid-approve-tick'))
     fireEvent.click(screen.getByTestId('bid-OL'))
     const v = getState().views[P]?.[D]
     expect(v?.all.filter(c => c.kind === 'request')).toHaveLength(1)
@@ -133,12 +135,15 @@ describe('beside a medical recorded with hours', () => {
 /* THE SHEET'S "NOW" SAYS WHAT THE BOX SAYS (the absence-record re-test, W5-F5, 26 Sep 26): the box and the chips read a
    morning as "<LL"; the sheet's heading printed the stored notation, "now *LL". */
 describe('the bid sheet heading', () => {
+  /* WAS read off the title's "now <LL" — round 3's change 7 (his D1331) took the code out of the title; the held half's line
+     names the other half as its box does: "LL", the half said in words ("The morning is LL…"), never "<LL" or "*LL" */
   it('reads the day the way its box does', () => {
     fileMorning()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
-    const cur = screen.getByTestId('bid-picker').querySelector('.cur')!.textContent || ''
-    expect(cur).toContain('<LL')
-    expect(cur).not.toContain('*')
+    expect(screen.getByTestId('bid-picker').querySelector('.cur')).toBeNull()
+    const said = screen.getByTestId('bid-heldhalf').textContent || ''
+    expect(said).toContain('The morning is LL,')
+    expect(said).not.toMatch(/[<>*]/)
   })
 })

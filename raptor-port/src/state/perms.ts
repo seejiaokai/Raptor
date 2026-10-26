@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -303,6 +303,12 @@ function mayChangeInput(row: any, act: Act): boolean {
 /* may he change / delete this input? An admin; the man; its filer, for a kind he may file for others, switch on. */
 export const mayEditInput = (row: any): boolean => mayChangeInput(row, 'U')
 export const mayDeleteInput = (row: any): boolean => mayChangeInput(row, 'D')
+/* MAY HE CHANGE WHERE IT STANDS — its Goes to, or a retype that would land it elsewhere? (his D1388, 26 Oct 26 — "Once a
+   scheduler has moved a member's Other, should only a scheduler be able to change where it goes? … yes — otherwise the
+   member could quietly move it back".) A scheduler, always; anyone else only while no scheduler has moved it
+   (engine/inputs.ts placeHeld). The window's Goes to and the save ask it; the commit gate (inputBreach) holds every
+   member's command to it. No session → true, as every question here. */
+export const mayMovePlace = (row: any): boolean => roleOf() === null || mayEditSched() || !placeHeld(row)
 /* WHY THE FILER MAY NOT, for the screens' words (owner D731 (8), 10 Oct 26). With the members' switch off, the member
    who FILED a shared input was told "Only Ranger — who filed it — or an admin can change this" — and he is Ranger. This
    answers one thing: is the signed-in member this input's filer, kept from it by the switch alone? It grants and
@@ -315,7 +321,7 @@ export function filerSwitchedOff(rows: readonly any[]): boolean {
 }
 /* §11's own-row note for `Input`, word for word — perms.test.ts fails when docs/data-model.md says anything else
    (D200: "the server's rules at the database step are a translation of an agreed list") */
-export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler\'s marks on an input — cancelled with its reason, the red box, information only — are never mine to set or clear, on my own input too (D760); an input filed for ALL AVAIL / ALL counts as filed for another person — one of seven kinds, one day (D700, D711, D712, D713, D778)'
+export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler\'s marks on an input — cancelled with its reason, the red box, information only — are never mine to set or clear, on my own input too (D760); where an input stands — on the Ground Programme, under Unavailable or rejected — is never mine to change once a scheduler has moved it (`movedByScheduler`), by its Goes to or by changing its kind, on my own input too, and that mark is never mine to set or clear (D1388); an input filed for ALL AVAIL / ALL counts as filed for another person — one of seven kinds, one day (D700, D711, D712, D713, D778)'
 /* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
@@ -425,19 +431,30 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.move': op(T.bid, 'U', 'optional'),
   'lw.ack': op(T.bid, 'U', 'optional'),
   'lw.decide': op(T.bid, 'U'),
+  /* an admin places leave and approves it in one step (D1147 — "Approve what I enter", M3 5.5): one command, one Undo */
+  'lw.placeApproved': op(T.bid, 'U'),
+  /* a course or an overseas duty filed on the war straight as the INPUT it is (round 2 — D1318): no bid, no approval; it writes Inputs only, so it is asked as an Inputs-page filing is — his own, an admin any */
+  'lw.file': op(T.input, 'U', 'optional'),
+  /* a request's own words and papers — its remarks, till tick, documents (M3 5.9, 5.10; D1210, D1150): his own row, as
+     lw.edit; on a day closed for him the commit lets exactly this through (onlyChangesWords) */
+  'lw.reqmeta': op(T.bid, 'U', 'optional'),
   'lw.approve': op(T.bid, 'U'),
   'lw.decideApproved': op(T.bid, 'U'),
   'lw.removeApproved': op(T.bid, 'U'),
   'lw.moveApproved': op(T.bid, 'U'),
-  /* D352 (28 Sep 26): a stage move (Open for bidding / Bidding closed / Published) — the admin's, as the stage always was
-     (27 Aug 26); its own type only so Undo can name it */
-  'lw.stage': op(T.bid, 'U'),
+  /* opening or closing dates for bidding (D1177, 21 Oct 26 — the stages went; D352 narrowed): the admin's, as the stage
+     always was (27 Aug 26) — the period's own record; its own type so Undo can name it ("Undid: opening bidding …") */
+  'lw.open': op(T.war, 'U'),
   /* the Holidays list's three writers (leavewar/state/store.ts holidayAdd / holidayChange / holidayRemove — the Inputs /
      SANS redesign, plan §3.4): a public holiday or an Off day is the leave period's own record, an admin's to change */
   'lw.holiday.add': op(T.war, 'U'), 'lw.holiday.change': op(T.war, 'U'), 'lw.holiday.remove': op(T.war, 'U'),
   /* the Event sheet's Save and Delete, each one command (leavewar/state/store.ts saveEvent / deleteEvent — plan §3.12):
      a day's event is the leave period's own record too, an admin's to change */
   'lw.event.save': op(T.war, 'U'), 'lw.event.remove': op(T.war, 'U'),
+  /* the Manning block's settings (the Leave War overhaul, batch 3): an Available row's Save — its name, who it counts and
+     its amber and red points (D1190, D1191, D1202) — and a Required row's name (D1193); both kept in the war's settings
+     (`manningdefs`, `reqnames`), a Setting, the admin's like every other */
+  'lw.availrow': op(T.setting, 'U'), 'lw.reqname': op(T.setting, 'U'),
   /* [OIL-AWARD-IS-A-GRANT] (Astra's round-2 read, R2-01): an OIL award is written under ITS row of the table, a ledger
      entry (another pool's credit, a correction) under the ledger's, and a clear that takes an award beside a bid names
      both — a member's clear takes no award and runs as `lw.edit` */
@@ -633,6 +650,89 @@ type ReplayCheck = (env: CommitEnvelope) => ((c: Change) => boolean) | null
 let REPLAY: ReplayCheck | null = null
 export function setInputReplayCheck(fn: ReplayCheck | null): void { REPLAY = fn }
 
+/* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8, 22 Oct 26; D1177, D1211, D1225). A member's war record —
+   `lw.cell`, id `war:person:date` — may change on a day OPEN for him (the period holding it has the day open, and it is
+   not before today); on any other day his command may only TAKE AWAY his own pending (live) bids there (D1225: "a
+   member may delete his own pending bid on a day that has since closed") or a replaced-bid notice he has seen — never
+   add or change a record. Whether a day is open is the Leave War's to say (its store installs the probe: the pure rule
+   `leavewar/engine/access.ts canEditCell`, asked of the period holding the date); with no war wired every day reads
+   open, as before. Undo and Redo: D1263, below. */
+type LwDayOpen = (cellId: string) => boolean
+let LW_DAY_OPEN: LwDayOpen | null = null
+export function setLwDayOpenProbe(fn: LwDayOpen | null): void { LW_DAY_OPEN = fn }
+/* D1263 (22 Oct 26, his "no" — [LW-REDO-ONTO-CLOSED]): a member's Undo or Redo never puts a bid of his back on a day closed
+   for him since; the one exception is his Undo of a step he made on that day while it was ALREADY closed — deleting his
+   own pending bid there (D1225, the walk's B-F1), or an Inputs-page half day that cut his bid there (D1166). The timeline
+   vouches for such a restore, record by record (undo/timeline.ts verifiedWarRestore, installed by state/undo-wire.ts);
+   anything else that would add or change a war record on a closed day is refused, whatever calls itself a restore.
+   `lwClosedKeys` is what the timeline keeps on each step as it is recorded: the war records a member's step changed on a
+   day not open for him at that moment. */
+let LW_RESTORE: ReplayCheck | null = null
+export function setLwRestoreCheck(fn: ReplayCheck | null): void { LW_RESTORE = fn }
+export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] | null | undefined): string[] {
+  if (!LW_DAY_OPEN || !actor || actor.role !== 'member') return []
+  const out: string[] = []
+  for (const c of changes) if (c.collection === 'lw.cell' && !LW_DAY_OPEN(c.id)) out.push(`${c.collection}/${c.id}`)
+  return out
+}
+/* HIS OWN PENDING REQUEST'S WORDS AND PAPERS CHANGE ON A CLOSED DAY (owner D1150 — "added or seen at any time, even after
+   its dates are locked"; D1210; M3 5.10). Only that: the same records, in the same order, each the same but for the
+   `remarks`, `till` and `docIds` of an undecided request. A code, a state, a record added or taken is not this. Whatever
+   the command calls itself — his Undo or Redo of such a change is the same change, and a Redo that would put a bid back
+   is not one (D1263's check still answers it). */
+function onlyChangesWords(before: unknown, after: unknown): boolean {
+  const b: any[] = Array.isArray(before) ? before : []
+  const a: any[] = Array.isArray(after) ? after : []
+  if (!b.length || a.length !== b.length) return false
+  const bare = (r: any) => { const { remarks: _r, till: _t, docIds: _d, ...rest } = r ?? {}; return JSON.stringify(rest) }
+  let changed = false
+  for (let i = 0; i < b.length; i++) {
+    const was = b[i], now = a[i]
+    if (JSON.stringify(was) === JSON.stringify(now)) continue
+    if (was?.kind !== 'request' || (was.state !== 'pending' && was.state !== 'acknowledged')) return false
+    if (bare(was) !== bare(now)) return false
+    changed = true
+  }
+  return changed
+}
+function onlyTakesPending(before: unknown, after: unknown): boolean {
+  const b: any[] = Array.isArray(before) ? before : []
+  const a: any[] = Array.isArray(after) ? after : []
+  const was = new Map(b.map(r => [String(r?.id), JSON.stringify(r)] as const))
+  const old = new Map(b.map(r => [String(r?.id), r] as const))
+  for (const r of a) {
+    if (was.get(String(r?.id)) === JSON.stringify(r)) continue
+    if (narrowed(old.get(String(r?.id)), r)) continue                                    // his whole-day bid cut to one half
+    return false                                                                          // nothing added or changed
+  }
+  const kept = new Set(a.map(r => String(r?.id)))
+  for (const r of b) {
+    if (kept.has(String(r?.id))) continue
+    /* his UNDECIDED bid, taken (D1225 — "his own pending bid"): named as the two undecided states rather than "not
+       refused", so a state added to a war record later is never taken by default (the break tests' 17b case — a war
+       record cannot be approved today: approved leave is an input) */
+    if (r?.kind === 'request' && (r.state === 'pending' || r.state === 'acknowledged')) continue
+    if (r?.kind === 'notice') continue                                                    // a notice he has seen
+    return false
+  }
+  return true
+}
+
+/* HIS WHOLE-DAY PENDING BID CUT TO ONE HALF IS A TAKE, NOT A CHANGE (M1's code read — both readers, H1 / F1). Leave or a
+   medical he files on the Inputs page for a morning or an afternoon of a day where his whole-day bid waits cuts the bid to
+   the half the input leaves free (`leavewar/inputgate.ts replaceClashingBids`: the same record, `LL` → `LL*` or `*LL`),
+   inside his own command. On a closed day, or a day before today, that read as a change and refused his whole filing —
+   and D1166 says the Inputs page is never stopped by the closed dates. Only that one cut passes: the same record, a
+   request not refused, its state unchanged, a whole-day code become exactly one of its halves, every other field equal. */
+function narrowed(was: any, now: any): boolean {
+  if (!was || !now || was.kind !== 'request' || now.kind !== 'request') return false
+  if ((was.state !== 'pending' && was.state !== 'acknowledged') || was.state !== now.state) return false
+  const code = String(was.code ?? '')
+  if (!code || code.includes('*')) return false
+  if (now.code !== `${code}*` && now.code !== `*${code}`) return false
+  return JSON.stringify({ ...was, code: '' }) === JSON.stringify({ ...now, code: '' })
+}
+
 const same = (a: any, b: any): boolean => (a ?? null) === (b ?? null)
 const filed = (x: any, y: any): boolean => same(x.by, y.by) && same(x.at, y.at) && same(x.grp, y.grp) && same(x.grpBy, y.grpBy)
 const isInputChange = (c: Change): boolean => c.collection === 'inputs' && c.id !== INPUT_ORDER
@@ -649,7 +749,15 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
      changed (one man split out of a cancelled input), which carries that record's. */
   { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info] : [false, '', false, false])
     const src = b || (env.changes.find(o => o !== c && isInputChange(o) && o.before != null && idsOf(f).some((p: any) => holds(o.before, p))) || {} as any).before || null
-    if (mk(f) !== mk(src)) return `a scheduler's mark on an input` }
+    if (mk(f) !== mk(src)) return `a scheduler's mark on an input`
+    /* …AND SO IS WHERE A SCHEDULER PUT IT (his D1388): the mark that he moved it is his to set and clear, and while it
+       stands — or his Reject does — a member's change leaves it where it is: under Unavailable, parked, or on the
+       Ground Programme. Asked of WHERE IT STANDS (engine/inputs.ts placeOf — the one answer the save keeps), never of the
+       stored marks: a leave stands under Unavailable by its kind with no mark, an overseas duty retyped out of one leaves
+       its Ground mark behind, and the programme's own 'g' comes and goes with the week — none of those moves it (the code
+       read's F1, 26 Oct 26: comparing the marks rolled back a retype that left it where it was). */
+    if (!!(src && src.schedPlaced) !== !!f.schedPlaced) return `a scheduler's move of an input`
+    if (b && placeHeld(b) && placeOf(b) !== placeOf(f)) return `where a scheduler put an input` }
   /* HIS OWN PART is taking himself OUT (D755 (3)). Putting himself INTO an input that holds others is adding a person
      to it — its filer's or a scheduler's (owner D763) — except as his own Undo putting him back, which is a replay. */
   if (own && b && idsOf(f).length > 1 && !holds(b, pid) && holds(f, pid) && !filedForOther(pid, b, f)) return `a person added to another person's input`
@@ -710,6 +818,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
+  let warRestore: ((c: Change) => boolean) | null | undefined
   for (const c of env.changes) {
     const where = `${c.collection}/${c.id}`
     if (a.role !== 'member') {
@@ -740,7 +849,20 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         return `a notice that is not his own change's (${where})`
       }
       case 'people': if (c.id !== pid) return `another person's row (${where})`; break
-      case 'lw.cell': { const parts = c.id.split(':'); if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`; break }
+      case 'lw.cell': {
+        const parts = c.id.split(':')
+        if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
+        /* …and his Undo of such a step puts back exactly what it took (the walk's B-F1, 22 Oct 26: the Undo was refused) —
+           but ONLY that (D1263): an Undo the timeline vouches for, of his own step made on the day already closed, image
+           for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a
+           restore puts nothing back on a closed day. (Taking his own pending bid away passes above, Undo or not.) */
+        const after = c.op === 'delete' ? [] : c.after
+        if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after) && !onlyChangesWords(c.before, after)) {
+          if (warRestore === undefined) warRestore = env.origin === 'restore' && LW_RESTORE ? LW_RESTORE(env) : null
+          if (!(warRestore && warRestore(c))) return `a war day not open for bidding (${where})`
+        }
+        break
+      }
       case 'lw.current': break
       /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes his OWN seen row and no other (EditLogSeen, own row
          — one row per person since [DB-READINESS] group A, phase 4.3) */

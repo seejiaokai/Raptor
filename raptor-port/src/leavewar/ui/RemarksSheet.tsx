@@ -1,10 +1,9 @@
-// The published-stage remarks editor (owner, 27 Aug 26 — "after the leave war
-// is published … click on their inputs directly on the leave war and edit the
-// remarks. but the admin can also … the same for all").
+// The remarks editor (owner, 27 Aug 26 — "click on their inputs directly on the leave war and edit the remarks. but
+// the admin can also … the same for all"; D418 narrowed by D1177: a member's approved leave offers its remarks at any
+// time, the published stage having gone).
 //
-// A published war is read-only for the squadron EXCEPT this: a member taps
-// their own approved leave and edits the note on it; an admin does it for
-// anyone. The note lives on the Raptor INPUT the cell derives from (found by
+// A member taps his own approved leave on the grid and edits the note on it (the leave itself he changes on the
+// Inputs page — D1166); an admin edits any man's from the day's list. The note lives on the Raptor INPUT the cell derives from (found by
 // sync.ts:leaveInputAt — a leave filed on Inputs OR bid in the war and minted
 // at publish, both ordinary rows). The save runs through Raptor's ONE commit
 // path (inputedit.ts:setLeaveRemarks → commitInputEdit): a remarks-only edit
@@ -12,12 +11,14 @@
 // not move — only the note the Inputs page reads is rewritten. That commit
 // path also carries the member-own / scheduler-any gate, so this sheet's own
 // role check and the write path's cannot drift.
-import { remarksTyped } from '../../engine/inputs'
+//
+// ROUND 3's ONE ROW (his D1354, 25 Oct 26 — round 3's Q2 "as recommended"): the window carries the bid windows' one row —
+// the dark box that wraps, its till, Document (`ReqWords.tsx LeaveWords`) — saved as it changes, in place of the older
+// labelled Document and Remarks rows, the light box and its own Save; words typed and not yet saved go with the closing.
 import { displayCell } from '../engine'
-import { useState } from 'react'
 import { Sheet } from './Sheet'
 import { inputDayLabel } from './dates'
-import { setLeaveRemarks } from '../../ui/inputedit'
+import { LeaveWords } from './ReqWords'
 
 export function RemarksSheet({
   callsign,
@@ -36,12 +37,11 @@ export function RemarksSheet({
   code: string
   onClose: () => void
 }) {
-  /* the typed words only — the leave's date is printed from its dates (D948) */
-  const [remarks, setRemarks] = useState<string>(remarksTyped(row?.remarks, row))
+  /* ITS DOCUMENTS (M3 7.3 — D1150: "added or seen at any time, even after its dates are locked"; D1159: the app's one
+     Document button) and its typed words only — the leave's date is printed from its dates (D948): the one row's */
   // The leave's own span, read off the row — a click on any day of a 13–15 Jul
   // run edits the one note for the whole run (owner's example).
   const span = row?.endDate ? `${inputDayLabel(row.date)} → ${inputDayLabel(row.endDate)}` : inputDayLabel(row?.date)   // day-first ([LW-ISO-DATES])
-  const save = () => { if (setLeaveRemarks(row, remarks, personId)) onClose() }
   return (
     <Sheet testid="remarks-sheet" label="Edit the note on this leave" onClose={onClose}>
       <div className="bidsheet-hd">
@@ -50,20 +50,7 @@ export function RemarksSheet({
         <span className="cur">{displayCell(code)}</span>
         <button className="x" data-testid="remarks-cancel" onClick={onClose} aria-label="Close">✕</button>
       </div>
-      <div className="bidsheet-row rmk-row">
-        <span className="lab">Remarks</span>
-        <textarea
-          className="rmk-field"
-          data-testid="remarks-field"
-          maxLength={200}
-          value={remarks}
-          placeholder="Where you are, why — read on the Inputs page"
-          onChange={e => setRemarks(e.target.value)}
-        />
-      </div>
-      <div className="bidsheet-row rmk-actions">
-        <button className="dchip approve" data-testid="remarks-save" onClick={save}>Save</button>
-      </div>
+      <LeaveWords row={row} personId={personId} testPrefix="remarks" />
     </Sheet>
   )
 }

@@ -11,7 +11,7 @@ import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { setWeekCal, setInsights } from './pops'
-import { CalIcon, HistIcon, HlIcon } from './icons'
+import { CalIcon, HistIcon, HlIcon, PenIcon, SrchIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck, refreshHistDots } from './histbubble'
@@ -25,17 +25,19 @@ import { useSheetFocus } from './sheetfocus'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
-import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, dayTplMenu } from './board'
+import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, SBZOOM, setBoardZoom, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, wireSideGrip, SIDE_MIN, dayTplMenu } from './board'
 import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
-import { wireRowDrag } from './rowdrag'
+import { wireRowDrag, cancelRowDrags } from './rowdrag'
 import { editingText, textCaret, CARET_GONE } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
 import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
 import { SaveBand } from './SaveStatus'
 import { OilBand } from './OilWaitSheet'
 import { clickedOutside } from './outside'
+import { wirePinch } from './pinchzoom'
+import { touchDragArmed, cancelTouchHold } from './drag'
 
 export function SchedBoard() {
   const version = useVersion()
@@ -104,6 +106,39 @@ export function SchedBoard() {
       if (menu.getBoundingClientRect().left < 4) menu.classList.remove('end')
     }
   }, [moreOpen])
+
+  /* PINCH TO ZOOM THE DAY — the desktop layout on a phone (owner D1107, D1109, 21 Oct 26; [BOARD-PHONE-PINCH-ZOOM]). Two
+     fingers on the day (.sb-main — the panels, the waves and the side column) zoom it, never the bar above it, which
+     stands at its phone size in this layout (13-board-rows-responsive.css); out until the day's whole width fits the
+     screen, in to twice normal (ui/pinchzoom.ts). The zoom is the day's CSS zoom, kept in SBZOOM across days and
+     dropped whenever the board closes — ✓ Done or a page change — so the next open is at today's size. Only on a phone
+     (the layout switch is offered only up to 820 wide); the phone layout has no pinch of its own. */
+  const [, setZoomTick] = useState(0)
+  useEffect(() => {
+    if (!open) { setBoardZoom(1); return }
+    const main = mainRef.current
+    if (!SBWIDE || !main) return
+    return wirePinch({
+      surface: main,
+      target: () => mainRef.current,
+      get: () => SBZOOM,
+      min: () => {
+        const r = rootRef.current, m = mainRef.current
+        return r && m && m.offsetWidth ? Math.min(1, r.clientWidth / m.offsetWidth) : 1
+      },
+      /* the zoom is a variable the stylesheet applies only up to 820 wide (13-board-rows-responsive.css): a phone turned
+         on its side past that shows the day at today's size, never stuck at a zoom nothing there can change (the code
+         read's finding 1); the board is drawn again so React holds what was written (its finding 9) */
+      apply: z => {
+        setBoardZoom(z)
+        mainRef.current?.style.setProperty('--sbz', String(z))
+        setZoomTick(t => t + 1)
+      },
+      canStart: () => !touchDragArmed() && !!window.matchMedia && window.matchMedia('(max-width:820px)').matches,
+      blockTwo: touchDragArmed,
+      onStart: () => { cancelTouchHold(); cancelRowDrags() },
+    })
+  }, [open, SBWIDE])
 
   /* LOCK THE PAGE WHILE THE BOARD IS OPEN (owner-reported, 11 Aug 26 — "I
      could scroll and see the edit schedule board leaking into it, and in the
@@ -209,9 +244,11 @@ export function SchedBoard() {
     /* the desktop grip that resizes the checks panel against the roster below it
        (owner, Aug 26) — a no-op until dragged, phone grip is display:none */
     const offSplit = sideRef.current ? wireWarnSplit(sideRef.current) : () => {}
+    /* and the panel's own width, by its left edge (D1113, D1118 — board.ts wireSideGrip) */
+    const offSide = sideRef.current ? wireSideGrip(sideRef.current) : () => {}
     return () => {
       el.removeEventListener('click', boardMbtn); el.removeEventListener('click', boardArmClick)
-      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist(); offSplit()
+      el.removeEventListener('change', boardChange); offDrag(); offDots(); offRos(); offHist(); offSplit(); offSide()
     }
   }, [])
 
@@ -473,7 +510,7 @@ export function SchedBoard() {
                 onClick={() => { setMoreOpen(false); toggleWide(); notify() }}><span className="bi">{SBWIDE ? '📱' : '🖥'}</span> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</button>
             </div>}
           </span>
-          <div className="searchbox sb-search">🔍<input id="searchB" placeholder="name / callsign"
+          <div className="searchbox sb-search"><SrchIcon /><input id="searchB" placeholder="name / callsign"
             onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           <button className="abtn sb-arrow" id="sbNextDay" title="Next day"
             disabled={SBDAY == null}
@@ -621,7 +658,11 @@ export function SchedBoard() {
             (3) comment in scheduler.css's min-width:821px block; display:none
             on a phone, where the fold makes its own geometry. */}
         <i className="sb-break" aria-hidden="true"></i>
-        <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><HlChips /></div>
+        {/* THE HIGHLIGHTER MARK LEADS THE STRIP ON A DESKTOP, AS ON THE WEEK (owner D1131, 21 Oct 26 — round 2 of the
+            consistency look): a quiet label, the week's own `.lab.hl-lab`; the #sbHl toggle by the search, which folds
+            nothing at a desktop's width (the strip is always open there), is hidden there and stays the phone's fold
+            (10-board-history.css). */}
+        <div className={'sb-hl' + (HLOPEN ? ' open' : '')} id="sbHlStrip"><span className="lab hl-lab" title="Highlight"><HlIcon /></span><HlChips /></div>
         {/* A FAILED SAVE'S WARNING ([SAVE-NOTE-COVERS], D587): the board lies over the top bar, so the bar's own
             warning cannot be seen from here — the board carries it, on a line of its own at the bottom of its bar.
             INSIDE .sb-top like the strip above, so --sb-topH follows it and nothing below is covered. */}
@@ -630,7 +671,7 @@ export function SchedBoard() {
             failed-save warning where both are up — for the same reason: from here the top bar's cannot be seen. */}
         <OilBand active={open} />
       </div>
-      <div className="sb-main" ref={mainRef}>
+      <div className="sb-main" ref={mainRef} style={SBWIDE ? { ['--sbz' as any]: SBZOOM } : undefined}>
         <div className={'sb-boardwrap' + (HISTMODE ? ' hist-on' : '')} ref={wrapRef}>
           {/* the sign-off heads the board column. On a PHONE .sb-boardwrap goes
               display:contents (see scheduler.css), so #sbSign, #sbWarn and
@@ -658,6 +699,9 @@ export function SchedBoard() {
             tapping any slot slides it open, exactly like the week. The
             desktop column and .sb-wide are unchanged (both restate). */}
         <div className="sb-side" id="sbSide" ref={sideRef}>
+          {/* the panel's width grip, on its left edge (D1113, D1118) — desktop only; see wireSideGrip / .sb-sidegrip */}
+          <div className="sb-sidegrip" data-sidegrip role="separator" aria-orientation="vertical" aria-label="Crew panel width"
+            aria-valuemin={SIDE_MIN} tabIndex={0} title="Drag to widen the panel. Double-click puts it back." />
           <div className="sb-warn" id="sbWarn" ref={warnRef} />
           {/* the drag grip between the checks and the roster (owner, Aug 26) —
               desktop only; see wireWarnSplit / .sb-wsplit */}
@@ -723,7 +767,7 @@ export function CxDialog() {
           {!editing
             ? <div className="cxquick" id="cxQuick">
                 {CXR_CFG.map((q, i) => <button key={i + ':' + q} type="button" data-cxq={q} onClick={() => { if (inRef.current) inRef.current.value = q }}>{q}</button>)}
-                {canEdit && <button type="button" className="cxq-edit" data-cxedit onClick={() => setEditing(true)} title="Add, rename or remove the quick reasons">✎ Edit</button>}
+                {canEdit && <button type="button" className="cxq-edit" data-cxedit onClick={() => setEditing(true)} title="Add, rename or remove the quick reasons"><PenIcon />Edit</button>}
               </div>
             : <div className="cxedit" id="cxEdit">
                 <div className="cxedit-h"><b>Cancel reasons</b><button type="button" className="abtn sm" data-cxdone onClick={() => { setEditing(false); setArmReset(false) }}>Done</button></div>

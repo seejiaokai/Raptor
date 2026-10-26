@@ -15,7 +15,9 @@
 
 /* the rail — the app's own coloured-tab language: a flat list of category
    buttons, the active one lifted onto --raised with an accent left bar */
-#page-admin .adm-rail h2{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0 0 12px}
+/* the page's title at Logic's page name's size and weight (owner D1138, 21 Oct 26 — 01-logic.css .lgttl: 18px / 700, 16px
+   on a phone, its .01em spacing too), in its own place; Help's the same */
+#page-admin .adm-rail h2{font-size:18px;font-weight:700;letter-spacing:.01em;margin:0 0 12px}
 #page-admin .adm-cat{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
   background:var(--panel);border:1px solid var(--edge);border-left:3px solid transparent;border-radius:11px;
   padding:11px 12px;margin-bottom:8px;color:var(--ink)}
@@ -99,7 +101,7 @@
    from the category's index via --h (HelpPage.tsx), so every category keeps
    one stable hue with no hand-kept colour map. ---- */
 #page-help .help-inner{max-width:720px;margin:0 auto;padding:18px 20px}
-#page-help h2{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0 0 12px}
+#page-help h2{font-size:18px;font-weight:700;letter-spacing:.01em;margin:0 0 12px}
 #page-help .help-card{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;margin-bottom:14px}
 #page-help .help-card h3{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700;margin:0 0 4px}
 #page-help .help-lead{margin:0 0 12px}
@@ -123,6 +125,8 @@
   #page-admin .adm-shell.drilled .adm-pane{display:block}
   #page-admin .adm-back{display:inline-flex}
   #page-admin .adm-cat{min-height:56px}
+  /* the two titles at Logic's phone size (D1138 — 01-logic.css .lgttl, the same 820px break) */
+  #page-admin .adm-rail h2,#page-help h2{font-size:16px}
 }
 
 /* DESKTOP (>=821px): the rail and pane sit side by side and both stay put — no

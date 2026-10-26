@@ -43,7 +43,24 @@ afterEach(() => {
   Object.defineProperty(window, 'innerHeight', { value: realH, configurable: true })
 })
 
-describe('the figures drawer (owner, 6 Sep 26)', () => {
+/* THE DRAWER IS GONE FROM THE GRID (D1245, 22 Oct 26 — "the grid's Balances fold goes": every balance column lives on the
+   Balances tab, each name keeps its LVE figure), and its toggle sat in the month band row, which went too (D1257). Its
+   code stays switched off until M5's Balances tab replaces it — and it goes whole with M5, these tests with it. Until
+   then they are skipped, not deleted, so the drawer's own behaviour is on record if M5 reuses any of it; what is live is
+   pinned below: nothing on the grid opens it. */
+describe('the figures drawer is unreachable (D1245, D1257)', () => {
+  it('the grid has no Balances fold and draws no drawer — for an admin or a member', () => {
+    render(<Matrix />)
+    expect(screen.queryByTestId('figures-toggle')).toBeNull()
+    expect(screen.queryByTestId('figdrawer')).toBeNull()
+    act(() => setRole('admin'))
+    expect(screen.queryByTestId('figures-toggle')).toBeNull()
+    expect(screen.queryByTestId('figdrawer')).toBeNull()
+    expect(document.querySelector('.mx-outer')!.classList.contains('mx-figures')).toBe(false)
+  })
+})
+
+describe.skip('the figures drawer (owner, 6 Sep 26) — switched off by D1245; goes whole with M5', () => {
   it('is closed at first, and the corner bar opens and closes it', () => {
     render(<Matrix />)
     const bar = screen.getByTestId('figures-toggle')

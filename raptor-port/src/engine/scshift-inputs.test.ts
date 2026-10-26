@@ -45,7 +45,7 @@ const mine = (code?: string) => validate().all.filter((x: any) =>
 
 describe('raw inputs are graded by type against SC MAIN', () => {
   it('every red-list type hard-flags, timed', () => {
-    for (const t of ['Training', 'CSE', 'Fly with', 'Personal', 'Appointment', 'Duty', 'Other']) {
+    for (const t of ['Training', 'CSE', 'Attach', 'Personal', 'Appointment', 'Duty', 'Other']) {
       expect(shiftHardInput(t), t).toBe(true)
       const d = JSON.parse(DSNAP); DAYS.length = 0; d.forEach((x: any) => DAYS.push(x))
       INPUTS.length = 0; JSON.parse(ISNAP).forEach((x: any) => INPUTS.push(x))
@@ -215,8 +215,8 @@ describe('accepted ground rows are graded by their source type', () => {
 
 describe('hand-typed ground rows are graded by their own words', () => {
   const cs = () => PEOPLE[P].cs
-  it('TRAINING and FLY WITH go red; MEETING and ACADEMICS stay amber', () => {
-    expect(shiftHardLabel('FLY WITH 145')).toBe(true)
+  it('TRAINING and ATTACH go red; MEETING and ACADEMICS stay amber', () => {
+    expect(shiftHardLabel('ATTACH 145')).toBe(true)
     expect(shiftHardLabel('ACADEMICS')).toBe(false)
     addSC(P)
     ;(DAYS[TUE] as any).ground.push({ prog: 'TRAINING', who: cs(), str: '0900', end: '1000' })

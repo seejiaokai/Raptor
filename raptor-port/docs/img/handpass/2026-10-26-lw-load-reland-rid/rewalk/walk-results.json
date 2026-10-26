@@ -1,0 +1,82 @@
+{
+ "results": [
+  {
+   "id": "R1-moved",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "Reject then → Ground: true; stored {\"acc\":\"g\",\"odGround\":true}; its rows [{\"day\":2,\"rid\":\"rimvp87o5den9adm\",\"kept\":false}]"
+  },
+  {
+   "id": "R1-count",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "day head \"1 pending\"; the button \"Load onto working copy\", pressed once it reads \"Discard 1 edit & load — confirm\""
+  },
+  {
+   "id": "R1-loaded",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "after the load: head \"\"; stored {}; rows []; his overseas duty listed under Unavailable (its Reject there): true; the note: \"Wednesday is back to the Original. Viewers still see the Original. OD is off Thursday and Friday too.\""
+  },
+  {
+   "id": "R3",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "moved true; head \"2 pending\" → \"1 pending\"; armed \"Discard 1 edit & load — confirm\"; the note \"Thursday is back to the Original. Viewers still see the Original. 1 input moved onto the programme since publishing stays there, pending.\"; stored acc g; rows [{\"day\":3,\"rid\":\"rimvp8821ryz4njh\",\"kept\":false}]"
+  },
+  {
+   "id": "R2-moved",
+   "size": "phone",
+   "verdict": "PASS",
+   "said": "Reject then → Ground on the phone's board: true; stored acc g; its rows [{\"day\":0,\"rid\":\"rimvp87ugnlixzrx\",\"kept\":false}]"
+  },
+  {
+   "id": "R2-load",
+   "size": "phone",
+   "verdict": "PASS",
+   "said": "day head \"1 pending\" → \"1 pending\"; the button \"Load onto working copy\"; the note \"Monday is already at the Original. 1 input moved onto the programme since publishing stays there, pending.\"; rows after [{\"day\":0,\"rid\":\"rimvp87ugnlixzrx\",\"kept\":false}]"
+  }
+ ],
+ "log": [
+  {
+   "id": "bundle",
+   "size": "desk",
+   "said": "index-DvP9EvcH.js"
+  },
+  {
+   "id": "r2-filed",
+   "size": "desk",
+   "said": "Ranger's course {\"date\":\"Jul 13\",\"endDate\":\"Jul 14\",\"acc\":\"u\"}"
+  },
+  {
+   "id": "r2-published",
+   "size": "desk",
+   "said": "{\"published\":true,\"pressed\":\"Publish day\",\"head\":{\"plan\":\"Live working copy ▾\",\"version\":\"ORIG\",\"beak\":null,\"headRow\":\"Live working copy ▾ ORIG 6 changes i Unpublish\",\"signNote\":\"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch\",\"unpublish\":\"Unpublish\"}}"
+  },
+  {
+   "id": "r3-filed",
+   "size": "desk",
+   "said": "Saber's course imvp8821ryz4njh"
+  },
+  {
+   "id": "r1-published",
+   "size": "desk",
+   "said": "{\"published\":true,\"pressed\":\"Publish day\",\"head\":{\"plan\":\"Live working copy ▾\",\"version\":\"ORIG\",\"beak\":null,\"headRow\":\"Live working copy ▾ ORIG 5 changes i Unpublish\",\"signNote\":\"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch\",\"unpublish\":\"Unpublish\"}}"
+  },
+  {
+   "id": "r3-published",
+   "size": "desk",
+   "said": "{\"published\":true,\"pressed\":\"Publish day\",\"head\":{\"plan\":\"Live working copy ▾\",\"version\":\"ORIG\",\"beak\":null,\"headRow\":\"Live working copy ▾ ORIG 9 changes i Unpublish\",\"signNote\":\"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch\",\"unpublish\":\"Unpublish\"}}"
+  },
+  {
+   "id": "errors-desk",
+   "size": "desk",
+   "said": "[]"
+  },
+  {
+   "id": "errors-phone",
+   "size": "phone",
+   "said": "[]"
+  }
+ ]
+}

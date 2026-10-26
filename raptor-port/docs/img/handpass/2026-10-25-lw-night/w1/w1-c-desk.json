@@ -1,0 +1,37 @@
+[
+ {
+  "id": "S8 placed approved on a red day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 → 26 red; settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s08-desk-approved-after-tap.png",
+   "s08-desk-approved-settled.png"
+  ]
+ },
+ {
+  "id": "S8b kept pending: window stays, no bubble; ✕ then the bubble",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "FAILED: the window stays open with its note (saw open=true \"undefined\") — window text: Drifter | Fri 2 Jan | Approve what I enter | ✕ | Fri 2 Jan | Available P 28 · red | Approve | Refuse | ⇄Move | Delete | till 2 Jan | Document | Whole day | AM | PM | 1 Jan 26 – 2 Jan 26 | January 2026 | › | 25 | ‹ | › | MON | TUE | WED | THU | FRI | SAT | SUN ; after ✕: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); (a locked week itself cannot be made on screen — this is the nearest reachable pending day)",
+  "pics": [
+   "s08-desk-b-after-tap.png",
+   "s08-desk-b-window-open.png",
+   "s08-desk-b-after-x.png"
+  ]
+ },
+ {
+  "id": "S9",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "script stopped: ReferenceError: dragCells is not defined",
+  "pics": []
+ },
+ {
+  "id": "errors-c",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

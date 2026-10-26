@@ -137,6 +137,12 @@
 .seat[data-og]::after{content:'OG';position:absolute;top:-5px;right:-3px;z-index:4;
   font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7.5px;font-weight:800;letter-spacing:.02em;line-height:1;
   padding:0 2px;border-radius:4px;background:var(--panel);color:#E6EAEE;border:1px dotted #E6EAEE;pointer-events:none}
+/* A SEAT THAT HOLDS A COUNT KEEPS ITS CORNER TAG ON THE PUCK ([OG-TAG-OVER-COUNT], 21 Oct 26 — walk find of 1 Oct 26).
+   The tag — "OG" above, and the waiting or issued ALn of 04-pucks-sections.css — is the seat's ::after, set on the
+   seat's top-right corner. A placeholder puck's seat also holds its ALL AVAIL count after the puck, so that corner was
+   the count's, and the tag lay over the count's top edge. Here the tag is set on the PUCK's own corner instead — its
+   right edge 3px past the puck's, as on a lone puck (pucks are --puck-w wide on every surface) — and keeps its look. */
+.seat:has(> .oilcount):is([data-og],[data-alc],[data-aln])::after{right:auto;left:calc(var(--puck-w) + 3px);transform:translateX(-100%)}
 
 /* THE GOLD DOT ([HIST-PHONE-HIDE], 28 Sep 26 — D339, D345: "a small gold dot on every detail with a history while History
    is on", desktop too): `data-histdot`, set after each repaint on exactly the details the history bubble answers for

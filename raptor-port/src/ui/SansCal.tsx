@@ -27,7 +27,7 @@
    THE SAVED-ROW REVEAL (state/view.ts INPREVEAL — kept whole from the first calendar): a commitment just saved, or
    brought back by Undo, opens its own day on its own month, ONCE; closing that day, opening another or leaving the
    calendar spends it, so a second visit does not open it again (Opus's read of the first build, step 0). */
-import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
 import { INPUTS, isSansAvail } from '../engine/inputs'
 import { getTones, sansCommittedOn } from '../state/flyplan'
 import { addDays } from '../state/flyplan-model'
@@ -48,7 +48,7 @@ import { HlIcon } from './icons'
 import { cutParts, dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
 import { useMedia } from './usemedia'
 import { useVersion } from './useStore'
-import { KEYBOARD_MIN } from './kbscroll'
+import { KEYBOARD_MIN, screenBox } from './kbscroll'
 
 /** "1–2", "3–4", "5+" — the three colours' ranges, from the figures as set */
 const span = (from: number, below?: number): string => below === undefined ? `${from}+` : below - 1 <= from ? String(from) : `${from}–${below - 1}`
@@ -106,7 +106,8 @@ function Highlight({ people, hi }: { people: string[]; hi: string | null }) {
   )
 }
 
-export function SansCal() {
+/* `lead`: the Inputs page's three tabs, handed in on a desktop so they stand first in the month row (owner D1125) */
+export function SansCal({ lead }: { lead?: ReactNode } = {}) {
   useVersion()
   useWarFacts()
   const gridRef = useRef<HTMLDivElement>(null)
@@ -226,8 +227,12 @@ export function SansCal() {
       /* the visible screen, as the browser's bars leave it — but not as a keyboard leaves it: a month that shrank for the
          keys and grew back as they went jumped twice, behind the box being typed in (D1081); with the keys up the page
          scrolls to the box instead (kbscroll.ts) */
-      const h = vv && window.innerHeight - vv.height <= KEYBOARD_MIN ? vv.height : window.innerHeight
-      const top = el.getBoundingClientRect().top + (window.scrollY || 0)
+      /* the layout's full height, and its top, from the fixed mark (kbscroll.ts screenBox): his iPhone, the keys up and the
+         screen panned, gives the window's height as what is left below the visible top and every box from that top */
+      const sb = vv ? screenBox(vv) : null
+      const lay = sb ? sb.layH : window.innerHeight
+      const h = vv && lay - vv.height <= KEYBOARD_MIN ? vv.height : lay
+      const top = el.getBoundingClientRect().top - (sb ? sb.layTop : 0) + (window.scrollY || 0)
       el.style.setProperty('--sc-fill', Math.max(0, Math.floor(h - top - 12)) + 'px')
     }
     fit()
@@ -256,9 +261,12 @@ export function SansCal() {
   return (
     <div className="sanscal" id="sansCal" data-testid="sanscal">
       <div className="sc-top" ref={topRef}>
-        <div className="sc-head">
+        <div className={'sc-head' + (lead ? ' sc-head-tabs' : '')}>
+          {lead}
           <button type="button" className="abtn sc-nav" data-testid="sc-prev" aria-label="Previous month" onClick={() => step(-1)}>&#8249;</button>
-          <span className="sc-month" data-testid="sc-month" aria-live="polite" aria-label={`${MONTHS[cur.m - 1]} ${cur.y}`}>{narrow ? MONTHS[cur.m - 1].slice(0, 3) : MONTHS[cur.m - 1]} {cur.y}</span>
+          {/* data-fit on a desktop: the name's room is the widest month in the device's own font, so › stays put (D1122);
+              the phone keeps its own 96px (D705) */}
+          <span className="sc-month" data-testid="sc-month" aria-live="polite" aria-label={`${MONTHS[cur.m - 1]} ${cur.y}`} data-fit={narrow ? undefined : MONTHS.map(m => `${m} ${cur.y}`).join('\n')}>{narrow ? MONTHS[cur.m - 1].slice(0, 3) : MONTHS[cur.m - 1]} {cur.y}</span>
           <button type="button" className="abtn sc-nav" data-testid="sc-next" aria-label="Next month" onClick={() => step(1)}>&#8250;</button>
           <button type="button" className="abtn sc-today" data-testid="sc-today" onClick={goToday}>Today</button>
           <span className="sc-spring" />

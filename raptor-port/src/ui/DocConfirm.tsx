@@ -13,9 +13,11 @@ import { useEffect, useRef } from 'react'
 import { clickedSurround } from './outside'
 import { useSheetFocus } from './sheetfocus'
 
-export function DocConfirm({ who, typeLabel, onUpload, onNoDoc }: {
+export function DocConfirm({ who, typeLabel, leave = false, onUpload, onNoDoc }: {
   who: string
   typeLabel: string
+  /** a new leave's ask (owner D1150, M3 7.4): its approval from the official leave app, never a hard stop */
+  leave?: boolean
   /** dismiss and return to the editor's upload control */
   onUpload: () => void
   /** file the input with no document */
@@ -35,11 +37,15 @@ export function DocConfirm({ who, typeLabel, onUpload, onNoDoc }: {
     <div className="airpop upconf-pop docconf-pop" data-testid="docconf"
       onClick={e => { if (clickedSurround(e, 'docconf-pop')) onUpload() }}>
       <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
-        <div className="airpop-head"><b>No medical document — {who}, {typeLabel}</b>
+        <div className="airpop-head"><b>{leave ? 'No document' : 'No medical document'} — {who}, {typeLabel}</b>
           <button className="x" aria-label="Close" onClick={onUpload}>✕</button></div>
         <div className="airpop-body upconf-body">
-          <div className="upconf-h">This {typeLabel} has no certificate attached.</div>
-          <div className="docconf-what">Attach one now, or file it without — for when the record genuinely isn’t available yet.</div>
+          {leave
+            ? <div className="docconf-what">Attach the approval from the leave app now, or file it and attach it later.</div>
+            : <>
+              <div className="upconf-h">This {typeLabel} has no certificate attached.</div>
+              <div className="docconf-what">Attach one now, or file it without — for when the record genuinely isn’t available yet.</div>
+            </>}
         </div>
         <div className="airpop-foot upconf-foot">
           <span style={{ flex: 1 }}></span>

@@ -1,0 +1,64 @@
+[
+ {
+  "id": "25e1",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "two days (3–4 Dec) each holding a war-approved morning LL \"Am1\" and a war-approved afternoon OL \"Pm1\" (the drag window's box opened holding \"\"), with a pending LL \"Pend5\" on 5 Dec so Approve is offered, dragged 3–5 Dec, typed \"Both\", Approve: 3 Dec: req: - | input: OL-pm 12-03..12-04/\"Both\" ; LL-am 12-03..12-04/\"Both\" ; 4 Dec: req: - | input: OL-pm 12-03..12-04/\"Both\" ; LL-am 12-03..12-04/\"Both\" ; 5 Dec: req: - | input: LL 12-05/\"Both\"",
+  "pics": [
+   "s25-dk-e1-before",
+   "s25-dk-e1-approve"
+  ]
+ },
+ {
+  "id": "25e2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "a day (3 Dec) holding a war-approved morning LL \"Am2\" and an Inputs-filed afternoon OL \"Pm2\", dragged 3–4 Dec, typed \"Both\" (Approve is NOT offered — nothing there is a bid to decide), closed with ✕: 3 Dec: req: - | input: LL-am 12-03/\"Both\" ; OL-pm[inputs] 12-03/\"Both\"",
+  "pics": [
+   "s25-dk-e2-before"
+  ]
+ },
+ {
+  "id": "25g",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "one LL on 7 Dec shared by Ranger and Ridge (\"Shared\") on one entry, Ranger's 7 Dec dragged with his pending 8 Dec bid, typed \"Mine only\", Approve. After — Ranger's entries: [\"LL 12-08..12-08 [bane] \\\"Mine only\\\" (war)\",\"LL 12-07..12-07 [bane] \\\"Mine only\\\"\"]; Ridge's: [\"LL 12-07..12-07 [razer] \\\"Shared\\\"\"]. Ridge's words unchanged: true; Ranger's part changed: true; Ranger split off onto an entry of his own",
+  "pics": [
+   "s25-dk-g-before",
+   "s25-dk-g-approve"
+  ]
+ },
+ {
+  "id": "25g-bell",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "the admin's bell after that save: no panel found by the usual ids",
+  "pics": [
+   "s25-dk-g-bell"
+  ]
+ },
+ {
+  "id": "25h",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Echo's 1 Dec OD (\"OD words\"), 2 Dec CSE (\"CSE words\"), 3 Dec UNA (\"UNA words\"), with a pending LL \"Pend4\" on 4 Dec so Approve is offered, dragged 1–4 Dec, typed \"New\", Approve. Before: {\"ins\":[\"CSE 12-02..12-02 \\\"CSE words\\\"\",\"OD 12-01..12-01 \\\"OD words\\\"\"],\"una\":[\"UNA \\\"UNA words\\\"\"],\"cells\":[\"1: OD|od|a|whole\",\"2: CSE|cse|a|whole\",\"3: UNA|una|a|whole\"]}. After: {\"ins\":[\"CSE 12-02..12-02 \\\"CSE words\\\"\",\"LL 12-04..12-04 \\\"New\\\"\",\"OD 12-01..12-01 \\\"OD words\\\"\"],\"una\":[\"UNA \\\"UNA words\\\"\"],\"cells\":[\"1: OD|od|a|whole\",\"2: CSE|cse|a|whole\",\"3: UNA|una|a|whole\"]}",
+  "pics": [
+   "s25-dk-h-before",
+   "s25-dk-h-approve"
+  ]
+ },
+ {
+  "id": "25h2",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "the same three filings dragged 1–3 Dec, typed \"New2\", closed with ✕: {\"ins\":[\"CSE 12-02..12-02 \\\"CSE words\\\"\",\"LL 12-04..12-04 \\\"New\\\"\",\"OD 12-01..12-01 \\\"OD words\\\"\"],\"una\":[\"UNA \\\"UNA words\\\"\"],\"cells\":[\"1: OD|od|a|whole\",\"2: CSE|cse|a|whole\",\"3: UNA|una|a|whole\"]}",
+  "pics": []
+ },
+ {
+  "id": "25-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

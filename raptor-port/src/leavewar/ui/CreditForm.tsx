@@ -9,10 +9,29 @@
 // grant is, and the STORE (grantTo) still has the last word on both.
 
 import { useState, type KeyboardEvent, type ReactNode } from 'react'
-import type { CounterName } from '../engine'
-import { grantTo, MAX_GIVEN_BY, MAX_REASON, reasonRequired } from '../state/store'
+import type { CounterName, Half } from '../engine'
+import { defaultAwardHalf, grantTo, MAX_GIVEN_BY, MAX_REASON, reasonRequired } from '../state/store'
 import { DateBox } from '../../ui/DateBox'
 import './oiltracker.css'
+
+/** WHICH HALF OF ITS DAY AN HO TAKES (owner, D1164 — an HO is drawn in a half, the morning or the afternoon, as a half
+ *  day's leave is): the AM / PM chips the bid window's half-day row uses, the picked one lit. Drawn only where the
+ *  award is half a day — the +OIL panel, the OIL tracker's form and editor, the day's list. `value` null lights
+ *  neither (several people whose days default to different halves). One body, so every door picks it alike. */
+export function HalfPick({ value, onPick, testid }: { value: Half | null; onPick: (h: Half) => void; testid: string }) {
+  return (
+    <>
+      {(['am', 'pm'] as const).map(h => (
+        <button
+          key={h} type="button" data-testid={`${testid}-${h}`}
+          className={`tchip half${value === h ? ' on' : ''}`} aria-pressed={value === h}
+          title={h === 'am' ? 'The morning' : 'The afternoon'}
+          onClick={() => onPick(h)}
+        >{h === 'am' ? 'AM' : 'PM'}</button>
+      ))}
+    </>
+  )
+}
 
 /** A single day behind a box: the box reads the day, a tap opens the app's one
  *  date calendar over the page (ui/DateBox.tsx), a tap on a day picks it and
@@ -73,9 +92,16 @@ export function CreditForm({ counter, ids, who, today, initialAmount = '1', auto
   const [reason, setReason] = useState('')
   const [given, setGiven] = useState('')
   const [err, setErr] = useState('')
+  /* AN HO'S HALF (owner, D1164) — null until the admin picks one. Unpicked, each person takes his own day's default
+     (the store's `defaultAwardHalf`: the other half beside a half-day leave, else the morning), and the chips light
+     that default — or neither, when the people picked would take different halves. */
+  const [half, setHalf] = useState<Half | null>(null)
+  const isHO = counter === 'oil' && parseAmount(amt, sign) === 0.5
+  const defs = isHO ? ids.map(id => defaultAwardHalf(id, date)) : []
+  const shownHalf = half ?? (defs.length && defs.every(d => d === defs[0]) ? defs[0]! : null)
   const save = () => {
     const n = parseAmount(amt, sign)
-    const problem = n === null ? 'Type the days — 2 adds, -2 subtracts' : grantTo(ids, counter, n, date, reason, given)
+    const problem = n === null ? 'Type the days — 2 adds, -2 subtracts' : grantTo(ids, counter, n, date, reason, given, half ?? undefined)
     if (problem) { setErr(problem); return }
     onDone()
   }
@@ -114,6 +140,7 @@ export function CreditForm({ counter, ids, who, today, initialAmount = '1', auto
         onChange={e => { setErr(''); setAmt(e.target.value) }}
         onKeyDown={keys}
       />
+      {isHO && <HalfPick testid="oil-half" value={shownHalf} onPick={h => { setErr(''); setHalf(h) }} />}
       {full && <DayChip testid="oil-date" value={date} today={today} onPick={setDate} />}
       {full && (
         <input className="oil-text" data-testid="oil-reason" maxLength={MAX_REASON} value={reason} placeholder="reason" aria-label="Reason" onChange={e => setReason(e.target.value)} onKeyDown={keys} />

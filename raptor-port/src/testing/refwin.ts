@@ -538,7 +538,7 @@ function reinput(html: string): string {
    (port reads the source type off row.src; the reference reads the remarks
    label) — no parity fixture may build one. */
 function reshift(html: string): string {
-  const RH = "/\\b(TRAINING|CSE|FLY\\s+WITH|PERSONAL|APPOINTMENT|DUTY|EVENT|OTHER)\\b/i"
+  const RH = "/\\b(TRAINING|CSE|ATTACH|PERSONAL|APPOINTMENT|DUTY|EVENT|OTHER)\\b/i"
   const swaps: Array<[string, string]> = [
     /* the sortie-clash loop no longer speaks over a shift line — the graded
        events loop is a shift's one voice (see validate.ts, same guard) */
@@ -734,10 +734,11 @@ function reirest(html: string): string {
   const swaps: Array<[string, string]> = [
     ["prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });",
      "prevFlyLd[e.id]=e.kind==='fly'?e.ld:null;}\n      });"
-     + "const _rt=/^(training|cse|meeting|fly with|appointment|duty|event|od|other)$/i;"
-     + "const _tk=/^(training|cse|meeting|fly with|personal|appointment|duty|event|od|other)$/i;"
+     + "const _rt=/^(training|cse|meeting|attach|appointment|duty|event|od|other)$/i;"
+     + "const _tk=/^(training|cse|meeting|attach|personal|appointment|duty|event|od|other)$/i;"
      + "const _il=i=>{const ty=String(i.type||''),t=String(i.title==null?'':i.title).replace(/\\s+/g,' ').trim().slice(0,40).trim();"
-     + "return _tk.test(ty.trim())&&t&&t.toLowerCase()!==ty.trim().toLowerCase()?t:ty;};"
+     + "const _to=/^attach$/i.test(ty.trim())?String(i.to==null?'':i.to).replace(/\\s+/g,' ').trim().slice(0,40).trim():'';"
+     + "const _nm=_tk.test(ty.trim())&&t&&t.toLowerCase()!==ty.trim().toLowerCase()?t:ty;return _to?_nm+' \u00b7 '+_to:_nm;};"
      + "ev[idx-1].input.forEach(i=>{"
      + "if(i.nx||i.pv||!_rt.test(String(i.type||'').trim()))return;"
      + "if(i.s==null||i.e==null||!isFinite(i.e)||i.e-i.s>=1439)return;"

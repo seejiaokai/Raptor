@@ -49,6 +49,26 @@ async function slowMachine(page: Page) {
   if (rate > 1) await (await page.context().newCDPSession(page)).send('Emulation.setCPUThrottlingRate', { rate })
 }
 
+/* THE LEAVE WAR'S "TODAY", HELD STILL (M1 — D1177, D1211, 22 Oct 26). A member never bids before today, the open-dates
+   chip, outline and window show him the open stretches from today, and the page lands on the first open date from
+   today (else today). The demo's open stretch is a fixed 1 Jan – 31 Mar 26 that the real calendar has passed — left to
+   the real date, every member bid in this suite would meet the closed note and the grid would open in October. So
+   every sign-in first pins the war's today far back, as the unit suite's own setup does (src/leavewar/test-setup.ts):
+   "today" decides nothing unless a test sets it on purpose. Pinned BEFORE the sign-in, so the grid's
+   first landing (and the idle pre-warm after login) already reads it. The bridge (src/probe-bridge.ts, this PC only)
+   is the one seam; a bridge without it fails here by name rather than as a hundred closed notes. */
+export const LW_TODAY = '2000-01-01'
+async function pinLeaveWarToday(page: Page) {
+  await page.waitForSelector('#luser')
+  const ok = await page.evaluate(d => {
+    const w = window as any
+    if (typeof w.lwSetMemberToday !== 'function') return false
+    w.lwSetMemberToday(d)
+    return true
+  }, LW_TODAY)
+  if (!ok) throw new Error('login: the probe bridge has no lwSetMemberToday — the Leave War\'s today cannot be pinned (src/probe-bridge.ts)')
+}
+
 /* Login is ad/a for full edit, us/us for the member (owner, 24 Aug 26). The
    username is lowercased before matching but the PASSWORD is compared
    exactly. The parameter keeps its historical 'a' | 'user' shape so the 100+
@@ -57,6 +77,7 @@ async function slowMachine(page: Page) {
 export async function login(page: Page, who: 'a' | 'user' = 'a') {
   await page.goto('/')
   await slowMachine(page)
+  await pinLeaveWarToday(page)
   await page.fill('#luser', who === 'a' ? 'ad' : 'us')
   await page.fill('#lpass', who === 'a' ? 'a' : 'us')
   await page.click('#loginForm button[type=submit]')
@@ -232,6 +253,11 @@ export async function puckSize(page: Page) {
    passes 'a', and mid-test switches go through w.lwSetRole (the toggle the
    standalone app drew was removed at the merge — the role rides the login). */
 export async function openLeaveWar(page: Page, who: 'a' | 'user' = 'user', viewAs: string | null = null) {
+  /* THE MANNING BLOCK AS THESE TESTS WERE WRITTEN FOR IT — EMPTY (his D1312, 24 Oct 26: the demo world now starts with
+     six counters, for his drawings and preview; a real squadron's store still starts with none — D669). Set before the
+     page loads, so the demo boot never lays them (state/demoworld.ts): nothing to delete, no Undo step, and a re-open
+     keeps whatever the test made. A test that is about counters makes its own (elevenCounters). */
+  await page.addInitScript(() => { (window as any).__lwNoDemoCounters = true })
   await login(page, who)
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')
@@ -279,16 +305,52 @@ export async function lwView(page: Page, id: string | null) {
   await page.waitForTimeout(150)
 }
 
-/* MOVE THE WAR'S STAGE the way a person does at this size ([LW-PHONE-HEADER-SPACE], owner D678, 8 Oct 26). On a tablet
-   and a desktop the two moves are in sight on the stage strip; on a phone (the Leave War's own phone width, 430px and
-   under) an admin's stage is a button and the same two moves are in the menu it opens — one tap more. A test that is
-   about what the stage DOES, not where its button is, goes through here and runs unchanged in both projects. */
-export async function stageMove(page: Page, which: 'advance' | 'back') {
-  if ((page.viewportSize()?.width ?? 1440) <= 430) {
-    await page.locator('[data-testid="stage-now"]').click()
-    await page.locator('[data-testid="stage-menu"]').waitFor({ state: 'visible' })
+/* OPEN AND CLOSE THE DATES the way a person does (D1177, D1168 — 21 Oct 26: the stages went; the admin opens the days
+   the squadron may bid on in the "Open for bidding" window). The one chip — "Open for bidding 1 Jan – 31 Mar" on a
+   desktop, "Open 1 Jan – 31 Mar" on a phone, "Bidding closed" with nothing open — opens the window at every size; a tap
+   on a month button opens a closed month whole and closes an open one. A test that is about what opening or closing
+   DOES goes through these and runs unchanged in both projects. */
+export const openChip = (page: Page) => page.locator('[data-testid="open-chip"]')
+export const datesWindow = (page: Page) => page.locator('[data-testid="open-dates"]')
+/** Open the "Open for bidding" window from the chip. */
+export async function openDatesWindow(page: Page) {
+  await openChip(page).click()
+  await expect(datesWindow(page)).toBeVisible()
+}
+/** Close it by its ✕. */
+export async function closeDatesWindow(page: Page) {
+  await page.locator('[data-testid="open-dates-close"]').click()
+  await expect(datesWindow(page)).toHaveCount(0)
+}
+/** Tap these months ("2026-04") in the open window, each one tap, waiting for each to change. */
+export async function tapMonths(page: Page, keys: string[]) {
+  for (const k of keys) {
+    const m = page.locator(`[data-testid="od-month-${k}"]`)
+    const was = await m.getAttribute('data-state')
+    await m.click()
+    await expect(m, `the ${k} button changed`).not.toHaveAttribute('data-state', was!)
   }
-  await page.locator(`[data-testid="stage-${which}"]`).click()
+}
+/** CLOSE BIDDING on the period on screen, as the admin does: every open month tapped shut (a month open in part is
+ *  tapped twice — the first tap opens it whole, the second closes it); the chip then reads "Bidding closed". */
+export async function closeBidding(page: Page) {
+  await openDatesWindow(page)
+  for (let i = 0; i < 30; i++) {
+    const lit = page.locator('[data-testid^="od-month-"][data-state="open"], [data-testid^="od-month-"][data-state="part"]').first()
+    if (!(await lit.count())) break
+    await tapMonths(page, [(await lit.getAttribute('data-testid'))!.slice('od-month-'.length)])
+  }
+  await expect(page.locator('[data-testid="od-none"]')).toBeVisible()
+  await closeDatesWindow(page)
+  await expect(openChip(page)).toHaveText('Bidding closed')
+}
+/** OPEN these whole months for bidding (the seed's own stretch is Jan – Mar 26), from the window. */
+export async function openMonths(page: Page, keys: string[] = ['2026-01', '2026-02', '2026-03']) {
+  await openDatesWindow(page)
+  for (const k of keys) {
+    if ((await page.locator(`[data-testid="od-month-${k}"]`).getAttribute('data-state')) !== 'open') await tapMonths(page, [k])
+  }
+  await closeDatesWindow(page)
 }
 
 /* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): with a day's sheet open, its Move picks the chip up into the grid's
@@ -329,7 +391,36 @@ export async function elevenCounters(page: Page) {
     return rules.filter((r: unknown) => !w.lwSaveManningRule(r)).map((r: any) => r.id)
   }, JSON.parse(JSON.stringify(ELEVEN_COUNTERS)))
   if (refused.length) throw new Error(`elevenCounters: refused ${refused.join(', ')}`)
+  /* the counters are made to be read: on a phone the Manning rows open folded since the overhaul's M2 (D1258), so they
+     are opened the way a person opens them before the first row is waited for — on a desktop they are open already */
+  await openManning(page)
   await page.waitForSelector('[data-testid="count-scn"]')
+}
+
+/* THE MANNING ROWS, OPENED BY THEIR BUTTON (D1258, 22 Oct 26): on a phone the Manning rows — the counters and the four
+   Required / Available rows — open folded, for everyone, so a test that reads or presses one taps "Manning" first; on a
+   desktop they open as before and this does nothing. */
+export async function openManning(page: Page) {
+  const t = page.locator('[data-testid="counts-toggle"]')
+  if ((await t.getAttribute('aria-expanded')) !== 'true') await t.click()
+  await expect(t).toHaveAttribute('aria-expanded', 'true')
+  /* …and kept open when the war's viewer changes under the test. The fold is remembered per person (`lw:manning:<viewer>`)
+     and re-read when the viewer changes; these tests open the war UNSCOPED (openLeaveWar's null viewer), and after a role
+     switch the next sync pass names the signed-in person again — which in production is who the war was scoped to all
+     along. Without this the rows fold away mid-test on that hand-over alone (measured: one setFlyRun after raptorRole).
+     So the choice is written as remembered for whoever the sync may name, as the person's own tap would have written it. */
+  await page.evaluate(() => {
+    try { for (const id of Object.keys((window as any).PEOPLE ?? {})) localStorage.setItem(`lw:manning:${id}`, 'open') } catch { /* view convenience only */ }
+  })
+}
+
+/* INTO REARRANGE THE WAY AN ADMIN GETS THERE (D1254, 22 Oct 26): the ⇅ toggle left the grid's bar for ⚙ — "⇅ Rearrange
+   the grid" turns the drag handles on and closes the window, and the bar then carries "⇅ Done" (`roster-arrange`), the
+   one way out. */
+export async function rearrangeOn(page: Page) {
+  await page.locator('[data-testid="settings-open"]').click()
+  await page.locator('[data-testid="settings-rearrange"]').click()
+  await expect(page.locator('[data-testid="roster-arrange"]')).toBeVisible()
 }
 
 /* ---- THE APP'S ONE DATE CALENDAR ([ONE-DATE-CALENDAR], 13 Oct 26 — src/ui/DateCal.tsx, DateBox.tsx). A date box is a
@@ -382,4 +473,27 @@ export async function pickDate(page: Page, sel: string, iso: string, touch = fal
   await expect(page.locator('[data-testid="dcal-card"]')).toBeVisible()
   await tapCalendarDate(page, iso, touch)
   await expect(box).toHaveAttribute('data-value', iso)
+}
+
+/** A NEW leave saved with no document asks first since D1150 (the Leave War overhaul's M3 7.4) — never a stop: answer it
+ *  "No document", as a filer who has none yet does. Does nothing where no ask opens (a duty, a leave with a file). */
+export async function answerNoDocument(page: Page): Promise<void> {
+  const b = page.locator('[data-testid="docconf-nodoc"]')
+  await b.waitFor({ state: 'visible', timeout: 1500 }).then(() => b.click(), () => {})
+}
+
+/** An admin's bid windows open with "Approve what I enter" on (owner D1186, the Leave War overhaul's M3 5.5) — a switch
+ *  remembered on the device since round 3 (D1302): a test that means to place a PENDING bid as an admin turns it off
+ *  first — by a press on the switch, as he would — where it is on. 'bid' for the one-day window, 'sel' for the
+ *  drag-selection window. */
+export async function untickApprove(page: Page, prefix: 'bid' | 'sel'): Promise<void> {
+  const t = page.locator(`[data-testid="${prefix}-approve-tick"]`)
+  if (await t.count() && (await t.getAttribute('aria-checked')) === 'true') await t.click()
+}
+
+/** The admin's Grant OIL, Post out and Post in stand behind the ⋯ in the row under the leaves since round 3 (D1326): open
+ *  it, as he would, and press the one named. `prefix` 'bid' (the one-day window) or 'sel' (the drag-selection window). */
+export async function pressMore(page: Page, item: string, prefix: 'bid' | 'sel' = 'bid'): Promise<void> {
+  await page.locator(`[data-testid="${prefix}-more"]`).click()
+  await page.locator(`[data-testid="${item}"]`).click()
 }
