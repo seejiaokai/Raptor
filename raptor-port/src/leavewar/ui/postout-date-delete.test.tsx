@@ -162,6 +162,8 @@ describe('an armed "Tap again to delete" on the other posting doors is taken bac
     expect(undoPostOut('rocky')).toBe(true)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-rocky-${STRUCK}`))
+    /* Post out stands in the window's ⋯ since the overhaul's M3 (D1349 — Other into the ⋯) */
+    fireEvent.click(screen.getByTestId('bid-more'))
     fireEvent.click(screen.getByTestId('bid-postout'))
     fireEvent.click(screen.getByTestId('po-delete'))
     fireEvent.click(screen.getByTestId('po-confirm'))
@@ -176,6 +178,7 @@ describe('an armed "Tap again to delete" on the other posting doors is taken bac
     const sel = { people: ['rocky'], from: STRUCK, to: STRUCK, cells: [{ personId: 'rocky', date: STRUCK }] }
     render(<SelectSheet sel={sel} people={() => 'Hex'} role="admin" canDecide={true} onDone={() => {}} onMove={() => {}}
       onPostOut={(_id, d, o) => { posted.push(`${d}:${o}`) }} onClose={() => {}} />)
+    fireEvent.click(screen.getByTestId('sel-more'))
     fireEvent.click(screen.getByTestId('sel-postout'))
     fireEvent.click(screen.getByTestId('sel-po-delete'))
     fireEvent.click(screen.getByTestId('sel-po-confirm'))
