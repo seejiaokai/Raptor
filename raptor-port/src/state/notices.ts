@@ -31,7 +31,7 @@
    (state/noticeseen.ts): were reading to write to the notice, the maker's Undo of his change would be refused —
    "Ranger changed this after your action" — by the read of the very person it told. */
 import { PEOPLE } from '../engine/people'
-import { dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
+import { odOut, isOD, dateOrd, inpLabel, isUnavail, namedOf, placeholderOf, remarksTyped, tillTurned } from '../engine/inputs'
 import { hhmm } from '../engine/time'
 import { mayEditSched } from './perms'
 
@@ -91,7 +91,7 @@ const here = (p: string): boolean => { const x: any = PEOPLE[p]; return !!x && !
 
 /* what changed about the INPUT ITSELF, for someone who is in it before and after (or filed it) — in the order a reader
    needs it: is it still on, is it still when he thought, who is in it, what it is called */
-function common(b: any, a: any, him: string): NoticePart[] {
+export function common(b: any, a: any, him: string): NoticePart[] {
   const out: NoticePart[] = []
   const why = String(a.cxr || '').trim()
   if (a.cx && (!b.cx || String(b.cxr || '').trim() !== why)) out.push(why ? { k: 'cx', why } : { k: 'cx' })
@@ -99,7 +99,10 @@ function common(b: any, a: any, him: string): NoticePart[] {
   /* A FILING UNDER UNAVAILABLE IS NOT THE PROGRAMME (owner D815, 13 Oct 26). These two knew only "taken off" against
      everything else, so an Other filed with "→ Unavail" told its man "Back on the programme", and taken out again
      "Taken off the programme" — it was on neither. Asked FIRST; the two lines below keep their meaning. */
-  if (a.acc === 'u' && b.acc !== 'u') out.push({ k: 'unav' })
+  /* an overseas duty stands under Unavailable by its kind, with no mark: put back, or taken out, it is said as a filing is (D1393) */
+  const odIn = (x: any) => isOD(x.type) && !odOut(x)
+  if (isOD(a.type) && isOD(b.type) && odIn(a) !== odIn(b)) out.push({ k: odIn(a) ? 'unav' : 'unavoff' })
+  else if (a.acc === 'u' && b.acc !== 'u') out.push({ k: 'unav' })
   /* …taken out however it is taken out: a Reject, or an Other's Goes to moved back to the programme (the code read's F6 —
      D815's reading that no button does it was overtaken by D1356's Goes to) */
   /* …but not a retype into a kind the Unavailable list shows by itself — a leave, a medical, an overseas duty — which never

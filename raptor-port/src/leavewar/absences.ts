@@ -140,7 +140,7 @@ export function warCounts(row: any): boolean {
      Leave and medical are not filed this way and count wherever they sit. */
   if (isAwayKind(row.type)) {
     if (String(row.type).trim().toUpperCase() === 'CSE') return row.acc === 'u' && !inputSilent(row)
-    return row.acc !== 'r' && row.acc !== 'g'
+    return row.acc !== 'r' && row.acc !== 'g' && !(row.odGround && row.acc !== 'u')
   }
   if (warVisible(row.type)) return true
   /* …unless it is cancelled or information only: silent everywhere else — no warning, no OIL, free for ALL AVAIL — so on

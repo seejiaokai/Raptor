@@ -4,7 +4,7 @@ import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
@@ -2186,7 +2186,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            Inputs group's → Unavail, and that group drops a filed input — so the row sat here with no
            way back but the top-bar Undo or deleting the man's input. The same Undo the landed rows
            carry; edit surfaces only (ed), so the view page and the parity week are untouched. */
-        const unfile=!acc&&ed&&inp.acc==='u'&&isPersonal(inp.type)&&canEditSched();
+        const unfile=!acc&&ed&&(inp.acc==='u'&&isPersonal(inp.type)||isOD(inp.type)&&!odOut(inp))&&canEditSched();
         /* one puck a man of the line — each by his OWN record, so its OIL bar is his own claim's — wearing his seat's four
            marks, the dotted and dashed crew-rest rings included (D1013, D1017: one man, one ring, on every copy of him) */
         const pk=line.map((one:any)=>PEOPLE[one.person]
@@ -2224,11 +2224,11 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        Available crew stays computed (not an input type); SANS is its own card grid
        (owner rework, 14 Aug 26); Unavailable is an offer's opposite and always
        prints, "Nil" and all. */
-    const crewInputs=ed?inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true):'';
+    const crewInputs=ed?inGrp('Personal Inputs',(inp:any)=>listedPersonal(inp),'sec-inp',false,true):'';
     const crewAvail=ed?availHTML(d,di,ed):'';
     const crewSans=sansSectionHTML(d,di,ed);
     // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this block
-    const crewUnav=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type),'sec-unav',true);
+    const crewUnav=inGrp('Unavailable',(inp:any)=>listedUnavail(inp),'sec-unav',true);
     if(ed){secBits.inputs=crewInputs;secBits.avail=crewAvail;secBits.sans=crewSans;secBits.unav=crewUnav;}
     /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
        .ah-h / .sub-h / .ap-h / .wv-sech title), not as a rail in the .dsec gutter —
@@ -2383,12 +2383,14 @@ export function accCtl(di:any,inp:any){
     const dj=acceptedDay(inp), other=dj>=0&&dj!==+di&&DAYS[dj]?String(DAYS[dj].dow||''):'';
     if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take its row off ${esc(other)}'s ground programme">Reject · ${esc(other.slice(0,3))}</button></span>`;
   }
+  /* AN OVERSEAS DUTY UNDER UNAVAILABLE BY ITS KIND (no mark) takes the same Reject as one filed there (his D1393) */
+  if(isOD(inp.type)&&!odOut(inp)&&inp.acc!=='u')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take it back out of Unavailable, into Personal Inputs">Reject</button></span>`;
   if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Take it back out of Unavailable, into Personal Inputs':'Take its row off the ground programme'}">Reject</button></span>`;
   /* ITS ROW IS ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26): a request covering Sun 19 – Mon 20 Jul landed on Sunday keeps
      its one row in week 1 (D175 — one request, one row). On week 2 its card offered Accept, which made a second row; it now
      says where the row is instead. (Its filing stays this week's own, so a published Monday's count never moves by a week
      change — Astra 02.) An unreadable saved week keeps the Accept, whose press refuses and says why. */
-  if(isPersonal(inp.type)){
+  if(isPersonal(inp.type)||isOD(inp.type)){
     const away=rowElsewhere(inpId(inp),inp);
     if(away&&away!=='unreadable'){ const w=isoDayWords(away.iso);
       return `<span class="accs"><span class="acc-away" title="Its row is on the ground programme of ${esc(w)} — load that week to change it">On ${esc(w)}</span></span>`; }
@@ -2403,7 +2405,7 @@ export function accCtl(di:any,inp:any){
        commitment's now (the rest "land on the Ground Programme until a scheduler moves one"), a course and an Attach — which
        land under Unavailable by themselves (D1372, D1374) — taken out and put back the same way. One holding ALL AVAIL / ALL
        is never under Unavailable: its Other keeps "→ Common", every other kind "Accept", as before. */
-    +(isPersonal(inp.type)&&!isSpecial(inp.person)&&!idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
+    +((isPersonal(inp.type)||isOD(inp.type))&&!isSpecial(inp.person)&&!idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
       ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
       : /^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
         ? b('g','→ Common','Accept onto the Common Programme')

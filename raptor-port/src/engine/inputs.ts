@@ -552,7 +552,22 @@ export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'
    above. A CANCELLED or information-only one is silent (inputSilent), an Attach included: the warning list ignores it
    already, and a strike it no longer backs is the drift the picker must not have. The ALL AVAIL crowd is unmoved — it
    already keeps out every commitment, wherever filed (leavewar/sync.ts availableFor). Pinned by unavaway.test.ts. */
-export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type))||(!inputSilent(inp)&&((isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'))||(isPersonal(inp.type)&&inp.acc==='u')));}
+/* AN OVERSEAS DUTY A SCHEDULER TOOK OUT OF UNAVAILABLE (his D1393, 26 Oct 26 — "an overseas duty has no Reject button on
+   the schedule … add one"). An overseas duty sits under Unavailable by its kind, with no mark; a scheduler may now take it
+   out as he takes out a course: Reject parks it in Personal Inputs ('r', dormant), → Ground puts its row on the Ground
+   Programme (`odGround`, kept on the record, because the 'g' a week works out for itself is cleared on every week load and
+   an overseas duty with no mark is away — a stored 'g' alone would send him away again on the next week; the course's F1),
+   → Unavail puts it back ('u'). Taken out, it counts him IN — here, on the crew list, and on the Leave War
+   (leavewar/absences.ts warCounts), which ask the same thing. */
+export function isOD(t:any){return String(t==null?'':t).trim().toUpperCase()==='OD';}
+export function odOut(inp:any){return !!inp&&isOD(inp.type)&&inp.acc!=='u'&&(inp.acc==='r'||inp.acc==='g'||!!inp.odGround);}
+/* does this request's kind put a row on the programme: an activity (isPersonal), or an overseas duty a scheduler moved onto
+   the Ground Programme (D1393) — the one test the read-time landing asks (overlay.ts) */
+export function goesOnProg(inp:any){return !!inp&&(isPersonal(inp.type)||(isOD(inp.type)&&!!inp.odGround&&inp.acc!=='u'&&inp.acc!=='r'));}
+/* is it LISTED in Personal Inputs / under Unavailable on the schedule (ui/html.ts, ui/board-html.ts — one body each) */
+export function listedPersonal(inp:any){return !!inp&&(isPersonal(inp.type)||odOut(inp))&&inp.acc!=='u';}
+export function listedUnavail(inp:any){return !!inp&&((isUnavail(inp.type)&&!odOut(inp))||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type);}
+export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type)&&!odOut(inp))||(!inputSilent(inp)&&((isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'))||(isPersonal(inp.type)&&inp.acc==='u')));}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a

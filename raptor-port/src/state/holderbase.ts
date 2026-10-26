@@ -21,7 +21,7 @@
    The week's copy in memory written on the way out (store.ts weekStashSnap) is this base, so a return to the week, and
    every cross-week read of it, starts from what its holder committed — as a reload does. */
 import { DAYS } from '../engine/data'
-import { INPUTS, isPersonal } from '../engine/inputs'
+import { INPUTS, goesOnProg } from '../engine/inputs'
 import { CURWEEK } from '../engine/waves'
 import { SCHED, dayApproved, dayCurVer, daySnapOf, protectedWeek } from '../engine/publish'
 import { keyDay } from '../engine/keys'
@@ -219,7 +219,7 @@ export function rederive(opts: { absorb?: Iterable<number>; live?: boolean } = {
         const src = g && String(g.src || '')
         if (!src || g.kept || told.has(src)) continue
         const r: any = (INPUTS as any[]).find((i: any) => i && String(i.iid || '') === src)
-        if (!r || isPersonal(r.type) || DAYS.some((d: any) => standsOn(d, src, r))) continue
+        if (!r || goesOnProg(r) || DAYS.some((d: any) => standsOn(d, src, r))) continue
         told.add(src)
         said.push(`${r.type} does not go on the Ground Programme — its row has been removed`)
       }
