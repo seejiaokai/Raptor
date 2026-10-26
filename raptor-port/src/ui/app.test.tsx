@@ -82,7 +82,7 @@ describe('the app shell', () => {
     /* the DRAFT/PART-PUBLISHED/APPROVED banner text is gone (owner, 15 Sep 26) —
        per-day green/DRAFT tags carry it now; the banner keeps only the AL roll,
        empty on a fully-draft week. */
-    expect(host.querySelector('#vBanner')!.textContent!.trim()).toBe('')
+    expect(host.querySelector('#vBanner'), 'the week banner is gone (D1098)').toBeNull()
     for (const id of ['#warnBtn', '#warnBtn2', '#warnBtn3', '#nHard', '#nAdv', '#nNote'])
       expect(host.querySelector(id), `${id} is gone from the topbar`).toBeNull()
   })

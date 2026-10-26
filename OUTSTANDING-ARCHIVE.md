@@ -6350,6 +6350,17 @@ switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wro
 ### [PO-MOVE-DATE-DELETE-ASK] The Post out sheet takes a moved date at one tap — does a posting whose outcome is Delete then delete him without its second ask? (raised 13 Oct 26 by the read of `[ONE-DATE-CALENDAR]`; older code) — OPEN, to reproduce first
 
 **Raised, not traced (`raptor-port/docs/handpass/parts/odc/read-opus.md` §5):** on the Leave War's Post out sheet a date picked is committed at once (as the phone's date box committed it). Where the posting's stored outcome is Delete and the date now picked has already come, does the delete run at that tap — without the second ask a Delete is owed (D287)? **Not `[ONE-DATE-CALENDAR]`'s doing** — the box hands on the same date the phone's did; but the app's calendar makes a past date one tap. **To do:** a test on `main`'s behaviour first (a posting out with Delete at a date to come; move the date to today). If it deletes at the tap: a question for him with a safe interim, and it bears on the tick he kept as a fallback (D801). **Place (the agent's):** before the Tracker's date boxes are built, since the same question — is one tap enough — is asked there.
+*Moved here 2026-10-21 by backlog-archive.mjs ([INNERHTML-REPAINT-SWEEP]). Forward facts: `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`.*
+
+### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
+React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed
+on the built app, 19 Oct 26: the same Quals table set again on a repaint that changed nothing). A screen that writes
+`dangerouslySetInnerHTML={{ __html: … }}` therefore throws its markup away on every repaint, with any box being typed in
+inside it. Quals was fixed in [KEYBOARD-SCROLL] (the object made once per change — `QualsPage.tsx` `tableInner`, pinned
+by `quals.test.tsx`). The rest: `ALPanel`, `AvailWindow`, `ChangesWindow`, `InputsCal`, `LogicPage`, `MedicalView`,
+`Modals`, `PeoplePick`, `SansCal`, `SansDay`, `Shell` — most hold no box to type in; the walk met no lost caret on the
+Inputs calendar, the SANS day or the Logic page. **To do:** for each, does its markup hold a box to type in, and does it
+repaint while one has the caret; where both, make the object once per change. **Place:** low — a sweep of its own.
 *Moved here 2026-10-21 by backlog-archive.mjs ([FLOATWIN-TWO-LINE-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
 
 ### [FLOATWIN-TWO-LINE-BAR] The two movable windows open over the bottom of a two-line top bar (filed 5 Oct 26)
@@ -6645,4 +6656,18 @@ job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 ### [NIGHT-RECORDS-1021] Rulings D1098–D1108 are on an open records pull request, not on main (filed 23 Oct 26 from a handoff block)
 **Seen (23 Oct 26, the pinch-zoom questions chat, clearing merged handoff blocks):** the board's pinch-zoom block (pull request 561, live) said its rulings D1098–D1108 and the item `[BOARD-PHONE-PINCH-ZOOM]` "live on `claude/night-records-1021` (unmerged) — archive [BOARD-PHONE-PINCH-ZOOM] once both are on `main`". Checked: pull request 560 is OPEN, its branch is not in main, and main's rulings files carry no D1098–D1108 rows, though D1109 and D1110 (live) answer D1107 and D1108. **To do:** bring the branch level with main (renumbering any clash, D78), check the document check passes, put it to him for his "merge live" (documents only); then archive `[BOARD-PHONE-PINCH-ZOOM]` there. **Place:** Documents and guides — small, his word to merge.
 **DONE 26 Oct 26 (his D1402):** brought level with main again and merged as pull request 560 — D1098–D1108 are in their area files (How we work, Scheduler, People & accounts); [BOARD-PHONE-PINCH-ZOOM] archived with it.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([RULES-TAG-OFF]). Forward facts: `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`.*
+
+### [RULES-TAG-OFF] Take the RULES MODIFIED tag off View and Edit Schedule (his word, 21 Oct 26 — D1098)
+**What:** when a Logic setting is changed from the squadron standard, a yellow RULES MODIFIED tag shows above the Legend
+on View Schedule and Edit Schedule. His word: every squadron changes the rules to fit its own, so the tag goes from both
+pages. **Where:** the tag is drawn by the schedule pages' banner (`Shell.tsx` sets the page mark; `scheduler/01-logic.css`
+draws the words; `scheduler/04-pucks-sections.css` shows the banner only for it) — the banner holds nothing else, so it
+goes too. **Stays:** the Logic page's own strip ("N settings changed from the squadron standard"), and the page mark if
+anything else reads it (check first). **Check:** the Logic tests that pin the mark; the walk scripts and the IT guide's
+picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
+desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
+**DONE 26 Oct 26 (pull request 555, merged on his D1402):** the tag and its banner holders are gone from View-only Sched and Edit Schedule; the Logic page's strip stays — evidence `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`, the design guide's Lesson 60.
 
