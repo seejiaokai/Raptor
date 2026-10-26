@@ -6646,3 +6646,16 @@ job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 **Seen (23 Oct 26, the pinch-zoom questions chat, clearing merged handoff blocks):** the board's pinch-zoom block (pull request 561, live) said its rulings D1098–D1108 and the item `[BOARD-PHONE-PINCH-ZOOM]` "live on `claude/night-records-1021` (unmerged) — archive [BOARD-PHONE-PINCH-ZOOM] once both are on `main`". Checked: pull request 560 is OPEN, its branch is not in main, and main's rulings files carry no D1098–D1108 rows, though D1109 and D1110 (live) answer D1107 and D1108. **To do:** bring the branch level with main (renumbering any clash, D78), check the document check passes, put it to him for his "merge live" (documents only); then archive `[BOARD-PHONE-PINCH-ZOOM]` there. **Place:** Documents and guides — small, his word to merge.
 **DONE 26 Oct 26 (his D1402):** brought level with main again and merged as pull request 560 — D1098–D1108 are in their area files (How we work, Scheduler, People & accounts); [BOARD-PHONE-PINCH-ZOOM] archived with it.
 
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([PO-AUTO-DELETE-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-27-lw-small.md`.*
+
+### [PO-AUTO-DELETE-WORDS] The Delete posting says it is automatic (his word, 21 Oct 26 — D1105)
+**What:** on the Post out sheet (every posting door), the Delete outcome's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck."; until the date his row reads "posting out <date> · auto delete" (the pending words, `leavewar/sync.ts` `postingPendingTag` / `OUTCOME_WORD` — Admin → Users and the Leave War); the button stays "Delete" (D298). **Check:** the line on every door, the row before and after the date, phone and desktop. **Place:** with the next Leave War batch (after pull request 556 merges). **Picture:** the sheet with the two places marked, sent to him 21 Oct 26.
+**DONE 27 Oct 26 (the night of 26–27 Oct 26, job 1, `claude/lw-small-1027`):** built red first, walked, read — `raptor-port/docs/handpass/2026-10-27-lw-small.md`.
+
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([LW-GROUPS-STALE-AFTER-ARCHIVE]). Forward facts: `raptor-port/docs/handpass/2026-10-27-lw-small.md`.*
+
+### [LW-GROUPS-STALE-AFTER-ARCHIVE] The Leave War's groups keep archived men until a reload (found 21 Oct 26 by the single-seat walk; low)
+With every WSO archived through Admin → Users, in the same session the Leave War still read IWSO 5 and OPS W 12; after a reload the empty groups were gone (an empty group draws no heading). The grid did not refresh its groups after the archives. **To do:** reproduce with one man archived; find why the roster projection does not regroup. **Place:** the agent's; with the next Leave War batch. **Evidence:** the night's single-seat check (`raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md`).
+**DONE 27 Oct 26 (the night of 26–27 Oct 26, job 1, `claude/lw-small-1027`):** not a fault — the walk read two different months; a guard test, the walk guide's lesson — `raptor-port/docs/handpass/2026-10-27-lw-small.md`.
