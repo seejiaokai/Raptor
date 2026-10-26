@@ -1,0 +1,126 @@
+{
+ "results": [
+  {
+   "id": "W1",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "Reject then → Unavail pressed: true; stored acc u, moved-by-a-scheduler mark true"
+  },
+  {
+   "id": "W1b",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "its Ground row's ✕ on the board (row 4, found true): acc r, mark true; then the board's → Unavail (true): acc u, mark true"
+  },
+  {
+   "id": "W4-fixture",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "filed by Ranger's pick under Unavailable, then Reject and → Ground: acc g, mark true"
+  },
+  {
+   "id": "W2",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "{\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"A scheduler moved it here: counted as away on the Leave War\",\"gDisabled\":true,\"uDisabled\":true}"
+  },
+  {
+   "id": "W2-dead-press",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "after a press on the dead Ground Programme button: {\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"A scheduler moved it here: counted as away on the Leave War\",\"gDisabled\":true,\"uDisabled\":true}"
+  },
+  {
+   "id": "W3-attach",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "retyped to an Attach and saved: type Attach, acc u; said: Input updated"
+  },
+  {
+   "id": "W3-meeting",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "then to a Meeting: type Meeting, acc u (a Meeting he files lands on the programme; this one stays where the scheduler put it)"
+  },
+  {
+   "id": "W4-window",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "{\"row\":true,\"g\":\"true\",\"u\":\"false\",\"line\":\"A scheduler moved it here: still counted in the Leave War’s manning\",\"gDisabled\":true,\"uDisabled\":true}"
+  },
+  {
+   "id": "W4-refused",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "retype to LL: stored type Other, acc g; said: A scheduler has moved this input, so only a scheduler can change it to LL"
+  },
+  {
+   "id": "W4b",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "ALL AVAIL chip offered true; stored acc u, people [\"bane\"]; said: A scheduler has moved this input under Unavailable, so only a scheduler can put ALL AVAIL or ALL in it"
+  },
+  {
+   "id": "W5",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "before {\"row\":true,\"g\":\"true\",\"u\":\"false\",\"line\":\"Still counted in the Leave War’s manning\",\"gDisabled\":false,\"uDisabled\":false} · after his press {\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false} · saved acc u, mark undefined"
+  },
+  {
+   "id": "W2-phone",
+   "size": "phone",
+   "verdict": "PASS",
+   "said": "{\"row\":true,\"g\":\"true\",\"u\":\"false\",\"line\":\"A scheduler moved it here: still counted in the Leave War’s manning\",\"gDisabled\":true,\"uDisabled\":true}; the line inside the screen: true"
+  },
+  {
+   "id": "W6",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "his window {\"row\":true,\"g\":\"true\",\"u\":\"false\",\"line\":\"Still counted in the Leave War’s manning\",\"gDisabled\":false,\"uDisabled\":false}; after his Unavailable and Save: acc u"
+  },
+  {
+   "id": "W7",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "OD moved onto the programme: true, stored {\"acc\":\"g\",\"odGround\":true}; head \"1 pending\"; the load arms as \"Discard 1 edit & load — confirm\""
+  },
+  {
+   "id": "W7-loaded",
+   "size": "desk",
+   "verdict": "PASS",
+   "said": "after the load: head \"\", stored {}"
+  }
+ ],
+ "log": [
+  {
+   "id": "bundle",
+   "size": "desk",
+   "said": "index-BeF60EZP.js"
+  },
+  {
+   "id": "w4-ll",
+   "size": "desk",
+   "said": "a question opened after the save: docconf"
+  },
+  {
+   "id": "member-errors",
+   "size": "desk",
+   "said": "[]"
+  },
+  {
+   "id": "phone-errors",
+   "size": "phone",
+   "said": "[]"
+  },
+  {
+   "id": "w7-published",
+   "size": "desk",
+   "said": "{\"published\":true,\"pressed\":\"Publish day\",\"head\":{\"plan\":\"Live working copy ▾\",\"version\":\"ORIG\",\"beak\":null,\"headRow\":\"Live working copy ▾ ORIG 6 changes i Unpublish\",\"signNote\":\"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch\",\"unpublish\":\"Unpublish\"}}"
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "[]"
+  }
+ ]
+}
