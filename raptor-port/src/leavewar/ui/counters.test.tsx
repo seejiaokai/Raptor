@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { setLwOnScreen } from '../state/screen'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
 import { closeDates, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
@@ -496,6 +497,17 @@ describe('going negative is asked about, never refused', () => {
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 
+  it('[LW-ARMS-PAGE-LEAVE-REST] the below-zero ask is taken back when the Leave War leaves the screen', () => {
+    setLwOnScreen(true)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-reset-2026-02-11'))
+    fireEvent.click(screen.getByTestId('bid-LL'))
+    expect(screen.getByTestId('span-note').textContent).toContain('RESET')
+    act(() => setLwOnScreen(false))                                  // another page in front
+    act(() => setLwOnScreen(true))                                   // and back
+    fireEvent.click(screen.getByTestId('bid-LL'))
+    expect(getState().grid.reset?.['2026-02-11'], 'asked again, nothing written').toBeUndefined()
+  })
   it('goes ahead when the same leave is tapped again', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-reset-2026-02-11'))

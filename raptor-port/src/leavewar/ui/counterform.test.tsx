@@ -5,6 +5,7 @@
 // explainer sheet's Edit counter… button.
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import { setLwOnScreen } from '../state/screen'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getState, initStore, setRole, saveManningRule, deleteManningRule } from '../state/store'
 import { MAX_MANNING_RULES } from '../engine'
@@ -108,6 +109,19 @@ describe('editing and deleting', () => {
     expect(rule.desc).toBeUndefined()
   })
 
+  it('[LW-ARMS-PAGE-LEAVE-REST] an armed "Really delete?" is taken back when the Leave War leaves the screen', () => {
+    setLwOnScreen(true)
+    setRole('admin')
+    render(<CounterForm ruleId="wmp" onClose={vi.fn()} />)
+    const del = screen.getByTestId('cform-delete')
+    fireEvent.click(del)
+    expect(del.textContent).toBe('Really delete?')
+    act(() => setLwOnScreen(false))                                  // another page in front
+    act(() => setLwOnScreen(true))                                   // and back
+    expect(screen.getByTestId('cform-delete').textContent).not.toBe('Really delete?')
+    fireEvent.click(screen.getByTestId('cform-delete'))
+    expect(getState().requirements.default.rules.some(r => r.id === 'wmp'), 'asked again, nothing gone').toBe(true)
+  })
   it('delete arms first, then removes the counter', () => {
     setRole('admin')
     const onClose = vi.fn()

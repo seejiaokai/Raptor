@@ -31,7 +31,8 @@
 // calendar follows what the row counts (D1154). Its Save is ONE command
 // (state/store.ts saveAvailRow — `lw.availrow`).
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { isLwOnScreen, subLwScreen } from '../state/screen'
 import {
   CAT_LADDER,
   MAX_TEAM_SLOTS,
@@ -257,6 +258,10 @@ export function CounterForm({ ruleId, onClose }: {
   const [amber, setAmber] = useState(existing ? String(existing.threshold.amber) : '0')
   const [red, setRed] = useState(existing ? String(existing.threshold.red) : '0')
   const [armDel, setArmDel] = useState(false)
+  /* [LW-ARMS-PAGE-LEAVE-REST] (27 Oct 26): every armed second tap here is taken back when the Leave War leaves the screen — the
+       page is kept mounted, so the question could wait across a page switch for a tap from someone who no longer knows it
+       was the second (the reason the posting doors' asks are taken back too, D1102) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setArmDel(false) }), [])
   /* an Available row's two points (D1190, D1191, D1202) — strings while typing, as the counters' numbers are */
   const pts0: AvailPoints | null = avail && existing ? availPointsOf(existing) : null
   const [amberPt, setAmberPt] = useState(pts0?.amber === undefined ? '' : signed(pts0.amber))

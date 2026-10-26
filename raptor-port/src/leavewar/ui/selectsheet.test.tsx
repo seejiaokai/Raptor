@@ -1,5 +1,6 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { boxValue, pickDate } from '../../ui/datecal-testkit'
+import { setLwOnScreen } from '../state/screen'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { closeDates, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
@@ -237,6 +238,16 @@ describe('the ask before a drag takes anyone below zero (D418)', () => {
     expect(onDone).toHaveBeenCalledWith(true)
   })
 
+  it('[LW-ARMS-PAGE-LEAVE-REST] the below-zero ask is taken back when the Leave War leaves the screen: the same leave again asks again', () => {
+    setLwOnScreen(true)
+    mount(rampTwo, { wouldLeave: zero({ ramp: 0 }) })
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(screen.getByTestId('sel-note').textContent).toMatch(/Tap the same leave again/)
+    act(() => setLwOnScreen(false))                                  // another page in front
+    act(() => setLwOnScreen(true))                                   // and back
+    fireEvent.click(screen.getByTestId('sel-CCL'))
+    expect(getState().grid.ramp?.['2026-01-06'], 'asked again, nothing written').toBeUndefined()
+  })
   it('a block of several men asks ONCE, naming only those it takes below zero', () => {
     mount(two, { wouldLeave: zero({ ramp: 0, tata: 5 }) })
     fireEvent.click(screen.getByTestId('sel-CCL'))

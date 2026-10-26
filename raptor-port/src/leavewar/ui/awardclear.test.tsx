@@ -10,6 +10,7 @@
 // on the day he earned it). A MEMBER's Clear never takes an award (an award is the admin's), so it asks nothing.
 
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import { setLwOnScreen } from '../state/screen'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { awardsIn, awardsOnDay, getState, initStore, lwHistInit, lwUndo, rawState, setCell, setDayAward, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
@@ -52,6 +53,17 @@ describe('a dragged block’s Delete names the awards and takes them (D260)', ()
     <SelectSheet sel={block} people={id => id.toUpperCase()} role="admin" canDecide onDone={onDone} onMove={noop} onClose={noop} />,
   )
 
+  it('[LW-ARMS-PAGE-LEAVE-REST] an armed Delete is taken back when the Leave War leaves the screen: the next tap asks again', () => {
+    setLwOnScreen(true)
+    setDayAward('ramp', '2026-01-06', 1)
+    mount()
+    fireEvent.click(screen.getByTestId('sel-delete'))
+    expect(screen.getByTestId('sel-note').textContent).toMatch(/OIL award/)
+    act(() => setLwOnScreen(false))                                  // another page in front
+    act(() => setLwOnScreen(true))                                   // and back
+    fireEvent.click(screen.getByTestId('sel-delete'))
+    expect(awardOn('ramp', '2026-01-06'), 'asked again, nothing gone').toBeTruthy()
+  })
   it('the confirm names each award BEFORE anything goes; the second tap takes them all', () => {
     setCell('ramp', '2026-01-08', 'LL')
     setDayAward('ramp', '2026-01-06', 1)

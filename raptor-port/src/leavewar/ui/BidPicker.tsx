@@ -236,7 +236,10 @@ export function BidPicker({
   /* a "Tap again to delete" left armed is taken back when the Leave War leaves the screen — the page is kept mounted, so
      this sheet can wait open across a page switch for a tap from someone who no longer knows it was the second (the
      reason D1102's date ask is taken back there too) */
-  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setDelArmed(false) }), [])
+  /* [LW-ARMS-PAGE-LEAVE-REST] (27 Oct 26): every armed second tap here is taken back when the Leave War leaves the screen — the
+       page is kept mounted, so the question could wait across a page switch for a tap from someone who no longer knows it
+       was the second (the reason the posting doors' asks are taken back too, D1102) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirming(null) } }), [])
   // The post-IN controls, folded the same way and for the same reason. No
   // archive switch: arriving has no counterpart to it — the Quals archive is
   // something a person LEAVES the roster into.
