@@ -37,6 +37,8 @@ const $ = (sel: string) => document.querySelector(sel) as HTMLElement | null
 const win = () => $('[data-testid="win-inputedit"]')
 const admin = 'stiff', member = 'bane'
 const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
+/* a NEW leave with no document asks first since D1150 (M3 7.4) — never a stop; these filers answer "No document" */
+const noDocAsk = async () => { const b = document.querySelector('[data-testid="docconf-nodoc"]'); if (b) await click(b) }
 const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
 const type = async (sel: string, v: string) => {
   const el = $(sel) as HTMLInputElement
@@ -124,8 +126,8 @@ describe('the window — a Title box under Type (D715)', () => {
     expect(box()!.value).toBe('Meeting')
     await choose('#inpEditType', 'Event')
     expect(box()!.value).toBe('Event')
-    await choose('#inpEditType', 'Fly with')
-    expect(box()!.value).toBe('Fly with')
+    await choose('#inpEditType', 'Attach')
+    expect(box()!.value).toBe('Attach')
   })
 
   it('a typed title is kept when the kind changes to another that takes one, and dropped for one that does not', async () => {
@@ -141,7 +143,7 @@ describe('the window — a Title box under Type (D715)', () => {
 
   it('saved untouched, the record carries NO title — it is the record it always was', async () => {
     await openNew({ type: 'Event' })
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(win()).toBeNull()
     const r = newest()
     expect(r.type).toBe('Event')
@@ -152,7 +154,7 @@ describe('the window — a Title box under Type (D715)', () => {
     await openNew({ type: 'Event' })
     await type('#inpEditOwnTitle', '  Sports   day ')
     await type('#inpEditRmk', 'bring boots')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const r = newest()
     expect(r.title).toBe('Sports day')
     expect(r.remarks).toBe('bring boots')
@@ -164,16 +166,16 @@ describe('the window — a Title box under Type (D715)', () => {
     await openOn(r)
     expect(box()!.value).toBe('Sports day')
     await type('#inpEditOwnTitle', 'event')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect('title' in live(r.iid)).toBe(false)
     await openOn(r)
     expect(box()!.value).toBe('Event')
     await type('#inpEditOwnTitle', 'Open house')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(r.iid).title).toBe('Open house')
     await openOn(r)
     await type('#inpEditOwnTitle', '   ')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect('title' in live(r.iid)).toBe(false)
   })
 
@@ -181,14 +183,14 @@ describe('the window — a Title box under Type (D715)', () => {
     const log = ELOG.rows.length
     await openNew({ type: 'Event' })
     await type('#inpEditOwnTitle', 'Sports day')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const line = ELOG.rows.slice(log).find(r => r.iid === newest().iid) as any
     expect(line, 'the filing wrote a line').toBeTruthy()
     expect([line.itype, line.iname]).toEqual(['Event', 'Sports day'])
     expect(line.lbl).toContain('Sports day')
     /* an untitled one records no name of its own */
     had.add(String(newest().iid))
-    await openNew({ type: 'Duty' }); await click($('#inpEditSave'))
+    await openNew({ type: 'Duty' }); await click($('#inpEditSave')); await noDocAsk()
     const plain = ELOG.rows.find(r => r.iid === newest().iid) as any
     expect(plain.itype).toBe('Duty'); expect('iname' in plain).toBe(false)
   })
@@ -198,7 +200,7 @@ describe('the window — a Title box under Type (D715)', () => {
     const log = ELOG.rows.length
     await openOn(r)
     await type('#inpEditOwnTitle', 'Sports day')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(win(), 'saved: the window has closed').toBeNull()
     expect(live(r.iid).title).toBe('Sports day')
     expect(ELOG.rows.length).toBeGreaterThan(log)
@@ -210,7 +212,7 @@ describe('the window — a Title box under Type (D715)', () => {
     const r = await filed({ title: 'Sports day' })
     await openOn(r)
     await choose('#inpEditType', 'LL')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const now = live(r.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
     expect(now, 'the retyped record').toBeTruthy()
     expect('title' in now).toBe(false)
@@ -231,7 +233,7 @@ describe('the window — a Title box under Type (D715)', () => {
     expect(box()!.value).toBe('Other')
     await type('#inpEditOwnTitle', 'Dentist run')
     await type('#inpEditRmk', 'back by 1400')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const r = newest()
     expect([r.type, r.title, r.remarks]).toEqual(['Other', 'Dentist run', 'back by 1400'])
   })
@@ -291,7 +293,7 @@ describe('the List — its form, its rows, the window a row opens, its search', 
     await choose('#inpEditType', 'Meeting')
     await pickDay()
     await type('#inpEditOwnTitle', 'Open house')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const a = newest()
     expect([a.type, a.title]).toEqual(['Meeting', 'Open house'])
     had.add(String(a.iid))
@@ -303,7 +305,7 @@ describe('the List — its form, its rows, the window a row opens, its search', 
     await choose('#inpEditType', 'Training')
     expect(box()!.value, 'the box shows the new input’s own kind — nothing of the last title').toBe('Training')
     await pickDay()
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const b = newest()
     expect(b.type).toBe('Training')
     expect('title' in b).toBe(false)
@@ -326,7 +328,7 @@ describe('the List — its form, its rows, the window a row opens, its search', 
     await openRow(t)
     expect(box()!.value).toBe('Sports day')
     await type('#inpEditOwnTitle', 'Open house')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(t.iid).title).toBe('Open house')
     expect(rowOf(live(t.iid)).querySelector('[data-testid="in-title"]')!.textContent, 'and the row reads by it').toBe('Open house')
   })
@@ -474,14 +476,14 @@ describe('a shared input and the List’s own OIL question', () => {
     await openOn(a)
     expect(box(), 'the shared window carries the Title box').toBeTruthy()
     await type('#inpEditOwnTitle', 'Team day')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(win(), 'saved: the window has closed').toBeNull()
     expect(lines().map((l: any) => [l.person, l.title])).toEqual([[x, 'Team day'], [y, 'Team day']])
     expect(idsOf(live(a.iid)), 'still the one input of the two').toEqual([x, y])
     await openOn(a)
     expect(box()!.value).toBe('Team day')
     await type('#inpEditOwnTitle', 'Event')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(lines().map((l: any) => [l.person, 'title' in l])).toEqual([[x, false], [y, false]])
     expect('title' in live(a.iid)).toBe(false)
   })
@@ -493,7 +495,7 @@ describe('a shared input and the List’s own OIL question', () => {
     const a = await filed({ person: x, grp: 'gT1', grpBy: admin }), b = await filed({ person: y, grp: 'gT1', grpBy: admin })
     await openOn(a)
     await type('#inpEditOwnTitle', 'Team day')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(win(), 'saved: the window has closed').toBeNull()
     expect(live(a.iid).title).toBe('Team day')
     expect('title' in live(b.iid), 'the other man’s own input is untouched').toBe(false)
@@ -510,7 +512,7 @@ describe('a shared input and the List’s own OIL question', () => {
     expect(sat, 'Saturday on the window’s calendar').toBeTruthy()
     await click(sat)
     await type('#inpEditOwnTitle', 'Weekend exercise')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const head = document.querySelector('[data-testid="oilconf"] .airpop-head')
     expect(head, 'the OIL question is up').toBeTruthy()
     expect(head!.textContent).toContain('Weekend exercise')
@@ -528,7 +530,7 @@ describe('the kind and the title changed in ONE save (Astra 1)', () => {
     await openOn(r)
     await choose('#inpEditType', 'Duty')
     await type('#inpEditOwnTitle', 'Guard shift')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect([live(r.iid).type, live(r.iid).title]).toEqual(['Duty', 'Guard shift'])
     expect(typeLines(log, r.iid).map(l => [l.from, l.to])).toEqual([['Event', 'Duty']])
     expect(titleLines(log, r.iid).map(l => [l.from, l.to])).toEqual([['Sports day', 'Guard shift']])
@@ -538,7 +540,7 @@ describe('the kind and the title changed in ONE save (Astra 1)', () => {
     const log = ELOG.rows.length
     await openOn(r)
     await choose('#inpEditType', 'Duty')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(typeLines(log, r.iid).length).toBe(1)
     expect(titleLines(log, r.iid)).toEqual([])
   })
@@ -547,7 +549,7 @@ describe('the kind and the title changed in ONE save (Astra 1)', () => {
     const log = ELOG.rows.length
     await openOn(r)
     await choose('#inpEditType', 'Training')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(r.iid).title).toBe('Sports day')
     expect(typeLines(log, r.iid).length).toBe(1)
     expect(titleLines(log, r.iid)).toEqual([])
@@ -557,7 +559,7 @@ describe('the kind and the title changed in ONE save (Astra 1)', () => {
     const log = ELOG.rows.length
     await openOn(r)
     await choose('#inpEditType', 'LL')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const now = live(r.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
     const lines = ELOG.rows.slice(log).filter(l => / · title$/.test(l.lbl)) as any[]
     expect('title' in now).toBe(false)
@@ -582,7 +584,7 @@ describe('the List’s "+ Input", filed for several people (Astra 2 — restated
     const picked = [...document.querySelectorAll('#inpEditPop .pp-pucks button[aria-pressed="true"]')].map(b => String(b.getAttribute('data-pp'))).sort()
     expect(picked.length, 'it is being filed for several people').toBeGreaterThanOrEqual(2)
     for (const id of two) expect(picked).toContain(id)
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const made = INPUTS.filter((r: any) => !had.has(String(r.iid)))
     /* THE RULE CHANGED (owner D756, D759 — the one-rule build): a filing for several people is ONE record holding the
        list of them, where it was a record a man. So: one record, everyone picked in it, the one title on it. */
@@ -594,7 +596,7 @@ describe('the List’s "+ Input", filed for several people (Astra 2 — restated
     await choose('#inpEditType', 'Duty')
     expect(($('#inpEditOwnTitle') as HTMLInputElement).value, 'the box shows the kind’s name — not the last input’s title').toBe('Duty')
     await click(wedOf())
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const next = INPUTS.filter((r: any) => !had.has(String(r.iid)))
     expect(next.length).toBeGreaterThanOrEqual(1)
     for (const r of next) { expect(r.type).toBe('Duty'); expect('title' in r, 'the next input has no title of the last one').toBe(false) }
@@ -644,9 +646,77 @@ describe('opened from its row in the List, retyped to a leave and SAVED (Sol’s
     expect(win(), 'the row opened the input’s window').toBeTruthy()
     await choose('#inpEditType', 'LL')
     expect(box(), 'a leave takes no title').toBeNull()
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const now = live(t.iid) || INPUTS.find((x: any) => x.person === admin && x.type === 'LL' && x.date === 'Oct 13')
     expect(now, 'the retyped record').toBeTruthy()
     expect(now.type).toBe('LL'); expect('title' in now).toBe(false)
+  })
+})
+
+/* AN OTHER'S "GOES TO" AND AN ATTACH'S "TO" (his D1356, D1367–D1369, D1373; drawn by scripts/handpass/lw-1025-q7.mjs,
+   SETS q1n look C and att): the window asks once where an Other goes — Ground Programme or Unavailable, with a grey line
+   saying what the Leave War does — and an Attach where he is attached. Red first: neither row existed. */
+describe('the window — an Other\u2019s Goes to, an Attach\u2019s To (D1356, D1369, D1373)', () => {
+  it('an Other shows Goes to, Ground Programme picked; Unavailable picked, the line says away, and it saves under Unavailable', async () => {
+    await openNew({ type: 'Other' })
+    const g = $('[data-testid="inpEdit-goes-g"]'), u = $('[data-testid="inpEdit-goes-u"]')
+    expect(g?.textContent).toBe('Ground Programme')
+    expect(u?.textContent).toBe('Unavailable')
+    expect(g?.getAttribute('aria-pressed')).toBe('true')
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Still counted in the Leave War\u2019s manning')
+    await click(u)
+    expect(u?.getAttribute('aria-pressed')).toBe('true')
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Counted as away on the Leave War')
+    await click($('#inpEditSave')); await noDocAsk()
+    expect(newest()).toMatchObject({ type: 'Other', acc: 'u' })
+  })
+  /* the designer's G3 (and the break test 15): with ALL AVAIL among the people picked the row goes — such an input is
+     never under Unavailable */
+  it('an Other for a man and ALL AVAIL: no Goes to row', async () => {
+    await openNew({ type: 'Other' })
+    expect($('[data-testid="inpEdit-goes-g"]'), 'one man: asked').toBeTruthy()
+    await click($('[data-testid="pp-several"]'))
+    await click($('[data-ph="allavail"]'))
+    expect($('[data-testid="pp-count"]')?.textContent ?? '').toContain('ALL AVAIL')
+    expect($('[data-testid="inpEdit-goes-g"]')).toBeNull()
+  })
+  it('no other kind asks it', async () => {
+    await openNew({ type: 'Meeting' })
+    expect($('[data-testid="inpEdit-goes-g"]')).toBeNull()
+  })
+  it('an Attach shows its To box and saves where he is attached; the name carries it', async () => {
+    await openNew({ type: 'Attach' })
+    expect(($('#inpEditTo') as HTMLInputElement).placeholder).toBe('Squadron, job or exercise')
+    await type('#inpEditTo', '145 Sqn')
+    await click($('#inpEditSave')); await noDocAsk()
+    expect(newest()).toMatchObject({ type: 'Attach', to: '145 Sqn', acc: 'u' })
+  })
+  /* the scenario designer's G5: a scheduler's Reject read in the window as "Ground Programme", and the member's flip to
+     Unavailable put it back on the schedule, over the scheduler's decision. A rejected Other now says so; only a scheduler
+     changes where it goes (his Reject stands, as a member's edit of a rejected request's time never revives it) */
+  it('a rejected Other: the window says so, picks neither; a member cannot move it, a scheduler can (G5)', async () => {
+    const r = await filed({ person: member, by: member, type: 'Other', acc: 'r', remarks: 'Board' })
+    await act(async () => { setSession({ user: member, role: 'main' }); setMe(member); notify() })
+    await openOn(r)
+    const g = $('[data-testid="inpEdit-goes-g"]') as HTMLButtonElement, u = $('[data-testid="inpEdit-goes-u"]') as HTMLButtonElement
+    expect(g.getAttribute('aria-pressed')).toBe('false'); expect(u.getAttribute('aria-pressed')).toBe('false')
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Rejected by a scheduler')
+    expect(u.disabled, 'a member does not undo the scheduler’s Reject').toBe(true)
+    /* …and the save behind the buttons keeps it too (the break test 12): a draft that says Unavailable, from a member */
+    let ok = false
+    await act(async () => { ok = commitInputEdit(live(r.iid), { ...draftOf(live(r.iid)), goes: 'u' }) })
+    expect(ok).toBe(true)
+    expect(live(r.iid).acc, 'the Reject stands').toBe('r')
+    await type('#inpEditRmk', 'Board of inquiry')
+    await click($('#inpEditSave'))
+    expect(live(r.iid)).toMatchObject({ remarks: 'Board of inquiry', acc: 'r' })
+    await act(async () => { setSession({ user: admin, role: 'admin' }); setMe(admin); notify() })
+    await openOn(live(r.iid))
+    const u2 = $('[data-testid="inpEdit-goes-u"]') as HTMLButtonElement
+    expect(u2.disabled).toBe(false)
+    await click(u2)
+    expect($('[data-testid="inpEdit-goes-line"]')?.textContent).toBe('Counted as away on the Leave War')
+    await click($('#inpEditSave'))
+    expect(live(r.iid).acc, 'the scheduler files it under Unavailable').toBe('u')
   })
 })

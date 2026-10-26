@@ -2,7 +2,7 @@
 // approved leave is a Raptor Input now, so a test that wants "SPLICE has ATT C
 // on 5 Jan" files the Input and re-reads the war — the replacement for the
 // deleted ingestFromRaptor.
-import { INPUTS, inpId, mintInpIds } from '../engine/inputs'
+import { INPUTS, inpId, mintInpIds, filingOf } from '../engine/inputs'
 import { warHolding } from './engine'
 import { inputRowFor } from './absences'
 import { getState, rawState, saveManningRule, setRole } from './state/store'
@@ -14,6 +14,9 @@ import { syncAbsences } from './sync'
 export function fileAbsence(person: string, code: string, from: string, to = from, opts: { lw?: boolean; remarks?: string } = {}): any {
   const war = warHolding(rawState().wars, from)
   const row = inputRowFor({ person, code, from, to, lw: opts.lw && war ? war.period.id : undefined, remarks: opts.remarks, mod: '2026-01-01' })
+  /* filed where its kind lands, as the Inputs page files it (D1372: a course under Unavailable by itself — engine/inputs.ts
+     filingOf); the war counts a course only there (D1389 — the night's code read, F1) */
+  if (filingOf(row.type, 'u')) row.acc = 'u'
   inpId(row)
   INPUTS.push(row)
   mintInpIds()   // its place in the list too, as the app mints it with its id ([DB-READINESS] group A, phase 2)

@@ -3,6 +3,7 @@
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
 import { Suspense, lazy, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { wireTopbarVar } from './topbarvar'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
@@ -123,6 +124,9 @@ export function Shell() {
      The section still only DOZES while hidden; the flag just adds "pre-warmed"
      to the same "ever visited" mount gate below. */
   const [prewarmed, setPrewarmed] = useState(false)
+  /* the top bar's live height for what is held under it as the page scrolls (D1116 — ui/topbarvar.ts) */
+  const topbarRef = useRef<HTMLDivElement>(null)
+  useEffect(() => wireTopbarVar(topbarRef.current), [])
   useEffect(() => {
     const teardown = installIdleTracking()
     const isPhone = typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches
@@ -336,7 +340,7 @@ export function Shell() {
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
          at a glance — both widths; View-only keeps the neutral dark. */
-      <div className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '')}>
+      <div ref={topbarRef} className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>

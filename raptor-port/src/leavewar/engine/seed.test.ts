@@ -80,9 +80,12 @@ describe('seed', () => {
 describe('seed records', () => {
   const all = () => Object.values(seedRecs()).flatMap(r => Object.values(r).flat())
 
-  it('shows every request colour — pending, acknowledged, refused — and approved green via an absence', () => {
+  /* Ack is gone (D1158, 21 Oct 26): the request states are pending and refused only — ASICS's 24 Feb OIL bid, the
+     seed's one 'acknowledged', is now pending. */
+  it('shows every request fill — pending, refused — and approved via an absence; no Ack (D1158)', () => {
     const states = new Set(all().filter(r => r.kind === 'request').map(r => (r as any).state))
-    expect(states).toEqual(new Set(['pending', 'acknowledged', 'refused']))
+    expect(states).toEqual(new Set(['pending', 'refused']))
+    expect(seedRecs().asics?.['2026-02-24']?.[0]).toMatchObject({ kind: 'request', code: 'OIL', state: 'pending' })
     expect(SEED_ABSENCES.some(a => a.lw)).toBe(true)
   })
 
@@ -171,12 +174,12 @@ describe('seedWars', () => {
     expect(seedWars().length).toBeGreaterThan(1)
   })
 
-  // The next war is normally a draft while its schedule is still being
-  // firmed up. Seeding one open and one draft shows both states at once.
-  it('opens the first and leaves the next in draft', () => {
+  // The next war normally has nothing open while its schedule is still being firmed up (D1177). Seeding one with an
+  // open stretch and one with none shows both states at once.
+  it('opens the first quarter of the first and nothing of the next', () => {
     const [q1, q2] = seedWars()
-    expect(q1.period.stage).toBe('open')
-    expect(q2.period.stage).toBe('draft')
+    expect(q1.period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+    expect(q2.period.open).toEqual([])
   })
 
   // A date belongs to at most one war. Two seeded wars sharing a day would

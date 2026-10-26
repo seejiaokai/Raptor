@@ -286,11 +286,15 @@
 /* Moving a bid is the third decision, and it is deliberately the quietest of
    the three: approve and refuse are the common answers, and a move is what
    you reach for when neither fits. */
-.bidsheet .dchip.move {
+.bidsheet .dchip.move,
+.bidsheet .dchip.plain {
   background: var(--panel-2);
   color: var(--ink-2);
   border: 1px solid var(--edge);
 }
+/* `.plain`: Move's quiet grey for a chip with no colour of its own — the admin's Note beside Move and Delete (M1's code
+   read, L6), the closed note's "Open the Inputs page" (M1's look): a bare .dchip has no colours of its own and fell back
+   to the browser's grey button with a white edge. (Not `.note`: that is the sheets' line of small text.) */
 
 /* THE ONE MOVE LOOK — the grey chip above with a TEAL arrow before the word (owner, D330 / D334, 27 Sep 26: "Can move be
    the same design and colour and be abit different"; option B of docs/mock/lw-move-standard.html §7). The same on every
@@ -926,6 +930,28 @@
   flex-basis: 100%;
 }
 
+/* AN AVAILABLE ROW'S AMBER AND RED POINTS (ui/CounterForm.tsx; the Leave War overhaul — D1190, D1191, D1202; drawn
+   r7-26): the label, a small dot in the colour it sets, "when under Required" and a short box for the number above or
+   below it — on one line, the box sized for "− 12", not the form's full-width field. */
+.bidsheet .cf-pt { flex-wrap: nowrap; }
+.bidsheet .cf-ptdot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.bidsheet .cf-ptdot.amb { background: var(--adv, #E5A83B); }
+.bidsheet .cf-ptdot.red { background: var(--hard, #F0555F); }
+.bidsheet .cf-ptwhen { font-size: 13px; color: var(--ink); white-space: nowrap; }
+.bidsheet .mth-in.cf-ptin {
+  width: 72px;
+  flex: none;
+  text-align: center;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet .mth-in.cf-ptin.bad { border-color: var(--hard, #F0555F); }
+
 .bidsheet .cf-row .cf-hint:not(:first-child) {
   flex-basis: auto;
 }
@@ -967,32 +993,8 @@
 /* (the counter window's Delete, armed, is solid red since D673 — `.creset.cf-del.arm` above; the older red-outline rule
    that sat here is folded into it) */
 
-/* The published-stage remarks editor's field (owner, 27 Aug 26). A plain
-   multi-line note box in the sheet's panel tones; the row stacks its label
-   above the field so a 200-char note has the sheet's full width. */
-.bidsheet-row.rmk-row {
-  flex-direction: column;
-  align-items: stretch;
-}
-.bidsheet .rmk-field {
-  width: 100%;
-  min-height: 68px;
-  margin-top: 4px;
-  padding: 8px 10px;
-  resize: vertical;
-  font: inherit;
-  color: var(--ink);
-  background: var(--panel-2);
-  border: 1px solid var(--edge);
-  border-radius: 8px;
-}
-.bidsheet .rmk-field:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-.bidsheet-row.rmk-actions {
-  justify-content: flex-end;
-}
+/* (the older remarks window's labelled field and its Save row went with his D1354, 25 Oct 26 — that window carries round 3's
+   one row now, `.bp-words`) */
 
 /* ============================================================================
    THE ⚙ SETTINGS SHEET (owner, 3 Sep 26 — every admin CONFIG control folds into
@@ -1015,7 +1017,7 @@
    turns it red once armed. */
 .bidsheet .rtbtn.set-danger { color: var(--ink-3); }
 /* Reset order (D160) is greyed while the roster already follows the default — dimmed so a greyed button reads as
-   "nothing to do", with its hint line saying so (the zoom pair's dead end dims the same way). */
+   "nothing to do", with its hint line saying so (the old zoom pair's dead end dimmed the same way). */
 .bidsheet .rtbtn.set-order:disabled { opacity: .45; cursor: default; }
 @media (hover: hover) {
   .bidsheet .rtbtn.set-order:disabled:hover { border-color: var(--edge-2); }
@@ -1162,7 +1164,9 @@
   align-items: center;
   gap: 8px;
   width: 100%;
-  margin: 8px 2px 2px;
+  /* No side margin (D1270, 23 Oct 26): with the full width, the old 2px either side made the window's contents 4px
+     wider than the window, and an iPhone let the whole window be dragged sideways. */
+  margin: 8px 0 2px;
   padding: 9px 11px;
   background: var(--panel-2);
   border: 1px solid var(--edge);
@@ -1256,6 +1260,11 @@
   color: #D9A6F5;
   border-color: rgba(178, 77, 234, .5);
 }
+
+/* "DELETE — SURE?" ON TWO LINES INSIDE ITS BUTTON (his D1387, D1395 C): each half a line of its own, the button a little
+   taller, never wider — every Delete that asks, in every window (SheetActions.tsx DeleteChip) */
+.bidsheet .dchip.del.armed { white-space: normal; line-height: 1.15; padding-top: 4px; padding-bottom: 4px; }
+.bidsheet .dchip.del.armed .del-l { display: block; }
 
 /* the list's Delete keeps the one dashed Delete look (D332) — the grey list chip above would otherwise draw it solid */
 .bidsheet .dl-acts .dchip.del {
@@ -1359,4 +1368,480 @@
   .bidsheet .reqp-apply .pchip,
   .bidsheet .reqp-do .tchip { min-height: 40px; }
   .bidsheet .reqp-inc { padding: 8px 12px; }
+
 }
+
+/* A FULL PAGE FROM THE TOP, ON A PHONE (owner D1264, 23 Oct 26 — "at the top full page … so that when the dates below jumps
+   it doesn't affect the user to chase the buttons"; Sheet.tsx `page`). The floating sheet is docked at the foot and grows
+   upward, so the "Open for bidding" window's month buttons rose each time a stretch line was added. Here it fills the
+   screen from the top, as the OIL tracker's sheet does on a phone, and grows down: the title and the months stay put. It
+   still scrolls itself (a long list of stretches), its header stuck to the top; no drag offset — it has nowhere to go. */
+#page-leavewar .bidsheet.fullpage {
+  /* (the four edges written out, and the page id named: outside the file's #page-leavewar wrapper, a bare class loses to the wrapper's own .bidsheet; `.page` is the app's own hidden page, so the class is `fullpage`) */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: auto;
+  max-height: none;
+  transform: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: max(10px, env(safe-area-inset-top, 0px)) 12px max(16px, env(safe-area-inset-bottom, 0px));
+}
+/* not movable: no grip, no move cursor, and a finger on the title may scroll the page's own list */
+#page-leavewar .bidsheet.fullpage .bidsheet-hd { cursor: default; touch-action: auto; }
+#page-leavewar .bidsheet.fullpage .bidsheet-hd::before { content: none; }
+
+
+/* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------
+   The month buttons: one row of twelve on a desktop, two rows of six on a phone, each a finger's size there. Lit in
+   the open-bidding green the chip and the grid's outline use (the app's one "open" green — not a new colour); a month
+   open only in part has the same green as a DOTTED edge (D1168's reading); a drag in progress shows its months in a
+   lighter wash of the colour it will leave them in. */
+.bidsheet .od-months {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.bidsheet .od-months.phone {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+.bidsheet .od-m {
+  min-height: 34px;
+  padding: 6px 2px;
+  border-radius: 9px;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  color: var(--ink-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  cursor: pointer;
+  touch-action: pan-y;
+}
+.bidsheet .od-months.phone .od-m {
+  min-height: 44px;
+  font-size: 13px;
+}
+.bidsheet .od-m.open {
+  background: rgba(87, 201, 122, .16);
+  color: #EAF9EF;
+  border-color: rgba(87, 201, 122, .7);
+}
+.bidsheet .od-m.part {
+  color: #EAF9EF;
+  border: 1px dashed rgba(87, 201, 122, .85);
+}
+.bidsheet .od-m.sweep-open {
+  background: rgba(87, 201, 122, .30);
+  color: #EAF9EF;
+  border-color: rgba(87, 201, 122, .9);
+}
+.bidsheet .od-m.sweep-close {
+  background: var(--panel);
+  color: var(--ink-3);
+  border-style: dashed;
+}
+/* A PAST MONTH (owner D1265, D1268, 23 Oct 26): the grid's own look for a closed date — half strength and the same small
+   padlock (matrix.css `.mx .mxhead th.locked`, `th.day.locked::after`) — so "closed, and nothing to open" reads alike
+   in both places; not pressable. A stretch wholly past is dimmed the same way. */
+.bidsheet .od-m.past { opacity: .45; position: relative; }
+.bidsheet .od-m.past::after {
+  content: ''; position: absolute; top: 4px; right: 5px; width: 8px; height: 9px; pointer-events: none;
+  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 16'%3E%3Cpath d='M3.5 7V5a3.5 3.5 0 0 1 7 0v2' fill='none' stroke='%23AEB7C2' stroke-width='1.8'/%3E%3Crect x='1' y='7' width='12' height='8.5' rx='1.6' fill='%23AEB7C2'/%3E%3C/svg%3E");
+}
+.bidsheet .od-line.past { opacity: .45; }
+.bidsheet .od-m:disabled {
+  cursor: default;
+}
+.bidsheet .od-m:focus-visible,
+.bidsheet .od-line-go:focus-visible,
+.bidsheet .od-cal:focus-visible,
+.bidsheet .od-more:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+/* One line a stretch: its dates in the green, its days counted at the right, the calendar icon at the end (D1172). */
+.bidsheet .od-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+.bidsheet .od-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--edge);
+  background: var(--panel-2);
+  border-radius: 10px;
+  padding: 4px 6px 4px 4px;
+}
+.bidsheet .od-line-go {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 8px;
+  background: none;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.bidsheet .od-line-go.ro {
+  cursor: default;
+}
+.bidsheet .od-span {
+  color: #8FE0A8;
+  font-weight: 700;
+  font-size: 13px;
+}
+.bidsheet .od-days {
+  color: var(--ink-3);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet .od-cal {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--edge);
+  background: var(--panel);
+  color: var(--accent);
+  border-radius: 9px;
+  cursor: pointer;
+}
+.bidsheet .od-cal .btnglyph {
+  width: 17px;
+  height: 17px;
+}
+.bidsheet .od-none {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border: 1px dashed var(--ink-3);
+  border-radius: 10px;
+  padding: 10px 12px;
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.bidsheet .od-last {
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.bidsheet .od-more {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  color: var(--accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 2px;
+  cursor: pointer;
+}
+
+.bidsheet .od-apply {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* ---- THE CLOSED NOTE (D1176, D1225; drawn r7-08, r7-09) ---------------------------------------------------------- */
+.bidsheet .cn-note {
+  margin: 10px 0 4px;
+  color: var(--ink);
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+.bidsheet .cn-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+.bidsheet .cn-bid {
+  color: var(--ink-2);
+  font-size: 13px;
+}
+.bidsheet .cn-code {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-right: 4px;
+  border: 1px dashed rgba(242, 200, 121, .8);
+  border-radius: 5px;
+  color: #F2C879;
+}
+/* THE AVAILABLE ROW'S TWO POINTS ON ONE LINE, as drawn (r7-26: "AMBER ● when under Required [+ 2]") — walker 2 found the
+   boxes full width on a line of their own: the window is not always a .bidsheet, so the rules are scoped to the row */
+#page-leavewar .cf-row.cf-pt { flex-wrap: nowrap; align-items: center; }
+#page-leavewar .cf-row.cf-pt .lab { flex: 0 0 auto; }
+#page-leavewar .cf-row.cf-pt .mth-in.cf-ptin { width: 72px; min-width: 72px; max-width: 72px; flex: none; }
+
+
+/* THE DAY LINE (owner D1144, D1213; M3 — DayLine.tsx): what the bid does to manning, at the window's top, under its
+   title bar. Each row a name and a figure, lined up down the window (his design lessons 20 and 29), in the row's colour
+   where it turns amber or red; one calm grey line where none does. No box of its own: a quiet band of the window. */
+.bidsheet-dayline {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 12px;
+  row-gap: 2px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.bidsheet-dayline .dl-when { grid-column: 1 / -1; color: var(--ink-3); font-size: 11px; }
+.bidsheet-dayline .dl-row { display: contents; }
+.bidsheet-dayline .dl-name { color: var(--ink-2); }
+.bidsheet-dayline .dl-fig { color: var(--ink); }
+.bidsheet-dayline .dl-amber .dl-name, .bidsheet-dayline .dl-amber .dl-fig { color: var(--adv); }
+.bidsheet-dayline .dl-red .dl-name, .bidsheet-dayline .dl-red .dl-fig { color: var(--hard); }
+.bidsheet-dayline .dl-calm { grid-column: 1 / -1; display: block; color: var(--ink-3); }
+
+/* THE LEAVE BUTTONS (M3 5.2–5.6 — LeaveButtons.tsx): two even rows of four on every width (his design lesson 28), each
+   in its kind's colour and fill (matrix.css's one map), its code and what is left beside it. */
+.bidsheet .lv-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  flex: 1 1 100%;
+  min-width: 0;
+}
+.bidsheet .tchip.lv {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  border-color: transparent;
+}
+.bidsheet .tchip.lv .lv-fig { font-weight: 500; font-variant-numeric: tabular-nums; opacity: .9; }
+.bidsheet .tchip.lv .lv-neg { color: var(--hard); opacity: 1; }
+.bidsheet .tchip.lv.lv-dim { opacity: .55; }
+
+/* "APPROVE WHAT I ENTER" (D1147, D1187 — in the title bar, at its right end before ✕; M3 5.5): a quiet tick, the
+   title bar's small words; it pushes itself and the ✕ to the right together. */
+.bidsheet-hd .bp-approve {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.bidsheet-hd .bp-approve + .x { margin-left: 4px; }
+.bidsheet-hd .bp-approve input { margin: 0; accent-color: var(--accent); }
+
+/* A REQUEST'S REMARKS BOX AND ITS "till <date>" (M3 5.9 — D1210, D1226): the Inputs page's own box and tick
+   (`.inped-rmk`, `.inped-tl`, `.inped-till` in scheduler/14-input-editors.css), sized for the bid window: the box takes
+   the row's room, the date stays on one line after it */
+.bidsheet .bp-rmk { flex: 1 1 220px; }
+.bidsheet .bp-rmk input[type='text'] {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 9px;
+  font-family: inherit;   /* written out — `font: 600 13px inherit` is not a font and was dropped (round 3's check) */
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+}
+.bidsheet .bp-rmk input[type='text']:focus { outline: none; border-color: var(--accent); }
+
+/* THE DAY PANEL (M3 batch 6 — D1143, D1198): the app's floating window (FloatWindow.tsx), so nothing here is scoped
+   under the page. Its figures read as the bid windows' day line does — names in one column, figures in a second, each
+   in its amber or red (his lessons 20, 29); its Away lines are the shared one-line row (LeaveLine.tsx). */
+.lwday-body { display: flex; flex-direction: column; gap: 10px; padding: 2px 0 8px; }
+.lwday-note { margin: 0; color: var(--ink-2); font-size: 12.5px; font-weight: 600; }
+.lwday-events { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; color: var(--ink); }
+/* IN COLUMNS OF FOUR (his D1382, D1395 — 26 Oct 26: "max 4 rows … more will go to the middle then to the right column … text
+   that is too long will … wrap … aligned horizontal and vertically neat"; drawn lw-m3n-draw.mjs d1): the figures run down
+   the left column first, then the middle, then the right; each column's names stand left and its figures right; a long
+   name wraps and its row grows; rows line up across the columns. Narrows D1198's one column. */
+.lwday-figs { display: grid; grid-template-rows: repeat(4, auto); grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 16px; row-gap: 4px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.lwday-figs .dl-row { display: flex; align-items: baseline; justify-content: space-between; gap: 6px; min-width: 0; }
+.lwday-figs .dl-name { color: var(--ink-2); min-width: 0; overflow-wrap: anywhere; }
+.lwday-figs .dl-fig { color: var(--ink); font-weight: 600; flex: none; }
+.lwday-figs .dl-amber .dl-name, .lwday-figs .dl-amber .dl-fig { color: var(--adv); }
+.lwday-figs .dl-red .dl-name, .lwday-figs .dl-red .dl-fig { color: var(--hard); }
+.lwday-away { display: flex; flex-direction: column; gap: 4px; }
+.lwday-h { margin: 4px 0 2px; font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+/* the one-line leave row: puck · box · dates · days · state, lined up from line to line */
+.ll-row { display: grid; grid-template-columns: max-content 34px 1fr max-content max-content; align-items: center; column-gap: 8px; min-height: 26px; font-size: 12.5px; }
+.ll-row .ll-box { position: static; display: inline-flex; align-items: center; justify-content: center; height: 20px; min-width: 30px; padding: 0 3px; border-radius: 4px; font-size: 10.5px; font-weight: 700; }
+.ll-row .ll-dates { color: var(--ink); white-space: nowrap; }
+.ll-row .ll-days { color: var(--ink-2); font-variant-numeric: tabular-nums; text-align: right; }
+.ll-row .ll-state { color: var(--ink-3); }
+.ll-row .ll-state.pend { color: var(--adv); }
+.lwday .win-step { min-width: 36px; min-height: 32px; padding: 0 8px; font-size: 16px; line-height: 1; }
+.ll-row .ll-cs { display: inline-block; min-width: 56px; padding: 2px 6px; border-radius: 4px; background: var(--panel-2); color: var(--ink); font-weight: 700; font-size: 11.5px; }
+
+/* ROUND 3 OF THE BID WINDOWS AND THE DAY'S LIST ([LW-ROUND3-BUILD] — his D1311, approved whole D1332 / D1334; the drawings
+   scripts/handpass/lw-declutter-look.mjs, lw-declutter-mock.mjs, lw-twoday-look.mjs, lw-q7-sideways.mjs). It replaces the
+   M3 walk's "as drawn" pair that stood here (the day line in its own box — Q2 A took it out of the box; "Which leave"
+   beside its buttons — the row labels went). Measured beside the drawings at his iPhone's 402 (lesson 42).
+   INSIDE THE PAGE'S OWN WRAPPER, as the file's head asks: written after the wrapper's close (as first built), every rule
+   here lost to the wrapped `.bidsheet-row` (flex, wrapping) and `.dchip` rules — the actions row stayed a wrapping line,
+   the ⋯ sat at the window's left edge 36 wide with its menu off the window, unpressable (its FULL check, 24 Oct 26 —
+   GitHub's run of pull request 569). Pinned by `e2e/round3-leavewar.spec.ts`. */
+#page-leavewar {
+
+/* the day line out of its box (change 2), its pairs side by side (D1313), each whole on its line */
+.bidsheet-dayline { display: block; border: 0; padding: 0 2px; background: none; margin: 0 0 4px; }
+.bidsheet-dayline .dl-when { margin-bottom: 1px; }
+.bidsheet-dayline .dl-pairs { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 7px; row-gap: 2px; }
+.bidsheet-dayline .dl-pairwrap { display: inline-flex; align-items: baseline; column-gap: 7px; white-space: nowrap; }
+.bidsheet-dayline .dl-row { display: inline; }
+.bidsheet-dayline .dl-dot { color: var(--ink-3); }
+.bidsheet-dayline .dl-calm { display: inline; color: var(--ink-3); }
+
+/* the rows: no labels (change 1) — the leave buttons take the row's full width (change 6, D1334) */
+.bidsheet .lv-grid { flex: 1 1 100%; }
+
+/* ONE ROW OF ACTIONS (change 3, D1330): four even columns, Approve · Refuse · Move · Delete — the same in the one-day
+   window, the drag window and the day's list; a row with fewer keeps their places from the left */
+.bidsheet .bp-acts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.bidsheet .bp-acts > .dchip { min-width: 0; padding-left: 4px; padding-right: 4px; white-space: nowrap; text-align: center; justify-content: center; }
+.bidsheet .bp-acts > .bp-wide { grid-column: 1 / -1; }
+/* Approve LIT on an approved leave (D1330 — drawn by lw-twoday-look.mjs): the fill stronger, its edge solid green — the
+   look an approved leave's Approve had never had */
+/* …REDRAWN (his D1361, 25 Oct 26 — "Solid + word", answering D1348's "the contrast … is not that obvious"; drawn by
+   scripts/handpass/lw-1025-contrast.mjs, its README the measures): the decide buttons (`.dec` — Approve and Refuse in the
+   bid windows and the day's list, never the OIL panel's green "Give FO") rest grey, as Move does, their words in their
+   colours; the decided one is solid in its colour with dark words — 9.1 : 1 green, 5.6 : 1 red — and its word is the
+   state ("Approved", "Refused"). The solid colours are the chips' own green and red at full strength. */
+.bidsheet .dchip.dec.approve,
+.bidsheet .dl-acts .dchip.dec.approve { background: var(--panel-2); color: #8FE0A8; border-color: var(--edge); }
+.bidsheet .dchip.dec.refuse,
+.bidsheet .dl-acts .dchip.dec.refuse { background: var(--panel-2); color: #FFA6AD; border-color: var(--edge); }
+.bidsheet .dchip.dec.approve.lit,
+.bidsheet .dl-acts .dchip.dec.approve.lit { background: #57C97A; color: #0b1116; border-color: #57C97A; }
+.bidsheet .dchip.dec.refuse.lit,
+.bidsheet .dl-acts .dchip.dec.refuse.lit { background: #F0555F; color: #0b1116; border-color: #F0555F; }
+
+/* REMARKS AND DOCUMENT ON ONE ROW (change 4): the box takes the room, then its "till", then the Document button */
+.bidsheet .bp-words { flex-wrap: nowrap; align-items: flex-start; }
+.bidsheet .bp-words .bp-rmk { flex: 1 1 auto; min-width: 0; align-items: center; }
+.bidsheet .bp-words .bp-doc { flex: 0 0 auto; }
+.bidsheet .bp-words .bp-doc .docfield { justify-content: flex-end; }
+/* …WITH A FILE ATTACHED, its chips and Add take a line under the box, as drawn (twoday-a-drawn-b): the box keeps the row's
+   room — round 3's FULL check found two long-named files squeezing it to 22 wide on a phone, the row 25 past the window */
+.bidsheet .bp-words.has-docs { flex-wrap: wrap; }
+.bidsheet .bp-words.has-docs .bp-rmk,
+.bidsheet .bp-words.has-docs .bp-doc { flex: 1 1 100%; }
+.bidsheet .bp-words.has-docs .bp-doc .docfield { justify-content: flex-start; flex-wrap: wrap; }
+/* THE DARK BOX (D1308, lesson 48) that wraps and grows (D1333): the Inputs page's own box colours, darker than the window */
+.bidsheet .bp-rmk.dark textarea {
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+  /* one line as tall as the Document button beside it, on its centre line (his lessons 42, 43 — round 3's FULL check
+     measured the box 35 beside the button's 30): 16 + 2 × 6 + the two borders */
+  min-height: 30px;
+  padding: 6px 10px;
+  /* written out: `font: 600 13px/1.3 inherit` is not a font (a family cannot be "inherit" inside the shorthand), so the
+     browser dropped the line and the box wrote in its own typewriter face (round 3's FULL check) */
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--edge-2);
+  border-radius: 8px;
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bidsheet .bp-rmk.dark textarea::placeholder { color: var(--ink-3); font-weight: 500; }
+.bidsheet .bp-rmk.dark textarea:focus { outline: none; border-color: var(--accent); }
+
+/* DURATION with "Pick a range" at its end (change 5) */
+.bidsheet .bp-dur .bp-range { margin-left: auto; }
+.bidsheet .bp-dur .bp-wide { flex: 1 1 100%; order: 5; }
+
+/* the day's own leave LIT (change 7): the window's cyan ring round its button, its own colour kept inside */
+.bidsheet .tchip.lv.lit { outline: 2px solid var(--accent); outline-offset: 2px; }
+.bidsheet .tchip.lv.s-w.lit { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* "APPROVE WHAT I ENTER" AS THE APP'S SWITCH (change 8, D1302): the Inputs window's "Several people" switch, sized to the
+   title bar's small words, standing before ✕ */
+.bidsheet-hd .bp-sw { margin-left: auto; min-height: 0; border: 0; background: none; padding: 0; gap: 5px; font-size: 11px; color: var(--ink-2); align-self: center; }
+.bidsheet-hd .bp-sw + .x { margin-left: 4px; }
+.bidsheet-hd .bp-sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
+
+/* THE ROW UNDER THE LEAVES and its ⋯ in the fourth place (D1326) — the leave grid's own columns, so it stands under CL */
+/* stretch, not the row's centre: the ⋯ (16px at line-height 1) and the chips (12px at the normal line-height) differ by a
+   pixel or two in height under Linux's fonts, and centred they stood a pixel apart (GitHub's run of 8622cdcaf) */
+.bidsheet .bp-extra { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; align-items: stretch; }
+.bidsheet .bp-extra .bp-more-wrap { position: relative; display: flex; }
+.bidsheet .bp-extra .bp-more-wrap.col4 { grid-column: 4; }
+/* no padding above or below its glyph (round 2's FULL check — the walk in Safari's engine): with the chips' 6px its 16px
+   line stood 30 tall, so on Safari's shorter line for the chips' words (28) the ⋯ set the whole row 2px taller than the
+   leave buttons above it. Now the chips set the row's height and the ⋯ stretches to it, centred, in every engine. */
+.bidsheet .bp-more { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 1px; line-height: 1; padding-top: 0; padding-bottom: 0; }
+.bidsheet .bp-more[aria-expanded='true'] { border-color: rgba(59, 198, 232, .55); color: var(--accent); }
+/* its menu opens UPWARD over the window, its right edge on the ⋯'s */
+.bidsheet .bp-menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: grid; gap: 6px; min-width: 150px; padding: 8px;
+  background: var(--panel); border: 1px solid var(--edge-2); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .45); }
+.bidsheet .bp-menu .bp-menu-item { justify-content: flex-start; text-align: left; white-space: nowrap; background: var(--panel-2); color: var(--ink-2); border: 1px solid var(--edge); }
+/* Grant OIL in OIL given's green (D1320) — the FO and HO boxes' own colours */
+.bidsheet .bp-menu .bp-menu-item.oil-give { background: rgba(70, 196, 108, .2); color: #DDF8E6; border-color: rgba(70, 196, 108, .7); }
+
+/* THE DAY'S LIST, ROUND 3 (D1315, D1327–D1330): the list's outer frame gone, each entry the window's full width, led by its
+   box as the grid draws it, its short words beside it, then one row of actions and its words row */
+.bidsheet .daylist.flat { border: 0; border-radius: 0; margin-top: 2px; overflow: visible; }
+.bidsheet .daylist.flat .dl-line { border-left: 0; padding-left: 0; padding-right: 0; }
+/* nowrap (round 2's FULL check — the picture helper's find on a phone): `.dl-line`'s wrap made this column a multi-line
+   flex box, whose one line is as wide as its widest row's own content — so on a phone every row of an entry stood 8 to
+   24 px past the entry's edge and the ✕ above. Single-line, each row is the entry's width and its content fits inside. */
+.bidsheet .dl-line.dl-card { flex-direction: column; flex-wrap: nowrap; align-items: stretch; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+.bidsheet .dl-line.dl-card:first-child { padding-top: 4px; }
+.bidsheet .dl-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.bidsheet .dl-head .dl-text { flex: 1 1 auto; }
+.bidsheet .dl-head .dl-box { zoom: 1.25; }
+.bidsheet .dl-line.dl-card .dl-main { font-size: 13.5px; }
+.bidsheet .dl-acts.bp-acts .dchip { padding-left: 4px; padding-right: 4px; white-space: nowrap; text-align: center; }
+.bidsheet .dl-line.dl-card > .bidsheet-row { margin-top: 0; }
+.bidsheet .dl-ro { gap: 8px; font-size: 13px; color: var(--ink-2); margin-top: 0; }
+.bidsheet .dl-ro .docchip { cursor: default; }
+
+}
+
+/* THE HELD HALF'S ONE LINE (his D1371): an Other's box, its half, its remarks, where it is changed — one wrapping line */
+.bidsheet .bp-heldline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.bidsheet .bp-heldline .bp-heldwords { color: var(--ink); }
+/* THE DRAG WINDOW'S REMARK LINES (his D1347, D1362): one grey line an entry, its dates after, above the empty box */
+.bidsheet .sel-rmks { flex-direction: column; align-items: flex-start; gap: 2px; }
+.bidsheet .sel-rmk-line { color: var(--ink-3); font-size: 12.5px; }
+/* GRANT OIL IN THE ROW'S THIRD PLACE (his D1349) keeps one line, as tall as the leave buttons above it: on a phone its two
+   words wrapped and the row stood 42 tall under 28 (GitHub's browser run, 25 Oct 26) */
+.bidsheet .tchip.lv.bp-grant { min-width: 0; }
+.bidsheet .tchip.lv.bp-grant .lv-code { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+
+/* GRANT OIL'S ONE AMOUNT CONTROL (his D1392, D1395 H — OilAmount.tsx, D1397): HO · 0.5 and FO · 1 to pick, then a dashed box for any
+   other amount, then the button naming what it gives; the row wraps rather than squeeze on a phone (drawn: lw-m3n-draw-ho.mjs) */
+.bidsheet .oil-amount { flex-wrap: wrap; row-gap: 8px; }
+.bidsheet .oil-picks { display: inline-flex; gap: 6px; }
+.bidsheet .oil-amount .oil-other { border-style: dashed; min-width: 0; width: 118px; }

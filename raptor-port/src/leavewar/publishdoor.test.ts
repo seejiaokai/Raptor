@@ -29,7 +29,7 @@ import { initStore as raptorInitStore } from '../state/store'
 import { commitSetDayApproved, commitPublishALDay } from '../state/sched-commit'
 import { setSession } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
-import { advanceStage, getState, initStore as lwInitStore, lwHistInit, rawState, setBidState, setCell, setPeople, setRole } from './state/store'
+import { getState, initStore as lwInitStore, lwHistInit, rawState, setBidState, setCell, setPeople, setRole } from './state/store'
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
 import { globalUndo, globalRedo } from '../undo'
@@ -110,12 +110,12 @@ describe('publishing weekend work FLAGS a clashing leave bid (owner, 20 Sep 26)'
     expect(recs('plasma', SAT).filter(r => r.kind === 'request')).toHaveLength(1)
   })
 
-  it('an acknowledged bid is kept too; a refused one is neither touched nor mentioned', () => {
+  it('a pending bid is kept too; a refused one is neither touched nor mentioned', () => {
     setRole('admin')
     expect(setCell('plasma', SAT, 'LL')).toBe(true)
     expect(setCell('rocky', SAT, 'OL')).toBe(true)
-    advanceStage()
-    setBidState('plasma', SAT, 'acknowledged')
+    // the admin decides at any time — no stage to close first (D1177; D418 narrowed)
+    /* Ack is gone (D1158): re-expressed with the decisions that remain: plasma's bid simply stays pending */
     setBidState('rocky', SAT, 'refused')
     said = []
     publish(5)

@@ -32,7 +32,9 @@
    (ui/SaveStatus.tsx): the bar's bottom less this height. --save-band is that height, the one number both rules share.
    Amber on the page's own dark, as before — a warning, not an error the person made.
    `.saveband` is the same warning IN THE FLOW of a full-screen surface that lies over the top bar (the scheduler
-   board, the Inputs calendar, the Medical view), under that surface's own bar. Pinned by e2e/save-note.spec.ts. */
+   board, the Leave War's OIL tracker), under that surface's own bar — the Inputs calendar and the Medical view are part
+   of the Inputs page now (D620, D626), under the top bar ([BATCH-14OCT-LEFTOVERS] (d), 21 Oct 26). Pinned by
+   e2e/save-note.spec.ts. */
 :root{--save-band:36px}
 .topbar.save-failed{padding-bottom:calc(12px + var(--save-band))}
 .topbar > .savestat.failed, .saveband{box-sizing:border-box;height:var(--save-band);margin:0;padding:0 20px;display:flex;align-items:center;
@@ -110,7 +112,8 @@
 .topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid currentColor;
   background:rgba(229,194,74,.12);color:inherit;font:inherit;font-weight:700;cursor:pointer}
 /* on the board the band is the LAST line of the board's own bar (inside .sb-top, so --sb-topH follows it), let out to
-   the bar's edges past its padding; in the two calendars it is a line of the column, between the head and the body */
+   the bar's edges past its padding; in the Medical view opened full (its column is `.inpcal` — no screen opens it so
+   today) and the Leave War's OIL tracker it is a line of the column, between the head and the body */
 .sb-top > .saveband{flex:0 0 auto;order:99;width:calc(100% + 32px);margin:2px -16px -10px}
 /* …the OIL band after it, the bar's last line. Where both are up the warning gives up the pull that set IT on the bar's
    bottom edge (its -10px), so the two lie one under the other and only the last one reaches the edge. */
@@ -120,7 +123,8 @@
 .inpcal > .saveband{flex:0 0 auto}
 /* …and in the Leave War's full-screen OIL tracker (grid and settings), a line of that sheet's column under its head */
 .bidsheet.full > .saveband{flex:0 0 auto}
-/* the Medical view opened full: a line of its column, as the warning is there */
+/* the Medical view opened full, with its own ✕ — a line of its column, as the warning is there (no screen opens it so
+   today: it is a tab of the Inputs page since D620 — ui/MedicalView.tsx) */
 .medview > .oilband{flex:0 0 auto}
 /* THE BOARD'S DESKTOP LAYOUT ABOVE THE PHONE WIDTH (the stylesheet reader's second pass, 6 Oct 26 — W13 again). That
    layout is switched on from a phone and stays on for the session, so a phone turned on its side (844px and more) —

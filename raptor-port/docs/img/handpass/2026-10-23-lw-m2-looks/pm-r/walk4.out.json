@@ -1,0 +1,65 @@
+{
+ "results": [
+  {
+   "id": 1,
+   "size": "phone390 admin",
+   "verdict": "PASS",
+   "said": "Available P on 13 Jan free 28, Required set to it; scrolled: Manning button in view=false; bid on cell-beams-2026-01-13: foot note {\"text\":\"This bid turns Available P red.\",\"show\":\"Show ›\",\"top\":786,\"bottom\":832,\"left\":12,\"right\":378,\"vh\":844,\"vw\":390}, bubble under the button \"null\"; after Show: {\"inView\":true,\"open\":true,\"foot\":false,\"focused\":\"counts-toggle\"}",
+   "pics": [
+    "pm1-scrolled.png",
+    "pm1-foot-note.png",
+    "pm1-after-show.png"
+   ]
+  },
+  {
+   "id": 2,
+   "size": "phone390 member",
+   "verdict": "PASS",
+   "said": "bid on 19 Jan (bubble then \"null\"); Move, tap 13 Jan: staged=true (bubble while staged \"null\"); Confirm: moved=true; bubble \"This bid turns Available P red.\", Manning open=true, button in view=true",
+   "pics": [
+    "pm2-move-bubble.png"
+   ]
+  },
+  {
+   "id": 3,
+   "size": "desk1536 member",
+   "verdict": "PASS",
+   "said": "Move 19→13 Jan: bubble \"This bid turns Available P red.\" foot false; Move back 13→19 (better): bubble \"null\" foot false; Move onto its own day: banner \"It is already on that day — pick another day. Cancel\", bubble \"null\" foot false",
+   "pics": [
+    "pm3-desk-move-bubble.png",
+    "pm3-desk-move-back.png",
+    "pm3-desk-own-day.png"
+   ]
+  },
+  {
+   "id": 4,
+   "size": "desk1536 admin",
+   "verdict": "PASS",
+   "said": "scrolled: button in view=false; foot note {\"text\":\"This bid turns Available P red.\",\"show\":\"Show ›\",\"top\":790,\"bottom\":836,\"left\":488,\"right\":1048,\"vh\":864,\"vw\":1536} (centred=true); Tab ×20 reached Show=true, note still up=true; Enter: {\"inView\":true,\"foot\":false,\"focused\":\"counts-toggle\"}",
+   "pics": [
+    "pm4-desk-foot-note.png",
+    "pm4-desk-show-focused.png",
+    "pm4-desk-after-enter.png"
+   ]
+  },
+  {
+   "id": "5a",
+   "size": "phone390 admin",
+   "verdict": "PASS",
+   "said": "page at its top: button in view before=true, when raised=true; bubble under the button \"This bid turns Available P red.\", foot note false (in view → under the button; out of view → the foot)",
+   "pics": [
+    "pm5-in-view-bubble.png"
+   ]
+  },
+  {
+   "id": "5b",
+   "size": "phone390 admin",
+   "verdict": "PASS",
+   "said": "scrolled, bid on cell-beams-2026-01-13: foot note up=true; a tap on the grid elsewhere: foot note up=false",
+   "pics": [
+    "pm5-after-tap-elsewhere.png"
+   ]
+  }
+ ],
+ "errs": []
+}

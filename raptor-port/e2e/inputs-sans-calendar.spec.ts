@@ -531,6 +531,8 @@ for (const width of [390, 360]) test(`a phone ${width} wide: the SANS calendar's
       return { abs: s.top, strip: [s.top - top, s.h], how: [h.top - top, h.h, h.left, h.right], key: [k.top - top, k.h, k.right], dow: d.top - top, k, h }
     }
     const inp = await read('.ib-sub', '[data-testid="ib-how"]', '[data-testid="ib-legend"]', '.ib-dow', '.ic-head')
+    /* the Inputs line now ends with ⤢ after its legend (his D1386, D1396): the SANS key ends where that LINE ends */
+    inp.key[2] = (await box('[data-testid="ib-expand"]')).right
     await page.locator('#inSansMode').tap(); await expect(tid(page, 'sanscal')).toBeVisible(); await month(page, 2026, 10)
     const sc = await read('.sc-sub', '[data-testid="sc-how"]', '[data-testid="sc-legend"]', '[data-testid="sc-dow"]', '.sc-head')
     expect(sc.strip, 'the line is as far under the tools, and as tall, as the Inputs calendar’s').toEqual(inp.strip)

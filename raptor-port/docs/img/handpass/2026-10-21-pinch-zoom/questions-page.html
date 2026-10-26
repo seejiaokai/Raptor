@@ -1,0 +1,171 @@
+<title>Board and Quals pinch zoom</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column of question cards, each a row of phone-sized pictures that wraps; the app's own dark look */
+:root{
+  --bg:#0b0e13; --panel:#141a22; --edge:#263241; --fg:#e8eef5; --mute:#93a2b4;
+  --cyan:#3bc6e8; --amber:#f2b33d; --red:#ef5b5b; --green:#58d18b;
+  --f-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-ui);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:22px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0 0 6px;text-wrap:balance}
+p{margin:0;max-width:68ch}
+.lead{color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.qnum{color:var(--cyan);font-weight:700;letter-spacing:.06em;font-size:12px;text-transform:uppercase}
+.shots{display:flex;flex-wrap:wrap;gap:14px}
+figure{margin:0;flex:1 1 200px;max-width:260px;min-width:0;display:flex;flex-direction:column;gap:6px}
+figure a{display:block;position:relative;border:1px solid var(--edge);border-radius:10px;overflow:hidden;background:#000}
+figure img{display:block;width:100%;height:auto}
+figcaption{font-size:13px;color:var(--mute)}
+figcaption b{color:var(--fg)}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;padding:1px 6px;border-radius:5px;margin-right:4px}
+.real{background:#16303a;color:var(--cyan)}
+.drawn{background:#3a2c12;color:var(--amber)}
+ol.opts{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.rec{color:var(--green);font-weight:700}
+.mark{position:absolute;border:3px solid var(--amber);border-radius:8px;pointer-events:none}
+.note{position:absolute;background:var(--amber);color:#111;font-size:11px;font-weight:700;padding:2px 6px;border-radius:5px;pointer-events:none;line-height:1.3}
+.arrow{position:absolute;right:4px;font-size:34px;color:var(--amber);font-weight:900;pointer-events:none;text-shadow:0 0 4px #000}
+.stack{display:flex;flex-direction:column}
+.stack img+img{border-top:2px dashed var(--amber)}
+.answer{background:#0f1a14;border:1px solid #234b33;border-radius:10px;padding:10px 12px}
+a:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+</style>
+
+<main>
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Pinch to zoom: the Scheduler Board's desktop layout and Quals, on a phone</h1>
+    <p class="lead">Four questions, each with my recommendation. Pictures are your iPhone's size (402 wide). <span class="tag real">REAL</span> is the app today; <span class="tag drawn">DRAWN</span> is the real app with only the zoom applied on top. Tap a picture to see it full size. The phone layout and the desktop are not changed.</p>
+  </header>
+
+  <section class="card" style="border-color:#3a2c12">
+    <div class="qnum" style="color:var(--amber)">Your look, round 1 — fixed, and your two questions</div>
+    <h2>Fixed on the same preview (reload it)</h2>
+    <ol class="opts">
+      <li><b>The sign-off box now scrolls away</b> with the day in the desktop layout, as on the desktop.</li>
+      <li><b>The issues list and the crew list are laid out as on the desktop.</b> On the phone they were still using the phone's narrower margins and columns (issues text 259 wide instead of 295; crew columns 74 instead of 144).</li>
+    </ol>
+    <h2>Your questions — my recommendation</h2>
+    <div class="shots">
+      <figure style="max-width:520px;flex-basis:320px"><a href="img/side-desk1440.png" target="_blank"><img src="img/side-desk1440.png" alt="The desktop board's right panel"><span class="mark" style="left:85.2%;top:47%;width:3.6%;height:50%"></span><span class="note" style="left:84%;top:43%">gap</span><span class="mark" style="left:77.4%;top:12%;width:1%;height:86%;border-color:var(--cyan)"></span><span class="note" style="left:66%;top:8%;background:var(--cyan)">drag here?</span></a>
+        <figcaption><span class="tag real">REAL</span>The desktop board at 1440: the right panel is 320 wide.</figcaption></figure>
+    </div>
+    <ol class="opts">
+      <li><b>The gap between pilots and WSOs (amber):</b> <span class="rec">keep the two equal columns.</span> The gap is the room the reason under a crossed-out puck wraps in ("already on OPS-O duty 06:00–14:00"). Moving the WSOs in beside the pilots would squeeze every reason into a puck's width, two or three lines taller.</li>
+      <li><b>A right panel you can drag wider (blue):</b> <span class="rec">yes.</span> Its left edge becomes a grip, like the one between the issues and the crew list. It drags from today's 320 up to about 40% of the screen, and is remembered on that computer. The extra width goes to both crew columns and the issues list. It is a new control, so it gets its own small job: questions and a picture first.</li>
+    </ol>
+  </section>
+
+  <section class="card" style="border-color:#234b33">
+    <div class="qnum" style="color:var(--green)">Built — your look</div>
+    <h2>Try it on your iPhone</h2>
+    <p>Your four answers ("Yes to all") are built. Open the preview on your phone, sign in as usual, then:</p>
+    <ol class="opts">
+      <li><b>Board:</b> Edit Schedule → open a day → ⋯ → Desktop layout. Pinch out until the whole day fits, then back in. ✓ Done and the day arrows stay at the top the whole time.</li>
+      <li>Change day with › — the zoom stays. Press ✓ Done and open the board again — it is back to normal.</li>
+      <li>Hold a crew puck and carry it to the left edge of the screen: the day slides back; drop it where you like.</li>
+      <li><b>Quals:</b> pinch the table out until every column fits; scroll down — the headings stay over their columns.</li>
+    </ol>
+    <p><b>Preview:</b> <span style="user-select:all">https://raptor-git-claude-board-pinch-zoom-kai-e2f5.vercel.app</span></p>
+    <div class="shots">
+      <figure><a href="img/after-b1-opens.png" target="_blank"><img src="img/after-b1-opens.png" alt="Desktop layout opened, phone bar on top"></a>
+        <figcaption><span class="tag real">REAL</span>Desktop layout opens at today's size, under the phone's bar.</figcaption></figure>
+      <figure><a href="img/after-b2-fit.png" target="_blank"><img src="img/after-b2-fit.png" alt="The whole day fitted"></a>
+        <figcaption><span class="tag real">REAL</span>Pinched right out: the whole day on one screen.</figcaption></figure>
+      <figure><a href="img/after-b7-edge.png" target="_blank"><img src="img/after-b7-edge.png" alt="A puck carried to the left edge"></a>
+        <figcaption><span class="tag real">REAL</span>A puck held at the left edge: the day slid back to its start.</figcaption></figure>
+      <figure><a href="img/after-q2-fit.png" target="_blank"><img src="img/after-q2-fit.png" alt="Quals fitted"></a>
+        <figcaption><span class="tag real">REAL</span>Quals pinched out: every column; the buttons unchanged.</figcaption></figure>
+      <figure><a href="img/after-q4-pinned.png" target="_blank"><img src="img/after-q4-pinned.png" alt="Quals pinned headings"></a>
+        <figcaption><span class="tag real">REAL</span>Quals zoomed in and scrolled: the headings over their columns.</figcaption></figure>
+    </div>
+    <p class="lead">Also fixed on the way: in the desktop layout a sideways swipe on the day itself never slid it (only a swipe on the bar did). Not tested here: Safari's own touch on a real iPhone — that is what your look is for.</p>
+  </section>
+
+
+  <section class="card">
+    <div class="qnum">Today</div>
+    <h2>What you see now</h2>
+    <p>In the board's desktop layout the whole board, its bar included, is 1180 wide and slides sideways. A pinch does nothing, and ✓ Done sits off the right of the screen until you slide over to it.</p>
+    <div class="shots">
+      <figure><a href="img/today-board-wide-left.png" target="_blank"><img src="img/today-board-wide-left.png" alt="Board desktop layout today, left end"><span class="mark" style="left:1%;top:0.5%;width:98%;height:8.6%"></span><span class="note" style="right:4px;top:9.5%">✓ Done is off to the right →</span></a>
+        <figcaption><span class="tag real">REAL</span><b>Board, desktop layout</b>, the left end of the day.</figcaption></figure>
+      <figure><a href="img/today-board-wide-right.png" target="_blank"><img src="img/today-board-wide-right.png" alt="Board desktop layout today, right end"></a>
+        <figcaption><span class="tag real">REAL</span>Slid to the right end: the crew list and ✓ Done.</figcaption></figure>
+      <figure><a href="img/today-quals.png" target="_blank"><img src="img/today-quals.png" alt="Quals today"><span class="mark" style="left:1%;top:22.5%;width:98%;height:4%"></span><span class="note" style="left:4px;top:27%">the table runs off at "SANS"</span></a>
+        <figcaption><span class="tag real">REAL</span><b>Quals</b>: the table is 1119 wide, about three screens.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 1 · the board</div>
+    <h2>What does a pinch zoom?</h2>
+    <ol class="opts">
+      <li><span class="rec">Recommended:</span> <b>the day only.</b> The bar stays at its phone size along the top, the same bar as the phone layout's (‹ › for the day, the calendar, Undo, the bell, ✓ Done), so it never slides away and stays in reach at any zoom.</li>
+      <li><b>The whole board as one picture</b>, bar included. Zoomed out, the bar's buttons shrink with it (✓ Done becomes about a third of its size).</li>
+    </ol>
+    <div class="shots">
+      <figure><a href="img/board-A-0.341.png" target="_blank"><span class="stack"><img src="img/bar-phone.png" alt="the phone bar"><img src="img/board-A-0.341.png" alt="Option 1: the day zoomed out to fit, phone bar on top"></span></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>Option 1</b>, zoomed right out: the whole day on one screen, the phone bar on top (above the dashed line: the phone layout's real bar).</figcaption></figure>
+      <figure><a href="img/board-B-fit.png" target="_blank"><img src="img/board-B-fit.png" alt="Option 2: the whole board zoomed out"><span class="mark" style="left:0.5%;top:0;width:99%;height:3.4%"></span><span class="note" style="right:4px;top:3.8%">the bar shrinks too</span></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>Option 2</b>, zoomed right out: the bar shrinks with the day.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 2 · the board</div>
+    <h2>How far can it zoom?</h2>
+    <ol class="opts">
+      <li><span class="rec">Recommended:</span> <b>out until the whole day's width fits the screen</b> (about a third of normal, the left picture of question 1), <b>in to twice normal</b> for reading small marks.</li>
+      <li>Out until the whole width fits, in only back to today's size.</li>
+    </ol>
+    <div class="shots">
+      <figure><a href="img/board-A-0.6.png" target="_blank"><span class="stack"><img src="img/bar-phone.png" alt="the phone bar"><img src="img/board-A-0.6.png" alt="the day at a middle zoom"></span></a>
+        <figcaption><span class="tag drawn">DRAWN</span>A middle zoom (0.6): the Common Programme whole, a wave's times and crew readable.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 3 · the board</div>
+    <h2>Where does it start, and is the zoom kept?</h2>
+    <ol class="opts">
+      <li><span class="rec">Recommended:</span> the desktop layout <b>opens at today's size</b>; the zoom you pinch to <b>stays while you change days</b> (‹ ›, the calendar) and goes back to today's size when you leave the board with ✓ Done.</li>
+      <li>Kept on this phone until you pinch again, even after you leave the board.</li>
+      <li>Back to today's size every time the day changes.</li>
+    </ol>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 4 · Quals</div>
+    <h2>What does a pinch zoom on Quals?</h2>
+    <ol class="opts">
+      <li><span class="rec">Recommended:</span> <b>the table only.</b> The top bar, Enable editing / Export / filter and the Pilots · WSOs · Personnel · All switch stay as they are. The heading row and the name column stay pinned and lined up while zoomed. Same range as the board (out to the whole table's width, in to twice), kept while you stay on Quals.</li>
+      <li>The whole page, bar and buttons included.</li>
+    </ol>
+    <div class="shots">
+      <figure><a href="img/quals-fit.png" target="_blank"><img src="img/quals-fit.png" alt="Quals table zoomed out to fit"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>Option 1</b>, zoomed right out: every column, every pilot, on one screen.</figcaption></figure>
+      <figure><a href="img/quals-mid.png" target="_blank"><img src="img/quals-mid.png" alt="Quals table at a middle zoom"></a>
+        <figcaption><span class="tag drawn">DRAWN</span>A middle zoom (0.6).</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Not a question · what I will build either way</div>
+    <h2>A dragged puck at the edge scrolls the board</h2>
+    <p>Hold a puck near any edge of the screen and the board slides that way, at the same edge distance and speed as the Leave War's drag (your rule D895), at any zoom, so it can be dropped anywhere on the day. Letting go of the puck stops it.</p>
+    <div class="shots">
+      <figure><a href="img/board-A-0.6.png" target="_blank"><span class="stack"><img src="img/bar-phone.png" alt="the phone bar"><img src="img/board-A-0.6.png" alt="a puck held at the right edge"></span><span class="mark" style="right:0;top:45%;width:12%;height:30%"></span><span class="arrow" style="top:55%">→</span></a>
+        <figcaption><span class="tag drawn">DRAWN</span>A puck held in the marked strip slides the day to the right.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="answer">
+    <p><b>Answered 21 Oct 26:</b> "Yes to all" — built as recommended (above).</p>
+  </section>
+</main>

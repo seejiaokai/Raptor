@@ -67,7 +67,7 @@ describe('selection counting and day sets (tfin W / B38)', () => {
    reason. Un-actioned it is still just a request, matching the validator
    gate; the two gates must not drift apart. */
 describe('an actioned Fly reads as away', () => {
-  const fly = () => INPUTS.find((i: any) => i.type === 'Fly with' && i.person === 'bruise')!
+  const fly = () => INPUTS.find((i: any) => i.type === 'Attach' && i.person === 'bruise')!
 
   it('un-actioned free · actioned off/barred · undo frees again', () => {
     const inp = fly(), d = DAYS[0]
@@ -77,15 +77,15 @@ describe('an actioned Fly reads as away', () => {
     expect(free0.anyWave.concat(...free0.byWave)).toContain('bruise')
     /* "not the actioned-Fly reason", not "no reason at all" — bruise is in a sim
        box overlapping this seat, which the picker has reported since 11 Aug 26 */
-    expect(slotBar('bruise', '0.0.0.0.p')).not.toContain('flying with another squadron')
+    expect(slotBar('bruise', '0.0.0.0.p')).not.toContain('attached to another squadron')
     acceptInput(0, inp, 'g')
     expect(dayOff(d).has('bruise')).toBe(true)
     const free1 = availByWave(d)
     expect(free1.anyWave.concat(...free1.byWave)).not.toContain('bruise')
-    expect(slotBar('bruise', '0.0.0.0.p')).toContain('flying with another squadron')
+    expect(slotBar('bruise', '0.0.0.0.p')).toContain('attached to another squadron')
     unacceptInput(0, inp)
     expect(dayOff(d).has('bruise')).toBe(false)
-    expect(slotBar('bruise', '0.0.0.0.p')).not.toContain('flying with another squadron')
+    expect(slotBar('bruise', '0.0.0.0.p')).not.toContain('attached to another squadron')
   })
 
   it('filing it under Unavailable closes the day just the same', () => {

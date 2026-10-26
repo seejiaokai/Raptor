@@ -12,6 +12,9 @@
 //     by `state/merge.ts`) — the way it draws an absence from the Inputs.
 //   - NOTICES — "your LL bid was replaced by ATT C (filed by …)", kept until the
 //     person or an admin taps "OK, seen" (catalogue owner rule + clash check B6).
+//   (UNA — the war's own "out of the manning" record of his D1338 — went on 25 Oct 26 with D1356: an Other filed under
+//     the schedule's Unavailable list takes its place, an Inputs-page input the war reads; a stored one is dropped on read,
+//     `isRetiredUna`.)
 // Several can sit on one person/date (a morning bid and an afternoon bid, a
 // worked morning beside an afternoon bid, a refused bid kept as history), so a
 // date holds a LIST. What the box shows is derived (`dayview.ts`), never stored.
@@ -22,9 +25,9 @@
 //   - at most one (automatic) credit;
 //   - notices unlimited.
 
-import { parseCell, type Portion } from './codes'
+import { formatCell, parseCell, type Portion } from './codes'
 import type { LedgerEntry } from './counters'
-import { AM, PM, FULL, type Contrib, type RequestState, type Win } from './dayview'
+import { AM, PM, FULL, isLeaveCode, isSickCode, portionOf, type Contrib, type RequestState, type Win } from './dayview'
 
 /** ITS PLACE AT ITS ADDRESS ([DB-READINESS] group A, phase 3 — plan §8 P3-CELL-DIFF; the design's `LeaveBid.sortIndex`).
  *  Every record is its own stored row now, so the order of the list at a person/date rides on each record: minted by
@@ -41,9 +44,22 @@ export interface RequestRec extends Placed {
   /** the date a closed-bidding move took it from (the dotted mark) */
   shiftedFrom?: string
   /** what an un-approval carried back from the Input, consumed by the next
-   *  approval: the member's remark and the moved marks (design §2.2, FB3-03) */
+   *  approval: the moved marks (design §2.2, FB3-03) — the remark is the request's own `remarks` since M3 */
   carried?: Carried
+  /** THE REQUEST'S OWN WORDS AND PAPERS (owner D1210, D1226, D1150, D1159; M3 7.1): its remarks (as an input's), the
+   *  "till <date>" tick where his hand choice differs from the default (D953), and its documents — ids in the document
+   *  drawer (`state/docs`), carried into the Input on approval and back on a put-back (B9) */
+  remarks?: string
+  till?: boolean
+  docIds?: string[]
 }
+
+/** the words and papers a request carries, copied wherever a request is rebuilt (a move, a put-back, a re-typed bid) */
+export function requestWords(r: Pick<RequestRec, 'remarks' | 'till' | 'docIds'>): Pick<RequestRec, 'remarks' | 'till' | 'docIds'> {
+  return { ...(r.remarks ? { remarks: r.remarks } : {}), ...(r.till !== undefined ? { till: r.till } : {}), ...(r.docIds?.length ? { docIds: [...r.docIds] } : {}) }
+}
+/** at most this many documents on one request */
+export const MAX_REQ_DOCS = 20
 export interface Carried { remarks?: string; lwMoved?: Record<string, string> }
 
 /** WHO GAVE THIS OIL, in the words the squadron reads (owner, 21 Sep 26).
@@ -100,7 +116,7 @@ export interface NoticeRec extends Placed {
   /** the REPLACED bid's notation */
   code: string
   /** what it was when replaced */
-  was: 'pending' | 'acknowledged'
+  was: 'pending'
   /** what replaced it, in the app's words: `ATT C`, `published schedule` */
   byType: string
   /** who did it, frozen at the time: a callsign, or `the published schedule` */
@@ -154,6 +170,50 @@ export function creditWins(c: CreditRec): Win[] {
   return c.spans && c.spans.length ? c.spans.map(([s, e]) => [s, e] as Win) : [FULL]
 }
 
+/* ---- the half an HO takes (owner, D1164, 21 Oct 26) ---------------------- */
+/** "An HO — half a day of OIL credited — is drawn in a half of its day's cell, the morning or the afternoon, as a half
+ *  day's leave is"; an FO stays a whole-day box. The half rides in the contribution's `win` (AM or PM) — what the grid
+ *  draws from — while every overlap test keeps reading the real hours in `wins` (the medical's pattern,
+ *  `absences.ts contribsOfInput`), so no clash, charge or manning figure moves with the drawing. */
+export type Half = 'am' | 'pm'
+export const halfWin = (h: Half): Win => (h === 'pm' ? PM : AM)
+
+/** AN AWARD'S HALF — the half the admin picked, the morning unless he picked the afternoon (D1164). Only an HO (an
+ *  award worth exactly half a day) has one; a stored HO without it — given before D1164 — reads as the morning, so it
+ *  still loads (D401). Null for an FO. */
+export function awardHalf(e: { amount: number; half?: Half }): Half | null {
+  return e.amount === 0.5 ? (e.half === 'pm' ? 'pm' : 'am') : null
+}
+
+/** AN AUTOMATIC HO'S HALF — the half the work fell in. THE RULE is the reading said to him with D1164's picture, "work
+ *  starting before noon, the morning": the earliest work stretch starting before 12:00 puts it in the morning, one
+ *  starting at 12:00 or later in the afternoon. (An HO is at most six hours of work, so a stretch across noon — 10:00 to
+ *  14:00 — goes by where it started; the stretch itself still clashes by its real hours.) A credit the schedule
+ *  reported no hours for reads as the morning, the same default as an award. Null for an FO, which stays a whole day. */
+export function creditHalf(c: Pick<CreditRec, 'code' | 'spans'>): Half | null {
+  if (c.code !== 'HO') return null
+  if (!c.spans?.length) return 'am'
+  return Math.min(...c.spans.map(s => s[0])) < 720 ? 'am' : 'pm'
+}
+
+/** THE HALF A NEW HO TAKES BY DEFAULT (D1164's reading — "an HO sharing its day with a half day's leave takes the other
+ *  half"): where exactly one half of the day already holds a half-day box — a half day's leave, a medical or ATT B in a
+ *  half, or another HO — the other half; otherwise the morning. A refused bid, a notice and a tail from the day before
+ *  are not boxes on this day; a whole-day entry holds no one half (D1167 draws an HO beside it). `exceptId` leaves out
+ *  the award being changed, so its own half never pushes it away. The admin may still pick either. */
+export function freeHalfFor(all: readonly Contrib[], exceptId?: string): Half {
+  let am = false, pm = false
+  for (const c of all) {
+    if (c.id === exceptId || c.kind === 'notice' || c.spill || c.state === 'refused') continue
+    const halfBox = c.kind === 'credit' ? c.code === 'HO' : isLeaveCode(c.code) || isSickCode(c.code) || c.code === 'ATTB'
+    if (!halfBox) continue
+    const p = portionOf(c.win)
+    if (p === 'am') am = true
+    else if (p === 'pm') pm = true
+  }
+  return am && !pm ? 'pm' : 'am'
+}
+
 /** A request's portion. */
 export const portionOfCode = (code: string): Portion => parseCell(code)?.portion ?? 'full'
 const halvesOf = (p: Portion): Array<'am' | 'pm'> => (p === 'full' ? ['am', 'pm'] : [p])
@@ -170,7 +230,13 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
          envelope is what the box shows, the stretches are what clashes read */
       const ws = creditWins(r)
       const env: Win = [Math.min(...ws.map(w => w[0])), Math.max(...ws.map(w => w[1]))]
-      out.push({ id: r.id, kind: 'credit', code: r.code, win: env, ...(ws.length > 1 ? { wins: ws } : {}), auto: true, ...(r.via ? { via: r.via } : {}), ...(r.note ? { note: r.note } : {}) })
+      /* AN HO IS DRAWN IN THE HALF ITS WORK FELL IN (D1164): the box takes the half, and its real hours — every
+         stretch, however many, or the whole day where none was reported — ride in `wins`, which every clash reads, so
+         an HO worked in the morning beside an afternoon's leave stays no clash and one on the same hours stays one,
+         exactly as before. An FO keeps its envelope. */
+      const h = creditHalf(r)
+      const box: Pick<Contrib, 'win' | 'wins'> = h ? { win: halfWin(h), wins: ws } : { win: env, ...(ws.length > 1 ? { wins: ws } : {}) }
+      out.push({ id: r.id, kind: 'credit', code: r.code, ...box, auto: true, ...(r.via ? { via: r.via } : {}), ...(r.note ? { note: r.note } : {}) })
     } else {
       out.push({ id: r.id, kind: 'notice', code: parseCell(r.code)?.type ?? r.code, win: FULL })
     }
@@ -186,10 +252,12 @@ export function recContribs(list: readonly WarRec[]): Contrib[] {
  *  labelled — HO for half a day, FO for anything else (Astra, plan read F05).
  *  No `auto`, no `via`, no hours: an award is not an attendance record (N13),
  *  so it clashes with nothing (D80), stands nobody down and counts on no
- *  manning. */
+ *  manning. Its window is only where it is DRAWN (D1164): an HO in the half the admin picked (`awardHalf`), anything
+ *  else the whole day. */
 export function awardContrib(e: LedgerEntry): Contrib {
+  const h = awardHalf(e)
   return {
-    id: e.id, kind: 'credit', code: e.amount === 0.5 ? 'HO' : 'FO', win: FULL, days: e.amount,
+    id: e.id, kind: 'credit', code: h ? 'HO' : 'FO', win: h ? halfWin(h) : FULL, days: e.amount,
     ...(e.reason ? { note: e.reason } : {}), ...(e.givenBy ? { givenBy: e.givenBy } : {}),
   }
 }
@@ -256,10 +324,19 @@ function readRecBody(x: unknown): WarRec | null {
   if (!isObj(x) || typeof x.id !== 'string' || !x.id || 'source' in x) return null
   if (x.kind === 'request') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || typeof x.state !== 'string' || !REQ_STATES.has(x.state)) return null
-    const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: x.state as RequestState }
+    /* a stored Ack reads as waiting (D1158 — Ack goes; D401 — an old shape still loads, nothing converted) */
+    const r: RequestRec = { id: x.id, kind: 'request', code: x.code.trim().toUpperCase(), state: (x.state === 'acknowledged' ? 'pending' : x.state) as RequestState }
     if (typeof x.shiftedFrom === 'string' && ISO.test(x.shiftedFrom)) r.shiftedFrom = x.shiftedFrom
     const c = readCarried(x.carried)
-    if (c) r.carried = c
+    if (c?.lwMoved) r.carried = { lwMoved: c.lwMoved }
+    /* its words: its own, or — an older saved shape (D401) — the remark an un-approval carried */
+    if (typeof x.remarks === 'string' && x.remarks.trim()) r.remarks = x.remarks.slice(0, MAX_CARRIED_REMARK)
+    else if (c?.remarks) r.remarks = c.remarks
+    if (typeof x.till === 'boolean') r.till = x.till
+    if (Array.isArray(x.docIds)) {
+      const ids = [...new Set((x.docIds as unknown[]).filter((d): d is string => typeof d === 'string' && !!d.trim() && d.length <= 120))].slice(0, MAX_REQ_DOCS)
+      if (ids.length) r.docIds = ids
+    }
     return r
   }
   if (x.kind === 'credit') {
@@ -288,7 +365,7 @@ function readRecBody(x: unknown): WarRec | null {
   if (x.kind === 'notice') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || (x.was !== 'pending' && x.was !== 'acknowledged')) return null
     if (typeof x.byType !== 'string' || typeof x.byWho !== 'string' || typeof x.seq !== 'number' || typeof x.at !== 'string') return null
-    return { id: x.id, kind: 'notice', code: x.code, was: x.was, byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
+    return { id: x.id, kind: 'notice', code: x.code, was: 'pending', byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
   }
   return null
 }
@@ -300,6 +377,9 @@ function readRecBody(x: unknown): WarRec | null {
  *  war, so it is skipped and everything beside it is kept. */
 export const isRetiredAward = (x: unknown): boolean =>
   isObj(x) && x.kind === 'credit' && x.oil === 'manual'
+/** …and a UNA, the war's own "out of the manning" record of D1338, retired with D1356 (25 Oct 26): demo data (D56), dropped
+ *  the same way, so a war that holds one still loads whole. */
+export const isRetiredUna = (x: unknown): boolean => isObj(x) && x.kind === 'una'
 
 /** A whole war's records, or null when anything is malformed or breaks the
  *  per-address rules — the caller then re-seeds the war blob (reset, don't
@@ -314,7 +394,7 @@ export function readRecs(x: unknown): Recs | null {
       if (!ISO.test(date) || !Array.isArray(list)) return null
       const read: WarRec[] = []
       for (const leaf of list) {
-        if (isRetiredAward(leaf)) continue
+        if (isRetiredAward(leaf) || isRetiredUna(leaf)) continue
         const r = readRec(leaf); if (!r) return null; read.push(r)
       }
       const recs = read

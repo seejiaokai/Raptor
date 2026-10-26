@@ -16,9 +16,14 @@ import { setSession, setMe } from '../state/auth'
 import { reassignInput, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
 import { projectPeople } from './state/raptorRoster'
 import {
-  advanceStage, clearCells, createWar, getState, initStore as lwInitStore, lwHistInit, moveCells,
+  closeDates, clearCells, createWar, getState, initStore as lwInitStore, lwHistInit, moveCells,
   rawState, setBidStates, setCell, setCellRange, setCells, setPeople, setPostOut, setRole, setViewer,
 } from './state/store'
+
+/* CLOSE BIDDING ON THE PERIOD ON SCREEN, as an admin does before deciding — the act that replaced "advance to Bidding
+   Closed" when the stages went (D1177). The admin may decide at any time now; closing first keeps these scenarios in the
+   setting they were written for (decided after the bids are in), it is not a requirement. */
+const closeBidding = () => { const p = getState().period; closeDates(p.start, p.end) }
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
 import { globalUndo, globalRedo, undoState } from '../undo'
@@ -151,7 +156,7 @@ describe('bulk gestures over a mixed rectangle', () => {
     setRole('admin')
     setCell('ammo', '2026-02-09', 'LL')                       // a bid
     file('ammo', 'ATT C', 'Feb 11')                            // a medical (Inputs page)
-    advanceStage()
+    closeBidding()
     setCell('ammo', '2026-02-10', 'LL'); setBidStates([{ personId: 'ammo', date: '2026-02-10' }], 'approved')
     const r = clearCells(['2026-02-09', '2026-02-10', '2026-02-11'].map(d => ({ personId: 'ammo', date: d })))
     expect(grid('ammo', '2026-02-11')).toBe('ATTC')
@@ -173,7 +178,7 @@ describe('bulk gestures over a mixed rectangle', () => {
     setRole('admin')
     setCell('ammo', '2026-02-09', 'LL')
     setCell('ammo', '2026-02-10', 'LL')
-    advanceStage()
+    closeBidding()
     setBidStates([{ personId: 'ammo', date: '2026-02-10' }], 'approved')
     const res = moveCells([{ personId: 'ammo', date: '2026-02-09' }, { personId: 'ammo', date: '2026-02-10' }], 5)
     expect(res).toBe('moved')
@@ -189,7 +194,7 @@ describe('undo depth', () => {
     const snap = () => JSON.stringify({ i: INPUTS, w: rawState().wars })
     const start = snap()
     setCell('ammo', '2026-02-09', 'LL')
-    advanceStage()
+    closeBidding()
     setBidStates([{ personId: 'ammo', date: '2026-02-09' }], 'approved')
     file('ammo', 'ATT C', 'Feb 09')
     file('rocky', 'LL', 'Feb 10', { endDate: 'Feb 12' })

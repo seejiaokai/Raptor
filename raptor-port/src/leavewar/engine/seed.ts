@@ -96,20 +96,16 @@ export function seedPeriod(): Period {
       d.events[0] = 'PH'
     }
   }
-  // Open, with bidding on the FIRST QUARTER only. That combination is the
-  // whole point of the window and is why it is seeded rather than left null:
-  // the squadron reads the entire year, and can bid on the part of it the
-  // schedule has actually reached. Jan–Mar because every seeded bid sits in
-  // January and February, so the demonstration costs no seed data — and Apr
-  // onwards is visibly locked from the first screen.
+  // ONE OPEN STRETCH, THE FIRST QUARTER (D1177 — the stages went; this was an open war with bidding on Jan–Mar, and an
+  // old open war's window becomes one open stretch). The squadron reads the whole year and bids on the part of it the
+  // schedule has reached; every seeded bid sits in January and February, so the demonstration costs no seed data.
   return {
     id: 'y2026',
     name: 'JAN - DEC 26',
     start: '2026-01-01',
     end: '2026-12-31',
-    stage: 'open',
-    bidFrom: '2026-01-01',
-    bidTo: '2026-03-31',
+    open: [{ from: '2026-01-01', to: '2026-03-31' }],
+    lastClosed: null,
     days,
     bands: [],
   }
@@ -151,7 +147,7 @@ export interface SeedAbsence {
 }
 
 let seedN = 0
-const rq = (code: string, state: 'pending' | 'acknowledged' | 'refused'): WarRec[] =>
+const rq = (code: string, state: 'pending' | 'refused'): WarRec[] =>
   [{ id: `seed${++seedN}`, kind: 'request', code, state }]
 
 export function seedRecs(): Recs {
@@ -167,7 +163,7 @@ export function seedRecs(): Recs {
     jaguar: { '2026-01-19': rq('OL', 'refused') },
     // ASICS carries every request colour at once: refused red, acknowledged
     // purple, and a plain pending bid (his approved green LL is an Input).
-    asics: { '2026-01-09': rq('LL', 'refused'), '2026-01-23': rq('*LL', 'pending'), '2026-02-24': rq('OIL', 'acknowledged') },
+    asics: { '2026-01-09': rq('LL', 'refused'), '2026-01-23': rq('*LL', 'pending'), '2026-02-24': rq('OIL', 'pending') },
     // MILES holds two plain pending bids — no seeded `shiftedFrom` (a trail is
     // a closed-war fact, owner 27 Aug 26).
     miles: { '2026-02-02': rq('LL', 'pending'), '2026-02-03': rq('LL*', 'pending') },

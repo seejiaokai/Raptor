@@ -1,0 +1,96 @@
+{
+ "log": [
+  {
+   "id": "Q1",
+   "size": "phone",
+   "said": "an approved leave's window: {\"approve\":{\"cls\":\"dchip approve lit\",\"bg\":\"rgba(87, 201, 122, 0.45)\",\"color\":\"rgb(242, 255, 245)\",\"border\":\"1px solid rgb(87, 201, 122)\",\"outline\":\"3px none rgb(242, 255, 245) +0px\"},\"refuse\":{\"cls\":\"dchip refuse\",\"bg\":\"rgba(240, 85, 95, 0.16)\",\"color\":\"rgb(255, 166, 173)\",\"border\":\"1px solid rgba(240, 85, 95, 0.5)\",\"outline\":\"3px none rgb(255, 166, 173) +0px\"},\"ll\":{\"cls\":\"tchip lv k-ll s-w lit\",\"bg\":\"rgba(0, 0, 0, 0)\",\"color\":\"rgb(242, 200, 110)\",\"border\":\"1px solid rgb(42, 49, 58)\",\"outline\":\"2px solid rgb(59, 198, 232) +2px\"}}"
+  },
+  {
+   "id": "Q1",
+   "size": "phone",
+   "said": "the refused bid's window: lit []; Refuse aria-pressed true, fill rgba(240, 85, 95, 0.16); cell [\"LL|k-ll|s-r|whole\"]"
+  },
+  {
+   "id": "Q1",
+   "size": "phone",
+   "said": "5 Nov: [\"LL|k-ll|s-a|top\",\"LL|k-ll|s-r|bot\"]; the refused line reads: LL Afternoon · refused Approve Refuse ⇄Move Delete till 5 Nov Document"
+  },
+  {
+   "id": "Q1",
+   "size": "phone",
+   "said": "the day list, right edges: {\"sheetRight\":390,\"sheetPadR\":\"12px\",\"headRight\":377,\"closeRight\":377,\"liRight\":377,\"actsRight\":377,\"actsScroll\":0,\"wordsRight\":377,\"lastBtnRight\":377,\"sheetScroll\":0,\"liLeft\":25,\"actsLeft\":25,\"actsCss\":\"352px m 0px/0px box border-box\",\"ulCss\":\"352px pad 0px/0px m 0px/0px\",\"liCss\":\"352px pad 0px/0px\"}"
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  },
+  {
+   "id": "Q1",
+   "size": "desk",
+   "said": "an approved leave's window: {\"approve\":{\"cls\":\"dchip approve lit\",\"bg\":\"rgba(87, 201, 122, 0.45)\",\"color\":\"rgb(242, 255, 245)\",\"border\":\"1px solid rgb(87, 201, 122)\",\"outline\":\"3px none rgb(242, 255, 245) +0px\"},\"refuse\":{\"cls\":\"dchip refuse\",\"bg\":\"rgba(240, 85, 95, 0.16)\",\"color\":\"rgb(255, 166, 173)\",\"border\":\"1px solid rgba(240, 85, 95, 0.5)\",\"outline\":\"3px none rgb(255, 166, 173) +0px\"},\"ll\":{\"cls\":\"tchip lv k-ll s-w lit\",\"bg\":\"rgba(0, 0, 0, 0)\",\"color\":\"rgb(242, 200, 110)\",\"border\":\"1px solid rgba(59, 198, 232, 0.5)\",\"outline\":\"2px solid rgb(59, 198, 232) +2px\"}}"
+  },
+  {
+   "id": "Q1",
+   "size": "desk",
+   "said": "the refused bid's window: lit []; Refuse aria-pressed true, fill rgba(240, 85, 95, 0.16); cell [\"LL|k-ll|s-r|whole\"]"
+  },
+  {
+   "id": "Q1",
+   "size": "desk",
+   "said": "5 Nov: [\"LL|k-ll|s-a|top\",\"LL|k-ll|s-r|bot\"]; the refused line reads: LL Afternoon · refused Approve Refuse ⇄Move Delete till 5 Nov Document"
+  },
+  {
+   "id": "Q1",
+   "size": "desk",
+   "said": "the day list, right edges: {\"sheetRight\":1000,\"sheetPadR\":\"12px\",\"headRight\":987,\"closeRight\":987,\"liRight\":987,\"actsRight\":987,\"actsScroll\":0,\"wordsRight\":987,\"lastBtnRight\":987,\"sheetScroll\":0,\"liLeft\":453,\"actsLeft\":453,\"actsCss\":\"534px m 0px/0px box border-box\",\"ulCss\":\"534px pad 0px/0px m 0px/0px\",\"liCss\":\"534px pad 0px/0px\"}"
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "q1-ref-approved-phone.png",
+   "label": "Today, an approved leave: Approve lit, LL ringed"
+  },
+  {
+   "file": "q1-today-refused-phone.png",
+   "label": "Today: a refused bid — nothing is lit"
+  },
+  {
+   "file": "q1-drawn-refused-phone.png",
+   "label": "Drawn: Refuse lit, LL ringed"
+  },
+  {
+   "file": "q1-today-daylist-phone.png",
+   "label": "Today: the refused bid in the day's list — Refuse not lit"
+  },
+  {
+   "file": "q1-drawn-daylist-phone.png",
+   "label": "Drawn: Refuse lit in the day's list"
+  },
+  {
+   "file": "q1-ref-approved-desk.png",
+   "label": "Today, an approved leave: Approve lit, LL ringed"
+  },
+  {
+   "file": "q1-today-refused-desk.png",
+   "label": "Today: a refused bid — nothing is lit"
+  },
+  {
+   "file": "q1-drawn-refused-desk.png",
+   "label": "Drawn: Refuse lit, LL ringed"
+  },
+  {
+   "file": "q1-today-daylist-desk.png",
+   "label": "Today: the refused bid in the day's list — Refuse not lit"
+  },
+  {
+   "file": "q1-drawn-daylist-desk.png",
+   "label": "Drawn: Refuse lit in the day's list"
+  }
+ ]
+}

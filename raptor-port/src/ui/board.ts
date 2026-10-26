@@ -24,7 +24,7 @@ import { applyMove, sortWave, sortInTimes, sortDutyBlock, sortSims, sortGround, 
 import { HIST } from '../state/history'
 import { rlFaultAtt, signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, nysMarkHTML, signedLineHTML, srcInput, saRoleHTML, saBadgesHTML, availHTML, QUARANTINE_NOTE , mkPeriod, withDaySnap, fltNoLenShown, sbPrevDay, SB_PREVDAY, boxText } from './html'
 import { onInputRow, rowMark, UNMARKED } from './reqdoor'
-import { setInpField, howMany } from './inputedit'
+import { setInpField, howMany, markMoved } from './inputedit'
 import { reqRowText } from './reqrow'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { DAYTPL_PUBLISHED_MSG } from '../engine/daytpl'
@@ -40,6 +40,7 @@ import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
+import { penSvg } from './pen'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
@@ -51,6 +52,7 @@ import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 import { followVisible } from './vvfollow'
+import { screenBox } from './kbscroll'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -538,7 +540,7 @@ export function boardWarnHTML(di: number, look = false) {
            himself. Same helper as the week (mkPeriod), so the button and the
            sentence cannot name different years, and no other check grows an
            action. */
-        + (!look && !hid && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
+        + (!look && !hid && mkPeriod(w, di) ? `<button class="wln-act" data-mkperiod="${esc(mkPeriod(w, di))}" title="Creates the ${esc(mkPeriod(w, di))} leave war period, with nothing open for bidding, and takes you to the Leave War to open its dates">Create the ${esc(mkPeriod(w, di))} period</button>` : '')
         + `</div>`
     })
   } else wh += `<div class="wln ok">No conflicts flagged for this day ✓</div>`
@@ -562,6 +564,15 @@ export function boardWarnHTML(di: number, look = false) {
    that leaves the 7px grip still tracks and still ends. Written straight to the
    DOM (a CSS var + a class on the persistent .sb-side), never through React
    state, so a panel re-hang mid-session does not throw the size away. */
+/* A DRAG OF A GRIP ENDS WITH A CLICK THAT IS NOT A CLICK. The press began on the grip and the button came up wherever
+   the pointer was let go — over the day, or further down the column — so the browser sends the click to what holds them
+   both, which the board reads as a click on blank space: the seat being planned and the selection were dropped (the
+   walk of 21 Oct 26, [BOARD-SIDE-WIDTH]). After a drag that moved, that one click is swallowed before anything sees it. */
+function swallowNextClick() {
+  const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
+  document.addEventListener('click', swallow, { capture: true, once: true })
+  setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+}
 export function wireWarnSplit(side: HTMLElement) {
   const down = (e: PointerEvent) => {
     const grip = (e.target as HTMLElement).closest('[data-wsplit]')
@@ -584,6 +595,7 @@ export function wireWarnSplit(side: HTMLElement) {
       document.removeEventListener('pointermove', move)
       document.removeEventListener('pointerup', up)
       document.removeEventListener('pointercancel', up)
+      if (moved) swallowNextClick()
     }
     document.addEventListener('pointermove', move)
     document.addEventListener('pointerup', up)
@@ -591,6 +603,65 @@ export function wireWarnSplit(side: HTMLElement) {
   }
   side.addEventListener('pointerdown', down)
   return () => side.removeEventListener('pointerdown', down)
+}
+
+/* THE RIGHT PANEL WIDENS BY ITS LEFT EDGE (owner D1113, D1118, 21 Oct 26 — "Yes as recommended for the right panel";
+   round 1 "yes to all"). A grip on the side column's left edge (.sb-sidegrip) drags the panel from 320 up to 40% of the
+   window; its two crew columns and the issues list share the width, the day narrows. A double-click puts it back to 320;
+   with the keyboard on the grip, ← widens and → narrows by 20, Home is 320 and End the widest. The width is REMEMBERED ON
+   THIS COMPUTER — a view preference, straight to localStorage under its own key outside the app's shared prefix, never
+   through the whiteboard or the settings command (the Tracker's ocuLocal precedent, docs/data-schema.md): it is nobody
+   else's business how wide one scheduler's panel is. The width he asked for is kept; what is drawn is clamped to the
+   window, so a smaller window shows less and a larger one gives it back. Written straight to the DOM (a CSS variable on
+   the persistent .sb-side, as wireWarnSplit does), so a repaint of the board keeps it. Desktop only: the grip is
+   display:none at a phone's width, where the column is the drawer. */
+export const SIDE_MIN = 320
+export const SIDE_KEY = 'raptorLocal:sbSideW'
+export const sideMax = () => Math.max(SIDE_MIN, Math.round(window.innerWidth * 0.4))
+const readSideW = () => { try { const v = Number(window.localStorage.getItem(SIDE_KEY) || ''); return v > 0 ? v : SIDE_MIN } catch { return SIDE_MIN } }
+const saveSideW = (w: number) => { try { if (w > SIDE_MIN) window.localStorage.setItem(SIDE_KEY, String(Math.round(w))); else window.localStorage.removeItem(SIDE_KEY) } catch { } }
+export function wireSideGrip(side: HTMLElement) {
+  const grip = side.querySelector('[data-sidegrip]') as HTMLElement | null
+  if (!grip) return () => { }
+  let want = readSideW()
+  const apply = (w: number) => {
+    const c = Math.max(SIDE_MIN, Math.min(sideMax(), Math.round(w)))
+    if (c > SIDE_MIN) side.style.setProperty('--sb-sideW', c + 'px'); else side.style.removeProperty('--sb-sideW')
+    grip.setAttribute('aria-valuenow', String(c)); grip.setAttribute('aria-valuemax', String(sideMax()))
+    return c
+  }
+  apply(want)
+  const set = (w: number) => { want = apply(w); saveSideW(want) }
+  const down = (e: PointerEvent) => {
+    if (e.button != null && e.button !== 0) return
+    e.preventDefault()
+    const x0 = e.clientX, w0 = side.getBoundingClientRect().width
+    try { grip.releasePointerCapture(e.pointerId) } catch { }
+    grip.classList.add('drag'); document.body.classList.add('sbside-drag')
+    let moved = false
+    const move = (ev: PointerEvent) => { if (!moved && Math.abs(ev.clientX - x0) < 3) return; moved = true; want = apply(w0 + (x0 - ev.clientX)); ev.preventDefault() }
+    const up = () => {
+      document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.removeEventListener('pointercancel', up)
+      grip.classList.remove('drag'); document.body.classList.remove('sbside-drag')
+      saveSideW(want)
+      if (moved) swallowNextClick()
+    }
+    document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.addEventListener('pointercancel', up)
+  }
+  const dbl = () => set(SIDE_MIN)
+  const key = (e: KeyboardEvent) => {
+    const now = side.getBoundingClientRect().width
+    const to = e.key === 'ArrowLeft' ? now + 20 : e.key === 'ArrowRight' ? now - 20 : e.key === 'Home' ? SIDE_MIN : e.key === 'End' ? sideMax() : null
+    if (to == null) return
+    e.preventDefault(); set(to)
+  }
+  const resize = () => apply(want)
+  grip.addEventListener('pointerdown', down); grip.addEventListener('dblclick', dbl); grip.addEventListener('keydown', key)
+  window.addEventListener('resize', resize)
+  return () => {
+    grip.removeEventListener('pointerdown', down); grip.removeEventListener('dblclick', dbl); grip.removeEventListener('keydown', key)
+    window.removeEventListener('resize', resize)
+  }
 }
 
 export function dayTabsHTML(di: number) {
@@ -603,7 +674,9 @@ export function dayTabsHTML(di: number) {
      carry ('Jan 1 2027' — weeks-data.ts weekLabels): the chip has room for
      'Fri 1', not 'Fri 1 2027' */
   const dayNum = (dt: string) => dt.replace(/^\S+\s+/, '').replace(/\s+\d{4}$/, '')
-  const chips = DAYS.map((x: any, i: number) => `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}">${esc(x.dow.slice(0, 3))} ${esc(dayNum(x.dt))}</span>`).join('')
+  /* data-fit: the chip's room is its weekday with a two-digit date ("Wed 30"), measured in whatever font draws it, so the
+     › after the chips stays put from week to week (owner D1122; the figures are of one width — 10-board-history.css) */
+  const chips = DAYS.map((x: any, i: number) => { const dw = esc(x.dow.slice(0, 3)); return `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}" data-fit="${dw} 30">${dw} ${esc(dayNum(x.dt))}</span>` }).join('')
   /* WEEK ARROWS FLANK THE DAY CHIPS ON DESKTOP (owner, 23 Aug 26 — "in
      scheduler board i cant go between weeks except through the calendar").
      They live INSIDE #sbDays, which is display:flex on a desktop and
@@ -1142,6 +1215,8 @@ export function boardMbtn(e: MouseEvent) {
        stand on — D363) is his own to remove, by the plain delete below ([DB-READINESS] phase 6 (c); overlay.ts standsOn) */
     const inp = row && row.src && standsOn(DAYS[di], row.src) === row ? srcInput(row) : null
     if (inp && unacceptInput(di, inp)) {
+      /* his row removed is a Reject — a scheduler's move, marked before the command records it (his D1388) */
+      markMoved(inp)
       afterSchedMutate(); notify()
       /* said to him, not written as a line: the request's own filing line ("… filed: on the programme → taken off the
          programme", the change history's one writer) is this act's one line (D114 — one act, one change; Fable's final
@@ -1535,12 +1610,16 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
     if (!box.isConnected || !anchor.isConnected) { stop(); document.removeEventListener('scroll', place, true); return }
     const r = anchor.getBoundingClientRect(), vv = window.visualViewport
     const zoomed = !vv || vv.scale > 1.01
-    const visTop = zoomed ? 0 : vv!.offsetTop, visBot = zoomed ? window.innerHeight : vv!.offsetTop + vv!.height
+    /* the visible screen in the measure the box's own place is given in, and the layout's top in it (kbscroll.ts
+       screenBox — his iPhone, the keys up and the screen panned, gives every box from the visible top); the list's `top`
+       is written in the layout's own measure */
+    const sb = zoomed ? null : screenBox(vv!)
+    const visTop = sb ? sb.top : 0, visBot = sb ? sb.bottom : window.innerHeight, lay = sb ? sb.layTop : 0
     const h = box.offsetHeight
     let top = r.bottom + 6
     if (top + h > visBot - 8 && r.top - 6 - h >= visTop + 8) top = r.top - 6 - h
     box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
-    box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top))) + 'px'
+    box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top)) - lay) + 'px'
   }
   const stop = followVisible(place)
   document.addEventListener('scroll', place, true)
@@ -1562,7 +1641,7 @@ export function blockMenu(anchor: HTMLElement, di: any) {
      the stores Config popup (owner, 26 Aug 26 \u2014 "how the config places the edit
      icon on the top right \u2026 do the same for \u2026 duties, not how it is at the
      bottom currently"). Same data-blkedit hook, only relocated. */
-  const html = `<h5 class="wm-hpen">Add a duty block<button class="wm-pen" data-blkedit="1" title="Edit the duty templates">\u270e</button></h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+  const html = `<h5 class="wm-hpen">Add a duty block<button class="wm-pen" data-blkedit="1" title="Edit the duty templates">${penSvg(true)}</button></h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}${t.wave ? ` · ${String(t.wave).toUpperCase()} desk` : ''}</span></button>`).join('')
     + `<button class="wm" data-blktpl="">Empty block</button></div>`
   popMenu(anchor, html, (e, close) => {
@@ -1601,7 +1680,7 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
       : `<div class="wm-note">No saved templates yet — save this day to start the library.</div>`)
     + `</div><div class="wm-row" style="flex-direction:column;align-items:stretch">`
     + `<button class="wm" data-daytplsave="1">+ Save this day as a template</button></div>`
-    + `<div class="wm-note"><button class="wm-edit" data-daytpledit="1">✎ Manage templates</button></div>`
+    + `<div class="wm-note"><button class="wm-edit" data-daytpledit="1">${penSvg()}Manage templates</button></div>`
   popMenu(anchor, html, (e, close) => {
     if (e.target.closest('[data-daytpledit]')) { close(); setDayTplEdit(true); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-daytplsave]')) {
@@ -1740,7 +1819,7 @@ export function planMenu(anchor: HTMLElement, di: any) {
     const sub = isLive ? (previewing ? 'tap to return to your live working copy' : liveSub) : 'tap to make it the live day'
     return `<div style="display:flex;gap:4px;align-items:stretch">`
       + `<button class="wm${isLive && !previewing ? ' sa' : ''}" style="flex:1"${act}>${esc(name)}${mark}<span class="wm-sub">${sub}</span></button>`
-      + (id && !ro ? `<button class="wm-edit" data-planedit="${esc(id)}" title="Rename or delete ${esc(name)}">✎</button>` : '')
+      + (id && !ro ? `<button class="wm-edit" data-planedit="${esc(id)}" title="Rename or delete ${esc(name)}">${penSvg(true)}</button>` : '')
       + `</div>`
   }
   const copies = list.length
@@ -1759,7 +1838,7 @@ export function planMenu(anchor: HTMLElement, di: any) {
     + `<div class="wm-row" style="flex-direction:column;align-items:stretch">${copies}</div>`
     + issuedRows
     + (ro ? '' : `<div class="wm-row" style="flex-direction:column;align-items:stretch"><button class="wm" data-plandup="1">+ Alt Plan</button></div>`)
-    + (list.length && !ro ? `<div class="wm-note"><button class="wm-edit" data-planmanage="1">✎ Manage plans</button></div>` : '')
+    + (list.length && !ro ? `<div class="wm-note"><button class="wm-edit" data-planmanage="1">${penSvg()}Manage plans</button></div>` : '')
   popMenu(anchor, html, (e, close) => {
     const pencil = e.target.closest('[data-planedit]')
     if (pencil) { close(); setDraftsEdit({ di, id: pencil.dataset.planedit }); notify(); e.stopPropagation(); return }
@@ -1890,13 +1969,19 @@ export function addWaveFromTpl(di: any, id: string) {
 
 /* the board layout choice survives closing and reopening it within a session */
 export let SBWIDE = false
+/* THE DESKTOP LAYOUT'S ZOOM ON A PHONE (owner D1109, 21 Oct 26 — [BOARD-PHONE-PINCH-ZOOM]): what a pinch has set the day
+   to (1 = the size it opens at), kept across days and dropped whenever the board closes (✓ Done, a page change — SchedBoard.tsx), by a change of layout and by
+   a sign-in or sign-out. Module state like SBWIDE; the pinch itself is ui/pinchzoom.ts, wired in SchedBoard.tsx. */
+export let SBZOOM = 1
+export function setBoardZoom(z: number) { SBZOOM = z }
 export function toggleWide() {
   SBWIDE = !SBWIDE
+  SBZOOM = 1
   toast(SBWIDE ? 'Desktop layout: pan sideways to read the whole day' : 'Phone layout')
 }
 /* …but not into the next person's: a sign-in or sign-out puts the standard layout back
    ([ACCOUNTS] — what the next person inherits; Astra's code read, 26 Sep 26) */
-view.VIEW_RESET.push({ name: 'SBWIDE', scopes: ['session'], reset: () => { SBWIDE = false } })
+view.VIEW_RESET.push({ name: 'SBWIDE', scopes: ['session'], reset: () => { SBWIDE = false; SBZOOM = 1 } })
 
 /* the phone board's Live checks fold (owner, 8 Aug 26): module state like
    SBWIDE, collapsed afresh on every openScheduler — a board visit starts

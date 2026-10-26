@@ -1,0 +1,39 @@
+[
+ {
+  "id": "S10 overseas duty from the one-day window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 red; right after the tap: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s10-phone-od-after-tap.png",
+   "s10-phone-od-settled.png",
+   "s10-phone-od-cell.png"
+  ]
+ },
+ {
+  "id": "S10 course from the one-day window, same day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 26 red; right after: under the Manning button, level red, \"This course takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 258×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This course takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 258×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s10-phone-cse-after-tap.png",
+   "s10-phone-cse-settled.png"
+  ]
+ },
+ {
+  "id": "S10 the OD on the Inputs page",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "under the Inputs list's heading for Thu 17 Dec, a Drifter OD card and a Ridge CSE card: true; that day's text: \"THU 17 DEC 2 inputs All day DrifterOD By Saber All day RidgeCSE By Saber \"",
+  "pics": [
+   "s10-phone-inputs-page.png"
+  ]
+ },
+ {
+  "id": "errors-d",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

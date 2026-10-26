@@ -116,7 +116,13 @@ describe('the board’s bar (D349 (3)): Undo · Redo · History · Sync · the b
     await click($('#sbSync'))
     expect($('#sbSync')!.className).toMatch(/\bon\b/)
     expect($('#fastSync')!.className, 'the top bar’s chip agrees').toMatch(/\bon\b/)
+    /* round 2's blind read (21 Oct 26): where only the arrows and the dot show (821–1599, D1126, D1130) each still says
+       what it is — Undo / Redo by name, the sync dot whether it is on — on both bars */
+    for (const id of ['#sbSync', '#fastSync']) expect($(id)!.getAttribute('aria-pressed'), id + ' says it is on').toBe('true')
     await click($('#sbSync'))
+    for (const id of ['#sbSync', '#fastSync']) expect($(id)!.getAttribute('aria-pressed'), id + ' says it is off').toBe('false')
+    for (const [id, name] of [['#sbUndo', 'Undo'], ['#sbRedo', 'Redo'], ['#undoBtn', 'Undo'], ['#redoBtn', 'Redo']])
+      expect($(id)!.getAttribute('aria-label'), id + ' is named').toBe(name)
   })
   it('the ⋯ menu opens, offers Sort all and the layout switch, and closes on a tap outside', async () => {
     await act(async () => { openScheduler(0) })

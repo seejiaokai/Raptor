@@ -24,8 +24,8 @@ import { deletedRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
-import { verifiedReplay } from '../undo/timeline'
-import { filedForOther, ownPart, setInputReplayCheck } from './perms'
+import { verifiedReplay, verifiedWarRestore } from '../undo/timeline'
+import { filedForOther, ownPart, setInputReplayCheck, lwClosedKeys, setLwRestoreCheck } from './perms'
 import type { RecordCtx, UndoEntry } from '../undo/types'
 import type { Change } from '../command'
 import { weekOf, dayKeyOf } from '../undo/derive'
@@ -42,7 +42,7 @@ import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
 import { restoreAbsencesOf } from '../leavewar/sync'
-import { warVisible } from '../leavewar/absences'
+import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 
 /* the 8 collections schedStore owns (the scheduler week + inputs + plan). NOT
@@ -246,7 +246,7 @@ function landingOf(entry: UndoEntry, dir:'undo'|'redo'): Landing | null {
   }
   if (m === 'inputs') {
     if (canEditSched() && inputDayOf(entry) != null) also.push('editsched')
-    if (fwd.some(c => c.collection === 'inputs' && inputRows(c).some(r => warVisible(r.type)))) also.push('leavewar')
+    if (fwd.some(c => c.collection === 'inputs' && inputRows(c).some(r => warCounts(r)) /* a commitment under Unavailable shows on the war too (D1357) */)) also.push('leavewar')
   }
   return primary || also.length ? { primary, also, then } : null
 }
@@ -385,8 +385,12 @@ export function installGlobalUndo(): void {
     filerMay: (cur, before, after) => cur.personId != null && filedForOther(String(cur.personId), before, after),
     /* …and his own part of an input he shares: himself taken out, or put back by his own Undo (perms.ts ownPart) */
     ownPart: (cur, before, after) => cur.personId != null && ownPart(String(cur.personId), before, after),
+    /* D1263 — the war records a member's step changed on a day already closed for him, kept with the step as it lands */
+    closedAtStep: (changes, actor) => lwClosedKeys(changes, actor),
     // currentActor OMITTED — the timeline defaults to deriveActor().
   })
   /* …and the commit gate trusts a restore only where the timeline vouches for it, record by record (perms.ts) */
   setInputReplayCheck(verifiedReplay)
+  /* …and a member's restore onto a Leave War day closed for him only where it is his Undo of a closed-day step (D1263) */
+  setLwRestoreCheck(verifiedWarRestore)
 }

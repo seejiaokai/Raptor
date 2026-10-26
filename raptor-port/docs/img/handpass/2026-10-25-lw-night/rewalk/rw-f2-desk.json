@@ -1,0 +1,39 @@
+[
+ {
+  "id": "F2a Show pressed twice ~90 ms apart",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "foot note up first (This bid turns Available P red. + \"Show ›\"); two presses 72 ms apart (clicks seen by the page: [{\"t\":7843,\"d\":1,\"tgt\":\"manning-bubble-show\"},{\"t\":7915,\"d\":1,\"tgt\":\"cell-riddler-2026-12-13\"}]); 29 scroll events; scrollY 981 → 0; windows open afterwards: []; Manning rows open: true",
+  "pics": [
+   "f2-dk-a-2-100ms-after-second.png",
+   "f2-dk-a-3-settled.png"
+  ]
+ },
+ {
+  "id": "F2c a quick click on the top bar’s Undo right after Show",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "the foot note up (Diesel's pending LL); Show pressed, Undo pressed ~60 ms later (top bar position styles [\"sticky\"]); the cell [\"LL|k-ll|s-w|whole\"] → []; Undo \"Undo — Diesel’s bid\" → \"Undo — Vapor’s bid\"; page at the Manning button; Available P now 27 red",
+  "pics": [
+   "f2-dk-c-1-after-undo-tap-150ms.png",
+   "f2-dk-c-2-settled.png"
+  ]
+ },
+ {
+  "id": "F2b Tab to Show, Enter, then Enter at once on the Manning button",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "21 Tab presses reached Show; Enter → focus on \"counts-toggle\"; second Enter 60 ms later; rows open before true, 150 ms after false, settled false; page at the Manning button; note: no bubble",
+  "pics": [
+   "f2-dk-b-2-after-second-enter-150ms.png",
+   "f2-dk-b-3-settled.png"
+  ]
+ },
+ {
+  "id": "errors-f2",
+  "size": "desktop/Chromium",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

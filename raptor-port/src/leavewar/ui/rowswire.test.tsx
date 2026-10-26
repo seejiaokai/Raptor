@@ -1,8 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, expect, it, vi } from 'vitest'
 import { initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
+import { askLw } from './lwnav'
+
+/* Rearrange's way in is a line in ⚙ since D1254 ("⇅ Rearrange the grid"); the bar's "⇅ Done" is only the way out. */
+const startRearrange = () => { act(() => { askLw({ kind: 'settings' }) }); fireEvent.click(screen.getByTestId('settings-rearrange')) }
 
 /* THE GRID HANDS THE MANNING BLOCK ITS RE-MEASURE ([LW-MONTHJUMP-PHONE] review,
    Astra LW-101, 23 Sep 26). The block's rows are cells of the grid's own table,
@@ -39,7 +43,7 @@ it('Matrix hands the manning block a way to tell it a count row went in or out',
   expect(seen.length).toBeGreaterThan(0)
   expect(typeof seen[seen.length - 1]!.onRowsChange).toBe('function')
   // ...and the re-measure it runs is safe with no layout at all
-  fireEvent.click(screen.getByTestId('roster-arrange'))
+  startRearrange()
   expect(screen.getByTestId('count-ip')).toBeTruthy()
   fireEvent.click(screen.getByTestId('manning-delete-ip'))
   expect(screen.queryByTestId('count-ip')).toBeNull()

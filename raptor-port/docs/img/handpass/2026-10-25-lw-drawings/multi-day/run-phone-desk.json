@@ -1,0 +1,126 @@
+{
+ "log": [
+  {
+   "size": "phone",
+   "said": "Drifter's boxes: {\"10\":\"LL|k-ll|s-a\",\"11\":\"LL|k-ll|s-a\",\"12\":\"OD|k-od|s-a\",\"13\":\"OD|k-od|s-a\",\"02\":\"LL|k-ll|s-w\",\"03\":\"LL|k-ll|s-w\",\"04\":\"LL|k-ll|s-w\",\"05\":\"LL|k-ll|s-w\",\"06\":\"LL|k-ll|s-w\",\"09\":\"LL|k-ll|s-a\"}"
+  },
+  {
+   "size": "phone",
+   "said": "the war's bids, by what makes them one run: {\"02\":\"[\\\"LL\\\",\\\"pending\\\",\\\"\\\",null,[]]\",\"03\":\"[\\\"LL\\\",\\\"pending\\\",\\\"\\\",null,[]]\",\"04\":\"[\\\"LL\\\",\\\"pending\\\",\\\"\\\",null,[]]\",\"05\":\"[\\\"LL\\\",\\\"pending\\\",\\\"Wedding\\\",null,[]]\",\"06\":\"[\\\"LL\\\",\\\"pending\\\",\\\"Family\\\",null,[]]\"}"
+  },
+  {
+   "size": "phone",
+   "said": "the Inputs page's November records of Drifter: [{\"iid\":\"imvmo94g5xgrsh6\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 11\",\"yr\":2026,\"lw\":\"y2026\"},{\"iid\":\"imvmo96ncdflwm9\",\"type\":\"OD\",\"date\":\"Nov 12\",\"endDate\":\"Nov 13\",\"yr\":2026,\"lw\":null}]"
+  },
+  {
+   "size": "phone",
+   "said": "fixtures: {\"one bid 2–4\":true,\"two bids 5, 6\":true,\"one approved LL input 9–11\":true,\"one OD input 12–13\":true}"
+  },
+  {
+   "size": "phone",
+   "said": "the grid here: {\"cellW\":20.8,\"cellH\":21.44,\"boxW\":16.61,\"boxH\":17.25,\"border\":\"1.25px\",\"zoom\":\"0.8\",\"headTop\":49,\"headH\":44,\"headBottom\":93,\"firstRowTop\":93,\"hitOk\":true,\"dpr\":3,\"bg\":\"rgba(0, 0, 0, 0)\"}"
+  },
+  {
+   "size": "phone",
+   "said": "drag held (grey): {\"selecting\":true,\"cells\":[\"2026-11-10\",\"2026-11-11\"]}"
+  },
+  {
+   "size": "phone",
+   "said": "drag held (bar): {\"selecting\":true,\"cells\":[\"2026-11-10\",\"2026-11-11\"]}"
+  },
+  {
+   "size": "phone",
+   "said": "errors: none (console, page, 4xx)"
+  },
+  {
+   "size": "desk",
+   "said": "Drifter's boxes: {\"10\":\"LL|k-ll|s-a\",\"11\":\"LL|k-ll|s-a\",\"12\":\"OD|k-od|s-a\",\"13\":\"OD|k-od|s-a\",\"02\":\"LL|k-ll|s-w\",\"03\":\"LL|k-ll|s-w\",\"04\":\"LL|k-ll|s-w\",\"05\":\"LL|k-ll|s-w\",\"06\":\"LL|k-ll|s-w\",\"09\":\"LL|k-ll|s-a\"}"
+  },
+  {
+   "size": "desk",
+   "said": "the war's bids, by what makes them one run: {\"02\":\"[\\\"LL\\\",\\\"pending\\\",\\\"\\\",null,[]]\",\"03\":\"[\\\"LL\\\",\\\"pending\\\",\\\"\\\",null,[]]\",\"04\":\"[\\\"LL\\\",\\\"pending\\\",\\\"\\\",null,[]]\",\"05\":\"[\\\"LL\\\",\\\"pending\\\",\\\"Wedding\\\",null,[]]\",\"06\":\"[\\\"LL\\\",\\\"pending\\\",\\\"Family\\\",null,[]]\"}"
+  },
+  {
+   "size": "desk",
+   "said": "the Inputs page's November records of Drifter: [{\"iid\":\"imvmo9qsy797n2k\",\"type\":\"OD\",\"date\":\"Nov 12\",\"endDate\":\"Nov 13\",\"yr\":2026,\"lw\":null},{\"iid\":\"imvmo9p07fzwiww\",\"type\":\"LL\",\"date\":\"Nov 9\",\"endDate\":\"Nov 11\",\"yr\":2026,\"lw\":\"y2026\"}]"
+  },
+  {
+   "size": "desk",
+   "said": "fixtures: {\"one bid 2–4\":true,\"two bids 5, 6\":true,\"one approved LL input 9–11\":true,\"one OD input 12–13\":true}"
+  },
+  {
+   "size": "desk",
+   "said": "the grid here: {\"cellW\":26,\"cellH\":26.59,\"boxW\":21,\"boxH\":21.59,\"border\":\"1px\",\"zoom\":\"1\",\"headTop\":57,\"headH\":45,\"headBottom\":102,\"firstRowTop\":102,\"hitOk\":true,\"dpr\":1,\"bg\":\"rgba(0, 0, 0, 0)\"}"
+  },
+  {
+   "size": "desk",
+   "said": "drag held (grey): {\"selecting\":true,\"cells\":[\"2026-11-10\",\"2026-11-11\"]}"
+  },
+  {
+   "size": "desk",
+   "said": "drag held (bar): {\"selecting\":true,\"cells\":[\"2026-11-10\",\"2026-11-11\"]}"
+  },
+  {
+   "size": "desk",
+   "said": "errors: none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "md1-today-phone.png",
+   "label": "Today: 2–4 Nov is one bid, 5 and 6 Nov two bids, 9–11 Nov one approved leave, 12–13 Nov one OD. Nothing on the grid says which days go together."
+  },
+  {
+   "file": "md2-grey-phone.png",
+   "label": "Drawn: a faint grey box round each entry of several days"
+  },
+  {
+   "file": "md3-white-phone.png",
+   "label": "Drawn: a thin white box round each entry of several days"
+  },
+  {
+   "file": "md4-black-phone.png",
+   "label": "Drawn: a black box round each entry of several days"
+  },
+  {
+   "file": "md5-bar-phone.png",
+   "label": "Drawn: each entry of several days is one bar with its code once; separate entries keep their gaps"
+  },
+  {
+   "file": "md6-grey-drag-phone.png",
+   "label": "Drawn: the grey box, with 10–11 Nov being dragged: the cyan shows as today"
+  },
+  {
+   "file": "md6-bar-drag-phone.png",
+   "label": "Drawn: the one bar, with 10–11 Nov being dragged: the cyan shows as today"
+  },
+  {
+   "file": "md1-today-desk.png",
+   "label": "Today: 2–4 Nov is one bid, 5 and 6 Nov two bids, 9–11 Nov one approved leave, 12–13 Nov one OD. Nothing on the grid says which days go together."
+  },
+  {
+   "file": "md2-grey-desk.png",
+   "label": "Drawn: a faint grey box round each entry of several days"
+  },
+  {
+   "file": "md3-white-desk.png",
+   "label": "Drawn: a thin white box round each entry of several days"
+  },
+  {
+   "file": "md4-black-desk.png",
+   "label": "Drawn: a black box round each entry of several days"
+  },
+  {
+   "file": "md5-bar-desk.png",
+   "label": "Drawn: each entry of several days is one bar with its code once; separate entries keep their gaps"
+  },
+  {
+   "file": "md6-grey-drag-desk.png",
+   "label": "Drawn: the grey box, with 10–11 Nov being dragged: the cyan shows as today"
+  },
+  {
+   "file": "md6-bar-drag-desk.png",
+   "label": "Drawn: the one bar, with 10–11 Nov being dragged: the cyan shows as today"
+  }
+ ]
+}

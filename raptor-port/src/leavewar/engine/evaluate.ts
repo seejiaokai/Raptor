@@ -9,7 +9,7 @@ import { countsFor, ruleHave, type DayCounts, type Grid } from './availability'
 import type { States } from './bids'
 import type { Person } from './people'
 import { requirementFor, type Requirements } from './requirements'
-import { isAvailId } from './availrows'
+import { isAvailId, type RedLine } from './availrows'
 
 export type Verdict = 'ok' | 'amber' | 'red'
 
@@ -84,5 +84,33 @@ export function evaluatePeriod(
 ): Record<string, DayVerdict> {
   const out: Record<string, DayVerdict> = {}
   for (const date of dates) out[date] = evaluateDay(people, grid, states, reqs, date, views)
+  return out
+}
+
+/** One day that breaks a manning rule, with every row it breaks and that row's figure. */
+export interface RedDay {
+  date: string
+  lines: RedLine[]
+}
+
+/** THE DAYS BREAKING A MANNING RULE (the under-manned list, and the count beside it): a Manning row below its red — the
+ *  day verdicts above — OR an Available P or W row at its red (D1243, narrowing D1213: amber is never counted). The
+ *  Available rows are judged here, beside the verdicts, never inside them: they are not Manning rows (`manningRowIds`),
+ *  and their red needs the day's Required, which the war does not hold — the caller hands it in as `availRed`
+ *  (leavewar/sync.ts `manningRedDays`). In date order; a day's Manning rows first, then Available P, then W. */
+export function redDays(
+  dates: readonly string[],
+  verdicts: Record<string, DayVerdict>,
+  availRed?: (date: string) => readonly RedLine[],
+): RedDay[] {
+  const out: RedDay[] = []
+  for (const date of dates) {
+    const v = verdicts[date]
+    const lines: RedLine[] = v
+      ? v.results.filter(r => r.verdict === 'red').map(r => ({ ruleId: r.ruleId, label: r.label, have: r.have }))
+      : []
+    if (availRed) lines.push(...availRed(date))
+    if (lines.length) out.push({ date, lines })
+  }
   return out
 }

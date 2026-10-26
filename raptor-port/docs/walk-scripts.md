@@ -49,6 +49,16 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   its record and the failure is blamed on the app.
 - **What an action created is named by the difference** between the ids before and after it, never by position: one
   door puts a new record at the top of a list, another at the bottom.
+- **A stand-in keyboard is set at the page's own height first, and plays his iPhone's measure as well as Chromium's.**
+  The stand-in visible screen starts at the size the page had before its width was set (1668 on a 684 screen) — give it
+  the real screen before the tap, or the app never learns the full height. And once the keys are up and the screen has
+  panned, his iPhone gives every box from the top of the VISIBLE screen and the layout's height as what is left below
+  it: a stand-in that only moves `offsetTop` tests a phone he does not have (four rounds of the keyboard fix passed
+  every check on Chromium's measure — his `?kbdebug` recordings of 25 Oct 26 showed the other; the way to play his is
+  `scripts/handpass/kbs-his-measure.mjs` and `e2e/kbscroll.spec.ts` KS3g). **Its motion is his phone's, measured off his
+  screen — never the app's own numbers:** round 5's test played the keys' slide on the very curve the app glided on, so
+  it could only pass, and the window dipped 90–145 points on his phone (his recordings of 11:49 and 11:54 — the slide read
+  at sixty frames a second off the `?kbdebug` readout, which stands at the pan: `kbs-slide-walk.mjs`, KS3j).
 
 ## 4. Steps, and what they assert
 
@@ -105,8 +115,17 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   after it: a row that slid under the sticky bar reads as a new defect. Measure the claim, then picture it.
 - **A script writes only under its own checkout**, every path resolved from the script itself (`import.meta.url`) —
   never an absolute path into a worktree: worktree folders are reused by other chats.
+- **On a phone, a tap gets a picture right after it (owner D1281):** within about 100 ms of the lift, the pointer left
+  where it pressed, besides the settled picture — an iPhone keeps the tapped thing "hovered", the test browser does
+  not, and a fault that lives in that state is otherwise never pictured (the bug-check order §7.10).
 - **One run, one folder.** A script that numbers its pictures empties its folder first, or writes a folder per run:
   two runs' pictures under interleaved numbers are no evidence.
+- **A picture of something moving carries its own moment, on the clock its motion is drawn on** (25 Oct 26, the keyboard
+  slide walk). Chromium's screencast stamps a frame later than what it shows, and its compositor draws a moving window
+  between the page's own frames — a frame ahead of anything the page itself paints: pictures timed by either showed the
+  fixed window 15–18 points low and the page behind it, the numbers saying it held still. Stamp each frame with a mark
+  the compositor moves (`kbs-slide-walk.mjs`: a 4px mark sweeping the foot of the screen, 400ms a sweep, its sweep told
+  by a colour the page paints) and time the picture by it.
 
 ## 6. The re-walk
 

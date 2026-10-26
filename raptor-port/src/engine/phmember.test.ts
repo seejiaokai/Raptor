@@ -56,7 +56,7 @@ describe('where it cannot apply, the one body says why (D753, D755 (4))', () => 
     const why = 'ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other'
     expect(placeholderProblem(one({ type: 'OL' }))).toBe(why)
     expect(placeholderProblem(one({ type: 'OD' }))).toBe(why)
-    expect(placeholderProblem(one({ type: 'Fly with' }))).toBe(why)
+    expect(placeholderProblem(one({ type: 'Attach' }))).toBe(why)
   })
   /* A NAMED RULING CHANGED THIS CASE (D776 "A2", D778 — 12 Oct 26). It read "a Personal input is one person's own —
      nobody beside him, a placeholder included" (D755 (4), D712). A Personal input is now the same as an Event for

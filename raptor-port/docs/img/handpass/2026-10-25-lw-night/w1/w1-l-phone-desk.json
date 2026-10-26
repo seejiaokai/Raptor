@@ -1,0 +1,70 @@
+[
+ {
+  "id": "State table: red → amber (a Refuse) raises nothing",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Required P 24; bids took Available P 28 → 27 amber → 26 amber → 25 red; Trident's refuse: 25 red → 26 amber",
+  "pics": [
+   "st-phone-trident-refuse-after-tap.png"
+  ]
+ },
+ {
+  "id": "State table: amber → amber (better) (a Refuse) raises nothing",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Required P 24; bids took Available P 28 → 27 amber → 26 amber → 25 red; Ridge's refuse: 26 amber → 27 amber",
+  "pics": [
+   "st-phone-ridge-refuse-after-tap.png"
+  ]
+ },
+ {
+  "id": "State table: amber → ok (a Refuse) raises nothing",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Required P 24; bids took Available P 28 → 27 amber → 26 amber → 25 red; Drifter's refuse: 27 amber → 28 ok",
+  "pics": [
+   "st-phone-drifter-refuse-after-tap.png"
+  ]
+ },
+ {
+  "id": "errors-st",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ },
+ {
+  "id": "State table: red → amber (a Refuse) raises nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Required P 24; bids took Available P 28 → 27 amber → 26 amber → 25 red; Trident's refuse: 25 red → 26 amber",
+  "pics": [
+   "st-desk-trident-refuse-after-tap.png"
+  ]
+ },
+ {
+  "id": "State table: amber → amber (better) (a Refuse) raises nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Required P 24; bids took Available P 28 → 27 amber → 26 amber → 25 red; Ridge's refuse: 26 amber → 27 amber",
+  "pics": [
+   "st-desk-ridge-refuse-after-tap.png"
+  ]
+ },
+ {
+  "id": "State table: amber → ok (a Refuse) raises nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Required P 24; bids took Available P 28 → 27 amber → 26 amber → 25 red; Drifter's refuse: 27 amber → 28 ok",
+  "pics": [
+   "st-desk-drifter-refuse-after-tap.png"
+  ]
+ },
+ {
+  "id": "errors-st",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

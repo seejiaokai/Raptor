@@ -19,7 +19,7 @@
 import { PEOPLE, whoId } from './people'
 import { whoArr } from './slots'
 import { dayIso } from './verid'
-import { INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed, remarksShown } from './inputs'
+import { goesOnProg, INPUTS, inpId, inpLabel, isPersonal, inputCoversDate, dateOrd, idsOf, leadOf, onlyNamed, remarksShown } from './inputs'
 import { hhmm } from './time'
 import { inputProtected } from './quarantine'
 import { rowElsewhere } from './weekstash'
@@ -278,7 +278,7 @@ function requestsById(): Map<string, any> {
 }
 /* may a row for request `r` stand on a day dated `dt`: the request is an activity (a meeting, an appointment — isPersonal),
    covers the day, and is not filed under Unavailable. A request taken off ('r') still qualifies: its row stands as it is. */
-export const rowMayStand = (r: any, dt: any): boolean => !!r && isPersonal(r.type) && r.acc !== 'u' && inputCoversDate(r, dt)
+export const rowMayStand = (r: any, dt: any): boolean => !!r && (isPersonal(r.type) || goesOnProg(r)) && r.acc !== 'u' && inputCoversDate(r, dt)
 /* is this row its request's row, for "one request, one row": every row with `src` whose request can stand on its day —
    never a DEAD one (its request gone, or a `kept` row on a day its request cannot stand on: D363 keeps it on the day the
    version had it, but it is not the request's row). A read-only request's rows are left exactly as they are. */
@@ -342,6 +342,9 @@ export type ViewCtx = {
   book?: { sign?: any; signBind?: any; drafts?: any }
   /* the year of the week's Monday — set by viewOfWeek: its rows print their "till" date in their own week's year */
   year?: number
+  /* row names held besides the days handed in — the saved week's, when the days are a copy of the screen
+     ([LW-LOAD-RELAND-RID], the code read's F1: drafts.ts dayAsLoadLeaves) */
+  taken?: Iterable<string>
 }
 
 /* ---- reconcile: each row with `src`, against its request (plan §3 (c) rules 1–7) ---- */
@@ -365,7 +368,7 @@ function reconcileRequestRows(days: any[], info: ViewDayInfo[], ctx: ViewCtx): v
       }
       if (!r) { info[di].gone.push({ src: id, why: 'gone' }); info[di].reqChanged = true; continue }            // 1.
       if (!may) {                                                                                                  // 2.
-        info[di].gone.push({ src: id, why: !isPersonal(r.type) ? 'type' : r.acc === 'u' ? 'u' : 'cover' }); info[di].reqChanged = true; continue
+        info[di].gone.push({ src: id, why: !(isPersonal(r.type) || goesOnProg(r)) ? 'type' : r.acc === 'u' ? 'u' : 'cover' }); info[di].reqChanged = true; continue
       }
       if (first.has(id)) { info[di].gone.push({ src: id, why: 'dup' }); info[di].reqChanged = true; continue }     // 7.
       first.add(id)
@@ -422,7 +425,7 @@ function landRequests(days: any[], ctx: ViewCtx, info: ViewDayInfo[], taken?: Se
      itself", 10 Aug 26; the build before (c) appended each landing at its filing). Found by the FULL check's walk. */
   for (let i = (INPUTS as any[]).length - 1; i >= 0; i--) {
     const r = (INPUTS as any[])[i]
-    if (!r || !r.iid || !isPersonal(r.type) || r.acc === 'r' || r.acc === 'u' || inputProtected(r)) continue
+    if (!r || !r.iid || !goesOnProg(r) || r.acc === 'r' || r.acc === 'u' || inputProtected(r)) continue
     const s0 = dateOrd(r.date, r.yr)
     if (s0 == null) continue
     const di = ordOf.indexOf(s0)
@@ -457,6 +460,7 @@ export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] 
   if (!Array.isArray(days)) return info
   const taken = new Set<string>()
   for (const d of days) for (const r of rowsOf(d || {})) if (r && r.rid) taken.add(String(r.rid))
+  for (const t of ctx.taken || []) taken.add(String(t))
   /* every row is written in its OWN week's year (D1095 — the fresh read's F1, 20 Oct 26): a week read while another is on
      screen comes out as it does when it is loaded itself */
   const own = { ...ctx, year: +String(v).split('/')[2] || undefined }
@@ -470,7 +474,7 @@ export function viewOfWeek(v: string, days: any[], ctx: ViewCtx): ViewDayInfo[] 
 export function landingDue(v: string): boolean {
   const lo = +dayIso(String(v), 0).replace(/-/g, ''), hi = +dayIso(String(v), 6).replace(/-/g, '')
   for (const r of INPUTS as any[]) {
-    if (!r || !isPersonal(r.type) || r.acc === 'r' || r.acc === 'u') continue
+    if (!r || !goesOnProg(r) || r.acc === 'r' || r.acc === 'u') continue
     const s0 = dateOrd(r.date, r.yr)
     if (s0 != null && s0 >= lo && s0 <= hi) return true
   }
@@ -479,6 +483,6 @@ export function landingDue(v: string): boolean {
 /* the activity requests' signature — what a memo of a week's worked-out rows must also key on (the peek) */
 export function requestsSig(): string {
   let s = ''
-  for (const r of INPUTS as any[]) if (r && isPersonal(r.type)) s += `${r.iid}|${r.acc || ''}|${r.date}|${r.endDate || ''}|${r.yr || ''}|${srcvOf(r)};`
+  for (const r of INPUTS as any[]) if (r && (isPersonal(r.type) || r.odGround)) s += `${r.iid}|${r.acc || ''}|${r.odGround ? 'o' : ''}|${r.date}|${r.endDate || ''}|${r.yr || ''}|${srcvOf(r)};`
   return s
 }

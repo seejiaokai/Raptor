@@ -1,0 +1,696 @@
+[
+ {
+  "id": "S1 geometry beside the drawing",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "height 270 (drawn 248, +22); bidsheet-hd h±3 c±0.5; Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S1 empty day (admin): title who · day · switch on · ✕, no \"now\"; no actions row; Pick a range ends Duration; the ⋯ under CL at its width",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "title \"Drifter Mon 2 Nov Approve what I enter ✕\"; switch true; actions row false; Pick a range last true (right gap 0); ⋯ vs CL dx 0 dw 0 gap 6",
+  "pics": [
+   "s1-empty-phone"
+  ]
+ },
+ {
+  "id": "S2 switch off: the buttons hollow, the LL placed waits",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "switch off true; LL button solid rgb(42, 49, 58); placed true; cell LL [LL|c k-ll s-w whole|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none]",
+  "pics": [
+   "s2-switch-off-phone"
+  ]
+ },
+ {
+  "id": "S3 geometry beside the drawing",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "height 308 (drawn 286, +22); bidsheet-hd h±3 c±0.5; Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S3 pending bid: Approve not lit, LL lit, Whole day lit; switch still off (remembered); on a phone the day stands above the window (D1290)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Approve {\"lit\":false,\"pressed\":\"false\"}; LL {\"lit\":true,\"pressed\":null}; Whole day true; switch off true; day line \"No manning row is amber or red\"; tapped day 25px above the window, cell class \" act hasc\"",
+  "pics": [
+   "s3-pending-phone"
+  ]
+ },
+ {
+  "id": "S4 a remark typed then ✕ (the box not left): kept on the bid",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "reopened box \"Walk remark one\"",
+  "pics": [
+   "s4-typed-phone",
+   "s4-reopened-phone"
+  ]
+ },
+ {
+  "id": "S5 geometry beside the drawing",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "height 308 (drawn 286, +22); bidsheet-hd h±3 c±0.5; Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S5 approved: the cell filled; reopened, Approve lit; the remark carried onto the leave (Inputs record)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cell s-a; Approve {\"lit\":true,\"pressed\":\"true\"}; box \"Walk remark one\"; the Inputs leave {\"remarks\":\"Walk remark one\",\"till\":null,\"docs\":0}",
+  "pics": [
+   "s5-approved-phone"
+  ]
+ },
+ {
+  "id": "S6 the approved leave's remark typed, ✕: saved onto the leave",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Inputs leave {\"remarks\":\"Walk remark two\",\"till\":null,\"docs\":0}; reopened box \"Walk remark two\"",
+  "pics": [
+   "s6-leave-remark-phone"
+  ]
+ },
+ {
+  "id": "S7 the lit Approve tapped again: back to waiting, the leave gone from the Inputs page, its words on the bid; Undo approves, Redo sends back",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after: cell s-w, Inputs leave null; reopened Approve {\"lit\":false,\"pressed\":\"false\"}, box \"Walk remark two\"; Undo s-a; Redo s-w",
+  "pics": [
+   "s7-sentback-cell-phone",
+   "s7-sentback-phone"
+  ]
+ },
+ {
+  "id": "S8 refused: struck; reopened, Refuse pressed, no leave lit",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cell s-r; Refuse {\"lit\":false,\"pressed\":\"true\"}; LL {\"lit\":false,\"pressed\":null}; rows bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": [
+   "s8-refused-phone"
+  ]
+ },
+ {
+  "id": "S9 half day (AM LL approved) reopened: the decide window, AM lit beside the lit LL, no code in the title (D1331)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cell s-a; window bid-picker; AM {\"lit\":false,\"pressed\":\"true\"}; LL {\"lit\":true,\"pressed\":null}; title \"Drifter Thu 5 Nov Approve what I enter ✕\"; text: Drifter | Thu 5 Nov | Approve what I enter | ✕ | No manning row is amber or red | Approve | Refuse | ⇄Move | Delete | till 5 Nov | Document | Whole day | AM | PM | Pick a range | <LL | 24.5 | <OL | 24.5 | <OIL | 4 | <CCL",
+  "pics": [
+   "s9-half-phone"
+  ]
+ },
+ {
+  "id": "S10 free half beside Inputs-page leave: PM only, \"The morning is LL, filed on the Inputs page — change that there\", no leave lit",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "portions portion-pm; line \"The morning is LL, filed on the Inputs page — change that there.\"; any lit false; rows bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Remarks and document:35/1L side h±5 c±2.5 | Duration:53/2L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": [
+   "s10-freehalf-phone"
+  ]
+ },
+ {
+  "id": "S11 the ⋯ opens its menu inside the window: Grant OIL (green), Post out, Post in, each pressable",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"inside\":true,\"items\":[{\"t\":\"Grant OIL\",\"ok\":true,\"bg\":\"rgba(70, 196, 108, 0.2)\"},{\"t\":\"Post out\",\"ok\":true,\"bg\":\"rgb(26, 31, 38)\"},{\"t\":\"Post in\",\"ok\":true,\"bg\":\"rgb(26, 31, 38)\"}]}",
+  "pics": [
+   "s11-menu-phone"
+  ]
+ },
+ {
+  "id": "S11b a press outside the menu (on the window) closes the menu, not the window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"menu\":false,\"win\":true}",
+  "pics": [
+   "s11-outside-phone-q"
+  ]
+ },
+ {
+  "id": "S12 Grant OIL from the ⋯: panel opens, FO lands; reopened, the ⋯ names the award",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "panel true; cell FO [FO|c k-oil s-a whole|bg rgba(70, 196, 108, 0.38)|none/none/none/none|td:none]; window bid-picker; ⋯ item \"FO · a day\"",
+  "pics": [
+   "s12-award-panel-phone",
+   "s12-reopened-phone"
+  ]
+ },
+ {
+  "id": "S13 a range picked reads on its chip; picked back to the day tapped the chip reads \"Pick a range\" again",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "range chip \"16 Nov 26 – 18 Nov 26\", day line \"Mon 16 Nov No manning row turns amber or red\"; back: \"Pick a range\"",
+  "pics": [
+   "s13-cal-phone",
+   "s13-range-phone",
+   "s13-back-phone"
+  ]
+ },
+ {
+  "id": "S14 the switch left off stays off in the next window and after a reload; turned on again",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "next window false; after reload false",
+  "pics": []
+ },
+ {
+  "id": "S15 geometry beside the drawing",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "height 338 (drawn 279, +59); Remarks and document h±5 c±2.5 — bidsheet-hd:51/1L side h±0 c±0 | bid-dayline:32/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | sel-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S15 drag window, one man, three days with a bid: title short \"23–25 Nov · 3 days\"; Approve · Refuse · Move · Delete; the ⋯ under CL",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "title \"Drifter 23–25 Nov · 3 days Approve what I enter ✕\"; actions Approve · Refuse · ⇄Move · Delete; ⋯ vs CL {\"dx\":0,\"dw\":0}",
+  "pics": [
+   "s15-drag-phone"
+  ]
+ },
+ {
+  "id": "S16 drag over two men: no Remarks row; RECORD the ⋯",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "words row false; ⋯ false; rows bidsheet-hd:53/1L side h±0 c±0 | bid-dayline:32/1L | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0",
+  "pics": [
+   "s16-drag2-phone"
+  ]
+ },
+ {
+  "id": "S17 two entries: each led by its box; the morning LL \"Morning · approved\", one row Approve(lit) · Refuse · Move · Delete, its Remarks; the ATT B \"Afternoon · change it on the Inputs page\", its remark read only",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "[{\"box\":\"c k-ll s-a top\",\"main\":\"Morning · approved\",\"acts\":[\"Approve(lit)\",\"Refuse\",\"⇄Move\",\"Delete\"],\"actLines\":1,\"widths\":[85,85,85,85],\"broken\":[],\"words\":true,\"ro\":null},{\"box\":\"c k-med s-a bot raptor\",\"main\":\"Afternoon · change it on the Inputs page\",\"acts\":[],\"actLines\":0,\"widths\":[],\"broken\":[],\"words\":false,\"ro\":\"“Clinic review — no flying till 9 Nov”\"}]",
+  "pics": [
+   "s17-list-phone"
+  ]
+ },
+ {
+  "id": "S17b the list's lit Approve tapped: the morning leave back to waiting",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lines now: Afternoon · change it on the Inputs page | Morning · pending; window open true",
+  "pics": [
+   "s17-sentback-phone"
+  ]
+ },
+ {
+  "id": "S18 a remark typed on the list's pending bid, the list closed by ✕: kept",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "boxes now [\"List remark\"]",
+  "pics": []
+ },
+ {
+  "id": "S19 a long remark: the box grows to show it all (no hidden words), the window grows, its foot on the screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"h\":153,\"sh\":151,\"ch\":151,\"winH\":388,\"winBottom\":860,\"vh\":874}; window before 270",
+  "pics": [
+   "s19-long-phone"
+  ]
+ },
+ {
+  "id": "S23 lesson 4: a press on the grid behind the open one-day window — RECORD what lights and what the window says",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "pressed cell-slipway-2026-11-01; {\"win\":false}",
+  "pics": [
+   "s23-behind-phone"
+  ]
+ },
+ {
+  "id": "X15 words typed on a pending bid, then Approve (the box not left): the words on the approved leave",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "reopened box \"Typed then approved\"; the saved leave {\"remarks\":\"Typed then approved\",\"till\":null,\"docs\":0}",
+  "pics": [
+   "x15-after-phone"
+  ]
+ },
+ {
+  "id": "X15b words typed, then Refuse (the box not left): the words on the refused bid",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "reopened box \"Typed then refused\"",
+  "pics": []
+ },
+ {
+  "id": "X3 two long-named documents: the box keeps a usable width, the row inside the window, no sideways scroll",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "{\"boxW\":22,\"rowRight\":377,\"winRight\":390,\"overX\":25,\"pageX\":0}; rows bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±19 c±2.5 overX25 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": [
+   "x3-docs-phone"
+  ]
+ },
+ {
+  "id": "X6 a pending run 7–9 Dec with an award on the 8th: the list's till date reads the run's last day, as the window on the 7th does",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "list tills [\"till 8 Dec\"]; the window on the 7th \"till 9 Dec\"",
+  "pics": [
+   "x6-list-phone"
+  ]
+ },
+ {
+  "id": "X9 the menu open, LL tapped beside it: RECORD — did the tap only close the menu, or also place LL?",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "cell before \"\" after \"s-w\"; menu open false; window open false",
+  "pics": [
+   "x9-after-phone"
+  ]
+ },
+ {
+  "id": "X14 the refused day: RECORD what names it, and where words typed before a new LL land",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "window before: Drifter | Tue 10 Nov | Approve what I enter | ✕ | No manning row turns amber or red | Approve | Refuse | ⇄Move | Delete | till 10 Nov | Document | Whole day | A; cell after LL LL LL [LL|c k-ll s-w left|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none ; LL|c k-ll s-r right|bg rgba(0, 0, 0, 0)|none/none/none/none|td:line-through]; window after: daylist LL | Pending | Approve | Refuse | ⇄Move | Delete | till 10 Nov | Document | LL | Refused | Approve | Delete | till 10 Nov | Document",
+  "pics": [
+   "x14-after-phone"
+  ]
+ },
+ {
+  "id": "X8 the list's lit Approve tapped twice at a person's speed: RECORD the end state",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "lines: Morning · pending | Afternoon · pending; cell LL PL [LL|c k-ll s-w top|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none ; PL|c k-care s-w bot|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none]",
+  "pics": [
+   "x8-list-phone",
+   "x8-after-phone"
+  ]
+ },
+ {
+  "id": "S20 geometry beside the drawing",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "height 234 (drawn 248, -14); Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L | bid-dayline:16/1L | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0",
+  "pics": []
+ },
+ {
+  "id": "S20 member, his empty open day: no switch, no ⋯ (none of the three is his)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "switch false; ⋯ false",
+  "pics": [
+   "s20-member-empty-phone"
+  ]
+ },
+ {
+  "id": "S20b member, his pending bid: Move and Delete only, the LL lit, his words row",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "actions ; LL {\"lit\":false,\"pressed\":null}",
+  "pics": [
+   "s20-member-pending-phone"
+  ]
+ },
+ {
+  "id": "X1 member, his own refused bid: no leave lit, as the admin’s window on it lights none",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window bid-picker; lit []; Ranger | Thu 19 Nov | Approve what I enter | ✕ | No manning row turns amber or red | Approve | Refuse | ⇄Move | Delete | till 19 Nov | Document | Whole day | AM",
+  "pics": [
+   "x1-member-refused-phone"
+  ]
+ },
+ {
+  "id": "X4 member, his own approved leave: RECORD which window and what its Remarks box is",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "bid-picker: Ranger | Fri 20 Nov | Approve what I enter | ✕ | No manning row is amber or red | Approve | Refuse | ⇄Move | Delete | till 20 Nov | Document | Whole day | AM | PM | Pick a range | LL | −1 | OL | −1 | ; box {\"tag\":\"TEXTAREA\",\"bg\":\"rgb(11, 13, 16)\",\"font\":\"\\\"Inter Tight\\\", system-ui, sans-serif\"}",
+  "pics": [
+   "x4-member-approved-phone"
+  ]
+ },
+ {
+  "id": "S21 member, a day before today: the closed-day window (RECORD — must not carry round 3's rows)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "bid-picker: Ranger | Tue 20 Oct | Approve what I enter | ✕ | No manning row turns amber or red | till 20 Oct | Document | Whole day | AM | PM | Pick a range | LL | −1 | OL | −1 | OIL | 0 | CCL | 0 | FCL | 0 | PL ",
+  "pics": [
+   "s21-member-closed-phone"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "S1 geometry beside the drawing",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "height 270 (drawn 248, +22); bidsheet-hd h±3 c±0.5; Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S1 empty day (admin): title who · day · switch on · ✕, no \"now\"; no actions row; Pick a range ends Duration; the ⋯ under CL at its width",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "title \"Drifter Mon 2 Nov Approve what I enter ✕\"; switch true; actions row false; Pick a range last true (right gap 0); ⋯ vs CL dx 0 dw 0 gap 6",
+  "pics": [
+   "s1-empty-desk"
+  ]
+ },
+ {
+  "id": "S2 switch off: the buttons hollow, the LL placed waits",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "switch off true; LL button solid rgb(42, 49, 58); placed true; cell LL [LL|c k-ll s-w whole|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none]",
+  "pics": [
+   "s2-switch-off-desk"
+  ]
+ },
+ {
+  "id": "S3 geometry beside the drawing",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "height 308 (drawn 286, +22); bidsheet-hd h±3 c±0.5; Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S3 pending bid: Approve not lit, LL lit, Whole day lit; switch still off (remembered); on a phone the day stands above the window (D1290)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Approve {\"lit\":false,\"pressed\":\"false\"}; LL {\"lit\":true,\"pressed\":null}; Whole day true; switch off true; day line \"No manning row is amber or red\"",
+  "pics": [
+   "s3-pending-desk"
+  ]
+ },
+ {
+  "id": "S4 a remark typed then ✕ (the box not left): kept on the bid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reopened box \"Walk remark one\"",
+  "pics": [
+   "s4-typed-desk",
+   "s4-reopened-desk"
+  ]
+ },
+ {
+  "id": "S5 geometry beside the drawing",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "height 308 (drawn 286, +22); bidsheet-hd h±3 c±0.5; Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S5 approved: the cell filled; reopened, Approve lit; the remark carried onto the leave (Inputs record)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cell s-a; Approve {\"lit\":true,\"pressed\":\"true\"}; box \"Walk remark one\"; the Inputs leave {\"remarks\":\"Walk remark one\",\"till\":null,\"docs\":0}",
+  "pics": [
+   "s5-approved-desk"
+  ]
+ },
+ {
+  "id": "S6 the approved leave's remark typed, ✕: saved onto the leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Inputs leave {\"remarks\":\"Walk remark two\",\"till\":null,\"docs\":0}; reopened box \"Walk remark two\"",
+  "pics": [
+   "s6-leave-remark-desk"
+  ]
+ },
+ {
+  "id": "S7 the lit Approve tapped again: back to waiting, the leave gone from the Inputs page, its words on the bid; Undo approves, Redo sends back",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after: cell s-w, Inputs leave null; reopened Approve {\"lit\":false,\"pressed\":\"false\"}, box \"Walk remark two\"; Undo s-a; Redo s-w",
+  "pics": [
+   "s7-sentback-cell-desk",
+   "s7-sentback-desk"
+  ]
+ },
+ {
+  "id": "S8 refused: struck; reopened, Refuse pressed, no leave lit",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cell s-r; Refuse {\"lit\":false,\"pressed\":\"true\"}; LL {\"lit\":false,\"pressed\":null}; rows bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": [
+   "s8-refused-desk"
+  ]
+ },
+ {
+  "id": "S9 half day (AM LL approved) reopened: the decide window, AM lit beside the lit LL, no code in the title (D1331)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cell s-a; window bid-picker; AM {\"lit\":false,\"pressed\":\"true\"}; LL {\"lit\":true,\"pressed\":null}; title \"Drifter Thu 5 Nov Approve what I enter ✕\"; text: Drifter | Thu 5 Nov | Approve what I enter | ✕ | No manning row is amber or red | Approve | Refuse | ⇄Move | Delete | till 5 Nov | Document | Whole day | AM | PM | Pick a range | <LL | 24.5 | <OL | 24.5 | <OIL | 4 | <CCL",
+  "pics": [
+   "s9-half-desk"
+  ]
+ },
+ {
+  "id": "S10 free half beside Inputs-page leave: PM only, \"The morning is LL, filed on the Inputs page — change that there\", no leave lit",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "portions portion-pm; line \"The morning is LL, filed on the Inputs page — change that there.\"; any lit false; rows bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Remarks and document:35/1L side h±5 c±2.5 | Duration:53/2L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": [
+   "s10-freehalf-desk"
+  ]
+ },
+ {
+  "id": "S11 the ⋯ opens its menu inside the window: Grant OIL (green), Post out, Post in, each pressable",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"inside\":true,\"items\":[{\"t\":\"Grant OIL\",\"ok\":true,\"bg\":\"rgba(70, 196, 108, 0.2)\"},{\"t\":\"Post out\",\"ok\":true,\"bg\":\"rgb(26, 31, 38)\"},{\"t\":\"Post in\",\"ok\":true,\"bg\":\"rgb(26, 31, 38)\"}]}",
+  "pics": [
+   "s11-menu-desk"
+  ]
+ },
+ {
+  "id": "S11b Escape: the menu first (focus back on the ⋯), then the window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "first Escape {\"menu\":false,\"win\":true,\"focus\":\"bid-more\"}; second: window open false",
+  "pics": []
+ },
+ {
+  "id": "S12 Grant OIL from the ⋯: panel opens, FO lands; reopened, the ⋯ names the award",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "panel true; cell FO [FO|c k-oil s-a whole|bg rgba(70, 196, 108, 0.38)|none/none/none/none|td:none]; window bid-picker; ⋯ item \"FO · a day\"",
+  "pics": [
+   "s12-award-panel-desk",
+   "s12-reopened-desk"
+  ]
+ },
+ {
+  "id": "S13 a range picked reads on its chip; picked back to the day tapped the chip reads \"Pick a range\" again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "range chip \"16 Nov 26 – 18 Nov 26\", day line \"Mon 16 Nov No manning row turns amber or red\"; back: \"Pick a range\"",
+  "pics": [
+   "s13-cal-desk",
+   "s13-range-desk",
+   "s13-back-desk"
+  ]
+ },
+ {
+  "id": "S14 the switch left off stays off in the next window and after a reload; turned on again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "next window false; after reload false",
+  "pics": []
+ },
+ {
+  "id": "S15 geometry beside the drawing",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "height 324 (drawn 279, +45); bidsheet-hd h±3 c±0.5; Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:32/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | sel-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S15 drag window, one man, three days with a bid: title short \"23–25 Nov · 3 days\"; Approve · Refuse · Move · Delete; the ⋯ under CL",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "title \"Drifter 23–25 Nov · 3 days Approve what I enter ✕\"; actions Approve · Refuse · ⇄Move · Delete; ⋯ vs CL {\"dx\":0,\"dw\":0}",
+  "pics": [
+   "s15-drag-desk"
+  ]
+ },
+ {
+  "id": "S16 drag over two men: no Remarks row; RECORD the ⋯",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words row false; ⋯ false; rows bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:32/1L | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0",
+  "pics": [
+   "s16-drag2-desk"
+  ]
+ },
+ {
+  "id": "S17 two entries: each led by its box; the morning LL \"Morning · approved\", one row Approve(lit) · Refuse · Move · Delete, its Remarks; the ATT B \"Afternoon · change it on the Inputs page\", its remark read only",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "[{\"box\":\"c k-ll s-a top\",\"main\":\"Morning · approved\",\"acts\":[\"Approve(lit)\",\"Refuse\",\"⇄Move\",\"Delete\"],\"actLines\":1,\"widths\":[129,129,129,129],\"broken\":[\"⇄Move\"],\"words\":true,\"ro\":null},{\"box\":\"c k-med s-a bot raptor\",\"main\":\"Afternoon · change it on the Inputs page\",\"acts\":[],\"actLines\":0,\"widths\":[],\"broken\":[],\"words\":false,\"ro\":\"“Clinic review — no flying till 9 Nov”\"}]",
+  "pics": [
+   "s17-list-desk"
+  ]
+ },
+ {
+  "id": "S17b the list's lit Approve tapped: the morning leave back to waiting",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines now: Afternoon · change it on the Inputs page | Morning · pending; window open true",
+  "pics": [
+   "s17-sentback-desk"
+  ]
+ },
+ {
+  "id": "S18 a remark typed on the list's pending bid, the list closed by ✕: kept",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "boxes now [\"List remark\"]",
+  "pics": []
+ },
+ {
+  "id": "S19 a long remark: the box grows to show it all (no hidden words), the window grows, its foot on the screen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"h\":69,\"sh\":67,\"ch\":67,\"winH\":304,\"winBottom\":886,\"vh\":900}; window before 270",
+  "pics": [
+   "s19-long-desk"
+  ]
+ },
+ {
+  "id": "S23 lesson 4: a press on the grid behind the open one-day window — RECORD what lights and what the window says",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "pressed undefined; {\"win\":true,\"title\":\"Drifter Mon 2 Nov Approve what I enter ✕\"}",
+  "pics": [
+   "s23-behind-desk"
+  ]
+ },
+ {
+  "id": "X15 words typed on a pending bid, then Approve (the box not left): the words on the approved leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reopened box \"Typed then approved\"; the saved leave {\"remarks\":\"Typed then approved\",\"till\":null,\"docs\":0}",
+  "pics": [
+   "x15-after-desk"
+  ]
+ },
+ {
+  "id": "X15b words typed, then Refuse (the box not left): the words on the refused bid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reopened box \"Typed then refused\"",
+  "pics": []
+ },
+ {
+  "id": "X3 two long-named documents: the box keeps a usable width, the row inside the window, no sideways scroll",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"boxW\":72,\"rowRight\":987,\"winRight\":1000,\"overX\":0,\"pageX\":0}; rows bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:16/1L | Actions:32/1L side h±0 c±0 | Remarks and document:35/1L side h±19 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": [
+   "x3-docs-desk"
+  ]
+ },
+ {
+  "id": "X6 a pending run 7–9 Dec with an award on the 8th: the list's till date reads the run's last day, as the window on the 7th does",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "list tills [\"till 8 Dec\"]; the window on the 7th \"till 9 Dec\"",
+  "pics": [
+   "x6-list-desk"
+  ]
+ },
+ {
+  "id": "X9 the menu open, LL tapped beside it: RECORD — did the tap only close the menu, or also place LL?",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "cell before \"\" after \"s-w\"; menu open false; window open false",
+  "pics": [
+   "x9-after-desk"
+  ]
+ },
+ {
+  "id": "X14 the refused day: RECORD what names it, and where words typed before a new LL land",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "window before: Drifter | Tue 10 Nov | Approve what I enter | ✕ | No manning row turns amber or red | Approve | Refuse | ⇄Move | Delete | till 10 Nov | Document | Whole day | A; cell after LL LL LL [LL|c k-ll s-w left|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none ; LL|c k-ll s-r right|bg rgba(0, 0, 0, 0)|none/none/none/none|td:line-through]; window after: daylist LL | Pending | Approve | Refuse | ⇄Move | Delete | till 10 Nov | Document | LL | Refused | Approve | Delete | till 10 Nov | Document",
+  "pics": [
+   "x14-after-desk"
+  ]
+ },
+ {
+  "id": "X8 the list's lit Approve tapped twice at a person's speed: RECORD the end state",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "lines: Morning · pending | Afternoon · pending; cell LL PL [LL|c k-ll s-w top|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none ; PL|c k-care s-w bot|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none]",
+  "pics": [
+   "x8-list-desk",
+   "x8-after-desk"
+  ]
+ },
+ {
+  "id": "S20 geometry beside the drawing",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "height 234 (drawn 248, -14); Remarks and document h±5 c±2.5 — bidsheet-hd:37/1L | bid-dayline:16/1L | Remarks and document:35/1L side h±5 c±2.5 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0",
+  "pics": []
+ },
+ {
+  "id": "S20 member, his empty open day: no switch, no ⋯ (none of the three is his)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "switch false; ⋯ false",
+  "pics": [
+   "s20-member-empty-desk"
+  ]
+ },
+ {
+  "id": "S20b member, his pending bid: Move and Delete only, the LL lit, his words row",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "actions ; LL {\"lit\":false,\"pressed\":null}",
+  "pics": [
+   "s20-member-pending-desk"
+  ]
+ },
+ {
+  "id": "X1 member, his own refused bid: no leave lit, as the admin’s window on it lights none",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window bid-picker; lit []; Ranger | Thu 19 Nov | Approve what I enter | ✕ | No manning row turns amber or red | Approve | Refuse | ⇄Move | Delete | till 19 Nov | Document | Whole day | AM",
+  "pics": [
+   "x1-member-refused-desk"
+  ]
+ },
+ {
+  "id": "X4 member, his own approved leave: RECORD which window and what its Remarks box is",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "bid-picker: Ranger | Fri 20 Nov | Approve what I enter | ✕ | No manning row is amber or red | Approve | Refuse | ⇄Move | Delete | till 20 Nov | Document | Whole day | AM | PM | Pick a range | LL | −1 | OL | −1 | ; box {\"tag\":\"TEXTAREA\",\"bg\":\"rgb(11, 13, 16)\",\"font\":\"\\\"Inter Tight\\\", system-ui, sans-serif\"}",
+  "pics": [
+   "x4-member-approved-desk"
+  ]
+ },
+ {
+  "id": "S21 member, a day before today: the closed-day window (RECORD — must not carry round 3's rows)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "bid-picker: Ranger | Tue 20 Oct | Approve what I enter | ✕ | No manning row turns amber or red | till 20 Oct | Document | Whole day | AM | PM | Pick a range | LL | −1 | OL | −1 | OIL | 0 | CCL | 0 | FCL | 0 | PL ",
+  "pics": [
+   "s21-member-closed-desk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

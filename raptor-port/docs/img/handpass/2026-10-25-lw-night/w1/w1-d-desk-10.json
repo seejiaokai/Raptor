@@ -1,0 +1,39 @@
+[
+ {
+  "id": "S10 overseas duty from the one-day window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 red; right after the tap: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level red, \"This overseas duty turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s10-desk-od-after-tap.png",
+   "s10-desk-od-settled.png",
+   "s10-desk-od-cell.png"
+  ]
+ },
+ {
+  "id": "S10 course from the one-day window, same day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 26 red; right after: under the Manning button, level red, \"This course takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 258×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This course takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 258×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s10-desk-cse-after-tap.png",
+   "s10-desk-cse-settled.png"
+  ]
+ },
+ {
+  "id": "S10 the OD on the Inputs page",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "under the Inputs list's heading for Thu 17 Dec, a Drifter OD card and a Ridge CSE card: true; that day's text: \"Drifter 17 Dec OD By Saber now \"",
+  "pics": [
+   "s10-desk-inputs-page.png"
+  ]
+ },
+ {
+  "id": "errors-d",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

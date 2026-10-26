@@ -1,0 +1,512 @@
+{
+ "looks": {
+  "A": {
+   "name": "outlined, as the Inputs calendar draws a commitment",
+   "css": ".c.k-una.s-a, .tchip.lv.k-una.s-a { background: rgba(232,237,242,.05) !important; box-shadow: inset 0 0 0 1.5px rgba(200,212,228,.78) !important; color: #E8EDF2 !important; }"
+  },
+  "B": {
+   "name": "light grey, dark words (your UNA grey)",
+   "css": ".c.k-una, .tchip.lv.k-una { --h: 184, 190, 198 !important; --ink: #0b1116 !important; --fill: 1 !important; }"
+  }
+ },
+ "log": [
+  {
+   "id": "c1",
+   "size": "phone",
+   "said": "the five days: {\"od\":[\"OD|k-od|s-a|whole\"],\"oth\":[\"UNA|k-una|s-a|whole\"],\"ref\":[\"LL|k-ll|s-r|whole\"],\"othAm\":[\"UNA|k-una|s-a|top\"],\"ll\":[\"LL|k-ll|s-a|whole\"]}"
+  },
+  {
+   "id": "c1",
+   "size": "phone",
+   "said": "A: OTH fill #1F2328 edge #A3ADBB words #E8EDF2 (13.5:1) · OD fill #535C69 edge #798798 · refused #14181D/#4A5560/#7D8894 · ΔE OTH–OD fill 19.2 edge 12.5 · OTH–refused fill 3.3 edge 33.9 words 27.6 · OTH–empty cell 3.3"
+  },
+  {
+   "id": "c1",
+   "size": "phone",
+   "said": "B: OTH fill #B8BEC6 edge #B8BEC6 words #0B1116 (10.1:1) · OD fill #535C69 edge #798798 · refused #14181D/#4A5560/#7D8894 · ΔE OTH–OD fill 34.5 edge 17.7 · OTH–refused fill 62.5 edge 38.4 words 40.1 · OTH–empty cell 62.5"
+  },
+  {
+   "id": "c2",
+   "size": "phone",
+   "said": "slipway 2026-11-12 after the morning filed on the Inputs page: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "c2",
+   "size": "phone",
+   "said": "bane 2026-11-12 after the morning filed on the Inputs page: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "c2",
+   "size": "phone",
+   "said": "today the window's held-half line: \"The morning is LL, filed on the Inputs page — change that there.\""
+  },
+  {
+   "id": "c2",
+   "size": "phone",
+   "said": "drawn, admin: {\"h\":28,\"w\":352,\"text\":\"OTH Morning “Board of inquiry” · change it on the Inputs page\"}"
+  },
+  {
+   "id": "c2",
+   "size": "phone",
+   "said": "drawn, member: {\"h\":28,\"text\":\"OTH Morning “Board of inquiry” · change it on the Inputs page\"}"
+  },
+  {
+   "id": "q1",
+   "size": "phone",
+   "said": "the Other window has: {\"allday\":true,\"span\":false}"
+  },
+  {
+   "id": "q1",
+   "size": "phone",
+   "said": "drawn A (u): the row is 77 tall"
+  },
+  {
+   "id": "q1",
+   "size": "phone",
+   "said": "drawn A (g): the row is 77 tall"
+  },
+  {
+   "id": "q2",
+   "size": "phone",
+   "said": "the course kind picked; window rows: Person · Type · Title · Duration · Document · Remarks · Dates"
+  },
+  {
+   "id": "q2",
+   "size": "phone",
+   "said": "filed: [{\"iid\":\"imvndkku5w09l1s\",\"date\":\"Jul 16\",\"acc\":\"g\"}]"
+  },
+  {
+   "id": "q2",
+   "size": "phone",
+   "said": "today — Ground Programme: {\"text\":\"CSE 06:00 18:00 Drifter A + ADD LATE Instructor course\",\"btns\":[],\"allRows\":4} · Unavailable: {\"rows\":[\"ATT C Grit C Medically downtill 17 Jul\",\"OD Nomad C Overseas duty — exercise, off islandtill 17 Jul\",\"OIL Gambit C till 16 Jul\"],\"sec\":true} · Personal Inputs: {\"text\":\"CSE 06:00 18:00 Drifter A LATE Instructor course REJECT\",\"btns\":[\"Reject\"],\"allRows\":2}"
+  },
+  {
+   "id": "q2",
+   "size": "phone",
+   "said": "drawn: the course row under Unavailable reads \"CSE 06:00 18:00 Drifter A + ADD LATE Instructor course\""
+  },
+  {
+   "id": "c1",
+   "size": "desk",
+   "said": "the five days: {\"od\":[\"OD|k-od|s-a|whole\"],\"oth\":[\"UNA|k-una|s-a|whole\"],\"ref\":[\"LL|k-ll|s-r|whole\"],\"othAm\":[\"UNA|k-una|s-a|top\"],\"ll\":[\"LL|k-ll|s-a|whole\"]}"
+  },
+  {
+   "id": "c1",
+   "size": "desk",
+   "said": "A: OTH fill #1F2328 edge #A3ADBB words #E8EDF2 (13.5:1) · OD fill #535C69 edge #798798 · refused #14181D/#4A5560/#7D8894 · ΔE OTH–OD fill 19.2 edge 12.5 · OTH–refused fill 3.3 edge 33.9 words 27.6 · OTH–empty cell 3.3"
+  },
+  {
+   "id": "c1",
+   "size": "desk",
+   "said": "B: OTH fill #B8BEC6 edge #B8BEC6 words #0B1116 (10.1:1) · OD fill #535C69 edge #798798 · refused #14181D/#4A5560/#7D8894 · ΔE OTH–OD fill 34.5 edge 17.7 · OTH–refused fill 62.5 edge 38.4 words 40.1 · OTH–empty cell 62.5"
+  },
+  {
+   "id": "c2",
+   "size": "desk",
+   "said": "slipway 2026-11-12 after the morning filed on the Inputs page: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "c2",
+   "size": "desk",
+   "said": "bane 2026-11-12 after the morning filed on the Inputs page: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "c2",
+   "size": "desk",
+   "said": "today the window's held-half line: \"The morning is LL, filed on the Inputs page — change that there.\""
+  },
+  {
+   "id": "c2",
+   "size": "desk",
+   "said": "drawn, admin: {\"h\":28,\"w\":534,\"text\":\"OTH Morning “Board of inquiry” · change it on the Inputs page\"}"
+  },
+  {
+   "id": "c2",
+   "size": "desk",
+   "said": "drawn, member: {\"h\":28,\"text\":\"OTH Morning “Board of inquiry” · change it on the Inputs page\"}"
+  },
+  {
+   "id": "q1",
+   "size": "desk",
+   "said": "the Other window has: {\"allday\":true,\"span\":false}"
+  },
+  {
+   "id": "q1",
+   "size": "desk",
+   "said": "drawn A (u): the row is 77 tall"
+  },
+  {
+   "id": "q1",
+   "size": "desk",
+   "said": "drawn A (g): the row is 77 tall"
+  },
+  {
+   "id": "q2",
+   "size": "desk",
+   "said": "the course kind picked; window rows: Person · Type · Title · Duration · Document · Remarks · Dates"
+  },
+  {
+   "id": "q2",
+   "size": "desk",
+   "said": "filed: [{\"iid\":\"imvndlz5lpigen3\",\"date\":\"Jul 16\",\"acc\":\"g\"}]"
+  },
+  {
+   "id": "q2",
+   "size": "desk",
+   "said": "today — Ground Programme: {\"text\":\"CSE 06:00 18:00 Drifter A + ADD LATE Instructor course\",\"btns\":[],\"allRows\":4} · Unavailable: {\"rows\":[\"ATT C Grit C Medically downtill 17 Jul\",\"OD Nomad C Overseas duty — exercise, off islandtill 17 Jul\",\"OIL Gambit C till 16 Jul\"],\"sec\":true} · Personal Inputs: {\"text\":\"CSE 06:00 18:00 Drifter A LATE Instructor course REJECT\",\"btns\":[\"Reject\"],\"allRows\":2}"
+  },
+  {
+   "id": "q2",
+   "size": "desk",
+   "said": "drawn: the course row under Unavailable reads \"CSE 06:00 18:00 Drifter A + ADD LATE Instructor course\""
+  }
+ ],
+ "pics": [
+  {
+   "file": "c1-a-grid-phone.png",
+   "label": "Drawn A (recommended): Other outlined, as the Inputs calendar draws a commitment. Drifter 14–18 Dec: OD · OTH · refused LL · OTH (AM) · LL"
+  },
+  {
+   "file": "c1-b-grid-phone.png",
+   "label": "Drawn B: Other in your light grey. Drifter 14–18 Dec: OD · OTH · refused LL · OTH (AM) · LL"
+  },
+  {
+   "file": "c2-today-leave-phone.png",
+   "label": "Today, for comparison: beside a morning leave filed on the Inputs page, the window opens on PM"
+  },
+  {
+   "file": "c2-drawn-admin-phone.png",
+   "label": "Drawn, as admin: the window on PM; the morning Other named by its box and remarks, changed on the Inputs page"
+  },
+  {
+   "file": "c2-drawn-member-phone.png",
+   "label": "Drawn, as Ranger: his window on PM; his morning Other named the same way, read only"
+  },
+  {
+   "file": "q1-today-phone.png",
+   "label": "Today: an Other has no choice of where it goes (it lands on the Ground Programme)"
+  },
+  {
+   "file": "q1-a-unavail-phone.png",
+   "label": "Drawn A (recommended): \"Goes to\", Unavailable picked — the grey line says what the Leave War does"
+  },
+  {
+   "file": "q1-a-ground-phone.png",
+   "label": "Drawn A: Ground Programme picked — the line follows the pick"
+  },
+  {
+   "file": "q1-b-tick-phone.png",
+   "label": "Drawn B: your tick as the only control — it says the war's effect, not that it goes under Unavailable"
+  },
+  {
+   "file": "q1-b2-clash-phone.png",
+   "label": "Drawn: the tick beside the choice can disagree — Ground Programme, yet \"manning reduced\""
+  },
+  {
+   "file": "q2-today-phone.png",
+   "label": "Today: a course lands on the Ground Programme, as something he is doing"
+  },
+  {
+   "file": "q2-unavail-phone.png",
+   "label": "Drawn (recommended): a course lands under Unavailable by itself, as an overseas duty does"
+  },
+  {
+   "file": "c1-a-grid-desk.png",
+   "label": "Drawn A (recommended): Other outlined, as the Inputs calendar draws a commitment. Drifter 14–18 Dec: OD · OTH · refused LL · OTH (AM) · LL"
+  },
+  {
+   "file": "c1-b-grid-desk.png",
+   "label": "Drawn B: Other in your light grey. Drifter 14–18 Dec: OD · OTH · refused LL · OTH (AM) · LL"
+  },
+  {
+   "file": "c2-today-leave-desk.png",
+   "label": "Today, for comparison: beside a morning leave filed on the Inputs page, the window opens on PM"
+  },
+  {
+   "file": "c2-drawn-admin-desk.png",
+   "label": "Drawn, as admin: the window on PM; the morning Other named by its box and remarks, changed on the Inputs page"
+  },
+  {
+   "file": "c2-drawn-member-desk.png",
+   "label": "Drawn, as Ranger: his window on PM; his morning Other named the same way, read only"
+  },
+  {
+   "file": "q1-today-desk.png",
+   "label": "Today: an Other has no choice of where it goes (it lands on the Ground Programme)"
+  },
+  {
+   "file": "q1-a-unavail-desk.png",
+   "label": "Drawn A (recommended): \"Goes to\", Unavailable picked — the grey line says what the Leave War does"
+  },
+  {
+   "file": "q1-a-ground-desk.png",
+   "label": "Drawn A: Ground Programme picked — the line follows the pick"
+  },
+  {
+   "file": "q1-b-tick-desk.png",
+   "label": "Drawn B: your tick as the only control — it says the war's effect, not that it goes under Unavailable"
+  },
+  {
+   "file": "q1-b2-clash-desk.png",
+   "label": "Drawn: the tick beside the choice can disagree — Ground Programme, yet \"manning reduced\""
+  },
+  {
+   "file": "q2-today-desk.png",
+   "label": "Today: a course lands on the Ground Programme, as something he is doing"
+  },
+  {
+   "file": "q2-unavail-desk.png",
+   "label": "Drawn (recommended): a course lands under Unavailable by itself, as an overseas duty does"
+  }
+ ],
+ "measures": [
+  {
+   "size": "phone",
+   "look": "A",
+   "boxes": {
+    "od": {
+     "cell": "#14181D",
+     "fill": "#535C69",
+     "edge": "#798798",
+     "words": "#F2F5F8",
+     "contrast": 6.2,
+     "struck": false,
+     "text": "OD"
+    },
+    "oth": {
+     "cell": "#14181D",
+     "fill": "#1F2328",
+     "edge": "#A3ADBB",
+     "words": "#E8EDF2",
+     "contrast": 13.5,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ref": {
+     "cell": "#14181D",
+     "fill": "#14181D",
+     "edge": "#4A5560",
+     "words": "#7D8894",
+     "contrast": 4.9,
+     "struck": true,
+     "text": "LL"
+    },
+    "othAm": {
+     "cell": "#14181D",
+     "fill": "#1F2328",
+     "edge": "#A3ADBB",
+     "words": "#E8EDF2",
+     "contrast": 13.5,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ll": {
+     "cell": "#14181D",
+     "fill": "#453F2F",
+     "edge": "#D8B365",
+     "words": "#FFF1CF",
+     "contrast": 9.4,
+     "struck": false,
+     "text": "LL"
+    }
+   },
+   "oth_vs_od": {
+    "fillDE": 19.2,
+    "edgeDE": 12.5,
+    "wordsDE": 2.1
+   },
+   "oth_vs_refused": {
+    "fillDE": 3.3,
+    "edgeDE": 33.9,
+    "wordsDE": 27.6
+   },
+   "oth_vs_emptyCell": 3.3
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "boxes": {
+    "od": {
+     "cell": "#14181D",
+     "fill": "#535C69",
+     "edge": "#798798",
+     "words": "#F2F5F8",
+     "contrast": 6.2,
+     "struck": false,
+     "text": "OD"
+    },
+    "oth": {
+     "cell": "#14181D",
+     "fill": "#B8BEC6",
+     "edge": "#B8BEC6",
+     "words": "#0B1116",
+     "contrast": 10.1,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ref": {
+     "cell": "#14181D",
+     "fill": "#14181D",
+     "edge": "#4A5560",
+     "words": "#7D8894",
+     "contrast": 4.9,
+     "struck": true,
+     "text": "LL"
+    },
+    "othAm": {
+     "cell": "#14181D",
+     "fill": "#B8BEC6",
+     "edge": "#B8BEC6",
+     "words": "#0B1116",
+     "contrast": 10.1,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ll": {
+     "cell": "#14181D",
+     "fill": "#453F2F",
+     "edge": "#D8B365",
+     "words": "#FFF1CF",
+     "contrast": 9.4,
+     "struck": false,
+     "text": "LL"
+    }
+   },
+   "oth_vs_od": {
+    "fillDE": 34.5,
+    "edgeDE": 17.7,
+    "wordsDE": 91.5
+   },
+   "oth_vs_refused": {
+    "fillDE": 62.5,
+    "edgeDE": 38.4,
+    "wordsDE": 40.1
+   },
+   "oth_vs_emptyCell": 62.5
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "boxes": {
+    "od": {
+     "cell": "#14181D",
+     "fill": "#535C69",
+     "edge": "#798798",
+     "words": "#F2F5F8",
+     "contrast": 6.2,
+     "struck": false,
+     "text": "OD"
+    },
+    "oth": {
+     "cell": "#14181D",
+     "fill": "#1F2328",
+     "edge": "#A3ADBB",
+     "words": "#E8EDF2",
+     "contrast": 13.5,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ref": {
+     "cell": "#14181D",
+     "fill": "#14181D",
+     "edge": "#4A5560",
+     "words": "#7D8894",
+     "contrast": 4.9,
+     "struck": true,
+     "text": "LL"
+    },
+    "othAm": {
+     "cell": "#14181D",
+     "fill": "#1F2328",
+     "edge": "#A3ADBB",
+     "words": "#E8EDF2",
+     "contrast": 13.5,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ll": {
+     "cell": "#14181D",
+     "fill": "#453F2F",
+     "edge": "#D8B365",
+     "words": "#FFF1CF",
+     "contrast": 9.4,
+     "struck": false,
+     "text": "LL"
+    }
+   },
+   "oth_vs_od": {
+    "fillDE": 19.2,
+    "edgeDE": 12.5,
+    "wordsDE": 2.1
+   },
+   "oth_vs_refused": {
+    "fillDE": 3.3,
+    "edgeDE": 33.9,
+    "wordsDE": 27.6
+   },
+   "oth_vs_emptyCell": 3.3
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "boxes": {
+    "od": {
+     "cell": "#14181D",
+     "fill": "#535C69",
+     "edge": "#798798",
+     "words": "#F2F5F8",
+     "contrast": 6.2,
+     "struck": false,
+     "text": "OD"
+    },
+    "oth": {
+     "cell": "#14181D",
+     "fill": "#B8BEC6",
+     "edge": "#B8BEC6",
+     "words": "#0B1116",
+     "contrast": 10.1,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ref": {
+     "cell": "#14181D",
+     "fill": "#14181D",
+     "edge": "#4A5560",
+     "words": "#7D8894",
+     "contrast": 4.9,
+     "struck": true,
+     "text": "LL"
+    },
+    "othAm": {
+     "cell": "#14181D",
+     "fill": "#B8BEC6",
+     "edge": "#B8BEC6",
+     "words": "#0B1116",
+     "contrast": 10.1,
+     "struck": false,
+     "text": "OTH"
+    },
+    "ll": {
+     "cell": "#14181D",
+     "fill": "#453F2F",
+     "edge": "#D8B365",
+     "words": "#FFF1CF",
+     "contrast": 9.4,
+     "struck": false,
+     "text": "LL"
+    }
+   },
+   "oth_vs_od": {
+    "fillDE": 34.5,
+    "edgeDE": 17.7,
+    "wordsDE": 91.5
+   },
+   "oth_vs_refused": {
+    "fillDE": 62.5,
+    "edgeDE": 38.4,
+    "wordsDE": 40.1
+   },
+   "oth_vs_emptyCell": 62.5
+  }
+ ]
+}

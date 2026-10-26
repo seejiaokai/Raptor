@@ -1,0 +1,127 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-BayEj7kB.js"
+ },
+ {
+  "id": "required",
+  "size": "desk",
+  "said": "typed 30"
+ },
+ {
+  "id": "base-war",
+  "size": "desk",
+  "said": "{\"cell\":[],\"avail\":\"25\",\"req\":\"30\"}"
+ },
+ {
+  "id": "base-sans",
+  "size": "desk",
+  "said": "need 3 – | day: 15 3 – F 2 0 O 0 1 A 0 0"
+ },
+ {
+  "id": "base-edit",
+  "size": "desk",
+  "said": "Wed Unavailable: [\"OL Cobra IP Overseas leave — off islandtill 15 Jul\",\"ATT C Grit C Medically downtill 17 Jul\",\"OD C Nomad C Overseas duty — exercise, off islandtill 17 Jul\",\"OIL C Gambit C till 15 Jul\"]"
+ },
+ {
+  "id": "13-filed",
+  "size": "desk",
+  "said": "{\"acc\":\"u\",\"type\":\"Other\",\"allday\":true,\"date\":\"Jul 15\",\"asked\":[],\"goesLine\":\"Counted as away on the Leave War\"}"
+ },
+ {
+  "id": "13-edit",
+  "size": "desk",
+  "said": "Unavailable has: [{\"text\":\"Other Ranger IP LATE Range tasking REJECT\",\"btns\":[\"Reject\"]}] | Ground has: []"
+ },
+ {
+  "id": "13-war",
+  "size": "desk",
+  "said": "{\"cell\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22\"],\"avail\":\"24\",\"req\":\"30\"}"
+ },
+ {
+  "id": "13-sans",
+  "size": "desk",
+  "said": "need 4 – | day: 15 4 – F 2 0 O 0 1 A 0 0"
+ },
+ {
+  "id": "13-undo",
+  "size": "desk",
+  "said": "button \"Undo — a personal input\" → page leavewar; {\"cell\":[],\"avail\":\"25\"}; inputs of type Other now: 0"
+ },
+ {
+  "id": "13-redo",
+  "size": "desk",
+  "said": "button \"Redo — a personal input\" → page leavewar; {\"cell\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22\"],\"avail\":\"24\"}"
+ },
+ {
+  "id": "13-reload-war",
+  "size": "desk",
+  "said": "{\"cell\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22\"],\"avail\":\"24\",\"req\":\"30\"}"
+ },
+ {
+  "id": "13-reload-edit",
+  "size": "desk",
+  "said": "Unavailable has: [{\"text\":\"Other Ranger IP LATE Range tasking REJECT\",\"btns\":[\"Reject\"]}]"
+ },
+ {
+  "id": "13-reload-door-cal",
+  "size": "desk",
+  "said": "{\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false}"
+ },
+ {
+  "id": "13-reload-door-row",
+  "size": "desk",
+  "said": "{\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false}"
+ },
+ {
+  "id": "13-reload-window",
+  "size": "desk",
+  "said": "Goes to: Ground false, Unavailable true, line \"Counted as away on the Leave War\""
+ },
+ {
+  "id": "14-edit",
+  "size": "desk",
+  "said": "acc g; Unavailable has []; Ground has [{\"text\":\"OTHER Ranger IP + ADD LATE Range tasking\",\"btns\":[]}]; Personal Inputs []"
+ },
+ {
+  "id": "14-ground-war",
+  "size": "desk",
+  "said": "{\"cell\":[],\"avail\":\"25\",\"req\":\"30\"}"
+ },
+ {
+  "id": "14-ground-sans",
+  "size": "desk",
+  "said": "need 3 – | day: 15 3 – F 2 0 O 0 1 A 0 0"
+ },
+ {
+  "id": "14-window-ground",
+  "size": "desk",
+  "said": "reopened: {\"row\":true,\"g\":\"true\",\"u\":\"false\",\"line\":\"Still counted in the Leave War’s manning\",\"gDisabled\":false,\"uDisabled\":false}"
+ },
+ {
+  "id": "14-back-war",
+  "size": "desk",
+  "said": "{\"cell\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22\"],\"avail\":\"24\",\"req\":\"30\"}"
+ },
+ {
+  "id": "14-back-sans",
+  "size": "desk",
+  "said": "need 4 – | day: 15 4 – F 2 0 O 0 1 A 0 0"
+ },
+ {
+  "id": "14-reload-war",
+  "size": "desk",
+  "said": "{\"cell\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22\"],\"avail\":\"24\",\"req\":\"30\"}"
+ },
+ {
+  "id": "14-reload",
+  "size": "desk",
+  "said": "acc after reload: u"
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "said": "[]"
+ }
+]

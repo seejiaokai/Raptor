@@ -1,0 +1,36 @@
+[
+ {
+  "id": "S18b Delete a bid on a red day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 28 ok; no bubble",
+  "pics": [
+   "s18b-desk-after-tap.png",
+   "s18b-desk-settled.png"
+  ]
+ },
+ {
+  "id": "errors-18",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ },
+ {
+  "id": "S18b Delete a bid on a red day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 28 ok; no bubble",
+  "pics": [
+   "s18b-phone-after-tap.png",
+   "s18b-phone-settled.png"
+  ]
+ },
+ {
+  "id": "errors-18",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

@@ -1,0 +1,38 @@
+[
+ {
+  "id": "B6a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "10 Dec (\"ten old\") on a closed day: typed \"six-a words\" (no Enter), Delete: bids left []; records anywhere holding \"six-a words\": 0 []",
+  "pics": [
+   "b6-dk-01-typed-then-delete"
+  ]
+ },
+ {
+  "id": "B6b",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "12 Dec (a pending LL, closed day): typed \"six-b words\" (no Enter), then OD: the closed-day window closed; the OD's own input window then came up: \"Ranger · 12 Dec ✕ TYPE LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE DURATION all day DOCUMENT Document REMARKS till 12 Dec OIL Not answered yet — 12 Dec Answer… Placed by Ranger · 25 Oct 26, 03:10 The person and the dates are changed o\" (then: Escape, Cancel); the OIL question on top of it: {\"text\":\"OIL: Ranger, OD ✕ This input falls on Sat 12 Dec, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Save\",\"buttons\":[\"✕\",\"Yes: credit FO\",\"No OIL\",\"Back\",\"Save\"]}; the bid now [\"LL/pending/\\\"six-b words\\\"\"]; Inputs entries on that day [\"OD \\\"\\\"\"]; the cell {\"text\":\"OD LL\",\"boxes\":[\"OD|c k-od s-a left raptor|bg rgba(128, 142, 160, 0.58)|none/none/none/none|td:none\",\"LL|c k-ll s-w right|bg rgba(0, 0, 0, 0)|none/none/none/none|td:none\"]}; records holding \"six-b words\": 1 [\"raptor:leavewar/rec:y2026:rmvmrxo6g5wtrm\"] — the OD filed without the words, the words are on the bid",
+  "pics": [
+   "b6-dk-02-typed-then-od",
+   "b6-dk-03-after-od"
+  ]
+ },
+ {
+  "id": "B6c",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "his closed-day window on 2 Dec was open (reads \"Ranger Wed 2 Dec ✕ YOUR BID LL Whole day · pending Your bid is pending a decision. Delete it if you no longer want it. till 3 Dec Document SELECTED Delete CSE OD\"); the admin reopened December in tab A; the window then reads THE SAME (it did not change); he typed \"six-c words\" + Enter: the bid saved [\"LL/pending/\\\"six-c words\\\"\"], the window then reads \"Ranger Wed 2 Dec ✕ YOUR BID LL Whole day · pending Your bid is pending a decision. Delete it if you no longer want it. till 3 Dec Document SELECTED Delete CSE OD\"; after a reload his tap on 2 Dec opens bid-picker (the day is open for bidding now)",
+  "pics": [
+   "b6-dk-04-window-after-reopen",
+   "b6-dk-05-after-reload"
+  ]
+ },
+ {
+  "id": "6-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx in tab A)",
+  "pics": []
+ }
+]

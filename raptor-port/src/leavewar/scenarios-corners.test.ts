@@ -15,8 +15,13 @@ import { commitSetDayApproved, commitPublishALDay } from '../state/sched-commit'
 import { setSession, setMe } from '../state/auth'
 import { projectPeople } from './state/raptorRoster'
 import {
-  ackReplacement, advanceStage, changeAbsenceById, getState, initStore as lwInitStore, lwHistInit, moveCells, rawState, setBidState, setBidStates, setCell, setCellRange, setPeople, setRole, setViewer, moveRecords,
+  ackReplacement, closeDates, changeAbsenceById, getState, initStore as lwInitStore, lwHistInit, moveCells, rawState, setBidState, setBidStates, setCell, setCellRange, setPeople, setRole, setViewer, moveRecords,
 } from './state/store'
+
+/* CLOSE BIDDING ON THE PERIOD ON SCREEN, as an admin does before deciding — the act that replaced "advance to Bidding
+   Closed" when the stages went (D1177). The admin may decide at any time now; closing first keeps these scenarios in the
+   setting they were written for (decided after the bids are in), it is not a requirement. */
+const closeBidding = () => { const p = getState().period; closeDates(p.start, p.end) }
 import { memoryBackend } from './state/storage'
 import { runOilPass, wireLeaveWarSync } from './sync'
 import { globalUndo, globalRedo } from '../undo'
@@ -68,7 +73,7 @@ describe('halves across doors', () => {
     setRole('admin')
     file('ammo', 'OIL', 'Feb 10', { allday: false, half: 'pm', s: 721, e: 1439 })
     expect(setCell('ammo', '2026-02-10', '*LL')).toBe(true)
-    advanceStage()
+    closeBidding()
     setBidState('ammo', '2026-02-10', 'approved')
     const v = getState().views.ammo['2026-02-10']!
     expect(v.all.filter(c => c.kind === 'absence')).toHaveLength(2)
@@ -91,14 +96,19 @@ describe('two wars', () => {
     expect(gridIn('ammo', d)).toBe('ATTC')
   })
 
-  it('moving approved leave into the next war is refused', () => {
+  /* KEPT with the open dates (the builder's call, 22 Oct 26): an approved leave carries the war that approved it, so it
+     never moves out of its own period — the year-end fix (B3) lets a BID cross, asked of the period holding its day. */
+  it('moving approved leave into the next war is refused; no period at all, refused too', () => {
     setRole('admin')
-    setCell('ammo', '2026-12-30', 'LL'); advanceStage()
+    setCell('ammo', '2026-12-30', 'LL'); closeBidding()
     setBidState('ammo', '2026-12-30', 'approved')
     const iid = String(lwRows('ammo')[0].iid)
-    const r = moveLeaveVia('ammo', '2026-12-30', iid, '2027-01-05')
-    expect(typeof r).toBe('string')
+    expect(moveLeaveVia('ammo', '2026-12-30', iid, '2028-02-03')).toBe('window')     // no period holds 2028
     expect(lwRows('ammo')[0].date).toBe('Dec 30')
+    expect(typeof moveLeaveVia('ammo', '2026-12-30', iid, '2027-01-05')).toBe('string')
+    expect(lwRows('ammo')).toHaveLength(1)
+    expect(lwRows('ammo')[0].date).toBe('Dec 30')
+    expect(view('ammo', '2026-12-30')?.main?.code).toBe('LL')                          // still where it was
   })
 })
 
@@ -115,7 +125,7 @@ describe('a medical that swallows a whole leave', () => {
   it('a cut keeps the moved marks of the days that survive', () => {
     setRole('admin')
     setCellRange('ammo', '2026-02-09', '2026-02-11', 'LL')
-    advanceStage()
+    closeBidding()
     setBidStates(['2026-02-09', '2026-02-10', '2026-02-11'].map(d => ({ personId: 'ammo', date: d })), 'approved')
     expect(moveCells([{ personId: 'ammo', date: '2026-02-09' }], 5)).toBe('moved')   // 9 -> 14, dotted
     expect(getState().views.ammo['2026-02-14']!.main!.movedFrom).toBe('2026-02-09')

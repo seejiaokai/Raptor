@@ -1031,6 +1031,19 @@ describe('[INPUT-OWN-TITLE] — a title changed after publishing waits for the a
     expect([...face.querySelectorAll('.nm-kind')].map(x => x.textContent), 'its kind kept in sight on the issued face').toContain('Event')
   })
 
+  /* an Attach's To (D1373) is drawn in the same name: changed after publishing it waits too, and the waiting list pairs the
+     two names (the code read's F3; the narrow read's R3 — it read "Attach · 149 Sqn — changed" alone) */
+  it('an Attach under Unavailable whose To changes after publishing: one change, the list pairs the two names', () => {
+    const inp: any = { person: 'bane', date: 'Jul 13', allday: true, type: 'Attach', to: '145 Sqn', acc: 'u', remarks: '', mod: '2026-07-01' }
+    INPUTS.push(inp); inpId(inp)
+    publishDay(MON); signBound(MON)
+    expect(commitInputEdit(inp, { ...draftOf(inp), to: '149 Sqn' })).toBeTruthy()
+    validate()
+    expect(counts(MON).engine).toBe(1)
+    expect(daySigned(MON)).toBe(false)
+    expect(listText(MON)).toMatch(/145 Sqn.*149 Sqn/)
+  })
+
   it('…and typed back to what was published, nothing waits and the sign-offs stand again (D98)', () => {
     const inp = landedEvent({ title: 'Sports day' })
     publishDay(MON); signBound(MON)

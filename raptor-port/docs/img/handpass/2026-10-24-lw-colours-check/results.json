@@ -1,0 +1,88 @@
+[
+ {
+  "id": "C1 the Legend: every kind its colour; \"OIL taken\" and \"OIL given\" apart",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "k-ll=rgba(242, 200, 110, 0.22); k-ol=rgba(226, 146, 38, 0.48); k-oilt=rgba(170, 230, 40, 0.3); k-oil=rgba(70, 196, 108, 0.38); k-care=rgba(138, 150, 255, 0.32); k-cse=rgba(160, 100, 240, 0.36); k-od=rgba(128, 142, 160, 0.58); k-med=rgba(238, 82, 82, 0.3); k-ll=rgba(242, 200, 110, 0.22) | OIL rows: OIL OIL taken: time off spent / FO OIL given: FO a day, HO half a day; a star, the app credited it",
+  "pics": [
+   "c1-legend-phone"
+  ]
+ },
+ {
+  "id": "C2 the grid: an OIL taken chartreuse, an FO green, a course purple, an overseas duty slate, a medical red — each filled",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "oilt:OIL rgba(170, 230, 40, 0.3); fo:FO rgba(70, 196, 108, 0.38); cse:CSE rgba(160, 100, 240, 0.36); od:OD rgba(128, 142, 160, 0.58); med:C rgba(238, 82, 82, 0.3)",
+  "pics": [
+   "c2-grid-phone"
+  ]
+ },
+ {
+  "id": "C3 the bid window's buttons: OIL in the OIL taken's colour, the others their kinds",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"LL\":\"rgba(242, 200, 110, 0.22)\",\"OL\":\"rgba(226, 146, 38, 0.48)\",\"OIL\":\"rgba(170, 230, 40, 0.3)\",\"CCL\":\"rgba(138, 150, 255, 0.32)\"}",
+  "pics": [
+   "c3-buttons-phone"
+  ]
+ },
+ {
+  "id": "C4 the Inputs month: absences filled in their kind's colour, the upchit medical, a duty outlined, a timed one a tint",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "all as drawn; Training: ib-bar amb duty timed rgba(232, 237, 242, 0.03)",
+  "pics": [
+   "c4-inputs-phone"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "C1 the Legend: every kind its colour; \"OIL taken\" and \"OIL given\" apart",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "k-ll=rgba(242, 200, 110, 0.22); k-ol=rgba(226, 146, 38, 0.48); k-oilt=rgba(170, 230, 40, 0.3); k-oil=rgba(70, 196, 108, 0.38); k-care=rgba(138, 150, 255, 0.32); k-cse=rgba(160, 100, 240, 0.36); k-od=rgba(128, 142, 160, 0.58); k-med=rgba(238, 82, 82, 0.3); k-ll=rgba(242, 200, 110, 0.22) | OIL rows: OIL OIL taken: time off spent / FO OIL given: FO a day, HO half a day; a star, the app credited it",
+  "pics": [
+   "c1-legend-desk"
+  ]
+ },
+ {
+  "id": "C2 the grid: an OIL taken chartreuse, an FO green, a course purple, an overseas duty slate, a medical red — each filled",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "oilt:OIL rgba(170, 230, 40, 0.3); fo:FO rgba(70, 196, 108, 0.38); cse:CSE rgba(160, 100, 240, 0.36); od:OD rgba(128, 142, 160, 0.58); med:C rgba(238, 82, 82, 0.3)",
+  "pics": [
+   "c2-grid-desk"
+  ]
+ },
+ {
+  "id": "C3 the bid window's buttons: OIL in the OIL taken's colour, the others their kinds",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"LL\":\"rgba(242, 200, 110, 0.22)\",\"OL\":\"rgba(226, 146, 38, 0.48)\",\"OIL\":\"rgba(170, 230, 40, 0.3)\",\"CCL\":\"rgba(138, 150, 255, 0.32)\"}",
+  "pics": [
+   "c3-buttons-desk"
+  ]
+ },
+ {
+  "id": "C4 the Inputs month: absences filled in their kind's colour, the upchit medical, a duty outlined, a timed one a tint",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "all as drawn; Training: ib-bar amb duty timed rgba(232, 237, 242, 0.03)",
+  "pics": [
+   "c4-inputs-desk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

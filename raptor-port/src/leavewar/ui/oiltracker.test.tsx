@@ -5,6 +5,11 @@ import { balanceOf } from '../engine'
 import { awardsOnDay, getState, grantTo, ingestDutyCredit, setDayAward, initStore, setBalance, setCell, setDayEvent, setOilPolicy, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* the OIL tracker opens from the OIL tab of the top row since D1254 (Chrome.tsx `Topbar`): the grid rendered alone is
+   asked as the tab's press asks it (ui/lwnav.ts). */
+const openOil = () => act(() => { askLw({ kind: 'oil' }) })
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -12,7 +17,7 @@ beforeEach(() => {
 
 const openTracker = () => {
   render(<Matrix />)
-  fireEvent.click(screen.getByTestId('oil-tracker'))
+  openOil()
   return screen.getByTestId('oil-sheet')
 }
 
@@ -25,7 +30,8 @@ function slammedStory() {
 }
 
 describe('the OIL tracker grid', () => {
-  it('is on the toolbar for a member and an admin alike: one row per person, the balance beside the name', () => {
+  // WAS "is on the toolbar" — the grid card's OIL button. Since D1254 it is the top row's OIL tab, for both roles alike.
+  it('opens from the OIL tab for a member and an admin alike: one row per person, the balance beside the name', () => {
     const sheet = openTracker()
     expect(sheet.textContent).toContain('OIL TRACKER')
     expect(sheet.className).toContain('full')
@@ -71,24 +77,16 @@ describe('the OIL tracker grid', () => {
     expect(screen.getByTestId('oil-legend-text').textContent).toContain('oldest credit is used first')
   })
 
-  // Owner, 6 Sep 26: "put a plus minus for zoom placed beside range" (and a
-  // phone opens one step out — a browser question, in e2e). jsdom has no
-  // matchMedia, so it opens at 1 here: two steps down reach the floor.
-  it('a − / + zoom pair sits right after RANGE, for a member too, and stops at the ends', () => {
+  // WAS "a − / + zoom pair sits right after RANGE" (owner, 6 Sep 26). CHANGED by D1285 (23 Oct 26): the OIL tab is
+  // pinched as the grid is (Ctrl+scroll on a desktop) and its − / + went with the grid's (D1276). The pinch itself, its
+  // limits and where it lands are the browser's to prove (e2e/leavewar.spec.ts) — jsdom has no layout. RANGE keeps its
+  // place, and the row goes on to ? and ⚙.
+  it('carries no − / + zoom pair: the table is pinched (D1285)', () => {
     openTracker()
+    for (const id of ['oil-zoom', 'oil-zoom-out', 'oil-zoom-in']) expect(screen.queryByTestId(id), id).toBeNull()
     const tools = screen.getByTestId('oil-range-pick').parentElement!
-    const ids = [...tools.querySelectorAll('[data-testid]')].map(el => el.getAttribute('data-testid')).filter(id => id !== 'oil-zoom')   // the pair's wrapper
-    const at = (id: string) => ids.indexOf(id)
-    expect(at('oil-zoom-out')).toBe(at('oil-range-pick') + 1)
-    expect(at('oil-zoom-in')).toBe(at('oil-zoom-out') + 1)
-    const out = screen.getByTestId('oil-zoom-out') as HTMLButtonElement
-    const inn = screen.getByTestId('oil-zoom-in') as HTMLButtonElement
-    expect(out.disabled).toBe(false); expect(inn.disabled).toBe(false)
-    fireEvent.click(out); fireEvent.click(out)
-    expect(out.disabled).toBe(true)          // 0.6 — the floor
-    fireEvent.click(inn); fireEvent.click(inn); fireEvent.click(inn); fireEvent.click(inn)
-    expect(inn.disabled).toBe(true)          // 1.4 — the ceiling
-    expect(out.disabled).toBe(false)
+    const ids = [...tools.querySelectorAll('[data-testid]')].map(el => el.getAttribute('data-testid'))
+    expect(ids.indexOf('oil-legend')).toBe(ids.indexOf('oil-range-pick') + 1)
   })
 })
 
@@ -261,8 +259,9 @@ describe('the credit boxes', () => {
     expect(getState().ledger.find(e => e.id === 'l4')).toMatchObject({ amount: 3, reason: 'CNY workplan (three days)', givenBy: 'OC Ops' })
     expect(screen.getByTestId('oil-entry-l4').textContent).toContain('+3')
     expect(screen.getByTestId('oil-entry-l4').textContent).toContain('OC Ops')
-    // The column snapped to +OIL on the edit.
-    expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
+    // Re-expressed for D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the column used
+    // to snap to +OIL on the edit; it is LVE alone now and stays so.
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
     fireEvent.click(screen.getByTestId('oil-entry-l4'))
     fireEvent.click(screen.getByTestId('oil-del-l4'))
     expect(screen.getByTestId('oil-del-l4').textContent).toBe('Really delete?')
@@ -312,7 +311,9 @@ describe('crediting OIL (admin)', () => {
     expect(box.textContent).toContain('Det recovery')
     expect(box.textContent).toContain('CO')
     expect(box.textContent).toContain('1.5 left')
-    expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
+    // Re-expressed for D1245: the grant no longer turns the column to +OIL — it stays +LVE, and the credit is read
+    // above, in the tracker's own balance.
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
   })
 
   /* THE CREDIT'S DATE IS THE APP'S OWN DATE BOX SINCE STEP TWO OF THE ONE DATE CALENDAR (owner D901, 15 Oct 26): its
@@ -435,13 +436,13 @@ describe('crediting OIL (admin)', () => {
    his iPhone ("it should never bring me to the oil tracker page"): being
    thrown off the grid mid-pass cost more than the reason was worth, and the
    tracker is one tap away on the OIL button. So this is not a weakened
-   assertion but the opposite rule, pinned as tightly — including the half
-   that did NOT change, the column snapping to the balance the leave comes
-   off. */
+   assertion but the opposite rule, pinned as tightly.
+   Re-expressed for D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the half that used to
+   stay — the column snapping to the balance the leave comes off — went with the picker; the column stays +LVE. */
 describe('an admin\'s manual OIL on the grid stays on the grid', () => {
-  it('opens no tracker for either role, and the column still snaps to +OIL', () => {
+  it('opens no tracker for either role, and the column stays +LVE (D1245)', () => {
     render(<Matrix />)
-    // A member's own bid: no tracker, and the column follows the write.
+    // A member's own bid: no tracker.
     fireEvent.click(screen.getByTestId('cell-ramp-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
     expect(screen.queryByTestId('oil-sheet')).toBeNull()
@@ -450,10 +451,10 @@ describe('an admin\'s manual OIL on the grid stays on the grid', () => {
     fireEvent.click(screen.getByTestId('bid-OIL'))
     expect(screen.queryByTestId('oil-sheet')).toBeNull()
     // The write landed and the sheet closed — the admin is left on the grid,
-    // looking at the figure the day just came off.
+    // and the column beside the names is still LVE (D1245).
     expect(getState().grid.dusk['2026-02-11']).toBe('OIL')
     expect(screen.queryByTestId('bid-picker')).toBeNull()
-    expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
   })
 })
 
@@ -538,13 +539,22 @@ describe('the Cinch sheet: an admin sets +LVE', () => {
     expect(screen.getByTestId('pfig-cl').querySelector('.fb')!.textContent).toBe('5')
     expect(getState().openings.ramp?.cl).toBe(5)
     fireEvent.click(screen.getByTestId('pfig-close'))
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    fireEvent.click(screen.getByTestId('counter-cl'))
-    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('5')
+    // Re-expressed for D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the grid's column
+    // can no longer be turned to +CL, so the CL balance is read where it now lives — the person's window, reopened after
+    // each write — and the column itself stays +LVE throughout.
+    const clOf = () => {
+      fireEvent.click(screen.getByTestId('person-ramp'))
+      const v = screen.getByTestId('pfig-cl').querySelector('.fb')!.textContent
+      fireEvent.click(screen.getByTestId('pfig-close'))
+      return v
+    }
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
+    expect(clOf()).toBe('5')
     act(() => { setCell('ramp', '2026-01-20', 'CL') })   // a Tuesday
-    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('4')
+    expect(clOf()).toBe('4')
     act(() => { setCell('ramp', '2026-01-21', 'LL') })   // annual, not CL
-    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('4')
+    expect(clOf()).toBe('4')
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
     // +OIL never grows a Set — the tracker is its editor.
     fireEvent.click(screen.getByTestId('person-ramp'))
     expect(screen.queryByTestId('oil-edit')).toBeNull()

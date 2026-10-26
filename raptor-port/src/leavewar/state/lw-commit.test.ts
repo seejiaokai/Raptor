@@ -7,7 +7,7 @@
    so every existing LW unit test (which never calls lwHistInit) is unaffected. */
 import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import {
-  initStore, lwHistInit, getState, setCell, lwUndo, lwCanUndo, setRole, advanceStage,
+  initStore, lwHistInit, getState, setCell, lwUndo, lwCanUndo, setRole, openDates,
 } from './store'
 import { memoryBackend } from './storage'
 import { onCommit } from '../../command'
@@ -52,12 +52,14 @@ describe('a standalone user LW edit emits a record-level envelope (property c)',
     expect(caught.length).toBe(0)
   })
 
-  it('a war-level change (advanceStage) emits an lw.war change, not an empty no-op (Fable-2)', () => {
+  /* was advanceStage — the stages went (D1177); opening dates is the war-level change now, its own command lw.open */
+  it('a war-level change (openDates) emits ONE lw.open envelope with an lw.war change, not an empty no-op (Fable-2)', () => {
     const warId = getState().currentId
     setRole('admin')   // pure-view, no persist
     caught = []
-    advanceStage()
-    expect(caught.length).toBeGreaterThan(0)
+    expect(openDates('2026-04-01', '2026-04-30')).toBe('set')
+    expect(caught.length).toBe(1)
+    expect(caught[0].type).toBe('lw.open')
     expect(caught.some(e => e.changes.some(c => c.collection === 'lw.war' && c.id === warId))).toBe(true)
   })
 })

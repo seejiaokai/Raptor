@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { PenGlyph } from './Glyphs.jsx';
 import * as core from '../app/core.js';
 
 const TOOLS = [
@@ -15,7 +16,7 @@ const ADDS = [
   { a: 'device', label: '+ CFT/IAT/EPT', style: { borderLeft: '4px solid var(--device)' } },
 ];
 const TOOLS2 = [
-  { t: 'text', label: '✎ Text', title: 'Click a ball to edit its text/type/number' },
+  { t: 'text', label: <><PenGlyph /> Text</>, title: 'Click a ball to edit its text/type/number' },
   { t: 'line', label: '╱ Line', title: 'Draw a free right-angle line: click to start, then click where it ends. Ends snap to a ball or to another line; anything left loose stays unlinked.' },
   { t: 'editlines', label: '❐ Edit lines', title: 'Show N/E/S/W snap points on every ball; select a line and drag its ends onto them' },
 ];

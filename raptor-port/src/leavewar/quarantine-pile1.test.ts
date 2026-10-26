@@ -5,7 +5,7 @@ import { stashClear, stashPut } from '../engine/weekstash'
 import { HIST, initStore, writeInputsBatch } from '../state/store'
 import { histApply } from '../state/history'
 import { applyMedPlan, mintMedSegments, removeInput } from '../ui/inputedit'
-import { advanceStage, clearCells, getState, initStore as lwInitStore, setBidState, setCell, setPeople, setRole } from './state/store'
+import { closeDates, clearCells, getState, initStore as lwInitStore, setBidState, setCell, setPeople, setRole } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { syncAbsences, wireLeaveWarSync } from './sync'
@@ -28,7 +28,8 @@ afterEach(() => { stashClear(); HOOKS.toast = toast })
 
 function approve(dates: string[], person = 'ammo') {
   dates.forEach(d => setCell(person, d, 'LL'))
-  if (getState().period.stage === 'open') advanceStage()
+  /* bidding closed before deciding, as the stage step did (the stages went — D1177; the admin decides at any time) */
+  { const p = getState().period; closeDates(p.start, p.end) }
   dates.forEach(d => setBidState(person, d, 'approved'))
 }
 const mine = () => INPUTS.filter((r: any) => holds(r, 'ammo') && r.lw)

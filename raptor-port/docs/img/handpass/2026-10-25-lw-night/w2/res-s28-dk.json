@@ -1,0 +1,204 @@
+[
+ {
+  "id": "28a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the open window (560 wide): row {\"l\":453,\"t\":843,\"r\":987,\"b\":873,\"w\":534,\"h\":30}, box {\"l\":453,\"t\":843,\"r\":784.1,\"b\":873,\"w\":331,\"h\":30} (colour rgb(11, 13, 16)), till tick {\"l\":792.1,\"t\":848.5,\"r\":874.3,\"b\":867.5,\"w\":82,\"h\":19}, Document {\"l\":880.3,\"t\":843,\"r\":987,\"b\":873,\"w\":107,\"h\":30}; all on one line: true; labels (.lab) in the window: []; a Save button: false; the till reads \"till 14 Dec\", ticked true; placeholder \"Remarks\"; the window text: \"Ranger 14 Dec LL ✕ till 14 Dec Document\"; the page scrolls sideways: false",
+  "pics": [
+   "s28-dk-01-open"
+  ]
+ },
+ {
+  "id": "28b",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "typed \"At home, call me\" (saved before Enter: [{\"remarks\":\"\",\"docs\":0,\"span\":\"12-14..12-14\",\"lw\":\"y2026\"}]), Enter → saved: [{\"remarks\":\"At home, call me\",\"docs\":0,\"span\":\"12-14..12-14\",\"lw\":\"y2026\"}]",
+  "pics": [
+   "s28-dk-02-typed",
+   "s28-dk-03-after-enter"
+  ]
+ },
+ {
+  "id": "28c",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "what tells him it saved (lesson 3): right after Enter — toast \"null\"; focus on TEXTAREA#remarks-remarks; live regions []; the window stays open: \"Ranger 14 Dec LL ✕ till 14 Dec Document\"",
+  "pics": [
+   "s28-dk-03-after-enter"
+  ]
+ },
+ {
+  "id": "28d",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reopened: the box reads \"At home, call me\", till \"till 14 Dec\"",
+  "pics": [
+   "s28-dk-05-reopened"
+  ]
+ },
+ {
+  "id": "28e",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the Inputs page (Ranger): [\"Ranger 14 Dec LL At home, call me till 14 DecBy Saber now No document\"]",
+  "pics": [
+   "s28-dk-06-inputs"
+  ]
+ },
+ {
+  "id": "29a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "typed, then a press on the title (leaving the box); saved before closing: [{\"remarks\":\"\",\"docs\":0,\"span\":\"12-16..12-16\",\"lw\":\"y2026\"}]; then ✕: saved [{\"remarks\":\"title press words\",\"docs\":0,\"span\":\"12-16..12-16\",\"lw\":\"y2026\"}]; reopened box \"title press words\" (want \"title press words\")",
+  "pics": [
+   "s28-dk-a-reopened"
+  ]
+ },
+ {
+  "id": "29b",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "typed, then ✕: saved [{\"remarks\":\"closed by x\",\"docs\":0,\"span\":\"12-18..12-18\",\"lw\":\"y2026\"}]; reopened box \"closed by x\" (want \"closed by x\")",
+  "pics": [
+   "s28-dk-b-reopened"
+  ]
+ },
+ {
+  "id": "29c",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "typed, then Escape (window closed): saved [{\"remarks\":\"closed by escape\",\"docs\":0,\"span\":\"12-21..12-21\",\"lw\":\"y2026\"}]; reopened box \"closed by escape\" (want \"closed by escape\")",
+  "pics": [
+   "s28-dk-c-reopened"
+  ]
+ },
+ {
+  "id": "29d",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "typed, then a tap outside at (700, 60) (window then: nothing): saved [{\"remarks\":\"closed by outside tap\",\"docs\":0,\"span\":\"12-23..12-23\",\"lw\":\"y2026\"}]; reopened box \"closed by outside tap\" (want \"closed by outside tap\")",
+  "pics": [
+   "s28-dk-d-reopened"
+  ]
+ },
+ {
+  "id": "29e1",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "a picture added: the chip count 1; saved at once (before closing): [{\"remarks\":\"\",\"docs\":1,\"span\":\"12-25..12-25\",\"lw\":\"y2026\"}]; the row now {\"l\":453,\"t\":807,\"r\":987,\"b\":873,\"w\":534,\"h\":66} Document button {\"l\":548.2,\"t\":843,\"r\":619.5,\"b\":873,\"w\":71,\"h\":30} (one line: false); the chip tapped opens: [] (window still open after Escape: false)",
+  "pics": [
+   "s28-dk-e-added",
+   "s28-dk-e-viewer"
+  ]
+ },
+ {
+  "id": "29e-viewer",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "a tap on the chip's name opened no viewer or dialog (the chip is a plain label with its ✕; D1292, ruled 24 Oct 26, says it opens the app's document viewer); Escape then closed the window",
+  "pics": [
+   "s28-dk-e-viewer"
+  ]
+ },
+ {
+  "id": "29e2",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "its ✕: saved at once [{\"remarks\":\"\",\"docs\":0,\"span\":\"12-25..12-25\",\"lw\":\"y2026\"}]; on screen the chips left: 1 and the button reads \"Add\" (a removed file should leave no chip and the button read Document)",
+  "pics": [
+   "s28-dk-e-removed"
+  ]
+ },
+ {
+  "id": "29e3",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "the window reopened after the ✕: chips 0",
+  "pics": []
+ },
+ {
+  "id": "29f1",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "in one open window: start {\"checked\":true,\"text\":\"till 28 Dec\",\"struck\":false}; tick pressed → screen {\"checked\":false,\"text\":\"till 28 Dec\",\"struck\":true}, saved till [false]; tick pressed again → screen {\"checked\":false,\"text\":\"till 28 Dec\",\"struck\":true}, saved till [null]",
+  "pics": [
+   "s28-dk-f-unticked",
+   "s28-dk-f-reticked-in-window"
+  ]
+ },
+ {
+  "id": "29f2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reopened after the two presses the window reads {\"checked\":true,\"text\":\"till 28 Dec\",\"struck\":false} (saved [null]); unticked: saved till [false], the Inputs page row [\"Ranger 28 Dec LL By Saber now No document\"]; ticked again: saved till [null], the Inputs page row [\"Ranger 28 Dec LL till 28 DecBy Saber now No document\"]",
+  "pics": [
+   "s28-dk-f-inputs-unticked",
+   "s28-dk-f-inputs-reticked"
+  ]
+ },
+ {
+  "id": "29g",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the box held \"To empty\", emptied then Enter: saved [{\"remarks\":\"\",\"docs\":0,\"span\":\"12-30..12-30\",\"lw\":\"y2026\"}]; reopened \"\"",
+  "pics": [
+   "s28-dk-g-emptied",
+   "s28-dk-g-reopened"
+  ]
+ },
+ {
+  "id": "29h1",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "200 characters typed: the box 329 × 94 (scrollHeight 92, clientHeight 92, line 16) shows all of it: true; saved length 200; reopened length 200; the row {\"l\":453,\"t\":779,\"r\":987,\"b\":873,\"w\":534,\"h\":94}, Document {\"l\":880.3,\"t\":779,\"r\":987,\"b\":809,\"w\":107,\"h\":30}",
+  "pics": [
+   "s28-dk-h-200",
+   "s28-dk-h-200-reopened"
+  ]
+ },
+ {
+  "id": "29h2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "250 characters pasted: the box kept 200; saved length 200; reopened length 200; the kept text is the first 200 of what was pasted: true",
+  "pics": [
+   "s28-dk-h-250"
+  ]
+ },
+ {
+  "id": "29i",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "desk: the box left (what the keyboard's Done does): saved [{\"remarks\":\"done press\",\"docs\":0,\"span\":\"12-16..12-16\",\"lw\":\"y2026\"}]; then typed and the Return key: saved [{\"remarks\":\"return press\",\"docs\":0,\"span\":\"12-16..12-16\",\"lw\":\"y2026\"}]",
+  "pics": [
+   "s28-dk-i-blurred"
+  ]
+ },
+ {
+  "id": "30a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"A words\" typed on 2026-11-16 (no Enter), then a tap on the grid at 2026-11-18 (the element at that point: sheet-scrim; cell in view: true): the window then is nothing {\"sheet\":\"nothing\"}; saved 2026-11-16: [{\"remarks\":\"A words\",\"docs\":0,\"span\":\"11-16..11-16\",\"lw\":\"y2026\"}]; saved 2026-11-18: [{\"remarks\":\"\",\"docs\":0,\"span\":\"11-18..11-18\",\"lw\":\"y2026\"}]; a second tap on 2026-11-18 then opens: {\"sheet\":\"remarks-sheet\",\"remarks\":\"\",\"who\":\"18 Nov\"}",
+  "pics": [
+   "s28-dk-a-typed",
+   "s28-dk-30-tapped-window",
+   "s28-dk-30-second-tap-window"
+  ]
+ },
+ {
+  "id": "30b",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the approved run 3–5 Nov (box held \"\"), typed \"run note\" on 4 Nov: saved on each day [[{\"remarks\":\"run note\",\"docs\":0,\"span\":\"11-03..11-05\",\"lw\":\"y2026\"}],[{\"remarks\":\"run note\",\"docs\":0,\"span\":\"11-03..11-05\",\"lw\":\"y2026\"}],[{\"remarks\":\"run note\",\"docs\":0,\"span\":\"11-03..11-05\",\"lw\":\"y2026\"}]]; 3 Nov's window reads \"run note\", 5 Nov's \"run note\"",
+  "pics": [
+   "s28-dk-30-run-typed"
+  ]
+ },
+ {
+  "id": "28-30-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

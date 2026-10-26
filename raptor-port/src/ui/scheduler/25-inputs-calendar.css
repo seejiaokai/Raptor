@@ -22,6 +22,32 @@
 .inputs-top .abtn:where(:not(.inrange-pop .abtn)){min-height:44px;min-width:44px;padding:8px 10px;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .inputs-top .abtn:where(:not(.inrange-pop .abtn)) .btnglyph{width:15px;height:15px;color:currentColor;flex-shrink:0}
 .inputs-spring{flex:1 1 0;min-width:0}
+/* ONE ROW, ONE ORDER, EVERY WIDTH (owner D1125, 21 Oct 26 — round 1 of the consistency look, "1 yes"): the tabs, the month's
+   ‹ name › and Today, then the Calendar / List switch, the filters and the gear at the right end — the order the phone
+   already had (D705) and the SANS calendar's row has. The switch stands after the spring on the Calendar and on the List,
+   so it never moves between them (D687). */
+.inputs-top .ic-nav{order:1}
+.inputs-top .inputs-spring{order:2}
+.inputs-top .inputs-views{order:3}
+.inputs-top #inFiltersBtn,.inputs-top .inputs-filterfields{order:4}
+.inputs-top .inputs-gear{order:5}
+/* ONE LOOK FOR THE TWO CALENDARS' ROW ON A DESKTOP (owner D1125): every button drawn 36 tall, as the tabs are (D698 — his
+   "yes" to the 36 was his word for this size, D487), and the month's arrows, Today and the gear the same sizes on the
+   Inputs and SANS rows, so they stand in the same places (the SANS rows: 24-sans-calendar.css `.sc-head-tabs`). */
+@media (min-width:821px){
+  .inputs-top .abtn:where(:not(.inrange-pop .abtn)){min-height:36px;padding-top:0;padding-bottom:0}
+  .inputs-top .inputs-filterfields select{min-height:36px;padding-top:4px;padding-bottom:4px}
+  .inputs-top .inputs-filterfields label.searchbox{min-height:36px}
+  .inputs-top .ic-nav #icPrev,.inputs-top .ic-nav #icNext,.inputs-top .ic-nav .ic-ga,.sanscal .sc-head .sc-nav{width:40px;min-width:40px;padding:0;font-size:20px;line-height:1}
+  .inputs-top .ic-nav #icToday,.inputs-top .ic-nav .ic-gt,.sanscal .sc-head .sc-today{font-size:12px;padding:0 10px}
+  .inputs-top .abtn.inputs-gear,.sanscal .sc-head .abtn.sc-gear{width:40px;min-width:40px}
+  /* drawn 36, pressed 46 — the phone's rule (D698) on a desktop too, for a touch laptop or an iPad on its side */
+  .inputs-top .abtn:where(:not(.inrange-pop .abtn)):not(.intab),.sanscal .sc-head .abtn{position:relative}
+  .inputs-top .abtn:where(:not(.inrange-pop .abtn)):not(.intab)::after,.sanscal .sc-head .abtn::after{content:'';position:absolute;inset:-5px 0}
+  /* the List's invisible copy of the month controls (InputsPage.tsx navGhost — D687 at every width) */
+  .inputs-top .ic-nav-ghost{visibility:hidden;pointer-events:none}
+  .inputs-top .ic-nav-ghost .ic-mon{font-size:18px;text-align:center;font-variant-numeric:tabular-nums}
+}
 
 .inputs-tabs{display:flex;gap:2px;padding:3px;border:1px solid var(--edge);border-radius:11px;background:var(--panel);flex:0 0 auto;min-width:0}
 .intab{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;min-width:0;padding:4px 14px;border:1px solid transparent;
@@ -44,6 +70,10 @@
 .inputs-top .inputs-filterfields{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;padding:0;flex:0 1 auto;min-width:0}
 .inputs-top .inputs-filterfields label{flex:0 1 150px;min-width:96px}
 .inputs-top .inputs-filterfields label.inputs-search{flex:0 1 220px}
+/* the search is the app's one search box (owner D1127): the line magnifier inside, the box as tall as the two selects
+   beside it (44 on a phone, 36 on a desktop — the D1125 block); the input inside carries no box of its own */
+.inputs-filterfields label.searchbox{flex-direction:row;align-items:center;gap:6px;min-height:44px;box-sizing:border-box;padding:0 10px}
+.inputs-filterfields label.searchbox input{min-height:0;height:auto;padding:0;border:0;background:transparent;width:100%;min-width:0;font-size:13px}
 /* (the three boxes carry no words over them since D729 — "Person", "Type", "Search" went; each box names itself) */
 .inputs-filter-summary{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--ink-2);font-size:12px;min-width:0}
 .inputs-filter-summary>span{flex:1;min-width:0;overflow-wrap:anywhere}
@@ -52,14 +82,32 @@
 .inputs-filterfields input,.inputs-filterfields select{width:100%;min-width:0;box-sizing:border-box;min-height:44px;padding:8px 10px;background:var(--bg);
   border:1px solid var(--edge);border-radius:8px;color:var(--ink);font:inherit;font-size:13px}
 .inputs-workspace .inputs-listtools{gap:8px;padding:8px 0}
-.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:44px}
+/* the list's own two buttons, "+ Input" and the dates button, are 36 tall as on a phone and as the rest of the Inputs page
+   (owner D1139, 21 Oct 26 — they were 44 here); the words and their places stay */
+.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{min-height:36px}
+/* ...and pressed 46, as the row above's 36-tall buttons are on a desktop (D698, D1125 — a touch laptop or an iPad on its side;
+   the fresh read's finding 2): the list row is shown on a desktop only */
+.inputs-listtools>.abtn,.inputs-listtools .inrange>.abtn{position:relative}
+.inputs-listtools>.abtn::after,.inputs-listtools .inrange>.abtn::after{content:'';position:absolute;inset:-5px 0}
+/* the dates button's line calendar (owner D1137, 21 Oct 26 — in place of the 📅 emoji) sits beside its dates, as in the
+   phone's row (.inputs-top .abtn): the desktop's row of the list's own two buttons is not .inputs-top, and the drawing is a
+   block (.btnglyph), so without this it stood above the dates and the button grew two lines tall */
+.inputs-listtools .inrange>.abtn{display:inline-flex;align-items:center;gap:6px}
+.inputs-listtools .inrange>.abtn .btnglyph{width:15px;height:15px;color:currentColor;flex-shrink:0}
 
 /* MEDICAL IS A TAB, IN THE PAGE (D620, D626). It used to lie over the whole screen, with a close cross of its own; a
    tab is left by choosing another, so the three tabs must stay in reach above it — it sits under them, as tall as what
    it holds, and the PAGE scrolls (found by reading the stylesheet after the cross was taken away: the view would have
    covered the only way out). */
-.inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:1px solid var(--edge);border-radius:12px}
-.medview.in-page .ic-head{border-radius:11px 11px 0 0}
+/* no frame round the Medical TAB (owner D1137, 21 Oct 26): the Inputs list draws none, so neither does it; its three
+   sections keep their own boxes. The window form (a cross to close it) keeps its own look. */
+.inpcal.medview.in-page{position:relative;inset:auto;z-index:auto;overflow:visible;background:transparent;border:0;border-radius:0}
+.medview.in-page .ic-head{border-radius:0}
+/* ...and its row stands where the Inputs list's does: "+ Medical" on "+ Input"'s left edge (D1137 — measured, it sat 16px in
+   on a desktop and 10px on a phone, inside the row's own band), on the page's own ground as the list's row is */
+.medview.in-page > .ic-head{padding-left:0;padding-right:0;background:transparent}
+/* on a phone its top too: the list's row stands right under the tabs (measured: "+ Input" 106, "+ Medical" 115 at 402) */
+@media(max-width:820px){.medview.in-page > .ic-head{padding-top:0}}
 .medview.in-page .med-body{flex:0 0 auto;overflow:visible}
 
 /* the month's own arrows, its name and Today — one group, so they never part across two lines */
@@ -69,7 +117,8 @@
   /* THE PAGE'S SIDE MARGIN ON A PHONE: the Inputs page ran edge to edge there (a fault seen while drawing the mock-ups —
      the plan §3.6); every tab's screen now stands in from the edge of the screen. A desktop keeps the page as it was. */
   .inputs-workspace{padding:0 8px}
-  .inputs-top{gap:5px;margin:8px 0 6px}
+  /* the tab row 4px under the app's top bar, as the Leave War's (owner D1280 — "choose the one that uses less vertical space") */
+  .inputs-top{gap:5px;margin:4px 0 6px}
   .inputs-tabs{flex:1 0 100%}
   .intab{flex:1 1 0;padding:4px 6px}
   /* narrower, and drawn as tall as a tab — the press area stays a finger's size (D698; see the head of this file) */
@@ -80,7 +129,7 @@
   /* THE MONTH'S ARROWS, ITS NAME AND TODAY FIRST, WHERE THE SANS CALENDAR HAS THEM; THE SWITCH AT THE ROW'S RIGHT END
      (owner D705, 9 Oct 26 — from his iPhone: "I see sans, the month and arrows and today are on the left. Can u make
      inputs calander the same position? Then shift the calendar and list buttons to somewhere right of it"). `order`
-     re-draws the row on a phone only — a desktop keeps the tabs and the tools on one line, the switch after the tabs.
+     re-draws the row on a phone (since D1125 the same order runs on a desktop too — the rules at the head of this file).
      The switch stands beside the filter button and the gear, pushed right by its own margin, so the List — which has
      no arrows — keeps it in the same place (D687). The arrows are 32px, the name's box 96px, Today 52px, 3px apart:
      the SANS head's own figures (24-sans-calendar.css), so the four stand in the same places on both tabs, and the
@@ -151,7 +200,10 @@
 body.in-cal{padding-bottom:0}
 .inpcal.ib{position:relative;inset:auto;z-index:auto;display:block;height:auto;background:transparent;overflow:hidden}
 .ib .ic-head{padding:0;border:0;background:transparent}
-.ib .ic-mon{font-size:18px;min-width:138px;text-align:center}
+/* one room for every month (owner D1122 — the › never moves): the widest of the twelve names, measured in the device's own
+   font (data-fit, InputsCal.tsx) — a fixed 10.6em sized in Windows' letters wrapped the row in GitHub's Linux ones; the
+   figures of one width so the year never changes it; the phone's own width below stands (D705) */
+.ib .ic-mon{font-size:18px;flex:0 0 auto;width:auto;min-width:0;text-align:center;font-variant-numeric:tabular-nums}
 .ib-dow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));border:1px solid var(--edge);border-bottom:0;border-radius:12px 12px 0 0;background:var(--panel)}
 .ib-dow span{text-align:center;font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);padding:6px 0 5px}
 .ib-dow span.is-we{color:var(--ink-3)}
@@ -200,6 +252,17 @@ body.in-cal{padding-bottom:0}
   .ib-bar.amb{--ib-c:color-mix(in srgb,var(--adv) 42%,var(--panel))}
 }
 .ib-bar.timed{background:var(--panel-2);background:color-mix(in srgb,var(--ib-c) 34%,var(--panel));box-shadow:inset 3px 0 0 var(--ib-c);color:var(--ink)}
+/* EACH KIND THE LEAVE WAR'S COLOUR (his D1304, D1309; set C D1316; D1321 — drawn by scripts/handpass/lw-q3-duties.mjs,
+   option 1; the OIL taken D1323): an absence's bar filled in its kind's colour (the app's one set, --k-*), white words; a
+   duty's or another commitment's OUTLINED — a dark bar, a light edge, light words — so the form says "away" or "still in
+   the manning" before the colour does. A timed bar stays lighter (D729): a tint of its colour and its left edge. */
+.ib-bar.kd{--kc:var(--k-od);background:rgba(var(--kc),.40);color:#fff;box-shadow:inset 0 0 0 1px rgba(var(--kc),.9);--ib-c:rgb(var(--kc))}
+.ib-bar.k-ll{--kc:var(--k-ll)} .ib-bar.k-ol{--kc:var(--k-ol)} .ib-bar.k-oilt{--kc:var(--k-oilt)} .ib-bar.k-care{--kc:var(--k-care)}
+.ib-bar.k-med{--kc:var(--k-med)} .ib-bar.k-cse{--kc:var(--k-cse)} .ib-bar.k-od{--kc:var(--k-od)}
+.ib-bar.kd.k-od{background:rgba(var(--kc),.58)}
+.ib-bar.duty{background:rgba(232,237,242,.05);color:#E8EDF2;box-shadow:inset 0 0 0 1.5px rgba(200,212,228,.78);--ib-c:rgba(200,212,228,.78)}
+.ib-bar.kd.timed{background:rgba(var(--kc),.16);color:var(--ink);box-shadow:inset 3px 0 0 rgb(var(--kc)),inset 0 0 0 1px rgba(var(--kc),.45)}
+.ib-bar.duty.timed{background:rgba(232,237,242,.03);color:var(--ink);box-shadow:inset 3px 0 0 rgba(200,212,228,.78),inset 0 0 0 1px rgba(200,212,228,.4)}
 .ib-bar.is-cont{margin-left:0;border-top-left-radius:0;border-bottom-left-radius:0}
 .ib-bar.is-on{margin-right:0;border-top-right-radius:0;border-bottom-right-radius:0}
 .ib-bar:hover{filter:brightness(1.18)}
@@ -230,7 +293,10 @@ body.in-cal{padding-bottom:0}
    family; what is its own is said here. On a desktop it opens beside the month and the page makes room for it until
    he drags it away (the same `:has()` rule, Safari 15.4 and later).
    ============================================================================================================ */
-.floatwin.inputsday{width:min(430px,calc(100vw - 32px))}
+/* the phone's own 12px sides (22-float-windows.css: left and right 12): "- 32px" left these windows 8px short of the right
+   edge on a phone, off-centre (found checking D1293, 24 Oct 26) — the same on the SANS day, the Calendar window, its
+   "Every" window, the SANS settings and an input's own window */
+.floatwin.inputsday{width:min(430px,calc(100vw - 24px))}
 .floatwin.inputsday .win-body{padding:0;overflow:hidden;display:flex;flex-direction:column}
 .inputsday .sd-top{flex:0 0 auto;padding:8px 12px 10px;border-bottom:1px solid var(--edge);display:flex;flex-direction:column;gap:8px}
 .inputsday .sd-top .sd-acts{margin-top:0}
@@ -399,7 +465,7 @@ body.in-cal{padding-bottom:0}
    runs up to a thin strip at the top of the screen (owner D537 — no large gap above a tall window) and scrolls inside.
    The two questions it can put — unsaved changes, and a field changed both ways — sit at the head of the form.
    ============================================================================================================ */
-.floatwin.inpedwin{width:min(430px,calc(100vw - 32px))}
+.floatwin.inpedwin{width:min(430px,calc(100vw - 24px))}
 .floatwin.inpedwin .win-body{padding:0}
 .inped-win{display:flex;flex-direction:column;min-height:0}
 /* ITS BUTTONS STAY IN SIGHT ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26). An input is changed in this window now (the list's
@@ -512,7 +578,10 @@ body.in-cal{padding-bottom:0}
 .inputsday .ic-note .ic-poppuck-edit{flex:1 1 0;min-width:0;width:auto;min-height:28px;height:28px}
 .inputsday .ic-note .ic-secpucks{flex:1 0 100%;min-width:0;display:block;min-height:0}
 .inputsday .ic-note .ic-secpk-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;width:100%;align-items:stretch}
-.inputsday .ic-note .ic-secpk{min-width:0;display:flex}
+/* each puck CENTRED in its quarter (D694 kept under D1385): the opened day now runs edge to edge on a phone, its quarters wider
+   than a puck — at their left the fourth stood 19px from the border and the first 9px (GitHub's run, 26 Oct 26) */
+.inputsday .ic-note .ic-secpk{min-width:0;display:flex;justify-content:center}
+.inputsday .ic-note .ic-secpk .seat{display:flex;justify-content:center}
 .inputsday .ic-note .ic-secpk .seat,.inputsday .ic-note .ic-secpk .puck{min-width:0;max-width:100%;width:100%}
 .inputsday .ic-note .ic-pkadd{min-height:var(--puck-h);height:auto;width:100%;padding:0;font:700 14px/1 inherit;border:1px dashed var(--edge-2);border-radius:5px;
   background:transparent;color:var(--ink-2);cursor:pointer}
@@ -565,3 +634,28 @@ body.in-cal{padding-bottom:0}
    ground so a card passing under it does not show through. */
 .oildaywin .odl-foot{position:sticky;bottom:-12px;z-index:1;margin:4px -12px -12px;padding:10px 12px 12px;background:var(--panel)}
 .odl-foot .upconf-need{flex:1;min-width:0}
+/* THE TYPE BOX KEEPS ITS WIDTH (M3 7.4 — D1179): its family choices ("All duty & commitments") would widen it and wrap the
+   row onto a second line on a desktop (D687's one line); a long choice is cut in the closed box, read whole in the list */
+.inputs-top .inputs-filterfields #inFType{max-width:8.5em;text-overflow:ellipsis}   /* (8.5em: GitHub's Linux letters are wider — 11.5 still wrapped there) */
+
+/* EACH CARD'S SQUARE IN ITS KIND'S COLOUR (his D1384, D1396 — drawn lw-m3n-draw.mjs d2): the same colours as the month's bars
+   and the Leave War's boxes (--k-*); an absence filled, a duty or other commitment outlined as its bar is (D1321). After the
+   red / amber squares above, which these replace. */
+.icard .icard-sq.kd{background:rgba(var(--kc),.9);box-shadow:inset 0 0 0 1px rgba(var(--kc),1)}
+.icard .icard-sq.k-ll{--kc:var(--k-ll)} .icard .icard-sq.k-ol{--kc:var(--k-ol)} .icard .icard-sq.k-oilt{--kc:var(--k-oilt)} .icard .icard-sq.k-care{--kc:var(--k-care)}
+.icard .icard-sq.k-med{--kc:var(--k-med)} .icard .icard-sq.k-cse{--kc:var(--k-cse)} .icard .icard-sq.k-od{--kc:var(--k-od)}
+.icard .icard-sq.duty{background:rgba(232,237,242,.05);box-shadow:inset 0 0 0 1.5px rgba(200,212,228,.78)}
+
+/* ON A PHONE THE OPENED DAY RUNS EDGE TO EDGE (his D1385, D1396 — 26 Oct 26: "the list view edges space is similar to the
+   calendar view edges space"; drawn lw-m3n-draw.mjs d3): the day window loses its 12px side gaps and side borders, and its
+   list's side padding is the Inputs list's 8px, so its cards stand where the list's do; the cards' insides are unchanged.
+   The SANS calendar's day alike (24-sans-calendar.css). */
+@media (max-width:620px){
+  .floatwin.inputsday.rests{left:0;right:0;width:auto;max-width:none;border-left-width:0;border-right-width:0}   /* width:auto beats the window's own min(430px, 100vw - 24px) — the walk's find */
+  .inputsday .sd-list{padding-left:8px;padding-right:8px}
+}
+
+/* ⤢ AT THE END OF THE "HOW THIS WORKS" ROW (his D1386, D1396 — drawn lw-m3n-draw.mjs d4): the month's own arrow button, the
+   row's height; lit while every input is shown */
+.ib-sub .ib-expand{flex:none;width:34px;height:28px;min-width:0;padding:0;font-size:16px;line-height:1}
+.ib-sub .ib-expand[aria-pressed="true"]{color:var(--accent);border-color:currentColor}

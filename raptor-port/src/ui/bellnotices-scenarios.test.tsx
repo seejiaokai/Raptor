@@ -59,7 +59,7 @@ import { useVersion } from './useStore'
 import { NOTICES, noticesFor, noticeWords, type Notice } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
 import { bellOn, bellTap, bellListOpen, closeBellList, openNotice, BellButton, BellList } from './topbits'
-import { initStore as lwInitStore, lwHistInit, getState, setPeople, setRole, setCells, advanceStage, setBidStates } from '../leavewar/state/store'
+import { initStore as lwInitStore, lwHistInit, getState, setPeople, setRole, setCells, setBidStates } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { wireLeaveWarSync, postOut, archivePerson, runPoOutcomes } from '../leavewar/sync'
@@ -755,10 +755,10 @@ describe('with the Leave War wired: a posting, an archive, a leave the war appro
   })
   it('R36: a leave the war approves lights no bell here — and a later change to that leave by someone else does tell him', async () => {
     await bootLW()
-    const day = String(getState().period.bidFrom || getState().period.start)
+    const day = String(getState().period.open[0]?.from ?? getState().period.start)
     const m = mark()
     setCells([{ personId: RANGER, date: day }], 'LL')
-    if (getState().period.stage === 'draft') advanceStage()
+    /* the admin decides at any time — no stage to move first (D1177, D418) */
     setBidStates([{ personId: RANGER, date: day }], 'approved')
     const leave = INPUTS.find((x: any) => x.lw && idsOf(x).map(String).includes(RANGER)) as any
     expect(leave, 'the approved leave is an input').toBeTruthy()

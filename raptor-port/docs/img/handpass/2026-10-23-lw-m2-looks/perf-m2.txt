@@ -1,0 +1,4 @@
+desk admin: open median 1586 ms [1386, 1730, 1533, 2368, 1586] · nodes median 17306 [17306, 15486, 13592, 17306, 17306] · tap median 1393 ms [907, 1393, 2575, 1230, 1472]
+desk member: open median 1222 ms [1210, 1222, 1081, 1468, 1467] · nodes median 16772 [16772, 13173, 16772, 18602, 16772] · tap median 1176 ms [1143, 2935, 1444, 935, 1176]
+phone admin: open median 1423 ms [1489, 1383, 1330, 1485, 1423] · nodes median 7918 [7918, 7918, 7918, 7918, 7918] · tap median 310 ms [303, 310, 362, 310, 330]
+phone member: open median 1248 ms [1248, 1024, 1235, 1291, 1295] · nodes median 7687 [7687, 7687, 7687, 7687, 7687] · tap median 331 ms [316, 313, 340, 331, 335]

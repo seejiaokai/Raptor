@@ -1,0 +1,231 @@
+{
+ "log": [
+  {
+   "id": "mid",
+   "size": "phone",
+   "said": "15 Dec: Available P 28, Required P set 28"
+  },
+  {
+   "id": "mid",
+   "size": "phone",
+   "said": "first bid (Drifter): cell [\"LL|k-ll|s-w\"]; Available P 28 → 27 (fr avail tap under); bubble {\"where\":\"mid\",\"text\":\"This bid turns Available P red.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":25,\"y\":203.296875,\"width\":183.03125,\"height\":32.1875}}"
+  },
+  {
+   "id": "mid",
+   "size": "phone",
+   "said": "second bid (Ridge): cell [\"LL|k-ll|s-w\"]; Available P 27 → 26; bubble {\"where\":\"none\"}"
+  },
+  {
+   "id": "C",
+   "size": "phone",
+   "said": "IP's 15 Dec cell drawn amber: {\"text\":\"16\",\"bg\":\"rgba(229, 168, 59, 0.18)\",\"color\":\"rgb(242, 200, 121)\"}"
+  },
+  {
+   "id": "foot",
+   "size": "phone",
+   "said": "16 Dec: Available P 28, Required P set 28"
+  },
+  {
+   "id": "foot",
+   "size": "phone",
+   "said": "first bid (Trident): cell [\"LL|k-ll|s-w\"]; bubble {\"where\":\"foot\",\"text\":\"This bid turns Available P red.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":12,\"y\":816,\"width\":378,\"height\":46}}"
+  },
+  {
+   "id": "foot",
+   "size": "phone",
+   "said": "second bid (Hunter): cell [\"LL|k-ll|s-w\"]; bubble {\"where\":\"none\"}"
+  },
+  {
+   "id": "od",
+   "size": "phone",
+   "said": "17 Dec: Required P 28; OD filed for Drifter [\"OD|k-od|s-a\"]; Available P 28 → 27; bubble {\"where\":\"mid\",\"text\":\"This bid turns Available P red.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":25,\"y\":203.296875,\"width\":183.03125,\"height\":32.1875}} (right after the tap: {\"where\":\"mid\",\"text\":\"This bid turns Available P red.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":25,\"y\":203.296875,\"width\":183.03125,\"height\":32.1875}})"
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  },
+  {
+   "id": "mid",
+   "size": "desk",
+   "said": "15 Dec: Available P 28, Required P set 28"
+  },
+  {
+   "id": "mid",
+   "size": "desk",
+   "said": "first bid (Drifter): cell [\"LL|k-ll|s-w\"]; Available P 28 → 27 (fr avail tap under); bubble {\"where\":\"mid\",\"text\":\"This bid turns Available P red.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":35,\"y\":196,\"width\":183.03125,\"height\":32.1875}}"
+  },
+  {
+   "id": "mid",
+   "size": "desk",
+   "said": "second bid (Ridge): cell [\"LL|k-ll|s-w\"]; Available P 27 → 26; bubble {\"where\":\"none\"}"
+  },
+  {
+   "id": "C",
+   "size": "desk",
+   "said": "IP's 15 Dec cell drawn amber: {\"text\":\"16\",\"bg\":\"rgba(229, 168, 59, 0.18)\",\"color\":\"rgb(242, 200, 121)\"}"
+  },
+  {
+   "id": "foot",
+   "size": "desk",
+   "said": "16 Dec: Available P 28, Required P set 28"
+  },
+  {
+   "id": "foot",
+   "size": "desk",
+   "said": "first bid (Trident): cell [\"LL|k-ll|s-w\"]; bubble {\"where\":\"foot\",\"text\":\"This bid turns Available P red.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":440,\"y\":826,\"width\":560,\"height\":46}}"
+  },
+  {
+   "id": "foot",
+   "size": "desk",
+   "said": "second bid (Hunter): cell [\"LL|k-ll|s-w\"]; bubble {\"where\":\"none\"}"
+  },
+  {
+   "id": "od",
+   "size": "desk",
+   "said": "17 Dec: Required P 28; OD filed for Drifter [\"OD|k-od|s-a\"]; Available P 28 → 27; bubble {\"where\":\"mid\",\"text\":\"This bid turns Available P red.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":35,\"y\":196,\"width\":183.03125,\"height\":32.1875}} (right after the tap: null)"
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "t1-quick-phone.png",
+   "label": "Today, right after the tap on LL (the first bid) — the whole screen; at that moment: the bubble under the Manning button, “This bid turns Available P red.”"
+  },
+  {
+   "file": "t1-mid-phone.png",
+   "label": "Today: a bid turns Available P red (28 → 27). The bubble is amber."
+  },
+  {
+   "file": "a-drawn-mid-phone.png",
+   "label": "Drawn: the same bubble in red"
+  },
+  {
+   "file": "t2-quick-phone.png",
+   "label": "Today, right after the tap on LL (the second bid) — the whole screen; at that moment: no bubble"
+  },
+  {
+   "file": "t2-mid-phone.png",
+   "label": "Today: a second bid takes Available P 27 → 26. No bubble."
+  },
+  {
+   "file": "b-drawn-mid-phone.png",
+   "label": "Drawn: the second bid raises the bubble too, in red"
+  },
+  {
+   "file": "b-drawn-mid-other-phone.png",
+   "label": "Drawn, other words: the second bid’s bubble"
+  },
+  {
+   "file": "c-drawn-mid-phone.png",
+   "label": "Drawn: IP made amber by hand (its figure left as it is), to show two rows. The bubble takes the worse level, red."
+  },
+  {
+   "file": "t1f-quick-phone.png",
+   "label": "Today, right after the tap on LL (the first bid, Manning out of view) — the whole screen; at that moment: the bubble at the foot, “This bid turns Available P red.”"
+  },
+  {
+   "file": "t1-foot-phone.png",
+   "label": "Today, the Manning button out of view: the bubble at the foot, amber"
+  },
+  {
+   "file": "a-drawn-foot-phone.png",
+   "label": "Drawn: the foot bubble in red"
+  },
+  {
+   "file": "t3-quick-phone.png",
+   "label": "Today, right after the tap on LL (the second bid, Manning out of view) — the whole screen; at that moment: no bubble"
+  },
+  {
+   "file": "t3-foot-phone.png",
+   "label": "Today: a second bid, the Manning button out of view. Nothing at the foot."
+  },
+  {
+   "file": "b-drawn-foot-phone.png",
+   "label": "Drawn: the second bid’s bubble at the foot, in red"
+  },
+  {
+   "file": "b-drawn-foot-other-phone.png",
+   "label": "Drawn, other words: the second bid’s bubble at the foot"
+  },
+  {
+   "file": "td-quick-phone.png",
+   "label": "Today, right after the tap on OD — the whole screen; at that moment: the bubble under the Manning button, “This bid turns Available P red.”"
+  },
+  {
+   "file": "td-mid-phone.png",
+   "label": "Today: an overseas duty filed turns Available P red (28 → 27). The bubble says “This bid”, in amber."
+  },
+  {
+   "file": "d-drawn-mid-phone.png",
+   "label": "Drawn: the bubble names the overseas duty, in red"
+  },
+  {
+   "file": "t1-mid-desk.png",
+   "label": "Today: a bid turns Available P red (28 → 27). The bubble is amber."
+  },
+  {
+   "file": "a-drawn-mid-desk.png",
+   "label": "Drawn: the same bubble in red"
+  },
+  {
+   "file": "t2-mid-desk.png",
+   "label": "Today: a second bid takes Available P 27 → 26. No bubble."
+  },
+  {
+   "file": "b-drawn-mid-desk.png",
+   "label": "Drawn: the second bid raises the bubble too, in red"
+  },
+  {
+   "file": "b-drawn-mid-other-desk.png",
+   "label": "Drawn, other words: the second bid’s bubble"
+  },
+  {
+   "file": "c-drawn-mid-desk.png",
+   "label": "Drawn: IP made amber by hand (its figure left as it is), to show two rows. The bubble takes the worse level, red."
+  },
+  {
+   "file": "t1-foot-desk.png",
+   "label": "Today, the Manning button out of view: the bubble at the foot, amber"
+  },
+  {
+   "file": "a-drawn-foot-desk.png",
+   "label": "Drawn: the foot bubble in red"
+  },
+  {
+   "file": "t3-foot-desk.png",
+   "label": "Today: a second bid, the Manning button out of view. Nothing at the foot."
+  },
+  {
+   "file": "b-drawn-foot-desk.png",
+   "label": "Drawn: the second bid’s bubble at the foot, in red"
+  },
+  {
+   "file": "b-drawn-foot-other-desk.png",
+   "label": "Drawn, other words: the second bid’s bubble at the foot"
+  },
+  {
+   "file": "td-mid-desk.png",
+   "label": "Today: an overseas duty filed turns Available P red (28 → 27). The bubble says “This bid”, in amber."
+  },
+  {
+   "file": "d-drawn-mid-desk.png",
+   "label": "Drawn: the bubble names the overseas duty, in red"
+  }
+ ],
+ "colours": {
+  "RED_EDGE": "rgba(240, 85, 95, .7)",
+  "RED_INK": "#FFAAB0",
+  "RED_FILL": "#2e1418"
+ },
+ "words": {
+  "B1": "This bid takes Available P lower, still red.",
+  "B2": "This bid takes Available P further into the red.",
+  "C": "This bid turns IP amber and Available P red.",
+  "D": "This overseas duty turns Available P red."
+ }
+}

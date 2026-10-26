@@ -181,12 +181,16 @@ input.tm.sadash::placeholder{color:var(--ink-3);opacity:.55}
    not read as one more preset to pick */
 .cxquick .cxq-edit{border-style:dashed;border-color:var(--edge-2);color:var(--ink-3);margin-left:auto}
 .cxquick .cxq-edit:hover{border-color:var(--accent);color:var(--accent)}
+/* the app's ring on the Cancel sheet's reason chips, "✎ Edit" and the edit list's ▲ ▼ ✕ — they wore the browser's own
+   ([BATCH-14OCT-LEFTOVERS] (a), 21 Oct 26; the design look's K10, owner D830 — its list had not held them) */
+.cxquick button:focus-visible,.cxedit-mv:focus-visible,.cxedit-del:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* the inline template editor (add / rename / reorder / delete / reset) */
 .abtn.sm{padding:4px 9px;font-size:11px}
 .cxedit{margin-top:9px;border:1px solid var(--edge);border-radius:10px;padding:9px 10px;background:var(--bg)}
 .cxedit-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .cxedit-h b{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--ink-2)}
-.cxedit-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow:auto}
+.cxedit-list{display:flex;flex-direction:column;gap:5px;max-height:200px;overflow:auto;
+  padding:4px;margin:-4px}   /* room for the keyboard ring (2px, 2px off) inside the scroll box, which cut it; the layout unmoved */
 .cxedit-row{display:flex;align-items:center;gap:4px}
 .cxedit-name{flex:1 1 auto;min-width:0;background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;
   color:var(--ink);font:600 12px inherit;padding:5px 8px}
