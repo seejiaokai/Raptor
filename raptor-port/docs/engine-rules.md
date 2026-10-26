@@ -3427,7 +3427,7 @@ before accounts; evidence `docs/handpass/2026-09-25-req-one-row.md`).**
   leaves the incoming row out and says the week could not be read (`rowsLeftOut` → `away` 'unreadable', `drafts.ts
   rowsLeftSaid`); the edit, the delete and the week switch's re-filing are refused or skipped by the older lock on an
   unreadable week (`quarantine.ts` — every such week is protected), each door's own check a second guard behind it. The filing letter itself (`acc`) stays week-local — only the row is one across weeks. Pinned by
-  `state/reqorphan.test.ts`; the screen words: `ui-contracts.md` §The pending list. The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it,
+  `state/reqorphan.test.ts`; the screen words: `ui-contracts.md` §The pending list. The load's "Discard N edits" (`dayDiscardCount`) counts against the day as the load will leave it *[and, since [LW-LOAD-RELAND-RID] (26 Oct 26), with the load's reconcile mirrored: a request on the programme whose row the version does not hold is unfiled, and one that then cannot stand there (an overseas duty) goes with the load — one edit; a request's row put down by → Ground carries the working-out's own name for it, `r` + its id (`overlay.ts landedRid`), so a row the working-out lands again is the same row, never one off and one on]*,
   and the load no longer takes its "already at <version>" short cut when a row would be left out. Every door names each
   request left out in its sentence (toast and Edit history) through ONE body, `drafts.ts rowsLeftSaid` — "Bane · Meeting
   left out — it is on Tuesday's programme": the Load on the preview bar (week and board, one handler), the plans menu's
