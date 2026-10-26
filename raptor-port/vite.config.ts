@@ -1,6 +1,7 @@
 /// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { TimedSequencer } from './src/testing/timed-sequencer'
 
 export default defineConfig({
   /* relative asset paths, so the same build works served from the domain
@@ -9,6 +10,10 @@ export default defineConfig({
   base: './',
   plugins: [react()],
   test: {
+    /* GitHub's unit legs (`--shard=k/n`, .github/workflows/deploy.yml) split the files by their measured time, not
+       vitest's equal-count hash split, which put the heavy files on one machine ([CI-UNIT-SHARE-2-6], 21 Oct 26);
+       without --shard (his PC, `npm test`) it is vitest's own order. src/testing/timed-sequencer.ts. */
+    sequence: { sequencer: TimedSequencer },
     /* TWO PROJECTS, not one include list (16 Aug 26, the Leave War merge).
        The vendored Leave War suite needs three things Raptor's suite must
        not inherit: a fixed TZ (its date maths is proven UTC-safe by running

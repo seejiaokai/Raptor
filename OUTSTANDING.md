@@ -63,12 +63,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Schedule and amendments**
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
-- [RULES-TAG-OFF] — BUILT on pull request 555 (D1098): the tag off View and Edit Schedule; archive once it merges.
 - [ARM-STRIP-STALE-TITLE] — the "Planning …" strip keeps the title the line had when its seat was picked; a callsign typed after does not show (older; low).
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [OIL-NOTIFY-SEEN] — three small things left: a puck dropped on nothing says nothing, the ALL AVAIL chip out of reach, a crew-list puck on a sideways phone never scrolls the board.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
-- [INNERHTML-REPAINT-SWEEP] — eleven screens hand React their markup as a new object every repaint, which React sets again — a box being typed in there is thrown away by any repaint (Quals fixed in [KEYBOARD-SCROLL]); sweep the rest (low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
@@ -76,7 +74,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
 - [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
-- [BOARD-MODALS-ESCAPE] — the Scheduler Board's Duty templates, Day templates and Plans windows do not close on Escape (older; found by the round 3 walk).
+- [BOARD-MODALS-ESCAPE] — the Scheduler Board's Duty templates, Day templates and Plans windows do not close on Escape (older; found by the round 3 walk). BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live").
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
 - [REST-FIRST-CREW-HINT] — an empty formation gives no crew-rest hint for its first man — with caps and ops limits.
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
@@ -145,8 +143,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
-- [TRK-PINCH-OLD-EDGES] — two older edges of the chart's pinch: a throw in Edit chart layout, a stale zoom label.
-- [TRK-REFUSALS-UNTESTED] — tests only: several of the chart editor's refusals have no test.
+- [TRK-PINCH-MORE-EDGES] — three more older edges of the chart's pinch, all low (a third finger, a mouse after a lost lift, a sign-out mid-pinch).
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -166,7 +163,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock.
-- [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them.
+- [TRAFFIC-WIN-COVERS-UNDO] — with the Traffic window open the top bar's Undo cannot be pressed (older; found 21 Oct 26).
+- [WINDOWS-KEEP-KEYS] — the larger windows let Tab walk into the page behind them. The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"); its three low leftovers stay open.
+- [BOARD-ESCAPE-CLOSE] — Escape does not close the Scheduler Board, though the design guide says Escape closes what opened last (found by the walk of 24 Oct 26; older).
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
@@ -178,12 +177,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CI-UNIT-SHARE-2-6] — GitHub's check is now 5m33s, set by one unit share (raptor 2/6, 5m29s; the next 4m31s): the split is by a hash of each file's path, not by time — rebalance (more shares, or a time-based split) for about a minute (low).
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
-- [RULINGS-LF-PIN] — pin the rulings folders to LF line endings — with the next change that runs the full checks.
-- [DEPLOY-DOCS] — the deploy workflow's header still describes the old Pages site.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
@@ -250,18 +246,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [TRAFFIC-WIN-COVERS-UNDO] With the Traffic window open, the top bar's Undo cannot be pressed (found 21 Oct 26 by the walk of the schedule pages; older; low)
+The airspace Traffic window's backdrop lies over the top bar, so a press on Undo / Redo does nothing while it is open (a real click timed out at both sizes) and Ctrl+Z inside the window does nothing either; Undo works after Done. Older behaviour, not caused by [INNERHTML-REPAINT-SWEEP]. **To do:** decide with the window rules (D641 — a window leaves the page behind it working) whether the top bar stays pressable over this window. **Place:** the agent's; with the next windows job. **Evidence:** `raptor-port/docs/handpass/2026-10-21-schedule-pages.md` §4.
 ### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
 **What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`. **Step 1 done (the night of 21 Oct 26):** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` — 44 places; three rules wrong for a real single-seat jet (AAR training, an IRT in one jet's remarks, OCU solo); the app cannot tell single-seat from a back seat not yet filled; 8 questions for him with marked pictures — put to him when he says (D994).
-
-### [RULES-TAG-OFF] Take the RULES MODIFIED tag off View and Edit Schedule (his word, 21 Oct 26 — D1098)
-**What:** when a Logic setting is changed from the squadron standard, a yellow RULES MODIFIED tag shows above the Legend
-on View Schedule and Edit Schedule. His word: every squadron changes the rules to fit its own, so the tag goes from both
-pages. **Where:** the tag is drawn by the schedule pages' banner (`Shell.tsx` sets the page mark; `scheduler/01-logic.css`
-draws the words; `scheduler/04-pucks-sections.css` shows the banner only for it) — the banner holds nothing else, so it
-goes too. **Stays:** the Logic page's own strip ("N settings changed from the squadron standard"), and the page mark if
-anything else reads it (check first). **Check:** the Logic tests that pin the mark; the walk scripts and the IT guide's
-picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
-desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
 
 ### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
 **What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
@@ -411,7 +399,8 @@ needs one adds a line and names it in its closing report; he may strike any. **W
 **Seen (21 Oct 26, the overnight run):** the design checker flags the gold history dot in `raptor-port/src/ui/scheduler/20-changes-quals.css` as a "grid background" — a false alarm. An ignore for that one file was added that night and taken out by job 5's helper; adding it needs his OK. **Place:** Checks and tooling — low, his word.
 
 ### [ARM-STRIP-STALE-TITLE] The strip over the crew list keeps an old title (found 21 Oct 26 by the blind read of [BOARD-SIDE-WIDTH]; older)
-**Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list.
+**Seen (by reading):** the "Planning FCP · VL BFM" strip takes its words once, when the seat is picked (`raptor-port/src/state/view.ts` armSlot sets `ARM.title` from `slotTitle`), so a callsign or mission typed on that line afterwards does not show until the seat is picked again. **Fix:** draw the strip's title from `slotTitle(ARM.key)` at paint (`palette-html.ts armStripHTML`), with a test that types a callsign after picking. **Place:** small, with the next change to the crew list. **BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** as
+said (`palette-html.ts armStripHTML`; test `ui/armstrip.test.tsx`). Archived once it is live.
 
 ### [CREW-REASON-TWICE] A crossed-out man's reason says each fact once (his D1121, 21 Oct 26; a later job)
 **His words** (to round 2 of [BOARD-SIDE-WIDTH], whose "checked and left" item showed Grit's reason): *"Yeah we shouldnt have the reason explained twice. we can do that job later too"*. **What is there:** with a place picked, a man struck for an absence reads the kind's meaning, then his own remark — "medically down — cannot report to work (ATT C) — Medically down till 17 Jul", "ordinary medical leave (OML) — Medical leave 13 Jul" (`raptor-port/src/engine/avail.ts` slotBar and `inputs.ts` offWord build it; the same sentence is the note a tap raises and the ALL AVAIL window's reason). Picture: `raptor-port/docs/img/handpass/2026-10-21-board-side-width/look/crop-reason-repeat.png`. **To do:** a wording that keeps the kind's fact where his remark does not say it ("cannot report to work") and drops the repeat; put to him before and after, read cold first (`design-practices.md` §1a); the design guide's lesson 15. **Place:** a job of its own after [BOARD-SIDE-WIDTH], or with the words pass ([UI-SLEEK-PASS], D808) — his to place.
@@ -421,7 +410,9 @@ needs one adds a line and names it in its closing report; he may strike any. **W
 Manage templates) and the Plans window (the plans menu → Manage plans) stay open on Escape; each closes by its ✕ or Done. The
 design guide §2: Escape closes what opened last. **Place:** `raptor-port/src/ui/DutyTplModal.tsx`, `DayTplModal.tsx`,
 `DraftsModal.tsx` (no keydown handler). **To do:** Escape closes each, the keyboard back on the button that opened it — with
-the next keyboard batch.
+the next keyboard batch. **BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** each closes on Escape (the Scheduler Board behind it stays open), takes and keeps the
+keyboard, and gives it back to the button that opened its menu (`ui/sheetfocus.ts` `useEscClose`, `noteOpener`; test
+`ui/windowkeys.test.tsx`). Archived once it is live.
 
 ### [QUALS-HEAD-FINGER-CAPTURE] In Edit quals a heading dragged by a finger may never reach another column (found 21 Oct 26, the pinch-zoom job; older)
 **Seen (the test browser, a finger over CDP):** in Edit quals a finger pressed on a heading's words and slid across the
@@ -433,9 +424,6 @@ heading's padding may work. **Check first** on his iPhone (Safari's hold may dif
 go of the pressed element's own hold — `(e.target as Element).releasePointerCapture?.(e.pointerId)` — with a browser test
 that drags a heading by a finger. Not changed in the pinch job (a different gesture). **Place:** small, with the next Quals
 change.
-
-### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
-**Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.
 
 ### [HIST-JUMP-SEEN] Older small finds met by the check of the tap on a change (10 Oct 26) — none caused by that job; filed, not fixed
 Met by `[HIST-JUMP-EMPTY-SEAT]`'s build and walk (`raptor-port/docs/handpass/2026-10-10-hist-jump-empty-seat.md` §8); each is older than that change and on `main`. His to place; low. **(1) On the Scheduler Board, the lines about the area strip and the In-time / Rally are listed but cannot be tapped** — the board draws those boxes since it gained them, but the list that says "the board cannot show this" was never updated (`raptor-port/src/ui/histbubble.ts` `NO_BOARD_CELL`; a test, `histlist.test.tsx` "a detail the board cannot draw…", pins the old answer). One line and its test. **(2) An extra man put under a desk and taken off again reads "Static moved place 2 → place 2"** in the changes window (`raptor-port/src/ui/changesmodel.ts` — the two lines are folded into one "move"); it should read as put on, then taken off. Words. **(3) With the board looking at an older version, a tap on a "warning hidden" line stays on the older version** (`raptor-port/src/ui/interactions.ts jumpToWarnLine` — the same gap the tap on a change had; its own door, its own test). **(4) On a phone the passing note lies over the changes bar's "Show" for its two seconds** — every note does; on `claude/day-window-compact` D731 (1) moves the note to the top while a WINDOW is up, and the bar is not a window. **(5) Two limits of the new landing, told to him (the sheet's §0):** on View-only Sched a row nobody is left on has nothing to ring, so the sentence alone is said; a read-only page would need each row to carry its own address to do better — and the printed week must stay byte for byte the reference's. **As filed:** each small.
@@ -759,16 +747,6 @@ it changes, never per scroll event, because the whole grid re-renders on it — 
 show/hide it outside React; either needs a speed check (the re-render would land inside the scroll
 frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
 after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
-
-### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
-**STATUS 24 Sep 26: the DOCS half is DONE** in the spring clean — the Pages-era text of `raptor-port/CLAUDE.md` and
-`HANDOFF.md` moved whole to `raptor-port/docs/archive/`; the live rules are `.claude/rules/shipping.md` and
-`raptor-port/docs/gates-and-deploy.md` (its Now block); "done" means live on Vercel (D143); the "site is public"
-sentences corrected. **Left** (Astra's red team, finding 12): the header and comments of
-`.github/workflows/deploy.yml` and `raptor-port/scripts/handpass/live-check.mjs`, which still describe a Pages
-deploy — files that start the gates, so their own small change.
-
-`raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — half done 23 Sep 26 (D59)
 **18 Oct 26 (the backlog tidy):** the repo is PUBLIC today (GitHub says so) — made public for a short period under D106, for GitHub's faster machines. Making it private again, and restarting his PC's check runner (D89), is still open and his step.
@@ -1358,16 +1336,9 @@ call; two are the owner's call because they change wording or feel. The ledger a
 `raptor-port/docs/performance.md` (Part 2; §Dead ends says what not to retry). **Place:** when a speed complaint
 or a board change comes near one of them; put the two that change wording or feel to him first.
 
-### [RULINGS-LF-PIN] Pin the rulings files to LF line endings, with the next change that runs the checks (filed 24 Sep 26)
-A leftover of `[DOC-TRIM]` (archived 24 Sep 26). `.gitattributes` pins `OUTSTANDING.md`, `OUTSTANDING-ARCHIVE.md`,
-`DECISIONS.md` and `HANDOFF.md` to LF ([DOCS-GUARD] F4, 23 Sep 26), so no script or editor setting can rewrite every
-line of them at once — a whole-file diff is where a destroyed record hides. The rulings split (D137) added
-`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/` — and, since D390, the full rows under `.claude/decisions-full/` — which are NOT pinned; all of them are LF
-today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
-**Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
-workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
 
 ### [ITFLOW-OIL-RESHOOT] Re-shoot the IT flow guide's Leave War pictures once the OIL words change (29 Sep 26)
+**Also for the next re-shoot (21 Oct 26 — D1098):** J14's picture settings-4 framed the RULES MODIFIED tag on View-only Sched, which is gone; its script now frames the Logic page's strip and its words say so (`scripts/itflow/j/settings.mjs`, `content.mjs`) — the deck's picture is re-shot with the rest.
 **Also for the next re-shoot (12 Oct 26 — D773; Fable's second read of the one-rule job, finding 3):** the deck's "Print, export and data" slide still pictures the Inputs List's "Export to Excel", a button that is removed. Its sources are corrected (`raptor-port/scripts/itflow/j/export.mjs`, `content.mjs` — the shot is gone, the Admin → Data step is step 3); the built deck keeps the old slide until he asks for a re-shoot (D403).
 The IT flow guide (`raptor-port/docs/it-flow-guide/`, archived `[IT-FLOW-GUIDE]`) pictures the Leave War as it was on 29 Sep 26. The OIL
 award chat (`claude/award-earned-vs-granted-2ed66d`, `[OIL-AWARD-IS-A-GRANT]`, D402) changes the war's OIL words ("earned" / "awarded")
@@ -1385,13 +1356,6 @@ PR merged 29 Sep 26 (PR #469), so the change is ready to picture whenever he ask
 ### [LW-HALF-DAY-WORDS-LEFT] Two places still print a half day the old way (found 21 Oct 26 by the Leave War batch's walk, W2) — OPEN, older
 Since the batch every grid box, both sheets' chips and the Legend read a half day "<LL" / "LL>" (D264). Left: (1) the clash note prints a half-day OIL credit as "*HO" where the grid's box for it reads "HO*" — the two disagree, and neither is the arrow form (`leavewar/sync.ts` — the clash's `notationOf`; the box's own drawing to check); (2) the one-day sheet reopened on an AM box lights "Whole day" under How much, not "AM" (W2, scenario 32, older). Seen: `raptor-port/docs/handpass/parts/lws/w2.md`. **To do:** (1) one form for a half-day credit in both places, the arrow form if it fits the box (D264); (2) the sheet opens on the box's own half — check against D264 first. **Place:** low, with the next Leave War batch.
 **26 Oct 26 (main merged in, his D1402):** since the Leave War overhaul a half day on the grid is drawn by its box's size, the top or bottom of the day (D1160), and the Legend teaches that, not the arrow — this branch's arrow section of the Legend was dropped at the merge; the drag window now draws the one-day window's own leave buttons. Check (1) and (2) against today's screens before acting on either.
-
-### [TRK-REFUSALS-UNTESTED] Some of the Tracker chart editor's refusals have no gate test (found 29 Sep 26)
-Found by the IT flow guide's research into the Tracker (D414): no test in the gates drives → Connect or its refusals ("That link
-would create a loop", "That link already exists.", "A link can't start and end on the same event."), nor Edit poke-ball's link refusals
-("No such event", "cannot be its own prerequisite", "Those links would create a loop"), the course-name refusals (a name already
-used, a colon) or "Keep at least one course." Each was seen working in the running app; only the proof is missing. **To do:** add them
-to `scripts/tracker/smoke.mjs` (or `src/tracker/*.test.tsx`), one check each. **Place:** low; with the next Tracker batch.
 
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
 Found by the IT flow guide's research (`[IT-FLOW-GUIDE]`), with the browser's print stubbed and each call recorded: one press of
@@ -2030,8 +1994,8 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 ### [QUALS-PINNED-COLS-REFLOW] Quals' pinned header row keeps its measured column widths when a column reflows inside a table of the same width (met by the D993 read, 18 Oct 26) — OPEN, low
 **Older than D993, not changed by it.** On a desktop wider than the table (or a phone while the table sits at its least width), an undo of a remark or a rename, or a change arriving from elsewhere, can change one column's width while the table keeps its total width: nothing re-pins the row, so each pinned heading stands a few pixels off its column until the page is next scrolled back up and down. The sideways follow itself stays right (the table's range is unchanged); a change of the table's own width is caught (D993's read, F1). **To do:** watch the real header's cells as well (`QualsPage` `pin`), with a guard that skips a re-render when nothing moved; a test that reflows one column on a desktop. **Place (the agent's):** with the next Quals job.
 
-### [TRK-PINCH-OLD-EDGES] Two older edges of the Tracker chart's pinch, met by the code reads of [TRK-CHART-FPS] (18 Oct 26) — OPEN, low
-**Found by reading, not by him; older than D992, not changed by it.** (1) Edit chart layout switched on while a pinch runs (only with a third finger, through the menu) throws in the pinch's move: its start was taken for the other mode (`enablePinchZoom`, `raptor-port/src/tracker/app/core.js`). (2) A pinch ended by a lift lost to a redraw settles its zoom but leaves the zoom's % label stale and does not mark the zoom as his, so the next redraw fits the chart to the phone's width again. **To do:** a failing test for each, then end the pinch in the mode it began in, and run the ordinary end (`zoomIsMine`, `notify`) on the lost-lift path. **Place (the agent's):** with the next Tracker batch.
+### [TRK-PINCH-MORE-EDGES] Three more older edges of the Tracker chart's pinch, met by the code read of [TRK-PINCH-OLD-EDGES] (21 Oct 26) — OPEN, low
+**Found by reading, not by him; older behaviour, not changed or made worse by that job (its fix read said so).** In `enablePinchZoom` (`raptor-port/src/tracker/app/core.js`): (1) a third finger landing during a pinch, then one of the first two lifting: the remaining pair carries on against the first pair's starting spread and midpoint (`start.d`, `start.m0`), so the zoom jumps — re-take the start whenever the pair of fingers changes; (2) after a lift lost on an iPad (Safari only), a mouse or trackpad press never clears the pinch — the mouse returns before the lost-lift check — so the chart's mouse handlers ignore presses until the next touch; run the lost-lift recovery before the mouse's early return; (3) a sign-out during a pinch on the ordinary chart leaves it running, and its lift marks the zoom as the next person's (`zoomIsMine` is not reset at the session end) — end a running pinch at the session end. **To do:** a failing test for each, then the fix; a walk with real fingers for (1). **Place (the agent's):** with the next Tracker batch. The read: `raptor-port/docs/handpass/2026-10-21-tracker-small.md` §The code read.
 
 ### [IT-GUIDE-DATEBOX-SCRIPT] The IT flow guide's picture script still types into two date boxes that are buttons now (found 13 Oct 26 by the read of `[ONE-DATE-CALENDAR]`) — OPEN
 
@@ -2064,15 +2028,6 @@ not caught as a drag, so the box may still be armed and the next key replace the
 box. **To do:** at his next iPhone look at a time box, ask him to try both; fix whichever arms wrongly (`interactions.ts`
 armFreshTime). **Place:** low — with the next iPhone look at the board.
 
-### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
-React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed
-on the built app, 19 Oct 26: the same Quals table set again on a repaint that changed nothing). A screen that writes
-`dangerouslySetInnerHTML={{ __html: … }}` therefore throws its markup away on every repaint, with any box being typed in
-inside it. Quals was fixed in [KEYBOARD-SCROLL] (the object made once per change — `QualsPage.tsx` `tableInner`, pinned
-by `quals.test.tsx`). The rest: `ALPanel`, `AvailWindow`, `ChangesWindow`, `InputsCal`, `LogicPage`, `MedicalView`,
-`Modals`, `PeoplePick`, `SansCal`, `SansDay`, `Shell` — most hold no box to type in; the walk met no lost caret on the
-Inputs calendar, the SANS day or the Logic page. **To do:** for each, does its markup hold a box to type in, and does it
-repaint while one has the caret; where both, make the object once per change. **Place:** low — a sweep of its own.
 ### [LOOK-PENDING-COUNT] The 👁 look at the Original shows "1 pending" in its head while the working copy shows "2 pending" (walker D, the D605 walk, 6 Oct 26 — OLD; low)
 A published Tuesday; a man seated on a new line and a leave filed for him afterwards: the working copy's head reads
 "2 pending" ("Vandal · LL filed", "WAVE 3 added"), and the 👁 look at the Original, opened at the same moment, reads
@@ -2082,12 +2037,18 @@ not reproduced or explained by the host; nothing about a warning. **To do:** fin
 whether a pending chip belongs on a look at an issued version at all. **Place:** low — with the next change to the
 changes window or the version look.
 
+### [BOARD-ESCAPE-CLOSE] Escape does not close the Scheduler Board (found 24 Oct 26 by the walk of the windows-and-Escape batch; older)
+**Seen (the built app, 1440, walker A's B1):** with no window over it, Escape on the Scheduler Board does nothing; only ✓ Done closes it (D349 — "✓ Done only"). A comment in `raptor-port/src/ui/SchedBoard.tsx` said Escape and a tap on the scrim still closed it; it was corrected the same day. The design guide §2 (D812): Escape closes what opened last — the board is what opened last when no window is over it. **To do:** Escape closes the board as ✓ Done does, but only with the keyboard nowhere or on a button of the board — Escape in one of the board's own boxes still puts the old time or words back first (D1011), and a window over the board still answers first (`ui/sheetfocus.ts useEscClose`). **Place:** with the next keyboard batch, a test first.
+
 ### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
 The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the
 schedule behind them (the Tab route stands down; a box there still saves on leaving). The same on `main`. The six sheets fixed in the
 check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered
 the caret is on nothing (his place in a Tab run is lost); the red explanation refresh (AB-F2) has no test of its own; with several
 unnamed lines an unreadable clock is explained once per line under the box. **Place:** low — with the next change to those windows.
+**The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** a request's window opened from the schedule (on the Inputs page it is a window the page behind
+works with, D641, and holds nothing), Week insights, the document viewer and the Flying waves window take and keep the keyboard;
+Insights and Flying waves close on Escape too (test `ui/windowkeys.test.tsx`). **The three low leftovers above stay open.**
 
 ### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
 Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound
