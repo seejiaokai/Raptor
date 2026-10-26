@@ -1765,6 +1765,8 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 - Met again 22 Oct 26 (the Leave War overhaul's overnight run): a `cat > file <<'EOF'` holding a regex with a doubled backslash lost one backslash on the way (and this very note lost another when written by a script), and the script failed to parse; rewritten with the Write tool. A third meeting — the guard proposed above (scripts are always written with the Write tool, never a heredoc) is still the fix.
 - **Met again 25 Oct 26** (M3 FULL check, the read's Q8 test): `/\bj[lr]\b/` written into an e2e test through a Python string in a here-doc came out with backspaces; the test failed on its pattern, not the app, and a `python -c` fix through bash did the same again. The guard proposed: edit test and source files with the Edit tool, never a shell-quoted script, whenever the new text holds a backslash.
 
+- Met again 26 Oct 26 (claude/lw-other-goes-to-lock), three times: a JS template literal written through a quoted here-doc lost the backslash before an apostrophe (two test files would not parse), and a node -e with nested template literals lost a whole argument (a walk step). Each fixed by the Write or Edit tool. The guard the entry proposes is still not in place.
+
 ### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
 
 **Status:** OPEN
@@ -2337,3 +2339,18 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 **Suggested improvement:** In the order's LOOK row, add: "where an earlier walk script already pictures the surface, re-run that one step into a new folder — its old pictures are the before."
 
 **Principle:** A walk script written as assertions with a step filter is reusable evidence: the cheapest before/after is the old run's pictures beside the same step re-run.
+
+### Observation 711: A filed code-read finding names one case — test its siblings by the same mechanism before building its fix
+
+**Status:** OPEN
+**Date:** 2026-10-26
+**Session context:** building [LW-OD-DISCARD-COUNT], a reviewer's filed finding ("an overseas duty … reads Discard 2 edits") with the fix spelled out for overseas duties only
+**Skill:** systematic-debugging (and the bug-check order's scenario design)
+**Type:** open-source
+**Phase/Area:** reproducing a finding before fixing it
+
+**Issue:** The finding and its prescribed fix named one input kind. Writing the red test for that kind alone would have shipped a fix that left a sibling kind (a course, which reaches the same state by the same buttons) miscounting by the identical mechanism. A second sibling (a multi-day record) miscounted for a different reason and was correctly filed rather than folded in. The first red test also used the seed's multi-day record, which is NOT the finding's case, and failed for the other reason — easy to misread as "the fix does not work".
+
+**Suggested improvement:** In systematic-debugging's reproduce step: before fixing a filed finding, (1) reproduce exactly the case it names, matching its shape (one day vs several, etc.); (2) list the siblings that reach the same state through the same mechanism and add each as a parametrised red case; (3) a sibling that fails for a different cause is filed as its own item, not folded into the fix.
+
+**Principle:** A finding is a sample of a defect class, not the class. Reproduce the named case precisely, then probe the siblings that share its mechanism; widen the fix only to those that fail for the same cause.

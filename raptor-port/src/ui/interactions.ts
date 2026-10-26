@@ -31,7 +31,7 @@ import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { iuParts } from '../engine/keys'
-import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho } from './inputedit'
+import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
@@ -1031,6 +1031,8 @@ export function routeClick(e: MouseEvent) {
           const x = find()
           if (!x || !commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true, oil })) return false
           if (!acceptInput(di, find(), dest)) { HOOKS.toast(refusalWords(find() || x), 'warn'); throw new CmdRefused('the put-back was refused') }
+          /* a scheduler's move, marked in the same step (his D1388 — ui/inputedit.tsx markMoved) */
+          markMoved(find())
           /* …and the marks are settled inside the step: an issued row put back as it went out wears no "goes out" mark.
              Every other Accept ends in afterSchedMutate, whose epilogue does this; this one is its own command and
              has no such ending (the Opus read of the finished code, F1) */
@@ -1038,6 +1040,9 @@ export function routeClick(e: MouseEvent) {
           return true
         }).ok
       : dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
+    /* A SCHEDULER'S MOVE IS MARKED, before the command below records it (his D1388): from now on only a scheduler changes
+       where it stands — the member's window offers no Goes to, and his save leaves it here (ui/inputedit.tsx markMoved) */
+    if (ok && !oil) markMoved(inp)
     if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the

@@ -907,19 +907,29 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
   /* …AND as the working-out after it leaves it ([DB-READINESS] phase 6 (c) — Fable's round-2 F5; drafts.ts dayAsLoadLeaves):
      a deleted man stripped, the rows the holder brings back `kept`, a row re-made for what its request has changed since
      the version (a hand-over), and a request filed since landed again — none of those is discarded by the load */
-  const after=HOOKS.dayAsLoadLeaves?HOOKS.dayAsLoadLeaves(di,snap.d):(()=>{const left=rowsLeftOut(di,snap.d);return left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;})();
-  const units:any[]=canonicalUnits(after,DAYS[di],di);
+  const after0=HOOKS.dayAsLoadLeaves?HOOKS.dayAsLoadLeaves(di,snap.d):(()=>{const left=rowsLeftOut(di,snap.d);return left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;})();
   /* the filings are planned against the version's day with its rows as they went out — a row issued `kept` (dead) is not
      "landed" — exactly as the load plans them, before it marks `kept` anew (drafts.ts loadVersionToWorkingCopy; the FULL
      check's walk K2: counted against the worked-out day, the filing it puts back went uncounted and the button said the
      day "is already at" its version) */
   const asIssued=(()=>{const left=rowsLeftOut(di,snap.d);const c=JSON.parse(JSON.stringify(snap.d));return left.length?leaveRowsOut(c,left.map((x:any)=>x.id)):c;})();
+  /* …AND WITH THE REQUESTS IT PUTS BACK OFF THE PROGRAMME, OFF IT ([LW-OD-DISCARD-COUNT] — the M3 batch's third code read,
+     26 Oct 26). The working-out above lands a row for a request still carrying its programme filing — it does not simulate
+     the filings the load puts back — so an overseas duty published under Unavailable and since moved onto the Ground
+     Programme (D1393) stood in that day as a stand-in row beside the real one: "1 pending", "Discard 2 edits"; a course
+     the same (D1381, D1389). The plan is built first, and each request it files back under Unavailable ('u'), parks ('r'),
+     or — an overseas duty, which stands under Unavailable with no mark — puts back unmarked, loses its standing rows from a
+     copy of the day; its row and its filing are then one edit, as the day head counts them (D109, D114). */
+  const plan0=filingRestorePlan(di,snap.fil,asIssued);
+  const offProg=new Set<string>(plan0.put.filter((p:any)=>{const w=String(p.want||'');return w==='u'||w==='r'||(w===''&&isOD(p.inp.type));}).map((p:any)=>String(inpId(p.inp))));
+  const after=offProg.size&&after0&&Array.isArray(after0.ground)?{...after0,ground:after0.ground.filter((r:any)=>!(r&&!r.kept&&offProg.has(String(r.src))))}:after0;
+  const units:any[]=canonicalUnits(after,DAYS[di],di);
   const filOf=(p:any)=>({addr:`inp:${di}.${inpId(p.inp)}`,kind:'input',from:String(p.want||''),to:String(p.inp.acc||'')});
   /* [DISCARD-FILING-NOOP] (the one-rule walk, F1/F8, 12 Oct 26): a request filed since the version, put back "fresh",
      lands again in the working-out after the load (drafts.ts dayAsLoadLeaves — "a request filed since landed again"), so
      the load discards nothing of it: counting it read "Discard 1 edit & load" for a load that changed nothing */
   const relands=(id:any)=>['ground','allhands'].some((k:string)=>((after&&after[k])||[]).some((r:any)=>r&&r.src===id&&!r.kept));
-  const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
+  const lone=plan0.put.filter((p:any)=>{
     if(String(p.want||'')===''&&relands(inpId(p.inp))&&!isOD(p.inp.type))return false;   // an overseas duty the load takes off the programme does not land again (D1393 — the narrow read's N4)
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=filOf(p);return false;}

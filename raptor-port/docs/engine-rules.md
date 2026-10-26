@@ -728,6 +728,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   outright whenever a dormant record's TYPE changes (same pass: a retype is
   a different commitment, so it fails closed and counts; time/remark edits
   keep the park). Deleting the input says the same thing louder.
+  *[NARROWED 26 Oct 26 by his D1388 and D1399 — `[LW-OTHER-GOES-TO-LOCK]`: the park is a scheduler's move, so a MEMBER's retype
+  no longer clears it — his save leaves where a scheduler put an input (parked, under Unavailable or on the Ground
+  Programme), and a retype into a kind that cannot stand there (a leave or a medical parked) is refused with its
+  reason, so dormant leave still cannot arise. A scheduler's retype clears the park as above. Pinned by
+  `ui/goesheld.test.tsx`; the rule: `engine/inputs.ts placeOf` / `placeHeld`, `state/perms.ts mayMovePlace`.]*
 - **Half-days** (owner, 10 Aug 26). Leave and medical types (`half` in the
   table) can be booked AM (00:00–12:00), PM (12:01–23:59) or all day. Stored
   as the `s`/`e` minutes the record already had, plus a `half:'am'|'pm'`

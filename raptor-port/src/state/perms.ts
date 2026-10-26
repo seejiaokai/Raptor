@@ -26,7 +26,7 @@
    replaced did (stated per question), so no headless test changes meaning. */
 import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
-import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds } from '../engine/inputs'
+import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
@@ -303,6 +303,12 @@ function mayChangeInput(row: any, act: Act): boolean {
 /* may he change / delete this input? An admin; the man; its filer, for a kind he may file for others, switch on. */
 export const mayEditInput = (row: any): boolean => mayChangeInput(row, 'U')
 export const mayDeleteInput = (row: any): boolean => mayChangeInput(row, 'D')
+/* MAY HE CHANGE WHERE IT STANDS — its Goes to, or a retype that would land it elsewhere? (his D1388, 26 Oct 26 — "Once a
+   scheduler has moved a member's Other, should only a scheduler be able to change where it goes? … yes — otherwise the
+   member could quietly move it back".) A scheduler, always; anyone else only while no scheduler has moved it
+   (engine/inputs.ts placeHeld). The window's Goes to and the save ask it; the commit gate (inputBreach) holds every
+   member's command to it. No session → true, as every question here. */
+export const mayMovePlace = (row: any): boolean => roleOf() === null || mayEditSched() || !placeHeld(row)
 /* WHY THE FILER MAY NOT, for the screens' words (owner D731 (8), 10 Oct 26). With the members' switch off, the member
    who FILED a shared input was told "Only Ranger — who filed it — or an admin can change this" — and he is Ranger. This
    answers one thing: is the signed-in member this input's filer, kept from it by the switch alone? It grants and
@@ -315,7 +321,7 @@ export function filerSwitchedOff(rows: readonly any[]): boolean {
 }
 /* §11's own-row note for `Input`, word for word — perms.test.ts fails when docs/data-model.md says anything else
    (D200: "the server's rules at the database step are a translation of an agreed list") */
-export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler\'s marks on an input — cancelled with its reason, the red box, information only — are never mine to set or clear, on my own input too (D760); an input filed for ALL AVAIL / ALL counts as filed for another person — one of seven kinds, one day (D700, D711, D712, D713, D778)'
+export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler\'s marks on an input — cancelled with its reason, the red box, information only — are never mine to set or clear, on my own input too (D760); where an input stands — on the Ground Programme, under Unavailable or rejected — is never mine to change once a scheduler has moved it (`movedByScheduler`), by its Goes to or by changing its kind, on my own input too, and that mark is never mine to set or clear (D1388); an input filed for ALL AVAIL / ALL counts as filed for another person — one of seven kinds, one day (D700, D711, D712, D713, D778)'
 /* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
@@ -743,7 +749,15 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
      changed (one man split out of a cancelled input), which carries that record's. */
   { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info] : [false, '', false, false])
     const src = b || (env.changes.find(o => o !== c && isInputChange(o) && o.before != null && idsOf(f).some((p: any) => holds(o.before, p))) || {} as any).before || null
-    if (mk(f) !== mk(src)) return `a scheduler's mark on an input` }
+    if (mk(f) !== mk(src)) return `a scheduler's mark on an input`
+    /* …AND SO IS WHERE A SCHEDULER PUT IT (his D1388): the mark that he moved it is his to set and clear, and while it
+       stands — or his Reject does — a member's change leaves it where it is: under Unavailable, parked, or on the
+       Ground Programme. Asked of WHERE IT STANDS (engine/inputs.ts placeOf — the one answer the save keeps), never of the
+       stored marks: a leave stands under Unavailable by its kind with no mark, an overseas duty retyped out of one leaves
+       its Ground mark behind, and the programme's own 'g' comes and goes with the week — none of those moves it (the code
+       read's F1, 26 Oct 26: comparing the marks rolled back a retype that left it where it was). */
+    if (!!(src && src.schedPlaced) !== !!f.schedPlaced) return `a scheduler's move of an input`
+    if (b && placeHeld(b) && placeOf(b) !== placeOf(f)) return `where a scheduler put an input` }
   /* HIS OWN PART is taking himself OUT (D755 (3)). Putting himself INTO an input that holds others is adding a person
      to it — its filer's or a scheduler's (owner D763) — except as his own Undo putting him back, which is a replay. */
   if (own && b && idsOf(f).length > 1 && !holds(b, pid) && holds(f, pid) && !filedForOther(pid, b, f)) return `a person added to another person's input`

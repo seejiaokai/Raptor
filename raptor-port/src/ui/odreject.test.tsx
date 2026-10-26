@@ -11,10 +11,11 @@ import { SCHED } from '../engine/publish'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { dayOff, slotBar } from '../engine/avail'
-import { filingRestorePlan, dayFilingFingerprint } from '../engine/publish'
+import { filingRestorePlan, dayFilingFingerprint, dayDiscardCount, dayPendingItems, signOf, setDayApproved } from '../engine/publish'
+import { routeClick } from './interactions'
 import { availableFor } from '../leavewar/sync'
 import { PEOPLE } from '../engine/people'
-import { initStore } from '../state/store'
+import { initStore, writeInputs } from '../state/store'
 import { setSession } from '../state/auth'
 import { setPage } from '../state/view'
 import { warCounts } from '../leavewar/absences'
@@ -138,4 +139,37 @@ describe('Reject, then → Ground or → Unavail, as a course has (D1393)', () =
     expect(noticeParts(before, out, 'pike').map((n: any) => n.k)).toContain('unavoff')
     expect(noticeParts(out, { ...out, acc: 'u' }, 'pike').map((n: any) => n.k)).toContain('unav')
   })
+})
+
+/* [LW-OD-DISCARD-COUNT] — the M3 batch's third code read (26 Oct 26, PLAUSIBLE, filed): an overseas duty published under
+   Unavailable, then Reject and → Ground on that day, read "1 pending" while "Load onto working copy" offered "Discard 2
+   edits". One change waiting is one edit discarded (D109, D114). Red first; a course, which has the same way out (D1381,
+   D1389), miscounted the same way. */
+describe("the load's count for a request moved onto the Ground Programme after publishing ([LW-OD-DISCARD-COUNT])", () => {
+  const MON = 0
+  const press = (di: number, r: any, dest: 'x' | 'g' | 'u') => {
+    const b = el(accCtl(di, r)).querySelector(`[data-acc="${dest}"]`) as HTMLElement
+    expect(b, `the "${dest}" button`).toBeTruthy()
+    document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  const publish = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(di, true) }
+  const oneDay = (type: string) => {
+    const who = Object.keys(PEOPLE).find(id => !PEOPLE[id].special && !PEOPLE[id].archived && !(PEOPLE[id] as any).pers
+      && !INPUTS.some((i: any) => i.date === 'Jul 13' && (i.person === id || (i.people || []).some((x: any) => x.p === id)))) as string
+    const row: any = { iid: 'dc-' + type, person: who, type, date: 'Jul 13', yr: 2026, allday: true, remarks: '', mod: '', ...(type === 'CSE' ? { acc: 'u' } : {}) }
+    expect(writeInputs(() => { INPUTS.unshift(row) })).toBe(true)
+    return () => INPUTS.find((x: any) => x.iid === row.iid) as any
+  }
+  for (const type of ['OD', 'CSE']) {
+    it(`a one-day ${type} published under Unavailable, then Reject and → Ground: 1 pending, and the load discards 1 edit`, () => {
+      const r = oneDay(type)
+      publish(MON)
+      expect(dayPendingItems(MON).length, 'nothing waiting once published').toBe(0)
+      press(MON, r(), 'x'); press(MON, r(), 'g')
+      expect(DAYS[MON].ground.filter((x: any) => x && x.src === r().iid).length, 'its one row on the programme').toBe(1)
+      expect(dayPendingItems(MON).length, 'the day head: 1 pending').toBe(1)
+      expect(dayDiscardCount(MON), 'the load: Discard 1 edit').toBe(1)
+    })
+  }
 })
