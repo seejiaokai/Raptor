@@ -165,3 +165,9 @@ the Inputs page's window is `#inpEditPop.inped-win`). The host opened W6-1 (the 
 Pictures `docs/img/handpass/2026-10-24-windows-escape/merge-rewalk-1026/`; output `parts/we-merge-rewalk-1026.walk.txt`.
 
 Walk: 7 scenarios re-walked on the merged build (desktop 1440 and a phone 402 by touch), 7 PASS — `parts/we-merge-rewalk-1026.walk.txt`.
+
+**The merge's code read (26 Oct 26):** a fresh, blind Opus reader read only the merge — the branch's code in
+`inputedit.tsx`, `board.ts`, `palette-html.ts` and `sheetfocus.ts` beside main's newer code, at the merged commit —
+and found **nothing**: main's sixteen changes to a request's window add no window or question sheet inside it, the hold
+stays off on the Inputs page (`useSheetFocus(box, open && !win)`), the board's six hand-back calls are intact, and main
+left the keyboard helper and every window using it alone.
