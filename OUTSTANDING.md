@@ -126,6 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
+- [TRK-STRAY-SCROLLBARS] — scroll bars show in odd places on the Tracker (his report, 27 Oct 26 — D1405): first, before the keyboard fault and M4; pictures to him first.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -227,6 +228,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [TRK-STRAY-SCROLLBARS] Scroll bars show in odd places on the Tracker (his report, 27 Oct 26 — D1405)
+**His words:** *"There is a visual scroll bar showing at weird areas on the tracker maybe we fix that first"*. **To do:** find every scroll bar the Tracker draws, on a desktop (Windows draws them always) and on a phone; for each, whether it scrolls something real; pictures to him with the stray ones marked; fix, red first; a walk. **Place:** first (D1405), on `claude/trk-scrollbars`.
 
 ### [TRAFFIC-WIN-COVERS-UNDO] With the Traffic window open, the top bar's Undo cannot be pressed (found 21 Oct 26 by the walk of the schedule pages; older; low)
 The airspace Traffic window's backdrop lies over the top bar, so a press on Undo / Redo does nothing while it is open (a real click timed out at both sizes) and Ctrl+Z inside the window does nothing either; Undo works after Done. Older behaviour, not caused by [INNERHTML-REPAINT-SWEEP]. **To do:** decide with the window rules (D641 — a window leaves the page behind it working) whether the top bar stays pressable over this window. **Place:** the agent's; with the next windows job. **Evidence:** `raptor-port/docs/handpass/2026-10-21-schedule-pages.md` §4.

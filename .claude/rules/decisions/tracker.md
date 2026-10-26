@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1405 | 27 Oct 26 | The Tracker's scroll bars that show in odd places are found and fixed first, before the iPhone keyboard fault (D1366) and the Leave War overhaul's M4 (D1404). |
 | D1171 | 21 Oct 26 | Where a narrow desktop wraps the Tracker's bar onto two lines, the bar may be 2 taller than before, as built; its lines are not moved closer to hold the old height. |
 | D1170 | 21 Oct 26 | Every control on the Tracker's bar is as tall as its dropdowns — 30 on a desktop, 26 on a phone; the bar grows no taller and nothing moves, except where a narrow desktop wraps it (D1171). — changed by D1171 |
 | D1136 | 21 Oct 26 | On a desktop the Tracker's labels "Crew", "Course" and "Syllabus" are drawn in the small spaced capitals of Quals' "Viewing" — its size, weight, spacing and grey; the words stay and nothing on the bar moves. |

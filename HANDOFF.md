@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/trk-scrollbars -->
+### `claude/trk-scrollbars` — the Tracker's stray scroll bars ([TRK-STRAY-SCROLLBARS], his D1405) — written 27 Oct 26, verify before use
+- **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.
+- **Where it started:** this chat (91% full) after the night of 26–27 Oct 26; his report that scroll bars show in odd places on the Tracker, "maybe we fix that first" (D1405). Branch cut from `main` at 965a48c80.
+- **Step in hand:** find every scroll bar the Tracker draws (desktop and phone), mark the stray ones in pictures for him; nothing changes before his look (D853).
+- **Then:** the keyboard fault (Fable, D1366), then the overhaul's M4 (D1404).
+- **Pick up here (a fresh chat — his word, 27 Oct 26):** nothing built yet. On this branch: build `main`, open the Tracker on a desktop (Windows Chrome draws scroll bars always — the PC at 125%, memory owner-pc-display-125-percent) and on a phone; list every element showing a scroll bar and whether it scrolls something real (the chart board, the Info half, a list, a window); pictures with the stray ones marked (D853, D1222 — cut to the area); ask him which go, with a recommendation; then fix red first (a browser test that no stray element is scrollable), WALK tier, a fresh blind Opus read, its PR.
+- **Opening line:** Level this chat with main: git fetch origin, git switch claude/trk-scrollbars (if refused because another worktree holds it: git switch --detach origin/claude/trk-scrollbars, then git switch -C claude/trk-scrollbars). Then read HANDOFF.md — the claude/trk-scrollbars block under ## Now — and carry on from its "Pick up here" (the Tracker's stray scroll bars, D1405). Check Remote Control is on for this chat and switch it on if not.
+<!-- /now -->
 <!-- now:claude/sync-main-handoff-fe9391 -->
 ### `claude/sync-main-handoff-fe9391` — THE NIGHT OF 26–27 OCT 26 (/overnight, 12 hours): DONE — the six old pull requests LIVE; jobs 1 and 2 waiting for his look; job 3 on this branch — written 27 Oct 26, verify before use
 - **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time. (None happened; the chat reached about 91%.)
