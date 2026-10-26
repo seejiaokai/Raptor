@@ -68,6 +68,11 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1108 | 21 Oct 26 | On a phone, Quals can be pinched to zoom in and out, as the Scheduler Board's desktop layout can (D1107), so its wide table can be seen whole or read close. — changed by D1110 |
+| D1105 | 21 Oct 26 | A posting out with Delete chosen says plainly that the app deletes him by itself on the date: the sheet's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck.", and until the date his row reads "posting out <date> · auto delete"; the button stays "Delete" (D298). |
+| D1102 | 21 Oct 26 | On the Post out sheet, changing the date of a posting whose outcome is Delete to today or earlier asks the same tap-twice question as the Delete button before he is deleted; the date is not saved until the second tap. |
+| D1101 | 21 Oct 26 | The app is deployed separately for each aircraft type — F-15, F-16, F-35 — each with its own database; one code base still serves them all (D1100), and the squadrons of one type, with their detachments, share that type's database. |
+| D1100 | 21 Oct 26 | One app is built for every squadron and aircraft type (F-15, F-16, F-35), each squadron configuring it inside the app, with an aircraft-type setting that carries its rules; detachments and squadrons sharing people by day or period come at the end, after the F-15 app's faults are fixed, and work before then avoids what would have to be redone. — changed by D1101 |
 | D1129 | 21 Oct 26 | While editing Quals, "Edit quals" is plain grey until pressed, as "✎ Edit" is, so "Done" is the one bright-blue button — the way out; pressed, it still reads "✕ Edit quals", plain, and what it does is unchanged. |
 | D1128 | 21 Oct 26 | Quals' edit buttons read as Logic's: "✎ Edit" in plain grey to start, "Done" in the bright blue while editing — in place of "Enable editing" (blue) and "Save changes" ("Save" on a phone, plain); what each does is unchanged. |
 | D1110 | 21 Oct 26 | On a phone a pinch on Quals zooms the table only: the top bar, Enable editing, Export, the filter and the Pilots · WSOs · Personnel · All switch stay as they are; the heading row and the name column stay pinned and lined up; it zooms out until the whole table's width fits and in to twice normal, and keeps its zoom while he stays on Quals. |
@@ -90,7 +95,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D306 | 27 Sep 26 | A posting that would leave no admin able to sign in waits, whole, until another admin can |
 | D304 | 27 Sep 26 | A delete counts from the real calendar date, as built. |
 | D303 | 27 Sep 26 | A posting with no chip chosen stays: "off the manpower, nothing else". |
-| D300 | 27 Sep 26 | The post-out sheet says each thing once: the date in its box, one line for what happens on it ("On 14 Oct: archived on Quals, account suspended."), and a button that reads just "Post out". |
+| D300 | 27 Sep 26 | The post-out sheet says each thing once: the date in its box, one line for what happens on it ("On 14 Oct: archived on Quals, account suspended."), and a button that reads just "Post out"; for Delete the line says the app deletes him automatically and his row reads "· auto delete" until the date (D1105). — changed by D1105 |
 | D299 | 27 Sep 26 | A delete takes him out of today and the future while the past keeps its record of him — his pucks on days flown, his past leave and OIL, his inputs and signatures, the history; the post-out mock-up, trimmed to say each thing once (D300), is the design of record for [POST-OUT-OUTCOMES]. — changed by D981, D300 |
 | D298 | 27 Sep 26 | The post-out chip reads "Delete", not "Fully delete". |
 | D297 | 27 Sep 26 | A man deleted for leaving flying for good keeps his puck on every day he already flew — published or not — and is taken off every day still to come |
@@ -102,13 +107,13 @@ scrolls it sideways: `inputs.md` (D893).
 | D290 | 27 Sep 26 | A man deleted for leaving flying for good (D287) is kept underneath as a hidden "deleted" mark — never erased. |
 | D289 | 27 Sep 26 | A community is the squadrons flying one aircraft type (F-15, F-16), and a guest from another community is always marked as one. |
 | D288 | 27 Sep 26 | Callsigns are unique within a community, not across the app. |
-| D287 | 26 Sep 26 | A man who leaves flying for good is deleted — his account and his person, from every list and every day still to come — while every day he already flew keeps his puck (D297) and the past keeps his record (D299); he is kept underneath as a hidden mark (D290); the delete asks twice. — changed by D299, D297, D290 |
+| D287 | 26 Sep 26 | A man who leaves flying for good is deleted — his account and his person, from every list and every day still to come — while every day he already flew keeps his puck (D297) and the past keeps his record (D299); he is kept underneath as a hidden mark (D290); the delete asks twice, and so does the date that sets one off (D1102). — changed by D1102, D299, D297, D290 |
 | D286 | 26 Sep 26 | An archived man's callsign may be given to a new person. If the archived man is later restored while his callsign is in use, one of the two must be renamed first. |
 | D285 | 26 Sep 26 | The account buttons read "Suspend" / "Enable" and "Delete account". |
 | D284 | 26 Sep 26 | A man back from overseas returns as he was — his Quals kept — and the app prompts the admin to update them. |
 | D283 | 26 Sep 26 | A man posted out as SANS: on the posting-out date he becomes SANS. With "Show SANS" off, the Leave War still shows him, marked posted out, and does not track his leave; with "Show SANS" on, he moves into the SANS group that day and his leave is tracked there. |
 | D282 | 26 Sep 26 | Neighbouring squadrons plan each other's people as a matter of course — not only while a man is being posted. |
-| D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's. — changed by D282 |
+| D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's; one app may serve every squadron and type, a man lent to another (D1100). — changed by D1100, D282 |
 | D280 | 26 Sep 26 | An account can be suspended and enabled again (a man away, then back) and deleted (a man who leaves flying for good) — a delete now takes the person too (D287). — changed by D287 |
 | D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D287, D283 |
 | D227 | 26 Sep 26 | Each admin's bell is his own (D216's "he" read per admin). |
