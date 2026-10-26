@@ -1,0 +1,485 @@
+{
+  "version": "trk-small-walk v6 (re-walk)",
+  "served": "assets/index-B_5qC1GR.js",
+  "local": "index-B_5qC1GR.js",
+  "rows": [
+    {
+      "id": "P1",
+      "name": "phone: ordinary pinch on a ball",
+      "expected": "the ball stays under the fingers within 6px; the label changes and equals round(zoom*100); no page error",
+      "pass": true,
+      "detail": "ball CFT-01 0.5px from the fingers' end (216,451); zoom 0.4->1.029; label 40%->103% (round(zoom*100)=103); wrap transform \"\"",
+      "method": null,
+      "pics": [
+        "P1-1-before.png",
+        "P1-2-after.png"
+      ],
+      "errors": [],
+      "measured": {
+        "ball": "CFT-01",
+        "drift": 0.5,
+        "before": {
+          "z": 0.4,
+          "pct": "40%"
+        },
+        "after": {
+          "z": 1.029,
+          "pct": "103%"
+        }
+      }
+    },
+    {
+      "id": "P4",
+      "name": "phone: Edit chart layout switched ON under a pinch",
+      "expected": "no page error; Edit chart layout on; #viewport does not change during the moves after the switch nor at the lift; a fresh pinch zooms the canvas; Done brings back the ordinary chart with label = zoom",
+      "pass": true,
+      "detail": "method b: a mouse click on the button while the two touch fingers were held ((a) a third touch point did not press it); ok mode switched (arrange true, button text) [arrange=true btn=\"✓ Done editing chart\"] | ok moves after the switch were delivered to the board (positive proof) [pointermoves seen=16] | ok #viewport transform unchanged by the moves [translate(-1.0,-85.0) scale(0.400) -> translate(-1.0,-85.0) scale(0.400)] | ok #viewport transform unchanged at the lift [translate(-1.0,-85.0) scale(0.400) -> translate(-1.0,-85.0) scale(0.400)] | ok the button reads \"✓ Done editing chart\" after the lift [\"✓ Done editing chart\" arrange=true] | ok a fresh pinch on empty canvas zooms the canvas, point kept within 6px [canvas point under the fingers moved 2.9px; view translate(-1.0,-85.0) scale(0.400) -> translate(-375.0,-681.0) scale(1.200)] | ok \"✓ Done editing chart\" brings the ordinary chart back, label = round(zoom*100) [arrange=false label 120% zoom 1.2]",
+      "method": "b: a mouse click on the button while the two touch fingers were held",
+      "pics": [
+        "P4-1-before.png",
+        "P4-2-two-fingers-spread-menu-open.png",
+        "P4-3-after-the-switch-fingers-still-down.png",
+        "P4-4-after-more-moves-fingers-still-down.png",
+        "P4-5-after-the-lift.png",
+        "P4-6-fresh-edit-pinch-1-before.png",
+        "P4-6-fresh-edit-pinch-2-after.png",
+        "P4-7-back-to-the-ordinary-chart.png"
+      ],
+      "errors": [],
+      "measured": {
+        "checks": [
+          {
+            "n": "mode switched (arrange true, button text)",
+            "ok": true,
+            "v": "arrange=true btn=\"✓ Done editing chart\""
+          },
+          {
+            "n": "moves after the switch were delivered to the board (positive proof)",
+            "ok": true,
+            "v": "pointermoves seen=16"
+          },
+          {
+            "n": "#viewport transform unchanged by the moves",
+            "ok": true,
+            "v": "translate(-1.0,-85.0) scale(0.400) -> translate(-1.0,-85.0) scale(0.400)"
+          },
+          {
+            "n": "#viewport transform unchanged at the lift",
+            "ok": true,
+            "v": "translate(-1.0,-85.0) scale(0.400) -> translate(-1.0,-85.0) scale(0.400)"
+          },
+          {
+            "n": "the button reads \"✓ Done editing chart\" after the lift",
+            "ok": true,
+            "v": "\"✓ Done editing chart\" arrange=true"
+          },
+          {
+            "n": "a fresh pinch on empty canvas zooms the canvas, point kept within 6px",
+            "ok": true,
+            "v": "canvas point under the fingers moved 2.9px; view translate(-1.0,-85.0) scale(0.400) -> translate(-375.0,-681.0) scale(1.200)"
+          },
+          {
+            "n": "\"✓ Done editing chart\" brings the ordinary chart back, label = round(zoom*100)",
+            "ok": true,
+            "v": "arrange=false label 120% zoom 1.2"
+          }
+        ],
+        "s0": {
+          "z": 0.4,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "40%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 307,
+          "sl": 0,
+          "pop": false
+        },
+        "sDown": {
+          "z": 0.4,
+          "wt": "translate(0px, 0px) scale(1.5825)",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "40%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 307,
+          "sl": 0,
+          "pop": false
+        },
+        "sSw": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-85.0) scale(0.400)",
+          "pct": "40%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        },
+        "sMoves": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-85.0) scale(0.400)",
+          "pct": "40%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        },
+        "sLift": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-85.0) scale(0.400)",
+          "pct": "40%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        }
+      }
+    },
+    {
+      "id": "P5",
+      "name": "phone: Edit chart layout switched OFF under a pinch",
+      "expected": "no page error; ordinary chart back; label and zoom do not change during the moves after the switch nor at the lift; a fresh ordinary pinch works",
+      "pass": true,
+      "detail": "method b: a mouse click on the button while the two touch fingers were held ((a) a third touch point did not press it); ok mode switched (arrange false, button text) [arrange=false btn=\"✎ Edit chart layout\"] | ok moves after the switch were delivered to the board (positive proof) [pointermoves seen=32] | ok zoom unchanged by the moves [z 0.633333 -> 0.633333; wrap transform \"\" -> \"\"] | ok label unchanged by the moves [63% -> 63%] | ok zoom and label unchanged at the lift [z 0.633333 -> 0.633333; label 63% -> 63%; wrap transform \"\"] | ok ordinary chart is back (not Edit chart layout) [arrange=false] | ok label equals round(zoom*100) after the switch [label 63%, zoom 0.633333] | ok a fresh ordinary pinch works as P1 [ball CFT-01 0.2px from the fingers' end (224,445); zoom 0.633333->1.629; label 63%->163% (round(zoom*100)=163); wrap transform \"\"]",
+      "method": "b: a mouse click on the button while the two touch fingers were held",
+      "pics": [
+        "P5-1-before.png",
+        "P5-2-two-fingers-spread-menu-open.png",
+        "P5-3-after-the-switch-fingers-still-down.png",
+        "P5-4-after-more-moves-fingers-still-down.png",
+        "P5-5-after-the-lift.png",
+        "P5-6-fresh-ordinary-pinch-1-before.png",
+        "P5-6-fresh-ordinary-pinch-2-after.png"
+      ],
+      "errors": [],
+      "measured": {
+        "checks": [
+          {
+            "n": "mode switched (arrange false, button text)",
+            "ok": true,
+            "v": "arrange=false btn=\"✎ Edit chart layout\""
+          },
+          {
+            "n": "moves after the switch were delivered to the board (positive proof)",
+            "ok": true,
+            "v": "pointermoves seen=32"
+          },
+          {
+            "n": "zoom unchanged by the moves",
+            "ok": true,
+            "v": "z 0.633333 -> 0.633333; wrap transform \"\" -> \"\""
+          },
+          {
+            "n": "label unchanged by the moves",
+            "ok": true,
+            "v": "63% -> 63%"
+          },
+          {
+            "n": "zoom and label unchanged at the lift",
+            "ok": true,
+            "v": "z 0.633333 -> 0.633333; label 63% -> 63%; wrap transform \"\""
+          },
+          {
+            "n": "ordinary chart is back (not Edit chart layout)",
+            "ok": true,
+            "v": "arrange=false"
+          },
+          {
+            "n": "label equals round(zoom*100) after the switch",
+            "ok": true,
+            "v": "label 63%, zoom 0.633333"
+          },
+          {
+            "n": "a fresh ordinary pinch works as P1",
+            "ok": true,
+            "v": "ball CFT-01 0.2px from the fingers' end (224,445); zoom 0.633333->1.629; label 63%->163% (round(zoom*100)=163); wrap transform \"\""
+          }
+        ],
+        "s0": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-87.0) scale(0.400)",
+          "pct": "40%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        },
+        "sDown": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-110.1,-274.8) scale(0.633)",
+          "pct": "40%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        },
+        "sSw": {
+          "z": 0.633333,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "63%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 497,
+          "sl": 304,
+          "pop": false
+        },
+        "sMoves": {
+          "z": 0.633333,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "63%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 497,
+          "sl": 304,
+          "pop": false
+        },
+        "sLift": {
+          "z": 0.633333,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "63%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 497,
+          "sl": 304,
+          "pop": false
+        }
+      }
+    },
+    {
+      "id": "P8",
+      "name": "phone: Edit chart layout switched on and straight off again under a pinch, fingers held still",
+      "expected": "no page error; after the lift label and zoom equal what they were after the second press; no inline transform left",
+      "pass": true,
+      "detail": "ok the chart was stretched under the fingers (positive proof) [wrap transform \"translate(0px, 0px) scale(1.6675)\"] | ok first press switched Edit chart layout on [arrange=true] | ok second press brought the ordinary chart back [arrange=false btn=\"✎ Edit chart layout\"] | ok zoom unchanged by the lift [zoom 0.4 -> 0.4 (zoom before the pinch 0.4)] | ok label unchanged by the lift and = round(zoom*100) [label 40% -> 40%, zoom 0.4] | ok no inline transform left on the chart [\"\"] | ok still the ordinary chart [arrange=false]",
+      "method": null,
+      "pics": [
+        "P8-1-before.png",
+        "P8-2-two-fingers-spread-chart-stretched.png",
+        "P8-3-edit-chart-layout-on-fingers-held-still.png",
+        "P8-4-switched-off-again-fingers-still-held.png",
+        "P8-5-after-the-lift.png"
+      ],
+      "errors": [],
+      "measured": {
+        "s0": {
+          "z": 0.4,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "40%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 303,
+          "sl": 0,
+          "pop": false
+        },
+        "sDown": {
+          "z": 0.4,
+          "wt": "translate(0px, 0px) scale(1.6675)",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "40%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 303,
+          "sl": 0,
+          "pop": false
+        },
+        "sOn": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-81.0) scale(0.400)",
+          "pct": "40%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        },
+        "sA": {
+          "z": 0.4,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "40%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 303,
+          "sl": 0,
+          "pop": false
+        },
+        "sL": {
+          "z": 0.4,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "40%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 303,
+          "sl": 0,
+          "pop": false
+        },
+        "checks": [
+          {
+            "n": "the chart was stretched under the fingers (positive proof)",
+            "ok": true,
+            "v": "wrap transform \"translate(0px, 0px) scale(1.6675)\""
+          },
+          {
+            "n": "first press switched Edit chart layout on",
+            "ok": true,
+            "v": "arrange=true"
+          },
+          {
+            "n": "second press brought the ordinary chart back",
+            "ok": true,
+            "v": "arrange=false btn=\"✎ Edit chart layout\""
+          },
+          {
+            "n": "zoom unchanged by the lift",
+            "ok": true,
+            "v": "zoom 0.4 -> 0.4 (zoom before the pinch 0.4)"
+          },
+          {
+            "n": "label unchanged by the lift and = round(zoom*100)",
+            "ok": true,
+            "v": "label 40% -> 40%, zoom 0.4"
+          },
+          {
+            "n": "no inline transform left on the chart",
+            "ok": true,
+            "v": "\"\""
+          },
+          {
+            "n": "still the ordinary chart",
+            "ok": true,
+            "v": "arrange=false"
+          }
+        ]
+      }
+    },
+    {
+      "id": "D2",
+      "name": "desktop with touch: Edit chart layout switched ON under a pinch",
+      "expected": "as P4",
+      "pass": true,
+      "detail": "method b: a mouse click on the button while the two touch fingers were held ((a) a third touch point did not press it); ok mode switched (arrange true, button text) [arrange=true btn=\"✓ Done editing chart\"] | ok moves after the switch were delivered to the board (positive proof) [pointermoves seen=16] | ok #viewport transform unchanged by the moves [translate(-1.0,-51.5) scale(1.000) -> translate(-1.0,-51.5) scale(1.000)] | ok #viewport transform unchanged at the lift [translate(-1.0,-51.5) scale(1.000) -> translate(-1.0,-51.5) scale(1.000)] | ok the button reads \"✓ Done editing chart\" after the lift [\"✓ Done editing chart\" arrange=true] | ok a fresh pinch on empty canvas zooms the canvas, point kept within 6px [canvas point under the fingers moved 2.8px; view translate(-1.0,-51.5) scale(1.000) -> translate(-1013.0,-800.5) scale(3.000)] | ok \"✓ Done editing chart\" brings the ordinary chart back, label = round(zoom*100) [arrange=false label 300% zoom 3]",
+      "method": "b: a mouse click on the button while the two touch fingers were held",
+      "pics": [
+        "D2-1-before.png",
+        "D2-2-two-fingers-spread-menu-open.png",
+        "D2-3-after-the-switch-fingers-still-down.png",
+        "D2-4-after-more-moves-fingers-still-down.png",
+        "D2-5-after-the-lift.png",
+        "D2-6-fresh-edit-pinch-1-before.png",
+        "D2-6-fresh-edit-pinch-2-after.png",
+        "D2-7-back-to-the-ordinary-chart.png"
+      ],
+      "errors": [],
+      "measured": {
+        "checks": [
+          {
+            "n": "mode switched (arrange true, button text)",
+            "ok": true,
+            "v": "arrange=true btn=\"✓ Done editing chart\""
+          },
+          {
+            "n": "moves after the switch were delivered to the board (positive proof)",
+            "ok": true,
+            "v": "pointermoves seen=16"
+          },
+          {
+            "n": "#viewport transform unchanged by the moves",
+            "ok": true,
+            "v": "translate(-1.0,-51.5) scale(1.000) -> translate(-1.0,-51.5) scale(1.000)"
+          },
+          {
+            "n": "#viewport transform unchanged at the lift",
+            "ok": true,
+            "v": "translate(-1.0,-51.5) scale(1.000) -> translate(-1.0,-51.5) scale(1.000)"
+          },
+          {
+            "n": "the button reads \"✓ Done editing chart\" after the lift",
+            "ok": true,
+            "v": "\"✓ Done editing chart\" arrange=true"
+          },
+          {
+            "n": "a fresh pinch on empty canvas zooms the canvas, point kept within 6px",
+            "ok": true,
+            "v": "canvas point under the fingers moved 2.8px; view translate(-1.0,-51.5) scale(1.000) -> translate(-1013.0,-800.5) scale(3.000)"
+          },
+          {
+            "n": "\"✓ Done editing chart\" brings the ordinary chart back, label = round(zoom*100)",
+            "ok": true,
+            "v": "arrange=false label 300% zoom 3"
+          }
+        ],
+        "s0": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "100%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 380,
+          "sl": 0,
+          "pop": false
+        },
+        "sDown": {
+          "z": 1,
+          "wt": "translate(0px, 0px) scale(1.583)",
+          "view": "translate(0.0,0.0) scale(1.000)",
+          "pct": "100%",
+          "arrange": false,
+          "btn": "✎ Edit chart layout",
+          "st": 380,
+          "sl": 0,
+          "pop": false
+        },
+        "sSw": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-51.5) scale(1.000)",
+          "pct": "100%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        },
+        "sMoves": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-51.5) scale(1.000)",
+          "pct": "100%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        },
+        "sLift": {
+          "z": 1,
+          "wt": "",
+          "view": "translate(-1.0,-51.5) scale(1.000)",
+          "pct": "100%",
+          "arrange": true,
+          "btn": "✓ Done editing chart",
+          "st": 0,
+          "sl": 0,
+          "pop": false
+        }
+      }
+    }
+  ]
+}
