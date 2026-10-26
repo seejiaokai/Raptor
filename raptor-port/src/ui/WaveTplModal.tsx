@@ -36,6 +36,7 @@ import { WAVEEDIT, setWaveEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { clickedOutside } from './outside'
+import { useSheetFocus, useEscClose } from './sheetfocus'
 
 /* inline glyphs — crisp at any size and theme-safe (stroke:currentColor), the same
    reason the board's own icons are inline SVG (moved here from WaveManageSheet). */
@@ -46,6 +47,12 @@ export function WaveTplModal() {
   useVersion()
   const [sel, setSel] = useState<string | null>(null)
   const timeBuf = useRef('')
+  /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
+     opened it ([WINDOWS-KEEP-KEYS], [BOARD-MODALS-ESCAPE] — ui/sheetfocus.ts); before the early return, as hooks must be */
+  const boxRef = useRef<HTMLDivElement>(null)
+  const open = WAVEEDIT && !(SESSION && !isAdmin())
+  useSheetFocus(boxRef, !!open)
+  useEscClose(boxRef, !!open, () => { setWaveEdit(false); notify() })
   /* GATE THE WHOLE EDITOR ON THE ROLE, not just the two admin-gated openers
      (bug hunt, 31 Aug 26 — point-2 authority sweep). The + Wave ⚙ and the Admin
      button both refuse a member, but the flag they set (WAVEEDIT) is NOT cleared
@@ -59,7 +66,7 @@ export function WaveTplModal() {
      The test is `SESSION && role !== 'admin'`, NOT `!canEditSched()`, so a
      sessionless test/boot context is not mistaken for a member (the same idiom
      the archive and inputedit write-path backstops use). */
-  if (!WAVEEDIT || (SESSION && !isAdmin())) return <div className="modal" id="waveTplModal" hidden />
+  if (!open) return <div className="modal" id="waveTplModal" hidden />
 
   const canEdit = canEditSched()
   /* the selected id can go stale (a delete, or first open), so fall back to the
@@ -89,7 +96,7 @@ export function WaveTplModal() {
 
   return (
     <div className="modal" id="waveTplModal" onClick={e => { if (clickedOutside(e, 'waveTplModal')) close() }}>
-      <div className="modal-box" style={{ width: 480 }}>
+      <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 480, outline: 'none' }}>
         <div className="modal-head"><b>Flying waves</b><button className="x" id="waveTplClose" onClick={close}>✕</button></div>
         <div className="modal-body">
           {/* WAVE TYPES — show / hide the four built-in rule-sets (folded in from the

@@ -6298,6 +6298,46 @@ would create a loop", "That link already exists.", "A link can't start and end o
 ("No such event", "cannot be its own prerequisite", "Those links would create a loop"), the course-name refusals (a name already
 used, a colon) or "Keep at least one course." Each was seen working in the running app; only the proof is missing. **To do:** add them
 to `scripts/tracker/smoke.mjs` (or `src/tracker/*.test.tsx`), one check each. **Place:** low; with the next Tracker batch.
+*Moved here 2026-10-21 by backlog-archive.mjs ([INNERHTML-REPAINT-SWEEP]). Forward facts: `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`.*
+
+### [INNERHTML-REPAINT-SWEEP] A box inside markup React sets again on every repaint loses its caret (found 19 Oct 26 — the D1048 walk, walker A's A12; low)
+React sets a `dangerouslySetInnerHTML` again whenever its object is a new one, not only when the markup differs (probed
+on the built app, 19 Oct 26: the same Quals table set again on a repaint that changed nothing). A screen that writes
+`dangerouslySetInnerHTML={{ __html: … }}` therefore throws its markup away on every repaint, with any box being typed in
+inside it. Quals was fixed in [KEYBOARD-SCROLL] (the object made once per change — `QualsPage.tsx` `tableInner`, pinned
+by `quals.test.tsx`). The rest: `ALPanel`, `AvailWindow`, `ChangesWindow`, `InputsCal`, `LogicPage`, `MedicalView`,
+`Modals`, `PeoplePick`, `SansCal`, `SansDay`, `Shell` — most hold no box to type in; the walk met no lost caret on the
+Inputs calendar, the SANS day or the Logic page. **To do:** for each, does its markup hold a box to type in, and does it
+repaint while one has the caret; where both, make the object once per change. **Place:** low — a sweep of its own.
+*Moved here 2026-10-21 by backlog-archive.mjs ([CI-UNIT-SHARE-2-6]). Forward facts: `raptor-port/docs/gates-and-deploy.md`, `raptor-port/docs/handpass/2026-10-21-checks.md`.*
+
+### [CI-UNIT-SHARE-2-6] One unit share sets GitHub's check time (found 20 Oct 26, pull request 548's run; low)
+**Seen:** with the Tracker smoke in two (pull request 548), the run is 5m33s and its slowest leg `unit (raptor 2/6)` 5m29s (the next, `unit (raptor 5/6)`, 4m31s; the Tracker parts 4m19s and less). Vitest's `--shard` splits the file list by a hash of each path, not by time, so one share carries the heavy files. **To do:** measure each raptor unit file's time on GitHub; then either more shares (the plan's 20 side by side is already exceeded by one with the Docs guard — merge two short legs first) or a split by time (a list of the heavy files spread by hand). **Place:** Checks and tooling — low, with the next change to the checks file.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([DEPLOY-DOCS]). Forward facts: `.github/workflows/deploy.yml`, `raptor-port/docs/handpass/2026-10-21-checks.md`.*
+
+### [DEPLOY-DOCS] The Pages-era deploy text is stale since the repo went private (D59, 23 Sep 26)
+**STATUS 24 Sep 26: the DOCS half is DONE** in the spring clean — the Pages-era text of `raptor-port/CLAUDE.md` and
+`HANDOFF.md` moved whole to `raptor-port/docs/archive/`; the live rules are `.claude/rules/shipping.md` and
+`raptor-port/docs/gates-and-deploy.md` (its Now block); "done" means live on Vercel (D143); the "site is public"
+sentences corrected. **Left** (Astra's red team, finding 12): the header and comments of
+`.github/workflows/deploy.yml` and `raptor-port/scripts/handpass/live-check.mjs`, which still describe a Pages
+deploy — files that start the gates, so their own small change.
+
+`raptor-port/CLAUDE.md` §Build & verify and §How to work here, and `HANDOFF.md` §Deploy, still describe GitHub Pages as the official live site, the "done means live" chain ending at Pages, and `seejiaokai.github.io/Raptor` as the page to check. All of it stopped being true on 23 Sep 26: Pages is gone, the publish job is off, Vercel is the only viewer. Marked SUPERSEDED in place at the two most misleading lines; the proper rewrite is its own docs pass (D29 — never trim inside another change). **Tier: NONE.** Do it with `[DOC-TRIM]`, which owns the same two files.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([RULINGS-LF-PIN]). Forward facts: `.gitattributes`, `raptor-port/docs/handpass/2026-10-21-checks.md`.*
+
+### [RULINGS-LF-PIN] Pin the rulings files to LF line endings, with the next change that runs the checks (filed 24 Sep 26)
+A leftover of `[DOC-TRIM]` (archived 24 Sep 26). `.gitattributes` pins `OUTSTANDING.md`, `OUTSTANDING-ARCHIVE.md`,
+`DECISIONS.md` and `HANDOFF.md` to LF ([DOCS-GUARD] F4, 23 Sep 26), so no script or editor setting can rewrite every
+line of them at once — a whole-file diff is where a destroyed record hides. The rulings split (D137) added
+`DECISIONS-ARCHIVE.md` and the area files under `.claude/rules/decisions/` — and, since D390, the full rows under `.claude/decisions-full/` — which are NOT pinned; all of them are LF
+today (checked 24 Sep 26 with `git ls-files --eol`). Add them — a pattern for the folder covers a new area file too.
+**Place:** ride the next change that starts the full checks on his PC anyway: `.gitattributes` is not on the deploy
+workflow's docs-only skip list, so a change to it alone starts a full run (D89, D151), which a docs pass must not do.
 *Moved here 2026-10-21 by backlog-archive.mjs ([FLOATWIN-TWO-LINE-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
 
 ### [FLOATWIN-TWO-LINE-BAR] The two movable windows open over the bottom of a two-line top bar (filed 5 Oct 26)
@@ -6593,4 +6633,18 @@ job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 ### [NIGHT-RECORDS-1021] Rulings D1098–D1108 are on an open records pull request, not on main (filed 23 Oct 26 from a handoff block)
 **Seen (23 Oct 26, the pinch-zoom questions chat, clearing merged handoff blocks):** the board's pinch-zoom block (pull request 561, live) said its rulings D1098–D1108 and the item `[BOARD-PHONE-PINCH-ZOOM]` "live on `claude/night-records-1021` (unmerged) — archive [BOARD-PHONE-PINCH-ZOOM] once both are on `main`". Checked: pull request 560 is OPEN, its branch is not in main, and main's rulings files carry no D1098–D1108 rows, though D1109 and D1110 (live) answer D1107 and D1108. **To do:** bring the branch level with main (renumbering any clash, D78), check the document check passes, put it to him for his "merge live" (documents only); then archive `[BOARD-PHONE-PINCH-ZOOM]` there. **Place:** Documents and guides — small, his word to merge.
 **DONE 26 Oct 26 (his D1402):** brought level with main again and merged as pull request 560 — D1098–D1108 are in their area files (How we work, Scheduler, People & accounts); [BOARD-PHONE-PINCH-ZOOM] archived with it.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([RULES-TAG-OFF]). Forward facts: `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`.*
+
+### [RULES-TAG-OFF] Take the RULES MODIFIED tag off View and Edit Schedule (his word, 21 Oct 26 — D1098)
+**What:** when a Logic setting is changed from the squadron standard, a yellow RULES MODIFIED tag shows above the Legend
+on View Schedule and Edit Schedule. His word: every squadron changes the rules to fit its own, so the tag goes from both
+pages. **Where:** the tag is drawn by the schedule pages' banner (`Shell.tsx` sets the page mark; `scheduler/01-logic.css`
+draws the words; `scheduler/04-pucks-sections.css` shows the banner only for it) — the banner holds nothing else, so it
+goes too. **Stays:** the Logic page's own strip ("N settings changed from the squadron standard"), and the page mark if
+anything else reads it (check first). **Check:** the Logic tests that pin the mark; the walk scripts and the IT guide's
+picture script that look for the tag (`scripts/handpass/`, `scripts/itflow/j/settings.mjs`); a walk of both pages, phone and
+desktop, with a setting changed. The original app (`reference/`) is read-only and keeps its tag.
+**DONE 26 Oct 26 (pull request 555, merged on his D1402):** the tag and its banner holders are gone from View-only Sched and Edit Schedule; the Logic page's strip stays — evidence `raptor-port/docs/handpass/2026-10-21-schedule-pages.md`, the design guide's Lesson 60.
 
