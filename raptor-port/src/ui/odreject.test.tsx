@@ -22,11 +22,12 @@ import { warCounts } from '../leavewar/absences'
 import { dayHTML, accCtl } from './html'
 import { sbInputsGroupPanel, sbUnavailPanel } from './board-html'
 import { common as noticeParts } from '../state/notices'
-import { inputsLeftSaid, loadVersionToWorkingCopy } from '../engine/drafts'
+import { inputsLeftSaid, loadVersionToWorkingCopy, loadMovedNow } from '../engine/drafts'
 import { dayCurVer, daySnapOf } from '../engine/publish'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { afterSchedMutate } from '../state/view'
-import { baseReset, rederive } from '../state/holderbase'
+import { baseReset, rederive, baseSnapshot } from '../state/holderbase'
+import { txtSet } from '../engine/slots'
 
 const WED = 2
 const el = (html: string) => { const d = document.createElement('div'); d.innerHTML = html; return d }
@@ -231,5 +232,70 @@ describe("a load over a request moved onto the Ground Programme across three day
     expect(rowsOf(cse()).map((x: any) => x.rid), 'its one row, under the name it had').toEqual([rid0])
     expect(dayPendingItems(WED).length, 'still 1 pending').toBe(1)
     expect(dayDiscardCount(WED), 'and still nothing to throw away').toBe(0)
+  })
+
+  /* THE CODE READ'S F1 (26 Oct 26): the working-out names a landed row past every name the STORED week still holds — a dead
+     row on a day the request no longer covers stays in the saved copy, though the screen drops it (overlay.ts landedRid's
+     `taken`). → Ground named its row from the screen alone, so it took the name the dead row still held; the saved week's
+     "first seen wins" then renamed it at random, and "Discard 2 edits" came back on every load, the load changing nothing. */
+  it("the code read's F1: a course re-dated after → Ground, then → Ground again on its new day — one name, no Discard 2", () => {
+    const who = Object.keys(PEOPLE).find(id => !PEOPLE[id].special && !PEOPLE[id].archived && !(PEOPLE[id] as any).pers
+      && !INPUTS.some((i: any) => ['Jul 15', 'Jul 16', 'Jul 17'].includes(i.date) && (i.person === id || (i.people || []).some((x: any) => x.p === id)))) as string
+    expect(writeInputs(() => { INPUTS.unshift({ iid: 'cse3', person: who, type: 'CSE', date: 'Jul 15', endDate: 'Jul 17', yr: 2026, allday: true, remarks: '', mod: '', acc: 'u' }) })).toBe(true)
+    const cse = () => INPUTS.find((x: any) => x.iid === 'cse3') as any
+    const THU = 3
+    baseReset(); rederive({ live: false })
+    press(WED, cse(), 'x'); press(WED, cse(), 'g')
+    expect(writeInputs(() => { cse().date = 'Jul 16' })).toBe(true)   // re-dated on the Inputs page: Thu 16 – Fri 17
+    const dead = (baseSnapshot() as any).d[WED].ground.filter((x: any) => x && x.src === 'cse3').map((x: any) => x.rid)
+    expect(dead, "Wednesday's saved copy still holds the old row, under the request's name").toEqual(['rcse3'])
+    press(THU, cse(), 'x'); press(THU, cse(), 'u')
+    publish(THU)
+    press(THU, cse(), 'x'); press(THU, cse(), 'g')
+    const rid = rowsOf(cse())[0].rid
+    expect(rid, 'named past the name the saved week holds, as the working-out names it').toBe('rcse3x2')
+    expect(dayPendingItems(THU).length, '1 pending').toBe(1)
+    expect(dayDiscardCount(THU), 'the load takes the course off Thursday and lands it again, the same row: nothing to throw away').toBe(0)
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(THU, dayCurVer(THU)); afterSchedMutate() })
+    expect(rowsOf(cse()).map((x: any) => x.rid), 'after the load: the same row, the same name').toEqual([rid])
+    expect(dayDiscardCount(THU), 'and still nothing to throw away').toBe(0)
+  })
+  /* THE CODE READ'S F2: the load's note named a request "off Thursday and Friday too" from the moved list taken straight
+     after its reconcile, but the working-out after the load lands an unfiled activity again — the course is back on the
+     programme, and the note read "off" beside "moved onto the programme … stays there". Only what is still so is said. */
+  it("the code read's F2: a course the working-out lands again after the load is never said to be off its other days", () => {
+    expect(writeInputs(() => { INPUTS.unshift({ iid: 'cse4', person: Object.keys(PEOPLE).find(id => !PEOPLE[id].special && !PEOPLE[id].archived && !(PEOPLE[id] as any).pers
+      && !INPUTS.some((i: any) => ['Jul 15', 'Jul 16', 'Jul 17'].includes(i.date) && (i.person === id || (i.people || []).some((x: any) => x.p === id))))!, type: 'CSE', date: 'Jul 15', endDate: 'Jul 17', yr: 2026, allday: true, remarks: '', mod: '', acc: 'u' }) })).toBe(true)
+    const cse = () => INPUTS.find((x: any) => x.iid === 'cse4') as any
+    baseReset(); rederive({ live: false })
+    publish(WED)
+    press(WED, cse(), 'x'); press(WED, cse(), 'g')
+    schedWrite(SCHED_TYPES.mutate, () => { txtSet('wl:' + WED + '.0', 'Early go'); afterSchedMutate() })   // another edit, so the load runs
+    expect(dayDiscardCount(WED), 'the wave label is the one edit thrown away').toBe(1)
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(cse().acc, 'the course is back on the programme after the load').toBe('g')
+    expect(loadMovedNow().filter(m => m.id === 'cse4'), 'so the note never says it is off Thursday and Friday').toEqual([])
+  })
+  it("…while the overseas duty, which the load does take off the programme, is still named off Thursday and Friday", () => {
+    baseReset(); rederive({ live: false })
+    publish(WED)
+    press(WED, od(), 'x'); press(WED, od(), 'g')
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(WED, dayCurVer(WED)); afterSchedMutate() })
+    expect(loadMovedNow().filter(m => m.id === od().iid).map(m => [m.on, m.days]), 'off Thursday and Friday too').toEqual([[false, ['Thu', 'Fri']]])
+  })
+  /* …and the code read's F3 ([LOAD-MOVES-ROW-DAY], a question for him): a load of Thursday that cannot put a three-day course
+     back lands it on its start day, Wednesday — the note names that move, never silent and never "off" */
+  it("the code read's F3: a course a load lands on another day is named on that day, not said to be off it", () => {
+    expect(writeInputs(() => { INPUTS.unshift({ iid: 'cse5', person: Object.keys(PEOPLE).find(id => !PEOPLE[id].special && !PEOPLE[id].archived && !(PEOPLE[id] as any).pers
+      && !INPUTS.some((i: any) => ['Jul 15', 'Jul 16', 'Jul 17'].includes(i.date) && (i.person === id || (i.people || []).some((x: any) => x.p === id))))!, type: 'CSE', date: 'Jul 15', endDate: 'Jul 17', yr: 2026, allday: true, remarks: '', mod: '', acc: 'u' }) })).toBe(true)
+    const cse = () => INPUTS.find((x: any) => x.iid === 'cse5') as any
+    const THU = 3
+    baseReset(); rederive({ live: false })
+    publish(WED); publish(THU)
+    press(THU, cse(), 'x'); press(THU, cse(), 'g')
+    schedWrite(SCHED_TYPES.mutate, () => { loadVersionToWorkingCopy(THU, dayCurVer(THU)); afterSchedMutate() })
+    expect(rowsOf(cse()).length, 'its row now stands on its start day').toBe(1)
+    expect(DAYS[WED].ground.some((x: any) => x && x.src === 'cse5'), 'on Wednesday').toBe(true)
+    expect(loadMovedNow().filter(m => m.id === 'cse5').map(m => [m.on, m.days]), 'named: on Wednesday').toEqual([[true, ['Wed']]])
   })
 })

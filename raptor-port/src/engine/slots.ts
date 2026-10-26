@@ -585,7 +585,10 @@ export function acceptInput(di:any,inp:any,dest:any){
      the working-out, and the confirm's count compares rows by that name — a fresh one read as one row taken off and one
      added, "Discard 2 edits" for a load that throws nothing away. One request, one row, one name, however it got there. */
   if(rid){row.rid=rid; d.ground.splice(ri,0,row);}
-  else{row.rid=landedRid(key,DAYS); ri=placeRequestRow(d,row);}
+  /* …past every name the SAVED week holds, not only the screen's (the code read's F1): a dead row of this request on a day it
+     no longer covers stays in the saved copy, and the working-out names past it — so must this, or the saved week's "first
+     seen wins" renames the row at random and the count reads it as one off and one on again */
+  else{row.rid=landedRid(key,DAYS,HOOKS.baseRowIds?HOOKS.baseRowIds():undefined); ri=placeRequestRow(d,row);}
   inp.acc='g';
   if(rid){
     /* the restored row is the ISSUED one, not a draft addition: mark the edit (so the funnel's

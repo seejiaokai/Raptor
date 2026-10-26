@@ -25,7 +25,7 @@ import { INPUTS, goesOnProg } from '../engine/inputs'
 import { CURWEEK } from '../engine/waves'
 import { SCHED, dayApproved, dayCurVer, daySnapOf, protectedWeek } from '../engine/publish'
 import { keyDay } from '../engine/keys'
-import { posKey, ensureRowIds } from '../engine/rowids'
+import { posKey, ensureRowIds, rowsOf } from '../engine/rowids'
 import { viewOfWeek, standingRow, standsOn, requestRowFields } from '../engine/overlay'
 import { rebaseDayPending } from '../engine/drafts'
 import { inputProtected } from '../engine/quarantine'
@@ -98,6 +98,16 @@ function requestAddMarks(di: number): void {
 
 /** the base is for THIS loaded week (a load or a boot set it) */
 export function baseActive(): boolean { return !!BASE && BASE_WEEK === String(CURWEEK) }
+/** every row name the saved week holds, a day left out by `skip` — the names the after-command pass's working-out names a
+ *  landed row past (overlay.ts viewOfWeek's `taken`), for → Ground and the load's count ([LW-LOAD-RELAND-RID], the code
+ *  read's F1). Empty while no week's base is set. */
+export function baseRowIds(skip?: number): Set<string> {
+  const out = new Set<string>()
+  if (!baseActive()) return out
+  BASE!.forEach((b, j) => { if (j !== skip && b) for (const r of rowsOf(b.d || {})) if (r && r.rid) out.add(String(r.rid)) })
+  return out
+}
+HOOKS.baseRowIds = baseRowIds
 /** the week load's and the boot's first step: the base is the week as it came into memory — the stored week (or the seed),
  *  before anything is worked out on it */
 export function baseReset(): void {

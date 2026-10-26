@@ -8,6 +8,9 @@
 //       Scheduler Board: 1 pending; the load of the Original finds nothing to throw away — the note says Monday is already
 //       at the Original and that the input moved onto the programme since publishing stays there, pending (never "filed
 //       since publishing"); a picture right after the tap (D1281); its row stays, under its name
+//   R3  desk (the code read's F2): a two-day course (Thu 16 – Fri 17) filed before Thursday goes out; Reject and → Ground on
+//       the week, one other edit on the board (a Common Programme end time); the load of the Original arms "Discard 1 edit";
+//       confirmed, the note never says the course is off Friday — it is back on the programme, and the note says so
 // Usage (from raptor-port/, the build served on 4181): node scripts/handpass/lw-reland-walk.mjs
 process.env.LW_PORT ||= '4181'
 process.env.LW_OUT ||= '2026-10-26-lw-load-reland-rid'
@@ -44,9 +47,19 @@ async function previewOriginal(P, di, iso) {
 }
 /* the board on day `di` through its own day chips (the week on screen may not show that day's own door) */
 async function boardOn(P, di) {
-  await LIB.board(P, 0)
-  if (di === 0) return
-  await P.locator(`#sbDays .sbday[data-sbtab="${di}"]:visible`).first().click(); await P.waitForTimeout(900)
+  if (!(await P.locator('#schedBoard').isVisible().catch(() => false)) || (await P.evaluate(() => window.CURPAGE)) !== 'editsched') {
+    await H.goEdit(w)
+    /* a day door inside the screen, as a person would press — the one for `di` when it is in view */
+    const vis = await P.evaluate(() => [...document.querySelectorAll('#eWeek [data-sbday]')].filter(e => { const r = e.getBoundingClientRect(); return e.offsetParent && r.left >= 0 && r.right <= innerWidth }).map(e => +e.dataset.sbday))
+    await LIB.board(P, vis.includes(di) ? di : vis[0])
+  }
+  if (await P.evaluate(() => window.SBDAY) === di) return
+  const chip = P.locator(`#sbDays .sbday[data-sbtab="${di}"]:visible`).first()
+  if (!(await chip.count())) {
+    note('boardOn-debug', 'desk', JSON.stringify(await P.evaluate(() => ({ board: !!document.querySelector('#schedBoard'), sb: window.SBDAY, page: window.CURPAGE, chips: [...document.querySelectorAll('#sbDays .sbday')].map(e => [e.dataset.sbtab, !!e.offsetParent]) }))))
+    await P.screenshot({ path: `${H.OUT}/debug-boardOn.png` })
+  }
+  await chip.click({ timeout: 5000 }); await P.waitForTimeout(900)
 }
 const loadBtnText = P => P.evaluate(() => [...document.querySelectorAll('#schedBoard [data-restore]')].filter(b => b.offsetParent).map(b => (b.innerText || '').replace(/\s+/g, ' ').trim()).join(' | '))
 
@@ -65,6 +78,13 @@ note('r2-filed', 'desk', `${who2}'s course ${JSON.stringify({ date: c2?.date, en
 await LIB.board(P, 0)
 note('r2-published', 'desk', JSON.stringify(await CD.signAndPublish(P, 0)))
 await LIB.closeBoard(P).catch(() => {})
+
+const who3 = await P.evaluate(not => {
+  const busy = new Set((window.INPUTS || []).filter(i => ['Jul 16', 'Jul 17'].includes(i.date) || ['Jul 16', 'Jul 17'].includes(i.endDate)).flatMap(i => [i.person, ...((i.people || []).map(x => x.p))]))
+  return Object.entries(window.PEOPLE || {}).find(([id, p]) => !p.special && !p.archived && !p.deleted && !p.pers && !busy.has(id) && p.cs !== not)?.[1]?.cs
+}, who2)
+const o3 = await H.fileInput(w, { who: who3, type: 'CSE', from: '2026-07-16', to: '2026-07-17', remarks: 'Instructor course', tag: 'r3-file', oil: 'no' })
+note('r3-filed', 'desk', `${who3}'s course ${o3.rec.iid}`)
 
 /* ---------- R1 — the seed's three-day overseas duty, desk ---------- */
 const odId = await P.evaluate(() => (window.INPUTS || []).find(i => i.type === 'OD' && i.person === 'pike')?.iid)
@@ -99,6 +119,30 @@ await P.waitForTimeout(400)
 await H.pic(w, 'r1-pike-back-under-unavailable', ['#schedBoard [data-inpadd="2.u"]'], { pad: 220, scale: 'device' }).catch(() => {})
 rec('R1-loaded', 'desk', !/pending/.test(pend1b) && !r1b?.acc && !r1b?.odGround && rows1b.length === 0 && odUnav1,
   `after the load: head "${pend1b}"; stored ${JSON.stringify({ acc: r1b?.acc, odGround: r1b?.odGround })}; rows ${JSON.stringify(rows1b)}; his overseas duty listed under Unavailable (its Reject there): ${odUnav1}; the note: "${note1}"`)
+await LIB.closeBoard(P).catch(() => {})
+
+/* ---------- R3 — the code read's F2, desk ---------- */
+await boardOn(P, 3)
+note('r3-published', 'desk', JSON.stringify(await CD.signAndPublish(P, 3)))
+await LIB.closeBoard(P).catch(() => {})
+await H.goEdit(w)
+const s3 = H.dayScope('editsched', 3)
+const moved3 = (await pressAcc(w, s3, 3, o3.rec.iid, 'x')) && (await pressAcc(w, s3, 3, o3.rec.iid, 'g'))
+await boardOn(P, 3)
+const end3 = P.locator('#schedBoard [data-bfld="ap:3.0.end"]:visible').first()
+await end3.click(); await end3.fill('08:10'); await end3.press('Enter'); await P.waitForTimeout(800)
+const pend3 = await pendOf(P)
+await previewOriginal(P, 3, '2026-07-16')
+await P.locator('#schedBoard [data-restore]:visible').first().click(); await P.waitForTimeout(900)
+const armed3 = await loadBtnText(P)
+await P.locator('#schedBoard [data-restore]:visible').first().click(); await P.waitForTimeout(600)
+const note3 = await said(P)
+await P.screenshot({ path: `${H.OUT}/r3-after-the-load.png` })
+await P.waitForTimeout(1000)
+const r3 = await H.inputById(P, o3.rec.iid), rows3 = await rowsOf(P, o3.rec.iid), pend3b = await pendOf(P)
+rec('R3', 'desk', moved3 && /2 pending/.test(pend3) && /Discard 1 edit\b/.test(armed3) && !/off Friday/.test(note3)
+  && /1 input moved onto the programme since publishing stays there, pending/.test(note3) && r3?.acc === 'g' && rows3.length === 1 && rows3[0].day === 3 && /1 pending/.test(pend3b),
+  `moved ${moved3}; head "${pend3}" → "${pend3b}"; armed "${armed3}"; the note "${note3}"; stored acc ${r3?.acc}; rows ${JSON.stringify(rows3)}`)
 await LIB.closeBoard(P).catch(() => {})
 note('errors-desk', 'desk', JSON.stringify(w.errs.slice(0, 8)))
 
