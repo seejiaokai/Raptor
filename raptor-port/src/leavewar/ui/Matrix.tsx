@@ -125,7 +125,7 @@ function monthLabel(date: string): string | null {
  *  manning count reads — are untouched. This narrows the 19 Aug rule above
  *  rather than reversing it: a row with nothing out there still disappears
  *  exactly as it did. */
-function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
+export function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
   if (!win) return true
   const [first, last] = win.split('|')
   const span = spans?.get(p.id)

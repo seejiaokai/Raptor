@@ -141,6 +141,11 @@ step)? What did the script actually press, and what did the box actually read? W
 world? Then the order's rule: the host reproduces it. A script's mistake is written on the sheet as one. A fault that
 depends on zoom or display scaling is reproduced in a browser STARTED at that scaling (`--force-device-scale-factor`),
 never with an emulated picture scale, which leaves the page's own arithmetic at 1.
+**A before / after comparison reads the same place on both sides** — the same month, the same day, the same scroll: the
+Leave War opens on its bidding window, not on today, so a "same session" read taken as the page opened and an "after
+reload" read taken after a month button compare January with December, and an archived man rightly counts in one and
+not the other ([LW-GROUPS-STALE-AFTER-ARCHIVE], 21 Oct 26 — filed as a fault, found on 27 Oct 26 to be this;
+`docs/handpass/parts/lw-small-1027/groups-diagnosis.md`).
 
 ## 8. When nothing on screen should change
 
