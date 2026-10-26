@@ -71,6 +71,9 @@ const pctOk = s => s.z != null && Math.abs(pctN(s) - s.z * 100) <= 0.5 + 1e-6
 const menuOpen = page => page.evaluate(() => !!document.querySelector('#sylMenuPanel.on'))
 const menuRect = page => page.evaluate(() => { const r = document.getElementById('sylMenuPanel').getBoundingClientRect(); return { l: r.left, t: r.top, r: r.right, b: r.bottom } })
 async function openMenuTap(page) { if (!(await menuOpen(page))) { await page.tap('#sylMenuBtn'); await wait(300) } }
+/* The button's words without its pencil: until 21 Oct 26 the pencil was the typed ✎, since D1134 (round 3 of the
+   consistency look) it is the app's drawn pencil, which leaves no character — so compare the words alone. */
+const offWords = (t) => String(t || '').replace(/^[✎\s]+/, '').trim()
 async function toggleEditReal(page) { await openMenuTap(page); await page.tap('#arrangeBtn'); await wait(700) }
 const centre = (page, sel) => page.evaluate(sel => { const e = document.querySelector(sel); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width } }, sel)
 
@@ -208,7 +211,7 @@ async function underPinch(env, to, pre) {
   await wait(500)
   const sSw = await S(page)
   await pic(page, `${pre}-3-after-the-switch-fingers-still-down`)
-  ck(`mode switched (arrange ${to === 'on' ? 'true' : 'false'}, button text)`, sSw.arrange === (to === 'on') && sSw.btn === (to === 'on' ? '✓ Done editing chart' : '✎ Edit chart layout'), `arrange=${sSw.arrange} btn="${sSw.btn}"`)
+  ck(`mode switched (arrange ${to === 'on' ? 'true' : 'false'}, button text)`, sSw.arrange === (to === 'on') && offWords(sSw.btn) === (to === 'on' ? '✓ Done editing chart' : 'Edit chart layout'), `arrange=${sSw.arrange} btn="${sSw.btn}"`)
   await page.evaluate(() => { window.__pmN = 0; document.getElementById('board').addEventListener('pointermove', e => { if (e.pointerType === 'touch') window.__pmN++ }, true) })
   await fingersMove(cdp, { m, d: 95 }, { m: { x: m.x + 15, y: m.y - 10 }, d: 200 }, 8)
   const sMoves = await S(page), moveCount = await page.evaluate(() => window.__pmN)
@@ -343,7 +346,7 @@ async function onThenOffHeld(env, pre) {
   await wait(400)
   const sA = await S(page)
   await pic(page, `${pre}-4-switched-off-again-fingers-still-held`)
-  ck('second press brought the ordinary chart back', sA.arrange === false && sA.btn === '✎ Edit chart layout', `arrange=${sA.arrange} btn="${sA.btn}"`)
+  ck('second press brought the ordinary chart back', sA.arrange === false && offWords(sA.btn) === 'Edit chart layout', `arrange=${sA.arrange} btn="${sA.btn}"`)
   await fingersLift(cdp)
   const sL = await S(page)
   await pic(page, `${pre}-5-after-the-lift`)

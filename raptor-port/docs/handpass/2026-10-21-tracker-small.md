@@ -224,3 +224,16 @@ Report `docs/handpass/parts/trk-small/rewalk/rewalk-report.md`; 30 pictures in
 `Walk: docs/handpass/2026-10-21-tracker-small.md · 84 pictures (54 + 30 re-walk) · 5 surfaces · 9 orders · MISSING: none (the read's 1 finding fixed red-first; 3 older filed [TRK-PINCH-MORE-EDGES])`
 
 Rulings: none this job (D994's small fixes, no answer or look from him).
+
+## Re-walk after main was merged in (26 Oct 26, his D1402)
+
+Pull request 557 sat unmerged from 21 to 26 Oct 26 while main moved 668 commits on. Main was merged in (no code clash:
+none of this change's files changed on main; the backlog's archive and the walk ledger kept both sides); the Tracker's
+unit tests 28 files, 546 / 546; the build of the merged code served on 4337 (`assets/index-CycwOQQ7.js`), and
+`scripts/handpass/trk-small-walk.mjs` re-run under the PC lock: first 12 of 14, P5 and P8 failing on the button's words
+alone — the chart in the right mode both times — because since D1134 (21 Oct 26) the pencil before "Edit chart layout" is
+the app's drawn pencil, not the typed ✎; the walk now compares the words without the pencil (`offWords`), and re-run:
+**14 of 14 PASS**, no page error. Pictures `docs/img/handpass/2026-10-21-tracker-small/rewalk-1026/` — the host opened
+P5-5 (after the lift: the ordinary chart, 63%, no stretch). Output: `docs/handpass/parts/trk-small-rewalk-1026.walk.txt`.
+
+Walk: 14 scenarios re-walked on the merged build (phone 390 and a desktop with touch), 14 PASS — `parts/trk-small-rewalk-1026.walk.txt`.
