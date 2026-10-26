@@ -117,7 +117,7 @@ function endSession() {
   saveStat = { text: '', cls: '' };
   if (arrangeMode) {
     /* `view` is the editing canvas's pan and zoom: it stays in Edit chart layout */
-    arrangeMode = false; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move'; view = { x: 0, y: 0, k: 1 };
+    arrangeMode = false; arrangeFlips++; connectSrc = null; drawing = null; selBalls = new Set(); tool = 'move'; view = { x: 0, y: 0, k: 1 };
     if (sylDirty) setSaveStatus('unsaved flow edits — hit “Save changes”', 'saving');
   }
   hintFlash = null;
@@ -884,6 +884,9 @@ export function resumeForPerson() {
   return true;
 }
 export let arrangeMode = false, layout = {}, drag = null, AUTO = {}, BORROW = null;
+/* how many times Edit chart layout has been switched on or off: a pinch notes it at its start and does nothing more once it
+   has changed — even switched on and straight off again with the fingers held still (enablePinchZoom, [TRK-PINCH-OLD-EDGES]) */
+let arrangeFlips = 0;
 /* ---- per-edge routing metadata layered on top of the prereq graph ---- */
 let edgeMeta = {}, merges = new Set(), unmerges = new Set(), selEdge = null, mergeFirst = null, selBalls = new Set(), redoStack = [], alignGuides = [];
 function ekey(p, c) { return p + '▸' + c; }
@@ -3727,9 +3730,25 @@ function enablePinchZoom(el) {
   function settlePicture(s) {
     if (!s || !s.c) return;
     if (s.w) { s.w.style.transform = ''; s.w.style.transformOrigin = ''; s.w.style.willChange = ''; }
-    if (arrangeMode || (s.zz === s.z && s.m === s.m0)) return;   /* fingers that never moved changed nothing */
+    if (!sameMode(s) || arrangeMode || (s.zz === s.z && s.m === s.m0)) return;   /* a changed mode, or fingers that never moved: nothing */
     flowZoom = s.zz; applyFlowZoom();
     placeChartPoint(el, s.c, s.m.x - s.r.left, s.m.y - s.r.top);
+  }
+  /* THE PINCH BELONGS TO THE MODE IT BEGAN IN ([TRK-PINCH-OLD-EDGES], 21 Oct 26). Edit chart layout can be switched on
+     or off while two fingers are down (a third finger, through the menu); the switch redraws the chart and sets its own
+     zoom, so the pinch's start, taken for the other mode, no longer fits: its moves threw. Once the mode has changed
+     under it, the pinch does nothing more — its moves are passed over and its lift settles nothing; the switch's own
+     zoom stands, even if the mode is switched back before the lift (the switches are counted — the code read's finding 1:
+     a switch on and straight off with the fingers held still sends no move between them). `s.arrange` is the mode it began
+     in, `s.flips` the count then. */
+  const sameMode = s => !!s && s.flips === arrangeFlips;
+  /* The pinch's one end — the ordinary lift, and a lift lost to a redraw found at the next first finger: a pinch is the
+     user taking the zoom over, the same as pressing + or −, so it is marked as his (without the flag a rotate or the
+     next redraw on a phone snapped it back to fit) and the % label is told (notify). */
+  function endPinch(s) {
+    pinching = false; settlePicture(s);
+    if (sameMode(s)) { if (!arrangeMode) zoomIsMine = true; flushView(); }
+    perfOff(); notify();
   }
   /* TWO FINGERS ARE THE PINCH'S, NOT THE PHONE'S SCROLL (D992). The board leaves one finger to the browser, which scrolls
      it (touch-action, tracker.css; dragScroll); a second finger's touch is cancelled here, so the browser neither scrolls
@@ -3773,7 +3792,7 @@ function enablePinchZoom(el) {
        a lift to the element the finger landed on even after a redraw has removed it,
        where the board never hears it). Without this, one lost lift made every later
        touch read as a pinch until a reload. What that finger did stands. */
-    if (e.isPrimary && pts.size) { const s = start; pts.clear(); start = null; if (pinching) { pinching = false; settlePicture(s); perfOff(); } releaseFirstFinger(); }
+    if (e.isPrimary && pts.size) { const s = start; pts.clear(); start = null; if (pinching) endPinch(s); releaseFirstFinger(); }
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     /* ...and so the lift is listened for on that element too (a second hearing is
        harmless: `drop` ignores a finger it no longer counts) */
@@ -3789,7 +3808,7 @@ function enablePinchZoom(el) {
          (a pinch makes no click, so nothing is taken from a ball) */
       for (const id of pts.keys()) { try { el.setPointerCapture(id); } catch (_) {} }
       perfOn();
-      start = { d: dist(a) || 1, k: view.k, z: flowZoom };
+      start = { d: dist(a) || 1, k: view.k, z: flowZoom, arrange: arrangeMode, flips: arrangeFlips };
       if (arrangeMode) {
         start.o = canvasOrigin();
         start.p = canvasPointAt(m.x, m.y, start.o);
@@ -3816,6 +3835,7 @@ function enablePinchZoom(el) {
     pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
     if (pts.size !== 2 || !start) return;
     e.preventDefault();
+    if (!sameMode(start)) return;   /* the mode changed under the pinch: it does nothing more */
     const a = [...pts.values()], m = mid(a);
     const f = (dist(a) || 1) / start.d;
     if (arrangeMode) {
@@ -3833,9 +3853,7 @@ function enablePinchZoom(el) {
     if (!pts.size) releaseFirstFinger();
     if (pts.size < 2) {
       const s = start; start = null;
-      /* A pinch is the user taking the zoom over, the same as pressing + or −:
-         without the flag a rotate afterwards snapped their zoom back to fit. */
-      if (pinching) { pinching = false; settlePicture(s); if (!arrangeMode) zoomIsMine = true; flushView(); perfOff(); notify(); }
+      if (pinching) endPinch(s);
     }
   };
   /* pointerleave stays a plain listener: it does not bubble, so in the capture
@@ -6241,7 +6259,7 @@ export function toggleArrange() {
   toolsOpen = false;   /* entering or leaving: the folded tools start shut (D373) */
   if (!arrangeMode) {
     const c = board && flowZoom > 0 ? chartPointAt(board, mid().x, mid().y) : null;
-    arrangeMode = true;
+    arrangeMode = true; arrangeFlips++;
     view = { x: 0, y: 0, k: flowZoom };
     setTool('move'); renderBoard();
     const place = () => { if (!arrangeMode) return; fitCanvas(); if (c) { const m = midOnScreen(); placeCanvasPoint(c, m.x, m.y); applyView(); } noteArrBox(); };
@@ -6249,7 +6267,7 @@ export function toggleArrange() {
   } else {
     let c = null; if (board && document.getElementById('flowSvg')) { const m = midOnScreen(); c = canvasPointAt(m.x, m.y); }
     const k = Math.min(3, Math.max(0.1, view.k)), was = flowZoom;
-    arrangeMode = false; connectSrc = null;
+    arrangeMode = false; arrangeFlips++; connectSrc = null;
     renderBoard();   /* the ordinary chart: renderBoard puts `view` back to the identity */
     flowZoom = k; if (k !== was) zoomIsMine = true; applyFlowZoom();
     /* the slack is half a view, so it is re-cut for the board's settled size first */
