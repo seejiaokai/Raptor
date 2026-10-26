@@ -1,5 +1,5 @@
 /* LOOK F'S TWO READINGS OF A CODE, AND ACK'S LAST TRACE IN THE READER — pinned on their own.
-   - `kindOf` (D1175): a box's colour is its KIND — local leave, overseas leave, OIL (OIL / FO / HO), the other leave
+   - `kindOf` (D1175): a box's colour is its KIND — local leave, overseas leave, an OIL taken (OIL), an OIL given (FO / HO — D1291, D1323), the other leave
      (CCL FCL PL CL EL), a course, overseas duty, medical (B C OML HL); an unknown code reads as overseas-duty grey.
    - `boxText` (D1160, D1145): the letters a box prints — the code bare, its half said by where the box sits, never by
      an arrow; ATT B / ATT C as the owner's B / C; an app-credited OIL keeps its star.
@@ -14,7 +14,8 @@ describe('kindOf — a box’s colour is its kind (D1175)', () => {
     const cases: Array<[string, string]> = [
       ['LL', 'll'], ['*LL', 'll'], ['LL*', 'll'],
       ['OL', 'ol'], ['*OL', 'ol'],
-      ['OIL', 'oil'], ['OIL*', 'oil'], ['FO', 'oil'], ['HO', 'oil'],
+      // an OIL taken is its own kind, apart from the OIL given (FO, HO) — his D1291, D1323 (24 Oct 26)
+      ['OIL', 'oilt'], ['OIL*', 'oilt'], ['*OIL', 'oilt'], ['FO', 'oil'], ['HO', 'oil'],
       ['CCL', 'care'], ['FCL', 'care'], ['PL', 'care'], ['CL', 'care'], ['EL', 'care'], ['*CCL', 'care'],
       ['CSE', 'cse'],
       ['OD', 'od'],

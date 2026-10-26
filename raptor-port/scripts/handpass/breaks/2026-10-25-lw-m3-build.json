@@ -1,0 +1,292 @@
+[
+ {
+  "n": 1,
+  "name": "the war counts a commitment under Unavailable (warCounts)",
+  "file": "src/leavewar/absences.ts",
+  "find": "  return row.acc === 'u' && isPersonal(row.type)",
+  "put": "  return false",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "ATCH files an Attach input (INPUT_FOR_WAR)",
+  "file": "src/leavewar/absences.ts",
+  "find": "OTH: 'Other', ATCH: 'Attach' }",
+  "put": "OTH: 'Other' }",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "an Other from the war is an admin’s",
+  "file": "src/leavewar/state/store.ts",
+  "find": "if (clean === 'OTH' && !canDecide(state.role))",
+  "put": "if (false)",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/leavewar/ui/round2.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "ATCH is filed straight",
+  "file": "src/leavewar/state/store.ts",
+  "find": "['CSE', 'OD', 'OTH', 'ATCH']",
+  "put": "['CSE', 'OD', 'OTH']",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "an Attach takes the Duration (store)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "clean === 'OTH' || clean === 'ATCH' ? formatCell({ type: clean, portion }) : clean",
+  "put": "clean === 'OTH' ? formatCell({ type: clean, portion }) : clean",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "the bid window’s Attach files ATCH",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "onPick: () => fileDuty('ATCH') },\n    ...(isAdmin",
+  "put": "onPick: () => fileDuty('OTH') },\n    ...(isAdmin",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/leavewar/ui/round3.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "the bid window passes the Duration for an Attach",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "code === 'OTH' || code === 'ATCH' ? portion : 'full')",
+  "put": "code === 'OTH' ? portion : 'full')",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "a member’s drag-window ⋯ holds Attach alone",
+  "file": "src/leavewar/ui/SelectSheet.tsx",
+  "find": "...(role === 'admin' ? [{ key: 'oth'",
+  "put": "...(true ? [{ key: 'oth'",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/leavewar/ui/round2.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "the closed note’s Attach files ATCH",
+  "file": "src/leavewar/ui/ClosedNoteSheet.tsx",
+  "find": "onPick: () => fileDuty('ATCH') }]",
+  "put": "onPick: () => fileDuty('OD') }]",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/leavewar/ui/closednote.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "the bubble names an Attach",
+  "file": "src/leavewar/ui/Matrix.tsx",
+  "find": "filed === 'ATCH' ? 'This Attach' : 'This bid'",
+  "put": "filed === 'ATCH' ? 'This bid' : 'This bid'",
+  "tests": [
+   "src/leavewar/ui/bidbubble.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "G5: a rejected Other reads as rejected",
+  "file": "src/ui/inputedit.tsx",
+  "find": "r && r.acc === 'r' ? 'r' : 'g'",
+  "put": "false ? 'r' : 'g'",
+  "tests": [
+   "src/ui/inputtitle.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "G5: a member does not move a rejected Other",
+  "file": "src/ui/inputedit.tsx",
+  "find": "(goesWas !== 'r' || canEditSched())",
+  "put": "(true)",
+  "tests": [
+   "src/ui/inputtitle.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "G5: the buttons are dead for a member on a rejected Other",
+  "file": "src/ui/inputedit.tsx",
+  "find": "disabled={readOnly || (draft.goes === 'r' && !canEditSched())}",
+  "put": "disabled={readOnly}",
+  "tests": [
+   "src/ui/inputtitle.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "G3: ALL AVAIL among the people lands on the programme",
+  "file": "src/ui/inputedit.tsx",
+  "find": "        if (r.acc === 'u' && isPlaceholderInput(r)) delete r.acc\n      } else {",
+  "put": "      } else {",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "G3: Goes to hidden with ALL AVAIL picked",
+  "file": "src/ui/inputedit.tsx",
+  "find": "!(several && ppl.some(p => isSpecial(p))) && ",
+  "put": "",
+  "tests": [
+   "src/ui/inputtitle.test.tsx",
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "a course and an Attach land under Unavailable by themselves",
+  "file": "src/engine/inputs.ts",
+  "find": "return c==='CSE'||c==='Attach';",
+  "put": "return false;",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/ui/inputtitle.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "an Other’s Goes to Unavailable files it there",
+  "file": "src/engine/inputs.ts",
+  "find": "(isOther(t)&&goes==='u')?'u':null",
+  "put": "false?'u':null",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/ui/inputtitle.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "G1: Undo of a commitment under Unavailable names the war",
+  "file": "src/state/undo-wire.ts",
+  "find": "inputRows(c).some(r => warCounts(r))",
+  "put": "inputRows(c).some(r => false)",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/state/undo-wire.test.ts"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "a held commitment opens the free half / the day list",
+  "file": "src/leavewar/ui/Matrix.tsx",
+  "find": "openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))",
+  "put": "false",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx",
+   "src/leavewar/ui/freehalf.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "the decided Refuse is lit",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "dec refuse${!span && decide?.state === 'refused' ? ' lit' : ''}",
+  "put": "dec refuse${''}",
+  "tests": [
+   "src/leavewar/ui/litdecide.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "every commitment is offered → Unavail",
+  "file": "src/ui/html.ts",
+  "find": "+(isPersonal(inp.type)&&!isSpecial(inp.person)",
+  "put": "+(/^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "Show reads the Manning rows (W1 7)",
+  "file": "src/leavewar/ui/Matrix.tsx",
+  "find": "    for (const row of rows) if (seen(row)) return true\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/bidbubble.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "the bubble goes at a tap, not a press that moved (W1 8)",
+  "file": "src/leavewar/ui/Matrix.tsx",
+  "find": "      if (Math.hypot((p.clientX ?? 0) - s.x, (p.clientY ?? 0) - s.y) > 10) return\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/ui/bidbubble.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "the day’s list names where an Attach is to (W2 18)",
+  "file": "src/leavewar/ui/DayList.tsx",
+  "find": "const where = row && typeof row.to === 'string' ? row.to.trim() : ''",
+  "put": "const where = ''",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "the held-half line names where an Attach is to (W2 18)",
+  "file": "src/leavewar/ui/BidPicker.tsx",
+  "find": "            {heldOther.to && <span>· {heldOther.to}</span>}\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/otherunavail.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "Q2: a commitment under Unavailable is away (isAway)",
+  "file": "src/engine/inputs.ts",
+  "find": "||(isPersonal(inp.type)&&inp.acc==='u')",
+  "put": "",
+  "tests": [
+   "src/engine/unavaway.test.ts",
+   "src/ui/crewunav.test.ts"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "Q2: a cancelled commitment is never away (isAway's inputSilent)",
+  "file": "src/engine/inputs.ts",
+  "find": "||(!inputSilent(inp)&&(",
+  "put": "||(true&&(",
+  "tests": [
+   "src/engine/unavaway.test.ts"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "Q2 walk: one with hours fades him as tasked (crew list eng0)",
+  "file": "src/ui/palette-html.ts",
+  "find": "if(d.dow)inputLinesOn(d.dt).forEach(",
+  "put": "if(false)inputLinesOn(d.dt).forEach(",
+  "tests": [
+   "src/ui/crewunav.test.ts"
+  ]
+ }
+]

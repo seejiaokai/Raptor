@@ -1,0 +1,28 @@
+[
+ {
+  "id": "S7 on its side: the note fits",
+  "size": "land",
+  "verdict": "PASS",
+  "said": "874×402; at the foot, level red, \"This bid turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 157,328 560×46 inside the 874×402 screen, centre hit is the bubble (pointer-events auto); cell vs note {\"cell\":[577,190,597,211],\"note\":[157,328,717,374],\"overlapPx\":0,\"cellInViewport\":true,\"cellFullyVisible\":true,\"noteTopMinusCellBottom\":117}",
+  "pics": [
+   "s07-land-after-tap.png",
+   "s07-land-settled-full.png"
+  ]
+ },
+ {
+  "id": "S7 on its side: Show can be pressed",
+  "size": "land",
+  "verdict": "PASS",
+  "said": "after Show: no bubble",
+  "pics": [
+   "s07-land-show-after-tap.png"
+  ]
+ },
+ {
+  "id": "errors-7-land",
+  "size": "land",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

@@ -139,7 +139,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   **Duty & commitment INPUTS joined both sides the same day** (owner —
   "everything in duty and commitments affects crew rest… do not include
   personal, sans availability"; "use the timings u see"): an input whose
-  type passes `inputs.ts:restsInput` (Training, CSE, Meeting, Fly with,
+  type passes `inputs.ts:restsInput` (Training, CSE, Meeting, Attach,
   Appointment, Duty, Event — D713, 9 Oct 26 — OD, Other — NOT the type spelled 'Personal', not SANS
   Availability, and no leave or medical type) counts exactly like a
   scheduled event, on BOTH sides, provided it carries TYPED times: an
@@ -544,7 +544,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 
 - There are no OFFERS any more (owner decision, Aug 26). `Office`,
   `Available fly` and `Available duty` were removed as types and `isOffer` is
-  gone with them. `Fly with` (named `Fly` until the owner renamed it, 14 Aug 26) gets no exemption: filed under Unavailable it raises
+  gone with them. `Attach` (named `Fly` until the owner renamed it, 14 Aug 26) gets no exemption: filed under Unavailable it raises
   `INPUT_FLY` and eats brief/debrief windows exactly as a `Meeting` does,
   using only its stated times — no brief/debrief padding is added to any
   input (padding is sortie-side: step→dekit).
@@ -581,7 +581,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   silently. Now all of `day.input` clashes with all of `day.events`, and
   against `kind==='shift'` (an SC MAIN) the grading is **per TYPE** (owner,
   26 Aug 26 — the shift may launch the man):
-  - **Red-list commitments — Training, CSE, Fly with, Personal, Appointment,
+  - **Red-list commitments — Training, CSE, Attach, Personal, Appointment,
     Duty, Event (owner D714, 9 Oct 26: "a clash like that, not the meeting softer amber"), Other — hard-flag the
     shift** (`INPUT_FLY` "Training but tasked —
     SC AM"). The list is the `shiftHard` flag on `INPUT_META`, read through
@@ -643,11 +643,11 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 
 ### Input types, their predicates, and when an input counts
 
-- **An actioned `Fly with` is AWAY** (owner, Aug 26: it means flying with
+- **An actioned `Attach` ("Fly with" until his D1373, 25 Oct 26 — it lands under Unavailable by itself since D1374, `inputs.ts landsUnavail`, and the Leave War counts it out) is AWAY** (owner, Aug 26: it means flying with
   another squadron). `isAway(inp)` = `isOffType(type) || (isFly(type) &&
   acc)` — it feeds `dayOff` (the Available-crew strip and the palette fade),
   `slotBar` (reason: "flying with another squadron") and the palette's
-  `offReason`. Whole-day, either destination. An actioned `Fly with` is local, so
+  `offReason`. Whole-day, either destination. An actioned `Attach` is local, so
   since 10 Aug 26 it does NOT bar a standalone spare — `canSpare` decides
   that now, not leave-ness.
 - **`INPUT_META` is the single source for every input type** (owner,
@@ -676,7 +676,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   carve-out, because HL/OML/ATT B/ATT C keep the man on the island but not fit
   to walk. Written against "a standalone spare" so the **AVALON rule the owner
   reserved** (10 Aug 26 — do NOT infer it) drops in without re-cutting.
-- `isAway` = `isUnavail` + an actioned `Fly with`. Widened from `isOffType` on
+- `isAway` = `isUnavail` + an actioned `Attach` + **any commitment filed under Unavailable** (`acc:'u'` — the M3
+  code read's Q2, 25 Oct 26: his D1372 sends a course there by itself "so the schedule and the Leave War agree", and
+  D1357 has the war count every commitment there out; on the Ground Programme a course's row faded him as tasked, under
+  Unavailable he had no row and the crew list drew him free). A cancelled or information-only commitment, an `Attach`
+  included, is not away (`inputSilent` — the warning list ignores it already); one on the Ground Programme or taken back
+  out ('r') stays busy, not away. The ALL AVAIL crowd is unmoved (it keeps out every commitment, wherever filed). Pins:
+  `unavaway.test.ts`. Widened from `isOffType` on
   10 Aug 26: `Detachment` sat in `isUnavail` but never in `isAway`, so a
   detached man was neither hidden from the palette nor barred — he only raised
   a warning once you had already planted him. OD may not be planned for
@@ -684,7 +690,7 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - The input types still split two ways, but the split is **presentational
   only** since 10 Aug 26 — it decides which block a row is drawn in and
   nothing else. `isUnavail` = leave + medical + OD; `isPersonal` = the
-  activity types (Training, CSE, Meeting, Fly with, Personal, Appointment,
+  activity types (Training, CSE, Meeting, Attach, Personal, Appointment,
   **Duty** — a LOCAL duty added 18 Aug 26, identical to Appointment in every
   derived rule — **Event** — added 9 Oct 26 (owner D713, D714: "its work, it can be an official event too … it should
   clash"), Duty's flags to the letter, pinned by `eventkind.test.ts`; the job: `[INPUT-EVENT-KIND]`, archived — and Other),
@@ -2407,7 +2413,7 @@ were `FS`/`HS` until the 28 Aug 26 rename.
     window drops him, **except ATT B**, the one type that says "no flying, may
     still work" (`canWork`);
   - a **COMMITMENT** overlapping the window drops him (Training, CSE, Meeting,
-    Fly with, Personal, Appointment, Duty, Event, Other — `isPersonal`). One the scheduler took off the
+    Attach, Personal, Appointment, Duty, Event, Other — `isPersonal`). One the scheduler took off the
     programme (`acc === 'r'`) is dormant and drops nothing;
   - anything he is **NAMED** for on the day's own schedule that overlaps the
     window drops him (`avail.ts:personBusy` — the same occupancy the validator
@@ -4415,10 +4421,10 @@ ones.** What changes in the bullets below, each left as written:
 - **The record:** the placeholder is an entry of the input's `people` (`inputs.ts placeholderOf`), not its `person`;
   `isPlaceholderInput` is "holds a placeholder". It makes no line (`inputLines`), so it is still nobody's absence and
   nobody's warning.
-- **The three structural rules are two:** `placeholderProblem` keeps the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]* and ONE day and loses "never in a
+- **The three structural rules are two:** `placeholderProblem` keeps the six kinds *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Attach"]* and ONE day and loses "never in a
   group" (and it is still never filed under Unavailable); `shapeProblem` adds at most ONE placeholder — "This input
   already has ALL AVAIL" for a second one or for ALL beside it. The sentences are "ALL AVAIL is for one day" and "ALL
-  AVAIL is for Training, Meeting, Appointment, Duty, Event and Other *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]*". `commitGroup` is gone: `commitInput` is the
+  AVAIL is for Training, Meeting, Appointment, Duty, Event and Other *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Attach"]*". `commitGroup` is gone: `commitInput` is the
   one saver; the save-boundary check (`state/store.ts placeholderShapeViolation`) now holds everything `shapeProblem`
   says of one record.
 - **The doors:** a placeholder dropped on an input's row JOINS the input (`ui/reqdoor.ts rowPut`) where the two rules
@@ -4437,8 +4443,8 @@ ones.** What changes in the bullets below, each left as written:
   exactly as for a placeholder a scheduler drops on a request's row (D44, D46). It lands its row on read like any
   request, the placeholder's puck in the name box.
 - **Three structural rules, ONE body — `inputs.ts placeholderProblem`:** one of six kinds (`PLACEHOLDER_KINDS`: Training,
-  Meeting, Appointment, Duty, Event, Other — never an overseas duty or a course, D711 (2); never "Fly with" or
-  "Personal", D712) *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Fly with"]*; ONE day
+  Meeting, Appointment, Duty, Event, Other — never an overseas duty or a course, D711 (2); never "Attach" or
+  "Personal", D712) *[SEVEN since 12 Oct 26 — D778: Personal is one of them; D712 stands for "Attach"]*; ONE day
   (D711 (3)); never in a group *[one of an input's own people since the one-rule build — D750, D753, D755]*. Asked first at every save door, with its sentence
   (`ui/inputedit.tsx placeholderRefused` — inside `normalizeInputDraft`, and before the document question in the three
   save handlers; `commitGroup` judges the whole selection; `ui/PeoplePick.tsx pickProblem`), and by the HARD check
@@ -4476,7 +4482,7 @@ ones.** What changes in the bullets below, each left as written:
   and the kind's own name where it has none (`engine/inputs.ts inpLabel`, the one body). **The kind goes on deciding
   every rule**: OIL, clashes, crew rest, what lands on the Ground Programme, who may file it. Nothing reads a rule out
   of a title's words.
-- **Which kinds (D716 (1)).** `titledKind` — the "Duty & other commitments" ones: Training, CSE, Meeting, Fly with,
+- **Which kinds (D716 (1)).** `titledKind` — the "Duty & other commitments" ones: Training, CSE, Meeting, Attach,
   Personal, Appointment, Duty, Event, OD, Other. Never leave, medical, an upchit or SANS availability.
 - **What is stored.** `titleOf(type, typed)` — trimmed, inner white space collapsed, at most `TITLE_MAX` (40) characters,
   and NOTHING when it is empty, is the kind's own name in any case, or the kind takes no title. An input whose Title

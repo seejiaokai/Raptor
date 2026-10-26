@@ -1,0 +1,87 @@
+[
+ {
+  "id": "A5-bridge",
+  "size": "desk",
+  "said": "bridge: {\"role\":\"function\",\"me\":\"function\",\"lw\":\"function\"}"
+ },
+ {
+  "id": "A5-filed",
+  "size": "desk",
+  "said": "acc g"
+ },
+ {
+  "id": "A5-rejected",
+  "size": "desk",
+  "said": "a scheduler pressed Reject: acc r"
+ },
+ {
+  "id": "A5-member",
+  "size": "desk",
+  "said": "his window: {\"row\":true,\"g\":\"false\",\"u\":\"false\",\"line\":\"Rejected by a scheduler\",\"gDisabled\":true,\"uDisabled\":true}"
+ },
+ {
+  "id": "A5-member",
+  "size": "desk",
+  "said": "after pressing both buttons: {\"row\":true,\"g\":\"false\",\"u\":\"false\",\"line\":\"Rejected by a scheduler\",\"gDisabled\":true,\"uDisabled\":true}"
+ },
+ {
+  "id": "A5-admin",
+  "size": "desk",
+  "said": "his window: {\"row\":true,\"g\":\"false\",\"u\":\"false\",\"line\":\"Rejected by a scheduler\",\"gDisabled\":false,\"uDisabled\":false}"
+ },
+ {
+  "id": "A5-admin",
+  "size": "desk",
+  "said": "after Unavailable + Save: acc u; Unavailable rows [\"Other Ranger IP LATE Rejected other REJECT\"]; war [\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw17.3\"] Available P 25 → 24"
+ },
+ {
+  "id": "errors-A5",
+  "size": "desk",
+  "said": "[]"
+ },
+ {
+  "id": "23-world",
+  "size": "phone",
+  "said": "chromium · bundle index-BayEj7kB.js · page leavewar"
+ },
+ {
+  "id": "23-window",
+  "size": "phone",
+  "said": "person select: value n/a disabled n/a; type options LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Attach,Personal,Appointment,Duty,Event,OD,Other"
+ },
+ {
+  "id": "23-window",
+  "size": "phone",
+  "said": "rows: Person · Type · Title · Goes to · Duration · Document · Remarks · Dates · AM/PM offered: false"
+ },
+ {
+  "id": "23-window",
+  "size": "phone",
+  "said": "dates \"Jul 13\"; goes {\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false}"
+ },
+ {
+  "id": "23-filed",
+  "size": "phone",
+  "said": "new inputs 1; acc u; type Other; time 540-660; asked []"
+ },
+ {
+  "id": "23-war",
+  "size": "phone",
+  "said": "his cell [\"OTH|k-unav|s-a|top|outlined|fs6.5px|w19h8|tw10.5\"]; Available P 28 → 27.5"
+ },
+ {
+  "id": "23-bid",
+  "size": "phone",
+  "said": "November opened by the admin; Ranger's 2026-11-12 cell: []"
+ },
+ {
+  "id": "23-bid",
+  "size": "phone",
+  "said": "row \"CSE OD ⋯\"; the ⋯ holds [\"bid-file-ATCH=Attach\"]; extra-row buttons [\"bid-file-CSE\",\"bid-file-OD\",\"bid-more\",\"bid-more-menu\",\"bid-file-ATCH\"]"
+ },
+ {
+  "id": "errors-23",
+  "size": "phone",
+  "said": "[]"
+ }
+]

@@ -194,6 +194,10 @@ Each to be drawn on the real app with lettered options and a worked example befo
 
 ## 5. His answers
 
+**26 Oct 26, D1387:** a button's words stand inside it in every state — the bid window's "Delete — sure?" ran past its edge; the fix drawn first. Filed as [LW-DELETE-SURE-FIT].
+
+**26 Oct 26, D1382:** the day panel's figures stand in columns of at most four rows — left first, then middle, then right — a long name wrapping and its row growing, names and figures lined up across and down (narrows D1198). Filed as [LW-DAYPANEL-COLUMNS].
+
 *(Written here as he gives them, each recorded as a ruling first — D13. This chat's numbers: D1140–D1159.)*
 
 **Round 1 (21 Oct 26):**
@@ -250,6 +254,9 @@ this instead for document to standardise it. 4 how about u keep it as B and make
   and PM) — is put to him with its picture (Q4b).
 - **His point on Q2 (D1161), before answering round 3:** a grid all one green is "boring and mundane"; with the colleague's app's grid (Gryphon; a colour for each kind of leave) he asked which is more intuitive. **And (D1162):** OD stays overseas duty, as the app has it — Gryphon's OD is "other duty", not taken over. Q2 is drawn again with a colour for each kind of leave (`../../mock/lw-overhaul/full-cells3.mjs`) and put with a recommendation.
 - **And the same evening (D1163, D1164):** Gryphon's SC is not taken over, since OIL earned is credited as FO and HO; an HO is drawn in a half of its day (morning or afternoon) like a half day's leave — the half the admin picks, or for one the app credits, the half the work fell in (the agent's reading, said with the picture).
+- **26 Oct 26 (D1391):** which half a hand-granted HO is does not matter — Grant OIL no longer asks morning or afternoon; the HO is still drawn in a half of its cell (D1164), the morning unless the morning is held; one the app credits itself keeps the half its work fell in. Filed under [LW-GRANT-HO-VISIBLE].
+- **26 Oct 26 (D1392):** Grant OIL gives any amount on one day — half a day, a day, or more (1½, 2 …) — every amount easy to give, half a day included; drawn as one amount control in half-day steps (H). Filed under [LW-GRANT-HO-VISIBLE].
+- **26 Oct 26, his "all as recommended" to the look page (D1394, D1395):** Grant OIL from the drag window gives one grant on each day picked, one reason (D1394); built as drawn — "Delete — sure?" on two lines (C), Grant OIL's Days row H (HO · ½, FO · 1, a box for any other amount), a short tap on a course day opening the bid window with the course's line, the day panel in columns of four (D1395). The drawings: `raptor-port/scripts/handpass/lw-m3n-draw.mjs`, `lw-m3n-draw-ho.mjs`.
 - **Q2 → E, his colours (D1165):** "for 2E how about LL and OL is different shades of amber, OIL is green" — a cell's colour is its kind of leave (filled approved, hollow waiting, grey struck refused); LL and OL two ambers, OIL green; drawn as look F (`../../mock/lw-overhaul/full-cells4.mjs`, pictures `full/p4d-*.png`) for him to confirm.
 - **Q6 → B, in his words (D1166):** the locks stop only bidding on the Leave War; Inputs-page leave is never locked and lands approved, as today — after the war closes a member gets management's verbal approval and files or edits his leave on the Inputs page, and the war follows by itself; he takes back "only the admin may change leave once locked". Narrows D1156; P6 struck; Q5's table line on approved leave changes to "he changes it himself on the Inputs page, after verbal approval". His picture of the war: bidding opened about three months ahead (each squadron its own period), everyone approved, then closed.
 - **His question on Q5:** which is more intuitive — saying what is open (default closed, the admin opens a stretch, as the app does today) or saying what is locked (Gryphon)? Drawn (`../../mock/lw-overhaul/full-q5.mjs`, `full/p5-*.png`); the agent recommends saying what is open — one line for a three-month window, one line to move it, nothing open by default — with the stages still gone; choosing it would replace D1156's lock dates.
@@ -665,3 +672,10 @@ Round 8 — the screen:
 The page ends with every Leave War screen as it will be built — every ruling and §10.2's fixes in, each question of
 §10.3 drawn with its recommended answer and marked "your answer first". Pictures `full/r7-*.png`, scripts
 `full-r7-*.mjs`.
+
+
+## Next: an overseas duty and a course filed on the Leave War (his D1299, 24 Oct 26 — not designed)
+
+His intent: people file an OD and a CRS on the Leave War, far ahead while bidding is open, because both lower manning (D998) and nobody thinks to file them early on the Inputs page. Questions for him first, with pictures: decided as a bid is, or filed straight; open dates only or any; a member's own only; a document asked for. [LW-FILE-OD-CRS]. **His answers (D1318, 24 Oct 26):** filed straight, no approval, as an input is; any date; a member may file them (his own), an admin any; no document. **D1324:** the unforeseen absence (UNA) filed the same way.
+
+Also his intent (D1303): one more kind for an unforeseen reason a person is out of the manning, named apart from the Inputs page's "Other" (which leaves him in it) — recommended "Unavailable" (UNA), the schedule's own word for a person off work; designed with OD and CRS.

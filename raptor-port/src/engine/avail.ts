@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { rosterShown } from './faceattrs'
-import { inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
+import { goesOnProg, inputLinesOn, inputReadPass, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel, shiftHardInput } from './inputs'
 import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
@@ -96,9 +96,19 @@ export function dayAway(d:any){const all=new Set(), tw:any={};
    AM leave is genuinely not off for the day. Timed absences are handled by
    availByWave below, per wave. */
 export function dayOff(d:any){return dayAway(d).all;}
+/* WHO IS TASKED TODAY, FOR EVERY COUNT THAT ASKS (the narrow read of the M3 code read's Q2 fixes, R2, 25 Oct 26): the men
+   on the day's rows (dayEngaged) and every man held by a commitment under Unavailable WITH HOURS — a course filed on the
+   Inputs page opens 06:00–18:00 and lands there by itself (D1372), one a scheduler moves → Unavail (D1357). On the Ground
+   Programme its row made him tasked; under Unavailable it has none, and an all-day one is `off` instead. One body for the
+   crew list's fade (palette-html.ts), the day panel's "Aircrew tasked" (html.ts) and the free-crew strip (availByWave),
+   so the three agree. NOT the ALL AVAIL crowd's `engaged` (leavewar/sync.ts — SANS on our programme), which keeps
+   dayEngaged: that crowd keeps every commitment out by itself. */
+export function dayTasked(d:any,standbyFree?:any){const s:any=dayEngaged(d,standbyFree);
+  inputLinesOn(d.dt).forEach((i:any)=>{if(isAway(i)&&isPersonal(i.type)&&!awayAllDay(i)&&PEOPLE[i.person]&&!PEOPLE[i.person].special)s.add(i.person);});
+  return s;}
 /* available crew bucketed by wave; anyWave = free across every wave (untasked) */
 export function availByWave(d:any){
-  const wins:any[]=waveWindows(d), aw=dayAway(d), off=aw.all, eng=dayEngaged(d);
+  const wins:any[]=waveWindows(d), aw=dayAway(d), off=aw.all, eng=dayTasked(d);
   const byWave=wins.map(()=>[] as any[]), anyWave:any[]=[];
   const bySort=(a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs);
   /* personnel (ground crew) are not aircrew — they never count toward a
@@ -166,7 +176,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,avKind:null,scDesk:false,infoRow:false,saExempt:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scLine:false,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,avKind:null,scDesk:false,infoRow:false,saExempt:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -287,6 +297,9 @@ export function slotRules(key:any){
         const it=seatIntime(wv,f,st);
         out.sansStart=it!=null?Math.min(it,out.slotStart):out.slotStart; } }
     if(wv&&f&&isStandalone(wv)&&(wv.kind==='sc'||flyRow)){
+      /* an SC line even with its times blank (the second narrow read's F1): `sc` names the shift only once both times are
+         typed, and the SC currency check reads it, so the soft-kind rule (slotBarNow scSoft) reads this flag beside it */
+      out.scLine=true;
       const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null&&en!=null){ if(en<st)en+=1440; out.sc=scShiftKind(st,en); out.scEnd=en; }
       /* a SPARE is standing by, not tasked: he may fly, sit a sim or stand a
@@ -502,11 +515,16 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     const inpHits=(x:any,shift:number)=>{const w2=inpWin(x);
       return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};
     const spareLike=!!r.scSpare||!!r.avJet||!!r.avDuty;
+    /* ACROSS AN SC MAIN SHIFT A SOFT COMMITMENT IS AN ADVISORY, NOT A BAR (the narrow read of the Q2 fixes, R1): a
+       commitment under Unavailable is away (inputs.ts isAway), but a Meeting is the warning list's amber across the shift
+       (shiftHardInput, validate.ts's soft branch), so it must not cross him out here; a course and every hard kind still do */
+    const scSoft=(x:any)=>!((r.sc||r.scLine)&&!r.scSpare&&isPersonal(x.type)&&!shiftHardInput(x.type));
     const flying=String(key).indexOf(':')<0;
     const kn=r.slotStart!=null&&r.slotEnd!=null;
     const off=inputLinesOn(DAYS[r.di].dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter(scSoft)
       .filter((x:any)=>!kn||awayAllDay(x)||inpHits(x,0));
     if(off.length)return offWord(off[0]);
     /* THE MIDNIGHT TAIL, picker side (owner, 11 Aug 26 — same modality as
@@ -520,6 +538,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     const off2=!nd?[]:inputLinesOn(nd.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter(scSoft)
       .filter((x:any)=>awayAllDay(x)||inpHits(x,1440));
     if(off2.length)return offWord(off2[0])+' (tomorrow)';
     /* ...and the same tail BACKWARDS, for the same reason and by the same
@@ -533,6 +552,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     const off3=!pdv?[]:inputLinesOn(pdv.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter(scSoft)
       .filter((x:any)=>awayAllDay(x)||inpHits(x,-1440));
     if(off3.length)return offWord(off3[0])+' (yesterday)';
     /* A different backward reach, and it is NOT the block above. An absence
@@ -547,6 +567,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     const off4=!pdo?[]:inputLinesOn(pdo.dt).filter((x:any)=>isAway(x)&&x.person===id)
       .filter((x:any)=>!(spareLike&&canSpare(x.type)))
       .filter((x:any)=>!(canWork(x.type)&&!flying))
+      .filter(scSoft)
       .filter((x:any)=>{const w2=inpWin(x); return !!w2&&w2[1]>1440&&inpHits(x,-1440);});
     if(off4.length)return offWord(off4[0])+' (overnight)';
   }
@@ -611,7 +632,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
     const flying=String(key).indexOf(':')<0, dt=DAYS[r.di].dt;
     const own=/^[dsga]:/.test(String(key))?rowRef(String(key)[0],String(key).slice(2).split('.')):null;
     const whole=(x:any)=>{if(awayAllDay(x))return true; const w2=inpWin(x); return !!w2&&w2[0]<=0&&w2[1]>=1439;};
-    const x=inputLinesOn(dt).find((x:any)=>!isAway(x)&&isPersonal(x.type)&&inpShow(x,dt,undefined,true)&&x.person===id
+    const x=inputLinesOn(dt).find((x:any)=>!isAway(x)&&(isPersonal(x.type)||goesOnProg(x))&&inpShow(x,dt,undefined,true)&&x.person===id
       &&!(canWork(x.type)&&!flying)&&whole(x)&&!(own&&own.src&&own.src===x.iid));
     if(x)return `already on ${inpLabel(x)}`;
   }
@@ -645,7 +666,7 @@ function slotBarNow(id:any,key:any,rules?:any,fromKey?:any){
        (the validator's day.input carries the nx/pv tails). */
     const flying=String(key).indexOf(':')<0;
     const cand=(dt:any,pred:(x:any)=>boolean)=>inputLinesOn(dt).find((x:any)=>
-      !isAway(x)&&isPersonal(x.type)&&inpShow(x,dt)&&x.person===id
+      !isAway(x)&&(isPersonal(x.type)||goesOnProg(x))&&inpShow(x,dt)&&x.person===id
       &&!(canWork(x.type)&&!flying)&&pred(x));
     const iHit=(x:any,shift:number)=>{const w2=inpWin(x);
       return !!w2&&overlap(r.slotStart,r.slotEnd,w2[0]+shift,w2[1]+shift);};

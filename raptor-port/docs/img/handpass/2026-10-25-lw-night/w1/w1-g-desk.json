@@ -1,0 +1,101 @@
+[
+ {
+  "id": "S18a Refuse a pending bid on a red day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 28 ok; cell [\"LL|k-ll|s-r|whole\"]; no bubble",
+  "pics": [
+   "s18a-desk-after-tap.png",
+   "s18a-desk-settled.png"
+  ]
+ },
+ {
+  "id": "S18b Delete a bid on a red day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 28 ok; no bubble",
+  "pics": [
+   "s18b-desk-after-tap.png",
+   "s18b-desk-settled.png"
+  ]
+ },
+ {
+  "id": "S18c LL changed to OL, same man, same half",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 27 red; no bubble",
+  "pics": [
+   "s18c-desk-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18d a bid that lowers Available P but it stays ok (above its point)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Required P 23; Available P 28 ok → 27 ok; no bubble",
+  "pics": [
+   "s18d-desk-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18e a ground-crew man’s bid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 28 → 28 ok; no bubble",
+  "pics": [
+   "s18e1-desk-ground-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18e a man posted out that day (a fill over his gone days)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 → 27 ok; no bubble",
+  "pics": [
+   "s18e2-desk-posted-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18e a shown SANS man’s bid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 → 27 ok; no bubble",
+  "pics": [
+   "s18e3-desk-sans-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18f UNA on a day he already holds approved leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cells LL|k-ll|s-a|whole → LL|k-ll|s-a|left+UNA|k-una|s-a|right; window closed; Available P 25 red → 25 red; no bubble",
+  "pics": [
+   "s18f-desk-UNA-after-tap.png",
+   "s18f-desk-UNA-settled.png"
+  ]
+ },
+ {
+  "id": "S18f",
+  "size": "desk",
+  "verdict": "NOT DONE",
+  "said": "script stopped: TimeoutError: page.waitForSelector: Timeout 5000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"bid-picker\"]') to be visible\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "S18g the second tap on a lit Approve (back to a bid)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 26 red → 26 red; no bubble",
+  "pics": [
+   "s18g-desk-after-tap.png",
+   "s18g-desk-settled.png"
+  ]
+ },
+ {
+  "id": "errors-18",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

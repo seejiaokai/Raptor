@@ -138,3 +138,5 @@ functions and Power Automate flows; what the 2,000-row reading limit is).
    D356); how two schedulers take turns on one day is `data-model.md` §9 (the day lock, D355).
 
 Questions to the owner; he will bring them to us.
+
+**Before the app goes out for testing (his D1383, 26 Oct 26):** signing in always opens on today's date — the demo week's date is accepted only while the demo data is what is worked on. Filed as [LOGIN-OPENS-TODAY].

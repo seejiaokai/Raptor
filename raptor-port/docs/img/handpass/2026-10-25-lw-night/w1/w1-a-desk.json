@@ -1,0 +1,159 @@
+[
+ {
+  "id": "S1 bubble",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 (red); right after the tap: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s01-desk-after-tap.png",
+   "s01-desk-settled.png",
+   "s01-desk-settled-full.png"
+  ]
+ },
+ {
+  "id": "S1 reopened day line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bid window on the bid reads: \"Available P 27 · red\"",
+  "pics": [
+   "s01-desk-reopened-dayline.png"
+  ]
+ },
+ {
+  "id": "S3 second bid (Ridge)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 27 → 26 red; right after the tap: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s03-desk-second-after-tap.png",
+   "s03-desk-second-settled.png"
+  ]
+ },
+ {
+  "id": "S3 third bid (Trident)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Available P 26 → 25 red; right after the tap: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s03-desk-third-after-tap.png",
+   "s03-desk-third-settled.png"
+  ]
+ },
+ {
+  "id": "S2 a click",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after the bid: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); after a click: no bubble",
+  "pics": [
+   "s02-desk-up-before-aclick.png",
+   "s02-desk-after-aclick.png"
+  ]
+ },
+ {
+  "id": "S2 an arrow key",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after the bid: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); after an arrow key: no bubble",
+  "pics": [
+   "s02-desk-up-before-anarrowkey.png",
+   "s02-desk-after-anarrowkey.png"
+  ]
+ },
+ {
+  "id": "S2 Tab alone",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after the bid: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); after Tab alone: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 240×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s02-desk-up-before-Tabalone.png",
+   "s02-desk-after-Tabalone.png"
+  ]
+ },
+ {
+  "id": "S2 Tab then a key",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Tab then ArrowDown: no bubble",
+  "pics": []
+ },
+ {
+  "id": "errors-1",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx) in the S1/S3/S2 world",
+  "pics": []
+ },
+ {
+  "id": "S4 bid 1 (Drifter)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Required P 24, Available P 28 base 28 ok → 27 amber; right after the tap: under the Manning button, level amber, \"This bid turns Available P amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 199×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level amber, \"This bid turns Available P amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 199×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s04-desk-bid1-after-tap.png",
+   "s04-desk-bid1-settled.png"
+  ]
+ },
+ {
+  "id": "S4 bid 2 (Ridge)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Required P 24, Available P 28 base 28 ok → 26 amber; right after the tap: under the Manning button, level amber, \"This bid takes Available P lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 256×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level amber, \"This bid takes Available P lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 35,195 256×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s04-desk-bid2-after-tap.png",
+   "s04-desk-bid2-settled.png"
+  ]
+ },
+ {
+  "id": "S4 bid 3 (Trident)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Required P 24, Available P 28 base 28 ok → 25 red; right after the tap: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s04-desk-bid3-after-tap.png",
+   "s04-desk-bid3-settled.png"
+  ]
+ },
+ {
+  "id": "errors-4",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx) in the S4 world",
+  "pics": []
+ },
+ {
+  "id": "S5 setup bid on the F2 day (non-IP pilot)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "IP before 16; under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 183×32 inside the 1440×900 screen, centre hit is month-MAR (pointer-events none)",
+  "pics": [
+   "s05-desk-x1-after-tap.png"
+  ]
+ },
+ {
+  "id": "S5 IP amber + Available P lower, still red",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "IP 16 → 15 amber; Available P 28 → 26; right after: under the Manning button, level red, \"This bid turns IP amber and takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 346×32 inside the 1440×900 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This bid turns IP amber and takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 346×32 inside the 1440×900 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s05-desk-x2-after-tap.png",
+   "s05-desk-x2-settled.png"
+  ]
+ },
+ {
+  "id": "S5 IP amber and Available P red (one bid, two rows turned)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "IP 16 → 15 amber; Available P 28 → 27; right after: under the Manning button, level red, \"This bid turns IP amber and Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 258×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns IP amber and Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 35,196 258×32 inside the 1440×900 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s05-desk-y1-after-tap.png",
+   "s05-desk-y1-settled.png"
+  ]
+ },
+ {
+  "id": "errors-5",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx) in the S5 world",
+  "pics": []
+ }
+]

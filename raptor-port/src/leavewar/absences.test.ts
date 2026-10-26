@@ -9,7 +9,7 @@ const hm = (h: number, m = 0) => h * 60 + m
 
 describe('warVisible — leave, medical, course, overseas duty; nothing else', () => {
   it.each([['LL', true], ['OIL', true], ['ATT C', true], ['ATT B', true], ['HL', true], ['CSE', true], ['OD', true],
-    ['Upchit', false], ['SANS Availability', false], ['Meeting', false], ['Duty', false], ['Fly with', false], ['Appointment', false]])('%s → %s', (t, v) => {
+    ['Upchit', false], ['SANS Availability', false], ['Meeting', false], ['Duty', false], ['Attach', false], ['Appointment', false]])('%s → %s', (t, v) => {
     expect(warVisible(t)).toBe(v)
   })
 })

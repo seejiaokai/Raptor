@@ -46,3 +46,14 @@ export function dayLabel(iso: string): string {
 /** An Inputs record's month-first label (`Jul 13`) said day-first (`13 Jul`) — the remarks editor's span. */
 export const inputDayLabel = (lbl: string | undefined): string =>
   String(lbl || '').trim().replace(/^([A-Za-z]{3}) (\d{1,2})(.*)$/, '$2 $1$3')
+
+/** AN INSTANT'S DAY WHERE IT IS READ ([LW-ENTERED-DATE-UTC], M3 §4): an award's "Entered by Saber · 22 Oct 26" is the
+ *  local day of the moment it was entered, never the world (UTC) date cut off the stored instant — late in a UTC+8
+ *  evening the two differ by a day. One body for every printer of an entered date. '' for no or a broken instant. */
+export function enteredDay(instant: string | undefined | null): string {
+  const t = instant ? Date.parse(instant) : NaN
+  if (!Number.isFinite(t)) return ''
+  const d = new Date(t)
+  const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  return shortDate(iso)
+}

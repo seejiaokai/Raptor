@@ -233,7 +233,7 @@ describe('who may move — one rule at every door (D333)', () => {
     expect(closeDates('2026-02-12', '2026-02-12')).toBe('set')
     setRole('member'); setViewer('ammo')
     expect(movableRecords(one('ammo', '2026-02-10'))).toHaveLength(1)
-    expect(moveCells(one('ammo', '2026-02-10'), 2)).toEqual({ reason: 'window', at: '2026-02-12' })
+    expect(moveCells(one('ammo', '2026-02-10'), 2)).toEqual({ reason: 'closed', at: '2026-02-12' })   // its own reason since M3 §4 (4): a day closed for him, not outside the war
     expect(bidsAt('ammo', '2026-02-10')).toHaveLength(1)
     expect(moveCells(one('ammo', '2026-02-10'), 3)).toBe('moved')
   })

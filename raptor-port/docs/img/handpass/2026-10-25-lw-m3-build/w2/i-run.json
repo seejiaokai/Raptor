@@ -1,0 +1,27 @@
+[
+ {
+  "id": "R8",
+  "size": "desk",
+  "said": "types [\"LL\",\"OL\",\"OIL\",\"CCL\",\"PL\",\"FCL\",\"EL\",\"CL\",\"HL\",\"OML\",\"ATT C\",\"ATT B\",\"Upchit\",\"Training\",\"CSE\",\"Meeting\",\"Attach\",\"Personal\",\"Appointment\",\"Duty\",\"Event\",\"OD\",\"Other\"]; \"Fly with\" kinds []; ALL options in the person list for Attach []; in Several people: 09:40:enabled:null, 10:20:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 10:40:enabled:null, 11:20:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 16:45:enabled:null, 17:25:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 16:20:enabled:null, 17:00:enabled:null, Remarks:enabled:null, Remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, 05:40:enabled:null, 06:20:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 06:40:enabled:null, 07:20:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 11:40:enabled:null, 12:20:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 11:40:enabled:null, 12:20:enabled:null, Remarks:enabled:null, Remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, 07:35:enabled:null, 08:15:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 07:35:enabled:null, 08:15:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 10:00:enabled:null, 10:40:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 10:00:enabled:null, 10:40:enabled:null, Remarks:enabled:null, Remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, 09:45:enabled:null, 10:25:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 09:45:enabled:null, 10:25:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 13:45:enabled:null, 14:25:enabled:null, Remarks:enabled:null, Remarks:enabled:null, 13:45:enabled:null, 14:25:enabled:null, Remarks:enabled:null, Remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, all day:enabled:null, remarks:enabled:null, 1:enabled:null, allavail:disabled:false, all:disabled:false; words \"ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other\""
+ },
+ {
+  "id": "R8-allavail",
+  "size": "desk",
+  "said": "ALL AVAIL first, then Attach: {\"person\":\"allavail\",\"type\":\"Attach\",\"why\":\"ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other\"}"
+ },
+ {
+  "id": "R8-allavail",
+  "size": "desk",
+  "said": "dates: Jul 16"
+ },
+ {
+  "id": "R8-allavail",
+  "size": "desk",
+  "said": "Add pressed: inputs made 0; window still open win-inputedit,inpEditPop"
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "said": "[]"
+ }
+]

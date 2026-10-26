@@ -1,0 +1,94 @@
+{
+ "all": [
+  {
+   "id": 15,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: admin placed LL 20–22 Jan with a file and a remark (ticked)",
+    "ok: Jan 20: c k-ll s-a whole",
+    "ok: Jan 21: c k-ll s-a whole",
+    "ok: Jan 22: c k-ll s-a whole",
+    "ok: one Inputs row for Ranger 20–22 Jan: [\"Ranger\\t20 Jan\\t22 Jan\\tLL\\tLATErmk15 till 22 JanBy Saber\\tnow\",\"Ranger\\t16 Jul 17:00–18:30\\t\\tAPPOINTMENT\\tMedical / PHA\\t29 Jun 26\",\"Drifter, Echo, Ranger, Saber\\t23 Jul 10:00–11:00\\t\\tMEETING\\tFlight  afety briefBy Saber\\t25 Jun 26\"]",
+    "ok: that row shows the paperclip (doc id 50)",
+    "ok: and the remark: \"Ranger\t20 Jan\t22 Jan\tLL\tLATErmk15 till 22 JanBy Saber\tnow\"",
+    "ok: the paperclip opens a viewer: {\"head\":\"Ranger · LL · Jan 20 → Jan 22\",\"imgs\":1,\"frames\":0,\"imgW\":240,\"h\":587}",
+    "ok: Jan 21 is now refused: c k-ll s-r whole",
+    "ok: that day's request shows the file: [\"Document\",\"walk-b.png\",\"✕\",\"Add\"] — window \"Ranger | Wed 21 Jan | NOW LL | Approve what I enter | ✕ | Available P | 28 → 27 | No manning row turns amber or red | DA\"",
+    "after Jan 21 was refused the Inputs rows are: [\"Ranger\\t20 Jan\\t\\tLL\\tLATErmk15 till 20 JanBy Saber\\tnow clip=true\",\"Ranger\\t22 Jan\\t\\tLL\\tLATErmk15 till 22 JanBy Saber\\tnow clip=true\"]",
+    "ok: every remaining piece of the leave keeps its file ([true,true]): [\"Ranger\\t20 Jan\\t\\tLL\\tLATErmk15 till 20 JanBy Saber\\tnow clip=true\",\"Ranger\\t22 Jan\\t\\tLL\\tLATErmk15 till 22 JanBy Saber\\tnow clip=true\"]",
+    "ok: admin placed LL 26–28 Jan with a file",
+    "ok: Jan 27 holds no box after Delete: []",
+    "ok: 26 and 28 Jan each keep the file ([true,true]): [\"Ranger\\t26 Jan\\t\\tLL\\tLATEtill 26 JanBy Saber\\tnow clip=true\",\"Ranger\\t28 Jan\\t\\tLL\\tLATEtill 28 JanBy Saber\\tnow clip=true\"]",
+    "ok: admin placed AM LL on 12 Jan with a file",
+    "ok: admin placed PM OL on 12 Jan (no file)",
+    "ok: the day with two records opens the day list: daylist — <LL — local leave, morning · approved | Back to bid | Refuse | ⇄Move | Delete | Note | OL> — overseas leave, afternoon · approved | Back to bid | Refuse | ⇄Move | Delete | Note",
+    "ok: the day list offers \"Back to bid\": dl-unapprove-imvl3ml18gum8x8, dl-refuse-imvl3ml18gum8x8, dl-remove-imvl3ml18gum8x8, dl-unapprove-imvl3mnrttgm9ol, dl-refuse-imvl3mnrttgm9ol, dl-remove-imvl3mnrttgm9ol",
+    "ok: the LL line has its own Back to bid: dl-unapprove-imvl3ml18gum8x8",
+    "after Back to bid the day list reads: OL> — overseas leave, afternoon · approved | Back to bid | Refuse | ⇄Move | Delete | Note | <LL — local leave, morning · bid pending | Approve | Refuse | ⇄Move | Delete | walk-b.pdf | ✕ | Add",
+    "ok: the put-back request's line shows the file: [{\"text\":\"OL> — overseas leave, afternoon · approved Back to bid Refuse ⇄Move Delete Note\",\"hasFile\":false},{\"text\":\"<LL — local leave, morning · bid pending Approve Refuse ⇄Move Delete walk-b.pdf ✕ Add\",\"hasFile\":true}]"
+   ],
+   "fails": [],
+   "pics": [
+    "s15-approved-desk-cr.png",
+    "s15-inputs-list-desk-cr.png",
+    "s15-viewer-desk-cr.png",
+    "s15-refused-day-desk-cr.png",
+    "s15-inputs-after-refuse-desk-cr.png",
+    "s15-inputs-after-delete-desk-cr.png",
+    "s15-daylist-desk-cr.png",
+    "s15-daylist-after-back-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 15,
+   "size": "phone",
+   "engine": "chromium",
+   "verdict": "FAIL",
+   "notes": [
+    "ok: admin placed LL 20–22 Jan with a file and a remark (ticked)",
+    "ok: Jan 20: c k-ll s-a whole",
+    "ok: Jan 21: c k-ll s-a whole",
+    "ok: Jan 22: c k-ll s-a whole",
+    "ok: one Inputs row for Ranger 20–22 Jan: [\"20 Jan LATE\\ntill 22 Jan\\nRangerLL\\nrmk15\\nBy Saber\",\"16 Jul 17:00–18:30\\nRangerAPPOINTMENT\\nMedical / PHA\",\"23 Jul 10:00–11:00\\nDrifter, Echo, Ranger, SaberMEETING\\nFlight  afety brief\\nBy Saber\"]",
+    "FAIL: that row shows the paperclip (doc id null)",
+    "ok: and the remark: \"20 Jan LATE\ntill 22 Jan\nRangerLL\nrmk15\nBy Saber\"",
+    "no paperclip on this size, so the file is looked for through the card: its window",
+    "the card opens: ⠿\nRanger · 20 Jan → 22 Jan\n✕\nPERSON\nAce\nAnvil\nBa her\nBlade\nBolt\nCinch\nCinder\nCobra\nComet\nCotter\nCutter\nDa h\nDie el\nDrifter\nEcho\nFable\nForge\nGambit\nGho t\nGrit\nHavoc\nHex\nHunter\nJe ter\nKraken\nLedger\nMarl",
+    "ok: the paperclip opens a viewer: {\"head\":\"Ranger · LL · Jan 20 → Jan 22\",\"imgs\":1,\"frames\":0,\"imgW\":240,\"h\":376}",
+    "ok: Jan 21 is now refused: c k-ll s-r whole",
+    "ok: that day's request shows the file: [\"Document\",\"walk-b.png\",\"✕\",\"Add\"] — window \"Ranger | Wed 21 Jan | NOW LL | Approve what I enter | ✕ | Available P | 28 → 27 | No manning row turns amber or red | DA\"",
+    "after Jan 21 was refused the Inputs rows are: [\"20 Jan LATE\\nAll day\\nRangerLL\\nrmk15\\nBy Saber clip=false\",\"22 Jan LATE\\nAll day\\nRangerLL\\nrmk15\\nBy Saber clip=false\"]",
+    "ok: every remaining piece of the leave keeps its file ([true,true]): [\"20 Jan LATE\\nAll day\\nRangerLL\\nrmk15\\nBy Saber clip=false\",\"22 Jan LATE\\nAll day\\nRangerLL\\nrmk15\\nBy Saber clip=false\"]",
+    "ok: admin placed LL 26–28 Jan with a file",
+    "ok: Jan 27 holds no box after Delete: []",
+    "ok: 26 and 28 Jan each keep the file ([true,true]): [\"26 Jan LATE\\nAll day\\nRangerLL\\nBy Saber clip=false\",\"28 Jan LATE\\nAll day\\nRangerLL\\nBy Saber clip=false\"]",
+    "ok: admin placed AM LL on 12 Jan with a file",
+    "ok: admin placed PM OL on 12 Jan (no file)",
+    "ok: the day with two records opens the day list: daylist — <LL — local leave, morning · approved | Back to bid | Refuse | ⇄Move | Delete | Note | OL> — overseas leave, afternoon · approved | Back to bid | Refuse | ⇄Move | Delete | Note",
+    "ok: the day list offers \"Back to bid\": dl-unapprove-imvl3o2sf4n189o, dl-refuse-imvl3o2sf4n189o, dl-remove-imvl3o2sf4n189o, dl-unapprove-imvl3o5rhjfsbtw, dl-refuse-imvl3o5rhjfsbtw, dl-remove-imvl3o5rhjfsbtw",
+    "ok: the LL line has its own Back to bid: dl-unapprove-imvl3o2sf4n189o",
+    "after Back to bid the day list reads: OL> — overseas leave, afternoon · approved | Back to bid | Refuse | ⇄Move | Delete | Note | <LL — local leave, morning · bid pending | Approve | Refuse | ⇄Move | Delete | walk-b.pdf | ✕ | Add",
+    "ok: the put-back request's line shows the file: [{\"text\":\"OL> — overseas leave, afternoon · approved Back to bid Refuse ⇄Move Delete Note\",\"hasFile\":false},{\"text\":\"<LL — local leave, morning · bid pending Approve Refuse ⇄Move Delete walk-b.pdf ✕ Add\",\"hasFile\":true}]"
+   ],
+   "fails": [
+    "that row shows the paperclip (doc id null)"
+   ],
+   "pics": [
+    "s15-approved-phone-cr.png",
+    "s15-inputs-list-phone-cr.png",
+    "s15-card-window-phone-cr.png",
+    "s15-viewer-phone-cr.png",
+    "s15-refused-day-phone-cr.png",
+    "s15-inputs-after-refuse-phone-cr.png",
+    "s15-inputs-after-delete-phone-cr.png",
+    "s15-daylist-phone-cr.png",
+    "s15-daylist-after-back-phone-cr.png"
+   ],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

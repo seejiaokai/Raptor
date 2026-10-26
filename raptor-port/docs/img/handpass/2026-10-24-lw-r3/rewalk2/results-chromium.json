@@ -1,0 +1,160 @@
+[
+ {
+  "id": "S13b \"Pick a range\" tapped again closes the calendar, the range kept on its chip (F11)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "calendar closed true; chip \"16 Nov 26 – 18 Nov 26\"",
+  "pics": [
+   "s13-closed-phone"
+  ]
+ },
+ {
+  "id": "S13 a range picked reads on its chip; picked back to the day tapped the chip reads \"Pick a range\" again",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "range chip \"16 Nov 26 – 18 Nov 26\", day line \"Mon 16 Nov No manning row turns amber or red\"; back: \"Pick a range\"",
+  "pics": [
+   "s13-cal-phone",
+   "s13-range-phone",
+   "s13-back-phone"
+  ]
+ },
+ {
+  "id": "S20 geometry beside the drawing",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "height 229 (the drawing before D1314 / D1326: 248, -19); every row one line, side by side one height — bidsheet-hd:37/1L | bid-dayline:16/1L | Remarks and document:30/1L side h±0 c±0 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0",
+  "pics": []
+ },
+ {
+  "id": "S20 member, his empty open day: no switch, no ⋯ (none of the three is his)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "switch false; ⋯ false",
+  "pics": [
+   "s20-member-empty-phone"
+  ]
+ },
+ {
+  "id": "S20b member, his pending bid: Move and Delete only, the LL lit, his words row",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "actions ⇄Move · Delete; LL {\"lit\":true,\"pressed\":null}",
+  "pics": [
+   "s20-member-pending-phone"
+  ]
+ },
+ {
+  "id": "X1 member, his own refused bid: no leave lit, as the admin’s window on it lights none",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window bid-picker; lit []; Ranger | Thu 19 Nov | ✕ | No manning row turns amber or red | ⇄Move | Delete | till 19 Nov | Document | Whole day | AM | PM | Pick a range | LL | −2 | OL | −2 |",
+  "pics": [
+   "x1-member-refused-phone"
+  ]
+ },
+ {
+  "id": "X4 member, his own approved leave: RECORD which window and what its Remarks box is",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "remarks-sheet: Ranger | 20 Nov | LL | ✕ | DOCUMENT | Document | REMARKS | Save; box {\"tag\":\"TEXTAREA\",\"bg\":\"rgb(26, 31, 38)\",\"font\":\"\\\"Inter Tight\\\", system-ui, sans-serif\"}",
+  "pics": [
+   "x4-member-approved-phone"
+  ]
+ },
+ {
+  "id": "S21 member, a day before today: the closed-day window (RECORD — must not carry round 3's rows)",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "closed-note: Ranger | Tue 20 Oct | ✕ | Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. | Open the Inputs page",
+  "pics": [
+   "s21-member-closed-phone"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "S13b \"Pick a range\" tapped again closes the calendar, the range kept on its chip (F11)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "calendar closed true; chip \"16 Nov 26 – 18 Nov 26\"",
+  "pics": [
+   "s13-closed-desk"
+  ]
+ },
+ {
+  "id": "S13 a range picked reads on its chip; picked back to the day tapped the chip reads \"Pick a range\" again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "range chip \"16 Nov 26 – 18 Nov 26\", day line \"Mon 16 Nov No manning row turns amber or red\"; back: \"Pick a range\"",
+  "pics": [
+   "s13-cal-desk",
+   "s13-range-desk",
+   "s13-back-desk"
+  ]
+ },
+ {
+  "id": "S20 geometry beside the drawing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "height 229 (the drawing before D1314 / D1326: 248, -19); every row one line, side by side one height — bidsheet-hd:37/1L | bid-dayline:16/1L | Remarks and document:30/1L side h±0 c±0 | Duration:30/1L side h±0 c±0 | Which leave:66/2L side h±0 c±0",
+  "pics": []
+ },
+ {
+  "id": "S20 member, his empty open day: no switch, no ⋯ (none of the three is his)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "switch false; ⋯ false",
+  "pics": [
+   "s20-member-empty-desk"
+  ]
+ },
+ {
+  "id": "S20b member, his pending bid: Move and Delete only, the LL lit, his words row",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "actions ⇄Move · Delete; LL {\"lit\":true,\"pressed\":null}",
+  "pics": [
+   "s20-member-pending-desk"
+  ]
+ },
+ {
+  "id": "X1 member, his own refused bid: no leave lit, as the admin’s window on it lights none",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window bid-picker; lit []; Ranger | Thu 19 Nov | ✕ | No manning row turns amber or red | ⇄Move | Delete | till 19 Nov | Document | Whole day | AM | PM | Pick a range | LL | −2 | OL | −2 |",
+  "pics": [
+   "x1-member-refused-desk"
+  ]
+ },
+ {
+  "id": "X4 member, his own approved leave: RECORD which window and what its Remarks box is",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "remarks-sheet: Ranger | 20 Nov | LL | ✕ | DOCUMENT | Document | REMARKS | Save; box {\"tag\":\"TEXTAREA\",\"bg\":\"rgb(26, 31, 38)\",\"font\":\"\\\"Inter Tight\\\", system-ui, sans-serif\"}",
+  "pics": [
+   "x4-member-approved-desk"
+  ]
+ },
+ {
+  "id": "S21 member, a day before today: the closed-day window (RECORD — must not carry round 3's rows)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "closed-note: Ranger | Tue 20 Oct | ✕ | Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself. | Open the Inputs page",
+  "pics": [
+   "s21-member-closed-desk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

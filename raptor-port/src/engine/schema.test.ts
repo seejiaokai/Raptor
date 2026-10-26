@@ -95,7 +95,7 @@ const inputSpec = (booted: boolean): Spec => ({
   iid: booted ? 'string' : 'string?', person: 'string?', date: 'string',
   /* its people (the one-rule build, D756): a record has `people`, or — in the old shape, every verbatim seed — `person` */
   people: { $opt: [{ p: 'string', by: 'string?', at: 'number?', mod: 'string?', h: 'number?' }] }, endDate: 'string?', yr: 'number?', allday: 'boolean',
-  s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?', title: 'string?',
+  s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?', title: 'string?', to: 'string?',
   mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
   ord: 'number?',   // its place in the list ([DB-READINESS] group A, phase 2 — state/ord.ts; every booted row has one — below)

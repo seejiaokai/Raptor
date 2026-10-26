@@ -52,6 +52,7 @@ import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
 import { followVisible } from './vvfollow'
+import { screenBox } from './kbscroll'
 
 const toast = (...a: any[]) => HOOKS.toast(...a)
 const afterSchedMutate = () => view.afterSchedMutate()
@@ -1607,12 +1608,16 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
     if (!box.isConnected || !anchor.isConnected) { stop(); document.removeEventListener('scroll', place, true); return }
     const r = anchor.getBoundingClientRect(), vv = window.visualViewport
     const zoomed = !vv || vv.scale > 1.01
-    const visTop = zoomed ? 0 : vv!.offsetTop, visBot = zoomed ? window.innerHeight : vv!.offsetTop + vv!.height
+    /* the visible screen in the measure the box's own place is given in, and the layout's top in it (kbscroll.ts
+       screenBox — his iPhone, the keys up and the screen panned, gives every box from the visible top); the list's `top`
+       is written in the layout's own measure */
+    const sb = zoomed ? null : screenBox(vv!)
+    const visTop = sb ? sb.top : 0, visBot = sb ? sb.bottom : window.innerHeight, lay = sb ? sb.layTop : 0
     const h = box.offsetHeight
     let top = r.bottom + 6
     if (top + h > visBot - 8 && r.top - 6 - h >= visTop + 8) top = r.top - 6 - h
     box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
-    box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top))) + 'px'
+    box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top)) - lay) + 'px'
   }
   const stop = followVisible(place)
   document.addEventListener('scroll', place, true)

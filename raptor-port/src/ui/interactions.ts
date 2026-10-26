@@ -7,7 +7,7 @@ import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT } fr
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
+import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -1000,6 +1000,8 @@ export function routeClick(e: MouseEvent) {
     const rowDay = dest === 'x' ? acceptedDay(inp) : -1
     /* …and WHERE it stood: on the ground programme ('g') or under Unavailable ('u') — the take-off says which it left */
     const was = inp.acc
+    /* an overseas duty with no mark stands under Unavailable by its kind (D1393 — the code read's F4) */
+    const wasUnav = was === 'u' || (isOD(inp.type) && !was && !inp.odGround)
     const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
     /* AN ARMED PLACE DOES NOT SURVIVE A ROW MOVING UNDER IT — here too. This door writes the day itself, BEFORE the
        after-command pass takes its own picture of the armed row (state/holderbase.ts), so a row an Accept put back
@@ -1058,7 +1060,7 @@ export function routeClick(e: MouseEvent) {
          stood on ANOTHER day names that day ([REQ-DOOR-WORDS] 2), and one filed under Unavailable is "taken out of
          Unavailable" — it was never on the programme. */
       const said = dest === 'x'
-          ? was === 'u' ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
+          ? wasUnav ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
           : rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `${cs}'s ${inpLabel(inp)} taken off ${DAYS[rowDay].dow}'s programme`
           : `${cs}'s ${inpLabel(inp)} taken off the programme`
         : dest === 'u' ? `${cs}'s ${inpLabel(inp)} filed under Unavailable`

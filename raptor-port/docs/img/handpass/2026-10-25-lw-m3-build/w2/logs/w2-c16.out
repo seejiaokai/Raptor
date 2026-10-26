@@ -1,0 +1,30 @@
+lw-m3b-w2-c C:\Users\User\projects\Raptor\.claude\worktrees\lw-m3-placing-leave-d1c063\raptor-port\docs\img\handpass\2026-10-25-lw-m3-build\w2 sets 16
+-- 16
+   bundle [desk] index-BayEj7kB.js
+   16-filed [desk] acc g, allday true, asked []
+   16-start [desk] on Ground Programme; war cell [] Available P 25 → 25
+   16-rejected [desk] pressed "REJECT"; on Personal Inputs only; buttons now ["g:→ Ground","u:→ Unavail"]; war [] Available P 25
+   16-unavail [desk] pressed "→ UNAVAIL"; on Unavailable; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 25 → 24
+   16-changes [desk] changes window (All changes tab): ⠿ Changes · week of 13/7 3 changes this week ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Wed · Input · Ranger · Training · 3 18:54 Training 15 Jul · filed taken off the programme → under Unavailable Saber · 25/10 18:54 Training 15 Jul · filed on the programme → taken off the programme Saber · 25/10 18:54 Training added · 15 Jul (on the programme) Saber · 25/10 18:54 Tap a change to go to it — the window stays open.
+   16-changes [desk] after its own cross the window reads: null
+   16-bell [desk] bell: no list
+PASS?  16-unavail [desk]  started on Ground Programme; Reject then buttons ["g:→ Ground","u:→ Unavail"]; "→ Unavail" put it on Unavailable; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 25 → 24  [c-16-start-ground, c-16-rejected-inputs, c-16-unavail-edit, c-16-unavail-war]
+   16-undo-redo [desk] Undo ("Undo — a change to the schedule"): {"page":"editsched","cell":[],"avail":"25","acc":"r"} · Redo ("Redo — a change to the schedule"): {"page":"editsched","cell":["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"],"avail":"24","acc":"u"}
+PASS?  16-undo-redo [desk]  Undo ("Undo — a change to the schedule") → page editsched, acc r, war [] Available P 25; Redo ("Redo — a change to the schedule") → page editsched, acc u, war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 24  [c-16-undo-war, c-16-redo-war]
+   16-ground [desk] after Reject: war [] Available P 25; "→ GROUND" → on Ground Programme; war [] Available P 25
+PASS?  16-ground [desk]  Reject: war [] Available P 25; "→ Ground": on Ground Programme, war [], Available P 25  [c-16-ground-edit, c-16-ground-war]
+   16-back [desk] back under Unavailable: war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 24
+PASS?  38(16) [desk]  after reload + sign-in: war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 24; row on Unavailable  [c-16-reload-war, c-16-reload-edit]
+   16b-board [desk] board buttons for it: ["x:Reject"]
+   16b-board [desk] Reject pressed "REJECT"; buttons now ["g:→ Ground","u:→ Unavail"]
+   16b-board [desk] "→ UNAVAIL" pressed; board's Unavailable panel: ⠿ UNAVAILABLE + ADD ITEM START END PEOPLE RMKS Training LATE Ranger IP REJECT ATT C Grit C till 17 Jul OD Nomad C till 17 Jul
+   16b-board [desk] Reject "REJECT" then "→ GROUND": Ground panel has it: true; war [] Available P 27
+PASS?  16-board [desk]  board offers ["g:→ Ground","u:→ Unavail"] after Reject; "→ Unavail": board's Unavailable panel holds it: true; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 27 → 26; "→ Ground": Ground panel holds it: true, war [], Available P 27  [c-16b-board-rejected, c-16b-board-unavail, c-16b-board-war, c-16b-board-ground, c-16b-board-ground-war]
+   errors-16 [desk] []
+RESULTS
+PASS? 16-unavail | started on Ground Programme; Reject then buttons ["g:→ Ground","u:→ Unavail"]; "→ Unavail" put it on Unavailable; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 25 → 24
+PASS? 16-undo-redo | Undo ("Undo — a change to the schedule") → page editsched, acc r, war [] Available P 25; Redo ("Redo — a change to the schedule") → page editsched, acc u, war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 24
+PASS? 16-ground | Reject: war [] Available P 25; "→ Ground": on Ground Programme, war [], Available P 25
+PASS? 38(16) | after reload + sign-in: war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 24; row on Unavailable
+PASS? 16-board | board offers ["g:→ Ground","u:→ Unavail"] after Reject; "→ Unavail": board's Unavailable panel holds it: true; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 27 → 26; "→ Ground": Ground panel holds it: true, war [], Available P 27
+exit 0

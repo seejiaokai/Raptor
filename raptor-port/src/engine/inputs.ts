@@ -208,6 +208,8 @@ export function inpDetailKey(inp:any):string{
        published is a pending change like a changed remark (D178). Named only where there is one, so an untitled
        input's key is byte-for-byte what it was. */
     ...(titleOf(inp.type,inp.title)?{title:titleOf(inp.type,inp.title)}:{}),
+    /* …and where an Attach is to (his D1373), drawn in its name beside the title (the code read's F3): named only where set */
+    ...(isFly(inp.type)&&toOf(inp.to)?{to:toOf(inp.to)}:{}),
     /* THE SCHEDULER'S MARKS ON IT ARE PART OF WHAT IT SAYS (step 4 of the one-rule build — owner D760: a CX on the row
        cancels the INPUT; reading 3: "on a published day a CX put on or taken off reads as a change waiting"). NORMALISED
        (Fable's read of the plan, F14): a CX put on and taken off leaves `cx:false` where a record never cancelled has
@@ -369,8 +371,14 @@ export const INPUT_META:any={
   'Meeting':    {name:'meeting',                  grp:'act',   work:false, local:true,  ground:true,  half:false},
   /* renamed from 'Fly' (owner, 14 Aug 26) — reads better in the dropdown, and
      the reference's own `^Fly$` offer regexes simply stop matching, which is
-     the commitment semantics both engines already agree on */
-  'Fly with':   {name:'flying with another squadron', grp:'act', work:false, local:true, ground:true, half:false, shiftHard:true},
+     the commitment semantics both engines already agree on.
+     …AND RENAMED AGAIN, "Fly with" → "ATTACH" (his D1373, 25 Oct 26 — "this person can be attached to anywhere … another
+     job or another Sqn"): attached to another squadron, a job or an exercise, its window asking one short "To" box for
+     where (`to`, shown in its name — "Attach · 145 Sqn", `inpLabel`). It LANDS UNDER UNAVAILABLE BY ITSELF (D1374), as
+     an overseas duty does — `landsUnavail` below — so it counts him out on the Leave War. Still a commitment in every
+     other rule (grp:'act': crew rest, the OIL question, red across an SC MAIN shift). A "Fly with" already stored is
+     demo data (D56). */
+  'Attach':     {name:'attached to another squadron, a job or an exercise', grp:'act', work:false, local:true, ground:true, half:false, shiftHard:true},
   'Personal':   {name:'personal',                 grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   'Appointment':{name:'appointment',              grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* a LOCAL duty (owner, 18 Aug 26 — "a new input call Duty… local… same kind
@@ -396,6 +404,11 @@ export const INPUT_META:any={
   /* overseas duty — replaces Detachment (owner, 10 Aug 26). Out of reach:
      cannot be planned for anything at all, an SC spare included. */
   'OD':         {name:'overseas duty',            grp:'duty',  work:false, local:false, ground:false, half:false},
+  /* (UNA — round 2's unforeseen absence — stood here for a day as an input kind. Since his D1338, 24 Oct 26 — "Maybe put
+     UNA instead? But nowhere else … its admin input only" — it became the Leave War's own record for a day, and since
+     his D1356, 25 Oct 26 — "UNA goes" — it is gone there too: an unforeseen absence is an Other its filer puts under
+     Unavailable, which the war counts out (D1357). A stored war UNA record is dropped on read (leavewar/engine/warrecs.ts
+     isRetiredUna). Pinned gone from here by unagone.test.ts.) */
   'Other':      {name:'other',                    grp:'act',   work:false, local:true,  ground:true,  half:false, shiftHard:true},
   /* SANS AVAILABILITY (owner, 14 Aug 26) — SANS aircrew filing POSITIVE
      availability for Fly / AMT / OFT, not an absence. grp:'sans' keeps it
@@ -467,7 +480,18 @@ export function isLocalLeave(t:any){const m=inpMeta(t); return !!m&&m.grp==='lea
    for. See the late-input block below. */
 export function isDownchit(t:any){const m=inpMeta(t); return !!m&&m.grp==='med';}
 export function isOffType(t:any){return isLeave(t)||isDownchit(t);}
-export function isFly(t:any){return /^Fly with$/i.test(String(t==null?'':t).trim());}
+/* "Fly with" is "Attach" since his D1373 (25 Oct 26) — the one predicate keeps its old name for its callers */
+export function isFly(t:any){return /^Attach$/i.test(String(t==null?'':t).trim());}
+/* LANDS UNDER UNAVAILABLE BY ITSELF (his D1372 a course, D1374 an Attach — 25 Oct 26 — "as an overseas duty does"): a
+   commitment kind whose input, when it is filed, goes straight under the schedule's Unavailable list — `acc:'u'`, the
+   same filing a scheduler's "→ Unavail" makes — so the schedule and the Leave War (which counts every commitment under
+   Unavailable out, D1357) agree. Its filer is not asked where it goes (the Other is: its window's "Goes to", D1356). Kept
+   a commitment (grp:'act') for every other rule; a scheduler may still move one (Reject, then → Ground). */
+export function landsUnavail(t:any){const c=inpType(t); return c==='CSE'||c==='Attach';}
+/* WHERE A NEW INPUT IS FILED: 'u' (under Unavailable) for a kind that lands there by itself, or an Other whose filer
+   picked Unavailable in its "Goes to" (his D1356, D1365 — `goes` is the window's choice, 'g' or 'u'); else null — it lands
+   on the Ground Programme as every commitment does, worked out on read (state/holderbase.ts). */
+export function filingOf(t:any,goes?:any):'u'|null{return landsUnavail(t)||(isOther(t)&&goes==='u')?'u':null;}
 /* may a NON-FLYING tasking still be given inside this input's hours? */
 export function canWork(t:any){const m=inpMeta(t); return !!m&&!!m.work;}
 /* IS THIS COMMITMENT A HARD CONFLICT ACROSS AN SC MAIN SHIFT? (owner, 26 Aug
@@ -520,7 +544,30 @@ export function shiftHardLabel(s:any){return SHIFT_HARD_RE.test(String(s==null?'
 /* AN UPCHIT IS UNAVAIL BUT NOT AWAY either (owner, 27 Aug 26) — it says the
    man is fit AGAIN, so striking him from the palette would invert its meaning.
    Same carve-out shape as SANS, at this same one call site. */
-export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type))||(isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'));}
+/* A COMMITMENT UNDER UNAVAILABLE IS AWAY TOO (the M3 code read's Q2, 25 Oct 26 — his D1372 sends a course there by
+   itself "as an overseas duty does, so the schedule and the Leave War agree", and D1357 has the war count any commitment
+   filed there out). On the Ground Programme a course had a row, which faded him in the crew list as already tasked;
+   under Unavailable it has none, so the crew list drew him free. So `acc:'u'` on any commitment kind now reads away for
+   its hours, as an Attach there already did — the activity types on the programme, or taken back out ('r'), stay out as
+   above. A CANCELLED or information-only one is silent (inputSilent), an Attach included: the warning list ignores it
+   already, and a strike it no longer backs is the drift the picker must not have. The ALL AVAIL crowd is unmoved — it
+   already keeps out every commitment, wherever filed (leavewar/sync.ts availableFor). Pinned by unavaway.test.ts. */
+/* AN OVERSEAS DUTY A SCHEDULER TOOK OUT OF UNAVAILABLE (his D1393, 26 Oct 26 — "an overseas duty has no Reject button on
+   the schedule … add one"). An overseas duty sits under Unavailable by its kind, with no mark; a scheduler may now take it
+   out as he takes out a course: Reject parks it in Personal Inputs ('r', dormant), → Ground puts its row on the Ground
+   Programme (`odGround`, kept on the record, because the 'g' a week works out for itself is cleared on every week load and
+   an overseas duty with no mark is away — a stored 'g' alone would send him away again on the next week; the course's F1),
+   → Unavail puts it back ('u'). Taken out, it counts him IN — here, on the crew list, and on the Leave War
+   (leavewar/absences.ts warCounts), which ask the same thing. */
+export function isOD(t:any){return String(t==null?'':t).trim().toUpperCase()==='OD';}
+export function odOut(inp:any){return !!inp&&isOD(inp.type)&&inp.acc!=='u'&&(inp.acc==='r'||inp.acc==='g'||!!inp.odGround);}
+/* does this request's kind put a row on the programme: an activity (isPersonal), or an overseas duty a scheduler moved onto
+   the Ground Programme (D1393) — the one test the read-time landing asks (overlay.ts) */
+export function goesOnProg(inp:any){return !!inp&&(isPersonal(inp.type)||(isOD(inp.type)&&!!inp.odGround&&inp.acc!=='u'&&inp.acc!=='r'));}
+/* is it LISTED in Personal Inputs / under Unavailable on the schedule (ui/html.ts, ui/board-html.ts — one body each) */
+export function listedPersonal(inp:any){return !!inp&&(isPersonal(inp.type)||odOut(inp))&&inp.acc!=='u';}
+export function listedUnavail(inp:any){return !!inp&&((isUnavail(inp.type)&&!odOut(inp))||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type);}
+export function isAway(inp:any){return (isUnavail(inp.type)&&!isSansAvail(inp.type)&&!isUpchit(inp.type)&&!odOut(inp))||(!inputSilent(inp)&&((isFly(inp.type)&&(inp.acc==='g'||inp.acc==='u'))||(isPersonal(inp.type)&&inp.acc==='u')));}
 /* DOES THIS ABSENCE CLOSE THE WHOLE DAY, or only some hours (owner, 10 Aug 26 —
    AM / PM half-days)? It does when it says so, AND when it carries no usable
    window at all: {person:'pike', type:'OD'} with neither allday nor s/e is a
@@ -573,7 +620,7 @@ export function offWord(inp:any){const m=inpMeta(inp.type);
    The first was a desk marker nobody read off the programme; the other two were
    OFFERS — a man saying what he WANTED rather than where he had to be. With them
    gone the offer concept goes with them: every remaining non-leave type is a real
-   commitment, "Fly with" included, so it clashes and consumes brief/debrief time
+   commitment, an Attach ("Fly with" until D1373) included, so it clashes and consumes brief/debrief time
    exactly like an Appointment does.
    DERIVED from INPUT_META, in its declaration order, so the list a scheduler
    picks from and the rules the engine applies cannot disagree about which
@@ -589,6 +636,13 @@ export const INPUT_TYPES=Object.keys(INPUT_META);
 export const TYPE_GROUPS:any=[
   {k:'leave',t:'Leave'},{k:'med',t:'Medical'},{k:'other',t:'Duty & other commitments'}];
 export function typeGroup(t:any){const m=inpMeta(t); return !m?'other':m.grp==='leave'?'leave':(m.grp==='med'||m.grp==='upchit')?'med':'other';}
+/* THE TYPE FILTER PICKS A WHOLE FAMILY TOO (owner D1179, M3 7.4 — "select leave to show all kinds of leave, likewise for
+   medical"): a filter value 'grp:<family>' matches every kind of that family, 'all' everything, else the one kind. ONE body
+   for the Inputs list, its calendar and the calendar's day, so the three cannot disagree. */
+export const TYPE_FAMILY_LABEL:any={leave:'All leave',med:'All medical',other:'All duty & commitments'};
+export function typeMatches(f:any,t:any):boolean{if(!f||f==='all')return true;if(String(f).startsWith('grp:'))return typeGroup(t)===String(f).slice(4);return t===f;}
+/* what a filter value reads as, in the list of filters applied */
+export function typeFilterLabel(f:any):string{return String(f).startsWith('grp:')?(TYPE_FAMILY_LABEL[String(f).slice(4)]||String(f)):String(f);}
 /* The two halves of the day's input blocks, and the ONLY place the split is
    decided — the week and the board both used to carry their own copy of this
    regex and could drift apart.
@@ -631,7 +685,7 @@ export function defaultAllday(t:any){return !(typeGroup(t)==='other'&&!isSansAva
 /* DOES THIS INPUT TYPE BEAR CREW REST? (owner, 21 Aug 26 — "everything in
    duty and commitments affects crew rest if the person is flying… do not
    include personal, sans availability"). The "Duty & other commitments"
-   dropdown group minus those two: Training, CSE, Meeting, Fly with,
+   dropdown group minus those two: Training, CSE, Meeting, Attach,
    Appointment, Duty, OD, Other. Leave and medical types are out of scope by
    the same ruling — a downchit is not a working day.
    NAMING TRAP: the exclusion is the TYPE spelled 'Personal', not the
@@ -646,7 +700,7 @@ export function restsInput(t:any){const m=inpMeta(t);
 /* DOES THIS INPUT TYPE ASK FOR OIL? (owner, 28 Aug 26 — a duty-&-commitments
    input landing on a weekend/PH is never credited silently: the app asks its
    owner whether it deserves the HO/FO credit). The owner picked EXACTLY the
-   crew-rest set — Training, CSE, Meeting, Fly with, Appointment, Duty, OD,
+   crew-rest set — Training, CSE, Meeting, Attach, Appointment, Duty, OD,
    Other — with 'Personal' and SANS Availability excluded again. Its own name
    so the two rules can diverge later without a hunt; today one delegates. */
 export function oilAsks(t:any){return restsInput(t);}
@@ -658,7 +712,7 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
    nobody's name is stored in it — who stands behind it is worked out on the day, as for a placeholder dropped on a row
    (D702, D44). So no man behind it has a record of his own, and none has an OIL answer of his own (D711 (1)).
    ITS STRUCTURAL RULES, said by ONE body so no door can hold a different idea of them: (a) one of SIX kinds — not an
-   overseas duty or a course (D711 (2): each is a fact about one man), not "Fly with" (D712 — "Personal" too until D778, 12 Oct 26: below), and the new
+   overseas duty or a course (D711 (2): each is a fact about one man), not an Attach — "Fly with" until D1373 — (D712 — "Personal" too until D778, 12 Oct 26: below), and the new
    Event is in (D713); (b) ONE day (D711 (3): a request lands its row on its first day only); and never under
    Unavailable (below). `placeholderProblem` answers '' or the sentence the screen says; every save door asks it
    first (ui/inputedit.tsx normalizeInputDraft, commitInput; ui/PeoplePick.tsx; the row's door, ui/reqdoor.ts) and the
@@ -670,7 +724,7 @@ export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim(
    (b) — "offered only where the input is a single day" — and "ALL or ALL AVAIL, never both" (shapeProblem, below).
    The words are the plan's (§4.4), as short as can be understood (D726, D765). */
 /* …AND "PERSONAL" IS ONE OF THE KINDS (owner D778, 12 Oct 26 — "So all avail all can go on personal"; it narrows D712,
-   which stands for "Fly with"): a Personal input is the same as an Event for everything about PEOPLE, and it is still
+   which stands for an Attach, "Fly with" when it was ruled): a Personal input is the same as an Event for everything about PEOPLE, and it is still
    NOT WORK — it never asks the OIL question (oilAsks, above), so the men behind its puck are counted and earn nothing
    (oilev.ts oilEvidence, the membership-only pass). Listed in the type dropdown's own order. */
 export const PLACEHOLDER_KINDS:string[]=['Training','Meeting','Personal','Appointment','Duty','Event','Other'];
@@ -752,8 +806,14 @@ export function titleOf(type:any,title:any):string{
    remark beside it in the remarks cell — no longer printed twice. */
 export function inpLabel(inp:any){
   const type=String((inp&&inp.type)||'');
-  return titleOf(type,inp&&inp.title)||type;
+  const name=titleOf(type,inp&&inp.title)||type;
+  /* AN ATTACH NAMES WHERE HE IS ATTACHED (his D1373): "Attach · 145 Sqn" — its "To" box, free words, optional */
+  const to=isFly(type)?toOf(inp&&inp.to):'';
+  return to?`${name} · ${to}`:name;
 }
+/* WHERE AN ATTACH IS TO (D1373): the typed words, trimmed, inner white space collapsed, at most TITLE_MAX — the same
+   narrow name column as a title; nothing where nothing was typed */
+export function toOf(to:any):string{return String(to==null?'':to).replace(/\s+/g,' ').trim().slice(0,TITLE_MAX).trim();}
 /* THE NAME OF A REQUEST THAT IS GONE, READ OFF THE ROW IT LEFT (the changes window's "… on the programme → deleted"):
    the row carries what it was made from (`srcType`) and what it was called (`prog`). Where the two differ the row was
    named by the request's own title — that is its name; otherwise its kind, written as a kind is. */
@@ -850,7 +910,7 @@ export let INPUTS:any[]=[
   {person:'nasty', date:'Jul 14', allday:true,               type:'LL',          remarks:'Local leave',  mod:'2026-06-30'},
   {person:'shrek', date:'Jul 14', allday:true,               type:'OIL',         remarks:'OIL — CO approved, post-detachment',mod:'2026-07-02'},
   {person:'sufa',  date:'Jul 13', endDate:'Jul 17', allday:true, type:'ATT C',   remarks:'Medically down till 17 Jul', mod:'2026-07-12'},
-  {person:'bruise',date:'Jul 13', allday:true,               type:'Fly with',    remarks:'Keen for any wave',mod:'2026-06-20'},
+  {person:'bruise',date:'Jul 13', allday:true,               type:'Attach',      remarks:'Keen for any wave',mod:'2026-06-20'},
   {person:'vinci', date:'Jul 13', allday:false, s:540, e:1020,type:'Meeting',     remarks:'Desk / staff work',mod:'2026-06-26'},
   {person:'pike',  date:'Jul 15', endDate:'Jul 17', allday:true, type:'OD',       remarks:'Overseas duty — exercise, off island',mod:'2026-06-18'},
   {person:'yeti',  date:'Jul 13', allday:false, s:600, e:660, type:'Appointment', remarks:'HSP blood panel',mod:'2026-07-06'},

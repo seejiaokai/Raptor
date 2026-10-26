@@ -2,7 +2,7 @@ import { DAYS } from './data'
 import { PEOPLE, whoId, isSpecial, callsignTakenBy, indexCallsigns } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek, dayCurVer, daySnapOf } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
-import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
+import { isOD, goesOnProg, INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx, holds, leadOf, isPlaceholderInput } from './inputs'
 import { shiftKeys, seatRow, iuParts } from './keys'
 import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
@@ -504,12 +504,13 @@ export function acceptInput(di:any,inp:any,dest:any){
      two carry identical times, so overlap() is trivially true). The board
      never offers the control for these; this guard keeps any future call
      site honest. */
-  if(isUnavail(inp.type))return false;
+  if(isUnavail(inp.type)&&!isOD(inp.type))return false;   // an overseas duty a scheduler took out of Unavailable may go back, or onto the programme (D1393)
   /* "UNAVAILABLE" DESCRIBES A REAL PERSON'S DAY ([INPUT-ALL-AVAIL]): an input filed for ALL AVAIL / ALL has no day to
      describe, and under Unavailable its person cell is a drop target that would turn it into one man's input. The
      button is not drawn for one (ui/html.ts accBtns); this is the door behind it. */
   if(dest==='u'&&isPlaceholderInput(inp))return false;
-  if(dest==='u'){ inp.acc='u'; markEdit(); return true; }
+  if(dest==='u'){ inp.acc='u'; delete inp.odGround; markEdit(); return true; }
+
   /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
      was the content key inpKey). Content keys are not unique — two inputs
      agreeing on person·date·type·start-minute (twins) minted the same `src`, so
@@ -526,7 +527,7 @@ export function acceptInput(di:any,inp:any,dest:any){
        reading "taken off", and Accept did nothing. Accept now ADOPTS that row — the request is on the programme again,
        no second row. (A general re-file on the switch itself was refused: switching back would then wake a deliberate
        removal as a fresh, flagging request — Fable's plan read F1.) Any other filing: the row is already there. */
-    if(inp.acc==='r'){ inp.acc='g'; markEdit(); return true; }
+    if(inp.acc==='r'){ inp.acc='g'; if(isOD(inp.type))inp.odGround=true; markEdit(); return true; }
     return false;
   }
   /* …AND NOT A SECOND ROW ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26; D175 across weeks — Fable's G3). A request covering
@@ -534,6 +535,9 @@ export function acceptInput(di:any,inp:any,dest:any){
      Monday take a second one. It asks the saved weeks too (weekstash.ts rowElsewhere — read-only; the filing stays
      week-local), and refuses when it cannot read one (never a second row on an unknown). */
   if(rowElsewhere(key,inp))return false;
+  /* an overseas duty's row on the Ground Programme is kept by a mark on the record (engine/inputs.ts odOut — D1393), set only
+     here, where the landing is certain (the code read's F5: set before the refusals above it stayed on a refused press) */
+  if(isOD(inp.type))inp.odGround=true;
   d.ground=d.ground||[];
   /* PUTTING AN ISSUED LANDING BACK IS A ROUND TRIP, NOT A NEW ROW ([HUMAN-RETEST] the amendment
      system, walk W4-F2, 24 Sep 26; register AM20). On a published day whose CURRENT issued
@@ -659,13 +663,15 @@ export function reconcileDayFiling(di:any){
        whose row a replacement DROPPED is unfiled; a falsy-acc personal input whose
        row a replacement RESTORED (a draft round-trip) is re-filed 'g' — the old
        delete-only form left it stranded, phantom-amending on the next navigation. */
-    if(landed){ if(inp.acc!=='g'&&isPersonal(inp.type))inp.acc='g'; }
+    if(landed){ if(inp.acc!=='g'&&goesOnProg(inp))inp.acc='g'; }
     else if(inp.acc==='g')delete inp.acc;
   });
 }
 export function unacceptInput(di:any,inp:any){
   if(protectedWeek()||inputProtected(inp))return false;   // read-only quarantine — global filing write, so guard the input's every date (P2-IMPL-03 + P2-QREV-02)
-  if(!inp||!inp.acc||inp.acc==='r')return false; // 'r' is already removed — nothing to undo
+  /* an overseas duty under Unavailable by its kind carries no mark — its Reject parks it all the same (D1393) */
+  if(inp&&!inp.acc&&isOD(inp.type)&&!inp.odGround){ inp.acc='r'; markEdit(); return true; }
+  if(!inp||(!inp.acc&&!(isOD(inp.type)&&inp.odGround))||inp.acc==='r')return false; // 'r' is already removed — nothing to undo
   const was=inp.acc;
   if(inp.acc==='g'){
     /* search by content key across the week rather than trusting di — see
@@ -699,7 +705,7 @@ export function unacceptInput(di:any,inp:any){
      and accCtl reads it as "offer Accept again". An input that was never
      landed at all (acc undefined — e.g. filed onto a published day) still
      counts; only a deliberate removal parks. */
-  inp.acc='r';
+  inp.acc='r'; delete inp.odGround;
   /* The amendment was marked on an inert deletion/input-action key above.
      Keep the bare call as the history/render epilogue; it must never re-mark
      the removed row address, which now belongs to whatever shifted into it. */

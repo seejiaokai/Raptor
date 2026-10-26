@@ -662,13 +662,17 @@ export function initPan() {
   /* …AND IT IS TAKEN DOWN WITH THE WEEK (13 Oct 26). The guard above was not enough: the live app's own check run was
      marked failed, every test passing, when this timer fired after a test file had ended and its page had gone
      ("document is not defined"). The tidy-up below now clears it, and it does nothing where there is no page. */
+  /* …AND NEVER, NOT ONLY UNDER THE NOTE ([LOGIN-NOT-AT-TOP], his report of 26 Oct 26 — "Why everytime I login I don't see
+     the top of the page?"). A phone's day card is taller than the screen, so the browser lined its top up with the top of
+     the screen — under the top bar that stays — and every sign-in opened 120px down, the day's heading and sign-off hidden.
+     The jump is sideways only: the page keeps its place, whatever is drawn above the week. */
   const jumpT = window.innerWidth <= 820 ? setTimeout(() => {
     if (typeof document === 'undefined') return
     const t = document.querySelector('#vWeek .day.today')
     if (!t || typeof t.scrollIntoView !== 'function') return
     const y = window.scrollY
     t.scrollIntoView({ inline: 'start', block: 'nearest' })
-    if (document.getElementById('welcomeBack') && window.scrollY !== y) window.scrollTo(window.scrollX, y)
+    if (window.scrollY !== y) window.scrollTo(window.scrollX, y)
   }, 120) : 0
   return () => {
     clearTimeout(ROSDAY_T)

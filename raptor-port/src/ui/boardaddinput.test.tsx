@@ -31,6 +31,8 @@ let host: HTMLDivElement
 let root: Root
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
+/* a NEW leave with no document asks first since D1150 (M3 7.4) — never a stop; these filers answer "No document" */
+const noDocAsk = async () => { const b = document.querySelector('[data-testid="docconf-nodoc"]'); if (b) await click(b) }
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })
@@ -162,7 +164,7 @@ describe('commitNewInput', () => {
 
 /* ---- (c) the dialog's context-bound shapes -------------------------------- */
 describe('the dialog opened from each add', () => {
-  it('Unavailable: leave/medical/OD types only, a range calendar, the till date after the remarks box (D948)', async () => {
+  it('Unavailable: leave/medical/OD and what lands there (a course, an Attach, an Other), a range calendar, the till date after the remarks box (D948)', async () => {
     await act(async () => { openScheduler(0); notify() })
     await click($('#schedBoard .unav .sb-addinp'))
     expect($('#inpEditTitle').textContent).toContain('New input')
@@ -170,7 +172,10 @@ describe('the dialog opened from each add', () => {
     expect($('#inpEditSave').textContent).toBe('Add')
     const opts = optionsOf($('#inpEditType'))
     expect(opts.length).toBeGreaterThan(0)
-    expect(opts.every(t => isUnavail(t) && !isSansAvail(t)), 'no activity types and no SANS here').toBe(true)
+    /* the absences, and since the M3 code read's Q3 (D1372, D1374, D1356) the three that land under Unavailable — a course
+       and an Attach by themselves, an Other on its Goes to; no other activity type and no SANS */
+    expect(opts.every(t => (isUnavail(t) && !isSansAvail(t)) || ['CSE', 'Attach', 'Other'].includes(t)), 'no other activity type and no SANS here').toBe(true)
+    expect(['CSE', 'Attach', 'Other'].every(t => opts.includes(t)), 'a course, an Attach and an Other are offered').toBe(true)
     expect($('#inpEdCal'), 'the two-click range calendar is in the dialog').toBeTruthy()
     /* an absence still opens all-day — leave/medical keep the ON default */
     expect(($('#inpEditSpan [data-span="all"]') as HTMLElement).getAttribute('aria-pressed'), 'an Unavailable add opens all-day').toBe('true')
@@ -218,7 +223,7 @@ describe('adding through the board', () => {
     await click($('#inpEdCal [data-iso="2026-07-15"]'))
     await click($('#inpEdCal [data-iso="2026-07-17"]'))
     expect([($('#inpEditRmk') as HTMLInputElement).value, $('[data-testid="inped-till"]')!.textContent], 'the pick moved the date after the box').toEqual(['', 'till 17 Jul'])
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(INPEDIT, 'the dialog closed on a good save').toBe(null)
     const row = INPUTS.find((i: any) => onlyNamed(i) === 'bane' && i.type === 'OL' && i.date === 'Jul 15')!
     expect(row, 'the record exists').toBeTruthy()
@@ -235,7 +240,7 @@ describe('adding through the board', () => {
     await click($('#schedBoard .grnd .sb-addinp'))
     await setSelect($('#inpEditPerson'), 'bane')
     await setSelect($('#inpEditType'), 'Meeting')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(INPEDIT).toBe(null)
     const row = onMon().find((i: any) => onlyNamed(i) === 'bane' && i.type === 'Meeting')!
     expect(row, 'the input exists on Monday').toBeTruthy()
@@ -260,7 +265,7 @@ describe('adding through the board', () => {
     /* tick Fly */
     const fly = $('#inpEditSans input[type=checkbox]') as HTMLInputElement
     await act(async () => { fly.click() })
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(INPEDIT).toBe(null)
     const row = onMon().find((i: any) => isSansAvail(i.type) && onlyNamed(i) === person)!
     expect(row, 'the offer exists on Monday').toBeTruthy()
@@ -273,7 +278,7 @@ describe('adding through the board', () => {
     const before = INPUTS.length
     await act(async () => { openScheduler(0); notify() })
     await click($('#schedBoard .sansav .sb-addinp'))
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(INPEDIT, 'refusal keeps the dialog open').toBeTruthy()
     expect(INPUTS.length).toBe(before)
     expect(TOASTS.some(t => /tick at least one/i.test(t))).toBe(true)

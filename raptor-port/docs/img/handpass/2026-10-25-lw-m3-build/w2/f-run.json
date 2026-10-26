@@ -1,0 +1,72 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-BayEj7kB.js"
+ },
+ {
+  "id": "30",
+  "size": "desk",
+  "said": "a question opened after the save: oilconf"
+ },
+ {
+  "id": "30-filed",
+  "size": "desk",
+  "said": "acc g; oil {\"2026-07-18\":1}; asked [\"oilconf\"]"
+ },
+ {
+  "id": "back-to-grid",
+  "size": "desk",
+  "said": "OIL tracker still up: false"
+ },
+ {
+  "id": "30-published",
+  "size": "desk",
+  "said": "publish {\"published\":true,\"version\":\"ORIG\",\"signSelects\":4}; war [\"FO*|k-oil|s-a|whole|plain|fs10px|w21h22|tw17.9\"] Available P 28 → 28; OIL row \"Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left\""
+ },
+ {
+  "id": "30-move",
+  "size": "desk",
+  "said": "Reject \"REJECT\" (windows []); \"→ Unavail\" \"→ UNAVAIL\" (windows []); acc now u"
+ },
+ {
+  "id": "back-to-grid",
+  "size": "desk",
+  "said": "OIL tracker still up: false"
+ },
+ {
+  "id": "30-moved",
+  "size": "desk",
+  "said": "row now on Unavailable; war [\"FO*|k-oil|s-a|left|plain|fs7.5px|w10h22|tw13|OVERFLOW2\",\"TRG|k-unav|s-a|right|outlined|fs6.5px|w10h22|tw12.2|OVERFLOW1\"] Available P 27; OIL row \"Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left\""
+ },
+ {
+  "id": "errors-30",
+  "size": "desk",
+  "said": "[]"
+ },
+ {
+  "id": "32-base",
+  "size": "desk",
+  "said": "Available P Mon 28, Tue 28"
+ },
+ {
+  "id": "32-Appointment",
+  "size": "desk",
+  "said": "{\"cs\":\"Ranger\",\"kind\":\"Appointment\",\"times\":\"600-660\",\"acc\":\"u\",\"monCell\":[\"APPT|k-unav|s-a|top|outlined|fs6.5px|w24h10|tw15.9\"],\"tueCell\":[],\"monAvail\":\"27.5\",\"tueAvail\":\"28\"}"
+ },
+ {
+  "id": "32-Meeting",
+  "size": "desk",
+  "said": "{\"cs\":\"Drifter\",\"kind\":\"Meeting\",\"times\":\"540-1020\",\"acc\":\"u\",\"monCell\":[\"MTG|k-unav|s-a|whole|outlined|fs8.5px|w24h22|tw18.6\"],\"tueCell\":[],\"monAvail\":\"26.5\",\"tueAvail\":\"28\"}"
+ },
+ {
+  "id": "32-Duty",
+  "size": "desk",
+  "said": "{\"cs\":\"Hunter\",\"kind\":\"Duty\",\"times\":\"1320-120\",\"acc\":\"u\",\"monCell\":[\"DTY|k-unav|s-a|bot|outlined|fs6.5px|w22h10|tw12.1\"],\"tueCell\":[],\"monAvail\":\"26\",\"tueAvail\":\"28\"}"
+ },
+ {
+  "id": "errors-32",
+  "size": "desk",
+  "said": "[]"
+ }
+]

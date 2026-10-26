@@ -1,0 +1,32 @@
+[
+ {
+  "id": "40-Attach-his",
+  "size": "phone",
+  "said": "{\"kind\":\"Attach\",\"realKind\":\"Attach\",\"mode\":\"his\",\"pan\":184,\"focused\":true,\"box\":[279,312],\"win\":[8,385],\"foot\":[335,384],\"goesRow\":null,\"inner\":[],\"held\":true,\"lift\":\"-38\",\"bodyScroll\":[24,949,318],\"clearOfKeys\":true,\"clearOfFoot\":true,\"windowAtTop\":true,\"errors\":[]}"
+ },
+ {
+  "id": "40-Attach-classic",
+  "size": "phone",
+  "said": "{\"kind\":\"Attach\",\"realKind\":\"Attach\",\"mode\":\"classic\",\"pan\":0,\"focused\":true,\"box\":[307,340],\"win\":[12,672],\"foot\":[622,671],\"goesRow\":null,\"inner\":[],\"held\":false,\"lift\":0,\"bodyScroll\":[0,949,601],\"clearOfKeys\":true,\"clearOfFoot\":true,\"windowAtTop\":true,\"errors\":[]}"
+ },
+ {
+  "id": "40-Other-his",
+  "size": "phone",
+  "said": "{\"kind\":\"Other\",\"realKind\":\"Other\",\"mode\":\"his\",\"pan\":184,\"focused\":true,\"box\":[279,312],\"win\":[8,385],\"foot\":[335,384],\"goesRow\":[16,92],\"inner\":[],\"held\":true,\"lift\":\"-38\",\"bodyScroll\":[267,972,318],\"clearOfKeys\":true,\"clearOfFoot\":true,\"windowAtTop\":true,\"goesClearOfKeys\":true,\"goesClearOfFoot\":true,\"headBottom\":null,\"goesUnderHeader\":false,\"titleUnderHeader\":false,\"afterPress\":{\"goesRow\":[16,92],\"win\":[8,385],\"foot\":[335,384],\"box\":[279,312],\"focused\":true,\"line\":\"Counted as away on the Leave War\",\"pressed\":\"true\"},\"windowMovedByPress\":false,\"errors\":[]}"
+ },
+ {
+  "id": "40-Other-classic",
+  "size": "phone",
+  "said": "{\"kind\":\"Other\",\"realKind\":\"Other\",\"mode\":\"classic\",\"pan\":0,\"focused\":true,\"box\":[352,385],\"win\":[12,672],\"foot\":[622,671],\"goesRow\":[89,165],\"inner\":[],\"held\":false,\"lift\":0,\"bodyScroll\":[198,972,601],\"clearOfKeys\":true,\"clearOfFoot\":true,\"windowAtTop\":true,\"goesClearOfKeys\":true,\"goesClearOfFoot\":true,\"headBottom\":null,\"goesUnderHeader\":false,\"titleUnderHeader\":false,\"afterPress\":{\"goesRow\":[89,165],\"win\":[12,672],\"foot\":[622,671],\"box\":[352,385],\"focused\":true,\"line\":\"Counted as away on the Leave War\",\"pressed\":\"true\"},\"windowMovedByPress\":false,\"errors\":[]}"
+ },
+ {
+  "id": "40-Other-his",
+  "size": "phone",
+  "said": "{\"kind\":\"OtherTitle\",\"realKind\":\"Other\",\"mode\":\"his\",\"pan\":184,\"focused\":true,\"box\":[239,272],\"win\":[8,385],\"foot\":[335,384],\"goesRow\":[283,359],\"inner\":[],\"held\":true,\"lift\":\"-38\",\"bodyScroll\":[0,972,318],\"clearOfKeys\":true,\"clearOfFoot\":true,\"windowAtTop\":true,\"goesClearOfKeys\":true,\"goesClearOfFoot\":false,\"headBottom\":null,\"goesUnderHeader\":false,\"titleUnderHeader\":false,\"afterPress\":{\"goesRow\":[283,359],\"win\":[8,385],\"foot\":[335,384],\"box\":[239,272],\"focused\":true,\"line\":\"Counted as away on the Leave War\",\"pressed\":\"true\"},\"windowMovedByPress\":false,\"errors\":[]}"
+ },
+ {
+  "id": "40-Other-classic",
+  "size": "phone",
+  "said": "{\"kind\":\"OtherTitle\",\"realKind\":\"Other\",\"mode\":\"classic\",\"pan\":0,\"focused\":true,\"box\":[243,276],\"win\":[12,672],\"foot\":[622,671],\"goesRow\":[287,363],\"inner\":[],\"held\":false,\"lift\":0,\"bodyScroll\":[0,972,601],\"clearOfKeys\":true,\"clearOfFoot\":true,\"windowAtTop\":true,\"goesClearOfKeys\":true,\"goesClearOfFoot\":true,\"headBottom\":null,\"goesUnderHeader\":false,\"titleUnderHeader\":false,\"afterPress\":{\"goesRow\":[287,363],\"win\":[12,672],\"foot\":[622,671],\"box\":[243,276],\"focused\":true,\"line\":\"Counted as away on the Leave War\",\"pressed\":\"true\"},\"windowMovedByPress\":false,\"errors\":[]}"
+ }
+]

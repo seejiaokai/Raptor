@@ -204,8 +204,8 @@ describe('where it cannot apply the drop is refused with its reason, and nothing
   })
   it('onto a kind that is not one of the six', async () => {
     await boot()
-    file(['bane'], WED, undefined, { type: 'Fly with', title: TITLE })
-    const r = INPUTS.find((x: any) => x.type === 'Fly with' && x.date === 'Jul 15' && idsOf(x).includes('bane') && x.remarks === 'Bring your kit') as any
+    file(['bane'], WED, undefined, { type: 'Attach', title: TITLE })
+    const r = INPUTS.find((x: any) => x.type === 'Attach' && x.date === 'Jul 15' && idsOf(x).includes('bane') && x.remarks === 'Bring your kit') as any
     const ri = ground().findIndex((g: any) => g && g.src === String(inpId(r)))
     if (ri < 0) return                 // a kind that lands no Ground row has no row door to ask; its window says it (below)
     refused(`g:${WED}.${ri}.+`, 'allavail', 'ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
@@ -215,7 +215,7 @@ describe('where it cannot apply the drop is refused with its reason, and nothing
     const no = (ppl: string[], over: any, why: string) => { SAID = []; expect(commitInput(null, DRAFT(WED, over), ppl)).toBe(false); expect(SAID).toEqual([why]) }
     const n = INPUTS.length
     no(['bane', 'allavail'], { end: '2026-07-17' }, 'ALL AVAIL is for one day')
-    no(['bane', 'all'], { type: 'Fly with' }, 'ALL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
+    no(['bane', 'all'], { type: 'Attach' }, 'ALL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
     no(['bane', 'allavail', 'all'], {}, 'This input already has ALL AVAIL')
     expect(INPUTS.length, 'nothing was filed').toBe(n)
     /* (until D776 and D778, 12 Oct 26, two more were refused here: ALL AVAIL on a Personal input, and a second person on

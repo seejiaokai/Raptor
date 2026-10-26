@@ -1,0 +1,91 @@
+{
+ "all": [
+  {
+   "id": 16,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: member placed LL on 14 Jan with a file",
+    "ok: the bid moved: 14 Jan has 0 box(es), 19 Jan has 1",
+    "ok: the moved bid (now on 19 Jan) keeps its file: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"] — \"Ranger | Mon 19 Jan | NOW LL | ✕ | No manning row turns amber or red | DATE | Just this da\"",
+    "ok: member placed LL on 15 Jan with a file",
+    "ok: member tapped OL on the same day (re-type)",
+    "ok: 15 Jan now reads OL: c k-ol s-w whole \"OL\"",
+    "ok: after LL → OL the file is kept: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"] — \"Ranger | Thu 15 Jan | NOW OL | ✕ | No manning row turns amber or red |\""
+   ],
+   "fails": [],
+   "pics": [
+    "s16-moved-bid-desk-cr.png",
+    "s16-retyped-bid-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 16,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "(admin, approved leave)",
+    "ok: admin placed an approved LL on 20 Jan with a file and a remark",
+    "ok: the approved leave moved: 20 Jan 0 box, 21 Jan c k-ll s-a whole moved",
+    "ok: the Inputs row for 21 Jan keeps the file (clip on the row=true, file=true): [\"Ranger\\t21 Jan\\t\\tLL\\tLATErmk16 till 21 JanBy Saber\\tnow clip=true\"]",
+    "the war window, OL tapped on the approved LL: refused with \"That time is already taken by LL — clear it first.\"",
+    "ok: after changing the kind to OL on the Inputs page the 21 Jan row reads OL and keeps its file (file=true): [\"Ranger\\t21 Jan\\t\\tOL\\tLATErmk16 till 21 JanBy Saber\\tnow clip=true\"]"
+   ],
+   "fails": [],
+   "pics": [
+    "s16-inputs-after-move-desk-cr.png",
+    "s16-approved-retype-refused-desk-cr.png",
+    "s16-input-window-desk-cr.png",
+    "s16-input-saved-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 16,
+   "size": "phone",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: member placed LL on 14 Jan with a file",
+    "ok: the bid moved: 14 Jan has 0 box(es), 19 Jan has 1",
+    "ok: the moved bid (now on 19 Jan) keeps its file: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"] — \"Ranger | Mon 19 Jan | NOW LL | ✕ | No manning row turns amber or red | DATE | Just this da\"",
+    "ok: member placed LL on 15 Jan with a file",
+    "ok: member tapped OL on the same day (re-type)",
+    "ok: 15 Jan now reads OL: c k-ol s-w whole \"OL\"",
+    "ok: after LL → OL the file is kept: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"] — \"Ranger | Thu 15 Jan | NOW OL | ✕ | No manning row turns amber or red |\""
+   ],
+   "fails": [],
+   "pics": [
+    "s16-moved-bid-phone-cr.png",
+    "s16-retyped-bid-phone-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 16,
+   "size": "phone",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "(admin, approved leave)",
+    "ok: admin placed an approved LL on 20 Jan with a file and a remark",
+    "ok: the approved leave moved: 20 Jan 0 box, 21 Jan c k-ll s-a whole moved",
+    "ok: the Inputs row for 21 Jan keeps the file (clip on the row=false, file=true): [\"21 Jan LATE\\nAll day\\nRangerLL\\nrmk16\\nBy Saber clip=false\"]",
+    "the war window, OL tapped on the approved LL: refused with \"That time is already taken by LL — clear it first.\"",
+    "ok: after changing the kind to OL on the Inputs page the 21 Jan row reads OL and keeps its file (file=true): [\"21 Jan LATE\\nAll day\\nRangerOL\\nrmk16\\nBy Saber clip=false\"]"
+   ],
+   "fails": [],
+   "pics": [
+    "s16-inputs-after-move-phone-cr.png",
+    "s16-approved-retype-refused-phone-cr.png",
+    "s16-input-window-phone-cr.png",
+    "s16-input-saved-phone-cr.png"
+   ],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

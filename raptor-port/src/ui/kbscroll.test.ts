@@ -3,7 +3,7 @@
    layout, so every box is given a stand-in place: an element's top is its place on the page less every scroll above
    it; the visual viewport is a stand-in object, as the walk's is. */
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, dropLifts, noteFullHeight, GAP } from './kbscroll'
+import { keepAboveKeyboard, keyboardUp, isTypingBox, installKbScroll, dropLifts, noteFullHeight, GAP, SLIDE_UP, SLIDE_DOWN, eased } from './kbscroll'
 
 const H = 800, KB = 340                                   // the layout's height; the keys' height
 const vvUp = { height: H - KB, offsetTop: 0, scale: 1 }   // the visible screen with the keys up
@@ -76,6 +76,35 @@ describe('keepAboveKeyboard', () => {
     place(b, 400, 30)                                          // hidden below the panel's foot
     keepAboveKeyboard(b, vvUp)
     expect(b.getBoundingClientRect().bottom).toBe(350 - GAP)
+  })
+  /* HIS REPORT, 25 Oct 26 07:06 (the input window, "Other", Remarks tapped on his iPhone — Document, then Cancel / Add, no
+     Remarks): a window's buttons pinned to the foot of its scrolling body cover that foot, and the body says so by its
+     scroll-padding-bottom (the input window's 64px, 25-inputs-calendar.css). The box was lifted to the body's very foot —
+     behind the buttons. */
+  it('a panel whose foot its own pinned buttons cover (its scroll padding) brings the box above them, not behind them', () => {
+    document.body.innerHTML = '<div id="fx" style="position:fixed"><div id="p" style="scroll-padding-bottom:64px"><input id="b"></div></div>'
+    const p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement
+    panel(p, 100, 250, 500)                                    // the panel ends at 350, above the keys; its buttons 286–350
+    place(b, 400, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(350 - 64 - GAP)
+  })
+  it('a pinned button row it does not declare (Holidays) is measured and cleared too', () => {
+    document.body.innerHTML = '<div id="fx" style="position:fixed"><div id="p"><div><input id="b"><div id="acts" style="position:sticky;bottom:0"></div></div></div></div>'
+    const p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement, acts = document.getElementById('acts')!
+    panel(p, 100, 250, 500)                                    // the panel ends at 350; its buttons 280–350, 70 tall
+    acts.getBoundingClientRect = () => ({ top: 280, bottom: 350, left: 0, right: 100, width: 100, height: 70, x: 0, y: 280, toJSON() {} }) as DOMRect
+    place(b, 400, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(350 - 70 - GAP)
+  })
+  it('and where that foot is under the keys, the keys are the floor, as before', () => {
+    document.body.innerHTML = '<div id="fx" style="position:fixed"><div id="p" style="scroll-padding-bottom:64px"><input id="b"></div></div>'
+    const p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement
+    panel(p, 0, H, 1000)                                       // the panel's foot (and its buttons) under the keys
+    place(b, 700, 30)
+    keepAboveKeyboard(b, vvUp)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
   })
 })
 
@@ -206,6 +235,124 @@ describe('a window that cannot scroll is raised instead', () => {
   })
 })
 
+/* HIS RECORDINGS, 25 Oct 26 08:05 — "Other" and OD, Remarks tapped, the iPhone's ˄ ˅ ✓ bar over the keys: the phone had
+   panned the visible screen down (offsetTop 186) past where the window's own place puts it (its top at 12), and the hold,
+   which only ever raised a window, left it there: its title off the screen, a band between its foot and the keys. */
+describe('a window the phone panned past', () => {
+  const vvPanned = { height: 416, offsetTop: 186, scale: 1 }   // the visible screen: 186–602 of the layout
+  afterEach(() => dropLifts())
+  const tall = (h: number) => {
+    document.body.innerHTML = '<div id="w" style="position:fixed"><input id="b"></div>'
+    const w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    let st = 0
+    w.style.overflowY = 'auto'
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : h)
+    Object.defineProperty(w, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(Math.max(0, 700 - wh()), v)) } })
+    Object.defineProperty(w, 'scrollHeight', { configurable: true, get: () => Math.max(700, wh()) })
+    Object.defineProperty(w, 'clientHeight', { configurable: true, get: () => wh() })
+    w.getBoundingClientRect = () => { const top = 12 - +(w.dataset.kblift || 0); return { top, bottom: top + wh(), left: 0, right: 100, width: 100, height: wh(), x: 0, y: top, toJSON() {} } as DOMRect }
+    return { w, b }
+  }
+  it('a window taller than the room: held to it and brought DOWN to the visible top — no band, the title in sight, the box shown', () => {
+    const { w, b } = tall(700)
+    place(b, 470, 30)                                          // in sight of the visible screen (186–602) already
+    keepAboveKeyboard(b, vvPanned)
+    expect(w.style.getPropertyValue('--kbcap')).toBe(`${416 - 2 * GAP}px`)
+    expect(w.getBoundingClientRect().top, 'its title at the visible top').toBe(186 + GAP)
+    expect(w.getBoundingClientRect().bottom, 'its foot at the keys, no band').toBe(186 + 416 - GAP)
+    expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(186 + GAP)
+    expect(b.getBoundingClientRect().bottom).toBeLessThanOrEqual(186 + 416 - GAP)
+  })
+  it('a window that fits, its top above the visible screen: brought down to the visible top, not held', () => {
+    const { w, b } = tall(300)
+    place(b, 200, 30)
+    keepAboveKeyboard(b, vvPanned)
+    expect(w.dataset.kbcap).toBeUndefined()
+    expect(w.getBoundingClientRect().top).toBe(186 + GAP)
+  })
+})
+
+/* HIS ?kbdebug RECORDINGS, 25 Oct 26 10:10 and 10:18 — the input window opened from a calendar day (OL; the SANS
+   calendar's SANS Availability), Remarks tapped, the keys up and the screen panned 184: his iPhone measured everything
+   from the top of the VISIBLE screen — the window that stands 12 from the layout's top read −172, the layout's height
+   684 − 184 = 500 — where the lift took the visible screen to start at the pan (184–577). So the window, read as standing
+   above it and as tall as the "layout" left, was taken for a full-screen backdrop, and the form inside it was brought
+   down 280 instead of the window: an empty band under the window's title, Remarks under the keys. A mark the app keeps
+   fixed at the layout's top and foot says where the layout stands in the phone's own measure. */
+describe('a phone that measures from the top of the visible screen (his iPhone, 25 Oct 26 10:10)', () => {
+  const PAN = 184, LAY = 684, VH = 393
+  const vvHis = { height: VH, offsetTop: PAN, scale: 1 }
+  const rect = (top: number, h: number) => ({ top, bottom: top + h, left: 0, right: 100, width: 100, height: h, x: 0, y: top, toJSON() {} }) as DOMRect
+  afterEach(() => dropLifts())
+  const build = () => {
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: LAY - PAN })
+    document.body.innerHTML = '<div data-kbprobe></div><div id="w" style="position:fixed"><div id="bar"></div><div id="bd"><input id="b"></div></div>'
+    const probe = document.querySelector('[data-kbprobe]') as HTMLElement
+    probe.getBoundingClientRect = () => rect(-PAN, LAY)
+    const w = document.getElementById('w')!, bd = document.getElementById('bd')!, b = document.getElementById('b') as HTMLInputElement
+    /* the window centres itself on the layout, 12 from its edges, as tall as it is held to (660 unheld) */
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 660)
+    const wTop = () => 12 + (LAY - 24 - wh()) / 2 - PAN - +(w.dataset.kblift || 0)
+    w.getBoundingClientRect = () => rect(wTop(), wh())
+    /* its body under a 44 bar, scrolling 800 of form */
+    let st = 0
+    bd.style.overflowY = 'auto'
+    const bh = () => wh() - 44
+    Object.defineProperty(bd, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(800 - bh(), v)) } })
+    Object.defineProperty(bd, 'scrollHeight', { configurable: true, get: () => 800 })
+    Object.defineProperty(bd, 'clientHeight', { configurable: true, get: () => bh() })
+    const bdTop = () => wTop() + 44 - +(bd.dataset.kblift || 0)
+    bd.getBoundingClientRect = () => rect(bdTop(), bh())
+    b.getBoundingClientRect = () => rect(bdTop() + 309 - st, 31)   // Remarks: 353 down the window
+    return { w, bd, b }
+  }
+  it('the window itself is held to the room and brought to the visible top; the form inside it never moves; Remarks shown', () => {
+    const { w, bd, b } = build()
+    keepAboveKeyboard(b, vvHis)
+    expect(bd.style.translate, 'the form inside the window not moved').toBe('')
+    expect(bd.dataset.kbcap, 'nor held').toBeUndefined()
+    expect(w.style.getPropertyValue('--kbcap'), 'the window held to the room').toBe(`${VH - 2 * GAP}px`)
+    expect(Math.abs(w.getBoundingClientRect().top - GAP), 'its title at the visible top').toBeLessThanOrEqual(1)
+    expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(w.getBoundingClientRect().top + 44)
+    expect(b.getBoundingClientRect().bottom, 'Remarks above the keys').toBeLessThanOrEqual(VH - GAP)
+  })
+  it('a window a little taller than the screen, centred on it (the Tracker\'s All events, his recording of 10:30): a window, never a backdrop — held and brought down whole, its body never moved', () => {
+    const P2 = 294, V2 = 390
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: LAY - P2 })
+    document.body.innerHTML = '<div data-kbprobe></div><div id="w" style="position:fixed"><div id="hd"></div><div id="bd"><input id="b"></div></div>'
+    ;(document.querySelector('[data-kbprobe]') as HTMLElement).getBoundingClientRect = () => rect(-P2, LAY)
+    const w = document.getElementById('w')!, bd = document.getElementById('bd')!, b = document.getElementById('b') as HTMLInputElement
+    /* centred on the layout by its middle (top 50%, translate −50%): 696 tall unheld, 6 above the layout's top */
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 696)
+    const wTop = () => LAY / 2 - wh() / 2 - P2 - +(w.dataset.kblift || 0)
+    w.getBoundingClientRect = () => rect(wTop(), wh())
+    let st = 0
+    bd.style.overflowY = 'auto'
+    const bh = () => wh() - 50
+    Object.defineProperty(bd, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(2000 - bh(), v)) } })
+    Object.defineProperty(bd, 'scrollHeight', { configurable: true, get: () => 2000 })
+    Object.defineProperty(bd, 'clientHeight', { configurable: true, get: () => bh() })
+    const bdTop = () => wTop() + 50 - +(bd.dataset.kblift || 0)
+    bd.getBoundingClientRect = () => rect(bdTop(), bh())
+    b.getBoundingClientRect = () => rect(bdTop() + 700 - st, 30)        // the event's Name box, well down the list
+    keepAboveKeyboard(b, { height: V2, offsetTop: P2, scale: 1 })
+    expect([bd.style.translate, bd.dataset.kbcap], 'the list inside the window never moved or held').toEqual(['', undefined])
+    expect(w.dataset.kbcap, 'the window itself held').toBe('')
+    expect(Math.abs(w.getBoundingClientRect().top - GAP), 'its title at the visible top').toBeLessThanOrEqual(1)
+    expect(b.getBoundingClientRect().top).toBeGreaterThanOrEqual(w.getBoundingClientRect().top + 50)
+    expect(b.getBoundingClientRect().bottom, 'the box above the keys').toBeLessThanOrEqual(V2 - GAP)
+  })
+  it('the same numbers read the classic way (the layout measured from its own top): unchanged — the visible screen starts at the pan', () => {
+    const { w, b } = build()
+    /* a browser measuring from the layout's top: the mark at 0, the window where its place puts it */
+    ;(document.querySelector('[data-kbprobe]') as HTMLElement).getBoundingClientRect = () => rect(0, LAY)
+    Object.defineProperty(window, 'innerHeight', { configurable: true, value: LAY })
+    w.getBoundingClientRect = () => { const h = w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 660; return rect(12 + (LAY - 24 - h) / 2 - +(w.dataset.kblift || 0), h) }
+    keepAboveKeyboard(b, vvHis)
+    expect(Math.abs(w.getBoundingClientRect().top - (PAN + GAP)), 'its title at the visible top, in the layout\'s measure').toBeLessThanOrEqual(1)
+  })
+})
+
 describe('keyboardUp', () => {
   it('reads a keyboard from a visible screen much shorter than the layout, never while pinch-zoomed', () => {
     expect(keyboardUp(vvUp)).toBe(true)
@@ -287,6 +434,41 @@ describe('installKbScroll', () => {
     vv.scale = 1; vv.height = H; vv.dispatchEvent(new Event('resize'))
     expect(w.style.translate, 'the keys down: put back').toBe('')
   })
+  /* HIS RECORDING, 25 Oct 26 07:40 (the input window, "Other", Remarks tapped on his iPhone): the window was held to the room
+     the keys left, then — later than the focus window — the iPhone's password bar rose and the phone panned the visible screen
+     some 170 points down; the held window stayed where it had been pinned, its top above the screen, an empty band under it.
+     A window held or raised for the keys follows the visible screen for as long as the keys are up and its box has the focus. */
+  const heldWin = () => {
+    document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
+    const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
+    place(bd, 0, H)
+    let st = 0
+    w.style.overflowY = 'auto'
+    const wh = () => (w.dataset.kbcap != null ? parseInt(w.style.getPropertyValue('--kbcap')) : 600)
+    Object.defineProperty(w, 'scrollTop', { configurable: true, get: () => st, set: v => { st = Math.max(0, Math.min(600 - wh(), v)) } })
+    Object.defineProperty(w, 'scrollHeight', { configurable: true, get: () => 600 })
+    Object.defineProperty(w, 'clientHeight', { configurable: true, get: () => wh() })
+    w.getBoundingClientRect = () => { const top = 300 - +(w.dataset.kblift || 0); return { top, bottom: top + wh(), left: 0, right: 100, width: 100, height: wh(), x: 0, y: top, toJSON() {} } as DOMRect }
+    place(b, 860, 30)
+    return { w, b }
+  }
+  it('a held window follows a late pan of the visible screen: its top at the screen\'s top again, no band under it', () => {
+    const { w, b } = heldWin()
+    b.focus(); keysUp(); frames()
+    expect([w.dataset.kbcap, w.getBoundingClientRect().top], 'the fixture: held, pinned at the top').toEqual(['', GAP])
+    vi.advanceTimersByTime(3000)                               // long after the focus
+    vv.offsetTop = 170; vv.dispatchEvent(new Event('scroll')); frames()
+    expect(w.getBoundingClientRect().top, 'pinned to the visible screen as it now stands').toBe(170 + GAP)
+    expect(b.getBoundingClientRect().bottom, 'the box still in sight').toBeLessThanOrEqual(170 + H - KB - GAP)
+  })
+  it('and a late shrink of the room (the password bar over the keys) holds it to the smaller room, its box kept in sight', () => {
+    const { w, b } = heldWin()
+    b.focus(); keysUp(); frames()
+    vi.advanceTimersByTime(3000)
+    vv.height = H - KB - 80; vv.dispatchEvent(new Event('resize')); frames()
+    expect(w.style.getPropertyValue('--kbcap')).toBe(`${H - KB - 80 - 2 * GAP}px`)
+    expect(b.getBoundingClientRect().bottom).toBeLessThanOrEqual(H - KB - 80 - GAP)
+  })
   it('a raised window goes back down when the keys do', () => {
     document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
     const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
@@ -331,7 +513,7 @@ describe('installKbScroll', () => {
     b.blur(); frames()
     expect(bd.dataset.kbfull).toBeUndefined()
   })
-  it("a window raised for the keys comes back down by what the phone's own pan then brought it; a pan long after the focus is left alone", () => {
+  it("a window raised for the keys comes back down by what the phone's own pan then brought it; a pan long after the focus moves the window with it", () => {
     document.body.innerHTML = '<div id="bd" style="position:fixed"><div id="w"><input id="b"></div></div>'
     const bd = document.getElementById('bd')!, w = document.getElementById('w')!, b = document.getElementById('b') as HTMLInputElement
     place(bd, 0, H); place(w, 300, 300); place(b, 560, 30)
@@ -342,9 +524,13 @@ describe('installKbScroll', () => {
     vv.offsetTop = 100; vv.dispatchEvent(new Event('scroll')); frames()
     expect(w.style.translate, 'down again by the pan: the box stays GAP above the keys, moved once in all').toBe(`0 -${raised - 100}px`)
     expect(b.getBoundingClientRect().bottom - vv.offsetTop).toBe(H - KB - GAP)
+    /* a pan long after the focus: the window follows it, so its box stays GAP above the keys (his recording, 25 Oct 26
+       07:40 — this line used to say "nothing", and the window left behind put the box under the keys or a band under it);
+       nothing inside the window is scrolled, so a box he scrolled away from in it would stay where he put it */
     vi.advanceTimersByTime(3000)
     vv.offsetTop = 0; vv.dispatchEvent(new Event('scroll')); frames()
-    expect(w.style.translate, 'a pan long after the focus: nothing').toBe(`0 -${raised - 100}px`)
+    expect(w.style.translate, 'a pan long after the focus: the window follows').toBe(`0 -${raised}px`)
+    expect(b.getBoundingClientRect().bottom - vv.offsetTop).toBe(H - KB - GAP)
   })
 })
 
@@ -381,5 +567,26 @@ describe('the Scheduler Board: the page first, then its list', () => {
     keepAboveKeyboard(b, vvUp)
     expect([pageST, p.scrollTop]).toEqual([100, 730 - (H - KB - GAP) - 100])
     expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+  })
+})
+
+/* HIS iPHONE'S SLIDES, MEASURED ([KBS-PHONE-SLIDE] — his recordings of 25 Oct 26 11:49 and 11:54, read at sixty frames a
+   second): a window moved for the keys follows these, so it holds still while the page slides under it. The points are
+   his phone's own, as fractions of the slide: change the curves only from a new recording of his. */
+describe("the keys' slides, as his iPhone draws them", () => {
+  it('up: ease-in-out over a quarter of a second, the pan told of some 30ms in — his first opening frame by frame', () => {
+    expect([SLIDE_UP.ms, [...SLIDE_UP.c], SLIDE_UP.lead]).toEqual([250, [0.42, 0, 0.58, 1], 30])
+    /* his 11:54 recording, the OL window: the pan (of 184) at each sixtieth of a second from the slide's start */
+    const seen: [number, number][] = [[23, 4], [40, 10], [57, 20], [73, 34], [90, 51], [107, 69], [123, 90], [140, 111], [157, 134], [173, 148], [190, 162], [207, 173], [223, 180], [240, 183]]
+    for (const [t, p] of seen) expect(Math.abs(184 * eased(t / SLIDE_UP.ms, SLIDE_UP.c) - p), `at ${t}ms`).toBeLessThanOrEqual(5)
+  })
+  it("down: a quick start and a long tail over a third of a second — his old build's closing, the window carried by the phone alone", () => {
+    expect([SLIDE_DOWN.ms, [...SLIDE_DOWN.c], SLIDE_DOWN.lead]).toEqual([330, [0.3, 0.58, 0.2, 1], 30])
+    /* his 11:49 recording: the window's foot carried 272 down, at each sixtieth of a second */
+    const seen: [number, number][] = [[11, 19], [28, 48], [44, 83], [61, 120], [78, 153], [94, 181], [111, 204], [128, 221], [144, 234], [161, 244], [178, 252], [194, 257], [211, 262], [228, 264]]
+    for (const [t, d] of seen) expect(Math.abs(272 * eased(t / SLIDE_DOWN.ms, SLIDE_DOWN.c) - d), `at ${t}ms`).toBeLessThanOrEqual(6)
+  })
+  it('the curve reads 0 before its start and 1 after its end', () => {
+    expect([eased(-0.2, SLIDE_UP.c), eased(0, SLIDE_UP.c), eased(1, SLIDE_UP.c), eased(1.4, SLIDE_DOWN.c)]).toEqual([0, 0, 1, 1])
   })
 })

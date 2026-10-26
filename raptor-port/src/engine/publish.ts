@@ -8,7 +8,7 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf } from './inputs'
+import { isOD, INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -552,7 +552,9 @@ export function dayInputsFrozen(di:any):any{di=+di;
 export function dayFilingFingerprint(di:any):any{di=+di;
   const dt=(DAYS[di]||{}).dt, fil:any={};
   if(dt==null)return fil;
-  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||''; });
+  /* an overseas duty on the Ground Programme is 'g' by its mark too (D1393 — the narrow read's N2: a week whose day is not
+     the one its row stands on carries no 'g' of its own) */
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||(isOD(inp.type)&&inp.odGround?'g':''); });
   return fil;}
 /* a STABLE string of the day's filing state, so a signature can bind to the filing
    axis too (owner, 15 Sep 26 — Codex PSF-001). A filing-only change (an Other input
@@ -918,7 +920,7 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
      the load discards nothing of it: counting it read "Discard 1 edit & load" for a load that changed nothing */
   const relands=(id:any)=>['ground','allhands'].some((k:string)=>((after&&after[k])||[]).some((r:any)=>r&&r.src===id&&!r.kept));
   const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
-    if(String(p.want||'')===''&&relands(inpId(p.inp)))return false;
+    if(String(p.want||'')===''&&relands(inpId(p.inp))&&!isOD(p.inp.type))return false;   // an overseas duty the load takes off the programme does not land again (D1393 — the narrow read's N4)
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=filOf(p);return false;}
     return true;});
@@ -953,7 +955,9 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
   if(dt==null)return {put,left};
   (INPUTS||[]).forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt))return;
-    const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
+    /* an overseas duty on the Ground Programme keeps that by a mark (D1393 — engine/inputs.ts odOut): its filing is 'g'
+       with or without the week's own mark (the fresh code read's F1) */
+    const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||(isOD(inp.type)&&inp.odGround?'g':''));
     if(filingSame(fil,id,cur))return;   // D174: a request the version never held, taken off since, stays taken off — never back to a fresh one that flags
     if(inputProtected(inp))return;   // a quarantined week's request is never touched — in the one plan both callers read (Fable's read, #2)
     /* ITS row — on a day it covers. A DEAD kept row (a version's row on a day the request no longer covers, D363) carries
@@ -966,6 +970,9 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     const has=(d:any)=>!!d&&inputCoversDate(inp,d.dt)&&((d.ground)||[]).some((g:any)=>g&&g.src===id&&!g.kept);
     const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
     if(want==='g'?!landed:landed){left.push(id);return;}
+    /* AN OVERSEAS DUTY WHOSE ROW STANDS IN ANOTHER WEEK (D1393 — the third read's find): its Ground mark is one value for
+       every week, so taking it off here takes its row off there; one day's load never moves another (AM1) — left as filed */
+    if(isOD(inp.type)&&inp.odGround&&!inp.acc&&want!=='g'&&rowElsewhere(id,inp)!==null){left.push(id);return;}
     /* the version's OWN row for it stands on this very day: "on the programme" is then the fact, whatever other day the
        request also covers — leaving it "taken off" beside its standing row would be the dangling state P2-REV2-05
        forbids the other way round, and the next AL would freeze it (Fable's code read, #1). The other day reads it too;

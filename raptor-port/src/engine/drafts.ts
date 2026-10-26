@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek, filingRestorePlan, rowsLeftOut, leaveRowsOut, dayPendingItems } from './publish'
 import { inputProtected } from './quarantine'
-import { INPUTS, inputCoversDate, inpId, inpLabel, goneRequestName, idsOf } from './inputs'
+import { isOD, INPUTS, inputCoversDate, inpId, inpLabel, goneRequestName, idsOf } from './inputs'
 import { PEOPLE } from './people'
 import { dayKeys } from './restore'
 import { reconcileDayFiling } from './slots'
@@ -672,14 +672,22 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   leaveOut(di, nd, false)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
+  /* an overseas duty on the Ground Programme whose row the loaded version does not hold (D1393 — the narrow read's N1):
+     the reconcile below drops its 'g'; its mark must go too, or the after-command landing puts the row straight back */
+  const odOn = INPUTS.filter((r: any) => r && isOD(r.type) && r.acc === 'g' && inputCoversDate(r, DAYS[di] && DAYS[di].dt))
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)
+  for (const r of odOn) if (!r.acc && String(((snap.fil || {})[inpId(r)]) || '') !== 'g') delete r.odGround
   /* …AND PUT BACK WHAT THAT VERSION HAD FILED (owner, D98, 25 Sep 26): a request the scheduler had taken off (or
      filed under Unavailable, or accepted) since goes back to the state the version froze, so the day reads exactly
      as that version — nothing pending. HERE ONLY, never in the general reconcile above: done there, a plan switched
      away and back turned a deliberate removal into a fresh request that flags (Fable's earlier read). What cannot be
      put back without moving another day is left as filed and named (LOADLEFT, for the caller's message). */
   const plan = filingRestorePlan(di, snap.fil)
-  plan.put.forEach(({ inp, want }) => { if (want) inp.acc = want; else delete inp.acc })   // the plan already skips a quarantined request
+  plan.put.forEach(({ inp, want }) => {   // the plan already skips a quarantined request
+    if (want) inp.acc = want; else delete inp.acc
+    /* an overseas duty's Ground Programme is its mark too (D1393): set with 'g', gone with any other filing (the code read's F1) */
+    if (isOD(inp.type)) { if (want === 'g') inp.odGround = true; else delete inp.odGround }
+  })
   markKept(nd)   // against the filings as the load leaves them
   LOADLEFT = plan.left
   LOADMOVED = multi.filter(x => (x.inp.acc || '') !== x.was).map(x => ({ id: inpId(x.inp), on: x.inp.acc === 'g',

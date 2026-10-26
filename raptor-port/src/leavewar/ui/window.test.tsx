@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { monthSpan, periodMonths, setMemberTodayForTests } from '../engine'
 import { closeDates, createWar, getState, initStore, selectWar, setRole, setStretch, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
@@ -473,5 +473,69 @@ describe('past months in the window (D1268)', () => {
     fireEvent.click(month('2026-04'))
     expect(getState().period.open.some(s => s.to >= '2026-04-15' && s.from <= '2026-04-30')).toBe(false)
     expect(month('2026-04').getAttribute('data-state')).toBe('closed')
+  })
+})
+
+/* HIS D1294 (24 Oct 26, his iPhone — [LW-OPEN-MONTHS-QUICK-SWIPE]): a quick sideways swipe across OCT–DEC picked nothing;
+   only a slow one did, because a phone's finger had to rest 180ms before the drag armed and one that moved first was
+   taken for a scroll. A move mostly SIDEWAYS now arms the drag at once, from the month first touched; one mostly up or
+   down still lets the window scroll; a slow drag and a tap are as they were. The month under the finger is a stand-in
+   `elementFromPoint` (jsdom has no layout); the real finger is the browser walk's. */
+describe('a finger across the months on a phone (D1294)', () => {
+  beforeEach(() => { setRole('admin') })
+  const finger = (path: Array<[string, number, number]>, opts: { holdMs?: number } = {}) => {
+    const strip = screen.getByTestId('od-months')
+    const under = { el: month(path[0]![0]) as Element }
+    const had = document.elementFromPoint
+    document.elementFromPoint = () => under.el
+    try {
+      const [k0, x0, y0] = path[0]!
+      fireEvent.pointerDown(month(k0), { button: 0, pointerType: 'touch', pointerId: 7, clientX: x0, clientY: y0 })
+      if (opts.holdMs) act(() => { vi.advanceTimersByTime(opts.holdMs!) })
+      for (const [k, x, y] of path.slice(1)) {
+        under.el = month(k)
+        fireEvent.pointerMove(strip, { pointerType: 'touch', pointerId: 7, clientX: x, clientY: y })
+      }
+      const [kn, xn, yn] = path[path.length - 1]!
+      under.el = month(kn)
+      fireEvent.pointerUp(month(kn), { pointerType: 'touch', pointerId: 7, clientX: xn, clientY: yn })
+    } finally {
+      document.elementFromPoint = had
+    }
+  }
+
+  it('a quick sideways swipe from MAY to JUL opens MAY to JUL, with no rest first', () => {
+    openWindow()
+    finger([['2026-05', 10, 10], ['2026-06', 60, 12], ['2026-07', 110, 13]])
+    expect(getState().period.open).toEqual([
+      { from: '2026-01-01', to: '2026-03-31' },
+      { from: '2026-05-01', to: '2026-07-31' },
+    ])
+  })
+
+  it('a slow drag — the finger rested first — still opens the months it passes', () => {
+    vi.useFakeTimers()
+    try {
+      openWindow()
+      finger([['2026-05', 10, 10], ['2026-06', 60, 12], ['2026-07', 110, 13]], { holdMs: 250 })
+      expect(getState().period.open).toEqual([
+        { from: '2026-01-01', to: '2026-03-31' },
+        { from: '2026-05-01', to: '2026-07-31' },
+      ])
+    } finally { vi.useRealTimers() }
+  })
+
+  it('a quick move mostly up or down is a scroll of the window: nothing opens', () => {
+    openWindow()
+    finger([['2026-05', 10, 10], ['2026-11', 14, 60], ['2026-11', 16, 110]])
+    expect(getState().period.open).toEqual([{ from: '2026-01-01', to: '2026-03-31' }])
+  })
+
+  it('a tap still opens one month', () => {
+    openWindow()
+    fireEvent.pointerDown(month('2026-06'), { button: 0, pointerType: 'touch', pointerId: 8, clientX: 10, clientY: 10 })
+    fireEvent.pointerUp(month('2026-06'), { pointerType: 'touch', pointerId: 8, clientX: 10, clientY: 10 })
+    fireEvent.click(month('2026-06'))
+    expect(month('2026-06').getAttribute('data-state')).toBe('open')
   })
 })

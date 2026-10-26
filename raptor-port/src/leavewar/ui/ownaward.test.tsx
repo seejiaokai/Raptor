@@ -15,6 +15,7 @@ import { setMemberTodayForTests } from '../engine'
 import { closeDates, initStore, setDayAward, setPostIn, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 const ME = 'ramp'
 const OUTSIDE = '2026-05-06'      // after the seeded war's bidding window (1 Jan – 31 Mar)
@@ -140,6 +141,10 @@ describe('what stays as it was', () => {
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
     expect(screen.getByTestId('oil-detail-why').textContent).toBe('SIM')
     expect(screen.queryByTestId('bid-oil')).toBeNull()          // no +OIL for a member
+    /* a member's ⋯ holds Attach alone (D1379) — no Grant OIL, no Other, no posting (round 3, D1326) */
+    fireEvent.click(screen.getByTestId('bid-more'))
+    expect([...screen.getByTestId('bid-more-menu').querySelectorAll('button')].map(b => b.textContent)).toEqual(['Attach'])
+    fireEvent.click(screen.getByTestId('bid-more'))
     expect(screen.queryByTestId('award-sheet')).toBeNull()
   })
 
@@ -148,7 +153,7 @@ describe('what stays as it was', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${ME}-${OUTSIDE}`))
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
-    expect(screen.getByTestId('bid-oil')).toBeTruthy()
+    expect(more('bid-oil')).toBeTruthy()
     expect(screen.queryByTestId('award-sheet')).toBeNull()
   })
 })

@@ -19,11 +19,20 @@ describe('the read-only sheet names an Inputs-filed absence in its own words', (
       expect(screen.getByTestId('raptor-note').textContent).toContain('change it there, not here')
     })
   }
-  for (const code of ['ATTC', 'HL', 'OML', 'ATTB', 'CSE', 'OD']) {
+  for (const code of ['ATTC', 'HL', 'OML', 'ATTB']) {
     it(`${code} — not leave — is never called approved, and still points at the Inputs page`, () => {
       open(code)
       expect(screen.getByTestId('raptor-sheet').textContent).not.toMatch(/approved/i)
       expect(screen.getByTestId('raptor-note').textContent).toBe('Filed on the Inputs page — change it there, not here.')
+    })
+  }
+  /* a course or an overseas duty may be filed on the war too since round 2 (D1318), so its line says only where it is
+     changed, never where it was filed (round 2's F1) — and still never calls it approved */
+  for (const code of ['CSE', 'OD']) {
+    it(`${code} — filed on either page — is never called approved, and says it is changed on the Inputs page`, () => {
+      open(code)
+      expect(screen.getByTestId('raptor-sheet').textContent).not.toMatch(/approved/i)
+      expect(screen.getByTestId('raptor-note').textContent).toBe('Change it on the Inputs page, not here.')
     })
   }
 })

@@ -1,0 +1,46 @@
+[
+ {
+  "id": "28e",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the Inputs page (Ranger's own list, all dates) after the save: [\"Ranger 14 Dec LL At home, call me till 14 DecBy Saber now No document\"]",
+  "pics": [
+   "s28x-dk-inputs-page"
+  ]
+ },
+ {
+  "id": "28f",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after a reload (signed in again as Ranger): saved \"At home, call me\"; his tap on 14 Dec opens remarks-sheet reading \"At home, call me\" (till \"till 14 Dec\")",
+  "pics": [
+   "s28x-dk-reload-window"
+  ]
+ },
+ {
+  "id": "29f2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "16 Dec: till unticked → saved false, the Inputs page row [\"Ranger 16 Dec LL By Saber now No document\"]; ticked again → saved undefined, the Inputs page row [\"Ranger 16 Dec LL till 16 DecBy Saber now No document\"]",
+  "pics": [
+   "s28x-dk-inputs-unticked",
+   "s28x-dk-inputs-reticked"
+  ]
+ },
+ {
+  "id": "28g",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the admin's one-day window on Ranger's 14 Dec leave (bid-picker) reads \"At home, call me\", till \"till 14 Dec\"; the window: \"Ranger Mon 14 Dec Approve what I enter ✕ No manning row is amber or red Approve Refuse ⇄Move Delete till 14 Dec Document Whole day AM PM Pick a range LL −2 OL −2 OIL 0 CCL 0 FCL 0 PL 0 EL 0 CL 0 CSE O\"; lit [\"decide-approve\",\"bid-LL\"]",
+  "pics": [
+   "s28x-dk-admin-window"
+  ]
+ },
+ {
+  "id": "28x-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]
