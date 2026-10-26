@@ -41,7 +41,7 @@ import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
-import { isMe, mayDeleteInput } from '../state/perms'
+import { isMe, mayDeleteInput, viewerId } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
@@ -73,6 +73,8 @@ const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 export const DESK_LANES = 7
 /* "+N more" stands on a line of its own, as tall as a bar's */
 const PHONE = { head: 22, lane: 16, more: 16 }
+/* expanded (D1386): lines enough for any day, so none says "+N more" */
+const EVERY_LANE = 999
 const DESK = { head: 26, lane: 20, more: 20 }
 
 /* yyyy-mm-dd → today's own iso, local time (the calendar's "Today" jump and
@@ -295,6 +297,19 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   }
   /* "How this works" — folded away each time the calendar is opened: it is read once, not looked at daily */
   const [how, setHow] = useState(false)
+  /* EVERY INPUT IN THE MONTH ITSELF (his D1386, D1396 — 26 Oct 26: "an expand icon or button to show all inputs at the calendar
+     view but growing vertically long and the user can scroll down if needed"; drawn lw-m3n-draw.mjs d4): ⤢ at the end of the
+     "How this works" row; expanded, no day says "+n more" — each week is as tall as its inputs need, never shorter than the
+     compact month's row, and the page scrolls. Remembered per person on this device (a view convenience, never a record:
+     `inp:calexpand:<person>` in the browser's own storage, inside a try — the month draws compact without it). Narrows D653 /
+     D664 (the month fits the screen) while expanded. */
+  const expandKey = () => { const v = viewerId(); return v ? `inp:calexpand:${v}` : null }
+  const [expanded, setExpanded] = useState(() => { try { const k = expandKey(); return !!k && localStorage.getItem(k) === '1' } catch { return false } })
+  const toggleExpanded = () => setExpanded(on => {
+    const next = !on
+    try { const k = expandKey(); if (k) { if (next) localStorage.setItem(k, '1'); else localStorage.removeItem(k) } } catch { /* the month still turns */ }
+    return next
+  })
   /* which late input's note is showing in the opened day (its entry's key) */
   const [rmkDraft, setRmkDraft] = useState('')
   /* the title box's own Escape is in flight: the blur it causes writes nothing (D732 — `titleKey`, in the opened day) */
@@ -649,7 +664,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     return () => { window.removeEventListener('resize', measure); window.visualViewport?.removeEventListener('resize', measure); ro?.disconnect() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weeks.length, narrow])
-  const lanes = narrow ? fit.lanes : DESK_LANES
+  const lanes = expanded ? EVERY_LANE : narrow ? fit.lanes : DESK_LANES
   /* the month's one tab stop: where the keyboard last was, else today, else the 1st */
   const firstIso = cells.find(Boolean) as string
   const tabAt = at && at.slice(0, 7) === firstIso.slice(0, 7) ? at : todayIso.slice(0, 7) === firstIso.slice(0, 7) ? todayIso : firstIso
@@ -1281,6 +1296,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
             <span className="ib-key red">absence</span>
             <span className="ib-key amb">duty</span>
           </span>
+          <button type="button" className="abtn ib-expand" data-testid="ib-expand" aria-pressed={expanded}
+            aria-label={expanded ? 'Show the month compact' : 'Show every input'} title={expanded ? 'Show the month compact' : 'Show every input'}
+            onClick={toggleExpanded}>{expanded ? '⤡' : '⤢'}</button>
         </div>
         {how && (
           <ol className="sc-how-list" id="ibHowList" data-testid="ib-how-list">
