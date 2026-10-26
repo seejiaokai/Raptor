@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1404 | 27 Oct 26 | The Leave War overhaul's M4 (deciding — Approvals, Approve all, the "New" choice, the bell's Leave War lines) is built next, in a fresh chat of its own after the night of 26–27 Oct 26, not tonight; M5 after it, by D1250's order. |
 | D1401 | 26 Oct 26 | "Load onto working copy" is not a scheduler's move: putting a request back where the published version had it does not lock where it goes (D1388), so a member whose own pick the load undid may pick again; a scheduler who wants it held presses Reject, → Ground or → Unavail. |
 | D1400 | 26 Oct 26 | The lock's words stand as built: under Goes to "A scheduler moved it here: counted as away on the Leave War" (or "still counted in the Leave War's manning"), both buttons greyed; the refusals "A scheduler has moved this input, so only a scheduler can change it to LL" and "…so only a scheduler can put ALL AVAIL or ALL in it". |
 | D1399 | 26 Oct 26 | A member's change of an input's kind never brings back one a scheduler rejected: it stays rejected until a scheduler accepts it, and a change into a leave or a medical, which cannot stay rejected, is refused with its reason. |
