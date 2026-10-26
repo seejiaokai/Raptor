@@ -552,7 +552,9 @@ export function dayInputsFrozen(di:any):any{di=+di;
 export function dayFilingFingerprint(di:any):any{di=+di;
   const dt=(DAYS[di]||{}).dt, fil:any={};
   if(dt==null)return fil;
-  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||''; });
+  /* an overseas duty on the Ground Programme is 'g' by its mark too (D1393 — the narrow read's N2: a week whose day is not
+     the one its row stands on carries no 'g' of its own) */
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||(isOD(inp.type)&&inp.odGround?'g':''); });
   return fil;}
 /* a STABLE string of the day's filing state, so a signature can bind to the filing
    axis too (owner, 15 Sep 26 — Codex PSF-001). A filing-only change (an Other input
@@ -918,7 +920,7 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
      the load discards nothing of it: counting it read "Discard 1 edit & load" for a load that changed nothing */
   const relands=(id:any)=>['ground','allhands'].some((k:string)=>((after&&after[k])||[]).some((r:any)=>r&&r.src===id&&!r.kept));
   const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
-    if(String(p.want||'')===''&&relands(inpId(p.inp)))return false;
+    if(String(p.want||'')===''&&relands(inpId(p.inp))&&!isOD(p.inp.type))return false;   // an overseas duty the load takes off the programme does not land again (D1393 — the narrow read's N4)
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=filOf(p);return false;}
     return true;});

@@ -672,7 +672,11 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   leaveOut(di, nd, false)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
+  /* an overseas duty on the Ground Programme whose row the loaded version does not hold (D1393 — the narrow read's N1):
+     the reconcile below drops its 'g'; its mark must go too, or the after-command landing puts the row straight back */
+  const odOn = INPUTS.filter((r: any) => r && isOD(r.type) && r.acc === 'g' && inputCoversDate(r, DAYS[di] && DAYS[di].dt))
   reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)
+  for (const r of odOn) if (!r.acc && String(((snap.fil || {})[inpId(r)]) || '') !== 'g') delete r.odGround
   /* …AND PUT BACK WHAT THAT VERSION HAD FILED (owner, D98, 25 Sep 26): a request the scheduler had taken off (or
      filed under Unavailable, or accepted) since goes back to the state the version froze, so the day reads exactly
      as that version — nothing pending. HERE ONLY, never in the general reconcile above: done there, a plan switched

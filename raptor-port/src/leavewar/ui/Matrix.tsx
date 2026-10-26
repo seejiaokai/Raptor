@@ -3643,8 +3643,9 @@ export function Matrix() {
   /* A COURSE HOLDING THE WHOLE DAY (his D1395, 26 Oct 26 — [LW-TAP-HELD-DAY]: "would it be better that a short press allows
      me to add additional input from there?"): a tap on a day a course alone holds opens the bid window, the course's line
      on top, so Grant OIL and the rest are one tap away — where he may bid there; else the read-only sheet, as before */
-  /* …never for an admin on a posted-out or not-yet-arrived day: his tap there is the posting sheet (the code read's last find) */
-  const openCourse = open && openView && !(role === 'admin' && (openPostedOut || openNotYetArrived)) && openView.all.length === 1
+  /* …only where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did,
+     unless he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below) */
+  const openCourse = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && openView.all.length === 1
     && openView.all[0]!.kind === 'absence' && openView.all[0]!.code === 'CSE' && canBidOn(open.id, open.date)
     ? heldCourse(openView) : null
   const openFreeHalf = open && raptorOwns(states, open.id, open.date)

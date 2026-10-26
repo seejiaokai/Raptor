@@ -11,7 +11,7 @@ import { SCHED } from '../engine/publish'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { dayOff, slotBar } from '../engine/avail'
-import { filingRestorePlan } from '../engine/publish'
+import { filingRestorePlan, dayFilingFingerprint } from '../engine/publish'
 import { availableFor } from '../leavewar/sync'
 import { PEOPLE } from '../engine/people'
 import { initStore } from '../state/store'
@@ -113,6 +113,12 @@ describe('Reject, then → Ground or → Unavail, as a course has (D1393)', () =
     const r = oneDayOD(freeOnMon(), { odGround: true })
     const plan = filingRestorePlan(0, {})
     expect(plan.put.find(p => p.inp === r), 'under Unavailable in the version: the load puts it back there').toMatchObject({ want: '' })
+  })
+  it('N2: the published filing record reads its Ground mark — a week that does not hold its row still records "on the programme"', () => {
+    const r = oneDayOD(freeOnMon(), { odGround: true })
+    expect(dayFilingFingerprint(0)[r.iid]).toBe('g')
+    delete r.odGround
+    expect(dayFilingFingerprint(0)[r.iid], 'with no mark: under Unavailable, as before').toBe('')
   })
   it('F2: on the Ground Programme he is kept out of the ALL AVAIL crowd, as a course there keeps him', () => {
     const who = freeOnMon()
