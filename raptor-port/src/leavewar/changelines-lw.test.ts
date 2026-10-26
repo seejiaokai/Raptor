@@ -7,7 +7,7 @@ import { INPUTS, holds } from '../engine/inputs'
 import { ELOG, elogClear, rowTouches } from '../engine/editlog'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
-import { getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, closeDates, setDayAward, clearCells, grantOil, changeAbsenceById, moveCells, moveRecords } from './state/store'
+import { fileStraight, getState, initStore as lwInitStore, setCell, setBidState, setPeople, setRole, closeDates, setDayAward, clearCells, grantOil, changeAbsenceById, moveCells, moveRecords } from './state/store'
 import { resetSession, writeInputs } from '../state/store'
 import { signIn, sessionFor } from '../state/accounts'
 import { inpId } from '../engine/inputs'
@@ -373,5 +373,17 @@ describe('the till-date tick across an approval (D953)', () => {
     setCell(pid, '2026-02-03', 'LL'); setBidState(pid, '2026-02-03', 'approved')
     const now = leaves().map((r: any) => [r.date, r.endDate ?? '', r.till ?? null]).sort()
     expect(now, JSON.stringify(now)).toEqual([['Feb 2', 'Feb 3', false], ['Feb 4', '', null]])
+  })
+})
+
+/* ROUND 2's FULL check — the fresh code read's F1: a course or an overseas duty filed on the war (lw.file — his D1318, "doesnt
+   need an approval … directly approved like an input") wrote "OD approved on the Leave War" in the change history, and its
+   own "added" line never. Only a leave the war approved (an input carrying the war's `lw` mark) is a war decision. */
+describe('round 2 — a course or an overseas duty filed on the war is added, never approved', () => {
+  it('its line says "added"; no line says "approved"', () => {
+    expect(fileStraight([{ personId: pid, date: '2026-02-11' }], 'OD').done).toBe(1)
+    const lines = ELOG.rows.map(r => String(r.lbl))
+    expect(lines.filter(l => /added/.test(l)), JSON.stringify(lines)).toHaveLength(1)
+    expect(lines.some(l => /approved|approval/.test(l)), JSON.stringify(lines)).toBe(false)
   })
 })

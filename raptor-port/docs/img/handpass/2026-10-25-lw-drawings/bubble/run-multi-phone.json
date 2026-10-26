@@ -1,0 +1,74 @@
+{
+ "log": [
+  {
+   "id": "multi",
+   "size": "phone",
+   "said": "9 Dec: IP 16, SXO 12, Available P 28; amber points IP 3 → 16, SXO 1 → 12; cells \"\", \"\""
+  },
+  {
+   "id": "multi",
+   "size": "phone",
+   "said": "Anvil's bid window on 9 Dec, its day line: \"IP 16 → 15 · amber · SXO 12 → 11 · amber\" — {\"amber\":{\"name\":{\"color\":\"rgb(229, 168, 59)\",\"weight\":\"400\",\"size\":\"12px\"},\"fig\":{\"color\":\"rgb(229, 168, 59)\",\"weight\":\"400\",\"size\":\"12px\"}},\"red\":null,\"dot\":{\"color\":\"rgb(138, 150, 163)\",\"weight\":\"400\",\"size\":\"12px\"},\"gap\":\"7px\",\"adv\":\"#e5a83b\",\"hard\":\"#f0555f\"}"
+  },
+  {
+   "id": "multi",
+   "size": "phone",
+   "said": "Anvil's pending LL [\"LL|k-ll|s-w\"]: IP 16 → 15 (\"amber\"), SXO 12 → 11 (\"amber\"), Available P 28 → 27 (\"fr avail tap\"); bubble {\"where\":\"mid\",\"text\":\"This bid turns IP amber and SXO amber.\",\"border\":\"rgba(229, 168, 59, 0.7)\",\"bg\":\"rgb(42, 34, 16)\",\"color\":\"rgb(242, 200, 121)\",\"rect\":{\"x\":25,\"y\":201.296875,\"width\":237.765625,\"height\":32.1875}}"
+  },
+  {
+   "id": "multi",
+   "size": "phone",
+   "said": "15 Dec: Required P 28; Ace's bid 28 → 27; Saint's [\"LL|k-ll|s-w\"] 27 → 26; bubble {\"where\":\"mid\",\"text\":\"This bid takes Available P lower, still red.\",\"border\":\"rgba(240, 85, 95, 0.7)\",\"bg\":\"rgb(46, 20, 24)\",\"color\":\"rgb(255, 170, 176)\",\"rect\":{\"x\":25,\"y\":203.296875,\"width\":240.0625,\"height\":32.1875}}"
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "multi-ref-dayline-phone.png",
+   "label": "Today, the bid window before the bid: its day line (the look B copies)"
+  },
+  {
+   "file": "multi-amber-quick-phone.png",
+   "label": "Today, right after the tap on LL (one bid, two rows amber) — the whole screen; at that moment: the bubble under the Manning button, “This bid turns IP amber and SXO amber.”"
+  },
+  {
+   "file": "multi-amber-today-phone.png",
+   "label": "Today: one bid turns two rows amber, IP 16 → 15 and SXO 12 → 11"
+  },
+  {
+   "file": "multi-amber-a-phone.png",
+   "label": "Drawn A: a sentence, each row’s figures in brackets"
+  },
+  {
+   "file": "multi-amber-b-phone.png",
+   "label": "Drawn B: the bid window’s day line pairs, led by “This bid:”"
+  },
+  {
+   "file": "multi-red-quick-phone.png",
+   "label": "Today, right after the tap on LL (a second bid on a red day) — the whole screen; at that moment: the bubble under the Manning button, “This bid takes Available P lower, still red.”"
+  },
+  {
+   "file": "multi-red-today-phone.png",
+   "label": "Today: a second bid takes Available P 27 → 26, still red"
+  },
+  {
+   "file": "multi-red-b-phone.png",
+   "label": "Drawn B, the red case: the day line’s pair, led by “This bid:”"
+  }
+ ],
+ "colours": {
+  "RED_EDGE": "rgba(240, 85, 95, .7)",
+  "RED_INK": "#FFAAB0",
+  "RED_FILL": "#2e1418"
+ },
+ "words": {
+  "B1": "This bid takes Available P lower, still red.",
+  "B2": "This bid takes Available P further into the red.",
+  "C": "This bid turns IP amber and Available P red.",
+  "D": "This overseas duty turns Available P red."
+ }
+}

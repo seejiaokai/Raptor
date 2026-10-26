@@ -1,0 +1,77 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-BayEj7kB.js"
+ },
+ {
+  "id": "base",
+  "size": "desk",
+  "said": "Available P {\"2026-07-16\":\"26\",\"2026-07-17\":\"27\",\"2026-07-13\":\"28\"} OTH boxes on the days: [[],[],[]]"
+ },
+ {
+  "id": "20-filed",
+  "size": "desk",
+  "said": "{\"person\":[{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792926280972}],\"acc\":\"g\",\"type\":\"Other\",\"asked\":[],\"goesRow\":0}"
+ },
+ {
+  "id": "20-sections",
+  "size": "desk",
+  "said": "{\"sec-unav\":[\"ATT C Grit C Medically downtill 17 Jul\",\"OD Nomad C Overseas duty — exercise, off islandtill 17 Jul\",\"OIL Gambit C till 16 Jul\"],\"sec-grnd\":[\"MEDICAL APPT 10:30 12:30 Diesel D + ADD\",\"DENTAL APPT 12:00 13:30 Kraken D + ADD\",\"APPOINTMENT 17:00 18:30 C Ranger IP + ADD Medical / PHA\"],\"sec-prog\":[\"⠿ COMMON PROGRAMME To take an input off, press Reject on it in Personal Inputs below. EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H ORDERS: FLYING ORDERS SECTION 4 NAME START END PEOPLE RMKS SODB 07:45 08:00 + ADD HQ ENGAGEMENT 08:45 16:30 C Ace A + ADD OTHER 10:00 11:00 ALL AVAIL 39 + ADD LATE Night brief all SCHEDULER NOTES MAKE PUBLIC\"],\"sec-inp\":[\"Other 10:00 11:00 ALL AVAIL LATE Night brief all REJECT\",\"Appointment 17:00 18:30 C Ranger IP Medical / PHA REJECT\"]}"
+ },
+ {
+  "id": "20-where",
+  "size": "desk",
+  "said": "Common [\"⠿ COMMON PROGRAMME To take an input off, press Reject on it in Personal Inputs below. EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H ORDERS: FLYING ORDERS SECTION 4 NAME START END PEOPLE RMKS SODB 07:45 08:00 + ADD HQ ENGAGEMENT 08:45 16:30 C Ace A + ADD OTHER 10:00 11:00 ALL AVAIL 39 + ADD LATE Night brief all SCHEDULER NOTES MAKE PUBLIC\"] · Unavailable [] · Ground [] · Personal Inputs [\"Other 10:00 11:00 ALL AVAIL LATE Night brief all REJECT\"]"
+ },
+ {
+  "id": "20-war",
+  "size": "desk",
+  "said": "Available P 26 → 26; OTH/UNA boxes on the day []; Ranger's cell []"
+ },
+ {
+  "id": "21-filed",
+  "size": "desk",
+  "said": "{\"goesBeforeAll\":{\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false},\"goesRowAfterAll\":0,\"picked\":\"1 picked + ALL AVAIL\",\"people\":[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1792926293803},{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1792926293803}],\"acc\":\"g\",\"asked\":[],\"readout\":\"Jul 17\"}"
+ },
+ {
+  "id": "21-window-after-save",
+  "size": "desk",
+  "said": "windows still open: "
+ },
+ {
+  "id": "21-sections",
+  "size": "desk",
+  "said": "{\"sec-unav\":[\"ATT C Grit C Medically downtill 17 Jul\",\"OD Nomad C Overseas duty — exercise, off islandtill 17 Jul\"],\"sec-grnd\":[\"GROUND SCHOOL - EW 09:00 11:00 Saber IP + ADD\",\"AIRCREW ADMIN 11:00 12:00 + ADD\"],\"sec-prog\":[\"⠿ COMMON PROGRAMME To take an input off, press Reject on it in Personal Inputs below. NO FLYING - GROUND TRAINING DAY ORDERS: FLYING ORDERS SECTION 5 NAME START END PEOPLE RMKS SODB 07:45 08:00 + ADD OTHER 10:00 11:00 Ranger IP ALL AVAIL 41 + ADD LATE Ranger and all SQN PT 15:00 16:30 + ADD MASS DEBRIEF + BEER CALL 17:00 + ADD SCHEDULER NOTES MAKE PUBLIC\"],\"sec-inp\":[\"Other 10:00 11:00 Ranger IP ALL AVAIL LATE Ranger and all REJECT\"]}"
+ },
+ {
+  "id": "21-where",
+  "size": "desk",
+  "said": "Common [\"⠿ COMMON PROGRAMME To take an input off, press Reject on it in Personal Inputs below. NO FLYING - GROUND TRAINING DAY ORDERS: FLYING ORDERS SECTION 5 NAME START END PEOPLE RMKS SODB 07:45 08:00 + ADD OTHER 10:00 11:00 Ranger IP ALL AVAIL 41 + ADD LATE Ranger and all SQN PT 15:00 16:30 + ADD MASS DEBRIEF + BEER CALL 17:00 + ADD SCHEDULER NOTES MAKE PUBLIC\"] · Ground [] · Unavailable [] · Personal Inputs [\"Other 10:00 11:00 Ranger IP ALL AVAIL LATE Ranger and all REJECT\"]"
+ },
+ {
+  "id": "21-war",
+  "size": "desk",
+  "said": "Available P 27 → 27; OTH boxes []; Ranger's cell []"
+ },
+ {
+  "id": "22-filed",
+  "size": "desk",
+  "said": "{\"people\":[\"bane\",\"slipway\",\"prowler\"],\"acc\":\"u\",\"picked\":\"3 picked\",\"asked\":[],\"goes\":{\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false}}"
+ },
+ {
+  "id": "22-sections",
+  "size": "desk",
+  "said": "Unavailable rows with the remark: [\"Other C Ranger IP LATE Three men away REJECT\",\"Other C Drifter A LATE Three men away REJECT\",\"Other C Hunter IP LATE Three men away REJECT\"]"
+ },
+ {
+  "id": "22-war",
+  "size": "desk",
+  "said": "Available P 28 → 25; cells {\"Ranger\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w22h22|tw17.3\"],\"Drifter\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w22h22|tw17.3\"],\"Hunter\":[\"OTH|k-unav|s-a|whole|outlined|fs8.5px|w22h22|tw17.3\"]}"
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "said": "[]"
+ }
+]

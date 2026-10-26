@@ -8,7 +8,7 @@ import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, ensureRowIds, RID_BOOK_VERSION } from './rowids'
 import { canonicalDiff, canonicalUnits, digest } from './canonical'
 import type { DeltaEntry, PendUnit } from './canonical'
-import { INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf } from './inputs'
+import { isOD, INPUTS, inpId, inputCoversDate, inpDetailKey, frozenInputMatch, stableJson, idsOf, namedOf, goesOnProg } from './inputs'
 import { CURWEEK, isStandalone } from './waves'
 import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
@@ -552,7 +552,9 @@ export function dayInputsFrozen(di:any):any{di=+di;
 export function dayFilingFingerprint(di:any):any{di=+di;
   const dt=(DAYS[di]||{}).dt, fil:any={};
   if(dt==null)return fil;
-  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||''; });
+  /* an overseas duty on the Ground Programme is 'g' by its mark too (D1393 — the narrow read's N2: a week whose day is not
+     the one its row stands on carries no 'g' of its own) */
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||(isOD(inp.type)&&inp.odGround?'g':''); });
   return fil;}
 /* a STABLE string of the day's filing state, so a signature can bind to the filing
    axis too (owner, 15 Sep 26 — Codex PSF-001). A filing-only change (an Other input
@@ -905,20 +907,45 @@ export function dayDiscardCount(di:any,toVer?:any):number{di=+di;
   /* …AND as the working-out after it leaves it ([DB-READINESS] phase 6 (c) — Fable's round-2 F5; drafts.ts dayAsLoadLeaves):
      a deleted man stripped, the rows the holder brings back `kept`, a row re-made for what its request has changed since
      the version (a hand-over), and a request filed since landed again — none of those is discarded by the load */
-  const after=HOOKS.dayAsLoadLeaves?HOOKS.dayAsLoadLeaves(di,snap.d):(()=>{const left=rowsLeftOut(di,snap.d);return left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;})();
-  const units:any[]=canonicalUnits(after,DAYS[di],di);
+  const after0=HOOKS.dayAsLoadLeaves?HOOKS.dayAsLoadLeaves(di,snap.d):(()=>{const left=rowsLeftOut(di,snap.d);return left.length?leaveRowsOut(JSON.parse(JSON.stringify(snap.d)),left.map((x:any)=>x.id)):snap.d;})();
   /* the filings are planned against the version's day with its rows as they went out — a row issued `kept` (dead) is not
      "landed" — exactly as the load plans them, before it marks `kept` anew (drafts.ts loadVersionToWorkingCopy; the FULL
      check's walk K2: counted against the worked-out day, the filing it puts back went uncounted and the button said the
      day "is already at" its version) */
   const asIssued=(()=>{const left=rowsLeftOut(di,snap.d);const c=JSON.parse(JSON.stringify(snap.d));return left.length?leaveRowsOut(c,left.map((x:any)=>x.id)):c;})();
+  /* …AND WITH THE REQUESTS IT PUTS BACK OFF THE PROGRAMME, OFF IT ([LW-OD-DISCARD-COUNT] — the M3 batch's third code read,
+     26 Oct 26). The working-out above lands a row for a request still carrying its programme filing — it does not simulate
+     the filings the load puts back — so an overseas duty published under Unavailable and since moved onto the Ground
+     Programme (D1393) stood in that day as a stand-in row beside the real one: "1 pending", "Discard 2 edits"; a course
+     the same (D1381, D1389). The plan is built first, and each request it files back under Unavailable ('u'), parks ('r'),
+     or — an overseas duty, which stands under Unavailable with no mark — puts back unmarked, loses its standing rows from a
+     copy of the day; its row and its filing are then one edit, as the day head counts them (D109, D114). */
+  const plan0=filingRestorePlan(di,snap.fil,asIssued);
+  const offProg=new Set<string>(plan0.put.filter((p:any)=>{const w=String(p.want||'');return w==='u'||w==='r'||(w===''&&isOD(p.inp.type));}).map((p:any)=>String(inpId(p.inp))));
+  /* …AND EACH THE LOAD'S RECONCILE TAKES OFF THE PROGRAMME ([LW-LOAD-RELAND-RID], 26 Oct 26): a request on the programme
+     ('g') whose row no loaded day holds once the version's day is in is unfiled there (drafts.ts loadVersionToWorkingCopy →
+     slots.ts reconcileDayFiling — "on the programme with no row is a lie"), and an overseas duty loses its Ground mark with
+     it unless the version had it on the programme. One the plan leaves as filed — a three-day overseas duty, which covers
+     Thursday and Friday too — is unfiled all the same; where it can no longer stand on the programme it does not land
+     again, so its row goes with the load: one edit, never the 0 a landing simulated from its old filing gave (nor the 2 a
+     row re-landed under another name gave). An activity unfiled so lands again, fresh, and keeps its row. */
+  {const dt=(DAYS[di]||{}).dt; if(dt!=null)(INPUTS||[]).forEach((r:any)=>{
+    if(!r||r.acc!=='g'||!inputCoversDate(r,dt)||inputProtected(r))return;
+    const id=String(inpId(r));
+    if(DAYS.some((d0:any,j:number)=>!!standsOn(j===di?asIssued:d0,id,r)))return;
+    const was=String(((snap.fil||{})[id])||'');
+    const left={...r}; delete left.acc; if(isOD(r.type)&&was!=='g')delete left.odGround;
+    if(!goesOnProg(left))offProg.add(id);
+  });}
+  const after=offProg.size&&after0&&Array.isArray(after0.ground)?{...after0,ground:after0.ground.filter((r:any)=>!(r&&!r.kept&&offProg.has(String(r.src))))}:after0;
+  const units:any[]=canonicalUnits(after,DAYS[di],di);
   const filOf=(p:any)=>({addr:`inp:${di}.${inpId(p.inp)}`,kind:'input',from:String(p.want||''),to:String(p.inp.acc||'')});
   /* [DISCARD-FILING-NOOP] (the one-rule walk, F1/F8, 12 Oct 26): a request filed since the version, put back "fresh",
      lands again in the working-out after the load (drafts.ts dayAsLoadLeaves — "a request filed since landed again"), so
      the load discards nothing of it: counting it read "Discard 1 edit & load" for a load that changed nothing */
   const relands=(id:any)=>['ground','allhands'].some((k:string)=>((after&&after[k])||[]).some((r:any)=>r&&r.src===id&&!r.kept));
-  const lone=filingRestorePlan(di,snap.fil,asIssued).put.filter((p:any)=>{
-    if(String(p.want||'')===''&&relands(inpId(p.inp)))return false;
+  const lone=plan0.put.filter((p:any)=>{
+    if(String(p.want||'')===''&&relands(inpId(p.inp))&&!isOD(p.inp.type))return false;   // an overseas duty the load takes off the programme does not land again (D1393 — the narrow read's N4)
     const u=requestRowUnit(units,inpId(p.inp),String(p.want||''),String(p.inp.acc||''),after,DAYS[di]);
     if(u){u.inp=filOf(p);return false;}
     return true;});
@@ -953,7 +980,9 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
   if(dt==null)return {put,left};
   (INPUTS||[]).forEach((inp:any)=>{
     if(!inputCoversDate(inp,dt))return;
-    const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||'');
+    /* an overseas duty on the Ground Programme keeps that by a mark (D1393 — engine/inputs.ts odOut): its filing is 'g'
+       with or without the week's own mark (the fresh code read's F1) */
+    const id=inpId(inp), want=String(((fil||{})[id])||''), cur=String(inp.acc||(isOD(inp.type)&&inp.odGround?'g':''));
     if(filingSame(fil,id,cur))return;   // D174: a request the version never held, taken off since, stays taken off — never back to a fresh one that flags
     if(inputProtected(inp))return;   // a quarantined week's request is never touched — in the one plan both callers read (Fable's read, #2)
     /* ITS row — on a day it covers. A DEAD kept row (a version's row on a day the request no longer covers, D363) carries
@@ -966,6 +995,9 @@ export function filingRestorePlan(di:any,fil:any,dayAfter?:any):{put:Array<{inp:
     const has=(d:any)=>!!d&&inputCoversDate(inp,d.dt)&&((d.ground)||[]).some((g:any)=>g&&g.src===id&&!g.kept);
     const landed=DAYS.some((d0:any,j:number)=>has((j===di&&dayAfter)?dayAfter:d0));
     if(want==='g'?!landed:landed){left.push(id);return;}
+    /* AN OVERSEAS DUTY WHOSE ROW STANDS IN ANOTHER WEEK (D1393 — the third read's find): its Ground mark is one value for
+       every week, so taking it off here takes its row off there; one day's load never moves another (AM1) — left as filed */
+    if(isOD(inp.type)&&inp.odGround&&!inp.acc&&want!=='g'&&rowElsewhere(id,inp)!==null){left.push(id);return;}
     /* the version's OWN row for it stands on this very day: "on the programme" is then the fact, whatever other day the
        request also covers — leaving it "taken off" beside its standing row would be the dangling state P2-REV2-05
        forbids the other way round, and the next AL would freeze it (Fable's code read, #1). The other day reads it too;

@@ -7,7 +7,7 @@ import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT } fr
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
-import { INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
+import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf, leadOf, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
@@ -17,7 +17,7 @@ import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
 import { openChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
-import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, LOADMOVED, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
+import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, loadMovedNow, ROWSLEFT, rowsLeftSentences, inputsLeftSaid, reconcileIssuedMarks } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -31,7 +31,7 @@ import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { iuParts } from '../engine/keys'
-import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho } from './inputedit'
+import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
 import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
@@ -1000,6 +1000,8 @@ export function routeClick(e: MouseEvent) {
     const rowDay = dest === 'x' ? acceptedDay(inp) : -1
     /* …and WHERE it stood: on the ground programme ('g') or under Unavailable ('u') — the take-off says which it left */
     const was = inp.acc
+    /* an overseas duty with no mark stands under Unavailable by its kind (D1393 — the code read's F4) */
+    const wasUnav = was === 'u' || (isOD(inp.type) && !was && !inp.odGround)
     const adopts = dest !== 'x' && inp.acc === 'r' && DAYS.some((d: any) => !!standsOn(d, k, inp))
     /* AN ARMED PLACE DOES NOT SURVIVE A ROW MOVING UNDER IT — here too. This door writes the day itself, BEFORE the
        after-command pass takes its own picture of the armed row (state/holderbase.ts), so a row an Accept put back
@@ -1029,6 +1031,8 @@ export function routeClick(e: MouseEvent) {
           const x = find()
           if (!x || !commitInputEdit(x, draftOf(x), undefined, undefined, { sched: true, oil })) return false
           if (!acceptInput(di, find(), dest)) { HOOKS.toast(refusalWords(find() || x), 'warn'); throw new CmdRefused('the put-back was refused') }
+          /* a scheduler's move, marked in the same step (his D1388 — ui/inputedit.tsx markMoved) */
+          markMoved(find())
           /* …and the marks are settled inside the step: an issued row put back as it went out wears no "goes out" mark.
              Every other Accept ends in afterSchedMutate, whose epilogue does this; this one is its own command and
              has no such ending (the Opus read of the finished code, F1) */
@@ -1036,6 +1040,9 @@ export function routeClick(e: MouseEvent) {
           return true
         }).ok
       : dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
+    /* A SCHEDULER'S MOVE IS MARKED, before the command below records it (his D1388): from now on only a scheduler changes
+       where it stands — the member's window offers no Goes to, and his save leaves it here (ui/inputedit.tsx markMoved) */
+    if (ok && !oil) markMoved(inp)
     if (armWas && view.armedRowKey() !== armWas) view.disarmSlot()
     if (ok) {
       /* SAID ONCE, to the scheduler and to the log, in the same words — the
@@ -1058,7 +1065,7 @@ export function routeClick(e: MouseEvent) {
          stood on ANOTHER day names that day ([REQ-DOOR-WORDS] 2), and one filed under Unavailable is "taken out of
          Unavailable" — it was never on the programme. */
       const said = dest === 'x'
-          ? was === 'u' ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
+          ? wasUnav ? `${cs}'s ${inpLabel(inp)} taken out of Unavailable`
           : rowDay >= 0 && rowDay !== di && DAYS[rowDay] ? `${cs}'s ${inpLabel(inp)} taken off ${DAYS[rowDay].dow}'s programme`
           : `${cs}'s ${inpLabel(inp)} taken off the programme`
         : dest === 'u' ? `${cs}'s ${inpLabel(inp)} filed under Unavailable`
@@ -1597,8 +1604,9 @@ export function routeClick(e: MouseEvent) {
       + (left ? ` ${left} request${left === 1 ? ' stays' : 's stay'} as filed because ${left === 1 ? 'it covers' : 'they cover'} another day.` : '')
       /* each request that came back onto (or went off) the programme with its row, by its own name, and the other days
          that read it too */
-      + LOADMOVED.map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
-          return m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
+      + loadMovedNow().map(m => { const x: any = (INPUTS as any[]).find((r: any) => String(inpId(r)) === m.id); const what = x ? inpLabel(x) : 'A request'
+          /* landed by the working-out on a day it never stood on ([LOAD-MOVES-ROW-DAY], a question for him): "now", not "again" */
+          return m.moved ? ` ${what} is on ${dayList(m.days)}'s programme now, pending there.` : m.on ? ` ${what} is on ${dayList(m.days)} again too.` : ` ${what} is off ${dayList(m.days)} too.` }).join('')
       /* …and a row the version held for a request that now stands on another day stayed out — one request, one row (D175) */
       + rowsLeftSentences(ROWSLEFT)
       /* …and a member's input changed since the day was issued, which stays pending (a member's record is his — Fable F5) */

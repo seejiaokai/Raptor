@@ -62,3 +62,23 @@ describe('the demo carries the walk\'s two-entry days', () => {
     expect(at('spaceman', '2026-02-23')).toHaveLength(0)
   })
 })
+
+/* HIS D1312 (24 Oct 26 — "add more manning counters like 6 rows so our mock ups caters for it"): a fresh demo world
+   starts with six counters, word for word six of the eleven the Manning block carried until D669; a world already
+   stored, and a shared store (no demo), start with none — D669 still holds for a real squadron. */
+describe('the demo carries six manning counters (D1312)', () => {
+  const ids = () => getState().requirements.default.rules.map(r => r.id)
+  it('a fresh demo world starts with Crew sets, IP, IWSO, OPSP, OPSW and SXO, in that order', async () => {
+    installDemoWorld(false)
+    expect(ids()).toEqual(['sets', 'ip', 'iwso', 'opsp', 'opsw', 'sxo'])
+    const { ELEVEN_COUNTERS } = await import('./testing/eleven')
+    for (const r of getState().requirements.default.rules) expect(r).toEqual(ELEVEN_COUNTERS.find(e => e.id === r.id))
+  })
+  it('a stored world lays none, and nor does a shared store', () => {
+    installDemoWorld(true)
+    expect(ids()).toEqual([])
+    lwInitStore(memoryBackend())
+    installDemoWorld(false, false)
+    expect(ids()).toEqual([])
+  })
+})

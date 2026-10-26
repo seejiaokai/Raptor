@@ -1,0 +1,40 @@
+[
+ {
+  "id": "S6 first bid out of view",
+  "size": "phone-chromium",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27; right after the tap: no bubble; settled: at the foot, level red, \"This bid turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 12,816 378×46 inside the 402×874 screen, centre hit is the bubble (pointer-events auto); cell vs note {\"cell\":[191,536,212,557],\"note\":[12,816,390,862],\"overlapPx\":0,\"cellInViewport\":true,\"cellFullyVisible\":true,\"noteTopMinusCellBottom\":259}",
+  "pics": [
+   "s06-phone-chromium-after-tap.png",
+   "s06-phone-chromium-settled-full.png",
+   "s06-phone-chromium-settled-note.png"
+  ]
+ },
+ {
+  "id": "S6 Show ›",
+  "size": "phone-chromium",
+  "verdict": "PASS",
+  "said": "after the Show tap: no bubble; right after the tap: no bubble; focus counts-toggle; rows open true→true",
+  "pics": [
+   "s06-phone-chromium-show-after-tap.png",
+   "s06-phone-chromium-show-settled.png"
+  ]
+ },
+ {
+  "id": "S6 second bid out of view",
+  "size": "phone-chromium",
+  "verdict": "PASS",
+  "said": "right after the tap: no bubble; settled: at the foot, level red, \"This bid takes Available P lower, still red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 12,816 378×46 inside the 402×874 screen, centre hit is the bubble (pointer-events auto); cell vs note {\"cell\":[191,516,212,538],\"note\":[12,816,390,862],\"overlapPx\":0,\"cellInViewport\":true,\"cellFullyVisible\":true,\"noteTopMinusCellBottom\":278}",
+  "pics": [
+   "s06-phone-chromium-second-after-tap.png",
+   "s06-phone-chromium-second-settled-note.png"
+  ]
+ },
+ {
+  "id": "errors-6-phone-chromium",
+  "size": "phone-chromium",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

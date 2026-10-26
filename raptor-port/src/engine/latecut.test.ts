@@ -53,7 +53,7 @@ describe('the standard values', () => {
 describe('which set judges an input', () => {
   it('a SANS availability input by the SANS calendar’s; every other input by the Inputs calendar’s', () => {
     expect(cutSetOf(sans('Jul 14', ''))).toBe('sans')
-    for (const type of ['LL', 'OL', 'Meeting', 'Appointment', 'Duty', 'Fly with', 'OD', 'ATT C', 'Upchit'])
+    for (const type of ['LL', 'OL', 'Meeting', 'Appointment', 'Duty', 'Attach', 'OD', 'ATT C', 'Upchit'])
       expect(cutSetOf({ type }), type).toBe('inputs')
     expect(cutSetOf(null)).toBe('inputs')
   })

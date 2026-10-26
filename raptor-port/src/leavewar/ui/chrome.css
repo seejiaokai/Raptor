@@ -662,11 +662,8 @@
   .card-hd .rtlbl {
     display: none;
   }
-  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden) and the − / +
-     step aside until it is off, so the bar keeps one line as drawn (questions/q3c-done-zoom-aside.png) */
-  .card-hd .lwzoom.aside {
-    display: none;
-  }
+  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden); the − / +
+     that stepped aside for it went with the pinch (D1276) */
 }
 
 @media (max-width: 700px) {
@@ -1194,37 +1191,9 @@
     .lw-top, .lw-viewline { padding-left: 12px; padding-right: 12px; }
   }
 
-  /* D1227's bubble: under the Manning button, naming the rows a bid just turned amber or red; gone at the next tap. The
-     amber of the grid's own amber marks, never a glow (D887). */
+  /* D1227's bubble stood under the Manning button until his D1358 (25 Oct 26) put it always at the foot of the screen —
+     the `.mn-foot` below; its arrowed box under the button went with that. */
   .card-hd { position: relative; }
-  .mn-bubble {
-    position: absolute;
-    left: 14px;
-    top: calc(100% + 8px);
-    z-index: 6;
-    max-width: calc(100% - 28px);
-    padding: 7px 11px;
-    border: 1px solid rgba(229, 168, 59, .7);
-    border-radius: 9px;
-    background: #2a2210;
-    color: #F2C879;
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1.35;
-    pointer-events: none;
-  }
-  .mn-bubble::before {
-    content: '';
-    position: absolute;
-    left: 22px;
-    top: -6px;
-    width: 10px;
-    height: 10px;
-    background: #2a2210;
-    border-left: 1px solid rgba(229, 168, 59, .7);
-    border-top: 1px solid rgba(229, 168, 59, .7);
-    transform: rotate(45deg);
-  }
   /* D1277: the same words at the foot of the screen when the Manning button is out of view — as drawn
      (`docs/img/handpass/2026-10-23-lw-m2-looks/questions/q1b-proposed-scrolled.png`): the bubble's amber, the screen's
      width less a margin on a phone (D828), "Show ›" at its right end; clear of the phone's home bar and of the desktop's
@@ -1262,7 +1231,23 @@
     cursor: pointer;
   }
   .mn-foot .mn-show:hover { background: rgba(229, 168, 59, .14); }
+  /* RED WHEN IT SAYS RED (his D1344, 25 Oct 26 — "this bid turns available P red. the box is in amber can u make it red"):
+     the bubble and the foot note wear the colour of the worst level they name — the amber above, or the red of a red
+     Manning cell (`matrix.css .counts td.red`: its edge, its words) on a dark red of the amber's depth; never a glow (D887). */
+  .mn-foot.mnb-red { background: #2e1418; border-color: rgba(240, 85, 95, .7); color: #FFAAB0; }
+  .mn-foot.mnb-red .mn-show { color: #FFAAB0; }
+  .mn-foot.mnb-red .mn-show:hover { background: rgba(240, 85, 95, .14); }
   .mn-foot .mn-show:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  /* ITS WORDS IN THE BID WINDOW'S DAY-LINE FORM (his D1360, D1364): "This bid:" in the bubble's own light words, then each
+     row's figures in its colour — the day line's amber and red (bidpicker.css .dl-amber / .dl-red), lifted to read on the
+     bubble's dark fill — the pairs kept whole, wrapping only between them (D1313's rule) */
+  .mn-foot .mn-words { min-width: 0; }
+  .mn-foot .mn-lead { color: #E8EDF2; font-weight: 600; }
+  .mn-foot .mn-pairwrap { white-space: nowrap; }
+  .mn-foot .mn-pair { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .mn-foot .mnp-amber { color: #F2C879; }
+  .mn-foot .mnp-red { color: #FFAAB0; }
+  .mn-foot .dl-dot { color: var(--ink-3); }
   @media (min-width: 701px) {
     .mn-foot {
       left: 50%;

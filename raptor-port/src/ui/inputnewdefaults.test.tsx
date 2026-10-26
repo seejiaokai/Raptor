@@ -144,9 +144,9 @@ describe('D920 — When and Remarks stand above the calendar', () => {
   const above = (k: string[]) => {
     const d = k.indexOf('Dates')
     expect(d, 'the calendar is there').toBeGreaterThan(-1)
-    expect(k.indexOf('When'), 'When above the calendar').toBeLessThan(d)
+    expect(k.indexOf('Duration'), 'Duration (D1212) above the calendar').toBeLessThan(d)
     expect(k.indexOf('Remarks'), 'Remarks above the calendar').toBeLessThan(d)
-    expect(k.indexOf('Type'), 'the kind still first').toBeLessThan(k.indexOf('When'))
+    expect(k.indexOf('Type'), 'the kind still first').toBeLessThan(k.indexOf('Duration'))
   }
   it('a new OL from the List', async () => {
     await mount('table')
@@ -159,7 +159,7 @@ describe('D920 — When and Remarks stand above the calendar', () => {
     await pick(win + ' #inpEditType', 'Event')
     const k = keys()
     above(k)
-    expect(k.indexOf('Title')).toBeLessThan(k.indexOf('When'))
+    expect(k.indexOf('Title')).toBeLessThan(k.indexOf('Duration'))
   })
   it('a saved input reopened', async () => {
     await mount('table')

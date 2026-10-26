@@ -1,0 +1,45 @@
+[
+ {
+  "id": "B3 Escape at the below-zero ask",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Undo \"Undo — Hunter’s bid\"",
+  "pics": [
+   "b3-desk-escape-ask-tap.png"
+  ]
+ },
+ {
+  "id": "B3 a move dropped on its own day, then cancelled by Escape",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Undo \"Undo — Ridge’s bid\"",
+  "pics": [
+   "b3-desk-own-day-tap.png"
+  ]
+ },
+ {
+  "id": "B3 a whole-day UNA’s day opened again (RECORD)",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "the day opens \"daylist-sheet\"; a whole-day UNA's day opens the day's list, which has no UNA button, so it cannot be placed again that way; cells UNA|k-una|s-a|whole → UNA|k-una|s-a|whole; Undo \"Undo — a UNA\"; bubble no bubble",
+  "pics": [
+   "b3-desk-una-first-after-tap.png"
+  ]
+ },
+ {
+  "id": "B3 the same morning UNA with the same words placed again",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "FAILED: the day opened a bid window to place it again (saw opened \"daylist-sheet\") — window closed; cells UNA|k-una|s-a|top → UNA|k-una|s-a|top; Undo \"Undo — a UNA\"",
+  "pics": [
+   "b3-desk-am-una-first-after-tap.png"
+  ]
+ },
+ {
+  "id": "errors-B3",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

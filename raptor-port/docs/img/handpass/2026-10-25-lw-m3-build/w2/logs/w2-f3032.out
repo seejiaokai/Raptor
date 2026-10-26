@@ -1,0 +1,23 @@
+lw-m3b-w2-f C:\Users\User\projects\Raptor\.claude\worktrees\lw-m3-placing-leave-d1c063\raptor-port\docs\img\handpass\2026-10-25-lw-m3-build\w2 sets 30,32
+-- 30
+   bundle [desk] index-BayEj7kB.js
+   30 [desk] a question opened after the save: oilconf
+   30-filed [desk] acc g; oil {"2026-07-18":1}; asked ["oilconf"]
+   back-to-grid [desk] OIL tracker still up: false
+   30-published [desk] publish {"published":true,"version":"ORIG","signSelects":4}; war ["FO*|k-oil|s-a|whole|plain|fs10px|w21h22|tw17.9"] Available P 28 → 28; OIL row "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"
+   30-move [desk] Reject "REJECT" (windows []); "→ Unavail" "→ UNAVAIL" (windows []); acc now u
+   back-to-grid [desk] OIL tracker still up: false
+   30-moved [desk] row now on Unavailable; war ["FO*|k-oil|s-a|left|plain|fs7.5px|w10h22|tw13|OVERFLOW2","TRG|k-unav|s-a|right|outlined|fs6.5px|w10h22|tw12.2|OVERFLOW1"] Available P 27; OIL row "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"
+PASS?  30 [desk]  Training on Sat 18 Jul, OIL Yes (asked ["oilconf"]), weekend published (ORIG): war ["FO*|k-oil|s-a|whole|plain|fs10px|w21h22|tw17.9"], Available P 28 → 28, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"; after Reject → Unavail (question on the move: []): row on Unavailable, war ["FO*|k-oil|s-a|left|plain|fs7.5px|w10h22|tw13|OVERFLOW2","TRG|k-unav|s-a|right|outlined|fs6.5px|w10h22|tw12.2|OVERFLOW1"], Available P 27, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left" (unchanged)  [f-30-oil-question, f-30-war-published, f-30-oil-before, f-30-war-moved, f-30-oil-after, f-30-edit-moved]
+   errors-30 [desk] []
+-- 32
+   32-base [desk] Available P Mon 28, Tue 28
+   32-Appointment [desk] {"cs":"Ranger","kind":"Appointment","times":"600-660","acc":"u","monCell":["APPT|k-unav|s-a|top|outlined|fs6.5px|w24h10|tw15.9"],"tueCell":[],"monAvail":"27.5","tueAvail":"28"}
+   32-Meeting [desk] {"cs":"Drifter","kind":"Meeting","times":"540-1020","acc":"u","monCell":["MTG|k-unav|s-a|whole|outlined|fs8.5px|w24h22|tw18.6"],"tueCell":[],"monAvail":"26.5","tueAvail":"28"}
+   32-Duty [desk] {"cs":"Hunter","kind":"Duty","times":"1320-120","acc":"u","monCell":["DTY|k-unav|s-a|bot|outlined|fs6.5px|w22h10|tw12.1"],"tueCell":[],"monAvail":"26","tueAvail":"28"}
+RECORD  32 [desk]  Available P Mon 28 / Tue 28 at the start. After the Appointment 10:00–11:00 (Ranger): Mon 27.5, Tue 28; + the Meeting 09:00–17:00 (Drifter): Mon 26.5, Tue 28; + the overnight Duty 22:00–02:00 (Hunter): Mon 26, Tue 28. Cells — Ranger Mon ["APPT|k-unav|s-a|top|outlined|fs6.5px|w24h10|tw15.9"]; Drifter Mon ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w24h22|tw18.6"]; Hunter Mon ["DTY|k-unav|s-a|bot|outlined|fs6.5px|w22h10|tw12.1"] Tue []  [f-32-war-ranger, f-32-war-drifter, f-32-war-hunter, f-32-edit-unav]
+   errors-32 [desk] []
+RESULTS
+PASS? 30 | Training on Sat 18 Jul, OIL Yes (asked ["oilconf"]), weekend published (ORIG): war ["FO*|k-oil|s-a|whole|plain|fs10px|w21h22|tw17.9"], Available P 28 → 28, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left"; after Reject → Unavail (question on the move: []): row on Unavailable, war ["FO*|k-oil|s-a|left|plain|fs7.5px|w10h22|tw13|OVERFLOW2","TRG|k-unav|s-a|right|outlined|fs6.5px|w10h22|tw12.2|OVERFLOW1"], Available P 27, OIL tracker "Ranger IP 1 + 1 +1 18 Jul AUTO Duty input Training 1 left" (unchanged)
+RECORD 32 | Available P Mon 28 / Tue 28 at the start. After the Appointment 10:00–11:00 (Ranger): Mon 27.5, Tue 28; + the Meeting 09:00–17:00 (Drifter): Mon 26.5, Tue 28; + the overnight Duty 22:00–02:00 (Hunter): Mon 26, Tue 28. Cells — Ranger Mon ["APPT|k-unav|s-a|top|outlined|fs6.5px|w24h10|tw15.9"]; Drifter Mon ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w24h22|tw18.6"]; Hunter Mon ["DTY|k-unav|s-a|bot|outlined|fs6.5px|w22h10|tw12.1"] Tue []
+exit 0

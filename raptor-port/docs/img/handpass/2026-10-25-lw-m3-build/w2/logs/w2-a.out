@@ -1,0 +1,39 @@
+lw-m3b-w2-a C:\Users\User\projects\Raptor\.claude\worktrees\lw-m3-placing-leave-d1c063\raptor-port\docs\img\handpass\2026-10-25-lw-m3-build\w2
+   bundle [desk] index-BayEj7kB.js
+   required [desk] typed 30
+   base-war [desk] {"cell":[],"avail":"25","req":"30"}
+   base-sans [desk] need 3 – | day: 15 3 – F 2 0 O 0 1 A 0 0
+   base-edit [desk] Wed Unavailable: ["OL Cobra IP Overseas leave — off islandtill 15 Jul","ATT C Grit C Medically downtill 17 Jul","OD C Nomad C Overseas duty — exercise, off islandtill 17 Jul","OIL C Gambit C till 15 Jul"]
+   13-filed [desk] {"acc":"u","type":"Other","allday":true,"date":"Jul 15","asked":[],"goesLine":"Counted as away on the Leave War"}
+   13-edit [desk] Unavailable has: [{"text":"Other Ranger IP LATE Range tasking REJECT","btns":["Reject"]}] | Ground has: []
+   13-war [desk] {"cell":["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"],"avail":"24","req":"30"}
+   13-sans [desk] need 4 – | day: 15 4 – F 2 0 O 0 1 A 0 0
+PASS?  13 [desk]  filed acc=u line="Counted as away on the Leave War"; Unavailable row holds it with remarks: true; war box OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22; Available P 25 → 24; SANS still needed 3 – → 4 –  [a-13-window, a-13-edit-unavail, a-13-war, a-13-sans]
+   13-undo [desk] button "Undo — a personal input" → page leavewar; {"cell":[],"avail":"25"}; inputs of type Other now: 0
+   13-redo [desk] button "Redo — a personal input" → page leavewar; {"cell":["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"],"avail":"24"}
+PASS?  13-undo-redo [desk]  Undo ("Undo — a personal input") left the screen on leavewar: cell [] Available P 25; Redo ("Redo — a personal input") on leavewar: cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"] Available P 24  [a-13-undo-war, a-13-redo-war]
+   13-reload-war [desk] {"cell":["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"],"avail":"24","req":"30"}
+   13-reload-edit [desk] Unavailable has: [{"text":"Other Ranger IP LATE Range tasking REJECT","btns":["Reject"]}]
+   13-reload-door-cal [desk] {"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false}
+   13-reload-door-row [desk] {"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false}
+   13-reload-window [desk] Goes to: Ground false, Unavailable true, line "Counted as away on the Leave War"
+PASS?  38(13) [desk]  after reload + sign-in: cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"], Available P 24, Unavailable row 1, Goes to by door {"cal":{"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false},"row":{"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false},"list":{"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false}}  [a-13-reload-war, a-13-reload-edit, a-13-reload-window, a-13-reload-window-cal, a-13-reload-window-row]
+   14-edit [desk] acc g; Unavailable has []; Ground has [{"text":"OTHER Ranger IP + ADD LATE Range tasking","btns":[]}]; Personal Inputs []
+   14-ground-war [desk] {"cell":[],"avail":"25","req":"30"}
+   14-ground-sans [desk] need 3 – | day: 15 3 – F 2 0 O 0 1 A 0 0
+PASS?  14-ground [desk]  line "Still counted in the Leave War’s manning"; acc g; on Ground 1, under Unavailable 0; war cell [], Available P 25; SANS still needed 3 – (base 3 –)  [a-14-window-ground, a-14-edit-ground, a-14-edit-unavail-gone, a-14-war-ground]
+PASS?  14-undo-redo [desk]  Undo of the flip: page leavewar, acc u, cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"], Available P 24; Redo: page leavewar, acc g, cell [], Available P 25  [a-14-undo-war, a-14-redo-war]
+   14-window-ground [desk] reopened: {"row":true,"g":"true","u":"false","line":"Still counted in the Leave War’s manning","gDisabled":false,"uDisabled":false}
+   14-back-war [desk] {"cell":["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"],"avail":"24","req":"30"}
+   14-back-sans [desk] need 4 – | day: 15 4 – F 2 0 O 0 1 A 0 0
+PASS?  14-back [desk]  acc u; under Unavailable 1, on Ground 0; war cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"], Available P 24; SANS still needed 4 –  [a-14-edit-unavail-back, a-14-war-back]
+   14-reload-war [desk] {"cell":["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"],"avail":"24","req":"30"}
+   14-reload [desk] acc after reload: u
+   errors [desk] []
+RESULTS
+PASS? 13 | filed acc=u line="Counted as away on the Leave War"; Unavailable row holds it with remarks: true; war box OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22; Available P 25 → 24; SANS still needed 3 – → 4 –
+PASS? 13-undo-redo | Undo ("Undo — a personal input") left the screen on leavewar: cell [] Available P 25; Redo ("Redo — a personal input") on leavewar: cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"] Available P 24
+PASS? 38(13) | after reload + sign-in: cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"], Available P 24, Unavailable row 1, Goes to by door {"cal":{"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false},"row":{"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false},"list":{"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false}}
+PASS? 14-ground | line "Still counted in the Leave War’s manning"; acc g; on Ground 1, under Unavailable 0; war cell [], Available P 25; SANS still needed 3 – (base 3 –)
+PASS? 14-undo-redo | Undo of the flip: page leavewar, acc u, cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"], Available P 24; Redo: page leavewar, acc g, cell [], Available P 25
+PASS? 14-back | acc u; under Unavailable 1, on Ground 0; war cell ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22"], Available P 24; SANS still needed 4 –

@@ -1,0 +1,26 @@
+{
+ "all": [
+  {
+   "id": 16,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: member placed LL on 14 Jan with a file",
+    "ok: the bid moved: 14 Jan has 0 box(es), 19 Jan has 1",
+    "ok: the moved bid (now on 19 Jan) keeps its file: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"] — \"Ranger | Mon 19 Jan | NOW LL | ✕ | No manning row turns amber or red | DATE | Just this da\"",
+    "ok: member placed LL on 15 Jan with a file",
+    "ok: member tapped OL on the same day (re-type)",
+    "ok: 15 Jan now reads OL: c k-ol s-w whole \"OL\"",
+    "ok: after LL → OL the file is kept: [\"Document\",\"walk-b.pdf\",\"✕\",\"Add\"] — \"Ranger | Thu 15 Jan | NOW OL | ✕ | No manning row turns amber or red |\""
+   ],
+   "fails": [],
+   "pics": [
+    "s16-moved-bid-desk-cr.png",
+    "s16-retyped-bid-desk-cr.png"
+   ],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

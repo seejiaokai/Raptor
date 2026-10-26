@@ -536,7 +536,7 @@ describe('shifting a bid', () => {
   // waits and its days are open" — where it is and where it lands).
   it('a member cannot shift a bid onto a day not open for bidding', () => {
     setCell('dusk', '2026-03-25', 'LL')             // open (the seed opens 1 Jan – 31 Mar)
-    expect(moveBidVia('dusk', '2026-03-25', '2026-04-08')).toBe('window')   // April is closed
+    expect(moveBidVia('dusk', '2026-03-25', '2026-04-08')).toBe('closed')   // April is closed — its own reason since M3 §4 (4)
     expect(getState().grid.dusk['2026-03-25']).toBe('LL')
     expect(getState().grid.dusk?.['2026-04-08']).toBeUndefined()
   })

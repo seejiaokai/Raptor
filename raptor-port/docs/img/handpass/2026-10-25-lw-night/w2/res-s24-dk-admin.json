@@ -1,0 +1,43 @@
+[
+ {
+  "id": "24a",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "drag 7–8 Dec (\"A\" on an LL, \"B\" on an OL), typed \"Moved together\", Move (banner shown: Tap a day to move 2 entries Cancel), landed on 14 Dec. After: 7 Dec: - ; 8 Dec: - ; 14 Dec: LL/pending/\"Moved together\" ; 15 Dec: OL/pending/\"Moved together\"",
+  "pics": [
+   "s24-dk-admin-01-typed",
+   "s24-dk-admin-02-banner",
+   "s24-dk-admin-04-landed"
+  ]
+ },
+ {
+  "id": "24a-undo",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Undo after the Move with words, press by press: #1 \"Undo — moving a bid\" → 7 Dec: LL/pending/\"Moved together\" ; 8 Dec: OL/pending/\"Moved together\" ; 14 Dec: - ; 15 Dec: - | #2 \"Undo — a leave request’s remarks or documents\" → 7 Dec: LL/pending/\"A\" ; 8 Dec: OL/pending/\"B\" ; 14 Dec: - ; 15 Dec: - | #3 \"Undo — Drifter’s bid\" → 7 Dec: LL/pending/\"A\" ; 8 Dec: - ; 14 Dec: - ; 15 Dec: -",
+  "pics": [
+   "s24-dk-admin-05-undo1",
+   "s24-dk-admin-05-undo2",
+   "s24-dk-admin-05-undo3"
+  ]
+ },
+ {
+  "id": "24b",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "type \"Escaped\", Move (banner up), Escape (banner gone; window open now: nothing). The bids hold: 7 Dec: LL/pending/\"Escaped\" ; 8 Dec: LL/pending/\"Escaped\" — the words stayed (D1339 \"whatever is pressed\"). One Undo: \"Undo — a leave request’s remarks or documents\" → 7 Dec: LL/pending/\"C\" ; 8 Dec: LL/pending/\"D\"; a second: \"Undo — Ridge’s bid\" → 7 Dec: LL/pending/\"C\" ; 8 Dec: -",
+  "pics": [
+   "s24-dk-admin-06-banner-b",
+   "s24-dk-admin-07-after-escape",
+   "s24-dk-admin-08-undo-escape",
+   "s24-dk-admin-08-undo-escape2"
+  ]
+ },
+ {
+  "id": "24-errors-admin",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

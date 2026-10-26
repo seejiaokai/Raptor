@@ -1,0 +1,370 @@
+{
+ "greys": {
+  "a": {
+   "h": "184, 190, 198",
+   "ink": "#0b1116",
+   "fill": 1,
+   "name": "light grey, dark words"
+  },
+  "b": {
+   "h": "170, 174, 180",
+   "ink": "#EEF0F3",
+   "fill": 0.22,
+   "name": "dark grey, light words, light edge"
+  }
+ },
+ "log": [
+  {
+   "id": "row",
+   "size": "phone",
+   "said": "today the row reads: CSE · OD · UNA · ⋯"
+  },
+  {
+   "id": "row",
+   "size": "phone",
+   "said": "today the ⋯ menu holds: Grant OIL · Post out · Post in"
+  },
+  {
+   "id": "row",
+   "size": "phone",
+   "said": "drawn Grant OIL: {\"w\":83.5,\"h\":30,\"odW\":83.5,\"odH\":30,\"over\":0,\"top\":817,\"odTop\":817,\"bg\":\"rgba(70, 196, 108, 0.38)\",\"color\":\"rgb(221, 248, 230)\",\"edge\":\"rgba(70, 196, 108, 0.85) 0px 0px 0px 1px inset\",\"fs\":\"12px\"}"
+  },
+  {
+   "id": "row",
+   "size": "phone",
+   "said": "drawn menu: UNA · Post out · Post in"
+  },
+  {
+   "id": "grid",
+   "size": "phone",
+   "said": "the five days: {\"od\":[\"OD|k-od|s-a|whole\"],\"una\":[\"UNA|k-una|s-a|whole\"],\"ref\":[\"LL|k-ll|s-r|whole\"],\"unaAm\":[\"UNA|k-una|s-a|top\"],\"ll\":[\"LL|k-ll|s-a|whole\"]}"
+  },
+  {
+   "id": "grid",
+   "size": "phone",
+   "said": "today-teal: UNA fill #146264 edge #147D7D words #D6FFFB (6.6:1) · OD fill #535C69 edge #798798 · refused cell #14181D edge #4A5560 words #7D8894 · ΔE UNA–OD 17.6, UNA–refused fill 27.7 edge 21.6 words 32.3"
+  },
+  {
+   "id": "grid",
+   "size": "phone",
+   "said": "grey-a: UNA fill #B8BEC6 edge #B8BEC6 words #0B1116 (10.1:1) · OD fill #535C69 edge #798798 · refused cell #14181D edge #4A5560 words #7D8894 · ΔE UNA–OD 34.5, UNA–refused fill 62.5 edge 38.4 words 40.1"
+  },
+  {
+   "id": "grid",
+   "size": "phone",
+   "said": "grey-b: UNA fill #35393E edge #989CA2 words #EEF0F3 (10.2:1) · OD fill #535C69 edge #798798 · refused cell #14181D edge #4A5560 words #7D8894 · ΔE UNA–OD 12.4, UNA–refused fill 10.4 edge 29 words 28.5"
+  },
+  {
+   "id": "legend",
+   "size": "phone",
+   "said": "the Legend's UNA row reads: UNA Unavailable: out of the manning"
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "1a-today-row-phone.png",
+   "label": "Today, the admin's bid window: CSE · OD · UNA · ⋯ under the leaves"
+  },
+  {
+   "file": "1b-today-menu-phone.png",
+   "label": "Today: the ⋯ opens Grant OIL, Post out, Post in"
+  },
+  {
+   "file": "1c-drawn-row-phone.png",
+   "label": "Drawn: CSE · OD · Grant OIL · ⋯ — Grant OIL in OIL given's green, UNA into the ⋯"
+  },
+  {
+   "file": "1d-drawn-menu-phone.png",
+   "label": "Drawn: the ⋯ opens UNA, Post out, Post in"
+  },
+  {
+   "file": "2a-today-grid-phone.png",
+   "label": "Today, Drifter 14–18 Dec: OD · UNA · refused LL · UNA (AM) · LL — UNA in deep teal"
+  },
+  {
+   "file": "2b-drawn-grid-grey-a-phone.png",
+   "label": "Drawn (a): UNA light grey, dark words — box #B8BEC6"
+  },
+  {
+   "file": "2c-drawn-grid-grey-b-phone.png",
+   "label": "Drawn (b): UNA dark grey, light words, light edge — box #35393E"
+  },
+  {
+   "file": "3a-today-legend-phone.png",
+   "label": "Today, the Legend: UNA in deep teal, beside OD and the refused box"
+  },
+  {
+   "file": "3b-drawn-legend-grey-a-phone.png",
+   "label": "Drawn (a): the Legend's UNA light grey, dark words"
+  },
+  {
+   "file": "3c-drawn-legend-grey-b-phone.png",
+   "label": "Drawn (b): the Legend's UNA dark grey, light words, light edge"
+  }
+ ],
+ "measures": [
+  {
+   "size": "phone",
+   "variant": "today-teal",
+   "boxes": {
+    "od": {
+     "cell": "#14181D",
+     "fill": "#535C69",
+     "edge": "#798798",
+     "words": "#F2F5F8",
+     "contrast": 6.2,
+     "lum": 0.106,
+     "struck": false,
+     "cls": "c k-od s-a whole raptor",
+     "text": "OD"
+    },
+    "una": {
+     "cell": "#14181D",
+     "fill": "#146264",
+     "edge": "#147D7D",
+     "words": "#D6FFFB",
+     "contrast": 6.6,
+     "lum": 0.098,
+     "struck": false,
+     "cls": "c k-una s-a whole wide",
+     "text": "UNA"
+    },
+    "ref": {
+     "cell": "#14181D",
+     "fill": "#14181D",
+     "edge": "#4A5560",
+     "words": "#7D8894",
+     "contrast": 4.9,
+     "lum": 0.009,
+     "struck": true,
+     "cls": "c k-ll s-r whole",
+     "text": "LL"
+    },
+    "unaAm": {
+     "cell": "#14181D",
+     "fill": "#146264",
+     "edge": "#147D7D",
+     "words": "#D6FFFB",
+     "contrast": 6.6,
+     "lum": 0.098,
+     "struck": false,
+     "cls": "c k-una s-a top wide",
+     "text": "UNA"
+    },
+    "ll": {
+     "cell": "#14181D",
+     "fill": "#453F2F",
+     "edge": "#D8B365",
+     "words": "#FFF1CF",
+     "contrast": 9.4,
+     "lum": 0.05,
+     "struck": false,
+     "cls": "c k-ll s-a whole",
+     "text": "LL"
+    }
+   },
+   "una_vs_od": {
+    "fillDE": 17.6,
+    "fillRGB": 63,
+    "edgeDE": 21,
+    "wordsDE": 13.6
+   },
+   "una_vs_refused": {
+    "fillDE": 27.7,
+    "fillRGB": 102,
+    "edgeDE": 21.6,
+    "wordsDE": 32.3
+   },
+   "unaAm_vs_od": {
+    "fillDE": 17.6,
+    "fillRGB": 63,
+    "edgeDE": 21,
+    "wordsDE": 13.6
+   },
+   "una_vs_emptyCell": 27.7,
+   "od_vs_refused": {
+    "fillDE": 22.4,
+    "fillRGB": 120,
+    "edgeDE": 19.3,
+    "wordsDE": 29.4
+   }
+  },
+  {
+   "size": "phone",
+   "variant": "grey-a",
+   "boxes": {
+    "od": {
+     "cell": "#14181D",
+     "fill": "#535C69",
+     "edge": "#798798",
+     "words": "#F2F5F8",
+     "contrast": 6.2,
+     "lum": 0.106,
+     "struck": false,
+     "cls": "c k-od s-a whole raptor",
+     "text": "OD"
+    },
+    "una": {
+     "cell": "#14181D",
+     "fill": "#B8BEC6",
+     "edge": "#B8BEC6",
+     "words": "#0B1116",
+     "contrast": 10.1,
+     "lum": 0.511,
+     "struck": false,
+     "cls": "c k-una s-a whole wide",
+     "text": "UNA"
+    },
+    "ref": {
+     "cell": "#14181D",
+     "fill": "#14181D",
+     "edge": "#4A5560",
+     "words": "#7D8894",
+     "contrast": 4.9,
+     "lum": 0.009,
+     "struck": true,
+     "cls": "c k-ll s-r whole",
+     "text": "LL"
+    },
+    "unaAm": {
+     "cell": "#14181D",
+     "fill": "#B8BEC6",
+     "edge": "#B8BEC6",
+     "words": "#0B1116",
+     "contrast": 10.1,
+     "lum": 0.511,
+     "struck": false,
+     "cls": "c k-una s-a top wide",
+     "text": "UNA"
+    },
+    "ll": {
+     "cell": "#14181D",
+     "fill": "#453F2F",
+     "edge": "#D8B365",
+     "words": "#FFF1CF",
+     "contrast": 9.4,
+     "lum": 0.05,
+     "struck": false,
+     "cls": "c k-ll s-a whole",
+     "text": "LL"
+    }
+   },
+   "una_vs_od": {
+    "fillDE": 34.5,
+    "fillRGB": 169,
+    "edgeDE": 17.7,
+    "wordsDE": 91.5
+   },
+   "una_vs_refused": {
+    "fillDE": 62.5,
+    "fillRGB": 288,
+    "edgeDE": 38.4,
+    "wordsDE": 40.1
+   },
+   "unaAm_vs_od": {
+    "fillDE": 34.5,
+    "fillRGB": 169,
+    "edgeDE": 17.7,
+    "wordsDE": 91.5
+   },
+   "una_vs_emptyCell": 62.5,
+   "od_vs_refused": {
+    "fillDE": 22.4,
+    "fillRGB": 120,
+    "edgeDE": 19.3,
+    "wordsDE": 29.4
+   }
+  },
+  {
+   "size": "phone",
+   "variant": "grey-b",
+   "boxes": {
+    "od": {
+     "cell": "#14181D",
+     "fill": "#535C69",
+     "edge": "#798798",
+     "words": "#F2F5F8",
+     "contrast": 6.2,
+     "lum": 0.106,
+     "struck": false,
+     "cls": "c k-od s-a whole raptor",
+     "text": "OD"
+    },
+    "una": {
+     "cell": "#14181D",
+     "fill": "#35393E",
+     "edge": "#989CA2",
+     "words": "#EEF0F3",
+     "contrast": 10.2,
+     "lum": 0.04,
+     "struck": false,
+     "cls": "c k-una s-a whole wide",
+     "text": "UNA"
+    },
+    "ref": {
+     "cell": "#14181D",
+     "fill": "#14181D",
+     "edge": "#4A5560",
+     "words": "#7D8894",
+     "contrast": 4.9,
+     "lum": 0.009,
+     "struck": true,
+     "cls": "c k-ll s-r whole",
+     "text": "LL"
+    },
+    "unaAm": {
+     "cell": "#14181D",
+     "fill": "#35393E",
+     "edge": "#989CA2",
+     "words": "#EEF0F3",
+     "contrast": 10.2,
+     "lum": 0.04,
+     "struck": false,
+     "cls": "c k-una s-a top wide",
+     "text": "UNA"
+    },
+    "ll": {
+     "cell": "#14181D",
+     "fill": "#453F2F",
+     "edge": "#D8B365",
+     "words": "#FFF1CF",
+     "contrast": 9.4,
+     "lum": 0.05,
+     "struck": false,
+     "cls": "c k-ll s-a whole",
+     "text": "LL"
+    }
+   },
+   "una_vs_od": {
+    "fillDE": 12.4,
+    "fillRGB": 63,
+    "edgeDE": 9.5,
+    "wordsDE": 1.1
+   },
+   "una_vs_refused": {
+    "fillDE": 10.4,
+    "fillRGB": 57,
+    "edgeDE": 29,
+    "wordsDE": 28.5
+   },
+   "unaAm_vs_od": {
+    "fillDE": 12.4,
+    "fillRGB": 63,
+    "edgeDE": 9.5,
+    "wordsDE": 1.1
+   },
+   "una_vs_emptyCell": 10.4,
+   "od_vs_refused": {
+    "fillDE": 22.4,
+    "fillRGB": 120,
+    "edgeDE": 19.3,
+    "wordsDE": 29.4
+   }
+  }
+ ]
+}

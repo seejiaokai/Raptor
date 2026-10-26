@@ -7,9 +7,10 @@
 //     row on a desktop.
 //   · A HOLD AND DRAG ACROSS THEM (D1169) opens every month from the first to the one under the finger, in CALENDAR
 //     order — never only those the finger crossed (the red team's A7b: on a phone's two rows a finger from MAY to SEP
-//     never touches JUL or AUG). A drag that starts on an open month closes instead. A phone arms the drag only once
-//     the finger has been held, so a finger that moves at once scrolls the window and opens nothing; a quick tap stays
-//     a tap. ONE command for the whole drag — one Undo, one repaint (the red team's B12).
+//     never touches JUL or AUG). A drag that starts on an open month closes instead. A phone arms the drag once the
+//     finger has been held, OR at once when it moves mostly sideways (his D1294 — a quick swipe across OCT–DEC picked
+//     nothing); a finger that moves mostly up or down scrolls the window and opens nothing; a quick tap stays a tap.
+//     ONE command for the whole drag — one Undo, one repaint (the red team's B12).
 //   · ONE LINE A STRETCH, its days counted, a calendar icon (never a pencil — D1172) that opens the calendar for exact
 //     days; a tap on the line opens the same calendar. "+ Open more dates" opens it for a new stretch.
 //   · NOTHING OPEN: "Nothing is open, so bidding is closed." and, once anything was closed, the last open stretch and
@@ -105,9 +106,15 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     const d = drag.current
     if (!d) return
     if (!d.armed) {
-      /* a phone's finger that moves before the hold is a scroll — let it go */
-      if (Math.abs(e.clientX - d.x) > 8 || Math.abs(e.clientY - d.y) > 8) endDrag()
-      return
+      const dx = Math.abs(e.clientX - d.x), dy = Math.abs(e.clientY - d.y)
+      if (dx <= 8 && dy <= 8) return
+      /* a phone's finger that moves before the hold: mostly up or down is a scroll of the window — let it go; mostly
+         SIDEWAYS is a swipe across the months (his D1294), armed at once from the month first touched. The buttons'
+         `touch-action: pan-y` leaves a sideways move to the page, so the browser never takes it for its own. */
+      if (dy >= dx) { endDrag(); return }
+      if (d.timer) window.clearTimeout(d.timer)
+      d.armed = true
+      setSpan({ lo: d.start, hi: d.start, closing: d.closing })
     }
     const ix = idxAt(e.clientX, e.clientY)
     if (ix === null || ix === d.cur) return

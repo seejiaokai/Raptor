@@ -471,7 +471,7 @@ describe('THE SAVE BOUNDARY, with no door in front of it (Sol\'s read of the pla
     const badLists: Array<[string, (rest: any) => any]> = [
       [`BOTH placeholders (D753: "ALL or ALL AVAIL, never both")`, rest => ({ ...rest, people: [{ p: others()[0] }, { p: ph }, { p: other }] })],
       [`${PEOPLE[ph].cs} beside a person over two days (D753)`, rest => ({ ...rest, people: [{ p: others()[0] }, { p: ph }], endDate: 'Oct 15' })],
-      [`${PEOPLE[ph].cs} beside a person on a kind that is not one of the six (D755 (4))`, rest => ({ ...rest, people: [{ p: others()[0] }, { p: ph }], type: 'Fly with' })],
+      [`${PEOPLE[ph].cs} beside a person on a kind that is not one of the six (D755 (4))`, rest => ({ ...rest, people: [{ p: others()[0] }, { p: ph }], type: 'Attach' })],
     ]
     for (const [name, make] of badLists)
       it(`a RESTORE that would put back ${name} is rolled back whole — no record, no history line, no Undo step`, async () => {

@@ -31,7 +31,7 @@
    has only ever been part of the Inputs page. Its overlay half went with this re-make — the page's scroll lock, its
    own close cross, its failed-save band, and an Escape that left the calendar "back to the list". */
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput } from '../engine/inputs'
+import { INPUTS, inputCoversDate, isSansAvail, sansLetters, idsOf, leadOf, isPlaceholderInput, typeMatches } from '../engine/inputs'
 import { dayFacts, flyAnswer, flyMonth, useWarFacts } from '../leavewar/sync'
 import { PEOPLE, QCOLOR, byCrew } from '../engine/people'
 import { hhmm } from '../engine/time'
@@ -41,12 +41,12 @@ import { notify, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, matchesHiSet, INPREVEAL, clearInpReveal, PLANREVEAL, clearPlanReveal } from '../state/view'
 import { HL_GROUPS } from './hlchips'
 import { canEditSched } from '../state/auth'
-import { isMe, mayDeleteInput } from '../state/perms'
+import { isMe, mayDeleteInput, viewerId } from '../state/perms'
 import { addDays } from '../state/flyplan-model'
 import { HOOKS } from '../engine/hooks'
 import { inputsInMode } from './sans-calendar-model'
 import { fmt, fmtDay, inputTone, newInputSeed, removeInput, upchitDeleteAsk, sharedRefusal, commitInput, draftOf, oilSignDay, oilSignNote } from './inputedit'
-import { INPEDIT, setInpEdit, setMedMove } from './pops'
+import { INPEDIT, setDocView, setInpEdit, setMedMove } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
@@ -62,7 +62,7 @@ import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { PenIcon } from './icons'
 import { useMedia } from './usemedia'
-import { KEYBOARD_MIN } from './kbscroll'
+import { KEYBOARD_MIN, screenBox } from './kbscroll'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
   'August', 'September', 'October', 'November', 'December']
@@ -73,6 +73,8 @@ const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 export const DESK_LANES = 7
 /* "+N more" stands on a line of its own, as tall as a bar's */
 const PHONE = { head: 22, lane: 16, more: 16 }
+/* expanded (D1386): lines enough for any day, so none says "+N more" */
+const EVERY_LANE = 999
 const DESK = { head: 26, lane: 20, more: 20 }
 
 /* yyyy-mm-dd → today's own iso, local time (the calendar's "Today" jump and
@@ -110,7 +112,7 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
   /* one body with the List and the month (ui/inputscal-model.ts): an input passes when ANY of its people does, or its
      placeholder — it is one record with the list of its people (owner D756; the one-rule plan §4.5) */
   inputs = inputs.filter((r: any) => inputPassesPerson(f.fPerson, r))
-  if (f.fType !== 'all') inputs = inputs.filter((r: any) => r.type === f.fType)
+  if (f.fType !== 'all') inputs = inputs.filter((r: any) => typeMatches(f.fType, r.type))
   /* …and by its NAME — its own title, or its kind — as the List and the month do: a bar found by its title opened a
      day that then hid it ([INPUT-OWN-TITLE], Sol's read of the plan — 5); and by the callsign of anyone in it */
   if (f.fSearch) inputs = inputs.filter((r: any) => inputMatchesSearch(r, f.fSearch))
@@ -295,6 +297,19 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   }
   /* "How this works" — folded away each time the calendar is opened: it is read once, not looked at daily */
   const [how, setHow] = useState(false)
+  /* EVERY INPUT IN THE MONTH ITSELF (his D1386, D1396 — 26 Oct 26: "an expand icon or button to show all inputs at the calendar
+     view but growing vertically long and the user can scroll down if needed"; drawn lw-m3n-draw.mjs d4): ⤢ at the end of the
+     "How this works" row; expanded, no day says "+n more" — each week is as tall as its inputs need, never shorter than the
+     compact month's row, and the page scrolls. Remembered per person on this device (a view convenience, never a record:
+     `inp:calexpand:<person>` in the browser's own storage, inside a try — the month draws compact without it). Narrows D653 /
+     D664 (the month fits the screen) while expanded. */
+  const expandKey = () => { const v = viewerId(); return v ? `inp:calexpand:${v}` : null }
+  const [expanded, setExpanded] = useState(() => { try { const k = expandKey(); return !!k && localStorage.getItem(k) === '1' } catch { return false } })
+  const toggleExpanded = () => setExpanded(on => {
+    const next = !on
+    try { const k = expandKey(); if (k) { if (next) localStorage.setItem(k, '1'); else localStorage.removeItem(k) } } catch { /* the month still turns */ }
+    return next
+  })
   /* which late input's note is showing in the opened day (its entry's key) */
   const [rmkDraft, setRmkDraft] = useState('')
   /* the title box's own Escape is in flight: the blur it causes writes nothing (D732 — `titleKey`, in the opened day) */
@@ -632,8 +647,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       /* the visible screen, as the browser's bars leave it — but not as a keyboard leaves it: a month that shrank for the
          keys and grew back as they went jumped twice, behind the box being typed in (D1081); with the keys up the page
          scrolls to the box instead (kbscroll.ts) */
-      const h = vv && window.innerHeight - vv.height <= KEYBOARD_MIN ? vv.height : window.innerHeight
-      const top = el.getBoundingClientRect().top + (window.scrollY || 0)
+      /* the layout's full height, and its top, from the fixed mark (kbscroll.ts screenBox): his iPhone, the keys up and the
+         screen panned, gives the window's height as what is left below the visible top and every box from that top */
+      const sb = vv ? screenBox(vv) : null
+      const lay = sb ? sb.layH : window.innerHeight
+      const h = vv && lay - vv.height <= KEYBOARD_MIN ? vv.height : lay
+      const top = el.getBoundingClientRect().top - (sb ? sb.layTop : 0) + (window.scrollY || 0)
       const next = fitLanes(h - top - 12, weeks.length, sizes)
       setFit(f => (f.row === next.row && f.lanes === next.lanes ? f : next))
     }
@@ -645,7 +664,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     return () => { window.removeEventListener('resize', measure); window.visualViewport?.removeEventListener('resize', measure); ro?.disconnect() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weeks.length, narrow])
-  const lanes = narrow ? fit.lanes : DESK_LANES
+  const lanes = expanded ? EVERY_LANE : narrow ? fit.lanes : DESK_LANES
   /* the month's one tab stop: where the keyboard last was, else today, else the 1st */
   const firstIso = cells.find(Boolean) as string
   const tabAt = at && at.slice(0, 7) === firstIso.slice(0, 7) ? at : todayIso.slice(0, 7) === firstIso.slice(0, 7) ? todayIso : firstIso
@@ -1120,7 +1139,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                   const when = cardWhen(r, it.b, iso)
                   return (
                     <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when} flash={lit.includes(it.key)}
-                      late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}>
+                      late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}
+                      onDoc={() => { setDocView({ row: r }); notify() }}>
                       {delAsk === it.key && (
                         <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
                           onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
@@ -1276,6 +1296,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
             <span className="ib-key red">absence</span>
             <span className="ib-key amb">duty</span>
           </span>
+          <button type="button" className="abtn ib-expand" data-testid="ib-expand" aria-pressed={expanded}
+            aria-label={expanded ? 'Show the month compact' : 'Show every input'} title={expanded ? 'Show the month compact' : 'Show every input'}
+            onClick={toggleExpanded}>{expanded ? '⤡' : '⤢'}</button>
         </div>
         {how && (
           <ol className="sc-how-list" id="ibHowList" data-testid="ib-how-list">
@@ -1360,7 +1383,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                      of leave"; 25-inputs-calendar.css) */
                   /* `innew`: just saved, changed or brought back — the just-added mark, on the month only while no day is
                      open over it (then the day's card wears it, and the bar behind does not light too) */
-                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '') + (barLit(sg.item.key) ? ' innew' : '')}
+                  <div key={sg.item.key} className={'ib-bar ' + sg.item.tone + (sg.item.col ? ' kd k-' + sg.item.col : ' duty') + (sg.item.allday ? '' : ' timed') + (sg.head ? '' : ' is-cont') + (sg.tail ? '' : ' is-on') + (sg.item.cx ? ' is-cx' : '') + (barLit(sg.item.key) ? ' innew' : '')}
                     data-iid={sg.item.key} data-fresh={barLit(sg.item.key) ? sg.item.key : undefined} data-icdrag data-testid={'ib-bar-' + sg.item.key} aria-hidden="true" title={tip(sg.item)}
                     style={{ gridColumn: `${sg.c0 + 1} / ${sg.c1 + 2}`, gridRow: sg.lane + 1 }}>{barText(sg.item, narrow)}</div>
                 ))}

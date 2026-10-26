@@ -16,6 +16,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { InputsPage } from './InputsPage'
 import { InputEditor } from './inputedit'
 import { initStore, notify, setSession } from '../state/store'
+import { setMe } from '../state/auth'
+import { me } from '../state/perms'
 import { CALMONTH, revealInput, setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { INPUTS } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
@@ -62,6 +64,7 @@ const mount = async () => {
   await act(async () => { setCalMonth({ y: 2026, m: 10 }); notify() })
 }
 beforeEach(async () => {
+  try { localStorage.clear() } catch { /* none */ }   // the month's expand is remembered there (D1386)
   INPUTS.splice(0, INPUTS.length, ...JSON.parse(seed))
   const mem = new Map<string, string>()
   storeBackend.impl = { getItem: k => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, v), keys: () => [...mem.keys()] }
@@ -160,6 +163,37 @@ describe('seven a day on a desktop, then "+N more" (D632, D639)', () => {
     expect(more.textContent).toBe('+2 more')
     await act(async () => { more.click() })
     expect($$('[data-popiid]').filter(el => rows.some(r => r.iid === el.dataset.popiid))).toHaveLength(9)
+  })
+})
+
+/* HIS D1386, D1396 (26 Oct 26 — [INP-CAL-EXPAND]): ⤢ at the end of the "How this works" row shows every input in the month,
+   no "+N more", each week as tall as it needs; remembered per person on this device */
+describe('⤢ shows every input in the month (D1386)', () => {
+  it('nine on one day: all nine drawn, no "+N more"; ⤡ puts the compact month back; remembered for him alone', async () => {
+    const rows: any[] = []
+    for (const p of crew().slice(0, 9)) rows.push(await file({ person: p, date: 'Oct 21' }))
+    const shown = () => $$('.ib-bar').filter(b => rows.some(r => r.iid === b.dataset.iid)).length
+    const btn = () => $('[data-testid="ib-expand"]')!
+    expect(btn().closest('.ib-sub'), 'on the "How this works" row').toBeTruthy()
+    expect(btn().getAttribute('aria-pressed')).toBe('false')
+    expect(shown()).toBe(7)
+    await act(async () => { btn().click() })
+    expect(btn().getAttribute('aria-pressed')).toBe('true')
+    expect(shown()).toBe(9)
+    expect($('[data-icmore="2026-10-21"]'), 'no "+N more"').toBeNull()
+    /* remembered: the page drawn again opens expanded for the same person… */
+    await act(async () => { root.unmount() }); host.remove(); await mount()
+    expect(btn().getAttribute('aria-pressed')).toBe('true')
+    /* …and compact for someone else on the same device */
+    const was = me(), other = crew().find(id => id !== was)!
+    await act(async () => { root.unmount() }); host.remove()
+    setMe(other); await mount()
+    expect(btn().getAttribute('aria-pressed'), 'another person opens compact').toBe('false')
+    await act(async () => { root.unmount() }); host.remove()
+    setMe(was); await mount()
+    await act(async () => { btn().click() })
+    expect(shown()).toBe(7)
+    expect($('[data-icmore="2026-10-21"]')!.textContent).toBe('+2 more')
   })
 })
 

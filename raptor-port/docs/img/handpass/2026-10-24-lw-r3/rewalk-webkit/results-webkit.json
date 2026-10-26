@@ -1,0 +1,117 @@
+[
+ {
+  "id": "S3 geometry beside the drawing",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "height 257 (the drawing before D1314 / D1326: 286, -29); every row one line, side by side one height — bidsheet-hd:37/1L side h±3 c±0.5 | bid-dayline:14/1L | Remarks and document:30/1L side h±0 c±0 | Duration:28/1L side h±0 c±0 | Which leave:62/2L side h±0 c±0 | bid-extra-row:30/1L",
+  "pics": []
+ },
+ {
+  "id": "S3 pending bid: Approve not lit, LL lit, Whole day lit; switch still off (remembered); on a phone the day stands above the window (D1290)",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "Approve null; LL {\"lit\":false,\"pressed\":null}; Whole day true; switch off false; day line \"No manning row turns amber or red\"; tapped day 78px above the window, cell class \" act\"",
+  "pics": [
+   "s3-pending-phone-wk"
+  ]
+ },
+ {
+  "id": "S5 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "TimeoutError: locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"decide-approve\"]').first()\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "S7 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "TimeoutError: locator.boundingBox: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"decide-approve\"]').first()\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "S11 the ⋯ opens its menu inside the window: Grant OIL (green), Post out, Post in, each pressable",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "{\"inside\":true,\"items\":[{\"t\":\"Grant OIL\",\"ok\":true,\"bg\":\"rgba(70, 196, 108, 0.2)\"},{\"t\":\"Post out\",\"ok\":true,\"bg\":\"rgb(26, 31, 38)\"},{\"t\":\"Post in\",\"ok\":true,\"bg\":\"rgb(26, 31, 38)\"}]}",
+  "pics": [
+   "s11-menu-phone-wk"
+  ]
+ },
+ {
+  "id": "S11b a press outside the menu (on the window) closes the menu, not the window",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "{\"menu\":false,\"win\":true}",
+  "pics": [
+   "s11-outside-phone-wk-q"
+  ]
+ },
+ {
+  "id": "S17 two entries: each led by its box; the morning LL \"Morning · approved\", one row Approve(lit) · Refuse · Move · Delete, its Remarks; the ATT B \"Afternoon · change it on the Inputs page\", its remark read only",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "[{\"box\":\"c k-ll s-a top\",\"main\":\"Morning · approved\",\"acts\":[\"Approve(lit)\",\"Refuse\",\"⇄Move\",\"Delete\"],\"actLines\":1,\"widths\":[84,84,84,84],\"broken\":[\"⇄Move\"],\"words\":true,\"ro\":null},{\"box\":\"c k-med s-a bot raptor\",\"main\":\"Afternoon · change it on the Inputs page\",\"acts\":[],\"actLines\":0,\"widths\":[],\"broken\":[],\"words\":false,\"ro\":\"“Clinic review — no flying till 9 Nov”\"}]",
+  "pics": [
+   "s17-list-phone-wk"
+  ]
+ },
+ {
+  "id": "S17b the list's lit Approve tapped: the morning leave back to waiting",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "lines now: Morning · pending | Afternoon · change it on the Inputs page; window open true",
+  "pics": [
+   "s17-sentback-phone-wk"
+  ]
+ },
+ {
+  "id": "S18 a remark typed on the list's pending bid, the list closed by ✕: kept",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "boxes now [\"List remark\"]",
+  "pics": []
+ },
+ {
+  "id": "X15 words typed on a pending bid, then Approve (the box not left): the words on the approved leave",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "reopened box \"Typed then approved\"; the saved leave {\"remarks\":\"Typed then approved\",\"till\":null,\"docs\":0}",
+  "pics": [
+   "x15-after-phone-wk"
+  ]
+ },
+ {
+  "id": "X15b words typed, then Refuse (the box not left): the words on the refused bid",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "reopened box \"Typed then refused\"",
+  "pics": []
+ },
+ {
+  "id": "X9 the menu open, LL tapped beside it: RECORD — did the tap only close the menu, or also place LL?",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "cell before \"\" after \"\"; menu open false; window open true",
+  "pics": [
+   "x9-after-phone-wk"
+  ]
+ },
+ {
+  "id": "X8 the list's lit Approve tapped twice at a person's speed: RECORD the end state",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "lines: Morning · approved | Afternoon · approved; cell LLPL [LL|c k-ll s-a top|bg rgba(242, 200, 110, 0.22)|none/none/none/none|td:none ; PL|c k-care s-a bot|bg rgba(138, 150, 255, 0.32)|none/none/none/none|td:none]",
+  "pics": [
+   "x8-list-phone-wk",
+   "x8-after-phone-wk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

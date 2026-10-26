@@ -1,0 +1,104 @@
+[
+ {
+  "id": "S18a Refuse a pending bid on a red day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 28 ok; cell [\"LL|k-ll|s-r|whole\"]; no bubble",
+  "pics": [
+   "s18a-phone-after-tap.png",
+   "s18a-phone-settled.png"
+  ]
+ },
+ {
+  "id": "S18b Delete a bid on a red day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 28 ok; no bubble",
+  "pics": [
+   "s18b-phone-after-tap.png",
+   "s18b-phone-settled.png"
+  ]
+ },
+ {
+  "id": "S18c LL changed to OL, same man, same half",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 red → 27 red; no bubble",
+  "pics": [
+   "s18c-phone-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18d a bid that lowers Available P but it stays ok (above its point)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Required P 23; Available P 28 ok → 27 ok; no bubble",
+  "pics": [
+   "s18d-phone-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18e a ground-crew man’s bid",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 → 28 ok; no bubble",
+  "pics": [
+   "s18e1-phone-ground-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18e a man posted out that day (a fill over his gone days)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 → 27 ok; no bubble",
+  "pics": [
+   "s18e2-phone-posted-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18e a shown SANS man’s bid",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 27 → 27 ok; no bubble",
+  "pics": [
+   "s18e3-phone-sans-after-tap.png"
+  ]
+ },
+ {
+  "id": "S18f UNA on a day he already holds approved leave",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cells LL|k-ll|s-a|whole → LL|k-ll|s-a|left+UNA|k-una|s-a|right; window closed; Available P 25 red → 25 red; no bubble",
+  "pics": [
+   "s18f-phone-UNA-after-tap.png",
+   "s18f-phone-UNA-settled.png"
+  ]
+ },
+ {
+  "id": "S18f OD on a day he already holds approved leave",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cells LL|k-ll|s-a|whole → LL|k-ll|s-a|left+OD|k-od|s-a|right; window closed; Available P 24 red → 24 red; no bubble",
+  "pics": [
+   "s18f-phone-OD-after-tap.png",
+   "s18f-phone-OD-settled.png"
+  ]
+ },
+ {
+  "id": "S18g the second tap on a lit Approve (back to a bid)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 26 red → 26 red; no bubble",
+  "pics": [
+   "s18g-phone-after-tap.png",
+   "s18g-phone-settled.png"
+  ]
+ },
+ {
+  "id": "errors-18",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

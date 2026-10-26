@@ -1,0 +1,56 @@
+[
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide and as tall, no word broken",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-una\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 28 vs 28; bid-file-OD: dx 0, dw 0, h 28 vs 28; bid-una: dx 0, dw 0, h 28 vs 28; bid-more: dx 0, dw 0, h 28 vs 28; broken []",
+  "pics": [
+   "h1-window-phone-wk"
+  ]
+ },
+ {
+  "id": "H1b a tap on OD files it: the window closes, the day holds one filled slate OD box",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h1-filed-phone-wk"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day says where it is changed: \"Change it on the Inputs page, not here.\" (F1 fixed)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "note: Change it on the Inputs page, not here.",
+  "pics": [
+   "h1-reopen-phone-wk"
+  ]
+ },
+ {
+  "id": "H3 a pending LL, then CSE: the bid stays and the day holds both, each its own box",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\",\"LL|k-ll|s-w|y 2 h 17|bg rgba(0, 0, 0, 0)\"]",
+  "pics": [
+   "h3-pending-phone-wk",
+   "h3-both-phone-wk"
+  ]
+ },
+ {
+  "id": "H3b the LL approved beside the course: both stand (RECORD — S22, the Inputs page allows the pair)",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "list daylist; approve [\"dl-approve-rmvmka72t1p7c0\"]; boxes after [\"LL|k-ll|s-a|y 2 h 17|bg rgba(242, 200, 110, 0.22)\",\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": [
+   "h3-list-phone-wk",
+   "h3-approved-phone-wk"
+  ]
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

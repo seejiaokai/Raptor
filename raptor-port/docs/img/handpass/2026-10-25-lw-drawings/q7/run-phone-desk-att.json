@@ -1,0 +1,81 @@
+{
+ "looks": {
+  "A": {
+   "name": "outlined, as the Inputs calendar draws a commitment",
+   "css": ".c.k-una.s-a, .tchip.lv.k-una.s-a { background: rgba(232,237,242,.05) !important; box-shadow: inset 0 0 0 1.5px rgba(200,212,228,.78) !important; color: #E8EDF2 !important; }"
+  },
+  "B": {
+   "name": "light grey, dark words (your UNA grey)",
+   "css": ".c.k-una, .tchip.lv.k-una { --h: 184, 190, 198 !important; --ink: #0b1116 !important; --fill: 1 !important; }"
+  }
+ },
+ "log": [
+  {
+   "id": "att",
+   "size": "phone",
+   "said": "drawn window: {\"to\":53}"
+  },
+  {
+   "id": "att",
+   "size": "phone",
+   "said": "today on the Ground Programme: {\"text\":\"FLY WITH Drifter A + ADD LATE Exercise support\",\"btns\":[],\"allRows\":4}"
+  },
+  {
+   "id": "att",
+   "size": "phone",
+   "said": "drawn row: \"Attach · 145 Sqn Drifter A + ADD LATE Exercise support\""
+  },
+  {
+   "id": "att",
+   "size": "phone",
+   "said": "Available P {\"2026-12-14\":\"28\",\"2026-12-15\":\"28\",\"2026-12-16\":\"28\",\"2026-12-17\":\"28\"} → {\"2026-12-14\":\"28\",\"2026-12-15\":\"27\",\"2026-12-16\":\"27\",\"2026-12-17\":\"28\"}"
+  },
+  {
+   "id": "att",
+   "size": "desk",
+   "said": "drawn window: {\"to\":53}"
+  },
+  {
+   "id": "att",
+   "size": "desk",
+   "said": "today on the Ground Programme: {\"text\":\"FLY WITH Drifter A + ADD LATE Exercise support\",\"btns\":[],\"allRows\":4}"
+  },
+  {
+   "id": "att",
+   "size": "desk",
+   "said": "drawn row: \"Attach · 145 Sqn Drifter A + ADD LATE Exercise support\""
+  },
+  {
+   "id": "att",
+   "size": "desk",
+   "said": "Available P {\"2026-12-14\":\"28\",\"2026-12-15\":\"28\",\"2026-12-16\":\"28\",\"2026-12-17\":\"28\"} → {\"2026-12-14\":\"28\",\"2026-12-15\":\"27\",\"2026-12-16\":\"27\",\"2026-12-17\":\"28\"}"
+  }
+ ],
+ "pics": [
+  {
+   "file": "att-window-phone.png",
+   "label": "Drawn A1: \"Fly with\" becomes \"Attach\", with one \"To\" box for where"
+  },
+  {
+   "file": "att-schedule-phone.png",
+   "label": "Drawn A2: an attachment lands under Unavailable by itself, where he is attached named"
+  },
+  {
+   "file": "att-war-phone.png",
+   "label": "Drawn A2, A3: on the Leave War it reads ATCH (C1's outlined look) and counts him out: Available P 28 → 27"
+  },
+  {
+   "file": "att-window-desk.png",
+   "label": "Drawn A1: \"Fly with\" becomes \"Attach\", with one \"To\" box for where"
+  },
+  {
+   "file": "att-schedule-desk.png",
+   "label": "Drawn A2: an attachment lands under Unavailable by itself, where he is attached named"
+  },
+  {
+   "file": "att-war-desk.png",
+   "label": "Drawn A2, A3: on the Leave War it reads ATCH (C1's outlined look) and counts him out: Available P 28 → 27"
+  }
+ ],
+ "measures": []
+}

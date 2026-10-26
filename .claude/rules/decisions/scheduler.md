@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1383 | 26 Oct 26 | Before the app is put out for testing, signing in always opens on today's date; until then it may open on the demo week's date, because the demo data is what is being worked on. |
 | D1131 | 21 Oct 26 | On a desktop the Scheduler Board's highlighter mark is drawn as the week's is — a plain mark leading its CAT / TYPE / QUALS row — and the boxed button by its search, which folds nothing at that width, goes; on a phone both pages keep their button, which folds the row away; SANS's "Highlight" button stays, another job (one man, his callsign shown). |
 | D1130 | 21 Oct 26 | On a desktop up to 1599 wide the Scheduler Board's own bar draws Undo, Redo and History as their icons only, their names on hover, and the sync pill its dot alone — as every page's top bar does (D1126); wider, the words come back on both; the board on a phone is left as it is. |
 | D1121 | 21 Oct 26 | A crossed-out man's reason in the crew list says each fact once: where the kind's meaning and his own remark repeat a fact it is said once, and a fact only one of them carries stays; done later, not in the right-panel job, on its own or with the words pass, his to place. |
