@@ -94,6 +94,7 @@ export function BidPicker({
   onlyPortion,
   heldBy,
   heldOther,
+  heldDay,
   approvedRow,
   dayState,
   onClose,
@@ -179,6 +180,10 @@ export function BidPicker({
   /** THE HELD HALF IS A COMMITMENT UNDER UNAVAILABLE (his D1371 — an Other, an Attach…): its code and remarks, for the one
    *  line that names it — its box, its half, its remarks and where it is changed — in place of the leave's sentence */
   heldOther?: { code: string; remarks: string; to?: string } | null
+  /** A COURSE HOLDING THE WHOLE DAY (his D1395 — [LW-TAP-HELD-DAY], drawn lw-m3n-draw.mjs d7): a short tap opens this
+   *  window so more can be added (Grant OIL…), with ONE line on top for the course — its box, "Whole day", its remarks,
+   *  and where it is changed — D1371's held-half line widened to a whole day */
+  heldDay?: { code: string; remarks: string; to?: string } | null
   /** THE APPROVED LEAVE ON THIS DAY — the Raptor input it is (`sync.ts leaveInputAt`), for its Remarks and Document row,
    *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
    *  first given the window that Note). */
@@ -558,6 +563,17 @@ export function BidPicker({
         </button>
       </div>
       <DayLine days={lineDays} />
+      {heldDay && (
+        <div className="bidsheet-row">
+          <span className="note bp-wide bp-heldline" data-testid="bid-heldday">
+            <EntryBox code={heldDay.code} fill="a" place="whole" />
+            <span>Whole day</span>
+            {heldDay.to && <span>· {heldDay.to}</span>}
+            {heldDay.remarks && <span className="bp-heldwords">“{heldDay.remarks}”</span>}
+            <span>· change it on the Inputs page</span>
+          </span>
+        </div>
+      )}
 
       {/* ROUND 3 OF THE WINDOW (his D1311, approved whole — D1332, D1334): its rows carry no labels — each row's buttons say
           what they are, and a screen reader still hears each row's name; the rows stand in one order on every day — what

@@ -96,6 +96,22 @@ describe('round 2 — the row under the leaves (D1326, D1338)', () => {
   })
   /* the walk's H1c (round 2's check): a tap on the day afterwards opened the window for an entry the Inputs page owns, which
      said "Filed on the Inputs page" — untrue for one filed here. A course or an OD is changed there wherever it was filed */
+  /* HIS D1395 (26 Oct 26 — [LW-TAP-HELD-DAY], drawn lw-m3n-draw.mjs d7): a short tap on a day a COURSE holds opens the bid
+     window so more can be added — Grant OIL and the rest — with one line on top for the course: its box, "Whole day", its
+     words, and where it is changed. An overseas duty keeps the sheet below (the ruling names a course). */
+  it('a tap on a course day opens the bid window, the course’s line on top, Grant OIL one tap away', () => {
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.change(within(sheet()).getByPlaceholderText('Remarks'), { target: { value: 'Instructor course' } })
+    fireEvent.click(within(sheet()).getByTestId('bid-file-CSE'))
+    fireEvent.click(cell())
+    expect(screen.queryByTestId('raptor-note'), 'no longer the read-only sheet').toBeNull()
+    const line = within(sheet()).getByTestId('bid-heldday')
+    expect(line.textContent).toContain('CSE')
+    expect(line.textContent).toContain('Whole day')
+    expect(line.textContent).toContain('change it on the Inputs page')
+    expect(within(sheet()).getByTestId('bid-oil'), 'Grant OIL is there').toBeTruthy()
+  })
   it('a tap on the filed day says where it is changed, never that it was filed on the Inputs page', () => {
     render(<Matrix />)
     fireEvent.click(cell())

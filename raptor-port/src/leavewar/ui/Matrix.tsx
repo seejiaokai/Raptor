@@ -218,6 +218,12 @@ export function bubbleWords(worse: Map<string, Worse>, filed: FiledKind): string
 
 /** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371): its code and its typed remarks, for the free
  *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
+/** THE COURSE HOLDING A WHOLE DAY (his D1395 — [LW-TAP-HELD-DAY]): its code and typed remarks for the bid window's top line */
+function heldCourse(v: DayView): { code: string; remarks: string } {
+  const c = v.all[0]!
+  const row = INPUTS.find((r: any) => String(r.iid) === c.id)
+  return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '' }
+}
 function heldCommitment(v: DayView | undefined): { code: string; remarks: string; to?: string } | null {
   const c = v?.all.find(x => x.kind === 'absence' && isCommitCode(x.code))
   if (!c) return null
@@ -3634,6 +3640,12 @@ export function Matrix() {
   const openWorkOnly = !!open && !!openView && role === 'admin'
     && openView.all.length > 0 && openView.all.every(c => c.kind === 'credit')
     && !openView.all.some(c => c.kind === 'credit' && !c.auto)
+  /* A COURSE HOLDING THE WHOLE DAY (his D1395, 26 Oct 26 — [LW-TAP-HELD-DAY]: "would it be better that a short press allows
+     me to add additional input from there?"): a tap on a day a course alone holds opens the bid window, the course's line
+     on top, so Grant OIL and the rest are one tap away — where he may bid there; else the read-only sheet, as before */
+  const openCourse = open && openView && openView.all.length === 1
+    && openView.all[0]!.kind === 'absence' && openView.all[0]!.code === 'CSE' && canBidOn(open.id, open.date)
+    ? heldCourse(openView) : null
   const openFreeHalf = open && raptorOwns(states, open.id, open.date)
     && canBidOn(open.id, open.date)
     ? freeHalfBeside(openView)
@@ -4342,7 +4354,7 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && !openWorkOnly && (
+      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && !openWorkOnly && !openCourse && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -4679,7 +4691,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly)
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly || !!openCourse)
         && canBidOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
@@ -4696,6 +4708,7 @@ export function Matrix() {
              holds the other one. */
           onlyPortion={openFreeHalf}
           heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}
+          heldDay={openCourse}
           heldOther={openFreeHalf ? heldCommitment(openView) : null}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
