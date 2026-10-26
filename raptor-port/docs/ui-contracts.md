@@ -9677,6 +9677,13 @@ Both reference photos remain private. Filed as [LOGIC-STICKY-SEARCH-COMPACT] in 
 
 ## The Tracker tab (7 Sep 26)
 
+**D1406, 27 Oct 26 — no scroll bars on the chart on a touch screen:** on a screen whose only pointer is a finger (an
+iPhone, an iPad) the chart box (`.board`) draws no scroll bars — the iPhone's own fading bars showed down its edge and
+along its foot whenever it moved, and mid-pinch they were drawn in the wrong place (one floating mid-chart, one at the
+top left). It still scrolls, glides and pinches as before. The Info half, Show All and every window keep their normal
+bars; a desktop with a mouse keeps the chart's and the Info panel's bars, which are how a mouse scrolls them. Pinned by
+`e2e/trk-scrollbars.spec.ts`.
+
 **D1132, 21 Oct 26 — the app's line icons (round 2 of the consistency look):** the Tracker's buttons wear the app's
 line icons (Lucide shapes, as `src/ui/icons.tsx` draws them) in place of typed marks — the pencils, ⓘ, ☰ before Show
 All, ⇪ before File, the bar's ^ and the phone tab's 🗺 — and on a phone its Flow chart / Info / Show All tabs sit

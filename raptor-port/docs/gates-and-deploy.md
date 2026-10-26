@@ -15,6 +15,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **A secrets scan joins the checks (his D1408, 27 Oct 26 — to build, [REVIEW-LAYERS]):** a pull request that adds a
+  password, key or access code to any file does not merge; the whole history is scanned once, and a key found there is
+  changed, not only deleted. The repo is public for now (D106).
 - **The checks run on HIS PC** (D89, 23 Sep 26): ONE job, `pc` in `.github/workflows/deploy.yml`, a Windows service.
   The way back to GitHub's own parallel jobs: the repo variable `CI_ON_GITHUB=true`. Take the runner OFF this repo
   before any collaborator is added (Astra SEC-101, `[REPO-PRIVATE]`). Where it lives and how it was set up:
@@ -135,7 +138,8 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   notification (D143). If it is some other commit, say so at once: the wrong thing is live.
 - **Docs-only changes skip the gates** (`paths-ignore`: `**.md`, `.claude/**`, `raptor-port/scripts/docsize*.mjs`,
   `backlog-archive.mjs`, `docs-guard.yml`); the Docs guard (`docs-guard.yml`) still runs on every PR and every push
-  to `main`, and a docs-only change still merges only on his "merge live".
+  to `main`; since D1407 (27 Oct 26) a change of notes only merges by itself once its run is green, and any other docs
+  change still waits for his "merge live" (`.claude/rules/shipping.md`).
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 
@@ -368,7 +372,8 @@ routing every look through the gated Pages deploy.
   that will never appear on such a PR. **It does NOT merge itself: that is an
   exemption from the GATES, never from the owner's explicit "merge live"**
   (corrected 17 Sep 26; the old wording said "merges immediately", the same
-  stale exemption that got a fix merged without him on 9 Sep). A mixed
+  stale exemption that got a fix merged without him on 9 Sep; narrowed 27 Oct 26 by D1407: a notes-only pull
+  request now merges itself once its run is green — `.claude/rules/shipping.md`). A mixed
   code+docs PR still runs the full gates.
 - **Known cosmetic warning, deliberately deferred (15 Aug 26):** the runner
   logs "actions/checkout@v4, setup-node@v4, cache@v4 target Node 20, forced

@@ -2488,3 +2488,18 @@ its value and never in innerText.
 **Suggested improvement:** when merging into a branch, resolve conflicts hunk by hunk (a small script that rewrites only the marked regions), never with a whole-file `--ours`/`--theirs`; after resolving, always diff the file against the branch's own HEAD and read every removed line.
 
 **Principle:** A merge resolution is judged against both parents: a check that compares only with the target branch cannot see what the source branch lost.
+
+### Observation 720: A scroll-bar hunt needs the bars switched back on, and the phone's own bars only show in his recording
+
+**Status:** ACTIONED (2026-10-27) — written into the bug-check order as §7.11 lesson 6 (what only the real phone draws; `--hide-scrollbars` taken off for a walk that judges bars)
+**Date:** 2026-10-27
+**Session context:** The Tracker's stray scroll bars (D1405): listing every box that scrolls and every bar drawn, desktop and phone.
+**Skill:** New skill candidate: none — the walk-scripts guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** Walk scripts — pictures of scroll bars
+
+**Issue:** Playwright starts a headless browser with scroll bars hidden, so a picture or a measure of the bars a desktop draws shows none — the very fault being hunted. Taking that default off (`ignoreDefaultArgs: ['--hide-scrollbars']`, the installed Chrome) brought them back and measured each bar's width. The iPhone's own fading bars cannot be drawn by any desktop browser at all: the only evidence of where they appear (one floated mid-chart during a pinch) was his own screen recording, read frame by frame with `scripts/handpass/video-frames.mjs` (that needs `node_modules`, which a fresh worktree lacks: a junction to the main checkout's, when the lock files match).
+
+**Suggested improvement:** In the walk-scripts guide's traps: a walk that judges scroll bars launches with `--hide-scrollbars` removed; a phone's overlay bars are judged from his recording or his own look, never from an emulated phone.
+
+**Principle:** Before trusting a test browser's picture of a fault, check the test browser does not switch that very thing off by default.

@@ -159,6 +159,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
@@ -227,6 +228,24 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
+**What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page
+https://claude.ai/artifact/5n9NqPAM5YywqFZhKDqiG8; his answer "All as recommended". **Steps, in order:** (1) the
+scorecard (D1409): a script counting, per two weeks, his finds after a change went live, changes undone or redone within
+two weeks, and merges — the first run is the baseline, before anything else here changes how work merges; (2) the
+standing brief every code reader is given (the agent's own call, the pattern of Anthropic's REVIEW.md): what is
+important here (OIL, a published record, saved data, permissions), what to skip (demo data D56, docs, style), at most
+five small notes, a file and line for every claim, the summary opening with a count — and three loop rules written into
+the bug-check order (after the first pass a reader reads only what changed; a fault is named by its kind so every copy is
+fixed; a finding already raised is never repeated) — a guide change, read before he approves it (D70); (3) notes-only
+pull requests merging by themselves (D1407): a check that lists the files and allows the merge only when every one is a
+note, running `npm run rulecheck`, the unit tests that read documents and the secrets scan on it (the gates skip notes), and the session-handoff skill's merge wording brought level with D1407 (a guide change, read before he approves it, D70 — until then shipping.md's newer rule wins, D90); (4) the secrets scan on every pull request, in a workflow with no skip list so notes-only ones are scanned too, and one scan of the whole history (D1408); (5) the security read on
+sign-in and permissions changes (D1411) in the bug-check order's tiers and the reader's brief, and the full security
+review placed before the database step; (6) the reader's test set from §7.11's six faults (D1410), the reader scored on
+it once; (7) the way back: putting the previous live version back on Vercel, checked on his plan, written for him (the page's improvement 7 — not one of his five rulings; the agent's own step, as is its "circuit breaker", which is not built without his word).
+After four weeks, the scorecard against the baseline. **Place:** after the iPhone keyboard fault (D1366) and M4 (D1404)
+unless he says otherwise; Opus 5.5, high effort; a fresh chat.
 
 ### [TRAFFIC-WIN-COVERS-UNDO] With the Traffic window open, the top bar's Undo cannot be pressed (found 21 Oct 26 by the walk of the schedule pages; older; low)
 The airspace Traffic window's backdrop lies over the top bar, so a press on Undo / Redo does nothing while it is open (a real click timed out at both sizes) and Ctrl+Z inside the window does nothing either; Undo works after Done. Older behaviour, not caused by [INNERHTML-REPAINT-SWEEP]. **To do:** decide with the window rules (D641 — a window leaves the page behind it working) whether the top bar stays pressable over this window. **Place:** the agent's; with the next windows job. **Evidence:** `raptor-port/docs/handpass/2026-10-21-schedule-pages.md` §4.

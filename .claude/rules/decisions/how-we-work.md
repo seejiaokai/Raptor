@@ -12,6 +12,11 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1411 | 27 Oct 26 | A security read is added to every change that touches sign-in, who may do or see what, or what one person can see of another — an extra fresh reader looking only for holes; and one full security review of the whole app is held before the database step; most changes need neither. |
+| D1410 | 27 Oct 26 | Every fault he found that a check missed becomes a case in a test set for the code reader, and whenever the reader's instructions or model change, the reader is run on the set and scored on how many it catches; a change that catches fewer is not kept. |
+| D1409 | 27 Oct 26 | Every two weeks the agent puts a one-page scorecard to him with three numbers — the faults he found after a change went live, the changes undone or redone within two weeks, and the merges in those two weeks — each beside the two weeks before; speed counts only while the first two hold. |
+| D1408 | 27 Oct 26 | GitHub's checks gain a secrets scan that stops a pull request from merging when a password, key or access code is found in its files, and the project's whole history is scanned once; a key found in the history is changed, not only deleted. |
+| D1407 | 27 Oct 26 | A pull request that changes only notes goes live by itself once its checks are green, without his "merge live"; anything that changes the app still waits for his word. |
 | D1403 | 27 Oct 26 | On the night of 26–27 Oct 26 the six old pull requests of D1402 go on merging while he sleeps, each once its GitHub run is green, the live app confirmed; the overnight guide's "nothing merges at night" is set aside for those six alone, and the night's new jobs merge nothing. |
 | D1402 | 26 Oct 26 | The six old pull requests of 21–23 Oct 26 go live one at a time on this "merge live": each is first checked for what still applies since the Leave War's later work, what main already does is dropped, the rest is brought level with main, re-checked, and merged once its new check is green. |
 | D1366 | 25 Oct 26 | The keyboard fault on his iPhone (the page behind a window showing as the keys come) is handed to Fable to fix after his weekly reset (Mon 26 Oct 26, evening), from a brief written now and a fresh recording he saves for it; until then no chat builds a seventh round, and the questions page and the build go on. |
@@ -170,7 +175,7 @@ never pay or money).
 | D67 | 23 Sep 26 | Opus 5.5 plans and builds; Astra reviews it, Sol 6.1 second where two readers are required, Fable on call (D590); when Codex plans or builds, Opus reviews; never their own artifact — but a fresh, blind Opus reader may read code Opus wrote (D790). — changed by D790, D590, D496, D353 |
 | D63 | 23 Sep 26 | The country-specific aircraft type goes: where a sentence describes the squadron or him it reads "fighter squadron"; where it names the aircraft or its documents, the bare "F-15" — the Tracker's event-box hint too (D64); its syllabus data is left (D62). — changed by D64 |
 | D62 | 23 Sep 26 | The Tracker's syllabus data is out of scope for every privacy or "what can a stranger read" sweep. Leave it; do not flag it again. |
-| D60 | 23 Sep 26 | Pushing a branch needs no permission; `main` always does. |
+| D60 | 23 Sep 26 | Pushing a branch needs no permission; `main` does, except a pull request of notes only, which merges by itself once green (D1407). — changed by D1407 |
 | D59 | 23 Sep 26 | The repo went private on 23 Sep 26 (done by him): GitHub Pages is gone, the publish job is off, the app is viewed on Vercel — made public again for a short period by D106, private again afterwards. — changed by D106 |
 | D58 | 23 Sep 26 | The bare number stays; the squadron abbreviation and the service abbreviation go, everywhere. |
 | D57 | 23 Sep 26 | The commander briefing deck (RAPTOR-Command-Brief.pptx, in the history) is his and stays — not a concern; never propose wiping it. |
