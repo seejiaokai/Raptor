@@ -287,6 +287,7 @@ opening its code? Open its area file first — `../.claude/rules/doc-structure.m
 | The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it); finished documents and passages moved out since, each unchanged: `docs/archive/` (its `README.md` lists them); then `git log` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | **Every typed remark that switches a rule on** — the seed of the user guide; keep it true as rules are added | `docs/remarks-vocabulary.md` |
+| **Every notification the app sends or should send** (D1151) — who is told, when, the words, what a tap opens, built / ruled / proposed; the agent adds a line whenever work shows a place that needs one and names it in its closing report | `docs/notifications-register.md` |
 | Skill-improvement observations captured during sessions (the ONE log, committed) | `../.claude/skill-observations/log.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
 | Last session's leftovers | the chat's own block under `## Now` in `../HANDOFF.md` (the old `docs/session-state.md` retired to `docs/archive/` on 24 Sep 26) |

@@ -7,10 +7,11 @@
    `PersonMonth` per month") — a prop added here is a repaint to argue for; `matrix-rows-memo.test.tsx` pins the row's. */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, canEditCell, canEditRow, catClass, catText, codeOf, displayCell, inSquadron, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
-import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow } from '../state/store'
+import { addDays, boxText, canEditRow, catClass, catText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
+import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, recordsAt, reqRunKey } from '../state/store'
+import type { RequestRec } from '../engine/warrecs'
 import { FigureCell, show } from './FigureCell'
-import { touchesAM, touchesPM, winsOf, type DayView } from '../engine/dayview'
+import { isCommitCode, offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { outcomeOf } from '../engine'
 import type { Views } from '../engine/dayview'
@@ -132,30 +133,21 @@ export function ownAwardAlone(view: DayView | undefined, viewer: string | null, 
 /** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
  *  row share. Where a tap goes (bid / decide / read-only / remarks) is decided
  *  in the sheet from the same facts; this only says "there is a sheet". */
-export function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
+export function cellOpenable(states: States, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
   return raptorOwns(states, personId, date) ||
-    /* HIS OWN OIL AWARD, AT EVERY STAGE (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardPresent`)
-       where nothing else would — outside the bidding window, once bidding has closed, on a published war. Another man's
-       award stays shut to a member. */
+    /* HIS OWN OIL AWARD, AT ANY TIME (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardPresent`)
+       where nothing else would — a day not open for him. Another man's award stays shut to a member. */
     ownAwardPresent(view, viewer, personId) ||
-    // A member may open a cell to EDIT only on their own row (the person they
-    // are viewing as); an admin, any row. Without the row half a member could
-    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
-    // date/window half is `canEditCell`; both must pass.
-    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
+    // EVERY DAY OF A PERSON'S OWN ROW OPENS SOMETHING FOR HIM (D1177, D1176, D1225): an open day from today, the bid
+    // window; any other day, the closed note (with Delete where his own pending bid stands); his approved leave, its
+    // remarks (D418 narrowed). An admin, any row. Another man's row stays shut to a member (owner, 27 Aug 26). Kept
+    // CHEAP — no date question here, because this runs for every drawn cell; which sheet opens is decided once, when
+    // the cell is opened (Matrix).
+    canEditRow(role, viewer, personId) ||
     (deciding && isBiddable(grid[personId]?.[date])) ||
-    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
-    // leave is tappable to edit its note (an admin's every cell is already
-    // openable through the canEditCell branch above). Kept CHEAP — code and
-    // state truthiness, never leaveInputAt, because this runs for every drawn
-    // cell; the precise "is there a backing leave input" test is `canRemark`,
-    // computed once when a cell is opened. Approved-only on purpose: a
-    // member's refused or pending bid at published opens NOTHING (no editor,
-    // no decision sheet), and the first cut still painted it tappable — a
-    // dead-feeling tap exactly where the stakes are highest, a refusal.
-    (period.stage === 'published' && personId === viewer
-      && isBiddable(grid[personId]?.[date])
-      && states[personId]?.[date]?.state === 'approved')
+    /* A COMMITMENT UNDER UNAVAILABLE OPENS FOR EVERYONE (his D1356 — its remarks shown "on the Leave War alike", as UNA's
+       were, D1338): another man's included, read only — it is changed on the Inputs page (D1365) */
+    !!view?.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
 }
 
 type PersonRowProps = {
@@ -217,6 +209,79 @@ type PersonMonthProps = {
   lockedCols: Set<string>
   api: MutableRefObject<RowApi>
 }
+
+const NO_ENTRIES: Contrib[] = []
+/** Which half of the cell a record's box takes (D1160, D1164): an HO its half — the admin's pick for an award, the half
+ *  its work started in for the app's own (`engine/warrecs.ts` gives its `win` AM or PM); an FO always the whole day,
+ *  whatever hours the app's own one was worked; anything else the part of the day its window takes. */
+const placeOf = (c: Contrib): 'am' | 'pm' | 'full' =>
+  c.kind === 'credit' ? (c.code === 'HO' ? portionOf(c.win) : 'full') : portionOf(c.win)
+type Place = 'top' | 'bot' | 'whole' | 'left' | 'right' | 'right-am' | 'right-pm'
+/** Where the two boxes of a two-entry day sit (D1146, D1167): [the main box's place, the second's], or null when the
+ *  two cannot both be drawn (both in the same half) — then the day keeps one box and its "+1" corner. */
+function pairPlaces(mainPortion: string | undefined, second: Contrib): [Place, Place] | null {
+  const a = mainPortion === 'am' || mainPortion === 'pm' ? mainPortion : 'full'
+  const b = placeOf(second)
+  if (a === 'full' && b === 'full') return ['left', 'right']
+  if (a === 'full') return ['left', b === 'am' ? 'right-am' : 'right-pm']
+  if (b === 'full') return [a === 'am' ? 'right-am' : 'right-pm', 'left']
+  if (a === b) return null
+  return a === 'am' ? ['top', 'bot'] : ['bot', 'top']
+}
+/* ONE ENTRY OVER SEVERAL DAYS READS AS ONE JOINED BAR (his D1359, 25 Oct 26 — "Joined bar (Recommended)"; drawn in
+   docs/img/handpass/2026-10-25-lw-drawings/multi-day/, md5 and busy B / C). An entry is a leave, a course, an overseas duty
+   or a commitment filed as ONE input (its iid), or a run of bids with one set of words (the store's own run, `reqRunKey`).
+   Next-door boxes of one entry join where their places meet — whole or right on the earlier day with whole or left on the
+   later; top with top, bottom with bottom — so the bar runs into the half of a first or last day that holds another entry;
+   a day in the MIDDLE holding a second entry breaks the bar (busy B: that day exactly as today). The code shows once, at the
+   start of each piece. Classes only, on the boxes already drawn — no element is added (D991, performance). */
+type JoinBox = { key: string | null; where: string }
+function entryKey(personId: string, date: string, c: Contrib): string | null {
+  if (c.kind === 'absence') return `a:${c.id}`
+  if (c.kind === 'request') {
+    const r = recordsAt(personId, date).find(x => x.id === c.id && x.kind === 'request') as RequestRec | undefined
+    return r ? `r:${reqRunKey(r)}` : null
+  }
+  return null
+}
+function dayBoxes(personId: string, date: string, v: DayView | undefined): JoinBox[] {
+  const es = v ? v.all.filter(c => c.kind !== 'notice') : []
+  if (!es.length || es.length > 2) return []
+  const p0 = portionOf(es[0]!.win)
+  const main = p0 === 'am' ? 'top' : p0 === 'pm' ? 'bot' : 'whole'
+  if (es.length === 1) return [{ key: entryKey(personId, date, es[0]!), where: main }]
+  const two = pairPlaces(p0, es[1]!)
+  if (!two) return [{ key: entryKey(personId, date, es[0]!), where: main }]
+  return [{ key: entryKey(personId, date, es[0]!), where: two[0] }, { key: entryKey(personId, date, es[1]!), where: two[1] }]
+}
+const ROW = (w: string) => (w === 'top' ? 't' : w === 'bot' ? 'b' : w === 'whole' || w === 'left' || w === 'right' ? 'f' : '')
+/** whether the box `a` (on a day) joins the box `b` on the next day — `aRunStarts` / `bRunEnds`: no box of the key the day
+ *  before `a` / the day after `b` (a half box joins only at its run's own end) */
+function meets(a: JoinBox, b: JoinBox, aRunStarts: boolean, bRunEnds: boolean): boolean {
+  if (!a.key || a.key !== b.key || ROW(a.where) !== ROW(b.where) || !ROW(a.where)) return false
+  if (ROW(a.where) === 'f') {
+    if (a.where === 'left' || b.where === 'right') return false
+    if (a.where === 'right' && !aRunStarts) return false
+    if (b.where === 'left' && !bRunEnds) return false
+  }
+  return true
+}
+/** the join classes of each box of one day: ' jl' (joined to the day before), ' jr' (to the day after) */
+export function joinClasses(personId: string, date: string, views: Record<string, DayView> | undefined): string[] {
+  const here = dayBoxes(personId, date, views?.[date])
+  if (!here.length) return []
+  const prevD = addDays(date, -1), nextD = addDays(date, 1)
+  const prev = dayBoxes(personId, prevD, views?.[prevD]), next = dayBoxes(personId, nextD, views?.[nextD])
+  const has = (d: string, key: string | null) => !!key && dayBoxes(personId, d, views?.[d]).some(x => x.key === key)
+  return here.map(b => {
+    const l = prev.some(x => meets(x, b, !has(addDays(prevD, -1), x.key), !has(nextD, b.key)))
+    const r = next.some(x => meets(b, x, !has(prevD, b.key), !has(addDays(nextD, 1), x.key)))
+    return `${l ? ' jl' : ''}${r ? ' jr' : ''}`
+  })
+}
+/** The fill of a day's second entry, by the same rule as the first: a request pending or refused, anything else filed,
+ *  credited or approved. */
+const entryFill = (c: Contrib) => c.kind === 'request' ? (c.state === 'refused' ? 'r' : 'w') : 'a'
 
 // A placeholder cell's width, all three properties so auto table layout can
 // neither widen nor narrow it (Matrix `applyPlaceholders`).
@@ -350,6 +415,29 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
 
 // One month of a person's day cells. `version` is a memo input only: every
 // store change still repaints every cell through it, exactly as the row did.
+/* A MONTH DRAWS AGAIN ONLY WHEN ITS OWN PERSON'S DAYS CHANGE ([LW-MONTH-MEMO-UNPINNED], M3 §4 — measured: one bid placed
+   redrew every month of every drawn row, 5,840 month-draws for 16 rows, because the whole war's grid, states and views
+   are handed down fresh on every write). A write leaves every other person's slice the same object (the store's lists
+   are rebuilt per person — checked), so the month compares THIS person's three slices and the rest by identity; the
+   store's `version` is not compared — everything a month draws arrives in these props (the closed days through
+   `lockedCols` and `period`, which a new day or new open dates replace). Pinned: matrix-rows-memo.test.tsx. */
+function sameMonth(a: PersonMonthProps, b: PersonMonthProps): boolean {
+  const id = a.p.id
+  return a.p === b.p && a.period === b.period && a.days === b.days && a.role === b.role && a.viewer === b.viewer &&
+    a.deciding === b.deciding && a.movedShown === b.movedShown && a.evKind === b.evKind && a.lockedCols === b.lockedCols &&
+    a.api === b.api && sameDays(a, b, id)
+}
+/* …and where his slice did change (a bid of his), only the days of THIS month are asked — a cell reads its own day and
+   nothing of its neighbours (checked: no day of a month reads another day's record), so a bid redraws its own month alone */
+function sameDays(a: PersonMonthProps, b: PersonMonthProps, id: string): boolean {
+  const ag = a.grid[id], bg = b.grid[id], as = a.states[id], bs = b.states[id], av = a.views[id], bv = b.views[id]
+  if (ag === bg && as === bs && av === bv) return true
+  /* a day's view the merge rebuilt with the same content (it rebuilds every dated record of his on a write — measured) is
+     the same day: compared by content, only where the object changed */
+  const same = (x: unknown, y: unknown) => x === y || (x != null && y != null && JSON.stringify(x) === JSON.stringify(y))
+  for (const d of a.days) if (!same(ag?.[d.date], bg?.[d.date]) || !same(as?.[d.date], bs?.[d.date]) || !same(av?.[d.date], bv?.[d.date])) return false
+  return true
+}
 export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, views, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
   return (
     <>
@@ -388,7 +476,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           // declared after the weekend so a holiday Saturday reads as the
           // holiday, not the weekend.
           evKind.get(d.date) ?? '',
-          // Outside the bidding window, for this role. Declared after the
+          // Not open for bidding, for this role (a member's closed days — D1177). Declared after the
           // event colour so a locked, tinted day still reads as locked — the
           // same cascade care the .blocked/.weekend pair needs, and for the
           // same reason.
@@ -401,7 +489,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            credit the APP worked out from the published schedule, rather than
            one a person granted. It prints as the trailing star (owner, 20 Sep
            26). */
-        const text = here || outLeave ? displayCell(code, !!view?.main?.auto) : notYetArrived ? '' : 'PO'
+        const text = here || outLeave ? boxText(code, !!view?.main?.auto) : notYetArrived ? '' : 'PO'
         // Duty first for the reader — FO/HO are work, not a bid. (They carry
         // `bid: false`, so they could not reach a bid branch anyway; the
         // order is legibility, not a guard.) Then the bid state, but only
@@ -417,29 +505,54 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         // sheet could not distinguish them. Purple now means acknowledged —
         // somebody has seen this — and the absence of colour means the
         // absence of news.
+        /* LOOK F (D1175, D1158): the box's COLOUR is its kind (`k-`), its FILL where it stands (`s-`) — filled approved
+           (and everything nobody bids for: a credit, a medical, a course, overseas duty), hollow and dashed pending,
+           grey and struck refused. Ack is gone (D1158): a bid with no decision simply waits. */
         const bid = stateOf(states, p.id, d.date)
-        const chipState = (!here && !outLeave) || !code
-          ? ''
-          : isDuty(code) ? 'sc'
-          : !isBiddable(code) ? 'info'
-          : bid === 'approved' ? 'appr'
-          : bid === 'refused' ? 'ref'
-          : bid === 'acknowledged' ? 'tbc'
-          : ''
-        // The half-day fill is read off the stored string via `parseCell`,
-        // never kept as its own bit of state and never guessed by matching an
-        // asterisk here in the component. The asterisk in `text` stays the
-        // one source of truth; this is only a derived echo of it, so the two
-        // can never disagree.
-        const portion = (here || outLeave) && code ? parseCell(code)?.portion : undefined
-        const portionClass = portion === 'am' || portion === 'pm' ? ` ${portion}` : ''
+        const live = (here || outLeave) && !!code
+        const fill = !live ? '' : isDuty(code) || !isBiddable(code) || bid === 'approved' ? 'a' : bid === 'refused' ? 'r' : 'w'
+        /* WHERE THE BOX SITS, by its half (D1160, D1145): a whole day fills the cell, the morning its top half, the
+           afternoon its bottom half — read off the stored string by `parseCell`, the one source of truth for the half. */
+        const portion = !live ? undefined : view?.main?.kind === 'credit' ? placeOf(view.main) : parseCell(code)?.portion
+        /* TWO ENTRIES ON A DAY BOTH SHOW (D1146, narrowed by D1167): a morning and an afternoon top and bottom; two whole
+           days side by side, each the full height; a whole day beside a half (an HO, D1164), the half in its own half of
+           the right side. Three or more keep one box and the "+n" corner, which opens the day's list. A notice is never a
+           box. The second entry is the day view's next record in its one order (`compareContrib`). */
+        const entries = live && view ? view.all.filter(c => c.kind !== 'notice') : NO_ENTRIES
+        const two = entries.length === 2 ? pairPlaces(portion, entries[1]!) : null
+        const where = two ? two[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
+        const wide = text.replace('*', '').length > 3 ? ' wide w4' : text.replace('*', '').length > 2 ? ' wide' : ''   // four letters (ATCH — D1375) a step smaller still
+        /* the joined bar (D1359): its classes; a day the drag selects shows as today — its own box, its code, the cyan */
+        const joins = live ? joinClasses(p.id, d.date, views[p.id]) : []   // a day the drag selects undoes them in the stylesheet (td.selcell)
+        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}${joins[0] ?? ''}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
+        const portionClass = ''
+        const second = two ? entries[1]! : null
+        /* with the day's two entries both drawn (D1146), "+1" has nothing more to say; the amber "!" stays */
+        const mk = two && mark === '+1' ? '' : mark
+        /* A CORNER TILE NEVER COVERS A BOX'S LETTERS (walker 1's #8, #9, 23 Oct 26). The mark ("!", "+n") keeps the
+           top-right corner and the PO tag the bottom-right — until a box in that half of the cell holds letters there: a
+           morning box (`top`) or a morning HO beside a whole day (`right-am`) under the mark, an afternoon one (`bot`,
+           `right-pm`) under the tag. A whole day's letters (and a side-by-side box's) sit mid-height, clear of both.
+           Then the tile takes the other corner on the right when nothing is there — no box's letters, no other tile —
+           (`mklo`, `pohi`); when there is none, the box's letters step aside for it (matrix.css). Classes on the cell,
+           no node added (`docs/performance.md` §E). */
+        const places: readonly string[] = !live ? [] : two ?? [where]
+        const lettersTop = places.some(pl => pl === 'top' || pl === 'right-am')
+        const lettersBot = places.some(pl => pl === 'bot' || pl === 'right-pm')
+        const mkShown = !!mk && (here || outLeave || notYetArrived)
+        const poTag = outLeave && !notYetArrived
+        const mkLow = mkShown && lettersTop && !lettersBot && !poTag
+        const poHigh = poTag && lettersBot && !lettersTop && !mkShown
         // Two marks on top of the state colour, never instead of it: the
         // squadron reads green as approved and magenta as pending, and that
         // stays true here. `raptor` says the approval happened elsewhere and
         // nothing on this screen will change it; `moved` says management
         // shifted this bid off another date.
+        /* `raptor` is the main ENTRY's own (`offWar`), never the day's (walker 1's #11, 23 Oct 26): a day holding leave
+           approved on the war and a course filed on the Inputs page is locked as a whole (`raptorOwns`, what a tap and
+           every write ask), but only the course's box wears the edge. */
         const marks = [
-          (here || outLeave) && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
+          (here || outLeave) && code && (view?.main ? offWar(view.main) : raptorOwns(states, p.id, d.date)) ? 'raptor' : '',
           movedShown && (here || outLeave) && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
         ].filter(Boolean).join(' ')
         /* BOTH ENDS of the squadron window are tappable (owner answer C, 20
@@ -453,13 +566,13 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            an ADMIN's tap manages the POSTING (the post-out sheet after, the
            post-in sheet before), and the person's OWN tap places LEAVE. */
         const actionable =
-          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
+          (here && cellOpenable(states, role, viewer, deciding, grid, p.id, d.date, view)) || (role === 'admin' && !here) ||
           // a marked day always opens its list; leave dated outside the
           // squadron window opens for an admin and for the person themself
           (!!mark && (here || outLeave)) || (outLeave && (role === 'admin' || viewer === p.id)) ||
-          // …and the person may bid clearing leave after posting out, or leave
-          // dated before they post in
-          (!here && role !== 'admin' && viewer === p.id && canEditCell(period, role, d.date))
+          // …and the person may bid clearing leave after posting out, or leave dated before they post in — on an open day;
+          // any other such day of his gives the closed note (D1176)
+          (!here && role !== 'admin' && viewer === p.id)
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise
@@ -474,7 +587,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           <td
             key={d.date}
             data-testid={`cell-${p.id}-${d.date}`}
-            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mark ? ' mkd' : ''}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}${mkLow ? ' mklo' : ''}${poHigh ? ' pohi' : ''}`}
             onClick={actionable
               ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
               : undefined}
@@ -486,7 +599,15 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
                 {text}
               </span>
             )}
-            {mark && (here || outLeave || notYetArrived) && (
+            {second && two && (
+              /* the second box wears its own edges too (the scenario designer's find): the Inputs page's by the same one rule
+                 as the main box (`offWar` — filed there, or the app's own credit, as it wears alone), the dotted one for
+                 leave moved here */
+              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 3 ? ' wide w4' : boxText(second.code).length > 2 ? ' wide' : ''}${joins[1] ?? ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
+                {boxText(second.code, !!second.auto)}
+              </span>
+            )}
+            {mkShown && (
               <span
                 className={`mk ${view!.amber ? 'warn' : 'more'}`}
                 data-testid={`mark-${p.id}-${d.date}`}
@@ -499,10 +620,10 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
                     ? 'Your bid is still live — tap to see what else is on this day'
                     : 'Something on this day needs an admin — tap to see'}
               >
-                {mark}
+                {mk}
               </span>
             )}
-            {outLeave && !notYetArrived && (
+            {poTag && (
               <span className="potag" data-testid={`potag-${p.id}-${d.date}`}>PO</span>
             )}
             {lastIn && (
@@ -521,4 +642,4 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
       })}
     </>
   )
-})
+}, sameMonth)

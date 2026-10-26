@@ -1,0 +1,189 @@
+<title>Board right panel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column of question cards; desktop pictures full width, panel crops side by side; the app's own dark look */
+:root{
+  --bg:#0b0e13; --panel:#141a22; --edge:#263241; --fg:#e8eef5; --mute:#93a2b4;
+  --cyan:#3bc6e8; --amber:#f2b33d; --green:#58d18b;
+  --f-ui:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-ui);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:22px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0;text-wrap:balance}
+p{margin:0;max-width:72ch}
+.lead{color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.qnum{color:var(--cyan);font-weight:700;letter-spacing:.06em;font-size:12px;text-transform:uppercase}
+.shots{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-start}
+figure{margin:0;flex:1 1 220px;max-width:330px;min-width:0;display:flex;flex-direction:column;gap:6px}
+figure.wide{flex-basis:100%;max-width:100%}
+figure.half{flex:1 1 420px;max-width:100%}
+figure a{display:block;position:relative;border:1px solid var(--edge);border-radius:10px;overflow:hidden;background:#000}
+figure img{display:block;width:100%;height:auto}
+figcaption{font-size:13px;color:var(--mute)}
+figcaption b{color:var(--fg)}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;padding:1px 6px;border-radius:5px;margin-right:4px}
+.real{background:#16303a;color:var(--cyan)}
+.drawn{background:#3a2c12;color:var(--amber)}
+.rec{color:var(--green);font-weight:700}
+.mark{position:absolute;border:3px solid var(--amber);border-radius:8px;pointer-events:none}
+.note{position:absolute;background:var(--amber);color:#111;font-size:11px;font-weight:700;padding:2px 6px;border-radius:5px;pointer-events:none;line-height:1.3;white-space:nowrap}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+a:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+</style>
+
+<main>
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>The Scheduler Board's right panel</h1>
+    <p class="lead">Built, and ready for your look: everything from both rounds, plus a man on standby no longer faded. Pictures from the finished app; the two question rounds are below, answered. Tap a picture to see it full size.</p>
+  </header>
+
+  <section class="card" style="border-color:#234b33">
+    <div class="qnum" style="color:var(--green)">Built · for your look</div>
+    <p>Open the preview on your PC, then: Edit Schedule → open Monday's board → drag the right panel's left edge to the left (the short bar at its middle). Pick a duty desk's "+ add" and widen the panel: the reasons move beside the pucks. Double-click the edge to put it back. On Edit Schedule's week, scroll down: "AIRCREW · ‹ MONDAY ›" stays in sight.</p>
+    <p id="preview-line">The preview link is in my message to you.</p>
+    <div class="shots">
+      <figure class="wide"><a href="img/final/pc-desk-wide-full.png" target="_blank"><img src="img/final/pc-desk-wide-full.png" alt="The board with the right panel dragged to 40%, a desk picked, reasons beside the pucks"><span class="mark" style="left:59%;top:50%;width:2.2%;height:12%"></span><span class="note" style="left:55.5%;top:63%">the grip</span></a>
+        <figcaption><b>The panel at 40%</b>, a desk picked: each reason beside its puck, the line across the puck only. An AVALON wave (added for the check) has Comet on it: he is not faded.</figcaption></figure>
+      <figure><a href="img/final/pc-none-side.png" target="_blank"><img src="img/final/pc-none-side.png" alt="The panel at 320, nothing picked: Comet on standby first, Havoc on ATT B after the free men with ATT B: no flying"></a>
+        <figcaption><b>Nothing picked</b>: Comet (on AVALON standby) with the free men; Havoc (ATT B) in full colour, "ATT B: no flying", after them; "SANS AVAIL · N FREE".</figcaption></figure>
+      <figure><a href="img/final/pc-front-wide.png" target="_blank"><img src="img/final/pc-front-wide.png" alt="A blank line's front seat picked: Planning FCP with no dot"></a>
+        <figcaption><b>A new line's seat picked</b>: "Planning FCP", no dangling dot.</figcaption></figure>
+      <figure><a href="img/final/phone-drawer.png" target="_blank"><img src="img/final/phone-drawer.png" alt="Your iPhone's size: the crew drawer with Havoc's words under his puck"></a>
+        <figcaption><b>Your iPhone's size</b>: the same looks in the crew drawer; no grip on a phone.</figcaption></figure>
+      <figure class="wide"><a href="img/final/pc-week-scrolled.png" target="_blank"><img src="img/final/pc-week-scrolled.png" alt="Edit Schedule scrolled down: the AIRCREW heading in sight under the top bar"><span class="mark" style="left:82%;top:13%;width:13%;height:4.5%"></span></a>
+        <figcaption><b>Edit Schedule, scrolled down</b>: "AIRCREW · ‹ MONDAY ›" in sight under the bar, its arrows still step the day.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Round 2 · what was looked at</div>
+    <p>The crew list on all seven days of the demo week with no seat picked, and on Monday with each kind of place picked: a front seat, a back seat, a duty desk, a sim seat, a sim passenger seat, a ground row, a programme row, and an SC seat (an SC wave added for it, with a man on its SPARE line so the standby look shows). For every one I recorded each man's look, his reason, the order and the counts.</p>
+    <ul>
+      <li><b>Right everywhere:</b> every "N free" count matches the men drawn free; pilots and WSOs always run free, then faded, then crossed out; every crossed-out man shows his reason once a place is picked, or the reason is said once under the heading where the whole column shares it ("WSO — cannot fly front seat"); an SC seat cuts the list to the SC-current men and gives "inside this shift" reasons; the weekend lists everyone free.</li>
+      <li><b>Not looked at:</b> a passenger seat on a jet (none on the demo Monday), AVALON and BB seats, the phone's crew drawer, and Edit Schedule's own crew panel (the same list, drawn one puck wide).</li>
+      <li><b>Text to delete:</b> none found. The list's words are its headings and its reasons.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Round 2 · finding 1 · the SANS section</div>
+    <h2>List the SANS men free first, and give the section its count?</h2>
+    <p>The SANS section is the only part of the crew list not ordered free first: its men stay in callsign order, so free and crossed-out men are mixed, and it has no "N free" in its heading. With a duty desk picked on Monday, Bolt (crossed out) comes before Jester (free), and you count the free ones by eye. Drawn: the same order as the pilots and WSOs (free first, then crossed out, callsign order within each), and the heading "SANS AVAIL · 8 FREE".</p>
+    <p><span class="rec">Recommended: yes, as drawn.</span></p>
+    <div class="shots">
+      <figure><a href="img/look/arm-desk-sans.png" target="_blank"><img src="img/look/arm-desk-sans.png" alt="Today: the SANS section with free and crossed-out men mixed"><span class="mark" style="left:3%;top:57%;width:50%;height:34%"></span></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>: mixed, no count.</figcaption></figure>
+      <figure><a href="img/look/sans-proposed.png" target="_blank"><img src="img/look/sans-proposed.png" alt="Drawn: the SANS section with free men first and the heading SANS Avail 8 free"><span class="mark" style="left:3%;top:57%;width:50%;height:34%"></span></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>Free first</b>, and "· 8 FREE" in the heading.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Round 2 · finding 2 · the strip over the list</div>
+    <h2>Drop the dangling dot in "Planning FCP ·" when the line has no callsign yet?</h2>
+    <p>When you pick a seat on a line that has no callsign or mission yet (every new line starts blank), the strip over the crew list reads "Planning FCP ·" with nothing after the dot. Drawn: "Planning FCP". A line that has its callsign keeps it after the dot, as today.</p>
+    <p><span class="rec">Recommended: yes, as drawn.</span></p>
+    <div class="shots">
+      <figure class="half"><a href="img/look/strip-today.png" target="_blank"><img src="img/look/strip-today.png" alt="Today: Planning FCP with a dot and nothing after it"></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>: "Planning FCP ·".</figcaption></figure>
+      <figure class="half"><a href="img/look/strip-proposed.png" target="_blank"><img src="img/look/strip-proposed.png" alt="Drawn: Planning FCP"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>"Planning FCP"</b>.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Round 2 · checked and left as they are</div>
+    <div class="shots">
+      <figure><a href="img/look/crop-reason-repeat.png" target="_blank"><img src="img/look/crop-reason-repeat.png" alt="Grit's reason: medically down, cannot report to work (ATT C), Medically down till 17 Jul"></a>
+        <figcaption><b>A reason that seems to say it twice.</b> The first half is what his kind of input means; the second is his own remark. Both carry a fact, and the same sentence is the note a tap raises, so it's left for the whole-app words job (D808).</figcaption></figure>
+      <figure><a href="img/look/crop-standby.png" target="_blank"><img src="img/look/crop-standby.png" alt="Comet on SC spare: almost like a free man, with a thin green left edge"><span class="mark" style="left:3%;top:38%;width:25%;height:7%"></span></a>
+        <figcaption><b>The standby look.</b> Comet, on an SC SPARE line, looks almost like a free man, with a thin green left edge. That is on purpose: he is free for anything else. Its green was kept apart from OIL's bar when OIL Earn was built.</figcaption></figure>
+      <figure><a href="img/look/crop-name-cut.png" target="_blank"><img src="img/look/crop-name-cut.png" alt="Wildcard's name fading at the puck's end"></a>
+        <figcaption><b>A long name fades at the puck's end</b> (Wildcard). That is the puck's own fade, the same on every screen, since pucks never wrap.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card" style="border-color:#234b33">
+    <div class="qnum" style="color:var(--green)">Round 1 · answered "yes to all" (D1118)</div>
+    <p>Built as drawn below: the grip and its double-click, the reasons beside the pucks, the ATT B look, the line across the puck only, and the AIRCREW heading kept under the top bar.</p>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 1 · dragging the panel wider (D1113)</div>
+    <h2>Drag the panel's left edge to widen it; double-click the edge to put it back?</h2>
+    <p>The panel's left edge becomes a grip, like the one between the issues list and the crew list: a short bar at its middle that turns blue under the pointer. Drag it left to widen the panel from today's 320 up to 40% of the screen; the width stays on that computer. Both crew columns and the issues list share the extra width. The day's area gets narrower to make room: on your screen, from 1162 wide today to 868 at the widest.</p>
+    <p><span class="rec">Recommended: yes, as drawn, with a double-click on the edge putting it back to 320.</span></p>
+    <div class="shots">
+      <figure class="wide"><a href="img/W614-desk-full.png" target="_blank"><img src="img/W614-desk-full.png" alt="The whole board with the right panel dragged to 40% of the screen"><span class="mark" style="left:59%;top:51%;width:2.2%;height:10%"></span><span class="note" style="left:55.5%;top:62%">the grip</span></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>The panel at 40% of your screen.</b> A duty desk is picked, so each man who can't take it shows why.</figcaption></figure>
+      <figure><a href="img/grip-close.png" target="_blank"><img src="img/grip-close.png" alt="Close-up of the grip on the panel's left edge, lit blue"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>The grip, close up</b>, lit blue under the pointer.</figcaption></figure>
+      <figure><a href="img/today-desk-full.png" target="_blank"><img src="img/today-desk-full.png" alt="The whole board today, right panel 320 wide"></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>: the panel is always 320 wide.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 2 · your question: the reasons beside the pucks</div>
+    <h2>Once there is room, does a crossed-out man's reason move beside his puck?</h2>
+    <p>Yes, if you agree: the reason stands beside the puck wherever at least 92 is left next to it, and drops under it where not. That is the rule the ALL AVAIL window already uses when you drag it wider (D40), so both lists behave the same. At today's 320 the reasons stay under the pucks; from about 400 wide they sit beside, and the list gets much shorter.</p>
+    <p><span class="rec">Recommended: yes, as drawn.</span></p>
+    <div class="shots">
+      <figure><a href="img/W320-desk.png" target="_blank"><img src="img/W320-desk.png" alt="The panel at 320: reasons under the pucks"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>320, today's width</b>: reasons stay under.</figcaption></figure>
+      <figure><a href="img/W460-desk.png" target="_blank"><img src="img/W460-desk.png" alt="The panel at 460: reasons beside the pucks"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>460</b>: every reason beside its puck.</figcaption></figure>
+      <figure><a href="img/W614-desk.png" target="_blank"><img src="img/W614-desk.png" alt="The panel at 614: reasons beside the pucks, mostly one line"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>614, the widest</b>: most reasons on one line.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 3 · the ATT B man with no seat picked (D1114)</div>
+    <h2>Show an ATT B man in full colour, with "ATT B: no flying" under his puck?</h2>
+    <p>Today, with no seat picked, a man on ATT B (grounded, but able to work) is faded like a man already tasked, though he is free for a duty desk, a sim seat or a ground row. Here Havoc is on ATT B and has nothing else that day. Drawn: his puck in full colour, the crew list's own small grey words "ATT B: no flying" under it (beside it once the panel is wide), and his place straight after the free men. He is still not counted in "5 free", because the count is of men who can fly. Once a seat is picked nothing changes: a flying seat crosses him out with his reason, and a desk, a sim seat or a ground row shows him in full colour, as today.</p>
+    <p><span class="rec">Recommended: yes, as drawn.</span></p>
+    <div class="shots">
+      <figure><a href="img/attb-today-320.png" target="_blank"><img src="img/attb-today-320.png" alt="Today: Havoc on ATT B is faded among the tasked men"><span class="mark" style="left:5%;top:72.6%;width:24%;height:3.2%"></span></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>: Havoc (ringed) faded among the tasked men.</figcaption></figure>
+      <figure><a href="img/attb-320.png" target="_blank"><img src="img/attb-320.png" alt="Drawn: Havoc in full colour after the free pilots, with ATT B: no flying under him"><span class="mark" style="left:5%;top:54%;width:24%;height:4.2%"></span></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>At 320</b>: full colour, the words under him.</figcaption></figure>
+      <figure><a href="img/attb-614.png" target="_blank"><img src="img/attb-614.png" alt="Drawn at 614: Havoc with ATT B: no flying beside him"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>At 614</b>: the words beside him.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Question 4 · the line through a crossed-out puck</div>
+    <h2>Draw the line across the puck only, not across the empty column?</h2>
+    <p>Today the line through a man who can't take the seat runs on past his puck to the panel's edge, across empty space (and through the column beside it, for the WSOs). Drawn: the line crosses the puck only. With the reasons beside the pucks (question 2) this matters more, because a full-width line would strike through the reason's words. This is the first finding of the look over the whole crew list you asked for (D1115); the rest of that look comes as round 2.</p>
+    <p><span class="rec">Recommended: yes, as drawn.</span></p>
+    <div class="shots">
+      <figure><a href="img/today-desk-side.png" target="_blank"><img src="img/today-desk-side.png" alt="Today: the lines run on to the panel's edge"><span class="mark" style="left:74%;top:72.8%;width:23%;height:2.4%"></span></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>: the line runs on to the edge (ringed).</figcaption></figure>
+      <figure><a href="img/W320-desk.png" target="_blank"><img src="img/W320-desk.png" alt="Drawn: lines across the puck only"></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>The line across the puck only</b>, at today's width.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Already ruled · Edit Schedule's AIRCREW heading (D1116)</div>
+    <h2>The day picker stays in sight when you scroll down</h2>
+    <p>The cause: as the page scrolls, the crew panel holds 8 from the top of the window, which is behind the blue top bar, so its heading "AIRCREW · ‹ MONDAY ›" sits under the bar. The fix holds the panel just under the bar instead. Nothing else moves; the crew list under the heading scrolls as today. No question here: this is built as you asked.</p>
+    <div class="shots">
+      <figure class="half"><a href="img/week-before.png" target="_blank"><img src="img/week-before.png" alt="Today: Edit Schedule scrolled down, the crew panel's heading hidden behind the top bar"><span class="mark" style="left:82%;top:1%;width:13%;height:5.5%"></span><span class="note" style="left:78%;top:8%">heading hidden here</span></a>
+        <figcaption><span class="tag real">REAL</span><b>Today</b>, scrolled down: the heading is behind the bar.</figcaption></figure>
+      <figure class="half"><a href="img/week-fixed.png" target="_blank"><img src="img/week-fixed.png" alt="Drawn: the crew panel held under the top bar, its heading in sight"><span class="mark" style="left:82%;top:13.3%;width:13%;height:4.5%"></span></a>
+        <figcaption><span class="tag drawn">DRAWN</span><b>Fixed</b>: "AIRCREW · ‹ MONDAY ›" in sight under the bar.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="qnum">Next</div>
+    <p>After your answers: round 2, the look over every state the crew list draws (free, faded, crossed out, standby, the placeholders, SANS; the counts and the order; with and without each kind of seat picked), then the build.</p>
+  </section>
+</main>

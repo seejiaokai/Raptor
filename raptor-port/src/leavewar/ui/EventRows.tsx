@@ -157,9 +157,11 @@ export function EventRows({
               aria-label={text ? `${text} (${short})` : undefined}
               /* FILLED: the box, for everyone. EMPTY: the sheet at once, for an admin. */
               onClick={text ? e => onPeek(line, d.date, e.currentTarget) : editable ? () => onEdit(line, d.date) : undefined}
-              style={{ minWidth: `${Math.max(short.length, 1)}ch` }}
             >
-              {short || (editable ? <span className="evadd" aria-hidden="true">＋</span> : null)}
+              {/* the short form sits in a span that adds no width of its own, so a cell never widens its day, with any
+                  letters (GitHub's Linux run, 23 Oct 26: "OFF" and "RC0" widened theirs by 1.1–1.9px — the cell's old
+                  floor of three characters was wider than a day once the letters were wider than his PC's) */}
+              {short ? <span className="evs">{short}</span> : (editable ? <span className="evadd" aria-hidden="true">＋</span> : null)}
             </td>,
           )
         }

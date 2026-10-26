@@ -1,0 +1,67 @@
+[
+ {
+  "id": "S7 desktop foot note",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "at the foot, level red, \"This bid turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 440,826 560×46 inside the 1440×900 screen, centre hit is the bubble (pointer-events auto); cell vs note {\"cell\":[1051,216,1077,243],\"note\":[440,826,1000,872],\"overlapPx\":0,\"cellInViewport\":true,\"cellFullyVisible\":true,\"noteTopMinusCellBottom\":583}",
+  "pics": [
+   "s07-desk-after-click.png",
+   "s07-desk-settled-full.png"
+  ]
+ },
+ {
+  "id": "S7 Tab to Show",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Tab pressed 20 time(s) from the page with nothing focused: reached \"Show ›\"; the note stayed up the whole way; first focus stops: A → A → A → A → A → A; at Show: at the foot, level red, \"This bid turns Available P red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 440,826 560×46 inside the 1440×900 screen, centre hit is the bubble (pointer-events auto)",
+  "pics": [
+   "s07-desk-tab-at-show.png"
+  ]
+ },
+ {
+  "id": "S7 Enter on Show",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Enter on Show: no bubble; focus counts-toggle",
+  "pics": [
+   "s07-desk-enter-settled.png"
+  ]
+ },
+ {
+  "id": "S7 wheel back",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "note up out of view: at the foot, level red, \"This bid takes Available P lower, still red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 440,826 560×46 inside the 1440×900 screen, centre hit is the bubble (pointer-events auto); after a wheel scroll that brings the Manning button back into view (button in view: true): at the foot, level red, \"This bid takes Available P lower, still red.\" + \"Show ›\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), box 440,826 560×46 inside the 1440×900 screen, centre hit is the bubble (pointer-events auto)",
+  "pics": [
+   "s07-desk-wheel-back.png"
+  ]
+ },
+ {
+  "id": "S7 wheel back then a click",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "a click then: no bubble",
+  "pics": []
+ },
+ {
+  "id": "errors-7-desk",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ },
+ {
+  "id": "S7 land",
+  "size": "land",
+  "verdict": "NOT DONE",
+  "said": "script stopped: Error: no pad key 2",
+  "pics": []
+ },
+ {
+  "id": "errors-7-land",
+  "size": "land",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

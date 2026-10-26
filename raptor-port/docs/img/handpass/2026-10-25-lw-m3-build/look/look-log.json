@@ -1,0 +1,32 @@
+[
+ {
+  "id": "q1-before",
+  "size": "desk",
+  "said": "⠿ Wed 15 Jul ‹ › ✕ Not open for bidding Required P – Available P 25 Required W – Available W 17 Crew sets 17 IP 15 IWSO 7 OPSP 10 OPSW 10 SXO 12 AWAY · 4 Cobra IP OL 15 Jul 1 Approved Gambit C OIL 15 Jul 1 Approved Nomad C OD 15 – 17 Jul 3 Approved Grit C C 13 – 17 Jul 5 Approved"
+ },
+ {
+  "id": "q1-filed",
+  "size": "desk",
+  "said": "⠿ Wed 15 Jul ‹ › ✕ Not open for bidding Required P – Available P 24 Required W – Available W 17 Crew sets 17 IP 14 IWSO 7 OPSP 10 OPSW 10 SXO 12 AWAY · 5 Cobra IP OL 15 Jul 1 Approved Comet IP CSE 15 Jul 1 Approved Gambit C OIL 15 Jul 1 Approved Nomad C OD 15 – 17 Jul 3 Approved Grit C C 13 – 17 Jul 5 Approved"
+ },
+ {
+  "id": "q1-rejected",
+  "size": "desk",
+  "said": "⠿ Wed 15 Jul ‹ › ✕ Not open for bidding Required P – Available P 24 Required W – Available W 17 Crew sets 17 IP 14 IWSO 7 OPSP 10 OPSW 10 SXO 12 AWAY · 5 Cobra IP OL 15 Jul 1 Approved Comet IP CSE 15 Jul 1 Approved Gambit C OIL 15 Jul 1 Approved Nomad C OD 15 – 17 Jul 3 Approved Grit C C 13 – 17 Jul 5 Approved"
+ },
+ {
+  "id": "q4-moved",
+  "size": "desk",
+  "said": "scheduler's → Unavail pressed true; stored acc u"
+ },
+ {
+  "id": "q4-member",
+  "size": "desk",
+  "said": "Goes to reads {\"row\":true,\"g\":\"false\",\"u\":\"true\",\"line\":\"Counted as away on the Leave War\",\"gDisabled\":false,\"uDisabled\":false}; buttons [\"Ground Programme:live:false\",\"Unavailable:live:true\",\"Counted as away on the Leave War:live:null\"]"
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "said": "[]"
+ }
+]

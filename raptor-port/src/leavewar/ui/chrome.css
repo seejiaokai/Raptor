@@ -9,6 +9,11 @@
    reason. Do not unwrap, and never fix a cross-page bleed by editing
    scheduler.css — add the explicit property here instead. */
 #page-leavewar {
+/* NO TAP HIGHLIGHT ANYWHERE ON THE LEAVE WAR (his report, 23 Oct 26 12:16 — "When I select the months why I see unclean
+   blue background"): a phone paints its own translucent blue (Safari grey-blue, Chrome rgba(51,181,229,.4)) over what a
+   finger pressed, and on the month strip it covered the strip and the header's corner for a moment. The property is
+   inherited, so the page sets it once; every press here shows itself (a month lights, a window opens, a cell changes). */
+& { -webkit-tap-highlight-color: transparent; }
 /* Topbar, nav mark and period/stage chips — selectors and values copied
    from Raptor's scheduler.css (.topbar, .mark, .nav, .wk, .filters, .fchip)
    verbatim, not from the comp's slightly different re-derivation of them. */
@@ -224,12 +229,27 @@
   font-weight: 600;
 }
 
-/* Stage tint: only 'open' has a comp reference to match (the squadron's
-   normal working state); other stages stay the neutral chip rather than
-   guessing at colours nothing has approved. Same ink lift as `.wk.on`, and
-   for the same reason — these are the app's tinted-chip pairs and they must
-   not drift apart. */
-.fchip.stage-open {
+/* THE OPEN-DATES CHIP (D1177): green while anything is open ("Open 1 Jan – 31 Mar"), the neutral chip when
+   "Bidding closed". A button for everyone — the admin changes the dates, a member reads them. Same ink lift as
+   `.wk.on`, and for the same reason — these are the app's tinted-chip pairs and they must not drift apart. */
+.fchip.openchip {
+  cursor: pointer;
+  font-family: inherit;
+}
+.fchip.openchip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.fchip.openchip .openword {
+  font-weight: 500;
+}
+/* the space between the parts is drawn, not typed: on a phone the chip is a flex box, which drops a typed space
+   ("Open15 Feb" — the walk's find, 22 Oct 26) */
+.fchip.openchip .openword + .opentxt,
+.fchip.openchip .openmore {
+  margin-left: .3em;
+}
+.fchip.open-on {
   background: rgba(87, 201, 122, .16);
   color: #EAF9EF;
   border-color: rgba(87, 201, 122, .7);
@@ -306,6 +326,13 @@
    THE LINE'S EDGES ARE THE BUTTONS' ABOVE IT — 10px, the second line's own side padding — not the screen's. */
 .clashnote {
   border-bottom: 1px solid rgba(229, 168, 59, .5);
+}
+/* since M2 the grid's bar stands on the grid card (D1254), so the note is drawn in the card's head row: it takes that
+   row's whole width, edge to edge across the card, on a line of its own under the bar — never a box beside it (list B's
+   browser test, 23 Oct 26: a 227-wide box, its words run together, "2 clashes with the scheduleShow") */
+.card-hd > .clashnote {
+  flex: 0 0 calc(100% + 28px);
+  margin: 0 -14px -10px;
 }
 
 .clashline {
@@ -484,35 +511,6 @@
   display: inline;
 }
 
-/* The stage control. Deliberately quieter than the stage chip beside it —
-   the chip is the fact, this is the action on it, and a louder button would
-   invite a click on a one-way transition. Sized to match `.fchip` so the
-   two sit on the same line without the strip looking assembled. */
-.stage-go {
-  background: transparent;
-  border: 1px solid var(--edge);
-  color: var(--ink-3);
-  padding: 6px 11px;
-  border-radius: 9px;
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: .04em;
-  cursor: pointer;
-  font-family: inherit;
-}
-
-.stage-go:hover:not([disabled]) {
-  border-color: rgba(59, 198, 232, .5);
-  color: var(--accent);
-}
-
-/* At published there is nowhere to go, and the cycle is forward only, so
-   this is the end state rather than a temporarily unavailable action. */
-.stage-go[disabled] {
-  opacity: .4;
-  cursor: default;
-}
-
 /* The role switch. Tinted only as admin, because member is the ordinary
    state and the squadron should not see a permanently lit control implying
    they hold something they do not. */
@@ -636,23 +634,6 @@
 
 /* The war's Undo / Redo pair left the period row for the app's top bar ([UNDO-TOPBAR], owner D347, 28 Sep 26). */
 
-/* The bidding-window chip. Reads as a value when a member looks at it and as
-   a control when an admin does — same chip, because it is the same fact and
-   only one of them can change it. */
-.winchip.can {
-  cursor: pointer;
-  border-color: rgba(59, 198, 232, .45);
-  color: var(--accent);
-}
-
-.winchip.can:hover {
-  background: rgba(59, 198, 232, .12);
-}
-
-.winchip:disabled {
-  cursor: default;
-}
-
 /* ---- phone: give the grid the screen ----
 
    Same breakpoint as the matrix's own, and last in this file for the same
@@ -681,6 +662,8 @@
   .card-hd .rtlbl {
     display: none;
   }
+  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden); the − / +
+     that stepped aside for it went with the pinch (D1276) */
 }
 
 @media (max-width: 700px) {
@@ -716,7 +699,6 @@
   }
 
   .fchip,
-  .stage-go,
   .rchip {
     padding: 4px 8px;
     font-size: 11px;
@@ -803,52 +785,23 @@
   /* THE LINE HOLDS WHATEVER LETTERS THE DEVICE DRAWS IT IN (9 Oct 26). The spare above is measured in this PC's
      letters; the app loads no font, and on wider ones (GitHub's machines' are about a seventh wider - the pull
      request's own check failed there) the four chips no longer fitted and Legend fell to a third line. So the row
-     does not wrap, and ONE thing gives way: the stage's name, cut with an ellipsis - as the callsign is on line 1.
-     Its small arrow (an admin's) stays; the dates, the count and Legend are never cut. */
-  .filters > .fchip:has(> .stagetxt) {
+     does not wrap, and ONE thing gives way: the open chip's dates ("Bidding closed" or the first stretch — since the
+     stage went, D1177), cut with an ellipsis - as the callsign is on line 1; the count and Legend are never cut. */
+  .filters > .fchip:has(> .opentxt) {
     flex: 0 1 auto;
     min-width: 0;
     display: inline-flex;
     align-items: center;
   }
 
-  .stagetxt {
+  .opentxt {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .stagebtn::after {
-    flex: 0 0 auto;
-  }
-
   .legkey {
     margin-left: auto;
-  }
-
-  /* an admin's stage is a BUTTON here — his two moves hang from it — and the small arrow says so. Drawn by this
-     sheet, not written into the button: its words stay exactly the desktop label's. */
-  .stagebtn {
-    cursor: pointer;
-    font-family: inherit;
-  }
-
-  /* a drawn triangle, not the "▾" letter: a letter comes from whichever font the phone falls back to, at that font's
-     size and height (on this PC it made the stage button 3px taller than its neighbours) */
-  .stagebtn::after {
-    content: '';
-    display: inline-block;
-    margin-left: 5px;
-    vertical-align: 1px;
-    border: 3.5px solid transparent;
-    border-top: 4.5px solid currentColor;
-    border-bottom: 0;
-    opacity: .85;
-  }
-
-  .stagebtn[aria-expanded="true"] {
-    outline: 2px solid var(--accent);
-    outline-offset: 1px;
   }
 
   /* "Under" before the count: the one quiet word left of the label that stood beside it */
@@ -968,47 +921,6 @@
   white-space: nowrap;
 }
 
-/* ---- the stage menu — a phone only (owner, D678, 8 Oct 26) ---------------
-   An admin's two stage moves, behind the stage button on a phone, where the strip is one line and has no room to show
-   them. The same fixed, JS-anchored pop-out as the under-manned list above, over the same scrim, for the same reasons;
-   the two buttons inside it are the strip's own `.stage-go` pair, drawn as full-width rows a thumb can tell apart
-   (40px — a little taller than the drawing's, on purpose: one of them moves the whole squadron's cycle). Never drawn
-   on a tablet or a desktop, where the pair stays in sight on the strip. */
-.stagemenu {
-  position: fixed;
-  top: 96px;
-  left: 8px;
-  z-index: 70;   /* above the frozen header mirror (55) — see .umlist */
-  width: 224px;  /* kept in step with Chrome.tsx STAGE_MENU_WIDTH */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  padding: 9px 8px 8px;
-  background: var(--panel);
-  border: 1px solid var(--edge);
-  border-radius: 12px;
-  box-shadow: 0 18px 48px rgba(0, 0, 0, .6);
-}
-
-.stagemenu-hd {
-  padding: 1px 3px 0;
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  font-weight: 600;
-}
-
-.stagemenu .stage-go {
-  display: block;
-  width: 100%;
-  min-height: 40px;
-  padding: 8px 11px;
-  font-size: 12px;
-  text-align: left;
-}
-
 /* ---- the colour/mark legend (owner, 27 Aug 26) --------------------------
    Same fixed, JS-anchored popover as the under-manned list above, for the
    same wrapping-strip reason. A read-only key: the swatches reuse the grid's
@@ -1065,8 +977,8 @@
   color: var(--ink-2);
   background: var(--panel-2);
 }
-.leg-sw.appr { background: rgba(87, 201, 122, .16); color: #8FE0A8; box-shadow: inset 0 0 0 1px rgba(87, 201, 122, .5); }
-.leg-sw.tbc  { background: rgba(178, 77, 234, .16); color: #D9A6F5; box-shadow: inset 0 0 0 1px rgba(178, 77, 234, .5); }
+/* look F's approved local leave (D1175 — matrix.css `.c.k-ll.s-a`): the corner rows' swatch; Ack's purple is gone (D1158) */
+.leg-sw.appr { background: rgba(242, 200, 110, .22); color: #FFF1CF; box-shadow: inset 0 0 0 1px rgba(242, 200, 110, .85); }
 .leg-sw.ref  { background: rgba(240, 85, 95, .16); color: #FFA6AD; box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .5); }
 .leg-sw.raptor { border-left: 2px solid var(--accent); padding-left: 4px; }
 .leg-sw.moved  { border-left: 2px dotted #F2C879; padding-left: 4px; }
@@ -1087,10 +999,262 @@
 
 }
 
-/* [ARCH-STACK] step 4 — the legend's corner-mark swatches, drawn like the
-   grid's own `.mk` / `.potag` (matrix.css) */
-.leg-sw.legmk { position: relative; padding-right: 9px; }
-.leg-sw .lmk { position: absolute; right: -3px; font-style: normal; font-size: 7px; font-weight: 800; line-height: 1; padding: 1px 2px; border-radius: 3px; }
-.leg-sw .lmk.more { top: -3px; background: rgba(150, 162, 178, .85); color: #0d1117; }
-.leg-sw .lmk.warn { top: -3px; background: #F2C879; color: #3a2500; padding: 1px 3px; }
-.leg-sw .lmk.po { bottom: -3px; background: rgba(150, 162, 178, .85); color: #0d1117; }
+/* the legend's corner rows draw the grid's own `.mk` / `.potag` inside a `.leg-box` (matrix.css) since M2 */
+
+/* THE LEAVE WAR'S NAVIGATION, AS DRAWN IN ROUND 19 (D1254 — `docs/mock/lw-overhaul/full/r19-nav-*`, `full/r21-rows-*`).
+   Row 1 the Inputs page's own tab row (`.inputs-tabs` / `.intab`, 25-inputs-calendar.css — one look for the two pages),
+   then View and the period picker, then My leave, ⚙ at the right end; on a phone the tabs and ⚙ make line 1 and View,
+   the picker and My leave line 2. The grid's own bar — [Manning | 1 red ›] · the open dates · … · Legend — stands on the
+   grid card (`.card-hd`), the same for everyone. Scoped as the rest of this file is. */
+#page-leavewar {
+  .lw-top {
+    gap: 12px;
+    flex-wrap: nowrap;
+    padding: 10px 20px;
+  }
+  .lw-top .lw-tabs { flex: 0 0 auto; }
+  .lw-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 4px;
+    /* View and the picker never shrink as a group: a <select> cannot be drawn narrower than its own padding (~48px), so a
+       group allowed to shrink past that let the picker spill out of it and My leave slide over it (GitHub's Linux run,
+       23 Oct 26 — at 701 wide, its wider letters, "my-leave lies over war-picker" by 47px). The picker's own cap below
+       keeps the group small; My leave, whose words cut with "…", is what gives way before ⚙ leaves the screen (the one
+       row needs ~770px at its widest, and from 701 wide it is the desktop's — list A, 23 Oct 26). */
+    flex: 0 0 auto;
+  }
+  .lw-view .warpick { min-width: 0; }
+  .lw-spring { flex: 1 1 auto; }
+  /* a long period name is cut with "…" rather than pushing My leave off the row (walker 3, scenario 36: a 47-letter name
+     made a phone's page scroll sideways; the full name is in the list); at a narrow desktop the cap follows the width, as
+     the phone's 44vw does, so the group stays small with any letters */
+  .lw-view .warpick { max-width: min(320px, 22vw); text-overflow: ellipsis; }
+  .lw-gear {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--edge);
+    border-radius: 11px;
+    background: var(--panel);
+    color: var(--accent);
+    cursor: pointer;
+  }
+  .lw-gear .btnglyph { width: 18px; height: 18px; }
+  .lw-gear:hover { border-color: var(--edge-2); }
+  .lw-gear:focus-visible, .myleave:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  .myleave {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    /* My leave is the one that gives way on the one row (its words cut with "…"): said outright, because up to 820 wide the
+       shell's phone bar holds every top-bar item at its full width (scheduler.css `.topbar>*{flex:0 0 auto}`), so it never
+       shrank — ⚙ was pushed off a 701-wide screen */
+    flex: 0 1 auto;
+    min-width: 0;
+    min-height: 44px;
+    padding: 6px 12px;
+    border: 1px solid var(--edge);
+    border-radius: 11px;
+    background: var(--panel);
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .myleave .ml-hd, .myleave .ml-figs {
+    /* never out of the button, whatever the letters' width (list A, 23 Oct 26: Apple's wider letters spilled the figures,
+       and at 360 wide the page scrolled sideways) — cut with "…", the whole in his person window, a tap away */
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .myleave .ml-figs { flex: 0 1 auto; }
+  .myleave .ml-hd {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+  .myleave .ml-next {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-2);
+  }
+  .myleave .ml-figs {
+    font-size: 13px;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .myleave .ml-figs b { font-weight: 800; }
+  .myleave .ml-go {
+    color: var(--ink-3);
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  /* the grid's own bar, on the grid card: one line, Manning at the left (D1240), Legend at the right end */
+  .card-hd .filters.lw-gridbar {
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+  .lw-manning {
+    display: inline-flex;
+    align-items: stretch;
+    flex: 0 0 auto;
+    border: 1px solid var(--edge);
+    border-radius: 9px;
+    background: var(--panel-2);
+    overflow: hidden;
+  }
+  .lw-manning .fchip {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .lw-manning .mn-car { font-size: 9px; color: var(--ink-2); }
+  .lw-manning .fchip.mn-r {
+    border-left: 1px solid var(--edge);
+    color: var(--ink);
+  }
+  .lw-manning .fchip.mn-r b { color: #FF8A93; font-weight: 800; }
+  .lw-manning .fchip:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  @media (max-width: 700px) {
+    /* the grid card's 20px edge up to 700 (D1016 — "from 431 to 700 the top keeps the grid card's 20px edge so the two
+       line up"; the tab row of D1254 is that top); 12px at 430 and under, as the card's own */
+    /* the two top lines as low as the round-19 drawing (D1278 — his "seems quite tall and big on the phone", 23 Oct 26):
+       the tab row ~53px (the tabs' 44 and 4px above and below), the View line ~42px (My leave's two lines, ~34px, and 3px) */
+    .lw-top {
+      gap: 8px;
+      padding: 4px 20px;
+    }
+    .lw-top .lw-tabs { flex: 1 1 auto; }
+    .lw-top .lw-tabs .intab { flex: 1 1 0; padding: 4px 8px; }
+    .lw-viewline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 3px 20px;
+      border-bottom: 1px solid var(--edge);
+    }
+    /* the picker keeps its whole name ("JAN - DEC 26", as drawn); My leave takes what is left */
+    .lw-viewline .lw-view { flex: 0 0 auto; }
+    .lw-viewline .warpick { max-width: 44vw; }
+    /* the green picker and My leave one height on one centre line (D1279): both take the line's height, which My leave's
+       two lines set — never a fixed number, so wider letters keep them equal */
+    .lw-viewline .lw-view, .lw-viewline .warpick { align-self: stretch; }
+    .lw-viewline .myleave {
+      position: relative;
+      flex: 1 1 auto;
+      min-width: 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      /* sized to its two lines, as drawn (D1278) — not the desktop's 44px floor */
+      min-height: 0;
+      padding: 2px 24px 2px 12px;
+      line-height: 1.1;
+    }
+    .lw-viewline .myleave .ml-go {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    /* never cut a chip ("Bidding cl…" with a red count beside it — walker 2): the bar takes a second line when it must */
+    .card-hd .filters.lw-gridbar { gap: 6px; row-gap: 6px; flex-wrap: wrap; }
+    .card-hd .filters.lw-gridbar > * { flex-shrink: 0; }
+  }
+
+  @media (max-width: 430px) {
+    .lw-top, .lw-viewline { padding-left: 12px; padding-right: 12px; }
+  }
+
+  /* D1227's bubble stood under the Manning button until his D1358 (25 Oct 26) put it always at the foot of the screen —
+     the `.mn-foot` below; its arrowed box under the button went with that. */
+  .card-hd { position: relative; }
+  /* D1277: the same words at the foot of the screen when the Manning button is out of view — as drawn
+     (`docs/img/handpass/2026-10-23-lw-m2-looks/questions/q1b-proposed-scrolled.png`): the bubble's amber, the screen's
+     width less a margin on a phone (D828), "Show ›" at its right end; clear of the phone's home bar and of the desktop's
+     scrollbar fixed at the foot. */
+  .mn-foot {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 55;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 8px 6px 14px;
+    border: 1px solid rgba(229, 168, 59, .7);
+    border-radius: 10px;
+    background: #2a2210;
+    color: #F2C879;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .mn-foot .mn-show {
+    flex: 0 0 auto;
+    min-height: 32px;
+    padding: 4px 8px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #F2C879;
+    font: inherit;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .mn-foot .mn-show:hover { background: rgba(229, 168, 59, .14); }
+  /* RED WHEN IT SAYS RED (his D1344, 25 Oct 26 — "this bid turns available P red. the box is in amber can u make it red"):
+     the bubble and the foot note wear the colour of the worst level they name — the amber above, or the red of a red
+     Manning cell (`matrix.css .counts td.red`: its edge, its words) on a dark red of the amber's depth; never a glow (D887). */
+  .mn-foot.mnb-red { background: #2e1418; border-color: rgba(240, 85, 95, .7); color: #FFAAB0; }
+  .mn-foot.mnb-red .mn-show { color: #FFAAB0; }
+  .mn-foot.mnb-red .mn-show:hover { background: rgba(240, 85, 95, .14); }
+  .mn-foot .mn-show:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  /* ITS WORDS IN THE BID WINDOW'S DAY-LINE FORM (his D1360, D1364): "This bid:" in the bubble's own light words, then each
+     row's figures in its colour — the day line's amber and red (bidpicker.css .dl-amber / .dl-red), lifted to read on the
+     bubble's dark fill — the pairs kept whole, wrapping only between them (D1313's rule) */
+  .mn-foot .mn-words { min-width: 0; }
+  .mn-foot .mn-lead { color: #E8EDF2; font-weight: 600; }
+  .mn-foot .mn-pairwrap { white-space: nowrap; }
+  .mn-foot .mn-pair { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .mn-foot .mnp-amber { color: #F2C879; }
+  .mn-foot .mnp-red { color: #FFAAB0; }
+  .mn-foot .dl-dot { color: var(--ink-3); }
+  @media (min-width: 701px) {
+    .mn-foot {
+      left: 50%;
+      right: auto;
+      bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+      width: min(560px, calc(100vw - 48px));
+      transform: translateX(-50%);
+    }
+  }
+}

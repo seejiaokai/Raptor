@@ -159,7 +159,16 @@ for (const [what, viewport, touch] of [['a phone', PHONE, true], ['a desktop', D
     await expect(page.locator('[data-testid="every-until"]')).toContainText('Pick a date')
     await press('[data-testid="every-until"]')
     await calendarOnTop(page, 'Until')
+    /* where the first Thursday and the start a week later fall in two months
+       (run on Fri 23 Oct 26: 29 Oct and 5 Nov) the earlier date is not drawn there — turn back to its month, check it,
+       and come back. (The test failed on GitHub's run that crossed midnight into that Friday: "element(s) not found".) */
+    const monthOn = () => page.locator('[data-testid="dcal"]').getAttribute('data-month')
+    const opened = await monthOn()
+    let back = 0
+    while ((await monthOn()) !== from0.slice(0, 7) && back < 2) { await press('[data-testid="dcal-prev"]'); back++ }
     await expect(page.locator(`[data-testid="dcal-day-${from0}"]`)).toBeDisabled()
+    for (let i = 0; i < back; i++) await press('[data-testid="dcal-next"]')
+    expect(await monthOn(), 'the calendar came back to the month it opened on').toBe(opened)
     await expect(page.locator(`[data-testid="dcal-day-${next}"]`)).toBeEnabled()
     /* a tap outside closes it and changes nothing — and presses nothing behind it */
     await page.mouse.click(3, 3)

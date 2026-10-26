@@ -124,6 +124,17 @@ export function requestInpReveal(row:any){
   setInpMode(mode);if(!inView)setCalMonth({y:+iso.slice(0,4),m:+iso.slice(5,7)})
   INPREVEAL={iid:row.iid,iso,mode}
 }
+/* A MEDICAL INPUT JUST SAVED FROM THE MEDICAL TAB (owner D1300, 24 Oct 26 — "when a new input they fill in is select, it
+   should also flash for a few seconds with cyan border on that input"): its card there wears the just-added mark and is
+   brought into view (ui/MedicalView.tsx, which spends it). Not INPREVEAL: that one turns the Inputs and SANS calendars to
+   the input's month, and from the Medical tab neither is in view (the code read of [MEDICAL-CARDS-3], finding 4). */
+export let MEDREVEAL:{iid:string}|null=null
+export function clearMedReveal(){ MEDREVEAL=null }
+export function revealMedInput(row:any):boolean{
+  if(!row||!INPUTS.includes(row))return false
+  MEDREVEAL={iid:inpId(row)}
+  return true
+}
 /** …and whether the page was asked to show it (ui/inputedit.tsx `saidSaved` — only then can its note be left unsaid) */
 export function revealInput(row:any):boolean{
   if(!row||!INPUTS.includes(row))return false
@@ -967,6 +978,7 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'INPVIEW', scopes:['session'], reset:()=>setInpView('cal') },
   { name:'INPMODE', scopes:['session'], reset:()=>setInpMode('member') },
   { name:'INPREVEAL', scopes:['session'], reset:clearInpReveal },
+  { name:'MEDREVEAL', scopes:['session'], reset:clearMedReveal },
   { name:'PLANREVEAL', scopes:['session'], reset:clearPlanReveal },
   { name:'SANSHL', scopes:['session'], reset:()=>setSansHl(null) },
   { name:'CALMONTH',scopes:['session'], reset:()=>setCalMonth(null) },
@@ -1340,7 +1352,10 @@ export function slotTitle(key:any){
   const k=String(key);
   if(k.indexOf(':')<0){const a=k.split('.');
     const f=(((DAYS[+a[0]]||{}).waves||[])[+a[1]]||{formations:[]}).formations[+a[2]]||{};
-    return `${a[4]==='p'?'FCP':'RCP'} · <span class="mono" style="color:var(--ink-3)">${esc(f.cs||'')} ${esc(f.msn||'')}</span>`;}
+    /* a line with no callsign or mission yet (every new line is blank) names the seat alone — "Planning FCP", never a
+       dangling "FCP ·" (owner D1119, 21 Oct 26) */
+    const lbl=[f.cs,f.msn].map((x:any)=>String(x||'').trim()).filter(Boolean);
+    return `${a[4]==='p'?'FCP':'RCP'}`+(lbl.length?` · <span class="mono" style="color:var(--ink-3)">${esc(lbl.join(' '))}</span>`:'');}
   const p=k.slice(0,k.indexOf(':')), a=k.slice(k.indexOf(':')+1).split('.');
   /* the reassign-a-puck arm (inputedit.tsx's reassignInput) — 'iu:<iid>',
      no day component, since one input can be filed on several loaded days at

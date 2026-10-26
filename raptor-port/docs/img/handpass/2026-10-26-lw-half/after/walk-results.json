@@ -1,0 +1,76 @@
+[
+ {
+  "id": "w2.opens",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Grant OIL opens on FO · 1 lit (true); no Half row (true)",
+  "pics": [
+   "w2-desk-1-grant-panel"
+  ]
+ },
+ {
+  "id": "w2.words",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the button: \"Give HO\" for HO · ½, \"Give FO · 2 days\" for 2 typed; the row inside the window true",
+  "pics": [
+   "w2-desk-3-two-typed"
+  ]
+ },
+ {
+  "id": "w2.ho",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the day after Give HO: [\"HO|k-oil|s-a|top|plain|fs7.5px|w21h10|tw11.4\"]",
+  "pics": [
+   "w2-desk-4-ho-given"
+  ]
+ },
+ {
+  "id": "w2.drag",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "drag window: Grant OIL there true, opens on FO · 1 (true); an FO on each of 17–20 Jul: [true,true,true,true]",
+  "pics": [
+   "w2-desk-5-drag-grant",
+   "w2-desk-6-drag-given"
+  ]
+ },
+ {
+  "id": "w2.opens",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Grant OIL opens on FO · 1 lit (true); no Half row (true)",
+  "pics": [
+   "w2-phone-1-grant-panel"
+  ]
+ },
+ {
+  "id": "w2.words",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the button: \"Give HO\" for HO · ½, \"Give FO · 2 days\" for 2 typed; the row inside the window true",
+  "pics": [
+   "w2-phone-3-two-typed"
+  ]
+ },
+ {
+  "id": "w2.ho",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the day after Give HO: [\"HO|k-oil|s-a|top|plain|fs7.5px|w17h8|tw9.2\"]",
+  "pics": [
+   "w2-phone-4-ho-given"
+  ]
+ },
+ {
+  "id": "w2.drag",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "drag window: Grant OIL there true, opens on FO · 1 (true); an FO on each of 17–20 Jul: [true,true,true,true]",
+  "pics": [
+   "w2-phone-5-drag-grant",
+   "w2-phone-6-drag-given"
+  ]
+ }
+]

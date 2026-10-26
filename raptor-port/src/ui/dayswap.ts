@@ -35,6 +35,7 @@
    therefore never trusted across a structural change: blocks are matched by
    position only when both the previous canonical list and the live child
    list agree on the count, and the fallback costs exactly what today costs. */
+import { scaleOf } from './pinchzoom'
 
 export type BodyChunk = { attrs: string; kids: string[] }
 export type DayChunks = { attrs: string; kids: (string | BodyChunk)[] }
@@ -188,5 +189,5 @@ export function holdingPlace(caret: Element, write: () => void): void {
   let sc: Element | null = caret.parentElement
   while (sc && !(sc.scrollHeight > sc.clientHeight && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement
   const owner = sc || document.scrollingElement
-  if (owner && typeof (owner as any).scrollBy === 'function') owner.scrollBy({ top: dy, behavior: 'instant' as ScrollBehavior })
+  if (owner && typeof (owner as any).scrollBy === 'function') owner.scrollBy({ top: owner === document.scrollingElement ? dy : dy / scaleOf(owner), behavior: 'instant' as ScrollBehavior })   // inside the board's pinch zoom a list's pixels are not the screen's (D1109, ui/pinchzoom.ts)
 }

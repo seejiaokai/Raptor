@@ -1,0 +1,528 @@
+[
+ {
+  "id": "P0",
+  "pass": true,
+  "what": "a phone opens one step out (0.8), the page at its own size",
+  "z": 0.8,
+  "vv": 1,
+  "days": 14.1
+ },
+ {
+  "id": "P0b",
+  "pass": true,
+  "what": "no − / + on the grid's bar"
+ },
+ {
+  "id": "P1",
+  "pass": false,
+  "what": "a pinch out at the top of the page zooms the grid out; the day stays under the fingers across, nothing jumps at the lift; the page, its bar and the month buttons keep their size",
+  "z": 0.473,
+  "from": 0.8,
+  "cell": "cell-taipan-2026-10-30",
+  "offX": 0,
+  "jump": 24,
+  "month": [
+   28,
+   22
+  ],
+  "monthWas": [
+   28,
+   22
+  ],
+  "vv": 1,
+  "barH": 44
+ },
+ {
+  "id": "P2a",
+  "pass": true,
+  "what": "frozen (scrolled down), the date row stands over its columns before any pinch",
+  "z": 0.473,
+  "sl": 3512,
+  "sy": 312,
+  "vv": 1,
+  "dayW": 12.32,
+  "days": 26.2,
+  "names": 57,
+  "mirror": true,
+  "mirrorTop": 49,
+  "mirrorN": 26,
+  "mirrorMaxDx": 0,
+  "mirrorMaxDw": 0,
+  "copyDx": 0,
+  "mirrorText": "FRI16",
+  "bandN": 49,
+  "bandMaxDy": 0,
+  "bidDx": null,
+  "month": [
+   28,
+   22
+  ],
+  "barH": 44,
+  "tf": "",
+  "selcells": 0,
+  "sheet": false,
+  "selecting": false
+ },
+ {
+  "id": "P2",
+  "pass": true,
+  "what": "a pinch in while frozen: the frozen dates zoom with the grid, each over its own column, the frozen names on their rows",
+  "z": 0.804,
+  "sl": 5884,
+  "sy": 663,
+  "vv": 1,
+  "dayW": 20.23,
+  "days": 14,
+  "names": 96,
+  "mirror": true,
+  "mirrorTop": 49,
+  "mirrorN": 14,
+  "mirrorMaxDx": 0,
+  "mirrorMaxDw": 0,
+  "copyDx": 0,
+  "mirrorText": "THU22",
+  "bandN": 35,
+  "bandMaxDy": 0,
+  "bidDx": null,
+  "month": [
+   28,
+   22
+  ],
+  "barH": 44,
+  "tf": "",
+  "selcells": 0,
+  "sheet": false,
+  "selecting": false
+ },
+ {
+  "id": "P3",
+  "pass": true,
+  "what": "in to 1.4 and no further; still lined up",
+  "z": 1.4,
+  "days": 6.1,
+  "mirrorMaxDx": 0
+ },
+ {
+  "id": "P4",
+  "pass": true,
+  "what": "out until about a whole month fits across, no further; still lined up",
+  "z": 0.406,
+  "days": 30.9,
+  "mirrorMaxDx": 0
+ },
+ {
+  "id": "P5",
+  "pass": true,
+  "what": "a pinch started on the app's top bar zooms the grid; the page stays its size",
+  "from": 0.406,
+  "z": 1.015,
+  "sl": 7415,
+  "sy": 220,
+  "vv": 1,
+  "dayW": 25.42,
+  "days": 10.2,
+  "names": 122,
+  "mirror": true,
+  "mirrorTop": 49,
+  "mirrorN": 9,
+  "mirrorMaxDx": 0,
+  "mirrorMaxDw": 0,
+  "copyDx": 0,
+  "mirrorText": "SAT24",
+  "bandN": 25,
+  "bandMaxDy": 0,
+  "bidDx": null,
+  "month": [
+   28,
+   22
+  ],
+  "barH": 44,
+  "tf": "",
+  "selcells": 0,
+  "sheet": false,
+  "selecting": false
+ },
+ {
+  "id": "P6mid",
+  "pass": true,
+  "what": "mid-pinch, after a 420 ms hold: no selection painted",
+  "selcells": 0,
+  "selecting": false
+ },
+ {
+  "id": "P6",
+  "pass": true,
+  "what": "a pinch whose first finger was held on a day selects nothing and opens no day",
+  "z": 0.914,
+  "selcells": 0,
+  "sheet": false
+ },
+ {
+  "id": "P7",
+  "pass": true,
+  "what": "one finger still scrolls the grid sideways after pinches, and does not zoom",
+  "slFrom": 6684,
+  "sl": 6849
+ },
+ {
+  "id": "P8",
+  "pass": true,
+  "what": "a month button still jumps the zoomed grid to its month, at the frozen edge",
+  "gap": -1
+ },
+ {
+  "id": "P9",
+  "pass": true,
+  "what": "the green open-dates outline stands on its first date after the zooms",
+  "bidDx": null
+ },
+ {
+  "id": "P10a",
+  "pass": true,
+  "what": "turned sideways while zoomed: the frozen dates stand over their columns",
+  "z": 0.914,
+  "sl": 1361,
+  "sy": 500,
+  "vv": 1,
+  "dayW": 23.39,
+  "days": 28.1,
+  "names": 174,
+  "mirror": true,
+  "mirrorTop": 149,
+  "mirrorN": 29,
+  "mirrorMaxDx": 0,
+  "mirrorMaxDw": 0,
+  "copyDx": 0,
+  "mirrorText": "MARSUN01",
+  "bandN": 0,
+  "bandMaxDy": null,
+  "bidDx": null,
+  "month": [
+   39,
+   22
+  ],
+  "barH": 51,
+  "tf": "",
+  "selcells": 0,
+  "sheet": false,
+  "selecting": false
+ },
+ {
+  "id": "P10b",
+  "pass": true,
+  "what": "a pinch out held sideways: lined up, the page its own size",
+  "z": 0.548,
+  "from": 0.914,
+  "mirrorMaxDx": 0.8
+ },
+ {
+  "id": "P10c",
+  "pass": true,
+  "what": "sideways, in to 1.4; lined up",
+  "z": 1.4
+ },
+ {
+  "id": "P10d",
+  "pass": true,
+  "what": "turned back upright at 1.4: the frozen dates stand over their columns",
+  "z": 1.4,
+  "sl": 2317,
+  "sy": 700,
+  "vv": 1,
+  "dayW": 35.3,
+  "days": 6,
+  "names": 168,
+  "mirror": true,
+  "mirrorTop": 49,
+  "mirrorN": 5,
+  "mirrorMaxDx": 0,
+  "mirrorMaxDw": 0,
+  "copyDx": 0,
+  "mirrorText": "MON09",
+  "bandN": 21,
+  "bandMaxDy": 0,
+  "bidDx": null,
+  "month": [
+   28,
+   22
+  ],
+  "barH": 44,
+  "tf": "",
+  "selcells": 0,
+  "sheet": false,
+  "selecting": false
+ },
+ {
+  "id": "P-errs",
+  "pass": true,
+  "what": "no error on the phone, upright and sideways",
+  "errs": []
+ },
+ {
+  "id": "P11a",
+  "pass": true,
+  "what": "the OIL tab opens one step out on a phone, with no − / +",
+  "z": 0.8,
+  "toolsH": 57,
+  "vv": 1,
+  "tf": ""
+ },
+ {
+  "id": "P11b",
+  "pass": true,
+  "what": "a pinch in on the OIL table zooms the table; its tools row and the page stay",
+  "z": 1.36,
+  "toolsH": 57,
+  "vv": 1,
+  "tf": ""
+ },
+ {
+  "id": "P11c",
+  "pass": true,
+  "what": "a pinch started on the OIL tab's tools row zooms the table too",
+  "z": 0.544,
+  "toolsH": 57,
+  "vv": 1,
+  "tf": ""
+ },
+ {
+  "id": "P11d",
+  "pass": true,
+  "what": "the OIL table goes in to 1.4 and no further",
+  "z": 1.4,
+  "toolsH": 57,
+  "vv": 1,
+  "tf": ""
+ },
+ {
+  "id": "P11e",
+  "pass": true,
+  "what": "scrolled down the OIL list, a pinch out on its tools row: the row first in sight stays in sight where it was",
+  "row": "oil-row-slipway",
+  "before": 55,
+  "after": 66
+ },
+ {
+  "id": "P11f",
+  "pass": true,
+  "what": "a pinch in on a pinned name: that name stays under the fingers",
+  "row": "oil-row-mamba",
+  "fingersY": 17,
+  "after": {
+   "top": -8,
+   "bottom": 43
+  }
+ },
+ {
+  "id": "P11-errs",
+  "pass": true,
+  "what": "no error on the OIL tab",
+  "errs": []
+ },
+ {
+  "id": "P12",
+  "pass": true,
+  "what": "in Rearrange, a row held by its grip (its lift frame up) is let go when a pinch starts: nothing moved, the grid zoomed",
+  "grip": true,
+  "held": true,
+  "before": "row-dice,row-shaft,row-snap,row-pump,row-bane,row-stiff",
+  "after": "row-dice,row-shaft,row-snap,row-pump,row-bane,row-stiff",
+  "z0": 0.8,
+  "z1": 1.28,
+  "dragging": false
+ },
+ {
+  "id": "P12-errs",
+  "pass": true,
+  "what": "no error in Rearrange",
+  "errs": []
+ },
+ {
+  "id": "P14a",
+  "pass": true,
+  "what": "with October and November open, the green open-dates outline stands on its first date after a pinch in",
+  "before": 0,
+  "after": 0,
+  "z": 1.2
+ },
+ {
+  "id": "P14b",
+  "pass": true,
+  "what": "…and after a pinch out",
+  "bidDx": 0,
+  "z": 0.733
+ },
+ {
+  "id": "P14c",
+  "pass": true,
+  "what": "the figures drawer: no toggle on the grid (nothing to walk)"
+ },
+ {
+  "id": "P14d",
+  "pass": true,
+  "what": "a pinch over the window of a day zooms the grid behind it; the window keeps its size and stays; the page never zooms",
+  "z0": 0.733,
+  "z": 1.173,
+  "h0": 254,
+  "h1": 254,
+  "vv": 1
+ },
+ {
+  "id": "P14-errs",
+  "pass": true,
+  "what": "no error with open dates, the drawer and a window",
+  "errs": []
+ },
+ {
+  "id": "P13a",
+  "pass": true,
+  "what": "a desktop opens at normal size; Ctrl+scroll down over the grid zooms the grid out, the page stays",
+  "from": 1,
+  "z": 0.549,
+  "dpr": 1
+ },
+ {
+  "id": "P13b",
+  "pass": true,
+  "what": "Ctrl+scroll up stops at 1.4",
+  "z": 1.4
+ },
+ {
+  "id": "P13c",
+  "pass": true,
+  "what": "a plain scroll still scrolls the page and does not zoom",
+  "y0": 394,
+  "y1": 694,
+  "z": 1.4
+ },
+ {
+  "id": "P13d",
+  "pass": true,
+  "what": "a desktop zoomed in, scrolled down: its frozen dates (if it freezes them) stand over their columns",
+  "z": 1.4,
+  "sl": 10527,
+  "sy": 700,
+  "vv": 1,
+  "dayW": 35.55,
+  "days": 31.8,
+  "names": 266,
+  "mirror": true,
+  "mirrorTop": 57,
+  "mirrorN": 32,
+  "mirrorMaxDx": 0,
+  "mirrorMaxDw": 0,
+  "copyDx": 0,
+  "mirrorText": "MON02",
+  "bandN": 0,
+  "bandMaxDy": null,
+  "bidDx": null,
+  "month": [
+   40,
+   22
+  ],
+  "barH": 51,
+  "tf": "",
+  "selcells": 0,
+  "sheet": false,
+  "selecting": false
+ },
+ {
+  "id": "P13-errs",
+  "pass": true,
+  "what": "no error on the desktop",
+  "errs": []
+ },
+ {
+  "id": "P-open",
+  "pass": true,
+  "what": "no pinch opened a window (a selection, a day)",
+  "opened": []
+ },
+ {
+  "id": "P-jump",
+  "pass": false,
+  "what": "no pinch on the phone made anything jump at the lift (the cell first under the fingers, before and after)",
+  "n": 11,
+  "worst": 24,
+  "over": [
+   {
+    "at": [
+     260,
+     640
+    ],
+    "cell": "cell-taipan-2026-10-30",
+    "jump": 24,
+    "pre": [
+     260,
+     472
+    ],
+    "post": [
+     260,
+     496
+    ],
+    "end": [
+     [
+      195,
+      640
+     ],
+     [
+      325,
+      640
+     ]
+    ]
+   },
+   {
+    "at": [
+     220,
+     500
+    ],
+    "cell": "cell-pain-2026-10-27",
+    "jump": 12,
+    "pre": [
+     220,
+     532
+    ],
+    "post": [
+     220,
+     520
+    ],
+    "end": [
+     [
+      200,
+      500
+     ],
+     [
+      240,
+      500
+     ]
+    ]
+   },
+   {
+    "at": [
+     220,
+     500
+    ],
+    "cell": "cell-stiff-2026-10-26",
+    "jump": 10,
+    "pre": [
+     220,
+     395
+    ],
+    "post": [
+     220,
+     405
+    ],
+    "end": [
+     [
+      160,
+      500
+     ],
+     [
+      280,
+      500
+     ]
+    ]
+   }
+  ]
+ }
+]

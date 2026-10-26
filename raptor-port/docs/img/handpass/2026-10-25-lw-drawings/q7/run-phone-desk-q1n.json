@@ -1,0 +1,266 @@
+{
+ "looks": {
+  "A": {
+   "name": "outlined, as the Inputs calendar draws a commitment",
+   "css": ".c.k-una.s-a, .tchip.lv.k-una.s-a { background: rgba(232,237,242,.05) !important; box-shadow: inset 0 0 0 1.5px rgba(200,212,228,.78) !important; color: #E8EDF2 !important; }"
+  },
+  "B": {
+   "name": "light grey, dark words (your UNA grey)",
+   "css": ".c.k-una, .tchip.lv.k-una { --h: 184, 190, 198 !important; --ink: #0b1116 !important; --fill: 1 !important; }"
+  }
+ },
+ "log": [
+  {
+   "id": "q1n",
+   "size": "phone",
+   "said": "B/u: [{\"text\":\"Ground Programme\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  },
+  {
+   "id": "q1n",
+   "size": "phone",
+   "said": "B/g: [{\"text\":\"Ground Programme\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  },
+  {
+   "id": "q1n",
+   "size": "phone",
+   "said": "C/u: [{\"text\":\"Ground Programme\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  },
+  {
+   "id": "q1n",
+   "size": "phone",
+   "said": "C/g: [{\"text\":\"Ground Programme\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  },
+  {
+   "id": "q1n",
+   "size": "desk",
+   "said": "B/u: [{\"text\":\"Ground Programme\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  },
+  {
+   "id": "q1n",
+   "size": "desk",
+   "said": "B/g: [{\"text\":\"Ground Programme\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  },
+  {
+   "id": "q1n",
+   "size": "desk",
+   "said": "C/u: [{\"text\":\"Ground Programme\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  },
+  {
+   "id": "q1n",
+   "size": "desk",
+   "said": "C/g: [{\"text\":\"Ground Programme\",\"on\":true,\"ratio\":null,\"h\":36,\"overflow\":false},{\"text\":\"Unavailable\",\"on\":false,\"ratio\":null,\"h\":36,\"overflow\":false}]"
+  }
+ ],
+ "pics": [
+  {
+   "file": "q1n-b-unavail-phone.png",
+   "label": "Drawn B: a tint of the colour and its edge, as the window shows a pick; ordinary letters. Unavailable picked"
+  },
+  {
+   "file": "q1n-b-ground-phone.png",
+   "label": "Drawn B: Ground Programme picked"
+  },
+  {
+   "file": "q1n-c-unavail-phone.png",
+   "label": "Drawn C (recommended): solid as before, ordinary letters. Unavailable picked"
+  },
+  {
+   "file": "q1n-c-ground-phone.png",
+   "label": "Drawn C: Ground Programme picked"
+  },
+  {
+   "file": "q1n-b-unavail-desk.png",
+   "label": "Drawn B: a tint of the colour and its edge, as the window shows a pick; ordinary letters. Unavailable picked"
+  },
+  {
+   "file": "q1n-b-ground-desk.png",
+   "label": "Drawn B: Ground Programme picked"
+  },
+  {
+   "file": "q1n-c-unavail-desk.png",
+   "label": "Drawn C (recommended): solid as before, ordinary letters. Unavailable picked"
+  },
+  {
+   "file": "q1n-c-ground-desk.png",
+   "label": "Drawn C: Ground Programme picked"
+  }
+ ],
+ "measures": [
+  {
+   "size": "phone",
+   "set": "q1n",
+   "look": "B",
+   "pick": "u",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  },
+  {
+   "size": "phone",
+   "set": "q1n",
+   "look": "B",
+   "pick": "g",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  },
+  {
+   "size": "phone",
+   "set": "q1n",
+   "look": "C",
+   "pick": "u",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  },
+  {
+   "size": "phone",
+   "set": "q1n",
+   "look": "C",
+   "pick": "g",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  },
+  {
+   "size": "desk",
+   "set": "q1n",
+   "look": "B",
+   "pick": "u",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  },
+  {
+   "size": "desk",
+   "set": "q1n",
+   "look": "B",
+   "pick": "g",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  },
+  {
+   "size": "desk",
+   "set": "q1n",
+   "look": "C",
+   "pick": "u",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  },
+  {
+   "size": "desk",
+   "set": "q1n",
+   "look": "C",
+   "pick": "g",
+   "buttons": [
+    {
+     "text": "Ground Programme",
+     "on": true,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    },
+    {
+     "text": "Unavailable",
+     "on": false,
+     "ratio": null,
+     "h": 36,
+     "overflow": false
+    }
+   ]
+  }
+ ]
+}

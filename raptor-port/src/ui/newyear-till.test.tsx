@@ -40,7 +40,8 @@ describe('the week of 28 Dec 2026 — a course running to 8 Jan 2027, its Wednes
     setSession({ user: 'a', role: 'admin' } as any)
     loadWeek('28/12/2026'); validate()
     const [a] = free(1)
-    expect(commitNewInput(draft(a, 'CSE', '2026-12-30', '2027-01-08', 'Course'))).toBe(true)
+    /* a Training, not a course: a course lands under Unavailable since D1372, and this pins a Ground Programme row's till */
+    expect(commitNewInput(draft(a, 'Training', '2026-12-30', '2027-01-08', 'Course'))).toBe(true)
     validate()
     cse = INPUTS.find((r: any) => r.remarks === 'Course')!
     for (const di of [2, 3, 4]) publish(di)

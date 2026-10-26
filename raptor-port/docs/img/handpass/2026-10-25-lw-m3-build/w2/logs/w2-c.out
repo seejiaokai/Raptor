@@ -1,0 +1,46 @@
+lw-m3b-w2-c C:\Users\User\projects\Raptor\.claude\worktrees\lw-m3-placing-leave-d1c063\raptor-port\docs\img\handpass\2026-10-25-lw-m3-build\w2 sets 16,17
+-- 16
+   bundle [desk] index-BayEj7kB.js
+   16-filed [desk] acc g, allday true, asked []
+   16-start [desk] on Ground Programme; war cell [] Available P 25 → 25
+   16-rejected [desk] pressed "REJECT"; on Personal Inputs only; buttons now ["g:→ Ground","u:→ Unavail"]; war [] Available P 25
+   16-unavail [desk] pressed "→ UNAVAIL"; on Unavailable; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 25 → 24
+   16-changes [desk] changes window words: ⠿ Changes · week of 13/7 3 changes this week ✕ New to you 0 All changes 3 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen
+   16-bell [desk] bell: no list
+PASS?  16-unavail [desk]  started on Ground Programme; Reject then buttons ["g:→ Ground","u:→ Unavail"]; "→ Unavail" put it on Unavailable; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 25 → 24  [c-16-start-ground, c-16-rejected-inputs, c-16-unavail-edit, c-16-unavail-war]
+   16-undo-redo [desk] Undo ("Undo — a change to the schedule"): {"page":"editsched","cell":[],"avail":"25","acc":"r"} · Redo ("Redo — a change to the schedule"): {"page":"editsched","cell":["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"],"avail":"24","acc":"u"}
+PASS?  16-undo-redo [desk]  Undo ("Undo — a change to the schedule") → page editsched, acc r, war [] Available P 25; Redo ("Redo — a change to the schedule") → page editsched, acc u, war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 24  [c-16-undo-war, c-16-redo-war]
+   16-ground [desk] after Reject: war [] Available P 25; "→ GROUND" → on Ground Programme; war [] Available P 25
+PASS?  16-ground [desk]  Reject: war [] Available P 25; "→ Ground": on Ground Programme, war [], Available P 25  [c-16-ground-edit, c-16-ground-war]
+   16-back [desk] back under Unavailable: war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 24
+PASS?  38(16) [desk]  after reload + sign-in: war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 24; row on Unavailable  [c-16-reload-war, c-16-reload-edit]
+   16b-board [desk] board buttons for it: ["x:Reject"]
+   16b-board [desk] Reject pressed "REJECT"; buttons now ["g:→ Ground","u:→ Unavail"]
+   16b-board [desk] "→ UNAVAIL" pressed; board's Unavailable panel: ⠿ UNAVAILABLE + ADD ITEM START END PEOPLE RMKS Training LATE Ranger IP REJECT ATT C Grit C till 17 Jul OD Nomad C till 17 Jul
+   16b-board [desk] Reject "REJECT" then "→ GROUND": Ground panel has it: false; war [] Available P 27
+FAIL?  16-board [desk]  board offers ["g:→ Ground","u:→ Unavail"] after Reject; "→ Unavail": board's Unavailable panel holds it: false; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 27 → 26; "→ Ground": Ground panel holds it: false, war [], Available P 27  [c-16b-board-rejected, c-16b-board-unavail, c-16b-board-war, c-16b-board-ground, c-16b-board-ground-war]
+   errors-16 [desk] []
+-- 17
+   17-base [desk] Available P {"2026-07-13":"28","2026-07-14":"28","2026-07-15":"25","2026-07-16":"26","2026-07-17":"27"}
+   17-Meeting [desk] filed acc g allday true; start [] → Reject "REJECT" → ["g:→ Ground","u:→ Unavail"] → "→ UNAVAIL"; row on Unavailable; war ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w22h22|tw18.6"] Available P 28 → 27
+   17-Personal [desk] filed acc g allday true; start [] → Reject "REJECT" → ["g:→ Ground","u:→ Unavail"] → "→ UNAVAIL"; row on Unavailable; war ["PERS|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw16.5"] Available P 28 → 27
+   17-Appointment [desk] filed acc g allday true; start [] → Reject "REJECT" → ["g:→ Ground","u:→ Unavail"] → "→ UNAVAIL"; row on Unavailable; war ["APPT|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw17.7"] Available P 25 → 24
+   17-Duty [desk] filed acc g allday true; start [] → Reject "REJECT" → ["g:→ Ground","u:→ Unavail"] → "→ UNAVAIL"; row on Unavailable; war ["DTY|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16"] Available P 26 → 25
+   17-Event [desk] filed acc g allday true; start [] → Reject "REJECT" → ["g:→ Ground","u:→ Unavail"] → "→ UNAVAIL"; row on Unavailable; war ["EVT|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw15.1"] Available P 27 → 26
+PASS?  17-desk [desk]  Meeting: MTG|k-unav|s-a|whole|outlined|fs8.5px|w22h22|tw18.6 on Unavailable, Available P 28 → 27 · Personal: PERS|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw16.5 on Unavailable, Available P 28 → 27 · Appointment: APPT|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw17.7 on Unavailable, Available P 25 → 24 · Duty: DTY|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16 on Unavailable, Available P 26 → 25 · Event: EVT|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw15.1 on Unavailable, Available P 27 → 26  [c-17-desk-war]
+   17-desk-fit [desk] MTG|k-unav|s-a|whole|outlined|fs8.5px|w22h22|tw18.6 ; PERS|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw16.5 ; APPT|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw17.7 ; DTY|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16 ; EVT|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw15.1
+-- 17-phone
+   17-phone-world [phone] Tue 14 Jul in the reopened world: ["PERS|k-unav|s-a|whole|outlined|fs7.5px|w17h17|tw13.2"]
+   17-phone [phone] [{"kind":"Meeting","want":"MTG","cell":["MTG|k-unav|s-a|whole|outlined|fs8.5px|w18h17|tw14.9"]},{"kind":"Personal","want":"PERS","cell":["PERS|k-unav|s-a|whole|outlined|fs7.5px|w17h17|tw13.2"]},{"kind":"Appointment","want":"APPT","cell":["APPT|k-unav|s-a|whole|outlined|fs7.5px|w17h17|tw14.2"]},{"kind":"Duty","want":"DTY","cell":["DTY|k-unav|s-a|whole|outlined|fs8.5px|w17h17|tw12.8"]},{"kind":"Event","want":"EVT","cell":["EVT|k-unav|s-a|whole|outlined|fs8.5px|w17h17|tw12.1"]}]
+PASS?  17-phone [phone]  Meeting: MTG|k-unav|s-a|whole|outlined|fs8.5px|w18h17|tw14.9 · Personal: PERS|k-unav|s-a|whole|outlined|fs7.5px|w17h17|tw13.2 · Appointment: APPT|k-unav|s-a|whole|outlined|fs7.5px|w17h17|tw14.2 · Duty: DTY|k-unav|s-a|whole|outlined|fs8.5px|w17h17|tw12.8 · Event: EVT|k-unav|s-a|whole|outlined|fs8.5px|w17h17|tw12.1  [c-17-phone-war, c-17-phone-meeting, c-17-phone-personal, c-17-phone-appointment, c-17-phone-duty, c-17-phone-event]
+   errors-17-phone [phone] []
+   errors-17 [desk] []
+RESULTS
+PASS? 16-unavail | started on Ground Programme; Reject then buttons ["g:→ Ground","u:→ Unavail"]; "→ Unavail" put it on Unavailable; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 25 → 24
+PASS? 16-undo-redo | Undo ("Undo — a change to the schedule") → page editsched, acc r, war [] Available P 25; Redo ("Redo — a change to the schedule") → page editsched, acc u, war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 24
+PASS? 16-ground | Reject: war [] Available P 25; "→ Ground": on Ground Programme, war [], Available P 25
+PASS? 38(16) | after reload + sign-in: war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"], Available P 24; row on Unavailable
+FAIL? 16-board | board offers ["g:→ Ground","u:→ Unavail"] after Reject; "→ Unavail": board's Unavailable panel holds it: false; war ["TRG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16.3"] Available P 27 → 26; "→ Ground": Ground panel holds it: false, war [], Available P 27
+PASS? 17-desk | Meeting: MTG|k-unav|s-a|whole|outlined|fs8.5px|w22h22|tw18.6 on Unavailable, Available P 28 → 27 · Personal: PERS|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw16.5 on Unavailable, Available P 28 → 27 · Appointment: APPT|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw17.7 on Unavailable, Available P 25 → 24 · Duty: DTY|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw16 on Unavailable, Available P 26 → 25 · Event: EVT|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw15.1 on Unavailable, Available P 27 → 26
+PASS? 17-phone | Meeting: MTG|k-unav|s-a|whole|outlined|fs8.5px|w18h17|tw14.9 · Personal: PERS|k-unav|s-a|whole|outlined|fs7.5px|w17h17|tw13.2 · Appointment: APPT|k-unav|s-a|whole|outlined|fs7.5px|w17h17|tw14.2 · Duty: DTY|k-unav|s-a|whole|outlined|fs8.5px|w17h17|tw12.8 · Event: EVT|k-unav|s-a|whole|outlined|fs8.5px|w17h17|tw12.1
+exit 0

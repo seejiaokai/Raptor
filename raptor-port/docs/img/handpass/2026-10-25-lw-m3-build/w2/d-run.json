@@ -1,0 +1,87 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-BayEj7kB.js"
+ },
+ {
+  "id": "base",
+  "size": "desk",
+  "said": "Available P {\"2026-07-14\":\"28\",\"2026-07-15\":\"25\",\"2026-07-16\":\"26\"} · Hunter 16 Jul [] · Ranger 14/15 [[],[]]"
+ },
+ {
+  "id": "18-cse",
+  "size": "desk",
+  "said": "acc u date Jul 14→Jul 15 asked [] readout \"Jul 14 → Jul 15\" goes row 0"
+ },
+ {
+  "id": "18-attach",
+  "size": "desk",
+  "said": "acc u to \"145 Sqn\" date Jul 16 asked [] goes row 0 labels in window: see picture"
+ },
+ {
+  "id": "18-where",
+  "size": "desk",
+  "said": "course Tue14: Unavailable [\"CSE 06:00 18:00 Ranger IP LATE Instructor coursetill 15 Jul REJECT\"] · Wed15: Unavailable · Attach Thu16: Unavailable [\"Attach · 145 Sqn ATTACH Hunter IP LATE Exercise support REJECT\"]"
+ },
+ {
+  "id": "18-words",
+  "size": "desk",
+  "said": "Unavailable row: \"Attach · 145 Sqn ATTACH Hunter IP LATE Exercise support REJECT\" · Inputs card: \"Hunter 16 Jul Attach · 145 Sqn ATTACH LATEExercise supportBy Saber now\" · Inputs calendar bar: \"Hunter · Attach · 145 Sqn\" (course bar \"Ranger · CSE\")"
+ },
+ {
+  "id": "18-daylist",
+  "size": "desk",
+  "said": "a tap on the Attach day opens: {\"id\":\"daylist\",\"text\":\"ATCH | Change it on the Inputs page | “Exercise support”\",\"tids\":[\"dl-a-imvnq0qju5fqk6b\",\"dl-ro-imvnq0qju5fqk6b\"]}"
+ },
+ {
+  "id": "18-war",
+  "size": "desk",
+  "said": "Hunter 16: [\"ATCH|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw18.1\"] Available P 26 → 25 · Ranger 14: [\"CSE|k-cse|s-a|whole|plain|fs8.5px|w21h22|tw14.3\"] 28 → 27 · 15: [\"CSE|k-cse|s-a|whole|plain|fs8.5px|w21h22|tw14.3\"] 25 → 24"
+ },
+ {
+  "id": "18-behind",
+  "size": "desk",
+  "said": "day panel after the first press:  · panels: win-inputsday,win-inputsday-x"
+ },
+ {
+  "id": "18-behind-rects",
+  "size": "desk",
+  "said": "{\"dayPanel\":[1090,96,1520,574],\"newWindow\":[1090,96,1520,840],\"topAtOverlap\":\"win-inputedit\"}"
+ },
+ {
+  "id": "18-behind",
+  "size": "desk",
+  "said": "window's dates before \"Jul 21\", after a press on Tue 14 Jul behind it \"Jul 21\"; window title \"null\"; day panel: ⠿ Tue 14 Jul + Note ✕ + Input 5 INPUTS till 17 Jul GritATT C Medically down LATE No document All day QuillLL Local leave; cells whose look changed: [\"2026-07-14: \\\"ib-day\\\" → \\\"ib-day is-open\\\"\",\"2026-07-21: \\\"ib-day is-open\\\" → \\\"ib-day\\\"\"]; windows open win-inputedit,inpEditPop"
+ },
+ {
+  "id": "18-behind",
+  "size": "desk",
+  "said": "cells with a pick/select/lit class: []"
+ },
+ {
+  "id": "19-reject",
+  "size": "desk",
+  "said": "row on Personal Inputs only; war [] Available P 26"
+ },
+ {
+  "id": "19-ground",
+  "size": "desk",
+  "said": "row on Ground Programme; war [] Available P 26"
+ },
+ {
+  "id": "19-unavail",
+  "size": "desk",
+  "said": "row on Unavailable; war [\"ATCH|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw18.1\"] Available P 25"
+ },
+ {
+  "id": "38(18)",
+  "size": "desk",
+  "said": "after reload: Attach war [\"ATCH|k-unav|s-a|whole|outlined|fs7.5px|w21h22|tw18.1\"] Available P 25; course [\"CSE|k-cse|s-a|whole|plain|fs8.5px|w21h22|tw14.3\"] 27 / [\"CSE|k-cse|s-a|whole|plain|fs8.5px|w21h22|tw14.3\"] 24; window \"To\" = \"145 Sqn\", goes row {\"row\":false}; Attach row on Unavailable: [\"Attach · 145 Sqn ATTACH Hunter IP LATE Exercise support REJECT\"]"
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "said": "[]"
+ }
+]

@@ -12,7 +12,7 @@ import { INPUTS, holds } from '../../engine/inputs'
 import { initStore as raptorInitStore, writeInputs } from '../../state/store'
 import { setMe, setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
-import { advanceStage, deletableIn, initStore as lwInitStore, movableRecords, moveCells, setBidStates, setCell, setPeople, setRole } from '../state/store'
+import { closeDates, deletableIn, initStore as lwInitStore, movableRecords, moveCells, setBidStates, setCell, setPeople, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { wireLeaveWarSync } from '../sync'
 import { SelectSheet } from './SelectSheet'
@@ -37,7 +37,7 @@ const cells = [{ personId: 'ammo', date: D }]
 describe('approved leave beside leave filed on the Inputs page (Fable’s S10)', () => {
   beforeEach(() => {
     expect(setCell('ammo', D, '*LL')).toBe(true)
-    advanceStage()                                                  // bidding closed — the admin decides
+    closeDates('2026-01-01', '2026-12-31')                          // every date closed (was the closed stage, D1177) — the admin decides
     setBidStates(cells, 'approved')
     const row = { iid: 'mss1', person: 'ammo', type: 'LL', date: 'Feb 18', yr: 2026, half: 'pm', s: 721, e: 1439, remarks: '', mod: '2026-02-01' }
     expect(writeInputs(() => { INPUTS.unshift(row) })).toBe(true)

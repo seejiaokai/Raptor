@@ -1,0 +1,129 @@
+{
+ "all": [
+  {
+   "id": 17,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "Ranger 20 Jul on the war before filing: []| act",
+    "ok: a new LL with no document raises the ask",
+    "ok: the ask's head reads \"No document — Ranger, LL\": \"No document — Ranger, LL ✕ Attach the approval from the leave app now, or file it and attach it later. No document Upload\"",
+    "ok: the ask's words: \"No document — Ranger, LL ✕ Attach the approval from the leave app now, or file it and attach it later. No document Upload\"",
+    "ok: the ask has [Upload] and [No document]",
+    "ok: the ask is gone after \"No document\"",
+    "ok: the leave is filed: [\"Ranger 16 Jul 17:00–18:30 APPOINTMENT Medical / PHA 29 Jun 26\",\"Ranger 20 Jul LL LATEtill 20 JulBy Saber now No document\",\"Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 MEETING Flight afety briefBy Saber 25 Jun 26\"]",
+    "ok: its row reads a quiet \"No document\": \"Ranger 20 Jul LL LATEtill 20 JulBy Saber now No document\"",
+    "Ranger 20 Jul on the war after filing: [[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 3px rgb(255, 241, 207)\",\"rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset\"]]| act hasc",
+    "bells after the filing — Ranger: {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"}; Saber: {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"}",
+    "ok: the window shows the new file chip (1)",
+    "ok: saving an edit of a saved leave raises no ask",
+    "ok: the window closed (saved)",
+    "ok: the row now has the file and no \"No document\": \"Ranger 20 Jul LL LATEtill 20 JulBy Saber now\" file=true",
+    "ok: the war's cell is unchanged by the documents-only edit: before \"[[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 3px rgb(255, 241, 207)\",\"rgba(24\" after \"[[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 3px rgb(255, 241, 207)\",\"rgba(24\"",
+    "ok: Ranger's bell is unchanged by the documents-only edit: before {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"} after {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"}",
+    "ok: Saber's bell is unchanged: before {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"} after {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"}"
+   ],
+   "fails": [],
+   "pics": [
+    "s17-new-window-desk-cr.png",
+    "s17-ask-desk-cr.png",
+    "s17-filed-desk-cr.png",
+    "s17-war-cell-filed-desk-cr.png",
+    "s17-edit-window-desk-cr.png",
+    "s17-added-desk-cr.png",
+    "s17-war-cell-doc-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 18,
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: admin placed an approved LL with a file on 20 Jan, so one leave carries a document",
+    "the unfiltered list has 45 rows; kinds: OL, ATT C, OML, UPCHIT, LL, OIL, CSE, CCL, ATT B, DUTY, FLY WITH, MEETING, APPOINTMENT, OD, EVENT",
+    "ok: \"All leave\" shows only leave kinds: 24 rows, kinds OL, LL, OIL, CCL",
+    "ok: \"No document\" stands on every leave row without a file: 23 of 23 bare rows carry it",
+    "ok: a row with a file never also says \"No document\"",
+    "ok: the calendar (JANUARY 2026) with \"All leave\" shows only leave bars: 7 bars, kinds OL, LL, OIL, CCL",
+    "ok: \"All medical\" shows only medical kinds: 9 rows, kinds ATT C, OML, UPCHIT, ATT B",
+    "ok: \"No document\" stands on every medical row without a file: 3 of 3 bare rows carry it",
+    "ok: a row with a file never also says \"No document\"",
+    "ok: the calendar (JANUARY 2026) with \"All medical\" shows only medical bars: 3 bars, kinds ATT C, OML, UPCHIT",
+    "ok: \"All duty & commitments\" shows only duty kinds: 12 rows, kinds CSE, DUTY, FLY WITH, MEETING, APPOINTMENT, OD, EVENT",
+    "ok: no duty row says \"No document\" (0 do)",
+    "ok: the calendar (JANUARY 2026) with \"All duty & commitments\" shows only duty bars: 1 bars, kinds CSE"
+   ],
+   "fails": [],
+   "pics": [
+    "s18-list-leave-desk-cr.png",
+    "s18-cal-leave-desk-cr.png",
+    "s18-list-medical-desk-cr.png",
+    "s18-cal-medical-desk-cr.png",
+    "s18-list-duty-desk-cr.png",
+    "s18-cal-duty-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": "17p",
+   "size": "desk",
+   "engine": "chromium",
+   "verdict": "PASS",
+   "notes": [
+    "ok: Tue 14 Jul is published: {\"chip\":\"5 changes\",\"al\":\"No pending changes\",\"ver\":\"ORIG\"}",
+    "after the leave was filed (no document): {\"chip\":\"pending\",\"al\":\"1 day with changes to publish\",\"ver\":\"ORIG\"}",
+    "ok: the 14 Jul leave is on the list: [\"Ranger\\t14 Jul\\t\\tLL\\tLATEtill 14 JulBy Saber\\tnow\\tNo document\",\"Ranger\\t16 Jul 17:00–18:30\\t\\tAPPOINTMENT\\tMedical / PHA\\t29 Jun 26\",\"Drifter, Echo, Ranger, Saber\\t23 Jul 10:00–11:00\\t\\tMEETING\\tFlight  afety briefBy Saber\\t25 Jun 26\"]",
+    "ok: the published day reads the same after the documents-only change: before {\"chip\":\"pending\",\"al\":\"1 day with changes to publish\",\"ver\":\"ORIG\"} after {\"chip\":\"pending\",\"al\":\"1 day with changes to publish\",\"ver\":\"ORIG\"}"
+   ],
+   "fails": [],
+   "pics": [
+    "s17p-published-desk-cr.png",
+    "s17p-after-filing-desk-cr.png",
+    "s17p-after-doc-desk-cr.png"
+   ],
+   "notrun": null
+  },
+  {
+   "id": 17,
+   "size": "phone",
+   "engine": "chromium",
+   "verdict": "FAIL",
+   "notes": [
+    "Ranger 20 Jul on the war before filing: []| act",
+    "ok: a new LL with no document raises the ask",
+    "ok: the ask's head reads \"No document — Ranger, LL\": \"No document — Ranger, LL ✕ Attach the approval from the leave app now, or file it and attach it later. No document Upload\"",
+    "ok: the ask's words: \"No document — Ranger, LL ✕ Attach the approval from the leave app now, or file it and attach it later. No document Upload\"",
+    "ok: the ask has [Upload] and [No document]",
+    "ok: the ask is gone after \"No document\"",
+    "ok: the leave is filed: [\"16 Jul 17:00–18:30 RangerAPPOINTMENT Medical / PHA\",\"20 Jul LATE All day RangerLL By Saber\",\"23 Jul 10:00–11:00 Drifter, Echo, Ranger, SaberMEETING Flight afety brief By Saber\"]",
+    "FAIL: its row reads a quiet \"No document\": \"20 Jul LATE All day RangerLL By Saber\"",
+    "Ranger 20 Jul on the war after filing: [[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 2.5px rgb(255, 241, 207)\",\"rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset\"]]| act hasc",
+    "bells after the filing — Ranger: {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"}; Saber: {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"}",
+    "ok: the window shows the new file chip (1)",
+    "ok: saving an edit of a saved leave raises no ask",
+    "ok: the window closed (saved)",
+    "ok: the row now has the file and no \"No document\": \"20 Jul LATE All day RangerLL By Saber\" file=true",
+    "ok: the war's cell is unchanged by the documents-only edit: before \"[[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 2.5px rgb(255, 241, 207)\",\"rgba(\" after \"[[\"c k-ll s-a whole raptor\",\"LL\",\"rgba(242, 200, 110, 0.22)\",\"rgb(255, 241, 207)\",\"none 2.5px rgb(255, 241, 207)\",\"rgba(\"",
+    "ok: Ranger's bell is unchanged by the documents-only edit: before {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"} after {\"badge\":\"\",\"menu\":\"LLMon 20 Jul You were added · Saber now Mark all read || LLMon 20 Jul You were added · Saber now || Mark all read\"}",
+    "ok: Saber's bell is unchanged: before {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"} after {\"badge\":\"\",\"menu\":\"Nothing new || Nothing new\"}"
+   ],
+   "fails": [
+    "its row reads a quiet \"No document\": \"20 Jul LATE All day RangerLL By Saber\""
+   ],
+   "pics": [
+    "s17-new-window-phone-cr.png",
+    "s17-ask-phone-cr.png",
+    "s17-filed-phone-cr.png",
+    "s17-war-cell-filed-phone-cr.png",
+    "s17-edit-window-phone-cr.png",
+    "s17-added-phone-cr.png",
+    "s17-war-cell-doc-phone-cr.png"
+   ],
+   "notrun": null
+  }
+ ],
+ "errs": []
+}

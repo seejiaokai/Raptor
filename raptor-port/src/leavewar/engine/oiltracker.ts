@@ -52,8 +52,8 @@ import { creditWorth } from './credit'
 import { codeOf } from './codes'
 import type { FigureCtx } from './counters'
 import { addDays, addMonths, isWeekend } from './period'
-import type { Win } from './dayview'
-import { creditGiver } from './warrecs'
+import { portionOf, type Win } from './dayview'
+import { awardHalf, creditGiver, type Half } from './warrecs'
 
 export type OilExpiryUnit = 'days' | 'months'
 
@@ -131,6 +131,9 @@ export interface OilCredit {
    *  Since N16 (21 Sep 26) a day can carry two credits, so a person and a
    *  date no longer name one of them. */
   recId?: string
+  /** An HO's half of its day (owner, D1164) — an award's as the admin picked it, the schedule's where its work fell —
+   *  so the tracker's line says which half, as the grid draws it. Absent on anything but half a day. */
+  half?: Half
   /** First day it can no longer be used; `null` = never. */
   expires: string | null
   /** FIFO draws against it, oldest debit first. */
@@ -224,7 +227,8 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
   for (const e of ctx.ledger) {
     if (e.personId !== personId || e.counter !== 'oil' || !e.amount) continue
     if (e.amount > 0) {
-      credits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: e.amount, reason: e.reason, source: 'grant', approvedBy: e.approvedBy, ...(e.givenBy ? { givenBy: e.givenBy } : {}), ...(e.enteredBy ? { enteredBy: e.enteredBy } : {}), ...(e.enteredAt ? { enteredAt: e.enteredAt } : {}), expires: expiryOf(e.date, policy), used: [], left: e.amount, expired: 0 })
+      const half = awardHalf(e)
+      credits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: e.amount, reason: e.reason, source: 'grant', approvedBy: e.approvedBy, ...(e.givenBy ? { givenBy: e.givenBy } : {}), ...(half ? { half } : {}), ...(e.enteredBy ? { enteredBy: e.enteredBy } : {}), ...(e.enteredAt ? { enteredAt: e.enteredAt } : {}), expires: expiryOf(e.date, policy), used: [], left: e.amount, expired: 0 })
     } else {
       debits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: -e.amount, reason: e.reason, source: 'correction', from: [], unbacked: 0 })
     }
@@ -248,8 +252,12 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
         if (amount <= 0) continue
         const reason = credit.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
         const giver = creditGiver({ auto: true, via: credit.via })
-        const hours = credit.wins ?? (credit.win[0] === 0 && credit.win[1] === 1439 ? undefined : [credit.win])
-        credits.push({ id: `auto:${wi}:${date}`, recId: credit.id, date, amount, reason, source: 'auto', ...(hours ? { hours } : {}), ...(giver ? { givenBy: giver } : {}), expires: expiryOf(date, policy), used: [], left: amount, expired: 0 })
+        /* the real hours: `wins` where the credit carries them (several stretches, and every HO since D1164 — its `win`
+           is the half it is drawn in, not its hours), else its window; a whole day reported with no hours shows none */
+        const real = credit.wins ?? [credit.win]
+        const hours = real.length === 1 && real[0]![0] === 0 && real[0]![1] === 1439 ? undefined : real
+        const half: Half | null = credit.code === 'HO' ? (portionOf(credit.win) === 'pm' ? 'pm' : 'am') : null
+        credits.push({ id: `auto:${wi}:${date}`, recId: credit.id, date, amount, reason, source: 'auto', ...(hours ? { hours } : {}), ...(half ? { half } : {}), ...(giver ? { givenBy: giver } : {}), expires: expiryOf(date, policy), used: [], left: amount, expired: 0 })
       }
       for (const t of charged.get(date) ?? []) {
         if (t.counter !== 'oil') continue

@@ -443,7 +443,7 @@ export const JOURNEYS = [
         tests: [
           ['deciding.test.tsx', 'approve, ack, refuse'],
           ['chrome.test.tsx', 'the stage strip'],
-          ['stage-undo.test.ts', 'Undo takes back a stage move'],
+          ['open-undo.test.ts', 'Undo takes back opening or closing dates'],
           ['sync.test.ts', 'approving turns bids into one input'],
           ['moveone.test.tsx', 'moving one bid'],
         ],

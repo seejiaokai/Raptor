@@ -1,0 +1,29 @@
+[
+ {
+  "id": "S18f UNA on a day he already holds approved leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cells LL|k-ll|s-a|whole → LL|k-ll|s-a|left+UNA|k-una|s-a|right; window closed; Available P 26 red → 26 red; no bubble",
+  "pics": [
+   "s18f-desk-UNA-after-tap.png",
+   "s18f-desk-UNA-settled.png"
+  ]
+ },
+ {
+  "id": "S18f OD on a day he already holds approved leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cells LL|k-ll|s-a|whole → LL|k-ll|s-a|left+OD|k-od|s-a|right; window closed; Available P 25 red → 25 red; no bubble",
+  "pics": [
+   "s18f-desk-OD-after-tap.png",
+   "s18f-desk-OD-settled.png"
+  ]
+ },
+ {
+  "id": "errors-18",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

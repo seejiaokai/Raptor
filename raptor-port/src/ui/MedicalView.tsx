@@ -20,14 +20,16 @@
    your own puck or an admin, and on a Pending card the Upchit path itself.
    This view deliberately ignores the table's filter bar: it is the
    squadron's medical state, not a filtered list (docs/ui-contracts.md). */
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
 import { INPUT_TYPES, inpMeta, inpType, leadOf, remarksTyped, defaultAllday } from '../engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode } from '../engine/medical'
 import { docHas, rowDocIds } from '../state/docs'
-import { MEDASOF, setMedAsOf } from '../state/view'
+import { MEDASOF, MEDREVEAL, clearMedReveal, setMedAsOf } from '../state/view'
 import { notify } from '../state/store'
-import { setDocView, setInpEdit } from './pops'
+import { INPEDIT, setDocView, setInpEdit } from './pops'
+import { useMedia } from './usemedia'
+import { bringRowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { puck } from './html'
 import { fmtDay, unfmt, newInputSeed } from './inputedit'
@@ -90,7 +92,7 @@ function remarkNote(remark: any): string {
    and "upchitted" (its section says Upchit, D961). ITS DOCUMENTS, IN EVERY SECTION (owner D966, D967 — "Both as
    recommended"): from two on file, one page drawing and the number ("▯ 2") after the period; one shows none — a downchit
    always carries one, so it would say nothing. The "N documents" pill went. */
-function Card({ e, line, up, docs, kind = true, onOpen }: { e: any, line: string, up?: boolean, docs?: number, kind?: boolean, onOpen: (row: any, up?: boolean) => void }) {
+function Card({ e, line, up, docs, kind = true, lit, onOpen }: { e: any, line: string, up?: boolean, docs?: number, kind?: boolean, lit?: boolean, onOpen: (row: any, up?: boolean) => void }) {
   const r = e.row
   /* (whose it is: a medical entry and an upchit are ONE person's — engine/inputs.ts shapeProblem, D655 reading 4 — so
      the puck is the first of the record's people, leadOf: a record stored before the one-rule build answers with its
@@ -100,7 +102,7 @@ function Card({ e, line, up, docs, kind = true, onOpen }: { e: any, line: string
      them (owner, 1 Sep 26); one document shows the plain title as before */
   const n = docs || 1
   return (
-    <button type="button" className="medcard" data-medcard={r.iid || ''}
+    <button type="button" className={'medcard' + (lit ? ' innew' : '')} data-medcard={r.iid || ''} data-fresh={lit ? r.iid : undefined}
       title={n > 1 ? `Tap to view ${n} documents` : 'Tap to view the document'}
       onClick={() => onOpen(r, up)}>
       <span className="medcard-top">
@@ -143,7 +145,35 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const asOf = MEDASOF || todayIso
   const ord = isoOrd(asOf)
   const [calOpen, setCalOpen] = useState(false)
+  /* where the as-of picker hangs: under its own button. Since D1137 "+ Medical" stands first, so the picker's fixed left
+     (12px) put it under "+ Medical" (the code read of 21 Oct 26, finding 2); measured at the press, kept on the row's width
+     (a phone's 100vw less 24, at most 340, as .med-cal's own width) */
+  const [calLeft, setCalLeft] = useState(0)
   const [cal, setCal] = useState({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) })
+  /* A PHONE AND A DESKTOP DIFFER IN ONE PLACE (owner D1300, 24 Oct 26): where "+ Medical" stands — first on a phone (D1137),
+     at the row's right end on a desktop, where its window opens — and whether the sections make room for that window */
+  const phone = useMedia('(max-width:820px)')
+
+  /* THE CARD JUST SAVED WEARS THE JUST-ADDED MARK (owner D1300 — "it should also flash for a few seconds with cyan border
+     on that input. just like how when the admin adds a new line in scheduler board"): the app's one mark (D851, D860 —
+     25-inputs-calendar.css `.innew`, the Inputs list's own), held six seconds as the List holds it, and the card brought on
+     screen by the least movement. The save asks for it (ui/inputedit.tsx `show`, state/view.ts MEDREVEAL); it is spent
+     here at once. A second save of the same input starts the mark again: its card is drawn afresh (its key). */
+  const [lit, setLit] = useState<{ iid: string; n: number } | null>(null)
+  const litT = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => () => { if (litT.current) clearTimeout(litT.current) }, [])
+  useLayoutEffect(() => {
+    const r = MEDREVEAL
+    if (!r) return
+    clearMedReveal()
+    setLit(l => ({ iid: r.iid, n: (l?.n ?? 0) + 1 }))
+    if (litT.current) clearTimeout(litT.current)
+    litT.current = setTimeout(() => setLit(null), 6000)
+  })
+  useEffect(() => {
+    if (lit) bringRowOnScreen(document.querySelector(`[data-medcard="${lit.iid}"]`))
+  }, [lit])
+  const litKey = (e: any) => (lit && e.row.iid === lit.iid ? '~' + lit.n : '')
 
   /* byCrew assumes roster members; a record restored for a body since
      removed from the roster must still LIST, not crash the page — it sorts
@@ -191,26 +221,35 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   }, [calOpen])
 
   return (
-    <div className={'inpcal medview' + (onClose ? '' : ' in-page')} id="medView">
+    <div className={'inpcal medview' + (onClose ? '' : ' in-page') + (!phone && INPEDIT ? ' med-room' : '')} id="medView">
       <div className="ic-head">
         {/* NO "Medical" HEADING (owner D927, 15 Oct 26 — built as drawn, D912): it only repeated the name of the tab
             picked just above it (the design guide §3, "A page's controls are one row", D926). The as-of button stands
             alone in the row under the tabs, as tall as that row's buttons on Inputs and SANS (36 — 16-medical.css). */}
         {/* the as-of control: which day the three sections describe. A pick
             answers "who was down then"; Today returns the view to now. */}
+        {/* THE TAB'S OWN DOOR FOR A MEDICAL INPUT (owner D963, D965 — 17 Oct 26: two doors, one window; a filled "+ Medical"
+            as tall as the row's "as of"). FIRST, AT THE ROW'S LEFT (owner D1137, 21 Oct 26 — round 3 of the consistency
+            look): where "+ Input" stands on the Inputs list (D729), so the Inputs page's tabs keep their add button in one
+            place; it stood at the row's right end until then. It opens the SAME window as the Inputs tab's "+ Input" — the
+            same seed (ui/inputedit.tsx newInputSeed: the signed-in person, no date yet) with ATT C, the most common medical
+            kind, already set (D968); the window itself, and who may file for whom in it (D655), are unchanged. */}
+        {phone && <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>}
         <button type="button" className={'abtn' + (calOpen ? ' on' : '')} id="medCalBtn"
           title="See the medical state as of another date"
-          onClick={() => { setCal({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) }); setCalOpen(o => !o) }}>
+          onClick={e => {
+            const b = e.currentTarget, rowW = (b.offsetParent as HTMLElement | null)?.clientWidth || 0
+            setCalLeft(Math.max(0, Math.min(b.offsetLeft, rowW - Math.min(340, window.innerWidth - 24))))
+            setCal({ y: +asOf.slice(0, 4), m: +asOf.slice(5, 7) }); setCalOpen(o => !o)
+          }}>
           <CalIcon /> as of {fmtDay(asOf)}
         </button>
         {MEDASOF && <button type="button" className="abtn" id="medToday" onClick={() => pick(todayIso)}>Today</button>}
         <span style={{ flex: 1 }}></span>
-        {/* THE TAB'S OWN DOOR FOR A MEDICAL INPUT (owner D963, D965 — 17 Oct 26: two doors, one window; look B, a filled
-            "+ Medical" at the row's right end, as tall as the row's "as of"). It opens the SAME window as the Inputs tab's
-            "+ Input" — the same seed (ui/inputedit.tsx newInputSeed: the signed-in person, no date yet) with ATT C, the most
-            common medical kind, already set (D968); the window itself, and who may file for whom in it (D655),
-            are unchanged. */}
-        <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>
+        {/* ON A DESKTOP AT THE ROW'S RIGHT END (owner D1300, 24 Oct 26 — "perhaps the medical input button can be put on the
+            right so that when i click on that the window that pops up doesnt block the main bulk of the data behind"): over
+            the place its window opens, the sections making room for it (16-medical.css `.med-room`). A phone keeps it first. */}
+        {!phone && <button type="button" className="abtn primary" id="medNew" onClick={openNew}>+ Medical</button>}
         {/* no cross where Medical is a TAB of the Inputs page (D626): a tab is left by choosing another */}
         {onClose && <button type="button" className="abtn" id="medClose" aria-label="Back to list"
           title="Back to list" onClick={onClose}>✕</button>}
@@ -222,7 +261,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         {calOpen && <>
           <button type="button" className="med-cal-scrim" aria-label="Close the date picker"
             onClick={() => setCalOpen(false)} />
-          <div className="med-cal" role="dialog" aria-label="Pick the as-of date">
+          <div className="med-cal" role="dialog" aria-label="Pick the as-of date" style={{ left: calLeft }}>
             <div className="med-cal-head">
               <button type="button" className="abtn" id="medCalPrev" aria-label="Previous month"
                 onClick={() => setCal(c => c.m === 1 ? { y: c.y - 1, m: 12 } : { y: c.y, m: c.m - 1 })}>‹</button>
@@ -245,7 +284,8 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
           warning cannot be seen from here ([SAVE-NOTE-COVERS], D587; ui/SaveStatus.tsx) */}
       {/* a failed save's warning under this surface's own bar — ONLY where it lies over the top bar (opened with a close
           cross of its own). As a TAB of the Inputs page (D620, D626) it sits in the page, under the tabs: the top bar is
-          in view and carries the warning itself, as it does for the Inputs calendar ([SAVE-NOTE-COVERS], D587). */}
+          in view and carries the warning itself, as it does for the Inputs calendar ([SAVE-NOTE-COVERS], D587). No screen
+          passes `onClose` today — the tab is the only way the view opens ([BATCH-14OCT-LEFTOVERS] (d), 21 Oct 26). */}
       {onClose && <SaveBand />}
       {/* …and the bar that waits on an OIL answer, where one is up behind this view (D831) */}
       {onClose && <OilBand />}
@@ -255,7 +295,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
           <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span></div>
           {down.length
             ? <div className="medcards">{down.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)}
+              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} lit={!!litKey(e)} onOpen={open} docs={episodeDocN(e.row)}
                 line={spanOf(e.row)} />)}</div>
             : <div className="med-empty">Nobody is medically down on this date.</div>}
         </section>
@@ -265,7 +305,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
           <div className="medsec-h">Pending Upchit<span className="medsec-n">{pend.length}</span></div>
           {pend.length
             ? <div className="medcards">{pend.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}
+              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} lit={!!litKey(e)} up onOpen={open} docs={episodeDocN(e.row)}
                 line={spanOf(e.row)} />)}</div>
             : <div className="med-empty">Nobody is owing an upchit.</div>}
         </section>
@@ -274,7 +314,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
             <span className="medsec-sub">the past 30 days, newest first</span></div>
           {done.length
             ? <div className="medcards">{done.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)} kind={false}
+              <Card key={(e.row.iid || '') + i + litKey(e)} e={e} lit={!!litKey(e)} onOpen={open} docs={episodeDocN(e.row)} kind={false}
                 line={lblDay(e.row.date, e.row.yr)} />)}</div>
             : <div className="med-empty">No upchits in the past 30 days.</div>}
         </section>

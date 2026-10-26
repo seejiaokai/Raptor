@@ -810,16 +810,17 @@ describe('Edit quals', () => {
     await click($('#qEdit'))
     expect($('#qEditQuals')).toBeTruthy()
     expect($('#qEditQuals').getAttribute('aria-pressed'), 'off until it is pressed').toBe('false')
-    /* blue while it is the thing to press, dark with a ✕ once you are in it —
-       the button shows the way OUT, exactly as Enable editing / Save changes
-       do beside it (owner, 5 Aug 26) */
-    expect($('#qEditQuals').className).toContain('primary')
+    /* D1129 (21 Oct 26): plain grey before and after it is pressed — "Done" beside it is the one bright-blue button
+       while editing (D1128); a ✕ once you are inside the mode shows the way out of it. (It was blue at rest, his
+       5 Aug 26 rule, until D1129.) */
+    expect($('#qEditQuals').className, 'D1129: plain at rest').not.toContain('primary')
+    expect($('#qSave').className, 'D1129: Done is the one blue').toContain('primary')
     expect($('#qEditQuals').textContent).toBe('Edit quals')
     await click($('#qEditQuals'))
-    expect($('#qEditQuals').className, 'the same dark button once it is on').not.toContain('primary')
+    expect($('#qEditQuals').className, 'the same plain button once it is on').not.toContain('primary')
     expect($('#qEditQuals').textContent).toBe('✕ Edit quals')
     await click($('#qEditQuals'))
-    expect($('#qEditQuals').className).toContain('primary')
+    expect($('#qEditQuals').className).not.toContain('primary')
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     expect($('#qEditQuals'), 'a member never sees it').toBeFalsy()
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
@@ -1158,14 +1159,18 @@ describe('D935 — Quals: one row, no paragraph under it', () => {
     for (const id of ['#qAddQual', '#qUses', '#qAdminLink']) expect($(id), id).toBeFalsy()
     expect(host.textContent).not.toMatch(/Similar to a LoX|integrated with the board|Archive, restore and delete are on/)
   })
-  /* owner D937, 16 Oct 26 ("As recommended"): on a phone "Save changes" reads "Save" too, so the filter keeps room to
-     type on the smallest phones while editing; the full words stay its name for a screen reader */
-  it('D937: Save changes keeps its full words for a screen reader, and has a short form for a phone', async () => {
-    await click($('#qEdit'))
+  /* owner D1128, 21 Oct 26 (round 1 of the consistency look): Logic's pair on Quals too — "✎ Edit" plain to start, "Done"
+     in the bright blue while editing; it replaced "Enable editing" and "Save changes" (D937's phone "Save" with it) */
+  it('D1128: "✎ Edit" plain to start, "Done" blue while editing — as Logic’s; Done still ends editing', async () => {
+    const e = $('#qEdit')
+    /* D1134 (21 Oct 26): its pencil is the app's one drawn pencil, never the typed ✎ */
+    expect(e.textContent).toBe('Edit')
+    expect(e.querySelector('svg.pen-ic'), 'the drawn pencil').toBeTruthy()
+    expect(e.className, 'plain to start').not.toContain('primary')
+    await click(e)
     const b = $('#qSave')
-    expect(b.querySelector('.qx-long')!.textContent).toBe('Save changes')
-    expect(b.querySelector('.qx-short')!.textContent).toBe('Save')
-    expect(b.querySelector('.qx-short')!.getAttribute('aria-hidden'), 'read once, not twice').toBe('true')
+    expect(b.textContent).toBe('Done')
+    expect(b.className, 'the bright blue while editing').toContain('primary')
     await click(b)
     expect($('#qEdit'), 'pressing it still ends editing').toBeTruthy()
   })

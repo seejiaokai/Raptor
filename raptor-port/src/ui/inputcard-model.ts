@@ -21,9 +21,10 @@
    record's people (never `person`, never how many records), its filer is its `by`, and a person's own late date rides
    his entry — read through engine/inputs.ts facesOf, one frozen view a person, for words only. A record stored before
    that build (one `person`) reads as the one-person input it is. */
-import { facesOf, idsOf, inpKindTag, inpLabel, placeholderOf, remarksTyped } from '../engine/inputs'
+import { facesOf, idsOf, inpKindTag, inpLabel, isSansAvail, placeholderOf, remarksTyped, typeGroup } from '../engine/inputs'
+import { docHas, rowDocIds } from '../state/docs'
 import { PEOPLE } from '../engine/people'
-import { namesOf, toneOf } from './inputscal-model'
+import { colourOf, namesOf, toneOf, type BarColour } from './inputscal-model'
 import { filerName, filerOf } from './placedline'
 import { hoursOf } from './sanscal-model'
 
@@ -40,8 +41,16 @@ export interface CardFacts {
   by: string
   /** red for an absence, amber for a duty or a commitment */
   tone: 'red' | 'amb'
+  /** THE SQUARE AT ITS LEFT IN ITS KIND'S COLOUR (his D1384, D1396 — "should the left side of the inputs also show the colours
+   *  of the input? And match?"): the one table the month's bars and the Leave War's boxes read (inputscal-model colourOf);
+   *  null for a duty or other commitment, whose square is outlined as its bar is (D1321) */
+  colour: BarColour | null
   /** the scheduler cancelled it — a CX on its row on the schedule cancels the INPUT (D760); it stays listed */
   cx: boolean
+  /** its papers, as the desktop list's paperclip and "No document" say them (owner D1150, D1179 — M3 7.4; the walk's B
+   *  faults 1–3: the phone's cards and the calendar's opened day said neither): 'has' — a file on it; 'none' — a leave or a
+   *  medical with none; '' — anything else, which asks for no paper */
+  doc: 'has' | 'none' | ''
   /** the reason he gave ("WX"); '' where none was typed, and always '' on an input that is not cancelled (D767) */
   why: string
 }
@@ -115,8 +124,10 @@ export function cardOf(rows: readonly any[], people: Record<string, any> = PEOPL
     remark: remarksTyped(r.remarks, r),
     by: said ? filerName(filer, people) : '',
     tone: toneOf(r.type),
+    colour: colourOf(r.type),
     cx: cxOf(r),
     why: cxWhy(r),
+    doc: rowDocIds(r).some(docHas) ? 'has' : !rowDocIds(r).length && (typeGroup(r.type) === 'leave' || typeGroup(r.type) === 'med') && !isSansAvail(r.type) ? 'none' : '',
   }
 }
 

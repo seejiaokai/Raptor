@@ -5,15 +5,15 @@
 // day's list moves a record by the move mode, no date box; and his answers to the mock-up
 // (docs/mock/lw-move-standard.html) — D331 order A: Decide → Selected (Move · Delete) → How much → Which leave; D332
 // "Delete" the one word (the one-day Clear and the list's Clear), dashed grey; D333 a member's Move on his own bid while
-// bidding is open; D334 the Move button a grey chip with a teal arrow ("⇄ Move") on every sheet; D335 the one-day sheet
+// bidding is open (narrowed by D1177: while his bid waits and its days are open); D334 the Move button a grey chip with a teal arrow ("⇄ Move") on every sheet; D335 the one-day sheet
 // keeps How many, a picked range widening what it acts on.
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, awardsOnDay, clearCells, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
+import { awardsOnDay, clearCells, closeDates, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
-import { canEditCell } from '../engine'
+import { canEditCell, memberToday } from '../engine'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
 import type { Selection } from './select'
@@ -55,20 +55,23 @@ const isDeleteChip = (el: HTMLElement) => {
 describe('the one-day sheet, in order A (D331, D335)', () => {
   beforeEach(() => { setCell(P, '2026-02-11', 'LL') })
 
-  it('How many → Decide → Selected (Move · Delete) → How much → Which leave → +OIL / PO / PI', () => {
+  /* the Decide row is found by its Approve where it was found by its Ack — Ack is gone (D1158) */
+  /* WAS "How many → Decide → Selected (Move · Delete) → How much → Which leave → +OIL / PO / PI" (D331, D335). ROUND 3 (his
+     D1330, D1332): Approve · Refuse · Move · Delete on ONE row, then Remarks and Document, then Duration (with "Pick a range"
+     at its end — the How many row went), then the leave, then the ⋯ (D1326) — and the row labels went */
+  it('one row Approve · Refuse · Move · Delete → Remarks and Document → Duration → Which leave → the ⋯', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
-    expect(above('span-one', 'decide-ack')).toBe(true)
-    expect(above('decide-ack', 'decide-shift')).toBe(true)
-    expect(above('decide-shift', 'portion-full')).toBe(true)
+    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(within(rowOf('decide-approve')).getAllByRole('button').map(b => b.textContent)).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete'])
+    expect(rowOf('decide-shift')).toBe(rowOf('decide-approve'))
+    expect(rowOf('bid-clear')).toBe(rowOf('decide-approve'))
+    expect(above('decide-approve', 'bid-remarks')).toBe(true)
+    expect(above('bid-remarks', 'portion-full')).toBe(true)
+    expect(rowOf('span-range')).toBe(rowOf('portion-full'))
     expect(above('portion-full', `bid-LL`)).toBe(true)
-    expect(above('bid-LL', 'bid-postout')).toBe(true)
-    // Move and Delete share the Selected row; Move is no longer on the decision row, Delete no longer a leave chip
-    expect(rowOf('decide-shift')).toBe(rowOf('bid-clear'))
-    expect(rowOf('decide-shift')).not.toBe(rowOf('decide-ack'))
+    expect(above('bid-LL', 'bid-more')).toBe(true)
     expect(rowOf('bid-clear')).not.toBe(rowOf('bid-LL'))
-    expect(within(rowOf('decide-shift')).getByText('Selected')).toBeTruthy()
-    expect(within(rowOf('decide-ack')).getByText('Decide')).toBeTruthy()
   })
 
   it('Move is the one Move look, Delete the one Delete look', () => {
@@ -81,7 +84,8 @@ describe('the one-day sheet, in order A (D331, D335)', () => {
   it('an EMPTY day has no Decide and no Selected row — it opens on the leave, as before', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-12`))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(screen.queryByTestId('decide-approve')).toBeNull()   // no Decide row — read off Approve since Ack went (D1158)
+    expect(screen.queryByTestId('decide-refuse')).toBeNull()
     expect(screen.queryByTestId('decide-shift')).toBeNull()
     expect(screen.queryByTestId('bid-clear')).toBeNull()
     expect(screen.getByTestId('bid-LL')).toBeTruthy()
@@ -120,11 +124,12 @@ describe('Pick a range widens what the one-day sheet acts on (D335)', () => {
     expect(bidsAt(P, '2026-02-11')).toHaveLength(0)
   })
 
+  /* answered with Refuse where it was Ack — Ack is gone (D1158) */
   it('Decide answers every day in the range', () => {
     render(<Matrix />)
     pickRange()
-    fireEvent.click(screen.getByTestId('decide-ack'))
-    expect(['2026-02-11', '2026-02-12', '2026-02-13'].map(d => bidsAt(P, d)[0]?.state)).toEqual(['acknowledged', 'acknowledged', 'acknowledged'])
+    fireEvent.click(screen.getByTestId('decide-refuse'))
+    expect(['2026-02-11', '2026-02-12', '2026-02-13'].map(d => bidsAt(P, d)[0]?.state)).toEqual(['refused', 'refused', 'refused'])
   })
 
   it('Delete takes every day in the range', () => {
@@ -173,22 +178,42 @@ describe('a range that sweeps up an award day and an empty day (Fable’s S14)',
   })
 })
 
-describe('a bid moved once bidding has closed says where it came from on its list line (Fable’s S4)', () => {
-  it('the award on top hides the grid’s dotted mark, so the line carries it', async () => {
+/* WAS "a bid moved once bidding has closed says where it came from on its list line" (Fable's S4: the award on top of
+   the day it landed on hid the grid's dotted mark, so the day's list line carried it). Since the stages went only an
+   APPROVED leave's move keeps a trail (D1177's reading — "the dotted 'moved' mark shows on any move of a leave already
+   approved"); a bid that only waits moves with none. Both halves pinned here, onto a day holding an award: the approved
+   leave ranks above the award, so its dotted mark stays on the grid where S4 needed it; the waiting bid carries none,
+   on the grid or its list line. */
+describe('a move onto a day holding an award, and where it came from (Fable’s S4)', () => {
+  it('an approved leave keeps its dotted mark on the grid — it is on top of the award', async () => {
     setCell(P, '2026-02-11', 'LL')
     setDayAward(P, '2026-02-16', 1)
-    advanceStage()
+    expect(decideRequestById(P, '2026-02-11', bidsAt(P, '2026-02-11')[0]!.id, 'approved')).toBe(true)
+    closeDates('2026-01-01', '2026-12-31')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
+    fireEvent.click(screen.getByTestId('decide-shift'))
+    await land(`cell-${P}-2026-02-16`)
+    const view = getState().views[P]?.['2026-02-16']
+    expect(view?.main?.kind).toBe('absence')
+    expect(view?.main?.movedFrom).toBe('2026-02-11')
+    expect(view?.all.some(c => c.kind === 'credit')).toBe(true)                   // the award is still there, beneath
+    expect(screen.getByTestId(`cell-${P}-2026-02-16`).querySelector('.c')!.className).toContain('moved')
+  })
+
+  it('a bid moved while it waits carries no trail — not on the grid, not on its list line', async () => {
+    setCell(P, '2026-02-11', 'LL')
+    setDayAward(P, '2026-02-16', 1)
+    closeDates('2026-01-01', '2026-12-31')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
     fireEvent.click(screen.getByTestId('decide-shift'))
     await land(`cell-${P}-2026-02-16`)
     expect(bidsAt(P, '2026-02-16')).toHaveLength(1)
-    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
     const bid = bidsAt(P, '2026-02-16')[0]!
-    /* a date inside a sentence reads day-first with its year, the bid sheet's own "moved from" voice ([LW-ISO-DATES];
-       Fable's final read F3 — the list read "moved from Wed 11 Feb", the sheet one tap away "moved from 11 Feb 26") */
-    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).toContain('moved from 11 Feb 26')
-    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).not.toContain('moved from Wed 11 Feb')
+    expect(bid.shiftedFrom).toBeUndefined()
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
+    expect(screen.getByTestId(`dl-r-${bid.id}`).textContent).not.toContain('moved from')
   })
 })
 
@@ -205,7 +230,8 @@ describe('a bid beside an OIL award — the day’s list (D265, D266)', () => {
     const bid = bidsAt(P, '2026-02-11')[0]!
     const line = screen.getByTestId(`dl-r-${bid.id}`)
     const names = within(line).getAllByRole('button').map(b => b.textContent)
-    expect(names).toEqual(['Ack', 'Approve', 'Refuse', '⇄Move', 'Delete'])
+    // Ack gone from the list's line (D1158); the bid's Document button after them since M3 7.3 (D1150, D1159)
+    expect(names).toEqual(['Approve', 'Refuse', '⇄Move', 'Delete', 'Document'])
     isMoveChip(within(line).getByTestId(`dl-move-${bid.id}`))
     isDeleteChip(within(line).getByTestId(`dl-clear-${bid.id}`))
     const award = awardsOnDay(P, '2026-02-11')[0]!
@@ -247,17 +273,19 @@ describe('the drag-selection sheet, in order A (D331)', () => {
   }
   beforeEach(() => { setCell(P, '2026-02-11', 'LL') })
 
-  it('Decide → Selected (Move · Delete) → How much → Which leave → PO', () => {
+  /* WAS "Decide → Selected (Move · Delete) → How much → Which leave → PO" (D331). ROUND 3: one row of actions, Duration, the
+     leave, Post out behind the ⋯ (D1326) */
+  it('one row Approve · Refuse · Move · Delete → Duration → Which leave → the ⋯ with Post out', () => {
     render(<SelectSheet sel={sel} people={id => id} role="admin" canDecide={true} onDone={() => {}} onMove={() => {}} onPostOut={() => {}} onClose={() => {}} />)
-    expect(above('sel-approve', 'sel-move')).toBe(true)
+    expect(rowOf('sel-approve')).toBe(rowOf('sel-move'))
     expect(rowOf('sel-move')).toBe(rowOf('sel-delete'))
     expect(above('sel-move', 'sel-portion-full')).toBe(true)
     expect(above('sel-portion-full', 'sel-LL')).toBe(true)
-    expect(above('sel-LL', 'sel-postout')).toBe(true)
-    expect(within(rowOf('sel-move')).getByText('Selected')).toBeTruthy()
+    expect(above('sel-LL', 'sel-more')).toBe(true)
     isMoveChip(screen.getByTestId('sel-move'))
     isDeleteChip(screen.getByTestId('sel-delete'))
-    expect(screen.getByTestId('sel-postout').textContent).toBe('PO')
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.getByTestId('sel-postout').textContent).toBe('Post out')
   })
 })
 
@@ -273,14 +301,15 @@ describe('the block offers Move and Delete only where they would do something (D
 
 describe('a member moves his own bid while bidding is open (D333)', () => {
   it('his one-day sheet offers the one Move, and it picks the bid up', async () => {
-    const date = getState().period.bidFrom!
+    const date = getState().period.open[0]!.from
     const next = new Date(Date.parse(`${date}T00:00:00Z`) + 2 * 86400000).toISOString().slice(0, 10)
     setRole('member'); setViewer(P)
-    expect(canEditCell(getState().period, 'member', date)).toBe(true)
+    expect(canEditCell(getState().period, 'member', date, memberToday())).toBe(true)
     expect(setCell(P, date, 'LL')).toBe(true)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()        // a member never decides
+    expect(screen.queryByTestId('decide-approve')).toBeNull()    // a member never decides (read off Approve since Ack went, D1158)
+    expect(screen.queryByTestId('decide-refuse')).toBeNull()
     isMoveChip(screen.getByTestId('decide-shift'))
     isDeleteChip(screen.getByTestId('bid-clear'))
     fireEvent.click(screen.getByTestId('decide-shift'))
@@ -289,14 +318,20 @@ describe('a member moves his own bid while bidding is open (D333)', () => {
     expect(bidsAt(P, next)).toHaveLength(1)
   })
 
-  it('once bidding has closed his sheet does not open, so there is no Move to press', () => {
-    const date = getState().period.bidFrom!
+  /* "his sheet does not open" CHANGED by D1176 / D1225: his tap on a closed day opens the closed note — with his own
+     pending bid there, the note that he may delete it, and Delete — but still no Move (D333 narrowed: he moves his bid
+     only while its days are open). */
+  it('once his days have closed his tap opens the closed note — Delete, but no Move to press', () => {
+    const date = getState().period.open[0]!.from
     setCell(P, date, 'LL')
-    advanceStage()
+    closeDates('2026-01-01', '2026-12-31')
     setRole('member'); setViewer(P)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${date}`))
+    expect(screen.getByTestId('closed-note')).toBeTruthy()
+    expect(screen.getByTestId('closed-delete')).toBeTruthy()
     expect(screen.queryByTestId('decide-shift')).toBeNull()
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 })
 
@@ -307,12 +342,13 @@ describe('FR4 — Decide over a picked range, from a day with no bid (Fable 4, A
     setCell(P, '2026-02-13', 'LL')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-12`))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()               // the one day: nothing to decide
+    expect(screen.queryByTestId('decide-approve')).toBeNull()           // the one day: nothing to decide
     fireEvent.click(screen.getByTestId('span-range'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-11'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-13'))
-    fireEvent.click(screen.getByTestId('decide-ack'))
-    expect([bidsAt(P, '2026-02-11')[0]?.state, bidsAt(P, '2026-02-13')[0]?.state]).toEqual(['acknowledged', 'acknowledged'])
+    /* answered with Refuse where it was Ack — Ack is gone (D1158) */
+    fireEvent.click(screen.getByTestId('decide-refuse'))
+    expect([bidsAt(P, '2026-02-11')[0]?.state, bidsAt(P, '2026-02-13')[0]?.state]).toEqual(['refused', 'refused'])
   })
   it('a range holding nothing to decide (an award) draws no Decide', () => {
     setDayAward(P, '2026-02-21', 1)
@@ -320,7 +356,8 @@ describe('FR4 — Decide over a picked range, from a day with no bid (Fable 4, A
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-20`))
     fireEvent.click(screen.getByTestId('span-range'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-21'))
-    expect(screen.queryByTestId('decide-ack')).toBeNull()
+    expect(screen.queryByTestId('decide-approve')).toBeNull()   // read off Approve since Ack went (D1158)
+    expect(screen.queryByTestId('decide-refuse')).toBeNull()
   })
 })
 

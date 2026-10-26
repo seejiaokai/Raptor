@@ -1,0 +1,40 @@
+[
+ {
+  "id": "32p-setup",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Tue 14 Jul published (version ORIG); the Changes window (All changes, Tue): after the publish [\"New to you 0\",\"All changes 5\",\"To go out · AL1 0\"] lines 5; after the admin placed Ranger's approved LL on that day [\"New to you 0\",\"All changes 6\",\"To go out · AL1 1\"] lines 6: [\"Input · Ranger · LLSaber · 25/10 03:17LL approved on the Leave War · 14 Jul\",\"Published — the OriginalSaber · 25/10 03:17\",\"Signed · APPROVED BY · AnvilSaber · 25/10 03:17\",\"Signed · PLANNED BY · AnvilSaber · 25/10 03:17\",\"Signed · SKED CK · AnvilSaber · 25/10 03:17\",\"Signed · CUR CK · AceSaber · 25/10 03:17\"]",
+  "pics": [
+   "s32pub-dk-chg-0-after-publish",
+   "s32pub-dk-chg-1-after-leave"
+  ]
+ },
+ {
+  "id": "27p",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "an approved leave on a PUBLISHED day (Tue 14 Jul) inside a drag 13–15 Jul: typed \"Drag on published\", closed with ✕ (no Approve is offered over an approved leave alone): Ranger's entry now [{\"remarks\":\"Drag on published\",\"docs\":0,\"lw\":true}]; a note in the window: none; toast: Tuesday published and approved; the Inputs page row: [\"Ranger 14 Jul LL LATEDrag on published till 14 JulBy Saber now No document\"]; the day's changes list before 6 line(s), after 7: [\"LL 14 Jul · remarks Drag on publishedSaber · 25/10 03:17\",\"LL approved on the Leave War · 14 JulSaber · 25/10 03:17\",\"Published — the OriginalSaber · 25/10 03:17\",\"Signed · APPROVED BY · AnvilSaber · 25/10 03:17\",\"Signed · PLANNED BY · AnvilSaber · 25/10 03:17\",\"Signed · SKED CK · AnvilSaber · 25/10 03:17\",\"Signed · CUR CK · AceSaber · 25/10 03:17\"]; All changes tab: [\"New to you 0\",\"All changes 7\",\"To go out · AL1 1\"]",
+  "pics": [
+   "s32pub-dk-27p-typed",
+   "s32pub-dk-27p-inputs",
+   "s32pub-dk-chg-2-after-drag"
+  ]
+ },
+ {
+  "id": "32p",
+  "size": "desk",
+  "verdict": "RECORD",
+  "said": "Ranger, on his approved leave on the published Tue 14 Jul: typed \"Member on published\" (no Enter), added a document (saved at once: [{\"remarks\":\"Member on published\",\"docs\":1,\"lw\":true}]), closed the window ([{\"remarks\":\"Member on published\",\"docs\":1,\"lw\":true}]). The day's changes list (All changes, Tue) before his saves: 6 line(s) [\"Input · Ranger · LLSaber · 25/10 03:17LL approved on the Leave War · 14 Jul\",\"Published — the OriginalSaber · 25/10 03:17\",\"Signed · APPROVED BY · AnvilSaber · 25/10 03:17\",\"Signed · PLANNED BY · AnvilSaber · 25/10 03:17\",\"Signed · SKED CK · AnvilSaber · 25/10 03:17\",\"Signed · CUR CK · AceSaber · 25/10 03:17\"]; after: 9 line(s) [\"LL 14 Jul · documents none → 1 documentRanger · 25/10 03:18\",\"LL 14 Jul · remarks Drag on published → Member on publishedRanger · 25/10 03:18\",\"LL 14 Jul · remarks Drag on publishedSaber · 25/10 03:17\",\"LL approved on the Leave War · 14 JulSaber · 25/10 03:17\",\"Published — the OriginalSaber · 25/10 03:17\",\"Signed · APPROVED BY · AnvilSaber · 25/10 03:17\",\"Signed · PLANNED BY · AnvilSaber · 25/10 03:17\",\"Signed · SKED CK · AnvilSaber · 25/10 03:17\",\"Signed · CUR CK · AceSaber · 25/10 03:17\"]; tabs [\"New to you 2\",\"All changes 9\",\"To go out · AL1 1\"] — so 3 new line(s) for his two saves (one for the document, one for the words)",
+  "pics": [
+   "s32pub-dk-32p-typed-and-doc",
+   "s32pub-dk-chg-3-after-member"
+  ]
+ },
+ {
+  "id": "32pub-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

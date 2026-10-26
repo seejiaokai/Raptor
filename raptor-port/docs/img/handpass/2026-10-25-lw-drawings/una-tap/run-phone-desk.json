@@ -1,0 +1,536 @@
+{
+ "day": "2026-11-12",
+ "words": "Board of inquiry",
+ "log": [
+  {
+   "id": "fixtures",
+   "size": "phone",
+   "said": "November: NOV — open; the chip reads \"Open 1 Nov – 30 Nov\""
+  },
+  {
+   "id": "fixtures",
+   "size": "phone",
+   "said": "Drifter's leave buttons, nothing on 2026-11-12: {\"LL\":\"26\",\"OL\":\"26\",\"OIL\":\"4\",\"CCL\":\"5\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}; day line \"No manning row turns amber or red\""
+  },
+  {
+   "id": "fixtures",
+   "size": "phone",
+   "said": "slipway 2026-11-12: cell [\"UNA|k-una|s-a|top\"]; saved {\"id\":\"umvmphbib1thpc\",\"kind\":\"una\",\"code\":\"*UNA\",\"remarks\":\"Board of inquiry\",\"by\":\"Saber\",\"ord\":1024,\"pid\":\"slipway\",\"date\":\"2026-11-12\"}"
+  },
+  {
+   "id": "fixtures",
+   "size": "phone",
+   "said": "bane 2026-11-12: cell [\"UNA|k-una|s-a|top\"]; saved {\"id\":\"umvmphe632y0c2\",\"kind\":\"una\",\"code\":\"*UNA\",\"remarks\":\"Board of inquiry\",\"by\":\"Saber\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-11-12\"}"
+  },
+  {
+   "id": "1",
+   "size": "phone",
+   "said": "admin's list: {\"tid\":\"dl-u-umvmphbib1thpc\",\"main\":\"Morning · out of the manning · placed by Saber\",\"box\":\"c k-una s-a top wide\",\"boxText\":\"UNA\",\"typed\":\"Board of inquiry\",\"ro\":null,\"buttons\":[\"dl-clear-umvmphbib1thpc:Delete\"],\"h\":127,\"w\":352,\"mainLines\":1,\"words\":\"Board of inquiry\"}"
+  },
+  {
+   "id": "2",
+   "size": "phone",
+   "said": "member's list: {\"tid\":\"dl-u-umvmphe632y0c2\",\"main\":\"Morning · out of the manning · placed by Saber\",\"box\":\"c k-una s-a top wide\",\"boxText\":\"UNA\",\"typed\":null,\"ro\":\"“Board of inquiry”\",\"buttons\":[],\"h\":74,\"w\":352,\"mainLines\":1,\"words\":\"Board of inquiry\"}"
+  },
+  {
+   "id": "2",
+   "size": "phone",
+   "said": "the whole list reads: UNA | Morning · out of the manning · placed by Saber | “Board of inquiry”"
+  },
+  {
+   "id": "2",
+   "size": "phone",
+   "said": "his leave buttons, nothing charged (13 Nov): {\"LL\":\"0\",\"OL\":\"0\",\"OIL\":\"0\",\"CCL\":\"0\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}"
+  },
+  {
+   "id": "swap",
+   "size": "phone",
+   "said": "slipway 2026-11-12: UNA deleted; after the Inputs page leave: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "swap",
+   "size": "phone",
+   "said": "bane 2026-11-12: UNA deleted; after the Inputs page leave: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "3",
+   "size": "phone",
+   "said": "the window today: {\"chips\":[\"portion-pm:true\"],\"held\":\"The morning is LL, filed on the Inputs page — change that there.\",\"day\":\"No manning row turns amber or red\",\"title\":\"Drifter Thu 12 Nov Approve what I enter ✕\"}; size {\"top\":572,\"bottom\":860,\"h\":288,\"vh\":874,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h53\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "3",
+   "size": "phone",
+   "said": "leave buttons' looks alike apart from the figures: true"
+  },
+  {
+   "id": "3",
+   "size": "phone",
+   "said": "drawn: {\"h\":127,\"w\":352,\"rowGap\":6,\"marginTop\":\"0px\",\"gapBelow\":16,\"typed\":\"Board of inquiry\",\"ro\":null,\"heldGone\":true,\"gridSwap\":{\"before\":{\"LL\":\"25.5\",\"OL\":\"25.5\",\"OIL\":\"4\",\"CCL\":\"5\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"},\"after\":{\"LL\":\"26\",\"OL\":\"26\",\"OIL\":\"4\",\"CCL\":\"5\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}},\"words\":{\"textW\":279,\"room\":305,\"atSeventhWider\":319}}; size {\"top\":464,\"bottom\":860,\"h\":396,\"vh\":874,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"daylist flat h127\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h30\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "4",
+   "size": "phone",
+   "said": "his window today: {\"chips\":[\"portion-pm:true\"],\"held\":\"The morning is LL, filed on the Inputs page — change that there.\",\"day\":\"No manning row turns amber or red\",\"title\":\"Ranger Thu 12 Nov ✕\"}; size {\"top\":572,\"bottom\":860,\"h\":288,\"vh\":874,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h53\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "4",
+   "size": "phone",
+   "said": "leave buttons' looks alike apart from the figures: true"
+  },
+  {
+   "id": "4",
+   "size": "phone",
+   "said": "drawn: {\"h\":74,\"w\":352,\"rowGap\":6,\"marginTop\":\"0px\",\"gapBelow\":16,\"typed\":null,\"ro\":\"“Board of inquiry”\",\"heldGone\":true,\"gridSwap\":{\"before\":{\"LL\":\"−0.5\",\"OL\":\"−0.5\",\"OIL\":\"0\",\"CCL\":\"0\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"},\"after\":{\"LL\":\"0\",\"OL\":\"0\",\"OIL\":\"0\",\"CCL\":\"0\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}},\"words\":{\"textW\":279,\"room\":305,\"atSeventhWider\":319}}; size {\"top\":517,\"bottom\":860,\"h\":343,\"vh\":874,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"daylist flat h74\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h30\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  },
+  {
+   "id": "fixtures",
+   "size": "desk",
+   "said": "November: NOV — open; the chip reads \"Open for bidding 1 Nov – 30 Nov\""
+  },
+  {
+   "id": "fixtures",
+   "size": "desk",
+   "said": "Drifter's leave buttons, nothing on 2026-11-12: {\"LL\":\"26\",\"OL\":\"26\",\"OIL\":\"4\",\"CCL\":\"5\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}; day line \"No manning row turns amber or red\""
+  },
+  {
+   "id": "fixtures",
+   "size": "desk",
+   "said": "slipway 2026-11-12: cell [\"UNA|k-una|s-a|top\"]; saved {\"id\":\"umvmpi0u91chjr\",\"kind\":\"una\",\"code\":\"*UNA\",\"remarks\":\"Board of inquiry\",\"by\":\"Saber\",\"ord\":1024,\"pid\":\"slipway\",\"date\":\"2026-11-12\"}"
+  },
+  {
+   "id": "fixtures",
+   "size": "desk",
+   "said": "bane 2026-11-12: cell [\"UNA|k-una|s-a|top\"]; saved {\"id\":\"umvmpi34n2ar8s\",\"kind\":\"una\",\"code\":\"*UNA\",\"remarks\":\"Board of inquiry\",\"by\":\"Saber\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-11-12\"}"
+  },
+  {
+   "id": "1",
+   "size": "desk",
+   "said": "admin's list: {\"tid\":\"dl-u-umvmpi0u91chjr\",\"main\":\"Morning · out of the manning · placed by Saber\",\"box\":\"c k-una s-a top wide\",\"boxText\":\"UNA\",\"typed\":\"Board of inquiry\",\"ro\":null,\"buttons\":[\"dl-clear-umvmpi0u91chjr:Delete\"],\"h\":127,\"w\":534,\"mainLines\":1,\"words\":\"Board of inquiry\"}"
+  },
+  {
+   "id": "2",
+   "size": "desk",
+   "said": "member's list: {\"tid\":\"dl-u-umvmpi34n2ar8s\",\"main\":\"Morning · out of the manning · placed by Saber\",\"box\":\"c k-una s-a top wide\",\"boxText\":\"UNA\",\"typed\":null,\"ro\":\"“Board of inquiry”\",\"buttons\":[],\"h\":74,\"w\":534,\"mainLines\":1,\"words\":\"Board of inquiry\"}"
+  },
+  {
+   "id": "2",
+   "size": "desk",
+   "said": "the whole list reads: UNA | Morning · out of the manning · placed by Saber | “Board of inquiry”"
+  },
+  {
+   "id": "2",
+   "size": "desk",
+   "said": "his leave buttons, nothing charged (13 Nov): {\"LL\":\"0\",\"OL\":\"0\",\"OIL\":\"0\",\"CCL\":\"0\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}"
+  },
+  {
+   "id": "swap",
+   "size": "desk",
+   "said": "slipway 2026-11-12: UNA deleted; after the Inputs page leave: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "swap",
+   "size": "desk",
+   "said": "bane 2026-11-12: UNA deleted; after the Inputs page leave: [\"LL|k-ll|s-a|top\"]"
+  },
+  {
+   "id": "3",
+   "size": "desk",
+   "said": "the window today: {\"chips\":[\"portion-pm:true\"],\"held\":\"The morning is LL, filed on the Inputs page — change that there.\",\"day\":\"No manning row turns amber or red\",\"title\":\"Drifter Thu 12 Nov Approve what I enter ✕\"}; size {\"top\":598,\"bottom\":886,\"h\":288,\"vh\":900,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h53\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "3",
+   "size": "desk",
+   "said": "leave buttons' looks alike apart from the figures: true"
+  },
+  {
+   "id": "3",
+   "size": "desk",
+   "said": "drawn: {\"h\":127,\"w\":534,\"rowGap\":6,\"marginTop\":\"0px\",\"gapBelow\":16,\"typed\":\"Board of inquiry\",\"ro\":null,\"heldGone\":true,\"gridSwap\":{\"before\":{\"LL\":\"25.5\",\"OL\":\"25.5\",\"OIL\":\"4\",\"CCL\":\"5\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"},\"after\":{\"LL\":\"26\",\"OL\":\"26\",\"OIL\":\"4\",\"CCL\":\"5\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}},\"words\":{\"textW\":279,\"room\":487,\"atSeventhWider\":319}}; size {\"top\":490,\"bottom\":886,\"h\":396,\"vh\":900,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"daylist flat h127\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h30\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "4",
+   "size": "desk",
+   "said": "his window today: {\"chips\":[\"portion-pm:true\"],\"held\":\"The morning is LL, filed on the Inputs page — change that there.\",\"day\":\"No manning row turns amber or red\",\"title\":\"Ranger Thu 12 Nov ✕\"}; size {\"top\":598,\"bottom\":886,\"h\":288,\"vh\":900,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h53\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "4",
+   "size": "desk",
+   "said": "leave buttons' looks alike apart from the figures: true"
+  },
+  {
+   "id": "4",
+   "size": "desk",
+   "said": "drawn: {\"h\":74,\"w\":534,\"rowGap\":6,\"marginTop\":\"0px\",\"gapBelow\":16,\"typed\":null,\"ro\":\"“Board of inquiry”\",\"heldGone\":true,\"gridSwap\":{\"before\":{\"LL\":\"−0.5\",\"OL\":\"−0.5\",\"OIL\":\"0\",\"CCL\":\"0\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"},\"after\":{\"LL\":\"0\",\"OL\":\"0\",\"OIL\":\"0\",\"CCL\":\"0\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}},\"words\":{\"textW\":279,\"room\":487,\"atSeventhWider\":319}}; size {\"top\":543,\"bottom\":886,\"h\":343,\"vh\":900,\"scrolls\":0,\"rows\":[\"bidsheet-hd h37\",\"bid-dayline h16\",\"daylist flat h74\",\"bid-rmk-row h30\",\"bidsheet-row bp-dur h30\",\"bidsheet-row h66\",\"bid-extra-row h30\"]}"
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "1-today-admin-list-phone.png",
+   "label": "Today, as admin: a tap on Drifter’s Thu 12 Nov opens the day’s list, with the morning UNA’s entry"
+  },
+  {
+   "file": "2-today-member-list-phone.png",
+   "label": "Today, as Ranger: a tap on his own Thu 12 Nov opens the day’s list, read only"
+  },
+  {
+   "file": "3a-today-free-half-phone.png",
+   "label": "Today, for comparison: beside a morning leave filed on the Inputs page, the tap opens the window on PM only"
+  },
+  {
+   "file": "3b-drawn-a-admin-phone.png",
+   "label": "Drawn A, as admin: the window opens on PM, the UNA’s entry under the day line. The Inputs page line is gone"
+  },
+  {
+   "file": "4a-today-free-half-member-phone.png",
+   "label": "Today, for comparison, as Ranger: beside a morning leave filed on the Inputs page, his window opens on PM only"
+  },
+  {
+   "file": "4b-drawn-a-member-phone.png",
+   "label": "Drawn A, as Ranger: his window on PM, the UNA’s entry read only, its remarks as words"
+  },
+  {
+   "file": "1-today-admin-list-desk.png",
+   "label": "Today, as admin: a tap on Drifter’s Thu 12 Nov opens the day’s list, with the morning UNA’s entry"
+  },
+  {
+   "file": "2-today-member-list-desk.png",
+   "label": "Today, as Ranger: a tap on his own Thu 12 Nov opens the day’s list, read only"
+  },
+  {
+   "file": "3a-today-free-half-desk.png",
+   "label": "Today, for comparison: beside a morning leave filed on the Inputs page, the tap opens the window on PM only"
+  },
+  {
+   "file": "3b-drawn-a-admin-desk.png",
+   "label": "Drawn A, as admin: the window opens on PM, the UNA’s entry under the day line. The Inputs page line is gone"
+  },
+  {
+   "file": "4a-today-free-half-member-desk.png",
+   "label": "Today, for comparison, as Ranger: beside a morning leave filed on the Inputs page, his window opens on PM only"
+  },
+  {
+   "file": "4b-drawn-a-member-desk.png",
+   "label": "Drawn A, as Ranger: his window on PM, the UNA’s entry read only, its remarks as words"
+  }
+ ],
+ "measures": [
+  {
+   "size": "phone",
+   "who": "admin",
+   "today": {
+    "top": 572,
+    "bottom": 860,
+    "h": 288,
+    "vh": 874,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h53",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "drawn": {
+    "top": 464,
+    "bottom": 860,
+    "h": 396,
+    "vh": 874,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "daylist flat h127",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h30",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "entry": {
+    "h": 127,
+    "w": 352,
+    "rowGap": 6,
+    "marginTop": "0px",
+    "gapBelow": 16,
+    "typed": "Board of inquiry",
+    "ro": null,
+    "heldGone": true,
+    "gridSwap": {
+     "before": {
+      "LL": "25.5",
+      "OL": "25.5",
+      "OIL": "4",
+      "CCL": "5",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     },
+     "after": {
+      "LL": "26",
+      "OL": "26",
+      "OIL": "4",
+      "CCL": "5",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     }
+    },
+    "words": {
+     "textW": 279,
+     "room": 305,
+     "atSeventhWider": 319
+    }
+   },
+   "listEntry": {
+    "h": 127,
+    "w": 352,
+    "mainLines": 1
+   }
+  },
+  {
+   "size": "phone",
+   "who": "member",
+   "today": {
+    "top": 572,
+    "bottom": 860,
+    "h": 288,
+    "vh": 874,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h53",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "drawn": {
+    "top": 517,
+    "bottom": 860,
+    "h": 343,
+    "vh": 874,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "daylist flat h74",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h30",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "entry": {
+    "h": 74,
+    "w": 352,
+    "rowGap": 6,
+    "marginTop": "0px",
+    "gapBelow": 16,
+    "typed": null,
+    "ro": "“Board of inquiry”",
+    "heldGone": true,
+    "gridSwap": {
+     "before": {
+      "LL": "−0.5",
+      "OL": "−0.5",
+      "OIL": "0",
+      "CCL": "0",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     },
+     "after": {
+      "LL": "0",
+      "OL": "0",
+      "OIL": "0",
+      "CCL": "0",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     }
+    },
+    "words": {
+     "textW": 279,
+     "room": 305,
+     "atSeventhWider": 319
+    }
+   },
+   "listEntry": {
+    "h": 74,
+    "w": 352,
+    "mainLines": 1
+   }
+  },
+  {
+   "size": "desk",
+   "who": "admin",
+   "today": {
+    "top": 598,
+    "bottom": 886,
+    "h": 288,
+    "vh": 900,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h53",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "drawn": {
+    "top": 490,
+    "bottom": 886,
+    "h": 396,
+    "vh": 900,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "daylist flat h127",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h30",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "entry": {
+    "h": 127,
+    "w": 534,
+    "rowGap": 6,
+    "marginTop": "0px",
+    "gapBelow": 16,
+    "typed": "Board of inquiry",
+    "ro": null,
+    "heldGone": true,
+    "gridSwap": {
+     "before": {
+      "LL": "25.5",
+      "OL": "25.5",
+      "OIL": "4",
+      "CCL": "5",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     },
+     "after": {
+      "LL": "26",
+      "OL": "26",
+      "OIL": "4",
+      "CCL": "5",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     }
+    },
+    "words": {
+     "textW": 279,
+     "room": 487,
+     "atSeventhWider": 319
+    }
+   },
+   "listEntry": {
+    "h": 127,
+    "w": 534,
+    "mainLines": 1
+   }
+  },
+  {
+   "size": "desk",
+   "who": "member",
+   "today": {
+    "top": 598,
+    "bottom": 886,
+    "h": 288,
+    "vh": 900,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h53",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "drawn": {
+    "top": 543,
+    "bottom": 886,
+    "h": 343,
+    "vh": 900,
+    "scrolls": 0,
+    "rows": [
+     "bidsheet-hd h37",
+     "bid-dayline h16",
+     "daylist flat h74",
+     "bid-rmk-row h30",
+     "bidsheet-row bp-dur h30",
+     "bidsheet-row h66",
+     "bid-extra-row h30"
+    ]
+   },
+   "entry": {
+    "h": 74,
+    "w": 534,
+    "rowGap": 6,
+    "marginTop": "0px",
+    "gapBelow": 16,
+    "typed": null,
+    "ro": "“Board of inquiry”",
+    "heldGone": true,
+    "gridSwap": {
+     "before": {
+      "LL": "−0.5",
+      "OL": "−0.5",
+      "OIL": "0",
+      "CCL": "0",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     },
+     "after": {
+      "LL": "0",
+      "OL": "0",
+      "OIL": "0",
+      "CCL": "0",
+      "FCL": "0",
+      "PL": "0",
+      "EL": "0",
+      "CL": "0"
+     }
+    },
+    "words": {
+     "textW": 279,
+     "room": 487,
+     "atSeventhWider": 319
+    }
+   },
+   "listEntry": {
+    "h": 74,
+    "w": 534,
+    "mainLines": 1
+   }
+  }
+ ]
+}

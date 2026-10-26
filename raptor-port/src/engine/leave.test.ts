@@ -57,12 +57,12 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
   })
 
   /* The offer exemption is gone (owner decision, Aug 26): "Available fly" and
-     "Available duty" were removed as types, and "Fly" (renamed "Fly with",
+     "Available duty" were removed as types, and "Fly" (renamed "Attach",
      14 Aug 26) became an ordinary
      commitment. What is left is the two-way split the day's blocks render —
      PRESENTATIONAL since 10 Aug 26, but still a partition. */
   it('every type is either personal or unavailable, and the dead ones are gone', () => {
-    expect(INPUT_TYPES).toContain('Fly with')
+    expect(INPUT_TYPES).toContain('Attach')
     expect(INPUT_TYPES).toContain('OD')
     for (const dead of ['Office', 'Available fly', 'Available duty', 'Detachment', 'Downchit'])
       expect(INPUT_TYPES).not.toContain(dead)
@@ -108,11 +108,11 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
   it('isUnavail covers leave, medical and overseas duty; the rest are personal', () => {
     for (const t of ['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'EL', 'CL', 'HL', 'OML', 'ATT C', 'ATT B', 'OD'])
       expect(isUnavail(t), t).toBe(true)
-    expect(isUnavail('Meeting') || isUnavail('Fly with') || isUnavail('Other') || isUnavail('CSE')).toBe(false)
+    expect(isUnavail('Meeting') || isUnavail('Attach') || isUnavail('Other') || isUnavail('CSE')).toBe(false)
   })
 
   it('isPersonal is what a scheduler may lift onto the Ground Programme', () => {
-    for (const t of ['Meeting', 'Training', 'CSE', 'Personal', 'Appointment', 'Fly with', 'Other'])
+    for (const t of ['Meeting', 'Training', 'CSE', 'Personal', 'Appointment', 'Attach', 'Other'])
       expect(isPersonal(t), t).toBe(true)
     expect(isPersonal('LL') || isPersonal('OML') || isPersonal('OD')).toBe(false)
     /* isPersonal and the table's `ground` flag are the same set — the block a
@@ -124,7 +124,7 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
      no, with medical the single carve-out — on the island but not fit to walk.
      Derived rather than stored, so this is the whole of it. */
   it('local may stand a spare, overseas may not, medical never does', () => {
-    for (const t of ['LL', 'OIL', 'CCL', 'PL', 'FCL', 'EL', 'CL', 'Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Other'])
+    for (const t of ['LL', 'OIL', 'CCL', 'PL', 'FCL', 'EL', 'CL', 'Training', 'CSE', 'Meeting', 'Attach', 'Personal', 'Appointment', 'Other'])
       expect(canSpare(t), t).toBe(true)
     for (const t of ['OL', 'OD', 'HL', 'OML', 'ATT C', 'ATT B'])
       expect(canSpare(t), t).toBe(false)

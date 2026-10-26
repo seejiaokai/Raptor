@@ -1,0 +1,22 @@
+lw-m3b-w2-f C:\Users\User\projects\Raptor\.claude\worktrees\lw-m3-placing-leave-d1c063\raptor-port\docs\img\handpass\2026-10-25-lw-m3-build\w2 sets 41
+-- 41
+   41-cse [desk] a question opened after the save: oilconf
+   41-course [desk] a course on Sat 18 Jul: asked ["oilconf"]; question words: OIL: Ranger, CSE ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add; acc u
+PASS?  41-course [desk]  a course (CSE) for Ranger filed on Saturday 18 Jul from the Inputs window: questions raised at the save ["oilconf"]; words "OIL: Ranger, CSE ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add"; landed acc u  [f-41-course-question]
+   41-filed [desk] Meeting on Wed 15: acc g; oil undefined; asked []
+   41-holiday [desk] event sheet: EVENT 2 15 Jul 26 Edit presets ✕ PRESETS PH Off day No Leave SC Other… Public holiday · work on it earns OIL NAME ON GRID This day A range Save
+   41-holiday [desk] after saving the holiday, OIL windows: [] · all windows:  · visible dialogs: win-oilday: ⠿ OIL — Wed 15 Jul Public holiday ✕ Wed 15 Jul is now a public holiday. 2 TO ANSWER Yes to all No to all till 17 Jul NomadOD Overseas duty — exercise, off island Yes · FO No All day RangerMEETING Hol 
+   41-holiday [desk] the day OIL list reads: ⠿ OIL — Wed 15 Jul Public holiday ✕ Wed 15 Jul is now a public holiday. 2 TO ANSWER Yes to all No to all till 17 Jul NomadOD Overseas duty — exercise, off island Yes · FO No All day RangerMEETING Hol meet By Saber Yes · FO No What is left goes to the schedulers’ bells Later Save
+   41-holiday [desk] after its cross, windows open: 
+   41-holiday [desk] Meeting's OIL record after the holiday: undefined; acc g
+   41-start [desk] on Wed 15: buttons []; war [] Available P 25 → 25
+   41-reject [desk] Reject "REJECT": windows []; buttons now ["g:→ Ground","u:→ Unavail"]
+   41-unavail [desk] "→ Unavail" "→ UNAVAIL": windows ["oilconf"]; question words "OIL: Ranger, Meeting ✕ Filing Ranger's Meeting under Unavailable This input falls on Wed 15 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Don’t file File"; acc while the question is up r; the row's buttons still ["g:→ Ground","u:→ Unavail"]
+   41-answer [desk] a question opened after the save: oilconf
+   41-answer [desk] after the answer: acc u; war ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw18.6"] Available P 24
+PASS?  41 [desk]  (the Saturday cannot be filed without an answer — the question has only Yes / No OIL / Back — so the day was made a holiday afterwards through the war's Event row, preset PH) Meeting on Wed 15 (oil undefined); Reject → windows []; "→ Unavail" → windows ["oilconf"] ("OIL: Ranger, Meeting ✕ Filing Ranger's Meeting under Unavailable This input falls on Wed 15 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Don’t file"), acc while open r, row's buttons ["g:→ Ground","u:→ Unavail"]; after answering Yes: acc u, war ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw18.6"] Available P 24  [f-41-after-holiday, f-41-start-ground, f-41-unavail-question, f-41-war-after-answer]
+   errors-41 [desk] []
+RESULTS
+PASS? 41-course | a course (CSE) for Ranger filed on Saturday 18 Jul from the Inputs window: questions raised at the save ["oilconf"]; words "OIL: Ranger, CSE ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add"; landed acc u
+PASS? 41 | (the Saturday cannot be filed without an answer — the question has only Yes / No OIL / Back — so the day was made a holiday afterwards through the war's Event row, preset PH) Meeting on Wed 15 (oil undefined); Reject → windows []; "→ Unavail" → windows ["oilconf"] ("OIL: Ranger, Meeting ✕ Filing Ranger's Meeting under Unavailable This input falls on Wed 15 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Don’t file"), acc while open r, row's buttons ["g:→ Ground","u:→ Unavail"]; after answering Yes: acc u, war ["MTG|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw18.6"] Available P 24
+exit 0

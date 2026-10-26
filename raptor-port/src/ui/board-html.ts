@@ -3,7 +3,7 @@
 import { DAYS } from '../engine/data'
 import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
-import { INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, oilAsks, sansBadge, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM, parseHM } from '../engine/time'
@@ -788,7 +788,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
     /* the Unavailable row of an activity input FILED there ('u') carries the Undo that takes it
        back out — its only door otherwise (→ Unavail) lives in the Personal Inputs panel, which
        drops a filed input ([HUMAN-RETEST] walk W4-F4, 24 Sep 26; html.ts inGrp is the week's twin) */
-    +`<span class="lctl">${(acc||(inp.acc==='u'&&isPersonal(inp.type)))&&!modeRO?accCtl(di,inp):''}</span></div>`;
+    +`<span class="lctl">${(acc||(inp.acc==='u'&&isPersonal(inp.type))||(isOD(inp.type)&&!odOut(inp)))&&!modeRO?accCtl(di,inp):''}</span></div>`;
 }
 /* ro (5th param, reviewer-found residual 9 Aug 26): accepting an input is a
    write — promotes it into the ground programme through the mutation funnel
@@ -799,7 +799,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any,mates?:any[]){
    still gets the original, narrower behaviour rather than silently always
    showing the buttons. */
 export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
-  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>isPersonal(inp.type)&&inp.acc!=='u');
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>listedPersonal(inp));
   /* a shared input is ONE line here (D661) — split by where each man's request is filed; the folded heading counts it once */
   const lines:any[][]=rows.map((r:any)=>facesDrawn(r)).filter((l:any[])=>l.length);
   const acRo=ro??pv;
@@ -837,7 +837,7 @@ export function sbInputsGroupPanel(d:any,di:any,pv?:any,day?:any,ro?:any){
    editable as the ones above since the owner asked for both (10 Aug 26). */
 export function sbUnavailPanel(d:any,di:any,day?:any,ro?:any){
   // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this panel
-  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type)).flatMap((r:any)=>facesOf(r));
+  const rows=(day||inputsOn(d.dt)).filter((inp:any)=>listedUnavail(inp)).flatMap((r:any)=>facesOf(r));
   /* + Add stays here (owner, Aug 26; reworked 19 Aug 26): the dialog now
      offers only leave/medical/OD types and carries a DATE RANGE, whose till
      date lands in remarks the way the Inputs page's calendar writes it */

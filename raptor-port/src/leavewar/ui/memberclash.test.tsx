@@ -70,6 +70,7 @@ describe('a member reading his own clashed day', () => {
     asMember()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${SAT}`))
-    expect(screen.getByTestId('daylist').textContent).toContain('bid, not decided yet')
+    // the day's list says "pending" beside the bid's own box (D1158 — Ack gone; D1217's word; the short words since D1328)
+    expect(screen.getByTestId('daylist').textContent).toMatch(/pending/i)
   })
 })

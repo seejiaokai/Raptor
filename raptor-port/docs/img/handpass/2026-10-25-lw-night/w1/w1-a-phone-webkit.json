@@ -1,0 +1,129 @@
+[
+ {
+  "id": "S1 bubble",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 (red); right after the tap: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 193×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 193×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s01-phone-webkit-after-tap.png",
+   "s01-phone-webkit-settled.png",
+   "s01-phone-webkit-settled-full.png"
+  ]
+ },
+ {
+  "id": "S1 reopened day line",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "bid window on the bid reads: \"Available P 27 · red\"",
+  "pics": [
+   "s01-phone-webkit-reopened-dayline.png"
+  ]
+ },
+ {
+  "id": "S3 second bid (Ridge)",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "Available P 27 → 26 red; right after the tap: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s03-phone-webkit-second-after-tap.png",
+   "s03-phone-webkit-second-settled.png"
+  ]
+ },
+ {
+  "id": "S3 third bid (Trident)",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "Available P 26 → 25 red; right after the tap: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 255×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s03-phone-webkit-third-after-tap.png",
+   "s03-phone-webkit-third-settled.png"
+  ]
+ },
+ {
+  "id": "S2",
+  "size": "phone-webkit",
+  "verdict": "NOT DONE",
+  "said": "the list puts S2 on the desktop (keys); the phone is covered by S1/S21 taps",
+  "pics": []
+ },
+ {
+  "id": "errors-1",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx) in the S1/S3/S2 world",
+  "pics": []
+ },
+ {
+  "id": "S4 bid 1 (Drifter)",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "Required P 24, Available P 28 base 28 ok → 27 amber; right after the tap: under the Manning button, level amber, \"This bid turns Available P amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 25,202 210×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level amber, \"This bid turns Available P amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 25,202 210×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s04-phone-webkit-bid1-after-tap.png",
+   "s04-phone-webkit-bid1-settled.png"
+  ]
+ },
+ {
+  "id": "S4 bid 2 (Ridge)",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "Required P 24, Available P 28 base 28 ok → 26 amber; right after the tap: under the Manning button, level amber, \"This bid takes Available P lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 25,202 271×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level amber, \"This bid takes Available P lower, still amber.\", border rgba(229, 168, 59, 0.7), fill rgb(42, 34, 16), words rgb(242, 200, 121), arrow rgb(42, 34, 16), box 25,202 271×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s04-phone-webkit-bid2-after-tap.png",
+   "s04-phone-webkit-bid2-settled.png"
+  ]
+ },
+ {
+  "id": "S4 bid 3 (Trident)",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "Required P 24, Available P 28 base 28 ok → 25 red; right after the tap: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 193×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); settled: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 193×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s04-phone-webkit-bid3-after-tap.png",
+   "s04-phone-webkit-bid3-settled.png"
+  ]
+ },
+ {
+  "id": "errors-4",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx) in the S4 world",
+  "pics": []
+ },
+ {
+  "id": "S5 setup bid on the F2 day (non-IP pilot)",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "IP before 16; under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 193×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none)",
+  "pics": [
+   "s05-phone-webkit-x1-after-tap.png"
+  ]
+ },
+ {
+  "id": "S5 IP amber + Available P lower, still red",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "IP 16 → 15 amber; Available P 28 → 26; right after: under the Manning button, level red, \"This bid turns IP amber and takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 352×48 inside the 402×874 screen, centre hit is mfill (pointer-events none); settled: under the Manning button, level red, \"This bid turns IP amber and takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 352×48 inside the 402×874 screen, centre hit is mfill (pointer-events none)",
+  "pics": [
+   "s05-phone-webkit-x2-after-tap.png",
+   "s05-phone-webkit-x2-settled.png"
+  ]
+ },
+ {
+  "id": "S5 IP amber and Available P red (one bid, two rows turned)",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "IP 16 → 15 amber; Available P 28 → 27; right after: under the Manning button, level red, \"This bid turns IP amber and Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 271×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none); settled: under the Manning button, level red, \"This bid turns IP amber and Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,204 271×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s05-phone-webkit-y1-after-tap.png",
+   "s05-phone-webkit-y1-settled.png"
+  ]
+ },
+ {
+  "id": "errors-5",
+  "size": "phone-webkit",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx) in the S5 world",
+  "pics": []
+ }
+]

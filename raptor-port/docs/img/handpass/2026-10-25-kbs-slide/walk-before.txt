@@ -1,0 +1,16 @@
+FAIL A Inputs calendar day → + Input (OL) → Remarks: rest 12, at rest with the keys up 8; furthest from still — up 77, down 45
+   up   15 42 73 88 89 82 69 55 41 28 18 11 8 7 7 7 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8
+   down 57 40 21 10 5 3 4 4 5 7 8 9 9 10 11 11 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+FAIL A2 Inputs calendar day → + Input → Other → Remarks: rest 12, at rest with the keys up 8; furthest from still — up 115, down 70
+   up   12 5 38 88 119 127 120 104 83 62 43 27 16 9 7 7 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8
+   down 82 60 30 12 4 1 1 2 3 4 6 7 8 9 10 11 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+FAIL B SANS calendar day → + → Remarks: rest 12, at rest with the keys up 8; furthest from still — up 70, down 40
+   up   20 46 70 82 81 73 62 49 36 25 17 11 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8
+   down 52 39 22 11 6 5 5 6 6 7 8 9 10 10 11 11 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12 12
+FAIL C Tracker → All events → ST-05's Edit → Name: rest 41, at rest with the keys up 8; furthest from still — up 103, down 55
+   up   41 66 94 129 144 140 123 101 77 55 36 21 12 7 7 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8
+   down 86 96 68 46 35 31 30 30 32 33 35 36 37 38 39 40 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41 41
+FAIL E Admin → Duty templates → the last time box: rest 129, at rest with the keys up 8; furthest from still — up 65, down 0
+   up   155 194 176 154 132 108 85 63 45 29 18 11 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8
+   down 62 70 77 86 94 101 107 112 116 119 121 123 125 126 127 128 128 129 129 129 129 129 129 129 129 129 129 129 129 129 129 129 129 129 129 129 129
+5 case(s) FAIL

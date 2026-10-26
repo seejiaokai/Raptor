@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   addEventBand,
@@ -12,6 +12,11 @@ import {
 } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
+   asked as the ⚙ press asks it (ui/lwnav.ts). */
+const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -42,7 +47,7 @@ describe('the two event lines', () => {
     const { rerender } = render(<Matrix />)
     // off the row entirely — reached only by opening ⚙ Settings (owner, 3 Sep 26)
     expect(screen.queryByTestId('event-add')).toBeNull()
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     rerender(<Matrix />)
     expect(screen.getByTestId('event-add')).toBeTruthy()
     // remove only appears once above the default two rows
@@ -59,12 +64,15 @@ describe('the two event lines', () => {
   it('the Show SANS switch shows inside ⚙ Settings for an admin only, and flips the store', () => {
     const { rerender, unmount } = render(<Matrix />)
     expect(screen.queryByTestId('settings-open'), 'a member has no settings').toBeNull()
+    // D1254: ⚙ is the top row's now, so the grid alone never draws it — a member asking for ⚙ gets no sheet either
+    openSettings()
+    expect(screen.queryByTestId('settings-sheet'), 'a member has no settings').toBeNull()
     expect(screen.queryByTestId('sans-toggle'), 'a member never sees it').toBeNull()
     unmount()
     setRole('admin')
     const r2 = render(<Matrix />)
     expect(screen.queryByTestId('sans-toggle'), 'not until Settings is opened').toBeNull()
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     r2.rerender(<Matrix />)
     const btn = screen.getByTestId('sans-toggle')
     expect(btn.textContent).toBe('Show SANS')
