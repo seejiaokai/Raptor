@@ -1,0 +1,190 @@
+{
+ "res": [
+  {
+   "id": "fixture: Comet on the AVALON line",
+   "ok": true,
+   "saw": "placed by arming its seat and tapping him in the crew list"
+  },
+  {
+   "id": "D1118 ATT B, no seat: full colour, its words",
+   "ok": true,
+   "saw": "{\"cls\":\"rpuck grounded haswhy\",\"why\":\"ATT B: no flying\",\"beside\":false,\"under\":true,\"opacity\":\"1\",\"title\":\"Havoc — grounded today: no flying, but a duty desk, a sim seat or a ground row is still open to him\"}"
+  },
+  {
+   "id": "D1120 AVALON man, no seat: the standby look, not faded",
+   "ok": true,
+   "saw": "{\"cls\":\"rpuck standby\",\"why\":\"\",\"beside\":false,\"under\":false,\"opacity\":\"0.82\",\"title\":\"Comet — AVALON standby, free for anything else\"}"
+  },
+  {
+   "id": "D1118 Pilots count leaves Havoc out, Comet counted",
+   "ok": true,
+   "saw": "Pilots · 5 free FFFFFFddddddddddddddddddddddX"
+  },
+  {
+   "id": "D1118 Havoc straight after the free men",
+   "ok": true,
+   "saw": "FFFFFHddddddddddddddddddddddX"
+  },
+  {
+   "id": "D1119 SANS heading counted, free first",
+   "ok": true,
+   "saw": "SANS Avail · 0 free dXXXXXXXXXX"
+  },
+  {
+   "id": "grip present on the desktop",
+   "ok": true,
+   "saw": "visible"
+  },
+  {
+   "id": "320, desk picked: crew columns under; each reason beside where 92 is free, under where not",
+   "ok": true,
+   "saw": "30 reasons: 27 under, 3 beside (SANS rows, full width)"
+  },
+  {
+   "id": "D1118 strike across the puck only (puck − 6)",
+   "ok": true,
+   "saw": "68/74 68/74 68/74"
+  },
+  {
+   "id": "desk picked: Havoc (ATT B) free for the desk",
+   "ok": true,
+   "saw": "{\"cls\":\"rpuck \",\"why\":\"\",\"beside\":false,\"under\":false,\"opacity\":\"1\",\"title\":\"Havoc\"}"
+  },
+  {
+   "id": "D1113 dragged to 40% and no further",
+   "ok": true,
+   "saw": "614"
+  },
+  {
+   "id": "the desk is still picked after the drag",
+   "ok": true,
+   "saw": "ARM kept"
+  },
+  {
+   "id": "wide, desk picked: every reason beside its puck, inside the panel",
+   "ok": true,
+   "saw": "30 of 30 beside"
+  },
+  {
+   "id": "the day narrows beside the panel, never under it",
+   "ok": true,
+   "saw": "first row right of panel edge"
+  },
+  {
+   "id": "remembered across closing the board",
+   "ok": true,
+   "saw": "614"
+  },
+  {
+   "id": "remembered across a reload",
+   "ok": true,
+   "saw": "614"
+  },
+  {
+   "id": "D1119 the strip reads \"Planning FCP\" on a blank line",
+   "ok": true,
+   "saw": "\"Planning FCP\""
+  },
+  {
+   "id": "front seat, wide: Havoc struck, his reason beside him",
+   "ok": true,
+   "saw": "{\"cls\":\"rpuck no haswhy\",\"why\":\"medically down — no flying, may still work (ATT B) — Medically down\",\"beside\":true,\"under\":false,\"opacity\":\"1\",\"title\":\"Havoc — medically down — no flying, may still work (ATT B) — Medically down\"}"
+  },
+  {
+   "id": "a double-click puts it back to 320",
+   "ok": true,
+   "saw": "320"
+  },
+  {
+   "id": "← three times: 380",
+   "ok": true,
+   "saw": "380"
+  },
+  {
+   "id": "End the widest, Home 320",
+   "ok": true,
+   "saw": "614 / 320"
+  },
+  {
+   "id": "window made smaller: clamped to 40%; larger again: back",
+   "ok": true,
+   "saw": "410 → 614"
+  },
+  {
+   "id": "Edit Schedule: Havoc full colour, words under (puck-wide column)",
+   "ok": true,
+   "saw": "{\"cls\":\"rpuck grounded haswhy\",\"why\":\"ATT B: no flying\",\"beside\":false,\"under\":true,\"opacity\":\"1\",\"title\":\"Havoc — grounded today: no flying, but a duty desk, a sim seat or a ground row is still open to him\"}"
+  },
+  {
+   "id": "Edit Schedule: Comet standby, not faded",
+   "ok": true,
+   "saw": "{\"cls\":\"rpuck standby\",\"why\":\"\",\"beside\":false,\"under\":false,\"opacity\":\"0.82\",\"title\":\"Comet — AVALON standby, free for anything else\"}"
+  },
+  {
+   "id": "Edit Schedule: no grip there",
+   "ok": true,
+   "saw": "none"
+  },
+  {
+   "id": "D1116 scrolled: \"AIRCREW · ‹ day ›\" under the top bar, in sight",
+   "ok": true,
+   "saw": "{\"y\":900,\"bar\":104,\"top\":121,\"on\":true,\"text\":\"Aircrew · ‹Monday›\"}"
+  },
+  {
+   "id": "D1116 the day picker works scrolled",
+   "ok": true,
+   "saw": "Aircrew · ‹Monday› → Aircrew · ‹Tuesday›"
+  },
+  {
+   "id": "1024: 40% is 410",
+   "ok": true,
+   "saw": "410"
+  },
+  {
+   "id": "1024, 410 wide: every reason beside, inside the panel",
+   "ok": true,
+   "saw": "30 of 30"
+  },
+  {
+   "id": "1024: Edit Schedule heading under the top bar when scrolled",
+   "ok": true,
+   "saw": "{\"bar\":104,\"top\":121,\"y\":900}"
+  },
+  {
+   "id": "phone: no grip",
+   "ok": true,
+   "saw": "hidden"
+  },
+  {
+   "id": "phone drawer: Havoc full colour, words under",
+   "ok": true,
+   "saw": "{\"cls\":\"rpuck grounded haswhy\",\"why\":\"ATT B: no flying\",\"beside\":false,\"under\":true,\"opacity\":\"1\",\"title\":\"Havoc — grounded today: no flying, but a duty desk, a sim seat or a ground row is still open to him\"}"
+  },
+  {
+   "id": "phone drawer: SANS counted, free first",
+   "ok": true,
+   "saw": "SANS Avail · 0 free dXXXXXXXXXX"
+  },
+  {
+   "id": "phone: the front seat is picked",
+   "ok": true,
+   "saw": "0.0.2.0.p"
+  },
+  {
+   "id": "phone, a seat picked: reasons under their pucks, strike on the puck",
+   "ok": true,
+   "saw": "8 of 8 under"
+  },
+  {
+   "id": "phone, desktop layout: side 320, no grip",
+   "ok": true,
+   "saw": "{\"w\":320,\"grip\":\"none\"}"
+  },
+  {
+   "id": "no errors in the browser",
+   "ok": true,
+   "saw": "none"
+  }
+ ],
+ "errors": []
+}

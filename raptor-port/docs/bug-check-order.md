@@ -340,7 +340,12 @@ reader reported a line a break test had cut out for one minute).
 **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
 are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
 chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
-and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Sonnet never reads
+and the host opens the pictures and REPRODUCES every finding before it enters the evidence sheet. **Saving tokens never
+costs this (owner, D1271, 23 Oct 26 — "I don't want u to loose quality for debugging or quality check"):** a look at a picture that
+decides whether something is wrong or right — a fault's cause, a fix's check, a finding — stays the host's; only a look
+whose answer the host does not rely on alone (picking pictures to send him) may go to Sonnet. **The host saves tokens by
+cropping instead (owner, D1273, 23 Oct 26):** a picture is cut to the area being judged — the fault and what is beside it
+— before the host opens it; a whole screen only when the question is about the whole screen. **Sonnet never reads
 code to find bugs** (in one outside code-review test it caught 6 of 13 known bugs where Opus caught 8 to 10, with more
 false alarms), never decides whether a finding is real, never writes the roll-call, a plan or a scenario list. Two trials led here (D476, D480 — both run — and the one check made before the reset, D508; their text:
 `docs/archive/codex-arrangement-2026-10-07.md`). Following the second, on a build with five known faults, the agent kept
@@ -697,7 +702,49 @@ it; Chromium retargets them), and add a synthetic check per difference: dispatch
 directly on the element it would reach. Name in the evidence sheet every line only a real device can prove,
 and put it on the owner's look card.
 
+**7.10 The moment after a press, and the drawing beside the build (owner D1281, 23 Oct 26).** Three faults he found on
+his iPhone in one day had passed every walk, each a state no step looked at. So, for every walk of a screen:
+- **A picture right after the press.** On a phone, a step that taps takes one picture within about 100 ms of the
+  lift, with the pointer left where it pressed, as well as the settled one — an iPhone keeps what was tapped
+  "hovered" until the next tap, where the test browser drops it in a quarter of a second, so a tint or a see-through
+  cell that lives in that state showed only on his phone (the month strip's dirty block, in the app since 19 Aug 26).
+  The walker opens it beside the settled picture and names any tint, see-through cell or shifted box that only the
+  pressed one shows.
+- **No pinned cell turns see-through.** Each dense screen keeps a standing browser test that presses its controls on
+  a phone, the pointer left on each, and asserts every pinned (sticky) cell stays fully opaque (a cell that paints nothing by design aside). The Leave War has it
+  (`e2e/leavewar.spec.ts`, "pressing the Leave War's controls on a phone never turns a pinned cell see-through");
+  the Scheduler Board, the week, Quals and the Tracker get theirs when each is next worked on, not swept now.
+- **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
+  iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
+  (his lessons 42 and 43, `docs/design-practices.md` §9).
+
 ---
+
+**7.11 The faults he found that a walk missed — and what each teaches (owner D1297, 24 Oct 26).** Whenever he finds a
+fault a bug check's walk let through, the same day and without asking him: the fault is fixed red-first, and WHY the walk
+missed it is written here as a lesson about the KIND of gap, newest first. **Every sizing step (§7.0) and every walker's
+brief reads this list and says, for each lesson, which scenario or named test covers it for the change in hand** — or why
+it cannot apply. One fresh reader checks each lesson; the closing report names the lessons added; he may strike any.
+1. **A reading checked in one state only (D1296, the Leave War M3, 24 Oct 26).** The bid window's day line was read before a
+   bid that turns a row red, never in the window reopened on that bid — where it said "No manning row turns amber or red"
+   with Available P red. **Lesson:** a surface with more than one state (new / already placed, empty / full, open / closed)
+   gets a table of state × every reading it shows (each line, figure and word), each cell a scenario or a named test (§7.4).
+2. **A gesture at one speed only (D1294, the same look).** The "Open for bidding" months were dragged slowly; a quick
+   sideways swipe, as a person makes it, picked nothing (the hold before a drag read it as a scroll). **Lesson:** every drag
+   and swipe is driven at a person's ordinary speed as well as slowly — a quick flick, a short hold — on the phone.
+3. **Feedback never looked for (D1289, D1295, the same look).** No step asked whether the tapped day showed it was picked,
+   or whether a list said more was below its foot. **Lesson:** after every press, the walk asks what tells the person it
+   happened and what is out of sight, and pictures that (the design guide's lessons 45, 46).
+4. **A press on the page behind an open window (D1298, the Inputs calendar, 24 Oct 26).** With a new input's window open (it
+   leaves the page working, D641), a click on another date lit it as picked while the window kept its date. **Lesson:** for
+   every window that leaves the page behind it working, the walk presses the page behind it — another date, another row —
+   and asks whether what lights matches what the window then says.
+5. **A box brought into sight, never checked against what stands over it (his report, the input window on his iPhone,
+   25 Oct 26).** The keyboard walk of 19 Oct 26 checked that a tapped box ended above the keys, never that nothing in the
+   window itself covered it: with the window fitted into the space above the keys (or the page shortened for them), its
+   Cancel / Add, pinned to its foot, stood exactly where Remarks was lifted. **Lesson:** wherever a box or row is moved into sight (a scroll, a lift, a jump to it), the walk checks it at
+   its resting place against everything that can stand over it — the keys, and the window's own pinned bars and buttons,
+   a banner, a bubble, a sticky heading — and pictures it there.
 
 ## 8. Making the checks FIND rather than CONFIRM
 

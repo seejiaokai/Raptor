@@ -199,18 +199,24 @@ describe('SANS availability is filed on the SANS calendar and nowhere else (D620
 /* THE SWITCH DOES NOT MOVE UNDER THE FINGER (owner D687, 9 Oct 26 — from his iPhone: "So weird that the calander/list
    button jumps to the left when I click on the list. Can it remain in the same position?"; his standing rule of 2 Sep 26:
    a control tapped repeatedly must not move). It jumped because the month's arrows and "Today" stood BEFORE it on the
-   Calendar and are not there on the List. It is the first thing after the tabs on both. */
-describe('the Calendar | List switch keeps its place (D687)', () => {
-  const afterTabs = () => $('.inputs-tabs')!.nextElementSibling as HTMLElement
-  it('on the Calendar it comes straight after the tabs — the month’s arrows and "Today" after it', () => {
-    expect(afterTabs().className).toContain('inputs-views')
-    expect($('.inputs-views')!.compareDocumentPosition($('.ic-nav')!) & Node.DOCUMENT_POSITION_FOLLOWING, 'the arrows follow the switch').toBeTruthy()
-    expect($('.inputs-views')!.parentElement, 'on the one row').toBe($('.ic-nav')!.parentElement)
+   Calendar and are not there on the List. It was the first thing after the tabs on both; since D1125 (21 Oct 26 — the
+   Inputs and SANS rows alike) it stands at the row's right end on every width, and the List keeps an invisible copy of
+   the month controls where the Calendar has them, so the two rows are the same widths and wrap alike (a browser test,
+   e2e/boardside.spec.ts "D1125", measures the switch at 1536, 1366 and 1024). */
+describe('the Calendar | List switch keeps its place (D687, D1125)', () => {
+  it('on the Calendar the month controls and the switch share the one row', () => {
+    expect($('.inputs-views')!.parentElement, 'on the one row').toBe($('.ic-head .ic-nav')!.parentElement)
   })
-  it('on the List it is in the same place: straight after the tabs', async () => {
+  it('on the List an invisible copy of the month controls stands in the row — hidden from sight, a screen reader and the keyboard', async () => {
     await click('#inListBtn')
-    expect(afterTabs().className).toContain('inputs-views')
+    const g = $('.ic-nav-ghost') as HTMLElement
+    expect(g, 'the copy is there').toBeTruthy()
+    expect(g.parentElement, 'on the switch’s row').toBe($('.inputs-views')!.parentElement)
+    expect(g.getAttribute('aria-hidden')).toBe('true')
+    expect(g.hasAttribute('inert'), 'out of the keyboard’s reach').toBe(true)
+    expect([...g.querySelectorAll('button')].map(b => [b.textContent, b.tabIndex]), 'the Calendar’s three buttons, none reachable').toEqual([['‹', -1], ['›', -1], ['Today', -1]])
+    expect(g.querySelector('.ic-mon')!.getAttribute('data-fit')!.split('\n'),'the month’s room: all twelve names').toHaveLength(12)
     await click('#inCalBtn')
-    expect(afterTabs().className).toContain('inputs-views')
+    expect($('.ic-nav-ghost'), 'gone on the Calendar, where the real ones stand').toBeFalsy()
   })
 })

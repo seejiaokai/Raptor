@@ -141,3 +141,24 @@ test('a phone: a short pop-up window (the Inputs calendar’s settings) stands i
     await page.screenshot({ path: test.info().outputPath('settings.png') })
   } finally { await context.close() }
 })
+
+/* [LOGIN-NOT-AT-TOP] (his report, 26 Oct 26 — "Why everytime I login I don't see the top of the page?"): on a phone the
+   week jumps SIDEWAYS to today's day after signing in, and that jump also scrolled the page DOWN until today's card
+   stood at the top of the screen, under the top bar — the day's heading and sign-off hidden, "N changes" the first thing
+   in view. Signing in opens the page at its top. */
+for (const [w, h] of [[390, 844], [375, 667]] as const) {
+  test(`a phone (${w} wide): after signing in the page opens at its top — today's heading in view (LOGIN-NOT-AT-TOP)`, async ({ browser, baseURL }) => {
+    const { context, page } = await phone(browser, baseURL, w, h)
+    try {
+      await page.waitForTimeout(600)   // the sideways jump to today runs 120ms after the week is up
+      const at = await page.evaluate(() => {
+        const bar = document.querySelector('.topbar') as HTMLElement | null
+        const day = document.querySelector('#vWeek .day.today') as HTMLElement | null
+        return { y: Math.round(window.scrollY), barBottom: bar ? Math.round(bar.getBoundingClientRect().bottom) : 0, dayTop: day ? Math.round(day.getBoundingClientRect().top) : -1 }
+      })
+      expect(at.y, 'the page is at its top').toBe(0)
+      expect(at.dayTop, `today's card starts below the top bar (card ${at.dayTop}, bar ${at.barBottom})`).toBeGreaterThanOrEqual(at.barBottom)
+      await page.screenshot({ path: test.info().outputPath('signed-in.png') })
+    } finally { await context.close() }
+  })
+}

@@ -21,10 +21,15 @@
 // AVAILABLE P and AVAILABLE W rows the SANS calendar reads are ordinary count rows
 // under two fixed ids (engine/availrows.ts), renamed and re-defined HERE — opened by
 // a tap on the row's name (ui/FlyRows.tsx). For them the form shows what holds and
-// nothing the store would refuse: a people count only (no "Sets / teams"), no amber
-// or red (their red comes from the Required row above them), no Delete (the SANS
-// calendar reads them) — and its live sample is summed the row's own way, which
-// never counts a SANS man (`availHave`), with a line saying so.
+// nothing the store would refuse: a people count only (no "Sets / teams"), no Delete
+// (the SANS calendar reads them) — and its live sample is summed the row's own way,
+// which never counts a SANS man (`availHave`), with a line saying so. In place of the
+// counters' fixed amber and red numbers it sets the row's AMBER and RED POINTS, each
+// a number plus or minus that day's Required (the Leave War overhaul — D1190, D1191,
+// D1202; drawn r7-26): red "+ 0" to start (under Required, as the row always was),
+// amber blank (none). A line says when red hides amber, and one says how the SANS
+// calendar follows what the row counts (D1154). Its Save is ONE command
+// (state/store.ts saveAvailRow — `lw.availrow`).
 
 import { useMemo, useState } from 'react'
 import {
@@ -35,14 +40,19 @@ import {
   AVAIL_W,
   availHave,
   availRuleOf,
+  availPointsOf,
+  amberHidden,
+  AVAIL_POINT_MAX,
   isAvailId,
   ruleHave,
+  type AvailPoints,
   type CrewFilter,
   type ManningRule,
   type RuleCount,
   type Seat,
 } from '../engine'
-import { deleteManningRule, getState, saveManningRule } from '../state/store'
+import { deleteManningRule, getState, saveAvailRow, saveManningRule } from '../state/store'
+import { reqRowNames } from '../sync'
 import { Sheet } from './Sheet'
 import { useVersion } from './useStore'
 import './bidpicker.css'
@@ -99,6 +109,17 @@ function mintId(label: string, taken: Set<string>): string {
 
 const toggled = (xs: string[], k: string): string[] =>
   xs.includes(k) ? xs.filter(x => x !== k) : [...xs, k]
+
+/* AN AVAILABLE ROW'S POINT, as its box shows it and as it is read back: "+ 2", "+ 0", "− 1" (the true minus, as drawn).
+   Typed, a bare number reads as plus, and "-" or "−" as minus; blank is no value — no amber, and a red that cannot be
+   saved. A value past the store's limit is no value either. */
+const signed = (n: number): string => (n < 0 ? `− ${-n}` : `+ ${n}`)
+function readPoint(v: string): number | null | undefined {
+  const t = v.replace(/\s+/g, '').replace(/\u2212/g, '-')
+  if (!t) return undefined
+  const n = Number(t)
+  return Number.isFinite(n) && Math.abs(n) <= AVAIL_POINT_MAX ? n : null
+}
 
 // ---- One filter's pickers, shared by the people shape and every slot -------
 
@@ -236,6 +257,12 @@ export function CounterForm({ ruleId, onClose }: {
   const [amber, setAmber] = useState(existing ? String(existing.threshold.amber) : '0')
   const [red, setRed] = useState(existing ? String(existing.threshold.red) : '0')
   const [armDel, setArmDel] = useState(false)
+  /* an Available row's two points (D1190, D1191, D1202) — strings while typing, as the counters' numbers are */
+  const pts0: AvailPoints | null = avail && existing ? availPointsOf(existing) : null
+  const [amberPt, setAmberPt] = useState(pts0?.amber === undefined ? '' : signed(pts0.amber))
+  const [redPt, setRedPt] = useState(pts0 ? signed(pts0.red) : '+ 0')
+  const ap = readPoint(amberPt), rp = readPoint(redPt)
+  const points: AvailPoints | null = avail && typeof rp === 'number' && ap !== null ? { red: rp, ...(ap === undefined ? {} : { amber: ap }) } : null
 
   const a = parseFloat(amber)
   const r = parseFloat(red)
@@ -245,6 +272,7 @@ export function CounterForm({ ruleId, onClose }: {
     label.trim().length > 0 &&
     Number.isFinite(a) && a >= 0 &&
     Number.isFinite(r) && r >= 0 &&
+    (!avail || points !== null) &&
     (mode === 'people' || slotsValid)
 
   const draftCount = (): RuleCount =>
@@ -279,7 +307,8 @@ export function CounterForm({ ruleId, onClose }: {
     // `desc` deliberately absent: a rule saved from this form gets its sheet
     // words written from the definition (describeRule), so they cannot lie.
     const rule: ManningRule = { id, label: label.trim(), count: draftCount(), threshold: { amber: a, red: r } }
-    if (saveManningRule(rule)) onClose()
+    /* an Available row's Save is one command with its points (state/store.ts saveAvailRow) */
+    if (avail ? saveAvailRow({ ...rule, points: points! }) : saveManningRule(rule)) onClose()
   }
 
   return (
@@ -409,8 +438,8 @@ export function CounterForm({ ruleId, onClose }: {
         </>
       )}
 
-      {/* An Available row carries no amber or red of its own — its red comes from the Required row above it — and the
-          store holds both at 0 whatever is sent: the boxes are not drawn. */}
+      {/* An Available row's amber and red are POINTS against the day's Required, set below — not these fixed numbers,
+          which the store holds at 0 for it whatever is sent. */}
       {!avail && <div className="mth-edit">
         <label className="mth-field">
           <span className="lab">Amber below</span>
@@ -428,9 +457,48 @@ export function CounterForm({ ruleId, onClose }: {
         </label>
       </div>}
 
+      {/* THE TWO POINTS (D1190, D1191, D1202 — drawn r7-26): each "when under Required", plus or minus a number. One tap
+          then typing replaces the value (D1080 — the .mth-in boxes). */}
+      {avail && (
+        <>
+          <div className="bidsheet-row cf-row cf-pt">
+            <span className="lab">Amber</span>
+            <span className="cf-ptdot amb" aria-hidden="true" />
+            <span className="cf-ptwhen">when under Required</span>
+            <input
+              className={`mth-in cf-ptin${ap === null ? ' bad' : ''}`} data-testid="cform-amber-pt" type="text"
+              inputMode="text" enterKeyHint="done" placeholder="none" aria-label="Amber: a number above or below Required"
+              value={amberPt} onChange={e => setAmberPt(e.target.value)}
+            />
+          </div>
+          <div className="bidsheet-row cf-row cf-pt">
+            <span className="lab">Red</span>
+            <span className="cf-ptdot red" aria-hidden="true" />
+            <span className="cf-ptwhen">when under Required</span>
+            <input
+              className={`mth-in cf-ptin${typeof rp !== 'number' ? ' bad' : ''}`} data-testid="cform-red-pt" type="text"
+              inputMode="text" enterKeyHint="done" aria-label="Red: a number above or below Required"
+              value={redPt} onChange={e => setRedPt(e.target.value)}
+            />
+          </div>
+          {points && amberHidden(points) && (
+            <div className="mwhen" data-testid="cform-amber-hidden">Red is set at or above amber, so amber never shows.</div>
+          )}
+          {(ap === null || typeof rp !== 'number') && (
+            <div className="mwhen" data-testid="cform-pt-bad">Enter each as a number above or below Required, like + 2 or − 1.</div>
+          )}
+        </>
+      )}
+
       {avail && (
         <div className="mwhen" data-testid="cform-avail-note">
           SANS people are never counted here. The SANS calendar reads this row, so it cannot be deleted.
+        </div>
+      )}
+      {/* how the SANS calendar follows what this row counts (D1154) */}
+      {avail && existing && (
+        <div className="mwhen" data-testid="cform-avail-sans">
+          On the SANS calendar, still needed is {reqRowNames()[existing.id === AVAIL_P ? 'p' : 'w']} less {label.trim() || existing.label}, less the SANS committed to fly.
         </div>
       )}
 

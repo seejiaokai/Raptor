@@ -6,6 +6,7 @@ import { figureCtxOf } from '../state/store'
 import { CreditForm } from './CreditForm'
 import { KEYBOARD_MIN } from './Sheet'
 import { followVisible } from '../../ui/vvfollow'
+import { screenBox } from '../../ui/kbscroll'
 
 /**
  * The docked bar after a drag down a figure column (owner, 6 Sep 26): "N
@@ -63,8 +64,11 @@ function useDockAboveKeyboard(ref: { current: HTMLDivElement | null }) {
     if (!vv || !el) return
     const GAP = 14
     const place = () => {
-      const covered = window.innerHeight - vv.height - vv.offsetTop
-      el.style.bottom = window.innerHeight - vv.height > KEYBOARD_MIN ? `${Math.max(0, covered) + GAP}px` : ''
+      /* the layout's full height from the fixed mark (ui/kbscroll.ts screenBox): his iPhone gives the window's own height as
+         what is left below the visible top once the keys have panned the screen, which left the bar under the keys */
+      const lay = screenBox(vv).layH
+      const covered = lay - vv.height - vv.offsetTop
+      el.style.bottom = lay - vv.height > KEYBOARD_MIN ? `${Math.max(0, covered) + GAP}px` : ''
     }
     /* frame by frame while the keys move, not a few frames behind them (D1081) */
     return followVisible(place)

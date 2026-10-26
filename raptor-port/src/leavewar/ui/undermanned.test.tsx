@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, getVersion, initStore, selectWar, setBidState, setCell, setRole } from '../state/store'
+import { closeDates, getState, getVersion, initStore, openDates, selectWar, setBidState, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { StageBar } from './Chrome'
@@ -61,7 +61,8 @@ describe('the under-manned list', () => {
 
   it('counts the same days the chip counts', () => {
     render(<StageBar />)
-    expect(screen.getByTestId('undermanned').textContent).toContain(`${RED.length} days`)
+    // D1243: the count is the Manning button's right half, "n red ›" (was "n days")
+    expect(screen.getByTestId('undermanned').textContent).toBe(`${RED.length} red ›`)
     fireEvent.click(screen.getByTestId('undermanned'))
     expect(within(screen.getByTestId('undermanned-list')).getAllByTestId(/^undermanned-day-/)).toHaveLength(RED.length)
   })
@@ -74,7 +75,7 @@ describe('the under-manned list', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('undermanned'))
     expect(screen.getByTestId('undermanned-day-2026-01-01')).toBeTruthy()
-    act(() => { setRole('admin'); advanceStage(); setBidState('ramp', '2026-01-01', 'refused') })
+    act(() => { setRole('admin'); closeDates('2026-01-01', '2026-12-31'); setBidState('ramp', '2026-01-01', 'refused') })
     expect(screen.queryByTestId('undermanned-day-2026-01-01')).toBeNull()
     expect(within(screen.getByTestId('undermanned-list')).getAllByTestId(/^undermanned-day-/)).toHaveLength(RED.length - 1)
   })
@@ -106,10 +107,10 @@ describe('the under-manned list', () => {
       }
     })
     render(<StageBar />)
-    const chip = screen.getByTestId('undermanned')
-    expect(chip.textContent).toContain('0 days')
-    expect(chip.hasAttribute('disabled')).toBe(true)
-    fireEvent.click(chip)
+    /* WAS "the chip reads 0 days and is disabled". D1243: with no red day the Manning button's right half goes — there
+       is nothing to press, and the button reads "Manning" alone */
+    expect(screen.queryByTestId('undermanned')).toBeNull()
+    expect(screen.getByTestId('counts-toggle').textContent!.trim()).toMatch(/Manning$/)
     expect(screen.queryByTestId('undermanned-list')).toBeNull()
   })
 })
@@ -146,7 +147,7 @@ describe('snapping to a day', () => {
   })
 
   it('marks the chosen day in the matrix so the eye lands on it', () => {
-    render(<StageBar />)
+    // D1254: the grid's bar (the Manning button and its red count) is drawn inside the grid card — the grid alone has it
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('undermanned'))
     fireEvent.click(screen.getByTestId('undermanned-day-2026-02-10'))
@@ -157,16 +158,19 @@ describe('snapping to a day', () => {
   // Switching war rebuilds the grid around different dates; a focus left
   // pointing into the old one would mark a column that is no longer there and
   // send the next snap nowhere. So the focus MOVES with the war — to the new
-  // one's own bidding start (owner, 7 Sep 26 — the same "land on the start of
-  // the period opened for bidding" rule as opening the tab), never left
-  // pointing back into the war just left.
-  it('moves the focus to the new war\'s bidding start when the war changes', () => {
+  // one's first open date (owner, 7 Sep 26 — the same landing rule as opening
+  // the tab; since the stages went, "the first open date from today, else
+  // today", D1177's reading), never left pointing back into the war just left.
+  it('moves the focus to the new war\'s first open date when the war changes', () => {
+    const here = getState().period.id
+    const other = getState().wars.find(w => w.period.id !== here)!
+    /* the other war opens 1 – 31 Mar 27 (opening dates writes the war on screen, so it is put there to open them) */
+    act(() => { setRole('admin'); selectWar(other.period.id); openDates('2027-03-01', '2027-03-31'); selectWar(here) })
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('undermanned'))
     fireEvent.click(screen.getByTestId('undermanned-day-2026-02-10'))
     expect(getState().focusDate).toBe('2026-02-10')
-    const other = getState().wars.find(w => w.period.id !== getState().period.id)!
-    const want = other.period.bidFrom ?? other.period.start
+    const want = '2027-03-01'
     act(() => selectWar(other.period.id))
     // The focus now names a day inside the NEW war, not the old 2026-02-10.
     expect(getState().focusDate).toBe(want)

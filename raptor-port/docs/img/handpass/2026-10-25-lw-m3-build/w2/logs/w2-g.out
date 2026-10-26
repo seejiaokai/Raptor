@@ -1,0 +1,26 @@
+lw-m3b-w2-g C:\Users\User\projects\Raptor\.claude\worktrees\lw-m3-placing-leave-d1c063\raptor-port\docs\img\handpass\2026-10-25-lw-m3-build\w2 sets A5,23 chromium
+-- A5
+   A5-bridge [desk] bridge: {"role":"function","me":"function","lw":"function"}
+   A5-filed [desk] acc g
+   A5-rejected [desk] a scheduler pressed Reject: acc r
+   A5-member [desk] his window: {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":true,"uDisabled":true}
+   A5-member [desk] after pressing both buttons: {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":true,"uDisabled":true}
+   A5-admin [desk] his window: {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":false,"uDisabled":false}
+   A5-admin [desk] after Unavailable + Save: acc u; Unavailable rows ["Other Ranger IP LATE Rejected other REJECT"]; war ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw17.3"] Available P 25 → 24
+PASS?  A5 [desk]  scheduler Reject → acc r; as Ranger: window {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":true,"uDisabled":true}; after pressing both buttons {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":true,"uDisabled":true}, acc still r; as admin: {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":false,"uDisabled":false}, after pressing Unavailable {"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false}; saved acc u; Unavailable rows 1; war ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw17.3"] Available P 25 → 24  [g-A5-member-window, g-A5-member-after-press, g-A5-admin-window, g-A5-unavail, g-A5-war]
+   errors-A5 [desk] []
+-- 23
+   23-world [phone] chromium · bundle index-BayEj7kB.js · page leavewar
+   23-window [phone] person select: value n/a disabled n/a; type options LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Attach,Personal,Appointment,Duty,Event,OD,Other
+   23-window [phone] rows: Person · Type · Title · Goes to · Duration · Document · Remarks · Dates · AM/PM offered: false
+   23-window [phone] dates "Jul 13"; goes {"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false}
+   23-filed [phone] new inputs 1; acc u; type Other; time 540-660; asked []
+   23-war [phone] his cell ["OTH|k-unav|s-a|top|outlined|fs6.5px|w19h8|tw10.5"]; Available P 28 → 27.5
+   23-bid [phone] November opened by the admin; Ranger's 2026-11-12 cell: []
+   23-bid [phone] row "CSE OD ⋯"; the ⋯ holds ["bid-file-ATCH=Attach"]; extra-row buttons ["bid-file-CSE","bid-file-OD","bid-more","bid-more-menu","bid-file-ATCH"]
+PASS?  23 [phone]  chromium: his Other 09:00–11:00, Goes to Unavailable → acc u; his cell ["OTH|k-unav|s-a|top|outlined|fs6.5px|w19h8|tw10.5"]; Available P 28 → 27.5; bid window row "CSE OD ⋯", its ⋯ holds ["bid-file-ATCH=Attach"] (day 2026-11-12)  [g-23-window, g-23-war-before, g-23-war-after, g-23-bid-row, g-23-bid-more, g-23-tap-new-q, g-23-tap-goes-u-q, g-23-tap-save-q, g-23-tap-day-q, g-23-tap-more-q]
+   errors-23 [phone] []
+RESULTS
+PASS? A5 | scheduler Reject → acc r; as Ranger: window {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":true,"uDisabled":true}; after pressing both buttons {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":true,"uDisabled":true}, acc still r; as admin: {"row":true,"g":"false","u":"false","line":"Rejected by a scheduler","gDisabled":false,"uDisabled":false}, after pressing Unavailable {"row":true,"g":"false","u":"true","line":"Counted as away on the Leave War","gDisabled":false,"uDisabled":false}; saved acc u; Unavailable rows 1; war ["OTH|k-unav|s-a|whole|outlined|fs8.5px|w21h22|tw17.3"] Available P 25 → 24
+PASS? 23 | chromium: his Other 09:00–11:00, Goes to Unavailable → acc u; his cell ["OTH|k-unav|s-a|top|outlined|fs6.5px|w19h8|tw10.5"]; Available P 28 → 27.5; bid window row "CSE OD ⋯", its ⋯ holds ["bid-file-ATCH=Attach"] (day 2026-11-12)
+exit 0

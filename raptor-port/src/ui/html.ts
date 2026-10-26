@@ -4,7 +4,7 @@ import { DAYS } from '../engine/data'
 import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, whoId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { personShown, briefLeadShown, withFaceAttrs } from '../engine/faceattrs'
-import { INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
+import { odOut, isOD, listedPersonal, listedUnavail, INPUTS, idsOf, inputsOn, remarksShown, remarksTyped, tillOf, shortYear, inputOnAny, withFrozenInputs, inputReadPass, inputCoversDate, inpLabel, inpKindTag, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote, facesOf, facesDrawn, iuTail } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, saFlies, saAnyFlies, saTyped, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { reportingIssuesForWave,stated,REPORTING_LABEL,REPORT_WORD } from '../engine/reporting'
@@ -16,7 +16,7 @@ import { rowElsewhere, isoDayWords } from '../engine/weekstash'
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, restTraceEntries, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn, fltNoLen, fltNoLenSays, versionFaceWarn, withVersionWarn } from '../engine/validate'
-import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
+import { availByWave, personBusy, dayOff, dayEngaged, personWarns, dayTasked } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayShownPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned, verSigners, publishReadPass, unpublishBackTo } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
@@ -1170,7 +1170,7 @@ export function dayWarnHTML(di:any){
            what is missing and leaving him to find the Leave War himself is half
            an answer. The year is read from the SAME hook the warning was
            written from, never parsed back out of its sentence. */
-        +(!PV&&!hid&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period in draft and takes you to the Leave War to set its bidding window">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
+        +(!PV&&!hid&&mkPeriod(w,di)?`<button class="witem-act" data-mkperiod="${esc(mkPeriod(w,di))}" title="Creates the ${esc(mkPeriod(w,di))} leave war period, with nothing open for bidding, and takes you to the Leave War to open its dates">Create the ${esc(mkPeriod(w,di))} period</button>`:'')
         +`</div>`;
     };
     /* an OFFICIAL-only warning (it clears once the day is signed): struck through,
@@ -1466,7 +1466,7 @@ export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
 export function lateMates(inp:any):any[]{
   /* (since the one-rule build: the people of the ONE record — its faces, each with his own late date where he has one;
      under Unavailable a row is one man's, and speaks for him alone) */
-  if(!inp||!isPersonal(inp.type)||inp.acc==='u')return [inp];
+  if(!inp||!listedPersonal(inp))return [inp];   // an overseas duty taken out of Unavailable is one line too (D1393)
   const f=facesOf(inp.several?(inputOnAny(inp.iid)||inp):inp);
   return f.length?f:[inp];}
 const lateOne=(inp:any):any=>inp?lateMates(inp).find((r:any)=>isLateInput(r)&&lateShown(r))||null:null;
@@ -2186,7 +2186,7 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
            Inputs group's → Unavail, and that group drops a filed input — so the row sat here with no
            way back but the top-bar Undo or deleting the man's input. The same Undo the landed rows
            carry; edit surfaces only (ed), so the view page and the parity week are untouched. */
-        const unfile=!acc&&ed&&inp.acc==='u'&&isPersonal(inp.type)&&canEditSched();
+        const unfile=!acc&&ed&&(inp.acc==='u'&&isPersonal(inp.type)||isOD(inp.type)&&!odOut(inp))&&canEditSched();
         /* one puck a man of the line — each by his OWN record, so its OIL bar is his own claim's — wearing his seat's four
            marks, the dotted and dashed crew-rest rings included (D1013, D1017: one man, one ring, on every copy of him) */
         const pk=line.map((one:any)=>PEOPLE[one.person]
@@ -2224,11 +2224,11 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        Available crew stays computed (not an input type); SANS is its own card grid
        (owner rework, 14 Aug 26); Unavailable is an offer's opposite and always
        prints, "Nil" and all. */
-    const crewInputs=ed?inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true):'';
+    const crewInputs=ed?inGrp('Personal Inputs',(inp:any)=>listedPersonal(inp),'sec-inp',false,true):'';
     const crewAvail=ed?availHTML(d,di,ed):'';
     const crewSans=sansSectionHTML(d,di,ed);
     // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this block
-    const crewUnav=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type),'sec-unav',true);
+    const crewUnav=inGrp('Unavailable',(inp:any)=>listedUnavail(inp),'sec-unav',true);
     if(ed){secBits.inputs=crewInputs;secBits.avail=crewAvail;secBits.sans=crewSans;secBits.unav=crewUnav;}
     /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
        .ah-h / .sub-h / .ap-h / .wv-sech title), not as a rail in the .dsec gutter —
@@ -2383,12 +2383,14 @@ export function accCtl(di:any,inp:any){
     const dj=acceptedDay(inp), other=dj>=0&&dj!==+di&&DAYS[dj]?String(DAYS[dj].dow||''):'';
     if(other)return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take its row off ${esc(other)}'s ground programme">Reject · ${esc(other.slice(0,3))}</button></span>`;
   }
+  /* AN OVERSEAS DUTY UNDER UNAVAILABLE BY ITS KIND (no mark) takes the same Reject as one filed there (his D1393) */
+  if(isOD(inp.type)&&!odOut(inp)&&inp.acc!=='u')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="Take it back out of Unavailable, into Personal Inputs">Reject</button></span>`;
   if(inp.acc&&inp.acc!=='r')return `<span class="accs"><button class="accb undo" data-acc="x" data-accd="${di}" data-acck="${k}" title="${inp.acc==='u'?'Take it back out of Unavailable, into Personal Inputs':'Take its row off the ground programme'}">Reject</button></span>`;
   /* ITS ROW IS ON ANOTHER WEEK ([REQ-ORPHAN-ROW], 28 Sep 26): a request covering Sun 19 – Mon 20 Jul landed on Sunday keeps
      its one row in week 1 (D175 — one request, one row). On week 2 its card offered Accept, which made a second row; it now
      says where the row is instead. (Its filing stays this week's own, so a published Monday's count never moves by a week
      change — Astra 02.) An unreadable saved week keeps the Accept, whose press refuses and says why. */
-  if(isPersonal(inp.type)){
+  if(isPersonal(inp.type)||isOD(inp.type)){
     const away=rowElsewhere(inpId(inp),inp);
     if(away&&away!=='unreadable'){ const w=isoDayWords(away.iso);
       return `<span class="accs"><span class="acc-away" title="Its row is on the ground programme of ${esc(w)} — load that week to change it">On ${esc(w)}</span></span>`; }
@@ -2398,11 +2400,16 @@ export function accCtl(di:any,inp:any){
     /* an input filed for ALL AVAIL / ALL is never filed under Unavailable — that names a real person's day
        ([INPUT-ALL-AVAIL]; the door behind this is slots.ts acceptInput) */
     /* …and its row stands on the Common Programme, so the button names it there (owner D955, D958 — "Short word Common") */
-    +(/^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
-      ? (idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
+    /* EVERY COMMITMENT MAY BE MOVED UNDER UNAVAILABLE (his D1357, 25 Oct 26 — "should anything a scheduler moves under
+       Unavailable count him out on the Leave War? … yes"): the pair "→ Ground · → Unavail" was an Other's alone; it is every
+       commitment's now (the rest "land on the Ground Programme until a scheduler moves one"), a course and an Attach — which
+       land under Unavailable by themselves (D1372, D1374) — taken out and put back the same way. One holding ALL AVAIL / ALL
+       is never under Unavailable: its Other keeps "→ Common", every other kind "Accept", as before. */
+    +((isPersonal(inp.type)||isOD(inp.type))&&!isSpecial(inp.person)&&!idsOf(inp).some((id:any)=>PEOPLE[id]&&PEOPLE[id].special)
+      ? b('g','→ Ground','Accept into the ground programme')+b('u','→ Unavail','File under Unavailable')
+      : /^Other$/i.test(String(inp.type))&&!isSpecial(inp.person)
         ? b('g','→ Common','Accept onto the Common Programme')
-        : b('g','→ Ground','Accept into the ground programme'))+b('u','→ Unavail','File under Unavailable')
-      : b('g','Accept','Accept into the ground programme'))
+        : b('g','Accept','Accept into the ground programme'))
     +`</span>`;
 }
 /* the strip that lives in one day's header. `full` is the roomy board version. */
@@ -2482,7 +2489,7 @@ export function dayInfoHTML(di:any){
   /* an input filed for ALL / ALL AVAIL counts where it is drawn — the Common Programme (owner D955, onCommon) */
   const grd=(d.ground||[]).filter((g:any)=>!g.cx&&!onCommon(g)).length;
   const prog=(d.allhands||[]).filter((x:any)=>!x.cx).length+(d.ground||[]).filter((g:any)=>!g.cx&&onCommon(g)).length;
-  const eng=dayEngaged(d).size, off=dayOff(d).size;
+  const eng=dayTasked(d).size, off=dayOff(d).size;
   const A=availByWave(d), freeAll=A.anyWave.length;
   const row=(k:any,v:any)=>`<div class="dip-r"><span class="k">${k}</span><span class="v">${v}</span></div>`;
   const alRecs=SCHED.als.filter((a:any)=>+a.di===di).slice().sort((a:any,b:any)=>+a.seq-+b.seq);

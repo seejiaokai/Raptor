@@ -46,6 +46,8 @@ const cs = (id: any) => PEOPLE[id].cs as string
 const admin = 'stiff'
 const others = () => Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived && !PEOPLE[id].deleted && !PEOPLE[id].special && !PEOPLE[id].san && !PEOPLE[id].pers && id !== admin)
 const live = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
+/* a NEW leave with no document asks first since D1150 (M3 7.4) — never a stop; these filers answer "No document" */
+const noDocAsk = async () => { const b = document.querySelector('[data-testid="docconf-nodoc"]'); if (b) await click(b) }
 const click = async (el: Element | null) => { expect(el, 'click target').toBeTruthy(); await act(async () => { (el as HTMLElement).click() }) }
 const type = async (sel: string, v: string) => {
   const el = $(sel) as HTMLInputElement
@@ -199,7 +201,7 @@ describe('a just-saved shared input on a day whose filter hides it is listed who
     for (const p of [b, c]) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
     await type('#inpEditRmk', 'range brief')
     const had = new Set(INPUTS.map((r: any) => r.iid))
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
     expect(made, 'one record').toHaveLength(1)
     expect(idsOf(made[0]).map(String).sort(), 'holding the three').toEqual([admin, b, c].sort())
@@ -288,7 +290,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
     await click($('#inpEdCal [data-iso="2026-07-14"]'))
     await type('#inpEditRmk', 'a quiet one')
     const had = new Set(INPUTS.map((r: any) => r.iid))
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const made = INPUTS.find((r: any) => !had.has(r.iid)) as any
     expect(made, 'filed').toBeTruthy()
     expect($$('#inBody tr')[0].getAttribute('data-iid'), 'first in the list, though the search does not match it').toBe(String(made.iid))
@@ -300,7 +302,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
     expect(lit()).toEqual([])
     await click(tr(r)!.querySelector('[data-testid="in-open"]'))
     await type('#inpEditRmk', 'after')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(r.iid).remarks).toBe('after')
     expect(lit()).toEqual([r.iid])
   })
@@ -333,7 +335,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
       await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
       for (const p of order) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
       await click($('#inpEdCal [data-iso="2026-07-16"]'))
-      await click($('#inpEditSave'))
+      await click($('#inpEditSave')); await noDocAsk()
       const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
       expect(made, 'one record').toHaveLength(1)
       expect(idsOf(made[0]).map(String).sort(), 'for the three').toEqual([admin, first, last].sort())
@@ -365,7 +367,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
       await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
       for (const p of [sorted[0], sorted[sorted.length - 1]]) await click($(`[data-testid="win-inputedit"] [data-pp="${p}"]`))
       await click($('#inpEdCal [data-iso="2026-07-16"]'))
-      await click($('#inpEditSave'))
+      await click($('#inpEditSave')); await noDocAsk()
       const made = INPUTS.filter((r: any) => !had.has(r.iid)) as any[]
       expect(made, 'one record for the three').toHaveLength(1)
       expect(idsOf(made[0]).map(String).sort()).toEqual([admin, sorted[0], sorted[sorted.length - 1]].sort())
@@ -382,7 +384,7 @@ describe('the row the list has just been shown is LIT (V1 — the form’s light
     const row = trOf(g.rows)
     await click(row.querySelector('[data-testid="in-open"]'))
     await type('#inpEditRmk', 'range brief, room 2')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(lit()).toEqual([row.getAttribute('data-iid')])
   })
 })
@@ -409,7 +411,7 @@ describe('the window’s "Input added" is said together with whatever the save i
     try {
       await click($('#inNew'))
       await click($('#inpEdCal [data-iso="2026-07-14"]'))
-      await click($('#inpEditSave'))
+      await click($('#inpEditSave')); await noDocAsk()
       expect(w.seen.map(x => x[0])).toContain('Input added')
       expect(w.seen.filter(x => !x[1]), 'nothing said outside the save’s one note').toEqual([])
     } finally { w.done() }
@@ -421,13 +423,13 @@ describe('the window’s "Input added" is said together with whatever the save i
     try {
       await click(tr(r)!.querySelector('[data-testid="in-open"]'))
       await type('#inpEditRmk', 'after')
-      await click($('#inpEditSave'))
+      await click($('#inpEditSave')); await noDocAsk()
       expect(w.seen.map(x => x[0])).toContain('Input updated')
       await click($('#inNew'))
       await click($('[data-testid="win-inputedit"] [data-testid="pp-several"]'))
       await click($(`[data-testid="win-inputedit"] [data-pp="${others()[2]}"]`))
       await click($('#inpEdCal [data-iso="2026-07-15"]'))
-      await click($('#inpEditSave'))
+      await click($('#inpEditSave')); await noDocAsk()
       expect(w.seen.map(x => x[0])).toContain('Input added for 2 people')
       expect(w.seen.filter(x => !x[1])).toEqual([])
     } finally { w.done() }
@@ -437,7 +439,7 @@ describe('the window’s "Input added" is said together with whatever the save i
     const w = wire()
     try {
       await click($('#inNew'))
-      await click($('#inpEditSave'))
+      await click($('#inpEditSave')); await noDocAsk()
       expect(w.seen.map(x => x[0])).toEqual(['Pick a start date on the calendar first'])
     } finally { w.done() }
   })
@@ -477,7 +479,7 @@ describe('the "?" beside Type is offered only where it can be pressed', () => {
     await click($('#inpEdCal [data-iso="2026-07-14"]'))
     await click($('#inTypeHelp'))
     expect($('#inTypePop'), 'the card is open').toBeTruthy()
-    await click($('#inpEditSave'))                 // as the keyboard does it: no press anywhere closes the card first
+    await click($('#inpEditSave'))                                // as the keyboard does it: no press anywhere closes the card first
     expect($('[data-testid="docconf"]'), 'the document question').toBeTruthy()
     expect($('#inTypePop'), 'the card has given way').toBeNull()
     await act(async () => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
@@ -519,14 +521,14 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     await mount(false)
     await click($('#inNew'))
     await click($('#inpEdCal [data-iso="2026-07-14"]'))
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     lit(tr(newest()), newest().iid, 'the row')
   })
   it('the phone List: the new card', async () => {
     await mount(true)
     await click($('#inNew'))
     await click($('#inpEdCal [data-iso="2026-07-14"]'))
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     lit($(`[data-testid="inl-row-${newest().iid}"]`), newest().iid, 'the card')
   })
   it('a day opened on the calendar: the new input’s CARD — and the bar behind the day does not light too', async () => {
@@ -534,7 +536,7 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     const before = await file({ date: 'Oct 21' })
     await openDay('2026-10-21')
     await click($('#icPopAdd'))
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     const r = newest()
     expect(r.iid, 'a new input').not.toBe(before.iid)
     lit($(`[data-testid="idy-row-${r.iid}"]`), r.iid, 'the day’s card')
@@ -546,7 +548,7 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     const r = await file({ date: 'Oct 21', remarks: 'before' })
     await act(async () => { setInpEdit(r); notify() })          // its window (a real press on a bar is the browser test's)
     await type('#inpEditRmk', 'after')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     expect(live(r.iid).remarks).toBe('after')
     const bars = $$(`.ib-bar[data-iid="${r.iid}"]`)
     expect(bars.length).toBeGreaterThan(0)
@@ -559,7 +561,7 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     expect(tr(r)!.classList.contains('innew'), 'not lit while nothing was done to it').toBe(false)
     await click(tr(r)!.querySelector('[data-testid="in-open"]'))
     await type('#inpEditRmk', 'after')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
     lit(tr(live(r.iid)), r.iid, 'the changed row')
   })
   /* THE FRESH READ'S F1 (14 Oct 26). The six seconds were ONE timer started by the first light and never cleared, and the
@@ -571,7 +573,7 @@ describe('an input just saved wears the just-added mark wherever the page shows 
       await mount(false)
       const r = await file({ remarks: 'before' })
       const row = () => tr(live(r.iid))!
-      const change = async (words: string) => { await click(row().querySelector('[data-testid="in-open"]')); await type('#inpEditRmk', words); await click($('#inpEditSave')) }
+      const change = async (words: string) => { await click(row().querySelector('[data-testid="in-open"]')); await type('#inpEditRmk', words); await click($('#inpEditSave')); await noDocAsk() }
       await change('one')
       lit(row(), r.iid, 'the row')
       await act(async () => { vi.advanceTimersByTime(4000) })
@@ -592,9 +594,9 @@ describe('an input just saved wears the just-added mark wherever the page shows 
      it the first one's box, four seconds old. A row is its input's own. */
   it('a second input added: the first input keeps its own row, and each is lit', async () => {
     await mount(false)
-    await click($('#inNew')); await click($('#inpEdCal [data-iso="2026-07-14"]')); await click($('#inpEditSave'))
+    await click($('#inNew')); await click($('#inpEdCal [data-iso="2026-07-14"]')); await click($('#inpEditSave')); await noDocAsk()
     const a = newest(), rowA = tr(a)
-    await click($('#inNew')); await click($('#inpEdCal [data-iso="2026-07-15"]')); await click($('#inpEditSave'))
+    await click($('#inNew')); await click($('#inpEdCal [data-iso="2026-07-15"]')); await click($('#inpEditSave')); await noDocAsk()
     const b = newest()
     expect(b.iid).not.toBe(a.iid)
     expect(tr(live(a.iid)), 'the first input is still drawn by the row it had').toBe(rowA)
@@ -613,10 +615,10 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     try {
       await mount(false, 'cal')
       await openDay('2026-10-21')
-      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave')); await noDocAsk()
       const first = newest().iid
       await act(async () => { vi.advanceTimersByTime(3000) })
-      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
+      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave')); await noDocAsk()
       const second = newest().iid
       expect(second).not.toBe(first)
       const cards = $$('[data-testid="win-inputsday"] .icard.innew').map(c => c.getAttribute('data-fresh'))
@@ -639,12 +641,12 @@ describe('an input just saved wears the just-added mark wherever the page shows 
     try {
       await mount(false, 'cal')
       await openDay('2026-10-21')
-      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave'))
+      await click($('#icPopAdd')); await timed(); await type('#inpEditStart', '07:00'); await type('#inpEditEnd', '08:00'); await click($('#inpEditSave')); await noDocAsk()
       const id = newest().iid, n = went.length
       expect(went[n - 1]).toBe(id)
       await act(async () => { vi.advanceTimersByTime(3000) })
       await click($(`[data-testid="idy-row-${id}"] [data-testid="idy-open"]`))
-      await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave'))
+      await type('#inpEditStart', '20:00'); await type('#inpEditEnd', '21:00'); await click($('#inpEditSave')); await noDocAsk()
       expect(live(id).s, 'the change was saved').toBe(20 * 60)
       expect(went.length, 'the window went to it once more').toBe(n + 1)
       expect(went[went.length - 1]).toBe(id)
@@ -656,7 +658,7 @@ describe('an input just saved wears the just-added mark wherever the page shows 
       await mount(false)
       await click($('#inNew'))
       await click($('#inpEdCal [data-iso="2026-07-14"]'))
-      await click($('#inpEditSave'))
+      await click($('#inpEditSave')); await noDocAsk()
       const r = newest()
       lit(tr(r), r.iid, 'the row')
       await act(async () => { vi.advanceTimersByTime(5900) })
@@ -682,7 +684,7 @@ describe('the save’s note on a laid-out page: left to the screen only where th
   const change = async (r: any) => {
     await act(async () => { setInpEdit(live(r.iid)); notify() })
     await type('#inpEditRmk', 'after')
-    await click($('#inpEditSave'))
+    await click($('#inpEditSave')); await noDocAsk()
   }
   it('the Inputs page in front: nothing is said in the same breath — the screen is asked first, and here answers "not seen"', async () => {
     await mount(false)

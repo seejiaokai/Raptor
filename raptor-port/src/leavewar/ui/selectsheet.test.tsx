@@ -1,10 +1,12 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { boxValue, pickDate } from '../../ui/datecal-testkit'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { advanceStage, getState, initStore, setCell, setRole } from '../state/store'
+import { closeDates, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { SelectSheet } from './SelectSheet'
+import { skipWhy } from './BidPicker'
 import type { Selection } from './select'
+import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 // The batched selection sheet (owner, 27 Aug 26). The DRAG that opens it needs
 // a real browser and is covered by e2e; here the sheet is rendered directly to
@@ -51,6 +53,14 @@ describe('the selection sheet', () => {
     expect(getState().grid.ramp['2026-01-06']).toBe('*LL')
   })
 
+  /* M1's code read (L2 / F4): the reason is true for whoever reads it */
+  it('names why days were skipped, as true for an admin, a member and a delete', () => {
+    expect(skipWhy('written', 'member')).toBe('closed for bidding, before today, or already holding leave or a medical')
+    expect(skipWhy('written', 'admin')).toBe('already holding leave or a medical')
+    expect(skipWhy('deleted', 'member')).toBe('already decided, or filed on the Inputs page')
+    expect(skipWhy('cleared', 'admin')).toBe('already decided, or filed on the Inputs page')
+  })
+
   it('reports a partial write and keeps the sheet up', () => {
     const onDone = vi.fn()
     // tata carries a Raptor-owned OIL on 2026-01-09 (seed) — it must skip
@@ -81,22 +91,25 @@ describe('the selection sheet', () => {
     setCell('ramp', '2026-01-06', 'LL')
     setCell('ramp', '2026-01-07', 'LL')
     expect(screen.queryByTestId('sel-approve')).toBeNull() // canDecide false by default
-    // the store itself now refuses a decision unless an admin holds it at
-    // closed/published (canDecide) — put the war in the state the sheet's
-    // canDecide prop claims
-    setRole('admin'); advanceStage()
+    // the store itself refuses a decision unless an admin holds it (canDecide —
+    // at any time since the stages went, D1177); the dates closed as well, the
+    // old closed stage's translation
+    setRole('admin'); closeDates('2026-01-01', '2026-12-31')
     mount(rampTwo, { canDecide: true })
     fireEvent.click(screen.getByTestId('sel-approve'))
     expect(getState().states.ramp['2026-01-06'].state).toBe('approved')
     expect(getState().states.ramp['2026-01-07'].state).toBe('approved')
   })
 
-  it('the acknowledge decision uses the app word — "Ack"', () => {
-    /* One word for one state (owner, 21 Sep 26, renaming his own 27 Aug
-       "Pending"): the bulk button, the single-cell window and the legend all
-       say Ack. The stored token is still 'acknowledged'. */
+  /* WAS "the acknowledge decision uses the app word — Ack". Ack is gone (D1158, 21 Oct 26): the drag-selection's
+     Decide row is Approve · Refuse, the same as the one-day window's, and nothing records "seen". */
+  /* since round 3 Decide is drawn only where the days hold a bid (round3.test.tsx) — this test's days get one first */
+  it('the Decide row is Approve · Refuse — no Ack (D1158)', () => {
+    setCell('ramp', '2026-01-06', 'LL')
     mount(rampTwo, { canDecide: true })
-    expect(screen.getByTestId('sel-pending').textContent).toBe('Ack')
+    expect(screen.queryByTestId('sel-pending')).toBeNull()
+    const row = screen.getByTestId('sel-approve').closest('.bidsheet-row')!
+    expect([...row.querySelectorAll('button.approve, button.refuse')].map(b => b.textContent)).toEqual(['Approve', 'Refuse'])
   })
 
   it('no Medical row for anyone, and no Decide row for a member', () => {
@@ -127,13 +140,56 @@ describe('the selection sheet', () => {
   it('offers Post-out only for a single-person selection', () => {
     const onPostOut = vi.fn()
     mount(rampTwo, { onPostOut })
-    expect(screen.getByTestId('sel-postout')).toBeTruthy()
+    expect(more('sel-postout')).toBeTruthy()
     const twoPeople: Selection = {
       people: ['ramp', 'dusk'], from: '2026-01-06', to: '2026-01-06',
       cells: [cell('ramp', '2026-01-06'), cell('dusk', '2026-01-06')],
     }
     mount(twoPeople, { onPostOut })
-    expect(screen.queryAllByTestId('sel-postout')).toHaveLength(1) // only the first mount's
+    /* both mounts draw a ⋯ since D1356 (it holds Other for an admin); Post out stays the one man's */
+    const mores = screen.queryAllByTestId('sel-more')
+    expect(mores).toHaveLength(2)
+    fireEvent.click(mores[1]!)
+    expect(screen.getAllByTestId('sel-more-menu').some(m => !m.querySelector('[data-testid="sel-postout"]'))).toBe(true)
+  })
+})
+
+/* [LW-DRAG-MORE-MENU] (his report, 26 Oct 26 — "Doesn't show post in"): the drag window's ⋯ carried Post out but not its
+   twin, Post in, which the one-day window's ⋯ holds beside it (his D1326). For one man, an admin's, dated from the drag's
+   first day; refused, the window stays and says why, as Post out's does. */
+describe('the drag window posts one man in', () => {
+  it('offers Post in beside Post out for one man, dated from the drag’s first day, and posts him in', () => {
+    const onPostIn = vi.fn(() => undefined)
+    const onDone = vi.fn()
+    mount(rampTwo, { onPostOut: vi.fn(), onPostIn, onDone })
+    const pi = more('sel-postin')
+    expect(pi?.textContent).toBe('Post in')
+    fireEvent.click(pi!)
+    expect(boxValue(screen.getByTestId('sel-pi-date'))).toBe('2026-01-06')
+    fireEvent.click(screen.getByTestId('sel-pi-confirm'))
+    expect(onPostIn).toHaveBeenCalledWith('ramp', '2026-01-06')
+    expect(onDone).toHaveBeenCalledWith(true)
+  })
+  it('not across several men, and not for a member', () => {
+    const twoPeople: Selection = {
+      people: ['ramp', 'dusk'], from: '2026-01-06', to: '2026-01-06',
+      cells: [cell('ramp', '2026-01-06'), cell('dusk', '2026-01-06')],
+    }
+    mount(twoPeople, { onPostIn: vi.fn() })
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.queryByTestId('sel-postin')).toBeNull()
+    cleanup()
+    mount(rampTwo, { onPostIn: vi.fn(), role: 'member' })
+    fireEvent.click(screen.getByTestId('sel-more'))
+    expect(screen.queryByTestId('sel-postin')).toBeNull()
+  })
+  it('a refused posting in keeps the window and says why', () => {
+    const onDone = vi.fn()
+    mount(rampTwo, { onPostIn: () => 'Ramp is already in the squadron on that day', onDone })
+    fireEvent.click(more('sel-postin')!)
+    fireEvent.click(screen.getByTestId('sel-pi-confirm'))
+    expect(screen.getByTestId('sel-note').textContent).toContain('already in the squadron')
+    expect(onDone).not.toHaveBeenCalled()
   })
 })
 
@@ -144,7 +200,7 @@ describe('a refused post-out on the selection sheet', () => {
     const onDone = vi.fn()
     const onPostOut = vi.fn(() => 'Posted in on 10 Jan 26 — the post-out has to be after that day.')
     mount(rampTwo, { onDone, onPostOut })
-    fireEvent.click(screen.getByTestId('sel-postout'))
+    fireEvent.click(more('sel-postout'))
     /* the date is picked on the app's own calendar ([ONE-DATE-CALENDAR], D796) — and is the date the posting is asked for */
     pickDate(screen.getByTestId('sel-po-date'), '2026-01-05')
     expect(boxValue(screen.getByTestId('sel-po-date'))).toBe('2026-01-05')
@@ -231,10 +287,10 @@ describe('the ask before a drag takes anyone below zero (D418)', () => {
 
   it('a Decide between the ask and the leave drops the ask (Astra F2)', () => {
     setCell('ramp', '2026-01-06', 'LL')
-    setRole('admin'); advanceStage()
+    setRole('admin'); closeDates('2026-01-01', '2026-12-31')
     mount(rampTwo, { canDecide: true, wouldLeave: zero({ ramp: 0 }) })
     fireEvent.click(screen.getByTestId('sel-CCL'))
-    fireEvent.click(screen.getByTestId('sel-pending'))               // Ack the one bid — a partial decision keeps the sheet
+    fireEvent.click(screen.getByTestId('sel-refuse'))                // refuse the one bid (Ack, here before, is gone — D1158) — a partial decision keeps the sheet
     fireEvent.click(screen.getByTestId('sel-CCL'))
     expect(getState().grid.ramp['2026-01-07']).toBeUndefined()
     expect(screen.getByTestId('sel-note').textContent).toContain('Tap the same leave again')

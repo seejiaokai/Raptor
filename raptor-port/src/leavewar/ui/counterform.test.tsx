@@ -4,7 +4,7 @@
 // two-tap delete. Reached from + Counter in the Rearrange tools and from the
 // explainer sheet's Edit counter… button.
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getState, initStore, setRole, saveManningRule, deleteManningRule } from '../state/store'
 import { MAX_MANNING_RULES } from '../engine'
@@ -12,6 +12,11 @@ import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { CounterForm } from './CounterForm'
 import { Matrix } from './Matrix'
+import { askLw } from './lwnav'
+
+/* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
+   asked as the ⚙ press asks it (ui/lwnav.ts). */
+const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
 
 beforeEach(() => {
   initStore(memoryBackend())
@@ -131,7 +136,7 @@ describe('the ways in', () => {
   it('+ Counter sits inside ⚙ Settings and opens the blank form', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('settings-open'))
+    openSettings()
     fireEvent.click(screen.getByTestId('counter-add'))
     expect(screen.getByTestId('counter-form')).toBeTruthy()
     expect((screen.getByTestId('cform-name') as HTMLInputElement).value).toBe('')

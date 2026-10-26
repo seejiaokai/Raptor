@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setBalance, setRole } from '../state/store'
+import { closeDates, getState, initStore, setBalance, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
@@ -63,15 +63,17 @@ describe('placing a bid', () => {
     expect(screen.getByTestId('bid-OL')).toBeTruthy()
   })
 
-  it('does nothing once bidding has closed', () => {
-    /* an admin closes the war (advancing is admin-only, 27 Aug 26), then the
-       member finds nothing to click — the behaviour under test */
+  it('places no bid once bidding has closed — the tap says why instead', () => {
+    /* an admin closes every date (opening and closing is admin-only — D1177), then the
+       member finds no bid window — the behaviour under test. Never a dead tap: his
+       own row's closed day opens the closed note (D1176) */
     setRole('admin')
-    advanceStage() // open -> closed
+    closeDates('2026-01-01', '2026-12-31')
     setRole('member')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.getByTestId('closed-note')).toBeTruthy()
   })
 
   // The whole point of the leave-code rework: a portion is something any
@@ -146,7 +148,8 @@ describe('bidding over a range', () => {
   it('opens on just this day, and writes only that day', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
-    expect(screen.getByTestId('span-one').getAttribute('aria-pressed')).toBe('true')
+    expect(screen.queryByTestId('span-one')).toBeNull()                                    // "Just this day" went (round 3)
+    expect(screen.getByTestId('span-range').getAttribute('aria-pressed')).toBe('false')   // the one day is the default
     expect(screen.queryByTestId('span-picker')).toBeNull()
     fireEvent.click(screen.getByTestId('bid-LL'))
     expect(getState().grid.dusk['2026-02-11']).toBe('LL')
@@ -201,6 +204,7 @@ describe('bidding over a range', () => {
     const said = screen.getByTestId('span-note').textContent!
     expect(said).toContain('3 days written')
     expect(said).toContain('4 skipped')
+    expect(said, 'and why, in the words of the open dates (M1, B-N1) — a member reads the closed days').toContain('closed for bidding')
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 
@@ -209,7 +213,10 @@ describe('bidding over a range', () => {
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-09'))
     fireEvent.click(screen.getByTestId('span-range'))
     fireEvent.click(screen.getByTestId('span-day-2026-02-20'))
-    fireEvent.click(screen.getByTestId('span-one'))
+    /* "Just this day" went (round 3, D1332): the range picked back to the day tapped is the one day again */
+    fireEvent.click(screen.getByTestId('span-day-2026-02-09'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-09'))
+    expect(screen.getByTestId('span-range').getAttribute('aria-pressed')).toBe('false')
     fireEvent.click(screen.getByTestId('bid-LL'))
     expect(getState().grid.dusk['2026-02-09']).toBe('LL')
     expect(getState().grid.dusk?.['2026-02-10']).toBeUndefined()
@@ -274,10 +281,14 @@ describe('a bid that would go below zero asks once, then writes', () => {
     fireEvent.click(screen.getByTestId(`bid-${type}`))
     expect(getState().grid.dusk['2026-02-11']).toBe(type)
     expect(screen.queryByTestId('bid-picker')).toBeNull()
-    // The column has followed the write to the balance it came off, which now
-    // reads one day under, in the red a negative balance wears.
-    expect(screen.getByTestId('counter-name').textContent).toBe(title)
-    const fb = screen.getByTestId('bal-dusk').querySelector('.fb')!
+    // Re-expressed for D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the column no
+    // longer follows the write to the balance it came off; it stays +LVE. That balance is read where it now lives, in
+    // the person's window (a tap on his name) — one day under, in the red a negative balance wears.
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
+    fireEvent.click(screen.getByTestId('person-dusk'))
+    const row = screen.getByTestId(`pfig-${counter}`)
+    expect(row.querySelector('.cn')!.textContent).toBe(title.slice(1))
+    const fb = row.querySelector('.fb')!
     expect(fb.textContent).toBe('-1')
     expect(fb.className).toContain('neg')
   }

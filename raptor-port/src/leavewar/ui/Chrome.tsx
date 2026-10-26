@@ -1,29 +1,33 @@
-// Raptor's topbar idiom plus a stage strip below it. Only real, computable
+// Raptor's topbar idiom plus the open-dates strip below it. Only real, computable
 // facts are surfaced here — no dead nav links to pages that don't exist
 // yet (My leave, Ledger, Rules, Roster) and no "closes in N days", which
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
-import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { biddingClosed, canReopen, evaluatePeriod, FIGURES, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
+import { boxText, evaluatePeriod, FIGURES, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
-import { getClashes, getClashVersion, openInputWindow, rosterCallsign, subscribeClashes, type ClashWayOut, type SyncClash } from '../sync'
-import {
-  advanceStage,
-  clearBidWindow,
-  focusDay,
-  reopenStage,
-  getState,
-  selectWar,
-  setBidWindow,
-} from '../state/store'
-import { RangePicker, type Range } from './RangePicker'
-import { Sheet } from './Sheet'
-import { dayLabel, shortDate, shortSpan, spanInYear } from './dates'
+import { getClashes, getClashVersion, manningRedDays, openInputWindow, rosterCallsign, subscribeClashes, usePlanVersion, type ClashWayOut, type SyncClash } from '../sync'
+import { figureCtxOf, focusDay, getState, selectWar } from '../state/store'
+import { OpenDatesSheet } from './OpenDatesSheet'
+import { dayLabel, shortDate } from './dates'
 import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
+import { askLw, isOilUp, lwNavVersion, subscribeLwNav } from './lwnav'
+import { fig, myLeaveOf } from './myleave'
 import './chrome.css'
+
+/** One of the Legend's swatches: the grid's OWN box, drawn by the same classes the cell uses (look F — D1175), in a frame
+ *  a cell's size. `fill` a (filled), w (pending), r (refused); `place` where it sits in the cell; `mark` an edge. */
+function LegBox({ code, text, fill = 'a', place = 'whole', mark }: { code: string; text?: string; fill?: 'a' | 'w' | 'r'; place?: 'whole' | 'top' | 'bot'; mark?: 'raptor' | 'moved' }) {
+  const t = text ?? boxText(code)
+  return (
+    <span className="leg-box">
+      <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.replace('*', '').length > 3 ? ' wide w4' : t.replace('*', '').length > 2 ? ' wide' : ''}${mark ? ` ${mark}` : ''}`}>{t}</span>
+    </span>
+  )
+}
 
 /** Kept in step with `.umlist`'s width in chrome.css — the clamp has to know
  *  how wide the thing it is clamping actually is. */
@@ -33,42 +37,79 @@ const LIST_WIDTH = 244
  *  word the popover now carries, and the constant has to track the CSS
  *  width exactly or the clamp math above places the popover off-screen. */
 const LEGEND_WIDTH = 312
-/** Same, for the phone's stage menu (`.stagemenu`) — the two stage moves behind the stage button (D678). */
-const STAGE_MENU_WIDTH = 224
 /** What each clash tells the admin to do — where it can actually be undone ([ABSENCE-SMALL-SEEN] 1, 28 Sep 26; the reason
  *  for each is at `clashWayOut` in sync.ts). "Resolve on the sheet" sent him to a sheet with no control on it whenever
  *  the leave in the way was filed on the Inputs page.
  *  THE WORDS OF RECORD (owner D827, D837 — 14 Oct 26; docs/superpowers/briefs/2026-10-13-wording-recheck.md, the second
  *  table): each is an instruction that starts with its verb, and is the clash's own link — a tap goes where it says. */
+/* THE APPROVED-LEAVE LINE (D1177 narrowing D827 — "Step the war back to Bidding Closed" is reworded at the build: there
+   is no stage to step back): "Change the approved leave", its sentence "…but the bid is approved OL", as the overhaul's
+   drawing of the phone's clash note has them (r7-19, approved with the plan — D1250). A tap opens the day for that
+   person, where the admin sends it back, moves or deletes it at any time. */
 const WAY_OUT: Record<ClashWayOut, string> = {
   bid: 'Decide the bid',
-  war: 'Send the leave back or delete it',
-  'war-published': 'Step the war back to Bidding Closed',
+  war: 'Change the approved leave',
   inputs: 'Change the leave on Inputs',
 }
 /** What clashes, as a sentence — today's words less the name and the date, which stand beside it (D825: every key word
- *  kept). Where the leave in the way is PUBLISHED the sentence says so: it is the reason the instruction is to step the
- *  war back, and the old line's "the leave is published" must not be lost with its dash. */
+ *  kept). Where the leave in the way is one the war APPROVED the sentence says so (r7-19): it is why the instruction is
+ *  to change the approved leave rather than decide a bid. */
 export function clashWhat(c: SyncClash): string {
-  const held = `${c.wayOut === 'war-published' ? 'published ' : ''}${c.bidCode}`
+  const held = `${c.wayOut === 'war' ? 'approved ' : ''}${c.bidCode}`
   return c.kind === 'duty'
     ? `Weekend/PH work earns ${c.inputCode}, but the day holds ${held}`
     : `The input is ${c.inputCode}, but the bid is ${held}`
 }
 
+/* THE TABS' TWO SMALL GLYPHS, in the line style of the app's icons (ui/icons.tsx — the Inputs page's tabs wear them). */
+function GridGlyph() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="2" /><path d="M3.5 9.5h17M3.5 14.5h17M9.5 3.5v17M14.5 3.5v17" />
+    </svg>
+  )
+}
+function ClockGlyph() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" />
+    </svg>
+  )
+}
+function GearGlyph() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
+    </svg>
+  )
+}
+
+/* the period list's last line, "+ New period" (D1244) — a value no period id can be */
+const NEW_PERIOD = '\u0000new'
+
 export function Topbar() {
   useVersion()
-  const { period, wars, role, people, viewer } = getState()
-  /* ON A PHONE THIS LINE IS THE PERIOD, "+" AND "VIEWING AS" — ONE LINE ([LW-PHONE-HEADER-SPACE]; owner, D678,
-     8 Oct 26 — "A looks good", of three ideas drawn into the running build after "how can we optimise the space such
-     that we don't use so much vertical space?"). The word "Period" goes (the picker says it, and still names itself
-     to a screen reader) and "+ New" reads "+": that is what lets the chip come back up beside the picker, where
-     D365 had it on a line of its own. A TABLET AND A DESKTOP ARE NOT TOUCHED (D679 — "keep the same for desktop"):
-     every `phone ?` below leaves their markup exactly as it was. The sizes are chrome.css's phone block. */
+  const { period, wars, role, viewer, people } = getState()
+  useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
+  const oilUp = isOilUp()
+  /* THE LEAVE WAR'S NAVIGATION AS DRAWN IN ROUND 19 (D1254, 22 Oct 26 — "N1 as recommended"; narrowing D1196, D1231, D678,
+     D679, D1141 and the 5 Sep 26 grid bar; drawn `docs/mock/lw-overhaul/full-r19-nav.mjs`, `full/r19-nav-*`, and with the
+     grid's order `full/r21-rows-*`):
+     · ONE TAB ROW, the Inputs page's own (`inputs-tabs` / `intab` — the same look, the same keyboard), with ⚙ at its right
+       end for an admin. Its tabs are the ones whose page exists: Grid and OIL now — Approvals joins with its list (M4) and
+       Balances with its page (M5), never as a tab with nothing behind it (the build plan's rule for the Approvals button).
+       OIL opens the OIL tracker, as the grid card's OIL button did, and reads as the chosen tab while it is up.
+     · THEN "View", the period picker and My leave — on a desktop in that same one row (the tabs, View, My leave, ⚙: D679 as
+       narrowed); on a phone a second line under the tabs (D678 as narrowed — an admin's third line is gone, D1227's line now
+       everyone's).
+     · "View", never "Period" (D1174); no "Viewing as" chip (D1173 — the person signed in knows who he is; My leave carries
+       his figures); "+ New period" is the period list's last line, an admin's only (D1244), not a button on the row.
+     Undo / Redo left this row long ago for the app's top bar (D347). */
   const phone = usePhone()
   const [making, setMaking] = useState(false)
   /* THE SHEET ASKED FOR FROM DAYS (ui/warask.ts): the Holidays list cannot write a holiday on dates no leave period
-     holds, and asks for THIS sheet — the one "+ New" opens — with those dates picked. The ask is taken once: an admin
+     holds, and asks for THIS sheet — the one "+ New period" opens — with those dates picked. The ask is taken once: an admin
      gets the sheet, raised above the window that asked; anyone else has no such sheet, and the ask is dropped rather
      than left to spring up at the next admin. */
   const ask = useSyncExternalStore(subscribeNewWarAsk, peekNewWarAsk, peekNewWarAsk)
@@ -79,153 +120,127 @@ export function Topbar() {
     clearNewWarAsk()
   }, [ask, role])
   /* however the sheet closes — Create, its ✕, Escape, a press outside — the asked dates go with it, so the next
-     "+ New" opens as it always has: no dates picked, at its own layer */
+     "+ New period" opens as it always has: no dates picked, at its own layer */
   const closeSheet = () => { setMaking(false); setAsked(null) }
-  // WHOSE view this is (owner, 28 Aug 26 — "make it obvious that im viewing as
-  // for example RANGER"). The whole grid — the lit row, the counter column, the
-  // figure sheets — answers for the viewing person (Raptor's "View as",
-  // mirrored in), and nothing on the page said so out loud. This chip does, at
-  // the top of the page where it is always in view. Absent when nobody is being
-  // viewed (an admin off any one person), where there is no "you" to name.
-  const me = viewer ? people.find(p => p.id === viewer) ?? null : null
+  /* MY LEAVE (D1141): the person signed in, when he has a row on the war — an admin with none has no "my" to show */
+  const me = viewer && people.some(p => p.id === viewer) ? viewer : null
+  const mine = me ? myLeaveOf(figureCtxOf(), wars, me, memberToday()) : null
+  /* the tabs, a tab list in the usual manner (as the Inputs page's): one tab stop, the arrow keys move along it */
+  const tabs: Array<['grid' | 'oil', string, () => void]> = [
+    ['grid', 'Grid', () => askLw({ kind: 'grid' })],
+    ['oil', 'OIL', () => askLw({ kind: 'oil' })],
+  ]
+  const tabOn = (t: 'grid' | 'oil') => (t === 'oil') === oilUp
+  const tabKey = (e: ReactKeyboardEvent, i: number) => {
+    const by = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
+    if (!by) return
+    e.preventDefault()
+    const j = (i + by + tabs.length) % tabs.length
+    tabs[j]![2]()
+    /* the keyboard goes with the tab it chose (walker 3, scenario 38 — as the Inputs page's tab row does) */
+    ;(e.currentTarget.parentElement?.children[j] as HTMLElement | undefined)?.focus()
+  }
+  const tabRow = (
+    <div className="inputs-tabs lw-tabs" role="tablist" aria-label="Leave War">
+      {tabs.map(([t, label, go], i) => (
+        <button
+          key={t}
+          type="button"
+          role="tab"
+          className="intab"
+          data-testid={t === 'oil' ? 'oil-tracker' : 'lw-tab-grid'}
+          aria-selected={tabOn(t)}
+          tabIndex={tabOn(t) ? 0 : -1}
+          title={t === 'oil' ? 'OIL balances, credits and history' : 'The leave grid'}
+          onClick={go}
+          onKeyDown={e => tabKey(e, i)}
+        >
+          {t === 'grid' ? <GridGlyph /> : <ClockGlyph />}
+          <span className="intab-t">{label}</span>
+        </button>
+      ))}
+    </div>
+  )
+  const gear = role === 'admin' && (
+    <button
+      type="button"
+      className="lw-gear"
+      data-testid="settings-open"
+      title="Settings — counters, event rows, roster groups and the order of the grid"
+      aria-label="Settings"
+      onClick={() => askLw({ kind: 'settings' })}
+    >
+      <GearGlyph />
+    </button>
+  )
+  const view = (
+    <span className="lw-view">
+      <span className="lab" data-testid="period-label">View</span>
+      {/* A native select rather than a popover: it is the one control that works the same on a phone, a desktop and a
+          keyboard. Each option is the war's NAME; an admin's list ends with "+ New period" (D1244), which opens the same
+          new-period window "+ New" did and leaves the period on screen as it was. */}
+      <select
+        className="wk on warpick"
+        data-testid="war-picker"
+        aria-label="View — which leave period"
+        value={period.id}
+        onChange={e => { if (e.target.value === NEW_PERIOD) setMaking(true); else selectWar(e.target.value) }}
+      >
+        {wars.map(w => (
+          <option key={w.period.id} value={w.period.id}>
+            {w.period.name}
+          </option>
+        ))}
+        {role === 'admin' && <option value={NEW_PERIOD} data-testid="war-new">+ New period</option>}
+      </select>
+    </span>
+  )
+  const myLeave = mine && me && (
+    /* his own leave at a glance; a tap opens his person window (until the overhaul's person window, M5, today's — the
+       build plan's batch 4), where each of his leave and its state is listed */
+    <button type="button" className="myleave" data-testid="my-leave" onClick={() => askLw({ kind: 'person', id: me })}>
+      <span className="ml-hd">My leave{mine.next && <span className="ml-next"> · next {nextLabel(mine.next)}</span>}</span>
+      <span className="ml-figs">
+        <b data-testid="my-leave-lve">LVE {fig(mine.lve)}</b> · <span data-testid="my-leave-oil">OIL {fig(mine.oil)}</span> · <span data-testid="my-leave-pending">{fig(mine.pending)} pending</span>
+      </span>
+      <span className="ml-go" aria-hidden="true">›</span>
+    </button>
+  )
   return (
     <>
-    {/* The Leave War page's own "142 / LEAVE WAR" mark and "Leave war" nav
-        pill were REMOVED (owner, 18 Aug 26 — "142 is repeated… takes too much
-        space"). Raptor's shell topbar already carries the 142 identity and
-        highlights the Leave War tab, so a second copy under it was pure
-        duplication and a band of wasted height on a phone. What stays is the
-        real controls only: the period picker here, and the stage strip below. */}
-    <div className="topbar">
-      <div className="spring">
-        {/* A native select rather than a popover: it is the one control that
-            works the same on a phone, a desktop and a keyboard, and it needs
-            no geometry of its own inside a page that already has a scroller
-            and three sheets.
-
-            Each option is the war's NAME only. Adding its stage would widen
-            the closed chip to whatever the longest label is, and the stage
-            strip immediately below already names the current war's — so the
-            cost lands on every phone screen to answer a question only
-            someone mid-switch is asking. */}
-        {/* The picker carried only the war's name, which says what is in it
-            and not what it is. Every chip in the stage strip below is
-            labelled this way already. */}
-        {!phone && <span className="lab" data-testid="period-label">Period</span>}
-        <select
-          className="wk on warpick"
-          data-testid="war-picker"
-          aria-label="Period — which leave war"
-          value={period.id}
-          onChange={e => selectWar(e.target.value)}
-        >
-          {wars.map(w => (
-            <option key={w.period.id} value={w.period.id}>
-              {w.period.name}
-            </option>
-          ))}
-        </select>
-        {role === 'admin' && (
-          <button className="warnew" data-testid="war-new" aria-label={phone ? 'New period' : undefined} onClick={() => setMaking(true)}>
-            {phone ? '+' : '+ New'}
-          </button>
-        )}
-        {/* THE WAR'S UNDO / REDO LEFT THIS ROW for the app's top bar ([UNDO-TOPBAR] — owner D347, 28 Sep 26: "all undo
-            and redo buttons should be at the top bar … standardised … like how the edit schedule is", his phone picture
-            circling this pair with an arrow up to the top bar). The same one undo, in Edit Schedule's place and look
-            (ui/Shell.tsx, ui/topbits.tsx). His 30 Aug 26 "Add undo and redo on leave war here" placement is narrowed by it. */}
-        {me && (
-          <span
-            className="lw-viewing"
-            data-testid="lw-viewing"
-            title={`Every number on this page is ${me.callsign}'s — the person signed in.`}
-          >
-            <svg className="eye" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
-              <path d="M12 5c-5 0-8.5 4.5-9.5 7 1 2.5 4.5 7 9.5 7s8.5-4.5 9.5-7c-1-2.5-4.5-7-9.5-7Z" fill="none" stroke="currentColor" strokeWidth="1.7" />
-              <circle cx="12" cy="12" r="2.6" fill="currentColor" />
-            </svg>
-            <span className="vlab">Viewing as</span>
-            <b className="vwho">{me.callsign}</b>
-          </span>
-        )}
-      </div>
+    <div className={`topbar lw-top${phone ? ' lw-top-ph' : ''}`}>
+      {tabRow}
+      {!phone && view}
+      {!phone && <span className="lw-spring" />}
+      {!phone && myLeave}
+      {gear}
     </div>
-    {/* OUTSIDE `.topbar`, and that is load-bearing rather than tidiness.
-        `.topbar` carries `backdrop-filter`, which makes it the containing
-        block for any `position: fixed` descendant — so the sheet's
-        `bottom: 14px` would resolve against the topbar's own 60px-tall box
-        and render clipped at the top of the page instead of at the bottom of
-        the viewport. jsdom computes no layout, so every unit test passed
-        while it was broken; the browser gate is what caught it. */}
+    {phone && (
+      <div className="lw-viewline">
+        {view}
+        {myLeave}
+      </div>
+    )}
+    {/* OUTSIDE `.topbar`, and that is load-bearing rather than tidiness: `.topbar` carries `backdrop-filter`, which makes
+        it the containing block for any `position: fixed` descendant — the sheet would render clipped at the top of the
+        page instead of at the bottom of the viewport. */}
     {making && <WarSheet key={asked ? `${asked.from}|${asked.to}` : 'new'} initial={asked} raised={!!asked} onClose={closeSheet} />}
     </>
   )
 }
 
-/**
- * Choose which dates the squadron may bid on.
- *
- * The refusals are the store's, not this sheet's: `setBidWindow` re-checks
- * the role and the bounds because the role switch is an affordance rather
- * than a permission, and the picker's own `min`/`max` only stop the mistake
- * being made in the first place.
- */
-function WindowSheet({ onClose }: { onClose: () => void }) {
-  const { period } = getState()
-  const [range, setRange] = useState<Range | null>(
-    period.bidFrom && period.bidTo ? { from: period.bidFrom, to: period.bidTo } : null,
-  )
-  const [problem, setProblem] = useState('')
-
-  const apply = () => {
-    const result = range ? setBidWindow(range.from, range.to) : clearBidWindow()
-    if (result === 'set') return onClose()
-    setProblem(
-      result === 'outside'
-        ? `Those dates leave ${period.name}, which runs ${shortSpan(period.start, period.end)}.`
-        : result === 'backwards'
-          ? 'The end date is before the start date.'
-          : 'Only an admin can open bidding.',
-    )
-  }
-
-  return (
-    <Sheet testid="window-sheet" label="Open bidding on" onClose={onClose}>
-      <div className="bidsheet-hd">
-        <span className="who">OPEN BIDDING ON</span>
-        <span className="dt">{period.name}</span>
-        <button className="x" data-testid="window-cancel" onClick={onClose} aria-label="Cancel">
-          ✕
-        </button>
-      </div>
-      <div className="bidsheet-row">
-        <RangePicker
-          testid="window"
-          clear
-          min={period.start}
-          max={period.end}
-          value={range}
-          onChange={setRange}
-        />
-      </div>
-      <div className="bidsheet-row">
-        <span className="lab" />
-        <button className="dchip approve" data-testid="window-apply" onClick={apply}>
-          {range ? 'Open these dates' : 'Open the whole year'}
-        </button>
-        {/* Clearing is a real choice, not a fallback: before a schedule firms
-            up at all, the whole year being open is the right state. */}
-        <span className="note">
-          The year stays on screen. Only these dates are editable by the squadron.
-        </span>
-        {problem && <span className="note warn" data-testid="window-problem">{problem}</span>}
-      </div>
-    </Sheet>
-  )
+/* "next 30 Jan" — the day and month, as drawn; the year only when it is not this year's */
+function nextLabel(iso: string): string {
+  const d = shortDate(iso)
+  return iso.slice(0, 4) === memberToday().slice(0, 4) ? d.slice(0, d.lastIndexOf(' ')) : d
 }
 
-export function StageBar() {
-  useVersion()
+/** THE GRID'S OWN BAR (D1254, D1196 as narrowed, D1243): [▸ Manning | 1 red ›] · the open dates · … · Legend — the same for
+ *  everyone, standing on the grid card above the month buttons (`full/r19-nav-*`, `full/r21-rows-*`). The grid hands it
+ *  the Manning fold (its own state — the counts it hides are the grid's rows) and anything that rides the bar's right end
+ *  before Legend ("Done" while rearranging; the zoom pair went when pinch to zoom replaced it — [LW-PHONE-PINCH-ZOOM], D1228, D1276). */
+export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen?: boolean; onManning?: () => void; extra?: ReactNode } = {}) {
+  const sv = useVersion()
   /* The clash list lives in the sync module, not the store — it is a view of
      two live records, re-derived on every inbound pass — so it carries its
      own subscription rather than riding the store's version. */
@@ -268,61 +283,55 @@ export function StageBar() {
   // plus a PM OML against one approved bid), and a duplicate key drops one row on repaint — hiding a clash the admin
   // must resolve. The list is re-derived whole on every pass, so the index is a safe tiebreak, not a reorder hazard.
   const clashKey = (c: SyncClash, i: number) => `${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`
-  const dates = period.days.map(d => d.date)
+  /* COUNTED WHEN WHAT IT COUNTS MOVES, NEVER ON A REDRAW (the M2 code read's F1, 23 Oct 26). Since the overhaul this bar
+     stands INSIDE the grid card (D1254), so it renders with every grid render — a month the window draws mid-scroll, a
+     row dragged over, a sheet opened — and each render ran a whole period's manning evaluation and twelve months of the
+     flying plan's answers, inside the scroll's own frames. The war's store version and the plan's version are what the
+     two read; between their moves the answer cannot change. */
+  const dates = useMemo(() => period.days.map(d => d.date), [period])
   // Duplicates the same evaluatePeriod call Matrix makes internally. Both
   // stay self-contained (no prop plumbing between them) so Matrix keeps
   // rendering standalone in its existing tests; the cost is one extra pass
   // over a 90-day period, which is not worth threading props for. Both must
   // be handed the same `states`, or the strip counts a different squadron
   // from the one the grid below it is painting.
-  const verdicts = evaluatePeriod(people, grid, states, requirements, dates, views)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const verdicts = useMemo(() => evaluatePeriod(people, grid, states, requirements, dates, views), [sv, dates])
   // The red days themselves, not just how many. Recomputed every render like
   // the tally beside them: a list built once would send a scheduler to a day
   // a refusal had already recovered.
-  const red = dates.filter(d => verdicts[d].verdict === 'red')
+  // …and since D1243 (narrowing D1213) a day with an Available P or W row at its red counts too, named in the list
+  // with its figure; amber never does. Their red reads the day's Required — the scheduler's plan — so the strip also
+  // hears the plan's signal.
+  const planV = usePlanVersion()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const redList = useMemo(() => manningRedDays(dates, verdicts), [verdicts, planV])
+  const red = redList.map(d => d.date)
   const redDays = red.length
-  const next = nextStage(period.stage)
-  // The way back, and who may take it. Both asked of the engine rather than
-  // worked out here, so the control the strip draws and the write the store
-  // will accept cannot disagree.
-  const back = canReopen(period.stage, role) ? previousStage(period.stage) : null
   const [listOpen, setListOpen] = useState(false)
   const showList = listOpen && redDays > 0
 
-  /* ON A PHONE THIS STRIP IS ONE LINE — the stage, the bidding dates, under-manned, Legend ([LW-PHONE-HEADER-SPACE];
-     owner, D678, 8 Oct 26: idea A of the page he was shown). Three things make room for it, each a reading he was
-     told with the drawing: the words "Stage", "Bidding on" and "Under-manned" go (the buttons say it); the dates read
-     without their year; and AN ADMIN'S TWO STAGE MOVES GO BEHIND THE STAGE BUTTON — a tap opens a small menu holding
-     the very same two buttons, so moving the stage is one tap more than on a desktop. A member has no moves, so his
-     stage stays the plain label it always was and a tap on it opens nothing. A TABLET AND A DESKTOP ARE NOT TOUCHED
-     (D679): there `stageMenu` is false and every branch below draws what it drew before. */
+  /* ON A PHONE THIS STRIP IS ONE LINE — the open dates, under-manned, Legend ([LW-PHONE-HEADER-SPACE]; owner, D678,
+     8 Oct 26: idea A of the page he was shown; the stage chip and its menu went with the stages, D1177). The words
+     "Under-manned" go on a phone (the buttons say it) and the dates read without their year. A TABLET AND A DESKTOP
+     draw the same chip with its longer words (D679). */
   const phone = usePhone()
-  const stageMenu = phone && role === 'admin'
-  const [stageOpen, setStageOpen] = useState(false)
-  const showStage = stageOpen && stageMenu
-  const closeStage = () => setStageOpen(false)
-  /* The menu's reason to exist can go while it is open — he switches to the member view, the phone is turned on its
-     side. It is put away then, not merely hidden: left "open" it would spring back the moment he is an admin on a
-     narrow screen again, over whatever he is doing. */
-  useEffect(() => { if (!stageMenu) setStageOpen(false) }, [stageMenu])
-  const stageRef = useRef<HTMLButtonElement>(null)
-  const [stageAt, setStageAt] = useState<{ left: number; top: number } | null>(null)
-  useLayoutEffect(() => {
-    if (!showStage) { setStageAt(null); return }
-    const r = stageRef.current?.getBoundingClientRect()
-    if (!r) return
-    const margin = 8
-    setStageAt({
-      left: Math.max(margin, Math.min(r.left, window.innerWidth - STAGE_MENU_WIDTH - margin)),
-      top: r.bottom + 6,
-    })
-  }, [showStage, period.stage])
+  /* WHAT IS OPEN, AS THIS PERSON SEES IT (D1177; D1211): the admin every open stretch; a member those from today on —
+     he never bids before today, so a stretch wholly past is not "open" to him. The chip shows the first and counts the
+     rest ("+1"); with none it reads "Bidding closed". One chip, a button for everyone: an admin's tap opens the "Open
+     for bidding" window to change them, a member's opens it to read them — and, with nothing open, the last open stretch
+     and who closed it. */
+  /* what is open FROM TODAY, for the admin as for a member (D1268, 23 Oct 26): an admin whose only open dates are past reads
+     "Bidding closed" here, as every member does, not "Open 1 Mar – 31 May" that no member can use a day of */
+  const openNow = openFrom(period, memberToday())
 
   // Where the list hangs. Measured, because the strip wraps: the chip is in a
   // different place on a phone than on a desktop, and a list anchored to its
   // left edge runs off the right of a narrow viewport and stops being
   // clickable at all.
   const chipRef = useRef<HTMLButtonElement>(null)
+  /* the open chip: the window it opens hands the keyboard back to it on closing (the design guide §3 — M1's walk, A-F2) */
+  const openChipRef = useRef<HTMLButtonElement>(null)
   const [at, setAt] = useState<{ left: number; top: number } | null>(null)
   useLayoutEffect(() => {
     if (!showList) { setAt(null); return }
@@ -351,7 +360,7 @@ export function StageBar() {
      own sheets. `Sheet` carries the same rule for the panels it wraps; these
      two use a different overlay, which is why it is restated here. */
   useEffect(() => {
-    if (!legOpen && !listOpen && !showStage) return
+    if (!legOpen && !listOpen) return
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       /* Same kept-mounted guard as Sheet.tsx (bug-hunt fix, 1 Sep 26): the
@@ -361,12 +370,11 @@ export function StageBar() {
       if (pg && !pg.classList.contains('on')) return
       e.stopPropagation()
       if (legOpen) setLegOpen(false)
-      else if (listOpen) setListOpen(false)
-      else setStageOpen(false)      // the phone's stage menu (D678) — the third of these pop-outs, by the same rule
+      else setListOpen(false)
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [legOpen, listOpen, showStage])
+  }, [legOpen, listOpen])
   useLayoutEffect(() => {
     if (!legOpen) { setLegAt(null); return }
     const r = legRef.current?.getBoundingClientRect()
@@ -378,152 +386,64 @@ export function StageBar() {
     })
   }, [legOpen])
 
-  /* The stage's two moves, built ONCE and placed twice: in sight on the strip (a tablet, a desktop) or inside the
-     stage menu (a phone, D678). One pair of buttons — the same words, the same test ids, the same store calls — so the
-     two sizes cannot come to offer different moves. */
-  /* It names the stage it will move TO — the label answers "what does this do", and the chip beside it (or above it,
-     in the menu) is already showing where the period stands.
-     Forward only, and disabled at the end of the cycle: `nextStage` owns which transitions exist and this asks it
-     rather than deciding for itself.
-     ADMIN ONLY, absent rather than disabled for a member (owner, 27 Aug 26 — "for a member i shouldnt be able to click
-     on bidding closed or published, thats an admin function"), the same idiom as the back control below; the store's
-     advanceStage refuses a member write regardless. Members still BID as before — this is the only member-facing
-     change. */
-  const advanceBtn = role === 'admin' && (
-    <button
-      className="stage-go"
-      data-testid="stage-advance"
-      disabled={next === null}
-      title={next ? `Move this period to ${stageLabel(next)}` : 'The cycle ends at published'}
-      onClick={() => { advanceStage(); closeStage() }}
-    >
-      → {next ? stageLabel(next) : 'END OF CYCLE'}
-    </button>
-  )
-  /* Stepping the cycle BACK — how bidding is opened again after being closed (owner, 10 Aug 26). Admin only, and
-     absent rather than disabled for a member: a disabled control advertises something they cannot have, and this one
-     is not theirs to want.
-
-     It names where it returns to, exactly as the forward control names where it goes, so the two read as one cycle.
-     Nothing here is destructive — every decision already made survives the move; see `reopenStage`. */
-  const backBtn = back && (
-    <button
-      className="stage-go"
-      data-testid="stage-back"
-      title={`Step this period back to ${stageLabel(back)}. Bids and decisions already made are kept.`}
-      onClick={() => { reopenStage(); closeStage() }}
-    >
-      ← {stageLabel(back)}
-    </button>
-  )
-
   return (
     <>
-    <div className="filters">
-      {!phone && <span className="lab">Stage</span>}
-      {stageMenu ? (
-        /* A PHONE, AN ADMIN: the stage is the button its two moves hang from (D678). It reads the stage alone — the
-           small arrow that says "this opens" is drawn by the stylesheet, so the words on the button are exactly the
-           words on a desktop's label. */
+    <div className="filters lw-gridbar">
+      {/* MANNING, AT THE LEFT, AND ITS COUNT OF RED DAYS AS ITS RIGHT HALF (D1240, D1243 — "1 red ›"): the left half folds
+          the Manning rows (a view toggle, either role); the right half counts the days a Manning, Available P or Available
+          W row is below its rule — red only, amber is not counted — and a tap lists them, a tap on a line takes the grid
+          there (today's list, in the new place). With no red day the right half goes and the button reads "Manning". */}
+      <span className={`lw-manning${redDays > 0 ? ' has-red' : ''}`}>
         <button
-          ref={stageRef}
-          className={`fchip stagebtn${period.stage === 'open' ? ' stage-open' : ''}`}
-          data-testid="stage-now"
-          aria-haspopup="dialog"
-          aria-expanded={showStage}
-          title="Move this period to another stage"
-          onClick={() => setStageOpen(o => !o)}
+          type="button"
+          className="fchip mn-l"
+          data-testid="counts-toggle"
+          aria-expanded={manningOpen}
+          title={manningOpen ? 'Hide the manning counts' : 'Show the manning counts'}
+          onClick={onManning}
         >
-          {/* its words in a box of their own: on a phone they are the one thing on the line that gives way (chrome.css) */}
-          <span className="stagetxt">{stageLabel(period.stage)}</span>
+          <span className="mn-car" aria-hidden="true">{manningOpen ? '▾' : '▸'}</span> Manning
         </button>
-      ) : (
-        <span
-          className={`fchip${period.stage === 'open' ? ' stage-open' : ''}`}
-          data-testid="stage-now"
-        >
-          <span className="stagetxt">{stageLabel(period.stage)}</span>
-        </span>
-      )}
-      {/* The control sits beside the stage it moves, so the strip reads as one thing rather than as a label and an
-          unrelated button. On a phone the pair is in the stage menu instead (below). */}
-      {!stageMenu && advanceBtn}
-      {!stageMenu && backBtn}
-      {showStage && (
-        <>
-          {/* the same scrim the two pop-outs below use: a press anywhere outside the menu puts it away and reaches
-              nothing under it (the 4 Sep 26 rule — a click-open popup closes on a click outside it) */}
-          <div className="umscrim" data-testid="stage-scrim" onClick={closeStage} />
-          <div
-            className="stagemenu"
-            data-testid="stage-menu"
-            role="dialog"
-            aria-label="Move the stage"
-            style={stageAt ? { left: stageAt.left, top: stageAt.top } : undefined}
-          >
-            <div className="stagemenu-hd">Move the stage</div>
-            {advanceBtn}
-            {backBtn}
-          </div>
-        </>
-      )}
-      {/* Which part of the year the squadron may bid on. The war is a whole
-          year on screen and the schedule firms up a quarter at a time, so
-          this is what "the admin opens a period" means — the year stays
-          visible and this much of it is writable.
-
-          Only shown while the war is OPEN: a draft or closed war is shut to
-          the squadron on every date, and a window advertised beside "BIDDING
-          CLOSED" would contradict it. */}
-      {period.stage === 'open' && (
-        <>
-          {!phone && <span className="lab" style={{ marginLeft: 12 }}>Bidding on</span>}
+        {redDays > 0 && (
           <button
-            className={`fchip winchip${role === 'admin' ? ' can' : ''}`}
-            data-testid="bid-window"
-            disabled={role !== 'admin'}
-            /* on a phone the words "Bidding on" and the dates' year are not on screen (D678), so they are said here */
-            aria-label={phone
-              ? `Bidding on ${period.bidFrom && period.bidTo ? shortSpan(period.bidFrom, period.bidTo) : 'the whole year'}`
-              : undefined}
-            title={role === 'admin'
-              ? 'Choose which dates the squadron may bid on'
-              : 'The dates the squadron may bid on'}
-            onClick={() => setPicking(true)}
+            type="button"
+            ref={chipRef}
+            className="fchip mn-r undermanned"
+            data-testid="undermanned"
+            onClick={() => setListOpen(o => !o)}
+            aria-expanded={showList}
+            aria-label={`${redDays} red day${redDays === 1 ? '' : 's'}: show the days that break a manning rule`}
+            title="Show the days that break a manning rule"
           >
-            {period.bidFrom && period.bidTo
-              ? (phone ? spanInYear : shortSpan)(period.bidFrom, period.bidTo)
-              : 'THE WHOLE YEAR'}
+            <b>{redDays}</b> red <span aria-hidden="true">›</span>
           </button>
-        </>
-      )}
+        )}
+      </span>
+      <button
+        className={`fchip openchip${openNow.length ? ' open-on' : ''}`}
+        data-testid="open-chip"
+        ref={openChipRef}
+        aria-haspopup="dialog"
+        aria-expanded={picking}
+        title={role === 'admin' ? 'Choose the dates open for bidding' : 'The dates open for bidding'}
+        onClick={() => setPicking(true)}
+      >
+        {openNow.length ? (
+          <>
+            <span className="openword">{phone ? 'Open' : 'Open for bidding'}</span>{' '}
+            <span className="opentxt">{stretchLabel(openNow[0]!)}</span>
+            {openNow.length > 1 && <span className="openmore">{' '}+{openNow.length - 1}</span>}
+          </>
+        ) : (
+          <span className="opentxt">Bidding closed</span>
+        )}
+      </button>
       {/* The standalone app's "Viewing as" role toggle stood here — an
           unverified affordance anyone could flip, because that app had no
           login. Inside Raptor there IS a login: the role now comes from the
           session (resetSession → setRole, admin account = admin here), the
           Raptor topbar already shows the Admin/Member badge, and a toggle
           that disagreed with the login would be a lie. Do not re-add it. */}
-      {!phone && <span className="lab" style={{ marginLeft: 12 }}>Under-manned</span>}
-      {/* The tally used to be a dead end: it said seven days were broken and
-          left the scheduler to find them by eye across 365 columns. It opens
-          the list of those days instead, and choosing one jumps the grid to
-          it — the same jump the month strip makes, for the same reason. */}
-      <button
-        ref={chipRef}
-        className={`fchip${redDays > 0 ? ' undermanned' : ''}`}
-        data-testid="undermanned"
-        onClick={() => setListOpen(o => !o)}
-        disabled={redDays === 0}
-        aria-expanded={showList}
-        aria-label={phone ? `Under-manned: ${redDays} day${redDays === 1 ? '' : 's'}` : undefined}
-        title={redDays === 0
-          ? 'No day in this war breaks a manning rule'
-          : 'Show the days that break a manning rule'}
-      >
-        {/* on a phone the label beside the count is gone, so the count carries one quiet word of it (D678 — "Under 0
-            days", as drawn) */}
-        {phone && <span className="umlab">Under </span>}{redDays} day{redDays === 1 ? '' : 's'}
-      </button>
       {showList && (
         <>
           <div className="umscrim" data-testid="undermanned-scrim" onClick={() => setListOpen(false)} />
@@ -536,12 +456,11 @@ export function StageBar() {
           >
             <div className="umlist-hd">Days breaking a manning rule</div>
             <div className="umlist-body">
-              {red.map(date => {
+              {redList.map(({ date, lines: broken }) => {
                 // Which rules are red, and the figure that broke each. "SXO 0"
                 // and "IWSO 1" are different problems and a scheduler acts
                 // differently on them, so a list of bare dates would just mean
                 // opening all seven to find out which is which.
-                const broken = verdicts[date].results.filter(r => r.verdict === 'red')
                 return (
                   <button
                     key={date}
@@ -550,7 +469,7 @@ export function StageBar() {
                     onClick={() => { focusDay(date); setListOpen(false) }}
                   >
                     <span className="d">{shortDate(date)}</span>
-                    <span className="why">{broken.map(r => `${r.label} ${r.have}`).join(' · ')}</span>
+                    <span className="why">{broken.map(r => `${r.label} ${r.have}${r.need != null ? ` of ${r.need}` : ''}`).join(' · ')}</span>
                   </button>
                 )
               })}
@@ -558,9 +477,10 @@ export function StageBar() {
           </div>
         </>
       )}
-      {/* The colour/mark KEY, to the RIGHT of the under-manned tally (owner,
-          27 Aug 26). Read-only for everyone — it explains the grid, it does
-          not change it. */}
+      <span className="lw-spring" />
+      {extra}
+      {/* The colour/mark KEY, at the bar's right end (D1254 — as drawn). Read-only for everyone — it explains the grid,
+          it does not change it. */}
       <button
         ref={legRef}
         className="fchip legkey"
@@ -583,43 +503,55 @@ export function StageBar() {
           >
             <div className="umlist-hd">What the grid is telling you</div>
             <div className="leglist-body">
-              <div className="leg-sec">The fill colour — where a bid stands</div>
-              <div className="leg-row"><span className="leg-sw appr">LL</span><span className="leg-t">Approved</span></div>
-              <div className="leg-row"><span className="leg-sw tbc">LL</span><span className="leg-t">Ack — seen, waiting on a decision</span></div>
-              <div className="leg-row"><span className="leg-sw ref">LL</span><span className="leg-t">Refused</span></div>
-              <div className="leg-sec">The left edge — where it came from</div>
-              <div className="leg-row"><span className="leg-sw raptor">LL</span><span className="leg-t">Filed on the Inputs page — change it there, not here</span></div>
-              {/* The moved stripe exists only once bidding has closed
-                  (movedShown, one biddingClosed body with the store) — while
-                  the war is open the legend must not advertise a mark no cell
-                  can wear, sending readers hunting for it. */}
-              {biddingClosed(period.stage) && (
-                <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
-              )}
+              {/* LOOK F's Legend, as drawn (`docs/mock/lw-overhaul/full/r7-07-legend-phone.png` — D1175, D1158, D1160,
+                  D1167): the colour is the kind, the fill where it stands, the size how much of the day. Every swatch is
+                  the grid's own box (`LegBox`, the same classes the cell draws), so the key cannot say a colour the grid
+                  does not paint. */}
+              <div className="leg-sec">The colour: what kind</div>
+              <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Local leave</span></div>
+              <div className="leg-row"><LegBox code="OL" /><span className="leg-t">Overseas leave</span></div>
+              {/* an OIL taken and an OIL given in colours of their own (his D1291, D1323 — drawn by lw-colours-c-d.mjs) */}
+              <div className="leg-row"><LegBox code="OIL" /><span className="leg-t">OIL taken: time off spent</span></div>
+              <div className="leg-row"><LegBox code="FO" /><span className="leg-t">OIL given: FO a day, HO half a day; a star, the app credited it</span></div>
+              <div className="leg-row"><LegBox code="CCL" /><span className="leg-t">Other leave: CCL, FCL, PL, CL, EL</span></div>
+              <div className="leg-row"><LegBox code="CSE" /><span className="leg-t">Course</span></div>
+              <div className="leg-row"><LegBox code="OD" /><span className="leg-t">Overseas duty</span></div>
+              {/* A COMMITMENT UNDER UNAVAILABLE (his D1357, D1370 — UNA went, D1356): outlined, out of the manning — OTH an
+                  Other, ATCH an Attach, the rest by their kind's letters */}
+              <div className="leg-row"><LegBox code="OTH" /><span className="leg-t">Under Unavailable on the schedule: OTH, ATCH and the rest, out of the manning</span></div>
+              <div className="leg-row"><LegBox code="ATTC" text="C" /><span className="leg-t">Medical: B, C, OML, HL</span></div>
+              <div className="leg-sec">The fill: where it stands</div>
+              <div className="leg-row"><LegBox code="LL" /><span className="leg-t">Approved</span></div>
+              <div className="leg-row"><LegBox code="LL" fill="w" /><span className="leg-t">Pending a decision</span></div>
+              <div className="leg-row"><LegBox code="LL" fill="r" /><span className="leg-t">Refused</span></div>
+              <div className="leg-sec">The size: how much of the day</div>
+              <div className="leg-row"><LegBox code="LL" /><span className="leg-t">A whole day</span></div>
+              <div className="leg-row"><LegBox code="LL" place="top" /><span className="leg-t">Morning (AM)</span></div>
+              <div className="leg-row"><LegBox code="LL" place="bot" /><span className="leg-t">Afternoon (PM)</span></div>
+              <div className="leg-row">
+                <span className="leg-box"><span className="c k-oil s-a left">FO</span><span className="c k-ol s-r right">OL</span></span>
+                <span className="leg-t">Two entries on one day</span>
+              </div>
+              <div className="leg-sec">The dates</div>
+              <div className="leg-row"><span className="leg-box leg-open" /><span className="leg-t">Open for bidding</span></div>
+              <div className="leg-row"><span className="leg-box leg-shut" /><span className="leg-t">Not open for bidding</span></div>
+              <div className="leg-sec">The left edge: where it came from</div>
+              <div className="leg-row"><LegBox code="LL" mark="raptor" /><span className="leg-t">Filed on the Inputs page: change it there, not here</span></div>
+              {/* the moved stripe: any move of a leave already approved wears it (D1177 — no longer only once bidding closed) */}
+              <div className="leg-row"><LegBox code="LL" mark="moved" /><span className="leg-t">Moved here from another day</span></div>
               {/* [ARCH-STACK] step 4 — the corner mark: one code per day, the
                   rest behind a count (owner comp, 19 Sep 26) */}
               <div className="leg-sec">The corner — more on the day</div>
-              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk more">+1</i></span><span className="leg-t">More on this day — tap to see every entry</span></div>
-              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk warn">!</i></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
-              <div className="leg-row"><span className="leg-sw appr legmk">LL<i className="lmk po">PO</i></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
-              {/* the half days as every box and both sheets draw them — "<LL" / "LL>" (D264); it taught the stored "*LL" /
-                  "LL*", which nothing on screen shows ([LW-SEL-HALF-LABELS], the blind read's L3) */}
-              <div className="leg-sec">The arrow — a half day</div>
-              <div className="leg-row"><span className="leg-sw plain">&lt;LL</span><span className="leg-t">AM (the arrow before the code)</span></div>
-              <div className="leg-row"><span className="leg-sw plain">LL&gt;</span><span className="leg-t">PM (the arrow after the code)</span></div>
-              {/* The figures (owner, 6 Sep 26): the colours the boxes and the
-                  column titles wear, then what each column counts — read off
-                  the figure catalogue so this can never drift from the grid. */}
+              {/* the grid's own tiles over the grid's own box (walker 1's #64, the code read's F4) */}
+              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-more"><span className="c k-ll s-a whole">LL</span><span className="mk more">+1</span></span><span className="leg-t">More on this day — tap to see every entry</span></div>
+              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-warn"><span className="c k-ll s-a whole">LL</span><span className="mk warn">!</span></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
+              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-po"><span className="c k-ll s-a whole">LL</span><span className="potag">PO</span></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
+              {/* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — every other balance is on
+                  the Balances tab and in a person's window, so the Legend teaches the one column the grid still shows. */}
               <div data-testid="legend-figures">
-                <div className="leg-sec">The figures — the colours</div>
-                <div className="leg-row"><span className="leg-sw plain figw">26</span><span className="leg-t">white — balance left (+ in the title)</span></div>
-                <div className="leg-row"><span className="leg-sw plain figa">3</span><span className="leg-t">amber — local leave (LL) taken</span></div>
-                <div className="leg-row"><span className="leg-sw plain figr">2</span><span className="leg-t">red — overseas leave (OL) taken, days used, or a total (− in the title)</span></div>
-                <div className="leg-row"><span className="leg-sw plain figr">−4</span><span className="leg-t">red with a minus — a balance below zero</span></div>
-                <div className="leg-sec">The figures — each column</div>
-                {FIGURES.map(f => (
-                  <div key={f.id} className="leg-row"><span className={`leg-sw plain ${f.kind === 'bal' ? 'figw' : 'figr'}`}>{f.title}</span><span className="leg-t">{f.desc}</span></div>
-                ))}
+                <div className="leg-sec">The figure beside each name</div>
+                <div className="leg-row"><span className="leg-sw plain figw">26</span><span className="leg-t">LVE left: local and overseas leave</span></div>
+                <div className="leg-row"><span className="leg-sw plain figr">−4</span><span className="leg-t">Red with a minus: below zero</span></div>
               </div>
               {/* What the LETTERS mean (owner, 28 Aug 26). The grid shows codes
                   the Inputs page never explains — FO/HO above all, which are not
@@ -633,7 +565,7 @@ export function StageBar() {
                   <div className={'leg-sec' + (g.onlyHere ? ' leg-sec-here' : '')}>{g.group}</div>
                   {g.rows.map(r => (
                     <div className="leg-row" key={r.show}>
-                      <span className={'leg-sw ' + (isDuty(r.show) ? 'sc' : !isBiddable(r.show) ? 'info' : 'plain')}>{r.show}</span>
+                      <LegBox code={r.show} text={r.show} place={r.show === 'HO' ? 'top' : 'whole'} />
                       <span className="leg-t">{r.mean}</span>
                     </div>
                   ))}
@@ -665,7 +597,7 @@ export function StageBar() {
       {/* Rendered inside `.filters` rather than `.topbar`, which carries no
           `backdrop-filter` — see the note on WarSheet in Topbar for why that
           distinction decides where a `position: fixed` sheet actually lands. */}
-      {picking && <WindowSheet onClose={() => setPicking(false)} />}
+      {picking && <OpenDatesSheet onClose={() => { setPicking(false); openChipRef.current?.focus({ preventScroll: true }) }} />}
     </div>
     {/* THE PHONE'S CLASH NOTE — after the two lines, never inside the second (above). Admin only, as the strip is. */}
     {role === 'admin' && clashes.length > 0 && phone && (

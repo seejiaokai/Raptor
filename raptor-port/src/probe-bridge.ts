@@ -9,7 +9,7 @@ import { DAYS } from './engine/data'
 import { posKey } from './engine/rowids'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, isPersonnel, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { NOTICES } from './state/notices'
-import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, oilNeverEarns, oilSilent, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
+import { INPUTS, filingOf, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, oilNeverEarns, oilSilent, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode, upchitTrimPlan, newMedTrimPlan, ordShift, ordLabel } from './engine/medical'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } from './engine/editlog'
@@ -45,7 +45,8 @@ import { roleOf } from './state/perms'
 import { notify, loadWeek, moveSection, moveSectionTo, writeInputs } from './state/store'
 import { globalUndo, globalRedo } from './undo'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
-import { setRole as lwSetRole, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
+import { setMemberTodayForTests as lwSetMemberToday, landingOf as lwLandingOf, memberToday as lwMemberToday } from './leavewar/engine'
+import { setRole as lwSetRole, selectWar as lwSelectWar, loadWars as lwLoadWars, setCell as lwSetCell, setPostOut as lwSetPostOut, saveManningRule as lwSaveManningRule, getState as lwGetState, setDayEvent as lwSetDayEvent, createWar as lwCreateWar } from './leavewar/state/store'
 import { pinViewer, carryViewerPin, dayFacts as lwDayFacts, flyAnswer } from './leavewar/sync'
 import { setFlyDays, setFlyRun, setFlyRule } from './state/flyplan'
 
@@ -154,6 +155,14 @@ export function installProbeBridge() {
      needs mid-test member↔admin switches that no click path reaches since
      the standalone app's on-screen toggle was removed at the merge. */
   w.lwSetRole = (r: 'admin' | 'member') => lwSetRole(r)
+  /* A MEMBER'S TODAY, PINNED FOR A BROWSER TEST (D1211 — he never bids before today): the demo's open dates are 1 Jan –
+     31 Mar 26, which the real calendar has passed. Pinned, the page is put on the period the boot would pick for that
+     day (`landingOf`), as a load would. Developer's PC only, like the rest of this bridge. */
+  w.lwSetMemberToday = (iso: string | null) => {
+    lwSetMemberToday(iso)
+    const land = lwLandingOf(lwGetState().wars.map(x => x.period), lwMemberToday())
+    if (land) lwSelectWar(land.periodId)
+  }
   /* the flying plan's two typed writers (state/flyplan.ts) — a day's required pilots and WSOs, and a figure that runs
      from a date on. The browser tests of the Leave War's Required rows plant a figure with these, as an admin's typing
      will (the Inputs / SANS redesign, plan §3.3); each is the real command, refused for a member like any other. */
@@ -202,7 +211,9 @@ export function installProbeBridge() {
      screenshot scenarios plant a filed leave / medical without driving the
      whole Inputs form each time. */
   if (isLocalHost()) {
-    w.fileInput = (row: any) => writeInputs(() => { INPUTS.unshift({ remarks: '', mod: '2026-01-01', ...row }) })
+    /* …filed where its kind lands, as the Inputs page files it (D1372: a course under Unavailable by itself — filingOf); the
+       war counts a course only there (D1389 — the night of 26 Oct 26's code read, F1). A row that names its own acc keeps it. */
+    w.fileInput = (row: any) => writeInputs(() => { INPUTS.unshift({ remarks: '', mod: '2026-01-01', ...(!('acc' in (row || {})) && filingOf(row?.type, row?.goes) ? { acc: 'u' } : {}), ...row }) })
     w.INPUTS = INPUTS
     w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)
     w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)

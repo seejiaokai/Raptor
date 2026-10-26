@@ -3,7 +3,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { advanceStage, awardsOnDay, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
+import { awardsOnDay, closeDates, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { syncAbsences } from '../sync'
@@ -16,14 +16,30 @@ const D = '2026-02-11'
 const cell = () => screen.getByTestId(`cell-${P}-${D}`)
 
 describe('the corner mark', () => {
-  it('morning LL + afternoon OIL: the box reads <LL, with a grey +1', () => {
+  /* WAS "morning LL + afternoon OIL: the box reads <LL, with a grey +1". Look F (D1146, D1160, D1145): a day's two
+     entries BOTH show — the morning's box in the top half, the afternoon's in the bottom, each its bare code (no arrow)
+     — so the "+1" corner has nothing more to say and is dropped. */
+  it('morning LL + afternoon OIL: two boxes, LL on top and OIL below, and no +1', () => {
     fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     render(<Matrix />)
-    // `<LL` on screen, `*LL` in the record — one fold, `displayCell`
-    expect(cell().textContent).toContain('<LL')
+    const boxes = [...cell().querySelectorAll('.c')]
+    expect(boxes.map(b => b.textContent)).toEqual(['LL', 'OIL'])
+    expect(boxes[0]!.className).toBe('c k-ll s-a top')
+    expect(boxes[1]!.className).toBe('c k-oilt s-a bot wide')   // an OIL taken, its own colour (D1291, D1323)
+    expect(cell().className).toContain('hasc')
+    expect(screen.queryByTestId(`mark-${P}-${D}`)).toBeNull()
+  })
+
+  /* …and three or more keep ONE box and the grey "+n" corner, which opens the day's list (D1146) */
+  it('three entries keep one box and a grey +2', () => {
+    fileAbsence(P, 'CSE', D)
+    fileAbsence(P, 'OD', D)
+    fileAbsence(P, 'LL', D)
+    render(<Matrix />)
+    expect(cell().querySelectorAll('.c')).toHaveLength(1)
     const mk = screen.getByTestId(`mark-${P}-${D}`)
-    expect(mk.textContent).toBe('+1')
+    expect(mk.textContent).toBe('+2')
     expect(mk.className).toContain('more')
   })
 
@@ -52,52 +68,64 @@ describe('the tap list', () => {
     const list = screen.getByTestId('daylist')
     const lines = within(list).getAllByRole('listitem')
     expect(lines).toHaveLength(2)
-    expect(lines[0]!.textContent).toContain('<LL — local leave, morning · approved')
-    expect(lines[1]!.textContent).toContain('OIL> ')
+    /* round 3 (D1327, D1328): each line led by its box, only its half and state beside it */
+    expect(lines[0]!.querySelector('.dl-main')!.textContent).toBe('Morning · approved')
+    expect(lines[0]!.querySelector('.dl-box .c')!.textContent).toBe('LL')
+    expect(lines[1]!.querySelector('.dl-main')!.textContent).toBe('Afternoon · approved')
+    expect(lines[1]!.querySelector('.dl-box .c')!.textContent).toBe('OIL')
   })
 
   it('an admin can send one of two approved leaves back to a bid from its own line', () => {
     const am = fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     setRole('admin')
-    act(() => { advanceStage() })       // closed — deciding
+    act(() => { closeDates('2026-01-01', '2026-12-31') })       // every date closed — the admin decides at any time (D1177)
     render(<Matrix />)
     fireEvent.click(cell())
-    fireEvent.click(screen.getByTestId(`dl-unapprove-${am.iid}`))
+    fireEvent.click(screen.getByTestId(`dl-approve-${am.iid}`))   // the lit Approve's second tap (D1330 — "Back to bid" went)
     expect(INPUTS.some((r: any) => r.iid === am.iid)).toBe(false)
     const list = rawState().wars[0]!.recs[P]![D]!
     expect(list.find(r => r.kind === 'request')).toMatchObject({ code: '*LL', state: 'pending' })
   })
 
-  it('an APPROVED leave on a PUBLISHED war offers the NOTE and nothing else', () => {
-    /* Owner, 21 Sep 26: "if the input is approved and published … the member
-       and admin can input the remarks there. In order to edit it again, admin
-       has to go back to open for bidding or bidding closed." The single-record
-       window always obeyed that; THIS list did not, because deciding means
-       closed-OR-published — so a day holding two records let an admin send a
-       published, approved leave back to a bid in one click (Astra, 21 Sep 26). */
+  /* WAS "an APPROVED leave on a PUBLISHED war offers the NOTE and nothing else" (owner, 21 Sep 26 — "if the input is
+     approved and published … In order to edit it again, admin has to go back to open for bidding or bidding closed";
+     Astra, 21 Sep 26: this list must obey the single-record window). The published stage went (D1177): nothing is
+     frozen, the admin sends back, refuses, moves or deletes approved leave at any time — and this list still obeys the
+     single-record window, which offers him the same. A MEMBER's own approved leave offers the Note and nothing else
+     (D418 narrowed: "a member's approved leave offers only its remarks, any time"). */
+  it('an APPROVED leave offers the admin every action at any time, and its owner the NOTE and nothing else', () => {
     const am = fileAbsence(P, '*LL', D, D, { lw: true })
     fileAbsence(P, 'OIL*', D, D, { lw: true })
     setRole('admin')
-    act(() => { advanceStage(); advanceStage() })     // closed → published
+    act(() => { closeDates('2026-01-01', '2026-12-31') })     // nothing open at all
+    const r = render(<Matrix />)
+    fireEvent.click(cell())
+    expect(screen.getByTestId(`dl-approve-${am.iid}`).className).toContain('lit')   // sends it back (D1330)
+    expect(screen.getByTestId(`dl-refuse-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-remove-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-move-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-${am.iid}-remarks`)).toBeTruthy()   // its Remarks at once — "Note" went (D1307)
+    r.unmount()
+    act(() => { setRole('member'); setViewer(P) })
     render(<Matrix />)
     fireEvent.click(cell())
-    expect(screen.queryByTestId(`dl-unapprove-${am.iid}`)).toBeNull()
+    expect(screen.queryByTestId(`dl-approve-${am.iid}`)).toBeNull()
     expect(screen.queryByTestId(`dl-refuse-${am.iid}`)).toBeNull()
     expect(screen.queryByTestId(`dl-remove-${am.iid}`)).toBeNull()
     expect(screen.queryByTestId(`dl-move-${am.iid}`)).toBeNull()
-    expect(screen.getByTestId(`dl-note-${am.iid}`)).toBeTruthy()
+    expect(screen.getByTestId(`dl-${am.iid}-remarks`)).toBeTruthy()   // his own leave's Remarks to change (D1307)
   })
 
   it('leave filed on the Inputs page says so and offers no war action', () => {
     const a = fileAbsence(P, '*LL', D)
     fileAbsence(P, 'CSE', D)
     setRole('admin')
-    act(() => { advanceStage() })
+    act(() => { closeDates('2026-01-01', '2026-12-31') })
     render(<Matrix />)
     fireEvent.click(cell())
-    expect(screen.queryByTestId(`dl-unapprove-${a.iid}`)).toBeNull()
-    expect(screen.getByTestId('daylist').textContent).toContain('Change it on the Inputs page.')
+    expect(screen.queryByTestId(`dl-approve-${a.iid}`)).toBeNull()
+    expect(screen.getByTestId('daylist').textContent).toContain('change it on the Inputs page')   // its short words (D1328)
   })
 
   it('a replaced-bid notice: amber !, its line, and "OK, seen" clears it', () => {

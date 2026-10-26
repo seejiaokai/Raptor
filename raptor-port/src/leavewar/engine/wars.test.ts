@@ -17,10 +17,11 @@ describe('makeWar', () => {
     expect(q2.period.days).toHaveLength(91)
   })
 
-  // A new war starts in draft. Opening it is the admin's act, taken when the
+  // A new war has nothing open (D1177; empty means closed — B2). Opening dates is the admin's act, taken when the
   // schedule firms up — never a side effect of creating it.
-  it('starts in draft, not open', () => {
-    expect(q1.period.stage).toBe('draft')
+  it('starts with nothing open', () => {
+    expect(q1.period.open).toEqual([])
+    expect(q1.period.lastClosed).toBeNull()
   })
 
   it('starts empty — no leave and no bids', () => {

@@ -118,7 +118,7 @@ const FILES = [
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
   ['.claude/rules/doc-structure.md',     0,  100],
-  ['.claude/rules/shipping.md',          0,  130],   // 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
+  ['.claude/rules/shipping.md',          0,  135],   // 130 → 135 (21 Oct 26): D1093 (his "auto merge live" covers a run) and D1097 (a notification at every stop that waits on him) — live rules every chat ships by, none moved out; 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */
@@ -238,7 +238,12 @@ const RULING_BYTES = [
   /* how-we-work 39500 -> 42000 (16 Oct 26, the documents tidy after pull request 519): 40,313 bytes with D902-D906, D926 and
      D911, D921 (the small-fix checks, the readers, when he is told and shown) - live; none is trimmed (D136).
      [RULINGS-SPENT-PASS] still brings it down. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 42000],
+  /* how-we-work 42000 -> 44000 (21 Oct 26, round 2 of the consistency look): 42,803 bytes with D1124, D1126, D1127 (the
+     consistency look, the top bar to 1599, one search box) and D1086-D1097 - live; none is trimmed (D136).
+     [RULINGS-SPENT-PASS] still brings it down. */
+  /* how-we-work 44000 -> 46000 (22 Oct 26, the Leave War overhaul's round 17): 44,268 bytes with D1237 (what he should
+     look at stands at the top of every mock-up page) - live; none is trimmed (D136). [RULINGS-SPENT-PASS] still brings it down. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 46000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -276,7 +281,9 @@ const RULING_BYTES = [
      not a target. */
   /* scheduler 103000 -> 107000 (19 Oct 26, [STANDBY-FLIES]): 103,062 bytes with D1060-D1067 - live; none is trimmed
      (D136); the file stays one (D976). Room, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 107000],
+  /* scheduler 107000 -> 111000 (21 Oct 26, [BOARD-SIDE-WIDTH]): 107,280 bytes with D1113-D1118 - his right-panel rulings,
+     live; none is trimmed (D136); the file stays one (D976). Room, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 111000],
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
@@ -291,7 +298,27 @@ const RULING_BYTES = [
   ['.claude/rules/decisions/oil.md',     2, 15500],
   /* leave-war 37000 -> 39000 (15 Oct 26, night): 37,040 bytes with D890-D892 (one landing line a gap, the other lists,
      a drag held at the edge scrolls - his finds on his iPhone) - live; none is trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 39000],
+  /* leave-war 39000 -> 44000 (21 Oct 26): 39,630 bytes with D1140-D1143 (the Leave War overhaul, D1140, and his answers
+     to its round 1 - "My leave", the bell, the day panel) and the narrowed lines of D678, D679, D1000. The overhaul has
+     three more rounds of his questions to come (claude/leave-war-overhaul holds D1140-D1159), all Leave War rulings; none
+     is trimmed (D136). Room for them, not a target. */
+  /* leave-war 44000 -> 50000 (21 Oct 26, evening): 44,178 bytes with D1157-D1160 (his round 2 answers on the overhaul's
+     full mock-up - the year grid kept, Ack gone, the one Document button, a half day's box filling its half) and the
+     narrowed lines of D331 and D1145. Two more rounds of the overhaul's questions are to come (the branch now holds
+     D1140-D1169), all Leave War rulings; none is trimmed (D136). Room for them, not a target. */
+  /* leave-war 50000 -> 60000 (21 Oct 26, night): 53,927 bytes with rounds 3 to 5 of the overhaul's questions
+     (D1172-D1203: the open-for-bidding window, Approvals in columns, the Available rows' amber and red settings, the
+     person window) and their narrowed lines. The overhaul's build will retire the rulings it replaces; until then none
+     is trimmed (D136). Room for the night's last answers, not a target. */
+  /* leave-war 60000 -> 66000 (22 Oct 26, morning): 60,058 bytes with his morning answers to the overhaul's questions
+     (D1208-D1226: notifications, OIL, remarks, past days, Date / Duration, pending, carried-forward leave, the lock,
+     + SANS, the URHO). The overhaul's build retires what it replaces; until then none is trimmed (D136). */
+  /* leave-war 66000 -> 72000 (22 Oct 26, afternoon): about 66,000 bytes with D1242-D1246 (his answers on the overhaul's
+     navigation and balances page); live rulings are never trimmed (D136, D390) and the overhaul's questions are still open */
+  /* leave-war 72000 -> 80000 (23 Oct 26): 73,999 bytes on main with D1263-D1279 (M1's and M2's answers at his look, merged
+     with pull requests 566 and 567 while the size check was deferred for code riding along); every line a live ruling, none
+     spent or restated in full yet, and the pinch-zoom job's answers are next. Raised, not trimmed (D136, D141). */
+  ['.claude/rules/decisions/leave-war.md', 2, 80000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);
@@ -300,7 +327,10 @@ const RULING_BYTES = [
      Tracker's down days, flex, legend - his directions of 18 Oct 26), already over on `main` when the tidy found it. A
      documents-only tidy is not the place to split an area; the split, or archiving the spent and restated rulings first
      (D560, D564 named as candidates, each checked by a fresh reader - D971), is filed in [RULINGS-SPENT-PASS]. */
-  ['.claude/rules/decisions/tracker.md', 2, 27500],
+  /* tracker 27500 -> 29500 (22 Oct 26, the Leave War design's merge on his "merge live"): 28,018 bytes on `main` with
+     D1170, D1171 (main's round 3 - the Tracker bar's height), already over on `main` and failing the documents check of
+     every pull request; none is trimmed (D136). The split or the spent-rulings pass stays filed in [RULINGS-SPENT-PASS]. */
+  ['.claude/rules/decisions/tracker.md', 2, 29500],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */

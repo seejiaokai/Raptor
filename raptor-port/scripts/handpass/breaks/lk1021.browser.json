@@ -1,0 +1,7 @@
+{ "spec": "e2e/look-keys.spec.ts", "grep": "FLOATWIN|Cancel sheet", "port": 4297, "breaks": [
+  { "n": 1, "name": "floatwin: the window is not lowered under the bar", "file": "src/ui/floatwin.ts", "find": "top = Math.max(top, Math.round(q.bottom + 8))", "put": "top = top" },
+  { "n": 2, "name": "floatwin: the bar counts even where the board covers it", "file": "src/ui/floatwin.ts", "find": "return !!under && bar.contains(under)", "put": "return true" },
+  { "n": 3, "name": "floatwin: the bar's height changing re-places the window", "file": "src/ui/floatwin.ts", "find": "bars.forEach(b => ro.observe(b))", "put": "void bars" },
+  { "n": 4, "name": "the Cancel sheet's chips and Edit wear the app's ring", "file": "src/ui/scheduler/12-schedule-editing.css", "find": ".cxquick button:focus-visible,", "put": ".cxquick-x button:focus-visible," },
+  { "n": 5, "name": "the edit list's up, down and remove wear the app's ring", "file": "src/ui/scheduler/12-schedule-editing.css", "find": ".cxedit-mv:focus-visible,.cxedit-del:focus-visible", "put": ".cxedit-mvx:focus-visible,.cxedit-delx:focus-visible" }
+] }

@@ -1,0 +1,30 @@
+[
+ {
+  "id": "S8 placed approved on a red day",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27 → 26 red; settled: under the Manning button, level red, \"This bid takes Available P lower, still red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 240×32 inside the 402×874 screen, centre hit is month-MAY (pointer-events none)",
+  "pics": [
+   "s08-phone-approved-after-tap.png",
+   "s08-phone-approved-settled.png"
+  ]
+ },
+ {
+  "id": "S8b kept pending: window stays, no bubble; ✕ then the bubble",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window note: \" 1 day not written: already holding leave or a medical. \"; after ✕: under the Manning button, level red, \"This bid turns Available P red.\", border rgba(240, 85, 95, 0.7), fill rgb(46, 20, 24), words rgb(255, 170, 176), arrow rgb(46, 20, 24), box 25,203 183×32 inside the 402×874 screen, centre hit is month-APR (pointer-events none); (a locked week itself cannot be made on screen — this is the nearest reachable pending day)",
+  "pics": [
+   "s08-phone-b-after-tap.png",
+   "s08-phone-b-window-open.png",
+   "s08-phone-b-after-x.png"
+  ]
+ },
+ {
+  "id": "errors-c",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

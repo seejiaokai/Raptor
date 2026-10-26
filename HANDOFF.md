@@ -20,24 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/insights-logic-fixes-3416c8 -->
-### 21 Oct 26 — the Insights and Logic small fixes (D994), `claude/insights-logic-fixes-3416c8`, pull request 554 — his "merge live" GIVEN (21 Oct 26), merging
-- **His pick:** [LOGIC-REDRAW-DROPS-TYPING] and [LOGIC-DONE-FIRST-PRESS] (D994; both archived). The Inputs batch (pull request
-  553) is LIVE — its block removed on this branch. His new ruling **D1097** (a phone notification at every stop that waits
-  on him) is filed, its home `.claude/rules/shipping.md`.
-- **Built:** the Logic page's rule list drawn again only when its words change; a box's save applied once the keyboard has
-  landed (Tab no longer left it in the box just left); the keyboard and any half-typed value put back after a redraw; Done
-  one press at both sizes; the code read's F1–F3 and GitHub's KS5 (a parked text cursor) fixed. Filed: [LOGIC-IOS-REFOCUS]
-  (a check on his iPhone). Auto-fix was switched on by the app on the pull request and switched off (D1090).
-- **Checked:** `raptor-port/docs/handpass/2026-10-21-logic-fixes.md` — WALK: walk 36 / 36, re-walk 39 / 39 (both sizes);
-  breaks all red (unit and browser); unit 104 / 104 and browser 16 / 16 on the touched files; two fresh Opus reads (4
-  findings, all fixed — the sheet §7); final re-walk 39 / 39. GitHub's run green on `95104b353`; on `e829a9f91` it was running.
-- **His "merge live":** given 21 Oct 26, after the look pictures were sent; these closing records pushed, their one GitHub run
-  waited for, then the merge (D1088).
-- **Pick up here:** if this block is still here, check pull request 554 merged and the live app is READY (D1088); then remove
-  this block and take his next pick (D994).
+<!-- now:claude/lw-load-reland-rid -->
+### `claude/lw-load-reland-rid` — the load's "Discard N edits" over a request moved onto the Ground Programme across days ([LW-LOAD-RELAND-RID]); FULL-checked, MERGED LIVE on his "Yes merge live" of 26 Oct 26 (PR 573) — written 26 Oct 26, verify before use
+- **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.
+- **Where it started:** levelled with `main` after PR 572 merged live (its block removed here — merged, nothing open but this item); his pick "Yes" to the count fix, 26 Oct 26.
+- **Built (red first):** measured, the load is not a no-op — the overseas duty goes back under Unavailable, so the right count is 1. Two faults made "Discard 2 edits": → Ground (`engine/slots.ts acceptInput`) named a new row with a fresh id where the working-out names it `r`+id (`overlay.ts landedRid`) — now the same; the count's dry run (`engine/publish.ts dayDiscardCount`) missed the load's reconcile — now mirrored. The load's note (`engine/drafts.ts inputsLeftSaid`) says "moved onto the programme since publishing" for an input the day went out with. Tests `ui/odreject.test.tsx` (+2), each fix red when taken out.
+- **Checked:** 184 affected unit files (4031) on his PC; the walk `scripts/handpass/lw-reland-walk.mjs` 5 PASS, re-walk 6 PASS (R3 for the read's F2) desk 1536 + phone 402 (port 4181); evidence sheet `raptor-port/docs/handpass/2026-10-26-lw-load-reland-rid.md`. The fresh Opus code read found 3: F1 (a dead row in the saved week — `holderbase.ts baseRowIds`) and F2 (the load's note after the working-out — `drafts.ts loadMovedNow`) fixed red-first; F3 filed for him as [LOAD-MOVES-ROW-DAY] (a load landing a course on another published day — a question, D994). The fix commit's narrow read found 1 (the note's "again") — fixed red-first.
+- **Branch:** `claude/lw-load-reland-rid` (upstream its own — it was cut tracking `origin/main`, unset at once); PR https://github.com/seejiaokai/Raptor/pull/573 — Auto-fix was switched on by the app and switched OFF (D1090).
+- **Gates:** GitHub's run of PR 573 is the full check (D1086).
+- **Pick up here:** this branch is merged — do not continue it; [LW-LOAD-RELAND-RID] archived (the sheet names it). Next: his pick from the backlog; [KBS-PHONE-SLIDE] is Fable's after his weekly reset (D1366); [LOGIN-OPENS-TODAY] waits for testing (D1383).
+- **Opening line:** Level this chat with main: git fetch origin, git merge --ff-only origin/main. Then read HANDOFF.md — the claude/lw-load-reland-rid block under ## Now (merged live) — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
+- **Notes:** ruling numbers to D1401 (none this chat); design lessons to 59; observations to 713.
 <!-- /now -->
-
 ## Next, in order
 
 **RIGHT NOW (21 Oct 26):** pull request 553 LIVE (the Inputs batch, D994 — its block removed) → his pick, the Insights and Logic small fixes (D994), on `claude/insights-logic-fixes-3416c8` (pull request 554, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.

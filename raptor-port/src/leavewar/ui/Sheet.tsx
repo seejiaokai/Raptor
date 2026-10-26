@@ -15,6 +15,9 @@
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import './bidpicker.css'
 import { followVisible } from '../../ui/vvfollow'
+import { holdPageScroll } from '../../ui/floatwin'
+import { screenBox } from '../../ui/kbscroll'
+import { usePhone } from './phone'
 
 /* THE PAGE STAYS FULLY SCROLLABLE UNDER A SHEET (owner, 28 Aug 26 — "enable
    me to still scroll up and down when this window is opened … on the desktop
@@ -219,8 +222,9 @@ function useSheetDrag(enabled = true) {
       panel.style.setProperty('--lw-dy', `${dy}px`)
     }
     const down = (e: PointerEvent) => {
-      // The ✕ and any control on the header keep doing their own job.
-      if ((e.target as HTMLElement).closest('button')) return
+      // The ✕ and any control on the header keep doing their own job — a tick and its words too ("Approve what I enter",
+      // M3's walk, fault A1: the drag captured the press, so a mouse click or a Safari tap never reached the tick).
+      if ((e.target as HTMLElement).closest('button, label, input, select, textarea, a')) return
       dragging = true
       px = e.clientX; py = e.clientY; dx0 = dx; dy0 = dy
       rect0 = panel.getBoundingClientRect()
@@ -241,7 +245,10 @@ function useSheetDrag(enabled = true) {
       const KEEP = 48
       const topbar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
       const vv = window.visualViewport
-      const vLeft = vv ? vv.offsetLeft : 0, vTop = vv ? vv.offsetTop : 0
+      /* the visible slice in the measure the panel's box is given in (ui/kbscroll.ts screenBox — his iPhone, the keys up
+         and the screen panned, measures from the visible top) */
+      const sb = vv ? screenBox(vv) : null
+      const vLeft = sb ? sb.left : 0, vTop = sb ? sb.top : 0
       const vw = vv ? vv.width : window.innerWidth, vh = vv ? vv.height : window.innerHeight
       const left0 = rect0.left, top0 = rect0.top
       const minLeft = vLeft + KEEP - rect0.width, maxLeft = vLeft + vw - KEEP
@@ -266,8 +273,12 @@ function useSheetDrag(enabled = true) {
       handle.removeEventListener('pointermove', move)
       handle.removeEventListener('pointerup', up)
       handle.removeEventListener('pointercancel', up)
+      /* re-armed when `enabled` changes — a phone turned past the full page's width (D1264; the fresh read's F3): the
+         drag offset goes with it, so the sheet it becomes opens where a sheet always does */
+      panel.style.removeProperty('--lw-dx')
+      panel.style.removeProperty('--lw-dy')
     }
-  }, [])
+  }, [enabled])
   return panelRef
 }
 
@@ -292,7 +303,11 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
     if (!vv || !panel) return
     const GAP = 8
     const place = () => {
-      if (window.innerHeight - vv.height <= KEYBOARD_MIN) {
+      /* the layout's full height from the fixed mark (ui/kbscroll.ts screenBox), not the window's: his iPhone gives the
+         window's as what is left below the visible top once the keys have panned the screen (684 − 184 = 500), which read
+         as no keyboard at all and dropped the sheet back to its foot, under the keys (his recordings of 25 Oct 26) */
+      const sb = screenBox(vv)
+      if (sb.layH - vv.height <= KEYBOARD_MIN) {
         // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
         // take back over.
         panel.style.top = ''
@@ -306,7 +321,8 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
       panel.style.setProperty('--lw-dy', '0px')
       // Sit just below the app top bar, but never above the visible slice's
       // own top (a pinch-zoom pan moves it down); cap the height to the slice.
-      const bar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      /* the bar's foot measured, then given in the layout's own measure, as the panel's `top` is */
+      const bar = (document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? sb.layTop) - sb.layTop
       const top = Math.round(Math.max(vv.offsetTop + GAP, bar + GAP))
       panel.style.top = `${top}px`
       panel.style.bottom = 'auto'
@@ -325,6 +341,7 @@ export function Sheet({
   full,
   modal = true,
   raised = false,
+  page = false,
   children,
 }: {
   testid: string
@@ -352,6 +369,11 @@ export function Sheet({
    *  leave period covers (ui/warask.ts). A sheet is a question to be answered; under the window that asked for it, it
    *  could not be seen — on a phone Days fills the screen. Every other sheet keeps its own layer. */
   raised?: boolean
+  /** ON A PHONE, A FULL PAGE FROM THE TOP (owner D1264, 23 Oct 26 — "put the open for bidding at the top full page. So that
+   *  when the dates below jumps it doesn't affect the user to chase the buttons"). A sheet docked at the foot grows UPWARD,
+   *  so buttons near its top move each time what is under them grows or shrinks; this one fills the screen from the top and
+   *  grows down, its buttons where they were. Not movable there (it fills the screen). A desktop keeps the floating sheet. */
+  page?: boolean
   children: ReactNode
 }) {
   // A drag that scrolled the grid ends in a trailing click on the scrim
@@ -363,8 +385,21 @@ export function Sheet({
   const closeRef = useRef(onClose)
   closeRef.current = onClose
   const scrimRef = useGridPan(movedRef, closeRef)
-  const panelRef = useSheetDrag(!full)
+  const phone = usePhone()
+  const asPage = page && phone
+  const panelRef = useSheetDrag(!full && !asPage)
   useKeyboardInset(panelRef)
+  /* A FINGER ON THE WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26; found on this window on his iPhone,
+     22 Oct 26 — "I could scroll the page behind this page somehow vertically"). The inner list's `overscroll-behavior:
+     contain` (bidpicker.css) holds only where there is something left to scroll; where what is in the window fits, or has
+     reached its end, an iPhone hands the swipe to the page. The app's other windows decide it themselves — one body,
+     ui/floatwin.ts holdPageScroll — and so does this one now. Only a swipe that BEGINS on the window: a finger on the
+     background still scrolls the grid (his 28 Aug 26 ruling, above). */
+  useEffect(() => {
+    const n = panelRef.current
+    if (!n) return
+    return holdPageScroll(n)
+  }, [panelRef])
   const onScrimClick = () => {
     if (movedRef.current) { movedRef.current = false; return }
     onClose()
@@ -435,8 +470,11 @@ export function Sheet({
      sheet's own layer each came up BEHIND the window (the calendar job's bug check, 8 Oct 26 - walker C). Only the one
      sheet the Holidays list asks for was raised (`raised`). A blocking sheet is the question now being asked; a window
      cannot open while it stands (its veil takes every press), so what is read here at the draw holds for its life.
-     A panel that does not block stays at its own layer - the window may lie over it and be dragged aside. */
-  const over = raised || (modal && typeof document !== 'undefined' && !!document.querySelector('.floatwin'))
+     A panel that does not block stays at its own layer - the window may lie over it and be dragged aside.
+     AND OVER THE WAR'S OWN NON-BLOCKING PANEL (M1's walk, S29): with a drag-selected block's panel up, the "Open for
+     bidding" window (a blocking sheet, opened from the chip above the grid) came up at the panel's own layer, under it,
+     unseen - the chip seemed to do nothing, and the panel took the presses meant for the window's months. */
+  const over = raised || (modal && typeof document !== 'undefined' && !!document.querySelector('.floatwin, .bidsheet.nonmodal'))
   return (
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader
@@ -447,7 +485,7 @@ export function Sheet({
       {/* NO scrim for a non-blocking window: with nothing mounted, useGridPan arms neither the mouse's interceptor
           nor the touch screen's tap shield (both hang off the scrim's own node), so every press reaches the grid. */}
       {modal && <div ref={scrimRef} className={`sheetscrim${over ? ' raised' : ''}`} data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />}
-      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${modal ? '' : ' nonmodal'}${over ? ' raised' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
+      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${asPage ? ' fullpage' : ''}${modal ? '' : ' nonmodal'}${over ? ' raised' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>
     </>

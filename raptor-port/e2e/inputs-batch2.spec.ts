@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, answerNoDocument } from './app'
 
 /* THE SECOND BATCH OF THE INPUTS PAGES, IN THE BUILT APP (owner D730, D731 — 10 Oct 26; `OUTSTANDING.md`
    `[SEEN-BATCH-2]`). What only a real browser can say — where a thing is drawn, what a real key press reaches, what a
@@ -362,6 +362,7 @@ for (const where of ['the List', 'the opened day'] as const) {
     const before = await page.evaluate(() => (window as any).INPUTS.length)
     await page.locator('#inpEditRmk').fill('weekly sync')
     await page.locator('#inpEditRmk').press('Enter')
+    await answerNoDocument(page)                        // the new leave's ask (D1150), answered as it has no file
     await expect.poll(() => page.evaluate(() => (window as any).INPUTS.length)).toBe(before + 1)
     /* the new input wearing its mark says the save happened (owner D851, 14 Oct 26: no "Input added" note where it can be
        seen arriving — it was the note this step waited on); by then any second window the key press could open would be up */

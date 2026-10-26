@@ -1,0 +1,1711 @@
+{
+ "log": [
+  {
+   "id": "approved",
+   "size": "phone",
+   "said": "6 Nov window: Approve lit true, LL ringed true"
+  },
+  {
+   "id": "today-approved",
+   "size": "phone",
+   "said": "lit \"Approve\" fill #326847 (L 0.11) vs \"Refuse\" #372228 (L 0.021) → 2.26:1; words #f2fff5 on lit 6.36:1; behind: #14181d; text 53.8/74 px; heights 32/32/32"
+  },
+  {
+   "id": "A-approved",
+   "size": "phone",
+   "said": "lit \"Approve\" fill #57c97a (L 0.452) vs \"Refuse\" #372228 (L 0.021) → 7.06:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 53.8/74 px; heights 32/32/32"
+  },
+  {
+   "id": "B-approved",
+   "size": "phone",
+   "said": "lit \"Approve\" fill #57c97a (L 0.452) vs \"Refuse\" #1a1f26 (L 0.013) → 7.92:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 53.8/74 px; heights 32/32/32"
+  },
+  {
+   "id": "C-approved",
+   "size": "phone",
+   "said": "lit \"✓ Approved\" fill #57c97a (L 0.452) vs \"Refuse\" #372228 (L 0.021) → 7.06:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 75.8/74 px; heights 32/32/32"
+  },
+  {
+   "id": "C-approved-wide",
+   "size": "phone",
+   "said": "lit \"✓ Approved\" fill #57c97a (L 0.452) vs \"Refuse\" #372228 (L 0.021) → 7.06:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 86.4/74 px CUT; heights 32/32/32"
+  },
+  {
+   "id": "fit-approved",
+   "size": "phone",
+   "said": "fit \"Approved\": 62 px (a seventh wider 70.7) in 74 px between the padding, 82 px inside the edge"
+  },
+  {
+   "id": "refused",
+   "size": "phone",
+   "said": "4 Nov window: lit [], Refuse aria-pressed true"
+  },
+  {
+   "id": "today-refused",
+   "size": "phone",
+   "said": "lit \"Refuse\" fill #372228 (L 0.021) vs \"Approve\" #1f342c (L 0.029) → 1.12:1; words #ffa6ad on lit 7.95:1; behind: #14181d; text 42.2/74 px; heights 32/32/32"
+  },
+  {
+   "id": "A-refused",
+   "size": "phone",
+   "said": "lit \"Refuse\" fill #f0555f (L 0.258) vs \"Approve\" #1f342c (L 0.029) → 3.89:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 42.2/74 px; heights 32/32/32"
+  },
+  {
+   "id": "B-refused",
+   "size": "phone",
+   "said": "lit \"Refuse\" fill #f0555f (L 0.258) vs \"Approve\" #1a1f26 (L 0.013) → 4.87:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 42.2/74 px; heights 32/32/32"
+  },
+  {
+   "id": "C-refused",
+   "size": "phone",
+   "said": "lit \"✕ Refused\" fill #f0555f (L 0.258) vs \"Approve\" #1f342c (L 0.029) → 3.89:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 65.1/74 px; heights 32/32/32"
+  },
+  {
+   "id": "C-refused-wide",
+   "size": "phone",
+   "said": "lit \"✕ Refused\" fill #f0555f (L 0.258) vs \"Approve\" #1f342c (L 0.029) → 3.89:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 74.2/74 px; heights 32/32/32"
+  },
+  {
+   "id": "fit-refused",
+   "size": "phone",
+   "said": "fit \"Refused\": 50.5 px (a seventh wider 57.6) in 74 px between the padding, 82 px inside the edge"
+  },
+  {
+   "id": "daylist",
+   "size": "phone",
+   "said": "5 Nov: [\"LL|k-ll|s-a|top\",\"LL|k-ll|s-r|bot\"]; approved imvmo04kfs70df0, refused rmvmo07544b0k6 (Refuse aria-pressed true)"
+  },
+  {
+   "id": "today-daylist-approved",
+   "size": "phone",
+   "said": "lit \"Approve\" fill #326847 (L 0.11) vs \"Refuse\" #372228 (L 0.021) → 2.26:1; words #f2fff5 on lit 6.36:1; behind: #14181d; text 53.8/74 px; heights 32/32/32"
+  },
+  {
+   "id": "today-daylist-refused",
+   "size": "phone",
+   "said": "lit \"Refuse\" fill #372228 (L 0.021) vs \"Approve\" #1f342c (L 0.029) → 1.12:1; words #ffa6ad on lit 7.95:1; behind: #14181d; text 42.2/74 px; heights 32/32/32"
+  },
+  {
+   "id": "B-daylist-approved",
+   "size": "phone",
+   "said": "lit \"Approve\" fill #57c97a (L 0.452) vs \"Refuse\" #1a1f26 (L 0.013) → 7.92:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 53.8/74 px; heights 32/32/32"
+  },
+  {
+   "id": "B-daylist-refused",
+   "size": "phone",
+   "said": "lit \"Refuse\" fill #f0555f (L 0.258) vs \"Approve\" #1a1f26 (L 0.013) → 4.87:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 42.2/74 px; heights 32/32/32"
+  },
+  {
+   "id": "C-daylist-approved",
+   "size": "phone",
+   "said": "lit \"✓ Approved\" fill #57c97a (L 0.452) vs \"Refuse\" #372228 (L 0.021) → 7.06:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 75.8/74 px; heights 32/32/32"
+  },
+  {
+   "id": "C-daylist-refused",
+   "size": "phone",
+   "said": "lit \"✕ Refused\" fill #f0555f (L 0.258) vs \"Approve\" #1f342c (L 0.029) → 3.89:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 65.1/74 px; heights 32/32/32"
+  },
+  {
+   "id": "errors",
+   "size": "phone",
+   "said": "none (console, page, 4xx)"
+  },
+  {
+   "id": "approved",
+   "size": "desk",
+   "said": "6 Nov window: Approve lit true, LL ringed true"
+  },
+  {
+   "id": "today-approved",
+   "size": "desk",
+   "said": "lit \"Approve\" fill #326847 (L 0.11) vs \"Refuse\" #372228 (L 0.021) → 2.26:1; words #f2fff5 on lit 6.36:1; behind: #14181d; text 53.8/119 px; heights 32/32/32"
+  },
+  {
+   "id": "A-approved",
+   "size": "desk",
+   "said": "lit \"Approve\" fill #57c97a (L 0.452) vs \"Refuse\" #372228 (L 0.021) → 7.06:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 53.8/119 px; heights 32/32/32"
+  },
+  {
+   "id": "B-approved",
+   "size": "desk",
+   "said": "lit \"Approve\" fill #57c97a (L 0.452) vs \"Refuse\" #1a1f26 (L 0.013) → 7.92:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 53.8/119 px; heights 32/32/32"
+  },
+  {
+   "id": "C-approved",
+   "size": "desk",
+   "said": "lit \"✓ Approved\" fill #57c97a (L 0.452) vs \"Refuse\" #372228 (L 0.021) → 7.06:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 75.8/119 px; heights 32/32/32"
+  },
+  {
+   "id": "fit-approved",
+   "size": "desk",
+   "said": "fit \"Approved\": 62 px (a seventh wider 70.7) in 119 px between the padding, 127 px inside the edge"
+  },
+  {
+   "id": "refused",
+   "size": "desk",
+   "said": "4 Nov window: lit [], Refuse aria-pressed true"
+  },
+  {
+   "id": "today-refused",
+   "size": "desk",
+   "said": "lit \"Refuse\" fill #372228 (L 0.021) vs \"Approve\" #1f342c (L 0.029) → 1.12:1; words #ffa6ad on lit 7.95:1; behind: #14181d; text 42.2/119 px; heights 32/32/32"
+  },
+  {
+   "id": "A-refused",
+   "size": "desk",
+   "said": "lit \"Refuse\" fill #f0555f (L 0.258) vs \"Approve\" #1f342c (L 0.029) → 3.89:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 42.2/119 px; heights 32/32/32"
+  },
+  {
+   "id": "B-refused",
+   "size": "desk",
+   "said": "lit \"Refuse\" fill #f0555f (L 0.258) vs \"Approve\" #1a1f26 (L 0.013) → 4.87:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 42.2/119 px; heights 32/32/32"
+  },
+  {
+   "id": "C-refused",
+   "size": "desk",
+   "said": "lit \"✕ Refused\" fill #f0555f (L 0.258) vs \"Approve\" #1f342c (L 0.029) → 3.89:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 65.1/119 px; heights 32/32/32"
+  },
+  {
+   "id": "fit-refused",
+   "size": "desk",
+   "said": "fit \"Refused\": 50.5 px (a seventh wider 57.6) in 119 px between the padding, 127 px inside the edge"
+  },
+  {
+   "id": "daylist",
+   "size": "desk",
+   "said": "5 Nov: [\"LL|k-ll|s-a|top\",\"LL|k-ll|s-r|bot\"]; approved imvmo135ud0nqdm, refused rmvmo15hd4vygb (Refuse aria-pressed true)"
+  },
+  {
+   "id": "today-daylist-approved",
+   "size": "desk",
+   "said": "lit \"Approve\" fill #326847 (L 0.11) vs \"Refuse\" #372228 (L 0.021) → 2.26:1; words #f2fff5 on lit 6.36:1; behind: #14181d; text 53.8/119 px; heights 32/32/32"
+  },
+  {
+   "id": "today-daylist-refused",
+   "size": "desk",
+   "said": "lit \"Refuse\" fill #372228 (L 0.021) vs \"Approve\" #1f342c (L 0.029) → 1.12:1; words #ffa6ad on lit 7.95:1; behind: #14181d; text 42.2/119 px; heights 32/32/32"
+  },
+  {
+   "id": "B-daylist-approved",
+   "size": "desk",
+   "said": "lit \"Approve\" fill #57c97a (L 0.452) vs \"Refuse\" #1a1f26 (L 0.013) → 7.92:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 53.8/119 px; heights 32/32/32"
+  },
+  {
+   "id": "B-daylist-refused",
+   "size": "desk",
+   "said": "lit \"Refuse\" fill #f0555f (L 0.258) vs \"Approve\" #1a1f26 (L 0.013) → 4.87:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 42.2/119 px; heights 32/32/32"
+  },
+  {
+   "id": "C-daylist-approved",
+   "size": "desk",
+   "said": "lit \"✓ Approved\" fill #57c97a (L 0.452) vs \"Refuse\" #372228 (L 0.021) → 7.06:1; words #0b1116 on lit 9.08:1; behind: #14181d; text 75.8/119 px; heights 32/32/32"
+  },
+  {
+   "id": "C-daylist-refused",
+   "size": "desk",
+   "said": "lit \"✕ Refused\" fill #f0555f (L 0.258) vs \"Approve\" #1f342c (L 0.029) → 3.89:1; words #0b1116 on lit 5.58:1; behind: #14181d; text 65.1/119 px; heights 32/32/32"
+  },
+  {
+   "id": "errors",
+   "size": "desk",
+   "said": "none (console, page, 4xx)"
+  }
+ ],
+ "pics": [
+  {
+   "file": "1-today-approved-phone.png",
+   "label": "Today: an approved leave — Approve lit as built"
+  },
+  {
+   "file": "4-a-approved-phone.png",
+   "label": "Drawn A: Approve lit solid green, dark words"
+  },
+  {
+   "file": "4-b-approved-phone.png",
+   "label": "Drawn B: Approve lit solid; Refuse grey like Move"
+  },
+  {
+   "file": "4-c-approved-phone.png",
+   "label": "Drawn C: lit solid, the word reads “✓ Approved”"
+  },
+  {
+   "file": "4-c-approved-wideletters-phone.png",
+   "label": "Drawn C, letters a seventh wider (as an iPhone’s may be)"
+  },
+  {
+   "file": "2-today-refused-phone.png",
+   "label": "Today: a refused bid — nothing lit"
+  },
+  {
+   "file": "5-a-refused-phone.png",
+   "label": "Drawn A: Refuse lit solid red, dark words; LL ringed"
+  },
+  {
+   "file": "5-b-refused-phone.png",
+   "label": "Drawn B: Refuse lit solid; Approve grey like Move; LL ringed"
+  },
+  {
+   "file": "5-c-refused-phone.png",
+   "label": "Drawn C: lit solid, the word reads “✕ Refused”; LL ringed"
+  },
+  {
+   "file": "5-c-refused-wideletters-phone.png",
+   "label": "Drawn C, letters a seventh wider (as an iPhone’s may be)"
+  },
+  {
+   "file": "3-today-daylist-phone.png",
+   "label": "Today: the day’s list — approved morning, refused afternoon"
+  },
+  {
+   "file": "6-b-daylist-phone.png",
+   "label": "Drawn B in the day’s list — both entries"
+  },
+  {
+   "file": "6-c-daylist-phone.png",
+   "label": "Drawn C in the day’s list — both entries"
+  },
+  {
+   "file": "1-today-approved-desk.png",
+   "label": "Today: an approved leave — Approve lit as built"
+  },
+  {
+   "file": "4-a-approved-desk.png",
+   "label": "Drawn A: Approve lit solid green, dark words"
+  },
+  {
+   "file": "4-b-approved-desk.png",
+   "label": "Drawn B: Approve lit solid; Refuse grey like Move"
+  },
+  {
+   "file": "4-c-approved-desk.png",
+   "label": "Drawn C: lit solid, the word reads “✓ Approved”"
+  },
+  {
+   "file": "2-today-refused-desk.png",
+   "label": "Today: a refused bid — nothing lit"
+  },
+  {
+   "file": "5-a-refused-desk.png",
+   "label": "Drawn A: Refuse lit solid red, dark words; LL ringed"
+  },
+  {
+   "file": "5-b-refused-desk.png",
+   "label": "Drawn B: Refuse lit solid; Approve grey like Move; LL ringed"
+  },
+  {
+   "file": "5-c-refused-desk.png",
+   "label": "Drawn C: lit solid, the word reads “✕ Refused”; LL ringed"
+  },
+  {
+   "file": "3-today-daylist-desk.png",
+   "label": "Today: the day’s list — approved morning, refused afternoon"
+  },
+  {
+   "file": "6-b-daylist-desk.png",
+   "label": "Drawn B in the day’s list — both entries"
+  },
+  {
+   "file": "6-c-daylist-desk.png",
+   "label": "Drawn C in the day’s list — both entries"
+  }
+ ],
+ "measures": [
+  {
+   "id": "today-approved",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#326847",
+    "L": 0.11,
+    "ink": "#f2fff5",
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.45)",
+     "color": "rgb(242, 255, 245)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 2.26,
+   "wordsOnLit": 6.36
+  },
+  {
+   "id": "A-approved",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.06,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "B-approved",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.92,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "C-approved",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✓ Approved",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 75.8,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.06,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "C-approved-wide",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✓ Approved",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 86.4,
+    "avail": 74,
+    "cut": true
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.06,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "today-refused",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "ink": "#ffa6ad",
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 1.12,
+   "wordsOnLit": 7.95
+  },
+  {
+   "id": "A-refused",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 3.89,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "B-refused",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 4.87,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "C-refused",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✕ Refused",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 65.1,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 3.89,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "C-refused-wide",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✕ Refused",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 74.2,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 3.89,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "today-daylist-approved",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#326847",
+    "L": 0.11,
+    "ink": "#f2fff5",
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.45)",
+     "color": "rgb(242, 255, 245)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 2.26,
+   "wordsOnLit": 6.36
+  },
+  {
+   "id": "today-daylist-refused",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "ink": "#ffa6ad",
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 1.12,
+   "wordsOnLit": 7.95
+  },
+  {
+   "id": "B-daylist-approved",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.92,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "B-daylist-refused",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 4.87,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "C-daylist-approved",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✓ Approved",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 75.8,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.06,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "C-daylist-refused",
+   "size": "phone",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✕ Refused",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 83.5,
+    "h": 32,
+    "textW": 65.1,
+    "avail": 74,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 3.89,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "today-approved",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#326847",
+    "L": 0.11,
+    "ink": "#f2fff5",
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.45)",
+     "color": "rgb(242, 255, 245)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 2.26,
+   "wordsOnLit": 6.36
+  },
+  {
+   "id": "A-approved",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.06,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "B-approved",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.92,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "C-approved",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✓ Approved",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 75.8,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.06,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "today-refused",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "ink": "#ffa6ad",
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 1.12,
+   "wordsOnLit": 7.95
+  },
+  {
+   "id": "A-refused",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 3.89,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "B-refused",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 4.87,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "C-refused",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "bid-picker rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✕ Refused",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 65.1,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 3.89,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "today-daylist-approved",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#326847",
+    "L": 0.11,
+    "ink": "#f2fff5",
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.45)",
+     "color": "rgb(242, 255, 245)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 2.26,
+   "wordsOnLit": 6.36
+  },
+  {
+   "id": "today-daylist-refused",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "ink": "#ffa6ad",
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 1.12,
+   "wordsOnLit": 7.95
+  },
+  {
+   "id": "B-daylist-approved",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Approve",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 53.8,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.92,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "B-daylist-refused",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "Refuse",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 42.2,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "raw": {
+     "bg": "rgb(26, 31, 38)",
+     "color": "rgb(182, 192, 203)",
+     "border": "1px solid rgb(42, 49, 58)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 4.87,
+   "wordsOnLit": 5.58
+  },
+  {
+   "id": "C-daylist-approved",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✓ Approved",
+    "fill": "#57c97a",
+    "L": 0.452,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(87, 201, 122)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(87, 201, 122)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 75.8,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Refuse",
+    "fill": "#372228",
+    "L": 0.021,
+    "raw": {
+     "bg": "rgba(240, 85, 95, 0.16)",
+     "color": "rgb(255, 166, 173)",
+     "border": "1px solid rgba(240, 85, 95, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 7.06,
+   "wordsOnLit": 9.08
+  },
+  {
+   "id": "C-daylist-refused",
+   "size": "desk",
+   "backdrop": "#14181d",
+   "backdropLayers": [
+    "daylist-sheet rgba(20,24,29,1)"
+   ],
+   "backdropImgs": [],
+   "lit": {
+    "text": "✕ Refused",
+    "fill": "#f0555f",
+    "L": 0.258,
+    "ink": "#0b1116",
+    "raw": {
+     "bg": "rgb(240, 85, 95)",
+     "color": "rgb(11, 17, 22)",
+     "border": "1px solid rgb(240, 85, 95)",
+     "weight": "700"
+    },
+    "w": 129,
+    "h": 32,
+    "textW": 65.1,
+    "avail": 119,
+    "cut": false
+   },
+   "other": {
+    "text": "Approve",
+    "fill": "#1f342c",
+    "L": 0.029,
+    "raw": {
+     "bg": "rgba(87, 201, 122, 0.16)",
+     "color": "rgb(143, 224, 168)",
+     "border": "1px solid rgba(87, 201, 122, 0.5)",
+     "weight": "700"
+    },
+    "h": 32
+   },
+   "move": {
+    "fill": "#1a1f26",
+    "L": 0.013,
+    "h": 32
+   },
+   "litVsOther": 3.89,
+   "wordsOnLit": 5.58
+  }
+ ],
+ "fits": [
+  {
+   "id": "fit-approved",
+   "size": "phone",
+   "word": "Approved",
+   "textW": 62,
+   "avail": 74,
+   "inner": 82,
+   "wide": 70.7
+  },
+  {
+   "id": "fit-refused",
+   "size": "phone",
+   "word": "Refused",
+   "textW": 50.5,
+   "avail": 74,
+   "inner": 82,
+   "wide": 57.6
+  },
+  {
+   "id": "fit-approved",
+   "size": "desk",
+   "word": "Approved",
+   "textW": 62,
+   "avail": 119,
+   "inner": 127,
+   "wide": 70.7
+  },
+  {
+   "id": "fit-refused",
+   "size": "desk",
+   "word": "Refused",
+   "textW": 50.5,
+   "avail": 119,
+   "inner": 127,
+   "wide": 57.6
+  }
+ ],
+ "values": {
+  "GREEN": "#57C97A",
+  "RED": "#F0555F",
+  "INK": "#0b1116",
+  "WORD": {
+   "approve": "✓ Approved",
+   "refuse": "✕ Refused"
+  }
+ }
+}

@@ -6293,6 +6293,7 @@ while the one-day sheet's read `<LL`, `LL>` — what the box on the grid will sh
 the two sheets share one format and one look. Not caused by that change (on `main` too). **To do:** print `displayCell(formatCell(…))`
 on the drag sheet's chips, as the one-day sheet does, the write still speaking the stored grammar; a test beside
 `movestandard.test.tsx`'s one-look checks. **Place:** low; with the next Leave War batch.
+**26 Oct 26 (main merged in, his D1402):** both halves are overtaken by the Leave War overhaul, not by this fix — the drag window draws the one-day window's own leave buttons (`LeaveButtons.tsx`, M3), so the two cannot read differently, and the Legend shows a half day by the box's size (D1160); the arrow section this fix added to the Legend was dropped at the merge, its one check that the Legend never shows "*LL" / "LL*" kept (`chrome.test.tsx`).
 
 
 *Moved here 2026-10-21 by backlog-archive.mjs ([LW-SETTINGS-SMALL]). Forward facts: `raptor-port/docs/handpass/2026-10-21-leavewar-small.md`.*
@@ -6349,4 +6350,273 @@ switch it to the section's `.on` / `.doze`. Nothing on screen is known to be wro
 ### [PO-MOVE-DATE-DELETE-ASK] The Post out sheet takes a moved date at one tap — does a posting whose outcome is Delete then delete him without its second ask? (raised 13 Oct 26 by the read of `[ONE-DATE-CALENDAR]`; older code) — OPEN, to reproduce first
 
 **Raised, not traced (`raptor-port/docs/handpass/parts/odc/read-opus.md` §5):** on the Leave War's Post out sheet a date picked is committed at once (as the phone's date box committed it). Where the posting's stored outcome is Delete and the date now picked has already come, does the delete run at that tap — without the second ask a Delete is owed (D287)? **Not `[ONE-DATE-CALENDAR]`'s doing** — the box hands on the same date the phone's did; but the app's calendar makes a past date one tap. **To do:** a test on `main`'s behaviour first (a posting out with Delete at a date to come; move the date to today). If it deletes at the tap: a question for him with a safe interim, and it bears on the tick he kept as a fallback (D801). **Place (the agent's):** before the Tracker's date boxes are built, since the same question — is one tap enough — is asked there.
+*Moved here 2026-10-21 by backlog-archive.mjs ([FLOATWIN-TWO-LINE-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [FLOATWIN-TWO-LINE-BAR] The two movable windows open over the bottom of a two-line top bar (filed 5 Oct 26)
+**DONE 21 Oct 26 (the look-and-keys job, pull request 558).** Measured first: the top bar is still two lines at about 900–1366 wide on the schedule pages and the Inputs page (103–104 tall; at 1440 too on GitHub's Linux machines). A window he has not moved now opens 8px under the bar's real bottom wherever the bar lies under it — the changes window, the ALL AVAIL window and every window of the shell (`raptor-port/src/ui/floatwin.ts barsUnder`; pins `raptor-port/e2e/look-keys.spec.ts`, `e2e/availwin.spec.ts`; the contract `raptor-port/docs/ui-contracts.md`, "…and under a two-line top bar"); over the Scheduler Board the corner stands — its own bar is `[FLOATWIN-BOARD-BAR]`, a question for him. The check: `raptor-port/docs/handpass/2026-10-21-look-keys.md`.
+**Place:** low — with the next change to the changes window or the ALL AVAIL window. Found while building
+`[SAVE-NOTE-COVERS]`: both open at a fixed spot, 96px down the right edge, whatever the top bar's height. Where the bar
+is two lines (Edit Schedule at about 1400px wide and under: 103px) the window's top edge lies over the bar's last 7px,
+on `main` too. With a failed save showing it now opens lower by the warning's band, so it stands where it stood — still
+those 7px over the band's lower edge; Retry's middle stays clear and a real press reaches it (tested). **Do:** measure
+the opening spot from the bar's bottom, as the failed-save warning does (`raptor-port/src/ui/floatwin.ts`,
+`raptor-port/src/ui/SaveStatus.tsx`).
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([OG-TAG-OVER-COUNT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [OG-TAG-OVER-COUNT] The "OG" new-to-you tag sits over the top edge of an ALL AVAIL count (walk find, 1 Oct 26)
+**DONE 21 Oct 26 (the look-and-keys job, pull request 558) — Trial 2 of D588 run:** a Sonnet 5.5 helper built it to a precise spec, read by Opus (the verdict: the sheet's §12). The corner tag — OG, the waiting ALn and the issued ALn — of a seat holding the count stands on the puck's own corner (`raptor-port/src/ui/scheduler/20-changes-quals.css`; pin `raptor-port/e2e/og-tag-count.spec.ts`; the contract `raptor-port/docs/ui-contracts.md` §The OG tag). The check: `raptor-port/docs/handpass/2026-10-21-look-keys.md`.
+Walker A's O3 (pictures `…/2026-10-01-dbr-phase7/a/R4b-*.png`, `R4-1.png`): on the member's View-only Sched, the dotted "OG" tag on
+a changed seat overlaps the count chip's top edge; the number stays legible close up, crowded at normal size. The admin's view
+is clean. Cosmetic, older than phase 7 (D172's tag, D37's chip). **Place:** low — with the next change to the tag or the chip;
+measure both at phone width. **It is also Trial 2 of D588 (not started):** ONE Sonnet 5.5 helper builds this fix to a precise spec; Opus reads
+its diff and tests, decides what that model takes, and tells him what it decided and why (D595).
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([INP-OIL-CHIP-PHONE]). Forward facts: `raptor-port/e2e/look-keys.spec.ts`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [INP-OIL-CHIP-PHONE] On a phone the green OIL chip is painted over a request card's date and time (found 5 Oct 26, the Codex stack check)
+**CLOSED 21 Oct 26 (the look-and-keys job, pull request 558) — nothing to fix:** the card was rebuilt (D723, D777); on a phone its only OIL mark is the "OIL?" tag in the corner row beside LATE and the hours; measured at 390 and 320 (and the desktop row at 821 and 1024), nothing overlaps. The browser test the item named pins it (`raptor-port/e2e/look-keys.spec.ts`); the check `raptor-port/docs/handpass/2026-10-21-look-keys.md`.
+Inputs page at phone width (390): the card of a request that carries an OIL answer (walked: Torch, Training, 18 Jul 11:00–12:00) draws its
+green "OIL" chip over the date and time — about 37 × 12 px of overlap. Walker E's picture:
+`raptor-port/docs/img/handpass/2026-10-05-codex-stack/E/oilchip-phone-torch-row.png`. Older than the Codex stack: nothing in the stack
+touched the Inputs page or its stylesheet part. **Place (the agent's line):** low — with the next change to the Inputs page; a browser
+test that the chip and the date do not overlap at 390 and 320.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([FLOATWIN-BOARD-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-look-keys.md`.*
+
+### [FLOATWIN-BOARD-BAR] Over the Scheduler Board the ALL AVAIL and changes windows open over the right end of the board's own bar (found 21 Oct 26, the look-and-keys check)
+On a desktop a window he has not moved opens 96px down the right edge. Over the Scheduler Board — which covers the app's top
+bar — that spot lies on the board's OWN bar at every desktop width: its foot is at 106 at 1366 and wider, 145 at 1200 (two
+rows) and 186 at 1024 (measured 21 Oct 26, `raptor-port/scripts/handpass/lk-win.mjs`). At 1200 the ALL AVAIL window covers
+the bell, Insights and ✓ Done (the walk's W10: a press at each one's middle lands on the window — picture
+`raptor-port/docs/img/handpass/2026-10-21-look-keys/walk/w10-board-bar-covered-1200.png`, the covered end marked); to leave the
+board the window must first be closed or moved. Older than tonight; not `[FLOATWIN-TWO-LINE-BAR]`'s (the top bar). The same
+rule would fix it — a first build did — but it moves where D41's window opens on the board, which he approved as drawn, so it
+is put to him. **Question for him (the picture above):** should the windows open just under the board's own bar, as they now
+open under the top bar? **Recommended: yes** — the same rule, about 15 minutes, and the three browser tests that pin the corner
+over the board (`e2e/availwin.spec.ts`, `e2e/look-keys.spec.ts`) change with it. **Place:** small, on his answer.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([BOARD-SIDE-WIDTH]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-board-side-width.md`, `raptor-port/docs/design-practices.md`.*
+
+### [BOARD-SIDE-WIDTH] The board's right panel — the pilots / WSOs gap and a panel he can drag wider (his questions, 21 Oct 26)
+**His words** (with a desktop picture of the side column): *"on the desktop the pilot and wso are spaced slightly apart.
+not sure which is the best position for both to standardise so it can optimise the available space"*, then *"And for the
+desktop should i allow the right panel to be sizable?"* **What is there (measured 21 Oct 26, `raptor-port/scripts/handpass/pz-side.mjs`):**
+the right panel is 320 wide at every desktop width; its crew list is two equal columns of 144, the pucks about 95 wide, so
+about 50 stands empty between the pilots' pucks and the WSOs' column — that room is what the reason under a struck puck
+("already on OPS-O duty 06:00–14:00") wraps in. **Recommended (put to him with a marked picture, the look page):** keep the
+two equal columns (moving the WSOs in beside the pilots would squeeze every reason into a puck's width, two or three lines
+taller), and YES to a panel he can drag wider — its left edge a grip like the one between the issues and the crew list,
+from 320 up to about 40% of the screen, remembered on that computer; the extra width goes to both columns and the issues
+list. A new control: its questions and a picture before it is built, as its own small job. **His answer, 21 Oct 26 — D1113: "Yes as recommended for the right panel".** And his question for the design: *"if I drag left enough would the words below the pucks when I click on an item on the schedule show on the right of the pucks instead? If there becomes enough space?"* — recommended yes: once a crew column is wide enough for the puck and its reason side by side, the reason stands to the puck's right; narrower, it stays under. His example ("This for example"): `raptor-port/docs/img/handpass/2026-10-21-pinch-zoom/his-reasons-under-pucks.png` — the crossed-out pucks of both columns with their reasons wrapped under them. Drawn for him at three widths with the job's questions.
+**Added the same day (his word):** **D1114** — with no seat picked an ATT B man (grounded, can still work) is faded like a man already tasked, though he is free for a duty desk, a sim seat or a ground row (with a seat picked the list judges him rightly: crossed out for a flying seat with the reason, full colour for a desk, sim or ground row — `raptor-port/src/ui/palette-html.ts` rosterPuck, `raptor-port/src/engine/avail.ts`); his look is a design question, recommended full colour with a small "can't fly" mark. **D1115** — a look over the whole crew list: every state a puck wears there (free, faded = tasked but plannable, crossed out = cannot be planned / cannot take the picked seat, standby, the placeholders, SANS), its reason, the "N free" counts and the order (free, then tasked, then crossed out), with no seat picked and with each kind of seat picked — findings to him with pictures before any change. **D1116** — on Edit Schedule's week on a desktop the AIRCREW panel's heading with its ‹ Monday › day picker scrolls out of sight; it is to stay in sight while the page scrolls (his two pictures, 21 Oct 26). **Round 1, 21 Oct 26 — his "yes to all" (D1118):** the question page `raptor-port/docs/img/handpass/2026-10-21-board-side-width/questions-page.html` (drawn by `raptor-port/scripts/handpass/bsw-mock.mjs`) — the grip to 40% with a double-click back to 320; a struck man's reason beside his puck where 92 is free; the ATT B man in full colour with "ATT B: no flying", after the free men, not counted free; the strike across the puck only. D1116's cause found: Edit Schedule's crew panel sticks 8px from the window's top, behind the 58px top bar. **Round 2 (D1115's look), put to him 21 Oct 26 on the same page:** two findings — the SANS section ordered free first with its "N free" count; "Planning FCP ·" loses its dot on a line with no callsign — and three checked and left (a reason that repeats its kind, the standby look, a long name's fade). **Next:** his answers, then the build. **Place:** in hand on `claude/board-side-width`.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([ARROWS-STAY-PUT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-board-side-width.md`, `raptor-port/docs/design-practices.md`.*
+
+### [ARROWS-STAY-PUT] Arrows around changing words keep their place — the whole app (his D1122, 21 Oct 26)
+**His words** (a picture of "AIRCREW · ‹ SATURDAY ›"): *"Can u make the right arrow the same place? If not i keep having to chase the arrow when the words change. make this part of the design skill. and see anything else in the app does it too and fix it"*. **To do:** every ‹ › pair around changing words measured in the running app (the second arrow's place across its values), each that moves given its longest value's room, walked with pictures; the design guide's lesson 16. Candidates: Edit Schedule's crew panel ‹ day ›, the Inputs calendar's ‹ month ›, the Medical tab's as-of calendar, the SANS calendar, the Calendar window and its Holidays list, the one date calendar, a document viewer's ‹ 1 of 3 ›, the Leave War's month and flying-day pads, the Tracker's side-panel calendar. **Place:** in hand, the right-panel branch.
+
+
+*Moved here 2026-10-21 by backlog-archive.mjs ([INPUTS-SANS-HEAD-SAME]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-21-board-side-width.md`, `raptor-port/docs/design-practices.md`.*
+
+### [INPUTS-SANS-HEAD-SAME] The Inputs and SANS calendars' top rows laid out alike (his D1123, 21 Oct 26)
+**His words** (two desktop pictures, the Inputs calendar and the SANS calendar): *"why the format of inputs and sans are different. can we standardise this too?"* **What is there (desktop):** Inputs puts its three tabs, Calendar / List, ‹ month › and Today on one row (the month 18px, weight 700); SANS puts the tabs on a row of their own and ‹ month › Today, Highlight and the gear on a second row (the month 20px, weight 800, letters spaced wider). The phone already matches (D705, D697, D698). **Why:** built at different times — SANS has no list (D620), so no switch; Inputs keeps its switch first so it never moves between the Calendar and the List (D687). **To do:** draw the matched row on the real app (desktop; the phone checked unchanged), put it to him with a recommendation, build on his pick, the bug-check order (a shared look on two pages: WALK). **Place:** `raptor-port/src/ui/InputsCal.tsx`, `SansCal.tsx`, `25-inputs-calendar.css`, `24-sans-calendar.css`; D687's and D705's browser tests in `raptor-port/e2e/inputs-calendar.spec.ts`.
+
+
+*Moved here 2026-10-22 by backlog-archive.mjs ([START-SIZE-AFTER-M1]). Forward facts: `raptor-port/docs/doc-budget.md`.*
+
+### [START-SIZE-AFTER-M1] What a chat loads and a big job reads, measured again and trimmed (his word, 22 Oct 26 — D1261)
+**WITHDRAWN 22 Oct 26 by D1262** (*"actually dont need to trim it yet since we done a trim recently"*) — kept below as written.
+**His words:** *"Yes — after M1 goes live, measure what a fresh chat loads and what a big job reads, and put the trim options to me."* — after *"I might bust my context quickly every chat… maybe bringing this repo into a new repo and cut all the unwanted data"*. **When:** once the Leave War overhaul's M1 is live (`claude/lw-m1-open-dates`), before the Tracker app's build. **To do:** as the 7 Oct 26 audit ([START-CONTEXT-AUDIT], D602, D609): measure, at a fresh chat's first turn, what is loaded (the rule files, the area rulings that load with a Leave War file, `HANDOFF.md`, memory, tools) and, for M1 itself, what the job read (the plan, the code map, the rulings, the drawings, the source and test files); then options to him — each with what it saves and what it risks (e.g. finished `## Now` blocks and long §Settled passages moved to the archive, the Leave War rulings file's size, a big merge split into a build chat and a check chat) — nothing trimmed before his ruling, never at the cost of the work's quality (D68). A new repo was not recommended (a chat pays for what it reads, not the repo's size); his to raise again. **Measured so far:** M1's chat began at 22% of its 880k context after reading the handoff, plan, code map, the bug-check order and the Leave War rulings; it reached about 75% midway through the build (about 60 files).
+
+
+*Moved here 2026-10-22 by backlog-archive.mjs ([LW-REDO-ONTO-CLOSED]). Forward facts: `raptor-port/docs/data-model.md`, `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md`.*
+
+### [LW-REDO-ONTO-CLOSED] A member's Undo or Redo must not put his pending bid back on a day closed since — to build (filed 22 Oct 26, M1; ruled D1263)
+Found by M1's two code readers (Fable F2, Opus scenario 6), each blind to the other. A member bids on a day while it is open;
+the admin closes the day; the member presses Undo (his bid goes — he may take his own pending bid off a closed day, D1225)
+and then Redo — his bid is back on the closed day. The same with Undo of a delete he made while the day was open. The
+commit's check lets a restore through when it only adds back pending bids of his (`raptor-port/src/state/perms.ts`, the
+`lw.cell` case — built for the walk's B-F1: his Undo of his own closed-day delete must put it back), and an Undo / Redo
+cannot tell "back" from "new". **Not reachable today in one browser:** the admin's closing sits on the one shared
+timeline above the member's step, so his Undo is refused there ("Switch back to the admin view…"); it becomes real with two
+people on one database. **His answer, D1263 (22 Oct 26, "no"):** a member's Redo, or his Undo of a delete made while the day
+was open, never puts a bid back on a day closed since; only his Undo of a delete he made on the day already closed does.
+**Build:** the timeline carries the direction (undo / redo) on the restore envelope, and the forward step records whether
+the day was closed for him when it was made; `ownershipViolation` lets the add-back through only for an Undo of a
+closed-day delete; the two tests the readers described (Redo after a close; Undo of an open-day delete after a close),
+red first. Pinned as built today:
+`raptor-port/src/leavewar/opendates-store.test.ts` "a restore on a closed day passes only when…" (to change with the build).
+**Place:** before M1's merge live — small, in the next chat.
+**DONE 22 Oct 26** on `claude/lw-m1-open-dates` (pull request 566): built as above (`undo/timeline.ts verifiedWarRestore`, the
+`closedAtStep` hook; `state/perms.ts lwClosedKeys`, `setLwRestoreCheck`); a refused one says "Bidding is closed on that day,
+so your bid can’t go back on it." and, after the fresh Opus read's F1, is passed over by the next press instead of jamming
+the button. Tests red first (the D1263 block); walked on a phone, W1–W5 (`scripts/handpass/lw-d1263-walk.mjs`); the
+evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBid row), D1263's full row.
+
+
+*Moved here 2026-10-23 by backlog-archive.mjs ([LW-BUBBLE-MOVE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-BUBBLE-MOVE] A moved bid raises the bubble too (his D1274, 23 Oct 26)
+**What:** D1227's bubble ("This bid turns Available P red.") today reads the verdicts between a bid window's opening and closing (`raptor-port/src/leavewar/ui/Matrix.tsx`, `flaggedNow` and the `sheetUp` effect), so a Move — the window's Move, then a tap on the target day — or a drag of a bid raises nothing, though it can turn a row red (walker 3, scenario 58; picture `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q2-move-no-bubble.png`). **To do:** take the "before" when a move or drag begins (the grid's move mode and the drag), compare when it lands, the same words and the same rule (only a worsening); a unit test in the bubble's file (`availform.test.tsx`) red first, and a look on a phone and a desktop. **Place:** M2, before its merge live, if the chat has room; else the next chat.
+
+
+*Moved here 2026-10-23 by backlog-archive.mjs ([LW-BUBBLE-OFFSCREEN]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-BUBBLE-OFFSCREEN] The bid bubble at the foot of the screen when its place is out of view (his D1277, 23 Oct 26)
+**What:** D1227's bubble is drawn under the Manning button (`.mn-bubble`, `raptor-port/src/leavewar/ui/Matrix.tsx` and `ui/chrome.css`); scrolled down, it appears off screen and nothing he is looking at changes (walker 3, scenario 61; picture `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q1b-today-scrolled.png`). His answer, as drawn in `q1b-proposed-scrolled.png`: when the Manning button is out of view the same words sit at the foot of the screen, in the bubble's amber, with "Show ›", which scrolls up to the Manning rows (opened); gone at the next tap or key; with the button in view nothing changes. **To do:** decide "in view" at the moment the bubble is raised (the button's rect against the visible screen, the keyboard and the safe area counted), the foot note fixed above the screen's foot (`env(safe-area-inset-bottom)`), read out to a screen reader; with [LW-BUBBLE-MOVE] in one change — a test red first, a look on a phone and a desktop. **Place:** M2, before its merge live.
+
+
+*Moved here 2026-10-23 by backlog-archive.mjs ([LW-REARRANGE-DONE-WORD]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-REARRANGE-DONE-WORD] "⇅ Done" in words on a phone while rearranging (his D1275, 23 Oct 26)
+**What:** today on a phone the bar's way out of Rearrange is the ⇅ icon alone (the phone's short words, D1019 — `.rtlbl` hidden). His answer: the word "Done" shows, and the − / + zoom pair (`[data-testid="lw-zoom"]`, `raptor-port/src/leavewar/ui/Matrix.tsx`) is not drawn while Rearrange is on, so the bar stays one line — as drawn in `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q3c-done-zoom-aside.png` (made by `scripts/handpass/lw-m2-q3-done.mjs`, which measured one line at 390 with both). **To do:** the word on the Done button only (the other short words stay), the zoom pair out while `arranging`; a test red first, and a look at 390 and 360 with a wider font forced (Linux's and the iPhone's letters are wider). **Place:** M2, before its merge live.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([LW-RULING-LINES-READ]). Forward facts: `raptor-port/docs/superpowers/briefs/2026-10-24-lw-ruling-lines-read.md`.*
+
+### [LW-RULING-LINES-READ] One fresh reader of the Leave War rulings' short lines against their full rows (filed 23 Oct 26 from two handoff blocks)
+**Owed (D138, D941):** the overhaul design chats and M1 left, each in its handoff block (both merged), "one fresh reader of D1231–D1255's short lines against their full rows and of lessons 33–39 and the §8 line, with D1208–D1220 and lesson 31" and "one reader of D1264–D1268's short lines against their full rows". Taken here whole, widened to D1269 and lesson 40 (M1's), and to D1282–D1285 (the pinch-zoom answers, 23 Oct 26 — the rulings script's UNREAD list). **To do:** one fresh, blind reader compares each short line in `.claude/rules/decisions/leave-war.md` (D1208–D1220, D1231–D1269, D1282–D1285) with its full row in `.claude/decisions-full/leave-war.md`, and each lesson (31, 33–40) and the design guide's §8 line with his words; fixes go in one documents-only change. **Place:** Documents and guides — a reader's job, with the next Leave War documents change.
+**DONE 24 Oct 26 (the night of 23–24 Oct, job 3), on `claude/lw-m3-placing-leave`:** one fresh, blind Opus reader read all 66 (56 short lines, lessons 31 and 33–40, the §8 line) — 61 OK, 5 fixed as it wrote them, each checked by the host first: D1241's line and full row (the Pending figure amber, D1251, D1252), D1282's line (the pinned parts, D1287), lesson 31 (the Inputs window's "Duration" is part of D1212, built), lesson 36 (narrowed by lesson 39), the §8 line (mock-up pages; the rest the agent's readings). The report: `raptor-port/docs/superpowers/briefs/2026-10-24-lw-ruling-lines-read.md`.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([LW-DAYLINE-PLACED-BID]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [LW-DAYLINE-PLACED-BID] The day line on a day already holding the bid tells the truth (his D1296, 24 Oct 26 — a fault of M3)
+**Seen (his iPhone, pull request 569):** Saber's LL on Wed 2 Dec turns Available P red (27 under 28 required); the window reopened on it reads "No manning row turns amber or red". **Cause:** `raptor-port/src/leavewar/ui/DayLine.tsx` draws `engine/whatif.ts`'s answer to "what would a new bid change"; on a day holding the bid nothing changes, so the calm line shows. **To do:** where the day holds the bid (the window's held / heldEdit state, BidPicker and SelectSheet), the line shows the day as it stands — the Available row's figure and level, each Manning row now amber or red — and the calm line only where none is; a test red first (his case: required 28, the bid placed, reopened). **Place:** first of the M3 follow-ups on `claude/lw-m3-placing-leave`, before "merge live".
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([LW-OPEN-MONTHS-QUICK-SWIPE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [LW-OPEN-MONTHS-QUICK-SWIPE] A quick sideways swipe picks the open-for-bidding months (his D1294, 24 Oct 26)
+**Seen (his iPhone, pull request 569):** a quick swipe across OCT–DEC picks nothing; only a slow one works. **Cause:** `raptor-port/src/leavewar/ui/OpenDatesSheet.tsx` — on a touch, a drag arms only after HOLD_MS (180) and a finger moving more than 8 points before that ends it as a scroll. **To do:** a move mostly sideways (|dx| > |dy|) past the 8 points arms the drag at once, from the month first touched; a move mostly up or down still lets the window scroll; a tap still toggles one month; a test of each (a quick swipe, a slow one, a vertical scroll, a tap). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave`.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([INP-LIST-PHONE-WIDTH]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [INP-LIST-PHONE-WIDTH] The Inputs list on a phone uses the full width (his D1293, 24 Oct 26)
+**Seen (his iPhone, pull request 569's preview):** in List view the day headings and input cards stand inset from the screen's edges, narrower than the filters and search box above. **To do:** the same side margin as the filters; check the Inputs calendar's day panel and the Medical tab's cards for the same inset. **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave` (pull request 569); a picture before and after.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([MED-ADD-RIGHT-FLASH]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-24-lw-m3-follow.md`.*
+
+### [MED-ADD-RIGHT-FLASH] "+ Medical" and its window on the right; the new card marked (his D1300, 24 Oct 26)
+**Seen (his desktop):** "+ Medical" at the left; its window opens over the cards, so a new card is hidden as it arrives, and nothing marks it. **To do:** on a desktop the button at the right of its row and the window opened at the right; the new card wears the just-added ring (D860) and is scrolled into view; the Inputs tab's "+ Input" checked for the same. **Place:** with the M3 follow-ups.
+
+
+*Moved here 2026-10-25 by backlog-archive.mjs ([LW-ENTERED-DATE-UTC]). Forward facts: `raptor-port/docs/superpowers/plans/2026-10-24-lw-m3-build-spec.md`.*
+
+### [LW-ENTERED-DATE-UTC] An OIL award's "entered" date is the world date, not his (found 23 Oct 26 by M2's walk, walker 2; older)
+**DONE — found stale on the night of 25 Oct 26:** built with M3 (commit 08b5936ee — `raptor-port/src/leavewar/ui/dates.ts enteredDay`, the day's list's one printer of the date; pinned by `ui/entereddate.test.ts`); the item had never been closed.
+**Seen (the built app, 03:xx on 23 Oct 26):** the award's window and the day's list print "Entered by Saber · 22 Oct 26" — the date the award was entered taken from the world (UTC) date, so between midnight and 8 a.m. in his time zone it reads the day before. Picture: `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/w2/s19-desk-b-after-save-list.png` (bottom right of the window); the walker's note: `raptor-port/docs/handpass/parts/lw-m2-w2.md`. Code going forward, so not D56's. **To do:** find where the entered date is stamped or printed (the OIL ledger entry's time, the award sheet and `ui/DayList.tsx`) and read it in local time, as every other date on the war is (the Leave War suite runs under a hostile time zone — pin it there). **Place:** small, with the next Leave War batch (M3).
+
+
+*Moved here 2026-10-25 by backlog-archive.mjs ([KBS-IOS-LATE-PAN]). Forward facts: `raptor-port/docs/handpass/2026-10-25-kbs-other-remarks.md`.*
+
+### [KBS-IOS-LATE-PAN] The input window's top cut off and an empty band under it, keys up, on his iPhone (25 Oct 26)
+
+His picture of 25 Oct 26 07:06 (the Inputs page's new-input window, "Other", Remarks tapped) showed two things. Remarks hidden behind Cancel / Add is fixed on `claude/lw-m3-placing-leave` (the keyboard lift now keeps clear of a window's pinned foot — `raptor-port/docs/handpass/2026-10-25-kbs-other-remarks.md`). The other — the window's top above the visible screen and an empty band between its foot and the keys — looks like the visible screen panned down after the window was placed and held to the room (`src/ui/kbscroll.ts` follows such a pan only within 1.5s of the focus). Chromium cannot pan as an iPhone does, so it is not reproduced. **Next:** his look on his iPhone at the fixed build; if the band is still there, the held window follows the visible screen for as long as the keys are up (re-pinned on every `scroll` of the visual viewport, not only in the first 1.5s), with a test that pans the stand-in viewport late.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-OD-REJECT]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-OD-REJECT] An overseas duty has no route out of Unavailable (found the night of 26 Oct 26)
+
+**What the walk found:** the schedule's Unavailable list gives a course a Reject button and an overseas duty none (picture `raptor-port/docs/img/handpass/2026-10-26-lw-m3-night/cse/n5-1-schedule-overseas-duty.png`), so his D1390 (a rejected overseas duty counts him back in) has no way to be used; `acceptInput` refuses an overseas duty. **Put to him** on the look page (https://claude.ai/artifact/2qGUuMq8wB1Qpc1JT6oAee, Q1), recommended: give an overseas duty Reject and → Ground as a course has. **If yes:** `engine/inputs.ts isAway` changes in the same job (it calls an overseas duty away whatever its mark), or the crew list and the war disagree (the code read, `raptor-port/docs/handpass/parts/lw-m3-night/read-code.md`).
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-GRANT-HO-VISIBLE]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-GRANT-HO-VISIBLE] Granting an HO is hidden behind typing 0.5 (his question, 26 Oct 26)
+
+**His words:** *"Why I can only grant FO oil? Not HO?"* — picture `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-grant-fo-only.png` (the ⋯ → Grant OIL panel: Days 1, "Give FO"). **What the app does:** Days 0.5 turns the button into "Give HO" and asks morning or afternoon (`raptor-port/src/leavewar/ui/BidPicker.tsx` `oilCode`); nothing says so. **To do:** draw a visible FO / HO choice (or a hint) for him with a recommendation; a question, not a ruling yet.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-DRAG-GRANT-OIL]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-DRAG-GRANT-OIL] Grant OIL over several dragged days (his report, 26 Oct 26)
+
+**His words:** [LW-DRAG-MORE-MENU]. Post in is built; Grant OIL over a drag means something new. **Put to him** on the look page (Q2), recommended: one grant on each day picked — FO for a whole-day Duration, HO for a morning or afternoon — with one reason for all; drawn for him before it is built.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-DELETE-SURE-FIT]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-DELETE-SURE-FIT] "Delete — sure?" runs past its button (his D1387, 26 Oct 26)
+
+**His words and picture:** D1387's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-delete-sure.png`. **To do:** with the design skill, a fix that keeps the asking state inside the button (wider button, shorter words, or the question on the line below beside the warning) drawn at his iPhone's width, put to him, then built; the same check on every Delete that asks again.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-TAP-HELD-DAY]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-TAP-HELD-DAY] A short tap on a day holding a course (his question, 26 Oct 26)
+
+**His words:** *"On CSE when I long press to put another input. Firstly if I don't long press it will just tell me to go to inputs page to change the input. But for e.g what if I wanna give OIL to this person. Would it be better that a short press allows me to add additional input from there?"* — pictures `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-cse-tap.png` (a tap on Saber's CSE: "Change it on the Inputs page, not here."), `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-drag-window.png` (a long press on it opens the drag window). **To do:** draw a short tap opening the one-day bid window with one line for the held entry (as D1371 does for a half-day Other), its ⋯ offering Grant OIL and the rest; put to him with a recommendation (yes). A question, not a ruling yet.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-DAYPANEL-COLUMNS]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [LW-DAYPANEL-COLUMNS] The day panel's figures in columns of four (his D1382, 26 Oct 26)
+
+**His words and picture:** D1382's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-daypanel-space.jpg`. **To build:** the day panel (`raptor-port/src/leavewar/ui/DayPanel.tsx`, `lwday-figs`) lays its figures in columns of at most four rows, filling left, then middle, then right; a long name wraps and its row grows; names and figures line up across and down. A picture of it at his iPhone's width and a desktop's goes to him before it is built (D541, D853), with the readings in D1382's row.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([INP-CAL-EXPAND]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [INP-CAL-EXPAND] Expand the Inputs calendar to show every input (his D1386, 26 Oct 26)
+
+**His words and picture:** D1386's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-month-more.png`. **To do:** design it with the design skill (Impeccable, D819 — he asked for it by name), drawn on the real app at his iPhone's width and a desktop's, put to him with a recommendation before it is built (D853, D1222).
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([INP-CARD-SQUARE-COLOURS]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [INP-CARD-SQUARE-COLOURS] Each input card's square in its kind's colour (his D1384, 26 Oct 26)
+
+**His words and pictures:** D1384's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-day-squares.png`, `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-list-edges.png`. **To build:** the square at the left of each card on the Inputs calendar's opened day and on the Inputs list takes its kind's colour from the one table the bars and the Leave War use (filled for an absence, outlined for a commitment — D1304, D1321); a picture to him at his iPhone's width before it is built (D853).
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([INP-DAY-WIDTH]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-m3-batch.md`.*
+
+### [INP-DAY-WIDTH] A day opened on the Inputs calendar as wide as the list (his D1385, 26 Oct 26)
+
+**His words and pictures:** D1385's full row; `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-day-edges.png` beside `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/owner/2026-10-26-inputs-list-edges.png`. **To build:** on a phone the opened day's window and its padding narrowed so its cards stand as far from the screen's edges as the list's cards (D1293); the SANS calendar's opened day alike; a picture first.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-PHONE-PINCH-ZOOM]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-23-lw-pinch.md`.*
+
+### [LW-PHONE-PINCH-ZOOM] On a phone the Leave War grid pinches to zoom (his word, 21 Oct 26 — D1117)
+**What:** as on the Scheduler Board's desktop layout and Quals (D1109, D1110, live with pull request 561), a pinch on a phone
+zooms the Leave War grid. **First:** what a pinch zooms (the grid only — not the war's top, the month strip, which already
+cancels the grid's zoom, or the pinned columns' alignment), how far, and whether the pinch and the − / + buttons share one
+zoom (recommended: one zoom, the buttons stepping it), with pictures at his iPhone's size. **How:** the one pinch body,
+`raptor-port/src/ui/pinchzoom.ts` (a stretch while the fingers move, laid out once at the lift); the grid's zoom today is
+`raptor-port/src/leavewar/ui/Matrix.tsx` (`zoom`, "Stepped +/− buttons rather than pinch" — that note is answered by the
+pinch body); the grid's window of months and its pinned rows (`raptor-port/docs/performance.md` §E) must follow a zoom
+change. **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP). **Place:** its own
+job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
+**From the overhaul's red team (22 Oct 26, fix A7a):** a pinch's first finger held 180 ms arms a selection today (`leavewar/ui/select.ts`, its hold and slow-slide timers) — a second finger must cancel a selection that is arming or armed; built with this job (the overhaul's build plan names it here).
+**23 Oct 26 — D1276 (narrowing D1228):** the − / + go only once this job proves the pinch works with the frozen date bar; if it cannot, they stay. **22 Oct 26 — D1228:** no − / + buttons on either; a pinch on a phone; on a desktop Ctrl+scroll or a trackpad pinch over the grid zooms the grid only; the opening sizes stay (D159).
+**23 Oct 26 — his look at the live app (after M1):** *"pinch to zoom the frozen top bar position goes off"* — on his iPhone, Safari's own pinch zooms the whole page, and the date row frozen at the top (the mirror, `raptor-port/src/leavewar/ui/Matrix.tsx` `stuck` / `pin`) keeps the column widths and the place it measured when it froze: its dates no longer stand over their columns, and in landscape the frozen copy is narrower than the grid, some dates shown twice. Pictures: `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/his-look/pinch-1-portrait.png`, `pinch-2-portrait.png`, `pinch-3-landscape.png`. Not patched in M2: this job's own pinch zooms the grid alone (the page no longer zooms on the grid), and the frozen row already re-measures on every zoom step — so the fix is this job; its walk checks the frozen row stands over its columns after a pinch, after a turn of the phone while zoomed, and in landscape. Recommended to him as the job right after M2.
+**23 Oct 26 — his iPhone look, mid-pinch (D1287, D1286):** the pinned parts now stay pinned while the fingers are down (the evidence sheet's H1–H6, fixed); no keyboard zoom on a desktop (D1286). **His answer on H7 (D1288):** build it before merge — part-way down the page the page scrolls with a pinch out (`raptor-port/src/ui/pinchzoom.ts` `edges`), so no band opens; with it the fresh read's five findings on the D1287 fix.
+**23 Oct 26 — the questions put to him (this job's first chat, branch `claude/lw-phone-pinch-zoom`):** his page https://claude.ai/artifact/Lb6KypdQGnGA167rVJY9M6 (source `raptor-port/docs/img/mock/lw-pinch/questions-page.html`, pictures beside it, script `raptor-port/scripts/handpass/lw-pz-questions.mjs`). His screen recording of 23 Oct 26 (8 s, landscape, then upright) shows it: Safari's own page zoom; the frozen row, fixed to the page's top edge with the widths it measured, slides off its columns and then up out of sight (frames `rec-1…3`; `video-frames.mjs` pulls frames from an iPhone recording). Measured at 402 x 874 (`lw-pz-measure.mjs`): zoom 0.6 ≈ 18 days and 35 people on screen, 0.8 (the opening) ≈ 14, 1.4 ≈ 6 days and 15 people; 0.41 ≈ a whole month and 51 people; 2 < 3 days (the names column ≈ two thirds of the width). **Q1** what a pinch zooms and where it may start (recommended A: the grid only — dates, Event and Manning rows, names with LVE, cells — and a pinch anywhere on the Leave War zooms the grid, the page never) · **Q2** how far out (recommended C: a whole month across, held upright, ≈ 0.4) · **Q3** how far in (recommended A: today's 1.4) · **Q4** the OIL tab pinches too and its own − / + go with the grid's (recommended yes). **Readings on the page, not asked:** the grid's − / + go only once his iPhone look proves the frozen row (D1276) — upright, sideways, turned while zoomed — else they come back before merge; a desktop's Ctrl+scroll uses the phone's limits (D1228); the opening sizes stay (D159); the zoom is kept while the app is open, as today; one finger still scrolls and a pinch never arms a selection (A7a). The older line above — "recommended: one zoom, the buttons stepping it" — is overtaken by D1228 and D1276. **His answers, 23 Oct 26 — "All as recommended": D1282 (Q1 A), D1283 (Q2 C), D1284 (Q3 A), D1285 (Q4 yes)** — the screen rules carry them (`raptor-port/docs/ui-contracts.md`, the Leave War grid pinches on a phone). **Next:** the build, in a fresh chat on this branch, the bug-check order in full (a gesture: WALK at least, real two-finger touch over CDP; the frozen row upright, sideways and turned while zoomed), then his iPhone look decides the − / + (D1276). **23 Oct 26 — BUILT (this branch; the as-built rules: `raptor-port/docs/ui-contracts.md`, the Leave War grid pinches on a phone):** walked by real fingers, 30 / 32 on the final build (`raptor-port/docs/img/handpass/2026-10-23-lw-pinch/final/walk-results.json`); the 2 are a known settle of up to 24 px after a big pinch out at the page's top. His check the same day: after − on the live app the frozen dates match their columns on his iPhone. Fixed on the way: the undrawn months' width estimate after a zoom (an old fault — the live app's + throws the view back a month), the month strip's band zoomed in, the second finger across the three selections. Next: break tests, a fresh Opus code read, the evidence sheet, his look (the − / +).
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-OTHER-GOES-TO-LOCK]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-goes-lock.md`.*
+
+### [LW-OTHER-GOES-TO-LOCK] Once a scheduler has moved a member's Other, only a scheduler changes where it goes (his D1388, 26 Oct 26)
+
+**His answer:** *"all as recommended"* to the M3 look page's question 2 (pictures `raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/look/look-q4-*`; the evidence sheet `raptor-port/docs/handpass/2026-10-25-lw-m3-build.md` Q4). **To build:** the member's Inputs-page window for his Other, once a scheduler has moved it (onto the Ground Programme or under Unavailable), shows where it sits and offers no Goes to; a retype by him into a kind that lands elsewhere by itself (an Attach) is held the same way; a scheduler's own window keeps both. Red first, then a short walk with pictures — a "who may do what" change, so its read follows the bug-check order's rule for permissions. Not selected for the night of 26 Oct 26.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([LW-LOAD-RELAND-RID]). Forward facts: `raptor-port/docs/handpass/2026-10-26-lw-load-reland-rid.md`, `raptor-port/docs/engine-rules.md`.*
+
+### [LW-LOAD-RELAND-RID] "Discard 2 edits" for a load that discards nothing — a request row re-made under a new hidden id (found 26 Oct 26)
+
+**BUILT 26 Oct 26 on `claude/lw-load-reland-rid` (pull request 573), FULL-checked — his pick ("Yes").** Measured, the load is not a no-op: it takes the overseas duty back under Unavailable, so the right count is 1, not 0; two faults made the 2 — → Ground's fresh row name, and the count's dry run missing the load's reconcile — both fixed red-first, with the load's note for a course moved onto the programme ("moved onto the programme since publishing"). Evidence: `raptor-port/docs/handpass/2026-10-26-lw-load-reland-rid.md`. Waits for his look and "merge live".
+
+**Found** building [LW-OD-DISCARD-COUNT] on `claude/lw-other-goes-to-lock`, measured, not fixed. **To reproduce:** publish Wed 15 Jul (the seed's three-day overseas duty, Pike, under Unavailable); on that day press Reject, then → Ground. The day head reads 1 pending; the read-only bar's "Load onto working copy" offers "Discard 2 edits". **Why:** the load leaves the filing of a request that covers other days (`engine/publish.ts filingRestorePlan` — loading one day never changes another), so the working-out after it lands the row again; but the row → Ground pushed carries a minted hidden id, and the re-landed one `r`+its id, so the count (`dayDiscardCount`, units compared by hidden id) reads one row added and one taken off. **What it costs:** a wrong number on the confirm; nothing saved is wrong. **To decide in the fix:** match a request's row by its request in the count, or have → Ground mint the id the working-out gives it — the second touches row identity in issued versions, so it needs the amendment tests' full run. Red first.
 

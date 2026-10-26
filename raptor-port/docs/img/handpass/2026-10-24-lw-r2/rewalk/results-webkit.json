@@ -1,0 +1,414 @@
+[
+ {
+  "id": "H1 the admin's window: CSE · OD · UNA · ⋯ under LL · OL · OIL · CL, as wide and as tall, no word broken",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "row [\"bid-file-CSE\",\"bid-file-OD\",\"bid-una\",\"bid-more\"]; bid-file-CSE: dx 0, dw 0, h 30 vs 28; bid-file-OD: dx 0, dw 0, h 30 vs 28; bid-una: dx 0, dw 0, h 30 vs 28; bid-more: dx 0, dw 0, h 30 vs 28; broken []",
+  "pics": [
+   "h1-window-phone-wk"
+  ]
+ },
+ {
+  "id": "H1b a tap on OD files it: the window closes, the day holds one filled slate OD box",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "window open false; boxes [\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h1-filed-phone-wk"
+  ]
+ },
+ {
+  "id": "H1c a tap on the filed day says where it is changed: \"Change it on the Inputs page, not here.\" (F1 fixed)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "note: Change it on the Inputs page, not here.",
+  "pics": [
+   "h1-reopen-phone-wk"
+  ]
+ },
+ {
+  "id": "H2 a range 3–5 Nov and OD: three filled slate boxes; one input, its words with it",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "boxes [[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]]; stored [[\"Nov 3\",\"Nov 5\",\"Exercise Pitch Black\",null]]",
+  "pics": [
+   "h2-range-phone-wk",
+   "h2-filed-phone-wk"
+  ]
+ },
+ {
+  "id": "H3 a pending LL, then CSE: the bid stays and the day holds both, each its own box",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\",\"LL|k-ll|s-w|y 2 h 17|bg rgba(0, 0, 0, 0)\"]",
+  "pics": [
+   "h3-pending-phone-wk",
+   "h3-both-phone-wk"
+  ]
+ },
+ {
+  "id": "H3b the LL approved beside the course: both stand (RECORD — S22, the Inputs page allows the pair)",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "list daylist; approve [\"dl-approve-rmvmit6um1m9qo\"]; boxes after [\"LL|k-ll|s-a|y 2 h 17|bg rgba(242, 200, 110, 0.22)\",\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": [
+   "h3-list-phone-wk",
+   "h3-approved-phone-wk"
+  ]
+ },
+ {
+  "id": "H4 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "H5 Undo takes the OD back, Redo puts it again",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "filed [\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]; undone []; redone [\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h5-undone-phone-wk"
+  ]
+ },
+ {
+  "id": "H6 an OD takes him off the day's manning: Available P on 19 Nov one lower",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "Available P 28 → 27",
+  "pics": [
+   "h6-manning-phone-wk"
+  ]
+ },
+ {
+  "id": "H12 a range over a day already holding an OD: that day keeps ONE OD, the days around it filed",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "ODs covering 24 Nov 1; boxes [[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"],[\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]]",
+  "pics": [
+   "h12-after-phone-wk"
+  ]
+ },
+ {
+  "id": "H12b a quick double tap on OD files ONE OD (RECORD what the second tap opened)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "ODs on 26 Nov: 1; open after: bid-picker",
+  "pics": [
+   "h12-double-phone-wk"
+  ]
+ },
+ {
+  "id": "H13 an OD over a weekend filed from the war: its OIL question opens at once, above the war",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "up true; on top true; words: OIL: Drifter, OD ✕ THIS INPUT COVERS 2 NON-WORKING DAYS (WEEKEND / PH) Each confirmed day earns FO — a full day of OIL. Which days does it deserve? All days Only some days… No OIL Back Save",
+  "pics": [
+   "h13-oil-phone-wk"
+  ]
+ },
+ {
+  "id": "H13b after the question: where the page is left (RECORD)",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "page leavewar; open nothing",
+  "pics": [
+   "h13-after-phone-wk"
+  ]
+ },
+ {
+  "id": "H14 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "H15 a day holding an AM leave: the window it opens, then OD — a whole-day OD beside the morning (RECORD — reading 2)",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "window bid-picker: Drifter | Mon 30 Nov | Approve what I enter | ✕ | No manning row is amber or red | Approve | Refuse | ⇄Move | Delete | till 30 Nov | Document | Whole day | AM |; boxes [\"LL|k-ll|s-a|y 2 h 8|bg rgba(242, 200, 110, 0.22)\",\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\"]",
+  "pics": [
+   "h15-window-phone-wk",
+   "h15-filed-phone-wk"
+  ]
+ },
+ {
+  "id": "H16 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "H17 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "U1 a whole-day UNA: the window closes, one filled teal box, the words and who placed it stored, Available P one lower",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "open false; boxes [\"UNA|k-una|s-a|y 2 h 17|bg rgba(20, 130, 130, 0.7)\"]; stored [{\"id\":\"umvmium4x44jqo\",\"kind\":\"una\",\"code\":\"UNA\",\"remarks\":\"Board of inquiry\",\"by\":\"Saber\",\"ord\":1024,\"pid\":\"slipway\",\"date\":\"2026-11-10\"}]; Available P 28 → 27",
+  "pics": [
+   "u1-placed-phone-wk"
+  ]
+ },
+ {
+  "id": "U1b a UNA is never an input (D1338)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "inputs of type UNA: 0",
+  "pics": []
+ },
+ {
+  "id": "U2 a morning UNA: its box in its half, stored *UNA, Available P half a man lower (RECORD the figure)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "box y 2 h 8 of 21; stored [\"*UNA\"]; Available P 28 → 27.5",
+  "pics": [
+   "u2-placed-phone-wk"
+  ]
+ },
+ {
+  "id": "U3 an afternoon UNA: its box in its half, stored UNA*, Available P half a man lower (RECORD the figure)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "box y 11 h 8 of 21; stored [\"UNA*\"]; Available P 28 → 27.5",
+  "pics": [
+   "u3-placed-phone-wk"
+  ]
+ },
+ {
+  "id": "U4 a range 3–5 Dec and UNA: three teal boxes",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "[[\"UNA|k-una|s-a|y 2 h 17|bg rgba(20, 130, 130, 0.7)\"],[\"UNA|k-una|s-a|y 2 h 17|bg rgba(20, 130, 130, 0.7)\"],[\"UNA|k-una|s-a|y 2 h 17|bg rgba(20, 130, 130, 0.7)\"]]",
+  "pics": [
+   "u4-range-phone-wk"
+  ]
+ },
+ {
+  "id": "U5 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "U6 the admin's tap on a UNA: the day's list — \"out of the manning · placed by …\", its words in a box, Delete",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "line: UNA Out of the manning · placed by Saber Delete; {\"box\":true,\"del\":true}",
+  "pics": [
+   "u6-list-phone-wk"
+  ]
+ },
+ {
+  "id": "U6b he changes its words there: saved",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "stored: Board of inquiry, week 2",
+  "pics": []
+ },
+ {
+  "id": "U8 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "U9 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "U10 Undo takes the UNA back, Redo puts it again (RECORD the Undo's words)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "placed [\"UNA|k-una|s-a|y 2 h 17|bg rgba(20, 130, 130, 0.7)\"]; undone []; redone [\"UNA|k-una|s-a|y 2 h 17|bg rgba(20, 130, 130, 0.7)\"]; words: Undid: a UNA",
+  "pics": [
+   "u10-redone-phone-wk"
+  ]
+ },
+ {
+  "id": "U12 the day panel's Away list names his UNA in its teal box, no state word",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "{\"t\":\"Drifter A UNA 10 – 12 Nov 2\",\"una\":1}",
+  "pics": [
+   "u12-panel-phone-wk"
+  ]
+ },
+ {
+  "id": "H7 the Legend: \"Unavailable: out of the manning\" in its own teal",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "{\"t\":\"UNA\\nUnavailable: out of the manning\",\"bg\":\"rgba(20, 130, 130, 0.7)\"}",
+  "pics": [
+   "h7-legend-phone-wk"
+  ]
+ },
+ {
+  "id": "U17 Available P = Required P, then a UNA: Available P one under, red; the Manning count and the next bid window's day line say so (RECORD the words)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "Required set 28; Available P 28 → 27; cell fr avail tap under fr avail tap under; Manning null → 1 red ›; day line: Available P 27 → 26 · red",
+  "pics": [
+   "u17-red-phone-wk",
+   "u17-dayline-phone-wk"
+  ]
+ },
+ {
+  "id": "U18 a UNA on his own row: My leave reads the same — nothing spent, no next leave",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "before: MY LEAVE LVE 0 · OIL 0 · 0 pending › | after: MY LEAVE LVE 0 · OIL 0 · 0 pending ›",
+  "pics": [
+   "u18-myleave-phone-wk"
+  ]
+ },
+ {
+  "id": "PREP Ranger: a pending LL on 21 Oct and a morning UNA on 16 Dec (fixtures)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "21 Oct [\"LL|k-ll|s-w|y 2 h 17|bg rgba(0, 0, 0, 0)\"]; 16 Dec [\"UNA|k-una|s-a|y 2 h 8|bg rgba(20, 130, 130, 0.7)\"]",
+  "pics": []
+ },
+ {
+  "id": "U11 after a reload the UNA is there, its words and who placed it with it",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "stored {\"id\":\"umvmium4x44jqo\",\"kind\":\"una\",\"code\":\"UNA\",\"remarks\":\"Board of inquiry, week 2\",\"by\":\"Saber\",\"ord\":1024,\"pid\":\"slipway\",\"date\":\"2026-11-10\"}; boxes [\"UNA|k-una|s-a|y 2 h 17|bg rgba(20, 130, 130, 0.7)\"]",
+  "pics": [
+   "u11-reload-phone-wk"
+  ]
+ },
+ {
+  "id": "H8 the Inputs list names Drifter's overseas duties; UNA nowhere on the page (D1338)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "Drifter's OD card: All dayDrifterOD; UNA on the page false",
+  "pics": [
+   "h8-list-phone-wk",
+   "h8-od-card-phone-wk"
+  ]
+ },
+ {
+  "id": "U14 \"+ Input\": the kinds offered hold no UNA",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "Everyone|ALL AVAIL|ALL|Ace|Anvil|Basher|Blade|Bolt|Cinch|Cinder|Cobra|Comet|Cotter|Cutter|Dash|Diesel|Drifter|Echo|Fable|Forge|Gambit|Ghost|Grit|Havoc|Hex|Hunter|Jester|Kraken|Ledger|Marlin|Nomad|Otter|Outlaw|Piston|Pixel|Quill|Ranger|Ratch",
+  "pics": [
+   "h8-new-phone-wk"
+  ]
+ },
+ {
+  "id": "H9 the schedule: Drifter under Unavailable with his OD on Tue 14 Jul (RECORD — read from the picture too)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "[\"OD C Drifter A LATE\"]",
+  "pics": [
+   "h9-schedule-phone-wk"
+  ]
+ },
+ {
+  "id": "U14b the schedule never names a UNA (Ridge's, placed on 14 Jul)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "UNA on the page: false",
+  "pics": [
+   "h9-schedule-phone-wk"
+  ]
+ },
+ {
+  "id": "H10 member, a day before his today: the closed note, then CSE · OD — no UNA",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "closed-note; row [\"closed-file-CSE\",\"closed-file-OD\"]",
+  "pics": [
+   "h10-closed-phone-wk"
+  ]
+ },
+ {
+  "id": "H10b his tap on CSE files it: the window closes, the day holds his course",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "boxes [\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": [
+   "h10-filed-phone-wk"
+  ]
+ },
+ {
+  "id": "H10c his Undo takes his course back, his Redo puts it again (S14)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "undone []; redone [\"CSE|k-cse|s-a|y 2 h 17|bg rgba(160, 100, 240, 0.36)\"]",
+  "pics": []
+ },
+ {
+  "id": "H11 his closed day with a pending LL: OD filed beside it, his words stay on the bid",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "boxes [\"OD|k-od|s-a|y 2 h 17|bg rgba(128, 142, 160, 0.58)\",\"LL|k-ll|s-w|y 2 h 17|bg rgba(0, 0, 0, 0)\"]; bid words Wedding",
+  "pics": [
+   "h11-closed-phone-wk",
+   "h11-both-phone-wk"
+  ]
+ },
+ {
+  "id": "H11b the day now holds two entries: what opens, his Delete on the bid (RECORD)",
+  "size": "phone/webkit",
+  "verdict": "RECORD",
+  "said": "daylist: LL | Pending | Delete | till 21 Oct | Document | OD | Change it on the Inputs page; delete [\"dl-clear-rmvmivzrgfymg9\"]",
+  "pics": [
+   "h11-list-phone-wk"
+  ]
+ },
+ {
+  "id": "U7 member, another man's UNA: the day's list read only — placed by, its words; no box, no Delete",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "line UNA Out of the manning · placed by Saber “Board of inquiry, week 2”; words “Board of inquiry, week 2”; box 0; delete 0",
+  "pics": [
+   "u7-list-phone-wk"
+  ]
+ },
+ {
+  "id": "U7b member, his own UNA: the list read only — no box, no Delete (RECORD what the free afternoon offers)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "daylist: UNA | Morning · out of the manning · placed by Saber; box 0; delete 0",
+  "pics": [
+   "u20-own-phone-wk",
+   "u7b-list-phone-wk"
+  ]
+ },
+ {
+  "id": "U15 — the script could not act",
+  "size": "phone/webkit",
+  "verdict": "NOT WALKED",
+  "said": "Error: no touch drag driver in this engine",
+  "pics": []
+ },
+ {
+  "id": "H10d member, another man's empty day: no window offers CSE, OD or UNA",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "raptor-sheet",
+  "pics": []
+ },
+ {
+  "id": "errors seen (console, page, 4xx)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

@@ -1,0 +1,52 @@
+[
+ {
+  "id": "26a",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Reaper 1 Dec LL \"a-old1\", 2 Dec OL \"a-old2\", dragged 1–2 Dec, typed \"ksa words\", then ✕ — the window closed; the days now: 1 Dec: req: LL/pending/\"ksa words\" | input: - ; 2 Dec: req: OL/pending/\"ksa words\" | input: - — the typed words WERE kept on both bids (D1339: never dropped)",
+  "pics": [
+   "s26-ph-a-typed",
+   "s26-ph-a-after",
+   "s26-ph-a-close-q"
+  ]
+ },
+ {
+  "id": "26b",
+  "size": "phone",
+  "verdict": "RECORD",
+  "said": "Anvil 1 Dec LL \"b-old1\", 2 Dec OL \"b-old2\", dragged 1–2 Dec, typed \"ksb words\", then Escape — the window closed; the days now: 1 Dec: req: LL/pending/\"ksb words\" | input: - ; 2 Dec: req: OL/pending/\"ksb words\" | input: - — the typed words WERE kept on both bids (D1339: never dropped)",
+  "pics": [
+   "s26-ph-b-typed",
+   "s26-ph-b-after"
+  ]
+ },
+ {
+  "id": "26c",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Cinch's 1–2 Dec bids dragged, typed \"ksc words\", then a tap on Piston's 2 Dec cell behind the window: the window opened is bid-picker ({\"remarks\":\"p-own\",\"who\":\"Piston\"}); Piston's 2 Dec now: req: LL/pending/\"p-own\" | input: -; Cinch's days: 1 Dec: req: LL/pending/\"ksc words\" | input: - ; 2 Dec: req: OL/pending/\"ksc words\" | input: -; records holding \"ksc words\": 2 (raptor:leavewar/rec:y2026:rmvmqnor05jt7x, raptor:leavewar/rec:y2026:rmvmqnrmx685wz) — the typed words WERE kept on Cinch's two bids, none on Piston",
+  "pics": [
+   "s26-ph-c-typed",
+   "s26-ph-c-tap-q",
+   "s26-ph-c-tapped-window"
+  ]
+ },
+ {
+  "id": "26d",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Sidewinder's 1–2 Dec bids dragged, typed \"ksd words\", Delete: first tap asked \"Delete 2 days for Sidewinder? Tap Delete again.\" (the days then: 1 Dec: req: LL/pending/\"d-old1\" | input: - ; 2 Dec: req: OL/pending/\"d-old2\" | input: -); second tap: 1 Dec: req: - | input: - ; 2 Dec: req: - | input: -; records anywhere holding \"ksd words\": 0 (none)",
+  "pics": [
+   "s26-ph-d-typed",
+   "s26-ph-d-delete1-q",
+   "s26-ph-d-after"
+  ]
+ },
+ {
+  "id": "26-errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]

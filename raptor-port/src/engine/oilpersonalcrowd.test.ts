@@ -9,7 +9,7 @@
      people, and D755 (4) with D712 kept a Personal input one person's own and without a placeholder: the row could
      not exist, and this file pinned the refusal.
    · D776 and D778 (the same day) — a Personal input is the same as an Event for everything about people: several
-     people, ALL AVAIL or ALL on a one-day one. D712 is narrowed (it stands for "Fly with"), D755 (4) withdrawn for the
+     people, ALL AVAIL or ALL on a one-day one. D712 is narrowed (it stands for "Attach"), D755 (4) withdrawn for the
      Personal kind. AND IT IS STILL NOT WORK: no OIL question, nothing earned — by the men named in it or by the men
      behind its puck (the agent's reading, told to him).
    So the cases of 1 Oct are back, each re-expressed to the one record: the placeholder is one of the INPUT's people
@@ -79,16 +79,16 @@ describe('a Personal input holds several people, and ALL AVAIL / ALL on a one-da
     }
   })
 
-  it('what stays refused: more than one day, both placeholders at once, a person twice — and "Fly with", which D712 still keeps out', () => {
+  it('what stays refused: more than one day, both placeholders at once, a person twice — and "Attach", which D712 still keeps out', () => {
     expect(shapeProblem(rec(TUE, ['ignite', 'allavail'], { endDate: 'Jul 15' }))).toBe('ALL AVAIL is for one day')
     expect(shapeProblem(rec(TUE, ['all', 'allavail']))).toMatch(/already has/)
     expect(shapeProblem(rec(TUE, ['ignite', 'ignite']))).toMatch(/already on this input/)
-    expect(placeholderProblem(rec(TUE, ['allavail'], { type: 'Fly with' }))).toBe('ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
+    expect(placeholderProblem(rec(TUE, ['allavail'], { type: 'Attach' }))).toBe('ALL AVAIL is for Training, Meeting, Personal, Appointment, Duty, Event and Other')
   })
 
   it('Personal is one of the kinds a placeholder may be filed for — and the only one of them that never asks the OIL question', () => {
     expect(PLACEHOLDER_KINDS).toContain('Personal')
-    expect(PLACEHOLDER_KINDS).not.toContain('Fly with')
+    expect(PLACEHOLDER_KINDS).not.toContain('Attach')
     for (const t of PLACEHOLDER_KINDS) expect(oilAsks(t), t).toBe(t !== 'Personal')
   })
 })

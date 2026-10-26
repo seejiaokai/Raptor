@@ -52,7 +52,7 @@ describe('rowKindTag — the one answer for a row', () => {
   })
   it('a row named by its kind — in any case — carries nothing', () => {
     expect(rowKindTag({ src: 'i1', srcType: 'Event', prog: 'EVENT' })).toBe('')
-    expect(rowKindTag({ src: 'i1', srcType: 'Fly with', prog: 'fly with' })).toBe('')
+    expect(rowKindTag({ src: 'i1', srcType: 'Attach', prog: 'attach' })).toBe('')
   })
   it('a row nobody filed (typed by the scheduler) carries nothing, whatever it is called', () => {
     expect(rowKindTag({ prog: 'SPORTS DAY' })).toBe('')

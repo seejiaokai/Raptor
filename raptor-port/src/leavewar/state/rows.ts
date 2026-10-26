@@ -5,7 +5,7 @@
    one (`wars`), every opening balance in one, the whole ledger in one, every posting window in one — so two people
    bidding at once overwrote each other. Now each thing is the row of its table in the design (data-model.md §5):
 
-     war:<warId>                 LeaveWar — the period (its days, bands, stage, bidding window; `ord`, its place)
+     war:<warId>                 LeaveWar — the period (its days, bands, open dates and last closing — D1177; `ord`, its place)
      rec:<warId>:<recId>         LeaveBid — one of the war's own records (a bid, an earned credit, a notice), with its
                                  person, its date and its place at that address (`ord`)
      ledger:<id>                 LeaveLedger — one entry
@@ -69,6 +69,8 @@ export const CONFIG_KEYS: ReadonlyArray<readonly [string, string]> = [
   ['manningOrder', 'manningorder'], ['manningHidden', 'manninghidden'], ['figureHidden', 'fighidden'],
   ['groupDefs', 'groupdefs'], ['groupPriority', 'grouppriority'], ['groupPriorityCustom', 'grouppriocustom'],
   ['groupColors', 'groupcolors'], ['requirements', 'manningdefs'], ['eventRows', 'eventrows'], ['showSans', 'showsans'],
+  /* the Required rows' names (D1193) — absent until an admin renames one */
+  ['reqNames', 'reqnames'],
 ]
 /* the squadron's manning rules are kept as the rule list alone (`manningdefs`), as they always were */
 const configValue = (field: string, v: any): string => JSON.stringify(field === 'requirements' ? v?.default?.rules : v)

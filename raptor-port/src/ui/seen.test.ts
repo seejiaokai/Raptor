@@ -144,7 +144,10 @@ describe('the note after a save — said only where the saved thing cannot be se
   /* THE FRESH READ'S F3 (14 Oct 26). A save's own after-pass raises its warning a beat AFTER the save returns — on
      purpose, so that it stands over the window's plain line (state/holderbase.ts: "LL does not go on the Ground
      Programme — its row has been removed"). The plain line now comes later still, and replaced it. A note raised
-     since the save asked keeps the screen; the late words go to a screen reader only. With the app's real note. */
+     since the save asked keeps the screen — and, since every note is told to a screen reader (ui/toast.ts sayToReader,
+     [BATCH-14OCT-LEFTOVERS] (f), 21 Oct 26), the reader's region too: the late words would replace the warning there,
+     and a reader hearing only the latest polite words would never hear the warning (the look-and-keys read, finding 3).
+     With the app's real note. */
   for (const [how, covered] of [['nothing wears the mark', false], ['the mark is covered when the page has settled', true]] as const) {
     it(`a note raised since the save asked is not replaced by the late words (${how})`, () => {
       HOOKS.toast = theToast as any
@@ -155,7 +158,7 @@ describe('the note after a save — said only where the saved thing cannot be se
       theToast('LL does not go on the Ground Programme — its row has been removed', 'warn')
       vi.advanceTimersByTime(SEEN_FIRST_MS + SEEN_SETTLE_MS + 50)
       expect(document.getElementById('toastEl')!.textContent, 'the warning stands').toBe('LL does not go on the Ground Programme — its row has been removed')
-      expect(spoken(), 'and the words are still told to a screen reader').toBe('Input updated')
+      expect(spoken(), 'and the reader hears the warning, not the late words over it').toBe('LL does not go on the Ground Programme — its row has been removed')
     })
   }
   it('with no note raised meanwhile the late words ARE the note, as before', () => {

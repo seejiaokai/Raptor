@@ -1,0 +1,47 @@
+[
+ {
+  "id": "bundle",
+  "size": "desk",
+  "said": "index-CG4cWTA5.js"
+ },
+ {
+  "id": "required",
+  "size": "desk",
+  "said": "typed 30"
+ },
+ {
+  "id": "N1",
+  "size": "PASS",
+  "said": "Available P 25 → 24; Comet's cell [\"CSE|k-cse|s-a|whole|plain|fs8.5px|w21h22|tw14.3\"]; filed acc u; SANS still needed 3 – → 4 –"
+ },
+ {
+  "id": "N2",
+  "size": "PASS",
+  "said": "Reject pressed true, stored acc r; Available P 25 (before 25); Comet's cell []; SANS still needed 3 – (before 3 –)"
+ },
+ {
+  "id": "N3",
+  "size": "PASS",
+  "said": "→ Ground pressed true, stored acc g; Available P 25 (before 25); Comet's cell []"
+ },
+ {
+  "id": "N4",
+  "size": "PASS",
+  "said": "→ Unavail pressed true, stored acc u; Available P 24; Comet's cell [\"CSE|k-cse|s-a|whole|plain|fs8.5px|w21h22|tw14.3\"]"
+ },
+ {
+  "id": "N5",
+  "size": "desk",
+  "said": "the overseas duty (pike, Jul 15–Jul 17) — the schedule offers it: []"
+ },
+ {
+  "id": "N6",
+  "size": "PASS",
+  "said": "Available P 24 → filed 23 → rejected 24; Reject pressed true; Saber's cell []"
+ },
+ {
+  "id": "errors",
+  "size": "both",
+  "said": "[]"
+ }
+]

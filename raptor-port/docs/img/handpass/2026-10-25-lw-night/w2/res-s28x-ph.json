@@ -1,0 +1,46 @@
+[
+ {
+  "id": "28e",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the Inputs page (Ranger's own list, all dates) after the save: [\"No document All day RangerLL At home, call me By Saber\"]",
+  "pics": [
+   "s28x-ph-inputs-page"
+  ]
+ },
+ {
+  "id": "28f",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after a reload (signed in again as Ranger): saved \"At home, call me\"; his tap on 14 Dec opens remarks-sheet reading \"At home, call me\" (till \"till 14 Dec\")",
+  "pics": [
+   "s28x-ph-reload-window"
+  ]
+ },
+ {
+  "id": "29f2",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "16 Dec: till unticked → saved false, the Inputs page row []; ticked again → saved undefined, the Inputs page row []",
+  "pics": [
+   "s28x-ph-inputs-unticked",
+   "s28x-ph-inputs-reticked"
+  ]
+ },
+ {
+  "id": "28g",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the admin's one-day window on Ranger's 14 Dec leave (bid-picker) reads \"At home, call me\", till \"till 14 Dec\"; the window: \"Ranger Mon 14 Dec Approve what I enter ✕ No manning row is amber or red Approve Refuse ⇄Move Delete till 14 Dec Document Whole day AM PM Pick a range LL −2 OL −2 OIL 0 CCL 0 FCL 0 PL 0 EL 0 CL 0 CSE O\"; lit [\"decide-approve\",\"bid-LL\"]",
+  "pics": [
+   "s28x-ph-admin-window"
+  ]
+ },
+ {
+  "id": "28x-errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none (console, page, 4xx)",
+  "pics": []
+ }
+]
