@@ -71,7 +71,7 @@ function makeRepo(live = LIVE0) {
   g('add', '-A'); g('commit', '-q', '-m', 'base')
   const base = g('rev-parse', 'HEAD').trim()
   return {
-    dir, base,
+    dir, base, git: g,
     read: f => readFileSync(join(dir, f), 'utf8'), write: w,
     commit: (msg) => { g('add', '-A'); g('commit', '-q', '-m', msg) },
     edit: (f, fn) => w(f, fn(readFileSync(join(dir, f), 'utf8'))),
@@ -117,6 +117,34 @@ scenario('over a ceiling inside a code change is deferred, not failed', false, c
 const raiseDecisions = t => { const u = t.replace(/(\['DECISIONS\.md',\s+1,\s+)\d+\]/, '$1400]'); if (u === t) throw new Error('the DECISIONS.md ceiling row was not found — update this self-test'); return u }
 scenario('a ceiling moved in a commit that also touches src', true, c => { c.edit('raptor-port/scripts/docsize.mjs', raiseDecisions); c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('sneak') }, { mustSay: 'touches raptor-port/src' })
 scenario('a ceiling moved in a docs-only commit', false, c => { c.edit('raptor-port/scripts/docsize.mjs', raiseDecisions); c.commit('raise, with its reason') })
+/* [DOCSIZE-MERGE-CEILING] (21 Oct 26): a merge of main that CARRIES main's own docs-only ceiling move, beside code on
+   both sides, is not a ceiling moved with code — compared with its first parent it read as one (29 Sep 26). The branch
+   and main both touch the gate's file (so the merge is not the same as either side) and the same source file. A
+   ceiling the merge sets ITSELF, or one moved with code on the branch before the merge, still fails. */
+const setCeiling = (file, n) => t => {
+  const u = t.replace(new RegExp(`(\\['${file.replace(/[.]/g, '\\.')}',\\s+\\d+,\\s+)\\d+\\]`), `$1${n}]`)
+  if (u === t) throw new Error(`the ${file} ceiling row was not found or already ${n} — update this self-test`)
+  return u
+}
+const mergeMainWithRaise = (c, { evil = false, branchMoves = false, pending = false } = {}) => {
+  c.git('switch', '-q', '-c', 'feature')
+  c.edit('raptor-port/scripts/docsize.mjs', t => t + '// the branch has a note of its own here\n')
+  if (branchMoves) c.edit('raptor-port/scripts/docsize.mjs', setCeiling('raptor-port/CLAUDE.md', 999))
+  c.edit('raptor-port/src/app.ts', t => t + 'export const b = 2\n'); c.commit('the branch: code')
+  c.git('switch', '-q', 'main')
+  c.edit('raptor-port/scripts/docsize.mjs', raiseDecisions); c.commit('main: raise, with its reason, docs only')
+  c.edit('raptor-port/src/app.ts', t => 'export const z = 0\n' + t); c.commit('main: code')
+  c.git('switch', '-q', 'feature')
+  c.git('merge', '-q', '--no-ff', '--no-edit', ...(evil || pending ? ['--no-commit'] : []), 'main')
+  if (evil) c.edit('raptor-port/scripts/docsize.mjs', setCeiling('DECISIONS.md', 500))
+  if (evil && !pending) c.commit('merge main')
+}
+/* the same merge while it is still being made (not yet committed) — the check is run mid-merge, while resolving */
+scenario('the same merge, not yet committed', false, c => mergeMainWithRaise(c, { pending: true }))
+scenario('a ceiling set while the merge is still being made, with code', true, c => mergeMainWithRaise(c, { evil: true, pending: true }), { mustSay: 'the merge in progress' })
+scenario('a merge of main that carried main\'s own docs-only ceiling move, code on both sides', false, c => mergeMainWithRaise(c))
+scenario('a ceiling the merge itself sets (neither side\'s value), with code', true, c => mergeMainWithRaise(c, { evil: true }), { mustSay: 'touches raptor-port/src' })
+scenario('a ceiling moved with code on the branch, then main merged in', true, c => mergeMainWithRaise(c, { branchMoves: true }), { mustSay: 'touches raptor-port/src' })
 
 /* THE RULINGS (F7, D137, D390). A ruling is a full row in the full-text folder and a short line in its area file; a
    number is never lost or doubled, the map agrees with the files, and every live full row has one short line. */

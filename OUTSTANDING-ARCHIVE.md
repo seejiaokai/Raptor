@@ -6477,6 +6477,25 @@ evidence sheet's §15. Homes: `raptor-port/docs/data-model.md` §11 (the LeaveBi
 ### [LW-REARRANGE-DONE-WORD] "⇅ Done" in words on a phone while rearranging (his D1275, 23 Oct 26)
 **What:** today on a phone the bar's way out of Rearrange is the ⇅ icon alone (the phone's short words, D1019 — `.rtlbl` hidden). His answer: the word "Done" shows, and the − / + zoom pair (`[data-testid="lw-zoom"]`, `raptor-port/src/leavewar/ui/Matrix.tsx`) is not drawn while Rearrange is on, so the bar stays one line — as drawn in `raptor-port/docs/img/handpass/2026-10-23-lw-m2-looks/questions/q3c-done-zoom-aside.png` (made by `scripts/handpass/lw-m2-q3-done.mjs`, which measured one line at 390 with both). **To do:** the word on the Done button only (the other short words stay), the zoom pair out while `arranging`; a test red first, and a look at 390 and 360 with a wider font forced (Linux's and the iPhone's letters are wider). **Place:** M2, before its merge live.
 
+*Moved here 2026-10-21 by backlog-archive.mjs ([DOCSIZE-MERGE-CEILING]). Forward facts: `raptor-port/scripts/docsize.mjs`, `raptor-port/scripts/docsize-selftest.mjs`.*
+
+### [DOCSIZE-MERGE-CEILING] The document check's ceiling rule fires on a MERGE of `main` that carried a ceiling move (found 29 Sep 26)
+`npm run docsize` on `claude/small-fixes-batch-d223f6` (after `main` #464 was taken in) fails: "a ceiling in raptor-port/scripts/docsize.mjs
+changed in commit 593c357e, which also touches raptor-port/src". 593c357e is the MERGE of `main` #459–#462; the ceiling moved on
+`main` in the guide step's own docs-only commit (D391), and the merge merely carried it beside the Tracker's code. The rule
+(`docsize.mjs` `ceilingMovedWithCode`) walks `git log BASE..HEAD -- docsize.mjs` and compares each commit with its FIRST parent, so
+a merge reads as a commit that moved the ceiling with code. The same HEAD passed the Docs guard on GitHub (72cf61e7), so it did
+not block the PR. **To do:** skip merge commits in that walk (`--no-merges`: every ceiling move is judged in the commit that made
+it, on whichever side) with a self-test — in a docs-only change of its own, never inside a code PR (the gate is not edited to pass
+the PR that trips it). **Place:** low; with the next document-gate change.
+
+
+*Moved here 2026-10-24 by backlog-archive.mjs ([BOARD-PHONE-PINCH-ZOOM]). Forward facts: `raptor-port/docs/file-map.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [BOARD-PHONE-PINCH-ZOOM] The board's desktop layout on a phone: pinch to zoom, and a drag that follows the edge (his word, 21 Oct 26 — D1107)
+**And Quals (D1108, the same morning):** on a phone Quals pinches to zoom too — its wide table, the pinned heading row and name column kept in line (D993); asked in the same round, built in the same job.
+**What:** on a phone, with the Scheduler Board in its desktop layout, a pinch zooms the board in and out; a puck dragged to the edge of what is on screen scrolls the board that way so it can land anywhere (design guide §5A, D895). His picture: the board wider than his iPhone's screen, the crew list at the right. **First:** what a pinch zooms (the board only, not the top bar), how far, whether the zoom is kept — put to him with pictures (D541, D853), in one round; the phone layout is untouched (D548). **Then:** build, the bug-check order (a gesture: WALK at least, real two-finger touch over CDP, §7.8 and §7.9 — his iPhone sends touches Safari's way). **Place:** the next job, in a fresh chat (his word).
+**BUILT and merged 21 Oct 26 (pull request 561, `claude/board-pinch-zoom`):** the board's desktop layout on a phone and Quals pinch to zoom, the edge scroll — D1107–D1110; archived 24 Oct 26 when these records were brought level with `main`.
 
 *Moved here 2026-10-24 by backlog-archive.mjs ([LW-RULING-LINES-READ]). Forward facts: `raptor-port/docs/superpowers/briefs/2026-10-24-lw-ruling-lines-read.md`.*
 
@@ -6619,4 +6638,11 @@ job, a fresh chat (his word) — after or beside [BOARD-SIDE-WIDTH], his order.
 **BUILT 26 Oct 26 on `claude/lw-load-reland-rid` (pull request 573), FULL-checked — his pick ("Yes").** Measured, the load is not a no-op: it takes the overseas duty back under Unavailable, so the right count is 1, not 0; two faults made the 2 — → Ground's fresh row name, and the count's dry run missing the load's reconcile — both fixed red-first, with the load's note for a course moved onto the programme ("moved onto the programme since publishing"). Evidence: `raptor-port/docs/handpass/2026-10-26-lw-load-reland-rid.md`. Waits for his look and "merge live".
 
 **Found** building [LW-OD-DISCARD-COUNT] on `claude/lw-other-goes-to-lock`, measured, not fixed. **To reproduce:** publish Wed 15 Jul (the seed's three-day overseas duty, Pike, under Unavailable); on that day press Reject, then → Ground. The day head reads 1 pending; the read-only bar's "Load onto working copy" offers "Discard 2 edits". **Why:** the load leaves the filing of a request that covers other days (`engine/publish.ts filingRestorePlan` — loading one day never changes another), so the working-out after it lands the row again; but the row → Ground pushed carries a minted hidden id, and the re-landed one `r`+its id, so the count (`dayDiscardCount`, units compared by hidden id) reads one row added and one taken off. **What it costs:** a wrong number on the confirm; nothing saved is wrong. **To decide in the fix:** match a request's row by its request in the count, or have → Ground mint the id the working-out gives it — the second touches row identity in issued versions, so it needs the amendment tests' full run. Red first.
+
+
+*Moved here 2026-10-26 by backlog-archive.mjs ([NIGHT-RECORDS-1021]). Forward facts: `.claude/decisions-full/how-we-work.md`.*
+
+### [NIGHT-RECORDS-1021] Rulings D1098–D1108 are on an open records pull request, not on main (filed 23 Oct 26 from a handoff block)
+**Seen (23 Oct 26, the pinch-zoom questions chat, clearing merged handoff blocks):** the board's pinch-zoom block (pull request 561, live) said its rulings D1098–D1108 and the item `[BOARD-PHONE-PINCH-ZOOM]` "live on `claude/night-records-1021` (unmerged) — archive [BOARD-PHONE-PINCH-ZOOM] once both are on `main`". Checked: pull request 560 is OPEN, its branch is not in main, and main's rulings files carry no D1098–D1108 rows, though D1109 and D1110 (live) answer D1107 and D1108. **To do:** bring the branch level with main (renumbering any clash, D78), check the document check passes, put it to him for his "merge live" (documents only); then archive `[BOARD-PHONE-PINCH-ZOOM]` there. **Place:** Documents and guides — small, his word to merge.
+**DONE 26 Oct 26 (his D1402):** brought level with main again and merged as pull request 560 — D1098–D1108 are in their area files (How we work, Scheduler, People & accounts); [BOARD-PHONE-PINCH-ZOOM] archived with it.
 
