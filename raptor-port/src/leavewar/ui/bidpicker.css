@@ -1261,6 +1261,11 @@
   border-color: rgba(178, 77, 234, .5);
 }
 
+/* "DELETE — SURE?" ON TWO LINES INSIDE ITS BUTTON (his D1387, D1395 C): each half a line of its own, the button a little
+   taller, never wider — every Delete that asks, in every window (SheetActions.tsx DeleteChip) */
+.bidsheet .dchip.del.armed { white-space: normal; line-height: 1.15; padding-top: 4px; padding-bottom: 4px; }
+.bidsheet .dchip.del.armed .del-l { display: block; }
+
 /* the list's Delete keeps the one dashed Delete look (D332) — the grey list chip above would otherwise draw it solid */
 .bidsheet .dl-acts .dchip.del {
   border: 1px dashed var(--ink-3);

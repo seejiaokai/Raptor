@@ -31,8 +31,11 @@ export function DeleteChip({ testid, onClick, armed = false }: {
   armed?: boolean
 }) {
   return (
-    <button className="dchip del" data-testid={testid} onClick={onClick}>
-      {armed ? 'Delete — sure?' : 'Delete'}
+    /* ASKING, ITS WORDS STAND ON TWO LINES INSIDE IT (his D1387, D1395 C — 26 Oct 26: "a button's words always stand inside
+       the button"): "Delete —" over "sure?", the button growing a little taller, never wider, so the row beside it never
+       moves and an iPhone's wider letters still fit (drawn: lw-m3n-draw.mjs d5, option C) */
+    <button className={`dchip del${armed ? ' armed' : ''}`} data-testid={testid} onClick={onClick}>
+      {armed ? <><span className="del-l">Delete —</span> <span className="del-l">sure?</span></> : 'Delete'}
     </button>
   )
 }
