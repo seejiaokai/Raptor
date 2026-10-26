@@ -33,7 +33,7 @@ function keepKeys(e: KeyboardEvent): void {
   const stops = [...el.querySelectorAll<HTMLElement>(STOPS)].filter(n => !(n as HTMLButtonElement).disabled && !n.closest('[hidden]'))
   const at = document.activeElement as HTMLElement | null
   /* the order the keys go round in: the sheet's own, with the head's ✕ moved to the end */
-  const x = stops.find(n => n.classList.contains('x') && !!n.closest('.airpop-head'))
+  const x = stops.find(n => n.classList.contains('x') && !!n.closest('.airpop-head, .modal-head'))
   const order = x ? [...stops.filter(n => n !== x), x] : stops
   const first = order[0], last = order[order.length - 1]
   if (!first || !last) { e.preventDefault(); el.focus({ preventScroll: true }); return }
@@ -56,6 +56,7 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
     const el = box.current
     if (!open || !el) return
     const before = document.activeElement as HTMLElement | null
+    const back = opener; opener = null
     if (!el.contains(before)) ((first && first(el)) || el).focus({ preventScroll: true })
     if (!sheets.length) document.addEventListener('keydown', keepKeys, true)
     sheets.push(el)
@@ -64,8 +65,55 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
       if (i >= 0) sheets.splice(i, 1)
       if (!sheets.length) document.removeEventListener('keydown', keepKeys, true)
       const now = document.activeElement
-      if (!before || before === document.body || !before.isConnected || el.contains(before)) return
-      if (now === document.body || now == null || el.contains(now)) before.focus({ preventScroll: true })
+      /* where it came from — or, when that was a menu item the menu took away with it, the button that opened the menu */
+      const to = before && before !== document.body && before.isConnected && !el.contains(before) ? before : back ? back() : null
+      if (!to) return
+      if (now === document.body || now == null || el.contains(now)) to.focus({ preventScroll: true })
     }
   }, [open])   // on opening and closing only — a repaint of the sheet never moves the keys
+}
+
+/* A WINDOW OPENED FROM A MENU GIVES THE KEYBOARD BACK TO THE MENU'S BUTTON ([BOARD-MODALS-ESCAPE], 24 Oct 26). The
+   Duty templates, Day templates and Plans windows open from an item of a small menu ("+ Block", Templates, the plans
+   selector) that is taken away as the window opens, so the window's "where it came from" is gone by the time it closes.
+   The menu notes its own button just before it opens the window; the next sheet to take the keyboard takes the note
+   (once), and gives the keyboard back to that button when it closes. The week and the board are redrawn from strings, so
+   the button may be a new one by then: it is found again by its id, or else by its first data attribute — the one shown
+   on screen where there are two. */
+let opener: (() => HTMLElement | null) | null = null
+export function noteOpener(el: HTMLElement | null): void {
+  if (!el) { opener = null; return }
+  const q = (v: string) => v.replace(/["\\]/g, '\\$&')
+  const da = [...el.attributes].find(x => x.name.startsWith('data-'))
+  const sel = el.id ? `[id="${q(el.id)}"]` : da ? `${el.tagName.toLowerCase()}[${da.name}="${q(da.value)}"]` : ''
+  opener = () => {
+    if (el.isConnected) return el
+    if (!sel) return null
+    const all = [...document.querySelectorAll<HTMLElement>(sel)]
+    return all.find(n => n.getClientRects().length > 0) || all[0] || null
+  }
+}
+
+/* the topmost sheet holding the keyboard, if any — a window with its own Escape asks it before closing under one */
+export function topSheet(): HTMLElement | null {
+  const el = sheets[sheets.length - 1]
+  return el && el.isConnected ? el : null
+}
+
+/* ESCAPE CLOSES THE WINDOW (the design guide §2 — Escape closes what opened last; [BOARD-MODALS-ESCAPE]). Heard on the
+   document before the page's own keys (the Scheduler Board closes on Escape too, and must not go with it), and only while
+   this window is the topmost sheet: a question sheet raised over it answers its own Escape first. */
+export function useEscClose(box: RefObject<HTMLElement | null>, open: boolean, close: () => void): void {
+  useEffect(() => {
+    if (!open) return
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || e.defaultPrevented) return
+      const el = box.current
+      if (!el || sheets[sheets.length - 1] !== el) return
+      e.stopPropagation(); e.preventDefault()
+      close()
+    }
+    document.addEventListener('keydown', esc, true)
+    return () => document.removeEventListener('keydown', esc, true)
+  })
 }
