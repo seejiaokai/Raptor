@@ -21,15 +21,15 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/lw-half-reads-0-5 -->
-### `claude/lw-half-reads-0-5` — Grant OIL's half-day pick reads "HO · 0.5" (D1397), LOOK-checked, PR 571 open for his "merge live" — written 26 Oct 26, verify before use
+### `claude/lw-half-reads-0-5` — Grant OIL's half-day pick reads "HO · 0.5" (D1397), LOOK-checked, MERGED LIVE on his "merge live" of 26 Oct 26 (PR 571) — written 26 Oct 26, verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.
 - **Where it started:** levelled with `main` after PR 569 (the M3 batch) merged; PR 568 (pinch to zoom) found already MERGED, so both of their blocks left here. His answer mid-chat to [LW-HALF-GLYPH]: "Show 0.5 instead", "Not 1/2" → D1397.
 - **Shipped on this branch:** the pick reads "HO · 0.5", the box hints "other: 1.5, 2…" (`leavewar/ui/OilAmount.tsx`; tests oilhalf, draggrantoil, creditdays — 39 passed); D1397 recorded (narrows D1395 H, D1392's example), lesson 37 met again in the design guide, the spec §5. LOOK check: `raptor-port/docs/handpass/2026-10-26-lw-half-reads-0-5.md` — the M3 walk's Grant OIL step re-run, 8 PASS, pictures `raptor-port/docs/img/handpass/2026-10-26-lw-half/after/`. Also: the nine M3 items and [LW-PHONE-PINCH-ZOOM] archived (`backlog-archive.mjs`), their pointer in the M3 evidence sheet.
 - **Branch:** `claude/lw-half-reads-0-5` (upstream its own); PR https://github.com/seejiaokai/Raptor/pull/571 — Auto-fix switched off (D1090).
 - **Gates:** GitHub's run of PR 571 is the full check (D1086); on his PC only the touched tests and the build the walk drove.
 - **Open questions for him:** none on this job. Filed, not asked (D994): [LW-TWO-BOX-LETTERS], [SCHED-UNAV-PENDING-MARK].
-- **Pick up here:** read PR 571's run on its last pushed commit; on his "merge live" merge it (D1088) and archive [LW-HALF-GLYPH] (homes: the evidence sheet above). Then the filed leftovers: [LW-OTHER-GOES-TO-LOCK] (D1388 — a permissions change, so FULL tier), [LW-OD-DISCARD-COUNT], [LOGIN-OPENS-TODAY] (D1383) before testing.
-- **Opening line:** Switch this chat to the branch claude/lw-half-reads-0-5: git fetch origin, git switch claude/lw-half-reads-0-5, git branch -u origin/claude/lw-half-reads-0-5, git pull --ff-only. If the switch is refused because another checkout holds the branch, release it there only if that checkout has no uncommitted changes and its HEAD equals git rev-parse origin/claude/lw-half-reads-0-5; then git -C <that folder> switch --detach and switch again; otherwise stop and tell me which folder holds it. Then read HANDOFF.md — the claude/lw-half-reads-0-5 block under ## Now — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
+- **Pick up here:** this branch is merged — do not continue it; [LW-HALF-GLYPH] is closed (its backlog line removed; its record is D1397 and the evidence sheet above). Next, after his weekly reset (95% used when written, reset 26 Oct 26 evening): the filed leftovers — [LW-OTHER-GOES-TO-LOCK] (D1388 — a permissions change, so FULL tier), [LW-OD-DISCARD-COUNT], [LOGIN-OPENS-TODAY] (D1383) before testing.
+- **Opening line:** Level this chat with main: git fetch origin, git merge --ff-only origin/main. Then read HANDOFF.md — the claude/lw-half-reads-0-5 block under ## Now (merged live) — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
 - **Notes:** ruling numbers to D1397; design lessons to 59 (37 met again); the walk re-runs one step with `ONLY=w2 LW_OUT=<folder>`; the archive script takes about 15 s an item.
 <!-- /now -->
 ## Next, in order
