@@ -109,3 +109,14 @@ Each made to fail first against round 2's code, then fixed, then green; one comm
 - Browser through the lock: red run of R3-1 against round 2's code on `lw-phone` — failed at 402 (a line lit); green run of
   every Approvals and bell test with all the new ones, `lw-phone` and `lw-desktop` — 20 passed, 8 skipped (phone-only on the
   desktop project), 0 failed.
+
+## Round 3b — the rounds 2–3 walk's G3 (`rewalk3.md`)
+
+| Finding | Red first | The fix | Commit | Twin paths tested |
+|---|---|---|---|---|
+| **G3** — the one-day window, "Approve what I enter" on a day from a man's posting-out date: the bid kept pending, but the day's list took the window's place at once and the reason went with it (pictures g3b-6-window-ape-on-after, g3c-1-after-LL-30/150/400, g3d-2-blade-after) | `e2e/leavewar.spec.ts` — "one-day window, 'Approve what I enter' on a day after his posting-out date: the reason it stays pending is on screen (R3b)", the walker's real route (post out, the posted-out day's "Place leave or OIL here instead…", the tick on, LL) — red on `lw-phone` and `lw-desktop` against the round-3 build | `BidPicker.tsx` hands the matrix the note of a placing kept pending (`onKept`); `Matrix.tsx` keeps it by cell (`keptNote`, gone when another cell or none is open); `DayList.tsx DayListSheet` shows it (`note`) until the next action says something else | 99244361d | phone AND desktop; read at once and settled (500 ms on); the drag window's own note (R2-4) still green |
+
+Checks (28 Oct 26): `m4bell` 19, `m4decide` 26, `m4page` 27, `m4ride` 14, `m4sec` 13; the 107 Leave War test files that call
+the changed windows, the matrix or the deciding doors: 2,099 passed, 40 skipped (skipped in the files as committed), 0
+failed. Browser through the lock (it builds and type-checks first), `lw-phone` and `lw-desktop`: the new test and every
+Approvals, bell and posting-out test — 24 passed, 8 skipped (phone-only on the desktop project), 0 failed.
