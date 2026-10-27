@@ -177,7 +177,7 @@ code is the one that carries the lesson's main point.
 | 711 | APPLY | SD Phase 4 step 1 (a filed finding is a sample: its siblings as red cases) |
 | 712 | APPLY | SD Phase 4 step 1 (a prediction's red test also performs the action) — merged with 711 |
 | 713 | APPLY | WS §4 (a row's presence by an element keyed to it) — merged with 697 |
-| 715 | APPLY | OVN step 6 ("Low or Medium?", his D1104 — never homed in the guide) and Part 2 (each job one fresh helper, as D1103's night found) — **a question for him** (Round 2, Q1); `[OVERNIGHT-SESSION-PER-JOB]` closes at install if he approves |
+| 715 | APPLY | OVN step 6 ("Low or Medium?", his D1104 — never homed in the guide) and Part 2 (each job one fresh helper, as D1103's night found) — **a question for him** (Round 1); the helper line is installed only with the D-number of his answer, and `[OVERNIGHT-SESSION-PER-JOB]` closes only then |
 | 716 | MEMORY | new note `worktree-never-cd-up-before-git` |
 | 717 | APPLY | OVN Part 2 "At every commit" (push by explicit refspec, alone); the guard's misjudgement: TOOLS |
 | 718 | REFLECTED | `.claude/rules/shipping.md` §Pull requests (Auto-fix found on is switched off and said, D1090); OVN "stop watching it at once" |

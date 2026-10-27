@@ -49,8 +49,8 @@ straight to steps 8 and 9 without ending the turn.
      hook, a setting, a working guide — even one he has approved, because it is done while he is awake.
 5. **Size each job, and the night.** For each job (or batch of related jobs on one branch — checked once at the
    riskiest tier, D485): its branch (below); its bug-check tier and walk size (`raptor-port/docs/bug-check-order.md` §5
-   and §7.0 — read it, not from memory); its model reads (D790: a fresh, blind Opus read of the finished code; Fable as
-   well on OIL, published days, who may do what, saved data); and a rough time, from `raptor-port/docs/walk-ledger.md`
+   and §7.0 — read it, not from memory); its model reads (D790, D903: a fresh, blind Opus read of the finished code;
+   Fable only on his word); and a rough time, from `raptor-port/docs/walk-ledger.md`
    or marked a guess. Add the times in the recommended order and mark where his hours run out — keeping the last hour
    for the report — so the list shows how many jobs fit (D867). The allowance can shorten it too. Order them so the
    most valuable finished job does not depend on the last one finishing.
@@ -65,7 +65,7 @@ straight to steps 8 and 9 without ending the turn.
    - **"Low or Medium?" (his D1104)**, beside the hours, with the one recommended: **Low** when there is time to
      spare — the fewest helpers the checks need, one after another, the caches kept warm; **Medium** when time is
      short — helpers as needed, several at once. Efficiency is judged by the weekly figure, not a token count, and no
-     work is cut to save allowance (D1033);
+     work is cut to save allowance (D1033) — outside the four questions; "go" takes the recommended one;
    - when he is waiting up for drawings to answer before he sleeps, the questions page is published with the first
      finished one and each further question added as its helper returns — a republish and one line to him each time,
      never held for the slowest (25 Oct 26: two looks were ready ten minutes before he went to sleep without any);
@@ -87,13 +87,14 @@ straight to steps 8 and 9 without ending the turn.
    `OUTSTANDING.md` `[NO-ASTRA-LIST]` in the same change (D761).
 8. **Write the night into the repo BEFORE the first job, and push it:** this chat's block in `HANDOFF.md` opens with
    "THE NIGHT OF <date>", and its first line reads: "After a compaction: re-read this block, the overnight guide and the
-   files of the step in hand before the next change; note the compaction here with its time." Then: his selection in order, each job's branch, check, reads and rough time, his answers, and
+   files of the step in hand before the next change; note the compaction here with its time." Then: his selection in order, each job's branch, check, reads and rough time, his answers, Low or Medium, and
    "Questions waiting for him: none yet". A compaction loses nothing that is already here (D667).
 9. **Then start**, without ending the turn: call `request_keep_awake` with `until: "session_idle"`; switch the
    compaction guard off for the night — `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --away`
    (D872); if the night's checkout has no `raptor-port/node_modules` (a fresh worktree has none), run `npm ci` in
    `raptor-port/` before the first job; and go to the first job. Through the night, wait on a long run INSIDE the turn (a monitor or a foreground wait), never by ending the
-   turn: an idle session lets the PC sleep after about five minutes, and the night stops with it.
+   turn — except as Part 2's coordinator does, with a background timer armed: an idle session lets the PC sleep after
+   about five minutes, and the night stops with it.
 
 **Branches.** A new job: its own branch cut from `main`. A job that needs unmerged work: cut from that branch, and the
 block says so. Never a pull request based on another branch — it runs none of the real checks.
@@ -103,12 +104,18 @@ block says so. Never a pull request based on another branch — it runs none of 
 - **Each selected job, or batch, runs the bug-check order in full** — roll-call, sized walk with pictures (the walkers
   Sonnet 5.5, D787), gates under the lock (D228), the model reads, fixes, re-walk, evidence sheet. Unattended is not a
   reason for a smaller check; if the night runs short, the LAST job is left, not a check.
-- **Each job is handed to one fresh helper** (the Agent tool, in the background) with a complete brief — its branch,
-  its items, its check, the helper limit Low or Medium sets, push by explicit refspec, Auto-fix off, no edits to
-  `HANDOFF.md` — and its own Sonnet walker and fresh Opus reader. The night's chat only coordinates: it checks each
-  report, keeps the records and the block, and wakes itself within the hour while it waits. A separate session cannot
-  be started from a turn his phone sent or a finished job woke (21 Oct 26), so it is a helper, not a session (D1103, as
-  that night found it).
+- **Each job is handed to one fresh helper** (the Agent tool, in the background), one job at a time — never two builders
+  in this one checkout; Medium means more walkers or a scenario designer inside a job, not two jobs at once — with a
+  complete brief: its branch, its items, its check, the helper limit Low or Medium sets, push by explicit refspec, no
+  edits to `HANDOFF.md`, its own Sonnet walker and fresh Opus reader; under Low the read's fixes and the re-walk go back to
+  the same helper while its copy is warm (D1104). The night's chat only coordinates: while a helper runs it writes nothing
+  into the tree (records are drafted in the scratch folder and committed between jobs); it switches Auto-fix off itself
+  when a pull request's event arrives, since a helper may not have the tool (D1090); it commits and pushes the block,
+  then opens each job's pull request; and it checks each report. It waits inside the turn; where it must end the turn, it
+  first arms a background timer of under an hour, so the night is woken before its cache goes cold (21 Oct 26). His
+  D1103 asked for a fresh session per job; on 21 Oct 26 the app started none from a turn his phone sent or a finished
+  job woke, so the night ran helpers instead — this line is his approval of that change (D<new>, <date>). A session per
+  job still works when he types the night's message in the desktop app, all of them started together.
 - **A helper's report** (reader, walker, scenario designer) is saved into the repo — its brief's folder or the evidence
   sheet — the moment it arrives, before anything is done about it.
 - **At every commit:** this chat's block and the backlog true; `cd raptor-port && npm run docsize` before a commit of
@@ -143,13 +150,13 @@ block says so. Never a pull request based on another branch — it runs none of 
   points to it; only that piece waits, the rest goes on. Before recommending "leave it as built", write the case in
   which "as built" fails the ruling's own words; if that case is real, it is a finding to fix, not a question.
 - **Pull requests:** a job cut from `main` gets its pull request when its check closes, so GitHub's checks run while he
-  sleeps; stop watching it at once. Write and commit the block BEFORE opening it (the block names the pull request "to
+  sleeps; stop watching it at once. Write, commit and push the block BEFORE opening it (the block names the pull request "to
   be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going
   (17 Oct 26: the block pushed seconds after the pull request opened cancelled its first run). A job cut from another unmerged branch gets none at night: the morning report
   offers him one pull request carrying the related work (D822, D864).
 - **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), when the weekly
-  figure passes 90% — unless what is left resets before it could be used, and then run until the limit, saving at
-  every step (his D1033: allowance is not saved by stopping; 19 and 26 Oct 26) — or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
+  figure passes 90% and the weekly reset falls after the night would end — where the reset falls before it, jobs go on
+  being started past 90% until the limit, saving at every step (his D1033) — or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
   block before it runs out, and carry on after it resets. A job half built at a stop is committed, pushed and written
   into the block as unfinished — never left in a state its tests do not describe.
 - **Never:** build a job he did not select, or one step 4 holds that his reply did not settle; merge; push to `main`; change his Claude settings, the hooks or a working

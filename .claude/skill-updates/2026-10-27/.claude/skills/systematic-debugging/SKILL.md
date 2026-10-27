@@ -279,7 +279,8 @@ You MUST complete each phase before proceeding to the next.
    - Before a second guess, instrument the events — every pointer, focus and
      change event on the elements involved, with their values — rather than
      re-reasoning the cause
-   - If < 3: Return to Phase 1, re-analyze with new information
+   - If < 3: Return to Phase 1, re-analyze with new information — on a
+     device you cannot run, two misses already stop you (step 5)
    - **If ≥ 3: STOP and question the architecture (step 5 below)**
    - DON'T attempt Fix #4 without architectural discussion
 

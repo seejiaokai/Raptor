@@ -193,7 +193,8 @@ desktop app starts, `.claude/settings*.json`, `.claude/hooks/`, `.claude/skills/
 from the main checkout's root (`C:\Users\User\projects\Raptor` — the process's `--project-config-root`); only `CLAUDE.md`
 and `.claude/rules/` load from the worktree. With the main checkout on an old branch, a merged hook or skill is in force in
 no chat (that day: the whole compaction set-up and `/overnight`, the main checkout 208 commits behind). After a merge that
-touches them, the main checkout must be on `main`, clean of tracked changes; verify in a NEW chat by what the app reports
+touches them, the main checkout must be on `main`, clean of tracked changes — the chat that saw the merge switches
+it, as the handoff guide says —; verify in a NEW chat by what the app reports
 (`get_usage`, the skill list), never by running the script by hand.
 
 *The baselines in the first paragraphs are history; the current one is `HANDOFF.md` §Gate baseline.*

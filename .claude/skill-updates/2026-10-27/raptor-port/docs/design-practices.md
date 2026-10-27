@@ -69,10 +69,11 @@ one, and neither is an instruction about the work itself.
    16 Oct 26 — "1-5 as recommended": "the design guide learns from my suggestions", D939).** One line: the lesson in
    terms of the app he intends, its date and its ruling. One fresh reader — never the chat that wrote it — checks that the
    line says what he meant; he is not asked first. The closing report names every lesson added, and he may strike or
-   change any. **The line keeps to his words:** it quotes or closely paraphrases them, is no wider than what he
-   corrected, and adds no reason he did not give — a reason of the agent's goes in the ruling's readings, marked as the
-   agent's; the fresh reader is handed his words, the option he picked and the line, nothing else (16 Oct 26: the first
-   lesson gained a reason he never gave and a wider scope, both found that way). Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
+   change any. **The line keeps to his words:** it quotes or closely paraphrases them, covers no case he did not
+   correct, and gives no reason he did not give; the point behind it (step 1) is stated as his words support it, and
+   anything of the agent's own is marked as the agent's reading. The fresh reader is handed his words, the option he
+   picked and the line — and, where the lesson narrows a rule, that rule and its pointer — nothing else (16 Oct 26: the
+   first lesson gained a reason he never gave and a wider scope, both found that way). Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
    is written, and the closing report names the correction so he can ask for one. A lesson that narrows a rule already in this guide says so
    in its line, and that rule gets a short pointer to it, checked by the same fresh reader as part of the lesson. (Until 16 Oct 26 he was asked each time and the line was read and
    approved as any change to this guide is — D852, D70; the rest of the guide, apart from a lesson's line and its pointer, still changes that way.)

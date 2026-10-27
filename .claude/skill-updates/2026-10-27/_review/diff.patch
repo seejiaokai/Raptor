@@ -1,5 +1,5 @@
 diff --git a/raptor-port/docs/walk-scripts.md b/.claude/skill-updates/2026-10-27/raptor-port/docs/walk-scripts.md
-index 42721dffe..0e7771243 100644
+index 42721dffe..09c102ef7 100644
 --- a/raptor-port/docs/walk-scripts.md
 +++ b/.claude/skill-updates/2026-10-27/raptor-port/docs/walk-scripts.md
 @@ -6,7 +6,7 @@ The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 t
@@ -44,11 +44,13 @@ index 42721dffe..0e7771243 100644
  - **A stand-in keyboard is set at the page's own height first, and plays his iPhone's measure as well as Chromium's.**
    The stand-in visible screen starts at the size the page had before its width was set (1668 on a 684 screen) — give it
    the real screen before the tap, or the app never learns the full height. And once the keys are up and the screen has
-@@ -66,9 +78,25 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
+@@ -66,9 +78,27 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
    that keeps its full words for a screen reader (clipped to 1px) beside a short form still counts both in `innerText`
    and `textContent`: read the children whose box is wider than 1px. The walk and the browser test both tripped on it;
    the pictures showed the right word.
-+- **A word is found by the element that draws it.** To assert a word is shown, find a drawn element whose OWN trimmed
++- **A word is found by the element that draws it.** To assert a word is shown, find a drawn element — a box wider than
++  zero, inside the surface being checked: the app keeps hidden copies (the week behind the board, a phone's frozen
++  band) — whose OWN trimmed
 +  text equals the word — never a word-boundary pattern over a container's text, which runs words together ("DrifterOD",
 +  "…ODLATE…"; 24 Oct 26, four tries). Words a person typed stand in a box's `value`, never in `innerText`: read the
 +  `input` and `textarea` values too, and check that a row is there by an element keyed to it (its id-carrying button),
@@ -70,7 +72,7 @@ index 42721dffe..0e7771243 100644
  - **A locator that READS a result is copied from the markup that draws it** (or from an existing test of that element),
    never composed from a neighbour's attribute. Where a new walk script and a new browser test share a read, run the
    walk first: it is the cheap place to find that the read is wrong.
-@@ -76,12 +104,34 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
+@@ -76,12 +106,35 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
    gesture happened: the drag's ghost, the caption under it, the refusal's own words. "Nothing written" cannot tell a
    correct refusal from a press that landed off the screen.
  - **A negative assertion first asserts that its subject exists:** "not greyed" passes on a row that was never drawn.
@@ -80,7 +82,8 @@ index 42721dffe..0e7771243 100644
 +  fields (`!!b.show && b.show.visible === …` reports WRONG exactly when Show is rightly absent).
 +- **A check over a list asserts the list's size first, and the premise that fills it** — `every(…)` over an empty list
 +  passes (21 Oct 26: a fault dropped the picked seat, the list emptied, and "0 of 0" passed).
-+- **Every scroll step asserts that the scroll position moved**, and "in view" is read with `elementFromPoint` at the
++- **Every scroll step asserts that the scroll position moved** — of the scroller the step means to move, not the window
++  — and "in view" is read with `elementFromPoint` at the
 +  visible part's middle, never from the box alone: a scripted touch scroll (`Input.synthesizeScrollGesture`) left the
 +  Leave War grid where it was, and the app bar or a frozen heading can stand over a box that is "in view" (25 Oct 26).
 +- **`elementFromPoint` proves a surface that takes presses** (a window, a calendar, a button). It skips one that takes
@@ -105,7 +108,7 @@ index 42721dffe..0e7771243 100644
  - **Leaving a control.** A Tab inside a date box steps to its next part: leave it with Enter (where the app commits on
    Enter) or a press elsewhere. End and Home stop at the end of the wrapped LINE on a phone: use the document-level key
    (Control+End). When a "left the box" step fails, record `document.activeElement` before blaming the app.
-@@ -113,8 +163,13 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
+@@ -113,8 +166,13 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
    opens it.
  - **A fixed-coordinate picture ("the top of the page") scrolls to the top first**, and any helper that scrolls runs
    after it: a row that slid under the sticky bar reads as a new defect. Measure the claim, then picture it.
@@ -120,12 +123,13 @@ index 42721dffe..0e7771243 100644
  - **On a phone, a tap gets a picture right after it (owner D1281):** within about 100 ms of the lift, the pointer left
    where it pressed, besides the settled picture — an iPhone keeps the tapped thing "hovered", the test browser does
    not, and a fault that lives in that state is otherwise never pictured (the bug-check order §7.10).
-@@ -136,6 +191,13 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
+@@ -136,6 +194,14 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
    it with `await import('./lib.mjs')` afterwards, or set it in a small module imported first, as
    `scripts/handpass/ab/ab-env.mjs` does — or the pictures go to the driver's default folder in another checkout), and
    the evidence sheet writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
 +  **Before a re-walk, check the folder line of every helper file it loads:** `grep -n "LW_OUT =\|HP_SHOTS =" <its
-+  files>` must print nothing (each must read `||=`) — a helper that sets its folder with a plain `=` writes the re-walk
++  files>` must print nothing but the re-walk's own setter file (its one line naming the `rewalk/` folder) — every other
++  helper must read `||=` — a helper that sets its folder with a plain `=` writes the re-walk
 +  over the first walk's pictures (25 Oct 26, twice). Run a re-walk from a small script FILE that sets the folder
 +  first, never with the variable typed into each command.
 +- **A re-walk runs only the steps of the places the change touched.** Give the script a step filter (`ONLY=w2`) and use
@@ -134,7 +138,7 @@ index 42721dffe..0e7771243 100644
  - **Once a finding is fixed, the note that observed it becomes a CHECK** asserting the fixed behaviour, before the
    re-walk runs.
  
-@@ -170,7 +232,11 @@ A refactor, a storage-only change, "leave the other sizes exactly as they are":
+@@ -170,7 +236,11 @@ A refactor, a storage-only change, "leave the other sizes exactly as they are":
    pass on the OLD build — that is what makes it a description of "as it was", not of "as I built it".
  - **The build before the change:** `git archive <commit>` of the source and the config into a SHORT path,
    `node_modules` joined by a junction, built and served on another port (a `git worktree` of an old commit fails on
@@ -147,7 +151,7 @@ index 42721dffe..0e7771243 100644
    `origin/main`, rebuild, run the SAME script into a scratch folder, put the files back and prove it with
    `git diff --stat` — never while walkers are served that build.
  - **A storage conversion is walked on data the OLD build really wrote.** Serve the old build, make the owner's kind
-@@ -192,6 +258,12 @@ list.
+@@ -192,6 +262,12 @@ list.
    reader or a walker is using the checkout, break in a separate worktree at a SHORT path (`node_modules` by a
    junction). A runner that edits source holds the tree until it prints DONE: no edit, build, browser test or commit
    meanwhile.
@@ -161,7 +165,7 @@ index 42721dffe..0e7771243 100644
    the list — a mistyped file name "guards" nothing. A `find` that does not match exactly once is re-targeted, never
    counted. A test selected by name is confirmed to have RUN.
 diff --git a/raptor-port/docs/bug-check-order.md b/.claude/skill-updates/2026-10-27/raptor-port/docs/bug-check-order.md
-index 2f0096ffb..3e863b425 100644
+index 2f0096ffb..78b6e96e7 100644
 --- a/raptor-port/docs/bug-check-order.md
 +++ b/.claude/skill-updates/2026-10-27/raptor-port/docs/bug-check-order.md
 @@ -337,6 +337,22 @@ later round makes a new one (6 Oct 26: a frozen folder "refreshed" for the next
@@ -175,8 +179,8 @@ index 2f0096ffb..3e863b425 100644
 +|---|---|---|
 +| A walker | the served build folder | nothing in the tree |
 +| A code reader | the source it reads (or the commit it is handed) | nothing — though it may RUN a unit file from the tree |
-+| A break test | — | the source, for minutes |
-+| A build, or a browser test (which builds) | — | the built folder |
++| A break test | the whole tree until it prints DONE — no edit, build, browser test or commit meanwhile (`docs/walk-scripts.md` §9) | the source, for minutes |
++| A build, or a browser test (which builds) | the source it builds | the built folder |
 +| A unit test | the source | nothing |
 +| A document edit | — | the documents the document check reads |
 +
@@ -281,7 +285,7 @@ index 2f0096ffb..3e863b425 100644
  
  **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
  has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
-@@ -706,6 +761,18 @@ those events (Safari can send a touch's later events to the element it landed on
+@@ -706,6 +761,19 @@ those events (Safari can send a touch's later events to the element it landed on
  it; Chromium retargets them), and add a synthetic check per difference: dispatch the other engine's sequence
  directly on the element it would reach. Name in the evidence sheet every line only a real device can prove,
  and put it on the owner's look card.
@@ -292,7 +296,8 @@ index 2f0096ffb..3e863b425 100644
 +- **A stand-in is believed only once it is calibrated** — a forced font, a stand-in keyboard, an injected metric. Run it
 +  on a state the real environment passed and on one it failed: it may judge a new case only if it passes the first and
 +  fails the second (21 Oct 26: a forced Verdana wrapped a row GitHub had passed; 25 Oct 26: three keyboard fixes passed
-+  a stand-in that had never reproduced his fault). §7.11 lesson 7 is where this ends for a motion the phone makes.
++  a stand-in that had never reproduced his fault). For a motion the phone itself makes, even a calibrated stand-in
++  proves nothing (§7.11 lesson 7).
 +- **A fault one engine shows and the suite's engine cannot:** find the metric that differs and inject it in the suite's
 +  own engine — Safari's shorter line for 12px text, as `line-height: 14px` on the chips — stating the rule in its
 +  engine-free form ("as tall as the leave buttons, whatever line the fonts give"): red before the fix, green after,
@@ -300,7 +305,7 @@ index 2f0096ffb..3e863b425 100644
  
  **7.10 The moment after a press, and the drawing beside the build (owner D1281, 23 Oct 26).** Three faults he found on
  his iPhone in one day had passed every walk, each a state no step looked at. So, for every walk of a screen:
-@@ -722,6 +789,9 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
+@@ -722,6 +790,9 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
  - **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
    iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
    (his lessons 42 and 43, `docs/design-practices.md` §9).
@@ -311,10 +316,10 @@ index 2f0096ffb..3e863b425 100644
  ---
  
 diff --git a/raptor-port/docs/gates-and-deploy.md b/.claude/skill-updates/2026-10-27/raptor-port/docs/gates-and-deploy.md
-index 0e0986019..f31db4ef7 100644
+index 0e0986019..9ab38a044 100644
 --- a/raptor-port/docs/gates-and-deploy.md
 +++ b/.claude/skill-updates/2026-10-27/raptor-port/docs/gates-and-deploy.md
-@@ -158,6 +158,44 @@ a walk's `HP_URL`), check the port is free: `netstat -ano | grep ":<port> "`. On
+@@ -158,6 +158,45 @@ a walk's `HP_URL`), check the port is free: `netstat -ano | grep ":<port> "`. On
  pointed at 4186 passed its first hundred tests and then failed 192 in a row, every one "waiting for #luser", because the
  page it loaded was the deck ("RAPTOR — Presenter"), not the app. Never stop a server that is not yours; pick another port.
  
@@ -353,29 +358,31 @@ index 0e0986019..f31db4ef7 100644
 +from the main checkout's root (`C:\Users\User\projects\Raptor` — the process's `--project-config-root`); only `CLAUDE.md`
 +and `.claude/rules/` load from the worktree. With the main checkout on an old branch, a merged hook or skill is in force in
 +no chat (that day: the whole compaction set-up and `/overnight`, the main checkout 208 commits behind). After a merge that
-+touches them, the main checkout must be on `main`, clean of tracked changes; verify in a NEW chat by what the app reports
++touches them, the main checkout must be on `main`, clean of tracked changes — the chat that saw the merge switches
++it, as the handoff guide says —; verify in a NEW chat by what the app reports
 +(`get_usage`, the skill list), never by running the script by hand.
 +
  *The baselines in the first paragraphs are history; the current one is `HANDOFF.md` §Gate baseline.*
  
  **Current main baseline — PR #420 ([SYNC-INTEG] medical guardrail batch: medical
 diff --git a/raptor-port/docs/design-practices.md b/.claude/skill-updates/2026-10-27/raptor-port/docs/design-practices.md
-index 7dde778a5..264467d81 100644
+index 7dde778a5..abd265c09 100644
 --- a/raptor-port/docs/design-practices.md
 +++ b/.claude/skill-updates/2026-10-27/raptor-port/docs/design-practices.md
-@@ -69,7 +69,10 @@ one, and neither is an instruction about the work itself.
+@@ -69,7 +69,11 @@ one, and neither is an instruction about the work itself.
     16 Oct 26 — "1-5 as recommended": "the design guide learns from my suggestions", D939).** One line: the lesson in
     terms of the app he intends, its date and its ruling. One fresh reader — never the chat that wrote it — checks that the
     line says what he meant; he is not asked first. The closing report names every lesson added, and he may strike or
 -   change any. Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
-+   change any. **The line keeps to his words:** it quotes or closely paraphrases them, is no wider than what he
-+   corrected, and adds no reason he did not give — a reason of the agent's goes in the ruling's readings, marked as the
-+   agent's; the fresh reader is handed his words, the option he picked and the line, nothing else (16 Oct 26: the first
-+   lesson gained a reason he never gave and a wider scope, both found that way). Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
++   change any. **The line keeps to his words:** it quotes or closely paraphrases them, covers no case he did not
++   correct, and gives no reason he did not give; the point behind it (step 1) is stated as his words support it, and
++   anything of the agent's own is marked as the agent's reading. The fresh reader is handed his words, the option he
++   picked and the line — and, where the lesson narrows a rule, that rule and its pointer — nothing else (16 Oct 26: the
++   first lesson gained a reason he never gave and a wider scope, both found that way). Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
     is written, and the closing report names the correction so he can ask for one. A lesson that narrows a rule already in this guide says so
     in its line, and that rule gets a short pointer to it, checked by the same fresh reader as part of the lesson. (Until 16 Oct 26 he was asked each time and the line was read and
     approved as any change to this guide is — D852, D70; the rest of the guide, apart from a lesson's line and its pointer, still changes that way.)
-@@ -99,6 +102,9 @@ as it stands.
+@@ -99,6 +103,9 @@ as it stands.
  - **Every word earns its place or goes.** What the screen already shows is a candidate to go (a hint that repeats its
    own label, a count the list makes obvious). Three ends for any note, each put to him before and after: **shortened**,
    **removed**, or **moved under one short "How this works" fold** for that page — as the two calendars have (D628, D646).
@@ -385,7 +392,7 @@ index 7dde778a5..264467d81 100644
  - **Text that only explains what the screen already makes plain is recommended for deletion (owner D846, 14 Oct 26 —
    "these are the examples of things u can delete and they are self explanatory").** His two examples, both on the OIL
    question: the small print under its answers ("The credit lands on the Leave War as an HO cell and moves the OIL
-@@ -209,6 +215,10 @@ what the note must still say afterwards — **the protected list: what happened
+@@ -209,6 +216,10 @@ what the note must still say afterwards — **the protected list: what happened
  right · every name and every number.** This is the method for the first of §1's three ends — a note that stays and gets
  shorter. Removing a note or folding it is §1's own decision, put to him as such.
  
@@ -396,7 +403,7 @@ index 7dde778a5..264467d81 100644
  1. **Measure the box before the words.** A note that "runs long" is first measured where it sits, at the smallest size
     the app ships: the box's width against the screen's, and how many lines it takes. The box and the words are reported
     as two separate findings — the box is often the cheaper fix (13 Oct 26: every passing note was half a phone's width).
-@@ -414,6 +424,11 @@ they are?** A design is not finished until its keyboard set is written down besi
+@@ -414,6 +425,11 @@ they are?** A design is not finished until its keyboard set is written down besi
  NEW work must do; where something already built does less, that is a gap for the keyboard sweep to list (D807) and is
  built on his word — it is not a statement that the app does it today.**
  
@@ -408,7 +415,7 @@ index 7dde778a5..264467d81 100644
  | The thing | What the keys must do |
  |---|---|
  | A window, sheet or question | Tab and Shift+Tab go round INSIDE it; Escape closes it; when it closes, the keyboard goes back to the button that opened it (or the nearest sensible place if that is gone) |
-@@ -467,7 +482,9 @@ and only then shorten, remove or fold the instruction (§1), each change shown t
+@@ -467,7 +483,9 @@ and only then shorten, remove or fold the instruction (§1), each change shown t
    heading a person would use (D809). Elsewhere that arrangement is offered as a picture, not assumed.
  - **One main button a view, in the same place every time; the dangerous one apart from it.** A control tapped again
    and again never moves under the finger (D687, the standing rule on repeated taps) — nor do arrows around words that
@@ -419,7 +426,7 @@ index 7dde778a5..264467d81 100644
  - **Show that more is hidden** — a fold says what is in it; a list that scrolls shows a cut row, not a clean edge.
  - **Fold what is rarely needed; never fold what is needed to act.**
  - **Order by what matters to the person doing the job**, not by how the code is arranged.
-@@ -652,7 +669,10 @@ state nobody drew.
+@@ -652,7 +670,10 @@ state nobody drew.
  
  *What his design corrections teach, written in the same day he makes one (§0, step 2), each checked by one fresh reader;
  he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
@@ -594,9 +601,20 @@ index dcf1b7586..90ba231f5 100644
 +  made-up records; replace identifying names before any picture; commit
 +  nothing that carries their storage keys or names (21 Oct 26).
 diff --git a/.claude/skills/overnight/SKILL.md b/.claude/skill-updates/2026-10-27/.claude/skills/overnight/SKILL.md
-index 778267ebb..bdaddd3e7 100644
+index 778267ebb..51c4035ac 100644
 --- a/.claude/skills/overnight/SKILL.md
 +++ b/.claude/skill-updates/2026-10-27/.claude/skills/overnight/SKILL.md
+@@ -49,8 +49,8 @@ straight to steps 8 and 9 without ending the turn.
+      hook, a setting, a working guide — even one he has approved, because it is done while he is awake.
+ 5. **Size each job, and the night.** For each job (or batch of related jobs on one branch — checked once at the
+    riskiest tier, D485): its branch (below); its bug-check tier and walk size (`raptor-port/docs/bug-check-order.md` §5
+-   and §7.0 — read it, not from memory); its model reads (D790: a fresh, blind Opus read of the finished code; Fable as
+-   well on OIL, published days, who may do what, saved data); and a rough time, from `raptor-port/docs/walk-ledger.md`
++   and §7.0 — read it, not from memory); its model reads (D790, D903: a fresh, blind Opus read of the finished code;
++   Fable only on his word); and a rough time, from `raptor-port/docs/walk-ledger.md`
+    or marked a guess. Add the times in the recommended order and mark where his hours run out — keeping the last hour
+    for the report — so the list shows how many jobs fit (D867). The allowance can shorten it too. Order them so the
+    most valuable finished job does not depend on the last one finishing.
 @@ -62,6 +62,13 @@ straight to steps 8 and 9 without ending the turn.
     - **the questions that must be answered before it starts** — at most four, numbered, each with a recommended answer
       and a worked example where it helps; a design question carries a picture with the area marked (D853) — if
@@ -604,33 +622,47 @@ index 778267ebb..bdaddd3e7 100644
 +   - **"Low or Medium?" (his D1104)**, beside the hours, with the one recommended: **Low** when there is time to
 +     spare — the fewest helpers the checks need, one after another, the caches kept warm; **Medium** when time is
 +     short — helpers as needed, several at once. Efficiency is judged by the weekly figure, not a token count, and no
-+     work is cut to save allowance (D1033);
++     work is cut to save allowance (D1033) — outside the four questions; "go" takes the recommended one;
 +   - when he is waiting up for drawings to answer before he sleeps, the questions page is published with the first
 +     finished one and each further question added as its helper returns — a republish and one line to him each time,
 +     never held for the slowest (25 Oct 26: two looks were ready ten minutes before he went to sleep without any);
     - the allowance: the weekly figure now and roughly after the night; how full this chat is;
     - "Nothing merges and nothing touches the live app. One notification in the morning. Leave the PC on and plugged
       in, the lid open.";
-@@ -84,7 +91,8 @@ straight to steps 8 and 9 without ending the turn.
+@@ -80,12 +87,14 @@ straight to steps 8 and 9 without ending the turn.
+    `OUTSTANDING.md` `[NO-ASTRA-LIST]` in the same change (D761).
+ 8. **Write the night into the repo BEFORE the first job, and push it:** this chat's block in `HANDOFF.md` opens with
+    "THE NIGHT OF <date>", and its first line reads: "After a compaction: re-read this block, the overnight guide and the
+-   files of the step in hand before the next change; note the compaction here with its time." Then: his selection in order, each job's branch, check, reads and rough time, his answers, and
++   files of the step in hand before the next change; note the compaction here with its time." Then: his selection in order, each job's branch, check, reads and rough time, his answers, Low or Medium, and
     "Questions waiting for him: none yet". A compaction loses nothing that is already here (D667).
  9. **Then start**, without ending the turn: call `request_keep_awake` with `until: "session_idle"`; switch the
     compaction guard off for the night — `node "$(git rev-parse --show-toplevel)/.claude/hooks/compact-ready.mjs" --away`
 -   (D872); and go to the first job. Through the night, wait on a long run INSIDE the turn (a monitor or a foreground wait), never by ending the
+-   turn: an idle session lets the PC sleep after about five minutes, and the night stops with it.
 +   (D872); if the night's checkout has no `raptor-port/node_modules` (a fresh worktree has none), run `npm ci` in
 +   `raptor-port/` before the first job; and go to the first job. Through the night, wait on a long run INSIDE the turn (a monitor or a foreground wait), never by ending the
-    turn: an idle session lets the PC sleep after about five minutes, and the night stops with it.
++   turn — except as Part 2's coordinator does, with a background timer armed: an idle session lets the PC sleep after
++   about five minutes, and the night stops with it.
  
  **Branches.** A new job: its own branch cut from `main`. A job that needs unmerged work: cut from that branch, and the
-@@ -95,10 +103,18 @@ block says so. Never a pull request based on another branch — it runs none of
+ block says so. Never a pull request based on another branch — it runs none of the real checks.
+@@ -95,10 +104,24 @@ block says so. Never a pull request based on another branch — it runs none of
  - **Each selected job, or batch, runs the bug-check order in full** — roll-call, sized walk with pictures (the walkers
    Sonnet 5.5, D787), gates under the lock (D228), the model reads, fixes, re-walk, evidence sheet. Unattended is not a
    reason for a smaller check; if the night runs short, the LAST job is left, not a check.
-+- **Each job is handed to one fresh helper** (the Agent tool, in the background) with a complete brief — its branch,
-+  its items, its check, the helper limit Low or Medium sets, push by explicit refspec, Auto-fix off, no edits to
-+  `HANDOFF.md` — and its own Sonnet walker and fresh Opus reader. The night's chat only coordinates: it checks each
-+  report, keeps the records and the block, and wakes itself within the hour while it waits. A separate session cannot
-+  be started from a turn his phone sent or a finished job woke (21 Oct 26), so it is a helper, not a session (D1103, as
-+  that night found it).
++- **Each job is handed to one fresh helper** (the Agent tool, in the background), one job at a time — never two builders
++  in this one checkout; Medium means more walkers or a scenario designer inside a job, not two jobs at once — with a
++  complete brief: its branch, its items, its check, the helper limit Low or Medium sets, push by explicit refspec, no
++  edits to `HANDOFF.md`, its own Sonnet walker and fresh Opus reader; under Low the read's fixes and the re-walk go back to
++  the same helper while its copy is warm (D1104). The night's chat only coordinates: while a helper runs it writes nothing
++  into the tree (records are drafted in the scratch folder and committed between jobs); it switches Auto-fix off itself
++  when a pull request's event arrives, since a helper may not have the tool (D1090); it commits and pushes the block,
++  then opens each job's pull request; and it checks each report. It waits inside the turn; where it must end the turn, it
++  first arms a background timer of under an hour, so the night is woken before its cache goes cold (21 Oct 26). His
++  D1103 asked for a fresh session per job; on 21 Oct 26 the app started none from a turn his phone sent or a finished
++  job woke, so the night ran helpers instead — this line is his approval of that change (D<new>, <date>). A session per
++  job still works when he types the night's message in the desktop app, all of them started together.
  - **A helper's report** (reader, walker, scenario designer) is saved into the repo — its brief's folder or the evidence
    sheet — the moment it arrives, before anything is done about it.
  - **At every commit:** this chat's block and the backlog true; `cd raptor-port && npm run docsize` before a commit of
@@ -641,7 +673,7 @@ index 778267ebb..bdaddd3e7 100644
    **No record is written into the repo while a gate run is going** — draft it in the scratch folder (the document check
    is the run's last gate, and an edit during the run fails it).
  - **Compact smartly, by how full the chat is (D766, D867, D868).** Not at a fixed point: from the first note (75% of the app's room — D878; D868's
-@@ -120,14 +136,20 @@ block says so. Never a pull request based on another branch — it runs none of
+@@ -120,14 +143,20 @@ block says so. Never a pull request based on another branch — it runs none of
      or a test result.
  - **A roadblock that needs him** waits until he wakes (D596, D867): search the rulings and the backlog first (D53); a
    technical choice is yours — decide and write down why; a choice truly his goes into the block's "Questions waiting
@@ -654,18 +686,18 @@ index 778267ebb..bdaddd3e7 100644
    which "as built" fails the ruling's own words; if that case is real, it is a finding to fix, not a question.
  - **Pull requests:** a job cut from `main` gets its pull request when its check closes, so GitHub's checks run while he
 -  sleeps; stop watching it at once. A job cut from another unmerged branch gets none at night: the morning report
-+  sleeps; stop watching it at once. Write and commit the block BEFORE opening it (the block names the pull request "to
++  sleeps; stop watching it at once. Write, commit and push the block BEFORE opening it (the block names the pull request "to
 +  be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going
 +  (17 Oct 26: the block pushed seconds after the pull request opened cancelled its first run). A job cut from another unmerged branch gets none at night: the morning report
    offers him one pull request carrying the related work (D822, D864).
  - **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), when the weekly
 -  figure passes 90%, or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
-+  figure passes 90% — unless what is left resets before it could be used, and then run until the limit, saving at
-+  every step (his D1033: allowance is not saved by stopping; 19 and 26 Oct 26) — or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
++  figure passes 90% and the weekly reset falls after the night would end — where the reset falls before it, jobs go on
++  being started past 90% until the limit, saving at every step (his D1033) — or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
    block before it runs out, and carry on after it resets. A job half built at a stop is committed, pushed and written
    into the block as unfinished — never left in a state its tests do not describe.
  - **Never:** build a job he did not select, or one step 4 holds that his reply did not settle; merge; push to `main`; change his Claude settings, the hooks or a working
-@@ -159,6 +181,7 @@ block says so. Never a pull request based on another branch — it runs none of
+@@ -159,6 +188,7 @@ block says so. Never a pull request based on another branch — it runs none of
  - [ ] Every recommended job meets step 4's "can run tonight", and none is already done.
  - [ ] Each job has a rough time, and the message says how many fit in his hours.
  - [ ] At most four questions, each with a recommended answer; no technical choice is put to him.
@@ -674,7 +706,7 @@ index 778267ebb..bdaddd3e7 100644
        by asking for his selection ("go" = the recommended jobs and answers).
  
 diff --git a/.claude/skills/session-handoff/SKILL.md b/.claude/skill-updates/2026-10-27/.claude/skills/session-handoff/SKILL.md
-index 818e791e5..ca76f41ad 100644
+index 818e791e5..93627075a 100644
 --- a/.claude/skills/session-handoff/SKILL.md
 +++ b/.claude/skill-updates/2026-10-27/.claude/skills/session-handoff/SKILL.md
 @@ -56,6 +56,10 @@ pushed and waiting for him — the normal end state, not unfinished business.
@@ -688,7 +720,7 @@ index 818e791e5..ca76f41ad 100644
  - **`## Next, in order`** changes only when the order itself changed (his word,
    or an item finished); it is the project's, not this chat's.
  - Print the same block in chat, and give him the **ready-to-paste opening line**
-@@ -193,7 +197,15 @@ re-read the WHOLE `## Now` section of `HANDOFF.md` and reconcile every block
+@@ -193,7 +197,20 @@ re-read the WHOLE `## Now` section of `HANDOFF.md` and reconcile every block
  against `git log origin/main`, not only the block this session wrote: a block
  whose branch merged is removed once its open residue is filed (Step 1). A
  "current state" section must hold nothing already done, and the staleness an
@@ -699,13 +731,18 @@ index 818e791e5..ca76f41ad 100644
 +`main`:** a worktree chat started from the desktop app loads those from the
 +main checkout, not from its own folder (14 Oct 26: a whole compaction set-up
 +and a new skill were in force in no chat, the main checkout 208 commits
-+behind). Tell him when that folder is not on `main`, and verify in a NEW chat
-+by what the app itself reports (`get_usage`, the skill list) — never by
-+running the script by hand (`raptor-port/docs/gates-and-deploy.md`).
++behind). When that folder is not on `main`: if `git -C
++C:\Users\User\projects\Raptor status --short` shows no tracked change, its
++branch has nothing unpushed (`git -C … status -sb` shows no "ahead"), and no
++chat is working in it, switch it (`git -C … switch main`) and say so;
++otherwise tell him in one plain line what holds it. The block's pick-up then
++tells the next chat to verify by what the app itself reports (`get_usage`,
++the skill list) — never by running the script by hand
++(`raptor-port/docs/gates-and-deploy.md`).
  
  **Merged between chats — sweep for it, whoever merged.** He merges on his own
  word, often after the chat that built the thing has ended. For every `## Now`
-@@ -218,7 +230,9 @@ memory:
+@@ -218,7 +235,9 @@ memory:
    "the only thing left is X" is a summary, not a check (24 Sep 26: one missed
    a second leftover). Search the full rulings rows (`.claude/decisions-full/`)
    for the item's id named as a HOME, too: point each at
@@ -717,7 +754,7 @@ index 818e791e5..ca76f41ad 100644
    checked commit — a refusal met after his "merge live" costs another whole
    check run (D151). Its contract goes to the right
 diff --git a/.claude/skills/systematic-debugging/SKILL.md b/.claude/skill-updates/2026-10-27/.claude/skills/systematic-debugging/SKILL.md
-index 412af02be..ff53687a8 100644
+index 412af02be..e23aabe26 100644
 --- a/.claude/skills/systematic-debugging/SKILL.md
 +++ b/.claude/skill-updates/2026-10-27/.claude/skills/systematic-debugging/SKILL.md
 @@ -117,6 +117,12 @@ You MUST complete each phase before proceeding to the next.
@@ -763,20 +800,23 @@ index 412af02be..ff53687a8 100644
  
  2. **Implement Single Fix**
     - Address the root cause identified
-@@ -251,6 +273,12 @@ You MUST complete each phase before proceeding to the next.
+@@ -251,7 +273,14 @@ You MUST complete each phase before proceeding to the next.
  4. **If Fix Doesn't Work**
     - STOP
     - Count: How many fixes have you tried?
+-   - If < 3: Return to Phase 1, re-analyze with new information
 +   - Re-run the finder's own script on the fixed build before trusting a new
 +     test: a test that takes another route (it scrolled the box to the
 +     centre first) can pass a fix that does not cure
 +   - Before a second guess, instrument the events — every pointer, focus and
 +     change event on the elements involved, with their values — rather than
 +     re-reasoning the cause
-    - If < 3: Return to Phase 1, re-analyze with new information
++   - If < 3: Return to Phase 1, re-analyze with new information — on a
++     device you cannot run, two misses already stop you (step 5)
     - **If ≥ 3: STOP and question the architecture (step 5 below)**
     - DON'T attempt Fix #4 without architectural discussion
-@@ -271,6 +299,14 @@ You MUST complete each phase before proceeding to the next.
+ 
+@@ -271,6 +300,14 @@ You MUST complete each phase before proceeding to the next.
  
     This is NOT a failed hypothesis - this is a wrong architecture.
  
@@ -791,7 +831,7 @@ index 412af02be..ff53687a8 100644
  ## Red Flags - STOP and Follow Process
  
  If you catch yourself thinking:
-@@ -350,6 +386,11 @@ proven one. For a flaky check, ask first:
+@@ -350,6 +387,11 @@ proven one. For a flaky check, ask first:
    port and fails the next run; the pile-up looks random.
  - Did it start right after a timing change? Then it is that change's bug
    announcing itself.
@@ -926,7 +966,7 @@ index 7c8284e1d..5ce196b5d 100644
  `closest()` below it: search the name in `closest(`, `matches(` and the
  selectors first, and prefer a state name no element uses (`is-…`, `has-…`).
 diff --git a/.claude/skills/task-observer/SKILL.md b/.claude/skill-updates/2026-10-27/.claude/skills/task-observer/SKILL.md
-index f6364eeab..cc3cd9a0e 100644
+index f6364eeab..da64b10a2 100644
 --- a/.claude/skills/task-observer/SKILL.md
 +++ b/.claude/skill-updates/2026-10-27/.claude/skills/task-observer/SKILL.md
 @@ -93,6 +93,14 @@ above).
@@ -950,9 +990,9 @@ index f6364eeab..cc3cd9a0e 100644
     return your own highest number before its "none" for any other branch is
 -   believed.
 +   believed. One `git grep` over every branch at once
-+   (`git grep -o -E '^### Observation [0-9]+' $(git for-each-ref
-+   --format='%(refname)' refs/remotes) -- <log path>`) answers in seconds
-+   and no path rewrite touches it.
++   (`git grep -h -o -E '^### Observation [0-9]+' $(git for-each-ref
++   --format='%(refname)' refs/remotes) -- <log path> | sort -u -k3,3n |
++   tail -3`) answers in seconds and no path rewrite touches it.
  
  **Log-write safety — never let a mutation span entry boundaries:** When
  mutating the log programmatically (marking entries ACTIONED/DECLINED,

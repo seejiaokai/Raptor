@@ -30,7 +30,8 @@ The cheaper helper's find-and-replace pairs match each spot's own line endings (
   not; a walk refuses to run with no address given, and a runner passes its address on (634).
 - **The walk helpers' pictures.** `pic(…, { around })` scrolls its subject into view, or refuses when the box is off the
   screen (603); a crop helper given several selectors boxes all of them (666); the Leave War walk helpers that set their
-  folder with `=` take it with `||=` (705).
+  folder with `=` take it with `||=` (705) — all but a re-walk's own setter file, whose one line names its `rewalk/`
+  folder on purpose.
 - **The check lock.** `gatelock.mjs` ends its child processes and releases the lock when it is itself stopped (607); and,
   while this checkout holds the lock for a run, an edit under `raptor-port/src` (or a document the document check reads)
   is refused — or the run works from a copy of the last commit — so the tree it checks cannot move under it (595, met

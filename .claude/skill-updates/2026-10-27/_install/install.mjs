@@ -3,10 +3,10 @@
 //   node .claude/skill-updates/2026-10-27/_install/install.mjs --rehearse
 //       copies every draft over its live file, runs `npm run docsize`, then restores ONLY those live paths from HEAD
 //       (by name — never the whole tree, which would also roll back the drafts: observation 542).
-//   node .claude/skill-updates/2026-10-27/_install/install.mjs --install [--skip <live path> ...] [--decline-asks]
+//   node .claude/skill-updates/2026-10-27/_install/install.mjs --install [--skip <live path> ...] [--decline <n>,<n>]
 //       copies the approved drafts over the live files (a path he did not approve is passed with --skip), marks each
 //       OPEN observation's status from _review/dispositions.md, and archives the entries resolved before today.
-//       ASK rows become DECLINED only with --decline-asks (his word); otherwise they stay OPEN.
+//       an ASK row becomes DECLINED only when named in --decline (his word, row by row); otherwise it stays OPEN.
 // The memory notes (_memory/additions.md) and the backlog additions (_docs/OUTSTANDING-items.md) are applied by hand
 // with the editor tool, after this script, on his approval.
 import fs from 'fs';
@@ -44,7 +44,7 @@ export const LIVE = [
 
 const args = process.argv.slice(2);
 const mode = args.includes('--rehearse') ? 'rehearse' : args.includes('--install') ? 'install' : null;
-if (!mode) { console.log('usage: --rehearse | --install [--skip <path> ...] [--decline-asks]'); process.exit(2); }
+if (!mode) { console.log('usage: --rehearse | --install [--skip <path> ...] [--decline <n>,<n>]'); process.exit(2); }
 const skip = new Set();
 for (let i = 0; i < args.length; i++) if (args[i] === '--skip') skip.add(args[++i]);
 for (const s of skip) if (!LIVE.includes(s)) { console.log('not a draft path:', s); process.exit(2); }
@@ -87,8 +87,6 @@ if (mode === 'rehearse') {
 const check = path.join(here, 'check-dispositions.mjs');
 execFileSync(process.execPath, [check], { cwd: root, stdio: 'inherit' });   // throws (exit 1) on any mismatch
 
-copyDrafts(LIVE.filter(p => !skip.has(p)));
-
 const logPath = path.join(root, '.claude/skill-observations/log.md');
 const before = fs.readFileSync(logPath, 'utf8');
 fs.writeFileSync(path.join(stage, '_install', 'log-backup.md'), before);   // the pre-write backup
@@ -98,7 +96,9 @@ for (const line of table.split('\n')) {
   const m = line.match(/^\| (\d+) \| ([A-Z]+) \| (.*) \|$/);
   if (m) rows.set(+m[1], { code: m[2], where: m[3] });
 }
-const declineAsks = args.includes('--decline-asks');
+// --decline 623,703 — the ASK rows he agreed to close, each named; an ASK row not named stays OPEN.
+const declined = new Set();
+for (let i = 0; i < args.length; i++) if (args[i] === '--decline') String(args[++i] || '').split(',').forEach(x => declined.add(+x));
 // The short names the dispositions table uses for each draft; a row naming a skipped draft stays OPEN.
 const SHORT = {
   'raptor-port/docs/walk-scripts.md': 'WS', 'raptor-port/docs/bug-check-order.md': 'BCO',
@@ -123,7 +123,7 @@ const out = parts.map((chunk, i) => {
   const n = +chunk.match(/^### Observation (\d+):/)[1];
   const r = rows.get(n);
   if (!r || r.code === 'OPEN') return chunk;
-  if (r.code === 'ASK' && !declineAsks) return chunk;
+  if (r.code === 'ASK' && !declined.has(n)) return chunk;
   if (namesSkipped(r.where)) return chunk;   // a draft it lands in was not approved: it stays OPEN
   const short = r.where.replace(/\s+/g, ' ').slice(0, 300);
   const status = r.code === 'ASK'
@@ -147,10 +147,12 @@ for (const c of chunks.slice(1)) {
 }
 const count = (s) => (s.match(/^### Observation \d+:/gm) || []).length;
 after = head + keep.join('');
+// The count check runs before anything is written, so a mismatch leaves every file as it was.
+if (count(after) + move.length !== count(before)) { console.log('COUNT MISMATCH — nothing written'); process.exit(1); }
 const archivePath = path.join(root, `.claude/skill-observations/archive/log-${TODAY}.md`);
 const archiveHead = fs.existsSync(archivePath) ? fs.readFileSync(archivePath, 'utf8') : before.split(/^## /m)[0];
+copyDrafts(LIVE.filter(p => !skip.has(p)));
 fs.writeFileSync(archivePath, archiveHead.replace(/\s*$/, '\n\n') + move.join(''));
-if (count(after) + move.length !== count(before)) { console.log('COUNT MISMATCH — log left as it was'); fs.writeFileSync(logPath, before); process.exit(1); }
 fs.writeFileSync(logPath, after);
 fs.writeFileSync(path.join(root, '.claude/skill-observations/last-review-date.txt'), TODAY + '\n');
 console.log(`statuses written: ${changed} · archived (resolved before today): ${move.length} · left in the log: ${count(after)}`);

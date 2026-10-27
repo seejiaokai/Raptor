@@ -203,9 +203,14 @@ force only once the main checkout (`C:\Users\User\projects\Raptor`) is on
 `main`:** a worktree chat started from the desktop app loads those from the
 main checkout, not from its own folder (14 Oct 26: a whole compaction set-up
 and a new skill were in force in no chat, the main checkout 208 commits
-behind). Tell him when that folder is not on `main`, and verify in a NEW chat
-by what the app itself reports (`get_usage`, the skill list) — never by
-running the script by hand (`raptor-port/docs/gates-and-deploy.md`).
+behind). When that folder is not on `main`: if `git -C
+C:\Users\User\projects\Raptor status --short` shows no tracked change, its
+branch has nothing unpushed (`git -C … status -sb` shows no "ahead"), and no
+chat is working in it, switch it (`git -C … switch main`) and say so;
+otherwise tell him in one plain line what holds it. The block's pick-up then
+tells the next chat to verify by what the app itself reports (`get_usage`,
+the skill list) — never by running the script by hand
+(`raptor-port/docs/gates-and-deploy.md`).
 
 **Merged between chats — sweep for it, whoever merged.** He merges on his own
 word, often after the chat that built the thing has ended. For every `## Now`

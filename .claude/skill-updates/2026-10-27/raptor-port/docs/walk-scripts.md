@@ -78,7 +78,9 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   that keeps its full words for a screen reader (clipped to 1px) beside a short form still counts both in `innerText`
   and `textContent`: read the children whose box is wider than 1px. The walk and the browser test both tripped on it;
   the pictures showed the right word.
-- **A word is found by the element that draws it.** To assert a word is shown, find a drawn element whose OWN trimmed
+- **A word is found by the element that draws it.** To assert a word is shown, find a drawn element — a box wider than
+  zero, inside the surface being checked: the app keeps hidden copies (the week behind the board, a phone's frozen
+  band) — whose OWN trimmed
   text equals the word — never a word-boundary pattern over a container's text, which runs words together ("DrifterOD",
   "…ODLATE…"; 24 Oct 26, four tries). Words a person typed stand in a box's `value`, never in `innerText`: read the
   `input` and `textarea` values too, and check that a row is there by an element keyed to it (its id-carrying button),
@@ -110,7 +112,8 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   fields (`!!b.show && b.show.visible === …` reports WRONG exactly when Show is rightly absent).
 - **A check over a list asserts the list's size first, and the premise that fills it** — `every(…)` over an empty list
   passes (21 Oct 26: a fault dropped the picked seat, the list emptied, and "0 of 0" passed).
-- **Every scroll step asserts that the scroll position moved**, and "in view" is read with `elementFromPoint` at the
+- **Every scroll step asserts that the scroll position moved** — of the scroller the step means to move, not the window
+  — and "in view" is read with `elementFromPoint` at the
   visible part's middle, never from the box alone: a scripted touch scroll (`Input.synthesizeScrollGesture`) left the
   Leave War grid where it was, and the app bar or a frozen heading can stand over a box that is "in view" (25 Oct 26).
 - **`elementFromPoint` proves a surface that takes presses** (a window, a calendar, a button). It skips one that takes
@@ -192,7 +195,8 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   `scripts/handpass/ab/ab-env.mjs` does — or the pictures go to the driver's default folder in another checkout), and
   the evidence sheet writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
   **Before a re-walk, check the folder line of every helper file it loads:** `grep -n "LW_OUT =\|HP_SHOTS =" <its
-  files>` must print nothing (each must read `||=`) — a helper that sets its folder with a plain `=` writes the re-walk
+  files>` must print nothing but the re-walk's own setter file (its one line naming the `rewalk/` folder) — every other
+  helper must read `||=` — a helper that sets its folder with a plain `=` writes the re-walk
   over the first walk's pictures (25 Oct 26, twice). Run a re-walk from a small script FILE that sets the folder
   first, never with the variable typed into each command.
 - **A re-walk runs only the steps of the places the change touched.** Give the script a step filter (`ONLY=w2`) and use

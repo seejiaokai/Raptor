@@ -168,7 +168,7 @@ never pay or money).
 | D78 | 23 Sep 26 | Parallel chats merge one at a time, and the later one adapts. |
 | D73 | 23 Sep 26 | No guide yet for bringing a whole separate app in as a new tab — write it only if a third app is brought in; notes #120 and #122 stay open for that job. |
 | D72 | 23 Sep 26 | The bug-testing list is retired. |
-| D70 | 23 Sep 26 | Working-guide changes are read before owner approval, one round each, never by their writer: by Astra and Sol 6.1 (D590 — Fable's round went to Sol); the 13 Oct 26 skill-notes review's by one fresh, blind Opus reader (D810). — changed by D1414, D941, D811, D810, D590, D496 |
+| D70 | 23 Sep 26 | Working-guide changes are read before owner approval, one round each, never by their writer: by Astra and Sol 6.1 (D590 — Fable's round went to Sol); the 13 Oct 26 and 27 Oct 26 skill-notes reviews' by one fresh, blind Opus reader (D810, D1414). — changed by D1414, D941, D811, D810, D590, D496 |
 | D69 | 23 Sep 26 | Write the state into the repo as you go (D68); when the work closes, condense what it wrote in its own docs-only commit, never inside a fix — a saved context is a summary (decisions, state, next step), never the conversation. |
 | D68 | 23 Sep 26 | Correctness beats context economy: never skip or shrink a read to save context. |
 | D67 | 23 Sep 26 | Opus 5.5 plans and builds; Astra reviews it, Sol 6.1 second where two readers are required, Fable on call (D590); when Codex plans or builds, Opus reviews; never their own artifact — but a fresh, blind Opus reader may read code Opus wrote (D790). — changed by D790, D590, D496, D353 |

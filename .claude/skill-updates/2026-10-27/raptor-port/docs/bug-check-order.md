@@ -344,8 +344,8 @@ again under load; a wrong order costs a false finding or a mixed walk):
 |---|---|---|
 | A walker | the served build folder | nothing in the tree |
 | A code reader | the source it reads (or the commit it is handed) | nothing — though it may RUN a unit file from the tree |
-| A break test | — | the source, for minutes |
-| A build, or a browser test (which builds) | — | the built folder |
+| A break test | the whole tree until it prints DONE — no edit, build, browser test or commit meanwhile (`docs/walk-scripts.md` §9) | the source, for minutes |
+| A build, or a browser test (which builds) | the source it builds | the built folder |
 | A unit test | the source | nothing |
 | A document edit | — | the documents the document check reads |
 
@@ -768,7 +768,8 @@ and put it on the owner's look card.
 - **A stand-in is believed only once it is calibrated** — a forced font, a stand-in keyboard, an injected metric. Run it
   on a state the real environment passed and on one it failed: it may judge a new case only if it passes the first and
   fails the second (21 Oct 26: a forced Verdana wrapped a row GitHub had passed; 25 Oct 26: three keyboard fixes passed
-  a stand-in that had never reproduced his fault). §7.11 lesson 7 is where this ends for a motion the phone makes.
+  a stand-in that had never reproduced his fault). For a motion the phone itself makes, even a calibrated stand-in
+  proves nothing (§7.11 lesson 7).
 - **A fault one engine shows and the suite's engine cannot:** find the metric that differs and inject it in the suite's
   own engine — Safari's shorter line for 12px text, as `line-height: 14px` on the chips — stating the rule in its
   engine-free form ("as tall as the leave buttons, whatever line the fonts give"): red before the fix, green after,

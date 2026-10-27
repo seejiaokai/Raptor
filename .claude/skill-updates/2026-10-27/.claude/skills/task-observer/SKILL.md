@@ -234,9 +234,9 @@ act of memory.
    as "no entries there". Run it on the CURRENT branch first — it must
    return your own highest number before its "none" for any other branch is
    believed. One `git grep` over every branch at once
-   (`git grep -o -E '^### Observation [0-9]+' $(git for-each-ref
-   --format='%(refname)' refs/remotes) -- <log path>`) answers in seconds
-   and no path rewrite touches it.
+   (`git grep -h -o -E '^### Observation [0-9]+' $(git for-each-ref
+   --format='%(refname)' refs/remotes) -- <log path> | sort -u -k3,3n |
+   tail -3`) answers in seconds and no path rewrite touches it.
 
 **Log-write safety — never let a mutation span entry boundaries:** When
 mutating the log programmatically (marking entries ACTIONED/DECLINED,
