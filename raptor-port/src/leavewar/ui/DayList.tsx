@@ -117,7 +117,7 @@ function readOnly(id: string, row: any, raw = false): ReactElement | null {
 }
 
 export function DayListSheet({
-  personId, callsign, date, view, role, viewer, period, onMove, onClose,
+  personId, callsign, date, view, role, viewer, period, onMove, onClose, note,
 }: {
   personId: string
   callsign: string
@@ -130,8 +130,11 @@ export function DayListSheet({
    *  modality and I can choose what to move"): the matrix closes the list and carries exactly this record, by its id. */
   onMove?: (rec: { personId: string; date: string; id: string }) => void
   onClose: () => void
+  /** a note the window it replaced was showing — the one-day window's "kept pending — <the reason>" when the bid it placed
+   *  made this list open in its place (the fixes' round 3b): it stands here until the next action says something else */
+  note?: string
 }) {
-  const [msg, setMsg] = useState('')
+  const [msg, setMsg] = useState(note ?? '')
   /* the award being edited in place, and its three boxes */
   const [editing, setEditing] = useState<string | null>(null)
   const [eWhy, setEWhy] = useState('')

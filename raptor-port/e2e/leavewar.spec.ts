@@ -8198,3 +8198,30 @@ test('with "Pick dates…" open, a tap on the empty card beside or under the cal
     }
   }
 })
+
+/* THE FIXES' ROUND 3b (the rounds 2–3 walk's G3): in the ONE-DAY window, "Approve what I enter" on, leave placed on a day from a
+   man's posting-out date is rightly kept pending — but the day then holds leave outside his time in the squadron, so the
+   window gave way to the day's list at once and the reason it was kept pending ("He posts out on …: refuse or delete it")
+   was never seen (lesson 3 of the order's §7.11: what tells the person it happened). The real route, as the walker took it:
+   the posted-out day's "Place leave or OIL here instead…", the tick on, LL. */
+test('one-day window, "Approve what I enter" on a day after his posting-out date: the reason it stays pending is on screen (R3b)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="month-JUN"]').click()
+  await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
+  await pressMore(page, 'bid-postout')
+  await page.locator('[data-testid="po-overseas"]').click()          // off the manpower, nothing else: he stays on the grid
+  await page.locator('[data-testid="po-confirm"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
+  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  await page.locator('[data-testid="postout-place"]').click()
+  const tick = page.getByTestId('bid-approve-tick')
+  await expect(tick).toBeVisible()
+  if ((await tick.getAttribute('aria-checked')) !== 'true') await tick.click()
+  await page.getByTestId('bid-LL').click()
+  /* his balance may go below zero: the same leave again goes ahead (the window's own ask) */
+  if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
+  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun: refuse or delete it/), 'the reason stands where he looks after the press').toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun: refuse or delete it/), '…and stays, settled').toBeVisible()
+})

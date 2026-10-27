@@ -80,6 +80,7 @@ export function BidPicker({
   current,
   dates,
   onWrote,
+  onKept,
   wouldLeave,
   dayLine,
   onPostOut,
@@ -112,6 +113,11 @@ export function BidPicker({
    *  entered. Reported rather than set here: the selection belongs to the
    *  matrix, which is the only thing that can keep every row in step. */
   onWrote?: (code: string) => void
+  /** Told the note of a placing whose approval was refused and KEPT PENDING ("Sat 16 Jun kept pending — He posted out on
+   *  15 Jun: refuse or delete it."), so it stands where he looks next: on a day outside the man's time in the squadron the
+   *  bid placed there makes the matrix open the day's list in this window's place, and the note would go with it (the
+   *  fixes' round 3b — the rounds 2–3 walk's G3; lesson 3 of the order's §7.11, what tells the person it happened). */
+  onKept?: (note: string) => void
   /** What the balance would read after this write, or `null` for leave that
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
@@ -484,7 +490,9 @@ export function BidPicker({
       /* the door's own reason where it gave one ("He posts out on 1 Mar: refuse or delete it" — the fixes' round 2, R2-4),
          several each a sentence of its own (round 3, R3-4) */
       if (r.pending.length) parts.push(`${r.pending.map(p => shortDate(p.date)).join(', ')} kept pending — ${r.why.length ? r.why.join('. ') : 'not approved (a locked week, or leave or a medical already there)'}`)
-      return setNote(parts.join('. ') + '.')
+      const said = parts.join('. ') + '.'
+      if (r.pending.length) onKept?.(said)
+      return setNote(said)
     }
 
     if (!span) {

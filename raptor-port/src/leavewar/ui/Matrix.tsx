@@ -334,6 +334,13 @@ export function Matrix() {
   const [placeAt, setPlaceAt] = useState<string | null>(null)
   const openKey = open ? `${open.id}|${open.date}` : ''
   const placing = !!open && placeAt === openKey
+  /* WHAT THE ONE-DAY WINDOW WAS SAYING WHEN THE DAY'S LIST TOOK ITS PLACE (the fixes' round 3b — the rounds 2–3 walk's G3):
+     leave placed with "Approve what I enter" on a day from a man's posting-out date is kept pending — and the day, now
+     holding leave outside his time in the squadron, opens the day's list in the window's place, so the reason ("He posts
+     out on 7 Jan: refuse or delete it") went with the window and nothing on screen said why. Kept by CELL, handed to the
+     list that opens there, gone once another cell (or none) is open. */
+  const [keptNote, setKeptNote] = useState<{ key: string; text: string } | null>(null)
+  useEffect(() => { setKeptNote(k => (k && k.key === openKey ? k : null)) }, [openKey])
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
@@ -4361,6 +4368,7 @@ export function Matrix() {
             setMoveSel({ people: [rec.personId], from: rec.date, to: rec.date, cells: [{ personId: rec.personId, date: rec.date }], only: [rec] })
           }}
           onClose={close}
+          note={keptNote && keptNote.key === openKey ? keptNote.text : undefined}
         />
       )}
       {open && canRemark && (
@@ -4787,6 +4795,7 @@ export function Matrix() {
              mode — the drag-selection's, so a single chip and a block move by one machine and one set of landing
              rules (moveCells: refused whole with its reason, the dotted mark once bidding is closed, lands
              undecided). A day that holds nothing this screen may move says so on the sheet instead. */
+          onKept={text => setKeptNote({ key: openKey, text })}
           onMove={cells => {
             /* the day tapped, or every day of a picked range (D335) — the records on them this role may move (D265) */
             if (!movableRecords(cells).length) return 'There is nothing here that can be moved.'
