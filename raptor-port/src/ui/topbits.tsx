@@ -26,6 +26,7 @@ import { me } from '../state/perms'
 import { noticesFor, noticeWords, noticeAge, holidayLineOn, noticeSpan, isWarNotice, type Notice } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
 import { useVersion } from './useStore'
+import { holdPageScroll } from './floatwin'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
 
 /* ---- the Sync chip (a demonstration toggle — there is no server yet; the one state for both bars) ---- */
@@ -164,6 +165,14 @@ export function BellList() {
     document.addEventListener('keydown', key)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key) }
   }, [open])
+  /* A FINGER ON THE BELL NEVER SCROLLS THE PAGE BEHIND IT (owner D686; the fixes' M8 — the re-walk's B-F1): its lines
+     scroll inside it, but a finger that began on its foot ("↓ 3 more", Mark all read) and dragged moved the page behind
+     it. The one body every window holds a finger with (floatwin.ts holdPageScroll), on the whole bell, its foot included. */
+  useEffect(() => {
+    const n = ref.current
+    if (!open || !n) return
+    return holdPageScroll(n)
+  }, [open, !!at])
   /* A LONG LIST KEEPS ITS FOOT IN SIGHT AND SAYS WHAT IS BELOW (the walk's C-F4, 27 Oct 26): the lines scroll inside
      the list, "Mark all read" stands under them, and "↓ 3 more" counts the lines not wholly in view below — the Leave
      War day panel's cue (D1295) — gone once the list is at its end */

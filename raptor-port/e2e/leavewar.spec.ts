@@ -7975,7 +7975,12 @@ test('the slim Approvals bar is the drawing’s plain bar: no cyan outline, Back
 
 /* HIS D1441 (28 Oct 26, question 18): on a phone Approve and Refuse take his drawing's letters (r22-5-phone — 12.5px, bold),
    so at his iPhone's width every request's dates stand on one line beside them; the desktop's buttons keep D1427's. (In
-   WebKit's wider letters it is measured by scripts/handpass/lw-m4-btnwidth.mjs at 402, 390 and 360.) */
+   WebKit's wider letters it is measured by scripts/handpass/lw-m4-btnwidth.mjs at 402, 390 and 360.)
+   WHERE THE ONE-LINE FIT IS ASKED (the fixes' M12, 28 Oct 26): the app loads no fonts, so whether "23 Jan AM ›" fits one
+   line is a property of the LETTERS ON THE DEVICE, not of the app — GitHub's Linux machines draw wider letters and the
+   half-day dates take two lines there, where Windows' Chromium and WebKit (the engines the fit was measured in, and his
+   iPhone's) keep them on one. So the drawing's letters are checked everywhere; on every machine no date may break INSIDE a
+   word (the button's words keep whole); and the one-line fit itself only on Windows, where it was measured. */
 test('on a phone Approve and Refuse are in the drawing’s letters and every date stays on one line at 402 (D1441)', async ({ page }) => {
   test.skip(!isPhone(), 'the phone’s two-line request')
   await lwRole(page, 'admin')
@@ -7984,14 +7989,29 @@ test('on a phone Approve and Refuse are in the drawing’s letters and every dat
   await expect(page.getByTestId('approvals-page')).toBeVisible()
   const g = await page.evaluate(() => {
     const ok = getComputedStyle(document.querySelector('[data-testid="appr-approve"]')!)
-    const broken = [...document.querySelectorAll('[data-testid="appr-dates"]')].filter(d => {
+    const dates = [...document.querySelectorAll('[data-testid="appr-dates"]')]
+    const broken = dates.filter(d => {
       const s = getComputedStyle(d); const lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.25
       return d.getBoundingClientRect().height > lh * 1.5
     }).map(d => d.textContent)
-    return { size: ok.fontSize, weight: ok.fontWeight, broken }
+    /* a word split over two lines: its letters' boxes stand on more than one line */
+    const splitWords: string[] = []
+    for (const d of dates) {
+      const walk = document.createTreeWalker(d, NodeFilter.SHOW_TEXT)
+      for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+        const text = n.textContent ?? ''
+        for (const m of text.matchAll(/\S+/g)) {
+          const r = document.createRange(); r.setStart(n, m.index!); r.setEnd(n, m.index! + m[0].length)
+          const tops = new Set([...r.getClientRects()].filter(x => x.width > 0).map(x => Math.round(x.top)))
+          if (tops.size > 1) splitWords.push(`${m[0]} in "${d.textContent}"`)
+        }
+      }
+    }
+    return { size: ok.fontSize, weight: ok.fontWeight, broken, splitWords }
   })
   expect({ size: g.size, weight: g.weight }, 'the drawing’s letters').toEqual({ size: '12.5px', weight: '700' })
-  expect(g.broken, 'dates on two lines').toEqual([])
+  expect(g.splitWords, 'a word of a date broken across two lines').toEqual([])
+  if (process.platform === 'win32') expect(g.broken, 'dates on two lines (the fit as measured, in Windows’ letters)').toEqual([])
 })
 
 /* The re-check before the re-walk (28 Oct 26, drawing D1439 at 360 wide): on a narrow phone "LOWEST AVAIL" ran into "PLACED"
@@ -8015,4 +8035,80 @@ test('on a phone no two Approvals headings run into each other, at 402, 390 and 
     })
     expect(touching, `${width} wide: headings touching`).toEqual([])
   }
+})
+
+/* THE FIXES' M4 (the re-walk's B-F3, 28 Oct 26 — a decision on the wrong man): on a phone, with "Pick dates…" open (the
+   calendar inline above the list), a finger on a line's Approve closed the calendar on its press, the list moved up under
+   the finger and the click landed on ANOTHER man's line, approving his request. D1421: nothing moves under his finger, and
+   a press must never decide a line he did not press. A press outside the open calendar only closes it — the app's "a
+   click-open popup closes on a click outside it" (4 Sep 26) — on a phone by a finger as on a desktop by the mouse. */
+test('with "Pick dates…" open, a press on a line’s Approve only closes the calendar — no line is decided (M4, D1421)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const sub = async () => (await page.getByTestId('appr-sub').textContent())!.trim()
+  const before = await sub()
+  await page.getByTestId('appr-pick').click()
+  await expect(page.getByTestId('appr-range')).toBeVisible()
+  /* the first line's Approve, where it stands with the calendar open — brought into view as a finger would scroll to it */
+  const btn = page.locator('[data-testid="approvals-page"] [data-testid="appr-approve"]').first()
+  await btn.scrollIntoViewIfNeeded()
+  const b = (await btn.boundingBox())!
+  if (isPhone()) await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2)
+  else await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2)
+  await expect(page.getByTestId('appr-range'), 'the calendar closes').toHaveCount(0)
+  await page.waitForTimeout(400)
+  expect(await page.locator('[data-testid="approvals-page"] .appr-ok.lit, [data-testid="approvals-page"] .appr-no.lit').count(), 'no line decided').toBe(0)
+  expect(await sub(), 'the pending count unchanged').toBe(before)
+})
+
+/* THE FIXES' M8 (the re-walk's B-F1): with a long bell open on a phone, a finger that began on its foot ("↓ N more", the
+   strip under the lines) and dragged scrolled the PAGE behind it. D686: a finger on a window never scrolls the page behind
+   it — the bell's list scrolled its own lines already; its foot is the bell too. A real touch drag, by the browser's own
+   touch events. */
+test('a finger dragged from the bell’s foot never scrolls the page behind it (M8, D686)', async ({ page }) => {
+  test.skip(!isPhone(), 'a finger on a phone')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await lwRole(page, 'admin')
+  await page.evaluate(() => {
+    const w = window as any
+    const now = Date.now()
+    for (let i = 0; i < 15; i++) w.NOTICES.push({ id: `e2e-foot-${i}`, to: 'bane', by: 'stiff', at: now - i * 60_000, iid: '', name: 'Your leave', day: '2026-01-1' + (i % 10), what: [{ k: 'rmk' }] })
+    window.scrollTo(0, 0)
+  })
+  await page.locator('.bellbtn:visible').first().click()
+  await expect(page.getByTestId('bell-more')).toBeVisible()
+  const f = (await page.getByTestId('bell-more').boundingBox())!
+  const x0 = Math.round(f.x + f.width / 2), y0 = Math.round(f.y + f.height / 2)
+  const y = () => page.evaluate(() => window.scrollY)
+  const before = await y()
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y: y0, id: 1 }] })
+  for (let i = 1; i <= 8; i++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0, y: y0 - 36 * i, id: 1 }] })
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await cdp.detach()
+  await page.waitForTimeout(400)
+  expect(await y(), 'the page behind the bell did not move').toBe(before)
+})
+
+/* THE FIXES' M13 (D1440 — "back to his drawing" r22-6-phone): measured on the drawing's own pixels (402 × 874 at 3×), its slim
+   bar's box stands 8px in from each edge, 46 tall, its foot 10 above the screen's (walker B's "4 and 50" read the drawing's
+   pink marking ring round it). The bar on a phone takes those, Back and ✕ keeping their 34px press area (D487). */
+test('on a phone the slim Approvals bar stands where the drawing has it: 8px in, 46 tall, 10 above the foot (M13, D1440)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s bar')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const r = document.querySelector<HTMLElement>('[data-testid="appr-slim"]')!.getBoundingClientRect()
+    const h = (s: string) => Math.round(document.querySelector<HTMLElement>(s)!.getBoundingClientRect().height)
+    return { left: Math.round(r.left), right: Math.round(innerWidth - r.right), tall: Math.round(r.height), foot: Math.round(innerHeight - r.bottom), back: h('[data-testid="appr-back"]'), x: h('[data-testid="appr-slim-x"]') }
+  })
+  expect({ left: g.left, right: g.right, tall: g.tall, foot: g.foot }).toEqual({ left: 8, right: 8, tall: 46, foot: 10 })
+  expect(g.back, 'Back keeps its press area').toBeGreaterThanOrEqual(34)
+  expect(g.x, '✕ keeps its press area').toBeGreaterThanOrEqual(34)
 })

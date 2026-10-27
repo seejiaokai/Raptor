@@ -123,6 +123,21 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       const t = e.target as Node | null
       if (t && (pickRef.current?.contains(t) || pickBtn.current?.contains(t))) return
       setPicking(false)
+      /* …AND THAT PRESS ONLY CLOSES IT (the fixes' M4 — the re-walk's B-F3): on a phone the calendar stands inline above the
+         list, so closing it on the press moved the list up under the finger, and the click that ends the press landed on
+         ANOTHER man's Approve — a decision he never made (D1421: nothing moves under his finger). The click this press
+         makes is taken here, before anything under it can act — on a desktop by the mouse as on a phone by a finger: the
+         click that follows THIS press's lift, and only that one; a press that makes no click (a scroll) leaves nothing
+         waiting for the next. */
+      const eat = (c: Event) => { c.preventDefault(); c.stopPropagation(); done() }
+      const lift = () => { document.removeEventListener('pointerup', lift, true); document.addEventListener('click', eat, true) }
+      const done = () => {
+        document.removeEventListener('pointerup', lift, true); document.removeEventListener('click', eat, true)
+        document.removeEventListener('pointerdown', done, true); clearTimeout(timer)
+      }
+      const timer = setTimeout(done, 800)
+      document.addEventListener('pointerup', lift, true)
+      setTimeout(() => document.addEventListener('pointerdown', done, true), 0)
     }
     const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); setPicking(false); pickBtn.current?.focus() } }
     document.addEventListener('pointerdown', down, true)
