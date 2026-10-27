@@ -20,15 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/kbs-fable -->
-### `claude/kbs-fable` — the keyboard on his iPhone, Fable's round ([KBS-PHONE-SLIDE], D1366, his D1412) — written 27 Oct 26, verify before use
-- **After a compaction:** re-read this block, `raptor-port/docs/handpass/2026-10-27-kbs-carried.md` and `raptor-port/src/ui/kbscroll.ts` before the next change.
-- **Where it started:** his call for Fable (D1366) with four recordings and his words of 27 Oct 26, recorded as D1412 (the box rises in step with the keys, nothing else jerks, no window shrinks). Branch cut from `main` at ab952f4c8 (pull request 569's branch had merged).
-- **Built and checked (27 Oct 26):** the app leaves a window to the phone — the hold, the pin, the bringing down, the pan compensation and the glide of rounds 1–6 are gone; a window is raised only as a last resort. Red first (10 unit, 10 browser cases), 39 / 39 and 18 / 18 on the fix, the walk 7 / 7 (`scripts/handpass/kbs-carried-walk.mjs`, pictures `docs/img/handpass/2026-10-27-kbs-carried/`), build and rulecheck green; the sheet above. A fresh blind Opus read of the finished code (D790): its result in the sheet.
-- **His iPhone look (27 Oct 26, 09:24): "the scroll is now fixed"; his "merge live" (27 Oct 26), Cancel / Add left to the phone (D1413).** Pull request 579 merges on his word once GitHub's run of these closing records is green; [KBS-PHONE-SLIDE] archived, the Leave War sheets' question filed as [KBS-LW-SHEETS].
-- **Named under D852, not changed (filed in [KBS-PHONE-SLIDE]):** the Leave War's sheets and bid windows place themselves at the pan's word (`leavewar/ui/Sheet.tsx useKeyboardInset`) — the same jump-then-slide class by my reading; if he sees it there, the same design (the phone carries the sheet) is drawn for him before it is built.
-- **Pick up here:** merged (or merging) on his "merge live" of 27 Oct 26 — do not continue this branch. If he later sees a keyboard fault anywhere: a fresh `?kbdebug` recording of that one screen, read frame by frame with `scripts/handpass/video-frames.mjs` at 1/60 s and a landmark tracked numerically, never by eye alone; the Leave War's sheets are [KBS-LW-SHEETS].
-- **Opening line:** Level this chat with main: git fetch origin, git switch claude/kbs-fable (if refused because another worktree holds it: git switch --detach origin/claude/kbs-fable, then git switch -C claude/kbs-fable). Then read HANDOFF.md's claude/kbs-fable block and raptor-port/docs/handpass/2026-10-27-kbs-carried.md, and carry on from "Pick up here".
+<!-- now:claude/observation-log-review-triage-7f6090 -->
+### `claude/observation-log-review-triage-7f6090` — the skill-notes review of 13–26 Oct 26 (152 open notes), then M4 — written 27 Oct 26, verify before use
+- **After a compaction:** re-read this block, `.claude/skill-updates/2026-10-27/_review/dispositions.md` and the step in hand's files before the next change; note the compaction here with its time.
+- **Where it started:** his opening line, 27 Oct 26: triage the open notes of `.claude/skill-observations/log.md` grouped by guide, drafts staged under `.claude/skill-updates/2026-10-27/` (never over the live guides), one fresh, blind Opus reader, then put to him grouped by guide in rounds of at most four (recorded as D1414); after his approval and the merge, the Leave War overhaul's M4 (D1404) on its own branch. Branch cut from `main` at 582eeb22f, upstream unset.
+- **Step in hand:** all 152 notes dispositioned (`_review/dispositions.md`, checked by `_install/check-dispositions.mjs`: APPLY 100, REFLECTED 28, FILED 15, MEMORY 5, ASK 2, OPEN 2); drafts of 19 guides staged with `_review/diff.patch`, `_memory/additions.md`, `_docs/OUTSTANDING-items.md`, `_install/install.mjs` (`--rehearse`, `--install`); the fresh Opus reader next (`_review/brief.md` → `_review/opus-reader.md`), then his rounds. Also this chat: D1402 and D1403 archived as spent; two merged blocks removed (the keyboard job, the load count — residue filed as [KBS-LW-SHEETS] and [LOAD-MOVES-ROW-DAY]); the scheduler rulings' tripwire 111000 → 115000 (main had crossed it with D1412).
+- **Branch:** `claude/observation-log-review-triage-7f6090`; no pull request yet; not released.
+- **Questions waiting for him:** none yet.
+- **Pick up here:** finish the step in hand; nothing is copied over a live guide before his approval (D1414).
+- **Notes:** ruling numbers to D1414; observations to 721.
 <!-- /now -->
 <!-- now:claude/trk-scrollbars -->
 ### `claude/trk-scrollbars` — the Tracker's stray scroll bars ([TRK-STRAY-SCROLLBARS], his D1405) — written 27 Oct 26, verify before use
@@ -55,18 +55,6 @@ the later merge keeps both (D78).
 - **Next:** his look and "merge live" for 574, 575 and this branch's records; then the overhaul's **M4** in a fresh chat (D1404); [KBS-PHONE-SLIDE] waits for Fable and his recording (D1366).
 - **Opening line (M4):** Start from main: git fetch origin, git switch --detach origin/main. Then read HANDOFF.md and OUTSTANDING.md [LW-OVERHAUL], and the build plan raptor-port/docs/superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md (M4 — deciding), and plan the Leave War overhaul's M4 (D1404). Check Remote Control is on for this chat and switch it on if not.
 - **Notes:** ruling numbers to D1404; observations to 719; design lessons to 60.
-<!-- /now -->
-<!-- now:claude/lw-load-reland-rid -->
-### `claude/lw-load-reland-rid` — the load's "Discard N edits" over a request moved onto the Ground Programme across days ([LW-LOAD-RELAND-RID]); FULL-checked, MERGED LIVE on his "Yes merge live" of 26 Oct 26 (PR 573) — written 26 Oct 26, verify before use
-- **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.
-- **Where it started:** levelled with `main` after PR 572 merged live (its block removed here — merged, nothing open but this item); his pick "Yes" to the count fix, 26 Oct 26.
-- **Built (red first):** measured, the load is not a no-op — the overseas duty goes back under Unavailable, so the right count is 1. Two faults made "Discard 2 edits": → Ground (`engine/slots.ts acceptInput`) named a new row with a fresh id where the working-out names it `r`+id (`overlay.ts landedRid`) — now the same; the count's dry run (`engine/publish.ts dayDiscardCount`) missed the load's reconcile — now mirrored. The load's note (`engine/drafts.ts inputsLeftSaid`) says "moved onto the programme since publishing" for an input the day went out with. Tests `ui/odreject.test.tsx` (+2), each fix red when taken out.
-- **Checked:** 184 affected unit files (4031) on his PC; the walk `scripts/handpass/lw-reland-walk.mjs` 5 PASS, re-walk 6 PASS (R3 for the read's F2) desk 1536 + phone 402 (port 4181); evidence sheet `raptor-port/docs/handpass/2026-10-26-lw-load-reland-rid.md`. The fresh Opus code read found 3: F1 (a dead row in the saved week — `holderbase.ts baseRowIds`) and F2 (the load's note after the working-out — `drafts.ts loadMovedNow`) fixed red-first; F3 filed for him as [LOAD-MOVES-ROW-DAY] (a load landing a course on another published day — a question, D994). The fix commit's narrow read found 1 (the note's "again") — fixed red-first.
-- **Branch:** `claude/lw-load-reland-rid` (upstream its own — it was cut tracking `origin/main`, unset at once); PR https://github.com/seejiaokai/Raptor/pull/573 — Auto-fix was switched on by the app and switched OFF (D1090).
-- **Gates:** GitHub's run of PR 573 is the full check (D1086).
-- **Pick up here:** this branch is merged — do not continue it; [LW-LOAD-RELAND-RID] archived (the sheet names it). Next: his pick from the backlog; [KBS-PHONE-SLIDE] is Fable's after his weekly reset (D1366); [LOGIN-OPENS-TODAY] waits for testing (D1383).
-- **Opening line:** Level this chat with main: git fetch origin, git merge --ff-only origin/main. Then read HANDOFF.md — the claude/lw-load-reland-rid block under ## Now (merged live) — and carry on from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
-- **Notes:** ruling numbers to D1401 (none this chat); design lessons to 59; observations to 713.
 <!-- /now -->
 ## Next, in order
 

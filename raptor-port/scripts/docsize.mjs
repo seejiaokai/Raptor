@@ -291,7 +291,10 @@ const RULING_BYTES = [
      (D136); the file stays one (D976). Room, not a target. */
   /* scheduler 107000 -> 111000 (21 Oct 26, [BOARD-SIDE-WIDTH]): 107,280 bytes with D1113-D1118 - his right-panel rulings,
      live; none is trimmed (D136); the file stays one (D976). Room, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 111000],
+  /* scheduler 111000 -> 115000 (27 Oct 26, the skill-notes review): 111,099 bytes — D1412 (the keyboard's feel, 27 Oct
+     26) took it over on main, where a docs-only change then failed this check; live, none trimmed (D136), the file stays
+     one (D976). Room, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 115000],
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
