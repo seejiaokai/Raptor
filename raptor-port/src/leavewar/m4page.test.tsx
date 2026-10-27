@@ -97,6 +97,26 @@ describe('the Approvals page’s rows', () => {
     expect(within(line()).getByTestId('appr-approve').textContent).toBe('Approved')
     expect(reqs('bane', TUE)).toEqual([])
   })
+  /* his D1430 (27 Oct 26, "all as recommended"): back to the drawing — a decided line's kind box shows the decision as the
+     grid draws it, and a thin line stands between New and the dates; D1435: a decide button holds its longer word's room */
+  it('D1430 a decided line\'s box is the grid\'s approved or refused box; a thin line stands between New and DATES', () => {
+    ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    const line = () => linesOf('bane')[0]!
+    const box = () => within(line()).getByTestId('appr-box').className
+    expect(box()).toMatch(/\bs-w\b/)
+    fireEvent.click(within(line()).getByTestId('appr-approve'))
+    expect(box()).toMatch(/\bs-a\b/)
+    fireEvent.click(within(line()).getByTestId('appr-refuse'))
+    expect(box()).toMatch(/\bs-r\b/)
+    const row = screen.getByRole('group', { name: 'Which requests to show' })
+    const kids = [...row.children]
+    const vs = row.querySelector('.appr-vs')
+    expect(vs, 'the divider is drawn').not.toBeNull()
+    expect(kids.indexOf(vs!), 'between New and DATES').toBe(kids.indexOf(screen.getByTestId('appr-new')) + 1)
+    expect(within(line()).getByTestId('appr-approve').querySelector('[data-long="Approved"]'), 'Approve holds "Approved"\'s room').not.toBeNull()
+    expect(within(line()).getByTestId('appr-refuse').querySelector('[data-long="Refused"]'), 'Refuse holds "Refused"\'s room').not.toBeNull()
+  })
   it('★8 two lines that join while drawn are ONE line — no greyed "No longer there"', () => {
     ranger(); expect(setCell('bane', MON, 'LL')).toBe(true); expect(setCell('bane', WED, 'LL')).toBe(true); saber()
     T(9)
@@ -114,6 +134,18 @@ describe('the Approvals page’s rows', () => {
     act(() => { expect(setCell('bane', TUE, 'LL')).toBe(true) })            // he places a pending bid on Ranger's row
     act(() => { ranger(); expect(setCell('bane', WED, 'OL')).toBe(true); saber() })
     expect(screen.getByTestId('appr-new').textContent).toContain('New 1')
+  })
+
+  /* his D1430 (the header, as drawn r22-2: "15 pending · 3 new since you last looked, Wed 7 Jan 16:40"): the "since" words
+     follow the count of new ones — with nothing new they would have said the pending ones came since he last looked */
+  it('D1430 the header names when he last looked beside the new count, and only there', () => {
+    T(9); render(<ApprovalsPage shown={true} />).unmount()                     // his first look, 09:00
+    T(10); act(() => { ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber() })
+    T(11); const second = render(<ApprovalsPage shown={true} />)
+    expect(screen.getByTestId('appr-sub').textContent).toMatch(/^\d+ pending · 1 new since you last looked, Wed 15 Jul 09:00$/)
+    second.unmount()
+    T(12); render(<ApprovalsPage shown={true} />)                              // nothing new since 11:00
+    expect(screen.getByTestId('appr-sub').textContent).toMatch(/^\d+ pending$/)
   })
 
   /* the walk's small finds (27 Oct 26): "New 0" kept its cyan dot — a dot that says something new with nothing new; and one

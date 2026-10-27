@@ -6,7 +6,7 @@ import os
 HERE = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(HERE, '..', '..', 'docs')
 DRAW = os.path.join(DOCS, 'mock', 'lw-overhaul', 'full')
-SBS = os.path.join(DOCS, 'img', 'handpass', '2026-10-27-lw-m4', 'sbs')
+SBS = os.path.join(DOCS, 'img', 'handpass', '2026-10-27-lw-m4', os.environ.get('SBS_DIR', 'sbs'))  # SBS_DIR=sbs-after: the build after his answers
 WALK = os.path.join(DOCS, 'img', 'handpass', '2026-10-27-lw-m4')
 OUT = os.path.join(SBS, 'pairs')
 os.makedirs(OUT, exist_ok=True)

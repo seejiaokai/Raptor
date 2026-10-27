@@ -281,6 +281,18 @@ const actor = (role: Actor['role'], personId?: string, principal?: string): Acto
 describe('the command gate (cmdAuthorize) — every command the app registers', () => {
   beforeAll(() => { initStore(); lwHistInit() })
 
+  /* the other way round (M4's bug check, 27 Oct 26): `lw.apprseen` had its row here but was never declared to the command
+     layer, which refuses a type it was never told of — so Approvals never saved when an admin opened it, and "New" and
+     "since you last looked" counted from the start of time. A row whose type the app never declares is a door that only
+     looks open. */
+  it('every command with a row is one the app declares to the command layer', () => {
+    const declared = new Set(registeredTypes())
+    /* declared by parts this suite does not start, each for its reason: the Tracker's own commands (its module declares them
+       when it loads); Undo's restore (installGlobalUndo); and the war's follow-up notice, which only ever runs inside an
+       Undo or a Redo — a command already let through — so it joins that one and is never asked for on its own */
+    const elsewhere = (t: string) => /^(trk|tracker)\./.test(t) || t === 'undo.restore' || t === 'lw.notice'
+    expect(Object.keys(COMMAND_OPS).filter(t => !declared.has(t) && !elsewhere(t)), 'rows the command layer would refuse').toEqual([])
+  })
   it('every registered command type has a row, and every row names a PERMS table', () => {
     const missing = registeredTypes().filter(t => !COMMAND_OPS[t])
     expect(missing, 'registered types with no COMMAND_OPS row').toEqual([])

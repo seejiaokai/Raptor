@@ -269,6 +269,8 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const filterRow = (
     <div className="appr-filters" role="group" aria-label="Which requests to show">
       {fchip(filter.kind === 'new', <><span className={`appr-dot${newCount ? '' : ' none'}`} aria-hidden="true" />New {newCount}</>, () => setFilter({ kind: 'new' }), { testid: 'appr-new' })}
+      {/* a thin upright line between New and the dates, as drawn (his D1430, r22-1-desk), so New never reads as one more date */}
+      {!phone && <span className="appr-vs" aria-hidden="true" />}
       {!phone && <span className="appr-lab">Dates</span>}
       {fchip(filter.kind === 'all', 'All', () => setFilter({ kind: 'all' }), { testid: 'appr-all' })}
       {months.map(ym => fchip(filter.kind === 'month' && filter.ym === ym, MON[+ym.slice(5, 7) - 1], () => setFilter({ kind: 'month', ym }), { dim: !monthHas(ym), testid: `appr-m-${ym}` }))}
@@ -284,7 +286,9 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     <div className="appr-head">
       <h2 className="appr-title">Approvals</h2>
       <span className="appr-sub" data-testid="appr-sub">
-        {pendingRows.length} pending{newCount ? ` · ${newCount} new` : ''}{!phone && prev ? ` since you last looked, ${dow(isoOf(prev))} ${dm(isoOf(prev))} ${placedWords(prev).split(' ').pop()}` : ''}
+        {/* "· 3 new since you last looked, Wed 7 Jan 16:40" (his D1430, r22-2): the "since" words belong to the new count —
+            with nothing new they would say the pending ones came since he last looked */}
+        {pendingRows.length} pending{newCount ? ` · ${newCount} new` : ''}{!phone && prev && newCount ? ` since you last looked, ${dow(isoOf(prev))} ${dm(isoOf(prev))} ${placedWords(prev).split(' ').pop()}` : ''}
       </span>
       {elsewhere.map(e => (
         <button key={e.warId} type="button" className="appr-elsewhere" data-testid="appr-elsewhere" onClick={() => selectWar(e.warId)}>
@@ -350,7 +354,9 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
       {tag && <span className="appr-tag" data-testid="appr-tag">{tag}</span>}
     </span>
   )
-  const box = <span className={`c k-${kindOf(l.code)} s-w appr-box`}>{boxText(l.code)}</span>
+  /* a decided line's box shows the decision as the grid draws it — filled once approved, grey and struck through once
+     refused (his D1430, r22-3-desk); waiting, the dashed box */
+  const box = <span className={`c k-${kindOf(l.code)} ${r.lit === 'approved' ? 's-a' : r.lit === 'refused' ? 's-r' : 's-w'} appr-box`} data-testid="appr-box">{boxText(l.code)}</span>
   const dates = (
     <span className="appr-dates">
       <button type="button" className="appr-dlink" data-testid="appr-dates" onClick={() => onDates(r)}>{datesWords(l.code, l.from, l.to, phone)} ›</button>
@@ -382,9 +388,9 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
   const btns = (
     <span className="appr-btns">
       <button type="button" className={`appr-ok${r.lit === 'approved' ? ' lit' : ''}`} aria-pressed={r.lit === 'approved'} data-testid="appr-approve"
-        disabled={stale} onClick={() => onPress(r, 'approved')}>{r.lit === 'approved' ? 'Approved' : 'Approve'}</button>
+        disabled={stale} onClick={() => onPress(r, 'approved')}>{word(r.lit === 'approved' ? 'Approved' : 'Approve', 'Approved')}</button>
       <button type="button" className={`appr-no${r.lit === 'refused' ? ' lit' : ''}`} aria-pressed={r.lit === 'refused'} data-testid="appr-refuse"
-        disabled={stale} onClick={() => onPress(r, 'refused')}>{r.lit === 'refused' ? 'Refused' : 'Refuse'}</button>
+        disabled={stale} onClick={() => onPress(r, 'refused')}>{word(r.lit === 'refused' ? 'Refused' : 'Refuse', 'Refused')}</button>
     </span>
   )
   if (phone) {
@@ -401,6 +407,11 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
     </div>
   )
 }
+/* a decide button's words, kept the width of its LONGER word whether lit or not (his D1435): the longer word stands hidden
+   in the same place, so "Approve" → "Approved" never moves the button's edge under the finger, whatever the phone's letters */
+const word = (shown: string, longer: string) => (
+  <span className="appr-word" data-long={longer}><span>{shown}</span></span>
+)
 /* one "also" line: the dot, his puck, the kind's box (a withdrawn bid struck through, a leave filed on the Inputs page
    approved), the dates (a link), what happened and when — nothing to decide, so no buttons */
 function AlsoRow({ a, phone, onDates }: { a: AlsoLine; phone: boolean; onDates: (personId: string, date: string) => void }) {
@@ -429,11 +440,13 @@ export function SlimBar() {
   useSyncExternalStore(subscribeLwNav, apprMode, apprMode)
   /* the page's own count — the period on view, as its header says it (17); the tab carries every period's */
   const n = VISIT.pending >= 0 ? VISIT.pending : pendingCount()
+  /* on a desktop the compact bar of his drawing (his D1432, r22-4-desk); a phone keeps its own until he rules on it */
+  const phone = usePhone()
   return (
-    <div className="appr-slim" role="region" aria-label="Back to Approvals" data-testid="appr-slim">
+    <div className={`appr-slim${phone ? ' ph' : ''}`} role="region" aria-label="Back to Approvals" data-testid="appr-slim">
       <span className="appr-dot" aria-hidden="true" />
       <b>Approvals</b>
-      <span className="appr-slim-n">· {n} pending{VISIT.newCount ? ` · ${VISIT.newCount} new` : ''}</span>
+      <span className="appr-slim-n">{phone ? '· ' : ''}{n} pending{VISIT.newCount ? ` · ${VISIT.newCount} new` : ''}</span>
       <span className="appr-spring" />
       <button type="button" className="appr-back" data-testid="appr-back" onClick={() => setApprMode('page')}>Back ▴</button>
       <button type="button" className="appr-x" data-testid="appr-slim-x" aria-label="Close Approvals" onClick={() => setApprMode('off')}>✕</button>

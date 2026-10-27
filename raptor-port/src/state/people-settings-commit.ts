@@ -54,6 +54,7 @@ import { mintOrd, byOrd } from '../command/ord'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 import { changesLoad, CHANGES_TYPES } from './changes'
 import { noticeSeenLoad, NOTICE_TYPES } from './noticeseen'
+import { APPRSEEN_TYPES } from './apprseen'
 import { insightsLoad } from '../engine/insights-config'
 import { flyplanLoad } from './flyplan'
 import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
@@ -331,6 +332,7 @@ export function registerPeopleSettingsCommandLayer(): void {
   for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
   for (const t of CHANGES_TYPES) definePermission(t, anyone)
   for (const t of NOTICE_TYPES) definePermission(t, anyone)    // own row only — perms.ts COMMAND_OPS decides
+  for (const t of APPRSEEN_TYPES) definePermission(t, anyone) // own row only — perms.ts COMMAND_OPS decides
   for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)

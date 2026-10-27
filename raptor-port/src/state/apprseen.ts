@@ -14,6 +14,9 @@ import { store } from '../engine/hooks'
 import { commitSettingsIntent } from './people-settings-commit'
 
 export const APPRSEEN_PFX = 'apprseen:'
+/* its one command, declared to the command layer with the other own-row "seen" records (state/people-settings-commit.ts) —
+   a type the layer was never told of is refused whatever perms.ts says, and the moment was never saved (27 Oct 26) */
+export const APPRSEEN_TYPES = ['lw.apprseen'] as const
 
 /** when this admin last opened Approvals (ms), or 0 — never */
 export function apprSeenAt(pid: string | null | undefined): number {
