@@ -32,7 +32,7 @@ the later merge keeps both (D78).
 - **Branch:** `claude/leave-war-m4-planning-d18224`, pull request 581 (base `main`); released here after the push (`git switch --detach`).
 - **Open questions for him:** the page's 16 (above).
 - **Running when written:** the walk preview on 4173 may still be up from this chat (stop it by its port); the check lock released.
-- **Notes:** ruling numbers to D1429 (D1427–D1429 this chat; both short lines want one reader against their full rows, D138); observations to the log's highest after this chat's entry.
+- **Notes:** this branch's next ruling numbers are D1430–D1449 (agreed 27 Oct 26 with the "Test app database tables" chat, which holds D1450–D1459); ruling numbers to D1429 (D1427–D1429 the fourth chat; both short lines want one reader against their full rows, D138); observations to the log's highest after this chat's entry.
 - **Opening line:** Switch this chat to the branch claude/leave-war-m4-planning-d18224: git fetch origin, git switch claude/leave-war-m4-planning-d18224, git branch -u origin/claude/leave-war-m4-planning-d18224, git pull --ff-only (if the switch is refused because another checkout holds the branch: release it there only if that folder has no uncommitted changes and is on origin's commit — git -C <folder> switch --detach — else stop and tell me). Then read HANDOFF.md — the claude/leave-war-m4-planning-d18224 block under ## Now — and the evidence sheet it names (§10 first), and carry on M4's bug check from its "Pick up here". Check Remote Control is on for this chat and switch it on if not.
 <!-- /now -->
 <!-- now:claude/trk-scrollbars -->
