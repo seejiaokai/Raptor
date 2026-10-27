@@ -262,8 +262,9 @@ passed the stand-in and failed on his phone; now the app leaves a window to the 
 rides up with the page, in step with the keys; nothing held, shrunk, re-placed or glided; a window raised only as a last resort (the pan at rest, the
 box still under the keys — never on Safari). Evidence: `raptor-port/docs/handpass/2026-10-27-kbs-carried.md` (the recordings read frame by frame, the
 roll-call, the walk `scripts/handpass/kbs-carried-walk.mjs`, the gates). The six rounds' story stays whole in `docs/handpass/2026-10-25-kbs-other-remarks.md`.
-**Open: his iPhone look** at the preview (the tab closed and reopened; `?kbdebug` if anything is left) — the input window from a calendar day (OL and
-"Other"), Remarks tapped; the sign-in page's two boxes; the Tracker's All events. **Named under D852, not changed:** the Leave War's sheets and bid
+**His iPhone look (27 Oct 26, 09:24): "the scroll is now fixed"** (the input window, HL and "Other", Remarks tapped). **Open:** his answer on Cancel / Add — with "Other"
+the phone's larger pan (272) brings the window's foot into view above the keys, with HL (184) it stays under; put to him with a picture, recommended left to
+the phone (making the two alike would mean the app steering the window again); then his "merge live" for pull request 579. **Named under D852, not changed:** the Leave War's sheets and bid
 windows place themselves at the pan's word (`leavewar/ui/Sheet.tsx useKeyboardInset` — their top set to the visible top and their height capped, at
 once, which on his iPhone is the same jump-then-slide class); if he sees it there, the same design (the phone carries the sheet) is drawn for him
 first. **Seen, not changed (older):** none left — the held window's shortening band went with the hold.

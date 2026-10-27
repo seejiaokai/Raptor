@@ -161,5 +161,4 @@ After the fixes: `kbscroll.test.ts` 40 / 40 (one more case — the box at the ke
 and the walk run again — the figures below are the re-run's.
 
 **Walk:** WALK — his measured slides played on seven windows, up and down (`kbs-carried-walk.mjs`): 7 / 7 the window never
-moved by the app, the box in sight above the keys and above Cancel / Add in every case, the body never stepped; pictures opened. **Owed: his iPhone look** — the preview, the tab closed and reopened: the input window from
-a calendar day (OL and "Other") → Remarks; the sign-in page's two boxes; the Tracker's All events → Edit.
+moved by the app, the box in sight above the keys and above Cancel / Add in every case, the body never stepped; pictures opened. **His iPhone look (27 Oct 26, 09:24 — his recording: the input window from a calendar day, HL then "Other", Remarks tapped):** *"the scroll is now fixed"* — the window rides up with the page, nothing behind it shows, no shrink. His one question: with "Other" the window's Cancel / Add come into view above the keys, with HL they stay under them — because Remarks sits lower in the longer "Other" form, so the phone pans further (272 against 184) and the window's foot comes up with it; the phone's own choice, not the app's (put to him with a picture).
