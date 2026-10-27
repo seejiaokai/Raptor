@@ -43,7 +43,7 @@ for (const [name, engine, opts] of runs) {
       let worst = 0, sample = ''
       for (const l of document.querySelectorAll('[data-testid^="appr-line-"]')) {
         const c = cellsOf(l)[i]
-        const t = c && (c.classList?.contains('appr-avail') ? c.querySelector('.appr-av') : c)
+        const t = c && (c.classList?.contains('appr-avail') ? (c.querySelector('.appr-av .appr-n') ?? c.querySelector('.appr-av')) : c)
         const cb = t && (t.classList?.contains('appr-puck') || t.classList?.contains('appr-box') ? t.getBoundingClientRect() : words(t))
         if (!cb || !cb.width) continue
         const gap = right ? cb.right - hb.right : cb.left - hb.left

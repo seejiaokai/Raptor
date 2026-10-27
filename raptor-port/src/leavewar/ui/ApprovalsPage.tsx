@@ -316,11 +316,11 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
           <div className="appr-list" role="list">
             {!phone && (
               <div className="appr-cols" aria-hidden="true">
-                <span>Name</span><span>Kind</span><span>Dates</span><span className="r">Days</span><span className="r">LVE Bal</span><span>Lowest Avail</span><span>Placed</span>
+                <span>Name</span><span>Kind</span><span>Dates</span><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span>Placed</span>
               </div>
             )}
             {phone && (
-              <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="r">Placed</span></div>
+              <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="appr-end">Placed</span></div>
             )}
             {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} onPress={press} onDates={openDates} />)}
           </div>
@@ -363,17 +363,19 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
       {r.msg && <span className="appr-why" role="status" data-testid="appr-why">{r.msg.why}</span>}
     </span>
   )
-  const days = <span className="appr-days r">{f ? daysWords(f.days) : ''}</span>
+  /* every figure reads from the left (his D1438): no right-aligned column — the list's old right-align class, `r`, was also the
+     puck's own class for a rear seat, so a WSO's name stood at the right of its puck */
+  const days = <span className="appr-days">{f ? daysWords(f.days) : ''}</span>
   const bal = (
-    <span className={`appr-bal r${f?.bal && f.bal.value < 0 ? ' neg' : ''}`}>
+    <span className={`appr-bal${f?.bal && f.bal.value < 0 ? ' neg' : ''}`}>
       {f?.bal ? <>{f.bal.label && <small>{f.bal.label} </small>}{fig(f.bal.value)}</> : ''}
     </span>
   )
   const avail = (
     <span className="appr-avail">
       {f?.sans ? <span className="appr-av">SANS · not in Avail</span> : f?.avail
-        ? <span className={`appr-av${f.avail.level ? ` ${f.avail.level}` : ''}`}><i>{f.avail.label.replace(/^Available\s+/i, '')}</i> {fig(f.avail.value)}</span> : null}
-      {f?.turned.map(t => <span key={t.label} className={`appr-av ${t.level}`}><i>{t.label}</i> {fig(t.value)}</span>)}
+        ? <span className={`appr-av${f.avail.level ? ` ${f.avail.level}` : ''}`}><i>{f.avail.label.replace(/^Available\s+/i, '')}</i><span className="appr-n">{fig(f.avail.value)}</span></span> : null}
+      {f?.turned.map(t => <span key={t.label} className={`appr-av ${t.level}`}><i>{t.label}</i><span className="appr-n">{fig(t.value)}</span></span>)}
     </span>
   )
   const placed = <span className="appr-placed">{placedWords(l.placedAt)}{by && <small> · by {by}</small>}</span>

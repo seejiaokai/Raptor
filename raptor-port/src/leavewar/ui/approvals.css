@@ -38,13 +38,22 @@
   /* the list — one eye-span: Approve and Refuse stand near the figures (D1420) */
   /* the columns packed after a narrower DATES as drawn (r22-1-desk), the room left before the buttons — with LOWEST AVAIL and
      PLACED a step further right, so the LVE BAL figures are never read with the Available beside them (his D1429) */
-  .appr-cols, .appr-line { display: grid; grid-template-columns: 150px 44px 180px 64px 64px 136px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center; }
-  .appr-cols > :nth-child(6), .appr-line > .appr-avail { padding-left: 28px; }
+  .appr-cols, .appr-line { display: grid; grid-template-columns: 150px 44px 160px 64px 64px 180px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center; }
+  /* LOWEST AVAIL: a step right of LVE BAL (D1429), its rows' names (W, P, OPS P) in a column of their own and the numbers lined
+     up after them, the heading over the numbers (D1438): 24px step + the 40px names + their 6px gap */
+  .appr-line > .appr-avail { padding-left: 24px; }
+  .appr-cols:not(.ph) > :nth-child(6) { padding-left: 70px; }
+  /* on a phone the names' column is 30px (W, P fit; a longer name runs left into the gap), so LOWEST AVAIL stands well clear of
+     PLACED and the two never read as one (lesson 62) */
+  .appr-cols.ph > :nth-child(3) { padding-left: 36px; }
+  .appr-l2 .appr-av { grid-template-columns: 30px auto; }
   /* each heading stands over its figures (his D1437): the headings' row starts where the lines do, and NAME alone steps in
      past the line's new-request dot (8px and its 6px gap) to stand over the puck */
   .appr-cols:not(.ph) > :first-child { padding-left: 14px; }
   .appr-cols { padding: 12px 0 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--edge); }
-  .appr-cols .r, .appr-line .r { text-align: right; justify-self: end; }
+  /* only the phone's last heading, PLACED, stands at the right edge, over its figures (D1438 — every other column reads from
+     the left; the old right-align class was named `r`, which is also a WSO puck's own class, and pushed his name right) */
+  .appr-cols .appr-end { text-align: right; justify-self: end; }
   .appr-line { min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
   .appr-line.stale { opacity: .78; }
   .appr-who { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; }
@@ -62,8 +71,10 @@
   .appr-bal small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
   .appr-bal.neg { color: var(--hard); }
   .appr-avail { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
-  .appr-av { font-variant-numeric: tabular-nums; font-weight: 700; }
-  .appr-av i { font-style: normal; font-weight: 500; color: var(--ink-2); margin-right: 6px; }
+  .appr-av { display: grid; grid-template-columns: 40px auto; column-gap: 6px; align-items: baseline; font-variant-numeric: tabular-nums; font-weight: 700; }
+  /* a row's name stands right against its number; a name longer than its column runs out to the left, never over the number */
+  .appr-av i { justify-self: end; white-space: nowrap; font-style: normal; font-weight: 500; color: var(--ink-2); }
+  .appr-av:not(:has(i)) { display: block; }
   .appr-av.amber { color: var(--adv); } .appr-av.amber i { color: var(--adv); }
   .appr-av.red { color: var(--hard); } .appr-av.red i { color: var(--hard); }
   .appr-placed { color: var(--ink-2); }
@@ -104,7 +115,7 @@
   .appr-page.ph .appr-all { grid-column: 4 / span 4; justify-self: end; }
   /* both rows keep the same columns at every width (D1437): the third may be narrower than "LOWEST AVAIL" on a 360 phone, and
      the heading then runs into the gap after it rather than widen its row and push PLACED out of line */
-  .appr-cols.ph { grid-template-columns: 70px 72px minmax(0, 1fr) 92px; padding: 12px 0 8px; }
+  .appr-cols.ph { grid-template-columns: 64px 64px minmax(0, 1fr) 92px; padding: 12px 0 8px; }
   .appr-cols.ph > span { white-space: nowrap; }
   .appr-line.ph { display: block; padding: 10px 0; }
   .appr-l1 { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 6px; }
@@ -117,7 +128,7 @@
   .appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 5px; font-size: 13.5px; }
   /* the same columns AND the same gaps as the headings above (his D1437 — without the 12px gap the figures sat 12 and 24px
      left of LVE BAL and LOWEST AVAIL) */
-  .appr-l2 { display: grid; grid-template-columns: 70px 72px minmax(0, 1fr) 92px; column-gap: 12px; align-items: start; margin-top: 6px; font-size: 13px; }
+  .appr-l2 { display: grid; grid-template-columns: 64px 64px minmax(0, 1fr) 92px; column-gap: 12px; align-items: start; margin-top: 6px; font-size: 13px; }
   .appr-l2 .appr-bal { text-align: left; justify-self: start; }
   .appr-l2 .appr-days { text-align: left; justify-self: start; }
   .appr-l2 .appr-placed { text-align: right; }
@@ -129,7 +140,7 @@
   .appr-alsohead .appr-lab { margin-left: 0; }
   /* the request lines' own columns (his D1430, r22-2-desk): the dates level with the words, what happened under DAYS across
      to LOWEST AVAIL, and when under PLACED */
-  .appr-aline { display: grid; grid-template-columns: 150px 44px 180px 64px 64px 136px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center;
+  .appr-aline { display: grid; grid-template-columns: 150px 44px 160px 64px 64px 180px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center;
     min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
   .appr-aline > .appr-dlink { align-self: center; }
   .appr-awhat { color: var(--ink); }

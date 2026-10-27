@@ -7906,7 +7906,7 @@ test('on a phone the Approvals tab holds its count inside its outline', async ({
    end. On a phone the figures' line had no gap between its columns where the headings' row had 12px (14 and W 17 sat 12 and
    24px left of LVE BAL and LOWEST AVAIL); on a desktop the headings' row was pushed 16px in from the left. Measured on every
    line, on both projects (scripts/handpass/lw-m4-colalign.mjs measures it in WebKit at 402, 390 and 360 too). */
-test('every Approvals heading stands over its figures (D1437)', async ({ page }) => {
+test('every Approvals heading stands over its figures, every name at the left (D1437, D1438)', async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
   await page.getByTestId('lw-tab-approvals').click()
@@ -7924,7 +7924,7 @@ test('every Approvals heading stands over its figures (D1437)', async ({ page })
       const right = getComputedStyle(h).textAlign === 'right'
       for (const l of document.querySelectorAll('[data-testid^="appr-line-"]')) {
         const c = cellsOf(l)[i]
-        const t = c && (c.classList.contains('appr-avail') ? c.querySelector('.appr-av') : c)
+        const t = c && (c.classList.contains('appr-avail') ? (c.querySelector('.appr-av .appr-n') ?? c.querySelector('.appr-av')) : c)
         const cb = t && (t.classList.contains('appr-puck') || t.classList.contains('appr-box') ? t.getBoundingClientRect() : words(t))
         if (!cb || !cb.width) continue
         const gap = right ? cb.right - hb.right : cb.left - hb.left
@@ -7934,4 +7934,11 @@ test('every Approvals heading stands over its figures (D1437)', async ({ page })
     return out
   })
   expect(gaps, 'headings more than 1px from their figures').toEqual([])
+  /* his D1438: every name at the left of its puck (a WSO's stood at the right — the list's right-align class was named `r`, a
+     rear seat's own class), and no heading set to the right but the phone's last, PLACED */
+  const right = await page.evaluate(() => ({
+    names: [...document.querySelectorAll('.appr-puck .nm')].filter(n => getComputedStyle(n).textAlign === 'right').map(n => (n as HTMLElement).innerText),
+    heads: [...document.querySelectorAll('.appr-cols > *')].filter(h => getComputedStyle(h).textAlign === 'right' && !h.classList.contains('appr-end')).map(h => (h as HTMLElement).innerText),
+  }))
+  expect(right, 'nothing set to the right').toEqual({ names: [], heads: [] })
 })
