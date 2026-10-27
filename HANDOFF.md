@@ -21,11 +21,11 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/test-app-db-tables-178b8c -->
-### `claude/test-app-db-tables-178b8c` — Power Apps code apps: a first test, and when to do the database step — written 27 Oct 26, verify before use
-- **Where it started:** his question, 27 Oct 26, following a "Power Apps code apps" video: write him tables to see if the app works there. Given three test tables (Person, Input, Schedule Day — cut down from `raptor-port/docs/data-model.md` §3) as a file in the chat, not in the repo; nothing in the app changed.
-- **His ruling D1450:** his own paid Power Apps environment, two test accounts he makes himself, where the agent tests the app on Dataverse fully before the IT handover — demo data only (`raptor-port/docs/handover-dataverse.md`). Numbered past the M4 branch's D1429.
-- **Waiting on him:** when to connect — the recommendation put to him: a feasibility test in his environment now, beside M4 and M5, on its own branch; the full database step still at the end (D473).
-- **Notes:** ruling numbers to D1450 (D1430–D1449 left free for the M4 chat); no observations this chat.
+### `claude/test-app-db-tables-178b8c` — the Dataverse trial: tables built, run on 1 Nov — written 28 Oct 26, verify before use
+- **Where it started:** his question, 27 Oct 26, following a "Power Apps code apps" video: does the app work there. His D1450: his own paid Power Apps environment, two test accounts, demo data only, only what the IT side allows (`raptor-port/docs/handover-dataverse.md`).
+- **His D1451, 28 Oct 26:** the trial's tables are built now; his account comes on 1 Nov 26. **Built:** `raptor-port/scripts/dataverse-trial.mjs` — Person, Input, Schedule Day, three links, demo rows, one solution `RaptorTrial` (prefix `rap`), by the Web API after a device-code sign-in he does himself; re-runnable; `--dry-run` clean. Read by one fresh Opus reader. Not run for real: no environment until 1 Nov.
+- **Next, on 1 Nov:** he pastes the environment's address; the agent runs the script in the background and gives him the sign-in code; then part 1 (the app opens as a code app — code apps switched on in the environment). The plan and his steps: `raptor-port/docs/superpowers/specs/2026-10-28-dataverse-trial.md`; backlog `[DATAVERSE-TRIAL]`.
+- **Notes:** this chat holds D1450–D1459 (D1430–D1449 left free for the M4 chat); compacted once, 28 Oct 26; no observations this chat.
 <!-- /now -->
 <!-- now:claude/observation-log-review-triage-7f6090 -->
 ### `claude/observation-log-review-triage-7f6090` — the skill-notes review of 13–26 Oct 26 (152 open notes), installed; then M4 — written 27 Oct 26, verify before use

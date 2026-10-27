@@ -141,6 +141,9 @@ Questions to the owner; he will bring them to us.
 
 **His own test environment (his D1450, 27 Oct 26):** before anything is handed to you, the app is tested on Dataverse in
 a Power Apps environment the owner pays for himself, with two test accounts he makes, demo data only and only what your
-platform allows (no plug-ins or Custom APIs), so what works there works on yours.
+platform allows (no plug-ins or Custom APIs), so what works there works on yours. **The trial's tables first (his D1451,
+28 Oct 26):** three of them — Person, Input, Schedule Day — made by a setup script (`raptor-port/scripts/dataverse-trial.mjs`)
+through Dataverse's own Web API, inside one solution you can export as a file; tried once his account comes on 1 Nov 26
+(`docs/superpowers/specs/2026-10-28-dataverse-trial.md`).
 
 **Before the app goes out for testing (his D1383, 26 Oct 26):** signing in always opens on today's date — the demo week's date is accepted only while the demo data is what is worked on. Filed as [LOGIN-OPENS-TODAY].

@@ -200,6 +200,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
 - [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
+- [DATAVERSE-TRIAL] — the trial in his own environment: tables built; run and parts 1–5 from 1 Nov 26, when his account comes.
 - [IT-QUESTIONS] — the IT side's written answers (licences, plug-ins, retention, the first admin).
 - [RESTRICTED-ENV-WORKFLOW] — a stand-in database and the working steps for the restricted environment.
 - [ARCH-STACK] — the root-cause stack's steps 5 and 6: the record storage door, then the old machinery retired.
@@ -1392,6 +1393,16 @@ of D320, D323, D328 — open their full rows first". **Open before building:** w
 the model without blocking the edit, and how to keep it quiet (once per file per session). **Context:**
 `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.8 and §5. **Place:** low — after
 [RULINGS-SLIM] merges, if a chat is seen acting on a short line alone; put to him first.
+
+### [DATAVERSE-TRIAL] The trial on Dataverse in his own environment (filed 28 Oct 26 — his D1450, D1451)
+**What:** before anything goes to the IT side, test whether RAPTOR works as a Power Apps code app on Dataverse, in the
+environment he pays for himself, demo data only, only what the IT side's platform allows. **Done 28 Oct 26:** the trial's three
+tables as a setup script (`raptor-port/scripts/dataverse-trial.mjs`), dry-run clean, read by one fresh reader. **Left:** run it
+once his account comes (1 Nov 26) — he signs in by a code, the agent runs it; then parts 1–5 of the trial (the app opens in
+Power Apps; Microsoft sign-in maps two accounts to Saber and Ranger; Inputs save and reach the other account; the day lock
+without plug-ins; a security read and a plain report). Parts 2–4 need both test accounts. The plan and his steps:
+`raptor-port/docs/superpowers/specs/2026-10-28-dataverse-trial.md`. The database step itself stays at the end (D473).
+**Place:** the Database step group.
 
 ### [RESTRICTED-ENV-WORKFLOW] Working and bug-checking once the app lives in the restricted environment (filed 29 Sep 26)
 From IT's answers (`[IT-QUESTIONS]`, 29 Sep 26): the live app runs only inside the restricted environment, which this
