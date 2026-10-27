@@ -65,3 +65,25 @@ not a difference** — the drawing's case and the walk's are different cases.
   test in `e2e/leavewar.spec.ts` — 16 passed, 6 skipped (phone-only tests on the desktop project), 0 failed. Red run before
   the fixes: M4 (phone), M8, M13 failed; the rest passed.
 - Not run: the full gate set (GitHub's run of the pull request is the full check while the repo is public — D1086).
+
+## Round 2 — the fresh blind read of the fixes (`fix-read.md`) and the host's reading of D1436
+
+Each made to fail first against round 1's code, then fixed, then green; nothing pushed.
+
+| Finding | Red first | The fix | Commit | Twin paths tested |
+|---|---|---|---|---|
+| **M5 narrowed (the host's reading of D1436's full row)** — only days from his posting-out date are refused, whether the posting has run or not; "a request with no such day approves as ever" | `m4decide.test.ts` — "a man whose posting out has run: his days from the date are refused, past tense; a day before approves…" (rewritten from round 1's blanket rule), and in "posting out — one answer through every door (M5)": "a posting that has RUN: every door refuses his days from the date…" and "…a day before the date approves in Approvals and the bid windows too" — all red against round 1 | `sync.ts approveWhy` loses the blanket run check; `postingOutWhy` is the one date rule in every door, "He posted out on <date>: refuse or delete it" once the posting has run (`postedOutBy`), "He posts out on…" before; `store.ts postedOutAsSans` removed (unused) | b7c433c3a | Approvals, the day's list, the bid windows; a day before AND a day from the date; still to come AND run; Refuse in each; SANS unchanged |
+| **R2-4 LOW** — "Approve what I enter" gave a guessed reason | `m4decide.test.ts` — "'Approve what I enter' on his days from the date: kept pending, with the door's reason (R2-4)"; `m4page.test.tsx` — "R2-4 the one-day window…" (the door asked for the refusal on a day the window opens — the grid draws his days from the date posted out, where a tap opens the day's list) and "R2-4 the drag window…" — all red | `store.ts placeApproved` returns the door's `why`; `BidPicker.tsx` and `SelectSheet.tsx` print it after "kept pending —" where present, the old words only where it is empty | b7c433c3a | the one-day window AND the drag window |
+| **R2-5 LOW** — the drag window's count | `m4decide.test.ts` — "the bid windows count the days the rules refused apart from the days with nothing to decide (R2-5)"; `m4page.test.tsx` — "R2-5 the drag window counts…" (expects "1 decided. 1 not approved: He posts out on 11 Feb: refuse or delete it. 1 skipped (no bid, or Raptor-owned).") — both red | `store.ts setBidStates` also returns `refused`; `SelectSheet.tsx decide` prints the refused days with their reason and the rest as "skipped (no bid, or Raptor-owned)"; `store.test.ts`' two exact-shape checks gain `refused: 0` | b7c433c3a | decided > 0 AND none decided |
+| **R2-3 LOW-MEDIUM** — M3's three-tap twin | `m4page.test.tsx` — "R2-3 Approve, Refuse, Approve, then Undo, Undo: lit 'Approved'; Redo, Redo: 'Refused' then 'Approved'" — red (unlit after the second Undo) | `ApprovalsPage.tsx apply` keeps every decision, newest first (not one a light) | 01947231a | Undo, Undo AND Redo, Redo |
+| **R2-1 MEDIUM** — M4 by a held press | `m4page.test.tsx` — "R2-1 a press held a second outside the open calendar still decides no line at its lift" (the iPhone's click fired at the lift onto another line); `e2e/leavewar.spec.ts` — "…a press HELD a second on a line's Approve decides no line at its lift (R2-1, D1421)" on `lw-phone`, a CDP touch held 1 s — both red (Chromium too fired the click) | `ApprovalsPage.tsx`, the picker's outside-press handler: the click-taker is armed at that press's own `pointerup` and ends on `pointercancel`, the next `pointerdown`, or 500 ms after the lift | 1b2141bba | a quick tap (round 1's M4 test, still green) AND a held press |
+| **R2-2 LOW** — every first outside press swallowed | `m4page.test.tsx` — "R2-2 a press outside the open calendar on something that did not move closes it AND does its job"; `e2e/leavewar.spec.ts` — "…a press on the Grid tab closes the calendar and opens the Grid at once (R2-2)" — red on `lw-phone` and `lw-desktop` | the same handler: only a click landing elsewhere than what was pressed, or on a pressed thing that moved (top or left by 1px or more), is taken | 1b2141bba | finger (phone) AND mouse (desktop); a moved Approve still taken |
+
+### Round 2 checks (28 Oct 26)
+
+- Unit: `m4bell` 19, `m4decide` 24, `m4page` 23, `m4ride` 14, `m4sec` 13, `state/store.test` 221 — green; the 59-file Leave War
+  sweep: 1,358 passed.
+- `npm run build` through the lock: passed (twice — round 1's handler restored for the red browser run, then the fix).
+- Browser through the lock, `lw-phone` and `lw-desktop`: red run of the two new tests against round 1's handler — 3 failed (R2-1
+  phone, R2-2 phone and desktop), 1 skipped; green run of every Approvals and bell test with the new ones — 19 passed, 7
+  skipped (phone-only on the desktop project), 0 failed.
