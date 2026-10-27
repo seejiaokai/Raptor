@@ -364,15 +364,18 @@ export function SelectSheet({
     setNoteAt('end')
     /* the words and the decision in ONE command, one Undo (the night's code read, R1) */
     /* the counts kept outside the command, so a refusal thrown inside it leaves the window its note (the narrow read, N3) */
-    let res = { decided: 0, skipped: 0, already: 0 }
+    let res: { decided: number; skipped: number; already: number; why: string[] } = { decided: 0, skipped: 0, already: 0, why: [] }
     inOneWarCommand('lw.decide', () => { keepWords(); res = setBidStates(sel.cells, bid) })
-    const { decided, skipped, already } = res
+    const { decided, skipped, already, why } = res
     if (skipped === 0 && !already) return onDone(decided > 0)
     /* an already-approved leave is said as such, never counted as a decision (AB7) */
     const was = already ? ` ${already} already approved.` : ''
+    /* …and a day the rules refused says their reason — "He posts out on 1 Mar: refuse or delete it" — as Approvals does (the
+       fixes' M5, D1436), never a guess at why */
+    const rules = why.length ? ` ${why.join(' ')}` : ''
     setNote(decided === 0
-      ? (skipped ? 'None of those could be decided — a decision needs a bid that is not Raptor-owned.' + was : `Nothing to decide —${was}`)
-      : `${decided} decided.${was}${skipped ? ` ${skipped} skipped (no bid, or Raptor-owned).` : ''}`)
+      ? (skipped ? (why.length ? why.join(' ') : 'None of those could be decided — a decision needs a bid that is not Raptor-owned.') + was : `Nothing to decide —${was}`)
+      : `${decided} decided.${was}${skipped ? ` ${skipped} skipped${why.length ? ':' : ' (no bid, or Raptor-owned).'}${rules}` : ''}`)
     if (decided > 0) onDone(true, true)
   }
 

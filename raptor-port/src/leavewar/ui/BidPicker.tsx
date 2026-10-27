@@ -310,9 +310,11 @@ export function BidPicker({
        second tap on a lit Approve does") */
     const again = !span && decide?.state === bid
     if (again) bid = 'pending'
-    const { decided } = setBidStates(selCells(), bid)
+    const { decided, why } = setBidStates(selCells(), bid)
     if (decided > 0) return onClose()
-    setMoveErr(span
+    /* the rules' own reason where they gave one — "He posts out on 1 Mar: refuse or delete it" — as Approvals says it (the
+       fixes' M5, D1436) */
+    setMoveErr(why[0] ? why[0] : span
       ? 'None of those days holds a bid this screen can decide.'
       : 'That could not be recorded — this day is not this screen’s to decide.')
   }

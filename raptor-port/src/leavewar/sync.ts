@@ -130,6 +130,8 @@ import {
   setViewer,
   setViewerCallsign,
   subscribe as lwSubscribe,
+  postedOutBy,
+  postedOutAsSans,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
@@ -426,6 +428,10 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
   if (!war || !rec) return 'No longer there'
+  /* A MAN WHOSE POSTING OUT HAS RUN (or who was deleted) — the older B12 rule, asked here so every door gives one answer
+     (the fixes' M5 — the re-walk and both code reads: it lived only in Approvals' writer, and the bid windows approved
+     what Approvals refused). A posting out as SANS keeps his leave (D283, D1436). */
+  if (postedOutBy(it.personId) && !postedOutAsSans(it.personId)) return 'Posted out — refuse or delete it'
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po

@@ -17,7 +17,8 @@ import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
-import { getState, initStore as lwInitStore, lwHistInit, recordsAt, setBidState, setCell, setPeople } from './state/store'
+import { getState, initStore as lwInitStore, lwHistInit, recordsAt, setBidState, setCell, setPeople, setPostOut } from './state/store'
+import { setMemberTodayForTests } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
@@ -274,6 +275,23 @@ describe('the Approvals page’s rows', () => {
 })
 
 describe('the day’s list (a day with two entries) says who placed each (the scenario designer’s 18; D1315)', () => {
+  /* THE FIXES' M5 (the re-walk's A-F3 = B-F2): the day's window refused Approve on a posted-out man's leave saying
+     "Couldn’t approve — something else is on that time" — untrue; Approvals said the posting. One reason in every door. */
+  it('M5 the day’s window gives Approvals’ posting-out reason', () => {
+    ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+    setMemberTodayForTests('2026-01-20')
+    try {
+      expect(setPostOut('bane', MON, 'none')).toBe(true)
+      const st = getState()
+      const id = reqs('bane', TUE)[0]!.id
+      render(<DayListSheet personId="bane" callsign="Ranger" date={TUE} view={st.views['bane']![TUE]!} role="admin" viewer="stiff" period={st.period} onClose={() => {}} />)
+      fireEvent.click(screen.getByTestId(`dl-approve-${id}`))
+      expect(screen.getByText('He posts out on 9 Feb: refuse or delete it')).toBeTruthy()
+      expect(screen.queryByText(/something else is on that time/)).toBeNull()
+      expect(reqs('bane', TUE)[0]!.state).toBe('pending')
+    } finally { setMemberTodayForTests(null) }
+  })
+
   it('one "Placed" line under each entry', () => {
     ranger(); expect(setCell('bane', TUE, 'LL*')).toBe(true); saber()
     T(9); expect(setCell('bane', TUE, '*OL')).toBe(true)

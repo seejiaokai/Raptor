@@ -16,7 +16,7 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import {
-  absenceDoor, closeDates, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
+  absenceDoor, closeDates, decideRequestById, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
   recordsAt, setAbsenceDoor, setBidStates, setCell, setPeople, setPostOut, type DecideLine, type DecidePart,
 } from './state/store'
 import { readRec, setMemberTodayForTests, type RequestRec } from './engine'
@@ -215,6 +215,42 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
     expect(r.skipped, 'his days from 4 Feb are skipped').toBe(2)
     expect(req('bane', DAYS[1]!).state).toBe('pending')
     expect(req('bane', DAYS[2]!).state).toBe('pending')
+  })
+
+  /* THE FIXES' M5 (the re-walk's A-F3 = B-F2; both code reads): one rule for posting out in every door (D1436, D754).
+     The bid windows refused a posting still to come with "something else is on that time" — untrue, and no reason at all
+     — and once a posting had RUN, Approvals refused but the bid windows approved. */
+  describe('posting out — one answer through every door (M5)', () => {
+    it('a posting still to come: the day’s list and the bid windows give Approvals’ reason', () => {
+      setMemberTodayForTests('2026-01-20')
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      const why = 'He posts out on 4 Feb: refuse or delete it'
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list').toBe(why)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[2]! }], 'approved').why, 'the bid windows').toEqual([why])
+      expect(req('bane', DAYS[2]!).state).toBe('pending')
+    })
+    it('a posting that has RUN: every door refuses with Approvals’ reason; Refuse still works in each', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', '2026-03-01', 'none')).toBe(true)
+      setMemberTodayForTests('2026-03-05')
+      const why = 'Posted out — refuse or delete it'
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0]).toEqual({ kind: 'refused', why })
+      const r = setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'approved')
+      expect(r.decided, 'the bid windows do not approve it').toBe(0)
+      expect(r.why).toEqual([why])
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list').toBe(why)
+      expect(leaveOf('bane')).toHaveLength(0)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'refused').decided).toBe(1)
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'refused')).toBe(true)
+    })
+    it('a posting out as SANS that has run approves in the bid windows too (D283)', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', '2026-03-01', 'sans')).toBe(true)
+      setMemberTodayForTests('2026-03-05')
+      expect(decideRequestById('bane', DAYS[0]!, req('bane', DAYS[0]!).id, 'approved')).toBe(true)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'approved').decided).toBe(1)
+    })
   })
 
   it('a posting out as SANS keeps his leave: approved before it runs and after (D1436, D283)', () => {

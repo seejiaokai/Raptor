@@ -3619,8 +3619,11 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
   return out
 }
 
-export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number } {
-  if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0 }
+/* `why` — the rules' reasons for what the door skipped ("He posts out on 1 Mar: refuse or delete it"), so a bid window says
+   what Approvals says (the fixes' M5) */
+export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number; why: string[] } {
+  if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0, why: [] }
+  const why: string[] = []
   /* `already` (the absence-record re-test, AB7, 26 Sep 26 — Fable F7, reproduced by W3): an Approve over a leave that
      was ALREADY approved changes nothing, and it was counted as "decided" — "3 decided" for two changes. */
   let decided = 0, skipped = 0, already = 0
@@ -3660,15 +3663,15 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
     }
     if (wrote && !quiet) persistNotify()
     if (toApprove.length) {
-      const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length }
-      decided += r.done; skipped += r.skipped
+      const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length, why: [] }
+      decided += r.done; skipped += r.skipped; why.push(...r.why)
     }
     if (toUnapprove.length) {
-      const r = DOOR ? DOOR.decideApproved(toUnapprove, bid as RequestState) : { done: 0, skipped: toUnapprove.length }
-      decided += r.done; skipped += r.skipped
+      const r = DOOR ? DOOR.decideApproved(toUnapprove, bid as RequestState) : { done: 0, skipped: toUnapprove.length, why: [] }
+      decided += r.done; skipped += r.skipped; why.push(...r.why)
     }
   })
-  return { decided, skipped, already }
+  return { decided, skipped, already, why: [...new Set(why)] }
 }
 
 /** Record a decision on one cell — the single-cell sibling of `setBidStates`,
@@ -3679,10 +3682,16 @@ export function setBidState(personId: string, date: string, bid: BidState): void
 
 /** Set the state of ONE request by its id (the tap list acts per record).
  *  Approving goes through the door; the rest is a plain edit. */
-export function decideRequestById(personId: string, date: string, recId: string, bid: BidState): boolean {
+export function decideRequestById(personId: string, date: string, recId: string, bid: BidState): boolean | string {
   if (!canDecide(state.role)) return false
   if (bid === 'approved') {
-    return gesture('lw.decide', () => (DOOR ? DOOR.approve([{ personId, date, recId }]).done > 0 : false))
+    /* an Approve the rules refuse answers with their reason — "He posts out on 1 Mar: refuse or delete it", a locked week —
+       so the day's list says what Approvals says, never a guess (the fixes' M5, D1436) */
+    return gesture('lw.decide', () => {
+      if (!DOOR) return false
+      const r = DOOR.approve([{ personId, date, recId }])
+      return r.done > 0 ? true : (r.why[0] ?? false)
+    })
   }
   return gesture('lw.decide', () => decideRequest(personId, date, recId, bid))
 }
@@ -3719,8 +3728,9 @@ const shortDay = (iso: string): string => {
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   return `${DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))).getUTCDay()]} ${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
 }
-/* his posting out is as SANS (his D1436: a SANS man's leave is kept, so his Approve is never refused for the posting) */
-const postedOutAsSans = (personId: string): boolean => {
+/** his posting out is as SANS (his D1436: a SANS man's leave is kept, so his Approve is never refused for the posting) —
+ *  asked by the one body every door's Approve asks (sync.ts approveWhy — the fixes' M5) */
+export const postedOutAsSans = (personId: string): boolean => {
   const w = state.postOuts[personId] || state.people.find(p => p.id === personId)
   return !!w && !w.gone && outcomeOf(w) === 'sans'
 }
@@ -3786,8 +3796,7 @@ function decideWhy(line: DecideLine): string | null {
   for (const p of line.parts) {
     if (p.state === to) continue
     if (to === 'approved') {
-      /* a posting out as SANS keeps his leave (his D1436, D283) — only another posting's leave is refused once it has run */
-      if (postedOutBy(personId) && !postedOutAsSans(personId)) return 'Posted out — refuse or delete it'
+      /* (a man whose posting has run is refused by that one body too, as every door is — the fixes' M5) */
       const why = DOOR?.approveWhy?.({ personId, date: p.date, recId: p.recId! })
       if (why) return why
       continue
