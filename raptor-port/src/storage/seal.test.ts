@@ -139,6 +139,9 @@ describe('the table each stored row belongs to', () => {
     /* the bell's notices and what each person has read of them (the one-rule build's step 7, 12 Oct 26 — D755 (3), D769):
        a notice is a row of its own collection; "read" is a row a person among the settings, never a write to the notice */
     ['settings', 'noticeseen:bane', 'NoticeSeen'],
+    /* the Approvals visit's moment (the Leave War overhaul's M4, 8.4 — the fixes' M11, Fable's read 3): its own table, as
+       state/perms.ts and data-model.md §11 call it, never "Setting" */
+    ['settings', 'apprseen:stiff', 'LeaveApprovalsSeen'],
     ['notices', 'nmg1abc', 'Notice'],
     ['settings', 'rules', 'Setting'],
     ['changes', 'c1-4', 'ChangeBatch'],

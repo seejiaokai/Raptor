@@ -58,6 +58,8 @@ export function tableOf(collection: Collection, id: string): string {
       if (id.startsWith('account:')) return 'User'
       if (id.startsWith('accessreq:')) return 'AccessRequest'
       if (id.startsWith('reqseen:')) return 'AccessRequestSeen'
+      /* when an admin last opened the Leave War's Approvals (M4 8.4): its own table, as the permissions table names it */
+      if (id.startsWith('apprseen:')) return 'LeaveApprovalsSeen'
       return 'Setting'
     case 'tracker': return TRACKER(id)
     case 'changes': return 'ChangeBatch'
