@@ -1,0 +1,24 @@
+[
+ {
+  "id": "S13 lit Approve keeps its box [chromium]",
+  "size": "402",
+  "verdict": "FAIL",
+  "said": "Approve 226.5-303.9 (w 77.4) -> lit 217.8-303.9 (w 86.1); Refuse 309.9 -> 309.9; dates 141 -> 141; second tap back to 226.5-303.9",
+  "pics": [
+   "s13-chromium-before.png",
+   "s13-chromium-q.png",
+   "s13-chromium-approved.png"
+  ]
+ },
+ {
+  "id": "S13 lit Approve keeps its box [webkit]",
+  "size": "402",
+  "verdict": "FAIL",
+  "said": "Approve 217.9-298.3 (w 80.4) -> lit 208.9-298.3 (w 89.4); Refuse 304.3 -> 304.3; dates 141 -> 141; second tap back to 217.9-298.3",
+  "pics": [
+   "s13-webkit-before.png",
+   "s13-webkit-q.png",
+   "s13-webkit-approved.png"
+  ]
+ }
+]

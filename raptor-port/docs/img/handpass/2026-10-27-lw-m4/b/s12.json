@@ -1,0 +1,32 @@
+[
+ {
+  "id": "S12 member's bell on a phone [402]",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "3 lines: (unread) Your leaveMon 9 Mar LL added and approved · Saber now | (unread) Your leaveThu 15 Jan LL refused · Saber now | (unread) Your leaveTue 13 Jan LL approved · Saber now; list box {\"l\":8,\"r\":394,\"t\":46,\"b\":247}; every line inside, none clipped: true",
+  "pics": [
+   "s12-bell-402.png",
+   "s12-bell-402-sharp.png"
+  ]
+ },
+ {
+  "id": "S12 member's bell on a phone [390]",
+  "size": "390",
+  "verdict": "PASS",
+  "said": "3 lines: (unread) Your leaveMon 9 Mar LL added and approved · Saber now | (unread) Your leaveThu 15 Jan LL refused · Saber now | (unread) Your leaveTue 13 Jan LL approved · Saber now; list box {\"l\":8,\"r\":382,\"t\":46,\"b\":247}; every line inside, none clipped: true",
+  "pics": [
+   "s12-bell-390.png",
+   "s12-bell-390-sharp.png"
+  ]
+ },
+ {
+  "id": "S12 member's bell on a phone [360]",
+  "size": "360",
+  "verdict": "PASS",
+  "said": "3 lines: (unread) Your leaveMon 9 Mar LL added and approved · Saber now | (unread) Your leaveThu 15 Jan LL refused · Saber now | (unread) Your leaveTue 13 Jan LL approved · Saber now; list box {\"l\":8,\"r\":352,\"t\":46,\"b\":247}; every line inside, none clipped: true",
+  "pics": [
+   "s12-bell-360.png",
+   "s12-bell-360-sharp.png"
+  ]
+ }
+]

@@ -1,0 +1,32 @@
+[
+ {
+  "id": "12d posting out on 1 Mar (after his February requests): the tag",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Blade lines: [\"Blade IP LL Mon 2 Feb › 1 day 4.5 P 27 — Approve Refuse\",\"Blade IP LL Tue 3 Feb, PM › 0.5 day 4.5 P 27.5 — Approve Refuse\"]; after Approve: \"Blade IP LL Mon 2 Feb › 1 day 4.5 P 27 — Approved Refuse\"",
+  "pics": [
+   "a-s9b-po-1mar-approvals",
+   "a-s9b-po-1mar-line"
+  ]
+ },
+ {
+  "id": "12e posting out on 15 Jan (before his February requests): the tag and the refusal",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Blade lines: [\"Blade IP LL Mon 2 Feb › 1 day 4.5 — Approve Refuse\",\"Blade IP LL Tue 3 Feb, PM › 0.5 day 4.5 — Approve Refuse\"]; after Approve: \"Blade IP LL Mon 2 Feb › 1 day 4.5 — Approved Refuse\"; Approve pressed true",
+  "pics": [
+   "a-s9b-po-15jan-approvals",
+   "a-s9b-po-15jan-after-approve"
+  ]
+ },
+ {
+  "id": "12f posting out (Delete) on 15 Jan: the tag and the refusal",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Blade lines: [\"Blade IP LL Mon 2 Feb › 1 day 4.5 P 27 — Approve Refuse\",\"Blade IP LL Tue 3 Feb, PM › 0.5 day 4.5 P 27.5 — Approve Refuse\"]; after Approve: \"Blade IP LL Mon 2 Feb › 1 day 4.5 P 27 — Approved Refuse\"; Approve pressed true",
+  "pics": [
+   "a-s9b-po-15jan-delete-approvals",
+   "a-s9b-po-15jan-delete-after-approve"
+  ]
+ }
+]

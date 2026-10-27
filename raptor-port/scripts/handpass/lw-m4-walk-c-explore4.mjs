@@ -1,0 +1,27 @@
+// walker C — exploration 4: why the member's drag over 2-3 Mar opened nothing
+process.env.LW_OUT ||= '../../docs/img/handpass/2026-10-27-lw-m4/c/explore'
+const L = await import('./lw-m4-lib.mjs')
+const { T, shot, press, vis, txt } = L
+console.log('[lw-m4-walk-c-explore4 v1]')
+const w = await L.newCtx('desk')
+const P = w.page
+await L.signIn(w, 'member')
+await L.reachCell(w, 'bane', '2026-03-02')
+await P.waitForTimeout(800)
+const A = await P.locator(T('cell-bane-2026-03-02')).first().boundingBox()
+const B = await P.locator(T('cell-bane-2026-03-03')).first().boundingBox()
+console.log('A', JSON.stringify(A), 'B', JSON.stringify(B), 'scrollX', await P.evaluate(() => window.scrollX))
+await shot(w, 'mar-before-drag')
+const at = await P.evaluate(({ x, y }) => { const e = document.elementFromPoint(x, y); return e ? (e.closest('[data-testid]')?.dataset.testid || e.tagName) : null }, { x: A.x + A.width / 2, y: A.y + A.height / 2 })
+console.log('element at A:', at)
+await P.mouse.move(A.x + A.width / 2, A.y + A.height / 2)
+await P.mouse.down()
+await P.mouse.move(B.x + B.width / 2, B.y + B.height / 2, { steps: 8 })
+await P.mouse.up()
+await P.waitForTimeout(700)
+console.log('select sheet:', await vis(P, T('select-sheet')), 'bid picker:', await vis(P, T('bid-picker')))
+await shot(w, 'mar-after-drag')
+console.log('errs', w.errs)
+await w.ctx.close()
+await L.closeBrowser()
+console.log('DONE')

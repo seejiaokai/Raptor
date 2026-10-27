@@ -1,0 +1,79 @@
+[
+ {
+  "id": "13 a run joined from bids placed at two times shows the earliest time",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "first bid in minute 19:42, second a minute later; the line reads \"Ranger IP LL Mon 2 – Tue 3 Mar › 2 days −4.5 P 26 27 Oct 19:42 Approve Refuse\"",
+  "pics": [
+   "a-s9-13-run-two-times"
+  ]
+ },
+ {
+  "id": "1e line against the bid window: LOWEST AVAIL and LVE BAL agree",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "line \"Ranger IP LL Wed 14 Jan › 1 day −4.5 P 26 27 Oct 19:42 Approve Refuse\"; window day line \"No manning row is amber or red\", LL button \"LL −4.5\"",
+  "pics": [
+   "a-s9-1-bidwin-14jan"
+  ]
+ },
+ {
+  "id": "9 two lines that join: ONE line Mon to Wed, no greyed \"No longer there\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "before: two lines false; Tue 13 Jan placed false; after Back: ; stale: []",
+  "pics": [
+   "a-s9-9-after-placing-13",
+   "a-s9-9-after-back"
+  ]
+ },
+ {
+  "id": "11 the day list shows \"Placed ...\" under EACH entry",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "day list open true; 2 Placed lines: [\"dl-placed-r-rmvqm8s014oqy6: Placed Ranger · Tue 27 Oct, 19:42\",\"dl-placed-r-rmvqmagq21bmx4: Placed Saber · Tue 27 Oct, 19:43\"]",
+  "pics": [
+   "a-s9-11-daylist"
+  ]
+ },
+ {
+  "id": "10 a SANS man off the war: \"SANS · not in Avail\", his dates open his person window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Jester B LL Wed 21 Jan › 1 day −1 SANS · not in Avail 27 Oct 19:43 · by Saber Approve Refuse\"; after the dates tap: [\"person-dice\",\"cat-dice\",\"bal-dice\",\"person-shaft\",\"cat-shaft\",\"bal-shaft\",\"person-snap\",\"cat-snap\"], slim bar true",
+  "pics": [
+   "a-s9-10-approvals",
+   "a-s9-10-dates-tap",
+   "a-s9-13-sans-line"
+  ]
+ },
+ {
+  "id": "12a a posted-out man: his line is tagged \"posting out ...\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Blade's lines: Blade IP LL Mon 2 Feb › 1 day 4.5 — Approve Refuse || Blade IP LL Tue 3 Feb, PM › 0.5 day 4.5 — Approve Refuse",
+  "pics": [
+   "a-s9-12-approvals",
+   "a-s9-13-postedout"
+  ]
+ },
+ {
+  "id": "12b Approve on his line says \"Posted out — refuse or delete it\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "line after Approve: \"Blade IP LL Mon 2 Feb › 1 day 4.5 — Approved Refuse\"; Approve pressed=true",
+  "pics": [
+   "a-s9-12-after-approve",
+   "a-s9-13-postedout-approve-refused"
+  ]
+ },
+ {
+  "id": "12c Refuse works on his line",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "line: \"Blade IP LL Mon 2 Feb › 1 day 4.5 — Approved Refuse\"; Refuse {\"t\":\"Refuse\",\"p\":\"false\",\"dis\":true}",
+  "pics": [
+   "a-s9-12-refused"
+  ]
+ }
+]

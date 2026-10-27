@@ -1,0 +1,53 @@
+[
+ {
+  "id": "6a an approval tells once: exactly one line, no \"You were added\" Inputs line beside it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1 new: Your leaveWed 7 Jan LL approved · Saber now ;; all: Your leaveWed 7 Jan LL approved · Saber now",
+  "pics": [
+   "6a-bell"
+  ]
+ },
+ {
+  "id": "6b Saber changes the remark on the Inputs page -> Ranger told once, \"Remark changed\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1 new: LLWed 7 Jan Remark changed · Saber now",
+  "pics": [
+   "6b-input-window",
+   "6b-after-save",
+   "6b-bell"
+  ]
+ },
+ {
+  "id": "8 Approve, Undo, Redo -> lit \"Approved\" again; a second tap sends it back",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Undo \"Fri 9 Jan:pending ; Tue 13 Jan:pending\"; after Redo \"Fri 9 Jan:approved ; Tue 13 Jan:pending\"; after second tap \"Fri 9 Jan:pending ; Tue 13 Jan:pending\"",
+  "pics": [
+   "7b-after-undo",
+   "8a-after-redo",
+   "8b-second-tap"
+  ]
+ },
+ {
+  "id": "7 Approve, Undo, leave Approvals, reopen, Redo -> Redo still works",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approve \"Fri 9 Jan:pending ; Tue 13 Jan:approved\"; undo \"Fri 9 Jan:pending ; Tue 13 Jan:pending\"; reopened \"Fri 9 Jan:pending ; Tue 13 Jan:pending\"; redo button disabled false; after redo \"Fri 9 Jan:pending ; Tue 13 Jan:approved-elsewhere(Already approved by Saber)\"",
+  "pics": [
+   "7c-grid-after-undo",
+   "7d-approvals-reopened",
+   "7e-after-redo"
+  ]
+ },
+ {
+  "id": "7f the changes window shows nothing for \"Approvals opened\" or \"taken back\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "mentions Approvals false; \"taken back\" false",
+  "pics": [
+   "7f-changes-window"
+  ]
+ }
+]

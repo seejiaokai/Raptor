@@ -1,0 +1,67 @@
+[
+ {
+  "id": "F fixture: Ranger LL AM on 21 Jan placed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window closed after placing: true",
+  "pics": []
+ },
+ {
+  "id": "S9a Pick dates... opens the calendar",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "calendar box {\"l\":21,\"t\":361,\"r\":371,\"b\":732}",
+  "pics": [
+   "s9-pick-open.png",
+   "s9-pick-open-q.png"
+  ]
+ },
+ {
+  "id": "S9b one day picked, a tap outside closes the calendar",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "selection \"13 Jan 26\"; open after the day tap: true; closed after the outside tap: true",
+  "pics": [
+   "s9-pick-day.png",
+   "s9-outside-q.png",
+   "s9-outside.png"
+  ]
+ },
+ {
+  "id": "S9c Escape closes the calendar (hardware keyboard)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "open true; closed after Escape true",
+  "pics": [
+   "s9-escape.png"
+  ]
+ },
+ {
+  "id": "F fixture: Saber placed OL on Ranger's free half of 21 Jan",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window true; AM/PM [\"AM:on\",\"PM:off\"]; closed after: true",
+  "pics": [
+   "s10-window-for-free-half.png"
+  ]
+ },
+ {
+  "id": "S10 each entry's Placed line is readable, inside the window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "[{\"id\":\"dl-placed-r-rmvqm0cjn28z05\",\"text\":\"Placed Ranger · Tue 27 Oct, 19:35\",\"l\":73,\"r\":377,\"t\":592,\"b\":608,\"inside\":true,\"clipped\":false},{\"id\":\"dl-placed-a-imvqm0l5f46oyaj\",\"text\":\"Placed Saber · Tue 27 Oct, 19:36 · Approved Saber · Tue 27 Oct, 19:36\",\"l\":73,\"r\":377,\"t\":727,\"b\":759,\"inside\":true,\"clipped\":false}]",
+  "pics": [
+   "s10-daylist-q.png",
+   "s10-daylist.png"
+  ]
+ },
+ {
+  "id": "S8 bell tap with the OIL tab up",
+  "size": "phone",
+  "verdict": "NOT WALKED",
+  "said": "no approved 13 Jan line: ",
+  "pics": [
+   "s8-bell-open.png"
+  ]
+ }
+]

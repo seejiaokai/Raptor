@@ -1,0 +1,29 @@
+[
+ {
+  "id": "11 bell follows the pinned today -> \"... bidding closed · its dates ended\", no name",
+  "size": "desk",
+  "verdict": "NOT WALKED",
+  "said": "before 3 lines, after 3; ended lines: ; new: ",
+  "pics": [
+   "11e-ranger-bell-after-pin"
+  ]
+ },
+ {
+  "id": "11c bell after signing in again with today at 12 Jan",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "ended lines: ; all: Leave War6 Jan – 9 Jan bidding open · Saber now | Leave War1 Mar – 31 Mar bidding closed · Saber now | Leave War1 Jan – 4 Jan bidding open · Saber now",
+  "pics": [
+   "11g-bell-after-signin-at-12jan"
+  ]
+ },
+ {
+  "id": "11d bell on the real clock (no pin)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "chip \"Bidding closed\"; ended lines: ; all: Leave War6 Jan – 9 Jan bidding open · Saber now | Leave War1 Mar – 31 Mar bidding closed · Saber now | Leave War1 Jan – 4 Jan bidding open · Saber now",
+  "pics": [
+   "11h-bell-no-pin"
+  ]
+ }
+]

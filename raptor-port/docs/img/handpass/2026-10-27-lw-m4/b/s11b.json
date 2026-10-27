@@ -1,0 +1,33 @@
+[
+ {
+  "id": "S11c slim bar up, name badge -> member view: off Approvals, no slim bar, no tab",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "before {\"approvals\":false,\"slim\":true,\"tabApprovals\":true,\"grid\":true}; after {\"approvals\":false,\"slim\":false,\"tabApprovals\":false,\"grid\":true}",
+  "pics": [
+   "s11b-slim-up.png",
+   "s11b-menu.png",
+   "s11b-switch-q.png",
+   "s11b-switched.png"
+  ]
+ },
+ {
+  "id": "S11d back to the admin view: the tab is back, no slim bar, Approvals not open by itself",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"approvals\":false,\"slim\":false,\"tabApprovals\":true,\"grid\":true}",
+  "pics": [
+   "s11b-back-admin.png"
+  ]
+ },
+ {
+  "id": "S11e on the Approvals page, name badge -> member view: off Approvals",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "before {\"approvals\":true,\"slim\":false,\"tabApprovals\":true,\"grid\":false}; after {\"approvals\":false,\"slim\":false,\"tabApprovals\":false,\"grid\":true}",
+  "pics": [
+   "s11c-menu.png",
+   "s11c-switched.png"
+  ]
+ }
+]

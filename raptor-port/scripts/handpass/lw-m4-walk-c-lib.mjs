@@ -24,6 +24,8 @@ export function mk(L) {
   /* a picked range by dragging in the grid (mouse on desktop): opens the drag window */
   H.drag = async (w, a, b) => {
     await L.reachCell(w, 'bane', a); await L.reachCell(w, 'bane', b)
+    await w.page.evaluate(iso => document.querySelector(`[data-testid="cell-bane-${iso}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' }), a)
+    await w.page.waitForTimeout(600)
     const A = await w.page.locator(T(`cell-bane-${a}`)).first().boundingBox()
     const B = await w.page.locator(T(`cell-bane-${b}`)).first().boundingBox()
     await w.page.mouse.move(A.x + A.width / 2, A.y + A.height / 2)

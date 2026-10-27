@@ -1,0 +1,72 @@
+[
+ {
+  "id": "7a dates tap: the grid at that day, the cell ringed, the slim bar up",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid up true; ring {\"id\":\"cell-bane-2026-01-12\",\"x\":211,\"y\":679,\"w\":27,\"h\":27,\"onTop\":true,\"slimTop\":794,\"vh\":860,\"vw\":1536}; slim \"Approvals · 9 pending · 3 new Back ▴ ✕\"",
+  "pics": [
+   "a-s6-7-grid-ring-350ms"
+  ]
+ },
+ {
+  "id": "7b the ring lasts about six seconds",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the ring was gone 6153 ms after the tap (polled every 200 ms)",
+  "pics": [
+   "a-s6-7-grid-ring-350ms",
+   "a-s6-7-grid-ring-gone"
+  ]
+ },
+ {
+  "id": "7c slim bar count equals the page header count",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "slim \"Approvals · 9 pending · 3 new Back ▴ ✕\" against the header just before \"9 pending · 3 new\" (after one line approved)",
+  "pics": [
+   "a-s6-7-before-dates-tap",
+   "a-s6-7-grid-ring-350ms"
+  ]
+ },
+ {
+  "id": "7d Back opens the list exactly as left",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "left: {\"lines\":[\"Thu 8 Jan ›|pending|dot:none\",\"Fri 23 Jan, AM ›|pending|dot:none\",\"Mon 12 Jan ›|pending|dot:-\",\"Wed 14 Jan ›|approved|dot:none\",\"Tue 20 Jan ›|pending|dot:-\"],\"filters\":[\"Jan\"],\"sub\":\"9 pending · 3 new\",\"all\":\"Approve all 4\",\"y\":0}; back: {\"lines\":[\"Thu 8 Jan ›|pending|dot:none\",\"Fri 23 Jan, AM ›|pending|dot:none\",\"Mon 12 Jan ›|pending|dot:-\",\"Wed 14 Jan ›|approved|dot:none\",\"Tue 20 Jan ›|pending|dot:-\"],\"filters\":[\"Jan\"],\"sub\":\"9 pending · 3 new\",\"all\":\"Approve all 4\",\"y\":0}",
+  "pics": [
+   "a-s6-7-before-dates-tap",
+   "a-s6-7-after-back"
+  ]
+ },
+ {
+  "id": "7e X leaves Approvals (the tab no longer lit, no slim bar)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "slim gone true, Approvals page gone true, tab {\"cls\":\"intab\",\"sel\":\"false\"}",
+  "pics": [
+   "a-s6-7-after-x"
+  ]
+ },
+ {
+  "id": "6a bid deleted on the grid: Back -> Approve all disarmed and recounted, the line says \"No longer there\", buttons off",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before: {\"text\":\"Approve 9 — tap again\",\"armed\":true}; after Back: {\"text\":\"Approve all 8\",\"armed\":false}; line \"Ranger IP LL Mon 12 Jan › No longer there 1 day −4 P 28 27 Oct 19:36 Approve Refuse\"; buttons [\"Approve:true\",\"Refuse:true\"]; delete window still open: false",
+  "pics": [
+   "a-s6-6-after-delete-on-grid",
+   "a-s6-6-after-back-deleted",
+   "a-s6-13-stale-gone"
+  ]
+ },
+ {
+  "id": "6b refused on the grid: Back -> \"Already refused by Saber\", buttons off",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Ranger IP LL Tue 20 Jan › Already refused by Saber 1 day −3 P 27 27 Oct 19:36 Approve Refuse\"; buttons [\"Approve:true\",\"Refuse:true\"]",
+  "pics": [
+   "a-s6-6-after-refuse-on-grid",
+   "a-s6-6-after-back-refused",
+   "a-s6-13-stale-refused"
+  ]
+ }
+]
