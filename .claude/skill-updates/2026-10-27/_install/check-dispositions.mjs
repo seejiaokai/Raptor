@@ -30,7 +30,9 @@ export function rows(text) {
 }
 
 const CODES = new Set(['APPLY', 'REFLECTED', 'FILED', 'MEMORY', 'ASK', 'OPEN']);
-const open = openSet(log);
+// The review covers the notes up to 721, the highest when it started; a note appended since stays OPEN for the next.
+const REVIEW_MAX = 721;
+const open = new Set([...openSet(log)].filter(n => n <= REVIEW_MAX));
 const rs = rows(table);
 const seen = new Map();
 let bad = 0;
