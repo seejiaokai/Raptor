@@ -57,6 +57,14 @@ import { ringCell } from './ui/cellring'
    behind it — its scroll and window of months kept for "Back" — so it is hidden, not unmounted, and this memo keeps a
    switch of tab from re-rendering its ~28k nodes. */
 const GridM = memo(Matrix)
+/* IS THE LEAVE WAR THE PAGE ON SCREEN? (the fixes' M6 — the Opus read's 3). Set by the page's own activation effect below,
+   and cleared there BEFORE it ends the Approvals visit — so the mode change that leaving makes is seen by `Body` as what
+   it is: he left the page, not the grid coming back. Without it `Body`'s effect, which runs after the page's cleanup,
+   flagged the hidden grid on screen again (a desktop then filled the whole year in the background, on other pages) and
+   scrolled the window — the next page's — to the grid's old place. A module flag, not state: nothing re-renders for it. */
+let pageOn = false
+/* where he was on the GRID (not on the Approvals page) — the page's return lands there when he left from Approvals */
+let gridYNow = 0
 /* APPROVALS IN THE GRID CARD'S PLACE (the overhaul's M4, 8.1 — D1254, D1420): while its page is up the grid is hidden; with
    the slim bar up (a request's dates tapped) the grid shows and the page waits, kept as he left it. Leaving Approvals ends
    the visit. Coming back to the grid from the page restores where he was on it — the page scroll is the window's (the
@@ -64,20 +72,24 @@ const GridM = memo(Matrix)
 function Body() {
   const mode = useSyncExternalStore(subscribeLwNav, apprMode, apprMode)
   useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
-  const gridY = useRef(0), apprY = useRef(0), was = useRef(mode)
+  const apprY = useRef(0), was = useRef(mode)
   useEffect(() => {
     const from = was.current
     was.current = mode
     if (from === mode) return
+    /* he left the Leave War (another page, the bell): the visit is over and the page's own cleanup has already flagged the
+       grid off screen — nothing of the grid's is touched, and no other page's scroll (M6) */
+    if (!pageOn) { if (mode === 'off') apprY.current = 0; return }
     /* a hidden grid fills nothing in the background (state/screen.ts — the same flag a hidden tab sets) */
     setLwOnScreen(mode !== 'page')
     if (mode === 'page') { window.scrollTo(0, apprY.current); return }
     /* back on the grid: where he was on it */
-    if (from === 'page') { window.scrollTo(0, gridY.current); window.dispatchEvent(new Event('resize')) }
+    if (from === 'page') { window.scrollTo(0, gridYNow); window.dispatchEvent(new Event('resize')) }
     if (mode === 'off') apprY.current = 0
   }, [mode])
   useEffect(() => {
-    const on = () => { if (apprMode() === 'page') apprY.current = window.scrollY; else gridY.current = window.scrollY }
+    /* only while the Leave War is the page on screen — the window's scroll is every page's (M6) */
+    const on = () => { if (!pageOn) return; if (apprMode() === 'page') apprY.current = window.scrollY; else gridYNow = window.scrollY }
     window.addEventListener('scroll', on, { passive: true })
     return () => window.removeEventListener('scroll', on)
   }, [])
@@ -145,6 +157,7 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
   useEffect(() => installDayClock(), [])
   useEffect(() => {
     if (!active) return
+    pageOn = true
     /* Tell the Matrix the tab is on screen BEFORE the resize kick, so its
        background fill switches from the small hidden window to filling the whole
        year (desktop) and the fill kick below finds the flag already true. The
@@ -179,6 +192,10 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', onScroll)
+      /* off the page FIRST, so the mode change below is read as leaving (M6) — and, left from the Approvals page, the next
+         return lands on the grid where he was on it, not at the page's scroll */
+      pageOn = false
+      if (apprMode() === 'page') savedY.current = gridYNow
       /* another page: he has left Approvals (M4 8.3 — the visit ends) */
       setApprMode('off')
       /* Off screen now: BEFORE the resize kick, so the Matrix sees the flag
