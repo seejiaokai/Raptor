@@ -17,13 +17,15 @@ import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
-import { getState, initStore as lwInitStore, lwHistInit, recordsAt, setBidState, setCell, setPeople, setPostOut } from './state/store'
+import { absenceDoor, getState, initStore as lwInitStore, lwHistInit, recordsAt, setAbsenceDoor, setBidState, setCell, setPeople, setPostOut } from './state/store'
 import { setMemberTodayForTests } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
 import { ApprovalsPage, SlimBar, rangeWords } from './ui/ApprovalsPage'
 import { DayListSheet } from './ui/DayList'
+import { Matrix } from './ui/Matrix'
+import { SelectSheet } from './ui/SelectSheet'
 import { setApprMode } from './ui/lwnav'
 
 const mem: Record<string, string> = {}
@@ -290,6 +292,50 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
       expect(screen.queryByText(/something else is on that time/)).toBeNull()
       expect(reqs('bane', TUE)[0]!.state).toBe('pending')
     } finally { setMemberTodayForTests(null) }
+  })
+
+  /* THE FIXES' ROUND 2, R2-4: "Approve what I enter" — the admin's default in both bid windows — kept a day after a man's
+     posting-out date pending with a guessed reason ("a locked week, or leave or a medical already there"); R2-5: the drag
+     window's note put the rules' reason against every skipped day, an empty one too. */
+  describe('the bid windows name the posting-out reason (R2-4, R2-5)', () => {
+    const THU = '2026-02-12', FRI = '2026-02-13'
+    const sel = (dates: string[]) => ({ people: ['bane'], from: dates[0]!, to: dates[dates.length - 1]!, cells: dates.map(date => ({ personId: 'bane', date })) }) as any
+    const noop = () => {}
+    beforeEach(() => { try { localStorage.clear() } catch { /* none */ } setMemberTodayForTests('2026-01-20') })
+    afterEach(() => { setMemberTodayForTests(null) })
+    /* (the grid draws his days from the posting-out date posted out, and a tap there opens the day's list, not the window with
+       the leave buttons — so the one-day window meets the door's refusal by a range across the date; here the door is asked
+       for that refusal on a day the window can open, to pin that the window prints whatever reason the door gives) */
+    it('R2-4 the one-day window, "Approve what I enter" refused by the door: kept pending with the door’s reason', () => {
+      const door = absenceDoor()!
+      const why = 'He posts out on 11 Feb: refuse or delete it'
+      setAbsenceDoor({ ...door, approve: items => ({ done: 0, skipped: items.length, why: items.map(() => why) }) })
+      try {
+        render(<Matrix />)
+        fireEvent.click(screen.getByTestId(`cell-bane-${THU}`))
+        expect(screen.getByTestId('bid-approve-tick').getAttribute('aria-checked')).toBe('true')
+        fireEvent.click(screen.getByTestId('bid-LL'))
+        fireEvent.click(screen.getByTestId('bid-LL'))          // his balance goes below zero: the same leave again goes ahead
+        expect(reqs('bane', THU).map(r => r.state)).toEqual(['pending'])
+        expect(screen.getByText(/kept pending — He posts out on 11 Feb: refuse or delete it/)).toBeTruthy()
+        expect(screen.queryByText(/a locked week, or leave or a medical already there/)).toBeNull()
+      } finally { setAbsenceDoor(door) }
+    })
+    it('R2-4 the drag window, "Approve what I enter" over his days after the date: kept pending with the door’s reason', () => {
+      expect(setPostOut('bane', WED, 'none')).toBe(true)
+      render(<SelectSheet sel={sel([THU, FRI])} people={() => 'Ranger'} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
+      expect(screen.getByTestId('sel-approve-tick').getAttribute('aria-checked')).toBe('true')
+      fireEvent.click(screen.getByTestId('sel-LL'))
+      expect(screen.getByTestId('sel-note').textContent).toContain('kept pending — He posts out on 11 Feb: refuse or delete it')
+      expect(screen.getByTestId('sel-note').textContent).not.toContain('a locked week')
+    })
+    it('R2-5 the drag window counts the days the rules refused apart from a day with nothing to decide', () => {
+      expect(setCell('bane', TUE, 'LL')).toBe(true); expect(setCell('bane', THU, 'LL')).toBe(true)
+      expect(setPostOut('bane', WED, 'none')).toBe(true)
+      render(<SelectSheet sel={sel([TUE, WED, THU, FRI].filter(d => d !== WED))} people={() => 'Ranger'} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
+      fireEvent.click(screen.getByTestId('sel-approve'))
+      expect(screen.getByTestId('sel-note').textContent).toBe('1 decided. 1 not approved: He posts out on 11 Feb: refuse or delete it. 1 skipped (no bid, or Raptor-owned).')
+    })
   })
 
   it('one "Placed" line under each entry', () => {

@@ -3556,10 +3556,13 @@ function warEditable(personId: string, date: string): boolean {
  *  rule: closed days, posted out, occupied); then exactly the requests it left of that code on those days go through the
  *  absence door's approve, as a Decide's Approve does. A day the approval refuses (a locked week, leave or a medical
  *  already there) keeps its bid, pending, and is returned in `pending` for the window to name — never a whole failure. */
-export function placeApproved(cells: { personId: string; date: string }[], code: string, words?: ReqWords): { written: number; skipped: number; approved: number; pending: Array<{ personId: string; date: string }> } {
+/* `why` — the door's reasons for the days kept pending ("He posts out on 1 Mar: refuse or delete it"), so the windows say
+   what Approvals says, never a guess (the fixes' round 2, R2-4) */
+export function placeApproved(cells: { personId: string; date: string }[], code: string, words?: ReqWords): { written: number; skipped: number; approved: number; pending: Array<{ personId: string; date: string }>; why: string[] } {
   const clean = code.trim().toUpperCase()
-  if (!canDecide(state.role) || !clean) return { written: 0, skipped: cells.length, approved: 0, pending: [] }
+  if (!canDecide(state.role) || !clean) return { written: 0, skipped: cells.length, approved: 0, pending: [], why: [] }
   let written = 0, skipped = 0, approved = 0
+  let why: string[] = []
   const pending: Array<{ personId: string; date: string }> = []
   gesture('lw.placeApproved', () => {
     const portion = portionOfCode(clean)
@@ -3579,13 +3582,14 @@ export function placeApproved(cells: { personId: string; date: string }[], code:
       }
     }
     if (!toApprove.length) return
-    const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length }
+    const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length, why: [] as string[] }
     approved = r.done
+    why = [...new Set(r.why)]
     for (const a of toApprove) {
       if (liveRequestsOn(listAt(a.personId, a.date), portion).some(x => x.id === a.recId)) pending.push({ personId: a.personId, date: a.date })
     }
   })
-  return { written, skipped, approved, pending }
+  return { written, skipped, approved, pending, why }
 }
 
 /** FILED STRAIGHT (his D1318 — "OD and course doesnt need an approval, its directly approved like an input. it can go
@@ -3620,9 +3624,10 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
 }
 
 /* `why` — the rules' reasons for what the door skipped ("He posts out on 1 Mar: refuse or delete it"), so a bid window says
-   what Approvals says (the fixes' M5) */
-export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number; why: string[] } {
-  if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0, why: [] }
+   what Approvals says (the fixes' M5); `refused` — how many of the skipped days the rules refused with a reason, apart from
+   the days with nothing to decide (round 2, R2-5: the drag window put the reason against every skipped day) */
+export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number; why: string[]; refused: number } {
+  if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0, why: [], refused: 0 }
   const why: string[] = []
   /* `already` (the absence-record re-test, AB7, 26 Sep 26 — Fable F7, reproduced by W3): an Approve over a leave that
      was ALREADY approved changes nothing, and it was counted as "decided" — "3 decided" for two changes. */
@@ -3671,7 +3676,7 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
       decided += r.done; skipped += r.skipped; why.push(...r.why)
     }
   })
-  return { decided, skipped, already, why: [...new Set(why)] }
+  return { decided, skipped, already, why: [...new Set(why)], refused: why.length }
 }
 
 /** Record a decision on one cell — the single-cell sibling of `setBidStates`,
@@ -3728,14 +3733,10 @@ const shortDay = (iso: string): string => {
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   return `${DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))).getUTCDay()]} ${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
 }
-/** his posting out is as SANS (his D1436: a SANS man's leave is kept, so his Approve is never refused for the posting) —
- *  asked by the one body every door's Approve asks (sync.ts approveWhy — the fixes' M5) */
-export const postedOutAsSans = (personId: string): boolean => {
-  const w = state.postOuts[personId] || state.people.find(p => p.id === personId)
-  return !!w && !w.gone && outcomeOf(w) === 'sans'
-}
-/** has this man's posting out RUN (his last day before today) — or was he deleted? A request of his is not approved then
- *  (M4 8.2, B12): "Posted out — refuse or delete it". A posting still to come approves as ever. */
+/** has this man's posting out RUN (his last day before today) — or was he deleted? His line's tag reads "posted out <date>"
+ *  then, and the refusal of his days from that date speaks in the past tense (sync.ts postingOutWhy). Since the fixes'
+ *  round 2 (D1436's full row, the host's reading of 28 Oct 26) a run posting no longer refuses every request of his — only
+ *  his days from the posting-out date, as before it runs. */
 export function postedOutBy(personId: string): string | null {
   const w = state.postOuts[personId] || state.people.find(p => p.id === personId)
   if (!w) return null

@@ -131,7 +131,6 @@ import {
   setViewerCallsign,
   subscribe as lwSubscribe,
   postedOutBy,
-  postedOutAsSans,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
@@ -428,10 +427,6 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
   if (!war || !rec) return 'No longer there'
-  /* A MAN WHOSE POSTING OUT HAS RUN (or who was deleted) — the older B12 rule, asked here so every door gives one answer
-     (the fixes' M5 — the re-walk and both code reads: it lived only in Approvals' writer, and the bid windows approved
-     what Approvals refused). A posting out as SANS keeps his leave (D283, D1436). */
-  if (postedOutBy(it.personId) && !postedOutAsSans(it.personId)) return 'Posted out — refuse or delete it'
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po
@@ -441,11 +436,16 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
 }
 /* his D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
    even before the posting has run — the Approvals list and the bid windows alike, since both ask `approveWhy`; a posting
-   out as SANS keeps his leave (D283). The record's own dates are read, as `postingPendingTag` reads them. */
+   out as SANS keeps his leave (D283). The record's own dates are read, as `postingPendingTag` reads them.
+   ONE DATE RULE, WHETHER THE POSTING HAS RUN OR NOT (the fixes' round 2 — the host's reading of D1436's full row, 28 Oct 26:
+   "a request with no such day approves as ever"). The older B12 rule — a man whose posting had run, every request of his
+   refused ("Posted out — refuse or delete it"), his months before the posting too — went: once the posting has run (or he
+   was deleted) his days from the date are refused as before it, the words in the past tense, and his days before it approve. */
 function postingOutWhy(personId: string, date: string): string | null {
   const w: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
-  if (!w || !w.to || w.gone || date <= w.to || outcomeOf(w) === 'sans') return null
-  return `He posts out on ${dayMon(addDays(w.to, 1))}: refuse or delete it`
+  if (!w || !w.to || date <= w.to || outcomeOf(w) === 'sans') return null
+  const on = dayMon(addDays(w.to, 1))
+  return postedOutBy(personId) ? `He posted out on ${on}: refuse or delete it` : `He posts out on ${on}: refuse or delete it`
 }
 /* WHY `doorDecideApproved` WOULD SKIP ONE ITEM (the same one body, M4 8.3) */
 function decideApprovedWhy(it: { personId: string; date: string; iid: string }, prot: Set<string> = lockedDates()): string | null {

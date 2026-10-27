@@ -481,7 +481,8 @@ export function BidPicker({
       if (!r.pending.length && !r.skipped) return onClose()
       const parts: string[] = []
       if (r.skipped) parts.push(`${r.skipped} day${r.skipped === 1 ? '' : 's'} not written: ${skipWhy('written', getState().role)}`)
-      if (r.pending.length) parts.push(`${r.pending.map(p => shortDate(p.date)).join(', ')} kept pending — not approved (a locked week, or leave or a medical already there)`)
+      /* the door's own reason where it gave one ("He posts out on 1 Mar: refuse or delete it" — the fixes' round 2, R2-4) */
+      if (r.pending.length) parts.push(`${r.pending.map(p => shortDate(p.date)).join(', ')} kept pending — ${r.why.length ? r.why.join(' ') : 'not approved (a locked week, or leave or a medical already there)'}`)
       return setNote(parts.join('. ') + '.')
     }
 
