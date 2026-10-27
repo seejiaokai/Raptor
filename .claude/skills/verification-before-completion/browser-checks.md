@@ -78,6 +78,12 @@ below is a way a real session "verified" a screen change and was wrong.
   animation frame that follows the switch, and assert what stays put
   relative to the view ("the point in the middle stays in the middle"), not
   absolute screen positions.
+- An edge-anchored element misplaced on a phone ("off the screen", "cut at
+  the edge"): first compare `document.documentElement.scrollWidth` with the
+  screen's width in the exact view and state, in a phone-emulating context.
+  Content wider than the screen widens the layout viewport, and every
+  right-anchored or clamped element follows it: find the child that
+  overflows before touching the element.
 - Where a view LANDS is judged at rest: wait until two scroll readings a short
   interval apart are equal, then assert ONCE. A polling assertion passes on
   its first sample — before a deferred scroll carries the target away.
@@ -89,6 +95,12 @@ wrapper around the whole file, the nearest `@media` above it, an override
 block that must stay last. A base rule goes ABOVE the block that overrides it.
 Then measure the narrow width on the first drive — the rule "appearing in the
 built file" proves it shipped, not that it applies.
+
+An exclusion added to a shared rule (`:not(…)`) raises its specificity, and
+it can start beating a narrower rule for a neighbour: write it
+`:where(:not(…))` so the rule keeps its weight, and measure the untouched
+neighbours before and after — a picture "looked at" passed a gear whose glyph
+went from 17px to 12px on every screen.
 
 A class placed on `html`, `body` or any wide ancestor is matched by every
 `closest()` below it: search the name in `closest(`, `matches(` and the

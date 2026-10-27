@@ -337,6 +337,22 @@ later round makes a new one (6 Oct 26: a frozen folder "refreshed" for the next 
 mid-flight fix, the next step's build. Break in a separate worktree, or hand the reader a commit (10 Oct 26: a
 reader reported a line a break test had cut out for one minute).
 
+**What each part of a check holds still, on ONE checkout** (14 Oct 26 — written once, so the order is not worked out
+again under load; a wrong order costs a false finding or a mixed walk):
+
+| Part | Needs held still | Changes |
+|---|---|---|
+| A walker | the served build folder | nothing in the tree |
+| A code reader | the source it reads (or the commit it is handed) | nothing — though it may RUN a unit file from the tree |
+| A break test | the whole tree until it prints DONE — no edit, build, browser test or commit meanwhile (`docs/walk-scripts.md` §9) | the source, for minutes |
+| A build, or a browser test (which builds) | the source it builds | the built folder |
+| A unit test | the source | nothing |
+| A document edit | — | the documents the document check reads |
+
+The order that follows: the reader (handed a commit) and the walker (on a frozen folder) together, with the documents
+and the NEW tests written meanwhile; then the break tests — after the reader has finished, since it may still run a
+unit file from the tree; then the build and the browser tests; then the gates.
+
 **FROM 5 OCT 26 THE WALKERS ARE SONNET 5.5 (owner, D588 — "Walk, checks, chores + one trial fix").** A walk's helpers
 are Sonnet 5.5, each in its own world as above; running the check set and reading its results, and documents-only
 chores, may go to a Sonnet helper too. Unchanged, and the price of it: each walker returns PICTURES and a filled table,
@@ -461,6 +477,8 @@ lived in a shared drawer and a new mode. **A cosmetic change to a shared drawer 
 
 The walk is the dearest part and the part whose cost varies most: what past walks of each type of change cost
 and found is in `docs/walk-ledger.md` §The figures (D607).
+**A LOOK whose surface an earlier walk script already pictures** re-runs that one step into a new folder (its step
+filter, `docs/walk-scripts.md` §6): the old run's pictures are the before (26 Oct 26 — a minute, with its fit check).
 
 **One check for a batch (owner, D485, 2 Oct 26 — "batch the checks").** Related features are built together on one branch
 and checked ONCE: the tier is the highest any one change in the batch would get alone; the roll-call, the scenario list and
@@ -502,7 +520,10 @@ its own narrow read ("is each fix right and complete, and what did it break besi
 not write the fix and is handed only the fix commit and the findings it answers (D790 — never the chat that wrote it; a
 further Fable read of a fix round is on his word), repeated on each round's fixes for at most about three rounds (the
 agent's cap, borrowed from the plan-review one, §4a); the sheet says which round was last and what carries the rest. "All
-findings fixed" is a claim about the findings, not about the fixes. And for a finding of the form "X is written
+findings fixed" is a claim about the findings, not about the fixes. **A fix that turns a refusal into a skip, a block
+or a lasting state** lists every twin path (undo AND redo, add AND remove) and every step that can sit behind the blocked
+one and still pick it, each with a test, before it is called complete (22 Oct 26: the read's fix unjammed Undo; the
+narrow read found the same jam on Redo one step later). And for a finding of the form "X is written
 outside the rules", ask first — and write the answer in its disposition — whether X should be written at all, by this
 actor, from this copy, before making the write conform (30 Sep 26: a bare write was wrapped to satisfy the check,
 when the write itself was the defect).
@@ -545,7 +566,9 @@ inside the puck, over exactly the strip the mark occupies (column 3).
 - **A wording ruling, or a fix to one writer of a record, gets its own small roll-call in the same commit** —
   every place that draws that text or writes that record. The fix is STRUCTURAL (one shared constant or one
   shared body), with a test that renders or drives each place. The "grep for the old wording" rule already
-  existed both times this failed.
+  existed both times this failed. Search for each exact old phrase on its own and list FILES, with no cap — a capped or
+  cut-short list is no list (15 Oct 26: a common phrase searched beside it filled `head -40`, and two tests that read
+  the old words failed only in the full run, fifteen minutes later).
 
 **And more rows, each from a fault a roll-call missed (24 Sep – 12 Oct 26):**
 
@@ -577,6 +600,24 @@ inside the puck, over exactly the strip the mark occupies (column 3).
 - **A storage change adds a column per writer:** on its FIRST write, and when it re-places a list, does it write ONLY
   what its own action changed? Any answer but a plain yes gets a two-tab step, the second tab opened before the first
   write.
+
+**And from the walks and reads of 13–26 Oct 26:**
+
+- **A new branch that SKIPS a call the others make** (an ending that validates and saves, an after-step, a notify) lists
+  each thing that call does, with where the new branch gets it or why it does not need it — written in the comment
+  beside the skip; and the readers' brief asks "what does the changed path no longer run?" (13 Oct 26: a put-back that
+  skipped the schedule's usual ending kept a "goes out" mark on an issued row).
+- **A change that runs a try-and-throw-away save** (a dry run of a save) lists every holder of a record across it — an
+  open window in each mode, a sheet's leftover rows, a plan — each with a test that ACTS through it after the try: the
+  rollback hands every record back as a new object, and the holders keep the old ones (18 Oct 26).
+- **A new kind of an existing record** (a new member of a family of kinds — UNA among the war's records) lists every
+  place the code branches on the kind (`=== '…'`, `!== '…'`, a switch), each marked "falls through rightly" or "needs
+  this change"; a read-only helper can make the list beside the build. The type checker flags none of them (24 Oct 26:
+  about 120 lines in 28 files, ten wrong — one would have reset the whole war on reload).
+- **A change to where an input is filed, or to who counts as away,** carries one row per reader of availability — Edit
+  Schedule's crew list (nothing picked, and a seat picked), the board's crew column, the day panel's counts, the
+  free-crew strip, ALL AVAIL, the Leave War's count — not only the screens that draw the input (25 Oct 26: a course
+  moved under Unavailable was drawn free on all four).
 
 ---
 
@@ -614,6 +655,9 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   not touch" is never that reason when the change touches the same listener family, the same component or the same scope
   rule (10 Oct 26: two real faults sat among eight scenarios set aside that way) — drive those once: a scripted step is
   cheaper than a second round of reads.
+- **A change that reads stored state** asks what else makes that field appear, change or vanish besides the control
+  under test — a week loaded, a sign-in, a reload, a page change — and walks one scenario per answer (26 Oct 26: the
+  war read a mark worked out only for the week on screen; the walk never changed the week, the code read found it).
 - **It sizes the walk and nothing else.** The tier, the roll-call, the door check, the tests, the gates, the code
   reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
   before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
@@ -656,6 +700,10 @@ finding.
   page not scrolled by the script, the pop-up's box inside the screen, a finger at a point on it meeting it — and
   its controls are then pressed at a point. A scripted press that scrolls its target into view first can work on a
   pop-up nobody could find: four browser tests and every walker passed a calendar drawn below the foot of the screen.
+- **A layout fix is walked once with wider letters too.** GitHub's Linux machines and his iPhone draw wider letters
+  than this PC: force them from the first paint (the Leave War browser tests' `LW_WIDE_LETTERS=1`, an init script — a
+  style added after the page loads misses what the app measures as it loads), in the test's own order of resizes
+  (23 Oct 26: three geometry tests red only on Linux, all reproduced here that way).
 - **How a walk script, a walker's brief and a break-test list are written — and what each trap in them has cost —
   is `docs/walk-scripts.md`.** Read it before writing one; every walker's brief names it.
 
@@ -672,7 +720,14 @@ may be carried by a test within §7.0's limits, and the sheet says which is whic
 between presses gets its state table too** (9 Oct 26: a walk of a new date picker passed 16 of 16, and two reads then
 found six faults, every one an order of action): each state × each event that can arrive in it — its own presses,
 the record changed behind it, another record opened, each answer to each question — a walk step where it needs the
-screen, a test otherwise; and the readers are asked the same in their brief.
+screen, a test otherwise; and the readers are asked the same in their brief. **So does anything with a lifetime** — a
+mark that lasts a few seconds, a timer, a note that waits, an animation (14 Oct 26: a walk sized "no new control"
+pressed only once inside a six-second mark; the read found three faults, each an order of action inside it). Its
+smallest table: the same trigger again inside the lifetime; a second, different trigger inside it; the thing removed,
+hidden or re-made while it runs; and its end arriving while another is running. **The states include the one each
+role's DEFAULT controls produce** (an admin's "Approve what I enter" is ticked, so his bid lands approved, not pending),
+and the red test of a fix goes once through the real door that makes that state (24 Oct 26: a store-only fixture kept
+the bid pending and the fixed line drew nothing in the app).
 
 **7.5 You have walked enough when** every roll-call row has a mark in every column, every order line
 has a result — from the walk, or from a test §7.0 allows to carry it — every MISSING has a disposition, the error list is empty or named, and the pictures
@@ -706,6 +761,19 @@ those events (Safari can send a touch's later events to the element it landed on
 it; Chromium retargets them), and add a synthetic check per difference: dispatch the other engine's sequence
 directly on the element it would reach. Name in the evidence sheet every line only a real device can prove,
 and put it on the owner's look card.
+- **A control the phone draws itself** (a date, time, select or file box) cannot be proved fixed in an emulated walk —
+  the desktop draws it differently. Replace it with the app's own control, or mark the fix "unproven until seen on the
+  device" on the sheet and on his look card (13 Oct 26: a date box "fitted" in a Windows browser ran off his iPhone
+  five days after it was written up as fixed).
+- **A stand-in is believed only once it is calibrated** — a forced font, a stand-in keyboard, an injected metric. Run it
+  on a state the real environment passed and on one it failed: it may judge a new case only if it passes the first and
+  fails the second (21 Oct 26: a forced Verdana wrapped a row GitHub had passed; 25 Oct 26: three keyboard fixes passed
+  a stand-in that had never reproduced his fault). For a motion the phone itself makes, even a calibrated stand-in
+  proves nothing (§7.11 lesson 7).
+- **A fault one engine shows and the suite's engine cannot:** find the metric that differs and inject it in the suite's
+  own engine — Safari's shorter line for 12px text, as `line-height: 14px` on the chips — stating the rule in its
+  engine-free form ("as tall as the leave buttons, whatever line the fonts give"): red before the fix, green after,
+  in every project (24 Oct 26).
 
 **7.10 The moment after a press, and the drawing beside the build (owner D1281, 23 Oct 26).** Three faults he found on
 his iPhone in one day had passed every walk, each a state no step looked at. So, for every walk of a screen:
@@ -722,6 +790,9 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
 - **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
   iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
   (his lessons 42 and 43, `docs/design-practices.md` §9).
+- **A close-up of every new or restyled control.** After the walkers return, one picture per new or restyled control,
+  cut to it at twice the pixels, beside a neighbour of its kind: over 300 full-screen pictures, three walkers and two
+  readers passed two new buttons drawn in the browser's bare grey, which the close-ups showed at once (22 Oct 26).
 
 ---
 

@@ -6922,3 +6922,9 @@ windows place themselves at the pan's word (`leavewar/ui/Sheet.tsx useKeyboardIn
 once, which on his iPhone is the same jump-then-slide class); if he sees it there, the same design (the phone carries the sheet) is drawn for him
 first. **Seen, not changed (older):** none left — the held window's shortening band went with the hold.
 
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([OVERNIGHT-SESSION-PER-JOB]). Forward facts: `.claude/skills/overnight/SKILL.md`.*
+
+### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
+**What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
+

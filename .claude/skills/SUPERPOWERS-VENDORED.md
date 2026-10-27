@@ -70,6 +70,16 @@ did not.
    | `executing-plans` | "each of these N sites" is a pointer; a branch that merged in another open branch |
    | `brainstorming` | a pointer to the new reference `mockups-on-the-real-app.md` (the method, the traps of injecting into a live page, judging the proposal, showing it) |
 
+6. **Local lessons from the skill review of 27 Oct 26** (his approval to come; the drafts read by one fresh Opus
+   reader, D1414; the same rules as changes 3 to 5 — an upstream refresh overwrites these, re-apply them).
+
+   | Skill | What was added |
+   |---|---|
+   | `systematic-debugging` | Phase 1: two versions side by side, step by step; a failure only a CI machine shows. Phase 4: a filed finding is a sample and its expected value a hypothesis; re-run the finder's script, instrument before a second guess; two misses on a device. Flaky: a transient state. `device-only-bugs.md`: the frame cap before "smoother"; the project's frame tool |
+   | `test-driven-development` | Verify RED: a case picked from what is on screen. Verify GREEN: other tests found by how tests reach the thing. `writing-good-tests.md`: a stand-in's numbers come from the real thing |
+   | `verification-before-completion` | the push row reads the remote back; two rows (a summary list rewritten, a merge's conflicts); `browser-checks.md`: an edge-anchored element on a phone; an exclusion that changes a rule's weight |
+   | `brainstorming` | `mockups-on-the-real-app.md`: the picture a ruling was made from; marks drawn on the element; from the picture to the build; five traps; choosing the state, one data set, a quantity measured, a detector's copy; captions from what was measured; four lines on showing it |
+
 ## Updating
 
 There is no auto-update. Re-clone upstream, copy `skills/` over, and re-apply

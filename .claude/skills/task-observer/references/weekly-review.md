@@ -102,6 +102,13 @@ observation has no Status line at all.** Concretely:
 `count(### Observation headers) == count(status-classified entries)`.
 If the counts differ, the delta is statusless entries — surface and
 triage them (as OPEN) rather than proceeding as if the log were clean.
+**The same guard holds for the output:** in a large review, one table — a
+row per OPEN observation, a code per row (carried by a draft / already
+written / filed / recommend closing / stays open) — whose set of numbers is
+checked by machine to equal the set of OPEN headers, with no duplicate,
+before the independent read and again before the install. The install reads
+the table, so the statuses written into the log cannot drift from what was
+approved.
 
 Also read all active cross-cutting principles. If there are no OPEN
 observations and no outstanding principles: report "no open observations
@@ -166,6 +173,16 @@ Updated skills ([N] observations, [N] principles applied):
 
 Wait for the user to acknowledge before other work.
 
+**Where an independent reader reads the drafts before approval**, its brief
+names the writer's own doubts as targets (the places most likely wrong),
+asks for the exact replacement text of every finding, and lets the reader
+write one file — its report. It asks the reader to RUN the drafts, not only
+read them: apply a drafted rule to named real cases and show the result;
+construct a case that passes every rule and is still wrong; tabulate what a
+rule yields against what was actually done. A reader told where the author
+is unsure, and asked for outputs, finds more than one asked whether the work
+is good.
+
 ## Constraints
 
 - Don't modify observation entries beyond their status field.
@@ -201,6 +218,12 @@ after. When seeding staged
 copies from the read-only mount, `chmod -R u+w` the staged path first —
 the mount's read-only mode travels with the copy, for directories as
 well as files. Do not edit skill files in place — nothing goes live
-until the user installs it. **Keep-two rule:** for any skill, keep only
+until the user installs it. **To rehearse a project check with the drafts in
+place** (before the read, and again after the reader's fixes): commit the
+drafts first, copy them over the live files, run the check, then restore ONLY
+the live paths, by name, and delete only the files the drafts add — never a
+whole-tree restore, which also returns the drafts to their last commit and
+throws away every edit since. One list of live paths serves the rehearsal
+and the install. **Keep-two rule:** for any skill, keep only
 the two most recent date directories under `skill-updates/`; delete
 older ones.

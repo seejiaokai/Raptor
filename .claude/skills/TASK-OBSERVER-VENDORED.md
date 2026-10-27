@@ -71,13 +71,20 @@ where that procedure's defaults do not fit a git repo with vendored skills:
 - **Staging:** drafts go to `.claude/skill-updates/<date>/`, never over the live
   skills, until the owner approves. Installing = copying the approved drafts over
   the live files on the review branch; going live = his "merge live" (D60).
+  A rehearsal of the document check with the drafts in place restores ONLY the
+  live paths it copied over, by name — never the whole tree, which also returns
+  the committed drafts to their last commit (13 Oct 26: about twenty-five of the
+  reader's fixes lost that way and re-applied). The install script's list of
+  live paths is the rehearsal's list.
 - **Who reads the drafts (owner, D70):** Fable AND Astra, one round each, before
   he approves — never the model that wrote them. *(D590, 5 Oct 26: the two readers
   are now Astra and Sol 6.1 — Fable's round went to Sol.)* *(D810, 13 Oct 26 —
   "u can use opus to do the review solely": for the 13 Oct 26 review ONLY, with the
   ChatGPT readers out, the drafts are read by ONE fresh, blind Opus reader — an Opus
   that did not write them and sees none of the writing chat's reasoning — not by
-  Fable; the two reads it goes without are on `OUTSTANDING.md` `[NO-ASTRA-LIST]`.)*
+  Fable; the two reads it goes without are on `OUTSTANDING.md` `[NO-ASTRA-LIST]`.)* *(D1414, 27 Oct 26 — the same for
+  the review of 27 Oct 26 ONLY: one fresh, blind Opus reader, then the drafts put to him grouped by guide, in rounds of
+  at most four.)*
 - **Clean up when the review ends (owner, D69):** after installing, delete the
   holding folder (git keeps the drafts), move the resolved entries to
   `archive/` the same day, and delete the review's handoff note once merged.
@@ -103,6 +110,13 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   scripts, walkers' briefs, break tests) and, inside the `brainstorming` skill,
   `mockups-on-the-real-app.md`; and it filed the lessons that are really a tool to build as
   backlog items instead of guide lines.
+
+- **27 Oct 26 review (his approval to come; read by one fresh Opus reader, D1414):** `SKILL.md` Session Start step 3
+  gained a size trigger beside the age one, and Numbering discipline item 4 a one-command search of every branch;
+  `references/weekly-review.md` Step 1's reconciliation guard now covers the output table, Step 8 the reader's brief,
+  and Delivering the rehearsal that restores only the live paths. This review's notes also landed in two places settled
+  before: the project's method documents (`raptor-port/docs/bug-check-order.md`, `walk-scripts.md`,
+  `gates-and-deploy.md`, `design-practices.md`) and the vendoring notes' own caveats.
 
 ## Known caveats (not bugs)
 

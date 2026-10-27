@@ -56,6 +56,10 @@ pushed and waiting for him — the normal end state, not unfinished business.
   list; the block names it in one line. A standing item already in the backlog
   is NOT this chat's leftover — name it in one line only if the next chat needs
   the pointer.
+- **Every open pull request is accounted for.** Run `gh pr list --state open` and name, in one line of the block,
+  each one no `## Now` block owns ("Also open, waiting for his merge live: …"), with how far behind `main` each is
+  (26 Oct 26: six built and checked pull requests sat unmerged for days, 317 to 668 commits behind, because every
+  block named only its own branch).
 - **`## Next, in order`** changes only when the order itself changed (his word,
   or an item finished); it is the project's, not this chat's.
 - Print the same block in chat, and give him the **ready-to-paste opening line**
@@ -193,7 +197,20 @@ re-read the WHOLE `## Now` section of `HANDOFF.md` and reconcile every block
 against `git log origin/main`, not only the block this session wrote: a block
 whose branch merged is removed once its open residue is filed (Step 1). A
 "current state" section must hold nothing already done, and the staleness an
-earlier session left sits in lines your diff never touched.
+earlier session left sits in lines your diff never touched. **A merge that
+changed `.claude/settings*.json`, `.claude/hooks/` or `.claude/skills/` is in
+force only once the main checkout (`C:\Users\User\projects\Raptor`) is on
+`main`:** a worktree chat started from the desktop app loads those from the
+main checkout, not from its own folder (14 Oct 26: a whole compaction set-up
+and a new skill were in force in no chat, the main checkout 208 commits
+behind). When that folder is not on `main`: if `git -C
+C:\Users\User\projects\Raptor status --short` shows no tracked change, its
+branch has nothing unpushed (`git -C … status -sb` shows no "ahead"), and no
+chat is working in it, switch it (`git -C … switch main`) and say so;
+otherwise tell him in one plain line what holds it. The block's pick-up then
+tells the next chat to verify by what the app itself reports (`get_usage`,
+the skill list) — never by running the script by hand
+(`raptor-port/docs/gates-and-deploy.md`).
 
 **Merged between chats — sweep for it, whoever merged.** He merges on his own
 word, often after the chat that built the thing has ended. For every `## Now`
@@ -218,7 +235,9 @@ memory:
   "the only thing left is X" is a summary, not a check (24 Sep 26: one missed
   a second leftover). Search the full rulings rows (`.claude/decisions-full/`)
   for the item's id named as a HOME, too: point each at
-  `OUTSTANDING-ARCHIVE.md` first, or the gate refuses the move. On a pull
+  `OUTSTANDING-ARCHIVE.md` first, or the gate refuses the move. The script
+  leaves the item's line in the priority list, and the document check passes
+  it: remove that line by hand in the same change (21 Oct 26). On a pull
   request that carries code, archive what the job finishes BEFORE its last
   checked commit — a refusal met after his "merge live" costs another whole
   check run (D151). Its contract goes to the right

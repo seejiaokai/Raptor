@@ -169,7 +169,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
-- [OVERNIGHT-SESSION-PER-JOB] — tried the night of 21 Oct 26 (D1103, D1104): a fresh helper per job, and the "Low or Medium?" question; if it worked, the overnight guide says so — written while he is awake, read before his approval.
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
 - [CI-FAIL-PICTURES] — GitHub's browser-test jobs keep no pictures of a failure — his call.
@@ -251,9 +250,6 @@ unless he says otherwise; Opus 5.5, high effort; a fresh chat.
 The airspace Traffic window's backdrop lies over the top bar, so a press on Undo / Redo does nothing while it is open (a real click timed out at both sizes) and Ctrl+Z inside the window does nothing either; Undo works after Done. Older behaviour, not caused by [INNERHTML-REPAINT-SWEEP]. **To do:** decide with the window rules (D641 — a window leaves the page behind it working) whether the top bar stays pressable over this window. **Place:** the agent's; with the next windows job. **Evidence:** `raptor-port/docs/handpass/2026-10-21-schedule-pages.md` §4.
 ### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
 **What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`. **Step 1 done (the night of 21 Oct 26):** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` — 44 places; three rules wrong for a real single-seat jet (AAR training, an IRT in one jet's remarks, OCU solo); the app cannot tell single-seat from a back seat not yet filled; 8 questions for him with marked pictures — put to him when he says (D994).
-
-### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
-**What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
 
 ### [KBS-LW-SHEETS] The Leave War's sheets and the keys — the same jump-then-slide class? (named under D852, 27 Oct 26)
 
@@ -1572,6 +1568,18 @@ environment as an input (285). **A cheaper alternative, if he prefers no new gua
 applies a list of exact find-and-replace pairs read from a file, so no script is typed at all (469).
 **Place:** allowed by him (D811, "Approve all"). The agent's placing: a small job on its own branch, read by a fresh
 Opus reader, after the Calendar job unless he says sooner; it removes the commonest lost round trip of every chat.
+**Met again since it was filed (13–26 Oct 26 — observations 601, 609, 668):** about forty more times by the three notes'
+own count, five of them hangs of two to five minutes on overnight runs; every time the Write or Edit tool put it
+right.
+**Two more refusals for the guard:** a command that begins `cat >` (or `cat >>`) with no here-document or file of its own —
+it waits on input for ever and the tool moves it to the background after two minutes (609); and every script run from
+the shell gets `< /dev/null`, so anything that reads input ends at once. **Conditions from the two notes about writing a
+command-refusing hook (598, 626):** read the shell's real grammar before the rule — quotes and escapes per shell,
+here-document and here-string bodies, comments, `$( … )`, `bash -c` / `eval`, redirects, launcher words (`timeout`,
+`env`) — and judge only the word in command position (`grep vitest` is not vitest); write the everyday commands as tests
+first (a commit with a here-document message, a pull request body, a grep for the tool's own name); list every situation
+in which the platform fires the hook's event and refuse only in the one the rule is for, never twice on unchanged state.
+The cheaper helper's find-and-replace pairs match each spot's own line endings (694).
 
 ### [CHECK-TOOLS-HARDEN] Small hardening of the checking tools, asked for by seventeen skill notes (filed 13 Oct 26 by the skill-notes review; none urgent)
 
@@ -1597,6 +1605,26 @@ Each line is a place where a tool allowed a mistake that a guide now only warns 
   accepts, ANSWERED among them (408). A branch name in backticks in a ruling's home cell is not read as a missing
   file (314). A search of the walk scripts' write paths for an absolute worktree path (298).
 - **The browser tests (`playwright.config.ts`).** Refuse to build while another run holds the check lock (444).
+- **A reused server is proved before it is used (586, 590, 616, 630, 634, 644 — six meetings; the guide lines already
+  exist and kept being missed).** The browser tests (`playwright.config.ts`, which reuses any server on its port outside
+  CI) and the walk drivers' `open()` (`lib.mjs`, `trk-lib.mjs`) check that the server they reach serves THIS checkout's
+  build — the hashed bundle name in the served `index.html` equals the local `dist`'s — and stop with that sentence if
+  not; a walk refuses to run with no address given, and a runner passes its address on (634).
+- **The walk helpers' pictures.** `pic(…, { around })` scrolls its subject into view, or refuses when the box is off the
+  screen (603); a crop helper given several selectors boxes all of them (666); the Leave War walk helpers that set their
+  folder with `=` take it with `||=` (705) — all but a re-walk's own setter file, whose one line names its `rewalk/`
+  folder on purpose.
+- **The check lock.** `gatelock.mjs` ends its child processes and releases the lock when it is itself stopped (607); and,
+  while this checkout holds the lock for a run, an edit under `raptor-port/src` (or a document the document check reads)
+  is refused — or the run works from a copy of the last commit — so the tree it checks cannot move under it (595, met
+  twice). A gate script's `--logs` default is under the checkout or carries the session's id, never a fixed name in
+  `$TEMP` (624).
+- **The backlog script.** `backlog-archive.mjs <ID>` removes the item's line from the priority list with its section (or
+  refuses and names it), and the document check fails on a priority-list line whose item is archived (657); its
+  `--dry-run` runs the same last inventory as the real run (569).
+- **The push guard.** A push from a worktree was judged by the main folder's branch on 21 Oct 26 ("this checkout is on
+  main") — reproduce and fix (717); and a push of a commit that touches `raptor-port/src` warns when the last build is
+  older than the last source edit, since GitHub's build then refuses what the PC never built (570, met again 25 Oct 26).
 
 **Place:** his to place. The agent's recommendation: one small tools job, any time, its own branch; the gates and a
 fresh Opus read of the scripts; no walk (nothing of the app changes).
@@ -1806,6 +1834,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The skill-notes review of 27 Oct 26 — the guide drafts from the 152 notes of 13–26 Oct 26, on `claude/observation-log-review-triage-7f6090` | one fresh, blind Opus reader, on his word (D1414) | the guide changes' two reads (D70: Astra and Sol 6.1) |
 | `[GROUP-INPUT-ONE-ROW]` — the schedule's one row for a shared input; LIVE since 11 Oct 26 (pull request #490) | its PLAN: Astra and Sol 6.1, two rounds; its finished CODE: Fable alone, on his word (D749, D752) | Astra's and Sol 6.1's reads of the finished code (`raptor-port/docs/handpass/2026-10-11-group-input-one-row.md`) |
 | The ring colours he found (D751) — fixed on the same branch, LIVE with it | walked and gated (the sheet's §14, WALK tier); no model read of its own | any ChatGPT read |
 | `[METHOD-LIT-COLOUR]` — the line his find costs the checking guide | MADE 13 Oct 26 with the skill-notes review, on that review's one fresh Opus read, on his word (D811) | the guide change's two reads (D70) |
@@ -2065,4 +2094,7 @@ typewriter face — fixed there, 0cca37160). Eight more, older: `raptor-port/src
 (491, 504, 572, 592). Each written out as `font-family: inherit` plus its size and weight would show the app's letters at
 the weight meant — a look change on screens he uses daily, so a before / after picture first (D541). **Place:** with the
 next Inputs or schedule batch (D490).
+**A guard with it (691, 704):** a structural test over the stylesheets — no rule after a scoping wrapper's close in a
+file that wraps itself (`#page-leavewar { … }`; a block appended after it lost silently, twice, 24 and 25 Oct 26), and no
+`font:` shorthand naming `inherit`. A rule that only a comment states is broken again.
 
