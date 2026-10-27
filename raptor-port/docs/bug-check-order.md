@@ -787,6 +787,10 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
   a phone, the pointer left on each, and asserts every pinned (sticky) cell stays fully opaque (a cell that paints nothing by design aside). The Leave War has it
   (`e2e/leavewar.spec.ts`, "pressing the Leave War's controls on a phone never turns a pinned cell see-through");
   the Scheduler Board, the week, Quals and the Tracker get theirs when each is next worked on, not swept now.
+- **Built to the drawing, from the first line (his D1424, 27 Oct 26 — "Don't u use that as a reference to build?").** A screen
+  with an approved drawing is put beside that drawing AS it is built and after every fix, not first at the walk; a departure
+  is made only on purpose, for a better design ("if u have better ideas and changed it, it's ok"), and named to him with its
+  picture and its reason — never left for him to find.
 - **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
   iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
   (his lessons 42 and 43, `docs/design-practices.md` §9).
@@ -829,6 +833,14 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** when a change hands anything to the phone itself (its scrolling, its keyboard, its bounce), the sizing step
    names what only the real phone draws and asks him for a look or a recording on his iPhone before merge; a walk that
    judges scroll bars launches with the test browser's `--hide-scrollbars` taken off.
+8. **A fix that reshaped an approved drawing, and a reading of it nobody held beside the picture (D1424, the Leave War M4's
+   Approvals, 27 Oct 26).** On a phone "New 1" broke onto two lines; the fix gave New two columns and Approve all a row of its
+   own — four rows where his drawing has three — chosen without opening the drawing. On a desktop the build read "the list
+   held to one eye-span" as the CARD narrowed, where the drawing has a full-width card with the list held inside it. The
+   drawing comparison (§7.10) was planned for after the walk, so neither was seen beside its drawing until he looked.
+   **Lesson:** a screen with an approved drawing is compared with it while it is built and after every fix to it — the
+   sizing step names the drawing for each surface and the walker's brief carries it; a fix for a fault keeps the drawn
+   layout, and a departure chosen on purpose is named to him with its picture and reason.
 7. **A mechanism tuned to a model of the phone is proved only by the model (D1412, the keyboard's six rounds, 25–27 Oct 26).** Six
    rounds moved, held and then glided a window against a model of his iPhone's keyboard slide; each passed the stand-in keyboard,
    which played that very model, and each failed on his phone, where the real slide, its timing and what the phone draws between

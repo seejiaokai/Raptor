@@ -5,7 +5,10 @@
    A working screen stays dense (D812): rows of 44px on a desktop, the buttons their bid-window size (D487). */
 #page-leavewar {
   .appr-page { padding: 0 12px 96px; }
-  .appr-card { max-width: 1240px; background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r); padding: 16px 18px 8px; }
+  /* the card takes the page's width as the grid card does; what is in it keeps one eye-span, so Approve and Refuse stand
+     near the figures (D1420, his drawing r22-1-desk — the first build narrowed the card itself) */
+  .appr-card > * { max-width: 1240px; }
+  .appr-card { background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r); padding: 16px 18px 8px; }
   .appr-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 12px; }
   .appr-title { margin: 0; font-size: 20px; font-weight: 800; color: var(--ink); }
   .appr-sub { color: var(--ink-2); font-size: 13px; }
@@ -73,17 +76,18 @@
      figures under headings drawn once */
   .appr-page.ph { padding: 0 8px 96px; }
   .appr-page.ph .appr-card { padding: 14px 12px 6px; }
-  .appr-page.ph .appr-filters { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
-  /* a chip's words never break inside it or run past its edge (D1387), on an iPhone's wider letters too: "New 1" with its
-     dot takes two columns — a month's three letters fit one — "Pick dates…" (or the dates picked) takes the rest of its
-     row, and Approve all, the page's one main button, a row of its own across the width, so its armed words "Approve 7 —
-     tap again" fit as well (the probe walk's phone fault, 27 Oct 26). A twelve-month period: New · All · Jan–Apr, then
-     May–Nov, then Dec · Pick dates…, then Approve all. */
+  .appr-page.ph .appr-filters { display: grid; grid-template-columns: max-content repeat(6, minmax(0, 1fr)); gap: 6px; }
+  /* AS HIS DRAWING (r22-5-phone — D1420, D1423): three rows — New · All · Jan–May, then Jun–Dec, then Pick dates… at the
+     left and Approve all at the right, each the size of its words. Every chip's words stay on one line inside its edge
+     (D1387), on an iPhone's wider letters too: "New 1" keeps its one column by a smaller dot and tighter spacing — the
+     first build broke it onto two lines (the probe walk, 27 Oct 26); its column is as wide as its words ("New 15" too), the
+     other six share the rest */
   .appr-page.ph .appr-f { justify-content: center; padding: 0 4px; min-height: 36px; white-space: nowrap; min-width: 0; }
-  .appr-page.ph [data-testid="appr-new"] { grid-column: span 2; gap: 4px; }
+  .appr-page.ph [data-testid="appr-new"] { gap: 3px; padding: 0 1px; font-size: 12px; letter-spacing: -.01em; }
+  .appr-page.ph [data-testid="appr-new"] .appr-dot { width: 6px; height: 6px; }
   .appr-page.ph .appr-spring { display: none; }
-  .appr-page.ph [data-testid="appr-pick"] { grid-column: span 6; }
-  .appr-page.ph .appr-all { grid-column: 1 / -1; }
+  .appr-page.ph [data-testid="appr-pick"] { grid-column: 1 / span 3; justify-self: start; padding: 0 12px; }
+  .appr-page.ph .appr-all { grid-column: 4 / span 4; justify-self: end; }
   .appr-cols.ph { grid-template-columns: 70px 72px 1fr 92px; padding: 12px 0 8px; }
   .appr-line.ph { display: block; padding: 10px 0; }
   .appr-l1 { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 6px; }

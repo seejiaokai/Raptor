@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1423 | 27 Oct 26 | On a phone the Leave War's Approvals filters and Approve all are built as his approved drawing shows them: three rows — New, All and Jan to May; Jun to Dec; then Pick dates… at the left and Approve all at the right — with every chip's words on one line, never a fourth row. |
 | D1422 | 27 Oct 26 | A member is told by the bell when an admin places leave on his row already approved ("Approve what I enter" on): one line, "Your leave · Mon 9 Mar · LL added and approved · Saber", a tap opening the grid at that day. |
 | D1421 | 27 Oct 26 | In the Leave War's Approvals list a request just approved or refused stays where it is, its button lit ("Approved" or "Refused"), until he leaves Approvals or changes the dates — a second tap on the lit button sends it back to pending, and nothing moves under his finger; the tab's count and "Approve all" count only what is still pending. |
 | D1420 | 27 Oct 26 | The Leave War's Approvals tab is built as drawn on the M4 page: its page takes the grid card's place under the top row, the list held to about one eye-span on a wide desktop so Approve and Refuse stand near the figures, each person his own puck (the schedule's, his CAT on its chip), and on a phone two lines a request. |

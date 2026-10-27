@@ -3,7 +3,7 @@
 process.env.LW_OUT ||= '../../docs/img/handpass/2026-10-27-lw-m4/probe'
 const L = await import('./lw-m4-lib.mjs')
 const { T, rec, shot, press, step, vis, txt } = L
-console.log('[lw-m4-probe v1]')
+console.log('[lw-m4-probe v2]')
 L.clearOut()
 for (const size of ['desk', 'phone']) {
   const w = await L.newCtx(size)
@@ -50,7 +50,8 @@ for (const size of ['desk', 'phone']) {
     await L.switchTo(w, 'member')
     await L.openBell(w)
     const bl = await L.bellLines(P)
-    rec('P9 his bell line', size, bl.some(b => /Your leave .*LL approved .*Saber/.test(b.text)) ? 'PASS' : 'FAIL', bl.map(b => b.text).join(' | '))
+    /* (the bell's words are separate boxes: read with no spaces assumed between them — v1's pattern wanted one) */
+    rec('P9 his bell line', size, bl.some(b => /Your leave.*LL approved.*Saber/.test(b.text)) ? 'PASS' : 'FAIL', bl.map(b => b.text).join(' | '))
     await shot(w, `${size}-p9-bell`)
   } catch (e) {
     rec('ERROR', size, 'FAIL', String(e).slice(0, 300))

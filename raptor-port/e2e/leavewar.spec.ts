@@ -7819,5 +7819,18 @@ test('on a phone every Approvals filter chip keeps its words on one line, inside
       return out
     })
     expect(bad, `${width} wide`).toEqual([])
+    /* …in his drawing's three rows (D1423, r22-5-phone): New · All · Jan–May, Jun–Dec, then Pick dates… left and Approve
+       all right on one row — never a fourth */
+    const rows = await page.evaluate(() => {
+      const tops = new Set<number>()
+      const els = Array.from(document.querySelectorAll<HTMLElement>('.appr-filters .appr-f, .appr-filters .appr-all'))
+      for (const el of els) tops.add(Math.round(el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2))
+      const mid = (s: string) => { const r = document.querySelector<HTMLElement>(s)!.getBoundingClientRect(); return { y: Math.round(r.top + r.height / 2), x: r.left } }
+      return { n: els.length, rows: [...tops].sort((a, b) => a - b).filter((t, i, a) => i === 0 || t - a[i - 1]! > 4).length, pick: mid('[data-testid="appr-pick"]'), all: mid('[data-testid="appr-approve-all"]') }
+    })
+    expect(rows.n, 'the chips are there').toBeGreaterThan(10)
+    expect(rows.rows, `${width} wide: three rows`).toBe(3)
+    expect(Math.abs(rows.pick.y - rows.all.y), 'Pick dates… and Approve all on one row').toBeLessThanOrEqual(4)
+    expect(rows.pick.x < rows.all.x, 'Pick dates… at the left').toBe(true)
   }
 })
