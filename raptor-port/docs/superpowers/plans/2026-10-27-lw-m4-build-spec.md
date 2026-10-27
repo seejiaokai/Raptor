@@ -49,8 +49,11 @@ verifies each before acting.**
 ## 1. Batch 8 — Approvals
 
 **8.1 The tab (D1254, D1188).** An admin's tab row reads Grid · Approvals N · OIL (Balances joins in M5, between Approvals
-and OIL — never a tab with nothing behind it). N is the count of pending requests in the period on view — the same number
-the list's "All" shows — and it rises as requests come in (D1152); it is the only place new requests show (D1208, D1219). A
+and OIL — never a tab with nothing behind it). N is the count of pending requests in EVERY period — since the count is the
+only sign that anything waits (D1208, D1219), a request in next year's period, bid on while he views this year, must still
+show — and it rises as requests come in (D1152). The list itself covers the period on view (D1184); where other periods
+hold pending requests, a line at its head says so and switches View there: "+4 pending in JAN – DEC 27 ›" (the fresh read,
+finding 5). A
 member has no Approvals tab. The tab's page takes the grid card's place under the top row, as the Balances page will
 (`r14-bal-1-desk`); the top row (the tabs, View, My leave, ⚙) stays. The keyboard: the tab row's own (one tab stop, the
 arrows). Re-measure the phone's tab row at 390, 402 and 431–700 and with an iPhone's wider letters — three tabs and ⚙ now,
@@ -63,19 +66,29 @@ number — so a five-day OL is one line, "Mon 23 – Fri 27 Feb · 5 days". Each
 kind's look-F box drawn pending · the dates (cyan, "›" — 8.5) · DAYS · LVE BAL (the balance the request already counts —
 D1153; an OIL or a CCL… request shows its own kind's balance, labelled; below zero red) · LOWEST AVAIL (his seat's
 Available row's lowest figure over the request's days, then every Manning row the request turns amber or red, each on its
-own line in its colour, flush left; a SANS man's line "SANS · not in Avail") · PLACED (the date and time; "by <name>" when
+own line in its colour, flush left — a row already amber or red that the request lowers further counts, as the bid
+bubble's does (D1345); a SANS man's line "SANS · not in Avail") · PLACED (the date and time; "by <name>" when
 someone else placed it) · the document mark (the Inputs list's paperclip, its number when two or more; a tap opens the
 document viewer for the admin to read before deciding; nothing when none) · Approve · Refuse. Columns line up from line to
 line under headings drawn once; numbers right-aligned. On a wide desktop the list keeps one eye-span (about 1240px) so
 the buttons stand near the figures (the drawing, `r22-1-desk`). On a phone each request is two lines (A11): puck · box ·
 dates · paperclip · Approve · Refuse; then the four figures under headings drawn once (`r22-5-phone`). A posted-out man's
-puck carries his posting tag (B12). The figures are worked out when the tab opens and when the war changes, not on every
+puck carries his posting tag (B12) — "posting out 12 Mar" before it runs (`sync.ts postingPendingTag`); once an archive or
+a transfer has run that tag is gone (it returns nothing), so the line reads "posted out 14 Oct", and his Approve is refused
+on the line ("Posted out — refuse or delete it") while Refuse still works. A line joined from next-door bids placed at
+different times or by different people (D1346, the run rule) shows the EARLIEST placed time and its "by". The figures are worked out when the tab opens and when the war changes, not on every
 grid repaint (the code map's cost note).
 
 **8.3 Deciding a line (D1361, D1330, A4, B8).** Approve and Refuse rest grey, their words green and red. A tap decides that
 one request at once — one command, one Undo — and its button lights ("Approved" solid green, or "Refused" solid red); the
-line STAYS where it is, lit, until he leaves the tab or changes the dates, so a slip is put right by a second tap on the
-lit button (it goes back to pending, as in the bid windows) and nothing moves under his finger. The count on the tab and
+line STAYS where it is, lit, until he leaves Approvals or changes the dates (if he answers Q1 yes), so a slip is put right
+by a second tap on the lit button (it goes back to pending, as in the bid windows) and nothing moves under his finger.
+**A line re-keys after its own decision** (the fresh read, finding 2): approving turns the request into an Input and a
+put-back mints a new request with a new id, so the writer returns the new ids per item and the line follows them —
+otherwise its own second tap reads as stale. Back to pending clears "decided by" (`decideRequest` spreads the record and
+would keep "Refused by Hex" on a pending line). A test: approve, second tap, approve again. **"Leaving Approvals"** means
+choosing another tab, the page, or ✕ on the slim bar and then going elsewhere — a tap on a request's dates with the slim
+bar up is not leaving: the lit lines, the dots, the New set and the dates picked all survive Back. The count on the tab and
 "Approve all N" count only what is still pending. A request the clash rules refuse is not decided: its line says why,
 in red, under its dates, and stays pending. A decision taken from a state since changed — the request deleted, moved or
 already decided by someone else since the list was drawn — is refused, the line saying what happened ("Already refused by
@@ -87,16 +100,20 @@ approval's "who" can also be read off the war-approved Input's `by`.
 **8.4 "New" (D1231's reading; P9).** The list remembers, for each admin, when he last opened the tab. A request placed
 since then wears the cyan dot; the "New N" choice shows only those and, under them, "Also since you last looked · nothing
 to decide": a member's withdrawn pending bid, and leave filed on the Inputs page that landed on the war — each a line with
-its puck, box, dates, what happened and when (`r22-2-desk`). The dots clear when he leaves the tab. The "last opened" moment
-is a stored per-person record (§3). Where the "also" lines come from is the build's to find and say: the change history's
+its puck, box, dates, what happened and when (`r22-2-desk`). The dots clear when he leaves Approvals (8.3's meaning). The
+moment stored is when he OPENED the tab, written then (a reload or an iPhone dropping the page while he is on it must not
+lose it); "new" is anything placed after the previous stored moment — a per-person record (§3). The "also" lines' dates are
+links too, as the requests' are (D1231's reading): a withdrawn bid's dates open the grid there, the day ringed, nothing
+in it. Where the "also" lines come from is the build's to find and say: the change history's
 Leave War lines (`state/changelines.ts`) if they hold a member's delete of his own pending bid and an Inputs-page leave
 landing on the war, by who and when; a deleted request otherwise leaves no trace to list.
 
 **8.5 The dates (D1184, D1197, D1231 as D1254 narrows it).** The filter row: New N · DATES · All · the period's months as
 the "Open for bidding" window has them (two rows of six on a phone, with New and All leading), a month with nothing pending
-dimmed · Pick dates… (the app's one calendar) · Approve all N at the right. "Approve all" approves exactly what the list
-shows: one press arms it ("Approve 13 — tap again", A4), a second approves every pending line shown as ONE command and one
-Undo; a line the clash rules refuse is reported on its line and the rest go through (`r22-3-desk`). A tap on a request's
+dimmed · Pick dates… (the app's one calendar) · Approve all N at the right. "Approve all" — the main-button look (A4) — approves exactly
+what the list shows: one press arms it ("Approve 13 — tap again", A4), a second approves every pending line shown as ONE
+command and one Undo; anything that changes what the list shows while it is armed (a filter, one line decided, an Undo, a
+request coming or going) disarms it, so the second tap never approves a number he did not read; a line the clash rules refuse is reported on its line and the rest go through (`r22-3-desk`). A tap on a request's
 dates opens the Grid tab, scrolled so the cell stands clear of the frozen columns and the slim bar, the cell wearing the
 just-added ring for about six seconds (D860), and a slim bar at the foot — "● Approvals · 15 pending · 3 new · Back ▴ · ✕" —
 on a desktop as on a phone (`r22-4-desk`, `r22-6-phone`). Back opens the tab again where it was (the dates picked, the
@@ -127,8 +144,11 @@ a change made on the Inputs page keeps telling him through the Inputs door as to
 cases, including a put-back that rings one line.
 
 **9.3 Undo (D1216, D148).** The admin's Undo of a decision takes its line back if the member has not read it; if he has, a
-new line says "Approval of LL taken back · Saber" (or "Refusal of…", "Move of…", "Deletion of…"). Redo writes the decision's
-line again and leaves the "taken back" line where it is (it happened). **How (the agent's call, from the survey §7):** an
+new line says "Approval of LL taken back · Saber" (or "Refusal of…", "Move of…", "Deletion of…"). Redo leaves the "taken back"
+line where it is (it happened); where one stands for that decision, Redo's follow-up writes a FRESH line, new id and the
+time now — "LL approved again · Saber" — because the old line, put back with its old id, is still in his read marks and
+would come back already read under an unread "taken back" (the fresh read, finding 3); where none stands, Redo simply puts
+the old line back. **How (the agent's call, from the survey §7):** an
 Undo restores an exact image, so it cannot itself leave or write a line. The decision's line goes with the Undo as today;
 then, once the Undo has landed, a follow-up notice command — never an Undo step (`undo/timeline.ts NOT_STEPS`) — writes the
 "taken back" line for each member whose read mark covered the line that went. For the admin's device to see a member's
@@ -149,8 +169,11 @@ bidding closed · Saber"; widening or shortening a stretch is one line with its 
 that stretch in view (the grid at its first open day). Undo follows 9.3. **Not a line a month:** each month tapped in the
 window is its own command, so an admin opening four months would ring every member four times — one live line per member
 per stretch, the newest replacing the older (as the holiday's lines do, `noticeLive`). Who gets it: every account tied to a
-person on the war, the archived, deleted and special left out, the admin who did it left out. A stretch that ends because
-its last date passes tells nobody unless he answers Q3 otherwise (§5).
+person on the war, the archived, deleted and special left out, the admin who did it left out. **A stretch that ends because its last date passes rings too** — D1214
+ruled the register's P7 in as written, and P7's "when" includes "its last day passes" (the fresh read, finding 4): "Leave
+War · 1 Apr – 30 Jun · bidding closed · its dates ended", no name. No command runs on that date, so the line is not a
+stored notice: each person's bell derives it from the period's stored stretches once the date has passed (its own steady
+id, read like any other line); at the database step a scheduled flow may write it instead (noted for the IT side).
 
 **9.4a An admin's leave placed approved on a member's row (the register's P2 — asked, Q2).** "Approve what I enter" makes a
 new war-approved Input, which today tells nobody. If he answers yes: "Your leave · Mon 9 Mar · LL added and approved · Saber",
@@ -158,7 +181,18 @@ a tap opening the grid there; written by `placeApproved` (`lw.placeApproved`) as
 
 **9.6 The tap (the survey §7, §10).** No route opens the Leave War at a date today: `sync.ts openWarAt(iso, personId?)`,
 from the bell (`ui/topbits.tsx openNotice`), opens the page, the war holding the date, the grid at that day and the
-person's cell ringed. The page's first-visit landing (`LeaveWarPage.tsx`, its landed flag) must not override it.
+person's cell ringed. The page's first-visit landing (`LeaveWarPage.tsx`, its landed flag) must not override it. **A line for a man
+with no row on the grid** (a SANS man while SANS is off the war — B12, the build plan's batch 9) opens his person window
+instead, as Approvals' dates do (8.5).
+
+**9.7 An admin moving or deleting a member's pending bid** (not in D1142's list, which names a decided bid and an approved
+leave — the fresh read, finding 11): one line, "Your leave · Tue 27 Jan · LL bid moved to Thu 29 Jan · Saber" / "… LL bid
+deleted · Saber" — a reading named at his look, his to strike.
+
+**9.8 A member's shared filing over another man's pending bid** (`[LW-M1-READ-LEFTOVERS]` (1), placed "with the Leave War's
+next batch"): today it writes a war notice on that man's row and the commit refuses the whole filing. 9.3a's one line rests
+on that filing landing, so it is built here: the war's notice rides the filing's own input id (the permission check's
+`rides`), and the case is walked. `[LW-CLASH-ROWLESS-TAP]` closes with the off-roster person window (8.5).
 
 **9.5 Nothing to the admin (D1208, D1219).** No bell line tells an admin that a request waits; the tab's count is the only
 sign. A member's withdrawn bid and an Inputs-page leave reach him only in "Also since you last looked" (8.4).
@@ -180,6 +214,8 @@ sign. A member's withdrawn bid and an Inputs-page leave reach him only in "Also 
   step (`NOT_STEPS`); its prefix joins `state/people-settings-commit.ts SETTINGS_ROW_PREFIXES`; PERMS a type of its own
   (each person his own row); `docs/data-schema.md`, `docs/data-model.md` and §11.
 - **The read-mark record gains an admin's read** (9.3) — `NoticeSeen`, PERMS `[T.noticeseen]` and §11 together.
+- **The follow-up notice command of 9.3** (after an Undo or a Redo) is a notice writer of its own type — named in
+  `state/perms.ts`, §11's Notice row and `undo/timeline.ts NOT_STEPS` together.
 - **The security read (D1411):** this widens who may write a notice — one extra fresh reader looks only for holes (a member
   writing a notice to another, a member reaching Approvals' commands, a forged "placed by").
 
@@ -242,7 +278,7 @@ NoticeSeen's admin read. `leavewar/permsparity.test.ts` gains Approve all and th
 
 **No other branch touches these files** (27 Oct 26: the one active branch, the handoff review, changes notes only).
 
-## 5. Put to him before the build — one look and three questions (D853, D1222; the page names each picture)
+## 5. Put to him before the build — one look and two questions (D853, D1222; the page names each picture)
 
 **L1 — Approvals as a tab's page** (`full/r22-1-desk`, `r22-2-desk`, `r22-5-phone`; the tab row's own place on the phone
 re-measured in the build). Recommended: as drawn — the page takes the grid card's place, the list held to one eye-span on a
@@ -252,11 +288,12 @@ right with a second tap and nothing moves under his finger; the count and "Appro
 The other way: the line leaves the list at once (an Undo brings it back).
 **Q2 — a member told when an admin places leave on his row already approved** (`r22-7-bell-phone`; the register's P2).
 Recommended yes: "Your leave · Mon 9 Mar · LL added and approved · Saber". Today he is told nothing.
-**Q3 — bidding that ends because its last date passes** (`r22-7-bell-phone`, the faded line). Recommended: no line — he saw
-the dates when it opened, and nobody closed it, so there is no "who"; only an admin's open or close rings (D1214).
+*(A third question, whether bidding that ends by its last date alone rings, was dropped after the fresh read: D1214 ruled
+the register's P7 in as written, and P7 counts "its last day passes" as closing — it is built, 9.4.)*
 
 **Readings built as recommended and named at his look, his to strike — none blocks the build:**
-1. The tab's count is what is pending in the period on view (the list's "All").
+1. The tab's count is every pending request, in every period; the list shows the period on view, with "+N pending in
+   JAN – DEC 27 ›" where another period holds some.
 2. A request placed over several days is one line; DAYS is what it takes off LVE (a weekend inside it not counted).
 3. Bidding lines go to everyone on the war but the admin who did it; a run of month taps is one line per stretch.
 4. Undo of an open or a close follows D1216, as a decision's does.
@@ -264,9 +301,12 @@ the dates when it opened, and nobody closed it, so there is no "who"; only an ad
 6. A request saved before M4 shows a dash for "placed" and sorts first.
 7. The bell's "taken back" needs an admin's device to read whether the member read the line — a permission widened.
 8. Every document chip on the war opens the document, read only.
+9. An admin moving or deleting a member's pending bid tells him (9.7).
+10. A posted-out man's pending request: tagged "posted out 14 Oct"; Approve refused on the line, Refuse works.
+11. Bidding that ends by its last date tells everyone "bidding closed · its dates ended", with no name (D1214, P7).
 
-**Records of each answer:** a ruling row in `leave-war.md` the moment he answers; Q2 and Q3 also in
-`docs/notifications-register.md` (P2 ruled or struck; P7's "its last day passes" struck or kept).
+**Records of each answer:** a ruling row in `leave-war.md` the moment he answers; Q2 also in
+`docs/notifications-register.md` (P2 ruled or struck); reading 9 a new register line (proposed, his to strike).
 
 ## 6. The roll-call seed (bug-check order §6) — the builder fills every cell: has it / must not, because… / MISSING
 
@@ -298,7 +338,9 @@ up, press the grid; 5 (brought into sight) — the ringed cell against the froze
 **A line's states × what it shows** (lesson 1): pending · approved here (lit) · refused here (lit) · back to pending (second
 tap) · refused by the clash rules · decided elsewhere since (stale) · deleted since · a SANS man · a posted-out man · with
 documents (0, 1, 2+) · a half day · a run over a weekend · an OIL and a CCL request · placed by someone else ("by …") · saved
-before M4 (dash). Each cell a scenario or a named test.
+before M4 (dash) · a man archived or transferred since he bid · on a locked, published week (the door's "locked week"
+refusal, not a clash) · a leave across the period boundary (two lines, one in each period — B3) · joined from bids placed at
+two times (the earliest shown). Each cell a scenario or a named test.
 
 1. Admin, desktop: the tab, its count; the list oldest first; every column against the request's own figures on the grid
    and in the bid window's day line.
@@ -307,15 +349,19 @@ before M4 (dash). Each cell a scenario or a named test.
 4. Approve all across Jan with one line the clash rules refuse → the rest approved, the refused line says why; ONE Undo
    brings every line back; the members' bells: one line each, none twice.
 5. Pick dates…, a month, New: "Approve all" approves exactly what shows — a pending request outside the filter untouched.
-6. Stale: two admins (two browser contexts, one store) — one refuses, the other's Approve on the same line says "Already
-   refused by …" and changes nothing.
+6. Stale (B8): the war carries no change across browser tabs today (`[LW-NIGHT1025-OLDER]` (b)), so two contexts cannot
+   prove it — a unit test feeds the writer a line drawn from an older state; and in one browser: arm Approve all, tap a
+   listed request's dates, delete that bid on the grid, Back — "Approve all" is disarmed and recounted, the deleted line
+   says "No longer there".
 7. A date tap: the Grid tab, the grid there, the cell ringed about six seconds, the slim bar; Back → the list where it was;
    ✕; a SANS man with SANS off → his person window; a request in another period.
 8. The paperclip → the document, read only; its count with two.
-9. The member's bell, for each case of 9.1 (approved, refused, put back, moved, deleted, replaced) — one line, the words,
-   the tap → the grid at that day ringed; no Inputs-door line beside it (B1); an Inputs-page change to the same leave still
-   tells him once.
-10. Undo of a decision he has not read → its line gone; one he has read → the line stays and "… taken back · Saber" comes.
+9. The member's bell, for each case of 9.1 (approved, refused, put back, moved, deleted, replaced) and 9.7 — one line, the
+   words, the tap → the grid at that day ringed; a SANS man with SANS off → his person window; no Inputs-door line beside
+   it (B1); an Inputs-page change to the same leave still tells him once; a member's shared filing over another man's
+   pending bid lands (9.8).
+10. Undo of a decision he has not read → its line gone; one he has read → "… taken back · Saber" comes; then Redo → "LL
+    approved again · Saber", unread, on top.
 11. Bidding: open four months by four taps → one line per member; close → one line; the admin himself none; a tap → the war
     with that stretch in view; Undo.
 12. A member's own move and delete of his pending bid → no line for him; the admin's "Also since you last looked" lists the
@@ -324,7 +370,12 @@ before M4 (dash). Each cell a scenario or a named test.
     picture after each tap.
 14. Reload after 2, 4, 10, 11 — the stamps, the decisions, the lines, the read marks and "last opened" all kept (the built
     bundle, browser storage).
-15. A member: no Approvals tab; nothing of Approvals reachable by the keyboard or a typed address.
+15. A member: no Approvals tab; nothing of Approvals reachable by the keyboard or a typed address; an admin who switches to
+    member view while on the tab is taken off it (D292).
+15a. The keyboard and a screen reader: the tab order through fifty lines, the lit button read as pressed, the armed and the
+    refused words announced.
+15b. Reload, or the page dropped, while on the tab → the "last opened" moment kept; the next visit's New counts from it.
+15c. The count with a pending request in next year's period while this year is on view; "+N pending in … ›".
 16. Speed (§E, the built bundle, before and after): the grid's node count with the tab used and left; the tab opening with
     fifty pending requests; a decision → the grid's repaint counted (`PersonMonth` draws).
 
@@ -341,9 +392,13 @@ reads FULL wants and the other provider's scenario design.
 
 ## 9. Open points and records
 
-**Left to the build — technical (the builder decides and says what he did):** the writer's exact shape and its per-item
-reasons; where "also since" reads from (8.4); the focus ask that rings without opening; the request form of the viewer;
+**Left to the build — technical (the builder decides and says what he did):** the writer's exact shape, its per-item
+reasons and the new ids it returns; where "also since" reads from (8.4); the focus ask that rings without opening; the request form of the viewer;
 the off-roster person window; merging the bidding lines.
+
+**The fresh read of this spec** (27 Oct 26, one blind Opus reader): 15 findings, all taken — 8.1's count, 8.2's
+posted-out and joined lines, 8.3's re-keying and "leaving", 8.4's moment stored, 8.5's disarm, 9.3's Redo, 9.4's ending
+date (Q3 dropped), 9.6's off-roster tap, 9.7, 9.8, §3's follow-up writer, and the walk's states and steps.
 
 **Not in M4:** the member's side of "since your last visit" and the person window (M5, A1); the Balances tab (M5); the
 document reminder the day before a leave (the register's P1 — later, D1150); M3's leftover (8), the silent 20-document cap,

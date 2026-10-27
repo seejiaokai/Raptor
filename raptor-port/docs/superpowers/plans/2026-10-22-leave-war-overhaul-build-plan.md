@@ -158,4 +158,4 @@ final set, §10.4 of the design note, is drawn tonight for that look). The two f
 were weighed: the year-end bid (B3) is latent (the range picker stops at the period's end) and halves-only on a balance
 (B6) needs a refusal on screen he has not seen — both go with their merges. Tonight builds nothing in the app.
 
-**Where it stands (27 Oct 26 — D1404):** M1, M2 and M3 are live; M4 is next, in a fresh chat of its own, then M5. **M4 planned (27 Oct 26):** `2026-10-27-lw-m4-build-spec.md` — the code read again on main, the Approvals tab drawn (`full/r22-*`), one look and three questions put to him before the build.
+**Where it stands (27 Oct 26 — D1404):** M1, M2 and M3 are live; M4 is next, in a fresh chat of its own, then M5. **M4 planned (27 Oct 26):** `2026-10-27-lw-m4-build-spec.md` — the code read again on main, the Approvals tab drawn (`full/r22-*`), one look and two questions put to him before the build.

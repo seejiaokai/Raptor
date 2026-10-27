@@ -219,8 +219,8 @@ const shot = async (p, name, clip) => { await p.mouse.move(2, 2); await p.waitFo
   await ctx.close()
 }
 // ---------- r22-7-bell-phone: the member's bell with M4's lines (D1142, D1214, D1216 — the words of r7-28) and the two
-// questions: Q2 an admin's leave placed already approved on his row (the register's P2), Q3 bidding that ends by its date
-// alone (P7's "its last day passes") — drawn faded, the recommended answer being that no such line is sent ----------
+// question Q2 (an admin's leave placed already approved on his row — the register's P2), and bidding that ends by its date
+// alone, which rings as D1214 ruled P7 ("its last day passes"), with no name ----------
 {
   const { ctx, p } = await newPage(browser, 402, 874, true)
   await signIn(p, 'member')
@@ -234,13 +234,13 @@ const shot = async (p, name, clip) => { await p.mouse.move(2, 2); await p.waitFo
       line(1, 'Your leave', 'Mon 19 – Wed 21 Jan', 'LL approved · Saber', '20m') +
       line(1, 'Your leave', 'Mon 2 Feb', 'LL refused · Saber', '20m') +
       line(0, 'Your leave', 'Mon 26 – Tue 27 Jan', 'Approval of LL taken back · Saber', '3d') +
-      line(0, 'Leave War', '8 Jan – 31 Mar', 'Bidding closed (its dates ran out)', '—', 'q3', true) +
+      line(0, 'Leave War', '8 Jan – 31 Mar', 'Bidding closed · its dates ended', '1d', 'q3') +
       line(0, 'Leave War', '8 Jan – 31 Mar', 'Bidding open · Saber', '3w'))
     if (!list.querySelector('.bl-foot')) list.insertAdjacentHTML('beforeend', '<div class="bl-foot"><button type="button" class="abtn sm ghost">Mark all read</button></div>')
   })
   const ok = await p.evaluate(() => !!document.querySelector('[data-zk="q2"]'))
   if (!ok) console.warn('BELL LIST NOT FOUND — r22-7 not drawn')
-  await mark(p, '[data-zk="q2"]', 'Q2', { right: false, off: -2, below: true }); await mark(p, '[data-zk="q3"]', 'Q3 · recommended: not sent', { off: -2, below: true })
+  await mark(p, '[data-zk="q2"]', 'Q2', { right: false, off: -2, below: true }); await mark(p, '[data-zk="q3"]', 'as ruled (D1214): no name', { off: -2, below: true })
   await shot(p, 'r22-7-bell-phone', { x: 0, y: 0, width: 402, height: 440 }); await unmark(p)
   await ctx.close()
 }
