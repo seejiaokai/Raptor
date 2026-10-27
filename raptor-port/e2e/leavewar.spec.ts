@@ -8258,3 +8258,27 @@ test('the "kept pending" note is said once: the same open day’s list, back aft
   await page.waitForTimeout(300)
   await expect(page.getByText(/kept pending/), 'no stale note — nothing was kept pending this time').toHaveCount(0)
 })
+
+/* THE BREAK TESTS (28 Oct 26, list lw-m4-browser #8 — his D1435): a decide button holds the room of its longer word, so
+   "Approve" lit as "Approved" (and "Refuse" as "Refused") never moves an edge under the finger, whatever the phone's
+   letters. Only a browser lays the words out — the unit test can see the longer word is there, not that it holds room. */
+test('a decide button lit never moves an edge: "Approved" and "Refused" stand where the buttons stood (D1435)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const line = page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').first()
+  const ok = line.getByTestId('appr-approve'), no = line.getByTestId('appr-refuse')
+  await ok.scrollIntoViewIfNeeded()
+  const edges = async () => {
+    const a = (await ok.boundingBox())!, b = (await no.boundingBox())!
+    return [a.x, a.x + a.width, b.x, b.x + b.width].map(v => Math.round(v))
+  }
+  const before = await edges()
+  await ok.click()
+  await expect(ok).toHaveText('Approved')
+  expect(await edges(), 'Approve lit: both buttons where they stood').toEqual(before)
+  await no.click()
+  await expect(no).toHaveText('Refused')
+  expect(await edges(), 'Refuse lit: both buttons where they stood').toEqual(before)
+})

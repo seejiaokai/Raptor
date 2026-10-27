@@ -1,0 +1,91 @@
+{
+ "spec": "e2e/leavewar.spec.ts",
+ "grep": "heading stands over|slim Approvals bar|window opens above the bar|bell.s foot|R3b|R3c-2|M4, D1421|D1441|Approve and Refuse|D1435",
+ "port": 4283,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "the desktop headings: LOWEST AVAIL stands over its numbers (D1437, D1438)",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".appr-cols:not(.ph) > :nth-child(6) { padding-left: 70px; }",
+   "put": ".appr-cols:not(.ph) > :nth-child(6) { padding-left: 40px; }"
+  },
+  {
+   "n": 2,
+   "name": "the phone headings: LOWEST AVAIL stands over its numbers (D1437, D1438)",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".appr-cols.ph > :nth-child(3) { padding-left: 36px; }",
+   "put": ".appr-cols.ph > :nth-child(3) { padding-left: 4px; }"
+  },
+  {
+   "n": 3,
+   "name": "the phone's slim bar stands 8px in, as drawn (M13, D1440)",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".appr-slim.ph { gap: 10px; left: 8px; right: 8px;",
+   "put": ".appr-slim.ph { gap: 10px; left: 12px; right: 12px;"
+  },
+  {
+   "n": 4,
+   "name": "the slim bar has no cyan outline (D1432, D1440)",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".appr-slim { gap: 14px; padding: 0 12px 0 16px; border-color: var(--edge);",
+   "put": ".appr-slim { gap: 14px; padding: 0 12px 0 16px;"
+  },
+  {
+   "n": 5,
+   "name": "on a phone a window stands above the slim bar, never over it",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".bidsheet:not(.full):not(.fullpage) { bottom: calc(64px + env(safe-area-inset-bottom, 0px));",
+   "put": ".bidsheet:not(.full):not(.fullpage) { bottom: calc(30px + env(safe-area-inset-bottom, 0px));"
+  },
+  {
+   "n": 6,
+   "name": "on a desktop a window stands above the slim bar, never over it",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".bidsheet:not(.full):not(.fullpage) { bottom: 74px;",
+   "put": ".bidsheet:not(.full):not(.fullpage) { bottom: 40px;"
+  },
+  {
+   "n": 7,
+   "name": "on a phone Approve and Refuse take the drawing's letters (D1441)",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 3px; font-size: 12.5px;",
+   "put": ".appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 3px; font-size: 14px;"
+  },
+  {
+   "n": 8,
+   "name": "a lit \"Approved\" never moves its edge (the longer word held, D1435)",
+   "file": "src/leavewar/ui/approvals.css",
+   "find": ".appr-word::after { content: attr(data-long); visibility: hidden; }",
+   "put": ".appr-word::after { content: none; visibility: hidden; }"
+  },
+  {
+   "n": 9,
+   "name": "a finger on the bell never scrolls the page behind it (M8, D686)",
+   "file": "src/ui/topbits.tsx",
+   "find": "    return holdPageScroll(n)\n",
+   "put": "    void holdPageScroll; void n\n"
+  },
+  {
+   "n": 10,
+   "name": "the open calendar's outside press takes its click on a real touch (M4)",
+   "file": "src/leavewar/ui/ApprovalsPage.tsx",
+   "find": "document.addEventListener('click', eat, true)\n",
+   "put": "void eat\n"
+  },
+  {
+   "n": 11,
+   "name": "the one-day window hands its \"kept pending\" reason to the day's list (R3b)",
+   "file": "src/leavewar/ui/BidPicker.tsx",
+   "find": "      if (r.pending.length) onKept?.(said)\n",
+   "put": "\n"
+  },
+  {
+   "n": 12,
+   "name": "the \"kept pending\" note is handed over once (R3c-2)",
+   "file": "src/leavewar/ui/Matrix.tsx",
+   "find": "  useEffect(() => { if (keptNote) setKeptNote(null) }, [keptNote])\n",
+   "put": "\n"
+  }
+ ]
+}
