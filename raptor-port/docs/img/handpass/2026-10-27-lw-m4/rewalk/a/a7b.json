@@ -1,0 +1,21 @@
+[
+ {
+  "id": "A7.4 in the window of that leave on the grid, Approve is refused with the same reason",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"text\":\"Blade Mon 2 Feb ✕ LL Pending Approve Refuse ⇄Move Delete till 2 Feb Document Couldn’t approve — something else is on that time\",\"pair\":[\"Approve:null:dchip dec approve\",\"Refuse:false:dchip dec refuse\"],\"testid\":\"daylist-sheet\"}",
+  "pics": [
+   "a7b-1-bidwin",
+   "a7b-2-after-approve"
+  ]
+ },
+ {
+  "id": "A7.4b Refuse works in that window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"text\":\"Blade Mon 2 Feb ✕ LL Refused Refused Saber · Wed 28 Oct, 02:01 Approve Refused ⇄Move Delete till 2 Feb Document\",\"pair\":[\"Approve:null:dchip dec approve\",\"Refused:true:dchip dec refuse lit\"],\"testid\":\"daylist-sheet\"}",
+  "pics": [
+   "a7b-3-refuse"
+  ]
+ }
+]

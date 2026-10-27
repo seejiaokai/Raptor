@@ -1,0 +1,38 @@
+[
+ {
+  "id": "A8.1 bell: \"Bidding open\" with a capital",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Leave War1 Jan – 30 Jun Bidding open · Saber now",
+  "pics": [
+   "a8-1-bell-open"
+  ]
+ },
+ {
+  "id": "A8.2 bell: \"Bidding closed\" with a capital",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Leave War1 Jun – 30 Jun Bidding closed · Saber now | Leave War1 Jan – 31 Mar Bidding open · Saber now",
+  "pics": [
+   "a8-2-bell-closed"
+  ]
+ },
+ {
+  "id": "A8.3 a long bell scrolls inside; \"Mark all read\" stays at its foot; \"↓ N more\" shows",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"lines\":15,\"scrollerIsList\":true,\"scTag\":\"DIV.bell-list#bell-list\",\"scH\":518,\"scScrollH\":518,\"scTop\":0,\"listRect\":[50,570],\"markRect\":[540,562],\"markInside\":false,\"more\":\"↓ 6 more\",\"vh\":860,\"panelBottom\":2256}",
+  "pics": [
+   "a8-3-long-bell"
+  ]
+ },
+ {
+  "id": "A8.4 at the end of the list: no \"↓ N more\", \"Mark all read\" still there",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"more\":\"↓ 6 more\",\"mark\":true}",
+  "pics": [
+   "a8-4-long-bell-end"
+  ]
+ }
+]

@@ -1,0 +1,18 @@
+[
+ {
+  "id": "A1.3b visit saved, then a bid, reload: words name the visit time",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "visit at 01:46; sub=\"7 pending · 1 new since you last looked, Wed 28 Oct 01:46\" new=\"New 1\"",
+  "pics": [
+   "a1b-visit-survives-reload"
+  ]
+ },
+ {
+  "id": "A1.3c then leave and reopen: New 0, no since",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sub=\"7 pending\" new=\"New 0\"",
+  "pics": []
+ }
+]

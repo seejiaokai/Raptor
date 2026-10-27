@@ -1,0 +1,54 @@
+[
+ {
+  "id": "A1.1 fresh world, first open: no \"since\" words",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sub=\"6 pending\" new=\"New 0\"",
+  "pics": [
+   "a1-1-first-open"
+  ]
+ },
+ {
+  "id": "A1.2a member placed Jan 13",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bid window closed after LL",
+  "pics": []
+ },
+ {
+  "id": "A1.2 after member bid: \"1 new since you last looked, <when>\", New 1 with dot",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sub=\"7 pending · 1 new since you last looked, Wed 28 Oct 01:45\" new=\"New 1\" dot=true",
+  "pics": [
+   "a1-2-after-bid"
+  ]
+ },
+ {
+  "id": "A1.3 reload: same words and time",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "before=\"7 pending · 1 new since you last looked, Wed 28 Oct 01:45\" after=\"7 pending\" new=\"New 0\"",
+  "pics": [
+   "a1-3-after-reload"
+  ]
+ },
+ {
+  "id": "A1.4 leave and reopen: New 0, no dot, no \"since\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sub=\"7 pending\" new=\"New 0\" dot=false",
+  "pics": [
+   "a1-4-reopen"
+  ]
+ },
+ {
+  "id": "A1.5 sign out and in: still New 0",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sub=\"7 pending\" new=\"New 0\"",
+  "pics": [
+   "a1-5-signout-in"
+  ]
+ }
+]

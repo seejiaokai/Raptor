@@ -1,0 +1,12 @@
+[
+ {
+  "id": "A10.3 (lesson 5) a far cell (Wed 4 Feb) is ringed, nothing over it (frozen columns, date row, bar), at its resting place",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1.2 s {\"ring\":true,\"box\":[211,715,237,742],\"allIn\":true,\"over\":[\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\"],\"slimTop\":794,\"slimL\":599,\"slimR\":937,\"bubbleTop\":null,\"vh\":860}; 3 s {\"ring\":true,\"box\":[211,715,237,742],\"allIn\":true,\"over\":[\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\"],\"slimTop\":794,\"slimL\":599,\"slimR\":937,\"bubbleTop\":null,\"vh\":860}",
+  "pics": [
+   "a10b-1-ring-1200ms",
+   "a10b-2-ring-3s"
+  ]
+ }
+]

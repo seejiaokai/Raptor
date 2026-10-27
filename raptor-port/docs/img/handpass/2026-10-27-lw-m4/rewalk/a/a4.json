@@ -1,0 +1,29 @@
+[
+ {
+  "id": "A4.1 first tap arms: \"Approve N — tap again\", amber (D1431)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"text\":\"Approve 6 — tap again\",\"bg\":\"rgb(229, 168, 59)\",\"color\":\"rgb(29, 20, 5)\",\"border\":\"rgb(229, 168, 59)\",\"armed\":\"appr-all armed null\"}",
+  "pics": [
+   "a4-1-armed"
+  ]
+ },
+ {
+  "id": "A4.2 deciding one line disarms it (words back to \"Approve all N\")",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"text\":\"Approve all 5\",\"bg\":\"rgb(59, 198, 232)\",\"color\":\"rgb(5, 42, 52)\",\"border\":\"rgb(59, 198, 232)\",\"armed\":\"appr-all null\"}",
+  "pics": [
+   "a4-2-disarmed"
+  ]
+ },
+ {
+  "id": "A4.3 armed again, second tap: every shown line lit approved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "armed text \"Approve 5 — tap again\"; lines approved,approved,approved,approved,approved,approved; head \"0 pending\"; all \"Approve all 0\"",
+  "pics": [
+   "a4-3-all-lit"
+  ]
+ }
+]

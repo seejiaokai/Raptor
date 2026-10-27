@@ -1,0 +1,69 @@
+[
+ {
+  "id": "A3.1 pending: both buttons unlit, dark fill; box dashed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"ok\":{\"bg\":\"rgb(18, 22, 27)\",\"color\":\"rgb(126, 226, 160)\",\"border\":\"rgb(39, 48, 59)\",\"bw\":\"1px\"},\"no\":{\"bg\":\"rgb(18, 22, 27)\",\"color\":\"rgb(255, 138, 146)\",\"border\":\"rgb(39, 48, 59)\",\"bw\":\"1px\"},\"box\":{\"cls\":\"c k-ll s-w appr-box\",\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"none rgb(242, 200, 110)\",\"deco\":\"none\",\"color\":\"rgb(242, 200, 110)\"}}",
+  "pics": [
+   "a3-0-pending"
+  ]
+ },
+ {
+  "id": "A3.2 Approve: lit green \"Approved\", other button still pressable, box filled",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"lit\":\"approved\",\"ok\":{\"bg\":\"rgb(63, 191, 111)\",\"color\":\"rgb(6, 33, 15)\",\"border\":\"rgb(63, 191, 111)\",\"bw\":\"1px\"},\"okWord\":\"Approved\",\"no\":{\"bg\":\"rgb(18, 22, 27)\",\"color\":\"rgb(255, 138, 146)\",\"border\":\"rgb(39, 48, 59)\",\"bw\":\"1px\"},\"box\":{\"cls\":\"c k-ll s-a appr-box\",\"bg\":\"rgba(242, 200, 110, 0.22)\",\"border\":\"none rgb(255, 241, 207)\",\"deco\":\"none\",\"color\":\"rgb(255, 241, 207)\"}}",
+  "pics": [
+   "a3-1-approved"
+  ]
+ },
+ {
+  "id": "A3.3 ONE tap on Refuse turns Approved into Refused; box grey and struck through",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"lit\":\"refused\",\"no\":{\"bg\":\"rgb(229, 83, 95)\",\"color\":\"rgb(42, 5, 7)\",\"border\":\"rgb(229, 83, 95)\",\"bw\":\"1px\"},\"noWord\":\"Refused\",\"box\":{\"cls\":\"c k-ll s-r appr-box\",\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"none rgb(125, 136, 148)\",\"deco\":\"line-through\",\"color\":\"rgb(125, 136, 148)\"}}",
+  "pics": [
+   "a3-2-refused"
+  ]
+ },
+ {
+  "id": "A3.4 ONE tap on Approve turns Refused into Approved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"lit\":\"approved\",\"ok\":{\"bg\":\"rgb(63, 191, 111)\",\"color\":\"rgb(6, 33, 15)\",\"border\":\"rgb(63, 191, 111)\",\"bw\":\"1px\"},\"box\":{\"cls\":\"c k-ll s-a appr-box\",\"bg\":\"rgba(242, 200, 110, 0.22)\",\"border\":\"none rgb(255, 241, 207)\",\"deco\":\"none\",\"color\":\"rgb(255, 241, 207)\"}}",
+  "pics": [
+   "a3-3-approved-again"
+  ]
+ },
+ {
+  "id": "A3.5 a tap on the lit Approve: pending again, box dashed",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"lit\":\"\",\"box\":{\"cls\":\"c k-ll s-w appr-box\",\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"none rgb(242, 200, 110)\",\"deco\":\"none\",\"color\":\"rgb(242, 200, 110)\"}}",
+  "pics": [
+   "a3-4-back-pending"
+  ]
+ },
+ {
+  "id": "A3.6 counts at each state (header N pending, tab count, Approve all N)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pending: head=\"6 pending\" tab=8 all=\"Approve all 6\" || approved: head=\"5 pending\" tab=7 all=\"Approve all 5\" || ONE tap Refuse: head=\"5 pending\" tab=7 all=\"Approve all 5\" || ONE tap Approve (from refused): head=\"5 pending\" tab=7 all=\"Approve all 5\" || tap the lit Approve: head=\"6 pending\" tab=8 all=\"Approve all 6\"",
+  "pics": [
+   "a3-0-pending",
+   "a3-1-approved",
+   "a3-2-refused"
+  ]
+ },
+ {
+  "id": "A3.7 Undo once after the one-tap switch, then Redo once (what the line shows)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before undo lit=refused; after Undo lit=\"refused\" ok=false no=true head=\"5 pending\"; after Redo lit=refused head=\"5 pending\"",
+  "pics": [
+   "a3-5-before-undo",
+   "a3-6-after-undo",
+   "a3-7-after-redo"
+  ]
+ }
+]

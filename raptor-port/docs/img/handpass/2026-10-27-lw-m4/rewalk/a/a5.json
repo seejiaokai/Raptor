@@ -1,0 +1,29 @@
+[
+ {
+  "id": "A5.1 under New: \"Also since you last looked\" lists the withdrawn bid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ALSO SINCE YOU LAST LOOKED · nothing to decide Ranger IP LL Tue 13 Jan › Bid withdrawn by Ranger 28 Oct 01:52",
+  "pics": [
+   "a5-1-new-also"
+  ]
+ },
+ {
+  "id": "A5.2 the words sit level with the dates",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "dates mid 312 words mid 312",
+  "pics": [
+   "a5-1-new-also"
+  ]
+ },
+ {
+  "id": "A5.3 what happened stands under DAYS, the time under PLACED",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "words left 429 vs DAYS undefined; time left 773 vs PLACED undefined",
+  "pics": [
+   "a5-1-new-also"
+  ]
+ }
+]
