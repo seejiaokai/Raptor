@@ -1490,13 +1490,18 @@ export function Matrix() {
   /* ABOVE A RESTING DAY PANEL ([LW-NIGHT1025-OLDER] (g) — on a phone the day panel rests at the foot, over where the note
      sat): the note is lifted to stand just above the panel's top while one is up, read when raised and as the page scrolls */
   const panelLift = (): number => {
+    /* …and ABOVE APPROVALS' SLIM BAR (the walk's B-F3, 27 Oct 26): with it up at the foot the note lay under it, only an
+       amber edge showing — on a phone and a desktop alike, the bar standing at the foot of both */
+    const s = document.querySelector('[data-testid="appr-slim"]') as HTMLElement | null
+    const sr = s ? s.getBoundingClientRect() : null
+    const slim = sr && sr.height > 0 && sr.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - sr.top)) : 0
     const w = document.querySelector('[data-testid="win-lwday"]') as HTMLElement | null
-    if (!w) return 0
+    if (!w) return slim
     const r = w.getBoundingClientRect()
     /* only a phone's panel, which rests at the foot (12 above it): on a desktop it floats near the top and the note keeps the
        foot (the code read's F5; the narrow read's R1 — read off the panel's bottom, a phone's 12 above the foot lifted nothing) */
-    if (!phoneLayout()) return 0
-    return r.height > 0 && r.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - r.top)) : 0
+    if (!phoneLayout()) return slim
+    return Math.max(slim, r.height > 0 && r.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - r.top)) : 0)
   }
   const flaggedNow = (): BubbleFlags => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is

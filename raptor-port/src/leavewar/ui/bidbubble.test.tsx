@@ -502,6 +502,36 @@ describe('above a resting day panel ((g))', () => {
       expect(bubble()?.style.bottom).toBe('')
     } finally { panel.remove() }
   })
+  /* THE WALK'S B-F3 (27 Oct 26): with Approvals' slim bar up at the foot (approvals.css, 22 above it, 44 tall) the note
+     lay under the bar, only an amber edge showing. It stands just above the bar, on a phone and a desktop alike. */
+  const slimBar = () => {
+    const s = document.createElement('div')
+    s.dataset.testid = 'appr-slim'
+    s.getBoundingClientRect = () => ({ top: window.innerHeight - 66, bottom: window.innerHeight - 22, left: 12, right: 390, width: 378, height: 44, x: 12, y: window.innerHeight - 66, toJSON: () => ({}) }) as DOMRect
+    document.body.appendChild(s)
+    return s
+  }
+  it('the slim bar up at a phone’s foot: the note stands above it, not under it (walk B-F3)', () => {
+    rowRedPastOneMore(TARGET)
+    const s = slimBar()
+    const undoPhone = asPhone()
+    try {
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+      fireEvent.click(screen.getByTestId('bid-LL'))
+      expect(bubble()?.style.bottom).toBe('78px')
+    } finally { s.remove(); undoPhone() }
+  })
+  it('the slim bar up on a desktop: the note stands above it too (walk B-F3)', () => {
+    rowRedPastOneMore(TARGET)
+    const s = slimBar()
+    try {
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId(`cell-dusk-${TARGET}`))
+      fireEvent.click(screen.getByTestId('bid-LL'))
+      expect(bubble()?.style.bottom).toBe('78px')
+    } finally { s.remove() }
+  })
   it('with no panel up it keeps its own place', () => {
     rowRedPastOneMore(TARGET)
     render(<Matrix />)
