@@ -179,7 +179,7 @@ export function Topbar() {
         >
           {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : <ClockGlyph />}
           <span className="intab-t">{label}</span>
-          {t === 'approvals' && waiting > 0 && <span className="medcount" data-testid="lw-approvals-count" aria-label={`${waiting} pending`}>{waiting}</span>}
+          {t === 'approvals' && waiting > 0 && <span className="appr-tabn" data-testid="lw-approvals-count" aria-label={`${waiting} pending`}>{waiting}</span>}
         </button>
       ))}
     </div>

@@ -93,7 +93,8 @@
   .appr-l2 .appr-placed small { display: block; }
 
   /* THE SLIM BAR (8.5; r22-4-desk, r22-6-phone): at the foot of the grid after a request's dates were tapped */
-  .appr-slim { position: fixed; left: 12px; right: 12px; bottom: 10px; z-index: 30; display: flex; align-items: center; gap: 8px; max-width: 760px; margin: 0 auto;
+  /* over the grid's frozen layers and clear of its fixed bottom scrollbar (15px), under every sheet (79+) */
+  .appr-slim { position: fixed; left: 12px; right: 12px; bottom: 22px; z-index: 70; display: flex; align-items: center; gap: 8px; max-width: 760px; margin: 0 auto;
     min-height: 44px; padding: 4px 6px 4px 14px; border-radius: 12px; background: var(--raised); border: 1px solid var(--accent); color: var(--ink); font-size: 13.5px; }
   .appr-slim-n { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .appr-back { min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--accent); background: rgba(59, 198, 232, .14); color: var(--accent);
@@ -107,3 +108,6 @@
 }
 /* (a keyframes rule cannot sit inside the scoped block) */
 @keyframes lwring { 0%, 90.83% { box-shadow: inset 0 0 0 2px #1E86FF; } 100% { box-shadow: inset 0 0 0 2px rgba(30, 134, 255, 0); } }
+/* the Approvals tab's count — the app's cyan, as drawn (r19-nav-*, r22-1-desk); the Inputs tab's red count is a warning */
+#page-leavewar .intab .appr-tabn { margin-left: 2px; min-width: 18px; padding: 1px 6px; border-radius: 9px; font-size: 11px; font-weight: 800;
+  background: rgba(59, 198, 232, .18); color: var(--accent); font-variant-numeric: tabular-nums; }

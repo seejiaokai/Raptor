@@ -197,7 +197,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const openDates = (r: Row) => {
     const onGrid = getState().people.some(p => p.id === r.line.personId)
     setApprMode('bar')
-    if (onGrid) ringCell(r.line.personId, r.line.parts[0]!.date, phone ? 64 : 56)
+    if (onGrid) ringCell(r.line.personId, r.line.parts[0]!.date, 76)
     else askLw({ kind: 'person', id: r.line.personId })
   }
 
