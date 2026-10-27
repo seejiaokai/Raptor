@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1429 | 27 Oct 26 | On a desktop the Leave War's Approvals columns go back to his drawing's packing after a narrower DATES, with LOWEST AVAIL and PLACED moved a little further right, so the LVE BAL figures are never read as part of the lowest Available beside them. |
 | D1428 | 27 Oct 26 | In the Leave War's Approvals list a decided line keeps its other button pressable, as his drawing r22-3 shows: one tap on Refuse turns an approval into a refusal, one tap on Approve turns a refusal into an approval; a second tap on the lit button still sends it back to pending (D1421). |
 | D1427 | 27 Oct 26 | In the Leave War's Approvals list Approve and Refuse keep their built size and row height, and take the colours of his drawings r22-2 and r22-3: at rest a dark fill with a faint edge and the words in the drawing's green and red; lit, the drawing's green and red with dark words. |
 | D1423 | 27 Oct 26 | On a phone the Leave War's Approvals filters and Approve all are built as his approved drawing shows them: three rows — New, All and Jan to May; Jun to Dec; then Pick dates… at the left and Approve all at the right — with every chip's words on one line, never a fourth row. |

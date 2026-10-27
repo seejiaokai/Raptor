@@ -33,7 +33,10 @@
   .appr-empty { padding: 28px 4px; color: var(--ink-3); }
 
   /* the list — one eye-span: Approve and Refuse stand near the figures (D1420) */
-  .appr-cols, .appr-line { display: grid; grid-template-columns: 170px 52px minmax(190px, 1.4fr) 64px 76px minmax(130px, 1fr) 128px 44px 214px; column-gap: 12px; align-items: center; }
+  /* the columns packed after a narrower DATES as drawn (r22-1-desk), the room left before the buttons — with LOWEST AVAIL and
+     PLACED a step further right, so the LVE BAL figures are never read with the Available beside them (his D1429) */
+  .appr-cols, .appr-line { display: grid; grid-template-columns: 150px 44px 180px 64px 64px 136px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center; }
+  .appr-cols > :nth-child(6), .appr-line > .appr-avail { padding-left: 28px; }
   .appr-cols { padding: 12px 0 8px 16px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--edge); }
   .appr-cols .r, .appr-line .r { text-align: right; justify-self: end; }
   .appr-line { min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
@@ -107,7 +110,7 @@
      the puck, the box and the dates, then what happened across the figures' columns, and when */
   .appr-alsohead { padding: 18px 0 8px; border-bottom: 1px solid var(--edge); color: var(--ink-2); font-size: 13px; }
   .appr-alsohead .appr-lab { margin-left: 0; }
-  .appr-aline { display: grid; grid-template-columns: 170px 52px minmax(190px, 1.4fr) minmax(220px, 2fr) 128px; column-gap: 12px; align-items: center;
+  .appr-aline { display: grid; grid-template-columns: 150px 44px 180px minmax(220px, 2fr) 128px; column-gap: 12px; align-items: center;
     min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
   .appr-awhat { color: var(--ink); }
   .appr-aline.ph { grid-template-columns: auto auto minmax(0, 1fr); row-gap: 4px; column-gap: 6px; padding: 10px 0; }
