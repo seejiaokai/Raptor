@@ -1,0 +1,118 @@
+// walker C, scenarios 9 and 10 — "Also since you last looked", and a reload (desktop)
+const CL = await import('./lw-m4-walk-c-lib.mjs')
+const L = await CL.setup('c', 's910')
+const H = CL.mk(L)
+const { T, rec, shot, press, vis, txt } = L
+console.log('[lw-m4-walk-c5 v6]')
+L.clearOut()
+const size = 'desk'
+const w = await L.newCtx(size)
+const P = w.page
+const say = (...a) => console.log(...a)
+const wait = ms => P.waitForTimeout(ms)
+const snap = bl => bl.map(l => `${l.unread ? '*' : ''}${l.text}`)
+async function openDates() { await press(w, T('open-chip')); await P.waitForSelector(T('open-dates'), { state: 'visible' }); await wait(500) }
+async function closeDates() { await press(w, T('open-dates-close')); await wait(400) }
+try {
+  await L.signIn(w, 'member')
+  await H.bid(w, '2026-01-14'); await H.bid(w, '2026-01-16')
+  /* admin: opens Approvals, approves 16 Jan, opens Apr for bidding, leaves Approvals */
+  await L.switchTo(w, 'admin')
+  await L.openApprovals(w)
+  await H.pressLoc(w, H.lineBtn(w, '16 Jan', 'appr-approve')); await wait(500)
+  await L.openGrid(w); await wait(500)
+  await openDates(); await press(w, T('od-month-2026-04')); await wait(500); await closeDates()
+  /* a later "look" on Approvals so the next opening counts from here */
+  await L.openApprovals(w); await wait(500)
+  const h0 = await txt(P, T('approvals-page'))
+  say('   Approvals header on the second look:', (await txt(P, T('appr-sub'))))
+  await L.openGrid(w); await wait(500)
+  /* Ranger: reads the bell (taps one line), withdraws the 14 Jan bid, files an LL on the Inputs page for 20 Jan */
+  await L.switchTo(w, 'member')
+  const b0 = await H.bell(w)
+  say('   Ranger bell:', snap(b0).join(' | '))
+  await H.pressLoc(w, P.locator(T(`bell-line-${b0[b0.length - 1].id}`)).first()); await wait(500)   /* the oldest line: read mark */
+  await L.closeBell(w)
+  await L.reachCell(w, 'bane', '2026-01-14')
+  await P.evaluate(() => document.querySelector('[data-testid="cell-bane-2026-01-14"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })); await wait(600)
+  await L.openCell(w, 'bane', '2026-01-14')
+  await shot(w, '9a-member-window-14jan')
+  await press(w, T('bid-clear')); await wait(500)
+  if (await vis(P, T('bid-picker'))) { await press(w, T('bid-clear')); await wait(600) }
+  const gone14 = !(await P.locator(T('cell-bane-2026-01-14')).evaluate(e => /LL/.test(e.innerText)).catch(() => false))
+  say('   14 Jan bid gone from the grid:', gone14)
+  await P.evaluate(() => window.go('inputs')); await wait(900)
+  await P.getByRole('button', { name: 'List' }).first().click(); await wait(600)
+  await P.click('[data-testid="in-new"]'); await wait(800)
+  await P.locator('#inpEditType').selectOption('LL'); await wait(400)
+  for (let i = 0; i < 6; i++) { await P.click('[data-testid="inpEdCal-prev"]'); await wait(150) }
+  await shot(w, '9b-new-input-ll')
+  await P.click('[data-testid="inpEdCal-day-2026-01-20"]'); await wait(400)
+  await shot(w, '9b-new-input-day-picked')
+  await P.getByRole('button', { name: 'Add', exact: true }).click(); await wait(900)
+  const nodoc = P.getByRole('button', { name: 'No document', exact: true })
+  if (await nodoc.count()) { await shot(w, '9b-no-document-ask'); await nodoc.first().click(); await wait(900) }
+  await shot(w, '9b-after-add')
+  await P.click('#inRangeBtn'); await wait(300); await P.getByText('All dates', { exact: true }).first().click(); await wait(600)
+  const rows = await P.evaluate(() => [...document.querySelectorAll('#intbl tr')].map(r => r.innerText.replace(/\s+/g, ' ').trim()))
+  say('   Inputs rows:', rows.filter(r => /Jan/.test(r)).join(' || '))
+  const filed = rows.some(r => /20 Jan.*LL/.test(r))
+  /* the war's own view of the filed leave */
+  await P.evaluate(() => window.go('leavewar')); await wait(900)
+  /* admin: opens Approvals -> New -> "Also since you last looked" */
+  await L.switchTo(w, 'admin')
+  await L.openApprovals(w)
+  await shot(w, '9c-approvals-opened')
+  say('   header:', await txt(P, T('appr-sub')))
+  await press(w, T('appr-new')); await wait(600)
+  await shot(w, '9d-approvals-new')
+  const alsoText = await txt(P, T('appr-also'))
+  const alsoLines = await P.evaluate(() => [...document.querySelectorAll('[data-testid="appr-also"] > *, [data-testid="appr-also"] li, [data-testid="appr-also"] [data-testid^="appr-also-"]')].map(e => e.innerText.replace(/\s+/g, ' ').trim()))
+  say('   Also since:', alsoText, '| children:', JSON.stringify(alsoLines))
+  rec('9 "Also since you last looked" lists both: Ranger\'s withdrawn bid and his Inputs filing, one line each', size,
+    filed && gone14 && alsoText && /withdrawn by Ranger/i.test(alsoText) && /Filed on the Inputs page/i.test(alsoText) ? 'PASS' : (filed && gone14 ? 'FAIL' : 'NOT WALKED'),
+    `filed on Inputs ${filed}, bid withdrawn ${gone14}; section text: "${alsoText}"`, ['9d-approvals-new'])
+  const hdr1 = await txt(P, T('appr-sub')); const newChip = await txt(P, T('appr-new'))
+  await L.openGrid(w); await wait(400)
+  /* Ranger snapshot just before the reload */
+  await L.switchTo(w, 'member')
+  const s1 = await H.bell(w); await shot(w, '10a-bell-before-reload'); await L.closeBell(w)
+  say('   Ranger bell before reload:', snap(s1).join(' | '))
+  /* a new pending bid AFTER Saber's last look: New must count it, before and after the reload */
+  await L.reachCell(w, 'bane', '2026-01-22')
+  await P.evaluate(() => document.querySelector('[data-testid="cell-bane-2026-01-22"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })); await wait(500)
+  await H.bid(w, '2026-01-22')
+  const cell15 = await H.cellText(w, 'bane', '2026-01-16')
+  /* ---- 10: reload (the browser keeps the world) ---- */
+  await P.reload(); await P.waitForSelector('#luser')
+  await P.evaluate(t => window.lwSetMemberToday && window.lwSetMemberToday(t), L.LW_TODAY)
+  await P.fill('#luser', 'us'); await P.fill('#lpass', 'us'); await P.click('#loginForm button[type=submit]')
+  await P.waitForSelector('#vWeek .day', { state: 'attached' })
+  await P.evaluate(t => window.lwSetMemberToday && window.lwSetMemberToday(t), L.LW_TODAY)
+  await L.openWar(w, 'member')
+  const s2 = await H.bell(w); await shot(w, '10b-bell-after-reload'); await L.closeBell(w)
+  say('   Ranger bell after reload:', snap(s2).join(' | '))
+  rec('10a the bell lines, their texts and their read marks survive a reload', size, JSON.stringify(snap(s1)) === JSON.stringify(snap(s2)) && s1.length > 0 ? 'PASS' : 'FAIL', `before ${s1.length} lines, after ${s2.length}; identical ${JSON.stringify(snap(s1)) === JSON.stringify(snap(s2))}; the bidding line present after: ${s2.some(l => /bidding open/.test(l.text))}`, ['10a-bell-before-reload', '10b-bell-after-reload'])
+  const cell15b = await H.cellText(w, 'bane', '2026-01-16')
+  await P.evaluate(() => document.querySelector('[data-testid="cell-bane-2026-01-16"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })); await wait(500)
+  await L.openCell(w, 'bane', '2026-01-16'); const placedMember = await txt(P, T('bid-placed')); await shot(w, '10c-member-window-15jan'); await L.closeWin(w)
+  await L.switchTo(w, 'admin')
+  await P.evaluate(() => document.querySelector('[data-testid="cell-bane-2026-01-16"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })); await wait(500)
+  await L.openCell(w, 'bane', '2026-01-16')
+  const placedAdmin = await txt(P, T('bid-placed')); await shot(w, '10d-admin-window-15jan')
+  await L.closeWin(w)
+  rec('10b the decision and the Placed · Decided stamps survive a reload', size, /^Placed Ranger/.test(placedAdmin || '') && /Approved Saber/.test(placedAdmin || '') ? 'PASS' : 'FAIL', `cell 16 Jan before "${cell15}", after "${cell15b}"; admin's Placed line after reload: "${placedAdmin}"`, ['10d-admin-window-15jan'])
+  await L.openApprovals(w)
+  const hdr2 = await txt(P, T('appr-sub')); const newChip2 = await txt(P, T('appr-new'))
+  await shot(w, '10e-approvals-after-reload')
+  say('   Approvals header before reload:', hdr1, '| New chip', newChip, ' ;; after reload:', hdr2, '| New chip', newChip2)
+  rec('10c Approvals\' "last opened" survives a reload (New counts from it: Ranger bid after the last look, so 1 new)', size, /1 new/.test(hdr2 || '') && /New 1/.test(newChip2 || '') ? 'PASS' : 'FAIL', `header after reload "${hdr2}" (New chip "${newChip2}"); header before "${hdr1}" (New chip "${newChip}")`, ['10e-approvals-after-reload'])
+} catch (e) {
+  rec('ERROR', size, 'FAIL', String(e).slice(0, 400))
+  await shot(w, 'error').catch(() => {})
+}
+if (w.errs.length) rec('console', size, 'FAIL', w.errs.join(' || ').slice(0, 800))
+L.writeResults('s910')
+await w.ctx.close()
+await L.closeBrowser()
+console.log('DONE')

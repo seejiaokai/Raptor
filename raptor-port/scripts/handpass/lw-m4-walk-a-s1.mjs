@@ -34,10 +34,10 @@ try {
   /* ---- 1. the tab, the page, the order, the columns, the halves ---- */
   const tabTxt = tab0
   rec('1a tab and header', size, /^\d+$/.test(tabTxt || '') ? 'PASS' : 'FAIL', `tab count "${tabTxt}", header "${sub0}", ${lines0.length} lines (header N counts this period only; tab counts all periods if it differs)`, ['a-s1-1-approvals'])
-  const order = lines0.filter(l => l.who === 'bane').map(l => l.text.match(/(Mon|Tue|Wed|Thu|Fri|Sat|Sun) \d+ \w+/)[0])
+  const order = await P.evaluate(() => [...document.querySelectorAll('.appr-line')].filter(e => e.dataset.testid === 'appr-line-bane').map(e => e.querySelector('.appr-dlink').innerText.replace(/ ›$/, '')))
   console.log('order of Ranger lines:', order.join(' > '))
-  const expect = ['Mon 12 Jan', 'Wed 14 Jan', 'Mon 19 Jan', 'Tue 20 Jan', 'Mon 26 Jan', 'Fri 30 Jan', 'Mon 9 Feb', 'Wed 11 Feb', 'Mon 16 Feb', 'Wed 18 Feb', 'Mon 23 Feb']
-  rec('1b oldest placed first', size, JSON.stringify(order) === JSON.stringify(expect) ? 'PASS' : 'FAIL', `observed ${order.join(', ')}; the bids went in the order ${expect.join(', ')}`, ['a-s1-1-approvals'])
+  const expect = ['Mon 12 Jan', 'Wed 14 Jan', 'Mon 19 Jan, AM', 'Tue 20 Jan, PM', 'Mon 26 – Tue 27 Jan', 'Fri 30 Jan – Mon 2 Feb', 'Mon 9 Feb', 'Wed 11 Feb', 'Mon 16 Feb', 'Wed 18 Feb', 'Mon 23 Feb']
+  rec('1b oldest placed first', size, JSON.stringify(order) === JSON.stringify(expect) ? 'PASS' : 'FAIL', `observed ${order.join(', ')}; the bids went in the order ${expect.join(', ')} (Mon 23 Feb was placed last, by Saber)`, ['a-s1-1-approvals'])
   const halves = await P.evaluate(() => document.querySelector('[data-testid="approvals-page"]').innerText.includes('½'))
   rec('1c no half sign', size, halves ? 'FAIL' : 'PASS', 'page text holds a ½: ' + halves, ['a-s1-1-approvals'])
   /* columns line up: every cell class's left edge (right edge for .r) the same on every line */

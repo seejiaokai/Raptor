@@ -1,0 +1,31 @@
+[
+ {
+  "id": "12g a man posting out in the future: the line is tagged \"posting out ...\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines: [\"Trident IP posting out 1 Mar · Overseas Sqn LL Tue 13 – Fri 16 Apr › 4 days −2 — Approve Refuse\",\"Cinder B LL Wed 5 May, AM › 0.5 day 13.5 W 17.5 — Approve Refuse\"]",
+  "pics": [
+   "a-s9c-3-approvals",
+   "a-s9c-13-posting-out-line"
+  ]
+ },
+ {
+  "id": "12h Approve on his line (requests after the posting-out date) says \"Posted out — refuse or delete it\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "line after Approve: \"Trident IP posting out 1 Mar · Overseas Sqn LL Tue 13 – Fri 16 Apr › 4 days −2 — Approved Refuse\"; Approve pressed true",
+  "pics": [
+   "a-s9c-4-after-approve",
+   "a-s9c-13-posting-out-after-approve"
+  ]
+ },
+ {
+  "id": "12i Refuse works on his line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line: \"Trident IP posting out 1 Mar · Overseas Sqn LL Tue 13 – Fri 16 Apr › 4 days −2 — Approve Refused\"; Refuse {\"t\":\"Refused\",\"p\":\"true\",\"dis\":false}; Approve {\"t\":\"Approve\",\"p\":\"false\",\"dis\":true}",
+  "pics": [
+   "a-s9c-5-refused"
+  ]
+ }
+]

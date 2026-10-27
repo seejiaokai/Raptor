@@ -11,8 +11,8 @@
  {
   "id": "1b oldest placed first",
   "size": "desk",
-  "verdict": "FAIL",
-  "said": "observed Mon 12 Jan, Wed 14 Jan, Mon 19 Jan, Tue 20 Jan, Tue 27 Jan, Fri 30 Jan, Mon 9 Feb, Wed 11 Feb, Mon 16 Feb, Wed 18 Feb, Mon 23 Feb; the bids went in the order Mon 12 Jan, Wed 14 Jan, Mon 19 Jan, Tue 20 Jan, Mon 26 Jan, Fri 30 Jan, Mon 9 Feb, Wed 11 Feb, Mon 16 Feb, Wed 18 Feb, Mon 23 Feb",
+  "verdict": "PASS",
+  "said": "observed Mon 12 Jan, Wed 14 Jan, Mon 19 Jan, AM, Tue 20 Jan, PM, Mon 26 – Tue 27 Jan, Fri 30 Jan – Mon 2 Feb, Mon 9 Feb, Wed 11 Feb, Mon 16 Feb, Wed 18 Feb, Mon 23 Feb; the bids went in the order Mon 12 Jan, Wed 14 Jan, Mon 19 Jan, AM, Tue 20 Jan, PM, Mon 26 – Tue 27 Jan, Fri 30 Jan – Mon 2 Feb, Mon 9 Feb, Wed 11 Feb, Mon 16 Feb, Wed 18 Feb, Mon 23 Feb (Mon 23 Feb was placed last, by Saber)",
   "pics": [
    "a-s1-1-approvals"
   ]
@@ -109,7 +109,7 @@
   "id": "15 speed and nodes",
   "size": "desk",
   "verdict": "PASS",
-  "said": "tap-to-lit ms 67, 92, 100 (median 92); grid nodes before Approvals 25148, after leaving 25148",
+  "said": "tap-to-lit ms 67, 103, 103 (median 103); grid nodes before Approvals 25148, after leaving 25148",
   "pics": []
  }
 ]
