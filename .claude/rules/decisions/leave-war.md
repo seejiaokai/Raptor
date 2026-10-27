@@ -56,6 +56,10 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1447 | 28 Oct 26 | The readings put to him on the M4 page stand as built: R12–R17 and R19 (version 6), and R20 — a man's leave is refused only on days from his posting-out date on, whether or not the posting has run, a day before it approving — and R21 — a man deleted on Admin → Users keeps the refusal of his leftover pending leave. |
+| D1446 | 28 Oct 26 | Under a man posting out, the Leave War's Approvals list keeps the build's words — "posting out 1 Mar · Overseas Sqn", where he goes named — not the drawing's "PO 1 Mar". |
+| D1445 | 28 Oct 26 | The Leave War's slim Approvals bar takes the darker fill of his drawings r22-4-desk and r22-6-phone, on a desktop and a phone alike, its edge, words and size unchanged. |
+| D1444 | 28 Oct 26 | The shorter phone top of the Leave War's Approvals list (D1439) is built as drawn: the link to another period on the title's line, "+2 in JAN – DEC 27 ›" (the period's own name, "pending" dropped), and only the months holding requests on the row of New and All; where the title's line has no room the link keeps a line of its own. |
 | D1441 | 28 Oct 26 | On a phone Approve and Refuse in the Leave War's Approvals list take the letters of his drawing r22-5-phone — a little smaller and less heavy, the same height — so a half-day date stays on one line at his phone's width; the desktop's buttons are unchanged. |
 | D1440 | 28 Oct 26 | On a phone the Leave War's slim Approvals bar on the grid goes back to his drawing r22-6-phone, as the desktop's did (D1432): no cyan outline, "Back ▴" as plain cyan words and a plain ✕. |
 | D1439 | 27 Oct 26 | On a phone the top of the Leave War's Approvals list takes less room: the link to another period's requests stands on the title's line, shortened ("Approvals  6 pending · +2 in Jan–Dec 27 ›"), and the month chips show only the months that hold requests waiting, on the row of New and All; Pick dates… and Approve all keep their row. |
