@@ -87,3 +87,25 @@ Each made to fail first against round 1's code, then fixed, then green; nothing 
 - Browser through the lock, `lw-phone` and `lw-desktop`: red run of the two new tests against round 1's handler — 3 failed (R2-1
   phone, R2-2 phone and desktop), 1 skipped; green run of every Approvals and bell test with the new ones — 19 passed, 7
   skipped (phone-only on the desktop project), 0 failed.
+
+## Round 3 — the blind read of round 2 (`fix-read-2.md`) and the host's decision on a deleted man
+
+Each made to fail first against round 2's code, then fixed, then green; one commit, 089e9a0d2; nothing pushed.
+
+| Finding | Red first | The fix | Twin paths tested |
+|---|---|---|---|
+| **R3-1 MEDIUM** — a touch on the empty card beside or under the open calendar decided a line (round 2's R2-2 regression) | `m4page.test.tsx` — "R3-1 a tap on the empty card beside the open calendar, its click landing on a line's Approve, decides nothing"; `e2e/leavewar.spec.ts` — "…a tap on the empty card beside or under the calendar decides no line (R3-1, D1421)" on `lw-phone` (a CDP touch in the band under the calendar at line 1's Approve's x, at 402 and 440, and at 440 the strip to its right where the screen leaves one) — red at 402 | `ApprovalsPage.tsx`, the picker's outside-press handler: the press and the click each resolve to the nearest pressable thing (`closest(PRESS)`); the click is let through only where both are the same control and it has not moved (measured on that control, or the pressed element where none) | the band under AND the strip beside the calendar; a held press (R2-1), a quick tap (M4) and a press on what did not move (R2-2, the Grid tab) all still green |
+| **R3-2 LOW** — an icon pressed, its button's edge lifted, swallowed | `m4page.test.tsx` — "R3-2 a press begun on an outside button's icon and ending on the button does the button's job, once" | the same change (both resolve to the button) | — |
+| **R3-3 LOW** — a stopped Refuse counted "not approved" | `m4page.test.tsx` — "R3-3 a Refuse the rules stop is counted 'not changed'" (the door asked for a locked-week refusal of an approved day) | `SelectSheet.tsx decide`: "not changed" for a Refuse or a send-back, "not approved" for an Approve | Approve (R2-5's test) AND Refuse |
+| **R3-4 LOW** — reasons run together; "He" over several men | `m4decide.test.ts` — "the bid windows give the reasons per man, one each, de-duplicated (R3-4)"; `m4page.test.tsx` — "R3-4 a two-man drag names each man before his reason, the reasons apart" | `sync.ts doorApprove`, `doorDecideApproved` give each reason with its man (`whyOf`); `store.ts setBidStates`, `placeApproved` return `whyBy` (by man, once each); `BidPicker.tsx` and `SelectSheet.tsx` join reasons with ". ", the drag window over more than one man naming each before his; `store.test.ts`' two exact-shape checks gain `whyBy: []` | `setBidStates` AND `placeApproved`; one man AND two |
+| **R3-5 words** | — (comments) | `store.ts`: the comment over Approvals' one writer and the one in `decideWhy` now describe the one date rule (D1436) and the deleted man | — |
+| **R3-6 (the host's decision)** — a deleted man's leftover pending bid approved | `m4decide.test.ts` — "a DELETED man: his leftover pending bid is refused in Approvals and in the bid windows (R3-6)" | `sync.ts approveWhy` (the one body every door asks): `postedOutBy(…) === 'gone'` → "Posted out — refuse or delete it" — the pre-M4 behaviour for a deleted man, restored pending his word | Approvals, the day's list, the bid windows; Refuse still works |
+
+### Round 3 checks (28 Oct 26)
+
+- Unit: `m4bell` 19, `m4decide` 26, `m4page` 27, `m4ride` 14, `m4sec` 13, `state/store.test` 221; the 60-file Leave War sweep
+  1,378 passed; `state/person-delete`, `p6d-deleteonread`, `perms`, `storage/seal`, `ui/bellnotices` 195 passed.
+- `npm run build` (the type-check) through the lock: passed.
+- Browser through the lock: red run of R3-1 against round 2's code on `lw-phone` — failed at 402 (a line lit); green run of
+  every Approvals and bell test with all the new ones, `lw-phone` and `lw-desktop` — 20 passed, 8 skipped (phone-only on the
+  desktop project), 0 failed.
