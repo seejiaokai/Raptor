@@ -7859,3 +7859,24 @@ test('a long bell keeps "Mark all read" in sight and says how many lines are bel
   await expect(page.getByTestId('bell-more')).toHaveCount(0)
   expect(await inSight(), '"Mark all read" in sight with the list at its end').toBe(true)
 })
+
+/* THE WALK'S A-F6 (27 Oct 26): with Approvals' slim bar up, a person's window opened over it, its foot across the bar —
+   "Back" read "ack". While the bar is up the war's windows stand above it, so the two never overlap. */
+test('with Approvals\u2019 slim bar up, a window opens above the bar, never over it', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  await page.locator('[data-testid="row-slipway"] .whoedit').first().click()
+  const sheet = page.getByTestId('person-figures')
+  await expect(sheet).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const s = document.querySelector<HTMLElement>('[data-testid="person-figures"]')!.getBoundingClientRect()
+    const b = document.querySelector<HTMLElement>('[data-testid="appr-slim"]')!.getBoundingClientRect()
+    return { sheetBottom: Math.round(s.bottom), barTop: Math.round(b.top), sheetTop: Math.round(s.top) }
+  })
+  expect(g.sheetBottom, `the window's foot (${g.sheetBottom}) above the bar's top (${g.barTop})`).toBeLessThanOrEqual(g.barTop)
+  expect(g.sheetTop, 'the window still starts on screen').toBeGreaterThanOrEqual(0)
+})
