@@ -311,10 +311,10 @@ index 2f0096ffb..3e863b425 100644
  ---
  
 diff --git a/raptor-port/docs/gates-and-deploy.md b/.claude/skill-updates/2026-10-27/raptor-port/docs/gates-and-deploy.md
-index 0e0986019..7804e5495 100644
+index 0e0986019..f31db4ef7 100644
 --- a/raptor-port/docs/gates-and-deploy.md
 +++ b/.claude/skill-updates/2026-10-27/raptor-port/docs/gates-and-deploy.md
-@@ -158,6 +158,36 @@ a walk's `HP_URL`), check the port is free: `netstat -ano | grep ":<port> "`. On
+@@ -158,6 +158,44 @@ a walk's `HP_URL`), check the port is free: `netstat -ano | grep ":<port> "`. On
  pointed at 4186 passed its first hundred tests and then failed 192 in a row, every one "waiting for #luser", because the
  page it loaded was the deck ("RAPTOR — Presenter"), not the app. Never stop a server that is not yours; pick another port.
  
@@ -334,6 +334,14 @@ index 0e0986019..7804e5495 100644
 +**The document check run in the middle of a merge reads the other side's changes as yours (13 Oct 26).** With a merge
 +resolved but not committed it reported "a size marker changed in a change that also touches the app's code" — the marker
 +had come in with `main`. Commit the merge, then run it.
++
++**A NEW rulings area file is set up in four steps before the first row moves into it (13 Oct 26 — two set-up slips, each a
++refused round of the mover).** (1) The file: its `paths:`, title, preamble and the short table's header. (2) Its row in
++`DECISIONS.md`'s map with at least one D-number in the last cell — the script rewrites the cell, and an empty one hides the
++row ("not in the map"). (3) Its byte tripwire in `RULING_BYTES` (`raptor-port/scripts/docsize.mjs`), added beside the
++others, never a placeholder (a patch that missed its anchor wrote one and dropped the scheduler's own tripwire). (4)
++`backlog-archive.mjs --rulings --move-rows --dry-run`, then the move, then a row-by-row compare against the base: the dry
++run does not run the real run's last inventory, so its pass is not the move's.
 +
 +**Stopping a gate run's background task does not stop the run (15 Oct 26, twice).** Stopping the task that ran
 +`gatelock.mjs run` ended only its shell: the `gatelock` process, vitest and its fifteen workers ran on, and the lock stayed
@@ -424,25 +432,16 @@ index 7dde778a5..264467d81 100644
  **Lesson 61 (27 Oct 26, D1412 — "all the text areas I click screen jerks or bounce a little when the keyboard opens. Even for text that are above the keyboard … Why can’t the text box I click on, auto scroll proportionately with the keyboard that appears and the window doesn’t shrink awhile. My idea is a smooth feel for this app and this made it worse").** When the keyboard opens, the box tapped rises in step with the keys, proportionately — one motion, the keys' own — and nothing else on screen moves: a box already above the keys stays exactly where it is, and no window shortens and grows back or lets the page behind it show while the keys move. What it says about the app he intends (D852): a correct end place is not the measure; the feel of the motion is, and a mechanism that steers a window frame by frame against the phone's own slide is judged by what he sees, not by its numbers. *Other places, named under D852 — the same check applies to each: the Leave War's sheets and bid windows (they place themselves, `leavewar/ui/Sheet.tsx`), the Tracker's event editor, Admin's Duty templates box, the Logic page's boxes, and the Scheduler Board's list ([KEYBOARD-SCROLL]).*
  
 diff --git a/DECISIONS.md b/.claude/skill-updates/2026-10-27/DECISIONS.md
-index 81982e673..9184f0ef6 100644
+index 81982e673..aebfa66a1 100644
 --- a/DECISIONS.md
 +++ b/.claude/skill-updates/2026-10-27/DECISIONS.md
-@@ -52,6 +52,18 @@ parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used).
+@@ -52,6 +52,9 @@ parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used).
  is full (D135–D149), so it continues from D157**, skipping D170+ (the demo chat's range, D154). **D200–D209 is the late-published chat's follow-on range** (`claude/rulings-supersede-sweep`, 26 Sep 26). **D210–D229 is the accounts chat's** (`claude/accounts`, 26 Sep 26), and **D230–D239 is offered to a parallel Tracker-palette chat** started beside it (**D240–D249** to a `[BG-CWD-GUARD]` chat, **D250–D259** to a `[BACKLOG-TIDY]` chat, if he starts them). **D347–D359 is the change-recording chat's** (`claude/change-recording-retest`, 28 Sep 26), and **D360–D369, D370–D379, D380–D389** are offered to three parallel chats started beside it the same day (a small-fixes batch, the Tracker leftovers, a docs-only tidy — if he starts them). **D270–D279 is the five-flags batch chat's** (`claude/five-flags-batch-build-ef7d85`, 26 Sep 26 — [PUCK-FLAG-GLOW], [LW-RESET-ORDER], [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]). **D390–D399 is the rulings slim-down chat's** (`claude/docs-rulings-slim-down-e83c74`, 28 Sep 26 — [RULINGS-SLIM], D390). **D400 was the handoff-review chat's** (`claude/handoff-review-next-priority-165f99`, 29 Sep 26); **D401–D409 is the OIL award chat's** (`claude/award-earned-vs-granted-2ed66d`, 29 Sep 26 — [OIL-AWARD-IS-A-GRANT] with D400); **D410–D429 is the IT flow guide chat's** (`claude/it-flow-guide-flowchart-da7ca1`, 29 Sep 26 — [IT-FLOW-GUIDE], D410). **D190–D199 is the
  Tracker smoke chat's range** (`claude/trk-smoke-add-race-bug-007eed`, D190, 25 Sep 26); **D176–D189 is the D175 chat's**
  (`claude/request-one-row`, his instruction of 25 Sep 26). **D180–D189 pass to the overnight chat** (`claude/leave-late-published`, 25 Sep 26 — the D175 chat merged having used D176–D179).
-+**The next free number on every branch, in one command** (21 Oct 26 — a loop of `git show <branch>:<file>` printed
-+nothing for every branch, because Git Bash rewrote the `rev:path` argument, and the silence read as "no numbers there"):
-+`git fetch` first, then `git grep -h -o -E '^\| D1[0-9]{3} \|' $(git for-each-ref --format='%(refname)' refs/remotes/origin)
-+-- .claude/rules/decisions .claude/decisions-full DECISIONS-ARCHIVE.md | sort -u | tail -3`. A search that prints nothing
-+is first run where the answer is known (the current branch) before its "none" is believed.
-+
-+**A NEW area file, before the first row moves into it** (13 Oct 26 — two set-up slips, each one refused round of the
-+mover): (1) the file — its `paths:`, title, preamble and the short table's header; (2) its row in the map below, with at
-+least one D-number in the last cell (the script rewrites the cell; an empty one hides the row); (3) its byte tripwire in
-+`RULING_BYTES` (`raptor-port/scripts/docsize.mjs`), added beside the others — never a placeholder; (4) `--dry-run`, then
-+the move, then a row-by-row compare against the base. The dry run does not run the real run's last inventory, so a pass
-+there is not a pass of the move.
++**The highest number on every branch, in one command** (a loop of `git show <branch>:<file>` prints nothing on Git Bash —
++the `rev:path` is rewritten — and silence reads as "none", 21 Oct 26): after `git fetch`, `git grep -h -o -E '^\| D1[0-9]{3} \|'
++$(git for-each-ref --format='%(refname)' refs/remotes/origin) -- .claude/rules/decisions .claude/decisions-full DECISIONS-ARCHIVE.md | sort -u | tail -3`.
  
  **What counts.** A ruling ("do it this way from now on"), a product decision ("green only where it
  counted"), a correction to how I work, a preference, a "leave it", a supersession of an earlier

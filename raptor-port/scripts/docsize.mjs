@@ -194,7 +194,10 @@ const FILES = [
      with its reason). */
   /* DECISIONS.md 90 -> 92 (13 Oct 26, D802): the map gained ONE row - the Inputs pages' own rulings file - and that
      row belongs there (D141: a line needed where it sits). Two lines of room, not a target. */
-  ['DECISIONS.md',                       1,   92],
+  /* DECISIONS.md 92 -> 95 (27 Oct 26, the skill-notes review): three lines in the recording steps — the one command that
+     finds the highest ruling number on every branch (observation 670); the file holds the steps every chat follows, so
+     the line goes where the step is. Room, not a target. */
+  ['DECISIONS.md',                       1,   95],
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing

@@ -45,7 +45,7 @@ code is the one that carries the lesson's main point.
 | 566 | APPLY | WS §9 (a look used as a detector points at a scratch folder); the helper's own refusal: TOOLS (existing line, 239/247/338) |
 | 567 | APPLY | WS §2 (the route is driven by the host first; control names from the passing run) |
 | 568 | APPLY | BCO §6 (a new branch that skips a shared call lists what the call does) |
-| 569 | APPLY | DEC (a new area file's four steps); the dry run's inventory: TOOLS |
+| 569 | APPLY | GD §How the gates lie (a new rulings area file's four steps — moved there from DEC, whose line tripwire the rehearsal showed it would cross); the dry run's inventory: TOOLS |
 | 570 | REFLECTED | VBC "A typecheck or lint is clean" row; BCO §4 names the real typecheck; memory `tsc-noemit-is-hollow`. Its "met again" guard (a push without a build): TOOLS |
 | 571 | REFLECTED | WS §9 (never `git checkout` / `git restore` a file with uncommitted work during a break) |
 | 572 | REFLECTED | the runner was fixed (observation 628, ACTIONED: 256 MB of output, its own failure named) |

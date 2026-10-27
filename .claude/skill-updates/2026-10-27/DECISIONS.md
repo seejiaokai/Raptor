@@ -52,18 +52,9 @@ parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used). 
 is full (D135–D149), so it continues from D157**, skipping D170+ (the demo chat's range, D154). **D200–D209 is the late-published chat's follow-on range** (`claude/rulings-supersede-sweep`, 26 Sep 26). **D210–D229 is the accounts chat's** (`claude/accounts`, 26 Sep 26), and **D230–D239 is offered to a parallel Tracker-palette chat** started beside it (**D240–D249** to a `[BG-CWD-GUARD]` chat, **D250–D259** to a `[BACKLOG-TIDY]` chat, if he starts them). **D347–D359 is the change-recording chat's** (`claude/change-recording-retest`, 28 Sep 26), and **D360–D369, D370–D379, D380–D389** are offered to three parallel chats started beside it the same day (a small-fixes batch, the Tracker leftovers, a docs-only tidy — if he starts them). **D270–D279 is the five-flags batch chat's** (`claude/five-flags-batch-build-ef7d85`, 26 Sep 26 — [PUCK-FLAG-GLOW], [LW-RESET-ORDER], [CROWD-SWAP-SAYS-BUSY], [VIEW-ARROW-OVER-LIST], [BG-GUARD-FALSE]). **D390–D399 is the rulings slim-down chat's** (`claude/docs-rulings-slim-down-e83c74`, 28 Sep 26 — [RULINGS-SLIM], D390). **D400 was the handoff-review chat's** (`claude/handoff-review-next-priority-165f99`, 29 Sep 26); **D401–D409 is the OIL award chat's** (`claude/award-earned-vs-granted-2ed66d`, 29 Sep 26 — [OIL-AWARD-IS-A-GRANT] with D400); **D410–D429 is the IT flow guide chat's** (`claude/it-flow-guide-flowchart-da7ca1`, 29 Sep 26 — [IT-FLOW-GUIDE], D410). **D190–D199 is the
 Tracker smoke chat's range** (`claude/trk-smoke-add-race-bug-007eed`, D190, 25 Sep 26); **D176–D189 is the D175 chat's**
 (`claude/request-one-row`, his instruction of 25 Sep 26). **D180–D189 pass to the overnight chat** (`claude/leave-late-published`, 25 Sep 26 — the D175 chat merged having used D176–D179).
-**The next free number on every branch, in one command** (21 Oct 26 — a loop of `git show <branch>:<file>` printed
-nothing for every branch, because Git Bash rewrote the `rev:path` argument, and the silence read as "no numbers there"):
-`git fetch` first, then `git grep -h -o -E '^\| D1[0-9]{3} \|' $(git for-each-ref --format='%(refname)' refs/remotes/origin)
--- .claude/rules/decisions .claude/decisions-full DECISIONS-ARCHIVE.md | sort -u | tail -3`. A search that prints nothing
-is first run where the answer is known (the current branch) before its "none" is believed.
-
-**A NEW area file, before the first row moves into it** (13 Oct 26 — two set-up slips, each one refused round of the
-mover): (1) the file — its `paths:`, title, preamble and the short table's header; (2) its row in the map below, with at
-least one D-number in the last cell (the script rewrites the cell; an empty one hides the row); (3) its byte tripwire in
-`RULING_BYTES` (`raptor-port/scripts/docsize.mjs`), added beside the others — never a placeholder; (4) `--dry-run`, then
-the move, then a row-by-row compare against the base. The dry run does not run the real run's last inventory, so a pass
-there is not a pass of the move.
+**The highest number on every branch, in one command** (a loop of `git show <branch>:<file>` prints nothing on Git Bash —
+the `rev:path` is rewritten — and silence reads as "none", 21 Oct 26): after `git fetch`, `git grep -h -o -E '^\| D1[0-9]{3} \|'
+$(git for-each-ref --format='%(refname)' refs/remotes/origin) -- .claude/rules/decisions .claude/decisions-full DECISIONS-ARCHIVE.md | sort -u | tail -3`.
 
 **What counts.** A ruling ("do it this way from now on"), a product decision ("green only where it
 counted"), a correction to how I work, a preference, a "leave it", a supersession of an earlier

@@ -175,6 +175,14 @@ prose.
 resolved but not committed it reported "a size marker changed in a change that also touches the app's code" — the marker
 had come in with `main`. Commit the merge, then run it.
 
+**A NEW rulings area file is set up in four steps before the first row moves into it (13 Oct 26 — two set-up slips, each a
+refused round of the mover).** (1) The file: its `paths:`, title, preamble and the short table's header. (2) Its row in
+`DECISIONS.md`'s map with at least one D-number in the last cell — the script rewrites the cell, and an empty one hides the
+row ("not in the map"). (3) Its byte tripwire in `RULING_BYTES` (`raptor-port/scripts/docsize.mjs`), added beside the
+others, never a placeholder (a patch that missed its anchor wrote one and dropped the scheduler's own tripwire). (4)
+`backlog-archive.mjs --rulings --move-rows --dry-run`, then the move, then a row-by-row compare against the base: the dry
+run does not run the real run's last inventory, so its pass is not the move's.
+
 **Stopping a gate run's background task does not stop the run (15 Oct 26, twice).** Stopping the task that ran
 `gatelock.mjs run` ended only its shell: the `gatelock` process, vitest and its fifteen workers ran on, and the lock stayed
 held. End them by their command lines (this checkout's path in them), then `gatelock.mjs status` → `release`, and see
