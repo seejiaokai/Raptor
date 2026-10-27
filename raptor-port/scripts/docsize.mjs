@@ -251,7 +251,10 @@ const RULING_BYTES = [
      [RULINGS-SPENT-PASS] still brings it down. */
   /* how-we-work 47000 -> 49000 (26 Oct 26): 47,311 bytes with D1402 (his "merge live" for the six old pull requests of
      21-23 Oct 26, one at a time) - live, none trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 49000],
+  /* how-we-work 49000 -> 51000 (27 Oct 26): 49,060 bytes with D1407-D1411 (his review-process rulings: notes-only
+     pull requests merging by themselves, the secrets scan, the scorecard, the reader's test set, the security read) - live,
+     none trimmed (D136). Room, not a target. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 51000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
