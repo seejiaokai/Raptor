@@ -1,0 +1,115 @@
+[
+ {
+  "id": "1a tab and header",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "tab count \"19\", header \"17 pending · 10 new\", 17 lines (header N counts this period only; tab counts all periods if it differs)",
+  "pics": [
+   "a-s1-1-approvals"
+  ]
+ },
+ {
+  "id": "1b oldest placed first",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "observed Mon 12 Jan, Wed 14 Jan, Mon 19 Jan, Tue 20 Jan, Tue 27 Jan, Fri 30 Jan, Mon 9 Feb, Wed 11 Feb, Mon 16 Feb, Wed 18 Feb, Mon 23 Feb; the bids went in the order Mon 12 Jan, Wed 14 Jan, Mon 19 Jan, Tue 20 Jan, Mon 26 Jan, Fri 30 Jan, Mon 9 Feb, Wed 11 Feb, Mon 16 Feb, Wed 18 Feb, Mon 23 Feb",
+  "pics": [
+   "a-s1-1-approvals"
+  ]
+ },
+ {
+  "id": "1c no half sign",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "page text holds a ½: false",
+  "pics": [
+   "a-s1-1-approvals"
+  ]
+ },
+ {
+  "id": "1d columns line up",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "spread (px) per cell: {\"appr-who\":0,\"appr-box\":0,\"appr-dates\":0,\"appr-days\":0,\"appr-bal\":0,\"appr-avail\":0,\"appr-placed\":0,\"appr-cliphold\":0,\"appr-btns\":0,\"appr-ok\":0,\"appr-no\":0}",
+  "pics": [
+   "a-s1-1-approvals"
+  ]
+ },
+ {
+  "id": "2a approve lights it, the line stays",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"t\":\"Approved\",\"p\":\"true\",\"dis\":false} cls=appr-line lit-approved",
+  "pics": [
+   "a-s1-2-approved-12jan",
+   "a-s1-13-lit-approved"
+  ]
+ },
+ {
+  "id": "2b tab count and Approve all each fall by one",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "tab 19 -> 18; Approve all \"Approve all 17\" -> \"Approve all 16\"",
+  "pics": [
+   "a-s1-2-approved-12jan"
+  ]
+ },
+ {
+  "id": "3a Refuse lights it \"Refused\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"t\":\"Refused\",\"p\":\"true\",\"dis\":false}",
+  "pics": [
+   "a-s1-13-lit-refused"
+  ]
+ },
+ {
+  "id": "3b second tap on lit Refuse -> pending",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"ok\":{\"t\":\"Approve\",\"p\":\"false\",\"dis\":false},\"no\":{\"t\":\"Refuse\",\"p\":\"false\",\"dis\":false}}",
+  "pics": [
+   "a-s1-13-back-to-pending"
+  ]
+ },
+ {
+  "id": "3c second tap on lit Approve -> pending",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"t\":\"Approve\",\"p\":\"false\",\"dis\":false}",
+  "pics": []
+ },
+ {
+  "id": "2c Undo: back to pending, the page did not move",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "scrollY before approve 546, after approve 546, after Undo 546; Undo button at top 14; line ok.pressed=false",
+  "pics": [
+   "a-s1-2-before-undo",
+   "a-s1-2-after-undo"
+  ]
+ },
+ {
+  "id": "2d Redo: lit Approved again, page still",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok={\"t\":\"Approved\",\"p\":\"true\",\"dis\":false} scrollY 546 (was 546)",
+  "pics": [
+   "a-s1-2-after-redo"
+  ]
+ },
+ {
+  "id": "2e after Redo a second tap still sends it back (star 1)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ok={\"t\":\"Approve\",\"p\":\"false\",\"dis\":false}",
+  "pics": []
+ },
+ {
+  "id": "15 speed and nodes",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "tap-to-lit ms 67, 92, 100 (median 92); grid nodes before Approvals 25148, after leaving 25148",
+  "pics": []
+ }
+]

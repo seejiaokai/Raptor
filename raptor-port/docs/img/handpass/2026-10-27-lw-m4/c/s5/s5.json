@@ -1,0 +1,66 @@
+[
+ {
+  "id": "5-pre closing Jan-Mar (set-up) -> what the bell says",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "2 new: Leave War1 Mar – 31 Mar bidding closed · Saber now | Leave War1 Jan – 4 Jan bidding open · Saber now ;; gone: ",
+  "pics": [
+   "5-pre-bell"
+  ]
+ },
+ {
+  "id": "5a Apr+May+Jun opened by three taps -> ONE line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1 new: Leave War1 Apr – 30 Jun bidding open · Saber now",
+  "pics": [
+   "5a-bell"
+  ]
+ },
+ {
+  "id": "5a tap on the bidding line -> the war with that stretch in view",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"first\":\"head-2026-04-02\",\"last\":\"head-2026-05-23\",\"n\":52,\"tabs\":\"lw-tab-grid\"}",
+  "pics": [
+   "5a-tap"
+  ]
+ },
+ {
+  "id": "5b close May -> TWO live lines, Apr and Jun, none saying Apr-Jun",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "2 new: Leave War1 Jun – 30 Jun bidding open · Saber now | Leave War1 Apr – 30 Apr bidding open · Saber now ;; any Apr-Jun line left: false ;; gone: Leave War1 Apr – 30 Jun bidding open · Saber now",
+  "pics": [
+   "5b-bell"
+  ]
+ },
+ {
+  "id": "5d the admin bell gets no bidding line of his own",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "1 lines: Leave War1 Jan – 4 Jan bidding closed · its dates ended 295 d",
+  "pics": [
+   "5c-admin-bell"
+  ]
+ },
+ {
+  "id": "5c close Apr and Jun -> closed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "2 new: Leave War1 Jun – 30 Jun bidding closed · Saber now | Leave War1 Apr – 30 Apr bidding closed · Saber now ;; open lines left: Leave War1 Jan – 4 Jan bidding open · Saber now",
+  "pics": [
+   "5c-bell"
+  ]
+ },
+ {
+  "id": "5e Undo of an opening in the same admin session -> no line for it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "chip \"Bidding closed\"; new: ; any Jul line: false",
+  "pics": [
+   "5e-bell",
+   "5e-after-undo"
+  ]
+ }
+]

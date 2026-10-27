@@ -1,0 +1,73 @@
+[
+ {
+  "id": "4a Approve all: first tap arms, second approves every shown line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "armed: {\"text\":\"Approve 12 — tap again\",\"armed\":true}; after second tap 12 of 12 lines lit approved; tab count 14 -> 2; button now {\"text\":\"Approve all 0\",\"armed\":false}",
+  "pics": [
+   "a-s4-4a-armed",
+   "a-s4-4a-all-approved"
+  ]
+ },
+ {
+  "id": "4b ONE Undo brings every line back",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after one Undo: 0 lit, 12 pending of 12; tab 14; toast \"Undid: a decision on a bid\"",
+  "pics": [
+   "a-s4-4a-after-one-undo"
+  ]
+ },
+ {
+  "id": "4d armed, then the month filter changes -> disarmed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before: {\"text\":\"Approve 12 — tap again\",\"armed\":true}; after Jan chip: {\"text\":\"Approve all 6\",\"armed\":false}",
+  "pics": [
+   "a-s4-4d-after-month-chip"
+  ]
+ },
+ {
+  "id": "5a month chip: Approve all approves exactly what shows",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Jan chip showed 6 lines, armed \"Approve 6 — tap again\", 6 lit; with All: Jan lines , Feb lines Mon 2 Feb ›:pending, Tue 3 Feb, PM ›:pending, Tue 10 Feb, AM ›:pending, Tue 24 Feb ›:pending, Mon 9 Feb ›:pending, Mon 16 Feb ›:pending",
+  "pics": [
+   "a-s4-5a-jan-approved",
+   "a-s4-5a-all-after-jan"
+  ]
+ },
+ {
+  "id": "5b Pick dates (a range): Approve all approves exactly the range",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "selection \"null\"; range showed 4 lines, 4 lit after the second tap; button Approve all 4 -> Approve 4 — tap again; inside: ; outside: Tue 24 Feb ›:pending, Mon 16 Feb ›:pending",
+  "pics": [
+   "a-s4-5b-range-picked",
+   "a-s4-5b-range-approved",
+   "a-s4-5b-all-after-range"
+  ]
+ },
+ {
+  "id": "5c New: Approve all approves exactly the New lines",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "New showed 1 lines (Mon 16 Feb ›); a demo request not new (24 Feb) is pending; all lines now: Tue 24 Feb ›:pending",
+  "pics": [
+   "a-s4-5c-new",
+   "a-s4-5c-new-approved",
+   "a-s4-5c-all-after-new"
+  ]
+ },
+ {
+  "id": "5d Pick dates closes on a press outside and on Escape",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened true, closed by an outside press true; opened true, closed by Escape true; focus after Escape: appr-pick",
+  "pics": [
+   "a-s4-5d-open",
+   "a-s4-5d-after-outside-press",
+   "a-s4-5d-after-escape"
+  ]
+ }
+]

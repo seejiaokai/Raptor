@@ -1,0 +1,12 @@
+[
+ {
+  "id": "4e Undo steps after approve, Undo, approve again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after the second round and ONE Undo the Undo button is off (no step left)",
+  "pics": [
+   "a-s4c-undo-A",
+   "a-s4c-undo-B"
+  ]
+ }
+]

@@ -1,0 +1,258 @@
+[
+ {
+  "id": "S1a tab row count [chromium]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "tab count \"8\"",
+  "pics": [
+   "s1-chromium-402-grid-tabrow.png"
+  ]
+ },
+ {
+  "id": "S1b three rows [chromium]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "3 rows of chips: New 0 · All · Jan · Feb · Mar · Apr · May // Jun · Jul · Aug · Sep · Oct · Nov · Dec // Pick dates… · Approve all 6",
+  "pics": [
+   "s1-chromium-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1c New on one line [chromium]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "New: {\"id\":\"appr-new\",\"text\":\"New 0\",\"x\":21,\"r\":68,\"y\":195,\"w\":47,\"h\":36,\"overflowX\":false,\"contentRight\":29,\"textRange\":{\"l\":23,\"r\":66,\"h\":16},\"lines\":1}",
+  "pics": [
+   "s1-chromium-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1d chip words inside edges [chromium]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "none spill",
+  "pics": [
+   "s1-chromium-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1e Pick dates left / Approve all right on the last row [chromium]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "pick x21-117, all x251-381, last row has both: true",
+  "pics": [
+   "s1-chromium-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1f armed words inside button [chromium]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "before \"Approve all 6\" after {\"id\":\"appr-approve-all\",\"text\":\"Approve 6 — tap again\",\"x\":185,\"r\":381,\"y\":279,\"w\":196,\"h\":36,\"overflowX\":false,\"contentRight\":185,\"textRange\":{\"l\":204,\"r\":362,\"h\":19},\"lines\":1}; rows 3",
+  "pics": [
+   "s1-chromium-402-armed.png",
+   "s1-chromium-402-armed-q.png"
+  ]
+ },
+ {
+  "id": "S1g armed keeps three rows [chromium]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "3 rows",
+  "pics": [
+   "s1-chromium-402-armed.png"
+  ]
+ },
+ {
+  "id": "S1a tab row count [chromium]",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "tab count \"8\"",
+  "pics": [
+   "s1-chromium-390-grid-tabrow.png"
+  ]
+ },
+ {
+  "id": "S1b three rows [chromium]",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "3 rows of chips: New 0 · All · Jan · Feb · Mar · Apr · May // Jun · Jul · Aug · Sep · Oct · Nov · Dec // Pick dates… · Approve all 6",
+  "pics": [
+   "s1-chromium-390-page-top.png"
+  ]
+ },
+ {
+  "id": "S1c New on one line [chromium]",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "New: {\"id\":\"appr-new\",\"text\":\"New 0\",\"x\":21,\"r\":68,\"y\":218,\"w\":47,\"h\":36,\"overflowX\":false,\"contentRight\":29,\"textRange\":{\"l\":23,\"r\":66,\"h\":16},\"lines\":1}",
+  "pics": [
+   "s1-chromium-390-page-top.png"
+  ]
+ },
+ {
+  "id": "S1d chip words inside edges [chromium]",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "none spill",
+  "pics": [
+   "s1-chromium-390-page-top.png"
+  ]
+ },
+ {
+  "id": "S1e Pick dates left / Approve all right on the last row [chromium]",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "pick x21-117, all x239-369, last row has both: true",
+  "pics": [
+   "s1-chromium-390-page-top.png"
+  ]
+ },
+ {
+  "id": "S1f armed words inside button [chromium]",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "before \"Approve all 6\" after {\"id\":\"appr-approve-all\",\"text\":\"Approve 6 — tap again\",\"x\":173,\"r\":369,\"y\":302,\"w\":196,\"h\":36,\"overflowX\":false,\"contentRight\":173,\"textRange\":{\"l\":192,\"r\":350,\"h\":19},\"lines\":1}; rows 3",
+  "pics": [
+   "s1-chromium-390-armed.png",
+   "s1-chromium-390-armed-q.png"
+  ]
+ },
+ {
+  "id": "S1g armed keeps three rows [chromium]",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "3 rows",
+  "pics": [
+   "s1-chromium-390-armed.png"
+  ]
+ },
+ {
+  "id": "S1a tab row count [chromium]",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "tab count \"8\"",
+  "pics": [
+   "s1-chromium-360-grid-tabrow.png"
+  ]
+ },
+ {
+  "id": "S1b three rows [chromium]",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "3 rows of chips: New 0 · All · Jan · Feb · Mar · Apr · May // Jun · Jul · Aug · Sep · Oct · Nov · Dec // Pick dates… · Approve all 6",
+  "pics": [
+   "s1-chromium-360-page-top.png"
+  ]
+ },
+ {
+  "id": "S1c New on one line [chromium]",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "New: {\"id\":\"appr-new\",\"text\":\"New 0\",\"x\":21,\"r\":68,\"y\":218,\"w\":47,\"h\":36,\"overflowX\":false,\"contentRight\":29,\"textRange\":{\"l\":23,\"r\":66,\"h\":16},\"lines\":1}",
+  "pics": [
+   "s1-chromium-360-page-top.png"
+  ]
+ },
+ {
+  "id": "S1d chip words inside edges [chromium]",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "none spill",
+  "pics": [
+   "s1-chromium-360-page-top.png"
+  ]
+ },
+ {
+  "id": "S1e Pick dates left / Approve all right on the last row [chromium]",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "pick x21-117, all x209-339, last row has both: true",
+  "pics": [
+   "s1-chromium-360-page-top.png"
+  ]
+ },
+ {
+  "id": "S1f armed words inside button [chromium]",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "before \"Approve all 6\" after {\"id\":\"appr-approve-all\",\"text\":\"Approve 6 — tap again\",\"x\":143,\"r\":339,\"y\":302,\"w\":196,\"h\":36,\"overflowX\":false,\"contentRight\":143,\"textRange\":{\"l\":162,\"r\":320,\"h\":19},\"lines\":1}; rows 3",
+  "pics": [
+   "s1-chromium-360-armed.png",
+   "s1-chromium-360-armed-q.png"
+  ]
+ },
+ {
+  "id": "S1g armed keeps three rows [chromium]",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "3 rows",
+  "pics": [
+   "s1-chromium-360-armed.png"
+  ]
+ },
+ {
+  "id": "S1a tab row count [webkit]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "tab count \"8\"",
+  "pics": [
+   "s1-webkit-402-grid-tabrow.png"
+  ]
+ },
+ {
+  "id": "S1b three rows [webkit]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "3 rows of chips: New 0 · All · Jan · Feb · Mar · Apr · May // Jun · Jul · Aug · Sep · Oct · Nov · Dec // Pick dates… · Approve all 6",
+  "pics": [
+   "s1-webkit-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1c New on one line [webkit]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "New: {\"id\":\"appr-new\",\"text\":\"New 0\",\"x\":21,\"r\":68,\"y\":218,\"w\":47,\"h\":36,\"overflowX\":false,\"contentRight\":29,\"textRange\":{\"l\":23,\"r\":66,\"h\":14},\"lines\":1}",
+  "pics": [
+   "s1-webkit-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1d chip words inside edges [webkit]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "none spill",
+  "pics": [
+   "s1-webkit-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1e Pick dates left / Approve all right on the last row [webkit]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "pick x21-124, all x243-381, last row has both: true",
+  "pics": [
+   "s1-webkit-402-page-top.png"
+  ]
+ },
+ {
+  "id": "S1f armed words inside button [webkit]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "before \"Approve all 6\" after {\"id\":\"appr-approve-all\",\"text\":\"Approve 6 — tap again\",\"x\":171,\"r\":381,\"y\":302,\"w\":210,\"h\":36,\"overflowX\":false,\"contentRight\":171,\"textRange\":{\"l\":190,\"r\":362,\"h\":19},\"lines\":1}; rows 3",
+  "pics": [
+   "s1-webkit-402-armed.png",
+   "s1-webkit-402-armed-q.png"
+  ]
+ },
+ {
+  "id": "S1g armed keeps three rows [webkit]",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "3 rows",
+  "pics": [
+   "s1-webkit-402-armed.png"
+  ]
+ }
+]
