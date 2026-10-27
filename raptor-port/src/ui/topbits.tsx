@@ -164,6 +164,20 @@ export function BellList() {
     document.addEventListener('keydown', key)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key) }
   }, [open])
+  /* A LONG LIST KEEPS ITS FOOT IN SIGHT AND SAYS WHAT IS BELOW (the walk's C-F4, 27 Oct 26): the lines scroll inside
+     the list, "Mark all read" stands under them, and "↓ 3 more" counts the lines not wholly in view below — the Leave
+     War day panel's cue (D1295) — gone once the list is at its end */
+  const scroller = useRef<HTMLDivElement>(null)
+  const [below, setBelow] = useState(0)
+  const countBelow = () => {
+    const s = scroller.current
+    if (!s) return
+    const bottom = s.getBoundingClientRect().bottom + 1
+    let n = 0
+    for (const l of Array.from(s.querySelectorAll<HTMLElement>('.bl-line'))) if (l.getBoundingClientRect().bottom > bottom) n++
+    setBelow(n)
+  }
+  useLayoutEffect(() => { if (open && at) countBelow() })
   if (!open) return null
   const mine = me()
   const list = noticesFor(mine)
@@ -174,6 +188,7 @@ export function BellList() {
   return (
     <div className={'bell-list' + (at && at.wide ? ' wide' : '')} ref={ref} role="menu" aria-label="Notifications" data-testid="bell-list"
       style={at ? (at.wide ? { top: at.top } : { top: at.top, right: at.right }) : { visibility: 'hidden' }}>
+      <div className="bl-scroll" ref={scroller} onScroll={countBelow}>
       {list.length === 0 && <div className="bl-empty" data-testid="bell-empty">Nothing new</div>}
       {list.map(n => {
         const w = noticeWords(n), fresh = isUnread(n, mine)
@@ -189,8 +204,12 @@ export function BellList() {
           </button>
         )
       })}
-      {unread && <div className="bl-foot"><button type="button" className="abtn sm ghost" data-testid="bell-markall"
-        onClick={() => { markAllNoticesRead(); notify() }}>Mark all read</button></div>}
+      </div>
+      {(unread || below > 0) && <div className="bl-foot">
+        {below > 0 && <span className="bl-more" data-testid="bell-more">↓ {below} more</span>}
+        {unread && <button type="button" className="abtn sm ghost" data-testid="bell-markall"
+          onClick={() => { markAllNoticesRead(); notify() }}>Mark all read</button>}
+      </div>}
     </div>
   )
 }

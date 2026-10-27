@@ -137,8 +137,8 @@
    under the bell; on a phone a panel as wide as the screen under the top bar. Each line: a dot while unread · the
    input in bold with its date · what happened and who under it · its age at the right. An unread line is bright, a
    read one muted. Above everything the page draws, the scheduler board included (it carries a bell of its own). ---- */
-.bell-list{position:fixed;z-index:500;box-sizing:border-box;width:348px;max-width:calc(100vw - 16px);max-height:min(70vh,520px);overflow-y:auto;
-  overscroll-behavior:contain;padding:4px;background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
+.bell-list{position:fixed;z-index:500;box-sizing:border-box;width:348px;max-width:calc(100vw - 16px);max-height:min(70vh,520px);
+  display:flex;flex-direction:column;overflow:hidden;padding:4px;background:var(--panel);border:1px solid var(--edge-2);border-radius:10px;
   box-shadow:0 10px 28px rgba(0,0,0,.5);color:var(--ink);font-size:13px;text-align:left}
 .bell-list.wide{left:8px;right:8px;width:auto;max-width:none}
 .bl-line{display:grid;grid-template-columns:7px minmax(0,1fr) auto;column-gap:9px;align-items:start;box-sizing:border-box;width:100%;
@@ -156,7 +156,10 @@
 .bl-line.unread .bl-t{color:var(--ink)}
 .bl-line.unread .bl-name{font-weight:600}
 .bl-line.unread .bl-day,.bl-line.unread .bl-what{color:var(--ink-2)}
-.bl-foot{display:flex;justify-content:flex-end;margin-top:4px;padding:6px 7px 3px;border-top:1px solid var(--edge)}
+/* the lines scroll inside the list; the foot under them stays in sight (the walk's C-F4, 27 Oct 26) */
+.bl-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
+.bl-foot{flex:none;display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:4px;padding:6px 7px 3px;border-top:1px solid var(--edge)}
+.bl-more{margin-right:auto;padding-left:4px;font-size:12px;color:var(--ink-3);white-space:nowrap}
 .bl-empty{padding:18px 11px;text-align:center;font-size:12.5px;color:var(--ink-3)}
 
 /* ============ PAGE SHELL ============ */

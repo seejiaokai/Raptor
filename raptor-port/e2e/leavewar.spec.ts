@@ -7834,3 +7834,28 @@ test('on a phone every Approvals filter chip keeps its words on one line, inside
     expect(rows.pick.x < rows.all.x, 'Pick dates… at the left').toBe(true)
   }
 })
+
+/* THE WALK'S C-F4 (27 Oct 26): a bell of twelve lines stopped at the ninth, its "Mark all read" at the end of the
+   scrolling list, out of sight, with nothing saying there was more. "Mark all read" stays at the list's foot in sight,
+   and the foot says how many lines are below ("↓ 3 more", the day panel's cue — D1295) until the list is at its end. */
+test('a long bell keeps "Mark all read" in sight and says how many lines are below', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.evaluate(() => {
+    const w = window as any
+    const now = Date.now()
+    for (let i = 0; i < 12; i++) w.NOTICES.push({ id: `e2e-long-${i}`, to: 'bane', by: 'stiff', at: now - i * 60_000, iid: '', name: 'Your leave', day: '2026-01-1' + (i % 10), what: [{ k: 'rmk' }] })
+  })
+  await page.locator('.bellbtn:visible').first().click()
+  const list = page.getByTestId('bell-list')
+  await expect(list.locator('.bl-line')).toHaveCount(12)
+  const inSight = () => page.evaluate(() => {
+    const l = document.querySelector<HTMLElement>('[data-testid="bell-list"]')!.getBoundingClientRect()
+    const b = document.querySelector<HTMLElement>('[data-testid="bell-markall"]')!.getBoundingClientRect()
+    return b.top >= l.top - 1 && b.bottom <= l.bottom + 1 && b.bottom <= window.innerHeight
+  })
+  expect(await inSight(), '"Mark all read" in sight with the list at its top').toBe(true)
+  await expect(page.getByTestId('bell-more')).toHaveText(/^↓ \d+ more$/)
+  await list.evaluate((e: HTMLElement) => { e.querySelector<HTMLElement>('.bl-scroll')!.scrollTop = 99999 })
+  await expect(page.getByTestId('bell-more')).toHaveCount(0)
+  expect(await inSight(), '"Mark all read" in sight with the list at its end').toBe(true)
+})
