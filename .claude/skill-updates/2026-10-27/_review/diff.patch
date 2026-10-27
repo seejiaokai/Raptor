@@ -439,7 +439,7 @@ index 7dde778a5..abd265c09 100644
  **Lesson 61 (27 Oct 26, D1412 — "all the text areas I click screen jerks or bounce a little when the keyboard opens. Even for text that are above the keyboard … Why can’t the text box I click on, auto scroll proportionately with the keyboard that appears and the window doesn’t shrink awhile. My idea is a smooth feel for this app and this made it worse").** When the keyboard opens, the box tapped rises in step with the keys, proportionately — one motion, the keys' own — and nothing else on screen moves: a box already above the keys stays exactly where it is, and no window shortens and grows back or lets the page behind it show while the keys move. What it says about the app he intends (D852): a correct end place is not the measure; the feel of the motion is, and a mechanism that steers a window frame by frame against the phone's own slide is judged by what he sees, not by its numbers. *Other places, named under D852 — the same check applies to each: the Leave War's sheets and bid windows (they place themselves, `leavewar/ui/Sheet.tsx`), the Tracker's event editor, Admin's Duty templates box, the Logic page's boxes, and the Scheduler Board's list ([KEYBOARD-SCROLL]).*
  
 diff --git a/DECISIONS.md b/.claude/skill-updates/2026-10-27/DECISIONS.md
-index 81982e673..aebfa66a1 100644
+index 9c1d751ea..2a7998fd1 100644
 --- a/DECISIONS.md
 +++ b/.claude/skill-updates/2026-10-27/DECISIONS.md
 @@ -52,6 +52,9 @@ parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used).
@@ -601,7 +601,7 @@ index dcf1b7586..90ba231f5 100644
 +  made-up records; replace identifying names before any picture; commit
 +  nothing that carries their storage keys or names (21 Oct 26).
 diff --git a/.claude/skills/overnight/SKILL.md b/.claude/skill-updates/2026-10-27/.claude/skills/overnight/SKILL.md
-index 778267ebb..51c4035ac 100644
+index 778267ebb..d94433179 100644
 --- a/.claude/skills/overnight/SKILL.md
 +++ b/.claude/skill-updates/2026-10-27/.claude/skills/overnight/SKILL.md
 @@ -49,8 +49,8 @@ straight to steps 8 and 9 without ending the turn.
@@ -690,10 +690,11 @@ index 778267ebb..51c4035ac 100644
 +  be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going
 +  (17 Oct 26: the block pushed seconds after the pull request opened cancelled its first run). A job cut from another unmerged branch gets none at night: the morning report
    offers him one pull request carrying the related work (D822, D864).
- - **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), when the weekly
+-- **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), when the weekly
 -  figure passes 90%, or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
-+  figure passes 90% and the weekly reset falls after the night would end — where the reset falls before it, jobs go on
-+  being started past 90% until the limit, saving at every step (his D1033) — or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
++- **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), or when his
++  selection is done. **The weekly figure stops nothing (his D1415, 27 Oct 26; D1033):** past 90%, jobs go on being
++  started until the limit, whenever the reset falls — and every step is saved, so the limit strands nothing. **When the 5-hour figure passes 85%:** commit, push and write the
    block before it runs out, and carry on after it resets. A job half built at a stop is committed, pushed and written
    into the block as unfinished — never left in a state its tests do not describe.
  - **Never:** build a job he did not select, or one step 4 holds that his reply did not settle; merge; push to `main`; change his Claude settings, the hooks or a working

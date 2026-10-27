@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1415 | 27 Oct 26 | An overnight run goes on starting jobs past 90% of the weekly allowance, whenever the reset falls, until the limit stops it; it saves at every step so the limit strands nothing. |
 | D1414 | 27 Oct 26 | The skill-notes review of 27 Oct 26 has its guide drafts read by one fresh, blind Opus reader before he approves them, not by Astra and Sol 6.1, and they are put to him grouped by guide, in rounds of at most four questions. |
 | D1411 | 27 Oct 26 | A security read is added to every change that touches sign-in, who may do or see what, or what one person can see of another — an extra fresh reader looking only for holes; and one full security review of the whole app is held before the database step; most changes need neither. |
 | D1410 | 27 Oct 26 | Every fault he found that a check missed becomes a case in a test set for the code reader, and whenever the reader's instructions or model change, the reader is run on the set and scored on how many it catches; a change that catches fewer is not kept. |
@@ -45,7 +46,7 @@ never pay or money).
 | D1088 | 20 Oct 26 | On his "merge live" the agent pushes the job's closing records, waits for that one GitHub run, merges once it is green, and confirms the live app — about nine minutes of waiting while the repo is public, in place of the closing push's second full wait. |
 | D1087 | 20 Oct 26 | Work is not held for one merge at the end: two to four related jobs of one area share one branch, one check and one merge on his "merge live"; a job he wants live at once goes on its own. |
 | D1086 | 20 Oct 26 | While the repo is public, GitHub's run of the pull request is a job's full check: the agent opens the pull request as soon as the job is built, so that run goes while the app is walked, and on his PC runs only the tests of what it changes and the build its walk drives; once the repo is private again, the full check is back on his PC (D89). |
-| D1033 | 19 Oct 26 | Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save allowance that would reset anyway; the agent still reads and reports the figure, and commits, pushes and writes the state into the repo before the limit can stop it. |
+| D1033 | 19 Oct 26 | Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save allowance that would reset anyway; the agent still reads and reports the figure, and commits, pushes and writes the state into the repo before the limit can stop it. — changed by D1415 |
 | D1024 | 18 Oct 26 | The backlog's priority list shows only what is really open, one line an item, grouped by area; finished work leaves it for the archive, and the stories of how work went live stay in git, the evidence sheets and the archive. |
 | D994 | 18 Oct 26 | The questions the backlog keeps for him are not put to him until he says so; meanwhile the agent goes on with work that needs no answer or look from him. |
 | D991 | 18 Oct 26 | Speed is part of how good the app feels — for motion, its frame rate: a scroll, and what a finger moves with it, should run as smoothly as the phone and browser allow, and a new design is judged by that as well as by how it looks. |

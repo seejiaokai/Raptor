@@ -154,9 +154,9 @@ block says so. Never a pull request based on another branch — it runs none of 
   be opened"), then open it and push nothing more until step 1's command shows no run of the last pushed commit going
   (17 Oct 26: the block pushed seconds after the pull request opened cancelled its first run). A job cut from another unmerged branch gets none at night: the morning report
   offers him one pull request carrying the related work (D822, D864).
-- **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), when the weekly
-  figure passes 90% and the weekly reset falls after the night would end — where the reset falls before it, jobs go on
-  being started past 90% until the limit, saving at every step (his D1033) — or when his selection is done. **When the 5-hour figure passes 85%:** commit, push and write the
+- **Stop starting new jobs** when the time he gave is nearly up (keep the last hour for the report), or when his
+  selection is done. **The weekly figure stops nothing (his D1415, 27 Oct 26; D1033):** past 90%, jobs go on being
+  started until the limit, whenever the reset falls — and every step is saved, so the limit strands nothing. **When the 5-hour figure passes 85%:** commit, push and write the
   block before it runs out, and carry on after it resets. A job half built at a stop is committed, pushed and written
   into the block as unfinished — never left in a state its tests do not describe.
 - **Never:** build a job he did not select, or one step 4 holds that his reply did not settle; merge; push to `main`; change his Claude settings, the hooks or a working

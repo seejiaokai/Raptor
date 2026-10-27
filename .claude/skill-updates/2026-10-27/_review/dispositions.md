@@ -112,7 +112,7 @@ code is the one that carries the lesson's main point.
 | 640 | APPLY | TDD Verify RED (a case picked from what is on screen recomputes that state first) |
 | 641 | REFLECTED | WGT "Reach the state the way production does" (a fixture never edits live state outside a command before an undo or replay) |
 | 642 | APPLY | MOCK Method (open the picture a ruling was made from, first) |
-| 643 | APPLY | OVN Part 2 stop rules (90% unless what is left resets first — his D1033, which the guide contradicted) |
+| 643 | APPLY | OVN Part 2 stop rules (the weekly figure stops nothing — his D1415, answering Round 1 question 1; D1033's reading answered) |
 | 644 | FILED | TOOLS (as 586 — its "met again" lines call the guard overdue); the rule: memory `e2e-port-held-by-other-preview`, GD |
 | 645 | APPLY | SD Phase 4 step 4 (re-run the finder's script; instrument before a second guess) |
 | 646 | APPLY | MOCK Traps (never type into a box on an emulated phone before a picture; scope queries to the surface) |
