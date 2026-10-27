@@ -20,6 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/kbs-fable -->
+### `claude/kbs-fable` — the keyboard on his iPhone, Fable's round ([KBS-PHONE-SLIDE], D1366, his D1412) — written 27 Oct 26, verify before use
+- **After a compaction:** re-read this block, `raptor-port/docs/handpass/2026-10-27-kbs-carried.md` and `raptor-port/src/ui/kbscroll.ts` before the next change.
+- **Where it started:** his call for Fable (D1366) with four recordings and his words of 27 Oct 26, recorded as D1412 (the box rises in step with the keys, nothing else jerks, no window shrinks). Branch cut from `main` at ab952f4c8 (pull request 569's branch had merged).
+- **Built and checked (27 Oct 26):** the app leaves a window to the phone — the hold, the pin, the bringing down, the pan compensation and the glide of rounds 1–6 are gone; a window is raised only as a last resort. Red first (10 unit, 10 browser cases), 39 / 39 and 18 / 18 on the fix, the walk 7 / 7 (`scripts/handpass/kbs-carried-walk.mjs`, pictures `docs/img/handpass/2026-10-27-kbs-carried/`), build and rulecheck green; the sheet above. A fresh blind Opus read of the finished code (D790): its result in the sheet.
+- **His iPhone look (27 Oct 26, 09:24): "the scroll is now fixed"; his "merge live" (27 Oct 26), Cancel / Add left to the phone (D1413).** Pull request 579 merges on his word once GitHub's run of these closing records is green; [KBS-PHONE-SLIDE] archived, the Leave War sheets' question filed as [KBS-LW-SHEETS].
+- **Named under D852, not changed (filed in [KBS-PHONE-SLIDE]):** the Leave War's sheets and bid windows place themselves at the pan's word (`leavewar/ui/Sheet.tsx useKeyboardInset`) — the same jump-then-slide class by my reading; if he sees it there, the same design (the phone carries the sheet) is drawn for him before it is built.
+- **Pick up here:** merged (or merging) on his "merge live" of 27 Oct 26 — do not continue this branch. If he later sees a keyboard fault anywhere: a fresh `?kbdebug` recording of that one screen, read frame by frame with `scripts/handpass/video-frames.mjs` at 1/60 s and a landmark tracked numerically, never by eye alone; the Leave War's sheets are [KBS-LW-SHEETS].
+- **Opening line:** Level this chat with main: git fetch origin, git switch claude/kbs-fable (if refused because another worktree holds it: git switch --detach origin/claude/kbs-fable, then git switch -C claude/kbs-fable). Then read HANDOFF.md's claude/kbs-fable block and raptor-port/docs/handpass/2026-10-27-kbs-carried.md, and carry on from "Pick up here".
+<!-- /now -->
 <!-- now:claude/trk-scrollbars -->
 ### `claude/trk-scrollbars` — the Tracker's stray scroll bars ([TRK-STRAY-SCROLLBARS], his D1405) — written 27 Oct 26, verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change; note the compaction here with its time.

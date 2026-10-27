@@ -82,7 +82,7 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     expect(await page.evaluate(() => document.scrollingElement!.scrollTop), 'the page behind the window').toBe(behind)
   })
 
-  test('KS3b a window taller than the room (Duty templates with fourteen roles): held to the visible screen, its own body scrolls the last row above the keys; all put back after', async ({ page }) => {
+  test('KS3b a window taller than the room (Duty templates with fourteen roles): never held or shrunk (D1412) — raised to the visible top at most, as tall as it was; put back after', async ({ page }) => {
     await login(page); await go(page, 'admin' as any)
     await page.evaluate(() => document.getElementById('admDutyTpl')!.click())
     const add = page.locator('#tplModal button', { hasText: /add role/i })
@@ -90,23 +90,25 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     const box = page.locator('#tplModal input.tm').last()
     await box.evaluate(e => e.scrollIntoView({ block: 'end' }))
     const behind = await page.evaluate(() => document.scrollingElement!.scrollTop)
-    const tall = await page.locator('#tplModal .modal-box').evaluate(e => Math.round(e.getBoundingClientRect().height))
+    const win = page.locator('#tplModal .modal-box')
+    const tall = await win.evaluate(e => Math.round(e.getBoundingClientRect().height))
     expect(tall, 'the fixture: the window is taller than the room the keys leave').toBeGreaterThan(H - KB)
     expect(await bottomOf(box), 'the fixture: its last row under where the keys come').toBeGreaterThan(H - KB)
     await page.waitForTimeout(600)
     await tap(page, box)
     await expect(box).toBeFocused()
     await keysUp(page)
-    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - KB - GAP + 1)
-    expect(await box.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'its top in sight').toBeGreaterThanOrEqual(0)
-    const win = page.locator('#tplModal .modal-box')
-    expect(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'the title of the window stays on the screen').toBeGreaterThanOrEqual(0)
+    await expect.poll(() => win.evaluate(e => Math.round(e.getBoundingClientRect().top))).toBeLessThanOrEqual(GAP + 1)
+    const g = await win.evaluate(e => { const l = e as HTMLElement; const r = l.getBoundingClientRect(); return { cap: l.dataset.kbcap, capv: l.style.getPropertyValue('--kbcap'), maxH: l.style.maxHeight, h: Math.round(r.height), top: Math.round(r.top) } })
+    expect([g.cap, g.capv, g.maxH], 'never held, never shrunk').toEqual([undefined, '', ''])
+    expect(g.h, 'as tall as it was').toBe(tall)
+    expect(g.top, "raised to the visible top, no further — a box the raise cannot reach is the phone's to show").toBeGreaterThanOrEqual(0)
     expect(await page.evaluate(() => document.scrollingElement!.scrollTop), 'the page behind the window').toBe(behind)
     await page.evaluate(() => { const v = (window as any).__vv; v.height = innerHeight; v.dispatchEvent(new Event('resize')) })
     await expect.poll(() => win.evaluate(e => [(e as HTMLElement).style.maxHeight, (e as HTMLElement).style.translate].join('|'))).toBe('|')
   })
 
-  test('KS3c the input window (a movable window, redrawn on every key): its box stays above the keys after a key is typed', async ({ page }) => {
+  test('KS3c the input window (a movable window, redrawn on every key): the phone\'s pan shows its lowest box, and a key typed moves nothing — the window stays where the pan carried it (D1412)', async ({ page }) => {
     await login(page); await go(page, 'inputs')
     await page.click('#inListBtn'); await page.click('#inNew')
     const win = page.locator('[data-testid="win-inputedit"]')
@@ -114,23 +116,27 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     /* the lowest box to type in, at the foot of the window's own scroll */
     const box = win.locator('input[type="text"]:visible, input:not([type]):visible, textarea:visible').last()
     await box.evaluate(e => e.scrollIntoView({ block: 'end' }))
-    /* the window stands in the middle of a phone's screen (D996): a keyboard tall enough to cover its lowest box */
-    const was = await bottomOf(box), kb = H - was + 60
+    const was = await bottomOf(box)
     await page.waitForTimeout(600)
     await tap(page, box); await expect(box).toBeFocused()
-    await keysUp(page, kb)
-    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - kb - GAP + 1)
+    /* the keys, and the phone's own pan that shows the box (Safari pans the visible screen to it; here the stand-in says so) */
+    const vh = H - KB, pan = Math.max(0, was - vh + 40)
+    await page.evaluate(([h, p]) => { const v = (window as any).__vv; v.height = h; v.offsetTop = p; v.pageTop = p; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) }, [vh, pan])
+    await page.waitForTimeout(400)
+    const state = () => win.evaluate(e => { const l = e as HTMLElement; return [l.style.translate, l.dataset.kblift, l.dataset.kbcap, Math.round(l.getBoundingClientRect().top), (l.querySelector('.win-body') as HTMLElement).scrollTop] })
+    const before = await state()
+    expect(before.slice(0, 3), 'the window untouched: the pan showed the box').toEqual(['', undefined, undefined])
     await page.keyboard.type('a')
     await page.waitForTimeout(200)
-    expect(await bottomOf(box), 'after a key: still above the keys').toBeLessThanOrEqual(H - kb - GAP + 1)
-    expect(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'its title on the screen').toBeGreaterThanOrEqual(0)
+    expect(await state(), 'after a key: nothing moved').toEqual(before)
+    expect(await bottomOf(box) - pan, 'the box above the keys, by the pan').toBeLessThanOrEqual(vh - GAP + 1)
   })
 
   /* KS3d — his report, 25 Oct 26 07:06: the input window on his iPhone, "Other" picked, Remarks tapped — Document, then
-     Cancel / Add, and no Remarks ("The page seems to be too small"). Held to the room the keys leave, the window's Cancel /
-     Add stand pinned at the foot of its scrolling body, and the box was lifted to that foot — behind them. KS3c never saw
-     it: it checked the box against the keys, not against the window's own buttons. */
-  test('KS3d the input window held to the room: Remarks of an "Other" comes to rest above Cancel / Add, never behind them', async ({ page }) => {
+     Cancel / Add, and no Remarks ("The page seems to be too small"). The window's Cancel / Add stand pinned at the foot of
+     its scrolling body, and the box was lifted to that foot — behind them. KS3c never saw it: it checked the box against
+     the keys, not against the window's own buttons. (The hold to the room this once tested went with D1412.) */
+  test('KS3d the input window, "Other", keys tall enough that its body alone cannot bring Remarks up: Remarks comes to rest above Cancel / Add, never behind them; the window never held', async ({ page }) => {
     await login(page); await go(page, 'inputs')
     await page.click('#inListBtn'); await page.click('#inNew')
     const win = page.locator('[data-testid="win-inputedit"]')
@@ -142,21 +148,25 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await win.locator('select[data-kind-sel]').selectOption({ label: 'Other' })
     const box = page.locator('#inpEditRmk'), foot = win.locator('.airpop-foot')
     await box.evaluate(e => e.scrollIntoView({ block: 'nearest' }))
-    /* keys tall enough that the window's own scroll cannot bring Remarks up: the window is held to the room (raise) */
     const kb = 540
     await page.waitForTimeout(600)
+    const h0 = await win.evaluate(e => Math.round(e.getBoundingClientRect().height))
     await tap(page, box); await expect(box).toBeFocused()
     await keysUp(page, kb)
-    await expect.poll(() => win.evaluate(e => (e as HTMLElement).dataset.kbcap != null), { message: 'the fixture: the window is held to the room' }).toBe(true)
-    await expect.poll(() => bottomOf(box)).toBeLessThanOrEqual(H - kb - GAP + 1)
+    /* the window's own body scrolls Remarks as far as it can; what the body cannot do, the phone's pan does on his iPhone
+       (the stand-in here makes none) — never a hold */
+    await expect.poll(() => win.locator('.win-body').evaluate(e => e.scrollTop)).toBeGreaterThan(0)
+    await page.waitForTimeout(300)
+    expect(await win.evaluate(e => [(e as HTMLElement).dataset.kbcap, (e as HTMLElement).style.getPropertyValue('--kbcap'), Math.round(e.getBoundingClientRect().height)]), 'never held or shrunk (D1412): as tall as before the tap').toEqual([undefined, '', h0])
     const fTop = await foot.evaluate(e => Math.round(e.getBoundingClientRect().top))
     expect(await bottomOf(box), 'Remarks above Cancel / Add, not behind them').toBeLessThanOrEqual(fTop)
     expect(await box.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'Remarks inside the window').toBeGreaterThanOrEqual(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)))
   })
 
-  /* KS3e — his recording, 25 Oct 26 07:40: held to the room, the window was then left behind when the iPhone's password bar
-     rose and the phone panned the visible screen down, later than the focus window: its top off the screen, a band under it. */
-  test('KS3e the held input window follows a late pan of the visible screen: its title in sight, Remarks above Cancel / Add and the keys', async ({ page }) => {
+  /* KS3e — his recording, 25 Oct 26 07:40: the iPhone's password bar rose and the phone panned the visible screen down, later
+     than the focus window. Since D1412 a window is the phone's to carry: the pan moves it on his screen as it moves the page,
+     and the app does nothing to it — no hold, no shift, nothing inside it scrolled. */
+  test("KS3e a late pan of the visible screen (the password bar rising): the window is the phone's to carry — the app moves nothing (D1412)", async ({ page }) => {
     await login(page); await go(page, 'inputs')
     await page.click('#inListBtn'); await page.click('#inNew')
     const win = page.locator('[data-testid="win-inputedit"]')
@@ -166,30 +176,30 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
       s!.setAttribute('data-kind-sel', '')
     })
     await win.locator('select[data-kind-sel]').selectOption({ label: 'Other' })
-    const box = page.locator('#inpEditRmk'), foot = win.locator('.airpop-foot')
+    const box = page.locator('#inpEditRmk')
     await box.evaluate(e => e.scrollIntoView({ block: 'nearest' }))
-    const kb = 540
     await page.waitForTimeout(600)
     await tap(page, box); await expect(box).toBeFocused()
-    await keysUp(page, kb)
-    await expect.poll(() => win.evaluate(e => (e as HTMLElement).dataset.kbcap != null), { message: 'the fixture: held' }).toBe(true)
+    /* the keys with the phone's own pan to the box (as his readouts show them), the box shown by that pan */
+    const kb = 460, PAN = 186
+    await page.evaluate(([k, p]) => { const v = (window as any).__vv; v.height = innerHeight - k; v.offsetTop = p; v.pageTop = p; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) }, [kb, PAN])
+    await page.waitForTimeout(400)
+    const state = () => win.evaluate(e => { const l = e as HTMLElement; return [l.style.translate, l.dataset.kblift, l.dataset.kbcap, Math.round(l.getBoundingClientRect().top)] })
+    const before = await state()
+    expect(before.slice(0, 3), 'the window untouched by the keys: the pan showed the box').toEqual(['', undefined, undefined])
+    const scrolled = await win.locator('.win-body').evaluate(e => e.scrollTop)
     await page.waitForTimeout(2000)                            // past the focus window
-    const PAN = 170
-    await page.evaluate(p => { const v = (window as any).__vv; v.offsetTop = p; v.pageTop = p; v.dispatchEvent(new Event('scroll')) }, PAN)
-    /* in the visible screen's own terms: what the layout says, less the pan */
-    await expect.poll(() => win.evaluate((e, p) => Math.round(e.getBoundingClientRect().top - p), PAN), { message: 'the title on the screen' }).toBeGreaterThanOrEqual(0)
-    const winBot = await win.evaluate((e, p) => Math.round(e.getBoundingClientRect().bottom - p), PAN)
-    expect(winBot, 'no band left between the window and the keys').toBeGreaterThanOrEqual(H - kb - 3 * GAP)
-    const bBot = await box.evaluate((e, p) => Math.round(e.getBoundingClientRect().bottom - p), PAN)
-    const fTop = await foot.evaluate((e, p) => Math.round(e.getBoundingClientRect().top - p), PAN)
-    expect(bBot, 'Remarks above Cancel / Add').toBeLessThanOrEqual(fTop)
-    expect(bBot, 'and above the keys').toBeLessThanOrEqual(H - kb - GAP + 1)
+    /* the password bar rises: the phone pans the visible screen 170 further */
+    await page.evaluate(p => { const v = (window as any).__vv; v.offsetTop = p; v.pageTop = p; v.dispatchEvent(new Event('scroll')) }, PAN + 170)
+    await page.waitForTimeout(400)
+    expect(await state(), 'the late pan: the app moves nothing').toEqual(before)
+    expect(await win.locator('.win-body').evaluate(e => e.scrollTop), 'nothing inside it scrolled').toBe(scrolled)
   })
 
   /* KS3f — his recordings of 25 Oct 26 08:05 ("Other", OD, the ˄ ˅ ✓ bar): the phone panned the visible screen down past the
-     window's own place as the keys came, and the hold — which only ever raised a window — left its title off the screen and
-     a band between its foot and the keys. */
-  test('KS3f the phone pans past the window as the keys come: the held window comes down to the visible top, no band, Remarks shown', async ({ page }) => {
+     window's own place as the keys came. Since D1412 the window is left to the phone's pan — never brought down, never
+     held: the pan carries it with the page, and the box it panned to show is where the phone put it. */
+  test("KS3f the phone pans past the window's place as the keys come: the window is left to the phone, never brought down or held (D1412)", async ({ page }) => {
     await login(page); await go(page, 'inputs')
     await page.click('#inListBtn'); await page.click('#inNew')
     const win = page.locator('[data-testid="win-inputedit"]')
@@ -199,20 +209,16 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
       s!.setAttribute('data-kind-sel', '')
     })
     await win.locator('select[data-kind-sel]').selectOption({ label: 'OD' })
-    const box = page.locator('#inpEditRmk'), foot = win.locator('.airpop-foot')
+    const box = page.locator('#inpEditRmk')
     await box.evaluate(e => e.scrollIntoView({ block: 'nearest' }))
     await page.waitForTimeout(600)
+    const rest = await win.evaluate(e => Math.round(e.getBoundingClientRect().top))
     await tap(page, box); await expect(box).toBeFocused()
     const kb = 460, PAN = 186
     /* the keys and the phone's own pan together, as his recording shows them */
     await page.evaluate(([k, p]) => { const v = (window as any).__vv; v.height = innerHeight - k; v.offsetTop = p; v.pageTop = p; v.dispatchEvent(new Event('resize')); v.dispatchEvent(new Event('scroll')) }, [kb, PAN])
-    await expect.poll(() => win.evaluate((e, p) => Math.round(e.getBoundingClientRect().top - p), PAN), { message: 'its title at the visible top' }).toBeGreaterThanOrEqual(0)
-    const winBot = await win.evaluate((e, p) => Math.round(e.getBoundingClientRect().bottom - p), PAN)
-    expect(winBot, 'no band left between the window and the keys').toBeGreaterThanOrEqual(H - kb - 3 * GAP)
-    const bBot = await box.evaluate((e, p) => Math.round(e.getBoundingClientRect().bottom - p), PAN)
-    const fTop = await foot.evaluate((e, p) => Math.round(e.getBoundingClientRect().top - p), PAN)
-    expect(bBot, 'Remarks above Cancel / Add').toBeLessThanOrEqual(fTop)
-    expect(bBot, 'and above the keys').toBeLessThanOrEqual(H - kb - GAP + 1)
+    await page.waitForTimeout(400)
+    expect(await win.evaluate(e => { const l = e as HTMLElement; return [l.style.translate, l.dataset.kblift, l.dataset.kbcap, l.style.getPropertyValue('--kbcap'), Math.round(l.getBoundingClientRect().top)] }), 'left to the phone: not shifted, not held, where its place puts it').toEqual(['', undefined, undefined, '', rest])
   })
 
   /* KS6 — D1081 (his recordings: the board a frame or three out of place as the keys closed, first when it followed the
@@ -387,6 +393,7 @@ test.describe('the input window on a phone that measures from the visible screen
   const check = async (page: Page) => {
     const win = page.locator('[data-testid="win-inputedit"]'), box = page.locator('#inpEditRmk'), foot = win.locator('.airpop-foot')
     await page.waitForTimeout(600)
+    const rest = await win.evaluate(e => Math.round(e.getBoundingClientRect().top))
     await tap(page, box); await expect(box).toBeFocused()
     /* the keys, then his phone's own pan a frame or two later, as his readout shows them */
     await page.evaluate(h => { const v = (window as any).__vv; v.height = h; v.dispatchEvent(new Event('resize')) }, VH)
@@ -397,21 +404,19 @@ test.describe('the input window on a phone that measures from the visible screen
     const g = await page.evaluate(() => {
       const w = document.querySelector('[data-testid="win-inputedit"]') as HTMLElement
       const R = (e: Element) => { const q = e.getBoundingClientRect(); return [Math.round(q.top), Math.round(q.bottom)] }
-      /* anything inside the window the lift moved or held — only the window itself may be */
-      const inner = [...w.querySelectorAll<HTMLElement>('*')].filter(e => e.style.translate || e.dataset.kblift || e.dataset.kbcap != null).map(e => e.className.toString().slice(0, 30))
-      return { win: R(w), rmk: R(document.getElementById('inpEditRmk')!), foot: R(w.querySelector('.airpop-foot')!), inner, held: w.dataset.kbcap != null }
+      /* anything inside the window, or the window itself, the lift moved or held */
+      const inner = [w, ...w.querySelectorAll<HTMLElement>('*')].filter(e => e.style.translate || e.dataset.kblift || e.dataset.kbcap != null || e.style.getPropertyValue('--kbcap')).map(e => e.className.toString().slice(0, 30))
+      return { win: R(w), rmk: R(document.getElementById('inpEditRmk')!), foot: R(w.querySelector('.airpop-foot')!), inner, scrolled: (w.querySelector('.win-body') as HTMLElement).scrollTop }
     })
-    expect(g.inner, 'the form inside the window is never moved or held').toEqual([])
-    expect(g.held, 'the window itself held to the room').toBe(true)
-    expect(g.win[0], 'the title at the visible top').toBeGreaterThanOrEqual(0)
-    expect(g.win[0]).toBeLessThanOrEqual(GAP + 2)
-    expect(g.win[1], 'no band between the window and the keys').toBeGreaterThanOrEqual(VH - 3 * GAP)
-    expect(g.win[1], 'the window above the keys').toBeLessThanOrEqual(VH)
+    expect(g.inner, 'the window and the form inside it: never moved, shifted or held (D1412)').toEqual([])
+    expect(g.win[0], "the window where the phone's pan carried it (in his measure: its place less the pan)").toBe(rest - PAN)
+    expect(g.rmk[1], "Remarks above the keys — by the phone's own pan").toBeLessThanOrEqual(VH - GAP)
     expect(g.rmk[1], 'Remarks above Cancel / Add').toBeLessThanOrEqual(g.foot[0])
-    expect(g.rmk[0], 'Remarks below the title').toBeGreaterThan(g.win[0])
-    await expect(foot).toBeVisible()
+    /* the window's body may scroll the few points the stand-in's pan left Remarks under the clear strip (Chromium lays the form
+       out longer than his phone does); the window itself never moves */
+    expect(g.scrolled, 'the body scrolled at most a little').toBeLessThanOrEqual(80)
   }
-  test('KS3g from an Inputs calendar day (OL): the window held to the room at the visible top, Remarks above Cancel / Add, the form never pushed down', async ({ page }) => {
+  test("KS3g from an Inputs calendar day (OL): the window left where the phone's pan carried it, Remarks shown by that pan, nothing in or of the window moved (D1412)", async ({ page }) => {
     await login(page); await go(page, 'inputs')
     await page.click('#inCalBtn'); await page.waitForTimeout(300)
     const cell = page.locator('[data-icday]').nth(10)
@@ -431,13 +436,12 @@ test.describe('the input window on a phone that measures from the visible screen
   })
 
   /* HIS iPHONE'S SLIDES, PLAYED FRAME BY FRAME (his recordings of 25 Oct 26 11:49 and 11:54, read at sixty frames a
-     second — "I can see the top of the background behind this window … The old one was like smoother"). Measured off his
-     screen, not taken from the app: the keys coming up, the page slides on cubic-bezier(.42,0,.58,1) over 250ms, the pan
-     told of about 30ms after the slide began — in one `resize` with the keys (OL), or the keys' `resize` first and the
-     pan's `scroll` 15ms later ("Other"); the keys going down, cubic-bezier(.3,.58,.2,1) over 330ms, the focus leaving the
-     box about 30ms in and the keys' `resize` some 40ms after that. On his screen a window stands at its place in the
-     layout less the slide so far; each frame's place is recorded, sampled at the frame's own time, as the phone draws
-     both its slide and the window's glide. */
+     second): the keys coming up, the page slides on cubic-bezier(.42,0,.58,1) over 250ms, the pan told of about 30ms after
+     the slide began — in one `resize` with the keys (OL), or the keys' `resize` first and the pan's `scroll` 15ms later
+     ("Other"); the keys going down, cubic-bezier(.3,.58,.2,1) over 330ms, the focus leaving the box about 30ms in and the
+     keys' `resize` some 40ms after that. Since D1412 (his recordings of 25 Oct 26 20:43–20:45 and 27 Oct 26 08:20) the app
+     never moves a window against that slide: the phone's pan carries it, and what is recorded here, frame by frame, is
+     the window's own place in the layout — which must not change by a point while the phone slides, up or down. */
   const UP = { c: [0.42, 0, 0.58, 1], ms: 250 }, DOWN = { c: [0.3, 0.58, 0.2, 1], ms: 330 }
   const play = (page: Page, sel: string, dir: 1 | -1, P: number, VH: number, splitPan = false) => page.evaluate(([sel, dir, P, VH, splitPan, UP, DOWN]) => new Promise<number[]>(ok => {
     const w = window as any, el = document.querySelector(sel) as HTMLElement
@@ -473,18 +477,17 @@ test.describe('the input window on a phone that measures from the visible screen
     const tick = () => setTimeout(() => {
       const ts = Number(document.timeline.currentTime)
       const slid = dir > 0 ? P * bez((ts - s0) / UP.ms, UP.c) : P * (1 - bez((ts - s0) / DOWN.ms, DOWN.c))
-      out.push(Math.round(real.call(el).top - slid))
+      void slid
+      out.push(Math.round(real.call(el).top))
       if (ts < end) requestAnimationFrame(tick); else ok(out)
     }, 0)
     requestAnimationFrame(tick)
   }), [sel, dir, P, VH, splitPan, UP, DOWN] as const)
-  /* a window that holds still on his screen: every frame between where it stood and where it rests, give or take a few
-     points (the frame's own timing) — never the 100 points below that showed the page behind it */
-  const holds = (tops: number[], from: number, to: number, what: string) => {
-    const lo = Math.min(from, to) - 10, hi = Math.max(from, to) + 10
-    expect(tops.filter(y => y < lo || y > hi), `${what}: the window holds still on his screen (its top each frame: ${tops.join(' ')})`).toEqual([])
-    expect(Math.abs(tops[tops.length - 1] - to), `${what}: it comes to rest where it should`).toBeLessThanOrEqual(3)
+  /* the app never moves the window while the phone slides: its place in the layout is the same at every frame */
+  const still = (tops: number[], rest: number, what: string) => {
+    expect(tops.filter(y => Math.abs(y - rest) > 1), `${what}: the app never moves the window — its own top each frame: ${tops.join(' ')}`).toEqual([])
   }
+  const untouched = (page: Page, sel: string) => page.evaluate(sel => { const e = document.querySelector(sel) as HTMLElement; return [e.style.translate, e.dataset.kblift, e.dataset.kbcap, e.style.getPropertyValue('--kbcap')] }, sel)
   const openInputWin = async (page: Page, other: boolean) => {
     await login(page); await go(page, 'inputs')
     await page.click('#inCalBtn'); await page.waitForTimeout(300)
@@ -499,25 +502,30 @@ test.describe('the input window on a phone that measures from the visible screen
   }
   const topOf = (page: Page, sel: string) => page.evaluate(sel => Math.round(((window as any).__realRect || Element.prototype.getBoundingClientRect).call(document.querySelector(sel)).top), sel)
 
-  test('KS3j the input window from an Inputs calendar day (OL), Remarks tapped: it holds still on his screen as his phone slides, up and down', async ({ page }) => {
+  test("KS3j the input window from an Inputs calendar day (OL), Remarks tapped: the app never moves it as his phone slides, up or down — the phone carries it (D1412)", async ({ page }) => {
     const W = '[data-testid="win-inputedit"]'
     await openInputWin(page, false)
     const rest = await topOf(page, W)
-    holds(await play(page, W, 1, PAN, VH), rest, GAP, 'the keys up')
-    holds(await play(page, W, -1, PAN, VH), GAP, rest, 'the keys down')
+    still(await play(page, W, 1, PAN, VH), rest, 'the keys up')
+    expect(await untouched(page, W), 'never shifted or held').toEqual(['', undefined, undefined, ''])
+    still(await play(page, W, -1, PAN, VH), rest, 'the keys down')
+    expect(await untouched(page, W)).toEqual(['', undefined, undefined, ''])
   })
-  test('KS3k the input window, "Other": the keys first, the pan 15ms later — it holds still, up and down', async ({ page }) => {
+  test('KS3k the input window, "Other": the keys first, the pan 15ms later — never moved by the app, up or down (D1412)', async ({ page }) => {
     const W = '[data-testid="win-inputedit"]'
     await openInputWin(page, true)
     const rest = await topOf(page, W)
-    holds(await play(page, W, 1, 272, 390, true), rest, GAP, 'the keys up')
-    holds(await play(page, W, -1, 272, 390), GAP, rest, 'the keys down')
+    still(await play(page, W, 1, 272, 390, true), rest, 'the keys up')
+    expect(await untouched(page, W), 'never shifted or held').toEqual(['', undefined, undefined, ''])
+    still(await play(page, W, -1, 272, 390), rest, 'the keys down')
+    expect(await untouched(page, W)).toEqual(['', undefined, undefined, ''])
   })
 
-  /* KS3i — HIS RECORDING OF 11:09 (the Tracker's All events, a box tapped, the keys put away, again): "a bit twitchy like
-     the page jumps weirdly". A window placed at once for where the slide ENDS stood a whole slide away from it for those
-     frames. Here his measured slides are played (above) and the window holds still on his screen. */
-  test('KS3i the Tracker\'s All events, the keys up then down: the window holds still on his screen while the phone slides', async ({ page }) => {
+  /* KS3i — HIS RECORDING OF 11:09 (the Tracker's All events, a box tapped, the keys put away, the next box tapped, again and
+     again: "a bit twitchy like the page jumps weirdly"). A window placed at once for where the slide ENDS stood a whole slide
+     away from it for those frames. Since D1412 the app never places it: the phone carries it, and the Name box the pan does
+     not reach is scrolled into sight by the window's own list. */
+  test("KS3i the Tracker's All events, the keys up then down: the app never moves the window while the phone slides (D1412)", async ({ page }) => {
     await login(page); await go(page, 'tracker'); await page.waitForTimeout(800)
     await page.locator('#showAllTab:visible, #showAllBtn:visible').first().click()
     await page.locator('#showAllPanel.on').waitFor()
@@ -528,8 +536,8 @@ test.describe('the input window on a phone that measures from the visible screen
     await page.waitForTimeout(500)
     await tap(page, name); await expect(name).toBeFocused()
     const rest = await topOf(page, '#showAllPanel')
-    const up = await play(page, '#showAllPanel', 1, 294, 390, true)
-    holds(up, rest, GAP, 'the keys up')
-    holds(await play(page, '#showAllPanel', -1, 294, 390), up[up.length - 1], rest, 'the keys down')
+    still(await play(page, '#showAllPanel', 1, 294, 390, true), rest, 'the keys up')
+    expect(await untouched(page, '#showAllPanel'), 'never shifted or held').toEqual(['', undefined, undefined, ''])
+    still(await play(page, '#showAllPanel', -1, 294, 390), rest, 'the keys down')
   })
 })

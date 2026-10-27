@@ -1,5 +1,8 @@
 # Brief for Fable — the keyboard fault on his iPhone, after six Opus rounds (25 Oct 26, D1366)
 
+**Taken 27 Oct 26 by Fable on `claude/kbs-fable`** (the branch of pull request 569 had merged): his ruling D1412, the four recordings read frame by
+frame, option (b) built — the phone carries the window — with the evidence sheet `raptor-port/docs/handpass/2026-10-27-kbs-carried.md`.
+
 **Who, when:** Fable, on his call (D903), after his weekly reset (Mon 26 Oct 26, evening) — D1366. Written by the chat
 that took his "still similar bug" on round 6, so the fixer starts with the whole story. Branch `claude/lw-m3-placing-leave`
 (pull request 569) unless he names another; if that branch has merged, cut `claude/kbs-fable` from `main`.
