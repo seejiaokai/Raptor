@@ -852,7 +852,7 @@ the reader's instructions or model change, it is run on every case and a change 
    fixed, and the design question comes first: hand the motion to the phone (the board, D1081; the windows, D1412) rather than
    model it, and keep a model only where he has seen it work on his own screen.
 9. **A list's alignment judged by eye, one kind of row at a time (D1437, D1438, the Leave War M4's Approvals, 27 Oct 26).** Three
-   walkers, a drawing comparison and a fresh reader all passed the Approvals list; he found, from two pictures, its headings off
+   walkers and a drawing comparison passed the Approvals list's alignment; he found, from two pictures, its headings off
    their figures by 12 to 24px on a phone and 16px on a desktop, and a WSO's name at the right of its puck — the list's own
    right-align class was named `r`, the puck's class for a rear seat, so only WSO pucks moved and the walk's pilot rows looked
    right. **Lesson:** every list or table a change draws is MEASURED, not looked at — each heading against its figures on every
