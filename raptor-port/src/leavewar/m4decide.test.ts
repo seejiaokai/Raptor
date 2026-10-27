@@ -16,7 +16,7 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import {
-  absenceDoor, closeDates, decideRequestById, decideRequests, forgetPersonFrom, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
+  absenceDoor, changeAbsenceById, closeDates, decideRequestById, decideRequests, forgetPersonFrom, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
   placeApproved, recordsAt, setAbsenceDoor, setBidStates, setCell, setPeople, setPostOut, type DecideLine, type DecidePart,
 } from './state/store'
 import { readRec, setMemberTodayForTests, type RequestRec } from './engine'
@@ -392,6 +392,21 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       /* (the delete takes the morning bid only; the afternoon leave is approved and stays) */
       expect(leaveOf('bane')).toHaveLength(1)
       expect(decideRequests([line])).toEqual([{ kind: 'stale', why: 'No longer there' }])
+    })
+
+    /* THE BREAK TESTS (28 Oct 26, list lw-m4 #6): a line approved here whose leave was then deleted on the grid, on a day whose
+       OTHER half holds a pending bid — the other half's bid is another line's, so this one is "No longer there", never
+       "Already put back to pending" (staleWhy reads a request back only on the line's own half) */
+    it('approved here, its leave deleted on the grid beside the other half\'s bid: "No longer there"', () => {
+      expect(setCell('bane', D, '*LL')).toBe(true)
+      const [a] = decideRequests([lineOf('bane', [D], 'approved')])
+      expect(a!.kind).toBe('done')
+      const parts = (a as any).parts as DecidePart[]
+      expect(setCell('bane', D, 'LL*')).toBe(true)                                   // the afternoon's own bid, pending
+      expect(req('bane', D)).toMatchObject({ code: 'LL*', state: 'pending' })
+      expect(changeAbsenceById('bane', D, parts[0]!.iid!, 'removed')).toBeNull()     // the morning's leave deleted on the grid
+      expect(decideRequests([{ personId: 'bane', parts, to: 'pending' }])).toEqual([{ kind: 'stale', why: 'No longer there' }])
+      expect(req('bane', D)).toMatchObject({ code: 'LL*', state: 'pending' })
     })
 
     it('the same tap on a line drawn before any other half was approved still works on a plain day', () => {

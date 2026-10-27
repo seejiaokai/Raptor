@@ -286,6 +286,45 @@ describe('the Approvals page’s rows', () => {
     expect(screen.getByTestId('appr-slim').textContent).toContain(`${n} pending`)
   })
 
+  /* THE BREAK TESTS (28 Oct 26, list lw-m4 #7, #8 — the red team's A4, his D1431): Approve all approves exactly what the list
+     showed when it was pressed — the first tap only arms it, and a request coming in while it is armed disarms it, so the
+     second tap never approves a line he did not read */
+  it('A4 Approve all: the first tap only arms it; a request coming in disarms it; armed again, the second tap approves', () => {
+    ranger(); expect(setCell('bane', MON, 'LL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    const all = () => screen.getByTestId('appr-approve-all')
+    const n0 = +all().textContent!.match(/^Approve all (\d+)$/)![1]!
+    fireEvent.click(all())
+    expect(all().textContent, 'armed').toBe(`Approve ${n0} — tap again`)
+    expect(reqs('bane', MON).map(r => r.state), 'the first tap decides nothing').toEqual(['pending'])
+    act(() => { ranger(); expect(setCell('bane', WED, 'OL')).toBe(true); saber() })
+    expect(all().textContent, 'a new request disarms it').toBe(`Approve all ${n0 + 1}`)
+    fireEvent.click(all())
+    expect(reqs('bane', MON).concat(reqs('bane', WED)).map(r => r.state), 'that tap only armed it again').toEqual(['pending', 'pending'])
+    fireEvent.click(all())
+    expect(reqs('bane', MON).concat(reqs('bane', WED)), 'both approved').toEqual([])
+  })
+  /* list lw-m4 #52 (D1421): a decided line stays lit where it is "until he leaves Approvals or changes the dates" — a change of
+     the dates starts the rows afresh */
+  it('D1421 a lit line stays where it is until the dates change; then it leaves the list', () => {
+    ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+    expect(linesOf('bane'), 'lit, in its place').toHaveLength(1)
+    fireEvent.click(screen.getByTestId('appr-m-2026-02'))
+    expect(linesOf('bane'), 'another choice of dates: the decided line leaves').toHaveLength(0)
+    fireEvent.click(screen.getByTestId('appr-all'))
+    expect(linesOf('bane'), 'and does not come back').toHaveLength(0)
+  })
+  /* list lw-m4 #62 (D1178): a request that carries a document shows the paperclip on its line; one with none shows none */
+  it('D1178 a request with a document wears the paperclip; one without wears none', () => {
+    ranger(); expect(setCell('bane', MON, 'LL', { docIds: ['doc-a'] })).toBe(true); expect(setCell('bane', WED, 'OL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    const [mon, wed] = linesOf('bane')
+    expect(within(mon!).getByTestId('appr-clip').getAttribute('aria-label')).toBe('View the document')
+    expect(within(wed!).queryByTestId('appr-clip')).toBeNull()
+  })
+
   it('14 "Pick dates…" closes on a press outside it and on Escape', () => {
     render(<ApprovalsPage shown={true} />)
     fireEvent.click(screen.getByTestId('appr-pick'))

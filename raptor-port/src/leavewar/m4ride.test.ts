@@ -19,13 +19,13 @@ import { NOTICES, noticesFor, noticeWords } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
 import { ownershipViolation } from '../state/perms'
 import { setLeaveRemarks } from '../ui/inputedit'
-import { clearCells, getState, initStore as lwInitStore, lwHistInit, recordsAt, setCell, setPeople, setRequestWords } from './state/store'
+import { clearCells, getState, initStore as lwInitStore, installDemoCounters, lwHistInit, recordsAt, selectWar, setCell, setPeople, setRequestWords } from './state/store'
 import { type NoticeRec, type RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { alsoSince, openWarAt, replacedCarry, wireLeaveWarSync } from './sync'
 import { takeLwAsk } from './ui/lwnav'
-import { figuresOf } from './approvals'
+import { figuresOf, linesOfWar, pendingCount, pendingElsewhere } from './approvals'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -223,5 +223,32 @@ describe('a tap on a bell line brings the grid in front (the scenario designer�
     takeLwAsk()
     openWarAt(D, 'bane')
     expect(takeLwAsk()).toEqual({ kind: 'grid' })
+  })
+})
+
+/* THE BREAK TESTS (28 Oct 26, list lw-m4 #63, #64, #65): the Approvals list's figures (approvals.ts — 8.1, 8.2; D1192, D1246)
+   and the count of other periods' requests, each asked of the store as the page asks it */
+describe('the Approvals figures and the other periods\u2019 count', () => {
+  const lineFor = (pid: string, from: string) => linesOfWar(getState().wars.find(w => w.period.id === getState().period.id)!).find(l => l.personId === pid && l.from === from)!
+  it('DAYS — a half day takes 0.5 off his balance (D1246)', () => {
+    ranger(); expect(setCell('bane', D, '*LL')).toBe(true); saber()
+    expect(figuresOf(lineFor('bane', D), getState().people.find(p => p.id === 'bane')).days).toBe(0.5)
+  })
+  it('LOWEST AVAIL — a Manning row the request lowers while it stands red is named, in its colour (D1192, D1345)', () => {
+    /* a counter of every pilot, red below 998 — red whatever the day holds, so any pilot's bid lowers it further */
+    installDemoCounters([{ id: 'brk-pilots', label: 'Pilots', count: { kind: 'people', filter: { seats: ['pilot'] } }, threshold: { amber: 999, red: 998 } }])
+    const pilot = getState().people.find(p => p.seat === 'pilot')!
+    expect(setCell(pilot.id, D, 'LL')).toBe(true)
+    expect(figuresOf(lineFor(pilot.id, D), pilot).turned.map(x => [x.label, x.level])).toEqual([['Pilots', 'red']])
+  })
+  it('"+N pending in <period> ›": another period\u2019s pending requests are counted apart, and in the tab\u2019s count (8.1)', () => {
+    ranger(); expect(setCell('bane', D, 'LL')).toBe(true); saber()
+    const first = getState().period.id
+    const inFirst = linesOfWar(getState().wars.find(w => w.period.id === first)!).length
+    expect(inFirst).toBeGreaterThan(0)
+    selectWar(getState().wars.find(w => w.period.id !== first)!.period.id)
+    expect(pendingElsewhere()).toEqual([{ warId: first, name: getState().wars.find(w => w.period.id === first)!.period.name, n: inFirst }])
+    const inNext = linesOfWar(getState().wars.find(w => w.period.id === getState().period.id)!).length
+    expect(pendingCount(), 'the tab counts every period').toBe(inFirst + inNext)
   })
 })

@@ -19,7 +19,7 @@ import { isUnread, noticeSeenLoad } from '../state/noticeseen'
 import { commitInputEdit, draftOf } from '../ui/inputedit'
 import {
   closeDates, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates, placeApproved,
-  recordsAt, setCell, setCellRange, setPeople, clearCells, type DecideLine, type DecidePart,
+  recordsAt, setCell, setCellRange, setPeople, clearCells, decisionTells, type DecideLine, type DecidePart,
 } from './state/store'
 import { type RequestRec, setMemberTodayForTests } from './engine'
 import { memoryBackend } from './state/storage'
@@ -315,5 +315,33 @@ describe('the scenario designer’s faults (★5, ★6, ★7)', () => {
     NOTICES.length = 0
     noticePass(new Map([['L9', was]]), [{ ...was, date: 'Feb 4' }], { actor: 'stiff', skipLw: true })
     expect(lines('bane')).toEqual([])
+  })
+})
+
+/* THE BREAK TESTS (28 Oct 26, list lw-m4 #38 and #40): the one body that works out a war command's lines for the bell
+   (store.ts decisionTells — every door, today's or tomorrow's, goes through it), asked directly with the state before and
+   after a command, so its own two rules are pinned where they live, whatever a later door does:
+   · his own change tells nobody — the man who made the change is never told of it (the store's own skip; the notices'
+     writer skips whoever did it too, which is why no end-to-end test could see this one go);
+   · on a day holding two halves, an approval is matched to the request on ITS half (M2): a command that approves the
+     morning bid and takes the afternoon's away reads "LL approved" and "OL bid deleted", never the other way round. */
+describe('the bell\u2019s one body for a war command (decisionTells)', () => {
+  const day = '2026-02-03'
+  const war = (recs: any): any => ({ wars: [{ period: { id: 'w1' }, recs }] })
+  it('his own change tells nobody; the same change by another tells him', () => {
+    const before = war({ bane: { [day]: [{ id: 'r1', kind: 'request', code: 'LL', state: 'pending' }] } })
+    const after = war({ bane: {} })
+    expect(decisionTells('lw.clear', before, after, new Map(), new Map(), 'bane')).toEqual([])
+    expect(decisionTells('lw.clear', before, after, new Map(), new Map(), 'stiff').map(t => [t.d, t.code])).toEqual([['biddel', 'LL']])
+  })
+  it('M2 the approval is matched to the request on its own half, never the other half\u2019s', () => {
+    const before = war({ bane: { [day]: [
+      { id: 'pm', kind: 'request', code: 'OL*', state: 'pending' },
+      { id: 'am', kind: 'request', code: '*LL', state: 'pending' },
+    ] } })
+    const after = war({ bane: {} })
+    const leaveAfter = new Map([['bane', new Map([[`${day}|*LL`, '*LL']])]])
+    expect(decisionTells('lw.decide', before, after, new Map(), leaveAfter, 'stiff').map(t => [t.d, t.code]))
+      .toEqual([['approved', '*LL'], ['biddel', 'OL*']])
   })
 })

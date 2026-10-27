@@ -17,10 +17,10 @@ import { initStore as raptorInitStore, notify as raptorNotify, resetSession, wri
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
-import { _resetTimeline } from '../undo/timeline'
+import { _resetTimeline, verifiedReplay } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
-import { cmdAuthorize, ownershipViolation } from '../state/perms'
+import { cmdAuthorize, ownershipViolation, setInputReplayCheck } from '../state/perms'
 import { clearCells, getState, initStore as lwInitStore, lwHistInit, recordsAt, setCell, setPeople } from './state/store'
 import { type RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
@@ -95,6 +95,31 @@ describe('1. a change that only calls itself a restore is judged as any other', 
     expect(reqs('bane', D2)).toEqual([])
     expect(globalRedo()).toBeTruthy()
     expect(reqs('bane', D2).map(r => [r.placedBy, r.placedAt]), 'his Redo two hours on puts his own bid back as it was').toEqual([['bane', placed]])
+  })
+})
+
+/* THE BREAK TESTS (28 Oct 26, list lw-m4 #27): while his real Undo is being applied, the timeline vouches for a war record
+   only as the very image the step took (undo/timeline.ts verifiedReplay) — a record of the same id carrying anything else
+   (another man's "placed by", say) is judged as any other change. Asked of the check the commit gate itself is handed. */
+describe('1b. the timeline vouches for a war record only as the image its step took', () => {
+  it('during his real Undo: the step’s own image is vouched for; the same record with another stamp is not', () => {
+    expect(setCell('bane', D, 'LL')).toBe(true)                       // the admin places it for him, pending
+    ranger()
+    T(9)
+    expect(clearCells([{ personId: 'bane', date: D }]).written).toBe(1)
+    let seen: { fn: (c: any) => boolean; change: any } | null = null
+    setInputReplayCheck(e => {
+      const fn = verifiedReplay(e)
+      const change = e.changes.find((c: any) => c.collection === 'lw.cell' && c.op === 'put' && Array.isArray(c.after) && c.after.length)
+      if (fn && change && !seen) seen = { fn, change }
+      return fn
+    })
+    try { expect(globalUndo()).toBeTruthy() } finally { setInputReplayCheck(verifiedReplay) }
+    expect(reqs('bane', D).map(r => r.placedBy), 'the Undo wrote the bid back').toEqual(['stiff'])
+    expect(seen, 'the commit gate asked the timeline').not.toBeNull()
+    expect(seen!.fn(seen!.change), 'the step’s own image').toBe(true)
+    const forged = { ...seen!.change, after: seen!.change.after.map((r: any) => (r.kind === 'request' ? { ...r, placedBy: 'bane', placedAt: 1 } : r)) }
+    expect(seen!.fn(forged), 'the same record with another stamp').toBe(false)
   })
 })
 
