@@ -35,7 +35,7 @@ import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clea
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
 import { StageBar } from './Chrome'
-import { askLw, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
+import { askLw, apprMode, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
 import { usePhone } from './phone'
 import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
@@ -3569,6 +3569,9 @@ export function Matrix() {
     /* the day clock's ask (D1266): the mark moves, the view stays — never a jump away from where he scrolled */
     if (focusQuiet) return
     if (focusSoft) {
+      /* …and not at all while the Approvals page stands in the grid's place: the change undone shows there, on its line,
+         and a jump of the hidden grid moved the page he is reading (D672; the scenario designer's ★2) */
+      if (apprMode() === 'page') return
       const wrap = wrapRef.current, cell = headCell(focusDate)
       if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return
     }

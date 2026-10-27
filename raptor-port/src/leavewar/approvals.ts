@@ -25,7 +25,7 @@ import {
 } from './engine'
 import { dayWhatIf, type DayWhatIf, type WhatIfLevel, type WhatIfWar } from './engine/whatif'
 import { availRules, figureCtxOf, getState, groupIdOf, rawState, reqRunKey, type DecidePart } from './state/store'
-import { flyAnswer } from './sync'
+import { flyAnswer, rosterIsSans } from './sync'
 
 export interface ApprLine {
   /** steady for the visit: the man and his first request's id when the line was first drawn */
@@ -132,7 +132,9 @@ export function figuresOf(line: ApprLine, who: Person | undefined): ApprFigures 
     bal = { counter: spends.counter, label: spends.counter === 'annual' ? '' : counterLabel(spends.counter), value }
   }
   /* LOWEST AVAIL — this request's own what-if, day by day */
-  const sans = !!who && groupIdOf(who) === 'SANS'
+  /* a SANS man — drawn in the SANS group, or not on the war at all while SANS is off it (D1215, D1221): then the war's
+     roster has no row for him and the roster is asked (the scenario designer's ★10) */
+  const sans = who ? groupIdOf(who) === 'SANS' : rosterIsSans(line.personId)
   const war: WhatIfWar = { people: st.people, grid: st.grid, states: st.states, requirements: st.requirements, views: st.views, avail: availRules() }
   let avail: ApprFigures['avail'] = null
   const turned = new Map<string, { label: string; value: number; level: WhatIfLevel }>()

@@ -14,12 +14,12 @@ import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
-import { NOTICES, noticesFor, noticeWords } from '../state/notices'
+import { NOTICES, noticePass, noticesFor, noticeWords } from '../state/notices'
 import { isUnread, noticeSeenLoad } from '../state/noticeseen'
 import { commitInputEdit, draftOf } from '../ui/inputedit'
 import {
   closeDates, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates, placeApproved,
-  recordsAt, setCell, setPeople, clearCells, type DecideLine, type DecidePart,
+  recordsAt, setCell, setCellRange, setPeople, clearCells, type DecideLine, type DecidePart,
 } from './state/store'
 import { type RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
@@ -168,7 +168,51 @@ describe('bidding opened or closed (9.4 — D1214)', () => {
     T(10); openDates('2026-05-01', '2026-05-31')
     T(11); openDates('2026-06-01', '2026-06-30')
     expect(lines('bane')).toEqual(['Leave War · 1 Mar – 30 Jun · bidding open · Saber'])
+    /* shortening a stretch is ONE line with its new dates (spec 9.4) — the older Mar–Jun line hides under it, so a
+       "Jun closed" line alone would leave him not knowing Mar–May is still open (the scenario designer's ★4) */
     T(12); closeDates('2026-06-01', '2026-06-30')
-    expect(lines('bane')[0]).toBe('Leave War · 1 Jun – 30 Jun · bidding closed · Saber')
+    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 May · bidding open · Saber'])
+    /* a stretch closed whole says closed */
+    T(13); closeDates('2026-03-01', '2026-05-31')
+    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 May · bidding closed · Saber'])
+  })
+  it('a month closed out of the middle of a stretch: each piece left open is its own line (★4)', () => {
+    const p = getState().period
+    closeDates(p.start, p.end)
+    openDates('2026-04-01', '2026-06-30')
+    NOTICES.length = 0
+    T(9); closeDates('2026-05-01', '2026-05-31')
+    expect(lines('bane').sort()).toEqual(['Leave War · 1 Apr – 30 Apr · bidding open · Saber', 'Leave War · 1 Jun – 30 Jun · bidding open · Saber'])
+  })
+})
+
+describe('the scenario designer’s faults (★5, ★6, ★7)', () => {
+  it('★5 an admin re-typing his pending bid tells him nothing, by the drag window and by the one-day window alike', () => {
+    ranger(); bids('bane'); saber()
+    NOTICES.length = 0
+    T(9)
+    expect(setCellRange('bane', DAYS[0]!, DAYS[1]!, 'OL').written).toBeGreaterThan(0)
+    expect(setCell('bane', DAYS[2]!, 'OL')).toBe(true)
+    expect(reqs('bane', DAYS[0]!).map(r => r.code)).toEqual(['OL'])
+    expect(lines('bane'), 'no "LL bid deleted" for a bid that still stands').toEqual([])
+  })
+  it('★6 "Approve what I enter" placing another kind over his pending bid names the kind placed', () => {
+    ranger(); expect(setCell('bane', DAYS[0]!, 'LL')).toBe(true); saber()
+    NOTICES.length = 0
+    T(9)
+    placeApproved([{ personId: 'bane', date: DAYS[0]! }], 'OL')
+    expect(lines('bane')).toEqual(['Your leave · Tue 3 Feb · OL added and approved · Saber'])
+  })
+  it('★7 a remark changed on his war-approved leave from a war window still tells him once', () => {
+    const was = { iid: 'L9', person: 'bane', type: 'LL', date: 'Feb 3', yr: 2026, allday: true, remarks: 'a', lw: getState().period.id, by: 'stiff', at: 1 }
+    const now = { ...was, remarks: 'family' }
+    NOTICES.length = 0
+    noticePass(new Map([['L9', was]]), [now], { actor: 'stiff', skipLw: true })
+    expect(lines('bane')).toHaveLength(1)
+    expect(lines('bane')[0]).toContain('Remark changed')
+    /* …while a war door's cut, move or delete of that leave stays the war's own line (B1) */
+    NOTICES.length = 0
+    noticePass(new Map([['L9', was]]), [{ ...was, date: 'Feb 4' }], { actor: 'stiff', skipLw: true })
+    expect(lines('bane')).toEqual([])
   })
 })

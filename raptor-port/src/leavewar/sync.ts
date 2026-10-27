@@ -929,6 +929,12 @@ export function rosterCallsign(id: string): string | null {
   const b: any = (PEOPLE as any)[id]
   return b && b.cs ? String(b.cs) : null
 }
+/* …and whether he is a SANS man, for a man with no row on the war (a SANS man while SANS is off it — Approvals' LOWEST AVAIL
+   says "SANS · not in Avail" for him, M4 8.2) */
+export function rosterIsSans(id: string): boolean {
+  const b: any = (PEOPLE as any)[id]
+  return !!(b && b.san)
+}
 export interface SyncClash {
   person: string
   date: string
@@ -1240,6 +1246,8 @@ export function openWarAt(iso: string, personId?: string | null): void {
   const pid = personId ? String(personId) : ''
   const onGrid = !!pid && getState().people.some(p => p.id === pid)
   if (pid && !onGrid) askLw({ kind: 'person', id: pid })
+  /* …and the grid in front: the OIL tab may be up over it (the scenario designer's 12 — the ringed day stood behind it) */
+  else askLw({ kind: 'grid' })
   if (CURPAGE === 'leavewar') { if (onGrid) ringCell(pid, iso); else focusDay(iso) }
   else { askRing({ personId: onGrid ? pid : '', date: iso }); setPage('leavewar') }
   raptorNotify()

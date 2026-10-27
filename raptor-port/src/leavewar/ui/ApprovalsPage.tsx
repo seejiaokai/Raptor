@@ -71,17 +71,25 @@ interface Row {
   /** every request id this line has ever had — so it is found again after an Undo or its own second tap */
   ids: Set<string>
   lit?: Exclude<DecideTo, 'pending'>
+  /** a decision made here that an Undo took back — kept so a Redo lights the line again (the scenario designer's ★1) */
+  undone?: { lit: Exclude<DecideTo, 'pending'>; parts: ApprLine['parts'] }
   msg?: { kind: 'refused' | 'stale'; why: string }
   figs?: ApprFigures
 }
 const recIds = (l: ApprLine) => l.parts.map(p => p.recId).filter((x): x is string => !!x)
 
-/* the visit's own facts the slim bar reads too (it lives outside the page) */
-let VISIT = { prev: 0, newCount: 0 }
+/* the visit's own facts the slim bar reads too (it lives outside the page) — `pending` the page's own count, the period
+   on view, as its header says it (the scenario designer's 17); -1 before the page has drawn */
+let VISIT = { prev: 0, newCount: 0, pending: -1 }
 
-function inFilter(l: ApprLine, f: Filter, prev: number): boolean {
+/* NEW — placed since he last looked, by someone else: what he placed himself is no news to him (the scenario designer's
+   16; the same as "Also since you last looked", which never lists what he did himself) */
+const isNewFor = (l: ApprLine, prev: number, me: string | null): boolean =>
+  typeof l.placedAt === 'number' && l.placedAt > prev && !(me != null && l.placedBy != null && String(l.placedBy) === me)
+
+function inFilter(l: ApprLine, f: Filter, prev: number, me: string | null): boolean {
   if (f.kind === 'all') return true
-  if (f.kind === 'new') return typeof l.placedAt === 'number' && l.placedAt > prev
+  if (f.kind === 'new') return isNewFor(l, prev, me)
   const days = l.parts.map(p => p.date)
   if (f.kind === 'month') return days.some(d => d.slice(0, 7) === f.ym)
   return days.some(d => d >= f.from && d <= f.to)
@@ -98,6 +106,22 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   useEffect(() => { setPrev(openApprovals(pid != null ? String(pid) : null)) }, [])
   const [filter, setFilterRaw] = useState<Filter>({ kind: 'all' })
   const [picking, setPicking] = useState(false)
+  const pickRef = useRef<HTMLDivElement | null>(null)
+  const pickBtn = useRef<HTMLButtonElement | null>(null)
+  /* "Pick dates…" is a click-open popup: it closes on a press outside it (its button counting as inside) and on Escape,
+     the keyboard back on its button (4 Sep 26; the scenario designer's 14) */
+  useEffect(() => {
+    if (!picking) return
+    const down = (e: Event) => {
+      const t = e.target as Node | null
+      if (t && (pickRef.current?.contains(t) || pickBtn.current?.contains(t))) return
+      setPicking(false)
+    }
+    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); setPicking(false); pickBtn.current?.focus() } }
+    document.addEventListener('pointerdown', down, true)
+    document.addEventListener('keydown', key)
+    return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key) }
+  }, [picking])
   const [armed, setArmed] = useState<string | null>(null)
   /* a decision the rules refused changes nothing in the war — this repaints the line's reason */
   const [tick, setTick] = useState(0)
@@ -122,12 +146,26 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       for (const id of r.ids) { const l = byId.get(id); if (l && !used.has(l)) { match = l; break } }
       if (match) {
         used.add(match)
-        /* pending again (an Undo of the decision made here, or one made elsewhere put back): the light goes */
+        /* pending again (an Undo of the decision made here, or one made elsewhere put back): the light goes — the decision
+           kept aside, so a Redo lights it again (★1) */
         const ids = new Set([...r.ids, ...recIds(match)])
-        out.push({ key: r.key, line: match, ids, ...(r.msg && r.msg.kind === 'refused' ? { msg: r.msg } : {}) })
+        const undone = r.lit ? { lit: r.lit, parts: r.line.parts } : r.undone
+        out.push({ key: r.key, line: match, ids, ...(undone ? { undone } : {}), ...(r.msg && r.msg.kind === 'refused' ? { msg: r.msg } : {}) })
         continue
       }
       if (r.lit) { out.push(r); continue }
+      /* its decision put back by a Redo — every day stands as decided here: lit again, where it was (★1) */
+      if (r.undone && lineStale(r.line.personId, r.undone.parts) === null) {
+        out.push({ key: r.key, line: { ...r.line, parts: r.undone.parts }, ids: r.ids, lit: r.undone.lit })
+        continue
+      }
+      /* JOINED into a line another row already holds (a day placed between two drawn lines — D1339, D1346), every day of
+         it still standing: that row is the line now, so this one simply goes — never a greyed "No longer there" (★8) */
+      if ([...r.ids].some(id => byId.has(id)) && lineStale(r.line.personId, r.line.parts) === null) {
+        const holder = out.find(x => [...r.ids].some(id => x.ids.has(id) || recIds(x.line).includes(id)))
+        if (holder) r.ids.forEach(id => holder.ids.add(id))
+        continue
+      }
       /* gone from the pending list while on screen (B8): say what happened */
       const why = r.msg?.kind === 'stale' ? r.msg.why : lineStale(r.line.personId, r.line.parts) || 'No longer there'
       out.push({ ...r, msg: { kind: 'stale', why } })
@@ -151,11 +189,12 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   for (const r of rows) { const f = figs.get(r.key); if (f) r.figs = f }
 
   const seen = prev ?? Number.MAX_SAFE_INTEGER
-  const isNew = (r: Row) => typeof r.line.placedAt === 'number' && r.line.placedAt > seen
+  const mePid = pid != null ? String(pid) : null
+  const isNew = (r: Row) => isNewFor(r.line, seen, mePid)
   const pendingRows = rows.filter(r => !r.lit && r.msg?.kind !== 'stale')
   const newCount = pendingRows.filter(isNew).length
-  VISIT = { prev: seen, newCount }
-  const shownRows = rows.filter(r => inFilter(r.line, filter, seen))
+  VISIT = { prev: seen, newCount, pending: pendingRows.length }
+  const shownRows = rows.filter(r => inFilter(r.line, filter, seen, mePid))
   const toApprove = shownRows.filter(r => !r.lit && r.msg?.kind !== 'stale')
   /* ARMED for exactly the lines shown when it was pressed — anything else and it is not armed (A4) */
   const sig = toApprove.map(r => `${r.key}:${recIds(r.line).join(',')}`).join('|')
@@ -181,7 +220,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
         row.line = { ...row.line, parts: o.parts }
         row.ids = new Set([...row.ids, ...o.parts.map(p => p.recId).filter((x): x is string => !!x)])
         if (to === 'pending') delete row.lit; else row.lit = to
-        delete row.msg
+        delete row.msg; delete row.undone
       } else row.msg = { kind: o.kind, why: o.why }
       next[ix] = row
     })
@@ -228,7 +267,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       {!phone && <span className="appr-lab">Dates</span>}
       {fchip(filter.kind === 'all', 'All', () => setFilter({ kind: 'all' }), { testid: 'appr-all' })}
       {months.map(ym => fchip(filter.kind === 'month' && filter.ym === ym, MON[+ym.slice(5, 7) - 1], () => setFilter({ kind: 'month', ym }), { dim: !monthHas(ym), testid: `appr-m-${ym}` }))}
-      <button type="button" className={`appr-f${filter.kind === 'range' ? ' on' : ''}`} data-testid="appr-pick" aria-expanded={picking}
+      <button ref={pickBtn} type="button" className={`appr-f${filter.kind === 'range' ? ' on' : ''}`} data-testid="appr-pick" aria-expanded={picking}
         onClick={() => setPicking(v => !v)}>{filter.kind === 'range' ? `${dm(filter.from)} – ${dm(filter.to)}` : 'Pick dates…'}</button>
       <span className="appr-spring" />
       <button type="button" className={`appr-all${isArmed ? ' armed' : ''}`} data-testid="appr-approve-all" disabled={!toApprove.length}
@@ -256,7 +295,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
         {head}
         {filterRow}
         {picking && (
-          <div className="appr-pickpop">
+          <div className="appr-pickpop" ref={pickRef}>
             <RangePicker testid="appr-range" min={st.period.start} max={st.period.end}
               value={filter.kind === 'range' ? { from: filter.from, to: filter.to } : null}
               onChange={(v: Range | null) => { if (v) { setFilter({ kind: 'range', from: v.from, to: v.to }); if (v.to !== v.from) setPicking(false) } }} />
@@ -381,7 +420,8 @@ const addOne = (iso: string) => { const d = new Date(Date.UTC(+iso.slice(0, 4), 
 export function SlimBar() {
   useVersion()
   useSyncExternalStore(subscribeLwNav, apprMode, apprMode)
-  const n = pendingCount()
+  /* the page's own count — the period on view, as its header says it (17); the tab carries every period's */
+  const n = VISIT.pending >= 0 ? VISIT.pending : pendingCount()
   return (
     <div className="appr-slim" role="region" aria-label="Back to Approvals" data-testid="appr-slim">
       <span className="appr-dot" aria-hidden="true" />

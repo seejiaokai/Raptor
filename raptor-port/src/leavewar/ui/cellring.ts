@@ -10,8 +10,10 @@
 import { focusDay } from '../state/store'
 
 const RING_MS = 6000
+const LOOK_MS = 4000
 let timer: ReturnType<typeof setTimeout> | null = null
 let ringed: HTMLElement | null = null
+let GEN = 0
 
 function clearRing(): void {
   if (timer) { clearTimeout(timer); timer = null }
@@ -22,11 +24,16 @@ function clearRing(): void {
 export function ringCell(personId: string, date: string, bar = 0): void {
   clearRing()
   focusDay(date)
-  let tries = 0
+  /* looked for by TIME, not by a count of frames: a far month, or the war's first visit of a session, takes about a second
+     to draw, and 40 frames (two-thirds of a second) gave up before it came (the scenario designer's ★3) */
+  const until = performance.now() + LOOK_MS
+  /* (a second ask while the first still looks wins: the first stops — it never rings a day he has left) */
+  const gen = ++GEN
   const look = () => {
+    if (gen !== GEN) return
     const cell = document.querySelector<HTMLElement>(`[data-testid="cell-${personId}-${date}"]`)
     if (!cell || cell.getBoundingClientRect().width === 0) {
-      if (++tries < 40) requestAnimationFrame(look)
+      if (performance.now() < until) requestAnimationFrame(look)
       return
     }
     /* up or down, only as far as needed: below the grid's frozen header, above the slim bar */

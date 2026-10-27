@@ -218,7 +218,16 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
   }
   for (const [iid, b] of before) {
     const a = now.get(iid)
-    if (o.skipLw && (b.lw || (a && a.lw))) continue
+    if (o.skipLw && (b.lw || (a && a.lw))) {
+      /* …but its REMARK is no line of the war's: the war tells decisions, moves and deletes, never words — so a remark
+         changed on a war-approved leave from a war window (the drag window's Remarks, D1341) is told here, once, as it was
+         before M4 (the scenario designer's ★7) */
+      if (a && b.lw && a.lw) {
+        const rmk = common(b, a, '').filter(x => x.k === 'rmk')
+        if (rmk.length && common(b, a, '').length === rmk.length) for (const p of ids(a)) tell(p, a, rmk)
+      }
+      continue
+    }
     const was = ids(b)
     if (!a) {
       for (const p of new Set([...was, b.by != null ? String(b.by) : ''])) if (p) tell(p, b, [{ k: 'del' }])

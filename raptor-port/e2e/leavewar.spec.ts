@@ -7789,3 +7789,35 @@ test('on a tablet and a desktop the clash note stays the strip under the open-da
   await page.locator('[data-testid="clash-go-0"]').click()
   await daySheetFor(page, who)
 })
+
+/* THE APPROVALS FILTER CHIPS NEVER BREAK THEIR WORDS ON A PHONE (the overhaul's M4 — the probe walk's fault, 27 Oct 26: "New 1"
+   with its dot broke onto two lines inside its button at 402; D1387: a button's words always stand inside it, on an
+   iPhone's wider letters too). Each chip of the filter rows is measured: its words one line, inside its own edge. */
+test('on a phone every Approvals filter chip keeps its words on one line, inside its edge', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone lays the filter rows out as a grid of seven')
+  await lwRole(page, 'admin')
+  for (const [width, height] of [[402, 874], ...PHONES] as [number, number][]) {
+    await page.setViewportSize({ width, height })
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    const bad = await page.evaluate(() => {
+      const out: string[] = []
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('.appr-filters .appr-f, .appr-filters .appr-all'))) {
+        const r = el.getBoundingClientRect()
+        /* the WORDS only (the dot beside "New" is a box of its own, centred, not a line of words) */
+        const tops = new Set<number>()
+        const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+        for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+          if (!n.textContent || !n.textContent.trim()) continue
+          const range = document.createRange(); range.selectNodeContents(n)
+          for (const x of Array.from(range.getClientRects())) if (x.width > 0) tops.add(Math.round(x.top + x.height / 2))
+        }
+        if (Math.max(...tops) - Math.min(...tops) > 4) out.push(`${el.textContent} wraps`)
+        if (el.scrollWidth > el.clientWidth + 1) out.push(`${el.textContent} runs past its edge`)
+        if (r.right > window.innerWidth) out.push(`${el.textContent} off the screen`)
+      }
+      return out
+    })
+    expect(bad, `${width} wide`).toEqual([])
+  }
+})

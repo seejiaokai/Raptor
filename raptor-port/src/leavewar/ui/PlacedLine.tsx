@@ -49,18 +49,23 @@ export function placedFacts(personId: string, date: string): PlacedFacts[] {
   return out
 }
 
+/** one entry's words — "Placed Ranger · Mon 5 Jan, 09:12 · Approved Saber · Thu 8 Jan, 08:40" */
+export function PlacedOne({ f }: { f: PlacedFacts }) {
+  return (
+    <span className="bp-placedline">
+      {f.placed && <>Placed <b>{f.placed.who || '—'}</b> · {whenWords(f.placed.at)}</>}
+      {f.placed && f.decided && ' · '}
+      {f.decided && <><span className={f.decided.what === 'Approved' ? 'bp-ok' : 'bp-no'}>{f.decided.what}</span> <b>{f.decided.who || '—'}</b>{f.decided.at !== undefined && <> · {whenWords(f.decided.at)}</>}</>}
+    </span>
+  )
+}
+
 export function PlacedLine({ personId, date }: { personId: string; date: string }) {
   const facts = placedFacts(personId, date)
   if (!facts.length) return null
   return (
     <div className="bidsheet-row bp-placed" data-testid="bid-placed">
-      {facts.map(f => (
-        <span key={f.key} className="bp-placedline">
-          {f.placed && <>Placed <b>{f.placed.who || '—'}</b> · {whenWords(f.placed.at)}</>}
-          {f.placed && f.decided && ' · '}
-          {f.decided && <><span className={f.decided.what === 'Approved' ? 'bp-ok' : 'bp-no'}>{f.decided.what}</span> <b>{f.decided.who || '—'}</b>{f.decided.at !== undefined && <> · {whenWords(f.decided.at)}</>}</>}
-        </span>
-      ))}
+      {facts.map(f => <PlacedOne key={f.key} f={f} />)}
     </div>
   )
 }

@@ -22,6 +22,7 @@ import { EntryBox } from './BidBits'
 import { draftOf, LeaveWords, patchOf, ReqWordsRows, runEnd, type FlushRef, type ReqDraft } from './ReqWords'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
+import { PlacedOne, placedFacts } from './PlacedLine'
 import { dayLabel, enteredDay, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
 import { halfWord } from './awardwords'
 import { HalfPick } from './CreditForm'
@@ -329,6 +330,7 @@ export function DayListSheet({
     key: `t-${c.id}`, cls: 'warn', box: null, words: null, actions: [] as ReactElement[], sub: 'It runs on from the day before — change it there.',
     text: `${shown(c.code)} — ${nameOf(c.code) || shown(c.code)}, from the day before till ${hm(c.win[1])}`,
   }))
+  const facts = new Map(placedFacts(personId, date).map(f => [f.key, f] as const))
   return (
     <Sheet testid="daylist-sheet" label={`${callsign} — ${dayLabel(date)}`} onClose={onClose}>
       <div className="bidsheet-hd">
@@ -359,19 +361,26 @@ export function DayListSheet({
       )}
       {/* the list's outer frame went (round 3): each entry takes the window's full width, a hairline between them */}
       <ul className="daylist flat" data-testid="daylist">
-        {[...lines, ...tailLines].map(l => (
+        {[...lines, ...tailLines].map(l => {
+          /* WHO PLACED AND DECIDED IT (M4 8.6; his D1315 — what the window shows about what a day holds, it shows for every
+             entry): the bid window's own words, under each request and each leave the war approved (the roll-call's
+             MISSING, the scenario designer's 18) */
+          const fact = /^[ar]-/.test(l.key) ? facts.get(l.key.slice(2)) : undefined
+          return (
           <li key={l.key} className={`dl-line${l.box ? ' dl-card' : ''}${l.cls ? ` ${l.cls}` : ''}`} data-testid={`dl-${l.key}`}>
             <div className="dl-head">
               {l.box}
               <div className="dl-text">
                 <span className="dl-main">{l.text}</span>
                 {l.sub && <span className="dl-sub">{l.sub}</span>}
+                {fact && <span className="dl-sub bp-placed" data-testid={`dl-placed-${l.key}`}><PlacedOne f={fact} /></span>}
               </div>
             </div>
             {l.actions.length > 0 && <div className={`dl-acts${l.box ? ' bp-acts' : ''}`}>{l.actions}</div>}
             {l.words}
           </li>
-        ))}
+          )
+        })}
       </ul>
       {/* THE OIL ON THIS DAY, READ BACK IN THE SAME THREE LINES AS THE DAY
           WINDOW (owner, 21 Sep 26). A locked day — one the published schedule

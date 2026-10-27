@@ -2840,10 +2840,18 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
     const lost = new Map([...LB].filter(([d, c]) => LA.get(d) !== c))
     const gained = new Map([...LA].filter(([d, c]) => LB.get(d) !== c))
     const evs: Ev[] = []
+    /* the days where a NEW request came — a re-typed kind is a new record on the same day (store.ts setCell): the bid
+       still stands, so its old record's going is no "deleted" (the scenario designer's ★5; D1142 names no re-type) */
+    const newOn = new Set([...RA].filter(([id]) => !RB.has(id)).map(([, x]) => x.date))
+    const kind = (c: string) => c.replace(/\*/g, '')
     for (const [id, { date, rec }] of RB) {
       const now = RA.get(id)
       if (!now) {
-        if (gained.has(date)) { evs.push({ d: 'approved', code: rec.code, date }); gained.delete(date); continue }
+        /* approved: the leave that came is this bid's own kind — leave of ANOTHER kind placed approved over it is the
+           admin's own placing, told as "added and approved" below (★6) */
+        if (gained.has(date) && (type !== 'lw.placeApproved' || kind(gained.get(date)!) === kind(rec.code))) { evs.push({ d: 'approved', code: rec.code, date }); gained.delete(date); continue }
+        if (gained.has(date)) continue
+        if (newOn.has(date) && rec.state !== 'refused') continue
         /* a refusal another refusal on the same half replaced (decideRequest keeps one) is no news */
         if (type === 'lw.decide' && rec.state === 'refused') continue
         evs.push({ d: 'biddel', code: rec.code, date })
@@ -2903,7 +2911,10 @@ export function openingTells(before: Period, after: Period): OpenTell[] {
   for (const o of after.open) {
     let fresh = false
     for (let d = o.from; d <= o.to && !fresh; d = addDays(d, 1)) if (!B.has(d)) fresh = true
-    if (fresh) out.push({ from: o.from, to: o.to, open: true })
+    /* …and a stretch SHORTENED or SPLIT is one line with its new dates too (spec 9.4): its older line hides under the new
+       one (notices.ts noticeLive), so a "closed" line alone left the dates still open unsaid (the scenario designer's ★4) */
+    const changed = !fresh && !before.open.some(b => b.from === o.from && b.to === o.to)
+    if (fresh || changed) out.push({ from: o.from, to: o.to, open: true })
   }
   /* a run closed that no line above already names (a stretch changed to exact days says its new dates only) */
   if (!out.length) for (const r of closedRuns(before.open, after.open)) out.push({ from: r.from, to: r.to, open: false })

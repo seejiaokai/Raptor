@@ -23,7 +23,9 @@ import { clearCells, getState, initStore as lwInitStore, lwHistInit, recordsAt, 
 import { type NoticeRec, type RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { alsoSince, replacedCarry, wireLeaveWarSync } from './sync'
+import { alsoSince, openWarAt, replacedCarry, wireLeaveWarSync } from './sync'
+import { takeLwAsk } from './ui/lwnav'
+import { figuresOf } from './approvals'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -193,5 +195,33 @@ describe('"Also since you last looked" (8.4)', () => {
     expect(alsoSince(since, p.start, p.end, 'stiff').map(a => [a.what, a.personId, a.from])).toEqual([['inputs', 'bane', D]])
     expect(alsoSince(since, p.start, p.end, 'bane'), 'never what he did himself').toEqual([])
     expect(alsoSince(Date.now(), p.start, p.end, 'stiff'), 'nothing since now').toEqual([])
+  })
+
+  it('his own Inputs-page leave over his own pending bid is ONE line, "filed" — the bid it replaced is no withdrawal (designer 11)', () => {
+    ranger()
+    expect(setCell('bane', D, 'LL')).toBe(true)
+    const since = T(9) - 1
+    T(10)
+    expect(writeInputs(() => { INPUTS.push(leave('a2', ['bane'], 'bane')) })).toBe(true)
+    const p = getState().period
+    expect(alsoSince(since, p.start, p.end, 'stiff').map(a => a.what)).toEqual(['inputs'])
+  })
+})
+
+describe('a SANS man while SANS is off the war: his line says so (the scenario designer’s ★10)', () => {
+  it('LOWEST AVAIL reads "SANS · not in Avail", not an empty cell', () => {
+    const sansId = Object.keys(PEOPLE).find(k => (PEOPLE as any)[k].san && !(PEOPLE as any)[k].archived && !(PEOPLE as any)[k].deleted)!
+    expect(sansId, 'the demo has a SANS man').toBeTruthy()
+    expect(getState().people.some(x => x.id === sansId), 'SANS is off the war by default (D1215)').toBe(false)
+    const line: any = { key: 'k', personId: sansId, code: 'LL', from: D, to: D, parts: [{ date: D, recId: 'x1', state: 'pending' }], docIds: [] }
+    expect(figuresOf(line, undefined).sans).toBe(true)
+  })
+})
+
+describe('a tap on a bell line brings the grid in front (the scenario designer’s 12)', () => {
+  it('the OIL tab up over the grid is put away: the grid is asked for', () => {
+    takeLwAsk()
+    openWarAt(D, 'bane')
+    expect(takeLwAsk()).toEqual({ kind: 'grid' })
   })
 })
