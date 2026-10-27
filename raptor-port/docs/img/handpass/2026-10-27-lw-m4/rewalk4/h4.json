@@ -1,0 +1,31 @@
+[
+ {
+  "id": "H4 phone: slim bar fill rgb(22, 27, 34), words, Back ▴ and ✕",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar bg rgb(22, 27, 34) text \"Approvals 6 pending Back ▴ ✕\" edge 1px solid rgb(42, 49, 58); Back \"Back ▴\" bg rgba(0, 0, 0, 0) bd 0px none rgb(59, 198, 232) fg rgb(59, 198, 232); ✕ \"✕\" bg rgba(0, 0, 0, 0) bd 0px none rgb(182, 192, 203); box 8,818 386x46",
+  "pics": [
+   "h4-phone-bar.png",
+   "h4-phone-bar-zoom.png"
+  ]
+ },
+ {
+  "id": "H5 desktop: every month chip and \"+2 pending in JAN - DEC 27 ›\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "chips [\"Jan\",\"Feb\",\"Mar\",\"Apr\",\"May\",\"Jun\",\"Jul\",\"Aug\",\"Sep\",\"Oct\",\"Nov\",\"Dec\"]; link \"+2 pending in JAN - DEC 27 ›\"; sub \"6 pending\"",
+  "pics": [
+   "h5-desktop-top.png"
+  ]
+ },
+ {
+  "id": "H4 desktop: slim bar fill rgb(22, 27, 34), words, Back ▴ and ✕",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bar bg rgb(22, 27, 34) text \"Approvals 6 pending Back ▴ ✕\" edge 1px solid rgb(42, 49, 58); Back \"Back ▴\" bg rgba(0, 0, 0, 0) bd 0px none rgb(59, 198, 232) fg rgb(59, 198, 232); ✕ \"✕\" bg rgba(0, 0, 0, 0) bd 0px none rgb(182, 192, 203); box 599,794 338x44",
+  "pics": [
+   "h4-desk-bar.png",
+   "h4-desk-bar-zoom.png"
+  ]
+ }
+]

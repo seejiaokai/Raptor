@@ -1,0 +1,57 @@
+[
+ {
+  "id": "H1 link on title line reading \"+2 in JAN - DEC 27 ›\"",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "link \"+2 in JAN - DEC 27 ›\" top 164 bottom 181; title 156-183",
+  "pics": [
+   "h1-top-402.png"
+  ]
+ },
+ {
+  "id": "H1 only Jan and Feb chips beside New and All",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "row1 [\"New 0\",\"All\",\"Jan\",\"Feb\"] months [\"Jan\",\"Feb\"]",
+  "pics": [
+   "h1-top-402.png"
+  ]
+ },
+ {
+  "id": "H1 Pick dates… and Approve all on the next row",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "rows [195,237] row2 [\"Pick dates…\",\"Approve all 6\"]",
+  "pics": [
+   "h1-top-402.png"
+  ]
+ },
+ {
+  "id": "H1 tap the link: the other period opens",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "after: {\"head\":\"2 pending\",\"title\":\"Approvals\",\"view\":null,\"link\":\"+6 in JAN - DEC 26 ›\",\"lines\":2}",
+  "pics": [
+   "h1-link-q.png",
+   "h1-after-link.png"
+  ]
+ },
+ {
+  "id": "H3 phone 390: same top, nothing cut, no chip on two lines",
+  "size": "phone390",
+  "verdict": "PASS",
+  "said": "link {\"text\":\"+2 in JAN - DEC 27 ›\",\"top\":164,\"bottom\":181,\"left\":207,\"right\":324,\"h\":17} title 156-183 linkOnTitleLine true; rows [195,237]; row1 [\"New 0\",\"All\",\"Jan\",\"Feb\"] row2 [\"Pick dates…\",\"Approve all 6\"]; oneLine true; scrollW 390/390",
+  "pics": [
+   "h1-top-390.png"
+  ]
+ },
+ {
+  "id": "H3 phone 360: same top, nothing cut, no chip on two lines",
+  "size": "phone360",
+  "verdict": "PASS",
+  "said": "link {\"text\":\"+2 in JAN - DEC 27 ›\",\"top\":164,\"bottom\":181,\"left\":207,\"right\":324,\"h\":17} title 156-183 linkOnTitleLine true; rows [195,237]; row1 [\"New 0\",\"All\",\"Jan\",\"Feb\"] row2 [\"Pick dates…\",\"Approve all 6\"]; oneLine true; scrollW 360/360",
+  "pics": [
+   "h1-top-360.png"
+  ]
+ }
+]

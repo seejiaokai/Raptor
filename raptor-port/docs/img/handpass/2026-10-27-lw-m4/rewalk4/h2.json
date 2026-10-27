@@ -1,0 +1,32 @@
+[
+ {
+  "id": "H2 a bid in a month with none: its chip appears in place",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "before [\"Jan[]\",\"Feb[]\"] after [\"Jan[]\",\"Feb[]\",\"Mar[]\"]; tab 9",
+  "pics": [
+   "h2-0-start.png",
+   "h2-1-chip-appears.png"
+  ]
+ },
+ {
+  "id": "H2 tap the Mar chip: the list shows that month only",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lines [\"Ranger IP LL 10 Mar › Approve Refuse 1 day −1 P 27 28 Oct 05:32\"]; chips [\"Jan[]\",\"Feb[]\",\"Mar*[on]\"]",
+  "pics": [
+   "h2-2-pick-q.png",
+   "h2-2-picked.png"
+  ]
+ },
+ {
+  "id": "H2 deleted its last request, not picked: the chip goes",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after [\"Jan[]\",\"Feb[]\"]; lines [\"Static IW LL 8 Jan › Approve Refuse 1 day 14 W 17 —\",\"Gambit C LL 23 Jan AM › Approve Refuse 0.5 day 8 P 27.5 —\",\"Blade IP LL 2 Feb › Approve Refuse 1 day 4.5 P 27 —\",\"Blade IP LL 3 Feb PM › Approve Refuse 0.5 day 4.5 P 27.5 —\",\"Drifter A OIL 10 Feb AM › Approve Refuse 0.5 day OIL 4 P 27.5 —\",\"Gambit C OIL 24 Feb › Approve Refuse 1 day OIL 3.5 P 27 —\"]",
+  "pics": [
+   "h2-4-replaced.png",
+   "h2-5-deleted-unpicked.png"
+  ]
+ }
+]
