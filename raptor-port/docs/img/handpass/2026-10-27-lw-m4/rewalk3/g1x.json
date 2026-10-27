@@ -1,0 +1,24 @@
+[
+ {
+  "id": "G1b' tap just under the calendar card at y 714 (x 281 = line 1 Approve)",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "hit DIV.appr-card \"Approvals\n6 pending\n\"; open true -> false; after {\"head\":\"6 pending\",\"tab\":\"8\",\"open\":false,\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "g1x-714-before",
+   "g1x-714-q",
+   "g1x-714-after"
+  ]
+ },
+ {
+  "id": "G1b' tap just under the calendar card at y 722 (x 281 = line 1 Approve)",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "hit DIV.appr-cols ph \"DAYS\nLVE BAL\nLOWEST \"; open true -> false; after {\"head\":\"6 pending\",\"tab\":\"8\",\"open\":false,\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "g1x-722-before",
+   "g1x-722-q",
+   "g1x-722-after"
+  ]
+ }
+]

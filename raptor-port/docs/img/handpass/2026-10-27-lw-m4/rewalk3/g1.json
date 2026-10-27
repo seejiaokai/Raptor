@@ -1,0 +1,68 @@
+[
+ {
+  "id": "G1a held 1 s on a line's Approve then lifted: nothing decided",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "open true -> false; before {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}; after {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "g1-402-a-1-open",
+   "g1-402-a-2-just-lifted",
+   "g1-402-a-3-settled"
+  ]
+ },
+ {
+  "id": "G1b tap on the empty band under the calendar at line 1 Approve x: nothing decided",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "tap at (281,732) on SPAN.; open -> false; after {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "g1-402-b-1-open",
+   "g1-402-b-2-q",
+   "g1-402-b-3-settled"
+  ]
+ },
+ {
+  "id": "G1d tap on the Grid tab with the calendar open: calendar closes AND Grid opens in that one tap",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "before open true; after approvals page showing false, calendar false, grid cells visible true, tab intab|true",
+  "pics": [
+   "g1-402-d-1-open",
+   "g1-402-d-2-q",
+   "g1-402-d-3-settled"
+  ]
+ },
+ {
+  "id": "G1e first tap on a line's Approve with the calendar open: calendar closes, nothing decided",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "open -> false; before {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}; after {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "g1-402-e-1-open",
+   "g1-402-e-2-q",
+   "g1-402-e-3-after-first-tap"
+  ]
+ },
+ {
+  "id": "G1e the next tap decides that line only",
+  "size": "phone402",
+  "verdict": "PASS",
+  "said": "lines approved,-,-,-,-,- (target \"Static IW LL 8 Jan › Approve Refuse 1 da\"); head 5 pending; Approve all \"Approve all 5\"; tab 7",
+  "pics": [
+   "g1-402-e-4-q",
+   "g1-402-e-5-after-second-tap"
+  ]
+ },
+ {
+  "id": "G1c at 440, tap on the strip right of the calendar where line 1 buttons will stand: nothing decided",
+  "size": "phone440",
+  "verdict": "PASS",
+  "said": "strip x 416, card right 371; tap on DIV.appr-card; open true -> false; after {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "g1-440-c-1-open",
+   "g1-440-c-2-closed",
+   "g1-440-c-4-q",
+   "g1-440-c-5-settled"
+  ]
+ }
+]

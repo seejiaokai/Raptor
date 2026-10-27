@@ -1,0 +1,41 @@
+[
+ {
+  "id": "G3b Approvals: posting out LATER (7 Jan, still to come), a bid after (8 Jan): \"He posts out on 7 Jan: refuse or delete it\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Static IW LL Thu 8 Jan › He posts out on 7 Jan: refuse or delete it 1 day 14 — Approve Refuse\"; words \"He posts out on 7 Jan: refuse or delete it\"; Approve lit false",
+  "pics": [
+   "g3b-2-appr-static"
+  ]
+ },
+ {
+  "id": "G3b bid window: the same bid refused with the same words",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words \"He posts out on 7 Jan: refuse or delete it\"; buttons [\"Approve:null\",\"Refuse:false\"]; text \"Static Thu 8 Jan ✕ LL Pending Approve Refuse ⇄Move Delete till 8 Jan Document He posts out on 7 Jan: refuse or delete it\"",
+  "pics": [
+   "g3b-3-window-static",
+   "g3b-4-window-static-after-approve"
+  ]
+ },
+ {
+  "id": "G3b \"Approve what I enter\" on, leave after his date: kept pending, the window gives his posting reason (not \"a locked week…\")",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "window text \"Static Tue 13 Jan ✕ LL Pending Placed Saber · Wed 28 Oct, 04:05 Approve Refuse ⇄Move Delete till 13 Jan Document\"",
+  "pics": [
+   "g3b-5-window-ape-on-before",
+   "g3b-6-window-ape-on-after"
+  ]
+ },
+ {
+  "id": "G3b drag over two men's days after their dates, Approve: the note names each man before his reason, the reasons apart",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "note \"2 not approved: Reaper: He posts out on 7 Jan: refuse or delete it. Anvil: He posts out on 8 Jan: refuse or delete it. 2 skipped (no bid, or Raptor-owned).\"",
+  "pics": [
+   "g3b-7-drag-window",
+   "g3b-8-drag-after-approve"
+  ]
+ }
+]

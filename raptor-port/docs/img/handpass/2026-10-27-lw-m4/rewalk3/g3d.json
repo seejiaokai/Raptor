@@ -1,0 +1,22 @@
+[
+ {
+  "id": "G3d one-day window, posting RUN, \"Approve what I enter\" on, leave after his date: the posting reason shown",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "\"kept pending\" on screen: null",
+  "pics": [
+   "g3d-1-blade-before",
+   "g3d-2-blade-after"
+  ]
+ },
+ {
+  "id": "G3d drag window over his days after the date, \"Approve what I enter\" on, LL: kept pending with the posting reason",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "note \"2 days kept pending — He posts out on 7 Jan: refuse or delete it.\"; \"kept pending\" on screen [\"2 days kept pending — He posts out on 7 Jan: refuse or delete it.\"]; tick true",
+  "pics": [
+   "g3d-3-drag-open",
+   "g3d-4-drag-after-LL"
+  ]
+ }
+]
