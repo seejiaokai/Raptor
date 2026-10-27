@@ -1,0 +1,23 @@
+[
+ {
+  "id": "B lesson 4a: Pick dates... open, press a line behind it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "picker open true -> false; the pressed line's button covered by the picker: false (SPAN.); line now \"Approve\" appr-line ph; header 6 pending -> 5 pending",
+  "pics": [
+   "b9-pick-open.png",
+   "b9-behind-q.png",
+   "b9-behind.png"
+  ]
+ },
+ {
+  "id": "B lesson 4b: slim bar up, tap another cell: the grid answers",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "tapped cell-wolf-2026-01-09; window {\"id\":\"bid-picker\",\"txt\":\"Static Fri 9 Jan Approve what I enter ✕ No manning row turns amber or red till 9\"}; slim bar after {\"l\":12,\"t\":808,\"r\":390,\"b\":852}; ring was cell-wolf-2026-01-08 now cell-wolf-2026-01-08",
+  "pics": [
+   "b9-cell-q.png",
+   "b9-cell.png"
+  ]
+ }
+]

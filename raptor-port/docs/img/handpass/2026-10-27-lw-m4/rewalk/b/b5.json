@@ -1,0 +1,70 @@
+[
+ {
+  "id": "B5 dates tap: the grid comes up, the slim bar is up, the cell ringed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "slim {\"l\":12,\"t\":808,\"r\":390,\"b\":852} ring {\"l\":107,\"t\":420,\"r\":128,\"b\":441}",
+  "pics": [
+   "b5-dates-q.png",
+   "b5-dates-1000ms.png"
+  ]
+ },
+ {
+  "id": "B5 the ringed cell at rest is NOT under the bar (nothing over it)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cell {\"l\":107,\"t\":420,\"r\":128,\"b\":441} bar top 808; five points on the cell all hit it: true; over: [\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"TD.act hasc lw-ring#cell-bane-2026-01-13\"]",
+  "pics": [
+   "b5-dates-1000ms.png"
+  ]
+ },
+ {
+  "id": "B5 the bar reads \"N pending\" with no \"·\" before it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar text \"Approvals 7 pending · 1 new Back ▴ ✕\"; page header was \"7 pending · 1 new\"",
+  "pics": [
+   "b5-slim-zoom.png"
+  ]
+ },
+ {
+  "id": "B5 Back ▴ (finger) opens Approvals, the bar goes",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "approvals page true; bar gone true",
+  "pics": [
+   "b5-back-q.png",
+   "b5-back.png"
+  ]
+ },
+ {
+  "id": "B5 ✕ (finger) closes the bar and leaves Approvals",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar false; approvals page false; Approvals tab lit false",
+  "pics": [
+   "b5-x-q.png",
+   "b5-x.png"
+  ]
+ },
+ {
+  "id": "B5 a person window opens with the bar up (look at the picture)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "windows [{\"tag\":\"DIV.bidsheet#person-figures\",\"l\":12,\"t\":188,\"r\":390,\"b\":800,\"z\":\"80\"}]; bar {\"l\":12,\"t\":808,\"r\":390,\"b\":852} on top at its centre: true; before {\"l\":12,\"t\":808,\"r\":390,\"b\":852}",
+  "pics": [
+   "b5-name-q.png",
+   "b5-person-window.png"
+  ]
+ },
+ {
+  "id": "B5 the bubble stands ABOVE the slim bar, nothing overlaps (B-F3)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "placed true; bubble {\"l\":12,\"t\":750,\"r\":390,\"b\":796} \"This bid: IWSO 3 → 2 Show ›\"; bar {\"l\":12,\"t\":808,\"r\":390,\"b\":852}; each on top at centre true/true",
+  "pics": [
+   "b5-bubble.png",
+   "b5-bubble-zoom.png"
+  ]
+ }
+]

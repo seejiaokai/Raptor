@@ -1,0 +1,302 @@
+[
+ {
+  "id": "B1 count inside its outline (Grid up)",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "{\"count\":{\"l\":213,\"r\":232,\"t\":69,\"b\":82,\"txt\":\"8\"},\"tab\":{\"l\":104,\"r\":252,\"t\":57,\"b\":93,\"cl\":124,\"cr\":232,\"cls\":\"intab\",\"lit\":false}}",
+  "pics": [
+   "b1-402-grid-tabrow.png"
+  ]
+ },
+ {
+  "id": "B1 count inside its outline (Approvals lit)",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "{\"count\":{\"l\":213,\"r\":232,\"t\":69,\"b\":82,\"txt\":\"8\"},\"tab\":{\"l\":104,\"r\":252,\"t\":57,\"b\":93,\"cl\":124,\"cr\":232,\"cls\":\"intab\",\"lit\":true},\"lit\":true}",
+  "pics": [
+   "b1-402-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B1 the tab row fits the screen",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "{\"oil\":{\"l\":254,\"r\":334,\"t\":57,\"b\":93,\"cl\":274,\"cr\":314,\"cls\":\"intab\",\"lit\":false},\"vw\":402}",
+  "pics": [
+   "b1-402-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 three rows",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "3 rows: New 0 · All · Jan · Feb · Mar · Apr · May // Jun · Jul · Aug · Sep · Oct · Nov · Dec // Pick dates… · Approve all 6",
+  "pics": [
+   "b1-402-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 every chip's words on one line",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "16 chips, none spill; heights 36",
+  "pics": [
+   "b1-402-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 Pick dates left / Approve all right on the 3rd row",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "pick x21-117; all x251-381",
+  "pics": [
+   "b1-402-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B3 no two headings touch (gaps)",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "gaps 47, 67, 47px; headings Days:21-50 LVE Bal:97-142 Lowest Avail:209-291 Placed:337-381",
+  "pics": [
+   "b1-402-headings.png"
+  ]
+ },
+ {
+  "id": "B3 LOWEST AVAIL does not run into PLACED",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "lowest ends 291, placed starts 337",
+  "pics": [
+   "b1-402-headings.png"
+  ]
+ },
+ {
+  "id": "B3 page does not scroll sideways",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "scrollWidth 402, viewport 402",
+  "pics": []
+ },
+ {
+  "id": "B2 every date on one line",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "6 lines; two-line dates: none",
+  "pics": [
+   "b1-402-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B2 a name at the left of its puck (box, per kind)",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "Static[IW] name 22-77 chip 77 puck.r.sm; Gambit[C] name 22-79 chip 79 puck.sm; Blade[IP] name 22-79 chip 79 puck.sm; Blade[IP] name 22-79 chip 79 puck.sm; Drifter[A] name 22-79 chip 79 puck.sm; Gambit[C] name 22-79 chip 79 puck.sm",
+  "pics": [
+   "b1-402-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B1 count inside its outline (Grid up)",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "{\"count\":{\"l\":207,\"r\":226,\"t\":69,\"b\":82,\"txt\":\"8\"},\"tab\":{\"l\":100,\"r\":244,\"t\":57,\"b\":93,\"cl\":118,\"cr\":226,\"cls\":\"intab\",\"lit\":false}}",
+  "pics": [
+   "b1-390-grid-tabrow.png"
+  ]
+ },
+ {
+  "id": "B1 count inside its outline (Approvals lit)",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "{\"count\":{\"l\":207,\"r\":226,\"t\":69,\"b\":82,\"txt\":\"8\"},\"tab\":{\"l\":100,\"r\":244,\"t\":57,\"b\":93,\"cl\":118,\"cr\":226,\"cls\":\"intab\",\"lit\":true},\"lit\":true}",
+  "pics": [
+   "b1-390-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B1 the tab row fits the screen",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "{\"oil\":{\"l\":246,\"r\":322,\"t\":57,\"b\":93,\"cl\":264,\"cr\":304,\"cls\":\"intab\",\"lit\":false},\"vw\":390}",
+  "pics": [
+   "b1-390-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 three rows",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "3 rows: New 0 · All · Jan · Feb · Mar · Apr · May // Jun · Jul · Aug · Sep · Oct · Nov · Dec // Pick dates… · Approve all 6",
+  "pics": [
+   "b1-390-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 every chip's words on one line",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "16 chips, none spill; heights 36",
+  "pics": [
+   "b1-390-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 Pick dates left / Approve all right on the 3rd row",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "pick x21-117; all x239-369",
+  "pics": [
+   "b1-390-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B3 no two headings touch (gaps)",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "gaps 47, 67, 35px; headings Days:21-50 LVE Bal:97-142 Lowest Avail:209-291 Placed:325-369",
+  "pics": [
+   "b1-390-headings.png"
+  ]
+ },
+ {
+  "id": "B3 LOWEST AVAIL does not run into PLACED",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "lowest ends 291, placed starts 325",
+  "pics": [
+   "b1-390-headings.png"
+  ]
+ },
+ {
+  "id": "B3 page does not scroll sideways",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "scrollWidth 390, viewport 390",
+  "pics": []
+ },
+ {
+  "id": "B2 every date on one line",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "6 lines; two-line dates: none",
+  "pics": [
+   "b1-390-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B2 a name at the left of its puck (box, per kind)",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "Static[IW] name 22-77 chip 77 puck.r.sm; Gambit[C] name 22-79 chip 79 puck.sm; Blade[IP] name 22-79 chip 79 puck.sm; Blade[IP] name 22-79 chip 79 puck.sm; Drifter[A] name 22-79 chip 79 puck.sm; Gambit[C] name 22-79 chip 79 puck.sm",
+  "pics": [
+   "b1-390-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B1 count inside its outline (Grid up)",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "{\"count\":{\"l\":188,\"r\":206,\"t\":69,\"b\":82,\"txt\":\"8\"},\"tab\":{\"l\":91,\"r\":222,\"t\":57,\"b\":93,\"cl\":107,\"cr\":206,\"cls\":\"intab\",\"lit\":false}}",
+  "pics": [
+   "b1-360-grid-tabrow.png"
+  ]
+ },
+ {
+  "id": "B1 count inside its outline (Approvals lit)",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "{\"count\":{\"l\":188,\"r\":206,\"t\":69,\"b\":82,\"txt\":\"8\"},\"tab\":{\"l\":91,\"r\":222,\"t\":57,\"b\":93,\"cl\":107,\"cr\":206,\"cls\":\"intab\",\"lit\":true},\"lit\":true}",
+  "pics": [
+   "b1-360-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B1 the tab row fits the screen",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "{\"oil\":{\"l\":224,\"r\":292,\"t\":57,\"b\":93,\"cl\":239,\"cr\":276,\"cls\":\"intab\",\"lit\":false},\"vw\":360}",
+  "pics": [
+   "b1-360-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 three rows",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "3 rows: New 0 · All · Jan · Feb · Mar · Apr · May // Jun · Jul · Aug · Sep · Oct · Nov · Dec // Pick dates… · Approve all 6",
+  "pics": [
+   "b1-360-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 every chip's words on one line",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "16 chips, none spill; heights 36",
+  "pics": [
+   "b1-360-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B4 Pick dates left / Approve all right on the 3rd row",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "pick x21-117; all x209-339",
+  "pics": [
+   "b1-360-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B3 no two headings touch (gaps)",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "gaps 47, 67, 41px; headings Days:21-50 LVE Bal:97-142 Lowest Avail:209-255 Placed:295-339",
+  "pics": [
+   "b1-360-headings.png"
+  ]
+ },
+ {
+  "id": "B3 LOWEST over AVAIL on two lines",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "lowest-avail heading lines 2, box 209-255",
+  "pics": [
+   "b1-360-headings.png"
+  ]
+ },
+ {
+  "id": "B3 LOWEST AVAIL does not run into PLACED",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "lowest ends 255, placed starts 295",
+  "pics": [
+   "b1-360-headings.png"
+  ]
+ },
+ {
+  "id": "B3 page does not scroll sideways",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "scrollWidth 360, viewport 360",
+  "pics": []
+ },
+ {
+  "id": "B2 every date on one line",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "6 lines; two-line dates: 23 Jan AM ›, 3 Feb PM ›, 10 Feb AM › (360: expected for a half day — noted)",
+  "pics": [
+   "b1-360-approvals-top.png"
+  ]
+ },
+ {
+  "id": "B2 a name at the left of its puck (box, per kind)",
+  "size": 360,
+  "verdict": "PASS",
+  "said": "Static[IW] name 22-77 chip 77 puck.r.sm; Gambit[C] name 22-79 chip 79 puck.sm; Blade[IP] name 22-79 chip 79 puck.sm; Blade[IP] name 22-79 chip 79 puck.sm; Drifter[A] name 22-79 chip 79 puck.sm; Gambit[C] name 22-79 chip 79 puck.sm",
+  "pics": [
+   "b1-360-approvals-top.png"
+  ]
+ }
+]
