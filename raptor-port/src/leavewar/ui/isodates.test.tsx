@@ -65,7 +65,8 @@ describe('the sentences built beside the sheets', () => {
   const src = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8')
   it('the absence door\'s refusals (approve, change, delete) print the day day-first', () => {
     const s = src('../sync.ts')
-    const why = [...s.matchAll(/why\.push\(`([^`]*)`\)/g)].map(m => m[1]!)
+    /* (since M4 the approve and change checks are one body each — approveWhy, decideApprovedWhy — which RETURN the reason) */
+    const why = [...s.matchAll(/(?:why\.push\(|return )`([^`]*)`/g)].map(m => m[1]!).filter(w => /not (approved|changed|deleted|filed)|decide or clear/.test(w))
     expect(why.length, 'the door still says why').toBeGreaterThan(3)
     for (const w of why) expect(w, w).not.toMatch(/\$\{it\.date\}/)
   })

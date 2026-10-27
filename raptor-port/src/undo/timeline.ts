@@ -198,7 +198,9 @@ function ingest(env: CommitEnvelope): void {
 /* B1 — the commands that are never an Undo step: each person's own "seen" (the changes window's "Mark all as seen", the
    admins' bell, the welcome-back note, "OK, seen" on a Leave War notice — §10) and a waiting person's own request for
    access (he has no Undo door). Their revisions are still tracked, so nothing reads as out-of-band. */
-const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack'])
+/* (…and the Leave War's "taken back" follow-up after an Undo or a Redo — M4 9.3: the line says what the Undo did, and is
+   no step of its own) */
+const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.notice'])
 
 /* A seen mark written INTO a record a step also holds (his welcome note on his own roster record, "OK, seen" on a Leave
    War day's list, the admins' bell on the requests) — the older step's before- and after-images still hold it unseen,

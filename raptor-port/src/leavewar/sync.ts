@@ -98,7 +98,10 @@ import {
   getVersion,
   setRefusalHook,
   setHolidayTell,
+  setDecisionTell,
   type HolidayRun,
+  type WarTell,
+  type OpenTell,
   type ReqWords,
   clearRaptorCell,
   createWar,
@@ -136,7 +139,8 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, setHolidayLeft, setHolidaySpan } from '../state/notices'
+import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
+import { hasRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
@@ -274,6 +278,8 @@ export function installAbsenceDoor(): void {
   /* [OIL-ASK-NOTIFY]: a working day made a holiday tells the schedulers and opens the one list (tellHoliday, below);
      and the bell's holiday line asks how many inputs are still left to answer (state/notices.ts) */
   setHolidayTell(tellHoliday)
+  /* M4 batch 9: a decision on a man's leave, and bidding opened or closed, tell the bell (tellWar, below) */
+  setDecisionTell({ leave: warLeaveNow, decisions: tellWar, openings: tellBidding })
   setHolidayLeft(holidayLeft)
   setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
@@ -1149,6 +1155,84 @@ function tellHoliday(runs: HolidayRun[]): void {
   commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(to, by != null ? String(by) : null, h.name, h.from, h.to) })
   const first = todo[0]!
   cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })
+}
+
+/* ---- THE BELL'S LEAVE WAR LINES (the overhaul's M4, batch 9 — D1142, D1214, D1422) ----------------------------
+   The war's store works out WHAT a command did to each man's leave (leavewar/state/store.ts decisionTells — from the
+   state before and after, never raised by a door); this is where it becomes his line: written through the scheduler
+   store's own input command, as a child of the war's, so the decision's Undo takes the line and its Redo puts it back
+   (9.3's "taken back" is the follow-up below). */
+/* each man's war-approved leave as it stands — person → date → its notation (LL, *LL, LL*) */
+function warLeaveNow(): Map<string, Map<string, string>> {
+  const out = new Map<string, Map<string, string>>()
+  for (const row of INPUTS as any[]) {
+    if (!row || !row.lw || !isLeave(row.type)) continue
+    const pid = onlyNamed(row)
+    if (pid == null) continue
+    const m = out.get(String(pid)) ?? new Map<string, string>()
+    for (const d of inputDates(row)) {
+      const c = absencesAt(String(pid), d).find(x => x.id === String(row.iid))
+      m.set(d, c ? notationOf(c.code, c.win) : String(row.type))
+    }
+    out.set(String(pid), m)
+  }
+  return out
+}
+function tellWar(tells: WarTell[]): void {
+  const by = me()
+  const who = by != null ? String(by) : null
+  commitInputs(SCHED_TYPES.inputsWrite, () => {
+    for (const t of tells) {
+      const part: NoticePart = { k: 'lw', c: t.code, a: t.from, b: t.to, d: t.d, ...(t.destFrom ? { to: t.destFrom, tb: t.destTo } : {}) }
+      noticeWar([t.personId], who, part)
+    }
+  })
+}
+/* who hears that bidding opened or closed: every person on the war with a sign-in — the archived, the deleted and the
+   special left out (noticeWar), and the admin who did it (D1214) */
+function warAudience(): string[] {
+  const onWar = new Set(getState().people.map(p => p.id))
+  return [...new Set(ACCOUNTS_LIST.filter((a: any) => a && a.pid != null && onWar.has(String(a.pid))).map((a: any) => String(a.pid)))]
+}
+function tellBidding(tells: OpenTell[]): void {
+  const by = me()
+  const who = by != null ? String(by) : null
+  const to = warAudience()
+  if (!to.length) return
+  commitInputs(SCHED_TYPES.inputsWrite, () => {
+    for (const t of tells) noticeWar(to, who, { k: 'lwopen', a: t.from, b: t.to, open: t.open })
+  })
+}
+
+/* "TAKEN BACK" (M4 9.3 — owner D1216, D148). An Undo restores an exact image, so it cannot itself leave a line or write
+   one: the decision's line goes with the Undo, as every notice does. Then, once the Undo has LANDED (the undo's own
+   `reversed` hook — state/undo-wire.ts), this follow-up — a command of its own, never an Undo step (undo/timeline.ts
+   NOT_STEPS) — writes "Approval of LL taken back · Saber" for each line that went which its member had already READ (his
+   read record, which an admin may read — state/perms.ts NoticeSeen): one he had not read simply went. A Redo puts the old
+   line back with its old id — already in his read marks — so where a "taken back" stands for it, Redo's follow-up writes
+   a FRESH line on top, new id and the time now ("LL approved again · Saber"), unread (the fresh read, finding 3). */
+export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
+  const made: Notice[] = []
+  for (const c of changes) {
+    if (c.collection !== 'notices' || c.op !== 'put' || !c.after) continue
+    const n = c.after as Notice
+    if (!isWarNotice(n)) continue
+    const p: any = (n.what || [])[0]
+    if (!p || p.k === 'lwback') continue
+    if (dir === 'undo') {
+      if (NOTICES.some(x => x.id === n.id) || !hasRead(n.to, n)) continue
+      const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
+      made.push({ ...n, what: [{ k: 'lwback', ...(p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id }] })
+    } else {
+      if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => x.to === n.to && (x.what || [])[0]?.k === 'lwback' && ((x.what[0] as any).ref === n.id))) continue
+      made.push({ ...n, what: [p.k === 'lw' ? { ...p, again: true } : { ...p }] })
+    }
+  }
+  if (!made.length) return 0
+  const by = me()
+  let wrote = 0
+  commitInputs('lw.notice', () => { for (const n of made) wrote += noticeWar([n.to], by != null ? String(by) : null, n.what[0]!) })
+  return wrote
 }
 
 /* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —

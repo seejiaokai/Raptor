@@ -438,6 +438,10 @@ function applyEnd(): void {
 /* (a posting whose date is today runs inside the admin's own `lw.postout`; one whose date arrives later runs as the
    reconciler's `lw.postoutRun`, a projection — both are the posting acting, and both tell with no name) */
 const APP_ACTS = new Set(['person.delete', 'lw.postoutRun', 'lw.postout'])
+/* THE WAR'S OWN DOORS, which tell a man about his leave in ONE line of their own (M4 9.2, B1 — notices.ts skipLw): every
+   Leave War command but a posting (which keeps telling, with no name) and a filing (a course, an overseas duty — no war
+   leave of its own) */
+const warDoor = (type: string): boolean => type.startsWith('lw.') && !APP_ACTS.has(type) && type !== 'lw.file'
 const TOLD = new WeakMap<object, { before: Map<string, any>; made: Set<string> }>()
 /* whose commands tell: a person's own, and the app's own acts on a man whatever raised them — never a restore, a seed
    or a change arriving from another device */
@@ -467,7 +471,7 @@ function tellPass(): void {
   }
   const pid = env.actor && env.actor.personId != null ? String(env.actor.personId) : null
   const from = NOTICES.length
-  noticePass(t.before, INPUTS, { actor: pid, app: APP_ACTS.has(env.type) })
+  noticePass(t.before, INPUTS, { actor: pid, app: APP_ACTS.has(env.type), skipLw: warDoor(env.type) })
   for (let i = from; i < NOTICES.length; i++) t.made.add(NOTICES[i]!.id)
 }
 

@@ -95,7 +95,9 @@ export const PERMS: Record<string, PermRow> = {
   /* a notice is written by whoever made the change, inside it, and read by the person it is addressed to; nobody
      rewrites one, and it is removed only by its maker's own Undo of that change */
   [T.notice]: row(cell('C R D'), cell('C', 'R D')),
-  [T.noticeseen]: row(cell('', 'C R U'), cell('', 'C R U')),
+  /* …and an ADMIN reads every person's (M4 9.3 — D1216): his Undo of a Leave War decision asks whether its member had read
+     the line it takes back */
+  [T.noticeseen]: row(cell('R', 'C R U'), cell('', 'C R U')),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
@@ -445,6 +447,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* opening or closing dates for bidding (D1177, 21 Oct 26 — the stages went; D352 narrowed): the admin's, as the stage
      always was (27 Aug 26) — the period's own record; its own type so Undo can name it ("Undid: opening bidding …") */
   'lw.open': op(T.war, 'U'),
+  /* the bell's "taken back" line after an admin's Undo or Redo of a Leave War decision (M4 9.3 — D1216): a notice of its
+     own command, written by the admin whose Undo it was; never a member's */
+  'lw.notice': op(T.notice, 'C'),
   /* the Holidays list's three writers (leavewar/state/store.ts holidayAdd / holidayChange / holidayRemove — the Inputs /
      SANS redesign, plan §3.4): a public holiday or an Off day is the leave period's own record, an admin's to change */
   'lw.holiday.add': op(T.war, 'U'), 'lw.holiday.change': op(T.war, 'U'), 'lw.holiday.remove': op(T.war, 'U'),

@@ -23,7 +23,7 @@
 import { store } from '../engine/hooks'
 import { me } from './perms'
 import { commitSettingsIntent } from './people-settings-commit'
-import { NOTICES, noticeLive, type Notice } from './notices'
+import { allNoticesFor, noticeLive, type Notice } from './notices'
 
 export const NOTICESEEN_PFX = 'noticeseen:'
 export const NOTICE_TYPES = ['notices.seen'] as const
@@ -60,8 +60,17 @@ export function isUnread(n: Notice, pid: string | null = me()): boolean {
 export function unreadFor(pid: string | null = me()): number {
   if (!pid) return 0
   let n = 0
-  for (const x of NOTICES) if (isUnread(x, pid)) n++
+  /* (his stored notices and the lines his bell works out — M4 9.4's "bidding closed · its dates ended") */
+  for (const x of allNoticesFor(pid)) if (isUnread(x, pid)) n++
   return n
+}
+/** HAS THIS PERSON READ THIS NOTICE? — asked by an ADMIN's device of a member's line (the overhaul's M4, 9.3 — D1216): his
+ *  Undo of a decision takes its line back if the member has not read it, and leaves a "taken back" line if he has. The
+ *  member's read record is his own (written only by him — `notices.seen`); an admin may READ it (state/perms.ts
+ *  NoticeSeen, docs/data-model.md §11 — widened for this, D200). */
+export function hasRead(pid: string, n: Pick<Notice, 'id' | 'at'>): boolean {
+  const s = SEEN[pid]
+  return !!s && (n.at <= s.upto || s.ids.includes(n.id))
 }
 
 function write(pid: string, next: Seen): boolean {
@@ -73,11 +82,11 @@ function write(pid: string, next: Seen): boolean {
 /** a tap on a line: that one notice is read. True when it wrote; false when it was read already, or is not his. */
 export function markNoticeRead(id: string): boolean {
   const pid = me()
-  const n = pid ? NOTICES.find(x => x.id === id && x.to === pid) : null
+  const n = pid ? allNoticesFor(pid).find(x => x.id === id) : null
   if (!pid || !n || !isUnread(n, pid)) return false
   const cur = SEEN[pid] || { upto: 0, ids: [] }
   /* an id whose notice is gone (its maker's Undo took it) can never be listed again — it leaves the record here */
-  const live = new Set(NOTICES.filter(x => x.to === pid && x.at > cur.upto).map(x => x.id))
+  const live = new Set(allNoticesFor(pid).filter(x => x.at > cur.upto).map(x => x.id))
   return write(pid, { upto: cur.upto, ids: [...new Set([...cur.ids, id])].filter(x => live.has(x)).sort() })
 }
 /** "Mark all read" — everything addressed to the person signed in, each by its id */
@@ -89,5 +98,5 @@ export function markAllNoticesRead(): boolean {
      A6): a holiday's line with nothing left to answer is not in his list, so pressing this cannot have read it — it
      took every notice of his, and such a line came back already read when an input on it needed an answer again. What
      he read before stays read. */
-  return write(pid, { upto: cur.upto, ids: NOTICES.filter(x => x.to === pid && x.at > cur.upto && (noticeLive(x) || cur.ids.includes(x.id))).map(x => x.id).sort() })
+  return write(pid, { upto: cur.upto, ids: allNoticesFor(pid).filter(x => x.at > cur.upto && (noticeLive(x) || cur.ids.includes(x.id))).map(x => x.id).sort() })
 }

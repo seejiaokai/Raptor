@@ -2778,6 +2778,145 @@ export function actCount(): number { return actSeq }
 export function filedSince(since: number): 'CSE' | 'OD' | 'OTH' | 'ATCH' | null {
   return lastFiled && lastFiled.at === actSeq && actSeq > since ? lastFiled.kind : null
 }
+/* ---- THE BELL'S LEAVE WAR LINES (the overhaul's M4, batch 9 — owner D1142, D1214, D1422; the build spec §2) ----------
+   A decision on a man's leave tells HIM, one line a decision: his bid approved or refused, his approved leave put back,
+   moved or deleted, leave placed on his row already approved, his pending bid moved or deleted by an admin — naming who
+   did it; a run of days decided together is one line. Like the holiday's notice above, it is WORKED OUT from the state
+   before and after the command, never raised by a door — so no door, today's or tomorrow's, can decide a man's leave
+   and tell nobody — and written INSIDE the command (through the sync's hook, as the scheduler's own record), so the
+   decision's Undo takes the line with it (9.3's follow-up says "taken back" where he had read it). Whoever did it is
+   never told; nor is anyone of a change to his own row (a member's own move or delete). What is DONE with the news —
+   the notices, who is still here to be told — is the sync's. */
+export interface WarTell {
+  personId: string
+  d: 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel'
+  code: string
+  from: string; to: string
+  /** where a move took it: the run it now stands on */
+  destFrom?: string; destTo?: string
+}
+export interface OpenTell { from: string; to: string; open: boolean }
+export interface TellHooks {
+  /** each man's war-approved leave as it stands: person → date → the leave's notation (LL, *LL) */
+  leave(): Map<string, Map<string, string>>
+  decisions(tells: WarTell[]): void
+  openings(tells: OpenTell[]): void
+}
+let TELL: TellHooks | null = null
+export function setDecisionTell(h: TellHooks | null): void { TELL = h }
+/* the commands that may decide a man's leave */
+const TELLS: ReadonlySet<string> = new Set(['lw.decide', 'lw.placeApproved', 'lw.move', 'lw.edit', 'lw.clear'])
+
+/** every request of one man, by id, in every war — with its date */
+function requestsOf(s: State, pid: string): Map<string, { date: string; rec: RequestRec }> {
+  const m = new Map<string, { date: string; rec: RequestRec }>()
+  for (const w of s.wars) for (const [date, list] of Object.entries(w.recs[pid] ?? {})) {
+    for (const r of list) if (r.kind === 'request') m.set(r.id, { date, rec: r })
+  }
+  return m
+}
+const dayGap = (a: string, b: string): number =>
+  Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86_400_000)
+
+export function decisionTells(type: string, before: State, after: State, leaveBefore: Map<string, Map<string, string>>, leaveAfter: Map<string, Map<string, string>>, actor: string | undefined): WarTell[] {
+  /* the men whose war rows or approved leave moved — nobody else is looked at */
+  const who = new Set<string>()
+  const was = new Map(before.wars.map(w => [w.period.id, w] as const))
+  for (const w of after.wars) {
+    const b = was.get(w.period.id)
+    if (b && b.recs === w.recs) continue
+    for (const pid of new Set([...Object.keys(w.recs), ...Object.keys(b?.recs ?? {})])) if (!b || b.recs[pid] !== w.recs[pid]) who.add(pid)
+  }
+  for (const pid of new Set([...leaveBefore.keys(), ...leaveAfter.keys()])) {
+    const a = leaveBefore.get(pid), b = leaveAfter.get(pid)
+    if (!a || !b || a.size !== b.size || [...a].some(([d, c]) => b.get(d) !== c)) who.add(pid)
+  }
+  type Ev = { d: WarTell['d']; code: string; date: string; dest?: string }
+  const out: WarTell[] = []
+  for (const pid of who) {
+    if (actor && pid === actor) continue                                  // his own change tells nobody
+    const RB = requestsOf(before, pid), RA = requestsOf(after, pid)
+    const LB = leaveBefore.get(pid) ?? new Map<string, string>(), LA = leaveAfter.get(pid) ?? new Map<string, string>()
+    const lost = new Map([...LB].filter(([d, c]) => LA.get(d) !== c))
+    const gained = new Map([...LA].filter(([d, c]) => LB.get(d) !== c))
+    const evs: Ev[] = []
+    for (const [id, { date, rec }] of RB) {
+      const now = RA.get(id)
+      if (!now) {
+        if (gained.has(date)) { evs.push({ d: 'approved', code: rec.code, date }); gained.delete(date); continue }
+        /* a refusal another refusal on the same half replaced (decideRequest keeps one) is no news */
+        if (type === 'lw.decide' && rec.state === 'refused') continue
+        evs.push({ d: 'biddel', code: rec.code, date })
+        continue
+      }
+      if (now.date !== date) { evs.push({ d: 'bidmoved', code: rec.code, date, dest: now.date }); continue }
+      if (now.rec.state !== rec.state) evs.push({ d: now.rec.state === 'refused' ? 'refused' : 'repend', code: rec.code, date })
+    }
+    for (const [id, { date, rec }] of RA) {
+      if (RB.has(id) || !lost.has(date)) continue
+      evs.push({ d: rec.state === 'refused' ? 'refused' : 'putback', code: rec.code, date })
+      lost.delete(date)
+    }
+    /* what is left of the leave: a move pairs what went with what came, day for day; the rest went or came */
+    if (type === 'lw.move' && lost.size && lost.size === gained.size) {
+      const L = [...lost.keys()].sort(), G = [...gained.keys()].sort()
+      const delta = dayGap(L[0]!, G[0]!)
+      if (L.every((d, i) => dayGap(d, G[i]!) === delta)) {
+        L.forEach((d, i) => evs.push({ d: 'moved', code: lost.get(d)!, date: d, dest: G[i]! }))
+        lost.clear(); gained.clear()
+      }
+    }
+    for (const [date, code] of lost) evs.push({ d: 'deleted', code, date })
+    if (type === 'lw.placeApproved') for (const [date, code] of gained) evs.push({ d: 'added', code, date })
+    /* ONE LINE A RUN: the same news about the same kind on days in a row (a move, the same distance) */
+    evs.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0) || (a.code < b.code ? -1 : a.code > b.code ? 1 : 0) || (a.date < b.date ? -1 : 1))
+    for (const e of evs) {
+      const last = out.length && out[out.length - 1]!.personId === pid ? out[out.length - 1]! : null
+      const sameMove = !e.dest || (!!last?.destFrom && dayGap(last.from, last.destFrom) === dayGap(e.date, e.dest))
+      if (last && last.d === e.d && last.code === e.code && addDays(last.to, 1) === e.date && sameMove) {
+        last.to = e.date
+        if (e.dest) last.destTo = e.dest
+        continue
+      }
+      out.push({ personId: pid, d: e.d, code: e.code, from: e.date, to: e.date, ...(e.dest ? { destFrom: e.dest, destTo: e.dest } : {}) })
+    }
+  }
+  return out
+}
+function tellDecisions(type: string, before: State, leaveBefore: Map<string, Map<string, string>>): void {
+  if (!TELL) return
+  const tells = decisionTells(type, before, state, leaveBefore, TELL.leave(), actorNow())
+  if (tells.length) TELL.decisions(tells)
+}
+
+/* BIDDING OPENED OR CLOSED (D1214, M4 9.4): what the "Open for bidding" window's one command did to the period on screen —
+   the stretch the newly opened days now stand in ("bidding open"), or the run just closed ("bidding closed"); a stretch
+   changed to exact days is one line with its new dates. */
+export function openingTells(before: Period, after: Period): OpenTell[] {
+  const days = (p: Period) => {
+    const s = new Set<string>()
+    for (const o of p.open) for (let d = o.from; d <= o.to; d = addDays(d, 1)) s.add(d)
+    return s
+  }
+  const B = days(before), A = days(after)
+  const out: OpenTell[] = []
+  for (const o of after.open) {
+    let fresh = false
+    for (let d = o.from; d <= o.to && !fresh; d = addDays(d, 1)) if (!B.has(d)) fresh = true
+    if (fresh) out.push({ from: o.from, to: o.to, open: true })
+  }
+  /* a run closed that no line above already names (a stretch changed to exact days says its new dates only) */
+  if (!out.length) for (const r of closedRuns(before.open, after.open)) out.push({ from: r.from, to: r.to, open: false })
+  return out
+}
+function tellOpenings(before: State): void {
+  if (!TELL) return
+  const b = before.wars.find(w => w.period.id === state.currentId)?.period
+  if (!b || b === state.period) return
+  const tells = openingTells(b, state.period)
+  if (tells.length) TELL.openings(tells)
+}
+
 function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: string } = {}): T {
   if (PLACING.has(type)) actSeq++
   if (cmdIsCommitting() || !LW_READY || LW_RESTORING) return fn()
@@ -2790,8 +2929,12 @@ function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: st
     apply: (t) => {
       t.enlist(lwStore)
       const before = LW_BASELINE
+      /* (the war-approved leave as it stood — a man's approved leave is an Input, outside this store — for the bell, M4) */
+      const leaveBefore = TELL && TELLS.has(type) ? TELL.leave() : null
       out = fn()
       tellHolidays(before)                       // [OIL-ASK-NOTIFY]: inside this command — its Undo takes the notices too
+      if (leaveBefore) tellDecisions(type, before, leaveBefore)       // M4 batch 9: the same — his line goes with its Undo
+      if (TELL && type === 'lw.open') tellOpenings(before)
       /* the per-cell persists inside ran as joined children (locked — no
          legacy undo step each); ONE unlocked persist at the seal records the
          whole gesture as one step on the legacy Leave War stack too */
