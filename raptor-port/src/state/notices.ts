@@ -159,7 +159,7 @@ export interface PassOpts {
   /** the pending Leave War bids this command's inputs replaced (M4 9.3a): input id → person → the bids' kinds */
   replaced?: ReadonlyMap<string, ReadonlyMap<string, readonly string[]>>
 }
-/* WHICH BIDS A COMMAND'S INPUTS REPLACED (M4 9.3a) — noted by the Leave War's clash gate (leavewar/inputgate.ts
+/* WHICH BIDS A COMMAND'S FILINGS REPLACED (M4 9.3a) — noted by the Leave War's clash gate (leavewar/inputgate.ts
    replaceClashingBids) inside the very command whose input replaced them, read by that command's notice pass
    (state/sched-commit.ts tellPass). Keyed by the command, so a refused command's notes go with it and never reach
    another's line. */
