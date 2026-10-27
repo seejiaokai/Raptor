@@ -1,0 +1,195 @@
+<title>Approvals vs Drawings</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; each difference a card — its question, the recommendation, the pair of pictures (tap to enlarge). */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --fg: #141821; --muted: #5a6475; --edge: #d9dee7;
+  --accent: #0e8fb0; --keep: #6b52c9; --back: #0e8a5a; --warn: #b5560f;
+  --f-body: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --f-num: ui-monospace, "Cascadia Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1016; --surface: #161b24; --fg: #e8ecf2; --muted: #98a2b3; --edge: #2a3240;
+  --accent: #3cc6e8; --keep: #a996ff; --back: #4fd08f; --warn: #f0a35a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d1016; --surface: #161b24; --fg: #e8ecf2; --muted: #98a2b3; --edge: #2a3240;
+  --accent: #3cc6e8; --keep: #a996ff; --back: #4fd08f; --warn: #f0a35a; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px }
+main { max-width: 860px; margin: 0 auto; display: grid; gap: 28px }
+h1 { font-size: 24px; margin: 0; text-wrap: balance }
+h2 { font-size: 18px; margin: 0 0 4px; text-wrap: balance }
+h3 { font-size: 16px; margin: 0; text-wrap: balance }
+p { margin: 0 }
+.lede { color: var(--muted); max-width: 65ch }
+.todo { background: var(--surface); border: 1px solid var(--edge); border-radius: 12px; padding: 16px; display: grid; gap: 10px }
+.todo ol { margin: 0; padding-left: 22px; display: grid; gap: 4px }
+.todo a { color: var(--accent) }
+section { display: grid; gap: 14px }
+.card { background: var(--surface); border: 1px solid var(--edge); border-radius: 12px; padding: 14px; display: grid; gap: 10px; min-width: 0 }
+.card .head { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap }
+.num { font-family: var(--f-num); font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums }
+.rec { font-size: 13px; font-weight: 700; padding: 2px 9px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap }
+.rec.back { color: var(--back) } .rec.keep { color: var(--keep) } .rec.fix { color: var(--warn) }
+.why { color: var(--muted); font-size: 14px; max-width: 70ch }
+.pic { display: block; border-radius: 8px; overflow: hidden; border: 1px solid var(--edge); background: #0c0d10; cursor: zoom-in }
+.pic img { display: block; width: 100%; height: auto }
+.pic:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px }
+.match { color: var(--muted); font-size: 14px }
+dialog { border: 0; padding: 0; background: transparent; max-width: 100vw; max-height: 100vh }
+dialog::backdrop { background: rgba(0,0,0,.85) }
+dialog img { max-width: 96vw; max-height: 92vh; display: block; border-radius: 6px }
+dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px)); right: calc(12px + env(safe-area-inset-right, 0px));
+  font-size: 15px; padding: 8px 14px; border-radius: 8px; border: 0; background: #ffffff; color: #141821; cursor: pointer }
+</style>
+<main>
+  <header style="display:grid;gap:8px">
+    <h1>Leave War Approvals: build beside your drawings</h1>
+    <p class="lede">Each difference between your approved drawings and what is built is shown below, your drawing on top and the build underneath, the place ringed. Nothing goes back to a drawing until you say. Tap a picture to see it full size.</p>
+  </header>
+
+  <div class="todo">
+    <h2>What I need from you</h2>
+    <p>Reply "all as recommended", or give the numbers you want the other way. My recommendation for each:</p>
+    <ol>
+      <li><a href="#d1">Header says when you last looked</a>: back to the drawing</li>
+      <li><a href="#d2">"+2 pending in JAN – DEC 27 ›" link</a>: keep the build's</li>
+      <li><a href="#d3">Thin line between New and DATES</a>: back to the drawing</li>
+      <li><a href="#d4">Columns packed to the left</a>: back to the drawing</li>
+      <li><a href="#d5">Size of Approve / Refuse and the row height</a>: keep the build's</li>
+      <li><a href="#d6">Gap between the tab row and the list</a>: back to the drawing</li>
+      <li><a href="#d7">On a decided line the other button stays pressable</a>: back to the drawing</li>
+      <li><a href="#d8">On a decided line the kind's box shows the decision</a>: back to the drawing</li>
+      <li><a href="#d9">Armed "Approve N — tap again" colour</a>: keep the build's amber</li>
+      <li><a href="#d10">"Also since you last looked" lined up with the columns</a>: back to the drawing</li>
+      <li><a href="#d11">The slim Approvals bar on the grid</a>: back to the drawing</li>
+      <li><a href="#d12">The bell's bidding lines start with a capital B</a>: back to the drawing</li>
+      <li><a href="#d13">How the bell writes a line's age</a>: keep the build's</li>
+      <li><a href="#q14">Phone filters: less height than your drawing?</a> (asked earlier, still open): keep your drawing's three rows</li>
+    </ol>
+  </div>
+
+  <section>
+    <h2>Desktop: the Approvals list</h2>
+
+    <article class="card" id="d1">
+      <div class="head"><span class="num">1</span><h3>The header says when you last looked</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">The drawing reads "15 pending · 3 new since you last looked, Wed 7 Jan 16:40". The build reads only "9 pending · 3 new". The time tells you what "new" is counted from.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 1"><img src="pairs/1-header.png" alt="Header: drawing with the last-looked time, build without it"></button>
+    </article>
+
+    <article class="card" id="d2">
+      <div class="head"><span class="num">2</span><h3>A link to requests in another period</h3><span class="rec keep">Keep the build's</span></div>
+      <p class="why">Added on purpose: the tab's count covers every period, the list only the period on view. Without the link the tab says 11 and the list shows 9 with nothing saying where the other 2 are. A tap opens that period.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 2"><img src="pairs/2-elsewhere.png" alt="The +2 pending link, only in the build"></button>
+    </article>
+
+    <article class="card" id="d3">
+      <div class="head"><span class="num">3</span><h3>A thin line between New and DATES</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">The drawing separates "New" from the date choices with a short upright line. The build has none, so New reads as one more date.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 3"><img src="pairs/3-divider.png" alt="Divider between New and DATES in the drawing, missing in the build"></button>
+    </article>
+
+    <article class="card" id="d4">
+      <div class="head"><span class="num">4</span><h3>The columns</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">The drawing keeps DATES narrower and packs DAYS · LVE BAL · LOWEST AVAIL · PLACED close behind it, leaving the space before the buttons. The build spreads them across the width, so your eye travels further along each line.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 4"><img src="pairs/4-columns.png" alt="Column headings: packed in the drawing, spread in the build"></button>
+    </article>
+
+    <article class="card" id="d5">
+      <div class="head"><span class="num">5</span><h3>Button size and row height</h3><span class="rec keep">Keep the build's</span></div>
+      <p class="why">The drawing has Approve and Refuse a little smaller (about 90 × 31 against 100 × 36) and rows 50 high against 54. The build uses the app's usual button size, and you ruled that no button changes size without your word. Say "5 back" if you want them smaller.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 5"><img src="pairs/5-sizes.png" alt="Approve and Refuse: smaller in the drawing"></button>
+    </article>
+
+    <article class="card" id="d6">
+      <div class="head"><span class="num">6</span><h3>The gap under the tab row</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">In the drawing the list's card sits a little lower, with a gap under the tab row, exactly where the grid's card sits. The build's card starts right under the tabs and a little further left.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 6"><img src="pairs/6-card.png" alt="Card position under the tabs"></button>
+    </article>
+
+    <article class="card" id="d7">
+      <div class="head"><span class="num">7</span><h3>A decided line: the other button</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">In the drawing, once a request is approved, Refuse stays an ordinary button you can press. The build greys it out and you cannot press it: to turn an approval into a refusal you must first tap Approved to send it back, then Refuse.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 7"><img src="pairs/7-other-button.png" alt="Decided lines: other button normal in the drawing, greyed in the build"></button>
+    </article>
+
+    <article class="card" id="d8">
+      <div class="head"><span class="num">8</span><h3>A decided line: the kind's box</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">The drawing shows the decision on the box too: filled once approved, grey and struck through once refused, as the grid draws it. The build keeps the dashed "pending" box.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 8"><img src="pairs/8-kind-box.png" alt="Kind box: filled or struck in the drawing, dashed in the build"></button>
+    </article>
+
+    <article class="card" id="d9">
+      <div class="head"><span class="num">9</span><h3>Approve all, waiting for its second tap</h3><span class="rec keep">Keep the build's amber</span></div>
+      <p class="why">The drawing keeps it cyan. The build turns it amber, as the plan said, so it is plain that the next tap decides many requests at once.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 9"><img src="pairs/9-armed.png" alt="Armed Approve all: cyan in the drawing, amber in the build"></button>
+    </article>
+
+    <article class="card" id="d10">
+      <div class="head"><span class="num">10</span><h3>"Also since you last looked"</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">In the drawing each line's dates, what happened and its time sit on one line, the words under DAYS and the time under PLACED. In the build the dates sit higher than the words, the words further right and the time at the far edge.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 10"><img src="pairs/10-also.png" alt="Also since you last looked: aligned in the drawing, scattered in the build"></button>
+    </article>
+  </section>
+
+  <section>
+    <h2>Desktop: the slim bar on the grid</h2>
+    <article class="card" id="d11">
+      <div class="head"><span class="num">11</span><h3>The slim Approvals bar</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">The drawing has a compact bar about half as wide, no cyan outline, "Back ▴" as plain cyan words and a plain ✕. The build's bar is about twice as wide, outlined, with Back and ✕ in boxes, and covers more of the grid.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 11"><img src="pairs/11-slim.png" alt="Slim bar: compact in the drawing, wide in the build"></button>
+    </article>
+  </section>
+
+  <section>
+    <h2>The bell</h2>
+    <article class="card" id="d12">
+      <div class="head"><span class="num">12</span><h3>Bidding lines start with a capital</h3><span class="rec back">Back to the drawing</span></div>
+      <p class="why">The drawing reads "Bidding closed", the build "bidding closed". (The build's picture is from a desktop, enlarged, so it is softer.)</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 12"><img src="pairs/12-bidding.png" alt="Capital B in the drawing, small b in the build"></button>
+    </article>
+    <article class="card" id="d13">
+      <div class="head"><span class="num">13</span><h3>How a line's age is written</h3><span class="rec keep">Keep the build's</span></div>
+      <p class="why">The drawing writes "5m", "20m", "1d", "3w". The build writes what the bell already writes for every other notice in the app: "now", "2 min", "1 h", "yesterday", "2 d". Changing it for Leave War lines alone would mix two styles in one list.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 13"><img src="pairs/13-ages.png" alt="Ages: 5m in the drawing, now in the build"></button>
+    </article>
+    <p class="match">Matches your drawings, nothing to choose: the phone's Approvals list, the phone's slim bar, and the bell's layout and "Mark all read" on a phone.</p>
+  </section>
+
+  <section>
+    <h2>Still open from earlier</h2>
+    <article class="card" id="q14">
+      <div class="head"><span class="num">14</span><h3>Phone filters: less height than your drawing?</h3><span class="rec back">Keep your drawing's three rows</span></div>
+      <p class="why">Built now as your drawing: three rows, then Pick dates… and Approve all. You asked earlier whether it could use less height. My recommendation is to keep it, because each chip is already as small as a finger can tap reliably.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 14"><img src="pairs/q14-filters.png" alt="The phone's filter rows"></button>
+    </article>
+  </section>
+
+  <section>
+    <h2>Being fixed now, without asking</h2>
+    <p class="why">These are plain faults, not design choices, so I am fixing them as you ruled. Each fix gets a test first and is walked again after.</p>
+    <article class="card"><h3>The member is never told when bidding ends by its dates</h3><p class="why">His bell keeps "bidding open" after the dates have passed, while the grid says "Bidding closed". The admin's bell gets the line instead.</p><button class="pic" type="button" aria-label="Enlarge: member bell"><img src="pairs/f7-member-bell.png" alt="Member bell still says bidding open"></button></article>
+    <article class="card"><h3>Approve works on a man who is posting out</h3><p class="why">His request past his posting-out date can be approved. It should say "Posted out: refuse or delete it" and approve nothing.</p><button class="pic" type="button" aria-label="Enlarge: posting out"><img src="pairs/f8-postedout.png" alt="Approved on a man posting out"></button></article>
+    <article class="card"><h3>A long bell hides "Mark all read"</h3><p class="why">With 12 lines it stops at the 9th with no sign there are more, and "Mark all read" is out of sight.</p><button class="pic" type="button" aria-label="Enlarge: long bell"><img src="pairs/f5-longbell.png" alt="Long bell cut off"></button></article>
+    <article class="card"><h3>The manning bubble hides behind the slim bar</h3><p class="why">On a phone, a bid that turns a row amber or red raises its bubble under the slim bar, so it cannot be read or pressed.</p><button class="pic" type="button" aria-label="Enlarge: bubble"><img src="pairs/f3-bubble.png" alt="Bubble behind the slim bar"></button></article>
+    <article class="card"><h3>A person's window covers the slim bar</h3><p class="why">Opening a SANS man's dates from Approvals opens his window half over the slim bar, cutting "Back".</p><button class="pic" type="button" aria-label="Enlarge: person window"><img src="pairs/f4-window.png" alt="Person window over the slim bar"></button></article>
+    <article class="card"><h3>The tab's count sits outside its ring on narrower phones</h3><p class="why">At 390 and 360 wide, and on an iPhone's letters, the "8" pokes out past the lit outline.</p><button class="pic" type="button" aria-label="Enlarge: tab count"><img src="pairs/f1-tabcount.png" alt="Tab count outside its ring"></button></article>
+    <article class="card"><h3>A date breaks over two lines</h3><p class="why">"23 Jan AM ›" leaves the › alone on a second line on narrower phones and on an iPhone's letters.</p><button class="pic" type="button" aria-label="Enlarge: date break"><img src="pairs/f2-dates.png" alt="Date broken over two lines"></button></article>
+    <article class="card"><h3>"Approved" is wider than "Approve"</h3><p class="why">When lit, the button grows and its left edge moves, so it shifts under your finger.</p><button class="pic" type="button" aria-label="Enlarge: Approved width"><img src="pairs/f6-approved.png" alt="Approved button wider"></button></article>
+    <p class="match">Also: "New 0" still shows its dot; one picked day reads "13 Jan – 13 Jan"; a SANS man's puck in Approvals lacks its purple edge.</p>
+  </section>
+</main>
+<dialog id="zoom" aria-label="Picture, full size"><button class="close" type="button" id="zoomClose">Close</button><img id="zoomImg" src="pairs/1-header.png" alt="Picture, full size"></dialog>
+<script>
+const dlg = document.getElementById('zoom'), big = document.getElementById('zoomImg')
+let opener = null
+document.querySelectorAll('.pic').forEach(b => b.addEventListener('click', () => {
+  const im = b.querySelector('img'); big.src = im.src; big.alt = im.alt; opener = b
+  try { dlg.showModal() } catch (e) { dlg.setAttribute('open', '') }
+}))
+const shut = () => { dlg.close ? dlg.close() : dlg.removeAttribute('open') }
+document.getElementById('zoomClose').addEventListener('click', shut)
+dlg.addEventListener('click', e => { if (e.target === dlg || e.target === big) shut() })
+dlg.addEventListener('close', () => { if (opener) opener.focus() })
+</script>

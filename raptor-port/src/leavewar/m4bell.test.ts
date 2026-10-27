@@ -21,7 +21,7 @@ import {
   closeDates, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates, placeApproved,
   recordsAt, setCell, setCellRange, setPeople, clearCells, type DecideLine, type DecidePart,
 } from './state/store'
-import { type RequestRec } from './engine'
+import { type RequestRec, setMemberTodayForTests } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
@@ -175,6 +175,23 @@ describe('bidding opened or closed (9.4 — D1214)', () => {
     /* a stretch closed whole says closed */
     T(13); closeDates('2026-03-01', '2026-05-31')
     expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 May · bidding closed · Saber'])
+  })
+  /* THE WALK'S C-F3 (27 Oct 26): the "its dates ended" line was dated the midnight after the stretch, so a "bidding open"
+     line written later (or any open line once the ended line passed its fourteen days) won as the newer line — his bell
+     went on saying "bidding open" for dates long gone. Told it opened, he is told it ended, whenever that was. */
+  it('a member told a stretch opened is told it ended — never left reading "bidding open" for past dates (walk C-F3)', () => {
+    const p = getState().period
+    closeDates(p.start, p.end)
+    NOTICES.length = 0
+    try {
+      setMemberTodayForTests('2026-02-20')
+      openDates('2026-03-01', '2026-03-31')   // written at 15 Jul by the clock, the war's today 20 Feb
+      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · bidding open · Saber'])
+      setMemberTodayForTests('2026-04-02')     // the dates have passed
+      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · bidding closed · its dates ended'])
+      setMemberTodayForTests('2026-05-20')     // weeks on: still the ended line, never the old "open" one back
+      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · bidding closed · its dates ended'])
+    } finally { setMemberTodayForTests('2000-01-01') }
   })
   it('a month closed out of the middle of a stretch: each piece left open is its own line (★4)', () => {
     const p = getState().period

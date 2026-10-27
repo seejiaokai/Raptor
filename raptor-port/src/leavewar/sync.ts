@@ -1221,15 +1221,26 @@ function tellBidding(tells: OpenTell[]): void {
    — a steady id, read like any other line (state/notices.ts setDerivedNotices). A stretch that ended more than fourteen
    days ago is old news and not listed (the build's reading, named at his look), so a new member is not handed a year of
    them. At the database step a scheduled flow may write it instead (noted for the IT side). */
+/* …AND A MAN TOLD A STRETCH OPENED IS ALWAYS TOLD IT ENDED (the walk's C-F3, 27 Oct 26). The bell keeps the newest line
+   of a stretch (state/notices.ts noticeLive), and this line was dated the midnight after it: an "open" line written
+   later than that, or any open line once this one passed its fourteen days, won — his bell went on reading "bidding
+   open" for dates long gone. So where he holds a line about the stretch, it is listed however old, dated just after
+   the newest of them. */
 const ENDED_DAYS = 14
 function endedLines(pid: string): Notice[] {
   if (!warAudience().includes(pid)) return []
   const today = memberToday(), since = addDays(today, -ENDED_DAYS)
   const out: Notice[] = []
   for (const w of rawState().wars) for (const o of w.period.open) {
-    if (!(o.to < today) || o.to < since) continue
+    if (!(o.to < today)) continue
+    let told = 0
+    for (const n of NOTICES) {
+      const p: any = n.to === pid ? (n.what || [])[0] : null
+      if (p && p.k === 'lwopen' && String(p.a) <= o.to && o.from <= String(p.b || p.a)) told = Math.max(told, n.at)
+    }
+    if (!told && o.to < since) continue
     const end = addDays(o.to, 1)
-    const at = new Date(+end.slice(0, 4), +end.slice(5, 7) - 1, +end.slice(8, 10)).getTime()
+    const at = Math.max(new Date(+end.slice(0, 4), +end.slice(5, 7) - 1, +end.slice(8, 10)).getTime(), told + 1)
     out.push({ id: `lwend:${w.period.id}:${o.from}:${o.to}`, to: pid, by: null, at, iid: '', name: 'Leave War', day: o.from, what: [{ k: 'lwopen', a: o.from, b: o.to, open: false, end: true }] })
   }
   return out
