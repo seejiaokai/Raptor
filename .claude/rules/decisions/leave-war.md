@@ -56,6 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1422 | 27 Oct 26 | A member is told by the bell when an admin places leave on his row already approved ("Approve what I enter" on): one line, "Your leave · Mon 9 Mar · LL added and approved · Saber", a tap opening the grid at that day. |
+| D1421 | 27 Oct 26 | In the Leave War's Approvals list a request just approved or refused stays where it is, its button lit ("Approved" or "Refused"), until he leaves Approvals or changes the dates — a second tap on the lit button sends it back to pending, and nothing moves under his finger; the tab's count and "Approve all" count only what is still pending. |
+| D1420 | 27 Oct 26 | The Leave War's Approvals tab is built as drawn on the M4 page: its page takes the grid card's place under the top row, the list held to about one eye-span on a wide desktop so Approve and Refuse stand near the figures, each person his own puck (the schedule's, his CAT on its chip), and on a phone two lines a request. |
 | D1404 | 27 Oct 26 | The Leave War overhaul's M4 (deciding — Approvals, Approve all, the "New" choice, the bell's Leave War lines) is built next, in a fresh chat of its own after the night of 26–27 Oct 26, not tonight; M5 after it, by D1250's order. |
 | D1401 | 26 Oct 26 | "Load onto working copy" is not a scheduler's move: putting a request back where the published version had it does not lock where it goes (D1388), so a member whose own pick the load undid may pick again; a scheduler who wants it held presses Reject, → Ground or → Unavail. |
 | D1400 | 26 Oct 26 | The lock's words stand as built: under Goes to "A scheduler moved it here: counted as away on the Leave War" (or "still counted in the Leave War's manning"), both buttons greyed; the refusals "A scheduler has moved this input, so only a scheduler can change it to LL" and "…so only a scheduler can put ALL AVAIL or ALL in it". |

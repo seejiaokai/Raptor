@@ -21,14 +21,15 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/leave-war-m4-planning-d18224 -->
-### `claude/leave-war-m4-planning-d18224` — the Leave War overhaul's M4 (deciding), PLANNED; waiting on his look and two answers — written 27 Oct 26, verify before use
+### `claude/leave-war-m4-planning-d18224` — the Leave War overhaul's M4 (deciding), PLANNED; his answers in (D1420–D1422), the build next — written 27 Oct 26, verify before use
 - **After a compaction:** re-read this block and the M4 build spec before the next change; note the compaction here with its time.
 - **Where it started:** his opening line, 27 Oct 26: plan M4 (D1404) from `main` at 36b7beaa9. Remote Control was already on.
 - **Done:** the build spec `raptor-port/docs/superpowers/plans/2026-10-27-lw-m4-build-spec.md` — every ruling M4 carries (Q8 and Q11 of the build plan already answered: D1214, D1216), the code read again on `main` by a helper (the 22 Oct code map is stale on Approvals being a tab, the puck, deciding by war; the risks: no writer takes a mixed list, one inner refusal sinks Approve all, a request stores no "placed" or "decided", nothing on the war opens a document, "taken back" needs an admin's read of the read marks, B1 skips by command type), the roll-call seed, the walk with §7.11's lessons, the checks (FULL + the security read, D1411). The Approvals tab drawn on the real app: `raptor-port/docs/mock/lw-overhaul/full-r22-*` (script `full-r22-approvals-tab.mjs`); the questions page `raptor-port/docs/mock/lw-overhaul/m4-questions.html`. The build plan's §2 table and M4 row corrected (D201). One fresh, blind Opus reader of the spec: 15 findings, all taken (among them: Q3 dropped — D1214 already rules that bidding ending on its last date rings; the count covers every period; a decided line re-keys; Redo after "taken back" writes a fresh line; the off-roster bell tap; [LW-M1-READ-LEFTOVERS] (1) built in M4).
 - **Questions waiting for him (the page, https://claude.ai/artifact/Ubso4EU7QfLLncH3jXuqiP):** L1 Approvals as a tab page, as drawn; Q1 a decided line stays lit in place until he leaves Approvals; Q2 a member told when an admin places approved leave on his row (the register's P2). Each recommended; twelve readings named for him to strike.
-- **Next:** record his answers (leave-war.md; Q2 in the notifications register too), fold them into the spec, then build M4 on THIS branch (its spec is here; one merge, FULL check — the build plan) — a fresh chat if this one is past about 60%: switch to `claude/leave-war-m4-planning-d18224` and read this block.
+- **His answers (27 Oct 26, "All as recommended"):** D1420 (Approvals as drawn), D1421 (a decided line stays lit in place), D1422 (a member told of leave placed approved on his row — the register's P2); the twelve readings stand, none struck. Recorded and folded into the spec.
+- **Next:** build M4 on THIS branch (its spec is here; one merge, FULL check — the build plan) — a fresh chat if this one is past about 60%: switch to `claude/leave-war-m4-planning-d18224` and read this block.
 - **His note on the pictures (27 Oct 26):** "Why don't just do a puck here" — the lines now draw the app's real puck (D1180, lesson 25 already say so; no new ruling); the page republished.
-- **Notes:** ruling numbers to D1419 (none new here); observations to 725.
+- **Notes:** ruling numbers to D1422; observations to 725.
 <!-- /now -->
 <!-- now:claude/observation-log-review-triage-7f6090 -->
 ### `claude/observation-log-review-triage-7f6090` — the skill-notes review of 13–26 Oct 26 (152 open notes), installed; then M4 — written 27 Oct 26, verify before use

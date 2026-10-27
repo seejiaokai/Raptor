@@ -1,4 +1,4 @@
-// M4's look before its build (27 Oct 26): Approvals AS A TAB (D1254 narrowed D1196 and D1231 after r7-14 to r7-16 drew it
+// M4's look before its build (27 Oct 26 — approved as drawn, D1420; Q1 D1421, Q2 D1422): Approvals AS A TAB (D1254 narrowed D1196 and D1231 after r7-14 to r7-16 drew it
 // as a window docked over the grid). The tab's page was never drawn; this draws it, with every ruling of the list in
 // place (D1152, D1178, D1180, D1181, D1184, D1189, D1192, D1197, D1231, D1246 halves .5, D1217 "pending", D1361 the lit
 // decided button, A4 "tap again", A11 the phone's two lines, B12 a posted-out man's tag).

@@ -48,7 +48,7 @@ verifies each before acting.**
 
 ## 1. Batch 8 — Approvals
 
-**8.1 The tab (D1254, D1188).** An admin's tab row reads Grid · Approvals N · OIL (Balances joins in M5, between Approvals
+**8.1 The tab (D1254, D1188; built as drawn — D1420).** An admin's tab row reads Grid · Approvals N · OIL (Balances joins in M5, between Approvals
 and OIL — never a tab with nothing behind it). N is the count of pending requests in EVERY period — since the count is the
 only sign that anything waits (D1208, D1219), a request in next year's period, bid on while he views this year, must still
 show — and it rises as requests come in (D1152). The list itself covers the period on view (D1184); where other periods
@@ -81,7 +81,7 @@ grid repaint (the code map's cost note).
 
 **8.3 Deciding a line (D1361, D1330, A4, B8).** Approve and Refuse rest grey, their words green and red. A tap decides that
 one request at once — one command, one Undo — and its button lights ("Approved" solid green, or "Refused" solid red); the
-line STAYS where it is, lit, until he leaves Approvals or changes the dates (if he answers Q1 yes), so a slip is put right
+line STAYS where it is, lit, until he leaves Approvals or changes the dates (D1421), so a slip is put right
 by a second tap on the lit button (it goes back to pending, as in the bid windows) and nothing moves under his finger.
 **A line re-keys after its own decision** (the fresh read, finding 2): approving turns the request into an Input and a
 put-back mints a new request with a new id, so the writer returns the new ids per item and the line follows them —
@@ -175,8 +175,8 @@ War · 1 Apr – 30 Jun · bidding closed · its dates ended", no name. No comma
 stored notice: each person's bell derives it from the period's stored stretches once the date has passed (its own steady
 id, read like any other line); at the database step a scheduled flow may write it instead (noted for the IT side).
 
-**9.4a An admin's leave placed approved on a member's row (the register's P2 — asked, Q2).** "Approve what I enter" makes a
-new war-approved Input, which today tells nobody. If he answers yes: "Your leave · Mon 9 Mar · LL added and approved · Saber",
+**9.4a An admin's leave placed approved on a member's row (the register's P2 — ruled in, D1422).** "Approve what I enter" makes a
+new war-approved Input, which today tells nobody. He is told (D1422): "Your leave · Mon 9 Mar · LL added and approved · Saber",
 a tap opening the grid there; written by `placeApproved` (`lw.placeApproved`) as 9.1's lines are.
 
 **9.6 The tap (the survey §7, §10).** No route opens the Leave War at a date today: `sync.ts openWarAt(iso, personId?)`,
@@ -279,6 +279,8 @@ NoticeSeen's admin read. `leavewar/permsparity.test.ts` gains Approve all and th
 **No other branch touches these files** (27 Oct 26: the one active branch, the handoff review, changes notes only).
 
 ## 5. Put to him before the build — one look and two questions (D853, D1222; the page names each picture)
+
+**ANSWERED 27 Oct 26 — "All as recommended": L1 → D1420, Q1 → D1421, Q2 → D1422; the readings below stand, none struck.**
 
 **L1 — Approvals as a tab's page** (`full/r22-1-desk`, `r22-2-desk`, `r22-5-phone`; the tab row's own place on the phone
 re-measured in the build). Recommended: as drawn — the page takes the grid card's place, the list held to one eye-span on a
