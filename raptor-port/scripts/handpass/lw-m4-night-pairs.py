@@ -36,10 +36,15 @@ def stack(name, parts_in):
     print(name, out.size)
 
 r5 = os.path.join(DRAW, 'r22-5-phone.png'); r6 = os.path.join(DRAW, 'r22-6-phone.png')
-DR, NOW = 'His drawing', 'Built tonight'
+DR, NOW = 'Your drawing', 'Built tonight'
 # 17 - the phone's slim bar: the foot of the screen
 stack('17-phone-slim', [(DR, cut(r6, (0, 2622 - 300, 1206, 2622))), (NOW, cut(os.path.join(SRC, 'n17-slim-402.png'), (0, 2622 - 330, 1206, 2622)))])
 # 18 - the list's first requests: the drawing's letters on Approve and Refuse
 stack('18-phone-buttons', [(DR, cut(r5, (0, 1000, 1206, 1900))), (NOW, cut(os.path.join(SRC, 'n18-list-402.png'), (0, 900, 1206, 1900)))])
 # 19 - the changes window's bar: before tonight (the page's picture of every bar) and after
 stack('19-changes-bar', [('Built tonight', cut(os.path.join(SRC, 'n19-chgbar-402.png'), (0, 2622 - 260, 1206, 2622)))])
+
+# 22 - the words under a man posting out: his drawing r22-1-desk ("PO 1 Mar", ringed 5 there) above, the build below
+# (walker A's picture of the first walk, a-s9c-13: "posting out 1 Mar · Overseas Sqn")
+po = os.path.join(DOCS, 'img', 'handpass', '2026-10-27-lw-m4', 'a', 's9c', 'a-s9c-13-posting-out-line.png')
+stack('22-po-words', [(DR, cut(os.path.join(DRAW, 'r22-1-desk.png'), (40, 870, 1300, 992))), ('As built', cut(po, (0, 0, Image.open(po).width, Image.open(po).height)))])
