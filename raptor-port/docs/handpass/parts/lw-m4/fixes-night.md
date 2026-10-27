@@ -134,3 +134,25 @@ the deciding doors, the windows, the matrix or the postings: 2,125 passed, 40 sk
 `state/person-delete` + `p6d-deleteonread` 37. Browser through the lock (it builds and type-checks first): red run of R3c-2
 against round 3b's code — failed on both projects at the stale note; green run, `lw-phone` and `lw-desktop`, of R3c-2, R3b
 and every Approvals, bell and posting-out test — 26 passed, 8 skipped (phone-only on the desktop project), 0 failed.
+
+## His D1444, D1445 (28 Oct 26, "all as recommended")
+
+| Ruling | Red first | The build | Commit |
+|---|---|---|---|
+| **D1444** — the shorter phone top of Approvals, as drawn (D1439; `scripts/handpass/lw-m4-d1439-mock.mjs`) | `e2e/leavewar.spec.ts` — "D1444 (A) on a phone the other period's link stands on the title's line, '+N in <period> ›'; the desktop keeps its words", "D1444 (B) on a phone only the months holding requests show, on the row of New and All; the desktop keeps every month", "D1444 (B) on a phone a month's chip comes with its first request and goes with its last" — red on `lw-phone` (the desktop halves passed before and after); `m4page.test.tsx` — "the month chips are keyed: React gives no missing-key warning" | `ApprovalsPage.tsx`: on a phone the link reads "+2 in JAN - DEC 27 ›", the month chips only where `monthHas` (or the month picked), each chip keyed; `approvals.css`: the phone head's row gap 2px (the drawing's). The phone filter test now pins D1444's two rows with the demo's two months (it pinned D1423's three) | f1b626906 |
+| **D1445** — the slim bar's fill #161B22 | `e2e/leavewar.spec.ts` — "D1445 the slim Approvals bar wears the drawings' fill, #161B22" — red on `lw-phone` and `lw-desktop` | `approvals.css`: `.appr-slim { background: #161B22 }`; edge, words and size unchanged | f1b626906 |
+
+**The measures — the card's top to the column headings (WebKit, `scripts/handpass/lw-m4-d1444-after.mjs`, the drawing's
+own measure; `d1444/measures.json`):** the demo's two months — 209 → **146** at 402, 390 and 360 (the drawing: 146 at all
+three), the link on the title's line at all three; seven months — 209 → **188** at 402 and 390, **205** at 360, where the
+title's line has no room and the link keeps a line of its own (the drawing: 188, 188, 205, the same). The slim bar: fill
+rgb(22, 27, 34) on both; on a phone 8 in, 46 tall, 10 above the foot (M13, unchanged), on a desktop 44 tall, centred.
+
+**The pictures** (`docs/img/handpass/2026-10-27-lw-m4/d1444/`): `demo-402-built.png`, `busy-360-built.png` (and 390, the
+demo at 360, seven months at 402 and 390), `slim-phone.png`, `slim-desk.png`; beside the drawings in `pairs/` —
+`d1444-top-402.png`, `d1444-top-360-busy.png`, `d1445-slim-phone.png`, `d1445-slim-desk.png`. (At 360 the drawing, made
+before round 1's heading fix, shows "LOWEST AVAIPLACED" run together; the build has them apart, as D1438's fix keeps them.)
+
+Checks (28 Oct 26): `m4bell` 21, `m4decide` 28, `m4page` 31, `m4ride` 17, `m4sec` 14 — green. Browser through the lock (it
+builds and type-checks first), `lw-phone` and `lw-desktop`: the four new tests with every Approvals, bell and round-1–3
+test — 31 passed, 9 skipped (phone-only on the desktop project), 0 failed.

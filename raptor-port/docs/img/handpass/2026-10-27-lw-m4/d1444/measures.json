@@ -1,0 +1,80 @@
+{
+  "top": [
+    {
+      "state": "demo (2 months)",
+      "width": 402,
+      "words": "+2 in JAN - DEC 27 ›",
+      "top": 146,
+      "chipRows": 2,
+      "months": "Jan Feb",
+      "linkOnTitle": true
+    },
+    {
+      "state": "demo (2 months)",
+      "width": 390,
+      "words": "+2 in JAN - DEC 27 ›",
+      "top": 146,
+      "chipRows": 2,
+      "months": "Jan Feb",
+      "linkOnTitle": true
+    },
+    {
+      "state": "demo (2 months)",
+      "width": 360,
+      "words": "+2 in JAN - DEC 27 ›",
+      "top": 146,
+      "chipRows": 2,
+      "months": "Jan Feb",
+      "linkOnTitle": true
+    },
+    {
+      "state": "busy (7 months)",
+      "width": 402,
+      "words": "+2 in JAN - DEC 27 ›",
+      "top": 188,
+      "chipRows": 3,
+      "months": "Jan Feb Mar Apr Jun Aug Oct",
+      "linkOnTitle": true
+    },
+    {
+      "state": "busy (7 months)",
+      "width": 390,
+      "words": "+2 in JAN - DEC 27 ›",
+      "top": 188,
+      "chipRows": 3,
+      "months": "Jan Feb Mar Apr Jun Aug Oct",
+      "linkOnTitle": true
+    },
+    {
+      "state": "busy (7 months)",
+      "width": 360,
+      "words": "+2 in JAN - DEC 27 ›",
+      "top": 205,
+      "chipRows": 3,
+      "months": "Jan Feb Mar Apr Jun Aug Oct",
+      "linkOnTitle": false
+    }
+  ],
+  "slim": [
+    {
+      "kind": "phone",
+      "fill": "rgb(22, 27, 34)",
+      "edge": "rgb(42, 49, 58)",
+      "left": 8,
+      "right": 8,
+      "tall": 46,
+      "foot": 10,
+      "words": "Approvals 6 pending Back ▴ ✕"
+    },
+    {
+      "kind": "desk",
+      "fill": "rgb(22, 27, 34)",
+      "edge": "rgb(42, 49, 58)",
+      "left": 596,
+      "right": 596,
+      "tall": 44,
+      "foot": 22,
+      "words": "Approvals 6 pending Back ▴ ✕"
+    }
+  ]
+}
