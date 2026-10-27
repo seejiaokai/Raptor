@@ -150,13 +150,14 @@ test.describe('the box being typed in shows above the keyboard — phone', () =>
     await box.evaluate(e => e.scrollIntoView({ block: 'nearest' }))
     const kb = 540
     await page.waitForTimeout(600)
+    const h0 = await win.evaluate(e => Math.round(e.getBoundingClientRect().height))
     await tap(page, box); await expect(box).toBeFocused()
     await keysUp(page, kb)
     /* the window's own body scrolls Remarks as far as it can; what the body cannot do, the phone's pan does on his iPhone
        (the stand-in here makes none) — never a hold */
     await expect.poll(() => win.locator('.win-body').evaluate(e => e.scrollTop)).toBeGreaterThan(0)
     await page.waitForTimeout(300)
-    expect(await win.evaluate(e => [(e as HTMLElement).dataset.kbcap, (e as HTMLElement).style.getPropertyValue('--kbcap'), Math.round(e.getBoundingClientRect().height)]), 'never held or shrunk (D1412)').toEqual([undefined, '', await win.evaluate(e => Math.round(e.getBoundingClientRect().height))])
+    expect(await win.evaluate(e => [(e as HTMLElement).dataset.kbcap, (e as HTMLElement).style.getPropertyValue('--kbcap'), Math.round(e.getBoundingClientRect().height)]), 'never held or shrunk (D1412): as tall as before the tap').toEqual([undefined, '', h0])
     const fTop = await foot.evaluate(e => Math.round(e.getBoundingClientRect().top))
     expect(await bottomOf(box), 'Remarks above Cancel / Add, not behind them').toBeLessThanOrEqual(fTop)
     expect(await box.evaluate(e => Math.round(e.getBoundingClientRect().top)), 'Remarks inside the window').toBeGreaterThanOrEqual(await win.evaluate(e => Math.round(e.getBoundingClientRect().top)))

@@ -37,13 +37,13 @@ beforeEach(() => {
 })
 
 describe('keepAboveKeyboard', () => {
-  it('scrolls the box\'s own panel so its bottom sits GAP above the keys, and no further', () => {
+  it('scrolls the box\'s own panel so its bottom clears the keys, and no further (in a window, to the keys\' own edge — D1412)', () => {
     document.body.innerHTML = '<div id="fx" style="position:fixed"><div id="p"><input id="b"></div></div>'
     const p = document.getElementById('p')!, b = document.getElementById('b') as HTMLInputElement
     panel(p, 0, H, 1000)
     place(b, 700, 30)                                          // 700–730: under the keys (they start at 460)
     keepAboveKeyboard(b, vvUp)
-    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB)
     expect(pageST).toBe(0)                                     // in a fixed layer: the page behind never moves (D686)
   })
   it('leaves a box already in sight where it is', () => {
@@ -104,7 +104,7 @@ describe('keepAboveKeyboard', () => {
     panel(p, 0, H, 1000)                                       // the panel's foot (and its buttons) under the keys
     place(b, 700, 30)
     keepAboveKeyboard(b, vvUp)
-    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB)                               // in a window: clear of the keys' edge (D1412)
   })
 })
 
@@ -185,8 +185,7 @@ describe('a window that cannot scroll is raised instead', () => {
     w.getBoundingClientRect = () => { const top = 300 - +(w.dataset.kblift || 0); return { top, bottom: top + 600, left: 0, right: 100, width: 100, height: 600, x: 0, y: top, toJSON() {} } as DOMRect }
     place(b, 860, 30)                   // its last row, which rising to the top alone cannot bring above the keys
     keepAboveKeyboard(b, vvUp)
-    expect([w.dataset.kbcap, w.style.getPropertyValue('--kbcap'), w.style.maxHeight], 'never held, never shrunk').toEqual([undefined, '', ''])
-    expect(w.getBoundingClientRect().height, 'as tall as it was').toBe(600)
+    expect([w.dataset.kbcap, w.style.getPropertyValue('--kbcap'), w.style.maxHeight], 'never held, never shrunk (the fixture\'s box is fixed at 600: the hold would show here, as the property it wrote)').toEqual([undefined, '', ''])
     expect(w.getBoundingClientRect().top, 'raised to the visible top, no further').toBe(GAP)
     dropLifts()
     expect([w.dataset.kblift, w.style.translate], 'put back').toEqual([undefined, ''])
@@ -236,6 +235,12 @@ describe("a window the phone's own pan carried to show the box (D1412)", () => {
     expect(w.getBoundingClientRect().top, 'where the phone left it').toBe(12)
     expect(w.scrollTop, 'its body not scrolled').toBe(0)
   })
+  it("a box the pan left at the keys' very edge is left there: no clear strip is demanded of the phone", () => {
+    const { w, b } = tall(600)
+    place(b, 572, 30)                                          // its bottom exactly at the keys (602)
+    expect(keepAboveKeyboard(b, vvPanned)).toBe(0)
+    expect([w.scrollTop, w.dataset.kblift, w.style.translate]).toEqual([0, undefined, ''])
+  })
   it('a window that fits, its top above the visible screen: left there too', () => {
     const { w, b } = tall(300)
     place(b, 200, 30)
@@ -244,10 +249,10 @@ describe("a window the phone's own pan carried to show the box (D1412)", () => {
   })
   it("a box the pan left a little under the keys: the window's own body scrolls it clear, the window itself untouched", () => {
     const { w, b } = tall(600)                                 // 12–612, scrolling 700 of content
-    place(b, 580, 30)                                          // 580–610: 16 under the keys' clear strip (602 − 8)
+    place(b, 580, 30)                                          // 580–610: 8 under the keys' edge (602)
     keepAboveKeyboard(b, vvPanned)
-    expect(w.scrollTop).toBe(16)
-    expect(b.getBoundingClientRect().bottom).toBe(602 - GAP)
+    expect(w.scrollTop, 'only by what the keys covered').toBe(8)
+    expect(b.getBoundingClientRect().bottom).toBe(602)
     expect([w.dataset.kbcap, w.dataset.kblift, w.style.translate], 'the window itself never moved or held').toEqual([undefined, undefined, ''])
   })
 })
@@ -315,8 +320,8 @@ describe('a phone that measures from the top of the visible screen (his iPhone, 
     expect([w.dataset.kbcap, w.dataset.kblift, w.style.translate], 'the window never held, shrunk or shifted').toEqual([undefined, undefined, ''])
     expect(w.getBoundingClientRect().top, 'where the pan carried it').toBe(LAY / 2 - 348 - P2)
     expect(bd.style.translate, 'the list inside the window never moved').toBe('')
-    expect(bd.scrollTop, 'the list scrolled the box clear of the keys').toBe(98)
-    expect(b.getBoundingClientRect().bottom, 'the box above the keys').toBeLessThanOrEqual(V2 - GAP)
+    expect(bd.scrollTop, 'the list scrolled the box clear of the keys, no further').toBe(90)
+    expect(b.getBoundingClientRect().bottom, 'the box clear of the keys').toBeLessThanOrEqual(V2)
   })
   it('the same numbers read the classic way (the layout measured from its own top): unchanged — the visible screen starts at the pan', () => {
     const { w, b } = build()
@@ -385,13 +390,13 @@ describe('installKbScroll', () => {
     b.focus(); frames()
     expect(b.getBoundingClientRect().bottom).toBe(730)        // no keyboard yet: nothing moves
     keysUp(); frames()
-    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB)                               // in a window: clear of the keys' edge (D1412)
   })
   it('with the keys already up, focusing another box lifts it at once', () => {
     const { b } = fixture()
     vv.height = H - KB
     b.focus(); frames()
-    expect(b.getBoundingClientRect().bottom).toBe(H - KB - GAP)
+    expect(b.getBoundingClientRect().bottom).toBe(H - KB)                               // in a window: clear of the keys' edge (D1412)
   })
   it('a resize long after the focus does not pull the box back (Safari\'s bars folding)', () => {
     const { p, b } = fixture()

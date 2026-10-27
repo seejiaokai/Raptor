@@ -233,10 +233,11 @@ function raise(fixedEl: HTMLElement, el: HTMLElement, sb: ScreenBox): number {
   if (!layer) return 0
   const s0 = shiftOf(layer)
   const r = el.getBoundingClientRect(), lr = layer.getBoundingClientRect()
-  /* under the keys by how much — where the phone itself placed the box in sight, a window never raised is left as it
-     is: nothing of the app's own moves after the phone's slide (D1412) */
+  /* where the phone itself placed the box in sight — to the keys' very edge — a window never raised is left as it is:
+     nothing of the app's own moves after the phone's slide (D1412; the fresh read's F3: measured against the clear strip,
+     a box the pan left a few points above the keys was still lifted, mid-slide); a box under the keys rises to the strip */
+  if (s0 === 0 && r.bottom <= visBot + 0.5) return 0
   const need = r.bottom - (visBot - GAP)
-  if (s0 === 0 && need <= 0.5) return 0
   /* up by what the box needs, never past the visible top; down again (towards where it stood) when it is higher than it
      need be — a box further up the same window, or the phone's pan since bringing the box up */
   const room = lr.top - (visTop + GAP)
@@ -302,11 +303,16 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   const visTop = sb.top, visBot = sb.bottom
   let moved = 0
   const layer = layerOf(el)
+  /* in a window the keys' floor is the keys' own edge — a box the phone's pan left in sight, to that edge, is not scrolled
+     (D1412); the floor of the panel's own pinned foot keeps its clear strip, and the page and the board keep theirs */
+  const keysFloor = layer && !layer.hasAttribute('data-kblayer') ? visBot : visBot - GAP
   const panels = () => {
     for (let a = el.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
       if (!scrolls(a)) continue
       const ar = a.getBoundingClientRect(), kc = keptClear(a)
-      moved += lift(a, el, Math.min(ar.bottom - kc.bottom, visBot) - GAP, Math.max(ar.top + kc.top, visTop) + GAP)
+      /* the panel's own edge (its foot less what covers it) with the clear strip where it stands above the keys; else the keys */
+      const edge = ar.bottom - kc.bottom
+      moved += lift(a, el, edge < keysFloor ? edge - GAP : keysFloor, Math.max(ar.top + kc.top, visTop) + GAP)
     }
   }
   const page = document.scrollingElement || document.documentElement
@@ -462,7 +468,8 @@ export function installKbScroll(): () => void {
       document.body.appendChild(dbgEl)
     }
     const vv = window.visualViewport
-    const l = box ? layerOf(box) : null, r = l?.getBoundingClientRect()
+    /* the window itself — on a backdrop, the window on it, not the backdrop (the fresh read's F4) */
+    const l0 = box ? layerOf(box) : null, l = l0 && box && vv ? windowIn(l0, box, screenBox(vv)) : l0, r = l?.getBoundingClientRect()
     const t = box ? Date.now() - at : 0
     /* L: where the layout's top stands in the page's measure (screenBox) — 0 on a desktop, minus the pan on his iPhone */
     const lay = vv ? screenBox(vv).layTop : 0

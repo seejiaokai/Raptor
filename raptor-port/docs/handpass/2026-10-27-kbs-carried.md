@@ -112,17 +112,18 @@ serves every box in every window, sheet and panel); a new gesture or surface no;
 ## The walk (`kbs-carried-walk.mjs`, the built bundle served on 4181; pictures `docs/img/handpass/2026-10-27-kbs-carried/`)
 
 The window's own place in the layout, recorded every frame through his measured slide up and down (its top at rest; the
-furthest it moved; anything shifted or held after):
+furthest it moved; anything shifted or held after); the box with the keys up, in his measure (from the visible top), against
+the visible height and the window's Cancel / Add; and the largest step the window's own body scrolled through the slide:
 
-| Case | At rest | Moved, up / down | Shifted or held after |
-|---|---|---|---|
-| A input window, OL, Remarks | 12 | 0 / 0 | nothing |
-| A2 input window, "Other", Remarks | 12 | 0 / 0 | nothing |
-| B SANS day's input window, Remarks | 12 | 0 / 0 | nothing |
-| C Tracker All events, Name | 41 | 0 / 0 | nothing |
-| E Duty templates, last time box | 129 | 0 / 0 | nothing |
-| F sign-in, Username (pan 19) | 152 | 0 / 0 | nothing |
-| G sign-in, Password (pan 75) | 152 | 0 / 0 | nothing |
+| Case | At rest | Moved, up / down | Shifted or held after | The box with the keys up | Body's largest step |
+|---|---|---|---|---|---|
+| A input window, OL, Remarks | 12 | 0 / 0 | nothing | 187–220 of 393, Cancel / Add at 438 | 0 / 0 |
+| A2 input window, "Other", Remarks | 12 | 0 / 0 | nothing | 278–311 of 390, Cancel / Add at 350 | 0 / 0 |
+| B SANS day's input window, Remarks | 12 | 0 / 0 | nothing | 260–293 of 390, Cancel / Add at 458 | 0 / 0 |
+| C Tracker All events, Name | 41 | 0 / 0 | nothing | 292–322 of 390 | 0 / 0 |
+| E Duty templates, last time box | 129 | 0 / 0 | nothing | 221–249 of 393 | 0 / 0 |
+| F sign-in, Username (pan 19) | 152 | 0 / 0 | nothing | 173–213 of 363 | 0 / 0 |
+| G sign-in, Password (pan 75) | 152 | 0 / 0 | nothing | 187–227 of 363 | 0 / 0 |
 
 **Looked at** (opened, the host): `A2-up.png` — the window rides up with the page over the slide, its title off the top by
 120 ms, Remarks at rest above the keys with Cancel / Add under it, nothing of the page above the window at any frame;
@@ -131,12 +132,34 @@ furthest it moved; anything shifted or held after):
 
 ## Gates
 
-- `src/ui/kbscroll.test.ts` 39 / 39; with `freshbox.test.tsx` and `amendbatch-app.test.tsx` 65 / 65.
-- `e2e/kbscroll.spec.ts` 18 / 18 on the built bundle (the lock taken for the builds and the runs).
+- `src/ui/kbscroll.test.ts` 40 / 40 (39 before the read's fixes); with `freshbox.test.tsx` and `amendbatch-app.test.tsx` 65 / 65.
+- `e2e/kbscroll.spec.ts` 18 / 18 on the built bundle, before and after the read's fixes (the lock taken for the builds and the runs).
 - `npm run build` green; `npm run rulecheck` OK.
 - GitHub's run of the pull request is the full set (D1086) — read after the push.
-- A fresh, blind Opus read of the finished code (D790) — its result below.
+- A fresh, blind Opus read of the finished code (D790) — §The fresh read, below: four findings, all fixed, the touched checks run again.
+
+## The fresh read (D790 — a fresh Opus reader, blind, on the finished commit 3f6eb7b38)
+
+Every path meant to be unchanged checked unbroken (the Scheduler Board's, page content's, the window bar's refit, every
+caller's import); no state that can get stuck; no reader of a removed name. Four findings, each with its failure, cause and
+fix — all four taken:
+
+- **F1 (a check that could not fail).** KS3d's "never shrunk" compared the window's height with itself, measured at the same
+  moment. Now the height is measured before the tap and the window must still be that tall after the keys.
+- **F2 (a walk that could not fail the way that matters).** The walk's pass rule checked only that the window never moved,
+  never where the box ended or what the window's body did through the slide. Now each case also requires the box, with the
+  keys up, in sight above the keys and above the window's own Cancel / Add where it has one, and reports the body's largest
+  scroll step through the slide, up and down.
+- **F3 (an 8-point move the raise could still make).** "In sight" was judged against the clear strip, so a box the phone's
+  pan left within 8 points of the keys would still have had its window raised — two frames after the pan's word, mid-slide,
+  the very kind of move D1412 forbids. Now a box the phone left in sight, to the keys' very edge, moves nothing: not the
+  window, and not the window's body (the body scrolls only what the keys actually cover; the clear strip stays against a
+  panel's own pinned foot, and on the page and the board as before). A box truly under the keys still rises to the strip.
+- **F4 (the readout).** `?kbdebug` named the backdrop, not the window on it, for a window on a backdrop; now the window.
+
+After the fixes: `kbscroll.test.ts` 40 / 40 (one more case — the box at the keys' very edge is left there), the browser set
+and the walk run again — the figures below are the re-run's.
 
 **Walk:** WALK — his measured slides played on seven windows, up and down (`kbs-carried-walk.mjs`): 7 / 7 the window never
-moved by the app, pictures opened. **Owed: his iPhone look** — the preview, the tab closed and reopened: the input window from
+moved by the app, the box in sight above the keys and above Cancel / Add in every case, the body never stepped; pictures opened. **Owed: his iPhone look** — the preview, the tab closed and reopened: the input window from
 a calendar day (OL and "Other") → Remarks; the sign-in page's two boxes; the Tracker's All events → Edit.

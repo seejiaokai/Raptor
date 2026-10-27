@@ -143,7 +143,8 @@ for (const k of ONLY) {
         const ts = Number(document.timeline.currentTime)
         const slid = dir > 0 ? P * bez((ts - s0) / UP.ms, UP.c) : P * (1 - bez((ts - s0) / DOWN.ms, DOWN.c))
         void slid
-        out.push([Math.round(ts - s0), Math.round(real.call(el).top)])
+        const sc = el.querySelector('.win-body, .sa-list, .modal-body') || el
+        out.push([Math.round(ts - s0), Math.round(real.call(el).top), sc.scrollTop])
         if (ts < end) requestAnimationFrame(tick); else ok({ out, s0 })
       }, 0)
       requestAnimationFrame(tick)
@@ -154,18 +155,28 @@ for (const k of ONLY) {
     return { ...res, frames: frames.filter(f => f.t >= res.s0 - 100 && f.t <= res.s0 + 600) }
   }
   const up = await play(1)
-  const upEnd = up.out[up.out.length - 1][1]
+  /* with the keys up: the box in his measure (from the visible top) — in sight above the keys, and above the window's own
+     pinned Cancel / Add where it has one (the fresh read's F2: the rule used to check only that nothing moved) */
+  const boxAt = await page.evaluate(([sel, last, win]) => {
+    /* the walk's box selectors carry Playwright's :visible, which the page's own querySelectorAll does not know */
+    const l = [...document.querySelectorAll(sel.replace(':visible', ''))].filter(e => e.offsetParent !== null || getComputedStyle(e).position === 'fixed'); const e = last ? l[l.length - 1] : l[0]; const r = e.getBoundingClientRect()
+    const foot = document.querySelector(win)?.querySelector('.airpop-foot'); const fr = foot ? foot.getBoundingClientRect() : null
+    return { top: Math.round(r.top), bottom: Math.round(r.bottom), foot: fr ? Math.round(fr.top) : null }
+  }, [box, k === 'E', C.win])
+  const boxOk = boxAt.top >= 0 && boxAt.bottom <= C.vh && (boxAt.foot == null || boxAt.bottom <= boxAt.foot + 0.5)
   await page.waitForTimeout(400)
   const down = await play(-1)
   /* the app never moves the window: its own place is the same at every frame, up and down, and nothing is shifted or held */
   const off = o => o.out.filter(([, y]) => Math.abs(y - rest) > 1)
   const upBad = off(up), downBad = off(down)
   const worst = o => Math.max(0, ...o.out.map(([, y]) => Math.abs(y - rest)))
+  /* what the window's own body scrolled through the slide: its largest change frame to frame (a jump inside the window) */
+  const bodyJump = o => Math.max(0, ...o.out.slice(1).map(([, , st], i) => Math.abs(st - o.out[i][2])))
   const touched = await page.evaluate(sel => { const e = document.querySelector(sel); return [e.style.translate, e.dataset.kblift, e.dataset.kbcap, e.style.getPropertyValue('--kbcap')].filter(Boolean) }, C.win)
-  const okCase = focused && !upBad.length && !downBad.length && !touched.length && !errs.length
+  const okCase = focused && !upBad.length && !downBad.length && !touched.length && boxOk && !errs.length
   if (!okCase) bad++
-  report.push({ k, what: C.what, focused, rest, upEnd, upWorst: worst(up), downWorst: worst(down), touched, up: up.out.map(x => x[1]).join(' '), down: down.out.map(x => x[1]).join(' '), errs, ok: okCase })
-  console.log(`${okCase ? 'PASS' : 'FAIL'} ${k} ${C.what}: the window's own top at rest ${rest}; furthest it moved — up ${worst(up)}, down ${worst(down)}; shifted or held after: ${touched.length ? touched.join(' ') : 'nothing'}${focused ? '' : ' (THE BOX NEVER TOOK THE FOCUS)'}${errs.length ? ' ERRORS ' + errs.join(' | ') : ''}`)
+  report.push({ k, what: C.what, focused, rest, upWorst: worst(up), downWorst: worst(down), touched, boxWithKeysUp: boxAt, boxOk, bodyJumpUp: bodyJump(up), bodyJumpDown: bodyJump(down), up: up.out.map(x => x[1]).join(' '), down: down.out.map(x => x[1]).join(' '), errs, ok: okCase })
+  console.log(`${okCase ? 'PASS' : 'FAIL'} ${k} ${C.what}: the window's own top at rest ${rest}; furthest it moved — up ${worst(up)}, down ${worst(down)}; shifted or held after: ${touched.length ? touched.join(' ') : 'nothing'}; the box with the keys up ${boxAt.top}–${boxAt.bottom} of ${C.vh}${boxAt.foot != null ? ` (Cancel / Add at ${boxAt.foot})` : ''} ${boxOk ? 'in sight' : 'NOT IN SIGHT'}; the body's largest scroll step up ${bodyJump(up)}, down ${bodyJump(down)}${focused ? '' : ' (THE BOX NEVER TOOK THE FOCUS)'}${errs.length ? ' ERRORS ' + errs.join(' | ') : ''}`)
   console.log(`   up   ${up.out.map(x => x[1]).join(' ')}`)
   console.log(`   down ${down.out.map(x => x[1]).join(' ')}`)
   /* his screen, frame by frame: Chromium's frame shifted up by the slide so far, the keys rising over it, a dashed line
