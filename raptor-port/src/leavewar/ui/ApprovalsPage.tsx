@@ -76,8 +76,10 @@ interface Row {
   /** every request id this line has ever had — so it is found again after an Undo or its own second tap */
   ids: Set<string>
   lit?: Exclude<DecideTo, 'pending'>
-  /** a decision made here that an Undo took back — kept so a Redo lights the line again (the scenario designer's ★1) */
-  undone?: { lit: Exclude<DecideTo, 'pending'>; parts: ApprLine['parts'] }
+  /** every decision made here this visit, the newest first, each with the parts it left — so after any Undo or Redo the
+   *  line shows the one the record now holds (the scenario designer's ★1; the fixes' M3: a one-tap change of mind, D1428,
+   *  is two decisions, and an Undo of the second must light the first again) */
+  forms?: Array<{ lit: Exclude<DecideTo, 'pending'>; parts: ApprLine['parts'] }>
   msg?: { kind: 'refused' | 'stale'; why: string }
   figs?: ApprFigures
 }
@@ -151,18 +153,30 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       for (const id of r.ids) { const l = byId.get(id); if (l && !used.has(l)) { match = l; break } }
       if (match) {
         used.add(match)
-        /* pending again (an Undo of the decision made here, or one made elsewhere put back): the light goes — the decision
-           kept aside, so a Redo lights it again (★1) */
+        /* pending again (an Undo of the decision made here, or one made elsewhere put back): the light goes — the decisions
+           kept aside, so a Redo lights the right one again (★1, M3) */
         const ids = new Set([...r.ids, ...recIds(match)])
-        const undone = r.lit ? { lit: r.lit, parts: r.line.parts } : r.undone
-        out.push({ key: r.key, line: match, ids, ...(undone ? { undone } : {}), ...(r.msg && r.msg.kind === 'refused' ? { msg: r.msg } : {}) })
+        out.push({ key: r.key, line: match, ids, ...(r.forms ? { forms: r.forms } : {}), ...(r.msg && r.msg.kind === 'refused' ? { msg: r.msg } : {}) })
         continue
       }
-      if (r.lit) { out.push(r); continue }
-      /* its decision put back by a Redo — every day stands as decided here: lit again, where it was (★1) */
-      if (r.undone && lineStale(r.line.personId, r.undone.parts) === null) {
-        out.push({ key: r.key, line: { ...r.line, parts: r.undone.parts }, ids: r.ids, lit: r.undone.lit })
+      /* NOT PENDING: the line shows the decision the record now holds — the newest made here whose every day still stands
+         as it left them. A lit line is asked too, never kept on trust (the fixes' M3 and M7: an Undo of a one-tap change of
+         mind left "Refused" lit over an approval standing again; a change on the grid left "Approved" lit over a bid). */
+      const standing = r.forms?.find(f => lineStale(r.line.personId, f.parts) === null)
+      if (standing) {
+        out.push({ key: r.key, line: { ...r.line, parts: standing.parts }, ids: r.ids, lit: standing.lit, ...(r.forms ? { forms: r.forms } : {}) })
         continue
+      }
+      /* …and decided here but put back to a bid ELSEWHERE (the grid's lit Approve — D1330): the new request is the same
+         one, so it takes this line's place, pending, rather than standing beside a stale copy (M7) */
+      if (r.forms?.length) {
+        const again = fresh.find(l => !used.has(l) && l.personId === r.line.personId && l.code === r.line.code &&
+          l.parts.map(p => p.date).join() === r.line.parts.map(p => p.date).join())
+        if (again) {
+          used.add(again)
+          out.push({ key: r.key, line: again, ids: new Set([...r.ids, ...recIds(again)]), forms: r.forms })
+          continue
+        }
       }
       /* JOINED into a line another row already holds (a day placed between two drawn lines — D1339, D1346), every day of
          it still standing: that row is the line now, so this one simply goes — never a greyed "No longer there" (★8) */
@@ -171,9 +185,11 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
         if (holder) r.ids.forEach(id => holder.ids.add(id))
         continue
       }
-      /* gone from the pending list while on screen (B8): say what happened */
+      /* gone from the pending list while on screen (B8), or its decision here no longer standing (M7): say what happened,
+         unlit — a light says the record holds that decision, and it does not */
       const why = r.msg?.kind === 'stale' ? r.msg.why : lineStale(r.line.personId, r.line.parts) || 'No longer there'
-      out.push({ ...r, msg: { kind: 'stale', why } })
+      const { lit: _gone, ...rest } = r
+      out.push({ ...rest, msg: { kind: 'stale', why } })
     }
     for (const l of fresh) if (!used.has(l)) out.push({ key: l.key, line: l, ids: new Set(recIds(l)) })
     out.sort((a, b) => (a.line.placedAt ?? -1) - (b.line.placedAt ?? -1) || (a.line.from < b.line.from ? -1 : a.line.from > b.line.from ? 1 : 0) || (a.key < b.key ? -1 : 1))
@@ -225,7 +241,9 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
         row.line = { ...row.line, parts: o.parts }
         row.ids = new Set([...row.ids, ...o.parts.map(p => p.recId).filter((x): x is string => !!x)])
         if (to === 'pending') delete row.lit; else row.lit = to
-        delete row.msg; delete row.undone
+        /* the decision and the parts it left, newest first — what an Undo or Redo is read against (M3) */
+        if (to !== 'pending') row.forms = [{ lit: to, parts: o.parts }, ...(row.forms ?? []).filter(f => f.lit !== to)]
+        delete row.msg
       } else row.msg = { kind: o.kind, why: o.why }
       next[ix] = row
     })

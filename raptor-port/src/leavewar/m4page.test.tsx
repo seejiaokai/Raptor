@@ -17,7 +17,7 @@ import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
-import { getState, initStore as lwInitStore, lwHistInit, recordsAt, setCell, setPeople } from './state/store'
+import { getState, initStore as lwInitStore, lwHistInit, recordsAt, setBidState, setCell, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
@@ -117,6 +117,102 @@ describe('the Approvals page’s rows', () => {
     expect(within(line()).getByTestId('appr-approve').querySelector('[data-long="Approved"]'), 'Approve holds "Approved"\'s room').not.toBeNull()
     expect(within(line()).getByTestId('appr-refuse').querySelector('[data-long="Refused"]'), 'Refuse holds "Refused"\'s room').not.toBeNull()
   })
+  /* THE FIXES' M3 (the re-walk, walker A's F1 and F2): after Approve then one tap on Refuse (D1428), an Undo left the line
+     lit "Refused" while the leave stood approved again, and two Undos then a Redo greyed it "Already approved by Saber" with
+     both buttons off. A line shows what the record shows after every Undo and Redo (D1421's light follows the decision). */
+  describe('Undo and Redo after a one-tap change of mind (M3)', () => {
+    const lit = (line: HTMLElement) => {
+      const ok = within(line).getByTestId('appr-approve'), no = within(line).getByTestId('appr-refuse')
+      return { approve: ok.textContent, refuse: no.textContent, why: within(line).queryByTestId('appr-why')?.textContent ?? null,
+        off: (ok as HTMLButtonElement).disabled || (no as HTMLButtonElement).disabled }
+    }
+    const approvedThenRefused = () => {
+      ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+      T(9)
+      render(<ApprovalsPage shown={true} />)
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-refuse'))
+      expect(lit(linesOf('bane')[0]!)).toMatchObject({ approve: 'Approve', refuse: 'Refused' })
+    }
+    const APPROVED = { approve: 'Approved', refuse: 'Refuse', why: null, off: false }
+    const REFUSED = { approve: 'Approve', refuse: 'Refused', why: null, off: false }
+    const PENDING = { approve: 'Approve', refuse: 'Refuse', why: null, off: false }
+
+    it('Undo of the switch: lit "Approved", as the record now is', () => {
+      approvedThenRefused()
+      act(() => { expect(globalUndo().ok).toBe(true) })
+      expect(reqs('bane', TUE), 'the leave stands approved again').toEqual([])
+      expect(linesOf('bane')).toHaveLength(1)
+      expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
+    })
+
+    it('Undo, Undo, then Redo and Redo: pending, then lit "Approved", then lit "Refused" — never "Already approved"', () => {
+      approvedThenRefused()
+      act(() => { expect(globalUndo().ok).toBe(true) })
+      act(() => { expect(globalUndo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(PENDING)
+      act(() => { expect(globalRedo().ok).toBe(true) })
+      expect(linesOf('bane')).toHaveLength(1)
+      expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
+      act(() => { expect(globalRedo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(REFUSED)
+    })
+
+    it('the twin: Refuse then one tap on Approve, Undo — lit "Refused" again; Redo — lit "Approved"', () => {
+      ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+      T(9)
+      render(<ApprovalsPage shown={true} />)
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-refuse'))
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+      expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
+      act(() => { expect(globalUndo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(REFUSED)
+      act(() => { expect(globalRedo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
+    })
+
+    it('the second tap undone: lit "Approved" again, and its Redo pending again', () => {
+      ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+      T(9)
+      render(<ApprovalsPage shown={true} />)
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+      expect(lit(linesOf('bane')[0]!)).toEqual(PENDING)
+      act(() => { expect(globalUndo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
+      act(() => { expect(globalRedo().ok).toBe(true) })
+      expect(linesOf('bane')).toHaveLength(1)
+      expect(lit(linesOf('bane')[0]!)).toEqual(PENDING)
+    })
+  })
+
+  /* THE FIXES' M7 (the Opus read's 4): a lit line was never asked again whether it still stood — approved here, then put
+     back to a bid on the grid, it stayed lit "Approved" beside a second, pending copy of the same request. */
+  describe('a lit line changed elsewhere (M7)', () => {
+    it('approved here, put back to a bid on the grid: ONE line, pending again, in its place', () => {
+      ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+      T(9)
+      render(<ApprovalsPage shown={true} />)
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+      act(() => { setBidState('bane', TUE, 'pending') })      // the grid's lit Approve pressed again (D1330)
+      expect(reqs('bane', TUE).map(r => r.state)).toEqual(['pending'])
+      expect(linesOf('bane'), 'the request is shown once').toHaveLength(1)
+      const l = linesOf('bane')[0]!
+      expect(within(l).getByTestId('appr-approve').textContent).toBe('Approve')
+      expect(within(l).queryByTestId('appr-why')).toBeNull()
+    })
+    it('refused here, its bid then deleted on the grid: the light goes and the line says so', () => {
+      ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+      T(9)
+      render(<ApprovalsPage shown={true} />)
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-refuse'))
+      act(() => { expect(setCell('bane', TUE, '')).toBe(true) })
+      const l = linesOf('bane')[0]!
+      expect(within(l).getByTestId('appr-refuse').textContent, 'no longer lit').toBe('Refuse')
+      expect(within(l).getByTestId('appr-why').textContent).toBe('No longer there')
+    })
+  })
+
   it('★8 two lines that join while drawn are ONE line — no greyed "No longer there"', () => {
     ranger(); expect(setCell('bane', MON, 'LL')).toBe(true); expect(setCell('bane', WED, 'LL')).toBe(true); saber()
     T(9)
