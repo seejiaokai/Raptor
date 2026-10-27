@@ -1183,7 +1183,10 @@ function tellHoliday(runs: HolidayRun[]): void {
    state before and after, never raised by a door); this is where it becomes his line: written through the scheduler
    store's own input command, as a child of the war's, so the decision's Undo takes the line and its Redo puts it back
    (9.3's "taken back" is the follow-up below). */
-/* each man's war-approved leave as it stands — person → date → its notation (LL, *LL, LL*) */
+/* each man's war-approved leave as it stands — person → "date|notation" → its notation (LL, *LL, LL*). Keyed by the date
+   AND the half (the fixes' M2 — the Opus read's 2, 28 Oct 26): a day may hold two war-approved halves, and keyed by the
+   date alone the later Input overwrote the earlier, so the bell read a half that stood all along as "deleted", an
+   approval as "bid deleted", or a put-back as nothing. */
 function warLeaveNow(): Map<string, Map<string, string>> {
   const out = new Map<string, Map<string, string>>()
   for (const row of INPUTS as any[]) {
@@ -1193,7 +1196,8 @@ function warLeaveNow(): Map<string, Map<string, string>> {
     const m = out.get(String(pid)) ?? new Map<string, string>()
     for (const d of inputDates(row)) {
       const c = absencesAt(String(pid), d).find(x => x.id === String(row.iid))
-      m.set(d, c ? notationOf(c.code, c.win) : String(row.type))
+      const n = c ? notationOf(c.code, c.win) : String(row.type)
+      m.set(`${d}|${n}`, n)
     }
     out.set(String(pid), m)
   }

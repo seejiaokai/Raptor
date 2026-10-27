@@ -39,9 +39,9 @@ const req = (p: string, d: string): RequestRec => { const l = reqs(p, d); expect
 const DAYS = ['2026-02-03', '2026-02-04', '2026-02-05']
 const openAll = () => { const p = getState().period; openDates(p.start, p.end) }
 const closeAll = () => { const p = getState().period; closeDates(p.start, p.end) }
-/* a line as the Approvals list draws it: the person's request run, each day by its record */
+/* a line as the Approvals list draws it: the person's request run, each day by its record and its code (approvals.ts) */
 const lineOf = (p: string, dates: string[], to: DecideLine['to']): DecideLine =>
-  ({ personId: p, to, parts: dates.map(date => { const r = req(p, date); return { date, recId: r.id, state: r.state as DecidePart['state'] } }) })
+  ({ personId: p, to, parts: dates.map(date => { const r = req(p, date); return { date, recId: r.id, code: r.code, state: r.state as DecidePart['state'] } }) })
 const leaveOf = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw && String(r.date).startsWith('Feb'))
 
 beforeAll(() => { vi.useFakeTimers({ toFake: ['Date'] }); PEOPLE0 = JSON.stringify(PEOPLE) })
@@ -226,6 +226,68 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
     setMemberTodayForTests('2026-02-10')
     const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
     expect(b!.kind, 'after it has run').toBe('done')
+  })
+
+  /* THE FIXES' M1 (both code reads, 28 Oct 26): on a day whose other half already holds war-approved leave, the line was
+     re-keyed after Approve to the FIRST war-approved leave of that day — the older, other half's — so the second tap or
+     Refuse (D1421, D1428) put back or refused leave approved days before, and left the one just approved standing. */
+  describe('a day whose other half already holds war-approved leave (M1)', () => {
+    const D = DAYS[0]!
+    /* the afternoon approved first (the older Input), then a morning bid drawn as its line */
+    const pmApprovedThenAmBid = () => {
+      expect(setCell('bane', D, 'LL*')).toBe(true)
+      expect(decideRequests([lineOf('bane', [D], 'approved')])[0]!.kind).toBe('done')
+      expect(setCell('bane', D, '*LL')).toBe(true)
+      const pm = leaveOf('bane')[0]
+      return { pmIid: String(pm.iid), line: lineOf('bane', [D], 'approved') }
+    }
+    const halfOf = (iid: string) => { const r = INPUTS.find((x: any) => String(x.iid) === iid); return r ? (r.half ?? (r.allday ? 'full' : '')) : null }
+
+    it('Approve re-keys the line to the morning leave it wrote, never the afternoon', () => {
+      const { pmIid, line } = pmApprovedThenAmBid()
+      const [a] = decideRequests([line])
+      expect(a!.kind).toBe('done')
+      const parts = (a as any).parts as DecidePart[]
+      expect(parts[0]!.iid, 'the line is the morning’s leave now').not.toBe(pmIid)
+      expect(leaveOf('bane')).toHaveLength(2)
+    })
+
+    it('the second tap puts back only the morning; the afternoon stays approved', () => {
+      const { pmIid, line } = pmApprovedThenAmBid()
+      const [a] = decideRequests([line])
+      const [b] = decideRequests([{ personId: 'bane', parts: (a as any).parts, to: 'pending' }])
+      expect(b!.kind).toBe('done')
+      expect(INPUTS.some((x: any) => String(x.iid) === pmIid), 'the afternoon leave still stands').toBe(true)
+      expect(leaveOf('bane')).toHaveLength(1)
+      expect(req('bane', D)).toMatchObject({ code: '*LL', state: 'pending' })
+      expect(halfOf(pmIid)).not.toBeNull()
+    })
+
+    it('Refuse after Approve refuses only the morning; the afternoon stays approved', () => {
+      const { pmIid, line } = pmApprovedThenAmBid()
+      const [a] = decideRequests([line])
+      const [b] = decideRequests([{ personId: 'bane', parts: (a as any).parts, to: 'refused' }])
+      expect(b!.kind).toBe('done')
+      expect(INPUTS.some((x: any) => String(x.iid) === pmIid), 'the afternoon leave still stands').toBe(true)
+      expect(req('bane', D)).toMatchObject({ code: '*LL', state: 'refused' })
+    })
+
+    it('a morning bid deleted since is "No longer there" — not "Already approved" for the afternoon', () => {
+      const { line } = pmApprovedThenAmBid()
+      setCell('bane', D, '')
+      /* (the delete takes the morning bid only; the afternoon leave is approved and stays) */
+      expect(leaveOf('bane')).toHaveLength(1)
+      expect(decideRequests([line])).toEqual([{ kind: 'stale', why: 'No longer there' }])
+    })
+
+    it('the same tap on a line drawn before any other half was approved still works on a plain day', () => {
+      expect(setCell('bane', D, '*LL')).toBe(true)
+      const [a] = decideRequests([lineOf('bane', [D], 'approved')])
+      expect(a!.kind).toBe('done')
+      const [b] = decideRequests([{ personId: 'bane', parts: (a as any).parts, to: 'pending' }])
+      expect(b!.kind).toBe('done')
+      expect(leaveOf('bane')).toHaveLength(0)
+    })
   })
 
   it('a member reaches none of it', () => {

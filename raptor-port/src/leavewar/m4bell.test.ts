@@ -132,6 +132,59 @@ describe('a decision on his leave — one line, naming who (9.1, 9.2)', () => {
   })
 })
 
+/* THE FIXES' M2 (the Opus code read's 2, 28 Oct 26): his war-approved leave was read as ONE notation a date, so on a day
+   holding two war-approved halves the later Input hid the earlier — the bell told him "deleted" beside "approved", "bid
+   deleted" for an approval, or nothing at all for a put-back. Each case the read lists, and D1422 beside a half. */
+describe('a day holding two war-approved halves (M2)', () => {
+  const D = DAYS[1]!
+  const approve = (code: string, date = D) => {
+    expect(setCell('bane', date, code)).toBe(true)
+    const r = reqs('bane', date).find(x => x.code === code && x.state === 'pending')!
+    return decideRequests([{ personId: 'bane', to: 'approved', parts: [{ date, recId: r.id, code, state: 'pending' }] }])[0]!
+  }
+  const fresh = () => { NOTICES.length = 0; T(9) }
+  /* (a line prints the kind without its half's star — "LL approved" — as every Leave War line does) */
+
+  it('(a) the afternoon approved, then the morning: ONE line, "approved" — never "deleted" beside it', () => {
+    approve('LL*')
+    fresh()
+    expect(approve('*LL').kind).toBe('done')
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL approved · Saber'])
+  })
+
+  it('(b) an approval that extends an older morning leave, on a day whose afternoon a later leave holds: "approved", not "bid deleted"', () => {
+    approve('*LL', DAYS[0]!)          // the older morning leave, K
+    approve('LL*')                     // the afternoon leave, A, filed later
+    fresh()
+    expect(approve('*LL').kind).toBe('done')    // extends K onto D
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL approved · Saber'])
+  })
+
+  it('(c) one half of a two-half day put back to a bid tells him so, whichever Input is older', () => {
+    approve('*LL')
+    const pm = approve('LL*')
+    fresh()
+    const parts = (pm as any).parts as DecidePart[]
+    expect(decideRequests([{ personId: 'bane', parts, to: 'pending' }])[0]!.kind).toBe('done')
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL put back to a bid · Saber'])
+  })
+
+  it('(c, the other half) the older morning put back tells him so too', () => {
+    const am = approve('*LL')
+    approve('LL*')
+    fresh()
+    expect(decideRequests([{ personId: 'bane', parts: (am as any).parts, to: 'pending' }])[0]!.kind).toBe('done')
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL put back to a bid · Saber'])
+  })
+
+  it('"Approve what I enter" beside an approved afternoon (D1422): "added and approved" only', () => {
+    approve('LL*')
+    fresh()
+    placeApproved([{ personId: 'bane', date: D }], '*LL')
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL added and approved · Saber'])
+  })
+})
+
 describe('Undo (9.3 — D1216)', () => {
   it('an unread line goes with the Undo; a read one leaves "taken back"; Redo then writes a fresh line, unread', () => {
     bids('bane')

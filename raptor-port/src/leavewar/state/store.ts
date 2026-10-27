@@ -124,6 +124,7 @@ import {
   liveRequestsOn,
   portionOfCode,
   requestWin,
+  overlaps,
   barsWrite,
   forbiddenPair,
   isSickCode,
@@ -2797,7 +2798,8 @@ export interface WarTell {
 }
 export interface OpenTell { from: string; to: string; open: boolean }
 export interface TellHooks {
-  /** each man's war-approved leave as it stands: person → date → the leave's notation (LL, *LL) */
+  /** each man's war-approved leave as it stands: person → "date|notation" → the leave's notation (LL, *LL) — one entry a
+   *  half, so a day holding two war-approved halves keeps both (M2) */
   leave(): Map<string, Map<string, string>>
   decisions(tells: WarTell[]): void
   openings(tells: OpenTell[]): void
@@ -2837,8 +2839,13 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
     if (actor && pid === actor) continue                                  // his own change tells nobody
     const RB = requestsOf(before, pid), RA = requestsOf(after, pid)
     const LB = leaveBefore.get(pid) ?? new Map<string, string>(), LA = leaveAfter.get(pid) ?? new Map<string, string>()
-    const lost = new Map([...LB].filter(([d, c]) => LA.get(d) !== c))
-    const gained = new Map([...LA].filter(([d, c]) => LB.get(d) !== c))
+    /* keyed "date|notation" — one entry a half (M2); a key's date is its first ten letters */
+    const lost = new Map([...LB].filter(([k]) => !LA.has(k)))
+    const gained = new Map([...LA].filter(([k]) => !LB.has(k)))
+    const dateOf = (k: string) => k.slice(0, 10)
+    /* the leave of `m` on that date standing on the half a request takes — never the other half's (M2) */
+    const onHalf = (m: Map<string, string>, date: string, code: string) =>
+      [...m.keys()].find(k => dateOf(k) === date && overlaps(requestWin(m.get(k)!), requestWin(code)))
     const evs: Ev[] = []
     /* the days where a NEW request came — a re-typed kind is a new record on the same day (store.ts setCell): the bid
        still stands, so its old record's going is no "deleted" (the scenario designer's ★5; D1142 names no re-type) */
@@ -2849,8 +2856,9 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
       if (!now) {
         /* approved: the leave that came is this bid's own kind — leave of ANOTHER kind placed approved over it is the
            admin's own placing, told as "added and approved" below (★6) */
-        if (gained.has(date) && (type !== 'lw.placeApproved' || kind(gained.get(date)!) === kind(rec.code))) { evs.push({ d: 'approved', code: rec.code, date }); gained.delete(date); continue }
-        if (gained.has(date)) continue
+        const g = onHalf(gained, date, rec.code)
+        if (g && (type !== 'lw.placeApproved' || kind(gained.get(g)!) === kind(rec.code))) { evs.push({ d: 'approved', code: rec.code, date }); gained.delete(g); continue }
+        if (g) continue
         if (newOn.has(date) && rec.state !== 'refused') continue
         /* a refusal another refusal on the same half replaced (decideRequest keeps one) is no news */
         if (type === 'lw.decide' && rec.state === 'refused') continue
@@ -2861,21 +2869,23 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
       if (now.rec.state !== rec.state) evs.push({ d: now.rec.state === 'refused' ? 'refused' : 'repend', code: rec.code, date })
     }
     for (const [id, { date, rec }] of RA) {
-      if (RB.has(id) || !lost.has(date)) continue
+      if (RB.has(id)) continue
+      const l = onHalf(lost, date, rec.code)
+      if (!l) continue
       evs.push({ d: rec.state === 'refused' ? 'refused' : 'putback', code: rec.code, date })
-      lost.delete(date)
+      lost.delete(l)
     }
     /* what is left of the leave: a move pairs what went with what came, day for day; the rest went or came */
     if (type === 'lw.move' && lost.size && lost.size === gained.size) {
       const L = [...lost.keys()].sort(), G = [...gained.keys()].sort()
-      const delta = dayGap(L[0]!, G[0]!)
-      if (L.every((d, i) => dayGap(d, G[i]!) === delta)) {
-        L.forEach((d, i) => evs.push({ d: 'moved', code: lost.get(d)!, date: d, dest: G[i]! }))
+      const delta = dayGap(dateOf(L[0]!), dateOf(G[0]!))
+      if (L.every((k, i) => dayGap(dateOf(k), dateOf(G[i]!)) === delta)) {
+        L.forEach((k, i) => evs.push({ d: 'moved', code: lost.get(k)!, date: dateOf(k), dest: dateOf(G[i]!) }))
         lost.clear(); gained.clear()
       }
     }
-    for (const [date, code] of lost) evs.push({ d: 'deleted', code, date })
-    if (type === 'lw.placeApproved') for (const [date, code] of gained) evs.push({ d: 'added', code, date })
+    for (const [k, code] of lost) evs.push({ d: 'deleted', code, date: dateOf(k) })
+    if (type === 'lw.placeApproved') for (const [k, code] of gained) evs.push({ d: 'added', code, date: dateOf(k) })
     /* ONE LINE A RUN: the same news about the same kind on days in a row (a move, the same distance) */
     evs.sort((a, b) => (a.d < b.d ? -1 : a.d > b.d ? 1 : 0) || (a.code < b.code ? -1 : a.code > b.code ? 1 : 0) || (a.date < b.date ? -1 : 1))
     for (const e of evs) {
@@ -3690,8 +3700,10 @@ export function decideRequestById(personId: string, date: string, recId: string,
    request into an Input and a put-back mints a new request, so the list follows the new ids and its own second tap is
    never read as stale (the fresh read's finding 2). */
 export type DecideTo = 'approved' | 'refused' | 'pending'
-/** one day of a line as it was drawn: a request (by id, in its state) or, once approved, the leave it became (an Input id) */
-export interface DecidePart { date: string; recId?: string; iid?: string; state: 'pending' | 'refused' | 'approved' }
+/** one day of a line as it was drawn: a request (by id, in its state) or, once approved, the leave it became (an Input id).
+ *  `code` is the request's notation (LL, *LL, LL*) — the half it takes, so a day whose OTHER half holds war-approved leave
+ *  is never mistaken for this line's (the fixes' M1). */
+export interface DecidePart { date: string; recId?: string; iid?: string; code?: string; state: 'pending' | 'refused' | 'approved' }
 export interface DecideLine { personId: string; parts: DecidePart[]; to: DecideTo }
 export type DecideOutcome =
   | { kind: 'done'; parts: DecidePart[] }
@@ -3725,12 +3737,22 @@ export function postedOutBy(personId: string): string | null {
 /* the leave the war approved for him on that day, by Input id — what an approved part is */
 const warLeaveOn = (personId: string, date: string, iid?: string) =>
   absencesAt(personId, date).find(c => c.kind === 'absence' && !!c.lw && isLeaveCode(c.code) && (iid === undefined || c.id === iid))
+/* …and, with no id, the war-approved leave on the HALF a request takes (the fixes' M1 — both code reads, 28 Oct 26). A day
+   may hold two halves of war-approved leave, and the day's absences follow the Inputs' order, so "the first leave that day"
+   was the older, OTHER half's: Approve re-keyed the line to it, and the second tap or Refuse then put back or refused leave
+   approved days before. With the request's code the half is known; without it (a line drawn by an older page) the day
+   alone is all there is to go on. */
+const warLeaveFor = (personId: string, date: string, code: string | undefined) =>
+  code === undefined
+    ? warLeaveOn(personId, date)
+    : absencesAt(personId, date).find(c => c.kind === 'absence' && !!c.lw && isLeaveCode(c.code) && overlaps(c.win, requestWin(code)))
 
 /** what became of a part since it was drawn, or null when it stands as drawn (B8) */
 function staleWhy(personId: string, p: DecidePart): string | null {
   if (p.state === 'approved') {
     if (p.iid && warLeaveOn(personId, p.date, p.iid)) return null
-    const back = listAt(personId, p.date).find((r): r is RequestRec => r.kind === 'request')
+    /* (a request back on the line's own half — the other half's bid is another line's) */
+    const back = listAt(personId, p.date).find((r): r is RequestRec => r.kind === 'request' && (p.code === undefined || overlaps(requestWin(r.code), requestWin(p.code))))
     if (back) return back.state === 'refused' ? `Already refused by ${csOf(back.decidedBy) || 'an admin'}` : 'Already put back to pending'
     return 'No longer there'
   }
@@ -3740,8 +3762,9 @@ function staleWhy(personId: string, p: DecidePart): string | null {
     if (rec.state === 'refused') return `Already refused by ${csOf(rec.decidedBy) || 'an admin'}`
     return 'Already put back to pending'
   }
-  /* gone from that day: approved there by someone else, moved to another day, or deleted */
-  const leave = warLeaveOn(personId, p.date)
+  /* gone from that day: approved there by someone else, moved to another day, or deleted — "approved" only where the
+     leave stands on the request's own half (M1) */
+  const leave = warLeaveFor(personId, p.date, p.code)
   if (leave) { const by = DOOR?.approvedBy?.(leave.id); return `Already approved${by ? ` by ${by}` : ''}` }
   for (const w of state.wars) for (const [d, list] of Object.entries(w.recs[personId] ?? {})) {
     if (list.some(r => r.id === p.recId)) return `Moved to ${shortDay(d)}`
@@ -3801,6 +3824,13 @@ export function decideRequests(lines: readonly DecideLine[]): DecideOutcome[] {
   /* the ids each day held before, so a put-back's new request is told from what was there */
   const idsBefore = new Map<string, Set<string>>()
   for (const { l } of go) for (const p of l.parts) idsBefore.set(`${l.personId}|${p.date}`, new Set(listAt(l.personId, p.date).map(r => r.id)))
+  /* …and the half each request takes, read now (an approved request is gone after the command): the re-read finds the
+     leave on THAT half, never the other half's (M1) */
+  const codeOf = new Map<DecidePart, string | undefined>()
+  for (const { l } of go) for (const p of l.parts) {
+    const rec = p.recId ? listAt(l.personId, p.date).find((r): r is RequestRec => r.kind === 'request' && r.id === p.recId) : undefined
+    codeOf.set(p, rec?.code ?? p.code)
+  }
   gesture('lw.decide', () => {
     const approve: Array<{ personId: string; date: string; recId: string }> = []
     const putBack = new Map<DecideTo, Array<{ personId: string; date: string; iid: string }>>()
@@ -3824,16 +3854,17 @@ export function decideRequests(lines: readonly DecideLine[]): DecideOutcome[] {
   for (const { l, i } of go) {
     const parts: DecidePart[] = []
     for (const p of l.parts) {
+      const code = codeOf.get(p)
       if (l.to === 'approved') {
-        const leave = p.state === 'approved' ? warLeaveOn(l.personId, p.date, p.iid) : warLeaveOn(l.personId, p.date)
-        if (leave && !listAt(l.personId, p.date).some(r => r.id === p.recId)) parts.push({ date: p.date, iid: leave.id, state: 'approved' })
+        const leave = p.state === 'approved' ? warLeaveOn(l.personId, p.date, p.iid) : warLeaveFor(l.personId, p.date, code)
+        if (leave && !listAt(l.personId, p.date).some(r => r.id === p.recId)) parts.push({ date: p.date, iid: leave.id, ...(code ? { code } : {}), state: 'approved' })
         continue
       }
       const was = idsBefore.get(`${l.personId}|${p.date}`) ?? new Set<string>()
       const rec = p.state === 'approved'
         ? listAt(l.personId, p.date).find((r): r is RequestRec => r.kind === 'request' && r.state === l.to && !was.has(r.id))
         : listAt(l.personId, p.date).find((r): r is RequestRec => r.kind === 'request' && r.id === p.recId && r.state === l.to)
-      if (rec) parts.push({ date: p.date, recId: rec.id, state: l.to })
+      if (rec) parts.push({ date: p.date, recId: rec.id, code: rec.code, state: l.to })
     }
     out[i] = parts.length === l.parts.length ? { kind: 'done', parts } : { kind: 'refused', why: 'Couldn’t decide that — the week is locked, or something else refused it' }
   }

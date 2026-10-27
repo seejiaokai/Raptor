@@ -68,14 +68,14 @@ export function linesOfWar(war: { period: { id: string }; recs: Record<string, R
         const line = prevDate && addDays(prevDate, 1) === date ? open.get(k) : undefined
         if (line) {
           line.to = date
-          line.parts.push({ date, recId: r.id, state: 'pending' })
+          line.parts.push({ date, recId: r.id, code: r.code, state: 'pending' })
           if (typeof r.placedAt === 'number' && (line.placedAt === undefined || r.placedAt < line.placedAt)) { line.placedAt = r.placedAt; line.placedBy = r.placedBy }
           next.set(k, line)
           continue
         }
         const l: ApprLine = {
           key: `${personId}|${r.id}`, personId, warId: war.period.id, code: r.code, from: date, to: date,
-          parts: [{ date, recId: r.id, state: 'pending' }],
+          parts: [{ date, recId: r.id, code: r.code, state: 'pending' }],
           ...(typeof r.placedAt === 'number' ? { placedAt: r.placedAt } : {}), ...(r.placedBy ? { placedBy: r.placedBy } : {}),
           ...(r.remarks ? { remarks: r.remarks } : {}), docIds: [...(r.docIds ?? [])],
         }
