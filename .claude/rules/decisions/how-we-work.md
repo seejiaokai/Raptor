@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1450 | 27 Oct 26 | He has his own paid Power Apps environment, with two test accounts he makes himself, where the agent may test the app on Dataverse fully before anything is handed to the IT side; it holds demo data only, never a real person's details. |
 | D1417 | 27 Oct 26 | A line in the design guide's list of his design lessons keeps to his words — it covers no case he did not correct, gives no reason he did not give, and marks anything of the agent's own as its reading; and a branch that will add lessons takes a range of lesson numbers first, any renumber told to him old and new. |
 | D1416 | 27 Oct 26 | On an overnight run each job goes to one fresh helper inside the night's chat, with its own walker and reader, and the night's chat only coordinates, checks each result and keeps the records; a separate session per job is used only when he types the night's message in the desktop app, all of them started together. |
 | D1415 | 27 Oct 26 | An overnight run goes on starting jobs past 90% of the weekly allowance, whenever the reset falls, until the limit stops it; it saves at every step so the limit strands nothing. |

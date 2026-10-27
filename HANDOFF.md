@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/test-app-db-tables-178b8c -->
+### `claude/test-app-db-tables-178b8c` — Power Apps code apps: a first test, and when to do the database step — written 27 Oct 26, verify before use
+- **Where it started:** his question, 27 Oct 26, following a "Power Apps code apps" video: write him tables to see if the app works there. Given three test tables (Person, Input, Schedule Day — cut down from `raptor-port/docs/data-model.md` §3) as a file in the chat, not in the repo; nothing in the app changed.
+- **His ruling D1450:** his own paid Power Apps environment, two test accounts he makes himself, where the agent tests the app on Dataverse fully before the IT handover — demo data only (`raptor-port/docs/handover-dataverse.md`). Numbered past the M4 branch's D1429.
+- **Waiting on him:** when to connect — the recommendation put to him: a feasibility test in his environment now, beside M4 and M5, on its own branch; the full database step still at the end (D473).
+- **Notes:** ruling numbers to D1450 (D1430–D1449 left free for the M4 chat); no observations this chat.
+<!-- /now -->
 <!-- now:claude/observation-log-review-triage-7f6090 -->
 ### `claude/observation-log-review-triage-7f6090` — the skill-notes review of 13–26 Oct 26 (152 open notes), installed; then M4 — written 27 Oct 26, verify before use
 - **Where it started:** his opening line, 27 Oct 26: triage the open notes of `.claude/skill-observations/log.md` grouped by guide, drafts staged first, one fresh, blind Opus reader, then put to him in rounds of at most four; after his approval and the merge, the Leave War overhaul's M4 (D1404) on its own branch.
