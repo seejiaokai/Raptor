@@ -429,8 +429,13 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   if (!war || !rec) return 'No longer there'
   /* A DELETED MAN (the host's decision, 28 Oct 26 — the fixes' round 3, R3-6): D1436 speaks only of posting out, so the
      refusal the code had before M4 for a man deleted from the squadron stands, pending his word: a pending bid left from
-     before his delete is not approved, in every door, with the words it had */
-  if (postedOutBy(it.personId) === 'gone') return 'Posted out — refuse or delete it'
+     before his delete is not approved, in every door, with the words it had.
+     …A MAN DELETED ON ADMIN → USERS ONLY (round 3c, R3c-1 — the third blind read's 1): a posting out with the "Delete"
+     outcome marks him gone too once it has run, and a Delete posting IS a posting out — so it falls to D1436's one date
+     rule below (his days before the date approve), never to this whole refusal. The kept record carries the posting's
+     outcome and `poDone` (store.ts markPostingDone; the kept row spreads the record's window). */
+  const kept: any = getState().postOuts[it.personId] || getState().people.find(p => p.id === it.personId)
+  if (postedOutBy(it.personId) === 'gone' && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)) return 'Posted out — refuse or delete it'
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po
@@ -443,8 +448,10 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
    out as SANS keeps his leave (D283). The record's own dates are read, as `postingPendingTag` reads them.
    ONE DATE RULE, WHETHER THE POSTING HAS RUN OR NOT (the fixes' round 2 — the host's reading of D1436's full row, 28 Oct 26:
    "a request with no such day approves as ever"). The older B12 rule — a man whose posting had run, every request of his
-   refused ("Posted out — refuse or delete it"), his months before the posting too — went: once the posting has run (or he
-   was deleted) his days from the date are refused as before it, the words in the past tense, and his days before it approve. */
+   refused ("Posted out — refuse or delete it"), his months before the posting too — went: once the posting has run (a
+   Delete posting included) his days from the date are refused as before it, the words in the past tense, and his days
+   before it approve — a man DELETED on Admin → Users is refused whole by `approveWhy`'s own check above (R3-6, R3c-1,
+   pending his word). */
 function postingOutWhy(personId: string, date: string): string | null {
   const w: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
   if (!w || !w.to || date <= w.to || outcomeOf(w) === 'sans') return null

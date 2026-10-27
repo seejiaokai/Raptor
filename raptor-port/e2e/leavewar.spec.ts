@@ -8225,3 +8225,36 @@ test('one-day window, "Approve what I enter" on a day after his posting-out date
   await page.waitForTimeout(500)
   await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun: refuse or delete it/), '…and stays, settled').toBeVisible()
 })
+
+/* THE FIXES' ROUND 3c, R3c-2 (the third blind read's 3): round 3b's "kept pending" note was kept by CELL until another cell
+   opened, so any later day's list of the same open cell showed it again, though nothing was kept pending this time. The
+   note is handed to the list once.
+   (The read's routes were tried as written: Undo in the top bar is not pressable with the window up — its scrim covers the
+   bar on a desktop, and on a phone the Undo closes the window — and a bid placed with the tick off closes the window, which
+   ends the cell's note anyway. So the list is taken away by its own Delete, and brought back on the SAME open day by a bid
+   that arrives from elsewhere while the window is up — another admin's, as the store's sync would bring it.) */
+test('the "kept pending" note is said once: the same open day’s list, back after a Delete, shows no stale note (R3c-2)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="month-JUN"]').click()
+  await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
+  await pressMore(page, 'bid-postout')
+  await page.locator('[data-testid="po-overseas"]').click()
+  await page.locator('[data-testid="po-confirm"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
+  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  await page.locator('[data-testid="postout-place"]').click()
+  const tick = page.getByTestId('bid-approve-tick')
+  await expect(tick).toBeVisible()
+  if ((await tick.getAttribute('aria-checked')) !== 'true') await tick.click()
+  await page.getByTestId('bid-LL').click()
+  if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
+  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun/), 'said once, after the press (R3b)').toBeVisible()
+  /* the list's own Delete: the bid goes, the same day stays open, on its window again */
+  await page.locator('[data-testid^="dl-clear-"]').first().click()
+  await expect(page.getByTestId('bid-approve-tick')).toBeVisible()
+  await page.evaluate(() => (window as any).lwSetCell('slipway', '2026-06-16', 'OL'))      // a bid arriving from elsewhere
+  await expect(page.getByTestId('daylist'), 'the day’s list again, the OL pending').toBeVisible()
+  await page.waitForTimeout(300)
+  await expect(page.getByText(/kept pending/), 'no stale note — nothing was kept pending this time').toHaveCount(0)
+})

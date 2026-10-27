@@ -22,7 +22,7 @@ import {
 import { readRec, setMemberTodayForTests, type RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { wireLeaveWarSync } from './sync'
+import { postOut, runPoOutcomes, wireLeaveWarSync } from './sync'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -283,6 +283,22 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       expect(setBidStates([{ personId: 'bane', date: DAYS[2]! }], 'approved').why, 'the bid windows').toEqual([why])
       expect(leaveOf('bane')).toHaveLength(0)
       expect(decideRequests([lineOf('bane', [DAYS[0]!], 'refused')])[0]!.kind, 'Refuse still works').toBe('done')
+    })
+    /* THE FIXES' ROUND 3c, R3c-1 (the third blind read's 1): R3-6's refusal of a deleted man reached a man posted out with the
+       "Delete" OUTCOME too, once the posting had run (it also marks him gone) — so leave on days he still served could no
+       longer be approved, against D1436 ("a request with no such day approves as ever"). Only a man deleted on Admin →
+       Users is refused whole; a run Delete posting falls to the one date rule. */
+    it('a man posted out with the Delete outcome, the posting run: his day before the date approves in Approvals and the bid windows (R3c-1)', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(postOut('bane', DAYS[1]!, 'delete')).toBe(true)
+      runPoOutcomes()
+      expect(getState().postOuts['bane'] ?? getState().people.find(p => p.id === 'bane'), 'the posting has run: he is gone').toMatchObject({ gone: true, poOutcome: 'delete' })
+      const bids = reqs('bane', DAYS[0]!)
+      expect(bids, 'his bid before the date is kept').toHaveLength(1)
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0]!.kind, 'Approvals approves it').toBe('done')
+      expect(leaveOf('bane'), 'approved as leave').toHaveLength(1)
+      expect(globalUndo().ok).toBe(true)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[0]! }], 'approved').decided, 'the bid windows approve it').toBe(1)
     })
     /* R3-4: over several men "He" named nobody — the reasons come per man as well */
     it('the bid windows give the reasons per man, one each, de-duplicated (R3-4)', () => {

@@ -120,3 +120,17 @@ Checks (28 Oct 26): `m4bell` 19, `m4decide` 26, `m4page` 27, `m4ride` 14, `m4sec
 the changed windows, the matrix or the deciding doors: 2,099 passed, 40 skipped (skipped in the files as committed), 0
 failed. Browser through the lock (it builds and type-checks first), `lw-phone` and `lw-desktop`: the new test and every
 Approvals, bell and posting-out test — 24 passed, 8 skipped (phone-only on the desktop project), 0 failed.
+
+## Round 3c — the third blind read (`fix-read-3.md`, findings 1, 3 and 4; its 2 filed by the host)
+
+| Finding | Red first | The fix | Twin paths tested |
+|---|---|---|---|
+| **R3c-1 MEDIUM** — R3-6's refusal reached a posting out with the "Delete" outcome once run (it marks him gone too), so leave on days he still served could not be approved, against D1436 | `m4decide.test.ts` — "a man posted out with the Delete outcome, the posting run: his day before the date approves in Approvals and the bid windows (R3c-1)" (posted out from 4 Feb with Delete, the outcomes pass run, his 3 Feb bid) — red: "Posted out — refuse or delete it" | `sync.ts approveWhy`: the whole refusal only for a man deleted on Admin → Users — not where the kept record's outcome is `delete` and its posting is done (`outcomeOf(kept) === 'delete' && kept.poDone`, fields verified: `markPostingDone` writes `poDone` on the record and the kept row, `poOutcome` rides the record) | Approvals AND the bid windows; the R3-6 test (a delete by `forgetPersonFrom`, as Admin → Users does it) still refused |
+| **R3c-2 LOW** — round 3b's "kept pending" note came back on a later day's list of the same open cell | `e2e/leavewar.spec.ts` — "the 'kept pending' note is said once: the same open day's list, back after a Delete, shows no stale note (R3c-2)" — the R3b steps, the list's Delete, then a bid arriving from elsewhere on the same open day (the read's Undo route is not pressable with the window up — its scrim covers the bar on a desktop, and on a phone Undo closes the window; a bid placed with the tick off closes the window, which ends the note anyway) — red on `lw-phone` and `lw-desktop` | `Matrix.tsx`: the note is handed to the list once — dropped after the render the list took it in | R3b's test (the note shown once, read at once and settled) still green on both projects |
+| **R3c-3 words** | — (comment) | `sync.ts`, the comment over `postingOutWhy`: a Delete posting falls to the date rule; a man deleted on Admin → Users is refused whole by `approveWhy`'s check above (R3-6, R3c-1, pending his word) | — |
+
+Checks (28 Oct 26): `m4bell` 19, `m4decide` 27, `m4page` 27, `m4ride` 14, `m4sec` 13; the 108 Leave War test files that call
+the deciding doors, the windows, the matrix or the postings: 2,125 passed, 40 skipped (as committed), 0 failed;
+`state/person-delete` + `p6d-deleteonread` 37. Browser through the lock (it builds and type-checks first): red run of R3c-2
+against round 3b's code — failed on both projects at the stale note; green run, `lw-phone` and `lw-desktop`, of R3c-2, R3b
+and every Approvals, bell and posting-out test — 26 passed, 8 skipped (phone-only on the desktop project), 0 failed.

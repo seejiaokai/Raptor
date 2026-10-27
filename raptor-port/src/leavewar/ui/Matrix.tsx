@@ -341,6 +341,10 @@ export function Matrix() {
      list that opens there, gone once another cell (or none) is open. */
   const [keptNote, setKeptNote] = useState<{ key: string; text: string } | null>(null)
   useEffect(() => { setKeptNote(k => (k && k.key === openKey ? k : null)) }, [openKey])
+  /* …HANDED OVER ONCE (round 3c, R3c-2 — the third blind read's 3): kept by cell alone, every later day's list of the same
+     open cell took it again as its first words — a stale "kept pending" after the bid was deleted and another arrived. The
+     list that opens in the same render as the placing has copied it into its own words by now, so it is dropped here. */
+  useEffect(() => { if (keptNote) setKeptNote(null) }, [keptNote])
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
