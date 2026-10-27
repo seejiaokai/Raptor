@@ -37,7 +37,7 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
-import { setDaysWin, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
+import { setDaysWin, setDocView, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
 import { puck } from '../ui/html'
 import type { DayWhatIf } from './engine/whatif'
 import { lwSyncTurn } from './state/store'
@@ -113,6 +113,7 @@ import {
   rawState,
   setAbsenceDoor,
   setActorLookup,
+  focusDay,
   setPeople,
   setPostOut,
   lwStore,
@@ -139,7 +140,9 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
+import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
+import { askLw, askRing, setApprMode } from './ui/lwnav'
+import { ringCell } from './ui/cellring'
 import { hasRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
@@ -280,6 +283,7 @@ export function installAbsenceDoor(): void {
   setHolidayTell(tellHoliday)
   /* M4 batch 9: a decision on a man's leave, and bidding opened or closed, tell the bell (tellWar, below) */
   setDecisionTell({ leave: warLeaveNow, decisions: tellWar, openings: tellBidding })
+  setDerivedNotices(endedLines)
   setHolidayLeft(holidayLeft)
   setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
@@ -1202,6 +1206,42 @@ function tellBidding(tells: OpenTell[]): void {
   commitInputs(SCHED_TYPES.inputsWrite, () => {
     for (const t of tells) noticeWar(to, who, { k: 'lwopen', a: t.from, b: t.to, open: t.open })
   })
+}
+
+/* BIDDING THAT ENDS BECAUSE ITS LAST DATE PASSES (M4 9.4 — D1214 ruled the register's P7 in as written, and P7's "when"
+   includes "its last day passes"): "Leave War · 1 Apr – 30 Jun · bidding closed · its dates ended", with no name. No command
+   runs on that date, so each person's bell works the line out from the periods' stored stretches once the date has passed
+   — a steady id, read like any other line (state/notices.ts setDerivedNotices). A stretch that ended more than fourteen
+   days ago is old news and not listed (the build's reading, named at his look), so a new member is not handed a year of
+   them. At the database step a scheduled flow may write it instead (noted for the IT side). */
+const ENDED_DAYS = 14
+function endedLines(pid: string): Notice[] {
+  if (!warAudience().includes(pid)) return []
+  const today = memberToday(), since = addDays(today, -ENDED_DAYS)
+  const out: Notice[] = []
+  for (const w of rawState().wars) for (const o of w.period.open) {
+    if (!(o.to < today) || o.to < since) continue
+    const end = addDays(o.to, 1)
+    const at = new Date(+end.slice(0, 4), +end.slice(5, 7) - 1, +end.slice(8, 10)).getTime()
+    out.push({ id: `lwend:${w.period.id}:${o.from}:${o.to}`, to: pid, by: null, at, iid: '', name: 'Leave War', day: o.from, what: [{ k: 'lwopen', a: o.from, b: o.to, open: false, end: true }] })
+  }
+  return out
+}
+
+/** A TAP ON THE BELL'S LEAVE WAR LINE (M4 9.6): the Leave War, the war holding the date, the grid at that day and his cell
+ *  ringed (ui/cellring.ts — the just-added mark). The page's first-visit landing takes the ask instead of its own
+ *  (LeaveWarPage.tsx). A man with no row on the grid (a SANS man while SANS is off the war — B12) is shown his person
+ *  window instead. Approvals is left (the bell is another way out of it). */
+export function openWarAt(iso: string, personId?: string | null): void {
+  const war = warHolding(rawState().wars, iso)
+  if (war && war.period.id !== rawState().currentId) selectWar(war.period.id)
+  setApprMode('off')
+  const pid = personId ? String(personId) : ''
+  const onGrid = !!pid && getState().people.some(p => p.id === pid)
+  if (pid && !onGrid) askLw({ kind: 'person', id: pid })
+  if (CURPAGE === 'leavewar') { if (onGrid) ringCell(pid, iso); else focusDay(iso) }
+  else { askRing({ personId: onGrid ? pid : '', date: iso }); setPage('leavewar') }
+  raptorNotify()
 }
 
 /* "TAKEN BACK" (M4 9.3 — owner D1216, D148). An Undo restores an exact image, so it cannot itself leave a line or write
@@ -2872,6 +2912,22 @@ export function openDays(iso: string): void {
  *  — the window is the scheduler's, drawn at the app's own level, and is its own gate on who may change what): the
  *  Inputs page is brought to the front and the input's window opened on it. False where the input is gone — the
  *  caller then opens the day instead, so the tap never does nothing. */
+/** A REQUEST'S DOCUMENTS, READ ONLY (the overhaul's M4 — 8.2's paperclip, and every document chip on the war): the app's one
+ *  document viewer (ui/DocViewer.tsx) on a request-shaped page — whose leave, the kind and its days, its remarks, who placed
+ *  it — with no "Edit input" or "Upchit" in its foot. Nothing on the war opened a document before (the survey §4). */
+export function openRequestDocs(r: { personId: string; code: string; from: string; to: string; docIds: readonly string[]; remarks?: string; placedBy?: string; placedAt?: number }): boolean {
+  if (!r.docIds.length) return false
+  const a = isoToInputDate(r.from), b = isoToInputDate(r.to)
+  const row: any = {
+    person: r.personId, type: parseCell(r.code)?.type ?? r.code, allday: true, date: a.date, yr: a.yr,
+    ...(r.to > r.from ? { endDate: b.yr === a.yr ? b.date : `${b.date} ${b.yr}` } : {}),
+    remarks: r.remarks ?? '', docIds: [...r.docIds],
+    ...(r.placedBy ? { by: r.placedBy } : {}), ...(typeof r.placedAt === 'number' ? { at: r.placedAt } : {}),
+  }
+  setDocView({ row, readOnly: true })
+  raptorNotify()
+  return true
+}
 export function openInputWindow(iid: string): boolean {
   const row = INPUTS.find((r: any) => String(r.iid) === String(iid))
   if (!row) return false

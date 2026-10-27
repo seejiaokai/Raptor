@@ -256,7 +256,8 @@ export function noticeLive(n: Notice): boolean {
      about bidding on dates this one shares takes its place, as the holiday's lines do */
   const o = openOf(n)
   if (o) {
-    for (const x of NOTICES) {
+    /* (the lines his bell works out count too: a stretch that ENDED replaces the line that opened it) */
+    for (const x of allNoticesFor(n.to)) {
       if (x === n || x.to !== n.to || !(x.at > n.at || (x.at === n.at && x.id > n.id))) continue
       const y = openOf(x)
       if (y && y.a <= o.b && o.a <= y.b) return false

@@ -19,11 +19,11 @@ import { oilUndoBoundary } from './oilmode'
 import { accessAlert, waitingCount } from '../state/accounts'
 import { bugAlert, unseenReports } from '../state/reports'
 import { openAdminUsers } from './adminopen'
-import { oilPendingFor } from '../leavewar/sync'
+import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, BELLAT, setBellList, setOilList } from './pops'
 import { me } from '../state/perms'
-import { noticesFor, noticeWords, noticeAge, holidayLineOn, noticeSpan, type Notice } from '../state/notices'
+import { noticesFor, noticeWords, noticeAge, holidayLineOn, noticeSpan, isWarNotice, type Notice } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
 import { useVersion } from './useStore'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
@@ -110,6 +110,16 @@ export function openNotice(n: Notice): void {
        left of it: state/notices.ts noticeSpan) */
     const span = noticeSpan(n) || { a: String(hol.a), b: String(hol.b || hol.a) }
     setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false })
+    notify(); return
+  }
+  /* A LEAVE WAR LINE (the overhaul's M4, 9.6): the Leave War at that day — where a move took it, at its new days — his
+     cell ringed; a bidding line, the stretch's first day */
+  if (isWarNotice(n)) {
+    markNoticeRead(n.id)
+    setBellList(false)
+    const p: any = (n.what || [])[0]
+    const day = p.k === 'lw' && p.to ? String(p.to) : String(p.a)
+    openWarAt(day, p.k === 'lwopen' || (p.k === 'lwback' && (p.d === 'open' || p.d === 'close')) ? null : n.to)
     notify(); return
   }
   const row = inpById(n.iid)

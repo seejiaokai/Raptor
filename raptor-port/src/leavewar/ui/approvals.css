@@ -1,0 +1,109 @@
+/* APPROVALS (the Leave War overhaul's M4, batch 8 — D1420 "as drawn": full/r22-1-desk, r22-3-desk, r22-5-phone, r22-6-phone).
+   SCOPED under #page-leavewar like every Leave War stylesheet (bidpicker.css's header says why). Its colours are the app's
+   own: the decide buttons are the bid windows' (D1361 — rest grey, the words green and red; the decided one solid with dark
+   words); the dates the app's link cyan; a figure amber or red in the warning colours; the "new" dot the cyan of D1231.
+   A working screen stays dense (D812): rows of 44px on a desktop, the buttons their bid-window size (D487). */
+#page-leavewar {
+  .appr-page { padding: 0 12px 96px; }
+  .appr-card { max-width: 1240px; background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r); padding: 16px 18px 8px; }
+  .appr-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 12px; }
+  .appr-title { margin: 0; font-size: 20px; font-weight: 800; color: var(--ink); }
+  .appr-sub { color: var(--ink-2); font-size: 13px; }
+  .appr-elsewhere { background: none; border: 0; padding: 0; color: var(--accent); font: inherit; font-size: 13px; cursor: pointer; }
+  .appr-elsewhere:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  /* the filter row: New · DATES · All · the months · Pick dates… · Approve all at the right */
+  .appr-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-bottom: 12px; border-bottom: 1px solid var(--edge); }
+  .appr-lab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin: 0 2px 0 6px; }
+  .appr-f { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--edge);
+    background: var(--panel-2); color: var(--ink); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .appr-f.dim { color: var(--ink-3); font-weight: 500; }
+  .appr-f.on { border-color: var(--accent); color: var(--accent); background: rgba(59, 198, 232, .12); }
+  .appr-f:focus-visible, .appr-all:focus-visible, .appr-dlink:focus-visible, .appr-ok:focus-visible, .appr-no:focus-visible,
+  .appr-clip:focus-visible, .appr-back:focus-visible, .appr-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .appr-spring { flex: 1 1 auto; }
+  /* the page's ONE main button (A4) — the app's cyan; armed it asks for the second tap in amber's words */
+  .appr-all { min-height: 36px; padding: 0 18px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+    font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+  .appr-all.armed { background: var(--adv); border-color: var(--adv); color: #1d1405; }
+  .appr-all:disabled { opacity: .45; cursor: default; }
+  .appr-pickpop { margin: 10px 0; max-width: 360px; }
+  .appr-empty { padding: 28px 4px; color: var(--ink-3); }
+
+  /* the list — one eye-span: Approve and Refuse stand near the figures (D1420) */
+  .appr-cols, .appr-line { display: grid; grid-template-columns: 170px 52px minmax(190px, 1.4fr) 64px 76px minmax(130px, 1fr) 128px 44px 214px; column-gap: 12px; align-items: center; }
+  .appr-cols { padding: 12px 0 8px 16px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--edge); }
+  .appr-cols .r, .appr-line .r { text-align: right; justify-self: end; }
+  .appr-line { min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
+  .appr-line.stale { opacity: .78; }
+  .appr-who { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; }
+  .appr-puck { display: inline-flex; }
+  .appr-tag { flex-basis: 100%; padding-left: 16px; font-size: 10.5px; font-weight: 700; color: var(--adv); white-space: nowrap; }
+  .appr-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+  .appr-dot.none { background: transparent; }
+  .appr-box { position: static; display: inline-flex; align-items: center; justify-content: center; height: 22px; min-width: 34px; padding: 0 4px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; }
+  .appr-dates { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .appr-dlink { align-self: flex-start; background: none; border: 0; padding: 0; color: var(--accent); font: inherit; font-weight: 600; cursor: pointer; text-align: left; }
+  .appr-why { color: var(--hard); font-size: 12px; font-weight: 600; }
+  .appr-days, .appr-bal, .appr-placed { font-variant-numeric: tabular-nums; }
+  .appr-bal { font-weight: 700; }
+  .appr-bal small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
+  .appr-bal.neg { color: var(--hard); }
+  .appr-avail { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+  .appr-av { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .appr-av i { font-style: normal; font-weight: 500; color: var(--ink-2); margin-right: 6px; }
+  .appr-av.amber { color: var(--adv); } .appr-av.amber i { color: var(--adv); }
+  .appr-av.red { color: var(--hard); } .appr-av.red i { color: var(--hard); }
+  .appr-placed { color: var(--ink-2); }
+  .appr-placed small { color: var(--ink-3); font-size: 11.5px; }
+  .appr-clip { display: inline-flex; align-items: center; gap: 2px; min-height: 32px; min-width: 36px; justify-content: center; border-radius: 8px;
+    border: 1px solid var(--edge); background: var(--panel-2); color: var(--ink); cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
+  /* Approve · Refuse — the bid windows' decide buttons (D1361) */
+  .appr-btns { display: flex; gap: 8px; justify-content: flex-end; }
+  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--edge); background: var(--panel-2);
+    font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+  .appr-ok { color: #8FE0A8; }
+  .appr-no { color: #FFA6AD; }
+  .appr-ok.lit { background: #57C97A; border-color: #57C97A; color: #0b1116; }
+  .appr-no.lit { background: #F0555F; border-color: #F0555F; color: #0b1116; }
+  .appr-ok:disabled:not(.lit), .appr-no:disabled:not(.lit) { opacity: .4; cursor: default; }
+
+  /* ON A PHONE (A11; r22-5-phone): two lines a request — puck · box · dates · paperclip · Approve · Refuse; then the four
+     figures under headings drawn once */
+  .appr-page.ph { padding: 0 8px 96px; }
+  .appr-page.ph .appr-card { padding: 14px 12px 6px; }
+  .appr-page.ph .appr-filters { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+  .appr-page.ph .appr-f { justify-content: center; padding: 0 4px; min-height: 36px; }
+  .appr-page.ph .appr-spring { display: none; }
+  .appr-page.ph [data-testid="appr-pick"] { grid-column: 1 / span 3; }
+  .appr-page.ph .appr-all { grid-column: 4 / span 4; }
+  .appr-cols.ph { grid-template-columns: 70px 72px 1fr 92px; padding: 12px 0 8px; }
+  .appr-line.ph { display: block; padding: 10px 0; }
+  .appr-l1 { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 6px; }
+  .appr-l1 .appr-who { flex-wrap: nowrap; }
+  .appr-l1 .appr-dot { display: none; }
+  .appr-l1 .appr-tag { display: none; }
+  .appr-l1 .appr-btns { gap: 6px; }
+  .appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 9px; font-size: 13.5px; }
+  .appr-l2 { display: grid; grid-template-columns: 70px 72px 1fr 92px; align-items: start; margin-top: 6px; font-size: 13px; }
+  .appr-l2 .appr-bal { text-align: left; justify-self: start; }
+  .appr-l2 .appr-days { text-align: left; justify-self: start; }
+  .appr-l2 .appr-placed { text-align: right; }
+  .appr-l2 .appr-placed small { display: block; }
+
+  /* THE SLIM BAR (8.5; r22-4-desk, r22-6-phone): at the foot of the grid after a request's dates were tapped */
+  .appr-slim { position: fixed; left: 12px; right: 12px; bottom: 10px; z-index: 30; display: flex; align-items: center; gap: 8px; max-width: 760px; margin: 0 auto;
+    min-height: 44px; padding: 4px 6px 4px 14px; border-radius: 12px; background: var(--raised); border: 1px solid var(--accent); color: var(--ink); font-size: 13.5px; }
+  .appr-slim-n { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .appr-back { min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--accent); background: rgba(59, 198, 232, .14); color: var(--accent);
+    font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
+  .appr-x { min-height: 34px; min-width: 34px; border-radius: 8px; border: 1px solid var(--edge); background: var(--panel-2); color: var(--ink-2); font: inherit; cursor: pointer; }
+
+  /* THE DAY BROUGHT INTO VIEW (cellring.ts): the app's one just-added mark (D860 — the plain blue ring, no glow) for six
+     seconds; for a reader who asked for less motion it stands steady and goes when its time is up */
+  td.lw-ring { box-shadow: inset 0 0 0 2px #1E86FF; animation: lwring 6s ease-out 1 forwards; }
+  @media (prefers-reduced-motion: reduce) { td.lw-ring { animation: none; } }
+}
+/* (a keyframes rule cannot sit inside the scoped block) */
+@keyframes lwring { 0%, 90.83% { box-shadow: inset 0 0 0 2px #1E86FF; } 100% { box-shadow: inset 0 0 0 2px rgba(30, 134, 255, 0); } }

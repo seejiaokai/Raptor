@@ -66,6 +66,8 @@ export const T = {
      was changed; and what each person has read of them, his own row */
   notice: 'Notice',
   noticeseen: 'NoticeSeen',
+  /* each admin's own moment of opening the Leave War's Approvals (M4 8.4 — state/apprseen.ts) */
+  apprseen: 'LeaveApprovalsSeen',
   input: 'Input',
   attachment: 'Attachment, InputAttachment',
   war: 'LeaveWar',
@@ -98,6 +100,8 @@ export const PERMS: Record<string, PermRow> = {
   /* …and an ADMIN reads every person's (M4 9.3 — D1216): his Undo of a Leave War decision asks whether its member had read
      the line it takes back */
   [T.noticeseen]: row(cell('R', 'C R U'), cell('', 'C R U')),
+  /* an admin's own row; a member has no Approvals (D1254) */
+  [T.apprseen]: row(cell('', 'C R U'), NONE),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
@@ -450,6 +454,8 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* the bell's "taken back" line after an admin's Undo or Redo of a Leave War decision (M4 9.3 — D1216): a notice of its
      own command, written by the admin whose Undo it was; never a member's */
   'lw.notice': op(T.notice, 'C'),
+  /* he opens Approvals: his OWN row of when (M4 8.4) */
+  'lw.apprseen': op(T.apprseen, 'U', 'required'),
   /* the Holidays list's three writers (leavewar/state/store.ts holidayAdd / holidayChange / holidayRemove — the Inputs /
      SANS redesign, plan §3.4): a public holiday or an Off day is the leave period's own record, an admin's to change */
   'lw.holiday.add': op(T.war, 'U'), 'lw.holiday.change': op(T.war, 'U'), 'lw.holiday.remove': op(T.war, 'U'),

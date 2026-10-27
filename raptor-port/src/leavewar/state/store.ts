@@ -3733,6 +3733,14 @@ function staleWhy(personId: string, p: DecidePart): string | null {
   return 'No longer there'
 }
 
+/** what became of a line since it was drawn (B8) — "Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — or
+ *  null where every day of it stands as drawn: the Approvals list asks this of a line that left the pending list while it
+ *  was on screen, so the line says what happened (the walk's step 6) */
+export function lineStale(personId: string, parts: readonly DecidePart[]): string | null {
+  for (const p of parts) { const s = staleWhy(personId, p); if (s) return s }
+  return null
+}
+
 /** why the rules refuse this line's decision, or null when it would go through (asked before anything is written) */
 function decideWhy(line: DecideLine): string | null {
   const { personId, to } = line

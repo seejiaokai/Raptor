@@ -1,0 +1,366 @@
+/* APPROVALS — THE ADMIN'S LIST OF LEAVE WAITING FOR A DECISION (the Leave War overhaul's M4, batch 8 — D1152, D1197, D1184,
+   D1189, D1192, D1180, D1181, D1178, D1254, D1420, D1421, D1231, D1361, D1330, D1246, D1175; the red team's A4, A11, B8, B12;
+   the build spec docs/superpowers/plans/2026-10-27-lw-m4-build-spec.md §1; drawn full/r22-1-desk, r22-2-desk, r22-3-desk,
+   r22-5-phone, r22-6-phone — D1420 "as drawn").
+
+   A tab's page in the grid card's place (LeaveWarPage.tsx). One line a request — the days placed together (D1339, D1346):
+   the "new" dot · his puck (the schedule's own — lesson 25) · the kind's box drawn pending (look F) · the dates (a link to
+   the grid) · DAYS · LVE BAL · LOWEST AVAIL · PLACED · the paperclip · Approve · Refuse. Oldest first by when it was
+   placed. On a phone two lines a request (A11). The figures come from `../approvals.ts`, worked out once per change of the
+   war.
+
+   DECIDING (D1361, D1330, D1421): Approve and Refuse rest grey, their words green and red. A tap decides that one request at
+   once — one command, one Undo — and its button lights; the line STAYS where it is, lit, until he leaves Approvals or
+   changes the dates, so a slip is put right by a second tap on the lit button and nothing moves under his finger. The
+   count and "Approve all" count only what is still pending. A request the rules refuse says why, in red, under its dates,
+   and stays pending; one drawn from a state since changed says what happened (B8). Every decision goes through the store's
+   ONE writer, `decideRequests`, which answers per line with the ids the line now has (approving turns a request into an
+   Input; a put-back mints a new request) — so the line follows them, and its own second tap is never read as stale.
+
+   APPROVE ALL (A4): approves exactly what the list shows. One press arms it ("Approve 13 — tap again"); a second approves
+   every pending line shown as ONE command and one Undo. Anything that changes what the list shows while it is armed — a
+   filter, a line decided, an Undo, a request coming or going — disarms it, so the second tap never approves a number he
+   did not read.
+
+   NEW (D1231's reading, 8.4): the moment he OPENED the tab is stored (state/apprseen.ts) and the previous one kept for the
+   visit: a request placed since wears the cyan dot, and "New N" shows only those. The dots go when he leaves Approvals. */
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { boxText, kindOf, parseCell } from '../engine'
+import { decideRequests, getState, getVersion, lineStale, postedOutBy, selectWar, type DecideTo } from '../state/store'
+import { figuresOf, linesOfWar, pendingCount, pendingElsewhere, type ApprFigures, type ApprLine } from '../approvals'
+import { openRequestDocs, postingPendingTag, puckHtml, rosterCallsign } from '../sync'
+import { openApprovals } from '../../state/apprseen'
+import { me } from '../../state/perms'
+import { ClipIcon } from '../../ui/icons'
+import { askLw, apprMode, setApprMode, subscribeLwNav } from './lwnav'
+import { ringCell } from './cellring'
+import { RangePicker, type Range } from './RangePicker'
+import { usePhone } from './phone'
+import { useVersion } from './useStore'
+import './approvals.css'
+
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const dow = (iso: string) => DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))).getUTCDay()]
+const dm = (iso: string) => `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
+const fig = (n: number) => String(Math.round(n * 2) / 2).replace('-', '−')
+
+/* "Thu 22 – Fri 23 Jan" · "Fri 23 Jan, AM" on a desktop; "22–23 Jan" · "23 Jan AM" on a phone (as drawn) */
+export function datesWords(code: string, from: string, to: string, phone: boolean): string {
+  const half = parseCell(code)?.portion
+  const h = half === 'am' ? 'AM' : half === 'pm' ? 'PM' : ''
+  const sameMonth = from.slice(0, 7) === to.slice(0, 7)
+  if (phone) {
+    const run = from === to ? dm(from) : sameMonth ? `${+from.slice(8, 10)}–${dm(to)}` : `${dm(from)}–${dm(to)}`
+    return h ? `${run} ${h}` : run
+  }
+  const run = from === to ? `${dow(from)} ${dm(from)}` : sameMonth ? `${dow(from)} ${+from.slice(8, 10)} – ${dow(to)} ${dm(to)}` : `${dow(from)} ${dm(from)} – ${dow(to)} ${dm(to)}`
+  return h ? `${run}, ${h}` : run
+}
+const daysWords = (n: number) => `${fig(n)} ${n === 1 ? 'day' : n <= 1 && n > 0 ? 'day' : 'days'}`
+const placedWords = (at?: number) => {
+  if (typeof at !== 'number') return '—'
+  const d = new Date(at)
+  return `${d.getDate()} ${MON[d.getMonth()]} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+type Filter = { kind: 'all' } | { kind: 'new' } | { kind: 'month'; ym: string } | { kind: 'range'; from: string; to: string }
+interface Row {
+  key: string
+  line: ApprLine
+  /** every request id this line has ever had — so it is found again after an Undo or its own second tap */
+  ids: Set<string>
+  lit?: Exclude<DecideTo, 'pending'>
+  msg?: { kind: 'refused' | 'stale'; why: string }
+  figs?: ApprFigures
+}
+const recIds = (l: ApprLine) => l.parts.map(p => p.recId).filter((x): x is string => !!x)
+
+/* the visit's own facts the slim bar reads too (it lives outside the page) */
+let VISIT = { prev: 0, newCount: 0 }
+
+function inFilter(l: ApprLine, f: Filter, prev: number): boolean {
+  if (f.kind === 'all') return true
+  if (f.kind === 'new') return typeof l.placedAt === 'number' && l.placedAt > prev
+  const days = l.parts.map(p => p.date)
+  if (f.kind === 'month') return days.some(d => d.slice(0, 7) === f.ym)
+  return days.some(d => d >= f.from && d <= f.to)
+}
+
+export function ApprovalsPage({ shown }: { shown: boolean }) {
+  useVersion()
+  const phone = usePhone()
+  const st = getState()
+  const version = getVersion()
+  const pid = me()
+  /* the moment he opened it — written now, the previous one kept for this visit (state/apprseen.ts) */
+  const [prev, setPrev] = useState<number | null>(null)
+  useEffect(() => { setPrev(openApprovals(pid != null ? String(pid) : null)) }, [])
+  const [filter, setFilterRaw] = useState<Filter>({ kind: 'all' })
+  const [picking, setPicking] = useState(false)
+  const [armed, setArmed] = useState<string | null>(null)
+  /* a decision the rules refused changes nothing in the war — this repaints the line's reason */
+  const [tick, setTick] = useState(0)
+  const rowsRef = useRef<{ period: string; rows: Row[] }>({ period: st.period.id, rows: [] })
+
+  /* THE ROWS — the pending lines of the period on view, merged with the lines decided here this visit (they stay lit where
+     they were) and the ones gone since they were drawn (they say what happened). Changing the dates — another filter, or
+     another period — starts the rows afresh (D1421). */
+  const fresh = useMemo(() => {
+    const war = getState().wars.find(w => w.period.id === getState().period.id)
+    return war ? linesOfWar(war) : []
+  }, [version, st.period.id])
+  const rows = useMemo(() => {
+    let cur = rowsRef.current
+    if (cur.period !== st.period.id) cur = { period: st.period.id, rows: [] }
+    const byId = new Map<string, ApprLine>()
+    for (const l of fresh) for (const id of recIds(l)) byId.set(id, l)
+    const used = new Set<ApprLine>()
+    const out: Row[] = []
+    for (const r of cur.rows) {
+      let match: ApprLine | undefined
+      for (const id of r.ids) { const l = byId.get(id); if (l && !used.has(l)) { match = l; break } }
+      if (match) {
+        used.add(match)
+        /* pending again (an Undo of the decision made here, or one made elsewhere put back): the light goes */
+        const ids = new Set([...r.ids, ...recIds(match)])
+        out.push({ key: r.key, line: match, ids, ...(r.msg && r.msg.kind === 'refused' ? { msg: r.msg } : {}) })
+        continue
+      }
+      if (r.lit) { out.push(r); continue }
+      /* gone from the pending list while on screen (B8): say what happened */
+      const why = r.msg?.kind === 'stale' ? r.msg.why : lineStale(r.line.personId, r.line.parts) || 'No longer there'
+      out.push({ ...r, msg: { kind: 'stale', why } })
+    }
+    for (const l of fresh) if (!used.has(l)) out.push({ key: l.key, line: l, ids: new Set(recIds(l)) })
+    out.sort((a, b) => (a.line.placedAt ?? -1) - (b.line.placedAt ?? -1) || (a.line.from < b.line.from ? -1 : a.line.from > b.line.from ? 1 : 0) || (a.key < b.key ? -1 : 1))
+    rowsRef.current = { period: st.period.id, rows: out }
+    return out
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fresh, st.period.id, tick])
+
+  /* the figures, once per change of the war, for the lines still pending (a lit line keeps the figures it was decided on) */
+  const figs = useMemo(() => {
+    const m = new Map<string, ApprFigures>()
+    for (const r of rows) {
+      if (r.lit || r.msg?.kind === 'stale') continue
+      m.set(r.key, figuresOf(r.line, st.people.find(p => p.id === r.line.personId)))
+    }
+    return m
+  }, [rows])
+  for (const r of rows) { const f = figs.get(r.key); if (f) r.figs = f }
+
+  const seen = prev ?? Number.MAX_SAFE_INTEGER
+  const isNew = (r: Row) => typeof r.line.placedAt === 'number' && r.line.placedAt > seen
+  const pendingRows = rows.filter(r => !r.lit && r.msg?.kind !== 'stale')
+  const newCount = pendingRows.filter(isNew).length
+  VISIT = { prev: seen, newCount }
+  const shownRows = rows.filter(r => inFilter(r.line, filter, seen))
+  const toApprove = shownRows.filter(r => !r.lit && r.msg?.kind !== 'stale')
+  /* ARMED for exactly the lines shown when it was pressed — anything else and it is not armed (A4) */
+  const sig = toApprove.map(r => `${r.key}:${recIds(r.line).join(',')}`).join('|')
+  const isArmed = armed !== null && armed === sig && toApprove.length > 0
+  const total = pendingCount()
+  const elsewhere = pendingElsewhere()
+
+  /* changing the dates starts the rows afresh: the lit lines and the gone ones leave (D1421) */
+  const setFilter = (f: Filter) => {
+    rowsRef.current = { period: st.period.id, rows: rowsRef.current.rows.filter(r => !r.lit && r.msg?.kind !== 'stale') }
+    setFilterRaw(f); setArmed(null); setTick(t => t + 1)
+  }
+
+  const apply = (targets: Row[], to: DecideTo) => {
+    const out = decideRequests(targets.map(r => ({ personId: r.line.personId, parts: r.line.parts, to })))
+    const next = rowsRef.current.rows.slice()
+    targets.forEach((r, i) => {
+      const o = out[i]!
+      const ix = next.findIndex(x => x.key === r.key)
+      if (ix < 0) return
+      const row = { ...next[ix]! }
+      if (o.kind === 'done') {
+        row.line = { ...row.line, parts: o.parts }
+        row.ids = new Set([...row.ids, ...o.parts.map(p => p.recId).filter((x): x is string => !!x)])
+        if (to === 'pending') delete row.lit; else row.lit = to
+        delete row.msg
+      } else row.msg = { kind: o.kind, why: o.why }
+      next[ix] = row
+    })
+    rowsRef.current = { period: st.period.id, rows: next }
+    setArmed(null); setTick(t => t + 1)
+  }
+  const press = (r: Row, to: Exclude<DecideTo, 'pending'>) => apply([r], r.lit === to ? 'pending' : to)
+  const approveAll = () => {
+    if (!isArmed) { setArmed(sig); return }
+    apply(toApprove, 'approved')
+  }
+  /* a request's dates → the Grid, the day ringed, the slim bar up (8.5); a man with no row on the grid → his person window */
+  const openDates = (r: Row) => {
+    const onGrid = getState().people.some(p => p.id === r.line.personId)
+    setApprMode('bar')
+    if (onGrid) ringCell(r.line.personId, r.line.parts[0]!.date, phone ? 64 : 56)
+    else askLw({ kind: 'person', id: r.line.personId })
+  }
+
+  /* the period's months, as the "Open for bidding" window has them; a month with nothing pending is dimmed */
+  const months = useMemo(() => {
+    const out: string[] = []
+    for (let y = +st.period.start.slice(0, 4), m = +st.period.start.slice(5, 7); ; ) {
+      const ym = `${y}-${String(m).padStart(2, '0')}`
+      if (ym > st.period.end.slice(0, 7)) break
+      out.push(ym)
+      if (++m > 12) { m = 1; y++ }
+    }
+    return out
+  }, [st.period.start, st.period.end])
+  const monthHas = (ym: string) => pendingRows.some(r => r.line.parts.some(p => p.date.slice(0, 7) === ym))
+
+  const fchip = (on: boolean, label: React.ReactNode, onClick: () => void, opts: { dim?: boolean; testid?: string } = {}) => (
+    <button type="button" className={`appr-f${on ? ' on' : ''}${opts.dim ? ' dim' : ''}`} aria-pressed={on} onClick={onClick} data-testid={opts.testid}>{label}</button>
+  )
+  const filterRow = (
+    <div className="appr-filters" role="group" aria-label="Which requests to show">
+      {fchip(filter.kind === 'new', <><span className="appr-dot" aria-hidden="true" />New {newCount}</>, () => setFilter({ kind: 'new' }), { testid: 'appr-new' })}
+      {!phone && <span className="appr-lab">Dates</span>}
+      {fchip(filter.kind === 'all', 'All', () => setFilter({ kind: 'all' }), { testid: 'appr-all' })}
+      {months.map(ym => fchip(filter.kind === 'month' && filter.ym === ym, MON[+ym.slice(5, 7) - 1], () => setFilter({ kind: 'month', ym }), { dim: !monthHas(ym), testid: `appr-m-${ym}` }))}
+      <button type="button" className={`appr-f${filter.kind === 'range' ? ' on' : ''}`} data-testid="appr-pick" aria-expanded={picking}
+        onClick={() => setPicking(v => !v)}>{filter.kind === 'range' ? `${dm(filter.from)} – ${dm(filter.to)}` : 'Pick dates…'}</button>
+      <span className="appr-spring" />
+      <button type="button" className={`appr-all${isArmed ? ' armed' : ''}`} data-testid="appr-approve-all" disabled={!toApprove.length}
+        aria-live="polite" onClick={approveAll}>{isArmed ? `Approve ${toApprove.length} — tap again` : `Approve all ${toApprove.length}`}</button>
+    </div>
+  )
+
+  const head = (
+    <div className="appr-head">
+      <h2 className="appr-title">Approvals</h2>
+      <span className="appr-sub" data-testid="appr-sub">
+        {pendingRows.length} pending{newCount ? ` · ${newCount} new` : ''}{!phone && prev ? ` since you last looked, ${dow(isoOf(prev))} ${dm(isoOf(prev))} ${placedWords(prev).split(' ').pop()}` : ''}
+      </span>
+      {elsewhere.map(e => (
+        <button key={e.warId} type="button" className="appr-elsewhere" data-testid="appr-elsewhere" onClick={() => selectWar(e.warId)}>
+          +{e.n} pending in {e.name} ›
+        </button>
+      ))}
+    </div>
+  )
+
+  return (
+    <section className={`appr-page${phone ? ' ph' : ''}`} hidden={!shown} data-testid="approvals-page" aria-label="Approvals">
+      <div className="appr-card">
+        {head}
+        {filterRow}
+        {picking && (
+          <div className="appr-pickpop">
+            <RangePicker testid="appr-range" min={st.period.start} max={st.period.end}
+              value={filter.kind === 'range' ? { from: filter.from, to: filter.to } : null}
+              onChange={(v: Range | null) => { if (v) { setFilter({ kind: 'range', from: v.from, to: v.to }); if (v.to !== v.from) setPicking(false) } }} />
+          </div>
+        )}
+        {total === 0 && rows.length === 0 && <div className="appr-empty" data-testid="appr-empty">Nothing waiting for a decision.</div>}
+        {rows.length > 0 && shownRows.length === 0 && <div className="appr-empty">Nothing here for these dates.</div>}
+        {shownRows.length > 0 && (
+          <div className="appr-list" role="list">
+            {!phone && (
+              <div className="appr-cols" aria-hidden="true">
+                <span>Name</span><span>Kind</span><span>Dates</span><span className="r">Days</span><span className="r">LVE Bal</span><span>Lowest Avail</span><span>Placed</span>
+              </div>
+            )}
+            {phone && (
+              <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="r">Placed</span></div>
+            )}
+            {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} onPress={press} onDates={openDates} />)}
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+const isoOf = (ms: number) => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
+
+function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; fresh: boolean; onPress: (r: Row, to: 'approved' | 'refused') => void; onDates: (r: Row) => void }) {
+  const l = r.line
+  const p = getState().people.find(x => x.id === l.personId)
+  const cs = p?.callsign || rosterCallsign(l.personId) || l.personId
+  const f = r.figs
+  /* B12: his posting — "posting out 12 Mar" before it runs; once it has run, "posted out 14 Oct" */
+  const po = postedOutBy(l.personId)
+  const tag = po && po !== 'gone' ? `posted out ${dm(addOne(po))}` : postingPendingTag(l.personId)
+  const stale = r.msg?.kind === 'stale'
+  const by = l.placedBy && l.placedBy !== l.personId ? (getState().people.find(x => x.id === l.placedBy)?.callsign || rosterCallsign(l.placedBy) || '') : ''
+  const puck = (
+    <span className="appr-who">
+      {fresh && !r.lit ? <span className="appr-dot" aria-label="New" /> : <span className="appr-dot none" aria-hidden="true" />}
+      <span className="appr-puck" dangerouslySetInnerHTML={{ __html: puckHtml(l.personId, cs) }} />
+      {tag && <span className="appr-tag" data-testid="appr-tag">{tag}</span>}
+    </span>
+  )
+  const box = <span className={`c k-${kindOf(l.code)} s-w appr-box`}>{boxText(l.code)}</span>
+  const dates = (
+    <span className="appr-dates">
+      <button type="button" className="appr-dlink" data-testid="appr-dates" onClick={() => onDates(r)}>{datesWords(l.code, l.from, l.to, phone)} ›</button>
+      {r.msg && <span className="appr-why" role="status" data-testid="appr-why">{r.msg.why}</span>}
+    </span>
+  )
+  const days = <span className="appr-days r">{f ? daysWords(f.days) : ''}</span>
+  const bal = (
+    <span className={`appr-bal r${f?.bal && f.bal.value < 0 ? ' neg' : ''}`}>
+      {f?.bal ? <>{f.bal.label && <small>{f.bal.label} </small>}{fig(f.bal.value)}</> : ''}
+    </span>
+  )
+  const avail = (
+    <span className="appr-avail">
+      {f?.sans ? <span className="appr-av">SANS · not in Avail</span> : f?.avail
+        ? <span className={`appr-av${f.avail.level ? ` ${f.avail.level}` : ''}`}><i>{f.avail.label.replace(/^Available\s+/i, '')}</i> {fig(f.avail.value)}</span> : null}
+      {f?.turned.map(t => <span key={t.label} className={`appr-av ${t.level}`}><i>{t.label}</i> {fig(t.value)}</span>)}
+    </span>
+  )
+  const placed = <span className="appr-placed">{placedWords(l.placedAt)}{by && <small> · by {by}</small>}</span>
+  const clip = l.docIds.length > 0 && (
+    <button type="button" className="appr-clip" data-testid="appr-clip" aria-label={`View ${l.docIds.length === 1 ? 'the document' : `${l.docIds.length} documents`}`}
+      onClick={() => openRequestDocs({ personId: l.personId, code: l.code, from: l.from, to: l.to, docIds: l.docIds, remarks: l.remarks, placedBy: l.placedBy, placedAt: l.placedAt })}>
+      <ClipIcon />{l.docIds.length > 1 && <span>{l.docIds.length}</span>}
+    </button>
+  )
+  const btns = (
+    <span className="appr-btns">
+      <button type="button" className={`appr-ok${r.lit === 'approved' ? ' lit' : ''}`} aria-pressed={r.lit === 'approved'} data-testid="appr-approve"
+        disabled={stale || r.lit === 'refused'} onClick={() => onPress(r, 'approved')}>{r.lit === 'approved' ? 'Approved' : 'Approve'}</button>
+      <button type="button" className={`appr-no${r.lit === 'refused' ? ' lit' : ''}`} aria-pressed={r.lit === 'refused'} data-testid="appr-refuse"
+        disabled={stale || r.lit === 'approved'} onClick={() => onPress(r, 'refused')}>{r.lit === 'refused' ? 'Refused' : 'Refuse'}</button>
+    </span>
+  )
+  if (phone) {
+    return (
+      <div className={`appr-line ph${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
+        <div className="appr-l1">{puck}{box}{dates}{clip}{btns}</div>
+        <div className="appr-l2">{days}{bal}{avail}{placed}</div>
+      </div>
+    )
+  }
+  return (
+    <div className={`appr-line${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
+      {puck}{box}{dates}{days}{bal}{avail}{placed}<span className="appr-cliphold">{clip}</span>{btns}
+    </div>
+  )
+}
+const addOne = (iso: string) => { const d = new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10) + 1)); return d.toISOString().slice(0, 10) }
+
+/* THE SLIM BAR (8.5 — D1231 as D1254 narrows it; drawn r22-4-desk, r22-6-phone): at the foot of the Grid after a request's
+   dates were tapped, on a desktop as on a phone. Back opens Approvals again exactly as he left it; ✕ drops the bar — he
+   has left Approvals. */
+export function SlimBar() {
+  useVersion()
+  useSyncExternalStore(subscribeLwNav, apprMode, apprMode)
+  const n = pendingCount()
+  return (
+    <div className="appr-slim" role="region" aria-label="Back to Approvals" data-testid="appr-slim">
+      <span className="appr-dot" aria-hidden="true" />
+      <b>Approvals</b>
+      <span className="appr-slim-n">· {n} pending{VISIT.newCount ? ` · ${VISIT.newCount} new` : ''}</span>
+      <span className="appr-spring" />
+      <button type="button" className="appr-back" data-testid="appr-back" onClick={() => setApprMode('page')}>Back ▴</button>
+      <button type="button" className="appr-x" data-testid="appr-slim-x" aria-label="Close Approvals" onClick={() => setApprMode('off')}>✕</button>
+    </div>
+  )
+}

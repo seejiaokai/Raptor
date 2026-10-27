@@ -43,7 +43,7 @@ import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
-import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
+import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
 import { DayPanelHost, openDayPanel } from './DayPanel'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
@@ -4585,9 +4585,12 @@ export function Matrix() {
           callsign. A figure row hands over to the breakdown above. (Its
           admin's "Edit person" is gone — D460, D461: seat, band and SXO change
           only on Quals.) */}
-      {whoOpen && people.some(p => p.id === whoOpen) && (
+      {/* …AND A MAN WITH NO ROW ON THE GRID (the overhaul's M4 — B12, [LW-CLASH-ROWLESS-TAP]): a SANS man while SANS is off
+          the war is not on its roster (sync.ts reprojectRoster), so Approvals' dates, the bell's line and the clash note open
+          his window from his identity as the war would have it (sync.ts warIdentityIfHidden) */}
+      {whoOpen && (people.some(p => p.id === whoOpen) || warIdentityIfHidden(whoOpen)) && (
         <PersonFiguresSheet
-          person={people.find(p => p.id === whoOpen)!}
+          person={people.find(p => p.id === whoOpen) ?? warIdentityIfHidden(whoOpen)}
           onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
           onOpenOil={() => { setOilTracker({ person: whoOpen }); setWhoOpen(null) }}
           onSetBalance={role === 'admin' ? (counter, target) => { setBalance(whoOpen, counter, target) } : undefined}

@@ -35,6 +35,9 @@ import { setLwOnScreen } from './state/screen'
 import { focusDay, getState, rawState, subscribe } from './state/store'
 import { focusDateOf, memberToday } from './engine'
 import { installDayClock } from './ui/dayclock'
+import { ApprovalsPage, SlimBar } from './ui/ApprovalsPage'
+import { apprMode, lwNavVersion, setApprMode, subscribeLwNav, takeRingAsk } from './ui/lwnav'
+import { ringCell } from './ui/cellring'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
    notify re-renders the Shell, and a plain child here would make React
@@ -50,12 +53,50 @@ import { installDayClock } from './ui/dayclock'
    Re-measured with the memo AND scheduler.css's `.page.doze`
    content-visibility cache: a return commits in ~3ms and paints within two
    frames (~0.1s at 390px, ~0.2s at 1280px) against a ~1s first build. */
+/* THE GRID, NEVER RE-WALKED BY THE TAB ROW (M4): the Approvals page takes the grid card's place, and the grid stays mounted
+   behind it — its scroll and window of months kept for "Back" — so it is hidden, not unmounted, and this memo keeps a
+   switch of tab from re-rendering its ~28k nodes. */
+const GridM = memo(Matrix)
+/* APPROVALS IN THE GRID CARD'S PLACE (the overhaul's M4, 8.1 — D1254, D1420): while its page is up the grid is hidden; with
+   the slim bar up (a request's dates tapped) the grid shows and the page waits, kept as he left it. Leaving Approvals ends
+   the visit. Coming back to the grid from the page restores where he was on it — the page scroll is the window's (the
+   standalone "one vertical scroll" rule) — and kicks the grid's measures, as a return to the tab does. */
+function Body() {
+  const mode = useSyncExternalStore(subscribeLwNav, apprMode, apprMode)
+  useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
+  const gridY = useRef(0), apprY = useRef(0), was = useRef(mode)
+  useEffect(() => {
+    const from = was.current
+    was.current = mode
+    if (from === mode) return
+    /* a hidden grid fills nothing in the background (state/screen.ts — the same flag a hidden tab sets) */
+    setLwOnScreen(mode !== 'page')
+    if (mode === 'page') { window.scrollTo(0, apprY.current); return }
+    /* back on the grid: where he was on it */
+    if (from === 'page') { window.scrollTo(0, gridY.current); window.dispatchEvent(new Event('resize')) }
+    if (mode === 'off') apprY.current = 0
+  }, [mode])
+  useEffect(() => {
+    const on = () => { if (apprMode() === 'page') apprY.current = window.scrollY; else gridY.current = window.scrollY }
+    window.addEventListener('scroll', on, { passive: true })
+    return () => window.removeEventListener('scroll', on)
+  }, [])
+  return (
+    <>
+      <div className="lw-gridhost" hidden={mode === 'page'}>
+        {/* the grid's own bar now stands on the grid card (Matrix renders StageBar — D1254) */}
+        <GridM />
+      </div>
+      {mode !== 'off' && <ApprovalsPage shown={mode === 'page'} />}
+      {mode === 'bar' && <SlimBar />}
+    </>
+  )
+}
 const LwFull = memo(function LwFull() {
   return (
     <>
       <Topbar />
-      {/* the grid's own bar now stands on the grid card (Matrix renders StageBar — D1254) */}
-      <Matrix />
+      <Body />
     </>
   )
 })
@@ -122,7 +163,11 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
        scrolls to them. For the seeded war the window opens in January, so this
        lands where the grid already sits and moves nothing; it earns its keep
        when the bidding window starts later in the year. */
-    if (!landedRef.current) {
+    /* a day asked for from outside the page (the bell's Leave War line — M4 9.6) lands INSTEAD of the first-visit
+       landing, which must not override it */
+    const ring = takeRingAsk()
+    if (ring && !hasNoWar()) { landedRef.current = true; ringCell(ring.personId, ring.date) }
+    else if (!landedRef.current) {
       landedRef.current = true
       /* no war yet (the page's empty state) has no day to land on */
       if (!hasNoWar()) focusDay(focusDateOf(getState().period, memberToday()))
@@ -134,6 +179,8 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', onScroll)
+      /* another page: he has left Approvals (M4 8.3 — the visit ends) */
+      setApprMode('off')
       /* Off screen now: BEFORE the resize kick, so the Matrix sees the flag
          false and shrinks its drawn window back to a few months around the
          current view. That is what keeps the NEXT return cheap — the browser
