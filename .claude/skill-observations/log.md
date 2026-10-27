@@ -2552,3 +2552,18 @@ its value and never in innerText.
 **Suggested improvement:** In the drawing-comparison step, every surface with an approved drawing gets a pair — the differences ringed, a match shown unringed — and a "matches" line cites its pair; a surface with no pair is listed as "not compared", never as matching.
 
 **Principle:** A negative verdict ("no difference") is a claim like any other and needs the same evidence as a positive one; listing a surface as checked without its evidence is how a difference survives a careful review.
+
+### Observation 731: Answer a question about a screen on the device of the picture he attached
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** Leave War M4 — he asked how a lowered Manning row would show in Approvals' LOWEST AVAIL, attaching a phone screenshot; the answer came with a desktop picture, and he had to say "i said this is for a phone".
+**Skill:** New skill candidate: none — plain-language.md / the D921 picture rule
+**Type:** open-source
+**Phase/Area:** answering questions about what a screen shows
+
+**Issue:** The attached picture was cropped and showed the phone's two-line layout, but the agent answered from code and reached for the nearest existing picture, which was a desktop one. The two layouts show the same figures in different places, so the answer did not show him what he asked about.
+
+**Suggested improvement:** Before answering a question about a screen, name the device and width of any picture he attached (phone or desktop) and make the answer's picture on the same device, the place marked; where the case needs data the demo lacks, set it up through the app's own windows rather than substituting a nearby picture.
+
+**Principle:** The picture a person attaches is part of the question: answer on the same view they asked about, not the one that is easiest to find.
