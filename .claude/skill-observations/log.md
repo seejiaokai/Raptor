@@ -2522,3 +2522,18 @@ its value and never in innerText.
 **Suggested improvement:** walk-scripts.md: a scenario that crosses the war's pinned today and the real clock is reproduced in a unit test with both pinned before it is called a fault. The guide's CSS note: in a scoped stylesheet, read the built rule (grep dist) after the first build that does not change the screen. A layout fix is looked at in a picture even when its test passes.
 
 **Principle:** When a fix has no effect, read what the build actually produced before trying again; when a test passes, look at the screen it measures, since a test checks only what it names.
+
+### Observation 729: A walker's "the mark is missing" on a few-pixel mark is checked enlarged before it is called a fault
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** Leave War M4 bug check, the fifth chat — confirming walker A's observation O3 (a SANS man's puck in Approvals "has no purple edge").
+**Skill:** New skill candidate: none — walk-scripts.md (project guide) / the walker's brief
+**Type:** open-source
+**Phase/Area:** confirming walk findings; the walker's brief
+
+**Issue:** A Sonnet walker reported a 4px coloured edge missing from a small badge on a list row. The host traced the drawing code and stylesheet looking for what hid it, then measured it in the live app and found it drawn; cropping and enlarging the walker's own picture showed the edge was there all along. The walker had judged a few-pixel mark at the row's normal scale.
+
+**Suggested improvement:** walk-scripts.md and every walker's brief: a finding that a SMALL mark (an edge, a dot, a chip under ~6px) is absent or wrong is confirmed on a cropped, enlarged picture — or by measuring the element — before it is written as a fault; the host does the same before tracing code.
+
+**Principle:** Absence of a small visual mark is a claim about pixels; check it at a scale where the mark would be unmistakable before spending effort explaining why it is missing.
