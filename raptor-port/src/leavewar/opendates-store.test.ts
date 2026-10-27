@@ -189,7 +189,9 @@ describe('B8 — a member\'s bid on a closed day is refused at the commit, not o
   })
   afterEach(() => { setSession(null); setMe(null as any) })
 
-  const bid = (id: string, code = 'LL'): WarRec => ({ id, kind: 'request', code, state: 'pending' } as WarRec)
+  /* (stamped as the app writes a member's bid since M4 — placed by him, now — so what refuses each case below is the
+     closed day, not a missing stamp: perms.ts stampForged, the security read's finding 2) */
+  const bid = (id: string, code = 'LL'): WarRec => ({ id, kind: 'request', code, state: 'pending', placedBy: pid, placedAt: Date.now() } as WarRec)
   const env = (date: string, before: WarRec[], after: WarRec[]): CommitEnvelope => ({
     seq: 0, at: '', type: 'lw.edit', origin: 'user', scope: { module: 'lw', warId: Y26 } as any,
     actor: { id: 'us', role: 'member', personId: pid, session: {} },

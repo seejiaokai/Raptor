@@ -152,8 +152,10 @@ describe('a member never writes who placed or decided as anyone but himself (the
     /* the admin placed it for him; he re-types its kind — a new record keeping the first stamp */
     const was = req({ placedBy: 'stiff', placedAt: 5 })
     expect(ownershipViolation(env([cell([was], [{ ...was, id: 'q2', code: 'OL' }])]))).toBeNull()
-    expect(ownershipViolation(env([cell([], [req({ decidedBy: 'stiff', decidedAt: 5 })])]))).toContain('who decided a request')
-    expect(ownershipViolation(env([cell([], [req({ placedBy: 'stiff', placedAt: 5 })])], 'restore')), 'his Undo writes the image back').toBeNull()
+    expect(ownershipViolation(env([cell([], [req({ placedBy: 'bane', placedAt: Date.now(), decidedBy: 'stiff', decidedAt: 5 })])]))).toContain('who decided a request')
+    /* a change that only CALLS itself a restore is judged as any other (the security read's finding 1): only the Undo
+       or Redo the timeline is applying writes an image back — m4sec.test.ts drives his real ones */
+    expect(ownershipViolation(env([cell([], [req({ placedBy: 'stiff', placedAt: 5 })])], 'restore')), 'a bare "restore"').toContain('who placed a request')
   })
   it('a member’s input that names who placed a war-approved leave — refused unless one of his command’s own records had it', () => {
     const inp = (extra: any = {}) => ({ iid: 'x1', person: 'bane', type: 'LL', date: 'Feb 10', yr: 2026, allday: true, remarks: '', mod: '2026-02-01', by: 'bane', at: Date.now(), ...extra })
