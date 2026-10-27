@@ -74,8 +74,7 @@ line under headings drawn once; numbers right-aligned. On a wide desktop the lis
 the buttons stand near the figures (the drawing, `r22-1-desk`). On a phone each request is two lines (A11): puck · box ·
 dates · paperclip · Approve · Refuse; then the four figures under headings drawn once (`r22-5-phone`). A posted-out man's
 puck carries his posting tag (B12) — "posting out 12 Mar" before it runs (`sync.ts postingPendingTag`); once an archive or
-a transfer has run that tag is gone (it returns nothing), so the line reads "posted out 14 Oct", and his Approve is refused
-on the line ("Posted out — refuse or delete it") while Refuse still works. **Since D1436 (27 Oct 26): Approve is refused too for leave on days after his posting-out date before the posting has run ("He posts out on 1 Mar: refuse or delete it"), except a posting out as SANS, whose leave is kept (D283) — wherever leave is approved, the bid windows included.** A line joined from next-door bids placed at
+a transfer has run that tag is gone (it returns nothing), so the line reads "posted out 14 Oct". *[Corrected 28 Oct 26 to D1436, as built on the night of 27–28 Oct 26 — this paragraph first refused every request of a man whose posting had run:]* **One date rule in every door that approves (D1436, D754): Approve is refused for leave on days from his posting-out date on, whether or not the posting has run — "He posts out on 1 Mar: refuse or delete it" before it runs, "He posted out on 1 Mar: …" after — and a request with no such day approves as ever; a posting out as SANS keeps his leave (D283); Refuse always works. A DELETED man's leftover pending request is still refused ("Posted out — refuse or delete it") — the behaviour from before M4, kept pending his word.** A line joined from next-door bids placed at
 different times or by different people (D1346, the run rule) shows the EARLIEST placed time and its "by". The figures are worked out when the tab opens and when the war changes, not on every
 grid repaint (the code map's cost note).
 
@@ -307,7 +306,7 @@ the register's P7 in as written, and P7 counts "its last day passes" as closing 
 7. The bell's "taken back" needs an admin's device to read whether the member read the line — a permission widened.
 8. Every document chip on the war opens the document, read only.
 9. An admin moving or deleting a member's pending bid tells him (9.7).
-10. A posted-out man's pending request: tagged "posted out 14 Oct"; Approve refused on the line, Refuse works.
+10. A posted-out man's pending request: tagged "posted out 14 Oct"; Approve refused for a day from his posting-out date on, a day before it approves (D1436 — corrected 28 Oct 26); Refuse works.
 11. Bidding that ends by its last date tells everyone "bidding closed · its dates ended", with no name (D1214, P7).
 
 **Records of each answer:** a ruling row in `leave-war.md` the moment he answers; Q2 also in
