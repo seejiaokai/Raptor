@@ -2567,3 +2567,18 @@ its value and never in innerText.
 **Suggested improvement:** Before answering a question about a screen, name the device and width of any picture he attached (phone or desktop) and make the answer's picture on the same device, the place marked; where the case needs data the demo lacks, set it up through the app's own windows rather than substituting a nearby picture.
 
 **Principle:** The picture a person attaches is part of the question: answer on the same view they asked about, not the one that is easiest to find.
+
+### Observation 732: A skill loaded from the main checkout's stale copy, not the worktree's current one
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** /overnight 12 for the Leave War M4 bug check, run in a worktree whose branch carries the installed skill-notes review (D1419)
+**Skill:** overnight (and every project skill loaded from a worktree)
+**Type:** internal
+**Phase/Area:** loading the skill (Part 1)
+
+**Issue:** The Skill tool loaded `.claude/skills/overnight/SKILL.md` from the MAIN checkout's folder (its base directory named the main folder), which sits on an older commit. The worktree's own copy carries the review installed on D1419 — "Low or Medium?" (D1104), one fresh helper per job (D1416), the weekly figure stopping nothing (D1415). The night started on the old text: no Low/Medium question, the first jobs built in the night's chat. He asked "didnt i say overnight 12?" two hours in, which is what made the agent compare the two copies.
+
+**Suggested improvement:** At the head of every project skill (or in the session-start hook): when the loaded base directory is not the current worktree's `.claude/skills/`, diff the two and follow the worktree's copy. A guard better than a line: the hook that injects skills checks the worktree path.
+
+**Principle:** In a worktree, the skill text that governs is the branch's own; a loader that reads a shared root can hand you a stale rulebook with no error.

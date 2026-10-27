@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1443 | 28 Oct 26 | When his overnight message names the work, the agent still tells him the night's jobs before it starts — numbered, in order, each with what he will have in the morning, its check and its rough time, how many fit in his hours, and what waits for him — then starts without waiting for a reply. |
 | D1426 | 27 Oct 26 | Where a built screen differs from its approved drawing, the differences are shown to him first, side by side with each one highlighted, and he chooses which go back to the drawing — some built ones may be the better design; an outright fault (words breaking, something covered or off screen, a wrong behaviour) is fixed without asking. |
 | D1425 | 27 Oct 26 | Fable reads the Leave War overhaul's M4 code beside the fresh blind Opus reader, after the walk, each blind to the other's report — his call for this job under D903. |
 | D1424 | 27 Oct 26 | A screen with an approved drawing is built to that drawing and checked beside it as it is built and after every fix, not only at the walk; a departure is made only on purpose, for a better design, and is named to him with its picture and its reason — never left for him to find. — changed by D1426 |
