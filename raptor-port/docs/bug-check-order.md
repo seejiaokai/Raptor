@@ -791,6 +791,9 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
   with an approved drawing is put beside that drawing AS it is built and after every fix, not first at the walk; a departure
   is made only on purpose, for a better design ("if u have better ideas and changed it, it's ok"), and named to him with its
   picture and its reason — never left for him to find.
+  **And a difference found after the build is shown to him before it is put back (his D1426):** side by side, each one
+  highlighted with a recommendation, and he chooses which go back to the drawing; an outright fault (words breaking, something
+  covered or off screen, a wrong behaviour) is fixed without asking.
 - **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
   iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
   (his lessons 42 and 43, `docs/design-practices.md` §9).
