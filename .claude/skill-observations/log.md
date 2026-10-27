@@ -1103,6 +1103,10 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 
 **Principle:** A shared folder is a shared namespace; a fixed file name in it is a race with every other writer.
 
+Met again 27 Oct 26 (the skill-notes review): a run's log was sent to `$TMP/../claude-ra.log` and a diff to `/tmp/x.patch` —
+both outside the session's scratchpad — in the same session that was drafting this very lesson into `walk-scripts.md` §5;
+moved and deleted at once. The unconditional default the review drafts ("never a fixed name in `$TEMP`") is the guard.
+
 ### Observation 625: A fixed pixel limit in a browser test is a limit on one machine's letters
 
 **Status:** OPEN
@@ -2518,3 +2522,18 @@ its value and never in innerText.
 **Suggested improvement:** A frame tool names frames by the step it was asked for (milliseconds), and prints the count it wrote against the count the length and step imply; a landmark tracker uses a strip that cannot change during the motion (a button, a title bar, a keyboard's top edge), never the tapped box, and every "jump" it reports is checked by eye on the two frames either side before it is believed.
 
 **Principle:** A measurement tool must fail loudly when it quietly loses data (count what it wrote against what it should have written), and a motion read off a tracker is a claim about the tracker until two frames are looked at — a landmark that changes its own look at the moment of interest is the wrong landmark.
+
+### Observation 722: A rehearsal of the project's check, and a fingerprint of each live file, caught two faults in a review's drafts before the reader saw them
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** The skill review of 27 Oct 26 (152 notes, 19 drafted guides). Positive signal.
+**Skill:** task-observer (`references/weekly-review.md`, Delivering updated skills)
+**Type:** open-source
+**Phase/Area:** Staging drafts; the install script
+
+**Issue:** Two faults surfaced before the independent read, each from a step taken for another reason. (1) The install script stored each live file's blob id at staging and refused to copy a draft over a live file that had changed since: the rulings index had been rewritten by a script run after the copy, and an install would have put back its stale lines. (2) The rehearsal (drafts copied over the live files, the document check run, the live paths restored by name) failed on a line-count tripwire the drafts pushed over, so the lines were moved to the right home before the reader read them. Neither was visible from the drafts alone.
+
+**Suggested improvement:** In Delivering updated skills: record each live file's fingerprint when its draft is made, and have the install refuse a live file that has changed since ("rebase the draft first"); rehearse the project's checks with the drafts in place before the read, not only before the install.
+
+**Principle:** A draft is a diff against a moment; check the moment still holds before applying it, and run the target's own checks on the drafts while they are still cheap to change.
