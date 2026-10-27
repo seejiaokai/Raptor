@@ -7819,8 +7819,9 @@ test('on a phone every Approvals filter chip keeps its words on one line, inside
       return out
     })
     expect(bad, `${width} wide`).toEqual([])
-    /* …in his drawing's three rows (D1423, r22-5-phone): New · All · Jan–May, Jun–Dec, then Pick dates… left and Approve
-       all right on one row — never a fourth */
+    /* …in his drawing's rows: since his D1444 (28 Oct 26 — D1439 built as drawn, narrowing D1423's three rows) only the
+       months holding requests stand on the row of New and All, so with the demo's two months it is two rows — New · All ·
+       Jan · Feb, then Pick dates… left and Approve all right on one row */
     const rows = await page.evaluate(() => {
       const tops = new Set<number>()
       const els = Array.from(document.querySelectorAll<HTMLElement>('.appr-filters .appr-f, .appr-filters .appr-all'))
@@ -7828,8 +7829,8 @@ test('on a phone every Approvals filter chip keeps its words on one line, inside
       const mid = (s: string) => { const r = document.querySelector<HTMLElement>(s)!.getBoundingClientRect(); return { y: Math.round(r.top + r.height / 2), x: r.left } }
       return { n: els.length, rows: [...tops].sort((a, b) => a - b).filter((t, i, a) => i === 0 || t - a[i - 1]! > 4).length, pick: mid('[data-testid="appr-pick"]'), all: mid('[data-testid="appr-approve-all"]') }
     })
-    expect(rows.n, 'the chips are there').toBeGreaterThan(10)
-    expect(rows.rows, `${width} wide: three rows`).toBe(3)
+    expect(rows.n, 'the chips are there: New, All, the months holding requests, Pick dates…, Approve all').toBeGreaterThanOrEqual(5)
+    expect(rows.rows, `${width} wide: two rows with the demo's two months (D1444)`).toBe(2)
     expect(Math.abs(rows.pick.y - rows.all.y), 'Pick dates… and Approve all on one row').toBeLessThanOrEqual(4)
     expect(rows.pick.x < rows.all.x, 'Pick dates… at the left').toBe(true)
   }
@@ -8281,4 +8282,72 @@ test('a decide button lit never moves an edge: "Approved" and "Refused" stand wh
   await no.click()
   await expect(no).toHaveText('Refused')
   expect(await edges(), 'Refuse lit: both buttons where they stood').toEqual(before)
+})
+
+/* HIS D1444 (28 Oct 26, "all as recommended" — question 20, D1439 built as drawn: scripts/handpass/lw-m4-d1439-mock.mjs,
+   docs/img/handpass/2026-10-27-lw-m4/d1439/): on a phone the top of Approvals is shorter — (A) the link to another period's
+   requests on the title's line, "+2 in JAN – DEC 27 ›" (the period's own name, "pending" dropped), a line of its own only
+   where the title's line has no room; (B) only the months holding requests, on the row of New and All; Pick dates… and
+   Approve all keep their row; the chips keep their size (D487). The desktop is unchanged. */
+test('D1444 (A) on a phone the other period’s link stands on the title’s line, "+N in <period> ›"; the desktop keeps its words', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const t = document.querySelector<HTMLElement>('.appr-title')!.getBoundingClientRect()
+    const l = document.querySelector<HTMLElement>('[data-testid="appr-elsewhere"]')
+    const r = l?.getBoundingClientRect()
+    return { words: l?.textContent?.trim() ?? null, onTitle: r ? Math.abs(r.bottom - t.bottom) < 6 : null }
+  })
+  expect(g.words, 'the demo holds requests in another period').not.toBeNull()
+  if (isPhone()) {
+    expect(g.words).toMatch(/^\+\d+ in .+ ›$/)
+    expect(g.onTitle, 'on the title’s line at 402').toBe(true)
+  } else expect(g.words, 'the desktop keeps its words').toMatch(/^\+\d+ pending in .+ ›$/)
+})
+const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const chipMonths = (page: Page) => page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid="approvals-page"] [data-testid^="appr-m-"]')]
+  .filter(c => c.getBoundingClientRect().width > 0).map(c => c.textContent!.trim()))
+test('D1444 (B) on a phone only the months holding requests show, on the row of New and All; the desktop keeps every month', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const shown = await chipMonths(page)
+  if (!isPhone()) { expect(shown, 'the desktop: every month of the period').toHaveLength(12); return }
+  const held = await page.evaluate(m => [...new Set([...document.querySelectorAll('[data-testid="approvals-page"] [data-testid="appr-dates"]')]
+    .flatMap(d => m.filter(x => (d.textContent || '').includes(x))))], MONS)
+  expect(shown.slice().sort(), 'only the months holding requests').toEqual(held.slice().sort())
+  const rows = await page.evaluate(() => {
+    const top = (s: string) => Math.round(document.querySelector<HTMLElement>(s)!.getBoundingClientRect().top)
+    const m = document.querySelector<HTMLElement>('[data-testid="approvals-page"] [data-testid^="appr-m-"]')!
+    return { newRow: top('[data-testid="appr-new"]'), month: Math.round(m.getBoundingClientRect().top), pick: top('[data-testid="appr-pick"]'), all: top('[data-testid="appr-approve-all"]') }
+  })
+  expect(rows.month, 'the months on the row of New and All').toBe(rows.newRow)
+  expect(rows.pick, 'Pick dates… and Approve all keep their row').toBe(rows.all)
+})
+test('D1444 (B) on a phone a month’s chip comes with its first request and goes with its last', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s months')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  expect(await chipMonths(page)).not.toContain('Jun')
+  expect(await page.evaluate(() => (window as any).lwSetCell('bane', '2026-06-10', 'LL'))).toBe(true)
+  await expect.poll(() => chipMonths(page), 'a request in June: its chip comes').toContain('Jun')
+  expect(await page.evaluate(() => (window as any).lwSetCell('bane', '2026-06-10', ''))).toBe(true)
+  await expect.poll(() => chipMonths(page), 'its last request gone: the chip goes').not.toContain('Jun')
+})
+
+/* HIS D1445 (28 Oct 26, "all as recommended" — question 21): the slim Approvals bar's fill is his drawings' darker grey,
+   #161B22 (both r22-4-desk and r22-6-phone measure 22, 27, 34), on a desktop and a phone; its edge, words and size unchanged */
+test('D1445 the slim Approvals bar wears the drawings’ fill, #161B22', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('[data-testid="appr-slim"]')!).backgroundColor)).toBe('rgb(22, 27, 34)')
 })

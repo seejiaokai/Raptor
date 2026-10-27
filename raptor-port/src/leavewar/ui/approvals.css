@@ -101,6 +101,8 @@
      figures under headings drawn once */
   .appr-page.ph { padding: 0 8px 96px; }
   .appr-page.ph .appr-card { padding: 14px 12px 6px; }
+  /* the title's line carries the other period's link where it fits, a line of its own where it does not (his D1444, as drawn) */
+  .appr-page.ph .appr-head { row-gap: 2px; }
   .appr-page.ph .appr-filters { display: grid; grid-template-columns: max-content repeat(6, minmax(0, 1fr)); gap: 6px; }
   /* AS HIS DRAWING (r22-5-phone — D1420, D1423): three rows — New · All · Jan–May, then Jun–Dec, then Pick dates… at the
      left and Approve all at the right, each the size of its words. Every chip's words stay on one line inside its edge
@@ -167,6 +169,9 @@
   /* HIS DRAWINGS' PLAIN BAR, on a desktop (his D1432, r22-4-desk) and on a phone (his D1440, r22-6-phone): no cyan outline —
      the app's edge and a drop shadow — "Back ▴" plain cyan words and a plain ✕; each keeps its 34px press area (D487) */
   .appr-slim { gap: 14px; padding: 0 12px 0 16px; border-color: var(--edge); box-shadow: 0 10px 30px rgba(0, 0, 0, .6); white-space: nowrap; }
+  /* …and his drawings' darker fill, #161B22 (both r22-4-desk and r22-6-phone measure 22, 27, 34), on a desktop and a phone —
+     one shade under the app's raised grey; its edge, words and size unchanged (his D1445, 28 Oct 26) */
+  .appr-slim { background: #161B22; }
   .appr-slim b { font-size: 15px; font-weight: 800; letter-spacing: .04em; }
   .appr-slim .appr-back { margin-left: 10px; padding: 0 6px; border: 0; background: none; font-size: 14px; font-weight: 700; }
   .appr-slim .appr-x { border: 0; background: none; font-size: 16px; }

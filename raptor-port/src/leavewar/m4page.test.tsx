@@ -325,6 +325,15 @@ describe('the Approvals page’s rows', () => {
     expect(within(wed!).queryByTestId('appr-clip')).toBeNull()
   })
 
+  /* (with D1444, 28 Oct 26) React warned that the month chips had no key — each chip is keyed by its month now */
+  it('the month chips are keyed: React gives no missing-key warning', () => {
+    const err = vi.spyOn(console, 'error').mockImplementation(() => {})
+    try {
+      render(<ApprovalsPage shown={true} />)
+      expect(err.mock.calls.map(c => String(c[0])).filter(m => /unique "key"/.test(m))).toEqual([])
+    } finally { err.mockRestore() }
+  })
+
   it('14 "Pick dates…" closes on a press outside it and on Escape', () => {
     render(<ApprovalsPage shown={true} />)
     fireEvent.click(screen.getByTestId('appr-pick'))

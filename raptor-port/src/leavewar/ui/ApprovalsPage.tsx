@@ -334,9 +334,15 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   }, [st.period.start, st.period.end])
   const monthHas = (ym: string) => pendingRows.some(r => r.line.parts.some(p => p.date.slice(0, 7) === ym))
 
+  /* (each chip keyed by what it stands for — the month chips are drawn from a list; with D1444, 28 Oct 26) */
   const fchip = (on: boolean, label: React.ReactNode, onClick: () => void, opts: { dim?: boolean; testid?: string } = {}) => (
-    <button type="button" className={`appr-f${on ? ' on' : ''}${opts.dim ? ' dim' : ''}`} aria-pressed={on} onClick={onClick} data-testid={opts.testid}>{label}</button>
+    <button key={opts.testid} type="button" className={`appr-f${on ? ' on' : ''}${opts.dim ? ' dim' : ''}`} aria-pressed={on} onClick={onClick} data-testid={opts.testid}>{label}</button>
   )
+  /* HIS D1444 (28 Oct 26 — D1439 built as drawn, scripts/handpass/lw-m4-d1439-mock.mjs): on a phone only the months holding
+     requests show, on the row of New and All in the grid's own columns — a month's chip comes with its first request and
+     goes with its last, and Pick dates… still reaches any date; the month he has picked stays while it is picked, so the
+     choice he made never vanishes under him. The desktop keeps every month, a month with nothing pending dimmed (D1430). */
+  const monthShown = (ym: string) => !phone || monthHas(ym) || (filter.kind === 'month' && filter.ym === ym)
   const filterRow = (
     <div className="appr-filters" role="group" aria-label="Which requests to show">
       {fchip(filter.kind === 'new', <><span className={`appr-dot${newCount ? '' : ' none'}`} aria-hidden="true" />New {newCount}</>, () => setFilter({ kind: 'new' }), { testid: 'appr-new' })}
@@ -344,7 +350,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       {!phone && <span className="appr-vs" aria-hidden="true" />}
       {!phone && <span className="appr-lab">Dates</span>}
       {fchip(filter.kind === 'all', 'All', () => setFilter({ kind: 'all' }), { testid: 'appr-all' })}
-      {months.map(ym => fchip(filter.kind === 'month' && filter.ym === ym, MON[+ym.slice(5, 7) - 1], () => setFilter({ kind: 'month', ym }), { dim: !monthHas(ym), testid: `appr-m-${ym}` }))}
+      {months.filter(monthShown).map(ym => fchip(filter.kind === 'month' && filter.ym === ym, MON[+ym.slice(5, 7) - 1], () => setFilter({ kind: 'month', ym }), { dim: !monthHas(ym), testid: `appr-m-${ym}` }))}
       <button ref={pickBtn} type="button" className={`appr-f${filter.kind === 'range' ? ' on' : ''}`} data-testid="appr-pick" aria-expanded={picking}
         onClick={() => setPicking(v => !v)}>{filter.kind === 'range' ? rangeWords(filter.from, filter.to) : 'Pick dates…'}</button>
       <span className="appr-spring" />
@@ -363,7 +369,9 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       </span>
       {elsewhere.map(e => (
         <button key={e.warId} type="button" className="appr-elsewhere" data-testid="appr-elsewhere" onClick={() => selectWar(e.warId)}>
-          +{e.n} pending in {e.name} ›
+          {/* on a phone "+2 in JAN – DEC 27 ›" — the period's own name, "pending" dropped — so it stands on the title's line
+              (his D1444); the desktop keeps its words */}
+          +{e.n}{phone ? '' : ' pending'} in {e.name} ›
         </button>
       ))}
     </div>
