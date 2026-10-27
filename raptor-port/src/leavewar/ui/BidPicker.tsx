@@ -36,6 +36,7 @@ import type { DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
 import { sayOnWar } from '../sync'
+import { PlacedLine } from './PlacedLine'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -573,6 +574,8 @@ export function BidPicker({
         </button>
       </div>
       <DayLine days={lineDays} />
+      {/* who placed the day's entries and who decided them (M4 8.6 — r7-13): one compact line an entry */}
+      {!span && <PlacedLine personId={personId} date={date} />}
       {heldDay && (
         <div className="bidsheet-row">
           <span className="note bp-wide bp-heldline" data-testid="bid-heldday">
@@ -971,6 +974,7 @@ export function RaptorSheet({
   code,
   creditShown,
   docNames = [],
+  onDoc,
   onClose,
 }: {
   callsign: string
@@ -978,6 +982,8 @@ export function RaptorSheet({
   code: string
   /** the documents the Inputs-page record carries — named, read only (M3 7.3, D1150) */
   docNames?: string[]
+  /** a tap on one opens the documents, read only (M4 — every document chip on the war) */
+  onDoc?: () => void
   /** OIL the APP earned on this day, if that is what the cell holds (owner,
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
@@ -1033,7 +1039,7 @@ export function RaptorSheet({
       {!creditShown && docNames.length > 0 && (
         <div className="bidsheet-row" data-testid="raptor-docs">
           <span className="lab">Document</span>
-          <span className="docfield">{docNames.map((n, i) => <span key={i} className="docchip"><span className="docname">{n}</span></span>)}</span>
+          <span className="docfield">{docNames.map((n, i) => <button key={i} type="button" className="docchip" onClick={() => onDoc?.()}><span className="docname">{n}</span></button>)}</span>
         </div>
       )}
       {/* The same three lines the day window gives for OIL, because the

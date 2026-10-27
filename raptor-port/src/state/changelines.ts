@@ -219,6 +219,13 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
   const admin = actorIsAdmin(env.actor)
   const say = (x: R, what: string, extra: any = {}) =>
     logAction(null, `Leave War · ${cs(x.pid)} · ${x.rec.code || ''} ${dayWord(x.date)}${what ? ': ' + what : ''}`.replace('  ', ' '), { date: x.date, sect: 'abs', sub: x.pid, ...extra })
+  /* a MEMBER WITHDRAWING HIS OWN PENDING BID (the Leave War overhaul's M4, 8.4 — the admin's "Also since you last looked"
+     lists it, and this line is the only record of it: the request itself is gone). Not a decision, so it was never a line;
+     it is one now, marked `fld: 'withdrawn'` and carrying the bid's code in `itype` (a war line has no input, so that field
+     is otherwise unused), so leavewar/sync.ts alsoSince can find it by its mark and never by its words. A re-typed kind on
+     the same day (the old request goes, a new one comes) is no withdrawal. */
+  const actorPid = env.actor && env.actor.personId != null ? String(env.actor.personId) : null
+  const cameOn = new Set([...came.values()].filter(x => x.rec.kind === 'request').map(x => `${x.pid}|${x.date}`))
   /* a request that left one day and reached another is a MOVE (the record keeps its id) */
   for (const [id, g] of gone) {
     const c = came.get(id)
@@ -226,6 +233,7 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
     if (g.rec.kind === 'request') {
       if (approvedFor.has(`${g.pid}|${g.date}`)) continue          // approved — the Input's own line says it
       if (admin) say(g, 'deleted')
+      else if (actorPid === g.pid && g.rec.state === 'pending' && !cameOn.has(`${g.pid}|${g.date}`)) say(g, 'bid withdrawn', { fld: 'withdrawn', itype: String(g.rec.code || '') })
     }
   }
   for (const [, c] of came) {

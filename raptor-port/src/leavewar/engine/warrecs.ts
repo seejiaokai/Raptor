@@ -143,6 +143,12 @@ export interface NoticeRec extends Placed {
   /** the command that replaced it — "OK, seen" clears every notice it made */
   seq: number
   at: string
+  /** WHAT THE BID CARRIED, KEPT (the overhaul's M4, 9.3a — M3's leftover (7)): a bid replaced whole by a clashing input lost
+   *  its remarks and documents from every record; they stay here, shown on the day's list, and are offered onto the
+   *  replacing leave of the same man (`iid` — the input that replaced it; leavewar/sync.ts carryReplaced) */
+  remarks?: string
+  docIds?: string[]
+  iid?: string
 }
 
 export type WarRec = RequestRec | CreditRec | NoticeRec
@@ -391,7 +397,15 @@ function readRecBody(x: unknown): WarRec | null {
   if (x.kind === 'notice') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || (x.was !== 'pending' && x.was !== 'acknowledged')) return null
     if (typeof x.byType !== 'string' || typeof x.byWho !== 'string' || typeof x.seq !== 'number' || typeof x.at !== 'string') return null
-    return { id: x.id, kind: 'notice', code: x.code, was: 'pending', byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
+    const n: NoticeRec = { id: x.id, kind: 'notice', code: x.code, was: 'pending', byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
+    /* what the replaced bid carried (M4 9.3a) — a notice saved before M4 has none and is kept as it is (D401) */
+    if (typeof x.remarks === 'string' && x.remarks.trim()) n.remarks = x.remarks.slice(0, MAX_CARRIED_REMARK)
+    if (Array.isArray(x.docIds)) {
+      const ids = [...new Set((x.docIds as unknown[]).filter((d): d is string => typeof d === 'string' && !!d.trim() && d.length <= 120))].slice(0, MAX_REQ_DOCS)
+      if (ids.length) n.docIds = ids
+    }
+    if (typeof x.iid === 'string' && x.iid && x.iid.length <= 80) n.iid = x.iid
+    return n
   }
   return null
 }

@@ -48,6 +48,11 @@ export type NoticePart =
   | { k: 'rem'; who: string[] }                    // others taken out
   | { k: 'title'; was: string }                    // renamed
   | { k: 'rmk' }                                   // its remark changed
+  /* …AND IT REPLACED HIS PENDING LEAVE WAR BID (the overhaul's M4, 9.3a — D1142: "a bid replaced by a clashing input"):
+     one line, not two — the Inputs door's own line about the input says it ("You were added · replaces your LL bid"), and
+     the war writes none. `c` — the bid's kind as stored (LL, *LL). Noted by the clash gate inside the same command
+     (noteReplacedBid, below) */
+  | { k: 'rbid'; c: string }
   /* A DAY MADE A PUBLIC HOLIDAY AFTER WHAT STANDS ON IT WAS FILED ([OIL-ASK-NOTIFY] — owner D780: "There should be a notification
      to the schedulers to award oil on those inputs. And should not be silent."; D783 (6): "one bell line a holiday,
      counting only what is left unanswered, a tap opening the list"). ITS OWN KIND OF NOTICE: it is about no one input
@@ -151,6 +156,24 @@ export interface PassOpts {
    *  its ONE line about a leave it approved (state/notices.ts `lw`), so the Inputs page's copy of that leave — cut, moved,
    *  deleted, put back — tells nothing here. A change made on the Inputs page keeps telling him as today (D1166). */
   skipLw?: boolean
+  /** the pending Leave War bids this command's inputs replaced (M4 9.3a): input id → person → the bids' kinds */
+  replaced?: ReadonlyMap<string, ReadonlyMap<string, readonly string[]>>
+}
+/* WHICH BIDS A COMMAND'S INPUTS REPLACED (M4 9.3a) — noted by the Leave War's clash gate (leavewar/inputgate.ts
+   replaceClashingBids) inside the very command whose input replaced them, read by that command's notice pass
+   (state/sched-commit.ts tellPass). Keyed by the command, so a refused command's notes go with it and never reach
+   another's line. */
+const REPLACED = new WeakMap<object, Map<string, Map<string, string[]>>>()
+export function noteReplacedBid(cmd: object | null, iid: string, person: string, code: string): void {
+  if (!cmd || !iid) return
+  const m = REPLACED.get(cmd) ?? new Map<string, Map<string, string[]>>()
+  const byP = m.get(iid) ?? new Map<string, string[]>()
+  const cs = byP.get(person) ?? []
+  if (!cs.includes(code)) cs.push(code)
+  byP.set(person, cs); m.set(iid, byP); REPLACED.set(cmd, m)
+}
+export function replacedBidsOf(cmd: object | null): ReadonlyMap<string, ReadonlyMap<string, readonly string[]>> | undefined {
+  return cmd ? REPLACED.get(cmd) : undefined
 }
 /** THE PASS — every input before the command (`before`, by id) against the list as it stands; pushes the notices the
  *  change owes onto NOTICES and answers how many. Nothing is told when nothing a reader sees has moved. */
@@ -176,6 +199,9 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
   let made = 0
   const tell = (to: string, r: any, what: NoticePart[]) => {
     if (!what.length || to === o.actor || !here(to)) return
+    /* (the bids of his this input replaced on the Leave War — said on this one line, M4 9.3a) */
+    const rb = o.replaced?.get(String(r.iid))?.get(to)
+    if (rb && rb.length) what = [...what, ...rb.map(c => ({ k: 'rbid' as const, c }))]
     NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what })
     made++
   }
@@ -374,6 +400,7 @@ function partWords(p: NoticePart): string {
     case 'on': return 'Back on the programme'
     case 'unav': return 'Filed under Unavailable'
     case 'unavoff': return 'Taken out of Unavailable'
+    case 'rbid': return `replaces your ${p.c.replace(/\*/g, '')} bid`
     case 'when': {
       const days = p.a ? (p.b && p.b !== p.a ? `${noticeDay(p.a)} – ${noticeDay(p.b)}` : noticeDay(p.a)) : ''
       return 'Now ' + [days, p.t || ''].filter(Boolean).join(' ')
@@ -435,7 +462,12 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
     const bidding = w.k === 'lwopen' || (w.k === 'lwback' && (w.d === 'open' || w.d === 'close'))
     return { name: n.name, day: bidding ? stretchWords(w.a, w.b || w.a) : noticeRun(w.a, w.b), what: partWords(w), who: n.by ? cs(n.by) : '' }
   }
-  return { name: n.name, day: noticeDay(n.day), what: (n.what || []).slice(0, 2).map(partWords).join(', '), who: n.by ? cs(n.by) : '' }
+  /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
+     replaces your LL bid") */
+  const rb = (n.what || []).filter(p => p.k === 'rbid')
+  const main = (n.what || []).filter(p => p.k !== 'rbid').slice(0, 2).map(partWords).join(', ')
+  const tail = rb.length ? `replaces your ${[...new Set(rb.map(p => (p as any).c.replace(/\*/g, '')))].join(', ')} bid` : ''
+  return { name: n.name, day: noticeDay(n.day), what: main && tail ? `${main} · ${tail}` : main || tail, who: n.by ? cs(n.by) : '' }
 }
 
 /** its age, at the line's right: now · 2 min · 1 h · yesterday · 2 d */

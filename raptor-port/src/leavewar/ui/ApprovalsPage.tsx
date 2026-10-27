@@ -28,7 +28,7 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'reac
 import { boxText, kindOf, parseCell } from '../engine'
 import { decideRequests, getState, getVersion, lineStale, postedOutBy, selectWar, type DecideTo } from '../state/store'
 import { figuresOf, linesOfWar, pendingCount, pendingElsewhere, type ApprFigures, type ApprLine } from '../approvals'
-import { openRequestDocs, postingPendingTag, puckHtml, rosterCallsign } from '../sync'
+import { alsoSince, openRequestDocs, postingPendingTag, puckHtml, rosterCallsign, type AlsoLine } from '../sync'
 import { openApprovals } from '../../state/apprseen'
 import { me } from '../../state/perms'
 import { ClipIcon } from '../../ui/icons'
@@ -193,13 +193,18 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     if (!isArmed) { setArmed(sig); return }
     apply(toApprove, 'approved')
   }
-  /* a request's dates → the Grid, the day ringed, the slim bar up (8.5); a man with no row on the grid → his person window */
-  const openDates = (r: Row) => {
-    const onGrid = getState().people.some(p => p.id === r.line.personId)
+  /* a request's dates → the Grid, the day ringed, the slim bar up (8.5); a man with no row on the grid → his person window.
+     The "also" lines' dates the same (D1231's reading): a withdrawn bid's day ringed, nothing in it. */
+  const openAt = (personId: string, date: string) => {
+    const onGrid = getState().people.some(p => p.id === personId)
     setApprMode('bar')
-    if (onGrid) ringCell(r.line.personId, r.line.parts[0]!.date, 76)
-    else askLw({ kind: 'person', id: r.line.personId })
+    if (onGrid) ringCell(personId, date, 76)
+    else askLw({ kind: 'person', id: personId })
   }
+  const openDates = (r: Row) => openAt(r.line.personId, r.line.parts[0]!.date)
+  /* "ALSO SINCE YOU LAST LOOKED · nothing to decide" (8.4, P9 — drawn r22-2-desk): under the New choice only */
+  const also = useMemo(() => (prev == null ? [] : alsoSince(prev, st.period.start, st.period.end, pid != null ? String(pid) : null)),
+    [version, prev, st.period.id, st.period.start, st.period.end, pid])
 
   /* the period's months, as the "Open for bidding" window has them; a month with nothing pending is dimmed */
   const months = useMemo(() => {
@@ -258,7 +263,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
           </div>
         )}
         {total === 0 && rows.length === 0 && <div className="appr-empty" data-testid="appr-empty">Nothing waiting for a decision.</div>}
-        {rows.length > 0 && shownRows.length === 0 && <div className="appr-empty">Nothing here for these dates.</div>}
+        {rows.length > 0 && shownRows.length === 0 && !(filter.kind === 'new' && also.length) && <div className="appr-empty">Nothing here for these dates.</div>}
         {shownRows.length > 0 && (
           <div className="appr-list" role="list">
             {!phone && (
@@ -270,6 +275,12 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
               <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="r">Placed</span></div>
             )}
             {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} onPress={press} onDates={openDates} />)}
+          </div>
+        )}
+        {filter.kind === 'new' && also.length > 0 && (
+          <div className="appr-also" role="list" aria-label="Also since you last looked" data-testid="appr-also">
+            <div className="appr-alsohead"><span className="appr-lab">Also since you last looked</span> · nothing to decide</div>
+            {also.map(a => <AlsoRow key={a.key} a={a} phone={phone} onDates={openAt} />)}
           </div>
         )}
       </div>
@@ -341,6 +352,24 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
   return (
     <div className={`appr-line${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
       {puck}{box}{dates}{days}{bal}{avail}{placed}<span className="appr-cliphold">{clip}</span>{btns}
+    </div>
+  )
+}
+/* one "also" line: the dot, his puck, the kind's box (a withdrawn bid struck through, a leave filed on the Inputs page
+   approved), the dates (a link), what happened and when — nothing to decide, so no buttons */
+function AlsoRow({ a, phone, onDates }: { a: AlsoLine; phone: boolean; onDates: (personId: string, date: string) => void }) {
+  const cs = getState().people.find(x => x.id === a.personId)?.callsign || rosterCallsign(a.personId) || a.personId
+  const byCs = a.by ? (getState().people.find(x => x.id === a.by)?.callsign || rosterCallsign(a.by) || '') : ''
+  const what = a.what === 'withdrawn'
+    ? `Bid withdrawn by ${byCs || cs}`
+    : `Filed on the Inputs page${byCs && a.by !== a.personId ? ` by ${byCs}` : ''} · approved`
+  return (
+    <div className={`appr-aline${phone ? ' ph' : ''}`} role="listitem" data-testid={`appr-also-${a.what}`}>
+      <span className="appr-who"><span className="appr-dot" aria-label="New" /><span className="appr-puck" dangerouslySetInnerHTML={{ __html: puckHtml(a.personId, cs) }} /></span>
+      <span className={`c k-${kindOf(a.code)} ${a.what === 'withdrawn' ? 's-r' : 's-a'} appr-box`}>{boxText(a.code)}</span>
+      <button type="button" className="appr-dlink" data-testid="appr-also-dates" onClick={() => onDates(a.personId, a.from)}>{datesWords(a.code, a.from, a.to, phone)} ›</button>
+      <span className="appr-awhat">{what}</span>
+      <span className="appr-placed">{placedWords(a.at)}</span>
     </div>
   )
 }

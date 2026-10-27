@@ -50,7 +50,7 @@ import { HIST, histSnap, histRestore, setSchedResync } from './history'
 import { setSchedEpilogueHook, HOOKS } from '../engine/hooks'
 import { issuedDisclosed, discloseIssued } from './disclosure'
 import { PLANPUCKS, DAYRMK } from './plan'
-import { NOTICES, noticePass } from './notices'
+import { NOTICES, noticePass, replacedBidsOf } from './notices'
 import { WARNOFF, DPREV, prunePreviews } from './view'
 import { canEditSched } from './auth'
 import { deriveActor, isCommitting, activeEnvelope } from '../command'
@@ -471,7 +471,7 @@ function tellPass(): void {
   }
   const pid = env.actor && env.actor.personId != null ? String(env.actor.personId) : null
   const from = NOTICES.length
-  noticePass(t.before, INPUTS, { actor: pid, app: APP_ACTS.has(env.type), skipLw: warDoor(env.type) })
+  noticePass(t.before, INPUTS, { actor: pid, app: APP_ACTS.has(env.type), skipLw: warDoor(env.type), replaced: replacedBidsOf(env) })
   for (let i = from; i < NOTICES.length; i++) t.made.add(NOTICES[i]!.id)
 }
 

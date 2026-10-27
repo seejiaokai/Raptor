@@ -145,6 +145,7 @@ import { askLw, askRing, setApprMode } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
+import { ELOG } from '../engine/editlog'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
 import { stampPlaced, stampChanged, stampWho } from '../state/inputstamp'
@@ -2912,6 +2913,43 @@ export function openDays(iso: string): void {
  *  — the window is the scheduler's, drawn at the app's own level, and is its own gate on who may change what): the
  *  Inputs page is brought to the front and the input's window opened on it. False where the input is gone — the
  *  caller then opens the day instead, so the tap never does nothing. */
+/** "ALSO SINCE YOU LAST LOOKED · nothing to decide" (the overhaul's M4, 8.4 — D1231's reading; the register's P9; drawn
+ *  full/r22-2-desk): what reached the war since this admin last opened Approvals that is not his to decide —
+ *  · a member's WITHDRAWN pending bid: the request is gone, so its only trace is the change history's line for it
+ *    (state/changelines.ts warLines — marked `fld: 'withdrawn'`, its code in `itype`), read by that mark;
+ *  · LEAVE FILED ON THE INPUTS PAGE, which lands on the war approved (D1166): read off the leave itself, whose `by` / `at`
+ *    say who filed it and when (state/inputstamp.ts — D629). A leave the war approved (`lw`) is a decision, not news.
+ *  Only the period's dates; never what he did himself. Each a line a run of days, newest first. */
+export interface AlsoLine { key: string; personId: string; code: string; from: string; to: string; what: 'withdrawn' | 'inputs'; by: string | null; at: number }
+export function alsoSince(prev: number, from: string, to: string, me: string | null): AlsoLine[] {
+  const out: AlsoLine[] = []
+  /* the withdrawals — one history line a day; consecutive days of one man and one kind are one line */
+  const rows = ELOG.rows.filter(r => r.fld === 'withdrawn' && r.sub && r.t > prev && r.date && r.date >= from && r.date <= to && String(r.pid ?? '') !== String(me ?? ''))
+    .slice().sort((a, b) => (a.sub! < b.sub! ? -1 : a.sub! > b.sub! ? 1 : 0) || ((a.itype || '') < (b.itype || '') ? -1 : 1) || (a.date! < b.date! ? -1 : 1))
+  for (const r of rows) {
+    const last = out[out.length - 1]
+    if (last && last.what === 'withdrawn' && last.personId === r.sub && last.code === (r.itype || '') && addDays(last.to, 1) === r.date) {
+      last.to = r.date!
+      if (r.t > last.at) last.at = r.t
+      continue
+    }
+    out.push({ key: `w|${r.lineId}`, personId: r.sub!, code: r.itype || '', from: r.date!, to: r.date!, what: 'withdrawn', by: r.pid != null ? String(r.pid) : null, at: r.t })
+  }
+  /* the Inputs page's leave, on a man the war shows */
+  const onWar = new Set(getState().people.map(p => p.id))
+  for (const row of INPUTS as any[]) {
+    if (!row || row.lw || !isLeave(row.type) || !(typeof row.at === 'number' && row.at > prev)) continue
+    if (row.by != null && me != null && String(row.by) === String(me)) continue
+    const pid = onlyNamed(row)
+    if (pid == null || !onWar.has(String(pid))) continue
+    const days = inputDates(row).filter((d: string) => d >= from && d <= to)
+    if (!days.length) continue
+    const c = absencesAt(String(pid), days[0]!).find(x => x.id === String(row.iid))
+    out.push({ key: `i|${row.iid}`, personId: String(pid), code: c ? notationOf(c.code, c.win) : String(row.type), from: days[0]!, to: days[days.length - 1]!, what: 'inputs', by: row.by != null ? String(row.by) : null, at: row.at })
+  }
+  return out.sort((a, b) => b.at - a.at || (a.key < b.key ? -1 : 1))
+}
+
 /** A REQUEST'S DOCUMENTS, READ ONLY (the overhaul's M4 — 8.2's paperclip, and every document chip on the war): the app's one
  *  document viewer (ui/DocViewer.tsx) on a request-shaped page — whose leave, the kind and its days, its remarks, who placed
  *  it — with no "Edit input" or "Upchit" in its foot. Nothing on the war opened a document before (the survey §4). */
@@ -2927,6 +2965,31 @@ export function openRequestDocs(r: { personId: string; code: string; from: strin
   setDocView({ row, readOnly: true })
   raptorNotify()
   return true
+}
+/** …AND A LEAVE'S, FILED OR APPROVED, READ ONLY (M4 — the spec's reading 8: every document chip on the war opens the
+ *  document; the day's list and the bid windows' Document row): the same viewer on the input itself; its papers change on
+ *  the Inputs page or in its own bid window, never from the viewer opened here */
+export function openInputDocs(row: any): boolean {
+  if (!row || !rowDocIds(row).length) return false
+  setDocView({ row, readOnly: true })
+  raptorNotify()
+  return true
+}
+/** M3's leftover (7), M4 9.3a: put a replaced bid's remarks and documents — kept on its grid notice — onto the leave that
+ *  replaced it, when that is a leave of the same man that still stands. Through the one remarks save (ui/inputedit.tsx
+ *  setLeaveRemarks → commitInputEdit), so who may change that leave is asked as anywhere: the man himself or an admin.
+ *  Answers the input it would go onto (`can`) and whether it was written. */
+export function replacedCarry(personId: string, n: { remarks?: string; docIds?: readonly string[]; iid?: string }): { row: any; remarks: string; docIds: string[] } | null {
+  if (!n.iid || (!n.remarks && !n.docIds?.length)) return null
+  const row = INPUTS.find((r: any) => String(r.iid) === n.iid)
+  if (!row || !isLeave(row.type) || !idsOf(row).map(String).includes(personId)) return null
+  const have = rowDocIds(row)
+  const docIds = [...new Set([...have, ...(n.docIds ?? [])])]
+  const cur = String(row.remarks ?? '').trim()
+  const add = (n.remarks ?? '').trim()
+  const remarks = !add || cur.includes(add) ? cur : cur ? `${cur} · ${add}` : add
+  if (remarks === cur && docIds.length === have.length) return null       // already carried
+  return { row, remarks, docIds }
 }
 export function openInputWindow(iid: string): boolean {
   const row = INPUTS.find((r: any) => String(r.iid) === String(iid))

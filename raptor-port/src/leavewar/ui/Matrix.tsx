@@ -43,7 +43,7 @@ import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
-import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
+import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, openInputDocs, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
 import { DayPanelHost, openDayPanel } from './DayPanel'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
@@ -4375,6 +4375,7 @@ export function Matrix() {
           date={open.date}
           /* its documents, read only (M3 7.3 — D1150): changed on the Inputs page, where it was filed */
           docNames={rowDocIds(leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])).map(id => docGet(id)?.name ?? 'document')}
+          onDoc={() => openInputDocs(leaveInputAt(open.id, open.date, grid[open.id]?.[open.date]))}
           code={grid[open.id]?.[open.date] ?? ''}
           /* An OIL credit the app earned opens here too, and it is not leave
              from the Inputs page — the sheet says which it is, and reads the

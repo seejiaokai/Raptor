@@ -706,6 +706,35 @@ function onlyChangesWords(before: unknown, after: unknown): boolean {
   }
   return changed
 }
+/* (the stamps a member's war command may write — see the `lw.cell` case: his own name with a time this minute, or a
+   stamp one of this command's own before-images already carried) */
+const STAMP_SKEW_MS = 5 * 60_000
+function stampForged(env: CommitEnvelope, after: unknown, pid: string): string | null {
+  const a: any[] = Array.isArray(after) ? after : []
+  let had: { placed: Set<string>; decided: Map<string, string> } | null = null
+  const was = () => {
+    if (had) return had
+    had = { placed: new Set(), decided: new Map() }
+    for (const x of env.changes) {
+      if (x.collection !== 'lw.cell' || !Array.isArray(x.before)) continue
+      for (const r of x.before as any[]) {
+        if (r?.kind !== 'request') continue
+        had.placed.add(`${r.placedBy ?? ''}|${r.placedAt ?? ''}`)
+        if (r.decidedBy !== undefined || r.decidedAt !== undefined) had.decided.set(String(r.id), `${r.decidedBy ?? ''}|${r.decidedAt ?? ''}`)
+      }
+    }
+    return had
+  }
+  for (const r of a) {
+    if (r?.kind !== 'request') continue
+    if (r.placedBy !== undefined || r.placedAt !== undefined) {
+      const fresh = String(r.placedBy) === pid && typeof r.placedAt === 'number' && Math.abs(r.placedAt - Date.now()) <= STAMP_SKEW_MS
+      if (!fresh && !was().placed.has(`${r.placedBy ?? ''}|${r.placedAt ?? ''}`)) return `who placed a request`
+    }
+    if ((r.decidedBy !== undefined || r.decidedAt !== undefined) && was().decided.get(String(r.id)) !== `${r.decidedBy ?? ''}|${r.decidedAt ?? ''}`) return `who decided a request`
+  }
+  return null
+}
 function onlyTakesPending(before: unknown, after: unknown): boolean {
   const b: any[] = Array.isArray(before) ? before : []
   const a: any[] = Array.isArray(after) ? after : []
@@ -846,6 +875,18 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
         const bad = inputBreach(env, c, pid, !!replayed && replayed(c))
         if (bad) return `${bad} (${where})`
+        /* WHO PLACED A LEAVE THE WAR APPROVED (the overhaul's M4, 8.6 — the security read's question, the spec §3): the
+           request's placer rides on its Input as `lwBy` / `lwAt`, written only by an admin's approval; a member's own
+           command keeps them as they were or drops them, never writes them (his Undo or Redo puts back the image it took) */
+        if (env.origin !== 'restore' && c.op === 'put' && c.after) {
+          const f: any = c.after
+          /* (a piece cut from a leave — a medical splitting it — is a new record carrying its parent's stamp: any before-image
+             of this command's own vouches for it) */
+          const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}`
+          if ((f.lwBy !== undefined || f.lwAt !== undefined)
+            && !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}` === stamp))
+            return `who placed a leave on the war (${where})`
+        }
         break
       }
       /* A BELL'S NOTICE (state/notices.ts; the plan §4.10): a member's command may make one only as part of his OWN
@@ -868,6 +909,11 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
            for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a
            restore puts nothing back on a closed day. (Taking his own pending bid away passes above, Undo or not.) */
         const after = c.op === 'delete' ? [] : c.after
+        /* WHO PLACED A REQUEST AND WHO DECIDED IT (M4 8.6 — the security read's question: a forged "placed by"): a request a
+           member writes is placed by HIM, now — or keeps the stamp it already had (a re-typed kind keeps the first; a move
+           carries it to another day of his row, so any of this command's own before-images vouches); nor does he ever
+           write who decided one. His Undo or Redo writes back the images it took. */
+        if (env.origin !== 'restore') { const bad = stampForged(env, after, pid); if (bad) return `${bad} (${where})` }
         if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after) && !onlyChangesWords(c.before, after)) {
           if (warRestore === undefined) warRestore = env.origin === 'restore' && LW_RESTORE ? LW_RESTORE(env) : null
           if (!(warRestore && warRestore(c))) return `a war day not open for bidding (${where})`

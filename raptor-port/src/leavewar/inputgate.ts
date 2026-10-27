@@ -33,7 +33,8 @@
 //
 // A restore (undo / redo) runs rule 2 only: it replays exact records.
 
-import { deferEffect as cmdDeferEffect } from '../command'
+import { deferEffect as cmdDeferEffect, activeEnvelope } from '../command'
+import { noteReplacedBid } from '../state/notices'
 import { CmdRefused } from '../command'
 import { HOOKS } from '../engine/hooks'
 import { INPUTS, inpId, isLeave, nowStamp, idsOf, namedOf, holds, leadOf, inputLines } from '../engine/inputs'
@@ -276,7 +277,7 @@ function nextNoticeGroup(): number {
   return Date.now() * 1000 + GROUP_N
 }
 
-export interface BidClaim { person: string; date: string; win: Win; byType: string }
+export interface BidClaim { person: string; date: string; win: Win; byType: string; /** the input that claims it (M4 9.3a) */ iid?: string }
 
 /** Remove the clashing part of every undecided bid the claims overlap — the
  *  one body both doors share (an Input filed on the Inputs page; weekend / PH
@@ -285,17 +286,18 @@ export interface BidClaim { person: string; date: string; win: Win; byType: stri
  *  (answer B). A notice goes on the war unless `own(person)` (B6). Runs inside
  *  the caller's command, so its undo brings the bid back. */
 export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, own: (p: string) => boolean): string[] {
-  const byAddr = new Map<string, { person: string; date: string; wins: Win[]; byType: string }>()
+  const byAddr = new Map<string, { person: string; date: string; wins: Win[]; byType: string; iids: string[] }>()
   for (const c of claims) {
     const k = `${c.person}|${c.date}`
     const e = byAddr.get(k)
-    if (e) e.wins.push(c.win)
-    else byAddr.set(k, { person: c.person, date: c.date, wins: [c.win], byType: c.byType })
+    if (e) { e.wins.push(c.win); if (c.iid && !e.iids.includes(c.iid)) e.iids.push(c.iid) }
+    else byAddr.set(k, { person: c.person, date: c.date, wins: [c.win], byType: c.byType, iids: c.iid ? [c.iid] : [] })
   }
+  const cmd = activeEnvelope()
   const group = nextNoticeGroup()
   const edits: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
   const said: string[] = []
-  for (const { person: p, date: d, wins, byType } of byAddr.values()) {
+  for (const { person: p, date: d, wins, byType, iids } of byAddr.values()) {
     const war = warHolding(rawState().wars, d)
     if (!war) continue
     const hit = (w: Win) => wins.some(x => overlaps(x, w))
@@ -316,8 +318,19 @@ export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, 
       drop.push(r.id)
       if (keep) add.push(keep)
       if (!own(p)) {
-        const n: NoticeRec = { id: newRecId('n'), kind: 'notice', code: gone, was: 'pending', byType, byWho, seq: group, at: nowStamp() }
+        /* WHAT THE BID CARRIED, KEPT ON THE NOTICE (M4 9.3a — M3's leftover (7)): a bid replaced whole loses its remarks and
+           documents from every record otherwise; a half kept keeps them on itself. Offered onto the replacing leave from
+           the day's list (sync.ts carryReplaced). */
+        const req = r as RequestRec
+        const carried = keep ? {} : {
+          ...(req.remarks ? { remarks: req.remarks } : {}),
+          ...(req.docIds?.length ? { docIds: [...req.docIds] } : {}),
+        }
+        const n: NoticeRec = { id: newRecId('n'), kind: 'notice', code: gone, was: 'pending', byType, byWho, seq: group, at: nowStamp(), ...carried, ...(iids[0] ? { iid: iids[0] } : {}) }
         add.push(n)
+        /* …and his ONE bell line is the Inputs door's own, naming the bid (9.3a, D1142): "You were added · replaces your LL
+           bid" — noted for this command's notice pass (a member's own filing over his own bid tells him nothing: own(p)) */
+        for (const iid of iids) noteReplacedBid(cmd, iid, p, r.code)
       }
       said.push(`${own(p) ? 'your' : `${cs(p)}'s`} ${bare} bid on ${dm(d)}${keep ? ` (${gone.startsWith('*') ? 'morning' : 'afternoon'})` : ''}`)
     }
@@ -345,7 +358,7 @@ function replaceBids(changed: any[]): string[] {
        morning appointment */
     for (const line of inputLines([row]) as any[])
       for (const [d, c] of contribsOfInput(line) as Array<[string, Contrib]>)
-        for (const w of winsOf(c)) claims.push({ person: String(line.person), date: d, win: w, byType: String(row.type) })
+        for (const w of winsOf(c)) claims.push({ person: String(line.person), date: d, win: w, byType: String(row.type), ...(row.iid != null ? { iid: String(row.iid) } : {}) })
   }
   return replaceClashingBids(claims, who, own)
 }

@@ -92,6 +92,18 @@
   .appr-l2 .appr-placed { text-align: right; }
   .appr-l2 .appr-placed small { display: block; }
 
+  /* "ALSO SINCE YOU LAST LOOKED · nothing to decide" (8.4; r22-2-desk): under the New choice — the request columns kept for
+     the puck, the box and the dates, then what happened across the figures' columns, and when */
+  .appr-alsohead { padding: 18px 0 8px; border-bottom: 1px solid var(--edge); color: var(--ink-2); font-size: 13px; }
+  .appr-alsohead .appr-lab { margin-left: 0; }
+  .appr-aline { display: grid; grid-template-columns: 170px 52px minmax(190px, 1.4fr) minmax(220px, 2fr) 128px; column-gap: 12px; align-items: center;
+    min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
+  .appr-awhat { color: var(--ink); }
+  .appr-aline.ph { grid-template-columns: auto auto minmax(0, 1fr); row-gap: 4px; column-gap: 6px; padding: 10px 0; }
+  .appr-aline.ph .appr-dot { display: none; }
+  .appr-aline.ph .appr-awhat { grid-column: 1 / span 2; font-size: 13px; color: var(--ink-2); }
+  .appr-aline.ph .appr-placed { text-align: right; font-size: 13px; }
+
   /* THE SLIM BAR (8.5; r22-4-desk, r22-6-phone): at the foot of the grid after a request's dates were tapped */
   /* over the grid's frozen layers and clear of its fixed bottom scrollbar (15px), under every sheet (79+) */
   .appr-slim { position: fixed; left: 12px; right: 12px; bottom: 22px; z-index: 70; display: flex; align-items: center; gap: 8px; max-width: 760px; margin: 0 auto;

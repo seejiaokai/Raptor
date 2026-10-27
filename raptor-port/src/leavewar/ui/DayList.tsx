@@ -16,7 +16,8 @@ import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../e
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
 import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
-import { docGet, rowDocIds } from '../sync'
+import { docGet, openInputDocs, openRequestDocs, replacedCarry, rowDocIds } from '../sync'
+import { setLeaveRemarks } from '../../ui/inputedit'
 import { EntryBox } from './BidBits'
 import { draftOf, LeaveWords, patchOf, ReqWordsRows, runEnd, type FlushRef, type ReqDraft } from './ReqWords'
 import { DeleteChip, MoveChip } from './SheetActions'
@@ -108,7 +109,8 @@ function readOnly(id: string, row: any, raw = false): ReactElement | null {
   return (
     <div className="bidsheet-row dl-ro" data-testid={`dl-ro-${id}`}>
       {words && <span className="dl-ro-words">“{words}”</span>}
-      {docs.map(d => <span key={d} className="docchip"><span className="docname">{docGet(d)?.name ?? 'document'}</span></span>)}
+      {/* every document chip on the war opens the document, read only (M4 — the spec's reading 8) */}
+      {docs.map(d => <button key={d} type="button" className="docchip" onClick={() => openInputDocs(row)}><span className="docname">{docGet(d)?.name ?? 'document'}</span></button>)}
     </div>
   )
 }
@@ -299,8 +301,22 @@ export function DayListSheet({
     const whose = own ? 'Your' : `${callsign}’s`
     const text = `${whose} ${shown(n?.code ?? c.code)} bid was replaced by ${n?.byType ?? 'another entry'}${n?.byWho ? ` (${n.byWho})` : ''}`
     const actions: ReactElement[] = []
+    /* WHAT THE BID CARRIED (M4 9.3a — M3's leftover (7)): its remarks and its documents, kept on the notice, each document
+       opening read only; and, where the leave that replaced it is his and still stands, one tap puts them onto it */
+    const carry = n && (role === 'admin' || own) ? replacedCarry(personId, n) : null
+    if (carry) actions.push(<button key="carry" className="dchip" data-testid={`dl-carry-${c.id}`} onClick={() => act(() => setLeaveRemarks(carry.row, carry.remarks, personId, carry.docIds), 'That could not be saved — change it on the Inputs page.')}>Add to the {String(carry.row.type)}</button>)
     if (n && (role === 'admin' || own)) actions.push(<button key="ok" className="dchip ack" data-testid={`dl-seen-${c.id}`} onClick={() => act(() => ackReplacement(personId, n.id))}>OK, seen</button>)
-    return { key: `n-${c.id}`, cls: 'warn', box: null, text, sub: '', actions, words: null }
+    const kept = n && (n.remarks || n.docIds?.length) ? (
+      <span className="dl-ro" data-testid={`dl-kept-${c.id}`}>
+        {n.remarks && <span className="dl-ro-words">“{n.remarks}”</span>}
+        {(n.docIds ?? []).map(d => (
+          <button key={d} type="button" className="docchip" onClick={() => openRequestDocs({ personId, code: n.code, from: date, to: date, docIds: n.docIds!, remarks: n.remarks })}>
+            <span className="docname">{docGet(d)?.name ?? 'document'}</span>
+          </button>
+        ))}
+      </span>
+    ) : ''
+    return { key: `n-${c.id}`, cls: 'warn', box: null, text, sub: kept, actions, words: null }
   })
 
   /* THE TAIL THAT RAISES THE AMBER (the absence-record re-test, AB6, 26 Sep 26 — Fable F6, confirmed by the phone
