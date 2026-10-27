@@ -296,6 +296,38 @@ describe('the Approvals page’s rows', () => {
     fireEvent.keyDown(document, { key: 'Escape' })
     expect(screen.queryByTestId('appr-range'), 'Escape').toBeNull()
   })
+
+  /* THE FIXES' ROUND 2, R2-1 (the fix read's 1): the click a press outside the open calendar makes was taken only within
+     0.8 s of the PRESS — so a press held about a second on a line's Approve on a phone (an iPhone fires the click at the
+     lift) closed the calendar, moved the list, and at the lift approved the line then under the finger. Taken from the
+     press's own lift now. (The click is fired where the moved list put another line — what the phone does.) */
+  it('R2-1 a press held a second outside the open calendar still decides no line at its lift', async () => {
+    ranger(); expect(setCell('bane', MON, 'LL')).toBe(true); expect(setCell('bane', WED, 'OL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    expect(linesOf('bane')).toHaveLength(2)
+    fireEvent.click(screen.getByTestId('appr-pick'))
+    const [first, second] = linesOf('bane')
+    fireEvent.pointerDown(within(first!).getByTestId('appr-approve'))
+    expect(screen.queryByTestId('appr-range'), 'the press closes the calendar').toBeNull()
+    await act(async () => { await new Promise(r => setTimeout(r, 1000)) })
+    fireEvent.pointerUp(within(first!).getByTestId('appr-approve'))
+    fireEvent.click(within(second!).getByTestId('appr-approve'))
+    expect(document.querySelectorAll('.appr-ok.lit, .appr-no.lit'), 'no line decided').toHaveLength(0)
+    expect(reqs('bane', MON).concat(reqs('bane', WED)).map(r => r.state)).toEqual(['pending', 'pending'])
+  })
+
+  /* R2-2 (the fix read's 2): every first press outside the open calendar was swallowed, also where nothing moved — the top
+     bar's Undo, the bell, the Grid tab needed a second press. Only a click that lands somewhere other than what was
+     pressed, or on a thing that moved, is taken. */
+  it('R2-2 a press outside the open calendar on something that did not move closes it AND does its job', () => {
+    let pressed = 0
+    render(<><button type="button" data-testid="elsewhere" onClick={() => { pressed++ }}>Undo</button><ApprovalsPage shown={true} /></>)
+    fireEvent.click(screen.getByTestId('appr-pick'))
+    const b = screen.getByTestId('elsewhere')
+    fireEvent.pointerDown(b); fireEvent.pointerUp(b); fireEvent.click(b)
+    expect(screen.queryByTestId('appr-range'), 'the calendar closed').toBeNull()
+    expect(pressed, 'the press did its job').toBe(1)
+  })
 })
 
 describe('the day’s list (a day with two entries) says who placed each (the scenario designer’s 18; D1315)', () => {

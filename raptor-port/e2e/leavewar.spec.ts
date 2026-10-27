@@ -8112,3 +8112,47 @@ test('on a phone the slim Approvals bar stands where the drawing has it: 8px in,
   expect(g.back, 'Back keeps its press area').toBeGreaterThanOrEqual(34)
   expect(g.x, '✕ keeps its press area').toBeGreaterThanOrEqual(34)
 })
+
+/* THE FIXES' ROUND 2, R2-1 (the fix read's 1): M4's taker of the click was timed from the press, so a press HELD about a
+   second on a line's Approve — an iPhone fires the click at the lift — approved the line then under the finger. A real
+   touch, held a second, by the browser's own touch events. (Chromium may make no click of a still press held this long,
+   as an Android phone does; the unit test m4page "R2-1" fires the iPhone's click itself.) */
+test('with "Pick dates…" open, a press HELD a second on a line’s Approve decides no line at its lift (R2-1, D1421)', async ({ page }) => {
+  test.skip(!isPhone(), 'a finger on a phone')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const before = (await page.getByTestId('appr-sub').textContent())!.trim()
+  await page.getByTestId('appr-pick').click()
+  await expect(page.getByTestId('appr-range')).toBeVisible()
+  const btn = page.locator('[data-testid="approvals-page"] [data-testid="appr-approve"]').first()
+  await btn.scrollIntoViewIfNeeded()
+  const b = (await btn.boundingBox())!
+  const at = { x: Math.round(b.x + b.width / 2), y: Math.round(b.y + b.height / 2), id: 1 }
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [at] })
+  await page.waitForTimeout(1000)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await cdp.detach()
+  await expect(page.getByTestId('appr-range'), 'the calendar closes').toHaveCount(0)
+  await page.waitForTimeout(400)
+  expect(await page.locator('[data-testid="approvals-page"] .appr-ok.lit, [data-testid="approvals-page"] .appr-no.lit').count(), 'no line decided').toBe(0)
+  expect((await page.getByTestId('appr-sub').textContent())!.trim(), 'the pending count unchanged').toBe(before)
+})
+
+/* R2-2 (the fix read's 2): M4 swallowed EVERY first press outside the open calendar, also where nothing moved — the Grid tab,
+   the top bar's Undo, the bell needed a second press. A press on what did not move closes the calendar AND does its job. */
+test('with "Pick dates…" open, a press on the Grid tab closes the calendar and opens the Grid at once (R2-2)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.getByTestId('appr-pick').click()
+  await expect(page.getByTestId('appr-range')).toBeVisible()
+  const tab = page.getByTestId('lw-tab-grid')
+  const t = (await tab.boundingBox())!
+  if (isPhone()) await page.touchscreen.tap(t.x + t.width / 2, t.y + t.height / 2)
+  else await page.mouse.click(t.x + t.width / 2, t.y + t.height / 2)
+  await expect(page.getByTestId('approvals-page'), 'the Grid is up with one press').toBeHidden()
+})

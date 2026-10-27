@@ -128,15 +128,42 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
          ANOTHER man's Approve — a decision he never made (D1421: nothing moves under his finger). The click this press
          makes is taken here, before anything under it can act — on a desktop by the mouse as on a phone by a finger: the
          click that follows THIS press's lift, and only that one; a press that makes no click (a scroll) leaves nothing
-         waiting for the next. */
-      const eat = (c: Event) => { c.preventDefault(); c.stopPropagation(); done() }
-      const lift = () => { document.removeEventListener('pointerup', lift, true); document.addEventListener('click', eat, true) }
+         waiting for the next.
+         FROM THE LIFT, HOWEVER LONG THE PRESS (the fixes' round 2, R2-1): the taker was timed from the press, so a press held
+         about a second — an iPhone fires the click at the lift — found nothing waiting and approved the line then under the
+         finger. It is armed at this press's own lift and ends on a cancelled press, the next press, or half a second after
+         the lift (the click follows the lift at once).
+         ONLY WHERE THE PRESS WOULD MISS (R2-2): a click on what was pressed, which has not moved, does its job — the top
+         bar's Undo, the bell, the Grid tab need no second press; one that lands elsewhere, or on a thing the calendar's
+         closing moved, is taken. */
+      const t0 = e.target instanceof Element ? e.target : null
+      const r0 = t0 ? t0.getBoundingClientRect() : null
+      const pid = (e as PointerEvent).pointerId
+      let timer = 0
+      const moved = () => {
+        if (!t0 || !r0 || !t0.isConnected) return true
+        const r = t0.getBoundingClientRect()
+        return Math.abs(r.top - r0.top) >= 1 || Math.abs(r.left - r0.left) >= 1
+      }
+      const eat = (c: Event) => {
+        const on = c.target instanceof Node ? c.target : null
+        if (!(t0 && on && t0.contains(on)) || moved()) { c.preventDefault(); c.stopPropagation() }
+        done()
+      }
+      const lift = (u: Event) => {
+        const up = (u as PointerEvent).pointerId
+        if (pid !== undefined && up !== undefined && up !== pid) return
+        document.removeEventListener('pointerup', lift, true)
+        document.addEventListener('click', eat, true)
+        timer = window.setTimeout(done, 500)
+      }
       const done = () => {
         document.removeEventListener('pointerup', lift, true); document.removeEventListener('click', eat, true)
-        document.removeEventListener('pointerdown', done, true); clearTimeout(timer)
+        document.removeEventListener('pointercancel', done, true); document.removeEventListener('pointerdown', done, true)
+        clearTimeout(timer)
       }
-      const timer = setTimeout(done, 800)
       document.addEventListener('pointerup', lift, true)
+      document.addEventListener('pointercancel', done, true)
       setTimeout(() => document.addEventListener('pointerdown', done, true), 0)
     }
     const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); setPicking(false); pickBtn.current?.focus() } }
