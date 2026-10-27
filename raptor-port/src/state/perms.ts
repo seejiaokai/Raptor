@@ -728,25 +728,44 @@ const STAMP_AHEAD_MS = 5_000
    `lwback`) — a member's notice carries none (the notices case below) */
 const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol'])
 const placedOf = (r: any): string => `${r?.placedBy ?? ''}|${r?.placedAt ?? ''}`
+/* the halves a request's code takes — "*LL" the morning, "LL*" the afternoon, "LL" both (the war's notation, read here
+   without reaching into the war's engine) */
+const halvesOfCode = (code: unknown): string[] => {
+  const s = String(code ?? '')
+  return s.startsWith('*') ? ['am'] : s.endsWith('*') ? ['pm'] : ['am', 'pm']
+}
 function stampForged(env: CommitEnvelope, c: Change, after: unknown, pid: string): string | null {
   const a: any[] = Array.isArray(after) ? after : []
   let byId: Map<string, any> | null = null
+  /* in how many of this command's cells each request id stands AFTER it — a record moved stands in one; a copy in two */
+  let afterCount: Map<string, number> | null = null
   const was = (id: string) => {
     if (!byId) {
       byId = new Map()
+      afterCount = new Map()
       for (const x of env.changes) {
-        if (x.collection !== 'lw.cell' || !Array.isArray(x.before)) continue
-        for (const r of x.before as any[]) if (r?.kind === 'request') byId.set(String(r.id), r)
+        if (x.collection !== 'lw.cell') continue
+        if (Array.isArray(x.before)) for (const r of x.before as any[]) if (r?.kind === 'request') byId.set(String(r.id), r)
+        if (Array.isArray(x.after)) for (const i of new Set((x.after as any[]).filter(r => r?.kind === 'request').map(r => String(r.id)))) afterCount.set(i, (afterCount.get(i) ?? 0) + 1)
       }
     }
-    return byId.get(id)
+    /* THE SAME RECORD only where it LEFT its old place (the fixes' M10 — the Opus read's 7): a request kept where it was
+       and copied, same id, onto another day of his row is a new bid there, placed by him now — never one carrying the
+       original's stamp to the top of Approvals */
+    return (afterCount!.get(id) ?? 0) > 1 ? undefined : byId.get(id)
   }
   const kept = new Set(a.map(r => String(r?.id)))
-  const replaced = (Array.isArray(c.before) ? c.before as any[] : []).filter(r => r?.kind === 'request' && !kept.has(String(r.id)))
-  const first = replaced.filter(r => typeof r.placedAt === 'number').sort((x, y) => x.placedAt - y.placedAt)[0]
+  /* A RE-TYPED KIND keeps the stamp of a LIVE bid on the half it replaces, as the store's setCell gives it (M10): a refused
+     request of months ago, or the other half's bid, dropped beside a new one is not what it was re-typed from */
+  const replaced = (Array.isArray(c.before) ? c.before as any[] : []).filter(r => r?.kind === 'request' && r.state !== 'refused' && !kept.has(String(r.id)))
+  const firstFor = (r: any) => {
+    const mine = halvesOfCode(r.code)
+    return replaced.filter(x => typeof x.placedAt === 'number' && halvesOfCode(x.code).some(h => mine.includes(h))).sort((x, y) => x.placedAt - y.placedAt)[0]
+  }
   for (const r of a) {
     if (r?.kind !== 'request') continue
     const same = was(String(r.id))
+    const first = same ? undefined : firstFor(r)
     if (same) {
       if (placedOf(same) !== placedOf(r)) return `who placed a request`
     } else if (first) {

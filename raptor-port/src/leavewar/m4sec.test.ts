@@ -128,6 +128,24 @@ describe('2. a request carries the stamp of the record it came from', () => {
     expect(ownershipViolation(env([cell([a, b], [req({ id: 'q3', code: 'OL', placedBy: 'stiff', placedAt: 7 })])]))).toContain('who placed a request')
     expect(ownershipViolation(env([cell([req()], [req({ id: 'q3', code: 'OL', placedBy: 'bane', placedAt: Date.now() })])]))).toBeNull()
   })
+  /* THE FIXES' M10 (the Opus read's 7): two hand-made commands still let a member's new bid borrow an old stamp — sorting
+     to the top of Approvals and never showing as "New". A re-typed kind takes the stamp only of a LIVE bid on the half it
+     replaces (as the store's setCell does), and "the same record" is one that LEFT its old place, never a copy. */
+  it('M10 his old REFUSED request dropped for a new bid carrying its stamp — refused; the other half’s bid’s stamp — refused', () => {
+    const refusedOld = req({ id: 'q0', state: 'refused', placedBy: 'stiff', placedAt: 5, decidedBy: 'stiff', decidedAt: 6 })
+    expect(ownershipViolation(env([cell([refusedOld], [req({ id: 'q9', placedBy: 'stiff', placedAt: 5 })])])))
+      .toContain('who placed a request')
+    const am = req({ id: 'q0', code: '*LL', placedBy: 'stiff', placedAt: 5 })
+    expect(ownershipViolation(env([cell([am], [req({ id: 'q9', code: 'OL*', placedBy: 'stiff', placedAt: 5 })])])), 'the afternoon borrows the morning’s')
+      .toContain('who placed a request')
+    /* …while a re-type on the half it replaces keeps its stamp, as before */
+    expect(ownershipViolation(env([cell([am], [req({ id: 'q9', code: '*OL', placedBy: 'stiff', placedAt: 5 })])]))).toBeNull()
+  })
+  it('M10 a copy of his request on another day, the original kept where it was — refused; a real move still passes', () => {
+    const q = req({ id: 'q0', placedBy: 'stiff', placedAt: 5 })
+    expect(ownershipViolation(env([cell([q], [q]), cell([], [q], D2)], 'lw.edit'))).toContain('who placed a request')
+    expect(ownershipViolation(env([cell([q], []), cell([], [q], D2)], 'lw.move'))).toBeNull()
+  })
   it('through the real stores: his bid placed, re-typed and moved passes the check', () => {
     ranger()
     expect(setCell('bane', D, 'LL')).toBe(true)
