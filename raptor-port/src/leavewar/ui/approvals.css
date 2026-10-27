@@ -40,7 +40,10 @@
      PLACED a step further right, so the LVE BAL figures are never read with the Available beside them (his D1429) */
   .appr-cols, .appr-line { display: grid; grid-template-columns: 150px 44px 180px 64px 64px 136px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center; }
   .appr-cols > :nth-child(6), .appr-line > .appr-avail { padding-left: 28px; }
-  .appr-cols { padding: 12px 0 8px 16px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--edge); }
+  /* each heading stands over its figures (his D1437): the headings' row starts where the lines do, and NAME alone steps in
+     past the line's new-request dot (8px and its 6px gap) to stand over the puck */
+  .appr-cols:not(.ph) > :first-child { padding-left: 14px; }
+  .appr-cols { padding: 12px 0 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--edge); }
   .appr-cols .r, .appr-line .r { text-align: right; justify-self: end; }
   .appr-line { min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
   .appr-line.stale { opacity: .78; }
@@ -99,7 +102,10 @@
   .appr-page.ph .appr-spring { display: none; }
   .appr-page.ph [data-testid="appr-pick"] { grid-column: 1 / span 3; justify-self: start; padding: 0 12px; }
   .appr-page.ph .appr-all { grid-column: 4 / span 4; justify-self: end; }
-  .appr-cols.ph { grid-template-columns: 70px 72px 1fr 92px; padding: 12px 0 8px; }
+  /* both rows keep the same columns at every width (D1437): the third may be narrower than "LOWEST AVAIL" on a 360 phone, and
+     the heading then runs into the gap after it rather than widen its row and push PLACED out of line */
+  .appr-cols.ph { grid-template-columns: 70px 72px minmax(0, 1fr) 92px; padding: 12px 0 8px; }
+  .appr-cols.ph > span { white-space: nowrap; }
   .appr-line.ph { display: block; padding: 10px 0; }
   .appr-l1 { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 6px; }
   .appr-l1 .appr-who { flex-wrap: nowrap; }
@@ -109,7 +115,9 @@
   /* a little narrower on a phone, the same height (his D1435 — his word under D487 for these two): less padding at the sides,
      so a narrow phone keeps a line's date on one line */
   .appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 5px; font-size: 13.5px; }
-  .appr-l2 { display: grid; grid-template-columns: 70px 72px 1fr 92px; align-items: start; margin-top: 6px; font-size: 13px; }
+  /* the same columns AND the same gaps as the headings above (his D1437 — without the 12px gap the figures sat 12 and 24px
+     left of LVE BAL and LOWEST AVAIL) */
+  .appr-l2 { display: grid; grid-template-columns: 70px 72px minmax(0, 1fr) 92px; column-gap: 12px; align-items: start; margin-top: 6px; font-size: 13px; }
   .appr-l2 .appr-bal { text-align: left; justify-self: start; }
   .appr-l2 .appr-days { text-align: left; justify-self: start; }
   .appr-l2 .appr-placed { text-align: right; }

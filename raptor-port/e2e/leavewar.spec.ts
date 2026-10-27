@@ -7900,3 +7900,38 @@ test('on a phone the Approvals tab holds its count inside its outline', async ({
     expect(g.rowFits, `${width} wide: the tab row on the screen`).toBe(true)
   }
 })
+
+/* HIS D1437 (27 Oct 26 — "the alignment of the title and the text is off … Check the desktop too"): each Approvals heading
+   stands over its figures — a heading set to the left starts where its figures start, one set to the right ends where they
+   end. On a phone the figures' line had no gap between its columns where the headings' row had 12px (14 and W 17 sat 12 and
+   24px left of LVE BAL and LOWEST AVAIL); on a desktop the headings' row was pushed 16px in from the left. Measured on every
+   line, on both projects (scripts/handpass/lw-m4-colalign.mjs measures it in WebKit at 402, 390 and 360 too). */
+test('every Approvals heading stands over its figures (D1437)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const gaps = await page.evaluate(() => {
+    const words = (el: Element | null | undefined) => { if (!el) return null; const rg = document.createRange(); rg.selectNodeContents(el); const b = rg.getBoundingClientRect(); return b.width ? b : null }
+    const phone = !!document.querySelector('.appr-cols.ph')
+    const hs = [...document.querySelector(phone ? '.appr-cols.ph' : '.appr-cols:not(.ph)')!.children] as HTMLElement[]
+    const cellsOf = (l: Element): (Element | null)[] => phone
+      ? [...l.querySelector('.appr-l2')!.children]
+      : (c => [c[0]!.querySelector('.appr-puck'), c[1]!, c[2]!.querySelector('.appr-dlink'), c[3]!, c[4]!, c[5]!, c[6]!])([...l.children])
+    const out: string[] = []
+    hs.forEach((h, i) => {
+      const hb = words(h); if (!hb) return
+      const right = getComputedStyle(h).textAlign === 'right'
+      for (const l of document.querySelectorAll('[data-testid^="appr-line-"]')) {
+        const c = cellsOf(l)[i]
+        const t = c && (c.classList.contains('appr-avail') ? c.querySelector('.appr-av') : c)
+        const cb = t && (t.classList.contains('appr-puck') || t.classList.contains('appr-box') ? t.getBoundingClientRect() : words(t))
+        if (!cb || !cb.width) continue
+        const gap = right ? cb.right - hb.right : cb.left - hb.left
+        if (Math.abs(gap) > 1) out.push(`${h.innerText.trim()} ${Math.round(gap)}px ("${(t as HTMLElement).innerText.replace(/\s+/g, ' ').slice(0, 16)}")`)
+      }
+    })
+    return out
+  })
+  expect(gaps, 'headings more than 1px from their figures').toEqual([])
+})
