@@ -7880,3 +7880,23 @@ test('with Approvals\u2019 slim bar up, a window opens above the bar, never over
   expect(g.sheetBottom, `the window's foot (${g.sheetBottom}) above the bar's top (${g.barTop})`).toBeLessThanOrEqual(g.barTop)
   expect(g.sheetTop, 'the window still starts on screen').toBeGreaterThanOrEqual(0)
 })
+
+/* THE WALK'S B-F1 (27 Oct 26), on a phone at his iPhone's 402 and the narrower 390 and 360: the Approvals tab's count ran
+   past its lit outline — three equal tabs left Approvals too narrow for its word and its count. */
+test('on a phone the Approvals tab holds its count inside its outline', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone shares the tab row out')
+  await lwRole(page, 'admin')
+  for (const [width, height] of [[402, 874], ...PHONES] as [number, number][]) {
+    await page.setViewportSize({ width, height })
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    const g = await page.evaluate(() => {
+      const tab = document.querySelector<HTMLElement>('[data-testid="lw-tab-approvals"]')!.getBoundingClientRect()
+      const n = document.querySelector<HTMLElement>('[data-testid="lw-approvals-count"]')!.getBoundingClientRect()
+      const row = document.querySelector<HTMLElement>('[data-testid="lw-tab-approvals"]')!.parentElement!.getBoundingClientRect()
+      return { inTab: n.left >= tab.left - 0.5 && n.right <= tab.right + 0.5, n: [n.left, n.right], tab: [tab.left, tab.right], rowFits: row.right <= window.innerWidth }
+    })
+    expect(g.inTab, `${width} wide: the count ${JSON.stringify(g.n)} inside the tab ${JSON.stringify(g.tab)}`).toBe(true)
+    expect(g.rowFits, `${width} wide: the tab row on the screen`).toBe(true)
+  }
+})
