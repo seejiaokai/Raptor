@@ -8351,3 +8351,56 @@ test('D1445 the slim Approvals bar wears the drawings’ fill, #161B22', async (
   await expect(page.getByTestId('appr-slim')).toBeVisible()
   expect(await page.evaluate(() => getComputedStyle(document.querySelector('[data-testid="appr-slim"]')!).backgroundColor)).toBe('rgb(22, 27, 34)')
 })
+
+/* THE D1444 READ'S F1 (28 Oct 26 — D1421, D672): on a phone, deciding the only request of a month took its chip away at once;
+   where that emptied a row of chips, the lit line and everything under it jumped up 42px under his finger. The host's reading,
+   to be named to him: a month's chip stays — dimmed, as a month with nothing pending is — while a line of that month stands on
+   the page (decided here, D1421), and goes when the rows start afresh (another filter, another period, leaving Approvals).
+   Six months holding requests (two rows of chips), real taps. */
+test('D1444 on a phone deciding a month’s only request keeps its chip, so nothing moves under the finger; All starts afresh (F1, D1421)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s months')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  for (const d of ['2026-03-16', '2026-04-14', '2026-06-10', '2026-08-12']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'LL'), d)).toBe(true)
+  /* his iPhone's Safari keeps no scroll anchoring, so content shrinking above the finger moves what is under it; Chromium's
+     anchoring would hide that once the page is scrolled — it is switched off here to see what he sees */
+  await page.addStyleTag({ content: 'html, body, * { overflow-anchor: none !important; }' })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  expect(await chipMonths(page), 'six months holding requests').toHaveLength(6)
+  const line = page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').filter({ has: page.locator('[data-testid="appr-dates"]', { hasText: /\bAug\b/ }) })
+  await expect(line).toHaveCount(1)
+  const ok = line.getByTestId('appr-approve')
+  await ok.scrollIntoViewIfNeeded()
+  const before = (await ok.boundingBox())!
+  await page.touchscreen.tap(before.x + before.width / 2, before.y + before.height / 2)
+  await page.waitForTimeout(100)
+  const pressed = (await ok.boundingBox())!
+  await page.screenshot({ path: 'docs/img/handpass/2026-10-27-lw-m4/d1444/f1-decided-pressed.png' })
+  await expect(ok).toHaveText('Approved')
+  await page.waitForTimeout(600)
+  const settled = (await ok.boundingBox())!
+  await page.screenshot({ path: 'docs/img/handpass/2026-10-27-lw-m4/d1444/f1-decided-settled.png' })
+  expect(Math.abs(pressed.y - before.y), `the lit Approve keeps its top at the press (${before.y} → ${pressed.y})`).toBeLessThanOrEqual(1)
+  expect(Math.abs(settled.y - before.y), `…and settled (${before.y} → ${settled.y})`).toBeLessThanOrEqual(1)
+  expect(await chipMonths(page), 'August’s chip stays while its decided line stands').toContain('Aug')
+  await expect(page.getByTestId('appr-m-2026-08')).toHaveClass(/\bdim\b/)
+  await page.getByTestId('appr-all').click()
+  await expect.poll(() => chipMonths(page), 'All starts the rows afresh: the chip goes').not.toContain('Aug')
+})
+
+/* THE D1444 READ'S F2 (older, reached by the link D1444 put on the title's line): with a month or a date range picked,
+   "+N in <period> ›" opened the other period still filtered by the old pick — "Nothing here for these dates", no chip lit,
+   Approve all 0. The filter, the date picker and an armed Approve all start afresh with the period. */
+test('D1444 a month picked, the other period’s link opens it on All, its lines shown (F2)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.getByTestId('appr-m-2026-02').click()
+  await expect(page.getByTestId('appr-m-2026-02')).toHaveAttribute('aria-pressed', 'true')
+  await page.getByTestId('appr-elsewhere').first().click()
+  await expect(page.getByTestId('appr-all'), 'All lit in the other period').toHaveAttribute('aria-pressed', 'true')
+  expect(await page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').count(), 'its lines shown').toBeGreaterThan(0)
+  await expect(page.getByText('Nothing here for these dates.')).toHaveCount(0)
+})
