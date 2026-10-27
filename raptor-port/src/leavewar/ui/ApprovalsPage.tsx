@@ -448,7 +448,8 @@ export function SlimBar() {
     <div className={`appr-slim${phone ? ' ph' : ''}`} role="region" aria-label="Back to Approvals" data-testid="appr-slim">
       <span className="appr-dot" aria-hidden="true" />
       <b>Approvals</b>
-      <span className="appr-slim-n">{phone ? '· ' : ''}{n} pending{VISIT.newCount ? ` · ${VISIT.newCount} new` : ''}</span>
+      {/* "15 pending · 3 new", as both drawings write it (r22-4-desk, r22-6-phone — his D1432, D1440) */}
+      <span className="appr-slim-n">{n} pending{VISIT.newCount ? ` · ${VISIT.newCount} new` : ''}</span>
       <span className="appr-spring" />
       <button type="button" className="appr-back" data-testid="appr-back" onClick={() => setApprMode('page')}>Back ▴</button>
       <button type="button" className="appr-x" data-testid="appr-slim-x" aria-label="Close Approvals" onClick={() => setApprMode('off')}>✕</button>

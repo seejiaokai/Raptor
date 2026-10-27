@@ -43,7 +43,9 @@ for (const width of [402, 390, 360]) {
   const wrapped = lines.filter(l => l.wraps)
   const moved = lit.okL !== first.okL || lit.okW !== first.okW || ref.noW !== first.noW
   const over = lines.filter(l => l.right > width)
-  if (wrapped.length || moved || over.length || errs.length) fails++
+  /* his D1441 (28 Oct 26): one line at his iPhone's 402 and at 390; on a 360 phone a half-day date may still break — he was told
+     so on the page — so 360 is reported, not failed */
+  if ((wrapped.length && width >= 390) || moved || over.length || errs.length) fails++
   console.log(`${width}: ${lines.length} lines; dates on two lines: ${wrapped.map(l => l.dates).join(', ') || 'none'}; ` +
     `Approve ${first.okW} → "${lit.text}" ${lit.okW} (left ${first.okL} → ${lit.okL}); Refuse ${first.noW} → "${ref.text}" ${ref.noW}; ` +
     `past the screen's edge: ${over.length}; page errors: ${errs.length}`)

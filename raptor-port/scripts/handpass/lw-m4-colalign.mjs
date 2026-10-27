@@ -2,6 +2,7 @@
 // measured against the figures under it on every line — a heading set to the left against the left edge of its figures,
 // one set to the right (DAYS, LVE BAL on a desktop; PLACED on a phone) against their right edge. Phones in WebKit (an
 // iPhone's letters) at 402, 390 and 360; the desktop at his PC's 1536. PASS when every gap is within 1px.
+// Also FAILS where two headings' words touch (28 Oct 26).
 // Run from raptor-port/ against the build served on PORT: PORT=4174 node scripts/handpass/lw-m4-colalign.mjs
 import { webkit, chromium, devices } from '@playwright/test'
 import { existsSync, mkdirSync } from 'node:fs'
@@ -51,6 +52,10 @@ for (const [name, engine, opts] of runs) {
       }
       out.push({ heading: h.innerText.trim(), side: right ? 'right' : 'left', worst: Math.round(worst * 10) / 10, sample })
     }
+    /* and no two headings' words touching (28 Oct 26: at 360 "LOWEST AVAIL" ran into "PLACED" in WebKit's letters) */
+    const rs = hs.map(h => { const rg = document.createRange(); rg.selectNodeContents(h); return { t: h.innerText.trim(), rs: [...rg.getClientRects()] } })
+    for (let i = 0; i < rs.length; i++) for (let j = i + 1; j < rs.length; j++) for (const a of rs[i].rs) for (const b of rs[j].rs)
+      if (a.top < b.bottom && b.top < a.bottom && a.left < b.right + 4 && b.left < a.right + 4) out.push({ heading: rs[i].t + ' / ' + rs[j].t, side: 'TOUCHING', worst: 99, sample: '' })
     return out
   })
   await P.locator('.appr-cols').first().scrollIntoViewIfNeeded()

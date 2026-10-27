@@ -236,6 +236,32 @@ test.describe('History on a phone — Hide, the bar, Show (D339, D344, D345)', (
     expect(await page.locator('[data-histdot]').count()).toBe(0)
   })
 
+  /* HIS D1442 (28 Oct 26, question 19): the bar takes the slim Approvals bar's plain look (D1440) — "Show ▴" plain cyan
+     words, a plain ✕ — each keeping its press area; its words stay as they are */
+  test('the bar’s Show ▴ and ✕ are plain, as the slim Approvals bar’s (D1442)', async ({ page }) => {
+    await hexEditsThenSaber(page)
+    await page.click('#histBtn')
+    await expect(page.locator('.chgwin:not([hidden])')).toBeVisible()
+    await page.click('.chgwin .win-hide')
+    await expect(page.locator('.chgwin.bar')).toBeVisible()
+    const g = await page.evaluate(() => {
+      const show = getComputedStyle(document.querySelector('.chgwin.bar .cw-show')!)
+      const x = getComputedStyle(document.querySelector('.chgwin.bar .win-x')!)
+      const xb = document.querySelector('.chgwin.bar .win-x')!.getBoundingClientRect()
+      const plain = (s: CSSStyleDeclaration) => (parseFloat(s.borderTopWidth) === 0 || s.borderTopStyle === 'none') && /rgba\(0, 0, 0, 0\)|transparent/.test(s.backgroundColor)
+      /* "History on · N changes": a gap before the "·" (a flex item drops its words' leading space — it read "History on·") */
+      const l = document.querySelector('.chgwin.bar .cw-barl')!.getBoundingClientRect(), r = document.createRange()
+      r.selectNodeContents(document.querySelector('.chgwin.bar .cw-barn')!)
+      return { showPlain: plain(show), showInk: show.color, xPlain: plain(x), xSize: [Math.round(xb.width), Math.round(xb.height)], gap: Math.round(r.getBoundingClientRect().left - l.right) }
+    })
+    expect(g.gap, 'a space between "History on" and "·"').toBeGreaterThanOrEqual(3)
+    expect(g.showPlain, 'Show ▴ is plain words, no pill').toBe(true)
+    expect(g.showInk, 'Show ▴ in the app’s cyan').toBe('rgb(59, 198, 232)')
+    expect(g.xPlain, '✕ is plain, no box').toBe(true)
+    expect(g.xSize, '✕ keeps its press area').toEqual([28, 28])
+    await expect(page.locator('.chgwin.bar .cw-barbtn')).toHaveText(/^History on · \d+ changes?\s*Show ▴$/)
+  })
+
   for (const order of ['ALL AVAIL first', 'History first'] as const) {
     test(`the hidden bar stays reachable over the ALL AVAIL window — ${order} (Astra 07)`, async ({ page }) => {
       await hexEditsThenSaber(page)

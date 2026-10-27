@@ -115,8 +115,12 @@
   .appr-page.ph .appr-all { grid-column: 4 / span 4; justify-self: end; }
   /* both rows keep the same columns at every width (D1437): the third may be narrower than "LOWEST AVAIL" on a 360 phone, and
      the heading then runs into the gap after it rather than widen its row and push PLACED out of line */
-  .appr-cols.ph { grid-template-columns: 64px 64px minmax(0, 1fr) 92px; padding: 12px 0 8px; }
+  .appr-cols.ph { grid-template-columns: 64px 64px minmax(0, 1fr) 92px; padding: 12px 0 8px; align-items: end; }
   .appr-cols.ph > span { white-space: nowrap; }
+  /* LOWEST AVAIL stands over its numbers (D1438), so it runs past its column into the room before PLACED's word — never into
+     it: where that room runs out (a 360 phone, in an iPhone's letters "LOWEST AVAIL" ran into "PLACED" — 28 Oct 26) it takes a
+     second line, "LOWEST" over "AVAIL", the other headings on its foot. 36px past the column leaves PLACED's word 8px clear. */
+  .appr-cols.ph > :nth-child(3) { white-space: normal; margin-right: -36px; }
   .appr-line.ph { display: block; padding: 10px 0; }
   .appr-l1 { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 6px; }
   .appr-l1 .appr-who { flex-wrap: nowrap; }
@@ -124,8 +128,9 @@
   .appr-l1 .appr-tag { display: none; }
   .appr-l1 .appr-btns { gap: 6px; }
   /* a little narrower on a phone, the same height (his D1435 — his word under D487 for these two): less padding at the sides,
-     so a narrow phone keeps a line's date on one line */
-  .appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 5px; font-size: 13.5px; }
+     so a narrow phone keeps a line's date on one line — and his drawing's letters (his D1441, r22-5-phone: 12.5px, bold), so at
+     his iPhone's width a half-day date ("23 Jan AM ›") keeps one line, measured in WebKit (scripts/handpass/lw-m4-btnwidth.mjs) */
+  .appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 3px; font-size: 12.5px; font-weight: 700; }
   /* the same columns AND the same gaps as the headings above (his D1437 — without the 12px gap the figures sat 12 and 24px
      left of LVE BAL and LOWEST AVAIL) */
   .appr-l2 { display: grid; grid-template-columns: 64px 64px minmax(0, 1fr) 92px; column-gap: 12px; align-items: start; margin-top: 6px; font-size: 13px; }
@@ -159,14 +164,17 @@
   .appr-back { min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--accent); background: rgba(59, 198, 232, .14); color: var(--accent);
     font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
   .appr-x { min-height: 34px; min-width: 34px; border-radius: 8px; border: 1px solid var(--edge); background: var(--panel-2); color: var(--ink-2); font: inherit; cursor: pointer; }
-  /* ON A DESKTOP, HIS DRAWING'S COMPACT BAR (his D1432, r22-4-desk): as wide as its words, centred, no cyan outline — the app's
-     edge and a drop shadow — "Back ▴" plain cyan words and a plain ✕; each keeps its 34px press area (D487) */
-  .appr-slim:not(.ph) { left: 50%; right: auto; transform: translateX(-50%); max-width: none; gap: 14px; padding: 0 12px 0 16px;
-    border-color: var(--edge); box-shadow: 0 10px 30px rgba(0, 0, 0, .6); white-space: nowrap; }
-  .appr-slim:not(.ph) b { font-size: 15px; font-weight: 800; letter-spacing: .04em; }
+  /* HIS DRAWINGS' PLAIN BAR, on a desktop (his D1432, r22-4-desk) and on a phone (his D1440, r22-6-phone): no cyan outline —
+     the app's edge and a drop shadow — "Back ▴" plain cyan words and a plain ✕; each keeps its 34px press area (D487) */
+  .appr-slim { gap: 14px; padding: 0 12px 0 16px; border-color: var(--edge); box-shadow: 0 10px 30px rgba(0, 0, 0, .6); white-space: nowrap; }
+  .appr-slim b { font-size: 15px; font-weight: 800; letter-spacing: .04em; }
+  .appr-slim .appr-back { margin-left: 10px; padding: 0 6px; border: 0; background: none; font-size: 14px; font-weight: 700; }
+  .appr-slim .appr-x { border: 0; background: none; font-size: 16px; }
+  /* on a desktop as wide as its words, centred (D1432); on a phone across the screen, Back and ✕ at its right, as drawn */
+  .appr-slim:not(.ph) { left: 50%; right: auto; transform: translateX(-50%); max-width: none; }
   .appr-slim:not(.ph) .appr-spring { display: none; }
-  .appr-slim:not(.ph) .appr-back { margin-left: 10px; padding: 0 6px; border: 0; background: none; font-size: 14px; font-weight: 700; }
-  .appr-slim:not(.ph) .appr-x { border: 0; background: none; font-size: 16px; }
+  .appr-slim.ph { gap: 10px; }
+  .appr-slim.ph .appr-back { margin-left: 0; }
 
   /* THE DAY BROUGHT INTO VIEW (cellring.ts): the app's one just-added mark (D860 — the plain blue ring, no glow) for six
      seconds; for a reader who asked for less motion it stands steady and goes when its time is up */

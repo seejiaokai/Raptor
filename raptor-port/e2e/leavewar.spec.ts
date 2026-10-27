@@ -7942,3 +7942,77 @@ test('every Approvals heading stands over its figures, every name at the left (D
   }))
   expect(right, 'nothing set to the right').toEqual({ names: [], heads: [] })
 })
+
+/* HIS D1440 (28 Oct 26, question 17): the slim Approvals bar is his drawing's plain bar on a phone as on a desktop (D1432) —
+   no cyan outline, "Back ▴" plain cyan words and a plain ✕, each keeping its press area (34px, D487); the count reads as
+   drawn (r22-6-phone: "15 pending · 3 new", no "·" before it). */
+test('the slim Approvals bar is the drawing’s plain bar: no cyan outline, Back and ✕ unboxed (D1432, D1440)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const cs = (sel: string) => getComputedStyle(document.querySelector(sel)!)
+    const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect()
+    const bar = cs('[data-testid="appr-slim"]'), back = cs('[data-testid="appr-back"]'), x = cs('[data-testid="appr-slim-x"]')
+    const plain = (s: CSSStyleDeclaration) => (parseFloat(s.borderTopWidth) === 0 || s.borderTopStyle === 'none') && /rgba\(0, 0, 0, 0\)|transparent/.test(s.backgroundColor)
+    return {
+      outline: bar.borderTopColor, backPlain: plain(back), xPlain: plain(x), backInk: back.color,
+      backTall: Math.round(box('[data-testid="appr-back"]').height), xTall: Math.round(box('[data-testid="appr-slim-x"]').height),
+      count: (document.querySelector('[data-testid="appr-slim"] .appr-slim-n') as HTMLElement).innerText.trim(),
+    }
+  })
+  expect(g.outline, 'the bar wears the app’s edge, not the cyan outline').not.toBe('rgb(59, 198, 232)')
+  expect(g.backPlain, 'Back ▴ is plain words, no box').toBe(true)
+  expect(g.xPlain, '✕ is plain, no box').toBe(true)
+  expect(g.backInk, 'Back ▴ in the app’s cyan').toBe('rgb(59, 198, 232)')
+  expect(g.backTall, 'Back keeps its 34px press area').toBeGreaterThanOrEqual(34)
+  expect(g.xTall, '✕ keeps its 34px press area').toBeGreaterThanOrEqual(34)
+  expect(g.count, 'the count as drawn, with no "·" before it').toMatch(/^\d+ pending/)
+})
+
+/* HIS D1441 (28 Oct 26, question 18): on a phone Approve and Refuse take his drawing's letters (r22-5-phone — 12.5px, bold),
+   so at his iPhone's width every request's dates stand on one line beside them; the desktop's buttons keep D1427's. (In
+   WebKit's wider letters it is measured by scripts/handpass/lw-m4-btnwidth.mjs at 402, 390 and 360.) */
+test('on a phone Approve and Refuse are in the drawing’s letters and every date stays on one line at 402 (D1441)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s two-line request')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const ok = getComputedStyle(document.querySelector('[data-testid="appr-approve"]')!)
+    const broken = [...document.querySelectorAll('[data-testid="appr-dates"]')].filter(d => {
+      const s = getComputedStyle(d); const lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.25
+      return d.getBoundingClientRect().height > lh * 1.5
+    }).map(d => d.textContent)
+    return { size: ok.fontSize, weight: ok.fontWeight, broken }
+  })
+  expect({ size: g.size, weight: g.weight }, 'the drawing’s letters').toEqual({ size: '12.5px', weight: '700' })
+  expect(g.broken, 'dates on two lines').toEqual([])
+})
+
+/* The re-check before the re-walk (28 Oct 26, drawing D1439 at 360 wide): on a narrow phone "LOWEST AVAIL" ran into "PLACED"
+   ("LOWEST AVAIPLACED") — the heading stands over its numbers (D1438), past its column, and at 360 that is further than the
+   room before PLACED's word. No two headings' words may touch, at his 402 and at 390 and 360. */
+test('on a phone no two Approvals headings run into each other, at 402, 390 and 360', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s headings')
+  await lwRole(page, 'admin')
+  for (const [width, height] of [[402, 874], ...PHONES] as [number, number][]) {
+    await page.setViewportSize({ width, height })
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    await page.waitForTimeout(150)
+    const touching = await page.evaluate(() => {
+      const rects = [...document.querySelector('.appr-cols.ph')!.children].map(h => { const r = document.createRange(); r.selectNodeContents(h); return { t: (h as HTMLElement).innerText.trim(), rs: [...r.getClientRects()] } })
+      const out: string[] = []
+      for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++)
+        for (const a of rects[i]!.rs) for (const b of rects[j]!.rs)
+          if (a.top < b.bottom && b.top < a.bottom && a.left < b.right + 4 && b.left < a.right + 4) out.push(`${rects[i]!.t} / ${rects[j]!.t}`)
+      return out
+    })
+    expect(touching, `${width} wide: headings touching`).toEqual([])
+  }
+})

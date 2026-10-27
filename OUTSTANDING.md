@@ -159,6 +159,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [E2E-HIDE-BAR-SEAT] — on his PC a changes-window browser test fails: its seat sits under the hidden bar (the test, not the app; small).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
@@ -227,6 +228,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [E2E-HIDE-BAR-SEAT] On his PC a changes-window browser test fails: the seat it checks sits under the hidden bar (found 28 Oct 26, the night's M4 build)
+The phone test "Hide sends the panel to the bar at the bottom…" (`raptor-port/e2e/changeswin.spec.ts`) brings Tuesday's changed seat into view with the browser's own scroll and then checks that nothing covers it. On his PC (Windows' letters) the seat is already on screen, at 780–795 of 844, and the hidden bar — 12px from the foot, about 51 tall — starts at 780, so the check fails every time: with the night's changed bar (D1442) and with the bar as it was, measured both ways on 28 Oct 26. GitHub's machines pass it. The app is not at fault there — its own tap on a change brings the change clear of the bar; the test's scroll does not. **Fix:** in the test, bring the seat clear of the bar the way the app does (or scroll it above the bar's top) before the check, keeping the check itself. Small; needs no answer from him.
 
 ### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
 **What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page
