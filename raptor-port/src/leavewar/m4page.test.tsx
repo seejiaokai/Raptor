@@ -21,7 +21,7 @@ import { getState, initStore as lwInitStore, lwHistInit, setCell, setPeople } fr
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
-import { ApprovalsPage, SlimBar } from './ui/ApprovalsPage'
+import { ApprovalsPage, SlimBar, rangeWords } from './ui/ApprovalsPage'
 import { DayListSheet } from './ui/DayList'
 import { setApprMode } from './ui/lwnav'
 
@@ -98,6 +98,15 @@ describe('the Approvals page’s rows', () => {
     expect(screen.getByTestId('appr-new').textContent).toContain('New 1')
   })
 
+  /* the walk's small finds (27 Oct 26): "New 0" kept its cyan dot — a dot that says something new with nothing new; and one
+     picked day read "13 Jan – 13 Jan" */
+  it('"New 0" wears no dot; one picked day reads as one day', () => {
+    render(<ApprovalsPage shown={true} />)
+    expect(screen.getByTestId('appr-new').textContent).toContain('New 0')
+    expect(screen.getByTestId('appr-new').querySelector('.appr-dot')!.classList.contains('none')).toBe(true)
+    expect(rangeWords('2026-01-13', '2026-01-13')).toBe('13 Jan')
+    expect(rangeWords('2026-01-13', '2026-01-15')).toBe('13 Jan – 15 Jan')
+  })
   it('17 the slim bar says the page’s count — the period on view', () => {
     ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
     render(<><ApprovalsPage shown={false} /><SlimBar /></>)

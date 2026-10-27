@@ -45,6 +45,11 @@ const dow = (iso: string) => DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(
 const dm = (iso: string) => `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
 const fig = (n: number) => String(Math.round(n * 2) / 2).replace('-', '−')
 
+/** the "Pick dates…" chip once a span is picked: "13 Jan – 15 Jan"; one day is one day, "13 Jan" (the walk, 27 Oct 26 — it
+ *  read "13 Jan – 13 Jan") */
+export function rangeWords(from: string, to: string): string {
+  return from === to ? dm(from) : `${dm(from)} – ${dm(to)}`
+}
 /* "Thu 22 – Fri 23 Jan" · "Fri 23 Jan, AM" on a desktop; "22–23 Jan" · "23 Jan AM" on a phone (as drawn) */
 export function datesWords(code: string, from: string, to: string, phone: boolean): string {
   const half = parseCell(code)?.portion
@@ -263,12 +268,12 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   )
   const filterRow = (
     <div className="appr-filters" role="group" aria-label="Which requests to show">
-      {fchip(filter.kind === 'new', <><span className="appr-dot" aria-hidden="true" />New {newCount}</>, () => setFilter({ kind: 'new' }), { testid: 'appr-new' })}
+      {fchip(filter.kind === 'new', <><span className={`appr-dot${newCount ? '' : ' none'}`} aria-hidden="true" />New {newCount}</>, () => setFilter({ kind: 'new' }), { testid: 'appr-new' })}
       {!phone && <span className="appr-lab">Dates</span>}
       {fchip(filter.kind === 'all', 'All', () => setFilter({ kind: 'all' }), { testid: 'appr-all' })}
       {months.map(ym => fchip(filter.kind === 'month' && filter.ym === ym, MON[+ym.slice(5, 7) - 1], () => setFilter({ kind: 'month', ym }), { dim: !monthHas(ym), testid: `appr-m-${ym}` }))}
       <button ref={pickBtn} type="button" className={`appr-f${filter.kind === 'range' ? ' on' : ''}`} data-testid="appr-pick" aria-expanded={picking}
-        onClick={() => setPicking(v => !v)}>{filter.kind === 'range' ? `${dm(filter.from)} – ${dm(filter.to)}` : 'Pick dates…'}</button>
+        onClick={() => setPicking(v => !v)}>{filter.kind === 'range' ? rangeWords(filter.from, filter.to) : 'Pick dates…'}</button>
       <span className="appr-spring" />
       <button type="button" className={`appr-all${isArmed ? ' armed' : ''}`} data-testid="appr-approve-all" disabled={!toApprove.length}
         aria-live="polite" onClick={approveAll}>{isArmed ? `Approve ${toApprove.length} — tap again` : `Approve all ${toApprove.length}`}</button>
