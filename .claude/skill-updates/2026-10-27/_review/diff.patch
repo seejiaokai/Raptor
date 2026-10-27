@@ -439,7 +439,7 @@ index 7dde778a5..a9066a9fb 100644
  **Lesson 61 (27 Oct 26, D1412 — "all the text areas I click screen jerks or bounce a little when the keyboard opens. Even for text that are above the keyboard … Why can’t the text box I click on, auto scroll proportionately with the keyboard that appears and the window doesn’t shrink awhile. My idea is a smooth feel for this app and this made it worse").** When the keyboard opens, the box tapped rises in step with the keys, proportionately — one motion, the keys' own — and nothing else on screen moves: a box already above the keys stays exactly where it is, and no window shortens and grows back or lets the page behind it show while the keys move. What it says about the app he intends (D852): a correct end place is not the measure; the feel of the motion is, and a mechanism that steers a window frame by frame against the phone's own slide is judged by what he sees, not by its numbers. *Other places, named under D852 — the same check applies to each: the Leave War's sheets and bid windows (they place themselves, `leavewar/ui/Sheet.tsx`), the Tracker's event editor, Admin's Duty templates box, the Logic page's boxes, and the Scheduler Board's list ([KEYBOARD-SCROLL]).*
  
 diff --git a/DECISIONS.md b/.claude/skill-updates/2026-10-27/DECISIONS.md
-index 8ed61f9b6..51ad265e7 100644
+index 6c0ae86f2..5b3acafe4 100644
 --- a/DECISIONS.md
 +++ b/.claude/skill-updates/2026-10-27/DECISIONS.md
 @@ -52,6 +52,9 @@ parallel chat holds (D90–D119 is the amendment chat's; D150–D156 are used).
