@@ -156,3 +156,17 @@ before round 1's heading fix, shows "LOWEST AVAIPLACED" run together; the build 
 Checks (28 Oct 26): `m4bell` 21, `m4decide` 28, `m4page` 31, `m4ride` 17, `m4sec` 14 — green. Browser through the lock (it
 builds and type-checks first), `lw-phone` and `lw-desktop`: the four new tests with every Approvals, bell and round-1–3
 test — 31 passed, 9 skipped (phone-only on the desktop project), 0 failed.
+
+**The blind read's findings (`fix-read-4.md`):**
+
+| Finding | Red first | The fix | Commit |
+|---|---|---|---|
+| **F1** (D1421, D672) — on a phone, deciding a month's only request took its chip away at once; where that emptied a chip row, the lit line and all under it jumped up 42px under the finger | `e2e/leavewar.spec.ts` — "D1444 on a phone deciding a month's only request keeps its chip, so nothing moves under the finger; All starts afresh (F1, D1421)" — real taps, six months holding requests, the Aug line's only request approved: red on `lw-phone`, its Approve's top **419 → 377** after the tap | `ApprovalsPage.tsx` — **the host's reading, to be named to him:** a month's chip stays, dimmed as a month with nothing pending is, while any line of its month stands on the page (`monthOnPage` over the rows), and goes when the rows start afresh — another filter, another period, leaving Approvals. Now the Approve's top holds within 1px pressed (100 ms) and settled (600 ms); the chip stays dimmed; a tap on All takes it away. "D1444 (B) … goes with its last" now expects the June chip to stay dimmed after its last request is deleted, and to go after All (the same reading) | d7d015e58 |
+| **F2** (older) — with a month or dates picked, "+N in <period> ›" opened the other period still on the old pick: "Nothing here for these dates", no chip lit | "D1444 a month picked, the other period's link opens it on All, its lines shown (F2)" — red on `lw-phone` and `lw-desktop` | `ApprovalsPage.tsx`: the filter, the date picker and an armed Approve all reset when the period changes | d7d015e58 |
+| **F3** (words) — the phone filter comment still said D1423's three rows | — (a comment) | `approvals.css`: its first sentence restated to D1444's rule | d7d015e58 |
+
+**The pictures** (`d1444/`): `f1-decided-pressed.png` and `f1-decided-settled.png` — the Aug line lit "Approved", in the
+same place as before the tap. Checks (28 Oct 26): `m4bell`, `m4decide`, `m4page`, `m4ride`, `m4sec` — 111 passed. Browser
+through the lock, `lw-phone` and `lw-desktop`, the two new tests with every Approvals, bell, D1444/D1445 and round-1–3 test
+— 34 passed, 10 skipped (phone-only on the desktop project), 0 failed. Left for the host: D1423's short line carries no
+"— changed by D1439" tail (a rulings file).
