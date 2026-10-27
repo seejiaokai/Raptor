@@ -2537,3 +2537,18 @@ its value and never in innerText.
 **Suggested improvement:** walk-scripts.md and every walker's brief: a finding that a SMALL mark (an edge, a dot, a chip under ~6px) is absent or wrong is confirmed on a cropped, enlarged picture — or by measuring the element — before it is written as a fault; the host does the same before tracing code.
 
 **Principle:** Absence of a small visual mark is a claim about pixels; check it at a scale where the mark would be unmistakable before spending effort explaining why it is missing.
+
+### Observation 730: A "matches the drawing" verdict needs its own pair, the same as a difference
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** Leave War M4 — building the owner's answers to a drawing-vs-build page; the page had listed three surfaces as "matches, nothing to choose".
+**Skill:** brainstorming (mockups-on-the-real-app.md) / the bug-check order §7.10 (the built screen beside its drawing)
+**Type:** open-source
+**Phase/Area:** comparing a build with its approved mock-ups
+
+**Issue:** The comparison page cut a ringed pair for every difference it found, but declared three surfaces "matching" without cutting a pair for them. One (the phone's slim bar) carried the same three differences as the desktop one the owner then ruled on; a ruling's reading repeated the false "matches" and had to be corrected, and a new question had to go back to the owner.
+
+**Suggested improvement:** In the drawing-comparison step, every surface with an approved drawing gets a pair — the differences ringed, a match shown unringed — and a "matches" line cites its pair; a surface with no pair is listed as "not compared", never as matching.
+
+**Principle:** A negative verdict ("no difference") is a claim like any other and needs the same evidence as a positive one; listing a surface as checked without its evidence is how a difference survives a careful review.
