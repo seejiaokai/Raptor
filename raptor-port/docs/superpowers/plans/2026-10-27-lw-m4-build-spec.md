@@ -75,7 +75,7 @@ the buttons stand near the figures (the drawing, `r22-1-desk`). On a phone each 
 dates · paperclip · Approve · Refuse; then the four figures under headings drawn once (`r22-5-phone`). A posted-out man's
 puck carries his posting tag (B12) — "posting out 12 Mar" before it runs (`sync.ts postingPendingTag`); once an archive or
 a transfer has run that tag is gone (it returns nothing), so the line reads "posted out 14 Oct", and his Approve is refused
-on the line ("Posted out — refuse or delete it") while Refuse still works. A line joined from next-door bids placed at
+on the line ("Posted out — refuse or delete it") while Refuse still works. **Since D1436 (27 Oct 26): Approve is refused too for leave on days after his posting-out date before the posting has run ("He posts out on 1 Mar: refuse or delete it"), except a posting out as SANS, whose leave is kept (D283) — wherever leave is approved, the bid windows included.** A line joined from next-door bids placed at
 different times or by different people (D1346, the run rule) shows the EARLIEST placed time and its "by". The figures are worked out when the tab opens and when the war changes, not on every
 grid repaint (the code map's cost note).
 
