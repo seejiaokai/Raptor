@@ -1,0 +1,156 @@
+[
+ {
+  "id": "P1 bid window opens",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bid window on Tue 13 Jan",
+  "pics": []
+ },
+ {
+  "id": "P2 bid placed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL placed, window closed",
+  "pics": []
+ },
+ {
+  "id": "P3 Placed line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"Placed Ranger · Tue 27 Oct, 17:32\"",
+  "pics": []
+ },
+ {
+  "id": "P3b member has no Approvals tab",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "tab count 0",
+  "pics": []
+ },
+ {
+  "id": "P4 tab count",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "count \"9\"",
+  "pics": []
+ },
+ {
+  "id": "P5 the list holds his line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "7 lines; his: Ranger IP LL Tue 13 Jan › 1 day −1 P 27 27 Oct 17:32 Approve Refuse",
+  "pics": []
+ },
+ {
+  "id": "P6 approve lights it, the line stays",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"who\":\"bane\",\"text\":\"Ranger IP LL Tue 13 Jan › 1 day −1 P 27 27 Oct 17:32 Approved Refuse\",\"lit\":\"approved\",\"stale\":false}",
+  "pics": []
+ },
+ {
+  "id": "P7 slim bar up",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Approvals · 8 pending Back ▴ ✕",
+  "pics": []
+ },
+ {
+  "id": "P7b the cell ringed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "td.lw-ring present: true",
+  "pics": []
+ },
+ {
+  "id": "P8 Back opens the list lit as left",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "",
+  "pics": []
+ },
+ {
+  "id": "P9 his bell line",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Your leaveTue 13 Jan LL approved · Saber now",
+  "pics": []
+ },
+ {
+  "id": "P1 bid window opens",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bid window on Tue 13 Jan",
+  "pics": []
+ },
+ {
+  "id": "P2 bid placed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "LL placed, window closed",
+  "pics": []
+ },
+ {
+  "id": "P3 Placed line",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"Placed Ranger · Tue 27 Oct, 17:32\"",
+  "pics": []
+ },
+ {
+  "id": "P3b member has no Approvals tab",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "tab count 0",
+  "pics": []
+ },
+ {
+  "id": "P4 tab count",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "count \"9\"",
+  "pics": []
+ },
+ {
+  "id": "P5 the list holds his line",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "7 lines; his: Ranger IP LL 13 Jan › Approve Refuse 1 day −1 P 27 27 Oct 17:32",
+  "pics": []
+ },
+ {
+  "id": "P6 approve lights it, the line stays",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"who\":\"bane\",\"text\":\"Ranger IP LL 13 Jan › Approved Refuse 1 day −1 P 27 27 Oct 17:32\",\"lit\":\"approved\",\"stale\":false}",
+  "pics": []
+ },
+ {
+  "id": "P7 slim bar up",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Approvals · 8 pending Back ▴ ✕",
+  "pics": []
+ },
+ {
+  "id": "P7b the cell ringed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "td.lw-ring present: true",
+  "pics": []
+ },
+ {
+  "id": "P8 Back opens the list lit as left",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "",
+  "pics": []
+ },
+ {
+  "id": "P9 his bell line",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "Your leaveTue 13 Jan LL approved · Saber now",
+  "pics": []
+ }
+]
