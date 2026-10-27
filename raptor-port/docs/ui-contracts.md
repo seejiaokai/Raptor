@@ -845,7 +845,8 @@ panels are scrolled, nearest first, so its bottom sits 8px above the keys and ab
 the page, unless the box is in a fixed layer (a window, a sheet; the board is page content of its own, below), where the page
 behind never moves (D686). **A window is the phone's to carry (D1412):** Safari pans the visible screen to show the box, and a
 window — fixed to the layout — rides up with the page in that same motion, in step with the keys; the app never raises, holds,
-shrinks, re-places or glides a window for the keys, and when they go down the phone's pan carries it back. Only as a last
+shrinks, re-places or glides a window for the keys, and when they go down the phone's pan carries it back — so where a window's foot (the input window's Cancel / Add) stands with the
+keys up is the phone's doing: in view above the keys with a long form, under them with a short one (owner D1413, 27 Oct 26). Only as a last
 resort — the pan at rest and the box still under the keys, which Safari never leaves — is a window raised (the CSS `translate`
 property; on a full-screen backdrop, the window on it), never past the visible top, and put back when the typing ends or the
 keys go down. **The six rounds of 25 Oct 26 that held a window to the room (`--kbcap`), pinned it to the visible top, brought it

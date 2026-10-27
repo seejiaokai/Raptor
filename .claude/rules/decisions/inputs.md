@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1413 | 27 Oct 26 | Where the input window's Cancel / Add stand while the keys are up is the phone's own doing: it pans the screen just far enough to show the box tapped, so with a long form ("Other") the window's foot comes into view above the keys and with a short one (HL) it stays under them; the app does not move the window to make the kinds alike. |
 | D1396 | 26 Oct 26 | The Inputs pages' three designs of the 26 Oct 26 look page are built as drawn: ⤢ at the end of the calendar's "How this works" row, weeks as tall as their inputs need, remembered per person; on a phone the opened day edge to edge, its cards where the list's are; each card's square in its kind's colour, outlined for a commitment. |
 | D1386 | 26 Oct 26 | The Inputs calendar gets an expand control that shows every input of each day in the month itself, the weeks growing taller as they need and the page scrolling down, in place of a day's "+n more"; its design is drawn for him before it is built. — changed by D1396 |
 | D1385 | 26 Oct 26 | On a phone a day opened on the Inputs calendar is widened so its input cards stand the same distance from the screen's edges as the Inputs list's cards do. — changed by D1396 |

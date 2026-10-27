@@ -6905,3 +6905,20 @@ said (`palette-html.ts armStripHTML`; test `ui/armstrip.test.tsx`). Archived onc
 ### [TRK-STRAY-SCROLLBARS] Scroll bars show in odd places on the Tracker (his report, 27 Oct 26 — D1405)
 **His words:** *"There is a visual scroll bar showing at weird areas on the tracker maybe we fix that first"*. **To do:** find every scroll bar the Tracker draws, on a desktop (Windows draws them always) and on a phone; for each, whether it scrolls something real; pictures to him with the stray ones marked; fix, red first; a walk. **Place:** first (D1405), on `claude/trk-scrollbars`.
 
+
+*Moved here 2026-10-27 by backlog-archive.mjs ([KBS-PHONE-SLIDE]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-10-27-kbs-carried.md`.*
+
+### [KBS-PHONE-SLIDE] The box being typed in, on his iPhone, as the keys open and the page slides (25 Oct 26) — OPEN
+**Fable's round, 27 Oct 26 (`claude/kbs-fable`, from the brief of D1366 and his four recordings of 25 Oct 26 20:43–20:45 and 27 Oct 26 08:20 — his D1412):**
+the six rounds steered a window against a model of his iPhone's slide (held to the room, pinned, brought down, moved with the pan, glided) and each
+passed the stand-in and failed on his phone; now the app leaves a window to the phone — Safari pans the visible screen to show the box and the window
+rides up with the page, in step with the keys; nothing held, shrunk, re-placed or glided; a window raised only as a last resort (the pan at rest, the
+box still under the keys — never on Safari). Evidence: `raptor-port/docs/handpass/2026-10-27-kbs-carried.md` (the recordings read frame by frame, the
+roll-call, the walk `scripts/handpass/kbs-carried-walk.mjs`, the gates). The six rounds' story stays whole in `docs/handpass/2026-10-25-kbs-other-remarks.md`.
+**His iPhone look (27 Oct 26, 09:24): "the scroll is now fixed"** (the input window, HL and "Other", Remarks tapped). **Open:** his answer on Cancel / Add — with "Other"
+the phone's larger pan (272) brings the window's foot into view above the keys, with HL (184) it stays under; put to him with a picture, recommended left to
+the phone (making the two alike would mean the app steering the window again); then his "merge live" for pull request 579. **Named under D852, not changed:** the Leave War's sheets and bid
+windows place themselves at the pan's word (`leavewar/ui/Sheet.tsx useKeyboardInset` — their top set to the visible top and their height capped, at
+once, which on his iPhone is the same jump-then-slide class); if he sees it there, the same design (the phone carries the sheet) is drawn for him
+first. **Seen, not changed (older):** none left — the held window's shortening band went with the hold.
+

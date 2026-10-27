@@ -90,7 +90,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [KBS-PHONE-SLIDE] — his iPhone, a box tapped in a window as the keys open: six Opus rounds, then Fable's seventh on `claude/kbs-fable` (27 Oct 26, D1412 — the phone carries the window, nothing steered); waiting on his iPhone look.
+- [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
 - [LOGIN-NOT-AT-TOP] — after signing in on a phone the page now opens at its top (live, pull request 569); his iPhone look owed, then archive.
@@ -255,19 +255,13 @@ The airspace Traffic window's backdrop lies over the top bar, so a press on Undo
 ### [OVERNIGHT-SESSION-PER-JOB] The overnight run starts each job in a fresh session (his word, 21 Oct 26 — D1103)
 **What:** tried on the night of 21 Oct 26 — the night's chat starts each job in a session of its own, one after another, and only coordinates. **Next:** the morning report says whether it worked (the weekly figure before and after, whether every session was started on time); if it did, the overnight guide (`.claude/skills/overnight/`) is changed to say so, while he is awake, read before his approval (D70) — with D1104's "Low or Medium?" question beside the hours, and what Low and Medium each mean; and what that night found: a separate session cannot be started from his phone or on a turn a finished job wakes, so a fresh helper per job is the default. **Record:** `raptor-port/docs/superpowers/plans/2026-10-21-night-vetting.md` §The night's way of working.
 
-### [KBS-PHONE-SLIDE] The box being typed in, on his iPhone, as the keys open and the page slides (25 Oct 26) — OPEN
-**Fable's round, 27 Oct 26 (`claude/kbs-fable`, from the brief of D1366 and his four recordings of 25 Oct 26 20:43–20:45 and 27 Oct 26 08:20 — his D1412):**
-the six rounds steered a window against a model of his iPhone's slide (held to the room, pinned, brought down, moved with the pan, glided) and each
-passed the stand-in and failed on his phone; now the app leaves a window to the phone — Safari pans the visible screen to show the box and the window
-rides up with the page, in step with the keys; nothing held, shrunk, re-placed or glided; a window raised only as a last resort (the pan at rest, the
-box still under the keys — never on Safari). Evidence: `raptor-port/docs/handpass/2026-10-27-kbs-carried.md` (the recordings read frame by frame, the
-roll-call, the walk `scripts/handpass/kbs-carried-walk.mjs`, the gates). The six rounds' story stays whole in `docs/handpass/2026-10-25-kbs-other-remarks.md`.
-**His iPhone look (27 Oct 26, 09:24): "the scroll is now fixed"** (the input window, HL and "Other", Remarks tapped). **Open:** his answer on Cancel / Add — with "Other"
-the phone's larger pan (272) brings the window's foot into view above the keys, with HL (184) it stays under; put to him with a picture, recommended left to
-the phone (making the two alike would mean the app steering the window again); then his "merge live" for pull request 579. **Named under D852, not changed:** the Leave War's sheets and bid
-windows place themselves at the pan's word (`leavewar/ui/Sheet.tsx useKeyboardInset` — their top set to the visible top and their height capped, at
-once, which on his iPhone is the same jump-then-slide class); if he sees it there, the same design (the phone carries the sheet) is drawn for him
-first. **Seen, not changed (older):** none left — the held window's shortening band went with the hold.
+### [KBS-LW-SHEETS] The Leave War's sheets and the keys — the same jump-then-slide class? (named under D852, 27 Oct 26)
+
+The Leave War's sheets and bid windows place themselves at the pan's word (`raptor-port/src/leavewar/ui/Sheet.tsx useKeyboardInset`: their
+top set to the visible top and their height capped, at once, followed frame by frame for 900 ms). On his iPhone the numbers come final at
+once, so by the keyboard job's reading (`raptor-port/docs/handpass/2026-10-27-kbs-carried.md`) the sheet jumps to its final place and then
+slides with the page — the class D1412 forbids. Not seen by him and not recorded; **to do only if he sees it:** the same design as the
+windows (the phone carries the sheet; its body scrolls a covered box), drawn for him first (D852), its own tests and walk.
 
 ### [LOGIN-NOT-AT-TOP] After signing in the page does not open at its top (his report, 26 Oct 26)
 
