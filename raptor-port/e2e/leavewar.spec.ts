@@ -8337,7 +8337,11 @@ test('D1444 (B) on a phone a month’s chip comes with its first request and goe
   expect(await page.evaluate(() => (window as any).lwSetCell('bane', '2026-06-10', 'LL'))).toBe(true)
   await expect.poll(() => chipMonths(page), 'a request in June: its chip comes').toContain('Jun')
   expect(await page.evaluate(() => (window as any).lwSetCell('bane', '2026-06-10', ''))).toBe(true)
-  await expect.poll(() => chipMonths(page), 'its last request gone: the chip goes').not.toContain('Jun')
+  /* (the D1444 read's F1, the host's reading: while its line still stands on the page — here greyed "No longer there" — the
+     chip stays, dimmed, so nothing above the finger moves; it goes when the rows start afresh) */
+  await expect(page.getByTestId('appr-m-2026-06'), 'its last request gone: the chip stays dimmed while its line stands').toHaveClass(/\bdim\b/)
+  await page.getByTestId('appr-all').click()
+  await expect.poll(() => chipMonths(page), 'the rows afresh: the chip goes').not.toContain('Jun')
 })
 
 /* HIS D1445 (28 Oct 26, "all as recommended" — question 21): the slim Approvals bar's fill is his drawings' darker grey,
@@ -8362,6 +8366,9 @@ test('D1444 on a phone deciding a month’s only request keeps its chip, so noth
   await lwRole(page, 'admin')
   await page.setViewportSize({ width: 402, height: 874 })
   for (const d of ['2026-03-16', '2026-04-14', '2026-06-10', '2026-08-12']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'LL'), d)).toBe(true)
+  /* …and lines placed after August's, so its line stands mid-list and the page is not scrolled to its foot (where a shorter
+     page is pulled down by the browser and hides the jump) */
+  for (const d of ['2026-01-20', '2026-01-22', '2026-01-26', '2026-01-28', '2026-02-16', '2026-02-18']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'OL'), d)).toBe(true)
   /* his iPhone's Safari keeps no scroll anchoring, so content shrinking above the finger moves what is under it; Chromium's
      anchoring would hide that once the page is scrolled — it is switched off here to see what he sees */
   await page.addStyleTag({ content: 'html, body, * { overflow-anchor: none !important; }' })

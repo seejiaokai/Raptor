@@ -104,7 +104,8 @@
   /* the title's line carries the other period's link where it fits, a line of its own where it does not (his D1444, as drawn) */
   .appr-page.ph .appr-head { row-gap: 2px; }
   .appr-page.ph .appr-filters { display: grid; grid-template-columns: max-content repeat(6, minmax(0, 1fr)); gap: 6px; }
-  /* AS HIS DRAWING (r22-5-phone — D1420, D1423): three rows — New · All · Jan–May, then Jun–Dec, then Pick dates… at the
+  /* AS HIS DRAWING (D1444, which narrows D1423's three rows): only the months holding requests — and a month picked, or one
+     holding a line still on the page — stand on the row of New and All, wrapping only past five; then Pick dates… at the
      left and Approve all at the right, each the size of its words. Every chip's words stay on one line inside its edge
      (D1387), on an iPhone's wider letters too: "New 1" keeps its one column by a smaller dot and tighter spacing — the
      first build broke it onto two lines (the probe walk, 27 Oct 26); its column is as wide as its words ("New 15" too), the

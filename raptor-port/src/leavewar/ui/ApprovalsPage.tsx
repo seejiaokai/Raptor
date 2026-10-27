@@ -180,6 +180,11 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key) }
   }, [picking])
   const [armed, setArmed] = useState<string | null>(null)
+  /* ANOTHER PERIOD STARTS THE PICK AFRESH (the D1444 read's F2): the rows already start afresh with the period (D1421), but the
+     filter did not — "+2 in JAN - DEC 27 ›" with Feb picked opened the other period on the old Feb ("Nothing here for these
+     dates", no chip lit, Approve all 0). The filter, the date picker and an armed Approve all go with the period. */
+  const periodId = st.period.id
+  useEffect(() => { setFilterRaw({ kind: 'all' }); setPicking(false); setArmed(null) }, [periodId])
   /* a decision the rules refused changes nothing in the war — this repaints the line's reason */
   const [tick, setTick] = useState(0)
   const rowsRef = useRef<{ period: string; rows: Row[] }>({ period: st.period.id, rows: [] })
@@ -342,7 +347,14 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
      requests show, on the row of New and All in the grid's own columns — a month's chip comes with its first request and
      goes with its last, and Pick dates… still reaches any date; the month he has picked stays while it is picked, so the
      choice he made never vanishes under him. The desktop keeps every month, a month with nothing pending dimmed (D1430). */
-  const monthShown = (ym: string) => !phone || monthHas(ym) || (filter.kind === 'month' && filter.ym === ym)
+  /* …AND A MONTH WHOSE LINE STILL STANDS ON THE PAGE KEEPS ITS CHIP (the D1444 read's F1; the host's reading, to be named to
+     him): deciding a month's only request took its chip away at once, and where that emptied a row of chips the lit line and
+     everything under it jumped up 42px under his finger — against D1421 (nothing moves under his finger) and D672 (an Undo
+     leaves the screen where it is). So a chip stays, dimmed as a month with nothing pending is, while any line of its month
+     stands on the page — pending, decided here, or gone — and goes when the rows start afresh: another filter, another
+     period, leaving Approvals. (`rows` holds every line of the period whatever the filter.) */
+  const monthOnPage = (ym: string) => rows.some(r => r.line.parts.some(p => p.date.slice(0, 7) === ym))
+  const monthShown = (ym: string) => !phone || monthOnPage(ym) || (filter.kind === 'month' && filter.ym === ym)
   const filterRow = (
     <div className="appr-filters" role="group" aria-label="Which requests to show">
       {fchip(filter.kind === 'new', <><span className={`appr-dot${newCount ? '' : ' none'}`} aria-hidden="true" />New {newCount}</>, () => setFilter({ kind: 'new' }), { testid: 'appr-new' })}
