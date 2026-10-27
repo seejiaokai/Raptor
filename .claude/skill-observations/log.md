@@ -2460,3 +2460,18 @@ its value and never in innerText.
 **Suggested improvement:** In writing-plans: a plan that lists the questions a step waits on names, in the same table, the plan file itself as a home every answering ruling must update; and the D201 sweep's "search for the rule's SUBJECT" step lists `docs/superpowers/plans/` explicitly.
 
 **Principle:** A list of open questions is one more home of every answer to it; record the answer there too, or the list keeps asking.
+
+### Observation 725: A mock-up built from an older drawing's script inherits its look-alikes
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** Drawing the Leave War's Approvals tab for M4, reusing round 7's Approvals markup
+**Skill:** brainstorming (mockups-on-the-real-app.md, "An existing component shown inside a mock is measured, not styled")
+**Type:** internal
+**Phase/Area:** drawing an existing component inside a mock-up
+
+**Issue:** The Approvals pictures copied round 7's hand-made person "puck" (an olive box and a separate CAT circle) instead of the app's own puck, though his ruling D1180 and design lesson 25 say the line shows his own puck and the guide says an existing component is reproduced, not styled. He circled it on his phone: "Why don't just do a puck here". The real one was one call away on a local build (`window.puck(id, …)`, the schedule's puck); dropping it in also exposed a class clash (the mock's row class `.r` matched the real puck's rear-seat class `.r` and stretched it).
+
+**Suggested improvement:** In mockups-on-the-real-app.md: before reusing an older drawing script, list every app component it draws and replace each stand-in with the running app's own markup (on a local build the probe bridge exposes several builders, `window.puck` among them); and a mock's own classes take a prefix, never a one-letter name the app already uses.
+
+**Principle:** Reusing an old mock's code reuses its shortcuts; re-check every component it draws against the real one before the picture goes out.

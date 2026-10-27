@@ -26,7 +26,9 @@ const FAM = { LL: 'LL', OL: 'OL', OIL: 'OIL', CCL: 'CARE' }
 const kv = k => { const [h, ink, f] = KF[FAM[k]]; return `--h:${h};--ink:${ink};--f:${f}` }
 const kbox = (k, st = 'wt') => `<span class="zkb ${st === 'rf' ? 'kx' : st}" style="${kv(k)}"><b>${k}</b></span>`
 const CHIP = { sxo: ['#E5B53B', '#2a1e02'], ins: ['#9F4ADF', '#fff'], c: ['#3BC6E8', '#04222b'], a: ['#CA4750', '#fff'] }
-const puck = (cs, seat, cat, chip, po) => `<span class="zpk ${seat}"><span class="cs">${cs}</span><i style="background:${CHIP[chip][0]};color:${CHIP[chip][1]}">${cat}</i>${po ? '<em class="zpo">PO 1 Mar</em>' : ''}</span>`
+// the line's person is the app's OWN puck (D1180, the design guide's lesson 25; his correction of 27 Oct 26 on the first
+// drawing's look-alike): a placeholder the page fills with window.puck(id), the schedule's puck as sync.ts puckHtml draws it
+const puck = (cs, id, po) => `<span class="zpk"><span class="zreal" data-id="${id}" data-cs="${cs}"></span>${po ? '<em class="zpo">PO 1 Mar</em>' : ''}</span>`
 
 // INVENTED: fifteen pending requests, oldest first — cs, row id, seat, cat, chip, kind, desk dates, phone dates, days,
 // balance, lowest-avail lines [[row, figure, tone]], placed, documents, new, posted-out tag
@@ -68,12 +70,10 @@ const CSS = `
 .zap .list{padding:0 16px 16px}
 /* on a wide desktop the line stays one eye-span: the decide buttons sit near the figures, not at the far edge */
 .zap:not(.ph) .fl,.zap:not(.ph) .list{max-width:1240px;box-sizing:border-box}
-.zap .r{display:flex;align-items:center;gap:12px;min-height:50px;border-bottom:1px solid #222a33;white-space:nowrap}
-.zap .r.h{min-height:30px;font:600 9.5px system-ui;letter-spacing:.12em;color:#8a96a3}
+.zap .zr{display:flex;align-items:center;gap:12px;min-height:50px;border-bottom:1px solid #222a33;white-space:nowrap}
+.zap .zr.h{min-height:30px;font:600 9.5px system-ui;letter-spacing:.12em;color:#8a96a3}
 .zpk{display:inline-flex;align-items:center;gap:4px;width:118px;flex:none;position:relative}
-.zpk .cs{flex:1;padding:2px 8px;border-radius:4px;font:600 12.5px system-ui;overflow:hidden;text-overflow:ellipsis}
-.zpk.pilot .cs{background:#423F1C;color:#FBFAF0}.zpk.wso .cs{background:#13402F;color:#EAFBF3}
-.zpk i{font-style:normal;font:800 9px system-ui;padding:2px 5px;border-radius:8px}
+.zpk > .puck{height:auto!important;max-height:none;align-self:center;flex:none}
 .zpk .zpo{position:absolute;left:0;top:100%;margin-top:1px;font:700 9px system-ui;font-style:normal;color:#F2C879;letter-spacing:.04em}
 .zkb{display:inline-flex;align-items:center;justify-content:center;flex:none;width:32px;height:22px;border-radius:4px;box-sizing:border-box;font:800 9.5px system-ui}
 .zkb.wt{color:rgb(var(--h));outline:1px dashed rgba(var(--h),.95);outline-offset:-1px}
@@ -81,7 +81,7 @@ const CSS = `
 .zkb.kx{color:#7d8894;box-shadow:inset 0 0 0 1px #4a5560}.zkb.kx b{text-decoration:line-through}
 .zap .k{width:32px;flex:none}
 .zap .dt{width:170px;flex:none;color:#5fd0e6;font-weight:600}.zap .dt::after{content:' ›'}
-.zap .r.h .dt{color:inherit;font-weight:inherit}.zap .r.h .dt::after{content:''}
+.zap .zr.h .dt{color:inherit;font-weight:inherit}.zap .zr.h .dt::after{content:''}
 .zap .c{flex:none;font-size:12.5px;font-variant-numeric:tabular-nums}.zap .c b{color:#fff}.zap .dy{width:62px}.zap .bl{width:84px;text-align:right;padding-right:18px}
 .zap .av{width:104px;display:flex;flex-direction:column;gap:2px;padding:6px 0}.zap .pl{width:96px;color:#9aa5b1}
 .zap .av .ln{display:grid;grid-template-columns:36px auto;column-gap:4px}
@@ -102,7 +102,7 @@ const CSS = `
 .zap.ph .hh{padding:8px 0 6px;border-bottom:1px solid #2a323c;font:600 9.5px system-ui;letter-spacing:.1em;color:#8a96a3}
 .zap.ph .card2{padding:8px 0;border-bottom:1px solid #222a33;display:flex;flex-direction:column;gap:6px}
 .zap.ph .l1{display:flex;align-items:center;gap:5px;white-space:nowrap}
-.zap.ph .zpk{width:78px}.zap.ph .zpk .cs{font-size:11.5px;padding:2px 5px}
+.zap.ph .zpk{width:auto;min-width:0}
 .zap.ph .l1 .dt{width:auto;flex:1;min-width:0;font-size:12.5px;overflow:hidden;text-overflow:ellipsis}
 .zap.ph .ap{width:66px;font-size:12.5px}.zap.ph .rf{width:58px;font-size:12.5px}
 .zap.ph .doc{width:28px}
@@ -129,12 +129,12 @@ function desk(o) {
   const pend = rows.filter(([, i]) => !(o.state && o.state[i])).length
   const head = `<div class="hd"><b>Approvals</b><span class="sub zz-sub">15 pending · 3 new since you last looked, Wed 7 Jan 16:40</span></div>`
   const fl = `<div class="fl"><span class="mb${o.newOnly ? ' on' : ''} zz-new">${DOT}New 3</span><span class="vs"></span><span class="zlab" style="margin-right:6px">DATES</span><span class="zz-months" style="display:inline-flex;gap:4px"><span class="mb${o.newOnly ? '' : ' on'}">All</span>${MON.map(m => `<span class="mb${HAS.includes(m) ? '' : ' dim'}">${m}</span>`).join('')}</span><span class="mb" style="margin-left:4px">Pick dates…</span><span class="zsp"></span><button class="apall${o.armed ? ' armed' : ''} zz-apall">${o.armed ? `Approve ${pend} — tap again` : `Approve all ${pend}`}</button></div>`
-  const hdr = `<div class="r h zz-cols"><span class="nd"></span><span class="zpk" style="background:none">NAME</span><span class="k">KIND</span><span class="dt">DATES</span><span class="c dy">DAYS</span><span class="c bl">LVE BAL</span><span class="c av" style="padding:0">LOWEST AVAIL</span><span class="c pl" style="color:inherit">PLACED</span><span class="doc"></span><span class="zsp"></span><span style="width:188px"></span></div>`
-  const lines = rows.map(([r, i]) => { const st = o.state?.[i]; return `<div class="r zz-line-${i}"><span class="nd">${r[13] ? DOT : ''}</span>${puck(r[0], r[2], r[3], r[4], r[14])}<span class="k">${kbox(r[5], st || 'wt')}</span><span class="dt zz-dt-${i}">${r[6]}</span><span class="c dy">${r[8]}</span><span class="c bl">${fmtBal(r[9])}</span><span class="c av">${low(r[10])}</span><span class="c pl">${r[11]}</span>${doc(r[12])}<span class="zsp"></span><span class="zz-btns-${i}" style="display:inline-flex;gap:8px">${btns(st)}</span></div>` }).join('')
+  const hdr = `<div class="zr h zz-cols"><span class="nd"></span><span class="zpk" style="background:none">NAME</span><span class="k">KIND</span><span class="dt">DATES</span><span class="c dy">DAYS</span><span class="c bl">LVE BAL</span><span class="c av" style="padding:0">LOWEST AVAIL</span><span class="c pl" style="color:inherit">PLACED</span><span class="doc"></span><span class="zsp"></span><span style="width:188px"></span></div>`
+  const lines = rows.map(([r, i]) => { const st = o.state?.[i]; return `<div class="zr zz-line-${i}"><span class="nd">${r[13] ? DOT : ''}</span>${puck(r[0], r[1], r[14])}<span class="k">${kbox(r[5], st || 'wt')}</span><span class="dt zz-dt-${i}">${r[6]}</span><span class="c dy">${r[8]}</span><span class="c bl">${fmtBal(r[9])}</span><span class="c av">${low(r[10])}</span><span class="c pl">${r[11]}</span>${doc(r[12])}<span class="zsp"></span><span class="zz-btns-${i}" style="display:inline-flex;gap:8px">${btns(st)}</span></div>` }).join('')
   // INVENTED: what changed since he last looked that needs no decision (the notifications register's P9, D1231's reading)
   const also = o.newOnly ? `<div class="zgh zz-also"><span class="zlab">ALSO SINCE YOU LAST LOOKED</span><span style="color:#8a96a3;font-size:12px">· nothing to decide</span></div>` +
-    [['Cinch', 'pilot', 'IP', 'sxo', 'LL', 'Thu 29 Jan', 'Bid withdrawn by Cinch', '7 Jan 17:20', 'rf'], ['Basher', 'wso', 'IW', 'sxo', 'LL', 'Mon 2 Feb', 'Filed on the Inputs page · approved', '7 Jan 19:05', 'ok']]
-      .map(([cs, s, c, ch, k, d, what, when, st]) => `<div class="r"><span class="nd">${DOT}</span>${puck(cs, s, c, ch)}<span class="k">${kbox(k, st)}</span><span class="dt">${d}</span><span class="wh">${what}</span><span class="c pl">${when}</span></div>`).join('') : ''
+    [['Cinch', 'snap', 'LL', 'Thu 29 Jan', 'Bid withdrawn by Cinch', '7 Jan 17:20', 'rf'], ['Basher', 'glass', 'LL', 'Mon 2 Feb', 'Filed on the Inputs page · approved', '7 Jan 19:05', 'ok']]
+      .map(([cs, id, k, d, what, when, st]) => `<div class="zr"><span class="nd">${DOT}</span>${puck(cs, id)}<span class="k">${kbox(k, st)}</span><span class="dt">${d}</span><span class="wh">${what}</span><span class="c pl">${when}</span></div>`).join('') : ''
   return head + fl + `<div class="list">${hdr}${lines}${also}</div>`
 }
 function phone(o) {
@@ -142,7 +142,7 @@ function phone(o) {
   const head = `<div class="hd"><b>Approvals</b><span class="sub">15 pending · 3 new</span></div>`
   const fl = `<div class="fl"><div class="mos zz-months"><span class="mb zz-new">${DOT}New 3</span><span class="mb on">All</span>${MON.map(m => `<span class="mb${HAS.includes(m) ? '' : ' dim'}">${m}</span>`).join('')}</div><div class="dr2"><span class="mb" style="height:32px">Pick dates…</span><span class="zsp"></span><button class="apall zz-apall">Approve all 15</button></div></div>`
   const hh = '<div class="g2 hh zz-cols"><span>DAYS</span><span>LVE BAL</span><span>LOWEST AVAIL</span><span>PLACED</span></div>'
-  const cards = rows.map(([r, i]) => `<div class="card2 zz-card-${i}"><div class="l1">${puck(r[0], r[2], r[3], r[4], r[14])}${kbox(r[5])}<span class="dt">${r[7]}</span>${doc(r[12])}${btns()}</div><div class="g2 l2"><span>${r[8]}</span><span>${fmtBal(r[9])}</span><span class="av">${low(r[10], true)}</span><span class="pl">${r[11]}</span></div></div>`).join('')
+  const cards = rows.map(([r, i]) => `<div class="card2 zz-card-${i}"><div class="l1">${puck(r[0], r[1], r[14])}${kbox(r[5])}<span class="dt">${r[7]}</span>${doc(r[12])}${btns()}</div><div class="g2 l2"><span>${r[8]}</span><span>${fmtBal(r[9])}</span><span class="av">${low(r[10], true)}</span><span class="pl">${r[11]}</span></div></div>`).join('')
   return head + fl + `<div class="list">${hh}${cards}</div>`
 }
 
@@ -163,8 +163,9 @@ const page = (p, html, ph) => p.evaluate(([html, ph]) => {
   const card = document.querySelector('#page-leavewar .stage > .card')
   card.querySelector('.zap')?.remove(); card.classList.add('zz-hide')
   const d = document.createElement('div'); d.className = 'zap' + (ph ? ' ph' : ''); d.innerHTML = html; card.prepend(d)
+  for (const z of d.querySelectorAll('.zreal')) { const h = window.puck ? window.puck(z.dataset.id, false, ph, false) : ''; z.outerHTML = (h || `<span class="ll-cs">${z.dataset.cs}</span>`).replace(' tabindex="0"', '') }
   window.scrollTo(0, 0)
-  return [...d.querySelectorAll('.r,.l1,.fl')].map(r => r.scrollWidth - r.clientWidth).filter(x => x > 1).length
+  return [...d.querySelectorAll('.zr,.l1,.fl')].map(r => r.scrollWidth - r.clientWidth).filter(x => x > 1).length
 }, [html, ph])
 const unpage = p => p.evaluate(() => { const c = document.querySelector('#page-leavewar .stage > .card'); c.querySelector('.zap')?.remove(); c.classList.remove('zz-hide') })
 const shot = async (p, name, clip) => { await p.mouse.move(2, 2); await p.waitForTimeout(250); await p.screenshot({ path: join(OUT, name + '.png'), ...(clip ? { clip } : {}) }); console.log('shot', name) }
