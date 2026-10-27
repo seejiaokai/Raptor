@@ -99,6 +99,7 @@ import {
   type WarRec,
   type RequestRec,
   requestWords,
+  requestStamps,
   MAX_REQ_DOCS,
   MAX_CARRIED_REMARK,
   type CreditRec,
@@ -2674,11 +2675,33 @@ export interface AbsenceDoor {
   /** file a course, an overseas duty or the unforeseen absence straight as Inputs (`lw.file` — round 2, D1318): one
    *  input a man a run of days, no bid, no approval */
   file(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] }
+  /** M4 (Approvals' one writer, B8): the reason `approve` would skip this one item — a locked week, leave or a medical
+   *  already there — asked BEFORE anything is written, so no inner refusal ever sinks the whole command; null when it would go */
+  approveWhy?(it: { personId: string; date: string; recId: string }): string | null
+  /** …and the reason `decideApproved` would skip it */
+  decideApprovedWhy?(it: { personId: string; date: string; iid: string }): string | null
+  /** who approved a war-approved leave (the Input's placer, by callsign) — "Already approved by Hex" */
+  approvedBy?(iid: string): string | null
 }
 let DOOR: AbsenceDoor | null = null
 export function setAbsenceDoor(d: AbsenceDoor | null): void { DOOR = d }
 /** The door installed now — the tests wrap it (a refusal only the commit meets must roll the move back and be said). */
 export function absenceDoor(): AbsenceDoor | null { return DOOR }
+
+/* WHO IS ACTING NOW — the name a request's "placed by" and "decided by" carry (the overhaul's M4, 8.6). The signed-in
+   person the running command acts for, as an Input's own stamp names him (sync.ts installs state/inputstamp.ts
+   stampWho — never a caller's say-so); with none installed (a store-only test) the viewer. */
+let ACTOR: (() => string | undefined) | null = null
+export function setActorLookup(fn: (() => string | undefined) | null): void { ACTOR = fn }
+function actorNow(): string | undefined {
+  if (ACTOR) return ACTOR()
+  return state.viewer ?? undefined
+}
+/** a request's "placed" pair, minted now */
+function placedNow(): Pick<RequestRec, 'placedBy' | 'placedAt'> {
+  const who = actorNow()
+  return { ...(who ? { placedBy: who } : {}), placedAt: Date.now() }
+}
 
 /** Run a war gesture as ONE command — every cell it touches, requests and
  *  approved leave alike, lands in one envelope and one undo step (design §5.2
@@ -3011,7 +3034,11 @@ export function setCell(personId: string, date: string, code: string, words?: Re
     till: typeof words?.till === 'boolean' ? words.till : old.find(r => typeof r.till === 'boolean')?.till,
     docIds: papers,
   })
-  const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending', ...carry }
+  /* WHO PLACED IT AND WHEN (M4 8.6): minted here — but a re-typed kind on the same half is the same request and keeps the
+     first stamp (the earliest of those it replaces) */
+  const first = old.filter(r => typeof r.placedAt === 'number').sort((a, b) => a.placedAt! - b.placedAt!)[0]
+  const stamp = first ? { ...(first.placedBy ? { placedBy: first.placedBy } : {}), placedAt: first.placedAt } : placedNow()
+  const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending', ...carry, ...stamp }
   /* a bid written here is a placing act for the bubble's count (`actCount` — this write is no gesture of its own) */
   actSeq++
   return putList(personId, date, [...list.filter(r => !replaced.includes(r as RequestRec)), rec])
@@ -3496,6 +3523,155 @@ export function decideRequestById(personId: string, date: string, recId: string,
   return gesture('lw.decide', () => decideRequest(personId, date, recId, bid))
 }
 
+/* ---- APPROVALS' ONE WRITER (the overhaul's M4, 8.3 and 8.5 — D1361, D1330, D1421; the red team's A4 and B8) ----------
+   A line of the Approvals list is one request as the grid treats it — the days placed together (D1339, D1346) — and a
+   press decides the whole line: Approve, Refuse, a second tap on the lit button (back to pending), or Approve all (every
+   line shown, ONE command, one Undo). None of the older writers takes a mixed list and answers per line, and each meets
+   two faults the list cannot live with (the survey, §3): a record not found is skipped in silence, and a refusal the
+   inner Inputs write meets rolls back the WHOLE outer command — one bad line sank every other.
+   So every line is checked FIRST — the state it was drawn from (B8: "Already refused by Hex", "No longer there"), the
+   clash rules, the locked week, a man whose posting has run — and only lines that pass are written, in one command; a
+   line that fails says why and is left exactly as it was. A decision reaches the war that holds each date (`listAt`), so
+   a request in another period is decided in its own war. Each line answers with the parts it now has: approving turns a
+   request into an Input and a put-back mints a new request, so the list follows the new ids and its own second tap is
+   never read as stale (the fresh read's finding 2). */
+export type DecideTo = 'approved' | 'refused' | 'pending'
+/** one day of a line as it was drawn: a request (by id, in its state) or, once approved, the leave it became (an Input id) */
+export interface DecidePart { date: string; recId?: string; iid?: string; state: 'pending' | 'refused' | 'approved' }
+export interface DecideLine { personId: string; parts: DecidePart[]; to: DecideTo }
+export type DecideOutcome =
+  | { kind: 'done'; parts: DecidePart[] }
+  /** the rules refused it (a clash, a locked week, a man posted out): the line stays as drawn, its reason in red */
+  | { kind: 'refused'; why: string }
+  /** drawn from a state since changed — deleted, moved, or decided by someone else (B8) */
+  | { kind: 'stale'; why: string }
+
+const csOf = (id: string | undefined): string =>
+  (id && (state.people.find(p => p.id === id)?.callsign || state.postOuts[id]?.callsign || state.persLabels[id])) || ''
+const shortDay = (iso: string): string => {
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return `${DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))).getUTCDay()]} ${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
+}
+/** has this man's posting out RUN (his last day before today) — or was he deleted? A request of his is not approved then
+ *  (M4 8.2, B12): "Posted out — refuse or delete it". A posting still to come approves as ever. */
+export function postedOutBy(personId: string): string | null {
+  const w = state.postOuts[personId] || state.people.find(p => p.id === personId)
+  if (!w) return null
+  if (w.gone) return 'gone'
+  if (w.to && addDays(w.to, 1) <= memberToday()) return w.to
+  return null
+}
+
+/* the leave the war approved for him on that day, by Input id — what an approved part is */
+const warLeaveOn = (personId: string, date: string, iid?: string) =>
+  absencesAt(personId, date).find(c => c.kind === 'absence' && !!c.lw && isLeaveCode(c.code) && (iid === undefined || c.id === iid))
+
+/** what became of a part since it was drawn, or null when it stands as drawn (B8) */
+function staleWhy(personId: string, p: DecidePart): string | null {
+  if (p.state === 'approved') {
+    if (p.iid && warLeaveOn(personId, p.date, p.iid)) return null
+    const back = listAt(personId, p.date).find((r): r is RequestRec => r.kind === 'request')
+    if (back) return back.state === 'refused' ? `Already refused by ${csOf(back.decidedBy) || 'an admin'}` : 'Already put back to pending'
+    return 'No longer there'
+  }
+  const rec = listAt(personId, p.date).find((r): r is RequestRec => r.kind === 'request' && r.id === p.recId)
+  if (rec) {
+    if (rec.state === p.state) return null
+    if (rec.state === 'refused') return `Already refused by ${csOf(rec.decidedBy) || 'an admin'}`
+    return 'Already put back to pending'
+  }
+  /* gone from that day: approved there by someone else, moved to another day, or deleted */
+  const leave = warLeaveOn(personId, p.date)
+  if (leave) { const by = DOOR?.approvedBy?.(leave.id); return `Already approved${by ? ` by ${by}` : ''}` }
+  for (const w of state.wars) for (const [d, list] of Object.entries(w.recs[personId] ?? {})) {
+    if (list.some(r => r.id === p.recId)) return `Moved to ${shortDay(d)}`
+  }
+  return 'No longer there'
+}
+
+/** why the rules refuse this line's decision, or null when it would go through (asked before anything is written) */
+function decideWhy(line: DecideLine): string | null {
+  const { personId, to } = line
+  for (const p of line.parts) {
+    if (p.state === to) continue
+    if (to === 'approved') {
+      if (postedOutBy(personId)) return 'Posted out — refuse or delete it'
+      const why = DOOR?.approveWhy?.({ personId, date: p.date, recId: p.recId! })
+      if (why) return why
+      continue
+    }
+    if (p.state === 'approved') {
+      const why = DOOR?.decideApprovedWhy?.({ personId, date: p.date, iid: p.iid! })
+      if (why) return why
+      continue
+    }
+    if (to === 'pending') {
+      /* a refusal reconsidered must not share its half with another undecided bid, nor land on a time taken since */
+      const list = listAt(personId, p.date)
+      const r = list.find((x): x is RequestRec => x.kind === 'request' && x.id === p.recId)!
+      const rest = list.filter(x => x !== r)
+      if (liveRequestsOn(rest, portionOfCode(r.code)).length) return `${shortDay(p.date)} holds another bid at that time — decide it first`
+      if (occupiedFor({ id: r.id, kind: 'request', code: parseCell(r.code)!.type, win: requestWin(r.code), state: 'pending' }, personId, p.date, [r]))
+        return `${shortDay(p.date)} is now taken at that time — clear it first`
+    }
+  }
+  return null
+}
+
+/** Decide every line given — Approve, Refuse, back to pending, or Approve all — as ONE command and one Undo, each line
+ *  answering for itself (see above). Admin only, at any time (`canDecide`; D1177). */
+export function decideRequests(lines: readonly DecideLine[]): DecideOutcome[] {
+  if (!canDecide(state.role)) return lines.map(() => ({ kind: 'refused', why: 'Only an admin decides leave' }))
+  const out: DecideOutcome[] = lines.map(line => {
+    for (const p of line.parts) { const s = staleWhy(line.personId, p); if (s) return { kind: 'stale', why: s } }
+    const why = decideWhy(line)
+    return why ? { kind: 'refused', why } : { kind: 'done', parts: line.parts }
+  })
+  const go = lines.map((l, i) => ({ l, i })).filter(x => out[x.i]!.kind === 'done' && x.l.parts.some(p => p.state !== x.l.to))
+  if (!go.length) return out
+  /* the ids each day held before, so a put-back's new request is told from what was there */
+  const idsBefore = new Map<string, Set<string>>()
+  for (const { l } of go) for (const p of l.parts) idsBefore.set(`${l.personId}|${p.date}`, new Set(listAt(l.personId, p.date).map(r => r.id)))
+  gesture('lw.decide', () => {
+    const approve: Array<{ personId: string; date: string; recId: string }> = []
+    const putBack = new Map<DecideTo, Array<{ personId: string; date: string; iid: string }>>()
+    const wasQuiet = quiet
+    quiet = true
+    let wrote = false
+    try {
+      for (const { l } of go) for (const p of l.parts) {
+        if (p.state === l.to) continue
+        if (l.to === 'approved') { approve.push({ personId: l.personId, date: p.date, recId: p.recId! }); continue }
+        if (p.state === 'approved') { const a = putBack.get(l.to) ?? []; a.push({ personId: l.personId, date: p.date, iid: p.iid! }); putBack.set(l.to, a); continue }
+        if (decideRequest(l.personId, p.date, p.recId!, l.to)) wrote = true
+      }
+    } finally { quiet = wasQuiet }
+    if (wrote && !quiet) persistNotify()
+    if (approve.length && DOOR) DOOR.approve(approve)
+    for (const [to, items] of putBack) if (DOOR) DOOR.decideApproved(items, to as RequestState)
+  })
+  /* WHAT THE STORE HOLDS AFTER THE COMMAND (setRequestWords' way): a command the commit refused rolled back, so each line
+     is read again — its new parts, or a refusal where nothing landed */
+  for (const { l, i } of go) {
+    const parts: DecidePart[] = []
+    for (const p of l.parts) {
+      if (l.to === 'approved') {
+        const leave = p.state === 'approved' ? warLeaveOn(l.personId, p.date, p.iid) : warLeaveOn(l.personId, p.date)
+        if (leave && !listAt(l.personId, p.date).some(r => r.id === p.recId)) parts.push({ date: p.date, iid: leave.id, state: 'approved' })
+        continue
+      }
+      const was = idsBefore.get(`${l.personId}|${p.date}`) ?? new Set<string>()
+      const rec = p.state === 'approved'
+        ? listAt(l.personId, p.date).find((r): r is RequestRec => r.kind === 'request' && r.state === l.to && !was.has(r.id))
+        : listAt(l.personId, p.date).find((r): r is RequestRec => r.kind === 'request' && r.id === p.recId && r.state === l.to)
+      if (rec) parts.push({ date: p.date, recId: rec.id, state: l.to })
+    }
+    out[i] = parts.length === l.parts.length ? { kind: 'done', parts } : { kind: 'refused', why: 'Couldn’t decide that — the week is locked, or something else refused it' }
+  }
+  return out
+}
+
 /* ---- the tap list's per-record actions ([ARCH-STACK] step 4 — design §25
    OA10-001: a day holding several records lists EVERY one, each with its own
    permission-checked actions, so no record can hide under another) ---------- */
@@ -3548,6 +3724,10 @@ function decideRequest(personId: string, date: string, recId: string, bid: BidSt
   const r = list.find((x): x is RequestRec => x.kind === 'request' && x.id === recId)
   if (!r || r.state === bid) return false
   const next: RequestRec = { ...r, state: bid }
+  /* WHO DECIDED IT (M4 8.3): a refusal names who and when; back to pending clears both — the record is spread, and a
+     pending line must never read "Refused by Hex" */
+  if (bid === 'refused') { const who = actorNow(); if (who) next.decidedBy = who; else delete next.decidedBy; next.decidedAt = Date.now() }
+  else { delete next.decidedBy; delete next.decidedAt }
   let rest = list.filter(x => x !== r)
   if (bid === 'refused') {
     const halves = portionOfCode(r.code)
@@ -5160,6 +5340,8 @@ export function moveRecords(recs: readonly MoveRec[], dayDelta: number): MoveRes
           ...(r.rec.shiftedFrom ? { shiftedFrom: r.rec.shiftedFrom } : {}),
           ...(r.rec.carried ? { carried: r.rec.carried } : {}),
           ...requestWords(r.rec),
+          /* who placed it stays with it (M4 8.6); it lands pending, so who decided it does not */
+          ...requestStamps(r.rec, false),
         }
         putList(r.personId, r.to, [...listAt(r.personId, r.to), landed])
       }

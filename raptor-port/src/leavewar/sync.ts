@@ -109,6 +109,7 @@ import {
   lwEditLists,
   rawState,
   setAbsenceDoor,
+  setActorLookup,
   setPeople,
   setPostOut,
   lwStore,
@@ -139,7 +140,7 @@ import { noticeHoliday, setHolidayLeft, setHolidaySpan } from '../state/notices'
 import { renameCallsign } from '../engine/slots'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
-import { stampPlaced, stampChanged } from '../state/inputstamp'
+import { stampPlaced, stampChanged, stampWho } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
 import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
@@ -251,7 +252,9 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
 
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
-  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved, file: doorFile })
+  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved, file: doorFile, approveWhy, decideApprovedWhy, approvedBy })
+  /* who a request's "placed by" / "decided by" names (M4 8.6): the person the running command acts for, as an Input's stamp */
+  setActorLookup(stampWho)
   /* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8): the permissions module asks, of a member's war record
      (`war:person:date`), whether that day is open for HIM — the one rule (`canEditCell`), asked of the period holding
      the date, with a member's today (D1211). Read from the right: a war id may carry a colon. */
@@ -392,9 +395,50 @@ function warLeaveRow(it: { personId: string; date: string; iid: string }): any |
   if (String(onlyNamed(row) ?? '') !== it.personId || !inputDates(row).includes(it.date)) return null
   return row
 }
+/* the earliest "placed" of a run of requests, as the leave keeps it (`lwBy`, `lwAt` — M4 8.6); none where no request of
+   the run carries one (a request saved before M4) */
+function placerOf(recs: ReadonlyArray<{ placedBy?: string; placedAt?: number }>): { lwBy?: string; lwAt?: number } {
+  const first = recs.filter(r => typeof r.placedAt === 'number').sort((a, b) => a.placedAt! - b.placedAt!)[0]
+  return first ? { ...(first.placedBy ? { lwBy: first.placedBy } : {}), lwAt: first.placedAt } : {}
+}
 function doorWrite(fn: () => void): boolean {
   DOOR++
   try { return writeInputsBatch(fn) } finally { DOOR-- }
+}
+
+/* WHY `doorApprove` WOULD SKIP ONE ITEM — the one body the door and Approvals' writer ask (M4 8.3: every line is checked
+   before anything is written, so an inner refusal never sinks Approve all). The locked week; then the preflight — the
+   would-be absence against every absence already there (a different leave on the same time, a medical) — skipped and
+   reported, nothing consumed. */
+const lockedDates = (): Set<string> => new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+function approveWhy(it: { personId: string; date: string; recId: string }, prot: Set<string> = lockedDates()): string | null {
+  const war = warHolding(rawState().wars, it.date)
+  const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
+  if (!war || !rec) return 'No longer there'
+  if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
+  const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
+  if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) return `${shortDate(it.date)} already holds leave or a medical at that time — not approved`
+  return null
+}
+/* WHY `doorDecideApproved` WOULD SKIP ONE ITEM (the same one body, M4 8.3) */
+function decideApprovedWhy(it: { personId: string; date: string; iid: string }, prot: Set<string> = lockedDates()): string | null {
+  const row = warLeaveRow(it)
+  if (!row) return 'No longer there'
+  if (prot.has(it.date) || inputProtected(row)) return `${shortDate(it.date)} is on a locked week — not changed`
+  const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
+  if (!contrib || !warHolding(rawState().wars, it.date)) return 'No longer there'
+  const list = recsAt(warHolding(rawState().wars, it.date)!.recs, it.personId, it.date)
+  /* design §24.1 (Codex AS4-002): un-approving never overwrites or sits beside a request already stored on that time —
+     pending, acknowledged OR a refused one kept as history — for every destination state */
+  const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
+  if (blocking.length) return `${blocking[0]!.code} request on ${shortDate(it.date)} — decide or clear it before changing the ${contrib.code}`
+  return null
+}
+/* who approved a war-approved leave — its Input's placer (D629), by callsign */
+function approvedBy(iid: string): string | null {
+  const row = INPUTS.find((r: any) => String(r.iid) === iid)
+  const p: any = row && row.by != null ? (PEOPLE as any)[String(row.by)] : null
+  return p && p.cs ? String(p.cs) : null
 }
 
 /** approve: requests → Inputs (design §5.2 `lw.approve`, §18 OA3-002). Groups
@@ -410,12 +454,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const war = warHolding(rawState().wars, it.date)
     const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
     if (!war || !rec) { skipped++; continue }
-    if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not approved`); continue }
-    /* preflight: the would-be absence against every absence already there
-       (a different leave on the same time, a medical) — skipped and reported,
-       nothing consumed */
-    const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${shortDate(it.date)} already holds leave or a medical at that time — not approved`); continue }
+    const bad = approveWhy(it, prot)
+    if (bad) { skipped++; why.push(bad); continue }
     /* a bid left standing when work was later credited. Owner Q5 and §26.3
        used to SKIP that day at approval; reversed 20 Sep 26 — recorded work no
        longer stops an approval: the leave is granted, the day is flagged, and
@@ -451,6 +491,9 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
        request said — a tick kept only where it differs from the leave's default (D953), the papers as the input's own */
     if (typeof first.rec.till === 'boolean' && first.rec.till !== tillDefault(row)) row.till = first.rec.till
     if (first.rec.docIds?.length) Object.assign(row, docFields(first.rec.docIds))
+    /* WHO PLACED THE REQUEST, KEPT ON THE LEAVE (M4 8.6): the Input's own `by` / `at` name the APPROVER (below), so the
+       request's placer rides beside them — the earliest of the run's — and a put-back gives them back to the request */
+    Object.assign(row, placerOf(run.map(p => p.rec)))
     inpId(row)
     /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
     stampPlaced(row)
@@ -490,6 +533,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       delete merged.docId; delete merged.docIds
       Object.assign(merged, docFields(papers))
       merged.mod = nowStamp()
+      /* …and the earliest placer of what it joins (M4 8.6) */
+      Object.assign(merged, placerOf([keep, r, ...(before && after ? [after] : [])].map(x => ({ placedBy: x.lwBy, placedAt: x.lwAt }))))
       /* an approval that EXTENDS a leave is still an approval: placed by this approver, now (the plan §3.8) */
       stampPlaced(merged)
       INPUTS.splice(INPUTS.indexOf(keep), 1, merged)
@@ -664,19 +709,11 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
   const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
     const row = warLeaveRow(it)
-    if (!row) { skipped++; continue }
-    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not changed`); continue }
-    const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
-    if (!contrib) { skipped++; continue }
+    const contrib = row ? absencesAt(it.personId, it.date).find(c => c.id === it.iid) : undefined
+    if (!row || !contrib || !warHolding(rawState().wars, it.date)) { skipped++; continue }
+    const bad = decideApprovedWhy(it, prot)
+    if (bad) { skipped++; why.push(bad); continue }
     const code = notationOf(contrib.code, contrib.win)
-    const war = warHolding(rawState().wars, it.date)
-    if (!war) { skipped++; continue }
-    const list = recsAt(war.recs, it.personId, it.date)
-    /* design §24.1 (Codex AS4-002): un-approving never overwrites or sits
-       beside a request already stored on that time — pending, acknowledged OR a
-       refused one kept as history — for every destination state */
-    const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
-    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${shortDate(it.date)} — decide or clear it before changing the ${contrib.code}`); continue }
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
@@ -685,6 +722,10 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
       ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}),
       ...(typeof row.till === 'boolean' ? { till: row.till } : {}),
       ...(rowDocIds(row).length ? { docIds: rowDocIds(row).slice(0, MAX_REQ_DOCS) } : {}),
+      /* who placed the request it was, as recorded on the leave (M4 8.6); a refusal names who refused it, now */
+      ...(typeof row.lwBy === 'string' && row.lwBy ? { placedBy: row.lwBy } : {}),
+      ...(typeof row.lwAt === 'number' ? { placedAt: row.lwAt } : {}),
+      ...(to === 'refused' ? { ...(stampWho() ? { decidedBy: stampWho() } : {}), decidedAt: Date.now() } : {}),
     }
     adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
     const set = cuts.get(it.iid) ?? new Set<string>()

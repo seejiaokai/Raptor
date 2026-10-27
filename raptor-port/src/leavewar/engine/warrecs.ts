@@ -52,6 +52,25 @@ export interface RequestRec extends Placed {
   remarks?: string
   till?: boolean
   docIds?: string[]
+  /** WHO PLACED IT AND WHEN (the overhaul's M4, 8.6 — the Approvals list's order and its PLACED column, the entry window's
+   *  "Placed" line): the person id of whoever placed the bid and the moment, ms. Kept across a move, a re-typed kind on the
+   *  same half and a put-back (the approved Input carries them as `lwBy` / `lwAt`); restored as recorded by Undo and Redo
+   *  (a restore writes the image back). A request saved before M4 has none (it sorts first and shows a dash — D401). */
+  placedBy?: string
+  placedAt?: number
+  /** WHO LAST DECIDED IT AND WHEN (M4 8.3 — "Already refused by Hex", the entry window's "Decided" line): set when an admin
+   *  refuses it; cleared when it goes back to pending. An approval turns it into an Input, whose `by` names the approver. */
+  decidedBy?: string
+  decidedAt?: number
+}
+
+/** who placed a request and who decided it — copied wherever a request is rebuilt (a move keeps who placed it; a move
+ *  makes it pending again, so who decided it is dropped there by the mover) */
+export function requestStamps(r: Pick<RequestRec, 'placedBy' | 'placedAt' | 'decidedBy' | 'decidedAt'>, decided = true): Pick<RequestRec, 'placedBy' | 'placedAt' | 'decidedBy' | 'decidedAt'> {
+  return {
+    ...(r.placedBy ? { placedBy: r.placedBy } : {}), ...(typeof r.placedAt === 'number' ? { placedAt: r.placedAt } : {}),
+    ...(decided && r.decidedBy ? { decidedBy: r.decidedBy } : {}), ...(decided && typeof r.decidedAt === 'number' ? { decidedAt: r.decidedAt } : {}),
+  }
 }
 
 /** the words and papers a request carries, copied wherever a request is rebuilt (a move, a put-back, a re-typed bid) */
@@ -337,6 +356,13 @@ function readRecBody(x: unknown): WarRec | null {
       const ids = [...new Set((x.docIds as unknown[]).filter((d): d is string => typeof d === 'string' && !!d.trim() && d.length <= 120))].slice(0, MAX_REQ_DOCS)
       if (ids.length) r.docIds = ids
     }
+    /* who placed it and who decided it (M4 8.6) — a request saved before M4 has none and is kept as it is (D401) */
+    const who = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 80
+    const when = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0
+    if (who(x.placedBy)) r.placedBy = x.placedBy
+    if (when(x.placedAt)) r.placedAt = x.placedAt
+    if (who(x.decidedBy)) r.decidedBy = x.decidedBy
+    if (when(x.decidedAt)) r.decidedAt = x.decidedAt
     return r
   }
   if (x.kind === 'credit') {
