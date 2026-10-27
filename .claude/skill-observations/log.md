@@ -2492,3 +2492,18 @@ its value and never in innerText.
 **Suggested improvement:** In the debugging guide's instrumentation step: remove a debug line by an exact edit of that line (or mark it with a unique tag and delete the tagged lines), never by restoring the file; or commit (a WIP commit) before adding instrumentation, so a restore can only take the instrumentation.
 
 **Principle:** A restore works on files, not on intentions: before using one to undo a small temporary change, check what else in that file is uncommitted — or make the temporary change only on top of a commit.
+
+### Observation 727: A fit fix reshaped an approved drawing; nobody held the build beside the drawing until the owner did
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** The Leave War M4 bug check (Approvals page), the third chat
+**Skill:** brainstorming (mockups-on-the-real-app) / the bug-check order — New skill candidate: none
+**Type:** internal
+**Phase/Area:** building a screen from an approved drawing; fixing a layout fault on it
+
+**Issue:** A chip's words wrapped on a phone. The agent fixed the symptom by rearranging the grid (a fourth row) without opening the approved drawing, and the first build had narrowed the desktop card where the drawing kept it full width with the list inside. The drawing comparison (bug-check order §7.10) was scheduled for after the walk, so the owner found both by looking at his drawing (D1424, §7.11 lesson 8).
+
+**Suggested improvement:** In the build and in any fix to a drawn screen, open the drawing first and picture the result beside it before committing — a step in the build spec's checklist and in the bug-check sizing step, not only at the walk.
+
+**Principle:** A layout fix is checked against the approved picture, not only against the fault it fixes — a fix that satisfies the test can still undo the design.
