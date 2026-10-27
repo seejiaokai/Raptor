@@ -11467,7 +11467,7 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   (open, not open), the left edge, the corner, the figures, the letters — every swatch `Chrome.tsx LegBox`, the grid's own
   box in a cell-sized frame, so the key cannot show a colour the grid does not paint.
 - **The top (D1254, narrowing D1196, D1231, D678, D679, D1141):** the page's tab row is the Inputs page's own
-  (`.inputs-tabs` / `.intab`) — Grid · OIL now; Approvals joins with its list (M4) and Balances with its page (M5), never a
+  (`.inputs-tabs` / `.intab`) — Grid · Approvals · OIL for an admin since M4 (27 Oct 26 — §The Leave War's Approvals below; Grid · OIL for a member), Balances joining with its page (M5), never a
   tab with nothing behind it. OIL opens the OIL tracker and reads as the chosen tab while it is up (`ui/lwnav.ts` carries
   the top row's asks to the grid, which owns the windows). Then "View" and the period picker (D1174; "+ New period" its
   last line, an admin's only — D1244), My leave (D1141 — LVE, OIL, days pending, next leave; `ui/myleave.ts`; a tap opens
@@ -11640,3 +11640,44 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   → Unavail" after a Reject (D1357). A rejected Other's window picks neither and reads "Rejected by a scheduler"; only a
   scheduler moves it (the designer's G5). Goes to is not offered once ALL AVAIL / ALL is among the people picked (G3), and
   such an Other lands on the programme. `ui/inputtitle.test.tsx`, `leavewar/otherunavail.test.tsx`.
+
+## The Leave War's Approvals, its slim bar and the bell's war lines (the overhaul's M4, 27 Oct 26)
+
+Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026-10-27-lw-m4-build-spec.md` (D1420–D1422).
+- **The tab (D1254, D1420):** an admin's tab row reads Grid · Approvals N · OIL; N (cyan, as drawn) counts every pending
+  request in EVERY period (`approvals.ts pendingCount`); a member has no Approvals tab, and an admin who switches to member
+  view is taken off it. The page takes the grid card's place (`LeaveWarPage.tsx` keeps the grid mounted behind it, its
+  scroll and window of months kept for Back); the list holds about one eye-span (1240px) on a wide desktop.
+- **A line (D1152, D1180, D1181, D1189, D1192, D1246):** one a request — the days placed together (D1339, D1346); the
+  cyan dot (new since he last opened the tab) · his puck (`sync.ts puckHtml` — the schedule's own) with a posting tag
+  (B12) · the kind's box drawn pending · the dates (cyan, "›" — a link) · DAYS · LVE BAL · LOWEST AVAIL (his seat's row,
+  then every Manning row it turns amber or red, each in its colour; "SANS · not in Avail") · PLACED ("by <name>" when
+  someone else placed it; a dash for a request saved before M4, which sorts first) · the paperclip (its count from two;
+  a tap opens the documents read only) · Approve · Refuse. On a phone two lines a request (A11).
+- **Deciding (D1361, D1330, D1421):** Approve and Refuse rest grey, their words green and red; a tap decides that line at
+  once (one command, one Undo — `store.ts decideRequests`) and its button lights ("Approved" / "Refused"); the line stays
+  where it is until he leaves Approvals or changes the dates, and a second tap on the lit button sends it back to pending.
+  A line the rules refuse says why, in red, under its dates; one drawn from a state since changed says what happened
+  ("Already refused by Hex", "Moved to Thu 29 Jan", "No longer there" — B8). Approve all approves exactly what the list
+  shows: one tap arms it ("Approve 13 — tap again"), anything that changes what the list shows disarms it.
+- **New (D1231's reading):** the moment he OPENS the tab is stored (`state/apprseen.ts`); "New N" shows the requests
+  placed since the previous moment and, under them, "Also since you last looked · nothing to decide" — a member's
+  withdrawn pending bid ("Bid withdrawn by Cinch", its box struck through) and leave filed on the Inputs page ("Filed on
+  the Inputs page · approved") — each with its dates as a link (`sync.ts alsoSince`). The dots go when he leaves.
+- **A request's dates → the grid (8.5):** the Grid tab, the cell scrolled clear of the frozen columns and the slim bar and
+  ringed with the just-added ring for six seconds (`ui/cellring.ts`, D860), and the slim bar at the foot — "● Approvals ·
+  15 pending · 3 new · Back ▴ · ✕" — on a desktop as on a phone; Back opens the tab as he left it; ✕ drops the bar (he has
+  left Approvals). A man with no row on the grid (a SANS man while SANS is off the war) opens his person window instead.
+- **The bell's war lines (D1142, D1214, D1216, D1422, D769):** "Your leave · Mon 19 – Wed 21 Jan · LL approved · Saber"
+  (refused, back to pending, put back to a bid, moved to …, deleted, added and approved, bid moved to …, bid deleted);
+  "Leave War · 1 Apr – 30 Jun · bidding open · Saber" (one live line a stretch; "bidding closed · its dates ended" with no
+  name once its last date passed); "Approval of LL taken back · Saber" after an admin's Undo of a line he had read, and
+  "LL approved again" on the Redo. A tap opens the Leave War there, the cell ringed (`sync.ts openWarAt`); a man with no
+  row opens his person window. A bid replaced by an Inputs-page leave is said on the Inputs door's own line: "You were
+  added · replaces your LL bid".
+- **Documents on the war open, read only (the spec's reading 8):** the Approvals paperclip, the day's list's chips and the
+  Inputs-leave window's Document row open the app's document viewer with no "Edit input" and no "Upchit" in its foot
+  (`sync.ts openRequestDocs`, `openInputDocs`). A replaced bid's grid notice shows the bid's remarks and documents and
+  offers "Add to the LL" onto the leave that replaced it (`sync.ts replacedCarry`).
+- **"Placed · Decided" (r7-13):** the bid window's one compact line an entry under its day line — "Placed Ranger · Mon 5
+  Jan, 09:12 · Approved Saber · Thu 8 Jan, 08:40" (`ui/PlacedLine.tsx`); nothing where nothing is known.

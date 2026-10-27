@@ -189,7 +189,10 @@ instead, as Approvals' dates do (8.5).
 leave — the fresh read, finding 11): one line, "Your leave · Tue 27 Jan · LL bid moved to Thu 29 Jan · Saber" / "… LL bid
 deleted · Saber" — a reading named at his look, his to strike.
 
-**9.8 A member's shared filing over another man's pending bid** (`[LW-M1-READ-LEFTOVERS]` (1), placed "with the Leave War's
+**9.8 A member's shared filing over another man's pending bid** — **FOUND NOT TO ARISE at the build (27 Oct 26):** only a
+leave or a medical replaces a bid, a member files neither for another man (D655) and may not change a shared leave someone
+else filed (D763); pinned (`memberclash.test.ts`, `m4ride.test.ts`), no permission widened. As written before the build
+(`[LW-M1-READ-LEFTOVERS]` (1), placed "with the Leave War's
 next batch"): today it writes a war notice on that man's row and the commit refuses the whole filing. 9.3a's one line rests
 on that filing landing, so it is built here: the war's notice rides the filing's own input id (the permission check's
 `rides`), and the case is walked. `[LW-CLASH-ROWLESS-TAP]` closes with the off-roster person window (8.5).
