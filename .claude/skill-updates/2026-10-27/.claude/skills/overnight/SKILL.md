@@ -114,7 +114,7 @@ block says so. Never a pull request based on another branch — it runs none of 
   then opens each job's pull request; and it checks each report. It waits inside the turn; where it must end the turn, it
   first arms a background timer of under an hour, so the night is woken before its cache goes cold (21 Oct 26). His
   D1103 asked for a fresh session per job; on 21 Oct 26 the app started none from a turn his phone sent or a finished
-  job woke, so the night ran helpers instead — this line is his approval of that change (D<new>, <date>). A session per
+  job woke, so the night ran helpers instead — this line is his approval of that change (D1416, 27 Oct 26). A session per
   job still works when he types the night's message in the desktop app, all of them started together.
 - **A helper's report** (reader, walker, scenario designer) is saved into the repo — its brief's folder or the evidence
   sheet — the moment it arrives, before anything is done about it.

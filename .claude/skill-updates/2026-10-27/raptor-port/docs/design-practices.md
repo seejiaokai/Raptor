@@ -69,7 +69,7 @@ one, and neither is an instruction about the work itself.
    16 Oct 26 — "1-5 as recommended": "the design guide learns from my suggestions", D939).** One line: the lesson in
    terms of the app he intends, its date and its ruling. One fresh reader — never the chat that wrote it — checks that the
    line says what he meant; he is not asked first. The closing report names every lesson added, and he may strike or
-   change any. **The line keeps to his words:** it quotes or closely paraphrases them, covers no case he did not
+   change any. **The line keeps to his words (D1417, 27 Oct 26):** it quotes or closely paraphrases them, covers no case he did not
    correct, and gives no reason he did not give; the point behind it (step 1) is stated as his words support it, and
    anything of the agent's own is marked as the agent's reading. The fresh reader is handed his words, the option he
    picked and the line — and, where the lesson narrows a rule, that rule and its pointer — nothing else (16 Oct 26: the
@@ -673,7 +673,7 @@ he may strike or change any. Newest first. Where a lesson meets a general rule a
 points here. A branch that will add lessons takes a range of lesson numbers before its first, as a chat does for ruling
 numbers, and names it in its handoff block; where two branches still meet on a number, the merge renumbers only the
 branch's own side, by script, and the closing report tells him the old and new numbers (22 Oct 26: eleven lessons
-renumbered across five files, and his page still said "lesson 28" for what became 30).*
+renumbered across five files, and his page still said "lesson 28" for what became 30 — D1417).*
 
 **Lesson 61 (27 Oct 26, D1412 — "all the text areas I click screen jerks or bounce a little when the keyboard opens. Even for text that are above the keyboard … Why can’t the text box I click on, auto scroll proportionately with the keyboard that appears and the window doesn’t shrink awhile. My idea is a smooth feel for this app and this made it worse").** When the keyboard opens, the box tapped rises in step with the keys, proportionately — one motion, the keys' own — and nothing else on screen moves: a box already above the keys stays exactly where it is, and no window shortens and grows back or lets the page behind it show while the keys move. What it says about the app he intends (D852): a correct end place is not the measure; the feel of the motion is, and a mechanism that steers a window frame by frame against the phone's own slide is judged by what he sees, not by its numbers. *Other places, named under D852 — the same check applies to each: the Leave War's sheets and bid windows (they place themselves, `leavewar/ui/Sheet.tsx`), the Tracker's event editor, Admin's Duty templates box, the Logic page's boxes, and the Scheduler Board's list ([KEYBOARD-SCROLL]).*
 
