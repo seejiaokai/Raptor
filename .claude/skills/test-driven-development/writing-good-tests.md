@@ -38,6 +38,13 @@ expect(buildSearchQuery({ tag: 'urgent' })).toBe(expected);
 expect(buildSearchQuery({ tag: 'urgent' })).toBe('tag:"urgent"');
 ```
 
+A stand-in for something outside the code — a device, a browser's
+animation, a remote service — takes its numbers from a measurement of the
+real thing (a recording, a log, a captured response), cited in the test;
+never from the constants the implementation uses, or the test compares the
+code with itself. Run it against the code before the fix: it must fail for
+the reason the user reported.
+
 A test of the form "the new path behaves like the old one" is the same
 mirror one step removed: it proves the new path copies the old, faults
 included. Beside every such loop write the absolute table — one expected

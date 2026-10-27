@@ -46,7 +46,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 542: A rehearsal's "put the live files back" also rolled back the review's own drafts — they were tracked too
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WR Delivering (rehearse with the drafts committed; restore only the live paths); TOV Staging
 **Date:** 2026-10-13
 **Session context:** The skill review of 13 Oct 26. To prove the document check would pass with the drafts installed, the staged drafts were copied over the live files, the check was run, and the live files were restored with `git checkout -- .`.
 **Skill:** task-observer (`references/weekly-review.md`, Delivering updated skills; this repo's `.claude/skills/TASK-OBSERVER-VENDORED.md` §Reviews in this repo — Staging)
@@ -61,7 +61,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 543: A review left for three weeks held 272 notes, and a third of them were one lesson logged again
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): TO Session Start step 3 (a size trigger beside the age one; a one-skill review past about 10)
 **Date:** 2026-10-13
 **Session context:** The same review: 272 open notes since 24 Sep 26, about 70,000 words, one whole session to read and sort.
 **Skill:** task-observer (SKILL.md Session Start Protocol step 3; `references/weekly-review.md`, the 7-day fallback)
@@ -76,7 +76,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 544: A large review is kept honest by a table every note appears in exactly once, checked by machine, and by a brief that names where the drafts are most likely wrong
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WR Step 1 (the guard covers the output table) and Step 8 (the reader's brief names the writer's doubts)
 **Date:** 2026-10-13
 **Session context:** The same review. Positive signal.
 **Skill:** task-observer (`references/weekly-review.md` Steps 1, 3 and 8)
@@ -93,7 +93,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 560: A fit fix for a phone's own control, proved only on another platform, was recorded as done and failed on the real phone
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §7.9 (a control the phone draws itself: replace it, or "unproven until seen on the device")
 **Date:** 2026-10-13
 **Session context:** [CAL-PHONE-SWIPE-FIT] — reading the Calendar window before its questions and picture (branch claude/cal-phone-swipe-fit-2affa0; numbered from 560 by agreement with the parallel skills-review chat, which keeps 542–559)
 **Skill:** impeccable (reference/adapt.md); also the bug-check order's walk step
@@ -108,7 +108,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 561: The handoff told him to pick the unmerged branch with no new worktree — the app refused, because the old chat's worktree still holds that branch
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): overtaken by D975: the new-chat screen has no picker; SH Step 1's opening line switches the branch and releases it there
 **Date:** 2026-10-13
 **Session context:** [ONE-DATE-CALENDAR] — handing the build of step one to a fresh chat (branch claude/cal-phone-swipe-fit-2affa0, itself an app-made worktree)
 **Skill:** session-handoff (and the always-loaded rule .claude/rules/doc-structure.md, D368's line: "an unmerged branch continuing: that claude/<name> branch")
@@ -123,7 +123,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 562: A test that "typed" into a control that had become a button still passed — it never checked the value it typed
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): TDD Verify GREEN "Which other tests?" (tests of a removed behaviour found by the element, the test id, the words) — widened by this review (652)
 **Date:** 2026-10-13
 **Session context:** [ONE-DATE-CALENDAR] step one — every date box that was the phone's own replaced by a button that opens the app's calendar
 **Skill:** test-driven-development (re-expressing older tests); the bug-check order's roll-call row "a change that REMOVES or replaces a control"
@@ -138,7 +138,7 @@ resolved statuses always carry their resolution date
 
 ### Observation 563: A new worktree has none of the installed packages — the handoff named the old folder's link, and the first test run of the new chat failed
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): SH Step 4 Gates line ("a fresh checkout needs `npm ci` first"); the overnight case is 620
 **Date:** 2026-10-13
 **Session context:** [ONE-DATE-CALENDAR] step one — a fresh chat in a new app-made worktree cut from the unmerged branch
 **Skill:** session-handoff (Step 1 — what the next chat needs before its first command); using-git-worktrees
@@ -154,7 +154,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 564: A class name added to the one global stylesheet was already the Tracker's — the roll-call listed where the new box is DRAWN, never who already used its name
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): BC CSS Placement (a short class in a shared global stylesheet is probably taken: prefix it, search `closest(`)
 **Date:** 2026-10-13
 **Session context:** [ONE-DATE-CALENDAR] step one, found on starting the Tracker's date boxes (D801)
 **Skill:** bug-check (the roll-call, order §6); raptor-executor (inspect before editing)
@@ -169,7 +169,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 565: A look script that passed everything had picked a date in one box of five — the narrow boxes were only ever seen empty
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (a fit check with the longest content, in every instance); its second half (an expectation from the rule's own text) is BCO §4 "Before a brief leaves"
 **Date:** 2026-10-13
 **Session context:** The Tracker's date boxes (D801) — the host's scripted look at a phone and a desktop
 **Skill:** bug-check (the host's look; `raptor-port/docs/walk-scripts.md`)
@@ -184,7 +184,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 566: The break run used the look script as its detector and overwrote the committed evidence pictures with pictures of broken builds
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §9 (a look used as a detector points at a scratch folder); the helper's own refusal: TOOLS (existing line, 239/247/338)
 **Date:** 2026-10-13
 **Session context:** The Tracker's date boxes (D801) — browser break tests whose detector was the host's look script
 **Skill:** bug-check (break tests, order §8.4; `raptor-port/docs/walk-scripts.md` on break-test lists)
@@ -199,7 +199,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 567: The walker's brief named a control that is not there — the host's own browser test of the route was written AFTER the brief, and corrected it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §2 (the route is driven by the host first; control names from the passing run)
 **Date:** 2026-10-13
 **Session context:** The Inputs / schedule batch (D793) — one Sonnet walker, a brief written by the host. (Numbered past 564–566, which are on the open branch claude/tracker-date-boxes and not in this copy of the log.)
 **Skill:** bug-check (the walk — `raptor-port/docs/walk-scripts.md`, writing a walker's brief)
@@ -214,7 +214,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 568: A new path that skips the usual ending of a write dropped a duty that ending performed — found by a blind reader, not by any test of the path
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 (a new branch that skips a shared call lists what the call does)
 **Date:** 2026-10-13
 **Session context:** The Inputs / schedule batch (D793) — the put-back made WITH its OIL answer is its own command and so does not call the schedule's usual ending
 **Skill:** raptor-executor (inspect before editing); bug-check (the reads)
@@ -229,7 +229,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 569: A rulings move was refused twice by its own script for reasons that were one line each — the refusal named the fix, and both were the builder's set-up slips
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): GD §How the gates lie (a new rulings area file's four steps — moved there from DEC, whose line tripwire the rehearsal showed it would cross); the dry run's inventory: TOOLS
 **Date:** 2026-10-13
 **Session context:** D802 — the Inputs pages' rulings moved to a file of their own with `backlog-archive.mjs --rulings --move-rows`
 **Skill:** record-decisions / doc-structure (a NEW area file); session work with the mover script
@@ -244,7 +244,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 570: The quick type check the builder ran while iterating was not the build's own — a move of code passed it and then failed the first full gate run
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): VBC "A typecheck or lint is clean" row; BCO §4 names the real typecheck; memory `tsc-noemit-is-hollow`. Its "met again" guard (a push without a build): TOOLS
 **Date:** 2026-10-13
 **Session context:** `[LW-ROWS-SPLIT]` — the Leave War's row drawing moved to a file of its own (branch `claude/lw-rows-split`; this note is written on `claude/inputs-rulings-file`, the night's documents-only branch, because the log there holds the night's other notes — numbered past 564–566 on the Tracker branch and 567–569 here)
 **Skill:** raptor-executor (Verification without self-approval); the project guide's Build & verify
@@ -261,7 +261,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 571: Putting a file back with `git checkout --` after a hand-run break test also threw away two edits not yet committed
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): WS §9 (never `git checkout` / `git restore` a file with uncommitted work during a break)
 **Date:** 2026-10-13
 **Session context:** `[LW-ROWS-SPLIT]` — a break test run by hand because its output was too large for the break runner
 **Skill:** bug-check order (the break tests); `raptor-port/docs/walk-scripts.md`
@@ -276,7 +276,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 572: The break runner reported an ERROR, not a caught break, when the failing test's output was a very large recorded-markup difference
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): the runner was fixed (observation 628, ACTIONED: 256 MB of output, its own failure named)
 **Date:** 2026-10-13
 **Session context:** `[LW-ROWS-SPLIT]` — break 1 changed a class on a row; the test that pins every row's whole markup (about 375,000 characters of record) failed as it should
 **Skill:** bug-check order (the break tests); `raptor-port/scripts/handpass/breaks.mjs`
@@ -291,7 +291,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 573: A pull request stacked on another branch showed two green ticks and had run none of the real checks
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): `.claude/rules/shipping.md` §The checks (a pull request based on another branch starts no checks); OVN "Branches"; memory `stacked-pr-runs-no-checks`
 **Date:** 2026-10-13
 **Session context:** Merging the night's five pull requests one after another; two of them were stacked on the first
 **Skill:** shipping (the loop; the checks); session-handoff
@@ -306,7 +306,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 574: An edit anchored on a heading's words landed in the paragraph that merely mentioned the heading
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): SH Step 1 (a script matches each marker anchored to the start of its own line)
 **Date:** 2026-10-13
 **Session context:** Rewriting this chat's block in `HANDOFF.md` with a script
 **Skill:** session-handoff; doc-structure
@@ -321,7 +321,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 575: The document check, run in the middle of a merge, reported a fault that was the merge itself
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): GD §How the gates lie (the document check mid-merge)
 **Date:** 2026-10-13
 **Session context:** Bringing `main` into a branch that also touches the app's code, several times in one afternoon
 **Skill:** doc-structure (the check that keeps it); shipping
@@ -336,7 +336,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 576: A question put to him without an example was answered about something else — twice in one morning
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): OVN Part 2 roadblock (a parked question opens with the case; no word that is on no screen); memory `owner-questions-need-a-worked-example` carries the day-time half
 **Date:** 2026-10-13
 **Session context:** The one question parked for him overnight ("should the Unavailable button ask the OIL question too?") and the two that followed
 **Skill:** plain-language; record-decisions (questions put to him)
@@ -349,24 +349,9 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A question is only as good as the picture the reader forms of it. If he could answer it about a different situation than the one you mean, it is not yet a question.
 
-### Observation 577: A complaint about wordy notes was half a layout fault — the box was measured only after the words had been drafted
-
-**Status:** ACTIONED (2026-10-14) — the design guide §1a test 1 (measure the box before the words; a pass that did not says so); on the branch, awaiting his approval of the guide's wording (D832)
-**Date:** 2026-10-13
-**Session context:** [DESIGN-LOOK-13OCT] — the design page: the shorter passing notes (D806), drawn before and after on the built app at a phone's size
-**Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen)
-**Type:** open-source
-**Phase/Area:** Clarify — before shortening any words
-
-**Issue:** The owner sent two pictures of a passing note five lines deep and asked for shorter words. The backlog item drafted shorter wordings and nothing else. Only when the built note was drawn at the phone's size and its box measured did it show that the box was half the screen wide (a box centred by "left: 50%" can only be as wide as the half it starts in). The same words in a full-width box were three lines; shorter words alone left it at three as well; both together made two. A second surface (a bar that stays) had the same cause.
-
-**Suggested improvement:** In clarify.md's first step, and the guide's §1: before rewording a note, a label or a hint that "runs long", measure the box it sits in at the smallest shipped width — its width against the screen's, its line count — and report the words and the box as two separate findings. A wording pass that never measured the box says so.
-
-**Principle:** "Too wordy" is a report of how much room the words take, not of how many there are. Measure the container before editing the text; the cheaper half of the fix is often not in the words.
-
 ### Observation 578: The design skill's critique saves its snapshot where this repo's document check refuses a new document
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): IMPV Known caveats (critique skips its snapshot here; scores go into the look's own record) — settled by the agent, a technical choice
 **Date:** 2026-10-13
 **Session context:** [DESIGN-LOOK-13OCT] — /impeccable critique, the "Persist the snapshot" step
 **Skill:** impeccable (reference/critique.md — Persist the Snapshot); .claude/skills/TASK-OBSERVER-VENDORED.md's sibling note for impeccable, if one is kept
@@ -381,39 +366,9 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Met again 2026-10-22:** Leave War overhaul round 14 (the LVE tile critique): persistence skipped on purpose, the synthesis put on his mock-up page instead; still undecided in writing.
 
-### Observation 579: "Shorten it" was answered with summaries — the owner sent the list back: "the key words are gone"
-
-**Status:** ACTIONED (2026-10-14) — the design guide §1a tests 2, 3, 4 and 8 (a word is cut only if the note states the same facts without it; show the change); on the branch, awaiting his approval (D832)
-**Date:** 2026-10-13
-**Session context:** [DESIGN-LOOK-13OCT] / [NOTES-SHORTER] — 33 shorter wordings for the app's passing notes, put to him before and after; his answer the same evening (D825)
-**Skill:** impeccable (reference/clarify.md); the design guide §1 (words on screen); plain-language (the same failure as a "condensed record that changed what the original meant", D138)
-**Type:** open-source
-**Phase/Area:** Clarify — rewriting existing copy shorter
-
-**Issue:** Asked to make wordy notes shorter, the first draft rewrote each note as a summary: named things became pronouns, reasons and consequences were dropped or compressed ("the common programme has no usable times, so nobody on it earns OIL" became "no times — no OIL from it"). The owner read it as key words gone. Redone with one test per word — would the sentence still say the same fact without it — the honest result was fourteen notes with filler cut (a day said twice, "Heads up", "it has been") and nineteen left whole. Nothing in the method had asked for the cut words to be listed, so the loss was invisible until he read it.
-
-**Suggested improvement:** In clarify.md and the guide's §1: a shortening is shown as before, after, and the exact words cut. A cut is allowed only for a word the sentence says the same without; a named thing, a number, a reason, a consequence and the place to fix it are never cut. A note that cannot lose a word that way is reported as "left whole", and the next question is its box, not its words.
-
-**Principle:** Shortening removes words; summarising removes facts. Show the removed words, and the difference polices itself.
-
-### Observation 580: A gap the machine record held never reached the page; a redraft said the opposite of its original — both caught only by a second model's read
-
-**Status:** ACTIONED (2026-10-14) — the design guide §1a test 9 (the cold read by someone else) and §8 (counts compared by a script); the wider-letters line is in the mock-up guide; on the branch, awaiting his approval (D832)
-**Date:** 2026-10-13
-**Session context:** [DESIGN-LOOK-13OCT] — Fable's read of the whole design page, on the owner's word (D826), after the host's own look and a fresh Opus reader's
-**Skill:** impeccable (reference/critique.md — synthesis; reference/clarify.md); the design guide §8 (how a look is reported)
-**Type:** open-source
-**Phase/Area:** Critique — from evidence to report; Clarify — checking a rewrite
-
-**Issue:** (1) The keyboard sweep wrote one row per key pressed, with a verdict. One row marked a gap (Delete on a filled date box does nothing) was reasoned away while the page was written and silently left off its list. Nothing compared the record's gap rows with the page's. (2) One shortened wording ("Nothing on this day earns OIL — anything added later too") could be read as the opposite of its original; the writer, knowing the meaning, could not see it. (3) A drawing's "every row the same shape" was proved only in the test browser's letters, and the column allowed to shrink was the date. A same-model reader given the pictures found none of the three; a different model given the page, the record and the source found all three.
-
-**Suggested improvement:** In the look's report step: every row a machine record marks as a gap appears on the page by number, or in "considered and left" with its reason — and the count is checked by a script, not by eye. In clarify: each rewrite is read back COLD for its literal meaning, without the original beside it, before the pair is shown. In a mock-up's script: name which part gives way when the letters are wider, and draw that case.
-
-**Principle:** Evidence that is gathered by machine must reach the report by count, not by recollection; and a rewrite is checked by someone who does not already know what it is meant to say.
-
 ### Observation 581: Three sources recorded as "would not open" had only moved — a second read reached all three by following the redirect or using a real browser
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (memory): new note `research-sources-unread-only-after-retry` (no skill of ours runs research)
 **Date:** 2026-10-13
 **Session context:** [SKILL-FUSION-WRITING] — the second read of outside writing guides (D833); the first read's note listed GOV.UK's, Google Material's and the US plain-language site's pages as "NOT read (redirects, an empty page, not found)"
 **Skill:** New skill candidate: reading outside sources for a guide (today a helper's brief; `anthropic-skills:deep-research` where it is used)
@@ -428,7 +383,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 582: "Checked in the app" was written from a note's words, not from whether its branch can run — one of thirteen approved wordings was a note the app can no longer show
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DP §1a test 0 (find every place the words are raised first); its second half (readers who disagree on a fact go to the source) is BCO §4 hand-back item 6
 **Date:** 2026-10-14
 **Session context:** [SKILL-FUSION-WRITING] — the wordings of 13 Oct rechecked against the writing guide; the third read (a fresh Opus reader and Fable, blind) asked to confirm every "checked in the app" in the record against the code
 **Skill:** impeccable (reference/clarify.md — Audit the language); the design guide §1a test 8 and §1b test 2; plain-language ("Verified vs assumed")
@@ -443,7 +398,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 583: Each of three read rounds of a guide found faults the last had missed — and nearly all came from making the reader APPLY the guide to real cases and to the code, not from reading it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WR Step 8 (the reader runs the drafts: real cases, a counter-example, a tally) — used in this review's own brief
 **Date:** 2026-10-14
 **Session context:** [SKILL-FUSION-WRITING] — a writing guide read three times by two blind readers (D832, D833, D835)
 **Skill:** New skill candidate: briefing a reader of a working guide (today in each brief; `claudex-loop` for plans); writing-skills
@@ -458,7 +413,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 584: A drawing's parts had names of their own; the build shortened them, and a bare name met one the app's global stylesheet already owned
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK step 6 "From the picture to the build"; the bare-name search itself is BC CSS Placement
 **Date:** 2026-10-14
 **Session context:** [LW-CLASH-NOTE-PHONE] — building an approved mock-up (a list drawn into the running app by an injection script) as real markup
 **Skill:** brainstorming (`mockups-on-the-real-app.md` — from the picture to the build); impeccable (building a drawn design)
@@ -473,7 +428,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 585: Two helpers reported a typecheck PASS from a command that checked no file
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): VBC "A typecheck or lint is clean" row (the pipeline's own command, or a checker seen to fail)
 **Date:** 2026-10-14
 **Session context:** A three-job batch built with two same-model helpers, each told to run the typecheck
 **Skill:** New skill candidate: briefing a build helper (today in each brief; `dispatching-parallel-agents`, `verification-before-completion`)
@@ -488,7 +443,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 586: A break test of a stylesheet rule passed with the rule cut: the browser tests reused a preview already serving
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (a reused server proved before use — six meetings); the rule is already BC "Before Trusting Any Browser Result", WS §1, GD
 **Date:** 2026-10-14
 **Session context:** A three-job batch's bug check - a browser test written to pin a one-line stylesheet fix, then broken on purpose
 **Skill:** verification-before-completion; the walk-scripts guide (`raptor-port/docs/walk-scripts.md` - break tests)
@@ -505,7 +460,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 587: An assertion that 'nothing moved' read the screen before the movement had finished - and the unit test beside it asked for the cause of the fault
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (an absence judged after the slowest route to presence)
 **Date:** 2026-10-14
 **Session context:** The same bug check - a calendar's month-and-year lists, keys that should do nothing
 **Skill:** the walk-scripts guide (`raptor-port/docs/walk-scripts.md` - asserting an absence); test-driven-development
@@ -520,7 +475,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 588: A new script written over an older one of the same name - the write tool said 'updated' and the host read past it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §1 (a new script's name carries its job's word and is proved free)
 **Date:** 2026-10-14
 **Session context:** The same bug check - adding one more walk script to a folder of earlier jobs' scripts
 **Skill:** New skill candidate: adding files to a shared scripts folder (today nowhere; the Write tool's own result is the only signal)
@@ -535,7 +490,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 589: A mark that lasts a few seconds holds state too - the walk sized "no new control" and never pressed twice inside its lifetime
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §7.4 (anything with a lifetime gets the state table, with its smallest rows)
 **Date:** 2026-10-14
 **Session context:** A small batch that put a six-second "just added" mark in place of a passing note; the bug check was sized SHORT because no control was new
 **Skill:** the checking guide (`raptor-port/docs/bug-check-order.md` §7.4, the state table; §7.0 sizing)
@@ -550,7 +505,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 590: The browser tests' default port was another chat's server - a run without the port set would have tested someone else's build
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (as 586); the rule: GD "A browser-test port someone else is already serving", memory `e2e-port-held-by-other-preview`
 **Date:** 2026-10-14
 **Session context:** The same batch - running one browser test file from a second worktree on a PC where another chat's preview held the default port
 **Skill:** the gates-and-deploy guide (`raptor-port/docs/gates-and-deploy.md`); verification-before-completion
@@ -563,24 +518,9 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 **Principle:** A reused server makes a test's verdict a fact about whatever is listening, not about the checkout. On a machine shared by several chats, "which build did this run against" has to be answered by the build, not assumed from the folder the command was typed in.
 
-### Observation 591: He asked the same pre-sleep questions for the third night running - and asked for them to become a command
-
-**Status:** ACTIONED (2026-10-15) — the `/overnight` command, `.claude/skills/overnight/SKILL.md` (his approval D869; shaped by D867, D868)
-**Date:** 2026-10-14
-**Session context:** An unattended overnight run: what can be built without him, what must be asked before he sleeps, how the state is kept across a compaction
-**Skill:** New skill candidate: overnight-run (filed as `[OVERNIGHT-SKILL]`, his word D859)
-**Type:** open-source
-**Phase/Area:** Session start of an unattended run
-
-**Issue:** Each night he asks: how long is the job in hand, what else is outstanding, what can run unattended, what do you need from me before I sleep - then gives the same permissions (decide yourself, this chat, compact, save to the repo, no merge). The agent answers from the handoff and the backlog each time, records a one-off permission each time, and re-derives the same rules (D596, D667, D766) from four places.
-
-**Suggested improvement:** A skill that does it in one call: read the handoff and the backlog's order; list what is ruled and buildable and what is not and why; at most four questions with a recommended answer each (design ones with a picture); record the night's permission; state each job's check; write the state into the repo before the first job and at every commit; park his choices in one list; never merge; one notification; a morning report with pictures and a numbered "what you do now". Its worked example is the night of 14 Oct 26 (the rulings D856 to D859 and that chat's handoff block).
-
-**Principle:** A question the user asks every time is a missing command. The cost of the ritual is not the minute it takes him but the chance that one night a permission is assumed that he did not give.
-
 ### Observation 592: A walk helper copied from another walk stepped the wrong way through a date picker - the two walks ran on different clocks
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): WS §1 (prove a borrowed helper's first step on today's screen) and §4 (navigate by reading the screen's own heading)
 **Date:** 2026-10-14
 **Session context:** Writing a walk script for the small OIL job (a day made a public holiday through the Calendar window, then a published version loaded back)
 **Skill:** walk scripts guide (`raptor-port/docs/walk-scripts.md`)
@@ -595,7 +535,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 593: A reader, a walker and the break tests want three different things held still - their order was worked out by hand
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §4 (a table: what each part of a check holds still on one checkout, and the order that follows)
 **Date:** 2026-10-14
 **Session context:** The small OIL job's FULL check, run unattended: a fresh code reader and a walk helper started together, with break tests and a new browser test still to run
 **Skill:** bug-check order (`raptor-port/docs/bug-check-order.md` section 4)
@@ -610,7 +550,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 594: A designer's open question was parked as "leave it" - and the code reader then showed it was the very gap the ruling closes
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): OVN Part 2 ("before recommending 'leave it as built', write the case in which it fails the ruling's words") and BCO §4 "Before a brief leaves"
 **Date:** 2026-10-14
 **Session context:** The small OIL job, unattended: the scenario designer asked what a load does with an input of several days whose unanswered day is not the day loaded; the host parked it for the owner with the recommendation "leave it"
 **Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`, the unattended-run paragraph and section 4 on scenario design)
@@ -625,7 +565,7 @@ ode_modules"`), and build before any look" — and say that facts about THIS fol
 
 ### Observation 595: A record edited while the gate run was going failed the run's last check - nothing was wrong with the app
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (the lock refuses an edit while a run holds it, or runs from a copy — met twice); the documents half is OVN Part 2 "No record is written while a gate run is going"
 **Date:** 2026-10-14
 **Session context:** The whole gate set running in the background (about 18 minutes); the host used the time to write the backlog, the rulings' records and the handoff
 **Skill:** shipping rule, the checks (`.claude/rules/shipping.md`) and the gate runner (`raptor-port/scripts/gatelock.mjs`)
@@ -642,7 +582,7 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 ### Observation 596: A guide for an unattended run sent its plan as a message and so ended the turn - the night could not start until he woke
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): OVN steps 6 and 9 and Part 2 (the questions are written inside the running turn; long waits inside the turn; parked questions written into the block)
 **Date:** 2026-10-15
 **Session context:** Drafting the overnight command ([OVERNIGHT-SKILL], D859); found by the fresh reader's F1 and F7
 **Skill:** New skill candidate: overnight (draft `raptor-port/docs/superpowers/specs/2026-10-15-overnight-skill-draft.md`); writing-skills
@@ -657,7 +597,7 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 ### Observation 597: "Are the checks still running?" read the newest run, and a push starts two runs at once
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): `[RUN-CHECK-BOTH-RUNS]` (archived): `--limit 6 --json status,workflowName,headSha` in SH, OVN and `shipping.md`
 **Date:** 2026-10-15
 **Session context:** The overnight command's read (F2); filed as `[RUN-CHECK-BOTH-RUNS]`
 **Skill:** session-handoff (Step 1, the push check); the shipping rule (`.claude/rules/shipping.md`, the loop)
@@ -672,7 +612,7 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 ### Observation 598: A guard that holds something back was built "fail open" and still could refuse the system's own recovery
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): GUARD (the conditions for a command-refusing hook); the compaction guard it came from is built and read
 **Date:** 2026-10-15
 **Session context:** [COMPACT-WHEN-MOD] — a hook that holds an automatic compaction until the agent has saved its state (D870); found by the fresh reader
 **Skill:** New skill candidate: writing a hook that can refuse an action (today nowhere; `.claude/hooks/compact-guard.mjs` is the worked example)
@@ -687,7 +627,7 @@ Met again 15 Oct 26 (`[LW-REARRANGE-EDGE-SCROLL]`), worse: CODE under `raptor-po
 
 ### Observation 599: Resetting a merged branch onto main left it tracking main - every push after it quietly did nothing
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): SH's opening line gives `git branch -u origin/claude/<name>`, no `checkout -B … origin/main`; memory `push-default-upstream-trap`. Its read-back of the remote: APPLY to VBC's push row
 **Date:** 2026-10-15
 **Session context:** After pull request 508 merged, the chat reset its branch onto the live version (`git checkout -B <branch> origin/main`, the form the session-handoff guide gives) and carried on; nine commits were "pushed" with `git push -q`
 **Skill:** session-handoff (Step 4's template, the "Branch:" line: `git fetch origin main && git checkout -B <branch> origin/main`); shipping rule
@@ -704,7 +644,7 @@ met again 2026-10-21: the handoff's pasted opening line for round 2 of the consi
 
 ### Observation 600: In the desktop app a worktree chat takes its settings, hooks and skills from the MAIN checkout, so a merged change to them is dead until that folder is brought to main
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): GD §How the gates lie (a worktree chat loads settings, hooks and skills from the main checkout); SH Step 3 (after such a merge)
 **Date:** 2026-10-14
 **Session context:** Running the four checks of the compaction set-up (pull request 509) in a new worktree chat on `main`.
 **Skill:** session-handoff (and the merge-live routine in shipping.md)
@@ -719,7 +659,7 @@ met again 2026-10-21: the handoff's pasted opening line for round 2 of the consi
 
 ### Observation 601: A shell here-document holding an apostrophe failed twice in one job, though a memory note names the trap
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): GUARD (approved to build, D811) — its met-again lines counted into the item
 **Date:** 15 Oct 26
 **Session context:** building [OIL-PLAN-SWITCH-UNASKED]; test bodies and edit scripts passed to Python through a bash here-document
 **Skill:** New skill candidate: none — the working practice behind every build (raptor-port/CLAUDE.md §Token discipline; the memory note "Bash heredoc with an apostrophe fails")
@@ -751,7 +691,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 wording roll-call (each old phrase alone, files, no cap)
 **Date:** 15 Oct 26
 **Session context:** [OIL-PLAN-SWITCH-UNASKED] — rewording the plan switch's note; finding every test that reads the old words before the change
 **Skill:** New skill candidate: none — the roll-call rule "a wording ruling … gets its own small roll-call" (raptor-port/docs/bug-check-order.md §6)
@@ -766,7 +706,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 603: A picture helper framing an element off screen pictures the top bar, silently
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §5 (a framed picture brings its subject into view first); the helper's refusal: TOOLS
 **Date:** 2026-10-15
 **Session context:** `[GLOW-OFF]` walk (`scripts/handpass/glowoff-walk.mjs`), phone size
 **Skill:** none — the walk-script guide (`raptor-port/docs/walk-scripts.md` §5) and the shared driver `scripts/handpass/dl-lib.mjs pic()`
@@ -781,7 +721,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 604: A drag aimed by a fraction of a row's height can land back in place at another size
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (a drag aimed at the target's box; record the order before and after)
 **Date:** 2026-10-15
 **Session context:** `[GLOW-OFF]` walk — the board's line drag
 **Skill:** none — `raptor-port/docs/walk-scripts.md` §4 (steps)
@@ -796,7 +736,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 605: A one-line follow-up change got the whole walk re-run — he asked why
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §6 (a re-walk runs only the touched steps, by a step filter)
 **Date:** 2026-10-15
 **Session context:** `[GLOW-OFF]` — after his answer D879 (one CSS line: the people picker's chip), the agent re-ran the whole 18-step walk script at both sizes
 **Skill:** none — `raptor-port/docs/bug-check-order.md` §5 "the re-walk" and `raptor-port/docs/walk-scripts.md` §6
@@ -811,7 +751,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 606: A close-up "around the element" fails for a mark bigger than the screen, and for a hidden copy
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Traps (the n-th visible match; an edge for a big or off-box effect; an identical pair means a missed crop)
 **Date:** 2026-10-15
 **Session context:** [GUIDE-NO-GLOW] — picturing the places that still glow, today beside no glow, for the owner
 **Skill:** brainstorming (its `mockups-on-the-real-app.md`)
@@ -826,7 +766,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 607: Stopping a gate run's background task leaves the run's processes alive and the PC's lock held
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): GD §How the gates lie (stopping a gate run's task does not stop it); the lock's own clean-up: TOOLS
 **Date:** 15 Oct 26
 **Session context:** the night's /overnight run on `claude/drag-edge-scroll-elsewhere-51bfc4` — a full gate run (`gatelock.mjs run`) stopped on purpose, twice, because the code was about to change
 **Skill:** overnight (internal) — and `.claude/rules/shipping.md` §The checks
@@ -841,7 +781,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 608: A "look before you push" check chained with `&&` does not stop the push — it only has to succeed, not say "none"
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): the push-and-lock guard (`[PUSH-LOCK-GUARD]`, D976 — built 17 Oct 26) refuses a push while the branch's checks run, whatever the chain
 **Date:** 15 Oct 26
 **Session context:** the night's /overnight run, `claude/drag-edge-scroll-elsewhere-51bfc4` — pushing the spare job's commit while the pull request's checks were running
 **Skill:** overnight (internal) — and `.claude/rules/shipping.md` (D151, never push while a pull request's checks run)
@@ -856,7 +796,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 ### Observation 609: A bare `cat >` at the head of a shell command waits on input for ever, and the time-out hides it as "moved to the background"
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): GUARD (a command beginning `cat >` with no input; input closed by default)
 **Date:** 15 Oct 26
 **Session context:** calendar step two (D901) — editing files by a short script run from the shell
 **Skill:** New skill candidate: none — the project's script-writing memory notes (`bash-heredoc-apostrophes-fail`, `node-e-in-git-bash-mangles-escapes`)
@@ -876,7 +816,7 @@ Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit
 
 ### Observation 610: Before/after pictures of the live app need no second checkout or server
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §8 (the archive leaves the docs out; served by routing inside the test browser, on localhost)
 **Date:** 2026-10-15
 **Session context:** calendar step two — a browser gate failed on a phone size; the change had to be put to the owner with pictures of the live app beside the branch.
 **Skill:** brainstorming (mockups-on-the-real-app.md); walk-scripts.md
@@ -891,7 +831,7 @@ Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit
 
 ### Observation 611: A control the change was told to leave alone is measured before and after, not eyeballed
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BC CSS Placement (`:where(:not(…))` keeps a shared rule's weight; measure the untouched neighbours); the before/after measure itself is WS §8
 **Date:** 2026-10-15
 **Session context:** calendar step two — moving two buttons into a toolbar row on a phone (D910), with "the other buttons keep their size" in the ruling.
 **Skill:** bug-check-order (raptor-port/docs/bug-check-order.md §9/§10 anti-pattern 21); mockups-on-the-real-app.md
@@ -906,7 +846,7 @@ Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit
 
 ### Observation 612: Draw a layout question in the state an already-ruled change will leave the screen in — and in the case it is about
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Judging, the busy state (picture the future state an already-ruled change will produce)
 **Date:** 2026-10-15
 **Session context:** [INPUT-NEW-DEFAULTS] — drawing his idea D913 A (time and remarks above an input's calendar) beside D917 (a new input opens on OL, ruled, not yet built)
 **Skill:** brainstorming (`mockups-on-the-real-app.md` — Judging the Proposal)
@@ -919,24 +859,9 @@ Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit
 
 **Principle:** A layout proposal is judged in the states that change its answer, including the state an already-decided change will produce — one state can make a good idea look useless or a bad one look fine.
 
-### Observation 613: A picture rule that lives only in files loaded with interface work is missed when the agent is only "explaining"
-
-**Status:** ACTIONED (2026-10-15) — the owner's D921 put the rule in `.claude/rules/plain-language.md`, which every chat loads, and widened it to explanations; `design-practices.md` §0 and `ui-design.md` point 1 say so.
-**Date:** 2026-10-15
-**Session context:** [INPUT-NEW-DEFAULTS] — telling him what two backlog leftovers were (a Tracker window's row arrows, the OIL question's small calendar)
-**Skill:** none (a project rule file); related: brainstorming `mockups-on-the-real-app.md`
-**Type:** internal
-**Phase/Area:** reporting to the owner
-
-**Issue:** The rule "every design or interface point comes with a picture, the area marked" (D853) was loaded and in force, yet two leftovers were explained to him twice in words alone; he asked a third time where exactly, then made the rule again (D921). The agent had read the rule as covering things PUT TO HIM to decide, and classed "what is this item" as a recap, not a design point.
-
-**Suggested improvement:** Done as D921: the rule names explanations and recaps, and sits in an always-loaded rule file. A check-before-send line could ask: "does this message name anything on screen? then is a picture attached?"
-
-**Principle:** A rule scoped by the kind of message ("a proposal") gets skipped when the agent classes its message as another kind; scope it by its trigger (anything on screen is named) instead.
-
 ### Observation 614: A touch-emulated tap leaves a hover ring on the last button in a mock-up picture
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Traps (a tapped control's hover ring; tap a neutral element first)
 **Date:** 2026-10-15
 **Session context:** Drawing the Tracker's Reorder finger drag on the real app ([TRK-REORDER-FINGER-DRAG], D922); the "after the drop" frame reached its state by tapping the real ▼ buttons.
 **Skill:** brainstorming (reference: mockups-on-the-real-app.md)
@@ -950,7 +875,7 @@ Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit
 **Principle:** The steps used to reach a pictured state leave their own marks on the screen; clear the traces of the setup before the shot, or the picture shows actions the proposal does not involve.
 ### Observation 615: A script that inserts under a document heading found the heading's name in the file's own prose first
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): as 574 (SH Step 1)
 **Date:** 2026-10-15
 **Session context:** The night run of 15 Oct 26 — writing a new chat block into HANDOFF.md under `## Now` by a Python edit (`s.index('## Now')`). Numbered past #614, which sits on the unmerged branch `claude/trk-reorder-finger-drag`.
 **Skill:** session-handoff (and overnight, which writes the night's block)
@@ -965,7 +890,7 @@ Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit
 
 ### Observation 616: A browser check reused a server another checkout left on its port, and tested the wrong app
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (as 586); its innerText half is WS §4 (written 16 Oct 26)
 **Date:** 2026-10-16
 **Session context:** Quals' one row (D935) in a fresh worktree; the first run of the new browser test.
 **Skill:** New skill candidate: none — the project's checking order (bug-check-order §7.2, "Stand up the real thing")
@@ -981,7 +906,7 @@ Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit
 
 ### Observation 617: Marks drawn as boxes over a page drift from their text on a phone; a mark drawn on the element cannot
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Method step 3 (marks drawn on the element, always — the unconditional form its own "met again" asks for)
 **Date:** 2026-10-16
 **Session context:** the whole-app words pass, round 1 — before-and-after pictures of the real app with each text outlined and numbered
 **Skill:** brainstorming (`mockups-on-the-real-app.md` — Traps When Injecting Into a Live Page); `raptor-port/docs/walk-scripts.md` §5
@@ -998,7 +923,7 @@ Met again 20 Oct 26 ([STANDBY-WEEK-B] mock-up, `mock-standby-week-b.mjs`): red b
 
 ### Observation 618: A line moved into a fold lost its subject; only the cold read caught it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DP §1 (a moved note takes its subject's name and gets the cold read)
 **Date:** 2026-10-16
 **Session context:** the whole-app words pass, round 1 — the editing hint printed on every day's input panels proposed to move, word for word, into the page's Legend fold
 **Skill:** the design guide (`raptor-port/docs/design-practices.md` §1 — the three ends of a note, "moved under one short fold"); impeccable (reference/clarify.md)
@@ -1013,7 +938,7 @@ Met again 20 Oct 26 ([STANDBY-WEEK-B] mock-up, `mock-standby-week-b.mjs`): red b
 
 ### Observation 619: Turning his words into a guide rule drifted twice in one line — the fresh read is what kept the lesson his
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DP §0 step 2 (a lesson line keeps to his words; the reader gets only his words and the line)
 **Date:** 2026-10-16
 **Session context:** the whole-app words pass, round 1 — his first "design lesson" written into the design guide under his new rule D941 (lessons written in by themselves, one fresh reader)
 **Skill:** the design guide (`raptor-port/docs/design-practices.md` §0 step 2, §9); record-decisions (writing the "point behind it")
@@ -1028,7 +953,7 @@ Met again 20 Oct 26 ([STANDBY-WEEK-B] mock-up, `mock-standby-week-b.mjs`): red b
 
 ### Observation 620: An overnight run's worktree may have no packages installed
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): OVN step 9 (`npm ci` when the night's checkout has no packages)
 **Date:** 2026-10-16
 **Session context:** /overnight, night of 16–17 Oct 26 — a fresh worktree switched to the night's branch; the first build failed ("tsc is not recognized") because the worktree had never had `npm ci`.
 **Skill:** overnight
@@ -1043,7 +968,7 @@ Met again 20 Oct 26 ([STANDBY-WEEK-B] mock-up, `mock-standby-week-b.mjs`): red b
 
 ### Observation 621: A records commit pushed seconds after opening the pull request cancels its first run
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): OVN Part 2 "Pull requests" (the block committed before the pull request opens)
 **Date:** 2026-10-17
 **Session context:** /overnight, night of 16–17 Oct 26 — opened PR 522, then committed and pushed the night's block straight away; the push cancelled the PR's first full run (D151).
 **Skill:** overnight
@@ -1056,26 +981,9 @@ Met again 20 Oct 26 ([STANDBY-WEEK-B] mock-up, `mock-standby-week-b.mjs`): red b
 
 **Principle:** When two standing rules meet at one moment, order the steps so the cheaper one goes first.
 
-### Observation 622: An unattended run's checkout keeps its branch, so the morning chat cannot switch to it
-
-**Status:** ACTIONED (2026-10-17) — D975: session-handoff's "Release the branch as your LAST step" and the switching opening line; overnight's Part 3 releases the branch last
-**Date:** 2026-10-17
-**Session context:** the morning chat after the night of 16–17 Oct 26, told "switch to branch claude/whole-app-words-pass-1b-6cfe51 and pull"
-**Skill:** overnight (also session-handoff)
-**Type:** internal
-**Phase/Area:** overnight — the closing step; session-handoff — the step that frees the branch
-
-**Issue:** The night's run ended with its branch still checked out in its own worktree. The morning chat's `git switch` was refused ("already used by worktree"), and detaching the old checkout from the new chat was refused by the permission guard as interfering with another workload. The chat had to take the branch's tip into its own checkout and push back to the branch by name instead — workable, but a detour, and it nearly touched shared git settings on the way (`push.default` written to the shared config).
-
-**Suggested improvement:** In overnight's closing step and in session-handoff's "free the branch" step: once everything is pushed, the run itself runs `git checkout --detach` in its own checkout as its last command, and the HANDOFF block says it did. The opening line can then say "switch to <branch>" and it works.
-
-**Principle:** A handoff is not finished while the outgoing session still holds a resource the incoming one must take; release it from the side that owns it, because the other side may not be allowed to.
-
-Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day chat) left `claude/sharp-goldberg-6d0656` checked out; the next chat's switch was refused, and this time `git -C <old checkout> checkout --detach` from the new chat was allowed (the old checkout was clean and level with its remote). Guard to propose: the session-handoff skill's last step runs the detach itself and the block's "Branch:" line says "released"; or the opening line it writes carries a fallback ("if the switch is refused, detach the old checkout when it is clean and pushed").
-
 ### Observation 623: Tidying the handoff before a merge restarts the green pull request's checks
 
-**Status:** OPEN
+**Status:** DECLINED (2026-10-27) — closed on his word in the skill review of 27 Oct 26: overtaken by his D1088 (on "merge live" the agent pushes the job's closing records, waits for that one run, then merges) — recommended closed
 **Date:** 2026-10-17
 **Session context:** a side session sent to merge two stacked pull requests on his "merge live" (522, then 523 cut from 522's tip); the brief said "before each merge, rewrite or remove the HANDOFF blocks".
 **Skill:** session-handoff (and shipping.md's merge steps)
@@ -1090,7 +998,7 @@ Met again 2026-10-17: the [CONTEXT-START-SIZE] handoff (session-handoff, a day c
 
 ### Observation 624: The shell's $TEMP is one folder for every chat on the PC — a fixed file name there reads another chat's file
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §5 (logs and scratch files never at a fixed name in `$TEMP`); a gate script's default: TOOLS
 **Date:** 2026-10-16
 **Session context:** the Medical cards job (`claude/sharp-goldberg-6d0656`), a background check run writing its results to `$TEMP/after.txt`.
 **Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/walk-scripts.md` §5, "A script writes only under its own checkout") and the gate scripts
@@ -1109,7 +1017,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 625: A fixed pixel limit in a browser test is a limit on one machine's letters
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): BC "Measure, Don't Estimate" (assertions name the behaviour, not a value one browser computes)
 **Date:** 2026-10-16
 **Session context:** the Medical cards job — "a card is at most 104 wide" passed on his PC and failed on GitHub's Linux machine (107), reported by the old merge chat.
 **Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/walk-scripts.md` §4, steps and what they assert)
@@ -1124,7 +1032,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 626: A guard that reads commands needs a shell's reading from its first draft, not after review
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): GUARD (read the shell's grammar first; test the everyday commands first)
 **Date:** 2026-10-17
 **Session context:** building the push-and-lock guard ([PUSH-LOCK-GUARD], D976) — a PreToolUse hook that refuses some commands
 **Skill:** New skill candidate: writing a command-refusing hook (or a section of the plugin-authoring / hook guidance)
@@ -1139,7 +1047,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 627: A fault found in passing is re-proved through the app's own door before it is filed
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §3 (a fault seen only in planted data is checked through the real door before it is filed)
 **Date:** 2026-10-17
 **Session context:** [MED-NEWYEAR] — a backlog item said a medical input across New Year never shows on the Medical tab
 **Skill:** New skill candidate: none — the project's checking guide (`raptor-port/docs/bug-check-order.md`, the "found while…" findings; `raptor-port/docs/walk-scripts.md` §3 Fixtures)
@@ -1152,24 +1060,9 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 **Principle:** A failure seen only with hand-made data is evidence about the data until the real input path reproduces it.
 
-### Observation 628: A proof runner read "killed for too much output" as "the break was not caught"
-
-**Status:** ACTIONED (2026-10-17) — `raptor-port/scripts/handpass/breaks.mjs` takes up to 256 MB of output and names a run that itself failed
-**Date:** 2026-10-17
-**Session context:** [OIL-CONFIRM-DAYGRID]'s break tests — eight of eleven breaks came back "did not finish (exit null)"
-**Skill:** none — the project's break-test runner (`docs/walk-scripts.md` §9)
-**Type:** open-source
-**Phase/Area:** verification — proving a test can fail
-
-**Issue:** The runner ran each broken build's tests through a child process with the default 1 MB output limit. A test file that renders the whole app prints the page with its failure (3.2 MB), so the child was killed and the runner reported "ERROR — the run did not finish": every break whose test went red looked like a break with no proof. Run by hand, each was caught in 12 seconds.
-
-**Suggested improvement:** done — a large output limit and the child's own error printed. For any runner that judges a child's result: treat "the child was killed" as its own verdict with its cause, never folded into pass or fail.
-
-**Principle:** A harness that cannot tell "the check failed" from "the harness failed" reports its own limits as findings about the code; name the harness's failure separately.
-
 ### Observation 629: An answer written mid-turn did not reach him — he asked the same question four times
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): memory `answer-mid-run-questions-first` (its 17 Oct 26 paragraph cites this note: end the turn with the answer; "reply go")
 **Date:** 2026-10-17
 **Session context:** `/overnight` (the night of 17 Oct 26): the Tracker tidy-up was running inside one long turn when he sent "What are the jobs u are doing tonight", "Any questions now?", "What is this job about again?", "What's a trackers import tidy up", "What are u tidying", "Answer me clearly … asap I want to sleep", "Answer me", "Answer me now…".
 **Skill:** overnight (internal)
@@ -1184,7 +1077,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 630: A picture run drove another chat's stale server on a port it assumed was free
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (as 586 — the check inside the shared drivers); the rule: WS §1
 **Date:** 2026-10-17
 **Session context:** the Tracker batch (D495) — the before pictures of each visible change
 **Skill:** New skill candidate: walk-script preamble (the bug-check order §7.2, `docs/walk-scripts.md`)
@@ -1199,7 +1092,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 631: A keyboard walk over a graph needs a test that every node is reachable
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DP §2 (a keyboard over a structure: one exhaustive test of reach over the real data)
 **Date:** 2026-10-17
 **Session context:** the Tracker batch — D980, the chart by keyboard
 **Skill:** New skill candidate: keyboard-navigation design check (the design guide §2)
@@ -1214,7 +1107,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 632: A check that passes on main and fails on a branch — replay both builds side by side, logging state at every step
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 1 step 3 (run both versions' steps side by side; find the first divergence)
 **Date:** 2026-10-17
 **Session context:** The Tracker batch's one open fault: a phone check in the Tracker suite failed by 51px on the branch and passed on main. The chat before had tried removing suspected changes one at a time (three experiment builds) without finding it.
 **Skill:** systematic-debugging
@@ -1229,7 +1122,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 633: A later fix that covers the same case twice makes an earlier break test silent
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §9 (re-run the whole break list after the last code change)
 **Date:** 2026-10-17
 **Session context:** The Tracker batch's break list (each fix taken out once, its test must go red) was run again after the code read's fixes: 34 of 36 caught. Two safety lines had each been backed up by a later fix (a blur handler, a reset in the close routine), so their tests passed with the line removed.
 **Skill:** New skill candidate: bug-check break tests (project guide `raptor-port/docs/walk-scripts.md`)
@@ -1244,7 +1137,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 634: A walk driven through a runner went to the shared driver's default port — another chat's build — and every break result was void
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (as 586 — refuse to run with no address; a runner passes its address on); the rule: WS §1
 **Date:** 17 Oct 26
 **Session context:** [TRK-SCROLL-GLIDE] — the Tracker's finger glide; break tests run by a new runner that rebuilds and re-runs the job's walk script
 **Skill:** New skill candidate: none — the project's walk-script guide (`raptor-port/docs/walk-scripts.md` §1, "a server found already running is used only once it is proved to serve this build")
@@ -1259,7 +1152,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 635: A "make it smoother" ask is measured against the device's own frame cap before any fix is chosen
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DOB "When the Engine Differs" (the frame cap before "smoother")
 **Date:** 2026-10-18
 **Session context:** [TRK-CHART-FPS] — the owner found the Tracker chart choppy on his phone; a "small, safe step" (promote the moving layer) had been ruled before anything was measured
 **Skill:** systematic-debugging (and the bug-check order's sizing step)
@@ -1274,7 +1167,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 636: A box placed from the screen's edge "off the screen" on a phone — look for the content that widened the page first
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BC "Measure, Don't Estimate" (an edge-anchored element on a phone: the page's scroll width first)
 **Date:** 2026-10-18
 **Session context:** Raptor, D994's first small-fixes batch — a window that opened half off a phone turned on its side (844 × 390)
 **Skill:** systematic-debugging
@@ -1289,7 +1182,7 @@ moved and deleted at once. The unconditional default the review drafts ("never a
 
 ### Observation 637: In a jsdom render of the input window, the modal stays drawn after a delete closes it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): TDD Verify RED "An assertion that something is ABSENT" (first assert it was present)
 **Date:** 2026-10-18
 **Session context:** his three follow-ups (D1022 — a deleted upchit gives its days back); a new unit test pressed the window's Delete
 **Skill:** New skill candidate: none — the project's test-writing notes (raptor-port/docs/walk-scripts.md or a test guide)
@@ -1310,7 +1203,7 @@ repaint like the app is asked about state, not pixels.
 
 ### Observation 638: A save tried and thrown away hands back every record as a new copy — every holder must find its own again
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 (a try-and-throw-away save lists every holder); the tests' half is WGT "After a refused command, hold the record's ID"
 **Date:** 2026-10-18
 **Session context:** [UPCHIT-SHEET-LEAVE-CUT] (D1023) — the upchit sheet lists what a give-back will cut by trying the save and throwing it away
 **Skill:** New skill candidate: none — the project's undo/command notes (raptor-port/docs/undo-contract.md) or the bug-check order's roll-call rows
@@ -1333,7 +1226,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 639: A backlog tidy's "finished" verdicts and its rewritten list each needed a second reader
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): VBC Common Failures (a summary list rewritten: ids by script, open statements by a reader of the old list)
 **Date:** 18 Oct 26
 **Session context:** the backlog tidy (D1024) — 167 items checked by four Sonnet helpers against git and the code, the priority list rewritten by area
 **Skill:** New skill candidate: backlog-tidy (or a section of session-handoff)
@@ -1348,7 +1241,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 640: A test that picks its case from what is on screen must work the state out afresh first
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): TDD Verify RED (a case picked from what is on screen recomputes that state first)
 **Date:** 18 Oct 26
 **Session context:** D994's Schedule and amendments fixes — the Tab route's missing tests ([TAB-LAST-BOX-TEST-GAPS])
 **Skill:** test-driven-development
@@ -1363,7 +1256,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 641: A test fixture written straight into the data before an undo test runs lands in the undo's baseline, not as a change
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): WGT "Reach the state the way production does" (a fixture never edits live state outside a command before an undo or replay)
 **Date:** 2026-10-19
 **Session context:** D994's Schedule and amendments batch — a red-first test of Undo pressed with the caret still in an In-time line (ui/undo-caret.test.tsx)
 **Skill:** test-driven-development
@@ -1378,7 +1271,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 642: A ruling made from a picture names the surface in his words; open the picture before drawing
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Method (open the picture a ruling was made from, first)
 **Date:** 19 Oct 26
 **Session context:** the mock-up of [RALLY-PER-FORMATION] (D1026) on the real app
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1393,7 +1286,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 643: The overnight guide stops at 90% weekly; his aim is to use the allowance up before the reset (D1033)
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): OVN Part 2 stop rules (the weekly figure stops nothing — his D1415, answering Round 1 question 1; D1033's reading answered)
 **Date:** 19 Oct 26
 **Session context:** the handoff into an /overnight build of [RALLY-PER-FORMATION], weekly allowance at 83%
 **Skill:** overnight
@@ -1410,7 +1303,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 644: A browser-test port held by another chat's old preview silently tests the wrong build
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (as 586 — its "met again" lines call the guard overdue); the rule: memory `e2e-port-held-by-other-preview`, GD
 **Date:** 19 Oct 26
 **Session context:** /overnight build of [RALLY-PER-FORMATION]; red-first e2e for [EDIT-BUTTON-AFTER-CHANGE]
 **Skill:** overnight (and the walk / gate guidance it points at)
@@ -1429,7 +1322,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 645: A tap-to-fill handler fought the app's own focus-arrival refresh
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 4 step 4 (re-run the finder's script; instrument before a second guess)
 **Date:** 19 Oct 26
 **Session context:** [RALLY-PER-FORMATION] walker B's F1 — tap R then B on the phone board
 **Skill:** New skill candidate: none — the bug-check order's §7.0/§8 (probe before fixing)
@@ -1444,7 +1337,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 646: An emulated phone zooms the page when a script types into a small box, and the mock-up comes out shifted
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Traps (never type into a box on an emulated phone before a picture; scope queries to the surface)
 **Date:** 19 Oct 26
 **Session context:** [STANDBY-FLIES] drawing the Flies tick on the real app (`raptor-port/scripts/handpass/look-standby-flies.mjs`) at his iPhone's width
 **Skill:** brainstorming (`mockups-on-the-real-app.md`, §Traps When Injecting Into a Live Page); walk-scripts.md
@@ -1459,7 +1352,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 647: Two scripted taps at one spot within a moment are a double tap that selects a word
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (two taps closer than half a second are a double tap)
 **Date:** 19 Oct 26
 **Session context:** [KEYBOARD-SCROLL] / D1080 browser test — tap a template time box, type, leave, tap it again, type
 **Skill:** walk scripts guide (raptor-port/docs/walk-scripts.md §4) — not a skill file
@@ -1473,7 +1366,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Principle:** A scripted gesture sequence runs faster than a person can; check that its timing does not turn two gestures into a different one before blaming the app.
 
 ### Observation 648: Two jobs in one checkout — `git add -A` sweeps the other job's untracked files into a commit
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (memory): `one-checkout-per-session` gains a paragraph (stage by named paths after a switch)
 **Date:** 20 Oct 26
 **Session context:** two jobs one after the other in one worktree ([CI-SPLIT-SLOW-JOBS] on its branch, then the standby batch on a branch from main), switching branches in the one checkout (the one-checkout-per-session rule)
 **Skill:** New skill candidate: none — belongs in raptor-port/docs/gates-and-deploy.md or the session workflow notes
@@ -1488,7 +1381,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 649: A layering check by elementFromPoint fails on a surface that takes no presses
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (`elementFromPoint` proves only a surface that takes presses; a grid cell's text read first)
 **Date:** 2026-10-20
 **Session context:** The OIL batch's walk (`raptor-port/scripts/handpass/oilfix/walk.mjs`) — checking the passing note after Unpublish was drawn on top, on the week and over the Scheduler Board.
 **Skill:** New skill candidate: none — the walk-scripts guide (`raptor-port/docs/walk-scripts.md`), the project's reference for writing walk scripts
@@ -1502,7 +1395,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Principle:** A check's method must fit the thing checked; a "hit test" only sees what can be hit. Before calling a scripted FAIL a fault, open its picture.
 
 ### Observation 650: A flaky check that polls for a state the app legitimately leaves again
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD "Flaky is a hypothesis" (permanent or transient? delay the check on purpose)
 **Date:** 2026-10-20
 **Session context:** The shaky-tests batch — [LW-WINDOW-PRUNE-FLAKE-2], a Leave War browser test that failed about one full run in two.
 **Skill:** systematic-debugging
@@ -1516,7 +1409,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 **Principle:** "Wait on what it needs" assumes the awaited state stays once reached. When the app legitimately passes through a state, a later look can miss it on a slow machine; delaying the check on purpose is the cheap experiment that tells a transient from a slow arrival.
 
 ### Observation 651: Turning traces on across a whole CI share to chase one flake changes the share
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 1 step 4 (a failure only a CI machine shows: a cheap event log, a trace of one test, spread across machines); the case itself is in GD already (20 Oct 26)
 **Date:** 2026-10-20
 **Session context:** The shaky-tests batch — [CI-E2E-FLAKES-1020], a browser test that failed only on GitHub's Linux machines.
 **Skill:** systematic-debugging
@@ -1531,7 +1424,7 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 ### Observation 652: A change to a page's boxes runs every browser test that drives those boxes, not only the page's own file
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): TDD Verify GREEN "Which other tests?" (found by how tests reach the thing — selectors and ids)
 **Date:** 2026-10-21
 **Session context:** Raptor — the Logic page fixes ([LOGIC-REDRAW-DROPS-TYPING], [LOGIC-DONE-FIRST-PRESS]), pull request 554
 **Skill:** verification-before-completion (and the project's bug-check order, `raptor-port/docs/bug-check-order.md` §5 "between fix rounds")
@@ -1554,7 +1447,7 @@ different feature that merely pass through it.
 
 ### Observation 657: The backlog's archive command leaves the item's line in the priority list, and the document check passes it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): TOOLS (the archive script removes the priority-list line; the check fails on an orphan); until then SH Step 3 says to remove it by hand
 **Date:** 2026-10-21
 **Session context:** D1106 built on the look-and-keys branch; `backlog-archive.mjs FLOATWIN-BOARD-BAR --homes …` moved the item's section to the archive (numbered past 656, the highest on the night-records branch)
 **Skill:** New skill candidate: none — project tooling (`raptor-port/scripts/backlog-archive.mjs`, `docsize.mjs`)
@@ -1569,7 +1462,7 @@ different feature that merely pass through it.
 
 ### Observation 658: A new test's precondition must be shown to happen before its break test means anything
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): TDD Verify RED "An assertion that something is ABSENT" and WS §4 "A negative assertion first asserts that its subject exists"
 **Date:** 2026-10-21
 **Session context:** the pinch-zoom job (numbered past 656 on `claude/night-records-1021`); two new browser tests ("a pinch on a wave grip moves no wave", "a pinch on a Quals heading moves no column") passed with their fixes taken out
 **Skill:** New skill candidate: none — the bug-check order's break tests (`raptor-port/docs/bug-check-order.md` §8)
@@ -1584,7 +1477,7 @@ different feature that merely pass through it.
 
 ### Observation 659: A mock-up's picked state must show the thing being asked about
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Judging, the busy state (choose the state by what it shows; count the exact element)
 **Date:** 21 Oct 26
 **Session context:** [BOARD-SIDE-WIDTH] — drawing "a crossed-out man's reason beside his puck" on the Scheduler Board's crew list
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1599,7 +1492,7 @@ different feature that merely pass through it.
 
 ### Observation 660: A walk check over a list passes when the list is empty — and the touched tests miss the stylesheet tests
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (a check over a list asserts its size and premise) and TDD "Which other tests?" (a style change runs the tests that read stylesheets)
 **Date:** 21 Oct 26
 **Session context:** [BOARD-SIDE-WIDTH] — the walk of the board's right panel, then GitHub's run
 **Skill:** (project guide) raptor-port/docs/walk-scripts.md; raptor-port/docs/bug-check-order.md §5 "the touched tests"
@@ -1614,7 +1507,7 @@ different feature that merely pass through it.
 
 ### Observation 661: A fixed room sized from one machine's fonts fails on another's
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DP §3 (a label's room reserved by the layout, never a width measured in one machine's letters)
 **Date:** 21 Oct 26
 **Session context:** [ARROWS-STAY-PUT] (D1122) — keeping arrows still around changing words
 **Skill:** (project guide) raptor-port/docs/design-practices.md §6; mockups-on-the-real-app.md "A fit drawn in the test browser's letters…"
@@ -1629,7 +1522,7 @@ different feature that merely pass through it.
 
 ### Observation 662: A stand-in font must pass what the real one passed before it can judge a new case
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §7.9 (a stand-in is believed only once calibrated) — where its own "met again" line says the general rule belongs
 **Date:** 21 Oct 26
 **Session context:** [ARROWS-STAY-PUT] — sizing labels by the real font so GitHub's Linux checks go green (applies Observation 661)
 **Skill:** (project guide) raptor-port/docs/walk-scripts.md; mockups-on-the-real-app.md "A fit drawn in the test browser's letters…"
@@ -1646,7 +1539,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 ### Observation 663: A part moved out of its box in a mock-up loses the box's styles
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Traps (moving nodes between containers keeps the scoped side)
 **Date:** 21 Oct 26
 **Session context:** [INPUTS-SANS-HEAD-SAME] (D1123) — drawing two calendars' top rows as one, on the running app
 **Skill:** brainstorming/mockups-on-the-real-app.md — "Traps When Injecting Into a Live Page"
@@ -1661,7 +1554,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 ### Observation 664: A comment heading in capitals tripped a test that scans the source for a name
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): GD §How the gates lie (the source-scanning tests read comments) and TDD "Which other tests?"
 **Date:** 2026-10-21
 **Session context:** Round 2 of the consistency look — a new comment in the Tracker's App.jsx, written in this repo's capitals-heading style ("ONE JOINED BOX, AS THE INPUTS / SANS / MEDICAL TABS ARE"), turned GitHub's unit share red: inputs-readers.test.ts lists every file whose text holds the store's name INPUTS, comments included, and demands each be classified.
 **Skill:** New skill candidate: none — raptor-executor / the project guide's coding conventions
@@ -1676,7 +1569,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 ### Observation 665: A look's picture script should tag the mark, not assume where it lives
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Traps ("every X" found on the running page)
 **Date:** 21 Oct 26
 **Session context:** Round 3 of the consistency look: picturing every typed pencil in the app, today and drawn.
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1691,7 +1584,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 ### Observation 666: A walk that checks an icon is "there" passes an icon in the wrong place
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (an icon's place, not only its presence); the crop helper: TOOLS
 **Date:** 21 Oct 26
 **Session context:** Round 3 of the consistency look: swapping typed marks for drawn icons in many buttons, then walking them.
 **Skill:** New skill candidate / bug-check order (walk-scripts.md)
@@ -1706,7 +1599,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 ### Observation 669: A "before" worked out by undoing styles on the page is not the before — measure a build of the old look
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): WS §8 ("for one size, role or mode that must not move: dump everything from the build BEFORE the first edit"; "for one measured number, swap the touched files from `origin/main`, rebuild, run the SAME script")
 **Date:** 2026-10-21
 **Session context:** Raptor round 3's answers 5–7 — the Tracker bar's controls made one height; the ruling also said the bar must grow no taller (numbered past 668, held by `claude/leave-war-overhaul`)
 **Skill:** New skill candidate: none — the walk-scripts guide (`raptor-port/docs/walk-scripts.md`) and the bug-check order's walk
@@ -1720,7 +1613,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 **Principle:** A comparison is only as good as its baseline; measure the old state the same way, in the same browser, as the new — and a match between a fixed size and a computed one is a match on one device only.
 ### Observation 671: A shared claude.ai app draws nothing without its database — run its saved source locally against a stand-in store to picture it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Showing It (picturing someone else's app)
 **Date:** 21 Oct 26
 **Session context:** [LW-OVERHAUL] (D1140) — comparing a colleague's leave app (a claude.ai artifact from another organisation) with our Leave War, pictures of both for the owner. Parallel branch claude/consistency-round2 was at 663 when this was written.
 **Skill:** brainstorming (`mockups-on-the-real-app.md`); impeccable (shape — studying a reference product)
@@ -1735,7 +1628,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 ### Observation 667: In a zoomed grid a rect reads unzoomed, and a copied column table hides behind the real one — a mock-up's moves and marks go wrong silently
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Traps (inside a zoomed part rects read unzoomed; every copy of rows moved; a new window appended inside the scope)
 **Date:** 21 Oct 26
 **Session context:** the Leave War overhaul's full mock-up, drawn into the real build (claude/leave-war-overhaul). Numbered 667 past main's and consistency round 2's 664.
 **Skill:** brainstorming (`mockups-on-the-real-app.md` — Traps When Injecting Into a Live Page)
@@ -1750,7 +1643,7 @@ Met again 25 Oct 26 (`claude/lw-m3-placing-leave`, the keyboard lift, four round
 
 ### Observation 668: A shell edit turned `\b` in a regex into a backspace character, twice — the trap the memory names for `node -e` hits Python and here-docs too
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): GUARD (its met-again lines counted into the item); the numstat check: memory `python-edits-crlf-trap`
 **Date:** 21 Oct 26
 **Session context:** editing the mock-up's drawing scripts by Python inside a bash here-doc and by `python -c`.
 **Skill:** task-observer (repo memory notes: "node -e in Git Bash loses escapes", "Python edits turn LF into CRLF")
@@ -1773,7 +1666,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 670: A cross-branch search for the next free ruling number skipped every branch's area file without a word — the same Git Bash path rewrite the numbering rule warns of
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DEC (the next free number on every branch in one `git grep`); TO Numbering item 4 (the same for observations)
 **Date:** 21 Oct 26
 **Session context:** Leave War overhaul round 4 — finding the next free D-number across every branch before recording his answers
 **Skill:** record-decisions (the "take the next free number" step) / task-observer numbering rule 4 (same trap)
@@ -1788,7 +1681,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 672: Design lessons are numbered in one sequence, so two branches adding lessons collide at the merge — as rulings would without their ranges
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): DP §9 head (a branch that will add lessons takes a range; a renumber touches only its own side)
 **Date:** 22 Oct 26
 **Session context:** the Leave War overhaul's overnight run merged `main` into `claude/leave-war-overhaul`.
 **Skill:** New skill candidate / the design guide's §9 rule (D941) and `record-decisions.md`
@@ -1803,7 +1696,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 673: A critique of a mock-up drawn into the running app needs a standalone markup copy before the detector can read it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Judging (a detector's copy of a drawn mock-up; a control's edge contrast)
 **Date:** 2026-10-22
 **Session context:** Leave War overhaul, round 14 — /impeccable critique of a balance tile that exists only as a mock-up injected into the real local build by a Playwright script
 **Skill:** impeccable (reference/critique.md — Assessment B); brainstorming (mockups-on-the-real-app.md)
@@ -1818,7 +1711,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 674: A "less height" redraw measured its own saving in the drawing script, and the first draw saved almost nothing
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Judging (an ask about a quantity is measured in the same run, on every device)
 **Date:** 2026-10-22
 **Session context:** Leave War navigation, round 19 (D1240: tabs design redrawn with less height at the top), drawn into the running app.
 **Skill:** brainstorming (mockups-on-the-real-app.md); impeccable (shape)
@@ -1833,7 +1726,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 675: A ruling answered on one picture left another picture of the same screen stale, and he caught it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Showing It (an answer changes every picture of the thing it governs)
 **Date:** 2026-10-22
 **Session context:** Leave War navigation, round 19: his D1242 gave members the Balances tab; the drawing of the member's main page (tabs Grid · OIL) was not redrawn in the same turn.
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1848,7 +1741,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 676: A drawing's caption described how today's app behaves from memory, and was wrong twice
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Judging, "This works like the existing X" (a caption about today's behaviour from what was measured)
 **Date:** 2026-10-22
 **Session context:** Leave War navigation, round 19: the under-manned chip folded into the Manning button.
 **Skill:** brainstorming (mockups-on-the-real-app.md); impeccable (shape)
@@ -1865,7 +1758,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 677: A design study draws every option on one shared data set, the earlier option redrawn too
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Judging (options compared share one data set)
 **Date:** 2026-10-22
 **Session context:** Leave War events study (his "is there a better way to design the events"), three ways drawn on the real grid
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1880,7 +1773,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 678: Close-up pictures of each changed control caught button-style faults that full-page walk pictures missed
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §7.10 (a close-up of every new or restyled control) and WS §4 (a new button's colours equal a sibling's)
 **Date:** 22 Oct 26
 **Session context:** the Leave War overhaul's M1 bug check — three Sonnet walkers, two re-walks, two blind code reads, then the owner's look pictures
 **Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md`) and `raptor-port/docs/walk-scripts.md`
@@ -1895,7 +1788,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 679: A refusal made permanent must be followed through both directions and one step behind
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §5 "A fix is new code" (a refusal made lasting: every twin path and every step behind it)
 **Date:** 2026-10-22
 **Session context:** Building D1263 (a member's Undo/Redo onto a Leave War day closed since) on M1's branch; two fresh Opus reads.
 **Skill:** systematic-debugging (and the bug-check order's §5 "a fix is new code")
@@ -1910,7 +1803,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 680: A geometry test that fails only on the CI's Linux machines is reproduced locally by forcing a wider font, not by reading the CI log
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): GD §How the gates lie (a geometry test red on Linux only: wider letters from the first paint) and BCO §7.2 (a layout fix walked once with wider letters)
 **Date:** 23 Oct 26
 **Session context:** The Leave War's M2 — three browser geometry tests red on GitHub's Linux run, green on the owner's Windows PC
 **Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md`) and `raptor-port/docs/gates-and-deploy.md` (the CI's traps)
@@ -1925,7 +1818,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 681: The walks pictured every screen after it settled, so a fault that lives in the moment after a tap — and stays on an iPhone — was never seen
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): his D1281: WS §5 (a picture right after a tap, the hover kept) and BCO §7.10 (the moment after a press; pinned cells never see-through)
 **Date:** 23 Oct 26
 **Session context:** The Leave War's M2 — the owner, on his iPhone, found a dirty blue block over the month strip after tapping a month; three walkers, a re-walk and the host's own walk had pressed those buttons and passed
 **Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7) and `raptor-port/docs/walk-scripts.md`
@@ -1940,7 +1833,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 682: An iPhone screen recording can be read on a PC with no video tools — the installed Chrome, in a visible window, decodes it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Showing It (a recording he sends is read first, with the project's frame tool) and DOB (the tool named); the frame tool itself was fixed by 721
 **Date:** 23 Oct 26
 **Session context:** planning the Leave War's pinch to zoom; he attached a screen recording of the fault and said to ask him to describe it if it could not be opened
 **Skill:** brainstorming (its mockups-on-the-real-app reference)
@@ -1955,7 +1848,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 683: A ring on a top-cropped picture is placed against the crop, not the whole picture
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): MOCK Showing It (a ring on a cropped picture)
 **Date:** 2026-10-23
 **Session context:** the Leave War pinch look card, an Artifact page of walk pictures with marked places (D921, D1222)
 **Skill:** brainstorming (mockups-on-the-real-app.md)
@@ -1970,7 +1863,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 686: A FULL walk read a window's top line in its "new bid" state only; the owner found it wrong in the "bid already placed" state
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): BCO §7.11 lesson 1 (a reading checked in one state only — the same fault)
 **Date:** 2026-10-24
 **Session context:** his iPhone look at the Leave War M3 build (pull request 569) the morning after its FULL bug check. Numbered past 682–685 on `claude/night-records-1021` (unmerged).
 **Skill:** bug-check order (raptor-port/docs/bug-check-order.md §7.4) / walk briefs
@@ -1985,7 +1878,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 687: A unit-test world without the real door could not reach the state the default control makes
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §7.4 (the states include the one each role's DEFAULT controls make; the red test goes once through that door)
 **Date:** 24 Oct 26
 **Session context:** M3's follow-ups — fixing the bid window's day line on a day already holding the bid (D1296), red test first
 **Skill:** existing — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.4 / §7.11), not a skill
@@ -2001,7 +1894,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 688: The Edit tool evens out a file's mixed line endings, turning a 16-line change into 218
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (memory): `python-edits-crlf-trap` gains a paragraph (the Edit tool evens a mixed file; compare numstat with and without line ends)
 **Date:** 2026-10-24
 **Session context:** Leave War — adding the demo's six counters (D1312); one Edit inserted 16 lines into `src/leavewar/state/store.ts`
 **Skill:** New skill candidate: none — a repo working note (beside the memory note "Python edits turn LF into CRLF")
@@ -2016,7 +1909,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 689: A drawing made with the design skill kept the old words beside the new boxes
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): DP §9 lesson 53 (his D1328: where a coloured box takes over, the words it makes redundant go)
 **Date:** 24 Oct 26
 **Session context:** Leave War — drawing the day list of a day with two entries (D1327: each entry led by its coloured box)
 **Skill:** impeccable (reference/shape.md — the brief); brainstorming (mockups-on-the-real-app.md)
@@ -2032,7 +1925,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 690: A field saved on blur, pressed past by a button — only a test without the blur sees an iPhone's loss
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (a box that saves when left is tested with no blur before the next press)
 **Date:** 24 Oct 26
 **Session context:** round 3's FULL check of the Leave War bid windows (branch claude/lw-m3-placing-leave)
 **Skill:** project method — `raptor-port/docs/walk-scripts.md` (§4) and the bug-check order's scenario design (not a skill file)
@@ -2047,7 +1940,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 691: CSS that loses silently — a scoping wrapper and an invalid shorthand, both caught only by a real browser
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): FONT (a structural test: no rule after a scope wrapper's close; no `font:` shorthand with `inherit`)
 **Date:** 24 Oct 26
 **Session context:** round 3's FULL check of the Leave War bid windows
 **Skill:** project method — the build's guards (`raptor-port/docs/gates-and-deploy.md`, a structural test) (not a skill file)
@@ -2062,7 +1955,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 692: A change of words on screen missed the older test that pinned the old words
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): TDD "Which other tests?" (for changed words, every test holding the OLD words); BCO §6's wording roll-call already asks it
 **Date:** 2026-10-24
 **Session context:** Leave War round 2's check — GitHub's run of the branch head failed a unit test the previous chat never ran
 **Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`, the fix step) and the debugging guide
@@ -2077,7 +1970,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 693: A demo record seeded for a new feature broke an unrelated browser test by its date
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): TDD "Which other tests?" (a new seed record's date and person)
 **Date:** 2026-10-24
 **Session context:** Leave War round 2 — a seeded entry of a new kind on 14 Jan raised its own window over the Holidays list in a phone test that makes 14–15 Jan a holiday
 **Skill:** raptor-executor (building) / walk-scripts (`raptor-port/docs/walk-scripts.md`)
@@ -2092,7 +1985,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 694: A file committed with Windows line endings in most lines defeats exact-match edit scripts
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (memory): `python-edits-crlf-trap` (count CR with node; an anchor in the spot's own endings); the edit helper: GUARD's cheaper alternative
 **Date:** 2026-10-24
 **Session context:** Leave War round 2b — edit scripts (node, exact-string anchors) against `raptor-port/src/leavewar/state/store.ts`
 **Skill:** raptor-executor (building) — the project's edit-script habit
@@ -2107,7 +2000,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 695: Before adding a new kind to a discriminated union, audit every branch on the kind in parallel
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 (a new kind of an existing record lists every branch on the kind)
 **Date:** 2026-10-24
 **Session context:** Leave War round 2b — UNA became a new kind of the war's own record (a new member of the record and day-view unions)
 **Skill:** raptor-executor / bug-check order (roll-call)
@@ -2122,7 +2015,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 696: A walk script that reads SAVED records must take its key from the built app's storage, proven on one known write
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (a step that reads a saved record takes the built app's storage key, proven on a known write)
 **Date:** 2026-10-24
 **Session context:** Leave War round 2's FULL check — the walk script v2 read the war's saved records to assert what a gesture stored
 **Skill:** walk scripts (`raptor-port/docs/walk-scripts.md` §4) / bug-check order §7
@@ -2137,7 +2030,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 697: Word matching over textContent fails where the page runs words together; match an element whose own text is the word
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (a word found by the element that draws it)
 **Date:** 2026-10-24
 **Session context:** Leave War round 2's FULL check — the walk's Inputs-list check (H8) at phone and desktop size
 **Skill:** walk scripts (`raptor-port/docs/walk-scripts.md` §4)
@@ -2152,7 +2045,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 698: An engine-only layout fault can be pinned red in a single-engine suite by injecting the other engine's metric
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §7.9 (a fault one engine shows: inject the metric that differs, state the rule engine-free)
 **Date:** 2026-10-24
 **Session context:** Leave War round 2's FULL check — the walk in WebKit found the row under the leaves 30 tall under leave buttons 28 tall (Chromium: both 30)
 **Skill:** bug-check order §7.9 / §8 item 4 (red first in the medium it runs in); walk scripts §9
@@ -2166,7 +2059,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 **Principle:** A fault that depends on an environment the suite lacks is pinned by reproducing the environment's difference, not the environment.
 
 ### Observation 699: Drawings he asks for "now, so I can answer tonight" should reach him as each lands
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): OVN step 6 (drawings he waits up for are published as each lands)
 **Date:** 2026-10-25
 **Session context:** /overnight 12 on the Leave War branch; he asked for four outstanding drawings to answer before sleeping
 **Skill:** overnight
@@ -2181,7 +2074,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 700: A gate chained with `grep -E "FAIL|OK" && …` lets a failure through
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): VBC "A check passed" row (output piped through `grep` reports the filter's success) and its long-check patterns
 **Date:** 25 Oct 26
 **Session context:** the keyboard fix's third round on claude/lw-m3-placing-leave; a handoff-block rewrite committed and pushed in one chained command
 **Skill:** session-handoff (and every chained commit-and-push of records)
@@ -2196,7 +2089,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 701: A test's stand-in for an outside system's behaviour was built from the code under test, so it could only pass
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WGT Principle 1 (a stand-in's numbers come from the real thing); the keyboard case is WS §3 and BCO §7.11 lesson 7
 **Date:** 2026-10-25
 **Session context:** A phone keyboard fix (a window moved in step with the phone's own slide as the keys open). Round 5 added a browser test that "played the phone's slide frame by frame" — but played it on the very easing curve and duration the app itself animated on. The test passed; on the owner's phone the window ran 90–145 points ahead of the real slide and the page behind it showed. Measuring the real slide off his screen recording (60 frames a second, a debug readout fixed at the pan) gave a different curve (ease-in-out, 250ms, the app told 30ms late); the rewritten test failed on the shipped code, 79–130 points, and passed on the fix.
 **Skill:** test-driven-development
@@ -2211,7 +2104,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 702: A device-only fault that passes every stand-in round should trigger the "stop steering" question early, not at round six
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 4 step 5 (two misses on a device: stop, three options); the keyboard case is BCO §7.11 lesson 7
 **Date:** 2026-10-25
 **Session context:** The keyboard fault on the owner's iPhone (the page behind a window showing as the keys rise). Six rounds in one day, each red-then-green against a stand-in keyboard tuned from his recordings, each still failing on his phone; after round 5 he said "the old one was smoother". At round 6's failure he asked whether to call another model.
 **Skill:** systematic-debugging (and the project's bug-check order)
@@ -2226,7 +2119,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 703: Checkpoint (lw-m3 build, three pieces done)
 
-**Status:** OPEN
+**Status:** DECLINED (2026-10-27) — closed on his word in the skill review of 27 Oct 26: a checkpoint marker ("no observations at this checkpoint") — nothing to carry; recommended closed
 **Date:** 2026-10-25
 **Session context:** building the five Leave War items of the M3 handoff
 **Skill:** task-observer
@@ -2241,7 +2134,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 704: A new style rule appended after a scoped stylesheet's wrapper loses silently — only a real browser sees it
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (filed): FONT (the same structural guard as 691); the placement rule is BC CSS Placement ("find what encloses the insertion point: a scope wrapper")
 **Date:** 2026-10-25
 **Session context:** the Leave War M3 build's FULL check (`claude/lw-m3-placing-leave`) — the joined bar (D1359) and the outlined commitment look (D1370)
 **Skill:** brainstorming (build steps) / bug-check order
@@ -2256,7 +2149,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 705: A walk helper that sets its output folder with "=" overwrites the first walk's evidence on the re-walk
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §6 (check every helper's folder line before a re-walk); the helpers fixed: TOOLS
 **Date:** 2026-10-25
 **Session context:** the same FULL check's re-walk
 **Skill:** bug-check order (walk-scripts.md §6)
@@ -2271,7 +2164,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 706: A walker's judge line can fail its own scenario, and a scripted touch scroll may not scroll the page
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (absence judged as absence; a scroll step asserts it moved; "in view" by `elementFromPoint`)
 **Date:** 2026-10-25
 **Session context:** the same FULL check — scenarios 7 and 8 (the bubble's Show ›)
 **Skill:** bug-check order (walk-scripts.md §4, §7)
@@ -2286,7 +2179,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 707: A walk judged a typed remark by the panel's page text, which leaves out what stands in a box
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (typed words are in a box's `value`) — merged with 697
 **Date:** 2026-10-25
 **Session context:** the M3 build's FULL check — the walk of the code read's Q3 (a course added from the board's Unavailable "+ Add")
 **Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md §4)
@@ -2301,7 +2194,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 708: The roll-call missed the crew list for a change to who counts as away
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 (where an input is filed: one row per reader of availability)
 **Date:** 2026-10-25
 **Session context:** the M3 build's FULL check — the code read's Q2 found Edit Schedule's crew list drawing a man on a course free; no roll-call row named the crew list
 **Skill:** bug-check order (raptor-port/docs/bug-check-order.md §6, the roll-call)
@@ -2316,7 +2209,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 709: A count read from a mark the app works out for the view on screen must be walked across a change of view
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §7.0 (a change that reads stored state: what else makes the field appear or vanish)
 **Date:** 26 Oct 26
 **Session context:** the night of 26 Oct 26 (/overnight) on `claude/lw-m3-placing-leave` — [LW-REJECTED-CSE], the Leave War counting a rejected course back in
 **Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.0, the sizing step) and `raptor-port/docs/walk-scripts.md`
@@ -2331,7 +2224,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 710: A LOOK tier's before/after pictures came free from the batch walk's own step
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §5 after the tier table (a LOOK re-runs an earlier walk's one step) and WS §6 (the step filter)
 **Date:** 2026-10-26
 **Session context:** a one-label change (Grant OIL's "HO · ½" → "HO · 0.5") right after the batch that built that control
 **Skill:** New skill candidate: none — the bug-check order's LOOK tier (project doc, not a skill)
@@ -2346,7 +2239,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 711: A filed code-read finding names one case — test its siblings by the same mechanism before building its fix
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 4 step 1 (a filed finding is a sample: its siblings as red cases)
 **Date:** 2026-10-26
 **Session context:** building [LW-OD-DISCARD-COUNT], a reviewer's filed finding ("an overseas duty … reads Discard 2 edits") with the fix spelled out for overseas duties only
 **Skill:** systematic-debugging (and the bug-check order's scenario design)
@@ -2361,7 +2254,7 @@ Met again the same day, twice more: a here-doc'd edit script turned `'\\r\\n'` i
 
 ### Observation 712: A filed fault's "the right answer is X" is a claim — measure it by running the real action before writing the red test
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 4 step 1 (a prediction's red test also performs the action) — merged with 711
 **Date:** 2026-10-26
 **Session context:** [LW-LOAD-RELAND-RID] — a filed fault said a confirm button read "Discard 2 edits" for a load "that discards nothing"
 **Skill:** systematic-debugging (the reproduce step), with the bug-check order's red-first rule
@@ -2383,7 +2276,7 @@ previews. A filed expected value is a hypothesis, however confident the filing.
 
 ### Observation 713: A page-text read misses what sits inside editable boxes — check by the element, not its text
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §4 (a row's presence by an element keyed to it) — merged with 697
 **Date:** 2026-10-26
 **Session context:** the walk of [LW-LOAD-RELAND-RID]: "is the overseas duty listed under Unavailable after the load?"
 **Skill:** the walk-scripts guide (`raptor-port/docs/walk-scripts.md`) — a project doc, not a skill
@@ -2402,7 +2295,7 @@ its value and never in innerText.
 
 ### Observation 715: An overnight run can hand each job to a fresh helper — a separate session cannot be started from the phone or from a woken turn
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): OVN step 6 ("Low or Medium?", his D1104 — never homed in the guide) and Part 2 (each job one fresh helper, as D1103's night found) — **a question for him** (Round 1); the helper line is installed only with the D-number of his answer, and `[OVERNIGHT-SESSION-PER-JOB]` closes only then
 **Date:** 2026-10-21
 **Renumbered:** was 653 on `claude/night-records-1021`; re-appended at the merge of main, 24 Oct 26 (its number was taken on main).
 **Session context:** /overnight, 14 hours, six jobs; the owner asked mid-run for "a new chat per job" to cut weekly usage.
@@ -2418,7 +2311,7 @@ its value and never in innerText.
 
 ### Observation 716: `cd ..` from a worktree's root lands outside the repo, and a bare `git` there acts on the main checkout
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (memory): new note `worktree-never-cd-up-before-git`
 **Date:** 2026-10-21
 **Renumbered:** was 654 on `claude/night-records-1021`; re-appended at the merge of main, 24 Oct 26 (its number was taken on main).
 **Session context:** the overnight run; switching the night's worktree to job 1's branch.
@@ -2434,7 +2327,7 @@ its value and never in innerText.
 
 ### Observation 717: The push guard judges the project's main folder, not the worktree — push by explicit refspec
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): OVN Part 2 "At every commit" (push by explicit refspec, alone); the guard's misjudgement: TOOLS
 **Date:** 2026-10-21
 **Renumbered:** was 655 on `claude/night-records-1021`; re-appended at the merge of main, 24 Oct 26 (its number was taken on main).
 **Session context:** the overnight run; pushing job 1's records from the night's worktree.
@@ -2450,7 +2343,7 @@ its value and never in innerText.
 
 ### Observation 718: The app turns Auto-fix on for every new pull request in the session
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (reflected): `.claude/rules/shipping.md` §Pull requests (Auto-fix found on is switched off and said, D1090); OVN "stop watching it at once"
 **Date:** 2026-10-21
 **Renumbered:** was 656 on `claude/night-records-1021`; re-appended at the merge of main, 24 Oct 26 (its number was taken on main).
 **Session context:** the overnight run; five pull requests opened (555–559).
@@ -2465,7 +2358,7 @@ its value and never in innerText.
 **Principle:** A default the host re-applies per item needs a standing step at the moment each item is created, not a one-off fix.
 ### Observation 714: Handoffs let six built, checked pull requests fall out of view
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SH Step 1 (every open pull request accounted for in the block)
 **Date:** 2026-10-26
 **Session context:** levelling a fresh chat with main and reading the merged block's "Pick up here"
 **Skill:** session-handoff
@@ -2480,7 +2373,7 @@ its value and never in innerText.
 
 ### Observation 719: "Take their side" of a conflicted file takes the whole file, not the clashing lines
 
-**Status:** OPEN
+**Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): VBC Common Failures (a merge's conflicts: hunk by hunk, diffed against both parents)
 **Date:** 2026-10-26
 **Session context:** merging main into six old pull requests (D1402), one after another
 **Skill:** New skill candidate: merging-old-branches (or an addition to the session-handoff / bug-check guides)
@@ -2537,3 +2430,18 @@ its value and never in innerText.
 **Suggested improvement:** In Delivering updated skills: record each live file's fingerprint when its draft is made, and have the install refuse a live file that has changed since ("rebase the draft first"); rehearse the project's checks with the drafts in place before the read, not only before the install.
 
 **Principle:** A draft is a diff against a moment; check the moment still holds before applying it, and run the target's own checks on the drafts while they are still cheap to change.
+
+### Observation 723: Every rulings filing rewrote the map a staged DECISIONS.md draft is built on
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** the skill-notes review of 27 Oct 26, recording his answers to two rounds while the drafts waited for install
+**Skill:** task-observer (references/weekly-review.md — staging and delivering)
+**Type:** internal
+**Phase/Area:** weekly-review — staging a draft of a file a script rewrites
+
+**Issue:** The review staged a draft of `DECISIONS.md` (three lines added to its head). Each of his answers was recorded as a ruling, and `backlog-archive.mjs --rulings` rewrites that file's map every time; five times in one day the staged draft fell behind the live file. The install guard caught it each time (good), but each catch cost a rebase, a fresh blob id in `_review/live-hashes.txt` and a commit; once the rebase ran before a second `--rulings` call in the same step, and the rehearsal refused again.
+
+**Suggested improvement:** In weekly-review's staging step: a draft of a file a project script rewrites (here the rulings map) is staged as the ADDITION only — its anchor and its text — and `install.mjs` applies it to the live file at install, so no ruling recorded during the rounds can make it stale. Until then: rebase and refresh the hash only after the LAST `--rulings` call of a step.
+
+**Principle:** Stage a change to a generated or script-maintained file as a patch applied at install, not as a whole-file copy; a whole-file draft of a file that keeps changing goes stale at every write.

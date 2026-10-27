@@ -39,6 +39,13 @@ settings must MERGE into this file, not overwrite it, or the hook goes dark.
 
 ## Known caveats (not bugs)
 
+- **A critique's snapshot is not saved in this repo** (settled 27 Oct 26, the skill-notes review). `/impeccable
+  critique`'s "Persist the Snapshot" step writes `.impeccable/critique/` at the repo root, and the document check fails
+  the turn on a new document outside `raptor-port/docs/` (13 Oct 26; skipped by hand again on 22 Oct 26). Here a critique
+  skips that step and writes its scores into the look's own record — the evidence sheet or the mock-up page — so its
+  trend line, and a later `/impeccable polish`'s inheritance from the snapshot, are not used. The two older snapshots in
+  the skill's folders date from before the check.
+
 - **The offline detector is an undercount.** `scripts/detect.mjs` wants
   `htmlparser2`/`css-select`/`css-tree`/`domutils`; a fresh container has none,
   so it falls back to regex matching and prints a DEGRADED banner

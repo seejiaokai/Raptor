@@ -6,7 +6,7 @@ The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 t
 size is `docs/walk-ledger.md`. This file is the HOW. Every line is here because a walk, a re-walk or a break test once
 reported something untrue — a fault that was the script's own, or a pass that proved nothing. The drivers are in
 `raptor-port/scripts/handpass/` (`lib.mjs`, `trk-lib.mjs`; the break runners `breaks.mjs` and `breaks-browser.mjs`); the
-traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26 from the skill notes of 24 Sep – 13 Oct 26.
+traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26 from the skill notes of 24 Sep – 13 Oct 26; extended 27 Oct 26 from those of 13–26 Oct 26.
 
 ## 1. Before the walkers start
 
@@ -17,6 +17,9 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
 - **One served folder a round** (the order's §4). A server found already running is used only once it is proved to
   serve this build: the hashed bundle name in the index page it serves equals the local build's. Check a port is free
   before pointing a run at it (`docs/gates-and-deploy.md`).
+- **A new script's name carries its job's word and is proved free** — list the folder and search `docs/file-map.md`
+  first. A write tool that answers "updated" to what was meant as a create is a stop (14 Oct 26: a new walk script went
+  over the previous day's script of the same name, and was run and cited under it).
 - **The clock is set to a start time and left RUNNING.** A frozen clock gives two records filed minutes apart the same
   moment, and a rule that tells them apart by time then matches them — a FAIL of the walk's own making. Hold it still
   only for a recording that must repeat byte for byte (§8), or for a scenario about one instant.
@@ -27,6 +30,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   is written to a file with the file tool and run from there, never passed inline to the shell: backslashes are lost
   and an apostrophe fails to parse, often with no error. A script's rewrite and its run are never sent in one step —
   the run may use the old file — and a script prints a version line at the top of every run.
+- **The route every scenario starts from is driven by the host first** — a browser test or a look script that passes —
+  and the brief names that file as its recipe. A control named in a brief comes from that passing run, never from
+  reading the source: the source says what exists, not what is on screen, in which panel, folded or open (13 Oct 26:
+  the brief's take-off button was not on the board, and the card with "Accept" sat in a folded panel; the host's own
+  browser test of the route failed three times on exactly those steps before anything of the app was wrong).
 - **Scope and stopping:** the number of scenarios; one picture per assertion that matters; "stop and report after N
   failed attempts at one gesture"; "send your report ONCE, after stopping every script and browser you started". The
   report goes to a named file, and the hand-back message is a short summary. A walker's cost is its own token count
@@ -49,6 +57,10 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   its record and the failure is blamed on the app.
 - **What an action created is named by the difference** between the ids before and after it, never by position: one
   door puts a new record at the top of a list, another at the bottom.
+- **A fault seen only with a fixture planted straight into the data is checked through the real door before it is
+  filed.** A planted record can have a shape no door writes (17 Oct 26: an end date without its year; a backlog item,
+  its place and an engine change were built on it, and every real door writes the year). If the real door cannot
+  reproduce it, the item says it was seen only in planted data.
 - **A stand-in keyboard is set at the page's own height first, and plays his iPhone's measure as well as Chromium's.**
   The stand-in visible screen starts at the size the page had before its width was set (1668 on a 684 screen) — give it
   the real screen before the tap, or the app never learns the full height. And once the keys are up and the screen has
@@ -66,9 +78,27 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   that keeps its full words for a screen reader (clipped to 1px) beside a short form still counts both in `innerText`
   and `textContent`: read the children whose box is wider than 1px. The walk and the browser test both tripped on it;
   the pictures showed the right word.
+- **A word is found by the element that draws it.** To assert a word is shown, find a drawn element — a box wider than
+  zero, inside the surface being checked: the app keeps hidden copies (the week behind the board, a phone's frozen
+  band) — whose OWN trimmed
+  text equals the word — never a word-boundary pattern over a container's text, which runs words together ("DrifterOD",
+  "…ODLATE…"; 24 Oct 26, four tries). Words a person typed stand in a box's `value`, never in `innerText`: read the
+  `input` and `textarea` values too, and check that a row is there by an element keyed to it (its id-carrying button),
+  not by a panel's text (25 and 26 Oct 26). Read a grid cell's text once on screen before writing what it should say
+  (the Leave War's "FO*").
 - **Press the control the app routes.** Choose it by its action attribute, and use text only to choose AMONG those — a
   label is echoed in a neighbour's caption. Aim at the control's own box (the "+ add", the button), never at a
   container's centre: once a row holds people, its centre is a man's puck.
+- **A drag is aimed at the TARGET's measured box, never by a distance from the grip** (15 Oct 26: 1.6 rows below the
+  grip landed in the next formation on a desktop and back in place on a phone). Record the order before and after, so
+  a drop that landed in place is told from an app that failed; a mark painted after the redraw is waited for, never
+  looked for once.
+- **Two taps at one point closer than about half a second are a double tap** in Chromium's touch emulation, which
+  selects the word under the finger (19 Oct 26: the typed digit replaced only "00"). Wait about 600ms between taps on
+  the same box unless the step is about a second tap, and print the box's selection when a typing step fails.
+- **A box that saves when it is left is also tested with no blur before the next press.** On an iPhone a tapped button
+  takes no focus, so the box never blurs and its words are lost; Chromium's walk passes the same order (24 Oct 26, the
+  bid window's Remarks). Press with no blur in between — a unit test's events, or `element.click()` after focus.
 - **A locator that READS a result is copied from the markup that draws it** (or from an existing test of that element),
   never composed from a neighbour's attribute. Where a new walk script and a new browser test share a read, run the
   walk first: it is the cheap place to find that the read is wrong.
@@ -76,12 +106,35 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   gesture happened: the drag's ghost, the caption under it, the refusal's own words. "Nothing written" cannot tell a
   correct refusal from a press that landed off the screen.
 - **A negative assertion first asserts that its subject exists:** "not greyed" passes on a row that was never drawn.
+- **An absence is judged after the slowest route to presence.** Name what would have moved and wait out the slowest way
+  it could (14 Oct 26: End in a scrolling list settles after about 750ms; a check at 450ms passed), or read the cause
+  directly (the scroll position over time). A judge for "X is absent" is written as absence, never through X's own
+  fields (`!!b.show && b.show.visible === …` reports WRONG exactly when Show is rightly absent).
+- **A check over a list asserts the list's size first, and the premise that fills it** — `every(…)` over an empty list
+  passes (21 Oct 26: a fault dropped the picked seat, the list emptied, and "0 of 0" passed).
+- **Every scroll step asserts that the scroll position moved** — of the scroller the step means to move, not the window
+  — and "in view" is read with `elementFromPoint` at the
+  visible part's middle, never from the box alone: a scripted touch scroll (`Input.synthesizeScrollGesture`) left the
+  Leave War grid where it was, and the app bar or a frozen heading can stand over a box that is "in view" (25 Oct 26).
+- **`elementFromPoint` proves a surface that takes presses** (a window, a calendar, a button). It skips one that takes
+  none (`pointer-events: none` — a passing note, a mark) and returns what lies beneath: prove that one by its box inside
+  the screen and its computed visibility and opacity, and open the picture (20 Oct 26: eleven false FAILs on the note).
 - **A gesture meant only to LOOK** — a tap or a hover that reads — on a surface that can also be edited counts the
   writes before and after (history lines, the stored record) and requires none: the tap that reads can be the tap
   that saves.
 - **A single-slot surface** (a toast, a banner) is read for what it is LEFT showing after the whole action.
 - **A new card, form or panel has its geometry measured**, not only its content: the main controls' left and right
   edges against the fields above, and inside their container. Looking normalises ten pixels.
+- **A fit check is run with the LONGEST content the control can hold, in every instance.** Fill each box (the widest
+  weekday and month: a Wednesday in a long month) before measuring: four empty boxes of five passed, and two of them cut
+  "Wed 28 Oct 20…" once filled (13 Oct 26).
+- **When a typed mark becomes a drawn icon, assert its PLACE as well as its presence** — the icon's box beside the words
+  (its right edge at or before the words' left, their middles within a few pixels) and the control's height unchanged
+  (21 Oct 26: "wears the icon" passed 71 of 71 with one icon drawn above its words). A new button's computed background
+  and border equal those of a button of the same kind beside it (22 Oct 26: two new buttons drawn in the browser's grey).
+- **A step that reads a SAVED record takes its key from the built app's storage** — on a built site the Leave War's
+  records are `raptor:leavewar/rec:…`, not the `leavewar:rec:` its unit tests see — and the script proves the read once,
+  on a write it has just made, before any step relies on it (24 Oct 26: seven checks read nothing).
 - **Leaving a control.** A Tab inside a date box steps to its next part: leave it with Enter (where the app commits on
   Enter) or a press elsewhere. End and Home stop at the end of the wrapped LINE on a phone: use the document-level key
   (Control+End). When a "left the box" step fails, record `document.activeElement` before blaming the app.
@@ -113,8 +166,13 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   opens it.
 - **A fixed-coordinate picture ("the top of the page") scrolls to the top first**, and any helper that scrolls runs
   after it: a row that slid under the sticky bar reads as a new defect. Measure the claim, then picture it.
+- **A framed picture brings its subject into view first.** The shared `pic(…, { around })` clamps a box that is off the
+  screen to the screen's edge and pictures the top bar, while the step's measure, read from the element, passes
+  (15 Oct 26). Until the helper refuses it, scroll the subject into view before framing it.
 - **A script writes only under its own checkout**, every path resolved from the script itself (`import.meta.url`) —
-  never an absolute path into a worktree: worktree folders are reused by other chats.
+  never an absolute path into a worktree: worktree folders are reused by other chats. Its logs and scratch files go to
+  the session's scratchpad or a folder under the checkout, never a fixed name in the shell's `$TEMP`, which is one
+  folder for every chat on the PC (16 Oct 26: a run's `$TEMP/after.txt` held another chat's list).
 - **On a phone, a tap gets a picture right after it (owner D1281):** within about 100 ms of the lift, the pointer left
   where it pressed, besides the settled picture — an iPhone keeps the tapped thing "hovered", the test browser does
   not, and a fault that lives in that state is otherwise never pictured (the bug-check order §7.10).
@@ -136,6 +194,14 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   it with `await import('./lib.mjs')` afterwards, or set it in a small module imported first, as
   `scripts/handpass/ab/ab-env.mjs` does — or the pictures go to the driver's default folder in another checkout), and
   the evidence sheet writes the re-walk's command out in full, with its `rewalk/` folders, beside the first walk's.
+  **Before a re-walk, check the folder line of every helper file it loads:** `grep -n "LW_OUT =\|HP_SHOTS =" <its
+  files>` must print nothing but the re-walk's own setter file (its one line naming the `rewalk/` folder) — every other
+  helper must read `||=` — a helper that sets its folder with a plain `=` writes the re-walk
+  over the first walk's pictures (25 Oct 26, twice). Run a re-walk from a small script FILE that sets the folder
+  first, never with the variable typed into each command.
+- **A re-walk runs only the steps of the places the change touched.** Give the script a step filter (`ONLY=w2`) and use
+  it: a script being cheap is no reason to run all of it, and its unrelated steps bring failures of their own (15 Oct
+  26: a one-line change re-walked whole, stopped by an unrelated page change before the one step that mattered).
 - **Once a finding is fixed, the note that observed it becomes a CHECK** asserting the fixed behaviour, before the
   re-walk runs.
 
@@ -170,7 +236,11 @@ A refactor, a storage-only change, "leave the other sizes exactly as they are":
   pass on the OLD build — that is what makes it a description of "as it was", not of "as I built it".
 - **The build before the change:** `git archive <commit>` of the source and the config into a SHORT path,
   `node_modules` joined by a junction, built and served on another port (a `git worktree` of an old commit fails on
-  this repo's long picture names — `docs/gates-and-deploy.md`). For one measured number, swap the touched files from
+  this repo's long picture names — `docs/gates-and-deploy.md`). Leave the bulky folders out of the archive
+  (`':(exclude)raptor-port/docs'`) — the copy, install and build then take under a minute — and serve the built folder
+  from inside the test browser, routing every request to it (`index.html` as the fallback) at `http://localhost:<a
+  free port>`: the app's test hooks answer only on localhost, and no second server holds a port (15 Oct 26). For one
+  measured number, swap the touched files from
   `origin/main`, rebuild, run the SAME script into a scratch folder, put the files back and prove it with
   `git diff --stat` — never while walkers are served that build.
 - **A storage conversion is walked on data the OLD build really wrote.** Serve the old build, make the owner's kind
@@ -192,6 +262,12 @@ list.
   reader or a walker is using the checkout, break in a separate worktree at a SHORT path (`node_modules` by a
   junction). A runner that edits source holds the tree until it prints DONE: no edit, build, browser test or commit
   meanwhile.
+- **Re-run the WHOLE list after the last code change**, not only the breaks for the lines that changed: a later fix
+  that covers the same case makes an earlier guard's break silently green (17 Oct 26: 34 of 36 caught after the read's
+  fixes). Read each one that stays green by the four readings below.
+- **A walk or look script used as a break test's detector is pointed at a scratch folder.** It empties and rewrites
+  its evidence folder on every run, so six broken builds replaced the committed pictures with pictures of broken
+  screens (13 Oct 26). Run the look again on the true build afterwards.
 - **Prove the list runs before trusting its reds.** Run the guard suite once unbroken and compare its file count with
   the list — a mistyped file name "guards" nothing. A `find` that does not match exactly once is re-targeted, never
   counted. A test selected by name is confirmed to have RUN.

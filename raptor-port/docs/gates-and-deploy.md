@@ -158,6 +158,45 @@ a walk's `HP_URL`), check the port is free: `netstat -ano | grep ":<port> "`. On
 pointed at 4186 passed its first hundred tests and then failed 192 in a row, every one "waiting for #luser", because the
 page it loaded was the deck ("RAPTOR — Presenter"), not the app. Never stop a server that is not yours; pick another port.
 
+**A geometry test red on GitHub's Linux machines only (23 Oct 26, the Leave War's M2).** The app loads no font, so each
+machine draws its own: Linux's DejaVu Sans is much wider than this PC's Segoe UI (his iPhone sits between). Before reading
+the logs, run the test here with wider letters forced from the first paint — the Leave War browser tests'
+`LW_WIDE_LETTERS=1`, or the same init script (a style tag added after the page loads reproduced one failure of three: the
+app measures some text as it loads) — and in the test's own order of resizes (loading at the target width missed one).
+Prove each fix red-then-green both ways before pushing.
+
+**The tests that scan source text read comments too (21 Oct 26).** `src/engine/inputs-readers.test.ts` lists every file
+whose text holds the store's name `INPUTS`, and `src/state/perms-scan.test.ts` scans for rules decided outside their one
+place: a capitals heading in a comment ("… AS THE INPUTS / SANS / MEDICAL TABS ARE") turned GitHub's unit share red. Run
+both with the touched tests whenever a change adds or edits a source file, and keep a store's name out of capitals in
+prose.
+
+**The document check run in the middle of a merge reads the other side's changes as yours (13 Oct 26).** With a merge
+resolved but not committed it reported "a size marker changed in a change that also touches the app's code" — the marker
+had come in with `main`. Commit the merge, then run it.
+
+**A NEW rulings area file is set up in four steps before the first row moves into it (13 Oct 26 — two set-up slips, each a
+refused round of the mover).** (1) The file: its `paths:`, title, preamble and the short table's header. (2) Its row in
+`DECISIONS.md`'s map with at least one D-number in the last cell — the script rewrites the cell, and an empty one hides the
+row ("not in the map"). (3) Its byte tripwire in `RULING_BYTES` (`raptor-port/scripts/docsize.mjs`), added beside the
+others, never a placeholder (a patch that missed its anchor wrote one and dropped the scheduler's own tripwire). (4)
+`backlog-archive.mjs --rulings --move-rows --dry-run`, then the move, then a row-by-row compare against the base: the dry
+run does not run the real run's last inventory, so its pass is not the move's.
+
+**Stopping a gate run's background task does not stop the run (15 Oct 26, twice).** Stopping the task that ran
+`gatelock.mjs run` ended only its shell: the `gatelock` process, vitest and its fifteen workers ran on, and the lock stayed
+held. End them by their command lines (this checkout's path in them), then `gatelock.mjs status` → `release`, and see
+`free` before anything builds.
+
+**A worktree chat loads its settings, hooks and skills from the MAIN checkout (14 Oct 26).** In a worktree session the
+desktop app starts, `.claude/settings*.json`, `.claude/hooks/`, `.claude/skills/`, agents, commands and `.mcp.json` come
+from the main checkout's root (`C:\Users\User\projects\Raptor` — the process's `--project-config-root`); only `CLAUDE.md`
+and `.claude/rules/` load from the worktree. With the main checkout on an old branch, a merged hook or skill is in force in
+no chat (that day: the whole compaction set-up and `/overnight`, the main checkout 208 commits behind). After a merge that
+touches them, the main checkout must be on `main`, clean of tracked changes — the chat that saw the merge switches
+it, as the handoff guide says —; verify in a NEW chat by what the app reports
+(`get_usage`, the skill list), never by running the script by hand.
+
 *The baselines in the first paragraphs are history; the current one is `HANDOFF.md` §Gate baseline.*
 
 **Current main baseline — PR #420 ([SYNC-INTEG] medical guardrail batch: medical

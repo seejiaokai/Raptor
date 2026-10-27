@@ -69,7 +69,11 @@ one, and neither is an instruction about the work itself.
    16 Oct 26 — "1-5 as recommended": "the design guide learns from my suggestions", D939).** One line: the lesson in
    terms of the app he intends, its date and its ruling. One fresh reader — never the chat that wrote it — checks that the
    line says what he meant; he is not asked first. The closing report names every lesson added, and he may strike or
-   change any. Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
+   change any. **The line keeps to his words (D1417, 27 Oct 26):** it quotes or closely paraphrases them, covers no case he did not
+   correct, and gives no reason he did not give; the point behind it (step 1) is stated as his words support it, and
+   anything of the agent's own is marked as the agent's reading. The fresh reader is handed his words, the option he
+   picked and the line — and, where the lesson narrows a rule, that rule and its pointer — nothing else (16 Oct 26: the
+   first lesson gained a reason he never gave and a wider scope, both found that way). Where the correction only brings a screen back to what he had already ruled, it teaches nothing new: no line
    is written, and the closing report names the correction so he can ask for one. A lesson that narrows a rule already in this guide says so
    in its line, and that rule gets a short pointer to it, checked by the same fresh reader as part of the lesson. (Until 16 Oct 26 he was asked each time and the line was read and
    approved as any change to this guide is — D852, D70; the rest of the guide, apart from a lesson's line and its pointer, still changes that way.)
@@ -99,6 +103,9 @@ as it stands.
 - **Every word earns its place or goes.** What the screen already shows is a candidate to go (a hint that repeats its
   own label, a count the list makes obvious). Three ends for any note, each put to him before and after: **shortened**,
   **removed**, or **moved under one short "How this works" fold** for that page — as the two calendars have (D628, D646).
+  A note MOVED away from what it describes takes that thing's name with it, and is read cold (§1a test 9) like a
+  reworded one: the place it stood was part of what it said (16 Oct 26: "Editing:" moved into a Legend no longer said
+  editing what).
 - **Text that only explains what the screen already makes plain is recommended for deletion (owner D846, 14 Oct 26 —
   "these are the examples of things u can delete and they are self explanatory").** His two examples, both on the OIL
   question: the small print under its answers ("The credit lands on the Leave War as an HO cell and moves the OIL
@@ -209,6 +216,10 @@ what the note must still say afterwards — **the protected list: what happened 
 right · every name and every number.** This is the method for the first of §1's three ends — a note that stays and gets
 shorter. Removing a note or folding it is §1's own decision, put to him as such.
 
+0. **Find every place the words are raised, first.** Search the code for the string — every place, with the count
+   stated — and, for each, the condition that reaches it, followed one call up. A string no path reaches is reported
+   dead, not reworded; a record's "checked in the app" names the function read (14 Oct 26: an approved shorter wording
+   was of a note its function had stopped raising three weeks before).
 1. **Measure the box before the words.** A note that "runs long" is first measured where it sits, at the smallest size
    the app ships: the box's width against the screen's, and how many lines it takes. The box and the words are reported
    as two separate findings — the box is often the cheaper fix (13 Oct 26: every passing note was half a phone's width).
@@ -414,6 +425,11 @@ they are?** A design is not finished until its keyboard set is written down besi
 NEW work must do; where something already built does less, that is a gap for the keyboard sweep to list (D807) and is
 built on his word — it is not a statement that the app does it today.**
 
+**Where the keyboard walks a structure** (a chart, a tree, a graph), one test explores it exhaustively over the REAL data
+— every state of the navigation, its position and whatever it remembers, from the start — and asserts that every item is
+reached: tests of each step prove the steps, not the coverage (17 Oct 26: 13 events of the real charts could not be
+reached by the arrows, every step test green).
+
 | The thing | What the keys must do |
 |---|---|
 | A window, sheet or question | Tab and Shift+Tab go round INSIDE it; Escape closes it; when it closes, the keyboard goes back to the button that opened it (or the nearest sensible place if that is gone) |
@@ -467,7 +483,9 @@ and only then shorten, remove or fold the instruction (§1), each change shown t
   heading a person would use (D809). Elsewhere that arrangement is offered as a picture, not assumed.
 - **One main button a view, in the same place every time; the dangerous one apart from it.** A control tapped again
   and again never moves under the finger (D687, the standing rule on repeated taps) — nor do arrows around words that
-  change: the words get their longest value's room (§9, lesson 16 — D1122).
+  change: the words get their longest value's room (§9, lesson 16 — D1122), reserved by the layout itself — every value
+  the words can take stacked in one grid cell, all but the current one hidden — never a width measured in one machine's
+  letters (21 Oct 26: a width measured on this PC let an arrow move 3px on GitHub's Linux machines).
 - **Show that more is hidden** — a fold says what is in it; a list that scrolls shows a cut row, not a clean edge.
 - **Fold what is rarely needed; never fold what is needed to act.**
 - **Order by what matters to the person doing the job**, not by how the code is arranged.
@@ -652,7 +670,10 @@ state nobody drew.
 
 *What his design corrections teach, written in the same day he makes one (§0, step 2), each checked by one fresh reader;
 he may strike or change any. Newest first. Where a lesson meets a general rule above, the lesson wins, and that rule
-points here.*
+points here. A branch that will add lessons takes a range of lesson numbers before its first, as a chat does for ruling
+numbers, and names it in its handoff block; where two branches still meet on a number, the merge renumbers only the
+branch's own side, by script, and the closing report tells him the old and new numbers (22 Oct 26: eleven lessons
+renumbered across five files, and his page still said "lesson 28" for what became 30 — D1417).*
 
 **Lesson 61 (27 Oct 26, D1412 — "all the text areas I click screen jerks or bounce a little when the keyboard opens. Even for text that are above the keyboard … Why can’t the text box I click on, auto scroll proportionately with the keyboard that appears and the window doesn’t shrink awhile. My idea is a smooth feel for this app and this made it worse").** When the keyboard opens, the box tapped rises in step with the keys, proportionately — one motion, the keys' own — and nothing else on screen moves: a box already above the keys stays exactly where it is, and no window shortens and grows back or lets the page behind it show while the keys move. What it says about the app he intends (D852): a correct end place is not the measure; the feel of the motion is, and a mechanism that steers a window frame by frame against the phone's own slide is judged by what he sees, not by its numbers. *Other places, named under D852 — the same check applies to each: the Leave War's sheets and bid windows (they place themselves, `leavewar/ui/Sheet.tsx`), the Tracker's event editor, Admin's Duty templates box, the Logic page's boxes, and the Scheduler Board's list ([KEYBOARD-SCROLL]).*
 

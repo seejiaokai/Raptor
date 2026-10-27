@@ -93,6 +93,14 @@ above).
    and proceed with the user's task unless they opt in; never gate their
    work on the review. Only a scheduled/autonomous run loads
    `references/weekly-review.md` and runs the review unprompted.
+   **A size trigger beside the age one:** an offer that never blocks is
+   passed over in every busy session, and the backlog grows past what a
+   session can review beside its own work. Once OPEN observations pass about
+   60, the offer stops being a one-line aside and becomes a line in the
+   session's closing report or handoff ("the log holds N unreviewed notes; a
+   review is a job of its own — start one?"), so the user places it like any
+   other work. Where one skill's own notes pass about 10, offer a review of
+   that skill alone, which is cheap enough to do beside a task.
 4. Once per session: if no CLAUDE.md (or equivalent) activation instruction
    for this skill exists, briefly suggest adding one (see
    `references/environments.md`). Skip if already configured.
@@ -225,7 +233,10 @@ act of memory.
    `MSYS_NO_PATHCONV=1` is set, and a failure hidden by `2>/dev/null` reads
    as "no entries there". Run it on the CURRENT branch first — it must
    return your own highest number before its "none" for any other branch is
-   believed.
+   believed. One `git grep` over every branch at once
+   (`git grep -h -o -E '^### Observation [0-9]+' $(git for-each-ref
+   --format='%(refname)' refs/remotes) -- <log path> | sort -u -k3,3n |
+   tail -3`) answers in seconds and no path rewrite touches it.
 
 **Log-write safety — never let a mutation span entry boundaries:** When
 mutating the log programmatically (marking entries ACTIONED/DECLINED,

@@ -50,7 +50,7 @@ Skip any step = lying, not verifying
 | A check passed | The check's own exit status and summary, error count included | Output piped through `tail`/`grep` (the pipe reports the filter's success); "0 failed" beside "Errors 1" |
 | A failure is unrelated to the change | An independent run agrees: CI, or the same test on the code before the change | Re-running it locally |
 | A screen change works | Driven in a real browser in every state it appears — [browser-checks.md](browser-checks.md) | Tests with no layout engine; one screenshot at rest |
-| Pushed / committed / clean | `git status -sb` read in this turn | Remembering that you pushed |
+| Pushed / committed / clean | `git status -sb` read in this turn — and after a quiet or filtered push (`-q`, piped through `tail`), the remote's head read back: `git ls-remote origin <branch>` equals `HEAD` | Remembering that you pushed; a push command that printed nothing |
 | Fixed everywhere it applies | The list of every place, re-checked AFTER the fix, each by opening it | The list written before building |
 | "You'll see X when you do Y" (a check step for someone else) | Did Y on the built app and saw X | Writing it from what the feature was meant to do |
 | Clean / nothing found / never happened | The verdict names what was examined AND what was not — which files, which kinds (binaries? the history?), which terms | "Clean", with its scope left for the reader to assume |
@@ -61,6 +61,8 @@ Skip any step = lying, not verifying
 | My edits landed (a batch; a write sent together with the run that depends on it) | After ANY refusal or error inside the batch, each intended change read back; the write confirmed before its run is believed | No error on the other calls; a run that exited 0 — it may have run the old file |
 | A count from a new audit script | One of its hits checked by hand, and the number compared with any earlier count | A surprising number taken as a finding — check the instrument first |
 | A mechanical rewrite across many files is right | The ADDED lines read (doubled words, the rule's own statement reworded), every renamed test title searched for in the docs, and evidence files — reviewers' reports, briefs after their run, archives — excluded by path | "The bundle is byte-identical": that proves no code moved, not that the words are right |
+| A summary list rewritten is complete (a priority list, an index) | A script for coverage of the ids AND a fresh reader comparing the OLD list's open statements (orders, someone's own steps, "waits on") with the new — the old list moved whole first, so the reader has it | The coverage script alone: a fact that lived only in the summary's prose is in no item |
+| A merge's conflicts were resolved right | Resolved hunk by hunk, then the file diffed against BOTH parents — the branch's own head as well as the target — and every removed line read | A check that compares only with the target branch; a whole-file `--ours` / `--theirs`, which takes one side's whole file, not the clashing lines |
 | A check deferred to the end still holds | Each deferred suite that reads the surface a step changed was run at that step — or the step's record names which of its assertions will need re-pointing | "They ride the final check": a stale check and a real failure look the same until someone investigates |
 
 ## Red Flags - STOP

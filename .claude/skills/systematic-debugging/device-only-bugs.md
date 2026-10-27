@@ -27,6 +27,13 @@ cannot run (a phone, Safari), or only in a recording someone sent.
 
 ## When the Engine Differs
 
+- **"Make it smoother" is measured against the platform's frame cap first.**
+  Ask which device and browser; check how many frames that platform lets a
+  page's own script-driven motion reach, against its native scrolling (a
+  120Hz iPhone holds the first near 60 by default, and an in-app browser
+  offers no setting); where the user can, a one-minute toggle on the device
+  separates the cap from slow drawing. Measure each gesture separately, so
+  two causes are not merged into one — a fix aimed below the cap is wasted.
 - **Portable causes first.** A train of long timer tasks right after the
   input is visible in any browser's trace. An engine-specific theory is earned
   only once the portable causes are exhausted — the portable fix is usually
@@ -47,6 +54,10 @@ cannot run (a phone, Safari), or only in a recording someone sent.
   element the same mechanism reaches, or name each one you leave alone and
   why.
 
-This project's worked cases: `raptor-port/docs/performance.md` (the ledger
+This project reads a phone recording with
+`raptor-port/scripts/handpass/video-frames.mjs` (the installed Chrome in a
+visible window plays an iPhone's HEVC; frames named to the millisecond, the
+count written checked against the count expected). Its worked cases:
+`raptor-port/docs/performance.md` (the ledger
 items on compositor layers, timer trains and the phone week glide) and
 `raptor-port/docs/ui-contracts.md` (the compositor-layer section).

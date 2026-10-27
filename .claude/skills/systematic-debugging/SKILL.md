@@ -117,6 +117,12 @@ You MUST complete each phase before proceeding to the next.
      identical probe on the base revision: one run decides, reasoning does not
    - A cause someone else wrote down (a handoff, a review, an earlier chat)
      is a hypothesis: trust the symptom, re-measure the mechanism
+   - A test that passes on one version and fails on another: run the test's
+     own steps on BOTH, printing the same state after every step, and find
+     the first step where the two runs part before suspecting any change. The
+     first difference names the cause, and it is often upstream of the
+     failing assertion — removing suspected changes one build at a time
+     found nothing in three builds; one side-by-side run found it
 
 4. **Gather Evidence in Multi-Component Systems**
 
@@ -155,6 +161,13 @@ You MUST complete each phase before proceeding to the next.
    ```
 
    **This reveals:** Which layer fails (secrets → workflow ✓, workflow → build ✗)
+
+   **A failure only a remote CI machine shows:** instrument the one test
+   with a cheap in-page event log, dumped only when it fails; record a trace
+   for that single test, never a whole share — tracing slows every step and
+   changes the timing it is chasing (seven unrelated tests timed out and the
+   flake never showed). Such a failure often follows the machine: spread the
+   repeats across several machines rather than many loops on one.
 
 5. **Trace Data Flow**
 
@@ -235,6 +248,15 @@ You MUST complete each phase before proceeding to the next.
      that can hold the failing state. A layout-less unit test can fabricate a
      state the product never reaches, and a fix for that state is dead code
      with a green tick
+   - A filed finding is a sample of a defect, and its expected value a
+     hypothesis. Reproduce exactly the case it names, matching its shape (one
+     day or several, one kind or another); list the siblings that reach the
+     same state by the same mechanism and add each as a red case — one that
+     fails for a different cause is filed as its own item, not folded in.
+     Where the fault is about a PREDICTION of an action (a count, a preview,
+     a confirm button's promise, a dry run), the red test also performs the
+     action and asserts that the prediction equals what it did — the filed
+     "right answer" was wrong once the real action ran
 
 2. **Implement Single Fix**
    - Address the root cause identified
@@ -251,7 +273,14 @@ You MUST complete each phase before proceeding to the next.
 4. **If Fix Doesn't Work**
    - STOP
    - Count: How many fixes have you tried?
-   - If < 3: Return to Phase 1, re-analyze with new information
+   - Re-run the finder's own script on the fixed build before trusting a new
+     test: a test that takes another route (it scrolled the box to the
+     centre first) can pass a fix that does not cure
+   - Before a second guess, instrument the events — every pointer, focus and
+     change event on the elements involved, with their values — rather than
+     re-reasoning the cause
+   - If < 3: Return to Phase 1, re-analyze with new information — on a
+     device you cannot run, two misses already stop you (step 5)
    - **If ≥ 3: STOP and question the architecture (step 5 below)**
    - DON'T attempt Fix #4 without architectural discussion
 
@@ -270,6 +299,14 @@ You MUST complete each phase before proceeding to the next.
    **Discuss with your human partner before attempting more fixes**
 
    This is NOT a failed hypothesis - this is a wrong architecture.
+
+   **On a device you cannot run, two misses are enough.** Two fixes that
+   pass a stand-in (an emulated phone, a model of its keyboard) and fail on
+   the real device mean the stand-in is wrong, not the last fix. Stop before
+   another round and put three options to your human partner: go back to the
+   last build they called better; a guardrail that hides the symptom
+   whatever the platform does; or a fresh model or reader — and say plainly
+   that the stand-in has not predicted the device.
 
 ## Red Flags - STOP and Follow Process
 
@@ -350,6 +387,11 @@ proven one. For a flaky check, ask first:
   port and fails the next run; the pile-up looks random.
 - Did it start right after a timing change? Then it is that change's bug
   announcing itself.
+- Is the asserted state permanent, or one the system passes through and
+  leaves? A poll after the event can miss a transient on a slow machine. Delay
+  the check on purpose (a pause before the assertion): if it then fails every
+  time, take the reading at the event itself (an observer armed in the same
+  task as the action) — waiting longer only hides it.
 - Could a USER leave the same state behind? A test failing on what an earlier
   test left (a component that is never unmounted keeps per-window state) is
   evidence about state lifetime: if a user can reach the same carry-over —
