@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1419 | 27 Oct 26 | The skill-notes review of 27 Oct 26 is approved as put to him in its two rounds — its guide drafts, the memory notes and backlog additions installed as drafted, and notes 623 and 703 closed without a change. |
 | D1418 | 27 Oct 26 | The checking guides' new lines drafted in the skill-notes review of 27 Oct 26 — about 80, in the bug-check order, the walk-scripts guide, the mock-ups guide and the gates guide — are approved as drafted, read by the one fresh Opus reader (D1414). |
 | D1417 | 27 Oct 26 | A line in the design guide's list of his design lessons keeps to his words — it covers no case he did not correct, gives no reason he did not give, and marks anything of the agent's own as its reading; and a branch that will add lessons takes a range of lesson numbers first, any renumber told to him old and new. |
 | D1416 | 27 Oct 26 | On an overnight run each job goes to one fresh helper inside the night's chat, with its own walker and reader, and the night's chat only coordinates, checks each result and keeps the records; a separate session per job is used only when he types the night's message in the desktop app, all of them started together. |
