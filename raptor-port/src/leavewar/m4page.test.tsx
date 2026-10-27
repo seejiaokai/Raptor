@@ -174,6 +174,28 @@ describe('the Approvals page’s rows', () => {
       expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
     })
 
+    /* THE FIXES' ROUND 2, R2-3 (the fix read's 3): one remembered decision a LIGHT dropped the first approval at the third tap
+       — each approval is a new leave of its own — so two Undos left the line greyed "Already approved by Saber" while the
+       record held that first approval */
+    it('R2-3 Approve, Refuse, Approve, then Undo, Undo: lit "Approved"; Redo, Redo: "Refused" then "Approved"', () => {
+      ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+      T(9)
+      render(<ApprovalsPage shown={true} />)
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-refuse'))
+      fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+      expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
+      act(() => { expect(globalUndo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(REFUSED)
+      act(() => { expect(globalUndo().ok).toBe(true) })
+      expect(linesOf('bane')).toHaveLength(1)
+      expect(lit(linesOf('bane')[0]!), 'the first approval stands again').toEqual(APPROVED)
+      act(() => { expect(globalRedo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(REFUSED)
+      act(() => { expect(globalRedo().ok).toBe(true) })
+      expect(lit(linesOf('bane')[0]!)).toEqual(APPROVED)
+    })
+
     it('the second tap undone: lit "Approved" again, and its Redo pending again', () => {
       ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
       T(9)

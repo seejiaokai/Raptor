@@ -256,8 +256,11 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
         row.line = { ...row.line, parts: o.parts }
         row.ids = new Set([...row.ids, ...o.parts.map(p => p.recId).filter((x): x is string => !!x)])
         if (to === 'pending') delete row.lit; else row.lit = to
-        /* the decision and the parts it left, newest first — what an Undo or Redo is read against (M3) */
-        if (to !== 'pending') row.forms = [{ lit: to, parts: o.parts }, ...(row.forms ?? []).filter(f => f.lit !== to)]
+        /* the decision and the parts it left, newest first — what an Undo or Redo is read against (M3). EVERY one is kept,
+           not one a light (the fixes' round 2, R2-3): each approval is a leave of its own, so Approve, Refuse, Approve lost
+           the first approval, and two Undos found no decision standing though the record held it. An older one stands only
+           where the record holds exactly its records again. */
+        if (to !== 'pending') row.forms = [{ lit: to, parts: o.parts }, ...(row.forms ?? [])]
         delete row.msg
       } else row.msg = { kind: o.kind, why: o.why }
       next[ix] = row
