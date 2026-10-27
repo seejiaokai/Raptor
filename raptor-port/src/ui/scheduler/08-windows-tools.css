@@ -6,9 +6,8 @@
 .modal{position:fixed;inset:0;z-index:470;background:rgba(4,7,10,.7);display:flex;align-items:center;justify-content:center;padding:22px}
 .modal[hidden]{display:none}
 .modal-box{background:var(--panel);border:1px solid var(--edge);border-radius:16px;width:460px;max-width:100%;max-height:84vh;max-height:84dvh;overflow:auto}
-/* a window held to the visible screen while a phone's keys are up (ui/kbscroll.ts, D1048): the hold outranks the window's
-   own height limit, inline or not, and goes with the keys */
-[data-kbcap]{max-height:var(--kbcap) !important}
+/* (the hold that shortened a window to the room a phone's keys left, [data-kbcap], went with D1412, 27 Oct 26: a window is
+   never held or shrunk for the keys — the phone's own pan carries it, ui/kbscroll.ts) */
 /* the room at the foot of the Scheduler Board's list while the keys are up (kbscroll.ts panelRoom) */
 [data-kbroom]{padding-bottom:var(--kbroom) !important}
 /* the Scheduler Board's height held while a box in it is typed in (kbscroll.ts holdFull): a floor, never a cap, so a layout

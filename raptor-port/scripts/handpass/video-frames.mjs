@@ -1,7 +1,7 @@
 // Pull still frames out of his iPhone screen recording (23 Oct 26, [LW-PHONE-PINCH-ZOOM]). There is no ffmpeg on his PC, and an
 // iPhone records in HEVC, which the test browser cannot play: the installed Chrome, opened in a VISIBLE window with its HEVC
 // decoder on, can. Usage: node scripts/handpass/video-frames.mjs <video.mp4> <out folder> [seconds between frames, 1]
-// Frames come out as f<seconds>.jpg at the video's own size; lw-pz-questions.mjs (REC, REC_SPEC) turns, crops and marks them.
+// Frames come out as f<seconds>.jpg at the video's own size, the seconds to the millisecond (f001.017.jpg): at one decimal a pull at 1/60 s wrote six frames to one name and kept the last (27 Oct 26); it prints how many frames it wrote against how many the length and the step imply, so a lost frame is seen. lw-pz-questions.mjs (REC, REC_SPEC) turns, crops and marks them.
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -45,8 +45,8 @@ for (let t = 0; t <= info.d; t += every) {
     v.onseeked = () => { c.width = v.videoWidth; c.height = v.videoHeight; c.getContext('2d').drawImage(v, 0, 0); ok(c.toDataURL('image/jpeg', 0.8)); };
     v.currentTime = t;
   }), t);
-  const name = path.join(outDir, `f${String(t.toFixed(1)).padStart(5, '0')}.jpg`);
+  const name = path.join(outDir, `f${String(t.toFixed(3)).padStart(7, '0')}.jpg`);
   fs.writeFileSync(name, Buffer.from(data.split(',')[1], 'base64'));
 }
 await browser.close(); srv.close();
-console.log('done');
+console.log(`done: ${fs.readdirSync(outDir).filter(f => f.endsWith('.jpg')).length} frames written, ${Math.floor(info.d / every) + 1} expected`);

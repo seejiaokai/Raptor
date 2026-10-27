@@ -2503,3 +2503,18 @@ its value and never in innerText.
 **Suggested improvement:** In the walk-scripts guide's traps: a walk that judges scroll bars launches with `--hide-scrollbars` removed; a phone's overlay bars are judged from his recording or his own look, never from an emulated phone.
 
 **Principle:** Before trusting a test browser's picture of a fault, check the test browser does not switch that very thing off by default.
+
+### Observation 721: A frame tool that names frames by a tenth of a second silently keeps one frame in ten
+
+**Status:** ACTIONED (2026-10-27) — the project's frame tool (`raptor-port/scripts/handpass/video-frames.mjs`) now names frames to the millisecond and prints the count written against the count expected; the landmark rule is in the job's evidence sheet (`raptor-port/docs/handpass/2026-10-27-kbs-carried.md`, the sign-in tracker's false jump)
+**Date:** 2026-10-27
+**Session context:** The iPhone keyboard fault (D1366, D1412) — reading his screen recordings frame by frame
+**Skill:** New skill candidate: reading a phone recording frame by frame (video-frames.mjs and the tracking of a landmark)
+**Type:** open-source
+**Phase/Area:** evidence gathering from a recording
+
+**Issue:** The project's frame puller names each frame by its time rounded to one decimal, so a pull asked for at 1/60 s wrote 321 frames into 55 names and kept the last of each tenth — a "frame by frame" read that was one frame in six, with no error. Found only because the folder held 55 files for a 5.3 s recording. A second trap, same session: a template tracker that matched a text box's row jumped 73 points the moment the box took its focus ring — the cyan ring changed the box, and the tracker found the unringed box below it — reading as a jump of the card that never happened.
+
+**Suggested improvement:** A frame tool names frames by the step it was asked for (milliseconds), and prints the count it wrote against the count the length and step imply; a landmark tracker uses a strip that cannot change during the motion (a button, a title bar, a keyboard's top edge), never the tapped box, and every "jump" it reports is checked by eye on the two frames either side before it is believed.
+
+**Principle:** A measurement tool must fail loudly when it quietly loses data (count what it wrote against what it should have written), and a motion read off a tracker is a claim about the tracker until two frames are looked at — a landmark that changes its own look at the moment of interest is the wrong landmark.

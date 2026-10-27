@@ -1,23 +1,40 @@
 /* THE BOX BEING TYPED IN SHOWS ABOVE THE KEYBOARD ([KEYBOARD-SCROLL], owner D1048, 19 Oct 26 — "when I select or type on
    anything on my phone that's at my keyboard area. When the keyboard pops up the thing I selected to type will show
-   above the keyboard. Like auto scroll to it." — every box in the app).
+   above the keyboard. Like auto scroll to it." — every box in the app), AND IT RISES WITH THE KEYS, NOTHING ELSE MOVING
+   (owner D1412, 27 Oct 26 — his four recordings: "all the text areas I click screen jerks or bounce a little when the
+   keyboard opens. Even for text that are above the keyboard … Why can't the text box I click on, auto scroll
+   proportionately with the keyboard that appears and the window doesn't shrink awhile. My idea is a smooth feel for
+   this app and this made it worse").
 
-   WHY THE PHONE DOES NOT DO IT BY ITSELF. An iPhone's keyboard does not shorten the page: the layout stays its full
-   height and only the VISUAL viewport (window.visualViewport — the slice actually on screen) shrinks and pans. Safari
-   then scrolls the PAGE so the box shows, but it does not reliably scroll a panel that scrolls inside a fixed layer —
-   the Scheduler Board's scrolling panel (the board itself follows the visual viewport, SchedBoard.tsx), a window's or a
-   sheet's own scrolling body — so a box low in such a panel stayed under the keys.
+   WHY THE PHONE DOES NOT DO IT BY ITSELF — AND WHAT IT DOES DO. An iPhone's keyboard does not shorten the page: the
+   layout stays its full height and only the VISUAL viewport (window.visualViewport — the slice actually on screen)
+   shrinks and pans. Safari then pans that slice over the page, smoothly with the keys, by exactly as much as it takes to
+   bring the box being typed in into view — and everything fixed to the layout, a window included, rides up with the
+   page in the same motion. What it does not do is scroll a panel that scrolls INSIDE a fixed layer (a window's or a
+   sheet's own scrolling body; the Scheduler Board's scrolling panel): a box low in such a panel can stay behind the
+   panel's own pinned foot, or — on a browser that shrinks the visible screen without panning to the box — under the keys.
 
    WHAT THIS DOES. When a box to type in takes the focus, and once the keyboard has shrunk the visual viewport (its
    `resize`) and the phone's own pan to the box has come to rest (its `scroll` steps — the lift never adds to a pan still
-   running), the box's own scrolling panels are scrolled, nearest first,
-   just far enough that its bottom sits GAP above the keyboard (or above the panel's own foot, if that is higher) —
-   then the page itself, unless the box sits in a fixed layer (a window, a sheet), where scrolling the page
-   would only move what is behind it (D686) — there, a box still under the keys raises its window instead (raise, below).
-   The Scheduler Board is page content of its own (SchedBoard.tsx, D1081): there the page comes FIRST — the scroll the
-   phone itself makes for the keys — then the board's list (keepAboveKeyboard). Never more than that: a box already in sight is left where it is, and a
-   box taller than the room left keeps its TOP in sight. Instant, not smooth: the keys are still sliding up, and a
-   smooth scroll measured mid-slide overshoots (D991 — no motion to wait on).
+   running), the box's own scrolling panels are scrolled, nearest first, just far enough that its bottom clears the
+   panel's own foot (its scroll padding, a pinned button row) and the keys — then the page itself, unless the box sits in
+   a fixed layer (a window, a sheet), where scrolling the page would only move what is behind it (D686). The Scheduler
+   Board is page content of its own (SchedBoard.tsx, D1081): there the page comes FIRST — the scroll the phone itself
+   makes for the keys — then the board's list (keepAboveKeyboard). Never more than that: a box already in sight is left
+   where it is, and a box taller than the room left keeps its TOP in sight.
+
+   WHAT IT NO LONGER DOES (D1412 — the six rounds of 25 Oct 26, kept whole in docs/handpass/2026-10-25-kbs-other-remarks.md).
+   A window whose box the keys would cover used to be moved by the app: raised, or held to the room the keys left
+   (shrunk to it and pinned to the visible top), brought down when the phone's pan carried it off the top, then — rounds
+   five and six — moved frame by frame against a model of the phone's own slide so that it would hold still while the
+   page slid under it. Every round passed the stand-in keyboard and failed on his iPhone: the model of Safari's slide was
+   always a little wrong, and he saw the window dip and show the page behind it, shrink, and jump back as the keys
+   closed. Now the window is not touched while the keys move: the phone's own pan carries it, with the box, exactly in
+   step with the keys, as it carries the page — one motion, the phone's, and nothing of the app's own. A window is
+   RAISED only as a last resort, once the pan has come to rest and the box is still under the keys (a browser that
+   shrank the visible screen without revealing the box — never Safari, which always does): up by what the box needs,
+   never past the visible top, by the CSS `translate` property; and put back when the typing ends or the keys go down. No
+   window is ever held, shrunk or re-placed for the keys, and nothing glides.
 
    WHEN IT DOES NOTHING. With no keyboard up — the visible screen within KEYBOARD_MIN of the layout's height: a desktop,
    a phone with a hardware keyboard (an Android phone's Chrome, since its version 108, shrinks only the visible screen as an
@@ -26,14 +43,16 @@
    focus act. So nothing changes on a desktop, and a box he scrolled away from on purpose stays where he put it.
 
    Chromium cannot raise an iPhone's keyboard, so the browser test and the walk stand a stand-in visual viewport in
-   for it (scripts/handpass/am/b3-03-keyboard.mjs's way); his iPhone is the real test (the look card). */
+   for it (scripts/handpass/am/b3-03-keyboard.mjs's way), playing the pans his phone was seen to make; his iPhone is the
+   real test (the look card). */
 
 import { scaleOf } from './pinchzoom'
 
 /* the same threshold as the Leave War's sheets (leavewar/ui/Sheet.tsx KEYBOARD_MIN): a visible screen this much
    shorter than the layout means a keyboard is up — the address bar alone never takes this much */
 export const KEYBOARD_MIN = 120
-/* the clear strip left between the box and the keys */
+/* the clear strip left between the box and what the app itself scrolls or raises it clear of (the keys, a panel's
+   pinned foot); where the PHONE placed the box, its place is taken as it is */
 export const GAP = 8
 /* how long after a focus a visual-viewport resize still counts as that keyboard opening (the keys' slide is ~250ms;
    the word-suggestion bar can follow it) */
@@ -88,7 +107,8 @@ function fullHeight(vv: { height: number, offsetTop: number }): number {
    A mark the app keeps fixed at the layout's top and foot, never seen, says where the layout stands in whatever measure
    the browser gives: the visible screen starts at its top plus the pan, the layout's full height is its height, and a
    place measured from the layout is a measured box less its top (`layTop`). On a desktop, in Chromium and on the older
-   phones the mark stands at 0, as tall as the layout, so every reading is what it always was. */
+   phones the mark stands at 0, as tall as the layout, so every reading is what it always was. The Leave War's sheets
+   and bar, the board's pick-list, the History bubble and the two calendars' fit read it too. */
 let PROBE: HTMLElement | null = null
 export type ScreenBox = { top: number, bottom: number, left: number, layTop: number, layLeft: number, layH: number }
 export function screenBox(vv: { height: number, offsetTop: number, offsetLeft?: number }): ScreenBox {
@@ -117,8 +137,7 @@ const scrolls = (a: Element) => {
    buttons are pinned to the foot of its own scrolling body (the input window's Cancel / Add, Holidays' buttons) covers that
    foot, and says by how much in the standard way, its scroll padding — the margin the browser itself keeps clear when it
    scrolls a thing into view there (25-inputs-calendar.css, 23-days.css). The lift measured the panel's bare edge, so a box
-   brought to the panel's foot sat exactly behind the buttons — whenever the whole window stood above the keys: held to the
-   room left (raise, below), or a browser that shortens the page for the keys. In screen pixels, as the panel's box is. */
+   brought to the panel's foot sat exactly behind the buttons. In screen pixels, as the panel's box is. */
 function keptClear(a: Element): { top: number, bottom: number } {
   const cs = getComputedStyle(a), k = scaleOf(a)
   const px = (v: string) => (parseFloat(v) || 0) * k
@@ -147,185 +166,28 @@ function lift(sc: Element, el: HTMLElement, bot: number, top: number): number {
   return (sc.scrollTop - was) * k
 }
 
-/* A WINDOW THAT CANNOT SCROLL IS RAISED INSTEAD (the walk's KS3, 19 Oct 26: Admin → Duty templates on a phone — its rows
-   all fit, so nothing in it scrolls, and its last time box sat under the keys). A window stands in the middle of the
-   layout's height (D997), which the keyboard does not shorten, so its lower half can be under the keys with nothing to
-   scroll. What is raised is the window itself — inside a backdrop that fills the screen (a .modal), the box on it; else
-   the fixed layer — by the CSS `translate` property, which adds to any transform a window is dragged by, never so far
-   that its top leaves the visible screen; and it is put back where it was when the typing ends or the keys go down.
-   A WINDOW TALLER THAN THE ROOM LEFT (the fresh read's F1, 19 Oct 26: Duty templates with eight roles — risen to the top
-   of the screen, its last rows were still under the keys; its own height limit is the layout's, which the keys do not
-   shorten, so its body had nothing more to scroll): it is held to the visible screen's height for as long as the keys are
-   up, its top at the top, and its own body then scrolls the box into sight — the Leave War's sheets do the same for
-   themselves (leavewar/ui/Sheet.tsx). A window that already sets its own height limit is left to it.
-   THE HOLD IS ITS OWN PROPERTY (the narrow read's 1, 19 Oct 26): a movable window writes its own inline max-height on
-   every redraw (floatwin.ts place() — and the input window redraws on every key), which wiped a hold written there, so
-   the box fell back under the keys at the first key. The hold is the custom property --kbcap, read by one rule
-   (`[data-kbcap]`, 08-windows-tools.css) that outranks the window's own. AND IT STAYS HELD (the narrow read's 2, 3): a box
-   higher in a held window, or a window already at the top, never lets the hold go while the keys are up — only the typing
-   ending, the keys going down or the focus leaving the window put it back (putBack). */
+/* A WINDOW IS RAISED ONLY AS A LAST RESORT (the walk's KS3, 19 Oct 26: Admin → Duty templates on a phone — its rows
+   all fit, so nothing in it scrolls, and its last time box sat under the keys; D1412, 27 Oct 26: on his iPhone the
+   phone's own pan brings the box into view, the window riding up with it, so the app has nothing to do). Once the
+   phone's pan has come to rest, a box still under the keys in a fixed layer — a browser that shrank the visible screen
+   without panning to the box — has its window raised: inside a backdrop that fills the screen (a .modal), the box on it;
+   else the fixed layer — by the CSS `translate` property, which adds to any transform a window is dragged by, up by what
+   the box needs and never so far that the window's top leaves the visible screen. It is put back where it was when the
+   typing ends or the keys go down, and comes down again — never below its own place — when a box further up the same
+   window is tapped or the phone's pan has since brought the box up. A window is never held to the room or shrunk
+   (D1412): a box its raising cannot reach is the phone's to show, and on an iPhone it is. */
 const LIFTED = new Set<HTMLElement>()
 const shiftOf = (l: HTMLElement) => +(l.dataset.kblift || 0)
-const held = (l: HTMLElement) => l.dataset.kbcap != null
-/* `s` up the screen; below zero, down it — a window the phone's own pan left above the visible screen comes down to it
-   (his recordings of 25 Oct 26 08:05, below at pin) */
+/* `s` up the screen, never below zero */
 function setShift(l: HTMLElement, s: number) {
-  if (Math.abs(s) > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l); return }
+  if (s > 0.5) { l.style.translate = `0 ${-Math.round(s)}px`; l.dataset.kblift = String(Math.round(s)); LIFTED.add(l); return }
   l.style.translate = ''; delete l.dataset.kblift
-  if (!held(l)) LIFTED.delete(l)
-}
-/* hold `l` to `h` tall — never over a height limit the window set itself */
-function cap(l: HTMLElement, h: number): boolean {
-  if (!held(l)) { if (l.style.maxHeight) return false; l.dataset.kbcap = '' }
-  l.style.setProperty('--kbcap', Math.round(h) + 'px'); LIFTED.add(l)
-  return true
-}
-/* A WINDOW MOVED FOR THE KEYS MOVES WITH THE PHONE'S OWN SLIDE, NEVER AHEAD OF IT (his recording of 25 Oct 26 11:09 — the
-   Tracker's All events, a box tapped, the keys put away, the next box tapped, again and again: "this section looks abit
-   twitchy like the page jumps weirdly slightly"). His iPhone slides the page over about a quarter of a second as the keys
-   open or close, but gives the visible screen's end at once — one `scroll` with the final pan, nothing after — so a window
-   placed at once for where the page ENDS stood, for the length of the slide, a whole pan away from it: 300 points low as
-   the keys came, then rising with the slide; 300 high as they went, then falling. Now a window the lift moves, holds or
-   puts back is drawn first where it stood and glides to its new place on the phone's own slide — its curve and length
-   measured off his recordings, timed from when the phone began it (SLIDE_UP, SLIDE_DOWN, below; compensate meets the
-   slide at the phone's own word): on his phone the two motions meet and the window holds still while the
-   page slides under it; where nothing slides (Chromium, a desktop) it moves there smoothly instead of at once. Only its
-   own `translate` is animated, from where it is drawn — a glide still running included — and every measure the lift
-   takes is of where the window ends (settleGlides first). Never for a reader who asked for less motion: at once, as before. */
-/* HIS iPHONE'S OWN SLIDES, MEASURED (his recordings of 25 Oct 26 11:49 and 11:54, read at sixty frames a second — the
-   input window, Remarks tapped: "I can see the top of the background behind this window … The old one was like
-   smoother"). The keys coming up: the phone slides the page on the standard ease-in-out curve over a quarter of a second
-   — two openings, each within a point of it — and tells of the pan about 30ms after the slide began (the keys' own
-   `resize` can come first, with no pan, and the pan in a `scroll` 15ms later). The keys going down: a quick start and a
-   long tail over a third of a second — his old build's closing, where nothing but the phone moved the window, and the
-   first frames of two closings of this one, each within two or three points — the focus leaving the box about 30ms in,
-   the keys' `resize` later still. Round 5 glided on a curve of its own (fast out, .2,.8,.2,1, 260ms) from the moment it
-   was told: by the slide's fourth frame some 100 points ahead of it, so the window stood that far below its place and
-   the day panel behind it — its "+ Input" — showed above it, then the window rose back; on the way down it rose some 70
-   points too high, then fell. Each glide now runs on the phone's own curve for its direction, timed from when the slide
-   began: `lead` is how long before the app is told that the phone started it. */
-export type Slide = { ms: number, c: readonly [number, number, number, number], lead: number }
-export const SLIDE_UP: Slide = { ms: 250, c: [0.42, 0, 0.58, 1], lead: 30 }
-export const SLIDE_DOWN: Slide = { ms: 330, c: [0.3, 0.58, 0.2, 1], lead: 30 }
-/* the keys' `resize` as they go down comes later in the slide than the focus leaving (his 11:54 readout: some 45–80ms) */
-const DOWN_RESIZE_LEAD = 60
-const bezierOf = (c: Slide['c']) => `cubic-bezier(${c.join(',')})`
-const calm = () => typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
-/* the glides running now, one a window: an animation of its own `translate` from where it was drawn to where it stands,
-   which the window's own style already holds — so a glide stopped is the window at its end, exactly; with the slide it
-   follows and the moment that slide began, so a glide that takes over stays on the same slide */
-type Glide = { a: Animation, s: Slide, origin: number }
-const GLIDES = new Map<HTMLElement, Glide>()
-/* ends any glide still running, at its end, so what is measured next is where each window stands (a CSS transition was
-   not stopped by taking it off: the next placing measured a window mid-glide and moved it 218 too far) */
-function settleGlides(ls: Iterable<HTMLElement>, into?: Map<HTMLElement, Glide>) {
-  for (const l of ls) {
-    const g = GLIDES.get(l)
-    if (!g) continue
-    /* still inside its slide: a glide that takes over goes on from there, on the same slide */
-    if (into) { const t = Number(g.a.currentTime); if (t > 0 && t < g.s.ms) into.set(l, g) }
-    g.a.cancel(); GLIDES.delete(l)
-  }
-}
-/* how far along a slide's curve it is, a fraction `p` of the way through its time */
-export function eased(p: number, c: Slide['c']): number {
-  if (p <= 0) return 0
-  if (p >= 1) return 1
-  const [x1, y1, x2, y2] = c
-  let lo = 0, hi = 1, u = p
-  for (let i = 0; i < 26; i++) { u = (lo + hi) / 2; const x = 3 * u * (1 - u) * (1 - u) * x1 + 3 * u * u * (1 - u) * x2 + u * u * u; if (x < p) lo = u; else hi = u }
-  return 3 * u * (1 - u) * (1 - u) * y1 + 3 * u * u * (1 - u) * y2 + u * u * u
-}
-/* the tops of `ls` as drawn now — the start of a glide */
-function topsOf(ls: Iterable<HTMLElement>): Map<HTMLElement, number> {
-  const m = new Map<HTMLElement, number>()
-  for (const l of ls) if (l.isConnected) m.set(l, l.getBoundingClientRect().top)
-  return m
-}
-/* the moment now on the clock the glides run on (the document's own timeline — what an animation's start is set in) */
-const clockNow = () => {
-  const t = typeof document !== 'undefined' && document.timeline ? Number(document.timeline.currentTime) : NaN
-  return Number.isFinite(t) ? t : performance.now()
-}
-/* the slide a glide follows, and when it began: a placing with no slide of the phone's own glides from now */
-export type When = { s: Slide, origin: number }
-const fromNow = (): When => ({ s: SLIDE_UP, origin: clockNow() })
-/* each window of `before` that the lift moved, held or put back glides from where it was drawn to where it now stands,
-   on the phone's slide `w` — or, taking over a glide still running (`into`), on that glide's slide */
-function glide(before: Map<HTMLElement, number>, moved: Set<HTMLElement>, w: When = fromNow(), into?: Map<HTMLElement, Glide>) {
-  if (calm()) return
-  for (const [l, top0] of before) {
-    if (!moved.has(l) || !l.isConnected || typeof l.animate !== 'function') continue
-    const d = top0 - l.getBoundingClientRect().top
-    if (Math.abs(d) < 1) continue
-    const s = shiftOf(l), end = `0px ${-Math.round(s)}px`
-    /* TAKING OVER a glide still running (a placing two frames into the slide): the new one starts from a point chosen so
-       that, `t` into the same curve, it passes exactly where the window is drawn now — the running glide drew it in
-       step with the slide — and goes on from `t`, so the two glides make one. A FRESH glide on a slide the phone began
-       before the app was told: from where the window stood, as if begun with the slide, so from its first frame it
-       stands where the slide puts it — the frames the phone slid before it was told are not carried on and drifted
-       back (the test's first frames of the keys going down: 48 points low, drifting back over the slide). Nearly at its
-       end, a fresh glide from where it is drawn. */
-    const g0 = into?.get(l)
-    let { s: sl, origin } = g0 || w
-    let t = clockNow() - origin, e = eased(t / sl.ms, sl.c)
-    if (e >= 0.9) { ({ s: sl, origin } = fromNow()); t = 0; e = 0 }
-    const from = g0 && t > 0 ? (d - s - e * -s) / (1 - e) : d - s
-    const a = l.animate([{ translate: `0px ${Math.round(from)}px` }, { translate: end }], { duration: sl.ms, easing: bezierOf(sl.c), fill: 'backwards' })
-    /* on the slide's own clock — left to itself an animation waits for the next frame and starts from there, a frame and
-       the phone's lead behind the slide */
-    try { a.startTime = origin } catch { /* an older browser: it starts a frame late */ }
-    /* (`backwards`: a frame drawn a hair before that start shows where it starts, never — for one frame — where it ends) */
-    GLIDES.set(l, { a, s: sl, origin })
-    a.onfinish = () => { if (GLIDES.get(l)?.a === a) GLIDES.delete(l) }
-  }
-}
-/* THE SLIDE MET THE MOMENT THE PHONE TELLS OF IT (the same recording, frame by frame): the placing comes two frames after
-   the phone's word (`soon`, below — so the board and the sheets have re-fitted first), and for those frames a window would
-   ride the start of the slide. So at the word itself the window that holds the box — and any window already moved for the
-   keys — is moved by the pan's change, gliding with the slide, and holds still on his screen; the placing then corrects it
-   from where it is. Never the Scheduler Board (page content, carried by the phone's own scroll — D1081) nor a sheet that
-   places itself by its own `top` (the Leave War's sheets, followVisible). */
-function compensate(dy: number, box: HTMLElement, sb: ScreenBox, at: number) {
-  if (Math.abs(dy) < 0.5 || calm()) return
-  const ls = new Set<HTMLElement>(LIFTED)
-  const l0 = layerOf(box)
-  if (l0 && !l0.hasAttribute('data-kblayer') && !l0.style.top && !l0.closest('.bidsheet')) {
-    const w = windowIn(l0, box, sb)
-    if (w) ls.add(w)
-  }
-  if (!ls.size) return
-  const before = topsOf(ls)
-  settleGlides(ls)
-  for (const l of ls) setShift(l, shiftOf(l) - dy)
-  /* on the keys' own slide, begun some 30ms before the phone told of the pan (SLIDE_UP — a late pan too) */
-  glide(before, ls, { s: SLIDE_UP, origin: at - SLIDE_UP.lead })
-}
-/* what may move in one placing: every window already moved for the keys, and every element round the box (the one the
-   lift will move is among them) */
-function aroundBox(el: Element | null): Set<HTMLElement> {
-  const s = new Set<HTMLElement>(LIFTED)
-  for (let a = el?.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) s.add(a)
-  return s
-}
-/* runs one placing of the lift with its glide: measured before, settled, placed, then glided from where it was drawn */
-function gliding<T>(el: Element | null, run: () => T): T {
-  const cand = aroundBox(el)
-  const before = topsOf(cand)
-  const was = new Set(LIFTED), into = new Map<HTMLElement, Glide>()
-  settleGlides(cand, into)
-  const out = run()
-  const moved = new Set<HTMLElement>([...was, ...LIFTED])
-  /* a glide still running goes on on its own slide; a window moved with no slide running glides from now */
-  glide(before, moved, fromNow(), into)
-  return out
+  LIFTED.delete(l)
 }
 
-/** Puts one window back where it stood, unheld — also for a window about to be dragged by its bar (floatwin.ts). */
+/** Puts one window back where it stood — also for a window about to be dragged by its bar (floatwin.ts). */
 export function putBack(l: HTMLElement) {
-  settleGlides([l])
   l.style.translate = ''; delete l.dataset.kblift
-  l.style.removeProperty('--kbcap'); delete l.dataset.kbcap
   LIFTED.delete(l)
 }
 /* ROOM BELOW THE PAGE (walker A's A11, 19 Oct 26: Admin → Users, the new person's last box — the page already at its
@@ -342,31 +204,20 @@ function roomBelow(px: number) {
   SPACER.style.height = Math.ceil((parseFloat(SPACER.style.height) || 0) + px) + 'px'
 }
 /** Puts back every window raised for the keys, but the one that holds `keep`; the room below the page only when the
-    typing has ended (no `keep`) — taken away between two boxes, the page would jump back and forth. `w`: the phone's
-    slide it goes back on (the keys going down — SLIDE_DOWN, from when it began); none, a glide from now. */
-export function dropLifts(keep?: Element | null, w?: When) {
-  /* each window put back glides there with the phone's own slide (glide, above), never jumps ahead of it */
-  const back = [...LIFTED].filter(l => !keep || !l.contains(keep))
-  const before = topsOf(back)
-  for (const l of back) putBack(l)
-  glide(before, new Set(back), w)
+    typing has ended (no `keep`) — taken away between two boxes, the page would jump back and forth. At once: nothing
+    the app moved for the keys is animated (D1412 — the phone's own slide is the only motion as the keys come and go). */
+export function dropLifts(keep?: Element | null) {
+  for (const l of [...LIFTED]) if (!keep || !l.contains(keep)) putBack(l)
   for (const p of [...ROOMED]) if (!keep || !p.contains(keep)) unroom(p)
   for (const l of [...FULL]) if (!keep || !l.contains(keep)) unholdFull(l)
   if (!keep && SPACER) { SPACER.remove(); SPACER = null }
 }
-/* a held window: held to the room again (the room may have changed), its top at the top — UP OR DOWN (his recordings of
-   25 Oct 26 08:05, "Other" and OD, Remarks tapped: the iPhone had panned the visible screen down past where the window's own
-   place puts it, and the hold, which only ever raised a window, left it there — its title off the screen, a band of some 110
-   points between its foot and the keys, Remarks at its foot behind Cancel / Add) */
-function pin(l: HTMLElement, s0: number, visTop: number, visBot: number) {
-  cap(l, visBot - visTop - 2 * GAP)
-  /* where the window's own place is (its top, less the shift it wears); below it only when the phone panned past it */
-  const own = l.getBoundingClientRect().top + s0
-  const s = own - (visTop + GAP)
-  setShift(l, own < visTop - 0.5 ? s : Math.max(0, s))
-}
-/* the window a fixed layer holds the box in: the layer itself, or — a backdrop exactly on the layout — its child that holds
-   the box (raise, below) */
+/* the window a fixed layer holds the box in: the layer itself, or — a backdrop exactly on the layout — its child that
+   holds the box. A backdrop stands exactly on the layout, its top on the layout's top and as tall, read by the fixed mark
+   (screenBox), never by the window's own height, which his iPhone gives as what is left below the visible top while the
+   screen is panned (a window 12 from the layout's top, 660 tall, then read as a backdrop — his recordings of 25 Oct 26
+   10:10); a window a little TALLER than the screen, centred on it (the Tracker's All events, 88% of a tall screen), is a
+   window. */
 function windowIn(fixedEl: HTMLElement, el: HTMLElement, sb: ScreenBox): HTMLElement | null {
   const fr = fixedEl.getBoundingClientRect()
   if (Math.abs(fr.top - sb.layTop) <= 1 && Math.abs(fr.height - sb.layH) <= 2) {
@@ -378,45 +229,20 @@ function windowIn(fixedEl: HTMLElement, el: HTMLElement, sb: ScreenBox): HTMLEle
 }
 function raise(fixedEl: HTMLElement, el: HTMLElement, sb: ScreenBox): number {
   const visTop = sb.top, visBot = sb.bottom
-  const fr = fixedEl.getBoundingClientRect()
-  /* a backdrop as tall as the layout: raise the window on it, the backdrop's child that holds the box — the layout read
-     by the fixed mark (screenBox), never by the window's own height, which his iPhone gives as what is left below the
-     visible top while the screen is panned (a window 12 from the layout's top, 660 tall, then read as a backdrop). A
-     backdrop stands exactly on the layout, its top on the layout's top and as tall: a window a little TALLER than the
-     screen, centred on it (the Tracker's All events, 88% of a tall screen: 6 above the layout's top, 696 tall — his
-     recording of 25 Oct 26 10:30), is a window, held and brought down as one, never a backdrop whose body is moved */
-  let layer = fixedEl
-  if (Math.abs(fr.top - sb.layTop) <= 1 && Math.abs(fr.height - sb.layH) <= 2) {
-    let c: Element | null = el
-    while (c && c.parentElement !== fixedEl) c = c.parentElement
-    if (!c) return 0
-    layer = c as HTMLElement
-  }
+  const layer = windowIn(fixedEl, el, sb)
+  if (!layer) return 0
   const s0 = shiftOf(layer)
-  /* a held window stays held and pinned while the keys are up — its own body scrolls to whichever box he taps */
-  if (held(layer)) { pin(layer, s0, visTop, visBot); return 1 }
   const r = el.getBoundingClientRect(), lr = layer.getBoundingClientRect()
+  /* under the keys by how much — where the phone itself placed the box in sight, a window never raised is left as it
+     is: nothing of the app's own moves after the phone's slide (D1412) */
   const need = r.bottom - (visBot - GAP)
+  if (s0 === 0 && need <= 0.5) return 0
   /* up by what the box needs, never past the visible top; down again (towards where it stood) when it is higher than it
-     need be — a box further up the same window */
+     need be — a box further up the same window, or the phone's pan since bringing the box up */
   const room = lr.top - (visTop + GAP)
-  /* a window the phone's own pan left above the visible screen, too tall for the room under it: held to the room as well,
-     not only brought down — brought down alone, its foot (Cancel / Add) would stand under the keys. Whether the box itself
-     happened to need it turned on a few points of the window's own scroll (his recordings of 25 Oct 26 10:10). */
-  const span = visBot - visTop - 2 * GAP
-  const pannedTall = lr.top + s0 < visTop - 0.5 && lr.height > span + 0.5
-  if ((need > room + 0.5 || pannedTall) && cap(layer, span)) {
-    /* held to the room, measured again (a window centred on its backdrop re-centres as it shrinks): its top to the top */
-    pin(layer, s0, visTop, visBot)
-    return 1
-  }
-  let d = need > 0 ? Math.min(need, room) : Math.max(need, -s0)
-  /* a window that fits, its top left above the visible screen by the phone's own pan (his recordings of 25 Oct 26 08:05):
-     down to the visible top, past where it stands if need be — only then; otherwise never below where it stood */
-  const below = lr.top + s0 < visTop - 0.5 && lr.top - d < visTop + GAP - 0.5
-  if (below) d = lr.top - (visTop + GAP)
+  const d = need > 0 ? Math.min(need, room) : Math.max(need, -s0)
   if (Math.abs(d) < 0.5) return 0
-  setShift(layer, below ? s0 + d : Math.max(0, s0 + d))
+  setShift(layer, Math.max(0, s0 + d))
   return Math.abs(shiftOf(layer) - s0)
 }
 
@@ -446,7 +272,7 @@ function panelRoom(el: HTMLElement, layer: Element, visTop: number, visBot: numb
 
 /* A LAYER over the page: anything position:fixed, and the Scheduler Board, which stands as page content while it is open
    (data-kblayer — SchedBoard.tsx, owner D1081: an iPhone draws a fixed full-screen layer out of place for a frame as the
-   keys close) but is still a whole screen of its own: never raised or held as a window is (panelRoom), and kept at the
+   keys close) but is still a whole screen of its own: never raised as a window is (panelRoom), and kept at the
    height it had when a box in it was tapped (holdFull). */
 const isLayer = (a: Element) => a.hasAttribute('data-kblayer') || getComputedStyle(a).position === 'fixed'
 const layerOf = (el: HTMLElement): HTMLElement | null => {
@@ -467,9 +293,9 @@ const layerOf = (el: HTMLElement): HTMLElement | null => {
    script scroll of a touch-scrolled list is the likeliest cause Fable could name without the phone; his readout decides. */
 
 /** Scrolls `el`'s scrolling panels (nearest first), then the page unless `el` is inside a fixed layer — where, if the box
-    is still under the keys, the window is raised instead (raise) — so the box sits GAP above the visible screen's foot.
-    In the Scheduler Board the page comes first (above), then its list. Returns how far it moved things in all (0: it was
-    already in sight). */
+    is still under the keys once the phone's own pan has shown what it will, the window is raised instead (raise) — so the
+    box sits clear of the keys and of its panel's pinned foot. In the Scheduler Board the page comes first (above), then
+    its list. Returns how far it moved things in all (0: it was already in sight). */
 export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   /* the visible screen in the measure the boxes are given in (screenBox — his iPhone measures from the visible top) */
   const sb = screenBox(vv)
@@ -494,7 +320,7 @@ export function keepAboveKeyboard(el: HTMLElement, vv: VV): number {
   panels()
   if (layer) {
     const r = raise(layer, el, sb)
-    /* a window raised, or held to the room, may now scroll its own body: the panels once more */
+    /* a window raised may now scroll its own body: the panels once more */
     if (r) { moved += r; panels() }
     return moved
   }
@@ -551,12 +377,12 @@ export function installKbScroll(): () => void {
     raf = 0
     const vv = window.visualViewport
     if (!box || document.activeElement !== box || !box.isConnected || !keyboardUp(vv)) return
-    /* a pan long after the focus: the window follows the visible screen, and nothing inside it is scrolled — a box he
-       scrolled away from in it stays where he put it */
-    /* each placing glides what it moves with the phone's own slide (glide, above) */
+    /* a pan long after the focus with the window raised: the raise is read again against the visible screen as it now
+       stands (down by what the pan brought), and nothing inside the window is scrolled — a box he scrolled away from in
+       it stays where he put it */
     const b = box
-    if (onlyWindow) { onlyWindow = false; const l = layerOf(b); if (l) gliding(b, () => raise(l, b, screenBox(vv!))); placed('placed-win'); return }
-    gliding(b, () => keepAboveKeyboard(b, vv!))
+    if (onlyWindow) { onlyWindow = false; const l = layerOf(b); if (l) raise(l, b, screenBox(vv!)); placed('placed-win'); return }
+    keepAboveKeyboard(b, vv!)
     placed('placed')
   }
   /* the readout's line after each placing (below); a no-op without ?kbdebug */
@@ -568,13 +394,12 @@ export function installKbScroll(): () => void {
     onlyWindow = windowOnly
     raf = requestAnimationFrame(() => { raf = requestAnimationFrame(place) })
   }
-  /* A WINDOW RAISED OR HELD FOR THE KEYS FOLLOWS THE VISIBLE SCREEN FOR AS LONG AS THEY ARE UP (his recording, 25 Oct 26
-     07:40 — the input window, "Other", Remarks tapped: held to the room, then the iPhone's password bar rose over the keys and
-     the phone panned the visible screen some 170 points down, later than the focus window below; the window stayed where it
-     had been pinned — its top off the screen, an empty band between its foot and the keys). The focus window is for the page
-     and its panels, where a late resize is Safari's own bars folding as he scrolls; a window lifted for the keys stands in a
-     fixed layer that no scroll of his moves, so where the visible screen goes, it goes: a late pan moves the window alone; a
-     late change of the room (the bar rising) holds it to the new room and keeps its box in sight. */
+  /* A WINDOW RAISED FOR THE KEYS IS READ AGAINST THE VISIBLE SCREEN FOR AS LONG AS THEY ARE UP (his recording, 25 Oct 26
+     07:40 — the iPhone's password bar rose over the keys and the phone panned the visible screen some 170 points down,
+     later than the focus window below). The focus window is for the page and its panels, where a late resize is Safari's
+     own bars folding as he scrolls; a window raised for the keys stands in a fixed layer that no scroll of his moves, so
+     a late pan has its raise read again (down by what the pan brought, never below its place). A window the app never
+     raised — every window on his iPhone — is the phone's: it rides the pan as page content does, and nothing is read. */
   const lifted = () => !!box && [...LIFTED].some(l => l.contains(box!))
   const focusin = (e: FocusEvent) => {
     dropLifts(e.target as Element)
@@ -585,39 +410,33 @@ export function installKbScroll(): () => void {
     if (layer && layer.hasAttribute('data-kblayer')) holdFull(layer)
     soon()
   }
-  /* the typing ended (the focus went to nothing, as a tap on blank page does): a raised window goes back — on the keys'
-     slide down, which the phone began some 30ms before the focus left (SLIDE_DOWN) */
+  /* the typing ended (the focus went to nothing, as a tap on blank page does): a raised window goes back at once; a
+     window the app never touched has nothing to go back from — the phone's own slide carries it down with the keys */
   const focusout = (e: FocusEvent) => {
     if (e.relatedTarget) return
-    const origin = performance.now() - SLIDE_DOWN.lead
-    requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts(null, { s: SLIDE_DOWN, origin }) })
+    requestAnimationFrame(() => { if (!isTypingBox(document.activeElement)) dropLifts() })
   }
   /* read fresh each time: the walk stands a stand-in viewport in after the page has loaded */
   let vvNow: VisualViewport | null = null
-  /* how far the visible screen's pan moved since the phone last told of it (compensate) */
-  let lastOff = window.visualViewport ? window.visualViewport.offsetTop : 0
-  const moved = (vv: VisualViewport | null) => { if (!vv) return 0; const d = vv.offsetTop - lastOff; lastOff = vv.offsetTop; return d }
   const resize = () => {
     noteFullHeight()
     const vv = window.visualViewport
-    const dy = moved(vv), now = performance.now()
     /* the keys down — read with the zoom taken out, so a pinch while typing (the narrow read round 2's L2) neither puts the
        window back nor takes the room below the page away; a zoomed frame itself changes nothing. A window still raised
-       (the focus went to a button, not to nothing) goes back on the keys' slide down, already well begun */
-    if (!vv || fullHeight(vv) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(null, { s: SLIDE_DOWN, origin: now - DOWN_RESIZE_LEAD }); return }
+       (the focus went to a button, not to nothing) goes back */
+    if (!vv || fullHeight(vv) - vv.height * (vv.scale || 1) <= KEYBOARD_MIN) { dropLifts(); return }
     if (vv.scale > 1.01) return
-    if (box && keyboardUp(vv)) compensate(dy, box, screenBox(vv), now)
     if (box && (Date.now() - at < FOCUS_WINDOW || lifted())) soon()
   }
   /* THE LIFT WAITS FOR THE PHONE'S OWN PAN TO END (Fable, 19 Oct 26). An iPhone scrolls the page to show the box over the
      frames the keys take to rise, and tells of each step by the visual viewport's `scroll`. A lift measured while that pan
      is still running adds its own move to one the phone has not finished — the screen then rises by more than the keys
      did (his recordings). Each step of the pan sets the measuring back two frames, so the box is measured once the screen
-     has come to rest, against where the phone left it: most often nothing is left to do, or the GAP alone. */
+     has come to rest, against where the phone left it: most often nothing is left to do. (His iPhone tells of the whole
+     pan in one `scroll`, some 30ms into a slide of a quarter second — his recordings of 25 Oct 26 11:49 and 11:54: the
+     numbers are final at once, the picture follows over the slide, and the app leaves the picture to the phone, D1412.) */
   const scroll = () => {
-    const dy = moved(window.visualViewport), now = performance.now()
     if (!box || !keyboardUp(window.visualViewport)) return
-    compensate(dy, box, screenBox(window.visualViewport!), now)
     if (Date.now() - at < FOCUS_WINDOW) soon()
     else if (lifted()) soon(true)
   }
@@ -631,7 +450,7 @@ export function installKbScroll(): () => void {
   /* THE PHONE'S OWN NUMBERS ON SCREEN, ON ASKING (his recordings of 25 Oct 26 — Chromium cannot raise an iPhone's keyboard,
      so what his phone does is read off his screen): with `?kbdebug` in the address, a small box at the top of the visible
      screen shows the layout's height, the visible screen's height and pan, whether the keys count as up, and the window of
-     the box typed in — its top and foot, its hold and shift — line by line as each event comes. Nothing without it. */
+     the box typed in — its top and foot, and its raise — line by line as each event comes. Nothing without it. */
   const debug = typeof location !== 'undefined' && /[?&]kbdebug\b/.test(location.search)
   let dbgEl: HTMLElement | null = null
   const dbgLines: string[] = []
@@ -648,14 +467,13 @@ export function installKbScroll(): () => void {
     /* L: where the layout's top stands in the page's measure (screenBox) — 0 on a desktop, minus the pan on his iPhone */
     const lay = vv ? screenBox(vv).layTop : 0
     dbgLines.push(`${t}ms ${ev} iH${Math.round(window.innerHeight)} vv${vv ? Math.round(vv.height) + '@' + Math.round(vv.offsetTop) : '-'} L${Math.round(lay)} ${keyboardUp(vv) ? 'UP' : 'dn'}` +
-      (r ? ` win${Math.round(r.top)}-${Math.round(r.bottom)} cap${l!.style.getPropertyValue('--kbcap') || '-'} sh${l!.dataset.kblift || 0}` : ''))
+      (r ? ` win${Math.round(r.top)}-${Math.round(r.bottom)} sh${l!.dataset.kblift || 0}` : ''))
     while (dbgLines.length > 9) dbgLines.shift()
     dbgEl.textContent = dbgLines.join('\n')
     dbgEl.style.top = Math.round(vv ? vv.offsetTop : 0) + 'px'
   }
   if (debug) {
     placed = dbg
-    /* the focus leaving too: the keys' slide down is timed from it (SLIDE_DOWN) */
     for (const [tgt, ev] of [[document, 'focusin'], [document, 'focusout'], [window, 'resize']] as const) tgt.addEventListener(ev, () => requestAnimationFrame(() => dbg(ev)), true)
     window.visualViewport?.addEventListener('resize', () => requestAnimationFrame(() => dbg('vv-resize')))
     window.visualViewport?.addEventListener('scroll', () => requestAnimationFrame(() => dbg('vv-scroll')))

@@ -840,26 +840,25 @@ press on its box; a box its screen opens with the focus already in it (the Leave
 
 **On a phone, the box being typed in shows above the keyboard (owner D1048, 19 Oct 26; nothing jumps as the keys open or close, D1081). The box rises IN STEP WITH THE KEYS, proportionately, and nothing else jerks or bounces — not a box already above the keys, and no window held short and grown back or showing the page behind it while the keys move (owner D1412, 27 Oct 26 — his four recordings; the six rounds of 25 Oct 26 are what he judged worse).** `ui/kbscroll.ts`, installed once
 from `main.tsx`: when a box to type in has the focus and the keyboard has shrunk the visible screen (`visualViewport`, more
-than 120px shorter than the layout, not pinch-zoomed), the box's own scrolling panels are scrolled, nearest first, so its
-bottom sits 8px above the keys — then the page, unless the box is in a fixed layer (a window, a sheet; the board is page
-content of its own, below), where the page behind never moves (D686). A box still under the keys in a fixed layer raises its window (the CSS `translate`
-property — on a full-screen backdrop, the window on it), never past the visible top; a window taller than the room is held
-to the visible screen's height while the keys are up (an inline `max-height`, never over one the window set itself) and its
-own body scrolls the box into sight. **A window raised or held for the keys follows the visible screen for as long as
-they are up and its box has the focus (his recording, 25 Oct 26 07:40 — the iPhone's password bar rose and the phone panned
-the screen some 170 points down after the focus window below; the held window stayed behind, its top off the screen, a band
-under it):** a late pan moves the window alone, nothing inside it scrolled; a late change of the room holds it to the new
-room and keeps its box in sight. **And it comes DOWN to the visible screen when the phone panned past its own place (his
-recordings of 25 Oct 26 08:05, "Other" and OD with the ˄ ˅ ✓ bar):** the hold used to raise a window only, so a window whose
-own place lay above the visible screen stayed there — its title off the top, a band under it; now it is pinned to the visible
-top up or down, and a window that fits is brought down to it — below its own place only then. **`?kbdebug` in the address**
+than 120px shorter than the layout, not pinch-zoomed), and once the phone's own pan has come to rest, the box's own scrolling
+panels are scrolled, nearest first, so its bottom sits 8px above the keys and above what the panel covers at its edges — then
+the page, unless the box is in a fixed layer (a window, a sheet; the board is page content of its own, below), where the page
+behind never moves (D686). **A window is the phone's to carry (D1412):** Safari pans the visible screen to show the box, and a
+window — fixed to the layout — rides up with the page in that same motion, in step with the keys; the app never raises, holds,
+shrinks, re-places or glides a window for the keys, and when they go down the phone's pan carries it back. Only as a last
+resort — the pan at rest and the box still under the keys, which Safari never leaves — is a window raised (the CSS `translate`
+property; on a full-screen backdrop, the window on it), never past the visible top, and put back when the typing ends or the
+keys go down. **The six rounds of 25 Oct 26 that held a window to the room (`--kbcap`), pinned it to the visible top, brought it
+down when the pan carried it off, moved it with the pan (`compensate`) and glided it on a model of his iPhone's slide are
+gone** — each passed the stand-in keyboard and failed on his phone (`docs/handpass/2026-10-25-kbs-other-remarks.md`); what
+replaced them is `docs/handpass/2026-10-27-kbs-carried.md`. **`?kbdebug` in the address**
 shows the phone's own numbers in a small box at the top of the visible screen (the layout's height, the visible screen's height
-and pan, the keys up or down, the window's top, foot, hold and shift, event by event) — for reading a fault off his recording.
+and pan, the keys up or down, the window's top, foot and raise, event by event) — for reading a fault off his recording.
 **A panel's own pinned foot is kept clear (his report, 25 Oct 26 07:06 — the input
 window on his iPhone, "Other", Remarks tapped: Document, then Cancel / Add, no Remarks):** the floor a box is lifted to in a
 scrolling panel stands above what the panel covers at its edges — its `scroll-padding` (the input window's 64px) and a button
-row it holds sticky at its foot (its last child, three deep, measured as it stands — Holidays' buttons) — so a window held
-to the room never lifts its box behind its own Cancel / Add. Everything is put back when the typing ends or the keys go down. Only resizes within
+row it holds sticky at its foot (its last child, three deep, measured as it stands — Holidays' buttons) — so a window's body
+never lifts its box behind its own Cancel / Add. Only resizes within
 1.5s of the focus act, so a box scrolled away on purpose stays where it was put. The Leave War sheets' keyboard anchoring
 runs first; this measures two frames later. **The Scheduler Board is page content, not a fixed layer, while it is open
 (D1081 — his iPhone drew the fixed board a keyboard's height lower on the first frame of the keys closing):**

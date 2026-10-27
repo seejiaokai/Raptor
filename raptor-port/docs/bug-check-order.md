@@ -758,6 +758,13 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** when a change hands anything to the phone itself (its scrolling, its keyboard, its bounce), the sizing step
    names what only the real phone draws and asks him for a look or a recording on his iPhone before merge; a walk that
    judges scroll bars launches with the test browser's `--hide-scrollbars` taken off.
+7. **A mechanism tuned to a model of the phone is proved only by the model (D1412, the keyboard's six rounds, 25–27 Oct 26).** Six
+   rounds moved, held and then glided a window against a model of his iPhone's keyboard slide; each passed the stand-in keyboard,
+   which played that very model, and each failed on his phone, where the real slide, its timing and what the phone draws between
+   the app's frames were never quite the model. **Lesson:** where a change steers something frame by frame against a motion the
+   phone itself makes, no stand-in can prove it — the sizing step says so, asks for his recording before anything is called
+   fixed, and the design question comes first: hand the motion to the phone (the board, D1081; the windows, D1412) rather than
+   model it, and keep a model only where he has seen it work on his own screen.
 
 ## 8. Making the checks FIND rather than CONFIRM
 
