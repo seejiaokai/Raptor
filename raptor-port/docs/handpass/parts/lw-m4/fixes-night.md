@@ -1,0 +1,67 @@
+# M4 — the fixes of the night of 27–28 Oct 26 (a fresh Opus builder)
+
+Brief: `docs/superpowers/briefs/2026-10-28-lw-m4-fixes.md`; the findings joined in the evidence sheet §11. Branch
+`claude/leave-war-m4-planning-d18224`, from 3ad84df65. Every fault was made to fail by a test first, then fixed, then green;
+nothing was pushed. Each row below: the test that was red (file — name), the fix (file — function), its commit, the twin
+paths given a test of their own.
+
+| Finding | Red first | The fix | Commit | Twin paths tested |
+|---|---|---|---|---|
+| **M1 HIGH** — the wrong half decided | `src/leavewar/m4decide.test.ts` — "a day whose other half already holds war-approved leave (M1)": the re-key, the second tap, Refuse, the stale reason (4 of 5 red; the plain-day control passed) | `src/leavewar/state/store.ts` — `DecidePart.code` (filled by `approvals.ts linesOfWar` and every re-read), `warLeaveFor` (the leave on the request's half), `decideRequests` (each request's half read before the command), `staleWhy` (the "Already approved" and "back" branches by half) | 05b952db1 | second tap AND Refuse after Approve; a stale line deleted since |
+| **M2 HIGH** — the bell on a two-half day | `src/leavewar/m4bell.test.ts` — "a day holding two war-approved halves (M2)": (a) afternoon then morning, (b) an approval extending an older morning leave, (c) the older half put back, "Approve what I enter" (D1422) — 4 red; (c, the later half) passed before | `src/leavewar/sync.ts warLeaveNow` keyed "date\|notation"; `store.ts decisionTells` matches approvals, put-backs, moves and deletions by date AND half | 05b952db1 | both halves put back; approve and place-approved |
+| **M3** — Undo / Redo after a one-tap change of mind | `src/leavewar/m4page.test.tsx` — "Undo and Redo after a one-tap change of mind (M3)": Approve→Refuse→Undo; Undo-Undo-Redo-Redo; the twin Refuse→Approve→Undo→Redo; the second tap undone (all 4 red) | `src/leavewar/ui/ApprovalsPage.tsx` rows memo — each row keeps every decision made on it (`forms`, newest first, in place of `undone`); a row not pending shows the newest whose days all still stand | ab6605d61 | Undo AND Redo; Approve→Refuse AND Refuse→Approve; the lit second tap undone |
+| **M4 HIGH** — a press decides another man's line | `e2e/leavewar.spec.ts` — "with 'Pick dates…' open, a press on a line's Approve only closes the calendar — no line is decided (M4, D1421)" — red on `lw-phone` by a touchscreen tap (a line lit); `lw-desktop` by the mouse passed before and after | `ApprovalsPage.tsx`, the picker's outside-press handler: the press closes the calendar and the click that follows that press's lift is taken before anything under it acts (a press that makes no click leaves nothing waiting) | 4d5763da3 | finger (phone) and mouse (desktop) |
+| **M5** — one posting-out rule in every door | `m4decide.test.ts` — "posting out — one answer through every door (M5)": a posting to come (the day's list and the bid windows' reason) and one that has run (refused everywhere, Refuse still works) — 2 red; SANS approves (passed before, kept); `m4page.test.tsx` — "M5 the day's window gives Approvals' posting-out reason" (red against the old store) | `sync.ts approveWhy` now holds the run check (from `store.ts decideWhy`, dropped there); `postedOutAsSans` exported; `decideRequestById` answers with the rules' reason; `setBidStates` returns `why`, shown by `BidPicker.tsx` (the one-day window) and `SelectSheet.tsx` (the drag window) | 3a76cb8ac | Approvals, the day's list, the bid windows; Approve refused AND Refuse working in each; to come AND run; SANS |
+| **M6 MEDIUM** — leaving from Approvals | `src/leavewar/leavewarpage.test.tsx` — "leaving the Leave War from Approvals (M6)": from the page, and its twin from the slim bar (both red: the grid flagged on screen after leaving) | `src/leavewar/LeaveWarPage.tsx` — a module flag `pageOn`, cleared by the page's cleanup before it ends the visit; `Body` then touches neither the flag nor the scroll, records the grid's place only on its own page; left from the page, the return lands on the grid where he was | 8502044d1 | from the page AND from the slim bar |
+| **M7** — a lit line never re-checked | `m4page.test.tsx` — "a lit line changed elsewhere (M7)": approved here, put back on the grid (two copies → one, pending, in place); refused here, deleted on the grid (stayed lit) — both red | `ApprovalsPage.tsx` rows memo (the same change as M3): a lit row is asked whether its decision stands; one put back elsewhere takes the new pending request in its own place; one that no longer stands goes unlit and says why | ab6605d61 | approved-then-put-back AND refused-then-deleted |
+| **M8** — a finger on the bell's foot | `e2e/leavewar.spec.ts` — "a finger dragged from the bell's foot never scrolls the page behind it (M8, D686)" on `lw-phone` (a CDP touch drag moved the page 273px) | `src/ui/topbits.tsx BellList` holds a finger with `floatwin.ts holdPageScroll`, the one body every window uses | 4d5763da3 | — (the list's own scroll already passed; still passes in "a long bell keeps…") |
+| **M9 LOW** — an unread "again" line after Undo | `m4bell.test.ts` — "an unread 'again' line and the next Undo (M9)": unread (the line went), and its twin read ("taken back" again) — both red | `sync.ts warNoticesReversed` gives the "again" line `ref` and writes "taken back" only where the "again" line was read, and no second "again" on Redo; `src/state/notices.ts noticeLive` shows an "again" line only while the line it repeats stands, and only its newest — no notice is deleted, so the notices' permission row is unchanged | dc70b9322 | unread AND read; Undo AND the Redo after it |
+| **M10 LOW, security** | `src/leavewar/m4sec.test.ts` — "M10 his old REFUSED request dropped…" and "M10 a copy of his request on another day…" (both passed the guard before) | `src/state/perms.ts stampForged`: a re-type takes the stamp only of a LIVE bid on the half it replaces; "the same record" only where its id stands in one cell after the command (a move, not a copy); `docs/data-model.md` §11 says so | 7ae55300e | an on-half re-type and a real move still pass |
+| **M11** | `src/storage/seal.test.ts` — "settings/apprseen:stiff → LeaveApprovalsSeen" | `src/storage/tables.ts tableOf` | fbdda026c | — |
+| **M12** — D1441 on Linux | `e2e/leavewar.spec.ts` — "on a phone Approve and Refuse are in the drawing's letters and every date stays on one line at 402 (D1441)" — not reproducible red here (Windows' letters fit before and after); the failure is GitHub's Linux run | the test only: the drawing's 12.5px bold checked everywhere; no date may break INSIDE a word anywhere; the one-line fit asserted only on Windows (`process.platform === 'win32'`), where it was measured — the comment says why | 4d5763da3 | — |
+| **M13** — the phone's slim bar | `e2e/leavewar.spec.ts` — "on a phone the slim Approvals bar stands where the drawing has it: 8px in, 46 tall, 10 above the foot (M13, D1440)" (red: 12, 44, 22) | `src/leavewar/ui/approvals.css .appr-slim.ph` — left / right 8px, min-height 46px, bottom 10px (+ the home bar's inset where a screen keeps one); the windows over it on a phone stand 8 above it (`bottom: 64px`); Back and ✕ keep 34px | 4d5763da3 | Back and ✕ press areas; the window-above-the-bar test still passes |
+
+## M13 — the measures
+
+Measured on the drawing's own pixels (`docs/mock/lw-overhaul/full/r22-6-phone.png`, 1206 × 2622 = 402 × 874 at 3×), by the
+bar's edge colour (42, 50, 60) and fill (22, 27, 34): the box's left edge at x 24–26 and right at 1179–1181 → **8px in from
+each side** (386 wide); its top edge at y 2454–2456 and foot at 2589–2591 → **46 tall**, its foot at 864 → **10 above the
+screen's foot**. Walker B's "about 4 and 50" read the drawing's pink marking ring (at x 10–16, y 2441–2447 and 2600–2606),
+which stands round the bar. The build had 12 in, 44 tall, 22 above the foot; it now has the drawing's (the browser test
+above measures 8 / 8 / 46 / 10 at 402 × 874).
+
+## The Archive-outcome look (to look at, not changed)
+
+**What the code does.** The puck's tag in Approvals is `postingPendingTag` (`sync.ts`) until the posting has run, then
+"posted out <date>". `postingPendingTag` reads the CALENDAR's today (`state/person-delete.ts effectiveToday`), while the
+refusal (D1436, `postingOutWhy`) and `postedOutBy` read the LEAVE WAR's today (`memberToday`). Walker A's scripts pin the
+Leave War's today to a January date (`scripts/handpass/lw-m4-lib.mjs`, `lwSetMemberToday`) but the calendar stays at 28 Oct
+26: for Blade's posting from 15 Jan the war said "still to come" (hence "He posts out on 15 Jan: refuse or delete it") while
+the tag's clock said "come and not yet run", for which it shows nothing (the held note on Admin → Users speaks). In use the
+two clocks are one (the pin is a test hook), and a posting still to come shows "posting out 15 Jan · Overseas Sqn" — what
+the first walk saw. **My reading: not a fault of the app — a set-up of the walk.** One difference from the drawing stands:
+r22-1 writes "PO 1 Mar" under the puck where the build writes "posting out 1 Mar · Overseas Sqn" (the words — the host's to
+put to him if wanted).
+
+**LOWEST AVAIL empty.** Walker A's leave (2 Feb, 3 Feb PM) lies AFTER his posting date; from that date he is not in the
+manning (the counts drop a man posted out), so the request lowers no Available row and there is no figure to show. r22-1's
+Blade has his leave (Mon 2 Feb) BEFORE his posting (1 Mar), so the drawing shows "P 27". **My reading: correct as built,
+not a difference** — the drawing's case and the walk's are different cases.
+
+## Not done
+
+- **Opus 8** (the bell's recount) — not now, by the brief (filed as tidiness, D489).
+- **M12 red-first** — cannot be made red on this PC (Windows' letters fit); GitHub's Linux run is its check.
+
+## Checks run (on his PC, 28 Oct 26)
+
+- Unit, every file touched plus the brief's list: `m4bell` 19, `m4decide` 21, `m4page` 17, `m4ride` 14, `m4sec` 13,
+  `leavewarpage` 4, `state/store.test` 221 (the Leave War project); `state/perms.test` 85, `storage/seal.test` 42; also
+  `ui/bellnotices` + `bellnotices-scenarios` 76 — all green.
+- A wider sweep of the 59 Leave War test files that call what changed (deciding, the bell, the posting doors, the pages):
+  1,349 passed.
+- `npm run build` (the type-check) through the lock: passed, twice (before the red browser run and after the fixes).
+- Browser, through the lock, on `lw-phone` and `lw-desktop`: the four new or changed tests above and every Approvals and bell
+  test in `e2e/leavewar.spec.ts` — 16 passed, 6 skipped (phone-only tests on the desktop project), 0 failed. Red run before
+  the fixes: M4 (phone), M8, M13 failed; the rest passed.
+- Not run: the full gate set (GitHub's run of the pull request is the full check while the repo is public — D1086).
