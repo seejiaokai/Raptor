@@ -162,19 +162,19 @@ describe('bidding opened or closed (9.4 — D1214)', () => {
     closeDates(p.start, p.end)
     NOTICES.length = 0
     openDates('2026-03-01', '2026-03-31')
-    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · bidding open · Saber'])
+    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · Bidding open · Saber'])
     expect(lines('stiff')).toEqual([])
     T(9); openDates('2026-04-01', '2026-04-30')
     T(10); openDates('2026-05-01', '2026-05-31')
     T(11); openDates('2026-06-01', '2026-06-30')
-    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 30 Jun · bidding open · Saber'])
+    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 30 Jun · Bidding open · Saber'])
     /* shortening a stretch is ONE line with its new dates (spec 9.4) — the older Mar–Jun line hides under it, so a
        "Jun closed" line alone would leave him not knowing Mar–May is still open (the scenario designer's ★4) */
     T(12); closeDates('2026-06-01', '2026-06-30')
-    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 May · bidding open · Saber'])
+    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 May · Bidding open · Saber'])
     /* a stretch closed whole says closed */
     T(13); closeDates('2026-03-01', '2026-05-31')
-    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 May · bidding closed · Saber'])
+    expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 May · Bidding closed · Saber'])
   })
   /* THE WALK'S C-F3 (27 Oct 26): the "its dates ended" line was dated the midnight after the stretch, so a "bidding open"
      line written later (or any open line once the ended line passed its fourteen days) won as the newer line — his bell
@@ -186,11 +186,11 @@ describe('bidding opened or closed (9.4 — D1214)', () => {
     try {
       setMemberTodayForTests('2026-02-20')
       openDates('2026-03-01', '2026-03-31')   // written at 15 Jul by the clock, the war's today 20 Feb
-      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · bidding open · Saber'])
+      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · Bidding open · Saber'])
       setMemberTodayForTests('2026-04-02')     // the dates have passed
-      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · bidding closed · its dates ended'])
+      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · Bidding closed · its dates ended'])
       setMemberTodayForTests('2026-05-20')     // weeks on: still the ended line, never the old "open" one back
-      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · bidding closed · its dates ended'])
+      expect(lines('bane')).toEqual(['Leave War · 1 Mar – 31 Mar · Bidding closed · its dates ended'])
     } finally { setMemberTodayForTests('2000-01-01') }
   })
   it('a month closed out of the middle of a stretch: each piece left open is its own line (★4)', () => {
@@ -199,7 +199,7 @@ describe('bidding opened or closed (9.4 — D1214)', () => {
     openDates('2026-04-01', '2026-06-30')
     NOTICES.length = 0
     T(9); closeDates('2026-05-01', '2026-05-31')
-    expect(lines('bane').sort()).toEqual(['Leave War · 1 Apr – 30 Apr · bidding open · Saber', 'Leave War · 1 Jun – 30 Jun · bidding open · Saber'])
+    expect(lines('bane').sort()).toEqual(['Leave War · 1 Apr – 30 Apr · Bidding open · Saber', 'Leave War · 1 Jun – 30 Jun · Bidding open · Saber'])
   })
 })
 

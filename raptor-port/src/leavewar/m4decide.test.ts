@@ -17,7 +17,7 @@ import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import {
   absenceDoor, closeDates, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
-  recordsAt, setAbsenceDoor, setCell, setPeople, setPostOut, type DecideLine, type DecidePart,
+  recordsAt, setAbsenceDoor, setBidStates, setCell, setPeople, setPostOut, type DecideLine, type DecidePart,
 } from './state/store'
 import { readRec, setMemberTodayForTests, type RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
@@ -189,6 +189,43 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
     const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'refused')])
     expect(b!.kind).toBe('done')
     setMemberTodayForTests(null)
+  })
+
+  /* his D1436 (27 Oct 26, "all as recommended", question 16): leave on days after a posting-out date still to come is
+     refused too — the day before still approves; a posting out as SANS keeps his leave, before and after it runs (D283);
+     the bid windows' Approve refuses alike (one body, `sync.ts approveWhy`) */
+  it('a posting still to come: Approve refuses leave on days after its date, with the date; a day before approves (D1436)', () => {
+    setMemberTodayForTests('2026-01-20')
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+    const [a] = decideRequests([lineOf('bane', DAYS, 'approved')])
+    expect(a).toEqual({ kind: 'refused', why: 'He posts out on 4 Feb: refuse or delete it' })
+    expect(leaveOf('bane')).toHaveLength(0)
+    const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
+    expect(b!.kind, 'the day before his posting-out date approves as ever').toBe('done')
+    const [c] = decideRequests([lineOf('bane', [DAYS[2]!], 'refused')])
+    expect(c!.kind, 'Refuse still works').toBe('done')
+  })
+
+  it('a posting still to come: the bid window refuses the same days (D1436)', () => {
+    setMemberTodayForTests('2026-01-20')
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+    const r = setBidStates(DAYS.map(date => ({ personId: 'bane', date })), 'approved')
+    expect(r.skipped, 'his days from 4 Feb are skipped').toBe(2)
+    expect(req('bane', DAYS[1]!).state).toBe('pending')
+    expect(req('bane', DAYS[2]!).state).toBe('pending')
+  })
+
+  it('a posting out as SANS keeps his leave: approved before it runs and after (D1436, D283)', () => {
+    setMemberTodayForTests('2026-01-20')
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    expect(setPostOut('bane', DAYS[1]!, 'sans')).toBe(true)
+    const [a] = decideRequests([lineOf('bane', [DAYS[2]!], 'approved')])
+    expect(a!.kind, 'before it runs').toBe('done')
+    setMemberTodayForTests('2026-02-10')
+    const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
+    expect(b!.kind, 'after it has run').toBe('done')
   })
 
   it('a member reaches none of it', () => {

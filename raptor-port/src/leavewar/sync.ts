@@ -427,9 +427,19 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
   if (!war || !rec) return 'No longer there'
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
+  const po = postingOutWhy(it.personId, it.date)
+  if (po) return po
   const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
   if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) return `${shortDate(it.date)} already holds leave or a medical at that time — not approved`
   return null
+}
+/* his D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
+   even before the posting has run — the Approvals list and the bid windows alike, since both ask `approveWhy`; a posting
+   out as SANS keeps his leave (D283). The record's own dates are read, as `postingPendingTag` reads them. */
+function postingOutWhy(personId: string, date: string): string | null {
+  const w: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
+  if (!w || !w.to || w.gone || date <= w.to || outcomeOf(w) === 'sans') return null
+  return `He posts out on ${dayMon(addDays(w.to, 1))}: refuse or delete it`
 }
 /* WHY `doorDecideApproved` WOULD SKIP ONE ITEM (the same one body, M4 8.3) */
 function decideApprovedWhy(it: { personId: string; date: string; iid: string }, prot: Set<string> = lockedDates()): string | null {

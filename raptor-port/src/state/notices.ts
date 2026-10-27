@@ -436,7 +436,8 @@ function partWords(p: NoticePart): string {
       }
       return c
     }
-    case 'lwopen': return p.end ? 'bidding closed · its dates ended' : p.open ? 'bidding open' : 'bidding closed'
+    /* "Bidding" with a capital, as his drawing writes it (his D1433, 27 Oct 26) */
+    case 'lwopen': return p.end ? 'Bidding closed · its dates ended' : p.open ? 'Bidding open' : 'Bidding closed'
     case 'lwback': {
       const c = (p.c || '').replace(/\*/g, '')
       const what: Record<string, string> = {

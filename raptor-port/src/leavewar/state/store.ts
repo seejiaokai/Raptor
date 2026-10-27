@@ -3707,6 +3707,11 @@ const shortDay = (iso: string): string => {
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
   return `${DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))).getUTCDay()]} ${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
 }
+/* his posting out is as SANS (his D1436: a SANS man's leave is kept, so his Approve is never refused for the posting) */
+const postedOutAsSans = (personId: string): boolean => {
+  const w = state.postOuts[personId] || state.people.find(p => p.id === personId)
+  return !!w && !w.gone && outcomeOf(w) === 'sans'
+}
 /** has this man's posting out RUN (his last day before today) — or was he deleted? A request of his is not approved then
  *  (M4 8.2, B12): "Posted out — refuse or delete it". A posting still to come approves as ever. */
 export function postedOutBy(personId: string): string | null {
@@ -3758,7 +3763,8 @@ function decideWhy(line: DecideLine): string | null {
   for (const p of line.parts) {
     if (p.state === to) continue
     if (to === 'approved') {
-      if (postedOutBy(personId)) return 'Posted out — refuse or delete it'
+      /* a posting out as SANS keeps his leave (his D1436, D283) — only another posting's leave is refused once it has run */
+      if (postedOutBy(personId) && !postedOutAsSans(personId)) return 'Posted out — refuse or delete it'
       const why = DOOR?.approveWhy?.({ personId, date: p.date, recId: p.recId! })
       if (why) return why
       continue
