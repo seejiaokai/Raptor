@@ -2445,3 +2445,18 @@ its value and never in innerText.
 **Suggested improvement:** In weekly-review's staging step: a draft of a file a project script rewrites (here the rulings map) is staged as the ADDITION only — its anchor and its text — and `install.mjs` applies it to the live file at install, so no ruling recorded during the rounds can make it stale. Until then: rebase and refresh the hash only after the LAST `--rulings` call of a step.
 
 **Principle:** Stage a change to a generated or script-maintained file as a patch applied at install, not as a whole-file copy; a whole-file draft of a file that keeps changing goes stale at every write.
+
+### Observation 724: A plan's "waits on his answer" table is not updated when the answers come
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** Planning the Leave War overhaul's M4 from the approved build plan of 22 Oct 26
+**Skill:** writing-plans (and the record-decisions rule's D201 sweep)
+**Type:** internal
+**Phase/Area:** a plan's table of the questions each step waits on
+
+**Issue:** The build plan's §2 table still read "Q8 … without his answer: not sent" and "Q11 … taken back silently" five days after he answered both (D1214, D1216). The rulings named the notifications register as their home and were filed there; the plan that listed them as open was never touched, so the next chat met two settled questions presented as open and had to search the rulings to find them answered. The plan's M4 row also still described Approvals as a docked window after D1254 made it a tab.
+
+**Suggested improvement:** In writing-plans: a plan that lists the questions a step waits on names, in the same table, the plan file itself as a home every answering ruling must update; and the D201 sweep's "search for the rule's SUBJECT" step lists `docs/superpowers/plans/` explicitly.
+
+**Principle:** A list of open questions is one more home of every answer to it; record the answer there too, or the list keeps asking.

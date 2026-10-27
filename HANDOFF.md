@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/leave-war-m4-planning-d18224 -->
+### `claude/leave-war-m4-planning-d18224` — the Leave War overhaul's M4 (deciding), PLANNED; waiting on his look and three answers — written 27 Oct 26, verify before use
+- **After a compaction:** re-read this block and the M4 build spec before the next change; note the compaction here with its time.
+- **Where it started:** his opening line, 27 Oct 26: plan M4 (D1404) from `main` at 36b7beaa9. Remote Control was already on.
+- **Done:** the build spec `raptor-port/docs/superpowers/plans/2026-10-27-lw-m4-build-spec.md` — every ruling M4 carries (Q8 and Q11 of the build plan already answered: D1214, D1216), the code read again on `main` by a helper (the 22 Oct code map is stale on Approvals being a tab, the puck, deciding by war; the risks: no writer takes a mixed list, one inner refusal sinks Approve all, a request stores no "placed" or "decided", nothing on the war opens a document, "taken back" needs an admin's read of the read marks, B1 skips by command type), the roll-call seed, the walk with §7.11's lessons, the checks (FULL + the security read, D1411). The Approvals tab drawn on the real app: `raptor-port/docs/mock/lw-overhaul/full-r22-*` (script `full-r22-approvals-tab.mjs`); the questions page `raptor-port/docs/mock/lw-overhaul/m4-questions.html`. The build plan's §2 table and M4 row corrected (D201). One fresh, blind Opus reader of the spec.
+- **Questions waiting for him (the page):** L1 Approvals as a tab page, as drawn; Q1 a decided line stays lit in place until he leaves the tab; Q2 a member told when an admin places approved leave on his row (the register's P2); Q3 no line when bidding ends by its date alone. Each recommended; eight readings named for him to strike.
+- **Next:** record his answers (leave-war.md; Q2 and Q3 in the notifications register too), fold them into the spec, then build M4 on a branch of its own cut from `main` (the build plan: one merge, FULL check) — a fresh chat if this one is past about 60%.
+- **Notes:** ruling numbers to D1419 (none new here); observations to 724.
+<!-- /now -->
 <!-- now:claude/observation-log-review-triage-7f6090 -->
 ### `claude/observation-log-review-triage-7f6090` — the skill-notes review of 13–26 Oct 26 (152 open notes), installed; then M4 — written 27 Oct 26, verify before use
 - **Where it started:** his opening line, 27 Oct 26: triage the open notes of `.claude/skill-observations/log.md` grouped by guide, drafts staged first, one fresh, blind Opus reader, then put to him in rounds of at most four; after his approval and the merge, the Leave War overhaul's M4 (D1404) on its own branch.

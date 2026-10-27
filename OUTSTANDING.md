@@ -106,7 +106,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-ADD-RIGHT] — the Inputs list's "+ Input" on a desktop at the right where its window opens, as "+ Medical" now is (D1300's reading, lesson 47) — his choice, with a picture.
 - [LW-OPENDATES-X-SIZE] — on a phone the "Open for bidding" page's ✕ is 18 × 17, under a finger's size — seen by M3's follow-up walk.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
-- [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1, M2 and M3 live (pull requests 566, 567, 569, follow-ups 571–573); M4 (deciding — Approvals, the bell) next, in a fresh chat (D1404), then M5.
+- [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1, M2 and M3 live (pull requests 566, 567, 569, follow-ups 571–573); M4 (deciding — Approvals, the bell) planned 27 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-27-lw-m4-build-spec.md`), waiting on his look and three answers, then built (D1404); then M5.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
@@ -305,6 +305,7 @@ Found by the walkers of `raptor-port/docs/handpass/2026-10-25-lw-night.md` (repo
 
 ### [LW-OVERHAUL] The Leave War's major overhaul, taking the good things from a colleague's app (his word, 21 Oct 26 — D1140)
 **M3's leftovers, from its fresh Opus read (24 Oct 26 — `raptor-port/docs/handpass/parts/lw-m3/read-opus.md`, findings 7 and 8; not built in M3):** (7) a bid replaced by a clashing Inputs-page leave or medical drops its documents and remarks from every record (`leavewar/inputgate.ts replaceClashingBids` writes a notice carrying neither) — carry them onto the same man's replacing leave, or keep them on the notice; (8) the 20-document cap on a request is silent (a 21st file picked disappears) and the Inputs page has none — one cap for both, said on screen. And from the walk, older and met in passing: an approved leave's one-record window has no "Back to bid" (the day's list has it); a drag made while a drag-selection window stays open does not replace its selection.
+**M4's build spec (27 Oct 26):** `raptor-port/docs/superpowers/plans/2026-10-27-lw-m4-build-spec.md` — batches 8 and 9, the code read again on main, one look and three questions for him (`raptor-port/docs/mock/lw-overhaul/m4-questions.html`, pictures `full/r22-*`).
 **M3's build list (23 Oct 26, the night's):** `raptor-port/docs/superpowers/plans/2026-10-24-lw-m3-build-spec.md` — batches 5–7 and the folded items, step by step, with the roll-call seed and the walk's scenarios; built on `claude/lw-m3-placing-leave`.
 **His words:** *"Should we create another worktree chat for a major overhaul planning of the leave war? … I saw this app
 created by my colleague and would like to take the good things from it"*. **What:** compare the colleague's leave app
