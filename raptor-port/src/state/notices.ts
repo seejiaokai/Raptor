@@ -64,8 +64,9 @@ export type NoticePart =
      input (`iid` is ''): `name` is "Your leave" or "Leave War", `day` the first day. Written by the war's own command, so
      its Undo takes them with it (leavewar/state/store.ts tellDecisions / tellOpenings, through leavewar/sync.ts).
      `lw` — a decision on HIS leave: `c` the kind as stored (LL, *LL), `a`..`b` its days, `d` what was done, `to`..`tb`
-     where a move took it; `again` — a Redo after a "taken back" line (9.3: a fresh line, so it is unread). */
-  | { k: 'lw'; c: string; a: string; b: string; d: LwDid; to?: string; tb?: string; again?: true }
+     where a move took it; `again` — a Redo after a "taken back" line (9.3: a fresh line, so it is unread), `ref` the line
+     it repeats (the fixes' M9: shown only while that line stands, and only the newest "again" of it). */
+  | { k: 'lw'; c: string; a: string; b: string; d: LwDid; to?: string; tb?: string; again?: true; ref?: string }
   /* bidding opened or closed on a stretch (D1214) — `end`: closed because its last date passed (derived, never stored) */
   | { k: 'lwopen'; a: string; b: string; open: boolean; end?: true }
   /* a war line the admin's Undo took back after the member had read it (D1216): `ref` the line it was, `d` what it said */
@@ -296,6 +297,18 @@ export function noticeLive(n: Notice): boolean {
       if (x === n || x.to !== n.to || !(x.at > n.at || (x.at === n.at && x.id > n.id))) continue
       const y = openOf(x)
       if (y && y.a <= o.b && o.a <= y.b) return false
+    }
+    return true
+  }
+  /* AN "AGAIN" LINE STANDS WITH THE LINE IT REPEATS (the fixes' M9 — the Opus read's 5; D1216): a Redo's "LL approved again"
+     is the follow-up's own line, not the step's, so the next Undo cannot take it; it is shown only while the line it
+     repeats is held (the decision stands), and only the newest "again" of that line */
+  const w: any = (n.what || [])[0]
+  if (w && w.k === 'lw' && w.again && w.ref) {
+    if (!NOTICES.some(x => x.id === w.ref)) return false
+    for (const x of NOTICES) {
+      const y: any = x === n || x.to !== n.to ? null : (x.what || [])[0]
+      if (y && y.k === 'lw' && y.again && y.ref === w.ref && (x.at > n.at || (x.at === n.at && x.id > n.id))) return false
     }
     return true
   }

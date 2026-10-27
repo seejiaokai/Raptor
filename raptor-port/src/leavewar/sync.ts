@@ -1293,13 +1293,23 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     if (!isWarNotice(n)) continue
     const p: any = (n.what || [])[0]
     if (!p || p.k === 'lwback') continue
+    /* the "again" lines an earlier Redo wrote for this line, newest last (the fixes' M9 — the Opus read's 5) */
+    const again = NOTICES.filter(x => x.to === n.to && (x.what || [])[0]?.k === 'lw' && (x.what[0] as any).again && (x.what[0] as any).ref === n.id)
     if (dir === 'undo') {
       if (NOTICES.some(x => x.id === n.id) || !hasRead(n.to, n)) continue
+      /* …a Redo after a "taken back" told him "again": that line is now the one he last had. Unread, it simply goes — it
+         names the line it repeats, and with that line gone it is no longer shown (state/notices.ts noticeLive) — so the
+         "taken back" he already holds still stands as what he knows (D1216); read, he is told "taken back" once more. */
+      const last = again[again.length - 1]
+      if (last && !hasRead(n.to, last)) continue
       const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
       made.push({ ...n, what: [{ k: 'lwback', ...(p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id }] })
     } else {
       if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => x.to === n.to && (x.what || [])[0]?.k === 'lwback' && ((x.what[0] as any).ref === n.id))) continue
-      made.push({ ...n, what: [p.k === 'lw' ? { ...p, again: true } : { ...p }] })
+      /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
+      const last = again[again.length - 1]
+      if (last && !hasRead(n.to, last)) continue
+      made.push({ ...n, what: [p.k === 'lw' ? { ...p, again: true, ref: n.id } : { ...p }] })
     }
   }
   if (!made.length) return 0

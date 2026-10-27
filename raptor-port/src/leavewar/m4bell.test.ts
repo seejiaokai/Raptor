@@ -209,6 +209,37 @@ describe('Undo (9.3 — D1216)', () => {
   })
 })
 
+/* THE FIXES' M9 (the Opus read's 5): the "… approved again" line a Redo writes is the follow-up's own, not the step's, so
+   the next Undo never looked at it — unread, it stayed in his bell for an approval that no longer stood (D1216: a line he
+   has not read goes with the Undo). */
+describe('an unread "again" line and the next Undo (M9 — D1216)', () => {
+  const readNewest = () => { mem['sqn142_noticeseen:bane'] = JSON.stringify({ upto: 0, ids: noticesFor('bane').map(n => n.id) }); noticeSeenLoad() }
+  it('Undo after a Redo he has not read: the "again" line goes; Redo brings ONE "again" line back', () => {
+    bids('bane')
+    decideRequests([lineOf('bane', DAYS, 'approved')])
+    readNewest()
+    T(9); expect(globalUndo().ok).toBe(true)
+    T(10); expect(globalRedo().ok).toBe(true)
+    expect(lines('bane')[0]).toBe('Your leave · Tue 3 – Thu 5 Feb · LL approved again · Saber')
+    T(11); expect(globalUndo().ok).toBe(true)
+    expect(lines('bane'), 'the unread "again" line went with the Undo').toEqual(['Your leave · Tue 3 – Thu 5 Feb · Approval of LL taken back · Saber'])
+    T(12); expect(globalRedo().ok).toBe(true)
+    expect(lines('bane').filter(l => l.includes('approved again')), 'one "again" line, never two').toHaveLength(1)
+    expect(lines('bane')[0]).toBe('Your leave · Tue 3 – Thu 5 Feb · LL approved again · Saber')
+  })
+  it('the twin: an "again" line he HAS read — the next Undo says "taken back" once more', () => {
+    bids('bane')
+    decideRequests([lineOf('bane', DAYS, 'approved')])
+    readNewest()
+    T(9); expect(globalUndo().ok).toBe(true)
+    T(10); expect(globalRedo().ok).toBe(true)
+    readNewest()
+    T(11); expect(globalUndo().ok).toBe(true)
+    expect(lines('bane')[0]).toBe('Your leave · Tue 3 – Thu 5 Feb · Approval of LL taken back · Saber')
+    expect(lines('bane').filter(l => l.includes('approved again')), 'the approval it repeated no longer stands').toHaveLength(0)
+  })
+})
+
 describe('bidding opened or closed (9.4 — D1214)', () => {
   it('everyone on the war with a sign-in but the admin who did it; four month taps are ONE live line', () => {
     const p = getState().period
