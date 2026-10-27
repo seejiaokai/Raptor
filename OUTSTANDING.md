@@ -90,6 +90,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
+- [LW-LEAVE-SCROLL-CARRY] — leaving the Leave War with its grid scrolled down, Edit Schedule opens scrolled down too (older; found 28 Oct 26).
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
@@ -228,6 +229,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [LW-LEAVE-SCROLL-CARRY] Leaving the Leave War scrolled down carries the scroll into Edit Schedule (found 28 Oct 26, the M4 fixes' re-walk, F6)
+On a desktop, with the Leave War's grid scrolled down (by hand, or by a request's dates from Approvals), choosing Edit Schedule from the menu opens it 547px down, not at its top. The walker's baseline (`raptor-port/scripts/handpass/lw-m4-rw2-f6x.mjs`, pictures in `raptor-port/docs/img/handpass/2026-10-27-lw-m4/rewalk2/`) shows it with no Approvals involved, so it is older than M4; the Inputs page and Edit Schedule from the Approvals page itself open at the top. **Fix:** find where a page change keeps the window's scroll (the app's page switch) and open each page at its own place; a browser test that scrolls the war and opens Edit Schedule. Small; no answer needed.
 
 ### [E2E-HIDE-BAR-SEAT] On his PC a changes-window browser test fails: the seat it checks sits under the hidden bar (found 28 Oct 26, the night's M4 build)
 The phone test "Hide sends the panel to the bar at the bottom…" (`raptor-port/e2e/changeswin.spec.ts`) brings Tuesday's changed seat into view with the browser's own scroll and then checks that nothing covers it. On his PC (Windows' letters) the seat is already on screen, at 780–795 of 844, and the hidden bar — 12px from the foot, about 51 tall — starts at 780, so the check fails every time: with the night's changed bar (D1442) and with the bar as it was, measured both ways on 28 Oct 26. GitHub's machines pass it. The app is not at fault there — its own tap on a change brings the change clear of the bar; the test's scroll does not. **Fix:** in the test, bring the seat clear of the bar the way the app does (or scroll it above the bar's top) before the check, keeping the check itself. Small; needs no answer from him.

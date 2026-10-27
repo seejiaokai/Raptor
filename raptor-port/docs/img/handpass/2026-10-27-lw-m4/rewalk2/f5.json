@@ -1,0 +1,86 @@
+[
+ {
+  "id": "F5.tocome desk: Approvals refuses Approve on a leave after the posting date, with its reason",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Blade IP LL Mon 2 Feb › He posts out on 15 Jan: refuse or delete it 1 day 4.5 — Approve Refuse\" Approve lit false; why \"He posts out on 15 Jan: refuse or delete it\"",
+  "pics": [
+   "f5d-tocome-2-approvals-after-approve"
+  ]
+ },
+ {
+  "id": "F5.tocome desk: Refuse still works in Approvals on it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"no\":\"true\",\"text\":\"Blade IP LL Mon 2 Feb › — Approve Refused\"}",
+  "pics": []
+ },
+ {
+  "id": "F5.tocome desk: the bid window refuses Approve with the SAME words as Approvals",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Approvals words \"posts out on 15 Jan: refuse or delete it\" / window words \"posts out on 15 Jan: refuse or delete it\"; window lit [\"Approve:null\",\"Refuse:false\"]; window text \"Blade Mon 2 Feb ✕ LL Pending Approve Refuse ⇄Move Delete till 2 Feb Document He posts out on 15 Jan: refuse or delete it\"",
+  "pics": [
+   "f5d-tocome-4-bidwin-after-approve"
+  ]
+ },
+ {
+  "id": "F5.tocome desk: a leave BEFORE the posting date approves",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true; line \"Blade IP LL Mon 12 Jan › 28 Oct 03:02 · by Saber Approved Refuse\" lit true",
+  "pics": [
+   "f5d-tocome-5-12jan"
+  ]
+ },
+ {
+  "id": "F5.run desk: Approvals refuses Approve on a leave after the posting date, with its reason",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Blade IP posted out 3 Jan LL Mon 2 Feb › Posted out — refuse or delete it 1 day 4.5 — Approve Refuse\" Approve lit false; why \"Posted out — refuse or delete it\"",
+  "pics": [
+   "f5d-run-2-approvals-after-approve"
+  ]
+ },
+ {
+  "id": "F5.run desk: Refuse still works in Approvals on it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"no\":\"true\",\"text\":\"Blade IP posted out 3 Jan LL Mon 2 Feb › — Approve Refused\"}",
+  "pics": []
+ },
+ {
+  "id": "F5.run desk: the bid window refuses Approve with the SAME words as Approvals",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Approvals words \"Posted out — refuse or delete it\" / window words \"Posted out — refuse or delete it\"; window lit [\"Approve:null\",\"Refuse:false\"]; window text \"Blade Mon 2 Feb ✕ LL Pending Approve Refuse ⇄Move Delete till 2 Feb Document Posted out — refuse or delete it\"",
+  "pics": [
+   "f5d-run-4-bidwin-after-approve"
+  ]
+ },
+ {
+  "id": "F5.tocome phone: Approvals refuses Approve on a leave after the posting date, with its reason",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "line \"Blade IP LL 2 Feb › He posts out on 15 Jan: refuse or delete it Approve Refuse 1 day 4.5 —\" Approve lit false; why \"He posts out on 15 Jan: refuse or delete it\"",
+  "pics": [
+   "f5p-tocome-2-approvals-after-approve"
+  ]
+ },
+ {
+  "id": "F5.tocome phone: Refuse still works in Approvals on it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"no\":\"true\",\"text\":\"Blade IP LL 2 Feb › Approve Refused —\"}",
+  "pics": []
+ },
+ {
+  "id": "F5.tocome phone: the bid window refuses Approve with the SAME words as Approvals",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Approvals words \"posts out on 15 Jan: refuse or delete it\" / window words \"posts out on 15 Jan: refuse or delete it\"; window lit [\"Approve:null\",\"Refuse:false\"]; window text \"Blade Mon 2 Feb ✕ LL Pending Approve Refuse ⇄Move Delete till 2 Feb Document He posts out on 15 Jan: refuse or delete it\"",
+  "pics": [
+   "f5p-tocome-4-bidwin-after-approve"
+  ]
+ }
+]

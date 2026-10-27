@@ -1,0 +1,88 @@
+[
+ {
+  "id": "F8 the bar stands 8 in from each side, 46 tall, its foot 10 above the screen foot (M13)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "measured {\"left\":8,\"right\":8,\"top\":818,\"bottomGap\":10,\"h\":46,\"w\":386,\"iw\":402,\"ih\":874,\"vvh\":874}",
+  "pics": [
+   "f8-slim-zoom"
+  ]
+ },
+ {
+  "id": "F8 dates tap: the grid comes up, the slim bar is up, the cell ringed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "slim {\"l\":8,\"t\":818,\"r\":394,\"b\":864} ring {\"l\":107,\"t\":420,\"r\":128,\"b\":441}",
+  "pics": [
+   "f8-dates-q",
+   "f8-dates-1000ms"
+  ]
+ },
+ {
+  "id": "F8 the ringed cell at rest is NOT under the bar (nothing over it)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cell {\"l\":107,\"t\":420,\"r\":128,\"b\":441} bar top 818; five points on the cell all hit it: true; over: [\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"SPAN.c k-ll s-w whole\",\"TD.act hasc lw-ring#cell-bane-2026-01-13\"]",
+  "pics": [
+   "f8-dates-1000ms"
+  ]
+ },
+ {
+  "id": "F8 the bar reads \"N pending\" with no \"·\" before it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar text \"Approvals 7 pending · 1 new Back ▴ ✕\"; page header was \"7 pending · 1 new\"",
+  "pics": [
+   "f8-slim-zoom"
+  ]
+ },
+ {
+  "id": "F8 Back ▴ (finger) opens Approvals, the bar goes",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "approvals page true; bar gone true",
+  "pics": [
+   "f8-back-q",
+   "f8-back"
+  ]
+ },
+ {
+  "id": "F8 ✕ (finger) closes the bar and leaves Approvals",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar false; approvals page false; Approvals tab lit false",
+  "pics": [
+   "f8-x-q",
+   "f8-x"
+  ]
+ },
+ {
+  "id": "F8 a person window opens with the bar up (look at the picture)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "windows [{\"tag\":\"DIV.bidsheet#person-figures\",\"l\":12,\"t\":198,\"r\":390,\"b\":810,\"z\":\"80\"}]; bar {\"l\":8,\"t\":818,\"r\":394,\"b\":864} on top at its centre: true; before {\"l\":8,\"t\":818,\"r\":394,\"b\":864}",
+  "pics": [
+   "f8-name-q",
+   "f8-person-window"
+  ]
+ },
+ {
+  "id": "F8 a window opened with the bar up stands above it (bottom above the bar, gap about 8)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window {\"l\":12,\"t\":545,\"r\":390,\"b\":810} bar {\"l\":8,\"t\":818,\"r\":394,\"b\":864}; gap 8; window foot takes the press true",
+  "pics": [
+   "f8-bidwin-with-bar"
+  ]
+ },
+ {
+  "id": "F8 the bubble stands ABOVE the slim bar, nothing overlaps (B-F3)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "placed true; bubble {\"l\":12,\"t\":760,\"r\":390,\"b\":806} \"This bid: IWSO 3 → 2 Show ›\"; bar {\"l\":8,\"t\":818,\"r\":394,\"b\":864}; each on top at centre true/true",
+  "pics": [
+   "f8-bubble",
+   "f8-bubble-zoom"
+  ]
+ }
+]
