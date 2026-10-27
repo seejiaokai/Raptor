@@ -2475,3 +2475,18 @@ its value and never in innerText.
 **Suggested improvement:** In mockups-on-the-real-app.md: before reusing an older drawing script, list every app component it draws and replace each stand-in with the running app's own markup (on a local build the probe bridge exposes several builders, `window.puck` among them); and a mock's own classes take a prefix, never a one-letter name the app already uses.
 
 **Principle:** Reusing an old mock's code reuses its shortcuts; re-check every component it draws against the real one before the picture goes out.
+
+### Observation 726: Never `git checkout <file>` to drop a debug line — it drops every uncommitted edit in that file
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** The Leave War overhaul's M4 build — two temporary debug prints were added to a file that also held two hours of uncommitted edits.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Cleaning up after instrumentation
+
+**Issue:** To remove two debug prints, the agent ran `git checkout <file>`, which reverted the whole file to its last commit — the two uncommitted feature edits in it went too. They were recoverable only because each edit had been applied by a saved script that could be re-run.
+
+**Suggested improvement:** In the debugging guide's instrumentation step: remove a debug line by an exact edit of that line (or mark it with a unique tag and delete the tagged lines), never by restoring the file; or commit (a WIP commit) before adding instrumentation, so a restore can only take the instrumentation.
+
+**Principle:** A restore works on files, not on intentions: before using one to undo a small temporary change, check what else in that file is uncommitted — or make the temporary change only on top of a commit.
