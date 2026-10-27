@@ -66,6 +66,8 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
       <li><a href="#d12">The bell's bidding lines start with a capital B</a>: back to the drawing</li>
       <li><a href="#d13">How the bell writes a line's age</a>: keep the build's</li>
       <li><a href="#q14">Phone filters: less height than your drawing?</a> (asked earlier, still open): keep your drawing's three rows</li>
+      <li><a href="#q15">Narrow phones: a date breaks, or the buttons get narrower</a>: narrower buttons on a phone</li>
+      <li><a href="#q16">Approve leave for days after a man posts out?</a>: refuse it, unless he becomes SANS</li>
     </ol>
   </div>
 
@@ -167,17 +169,29 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
   </section>
 
   <section>
-    <h2>Being fixed now, without asking</h2>
-    <p class="why">These are plain faults, not design choices, so I am fixing them as you ruled. Each fix gets a test first and is walked again after.</p>
-    <article class="card"><h3>The member is never told when bidding ends by its dates</h3><p class="why">His bell keeps "bidding open" after the dates have passed, while the grid says "Bidding closed". The admin's bell gets the line instead.</p><button class="pic" type="button" aria-label="Enlarge: member bell"><img src="pairs/f7-member-bell.png" alt="Member bell still says bidding open"></button></article>
-    <article class="card"><h3>Approve works on a man who is posting out</h3><p class="why">His request past his posting-out date can be approved. It should say "Posted out: refuse or delete it" and approve nothing.</p><button class="pic" type="button" aria-label="Enlarge: posting out"><img src="pairs/f8-postedout.png" alt="Approved on a man posting out"></button></article>
-    <article class="card"><h3>A long bell hides "Mark all read"</h3><p class="why">With 12 lines it stops at the 9th with no sign there are more, and "Mark all read" is out of sight.</p><button class="pic" type="button" aria-label="Enlarge: long bell"><img src="pairs/f5-longbell.png" alt="Long bell cut off"></button></article>
-    <article class="card"><h3>The manning bubble hides behind the slim bar</h3><p class="why">On a phone, a bid that turns a row amber or red raises its bubble under the slim bar, so it cannot be read or pressed.</p><button class="pic" type="button" aria-label="Enlarge: bubble"><img src="pairs/f3-bubble.png" alt="Bubble behind the slim bar"></button></article>
-    <article class="card"><h3>A person's window covers the slim bar</h3><p class="why">Opening a SANS man's dates from Approvals opens his window half over the slim bar, cutting "Back".</p><button class="pic" type="button" aria-label="Enlarge: person window"><img src="pairs/f4-window.png" alt="Person window over the slim bar"></button></article>
-    <article class="card"><h3>The tab's count sits outside its ring on narrower phones</h3><p class="why">At 390 and 360 wide, and on an iPhone's letters, the "8" pokes out past the lit outline.</p><button class="pic" type="button" aria-label="Enlarge: tab count"><img src="pairs/f1-tabcount.png" alt="Tab count outside its ring"></button></article>
-    <article class="card"><h3>A date breaks over two lines</h3><p class="why">"23 Jan AM ›" leaves the › alone on a second line on narrower phones and on an iPhone's letters.</p><button class="pic" type="button" aria-label="Enlarge: date break"><img src="pairs/f2-dates.png" alt="Date broken over two lines"></button></article>
-    <article class="card"><h3>"Approved" is wider than "Approve"</h3><p class="why">When lit, the button grows and its left edge moves, so it shifts under your finger.</p><button class="pic" type="button" aria-label="Enlarge: Approved width"><img src="pairs/f6-approved.png" alt="Approved button wider"></button></article>
-    <p class="match">Also: "New 0" still shows its dot; one picked day reads "13 Jan – 13 Jan"; a SANS man's puck in Approvals lacks its purple edge.</p>
+    <h2>Two new questions from the fixes</h2>
+    <article class="card" id="q15">
+      <div class="head"><span class="num">15</span><h3>Narrow phones: a date breaks, or the buttons get narrower</h3><span class="rec back">Narrower buttons on a phone</span></div>
+      <p class="why">On phones narrower than yours (390 and 360 wide), and with an iPhone's wider letters, a line has no room for the name, the box, "23 Jan AM ›" and both buttons, so the › drops to a second line (first picture). And a lit "Approved" is wider than "Approve", so its left edge moves under your finger (second picture). Making each button as wide as its longer word fixes the second but makes the first worse, even at your 402. Narrowing Approve and Refuse a little on a phone (smaller side padding, same height) fixes both. You ruled that no button changes size without your word, so this is yours to say.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 15a"><img src="pairs/f2-dates.png" alt="A date broken over two lines"></button>
+      <button class="pic" type="button" aria-label="Enlarge picture 15b"><img src="pairs/f6-approved.png" alt="Approved wider than Approve"></button>
+    </article>
+    <article class="card" id="q16">
+      <div class="head"><span class="num">16</span><h3>Approve leave for days after a man posts out?</h3><span class="rec back">Refuse it, unless he becomes SANS</span></div>
+      <p class="why">Today Approve is refused only once a man's posting has gone through. Before that, his leave for days after his posting-out date can still be approved, as here: Trident posts out on 1 Mar and his 13–16 Apr leave was approved. My recommendation: refuse it with "He posts out on 1 Mar: refuse or delete it", except when he is posted out as SANS, since a SANS man's leave is still kept.</p>
+      <button class="pic" type="button" aria-label="Enlarge picture 16"><img src="pairs/f8-postedout.png" alt="Leave approved for a man posting out"></button>
+    </article>
+  </section>
+
+  <section>
+    <h2>Fixed without asking</h2>
+    <p class="why">These were plain faults, not design choices, so I fixed them as you ruled. Each has a test that failed first, and each is walked again before your look.</p>
+    <article class="card"><h3>The bell went on saying "bidding open" for dates long gone</h3><p class="why">Once the dates had passed, the "its dates ended" line could lose to the older "bidding open" line, and two weeks on the "open" line came back. Now a man told that bidding opened is always told it ended.</p><button class="pic" type="button" aria-label="Enlarge: member bell"><img src="pairs/f7-member-bell.png" alt="Member bell still says bidding open"></button></article>
+    <article class="card"><h3>A long bell hides "Mark all read"</h3><p class="why">With 12 lines it stopped at the 9th with no sign of more, "Mark all read" out of sight. Now "Mark all read" stays at the foot, with "↓ 3 more" until you reach the end.</p><button class="pic" type="button" aria-label="Enlarge: long bell"><img src="pairs/f5-longbell.png" alt="Long bell cut off"></button></article>
+    <article class="card"><h3>The manning bubble hides behind the slim bar</h3><p class="why">A bid that turns a row amber or red raised its bubble under the slim bar. It now stands above the bar, on a phone and a desktop.</p><button class="pic" type="button" aria-label="Enlarge: bubble"><img src="pairs/f3-bubble.png" alt="Bubble behind the slim bar"></button></article>
+    <article class="card"><h3>A person's window covers the slim bar</h3><p class="why">A window opened half over the slim bar, cutting "Back". While the bar is up, windows now open above it.</p><button class="pic" type="button" aria-label="Enlarge: person window"><img src="pairs/f4-window.png" alt="Person window over the slim bar"></button></article>
+    <article class="card"><h3>The tab's count sits outside its ring on narrower phones</h3><p class="why">At 390 and 360 wide the "8" poked out past the lit outline. Each tab now takes at least its own width.</p><button class="pic" type="button" aria-label="Enlarge: tab count"><img src="pairs/f1-tabcount.png" alt="Tab count outside its ring"></button></article>
+    <p class="match">Also fixed: "New 0" no longer shows its dot; one picked day reads "13 Jan", not "13 Jan – 13 Jan". Still to fix: a SANS man's puck in Approvals lacks its purple edge.</p>
   </section>
 </main>
 <dialog id="zoom" aria-label="Picture, full size"><button class="close" type="button" id="zoomClose">Close</button><img id="zoomImg" src="pairs/1-header.png" alt="Picture, full size"></dialog>

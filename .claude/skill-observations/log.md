@@ -2507,3 +2507,18 @@ its value and never in innerText.
 **Suggested improvement:** In the build and in any fix to a drawn screen, open the drawing first and picture the result beside it before committing — a step in the build spec's checklist and in the bug-check sizing step, not only at the walk.
 
 **Principle:** A layout fix is checked against the approved picture, not only against the fault it fixes — a fix that satisfies the test can still undo the design.
+
+### Observation 728: A rule begun at body in a page-scoped stylesheet never matches; a walk's pinned date makes faults that are not there
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** the Leave War overhaul's M4, fixing the walk's faults (branch claude/leave-war-m4-planning-d18224)
+**Skill:** New skill candidate: none — the bug-check order's walk scripts (raptor-port/docs/walk-scripts.md) and the design guide's CSS notes
+**Type:** internal
+**Phase/Area:** fixing a walk's finding; writing a walker's brief
+
+**Issue:** (1) A CSS fix written `body:has(...) .bidsheet` in a Leave War stylesheet did nothing: the build scopes every rule there under #page-leavewar, producing "#page-leavewar body:has(...)", which never matches. Two builds went before the built CSS was read. Written from the page instead (`&:has(...)` inside the scoped block) it worked. (2) Two walk findings (the member's "bidding ended" line, a posted-out man's approval) were first read as faults because the walk pinned the war's today to Jan 26 while notices, postings and stamps ran on the real clock (Oct 26). One hid a real fault in the same code. (3) A browser test that passed (the date "on one line") missed that the date was now covered by the buttons; only opening a picture showed it.
+
+**Suggested improvement:** walk-scripts.md: a scenario that crosses the war's pinned today and the real clock is reproduced in a unit test with both pinned before it is called a fault. The guide's CSS note: in a scoped stylesheet, read the built rule (grep dist) after the first build that does not change the screen. A layout fix is looked at in a picture even when its test passes.
+
+**Principle:** When a fix has no effect, read what the build actually produced before trying again; when a test passes, look at the screen it measures, since a test checks only what it names.
