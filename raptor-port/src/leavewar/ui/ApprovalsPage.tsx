@@ -377,12 +377,14 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
       <ClipIcon />{l.docIds.length > 1 && <span>{l.docIds.length}</span>}
     </button>
   )
+  /* a decided line keeps its OTHER button pressable (his D1428, as drawn r22-3): one tap changes his mind either way; a
+     second tap on the lit one sends it back to pending (D1421); only a line drawn from a state since changed has both off */
   const btns = (
     <span className="appr-btns">
       <button type="button" className={`appr-ok${r.lit === 'approved' ? ' lit' : ''}`} aria-pressed={r.lit === 'approved'} data-testid="appr-approve"
-        disabled={stale || r.lit === 'refused'} onClick={() => onPress(r, 'approved')}>{r.lit === 'approved' ? 'Approved' : 'Approve'}</button>
+        disabled={stale} onClick={() => onPress(r, 'approved')}>{r.lit === 'approved' ? 'Approved' : 'Approve'}</button>
       <button type="button" className={`appr-no${r.lit === 'refused' ? ' lit' : ''}`} aria-pressed={r.lit === 'refused'} data-testid="appr-refuse"
-        disabled={stale || r.lit === 'approved'} onClick={() => onPress(r, 'refused')}>{r.lit === 'refused' ? 'Refused' : 'Refuse'}</button>
+        disabled={stale} onClick={() => onPress(r, 'refused')}>{r.lit === 'refused' ? 'Refused' : 'Refuse'}</button>
     </span>
   )
   if (phone) {

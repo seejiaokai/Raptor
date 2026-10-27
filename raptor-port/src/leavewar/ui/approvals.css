@@ -1,7 +1,6 @@
 /* APPROVALS (the Leave War overhaul's M4, batch 8 — D1420 "as drawn": full/r22-1-desk, r22-3-desk, r22-5-phone, r22-6-phone).
    SCOPED under #page-leavewar like every Leave War stylesheet (bidpicker.css's header says why). Its colours are the app's
-   own: the decide buttons are the bid windows' (D1361 — rest grey, the words green and red; the decided one solid with dark
-   words); the dates the app's link cyan; a figure amber or red in the warning colours; the "new" dot the cyan of D1231.
+   own: the decide buttons are the bid windows' shape (D1361) in his drawings' colours (D1427); the dates the app's link cyan; a figure amber or red in the warning colours; the "new" dot the cyan of D1231.
    A working screen stays dense (D812): rows of 44px on a desktop, the buttons their bid-window size (D487). */
 #page-leavewar {
   .appr-page { padding: 0 12px 96px; }
@@ -64,12 +63,14 @@
     border: 1px solid var(--edge); background: var(--panel-2); color: var(--ink); cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
   /* Approve · Refuse — the bid windows' decide buttons (D1361) */
   .appr-btns { display: flex; gap: 8px; justify-content: flex-end; }
-  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--edge); background: var(--panel-2);
+  /* the built size and row height, in his drawings' colours (D1427 — r22-2-desk at rest, r22-3-desk lit; measured off the
+     drawings): at rest a dark fill with a faint edge, the words green and red; lit, solid green or red with dark words */
+  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 12px; border-radius: 8px; border: 1px solid #27303B; background: #12161B;
     font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
-  .appr-ok { color: #8FE0A8; }
-  .appr-no { color: #FFA6AD; }
-  .appr-ok.lit { background: #57C97A; border-color: #57C97A; color: #0b1116; }
-  .appr-no.lit { background: #F0555F; border-color: #F0555F; color: #0b1116; }
+  .appr-ok { color: #7EE2A0; }
+  .appr-no { color: #FF8A92; }
+  .appr-ok.lit { background: #3FBF6F; border-color: #3FBF6F; color: #06210F; }
+  .appr-no.lit { background: #E5535F; border-color: #E5535F; color: #2A0507; }
   .appr-ok:disabled:not(.lit), .appr-no:disabled:not(.lit) { opacity: .4; cursor: default; }
 
   /* ON A PHONE (A11; r22-5-phone): two lines a request — puck · box · dates · paperclip · Approve · Refuse; then the four

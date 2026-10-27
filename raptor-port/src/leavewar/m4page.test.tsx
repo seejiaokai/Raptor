@@ -17,7 +17,7 @@ import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
-import { getState, initStore as lwInitStore, lwHistInit, setCell, setPeople } from './state/store'
+import { getState, initStore as lwInitStore, lwHistInit, recordsAt, setCell, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
@@ -29,6 +29,7 @@ const mem: Record<string, string> = {}
 let PEOPLE0 = ''
 const ISNAP = JSON.stringify(INPUTS)
 const toast = HOOKS.toast
+const reqs = (p: string, d: string) => recordsAt(p, d).filter((r: any) => r.kind === 'request') as any[]
 
 const T = (h: number, day = 15): number => { const d = new Date(2026, 6, day, h, 0, 0); vi.setSystemTime(d); return d.getTime() }
 const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
@@ -79,6 +80,23 @@ describe('the Approvals page’s rows', () => {
     expect(within(line()).getByTestId('appr-approve').textContent, 'the second tap sends it back').toBe('Approve')
   })
 
+  /* his D1428 (27 Oct 26 — "why cant i just tap an initial approved to refused if i change my mind"): a decided line keeps
+     its other button pressable, as drawn (r22-3) — one tap changes his mind, either way */
+  it('D1428 one tap on Refuse turns an approval into a refusal, and one on Approve turns it back', () => {
+    ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    const line = () => linesOf('bane')[0]!
+    fireEvent.click(within(line()).getByTestId('appr-approve'))
+    expect(within(line()).getByTestId('appr-approve').textContent).toBe('Approved')
+    expect((within(line()).getByTestId('appr-refuse') as HTMLButtonElement).disabled, 'Refuse still pressable').toBe(false)
+    fireEvent.click(within(line()).getByTestId('appr-refuse'))
+    expect(within(line()).getByTestId('appr-refuse').textContent).toBe('Refused')
+    expect(within(line()).getByTestId('appr-approve').textContent).toBe('Approve')
+    expect(reqs('bane', TUE).map(r => r.state)).toEqual(['refused'])
+    fireEvent.click(within(line()).getByTestId('appr-approve'))
+    expect(within(line()).getByTestId('appr-approve').textContent).toBe('Approved')
+    expect(reqs('bane', TUE)).toEqual([])
+  })
   it('★8 two lines that join while drawn are ONE line — no greyed "No longer there"', () => {
     ranger(); expect(setCell('bane', MON, 'LL')).toBe(true); expect(setCell('bane', WED, 'LL')).toBe(true); saber()
     T(9)
