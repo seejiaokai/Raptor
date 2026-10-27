@@ -49,7 +49,7 @@ import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
 import { OilAmount, oilAmountText, oilNumber, type OilPick } from './OilAmount'
 import { emptyDraft, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
-import { getState, recordsAt, reqRunKey } from '../state/store'
+import { getState, recordsAt, reqRunKey, type WhyOf } from '../state/store'
 import { addDays } from '../engine'
 import type { RequestRec } from '../engine/warrecs'
 import { leaveInputsAt, rowDocIds } from '../sync'
@@ -275,8 +275,9 @@ export function SelectSheet({
       if (!r.skipped && !r.pending.length) { onDone(r.written > 0); return }
       const parts: string[] = []
       if (r.skipped) parts.push(skipNote('written', r.written, r.skipped).replace(/\.$/, ''))
-      /* the door's own reason where it gave one ("He posts out on 1 Mar: refuse or delete it" — the fixes' round 2, R2-4) */
-      if (r.pending.length) parts.push(`${r.pending.length} day${r.pending.length === 1 ? '' : 's'} kept pending — ${r.why.length ? r.why.join(' ') : 'not approved (a locked week, or leave or a medical already there)'}`)
+      /* the door's own reason where it gave one ("He posts out on 1 Mar: refuse or delete it" — the fixes' round 2, R2-4),
+         over several men each named before his (round 3, R3-4) */
+      if (r.pending.length) parts.push(`${r.pending.length} day${r.pending.length === 1 ? '' : 's'} kept pending — ${r.why.length ? reasons(r.why, r.whyBy) : 'not approved (a locked week, or leave or a medical already there)'}`)
       setNote(parts.join('. ') + '.')
       if (r.written > 0) onDone(true, true)
       return
@@ -360,12 +361,18 @@ export function SelectSheet({
      empty days (a NEW leave's words, nothing placed) there is nothing to keep them on */
   const closeKeeping = () => { keepWords(); onClose() }
 
+  /* THE RULES' REASONS, EACH A SENTENCE OF ITS OWN (the fixes' round 3, R3-4): run together they read as one; and the door's
+     words were written for an Approvals line, which already names the man — so over several men each is named first
+     ("Ranger: He posts out on 11 Feb: refuse or delete it. Rocky: …") */
+  const reasons = (why: readonly string[], by: readonly WhyOf[]): string =>
+    sel.people.length > 1 && by.length ? by.map(w => `${people(w.personId)}: ${w.why}`).join('. ') : why.join('. ')
+
   const decide = (bid: BidState) => {
     setConfirming(null)
     setNoteAt('end')
     /* the words and the decision in ONE command, one Undo (the night's code read, R1) */
     /* the counts kept outside the command, so a refusal thrown inside it leaves the window its note (the narrow read, N3) */
-    let res: { decided: number; skipped: number; already: number; why: string[]; refused: number } = { decided: 0, skipped: 0, already: 0, why: [], refused: 0 }
+    let res: { decided: number; skipped: number; already: number; why: string[]; refused: number; whyBy: WhyOf[] } = { decided: 0, skipped: 0, already: 0, why: [], refused: 0, whyBy: [] }
     inOneWarCommand('lw.decide', () => { keepWords(); res = setBidStates(sel.cells, bid) })
     const { decided, skipped, already, why, refused } = res
     if (skipped === 0 && !already) return onDone(decided > 0)
@@ -374,7 +381,8 @@ export function SelectSheet({
     /* …the days the rules refused, with their reason — "He posts out on 1 Mar: refuse or delete it" — as Approvals says it
        (the fixes' M5, D1436); and the rest, skipped for having no bid to decide, counted apart (round 2, R2-5: the reason
        stood against every skipped day, an empty one too) */
-    const ruled = refused ? `${refused} not approved: ${why.join(' ')}.` : ''
+    /* (a Refuse or a send-back the rules stopped is "not changed" — he asked for no approval: round 3, R3-3) */
+    const ruled = refused ? `${refused} ${bid === 'approved' ? 'not approved' : 'not changed'}: ${reasons(why, res.whyBy)}.` : ''
     const rest = skipped - refused
     const other = rest > 0 ? `${rest} skipped (no bid, or Raptor-owned).` : ''
     setNote(decided === 0

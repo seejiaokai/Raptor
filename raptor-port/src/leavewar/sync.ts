@@ -427,6 +427,10 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
   if (!war || !rec) return 'No longer there'
+  /* A DELETED MAN (the host's decision, 28 Oct 26 — the fixes' round 3, R3-6): D1436 speaks only of posting out, so the
+     refusal the code had before M4 for a man deleted from the squadron stands, pending his word: a pending bid left from
+     before his delete is not approved, in every door, with the words it had */
+  if (postedOutBy(it.personId) === 'gone') return 'Posted out — refuse or delete it'
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po
@@ -471,8 +475,10 @@ function approvedBy(iid: string): string | null {
 /** approve: requests → Inputs (design §5.2 `lw.approve`, §18 OA3-002). Groups
  *  each person's selected requests into runs of consecutive days with the same
  *  code and the same carried remark; one Input per run; the requests go. */
-function doorApprove(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[] } {
+function doorApprove(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[]; whyOf: Array<{ personId: string; why: string }> } {
   const why: string[] = []
+  /* …and whose each reason is, so a window over several men names each (the fixes' round 3, R3-4) */
+  const whyOf: Array<{ personId: string; why: string }> = []
   const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   type Pick = { personId: string; date: string; rec: RequestRec; warId: string }
   const picks: Pick[] = []
@@ -482,14 +488,14 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
     if (!war || !rec) { skipped++; continue }
     const bad = approveWhy(it, prot)
-    if (bad) { skipped++; why.push(bad); continue }
+    if (bad) { skipped++; why.push(bad); whyOf.push({ personId: it.personId, why: bad }); continue }
     /* a bid left standing when work was later credited. Owner Q5 and §26.3
        used to SKIP that day at approval; reversed 20 Sep 26 — recorded work no
        longer stops an approval: the leave is granted, the day is flagged, and
        a human resolves it. */
     picks.push({ ...it, rec, warId: war.period.id })
   }
-  if (!picks.length) return { done: 0, skipped, why }
+  if (!picks.length) return { done: 0, skipped, why, whyOf }
   /* runs: same person, war, code, remark, till tick and documents (M3 7.2 — one leave holds one of each), consecutive dates */
   picks.sort((a, b) => cmpISO(a.personId, b.personId) || cmpISO(a.date, b.date))
   const runs: Pick[][] = []
@@ -569,10 +575,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     }
     ok = true
   })
-  if (!ok) return { done: 0, skipped: skipped + picks.length, why }
+  if (!ok) return { done: 0, skipped: skipped + picks.length, why, whyOf }
   lwEditLists(picks.map(p => ({ personId: p.personId, date: p.date, drop: [p.rec.id], add: [] })))
   refreshAbsencesAndRepaint()
-  return { done: picks.length, skipped, why }
+  return { done: picks.length, skipped, why, whyOf }
 }
 
 /** FILED STRAIGHT (round 2 — his D1318, D1324; `store.ts fileStraight`): a course, an overseas duty or — since his D1365 —
@@ -728,8 +734,10 @@ function carriedRemark(text: unknown): string {
  *  `lw.decideApproved`, §24): the Input shrinks / splits / goes on those dates,
  *  and a request carrying its remark and moved marks takes its place. Refused
  *  per date where a different request already sits on that time (§24.1). */
-function doorDecideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[] } {
+function doorDecideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[]; whyOf: Array<{ personId: string; why: string }> } {
   const why: string[] = []
+  /* …and whose each reason is, so a window over several men names each (the fixes' round 3, R3-4) */
+  const whyOf: Array<{ personId: string; why: string }> = []
   let skipped = 0
   const cuts = new Map<string, Set<string>>()
   const adds: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
@@ -739,7 +747,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
     const contrib = row ? absencesAt(it.personId, it.date).find(c => c.id === it.iid) : undefined
     if (!row || !contrib || !warHolding(rawState().wars, it.date)) { skipped++; continue }
     const bad = decideApprovedWhy(it, prot)
-    if (bad) { skipped++; why.push(bad); continue }
+    if (bad) { skipped++; why.push(bad); whyOf.push({ personId: it.personId, why: bad }); continue }
     const code = notationOf(contrib.code, contrib.win)
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
@@ -759,11 +767,11 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
     set.add(it.date)
     cuts.set(it.iid, set)
   }
-  if (!adds.length) return { done: 0, skipped, why }
-  if (!cutDates(cuts)) return { done: 0, skipped: skipped + adds.length, why }
+  if (!adds.length) return { done: 0, skipped, why, whyOf }
+  if (!cutDates(cuts)) return { done: 0, skipped: skipped + adds.length, why, whyOf }
   lwEditLists(adds)
   refreshAbsencesAndRepaint()
-  return { done: adds.length, skipped, why }
+  return { done: adds.length, skipped, why, whyOf }
 }
 
 /** delete approved leave days (design §5.2 `lw.removeApproved` — a deliberate

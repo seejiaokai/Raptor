@@ -2666,9 +2666,9 @@ export function setViewer(next: string | null): void {
  *  runs INSIDE the caller's gesture (one envelope) and reports per item. */
 export interface AbsenceDoor {
   /** turn requests into Inputs (design §5.2 `lw.approve`) */
-  approve(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[] }
+  approve(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[]; whyOf?: WhyOf[] }
   /** un-approve approved leave back into a request of `to` (`lw.decideApproved`) */
-  decideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[] }
+  decideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[]; whyOf?: WhyOf[] }
   /** delete approved leave days (`lw.removeApproved`) */
   removeApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] }
   /** slide approved leave days by `delta` (`lw.moveApproved`); null = clear, else the refusal */
@@ -2683,6 +2683,13 @@ export interface AbsenceDoor {
   decideApprovedWhy?(it: { personId: string; date: string; iid: string }): string | null
   /** who approved a war-approved leave (the Input's placer, by callsign) — "Already approved by Hex" */
   approvedBy?(iid: string): string | null
+}
+/** one reason the door gave, and the man it is about (the fixes' round 3, R3-4: a window over several men names each) */
+export interface WhyOf { personId: string; why: string }
+/* the reasons by man, each once */
+const whyByMan = (all: readonly WhyOf[]): WhyOf[] => {
+  const seen = new Set<string>()
+  return all.filter(w => { const k = `${w.personId}\u0000${w.why}`; if (seen.has(k)) return false; seen.add(k); return true })
 }
 let DOOR: AbsenceDoor | null = null
 export function setAbsenceDoor(d: AbsenceDoor | null): void { DOOR = d }
@@ -3558,11 +3565,12 @@ function warEditable(personId: string, date: string): boolean {
  *  already there) keeps its bid, pending, and is returned in `pending` for the window to name — never a whole failure. */
 /* `why` — the door's reasons for the days kept pending ("He posts out on 1 Mar: refuse or delete it"), so the windows say
    what Approvals says, never a guess (the fixes' round 2, R2-4) */
-export function placeApproved(cells: { personId: string; date: string }[], code: string, words?: ReqWords): { written: number; skipped: number; approved: number; pending: Array<{ personId: string; date: string }>; why: string[] } {
+export function placeApproved(cells: { personId: string; date: string }[], code: string, words?: ReqWords): { written: number; skipped: number; approved: number; pending: Array<{ personId: string; date: string }>; why: string[]; whyBy: WhyOf[] } {
   const clean = code.trim().toUpperCase()
-  if (!canDecide(state.role) || !clean) return { written: 0, skipped: cells.length, approved: 0, pending: [], why: [] }
+  if (!canDecide(state.role) || !clean) return { written: 0, skipped: cells.length, approved: 0, pending: [], why: [], whyBy: [] }
   let written = 0, skipped = 0, approved = 0
   let why: string[] = []
+  let whyBy: WhyOf[] = []
   const pending: Array<{ personId: string; date: string }> = []
   gesture('lw.placeApproved', () => {
     const portion = portionOfCode(clean)
@@ -3585,11 +3593,12 @@ export function placeApproved(cells: { personId: string; date: string }[], code:
     const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length, why: [] as string[] }
     approved = r.done
     why = [...new Set(r.why)]
+    whyBy = whyByMan(('whyOf' in r && r.whyOf) || [])
     for (const a of toApprove) {
       if (liveRequestsOn(listAt(a.personId, a.date), portion).some(x => x.id === a.recId)) pending.push({ personId: a.personId, date: a.date })
     }
   })
-  return { written, skipped, approved, pending, why }
+  return { written, skipped, approved, pending, why, whyBy }
 }
 
 /** FILED STRAIGHT (his D1318 — "OD and course doesnt need an approval, its directly approved like an input. it can go
@@ -3626,9 +3635,10 @@ export function fileStraight(cells: { personId: string; date: string }[], code: 
 /* `why` — the rules' reasons for what the door skipped ("He posts out on 1 Mar: refuse or delete it"), so a bid window says
    what Approvals says (the fixes' M5); `refused` — how many of the skipped days the rules refused with a reason, apart from
    the days with nothing to decide (round 2, R2-5: the drag window put the reason against every skipped day) */
-export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number; why: string[]; refused: number } {
-  if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0, why: [], refused: 0 }
+export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number; already: number; why: string[]; refused: number; whyBy: WhyOf[] } {
+  if (!canDecide(state.role)) return { decided: 0, skipped: cells.length, already: 0, why: [], refused: 0, whyBy: [] }
   const why: string[] = []
+  const whyOf: WhyOf[] = []
   /* `already` (the absence-record re-test, AB7, 26 Sep 26 — Fable F7, reproduced by W3): an Approve over a leave that
      was ALREADY approved changes nothing, and it was counted as "decided" — "3 decided" for two changes. */
   let decided = 0, skipped = 0, already = 0
@@ -3669,14 +3679,14 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
     if (wrote && !quiet) persistNotify()
     if (toApprove.length) {
       const r = DOOR ? DOOR.approve(toApprove) : { done: 0, skipped: toApprove.length, why: [] }
-      decided += r.done; skipped += r.skipped; why.push(...r.why)
+      decided += r.done; skipped += r.skipped; why.push(...r.why); whyOf.push(...(('whyOf' in r && r.whyOf) || []))
     }
     if (toUnapprove.length) {
       const r = DOOR ? DOOR.decideApproved(toUnapprove, bid as RequestState) : { done: 0, skipped: toUnapprove.length, why: [] }
-      decided += r.done; skipped += r.skipped; why.push(...r.why)
+      decided += r.done; skipped += r.skipped; why.push(...r.why); whyOf.push(...(('whyOf' in r && r.whyOf) || []))
     }
   })
-  return { decided, skipped, already, why: [...new Set(why)], refused: why.length }
+  return { decided, skipped, already, why: [...new Set(why)], refused: why.length, whyBy: whyByMan(whyOf) }
 }
 
 /** Record a decision on one cell — the single-cell sibling of `setBidStates`,
@@ -3708,7 +3718,8 @@ export function decideRequestById(personId: string, date: string, recId: string,
    two faults the list cannot live with (the survey, §3): a record not found is skipped in silence, and a refusal the
    inner Inputs write meets rolls back the WHOLE outer command — one bad line sank every other.
    So every line is checked FIRST — the state it was drawn from (B8: "Already refused by Hex", "No longer there"), the
-   clash rules, the locked week, a man whose posting has run — and only lines that pass are written, in one command; a
+   clash rules, the locked week, a day from his posting-out date (D1436) or a man deleted — and only lines that pass are
+   written, in one command; a
    line that fails says why and is left exactly as it was. A decision reaches the war that holds each date (`listAt`), so
    a request in another period is decided in its own war. Each line answers with the parts it now has: approving turns a
    request into an Input and a put-back mints a new request, so the list follows the new ids and its own second tap is
@@ -3797,7 +3808,8 @@ function decideWhy(line: DecideLine): string | null {
   for (const p of line.parts) {
     if (p.state === to) continue
     if (to === 'approved') {
-      /* (a man whose posting has run is refused by that one body too, as every door is — the fixes' M5) */
+      /* (a day from his posting-out date — one date rule, whether the posting has run or not, D1436 — and a deleted man are
+         refused by that one body, as in every door: sync.ts approveWhy) */
       const why = DOOR?.approveWhy?.({ personId, date: p.date, recId: p.recId! })
       if (why) return why
       continue

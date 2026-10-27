@@ -8156,3 +8156,45 @@ test('with "Pick dates…" open, a press on the Grid tab closes the calendar and
   else await page.mouse.click(t.x + t.width / 2, t.y + t.height / 2)
   await expect(page.getByTestId('approvals-page'), 'the Grid is up with one press').toBeHidden()
 })
+
+/* THE FIXES' ROUND 3, R3-1 (the round-2 read's 1): by touch, a tap on the empty card just under the open calendar — the "tap
+   outside to close" — closed it, the list moved up under the finger, and the lift's click landed on a line's Approve, which
+   round 2 let act because the card holds every line and never moves: M4 again. A real touch on the band under the
+   calendar, at the x of the first line's Approve; and, where the screen leaves one, on the strip to the calendar's right. */
+test('with "Pick dates…" open, a tap on the empty card beside or under the calendar decides no line (R3-1, D1421)', async ({ page }) => {
+  test.skip(!isPhone(), 'a finger on a phone')
+  await lwRole(page, 'admin')
+  for (const width of [402, 440]) {
+    await page.setViewportSize({ width, height: 874 })
+    await page.getByTestId('lw-tab-grid').click()
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    const before = (await page.getByTestId('appr-sub').textContent())!.trim()
+    const points = await (async () => {
+      await page.getByTestId('appr-pick').click()
+      await expect(page.getByTestId('appr-range')).toBeVisible()
+      return page.evaluate(() => {
+        const pop = document.querySelector<HTMLElement>('.appr-pickpop')!.getBoundingClientRect()
+        const card = document.querySelector<HTMLElement>('.appr-card')!.getBoundingClientRect()
+        const ok = document.querySelector<HTMLElement>('[data-testid="approvals-page"] [data-testid="appr-approve"]')!.getBoundingClientRect()
+        const out: Array<{ x: number; y: number; what: string }> = []
+        out.push({ x: Math.round(ok.left + ok.width / 2), y: Math.round(pop.bottom + 4), what: 'the band under the calendar' })
+        if (card.right - 16 - pop.right >= 12) out.push({ x: Math.round((pop.right + card.right - 16) / 2), y: Math.round(pop.top + pop.height / 2), what: 'the strip to its right' })
+        return out
+      })
+    })()
+    for (const [i, p] of points.entries()) {
+      if (i > 0) { await page.getByTestId('appr-pick').click(); await expect(page.getByTestId('appr-range')).toBeVisible() }
+      const hit = await page.evaluate(({ x, y }) => { const e = document.elementFromPoint(x, y); return e ? (e.closest('button') ? 'a button' : e.className || e.tagName) : 'nothing' }, p)
+      expect(hit, `${width} wide, ${p.what}: the point is the card, not a control`).not.toBe('a button')
+      const cdp = await page.context().newCDPSession(page)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: p.x, y: p.y, id: 1 }] })
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      await cdp.detach()
+      await expect(page.getByTestId('appr-range'), `${width} wide, ${p.what}: the calendar closes`).toHaveCount(0)
+      await page.waitForTimeout(400)
+      expect(await page.locator('[data-testid="approvals-page"] .appr-ok.lit, [data-testid="approvals-page"] .appr-no.lit').count(), `${width} wide, ${p.what}: no line decided`).toBe(0)
+      expect((await page.getByTestId('appr-sub').textContent())!.trim(), `${width} wide, ${p.what}: the pending count unchanged`).toBe(before)
+    }
+  }
+})

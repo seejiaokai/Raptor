@@ -17,7 +17,7 @@ import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import { NOTICES } from '../state/notices'
 import { noticeSeenLoad } from '../state/noticeseen'
-import { absenceDoor, getState, initStore as lwInitStore, lwHistInit, recordsAt, setAbsenceDoor, setBidState, setCell, setPeople, setPostOut } from './state/store'
+import { absenceDoor, getState, initStore as lwInitStore, lwHistInit, recordsAt, setAbsenceDoor, setBidState, setBidStates, setCell, setPeople, setPostOut } from './state/store'
 import { setMemberTodayForTests } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
@@ -316,6 +316,30 @@ describe('the Approvals page’s rows', () => {
     expect(reqs('bane', MON).concat(reqs('bane', WED)).map(r => r.state)).toEqual(['pending', 'pending'])
   })
 
+  /* THE FIXES' ROUND 3, R3-1 (the round-2 read's 1): by touch, a tap on the EMPTY CARD beside or under the open calendar
+     closed it, the list moved up, and the lift's click landed on a line's Approve — which the card contains and the card
+     never moves — so round 2 let it act: M4 again. The press and the click are compared by the control each is on. */
+  it('R3-1 a tap on the empty card beside the open calendar, its click landing on a line’s Approve, decides nothing', () => {
+    ranger(); expect(setCell('bane', MON, 'LL')).toBe(true); saber()
+    render(<ApprovalsPage shown={true} />)
+    fireEvent.click(screen.getByTestId('appr-pick'))
+    const card = document.querySelector('.appr-card')!
+    fireEvent.pointerDown(card); fireEvent.pointerUp(card)
+    fireEvent.click(within(linesOf('bane')[0]!).getByTestId('appr-approve'))
+    expect(document.querySelectorAll('.appr-ok.lit, .appr-no.lit'), 'no line decided').toHaveLength(0)
+    expect(reqs('bane', MON).map(r => r.state)).toEqual(['pending'])
+  })
+  /* R3-2: a press begun on a button's icon and lifted on the button's edge was swallowed (the bell, Undo) */
+  it('R3-2 a press begun on an outside button’s icon and ending on the button does the button’s job, once', () => {
+    let pressed = 0
+    render(<><button type="button" data-testid="bellish" onClick={() => { pressed++ }}><span data-testid="bellicon">🔔</span></button><ApprovalsPage shown={true} /></>)
+    fireEvent.click(screen.getByTestId('appr-pick'))
+    fireEvent.pointerDown(screen.getByTestId('bellicon')); fireEvent.pointerUp(screen.getByTestId('bellish'))
+    fireEvent.click(screen.getByTestId('bellish'))
+    expect(screen.queryByTestId('appr-range'), 'the calendar closed').toBeNull()
+    expect(pressed).toBe(1)
+  })
+
   /* R2-2 (the fix read's 2): every first press outside the open calendar was swallowed, also where nothing moved — the top
      bar's Undo, the bell, the Grid tab needed a second press. Only a click that lands somewhere other than what was
      pressed, or on a thing that moved, is taken. */
@@ -382,6 +406,29 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
       fireEvent.click(screen.getByTestId('sel-LL'))
       expect(screen.getByTestId('sel-note').textContent).toContain('kept pending — He posts out on 11 Feb: refuse or delete it')
       expect(screen.getByTestId('sel-note').textContent).not.toContain('a locked week')
+    })
+    /* ROUND 3, R3-3: a Refuse the rules stopped was counted "not approved" — he asked for no approval */
+    it('R3-3 a Refuse the rules stop is counted "not changed"', () => {
+      ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
+      expect(setBidStates([{ personId: 'bane', date: TUE }], 'approved').decided).toBe(1)
+      const door = absenceDoor()!
+      setAbsenceDoor({ ...door, decideApproved: items => ({ done: 0, skipped: items.length, why: items.map(() => 'Tue 10 Feb is on a locked week — not changed') }) })
+      try {
+        render(<SelectSheet sel={sel([TUE])} people={() => 'Ranger'} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
+        fireEvent.click(screen.getByTestId('sel-refuse'))
+        expect(screen.getByTestId('sel-note').textContent).toBe('1 not changed: Tue 10 Feb is on a locked week — not changed.')
+      } finally { setAbsenceDoor(door) }
+    })
+    /* ROUND 3, R3-4: several reasons ran together, and over several men "He" named nobody */
+    it('R3-4 a two-man drag names each man before his reason, the reasons apart', () => {
+      for (const p of ['bane', 'rocky']) expect(setCell(p, THU, 'LL')).toBe(true)
+      expect(setPostOut('bane', WED, 'none')).toBe(true)
+      expect(setPostOut('rocky', THU, 'none')).toBe(true)
+      const two = { people: ['bane', 'rocky'], from: THU, to: FRI, cells: ['bane', 'rocky'].flatMap(p => [THU, FRI].map(date => ({ personId: p, date }))) } as any
+      render(<SelectSheet sel={two} people={id => (id === 'bane' ? 'Ranger' : 'Rocky')} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
+      fireEvent.click(screen.getByTestId('sel-approve'))
+      const note = screen.getByTestId('sel-note').textContent!
+      expect(note).toContain('Ranger: He posts out on 11 Feb: refuse or delete it. Rocky: He posts out on 12 Feb: refuse or delete it.')
     })
     it('R2-5 the drag window counts the days the rules refused apart from a day with nothing to decide', () => {
       expect(setCell('bane', TUE, 'LL')).toBe(true); expect(setCell('bane', THU, 'LL')).toBe(true)

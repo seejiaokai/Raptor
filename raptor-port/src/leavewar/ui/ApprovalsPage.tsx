@@ -135,19 +135,27 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
          the lift (the click follows the lift at once).
          ONLY WHERE THE PRESS WOULD MISS (R2-2): a click on what was pressed, which has not moved, does its job — the top
          bar's Undo, the bell, the Grid tab need no second press; one that lands elsewhere, or on a thing the calendar's
-         closing moved, is taken. */
+         closing moved, is taken.
+         …MEASURED BY THE CONTROL EACH IS ON (the fixes' round 3, R3-1, R3-2): round 2 asked whether the press's target
+         CONTAINED the click's — so a finger on the empty card beside or under the calendar (the card holds every line and
+         never moves) let its click, landing on a line's Approve as the list moved up, act: M4 again; and an icon pressed and
+         its button's edge lifted was taken, the icon not holding its own button. Now the press and the click each resolve to
+         the nearest pressable thing; they must be the same one, and it must not have moved. */
+      const PRESS = 'button, a[href], input, select, textarea, label, summary, [role="button"], [role="tab"], [role="link"], [role="option"], [tabindex]:not([tabindex="-1"])'
       const t0 = e.target instanceof Element ? e.target : null
-      const r0 = t0 ? t0.getBoundingClientRect() : null
+      const a0 = t0 ? t0.closest(PRESS) : null
+      const box = a0 ?? t0
+      const r0 = box ? box.getBoundingClientRect() : null
       const pid = (e as PointerEvent).pointerId
       let timer = 0
       const moved = () => {
-        if (!t0 || !r0 || !t0.isConnected) return true
-        const r = t0.getBoundingClientRect()
+        if (!box || !r0 || !box.isConnected) return true
+        const r = box.getBoundingClientRect()
         return Math.abs(r.top - r0.top) >= 1 || Math.abs(r.left - r0.left) >= 1
       }
       const eat = (c: Event) => {
-        const on = c.target instanceof Node ? c.target : null
-        if (!(t0 && on && t0.contains(on)) || moved()) { c.preventDefault(); c.stopPropagation() }
+        const a1 = c.target instanceof Element ? c.target.closest(PRESS) : null
+        if (a1 !== a0 || moved()) { c.preventDefault(); c.stopPropagation() }
         done()
       }
       const lift = (u: Event) => {

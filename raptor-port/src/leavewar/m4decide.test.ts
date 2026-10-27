@@ -16,7 +16,7 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import {
-  absenceDoor, closeDates, decideRequestById, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
+  absenceDoor, closeDates, decideRequestById, decideRequests, forgetPersonFrom, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
   placeApproved, recordsAt, setAbsenceDoor, setBidStates, setCell, setPeople, setPostOut, type DecideLine, type DecidePart,
 } from './state/store'
 import { readRec, setMemberTodayForTests, type RequestRec } from './engine'
@@ -270,6 +270,33 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       const r = placeApproved([{ personId: 'bane', date: DAYS[2]! }], 'LL')
       expect(r.pending).toEqual([{ personId: 'bane', date: DAYS[2]! }])
       expect(r.why).toEqual(['He posts out on 4 Feb: refuse or delete it'])
+    })
+    /* THE FIXES' ROUND 3, R3-6 (the host's decision, 28 Oct 26): round 2's one date rule dropped the refusal of a DELETED
+       man's requests too, so his leftover pending bids from before the delete approved. D1436 speaks only of posting out:
+       a deleted man's Approve is refused again, in every door, with the words the code had before. */
+    it('a DELETED man: his leftover pending bid is refused in Approvals and in the bid windows (R3-6)', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      forgetPersonFrom('bane', '2026-03-01')
+      const why = 'Posted out — refuse or delete it'
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0], 'Approvals').toEqual({ kind: 'refused', why })
+      expect(decideRequestById('bane', DAYS[1]!, req('bane', DAYS[1]!).id, 'approved'), 'the day’s list').toBe(why)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[2]! }], 'approved').why, 'the bid windows').toEqual([why])
+      expect(leaveOf('bane')).toHaveLength(0)
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'refused')])[0]!.kind, 'Refuse still works').toBe('done')
+    })
+    /* R3-4: over several men "He" named nobody — the reasons come per man as well */
+    it('the bid windows give the reasons per man, one each, de-duplicated (R3-4)', () => {
+      setMemberTodayForTests('2026-01-20')
+      for (const p of ['bane', 'rocky']) { setCell(p, DAYS[2]!, 'LL'); setCell(p, '2026-02-06', 'LL') }
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      expect(setPostOut('rocky', DAYS[2]!, 'none')).toBe(true)
+      const r = setBidStates(['bane', 'rocky'].flatMap(p => [DAYS[2]!, '2026-02-06'].map(date => ({ personId: p, date }))), 'approved')
+      expect(r.whyBy).toEqual([
+        { personId: 'bane', why: 'He posts out on 4 Feb: refuse or delete it' },
+        { personId: 'rocky', why: 'He posts out on 5 Feb: refuse or delete it' },
+      ])
+      const p = placeApproved([{ personId: 'bane', date: '2026-02-09' }, { personId: 'rocky', date: '2026-02-09' }], 'OL')
+      expect(p.whyBy.map(x => x.personId)).toEqual(['bane', 'rocky'])
     })
     /* R2-5: the drag window printed the rules' reason against EVERY skipped day, an empty one too */
     it('the bid windows count the days the rules refused apart from the days with nothing to decide (R2-5)', () => {
