@@ -1591,7 +1591,7 @@ function persistNotify(): void {
       /* …and a man's own bid changed by someone else outside a gesture — the one-day window's re-type of a pending bid (his
          D1460, 28 Oct 26). Only the war's own records change on this path, never an approved leave (an Input), so the
          leave before and after is the one read now. */
-      if (TELL) { const l = TELL.leave(); const tells = decisionTells('lw.edit', before, state, l, l, actorNow()); if (tells.length) TELL.decisions(tells) }
+      if (TELL && before.wars !== state.wars) { const l = TELL.leave(); const tells = decisionTells('lw.edit', before, state, l, l, actorNow()); if (tells.length) TELL.decisions(tells) }
       cmdDeferEffect(rawNotify)
     },
   })
@@ -2865,7 +2865,7 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
        "LL bid changed to OL" (his D1460, 28 Oct 26: R15 struck — "if not they might get a shock") */
     const newOn = new Set([...RA].filter(([id]) => !RB.has(id)).map(([, x]) => x.date))
     const newOnHalf = (date: string, code: string) =>
-      [...RA].find(([nid, x]) => !RB.has(nid) && x.date === date && overlaps(requestWin(x.rec.code), requestWin(code)))?.[1].rec
+      [...RA].filter(([nid, x]) => !RB.has(nid) && x.date === date && overlaps(requestWin(x.rec.code), requestWin(code))).map(([, x]) => x.rec)
     const kind = (c: string) => c.replace(/\*/g, '')
     for (const [id, { date, rec }] of RB) {
       const now = RA.get(id)
@@ -2876,8 +2876,16 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
         if (g && (type !== 'lw.placeApproved' || kind(gained.get(g)!) === kind(rec.code))) { evs.push({ d: 'approved', code: rec.code, date }); gained.delete(g); continue }
         if (g) continue
         if (newOn.has(date) && rec.state !== 'refused') {
-          const n = newOnHalf(date, rec.code)
-          if (n && n.state === 'pending' && kind(n.code) !== kind(rec.code)) evs.push({ d: 'retyped', code: n.code, date, was: rec.code })
+          const news = newOnHalf(date, rec.code)
+          const n = news.find(x => x.state === 'pending' && kind(x.code) !== kind(rec.code))
+          if (n) evs.push({ d: 'retyped', code: kind(n.code), date, was: kind(rec.code) })
+          /* …and a whole-day bid re-typed on one half only: the other half went with it — said, never left silent (the bell
+             fix read's F2, 28 Oct 26) */
+          const halfOf = (c: string) => parseCell(c)?.portion ?? 'full'
+          const h0 = news.length ? halfOf(news[0]!.code) : 'full'
+          if (halfOf(rec.code) === 'full' && h0 !== 'full' && news.every(x => halfOf(x.code) === h0)) {
+            evs.push({ d: 'biddel', code: h0 === 'am' ? `${kind(rec.code)}*` : `*${kind(rec.code)}`, date })
+          }
           continue
         }
         /* a refusal another refusal on the same half replaced (decideRequest keeps one) is no news */
@@ -2888,7 +2896,7 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
       if (now.date !== date) { evs.push({ d: 'bidmoved', code: rec.code, date, dest: now.date }); continue }
       if (now.rec.state !== rec.state) evs.push({ d: now.rec.state === 'refused' ? 'refused' : 'repend', code: rec.code, date })
       /* …and the same bid with another kind (a re-type that keeps the record — D1460) */
-      else if (now.rec.state === 'pending' && kind(now.rec.code) !== kind(rec.code)) evs.push({ d: 'retyped', code: now.rec.code, date, was: rec.code })
+      else if (now.rec.state === 'pending' && kind(now.rec.code) !== kind(rec.code)) evs.push({ d: 'retyped', code: kind(now.rec.code), date, was: kind(rec.code) })
     }
     for (const [id, { date, rec }] of RA) {
       if (RB.has(id)) continue
@@ -2913,7 +2921,8 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
     for (const e of evs) {
       const last = out.length && out[out.length - 1]!.personId === pid ? out[out.length - 1]! : null
       const sameMove = !e.dest || (!!last?.destFrom && dayGap(last.from, last.destFrom) === dayGap(e.date, e.dest))
-      if (last && last.d === e.d && last.code === e.code && last.was === e.was && addDays(last.to, 1) === e.date && sameMove) {
+      /* (the same news twice on one day — the two halves of one day re-typed whole — is one line: the bell fix read's F1) */
+      if (last && last.d === e.d && last.code === e.code && last.was === e.was && (addDays(last.to, 1) === e.date || last.to === e.date) && sameMove) {
         last.to = e.date
         if (e.dest) last.destTo = e.dest
         continue

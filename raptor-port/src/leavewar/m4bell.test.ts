@@ -312,6 +312,22 @@ describe('the scenario designer’s faults (★5, ★6, ★7)', () => {
     globalUndo()
     expect(lines('bane'), 'the Undo takes the unread line').toEqual([])
   })
+  /* the bell fix read (28 Oct 26): F1 — a day holding his bid as two halves, re-typed whole, is ONE line; F2 — a whole-day
+     bid re-typed on one half says the other half went too */
+  it('D1460 two half-day bids re-typed whole are one line (F1)', () => {
+    ranger(); expect(setCell('bane', DAYS[0]!, '*LL')).toBe(true); expect(setCell('bane', DAYS[0]!, 'LL*')).toBe(true); saber()
+    NOTICES.length = 0
+    T(9)
+    expect(setCell('bane', DAYS[0]!, 'OL')).toBe(true)
+    expect(lines('bane')).toEqual(['Your leave · Tue 3 Feb · LL bid changed to OL · Saber'])
+  })
+  it('D1460 a whole-day bid re-typed on its morning only says the afternoon went (F2)', () => {
+    ranger(); expect(setCell('bane', DAYS[0]!, 'LL')).toBe(true); saber()
+    NOTICES.length = 0
+    T(9)
+    expect(setCell('bane', DAYS[0]!, '*OL')).toBe(true)
+    expect(lines('bane').sort()).toEqual(['Your leave · Tue 3 Feb · LL bid changed to OL · Saber', 'Your leave · Tue 3 Feb · LL bid deleted · Saber'])
+  })
   it('★6 "Approve what I enter" placing another kind over his pending bid names the kind placed', () => {
     ranger(); expect(setCell('bane', DAYS[0]!, 'LL')).toBe(true); saber()
     NOTICES.length = 0
