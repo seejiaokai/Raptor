@@ -248,6 +248,52 @@ describe('what Approve, Refuse, Move and Delete act on', () => {
     fireEvent.click(within(sheet()).getByTestId('decide-approve'))
     for (const d of [...DAYS, '2026-02-13']) expect(st(d), d).toBe('approved')
   })
+  /* THE CODE READ'S F1 (28 Oct 26): the re-read at the press is for a window already showing "All" — never for a one-day
+     window. A separate bid on Fri 13 beside a four-day leave with the words "Wedding": typing those words on Fri 13 and
+     pressing without leaving the box joined it to the leave at the save, and Delete took all five days, re-typing wrote
+     five, Approve approved five — days the window never named */
+  const besideWedding = () => {
+    expect(setCellRange(P, DAYS[0]!, DAYS[3]!, 'LL', { remarks: 'Wedding' }).written).toBe(4)
+    expect(setCell(P, '2026-02-13', 'LL')).toBe(true)
+    tap('2026-02-13')
+    expect(within(sheet()).queryByTestId('scope-all'), 'a one-day window').toBeNull()
+    fireEvent.change(within(sheet()).getByTestId('bid-remarks'), { target: { value: 'Wedding' } })
+  }
+  it('F1: on a one-day window, words that join it to a next-door leave never widen Delete', () => {
+    besideWedding()
+    fireEvent.click(within(sheet()).getByTestId('bid-clear'))
+    expect(reqs('2026-02-13')).toHaveLength(0)
+    for (const d of DAYS) expect(reqs(d)[0]?.state, d).toBe('pending')
+  })
+  it('F1: …nor a re-typed leave (Auto-approve off)', () => {
+    besideWedding()
+    fireEvent.click(within(sheet()).getByTestId('bid-approve-tick'))
+    fireEvent.click(within(sheet()).getByTestId('bid-OL'))
+    expect(reqs('2026-02-13')[0]?.code).toBe('OL')
+    for (const d of DAYS) expect(reqs(d)[0]?.code, d).toBe('LL')
+  })
+  it('F1: …nor Approve', () => {
+    besideWedding()
+    fireEvent.click(within(sheet()).getByTestId('decide-approve'))
+    expect(st('2026-02-13')).toBe('approved')
+    for (const d of DAYS) expect(reqs(d)[0]?.state, d).toBe('pending')
+  })
+
+  it('F1\'s twin: a range picked keeps acting on the range when a leave joins under the open window', () => {
+    expect(setCellRange(P, DAYS[0]!, DAYS[3]!, 'LL', { remarks: 'Wedding' }).written).toBe(4)
+    expect(setCell(P, '2026-02-13', 'OL')).toBe(true)
+    expect(setCell(P, '2026-02-16', 'OL')).toBe(true)
+    tap('2026-02-13')
+    fireEvent.click(within(sheet()).getByTestId('span-range'))
+    fireEvent.click(screen.getByTestId('span-day-2026-02-16'))
+    /* another tab re-types Fri 13 to the leave's kind and words: it joins 9–12 */
+    act(() => { setCell(P, '2026-02-13', 'LL', { remarks: 'Wedding' }) })
+    expect(within(sheet()).queryByTestId('scope-all'), 'the range stands').toBeNull()
+    fireEvent.click(within(sheet()).getByTestId('bid-clear'))
+    for (const d of ['2026-02-13', '2026-02-16']) expect(reqs(d), d).toHaveLength(0)
+    for (const d of DAYS) expect(reqs(d)[0]?.state, d).toBe('pending')
+  })
+
   it('the two choices are named in full for a screen reader (G11)', () => {
     fourBid()
     tap(DAYS[1]!)

@@ -49,9 +49,18 @@ async function durRow(page: Page) {
   })
 }
 
+/* LETTERS OF ARIAL'S WIDTHS ON EVERY MACHINE (the code read's F2): close to Apple's on his iPhone (measured 28 Oct 26 at
+   402: the longest labels need 342 of the row's 352), and the same on this PC (Arial) and on GitHub's Linux machines
+   (Liberation Sans, Arial's metric twin) — so "one line at his phone's width" is asserted outright, wherever it runs; the
+   very wide letters' wrap has a block of its own below */
+const ARIAL = '#page-leavewar, #page-leavewar * { font-family: Arial, "Liberation Sans", sans-serif !important }'
 test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
   await lwRole(page, 'admin')
+  await page.addStyleTag({ content: ARIAL })
+  /* the phone project is an iPhone 13 (390 wide): his iPhone is 402 */
+  const v = page.viewportSize()
+  if (v && v.width < 500) await page.setViewportSize({ width: 402, height: 874 })
 })
 
 test('a four-day leave: the choice on one line with Duration, the window\'s height unchanged by it, the leave\'s days marked', async ({ page }) => {
@@ -60,8 +69,7 @@ test('a four-day leave: the choice on one line with Duration, the window\'s heig
   await expect(page.locator(T('scope-all'))).toHaveText('All 4 days')
   await expect(page.locator(T('scope-day'))).toHaveText('Tue 10')
   const all = await durRow(page)
-  expect(all.tops.length, 'one line where the row has the room').toBe(all.fits ? 1 : 2)
-  expect(all.chipsTogether, 'the two chips together').toBe(true)
+  expect(all.tops, 'one line').toHaveLength(1)
   expect(all.clipped, 'no words past their edge').toEqual([])
   expect(all.pastEdge, 'inside the window').toBe(false)
   /* THE CHOICE ADDS NO HEIGHT (D1461 — "the window keeps its height"): the same rows on "All" and on the day, the Duration
@@ -80,7 +88,7 @@ test('a four-day leave: the choice on one line with Duration, the window\'s heig
   await place(page, '2026-02-16', 1)
   await openDay(page, 'FEB', '2026-02-16')
   await expect(page.locator(T('span-range'))).toHaveText('Pick a range')
-  if (all.fits) expect(Math.abs((await durRow(page)).height - all.height), 'the row as tall as a single day\'s').toBeLessThan(1)
+  expect(Math.abs((await durRow(page)).height - all.height), 'the row as tall as a single day\'s').toBeLessThan(1)
 })
 
 test('the longest labels — "All 14 days" beside "Wed 30" — still stand on one line, inside the window', async ({ page }) => {
@@ -89,8 +97,7 @@ test('the longest labels — "All 14 days" beside "Wed 30" — still stand on on
   await expect(page.locator(T('scope-all'))).toHaveText('All 14 days')
   await expect(page.locator(T('scope-day'))).toHaveText('Wed 30')
   const r = await durRow(page)
-  expect(r.tops.length, 'one line where the row has the room').toBe(r.fits ? 1 : 2)
-  expect(r.chipsTogether, 'the two chips together').toBe(true)
+  expect(r.tops, 'one line').toHaveLength(1)
   expect(r.clipped).toEqual([])
   expect(r.pastEdge).toBe(false)
   await expect(page.locator(`${T('bid-picker')} .bidsheet-hd .when`)).toHaveText('17–30 Sep')

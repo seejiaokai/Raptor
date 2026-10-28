@@ -227,7 +227,9 @@ export function BidPicker({
      pick is this window's alone, never saved. */
   const run = !onlyPortion ? leaveRunAt(personId, date) : null
   const [pick, setPick] = useState<'all' | 'day'>('all')
-  const whole = run && pick === 'all' ? run : null
+  /* (a range picked wins — it was picked on a window with no leave of several days, and one joined under it since must not
+     turn the title and the mark to the leave while the buttons act on the range: the code read's F1, its twin) */
+  const whole = run && !span && pick === 'all' ? run : null
   /* what a range write covers: the range picked, or the whole leave on "All" (a leave button re-types it, CSE · OD · the ⋯'s
      filings file over it, as over a picked range — the spec's reading R2) */
   const multi: Range | null = span ?? (whole ? { from: whole.from, to: whole.to } : null)
@@ -383,7 +385,10 @@ export function BidPicker({
   /* THE LEAVE AS IT STANDS AT THE PRESS (the scenario designer's G4): every press saves the words still in a box first
      (`flushWords`), and words saved can join the leave to a next-door bid with the same words — or another tab may have
      changed it since the window drew — so each press reads the leave again after the save and acts on that */
-  const wholeNow = (): LeaveRun | null => (pick === 'all' && !onlyPortion ? leaveRunAt(personId, date) : null)
+  /* …ONLY on a window that drew a leave of several days, "All" picked, no range picked (the code read's F1): a one-day
+     window whose words join it to a next-door leave at the save acts on its one day, as it always did — never on days it
+     never named; a range picked keeps its range */
+  const wholeNow = (): LeaveRun | null => (run && !span && pick === 'all' && !onlyPortion ? leaveRunAt(personId, date) : null)
   /* The Selected row's two buttons are drawn only where they would do something — the house rule for a control that
      could not work (a disabled chip invites a tap and then refuses it). Move: a record on these days this role may move
      (the store's one rule, D333 — so a member's own bid offers it while bidding is open); Delete: a day a Delete would
@@ -793,7 +798,7 @@ export function BidPicker({
         {/* ON A LEAVE OF SEVERAL DAYS (his D1461 — version 2): "Pick a range"'s place holds the choice of what Approve,
             Refuse, Move and Delete act on — "All <n> days" (picked to start with) or the day tapped ("Tue 13") — so the
             window keeps its height. Picking either takes back an armed question and a note about the other. */}
-        {run && (
+        {run && !span && (
           <span className="bp-scope" role="group" aria-label="What it acts on">
             {(['all', 'day'] as const).map(k => (
               <button
@@ -811,7 +816,7 @@ export function BidPicker({
             ))}
           </span>
         )}
-        {!run && <button
+        {(!run || span) && <button
           data-testid="span-range"
           className={`pchip bp-range${span ? ' on' : ''}`}
           aria-pressed={!!span}
