@@ -3826,6 +3826,109 @@ export function lineStale(personId: string, parts: readonly DecidePart[]): strin
   return null
 }
 
+/* ---- A LEAVE OF SEVERAL DAYS, OPENED WHOLE (his D1448, D1461 — 28 Oct 26; [LW-WHOLE-LEAVE-WINDOW]) --------------------
+   A tap on any day of a leave of several days opens the bid window on the whole leave. "The leave" is the ONE entry the app
+   already knows, so the window, the grid's joined bar (MatrixRows.tsx entryKey) and the Approvals list's line
+   (approvals.ts linesOfWar) can never disagree on it:
+   · a bid, pending or refused — the days in a row holding a request with the same run key (`reqRunKey`: its kind, state,
+     words, till tick and documents), found from the day's ONE request (a day holding two opens the day's list);
+   · a leave the war approved — the days in a row holding the same Input (one id), the war's own (`lw`), a leave code;
+   · within the period holding the day tapped — the Approvals list draws a line per period, and the grid shows one period.
+   Leave filed on the Inputs page is not one of these (its read-only window), nor a course or any other commitment. One day
+   is no run: the window opens as built. A pure read — nothing is written. */
+export interface LeaveRun {
+  kind: 'request' | 'absence'
+  from: string
+  to: string
+  dates: string[]
+  /** the leave's own records, one a day — what Move carries (`movableRecords(cells, only)`) and Delete takes */
+  recs: MoveRec[]
+  /** the leave as one Approvals line — what Approve and Refuse decide (`decideRequests`) */
+  parts: DecidePart[]
+  state: 'pending' | 'refused' | 'approved'
+}
+export function leaveRunAt(personId: string, date: string): LeaveRun | null {
+  const war = warHolding(state.wars, date)
+  if (!war) return null
+  const inWar = (d: string) => warHolding(state.wars, d) === war
+  /* walk back and forward from the day while `on` finds the entry there, inside the period */
+  const walk = <T>(on: (d: string) => T | undefined): Array<{ date: string; it: T }> => {
+    const first = on(date)
+    if (first === undefined) return []
+    const run = [{ date, it: first }]
+    for (let d = addDays(date, -1), x = inWar(d) ? on(d) : undefined; x !== undefined; d = addDays(d, -1), x = inWar(d) ? on(d) : undefined) run.unshift({ date: d, it: x })
+    for (let d = addDays(date, 1), x = inWar(d) ? on(d) : undefined; x !== undefined; d = addDays(d, 1), x = inWar(d) ? on(d) : undefined) run.push({ date: d, it: x })
+    return run
+  }
+  const reqs = listAt(personId, date).filter((r): r is RequestRec => r.kind === 'request')
+  if (reqs.length === 1) {
+    const r0 = reqs[0]!
+    /* a request's states are pending and refused (Ack went — D1158); anything else is no leave to open whole */
+    if (r0.state !== 'pending' && r0.state !== 'refused') return null
+    const k = reqRunKey(r0)
+    const run = walk(d => listAt(personId, d).find((r): r is RequestRec => r.kind === 'request' && reqRunKey(r) === k))
+    if (run.length < 2) return null
+    const st = r0.state
+    return {
+      kind: 'request', from: run[0]!.date, to: run[run.length - 1]!.date, dates: run.map(x => x.date), state: st,
+      recs: run.map(x => ({ personId, date: x.date, id: x.it.id, kind: 'request' as const })),
+      parts: run.map(x => ({ date: x.date, recId: x.it.id, code: x.it.code, state: st })),
+    }
+  }
+  if (reqs.length) return null
+  const leave = absencesAt(personId, date).filter(c => c.kind === 'absence' && !!c.lw && isLeaveCode(c.code))
+  if (leave.length !== 1) return null
+  const iid = leave[0]!.id
+  const run = walk(d => (absencesAt(personId, d).some(c => c.kind === 'absence' && c.id === iid) ? iid : undefined))
+  if (run.length < 2) return null
+  return {
+    kind: 'absence', from: run[0]!.date, to: run[run.length - 1]!.date, dates: run.map(x => x.date), state: 'approved',
+    recs: run.map(x => ({ personId, date: x.date, id: iid, kind: 'absence' as const })),
+    parts: run.map(x => ({ date: x.date, iid, state: 'approved' as const })),
+  }
+}
+
+/** May this role take this one record — a request by the gates of every cell write (his row, a day open for him or his own
+ *  pending bid on a day since closed — D1225), a war-approved leave by the admin (`warEditable`)? The one answer
+ *  `clearRecords` writes by and `deletableRecords` counts by, so the window's Delete is drawn only where it would act. */
+function recordTakeable(m: MoveRec): boolean {
+  if (!warHolding(state.wars, m.date)) return false
+  if (m.kind === 'absence') return canDecide(state.role) && warEditable(m.personId, m.date) && absencesAt(m.personId, m.date).some(c => c.id === m.id)
+  if (!canEditRow(state.role, state.viewer, m.personId)) return false
+  const r = listAt(m.personId, m.date).find((x): x is RequestRec => x.kind === 'request' && x.id === m.id)
+  if (!r) return false
+  return dayWritable(m.date) || ownPendingOnClosedDay(m.personId, m.date).includes(r)
+}
+/** How many of these records a Delete would take (asked without writing). */
+export function deletableRecords(recs: readonly MoveRec[]): number {
+  return recs.filter(recordTakeable).length
+}
+/** DELETE THESE RECORDS AND NOTHING ELSE ON THEIR DAYS (the whole-leave window's Delete — D1461): a leave's own requests,
+ *  or the leave the war approved (through the door, by its Input id), in ONE command and one Undo. An OIL award or the
+ *  other half's bid sharing one of its days stays — what is picked is the leave, not the days (a drag over the days still
+ *  takes everything on them, D260). A record this role may not take is counted, never forced. */
+export function clearRecords(recs: readonly MoveRec[]): RangeWrite & { why: string[] } {
+  let written = 0, skipped = 0
+  const why: string[] = []
+  const go = recs.filter(m => { const ok = recordTakeable(m); if (!ok) skipped++; return ok })
+  if (!go.length) return { written, skipped, why }
+  gesture('lw.edit', () => {
+    const approved: Array<{ personId: string; date: string; iid: string }> = []
+    for (const m of go) {
+      if (m.kind === 'absence') { approved.push({ personId: m.personId, date: m.date, iid: m.id }); continue }
+      const list = listAt(m.personId, m.date)
+      putList(m.personId, m.date, list.filter(x => x.id !== m.id))
+      written++
+    }
+    if (approved.length) {
+      /* (a day on a locked week is left by the door, with its own reason — said by the window, the scenario designer's G8b) */
+      const d = DOOR ? DOOR.removeApproved(approved) : { done: 0, skipped: approved.length, why: [] as string[] }
+      written += d.done; skipped += d.skipped; why.push(...d.why)
+    }
+  })
+  return { written, skipped, why: [...new Set(why)] }
+}
+
 /** why the rules refuse this line's decision, or null when it would go through (asked before anything is written) */
 function decideWhy(line: DecideLine): string | null {
   const { personId, to } = line

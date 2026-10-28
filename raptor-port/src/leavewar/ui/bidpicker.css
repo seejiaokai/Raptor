@@ -1790,6 +1790,10 @@
 
 /* DURATION with "Pick a range" at its end (change 5) */
 .bidsheet .bp-dur .bp-range { margin-left: auto; }
+/* A LEAVE OF SEVERAL DAYS (his D1461 — version 2, drawn by scripts/handpass/lw-whole-leave-mock.mjs): "All <n> days" and the
+   day tapped stand where "Pick a range" stands, at the row's right end, as drawn — each on one line, a little less padding */
+.bidsheet .bp-dur .bp-scope { margin-left: auto; display: inline-flex; gap: 6px; }
+.bidsheet .bp-dur .bp-scope .pchip { padding-left: 10px; padding-right: 10px; white-space: nowrap; }
 .bidsheet .bp-dur .bp-wide { flex: 1 1 100%; order: 5; }
 
 /* the day's own leave LIT (change 7): the window's cyan ring round its button, its own colour kept inside */

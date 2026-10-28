@@ -5,7 +5,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { initStore, rawState, setBidStates, setCell, setCellRange, setRole } from '../state/store'
+import { initStore, rawState, setBidStates, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { Matrix } from './Matrix'
@@ -61,7 +61,8 @@ describe('the one-day window — the decided one lit and named (D1361, D1355)', 
   })
 
   it('over a picked range nothing is lit, and a Refuse over refused days refuses (never a send-back)', () => {
-    setCellRange(P, D, '2026-02-12', 'LL')
+    /* two separate bids (a kind each): one refused leave of two days would open whole, Refused lit (D1461) */
+    setCell(P, D, 'LL'); setCell(P, '2026-02-12', 'OL')
     setBidStates([{ personId: P, date: D }, { personId: P, date: '2026-02-12' }], 'refused')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))

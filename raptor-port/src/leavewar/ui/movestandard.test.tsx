@@ -9,7 +9,7 @@
 // keeps How many, a picked range widening what it acts on.
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { awardsOnDay, clearCells, closeDates, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setCellRange, setDayAward, setRole, setViewer } from '../state/store'
+import { awardsOnDay, clearCells, closeDates, decideRequestById, getState, initStore, lwHistInit, rawState, setCell, setDayAward, setRole, setViewer } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
@@ -107,7 +107,9 @@ describe('the one-day sheet, in order A (D331, D335)', () => {
 })
 
 describe('Pick a range widens what the one-day sheet acts on (D335)', () => {
-  beforeEach(() => { setCellRange(P, '2026-02-11', '2026-02-13', 'LL') })
+  /* three SEPARATE entries, a kind each: one leave of several days opens whole instead, its choice where "Pick a range"
+     stands (D1461 — wholeleave.test.tsx); a range is for days that are not one leave */
+  beforeEach(() => { setCell(P, '2026-02-11', 'LL'); setCell(P, '2026-02-12', 'OL'); setCell(P, '2026-02-13', 'LL') })
   const pickRange = () => {
     fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-11`))
     fireEvent.click(screen.getByTestId('span-range'))
