@@ -28,7 +28,7 @@ the later merge keeps both (D78).
 - **Questions waiting for him (the plan §4):** (1) War bal after an approval — recommended: App bal less every leave, pending or approved, dated on or after the day App bal was typed; (2) a leave across 31 Dec — each day to its own year; (3) D1235's three readings — as read; (4) M5 in two merges, M5a balances first — yes.
 - **Pick up here:** record his answers as rulings (Leave War; this chat's range D1468–D1479 — check the live numbers first), then redraw M5a's screens on the real app (the person window, the balances page — desktop and phone; plan §4's list) and put them in rounds of at most four; then M5a's build spec in M4's shape, on a new branch from main.
 - **Branch:** `claude/leave-war-m5-handoff-3a6602` — notes only so far.
-- **Notes:** ruling numbers to D1470 (this chat's range D1468–D1479); design lessons to 67 (this branch holds 67–69, D1417); observations to 733. A fresh reader of D1468–D1470 and lesson 67 (D138, D941) was running at this writing — read its result before relying on them.
+- **Notes:** ruling numbers to D1470 (this chat's range D1468–D1479); design lessons to 67 (this branch holds 67–69, D1417); observations to 733. D1468–D1470 and lesson 67 read by a fresh reader (D138, D941); its fixes taken.
 <!-- /now -->
 ## Next, in order
 

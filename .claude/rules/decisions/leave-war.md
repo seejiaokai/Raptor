@@ -56,7 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1470 | 28 Oct 26 | On the Leave War a ground crewman's chip reads "G", not "GND". |
+| D1470 | 28 Oct 26 | On the Leave War ground personnel's chip reads "G", not "GND". |
 | D1469 | 28 Oct 26 | On the Leave War an OCU man's chip reads "O", in the same colour as his puck's OCU chip on the schedule, not "OCU". |
 | D1468 | 28 Oct 26 | On the Leave War grid each person's name is drawn as a puck, as on the schedule: his category chip sits inside the name's own box at its right end, not as a separate badge beside it. |
 | D1467 | 28 Oct 26 | The whole-leave window's readings stand as built: one leave is the joined bar's entry, within its period; on "All" a leave button re-types it, and Delete and Move take only it, an award or the other half's bid staying; the cyan mark is on every bid window; "All n days" counts calendar days; no "Pick a range" on such a leave. |

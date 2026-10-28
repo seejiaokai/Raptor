@@ -11645,11 +11645,11 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 ## The Leave War's name column — names as pucks (his D1468–D1470, 28 Oct 26 — RULED, NOT BUILT: [LW-NAME-PUCKS])
 
 - **A name is a puck, as on the schedule (D1468):** the person's category chip sits inside the name's own box at its right
-  end, not as a separate badge beside it; the chip keeps its colours and its tap or hover that lists his qualifications; a
+  end, not as a separate badge beside it; the chip keeps its colours (OCU's changes to the schedule's, D1469) and its tap or hover that lists his qualifications; a
   tap on the name still opens his person window; the LVE figure keeps its column beside the name.
 - **An OCU man's chip reads "O" (D1469),** in the schedule's OCU colour (read from the schedule's own chip list — one
   source); the group's heading stays "OCU".
-- **A ground crewman's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the
+- **Ground personnel's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the
   schedule's own ground-crew puck (no chip) is unchanged.
 - Today (28 Oct 26): `leavewar/ui/MatrixRows.tsx` draws the name and a separate `catchip` badge ("OCU", "GND" from
   `leavewar/engine/people.ts catText`); the schedule's puck draws its chip inside (`ui/html.ts`, `QCHIP` / `QCLASS`).
