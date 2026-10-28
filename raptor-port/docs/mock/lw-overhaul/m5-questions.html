@@ -34,6 +34,7 @@ figcaption{color:var(--mute);font-size:13px}
 .part.good{border-color:var(--green)}
 .amber{color:var(--amber)} .redt{color:var(--red)} .greent{color:var(--green)}
 .note{font-size:13px;color:var(--mute)}
+ol.chg{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
 table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%}
 th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--edge);font-size:14px}
 th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
@@ -49,13 +50,91 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 
 <main>
   <header style="display:flex;flex-direction:column;gap:6px">
-    <h1>Leave War M5a: nothing open right now</h1>
-    <p class="lead">Round 1, the person window, is settled (28 Oct): App bal comes down by itself as leave is approved (D1479), the window as drawn (D1480), no "● new" count on My leave (D1481). The answered questions and their pictures are kept in the project.</p>
+    <h1>Leave War M5a, round 2: the Balances page (part 1 of 2)</h1>
+    <p class="lead">Drawn on today's app. Every part you approved before is redrawn from its own drawing and shown beside it (D1478): round 14's page, round 16's phone, round 19's tabs. Only what later rulings require has changed, and each change is numbered on the pictures. Part 2, after this one: the Grades window, a member's page (unlocked and locked) and "Lock for members" turned on.</p>
   </header>
+
   <div class="now">
     <h2>Look at now</h2>
-    <p>Nothing. Round 2, the Balances page (desktop and phone, its two views and the Grades window), comes next, in a fresh chat.</p>
+    <ol>
+      <li><a href="#q1">The Balances page on a desktop, as drawn?</a> <span class="rec">Recommended: yes.</span></li>
+      <li><a href="#q2">The same page on a phone, as drawn?</a> <span class="rec">Recommended: yes.</span></li>
+      <li><a href="#q3">The "Days taken" view, desktop and phone, as drawn?</a> <span class="rec">Recommended: yes.</span></li>
+      <li><a href="#q4">Does ⚙ Settings keep a line that opens this page?</a> <span class="rec">Recommended: no, the Balances tab is the one way in.</span></li>
+    </ol>
   </div>
+
+  <section id="q1">
+    <p class="q">Question 1</p>
+    <h2>The Balances page on a desktop: approve as drawn?</h2>
+    <p>Everyone's balances on one page, opened from its own Balances tab. Worked example, Ranger (the same figures as his person window in round 1): he typed App bal 17 on 5 Jan; 26–27 Jan was approved since, so App bal now reads <b>15</b>, incl. <b>2</b> carried fwd (carried days go first). 2.5 days are pending, so War bal is <b>12.5</b>. His CCL box reads 3 with <span class="amber">−1</span> pending after it.</p>
+    <figure><img src="m5a/m5b-b1-ranger.png" alt="The Balances page on a desktop, cut to the first rows; Ranger's row and the changes numbered"><figcaption>Cut to the top rows. The numbers are the changes below.</figcaption></figure>
+    <div class="part">
+      <h3>What changed from round 14, and why</h3>
+      <ol class="chg">
+        <li>It opens from its own <b>Balances</b> tab (your round 19 tabs, D1254), so round 14's "‹ Grid" button goes.</li>
+        <li>No year picker on the page. These are today's balances, and "Days taken" counts the period picked in View at the top (JAN – DEC 26), as Approvals does, so two year controls can never disagree. <i>My change, for your yes or no.</i></li>
+        <li>App bal comes down by itself as leave is approved (D1479), so it reads 15, not round 14's 17.</li>
+        <li>Pending figures are amber (D1251).</li>
+        <li>New: a pending CCL, FCL, PL, EL or CL day shows in amber right after its box (D1251 says every pending figure on this page is amber; round 14 had no place for one). Each box keeps its column whether or not something is pending.</li>
+        <li>Each name is the schedule's own puck, the size the Approvals list uses (D1468, D1476).</li>
+      </ol>
+      <p class="note">Also gone: the "No grade 2" chip (D1249). Halves read .5 (D1246). Unchanged from round 14: the grade box with "+36" (D1233), the LVE and other-leave columns, OIL read only with › (D1255), "Grades…", "Lock for members" (D1247) and "Find a person".</p>
+    </div>
+    <figure><img src="m5a/m5b-b1-vs-r14.png" alt="Round 14's approved drawing beside the new page"><figcaption>Round 14 (left) beside the new page (right).</figcaption></figure>
+    <figure><img src="m5a/m5b-b1-desk.png" alt="The whole new page on a desktop"><figcaption>The whole page on your PC's screen size.</figcaption></figure>
+  </section>
+
+  <section id="q2">
+    <p class="q">Question 2</p>
+    <h2>The same page on a phone: approve as drawn?</h2>
+    <p>Round 16's phone, as you asked for it (D1236): the names stay put while the figures slide sideways, and a pinch shows every column. Worked example: slide Ranger's row left and his CCL 3 <span class="amber">−1</span>, FCL 5, PL 2 <span class="amber">−0.5</span> and EL 4 come into view beside his name.</p>
+    <figure><img src="m5a/m5b-b2-three.png" alt="The phone page at rest, slid sideways and pinched out"><figcaption>At rest · slid sideways · pinched out (iPhone width).</figcaption></figure>
+    <div class="part">
+      <h3>What changed from round 16, and why</h3>
+      <ol class="chg">
+        <li>Four tabs now share the top row with ⚙. They fit with round 19's tighter spacing; today's build spaces three, so the build takes round 19's spacing too. On a narrower iPhone (375 wide) the count touches the lit tab, so there the tabs drop their small icons (picture below).</li>
+        <li>The page's bar, the same in both views: Balances | Days taken first, then search, Grades and the lock. The back arrow, "No grade 2" and the year picker go, as on the desktop.</li>
+        <li>App bal, pending in amber and the pucks as in question 1.</li>
+        <li>The five other kinds are a little wider, to hold a pending figure, so one slide shows four of them at a time; CL is a short slide further.</li>
+      </ol>
+    </div>
+    <figure><img src="m5a/m5b-b2-vs-r16.png" alt="Round 16's approved phone drawings beside the new ones"><figcaption>Round 16 (left, its three) beside the new page at rest and slid (right), changes numbered.</figcaption></figure>
+    <div class="row">
+      <figure><img src="m5a/m5b-b5-tabs-375.png" alt="The four tabs at 375 wide with icons: the count touches the lit tab"><figcaption>375 wide, with icons: the 13 touches Balances.</figcaption></figure>
+      <figure><img src="m5a/m5b-b5-tabs-375-noicons.png" alt="The four tabs at 375 wide without icons"><figcaption>375 wide, icons dropped: room to spare.</figcaption></figure>
+    </div>
+  </section>
+
+  <section id="q3">
+    <p class="q">Question 3</p>
+    <h2>The "Days taken" view: approve as drawn?</h2>
+    <p>The second view (D1248), as round 14 drew it: each person's days taken this year, one column a kind. Worked example: Ranger shows <b>3</b> under LL (19–21 Jan), the same "3 taken" as his window; Anvil's half day reads 0.5.</p>
+    <div class="row">
+      <figure><img src="m5a/m5b-b3-desk-marked.png" alt="Days taken on a desktop, the switch and the heading marked"><figcaption>Desktop: 1 the switch, 2 the period it counts.</figcaption></figure>
+      <figure><img src="m5a/m5b-b3-phone.png" alt="Days taken on a phone"><figcaption>Phone: the kinds slide sideways as the balances do.</figcaption></figure>
+    </div>
+    <div class="part">
+      <h3>What changed from round 14</h3>
+      <ol class="chg">
+        <li>The bar is the same as on Balances, so nothing moves under your finger when you switch.</li>
+        <li>No "2026" picker: it counts the period picked in View at the top, and its heading names it, "DAYS TAKEN IN JAN – DEC 26". Pick 2027 in View and it counts 2027.</li>
+        <li>Halves read .5 (Anvil 0.5); no "No grade" chip; the Balances tab as in question 1.</li>
+      </ol>
+    </div>
+    <figure><img src="m5a/m5b-b3-vs-r14.png" alt="Round 14's Days taken beside the new one"><figcaption>Round 14 (left) beside the new view (right).</figcaption></figure>
+  </section>
+
+  <section id="q4">
+    <p class="q">Question 4</p>
+    <h2>Does ⚙ Settings keep a line that opens this page?</h2>
+    <p>When you put "Lock for members" on this page (D1247), Settings was to keep a line pointing to it, until the Balances tab existed. Now the tab (1) sits one tap away, beside ⚙ (2). <span class="rec">Recommended: no line in Settings.</span> One way in, always in view; Settings stays shorter.</p>
+    <figure><img src="m5a/m5b-b4-way-in.png" alt="The Leave War's top row: the Balances tab and the Settings gear marked"><figcaption>1: the Balances tab. 2: ⚙ Settings.</figcaption></figure>
+  </section>
+
+  <section>
+    <p class="note">Every figure on these pages is made up for the drawing except Ranger's and Saber's, as in round 14; the people, their groups and their pending days are the app's own.</p>
+  </section>
 </main>
 
 <dialog id="zoom" aria-label="Full-size picture"></dialog>

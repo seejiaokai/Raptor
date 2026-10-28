@@ -2644,3 +2644,18 @@ its value and never in innerText.
 **Suggested improvement:** Count it toward [SHELL-SCRIPT-GUARD] — the guard that refuses a shell-written script carrying a backslash — rather than another note.
 
 **Principle:** A trap noted three times and still met wants a check in the action itself, not a fourth note.
+
+### Observation 737: A control added to a new tab page duplicated one the app's own top row already carries
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** Leave War M5a round 2 — the Balances page redrawn from round 14's drawing onto today's app, which now has a tab row with the View period picker above every tab's page.
+**Skill:** brainstorming (mockups-on-the-real-app.md) / impeccable (critique)
+**Type:** open-source
+**Phase/Area:** carrying an older drawing's controls into a page that now sits under a shared top row
+
+**Issue:** Round 14's page carried its own year picker. Redrawn under the new tab row, the agent kept it on the "Days taken" view, beside the View period picker the top row already shows — two year controls on one screen that could disagree. The agent's own side-by-side against the approved drawing did not catch it (the picker matched the drawing); a fresh design reviewer looking at the pictures did.
+
+**Suggested improvement:** In mockups-on-the-real-app.md, when an older drawing's page is placed under chrome built since: list each control the page carries and check the surrounding chrome for one doing the same job; a duplicate goes (or is put to the owner), it is not carried over because the old drawing had it.
+
+**Principle:** A side-by-side with the old drawing proves sameness, not fitness: re-check each carried control against what the screen around it now already offers.
