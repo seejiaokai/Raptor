@@ -13,10 +13,12 @@
 //     fresh single-day tap still autofocuses so you can type at once.
 
 import { fireEvent, render, screen } from '@testing-library/react'
+import { useLayoutEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { Sheet } from './Sheet'
 
 // jsdom has no visualViewport; this EventTarget stub carries the fields the
 // hook reads and lets a test fire 'resize' to mimic the keyboard opening.
@@ -120,5 +122,46 @@ describe('opening the full window vs typing at once', () => {
     { const edit = screen.queryByTestId('event-peek-edit'); if (edit) fireEvent.click(edit) }   // a filled cell opens the small box first (plan §3.12)
     expect(screen.getByTestId('event-sheet')).toBeTruthy()
     expect(document.activeElement).not.toBe(screen.getByTestId('event-text'))
+  })
+})
+
+/* A WINDOW THAT PLACES ITSELF KEEPS ITS PLACE (the M5a browser tests, 29 Oct 26). The person window docks at the grid's
+   right edge on a desktop and the Grades window under "Grades…" — each writes its own top (the person window its height
+   too) on the panel. The keyboard hook's no-keyboard branch cleared top, bottom and max-height on every call, and it is
+   called as the sheet opens and on every focus change (vvfollow.ts) — so on a desktop, with no keyboard ever, the docked
+   window lost its top and fell to where it stood in the page's flow, under the grid, off the screen, its ✕ out of reach.
+   The hook now undoes only what it wrote itself, and puts back what stood before the keys came up. */
+describe('a sheet that places itself keeps its place', () => {
+  function Docked() {
+    useLayoutEffect(() => {
+      const p = document.querySelector<HTMLElement>('[data-testid="docked"]')!
+      p.style.top = '120px'; p.style.maxHeight = '500px'
+    }, [])
+    return <Sheet testid="docked" label="Docked" onClose={() => {}} modal={false}><input data-testid="docked-box" /></Sheet>
+  }
+
+  it('with no keyboard, on opening and on a focus change, its own top and height stand', () => {
+    render(<Docked />)
+    const panel = screen.getByTestId('docked')
+    expect(panel.style.top).toBe('120px')
+    expect(panel.style.maxHeight).toBe('500px')
+    fireEvent.focusIn(screen.getByTestId('docked-box'))
+    vv.dispatchEvent(new Event('resize'))
+    expect(panel.style.top).toBe('120px')
+    expect(panel.style.maxHeight).toBe('500px')
+  })
+
+  it('the keyboard lifts it, and when the keys go down its own place comes back', () => {
+    render(<Docked />)
+    const panel = screen.getByTestId('docked')
+    vv.height = 380
+    vv.dispatchEvent(new Event('resize'))
+    expect(panel.style.bottom).toBe('auto')
+    expect(parseInt(panel.style.maxHeight, 10)).toBeLessThan(380)
+    vv.height = 844
+    vv.dispatchEvent(new Event('resize'))
+    expect(panel.style.top).toBe('120px')
+    expect(panel.style.maxHeight).toBe('500px')
+    expect(panel.style.bottom).toBe('')
   })
 })

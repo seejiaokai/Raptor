@@ -302,22 +302,31 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
     const panel = panelRef.current
     if (!vv || !panel) return
     const GAP = 8
+    /* WHAT STOOD BEFORE THE KEYS CAME UP, put back when they go (the M5a browser tests, 29 Oct 26): a window that places
+       itself — the person window docked at the grid's right edge, the Grades window under "Grades…" — writes its own top
+       and height on the panel. This hook used to clear all three on every no-keyboard call (on opening, and on every
+       focus change), which dropped such a window to its place in the page's flow, off the screen. Now it touches the
+       panel only while a keyboard is up, and on the way down restores exactly what it found. */
+    let before: { top: string; bottom: string; maxHeight: string } | null = null
     const place = () => {
       /* the layout's full height from the fixed mark (ui/kbscroll.ts screenBox), not the window's: his iPhone gives the
          window's as what is left below the visible top once the keys have panned the screen (684 − 184 = 500), which read
          as no keyboard at all and dropped the sheet back to its foot, under the keys (his recordings of 25 Oct 26) */
       const sb = screenBox(vv)
       if (sb.layH - vv.height <= KEYBOARD_MIN) {
-        // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
-        // take back over — except on a window that places itself (the person window docked at the grid's right edge on a
-        // desktop — PersonWindow.tsx dock, `data-docked`): wiping its top dropped it below the screen's foot (the M5a
-        // host probe, 29 Oct 26: its top at 860 on an 860-high screen).
-        if (panel.dataset.docked === '1') return
-        panel.style.top = ''
-        panel.style.bottom = ''
-        panel.style.maxHeight = ''
+        // No keyboard: drop our overrides, so what stood before (the CSS
+        // bottom-anchor + dvh cap, or the window's own place) takes back over.
+        // (The host probe's `data-docked` guard, 29 Oct 26 — the person window's top at 860 on an 860-high screen — is
+        // folded into this: it kept the person window, but not the Grades window, which places itself the same way.)
+        if (before) {
+          panel.style.top = before.top
+          panel.style.bottom = before.bottom
+          panel.style.maxHeight = before.maxHeight
+          before = null
+        }
         return
       }
+      if (!before) before = { top: panel.style.top, bottom: panel.style.bottom, maxHeight: panel.style.maxHeight }
       // Zero any drag offset so the top anchor composes cleanly with the
       // panel's own translateX(-50%) centering.
       panel.style.setProperty('--lw-dx', '0px')
