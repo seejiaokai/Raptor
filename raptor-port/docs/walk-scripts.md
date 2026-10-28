@@ -326,7 +326,8 @@ and `selftest.mjs`. The worked example is M5a's (`specs/lw-m5a.mjs`). When it is
 - **Each difference goes to him side by side (D1426)** — the report's pictures are that page's pictures. One he keeps
   goes into the part list's `accepted` list — `{ state, part, check, why }`, `why` naming his ruling — with `check` set
   to the one kind of difference he kept (place, width, fill…), so a new difference in the same part still turns the
-  check red (the script refuses an entry without it); the report still shows the kept one, marked.
+  check red (the script refuses an entry without it); the report still shows the kept one, marked. A kept place or
+  size also carries the value the build had (`build`), so a further move of that part is a new difference (added with D1497, 29 Oct 26 — the agent's own way of keeping what he kept).
 - **After any change to the comparing**, run `node scripts/drawcheck/selftest.mjs` (it feeds the comparing each kind
   of difference M5a showed, and each look that must not count, and fails on a miss); after a change to the measure,
   the recorder or the runner, re-run the check on M5a's build at 794346689 and compare its report with the committed

@@ -1,8 +1,8 @@
 # Drawing check — Leave War M5a
 
-Build: `main at cdb984e39 (M5a live, with the D1493 fixes)` · run 29 Oct 2026, 06:51 · tolerance 2px
+Build: `main at cdb984e39 (M5a live, with the D1493 fixes)` · run 29 Oct 2026, 06:58 · tolerance 2px
 
-**RED** — 5 difference(s) unexplained, 21 kept as built by his ruling, 0 screen(s) not checked.
+**RED** — 3 difference(s) unexplained, 23 kept as built by his ruling, 0 screen(s) not checked.
 
 ## The person window, desktop, admin (`person-desk`, 1536 × 864 at 1.25)
 
@@ -25,7 +25,7 @@ Drawing: `docs/mock/lw-overhaul/full-m5a-person.mjs` → `m5a-p2-desk-drawn.png`
 
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
-| the window | where it sits (from the top) — 66px lower | 64 | 130 | **unexplained** · [picture](person-desk-top--window.png) |
+| the window | where it sits (from the top) — 66px lower | 64 | 130 | kept as built: D1497 — under My leave and the gear at the page top, covering neither · [picture](person-desk-top--window.png) |
 | the window's title bar | matches | | | |
 
 ## His own person window, iPhone, member (`person-phone`, 402 × 874 at 3)
@@ -34,7 +34,7 @@ Drawing: `docs/mock/lw-overhaul/full-m5a-person.mjs` → `m5a-p4-phone-own.png` 
 
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
-| the window | where it sits (from the top) — 4.5px lower | 68.5 | 73 | **unexplained** · [picture](person-phone--window.png) |
+| the window | where it sits (from the top) — 4.5px lower | 68.5 | 73 | kept as built: D1497 — centred, a little shorter than drawn · [picture](person-phone--window.png) |
 | the window's title bar | matches | | | |
 | the LVE tile | matches | | | |
 | the year picker | matches | | | |

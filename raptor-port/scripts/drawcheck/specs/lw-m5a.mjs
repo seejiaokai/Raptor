@@ -229,5 +229,8 @@ export default {
       ...['place', 'height'].map(check => ({ state, part: 'switch-lit', check, why: 'D1493 — the switch stands as built' })),
     ]),
     { state: 'taken-desk', part: 'taken-head', check: 'text', why: "D1493 — the period's own name, its hyphen as typed" },
+    // D1497 (29 Oct 26, "As recommended"): kept at the place live M5a has them, so a further move is new
+    { state: 'person-desk-top', part: 'window', check: 'place', build: '130', why: 'D1497 — under My leave and the gear at the page top, covering neither' },
+    { state: 'person-phone', part: 'window', check: 'place', build: '73', why: 'D1497 — centred, a little shorter than drawn' },
   ],
 }

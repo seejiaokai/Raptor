@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1497 | 29 Oct 26 | On live M5a the desktop person window stays under My leave and the gear when the page is at its top, and the iPhone person window keeps its place; the iPhone's locked Balances page goes back to its drawing — its read-only figures 10px further left, off the column's right edge, and Ranger's row 6px higher. |
 | D1493 | 29 Oct 26 | M5a's drawing differences are settled as recommended: the desktop person window back to its drawn place, its leave lines flat rows with only the dot for new, the Balances names set left, a member's locked amber figures on their row's line; the rest stand as built. |
 | D1492 | 28 Oct 26 | The 24 readings of the Leave War M5a build spec stand as put to him, none struck: among them CCL, FCL, PL, EL and CL come down by themselves as approved, a balance changes only by its box, approved leave and 1 Jan, and D1473's example reads 21, 52, 52 under D1479. |
 | D1491 | 28 Oct 26 | The Leave War grid's drag down the LVE figures beside the names, and the bar it raises to give several people extra LVE at once, are removed, as the grid's FIGURES drawer is (D1245): a leave balance changes only by its box on the Balances page or the person window, by approved leave and by 1 Jan. |

@@ -131,7 +131,9 @@ for (const st of spec.states) {
     else diffs = compare(part, D, B, Drel?.found && Drel, Brel?.found && Brel, TOL)
     const acc = spec.accepted || []
     for (const d of diffs) {
-      const a = acc.find(a => a.state === st.id && a.part === part.name && a.check === d.check)
+      // with `build`, it keeps only the value he saw (within the tolerance): a further move of the kept part is new
+      const a = acc.find(a => a.state === st.id && a.part === part.name && a.check === d.check
+        && (a.build === undefined || Math.abs(parseFloat(d.build) - parseFloat(a.build)) <= TOL))
       d.accepted = a ? a.why : null
       d.counts = !a || ALL
     }
