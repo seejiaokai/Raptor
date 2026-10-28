@@ -11647,6 +11647,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **A name is a puck, as on the schedule (D1468):** the person's category chip sits inside the name's own box at its right
   end, not as a separate badge beside it; the chip keeps its colours (OCU's changes to the schedule's, D1469) and its tap or hover that lists his qualifications; a
   tap on the name still opens his person window; the LVE figure keeps its column beside the name.
+- **The puck is the schedule's own, as the Approvals list draws it (D1471)** — not a restyled bar; its seat colours are the schedule's (lighter than the grid's bars of 4 Sep 26 — shown to him in the drawing); ground personnel's puck gains the "G" chip on the Leave War.
 - **An OCU man's chip reads "O" (D1469),** in the schedule's OCU colour (read from the schedule's own chip list — one
   source); the group's heading stays "OCU".
 - **Ground personnel's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the

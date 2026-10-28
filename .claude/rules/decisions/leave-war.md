@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1471 | 28 Oct 26 | The Leave War grid's names are the schedule's own puck — the same one the Approvals list draws for each request — not a restyled bar of their own. |
 | D1470 | 28 Oct 26 | On the Leave War ground personnel's chip reads "G", not "GND". |
 | D1469 | 28 Oct 26 | On the Leave War an OCU man's chip reads "O", in the same colour as his puck's OCU chip on the schedule, not "OCU". |
 | D1468 | 28 Oct 26 | On the Leave War grid each person's name is drawn as a puck, as on the schedule: his category chip sits inside the name's own box at its right end, not as a separate badge beside it. |

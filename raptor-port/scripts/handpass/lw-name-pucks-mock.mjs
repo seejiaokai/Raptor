@@ -64,6 +64,35 @@ async function shot(P, name, clip) {
   console.log('shot', name, 'marks', ok)
 }
 
+// VERSION 2 (his word, 15:57 — "Wouldn't it be better to be like this design pick" / "Puck", D1471): each row's name and
+// chip are replaced by the schedule's own puck markup — <span class="puck [r] [pers]"><span class="nm">…</span>
+// <span class="role q-…">…</span></span>, the shape ui/html.ts puck() prints and the Approvals list draws — styled by the
+// app's own stylesheet; the only new style is ground personnel's "G" chip, which the schedule's puck has none of (D1470).
+// the puck keeps the schedule's own size where the column has room (desktop) and shrinks to the column where it has not
+// (a phone's frozen column is a few pixels narrower than the puck, which cut its chip off) — the name fades, the chip stays whole
+const G_CSS = `.puck .role.lwmock-g { background: var(--pers-line, #7C8AA0); color: #fff; }
+  .mx .who .whoedit .puck { max-width: 100%; min-width: 0; flex: 0 1 auto; }
+  .mx .who .whoedit .puck .role { flex: none; }`
+async function asPucks(P) {
+  await P.addStyleTag({ content: G_CSS })
+  await P.evaluate(() => {
+    const QC = { A: 'q-a', B: 'q-b', C: 'q-c', D: 'q-d', OCU: 'q-ocu', O: 'q-ocu', IW: 'q-ins', IP: 'q-ins', IR: 'q-ins', FI: 'q-ins' }
+    const QT = { OCU: 'O' }
+    document.querySelectorAll('.mx .who .whoedit').forEach(w => {
+      if (w.querySelector('.puck')) return
+      const cs = w.querySelector('.cs'), chip = w.querySelector('.catchip'); if (!cs || !chip) return
+      const t = chip.textContent.trim(), pers = cs.classList.contains('seat-gnd'), wso = cs.classList.contains('seat-wso')
+      const pk = document.createElement('span')
+      pk.className = 'puck' + (wso ? ' r' : '') + (pers ? ' pers' : '')
+      const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = cs.textContent.trim()
+      const ro = document.createElement('span'); ro.className = 'role ' + (pers ? 'lwmock-g' : (QC[t] || 'q-ins')); ro.textContent = pers ? 'G' : (QT[t] || t)
+      pk.append(nm, ro)
+      cs.style.display = 'none'; chip.style.display = 'none'
+      w.insertBefore(pk, w.firstChild)
+    })
+  })
+}
+
 async function both(P, prefix, clip) {
   await P.addStyleTag({ content: MARK_CSS })
   await frame(P); await shot(P, prefix + '-now.png', clip)
@@ -75,6 +104,14 @@ async function both(P, prefix, clip) {
   const cut = await P.evaluate(() => [...document.querySelectorAll('.mx .who .whoedit .cs')].filter(c => c.getBoundingClientRect().width > 0 && c.scrollWidth > c.clientWidth).map(c => c.textContent.trim()))
   console.log(prefix, 'names still cut after:', cut.length, cut.slice(0, 12).join(', '))
   await shot(P, prefix + '-puck.png', clip)
+  // version 2: undo version 1's bar (its sheet stays, but its .cs/.catchip are hidden) and draw the pucks
+  await asPucks(P); await frame(P); await P.waitForTimeout(200)
+  await P.evaluate(() => document.querySelectorAll('[data-mk]').forEach(w => { const pk = w.querySelector('.puck'); if (pk) { w.removeAttribute('data-mk'); pk.setAttribute('data-mk', '1') } }))
+  const faded = await P.evaluate(() => [...document.querySelectorAll('.mx .who .whoedit .puck .nm')].filter(n => n.getBoundingClientRect().width > 0 && n.scrollWidth > n.clientWidth).map(n => n.textContent))
+  console.log(prefix, 'v2 names that fade:', faded.length, faded.slice(0, 12).join(', '))
+  const w = await P.evaluate(() => { const p = [...document.querySelectorAll('.mx .who .whoedit .puck')].find(e => e.getBoundingClientRect().width > 0); const c = p?.closest('.who'); return p ? [Math.round(p.getBoundingClientRect().width), Math.round(c.getBoundingClientRect().width)] : null })
+  console.log(prefix, 'v2 puck width / column width:', w)
+  await shot(P, prefix + '-puck2.png', clip)
 }
 
 const wk = await webkit.launch()
