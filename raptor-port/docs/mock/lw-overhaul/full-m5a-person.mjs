@@ -28,7 +28,7 @@ const CSS = `
 .m5p .r17-t .s{grid-row:4;align-self:center;font:600 11px/1 system-ui;color:#8a96a3;white-space:nowrap}
 .m5p .r17-go{color:#5fd0e6;font:700 16px/1 system-ui}
 .m5p .r17-lve{grid-column:span 3}
-.m5p .r17-sum{grid-row:2 / span 2;display:grid;grid-template-columns:repeat(3,max-content);justify-content:start;grid-template-rows:12px 30px;row-gap:5px;column-gap:var(--sg,18px)}
+.m5p .r17-sum{grid-row:2 / span 2;display:grid;grid-template-columns:repeat(3,max-content);justify-content:start;grid-template-rows:12px 30px;row-gap:5px;column-gap:24px}
 .m5p .r17-sum .h{grid-row:1;font:600 10.5px/12px system-ui;color:#8a96a3;text-align:left;white-space:nowrap}
 .m5p .r17-sum .v{grid-row:2;display:flex;align-items:center;justify-content:flex-start;font:700 15px/1 system-ui;font-variant-numeric:tabular-nums;color:#c9d1d9}
 .m5p .r17-sum .v.pd{color:#F2C879}
@@ -151,7 +151,10 @@ async function scene(p, { pid, F, ro, lockWords, extra, phone, dockW = 560 }) {
     // only a filled (approved) box: a tile's kind box is the kind's colour, never a pending box's hollow look
     const gridChip = k => [...document.querySelectorAll('#page-leavewar td .c.s-a')].find(c => c.textContent.trim() === k)
     for (const kb of win.querySelectorAll('.kb')) {
-      const k = kb.textContent.trim(), src = gridChip(k === 'LVE' ? 'LL' : k)
+      // the five other leaves share one look on the grid (D1175: other leave blue) — every tile borrows the same one
+      const OTHER5 = ['CCL', 'FCL', 'PL', 'EL', 'CL']
+      const k = kb.textContent.trim()
+      const src = k === 'LVE' ? gridChip('LL') : OTHER5.includes(k) ? OTHER5.map(gridChip).find(Boolean) : gridChip(k)
       const cs = src ? getComputedStyle(src) : null
       if (cs) Object.assign(kb.style, { background: cs.backgroundColor, color: cs.color, border: cs.border })
       else Object.assign(kb.style, k === 'OIL' ? { background: '#2c4a1c', color: '#dff5b0', border: '1.5px solid #aae628' } : k === 'MED' ? { background: '#4a1f24', color: '#ffd5d8', border: '1.5px solid #ee5252' } : { background: '#26304f', color: '#d9e2ff', border: '1.5px solid #7f93ff' })
