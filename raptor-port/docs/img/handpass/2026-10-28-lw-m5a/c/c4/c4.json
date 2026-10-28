@@ -1,0 +1,120 @@
+[
+ {
+  "id": "PH1 a name on the grid opens his window in the middle of the screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10, top 45, bottom 45 from the foot, height 785 of 874; centre 437 vs screen centre 437; App 15 pend −2.5 war 12.5; lines 8; boxes 7",
+  "pics": [
+   "40a-name",
+   "40a-name-q"
+  ]
+ },
+ {
+  "id": "PH1b ✕ closes it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "element above the window (the scrim?): topbar has-undo",
+  "pics": []
+ },
+ {
+  "id": "PH2 the LVE figure beside a name opens the window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10, top 45, bottom 45 from the foot, height 785 of 874; centre 437 vs screen centre 437; figure \"12.5 7.5\"",
+  "pics": [
+   "40b-lve-figure",
+   "40b-lve-figure-q"
+  ]
+ },
+ {
+  "id": "PH3 My leave (Saber) opens his own window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10, top 220, bottom 220 from the foot, height 434 of 874; centre 437 vs screen centre 437; boxes 7",
+  "pics": [
+   "40c-myleave",
+   "40c-myleave-q"
+  ]
+ },
+ {
+  "id": "PH4 a name on the Balances page opens his window",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10, top 45, bottom 45 from the foot, height 785 of 874; centre 437 vs screen centre 437; the Balances page behind drawn: true",
+  "pics": [
+   "40d-balances-name",
+   "40d-balances-name-q"
+  ]
+ },
+ {
+  "id": "PH5 Ranger (member) opens his own: first visit, boxes, no dots",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10, top 45, bottom 45 from the foot, height 785 of 874; centre 437 vs screen centre 437; boxes 7; LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "42a-first-visit"
+  ]
+ },
+ {
+  "id": "PH6 Saber approves 29 Jan AM and refuses 12–13 Feb on the phone's Approvals",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "pressed Approve and Refuse on their lines",
+  "pics": []
+ },
+ {
+  "id": "PH7 his own window on the phone: the two lines Saber decided are dotted with \"who, when\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10, top 33, bottom 33 from the foot, height 808 of 874; centre 437 vs screen centre 437; LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Approved approved by Saber · 29 Oct 02:02 [DOT] {approved by Saber · 29 Oct 02:02} | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Refused refused by Saber · 29 Oct 02:02 [DOT] {refused by Saber · 29 Oct 02:02} | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "44a-own-with-dots",
+   "44a-own-crop"
+  ]
+ },
+ {
+  "id": "PH8 Ranger opens Recon's window: read only (m5a-p6-phone-other)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10, top 220, bottom 220 from the foot, height 434 of 874; centre 437 vs screen centre 437; boxes 0; App 31; lines 0",
+  "pics": [
+   "44b-other",
+   "44b-other-crop"
+  ]
+ },
+ {
+  "id": "PH9 a leave line tapped on the phone takes the grid there; the window leaves the day free",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "window after: closed; cell at 107,408 size 22x19; top element the cell; ringed true",
+  "pics": [
+   "44c-line-tapped"
+  ]
+ },
+ {
+  "id": "PH10 locked: the admin's window of Ranger keeps its boxes, \"Locked for members\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lock words \"Locked for members\"; boxes 7",
+  "pics": [
+   "45b-admin-locked-window"
+  ]
+ },
+ {
+  "id": "PH11 locked: his own window reads only, \"Locked by admin\" (m5a-p5-phone-locked)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lock words \"Locked by admin\"; boxes 0; App 14.5 cf 1.5; read-only spans 7",
+  "pics": [
+   "45c-member-locked-window",
+   "45c-member-locked-crop"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

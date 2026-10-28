@@ -1,0 +1,41 @@
+[
+ {
+  "id": "D1 the day panel's \"who is away\" names",
+  "size": "desk",
+  "verdict": "NOT WALKED",
+  "said": "no date-heading test id found: counter-head,head-2026-01-01,head-2026-01-02,head-2026-01-03,head-2026-01-04,head-2026-01-05,head-2026-01-06,head-2026-01-07,head-2026-01-08,head-2026-01-09,head-2026-01-10,head-2026-01-11",
+  "pics": []
+ },
+ {
+  "id": "D2 a name on the OIL tab (reading: opens the person window, or does not)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window after a tap on a name: none opened; OIL words read-only name buttons: [\"person-dice\",\"person-shaft\",\"person-bane\"]",
+  "pics": [
+   "52a-oil-name"
+  ]
+ },
+ {
+  "id": "A1 (lesson 9, 25) the tiles stand in the same place in a pilot's, WSO's, ground, OCU and grade-A man's window (left, top, width of each tile relative to the window)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "differing parts: pw-LVE; pilot LVE tile 21,93,309,109 / CL box 444,243,42,28 / window 560x650 || WSO LVE tile 21,93,309,109 / CL box 444,243,42,28 / window 560x434 || ground LVE tile 21,93,309,109 / CL box 444,243,42,28 / window 560x434 || O LVE tile 21,93,309,109 / CL box 444,243,42,28 / window 560x434 || pilot A LVE tile 21,93,309,109 / CL box 444,243,42,28 / window 560x641",
+  "pics": []
+ },
+ {
+  "id": "PO0 the post-out sheet opens",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "142 RAPTOR Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMIN Grid Approvals 13 Balances OIL VIEW JAN - DEC 26 JAN - DEC 27 + New period MY LEAVE LVE 17.5 · OIL 0 · 0 pending › ▾ Manning Open for bidding 25 Jan – 31 Mar Legend JAN FEB MAR ",
+  "pics": [
+   "54b-postout-sheet"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

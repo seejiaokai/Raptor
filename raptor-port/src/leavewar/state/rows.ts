@@ -10,6 +10,9 @@
                                  person, its date and its place at that address (`ord`)
      ledger:<id>                 LeaveLedger — one entry
      opening:<pid>:<counter>     LeaveOpening — one opening balance
+     bal:<pid>:<kind>            LeaveBalance — a figure TYPED from the official leave app (M5a, D1479): { amount, cf?,
+                                 day, by, snap } (engine/leaveyear.ts TypedBal); OIL's openings stay `opening:` rows
+     grade:<pid>                 LeaveGrade — his leave grade over time (M5a, D1229, D1490): { hist: [{ id | null, from }] }
      profile:<pid>               LeavePersonProfile — his posting window (`post`, the app's frozen copy of him with the
                                  window on it) and his personnel label (`label`)
      current, oilpolicy and the ⚙ keys (eventdefs, figorder, …)   Setting — unchanged, one key each
@@ -33,11 +36,16 @@ export const REC = 'rec:'
 export const LEDGER = 'ledger:'
 export const OPENING = 'opening:'
 export const PROFILE = 'profile:'
+export const BALANCE = 'bal:'
+export const GRADE = 'grade:'
 export const warKey = (warId: string): string => WAR + warId
 export const recKey = (warId: string, recId: string): string => `${REC}${warId}:${recId}`
 export const ledgerKey = (id: string): string => LEDGER + id
 export const openingKey = (pid: string, counter: string): string => `${OPENING}${pid}:${counter}`
 export const profileKey = (pid: string): string => PROFILE + pid
+/** `lw.balance` ids are `<pid>:<kind>`, `lw.grade` ids the bare pid — the row keys are the prefix and the id */
+export const balanceKey = (pid: string, kind: string): string => `${BALANCE}${pid}:${kind}`
+export const gradeKey = (pid: string): string => GRADE + pid
 
 /* a key's two parts, the second from the RIGHT (a war id or a person id may one day carry ':'; a record id and a
    counter never do) */
@@ -55,6 +63,11 @@ export function parseOpeningKey(k: string): { pid: string; counter: string } | n
   const p = splitRight(k.slice(OPENING.length))
   return p && { pid: p[0], counter: p[1] }
 }
+export function parseBalanceKey(k: string): { pid: string; kind: string } | null {
+  if (!k.startsWith(BALANCE)) return null
+  const p = splitRight(k.slice(BALANCE.length))
+  return p && { pid: p[0], kind: p[1] }
+}
 /** an `lw.cell` id `<warId>:<pid>:<date>` — the date and the person from the RIGHT */
 export function cellParts(id: string): { warId: string; pid: string; date: string } {
   const iDate = id.lastIndexOf(':'); const date = id.slice(iDate + 1)
@@ -71,6 +84,9 @@ export const CONFIG_KEYS: ReadonlyArray<readonly [string, string]> = [
   ['groupColors', 'groupcolors'], ['requirements', 'manningdefs'], ['eventRows', 'eventrows'], ['showSans', 'showsans'],
   /* the Required rows' names (D1193) — absent until an admin renames one */
   ['reqNames', 'reqnames'],
+  /* M5a: the grades list (absent until an admin first edits it — the engine then reads the starting five) and the
+     balance lock (D1220, D1247) */
+  ['grades', 'grades'], ['balLock', 'ballock'],
 ]
 /* the squadron's manning rules are kept as the rule list alone (`manningdefs`), as they always were */
 const configValue = (field: string, v: any): string => JSON.stringify(field === 'requirements' ? v?.default?.rules : v)
@@ -115,6 +131,8 @@ export function lwRows(changes: readonly Change[], now: LwNow): LwRow[] {
       case 'lw.war': if (c.op === 'delete') remove(warKey(c.id)); else put(warKey(c.id), JSON.stringify(c.after)); break
       case 'lw.ledger': if (c.op === 'delete') remove(ledgerKey(c.id)); else put(ledgerKey(c.id), JSON.stringify(c.after)); break
       case 'lw.opening': if (c.op === 'delete') remove(OPENING + c.id); else put(OPENING + c.id, JSON.stringify(c.after)); break
+      case 'lw.balance': if (c.op === 'delete') remove(BALANCE + c.id); else put(BALANCE + c.id, JSON.stringify(c.after)); break
+      case 'lw.grade': if (c.op === 'delete') remove(GRADE + c.id); else put(GRADE + c.id, JSON.stringify(c.after)); break
       case 'lw.postouts': case 'lw.label': {
         let p = profiles.get(c.id)
         if (!p) profiles.set(c.id, p = {})
@@ -128,7 +146,10 @@ export function lwRows(changes: readonly Change[], now: LwNow): LwRow[] {
         if (c.op === 'delete') break
         const b: any = c.before && typeof c.before === 'object' ? c.before : null, a: any = c.after || {}
         for (const [field, key] of CONFIG_KEYS) {
-          if (!(field in a)) continue
+          /* a field the record had before and has no longer is REMOVED, not left behind: the grades list is absent until an
+             admin first edits it (narrow read 6), so the Undo of that first edit restores a record with no `grades` — and
+             the stored list, left in place, came back on the next reload (the code read's 1, 29 Oct 26) */
+          if (!(field in a)) { if (b && field in b) remove(key); continue }
           const v = configValue(field, a[field])
           if (!b || configValue(field, b[field]) !== v) put(key, v)
         }

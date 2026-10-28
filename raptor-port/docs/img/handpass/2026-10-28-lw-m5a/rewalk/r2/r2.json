@@ -1,0 +1,135 @@
+[
+ {
+  "id": "W1 the person window opened from a name on the grid stands wholly on screen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box 948,200 – 1508,850 of 1536x860; Ranger App 15",
+  "pics": [
+   "01-window-from-grid"
+  ]
+ },
+ {
+  "id": "W2 … and after a Tab",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box 948,200 – 1508,850 of 1536x860; focus on pw-close",
+  "pics": [
+   "02-window-after-tab"
+  ]
+ },
+ {
+  "id": "W3 the window opened from a name on the Balances page stands wholly on screen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box 968,121 – 1528,850 of 1536x860",
+  "pics": [
+   "03-window-from-balances"
+  ]
+ },
+ {
+  "id": "W4 … and after a Tab",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box 968,121 – 1528,850 of 1536x860",
+  "pics": [
+   "04-window-balances-tab"
+  ]
+ },
+ {
+  "id": "W5 the Grades window opened from Balances stands wholly on screen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"left\":828,\"right\":1298,\"top\":191,\"bottom\":541,\"vw\":1536,\"vh\":860}",
+  "pics": [
+   "05-grades-window"
+  ]
+ },
+ {
+  "id": "W6 … and after a Tab",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"left\":828,\"right\":1298,\"top\":191,\"bottom\":541,\"vw\":1536,\"vh\":860}; focus on grade-name-sp",
+  "pics": [
+   "06-grades-after-tab"
+  ]
+ },
+ {
+  "id": "W7 Grades window reached through Grid → Balances → Grades…: wholly on screen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"left\":828,\"right\":1298,\"top\":191,\"bottom\":541,\"vw\":1536,\"vh\":860}",
+  "pics": []
+ },
+ {
+  "id": "W8 with Approvals' slim bar up (Grid reached from a request's dates), a name opens the window above the bar",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "slim bar {\"left\":595,\"right\":941,\"top\":794,\"bottom\":838,\"vw\":1536,\"vh\":860}; box 948,65 – 1508,786 of 1536x860",
+  "pics": [
+   "07-window-above-slim-bar"
+  ]
+ },
+ {
+  "id": "W8b … and the slim bar can still be pressed (nothing over it)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"onBar\":true}",
+  "pics": []
+ },
+ {
+  "id": "V2 Escape closes the document viewer first; the person window stays",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window still open: true; focus on pw-clip-2026-04-07",
+  "pics": [
+   "11-viewer-over-window",
+   "12-after-first-escape"
+  ]
+ },
+ {
+  "id": "V3 a second Escape closes the window, and focus returns to the name that opened it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window open: false; focus on the opener",
+  "pics": [
+   "13-after-second-escape"
+  ]
+ },
+ {
+  "id": "F-a the LVE figure beside a name opens the window; Escape returns focus to the figure",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "window opened: true; focus on BODY.",
+  "pics": []
+ },
+ {
+  "id": "F-b a name on the grid; the window's ✕ returns focus to the name",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "focus on the opener",
+  "pics": []
+ },
+ {
+  "id": "F-c a name on the Balances page; Escape returns focus to the name",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "focus on the opener",
+  "pics": []
+ },
+ {
+  "id": "F-d My leave opens Ranger's own window; Escape returns focus to My leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window Ranger; box 948,200 – 1508,850 of 1536x860; focus on the opener",
+  "pics": [
+   "21-my-leave-window"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

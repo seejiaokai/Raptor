@@ -1,0 +1,193 @@
+[
+ {
+  "id": "A1 Balances page, top",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "tabs Grid · Approvals 13 · Balances · OIL ⚙ at x 1472; 50 rows; headings LVE | OTHER LEAVE // NAME | GRADE · AUTO + LVE ON 1 JAN | APP BAL | INCL. CARRIED FWD | PENDING | WAR BAL | OIL | CCL | FCL | PL | EL | CL; groups SXO12 / IP8 / OPS P8 / IWSO5 / OPS W11 / OCU3 / Personnel3; bar: {\"find\":true,\"grades\":\"Grades…\",\"lock\":\"Lock for members\",\"views\":[\"Balances:true\",\"Days taken:false\"]}",
+  "pics": [
+   "01-page-top"
+  ]
+ },
+ {
+  "id": "A2 type App bal 16 + Enter (Ranger)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before {\"app\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\"}; after App bal 16, incl. carried fwd 2, Pending −2.5, War bal 13.5; focus bal-LVE-bane; err null",
+  "pics": [
+   "02-typed-16"
+  ]
+ },
+ {
+  "id": "A3 type carried fwd 3 + Enter (Ranger)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 16, incl. 3, Pending −2.5, War bal 13.5",
+  "pics": [
+   "03-typed-cf3"
+  ]
+ },
+ {
+  "id": "A4 the grid's figure beside Ranger",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid cell bal-bane reads \"13.5 7.5\" (War bal expected 13.5)",
+  "pics": [
+   "04-grid-figure"
+  ]
+ },
+ {
+  "id": "A5 Approvals LVE BAL for Ranger's pending leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "5 lines for Ranger: Ranger IP LL Thu 29 Jan, AM › 0.5 day 13.5 P 27.5 — Approve Refuse || Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 13.5 P 27 — Approve Refuse || Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse || Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse || Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse",
+  "pics": [
+   "05-approvals"
+  ]
+ },
+ {
+  "id": "A7a Undo (carried fwd back to 2); the screen stays where it is (D672)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bane row after: App 16, incl. 2, War 13.5; scroll before {\"top\":600,\"left\":0,\"win\":0} after {\"top\":600,\"left\":0,\"win\":0}; note DTEchoIW | DTRelayIW | DTEchoIW | DTRelayIW | LStaticIW | LStaticIW | DTEchoIW | DTRelayIW | Undid: LVE carried fwd 2 → 3",
+  "pics": [
+   "07-undo-1"
+  ]
+ },
+ {
+  "id": "A7b Undo again (App bal back to 15)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App 15, incl. 2, War 12.5; scroll {\"top\":600,\"left\":0,\"win\":0}",
+  "pics": []
+ },
+ {
+  "id": "A7c Redo twice",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App 16, incl. 3, War 13.5",
+  "pics": []
+ },
+ {
+  "id": "A7d reload keeps the typed figures",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "signed out by reload: true; App 16, incl. 3, War 13.5",
+  "pics": [
+   "08-after-reload"
+  ]
+ },
+ {
+  "id": "A7e Undo / Redo empty after the reload (D148)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "undo disabled true, redo disabled true",
+  "pics": []
+ },
+ {
+  "id": "A6 as Ranger: My leave and his row follow",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "My leave \"MY LEAVE · next 26 Jan LVE 13.5 · OIL 0 · 5 pending ›\"; his row App bal 16, incl. 3, Pending −2.5, War bal 13.5; boxes 7",
+  "pics": [
+   "06-member-view"
+  ]
+ },
+ {
+  "id": "A8a refuse 17.3 (a quarter)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box now \"16\", row App 16 (was 16); words under the box: \"Type a whole number or a half, like 17 or 17.5\"; focus bal-LVE-bane",
+  "pics": [
+   "refuse-17-3"
+  ]
+ },
+ {
+  "id": "A8b Escape on a refused box puts the figure back",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box after Escape \"16\", words \"null\"",
+  "pics": [
+   "refuse-17-3-esc"
+  ]
+ },
+ {
+  "id": "A8c carried fwd 30 over App bal 16",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING (spec says clamped, not refused): box now \"3\", row App 16 incl. 3 (was 16 incl. 3); words \"Carried forward is from 0 to 16\"",
+  "pics": [
+   "refuse-cf-over"
+  ]
+ },
+ {
+  "id": "A8 refuse \"abc\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box \"16\", App 16; words \"Type a whole number or a half, like 17 or 17.5\"",
+  "pics": [
+   "refuse-abc"
+  ]
+ },
+ {
+  "id": "A8 refuse \"BS\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "box \"16\", App 16; words \"null\"",
+  "pics": [
+   "refuse-empty"
+  ]
+ },
+ {
+  "id": "A8 refuse \"1,5\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box \"16\", App 16; words \"Type a whole number or a half, like 17 or 17.5\"",
+  "pics": [
+   "refuse-comma"
+  ]
+ },
+ {
+  "id": "A8 accepts 17.5",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App 17.5, War 15",
+  "pics": []
+ },
+ {
+  "id": "A8 accepts -2 (a negative App bal)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Piston row App −2, incl 0, War −2",
+  "pics": [
+   "negative-2"
+  ]
+ },
+ {
+  "id": "A8 accepts .5",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App 0.5",
+  "pics": []
+ },
+ {
+  "id": "A9 (scn 18) focus and leave / Enter / Escape without typing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Saber's row unchanged App 17.5; Undo state — see next line",
+  "pics": []
+ },
+ {
+  "id": "A9b (scn 18) retyping the figure shown (no step expected, reading)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Undo's tip before \"Undo — LVE balance 0.5 → 0\" after \"Undo — LVE balance 0.5 → 0\"",
+  "pics": []
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

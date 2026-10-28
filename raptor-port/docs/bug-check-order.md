@@ -790,7 +790,8 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
 - **Built to the drawing, from the first line (his D1424, 27 Oct 26 — "Don't u use that as a reference to build?").** A screen
   with an approved drawing is put beside that drawing AS it is built and after every fix, not first at the walk; a departure
   is made only on purpose, for a better design ("if u have better ideas and changed it, it's ok"), and named to him with its
-  picture and its reason — never left for him to find.
+  picture and its reason — never left for him to find. The same holds before a build, for a later mock-up round that
+  redraws an approved part (his D1478, 28 Oct 26): it is put beside its approved drawing before the page goes to him.
   **And a difference found after the build is shown to him before it is put back (his D1426):** side by side, each one
   highlighted with a recommendation, and he chooses which go back to the drawing; an outright fault (words breaking, something
   covered or off screen, a wrong behaviour) is fixed without asking.

@@ -465,24 +465,12 @@ export const FIGURES: readonly Figure[] = Object.freeze([
 /** The figure the column opens on: how much leave is left. */
 export const DEFAULT_FIGURE_ID = 'lve'
 
-/** The numbers a two-line box shows: the figure's own number on top, and each
- *  used line's days under it. One reader for the closed column, the frozen
- *  overlay and the drawer, so the three cannot disagree. */
-export function figureLines(f: Figure, ctx: FigureCtx, personId: string): FigureLines {
-  return {
-    top: f.value(ctx, personId),
-    used: f.used.map(u => ({ label: u.label, tone: u.tone, value: takenOf(ctx.sources, personId, u.type, ctx) })),
-  }
-}
+/** The numbers a two-line box shows: his figure on top, and each used line's days under it. Since M5a the box beside a
+ *  name reads the one engine (ui/MatrixRows.tsx nameLines); the old reader of a FIGURE here (`figureLines`) went with the
+ *  figures sheet and the phone's frozen copy that called it. */
 export interface FigureLines { top: number; used: { label: string; tone: Tone; value: number }[] }
 
-/** A figure an admin can credit from the grid: every balance that names a
- *  counter — OIL included, whose grant is the tracker's own record. Totals
- *  (and headers, which are not figures) never. ONE predicate: the gesture, the
- *  bar and their tests read it, never a literal list of ids. Deliberately NOT
- *  the person sheet's `settable` (that excludes OIL, because SET moves an
- *  opening figure and OIL's opening belongs to the tracker). */
-export const selectableFigure = (f: Figure | undefined): f is Figure & { counter: CounterName } => !!f?.counter
+/* (`selectableFigure` — which figures the grid's drag down a column could credit — went with that drag, D1491; M5a) */
 
 /** OIL AWARDED to a person — every positive OIL ledger entry, the one kind of
  *  hand-given OIL (D400, D402). */

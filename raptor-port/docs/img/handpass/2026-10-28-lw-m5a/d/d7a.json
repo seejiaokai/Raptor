@@ -1,0 +1,41 @@
+[
+ {
+  "id": "7 a half day everywhere: 20 incl 3 typed, an AM LL on Fri 23 Jan approved (19.5 incl 2.5)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 19.5; incl. 2.5; Pending −2.5; War bal 17; window App 19.5; window war 17; grid figure 17; Days taken LL (3 + 0.5) 3.5 · My leave (Ranger signed in): \"MY LEAVE · next 26 Jan LVE 17 · OIL 0 · 5 pending ›\"; Approvals lines LL Thu 29 Jan, AM › 0.5 day 17 P 27.5 — Approve Refuse // LL Thu 12 – Fri 13 Feb › 2 days 17 P 27 — Approve Refuse // CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse // PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse // CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse",
+  "pics": [
+   "d7a-7-bal-win",
+   "d7a-7-grid",
+   "d7a-7-taken"
+  ]
+ },
+ {
+  "id": "8 AM LL and PM CCL approved on one Wed (4 Feb)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LVE App bal 19.5 − 0.5 19; LVE incl. 2; CCL tile App bal after (3 − 0.5, pending −1 war 1.5) 2.5 · CCL tile \"2.5 pend −1 war 1.5\"",
+  "pics": [
+   "d7a-8-bal-win"
+  ]
+ },
+ {
+  "id": "12 Approve all, then one Undo (the Undo from the Balances page)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "11 lines pending; button armed reading \"Approve 11 — tap again\"; War bal kept for all five: true; App bal fell for each man who had pending: true; one Undo (\"Undid: a decision on a bid\") put all back: true; scroll before/after Undo {\"top\":0,\"left\":0,\"win\":0} / {\"top\":0,\"left\":0,\"win\":0}; bane: App 19 pend −2.5 war 16.5 → App 16.5 pend – war 16.5 → Undo App 19 pend −2.5 war 16.5 || wolf: App 20 pend −1 war 19 → App 19 pend – war 19 → Undo App 20 pend −1 war 19 || bruise: App 18 pend −0.5 war 17.5 → App 17.5 pend – war 17.5 → Undo App 18 pend −0.5 war 17.5 || slash: App 33 pend −1.5 war 31.5 → App 31.5 pend – war 31.5 → Undo App 33 pend −1.5 war 31.5 || slipway: App 24 pend – war 24 → App 24 pend – war 24 → Undo App 24 pend – war 24",
+  "pics": [
+   "d7a-12-before",
+   "d7a-12-after",
+   "d7a-12-balances",
+   "d7a-12-undone"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

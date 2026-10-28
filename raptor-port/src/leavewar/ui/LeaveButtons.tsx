@@ -1,7 +1,9 @@
 /* THE BID WINDOWS' LEAVE BUTTONS (the Leave War overhaul's M3, batch 5 — one piece for the one-day window and the
    drag-selection window, D264 / D331's one format):
-   · 5.2 — each button reads its code and what is left NOW (D1144, D1153: the figure the grid's balance column shows;
-     halves ".5", never "½" — D1246); a kind that spends nothing shows no figure; a negative one in the app's red;
+   · 5.2 — each button reads its code and what is left (D1144, D1153; halves ".5", never "½" — D1246): since M5a his War
+     bal of the kind AFTER this leave is placed on the window's days and half — the engine's what-if (the M5a spec §1.6;
+     walker D's FAILs 1–4) — so the grid's figure less what the press would cost; a kind that spends nothing shows no
+     figure; a negative one in the app's red;
    · 5.3 — each in its kind's colour (D1183, look F — D1175), the grid's own kinds and fills (matrix.css `.c.k-…`), so a
      button looks like the box it places; at 0 or below it keeps its colour, dimmed, and stays pressable;
    · 5.4 — filled (the approved look) while an admin's "Approve what I enter" is ticked, hollow and dashed (the pending
@@ -17,7 +19,8 @@ const fig = (n: number) => String(Math.round(n * 2) / 2).replace('-', '−')
 export function LeaveButtons({ portion, onPick, figure, filled, lit = null, testPrefix = 'bid' }: {
   portion: Portion
   onPick: (code: string) => void
-  /** what is left of the balance this leave spends, now — null where it spends nothing (or the window names no one man) */
+  /** what is left of the balance this leave spends once it is placed — null where it spends nothing (or the window names
+   *  no one man) */
   figure?: (code: string) => number | null
   /** the approved look (an admin placing with "Approve what I enter" ticked) — else the pending look */
   filled: boolean

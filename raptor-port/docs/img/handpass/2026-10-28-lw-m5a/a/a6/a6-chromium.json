@@ -1,0 +1,68 @@
+[
+ {
+  "id": "A60 start: Ranger on Balances",
+  "size": "desk-chromium",
+  "verdict": "PASS",
+  "said": "App 15 Pending −2.5 War 12.5",
+  "pics": []
+ },
+ {
+  "id": "A61.1 (lesson 10) way back from the Grid tab, after approving a leave of Ranger's while the page was hidden",
+  "size": "desk-chromium",
+  "verdict": "PASS",
+  "said": "leave line pressed: yes (\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 12.5 P 27.5 — Approve \"); same-tick {\"pageVisible\":false,\"rows\":0,\"rowsWithBoxes\":0,\"bane\":{\"app\":null,\"pend\":null,\"war\":null},\"scrollH\":null}; first frame {\"pageVisible\":true,\"rows\":50,\"rowsWithBoxes\":50,\"bane\":{\"app\":\"14.5\",\"pend\":\"−2\",\"war\":\"12.5\"},\"scrollH\":2287}; second {\"pageVisible\":true,\"rows\":50,\"rowsWithBoxes\":50,\"bane\":{\"app\":\"14.5\",\"pend\":\"−2\",\"war\":\"12.5\"},\"scrollH\":2287}; settled (+500ms): App 14.5 Pending −2 War 12.5",
+  "pics": [
+   "chromium-way-back-1"
+  ]
+ },
+ {
+  "id": "A61.2 (lesson 10) way back from the Approvals tab, after approving a leave of Ranger's while the page was hidden",
+  "size": "desk-chromium",
+  "verdict": "PASS",
+  "said": "leave line pressed: yes (\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 12.5 P 27 — Approv\"); same-tick {\"pageVisible\":false,\"rows\":0,\"rowsWithBoxes\":0,\"bane\":{\"app\":null,\"pend\":null,\"war\":null},\"scrollH\":null}; first frame {\"pageVisible\":true,\"rows\":50,\"rowsWithBoxes\":50,\"bane\":{\"app\":\"12.5\",\"pend\":\"–\",\"war\":\"12.5\"},\"scrollH\":2287}; second {\"pageVisible\":true,\"rows\":50,\"rowsWithBoxes\":50,\"bane\":{\"app\":\"12.5\",\"pend\":\"–\",\"war\":\"12.5\"},\"scrollH\":2287}; settled (+500ms): App 12.5 Pending – War 12.5",
+  "pics": [
+   "chromium-way-back-2"
+  ]
+ },
+ {
+  "id": "A61.3 (lesson 10) way back from the OIL tab (the OIL page closed with Escape first: it covers the tab row), after approving a leave of Ranger's while the page was hidden",
+  "size": "desk-chromium",
+  "verdict": "PASS",
+  "said": "leave line pressed: yes (\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\"); same-tick {\"pageVisible\":false,\"rows\":0,\"rowsWithBoxes\":0,\"bane\":{\"app\":null,\"pend\":null,\"war\":null},\"scrollH\":null}; first frame {\"pageVisible\":true,\"rows\":50,\"rowsWithBoxes\":50,\"bane\":{\"app\":\"12.5\",\"pend\":\"–\",\"war\":\"12.5\"},\"scrollH\":2287}; second {\"pageVisible\":true,\"rows\":50,\"rowsWithBoxes\":50,\"bane\":{\"app\":\"12.5\",\"pend\":\"–\",\"war\":\"12.5\"},\"scrollH\":2287}; settled (+500ms): App 12.5 Pending – War 12.5",
+  "pics": [
+   "chromium-way-back-3"
+  ]
+ },
+ {
+  "id": "A62 (lesson 10) Balances → Grid: the grid drawn on its first frame, Ranger's figure",
+  "size": "desk-chromium",
+  "verdict": "PASS",
+  "said": "{\"sync\":{\"cellsDrawnForRanger\":0,\"figure\":\"12.57.5\",\"rowsDrawn\":0},\"frame1\":{\"cellsDrawnForRanger\":90,\"figure\":\"12.57.5\",\"rowsDrawn\":50},\"frame2\":{\"cellsDrawnForRanger\":90,\"figure\":\"12.57.5\",\"rowsDrawn\":50}}",
+  "pics": [
+   "chromium-balances-to-grid"
+  ]
+ },
+ {
+  "id": "A63 (lesson 10) another period chosen on the Grid while Balances was hidden: back on Balances (the Balances view — the page does not keep Days taken across leaving), the Days taken heading names the new period",
+  "size": "desk-chromium",
+  "verdict": "PASS",
+  "said": "{\"sync\":null,\"frame1\":null,\"view\":\"false\",\"balancesRowsOnReturn\":49,\"afterPressingDaysTaken\":\"DAYS TAKEN IN JAN - DEC 27\"}",
+  "pics": [
+   "chromium-period-switch"
+  ]
+ },
+ {
+  "id": "A64 (lesson 10) the bell as a way back to Balances",
+  "size": "desk-chromium",
+  "verdict": "NOT WALKED",
+  "said": "the bell holds 0 lines for Saber; none of them opens the Balances page (a Leave War line opens the grid at a date), so there is no bell route to Balances to walk; the ✕ of the slim \"Back to Approvals\" bar leads to Approvals/Grid, not Balances",
+  "pics": []
+ },
+ {
+  "id": "errors",
+  "size": "desk-chromium",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

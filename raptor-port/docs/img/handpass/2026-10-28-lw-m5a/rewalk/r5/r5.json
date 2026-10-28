@@ -1,0 +1,46 @@
+[
+ {
+  "id": "X0 Saber places LL AM (approved) and CL PM (pending) on Tue 21 Apr for Ranger",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL AM placed true; CL PM placed true; portion buttons at the second opening: portion-full:false portion-am:true portion-pm:false",
+  "pics": [
+   "01-both-halves"
+  ]
+ },
+ {
+  "id": "X1 Ranger opens his window: both halves of 21 Apr listed, no dots",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "LL Tue 21 Apr, AM 0.5 Approved added and approved by Saber · 29 Oct 03:53 | CL Tue 21 Apr, PM 0.5 Pending placed by Saber · 29 Oct 03:53",
+  "pics": []
+ },
+ {
+  "id": "X2 Saber re-types the CL half to FCL",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the drag window over 21-22 Apr, PM lit, FCL pressed",
+  "pics": [
+   "02-day-opened",
+   "03-bid-window-pm",
+   "04-after-retype"
+  ]
+ },
+ {
+  "id": "X3 Ranger's window: the FCL line dotted (\"changed from CL by Saber\"), the untouched LL line NOT dotted",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "lines for 21 Apr: LL Tue 21 Apr, AM 0.5 Approved [dot true] \"changed from CL by Saber · 29 Oct 03:54\"; all dotted: LL Tue 21 Apr, AM 0.5 Approved | FCL Tue 21 – Wed 22 Apr 1 Pending changed from CL by Saber · 29 Oct 03:54",
+  "pics": [
+   "05-ranger-after",
+   "06-ranger-after-crop"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

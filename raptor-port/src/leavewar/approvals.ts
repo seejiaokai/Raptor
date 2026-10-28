@@ -9,22 +9,29 @@
 
    THE FIGURES are worked out from the war as it stands, ONE time per change of the war (the page memoises them on the
    store's version) — never per repaint of the grid:
-   · DAYS — what the request takes off its balance (engine/charge.ts, the one charging rule), so it agrees with LVE BAL:
-     a weekend inside it is not counted; a half day is 0.5 (D1246).
-   · LVE BAL — the balance of the counter the request spends, as it stands: a bid takes its leave off at once (D1153), so
-     the figure already counts it. An OIL or a CCL request shows its own counter's balance, labelled.
+   · DAYS — the request's OWN days, as its kind charges them (engine/charge.ts, the one charging rule, run on the
+     request alone — `ownDays`): a weekend or a holiday inside it is not counted; a half day is 0.5 (D1246). My leave's
+     "pending" is the sum of these (ui/myleave.ts — the M5a build spec's reading 14). Run on the request alone, not on
+     his whole leave: a bid that lengthens a pilot's approved run past 15 days counts its own weekdays here, while the
+     run's weekends it makes cost show in his tile's Pending (reading 24, §1.5 row 10 — the one case the two differ).
+   · LVE BAL — his War bal of the kind the request spends (M5a: the one engine, engine/leaveyear.ts through the store's
+     `leaveFiguresOf` — the figure beside his name on the grid and on My leave): a bid takes its leave off at once
+     (D1153), so the figure already counts it. A CCL request shows its own kind's War bal, labelled; an OIL request the
+     OIL tracker's balance (OIL is never a typed figure — D1209).
    · LOWEST AVAIL — his seat's Available row at its lowest over the request's days, then every Manning row the request
      turns amber or red (or lowers further while already there — D1345's rule, the bid bubble's), each in its colour. Read
      off the bid windows' own what-if (engine/whatif.ts dayWhatIf), on the day rebuilt WITHOUT just this request (the
      other half kept), so the answer is what THIS request does, never the day's every amber row (the survey §4). A man the
      Available rows never count (SANS) reads "SANS · not in Avail". */
 import {
-  addDays, availPointsOf, availVerdict, balanceOf, chargedDays, codeOf as leaveCodeOf, counterLabel, dayView,
+  addDays, availPointsOf, availVerdict, chargedDays, codeOf as leaveCodeOf, counterLabel, dayView,
   evaluateDay, fillRow, oilLedgerOf, parseCell,
-  type Person, type RequestRec, type Views, type CounterName,
+  type Person, type RequestRec, type Views, type CounterName, type FigureCtx, type LeaveSource,
 } from './engine'
+import { AM, FULL, PM, type DayView } from './engine/dayview'
+import { BAL_KINDS, KIND_COUNTER } from './engine/leaveyear'
 import { dayWhatIf, type DayWhatIf, type WhatIfLevel, type WhatIfWar } from './engine/whatif'
-import { availRules, figureCtxOf, getState, groupIdOf, rawState, reqRunKey, type DecidePart } from './state/store'
+import { availRules, figureCtxOf, getState, groupIdOf, leaveFiguresOf, peopleCountedFor, rawState, reqRunKey, type DecidePart } from './state/store'
 import { flyAnswer, rosterIsSans } from './sync'
 
 export interface ApprLine {
@@ -110,26 +117,42 @@ function judge(seat: 'p' | 'w', have: number, iso: string): '' | WhatIfLevel {
   return availVerdict(have, a.reqFrom[seat] === 'nf' ? null : a.req[seat], availPointsOf(rules[seat])) as '' | WhatIfLevel
 }
 
+/** THE DAYS OF ONE REQUEST, AS ITS KIND CHARGES THEM — the request alone (its days, its codes, their halves), under the
+ *  wars' periods and holidays and the pilots' 15-day rule (engine/charge.ts chargedDays): a weekend or a holiday 0, a
+ *  half .5. Approvals' DAYS for a line, and, summed over his lines, My leave's "pending" (ui/myleave.ts). */
+export function ownDays(personId: string, parts: ReadonlyArray<{ date: string; code?: string }>, ctx: FigureCtx = figureCtxOf()): number {
+  const row: Record<string, DayView> = {}
+  const held = new Map<string, Array<{ code: string; win: typeof FULL }>>()
+  for (const p of parts) {
+    const cell = parseCell(p.code)
+    if (!cell) continue
+    const win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL
+    held.set(p.date, [...(held.get(p.date) ?? []), { code: cell.type, win }])
+  }
+  /* asked of the people the engine asks of him (the store's `peopleCountedFor`): a pilot with no row — a SANS man while
+     SANS is off — is still a pilot, so his own 15-day run counts every day here as on his tile (the code read's 5) */
+  if (!ctx.people?.some(p => p.id === personId)) ctx = { ...ctx, people: peopleCountedFor(personId) }
+  for (const [date, list] of held) row[date] = dayView(list.map((x, i) => ({ id: `own:${date}:${i}`, kind: 'request' as const, code: x.code, win: x.win, state: 'pending' as const })))
+  /* the wars only for their periods (which days are holidays), never their leave; the request is the one row */
+  const sources: LeaveSource[] = [...ctx.sources.map(w => ({ grid: {}, states: {}, views: {}, ...(w.period ? { period: w.period } : {}) })), { grid: {}, states: {}, views: { [personId]: row } }]
+  let days = 0
+  for (const list of chargedDays(sources, personId, ctx).values()) for (const t of list) days += t.amount
+  return Math.round(days * 2) / 2
+}
+
 /** One line's figures, on the war on screen (the list shows the period on view — D1184). */
 export function figuresOf(line: ApprLine, who: Person | undefined): ApprFigures {
   const st = getState()
   const ctx = figureCtxOf()
-  const type = parseCell(line.code)?.type ?? line.code
-  const portion = parseCell(line.code)?.portion
-  /* DAYS — what it takes off its balance, the one charging rule's answer on his days */
-  const charged = chargedDays(ctx.sources, line.personId, ctx)
-  let days = 0
-  for (const p of line.parts) for (const t of charged.get(p.date) ?? []) {
-    if (t.type !== type) continue
-    if (portion && portion !== 'full' && t.half && t.half !== portion) continue
-    days += t.amount
-  }
-  /* LVE BAL — its counter's balance as it stands (it already counts this request — D1153) */
+  /* DAYS — the request's own days, as its kind charges them (`ownDays`) */
+  const days = ownDays(line.personId, line.parts, ctx)
+  /* LVE BAL — his War bal of the kind it spends, as it stands (it already counts this request — D1153); OIL the tracker's */
   const spends = leaveCodeOf(line.code)?.spends ?? null
   let bal: ApprFigures['bal'] = null
   if (spends) {
-    const value = spends.counter === 'oil' ? oilLedgerOf(ctx, line.personId).balance : balanceOf(ctx.openings, ctx.ledger, ctx.sources, line.personId, spends.counter, ctx)
-    bal = { counter: spends.counter, label: spends.counter === 'annual' ? '' : counterLabel(spends.counter), value }
+    const kind = BAL_KINDS.find(k => KIND_COUNTER[k] === spends.counter)
+    const value = spends.counter === 'oil' ? oilLedgerOf(ctx, line.personId).balance : kind ? leaveFiguresOf(line.personId).kinds[kind].war : null
+    if (value !== null) bal = { counter: spends.counter, label: spends.counter === 'annual' ? '' : counterLabel(spends.counter), value }
   }
   /* LOWEST AVAIL — this request's own what-if, day by day */
   /* a SANS man — drawn in the SANS group, or not on the war at all while SANS is off it (D1215, D1221): then the war's

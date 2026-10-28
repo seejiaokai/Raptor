@@ -443,7 +443,7 @@ export function SelectSheet({
             {/* the one-day window's buttons (M3 5.2–5.6): his figures where the drag holds one man, none across several
                 (the below-zero ask still names each — the agent's reading, M3 §7.2) */}
             <LeaveButtons portion={portion} onPick={fill} filled={approving} testPrefix="sel"
-              figure={wouldLeave && nPeople === 1 ? code => wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code)?.before ?? null : undefined} />
+              figure={wouldLeave && nPeople === 1 ? code => wouldLeave(sel.people[0]!, sel.cells.map(c => c.date), code)?.after ?? null : undefined} />
             {note && noteAt === 'leave' && <span className="note warn" data-testid="sel-note">{note}</span>}
           </div>
 

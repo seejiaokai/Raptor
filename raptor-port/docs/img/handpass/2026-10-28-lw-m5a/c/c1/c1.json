@@ -1,0 +1,216 @@
+[
+ {
+  "id": "P1 a pilot's name on the grid opens his window docked at the grid's right edge",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box left 948 right 1508 top 200 bottom 850 (screen 1536x860); grid card right 1515, page right 1536, grid top 188",
+  "pics": [
+   "01-ranger-docked"
+  ]
+ },
+ {
+  "id": "P2 the tiles against m5a-c-approved / p2-desk-drawn (figures)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "taken \"3 taken\"; App bal 15; Pending −2.5; War bal 12.5; carried fwd 2; OIL \"0›\"; MED \"0\"; CCL 3 pend −1 war 2; FCL 5; PL 2 pend −0.5 war 1.5; EL 4; CL 1 pend −1 war 0; boxes 7; lock null",
+  "pics": [
+   "01-ranger-window-crop"
+  ]
+ },
+ {
+  "id": "P2b words \"incl. 2 carried fwd · till 31 Dec\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Ranger ✕ BALANCES LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL Pending −1 War bal 2 FCL PL Pending −0.5 War bal 1.5 EL CL Pending −1 War bal 0 LEAVE 2026 and ahead LL Mon 19 – Wed 21 Jan 3 Approved LL Mon",
+  "pics": [
+   "01-ranger-window-crop"
+  ]
+ },
+ {
+  "id": "P2c small tiles show Pending / War bal only while something is pending",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "CCL:pend FCL:none PL:pend EL:none CL:pend",
+  "pics": [
+   "01-ranger-window-crop"
+  ]
+ },
+ {
+  "id": "P2d the five small tiles line up (boxes, Pending lines, War bal lines)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box tops 443,443,443,443,443; Pending tops 476,476,476; War bal tops 494,494,494; tiles: LVE {\"l\":969,\"t\":293,\"w\":309,\"h\":109} OIL {\"l\":1282,\"t\":293,\"w\":100,\"h\":109} MED {\"l\":1387,\"t\":293,\"w\":100,\"h\":109}",
+  "pics": [
+   "01-ranger-window-crop"
+  ]
+ },
+ {
+  "id": "P2e heading: his name as words, no puck (D1480 \"without a puck\")",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "puck inside window: false; name html Ranger",
+  "pics": [
+   "01-ranger-window-crop"
+  ]
+ },
+ {
+  "id": "P3 the leave list, one line each, as drawn (kind box · dates · days · state)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "01-ranger-docked"
+  ]
+ },
+ {
+  "id": "P3b a paperclip on a line with a document",
+  "size": "desk",
+  "verdict": "NOT WALKED",
+  "said": "paperclips drawn: 0 () — the drawing shows one on Mon 19 – Wed 21 Jan",
+  "pics": [
+   "01-ranger-window-crop"
+  ]
+ },
+ {
+  "id": "P3c the window's height: whole list in view, or scrolls inside itself",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window 650 high of a 860 screen (top 200); scrolling parts: [{\"tag\":\"person-window\",\"sh\":783,\"ch\":648}]; the drawing shows all 8 lines in the window with no scroll",
+  "pics": [
+   "01-ranger-docked"
+  ]
+ },
+ {
+  "id": "P4 the window drags by its grip (480 left, 96 down)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before left 948 top 200; after left 468 top 296 right 1028 bottom 946; on screen true",
+  "pics": [
+   "02-dragged"
+  ]
+ },
+ {
+  "id": "P5 press another name with the window up: it switches to him, one window (lesson 4)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window now \"Saber\", 1 window(s); position left 948 top 200 (dragged position kept: false); App bal 17.5 cf 1; boxes 7; lock null; lit row in grid: row-stiff:me",
+  "pics": [
+   "02b-other-name-while-dragged"
+  ]
+ },
+ {
+  "id": "P6 press a day cell with the window up: the bid window opens beside it (D641) — both visible, neither under the other",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bid window {\"l\":488,\"t\":543,\"r\":1048,\"b\":846}; person window now \"Saber\" box 948,200-1508,634; window centre: itself; person window centre: covered by sheet-scrim",
+  "pics": [
+   "02c-cell-pressed"
+  ]
+ },
+ {
+  "id": "W1 the LVE figure beside a name (reading 15) opens the person window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "figure read \"12.5 7.5\"; window \"Ranger\" top 200; old breakdown sheet visible: false",
+  "pics": [
+   "03-lve-figure"
+  ]
+ },
+ {
+  "id": "W2 My leave (Saber, admin) opens his own window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"Saber\" App bal 17.5 pend 0 war 17.5; boxes 7; top 200; lines 0; dots 0",
+  "pics": [
+   "03b-myleave-admin"
+  ]
+ },
+ {
+  "id": "P7 WSO (IW) opens his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "glass (WSO (IW)): window \"Basher\" App 16.5 cf 3 pend 0 war 16.5 OIL 0› on screen true boxes 7 lines 0; chip IW",
+  "pics": [
+   "04-glass"
+  ]
+ },
+ {
+  "id": "P7 ground personnel (G) opens his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "spanner (ground personnel (G)): window \"Cotter\" App 0 cf 0 pend 0 war 0 OIL 0› on screen true boxes 7 lines 0; chip G",
+  "pics": [
+   "04-spanner"
+  ]
+ },
+ {
+  "id": "P7 OCU (O) opens his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "prism (OCU (O)): window \"Recon\" App 31 cf 3 pend 0 war 31 OIL 0› on screen true boxes 7 lines 0; chip O",
+  "pics": [
+   "04-prism"
+  ]
+ },
+ {
+  "id": "P7 pilot, grade A opens his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "slipway (pilot, grade A): window \"Drifter\" App 24 cf 2 pend 0 war 24 OIL 4› on screen true boxes 7 lines 5; chip A",
+  "pics": [
+   "04-slipway"
+  ]
+ },
+ {
+  "id": "P7 A opens his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "dj (A): window \"Ace\" App 30 cf 2 pend 0 war 30 OIL 4› on screen true boxes 7 lines 2; chip A",
+  "pics": [
+   "04-dj"
+  ]
+ },
+ {
+  "id": "W3 a name on the Balances page opens his window on the screen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"Ranger\" box 968,121-1528,850; Balances page behind still drawn: true",
+  "pics": [
+   "05-from-balances"
+  ]
+ },
+ {
+  "id": "W3b another name on the page behind switches the one window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"Saber\", count 1",
+  "pics": [
+   "05-from-balances"
+  ]
+ },
+ {
+  "id": "W4 Approvals: a tap on a man's puck opens his window (reading)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "window \"undefined\" box null; Approvals page still drawn: true",
+  "pics": [
+   "05b-from-approvals-puck"
+  ]
+ },
+ {
+  "id": "W5 a leave line's tap",
+  "size": "desk",
+  "verdict": "NOT WALKED",
+  "said": "no button.ll-go on the line",
+  "pics": [
+   "05b-from-approvals-puck"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

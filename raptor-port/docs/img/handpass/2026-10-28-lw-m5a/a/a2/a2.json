@@ -1,0 +1,144 @@
+[
+ {
+  "id": "A10 (scn 6) type incl. carried fwd 3 only",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row App 15 incl. 3 War 12.5; Undo tip \"Undo — LVE carried fwd 2 → 3\"",
+  "pics": []
+ },
+ {
+  "id": "A10b (scn 6) then App bal 16 only",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row App 16 incl. 3 War 13.5; Undo tip \"Undo — LVE balance 15 → 16\"",
+  "pics": []
+ },
+ {
+  "id": "A10c (scn 6) two Undo steps back to 15 incl. 2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after one Undo 15/3; after two 15/2",
+  "pics": []
+ },
+ {
+  "id": "A11 ★17 typed 16, no Enter, then Days taken → saved to Ranger",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box was dirty \"1\"; back on Balances: Ranger App 16 War 13.5; Undo tip \"Undo — LVE balance 15 → 16\"",
+  "pics": [
+   "10-star17-taken"
+  ]
+ },
+ {
+  "id": "A11b its Undo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App 15",
+  "pics": []
+ },
+ {
+  "id": "A12 ★17 typed 16, no Enter, then Lock",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Ranger App 16; lock aria-checked true; Undo tip \"Undo — the balance lock\"",
+  "pics": [
+   "11-star17-lock"
+  ]
+ },
+ {
+  "id": "A12b (scn 47) Undo after Lock: unlocks (the lock is an Undo step?)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING: lock aria-checked after one Undo false; Ranger App 16; Undo tip \"Undo — LVE balance 15 → 16\"",
+  "pics": []
+ },
+ {
+  "id": "A12c second Undo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Ranger App 15; lock false",
+  "pics": []
+ },
+ {
+  "id": "A13 ★17 typed 16 in Ranger's box, no Enter, then the top bar's Undo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING (spec: the blur saves first, then the Undo takes it back): Ranger App 15; Piston CL 2; Undo tip \"Undo — CL balance 0 → 2\"; Redo tip \"Redo — LVE balance 15 → 16\"",
+  "pics": []
+ },
+ {
+  "id": "A13b Redo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Ranger App 16; Piston CL 2",
+  "pics": []
+ },
+ {
+  "id": "A14 Days taken view, this period",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "picker options [\"JAN - DEC 26*\",\"JAN - DEC 27\",\"+ New period\"]; heading \"DAYS TAKEN IN JAN - DEC 26\"; Ranger LL 3, OL –, OIL –, CCL –, FCL –, PL –, EL –, CL –, MED –, CSE –, OD –; Reaper LL –, OL –, OIL –, CCL –, FCL –, PL –, EL –, CL –, MED –, CSE –, OD –",
+  "pics": []
+ },
+ {
+  "id": "A14 Days taken, View switched to \"JAN - DEC 27\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading \"DAYS TAKEN IN JAN - DEC 27\"; Days taken view still on: true; 539 cells, 0 not a dash (); Ranger LL –, OL –, OIL –, CCL –, FCL –, PL –, EL –, CL –, MED –, CSE –, OD –",
+  "pics": [
+   "12-taken-JAN_DEC_27"
+  ]
+ },
+ {
+  "id": "A14c create a past non-calendar period through + New period",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "calendar reached reached 2024-07-01 / reached 2025-06-30; selection words \"1 Jul 24 – 30 Jun 25\"; picker now [\"JAN - DEC 26\",\"JAN - DEC 27\",\"Past 24-25*\",\"+ New period\"]",
+  "pics": [
+   "12-newperiod-picked"
+  ]
+ },
+ {
+  "id": "A14d Days taken on that past, non-calendar period",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "heading \"DAYS TAKEN IN Past 24-25\"; cells {\"n\":550,\"nonDash\":0}; view on true",
+  "pics": [
+   "12-taken-past"
+  ]
+ },
+ {
+  "id": "A15 (scn 28) Find a person \"rec\" brings the row into sight, marked, not under the headings",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"rowId\":\"bal-row-prism\",\"cls\":\"\",\"top\":276,\"headBottom\":242,\"scBottom\":851,\"underHead\":false,\"hitIsRow\":true,\"scrollTop\":0}",
+  "pics": [
+   "13-find-rec"
+  ]
+ },
+ {
+  "id": "A15b Find a person, no match says so",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words found: \"No one by that name on the Leave War\"; rows drawn 0",
+  "pics": [
+   "14-find-none"
+  ]
+ },
+ {
+  "id": "A15c Find a person on Days taken",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"top\":276,\"headBottom\":242,\"under\":false}",
+  "pics": [
+   "15-find-taken"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

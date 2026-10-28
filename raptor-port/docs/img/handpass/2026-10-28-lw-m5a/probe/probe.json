@@ -1,0 +1,428 @@
+[
+ {
+  "id": "1 tab row (admin)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Grid · Approvals 13 · Balances · OIL · gear at x 1472; ids lw-tab-grid,lw-tab-approvals,lw-tab-balances,oil-tracker",
+  "pics": [
+   "desk-01-tabrow"
+  ]
+ },
+ {
+  "id": "2 Balances page, Ranger's row",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid behind drawn: false; Ranger {\"app\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot+36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"1 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "desk-02-balances"
+  ]
+ },
+ {
+  "id": "3a typed 16 + Enter",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 16, cf 2, pend −2.5, War bal 13.5; error words: none; focus on bal-LVE-bane",
+  "pics": [
+   "desk-03a-typed"
+  ]
+ },
+ {
+  "id": "3b Undo puts it back, the screen where it was",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 15, War bal 12.5; scroll before typing {\"top\":0,\"left\":0,\"win\":0}, before Undo {\"top\":0,\"left\":0,\"win\":0}, after {\"top\":0,\"left\":0,\"win\":0}",
+  "pics": [
+   "desk-03b-undo"
+  ]
+ },
+ {
+  "id": "3c Redo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 16, War bal 13.5",
+  "pics": [
+   "desk-03c-redo"
+  ]
+ },
+ {
+  "id": "3d Undo again (back to the seed)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 15",
+  "pics": []
+ },
+ {
+  "id": "4a Days taken view",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading \"DAYS TAKEN IN JAN - DEC 26\"; columns NAME | GRADE · AUTO + LVE ON 1 JAN | LL | OL | OIL | CCL | FCL | PL | EL | CL | MED | CSE | OD; Ranger LL 3, OL –, OIL –, CCL –, FCL –, PL –, EL –, CL –, MED –, CSE –, OD –",
+  "pics": [
+   "desk-04-taken"
+  ]
+ },
+ {
+  "id": "4b back to Balances",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal box back: 15",
+  "pics": []
+ },
+ {
+  "id": "5a Grades… opens",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "5 grades: ⠿ 16 people ✕ / ⠿ 12 people ✕ / ⠿ 7 people ✕ / ⠿ 11 people ✕ / ⠿ 3 people ✕",
+  "pics": [
+   "desk-05a-grades"
+  ]
+ },
+ {
+  "id": "5b Escape closes it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sheet visible after Escape: false; focus bal-grades",
+  "pics": [
+   "desk-05b-closed"
+  ]
+ },
+ {
+  "id": "6 person window from the Balances name, on the screen",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "right edge 1528 vs Leave War page right 1536 (Balances card right 1536), top 860 of a 860 screen (style top \"\"), width 560; {\"name\":\"Ranger\",\"taken\":\"3 taken\",\"lve\":\"LVE3 takenApp balPendingWar bal−2.512.5incl. carried fwd · till 31 Dec\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"cf\":\"2\",\"oil\":\"0›\",\"med\":\"0\",\"lock\":null,\"other\":{\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"},\"boxes\":7,\"year\":{\"value\":\"ahead\",\"options\":[\"2026 and ahead\"]},\"lines\":[{\"id\":\"pw-line-2026-01-19\",\"text\":\"LL Mon 19 – Wed 21 Jan 3 Approved\",\"dot\":false},{\"id\":\"pw-line-2026-01-26\",\"text\":\"LL Mon 26 – Tue 27 Jan 2 Approved\",\"dot\":false},{\"id\":\"pw-line-2026-01-29\",\"text\":\"LL Thu 29 Jan, AM 0.5 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-02-02\",\"text\":\"LL Mon 2 Feb 1 Refused\",\"dot\":false},{\"id\":\"pw-line-2026-02-12\",\"text\":\"LL Thu 12 – Fri 13 Feb 2 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-03-02\",\"text\":\"CCL Mon 2 Mar 1 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-03-16\",\"text\":\"PL Mon 16 Mar, AM 0.5 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-03-17\",\"text\":\"CL Tue 17 Mar 1 Pending\",\"dot\":false}],\"vh\":860,\"closeY\":882,\"styleTop\":\"\"}",
+  "pics": [
+   "desk-06-person"
+  ]
+ },
+ {
+  "id": "6b the window closes",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "closed by Escape (✕ off the screen)",
+  "pics": []
+ },
+ {
+  "id": "7a Lock for members on",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "switch aria-checked true; label \"Lock for members\"",
+  "pics": [
+   "desk-07a-lock-on"
+  ]
+ },
+ {
+  "id": "7b tab row (member)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Grid · Balances · OIL; gear none",
+  "pics": [
+   "desk-07b-member-tabs"
+  ]
+ },
+ {
+  "id": "7c member, locked: his row read only, \"Locked by admin\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words \"Locked by admin\"; Ranger's row: boxes 0, read-only figures 15 2 3 5 2 4 1",
+  "pics": [
+   "desk-07c-member-locked"
+  ]
+ },
+ {
+  "id": "7d Lock off again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "switch aria-checked false",
+  "pics": [
+   "desk-07d-lock-off"
+  ]
+ },
+ {
+  "id": "8a lockViaBridge(on) under the member",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "helper {\"ok\":true,\"wrote\":true,\"url\":\"/assets/store-B-UhQ3BQ.js\"}; boxes before 7, after 0; words \"Locked by admin\"",
+  "pics": [
+   "desk-08a-bridge-on"
+  ]
+ },
+ {
+  "id": "8b lockViaBridge(off)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "helper {\"ok\":true,\"wrote\":true,\"url\":\"/assets/store-B-UhQ3BQ.js\"}; boxes 7",
+  "pics": []
+ },
+ {
+  "id": "8c the lock lands under his open box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box read \"14\" before; after: boxes 0, figures 15 2 3 5 2 4 1; notes on screen: Ranger LVE App bal not saved: Locked by admin",
+  "pics": [
+   "desk-08c-lock-under-box"
+  ]
+ },
+ {
+  "id": "8d after: App bal unchanged (the typed 14 refused)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 15",
+  "pics": []
+ },
+ {
+  "id": "9a today 1 Jan 2027 (after a reload)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reload signed him out: true; period on screen \"JAN - DEC 27\"; Ranger {\"app\":\"49\",\"cf\":\"13\",\"pend\":\"−0.5\",\"war\":\"48.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot+36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"1 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "desk-09a-2027"
+  ]
+ },
+ {
+  "id": "9b back to 25 Jan 2026",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Ranger {\"app\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot+36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"1 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "desk-09b-back"
+  ]
+ },
+ {
+  "id": "10a My leave opens his own window, on the screen",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "My leave read \"MY LEAVE · next 26 Jan LVE 12.5 · OIL 0 · 5 pending ›\"; window top 2034 of a 860 screen, left 948, right 1508; {\"name\":\"Ranger\",\"taken\":\"3 taken\",\"lve\":\"LVE3 takenApp balPendingWar bal−2.512.5incl. carried fwd · till 31 Dec\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"cf\":\"2\",\"oil\":\"0›\",\"med\":\"0\",\"lock\":null,\"other\":{\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"},\"boxes\":7,\"year\":{\"value\":\"ahead\",\"options\":[\"2026 and ahead\"]},\"lines\":\"8 lines\",\"vh\":860,\"closeY\":2056,\"styleTop\":\"\"}",
+  "pics": [
+   "desk-10-myleave"
+  ]
+ },
+ {
+  "id": "10b the window closes",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "closed by Escape (✕ off the screen)",
+  "pics": [
+   "desk-10b-closed"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ },
+ {
+  "id": "1 tab row (admin)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Grid · Approvals 13 · Balances · OIL · gear at x 346; ids lw-tab-grid,lw-tab-approvals,lw-tab-balances,oil-tracker",
+  "pics": [
+   "phone-01-tabrow"
+  ]
+ },
+ {
+  "id": "2 Balances page, Ranger's row",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "grid behind drawn: false; Ranger {\"app\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot · +36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"1 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "phone-02-balances"
+  ]
+ },
+ {
+  "id": "3a typed 16 + Enter",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "App bal 16, cf 2, pend −2.5, War bal 13.5; error words: none; focus on bal-LVE-bane",
+  "pics": [
+   "phone-03a-typed"
+  ]
+ },
+ {
+  "id": "3b Undo puts it back, the screen where it was",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "App bal 15, War bal 12.5; scroll before typing {\"top\":0,\"left\":0,\"win\":0}, before Undo {\"top\":0,\"left\":0,\"win\":0}, after {\"top\":0,\"left\":0,\"win\":0}",
+  "pics": [
+   "phone-03b-undo"
+  ]
+ },
+ {
+  "id": "3c Redo",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "App bal 16, War bal 13.5",
+  "pics": [
+   "phone-03c-redo"
+  ]
+ },
+ {
+  "id": "3d Undo again (back to the seed)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "App bal 15",
+  "pics": []
+ },
+ {
+  "id": "4a Days taken view",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "heading \"(none drawn on a phone)\"; columns NAME · GRADE | LL | OL | OIL | CCL | FCL | PL | EL | CL | MED | CSE | OD; Ranger LL 3, OL –, OIL –, CCL –, FCL –, PL –, EL –, CL –, MED –, CSE –, OD –",
+  "pics": [
+   "phone-04-taken"
+  ]
+ },
+ {
+  "id": "4b back to Balances",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "App bal box back: 15",
+  "pics": []
+ },
+ {
+  "id": "5a Grades… opens",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "5 grades: ⠿ 16 people ✕ / ⠿ 12 people ✕ / ⠿ 7 people ✕ / ⠿ 11 people ✕ / ⠿ 3 people ✕",
+  "pics": [
+   "phone-05a-grades"
+  ]
+ },
+ {
+  "id": "5b Escape closes it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "sheet visible after Escape: false; focus bal-grades",
+  "pics": [
+   "phone-05b-closed"
+  ]
+ },
+ {
+  "id": "6 person window from the Balances name, on the screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "left margin 10, right margin 10; {\"name\":\"Ranger\",\"taken\":\"3 taken\",\"lve\":\"LVE3 takenApp balPendingWar bal−2.512.5incl. carried fwd · till 31 Dec\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"cf\":\"2\",\"oil\":\"0›\",\"med\":\"0\",\"lock\":null,\"other\":{\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"},\"boxes\":7,\"year\":{\"value\":\"ahead\",\"options\":[\"2026 and ahead\"]},\"lines\":[{\"id\":\"pw-line-2026-01-19\",\"text\":\"LL Mon 19 – Wed 21 Jan 3 Approved\",\"dot\":false},{\"id\":\"pw-line-2026-01-26\",\"text\":\"LL Mon 26 – Tue 27 Jan 2 Approved\",\"dot\":false},{\"id\":\"pw-line-2026-01-29\",\"text\":\"LL Thu 29 Jan, AM 0.5 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-02-02\",\"text\":\"LL Mon 2 Feb 1 Refused\",\"dot\":false},{\"id\":\"pw-line-2026-02-12\",\"text\":\"LL Thu 12 – Fri 13 Feb 2 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-03-02\",\"text\":\"CCL Mon 2 Mar 1 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-03-16\",\"text\":\"PL Mon 16 Mar, AM 0.5 Pending\",\"dot\":false},{\"id\":\"pw-line-2026-03-17\",\"text\":\"CL Tue 17 Mar 1 Pending\",\"dot\":false}],\"vh\":874,\"closeY\":67,\"styleTop\":\"\"}",
+  "pics": [
+   "phone-06-person"
+  ]
+ },
+ {
+  "id": "6b the window closes",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "closed by ✕",
+  "pics": []
+ },
+ {
+  "id": "7a Lock for members on",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "switch aria-checked true; label \"Locked for members\"",
+  "pics": [
+   "phone-07a-lock-on"
+  ]
+ },
+ {
+  "id": "7b tab row (member)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Grid · Balances · OIL; gear none",
+  "pics": [
+   "phone-07b-member-tabs"
+  ]
+ },
+ {
+  "id": "7c member, locked: his row read only, \"Locked by admin\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "words \"Locked by admin\"; Ranger's row: boxes 0, read-only figures 15 2 3 5 2 4 1",
+  "pics": [
+   "phone-07c-member-locked"
+  ]
+ },
+ {
+  "id": "7d Lock off again",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "switch aria-checked false",
+  "pics": [
+   "phone-07d-lock-off"
+  ]
+ },
+ {
+  "id": "8a lockViaBridge(on) under the member",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "helper {\"ok\":true,\"wrote\":true,\"url\":\"/assets/store-B-UhQ3BQ.js\"}; boxes before 7, after 0; words \"Locked by admin\"",
+  "pics": [
+   "phone-08a-bridge-on"
+  ]
+ },
+ {
+  "id": "8b lockViaBridge(off)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "helper {\"ok\":true,\"wrote\":true,\"url\":\"/assets/store-B-UhQ3BQ.js\"}; boxes 7",
+  "pics": []
+ },
+ {
+  "id": "8c the lock lands under his open box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "box read \"14\" before; after: boxes 0, figures 15 2 3 5 2 4 1; notes on screen: Ranger LVE App bal not saved: Locked by admin",
+  "pics": [
+   "phone-08c-lock-under-box"
+  ]
+ },
+ {
+  "id": "8d after: App bal unchanged (the typed 14 refused)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "App bal 15",
+  "pics": []
+ },
+ {
+  "id": "9a today 1 Jan 2027 (after a reload)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "reload signed him out: true; period on screen \"JAN - DEC 27\"; Ranger {\"app\":\"49\",\"cf\":\"13\",\"pend\":\"−0.5\",\"war\":\"48.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot · +36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"1 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "phone-09a-2027"
+  ]
+ },
+ {
+  "id": "9b back to 25 Jan 2026",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Ranger {\"app\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot · +36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"1 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "phone-09b-back"
+  ]
+ },
+ {
+  "id": "10a My leave opens his own window, on the screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "My leave read \"MY LEAVE · next 26 Jan LVE 12.5 · OIL 0 · 5 pending ›\"; window top 45 of a 874 screen, left 10, right 392; {\"name\":\"Ranger\",\"taken\":\"3 taken\",\"lve\":\"LVE3 takenApp balPendingWar bal−2.512.5incl. carried fwd · till 31 Dec\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"cf\":\"2\",\"oil\":\"0›\",\"med\":\"0\",\"lock\":null,\"other\":{\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"},\"boxes\":7,\"year\":{\"value\":\"ahead\",\"options\":[\"2026 and ahead\"]},\"lines\":\"8 lines\",\"vh\":874,\"closeY\":67,\"styleTop\":\"\"}",
+  "pics": [
+   "phone-10-myleave"
+  ]
+ },
+ {
+  "id": "10b the window closes",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "closed by ✕",
+  "pics": [
+   "phone-10b-closed"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

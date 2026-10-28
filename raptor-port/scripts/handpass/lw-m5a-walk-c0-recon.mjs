@@ -1,0 +1,23 @@
+// walker C recon: what rows the grid holds, and the person window on a desktop (a first look, no verdicts)
+process.env.LW_OUT ||= '../../docs/img/handpass/2026-10-28-lw-m5a/c/recon'
+const { L, T, pwRead, onScreen, closePw, ids } = await import('./lw-m5a-walk-c-lib.mjs')
+console.log('[lw-m5a-walk-c0-recon v1]')
+L.clearOut()
+const w = await L.newCtx('desk')
+const P = w.page
+await L.signIn(w, 'admin')
+const rows = await P.evaluate(() => [...document.querySelectorAll('[data-testid^="row-"]')].map(e => {
+  const nm = e.querySelector('.whoedit'); const chip = e.querySelector('.chip, .cat, [class*="chip"]')
+  return e.dataset.testid.slice(4) + ':' + (nm?.textContent || '').trim() + ':' + (e.className || '').toString().slice(0, 40)
+}))
+console.log(rows.length, rows.join(' | '))
+const tr = await ids(P, 'bal-')
+console.log('grid bal cells', tr.slice(0, 8))
+await L.shot(w, '00-grid')
+await L.press(w, '[data-testid="row-bane"] .whoedit'); await P.waitForTimeout(600)
+const pw = await pwRead(P)
+console.log(JSON.stringify(pw))
+await L.shot(w, '01-ranger-window')
+await closePw(w)
+await w.ctx.close(); await L.closeBrowser()
+console.log('DONE', w.errs)

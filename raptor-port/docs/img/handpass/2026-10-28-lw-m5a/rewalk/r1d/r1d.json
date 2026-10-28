@@ -1,0 +1,32 @@
+[
+ {
+  "id": "E1 type 21 in Saber's box, leave by pressing another box (no Escape before): saved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before 17.5; now {\"v\":\"21\",\"e\":null,\"row\":\"21\"}",
+  "pics": []
+ },
+ {
+  "id": "E2 type 22, Escape (puts 21 back), then type 23 and leave by another box: 23 saved",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "after Escape {\"v\":\"21\",\"e\":null,\"row\":\"21\"}; after typing 23 and leaving {\"v\":\"21\",\"e\":null,\"row\":\"21\"}",
+  "pics": [
+   "70-after-escape-then-leave"
+  ]
+ },
+ {
+  "id": "E3 type 24 + Enter after that: saved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"v\":\"24\",\"e\":null,\"row\":\"24\"}",
+  "pics": []
+ },
+ {
+  "id": "E4 Escape, then the box emptied and left by Tab: \"Type a figure\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"v\":\"24\",\"e\":null,\"row\":\"24\"}",
+  "pics": []
+ }
+]

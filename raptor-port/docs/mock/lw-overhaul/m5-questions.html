@@ -13,7 +13,9 @@ body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:15px
 main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
 h1{font-size:22px;margin:0;letter-spacing:.01em;text-wrap:balance}
 h2{font-size:18px;margin:0 0 4px;text-wrap:balance}
+h3{font-size:15px;margin:0}
 p{margin:0}
+ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
 .lead{color:var(--mute);max-width:68ch}
 .now{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
 .now h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--cyan)}
@@ -25,28 +27,19 @@ section{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--e
 figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
 figure img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);cursor:zoom-in}
 figcaption{color:var(--mute);font-size:13px}
-.crop{overflow:hidden;border-radius:8px;border:1px solid var(--edge)}
-.crop img{border:0;border-radius:0}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
-.tile{background:var(--tile);border:1px solid var(--edge);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
-.tile.bad{border-color:var(--red)}
-.tile.good{border-color:var(--green)}
-.tile h3{margin:0;font-size:14px}
-.figs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-variant-numeric:tabular-nums}
-.figs span{display:block;color:var(--mute);font-size:12px}
-.figs b{font-size:20px}
+.row.phones{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.part{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.part.good{border-color:var(--green)}
 .amber{color:var(--amber)} .redt{color:var(--red)} .greent{color:var(--green)}
 .note{font-size:13px;color:var(--mute)}
+ol.chg{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
 table{border-collapse:collapse;font-variant-numeric:tabular-nums;width:100%}
 th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--edge);font-size:14px}
 th{color:var(--mute);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+td.n{text-align:right}
 .tw{overflow-x:auto}
-.days{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
-.day{background:var(--tile);border:1px solid var(--edge);border-radius:8px;padding:8px;text-align:center;font-size:13px}
-.day b{display:block;font-size:15px}
-.day.y1{border-color:var(--amber)} .day.y2{border-color:var(--cyan)} .day.none{opacity:.55}
-.split{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.part{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
 .warn{color:var(--fg);font-size:14px}
 .warn b{color:var(--amber)}
 dialog{background:#000;border:0;padding:0;max-width:96vw;max-height:96vh}
@@ -57,34 +50,13 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
 
 <main>
   <header style="display:flex;flex-direction:column;gap:6px">
-    <h1>Leave War: one question open</h1>
-    <p class="lead">M5's four points are answered (28 Oct, "All as recommended") and saved. Tap a picture to see it full size.</p>
+    <h1>Leave War M5a: nothing open right now</h1>
+    <p class="lead">The build plan's two questions are answered (28 Oct): a grade changed after 1 Jan counts from the next 1 Jan (D1490); the grid's drag-to-give-days bar goes (D1491); all 24 readings stand (D1492). The answered questions and their pictures are kept in the project.</p>
   </header>
-
   <div class="now">
-    <h2>Look at now (newest first)</h2>
-    <ol>
-      <li><a href="#q5">Names as the schedule's puck, "O" and "G"</a> (your changes of 15:43 and 15:57): <span class="rec">recommended</span> build as drawn, in the schedule's colours, on its own, before M5.</li>
-    </ol>
+    <h2>Look at now</h2>
+    <p>Nothing. Next: M5a is built from its plan, in a fresh chat.</p>
   </div>
-
-  <section id="q5">
-    <span class="q">Newest · your changes of 28 Oct, 15:43 and 15:57</span>
-    <h2>Leave War names as the schedule's puck; OCU "O", ground personnel "G"</h2>
-    <p>Redrawn with the schedule's own puck, the same one Approvals uses, as you picked. OCU reads "O" in the schedule's purple, and ground personnel get a "G" chip; the schedule's own puck has no chip for them, so the "G" is new. Tapping the chip still lists his qualifications, and tapping the name still opens his window.</p>
-    <p><b>On a phone:</b> every chip shows whole, and names cut short drop from 20 today to 3 that fade at the end ("Sidewinder", "Talisman", "Wildcard"), as long names do on the schedule. The puck shrinks to fit the phone's name column, which is a few pixels narrower than the schedule's puck. <b>On a desktop</b> it keeps the schedule's size.</p>
-    <p class="warn"><b>Your call: the colours.</b> The puck brings the schedule's lighter olive and green. The Leave War's name bars were made darker on 4 Sep 26 at your word ("make the colour darker"); this drawing goes back to the schedule's colours. <span class="rec">Recommended:</span> the schedule's colours, so a person looks the same everywhere. Say if you want the darker ones kept.</p>
-    <div class="row">
-      <figure><img src="name-pucks/phone-now.png" alt="Today on a phone: names cut short beside separate round chips, OCU and GND"><figcaption>1. Phone, today: "Led…", "Re…", "Co…" beside separate chips.</figcaption></figure>
-      <figure><img src="name-pucks/phone-puck2.png" alt="Drawn on a phone with the schedule's puck: Ledger, Recon, Cotter whole; O and G chips"><figcaption>2. Phone, drawn: the schedule's puck, "O" and "G".</figcaption></figure>
-    </div>
-    <div class="row">
-      <figure><img src="name-pucks/desk-now.png" alt="Today on a desktop: OCU and GND chips apart from the name bars, Recon and Cotter ringed"><figcaption>3. Desktop, today. Ringed: an OCU man and ground personnel.</figcaption></figure>
-      <figure><img src="name-pucks/desk-puck2.png" alt="Drawn on a desktop with the schedule's puck, O and G"><figcaption>4. Desktop, drawn: the schedule's puck at its own size.</figcaption></figure>
-    </div>
-    <p><span class="rec">Recommended:</span> build it as drawn, as a small change on its own before M5. It touches only how the name column looks, and M5's Balances page can then show names the same way.</p>
-  </section>
-
 </main>
 
 <dialog id="zoom" aria-label="Full-size picture"></dialog>

@@ -23,6 +23,12 @@ import type { Figure, FigureLines } from '../engine'
 // a drift seam waiting to happen.
 export const show = (n: number) => String(Math.round(n * 10) / 10)
 
+/** A FIGURE AS EVERY SURFACE WRITES IT: halves .5 (D1246), a minus sign, never a hyphen. The one helper — the Balances page,
+ *  the person window, the grid's figure beside a name and the below-zero ask all write a figure through it (walker D's
+ *  FAIL 5, 29 Oct 26: the grid's figure and the ask drew "-2" where every other surface drew "−2"). It lives in this small
+ *  module, which imports no screen, so the bid windows' ask can read it without pulling the Balances page in. */
+export const figWords = (n: number) => { const r = Math.round(n * 2) / 2; return (r < 0 ? '−' : '') + String(Math.abs(r)) }
+
 /** The column at which a value stops fitting its box at the ordinary type size.
  *
  *  The spec's rule (§2): "a column never widens and a number never wraps — the
@@ -42,7 +48,7 @@ const WIDE_CHARS = 4
 const FLASH_MS = 700
 
 export const FigureCell = memo(function FigureCell({
-  figure, lines, personId, testid, title, onClick, extraClass, dataFig, dataPerson, selected,
+  figure, lines, personId, testid, title, onClick, extraClass, dataFig, dataPerson,
 }: {
   figure: Figure
   lines: FigureLines
@@ -56,13 +62,7 @@ export const FigureCell = memo(function FigureCell({
    *  than a testid — harmless on the grid cell, which nobody reads by these. */
   dataFig?: string
   dataPerson?: string
-  /** The committed selection (Matrix `figSel`) — rendered as `data-figsel` so
-   *  the highlight survives this cell's own re-render. Mid-drag the gesture
-   *  paints its OWN attribute (`data-figdrag`, select.ts) and never touches
-   *  this one: React writes an attribute only when its prop CHANGED, so a mark
-   *  cleared from outside would never come back. The two read as one highlight
-   *  in the CSS. */
-  selected?: boolean
+  /* (`selected` / `data-figsel` — the committed selection of a drag down the LVE column — went with that drag, D1491) */
 }) {
   const prev = useRef<{ id: string; person: string; top: number } | null>(null)
   const [flash, setFlash] = useState(false)
@@ -86,7 +86,8 @@ export const FigureCell = memo(function FigureCell({
   }, [flash])
   const neg = lines.top < 0
   const shownUsed = lines.used.filter(u => u.value !== 0)
-  const topText = show(lines.top)
+  /* a balance written as every surface writes it (its true minus — figWords); a total keeps the box's own rounding */
+  const topText = figure.kind === 'tot' ? show(lines.top) : figWords(lines.top)
   // The used line is measured as ONE run because that is how it is drawn — LL
   // and OL sit side by side on it, so `12` and `10` together are what has to
   // fit, not either of them alone.
@@ -98,7 +99,6 @@ export const FigureCell = memo(function FigureCell({
       data-testid={testid}
       data-fig={dataFig}
       data-person={dataPerson}
-      data-figsel={selected ? '1' : undefined}
       title={title}
       onClick={onClick}
       onAnimationEnd={() => setFlash(false)}

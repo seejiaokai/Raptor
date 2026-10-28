@@ -21,7 +21,7 @@ import { closeDates, figureCtxOf, getState, initStore, setBidState, setCell, set
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { StageBar, Topbar } from './Chrome'
-import { setOilUp } from './lwnav'
+import { lwPage, setBalancesUp, setOilUp } from './lwnav'
 import { Matrix } from './Matrix'
 import { fig, myLeaveOf } from './myleave'
 import { PHONE_QUERY, usePhone } from './phone'
@@ -49,6 +49,7 @@ beforeEach(() => {
   /* the OIL tab's lit state is the grid's answer (ui/lwnav.ts), kept outside the store — a grid unmounted with the tracker
      up by an earlier test would leave it lit for the next */
   setOilUp(false)
+  setBalancesUp(false)
 })
 afterEach(() => { delete (window as any).matchMedia })
 
@@ -346,15 +347,25 @@ describe('the tab row (D1254)', () => {
     expect(selected('lw-tab-grid')).toBe('true')
   })
 
+  /* REWRITTEN for M5a (D1254, D1483): a member's row is Grid · Balances · OIL now, so the arrow from Grid lands on
+     Balances (its page — ui/lwnav.ts `lwPage`), the next on OIL, and back. Was: Grid → OIL → Grid. */
   it('is one tab stop: the arrow keys move along it and open what they land on', () => {
     render(<><Topbar /><Matrix /></>)
     expect(screen.getByTestId('lw-tab-grid').tabIndex).toBe(0)
+    expect(screen.getByTestId('lw-tab-balances').tabIndex).toBe(-1)
     expect(screen.getByTestId('oil-tracker').tabIndex).toBe(-1)
     fireEvent.keyDown(screen.getByTestId('lw-tab-grid'), { key: 'ArrowRight' })
+    expect(lwPage()).toBe('balances')
+    expect(screen.getByTestId('lw-tab-balances').tabIndex).toBe(0)
+    fireEvent.keyDown(screen.getByTestId('lw-tab-balances'), { key: 'ArrowRight' })
+    expect(lwPage()).toBe('grid')
     expect(screen.getByTestId('oil-sheet')).toBeTruthy()
     expect(screen.getByTestId('oil-tracker').tabIndex).toBe(0)
     fireEvent.keyDown(screen.getByTestId('oil-tracker'), { key: 'ArrowLeft' })
     expect(screen.queryByTestId('oil-sheet')).toBeNull()
+    expect(lwPage()).toBe('balances')
+    fireEvent.keyDown(screen.getByTestId('lw-tab-balances'), { key: 'ArrowLeft' })
+    expect(lwPage()).toBe('grid')
   })
 
   it('⚙ is an admin\'s only, at the row\'s right end, and opens ⚙ Settings on the grid', () => {
@@ -376,7 +387,8 @@ describe('the tab row (D1254)', () => {
    MILES holds two pending bids (2 Feb LL, a whole day; 3 Feb LL*, the afternoon), opens on annual 7 less a correction of 1,
    OIL 6; RESET's four pending LL are in next year's period (13–16 Apr 27), not the one on screen. */
 describe('My leave\'s figures (D1141; pending in days, D1217; a half .5, D1246)', () => {
-  const mine = (id: string, today: string) => myLeaveOf(figureCtxOf(), getState().wars, id, today)
+  /* (since M5a LVE is his War bal from the one engine and OIL the tracker's ledger — the reader asks the store itself) */
+  const mine = (id: string, today: string) => myLeaveOf(getState().wars, id, today)
 
   it('LVE takes his waiting bids off, OIL is his balance, pending counts days — a half .5', () => {
     const m = mine('miles', '2026-01-05')
@@ -427,7 +439,7 @@ describe('My leave\'s figures (D1141; pending in days, D1217; a half .5, D1246)'
     expect(screen.getByTestId('my-leave-pending').textContent).toBe('1.5 pending')
     expect(screen.getByTestId('my-leave').textContent).toContain('next 2 Feb')
     fireEvent.click(screen.getByTestId('my-leave'))
-    expect(screen.getByTestId('person-figures').getAttribute('aria-label') ?? screen.getByTestId('person-figures').textContent).toContain('MILES')
+    expect(screen.getByTestId('person-window').getAttribute('aria-label') ?? screen.getByTestId('person-window').textContent).toContain('MILES')
   })
 
   it('an admin with no row on the war has no My leave', () => {

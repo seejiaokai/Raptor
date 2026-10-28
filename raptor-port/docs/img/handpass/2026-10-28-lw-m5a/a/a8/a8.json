@@ -1,0 +1,11 @@
+[
+ {
+  "id": "A80 pinned headings opaque while rows slide under them (desktop)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "see picture 80-scrolled-heading; computed backgrounds above",
+  "pics": [
+   "80-scrolled-heading"
+  ]
+ }
+]

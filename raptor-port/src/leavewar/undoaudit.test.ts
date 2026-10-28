@@ -21,7 +21,7 @@ import {
   getState,
   grantOil,
   setOilPolicy,
-  setBalance,
+  setTypedBalance,
   initStore as lwInitStore,
   lwCanRedo,
   lwCanUndo,
@@ -286,14 +286,15 @@ describe('undo/redo — full state coverage (every editable surface)', () => {
     expect(getState().oilPolicy.expiry).toBeNull()
   })
 
-  it('an admin-set balance (the opening figure it moves)', () => {
+  /* an admin's typed figure (M5a — `setTypedBalance`, which replaced the old "Set" that moved an opening) */
+  it('an admin-typed balance', () => {
     setRole('admin')
     const who = getState().people[0].id
-    const o0 = getState().openings[who]?.annual
-    expect(setBalance(who, 'annual', 40)).toBe(true)
-    expect(getState().openings[who].annual).not.toBe(o0)
+    const b0 = getState().balances[who]?.LVE
+    expect(setTypedBalance(who, 'LVE', 40)).toBe(true)
+    expect(getState().balances[who]!.LVE!.amount).toBe(40)
     lwUndo()
-    expect(getState().openings[who]?.annual).toBe(o0)
+    expect(getState().balances[who]?.LVE).toEqual(b0)
   })
 })
 describe('undo/redo — the deliberate exclusions (must NOT corrupt)', () => {

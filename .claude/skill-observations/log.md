@@ -2615,6 +2615,8 @@ its value and never in innerText.
 
 **Principle:** A blanket approval covers exactly what the approver was shown; the richer internal document behind it is the agent's reading until shown.
 
+**Met again 2026-10-28** (claude/leave-war-m5a-screens-ced9d7): D1483's short line said the tabs drop their icons "under 400 wide" — the drawing script's cut-off; the page he answered showed only 375 wide. The fresh reader of D1478–D1489 caught it (and three more). **Proposed guard:** the fresh reader's brief for every blanket-approved ruling names the page version answered (`git show <sha>:<page>`) and checks each number and condition in the short line against it — an unconditional step, not a judgement.
+
 ### Observation 735: A roll-call's search for a removed class was confined to the area's own files
 
 **Status:** OPEN
@@ -2630,6 +2632,50 @@ its value and never in innerText.
 
 **Principle:** A removal's readers are found by searching for the removed thing everywhere, not where the change lives; a check that reads a removed element passes silently.
 
+### Observation 736: The `\b` backspace trap of observation 668 met again — a quoted heredoc feeding a node edit script
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** `claude/leave-war-m5a-screens-ced9d7`, drawing M5a's person window on the real app
+**Skill:** New skill candidate: none — the project's script-writing memory notes and [SHELL-SCRIPT-GUARD] (observation 668, closed 27 Oct 26)
+**Type:** internal
+**Phase/Area:** editing a drawing script from the shell
+
+**Issue:** An edit script written through a quoted `<<'EOF'` heredoc and run with node carried `/\\bam\\b/` search strings; the strings reached the file as a backspace character, so the first replacement failed ("missing: const half = /am/…"). Redone with the file-edit tool, which worked first time. Observation 668 (closed) and two memory notes name this trap; it still cost a round trip because the shell path was chosen by habit.
+
+**Suggested improvement:** Count it toward [SHELL-SCRIPT-GUARD] — the guard that refuses a shell-written script carrying a backslash — rather than another note.
+
+**Principle:** A trap noted three times and still met wants a check in the action itself, not a fourth note.
+
+### Observation 737: A control added to a new tab page duplicated one the app's own top row already carries
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** Leave War M5a round 2 — the Balances page redrawn from round 14's drawing onto today's app, which now has a tab row with the View period picker above every tab's page.
+**Skill:** brainstorming (mockups-on-the-real-app.md) / impeccable (critique)
+**Type:** open-source
+**Phase/Area:** carrying an older drawing's controls into a page that now sits under a shared top row
+
+**Issue:** Round 14's page carried its own year picker. Redrawn under the new tab row, the agent kept it on the "Days taken" view, beside the View period picker the top row already shows — two year controls on one screen that could disagree. The agent's own side-by-side against the approved drawing did not catch it (the picker matched the drawing); a fresh design reviewer looking at the pictures did.
+
+**Suggested improvement:** In mockups-on-the-real-app.md, when an older drawing's page is placed under chrome built since: list each control the page carries and check the surrounding chrome for one doing the same job; a duplicate goes (or is put to the owner), it is not carried over because the old drawing had it.
+
+**Principle:** A side-by-side with the old drawing proves sameness, not fitness: re-check each carried control against what the screen around it now already offers.
+
+### Observation 738: A differences list written mid-night goes stale before the morning look
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** Showing him M5a's drawing differences from the night's walk triage, the morning after the build.
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** the morning report — the "differences from the drawings" list put to him (D1426)
+
+**Issue:** The triage was written at ~02:20, before three fix rounds. One of its seven differences (the Grades window's place and box width) had since been put right by a later fix; only opening the latest re-walk picture beside the drawing showed it. Shown as written, he would have been asked to choose on a difference that no longer exists.
+
+**Suggested improvement:** In the overnight skill's morning-report step, re-check each listed drawing difference against a picture of the LAST build before it goes to him, and mark any that a later fix closed.
+
+**Principle:** A list of findings is dated by the build it was taken from; before putting it to someone for a decision, re-verify each item against the latest build.
 ### Observation 739: A drawing's placement formula is not the spec — its picture is
 
 **Status:** OPEN

@@ -1,0 +1,173 @@
+[
+ {
+  "id": "T402 tab row at 402: one line, nothing over anything, page not wider than the screen",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "icons YYYY; tabs Grid 16-73, Appro 75-196, Balan 198-280, OIL 282-334; gear 346-390; scrollWidth 402",
+  "pics": [
+   "t1-tabs-402"
+  ]
+ },
+ {
+  "id": "T390 tab row at 390: one line, nothing over anything, page not wider than the screen",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs Grid 16-70, Appro 72-190, Balan 192-271, OIL 273-322; gear 334-378; scrollWidth 390",
+  "pics": [
+   "t1-tabs-390"
+  ]
+ },
+ {
+  "id": "T375 tab row at 375: one line, nothing over anything, page not wider than the screen",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs Grid 16-66, Appro 68-182, Balan 184-260, OIL 262-307; gear 319-363; scrollWidth 375",
+  "pics": [
+   "t1-tabs-375"
+  ]
+ },
+ {
+  "id": "B5a the Balances page fits the screen: the document is no taller than it",
+  "size": "402 chromium",
+  "verdict": "FAIL",
+  "said": "document 994 high on a 874 screen (Grid tab: 1520); page bottom 874; scrollY 0",
+  "pics": [
+   "p1-balances-rest"
+  ]
+ },
+ {
+  "id": "B5d Balances opened after the grid was scrolled: the document still fits, scrollY 0",
+  "size": "402 chromium",
+  "verdict": "FAIL",
+  "said": "grid scrollY 300 → Balances: document 994/874, scrollY 0",
+  "pics": [
+   "p3-balances-after-grid-scroll"
+  ]
+ },
+ {
+  "id": "R1 App bal 17.3 + Enter: the words stay on the screen (and inside the sliding area), old figure back",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "words \"Type a whole number or a half, like 17 or 17.5\"; x 4–244 of 402; sliding area 0–402; box reads 16",
+  "pics": [
+   "p4-refused-17.3"
+  ]
+ },
+ {
+  "id": "R2 a refusal on CL (the far right box): the words on the screen",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "words \"Type a whole number or a half, like 17 or 17.5\"; x 111–351 of 402",
+  "pics": [
+   "p5-refused-CL"
+  ]
+ },
+ {
+  "id": "R3 an emptied App bal box + Enter: \"Type a figure\" on the screen, the old figure kept",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "words \"Type a figure\"; x 103–191 of 402; box 16",
+  "pics": [
+   "p6-emptied"
+  ]
+ },
+ {
+  "id": "B4 a tap on Ranger's PL box: the box and its amber pending figure both in sight (clear of the names column, inside the screen)",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "box x 181,221; pending x 224,254; names end 132; screen 402",
+  "pics": [
+   "p7-tap-PL-q",
+   "p7-tap-PL"
+  ]
+ },
+ {
+  "id": "B4 a tap on Ranger's CCL box: the box and its amber pending figure both in sight (clear of the names column, inside the screen)",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "box x 181,221; pending x 224,254; names end 132; screen 402",
+  "pics": [
+   "p7-tap-CCL-q",
+   "p7-tap-CCL"
+  ]
+ },
+ {
+  "id": "B4 a tap on Ranger's CL box: the box and its amber pending figure both in sight (clear of the names column, inside the screen)",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "box x 311,351; pending x 354,384; names end 132; screen 402",
+  "pics": [
+   "p7-tap-CL-q",
+   "p7-tap-CL"
+  ]
+ },
+ {
+  "id": "B7 the phone's person window stands under the top bar (the drawing ~70)",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "window 10–392 x 220–654 of 402x874; top bar's lowest edge 49",
+  "pics": [
+   "p8-myleave-q",
+   "p8-window"
+  ]
+ },
+ {
+  "id": "B7b … and from a name on the Balances page",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "window top 57, bottom 817; bar 49",
+  "pics": [
+   "p9-window-from-balances"
+  ]
+ },
+ {
+  "id": "B5b a swipe up from the tab row / bar area: the page does not scroll, the tab row stays under the top bar",
+  "size": "402 chromium",
+  "verdict": "FAIL",
+  "said": "scrollY 75; tab row top 53 → -22",
+  "pics": [
+   "p2-swipe-from-tab-row"
+  ]
+ },
+ {
+  "id": "B5c a swipe up inside the list scrolls the list, not the page",
+  "size": "402 chromium",
+  "verdict": "FAIL",
+  "said": "scrollY 75; list scrollTop 165",
+  "pics": []
+ },
+ {
+  "id": "T320 tab row at 320: one line, ⚙ not over OIL, ⚙ and the page inside the screen, Approvals' count inside its tab",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs grid 12-52, approvals 54-155, balances 157-221, oil-tracker 223-258; gear 268-312; scrollWidth 320/320; count {\"n\":[123,147],\"tab\":[54,155]}",
+  "pics": [
+   "t2-tabs-320"
+  ]
+ },
+ {
+  "id": "T320b a press on OIL at 320 opens the OIL tracker, not Settings",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "settings window open false; an OIL element drawn false",
+  "pics": [
+   "t3-oil-pressed-320"
+  ]
+ },
+ {
+  "id": "T720 tab row at 720: one line, ⚙ not over OIL, ⚙ and the page inside the screen, Approvals' count inside its tab",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs grid 24-64, approvals 66-174, balances 176-243, oil-tracker 245-279; gear 656-700; scrollWidth 720/720; count {\"n\":[143,167],\"tab\":[66,174]}",
+  "pics": [
+   "t2-tabs-720"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "402 chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

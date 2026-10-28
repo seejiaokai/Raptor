@@ -1,9 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
-  openDates, closeDates, setStretch, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setBalance, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, saveManningRule, deleteManningRule, setQualCatalog, orderedManningIds, moveManningRow, setPeople, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
+  openDates, closeDates, setStretch, getState, getVersion, initStore, lwCanRedo, lwCanUndo, lwRedo, lwUndo, setBidState, setCell, createWar, selectWar, setRole, setCellRange, setDayEvent, setDayEventRange, addEventBand, removeEventBand, moveEvent, moveEventProblem, addEventType, grantOil, grantTo, reasonRequired, HALF_STEP_MSG, setDayAward, awardsOnDay, updateLedgerEntry, removeLedgerEntry, setOilPolicy, setTypedBalance, balanceProblem, leaveFiguresOf, figureCtxOf, updateEventType, removeEventType, resetEventTypes, addEventRow, removeEventRow, eventRowUsed, MAX_EVENT_ROWS, setManningThreshold, saveManningRule, deleteManningRule, setQualCatalog, orderedManningIds, moveManningRow, setPeople, subscribe, setCells, clearCells, setBidStates, moveCells, movableCells, moveProblem, setViewer,
 } from './store'
 import { FIGURES, figureParts, makeWar, MAX_MANNING_RULES, type CounterName } from '../engine'
-import { balanceOf, figureLines } from '../engine/counters'
+import { balanceOf } from '../engine/counters'
+import type { BalKind } from '../engine/leaveyear'
 import { localBackend, memoryBackend } from './storage'
 import { elevenCounters, fileAbsence } from '../testkit'
 /* [LW-SPARE-MOVE-DOORS] (28 Sep 26): the old one-bid mover `shiftBid` is RETIRED — every move goes through the one door,
@@ -2090,10 +2091,12 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     initStore(memoryBackend())
   })
 
-  it('a member cannot credit OIL, edit the policy, or set a balance', () => {
+  /* (the old "set a balance" door, `setBalance`, went with M5a; a member types his OWN figures now — D1203 — but OIL never,
+     by any door: B6, reading 16) */
+  it('a member cannot credit OIL, edit the policy, or type an OIL figure', () => {
     expect(grantOil(['ramp'], 1, '2026-03-02', 'Det recovery')).toBe('Only an admin can credit OIL')
     expect(setOilPolicy({ expiry: { n: 30, unit: 'days' } })).toBe(false)
-    expect(setBalance('ramp', 'annual', 30)).toBe(false)
+    expect(setTypedBalance('ramp', 'OIL' as BalKind, 30)).toBe(false)
     expect(getState().ledger.some(e => e.reason === 'Det recovery')).toBe(false)
     expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: null })
   })
@@ -2237,33 +2240,37 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
   })
 })
 
-describe('setBalance: an admin types the balance, LL and OL deduct from it', () => {
+/* THE OLD "SET" IS GONE (M5a): `setBalance` moved a counter's OPENING figure so the old balance read a target — and took OIL
+   too (this file pinned that `setBalance(…, 'oil', …)` succeeded). A figure is TYPED now (`setTypedBalance` — D1479, B6), and
+   OIL is refused as a typed figure by every door (reading 16): the same pins, re-expressed against the door that replaced it. */
+describe('a typed balance: an admin types it, approved and pending leave come off it', () => {
   beforeEach(() => {
     initStore(memoryBackend())
     setRole('admin')
   })
 
-  it('makes +LVE read the target now, by moving the opening figure', () => {
-    const lvebal = FIGURES.find(f => f.id === 'lve')!
-    // ramp: 12 opening + 14 top-up − 0 drawn = 26 in the seed — his one OL
-    // sits on 1 Jan, a seeded PH, which charges nothing since 3 Sep 26.
-    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(26)
-    expect(setBalance('ramp', 'annual', 30)).toBe(true)
-    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(30)
-    expect(getState().openings.ramp.annual).toBe(16)     // 30 − 14 granted + 0 drawn
-    // The parts still explain it.
-    const parts = figureParts(lvebal, figureCtxOf(), 'ramp')
-    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(30)
-    // And leave taken after this deducts from it.
+  it('makes App bal read the figure typed, and a bid placed after comes off War bal at once', () => {
+    expect(setTypedBalance('ramp', 'LVE', 30)).toBe(true)
+    expect(getState().balances.ramp!.LVE).toMatchObject({ amount: 30, cf: 0 })
+    // the seed's LVE grant (dated after the suite's pinned today) still counts on top — "grants count from the typed day"
+    const app = leaveFiguresOf('ramp').kinds.LVE.app
+    expect(app).toBe(30 + 14)
+    // the OIL opening the seed gave him is not touched by a typed figure
+    const oil = getState().openings.ramp?.oil
     setCell('ramp', '2026-01-20', 'OL')
-    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(29)
+    expect(leaveFiguresOf('ramp').kinds.LVE.war).toBe(app - 1)
+    expect(leaveFiguresOf('ramp').kinds.LVE.app).toBe(app)
+    expect(getState().openings.ramp?.oil).toBe(oil)
   })
 
-  it('refuses an unknown person or a non-number, and other counters are untouched', () => {
-    expect(setBalance('nobody', 'annual', 10)).toBe(false)
-    expect(setBalance('ramp', 'annual', NaN)).toBe(false)
-    expect(setBalance('ramp', 'oil', 0)).toBe(true)
-    expect(getState().openings.ramp.annual).toBe(12)
+  it('refuses OIL, an unknown person or a non-number, and leaves the openings as they were', () => {
+    const before = JSON.stringify(getState().openings)
+    expect(balanceProblem('ramp', 'OIL', 0)).toBe('OIL is not typed here: it comes from the OIL tracker')
+    expect(setTypedBalance('ramp', 'OIL' as BalKind, 0)).toBe(false)
+    expect(setTypedBalance('nobody', 'LVE', 10)).toBe(false)
+    expect(setTypedBalance('ramp', 'LVE', NaN)).toBe(false)
+    expect(JSON.stringify(getState().openings)).toBe(before)
+    expect((getState().balances.ramp as Record<string, unknown> | undefined)?.OIL).toBeUndefined()
   })
 })
 
@@ -2299,10 +2306,10 @@ describe('grantTo — a dated credit on any pool', () => {
     setRole('admin')
     const lve = FIGURES.find(f => f.id === 'lve')!
     const before = bal('ramp', 'annual')
-    const boxBefore = figureLines(lve, figureCtxOf(), 'ramp').top
+    const boxBefore = lve.value(figureCtxOf(), 'ramp')
     expect(grantTo(['ramp'], 'annual', 2, '2026-09-06', '')).toBeNull()
     expect(bal('ramp', 'annual')).toBe(before + 2)
-    expect(figureLines(lve, figureCtxOf(), 'ramp').top).toBe(boxBefore + 2)
+    expect(lve.value(figureCtxOf(), 'ramp')).toBe(boxBefore + 2)
   })
   it('subtracts with a negative amount — a correction, not a second mechanism', () => {
     setRole('admin')

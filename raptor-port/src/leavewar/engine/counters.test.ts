@@ -15,9 +15,7 @@ import {
   orderedFigures,
   earnedOil,
   figureForLeave,
-  figureLines,
   titleLines,
-  selectableFigure,
   grantsFor,
   DEFAULT_FIGURE_ID,
   DEFAULT_FIGURE_ORDER,
@@ -439,7 +437,9 @@ describe('FIGURES — the owner\'s eight (6 Sep 26)', () => {
   })
 })
 
-describe('figureLines — the two-line box', () => {
+/* (The figure's own two-line reader, `figureLines`, went with M5a — its readers, the old figures sheet and the phone's frozen
+   copy of the names, read the one engine now: ui/MatrixRows.tsx nameLines. What it read is pinned here off the figure itself.) */
+describe('a figure — its balance and its used lines', () => {
   const grid: Grid = { ramp: { '2026-03-02': 'LL', '2026-03-03': 'LL', '2026-03-04': 'OL', '2026-03-10': 'OIL' } }
   const states: States = {
     ramp: { '2026-03-02': approved(), '2026-03-03': approved(), '2026-03-04': approved(), '2026-03-10': pending },
@@ -450,14 +450,14 @@ describe('figureLines — the two-line box', () => {
 
   it('reads the balance on top and each used line under it, LL then OL', () => {
     const lve = FIGURES.find(f => f.id === 'lve')!
-    expect(figureLines(lve, ctx, 'ramp')).toEqual({
-      top: 9,
-      used: [{ label: 'LL', tone: 'amber', value: 2 }, { label: 'OL', tone: 'red', value: 1 }],
-    })
+    expect(lve.value(ctx, 'ramp')).toBe(9)
+    expect(lve.used.map(u => ({ label: u.label, tone: u.tone, value: takenOf(ctx.sources, 'ramp', u.type) })))
+      .toEqual([{ label: 'LL', tone: 'amber', value: 2 }, { label: 'OL', tone: 'red', value: 1 }])
   })
   it('a total has no used lines', () => {
     const tot = FIGURES.find(f => f.id === 'lvetot')!
-    expect(figureLines(tot, ctx, 'ramp')).toEqual({ top: 4, used: [] })
+    expect(tot.value(ctx, 'ramp')).toBe(4)
+    expect(tot.used).toEqual([])
   })
   it('an LVE breakdown splits LL from OL and still sums to the balance', () => {
     const lve = FIGURES.find(f => f.id === 'lve')!
@@ -543,12 +543,8 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
   })
 })
 
-describe('selectableFigure and grantsFor (the figures bar, 6 Sep 26)', () => {
-  it('selects every balance, OIL included, and never a total', () => {
-    const by = Object.fromEntries(FIGURES.map(f => [f.id, selectableFigure(f)]))
-    expect(by).toEqual({ lve: true, oil: true, ccl: true, fcl: true, cl: true, pl: true, lvetot: false, medtot: false })
-    expect(selectableFigure(undefined)).toBe(false)
-  })
+/* (the figures bar's `selectableFigure` and its test went with the drag down the LVE column — D1491, M5a) */
+describe('grantsFor (the figures bar, 6 Sep 26)', () => {
   it('lists a person\'s entries on one pool, oldest first, and no other pool\'s', () => {
     const ledger: Ledger = [
       { id: 'ol-2', personId: 'a', counter: 'ccl', amount: 1, date: '2026-03-02', reason: '', approvedBy: 'admin' },

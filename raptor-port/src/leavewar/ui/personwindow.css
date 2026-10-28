@@ -1,0 +1,121 @@
+/* THE PERSON WINDOW (the Leave War overhaul's M5a — D1480, D1241, D1251–D1253, D1238, D1239, D1220, D1148, D1231, D1327;
+   PersonWindow.tsx). SCOPED under #page-leavewar like every Leave War stylesheet (matrix.css's header says why), and under the
+   window's own test id, so nothing here reaches another sheet.
+
+   EVERY NUMBER HERE IS THE DRAWING'S OWN (D1478): `docs/mock/lw-overhaul/full-m5a-person.mjs` (its BODY_CSS), which reads its
+   tiles from round 20d's drawing `full-r20-3c.mjs` (its CSS, with the `.zz-d` corrections the person pictures are drawn
+   with — D1252), round 14's `full-r14-lve.mjs` (the padlock line) and round 7's `full-r7-person.mjs` (the heading and the kind
+   boxes). The selectors keep the drawing's own class names, so the build reads beside its drawing. What the drawing did not
+   carry is marked "(built)": the boxes are real boxes (the Balances page's FigBox), the year picker a real list, the line a
+   real link, where the window stands. */
+#page-leavewar {
+  /* ---------------------------------------------------------------- where it stands (built — the drawing's placing) */
+  /* on a desktop docked at the grid's right edge, 560 wide, just under the app's top bar (PersonWindow.tsx writes its left
+     from the grid card and its top from the bar, as the drawing m5a-p2-desk-drawn stands it — D1493); dragged by its title
+     (Sheet.tsx — D641), the grid working behind it */
+  .bidsheet[data-testid="person-window"] {
+    width: 560px; max-width: calc(100vw - 24px); bottom: auto; transform: translate(var(--lw-dx, 0px), var(--lw-dy, 0px));
+    overflow: auto;
+  }
+  /* (built) its height, from the top PersonWindow.tsx docks it at (`--pw-top`): down to 10px off the screen's foot, at least
+     200; while Approvals' slim bar is up, above the bar as every window of the war stands (the walk's A-F6 — approvals.css
+     keeps the others 74px off the foot), so a bar that comes up while the window stands is never crossed */
+  @media (min-width: 700.02px) {
+    .bidsheet[data-testid="person-window"] { max-height: max(200px, calc(100vh - var(--pw-top, 72px) - 10px)); }
+    /* as specific as approvals.css's own rule for the other windows, `:not(.full):not(.fullpage)` and all, so this one wins */
+    &:has([data-testid="appr-slim"]) .bidsheet[data-testid="person-window"]:not(.full):not(.fullpage) { max-height: max(200px, calc(100vh - var(--pw-top, 72px) - 74px)); }
+  }
+  /* on a phone in the middle of the screen (D997 — the app's float windows' own way, as the Grades window): both edges at the
+     drawing's 10px, automatic margins, its own height up to the visible screen less 24 — AND UNDER THE TOP BAR (the M5a
+     walk, 29 Oct 26: a window as tall as the screen allowed stood at 33–45, over the bar's lower half, where the drawing
+     `m5a-p4-phone-own` has it under the bar). Still centred on the screen as the drawing places it, its height held so its
+     top is never above the bar's foot + 8 (the bar's live height — ui/topbarvar.ts); a longer list scrolls inside it. */
+  @media (max-width: 700px) {
+    .bidsheet[data-testid="person-window"] { left: 10px; right: 10px; width: auto; max-width: none; top: 12px; bottom: 12px; margin: auto 0; height: fit-content; max-height: calc(100vh - 2 * (var(--topbar-h, 0px) + 8px)); max-height: calc(100dvh - 2 * (var(--topbar-h, 0px) + 8px)); }
+    /* …and while Approvals' slim bar is up (the fresh read of the M5a fixes, finding 2, 29 Oct 26): approvals.css's phone rule
+       for every window above the bar is weightier than the rule above and set its own height, so a tall window stood at
+       about 35, over the top bar again. This one is weightier still. Its foot stands at 64 + the safe area (approvals.css),
+       its top at 12, so a window of this height centres at exactly the bar's foot + 8:
+       12 + (H − 76 − s − h) / 2 = bar + 8  ⇔  h = H − 2·bar − 68 − s. */
+    &:has([data-testid="appr-slim"].ph) .bidsheet[data-testid="person-window"]:not(.full):not(.fullpage) { max-height: calc(100vh - 2 * (var(--topbar-h, 0px) + 8px) - 52px); max-height: calc(100dvh - 2 * (var(--topbar-h, 0px) + 8px) - 52px - env(safe-area-inset-bottom, 0px)); }
+  }
+
+  .bidsheet[data-testid="person-window"] {
+    /* ---------------------------------------------------------------- the body (full-m5a-person.mjs BODY_CSS) */
+    .m5-body { padding: 4px 8px 14px; display: flex; flex-direction: column; gap: 6px; }
+    .m5-list { display: flex; flex-direction: column; }
+    .m5-list .ll-row { grid-template-columns: 10px 34px 1fr max-content 64px; min-height: 34px; font-size: 13.5px; border-top: 1px solid #222a33; padding: 5px 0; }
+    .m5-list .ll-row .ll-box { min-width: 34px; height: 22px; font-size: 11px; }
+    .m5-list .ll-row .ll-state { font-size: 12.5px; }
+    .m5-list .ll-row .ll-state.ref { color: #7d8894; }
+    .m5-dot { display: block; width: 7px; height: 7px; border-radius: 50%; background: #38bdf8; justify-self: start; }
+    .m5-by { grid-column: 3 / -1; font: 500 11.5px/1.2 system-ui; color: #8a96a3; margin-top: -2px; }
+    .ll-row.gone .ll-dates { text-decoration: line-through; color: #8a96a3; }
+    .m5-clip { display: inline-flex; vertical-align: -1px; padding: 0 2px; margin-left: 6px; border: 0; background: none; color: #8a96a3; cursor: pointer; }
+    .m5-none { padding: 8px 2px; color: #8a96a3; font-size: 13px; }
+    /* (built) a line that takes the grid there: the row is the pointer's, its dates the keyboard's */
+    .ll-row.ll-tap { cursor: pointer; }
+    .ll-row.ll-tap:hover { background: rgba(255, 255, 255, .03); }
+    .ll-go { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
+    .ll-go:focus-visible, .m5-clip:focus-visible, .m5-yr:focus-visible, .r17-oil:focus-visible { outline: 2px solid #3bc6e8; outline-offset: 2px; border-radius: 4px; }
+
+    /* ---------------------------------------------------------------- the headings (round 7 — full-r7-person.mjs) */
+    .r7-hd { display: flex; align-items: center; gap: 8px; margin: 10px 2px 6px; font: 700 10.5px/1 system-ui, sans-serif; letter-spacing: .12em; color: #8a96a3; text-transform: uppercase; min-height: 26px; }
+    .r7-hd.lv { margin-top: 10px; }
+    /* the tiles sit close under "Balances" (D1252 — round 20d's `.zz-d`) */
+    .zz-balhd { margin-bottom: 6px; padding-bottom: 0; min-height: 0; }
+    .zz-balhd + * { margin-top: 0; }
+    /* the padlock while locked (A10, D1220 — round 14's `.r14-lk`) */
+    .r14-lk { display: inline-flex; align-items: center; gap: 5px; letter-spacing: .02em; text-transform: none; font: 600 12px/1 system-ui; color: #b6c0cb; }
+    .r14-lk svg { width: 11px; height: 13px; display: inline-block; }
+    /* the year picker (D1148) — the drawing's button, a real list (built) */
+    .m5-yrw { position: relative; margin-left: auto; display: inline-flex; }
+    .m5-yr { appearance: none; -webkit-appearance: none; height: 30px; padding: 0 26px 0 10px; border: 1px solid #3a4452; border-radius: 7px; background: #11161c; color: #e6edf3; font: 600 13px system-ui; letter-spacing: 0; text-transform: none; cursor: pointer; }
+    .m5-yrw::after { content: '▾'; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #e6edf3; font: 600 11px system-ui; pointer-events: none; }
+
+    /* ---------------------------------------------------------------- the kind boxes (round 7 — `r7-kb`) */
+    .r7-kb { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 4px; font: 800 10px/1 system-ui; letter-spacing: .02em; }
+    .r7-kb.appr { background: rgba(var(--h), var(--fill)); color: var(--ink); box-shadow: inset 0 0 0 1px rgba(var(--h), .85); }
+
+    /* ---------------------------------------------------------------- the tiles (round 20d — full-r20-3c.mjs, as `.zz-d`) */
+    .r17-bal { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 4px; row-gap: 6px; }
+    .r17-t { background: #151b22; border-radius: 9px; padding: 8px 9px; display: grid; grid-template-rows: 22px 12px 30px 14px; row-gap: 5px; min-width: 0; box-sizing: border-box; }
+    .r17-t.r2 { grid-template-rows: 22px 30px; }
+    .r17-t.r2.hs { grid-template-rows: 22px 30px 14px; }
+    .r17-t.r2 .s { grid-row: 3; }
+    .r17-t.r2.st { grid-template-rows: 22px 30px 14px 14px; row-gap: 4px; padding: 8px 5px; }
+    .r17-t .ln { display: flex; align-items: baseline; justify-content: space-between; gap: 3px; font: 600 10px/1 system-ui; color: #8a96a3; white-space: nowrap; }
+    .r17-t .ln.a { grid-row: 3; } .r17-t .ln.b { grid-row: 4; }
+    .r17-t .ln b { font: 800 11px/1 system-ui; font-variant-numeric: tabular-nums; color: #fff; }
+    .r17-t .ln b.pd { color: #F2C879; font-weight: 700; }
+    .r17-t .k { grid-row: 1; display: flex; align-items: center; justify-content: flex-start; gap: 8px; min-width: 0; }
+    .r17-t .tk { font: 600 11px/1 system-ui; color: #8a96a3; white-space: nowrap; }
+    .r17-t .f { grid-row: 3; display: flex; align-items: center; gap: 5px; font: 700 20px/1 system-ui; font-variant-numeric: tabular-nums; color: #f1f4f7; }
+    .r17-t.r2 .f { grid-row: 2; }
+    .r17-t .f.z { color: #7d8894; font-weight: 600; }
+    .r17-t .s { grid-row: 4; align-self: center; font: 600 11px/1 system-ui; color: #8a96a3; white-space: nowrap; }
+    .r17-go { color: #5fd0e6; font: 700 16px/1 system-ui; }
+    /* (built) OIL's "0 ›" is a button: it opens his OIL tracker (D1209) — drawn as the figure it is */
+    .r17-oil { display: inline-flex; align-items: center; gap: 5px; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+    /* LVE: three columns, the labels over their figures, every one from the left (D1238, D1239) */
+    .r17-lve { grid-column: span 3; }
+    .r17-sum { grid-row: 2 / span 2; display: grid; grid-template-columns: max-content max-content max-content; justify-content: start; grid-template-rows: 12px 30px; row-gap: 5px; column-gap: 24px; }
+    .r17-sum .h { grid-row: 1; font: 600 10.5px/12px system-ui; color: #8a96a3; text-align: left; white-space: nowrap; }
+    .r17-sum .v { grid-row: 2; display: flex; align-items: center; justify-content: flex-start; font: 700 15px/1 system-ui; font-variant-numeric: tabular-nums; color: #c9d1d9; }
+    .r17-sum .v.pd { color: #F2C879; }
+    .r17-sum .war { font: 800 20px/1 system-ui; color: #fff; }
+    .r17-cf { grid-row: 4; display: flex; align-items: center; gap: 5px; font: 600 11px/1 system-ui; color: #8a96a3; white-space: nowrap; }
+    /* the box: "you can type this" (edge 3.4:1); read only it gives its room back, so the figure sits on its label's edge */
+    .r17-box { display: inline-flex; align-items: center; justify-content: flex-start; box-sizing: border-box; height: 28px; min-width: 42px; padding: 0 7px; border: 1px solid #66717f; border-radius: 6px; background: #0d1217; color: #f1f4f7; font: 700 16px/1 system-ui; font-variant-numeric: tabular-nums; }
+    .r17-box.sm { height: 18px; min-width: 22px; padding: 0 4px; font-size: 11.5px; border-radius: 4px; justify-content: center; }
+    .r17-box.z { color: #7d8894; font-weight: 600; }
+    .r17-box.ro { border-color: transparent; background: transparent; min-width: 0; padding: 0; }
+    .r17-t .f .r17-box.ro { font-size: 20px; }
+    /* (built) a typed box is the Balances page's own (FigBox — one box, one behaviour) wearing the tile's `r17-box` */
+    input.bp-bx.r17-box { width: auto; min-height: 0; margin: 0; text-align: left; outline: none; }
+    input.bp-bx.r17-box.sm { text-align: center; }
+    input.bp-bx.r17-box:focus { border-color: #3bc6e8; }
+    .bp-fb.bad input.bp-bx.r17-box { border-color: #FF7A84; }
+    .bp-err { left: 0; right: auto; max-width: 220px; }
+  }
+}

@@ -1,0 +1,181 @@
+[
+ {
+  "id": "P2b words \"incl. [2] carried fwd · till 31 Dec\" (box read)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "carried fwd box \"2\"; words \"incl. carried fwd · till 31 Dec\"",
+  "pics": [
+   "01-ranger-docked"
+  ]
+ },
+ {
+  "id": "S1 Show SANS puts SANS men on the war (their rows appear)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "rows before 50, after 61; new: ipman,romeo,yeti,vinci,krait,cards,wrangler,badger,waldo,nick,bullet",
+  "pics": [
+   "22a-settings-sans-on"
+  ]
+ },
+ {
+  "id": "P7 a SANS man (SANS on) opens his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ipman \"Jester B\": window \"Jester\" App 0 cf 0 pend 0 war 0 lines 0 boxes 7",
+  "pics": [
+   "22b-sans-window"
+  ]
+ },
+ {
+  "id": "S2 a pending LL placed for the SANS man shows in his window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true; lines: LL Tue 10 Feb 1 Pending; Pending −1",
+  "pics": [
+   "22c-sans-with-bid"
+  ]
+ },
+ {
+  "id": "S3 SANS off the war: his request still on Approvals",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "his grid row gone: true; Approvals lines for him: [{\"who\":\"ipman\",\"text\":\"Jester B LL Tue 10 Feb › 1 day −1 SANS · not in Avail 29 Oct 01:53 · by Saber Approve Refuse\",\"lit\":\"\",\"stale\":false}]",
+  "pics": [
+   "22d-approvals-sans-off"
+  ]
+ },
+ {
+  "id": "S4 a man with no row: a tap on his puck on Approvals",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window none opened; tab now lw-tab-approvals; (the spec's way in for a man with no row is Approvals' line; where nothing opens, the host reads it)",
+  "pics": [
+   "22e-sans-off-his-puck"
+  ]
+ },
+ {
+  "id": "S4 a man with no row: a tap on his dates on Approvals",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"Jester\" App 0 pend −1 lines 1 top 200; tab now lw-tab-grid; (the spec's way in for a man with no row is Approvals' line; where nothing opens, the host reads it)",
+  "pics": [
+   "22e-sans-off-his-dates"
+  ]
+ },
+ {
+  "id": "S5 (★15) a leave line tapped for a man with no row: nothing jumps to an empty place",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line is a link: false; tab before lw-tab-grid, after lw-tab-grid; ring-like marks drawn: 5; his row on the grid: none (SANS off) — the host reads the picture",
+  "pics": [
+   "22f-line-tap-no-row"
+  ]
+ },
+ {
+  "id": "C1 a leave with a document wears a paperclip in the list",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "file inputs 1; placed true; clips pw-clip-2026-04-07; lines LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending | LL Tue 7 Apr 1 Approved",
+  "pics": [
+   "23b-window-with-clip"
+  ]
+ },
+ {
+  "id": "C2 the paperclip opens the document over the window (D1292): the element at the window's centre is the viewer",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "element at the window's centre: {\"tag\":\"DIV\",\"cls\":\"airpop\",\"inWindow\":false}",
+  "pics": [
+   "23c-viewer"
+  ]
+ },
+ {
+  "id": "C3 Escape closes the viewer first, the window stays",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "person window still open: false; focus on BODY",
+  "pics": [
+   "23d-after-first-escape"
+  ]
+ },
+ {
+  "id": "C3b a second Escape closes the window; the keyboard returns to the name that opened it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window open after second Escape: false; focus on BODY",
+  "pics": [
+   "23d-after-first-escape"
+  ]
+ },
+ {
+  "id": "L1 a tap on a line (2026-03-02) takes the grid there with the ring; the window stays and does not cover the day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"cell\":true,\"l\":211,\"r\":238,\"t\":661,\"b\":684,\"pwLeft\":948,\"onTop\":\"cell\",\"outline\":\"rgb(241, 244, 247) none 3px\",\"shadow\":\"rgb(59, 198, 232) 0px 0px 0px 2px inset\",\"cls\":\"act hasc lw-ring\"}",
+  "pics": [
+   "24-line-2026-03-02"
+  ]
+ },
+ {
+  "id": "L1 a tap on a line (2026-01-26) takes the grid there with the ring; the window stays and does not cover the day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"cell\":true,\"l\":211,\"r\":238,\"t\":661,\"b\":684,\"pwLeft\":948,\"onTop\":\"cell\",\"outline\":\"rgb(241, 244, 247) none 3px\",\"shadow\":\"rgb(59, 198, 232) 0px 0px 0px 2px inset\",\"cls\":\"act hasc lw-ring\"}",
+  "pics": [
+   "24-line-2026-01-26"
+  ]
+ },
+ {
+  "id": "L1 a tap on a line (2026-04-07) takes the grid there with the ring; the window stays and does not cover the day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"cell\":true,\"l\":212,\"r\":238,\"t\":661,\"b\":684,\"pwLeft\":948,\"onTop\":\"cell\",\"outline\":\"rgb(241, 244, 247) none 3px\",\"shadow\":\"rgb(59, 198, 232) 0px 0px 0px 2px inset\",\"cls\":\"act hasc lw-ring\"}",
+  "pics": [
+   "24-line-2026-04-07"
+  ]
+ },
+ {
+  "id": "Y1 clock 5 Jan 2027: the year picker offers the new year first and the past year",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "options {\"value\":\"ahead\",\"options\":[\"2027 and ahead\",\"2026\"]}; lines 0; taken \"0 taken\"; App 49 cf 13",
+  "pics": [
+   "25a-2027"
+  ]
+ },
+ {
+  "id": "Y2 a past year picked: that year's leave, read only?",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "year {\"value\":\"2026\",\"options\":[\"2027 and ahead\",\"2026\"]}; 9 lines: LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending | LL Tue 7 Apr 1 Approved",
+  "pics": [
+   "25b-past-year"
+  ]
+ },
+ {
+  "id": "X1 (★17) a figure typed in Ranger's window, no Enter, then Anvil's name: saved to Ranger, Anvil's window shows his own",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Anvil's window \"Anvil\" App bal 19; Balances: Ranger {\"app\":\"16\",\"cf\":\"1\",\"pend\":\"−2.5\",\"war\":\"13.5\",\"oil\":\"0›\"}, Anvil {\"app\":\"19\",\"cf\":\"2\",\"pend\":\"–\",\"war\":\"19\",\"oil\":\"0›\"}; grid figures Ranger \"13.5 8.5\", Anvil \"19\"",
+  "pics": [
+   "26-typed-then-other-name",
+   "26b-balances-after"
+  ]
+ },
+ {
+  "id": "X2 one Undo takes Ranger's 16 back",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Ranger after Undo {\"app\":\"14\",\"cf\":\"1\",\"pend\":\"−2.5\",\"war\":\"11.5\",\"oil\":\"0›\"}; note Undid: LVE balance 14 → 16",
+  "pics": [
+   "26b-balances-after"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

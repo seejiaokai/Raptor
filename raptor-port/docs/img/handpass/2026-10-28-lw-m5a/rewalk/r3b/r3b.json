@@ -1,0 +1,70 @@
+[
+ {
+  "id": "C1 carried forward 25 beside App bal 20: shown clamped to 20, saved 20",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App 20, incl. 20; words under box \"null\"; Undo tip before \"Undo — LVE balance 10.5 → 20\" → after \"Undo — LVE carried fwd 0 → 20\"",
+  "pics": [
+   "01-cf-25"
+  ]
+ },
+ {
+  "id": "C2 carried forward 20 typed over a 20 already shown: nothing saved (the Undo step does not change)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "tip \"Undo — LVE carried fwd 0 → 20\" → \"Undo — LVE carried fwd 0 → 20\"",
+  "pics": []
+ },
+ {
+  "id": "C3 carried forward −3: saved 0",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "incl. 0; words \"null\"",
+  "pics": [
+   "02-cf-minus3"
+  ]
+ },
+ {
+  "id": "G1 Vapor (vegas) typed −2: the Balances box and War bal, the window and the grid's figure all draw \"−\" (U+2212)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Balances box \"−2\", War bal \"−2\"; window box \"−2\", war \"−2\"; grid figure \"−2\" (code points U+2212 U+0032)",
+  "pics": [
+   "03-grid-negative"
+  ]
+ },
+ {
+  "id": "Z1 the below-zero ask names the figure with \"−\" (U+2212), not a hyphen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ranges true/true/true; LL button read \"−1\"; the ask: \"That takes Saint to −1 LVE.\"",
+  "pics": [
+   "04-below-zero-ask"
+  ]
+ },
+ {
+  "id": "Z2 after the second press the grid's figure beside Saint reads −1 with \"−\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid figure \"−1 21\"",
+  "pics": [
+   "05-grid-after-second-press"
+  ]
+ },
+ {
+  "id": "R10 row 10 (Nomad): Mon 22 Feb LL left = War bal − 1 = 8",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true/true/true/true; Nomad App 20 pend −11 war 9; LL left 8",
+  "pics": [
+   "06-row10-left-22-feb"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
