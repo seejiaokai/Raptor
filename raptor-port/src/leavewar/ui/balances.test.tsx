@@ -513,6 +513,15 @@ describe('the M5a walk\'s faults', () => {
     }
   })
 
+  it('B-F5: while the page is up the window keeps no bottom pad to scroll by — the app\'s 120px pad under every page goes, and comes back when it closes', () => {
+    /* the M5a browser tests, 29 Oct 26: the page fitted the screen to the pixel and the document was still 120 taller — the
+       body's own bottom pad (scheduler.css), which the Tracker drops the same way (body.tr-on) */
+    const { unmount } = render(<BalancesPage />)
+    expect(document.body.classList.contains('lw-bal-on')).toBe(true)
+    unmount()
+    expect(document.body.classList.contains('lw-bal-on')).toBe(false)
+  })
+
   it('B-F4: a tapped box is brought into sight with its pending figure, clear of the names', async () => {
     const back = asPhone()
     let left = 0

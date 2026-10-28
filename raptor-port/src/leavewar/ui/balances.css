@@ -257,3 +257,8 @@
     .gw-r.h .dh { width: 64px; white-space: normal; line-height: 1.2; }
   }
 }
+
+/* OUTSIDE the page's scope, as tracker.css's body.tr-on is (no page-scoped selector reaches <body>): while the Balances page
+   is up the window keeps none of Raptor's 120px bottom pad, so the page — which fills the screen and scrolls inside itself —
+   is the whole document and the window never scrolls (the M5a walk's B-F5; BalancesPage.tsx toggles it) */
+body.lw-bal-on { padding-bottom: 0; }

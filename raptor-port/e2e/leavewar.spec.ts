@@ -2276,12 +2276,13 @@ test('a negative balance is painted red, and a positive one is not', async ({ pa
   // 6 Sep 26), not on the cell: the used numbers under it carry their own.
   // SINCE M5a the figure is his War bal off a TYPED App bal (D1479, D1482): the demo types every man's LVE, and the one
   // it sends below zero is ROCKY (typed −2 — demoworld.ts demoBalances), so he is the negative man now; HARPOON's typed
-  // figure leaves him positive.
+  // figure leaves him positive. And the figure is written with the true minus "−" since M5a's fixes (walker D's 5 — the
+  // grid's figure takes the Balances page's own writing, figWords), never the hyphen.
   await expect(page.locator('[data-testid="counter-name"]')).toHaveText('+LVE')
   const neg = await page.locator('[data-testid="bal-rocky"] .fb').evaluate(el => ({
     text: el.textContent, colour: getComputedStyle(el).color,
   }))
-  expect(neg.text!.startsWith('-')).toBe(true)
+  expect(neg.text, 'ROCKY reads −2, its minus the true one').toBe('−2')
   const pos = await page.locator('[data-testid="bal-slipway"] .fb')
     .evaluate(el => getComputedStyle(el).color)
   expect(neg.colour).not.toBe(pos)
@@ -7838,9 +7839,13 @@ test('M5a walk A-F3: a box shows its whole figure and keeps its width, nothing b
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
   await openBalancesPage(page)
+  /* the places are read in the list's own measure (the screen's plus how far it has slid): on a phone a box typed in is
+     brought into sight with its pending figure (the walk's B-F4), sliding the whole list sideways — every column alike, which
+     is no figure moving beside the box */
   const geo = () => page.evaluate(() => {
     const r = (id: string) => document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!.getBoundingClientRect()
-    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').right, el: r('bal-EL-bane').left }
+    const slid = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.scrollLeft
+    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').right + slid, el: r('bal-EL-bane').left + slid }
   })
   const whole = (id: string) => page.getByTestId(id).evaluate((e: HTMLInputElement) => e.scrollWidth <= e.clientWidth + 0.5)
   const g0 = await geo()

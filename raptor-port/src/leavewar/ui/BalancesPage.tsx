@@ -72,22 +72,37 @@ function Chev() {
 const EMPTY_WORDS = 'Type a figure'
 /** the person window's box: four figures' room ("16.5", "−2.5", "100") — longer ones are drawn smaller (fitFigure) */
 const FIT_CH = 4
-/** the smallest letters a long figure is drawn in */
-const FIG_MIN_PX = 9
+/** the smallest letters a long figure is drawn in. (the M5a browser tests, 29 Oct 26) 9 left "−998.5" — as long as the
+ *  longest figure the store takes — cut in the 44-wide boxes (CCL, PL…): 2px over on the phone's box, 7px over in wider
+ *  letters (GitHub's Linux machines, as an iPhone's). 7 holds it whole in both; a figure he would really type ("−12.5",
+ *  "10.5") is drawn at 11.5px or more */
+const FIG_MIN_PX = 7
 
 /** A FIGURE LONGER THAN ITS BOX IS DRAWN SMALLER UNTIL IT FITS (the M5a walk's A-F3). The box's own letters come back the
- *  moment the figure fits again. Reads the box's measure once; writes only for a figure that overflows. */
-function fitFigure(el: HTMLInputElement): void {
+ *  moment the figure fits again. Reads the box's measure once; writes only for a figure that overflows.
+ *  `keepWidth` is the width of a box measured in its own letters (the person window's `calc(4ch + …)`): smaller letters
+ *  would make its `ch` smaller and the box narrower, and the figures beside it would move as it is typed in (the M5a
+ *  browser tests, 29 Oct 26 — "−12.5" drawn smaller narrowed the box, and "16.5" typed after it, at the box's own letters,
+ *  pushed Pending 10.8px along). Its width at its own letters is held while the letters are smaller. */
+function fitFigure(el: HTMLInputElement, keepWidth?: string): void {
   if (el.style.fontSize) el.style.fontSize = ''
+  if (el.style.paddingRight) el.style.paddingRight = ''
+  if (keepWidth && el.style.width !== keepWidth) el.style.width = keepWidth
   if (el.scrollWidth <= el.clientWidth) return
   const cs = getComputedStyle(el)
+  if (keepWidth) el.style.width = cs.width
   const pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0)
   const base = parseFloat(cs.fontSize) || 13.5
   const room = el.clientWidth - pad, need = el.scrollWidth - pad
   let px = Math.max(FIG_MIN_PX, Math.floor((base * room) / Math.max(need, 1) * 2) / 2)
   el.style.fontSize = `${px}px`
   /* the letters' widths do not scale exactly with their size: a half point less until it fits, at most a few steps */
-  for (let i = 0; i < 6 && px > FIG_MIN_PX && el.scrollWidth > el.clientWidth; i++) { px -= 0.5; el.style.fontSize = `${px}px` }
+  const shrink = () => { for (let i = 0; i < 8 && px > FIG_MIN_PX && el.scrollWidth > el.clientWidth; i++) { px -= 0.5; el.style.fontSize = `${px}px` } }
+  shrink()
+  /* the last resort, for a figure near the longest the store takes in the narrowest box and the widest letters (the phone's
+     44 column in an iPhone's letters, "−998.5"): the box gives up its extra right padding — the figure's right edge a few
+     pixels nearer the box's edge — and tries its letters again from where they are */
+  if (el.scrollWidth > el.clientWidth) { el.style.paddingRight = cs.paddingLeft; px = Math.min(base, px + 2); el.style.fontSize = `${px}px`; shrink() }
 }
 
 /** A REFUSAL'S WORDS MOVED SIDEWAYS INTO SIGHT (the M5a walk's B-F2/F3): inside the page's scroller, 4px off its edges,
@@ -179,7 +194,8 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
      last digit cut. The box keeps its drawn width — the columns and the figures beside it never move as it is typed in —
      and a figure longer than that width holds is drawn in smaller letters until it fits (−999.5, the longest the store
      takes, included). Measured only when the figure changes; a figure that fits is never touched. */
-  useLayoutEffect(() => { const el = boxRef.current; if (el) fitFigure(el) }, [text, shown])
+  const fitW = fit != null ? `calc(${FIT_CH}ch + ${fit}px)` : undefined
+  useLayoutEffect(() => { const el = boxRef.current; if (el) fitFigure(el, fitW) }, [text, shown, fitW])
   /* A REFUSAL'S WORDS STAY ON THE SCREEN (the M5a walk's B-F2/F3, 29 Oct 26): set under the box's right edge, a long
      refusal under a box near the phone's left ran off the screen. They are moved sideways, never re-worded, to stand
      inside the sliding area (the page's scroller), or the screen where the box has none. */
@@ -202,7 +218,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
     <span className={`bp-fb${err ? ' bad' : ''}`}>
       <input
         className={`mth-in bp-bx${sm ? ' sm' : ''}${value === 0 && text === null ? ' z' : ''}${cls ? ` ${cls}` : ''}`}
-        style={fit != null ? { width: `calc(${FIT_CH}ch + ${fit}px)` } : undefined}
+        style={fitW ? { width: fitW } : undefined}
         data-testid={testid}
         ref={boxRef}
         data-dirty={text !== null ? '1' : undefined}
@@ -515,6 +531,15 @@ export function BalancesPage() {
     window.addEventListener('resize', fit)
     return () => window.removeEventListener('resize', fit)
   }, [phone])
+  /* …AND THE WINDOW KEEPS NO PAD BELOW IT (the M5a browser tests, 29 Oct 26 — the walk's B-F5 still there): the page fitted
+     the screen to the pixel and the document was still 120 taller — Raptor's body keeps a 120px bottom pad under every page
+     (scheduler.css), so the whole window still scrolled by that much, the tab row under the top bar. While the page is up
+     `body.lw-bal-on` (balances.css) drops it, as the Tracker's `body.tr-on` does; the page leaving takes it away (the Leave
+     War left closes the page too — LeaveWarPage.tsx). */
+  useLayoutEffect(() => {
+    document.body.classList.add('lw-bal-on')
+    return () => document.body.classList.remove('lw-bal-on')
+  }, [])
 
   /* THE TWO HEADING LINES MEET (the M5a walk's A-F4, 29 Oct 26): the second pinned at the drawing's 30px while the first
      drew shorter, and a strip of the rows slid between them. The second pins where the first one ends, as measured — the
