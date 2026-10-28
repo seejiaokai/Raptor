@@ -859,6 +859,15 @@ the reader's instructions or model change, it is run on every case and a change 
    line, at a phone's width and a desktop's (`scripts/handpass/lw-m4-colalign.mjs` is the pattern) — and a puck, chip or row
    drawn inside it is checked in every KIND it comes in (pilot and WSO, SANS, every CAT), because a page's own class can collide
    with the app's.
+10. **A way back to a page walked only straight from where it was left (his video and picture, the Leave War M4, 28 Oct 26).**
+   The walks went from the grid to Approvals and back, at once. He went Approvals → the View picker (another period) → read a
+   while → OIL → back: the grid came back every day striped ("not drawn yet") until he scrolled, and the OIL tab flashed the
+   grid for one frame on the way. While a page is hidden the app goes on changing it (a period's landing) and its background
+   work goes to rest once idle; on his iPhone, showing it again sends no scroll event, and only a scroll had woken the
+   drawing. **Lesson:** for every surface a page hides and shows again, the walk changes what the hidden page shows while it
+   is hidden, waits past its idle time (two seconds and more), comes back by every route (each tab, each ✕, the bell), and
+   counts what stands drawn at once without a touch, in WebKit; and every switch between pages is pictured on its first
+   frame. (`scripts/handpass/lw-appr-stripes.mjs`, `lw-appr-return-walk.mjs`.)
 
 ## 8. Making the checks FIND rather than CONFIRM
 

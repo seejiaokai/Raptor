@@ -52,7 +52,7 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
     <h2>What I need from you</h2>
     <p>Reply "all as recommended", or give the number of any you want the other way.</p>
     <ol>
-      <li><a href="#q25">25</a>: tap a leave of several days and the whole leave opens; a "Tue 13 only" choice changes just the day you tapped. <b>Recommended: yes</b></li>
+      <li><a href="#q25">25</a>: tap a leave of several days and the whole leave opens; "All 4 days" or "Tue 13" sits on the Duration row, so the window gets no taller. <b>Recommended: version 2</b></li>
       <li><a href="#q24">24</a>: the ring on the day you jump to from Approvals is cyan, matching the date above it. <b>Recommended: yes, cyan</b></li>
       <li><a href="#q23">23</a>, on your iPhone: check that "23 Jan AM ›" stays on one line</li>
       <li>Reading R22 (below): strike it if you want it the other way</li>
@@ -62,11 +62,11 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
   <section>
     <h2>Open</h2>
     <article class="card" id="q25">
-      <div class="head"><span class="num">25</span><h3>A leave of several days: decide it whole, keep single days</h3><span class="rec back">Recommended: one row, two choices</span></div>
-      <p class="why">Today, tapping a day of Trident's 13–16 Apr leave opens a window for that one day, so Approve decides one day of the four. (In Approvals the leave is already one line, and one Approve decides all four days.) <b>As you said:</b> tapping any day of the leave opens the whole leave. The title reads "13 – 16 Apr", and the grid marks all four days. <b>To keep single days:</b> one new row, "All 4 days" (picked to start with) or "Tue 13 only", meaning the day you tapped. Approve, Refuse, Move and Delete act on what's picked, so changing one day takes one extra tap. This matches how the leave already works: one leave, one remark for all its days (D1339). The row shows only on a leave of more than one day. <b>The other way:</b> no new row, and "Pick a range" narrows the window to one day. That's one row fewer, but changing one day takes a calendar and two more taps.</p>
+      <div class="head"><span class="num">25</span><h3>A leave of several days: decide it whole, keep single days, no taller window</h3><span class="rec back">Recommended: version 2</span></div>
+      <p class="why">Tapping any day of Trident's 13–16 Apr leave opens the whole leave. The title reads "13 – 16 Apr" and the grid marks all four days, so one Approve decides the leave. <b>Version 2, as you asked, adds no row.</b> On a leave of more than one day, the Duration row's right end, where "Pick a range" sits today, offers "All 4 days" (picked to start with) or "Tue 13", the day you tapped. Approve, Refuse, Move and Delete act on what's picked, and the title and the grid show which. The window stays today's height. It fits on one line at your phone's width, measured in the iPhone's engine. <b>The cost:</b> on a leave of several days, "Pick a range" is replaced there. It's for placing new leave over a range, which the window of a placed leave doesn't do; you still have dragging and Move. (Version 1's new row is set aside, kept in the project.)</p>
       <button class="pic" type="button" aria-label="Enlarge: now"><img src="whole/now.png" alt="Now: the window opened on one day of a four-day leave"></button>
-      <button class="pic" type="button" aria-label="Enlarge: whole leave"><img src="whole/rec-all.png" alt="Recommended: the window opened on the whole leave, All 4 days picked"></button>
-      <button class="pic" type="button" aria-label="Enlarge: one day"><img src="whole/rec-one.png" alt="Recommended: Tue 13 only picked, one day marked"></button>
+      <button class="pic" type="button" aria-label="Enlarge: version 2, whole leave"><img src="whole/v2-all.png" alt="Version 2: All 4 days picked on the Duration row, the window as tall as today"></button>
+      <button class="pic" type="button" aria-label="Enlarge: version 2, one day"><img src="whole/v2-one.png" alt="Version 2: Tue 13 picked, one day marked"></button>
     </article>
     <article class="card" id="q24">
       <div class="head"><span class="num">24</span><h3>The ring on the day you jump to: cyan, not blue</h3><span class="rec back">Recommended: cyan</span></div>

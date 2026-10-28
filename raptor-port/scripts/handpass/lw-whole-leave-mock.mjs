@@ -86,5 +86,45 @@ async function mode(all) {
 }
 await mode(true); await shot('rec-all.png')
 await mode(false); await shot('rec-one.png')
+/* VERSION 2 (his word, 09:12 — "anyway to shorten the vertical space needed"): no new row. On a leave of several days
+   the Duration row's right end — where "Pick a range" stands, the window's Date choice — holds the two choices instead,
+   "All 4 days" and "Tue 13" (the day tapped); the window keeps today's height */
+await P.evaluate(() => {
+  document.getElementById('mockScope')?.remove()
+  const sheet = document.querySelector('[data-testid="bid-picker"]')
+  const pick = [...sheet.querySelectorAll('button')].find(x => x.textContent.trim() === 'Pick a range')
+  const m = window.__mock
+  const wrap = document.createElement('span')
+  wrap.id = 'mockScope2'
+  wrap.style.cssText = 'display:inline-flex;gap:6px;margin-left:auto'
+  const a = pick.cloneNode(false); a.textContent = 'All 4 days'; a.id = 'mAll'
+  const c = pick.cloneNode(false); c.textContent = 'Tue 13'; c.id = 'mOne'
+  for (const el of [a, c]) { el.style.paddingLeft = '10px'; el.style.paddingRight = '10px'; el.style.whiteSpace = 'nowrap' }
+  wrap.append(a, c)
+  pick.replaceWith(wrap)
+  m.whole2 = m.whole; m.plain2 = pick.className
+})
+async function mode2(all) {
+  await P.evaluate((all) => {
+    const m = window.__mock
+    document.getElementById('mAll').className = all ? m.whole : m.plain2
+    document.getElementById('mOne').className = all ? m.plain2 : m.whole
+    document.querySelector('[data-testid="bid-picker"] .bidsheet-hd .dt').textContent = all ? '13 – 16 Apr' : 'Tue 13 Apr'
+    m.dates.forEach((d, i) => document.querySelector(`[data-testid="cell-${m.who}-${d}"]`)?.classList.toggle('selcell', all || i === 0))
+  }, all)
+  await P.waitForTimeout(150)
+  await clearRow()
+}
+const fit = () => P.evaluate(() => {
+  const row = document.getElementById('mockScope2').parentElement
+  const r = row.getBoundingClientRect(), s = document.querySelector('[data-testid="bid-picker"]').getBoundingClientRect()
+  const kids = [...row.children].map(k => k.getBoundingClientRect())
+  const tops = new Set(kids.map(k => Math.round(k.top)))
+  return { rowRight: Math.round(r.right), sheetRight: Math.round(s.right), lines: tops.size, sheetH: Math.round(s.height),
+    over: kids.some(k => k.right > r.right + 0.5), wrapWords: [...document.querySelectorAll('#mockScope2 button')].some(b => b.scrollWidth > b.clientWidth + 1) }
+})
+await mode2(true); console.log('v2 all', JSON.stringify(await fit())); await shot('v2-all.png')
+await mode2(false); console.log('v2 one', JSON.stringify(await fit())); await shot('v2-one.png')
+/* the window's height as built, for the comparison */
 await b.close()
 console.log(problems ? `${problems} page errors` : 'no page errors')

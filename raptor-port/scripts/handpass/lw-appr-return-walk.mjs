@@ -81,6 +81,14 @@ async function run(name, launcher, ctxOpts) {
   await P.click('[data-testid="oil-tracker"]'); await P.waitForTimeout(700)
   await P.click('[data-testid="oil-close"]'); await P.waitForTimeout(800); s = await state()
   await step('8-period-return', 'Period changed on Approvals, back via OIL: the month in view drawn without a touch', s.stripes === 0 && s.days > 0, s)
+  /* 9. another page of the app and back: the period changed on Approvals, then the week, then the Leave War again */
+  await P.locator('#page-leavewar button', { hasText: /^NOV$/ }).first().click(); await P.waitForTimeout(1500)
+  await toAppr()
+  await P.selectOption('[data-testid="war-picker"]', ids[1]); await P.waitForTimeout(800)
+  await P.selectOption('[data-testid="war-picker"]', ids[0]); await P.waitForTimeout(3500)
+  await P.evaluate(() => window.go('editsched')); await P.waitForTimeout(1200)
+  await P.evaluate(() => window.go('leavewar')); await P.waitForTimeout(1000); s = await state()
+  await step('9-other-page', 'Period changed on Approvals, the week, then the Leave War again: what stands is drawn', s.stripes === 0 && (s.appr || s.days > 0), s)
   await b.close()
 }
 await run('phone', webkit, { ...devices['iPhone 13'], viewport: { width: 402, height: 874 }, deviceScaleFactor: 2 })
