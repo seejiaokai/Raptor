@@ -52,16 +52,28 @@ a:focus-visible, summary:focus-visible, img:focus-visible { outline: 2px solid v
   <p class="lede">A script that measures a built screen against its approved drawing and lists every difference, each with the drawing and the build side by side. It is built and was tested on the Leave War's M5a screens as they were before this morning's fixes, on your PC's size and your iPhone's.</p>
 
   <section class="ask" aria-labelledby="ask-h">
-    <span class="k" id="ask-h">Waiting for you · one question</span>
-    <h2 style="margin:0">May the check become a standing step of every build that has an approved drawing?</h2>
-    <p><b>My recommendation: yes.</b> What changes, in plain words:</p>
-    <ol>
-      <li>While a screen is built, and after every fix to it, the builder runs the check. It stays red until each difference is either put back to the drawing or shown to you (your rule D1426).</li>
-      <li>A difference you choose to keep is written into the check's list with your ruling, so it is never asked again.</li>
-      <li>The check only measures the parts it is told to. Looking at the screen beside its drawing, and walking the app, both still happen.</li>
-    </ol>
-    <p>Answer "yes", "no", or say what to change. The exact wording for the two checking guides is at the bottom of this page. A fresh reviewer read it and I took all 16 of its fixes. The two ChatGPT reviewers your rules ask for are out until about 1 November, so their reads are on the list kept for when they are back.</p>
+    <span class="k" id="ask-h">Waiting for you · three choices</span>
+    <h2 style="margin:0">Live M5a, after this morning's fixes: three differences are left</h2>
+    <p>The check ran on M5a as it is live now. The leave lines, the names and the amber figure now match their drawings. These three still differ. For each, choose: keep it as built, or put it back to the drawing. Answer 1 to 3, or "all as recommended". In each picture the drawing is on the left, the build on the right; <i style="font-style:normal;font-weight:700;color:var(--pink)">pink</i> rings the drawing's place, <i style="font-style:normal;font-weight:700;color:var(--gold)">yellow</i> the build's. Tap a picture to enlarge it.</p>
   </section>
+  <div class="cards">
+    <article class="card">
+      <header><h3>1 · Person window on a computer: under "My leave" and ⚙, not over them</h3><span class="tag keep">recommend: keep as built</span></header>
+      <p class="why">With the page at its top, the drawn place would cover the "My leave" box and the ⚙. The fix moved the window just below them, 66 points lower than drawn. With the page scrolled down it stands where drawn. Keeping it means nothing is ever covered.</p>
+      <img src="live-person-desk-top--window.png" alt="Person window just below My leave and the gear, 66 points lower than drawn" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>2 · iPhone, locked Balances page: figures 10 points too far right, row 6 points lower</h3><span class="tag new">recommend: put back to the drawing</span></header>
+      <p class="why">Ranger's read-only figures touch the right edge of their column, where the drawing keeps a small margin. His row also stands 6 points lower on the page. Both are small, but they show on every row of a member's locked page.</p>
+      <img src="live-balances-phone-locked--ranger-app.png" alt="App bal figure further right in the build than in the drawing" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>3 · iPhone person window: its top 4.5 points lower</h3><span class="tag keep">recommend: keep as built</span></header>
+      <p class="why">The window is centred on the screen. It holds a little less than the drawing (11 points shorter), so its top sits slightly lower. Nothing to change.</p>
+      <img src="live-person-phone--window.png" alt="Phone person window slightly lower and shorter than drawn" tabindex="0">
+    </article>
+  </div>
+  <p class="legend" style="margin-top:4px">Answered, 29 Oct: "Yes", the check is now a standing step of every build with a drawing (D1495), and every mock-up is drawn in the app's own design (D1496). Below: what it found on M5a before the fixes.</p>
 
   <h2>What it found on M5a</h2>
   <div class="tally">
@@ -108,23 +120,6 @@ a:focus-visible, summary:focus-visible, img:focus-visible { outline: 2px solid v
     </article>
   </div>
 
-  <details>
-    <summary>The exact wording for the two checking guides</summary>
-    <p style="margin-top:10px"><b>The bug-check order, the walk's sizing step:</b> a new line saying that a screen with an approved drawing gets the drawing check, run before the walk and after every fix, and that neither replaces the other.</p>
-    <blockquote id="w1"><p>• <b>A screen with an approved drawing gets the drawing check (his D1494, 29 Oct 26).</b> The sizing lines name each such surface's drawing and the check's part list for it (<code>scripts/drawcheck/specs/</code>); the check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk. A surface whose drawing has no part list or no record yet gets both first (<code>docs/walk-scripts.md</code> §10). A screen drawn at one size only is said so here, and its other size is carried by the walk. Where no drawing exists, nothing here applies.</p></blockquote>
-    <p style="margin-top:12px"><b>The bug-check order, "the built screen beside its drawing":</b> the by-eye comparison becomes the measured one.</p>
-    <blockquote id="w2"><p>• <b>The built screen beside its drawing — measured as well as looked at (his D1494, 29 Oct 26).</b> The drawing check (<code>scripts/drawcheck/check.mjs</code>, <code>docs/walk-scripts.md</code> §10) measures each named part of the build against the approved drawing at the size that drawing was taken at — where it sits, its size, its fill, edges and corners, where its words sit and what they say — and lists every difference over about 2px with the two side by side and laid over each other. Its part list carries a state at his iPhone's size and at his PC's for every screen drawn at both. It runs while the screen is built and after every fix. The check sees only the parts its list names; the side-by-side look by eye stays, for everything the list does not name. While the screen is built, a difference is put back to the drawing (D1424), or kept on purpose for a better design and named to him with its picture; once the build has gone for his look, each difference is shown to him side by side before any is put back, an outright fault (words breaking, something covered or off screen, a wrong behaviour) fixed without asking (D1426). The check stays red until each difference is put back or he has ruled to keep it — one put to him and not yet answered stays red; a difference he keeps is recorded as §10 says. Each row's height and each pair of side-by-side boxes (his lessons 42 and 43) are named as parts with their place and size, so a row taller than drawn or a box off its neighbour's line shows as a difference from the drawing; the check does not test two built boxes against each other, so lesson 43 on a row the drawing does not show is measured by the walk. Checked by eye, M4's screens reached him with differences he found himself (D1424) and M5a's with seven its walk had to find (D1493); run on M5a's build as it stood, the check caught every one that build still had, found the Grades window matching, and found two more nobody had seen.</p></blockquote>
-    <p style="margin-top:12px"><b>The walk-scripts guide, a new section 10:</b> how to record a drawing, name its parts, bring the build to the drawing's own world, run the check and test the check itself.</p>
-    <blockquote id="w3"><p><b>10. The drawing check (his D1494, 29 Oct 26)</b></p>
-<p>The script is <code>scripts/drawcheck/</code> — <code>record.mjs</code>, <code>check.mjs</code>, <code>compare.mjs</code>, a part list per screen under <code>specs/</code>, and <code>selftest.mjs</code>. The worked example is M5a's (<code>specs/lw-m5a.mjs</code>).</p>
-<p>• <b>Record the drawing when it is drawn</b>, from <code>raptor-port/</code>: <code>DRAWCHECK_SPEC=scripts/drawcheck/specs/&lt;screen&gt;.mjs DRAWCHECK_APPROVED=&lt;the approved pictures' folder&gt; DRAWCHECK_DIST=&lt;the drawing's build&gt; DRAWCHECK_DRAWN_ON='&lt;branch&gt; at &lt;commit&gt;' [DRAWCHECK_ORIGIN=&lt;the address the drawing script opens; default http://localhost:4197&gt;] node --import ./scripts/drawcheck/record.mjs &lt;drawing script&gt;</code>, the drawing script's own pictures sent to a scratch folder, never the approved one. At each picture the part list names, it saves every part's measure and a whole-screen picture beside the drawing (<code>docs/mock/&lt;area&gt;/drawcheck/</code>). Each record says whether its replay drew the approved picture (no pixel more than 24 colour levels off); a record that differs, or that was never compared, is not a record of the approved drawing — find why, or record it again, before trusting it. The drawing's build is the commit it was drawn on, built as §8 says.</p>
-<p>• <b>Name the parts a person would point at</b> — the window, a row, a switch and its lit half, a column of figures, a name — each with its drawing selector, its build selector and what is compared. A part inside another is measured from it (<code>rel</code>), so a row that moved down the page does not make every figure in it "move". A figure with no box of its own is judged by where its words are drawn (<code>words-place</code>), never by an invisible box's width.</p>
-<p>• <b>Bring the build to the drawing's own world</b> — the same people, leave and clock, the same lock and switches: each state's <code>reach</code> in the part list brings the build there through the same doors the drawing's stage script used (M5a's: the bids by the localhost bridge, approve and refuse pressed in the real window), and returns a sentence when it cannot — the state is then NOT CHECKED. A drawing taken with the page scrolled says nothing about a window docked by the page's position: give every docked or floating part a second state measured against the same record (<code>drawing.record: '&lt;state&gt;'</code>) with the page at its top (M5a's window stood 136px lower there, and matched in the drawing's own scroll).</p>
-<p>• <b>Run it after every change</b>, from <code>raptor-port/</code>: <code>npm run build</code>, then <code>node scripts/drawcheck/check.mjs scripts/drawcheck/specs/&lt;screen&gt;.mjs --dist dist --out docs/img/handpass/&lt;date&gt;-drawcheck-&lt;screen&gt;</code> (each run empties its <code>--out</code> folder: give the run whose pictures go to him a folder of its own, §6). Red while any difference is unexplained, any state has no drawing record, or any state could not be reached (its <code>reach</code> returned why); page errors are listed but do not turn it red. Open the pictures before reporting a difference: a part off the screen is listed, not pictured.</p>
-<p>• <b>A difference in a rule with no visible effect</b> (an edge of no width, a see-through fill) is the comparing's fault: fix it in <code>compare.mjs</code>, add that look to <code>selftest.mjs</code> as one that must not count, and name it in the closing report — never drop the part or its check to turn the run green.</p>
-<p>• <b>Each difference goes to him side by side (D1426)</b> — the report's pictures are that page's pictures. One he keeps goes into the part list's <code>accepted</code> list — <code>{ state, part, check, why }</code>, <code>why</code> naming his ruling — with <code>check</code> set to the one kind of difference he kept (place, width, fill…), so a new difference in the same part still turns the check red (the script refuses an entry without it); the report still shows the kept one, marked.</p>
-<p>• <b>After any change to the comparing</b>, run <code>node scripts/drawcheck/selftest.mjs</code> (it feeds the comparing each kind of difference M5a showed, and each look that must not count, and fails on a miss); after a change to the measure, the recorder or the runner, re-run the check on M5a's build at 794346689 and compare its report with the committed one.</p></blockquote>
-  </details>
 </main>
 <div id="zoom" hidden><img alt=""></div>
 <script>

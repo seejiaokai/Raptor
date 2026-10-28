@@ -12,7 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
-| D1496 | 29 Oct 26 | Every mock-up draws each part the way the rest of the app already draws that kind of part — its components, colours, letters, sizes, corners and spacing — so a design is the app's own, not a new look; a part that has to differ is named to him as a new design, with its picture and its reason. |
+| D1496 | 29 Oct 26 | Every mock-up's design is standardised to the rest of the app: each part drawn the way the app already draws that kind of part, so a design is the app's own, not a new look. |
 | D1495 | 29 Oct 26 | The drawing check is a standing step of every build that has an approved drawing: run while the screen is built and after every fix, red until each difference is put back or he has ruled to keep it, beside the look by eye and the walk, never instead of them — the wording approved as drafted. |
 | D1494 | 29 Oct 26 | A drawing check is built as its own job: a script that measures a built screen against its approved drawing — where each part sits, its size, colour and text alignment — at his iPhone's and a desktop's size, lists every difference over about 2px with marked pictures side by side, and fails until each is fixed or put to him. — changed by D1495 |
 | D1478 | 28 Oct 26 | Any part of a screen he has already approved in a drawing is drawn again from that drawing and checked beside it before a page goes to him — in a later mock-up round as in a build; the approved drawing is the sole source, and only what a later ruling requires is added, named and shown beside it. |
