@@ -53,7 +53,6 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
     <p>Reply "all as recommended", or give the number of any you want the other way.</p>
     <ol>
       <li><a href="#q25">25</a>: tap a leave of several days and the whole leave opens; "All 4 days" or "Tue 13" sits on the Duration row, so the window gets no taller. <b>Recommended: version 2</b></li>
-      <li><a href="#q24">24</a>: the ring on the day you jump to from Approvals is cyan, matching the date above it. <b>Recommended: yes, cyan</b></li>
       <li><a href="#q23">23</a>, on your iPhone: check that "23 Jan AM ›" stays on one line</li>
       <li>Reading R22 (below): strike it if you want it the other way</li>
     </ol>
@@ -68,13 +67,7 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
       <button class="pic" type="button" aria-label="Enlarge: version 2, whole leave"><img src="whole/v2-all.png" alt="Version 2: All 4 days picked on the Duration row, the window as tall as today"></button>
       <button class="pic" type="button" aria-label="Enlarge: version 2, one day"><img src="whole/v2-one.png" alt="Version 2: Tue 13 picked, one day marked"></button>
     </article>
-    <article class="card" id="q24">
-      <div class="head"><span class="num">24</span><h3>The ring on the day you jump to: cyan, not blue</h3><span class="rec back">Recommended: cyan</span></div>
-      <p class="why">You're right, the blue is too dark. When you tap a request's dates in Approvals, the grid rings two things: the date at the top, which is already cyan, and the man's day, which is the app's darker blue. That's one message in two colours, and the more important of the two is the dimmer one. On cyan the day stands out about twice as strongly against the dark grid, and it matches its date. My recommendation: make it cyan on the Leave War only. On the Scheduler Board and the Inputs pages the ring stays the app's blue, because there blue is also the colour of a picked puck. That makes the Leave War an exception to "one mark, one look" (your D876), so it's your call. The lighter blue is a middle option: brighter, but still a different colour from its date.</p>
-      <button class="pic" type="button" aria-label="Enlarge: now"><img src="ring/ring-now.png" alt="Now: the date ringed cyan, the day ringed the app's darker blue"></button>
-      <button class="pic" type="button" aria-label="Enlarge: cyan"><img src="ring/ring-cyan.png" alt="Cyan: the date and the day ringed alike"></button>
-      <button class="pic" type="button" aria-label="Enlarge: lighter blue"><img src="ring/ring-light.png" alt="A lighter blue on the day"></button>
-    </article>
+
     <article class="card" id="q23">
       <div class="head"><span class="num">23</span><h3>A check only your iPhone can make</h3><span class="rec fix">Please look</span></div>
       <p class="why">Approve and Refuse now use your drawing's letters (your answer 18). In the test browsers that keeps every date on one line at your phone's width. The app uses your phone's own letters, which only your phone shows, so please open Approvals on your iPhone and check that the half-day dates, such as "23 Jan AM ›", stay on one line. On GitHub's machines, whose letters are wider, those two still break.</p>
@@ -83,6 +76,13 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
       <h3>Readings to strike</h3>
       <p class="why">R12 a member never replaces another man's bid · R13 a member taking back his own bid is a line in the change history · R14 his own filing over his own bid leaves no notice · R15 an admin re-typing a member's bid tells him nothing · R16 "Placed" keeps who placed the first bid · R17 "New" counts what others placed since you last looked · R19 one leave keeps one approver · <b>new tonight:</b> R20 a man's leave is refused only on days from his posting-out date on, whether or not the posting has run; a day before it approves (your D1436, as one rule in every window) · R21 a man deleted on Admin → Users keeps the old refusal of his leftover pending leave ("Posted out — refuse or delete it"). <b>New:</b> R22 on a phone, a month's chip stays (dimmed) while a request of that month you just decided is still on the list, so the list never moves under your finger; it goes when you pick another filter or leave. Say the number of any you want the other way.</p>
     </article>
+  </section>
+
+  <section>
+    <h2>Built this morning (your answers and your video)</h2>
+    <article class="card"><div class="head"><span class="num">24</span><h3>The ring on the day you jump to is cyan</h3></div><p class="why">It matches the date ringed above it (your D1449). The Scheduler Board and the Inputs pages keep the app's blue.</p><button class="pic" type="button" aria-label="Enlarge: cyan ring"><img src="ring/ring-built.png" alt="Static's LL ringed in cyan"></button></article>
+    <article class="card"><h3>Your bell says when someone changes your bid's kind</h3><p class="why">Your D1460: an admin changing a member's pending LL to OL now tells him: "LL bid changed to OL". His own change tells nobody, and an Undo takes the unread line.</p><button class="pic" type="button" aria-label="Enlarge: bell"><img src="ring/bell-retype.png" alt="The member's bell: Your leave, Wed 4 Nov, LL bid changed to OL, Saber"></button></article>
+    <p class="match">Also fixed from your video: OIL from Approvals no longer flashes the grid; the grid comes back drawn after Approvals, never striped; and a period picked on Approvals now lands the grid on that period's first day.</p>
   </section>
 
   <section>
