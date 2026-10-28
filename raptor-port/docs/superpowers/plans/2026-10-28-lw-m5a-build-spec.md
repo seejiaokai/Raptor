@@ -68,7 +68,11 @@ finding 6), who typed it, and **the snapshot** — the days of his approved leav
 one entry a day and a half (`date`, `half`), never a total (finding 2). OIL is not typed (D1209, D1255). A figure is a whole
 number or a .5; below zero may be typed; carried forward is a whole number or a .5 from 0 to the figure (or 0 when the
 figure is below zero). **A box saves on Enter or on leaving it, never on each key** (finding 13); Escape puts the old figure
-back; one tap then typing replaces it (D1080).
+back; one tap then typing replaces it (D1080). **A save of either LVE box writes the whole row afresh** (narrow read 2):
+`amount` = the App bal box as it then shows (the running figure, or what was typed into it), `cf` = the carried-forward box
+as it then shows (the running carried forward, or what was typed into it), clamped to 0 … max(`amount`, 0); the day is
+today and the snapshot is taken now. So correcting only "incl. 2" to 3 after 26–27 Jan were approved gives 15 incl. 3,
+never 17 incl. 3. The history line's "from" is the running figure shown before the save.
 
 **1.2 How a leave's days are counted.** The war's one charging rule (`engine/charge.ts chargedDays`: a weekend or holiday
 charges nothing, except a pilot's run of 15 or more days of LL / OL, his answer of 19 Sep 26), with two additions:
@@ -80,7 +84,9 @@ charges nothing, except a pilot's run of 15 or more days of LL / OL, his answer 
   that was already counted the same way in the snapshot (finding 2). Today such a date charges nothing; this is new and is
   named to him (reading 17).
 Both the snapshot and today's leave are charged NOW, with today's periods, holidays and runs: a period created, a holiday
-added or a run grown after typing treats the snapshot and today alike, so only a real change to his leave moves App bal.
+added or a run grown after typing treats the snapshot and today alike — so leave already approved when he typed never moves
+App bal; leave approved since is charged as the war now counts it, so a holiday later found on one of its days gives that day
+back (narrow read 7).
 
 **1.3 The formula — App bal for one kind.** Let *typed* be the figure, *cf* its carried-forward part and *Y0* the year of
 the day typed. For each date, *delta* = what the approved leave now charges on that date less what the snapshot charges
@@ -89,19 +95,23 @@ year *y*; a date before Y0 counts in Y0 (finding 3c — a change to an earlier y
 official app would show it).
 - **CCL, FCL, PL, EL, CL:** App bal = typed − the sum of every *net(y)*. No years, no roll-over (D1489).
 - **LVE, the typing year Y0:** two pools — carried forward *CF = cf*, this year's *AN = typed − cf*. If *net(Y0)* ≥ 0 it
-  comes off CF first, then AN (D1224): *CF = max(0, cf − net)*, *AN = AN − max(0, net − cf)*. If *net(Y0)* < 0 (days
-  given back) they go back to this year's leave: *CF = cf*, *AN = AN − net* — so "incl. N carried fwd" never shows more
-  than was typed (finding 3a; reading 18).
+  comes off as **the year's rule** below, with *C = cf*.
+- **The year's rule, for any year y** (narrow read 8), *C* being the carried forward at the start of y (*cf* in Y0, the
+  roll-over's *new CF* after): if *net(y)* ≥ 0, *CF = max(0, C − net(y))* and *AN = AN − max(0, net(y) − C)* —
+  carried-forward first (D1224); if *net(y)* < 0 (days given back), *CF = C* and *AN = AN − net(y)*. Days given back in a
+  year first cancel days taken that year (the netting), and only the rest go back to this year's leave — so "incl. N
+  carried fwd" never shows more than it started the year with (finding 3a; reading 18).
 - **LVE, each 1 Jan of a year y after Y0, up to this year** (D1235, D1474): the carried-forward left goes; *new CF =
   max(0, AN)*; *new AN = the grade's days held on 1 Jan y + min(0, AN)* (below zero carries nothing forward and the
-  overdrawn days still come off: −2 + 33 = 31). Then *net(y)* is taken off as above, CF first, days given back to AN.
+  overdrawn days still come off: −2 + 33 = 31). Then *net(y)* is taken off by the year's rule, with *C = new CF*.
   No grade on that day adds 0 (D1474). Grade and its days as they held on that 1 Jan (Q1).
 - **LVE, days in a year after this one** (a leave approved now for next January): they come off now (D1479), from the
   total only — App bal = *CF + AN − the sum of net(y) for y after this year*; "incl. N carried fwd" is this year's *CF*,
   untouched, since those days will use next year's carried forward (D1218, D1473). A later-year day already approved
   when he typed is in the snapshot, so it is inside the typed figure and never comes off again (finding 3b).
-- **Never typed** (finding 5): read as typed 0, cf 0, on 1 Jan of the year of the war's earliest period, with an empty
-  snapshot — so each 1 Jan after it adds his grade's days and his approved leave since comes off (reading 4). **An old
+- **Never typed** (finding 5): read as typed 0, cf 0, on 1 Jan of the year of the war's earliest period (or of this year
+  when no period exists — a shared store may hold none), with an empty snapshot; it moves if an earlier period is
+  created later (reading 4) — so each 1 Jan after it adds his grade's days and his approved leave since comes off (reading 4). **An old
   row in today's bare-number shape** (demo data, D56) is read the same way, its number as the figure — never skipped, never
   a loop from the year 1970: the years run from that start year to this year plus the last year holding any of his leave,
   and a test pins a load that would otherwise loop (finding 5).
@@ -134,7 +144,7 @@ pilot (+33); 2027 holds a period, 1 Jan a public holiday.
 | 7 | the same leave, approved only on 2 Jan | 31 Dec: 23 incl. 3 · 1 Jan: 53 incl. 20 · 2 Jan: 52 incl. 19 | 31 Dec counts in 2026 (D1473) and takes 2026's carried-forward, which has ended, so only 4 Jan comes off — reading 22 |
 | 8 | D1474: 10 left incl. 4; LL Tue 29 – Wed 30 Dec pending over 1 Jan | 28 Dec: App 10, Pending −2, War 8 · 1 Jan: App 39, Pending —, War 39 | reading 19 |
 | 9 | typed 20 incl. 0 in Nov 2026; LL 2–3 Feb 2027 approved on the Inputs page before typing; the 2027 period created after | 20, unchanged by the period | finding 2 |
-| 10 | a pilot: LL 1–12 approved (10 days charged); LL 13–21 bid, pending | App bal unchanged; Pending and War bal take the run's weekends | finding 1 |
+| 10 | a pilot, Feb 2027: LL Mon 1 – Fri 12 approved (10 charged); LL Sat 13 – Sun 21 bid, pending | App bal unchanged; Pending −11 (the run of 21 days now charges every day: 21 − 10); War bal 11 lower. Approvals' DAYS and My leave count the bid alone: 5 | finding 1; reading 24 |
 | 11 | typed 23 incl. 3; a 2-day leave approved before typing then deleted | 25 incl. 3 | days back to this year's leave — reading 18 |
 
 Every row is a unit test of the engine before any screen is built, and rows 1, 2, 6, 8 and 10 are walked on screen (§7).
@@ -152,7 +162,7 @@ below-zero helpers and the top row's figures. A test feeds one world to every re
 ✕; then BALANCES with the padlock and "Locked for members" (admin) or "Locked by admin" (member) while locked (A10,
 D1220); round 20d's tiles exactly (`m5a-c-approved`): LVE (its box, "3 taken"; App bal · Pending · War bal on one line, the
 pending figure amber; "incl. [2] carried fwd · till 31 Dec" under App bal), OIL ("0 ›", opening the OIL tracker — D1209),
-MED (days); then CCL, FCL, PL, EL, CL, each its box and, only while something is pending, "Pending −1 / War bal 2" as a
+MED (days); then CCL, FCL, PL, EL, CL, each its box and, only while its Pending figure is not 0, "Pending −1 / War bal 2" as a
 little list (D1253). A box only where the viewer may type (an admin any row; a member his own row while unlocked); locked,
 no boxes for a member, boxes kept for an admin. Then LEAVE and the year picker ("2026 and ahead"; past years in its list —
 D1148): his leave one line each, without a puck — the kind's box (look F: filled approved, hollow dashed pending, grey
@@ -183,7 +193,7 @@ padlock open and unlit when off, closed and lit cyan when on — D1488). **A mem
 unlocked, everyone else's read only; locked, everything read only with the padlock and "Locked by admin" — on a phone on a
 slim line under the bar; no Grades, no lock switch. **Grades… (D1486, D1234):** a window — each grade a grip, its name in a
 box, "19 people", its "+36" box, a ✕; "+ Grade" at the foot; a drag shows one landing line (D890); deleting a grade people
-hold asks first, naming how many, and they become "No grade" (Undo brings it back); two grades cannot share a name. Its
+hold asks first, naming how many, and they become "No grade" (Undo brings it back); two grades not deleted cannot share a name. Its
 starting list: Senior pilot +36, Junior pilot +33, Senior WSO +21, Junior WSO +18, Ops A +14 (D1229).
 
 **2.3 The lock (D1220, D1247, D1488; job 4).** One switch for everyone, an admin's only, on the Balances page. Locked: a
@@ -214,9 +224,10 @@ Settings gains no Balances line (D1485).
   profile throws "would be emptied" (finding 7).
 - **The grades list and the lock — `lw.config`**: `grades: [{ id, name, order, days: [{ n, from }], goneFrom? }]` (a deleted
   grade keeps its days with the day it went, so a 1 Jan before that still reads them and one after adds nothing —
-  finding 11) and `balLock: boolean`. The starting five (D1229) have FIXED ids (`sp`, `jp`, `sw`, `jw`, `opsa`) and are
-  written once, at the first boot that finds no list, as a command of their own — never re-made on each boot, where a
-  generated id would leave every man's grade pointing at nothing after a reload (finding 11). `lw.config`'s fields are
+  finding 11) and `balLock: boolean`. The starting five (D1229) have FIXED ids (`sp`, `jp`, `sw`, `jw`, `opsa`). **No command runs at boot** (narrow
+  read 6): while `lw.config` has no `grades` field (absent, never an empty list) the engine reads the starting five; the first
+  admin edit of the list writes it whole; `balLock` reads false while absent. Fixed ids mean a man's grade never points at
+  nothing after a reload (finding 11). `lw.config`'s fields are
   listed in four places (`store.ts lwRecords` ~L1361–1368, `applyLwRecord` ~L1440–1452, `rows.ts CONFIG_KEYS` ~L128–135,
   the boot's `readStored`); both new fields join all four, with the reload-and-Undo test.
 - **A member's "last visit" — a settings row of his own, `lwseen:<pid>` = `{ at: ms }`** (the moment matters here, not the
@@ -234,17 +245,22 @@ Settings gains no Balances line (D1485).
 - **Who may write — `state/perms.ts` and `docs/data-model.md` §11 together (D200).** Today ONE row, `T.ledger`, covers
   `LeaveOpening`, `LeaveLedger` and `LeaveCounter` (~L76, ~L115), and the balance write rides `lw.edit`, whose gate row is a
   BID's. New rows: **`LeaveBalance`** — admin C R U D; member **R for every row** (D1242: every member reads every man's
-  figures — finding 10a) and U of his own; **`LeaveGrade`** — admin C R U D, member R; the grades list and the lock stay
+  figures — finding 10a) and **C U D of his own** (his first typing creates the row, his Undo of it deletes it — narrow
+  read 5); **`LeaveGrade`** — admin C R U D, member R; the grades list and the lock stay
   under `lw.config`'s admin row. `T.ledger` is never widened (a member would reach grants and OIL corrections).
   **`ownershipViolation`** (~L916–1015) gains: `lw.balance` — a member only on his own pid, only while `balLock` is off
   as it stands when the command is saved (an open box after the lock, and his Undo or Redo after it, refused alike — B6);
-  never OIL; and `lw.grade` joined to the "an admin's record" case — its `default: break` would otherwise ALLOW a member's
+  the kind one of LVE, CCL, FCL, PL, EL, CL and `cf` only on LVE; and `lw.grade` joined to the "an admin's record" case — its `default: break` would otherwise ALLOW a member's
   grade write (finding 7).
 - **What the gate recomputes, so a member cannot forge it (finding 9):** for an `lw.balance` row it refuses unless `by` is
   the writer himself, `day` is the app's today, `amount` and `cf` are halves with 0 ≤ `cf` ≤ max(`amount`, 0), and `snap`
-  equals the snapshot the store itself builds from his approved leave at that moment — so a member cannot type 20 with a
-  snapshot that shows 120, back-date the day before a 1 Jan, or write another man's name as the one who typed it. Each
-  check has a break test (§8).
+  equals the snapshot the store itself builds from his approved leave at that moment (compared sorted by date, then half) — so a member cannot type 20 with a
+  snapshot that shows 120, back-date the day before a 1 Jan, or write another man's name as the one who typed it. **These
+  three forging checks apply to a forward write; a restore that `undo/timeline.ts verifiedReplay` vouches for, image for
+  image, passes them** — `lw.balance` joins its `want` set beside `inputs` and `lw.cell` (~L531–533) — so his own Undo of his
+  second typing, or a Redo the next day, puts back the earlier row with its older day and snapshot (narrow read 1). The lock
+  check applies to both (B6). With no war wired, the gate refuses a member's write. Each check has a break test (§8), and a
+  test pins a member's Undo and next-day Redo of his second typing, unlocked, as accepted.
 - **The change history (`state/changelines.ts`).** Today a balance writes no line and its Undo none (~L543–546). New lines:
   "LVE balance 18 → 20 · Ranger" (B6), each kind by its name; "LVE carried fwd 2 → 3"; "Grade Junior pilot → Senior pilot ·
   Saber"; "Balances locked for members · Saber"; the grades list's add, rename, days and delete. `lw.balance`, `lw.grade`,
@@ -381,7 +397,7 @@ way to change a balance (its box on the Balances page, every row a box) leaves f
 
 **Readings built as recommended and named at his look, his to strike — none blocks the build:**
 1. CCL, FCL, PL, EL and CL come down by themselves as their leave is approved, as App bal does (D1479's rule, for every
-   typed kind): the box shows the running figure, and its Pending / War bal lines show only while something is pending.
+   typed kind): the box shows the running figure, and its Pending / War bal lines show only while its Pending figure is not 0.
 2. "Since he typed" is counted by what was approved when he typed, day by day, not by a leave's dates or by when it was
    approved: a leave already approved then takes nothing off; one lengthened afterwards takes only its new days; one
    deleted gives its days back.
@@ -413,9 +429,11 @@ way to change a balance (its box on the Balances page, every row a box) leaves f
     its date (D402) and follows the OIL expiry rule. Only real data meets it, at the database step, so it is filed as a
     question for then (`[LW-OIL-OPENING-AWARD]`), not built here.
 17. Leave on a date no period covers yet comes off by the plain rule — weekdays count, Saturday and Sunday do not, no
-    holidays known (today such a date counts nothing); creating the period later moves nothing already counted.
-18. Days given back (a leave deleted or shortened) go back to this year's leave, never to carried forward, so "incl. N
-    carried fwd" never shows more than was typed.
+    holidays known (today such a date counts nothing). Creating the period later moves nothing that was already approved
+    when he typed; leave approved since gives a day back if the new period makes one of its days a holiday.
+18. Days given back in a year (a leave deleted or shortened) first cancel days taken that year; only the rest go back to
+    this year's leave, never to carried forward. If those days had used carried forward, after 1 Jan the war can show up to
+    that many days more than the official app, until App bal is typed again.
 19. A pending day in a year whose carried-forward has ended costs nothing more, so it shows no pending figure on the tile,
     though the request still waits in his list (D1474 — §1.5 row 8).
 20. Days taken counts leave as the balances charge it (weekends free) and MED, a course and an overseas duty as calendar
@@ -426,6 +444,9 @@ way to change a balance (its box on the Balances page, every row a box) leaves f
     carried-forward covers costs nothing now (§1.5 row 7).
 23. A tap on a name on the Balances page opens his person window, as every tap on a person on the Leave War does (D1148);
     it was not drawn.
+24. A bid that lengthens a pilot's approved run past 15 days shows the run's weekends in his tile's Pending; My leave's
+    count and Approvals' DAYS count the request's own days (§1.5 row 10) — the one place the figures may differ, and the
+    agreement test says so.
 
 **Records of each answer:** a ruling row in `leave-war.md` the moment he answers; reading 8's bell line in
 `docs/notifications-register.md` as proposed.
@@ -505,7 +526,10 @@ and old rows bounded; one clock, the app's today), §3 rewritten (the typed figu
 their own, OIL's openings left numeric, every place a collection is listed, the grades' dated shape and fixed ids, the
 member's read of every row, `lw.seen` mapped, the commands named, what the gate recomputes), the missed readers (§4), the
 machine marks on the war's history lines, the box saving on Enter or leaving it, readings 17–23, and the walk's method for
-the lock and its four added scenarios.
+the lock and its four added scenarios. **Then a narrow fresh read of the rewritten §1 and §3** (28 Oct 26): every figure of
+§1.5 recomputed by hand and correct; nine findings, all taken — restores pass the forging checks, what a save of either box
+writes, row 10's figures and reading 24, the netting in reading 18, a member's C U D on his own row, no command at boot for
+the starting grades, §1.2's last sentence, one year's rule for every year, and three one-line points.
 
 **Left to the build — technical (the builder decides and says what he did):** the engine's exact shape (§1.5); how the
 snapshot of §1.2 is held (§3); the grades' dated history (§3); the page's sideways slide and pinch (§4); the seen moment's
