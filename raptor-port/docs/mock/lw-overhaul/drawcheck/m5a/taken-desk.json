@@ -1,0 +1,148 @@
+{
+ "state": "taken-desk",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+  "shot": "m5b-b3-desk"
+ },
+ "recorded": "2026-10-28T22:29:36.041Z",
+ "drawnOn": "main at 230aa3b85 (the build the M5a drawings were drawn on)",
+ "checkout": "",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 1.25,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "switch": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 35,
+    "y": 146.5,
+    "w": 217.8,
+    "h": 36
+   },
+   "ink": {
+    "x": 68,
+    "y": 155.5,
+    "w": 151.8,
+    "h": 18
+   },
+   "text": "Balances Days taken",
+   "typed": false,
+   "look": {
+    "fill": "rgba(20, 24, 29, 0.5)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.seg.zz-seg"
+  },
+  "switch-lit": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 140.5,
+    "y": 155.5,
+    "w": 91.3,
+    "h": 18
+   },
+   "ink": {
+    "x": 153.5,
+    "y": 155.5,
+    "w": 66.3,
+    "h": 18
+   },
+   "text": "Days taken",
+   "typed": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.14)",
+    "image": "",
+    "edge": [
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)",
+     "1px solid rgb(47, 58, 70)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(95, 208, 230)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.on"
+  },
+  "taken-head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 383.8,
+    "y": 193,
+    "w": 506,
+    "h": 23
+   },
+   "ink": {
+    "x": 551.9,
+    "y": 201,
+    "w": 170.8,
+    "h": 14
+   },
+   "text": "DAYS TAKEN IN JAN – DEC 26",
+   "typed": false,
+   "look": {
+    "fill": "rgb(17, 22, 28)",
+    "image": "",
+    "edge": [
+     "0px none rgb(107, 119, 133)",
+     "0px none rgb(107, 119, 133)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(34, 42, 51)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(107, 119, 133)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 10px",
+    "spacing": "1.4px"
+   },
+   "tag": "th.span.sep"
+  }
+ },
+ "approved": {
+  "picture": "m5b-b3-desk.png",
+  "identical": true
+ }
+}

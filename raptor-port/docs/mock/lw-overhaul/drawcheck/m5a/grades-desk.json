@@ -1,0 +1,189 @@
+{
+ "state": "grades-desk",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+  "shot": "m5c-c1-grades"
+ },
+ "recorded": "2026-10-28T22:29:55.689Z",
+ "drawnOn": "main at 230aa3b85 (the build the M5a drawings were drawn on)",
+ "checkout": "",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 1.25,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "window": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 829.5,
+    "y": 190.5,
+    "w": 470,
+    "h": 350
+   },
+   "ink": {
+    "x": 844.5,
+    "y": 203.5,
+    "w": 440,
+    "h": 319
+   },
+   "text": "⠿ Grades ✕ GRADE HOLDS AUTO + LVE ON 1 JAN ⠿ Senior pilot 19 people +36 ✕ ⠿ Junior pilot 8 people +33 ✕ ⠿ Senior WSO 9 people +21 ✕ ⠿ Junior WSO 9 people +18 ✕ ⠿ Ops A 3 people +14 ✕ + Grade",
+   "typed": false,
+   "look": {
+    "fill": "rgb(22, 27, 34)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)"
+    ],
+    "corners": [
+     "12px",
+     "12px",
+     "12px",
+     "12px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.6) 0px 10px 30px 0px",
+    "color": "rgb(201, 209, 217)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.zgw.zz-gw"
+  },
+  "title-bar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 830.5,
+    "y": 191.5,
+    "w": 468,
+    "h": 46
+   },
+   "ink": {
+    "x": 844.5,
+    "y": 203.5,
+    "w": 440,
+    "h": 21
+   },
+   "text": "⠿ Grades ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "1px solid rgb(42, 50, 60)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.hd"
+  },
+  "first-grade": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 830.5,
+    "y": 267.5,
+    "w": 468,
+    "h": 44
+   },
+   "ink": {
+    "x": 844.5,
+    "y": 279.5,
+    "w": 436.7,
+    "h": 19
+   },
+   "text": "⠿ Senior pilot 19 people +36 ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(230, 237, 243)",
+     "0px none rgb(230, 237, 243)",
+     "1px solid rgb(34, 42, 51)",
+     "0px none rgb(230, 237, 243)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(230, 237, 243)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.r.zz-g1"
+  },
+  "first-days": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1126.5,
+    "y": 275,
+    "w": 130,
+    "h": 28
+   },
+   "ink": {
+    "x": 1221.6,
+    "y": 280,
+    "w": 24.9,
+    "h": 18
+   },
+   "text": "+36",
+   "typed": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "flex-end",
+    "font": "700 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.bx"
+  }
+ },
+ "approved": {
+  "picture": "m5c-c1-grades.png",
+  "identical": true
+ }
+}

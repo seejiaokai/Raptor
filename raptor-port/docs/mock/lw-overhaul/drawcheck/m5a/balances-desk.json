@@ -1,0 +1,353 @@
+{
+ "state": "balances-desk",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+  "shot": "m5b-b1-desk"
+ },
+ "recorded": "2026-10-28T22:29:27.518Z",
+ "drawnOn": "main at 230aa3b85 (the build the M5a drawings were drawn on)",
+ "checkout": "",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 1.25,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "switch": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 35,
+    "y": 146.5,
+    "w": 217.8,
+    "h": 36
+   },
+   "ink": {
+    "x": 68,
+    "y": 155.5,
+    "w": 151.8,
+    "h": 18
+   },
+   "text": "Balances Days taken",
+   "typed": false,
+   "look": {
+    "fill": "rgba(20, 24, 29, 0.5)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.seg.zz-seg"
+  },
+  "switch-lit": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 56,
+    "y": 155.5,
+    "w": 76.5,
+    "h": 18
+   },
+   "ink": {
+    "x": 68,
+    "y": 155.5,
+    "w": 52.5,
+    "h": 18
+   },
+   "text": "Balances",
+   "typed": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.14)",
+    "image": "",
+    "edge": [
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(95, 208, 230)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.on"
+  },
+  "grades-button": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1220.4,
+    "y": 146.5,
+    "w": 79.1,
+    "h": 36
+   },
+   "ink": {
+    "x": 1233.4,
+    "y": 155.5,
+    "w": 53.1,
+    "h": 18
+   },
+   "text": "Grades…",
+   "typed": false,
+   "look": {
+    "fill": "rgb(18, 22, 27)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(230, 237, 243)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.btn.zz-grades"
+  },
+  "ranger-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 21,
+    "y": 436,
+    "w": 1494,
+    "h": 40
+   },
+   "ink": {
+    "x": 36,
+    "y": 445.5,
+    "w": 1235.8,
+    "h": 20
+   },
+   "text": "Ranger IP Senior pilot +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "tr"
+  },
+  "ranger-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 31,
+    "y": 450,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 36,
+    "y": 450.8,
+    "w": 65.2,
+    "h": 12.3
+   },
+   "text": "Ranger IP",
+   "typed": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm"
+  },
+  "hex-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 31,
+    "y": 2026,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 36,
+    "y": 2026.8,
+    "w": 63.5,
+    "h": 12.3
+   },
+   "text": "Hex C",
+   "typed": false,
+   "look": {
+    "fill": "rgb(31, 110, 82)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(234, 251, 243)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.r.sm"
+  },
+  "ranger-app": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 394.8,
+    "y": 441.5,
+    "w": 54,
+    "h": 28
+   },
+   "ink": {
+    "x": 423.4,
+    "y": 446.5,
+    "w": 15.4,
+    "h": 18
+   },
+   "text": "15",
+   "typed": false,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)",
+     "1px solid rgb(102, 113, 127)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.bx"
+  },
+  "ranger-pend": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 591.3,
+    "y": 436,
+    "w": 71.8,
+    "h": 40
+   },
+   "ink": {
+    "x": 626.7,
+    "y": 446.5,
+    "w": 26.5,
+    "h": 18
+   },
+   "text": "−2.5",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 200, 121)",
+     "0px none rgb(242, 200, 121)",
+     "1px solid rgb(29, 36, 44)",
+     "0px none rgb(242, 200, 121)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "right",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.pend.pd"
+  }
+ },
+ "approved": {
+  "picture": "m5b-b1-desk.png",
+  "identical": true
+ }
+}
