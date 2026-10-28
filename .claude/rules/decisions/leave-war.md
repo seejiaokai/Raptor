@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1477 | 28 Oct 26 | The Leave War's month strip lights in blue the month he is looking at — the month he pressed — never a later month only because more of it fits on a wide screen. |
 | D1476 | 28 Oct 26 | The Leave War grid's name pucks take the schedule's own puck colours — its olive for a pilot, its green for a WSO, its light puck for ground personnel — not the darker name bars the Leave War has worn since 4 Sep 26. |
 | D1475 | 28 Oct 26 | The Leave War overhaul's M5 is built as two merges, not one: M5a, a person's leave figures (the person window with a member's new rows, the balances page with its lock, a member's own writes, the leave year), then M5b, the admin's set-up (the new Settings, Management, holidays and events by file), each with its own full check and his "merge live". |
 | D1474 | 28 Oct 26 | The Leave War's 1 Jan roll-over (D1235) holds as read for its three open cases: a person with no grade set gets the roll-over with nothing added; a leave pending over the new year counts in the year its days fall in; a balance below zero carries nothing forward, and its overdrawn days still come off the new year's days. |

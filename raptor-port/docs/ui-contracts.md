@@ -8193,6 +8193,8 @@ Reset order), `roster.test.ts` (resetRosterOrder …) and `undoaudit.test.ts` (R
 
 ### The zoom buttons, OIL credit boxes that wrap, and the one-line month strip
 
+**Which month is lit (his D1477, 28 Oct 26 — "i click on the jan icon, MAR lights up"):** the month he presses stays lit while the grid sits where the jump left it (its first day at the frozen edge, or the view at the year's end with the month whole on screen — `Matrix.tsx pressedRef`); once he scrolls, the first month from the left with at least half of it on screen, and only where none is, the month filling most of the screen (`monthview.ts monthInView`). It was the month filling most of the screen alone, which on a desktop wide enough for three or four months lit a later one. Checked at 1536, 1536 with the grid zoomed out, a 2560-wide screen and a phone: `scripts/handpass/lw-month-strip-check.mjs`.
+
 **The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
 widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the
 default zoom? Like zoom 1 click out. Put the zoom + - button after oil/oil

@@ -1145,11 +1145,20 @@ export function Matrix() {
   // correction must run even on a coarse pointer (the fling is already dead —
   // the window only grows left there once the scroll sits at its bound).
   const colShiftRef = useRef(false)
+  /* THE MONTH HE PRESSED (his D1477, 28 Oct 26 — "the month icon lit up is wrong in blue"): a month pressed in the strip
+     stays lit while the grid sits where the jump left it — its first day at the frozen edge, or, at the year's end where
+     the grid cannot scroll that far, the view at its end with the month whole on screen. A scroll that moves it from there
+     hands the lit month back to the readout (monthview.ts). Its index in the war's months, the strip's own order. */
+  const pressedRef = useRef<number | null>(null)
+  /* when it was pressed: a month not drawn yet lands a commit later, so for a moment after the press the view not being
+     there yet is not a scroll away */
+  const pressedAtRef = useRef(0)
   // A different war is a different set of months: start its window over.
   const warRef = useRef(period.id)
   useEffect(() => {
     if (warRef.current === period.id) return
     warRef.current = period.id
+    pressedRef.current = null   // a month pressed in the last war's strip is not this war's (D1477)
     const next = hasLayout() ? windowAround(months.length, defaultMonth) : null
     setColWin(prev => (prev && next && prev.lo === next.lo && prev.hi === next.hi ? prev : next))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1211,6 +1220,9 @@ export function Matrix() {
 
   const hiddenJumpRef = useRef<string | null>(null)
   const jumpTo = (date: string) => {
+    /* any jump spends a month pressed in the strip (D1477) — the strip's own press sets it again after this call, and a
+       date jumped to from Approvals, the bell, the period or today is the readout's to light (the fix read's 1) */
+    pressedRef.current = null
     const wrap = wrapRef.current
     if (!wrap) return
     /* A JUMP ASKED WHILE THE GRID IS HIDDEN ([LW-APPR-PERIOD-LANDING], 28 Oct 26): a period picked on the Approvals page
@@ -2676,7 +2688,17 @@ export function Matrix() {
     const g = stripGeoRef.current
     if (!g) return
     const sl = wrap.scrollLeft
-    paintInView(monthInView(g.spans, sl + g.frozen, sl + g.client))
+    const vl = sl + g.frozen, vr = sl + g.client
+    let lit = monthInView(g.spans, vl, vr)
+    const pi = pressedRef.current
+    if (pi !== null) {
+      const sp = g.spans[pi], end = g.spans[g.spans.length - 1]
+      const day = sp ? (sp.right - sp.left) / 28 : 0
+      const landed = !!sp && !!end && sp.right > vl && (Math.abs(sp.left - vl) <= day * 1.5 || (sp.left >= vl && vr >= end.right - 1))
+      if (landed) lit = sp!.label
+      else if (Date.now() - pressedAtRef.current > 1000) pressedRef.current = null
+    }
+    paintInView(lit)
     // Which months (absolute indices, drawn or placeholder) the view is over —
     // what the fill engine's rolling target follows, and where the grid shrinks
     // to around when the tab is left. Same twelve numbers, no extra read.
@@ -3927,7 +3949,7 @@ export function Matrix() {
                           data-testid={`month-${m.label.replace(' ', '-')}`}
                           aria-current={m.label === inViewRef.current ? 'true' : undefined}
                           title={`Jump to ${m.label}`}
-                          onClick={() => jumpTo(m.first)}
+                          onClick={() => { jumpTo(m.first); pressedRef.current = months.indexOf(m); pressedAtRef.current = Date.now(); measureStrip() }}
                         >
                           {m.label}
                         </button>
