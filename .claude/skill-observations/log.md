@@ -2661,3 +2661,18 @@ its value and never in innerText.
 **Suggested improvement:** In mockups-on-the-real-app.md, when an older drawing's page is placed under chrome built since: list each control the page carries and check the surrounding chrome for one doing the same job; a duplicate goes (or is put to the owner), it is not carried over because the old drawing had it.
 
 **Principle:** A side-by-side with the old drawing proves sameness, not fitness: re-check each carried control against what the screen around it now already offers.
+
+### Observation 738: A differences list written mid-night goes stale before the morning look
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** Showing him M5a's drawing differences from the night's walk triage, the morning after the build.
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** the morning report — the "differences from the drawings" list put to him (D1426)
+
+**Issue:** The triage was written at ~02:20, before three fix rounds. One of its seven differences (the Grades window's place and box width) had since been put right by a later fix; only opening the latest re-walk picture beside the drawing showed it. Shown as written, he would have been asked to choose on a difference that no longer exists.
+
+**Suggested improvement:** In the overnight skill's morning-report step, re-check each listed drawing difference against a picture of the LAST build before it goes to him, and mark any that a later fix closed.
+
+**Principle:** A list of findings is dated by the build it was taken from; before putting it to someone for a decision, re-verify each item against the latest build.

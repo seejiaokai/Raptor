@@ -46,6 +46,7 @@ error, page error or 4xx in any run. Build 92b43acf9.
   directly — proves the refusal, not the screen's route). NOT WALKED.
 
 ## Differences from the drawings — to show him side by side, each with a recommendation (D1426), not changed tonight
+**His picks, 29 Oct 26 (D1493 — "All as recommended"):** back to the drawing — the desktop person window's place, its flat leave rows, the Balances page's names set left, a member's locked amber figures on their row's line; as built — the switch, the hyphen, the phone's search line, readings R1–R11. The Grades window already matched by then.
 - The desktop person window docked lower than drawn (top 200 against ~65), its last lines below the fold (`m5a-p2-desk-drawn`)
   — recommend the drawing's place.
 - The person window's leave lines are rounded cards with a cyan left bar on every line, where the drawings have flat rows

@@ -287,3 +287,7 @@ list.
 - **Each new test is proved red in the medium it runs in.** A list that runs unit tests says nothing about a browser
   test. And a browser test of an act that shares a code path with its own set-up takes its "before" from a value read
   BEFORE the set-up.
+
+## 10. The drawing check — D1494 (to build)
+
+His ruling D1494 (29 Oct 26): a script measures a built screen against its approved drawing — each named part's place, size, colour and text alignment, at his iPhone's and a desktop's size — lists every difference over about 2px with marked side-by-side pictures, and fails until each is fixed or put to him (D1426). Until it is built and its wording approved, a screen with a drawing is compared beside it by eye, as D1424 requires. Filed as [DRAWING-CHECK].

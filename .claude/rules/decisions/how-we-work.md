@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1494 | 29 Oct 26 | A drawing check is built as its own job: a script that measures a built screen against its approved drawing — where each part sits, its size, colour and text alignment — at his iPhone's and a desktop's size, lists every difference over about 2px with marked pictures side by side, and fails until each is fixed or put to him. |
 | D1478 | 28 Oct 26 | Any part of a screen he has already approved in a drawing is drawn again from that drawing and checked beside it before a page goes to him — in a later mock-up round as in a build; the approved drawing is the sole source, and only what a later ruling requires is added, named and shown beside it. |
 | D1443 | 28 Oct 26 | When his overnight message names the work, the agent still tells him the night's jobs before it starts — numbered, in order, each with what he will have in the morning, its check and its rough time, how many fit in his hours, and what waits for him — then starts without waiting for a reply. |
 | D1426 | 27 Oct 26 | Where a built screen differs from its approved drawing, the differences are shown to him first, side by side with each one highlighted, and he chooses which go back to the drawing — some built ones may be the better design; an outright fault (words breaking, something covered or off screen, a wrong behaviour) is fixed without asking. |

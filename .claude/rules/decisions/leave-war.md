@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1493 | 29 Oct 26 | M5a's drawing differences are settled as recommended: the desktop person window back to its drawn place, its leave lines flat rows with only the dot for new, the Balances names set left, a member's locked amber figures on their row's line; the rest stand as built. |
 | D1492 | 28 Oct 26 | The 24 readings of the Leave War M5a build spec stand as put to him, none struck: among them CCL, FCL, PL, EL and CL come down by themselves as approved, a balance changes only by its box, approved leave and 1 Jan, and D1473's example reads 21, 52, 52 under D1479. |
 | D1491 | 28 Oct 26 | The Leave War grid's drag down the LVE figures beside the names, and the bar it raises to give several people extra LVE at once, are removed, as the grid's FIGURES drawer is (D1245): a leave balance changes only by its box on the Balances page or the person window, by approved leave and by 1 Jan. |
 | D1490 | 28 Oct 26 | A leave grade given to a person after 1 Jan, or a grade's "+ days" changed during the year, counts from the next 1 Jan: the days that 1 Jan already added stay as they were, and a wrong grade put right after 1 Jan is corrected for that year by typing his App bal. |

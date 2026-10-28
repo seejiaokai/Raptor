@@ -192,6 +192,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
 - [IT-GUIDE-DATEBOX-SCRIPT] — the IT guide's picture script still types into date boxes that are buttons now — at its next re-shoot.
 - [ITFLOW-OIL-RESHOOT] — re-shoot the IT flow guide's Leave War and OIL pictures — on his word (D403).
+- [DRAWING-CHECK] — a script that measures each build against its approved drawing (D1494), proved on M5a's seven differences — its own job.
 - [IMPECCABLE-UPDATE] — the design skill to v4.1.3 (D625): the calendar job it waited for is live; its reads and his word next.
 - [START-CONTEXT-AUDIT] — the guard that stops a new chat's load growing back is not built; two of his own settings.
 - [CONTEXT-START-SIZE] — left: the short skill-notes guide (F) and his own connectors setting (E).
@@ -915,6 +916,9 @@ back to its last published version (`[DISCARD-MARKS-REMOVE]`, D488). The second 
 by a Sonnet helper — ran 21 Oct 26 on `[OG-TAG-OVER-COUNT]` (archived; the verdict: `raptor-port/docs/handpass/2026-10-21-look-keys.md` §12). **Place (the agent's line):** (1) with the next change to Insights'
 role question; (2) and (3) with their own jobs; (4) only if he raises it.
 **Seen 10 Oct 26, not corrected (a helper's scan of the backlog's own status lines):** `[INSIGHTS-CLOSE-STAYS-VISIBLE]`, `[LOGIC-STICKY-SEARCH-COMPACT]` and `[TRK-FLIGHT-LABEL-READABILITY]` still say "owner look and Claude reads pending" although the workflow UI pass is live (PR #481, 6 Oct 26) — read each, then archive it or say what is left; `[ITFLOW-OIL-RESHOOT]` waits on a merge that has happened (PR #469).
+
+### [DRAWING-CHECK] A drawing check: measure the build against its approved drawing (D1494 — 29 Oct 26)
+**Place:** its own job, Opus on high effort, its own branch from `main`. **What:** a Playwright script that opens the approved drawing (drawn on the real app — `.claude/skills/brainstorming/mockups-on-the-real-app.md`, the drawing scripts under `raptor-port/docs/mock/`) and the built page at the same size (desktop, his iPhone's 402), records each named part's box, text alignment, fill and edge, and lists every difference over about 2px or in look, with marked side-by-side crops and an overlay; red until each is fixed or put to him (D1426). **Proof:** it catches M5a's seven differences (`raptor-port/docs/handpass/parts/lw-m5a/walk-triage.md`). **Then:** the wording that makes it part of every build with a drawing, for the bug-check order and `raptor-port/docs/walk-scripts.md` §10 — read by a fresh, blind reader (D70, D790) before his approval. **Why:** builders followed the plan's words over the picture, reused parts carried their old look, and the by-eye check beside the drawing (D1424) missed it — M4 and M5a both.
 
 ### [IMPECCABLE-UPDATE] Move Impeccable to v4.1.3, the last version built from readable scripts — AFTER the calendar job (D625; the newest version is not taken, D623 — 7 Oct 26)
 **Place (his word, D625):** after the Inputs / SANS calendar job — its own small branch from `main`, the vendoring note's own steps (copy the publisher's files at the tag `skill-v4.1.3`, merge the two hook lines by hand), Astra's and Sol 6.1's reads (D70), then his "merge live". *The paragraph below is how the question arose; its two points "to put to him" are answered by D625 — v4.1.1 stays until then, and the update is 4.1.3, not a later version's guide text.*
