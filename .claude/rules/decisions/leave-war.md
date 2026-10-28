@@ -56,6 +56,10 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1489 | 28 Oct 26 | On 1 Jan the Leave War leaves CCL, FCL, PL, EL and CL as they stand: only LVE rolls over by itself (D1235); each person's new figure for those kinds is typed from the official leave app, by an admin or by the member on his own row while unlocked. |
+| D1488 | 28 Oct 26 | "Lock for members" is built as drawn in M5a round 2: on a desktop round 14's switch on the page's bar, off then on; on a phone the padlock button, an open padlock unlit when off and a closed padlock lit cyan when on. |
+| D1487 | 28 Oct 26 | A member's Balances page is built as drawn in M5a round 2: unlocked, his own row in boxes and everyone else's figures read only; locked, all read only with the padlock and "Locked by admin" — on a phone on a slim line under the page's bar; no Grades and no lock switch; his grade as words with its "+36". |
+| D1486 | 28 Oct 26 | The Leave War's Grades window and a row's grade box and list are built as round 14 drew them and M5a round 2 redrew them: a person with no grade shows "No grade" in amber in his own row; a tap on the box lists the grades with their "+ days" and "No grade"; "Grades…" opens the squadron's own list to rename, reorder, delete and add. |
 | D1485 | 28 Oct 26 | The Leave War's Settings carry no line to the Balances page: the Balances tab, one tap away beside ⚙, is its one way in. |
 | D1484 | 28 Oct 26 | The Balances page's "Days taken" view is built as drawn in M5a round 2: each person's days taken a kind, counted over the period picked in View at the top of the Leave War, its heading naming that period ("DAYS TAKEN IN JAN – DEC 26"); it has no year picker of its own. |
 | D1483 | 28 Oct 26 | On a phone the Balances page is built as drawn in M5a round 2, round 16's design: the names stay while the figures slide sideways and a pinch shows every column; four tabs share the top row with ⚙ in round 19's tighter spacing, dropping their icons under 400 wide. |

@@ -122,7 +122,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
-- [LEAVE-YEAR] — yearly leave balances and carry-over — ruled (D1218, D1224, D1229, D1234, D1235, D1473, D1474), built with the Leave War overhaul's M5a.
+- [LEAVE-YEAR] — yearly leave balances and carry-over — ruled (D1218, D1224, D1229, D1234, D1235, D1473, D1474, D1489 — the other kinds keep their figures on 1 Jan), built with the Leave War overhaul's M5a.
 - [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
 - [LW-M1-READ-LEFTOVERS] — three small things M1's code read found: a member's shared input over another man's bid, the "This replaces your … bid" note raised before the check, a vague refused Move — with the next Leave War batch; the midnight one built (D1266).
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
