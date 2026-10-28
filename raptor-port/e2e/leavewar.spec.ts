@@ -7865,10 +7865,11 @@ test('M5a walk A-F3: a box shows its whole figure and keeps its width, nothing b
   await page.getByTestId('pw-LVE').click()
   await page.getByTestId('pw-LVE').fill('16.5')
   expect(await whole('pw-LVE'), 'the person window’s box shows "16.5" whole').toBe(true)
-  expect(await pend(), 'Pending stays where it was').toBe(pend0)
+  /* (within half a pixel: GitHub's letters lay the same box out 0.016px apart — the fault this guards moved it 11px) */
+  expect(Math.abs((await pend()) - pend0), 'Pending stays where it was').toBeLessThan(0.5)
   await page.getByTestId('pw-LVE').fill('-123.5')
   expect(await whole('pw-LVE'), 'a long figure shown whole, in smaller letters').toBe(true)
-  expect(await pend(), 'Pending still where it was').toBe(pend0)
+  expect(Math.abs((await pend()) - pend0), 'Pending still where it was').toBeLessThan(0.5)
   expect(await whole('pw-CCL'), 'the CCL tile’s "−998.5" shown whole').toBe(true)
 })
 
