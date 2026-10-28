@@ -1,0 +1,63 @@
+[
+ {
+  "id": "F2.1 Undo once after approve→refuse: the line shows lit \"Approved\" again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Undo 1\",\"lit\":\"approved\",\"ok\":\"true\",\"no\":\"false\",\"okT\":\"Approved\",\"noT\":\"Refuse\",\"rec\":\"a\",\"head\":\"5 pending\"}",
+  "pics": [
+   "f2-3-undo1",
+   "f2-3-undo1-page"
+  ]
+ },
+ {
+  "id": "F2.2 …and the record agrees (the grid cell: approved)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "rec: pending=w approved=a refused=r undo1=a",
+  "pics": []
+ },
+ {
+  "id": "F2.3 Undo again: pending",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Undo 2\",\"lit\":\"none\",\"ok\":\"false\",\"no\":\"false\",\"okT\":\"Approve\",\"noT\":\"Refuse\",\"rec\":\"w\",\"head\":\"6 pending\"}",
+  "pics": [
+   "f2-4-undo2"
+  ]
+ },
+ {
+  "id": "F2.4 …record agrees (pending)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "rec pending=w undo2=w",
+  "pics": []
+ },
+ {
+  "id": "F2.5 Redo: lit \"Approved\", both buttons working",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Redo 1\",\"lit\":\"approved\",\"ok\":\"true\",\"no\":\"false\",\"okT\":\"Approved\",\"noT\":\"Refuse\",\"rec\":\"a\",\"head\":\"5 pending\"} {\"u\":false,\"r\":false}",
+  "pics": [
+   "f2-5-redo1"
+  ]
+ },
+ {
+  "id": "F2.6 Redo: lit \"Refused\"; record agrees",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Redo 2\",\"lit\":\"refused\",\"ok\":\"false\",\"no\":\"true\",\"okT\":\"Approve\",\"noT\":\"Refused\",\"rec\":\"r\",\"head\":\"5 pending\"} refusedRecord=r",
+  "pics": [
+   "f2-6-redo2",
+   "f2-6-redo2-page"
+  ]
+ },
+ {
+  "id": "F2.7 after the redos a tap on the lit button still works",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"tap lit Refused after redos\",\"lit\":\"none\",\"ok\":\"false\",\"no\":\"false\",\"okT\":\"Approve\",\"noT\":\"Refuse\",\"rec\":\"w\",\"head\":\"6 pending\"}",
+  "pics": [
+   "f2-7-after-redos-tap"
+  ]
+ }
+]

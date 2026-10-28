@@ -1,0 +1,18 @@
+[
+ {
+  "id": "S2h two touches back to back (page clock gap)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "pointerdown gap 33 ms; lit 6 of 6; button \"Approve all 0\"",
+  "pics": [
+   "s2b-back-to-back.png"
+  ]
+ },
+ {
+  "id": "S2i one Undo after the back-to-back taps",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lit after one Undo 0; undo disabled true",
+  "pics": []
+ }
+]

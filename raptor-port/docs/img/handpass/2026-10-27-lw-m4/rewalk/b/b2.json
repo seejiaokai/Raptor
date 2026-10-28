@@ -1,0 +1,134 @@
+[
+ {
+  "id": "B2 Approve lights it (pressed 100 ms picture)",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "100 ms: ok \"Approved\" bg rgb(63, 191, 111) line appr-line ph lit-approved",
+  "pics": [
+   "b2-402-1-approve-pressed.png"
+  ]
+ },
+ {
+  "id": "B2 settled: Approved lit, kind box filled, counts fall",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "ok \"Approved\" line appr-line ph lit-approved; header \"5 pending\" tab 7 all \"Approve all 5\"; box {\"cls\":\"c k-ll s-a appr-box\",\"bg\":\"rgba(242, 200, 110, 0.22)\",\"fg\":\"rgb(255, 241, 207)\",\"bd\":\"none rgb(255, 241, 207)\",\"td\":\"none\",\"op\":\"1\"}",
+  "pics": [
+   "b2-402-1-approve-settled.png"
+  ]
+ },
+ {
+  "id": "B2 the lit Approve does not move its edge (D1435)",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "ok left 248 -> 248 (100 ms) -> 248; width 66 -> 66; refuse left 320 -> 320; max shift 0",
+  "pics": [
+   "b2-402-0-pending.png",
+   "b2-402-1-approve-pressed.png",
+   "b2-402-1-approve-settled.png"
+  ]
+ },
+ {
+  "id": "B2 one tap on Refuse turns Approved into Refused (D1428)",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "refuse \"Refused\" approve \"Approve\" line appr-line ph lit-refused; header \"5 pending\" tab 7; box {\"cls\":\"c k-ll s-r appr-box\",\"bg\":\"rgba(0, 0, 0, 0)\",\"fg\":\"rgb(125, 136, 148)\",\"bd\":\"none rgb(125, 136, 148)\",\"td\":\"line-through\",\"op\":\"1\"}",
+  "pics": [
+   "b2-402-2-refuse-once-pressed.png",
+   "b2-402-2-refuse-once-settled.png"
+  ]
+ },
+ {
+  "id": "B2 one tap on Approve turns Refused into Approved",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "approve \"Approved\" refuse \"Refuse\" line appr-line ph lit-approved; box {\"cls\":\"c k-ll s-a appr-box\",\"bg\":\"rgba(242, 200, 110, 0.22)\",\"fg\":\"rgb(255, 241, 207)\",\"bd\":\"none rgb(255, 241, 207)\",\"td\":\"none\",\"op\":\"1\"}",
+  "pics": [
+   "b2-402-3-approve-once-pressed.png",
+   "b2-402-3-approve-once-settled.png"
+  ]
+ },
+ {
+  "id": "B2 a tap on the lit Approve sends it back to pending",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "line appr-line ph; ok \"Approve\"; header \"6 pending\" tab 8; box {\"cls\":\"c k-ll s-w appr-box\",\"bg\":\"rgba(0, 0, 0, 0)\",\"fg\":\"rgb(242, 200, 110)\",\"bd\":\"none rgb(242, 200, 110)\",\"td\":\"none\",\"op\":\"1\"}",
+  "pics": [
+   "b2-402-4-approve-lit-pressed.png",
+   "b2-402-4-approve-lit-settled.png"
+  ]
+ },
+ {
+  "id": "B2 nothing scrolls sideways through the presses",
+  "size": 402,
+  "verdict": "PASS",
+  "said": "scrollWidth max 402",
+  "pics": []
+ },
+ {
+  "id": "B2 Approve lights it (pressed 100 ms picture)",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "100 ms: ok \"Approved\" bg rgb(63, 191, 111) line appr-line ph lit-approved",
+  "pics": [
+   "b2-390-1-approve-pressed.png"
+  ]
+ },
+ {
+  "id": "B2 settled: Approved lit, kind box filled, counts fall",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "ok \"Approved\" line appr-line ph lit-approved; header \"5 pending\" tab 7 all \"Approve all 5\"; box {\"cls\":\"c k-ll s-a appr-box\",\"bg\":\"rgba(242, 200, 110, 0.22)\",\"fg\":\"rgb(255, 241, 207)\",\"bd\":\"none rgb(255, 241, 207)\",\"td\":\"none\",\"op\":\"1\"}",
+  "pics": [
+   "b2-390-1-approve-settled.png"
+  ]
+ },
+ {
+  "id": "B2 the lit Approve does not move its edge (D1435)",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "ok left 236 -> 236 (100 ms) -> 236; width 66 -> 66; refuse left 308 -> 308; max shift 0",
+  "pics": [
+   "b2-390-0-pending.png",
+   "b2-390-1-approve-pressed.png",
+   "b2-390-1-approve-settled.png"
+  ]
+ },
+ {
+  "id": "B2 one tap on Refuse turns Approved into Refused (D1428)",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "refuse \"Refused\" approve \"Approve\" line appr-line ph lit-refused; header \"5 pending\" tab 7; box {\"cls\":\"c k-ll s-r appr-box\",\"bg\":\"rgba(0, 0, 0, 0)\",\"fg\":\"rgb(125, 136, 148)\",\"bd\":\"none rgb(125, 136, 148)\",\"td\":\"line-through\",\"op\":\"1\"}",
+  "pics": [
+   "b2-390-2-refuse-once-pressed.png",
+   "b2-390-2-refuse-once-settled.png"
+  ]
+ },
+ {
+  "id": "B2 one tap on Approve turns Refused into Approved",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "approve \"Approved\" refuse \"Refuse\" line appr-line ph lit-approved; box {\"cls\":\"c k-ll s-a appr-box\",\"bg\":\"rgba(242, 200, 110, 0.22)\",\"fg\":\"rgb(255, 241, 207)\",\"bd\":\"none rgb(255, 241, 207)\",\"td\":\"none\",\"op\":\"1\"}",
+  "pics": [
+   "b2-390-3-approve-once-pressed.png",
+   "b2-390-3-approve-once-settled.png"
+  ]
+ },
+ {
+  "id": "B2 a tap on the lit Approve sends it back to pending",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "line appr-line ph; ok \"Approve\"; header \"6 pending\" tab 8; box {\"cls\":\"c k-ll s-w appr-box\",\"bg\":\"rgba(0, 0, 0, 0)\",\"fg\":\"rgb(242, 200, 110)\",\"bd\":\"none rgb(242, 200, 110)\",\"td\":\"none\",\"op\":\"1\"}",
+  "pics": [
+   "b2-390-4-approve-lit-pressed.png",
+   "b2-390-4-approve-lit-settled.png"
+  ]
+ },
+ {
+  "id": "B2 nothing scrolls sideways through the presses",
+  "size": 390,
+  "verdict": "PASS",
+  "said": "scrollWidth max 390",
+  "pics": []
+ }
+]

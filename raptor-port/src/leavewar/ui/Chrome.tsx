@@ -7,14 +7,15 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalS
 import { boxText, evaluatePeriod, FIGURES, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, manningRedDays, openInputWindow, rosterCallsign, subscribeClashes, usePlanVersion, type ClashWayOut, type SyncClash } from '../sync'
-import { figureCtxOf, focusDay, getState, selectWar } from '../state/store'
+import { figureCtxOf, focusDay, getState, getVersion, selectWar } from '../state/store'
 import { OpenDatesSheet } from './OpenDatesSheet'
 import { dayLabel, shortDate } from './dates'
 import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
-import { askLw, isOilUp, lwNavVersion, subscribeLwNav } from './lwnav'
+import { askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode } from './lwnav'
+import { pendingCount } from '../approvals'
 import { fig, myLeaveOf } from './myleave'
 import './chrome.css'
 
@@ -85,6 +86,16 @@ function GearGlyph() {
   )
 }
 
+/* Approvals' mark — a list with a tick, as drawn (`full/r19-nav-*`, `r22-1-desk`) */
+function ApprGlyph() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 6h10M4 12h7M4 18h7" />
+      <path d="m14 16 2.5 2.5L21 13" />
+    </svg>
+  )
+}
+
 /* the period list's last line, "+ New period" (D1244) — a value no period id can be */
 const NEW_PERIOD = '\u0000new'
 
@@ -126,11 +137,22 @@ export function Topbar() {
   const me = viewer && people.some(p => p.id === viewer) ? viewer : null
   const mine = me ? myLeaveOf(figureCtxOf(), wars, me, memberToday()) : null
   /* the tabs, a tab list in the usual manner (as the Inputs page's): one tab stop, the arrow keys move along it */
-  const tabs: Array<['grid' | 'oil', string, () => void]> = [
-    ['grid', 'Grid', () => askLw({ kind: 'grid' })],
-    ['oil', 'OIL', () => askLw({ kind: 'oil' })],
+  /* APPROVALS — an admin's tab (the overhaul's M4, 8.1 — D1254, D1420; a member has none). Its count is every pending
+     request in EVERY period: the count is the only sign that anything waits (D1208, D1219). Choosing another tab leaves
+     Approvals (D1421 — the visit ends). Worked out once per change of the war, never per repaint. */
+  const admin = role === 'admin'
+  const mode = apprMode()
+  const version = getVersion()
+  const waiting = useMemo(() => (admin ? pendingCount() : 0), [admin, version])
+  /* the member view (D292) is taken off the tab (8.1, the walk's 15) */
+  useEffect(() => { if (!admin && mode !== 'off') setApprMode('off') }, [admin, mode])
+  type Tab = 'grid' | 'approvals' | 'oil'
+  const tabs: Array<[Tab, string, () => void]> = [
+    ['grid', 'Grid', () => { setApprMode('off'); askLw({ kind: 'grid' }) }],
+    ...(admin ? [['approvals', 'Approvals', () => { askLw({ kind: 'grid' }); setApprMode('page') }] as [Tab, string, () => void]] : []),
+    ['oil', 'OIL', () => { setApprMode('off'); askLw({ kind: 'oil' }) }],
   ]
-  const tabOn = (t: 'grid' | 'oil') => (t === 'oil') === oilUp
+  const tabOn = (t: Tab) => (mode === 'page' ? t === 'approvals' : t === 'approvals' ? false : (t === 'oil') === oilUp)
   const tabKey = (e: ReactKeyboardEvent, i: number) => {
     const by = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
     if (!by) return
@@ -148,15 +170,16 @@ export function Topbar() {
           type="button"
           role="tab"
           className="intab"
-          data-testid={t === 'oil' ? 'oil-tracker' : 'lw-tab-grid'}
+          data-testid={t === 'oil' ? 'oil-tracker' : t === 'approvals' ? 'lw-tab-approvals' : 'lw-tab-grid'}
           aria-selected={tabOn(t)}
           tabIndex={tabOn(t) ? 0 : -1}
-          title={t === 'oil' ? 'OIL balances, credits and history' : 'The leave grid'}
+          title={t === 'oil' ? 'OIL balances, credits and history' : t === 'approvals' ? 'Leave waiting for a decision' : 'The leave grid'}
           onClick={go}
           onKeyDown={e => tabKey(e, i)}
         >
-          {t === 'grid' ? <GridGlyph /> : <ClockGlyph />}
+          {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : <ClockGlyph />}
           <span className="intab-t">{label}</span>
+          {t === 'approvals' && waiting > 0 && <span className="appr-tabn" data-testid="lw-approvals-count" aria-label={`${waiting} pending`}>{waiting}</span>}
         </button>
       ))}
     </div>

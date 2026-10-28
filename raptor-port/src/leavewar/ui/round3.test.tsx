@@ -98,7 +98,7 @@ describe('round 3 — the one-day window', () => {
     const hd = sheet().querySelector('.bidsheet-hd')!
     expect(hd.querySelector('.cur')).toBeNull()
     expect(hd.textContent!.toLowerCase()).not.toContain('now')
-    expect([...hd.children].map(c => c.getAttribute('data-testid') || c.className)).toEqual(['who', 'dt', 'bid-approve-tick', 'bid-cancel'])
+    expect([...hd.children].map(c => c.getAttribute('data-testid') || c.className)).toEqual(['who', 'dt when', 'bid-approve-tick', 'bid-cancel'])
   })
 
   it('lights the day\'s own leave; an empty day lights none', () => {
@@ -669,5 +669,41 @@ describe('round 3 — the fresh read’s finds', () => {
     act(() => lwUndo())
     expect(awardsOnDay(P, D), 'the award taken back first').toHaveLength(0)
     expect(rawState().wars[0]!.recs[P]![D]!.find(x => x.kind === 'request')).toMatchObject({ remarks: 'typed then an award' })
+  })
+})
+
+/* HIS ANSWERS OF 28 OCT 26 to questions 26 and 27 of the M4 page: the switch reads "Auto-approve" (D1463), and the title's
+   date or dates in every window opened on a leave's day or dates wear the brighter look (D1462 — `.dt.when`, its colour
+   pinned in the browser by e2e/leavewar.spec.ts). Written before the change, red first. */
+describe('his answers 26 and 27 (D1462, D1463)', () => {
+  it('the switch reads "Auto-approve" in the one-day window and the drag window', () => {
+    const r = render(<Matrix />)
+    fireEvent.click(cell())
+    expect(within(sheet()).getByTestId('bid-approve-tick').textContent).toBe('Auto-approve')
+    expect(sheet().textContent).not.toContain('Approve what I enter')
+    r.unmount()
+    render(<SelectSheet sel={{ people: [P], from: D, to: D, cells: [{ personId: P, date: D }] } as any} people={id => id}
+      role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} />)
+    expect(screen.getByTestId('sel-approve-tick').textContent).toBe('Auto-approve')
+  })
+
+  it('the title\'s day wears the brighter look in the one-day window, the drag window and the day\'s list', () => {
+    const r = render(<Matrix />)
+    fireEvent.click(cell())
+    expect(sheet().querySelector('.bidsheet-hd .dt')!.classList.contains('when')).toBe(true)
+    fireEvent.click(within(sheet()).getByTestId('bid-cancel'))
+    r.unmount()
+    const s = render(<SelectSheet sel={{ people: [P], from: D, to: D, cells: [{ personId: P, date: D }] } as any} people={id => id}
+      role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} />)
+    expect(screen.getByTestId('sel-span').classList.contains('when')).toBe(true)
+    s.unmount()
+    /* a day with two entries opens the day's list */
+    expect(setCell(P, D, '*LL')).toBe(true)
+    expect(setCell(P, D, 'OL*')).toBe(true)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const dl = screen.queryByTestId('daylist-sheet')
+    if (dl) expect(dl.querySelector('.bidsheet-hd .dt')!.classList.contains('when')).toBe(true)
+    else expect(sheet().querySelector('.bidsheet-hd .dt')!.classList.contains('when')).toBe(true)
   })
 })

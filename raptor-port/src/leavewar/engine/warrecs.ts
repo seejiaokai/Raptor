@@ -52,6 +52,25 @@ export interface RequestRec extends Placed {
   remarks?: string
   till?: boolean
   docIds?: string[]
+  /** WHO PLACED IT AND WHEN (the overhaul's M4, 8.6 — the Approvals list's order and its PLACED column, the entry window's
+   *  "Placed" line): the person id of whoever placed the bid and the moment, ms. Kept across a move, a re-typed kind on the
+   *  same half and a put-back (the approved Input carries them as `lwBy` / `lwAt`); restored as recorded by Undo and Redo
+   *  (a restore writes the image back). A request saved before M4 has none (it sorts first and shows a dash — D401). */
+  placedBy?: string
+  placedAt?: number
+  /** WHO LAST DECIDED IT AND WHEN (M4 8.3 — "Already refused by Hex", the entry window's "Decided" line): set when an admin
+   *  refuses it; cleared when it goes back to pending. An approval turns it into an Input, whose `by` names the approver. */
+  decidedBy?: string
+  decidedAt?: number
+}
+
+/** who placed a request and who decided it — copied wherever a request is rebuilt (a move keeps who placed it; a move
+ *  makes it pending again, so who decided it is dropped there by the mover) */
+export function requestStamps(r: Pick<RequestRec, 'placedBy' | 'placedAt' | 'decidedBy' | 'decidedAt'>, decided = true): Pick<RequestRec, 'placedBy' | 'placedAt' | 'decidedBy' | 'decidedAt'> {
+  return {
+    ...(r.placedBy ? { placedBy: r.placedBy } : {}), ...(typeof r.placedAt === 'number' ? { placedAt: r.placedAt } : {}),
+    ...(decided && r.decidedBy ? { decidedBy: r.decidedBy } : {}), ...(decided && typeof r.decidedAt === 'number' ? { decidedAt: r.decidedAt } : {}),
+  }
 }
 
 /** the words and papers a request carries, copied wherever a request is rebuilt (a move, a put-back, a re-typed bid) */
@@ -124,6 +143,12 @@ export interface NoticeRec extends Placed {
   /** the command that replaced it — "OK, seen" clears every notice it made */
   seq: number
   at: string
+  /** WHAT THE BID CARRIED, KEPT (the overhaul's M4, 9.3a — M3's leftover (7)): a bid replaced whole by a clashing input lost
+   *  its remarks and documents from every record; they stay here, shown on the day's list, and are offered onto the
+   *  replacing leave of the same man (`iid` — the input that replaced it; leavewar/sync.ts carryReplaced) */
+  remarks?: string
+  docIds?: string[]
+  iid?: string
 }
 
 export type WarRec = RequestRec | CreditRec | NoticeRec
@@ -337,6 +362,13 @@ function readRecBody(x: unknown): WarRec | null {
       const ids = [...new Set((x.docIds as unknown[]).filter((d): d is string => typeof d === 'string' && !!d.trim() && d.length <= 120))].slice(0, MAX_REQ_DOCS)
       if (ids.length) r.docIds = ids
     }
+    /* who placed it and who decided it (M4 8.6) — a request saved before M4 has none and is kept as it is (D401) */
+    const who = (v: unknown): v is string => typeof v === 'string' && v.length > 0 && v.length <= 80
+    const when = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v) && v > 0
+    if (who(x.placedBy)) r.placedBy = x.placedBy
+    if (when(x.placedAt)) r.placedAt = x.placedAt
+    if (who(x.decidedBy)) r.decidedBy = x.decidedBy
+    if (when(x.decidedAt)) r.decidedAt = x.decidedAt
     return r
   }
   if (x.kind === 'credit') {
@@ -365,7 +397,15 @@ function readRecBody(x: unknown): WarRec | null {
   if (x.kind === 'notice') {
     if (typeof x.code !== 'string' || !parseCell(x.code) || (x.was !== 'pending' && x.was !== 'acknowledged')) return null
     if (typeof x.byType !== 'string' || typeof x.byWho !== 'string' || typeof x.seq !== 'number' || typeof x.at !== 'string') return null
-    return { id: x.id, kind: 'notice', code: x.code, was: 'pending', byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
+    const n: NoticeRec = { id: x.id, kind: 'notice', code: x.code, was: 'pending', byType: x.byType.slice(0, 40), byWho: x.byWho.slice(0, 60), seq: x.seq, at: x.at }
+    /* what the replaced bid carried (M4 9.3a) — a notice saved before M4 has none and is kept as it is (D401) */
+    if (typeof x.remarks === 'string' && x.remarks.trim()) n.remarks = x.remarks.slice(0, MAX_CARRIED_REMARK)
+    if (Array.isArray(x.docIds)) {
+      const ids = [...new Set((x.docIds as unknown[]).filter((d): d is string => typeof d === 'string' && !!d.trim() && d.length <= 120))].slice(0, MAX_REQ_DOCS)
+      if (ids.length) n.docIds = ids
+    }
+    if (typeof x.iid === 'string' && x.iid && x.iid.length <= 80) n.iid = x.iid
+    return n
   }
   return null
 }

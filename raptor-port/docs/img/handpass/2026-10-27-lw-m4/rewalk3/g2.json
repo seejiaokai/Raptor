@@ -1,0 +1,41 @@
+[
+ {
+  "id": "G2d click on the Grid tab with the calendar open: calendar closes AND Grid opens in that one click",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before open true; after approvals page false, calendar false, grid cells visible true",
+  "pics": [
+   "g2-d-1-open",
+   "g2-d-2-after"
+  ]
+ },
+ {
+  "id": "G2e first click on a line's Approve with the calendar open: calendar closes, nothing decided",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "open -> false; before {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}; after {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"open\":false,\"page\":true,\"lines\":\"-,-,-,-,-,-\"}; the point 1121,694 calendar box [48,258,380,611]",
+  "pics": [
+   "g2-e-1-open",
+   "g2-e-2-after-first-click"
+  ]
+ },
+ {
+  "id": "G2e the next click decides that line only",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines approved,-,-,-,-,-; head 5 pending; Approve all \"Approve all 5\"; tab 7",
+  "pics": [
+   "g2-e-3-after-second-click"
+  ]
+ },
+ {
+  "id": "G2 click on the top bar's Undo with the calendar open: closes the calendar AND undoes, in one click",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Undo enabled true; open true -> false; lines approved,-,-,-,-,- -> -,-,-,-,-,-; head 5 pending -> 6 pending",
+  "pics": [
+   "g2-u-1-open",
+   "g2-u-2-after-undo"
+  ]
+ }
+]

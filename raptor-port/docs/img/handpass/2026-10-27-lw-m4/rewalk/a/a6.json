@@ -1,0 +1,74 @@
+[
+ {
+  "id": "A6.1 dates -> the grid, the cell ringed, the slim bar up",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bar \"Approvals 6 pending · 1 new Back ▴ ✕\" ring {\"l\":211,\"t\":679,\"r\":237,\"b\":706}",
+  "pics": [
+   "a6-1-slim-up"
+  ]
+ },
+ {
+  "id": "A6.2 the bar is compact, centred, plain (no cyan outline); Back plain cyan words, plain X",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "width 383 of 1536; left gap 576 right gap 576; bar border \"1px solid rgb(42, 49, 58)\" bg rgb(32, 38, 46); Back {\"bg\":\"rgba(0, 0, 0, 0)\",\"bd\":\"0px none rgb(59, 198, 232)\",\"color\":\"rgb(59, 198, 232)\"}; X {\"bg\":\"rgba(0, 0, 0, 0)\",\"bd\":\"0px none rgb(182, 192, 203)\",\"color\":\"rgb(182, 192, 203)\"} \"✕\"",
+  "pics": [
+   "a6-1-slim-up"
+  ]
+ },
+ {
+  "id": "A6.3 a person window (tap a name) stands above the bar",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "52 window box(es); overlaps bar: true; bar on top at its three points: false ([\"DIV.sheetscrim#sheet-scrim\",\"DIV.sheetscrim#sheet-scrim\",\"DIV.sheetscrim#sheet-scrim\"]); windows [{\"id\":\"person-dice\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,576,136,596]},{\"id\":\"person-shaft\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,603,136,622]},{\"id\":\"person-snap\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,629,136,649]},{\"id\":\"person-pump\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,656,136,675]},{\"id\":\"person-bane\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,682,136,702]},{\"id\":\"person-stiff\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,709,136,729]},{\"id\":\"person-mamba\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,736,136,755]},{\"id\":\"person-nact\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,762,136,782]},{\"id\":\"person-slipway\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,789,136,808]},{\"id\":\"person-razer\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,815,136,835]},{\"id\":\"person-glass\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,842,136,862]},{\"id\":\"person-freak\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,869,136,888]},{\"id\":\"person-slash\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,927,136,947]},{\"id\":\"person-taipan\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,954,136,973]},{\"id\":\"person-beams\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,980,136,1000]},{\"id\":\"person-chaps\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1007,136,1027]},{\"id\":\"person-boosh\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1034,136,1053]},{\"id\":\"person-prowler\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1060,136,1080]},{\"id\":\"person-harpoon\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1087,136,1106]},{\"id\":\"person-split\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1113,136,1133]},{\"id\":\"person-dj\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1194,136,1213]},{\"id\":\"person-salsa\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1242,136,1262]},{\"id\":\"person-bruise\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1291,136,1311]},{\"id\":\"person-pike\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1318,136,1337]},{\"id\":\"person-casper\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1344,136,1364]},{\"id\":\"person-ignite\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1371,136,1390]},{\"id\":\"person-fantom\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1419,136,1439]},{\"id\":\"person-vegas\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1446,136,1466]},{\"id\":\"person-drill\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1505,136,1524]},{\"id\":\"person-nasty\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1531,136,1551]},{\"id\":\"person-dirty\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1558,136,1577]},{\"id\":\"person-stuff\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1584,136,1604]},{\"id\":\"person-wolf\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1611,136,1631]},{\"id\":\"person-ammo\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1692,136,1711]},{\"id\":\"person-pain\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1718,136,1738]},{\"id\":\"person-psy\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1767,136,1786]},{\"id\":\"person-spaceman\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1793,136,1813]},{\"id\":\"person-plasma\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1820,136,1840]},{\"id\":\"person-riddler\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1847,136,1866]},{\"id\":\"person-sufa\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1873,136,1893]},{\"id\":\"person-rocky\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1900,136,1919]},{\"id\":\"person-xray\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1926,136,1946]},{\"id\":\"person-divot\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1953,136,1973]},{\"id\":\"person-shrek\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,1980,136,1999]},{\"id\":\"person-prism\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,2038,136,2058]},{\"id\":\"person-haowen\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,2065,136,2084]},{\"id\":\"person-bapster\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,2091,136,2111]},{\"id\":\"person-spanner\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,2150,136,2170]},{\"id\":\"person-torque\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,2177,136,2196]},{\"id\":\"person-gizmo\",\"cls\":\"whoedit\",\"z\":\"auto\",\"r\":[33,2203,136,2223]},{\"id\":\"sheet-scrim\",\"cls\":\"sheetscrim\",\"z\":\"79\",\"r\":[0,0,1536,860]},{\"id\":\"person-figures\",\"cls\":\"bidsheet\",\"z\":\"80\",\"r\":[488,174,1048,786]}]",
+  "pics": [
+   "a6-2-person-window"
+  ]
+ },
+ {
+  "id": "A6.4 the bid window opened over the bar stands above it (A-F6)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window {\"l\":488,\"t\":521,\"r\":1048,\"b\":786,\"w\":560,\"h\":265} bar {\"l\":576,\"t\":794,\"r\":960,\"b\":838,\"w\":383,\"h\":44} topmost at the bar's centre: DIV.sheetscrim",
+  "pics": [
+   "a6-3-window-over-bar"
+  ]
+ },
+ {
+  "id": "A6.5 the manning bubble stands ABOVE the slim bar (B-F3)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bubble {\"l\":488,\"t\":736,\"r\":1048,\"b\":782,\"w\":560,\"h\":46} \"This bid: IWSO 3 → 2 Show ›\"; bar {\"l\":576,\"t\":794,\"r\":960,\"b\":838,\"w\":383,\"h\":44}; bubble bottom 782 vs bar top 794",
+  "pics": [
+   "a6-4-bubble"
+  ]
+ },
+ {
+  "id": "A6.6 with the bar up, another cell tapped: its window opens, the bar stays",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window opened true; bar before true after true",
+  "pics": [
+   "a6-5-another-cell"
+  ]
+ },
+ {
+  "id": "A6.7 Back opens Approvals as left: the lit line still lit",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before \"appr-line lit-approved\" after \"appr-line lit-approved\"; slim gone true",
+  "pics": [
+   "a6-6-back"
+  ]
+ },
+ {
+  "id": "A6.8 X closes the bar and leaves Approvals (tab no longer lit)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bar gone true; approvals page visible false; tab intab|false",
+  "pics": [
+   "a6-7-x"
+  ]
+ }
+]

@@ -27,3 +27,19 @@ export function setOilUp(v: boolean) { if (oilUp !== v) { oilUp = v; ping() } }
 export const isOilUp = () => oilUp
 export const lwNavVersion = () => seq
 export function subscribeLwNav(f: () => void) { subs.add(f); return () => { subs.delete(f) } }
+
+/* APPROVALS (the overhaul's M4, 8.1 and 8.5 — D1254, D1420, D1231). An admin's tab whose page takes the grid card's place.
+   'page' — its page is up; 'bar' — he tapped a request's dates, so the Grid is up with the slim "Back to Approvals" bar at
+   its foot, and the page waits behind it exactly as he left it (its lit lines, its dots, the dates picked, its scroll);
+   'off' — he has LEFT Approvals: another tab, the slim bar's ✕, another page, or the member view. Leaving ends the visit
+   (D1421: the lit lines and the dots go). View state only — not saved, not undone, repaints no grid. */
+export type ApprMode = 'off' | 'page' | 'bar'
+let appr: ApprMode = 'off'
+export const apprMode = (): ApprMode => appr
+export function setApprMode(m: ApprMode) { if (appr !== m) { appr = m; ping() } }
+
+/* A DAY ASKED FOR FROM OUTSIDE THE PAGE (M4 9.6 — the bell's Leave War line): the page is not on screen yet, so the ask
+   waits here and the page's landing takes it INSTEAD of its own first-visit landing (LeaveWarPage.tsx). */
+let ringAsk: { personId: string; date: string } | null = null
+export function askRing(a: { personId: string; date: string } | null) { ringAsk = a }
+export function takeRingAsk(): { personId: string; date: string } | null { const a = ringAsk; ringAsk = null; return a }

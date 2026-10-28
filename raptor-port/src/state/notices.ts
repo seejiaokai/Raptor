@@ -48,6 +48,11 @@ export type NoticePart =
   | { k: 'rem'; who: string[] }                    // others taken out
   | { k: 'title'; was: string }                    // renamed
   | { k: 'rmk' }                                   // its remark changed
+  /* …AND IT REPLACED HIS PENDING LEAVE WAR BID (the overhaul's M4, 9.3a — D1142: "a bid replaced by a clashing input"):
+     one line, not two — the Inputs door's own line about the input says it ("You were added · replaces your LL bid"), and
+     the war writes none. `c` — the bid's kind as stored (LL, *LL). Noted by the clash gate inside the same command
+     (noteReplacedBid, below) */
+  | { k: 'rbid'; c: string }
   /* A DAY MADE A PUBLIC HOLIDAY AFTER WHAT STANDS ON IT WAS FILED ([OIL-ASK-NOTIFY] — owner D780: "There should be a notification
      to the schedulers to award oil on those inputs. And should not be silent."; D783 (6): "one bell line a holiday,
      counting only what is left unanswered, a tap opening the list"). ITS OWN KIND OF NOTICE: it is about no one input
@@ -55,6 +60,20 @@ export type NoticePart =
      IT STORES NO COUNT — how many inputs still need an answer is read live when the bell draws (noticeWords), so what
      an admin answers tells nobody (D781), and a line with nothing left is not listed at all (noticeLive). */
   | { k: 'oilhol'; a: string; b: string }
+  /* THE LEAVE WAR'S OWN LINES (the overhaul's M4, batch 9 — owner D1142, D1214, D1216, D1422; the build spec §2). About no
+     input (`iid` is ''): `name` is "Your leave" or "Leave War", `day` the first day. Written by the war's own command, so
+     its Undo takes them with it (leavewar/state/store.ts tellDecisions / tellOpenings, through leavewar/sync.ts).
+     `lw` — a decision on HIS leave: `c` the kind as stored (LL, *LL), `a`..`b` its days, `d` what was done, `to`..`tb`
+     where a move took it; `again` — a Redo after a "taken back" line (9.3: a fresh line, so it is unread), `ref` the line
+     it repeats (the fixes' M9: shown only while that line stands, and only the newest "again" of it). */
+  | { k: 'lw'; c: string; a: string; b: string; d: LwDid; to?: string; tb?: string; again?: true; ref?: string; w?: string }
+  /* bidding opened or closed on a stretch (D1214) — `end`: closed because its last date passed (derived, never stored) */
+  | { k: 'lwopen'; a: string; b: string; open: boolean; end?: true }
+  /* a war line the admin's Undo took back after the member had read it (D1216): `ref` the line it was, `d` what it said */
+  | { k: 'lwback'; c?: string; a: string; b: string; d: LwDid | 'open' | 'close'; ref: string; w?: string }
+
+/** what the war did to a man's leave, for his bell (M4 9.1, 9.4a, 9.7) */
+export type LwDid = 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel' | 'retyped'
 
 export interface Notice {
   id: string
@@ -134,6 +153,28 @@ export interface PassOpts {
   /** the app itself took someone out (a posting on its date, a delete): said with no name (R12) */
   app?: boolean
   at?: number
+  /** NEVER TOLD TWICE (the overhaul's M4, 9.2 — the red team's B1): the command is one of the Leave War's own, which writes
+   *  its ONE line about a leave it approved (state/notices.ts `lw`), so the Inputs page's copy of that leave — cut, moved,
+   *  deleted, put back — tells nothing here. A change made on the Inputs page keeps telling him as today (D1166). */
+  skipLw?: boolean
+  /** the pending Leave War bids this command's inputs replaced (M4 9.3a): input id → person → the bids' kinds */
+  replaced?: ReadonlyMap<string, ReadonlyMap<string, readonly string[]>>
+}
+/* WHICH BIDS A COMMAND'S FILINGS REPLACED (M4 9.3a) — noted by the Leave War's clash gate (leavewar/inputgate.ts
+   replaceClashingBids) inside the very command whose input replaced them, read by that command's notice pass
+   (state/sched-commit.ts tellPass). Keyed by the command, so a refused command's notes go with it and never reach
+   another's line. */
+const REPLACED = new WeakMap<object, Map<string, Map<string, string[]>>>()
+export function noteReplacedBid(cmd: object | null, iid: string, person: string, code: string): void {
+  if (!cmd || !iid) return
+  const m = REPLACED.get(cmd) ?? new Map<string, Map<string, string[]>>()
+  const byP = m.get(iid) ?? new Map<string, string[]>()
+  const cs = byP.get(person) ?? []
+  if (!cs.includes(code)) cs.push(code)
+  byP.set(person, cs); m.set(iid, byP); REPLACED.set(cmd, m)
+}
+export function replacedBidsOf(cmd: object | null): ReadonlyMap<string, ReadonlyMap<string, readonly string[]>> | undefined {
+  return cmd ? REPLACED.get(cmd) : undefined
 }
 /** THE PASS — every input before the command (`before`, by id) against the list as it stands; pushes the notices the
  *  change owes onto NOTICES and answers how many. Nothing is told when nothing a reader sees has moved. */
@@ -159,12 +200,16 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
   let made = 0
   const tell = (to: string, r: any, what: NoticePart[]) => {
     if (!what.length || to === o.actor || !here(to)) return
+    /* (the bids of his this input replaced on the Leave War — said on this one line, M4 9.3a) */
+    const rb = o.replaced?.get(String(r.iid))?.get(to)
+    if (rb && rb.length) what = [...what, ...rb.map(c => ({ k: 'rbid' as const, c }))]
     NOTICES.push({ id: mint(at), to, by, at, iid: String(r.iid), name: String(inpLabel(r)), day: firstDay(r), what })
     made++
   }
   const split = new Map<string, string>()             // old input id → the man split out of it, told under his new one
   for (const [iid, a] of now) {
     if (before.has(iid)) continue
+    if (o.skipLw && a.lw) continue
     /* a leave the Leave War approved is told by the war's own page; nothing here */
     if (a.lw) continue
     const from = splitFrom(a)
@@ -174,6 +219,16 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
   }
   for (const [iid, b] of before) {
     const a = now.get(iid)
+    if (o.skipLw && (b.lw || (a && a.lw))) {
+      /* …but its REMARK is no line of the war's: the war tells decisions, moves and deletes, never words — so a remark
+         changed on a war-approved leave from a war window (the drag window's Remarks, D1341) is told here, once, as it was
+         before M4 (the scenario designer's ★7) */
+      if (a && b.lw && a.lw) {
+        const rmk = common(b, a, '').filter(x => x.k === 'rmk')
+        if (rmk.length && common(b, a, '').length === rmk.length) for (const p of ids(a)) tell(p, a, rmk)
+      }
+      continue
+    }
     const was = ids(b)
     if (!a) {
       for (const p of new Set([...was, b.by != null ? String(b.by) : ''])) if (p) tell(p, b, [{ k: 'del' }])
@@ -233,6 +288,30 @@ export function noticeLeft(n: Notice): number { const s = noticeSpan(n); return 
  *  by what counts as unread (state/noticeseen.ts) and so by whether the bell is lit: a line the list leaves out can
  *  never light it. */
 export function noticeLive(n: Notice): boolean {
+  /* ONE BIDDING LINE A STRETCH (M4 9.4): each month tapped in "Open for bidding" is its own command — a newer line of his
+     about bidding on dates this one shares takes its place, as the holiday's lines do */
+  const o = openOf(n)
+  if (o) {
+    /* (the lines his bell works out count too: a stretch that ENDED replaces the line that opened it) */
+    for (const x of allNoticesFor(n.to)) {
+      if (x === n || x.to !== n.to || !(x.at > n.at || (x.at === n.at && x.id > n.id))) continue
+      const y = openOf(x)
+      if (y && y.a <= o.b && o.a <= y.b) return false
+    }
+    return true
+  }
+  /* AN "AGAIN" LINE STANDS WITH THE LINE IT REPEATS (the fixes' M9 — the Opus read's 5; D1216): a Redo's "LL approved again"
+     is the follow-up's own line, not the step's, so the next Undo cannot take it; it is shown only while the line it
+     repeats is held (the decision stands), and only the newest "again" of that line */
+  const w: any = (n.what || [])[0]
+  if (w && w.k === 'lw' && w.again && w.ref) {
+    if (!NOTICES.some(x => x.id === w.ref)) return false
+    for (const x of NOTICES) {
+      const y: any = x === n || x.to !== n.to ? null : (x.what || [])[0]
+      if (y && y.k === 'lw' && y.again && y.ref === w.ref && (x.at > n.at || (x.at === n.at && x.id > n.id))) return false
+    }
+    return true
+  }
   const h = holOf(n)
   if (!h) return true
   /* A SCHEDULER'S LINE, AND ONLY WHILE HE IS ONE (the check's walk, E8 — 13 Oct 26; owner D785, with the reading told to
@@ -270,6 +349,36 @@ export function holidayLineAny(iso: string): boolean {
   return false
 }
 
+/* ---- the Leave War's lines (M4 batch 9) ---------------------------------------------------------------------- */
+/** a war line, written inside the war command that made the change (leavewar/sync.ts) — never to whoever did it, never
+ *  to a man who has left. Answers how many were made. */
+export function noticeWar(to: readonly string[], by: string | null, part: NoticePart, at: number = Date.now()): number {
+  const p: any = part
+  const name = p.k === 'lwopen' || (p.k === 'lwback' && (p.d === 'open' || p.d === 'close')) ? 'Leave War' : 'Your leave'
+  let made = 0
+  for (const who of new Set(to.map(String))) {
+    if (!here(who) || (by != null && who === by)) continue
+    NOTICES.push({ id: mint(at), to: who, by, at, iid: '', name, day: String(p.a), what: [part] })
+    made++
+  }
+  return made
+}
+/** is this one of the war's lines? */
+export const isWarNotice = (n: Pick<Notice, 'what'>): boolean => { const k = (n.what || [])[0]?.k; return k === 'lw' || k === 'lwopen' || k === 'lwback' }
+const openOf = (n: Notice): { a: string; b: string } | null => { const p: any = (n.what || [])[0]; return p && p.k === 'lwopen' ? { a: String(p.a), b: String(p.b || p.a) } : null }
+
+/* THE LINES EACH PERSON'S BELL WORKS OUT FOR ITSELF (M4 9.4 — D1214, the register's P7: a stretch that ends because its
+   last date passes closes bidding too). No command runs on that date, so the line is not stored: the war says which
+   stretches have ended (leavewar/sync.ts, from the stored periods) and each one is a line of a steady id, read like any
+   other. None installed (a scheduler-only test): none. */
+let DERIVED: ((pid: string) => Notice[]) | null = null
+export function setDerivedNotices(fn: ((pid: string) => Notice[]) | null): void { DERIVED = fn }
+/** every notice addressed to this person — the stored ones and the ones his bell works out */
+export function allNoticesFor(pid: string): Notice[] {
+  const own = NOTICES.filter(n => n.to === pid)
+  return DERIVED ? [...own, ...DERIVED(pid)] : own
+}
+
 /* ---- reading them --------------------------------------------------------------------------------------------- */
 const LIST_MAX = 30
 /** one person's notices, newest first — the bell's list (a holiday's line with nothing left to answer is left out
@@ -281,7 +390,7 @@ export function noticesFor(pid: string | null | undefined): Notice[] {
      more than thirty newer notices the line was cut from the list while the tap still deferred to it — his own
      question, and the one list, could no longer be reached from his bell. The thirty are of the other notices. */
   let others = 0
-  return NOTICES.filter(n => n.to === pid && noticeLive(n)).sort((x, y) => y.at - x.at || (x.id < y.id ? 1 : -1)).filter(n => holOf(n) != null || others++ < LIST_MAX)
+  return allNoticesFor(pid).filter(n => noticeLive(n)).sort((x, y) => y.at - x.at || (x.id < y.id ? 1 : -1)).filter(n => holOf(n) != null || others++ < LIST_MAX)
 }
 
 const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -313,6 +422,7 @@ function partWords(p: NoticePart): string {
     case 'on': return 'Back on the programme'
     case 'unav': return 'Filed under Unavailable'
     case 'unavoff': return 'Taken out of Unavailable'
+    case 'rbid': return `replaces your ${p.c.replace(/\*/g, '')} bid`
     case 'when': {
       const days = p.a ? (p.b && p.b !== p.a ? `${noticeDay(p.a)} – ${noticeDay(p.b)}` : noticeDay(p.a)) : ''
       return 'Now ' + [days, p.t || ''].filter(Boolean).join(' ')
@@ -323,7 +433,41 @@ function partWords(p: NoticePart): string {
     case 'rmk': return 'Remark changed'
     /* (its count is the line's own, read live: noticeWords) */
     case 'oilhol': return 'Inputs need an OIL answer'
+    case 'lw': {
+      const c = p.c.replace(/\*/g, '')
+      const to = p.to ? noticeRun(p.to, p.tb) : ''
+      switch (p.d) {
+        case 'approved': return p.again ? `${c} approved again` : `${c} approved`
+        case 'refused': return p.again ? `${c} refused again` : `${c} refused`
+        case 'repend': return `${c} back to pending`
+        case 'putback': return p.again ? `${c} put back to a bid again` : `${c} put back to a bid`
+        case 'moved': return `${c} moved to ${to}`
+        case 'deleted': return `${c} deleted`
+        case 'added': return p.again ? `${c} added and approved again` : `${c} added and approved`
+        case 'bidmoved': return `${c} bid moved to ${to}`
+        case 'biddel': return `${c} bid deleted`
+        /* his D1460: what a pending bid of his was changed to, by someone else */
+        case 'retyped': return `${(p.w || '').replace(/\*/g, '')} bid changed to ${c}`
+      }
+      return c
+    }
+    /* "Bidding" with a capital, as his drawing writes it (his D1433, 27 Oct 26) */
+    case 'lwopen': return p.end ? 'Bidding closed · its dates ended' : p.open ? 'Bidding open' : 'Bidding closed'
+    case 'lwback': {
+      const c = (p.c || '').replace(/\*/g, '')
+      const what: Record<string, string> = {
+        approved: `Approval of ${c}`, added: `Approval of ${c}`, refused: `Refusal of ${c}`, repend: `Return of ${c} to pending`,
+        putback: `Put-back of ${c}`, moved: `Move of ${c}`, deleted: `Deletion of ${c}`, bidmoved: `Move of ${c} bid`,
+        biddel: `Deletion of ${c} bid`, retyped: `Change of ${(p.w || '').replace(/\*/g, '')} bid to ${c}`, open: 'Opening of bidding', close: 'Closing of bidding',
+      }
+      return `${what[p.d] || c} taken back`
+    }
   }
+}
+/* a bidding stretch said without its weekdays — "1 Apr – 30 Jun" (D1214's words) */
+function stretchWords(a: string, b: string): string {
+  const d = (iso: string) => `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
+  return a === b ? d(a) : `${d(a)} – ${d(b)}`
 }
 /** A LINE OF THE LIST, IN THE SHORTER WORDING (D769): the input and its date; what happened — the first two things,
  *  where a save changed several — and who did it ('' where the app did). */
@@ -336,7 +480,19 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
     /* (its name as the holiday is called NOW — a holiday renamed since its notice was made is not called by its old name) */
     return { name: (s.name != null ? s.name : n.name) || 'Public holiday', day: noticeRun(s.a, s.b), what: left === 1 ? '1 input needs an OIL answer' : `${left} inputs need an OIL answer`, who: n.by ? cs(n.by) : '' }
   }
-  return { name: n.name, day: noticeDay(n.day), what: (n.what || []).slice(0, 2).map(partWords).join(', '), who: n.by ? cs(n.by) : '' }
+  /* THE WAR'S LINES (M4 batch 9): "Your leave · Mon 19 – Wed 21 Jan · LL approved · Saber"; "Leave War · 1 Apr – 30 Jun ·
+     bidding open · Saber" */
+  const w: any = (n.what || [])[0]
+  if (w && (w.k === 'lw' || w.k === 'lwopen' || w.k === 'lwback')) {
+    const bidding = w.k === 'lwopen' || (w.k === 'lwback' && (w.d === 'open' || w.d === 'close'))
+    return { name: n.name, day: bidding ? stretchWords(w.a, w.b || w.a) : noticeRun(w.a, w.b), what: partWords(w), who: n.by ? cs(n.by) : '' }
+  }
+  /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
+     replaces your LL bid") */
+  const rb = (n.what || []).filter(p => p.k === 'rbid')
+  const main = (n.what || []).filter(p => p.k !== 'rbid').slice(0, 2).map(partWords).join(', ')
+  const tail = rb.length ? `replaces your ${[...new Set(rb.map(p => (p as any).c.replace(/\*/g, '')))].join(', ')} bid` : ''
+  return { name: n.name, day: noticeDay(n.day), what: main && tail ? `${main} · ${tail}` : main || tail, who: n.by ? cs(n.by) : '' }
 }
 
 /** its age, at the line's right: now · 2 min · 1 h · yesterday · 2 d */

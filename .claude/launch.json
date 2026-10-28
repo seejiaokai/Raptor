@@ -848,6 +848,20 @@
         "--strictPort"
       ],
       "port": 4280
+    },
+    {
+      "name": "raptor-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "raptor-port",
+        "--port",
+        "4176",
+        "--strictPort"
+      ],
+      "port": 4176
     }
   ]
 }

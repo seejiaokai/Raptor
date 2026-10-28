@@ -1,0 +1,40 @@
+[
+ {
+  "id": "G3a Approvals: a bid BEFORE the run posting date (3 Jan, posted out 4 Jan) approves",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Blade IP posted out 4 Jan LL Sat 3 Jan › 28 Oct 04:02 · by Saber Approved Refuse\" Approve lit true",
+  "pics": [
+   "g3a-2-appr-before-2jan"
+  ]
+ },
+ {
+  "id": "G3a Approvals: a bid AFTER the run posting date (2 Feb) is refused \"He posted out on 4 Jan: refuse or delete it\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Blade IP posted out 4 Jan LL Mon 2 Feb › He posted out on 4 Jan: refuse or delete it 1 day 4.5 — Approve Refuse\" Approve lit false; words \"He posted out on 4 Jan: refuse or delete it\"",
+  "pics": [
+   "g3a-3-appr-after-2feb"
+  ]
+ },
+ {
+  "id": "G3a bid window: a bid BEFORE the run posting date (1 Jan) approves",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "buttons null; text \"null\"",
+  "pics": [
+   "g3a-4-window-1jan",
+   "g3a-5-window-1jan-after-approve"
+  ]
+ },
+ {
+  "id": "G3a bid window: a bid AFTER the run posting date (2 Feb) refused with the same words",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words \"He posted out on 4 Jan: refuse or delete it\"; buttons [\"Approve:null\",\"Refuse:false\"]; text \"Blade Mon 2 Feb ✕ LL Pending Approve Refuse ⇄Move Delete till 2 Feb Document He posted out on 4 Jan: refuse or delete it\"",
+  "pics": [
+   "g3a-6-window-2feb",
+   "g3a-7-window-2feb-after-approve"
+  ]
+ }
+]

@@ -7789,3 +7789,787 @@ test('on a tablet and a desktop the clash note stays the strip under the open-da
   await page.locator('[data-testid="clash-go-0"]').click()
   await daySheetFor(page, who)
 })
+
+/* THE APPROVALS FILTER CHIPS NEVER BREAK THEIR WORDS ON A PHONE (the overhaul's M4 — the probe walk's fault, 27 Oct 26: "New 1"
+   with its dot broke onto two lines inside its button at 402; D1387: a button's words always stand inside it, on an
+   iPhone's wider letters too). Each chip of the filter rows is measured: its words one line, inside its own edge. */
+test('on a phone every Approvals filter chip keeps its words on one line, inside its edge', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone lays the filter rows out as a grid of seven')
+  await lwRole(page, 'admin')
+  for (const [width, height] of [[402, 874], ...PHONES] as [number, number][]) {
+    await page.setViewportSize({ width, height })
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    const bad = await page.evaluate(() => {
+      const out: string[] = []
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('.appr-filters .appr-f, .appr-filters .appr-all'))) {
+        const r = el.getBoundingClientRect()
+        /* the WORDS only (the dot beside "New" is a box of its own, centred, not a line of words) */
+        const tops = new Set<number>()
+        const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+        for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+          if (!n.textContent || !n.textContent.trim()) continue
+          const range = document.createRange(); range.selectNodeContents(n)
+          for (const x of Array.from(range.getClientRects())) if (x.width > 0) tops.add(Math.round(x.top + x.height / 2))
+        }
+        if (Math.max(...tops) - Math.min(...tops) > 4) out.push(`${el.textContent} wraps`)
+        if (el.scrollWidth > el.clientWidth + 1) out.push(`${el.textContent} runs past its edge`)
+        if (r.right > window.innerWidth) out.push(`${el.textContent} off the screen`)
+      }
+      return out
+    })
+    expect(bad, `${width} wide`).toEqual([])
+    /* …in his drawing's rows: since his D1444 (28 Oct 26 — D1439 built as drawn, narrowing D1423's three rows) only the
+       months holding requests stand on the row of New and All, so with the demo's two months it is two rows — New · All ·
+       Jan · Feb, then Pick dates… left and Approve all right on one row */
+    const rows = await page.evaluate(() => {
+      const tops = new Set<number>()
+      const els = Array.from(document.querySelectorAll<HTMLElement>('.appr-filters .appr-f, .appr-filters .appr-all'))
+      for (const el of els) tops.add(Math.round(el.getBoundingClientRect().top + el.getBoundingClientRect().height / 2))
+      const mid = (s: string) => { const r = document.querySelector<HTMLElement>(s)!.getBoundingClientRect(); return { y: Math.round(r.top + r.height / 2), x: r.left } }
+      return { n: els.length, rows: [...tops].sort((a, b) => a - b).filter((t, i, a) => i === 0 || t - a[i - 1]! > 4).length, pick: mid('[data-testid="appr-pick"]'), all: mid('[data-testid="appr-approve-all"]') }
+    })
+    expect(rows.n, 'the chips are there: New, All, the months holding requests, Pick dates…, Approve all').toBeGreaterThanOrEqual(5)
+    expect(rows.rows, `${width} wide: two rows with the demo's two months (D1444)`).toBe(2)
+    expect(Math.abs(rows.pick.y - rows.all.y), 'Pick dates… and Approve all on one row').toBeLessThanOrEqual(4)
+    expect(rows.pick.x < rows.all.x, 'Pick dates… at the left').toBe(true)
+  }
+})
+
+/* THE WALK'S C-F4 (27 Oct 26): a bell of twelve lines stopped at the ninth, its "Mark all read" at the end of the
+   scrolling list, out of sight, with nothing saying there was more. "Mark all read" stays at the list's foot in sight,
+   and the foot says how many lines are below ("↓ 3 more", the day panel's cue — D1295) until the list is at its end. */
+test('a long bell keeps "Mark all read" in sight and says how many lines are below', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.evaluate(() => {
+    const w = window as any
+    const now = Date.now()
+    for (let i = 0; i < 12; i++) w.NOTICES.push({ id: `e2e-long-${i}`, to: 'bane', by: 'stiff', at: now - i * 60_000, iid: '', name: 'Your leave', day: '2026-01-1' + (i % 10), what: [{ k: 'rmk' }] })
+  })
+  await page.locator('.bellbtn:visible').first().click()
+  const list = page.getByTestId('bell-list')
+  await expect(list.locator('.bl-line')).toHaveCount(12)
+  const inSight = () => page.evaluate(() => {
+    const l = document.querySelector<HTMLElement>('[data-testid="bell-list"]')!.getBoundingClientRect()
+    const b = document.querySelector<HTMLElement>('[data-testid="bell-markall"]')!.getBoundingClientRect()
+    return b.top >= l.top - 1 && b.bottom <= l.bottom + 1 && b.bottom <= window.innerHeight
+  })
+  expect(await inSight(), '"Mark all read" in sight with the list at its top').toBe(true)
+  await expect(page.getByTestId('bell-more')).toHaveText(/^↓ \d+ more$/)
+  await list.evaluate((e: HTMLElement) => { e.querySelector<HTMLElement>('.bl-scroll')!.scrollTop = 99999 })
+  await expect(page.getByTestId('bell-more')).toHaveCount(0)
+  expect(await inSight(), '"Mark all read" in sight with the list at its end').toBe(true)
+})
+
+/* THE WALK'S A-F6 (27 Oct 26): with Approvals' slim bar up, a person's window opened over it, its foot across the bar —
+   "Back" read "ack". While the bar is up the war's windows stand above it, so the two never overlap. */
+test('with Approvals\u2019 slim bar up, a window opens above the bar, never over it', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  await page.locator('[data-testid="row-slipway"] .whoedit').first().click()
+  const sheet = page.getByTestId('person-figures')
+  await expect(sheet).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const s = document.querySelector<HTMLElement>('[data-testid="person-figures"]')!.getBoundingClientRect()
+    const b = document.querySelector<HTMLElement>('[data-testid="appr-slim"]')!.getBoundingClientRect()
+    return { sheetBottom: Math.round(s.bottom), barTop: Math.round(b.top), sheetTop: Math.round(s.top) }
+  })
+  expect(g.sheetBottom, `the window's foot (${g.sheetBottom}) above the bar's top (${g.barTop})`).toBeLessThanOrEqual(g.barTop)
+  expect(g.sheetTop, 'the window still starts on screen').toBeGreaterThanOrEqual(0)
+})
+
+/* THE WALK'S B-F1 (27 Oct 26), on a phone at his iPhone's 402 and the narrower 390 and 360: the Approvals tab's count ran
+   past its lit outline — three equal tabs left Approvals too narrow for its word and its count. */
+test('on a phone the Approvals tab holds its count inside its outline', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone shares the tab row out')
+  await lwRole(page, 'admin')
+  for (const [width, height] of [[402, 874], ...PHONES] as [number, number][]) {
+    await page.setViewportSize({ width, height })
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    const g = await page.evaluate(() => {
+      const tab = document.querySelector<HTMLElement>('[data-testid="lw-tab-approvals"]')!.getBoundingClientRect()
+      const n = document.querySelector<HTMLElement>('[data-testid="lw-approvals-count"]')!.getBoundingClientRect()
+      const row = document.querySelector<HTMLElement>('[data-testid="lw-tab-approvals"]')!.parentElement!.getBoundingClientRect()
+      return { inTab: n.left >= tab.left - 0.5 && n.right <= tab.right + 0.5, n: [n.left, n.right], tab: [tab.left, tab.right], rowFits: row.right <= window.innerWidth }
+    })
+    expect(g.inTab, `${width} wide: the count ${JSON.stringify(g.n)} inside the tab ${JSON.stringify(g.tab)}`).toBe(true)
+    expect(g.rowFits, `${width} wide: the tab row on the screen`).toBe(true)
+  }
+})
+
+/* HIS D1437 (27 Oct 26 — "the alignment of the title and the text is off … Check the desktop too"): each Approvals heading
+   stands over its figures — a heading set to the left starts where its figures start, one set to the right ends where they
+   end. On a phone the figures' line had no gap between its columns where the headings' row had 12px (14 and W 17 sat 12 and
+   24px left of LVE BAL and LOWEST AVAIL); on a desktop the headings' row was pushed 16px in from the left. Measured on every
+   line, on both projects (scripts/handpass/lw-m4-colalign.mjs measures it in WebKit at 402, 390 and 360 too). */
+test('every Approvals heading stands over its figures, every name at the left (D1437, D1438)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const gaps = await page.evaluate(() => {
+    const words = (el: Element | null | undefined) => { if (!el) return null; const rg = document.createRange(); rg.selectNodeContents(el); const b = rg.getBoundingClientRect(); return b.width ? b : null }
+    const phone = !!document.querySelector('.appr-cols.ph')
+    const hs = [...document.querySelector(phone ? '.appr-cols.ph' : '.appr-cols:not(.ph)')!.children] as HTMLElement[]
+    const cellsOf = (l: Element): (Element | null)[] => phone
+      ? [...l.querySelector('.appr-l2')!.children]
+      : (c => [c[0]!.querySelector('.appr-puck'), c[1]!, c[2]!.querySelector('.appr-dlink'), c[3]!, c[4]!, c[5]!, c[6]!])([...l.children])
+    const out: string[] = []
+    hs.forEach((h, i) => {
+      const hb = words(h); if (!hb) return
+      const right = getComputedStyle(h).textAlign === 'right'
+      for (const l of document.querySelectorAll('[data-testid^="appr-line-"]')) {
+        const c = cellsOf(l)[i]
+        const t = c && (c.classList.contains('appr-avail') ? (c.querySelector('.appr-av .appr-n') ?? c.querySelector('.appr-av')) : c)
+        const cb = t && (t.classList.contains('appr-puck') || t.classList.contains('appr-box') ? t.getBoundingClientRect() : words(t))
+        if (!cb || !cb.width) continue
+        const gap = right ? cb.right - hb.right : cb.left - hb.left
+        if (Math.abs(gap) > 1) out.push(`${h.innerText.trim()} ${Math.round(gap)}px ("${(t as HTMLElement).innerText.replace(/\s+/g, ' ').slice(0, 16)}")`)
+      }
+    })
+    return out
+  })
+  expect(gaps, 'headings more than 1px from their figures').toEqual([])
+  /* his D1438: every name at the left of its puck (a WSO's stood at the right — the list's right-align class was named `r`, a
+     rear seat's own class), and no heading set to the right but the phone's last, PLACED */
+  const right = await page.evaluate(() => ({
+    names: [...document.querySelectorAll('.appr-puck .nm')].filter(n => getComputedStyle(n).textAlign === 'right').map(n => (n as HTMLElement).innerText),
+    heads: [...document.querySelectorAll('.appr-cols > *')].filter(h => getComputedStyle(h).textAlign === 'right' && !h.classList.contains('appr-end')).map(h => (h as HTMLElement).innerText),
+  }))
+  expect(right, 'nothing set to the right').toEqual({ names: [], heads: [] })
+})
+
+/* HIS D1440 (28 Oct 26, question 17): the slim Approvals bar is his drawing's plain bar on a phone as on a desktop (D1432) —
+   no cyan outline, "Back ▴" plain cyan words and a plain ✕, each keeping its press area (34px, D487); the count reads as
+   drawn (r22-6-phone: "15 pending · 3 new", no "·" before it). */
+test('the slim Approvals bar is the drawing’s plain bar: no cyan outline, Back and ✕ unboxed (D1432, D1440)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const cs = (sel: string) => getComputedStyle(document.querySelector(sel)!)
+    const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect()
+    const bar = cs('[data-testid="appr-slim"]'), back = cs('[data-testid="appr-back"]'), x = cs('[data-testid="appr-slim-x"]')
+    const plain = (s: CSSStyleDeclaration) => (parseFloat(s.borderTopWidth) === 0 || s.borderTopStyle === 'none') && /rgba\(0, 0, 0, 0\)|transparent/.test(s.backgroundColor)
+    return {
+      outline: bar.borderTopColor, backPlain: plain(back), xPlain: plain(x), backInk: back.color,
+      backTall: Math.round(box('[data-testid="appr-back"]').height), xTall: Math.round(box('[data-testid="appr-slim-x"]').height),
+      count: (document.querySelector('[data-testid="appr-slim"] .appr-slim-n') as HTMLElement).innerText.trim(),
+    }
+  })
+  expect(g.outline, 'the bar wears the app’s edge, not the cyan outline').not.toBe('rgb(59, 198, 232)')
+  expect(g.backPlain, 'Back ▴ is plain words, no box').toBe(true)
+  expect(g.xPlain, '✕ is plain, no box').toBe(true)
+  expect(g.backInk, 'Back ▴ in the app’s cyan').toBe('rgb(59, 198, 232)')
+  expect(g.backTall, 'Back keeps its 34px press area').toBeGreaterThanOrEqual(34)
+  expect(g.xTall, '✕ keeps its 34px press area').toBeGreaterThanOrEqual(34)
+  expect(g.count, 'the count as drawn, with no "·" before it').toMatch(/^\d+ pending/)
+})
+
+/* HIS D1441 (28 Oct 26, question 18): on a phone Approve and Refuse take his drawing's letters (r22-5-phone — 12.5px, bold),
+   so at his iPhone's width every request's dates stand on one line beside them; the desktop's buttons keep D1427's. (In
+   WebKit's wider letters it is measured by scripts/handpass/lw-m4-btnwidth.mjs at 402, 390 and 360.)
+   WHERE THE ONE-LINE FIT IS ASKED (the fixes' M12, 28 Oct 26): the app loads no fonts, so whether "23 Jan AM ›" fits one
+   line is a property of the LETTERS ON THE DEVICE, not of the app — GitHub's Linux machines draw wider letters and the
+   half-day dates take two lines there, where Windows' Chromium and WebKit (the engines the fit was measured in, and his
+   iPhone's) keep them on one. So the drawing's letters are checked everywhere; on every machine no date may break INSIDE a
+   word (the button's words keep whole); and the one-line fit itself only on Windows, where it was measured. */
+test('on a phone Approve and Refuse are in the drawing’s letters and every date stays on one line at 402 (D1441)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s two-line request')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const ok = getComputedStyle(document.querySelector('[data-testid="appr-approve"]')!)
+    const dates = [...document.querySelectorAll('[data-testid="appr-dates"]')]
+    const broken = dates.filter(d => {
+      const s = getComputedStyle(d); const lh = parseFloat(s.lineHeight) || parseFloat(s.fontSize) * 1.25
+      return d.getBoundingClientRect().height > lh * 1.5
+    }).map(d => d.textContent)
+    /* a word split over two lines: its letters' boxes stand on more than one line */
+    const splitWords: string[] = []
+    for (const d of dates) {
+      const walk = document.createTreeWalker(d, NodeFilter.SHOW_TEXT)
+      for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+        const text = n.textContent ?? ''
+        for (const m of text.matchAll(/\S+/g)) {
+          const r = document.createRange(); r.setStart(n, m.index!); r.setEnd(n, m.index! + m[0].length)
+          const tops = new Set([...r.getClientRects()].filter(x => x.width > 0).map(x => Math.round(x.top)))
+          if (tops.size > 1) splitWords.push(`${m[0]} in "${d.textContent}"`)
+        }
+      }
+    }
+    return { size: ok.fontSize, weight: ok.fontWeight, broken, splitWords }
+  })
+  expect({ size: g.size, weight: g.weight }, 'the drawing’s letters').toEqual({ size: '12.5px', weight: '700' })
+  expect(g.splitWords, 'a word of a date broken across two lines').toEqual([])
+  if (process.platform === 'win32') expect(g.broken, 'dates on two lines (the fit as measured, in Windows’ letters)').toEqual([])
+})
+
+/* The re-check before the re-walk (28 Oct 26, drawing D1439 at 360 wide): on a narrow phone "LOWEST AVAIL" ran into "PLACED"
+   ("LOWEST AVAIPLACED") — the heading stands over its numbers (D1438), past its column, and at 360 that is further than the
+   room before PLACED's word. No two headings' words may touch, at his 402 and at 390 and 360. */
+test('on a phone no two Approvals headings run into each other, at 402, 390 and 360', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s headings')
+  await lwRole(page, 'admin')
+  for (const [width, height] of [[402, 874], ...PHONES] as [number, number][]) {
+    await page.setViewportSize({ width, height })
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    await page.waitForTimeout(150)
+    const touching = await page.evaluate(() => {
+      const rects = [...document.querySelector('.appr-cols.ph')!.children].map(h => { const r = document.createRange(); r.selectNodeContents(h); return { t: (h as HTMLElement).innerText.trim(), rs: [...r.getClientRects()] } })
+      const out: string[] = []
+      for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++)
+        for (const a of rects[i]!.rs) for (const b of rects[j]!.rs)
+          if (a.top < b.bottom && b.top < a.bottom && a.left < b.right + 4 && b.left < a.right + 4) out.push(`${rects[i]!.t} / ${rects[j]!.t}`)
+      return out
+    })
+    expect(touching, `${width} wide: headings touching`).toEqual([])
+  }
+})
+
+/* THE FIXES' M4 (the re-walk's B-F3, 28 Oct 26 — a decision on the wrong man): on a phone, with "Pick dates…" open (the
+   calendar inline above the list), a finger on a line's Approve closed the calendar on its press, the list moved up under
+   the finger and the click landed on ANOTHER man's line, approving his request. D1421: nothing moves under his finger, and
+   a press must never decide a line he did not press. A press outside the open calendar only closes it — the app's "a
+   click-open popup closes on a click outside it" (4 Sep 26) — on a phone by a finger as on a desktop by the mouse. */
+test('with "Pick dates…" open, a press on a line’s Approve only closes the calendar — no line is decided (M4, D1421)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const sub = async () => (await page.getByTestId('appr-sub').textContent())!.trim()
+  const before = await sub()
+  await page.getByTestId('appr-pick').click()
+  await expect(page.getByTestId('appr-range')).toBeVisible()
+  /* the first line's Approve, where it stands with the calendar open — brought into view as a finger would scroll to it */
+  const btn = page.locator('[data-testid="approvals-page"] [data-testid="appr-approve"]').first()
+  await btn.scrollIntoViewIfNeeded()
+  const b = (await btn.boundingBox())!
+  if (isPhone()) await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2)
+  else await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2)
+  await expect(page.getByTestId('appr-range'), 'the calendar closes').toHaveCount(0)
+  await page.waitForTimeout(400)
+  expect(await page.locator('[data-testid="approvals-page"] .appr-ok.lit, [data-testid="approvals-page"] .appr-no.lit').count(), 'no line decided').toBe(0)
+  expect(await sub(), 'the pending count unchanged').toBe(before)
+})
+
+/* THE FIXES' M8 (the re-walk's B-F1): with a long bell open on a phone, a finger that began on its foot ("↓ N more", the
+   strip under the lines) and dragged scrolled the PAGE behind it. D686: a finger on a window never scrolls the page behind
+   it — the bell's list scrolled its own lines already; its foot is the bell too. A real touch drag, by the browser's own
+   touch events. */
+test('a finger dragged from the bell’s foot never scrolls the page behind it (M8, D686)', async ({ page }) => {
+  test.skip(!isPhone(), 'a finger on a phone')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await lwRole(page, 'admin')
+  await page.evaluate(() => {
+    const w = window as any
+    const now = Date.now()
+    for (let i = 0; i < 15; i++) w.NOTICES.push({ id: `e2e-foot-${i}`, to: 'bane', by: 'stiff', at: now - i * 60_000, iid: '', name: 'Your leave', day: '2026-01-1' + (i % 10), what: [{ k: 'rmk' }] })
+    window.scrollTo(0, 0)
+  })
+  await page.locator('.bellbtn:visible').first().click()
+  await expect(page.getByTestId('bell-more')).toBeVisible()
+  const f = (await page.getByTestId('bell-more').boundingBox())!
+  const x0 = Math.round(f.x + f.width / 2), y0 = Math.round(f.y + f.height / 2)
+  const y = () => page.evaluate(() => window.scrollY)
+  const before = await y()
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y: y0, id: 1 }] })
+  for (let i = 1; i <= 8; i++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0, y: y0 - 36 * i, id: 1 }] })
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await cdp.detach()
+  await page.waitForTimeout(400)
+  expect(await y(), 'the page behind the bell did not move').toBe(before)
+})
+
+/* THE FIXES' M13 (D1440 — "back to his drawing" r22-6-phone): measured on the drawing's own pixels (402 × 874 at 3×), its slim
+   bar's box stands 8px in from each edge, 46 tall, its foot 10 above the screen's (walker B's "4 and 50" read the drawing's
+   pink marking ring round it). The bar on a phone takes those, Back and ✕ keeping their 34px press area (D487). */
+test('on a phone the slim Approvals bar stands where the drawing has it: 8px in, 46 tall, 10 above the foot (M13, D1440)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s bar')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const r = document.querySelector<HTMLElement>('[data-testid="appr-slim"]')!.getBoundingClientRect()
+    const h = (s: string) => Math.round(document.querySelector<HTMLElement>(s)!.getBoundingClientRect().height)
+    return { left: Math.round(r.left), right: Math.round(innerWidth - r.right), tall: Math.round(r.height), foot: Math.round(innerHeight - r.bottom), back: h('[data-testid="appr-back"]'), x: h('[data-testid="appr-slim-x"]') }
+  })
+  expect({ left: g.left, right: g.right, tall: g.tall, foot: g.foot }).toEqual({ left: 8, right: 8, tall: 46, foot: 10 })
+  expect(g.back, 'Back keeps its press area').toBeGreaterThanOrEqual(34)
+  expect(g.x, '✕ keeps its press area').toBeGreaterThanOrEqual(34)
+})
+
+/* THE FIXES' ROUND 2, R2-1 (the fix read's 1): M4's taker of the click was timed from the press, so a press HELD about a
+   second on a line's Approve — an iPhone fires the click at the lift — approved the line then under the finger. A real
+   touch, held a second, by the browser's own touch events. (Chromium may make no click of a still press held this long,
+   as an Android phone does; the unit test m4page "R2-1" fires the iPhone's click itself.) */
+test('with "Pick dates…" open, a press HELD a second on a line’s Approve decides no line at its lift (R2-1, D1421)', async ({ page }) => {
+  test.skip(!isPhone(), 'a finger on a phone')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const before = (await page.getByTestId('appr-sub').textContent())!.trim()
+  await page.getByTestId('appr-pick').click()
+  await expect(page.getByTestId('appr-range')).toBeVisible()
+  const btn = page.locator('[data-testid="approvals-page"] [data-testid="appr-approve"]').first()
+  await btn.scrollIntoViewIfNeeded()
+  const b = (await btn.boundingBox())!
+  const at = { x: Math.round(b.x + b.width / 2), y: Math.round(b.y + b.height / 2), id: 1 }
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [at] })
+  await page.waitForTimeout(1000)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await cdp.detach()
+  await expect(page.getByTestId('appr-range'), 'the calendar closes').toHaveCount(0)
+  await page.waitForTimeout(400)
+  expect(await page.locator('[data-testid="approvals-page"] .appr-ok.lit, [data-testid="approvals-page"] .appr-no.lit').count(), 'no line decided').toBe(0)
+  expect((await page.getByTestId('appr-sub').textContent())!.trim(), 'the pending count unchanged').toBe(before)
+})
+
+/* R2-2 (the fix read's 2): M4 swallowed EVERY first press outside the open calendar, also where nothing moved — the Grid tab,
+   the top bar's Undo, the bell needed a second press. A press on what did not move closes the calendar AND does its job. */
+test('with "Pick dates…" open, a press on the Grid tab closes the calendar and opens the Grid at once (R2-2)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.getByTestId('appr-pick').click()
+  await expect(page.getByTestId('appr-range')).toBeVisible()
+  const tab = page.getByTestId('lw-tab-grid')
+  const t = (await tab.boundingBox())!
+  if (isPhone()) await page.touchscreen.tap(t.x + t.width / 2, t.y + t.height / 2)
+  else await page.mouse.click(t.x + t.width / 2, t.y + t.height / 2)
+  await expect(page.getByTestId('approvals-page'), 'the Grid is up with one press').toBeHidden()
+})
+
+/* THE FIXES' ROUND 3, R3-1 (the round-2 read's 1): by touch, a tap on the empty card just under the open calendar — the "tap
+   outside to close" — closed it, the list moved up under the finger, and the lift's click landed on a line's Approve, which
+   round 2 let act because the card holds every line and never moves: M4 again. A real touch on the band under the
+   calendar, at the x of the first line's Approve; and, where the screen leaves one, on the strip to the calendar's right. */
+test('with "Pick dates…" open, a tap on the empty card beside or under the calendar decides no line (R3-1, D1421)', async ({ page }) => {
+  test.skip(!isPhone(), 'a finger on a phone')
+  await lwRole(page, 'admin')
+  for (const width of [402, 440]) {
+    await page.setViewportSize({ width, height: 874 })
+    await page.getByTestId('lw-tab-grid').click()
+    await page.getByTestId('lw-tab-approvals').click()
+    await expect(page.getByTestId('approvals-page')).toBeVisible()
+    const before = (await page.getByTestId('appr-sub').textContent())!.trim()
+    const points = await (async () => {
+      await page.getByTestId('appr-pick').click()
+      await expect(page.getByTestId('appr-range')).toBeVisible()
+      return page.evaluate(() => {
+        const pop = document.querySelector<HTMLElement>('.appr-pickpop')!.getBoundingClientRect()
+        const card = document.querySelector<HTMLElement>('.appr-card')!.getBoundingClientRect()
+        const ok = document.querySelector<HTMLElement>('[data-testid="approvals-page"] [data-testid="appr-approve"]')!.getBoundingClientRect()
+        const out: Array<{ x: number; y: number; what: string }> = []
+        out.push({ x: Math.round(ok.left + ok.width / 2), y: Math.round(pop.bottom + 4), what: 'the band under the calendar' })
+        if (card.right - 16 - pop.right >= 12) out.push({ x: Math.round((pop.right + card.right - 16) / 2), y: Math.round(pop.top + pop.height / 2), what: 'the strip to its right' })
+        return out
+      })
+    })()
+    for (const [i, p] of points.entries()) {
+      if (i > 0) { await page.getByTestId('appr-pick').click(); await expect(page.getByTestId('appr-range')).toBeVisible() }
+      const hit = await page.evaluate(({ x, y }) => { const e = document.elementFromPoint(x, y); return e ? (e.closest('button') ? 'a button' : e.className || e.tagName) : 'nothing' }, p)
+      expect(hit, `${width} wide, ${p.what}: the point is the card, not a control`).not.toBe('a button')
+      const cdp = await page.context().newCDPSession(page)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: p.x, y: p.y, id: 1 }] })
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      await cdp.detach()
+      await expect(page.getByTestId('appr-range'), `${width} wide, ${p.what}: the calendar closes`).toHaveCount(0)
+      await page.waitForTimeout(400)
+      expect(await page.locator('[data-testid="approvals-page"] .appr-ok.lit, [data-testid="approvals-page"] .appr-no.lit').count(), `${width} wide, ${p.what}: no line decided`).toBe(0)
+      expect((await page.getByTestId('appr-sub').textContent())!.trim(), `${width} wide, ${p.what}: the pending count unchanged`).toBe(before)
+    }
+  }
+})
+
+/* THE FIXES' ROUND 3b (the rounds 2–3 walk's G3): in the ONE-DAY window, "Approve what I enter" on, leave placed on a day from a
+   man's posting-out date is rightly kept pending — but the day then holds leave outside his time in the squadron, so the
+   window gave way to the day's list at once and the reason it was kept pending ("He posts out on …: refuse or delete it")
+   was never seen (lesson 3 of the order's §7.11: what tells the person it happened). The real route, as the walker took it:
+   the posted-out day's "Place leave or OIL here instead…", the tick on, LL. */
+test('one-day window, "Approve what I enter" on a day after his posting-out date: the reason it stays pending is on screen (R3b)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="month-JUN"]').click()
+  await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
+  await pressMore(page, 'bid-postout')
+  await page.locator('[data-testid="po-overseas"]').click()          // off the manpower, nothing else: he stays on the grid
+  await page.locator('[data-testid="po-confirm"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
+  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  await page.locator('[data-testid="postout-place"]').click()
+  const tick = page.getByTestId('bid-approve-tick')
+  await expect(tick).toBeVisible()
+  if ((await tick.getAttribute('aria-checked')) !== 'true') await tick.click()
+  await page.getByTestId('bid-LL').click()
+  /* his balance may go below zero: the same leave again goes ahead (the window's own ask) */
+  if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
+  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun: refuse or delete it/), 'the reason stands where he looks after the press').toBeVisible()
+  await page.waitForTimeout(500)
+  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun: refuse or delete it/), '…and stays, settled').toBeVisible()
+})
+
+/* THE FIXES' ROUND 3c, R3c-2 (the third blind read's 3): round 3b's "kept pending" note was kept by CELL until another cell
+   opened, so any later day's list of the same open cell showed it again, though nothing was kept pending this time. The
+   note is handed to the list once.
+   (The read's routes were tried as written: Undo in the top bar is not pressable with the window up — its scrim covers the
+   bar on a desktop, and on a phone the Undo closes the window — and a bid placed with the tick off closes the window, which
+   ends the cell's note anyway. So the list is taken away by its own Delete, and brought back on the SAME open day by a bid
+   that arrives from elsewhere while the window is up — another admin's, as the store's sync would bring it.) */
+test('the "kept pending" note is said once: the same open day’s list, back after a Delete, shows no stale note (R3c-2)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="month-JUN"]').click()
+  await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
+  await pressMore(page, 'bid-postout')
+  await page.locator('[data-testid="po-overseas"]').click()
+  await page.locator('[data-testid="po-confirm"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
+  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  await page.locator('[data-testid="postout-place"]').click()
+  const tick = page.getByTestId('bid-approve-tick')
+  await expect(tick).toBeVisible()
+  if ((await tick.getAttribute('aria-checked')) !== 'true') await tick.click()
+  await page.getByTestId('bid-LL').click()
+  if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
+  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun/), 'said once, after the press (R3b)').toBeVisible()
+  /* the list's own Delete: the bid goes, the same day stays open, on its window again */
+  await page.locator('[data-testid^="dl-clear-"]').first().click()
+  await expect(page.getByTestId('bid-approve-tick')).toBeVisible()
+  await page.evaluate(() => (window as any).lwSetCell('slipway', '2026-06-16', 'OL'))      // a bid arriving from elsewhere
+  await expect(page.getByTestId('daylist'), 'the day’s list again, the OL pending').toBeVisible()
+  await page.waitForTimeout(300)
+  await expect(page.getByText(/kept pending/), 'no stale note — nothing was kept pending this time').toHaveCount(0)
+})
+
+/* THE BREAK TESTS (28 Oct 26, list lw-m4-browser #8 — his D1435): a decide button holds the room of its longer word, so
+   "Approve" lit as "Approved" (and "Refuse" as "Refused") never moves an edge under the finger, whatever the phone's
+   letters. Only a browser lays the words out — the unit test can see the longer word is there, not that it holds room. */
+test('a decide button lit never moves an edge: "Approved" and "Refused" stand where the buttons stood (D1435)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const line = page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').first()
+  const ok = line.getByTestId('appr-approve'), no = line.getByTestId('appr-refuse')
+  await ok.scrollIntoViewIfNeeded()
+  const edges = async () => {
+    const a = (await ok.boundingBox())!, b = (await no.boundingBox())!
+    return [a.x, a.x + a.width, b.x, b.x + b.width].map(v => Math.round(v))
+  }
+  const before = await edges()
+  await ok.click()
+  await expect(ok).toHaveText('Approved')
+  expect(await edges(), 'Approve lit: both buttons where they stood').toEqual(before)
+  await no.click()
+  await expect(no).toHaveText('Refused')
+  expect(await edges(), 'Refuse lit: both buttons where they stood').toEqual(before)
+})
+
+/* HIS D1444 (28 Oct 26, "all as recommended" — question 20, D1439 built as drawn: scripts/handpass/lw-m4-d1439-mock.mjs,
+   docs/img/handpass/2026-10-27-lw-m4/d1439/): on a phone the top of Approvals is shorter — (A) the link to another period's
+   requests on the title's line, "+2 in JAN – DEC 27 ›" (the period's own name, "pending" dropped), a line of its own only
+   where the title's line has no room; (B) only the months holding requests, on the row of New and All; Pick dates… and
+   Approve all keep their row; the chips keep their size (D487). The desktop is unchanged. */
+test('D1444 (A) on a phone the other period’s link stands on the title’s line, "+N in <period> ›"; the desktop keeps its words', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const t = document.querySelector<HTMLElement>('.appr-title')!.getBoundingClientRect()
+    const l = document.querySelector<HTMLElement>('[data-testid="appr-elsewhere"]')
+    const r = l?.getBoundingClientRect()
+    return { words: l?.textContent?.trim() ?? null, onTitle: r ? Math.abs(r.bottom - t.bottom) < 6 : null }
+  })
+  expect(g.words, 'the demo holds requests in another period').not.toBeNull()
+  if (isPhone()) {
+    expect(g.words).toMatch(/^\+\d+ in .+ ›$/)
+    expect(g.onTitle, 'on the title’s line at 402').toBe(true)
+  } else expect(g.words, 'the desktop keeps its words').toMatch(/^\+\d+ pending in .+ ›$/)
+})
+const MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const chipMonths = (page: Page) => page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid="approvals-page"] [data-testid^="appr-m-"]')]
+  .filter(c => c.getBoundingClientRect().width > 0).map(c => c.textContent!.trim()))
+test('D1444 (B) on a phone only the months holding requests show, on the row of New and All; the desktop keeps every month', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const shown = await chipMonths(page)
+  if (!isPhone()) { expect(shown, 'the desktop: every month of the period').toHaveLength(12); return }
+  const held = await page.evaluate(m => [...new Set([...document.querySelectorAll('[data-testid="approvals-page"] [data-testid="appr-dates"]')]
+    .flatMap(d => m.filter(x => (d.textContent || '').includes(x))))], MONS)
+  expect(shown.slice().sort(), 'only the months holding requests').toEqual(held.slice().sort())
+  const rows = await page.evaluate(() => {
+    const top = (s: string) => Math.round(document.querySelector<HTMLElement>(s)!.getBoundingClientRect().top)
+    const m = document.querySelector<HTMLElement>('[data-testid="approvals-page"] [data-testid^="appr-m-"]')!
+    return { newRow: top('[data-testid="appr-new"]'), month: Math.round(m.getBoundingClientRect().top), pick: top('[data-testid="appr-pick"]'), all: top('[data-testid="appr-approve-all"]') }
+  })
+  expect(rows.month, 'the months on the row of New and All').toBe(rows.newRow)
+  expect(rows.pick, 'Pick dates… and Approve all keep their row').toBe(rows.all)
+})
+test('D1444 (B) on a phone a month’s chip comes with its first request and goes with its last', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s months')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  expect(await chipMonths(page)).not.toContain('Jun')
+  expect(await page.evaluate(() => (window as any).lwSetCell('bane', '2026-06-10', 'LL'))).toBe(true)
+  await expect.poll(() => chipMonths(page), 'a request in June: its chip comes').toContain('Jun')
+  expect(await page.evaluate(() => (window as any).lwSetCell('bane', '2026-06-10', ''))).toBe(true)
+  /* (the D1444 read's F1, the host's reading: while its line still stands on the page — here greyed "No longer there" — the
+     chip stays, dimmed, so nothing above the finger moves; it goes when the rows start afresh) */
+  await expect(page.getByTestId('appr-m-2026-06'), 'its last request gone: the chip stays dimmed while its line stands').toHaveClass(/\bdim\b/)
+  await page.getByTestId('appr-all').click()
+  await expect.poll(() => chipMonths(page), 'the rows afresh: the chip goes').not.toContain('Jun')
+})
+
+/* HIS D1445 (28 Oct 26, "all as recommended" — question 21): the slim Approvals bar's fill is his drawings' darker grey,
+   #161B22 (both r22-4-desk and r22-6-phone measure 22, 27, 34), on a desktop and a phone; its edge, words and size unchanged */
+test('D1445 the slim Approvals bar wears the drawings’ fill, #161B22', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('[data-testid="appr-slim"]')!).backgroundColor)).toBe('rgb(22, 27, 34)')
+})
+
+/* THE D1444 READ'S F1 (28 Oct 26 — D1421, D672): on a phone, deciding the only request of a month took its chip away at once;
+   where that emptied a row of chips, the lit line and everything under it jumped up 42px under his finger. The host's reading,
+   to be named to him: a month's chip stays — dimmed, as a month with nothing pending is — while a line of that month stands on
+   the page (decided here, D1421), and goes when the rows start afresh (another filter, another period, leaving Approvals).
+   Six months holding requests (two rows of chips), real taps. */
+test('D1444 on a phone deciding a month’s only request keeps its chip, so nothing moves under the finger; All starts afresh (F1, D1421)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s months')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  for (const d of ['2026-03-16', '2026-04-14', '2026-06-10', '2026-08-12']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'LL'), d)).toBe(true)
+  /* …and lines placed after August's, so its line stands mid-list and the page is not scrolled to its foot (where a shorter
+     page is pulled down by the browser and hides the jump) */
+  for (const d of ['2026-01-20', '2026-01-22', '2026-01-26', '2026-01-28', '2026-02-16', '2026-02-18']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'OL'), d)).toBe(true)
+  /* his iPhone's Safari keeps no scroll anchoring, so content shrinking above the finger moves what is under it; Chromium's
+     anchoring would hide that once the page is scrolled — it is switched off here to see what he sees */
+  await page.addStyleTag({ content: 'html, body, * { overflow-anchor: none !important; }' })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  expect(await chipMonths(page), 'six months holding requests').toHaveLength(6)
+  const line = page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').filter({ has: page.locator('[data-testid="appr-dates"]', { hasText: /\bAug\b/ }) })
+  await expect(line).toHaveCount(1)
+  const ok = line.getByTestId('appr-approve')
+  await ok.scrollIntoViewIfNeeded()
+  const before = (await ok.boundingBox())!
+  await page.touchscreen.tap(before.x + before.width / 2, before.y + before.height / 2)
+  await page.waitForTimeout(100)
+  const pressed = (await ok.boundingBox())!
+  await page.screenshot({ path: 'docs/img/handpass/2026-10-27-lw-m4/d1444/f1-decided-pressed.png' })
+  await expect(ok).toHaveText('Approved')
+  await page.waitForTimeout(600)
+  const settled = (await ok.boundingBox())!
+  await page.screenshot({ path: 'docs/img/handpass/2026-10-27-lw-m4/d1444/f1-decided-settled.png' })
+  expect(Math.abs(pressed.y - before.y), `the lit Approve keeps its top at the press (${before.y} → ${pressed.y})`).toBeLessThanOrEqual(1)
+  expect(Math.abs(settled.y - before.y), `…and settled (${before.y} → ${settled.y})`).toBeLessThanOrEqual(1)
+  expect(await chipMonths(page), 'August’s chip stays while its decided line stands').toContain('Aug')
+  await expect(page.getByTestId('appr-m-2026-08')).toHaveClass(/\bdim\b/)
+  await page.getByTestId('appr-all').click()
+  await expect.poll(() => chipMonths(page), 'All starts the rows afresh: the chip goes').not.toContain('Aug')
+})
+
+/* THE D1444 READ'S F2 (older, reached by the link D1444 put on the title's line): with a month or a date range picked,
+   "+N in <period> ›" opened the other period still filtered by the old pick — "Nothing here for these dates", no chip lit,
+   Approve all 0. The filter, the date picker and an armed Approve all start afresh with the period. */
+test('D1444 a month picked, the other period’s link opens it on All, its lines shown (F2)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.getByTestId('appr-m-2026-02').click()
+  await expect(page.getByTestId('appr-m-2026-02')).toHaveAttribute('aria-pressed', 'true')
+  await page.getByTestId('appr-elsewhere').first().click()
+  await expect(page.getByTestId('appr-all'), 'All lit in the other period').toHaveAttribute('aria-pressed', 'true')
+  expect(await page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').count(), 'its lines shown').toBeGreaterThan(0)
+  await expect(page.getByText('Nothing here for these dates.')).toHaveCount(0)
+})
+
+/* HIS VIDEO AND PICTURE OF 28 OCT 26 (09:03, 09:14 — the walk missed both; the order's §7.11 lesson 10). (1) The OIL tab
+   pressed from the Approvals page drew the grid for one frame before the OIL tracker covered it: the tracker was opened
+   by an effect that runs after the frame is painted. (2) On a phone, the grid shown again after the Approvals page came
+   back with every day still striped ("not drawn yet") until a finger scrolled it: while Approvals hid it a change of
+   period drew the grid around the new period's first months, the view stayed on the month he had left, and nothing woke
+   the month-drawing when the grid showed again — only a scroll did. */
+test('the OIL tab pressed from Approvals never shows the grid first (his video, 28 Oct 26)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const first = await page.evaluate(() => new Promise<{ oil: boolean; grid: boolean }>(ok => {
+    document.querySelector<HTMLElement>('[data-testid="oil-tracker"]')!.click()
+    /* the next frame, before it is painted */
+    requestAnimationFrame(() => {
+      const host = document.querySelector<HTMLElement>('#page-leavewar .lw-gridhost')
+      ok({ oil: !!document.querySelector('[data-testid="oil-window"]'), grid: !!host && !host.hidden })
+    })
+  }))
+  expect(first.oil || !first.grid, `the first frame after the press: the tracker ${first.oil ? 'up' : 'not yet up'}, the grid ${first.grid ? 'showing' : 'hidden'}`).toBe(true)
+})
+
+test('on a phone the grid shown again after Approvals draws the month in view by itself (his picture, 28 Oct 26)', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone draws a rolling window of months; a desktop fills the whole year')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  const seen = () => page.evaluate(() => {
+    const cells = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx td[data-testid^="cell-"]')]
+    const inView = (els: HTMLElement[]) => els.filter(e => {
+      const r = e.getBoundingClientRect()
+      return r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 140 && r.left < innerWidth
+    })
+    const days = inView(cells).map(e => e.dataset.testid!.slice(-10)).sort()
+    return { stripes: inView([...document.querySelectorAll<HTMLElement>('#page-leavewar .mx tbody td.lwph')]).length, days: days.length, first: days[0] ?? '' }
+  })
+  /* where a switch to the second period lands, on the grid in view */
+  const ids = await page.$$eval('[data-testid="war-picker"] option', os => os.map(o => (o as HTMLOptionElement).value))
+  await page.selectOption('[data-testid="war-picker"]', ids[0]!)
+  await page.waitForTimeout(800)
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await expect.poll(async () => (await seen()).first, { message: 'the second period landed' }).not.toBe('')
+  const landed = +(await seen()).first.slice(5, 7)
+  /* the grid taken far from there by a month button, as his was (October from a request's dates in April) */
+  const far = landed <= 6 ? 'OCT' : 'FEB'
+  await page.locator('#page-leavewar button', { hasText: new RegExp(`^${far}$`) }).first().click()
+  await expect.poll(async () => (await seen()).days, { message: `${far} drawn` }).toBeGreaterThan(0)
+  await page.waitForTimeout(1200)
+  /* his path: the Approvals page, the View picker away and back (the grid, hidden, is drawn around where the period lands),
+     then OIL and its ✕ — the grid on screen again, the view still on the far month, and nothing touches it */
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.selectOption('[data-testid="war-picker"]', ids[0]!)
+  await page.waitForTimeout(800)
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  /* …and he reads the list a while: the hidden grid's drawing waits for the app to be idle (two seconds without a touch),
+     draws its few months and then rests, waiting to be woken */
+  await page.waitForTimeout(3500)
+  /* WebKit — his iPhone's engine — sends the grid no scroll event when it is shown again; the test browser may, and that
+     event alone would wake the drawing and hide the fault. From here on the grid's scroll events are held back, as his
+     phone holds them, so only the grid's own wake on being shown can draw the month in view. */
+  await page.evaluate(() => {
+    document.addEventListener('scroll', e => { if ((e.target as Element)?.classList?.contains('mx-wrap')) e.stopImmediatePropagation() }, true)
+  })
+  await page.getByTestId('oil-tracker').click()
+  await page.waitForTimeout(800)
+  await page.getByTestId('oil-close').click()
+  await expect.poll(seen, { message: 'the days in view drawn, no stripes, without a touch', timeout: 4000 }).toEqual(expect.objectContaining({ stripes: 0 }))
+  expect((await seen()).days, 'drawn days in view').toBeGreaterThan(0)
+})
+
+/* [LW-APPR-PERIOD-LANDING] (found by the walk of his video's fix, 28 Oct 26; he asked for it fixed): a period picked while
+   the Approvals page stands in the grid's place left the grid, on return, at the month on screen before — the landing's
+   jump ran while the grid was hidden and could not scroll it. Picked there, the period lands where a pick on the grid
+   lands: its first open day from today, else today, else its first day (selectWar, D1177). */
+test('a period picked on the Approvals page lands the grid on its first day, as a pick on the grid does', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  const firstSeen = () => page.evaluate(() => {
+    const days = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx td[data-testid^="cell-"]')].filter(e => {
+      const r = e.getBoundingClientRect()
+      return r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.left >= (document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect().left + 100) && r.left < innerWidth
+    }).map(e => e.dataset.testid!.slice(-10)).sort()
+    return days[0] ?? ''
+  })
+  const ids = await page.$$eval('[data-testid="war-picker"] option', os => os.map(o => (o as HTMLOptionElement).value))
+  /* where a pick on the grid lands the second period */
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await expect.poll(firstSeen, { message: 'the second period landed' }).not.toBe('')
+  await page.waitForTimeout(800)
+  const landing = (await firstSeen()).slice(0, 7)
+  /* back to the first period, the grid taken far from that month */
+  await page.selectOption('[data-testid="war-picker"]', ids[0]!)
+  await page.waitForTimeout(800)
+  const far = +landing.slice(5, 7) <= 6 ? 'OCT' : 'FEB'
+  await page.locator('#page-leavewar button', { hasText: new RegExp(`^${far}$`) }).first().click()
+  await page.waitForTimeout(1200)
+  /* the second period picked on the Approvals page, then back to the grid */
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await page.waitForTimeout(800)
+  await page.getByTestId('lw-tab-grid').click()
+  await expect.poll(async () => (await firstSeen()).slice(0, 7), { message: `the grid lands in ${landing}, as a pick on the grid does`, timeout: 4000 }).toBe(landing)
+})
+
+/* D1449 (28 Oct 26, his "24 as recommended" — the app's blue "a bit dark"): on the Leave War the day brought into view from
+   Approvals is ringed in the Leave War's cyan, the colour of its date ringed above it, not the app's darker blue. */
+test('D1449 the day brought into view from Approvals is ringed in the Leave War’s cyan', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await page.getByTestId('appr-dates').first().click()
+  const ring = page.locator('td.lw-ring')
+  await expect(ring).toHaveCount(1)
+  const shadow = await ring.evaluate(e => getComputedStyle(e).boxShadow)
+  expect(shadow, 'the ring in cyan (59, 198, 232)').toContain('rgb(59, 198, 232)')
+})
+
+/* THE FIX READ'S F1 (28 Oct 26): a period picked on the Approvals page keeps its landing for when the grid shows again —
+   but a request's dates tapped next, which shows the grid AND rings his day in the same press, must win: the kept landing
+   is spent by any jump that runs, never replayed over a newer one. */
+test('a period picked on Approvals, then a request’s dates: the grid lands on the request’s day, ringed in view', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  const ids = await page.$$eval('[data-testid="war-picker"] option', os => os.map(o => (o as HTMLOptionElement).value))
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await page.waitForTimeout(600)
+  await page.getByTestId('appr-dates').first().click()
+  const ring = page.locator('td.lw-ring')
+  await expect(ring).toHaveCount(1)
+  await expect.poll(() => ring.evaluate(e => {
+    const r = e.getBoundingClientRect(), w = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect()
+    return r.width > 0 && r.left >= w.left && r.right <= w.right + 1
+  }), { message: 'the ringed day stands in the grid\u2019s view', timeout: 4000 }).toBe(true)
+})
+
+/* D1462, D1463 (28 Oct 26, his "As recommended for all" to questions 26 and 27): the bid window's title names its day the
+   size of the name, in the app's white — not the small faint grey — and the admin's switch reads "Auto-approve", on one
+   line beside the day and ✕ at his phone's width. Red first: before the change the day was 11px grey and the switch read
+   "Approve what I enter". */
+test('D1462 D1463 the bid window title: its day brighter, the switch "Auto-approve"', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="month-JUN"]').click()
+  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  const sw = page.getByTestId('bid-approve-tick')
+  await expect(sw).toHaveText('Auto-approve')
+  const look = await page.evaluate(() => {
+    const dt = document.querySelector('[data-testid="bid-picker"] .bidsheet-hd .dt') as HTMLElement
+    const ink = getComputedStyle(document.body).getPropertyValue('--ink').trim()
+    const probe = document.createElement('span'); probe.style.color = ink; document.body.appendChild(probe)
+    const inkRgb = getComputedStyle(probe).color; probe.remove()
+    const cs = getComputedStyle(dt), s = (document.querySelector('[data-testid="bid-approve-tick"]') as HTMLElement).getBoundingClientRect()
+    return { size: cs.fontSize, weight: cs.fontWeight, color: cs.color, inkRgb, swH: s.height }
+  })
+  expect(look.size).toBe('13px')
+  expect(Number(look.weight)).toBeGreaterThanOrEqual(600)
+  expect(look.color, 'the app\'s white').toBe(look.inkRgb)
+  expect(look.swH, 'the switch on one line').toBeLessThan(30)
+})

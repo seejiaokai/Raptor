@@ -1,0 +1,22 @@
+[
+ {
+  "id": "S3c rested flick, then Approve tap lights that line only",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "scrollY 385; tapped appr-line-slash; lit [\"slash:approved\"]",
+  "pics": [
+   "s3b-A-tap-q.png",
+   "s3b-A-tap.png"
+  ]
+ },
+ {
+  "id": "S3d no-rest fling, page still, Approve tap",
+  "size": "phone",
+  "verdict": "NOT WALKED",
+  "said": "scrollY 696; tapped appr-line-bane; first tap lit []; second tap lit [\"bane:approved\"] (first tap after a no-rest fling swallowed: the test browser trap of walk-scripts s4, not judged)",
+  "pics": [
+   "s3b-B-tap1.png",
+   "s3b-B-tap2.png"
+  ]
+ }
+]

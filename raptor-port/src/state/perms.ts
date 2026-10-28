@@ -66,6 +66,8 @@ export const T = {
      was changed; and what each person has read of them, his own row */
   notice: 'Notice',
   noticeseen: 'NoticeSeen',
+  /* each admin's own moment of opening the Leave War's Approvals (M4 8.4 — state/apprseen.ts) */
+  apprseen: 'LeaveApprovalsSeen',
   input: 'Input',
   attachment: 'Attachment, InputAttachment',
   war: 'LeaveWar',
@@ -95,7 +97,11 @@ export const PERMS: Record<string, PermRow> = {
   /* a notice is written by whoever made the change, inside it, and read by the person it is addressed to; nobody
      rewrites one, and it is removed only by its maker's own Undo of that change */
   [T.notice]: row(cell('C R D'), cell('C', 'R D')),
-  [T.noticeseen]: row(cell('', 'C R U'), cell('', 'C R U')),
+  /* …and an ADMIN reads every person's (M4 9.3 — D1216): his Undo of a Leave War decision asks whether its member had read
+     the line it takes back */
+  [T.noticeseen]: row(cell('R', 'C R U'), cell('', 'C R U')),
+  /* an admin's own row; a member has no Approvals (D1254) */
+  [T.apprseen]: row(cell('', 'C R U'), NONE),
   [T.input]: row(cell('C R U D'), cell('R', 'C R U D'), cell('R')),
   [T.attachment]: row(cell('R'), cell('R', 'C R')),
   [T.war]: row(cell('C R U D'), cell('R')),
@@ -445,6 +451,11 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   /* opening or closing dates for bidding (D1177, 21 Oct 26 — the stages went; D352 narrowed): the admin's, as the stage
      always was (27 Aug 26) — the period's own record; its own type so Undo can name it ("Undid: opening bidding …") */
   'lw.open': op(T.war, 'U'),
+  /* the bell's "taken back" line after an admin's Undo or Redo of a Leave War decision (M4 9.3 — D1216): a notice of its
+     own command, written by the admin whose Undo it was; never a member's */
+  'lw.notice': op(T.notice, 'C'),
+  /* he opens Approvals: his OWN row of when (M4 8.4) */
+  'lw.apprseen': op(T.apprseen, 'U', 'required'),
   /* the Holidays list's three writers (leavewar/state/store.ts holidayAdd / holidayChange / holidayRemove — the Inputs /
      SANS redesign, plan §3.4): a public holiday or an Off day is the leave period's own record, an admin's to change */
   'lw.holiday.add': op(T.war, 'U'), 'lw.holiday.change': op(T.war, 'U'), 'lw.holiday.remove': op(T.war, 'U'),
@@ -519,6 +530,11 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D']]),
 }
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
+/* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
+   follow-up notice (`lw.notice` — "… taken back" / "… again" after an admin's Undo or Redo of a war decision, M4 9.3,
+   D1216). A member's Notice C is a line riding his own input change (the commit's notices case); this command rides none,
+   and a member never runs it (the security read's finding 4, 27 Oct 26) */
+const ADMIN_ONLY_COMMANDS = new Set(['lw.notice'])
 
 function owners(meta: any): string[] | null {
   if (!meta) return null
@@ -533,6 +549,7 @@ export function cmdAuthorize(type: string, actor: Actor, meta?: any): boolean {
   const who = actorRole(actor)
   if (who === null) return true                          // the system actor (authorize short-circuits it first anyway)
   if (who === 'off') return false
+  if (ADMIN_ONLY_COMMANDS.has(type) && who !== 'admin') return false
   /* the base op with its own-row rule, then every `more` op held outright — ALL must allow
      (no early success before the last is asked) */
   if (!opAllows(who, o.table, o.act, o.own, actor, meta)) return false
@@ -695,6 +712,73 @@ function onlyChangesWords(before: unknown, after: unknown): boolean {
   }
   return changed
 }
+/* WHO PLACED A REQUEST AND WHO DECIDED IT — VOUCHED BY THE RECORD IT CAME FROM (M4 8.6; the security read's finding 2,
+   27 Oct 26: a stamp vouched by ANY before-image let a new bid borrow another record's stamp, and a new bid with none
+   jumped the Approvals queue and dodged "New"). A request a member's command leaves on a cell is one of three:
+   · THE SAME RECORD (its id in a before-image of this command — a move to another day of his row, a whole day cut to one
+     half): exactly that record's stamps, absent only where they were absent (a bid saved before M4);
+   · A RE-TYPED KIND (a new id where this cell's before-image held requests it replaces — leavewar/state/store.ts setCell):
+     the stamp of the first of those that has one, as the store gives it; where none had one, placed by him now;
+   · NEW: placed by him, now — never stampless, never another man's name, never dated ahead.
+   "Now" is this minute behind and a few seconds ahead (the lower note: a time ahead put his bid after later ones); at the
+   database step the server sets the time itself. Who decided one is never his to write: only as the same record had it. */
+const STAMP_SKEW_MS = 5 * 60_000
+const STAMP_AHEAD_MS = 5_000
+/* the kinds of a bell line only a Leave War command of an admin's writes (state/notices.ts NoticeWhat: `lw`, `lwopen`,
+   `lwback`) — a member's notice carries none (the notices case below) */
+const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol'])
+const placedOf = (r: any): string => `${r?.placedBy ?? ''}|${r?.placedAt ?? ''}`
+/* the halves a request's code takes — "*LL" the morning, "LL*" the afternoon, "LL" both (the war's notation, read here
+   without reaching into the war's engine) */
+const halvesOfCode = (code: unknown): string[] => {
+  const s = String(code ?? '')
+  return s.startsWith('*') ? ['am'] : s.endsWith('*') ? ['pm'] : ['am', 'pm']
+}
+function stampForged(env: CommitEnvelope, c: Change, after: unknown, pid: string): string | null {
+  const a: any[] = Array.isArray(after) ? after : []
+  let byId: Map<string, any> | null = null
+  /* in how many of this command's cells each request id stands AFTER it — a record moved stands in one; a copy in two */
+  let afterCount: Map<string, number> | null = null
+  const was = (id: string) => {
+    if (!byId) {
+      byId = new Map()
+      afterCount = new Map()
+      for (const x of env.changes) {
+        if (x.collection !== 'lw.cell') continue
+        if (Array.isArray(x.before)) for (const r of x.before as any[]) if (r?.kind === 'request') byId.set(String(r.id), r)
+        if (Array.isArray(x.after)) for (const i of new Set((x.after as any[]).filter(r => r?.kind === 'request').map(r => String(r.id)))) afterCount.set(i, (afterCount.get(i) ?? 0) + 1)
+      }
+    }
+    /* THE SAME RECORD only where it LEFT its old place (the fixes' M10 — the Opus read's 7): a request kept where it was
+       and copied, same id, onto another day of his row is a new bid there, placed by him now — never one carrying the
+       original's stamp to the top of Approvals */
+    return (afterCount!.get(id) ?? 0) > 1 ? undefined : byId.get(id)
+  }
+  const kept = new Set(a.map(r => String(r?.id)))
+  /* A RE-TYPED KIND keeps the stamp of a LIVE bid on the half it replaces, as the store's setCell gives it (M10): a refused
+     request of months ago, or the other half's bid, dropped beside a new one is not what it was re-typed from */
+  const replaced = (Array.isArray(c.before) ? c.before as any[] : []).filter(r => r?.kind === 'request' && r.state !== 'refused' && !kept.has(String(r.id)))
+  const firstFor = (r: any) => {
+    const mine = halvesOfCode(r.code)
+    return replaced.filter(x => typeof x.placedAt === 'number' && halvesOfCode(x.code).some(h => mine.includes(h))).sort((x, y) => x.placedAt - y.placedAt)[0]
+  }
+  for (const r of a) {
+    if (r?.kind !== 'request') continue
+    const same = was(String(r.id))
+    const first = same ? undefined : firstFor(r)
+    if (same) {
+      if (placedOf(same) !== placedOf(r)) return `who placed a request`
+    } else if (first) {
+      if (placedOf(first) !== placedOf(r)) return `who placed a request`
+    } else {
+      const age = typeof r.placedAt === 'number' ? Date.now() - r.placedAt : NaN
+      if (String(r.placedBy) !== pid || !(age <= STAMP_SKEW_MS && age >= -STAMP_AHEAD_MS)) return `who placed a request`
+    }
+    if ((r.decidedBy !== undefined || r.decidedAt !== undefined)
+      && (!same || `${same.decidedBy ?? ''}|${same.decidedAt ?? ''}` !== `${r.decidedBy ?? ''}|${r.decidedAt ?? ''}`)) return `who decided a request`
+  }
+  return null
+}
 function onlyTakesPending(before: unknown, after: unknown): boolean {
   const b: any[] = Array.isArray(before) ? before : []
   const a: any[] = Array.isArray(after) ? after : []
@@ -758,6 +842,21 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
        read's F1, 26 Oct 26: comparing the marks rolled back a retype that left it where it was). */
     if (!!(src && src.schedPlaced) !== !!f.schedPlaced) return `a scheduler's move of an input`
     if (b && placeHeld(b) && placeOf(b) !== placeOf(f)) return `where a scheduler put an input` }
+  /* "APPROVED BY THE WAR" IS NEVER A MEMBER'S TO SET (the overhaul's M4 — the security read's finding 3, 27 Oct 26). `lw`
+     (the war that approved it) and `lwMoved` (the days a move on the war carried) are written by an admin's approval and
+     move; M4 trusts them ("Also since you last looked" and Approvals read `lw` as war-approved leave). A member's change
+     keeps them as they were or drops them (his own re-dated or re-typed leave goes back to "filed on the Inputs page",
+     19 Sep 26); a record he creates carries them only as a piece the app cut from a record of the same man this command
+     changed (a medical cutting his war-approved leave): that record's `lw`, and of its moved days only its own. */
+  { const mark = (x: any) => (x && x.lw ? x.lw : null)
+    const moved = (x: any): Record<string, unknown> => (x && x.lwMoved && typeof x.lwMoved === 'object' ? x.lwMoved : {})
+    if (mark(f) != null || Object.keys(moved(f)).length) {
+      const man = personOfInput(f)
+      const from = b ? [b] : env.changes.filter(o => o !== c && isInputChange(o) && o.before != null && man != null && holds(o.before, man)).map(o => o.before)
+      const ok = from.some((s: any) => mark(s) != null && (mark(f) == null || JSON.stringify(mark(f)) === JSON.stringify(mark(s)))
+        && Object.entries(moved(f)).every(([d, v]) => moved(s)[d] === v))
+      if (!ok) return `a mark that it was approved on the war`
+    } }
   /* HIS OWN PART is taking himself OUT (D755 (3)). Putting himself INTO an input that holds others is adding a person
      to it — its filer's or a scheduler's (owner D763) — except as his own Undo putting him back, which is a replay. */
   if (own && b && idsOf(f).length > 1 && !holds(b, pid) && holds(f, pid) && !filedForOther(pid, b, f)) return `a person added to another person's input`
@@ -835,6 +934,20 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
         const bad = inputBreach(env, c, pid, !!replayed && replayed(c))
         if (bad) return `${bad} (${where})`
+        /* WHO PLACED A LEAVE THE WAR APPROVED (the overhaul's M4, 8.6 — the security read's question, the spec §3): the
+           request's placer rides on its Input as `lwBy` / `lwAt`, written only by an admin's approval; a member's own
+           command keeps them as they were or drops them, never writes them (his Undo or Redo puts back the image it took) */
+        /* (his Undo or Redo puts back the image it took — ONLY the one the timeline is applying, record for record; a
+           change that merely calls itself a restore is judged as any other: the security read's finding 1) */
+        if (!(replayed && replayed(c)) && c.op === 'put' && c.after) {
+          const f: any = c.after
+          /* (a piece cut from a leave — a medical splitting it — is a new record carrying its parent's stamp: any before-image
+             of this command's own vouches for it) */
+          const stamp = `${f.lwBy ?? ''}|${f.lwAt ?? ''}`
+          if ((f.lwBy !== undefined || f.lwAt !== undefined)
+            && !env.changes.some(x => x.collection === 'inputs' && x.before && `${(x.before as any).lwBy ?? ''}|${(x.before as any).lwAt ?? ''}` === stamp))
+            return `who placed a leave on the war (${where})`
+        }
         break
       }
       /* A BELL'S NOTICE (state/notices.ts; the plan §4.10): a member's command may make one only as part of his OWN
@@ -844,6 +957,11 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       case 'notices': {
         const b: any = c.before, n: any = c.after
         const rides = (iid: any) => env.changes.some(x => x.collection === 'inputs' && x.id === String(iid))
+        /* A LEAVE WAR LINE IS NEVER A MEMBER'S (M4; the security read's finding 4): "Your leave · LL refused", bidding
+           opened or closed, "… taken back" are written only by an admin's war command (state/notices.ts noticeWar, the
+           `lw.notice` follow-up) — a member's notice riding his own input may carry none of them */
+        const warLine = (x: any) => Array.isArray(x?.what) && x.what.some((p: any) => WAR_LINE_KINDS.has(String(p?.k)))
+        if (c.op === 'put' && warLine(n)) return `a notice that is not his own change's (${where})`
         if (c.op === 'put' && b == null && n && String(n.by) === pid && String(n.to) !== pid && rides(n.iid)) break
         if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid)) break
         return `a notice that is not his own change's (${where})`
@@ -857,6 +975,14 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
            for image. A Redo, the Undo of a step made while the day was open, or a command that only calls itself a
            restore puts nothing back on a closed day. (Taking his own pending bid away passes above, Undo or not.) */
         const after = c.op === 'delete' ? [] : c.after
+        /* WHO PLACED A REQUEST AND WHO DECIDED IT (M4 8.6 — the security read's question: a forged "placed by"): a request a
+           member writes is placed by HIM, now — or keeps the stamp it already had (a re-typed kind keeps the first; a move
+           carries it to another day of his row, so any of this command's own before-images vouches); nor does he ever
+           write who decided one. His Undo or Redo writes back the images it took. */
+        /* (…and only the Undo or Redo the timeline is applying writes back the images it took, record for record — a change
+           that merely calls itself a restore is judged as any other: the security read's finding 1, 27 Oct 26) */
+        if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+        if (!(replayed && replayed(c))) { const bad = stampForged(env, c, after, pid); if (bad) return `${bad} (${where})` }
         if (LW_DAY_OPEN && !LW_DAY_OPEN(c.id) && !onlyTakesPending(c.before, after) && !onlyChangesWords(c.before, after)) {
           if (warRestore === undefined) warRestore = env.origin === 'restore' && LW_RESTORE ? LW_RESTORE(env) : null
           if (!(warRestore && warRestore(c))) return `a war day not open for bidding (${where})`

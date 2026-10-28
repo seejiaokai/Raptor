@@ -1,0 +1,65 @@
+[
+ {
+  "id": "F fixture: Ranger placed six LL bids",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "placed 6 of 6",
+  "pics": []
+ },
+ {
+  "id": "F2 the list is long enough to scroll",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "12 lines; page 1570 px tall in a 874 px screen",
+  "pics": []
+ },
+ {
+  "id": "S3a quick flick scrolls the page",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "scrollY 0 -> 473 -> 696",
+  "pics": [
+   "s3-after-flick1.png"
+  ]
+ },
+ {
+  "id": "S3b after the flick, tapping a line's Approve lights that line only",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "tapped appr-line-bruise; lit before [] after []",
+  "pics": [
+   "s3-tap-q.png",
+   "s3-tap.png"
+  ]
+ },
+ {
+  "id": "S4a approve the low line: it lights",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lit [\"bane:approved\"]; scrollY 63 -> 63",
+  "pics": [
+   "s4-low-before.png",
+   "s4-approve-q.png",
+   "s4-approved.png"
+  ]
+ },
+ {
+  "id": "S4b top-bar Undo: scroll unchanged, line back to pending in place",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "scrollY 63 -> 63; line top 804 -> 804; lit after []; undo button on screen: true",
+  "pics": [
+   "s4-undo-q.png",
+   "s4-undone.png"
+  ]
+ },
+ {
+  "id": "S4c Redo: the line lit again, scroll unchanged",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "scrollY 63 -> 63; lit [\"bane:approved\"]",
+  "pics": [
+   "s4-redone.png"
+  ]
+ }
+]

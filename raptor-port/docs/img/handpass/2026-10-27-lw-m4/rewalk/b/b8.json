@@ -1,0 +1,48 @@
+[
+ {
+  "id": "B8 fixture: Trident's pending LL of 13-16 Apr 27 is in the 2027 list",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"text\":\"Trident IP LL 13–16 Apr › Approve Refuse 4 days −2 P 27 —\",\"cls\":\"appr-line ph\",\"ok\":{\"txt\":\"Approve\",\"cls\":\"appr-ok\",\"dis\":false,\"p\":\"false\"},\"no\":{\"txt\":\"Refuse\",\"cls\":\"appr-no\",\"dis\":false,\"p\":\"false\"},\"why\":null}",
+  "pics": []
+ },
+ {
+  "id": "B8 his line is tagged as posting out",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "{\"text\":\"Trident IP LL 13–16 Apr › Approve Refuse 4 days −2 —\",\"cls\":\"appr-line ph\",\"ok\":{\"txt\":\"Approve\",\"cls\":\"appr-ok\",\"dis\":false,\"p\":\"false\"},\"no\":{\"txt\":\"Refuse\",\"cls\":\"appr-no\",\"dis\":false,\"p\":\"false\"},\"why\":null}",
+  "pics": [
+   "b8-approvals-tagged.png"
+  ]
+ },
+ {
+  "id": "B8 Approve in Approvals is refused with its reason (the button not lit)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"text\":\"Trident IP LL 13–16 Apr › He posts out on 1 Mar: refuse or delete it Approve Refuse 4 days −2 —\",\"cls\":\"appr-line ph\",\"ok\":{\"txt\":\"Approve\",\"cls\":\"appr-ok\",\"dis\":false,\"p\":\"false\"},\"no\":{\"txt\":\"Refuse\",\"cls\":\"appr-no\",\"dis\":false,\"p\":\"false\"},\"why\":\"He posts out on 1 Mar: refuse or delete it\"}",
+  "pics": [
+   "b8-approve-q.png",
+   "b8-approve.png"
+  ]
+ },
+ {
+  "id": "B8 bid window: Approve is refused the same way (reason shown, not approved)",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "window text: \"Trident Wed 14 Apr ✕ LL Pending Approve Refuse ⇄Move Delete till 16 Apr 27 Document Couldn’t approve — something else is on that time\"; button {\"txt\":\"Approve\",\"cls\":\"dchip dec approve\"}",
+  "pics": [
+   "b8-bid-approve-q.png",
+   "b8-bid-approve.png"
+  ]
+ },
+ {
+  "id": "B8 Refuse still works on his line",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"text\":\"Trident IP LL 13–16 Apr › Approve Refused 4 days −2 —\",\"cls\":\"appr-line ph lit-refused\",\"ok\":{\"txt\":\"Approve\",\"cls\":\"appr-ok\",\"dis\":false,\"p\":\"false\"},\"no\":{\"txt\":\"Refused\",\"cls\":\"appr-no lit\",\"dis\":false,\"p\":\"true\"},\"why\":null}",
+  "pics": [
+   "b8-refuse-q.png",
+   "b8-refuse.png"
+  ]
+ }
+]

@@ -1,0 +1,30 @@
+// walker C — exploration: which controls the admin's bid window and the drag window carry
+process.env.LW_OUT ||= '../../docs/img/handpass/2026-10-27-lw-m4/c/explore'
+const L = await import('./lw-m4-lib.mjs')
+const { T, shot, press, vis, txt } = L
+console.log('[lw-m4-walk-c-explore v1]')
+const w = await L.newCtx('desk')
+const P = w.page
+const ids = () => P.evaluate(() => [...document.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().height > 0).map(e => e.dataset.testid).filter(t => /^(bid|decide|sel|dl|portion|sheet|move|settings|open|oil-)/.test(t)))
+await L.signIn(w, 'member')
+await L.openCell(w, 'bane', '2026-01-13')
+await L.placeLeave(w, 'LL')
+await L.switchTo(w, 'admin')
+await L.openCell(w, 'bane', '2026-01-13')
+console.log('ADMIN BID WINDOW (pending bid):', JSON.stringify(await ids()))
+await shot(w, 'admin-bidwin')
+await L.closeWin(w)
+// drag window: drag across two cells
+const a = await P.locator(T('cell-bane-2026-01-14')).first().boundingBox()
+const b = await P.locator(T('cell-bane-2026-01-15')).first().boundingBox()
+await P.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+await P.mouse.down()
+await P.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 6 })
+await P.mouse.up()
+await P.waitForTimeout(600)
+console.log('DRAG WINDOW:', JSON.stringify(await ids()))
+await shot(w, 'drag-win')
+console.log('errs', w.errs)
+await w.ctx.close()
+await L.closeBrowser()
+console.log('DONE')

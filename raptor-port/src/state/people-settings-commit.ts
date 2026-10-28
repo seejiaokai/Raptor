@@ -54,6 +54,7 @@ import { mintOrd, byOrd } from '../command/ord'
 import { accountsLoad, ACCOUNT_TYPES } from './accounts'
 import { changesLoad, CHANGES_TYPES } from './changes'
 import { noticeSeenLoad, NOTICE_TYPES } from './noticeseen'
+import { APPRSEEN_TYPES } from './apprseen'
 import { insightsLoad } from '../engine/insights-config'
 import { flyplanLoad } from './flyplan'
 import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
@@ -91,7 +92,8 @@ export const SETTINGS_KEYS = [
      it still sitting in a browser's storage is read by nothing.) */
 /* - `noticeseen:<pid>` — what each person has read of his bell's notices, `NoticeSeen`; written ONLY by
      state/noticeseen.ts, through its one command `notices.seen` (own row only — the one-rule build's step 7). */
-export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', ...FLY_ROW_PREFIXES] as const
+/* (…'apprseen:' — each admin's own moment of opening the Leave War's Approvals, M4 8.4: state/apprseen.ts) */
+export const SETTINGS_ROW_PREFIXES = ['account:', 'accessreq:', 'reqseen:', 'seen:', 'noticeseen:', 'apprseen:', ...FLY_ROW_PREFIXES] as const
 const isRowKey = (k: string) => SETTINGS_ROW_PREFIXES.some(p => k.startsWith(p))
 /* every row stored now — ONE pass over the settings keys (the guard reads this on every command, so never one per kind) */
 const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
@@ -330,6 +332,7 @@ export function registerPeopleSettingsCommandLayer(): void {
   for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
   for (const t of CHANGES_TYPES) definePermission(t, anyone)
   for (const t of NOTICE_TYPES) definePermission(t, anyone)    // own row only — perms.ts COMMAND_OPS decides
+  for (const t of APPRSEEN_TYPES) definePermission(t, anyone) // own row only — perms.ts COMMAND_OPS decides
   for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)

@@ -1,0 +1,1322 @@
+[
+ {
+  "n": 1,
+  "name": "the writer refuses a line drawn from a state since changed (stale, B8)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "for (const p of line.parts) { const s = staleWhy(line.personId, p); if (s) return { kind: 'stale', why: s } }",
+  "put": "void 0",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "a decided line's OTHER button stays pressable (D1428)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "disabled={stale} onClick={() => onPress(r, 'refused')}",
+  "put": "disabled={stale || r.lit === 'approved'} onClick={() => onPress(r, 'refused')}",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "a second tap on the lit button sends the line back to pending (D1421)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "const press = (r: Row, to: Exclude<DecideTo, 'pending'>) => apply([r], r.lit === to ? 'pending' : to)",
+  "put": "const press = (r: Row, to: Exclude<DecideTo, 'pending'>) => apply([r], to)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "the right half of a two-half day: the leave on the request's own half (M1, warLeaveFor)",
+  "file": "src/leavewar/state/store.ts",
+  "find": ": absencesAt(personId, date).find(c => c.kind === 'absence' && !!c.lw && isLeaveCode(c.code) && overlaps(c.win, requestWin(code)))",
+  "put": ": absencesAt(personId, date).find(c => c.kind === 'absence' && !!c.lw && isLeaveCode(c.code))",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "the writer reads each request's half before the command (M1, codeOf)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "codeOf.set(p, rec?.code ?? p.code)",
+  "put": "codeOf.set(p, undefined)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "a put-back on the line's own half, not the other half's bid (M1, staleWhy)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "(p.code === undefined || overlaps(requestWin(r.code), requestWin(p.code)))",
+  "put": "(true)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "Approve all is armed only for exactly the lines shown (A4's signature)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "const isArmed = armed !== null && armed === sig && toApprove.length > 0",
+  "put": "const isArmed = armed !== null && toApprove.length > 0",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "Approve all needs a second tap (A4, D1431)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "if (!isArmed) { setArmed(sig); return }",
+  "put": "void isArmed",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 9,
+  "name": "every door asks the posting-out date rule (D1436, approveWhy)",
+  "file": "src/leavewar/sync.ts",
+  "find": "  if (po) return po\n",
+  "put": "  if (po && false) return po\n",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 10,
+  "name": "the date rule refuses only days from the posting-out date (D1436)",
+  "file": "src/leavewar/sync.ts",
+  "find": "if (!w || !w.to || date <= w.to || outcomeOf(w) === 'sans') return null",
+  "put": "if (!w || !w.to || date < w.to || outcomeOf(w) === 'sans') return null",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 11,
+  "name": "a posting out as SANS keeps his leave (D283)",
+  "file": "src/leavewar/sync.ts",
+  "find": "if (!w || !w.to || date <= w.to || outcomeOf(w) === 'sans') return null",
+  "put": "if (!w || !w.to || date <= w.to) return null",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 12,
+  "name": "a posting that has run speaks in the past tense",
+  "file": "src/leavewar/sync.ts",
+  "find": "return postedOutBy(personId) ? `He posted out on ${on}",
+  "put": "return null ? `He posted out on ${on}",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 13,
+  "name": "postedOutBy: a posting has run once his last day is before today",
+  "file": "src/leavewar/state/store.ts",
+  "find": "if (w.to && addDays(w.to, 1) <= memberToday()) return w.to",
+  "put": "if (false) return w.to",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 14,
+  "name": "a man deleted on Admin → Users: his leftover bid refused (R3-6)",
+  "file": "src/leavewar/sync.ts",
+  "find": "if (postedOutBy(it.personId) === 'gone' && !(kept",
+  "put": "if (postedOutBy(it.personId) === 'never' && !(kept",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 15,
+  "name": "a Delete-outcome posting that has run falls to the date rule (R3c-1)",
+  "file": "src/leavewar/sync.ts",
+  "find": "!(kept && outcomeOf(kept) === 'delete' && kept.poDone)",
+  "put": "!(false)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 16,
+  "name": "the day's list answers with the rules' reason (M5, decideRequestById)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "return r.done > 0 ? true : (r.why[0] ?? false)",
+  "put": "return r.done > 0 ? true : false",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 17,
+  "name": "the bid windows are handed the rules' reasons (M5, setBidStates)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "return { decided, skipped, already, why: [...new Set(why)], refused: why.length",
+  "put": "return { decided, skipped, already, why: [], refused: why.length",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 18,
+  "name": "the drag window counts the refused days apart (R2-5)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "why: [...new Set(why)], refused: why.length, whyBy",
+  "put": "why: [...new Set(why)], refused: 0, whyBy",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 19,
+  "name": "\"Approve what I enter\" hands back the door's reason (R2-4)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "why = [...new Set(r.why)]",
+  "put": "why = []",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 20,
+  "name": "the reasons by man, each once (R3-4)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "if (seen.has(k)) return false; seen.add(k); return true",
+  "put": "seen.add(k); return true",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "stampForged: a copy kept beside its original is a new bid (M10)",
+  "file": "src/state/perms.ts",
+  "find": "return (afterCount!.get(id) ?? 0) > 1 ? undefined : byId.get(id)",
+  "put": "return byId.get(id)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "stampForged: a refused request is not what a re-type replaces (M10)",
+  "file": "src/state/perms.ts",
+  "find": "r?.kind === 'request' && r.state !== 'refused' && !kept.has(String(r.id))",
+  "put": "r?.kind === 'request' && !kept.has(String(r.id))",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "stampForged: the other half's bid is not what a re-type replaces (M10)",
+  "file": "src/state/perms.ts",
+  "find": "halvesOfCode(x.code).some(h => mine.includes(h))",
+  "put": "true",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 24,
+  "name": "stampForged: a new bid is placed by him NOW (time window)",
+  "file": "src/state/perms.ts",
+  "find": "if (String(r.placedBy) !== pid || !(age <= STAMP_SKEW_MS && age >= -STAMP_AHEAD_MS)) return",
+  "put": "if (String(r.placedBy) !== pid) return",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 25,
+  "name": "stampForged: who decided is never his to write",
+  "file": "src/state/perms.ts",
+  "find": "if ((r.decidedBy !== undefined || r.decidedAt !== undefined)",
+  "put": "if (false && (r.decidedBy !== undefined || r.decidedAt !== undefined)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 26,
+  "name": "verifiedReplay vouches for the war's records too (a real Undo writes its stamps back)",
+  "file": "src/undo/timeline.ts",
+  "find": "for (const ch of a.changes) if (ch.collection === 'inputs' || ch.collection === 'lw.cell') want.set",
+  "put": "for (const ch of a.changes) if (ch.collection === 'inputs') want.set",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 27,
+  "name": "verifiedReplay: a war record must be the image the step took",
+  "file": "src/undo/timeline.ts",
+  "find": ": deepEqual(w.after, c.after)\n",
+  "put": ": true\n",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 28,
+  "name": "\"approved by the war\" (lw) is never a member's to set",
+  "file": "src/state/perms.ts",
+  "find": "if (!ok) return `a mark that it was approved on the war`",
+  "put": "if (false) return `a mark that it was approved on the war`",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 29,
+  "name": "a member's notice never carries a Leave War line",
+  "file": "src/state/perms.ts",
+  "find": "if (c.op === 'put' && warLine(n)) return",
+  "put": "if (false && warLine(n)) return",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 30,
+  "name": "the war's follow-up notice command is the admin's alone",
+  "file": "src/state/perms.ts",
+  "find": "if (ADMIN_ONLY_COMMANDS.has(type) && who !== 'admin') return false",
+  "put": "void 0",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 31,
+  "name": "apprseen: its command declared to the command layer",
+  "file": "src/state/people-settings-commit.ts",
+  "find": "for (const t of APPRSEEN_TYPES) definePermission(t, anyone)",
+  "put": "void APPRSEEN_TYPES",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 32,
+  "name": "apprseen: its own table (M11)",
+  "file": "src/storage/tables.ts",
+  "find": "if (id.startsWith('apprseen:')) return 'LeaveApprovalsSeen'",
+  "put": "if (id.startsWith('apprseen:')) return 'Setting'",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 33,
+  "name": "apprseen: the moment is saved when he opens Approvals",
+  "file": "src/state/apprseen.ts",
+  "find": "store.set(APPRSEEN_PFX + pid, { at: now })",
+  "put": "void now",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 34,
+  "name": "apprseen: the page asks for the moment on open",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "useEffect(() => { setPrev(openApprovals(pid != null ? String(pid) : null)) }, [])",
+  "put": "useEffect(() => { setPrev(0) }, [])",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 35,
+  "name": "apprseen: an admin may write only his own row (the permissions row)",
+  "file": "src/state/perms.ts",
+  "find": "[T.apprseen]: row(cell('', 'C R U'), NONE),",
+  "put": "[T.apprseen]: row(cell('C R U', 'C R U'), NONE),",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 36,
+  "name": "a decision is ONE line a run (grouping)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "if (last && last.d === e.d && last.code === e.code && addDays(last.to, 1) === e.date && sameMove)",
+  "put": "if (false)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 37,
+  "name": "Approvals' and the bid windows' decisions are told (TELLS holds lw.decide)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "new Set(['lw.decide', 'lw.placeApproved',",
+  "put": "new Set(['lw.placeApproved',",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 38,
+  "name": "his own change tells nobody",
+  "file": "src/leavewar/state/store.ts",
+  "find": "if (actor && pid === actor) continue",
+  "put": "void 0",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 39,
+  "name": "M2: the bell keys war leave by date AND half",
+  "file": "src/leavewar/sync.ts",
+  "find": "m.set(`${d}|${n}`, n)",
+  "put": "m.set(d, n)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 40,
+  "name": "M2: the leave on the request's half, never the other's (onHalf)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "overlaps(requestWin(m.get(k)!), requestWin(code)))",
+  "put": "true)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 41,
+  "name": "\"taken back\" only where he had read the line",
+  "file": "src/leavewar/sync.ts",
+  "find": "if (NOTICES.some(x => x.id === n.id) || !hasRead(n.to, n)) continue",
+  "put": "if (NOTICES.some(x => x.id === n.id)) continue",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 42,
+  "name": "Redo after \"taken back\" writes an \"again\" line",
+  "file": "src/leavewar/sync.ts",
+  "find": "made.push({ ...n, what: [p.k === 'lw' ? { ...p, again: true, ref: n.id } : { ...p }] })",
+  "put": "made.push({ ...n, what: [{ ...p }] })",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 43,
+  "name": "M9: an \"again\" line stands only with the line it repeats",
+  "file": "src/state/notices.ts",
+  "find": "if (!NOTICES.some(x => x.id === w.ref)) return false",
+  "put": "void 0",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 44,
+  "name": "bidding open: a stretch shortened or split is a line of its own (★4)",
+  "file": "src/leavewar/state/store.ts",
+  "find": "if (fresh || changed) out.push({ from: o.from, to: o.to, open: true })",
+  "put": "if (fresh) out.push({ from: o.from, to: o.to, open: true })",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 45,
+  "name": "bidding closed when its dates ended: dated after the line that opened it (C-F3)",
+  "file": "src/leavewar/sync.ts",
+  "find": "getTime(), told + 1)",
+  "put": "getTime(), 0)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 46,
+  "name": "the bell's bidding lines start with a capital (D1433)",
+  "file": "src/state/notices.ts",
+  "find": "p.open ? 'Bidding open' : 'Bidding closed'",
+  "put": "p.open ? 'bidding open' : 'Bidding closed'",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 47,
+  "name": "the war's own doors tell once — the Inputs copy is silent (B1, skipLw)",
+  "file": "src/state/sched-commit.ts",
+  "find": "skipLw: warDoor(env.type),",
+  "put": "skipLw: false,",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 48,
+  "name": "the clash gate's replaced bid is named on the Inputs line (9.3a, rbid)",
+  "file": "src/state/notices.ts",
+  "find": "if (rb && rb.length) what =",
+  "put": "if (false) what =",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 49,
+  "name": "M3: a line shows the newest decision that still stands, not only the last",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "const standing = r.forms?.find(f => lineStale",
+  "put": "const standing = r.forms?.slice(0, 1).find(f => lineStale",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 50,
+  "name": "R2-3: every decision kept, newest first",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "row.forms = [{ lit: to, parts: o.parts }, ...(row.forms ?? [])]",
+  "put": "row.forms = [{ lit: to, parts: o.parts }]",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 51,
+  "name": "M7: decided here, put back elsewhere — the new request takes the line's place",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "      if (r.forms?.length) {\n",
+  "put": "      if (false) {\n",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 52,
+  "name": "changing the dates starts the rows afresh (D1421)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "rows: rowsRef.current.rows.filter(r => !r.lit && r.msg?.kind !== 'stale') }",
+  "put": "rows: rowsRef.current.rows }",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 53,
+  "name": "\"New\" never counts what he placed himself (16)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": " && !(me != null && l.placedBy != null && String(l.placedBy) === me)",
+  "put": "",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 54,
+  "name": "the click-taker: a click on another control than the press is taken (R3-1)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "if (a1 !== a0 || moved()) { c.preventDefault()",
+  "put": "if (moved()) { c.preventDefault()",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 55,
+  "name": "the click-taker lets through a click on what was pressed and did not move (R2-2)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "if (a1 !== a0 || moved()) { c.preventDefault()",
+  "put": "if (true) { c.preventDefault()",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 56,
+  "name": "the click-taker resolves the press to its control (R3-2)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "const a0 = t0 ? t0.closest(PRESS) : null",
+  "put": "const a0 = t0",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 57,
+  "name": "the click-taker is armed at the press's own lift (R2-1)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "      document.addEventListener('pointerup', lift, true)\n      document.addEventListener('pointercancel', done, true)\n",
+  "put": "      document.addEventListener('click', eat, true); timer = window.setTimeout(done, 500)\n      document.addEventListener('pointercancel', done, true)\n",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 58,
+  "name": "the outside press closes the calendar and its click is taken at all (M4)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "document.addEventListener('click', eat, true)\n",
+  "put": "void eat\n",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 59,
+  "name": "M6: the page is flagged off BEFORE the visit ends",
+  "file": "src/leavewar/LeaveWarPage.tsx",
+  "find": "      pageOn = false\n",
+  "put": "\n",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 60,
+  "name": "M6: Body touches nothing once he has left the page",
+  "file": "src/leavewar/LeaveWarPage.tsx",
+  "find": "if (!pageOn) { if (mode === 'off') apprY.current = 0; return }",
+  "put": "if (false) { if (mode === 'off') apprY.current = 0; return }",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 61,
+  "name": "the Placed line in the bid windows and the day's list (8.6)",
+  "file": "src/leavewar/ui/PlacedLine.tsx",
+  "find": "if (typeof q.placedAt === 'number') f.placed = { who: csOf(q.placedBy), at: q.placedAt }",
+  "put": "void q.placedAt",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 62,
+  "name": "the Approvals paperclip opens the request's documents (D1178)",
+  "file": "src/leavewar/ui/ApprovalsPage.tsx",
+  "find": "const clip = l.docIds.length > 0 && (",
+  "put": "const clip = false && (",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 63,
+  "name": "LOWEST AVAIL: the Manning rows the request turns amber or red (D1192)",
+  "file": "src/leavewar/approvals.ts",
+  "find": "if (r.verdict === 'ok') continue",
+  "put": "continue",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 64,
+  "name": "DAYS: what the request takes off its balance",
+  "file": "src/leavewar/approvals.ts",
+  "find": "    days += t.amount",
+  "put": "    days += 1",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 65,
+  "name": "\"+N pending in <period> ›\" counts other periods (8.1)",
+  "file": "src/leavewar/approvals.ts",
+  "find": "return st.wars.filter(w => w.period.id !== st.currentId)",
+  "put": "return [].filter((w: any) => w.period.id !== st.currentId)",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ },
+ {
+  "n": 66,
+  "name": "\"Also since\": a member's withdrawn bid is a history line (8.4)",
+  "file": "src/state/changelines.ts",
+  "find": "say(g, 'bid withdrawn', { fld: 'withdrawn',",
+  "put": "void ({ fld: 'withdrawn',",
+  "tests": [
+   "src/leavewar/m4decide.test.ts",
+   "src/leavewar/m4bell.test.ts",
+   "src/leavewar/m4page.test.tsx",
+   "src/leavewar/m4ride.test.ts",
+   "src/leavewar/m4sec.test.ts",
+   "src/leavewar/leavewarpage.test.tsx",
+   "src/leavewar/state/store.test.ts",
+   "src/storage/seal.test.ts",
+   "src/state/perms.test.ts",
+   "src/ui/bellnotices.test.tsx",
+   "src/ui/bellnotices-scenarios.test.tsx"
+  ]
+ }
+]

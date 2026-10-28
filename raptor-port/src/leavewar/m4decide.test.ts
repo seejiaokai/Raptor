@@ -1,0 +1,429 @@
+/* THE OVERHAUL'S M4 — WHO PLACED A REQUEST, AND APPROVALS' ONE WRITER (the build spec
+   docs/superpowers/plans/2026-10-27-lw-m4-build-spec.md, 8.3, 8.5, 8.6; D1361, D1330, D1421; the red team's A4 and B8).
+
+   Every request records who placed it and when — kept across a re-typed kind, a move, an approval and a put-back — and
+   who refused it. Approve, Refuse, a second tap and Approve all are ONE writer (`decideRequests`): every line checked
+   first, written as one command, each line answering for itself with the ids it now has.
+
+   Runs in the Leave War project (a hostile time zone): the stamps are moments, never calendar days. */
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { storeBackend, HOOKS } from '../engine/hooks'
+import { PEOPLE, indexCallsigns } from '../engine/people'
+import { INPUTS, holds } from '../engine/inputs'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { accountsLoad, signIn, sessionFor } from '../state/accounts'
+import { installGlobalUndo } from '../state/undo-wire'
+import { globalUndo, globalRedo } from '../undo'
+import { _resetTimeline } from '../undo/timeline'
+import {
+  absenceDoor, changeAbsenceById, closeDates, decideRequestById, decideRequests, forgetPersonFrom, getState, initStore as lwInitStore, lwHistInit, moveRecords, openDates,
+  placeApproved, recordsAt, setAbsenceDoor, setBidStates, setCell, setPeople, setPostOut, type DecideLine, type DecidePart,
+} from './state/store'
+import { readRec, setMemberTodayForTests, type RequestRec } from './engine'
+import { memoryBackend } from './state/storage'
+import { projectPeople } from './state/raptorRoster'
+import { postOut, runPoOutcomes, wireLeaveWarSync } from './sync'
+
+const mem: Record<string, string> = {}
+let PEOPLE0 = ''
+const ISNAP = JSON.stringify(INPUTS)
+const toast = HOOKS.toast
+
+const T = (h: number, day = 15): number => { const d = new Date(2026, 6, day, h, 0, 0); vi.setSystemTime(d); return d.getTime() }
+const signInAs = (name: string, pass = 'x') => { resetSession(sessionFor(signIn(name, pass))); raptorNotify() }
+const saber = () => signInAs('ad', 'a')        // the admin — person `stiff`
+const ranger = () => signInAs('us', 'us')      // a member — person `bane`
+
+const reqs = (p: string, d: string): RequestRec[] => recordsAt(p, d).filter((r): r is RequestRec => r.kind === 'request')
+const req = (p: string, d: string): RequestRec => { const l = reqs(p, d); expect(l, `${p} has one request on ${d}`).toHaveLength(1); return l[0]! }
+const DAYS = ['2026-02-03', '2026-02-04', '2026-02-05']
+const openAll = () => { const p = getState().period; openDates(p.start, p.end) }
+const closeAll = () => { const p = getState().period; closeDates(p.start, p.end) }
+/* a line as the Approvals list draws it: the person's request run, each day by its record and its code (approvals.ts) */
+const lineOf = (p: string, dates: string[], to: DecideLine['to']): DecideLine =>
+  ({ personId: p, to, parts: dates.map(date => { const r = req(p, date); return { date, recId: r.id, code: r.code, state: r.state as DecidePart['state'] } }) })
+const leaveOf = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw && String(r.date).startsWith('Feb'))
+
+beforeAll(() => { vi.useFakeTimers({ toFake: ['Date'] }); PEOPLE0 = JSON.stringify(PEOPLE) })
+afterAll(() => { vi.useRealTimers(); storeBackend.impl = null })
+beforeEach(() => {
+  T(8)
+  Object.keys(mem).forEach(k => delete mem[k])
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
+  const p0 = JSON.parse(PEOPLE0)
+  for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
+  Object.assign(PEOPLE, p0); indexCallsigns()
+  INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
+  lwInitStore(memoryBackend())
+  raptorInitStore()
+  accountsLoad()
+  setPeople(projectPeople())
+  wireLeaveWarSync()
+  _resetTimeline(); lwHistInit(); installGlobalUndo()
+  HOOKS.toast = () => {}
+  saber()
+})
+afterEach(() => { HOOKS.toast = toast; setMemberTodayForTests(null); _resetTimeline(); resetSession(null) })
+
+describe('who placed a request (8.6)', () => {
+  it('a member’s own bid names him and the moment; an admin’s bid on his row names the admin', () => {
+    openAll()
+    ranger()
+    const t1 = T(9)
+    expect(setCell('bane', DAYS[0]!, 'LL')).toBe(true)
+    expect(req('bane', DAYS[0]!)).toMatchObject({ placedBy: 'bane', placedAt: t1 })
+    saber()
+    const t2 = T(10)
+    expect(setCell('bane', DAYS[1]!, 'LL')).toBe(true)
+    expect(req('bane', DAYS[1]!)).toMatchObject({ placedBy: 'stiff', placedAt: t2 })
+  })
+
+  it('a re-typed kind on the same half keeps the first stamp — it is the same request', () => {
+    const t1 = T(9)
+    setCell('bane', DAYS[0]!, 'LL')
+    T(11)
+    expect(setCell('bane', DAYS[0]!, 'OL')).toBe(true)
+    expect(req('bane', DAYS[0]!)).toMatchObject({ code: 'OL', placedBy: 'stiff', placedAt: t1 })
+  })
+
+  it('a move keeps who placed it; a refused bid moved lands pending, without who refused it', () => {
+    const t1 = T(9)
+    setCell('bane', DAYS[0]!, 'LL')
+    expect(decideRequests([lineOf('bane', [DAYS[0]!], 'refused')])[0]!.kind).toBe('done')
+    expect(req('bane', DAYS[0]!)).toMatchObject({ state: 'refused', decidedBy: 'stiff' })
+    const r = req('bane', DAYS[0]!)
+    expect(moveRecords([{ kind: 'request', personId: 'bane', date: DAYS[0]!, id: r.id } as any], 2)).toBe('moved')
+    const m = req('bane', '2026-02-05')
+    expect(m).toMatchObject({ placedBy: 'stiff', placedAt: t1, state: 'pending' })
+    expect(m.decidedBy).toBeUndefined()
+  })
+
+  it('kept by the reader across a reload; a request saved before M4 loads without it (D401)', () => {
+    const r = readRec({ id: 'r1', kind: 'request', code: 'LL', state: 'refused', placedBy: 'bane', placedAt: 5, decidedBy: 'stiff', decidedAt: 6 })
+    expect(r).toMatchObject({ placedBy: 'bane', placedAt: 5, decidedBy: 'stiff', decidedAt: 6 })
+    const old = readRec({ id: 'r2', kind: 'request', code: 'LL', state: 'pending' }) as RequestRec
+    expect(old.placedBy).toBeUndefined(); expect(old.placedAt).toBeUndefined()
+    const bad = readRec({ id: 'r3', kind: 'request', code: 'LL', state: 'pending', placedBy: 7, placedAt: 'x' }) as RequestRec
+    expect(bad.placedBy).toBeUndefined(); expect(bad.placedAt).toBeUndefined()
+  })
+})
+
+describe('Approvals’ one writer (8.3, 8.5)', () => {
+  it('approve a three-day line → ONE leave carrying who placed it; a second tap puts it back with the same placer; again', () => {
+    openAll(); ranger()
+    const t1 = T(9)
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    saber(); closeAll()
+    T(12)
+    const [a] = decideRequests([lineOf('bane', DAYS, 'approved')])
+    expect(a!.kind).toBe('done')
+    const parts = (a as any).parts as DecidePart[]
+    expect(parts.every(p => p.state === 'approved' && p.iid)).toBe(true)
+    expect(leaveOf('bane')).toHaveLength(1)
+    expect(leaveOf('bane')[0]).toMatchObject({ lwBy: 'bane', lwAt: t1, by: 'stiff' })
+    /* the second tap on the lit Approve: back to pending, the line re-keyed to the new requests */
+    const [b] = decideRequests([{ personId: 'bane', parts, to: 'pending' }])
+    expect(b!.kind).toBe('done')
+    const back = (b as any).parts as DecidePart[]
+    expect(back.map(p => p.state)).toEqual(['pending', 'pending', 'pending'])
+    for (const p of back) expect(req('bane', p.date)).toMatchObject({ id: p.recId, placedBy: 'bane', placedAt: t1 })
+    expect(req('bane', DAYS[0]!).decidedBy, 'a pending line never reads "Refused by …"').toBeUndefined()
+    /* and approved again from the re-keyed line — never read as stale */
+    const [c] = decideRequests([{ personId: 'bane', parts: back, to: 'approved' }])
+    expect(c!.kind).toBe('done')
+    expect(leaveOf('bane')).toHaveLength(1)
+  })
+
+  it('refuse → lit; second tap → pending again, "decided" cleared', () => {
+    setCell('bane', DAYS[0]!, 'LL')
+    const [a] = decideRequests([lineOf('bane', [DAYS[0]!], 'refused')])
+    const parts = (a as any).parts as DecidePart[]
+    expect(req('bane', DAYS[0]!)).toMatchObject({ state: 'refused', decidedBy: 'stiff' })
+    const [b] = decideRequests([{ personId: 'bane', parts, to: 'pending' }])
+    expect(b!.kind).toBe('done')
+    const r = req('bane', DAYS[0]!)
+    expect(r.state).toBe('pending'); expect(r.decidedBy).toBeUndefined(); expect(r.decidedAt).toBeUndefined()
+  })
+
+  it('B8 — a line drawn from a state since changed is refused, saying what happened; nothing is written', () => {
+    setCell('bane', DAYS[0]!, 'LL'); setCell('bane', DAYS[1]!, 'LL'); setCell('bane', DAYS[2]!, 'LL')
+    const gone = lineOf('bane', [DAYS[0]!], 'approved')
+    const decided = lineOf('bane', [DAYS[1]!], 'approved')
+    const moved = lineOf('bane', [DAYS[2]!], 'approved')
+    setCell('bane', DAYS[0]!, '')                                                   // deleted since
+    decideRequests([lineOf('bane', [DAYS[1]!], 'refused')])                       // refused since, by Saber
+    moveRecords([{ kind: 'request', personId: 'bane', date: DAYS[2]!, id: moved.parts[0]!.recId! } as any], 7)
+    const out = decideRequests([gone, decided, moved])
+    expect(out).toEqual([
+      { kind: 'stale', why: 'No longer there' },
+      { kind: 'stale', why: 'Already refused by Saber' },
+      { kind: 'stale', why: 'Moved to Thu 12 Feb' },
+    ])
+    expect(leaveOf('bane')).toHaveLength(0)
+  })
+
+  it('Approve all — one line the rules refuse is reported on its line, the rest go through, as ONE command and ONE Undo', () => {
+    for (const p of ['bane', 'rocky']) for (const d of DAYS) setCell(p, d, 'LL')
+    const door = absenceDoor()!
+    setAbsenceDoor({ ...door, approveWhy: it => (it.personId === 'rocky' && it.date === DAYS[1] ? 'Wed 4 Feb is on a locked week — not approved' : door.approveWhy!(it)) })
+    try {
+      const out = decideRequests([lineOf('bane', DAYS, 'approved'), lineOf('rocky', DAYS, 'approved')])
+      expect(out[0]!.kind).toBe('done')
+      expect(out[1]).toEqual({ kind: 'refused', why: 'Wed 4 Feb is on a locked week — not approved' })
+      expect(leaveOf('bane')).toHaveLength(1)
+      expect(reqs('rocky', DAYS[0]!)).toHaveLength(1)
+      expect(globalUndo().ok).toBe(true)
+      expect(leaveOf('bane'), 'one Undo takes every line back').toHaveLength(0)
+      for (const d of DAYS) expect(req('bane', d).state).toBe('pending')
+      expect(globalRedo().ok).toBe(true)
+      expect(leaveOf('bane')).toHaveLength(1)
+    } finally { setAbsenceDoor(door) }
+  })
+
+  /* A MAN WHOSE POSTING OUT HAS RUN (B12 as his D1436 narrows it — the host's reading of D1436's full row, 28 Oct 26: "a
+     request with no such day [after his posting-out date] approves as ever"): only his days from the posting-out date on are
+     refused, in the past tense now; a day before it approves; Refuse still works. The earlier "Posted out — refuse or delete
+     it" for every request of his is gone (it refused his own months before the posting too). */
+  it('a man whose posting out has run: his days from the date are refused, past tense; a day before approves; Refuse works (B12, D1436)', () => {
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+    setMemberTodayForTests('2026-02-10')
+    try {
+      const [a] = decideRequests([lineOf('bane', [DAYS[1]!, DAYS[2]!], 'approved')])
+      expect(a).toEqual({ kind: 'refused', why: 'He posted out on 4 Feb: refuse or delete it' })
+      const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
+      expect(b!.kind, 'the day before his posting-out date approves as ever').toBe('done')
+      const [c] = decideRequests([lineOf('bane', [DAYS[2]!], 'refused')])
+      expect(c!.kind, 'Refuse still works').toBe('done')
+    } finally { setMemberTodayForTests(null) }
+  })
+
+  /* his D1436 (27 Oct 26, "all as recommended", question 16): leave on days after a posting-out date still to come is
+     refused too — the day before still approves; a posting out as SANS keeps his leave, before and after it runs (D283);
+     the bid windows' Approve refuses alike (one body, `sync.ts approveWhy`) */
+  it('a posting still to come: Approve refuses leave on days after its date, with the date; a day before approves (D1436)', () => {
+    setMemberTodayForTests('2026-01-20')
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+    const [a] = decideRequests([lineOf('bane', DAYS, 'approved')])
+    expect(a).toEqual({ kind: 'refused', why: 'He posts out on 4 Feb: refuse or delete it' })
+    expect(leaveOf('bane')).toHaveLength(0)
+    const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
+    expect(b!.kind, 'the day before his posting-out date approves as ever').toBe('done')
+    const [c] = decideRequests([lineOf('bane', [DAYS[2]!], 'refused')])
+    expect(c!.kind, 'Refuse still works').toBe('done')
+  })
+
+  it('a posting still to come: the bid window refuses the same days (D1436)', () => {
+    setMemberTodayForTests('2026-01-20')
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+    const r = setBidStates(DAYS.map(date => ({ personId: 'bane', date })), 'approved')
+    expect(r.skipped, 'his days from 4 Feb are skipped').toBe(2)
+    expect(req('bane', DAYS[1]!).state).toBe('pending')
+    expect(req('bane', DAYS[2]!).state).toBe('pending')
+  })
+
+  /* THE FIXES' M5 (the re-walk's A-F3 = B-F2; both code reads): one rule for posting out in every door (D1436, D754).
+     The bid windows refused a posting still to come with "something else is on that time" — untrue, and no reason at all
+     — and once a posting had RUN, Approvals refused but the bid windows approved. */
+  describe('posting out — one answer through every door (M5)', () => {
+    it('a posting still to come: the day’s list and the bid windows give Approvals’ reason', () => {
+      setMemberTodayForTests('2026-01-20')
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      const why = 'He posts out on 4 Feb: refuse or delete it'
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list').toBe(why)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[2]! }], 'approved').why, 'the bid windows').toEqual([why])
+      expect(req('bane', DAYS[2]!).state).toBe('pending')
+    })
+    /* (narrowed by D1436's full row, the host's reading of 28 Oct 26: one DATE rule in every door, whether the posting has
+       run or not — a day before his posting-out date approves in every door, a day from it is refused in every door) */
+    it('a posting that has RUN: every door refuses his days from the date, past tense, and approves a day before; Refuse works in each', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      setMemberTodayForTests('2026-02-10')
+      const why = 'He posted out on 4 Feb: refuse or delete it'
+      expect(decideRequests([lineOf('bane', [DAYS[1]!], 'approved')])[0]).toEqual({ kind: 'refused', why })
+      const r = setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'approved')
+      expect(r.decided, 'the bid windows do not approve it').toBe(0)
+      expect(r.why).toEqual([why])
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list').toBe(why)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'refused').decided).toBe(1)
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'refused')).toBe(true)
+      expect(leaveOf('bane')).toHaveLength(0)
+      /* a day before his posting-out date: approved through the bid windows' door */
+      expect(decideRequestById('bane', DAYS[0]!, req('bane', DAYS[0]!).id, 'approved'), 'the day before approves').toBe(true)
+      expect(leaveOf('bane')).toHaveLength(1)
+    })
+    it('a posting that has RUN: a day before the date approves in Approvals and the bid windows too', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', '2026-03-01', 'none')).toBe(true)
+      setMemberTodayForTests('2026-03-05')
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0]!.kind, 'Approvals').toBe('done')
+      expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'approved').decided, 'the bid windows').toBe(1)
+    })
+    /* THE FIXES' ROUND 2, R2-4: "Approve what I enter" (placeApproved) kept a refused day pending with a guessed reason */
+    it('"Approve what I enter" on his days from the date: kept pending, with the door’s reason (R2-4)', () => {
+      setMemberTodayForTests('2026-01-20')
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      const r = placeApproved([{ personId: 'bane', date: DAYS[2]! }], 'LL')
+      expect(r.pending).toEqual([{ personId: 'bane', date: DAYS[2]! }])
+      expect(r.why).toEqual(['He posts out on 4 Feb: refuse or delete it'])
+    })
+    /* THE FIXES' ROUND 3, R3-6 (the host's decision, 28 Oct 26): round 2's one date rule dropped the refusal of a DELETED
+       man's requests too, so his leftover pending bids from before the delete approved. D1436 speaks only of posting out:
+       a deleted man's Approve is refused again, in every door, with the words the code had before. */
+    it('a DELETED man: his leftover pending bid is refused in Approvals and in the bid windows (R3-6)', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      forgetPersonFrom('bane', '2026-03-01')
+      const why = 'Posted out — refuse or delete it'
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0], 'Approvals').toEqual({ kind: 'refused', why })
+      expect(decideRequestById('bane', DAYS[1]!, req('bane', DAYS[1]!).id, 'approved'), 'the day’s list').toBe(why)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[2]! }], 'approved').why, 'the bid windows').toEqual([why])
+      expect(leaveOf('bane')).toHaveLength(0)
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'refused')])[0]!.kind, 'Refuse still works').toBe('done')
+    })
+    /* THE FIXES' ROUND 3c, R3c-1 (the third blind read's 1): R3-6's refusal of a deleted man reached a man posted out with the
+       "Delete" OUTCOME too, once the posting had run (it also marks him gone) — so leave on days he still served could no
+       longer be approved, against D1436 ("a request with no such day approves as ever"). Only a man deleted on Admin →
+       Users is refused whole; a run Delete posting falls to the one date rule. */
+    it('a man posted out with the Delete outcome, the posting run: his day before the date approves in Approvals and the bid windows (R3c-1)', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(postOut('bane', DAYS[1]!, 'delete')).toBe(true)
+      runPoOutcomes()
+      expect(getState().postOuts['bane'] ?? getState().people.find(p => p.id === 'bane'), 'the posting has run: he is gone').toMatchObject({ gone: true, poOutcome: 'delete' })
+      const bids = reqs('bane', DAYS[0]!)
+      expect(bids, 'his bid before the date is kept').toHaveLength(1)
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0]!.kind, 'Approvals approves it').toBe('done')
+      expect(leaveOf('bane'), 'approved as leave').toHaveLength(1)
+      expect(globalUndo().ok).toBe(true)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[0]! }], 'approved').decided, 'the bid windows approve it').toBe(1)
+    })
+    /* R3-4: over several men "He" named nobody — the reasons come per man as well */
+    it('the bid windows give the reasons per man, one each, de-duplicated (R3-4)', () => {
+      setMemberTodayForTests('2026-01-20')
+      for (const p of ['bane', 'rocky']) { setCell(p, DAYS[2]!, 'LL'); setCell(p, '2026-02-06', 'LL') }
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      expect(setPostOut('rocky', DAYS[2]!, 'none')).toBe(true)
+      const r = setBidStates(['bane', 'rocky'].flatMap(p => [DAYS[2]!, '2026-02-06'].map(date => ({ personId: p, date }))), 'approved')
+      expect(r.whyBy).toEqual([
+        { personId: 'bane', why: 'He posts out on 4 Feb: refuse or delete it' },
+        { personId: 'rocky', why: 'He posts out on 5 Feb: refuse or delete it' },
+      ])
+      const p = placeApproved([{ personId: 'bane', date: '2026-02-09' }, { personId: 'rocky', date: '2026-02-09' }], 'OL')
+      expect(p.whyBy.map(x => x.personId)).toEqual(['bane', 'rocky'])
+    })
+    /* R2-5: the drag window printed the rules' reason against EVERY skipped day, an empty one too */
+    it('the bid windows count the days the rules refused apart from the days with nothing to decide (R2-5)', () => {
+      setMemberTodayForTests('2026-01-20')
+      setCell('bane', DAYS[0]!, 'LL'); setCell('bane', DAYS[2]!, 'LL')
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      const r = setBidStates([DAYS[0]!, DAYS[2]!, '2026-02-06'].map(date => ({ personId: 'bane', date })), 'approved')
+      expect(r).toMatchObject({ decided: 1, skipped: 2, refused: 1, why: ['He posts out on 4 Feb: refuse or delete it'] })
+    })
+    it('a posting out as SANS that has run approves in the bid windows too (D283)', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', '2026-03-01', 'sans')).toBe(true)
+      setMemberTodayForTests('2026-03-05')
+      expect(decideRequestById('bane', DAYS[0]!, req('bane', DAYS[0]!).id, 'approved')).toBe(true)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'approved').decided).toBe(1)
+    })
+  })
+
+  it('a posting out as SANS keeps his leave: approved before it runs and after (D1436, D283)', () => {
+    setMemberTodayForTests('2026-01-20')
+    for (const d of DAYS) setCell('bane', d, 'LL')
+    expect(setPostOut('bane', DAYS[1]!, 'sans')).toBe(true)
+    const [a] = decideRequests([lineOf('bane', [DAYS[2]!], 'approved')])
+    expect(a!.kind, 'before it runs').toBe('done')
+    setMemberTodayForTests('2026-02-10')
+    const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
+    expect(b!.kind, 'after it has run').toBe('done')
+  })
+
+  /* THE FIXES' M1 (both code reads, 28 Oct 26): on a day whose other half already holds war-approved leave, the line was
+     re-keyed after Approve to the FIRST war-approved leave of that day — the older, other half's — so the second tap or
+     Refuse (D1421, D1428) put back or refused leave approved days before, and left the one just approved standing. */
+  describe('a day whose other half already holds war-approved leave (M1)', () => {
+    const D = DAYS[0]!
+    /* the afternoon approved first (the older Input), then a morning bid drawn as its line */
+    const pmApprovedThenAmBid = () => {
+      expect(setCell('bane', D, 'LL*')).toBe(true)
+      expect(decideRequests([lineOf('bane', [D], 'approved')])[0]!.kind).toBe('done')
+      expect(setCell('bane', D, '*LL')).toBe(true)
+      const pm = leaveOf('bane')[0]
+      return { pmIid: String(pm.iid), line: lineOf('bane', [D], 'approved') }
+    }
+    const halfOf = (iid: string) => { const r = INPUTS.find((x: any) => String(x.iid) === iid); return r ? (r.half ?? (r.allday ? 'full' : '')) : null }
+
+    it('Approve re-keys the line to the morning leave it wrote, never the afternoon', () => {
+      const { pmIid, line } = pmApprovedThenAmBid()
+      const [a] = decideRequests([line])
+      expect(a!.kind).toBe('done')
+      const parts = (a as any).parts as DecidePart[]
+      expect(parts[0]!.iid, 'the line is the morning’s leave now').not.toBe(pmIid)
+      expect(leaveOf('bane')).toHaveLength(2)
+    })
+
+    it('the second tap puts back only the morning; the afternoon stays approved', () => {
+      const { pmIid, line } = pmApprovedThenAmBid()
+      const [a] = decideRequests([line])
+      const [b] = decideRequests([{ personId: 'bane', parts: (a as any).parts, to: 'pending' }])
+      expect(b!.kind).toBe('done')
+      expect(INPUTS.some((x: any) => String(x.iid) === pmIid), 'the afternoon leave still stands').toBe(true)
+      expect(leaveOf('bane')).toHaveLength(1)
+      expect(req('bane', D)).toMatchObject({ code: '*LL', state: 'pending' })
+      expect(halfOf(pmIid)).not.toBeNull()
+    })
+
+    it('Refuse after Approve refuses only the morning; the afternoon stays approved', () => {
+      const { pmIid, line } = pmApprovedThenAmBid()
+      const [a] = decideRequests([line])
+      const [b] = decideRequests([{ personId: 'bane', parts: (a as any).parts, to: 'refused' }])
+      expect(b!.kind).toBe('done')
+      expect(INPUTS.some((x: any) => String(x.iid) === pmIid), 'the afternoon leave still stands').toBe(true)
+      expect(req('bane', D)).toMatchObject({ code: '*LL', state: 'refused' })
+    })
+
+    it('a morning bid deleted since is "No longer there" — not "Already approved" for the afternoon', () => {
+      const { line } = pmApprovedThenAmBid()
+      setCell('bane', D, '')
+      /* (the delete takes the morning bid only; the afternoon leave is approved and stays) */
+      expect(leaveOf('bane')).toHaveLength(1)
+      expect(decideRequests([line])).toEqual([{ kind: 'stale', why: 'No longer there' }])
+    })
+
+    /* THE BREAK TESTS (28 Oct 26, list lw-m4 #6): a line approved here whose leave was then deleted on the grid, on a day whose
+       OTHER half holds a pending bid — the other half's bid is another line's, so this one is "No longer there", never
+       "Already put back to pending" (staleWhy reads a request back only on the line's own half) */
+    it('approved here, its leave deleted on the grid beside the other half\'s bid: "No longer there"', () => {
+      expect(setCell('bane', D, '*LL')).toBe(true)
+      const [a] = decideRequests([lineOf('bane', [D], 'approved')])
+      expect(a!.kind).toBe('done')
+      const parts = (a as any).parts as DecidePart[]
+      expect(setCell('bane', D, 'LL*')).toBe(true)                                   // the afternoon's own bid, pending
+      expect(req('bane', D)).toMatchObject({ code: 'LL*', state: 'pending' })
+      expect(changeAbsenceById('bane', D, parts[0]!.iid!, 'removed')).toBeNull()     // the morning's leave deleted on the grid
+      expect(decideRequests([{ personId: 'bane', parts, to: 'pending' }])).toEqual([{ kind: 'stale', why: 'No longer there' }])
+      expect(req('bane', D)).toMatchObject({ code: 'LL*', state: 'pending' })
+    })
+
+    it('the same tap on a line drawn before any other half was approved still works on a plain day', () => {
+      expect(setCell('bane', D, '*LL')).toBe(true)
+      const [a] = decideRequests([lineOf('bane', [D], 'approved')])
+      expect(a!.kind).toBe('done')
+      const [b] = decideRequests([{ personId: 'bane', parts: (a as any).parts, to: 'pending' }])
+      expect(b!.kind).toBe('done')
+      expect(leaveOf('bane')).toHaveLength(0)
+    })
+  })
+
+  it('a member reaches none of it', () => {
+    setCell('bane', DAYS[0]!, 'LL')
+    const line = lineOf('bane', [DAYS[0]!], 'approved')
+    ranger()
+    expect(decideRequests([line])).toEqual([{ kind: 'refused', why: 'Only an admin decides leave' }])
+    expect(req('bane', DAYS[0]!).state).toBe('pending')
+  })
+})

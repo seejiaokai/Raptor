@@ -92,9 +92,12 @@
   .chgwin.bar,.chgwin.bar.front{z-index:412}
 }
 .chgwin.bar .cw-barbtn{flex:1;display:flex;align-items:center;min-width:0;text-align:left;font:inherit;font-size:13px;font-weight:700;color:var(--ink);background:none;border:0;padding:6px 4px;cursor:pointer}
-.chgwin.bar .cw-barn{color:var(--ink-3);font-weight:600;white-space:nowrap}
-/* "Show ▴" — a word on a pill, not the arrow alone (D339: "how does one know that the action is to minimise?") */
-.chgwin.bar .cw-show{margin-left:auto;padding:3px 10px;border:1px solid var(--edge-2);border-radius:7px;white-space:nowrap}
+/* its own space before the "·": a flex item drops the leading space of its words, and the bar read "History on· 0 changes"
+   (found picturing D1442, 28 Oct 26) */
+.chgwin.bar .cw-barn{color:var(--ink-3);font-weight:600;white-space:nowrap;margin-left:.28em}
+/* "Show ▴" — a word, not the arrow alone (D339: "how does one know that the action is to minimise?"), in the slim Approvals
+   bar's plain look: cyan words with no pill (his D1442, as D1440 drew Approvals' "Back ▴"); the whole bar is its press area */
+.chgwin.bar .cw-show{margin-left:auto;padding:3px 6px;color:var(--accent);font-size:14px;white-space:nowrap}
 /* "Hide ▾" beside ✕ on a phone ([HIST-PHONE-HIDE], D339 — spelled out) */
 .chgwin .win-hide{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;height:25px;padding:0 9px;
   font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;flex:0 0 auto;white-space:nowrap}
@@ -107,7 +110,8 @@
 .chgwin .cw-ghn{color:var(--ink-3);font-weight:600}
 .chgwin .cw-g.cw-one{border:0;background:none}
 .chgwin .cw-sub .cw-txt{margin:0;flex:1;min-width:0}
-.chgwin.bar .win-x{background:none;border:1px solid var(--edge-2);color:var(--ink-2);border-radius:5px;width:28px;height:28px;font-size:12px;font-family:inherit}
+/* a plain ✕, its 28px press area kept (his D1442 — the slim Approvals bar's look, D1440) */
+.chgwin.bar .win-x{background:none;border:0;color:var(--ink-2);border-radius:5px;width:28px;height:28px;font-size:16px;font-family:inherit}
 
 /* THE DAY'S CHIP ([DRAFT-PENDING] — D168, D171 (3)): "N new" gold, "N changes" quiet; a gold dot on "N pending" when
    something on the day is new to you. The chip is the per-day door into the changes window, for admins and members. */

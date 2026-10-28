@@ -20,7 +20,7 @@ run goes while the app is walked (D1086), its bug check in full (§4), nothing m
 | **M1 — open dates** | 1 | the stage chip and its menu gone; "Open 1 Jan – 31 Mar" / "Bidding closed"; the "Open for bidding" window with month buttons; closed days dimmed, each open stretch outlined; the closed note; the page opens on the first open date | FULL · wide (member and admin, phone and desktop, every place the stage was read) | a long day |
 | **M2 — how it looks** | 2, 3, 4 | look F's colours; halves and two entries in a cell; Ack gone; the Legend; "Balances" a button; the Required / Available rows' names, amber and red points, faint tints; the top rows (View, no "Viewing as", My leave, the second line the same for everyone); the grid's order: months, dates, Manning straight under them, then the full Event rows (D1256, D1259), no month band (D1257), Manning folded on a phone (D1258) | FULL (the OIL award's half) · wide | a long day |
 | **M3 — placing leave** | 5, 6, 7 | the bid windows (the day line, balances on the buttons, Document above "Which leave", filled / hollow buttons, "Approve what I enter" in the title bar, the "Also" row); the day panel; documents on every entry and on the Inputs page | FULL (a new admin command; documents saved and carried) · wide | a day |
-| **M4 — deciding** | 8, 9 | Approvals and its button (docked on a desktop, two-line on a phone, "Approve all — tap again"); its "New" choice and the new lines' dot, a request's dates showing it on the grid with the just-added ring, the phone's slim bar (D1231 — no dot on the grid); the bell's Leave War lines | FULL (saved fields, one-command Approve all, the bell, permissions) · wide | a day |
+| **M4 — deciding** | 8, 9 | Approvals as a tab (D1254 — its page in the grid card's place, two-line on a phone, "Approve all — tap again"); its "New" choice and the new lines' dot, a request's dates opening the Grid tab with the just-added ring and a slim "Back to Approvals" bar, desktop and phone (D1231 as D1254 narrows it — no dot on the grid); the bell's Leave War lines. Its build spec: `2026-10-27-lw-m4-build-spec.md` | FULL (saved fields, one-command Approve all, the bell, permissions) · wide | a day |
 | **M5 — the rest** | 10, 11, and the approved person window, "since your last visit", Settings | events and holidays by file; Management first; one person window with every balance and the lock; "● new"; the new Settings | FULL (members writing their own balances — a permission) · wide | a day |
 
 **Why this order.** Nearly every later screen reads the stage (the code map §3, risk 1: about 150 places in 17 files) —
@@ -40,8 +40,8 @@ has data; inside M3 the stored document list (batch 7) is built before or with t
 | Q7 Available P / W at amber or red count as under-manned | M2 / M3 | the chip and the bid line name Manning rows only, as today. *A yes changes the architecture's line "the Available rows are never judged" (`.claude/rules/decisions/leave-war.md` §Architecture) — fixed in the same change (D201).* |
 | Q9 a member's phone: My leave in line 1; Manning folded on every phone, remembered per person (D1227, widened by D1258) | M2 | today's layout with My leave as a third line (D1141) |
 | Q12 the phone's zoom pair become magnifiers | M2 | the "−" / "+" stay |
-| Q8 members' bell told of bidding opening and closing | M4 | not sent |
-| Q11 the bell keeps "approval taken back" after an Undo | M4 | the line is taken back silently, as D148 has it |
+| Q8 members' bell told of bidding opening and closing | M4 | **answered yes — D1214** |
+| Q11 the bell keeps "approval taken back" after an Undo | M4 | **answered as recommended — D1216** |
 | Q1 "since your last visit": A (count on My leave and Approvals) | M5 | that piece waits; the rest of M5 goes on |
 | Q2 one balance lock for everyone, in Settings | M5 | the lock waits; balances stay admin-set as today |
 | Q3 the balance box takes his official figure | M5 | member editing waits |
@@ -158,4 +158,4 @@ final set, §10.4 of the design note, is drawn tonight for that look). The two f
 were weighed: the year-end bid (B3) is latent (the range picker stops at the period's end) and halves-only on a balance
 (B6) needs a refusal on screen he has not seen — both go with their merges. Tonight builds nothing in the app.
 
-**Where it stands (27 Oct 26 — D1404):** M1, M2 and M3 are live; M4 is next, in a fresh chat of its own, then M5.
+**Where it stands (27 Oct 26 — D1404):** M1, M2 and M3 are live; M4 is next, in a fresh chat of its own, then M5. **M4 planned (27 Oct 26):** `2026-10-27-lw-m4-build-spec.md` — the code read again on main, the Approvals tab drawn (`full/r22-*`), one look and two questions put to him before the build.

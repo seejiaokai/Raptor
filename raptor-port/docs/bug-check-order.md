@@ -787,6 +787,13 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
   a phone, the pointer left on each, and asserts every pinned (sticky) cell stays fully opaque (a cell that paints nothing by design aside). The Leave War has it
   (`e2e/leavewar.spec.ts`, "pressing the Leave War's controls on a phone never turns a pinned cell see-through");
   the Scheduler Board, the week, Quals and the Tracker get theirs when each is next worked on, not swept now.
+- **Built to the drawing, from the first line (his D1424, 27 Oct 26 — "Don't u use that as a reference to build?").** A screen
+  with an approved drawing is put beside that drawing AS it is built and after every fix, not first at the walk; a departure
+  is made only on purpose, for a better design ("if u have better ideas and changed it, it's ok"), and named to him with its
+  picture and its reason — never left for him to find.
+  **And a difference found after the build is shown to him before it is put back (his D1426):** side by side, each one
+  highlighted with a recommendation, and he chooses which go back to the drawing; an outright fault (words breaking, something
+  covered or off screen, a wrong behaviour) is fixed without asking.
 - **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
   iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
   (his lessons 42 and 43, `docs/design-practices.md` §9).
@@ -829,6 +836,14 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** when a change hands anything to the phone itself (its scrolling, its keyboard, its bounce), the sizing step
    names what only the real phone draws and asks him for a look or a recording on his iPhone before merge; a walk that
    judges scroll bars launches with the test browser's `--hide-scrollbars` taken off.
+8. **A fix that reshaped an approved drawing, and a reading of it nobody held beside the picture (D1424, the Leave War M4's
+   Approvals, 27 Oct 26).** On a phone "New 1" broke onto two lines; the fix gave New two columns and Approve all a row of its
+   own — four rows where his drawing has three — chosen without opening the drawing. On a desktop the build read "the list
+   held to one eye-span" as the CARD narrowed, where the drawing has a full-width card with the list held inside it. The
+   drawing comparison (§7.10) was planned for after the walk, so neither was seen beside its drawing until he looked.
+   **Lesson:** a screen with an approved drawing is compared with it while it is built and after every fix to it — the
+   sizing step names the drawing for each surface and the walker's brief carries it; a fix for a fault keeps the drawn
+   layout, and a departure chosen on purpose is named to him with its picture and reason.
 7. **A mechanism tuned to a model of the phone is proved only by the model (D1412, the keyboard's six rounds, 25–27 Oct 26).** Six
    rounds moved, held and then glided a window against a model of his iPhone's keyboard slide; each passed the stand-in keyboard,
    which played that very model, and each failed on his phone, where the real slide, its timing and what the phone draws between
@@ -836,6 +851,23 @@ the reader's instructions or model change, it is run on every case and a change 
    phone itself makes, no stand-in can prove it — the sizing step says so, asks for his recording before anything is called
    fixed, and the design question comes first: hand the motion to the phone (the board, D1081; the windows, D1412) rather than
    model it, and keep a model only where he has seen it work on his own screen.
+9. **A list's alignment judged by eye, one kind of row at a time (D1437, D1438, the Leave War M4's Approvals, 27 Oct 26).** Three
+   walkers and a drawing comparison passed the Approvals list's alignment; he found, from two pictures, its headings off
+   their figures by 12 to 24px on a phone and 16px on a desktop, and a WSO's name at the right of its puck — the list's own
+   right-align class was named `r`, the puck's class for a rear seat, so only WSO pucks moved and the walk's pilot rows looked
+   right. **Lesson:** every list or table a change draws is MEASURED, not looked at — each heading against its figures on every
+   line, at a phone's width and a desktop's (`scripts/handpass/lw-m4-colalign.mjs` is the pattern) — and a puck, chip or row
+   drawn inside it is checked in every KIND it comes in (pilot and WSO, SANS, every CAT), because a page's own class can collide
+   with the app's.
+10. **A way back to a page walked only straight from where it was left (his video and picture, the Leave War M4, 28 Oct 26).**
+   The walks went from the grid to Approvals and back, at once. He went Approvals → the View picker (another period) → read a
+   while → OIL → back: the grid came back every day striped ("not drawn yet") until he scrolled, and the OIL tab flashed the
+   grid for one frame on the way. While a page is hidden the app goes on changing it (a period's landing) and its background
+   work goes to rest once idle; on his iPhone, showing it again sends no scroll event, and only a scroll had woken the
+   drawing. **Lesson:** for every surface a page hides and shows again, the walk changes what the hidden page shows while it
+   is hidden, waits past its idle time (two seconds and more), comes back by every route (each tab, each ✕, the bell), and
+   counts what stands drawn at once without a touch, in WebKit; and every switch between pages is pictured on its first
+   frame. (`scripts/handpass/lw-appr-stripes.mjs`, `lw-appr-return-walk.mjs`.)
 
 ## 8. Making the checks FIND rather than CONFIRM
 

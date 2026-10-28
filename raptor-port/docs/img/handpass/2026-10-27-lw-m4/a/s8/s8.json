@@ -1,0 +1,31 @@
+[
+ {
+  "id": "8a the paperclip opens the viewer, read only (no \"Edit input\", no \"Upchit\")",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "buttons in the viewer: []; text \"Placed by Ranger · 27 Oct 26, 19:38\"",
+  "pics": [
+   "a-s8-1-viewer-open"
+  ]
+ },
+ {
+  "id": "8b a press on another line behind the viewer: the viewer still shows ITS request",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the press at the visible edge of Wed 14 Jan's Approve hit \"airpop\"; viewer open afterwards: false (\"null\"); 14 Jan Approve pressed=false; 12 Jan Approve pressed=false",
+  "pics": [
+   "a-s8-1-viewer-open",
+   "a-s8-2-after-press-behind"
+  ]
+ },
+ {
+  "id": "14 the \"+N pending in <next period>\" link switches the View",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "link \"+2 pending in JAN - DEC 27 ›\"; View \"JAN - DEC 26 JAN - DEC 27 + New period\" -> \"JAN - DEC 26 JAN - DEC 27 + New period\"; header \"8 pending · 2 new\" -> \"2 pending\"; lines after: 2; the link now reads \"+8 pending in JAN - DEC 26 ›\"",
+  "pics": [
+   "a-s8-14-before-link",
+   "a-s8-14-after-link"
+  ]
+ }
+]

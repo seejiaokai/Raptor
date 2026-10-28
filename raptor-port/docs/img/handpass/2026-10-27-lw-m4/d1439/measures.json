@@ -1,0 +1,74 @@
+[
+  {
+    "state": "demo (2 months)",
+    "width": 402,
+    "words": "+2 in JAN - DEC 27 ›",
+    "todayTop": 209,
+    "proposedTop": 146,
+    "saved": 63,
+    "chipRowsToday": 3,
+    "chipRowsProposed": 2,
+    "linkOnTitle": true,
+    "linkOnTitleWideLetters": true
+  },
+  {
+    "state": "demo (2 months)",
+    "width": 390,
+    "words": "+2 in JAN - DEC 27 ›",
+    "todayTop": 209,
+    "proposedTop": 146,
+    "saved": 63,
+    "chipRowsToday": 3,
+    "chipRowsProposed": 2,
+    "linkOnTitle": true,
+    "linkOnTitleWideLetters": false
+  },
+  {
+    "state": "demo (2 months)",
+    "width": 360,
+    "words": "+2 in JAN - DEC 27 ›",
+    "todayTop": 209,
+    "proposedTop": 146,
+    "saved": 63,
+    "chipRowsToday": 3,
+    "chipRowsProposed": 2,
+    "linkOnTitle": true,
+    "linkOnTitleWideLetters": false
+  },
+  {
+    "state": "busy (7 months)",
+    "width": 402,
+    "words": "+2 in JAN - DEC 27 ›",
+    "todayTop": 209,
+    "proposedTop": 188,
+    "saved": 21,
+    "chipRowsToday": 3,
+    "chipRowsProposed": 3,
+    "linkOnTitle": true,
+    "linkOnTitleWideLetters": false
+  },
+  {
+    "state": "busy (7 months)",
+    "width": 390,
+    "words": "+2 in JAN - DEC 27 ›",
+    "todayTop": 209,
+    "proposedTop": 188,
+    "saved": 21,
+    "chipRowsToday": 3,
+    "chipRowsProposed": 3,
+    "linkOnTitle": true,
+    "linkOnTitleWideLetters": false
+  },
+  {
+    "state": "busy (7 months)",
+    "width": 360,
+    "words": "+2 in JAN - DEC 27 ›",
+    "todayTop": 209,
+    "proposedTop": 205,
+    "saved": 4,
+    "chipRowsToday": 3,
+    "chipRowsProposed": 3,
+    "linkOnTitle": false,
+    "linkOnTitleWideLetters": false
+  }
+]

@@ -1,0 +1,11 @@
+[
+ {
+  "id": "8 a long list (12 lines) on a desktop: \"Mark all read\" is on screen or the list scrolls to it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"n\":12,\"scrollers\":[{\"cls\":\"bell-list\",\"sh\":665,\"ch\":518,\"st\":0}],\"markAll\":{\"top\":687,\"bottom\":709,\"h\":22},\"vh\":860}",
+  "pics": [
+   "8a-long-bell"
+  ]
+ }
+]

@@ -1,0 +1,23 @@
+[
+ {
+  "id": "P1 phone bell: every box inside the screen, Mark all read reachable",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"listBox\":{\"x\":8,\"y\":46,\"w\":386,\"h\":357},\"scrollers\":[{\"tag\":\"DIV\",\"id\":\"\",\"cls\":\"bell-list wide\",\"sh\":355,\"ch\":355}],\"markAll\":[{\"top\":373,\"bottom\":395,\"vis\":true}],\"vh\":874,\"vw\":402}",
+  "pics": [
+   "7d-bell-q",
+   "7d-bell"
+  ]
+ },
+ {
+  "id": "P2 phone: a tap on a bell line -> the grid at that day, ringed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "ring at 1 s {\"tag\":\"TD\",\"id\":\"cell-bane-2026-01-21\",\"cls\":\"act hasc lw-ring\"}; at 3 s {\"tag\":\"TD\",\"id\":\"cell-bane-2026-01-21\",\"cls\":\"act hasc lw-ring\"}; newest line \"Your leaveWed 21 Jan LL approved · Saber now\"",
+  "pics": [
+   "7e-tap-q",
+   "7e-tap-1s",
+   "7f-tap-3s"
+  ]
+ }
+]

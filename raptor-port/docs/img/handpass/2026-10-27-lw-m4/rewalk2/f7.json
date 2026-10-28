@@ -1,0 +1,89 @@
+[
+ {
+  "id": "F7 fixture: Ranger placed 13 bids",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "13 placed",
+  "pics": []
+ },
+ {
+  "id": "F7 fixture: the admin approved each of Ranger's lines one by one",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "13 of 13 lit approved",
+  "pics": []
+ },
+ {
+  "id": "F7 the bell's bidding lines start \"Bidding\" with a capital",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "2 bidding lines: Leave War1 Jun – 30 Jun Bidding closed · Saber now | Leave War1 Jan – 30 Apr Bidding open · Saber now",
+  "pics": [
+   "f7-bell-open"
+  ]
+ },
+ {
+  "id": "F7 the list scrolls inside the bell (it overflows and has its own scroll)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "inner scroller {\"tag\":\"DIV.bl-scroll\",\"ov\":\"auto\",\"sh\":776,\"ch\":474}",
+  "pics": [
+   "f7-bell-open"
+  ]
+ },
+ {
+  "id": "F7 \"Mark all read\" stands at the foot and is on screen",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "button [{\"t\":536,\"b\":558,\"l\":295,\"r\":382}] screen height 874",
+  "pics": [
+   "f7-bell-open"
+  ]
+ },
+ {
+  "id": "F7 \"↓ N more\" shows while lines are below",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cue [{\"txt\":\"↓ 6 more\",\"t\":539,\"b\":555,\"l\":20,\"r\":70}]",
+  "pics": [
+   "f7-bell-open"
+  ]
+ },
+ {
+  "id": "F7 (D686) a finger that begins on the bell's foot does not scroll the page behind it",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "page scrollable range 825; swipe began at y=547 (the \"N more\" strip), dragged up 300 then down 200; page scrollY 0 -> 0 -> 0; list scrollTop 0 -> 0",
+  "pics": [
+   "f7-bell-foot-swipe"
+  ]
+ },
+ {
+  "id": "F7 a finger scroll inside the bell moves its list, not the page",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "list scrollTop 0 -> 302 (max 302); page scrollY 0 -> 0",
+  "pics": [
+   "f7-bell-scrolled-once"
+  ]
+ },
+ {
+  "id": "F7 at the end of the list \"↓ N more\" is gone and Mark all read is still reachable",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "scrollTop 302/302; cue present false; Mark all read {\"t\":536,\"b\":558,\"onTop\":true}",
+  "pics": [
+   "f7-bell-end"
+  ]
+ },
+ {
+  "id": "F7 Mark all read marks every line read",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "0 of 15 still unread",
+  "pics": [
+   "f7-markall-q",
+   "f7-markall"
+  ]
+ }
+]

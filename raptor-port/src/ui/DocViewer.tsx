@@ -74,7 +74,11 @@ export function DocViewer() {
   /* a medical entry is ONE person's (D655 reading 4): its person is the first of its people — engine/inputs.ts leadOf,
      which answers for a record stored before the one-rule build (one `person`) and one after it alike */
   const pid = r ? leadOf(r) : undefined
-  const mine = r && (canEditSched() || isMe(pid))
+  /* A LEAVE WAR REQUEST'S PAPERS, READ ONLY (the overhaul's M4 — 8.2's paperclip, every document chip on the war): a request
+     is no input, so its foot has no "Edit input" and no "Upchit" — its papers change in its own bid window
+     (leavewar/sync.ts openRequestDocs) */
+  const ro = !!(v && v.readOnly)
+  const mine = r && !ro && (canEditSched() || isMe(pid))
   const edit = () => { setDocView(null); setInpEdit(r); notify() }
   /* the pending card's own Upchit path (owner, 27 Aug 26 — "the user can
      click on their own puck and upload their document to upchit"): a seed

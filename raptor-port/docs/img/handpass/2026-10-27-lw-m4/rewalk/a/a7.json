@@ -1,0 +1,52 @@
+[
+ {
+  "id": "A7.0 a pending LL of Blade on Mon 12 Jan (before the date)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": []
+ },
+ {
+  "id": "A7.1 a leave of his BEFORE the date (12 Jan) approves",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Blade IP LL Mon 12 Jan › 1 day 3.5 P 28 28 Oct 01:57 · by Saber Approved Refuse\" Approve pressed true",
+  "pics": [
+   "a7-3-12jan-approve"
+  ]
+ },
+ {
+  "id": "A7.2 Approve on a leave AFTER the date is refused with its reason, in Approvals",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "line \"Blade IP LL Mon 2 Feb › He posts out on 15 Jan: refuse or delete it 1 day 3.5 — Approve Refuse\" Approve pressed false; note \"He posts out on 15 Jan: refuse or delete it\"",
+  "pics": [
+   "a7-4-2feb-approve"
+  ]
+ },
+ {
+  "id": "A7.3 Refuse still works on that line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Blade IP LL Mon 2 Feb › 1 day 3.5 — Approve Refused\" Refuse pressed true",
+  "pics": [
+   "a7-5-2feb-refuse"
+  ]
+ },
+ {
+  "id": "ERROR case1",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "TimeoutError: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"decide-approve\"]').first()\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "A7.5 a man posted out as SANS, leave after his date: Approve works",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Blade IP posted out 15 Jan · SANS LL Mon 2 Feb › 1 day 4.5 — Approved Refuse\" Approve pressed true",
+  "pics": [
+   "a7-9-sans-approve"
+  ]
+ }
+]

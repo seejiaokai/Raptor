@@ -1,0 +1,205 @@
+/* APPROVALS (the Leave War overhaul's M4, batch 8 — D1420 "as drawn": full/r22-1-desk, r22-3-desk, r22-5-phone, r22-6-phone).
+   SCOPED under #page-leavewar like every Leave War stylesheet (bidpicker.css's header says why). Its colours are the app's
+   own: the decide buttons are the bid windows' shape (D1361) in his drawings' colours (D1427); the dates the app's link cyan; a figure amber or red in the warning colours; the "new" dot the cyan of D1231.
+   A working screen stays dense (D812): rows of 44px on a desktop, the buttons their bid-window size (D487). */
+#page-leavewar {
+  /* the card stands where the grid's card stands — the stage's own 14px under the tab row and 20px at the sides (his D1430,
+     r22-1-desk: the drawing lays the list inside the grid's card) */
+  .appr-page { padding: 14px 20px 96px; }
+  /* the card takes the page's width as the grid card does; what is in it keeps one eye-span, so Approve and Refuse stand
+     near the figures (D1420, his drawing r22-1-desk — the first build narrowed the card itself) */
+  .appr-card > * { max-width: 1240px; }
+  .appr-card { background: var(--panel); border: 1px solid var(--edge); border-radius: var(--r); padding: 16px 18px 8px; }
+  .appr-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 12px; }
+  .appr-title { margin: 0; font-size: 20px; font-weight: 800; color: var(--ink); }
+  .appr-sub { color: var(--ink-2); font-size: 13px; }
+  .appr-elsewhere { background: none; border: 0; padding: 0; color: var(--accent); font: inherit; font-size: 13px; cursor: pointer; }
+  .appr-elsewhere:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  /* the filter row: New · DATES · All · the months · Pick dates… · Approve all at the right */
+  .appr-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding-bottom: 12px; border-bottom: 1px solid var(--edge); }
+  .appr-vs { width: 1px; height: 20px; background: var(--edge); margin: 0 6px; flex: 0 0 auto; }
+  .appr-lab { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin: 0 2px 0 6px; }
+  .appr-f { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--edge);
+    background: var(--panel-2); color: var(--ink); font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .appr-f.dim { color: var(--ink-3); font-weight: 500; }
+  .appr-f.on { border-color: var(--accent); color: var(--accent); background: rgba(59, 198, 232, .12); }
+  .appr-f:focus-visible, .appr-all:focus-visible, .appr-dlink:focus-visible, .appr-ok:focus-visible, .appr-no:focus-visible,
+  .appr-clip:focus-visible, .appr-back:focus-visible, .appr-x:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .appr-spring { flex: 1 1 auto; }
+  /* the page's ONE main button (A4) — the app's cyan; armed it asks for the second tap in amber's words */
+  .appr-all { min-height: 36px; padding: 0 18px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+    font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+  .appr-all.armed { background: var(--adv); border-color: var(--adv); color: #1d1405; }
+  .appr-all:disabled { opacity: .45; cursor: default; }
+  .appr-pickpop { margin: 10px 0; max-width: 360px; }
+  .appr-empty { padding: 28px 4px; color: var(--ink-3); }
+
+  /* the list — one eye-span: Approve and Refuse stand near the figures (D1420) */
+  /* the columns packed after a narrower DATES as drawn (r22-1-desk), the room left before the buttons — with LOWEST AVAIL and
+     PLACED a step further right, so the LVE BAL figures are never read with the Available beside them (his D1429) */
+  .appr-cols, .appr-line { display: grid; grid-template-columns: 150px 44px 160px 64px 64px 180px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center; }
+  /* LOWEST AVAIL: a step right of LVE BAL (D1429), its rows' names (W, P, OPS P) in a column of their own and the numbers lined
+     up after them, the heading over the numbers (D1438): 24px step + the 40px names + their 6px gap */
+  .appr-line > .appr-avail { padding-left: 24px; }
+  .appr-cols:not(.ph) > :nth-child(6) { padding-left: 70px; }
+  /* on a phone the names' column is 30px (W, P fit; a longer name runs left into the gap), so LOWEST AVAIL stands well clear of
+     PLACED and the two never read as one (lesson 62) */
+  .appr-cols.ph > :nth-child(3) { padding-left: 36px; }
+  .appr-l2 .appr-av { grid-template-columns: 30px auto; }
+  /* each heading stands over its figures (his D1437): the headings' row starts where the lines do, and NAME alone steps in
+     past the line's new-request dot (8px and its 6px gap) to stand over the puck */
+  .appr-cols:not(.ph) > :first-child { padding-left: 14px; }
+  .appr-cols { padding: 12px 0 8px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--edge); }
+  /* only the phone's last heading, PLACED, stands at the right edge, over its figures (D1438 — every other column reads from
+     the left; the old right-align class was named `r`, which is also a WSO puck's own class, and pushed his name right) */
+  .appr-cols .appr-end { text-align: right; justify-self: end; }
+  .appr-line { min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
+  .appr-line.stale { opacity: .78; }
+  .appr-who { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; position: relative; }
+  .appr-puck { display: inline-flex; }
+  .appr-tag { flex-basis: 100%; padding-left: 16px; font-size: 10.5px; font-weight: 700; color: var(--adv); white-space: nowrap; }
+  .appr-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex: 0 0 auto; }
+  .appr-dot.none { background: transparent; }
+  .appr-box { position: static; display: inline-flex; align-items: center; justify-content: center; height: 22px; min-width: 34px; padding: 0 4px; border-radius: 4px;
+    font-size: 11px; font-weight: 700; }
+  .appr-dates { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .appr-dlink { align-self: flex-start; background: none; border: 0; padding: 0; color: var(--accent); font: inherit; font-weight: 600; cursor: pointer; text-align: left; }
+  .appr-why { color: var(--hard); font-size: 12px; font-weight: 600; }
+  .appr-days, .appr-bal, .appr-placed { font-variant-numeric: tabular-nums; }
+  .appr-bal { font-weight: 700; }
+  .appr-bal small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
+  .appr-bal.neg { color: var(--hard); }
+  .appr-avail { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; }
+  .appr-av { display: grid; grid-template-columns: 40px auto; column-gap: 6px; align-items: baseline; font-variant-numeric: tabular-nums; font-weight: 700; }
+  /* a row's name stands right against its number; a name longer than its column runs out to the left, never over the number */
+  .appr-av i { justify-self: end; white-space: nowrap; font-style: normal; font-weight: 500; color: var(--ink-2); }
+  .appr-av:not(:has(i)) { display: block; }
+  .appr-av.amber { color: var(--adv); } .appr-av.amber i { color: var(--adv); }
+  .appr-av.red { color: var(--hard); } .appr-av.red i { color: var(--hard); }
+  .appr-placed { color: var(--ink-2); }
+  .appr-placed small { color: var(--ink-3); font-size: 11.5px; }
+  .appr-clip { display: inline-flex; align-items: center; gap: 2px; min-height: 32px; min-width: 36px; justify-content: center; border-radius: 8px;
+    border: 1px solid var(--edge); background: var(--panel-2); color: var(--ink); cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
+  /* Approve · Refuse — the bid windows' decide buttons (D1361) */
+  .appr-btns { display: flex; gap: 8px; justify-content: flex-end; }
+  /* the built size and row height, in his drawings' colours (D1427 — r22-2-desk at rest, r22-3-desk lit; measured off the
+     drawings): at rest a dark fill with a faint edge, the words green and red; lit, solid green or red with dark words */
+  .appr-ok, .appr-no { min-height: 36px; min-width: 100px; padding: 0 12px; border-radius: 8px; border: 1px solid #27303B; background: #12161B;
+    font: inherit; font-size: 14px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+  .appr-ok { color: #7EE2A0; }
+  .appr-no { color: #FF8A92; }
+  .appr-ok.lit { background: #3FBF6F; border-color: #3FBF6F; color: #06210F; }
+  .appr-no.lit { background: #E5535F; border-color: #E5535F; color: #2A0507; }
+  .appr-ok:disabled:not(.lit), .appr-no:disabled:not(.lit) { opacity: .4; cursor: default; }
+  /* the words and their longer word in one cell, so the button is always the longer word's width (D1435) */
+  .appr-word { display: inline-grid; }
+  .appr-word > span, .appr-word::after { grid-area: 1 / 1; text-align: center; }
+  .appr-word::after { content: attr(data-long); visibility: hidden; }
+
+  /* ON A PHONE (A11; r22-5-phone): two lines a request — puck · box · dates · paperclip · Approve · Refuse; then the four
+     figures under headings drawn once */
+  .appr-page.ph { padding: 0 8px 96px; }
+  .appr-page.ph .appr-card { padding: 14px 12px 6px; }
+  /* the title's line carries the other period's link where it fits, a line of its own where it does not (his D1444, as drawn) */
+  .appr-page.ph .appr-head { row-gap: 2px; }
+  .appr-page.ph .appr-filters { display: grid; grid-template-columns: max-content repeat(6, minmax(0, 1fr)); gap: 6px; }
+  /* AS HIS DRAWING (D1444, which narrows D1423's three rows): only the months holding requests — and a month picked, or one
+     holding a line still on the page — stand on the row of New and All, wrapping only past five; then Pick dates… at the
+     left and Approve all at the right, each the size of its words. Every chip's words stay on one line inside its edge
+     (D1387), on an iPhone's wider letters too: "New 1" keeps its one column by a smaller dot and tighter spacing — the
+     first build broke it onto two lines (the probe walk, 27 Oct 26); its column is as wide as its words ("New 15" too), the
+     other six share the rest */
+  .appr-page.ph .appr-f { justify-content: center; padding: 0 4px; min-height: 36px; white-space: nowrap; min-width: 0; }
+  .appr-page.ph [data-testid="appr-new"] { gap: 3px; padding: 0 1px; font-size: 12px; letter-spacing: -.01em; }
+  .appr-page.ph [data-testid="appr-new"] .appr-dot { width: 6px; height: 6px; }
+  .appr-page.ph .appr-spring { display: none; }
+  .appr-page.ph [data-testid="appr-pick"] { grid-column: 1 / span 3; justify-self: start; padding: 0 12px; }
+  .appr-page.ph .appr-all { grid-column: 4 / span 4; justify-self: end; }
+  /* both rows keep the same columns at every width (D1437): the third may be narrower than "LOWEST AVAIL" on a 360 phone, and
+     the heading then runs into the gap after it rather than widen its row and push PLACED out of line */
+  .appr-cols.ph { grid-template-columns: 64px 64px minmax(0, 1fr) 92px; padding: 12px 0 8px; align-items: end; }
+  .appr-cols.ph > span { white-space: nowrap; }
+  /* LOWEST AVAIL stands over its numbers (D1438), so it runs past its column into the room before PLACED's word — never into
+     it: where that room runs out (a 360 phone, in an iPhone's letters "LOWEST AVAIL" ran into "PLACED" — 28 Oct 26) it takes a
+     second line, "LOWEST" over "AVAIL", the other headings on its foot. 36px past the column leaves PLACED's word 8px clear. */
+  .appr-cols.ph > :nth-child(3) { white-space: normal; margin-right: -36px; }
+  .appr-line.ph { display: block; padding: 10px 0; }
+  .appr-l1 { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; align-items: center; column-gap: 6px; }
+  .appr-l1 .appr-who { flex-wrap: nowrap; }
+  .appr-l1 .appr-dot { display: none; }
+  .appr-l1 .appr-tag { display: none; }
+  .appr-l1 .appr-btns { gap: 6px; }
+  /* a little narrower on a phone, the same height (his D1435 — his word under D487 for these two): less padding at the sides,
+     so a narrow phone keeps a line's date on one line — and his drawing's letters (his D1441, r22-5-phone: 12.5px, bold), so at
+     his iPhone's width a half-day date ("23 Jan AM ›") keeps one line, measured in WebKit (scripts/handpass/lw-m4-btnwidth.mjs) */
+  .appr-l1 .appr-ok, .appr-l1 .appr-no { min-width: 0; padding: 0 3px; font-size: 12.5px; font-weight: 700; }
+  /* the same columns AND the same gaps as the headings above (his D1437 — without the 12px gap the figures sat 12 and 24px
+     left of LVE BAL and LOWEST AVAIL) */
+  .appr-l2 { display: grid; grid-template-columns: 64px 64px minmax(0, 1fr) 92px; column-gap: 12px; align-items: start; margin-top: 6px; font-size: 13px; }
+  .appr-l2 .appr-bal { text-align: left; justify-self: start; }
+  .appr-l2 .appr-days { text-align: left; justify-self: start; }
+  .appr-l2 .appr-placed { text-align: right; }
+  .appr-l2 .appr-placed small { display: block; }
+
+  /* "ALSO SINCE YOU LAST LOOKED · nothing to decide" (8.4; r22-2-desk): under the New choice — the request columns kept for
+     the puck, the box and the dates, then what happened across the figures' columns, and when */
+  .appr-alsohead { padding: 18px 0 8px; border-bottom: 1px solid var(--edge); color: var(--ink-2); font-size: 13px; }
+  .appr-alsohead .appr-lab { margin-left: 0; }
+  /* the request lines' own columns (his D1430, r22-2-desk): the dates level with the words, what happened under DAYS across
+     to LOWEST AVAIL, and when under PLACED */
+  .appr-aline { display: grid; grid-template-columns: 150px 44px 160px 64px 64px 180px 112px 44px minmax(214px, 1fr); column-gap: 12px; align-items: center;
+    min-height: 54px; padding: 6px 0; border-bottom: 1px solid var(--edge); font-size: 13.5px; color: var(--ink); }
+  .appr-aline > .appr-dlink { align-self: center; }
+  .appr-awhat { color: var(--ink); }
+  .appr-aline:not(.ph) > .appr-awhat { grid-column: 4 / span 3; }
+  .appr-aline:not(.ph) > .appr-placed { grid-column: 7 / span 3; }
+  .appr-aline.ph { grid-template-columns: auto auto minmax(0, 1fr); row-gap: 4px; column-gap: 6px; padding: 10px 0; }
+  .appr-aline.ph .appr-dot { display: none; }
+  .appr-aline.ph .appr-awhat { grid-column: 1 / span 2; font-size: 13px; color: var(--ink-2); }
+  .appr-aline.ph .appr-placed { text-align: right; font-size: 13px; }
+
+  /* THE SLIM BAR (8.5; r22-4-desk, r22-6-phone): at the foot of the grid after a request's dates were tapped */
+  /* over the grid's frozen layers and clear of its fixed bottom scrollbar (15px), under every sheet (79+) */
+  .appr-slim { position: fixed; left: 12px; right: 12px; bottom: 22px; z-index: 70; display: flex; align-items: center; gap: 8px; max-width: 760px; margin: 0 auto;
+    min-height: 44px; padding: 4px 6px 4px 14px; border-radius: 12px; background: var(--raised); border: 1px solid var(--accent); color: var(--ink); font-size: 13.5px; }
+  .appr-slim-n { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .appr-back { min-height: 34px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--accent); background: rgba(59, 198, 232, .14); color: var(--accent);
+    font: inherit; font-weight: 800; cursor: pointer; white-space: nowrap; }
+  .appr-x { min-height: 34px; min-width: 34px; border-radius: 8px; border: 1px solid var(--edge); background: var(--panel-2); color: var(--ink-2); font: inherit; cursor: pointer; }
+  /* HIS DRAWINGS' PLAIN BAR, on a desktop (his D1432, r22-4-desk) and on a phone (his D1440, r22-6-phone): no cyan outline —
+     the app's edge and a drop shadow — "Back ▴" plain cyan words and a plain ✕; each keeps its 34px press area (D487) */
+  .appr-slim { gap: 14px; padding: 0 12px 0 16px; border-color: var(--edge); box-shadow: 0 10px 30px rgba(0, 0, 0, .6); white-space: nowrap; }
+  /* …and his drawings' darker fill, #161B22 (both r22-4-desk and r22-6-phone measure 22, 27, 34), on a desktop and a phone —
+     one shade under the app's raised grey; its edge, words and size unchanged (his D1445, 28 Oct 26) */
+  .appr-slim { background: #161B22; }
+  .appr-slim b { font-size: 15px; font-weight: 800; letter-spacing: .04em; }
+  .appr-slim .appr-back { margin-left: 10px; padding: 0 6px; border: 0; background: none; font-size: 14px; font-weight: 700; }
+  .appr-slim .appr-x { border: 0; background: none; font-size: 16px; }
+  /* on a desktop as wide as its words, centred (D1432); on a phone across the screen, Back and ✕ at its right, as drawn */
+  .appr-slim:not(.ph) { left: 50%; right: auto; transform: translateX(-50%); max-width: none; }
+  .appr-slim:not(.ph) .appr-spring { display: none; }
+  /* …and on a phone where his drawing stands it (his D1440, r22-6-phone — the fixes' M13, measured on the drawing's own
+     pixels, 402 × 874 at 3×): its box 8px in from each edge, 46 tall, its foot 10 above the screen's (and above an iPhone's
+     home bar where the screen keeps one); Back and ✕ keep their 34px press area (D487) */
+  .appr-slim.ph { gap: 10px; left: 8px; right: 8px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); min-height: 46px; }
+  .appr-slim.ph .appr-back { margin-left: 0; }
+
+  /* THE DAY BROUGHT INTO VIEW (cellring.ts): the app's one just-added mark (D860 — the plain ring, no glow) for six
+     seconds, in the Leave War's cyan, the colour of the date ringed above it (his D1449, 28 Oct 26 — the app's blue read
+     too dark on the grid); for a reader who asked for less motion it stands steady and goes when its time is up */
+  td.lw-ring { box-shadow: inset 0 0 0 2px #3BC6E8; animation: lwring 6s ease-out 1 forwards; }
+  @media (prefers-reduced-motion: reduce) { td.lw-ring { animation: none; } }
+
+  /* WHILE THE SLIM BAR IS UP (the walk's A-F6, 27 Oct 26): a window opened over the bar's foot cut it ("Back" read "ack") —
+     every window but a full-screen one stands above the bar (22 above the foot, 44 tall), so the two never overlap, and is
+     shorter by the same. (Written from the page — `&:has` — since a rule begun at <body> would be scoped out of matching.) */
+  &:has([data-testid="appr-slim"]) .bidsheet:not(.full):not(.fullpage) { bottom: 74px; max-height: calc(100vh - 132px); max-height: calc(100dvh - 132px); }
+  /* (on a phone the bar is 10 above the foot and 46 tall — M13 — so a window stands 8 above it the same way) */
+  &:has([data-testid="appr-slim"].ph) .bidsheet:not(.full):not(.fullpage) { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); max-height: calc(100vh - 122px); max-height: calc(100dvh - 122px); }
+}
+/* (a keyframes rule cannot sit inside the scoped block) */
+@keyframes lwring { 0%, 90.83% { box-shadow: inset 0 0 0 2px #3BC6E8; } 100% { box-shadow: inset 0 0 0 2px rgba(59, 198, 232, 0); } }
+/* the Approvals tab's count — the app's cyan, as drawn (r19-nav-*, r22-1-desk); the Inputs tab's red count is a warning */
+#page-leavewar .intab .appr-tabn { margin-left: 2px; min-width: 18px; padding: 1px 6px; border-radius: 9px; font-size: 11px; font-weight: 800;
+  background: rgba(59, 198, 232, .18); color: var(--accent); font-variant-numeric: tabular-nums; }

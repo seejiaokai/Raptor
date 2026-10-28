@@ -1,0 +1,63 @@
+[
+ {
+  "id": "G5.1 the three presses: Approved, Refused, Approved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved / refused / approved; records a / r / a",
+  "pics": [
+   "g5-1-approved",
+   "g5-2-refused",
+   "g5-3-approved-again"
+  ]
+ },
+ {
+  "id": "G5.2 Undo once: the line shows the middle state lit \"Refused\", record agrees",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Undo 1\",\"lit\":\"refused\",\"ok\":\"false\",\"no\":\"true\",\"okDis\":false,\"noDis\":false,\"okT\":\"Approve\",\"noT\":\"Refused\",\"rec\":\"r\",\"head\":\"5 pending\"} middle-record r",
+  "pics": [
+   "g5-4-undo1",
+   "g5-4-undo1-page"
+  ]
+ },
+ {
+  "id": "G5.3 Undo, Undo: lit \"Approved\", both buttons working, record agrees",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Undo 2\",\"lit\":\"approved\",\"ok\":\"true\",\"no\":\"false\",\"okDis\":false,\"noDis\":false,\"okT\":\"Approved\",\"noT\":\"Refuse\",\"rec\":\"a\",\"head\":\"5 pending\"} approved-record a",
+  "pics": [
+   "g5-5-undo2",
+   "g5-5-undo2-page"
+  ]
+ },
+ {
+  "id": "G5.4 Redo: lit \"Refused\", record agrees",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Redo 1\",\"lit\":\"refused\",\"ok\":\"false\",\"no\":\"true\",\"okDis\":false,\"noDis\":false,\"okT\":\"Approve\",\"noT\":\"Refused\",\"rec\":\"r\",\"head\":\"5 pending\"}",
+  "pics": [
+   "g5-6-redo1",
+   "g5-6-redo1-page"
+  ]
+ },
+ {
+  "id": "G5.5 Redo: lit \"Approved\", record agrees",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Redo 2\",\"lit\":\"approved\",\"ok\":\"true\",\"no\":\"false\",\"okDis\":false,\"noDis\":false,\"okT\":\"Approved\",\"noT\":\"Refuse\",\"rec\":\"a\",\"head\":\"5 pending\"}",
+  "pics": [
+   "g5-7-redo2",
+   "g5-7-redo2-page"
+  ]
+ },
+ {
+  "id": "G5.6 after the redos both buttons still work",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "refused then approved",
+  "pics": [
+   "g5-8-refuse-after",
+   "g5-9-approve-after"
+  ]
+ }
+]

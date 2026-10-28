@@ -41,7 +41,7 @@ import { CURWEEK } from '../engine/waves'
 import { PEOPLE } from '../engine/people'
 import { parseVerId, dayIso } from '../engine/verid'
 import { lwStore, LW_COLLS, selectWar, focusDay, bumpLwHistEpoch, restoreBlocker } from '../leavewar/state/store'
-import { restoreAbsencesOf } from '../leavewar/sync'
+import { restoreAbsencesOf, warNoticesReversed } from '../leavewar/sync'
 import { warCounts } from '../leavewar/absences'
 import { DATES, inputCoversDate, isSansAvail } from '../engine/inputs'
 
@@ -367,7 +367,12 @@ export function installGlobalUndo(): void {
     snapView,
     showBubble: (text: string) => toast(text, ''),
     /* the change history's line for an undo or a redo, on every day it touched ([DRAFT-PENDING], Astra DP-04) */
-    reversed: (entry, dir) => logReversed(entry as any, dir),
+    reversed: (entry, dir) => {
+      logReversed(entry as any, dir)
+      /* M4 9.3 (D1216): a Leave War line the member had read leaves "taken back"; a Redo after it, a fresh line — the step's
+         own notices, as it made them (its forward images) */
+      warNoticesReversed(entry.forward as any, dir)
+    },
     reinstallLocks,
     resolvePublishDay,
     postRestore,

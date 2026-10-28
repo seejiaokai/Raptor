@@ -36,6 +36,7 @@ import type { DayWhatIf } from '../engine/whatif'
 import { DayLine, dayLineCode } from './DayLine'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
 import { sayOnWar } from '../sync'
+import { PlacedLine } from './PlacedLine'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
 const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')}`
@@ -79,6 +80,7 @@ export function BidPicker({
   current,
   dates,
   onWrote,
+  onKept,
   wouldLeave,
   dayLine,
   onPostOut,
@@ -111,6 +113,11 @@ export function BidPicker({
    *  entered. Reported rather than set here: the selection belongs to the
    *  matrix, which is the only thing that can keep every row in step. */
   onWrote?: (code: string) => void
+  /** Told the note of a placing whose approval was refused and KEPT PENDING ("Sat 16 Jun kept pending — He posted out on
+   *  15 Jun: refuse or delete it."), so it stands where he looks next: on a day outside the man's time in the squadron the
+   *  bid placed there makes the matrix open the day's list in this window's place, and the note would go with it (the
+   *  fixes' round 3b — the rounds 2–3 walk's G3; lesson 3 of the order's §7.11, what tells the person it happened). */
+  onKept?: (note: string) => void
   /** What the balance would read after this write, or `null` for leave that
    *  spends nothing. Supplied by the matrix, where the wars, openings and
    *  ledger already are. */
@@ -309,9 +316,11 @@ export function BidPicker({
        second tap on a lit Approve does") */
     const again = !span && decide?.state === bid
     if (again) bid = 'pending'
-    const { decided } = setBidStates(selCells(), bid)
+    const { decided, why } = setBidStates(selCells(), bid)
     if (decided > 0) return onClose()
-    setMoveErr(span
+    /* the rules' own reason where they gave one — "He posts out on 1 Mar: refuse or delete it" — as Approvals says it (the
+       fixes' M5, D1436) */
+    setMoveErr(why[0] ? why[0] : span
       ? 'None of those days holds a bid this screen can decide.'
       : 'That could not be recorded — this day is not this screen’s to decide.')
   }
@@ -478,8 +487,12 @@ export function BidPicker({
       if (!r.pending.length && !r.skipped) return onClose()
       const parts: string[] = []
       if (r.skipped) parts.push(`${r.skipped} day${r.skipped === 1 ? '' : 's'} not written: ${skipWhy('written', getState().role)}`)
-      if (r.pending.length) parts.push(`${r.pending.map(p => shortDate(p.date)).join(', ')} kept pending — not approved (a locked week, or leave or a medical already there)`)
-      return setNote(parts.join('. ') + '.')
+      /* the door's own reason where it gave one ("He posts out on 1 Mar: refuse or delete it" — the fixes' round 2, R2-4),
+         several each a sentence of its own (round 3, R3-4) */
+      if (r.pending.length) parts.push(`${r.pending.map(p => shortDate(p.date)).join(', ')} kept pending — ${r.why.length ? r.why.join('. ') : 'not approved (a locked week, or leave or a medical already there)'}`)
+      const said = parts.join('. ') + '.'
+      if (r.pending.length) onKept?.(said)
+      return setNote(said)
     }
 
     if (!span) {
@@ -566,13 +579,15 @@ export function BidPicker({
           says which leave the day holds, D1331 its half) */}
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         {isAdmin && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
         <button className="x" data-testid="bid-cancel" onClick={closeKeeping} aria-label="Cancel">
           ✕
         </button>
       </div>
       <DayLine days={lineDays} />
+      {/* who placed the day's entries and who decided them (M4 8.6 — r7-13): one compact line an entry */}
+      {!span && <PlacedLine personId={personId} date={date} />}
       {heldDay && (
         <div className="bidsheet-row">
           <span className="note bp-wide bp-heldline" data-testid="bid-heldday">
@@ -971,6 +986,7 @@ export function RaptorSheet({
   code,
   creditShown,
   docNames = [],
+  onDoc,
   onClose,
 }: {
   callsign: string
@@ -978,6 +994,8 @@ export function RaptorSheet({
   code: string
   /** the documents the Inputs-page record carries — named, read only (M3 7.3, D1150) */
   docNames?: string[]
+  /** a tap on one opens the documents, read only (M4 — every document chip on the war) */
+  onDoc?: () => void
   /** OIL the APP earned on this day, if that is what the cell holds (owner,
    *  21 Sep 26). See the note below on why this sheet had to learn the
    *  difference. */
@@ -1001,7 +1019,7 @@ export function RaptorSheet({
     <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave from Raptor'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         {/* the box's notation, as the bid sheet's "now" (W5's re-walk, NF2) */}
         <span className="cur">{displayCell(code)}{creditShown || leave ? ' · approved' : ''}</span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Close">
@@ -1033,7 +1051,7 @@ export function RaptorSheet({
       {!creditShown && docNames.length > 0 && (
         <div className="bidsheet-row" data-testid="raptor-docs">
           <span className="lab">Document</span>
-          <span className="docfield">{docNames.map((n, i) => <span key={i} className="docchip"><span className="docname">{n}</span></span>)}</span>
+          <span className="docfield">{docNames.map((n, i) => <button key={i} type="button" className="docchip" onClick={() => onDoc?.()}><span className="docname">{n}</span></button>)}</span>
         </div>
       )}
       {/* The same three lines the day window gives for OIL, because the
@@ -1104,7 +1122,7 @@ export function AwardSheet({
     <Sheet testid="award-sheet" label="Your OIL award" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <span className="cur">{award.code} · OIL award</span>
         <button className="x" data-testid="award-close" onClick={onClose} aria-label="Close">
           ✕
@@ -1194,7 +1212,7 @@ export function PostOutSheet({
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <button className="x" data-testid="postout-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
@@ -1320,7 +1338,7 @@ export function PostInSheet({
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <button className="x" data-testid="postin-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>

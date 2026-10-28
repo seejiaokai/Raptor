@@ -1,0 +1,22 @@
+[
+ {
+  "id": "B5 Back held down: no tint, no box, plain words (finger down picture)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"bg\":\"rgba(0, 0, 0, 0)\",\"fg\":\"rgb(59, 198, 232)\",\"bd\":\"none rgb(59, 198, 232)\",\"op\":\"1\",\"active\":false,\"hover\":false} approvals page after lift true",
+  "pics": [
+   "b5b-back-down.png",
+   "b5b-back-after.png"
+  ]
+ },
+ {
+  "id": "B5 X held down: no tint, no box (finger down picture)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"bg\":\"rgba(0, 0, 0, 0)\",\"fg\":\"rgb(182, 192, 203)\",\"bd\":\"none rgb(182, 192, 203)\",\"op\":\"1\",\"active\":false,\"hover\":false}",
+  "pics": [
+   "b5b-x-down.png",
+   "b5b-x-after.png"
+  ]
+ }
+]

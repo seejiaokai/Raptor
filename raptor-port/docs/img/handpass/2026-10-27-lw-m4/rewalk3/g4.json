@@ -1,0 +1,20 @@
+[
+ {
+  "id": "G4 deleted man: Approve on his pending bid refused \"Posted out — refuse or delete it\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Static IW LL Thu 8 Jan › Posted out — refuse or delete it 1 day 14 W 17 — Approve Refuse\"; Approve lit false",
+  "pics": [
+   "g4-4-approve-pressed"
+  ]
+ },
+ {
+  "id": "G4 deleted man: Refuse works",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"Static IW LL Thu 8 Jan › — Approve Refused\"; Refuse lit true",
+  "pics": [
+   "g4-5-refuse-pressed"
+  ]
+ }
+]

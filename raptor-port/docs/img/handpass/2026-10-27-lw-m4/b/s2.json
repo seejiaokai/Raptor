@@ -1,0 +1,65 @@
+[
+ {
+  "id": "S2a fast double tap (<150 ms)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "taps 252 ms in all; before {\"n\":6,\"lit\":\"\",\"nlit\":0,\"all\":\"Approve all 6\",\"tab\":\"8\",\"undo\":\"disabled\",\"hdr\":\"6 pending\"}; after {\"n\":6,\"lit\":\"wolf:approved,bruise:approved,slash:approved,slash:approved,slipway:approved,bruise:approved\",\"nlit\":6,\"all\":\"Approve all 0\",\"tab\":\"2\",\"undo\":\"enabled\",\"hdr\":\"0 pending\"}; all lines lit: true; still armed: false",
+  "pics": [
+   "s2-fast-q.png",
+   "s2-fast-settled.png"
+  ]
+ },
+ {
+  "id": "S2b one Undo after the fast taps brings every line back",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lit after undo 0; undo disabled; all \"Approve all 6\"; tab 8",
+  "pics": [
+   "s2-fast-undo.png"
+  ]
+ },
+ {
+  "id": "S2c slow: first tap arms and stays armed 3 s",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after tap Approve 6 — tap again; after 3 s Approve 6 — tap again",
+  "pics": [
+   "s2-slow1.png",
+   "s2-slow-3s.png"
+  ]
+ },
+ {
+  "id": "S2d slow second tap approves exactly the lines shown",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lit 6 of 6; tab 8 -> 2; all \"Approve all 0\"",
+  "pics": [
+   "s2-slow2-q.png",
+   "s2-slow2.png"
+  ]
+ },
+ {
+  "id": "S2e one Undo takes the slow approve-all back",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lit 0; tab 8",
+  "pics": []
+ },
+ {
+  "id": "S2f armed, then a month chip: disarmed, words back",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "armed \"Approve 6 — tap again\" -> after chip \"Approve all 4\", lit 0",
+  "pics": [
+   "s2-arm2.png",
+   "s2-monthchip.png"
+  ]
+ },
+ {
+  "id": "S2g after disarming, the next tap only arms",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"Approve 4 — tap again\", lit 0",
+  "pics": []
+ }
+]

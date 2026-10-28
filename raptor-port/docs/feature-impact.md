@@ -1542,3 +1542,24 @@ those days for a scheduler (D782) — `sync.ts askFiledOil`, a deferred effect o
 was a new input kind here, a drift-seam across every hand-kept list of kinds; since D1338 it is the war's own record — the
 paragraph above — and every list of input kinds is back as it was, pinned by `engine/unagone.test.ts`.)* The design note:
 `docs/superpowers/specs/2026-10-24-lw-file-od-cse-una.md`.
+
+## Deciding leave — Approvals and the bell's Leave War lines (the overhaul's M4, 27 Oct 26 — D1420–D1422)
+
+**Approvals** (an admin's tab, D1254) reads the war's pending requests in every period (the tab's count) and the period on
+view (its list) — `leavewar/approvals.ts`; it decides through ONE writer, `leavewar/state/store.ts decideRequests` (every
+line checked before anything is written; one command `lw.decide`; per-line answers with the new ids), which reaches the
+absence door as the grid's own decisions do — so a decision there lands on the grid, the day's list, the day panel, My
+leave, the person window, the manning rows and their counts, the OIL tracker for an OIL request, the Inputs page (an
+approved request IS an Input) and the schedule's Unavailable list exactly as the grid's do. Its "New" choice reads each
+admin's `apprseen:` row; its "Also since you last looked" reads the change history's `withdrawn` lines and the Inputs'
+own `by`/`at` (`sync.ts alsoSince`). A request's dates reach the grid through `ui/cellring.ts` and the slim bar.
+**The bell's war lines** are worked out from the state before and after each of the war's own commands (`store.ts
+gesture` → `decisionTells` / `openingTells`) and written through the scheduler store's notices (`sync.ts tellWar` /
+`tellBidding`), so every door that decides, moves, deletes or places a man's leave — the bid window, the drag window, the
+day's list, Approvals, "Approve what I enter", Undo / Redo — tells him the same one line, and none can forget to. The
+Inputs page's own line for that leave is skipped inside a war command (B1, `sched-commit.ts warDoor`). An Undo takes an
+unread line away and leaves "taken back" for a read one (`sync.ts warNoticesReversed`, from `state/undo-wire.ts`).
+**Who placed and who decided** a request (`RequestRec` stamps; an approved Input's `lwBy` / `lwAt`) must be carried by
+every place a request is made or rebuilt: `setCell` (a re-typed kind keeps the first), `moveRecords`, the put-back
+(`sync.ts doorDecideApproved`), `replaceClashingBids` and `decideRequest` (both spread the record). A new place that
+rebuilds a request field by field must copy `requestStamps`, or the PLACED column reads a dash.

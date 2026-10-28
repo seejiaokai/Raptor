@@ -1,0 +1,44 @@
+[
+ {
+  "id": "2 re-typed LL->OL (drag window + one-day window): no \"LL bid deleted\" line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "drag true, placed true/true, cells 02-16:OL 02-17:OL 02-19:OL; Ranger's new lines: none",
+  "pics": [
+   "2a-drag-window",
+   "2a-after",
+   "2b-after",
+   "2-bell"
+  ]
+ },
+ {
+  "id": "3 OL placed approved over his LL bid -> \"OL added and approved · Saber\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true; Ranger's new: Your leaveMon 23 Feb OL added and approved · Saber now; gone: none",
+  "pics": [
+   "3-bell"
+  ]
+ },
+ {
+  "id": "3b the Placed line over a replaced bid (reading R16: the bid's placer is kept)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "admin sees \"Placed Ranger · Tue 27 Oct, 19:40 · Approved Saber · Tue 27 Oct, 19:40\"; Ranger sees \"null\"",
+  "pics": [
+   "3-admin-window-placed-line",
+   "3-member-window-placed-line"
+  ]
+ },
+ {
+  "id": "4 remark from the drag window -> ONE \"Remark changed\" line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "action sel-approve; remark on the day \"doctor appointment\"; Ranger's new lines: LLMon 2 Mar Remark changed · Saber now",
+  "pics": [
+   "4-admin-drag-window",
+   "4-after-press",
+   "4-bell"
+  ]
+ }
+]

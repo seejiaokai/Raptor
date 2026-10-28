@@ -37,7 +37,7 @@ import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, getVersion as raptorVersion, writeInputsBatch } from '../state/store'
-import { setDaysWin, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
+import { setDaysWin, setDocView, setInpEdit, setOilAsk, setOilList } from '../ui/pops'
 import { puck } from '../ui/html'
 import type { DayWhatIf } from './engine/whatif'
 import { lwSyncTurn } from './state/store'
@@ -98,7 +98,10 @@ import {
   getVersion,
   setRefusalHook,
   setHolidayTell,
+  setDecisionTell,
   type HolidayRun,
+  type WarTell,
+  type OpenTell,
   type ReqWords,
   clearRaptorCell,
   createWar,
@@ -109,6 +112,8 @@ import {
   lwEditLists,
   rawState,
   setAbsenceDoor,
+  setActorLookup,
+  focusDay,
   setPeople,
   setPostOut,
   lwStore,
@@ -125,6 +130,7 @@ import {
   setViewer,
   setViewerCallsign,
   subscribe as lwSubscribe,
+  postedOutBy,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
@@ -135,11 +141,15 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, setHolidayLeft, setHolidaySpan } from '../state/notices'
+import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
+import { askLw, askRing, setApprMode } from './ui/lwnav'
+import { ringCell } from './ui/cellring'
+import { hasRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
+import { ELOG } from '../engine/editlog'
 import { callsignProblem } from '../state/roster-add'
 import { setPublishGate, setOilPlan } from '../state/inputgate-hook'
-import { stampPlaced, stampChanged } from '../state/inputstamp'
+import { stampPlaced, stampChanged, stampWho } from '../state/inputstamp'
 import { absencesAt, setAbsenceRows, type MergedWar } from './state/merge'
 import { validIso, planFor, monthAnswers, type DayFacts, type DayAnswer } from '../state/flyplan-model'
 import { getFlyPlan, getTones, sansFly } from '../state/flyplan'
@@ -251,7 +261,9 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
 
 /** Install the absence door (wireLeaveWarSync does; tests call it alone). */
 export function installAbsenceDoor(): void {
-  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved, file: doorFile })
+  setAbsenceDoor({ approve: doorApprove, decideApproved: doorDecideApproved, removeApproved: doorRemoveApproved, moveApproved: doorMoveApproved, file: doorFile, approveWhy, decideApprovedWhy, approvedBy })
+  /* who a request's "placed by" / "decided by" names (M4 8.6): the person the running command acts for, as an Input's stamp */
+  setActorLookup(stampWho)
   /* THE OPEN DAYS JOIN THE WAR'S PERMISSION (the red team's B8): the permissions module asks, of a member's war record
      (`war:person:date`), whether that day is open for HIM — the one rule (`canEditCell`), asked of the period holding
      the date, with a member's today (D1211). Read from the right: a war id may carry a colon. */
@@ -271,6 +283,9 @@ export function installAbsenceDoor(): void {
   /* [OIL-ASK-NOTIFY]: a working day made a holiday tells the schedulers and opens the one list (tellHoliday, below);
      and the bell's holiday line asks how many inputs are still left to answer (state/notices.ts) */
   setHolidayTell(tellHoliday)
+  /* M4 batch 9: a decision on a man's leave, and bidding opened or closed, tell the bell (tellWar, below) */
+  setDecisionTell({ leave: warLeaveNow, decisions: tellWar, openings: tellBidding })
+  setDerivedNotices(endedLines)
   setHolidayLeft(holidayLeft)
   setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
@@ -392,16 +407,85 @@ function warLeaveRow(it: { personId: string; date: string; iid: string }): any |
   if (String(onlyNamed(row) ?? '') !== it.personId || !inputDates(row).includes(it.date)) return null
   return row
 }
+/* the earliest "placed" of a run of requests, as the leave keeps it (`lwBy`, `lwAt` — M4 8.6); none where no request of
+   the run carries one (a request saved before M4) */
+function placerOf(recs: ReadonlyArray<{ placedBy?: string; placedAt?: number }>): { lwBy?: string; lwAt?: number } {
+  const first = recs.filter(r => typeof r.placedAt === 'number').sort((a, b) => a.placedAt! - b.placedAt!)[0]
+  return first ? { ...(first.placedBy ? { lwBy: first.placedBy } : {}), lwAt: first.placedAt } : {}
+}
 function doorWrite(fn: () => void): boolean {
   DOOR++
   try { return writeInputsBatch(fn) } finally { DOOR-- }
 }
 
+/* WHY `doorApprove` WOULD SKIP ONE ITEM — the one body the door and Approvals' writer ask (M4 8.3: every line is checked
+   before anything is written, so an inner refusal never sinks Approve all). The locked week; then the preflight — the
+   would-be absence against every absence already there (a different leave on the same time, a medical) — skipped and
+   reported, nothing consumed. */
+const lockedDates = (): Set<string> => new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+function approveWhy(it: { personId: string; date: string; recId: string }, prot: Set<string> = lockedDates()): string | null {
+  const war = warHolding(rawState().wars, it.date)
+  const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
+  if (!war || !rec) return 'No longer there'
+  /* A DELETED MAN (the host's decision, 28 Oct 26 — the fixes' round 3, R3-6): D1436 speaks only of posting out, so the
+     refusal the code had before M4 for a man deleted from the squadron stands, pending his word: a pending bid left from
+     before his delete is not approved, in every door, with the words it had.
+     …A MAN DELETED ON ADMIN → USERS ONLY (round 3c, R3c-1 — the third blind read's 1): a posting out with the "Delete"
+     outcome marks him gone too once it has run, and a Delete posting IS a posting out — so it falls to D1436's one date
+     rule below (his days before the date approve), never to this whole refusal. The kept record carries the posting's
+     outcome and `poDone` (store.ts markPostingDone; the kept row spreads the record's window). */
+  const kept: any = getState().postOuts[it.personId] || getState().people.find(p => p.id === it.personId)
+  if (postedOutBy(it.personId) === 'gone' && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)) return 'Posted out — refuse or delete it'
+  if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
+  const po = postingOutWhy(it.personId, it.date)
+  if (po) return po
+  const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
+  if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) return `${shortDate(it.date)} already holds leave or a medical at that time — not approved`
+  return null
+}
+/* his D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
+   even before the posting has run — the Approvals list and the bid windows alike, since both ask `approveWhy`; a posting
+   out as SANS keeps his leave (D283). The record's own dates are read, as `postingPendingTag` reads them.
+   ONE DATE RULE, WHETHER THE POSTING HAS RUN OR NOT (the fixes' round 2 — the host's reading of D1436's full row, 28 Oct 26:
+   "a request with no such day approves as ever"). The older B12 rule — a man whose posting had run, every request of his
+   refused ("Posted out — refuse or delete it"), his months before the posting too — went: once the posting has run (a
+   Delete posting included) his days from the date are refused as before it, the words in the past tense, and his days
+   before it approve — a man DELETED on Admin → Users is refused whole by `approveWhy`'s own check above (R3-6, R3c-1,
+   pending his word). */
+function postingOutWhy(personId: string, date: string): string | null {
+  const w: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
+  if (!w || !w.to || date <= w.to || outcomeOf(w) === 'sans') return null
+  const on = dayMon(addDays(w.to, 1))
+  return postedOutBy(personId) ? `He posted out on ${on}: refuse or delete it` : `He posts out on ${on}: refuse or delete it`
+}
+/* WHY `doorDecideApproved` WOULD SKIP ONE ITEM (the same one body, M4 8.3) */
+function decideApprovedWhy(it: { personId: string; date: string; iid: string }, prot: Set<string> = lockedDates()): string | null {
+  const row = warLeaveRow(it)
+  if (!row) return 'No longer there'
+  if (prot.has(it.date) || inputProtected(row)) return `${shortDate(it.date)} is on a locked week — not changed`
+  const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
+  if (!contrib || !warHolding(rawState().wars, it.date)) return 'No longer there'
+  const list = recsAt(warHolding(rawState().wars, it.date)!.recs, it.personId, it.date)
+  /* design §24.1 (Codex AS4-002): un-approving never overwrites or sits beside a request already stored on that time —
+     pending, acknowledged OR a refused one kept as history — for every destination state */
+  const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
+  if (blocking.length) return `${blocking[0]!.code} request on ${shortDate(it.date)} — decide or clear it before changing the ${contrib.code}`
+  return null
+}
+/* who approved a war-approved leave — its Input's placer (D629), by callsign */
+function approvedBy(iid: string): string | null {
+  const row = INPUTS.find((r: any) => String(r.iid) === iid)
+  const p: any = row && row.by != null ? (PEOPLE as any)[String(row.by)] : null
+  return p && p.cs ? String(p.cs) : null
+}
+
 /** approve: requests → Inputs (design §5.2 `lw.approve`, §18 OA3-002). Groups
  *  each person's selected requests into runs of consecutive days with the same
  *  code and the same carried remark; one Input per run; the requests go. */
-function doorApprove(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[] } {
+function doorApprove(items: Array<{ personId: string; date: string; recId: string }>): { done: number; skipped: number; why: string[]; whyOf: Array<{ personId: string; why: string }> } {
   const why: string[] = []
+  /* …and whose each reason is, so a window over several men names each (the fixes' round 3, R3-4) */
+  const whyOf: Array<{ personId: string; why: string }> = []
   const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   type Pick = { personId: string; date: string; rec: RequestRec; warId: string }
   const picks: Pick[] = []
@@ -410,19 +494,15 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     const war = warHolding(rawState().wars, it.date)
     const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
     if (!war || !rec) { skipped++; continue }
-    if (prot.has(it.date)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not approved`); continue }
-    /* preflight: the would-be absence against every absence already there
-       (a different leave on the same time, a medical) — skipped and reported,
-       nothing consumed */
-    const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-    if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) { skipped++; why.push(`${shortDate(it.date)} already holds leave or a medical at that time — not approved`); continue }
+    const bad = approveWhy(it, prot)
+    if (bad) { skipped++; why.push(bad); whyOf.push({ personId: it.personId, why: bad }); continue }
     /* a bid left standing when work was later credited. Owner Q5 and §26.3
        used to SKIP that day at approval; reversed 20 Sep 26 — recorded work no
        longer stops an approval: the leave is granted, the day is flagged, and
        a human resolves it. */
     picks.push({ ...it, rec, warId: war.period.id })
   }
-  if (!picks.length) return { done: 0, skipped, why }
+  if (!picks.length) return { done: 0, skipped, why, whyOf }
   /* runs: same person, war, code, remark, till tick and documents (M3 7.2 — one leave holds one of each), consecutive dates */
   picks.sort((a, b) => cmpISO(a.personId, b.personId) || cmpISO(a.date, b.date))
   const runs: Pick[][] = []
@@ -451,6 +531,9 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
        request said — a tick kept only where it differs from the leave's default (D953), the papers as the input's own */
     if (typeof first.rec.till === 'boolean' && first.rec.till !== tillDefault(row)) row.till = first.rec.till
     if (first.rec.docIds?.length) Object.assign(row, docFields(first.rec.docIds))
+    /* WHO PLACED THE REQUEST, KEPT ON THE LEAVE (M4 8.6): the Input's own `by` / `at` name the APPROVER (below), so the
+       request's placer rides beside them — the earliest of the run's — and a put-back gives them back to the request */
+    Object.assign(row, placerOf(run.map(p => p.rec)))
     inpId(row)
     /* placed by whoever approved it, now (D629 — state/inputstamp.ts) */
     stampPlaced(row)
@@ -490,6 +573,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       delete merged.docId; delete merged.docIds
       Object.assign(merged, docFields(papers))
       merged.mod = nowStamp()
+      /* …and the earliest placer of what it joins (M4 8.6) */
+      Object.assign(merged, placerOf([keep, r, ...(before && after ? [after] : [])].map(x => ({ placedBy: x.lwBy, placedAt: x.lwAt }))))
       /* an approval that EXTENDS a leave is still an approval: placed by this approver, now (the plan §3.8) */
       stampPlaced(merged)
       INPUTS.splice(INPUTS.indexOf(keep), 1, merged)
@@ -497,10 +582,10 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
     }
     ok = true
   })
-  if (!ok) return { done: 0, skipped: skipped + picks.length, why }
+  if (!ok) return { done: 0, skipped: skipped + picks.length, why, whyOf }
   lwEditLists(picks.map(p => ({ personId: p.personId, date: p.date, drop: [p.rec.id], add: [] })))
   refreshAbsencesAndRepaint()
-  return { done: picks.length, skipped, why }
+  return { done: picks.length, skipped, why, whyOf }
 }
 
 /** FILED STRAIGHT (round 2 — his D1318, D1324; `store.ts fileStraight`): a course, an overseas duty or — since his D1365 —
@@ -656,27 +741,21 @@ function carriedRemark(text: unknown): string {
  *  `lw.decideApproved`, §24): the Input shrinks / splits / goes on those dates,
  *  and a request carrying its remark and moved marks takes its place. Refused
  *  per date where a different request already sits on that time (§24.1). */
-function doorDecideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[] } {
+function doorDecideApproved(items: Array<{ personId: string; date: string; iid: string }>, to: RequestState): { done: number; skipped: number; why: string[]; whyOf: Array<{ personId: string; why: string }> } {
   const why: string[] = []
+  /* …and whose each reason is, so a window over several men names each (the fixes' round 3, R3-4) */
+  const whyOf: Array<{ personId: string; why: string }> = []
   let skipped = 0
   const cuts = new Map<string, Set<string>>()
   const adds: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
   const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
     const row = warLeaveRow(it)
-    if (!row) { skipped++; continue }
-    if (prot.has(it.date) || inputProtected(row)) { skipped++; why.push(`${shortDate(it.date)} is on a locked week — not changed`); continue }
-    const contrib = absencesAt(it.personId, it.date).find(c => c.id === it.iid)
-    if (!contrib) { skipped++; continue }
+    const contrib = row ? absencesAt(it.personId, it.date).find(c => c.id === it.iid) : undefined
+    if (!row || !contrib || !warHolding(rawState().wars, it.date)) { skipped++; continue }
+    const bad = decideApprovedWhy(it, prot)
+    if (bad) { skipped++; why.push(bad); whyOf.push({ personId: it.personId, why: bad }); continue }
     const code = notationOf(contrib.code, contrib.win)
-    const war = warHolding(rawState().wars, it.date)
-    if (!war) { skipped++; continue }
-    const list = recsAt(war.recs, it.personId, it.date)
-    /* design §24.1 (Codex AS4-002): un-approving never overwrites or sits
-       beside a request already stored on that time — pending, acknowledged OR a
-       refused one kept as history — for every destination state */
-    const blocking = list.filter((r): r is RequestRec => r.kind === 'request' && overlaps(requestWin(r.code), contrib.win))
-    if (blocking.length) { skipped++; why.push(`${blocking[0]!.code} request on ${shortDate(it.date)} — decide or clear it before changing the ${contrib.code}`); continue }
     const rec: RequestRec = {
       id: newRecId(), kind: 'request', code, state: to,
       ...(row.lwMoved?.[it.date] ? { shiftedFrom: row.lwMoved[it.date] } : {}),
@@ -685,17 +764,21 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
       ...(row.remarks ? { remarks: carriedRemark(row.remarks) } : {}),
       ...(typeof row.till === 'boolean' ? { till: row.till } : {}),
       ...(rowDocIds(row).length ? { docIds: rowDocIds(row).slice(0, MAX_REQ_DOCS) } : {}),
+      /* who placed the request it was, as recorded on the leave (M4 8.6); a refusal names who refused it, now */
+      ...(typeof row.lwBy === 'string' && row.lwBy ? { placedBy: row.lwBy } : {}),
+      ...(typeof row.lwAt === 'number' ? { placedAt: row.lwAt } : {}),
+      ...(to === 'refused' ? { ...(stampWho() ? { decidedBy: stampWho() } : {}), decidedAt: Date.now() } : {}),
     }
     adds.push({ personId: it.personId, date: it.date, drop: [], add: [rec] })
     const set = cuts.get(it.iid) ?? new Set<string>()
     set.add(it.date)
     cuts.set(it.iid, set)
   }
-  if (!adds.length) return { done: 0, skipped, why }
-  if (!cutDates(cuts)) return { done: 0, skipped: skipped + adds.length, why }
+  if (!adds.length) return { done: 0, skipped, why, whyOf }
+  if (!cutDates(cuts)) return { done: 0, skipped: skipped + adds.length, why, whyOf }
   lwEditLists(adds)
   refreshAbsencesAndRepaint()
-  return { done: adds.length, skipped, why }
+  return { done: adds.length, skipped, why, whyOf }
 }
 
 /** delete approved leave days (design §5.2 `lw.removeApproved` — a deliberate
@@ -876,6 +959,12 @@ export type ClashWayOut = 'bid' | 'war' | 'inputs'
 export function rosterCallsign(id: string): string | null {
   const b: any = (PEOPLE as any)[id]
   return b && b.cs ? String(b.cs) : null
+}
+/* …and whether he is a SANS man, for a man with no row on the war (a SANS man while SANS is off it — Approvals' LOWEST AVAIL
+   says "SANS · not in Avail" for him, M4 8.2) */
+export function rosterIsSans(id: string): boolean {
+  const b: any = (PEOPLE as any)[id]
+  return !!(b && b.san)
 }
 export interface SyncClash {
   person: string
@@ -1108,6 +1197,147 @@ function tellHoliday(runs: HolidayRun[]): void {
   commitInputs(SCHED_TYPES.inputsWrite, () => { for (const h of todo) noticeHoliday(to, by != null ? String(by) : null, h.name, h.from, h.to) })
   const first = todo[0]!
   cmdDeferEffect(() => { setOilList({ from: first.from, to: first.to, name: first.name, fresh: true }); raptorNotify() })
+}
+
+/* ---- THE BELL'S LEAVE WAR LINES (the overhaul's M4, batch 9 — D1142, D1214, D1422) ----------------------------
+   The war's store works out WHAT a command did to each man's leave (leavewar/state/store.ts decisionTells — from the
+   state before and after, never raised by a door); this is where it becomes his line: written through the scheduler
+   store's own input command, as a child of the war's, so the decision's Undo takes the line and its Redo puts it back
+   (9.3's "taken back" is the follow-up below). */
+/* each man's war-approved leave as it stands — person → "date|notation" → its notation (LL, *LL, LL*). Keyed by the date
+   AND the half (the fixes' M2 — the Opus read's 2, 28 Oct 26): a day may hold two war-approved halves, and keyed by the
+   date alone the later Input overwrote the earlier, so the bell read a half that stood all along as "deleted", an
+   approval as "bid deleted", or a put-back as nothing. */
+function warLeaveNow(): Map<string, Map<string, string>> {
+  const out = new Map<string, Map<string, string>>()
+  for (const row of INPUTS as any[]) {
+    if (!row || !row.lw || !isLeave(row.type)) continue
+    const pid = onlyNamed(row)
+    if (pid == null) continue
+    const m = out.get(String(pid)) ?? new Map<string, string>()
+    for (const d of inputDates(row)) {
+      const c = absencesAt(String(pid), d).find(x => x.id === String(row.iid))
+      const n = c ? notationOf(c.code, c.win) : String(row.type)
+      m.set(`${d}|${n}`, n)
+    }
+    out.set(String(pid), m)
+  }
+  return out
+}
+function tellWar(tells: WarTell[]): void {
+  const by = me()
+  const who = by != null ? String(by) : null
+  commitInputs(SCHED_TYPES.inputsWrite, () => {
+    for (const t of tells) {
+      const part: NoticePart = { k: 'lw', c: t.code, a: t.from, b: t.to, d: t.d, ...(t.destFrom ? { to: t.destFrom, tb: t.destTo } : {}), ...(t.was ? { w: t.was } : {}) }
+      noticeWar([t.personId], who, part)
+    }
+  })
+}
+/* who hears that bidding opened or closed: every person on the war with a sign-in — the archived, the deleted and the
+   special left out (noticeWar), and the admin who did it (D1214) */
+function warAudience(): string[] {
+  const onWar = new Set(getState().people.map(p => p.id))
+  return [...new Set(ACCOUNTS_LIST.filter((a: any) => a && a.pid != null && onWar.has(String(a.pid))).map((a: any) => String(a.pid)))]
+}
+function tellBidding(tells: OpenTell[]): void {
+  const by = me()
+  const who = by != null ? String(by) : null
+  const to = warAudience()
+  if (!to.length) return
+  commitInputs(SCHED_TYPES.inputsWrite, () => {
+    for (const t of tells) noticeWar(to, who, { k: 'lwopen', a: t.from, b: t.to, open: t.open })
+  })
+}
+
+/* BIDDING THAT ENDS BECAUSE ITS LAST DATE PASSES (M4 9.4 — D1214 ruled the register's P7 in as written, and P7's "when"
+   includes "its last day passes"): "Leave War · 1 Apr – 30 Jun · bidding closed · its dates ended", with no name. No command
+   runs on that date, so each person's bell works the line out from the periods' stored stretches once the date has passed
+   — a steady id, read like any other line (state/notices.ts setDerivedNotices). A stretch that ended more than fourteen
+   days ago is old news and not listed (the build's reading, named at his look), so a new member is not handed a year of
+   them. At the database step a scheduled flow may write it instead (noted for the IT side). */
+/* …AND A MAN TOLD A STRETCH OPENED IS ALWAYS TOLD IT ENDED (the walk's C-F3, 27 Oct 26). The bell keeps the newest line
+   of a stretch (state/notices.ts noticeLive), and this line was dated the midnight after it: an "open" line written
+   later than that, or any open line once this one passed its fourteen days, won — his bell went on reading "bidding
+   open" for dates long gone. So where he holds a line about the stretch, it is listed however old, dated just after
+   the newest of them. */
+const ENDED_DAYS = 14
+function endedLines(pid: string): Notice[] {
+  if (!warAudience().includes(pid)) return []
+  const today = memberToday(), since = addDays(today, -ENDED_DAYS)
+  const out: Notice[] = []
+  for (const w of rawState().wars) for (const o of w.period.open) {
+    if (!(o.to < today)) continue
+    let told = 0
+    for (const n of NOTICES) {
+      const p: any = n.to === pid ? (n.what || [])[0] : null
+      if (p && p.k === 'lwopen' && String(p.a) <= o.to && o.from <= String(p.b || p.a)) told = Math.max(told, n.at)
+    }
+    if (!told && o.to < since) continue
+    const end = addDays(o.to, 1)
+    const at = Math.max(new Date(+end.slice(0, 4), +end.slice(5, 7) - 1, +end.slice(8, 10)).getTime(), told + 1)
+    out.push({ id: `lwend:${w.period.id}:${o.from}:${o.to}`, to: pid, by: null, at, iid: '', name: 'Leave War', day: o.from, what: [{ k: 'lwopen', a: o.from, b: o.to, open: false, end: true }] })
+  }
+  return out
+}
+
+/** A TAP ON THE BELL'S LEAVE WAR LINE (M4 9.6): the Leave War, the war holding the date, the grid at that day and his cell
+ *  ringed (ui/cellring.ts — the just-added mark). The page's first-visit landing takes the ask instead of its own
+ *  (LeaveWarPage.tsx). A man with no row on the grid (a SANS man while SANS is off the war — B12) is shown his person
+ *  window instead. Approvals is left (the bell is another way out of it). */
+export function openWarAt(iso: string, personId?: string | null): void {
+  const war = warHolding(rawState().wars, iso)
+  if (war && war.period.id !== rawState().currentId) selectWar(war.period.id)
+  setApprMode('off')
+  const pid = personId ? String(personId) : ''
+  const onGrid = !!pid && getState().people.some(p => p.id === pid)
+  if (pid && !onGrid) askLw({ kind: 'person', id: pid })
+  /* …and the grid in front: the OIL tab may be up over it (the scenario designer's 12 — the ringed day stood behind it) */
+  else askLw({ kind: 'grid' })
+  if (CURPAGE === 'leavewar') { if (onGrid) ringCell(pid, iso); else focusDay(iso) }
+  else { askRing({ personId: onGrid ? pid : '', date: iso }); setPage('leavewar') }
+  raptorNotify()
+}
+
+/* "TAKEN BACK" (M4 9.3 — owner D1216, D148). An Undo restores an exact image, so it cannot itself leave a line or write
+   one: the decision's line goes with the Undo, as every notice does. Then, once the Undo has LANDED (the undo's own
+   `reversed` hook — state/undo-wire.ts), this follow-up — a command of its own, never an Undo step (undo/timeline.ts
+   NOT_STEPS) — writes "Approval of LL taken back · Saber" for each line that went which its member had already READ (his
+   read record, which an admin may read — state/perms.ts NoticeSeen): one he had not read simply went. A Redo puts the old
+   line back with its old id — already in his read marks — so where a "taken back" stands for it, Redo's follow-up writes
+   a FRESH line on top, new id and the time now ("LL approved again · Saber"), unread (the fresh read, finding 3). */
+export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; op: string; after?: unknown }>, dir: 'undo' | 'redo'): number {
+  const made: Notice[] = []
+  for (const c of changes) {
+    if (c.collection !== 'notices' || c.op !== 'put' || !c.after) continue
+    const n = c.after as Notice
+    if (!isWarNotice(n)) continue
+    const p: any = (n.what || [])[0]
+    if (!p || p.k === 'lwback') continue
+    /* the "again" lines an earlier Redo wrote for this line, newest last (the fixes' M9 — the Opus read's 5) */
+    const again = NOTICES.filter(x => x.to === n.to && (x.what || [])[0]?.k === 'lw' && (x.what[0] as any).again && (x.what[0] as any).ref === n.id)
+    if (dir === 'undo') {
+      if (NOTICES.some(x => x.id === n.id) || !hasRead(n.to, n)) continue
+      /* …a Redo after a "taken back" told him "again": that line is now the one he last had. Unread, it simply goes — it
+         names the line it repeats, and with that line gone it is no longer shown (state/notices.ts noticeLive) — so the
+         "taken back" he already holds still stands as what he knows (D1216); read, he is told "taken back" once more. */
+      const last = again[again.length - 1]
+      if (last && !hasRead(n.to, last)) continue
+      const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
+      made.push({ ...n, what: [{ k: 'lwback', ...(p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}) }] })
+    } else {
+      if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => x.to === n.to && (x.what || [])[0]?.k === 'lwback' && ((x.what[0] as any).ref === n.id))) continue
+      /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
+      const last = again[again.length - 1]
+      if (last && !hasRead(n.to, last)) continue
+      made.push({ ...n, what: [p.k === 'lw' ? { ...p, again: true, ref: n.id } : { ...p }] })
+    }
+  }
+  if (!made.length) return 0
+  const by = me()
+  let wrote = 0
+  commitInputs('lw.notice', () => { for (const n of made) wrote += noticeWar([n.to], by != null ? String(by) : null, n.what[0]!) })
+  return wrote
 }
 
 /* WHO AN ALL / ALL AVAIL PUCK STANDS FOR ([ALL-AVAIL-REDEF], owner 21 Sep 26 —
@@ -2747,6 +2977,84 @@ export function openDays(iso: string): void {
  *  — the window is the scheduler's, drawn at the app's own level, and is its own gate on who may change what): the
  *  Inputs page is brought to the front and the input's window opened on it. False where the input is gone — the
  *  caller then opens the day instead, so the tap never does nothing. */
+/** "ALSO SINCE YOU LAST LOOKED · nothing to decide" (the overhaul's M4, 8.4 — D1231's reading; the register's P9; drawn
+ *  full/r22-2-desk): what reached the war since this admin last opened Approvals that is not his to decide —
+ *  · a member's WITHDRAWN pending bid: the request is gone, so its only trace is the change history's line for it
+ *    (state/changelines.ts warLines — marked `fld: 'withdrawn'`, its code in `itype`), read by that mark;
+ *  · LEAVE FILED ON THE INPUTS PAGE, which lands on the war approved (D1166): read off the leave itself, whose `by` / `at`
+ *    say who filed it and when (state/inputstamp.ts — D629). A leave the war approved (`lw`) is a decision, not news.
+ *  Only the period's dates; never what he did himself. Each a line a run of days, newest first. */
+export interface AlsoLine { key: string; personId: string; code: string; from: string; to: string; what: 'withdrawn' | 'inputs'; by: string | null; at: number }
+export function alsoSince(prev: number, from: string, to: string, me: string | null): AlsoLine[] {
+  const out: AlsoLine[] = []
+  /* the withdrawals — one history line a day; consecutive days of one man and one kind are one line */
+  const rows = ELOG.rows.filter(r => r.fld === 'withdrawn' && r.sub && r.t > prev && r.date && r.date >= from && r.date <= to && String(r.pid ?? '') !== String(me ?? ''))
+    .slice().sort((a, b) => (a.sub! < b.sub! ? -1 : a.sub! > b.sub! ? 1 : 0) || ((a.itype || '') < (b.itype || '') ? -1 : 1) || (a.date! < b.date! ? -1 : 1))
+  for (const r of rows) {
+    const last = out[out.length - 1]
+    if (last && last.what === 'withdrawn' && last.personId === r.sub && last.code === (r.itype || '') && addDays(last.to, 1) === r.date) {
+      last.to = r.date!
+      if (r.t > last.at) last.at = r.t
+      continue
+    }
+    out.push({ key: `w|${r.lineId}`, personId: r.sub!, code: r.itype || '', from: r.date!, to: r.date!, what: 'withdrawn', by: r.pid != null ? String(r.pid) : null, at: r.t })
+  }
+  /* the Inputs page's leave, on a man the war shows */
+  const onWar = new Set(getState().people.map(p => p.id))
+  for (const row of INPUTS as any[]) {
+    if (!row || row.lw || !isLeave(row.type) || !(typeof row.at === 'number' && row.at > prev)) continue
+    if (row.by != null && me != null && String(row.by) === String(me)) continue
+    const pid = onlyNamed(row)
+    if (pid == null || !onWar.has(String(pid))) continue
+    const days = inputDates(row).filter((d: string) => d >= from && d <= to)
+    if (!days.length) continue
+    const c = absencesAt(String(pid), days[0]!).find(x => x.id === String(row.iid))
+    out.push({ key: `i|${row.iid}`, personId: String(pid), code: c ? notationOf(c.code, c.win) : String(row.type), from: days[0]!, to: days[days.length - 1]!, what: 'inputs', by: row.by != null ? String(row.by) : null, at: row.at })
+  }
+  return out.sort((a, b) => b.at - a.at || (a.key < b.key ? -1 : 1))
+}
+
+/** A REQUEST'S DOCUMENTS, READ ONLY (the overhaul's M4 — 8.2's paperclip, and every document chip on the war): the app's one
+ *  document viewer (ui/DocViewer.tsx) on a request-shaped page — whose leave, the kind and its days, its remarks, who placed
+ *  it — with no "Edit input" or "Upchit" in its foot. Nothing on the war opened a document before (the survey §4). */
+export function openRequestDocs(r: { personId: string; code: string; from: string; to: string; docIds: readonly string[]; remarks?: string; placedBy?: string; placedAt?: number }): boolean {
+  if (!r.docIds.length) return false
+  const a = isoToInputDate(r.from), b = isoToInputDate(r.to)
+  const row: any = {
+    person: r.personId, type: parseCell(r.code)?.type ?? r.code, allday: true, date: a.date, yr: a.yr,
+    ...(r.to > r.from ? { endDate: b.yr === a.yr ? b.date : `${b.date} ${b.yr}` } : {}),
+    remarks: r.remarks ?? '', docIds: [...r.docIds],
+    ...(r.placedBy ? { by: r.placedBy } : {}), ...(typeof r.placedAt === 'number' ? { at: r.placedAt } : {}),
+  }
+  setDocView({ row, readOnly: true })
+  raptorNotify()
+  return true
+}
+/** …AND A LEAVE'S, FILED OR APPROVED, READ ONLY (M4 — the spec's reading 8: every document chip on the war opens the
+ *  document; the day's list and the bid windows' Document row): the same viewer on the input itself; its papers change on
+ *  the Inputs page or in its own bid window, never from the viewer opened here */
+export function openInputDocs(row: any): boolean {
+  if (!row || !rowDocIds(row).length) return false
+  setDocView({ row, readOnly: true })
+  raptorNotify()
+  return true
+}
+/** M3's leftover (7), M4 9.3a: put a replaced bid's remarks and documents — kept on its grid notice — onto the leave that
+ *  replaced it, when that is a leave of the same man that still stands. Through the one remarks save (ui/inputedit.tsx
+ *  setLeaveRemarks → commitInputEdit), so who may change that leave is asked as anywhere: the man himself or an admin.
+ *  Answers the input it would go onto (`can`) and whether it was written. */
+export function replacedCarry(personId: string, n: { remarks?: string; docIds?: readonly string[]; iid?: string }): { row: any; remarks: string; docIds: string[] } | null {
+  if (!n.iid || (!n.remarks && !n.docIds?.length)) return null
+  const row = INPUTS.find((r: any) => String(r.iid) === n.iid)
+  if (!row || !isLeave(row.type) || !idsOf(row).map(String).includes(personId)) return null
+  const have = rowDocIds(row)
+  const docIds = [...new Set([...have, ...(n.docIds ?? [])])]
+  const cur = String(row.remarks ?? '').trim()
+  const add = (n.remarks ?? '').trim()
+  const remarks = !add || cur.includes(add) ? cur : cur ? `${cur} · ${add}` : add
+  if (remarks === cur && docIds.length === have.length) return null       // already carried
+  return { row, remarks, docIds }
+}
 export function openInputWindow(iid: string): boolean {
   const row = INPUTS.find((r: any) => String(r.iid) === String(iid))
   if (!row) return false

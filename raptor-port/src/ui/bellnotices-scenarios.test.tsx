@@ -753,7 +753,9 @@ describe('with the Leave War wired: a posting, an archive, a leave the war appro
     expect(since(m).map(n => n.to).sort(), 'nothing addressed to the archived man').toEqual([RANGER, HEX].sort())
     expect(sinceTo(m, RANGER)).toEqual([`${TITLE} · Wed 15 Jul — Cancelled — WX · ${cs(SABER)}`])
   })
-  it('R36: a leave the war approves lights no bell here — and a later change to that leave by someone else does tell him', async () => {
+  /* (changed by the Leave War overhaul's M4, 9.1 — owner D1142: the war's decision now tells him in ONE line of its own;
+     the Inputs page's copy of the leave still tells nothing beside it — never told twice, the red team's B1) */
+  it('R36: a leave the war approves is ONE line, the war’s own — and a later change to that leave by someone else does tell him', async () => {
     await bootLW()
     const day = String(getState().period.open[0]?.from ?? getState().period.start)
     const m = mark()
@@ -762,10 +764,11 @@ describe('with the Leave War wired: a posting, an archive, a leave the war appro
     setBidStates([{ personId: RANGER, date: day }], 'approved')
     const leave = INPUTS.find((x: any) => x.lw && idsOf(x).map(String).includes(RANGER)) as any
     expect(leave, 'the approved leave is an input').toBeTruthy()
-    expect(since(m), 'approved on the war: no notice').toEqual([])
+    expect(since(m).map(n => [n.to, noticeWords(n).what]), 'approved on the war: one line, the war’s own').toEqual([[RANGER, 'LL approved']])
     tick()
+    const m2 = mark()
     expect(setLeaveRemarks(leave, 'Bali')).toBe(true)
-    expect(sinceTo(m, RANGER).map(l => l.split(' — ')[1])).toEqual([`Remark changed · ${cs(SABER)}`])
+    expect(sinceTo(m2, RANGER).map(l => l.split(' — ')[1])).toEqual([`Remark changed · ${cs(SABER)}`])
   })
   it('sick leave a man files himself cuts HIS part out of a leave for three: the other two and the filer are told he was taken off — he is told nothing, and nobody is told "added"', async () => {
     await bootLW()

@@ -1,0 +1,42 @@
+[
+ {
+  "id": "F4p.1 phone: Pick dates open, press a line's Approve: calendar closes, nothing decided",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "picker open true -> false; target line under picker: false (SPAN.); before {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"lines\":\"-,-,-,-,-,-\"} after {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "f4p-1-pick-open",
+   "f4p-2-press-behind-q",
+   "f4p-2-after-first-press"
+  ]
+ },
+ {
+  "id": "F4p.2 phone: press again: that line, and only it, is approved",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lit lines approved,-,-,-,-,- (target index 0); head 6 pending -> 5 pending; Approve all \"Approve all 5\"",
+  "pics": [
+   "f4p-3-press-again-q",
+   "f4p-3-after-second-press"
+  ]
+ },
+ {
+  "id": "F4d.1 desk: Pick dates open, press a line's Approve: calendar closes, nothing decided",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "picker open true -> false; target line under picker: false (SPAN.); before {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"lines\":\"-,-,-,-,-,-\"} after {\"head\":\"6 pending\",\"all\":\"Approve all 6\",\"tab\":\"8\",\"lines\":\"-,-,-,-,-,-\"}",
+  "pics": [
+   "f4d-1-pick-open",
+   "f4d-2-after-first-press"
+  ]
+ },
+ {
+  "id": "F4d.2 desk: press again: that line, and only it, is approved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lit lines approved,-,-,-,-,- (target index 0); head 6 pending -> 5 pending; Approve all \"Approve all 5\"",
+  "pics": [
+   "f4d-3-after-second-press"
+  ]
+ }
+]

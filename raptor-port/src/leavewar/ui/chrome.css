@@ -1150,7 +1150,9 @@
       padding: 4px 20px;
     }
     .lw-top .lw-tabs { flex: 1 1 auto; }
-    .lw-top .lw-tabs .intab { flex: 1 1 0; padding: 4px 8px; }
+    /* each tab its own words' width at least, the room left shared out (the walk's B-F1, 27 Oct 26: three equal tabs left
+       Approvals and its count wider than its lit outline at 390 and 360, and on an iPhone's letters) */
+    .lw-top .lw-tabs .intab { flex: 1 1 auto; min-width: max-content; padding: 4px 8px; }
     .lw-viewline {
       display: flex;
       align-items: center;

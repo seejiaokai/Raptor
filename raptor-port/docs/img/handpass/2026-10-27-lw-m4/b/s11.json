@@ -1,0 +1,30 @@
+[
+ {
+  "id": "S11a a member has no Approvals tab",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "tabs drawn: lw-tab-grid, oil-tracker; approvals page in the page: 0",
+  "pics": [
+   "s11-member-grid.png"
+  ]
+ },
+ {
+  "id": "S11b typing an address cannot reach Approvals as a member",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "#approvals: sign-in card false, approvals page present 0, visible false | #/approvals: sign-in card false, approvals page present 0, visible false | ?tab=approvals: sign-in card true, approvals page present 0, visible false | ?page=approvals: sign-in card true, approvals page present 0, visible false | approvals: sign-in card true, approvals page present 0, visible false",
+  "pics": [
+   "s11-after-addresses.png"
+  ]
+ },
+ {
+  "id": "S11 setup: slim bar up and the menu open",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "slim bar up: true; lines in the list: true",
+  "pics": [
+   "s11-saber-slim-up.png",
+   "s11-menu.png"
+  ]
+ }
+]

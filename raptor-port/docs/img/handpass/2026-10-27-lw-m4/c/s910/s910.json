@@ -1,0 +1,39 @@
+[
+ {
+  "id": "9 \"Also since you last looked\" lists both: Ranger's withdrawn bid and his Inputs filing, one line each",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "filed on Inputs true, bid withdrawn true; section text: \"ALSO SINCE YOU LAST LOOKED · nothing to decide Ranger IP LL Tue 20 Jan › Filed on the Inputs page · approved 27 Oct 19:54 Ranger IP LL Wed 14 Jan › Bid withdrawn by Ranger 27 Oct 19:54 Wisp C OIL Tue 14 Jul › Filed on the Inputs page · approved 2 Jul 13:35 Quill IW LL Tue 14 Jul › Filed on the Inputs page · approved 30 Jun 12:28\"",
+  "pics": [
+   "9d-approvals-new"
+  ]
+ },
+ {
+  "id": "10a the bell lines, their texts and their read marks survive a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before 2 lines, after 2; identical true; the bidding line present after: true",
+  "pics": [
+   "10a-bell-before-reload",
+   "10b-bell-after-reload"
+  ]
+ },
+ {
+  "id": "10b the decision and the Placed · Decided stamps survive a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cell 16 Jan before \"LL\", after \"LL\"; admin's Placed line after reload: \"Placed Ranger · Tue 27 Oct, 19:53 · Approved Saber · Tue 27 Oct, 19:54\"",
+  "pics": [
+   "10d-admin-window-15jan"
+  ]
+ },
+ {
+  "id": "10c Approvals' \"last opened\" survives a reload (New counts from it: Ranger bid after the last look, so 1 new)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "header after reload \"7 pending · 1 new\" (New chip \"New 1\"); header before \"6 pending\" (New chip \"New 0\")",
+  "pics": [
+   "10e-approvals-after-reload"
+  ]
+ }
+]

@@ -1,0 +1,38 @@
+[
+ {
+  "id": "F1.0 set-up: PM approved + AM pending on Tue 13 Jan",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pm true am true",
+  "pics": []
+ },
+ {
+  "id": "F1.1 approve AM, tap the lit Approved: MORNING back to pending, afternoon stays approved (grid cell + window)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after tap: line lit=false; cell AM w|c k-ll s-w top PM a|c k-ll s-a bot; window \"Ranger Tue 13 Jan ✕ LL Morning · pending Placed Saber · Wed 28 Oct, 02:51 Approve Refuse ⇄Move Delete till 13 Jan Document LL Afternoon · approved Placed Saber · Wed 28 Oct, 02:51 · Approved Saber · Wed 28 Oct, 02:51 Approved Refuse ⇄Move Delete till 13 Jan Do\"",
+  "pics": [
+   "f1-2-line-tapped-lit",
+   "f1-2tapped-grid-window"
+  ]
+ },
+ {
+  "id": "F1.2 approve again, ONE tap on Refuse: morning refused, afternoon still approved (grid cell + window)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line Refuse lit=true; cell AM r|c k-ll s-r top PM a|c k-ll s-a bot; window \"Ranger Tue 13 Jan ✕ LL Morning · refused Placed Saber · Wed 28 Oct, 02:51 · Refused Saber · Wed 28 Oct, 02:51 Approve Refused ⇄Move Delete till 13 Jan Document LL Afternoon · approved Placed Saber · Wed 28 Oct, 02:51 · Approved Saber · Wed 28 Oct, 02:51 Approv\"",
+  "pics": [
+   "f1-3-line-refused",
+   "f1-3refused-grid-window"
+  ]
+ },
+ {
+  "id": "F1.3 Ranger's bell: lines for the decisions, never \"deleted\" for an approval",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "5 lines: Your leaveTue 13 Jan LL refused · Saber now || Your leaveTue 13 Jan LL approved · Saber now || Your leaveTue 13 Jan LL put back to a bid · Saber now || Your leaveTue 13 Jan LL approved · Saber now || Your leaveTue 13 Jan LL added and approved · Saber now",
+  "pics": [
+   "f1-4-bell"
+  ]
+ }
+]

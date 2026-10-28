@@ -19,13 +19,14 @@ import { oilUndoBoundary } from './oilmode'
 import { accessAlert, waitingCount } from '../state/accounts'
 import { bugAlert, unseenReports } from '../state/reports'
 import { openAdminUsers } from './adminopen'
-import { oilPendingFor } from '../leavewar/sync'
+import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, BELLAT, setBellList, setOilList } from './pops'
 import { me } from '../state/perms'
-import { noticesFor, noticeWords, noticeAge, holidayLineOn, noticeSpan, type Notice } from '../state/notices'
+import { noticesFor, noticeWords, noticeAge, holidayLineOn, noticeSpan, isWarNotice, type Notice } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
 import { useVersion } from './useStore'
+import { holdPageScroll } from './floatwin'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
 
 /* ---- the Sync chip (a demonstration toggle — there is no server yet; the one state for both bars) ---- */
@@ -112,6 +113,16 @@ export function openNotice(n: Notice): void {
     setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false })
     notify(); return
   }
+  /* A LEAVE WAR LINE (the overhaul's M4, 9.6): the Leave War at that day — where a move took it, at its new days — his
+     cell ringed; a bidding line, the stretch's first day */
+  if (isWarNotice(n)) {
+    markNoticeRead(n.id)
+    setBellList(false)
+    const p: any = (n.what || [])[0]
+    const day = p.k === 'lw' && p.to ? String(p.to) : String(p.a)
+    openWarAt(day, p.k === 'lwopen' || (p.k === 'lwback' && (p.d === 'open' || p.d === 'close')) ? null : n.to)
+    notify(); return
+  }
   const row = inpById(n.iid)
   markNoticeRead(n.id)
   if (!row) { HOOKS.toast('That input is gone'); notify(); return }
@@ -154,6 +165,28 @@ export function BellList() {
     document.addEventListener('keydown', key)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key) }
   }, [open])
+  /* A FINGER ON THE BELL NEVER SCROLLS THE PAGE BEHIND IT (owner D686; the fixes' M8 — the re-walk's B-F1): its lines
+     scroll inside it, but a finger that began on its foot ("↓ 3 more", Mark all read) and dragged moved the page behind
+     it. The one body every window holds a finger with (floatwin.ts holdPageScroll), on the whole bell, its foot included. */
+  useEffect(() => {
+    const n = ref.current
+    if (!open || !n) return
+    return holdPageScroll(n)
+  }, [open, !!at])
+  /* A LONG LIST KEEPS ITS FOOT IN SIGHT AND SAYS WHAT IS BELOW (the walk's C-F4, 27 Oct 26): the lines scroll inside
+     the list, "Mark all read" stands under them, and "↓ 3 more" counts the lines not wholly in view below — the Leave
+     War day panel's cue (D1295) — gone once the list is at its end */
+  const scroller = useRef<HTMLDivElement>(null)
+  const [below, setBelow] = useState(0)
+  const countBelow = () => {
+    const s = scroller.current
+    if (!s) return
+    const bottom = s.getBoundingClientRect().bottom + 1
+    let n = 0
+    for (const l of Array.from(s.querySelectorAll<HTMLElement>('.bl-line'))) if (l.getBoundingClientRect().bottom > bottom) n++
+    setBelow(n)
+  }
+  useLayoutEffect(() => { if (open && at) countBelow() })
   if (!open) return null
   const mine = me()
   const list = noticesFor(mine)
@@ -164,6 +197,7 @@ export function BellList() {
   return (
     <div className={'bell-list' + (at && at.wide ? ' wide' : '')} ref={ref} role="menu" aria-label="Notifications" data-testid="bell-list"
       style={at ? (at.wide ? { top: at.top } : { top: at.top, right: at.right }) : { visibility: 'hidden' }}>
+      <div className="bl-scroll" ref={scroller} onScroll={countBelow}>
       {list.length === 0 && <div className="bl-empty" data-testid="bell-empty">Nothing new</div>}
       {list.map(n => {
         const w = noticeWords(n), fresh = isUnread(n, mine)
@@ -179,8 +213,12 @@ export function BellList() {
           </button>
         )
       })}
-      {unread && <div className="bl-foot"><button type="button" className="abtn sm ghost" data-testid="bell-markall"
-        onClick={() => { markAllNoticesRead(); notify() }}>Mark all read</button></div>}
+      </div>
+      {(unread || below > 0) && <div className="bl-foot">
+        {below > 0 && <span className="bl-more" data-testid="bell-more">↓ {below} more</span>}
+        {unread && <button type="button" className="abtn sm ghost" data-testid="bell-markall"
+          onClick={() => { markAllNoticesRead(); notify() }}>Mark all read</button>}
+      </div>}
     </div>
   )
 }

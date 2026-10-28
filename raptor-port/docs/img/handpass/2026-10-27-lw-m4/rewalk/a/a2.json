@@ -1,0 +1,21 @@
+[
+ {
+  "id": "A2.1 the card stands under the tab row where the grid card stands",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid gap 0 left 0; approvals gap 0 left 0",
+  "pics": [
+   "a2-0-grid",
+   "a2-1-approvals"
+  ]
+ },
+ {
+  "id": "A2.4 a name stands at the LEFT of its puck, WSO and pilot alike (lesson 9, by box)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "6 pucks, classes [\"puck r\",\"puck\"]; name offsets wolf:5W bruise:5P slash:5P slash:5P slipway:5P bruise:5P",
+  "pics": [
+   "a2-1-approvals"
+  ]
+ }
+]

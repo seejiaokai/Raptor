@@ -1,0 +1,120 @@
+<title>Leave War M4 questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column of question cards, newest first; each card the question, the recommendation, its picture (tap to zoom). */
+:root{
+  --bg:#0d1014; --panel:#161b22; --edge:#2a323c; --fg:#e6edf3; --mute:#9aa5b1; --accent:#3bc6e8; --mark:#ff2d95; --ok:#7ee2a0;
+  --f-body: system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){ --bg:#f3f5f7; --panel:#ffffff; --edge:#d5dbe1; --fg:#14181d; --mute:#56606b; --accent:#0a7fa0; --mark:#c2186d; --ok:#1d7a42; color-scheme:light } }
+:root[data-theme="light"]{ --bg:#f3f5f7; --panel:#ffffff; --edge:#d5dbe1; --fg:#14181d; --mute:#56606b; --accent:#0a7fa0; --mark:#c2186d; --ok:#1d7a42; color-scheme:light }
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-size:22px;margin:0;text-wrap:balance}
+h2{font-size:17px;margin:0;text-wrap:balance}
+.lead{color:var(--mute);margin:4px 0 0;max-width:68ch}
+.now{background:var(--panel);border:1px solid var(--edge);border-radius:12px;padding:14px 16px}
+.now h2{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin-bottom:8px}
+.now ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
+.now a{color:var(--accent)}
+.q{display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--edge);padding-top:18px}
+.tag{display:inline-block;font:800 12px var(--f-body);background:var(--mark);color:#fff;border-radius:6px;padding:2px 7px;margin-right:8px;vertical-align:2px}
+.rec{color:var(--ok);font-weight:600}
+.alt{color:var(--mute)}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.pics.one{grid-template-columns:1fr}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure button{all:unset;cursor:zoom-in;display:block;border:1px solid var(--edge);border-radius:8px;overflow:hidden;background:#000}
+figure button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+figure img{display:block;width:100%;height:auto}
+figcaption{color:var(--mute);font-size:13px}
+.readings{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px;color:var(--fg)}
+.note{color:var(--mute);font-size:13px}
+#zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:flex;align-items:flex-start;justify-content:center;overflow:auto;z-index:50;padding:max(12px,env(safe-area-inset-top,0px)) 12px 12px}
+#zoom img{max-width:none;width:min(1600px,200%);height:auto;cursor:zoom-out}
+@media (max-width:600px){ #zoom img{width:250%} }
+</style>
+<main>
+  <header>
+    <h1>Leave War M4 — before the build</h1>
+    <p class="lead">M4 is Approvals and the bell's Leave War lines. The plan is written. Three things need your eye first; everything else is already settled by your rulings. Pictures are drawn into the real app; the requests in them are made up (today's demo has none waiting). Tap a picture to zoom.</p>
+  </header>
+
+  <section class="now" aria-labelledby="now-h">
+    <h2 id="now-h">Look at now — newest first</h2>
+    <ol>
+      <li><a href="#l1">L1</a> Approvals as its own tab page. <span class="rec">Recommended: as drawn.</span></li>
+      <li><a href="#q1">Q1</a> A line you just approved or refused stays in place, lit, until you leave the tab. <span class="rec">Recommended: yes.</span></li>
+      <li><a href="#q2">Q2</a> Tell a member when you put leave on his row already approved. <span class="rec">Recommended: yes.</span></li>
+    </ol>
+  </section>
+
+  <section class="q" id="l1">
+    <h2><span class="tag">L1</span>Approvals as a tab page</h2>
+    <p>You ruled Approvals is a tab (Grid · Approvals · OIL, Balances joining in M5). Its page was never drawn — the earlier pictures showed a window over the grid. Here it takes the grid's place under the top row, like the Balances page will. On a wide screen the list keeps to one eye-span so Approve and Refuse sit near the figures. On a phone each request is two lines. Each person is his own puck, the schedule's, with his CAT on its chip (redrawn after your note; the first drawing used a look-alike).</p>
+    <p class="rec">Recommended: build it as drawn.</p>
+    <div class="pics">
+      <figure><button type="button" data-z="r22-1-desk.png"><img src="r22-1-desk.png" alt="Approvals tab page on a desktop, All months"></button><figcaption>1 the tab · 2 the months · 3 the columns · 4 every Manning row a request turns amber or red · 5 a posted-out man's tag</figcaption></figure>
+      <figure><button type="button" data-z="r22-5-phone.png"><img src="r22-5-phone.png" alt="Approvals tab page on a phone"></button><figcaption>On your iPhone's width: the tab, two lines a request</figcaption></figure>
+      <figure><button type="button" data-z="r22-2-desk.png"><img src="r22-2-desk.png" alt="Approvals with New picked"></button><figcaption>"New 3": what came in since you last looked, and below it what changed that needs no decision</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q1">
+    <h2><span class="tag">Q1</span>A decided line stays in place, lit</h2>
+    <p>You tap Approve on Cinch: his button turns solid green "Approved" and the line stays where it is until you leave the tab or change the dates. A slip is put right with a second tap (as in the bid windows), and nothing jumps under your finger. The tab count and "Approve all" count only what is still pending — here 13.</p>
+    <p class="rec">Recommended: yes, stays lit in place.</p>
+    <p class="alt">The other way: the line leaves the list the moment you tap; Undo brings it back.</p>
+    <div class="pics one">
+      <figure><button type="button" data-z="r22-3-desk.png"><img src="r22-3-desk.png" alt="One line approved, one refused, Approve all armed"></button><figcaption>1 approved · 2 refused · 3 "Approve all" armed: "Approve 13 — tap again"</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="q2">
+    <h2><span class="tag">Q2</span>Tell a member when you place approved leave on his row</h2>
+    <p>With "Approve what I enter" on, leave you put on Ranger's row lands approved. Today nothing tells him. Your rulings cover a bid you decide, not leave you place yourself.</p>
+    <p class="rec">Recommended: yes — "Your leave · Mon 9 Mar · LL added and approved · Saber", a tap opening the grid there.</p>
+    <div class="pics">
+      <figure><button type="button" data-z="r22-7-bell-phone.png"><img src="r22-7-bell-phone.png" alt="The member's bell with the Leave War lines"></button><figcaption>Q2 the new line at the top. Lower down, bidding that ends on its last date: you already ruled members are told (D1214), so it is built, with no name since nobody closed it.</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="q" id="readings">
+    <h2>Built as I read your rulings — strike any</h2>
+    <ol class="readings">
+      <li>The tab's count is every pending request, in every period, since it is your only sign that anything waits; the list shows the year on view, with "+4 pending in JAN – DEC 27 ›" when another year holds some.</li>
+      <li>Leave placed over several days is one line; DAYS is what it takes off LVE (a weekend inside it not counted).</li>
+      <li>The bidding line goes to everyone on the war except the admin who did it; opening four months by four taps is one line, not four.</li>
+      <li>Undo of opening or closing bidding works like Undo of a decision: unread lines go, a read one gets "taken back".</li>
+      <li>A bid replaced by a member's own filing tells him nothing; replaced by someone else's filing, one line, not two.</li>
+      <li>A tap on a request's dates opens the grid there with the cell ringed and a slim "Back to Approvals" bar at the foot.</li>
+      <li>For "taken back · Saber" to work, your device needs to see whether the member has read the line — a small permission change, checked by a security read.</li>
+      <li>Every document on the war opens when tapped, read only (today none does).</li>
+      <li>When you move or delete a member's pending bid, his bell tells him ("LL bid moved to Thu 29 Jan · Saber").</li>
+      <li>A man posted out since he bid: his line says "posted out 14 Oct"; Approve is refused there, Refuse works.</li>
+      <li>Bidding that ends on its last date tells everyone "Bidding closed · its dates ended", as you ruled (D1214).</li>
+      <li>"Approve 13 — tap again" un-arms itself if the list changes before your second tap, so it never approves a number you did not see.</li>
+    </ol>
+  </section>
+
+  <section class="q" id="grid">
+    <h2>For reference — after a tap on a request's dates</h2>
+    <div class="pics">
+      <figure><button type="button" data-z="r22-4-desk.png"><img src="r22-4-desk.png" alt="The grid after a date tap, the cell ringed, the slim bar"></button><figcaption>1 the Grid tab · 2 his cell ringed for about six seconds · 3 the slim bar: Back opens Approvals where you were</figcaption></figure>
+      <figure><button type="button" data-z="r22-6-phone.png"><img src="r22-6-phone.png" alt="The slim bar on a phone"></button><figcaption>The same bar on a phone</figcaption></figure>
+    </div>
+  </section>
+</main>
+<div id="zoom" hidden></div>
+<script>
+(function(){
+  var z=document.getElementById('zoom'), zi=document.createElement('img'), last=null; z.appendChild(zi);
+  document.querySelectorAll('[data-z]').forEach(function(b){
+    b.addEventListener('click',function(){ last=b; zi.src=b.getAttribute('data-z'); zi.alt=b.querySelector('img').alt; z.hidden=false; z.scrollTo(0,0); });
+  });
+  function close(){ z.hidden=true; if(last) last.focus(); }
+  z.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape' && !z.hidden) close(); });
+})();
+</script>

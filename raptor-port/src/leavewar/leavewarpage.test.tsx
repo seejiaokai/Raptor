@@ -32,3 +32,37 @@ describe('the Leave War tab lands on its default view (7 Sep 26; D1177)', () => 
     expect(getState().focusDate).toBe('2026-06-15')
   })
 })
+
+/* THE FIXES' M6 (the Opus read's 3): leaving the Leave War from the Approvals page ended the visit (mode → off) and then
+   flagged the grid hidden — but the grid's own effect for that mode change ran AFTER, turned the "on screen" flag back on
+   (a desktop then filled the whole year in the background, on other pages) and scrolled the window to the grid's old
+   place, on whatever page came next. */
+describe('leaving the Leave War from Approvals (M6)', () => {
+  it('keeps the grid off screen and moves the next page nowhere', async () => {
+    const { isLwOnScreen } = await import('./state/screen')
+    const { setApprMode } = await import('./ui/lwnav')
+    const { setRole } = await import('./state/store')
+    setRole('admin')                                  // Approvals is an admin's; a member's view leaves it
+    const { rerender } = render(<LeaveWarPage active={true} />)
+    act(() => setApprMode('page'))
+    expect(isLwOnScreen(), 'the Approvals page hides the grid').toBe(false)
+    const calls: number[][] = []
+    const was = window.scrollTo
+    window.scrollTo = ((x: number, y: number) => { calls.push([x, y]) }) as any
+    try {
+      act(() => rerender(<LeaveWarPage active={false} />))
+      expect(isLwOnScreen(), 'another page: the grid stays off screen').toBe(false)
+      expect(calls, 'no scroll of the page he went to').toEqual([])
+    } finally { window.scrollTo = was }
+  })
+  it('the twin, from the slim bar: leaving keeps the grid off screen too', async () => {
+    const { isLwOnScreen } = await import('./state/screen')
+    const { setApprMode } = await import('./ui/lwnav')
+    const { setRole } = await import('./state/store')
+    setRole('admin')                                  // Approvals is an admin's; a member's view leaves it
+    const { rerender } = render(<LeaveWarPage active={true} />)
+    act(() => setApprMode('bar'))
+    act(() => rerender(<LeaveWarPage active={false} />))
+    expect(isLwOnScreen()).toBe(false)
+  })
+})

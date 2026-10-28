@@ -1,0 +1,121 @@
+// Walker A, route 5: scenarios 9 (two lines that join), 11 (the day's list), 10 (a SANS man), 12 (a posted-out man), the cross-check of 1 and the line states of 13. Desktop, admin.
+process.env.LW_OUT ||= '../../docs/img/handpass/2026-10-27-lw-m4/a/s9'
+const A = await import('./lw-m4-walk-a-lib.mjs')
+const { L, bidBatch, placeBid, pressLoc, lineLoc, lineInfo, approveBtn, refuseBtn, datesBtn, shotLine } = A
+const { T, rec, shot, txt, vis, press } = L
+console.log('[lw-m4-walk-a-s9 v1]')
+L.clearOut()
+const w = await L.newCtx('desk')
+const P = w.page
+const size = 'desk'
+const rangerLines = async () => (await L.apprLines(P)).filter(l => l.who === 'bane').map(l => l.text)
+const clock = () => new Date().toTimeString().slice(0, 5)
+try {
+  /* ---- the member's bids; the 2 and 3 March bids a minute apart ---- */
+  await L.signIn(w, 'member')
+  await bidBatch(w, 'bane', [{ iso: '2026-03-02' }])
+  const m1 = clock()
+  await bidBatch(w, 'bane', [{ iso: '2026-01-12' }, { iso: '2026-01-14' }, { iso: '2026-01-19', portion: 'am' }])
+  while (clock() === m1) await P.waitForTimeout(2000)
+  await bidBatch(w, 'bane', [{ iso: '2026-03-03' }])
+  console.log('first bid at', m1, 'second after', clock())
+  await L.switchTo(w, 'admin')
+  await L.openApprovals(w)
+  const l0 = await rangerLines()
+  console.log('Ranger lines:', l0.join(' || '))
+  await shot(w, 'a-s9-0-approvals')
+  /* ---- 13: the run joined from bids placed at two times ---- */
+  const joinedLine = l0.find(t => /Mon 2 – Tue 3 Mar/.test(t))
+  await shotLine(w, 'a-s9-13-run-two-times', 'Mon 2 – Tue 3 Mar').catch(() => {})
+  const placedTime = joinedLine && joinedLine.match(/27 Oct (\d\d:\d\d)/)
+  rec('13 a run joined from bids placed at two times shows the earliest time', size, joinedLine && placedTime && placedTime[1] === m1 ? 'PASS' : 'FAIL', `first bid in minute ${m1}, second a minute later; the line reads "${joinedLine}"`, ['a-s9-13-run-two-times'])
+  /* ---- 1: cross-check one request against the bid window's day line, from the dates tap ---- */
+  const lineTxt = l0.find(t => /Wed 14 Jan/.test(t))
+  await pressLoc(w, datesBtn(P, 'Wed 14 Jan')); await P.waitForTimeout(500)
+  await L.openCell(w, 'bane', '2026-01-14')
+  const dayline = await txt(P, T('bid-dayline'))
+  const llLeft = await txt(P, T('bid-LL'))
+  const placedTxt = await txt(P, T('bid-placed'))
+  await shot(w, 'a-s9-1-bidwin-14jan')
+  console.log('Approvals line:', lineTxt, '\n  bid window dayline:', dayline, '| LL button:', llLeft, '| placed:', placedTxt)
+  const availGrid = await P.evaluate(iso => {
+    const head = document.querySelector(`[data-testid="head-${iso}"]`)
+    const row = [...document.querySelectorAll('tr')].find(r => /^AVAILABLE P/i.test((r.firstElementChild?.innerText || '').trim()))
+    if (!head || !row) return null
+    const hb = head.getBoundingClientRect(); const cx = hb.x + hb.width / 2
+    const c = [...row.children].find(td => { const b = td.getBoundingClientRect(); return b.x <= cx && b.x + b.width >= cx })
+    return c ? c.innerText.trim() : null
+  }, '2026-01-14')
+  const pLine = (lineTxt || '').match(/ P (\d+(?:\.\d+)?) /)
+  const balLine = (lineTxt || '').match(/days? (\S+) P /), balWin = (llLeft || '').match(/(\S+)\s*$/)
+  console.log('grid Available P on 14 Jan:', availGrid, '| line P:', pLine && pLine[1], '| line bal', balLine && balLine[1], '| window LL', balWin && balWin[1])
+  rec('1e line against the grid and the bid window: LOWEST AVAIL and LVE BAL agree', size, pLine && availGrid && availGrid === pLine[1] && balLine && balWin && balLine[1] === balWin[1] ? 'PASS' : 'FAIL', `line "${lineTxt}"; the grid's Available P row on 14 Jan reads "${availGrid}"; bid window LL button "${llLeft}" (its day line is calm: "${dayline}")`, ['a-s9-1-bidwin-14jan'])
+  await L.closeWin(w)
+  /* ---- 9: two lines that join ---- */
+  const two = l0.some(t => /Mon 12 Jan/.test(t)) && l0.some(t => /Wed 14 Jan/.test(t))
+  /* we are on the grid with the slim bar up: place Tue 13 Jan pending (Approve what I enter OFF) */
+  console.log('slim bar up:', await vis(P, T('appr-slim')))
+  /* the dates tap parked 14 Jan at the frozen columns' edge: scroll the grid back a few days, as a hand would, to reach 13 Jan */
+  await P.evaluate(() => { const h = document.querySelector('[data-testid="head-2026-01-14"]'); for (let e = h; e; e = e.parentElement) { if (e.scrollWidth > e.clientWidth + 5 && /auto|scroll/.test(getComputedStyle(e).overflowX)) { e.scrollLeft -= 140; break } } })
+  await P.waitForTimeout(500)
+  const ok13 = await placeBid(w, 'bane', '2026-01-13', 'LL', 'full', { adminOff: true })
+  await shot(w, 'a-s9-9-after-placing-13')
+  await press(w, T('appr-back')); await P.waitForTimeout(800)
+  const l9 = await rangerLines()
+  const stale = await P.evaluate(() => [...document.querySelectorAll('.appr-line')].filter(e => /No longer there|Moved to|Already/.test(e.innerText)).map(e => e.innerText.replace(/\s+/g, ' ')))
+  console.log('after Back:', l9.join(' || '), '| stale lines:', JSON.stringify(stale))
+  await shot(w, 'a-s9-9-after-back')
+  await shotLine(w, 'a-s9-13-run-joined', 'Mon 12 – Wed 14 Jan').catch(() => {})
+  const joined = l9.filter(t => /Mon 12 – Wed 14 Jan/.test(t))
+  rec('9 two lines that join: ONE line Mon to Wed, no greyed "No longer there"', size, two && ok13 && joined.length === 1 && stale.length === 0 && !l9.some(t => /Mon 12 Jan ›|Wed 14 Jan ›/.test(t)) ? 'PASS' : 'FAIL', `before: two lines ${two}; Tue 13 Jan placed ${ok13}; after Back: ${l9.filter(t => /Jan/.test(t)).join(' || ')}; stale: ${JSON.stringify(stale)}`, ['a-s9-9-after-placing-13', 'a-s9-9-after-back'])
+  /* leave Approvals */
+  await L.openGrid(w); await P.waitForTimeout(500)
+  /* ---- 11: the day's list, two entries on Ranger's 19 Jan (LL AM by him, OL PM by Saber) ---- */
+  const ok19 = await placeBid(w, 'bane', '2026-01-19', 'OL', 'pm', { adminOff: true })
+  console.log('OL PM placed by Saber on 19 Jan:', ok19)
+  await L.openCell(w, 'bane', '2026-01-19')
+  const dl = await vis(P, T('daylist-sheet'))
+  const placedLines = await P.evaluate(() => [...document.querySelectorAll('[data-testid^="dl-placed-"]')].map(e => `${e.dataset.testid}: ${e.innerText.replace(/\s+/g, ' ')}`))
+  const sheetTxt = await txt(P, T('daylist-sheet'))
+  await shot(w, 'a-s9-11-daylist')
+  console.log('daylist', dl, JSON.stringify(placedLines), '\n  text:', sheetTxt)
+  rec('11 the day list shows "Placed ..." under EACH entry', size, dl && placedLines.length === 2 && placedLines.every(t => /Placed/.test(t)) && placedLines.some(t => /Saber/.test(t)) && placedLines.some(t => /Ranger/.test(t)) ? 'PASS' : 'FAIL', `day list open ${dl}; ${placedLines.length} Placed lines: ${JSON.stringify(placedLines)}`, ['a-s9-11-daylist'])
+  await P.keyboard.press('Escape'); await P.waitForTimeout(400)
+  if (await vis(P, T('daylist-sheet'))) await P.mouse.click(1450, 400)
+  await P.waitForTimeout(400)
+  /* ---- 10: a SANS man ---- */
+  await press(w, T('settings-open')); await P.waitForTimeout(500)
+  const sansBtn = P.locator('button.rtbtn', { hasText: /SANS/ })
+  await sansBtn.first().click(); await P.waitForTimeout(700)
+  console.log('SANS button now', await sansBtn.first().innerText())
+  await P.keyboard.press('Escape'); await P.waitForTimeout(500)
+  const okS = await placeBid(w, 'ipman', '2026-01-21', 'LL', 'full', { adminOff: true })
+  console.log('SANS man ipman LL placed:', okS)
+  await press(w, T('settings-open')); await P.waitForTimeout(500)
+  await sansBtn.first().click(); await P.waitForTimeout(700)
+  console.log('SANS button now', await sansBtn.first().innerText())
+  await shot(w, 'a-s9-10-settings-sans-off')
+  await P.keyboard.press('Escape'); await P.waitForTimeout(500)
+  await L.openApprovals(w)
+  const sansLines = (await L.apprLines(P)).filter(l => l.who === 'ipman').map(l => l.text)
+  await shotLine(w, 'a-s9-13-sans-line', 'Wed 21 Jan').catch(() => {})
+  console.log('SANS line:', sansLines.join(' || '))
+  await shot(w, 'a-s9-10-approvals')
+  await pressLoc(w, datesBtn(P, 'Wed 21 Jan')); await P.waitForTimeout(800)
+  const personWin = await P.evaluate(() => { const ids = [...new Set([...document.querySelectorAll('[data-testid]')].filter(e => e.getBoundingClientRect().width > 0 && /person|bal-|cat-|polast/.test(e.dataset.testid)).map(e => e.dataset.testid))]; return ids.slice(0, 8) })
+  const slimNow = await vis(P, T('appr-slim'))
+  await shot(w, 'a-s9-10-dates-tap')
+  console.log('after the dates tap: person-window ids', JSON.stringify(personWin), 'slim', slimNow)
+  rec('10 a SANS man off the war: "SANS · not in Avail", his dates open his person window', size, sansLines.length === 1 && /SANS · not in Avail/.test(sansLines[0]) && personWin.some(i => /^person-/.test(i)) ? 'PASS' : 'FAIL', `line "${sansLines.join(' || ')}"; after the dates tap: ${JSON.stringify(personWin)}, slim bar ${slimNow}`, ['a-s9-10-approvals', 'a-s9-10-dates-tap', 'a-s9-13-sans-line'])
+  await P.keyboard.press('Escape'); await P.waitForTimeout(500)
+  if (await vis(P, T('appr-slim'))) await press(w, T('appr-slim-x'))
+  await P.waitForTimeout(400)
+  /* 12 is walked in lw-m4-walk-a-s9b.mjs and lw-m4-walk-a-s9c.mjs */
+} catch (e) {
+  rec('ERROR', size, 'FAIL', String(e).slice(0, 500))
+  await shot(w, 'a-s9-error').catch(() => {})
+}
+console.log('errs', JSON.stringify(w.errs))
+L.writeResults('s9')
+await w.ctx.close(); await L.closeBrowser()
+console.log('DONE')

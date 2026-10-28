@@ -35,7 +35,7 @@ import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clea
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
 import { StageBar } from './Chrome'
-import { askLw, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
+import { askLw, apprMode, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
 import { usePhone } from './phone'
 import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
@@ -43,7 +43,7 @@ import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
-import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, type DayAnswer } from '../sync'
+import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, openInputDocs, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
 import { DayPanelHost, openDayPanel } from './DayPanel'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
@@ -334,6 +334,17 @@ export function Matrix() {
   const [placeAt, setPlaceAt] = useState<string | null>(null)
   const openKey = open ? `${open.id}|${open.date}` : ''
   const placing = !!open && placeAt === openKey
+  /* WHAT THE ONE-DAY WINDOW WAS SAYING WHEN THE DAY'S LIST TOOK ITS PLACE (the fixes' round 3b — the rounds 2–3 walk's G3):
+     leave placed with "Approve what I enter" on a day from a man's posting-out date is kept pending — and the day, now
+     holding leave outside his time in the squadron, opens the day's list in the window's place, so the reason ("He posts
+     out on 7 Jan: refuse or delete it") went with the window and nothing on screen said why. Kept by CELL, handed to the
+     list that opens there, gone once another cell (or none) is open. */
+  const [keptNote, setKeptNote] = useState<{ key: string; text: string } | null>(null)
+  useEffect(() => { setKeptNote(k => (k && k.key === openKey ? k : null)) }, [openKey])
+  /* …HANDED OVER ONCE (round 3c, R3c-2 — the third blind read's 3): kept by cell alone, every later day's list of the same
+     open cell took it again as its first words — a stale "kept pending" after the bid was deleted and another arrived. The
+     list that opens in the same render as the placing has copied it into its own words by now, so it is dropped here. */
+  useEffect(() => { if (keptNote) setKeptNote(null) }, [keptNote])
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
@@ -389,7 +400,10 @@ export function Matrix() {
   /* THE TOP ROW'S ASKS (ui/lwnav.ts — D1254): its tabs, ⚙ and My leave open the windows this grid owns, as their buttons
      did when they sat on the grid card's bar. Taken once; the OIL tab reads as chosen while the tracker is up. */
   const navSeq = useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
-  useEffect(() => {
+  /* Taken BEFORE the frame is painted (his video, 28 Oct 26): the OIL tab pressed from the Approvals page turns the page
+     off and asks for the tracker in one press; taken after the paint, the grid showed for one frame before the tracker
+     covered it. */
+  useLayoutEffect(() => {
     const a = takeLwAsk()
     if (!a) return
     if (a.kind === 'grid') setOilTracker(null)
@@ -1194,9 +1208,18 @@ export function Matrix() {
     return who + (wrap.querySelector<HTMLElement>('.bal')?.getBoundingClientRect().width ?? 0)
   }
 
+  const hiddenJumpRef = useRef<string | null>(null)
   const jumpTo = (date: string) => {
     const wrap = wrapRef.current
     if (!wrap) return
+    /* A JUMP ASKED WHILE THE GRID IS HIDDEN ([LW-APPR-PERIOD-LANDING], 28 Oct 26): a period picked on the Approvals page
+       (or anything else that asks while another page stands in the grid's place) measured every box at 0, so the scroll
+       moved by nothing and the jump was spent — the grid came back at the month it was on. It is kept, and taken the
+       moment the grid shows again (the on-screen listener below); a later ask replaces it. */
+    if (wrap.getBoundingClientRect().width === 0) { hiddenJumpRef.current = date; return }
+    /* …and any jump that runs spends a kept one: a request's dates tapped on the Approvals page show the grid and jump in the
+       same press, and the kept landing must never be replayed over that newer jump (the fix read's F1, 28 Oct 26) */
+    hiddenJumpRef.current = null
     const win = colWinRef.current
     const mi = monthIndexOf(date)
     // Tell the fill engine where the view is ABOUT to be, before the scroll
@@ -1225,6 +1248,9 @@ export function Matrix() {
     // wherever the grid happens to be scrolled already.
     wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
   }
+  /* the on-screen listener is wired once; it reaches this render's jumpTo through the ref */
+  const jumpToRef = useRef(jumpTo)
+  jumpToRef.current = jumpTo
 
   // Which month the grid is showing, so the strip says where you ARE and not
   // only where you can go. Held as state rather than derived during render
@@ -1490,13 +1516,18 @@ export function Matrix() {
   /* ABOVE A RESTING DAY PANEL ([LW-NIGHT1025-OLDER] (g) — on a phone the day panel rests at the foot, over where the note
      sat): the note is lifted to stand just above the panel's top while one is up, read when raised and as the page scrolls */
   const panelLift = (): number => {
+    /* …and ABOVE APPROVALS' SLIM BAR (the walk's B-F3, 27 Oct 26): with it up at the foot the note lay under it, only an
+       amber edge showing — on a phone and a desktop alike, the bar standing at the foot of both */
+    const s = document.querySelector('[data-testid="appr-slim"]') as HTMLElement | null
+    const sr = s ? s.getBoundingClientRect() : null
+    const slim = sr && sr.height > 0 && sr.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - sr.top)) : 0
     const w = document.querySelector('[data-testid="win-lwday"]') as HTMLElement | null
-    if (!w) return 0
+    if (!w) return slim
     const r = w.getBoundingClientRect()
     /* only a phone's panel, which rests at the foot (12 above it): on a desktop it floats near the top and the note keeps the
        foot (the code read's F5; the narrow read's R1 — read off the panel's bottom, a phone's 12 above the foot lifted nothing) */
-    if (!phoneLayout()) return 0
-    return r.height > 0 && r.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - r.top)) : 0
+    if (!phoneLayout()) return slim
+    return Math.max(slim, r.height > 0 && r.top < window.innerHeight ? Math.max(0, Math.round(window.innerHeight - r.top)) : 0)
   }
   const flaggedNow = (): BubbleFlags => {
     /* each row-day at its level — 1 amber, 2 red — so a row that got BETTER (red to amber after a Refuse or a Delete) is
@@ -2978,10 +3009,26 @@ export function Matrix() {
       const prev = prevOnRef.current
       prevOnRef.current = on
       onScreenRef.current = on
+      /* SHOWN AGAIN → read where the view is now and wake the drawing, on a phone as on a desktop (his picture, 28 Oct 26:
+         the grid came back from the Approvals page striped until a finger scrolled it). While hidden the drawing waits for
+         the app to be idle, draws a few months and rests; a change of period meanwhile drew them around where the new
+         period lands, while the view stayed on the month he had left. Only a scroll woke it, and on his iPhone showing
+         the grid sends none. Re-reading the view first lets the fill's "the view comes first" step replace the window
+         with the months on screen. */
+      if (on) {
+        if (!prev) {
+          remeasureRef.current()
+          /* …and a jump asked while it was hidden lands now ([LW-APPR-PERIOD-LANDING]) */
+          const d = hiddenJumpRef.current
+          hiddenJumpRef.current = null
+          if (d) jumpToRef.current(d)
+          kickFillRef.current()
+        }
+        return
+      }
       if (phone) return
       const win = colWinRef.current
       if (!win) return                       // short war drawn whole — nothing to window
-      if (on) { if (!prev) kickFillRef.current(); return } // shown → resume filling the year
       if (!prev) return                      // already hidden at mount → the fill's cap handles it
       // on → off: shrink around the reader's month. The months dropped become
       // placeholders at their MEASURED widths, so nothing moves and the scroll
@@ -3569,6 +3616,9 @@ export function Matrix() {
     /* the day clock's ask (D1266): the mark moves, the view stays — never a jump away from where he scrolled */
     if (focusQuiet) return
     if (focusSoft) {
+      /* …and not at all while the Approvals page stands in the grid's place: the change undone shows there, on its line,
+         and a jump of the hidden grid moved the page he is reading (D672; the scenario designer's ★2) */
+      if (apprMode() === 'page') return
       const wrap = wrapRef.current, cell = headCell(focusDate)
       if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return
     }
@@ -4353,6 +4403,7 @@ export function Matrix() {
             setMoveSel({ people: [rec.personId], from: rec.date, to: rec.date, cells: [{ personId: rec.personId, date: rec.date }], only: [rec] })
           }}
           onClose={close}
+          note={keptNote && keptNote.key === openKey ? keptNote.text : undefined}
         />
       )}
       {open && canRemark && (
@@ -4375,6 +4426,7 @@ export function Matrix() {
           date={open.date}
           /* its documents, read only (M3 7.3 — D1150): changed on the Inputs page, where it was filed */
           docNames={rowDocIds(leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])).map(id => docGet(id)?.name ?? 'document')}
+          onDoc={() => openInputDocs(leaveInputAt(open.id, open.date, grid[open.id]?.[open.date]))}
           code={grid[open.id]?.[open.date] ?? ''}
           /* An OIL credit the app earned opens here too, and it is not leave
              from the Inputs page — the sheet says which it is, and reads the
@@ -4585,9 +4637,12 @@ export function Matrix() {
           callsign. A figure row hands over to the breakdown above. (Its
           admin's "Edit person" is gone — D460, D461: seat, band and SXO change
           only on Quals.) */}
-      {whoOpen && people.some(p => p.id === whoOpen) && (
+      {/* …AND A MAN WITH NO ROW ON THE GRID (the overhaul's M4 — B12, [LW-CLASH-ROWLESS-TAP]): a SANS man while SANS is off
+          the war is not on its roster (sync.ts reprojectRoster), so Approvals' dates, the bell's line and the clash note open
+          his window from his identity as the war would have it (sync.ts warIdentityIfHidden) */}
+      {whoOpen && (people.some(p => p.id === whoOpen) || warIdentityIfHidden(whoOpen)) && (
         <PersonFiguresSheet
-          person={people.find(p => p.id === whoOpen)!}
+          person={people.find(p => p.id === whoOpen) ?? warIdentityIfHidden(whoOpen)}
           onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
           onOpenOil={() => { setOilTracker({ person: whoOpen }); setWhoOpen(null) }}
           onSetBalance={role === 'admin' ? (counter, target) => { setBalance(whoOpen, counter, target) } : undefined}
@@ -4775,6 +4830,7 @@ export function Matrix() {
              mode — the drag-selection's, so a single chip and a block move by one machine and one set of landing
              rules (moveCells: refused whole with its reason, the dotted mark once bidding is closed, lands
              undecided). A day that holds nothing this screen may move says so on the sheet instead. */
+          onKept={text => setKeptNote({ key: openKey, text })}
           onMove={cells => {
             /* the day tapped, or every day of a picked range (D335) — the records on them this role may move (D265) */
             if (!movableRecords(cells).length) return 'There is nothing here that can be moved.'

@@ -1,0 +1,21 @@
+[
+ {
+  "id": "A8.3 the long bell: the list scrolls inside (the lines move), \"Mark all read\" stays at its foot, \"↓ N more\" at first",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "open {\"total\":13,\"fullyVisible\":9,\"firstVisible\":\"Your leaveSat 31 Jan LL approved · Saber\",\"lastVisible\":\"Your leaveThu 15 Jan LL approved · Saber\",\"listRect\":[50,570],\"overflowY\":\"hidden\",\"scrollTop\":0,\"scrollH\":518,\"clientH\":518,\"more\":\"↓ 4 more\",\"markRect\":[540,562],\"vh\":860}; after wheel {\"total\":13,\"fullyVisible\":9,\"firstVisible\":\"Your leaveFri 23 Jan LL approved · Saber\",\"lastVisible\":\"Your leaveWed 7 Jan LL approved · Saber \",\"listRect\":[50,570],\"overflowY\":\"hidden\",\"scrollTop\":0,\"scrollH\":518,\"clientH\":518,\"more\":null,\"markRect\":[540,562],\"vh\":860}",
+  "pics": [
+   "a8b-1-top",
+   "a8b-2-middle"
+  ]
+ },
+ {
+  "id": "A8.4 at the end: no \"↓ N more\", \"Mark all read\" still at the foot",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"total\":13,\"fullyVisible\":9,\"firstVisible\":\"Your leaveFri 23 Jan LL approved · Saber\",\"lastVisible\":\"Your leaveWed 7 Jan LL approved · Saber \",\"listRect\":[50,570],\"overflowY\":\"hidden\",\"scrollTop\":0,\"scrollH\":518,\"clientH\":518,\"more\":null,\"markRect\":[540,562],\"vh\":860}",
+  "pics": [
+   "a8b-3-end"
+  ]
+ }
+]

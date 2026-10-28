@@ -1,0 +1,74 @@
+[
+ {
+  "id": "S7 prime: four bids placed, no bubble yet",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bubble seen early: false",
+  "pics": []
+ },
+ {
+  "id": "S7 slim bar is up on the grid",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"l\":12,\"t\":808,\"r\":390,\"b\":852} Approvals · 7 pending · 1 new Back ▴ ✕",
+  "pics": [
+   "s7-slim-up.png"
+  ]
+ },
+ {
+  "id": "S7a bubble and slim bar at the foot: nothing overlaps, both readable",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "bid placed true; bubble {\"l\":12,\"t\":816,\"r\":390,\"b\":862} \"This bid: IWSO 3 → 2 Show ›\"; slim {\"l\":12,\"t\":808,\"r\":390,\"b\":852}; each on top at its centre: false/true; overlap true",
+  "pics": [
+   "s7a-bubble-with-slim.png"
+  ]
+ },
+ {
+  "id": "S7b bid window up with the slim bar: every button is on top at its middle",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "23 buttons; covered: []; window {\"l\":12,\"t\":537,\"r\":390,\"b\":860}; slim bar {\"l\":12,\"t\":808,\"r\":390,\"b\":852}; overlap true",
+  "pics": [
+   "s7b-window.png"
+  ]
+ },
+ {
+  "id": "S7b2 a window button presses (AM)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "AM before [\"pchip|false\"] after [\"pchip on|true\"]",
+  "pics": [
+   "s7b-am-q.png",
+   "s7b-am.png"
+  ]
+ },
+ {
+  "id": "S7b3 the slim bar is back once the window closes",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "slim bar {\"l\":12,\"t\":808,\"r\":390,\"b\":852}; it was visible while the window was up: true",
+  "pics": [
+   "s7b-closed.png"
+  ]
+ },
+ {
+  "id": "S7c a cell just above the slim bar answers (the bid window opens)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "cell cell-split-2026-01-14 (bottom 794 vs bar top 808); window open true: \"Vandal Wed 14 Jan Approve what I enter ✕ No manning row turns amber or\"",
+  "pics": [
+   "s7c-tap-q.png",
+   "s7c-tap.png"
+  ]
+ },
+ {
+  "id": "S7c2 a finger scroll behind the bar moves the page and the bar stays",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "scrollY 377 -> 622; slim bar top 808 -> 808",
+  "pics": [
+   "s7c-scrolled.png"
+  ]
+ }
+]

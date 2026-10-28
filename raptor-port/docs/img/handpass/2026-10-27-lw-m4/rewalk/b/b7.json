@@ -1,0 +1,68 @@
+[
+ {
+  "id": "B7 the bar reads \"History on · N changes\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar text \"History on · 0 changes Show ▴ ✕\"; raw \"History on · 0 changesShow ▴✕\"",
+  "pics": [
+   "b7-bar.png",
+   "b7-bar-zoom.png"
+  ]
+ },
+ {
+  "id": "B7 a space before the \"·\" (text and measured gap)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "raw \"History on · 0 changesShow ▴✕\"; gap between \"History on\" and the dot 3.6px; nodes [{\"s\":\"\\\"History on\\\"\",\"l\":25,\"r\":89.4,\"w\":64.4},{\"s\":\"\\\" · \\\"\",\"l\":93,\"r\":99.8,\"w\":6.7},{\"s\":\"\\\"0\\\"\",\"l\":99.8,\"r\":107,\"w\":7.2},{\"s\":\"\\\" change\\\"\",\"l\":107,\"r\":153.4,\"w\":46.4},{\"s\":\"\\\"s\\\"\",\"l\":153.4,\"r\":159,\"w\":5.6},{\"s\":\"\\\"Show ▴\\\"\",\"l\":283.2,\"r\":335,\"w\":51.8},{\"s\":\"\\\"✕\\\"\",\"l\":360.5,\"r\":373.5,\"w\":13.1}]",
+  "pics": [
+   "b7-bar-zoom.png"
+  ]
+ },
+ {
+  "id": "B7 \"Show ▴\" is plain cyan words (no box, no fill)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"span.cw-show\",\"txt\":\"Show ▴\",\"box\":\"277,824 64x25\",\"bg\":\"rgba(0, 0, 0, 0)\",\"bd\":\"0px none rgb(59, 198, 232)\",\"fg\":\"rgb(59, 198, 232)\",\"fs\":\"14px\",\"fw\":\"700\",\"shadow\":\"none\"}",
+  "pics": [
+   "b7-bar-zoom.png"
+  ]
+ },
+ {
+  "id": "B7 ✕ is a plain ✕ (no box, no fill)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"button.win-x\",\"txt\":\"✕\",\"box\":\"353,823 28x28\",\"bg\":\"rgba(0, 0, 0, 0)\",\"bd\":\"0px none rgb(182, 192, 203)\",\"fg\":\"rgb(182, 192, 203)\",\"fs\":\"16px\",\"fw\":\"400\",\"shadow\":\"none\"}",
+  "pics": [
+   "b7-bar-zoom.png"
+  ]
+ },
+ {
+  "id": "B7 each keeps its full tap area (the bar X at least as big as the open window X; Show sits in a wide button)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar targets [{\"tag\":\"button.cw-barbtn\",\"box\":\"21,818 324x37\"},{\"tag\":\"span.cw-show\",\"box\":\"277,824 64x25\"},{\"tag\":\"button.win-x\",\"box\":\"353,823 28x28\"}]; open-window sizes {\".win-x\":\"25x25\",\".win-hide\":\"61x25\"}",
+  "pics": [
+   "b7-bar-zoom.png"
+  ]
+ },
+ {
+  "id": "B7 Show ▴ brings the panel back",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"bar\":false,\"h\":542}",
+  "pics": [
+   "b7-show-q.png",
+   "b7-show.png"
+  ]
+ },
+ {
+  "id": "B7 ✕ closes it (History off)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bar before true; window left false; hist button class \"abtn chgbtn\"",
+  "pics": [
+   "b7-x-q.png",
+   "b7-x.png"
+  ]
+ }
+]

@@ -4184,7 +4184,11 @@ history, which the one changes window reads (`ui-contracts.md` §The one changes
   sign-off signed or cleared writes its own, inside its command. **Added by Fable's scenario design (28 Sep 26):** a bid an
   input takes away (filed over it on the Inputs page, the board or an edit window — the Leave War's gate removes it inside
   the INPUT's command) is a line of its own, "Leave War · Ranger · LL 2 Feb: bid taken away — an input covers it"
-  (P10) — and the same reader (`crossLines`) says a bid a person's DELETE (or archive) took away plainly, "bid removed"
+  (P10) — **and since the Leave War overhaul's M4 (27 Oct 26), a MEMBER withdrawing his own pending bid on the war is a line
+  too, "Leave War · Ranger · LL 10 Feb: bid withdrawn"** (`warLines`; it was no line, a bid not being a decision): the
+  request is gone, so this line is the only trace the admin's Approvals "Also since you last looked" can list — it is
+  marked `fld: 'withdrawn'` with the bid's code in `itype`, read by that mark (`leavewar/sync.ts alsoSince`); a re-typed
+  kind on the same day is no withdrawal — and the same reader (`crossLines`) says a bid a person's DELETE (or archive) took away plainly, "bid removed"
   (an OIL award the delete takes is a ledger entry and says "OIL award taken away" through `ledgerLines`), "an input covers it" only when an input in that command does (Astra's final
   read, 01) — a delete lists everything it took away, one line each, his "deleted" line with them (the owner's D337,
   "12 A", 28 Sep 26); an APPROVED leave changed on the war is one line of what happened, read by the DAYS each man's approvals of

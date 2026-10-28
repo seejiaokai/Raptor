@@ -1,0 +1,56 @@
+[
+ {
+  "id": "F6.slim Edit Schedule: opens at its top, no Leave War showing, no jump over 1.8 s",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "[\"50ms win=547 lw=false pages=page-editsched\",\"150ms win=547 lw=false pages=page-editsched\",\"400ms win=547 lw=false pages=page-editsched\",\"900ms win=547 lw=false pages=page-editsched\",\"1800ms win=547 lw=false pages=page-editsched\"]",
+  "pics": [
+   "slim-edit-at-EditSchedule"
+  ]
+ },
+ {
+  "id": "F6.slim Inputs: opens at its top, no Leave War showing, no jump over 1.8 s",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "[\"50ms win=0 lw=false pages=page-inputs\",\"150ms win=0 lw=false pages=page-inputs\",\"400ms win=0 lw=false pages=page-inputs\",\"900ms win=0 lw=false pages=page-inputs\",\"1800ms win=0 lw=false pages=page-inputs\"]",
+  "pics": [
+   "slim-inputs-at-Inputs"
+  ]
+ },
+ {
+  "id": "F6.slim back in the Leave War: the grid and Approvals as left (slim bar route)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before {\"slim\":true,\"appr\":false}; after {\"lw\":true,\"slim\":false,\"appr\":false,\"pages\":[\"page-leavewar\"],\"winY\":547} (judge on the picture)",
+  "pics": [
+   "slim-3-back"
+  ]
+ },
+ {
+  "id": "F6.page Edit Schedule: opens at its top, no Leave War showing, no jump over 1.8 s",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "[\"50ms win=0 lw=false pages=page-editsched\",\"150ms win=0 lw=false pages=page-editsched\",\"400ms win=0 lw=false pages=page-editsched\",\"900ms win=0 lw=false pages=page-editsched\",\"1800ms win=0 lw=false pages=page-editsched\"]",
+  "pics": [
+   "page-edit-at-EditSchedule"
+  ]
+ },
+ {
+  "id": "F6.page Inputs: opens at its top, no Leave War showing, no jump over 1.8 s",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "[\"50ms win=0 lw=false pages=page-inputs\",\"150ms win=0 lw=false pages=page-inputs\",\"400ms win=0 lw=false pages=page-inputs\",\"900ms win=0 lw=false pages=page-inputs\",\"1800ms win=0 lw=false pages=page-inputs\"]",
+  "pics": [
+   "page-inputs-at-Inputs"
+  ]
+ },
+ {
+  "id": "F6.page back in the Leave War: Approvals as left (page route)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before {\"slim\":false,\"appr\":true}; after {\"lw\":true,\"slim\":false,\"appr\":false,\"pages\":[\"page-leavewar\"],\"winY\":0} (judge on the picture)",
+  "pics": [
+   "page-3-back"
+  ]
+ }
+]

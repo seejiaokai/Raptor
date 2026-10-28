@@ -1,0 +1,22 @@
+[
+ {
+  "id": "F3a a line approved here, put back to a bid on the grid, Back: no longer lit, shown once",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines for Thu 8 Jan after Back: [{\"who\":\"wolf\",\"text\":\"Static IW LL Thu 8 Jan › 1 day 14 W 17 — Approve Refuse\",\"lit\":\"\",\"stale\":false}]; buttons [{\"t\":\"Approve\",\"p\":\"false\",\"dis\":false},{\"t\":\"Refuse\",\"p\":\"false\",\"dis\":false}]; window after put-back \"\"",
+  "pics": [
+   "f3a-6-after-back",
+   "f3a-7-line"
+  ]
+ },
+ {
+  "id": "F3b a line refused here, put back to a bid on the grid, Back: no longer lit, shown once",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines for Thu 8 Jan after Back: [{\"who\":\"wolf\",\"text\":\"Static IW LL Thu 8 Jan › 1 day 14 W 17 — Approve Refuse\",\"lit\":\"\",\"stale\":false}]; buttons [{\"t\":\"Approve\",\"p\":\"false\",\"dis\":false},{\"t\":\"Refuse\",\"p\":\"false\",\"dis\":false}]; window after put-back \"\"",
+  "pics": [
+   "f3b-6-after-back",
+   "f3b-7-line"
+  ]
+ }
+]

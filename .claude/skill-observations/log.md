@@ -812,6 +812,8 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 Met again 18 Oct 26 (`claude/schedule-amendments-fixes-fffce0`): twice a command began `cat > <file>` with no input (once `cat > /tmp/x.test.ts 2>/dev/null; mkdir …`) — each stalled two minutes and was moved to the background before it was stopped. The same proposal stands: never begin a command with `cat >`; close input with `< /dev/null`.
 
+Met again 27 Oct 26 (`claude/leave-war-m4-planning-d18224`, M4's build): a `node` edit script written through a quoted `<<'EOF'` heredoc lost the backslash of `/\*/g` twice (the regex came out `/*/g`); caught by reading the lines back, put right with the file-edit tool. Even the quoted heredoc is not safe for escapes; the unconditional guard ([SHELL-SCRIPT-GUARD]) stands.
+
 Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit scripts written inline in the shell broke — a template literal's backticks inside a `node -e "…"` were run by bash as commands (two picture names came out blank), a `\\[` in a heredoc reached the regex unescaped, a `"\\n"` became a real line break. Each was redone with the file-writing tool and ran first time. The guard stands as proposed: every multi-line or quote-bearing script goes through the file tool, unconditionally.
 
 ### Observation 610: Before/after pictures of the live app need no second checkout or server
@@ -2445,3 +2447,138 @@ its value and never in innerText.
 **Suggested improvement:** In weekly-review's staging step: a draft of a file a project script rewrites (here the rulings map) is staged as the ADDITION only — its anchor and its text — and `install.mjs` applies it to the live file at install, so no ruling recorded during the rounds can make it stale. Until then: rebase and refresh the hash only after the LAST `--rulings` call of a step.
 
 **Principle:** Stage a change to a generated or script-maintained file as a patch applied at install, not as a whole-file copy; a whole-file draft of a file that keeps changing goes stale at every write.
+
+### Observation 724: A plan's "waits on his answer" table is not updated when the answers come
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** Planning the Leave War overhaul's M4 from the approved build plan of 22 Oct 26
+**Skill:** writing-plans (and the record-decisions rule's D201 sweep)
+**Type:** internal
+**Phase/Area:** a plan's table of the questions each step waits on
+
+**Issue:** The build plan's §2 table still read "Q8 … without his answer: not sent" and "Q11 … taken back silently" five days after he answered both (D1214, D1216). The rulings named the notifications register as their home and were filed there; the plan that listed them as open was never touched, so the next chat met two settled questions presented as open and had to search the rulings to find them answered. The plan's M4 row also still described Approvals as a docked window after D1254 made it a tab.
+
+**Suggested improvement:** In writing-plans: a plan that lists the questions a step waits on names, in the same table, the plan file itself as a home every answering ruling must update; and the D201 sweep's "search for the rule's SUBJECT" step lists `docs/superpowers/plans/` explicitly.
+
+**Principle:** A list of open questions is one more home of every answer to it; record the answer there too, or the list keeps asking.
+
+### Observation 725: A mock-up built from an older drawing's script inherits its look-alikes
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** Drawing the Leave War's Approvals tab for M4, reusing round 7's Approvals markup
+**Skill:** brainstorming (mockups-on-the-real-app.md, "An existing component shown inside a mock is measured, not styled")
+**Type:** internal
+**Phase/Area:** drawing an existing component inside a mock-up
+
+**Issue:** The Approvals pictures copied round 7's hand-made person "puck" (an olive box and a separate CAT circle) instead of the app's own puck, though his ruling D1180 and design lesson 25 say the line shows his own puck and the guide says an existing component is reproduced, not styled. He circled it on his phone: "Why don't just do a puck here". The real one was one call away on a local build (`window.puck(id, …)`, the schedule's puck); dropping it in also exposed a class clash (the mock's row class `.r` matched the real puck's rear-seat class `.r` and stretched it).
+
+**Suggested improvement:** In mockups-on-the-real-app.md: before reusing an older drawing script, list every app component it draws and replace each stand-in with the running app's own markup (on a local build the probe bridge exposes several builders, `window.puck` among them); and a mock's own classes take a prefix, never a one-letter name the app already uses.
+
+**Principle:** Reusing an old mock's code reuses its shortcuts; re-check every component it draws against the real one before the picture goes out.
+
+### Observation 726: Never `git checkout <file>` to drop a debug line — it drops every uncommitted edit in that file
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** The Leave War overhaul's M4 build — two temporary debug prints were added to a file that also held two hours of uncommitted edits.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Cleaning up after instrumentation
+
+**Issue:** To remove two debug prints, the agent ran `git checkout <file>`, which reverted the whole file to its last commit — the two uncommitted feature edits in it went too. They were recoverable only because each edit had been applied by a saved script that could be re-run.
+
+**Suggested improvement:** In the debugging guide's instrumentation step: remove a debug line by an exact edit of that line (or mark it with a unique tag and delete the tagged lines), never by restoring the file; or commit (a WIP commit) before adding instrumentation, so a restore can only take the instrumentation.
+
+**Principle:** A restore works on files, not on intentions: before using one to undo a small temporary change, check what else in that file is uncommitted — or make the temporary change only on top of a commit.
+
+### Observation 727: A fit fix reshaped an approved drawing; nobody held the build beside the drawing until the owner did
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** The Leave War M4 bug check (Approvals page), the third chat
+**Skill:** brainstorming (mockups-on-the-real-app) / the bug-check order — New skill candidate: none
+**Type:** internal
+**Phase/Area:** building a screen from an approved drawing; fixing a layout fault on it
+
+**Issue:** A chip's words wrapped on a phone. The agent fixed the symptom by rearranging the grid (a fourth row) without opening the approved drawing, and the first build had narrowed the desktop card where the drawing kept it full width with the list inside. The drawing comparison (bug-check order §7.10) was scheduled for after the walk, so the owner found both by looking at his drawing (D1424, §7.11 lesson 8).
+
+**Suggested improvement:** In the build and in any fix to a drawn screen, open the drawing first and picture the result beside it before committing — a step in the build spec's checklist and in the bug-check sizing step, not only at the walk.
+
+**Principle:** A layout fix is checked against the approved picture, not only against the fault it fixes — a fix that satisfies the test can still undo the design.
+
+### Observation 728: A rule begun at body in a page-scoped stylesheet never matches; a walk's pinned date makes faults that are not there
+
+**Status:** OPEN
+**Date:** 2026-10-27
+**Session context:** the Leave War overhaul's M4, fixing the walk's faults (branch claude/leave-war-m4-planning-d18224)
+**Skill:** New skill candidate: none — the bug-check order's walk scripts (raptor-port/docs/walk-scripts.md) and the design guide's CSS notes
+**Type:** internal
+**Phase/Area:** fixing a walk's finding; writing a walker's brief
+
+**Issue:** (1) A CSS fix written `body:has(...) .bidsheet` in a Leave War stylesheet did nothing: the build scopes every rule there under #page-leavewar, producing "#page-leavewar body:has(...)", which never matches. Two builds went before the built CSS was read. Written from the page instead (`&:has(...)` inside the scoped block) it worked. (2) Two walk findings (the member's "bidding ended" line, a posted-out man's approval) were first read as faults because the walk pinned the war's today to Jan 26 while notices, postings and stamps ran on the real clock (Oct 26). One hid a real fault in the same code. (3) A browser test that passed (the date "on one line") missed that the date was now covered by the buttons; only opening a picture showed it.
+
+**Suggested improvement:** walk-scripts.md: a scenario that crosses the war's pinned today and the real clock is reproduced in a unit test with both pinned before it is called a fault. The guide's CSS note: in a scoped stylesheet, read the built rule (grep dist) after the first build that does not change the screen. A layout fix is looked at in a picture even when its test passes.
+
+**Principle:** When a fix has no effect, read what the build actually produced before trying again; when a test passes, look at the screen it measures, since a test checks only what it names.
+
+### Observation 729: A walker's "the mark is missing" on a few-pixel mark is checked enlarged before it is called a fault
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** Leave War M4 bug check, the fifth chat — confirming walker A's observation O3 (a SANS man's puck in Approvals "has no purple edge").
+**Skill:** New skill candidate: none — walk-scripts.md (project guide) / the walker's brief
+**Type:** open-source
+**Phase/Area:** confirming walk findings; the walker's brief
+
+**Issue:** A Sonnet walker reported a 4px coloured edge missing from a small badge on a list row. The host traced the drawing code and stylesheet looking for what hid it, then measured it in the live app and found it drawn; cropping and enlarging the walker's own picture showed the edge was there all along. The walker had judged a few-pixel mark at the row's normal scale.
+
+**Suggested improvement:** walk-scripts.md and every walker's brief: a finding that a SMALL mark (an edge, a dot, a chip under ~6px) is absent or wrong is confirmed on a cropped, enlarged picture — or by measuring the element — before it is written as a fault; the host does the same before tracing code.
+
+**Principle:** Absence of a small visual mark is a claim about pixels; check it at a scale where the mark would be unmistakable before spending effort explaining why it is missing.
+
+### Observation 730: A "matches the drawing" verdict needs its own pair, the same as a difference
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** Leave War M4 — building the owner's answers to a drawing-vs-build page; the page had listed three surfaces as "matches, nothing to choose".
+**Skill:** brainstorming (mockups-on-the-real-app.md) / the bug-check order §7.10 (the built screen beside its drawing)
+**Type:** open-source
+**Phase/Area:** comparing a build with its approved mock-ups
+
+**Issue:** The comparison page cut a ringed pair for every difference it found, but declared three surfaces "matching" without cutting a pair for them. One (the phone's slim bar) carried the same three differences as the desktop one the owner then ruled on; a ruling's reading repeated the false "matches" and had to be corrected, and a new question had to go back to the owner.
+
+**Suggested improvement:** In the drawing-comparison step, every surface with an approved drawing gets a pair — the differences ringed, a match shown unringed — and a "matches" line cites its pair; a surface with no pair is listed as "not compared", never as matching.
+
+**Principle:** A negative verdict ("no difference") is a claim like any other and needs the same evidence as a positive one; listing a surface as checked without its evidence is how a difference survives a careful review.
+
+### Observation 731: Answer a question about a screen on the device of the picture he attached
+
+**Status:** OPEN
+**Date:** 27 Oct 26
+**Session context:** Leave War M4 — he asked how a lowered Manning row would show in Approvals' LOWEST AVAIL, attaching a phone screenshot; the answer came with a desktop picture, and he had to say "i said this is for a phone".
+**Skill:** New skill candidate: none — plain-language.md / the D921 picture rule
+**Type:** open-source
+**Phase/Area:** answering questions about what a screen shows
+
+**Issue:** The attached picture was cropped and showed the phone's two-line layout, but the agent answered from code and reached for the nearest existing picture, which was a desktop one. The two layouts show the same figures in different places, so the answer did not show him what he asked about.
+
+**Suggested improvement:** Before answering a question about a screen, name the device and width of any picture he attached (phone or desktop) and make the answer's picture on the same device, the place marked; where the case needs data the demo lacks, set it up through the app's own windows rather than substituting a nearby picture.
+
+**Principle:** The picture a person attaches is part of the question: answer on the same view they asked about, not the one that is easiest to find.
+
+### Observation 732: A skill loaded from the main checkout's stale copy, not the worktree's current one
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** /overnight 12 for the Leave War M4 bug check, run in a worktree whose branch carries the installed skill-notes review (D1419)
+**Skill:** overnight (and every project skill loaded from a worktree)
+**Type:** internal
+**Phase/Area:** loading the skill (Part 1)
+
+**Issue:** The Skill tool loaded `.claude/skills/overnight/SKILL.md` from the MAIN checkout's folder (its base directory named the main folder), which sits on an older commit. The worktree's own copy carries the review installed on D1419 — "Low or Medium?" (D1104), one fresh helper per job (D1416), the weekly figure stopping nothing (D1415). The night started on the old text: no Low/Medium question, the first jobs built in the night's chat. He asked "didnt i say overnight 12?" two hours in, which is what made the agent compare the two copies.
+
+**Suggested improvement:** At the head of every project skill (or in the session-start hook): when the loaded base directory is not the current worktree's `.claude/skills/`, diff the two and follow the worktree's copy. A guard better than a line: the hook that injects skills checks the worktree path.
+
+**Principle:** In a worktree, the skill text that governs is the branch's own; a loader that reads a shared root can hand you a stale rulebook with no error.

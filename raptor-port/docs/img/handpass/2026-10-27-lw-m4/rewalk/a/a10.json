@@ -1,0 +1,30 @@
+[
+ {
+  "id": "A10.1 a name at the LEFT of its puck in every kind present (by box)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "16 pucks; kinds [\"IW/puck r\",\"C/puck\",\"IP/puck  san\",\"A/puck\",\"B/puck\",\"D/puck\",\"IR/puck\",\"B/puck r\",\"C/puck r\",\"IP/puck\"]; bad []",
+  "pics": [
+   "a10-1-approvals-all-pucks"
+  ]
+ },
+ {
+  "id": "A10.2 a press on a line's Approve with \"Pick dates…\" open: what happens",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "picker open before the press, line \"Thu 8 Jan\" appr-line; picker open after: false; at the button's point the element was SPAN.#",
+  "pics": [
+   "a10-2-pick-open",
+   "a10-3-after-press-behind"
+  ]
+ },
+ {
+  "id": "A10.3 (lesson 5) the dates tap brings a far cell (Wed 4 Feb) into sight, clear of the frozen columns, the date row and the bar",
+  "size": "desk",
+  "verdict": "NOT WALKED",
+  "said": "ring still there after 7.5 s: false; {\"ring\":false,\"lingering\":false}",
+  "pics": [
+   "a10-4-ring-after-6s"
+  ]
+ }
+]

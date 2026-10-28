@@ -198,7 +198,9 @@ function ingest(env: CommitEnvelope): void {
 /* B1 — the commands that are never an Undo step: each person's own "seen" (the changes window's "Mark all as seen", the
    admins' bell, the welcome-back note, "OK, seen" on a Leave War notice — §10) and a waiting person's own request for
    access (he has no Undo door). Their revisions are still tracked, so nothing reads as out-of-band. */
-const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack'])
+/* (…and the Leave War's "taken back" follow-up after an Undo or a Redo — M4 9.3: the line says what the Undo did, and is
+   no step of its own) */
+const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.notice', 'lw.apprseen'])
 
 /* A seen mark written INTO a record a step also holds (his welcome note on his own roster record, "OK, seen" on a Leave
    War day's list, the admins' bell on the requests) — the older step's before- and after-images still hold it unseen,
@@ -522,14 +524,17 @@ export function verifiedReplay(env: { origin: string; type: string; causedBy?: n
   const a = APPLYING
   if (!a || env.origin !== 'restore' || env.type !== 'undo.restore' || env.causedBy !== a.entry.seq) return null
   if ((a.entry.actor.personId ?? null) !== (env.actor.personId ?? null)) return null
-  /* a closure may write one record twice (never coalesced): what it is left as is the LAST image */
+  /* a closure may write one record twice (never coalesced): what it is left as is the LAST image. Inputs and — since the
+     overhaul's M4 security read (its finding 1, 27 Oct 26) — the war's own records: a request's "placed by" / "decided by"
+     is written back only by the restore this module is applying, never by a change that merely calls itself one */
   const want = new Map<string, Change>()
-  for (const ch of a.changes) if (ch.collection === 'inputs') want.set(ch.id, ch)
+  for (const ch of a.changes) if (ch.collection === 'inputs' || ch.collection === 'lw.cell') want.set(`${ch.collection}/${ch.id}`, ch)
   return (c: Change): boolean => {
-    const w = c.collection === 'inputs' ? want.get(c.id) : undefined
+    const w = c.collection === 'inputs' || c.collection === 'lw.cell' ? want.get(`${c.collection}/${c.id}`) : undefined
     if (!w) return false
     if (w.op === 'delete') return c.op === 'delete'
-    return c.op === 'put' && deepEqual(landed(w.after), landed(c.after))
+    if (c.op !== 'put') return false
+    return c.collection === 'inputs' ? deepEqual(landed(w.after), landed(c.after)) : deepEqual(w.after, c.after)
   }
 }
 

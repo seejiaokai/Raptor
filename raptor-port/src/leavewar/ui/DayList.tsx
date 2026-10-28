@@ -16,11 +16,13 @@ import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../e
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
 import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
-import { docGet, rowDocIds } from '../sync'
+import { docGet, openInputDocs, openRequestDocs, replacedCarry, rowDocIds } from '../sync'
+import { setLeaveRemarks } from '../../ui/inputedit'
 import { EntryBox } from './BidBits'
 import { draftOf, LeaveWords, patchOf, ReqWordsRows, runEnd, type FlushRef, type ReqDraft } from './ReqWords'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
+import { PlacedOne, placedFacts } from './PlacedLine'
 import { dayLabel, enteredDay, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
 import { halfWord } from './awardwords'
 import { HalfPick } from './CreditForm'
@@ -108,13 +110,14 @@ function readOnly(id: string, row: any, raw = false): ReactElement | null {
   return (
     <div className="bidsheet-row dl-ro" data-testid={`dl-ro-${id}`}>
       {words && <span className="dl-ro-words">“{words}”</span>}
-      {docs.map(d => <span key={d} className="docchip"><span className="docname">{docGet(d)?.name ?? 'document'}</span></span>)}
+      {/* every document chip on the war opens the document, read only (M4 — the spec's reading 8) */}
+      {docs.map(d => <button key={d} type="button" className="docchip" onClick={() => openInputDocs(row)}><span className="docname">{docGet(d)?.name ?? 'document'}</span></button>)}
     </div>
   )
 }
 
 export function DayListSheet({
-  personId, callsign, date, view, role, viewer, period, onMove, onClose,
+  personId, callsign, date, view, role, viewer, period, onMove, onClose, note,
 }: {
   personId: string
   callsign: string
@@ -127,8 +130,11 @@ export function DayListSheet({
    *  modality and I can choose what to move"): the matrix closes the list and carries exactly this record, by its id. */
   onMove?: (rec: { personId: string; date: string; id: string }) => void
   onClose: () => void
+  /** a note the window it replaced was showing — the one-day window's "kept pending — <the reason>" when the bid it placed
+   *  made this list open in its place (the fixes' round 3b): it stands here until the next action says something else */
+  note?: string
 }) {
-  const [msg, setMsg] = useState('')
+  const [msg, setMsg] = useState(note ?? '')
   /* the award being edited in place, and its three boxes */
   const [editing, setEditing] = useState<string | null>(null)
   const [eWhy, setEWhy] = useState('')
@@ -299,8 +305,22 @@ export function DayListSheet({
     const whose = own ? 'Your' : `${callsign}’s`
     const text = `${whose} ${shown(n?.code ?? c.code)} bid was replaced by ${n?.byType ?? 'another entry'}${n?.byWho ? ` (${n.byWho})` : ''}`
     const actions: ReactElement[] = []
+    /* WHAT THE BID CARRIED (M4 9.3a — M3's leftover (7)): its remarks and its documents, kept on the notice, each document
+       opening read only; and, where the leave that replaced it is his and still stands, one tap puts them onto it */
+    const carry = n && (role === 'admin' || own) ? replacedCarry(personId, n) : null
+    if (carry) actions.push(<button key="carry" className="dchip" data-testid={`dl-carry-${c.id}`} onClick={() => act(() => setLeaveRemarks(carry.row, carry.remarks, personId, carry.docIds), 'That could not be saved — change it on the Inputs page.')}>Add to the {String(carry.row.type)}</button>)
     if (n && (role === 'admin' || own)) actions.push(<button key="ok" className="dchip ack" data-testid={`dl-seen-${c.id}`} onClick={() => act(() => ackReplacement(personId, n.id))}>OK, seen</button>)
-    return { key: `n-${c.id}`, cls: 'warn', box: null, text, sub: '', actions, words: null }
+    const kept = n && (n.remarks || n.docIds?.length) ? (
+      <span className="dl-ro" data-testid={`dl-kept-${c.id}`}>
+        {n.remarks && <span className="dl-ro-words">“{n.remarks}”</span>}
+        {(n.docIds ?? []).map(d => (
+          <button key={d} type="button" className="docchip" onClick={() => openRequestDocs({ personId, code: n.code, from: date, to: date, docIds: n.docIds!, remarks: n.remarks })}>
+            <span className="docname">{docGet(d)?.name ?? 'document'}</span>
+          </button>
+        ))}
+      </span>
+    ) : ''
+    return { key: `n-${c.id}`, cls: 'warn', box: null, text, sub: kept, actions, words: null }
   })
 
   /* THE TAIL THAT RAISES THE AMBER (the absence-record re-test, AB6, 26 Sep 26 — Fable F6, confirmed by the phone
@@ -313,11 +333,12 @@ export function DayListSheet({
     key: `t-${c.id}`, cls: 'warn', box: null, words: null, actions: [] as ReactElement[], sub: 'It runs on from the day before — change it there.',
     text: `${shown(c.code)} — ${nameOf(c.code) || shown(c.code)}, from the day before till ${hm(c.win[1])}`,
   }))
+  const facts = new Map(placedFacts(personId, date).map(f => [f.key, f] as const))
   return (
     <Sheet testid="daylist-sheet" label={`${callsign} — ${dayLabel(date)}`} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <button className="x" data-testid="daylist-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
       {/* WHAT THE CLASH MEANS, TO WHOEVER IS READING IT (CURRENT-STATE item A,
@@ -343,19 +364,26 @@ export function DayListSheet({
       )}
       {/* the list's outer frame went (round 3): each entry takes the window's full width, a hairline between them */}
       <ul className="daylist flat" data-testid="daylist">
-        {[...lines, ...tailLines].map(l => (
+        {[...lines, ...tailLines].map(l => {
+          /* WHO PLACED AND DECIDED IT (M4 8.6; his D1315 — what the window shows about what a day holds, it shows for every
+             entry): the bid window's own words, under each request and each leave the war approved (the roll-call's
+             MISSING, the scenario designer's 18) */
+          const fact = /^[ar]-/.test(l.key) ? facts.get(l.key.slice(2)) : undefined
+          return (
           <li key={l.key} className={`dl-line${l.box ? ' dl-card' : ''}${l.cls ? ` ${l.cls}` : ''}`} data-testid={`dl-${l.key}`}>
             <div className="dl-head">
               {l.box}
               <div className="dl-text">
                 <span className="dl-main">{l.text}</span>
                 {l.sub && <span className="dl-sub">{l.sub}</span>}
+                {fact && <span className="dl-sub bp-placed" data-testid={`dl-placed-${l.key}`}><PlacedOne f={fact} /></span>}
               </div>
             </div>
             {l.actions.length > 0 && <div className={`dl-acts${l.box ? ' bp-acts' : ''}`}>{l.actions}</div>}
             {l.words}
           </li>
-        ))}
+          )
+        })}
       </ul>
       {/* THE OIL ON THIS DAY, READ BACK IN THE SAME THREE LINES AS THE DAY
           WINDOW (owner, 21 Sep 26). A locked day — one the published schedule

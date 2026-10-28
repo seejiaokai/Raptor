@@ -46,7 +46,7 @@ export function RemarksSheet({
     <Sheet testid="remarks-sheet" label="Edit the note on this leave" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{span}</span>
+        <span className="dt when">{span}</span>
         <span className="cur">{displayCell(code)}</span>
         <button className="x" data-testid="remarks-cancel" onClick={onClose} aria-label="Close">✕</button>
       </div>

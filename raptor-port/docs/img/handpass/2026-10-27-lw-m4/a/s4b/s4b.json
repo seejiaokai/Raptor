@@ -1,0 +1,13 @@
+[
+ {
+  "id": "4c fast taps: Undo steps left by Approve all",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "two slow taps (1 s): 6/6 lit, 1 decision step(s) on the Undo list; two taps back to back (78 ms): 6/6 lit, 1 step(s); two taps 100 ms apart: 6/6 lit, 1 step(s)",
+  "pics": [
+   "a-s4b-slow-after-taps",
+   "a-s4b-fast-after-taps",
+   "a-s4b-mid-after-taps"
+  ]
+ }
+]
