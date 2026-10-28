@@ -125,6 +125,27 @@ const fit = () => P.evaluate(() => {
 })
 await mode2(true); console.log('v2 all', JSON.stringify(await fit())); await shot('v2-all.png')
 await mode2(false); console.log('v2 one', JSON.stringify(await fit())); await shot('v2-one.png')
+/* HIS QUESTION ON THE TITLE (28 Oct 26, about 10:30 — "should the Tue 13 Apr title be a bit brighter and more obvious?"):
+   the title's dates as built (11px, the faint grey), brighter (13px, the app's white, semi-bold) and in the cyan; the
+   window's top three rows pictured each time, in both states of version 2 */
+const TITLE = {
+  now: '',
+  bright: 'font-size:13px;color:var(--ink);font-weight:600;letter-spacing:.04em',
+  cyan: 'font-size:13px;color:var(--accent);font-weight:600;letter-spacing:.04em',
+}
+const titleShot = async (name) => {
+  const r = await P.evaluate(() => { const s = document.querySelector('[data-testid="bid-picker"]').getBoundingClientRect(); const act = document.querySelector('[data-testid="bid-actions"]').getBoundingClientRect(); return { x: s.left, y: s.top, w: s.width, h: act.bottom - s.top + 8 } })
+  await P.screenshot({ path: path.join(OUT, name), clip: { x: r.x, y: r.y, width: r.w, height: r.h } })
+}
+for (const all of [true, false]) {
+  await mode2(all)
+  for (const [k, css] of Object.entries(TITLE)) {
+    await P.evaluate((css) => { document.querySelector('[data-testid="bid-picker"] .bidsheet-hd .dt').style.cssText = css }, css)
+    await P.waitForTimeout(100)
+    await titleShot(`title-${k}-${all ? 'all' : 'one'}.png`)
+  }
+  await P.evaluate(() => { document.querySelector('[data-testid="bid-picker"] .bidsheet-hd .dt').style.cssText = '' })
+}
 /* the window's height as built, for the comparison */
 await b.close()
 console.log(problems ? `${problems} page errors` : 'no page errors')

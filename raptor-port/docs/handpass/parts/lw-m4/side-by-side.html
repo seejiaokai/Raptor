@@ -52,7 +52,7 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
     <h2>What I need from you</h2>
     <p>Reply "all as recommended", or give the number of any you want the other way.</p>
     <ol>
-      <li><a href="#q25">25</a>: tap a leave of several days and the whole leave opens; "All 4 days" or "Tue 13" sits on the Duration row, so the window gets no taller. <b>Recommended: version 2</b></li>
+      <li><a href="#q26">26</a>: the window title's dates brighter, in white. <b>Recommended: yes</b></li>
       <li><a href="#q23">23</a>, on your iPhone: check that "23 Jan AM ›" stays on one line</li>
       <li>Reading R22 (below): strike it if you want it the other way</li>
     </ol>
@@ -60,12 +60,12 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
 
   <section>
     <h2>Open</h2>
-    <article class="card" id="q25">
-      <div class="head"><span class="num">25</span><h3>A leave of several days: decide it whole, keep single days, no taller window</h3><span class="rec back">Recommended: version 2</span></div>
-      <p class="why">Tapping any day of Trident's 13–16 Apr leave opens the whole leave. The title reads "13 – 16 Apr" and the grid marks all four days, so one Approve decides the leave. <b>Version 2, as you asked, adds no row.</b> On a leave of more than one day, the Duration row's right end, where "Pick a range" sits today, offers "All 4 days" (picked to start with) or "Tue 13", the day you tapped. Approve, Refuse, Move and Delete act on what's picked, and the title and the grid show which. The window stays today's height. It fits on one line at your phone's width, measured in the iPhone's engine. <b>The cost:</b> on a leave of several days, "Pick a range" is replaced there. It's for placing new leave over a range, which the window of a placed leave doesn't do; you still have dragging and Move. (Version 1's new row is set aside, kept in the project.)</p>
-      <button class="pic" type="button" aria-label="Enlarge: now"><img src="whole/now.png" alt="Now: the window opened on one day of a four-day leave"></button>
-      <button class="pic" type="button" aria-label="Enlarge: version 2, whole leave"><img src="whole/v2-all.png" alt="Version 2: All 4 days picked on the Duration row, the window as tall as today"></button>
-      <button class="pic" type="button" aria-label="Enlarge: version 2, one day"><img src="whole/v2-one.png" alt="Version 2: Tue 13 picked, one day marked"></button>
+    <article class="card" id="q26">
+      <div class="head"><span class="num">26</span><h3>The window's title: its dates brighter</h3><span class="rec back">Recommended: brighter, in white</span></div>
+      <p class="why">Yes, I'd make it brighter. With version 2 the title's dates say which days Approve, Refuse, Move and Delete act on ("13 – 16 Apr", or "Tue 13 Apr" once you pick the one day). Today they're the faintest words in the window. <b>Recommended:</b> the same size as the name, in the app's white, a little lighter than the name, so the name still leads. <b>Cyan</b> ties them to the lit choice and the grid's marks, but cyan text reads like something to press, and the title isn't. The change is in every bid window's title, a one-day leave's included.</p>
+      <button class="pic" type="button" aria-label="Enlarge: as built"><img src="whole/title-now.png" alt="The title's dates as built: small, faint grey"></button>
+      <button class="pic" type="button" aria-label="Enlarge: brighter"><img src="whole/title-bright.png" alt="The title's dates brighter: larger, white"></button>
+      <button class="pic" type="button" aria-label="Enlarge: cyan"><img src="whole/title-cyan.png" alt="The title's dates in cyan"></button>
     </article>
 
     <article class="card" id="q23">
@@ -82,6 +82,7 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
     <h2>Built this morning (your answers and your video)</h2>
     <article class="card"><div class="head"><span class="num">24</span><h3>The ring on the day you jump to is cyan</h3></div><p class="why">It matches the date ringed above it (your D1449). The Scheduler Board and the Inputs pages keep the app's blue.</p><button class="pic" type="button" aria-label="Enlarge: cyan ring"><img src="ring/ring-built.png" alt="Static's LL ringed in cyan"></button></article>
     <article class="card"><h3>Your bell says when someone changes your bid's kind</h3><p class="why">Your D1460: an admin changing a member's pending LL to OL now tells him: "LL bid changed to OL". His own change tells nobody, and an Undo takes the unread line.</p><button class="pic" type="button" aria-label="Enlarge: bell"><img src="ring/bell-retype.png" alt="The member's bell: Your leave, Wed 4 Nov, LL bid changed to OL, Saber"></button></article>
+    <p class="match">25 decided: version 2 (your D1461). It's filed to build on its own branch once M4 is live, with a full check, because it decides leave.</p>
     <p class="match">Also fixed from your video: OIL from Approvals no longer flashes the grid; the grid comes back drawn after Approvals, never striped; and a period picked on Approvals now lands the grid on that period's first day.</p>
   </section>
 
