@@ -2629,3 +2629,18 @@ its value and never in innerText.
 **Suggested improvement:** In §6's row "A change that REMOVES or replaces a control…": a removed class or test id is searched for across the whole app, every test folder and the probes, by each exact selector on its own, uncapped; and every test whose query used it is checked for going vacuous (a guard that it still finds things).
 
 **Principle:** A removal's readers are found by searching for the removed thing everywhere, not where the change lives; a check that reads a removed element passes silently.
+
+### Observation 736: The `\b` backspace trap of observation 668 met again — a quoted heredoc feeding a node edit script
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** `claude/leave-war-m5a-screens-ced9d7`, drawing M5a's person window on the real app
+**Skill:** New skill candidate: none — the project's script-writing memory notes and [SHELL-SCRIPT-GUARD] (observation 668, closed 27 Oct 26)
+**Type:** internal
+**Phase/Area:** editing a drawing script from the shell
+
+**Issue:** An edit script written through a quoted `<<'EOF'` heredoc and run with node carried `/\\bam\\b/` search strings; the strings reached the file as a backspace character, so the first replacement failed ("missing: const half = /am/…"). Redone with the file-edit tool, which worked first time. Observation 668 (closed) and two memory notes name this trap; it still cost a round trip because the shell path was chosen by habit.
+
+**Suggested improvement:** Count it toward [SHELL-SCRIPT-GUARD] — the guard that refuses a shell-written script carrying a backslash — rather than another note.
+
+**Principle:** A trap noted three times and still met wants a check in the action itself, not a fourth note.
