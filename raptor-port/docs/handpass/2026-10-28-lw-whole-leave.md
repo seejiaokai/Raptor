@@ -89,3 +89,14 @@ year's end, the store's run — as before); Escape leaves focus on the page (as 
 ## 6. The ledger's row
 
 Added to `docs/walk-ledger.md` (28 Oct 26).
+
+## 7. The reads (D790, D1411 — Astra and Sol 6.1 owed, the [NO-ASTRA-LIST] row)
+
+- **The security read** (a fresh Opus, holes only): **no hole** — `docs/handpass/parts/lw-whole/security-read.md`.
+- **The blind code read** (a fresh Opus, with this sheet): 1 HIGH, 1 LOW — `docs/handpass/parts/lw-whole/code-read.md`.
+  **F1 (HIGH)** a one-day window beside a several-day leave, words typed matching the leave's, took the whole leave on
+  Delete, a re-typed kind or Approve — fixed red first (three cases), and its twin (a range picked loses to a leave joined
+  under the window) closed with a fourth; **F2 (LOW)** the browser test could not fail on its one-line claim — it pins
+  Arial-width letters at 402 and asserts outright. Commit a244cf5d1.
+- **The narrow read of the fix** (a fresh Opus, the fix commit and F1/F2 only) and **the re-walk** (one Sonnet walker, R1–R5:
+  the calm line, F1 on screen, the single day, Undo): *in progress.*
