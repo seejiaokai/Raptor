@@ -100,3 +100,13 @@ Added to `docs/walk-ledger.md` (28 Oct 26).
   Arial-width letters at 402 and asserts outright. Commit a244cf5d1.
 - **The narrow read of the fix** (a fresh Opus, the fix commit and F1/F2 only): **N1 (HIGH)** — in a real browser the press takes the focus off the box first, which saves the words and joins the day to the leave before the click lands; "All" was picked at open in every window, so the click took the whole leave. Fixed red first: "All" is picked at open only on a window that opens on a leave of several days (D1461's "picked to start with"); the F1 cases now leave the box before the press (red before). A one-line change, carried by its tests — the last round (the order's §5, about three).
 - **The re-walk** (one Sonnet walker, `docs/handpass/parts/lw-whole/rewalk.md`, pictures `…/rewalk/`): **9 PASS of 9**, no page error — the calm line with no date, F1 on screen (Delete and Approve on the one day only), the single day, one Undo.
+
+## 8. His look (28 Oct 26)
+
+His page https://claude.ai/artifact/AxcG3DBCAP64ZzBNRinMeX; his answer *"Yes as recommended"*: **D1465** the title keeps
+"9–12 Feb" (the drawing's one difference, kept); **D1466** a day of the leave holding a second entry opens the day's list
+(narrows D1448); **D1467** the readings stand. Then his *"After u are done merge live"*.
+
+**Walk:** FULL — one Sonnet walker, 15 scenarios (+1) at phone WebKit 402 / 360 and desktop 1536 at 1.25, 26 PASS of 30,
+no fault of this change (the host found one departure from the drawing in its pictures, fixed); the fixes' re-walk 9 of 9;
+pictures `docs/img/handpass/2026-10-28-lw-whole-leave/walk/` and `…/rewalk/`.

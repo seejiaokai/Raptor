@@ -11700,3 +11700,7 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
 - **The cyan mark (D1289):** every bid window marks on the grid what it acts on — the day tapped, the range picked, or the
   leave's days — with the drag-selection's own `td.selcell`, kept on while rows re-render or months draw under it, taken
   off when the window closes. Pin: `leavewar/ui/wholeleave.test.tsx`.
+- **His look (28 Oct 26):** the title keeps "9–12 Feb" (D1465); a day of the leave also holding a second entry — an OIL
+  award, the other half's bid — opens the day's list (D1466); the readings stand — one leave the joined bar's entry, a leave
+  button re-typing it, Delete and Move taking only it, the mark on every bid window, calendar days counted, no "Pick a
+  range" on such a leave, the chips' whole wrap at 360, Approvals' greyed line after Back (D1467).
