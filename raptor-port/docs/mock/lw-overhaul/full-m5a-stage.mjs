@@ -20,6 +20,9 @@ const put = (d, c) => p.evaluate(([d, c]) => window.lwSetCell('bane', d, c), [d,
 const ok = []
 for (const d of ['2026-01-19', '2026-01-20', '2026-01-21', '2026-01-26', '2026-01-27', '2026-02-02', '2026-02-12', '2026-02-13']) ok.push(await put(d, 'LL'))
 ok.push(await put('2026-03-02', 'CCL'))   // a pending CCL, for the small tile's Pending / War bal lines (D1253)
+// and round 20d's other two pending small tiles: PL half a day, CL a day (its own sample figures — D1478, the sole source)
+ok.push(await put('2026-03-16', '*PL'))
+ok.push(await put('2026-03-17', 'CL'))
 ok.push(await put('2026-01-29', '*LL'))   // a leading * is the morning (codes.ts parseCell)
 console.log('placed', JSON.stringify(ok))
 await p.waitForTimeout(500)

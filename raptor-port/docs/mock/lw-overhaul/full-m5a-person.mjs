@@ -10,48 +10,15 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { chromium, newPage, signIn, shot, q, errs, OUT, PINK } from './full-lib.mjs'
+import { LOCK_SVG } from './full-propose.mjs'
 const M5CLOCK = new Date('2026-01-22T09:00:00+08:00')
 const state = JSON.parse(readFileSync(join(OUT, 'm5a-state.json'), 'utf8'))
 const browser = await chromium.launch()
 
-// round 20d's tile look, verbatim (full-r20-3c.mjs, its 'd' variant folded in), scoped to the drawn window
-const CSS = `
-.m5p .r17-bal{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));column-gap:4px;row-gap:6px}
-.m5p .r17-t{background:#151b22;border-radius:9px;padding:8px 9px;display:grid;grid-template-rows:22px 12px 30px 14px;row-gap:5px;min-width:0;box-sizing:border-box}
-.m5p .r17-t.r2{grid-template-rows:22px 30px;padding:8px 5px}
-.m5p .r17-t.r2.st{grid-template-rows:22px 30px 14px 14px;row-gap:4px}
-.m5p .r17-t .k{grid-row:1;display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0}
-.m5p .r17-t .tk{font:600 11px/1 system-ui;color:#8a96a3;white-space:nowrap}
-.m5p .r17-t .f{grid-row:3;display:flex;align-items:center;gap:5px;font:700 20px/1 system-ui;font-variant-numeric:tabular-nums;color:#f1f4f7}
-.m5p .r17-t.r2 .f{grid-row:2}
-.m5p .r17-t .f.z{color:#7d8894;font-weight:600}
-.m5p .r17-t .s{grid-row:4;align-self:center;font:600 11px/1 system-ui;color:#8a96a3;white-space:nowrap}
-.m5p .r17-go{color:#5fd0e6;font:700 16px/1 system-ui}
-.m5p .r17-lve{grid-column:span 3}
-.m5p .r17-sum{grid-row:2 / span 2;display:grid;grid-template-columns:repeat(3,max-content);justify-content:start;grid-template-rows:12px 30px;row-gap:5px;column-gap:24px}
-.m5p .r17-sum .h{grid-row:1;font:600 10.5px/12px system-ui;color:#8a96a3;text-align:left;white-space:nowrap}
-.m5p .r17-sum .v{grid-row:2;display:flex;align-items:center;justify-content:flex-start;font:700 15px/1 system-ui;font-variant-numeric:tabular-nums;color:#c9d1d9}
-.m5p .r17-sum .v.pd{color:#F2C879}
-.m5p .r17-sum .war{font:800 20px/1 system-ui;color:#fff}
-.m5p .r17-t.r17-lve{grid-template-rows:22px 12px 30px 14px 14px}
-.m5p .r17-ap{grid-row:4;display:flex;align-items:baseline;gap:8px;font:600 11px/1 system-ui;color:#8a96a3;white-space:nowrap}
-.m5p .r17-ap b{font:800 12px/1 system-ui;color:#fff;font-variant-numeric:tabular-nums}
-.m5p .r17-t.r17-lve.noap{grid-template-rows:22px 12px 30px 14px}
-.m5p .m5-none{color:#8a96a3;font:500 13px/1.3 system-ui;padding:10px 0 4px;border-top:1px solid #222a33}
-.m5p .r17-t.noap .r17-cf{grid-row:4}
-.m5p .r17-cf{grid-row:5;display:flex;align-items:center;gap:5px;font:600 11px/1 system-ui;color:#8a96a3;white-space:nowrap}
-.m5p .r17-box{display:inline-flex;align-items:center;justify-content:flex-start;box-sizing:border-box;height:28px;min-width:42px;padding:0 7px;border:1px solid #66717f;border-radius:6px;background:#0d1217;color:#f1f4f7;font:700 16px/1 system-ui;font-variant-numeric:tabular-nums}
-.m5p .r17-box.sm{height:18px;min-width:22px;padding:0 4px;font-size:11.5px;border-radius:4px;justify-content:center}
-.m5p .r17-box.z{color:#7d8894;font-weight:600}
-.m5p .r17-box.ro{border-color:transparent;background:transparent;min-width:0;padding:0}
-.m5p .r17-t .f .r17-box.ro{font-size:20px}
-.m5p .r17-t .ln{display:flex;align-items:baseline;justify-content:space-between;gap:3px;font:600 10px/1 system-ui;color:#8a96a3;white-space:nowrap}
-.m5p .r17-t .ln.a{grid-row:3}.m5p .r17-t .ln.b{grid-row:4}
-.m5p .r17-t .ln b{font:800 11px/1 system-ui;font-variant-numeric:tabular-nums;color:#fff}
-.m5p .r17-t .ln b.pd{color:#F2C879;font-weight:700}
-.m5p .kb{display:inline-flex;align-items:center;justify-content:center;height:22px;min-width:34px;padding:0 6px;border-radius:5px;font:800 11.5px/1 system-ui;box-sizing:border-box}
+const BODY_CSS = `
 /* the body */
-.m5p .m5-body{padding:4px 14px 14px;display:flex;flex-direction:column;gap:6px}
+/* side margins set so the tile grid is round 20d's 340 points wide on a phone (it drew 25 + 25 inside 390) */
+.m5p .m5-body{padding:4px 8px 14px;display:flex;flex-direction:column;gap:6px}
 .m5p .m5-hd{display:flex;align-items:center;gap:10px;min-height:30px;font:700 11.5px/1 system-ui;letter-spacing:.12em;text-transform:uppercase;color:#8a96a3}
 .m5p .m5-hd .sp{flex:1}
 .m5p .m5-lk{display:inline-flex;align-items:center;gap:5px;letter-spacing:0;text-transform:none;font:600 12px/1 system-ui;color:#c9d1d9;border:1px solid #3a4452;border-radius:6px;padding:4px 7px}
@@ -69,22 +36,48 @@ const CSS = `
 `
 const LOCK = '<svg width="11" height="12" viewBox="0 0 11 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="5.2" width="9" height="6" rx="1.3"/><path d="M3 5.2V3.6a2.5 2.5 0 0 1 5 0v1.6"/></svg>'
 const CLIP = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg>'
-// the kinds' boxes as the grid's look F draws them (D1175): the app's own classes, copied off a grid cell at run time
-const box = (v, o = {}) => `<span class="r17-box${o.sm ? ' sm' : ''}${o.ro ? ' ro' : ''}${v === '0' ? ' z' : ''}">${v}</span>`
-
-// one person's figures: { app, appr, pend, war, cf, taken, typed, oil, med, other: {CCL:[v,pend],…} }
+// THE SOLE SOURCE (his D1478, 28 Oct 26): the balance tiles come from round 20d's own drawing code, READ from its files
+// (full-r20-3c.mjs, which reads round 14's and round 7's) — never re-typed. Its styles, its kind boxes and its markup are
+// the approved ones; what this round adds is only D1472's line, `ADD_CSS` below, named on his page.
+const SRC = f => readFileSync(new URL('./' + f, import.meta.url), 'utf8')
+const cut = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i + 1); if (i < 0 || j < 0) throw new Error('marker missing: ' + a + ' … ' + b); return s.slice(i, j) }
+const load = (code, deps, names) => new Function(...Object.keys(deps), code.replace(/^export /gm, '') + `\n;return { ${names.join(', ')} }`)(...Object.values(deps))
+const R7SRC = SRC('full-r7-person.mjs'), R20SRC = SRC('full-r20-3c.mjs')
+const { kb } = load(cut(R7SRC, 'const KIND = {', 'const CSS = `'), {}, ['KIND', 'kb'])
+const { LOCKI } = load(cut(R7SRC, 'const LOCKI', '\n'), { LOCK_SVG }, ['LOCKI'])
+const R7CSS = load(cut(R7SRC, 'const CSS = `', '\n`\n') + '\n`', {}, ['CSS']).CSS
+const R14CSS = load(cut(SRC('full-r14-lve.mjs'), 'const CSS = `', 'const box = '), {}, ['CSS']).CSS
+const R20CSS = load(cut(R20SRC, 'const CSS = R14CSS + `', 'const box = '), { R14CSS }, ['CSS']).CSS
+// (the marker names its own line: 20d's file says 'const box = ' earlier, inside a string)
+const T = load(cut(R20SRC, 'const box = (v', 'const gridC'), { PR: { kb } }, ['box', 'kbx', 'lve', 'tile', 'stTile2'])
+// the one addition (D1472): a line under the three figures while approved leave counts; the carried-forward line moves down
+const ADD_CSS = `
+.bidsheet .r17-t.r17-lve.m5ap{grid-template-rows:22px 12px 30px 14px 14px}
+.bidsheet .r17-lve.m5ap .r17-cf{grid-row:5}
+.bidsheet .r17-ap{grid-row:4;display:flex;align-items:center;gap:6px;font:600 11px/1 system-ui;color:#8a96a3;white-space:nowrap}
+.bidsheet .r17-ap b{font:700 12px/1 system-ui;font-variant-numeric:tabular-nums;color:#c9d1d9}
+`
+const CSS = R7CSS + R20CSS + ADD_CSS + BODY_CSS
+const box = T.box
+// round 20d's tiles with one person's figures: { app, appr, pend, war, cf, taken, typed, oil, med, other: {CCL:[v,pend,war],…} }
+// 20d's LVE tile is drawn with its own sample figures; each is swapped for his in place, nothing else touched
 function tiles(F, ro) {
-  const kb = (k, cls) => `<span class="kb ${cls}">${k}</span>`
-  const lve = `<div class="r17-t r17-lve${F.appr === '0' ? ' noap' : ''}" data-zk="lve"><span class="k">${kb('LVE', 'kLVE')}<span class="tk">${F.taken} taken</span></span>` +
-    `<div class="r17-sum" data-zk="sum"><span class="h" style="grid-column:1">App bal</span><span class="h" style="grid-column:2">Pending</span><span class="h" style="grid-column:3">War bal</span>` +
-    `<span class="v" style="grid-column:1">${box(F.app, { ro })}</span><span class="v pd" style="grid-column:2">${F.pend}</span><span class="v war" style="grid-column:3">${F.war}</span></div>` +
-    // D1472: approved leave placed since App bal was typed comes off too — one small line, only while there is some
-    (F.appr !== '0' ? `<span class="r17-ap" data-zk="ap">Approved since ${F.typed} <b>${F.appr}</b></span>` : '') +
-    `<span class="r17-cf">incl. ${box(F.cf, { ro, sm: 1 })} carried fwd · till 31 Dec</span></div>`
-  const t1 = (k, v, o) => `<div class="r17-t" data-zk="${k}"><span class="k">${kb(k, 'k' + k)}</span><span class="f${v === '0' ? ' z' : ''}">${v}${o.go ? '<span class="r17-go">›</span>' : ''}</span>${o.sub ? `<span class="s">${o.sub}</span>` : ''}</div>`
-  const t2 = (k, [v, pend, war]) => `<div class="r17-t r2${pend ? ' st' : ''}" data-zk="${k}"><span class="k">${kb(k, 'kO')}</span><span class="f">${box(v, { ro })}</span>` +
-    (pend ? `<span class="ln a"><span>Pending</span><b class="pd">−${pend}</b></span><span class="ln b"><span>War bal</span><b>${war}</b></span>` : '') + '</div>'
-  return `<div class="r17-bal">${lve}${t1('OIL', F.oil, { go: 1 })}${t1('MED', F.med, { sub: 'days' })}${Object.entries(F.other).map(([k, x]) => t2(k, x)).join('')}</div>`
+  let l = T.lve(ro)
+  const swap = (a, b) => { if (!l.includes(a)) throw new Error('20d LVE tile changed: ' + a); l = l.split(a).join(b) }
+  swap('>3 taken<', `>${F.taken} taken<`)
+  swap(T.box('17', { ro, zk: 'app' }), T.box(F.app, { ro, zk: 'app' }))
+  swap('>−2.5<', `>${F.pend}<`)
+  swap('data-zk="war">14.5<', `data-zk="war">${F.war}<`)
+  swap(T.box('4', { ro, sm: 1, zk: 'cfbox' }), T.box(F.cf, { ro, sm: 1, zk: 'cfbox' }))
+  // nothing pending: a plain 0, not amber (amber marks a pending figure — D1251)
+  if (F.pend === '0') swap('class="v pd"', 'class="v"')
+  if (F.appr !== '0') {
+    swap('class="r17-t r17-lve"', 'class="r17-t r17-lve m5ap"')
+    swap('<span class="r17-cf"', `<span class="r17-ap" data-zk="ap">Approved since ${F.typed} <b>${F.appr}</b></span><span class="r17-cf"`)
+  }
+  const o = F.other
+  return `<div class="r17-bal zz-balgrid">` + l + T.tile('OIL', F.oil, { go: true }) + T.tile('MED', F.med, { sub: 'days' }) +
+    ['CCL', 'FCL', 'PL', 'EL', 'CL'].map(k => T.stTile2(k, o[k][0], o[k][1] || '', o[k][2] || '', ro)).join('') + '</div>'
 }
 
 // his leave, one line each, from the grid's own cells (look F's box cloned, D1175); `extra` adds the drawn-in lines
@@ -133,7 +126,7 @@ async function scene(p, { pid, F, ro, lockWords, extra, phone, dockW = 560 }) {
     if (!document.getElementById('m5css')) { const s = document.createElement('style'); s.id = 'm5css'; s.textContent = css; document.head.appendChild(s) }
     const sh = document.querySelector('[data-testid="person-figures"]'); if (!sh) return 'NO SHEET'
     const win = sh.closest('.bidsheet') || sh
-    win.classList.add('m5p')
+    win.classList.add('m5p', 'zz-d')
     // keep the title bar (name, ✕); drop today's caption, key and list; the new body after the title bar
     const hd = win.querySelector('.bidsheet-hd'); hd.querySelector('.dt')?.remove()
     win.querySelectorAll('.clegend, .clist').forEach(n => n.remove())
@@ -147,18 +140,6 @@ async function scene(p, { pid, F, ro, lockWords, extra, phone, dockW = 560 }) {
       const top = Math.max(card.top, 0) + 64
       Object.assign(win.style, { left: 'auto', right: (innerWidth - card.right + 8) + 'px', top: top + 'px', bottom: 'auto', width: dockW + 'px', maxWidth: dockW + 'px', height: 'auto', maxHeight: (innerHeight - top - 10) + 'px', transform: 'none', overflow: 'auto', margin: '0' })
     }
-    // the kinds' boxes as the grid's: borrow a grid chip's look for each kind's tile box
-    // only a filled (approved) box: a tile's kind box is the kind's colour, never a pending box's hollow look
-    const gridChip = k => [...document.querySelectorAll('#page-leavewar td .c.s-a')].find(c => c.textContent.trim() === k)
-    for (const kb of win.querySelectorAll('.kb')) {
-      // the five other leaves share one look on the grid (D1175: other leave blue) — every tile borrows the same one
-      const OTHER5 = ['CCL', 'FCL', 'PL', 'EL', 'CL']
-      const k = kb.textContent.trim()
-      const src = k === 'LVE' ? gridChip('LL') : OTHER5.includes(k) ? OTHER5.map(gridChip).find(Boolean) : gridChip(k)
-      const cs = src ? getComputedStyle(src) : null
-      if (cs) Object.assign(kb.style, { background: cs.backgroundColor, color: cs.color, border: cs.border })
-      else Object.assign(kb.style, k === 'OIL' ? { background: '#2c4a1c', color: '#dff5b0', border: '1.5px solid #aae628' } : k === 'MED' ? { background: '#4a1f24', color: '#ffd5d8', border: '1.5px solid #ee5252' } : { background: '#26304f', color: '#d9e2ff', border: '1.5px solid #7f93ff' })
-    }
     const over = [...win.querySelectorAll('.r17-sum, .r17-cf, .r17-t, .ll-row, .m5-hd')].map(e => [e.className.split(' ')[0], e.scrollWidth - e.clientWidth]).filter(x => x[1] > 0)
     const b = win.getBoundingClientRect()
     return { over, box: [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)], scroll: win.scrollHeight - win.clientHeight }
@@ -167,14 +148,17 @@ async function scene(p, { pid, F, ro, lockWords, extra, phone, dockW = 560 }) {
   return r
 }
 const body = (F, ro, lockWords, rows) => `<div class="m5-body">` +
-  `<div class="m5-hd">Balances${lockWords ? `<span class="m5-lk">${LOCK}${lockWords}</span>` : ''}</div>` +
+  `<div class="r7-hd zz-balhd"><span>Balances</span>${lockWords ? `<span class="r14-lk" data-zk="lock">${LOCKI}${lockWords}</span>` : ''}</div>` +
   tiles(F, ro) +
-  `<div class="m5-hd" style="margin-top:6px">Leave<span class="sp"></span><button class="lw-btn m5-yr" style="height:30px;padding:0 10px;border:1px solid #3a4452;border-radius:7px;background:#11161c;color:#e6edf3;font:600 13px system-ui">2026 and ahead ▾</button></div>` +
+  `<div class="r7-hd" style="margin-top:10px"><span>Leave</span><button class="lw-btn m5-yr" style="margin-left:auto;height:30px;padding:0 10px;border:1px solid #3a4452;border-radius:7px;background:#11161c;color:#e6edf3;font:600 13px system-ui">2026 and ahead ▾</button></div>` +
   `<div class="m5-list">${rows}</div></div>`
 
 // Ranger's figures (the staged case): App bal 17 typed Mon 5 Jan; approved since then 26–27 Jan (2); pending 2.5
 const RANGER = { app: '17', appr: '−2', pend: '−2.5', war: '12.5', cf: '4', taken: '3', typed: '5 Jan', oil: '0', med: '0',
-  other: { CCL: ['3', '1', '2'], FCL: ['5'], PL: ['2'], EL: ['0'], CL: ['1'] } }
+  // the small tiles carry round 20d's own sample figures; the stage puts his pending CCL, PL and CL on the grid to match
+  other: { CCL: ['3', '1', '2'], FCL: ['5'], PL: ['2', '0.5', '1.5'], EL: ['4'], CL: ['1', '1', '0'] } }
+// his question (28 Oct 26): the same window once the 2.5 pending days are approved — War bal does not move (D1472)
+const RANGER_APPROVED = { ...RANGER, pend: '0', appr: '−4.5' }
 // the drawn-in parts of his list: what is new since his last visit (D1231), a deleted leave struck for that visit
 const NEWS = [
   { from: '2026-01-26', isNew: 1, by: 'approved by Saber · yesterday 08:40' },
@@ -229,6 +213,7 @@ await one('m5a-p3-phone-today', 'member', 402, 874, true, { today: 1 })
 await one('m5a-p4-phone-own', 'member', 402, 874, true, { pid: 'bane', F: RANGER, ro: false, lockWords: '', extra: NEWS })
 await one('m5a-p5-phone-locked', 'member', 402, 874, true, { pid: 'bane', F: RANGER, ro: true, lockWords: 'Locked by admin', extra: NEWS })
 await one('m5a-p7-myleave', 'member', 402, 874, true, { myleave: 1 })
+await one('m5a-p8-phone-approved', 'member', 402, 874, true, { pid: 'bane', F: RANGER_APPROVED, ro: false, lockWords: '', extra: NEWS })
 // an iPhone's letters run about a seventh wider than this browser's: the same window, its words spaced out to match
 await one('m5a-p4w-phone-wide', 'member', 402, 874, true, { pid: 'bane', F: RANGER, ro: false, lockWords: '', extra: NEWS, wide: 1 })
 await one('m5a-p6-phone-other', 'member', 402, 874, true, { pid: '@Gambit', F: OTHER, ro: true, lockWords: '', extra: [] })

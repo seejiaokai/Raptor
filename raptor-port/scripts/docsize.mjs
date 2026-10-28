@@ -257,7 +257,9 @@ const RULING_BYTES = [
   /* how-we-work 49000 -> 50500 (27 Oct 26, the skill-notes review): 49,667 bytes with D1414-D1418 (its reader, the
      overnight run's 90% stop, a helper per overnight job, a design lesson in his words, the checking guides' lines) after
      D1402, D1403 and D1366 left as spent; D1414, D1418 and D1419 left as spent at the install, 49,144 bytes then. Room, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 50500],
+  /* how-we-work 50500 -> 52000 (28 Oct 26, D1478 — an approved drawing is the sole source of any later drawing of it):
+     about 50,550 bytes with its line, none trimmed (D136). Room, not a target. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 52000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
