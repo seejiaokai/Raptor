@@ -2584,3 +2584,18 @@ its value and never in innerText.
 **Principle:** In a worktree, the skill text that governs is the branch's own; a loader that reads a shared root can hand you a stale rulebook with no error.
 
 **Met again 28 Oct 26:** the records-and-M5 chat (`claude/lw-whole-records`) — the session-start hook's task-observer loaded from the main folder (on 26 Oct 26's commit); the worktree's copy differs (the size trigger, the cross-branch `git grep`). Caught by diffing the two; nothing in this session turned on the difference. Every project skill differs the same way, overnight included.
+
+### Observation 733: A planning report put screen questions to him in words only
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** planning the Leave War overhaul's M5 (claude/leave-war-m5-handoff-3a6602)
+**Skill:** New skill candidate: planning-report (or the closing-report check in plain-language.md)
+**Type:** internal
+**Phase/Area:** the closing report of a planning job
+
+**Issue:** The M5 plan's closing message named the person window, War bal, the Balances page and Settings and asked four questions about them with no picture. He replied "Where is the drawing". D853 and D921 already require pictures of the real app, the place marked, the first time anything on screen is raised; the rule was loaded and still missed, because the four points felt like "rules, not screens" and the redraw was planned for the next step.
+
+**Suggested improvement:** Add to plain-language.md's check-before-you-send a mechanical step: list every screen, tile, figure or control the message names; each needs a picture link in the same message (an existing drawing, cropped and marked, is enough) or the message is not sent.
+
+**Principle:** A rule judged case by case ("is this a screen question?") slips under the pressure of a long job; a checklist step that counts the screen names in the draft does not.
