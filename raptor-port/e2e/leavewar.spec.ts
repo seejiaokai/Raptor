@@ -1360,6 +1360,53 @@ test('tapping a name\'s LVE figure opens his person window', async ({ page }) =>
   await expect(win).toHaveCount(0)
 })
 
+/* A WINDOW THAT PLACES ITSELF STANDS ON THE SCREEN (M5a, D1480, D1486 — red on 27e5d655c). On a desktop the person window
+   docks at the grid's right edge and the Grades window under "Grades…"; the shared window's keyboard follower wiped the top
+   each wrote, on opening and on every focus change, so each fell to its place in the page's flow — the person window's top
+   at the screen's foot, its ✕ out of reach. Opened from a name on the grid, from a name on the Balances page, and Grades…
+   on the Balances page: each box wholly inside the screen, and still there once the keyboard has moved inside it. */
+test('on a desktop the person window and the Grades window stand wholly on the screen, from the grid and from Balances', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop docks them; a phone centres them (its own tests)')
+  await lwRole(page, 'admin')
+  const onScreen = async (sel: string, why: string) => {
+    const box = (await page.locator(sel).boundingBox())!
+    const vp = page.viewportSize()!
+    expect(box, `${why}: drawn`).toBeTruthy()
+    expect(box.y, `${why}: its top on the screen`).toBeGreaterThanOrEqual(0)
+    expect(box.x, `${why}: its left on the screen`).toBeGreaterThanOrEqual(0)
+    expect(box.y + box.height, `${why}: its foot on the screen`).toBeLessThanOrEqual(vp.height + 0.5)
+    expect(box.x + box.width, `${why}: its right edge on the screen`).toBeLessThanOrEqual(vp.width + 0.5)
+  }
+  const win = '[data-testid="person-window"]'
+  /* from a name on the grid */
+  await page.locator('[data-testid="person-slipway"]').click()
+  await expect(page.locator(win)).toBeVisible()
+  await onScreen(win, 'from the grid')
+  await page.keyboard.press('Tab')   // a focus change inside it — the moment the follower used to wipe its place
+  await onScreen(win, 'from the grid, after Tab')
+  await page.locator('[data-testid="pw-close"]').click()
+  await expect(page.locator(win)).toHaveCount(0)
+  /* from a name on the Balances page */
+  await page.locator('[data-testid="lw-tab-balances"]').click()
+  await expect(page.locator('[data-testid="balances-page"]')).toBeVisible()
+  await page.locator('[data-testid="bal-name-slipway"]').click()
+  await expect(page.locator(win)).toBeVisible()
+  await onScreen(win, 'from Balances')
+  await page.keyboard.press('Tab')
+  await onScreen(win, 'from Balances, after Tab')
+  await page.locator('[data-testid="pw-close"]').click()
+  await expect(page.locator(win)).toHaveCount(0)
+  /* and Grades… under its button */
+  await page.locator('[data-testid="bal-grades"]').click()
+  const grades = '[data-testid="grades-sheet"]'
+  await expect(page.locator(grades)).toBeVisible()
+  await onScreen(grades, 'Grades…')
+  await page.keyboard.press('Tab')
+  await onScreen(grades, 'Grades…, after Tab')
+  const gb = (await page.locator('[data-testid="bal-grades"]').boundingBox())!
+  expect((await page.locator(grades).boundingBox())!.y, 'Grades… opens under its button').toBeGreaterThanOrEqual(gb.y + gb.height)
+})
+
 // The reason the bid sheet is a fixed-position sheet rather than a popover
 // inside the cell: `.mx-wrap` is an `overflow: auto` scroller, and anything
 // positioned inside a 30px-wide cell is clipped by it. jsdom applies no
@@ -2227,8 +2274,11 @@ test('a negative balance is painted red, and a positive one is not', async ({ pa
   // which the cross-war rule counts — so his balance reads -2; SLIPWAY sits
   // comfortably positive. The colour lives on the box's TOP LINE now (`.fb`,
   // 6 Sep 26), not on the cell: the used numbers under it carry their own.
+  // SINCE M5a the figure is his War bal off a TYPED App bal (D1479, D1482): the demo types every man's LVE, and the one
+  // it sends below zero is ROCKY (typed −2 — demoworld.ts demoBalances), so he is the negative man now; HARPOON's typed
+  // figure leaves him positive.
   await expect(page.locator('[data-testid="counter-name"]')).toHaveText('+LVE')
-  const neg = await page.locator('[data-testid="bal-harpoon"] .fb').evaluate(el => ({
+  const neg = await page.locator('[data-testid="bal-rocky"] .fb').evaluate(el => ({
     text: el.textContent, colour: getComputedStyle(el).color,
   }))
   expect(neg.text!.startsWith('-')).toBe(true)
@@ -2430,10 +2480,13 @@ test('a scrolled sheet keeps its header and its close button', async ({ page }) 
 // here since it only bites when the list overflows, which a fitting sheet does
 // not.)
 // RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
+// RE-EXPRESSED AGAIN, M5a (D1480, D641): a person's figures are his person window now, a window that blocks nothing and
+// draws no scrim — so the scrim's own rule is proved on a cell's bid sheet, the blocking sheet the grid opens most; the
+// person window's own "the page scrolls and it stays put" is the next test.
 test('the page scrolls behind an open sheet, and the panel stays put', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 0))
-  await page.locator('[data-testid="person-slipway"]').click()
-  const sheet = page.locator('[data-testid="person-window"]')
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  const sheet = page.locator('[data-testid="bid-picker"]')
   await expect(sheet).toBeVisible()
   const topBefore = (await sheet.boundingBox())!.y
 
@@ -2453,6 +2506,25 @@ test('the page scrolls behind an open sheet, and the panel stays put', async ({ 
   const ta = await page.locator('[data-testid="sheet-scrim"]').evaluate(el => getComputedStyle(el).touchAction)
   expect(ta).toBe('pan-y')
   expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden')
+})
+
+// The person window blocks nothing (M5a, D1480; windows do not block — D641): no scrim behind it, the page scrolls
+// freely while it is up, and it stays where it stands — on a desktop docked at the grid's right edge, on a phone in the
+// middle of the screen, wholly on the screen either way.
+test('the person window blocks nothing: no scrim, the page scrolls behind it, it stays put', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.locator('[data-testid="person-slipway"]').click()
+  const win = page.locator('[data-testid="person-window"]')
+  await expect(win).toBeVisible()
+  await expect(page.locator('[data-testid="sheet-scrim"]')).toHaveCount(0)
+  const vp = page.viewportSize()!
+  const before = (await win.boundingBox())!
+  expect(before.y).toBeGreaterThanOrEqual(0)
+  expect(before.y + before.height).toBeLessThanOrEqual(vp.height + 0.5)
+  await page.evaluate(() => window.scrollBy(0, 300))
+  await page.waitForTimeout(100)
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+  expect(Math.abs((await win.boundingBox())!.y - before.y)).toBeLessThan(1.5)
 })
 
 /* THE SWIPE UNDER A SHEET IS THE BROWSER'S OWN, ON THE GRID ITSELF (owner,
@@ -2768,12 +2840,16 @@ test('a member counter bar is Manning then OIL, adjacent, one row', async ({ pag
   expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
   // no − / + for a member either: the grid is pinched (D1228, D1276)
   await expect(page.locator('[data-testid="lw-zoom-in"]')).toHaveCount(0)
-  // and OIL is the member's tab, right after Grid on the tab row
+  // and the member's tab row is Grid · Balances · OIL (D1254 — Balances built in M5a, D1482), each tab right after the
+  // one before it, on one row
   const g = (await page.locator('[data-testid="lw-tab-grid"]').boundingBox())!
+  const b = (await page.locator('[data-testid="lw-tab-balances"]').boundingBox())!
   const t = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
-  expect(t.x).toBeGreaterThan(g.x)
-  expect(Math.abs(mid(t) - mid(g))).toBeLessThan(4)
-  expect(t.x - (g.x + g.width)).toBeLessThan(24)
+  for (const [l, r] of [[g, b], [b, t]] as const) {
+    expect(r.x).toBeGreaterThan(l.x)
+    expect(Math.abs(mid(r) - mid(l))).toBeLessThan(4)
+    expect(r.x - (l.x + l.width)).toBeLessThan(24)
+  }
 })
 
 // In Rearrange the reorder grip shares the frozen NAME cell, to the LEFT of the
@@ -2873,7 +2949,14 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
   // figure is the same from either screen. HARPOON's four days sit in Apr–Jun
   // and take him to −2 annual, which reads −2 from Jan–Mar too.
   await expect(page.locator('[data-testid="bal-harpoon"] .fb')).toHaveText(before!)
-  expect(before).toBe('−2')
+  // SINCE M5a the figure is his War bal off a typed App bal (D1479; the demo types every man's LVE — demoworld.ts
+  // demoBalances), so the number is no longer −2: what still holds is that the four 2027 days come off it from either
+  // war — his person window says Pending −4, and its War bal is the very figure the grid shows.
+  await page.locator('[data-testid="bal-harpoon"]').click()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
+  await expect(page.locator('[data-testid="pw-LVE-pend"]')).toHaveText('−4')
+  await expect(page.locator('[data-testid="pw-LVE-war"]')).toHaveText(before!.replace('-', '−'))
+  await page.locator('[data-testid="pw-close"]').click()
 })
 
 /** "+ New period" is the period list's last line since the overhaul's M2, an admin's only (D1244) — no "+ New" button on
@@ -7522,10 +7605,13 @@ test('D1444 on a phone deciding a month’s only request keeps its chip, so noth
   test.skip(!isPhone(), 'the phone’s months')
   await lwRole(page, 'admin')
   await page.setViewportSize({ width: 402, height: 874 })
-  for (const d of ['2026-03-16', '2026-04-14', '2026-06-10', '2026-08-12']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'LL'), d)).toBe(true)
+  /* SINCE M5a the demo gives Ranger (bane) leave of his own (demoworld.ts DEMO_M5A_LEAVE / DEMO_M5A_RECS — approved LL
+     19–21 and 26–27 Jan, requests on 29 Jan, 2, 12, 13 Feb, 2, 16, 17 Mar), so the days placed here are days he left free:
+     16 Mar → 19 Mar, 20 Jan → 23 Jan, 26 Jan → 30 Jan; the six months, and August's one request, are as before */
+  for (const d of ['2026-03-19', '2026-04-14', '2026-06-10', '2026-08-12']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'LL'), d)).toBe(true)
   /* …and lines placed after August's, so its line stands mid-list and the page is not scrolled to its foot (where a shorter
      page is pulled down by the browser and hides the jump) */
-  for (const d of ['2026-01-20', '2026-01-22', '2026-01-26', '2026-01-28', '2026-02-16', '2026-02-18']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'OL'), d)).toBe(true)
+  for (const d of ['2026-01-22', '2026-01-23', '2026-01-28', '2026-01-30', '2026-02-16', '2026-02-18']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'OL'), d)).toBe(true)
   /* his iPhone's Safari keeps no scroll anchoring, so content shrinking above the finger moves what is under it; Chromium's
      anchoring would hide that once the page is scrolled — it is switched off here to see what he sees */
   await page.addStyleTag({ content: 'html, body, * { overflow-anchor: none !important; }' })

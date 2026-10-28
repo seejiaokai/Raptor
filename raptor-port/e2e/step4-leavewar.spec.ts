@@ -18,7 +18,7 @@
    The file name ends in `leavewar.spec.ts` so the lw-desktop / lw-phone
    projects in playwright.config.ts pick it up. */
 import { expect, test, type Page } from '@playwright/test'
-import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo, answerNoDocument, untickApprove } from './app'
+import { closeBidding, go, gridAtRest, login, lwRole, lwView, moveOneTo, answerNoDocument, untickApprove, LW_TODAY } from './app'
 
 const isPhone = () => test.info().project.name === 'lw-phone'
 const desktopOnly = () => test.skip(isPhone(), 'mouse drag-select / desktop-only path')
@@ -112,13 +112,25 @@ const figNum = (t: string | null) => Number(String(t ?? '').replace('−', '-').
  *  truth even where the balance COLUMN is stale — see the BUG test for that). Each opening and closing repaints the grid,
  *  which is the slow part on a slow machine, so a caller that needs three figures asks for all three at once. */
 async function figures<F extends Fig>(page: Page, p: string, want: readonly F[]): Promise<Record<F, number>> {
-  await page.locator(`[data-testid="person-${p}"]`).scrollIntoViewIfNeeded()
-  await page.locator(`[data-testid="person-${p}"]`).click()
+  const read = async (fs: readonly F[], got: Record<F, number>) => {
+    await page.locator(`[data-testid="person-${p}"]`).scrollIntoViewIfNeeded()
+    await page.locator(`[data-testid="person-${p}"]`).click()
+    for (const f of fs) got[f] = figNum(await page.locator(`[data-testid="${FIG_ID[f]}"]`).textContent())
+    await page.locator('[data-testid="pw-close"]').click()
+    await expect(page.locator('[data-testid="person-window"]')).toHaveCount(0)
+    await expect(sheetScrim(page)).toHaveCount(0)
+  }
   const got = {} as Record<F, number>
-  for (const f of want) got[f] = figNum(await page.locator(`[data-testid="${FIG_ID[f]}"]`).textContent())
-  await page.locator('[data-testid="pw-close"]').click()
-  await expect(page.locator('[data-testid="person-window"]')).toHaveCount(0)
-  await expect(sheetScrim(page)).toHaveCount(0)
+  const now = want.filter(f => f !== 'medtot')
+  if (now.length) await read(now, got)
+  /* MED counts this year up to TODAY (the spec §1.4), and the suite holds the war's today at 1 Jan 2000 (app.ts LW_TODAY),
+     where it would read 0 for every medical in 2026 — so it is read with today moved to 31 Dec 26, the 2026 medicals all
+     behind it, and put back at once (the bridge's today lands the grid on the war that holds it: the same 2026 war) */
+  if (want.includes('medtot' as F)) {
+    await page.evaluate(() => (window as any).lwSetMemberToday('2026-12-31'))
+    await read(['medtot' as F], got)
+    await page.evaluate(d => (window as any).lwSetMemberToday(d), LW_TODAY)
+  }
   return got
 }
 /** One figure for one person — `figures` with a single ask. */
