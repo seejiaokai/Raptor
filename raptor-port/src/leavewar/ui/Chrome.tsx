@@ -4,7 +4,7 @@
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } from 'react'
-import { boxText, evaluatePeriod, FIGURES, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
+import { boxText, evaluatePeriod, kindOf, memberToday, openFrom, stretchLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, manningRedDays, openInputWindow, rosterCallsign, subscribeClashes, usePlanVersion, type ClashWayOut, type SyncClash } from '../sync'
 import { figureCtxOf, focusDay, getState, getVersion, selectWar } from '../state/store'
@@ -14,7 +14,7 @@ import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
-import { askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode } from './lwnav'
+import { askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode, lwPage, setBalancesUp } from './lwnav'
 import { pendingCount } from '../approvals'
 import { fig, myLeaveOf } from './myleave'
 import './chrome.css'
@@ -96,6 +96,15 @@ function ApprGlyph() {
   )
 }
 
+/* Balances' mark — three bars, round 19's own (`full-r19-nav.mjs` IC.bal, D1478: its viewBox and strokes as drawn) */
+function BalGlyph() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M3 13.5V8.5M8 13.5V3M13 13.5V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
 /* the period list's last line, "+ New period" (D1244) — a value no period id can be */
 const NEW_PERIOD = '\u0000new'
 
@@ -108,8 +117,8 @@ export function Topbar() {
      D679, D1141 and the 5 Sep 26 grid bar; drawn `docs/mock/lw-overhaul/full-r19-nav.mjs`, `full/r19-nav-*`, and with the
      grid's order `full/r21-rows-*`):
      · ONE TAB ROW, the Inputs page's own (`inputs-tabs` / `intab` — the same look, the same keyboard), with ⚙ at its right
-       end for an admin. Its tabs are the ones whose page exists: Grid and OIL now — Approvals joins with its list (M4) and
-       Balances with its page (M5), never as a tab with nothing behind it (the build plan's rule for the Approvals button).
+       end for an admin. Its tabs are the ones whose page exists: Grid, Approvals (M4), Balances (M5a) and OIL — never a tab
+       with nothing behind it (the build plan's rule for the Approvals button).
        OIL opens the OIL tracker, as the grid card's OIL button did, and reads as the chosen tab while it is up.
      · THEN "View", the period picker and My leave — on a desktop in that same one row (the tabs, View, My leave, ⚙: D679 as
        narrowed); on a phone a second line under the tabs (D678 as narrowed — an admin's third line is gone, D1227's line now
@@ -135,7 +144,7 @@ export function Topbar() {
   const closeSheet = () => { setMaking(false); setAsked(null) }
   /* MY LEAVE (D1141): the person signed in, when he has a row on the war — an admin with none has no "my" to show */
   const me = viewer && people.some(p => p.id === viewer) ? viewer : null
-  const mine = me ? myLeaveOf(figureCtxOf(), wars, me, memberToday()) : null
+  const mine = me ? myLeaveOf(wars, me, memberToday()) : null
   /* the tabs, a tab list in the usual manner (as the Inputs page's): one tab stop, the arrow keys move along it */
   /* APPROVALS — an admin's tab (the overhaul's M4, 8.1 — D1254, D1420; a member has none). Its count is every pending
      request in EVERY period: the count is the only sign that anything waits (D1208, D1219). Choosing another tab leaves
@@ -146,13 +155,19 @@ export function Topbar() {
   const waiting = useMemo(() => (admin ? pendingCount() : 0), [admin, version])
   /* the member view (D292) is taken off the tab (8.1, the walk's 15) */
   useEffect(() => { if (!admin && mode !== 'off') setApprMode('off') }, [admin, mode])
-  type Tab = 'grid' | 'approvals' | 'oil'
+  /* BALANCES (the overhaul's M5a — D1254, D1483, D1242): everyone's tab, a member's too, between Approvals and OIL — its page
+     takes the grid card's place as Approvals' does (ui/lwnav.ts `lwPage`). Grid · Approvals N · Balances · OIL for an admin,
+     Grid · Balances · OIL for a member, ⚙ at the right end. */
+  type Tab = 'grid' | 'approvals' | 'balances' | 'oil'
+  const page = lwPage()
   const tabs: Array<[Tab, string, () => void]> = [
-    ['grid', 'Grid', () => { setApprMode('off'); askLw({ kind: 'grid' }) }],
+    ['grid', 'Grid', () => { setApprMode('off'); setBalancesUp(false); askLw({ kind: 'grid' }) }],
     ...(admin ? [['approvals', 'Approvals', () => { askLw({ kind: 'grid' }); setApprMode('page') }] as [Tab, string, () => void]] : []),
-    ['oil', 'OIL', () => { setApprMode('off'); askLw({ kind: 'oil' }) }],
+    ['balances', 'Balances', () => { askLw({ kind: 'grid' }); setBalancesUp(true) }],
+    ['oil', 'OIL', () => { setApprMode('off'); setBalancesUp(false); askLw({ kind: 'oil' }) }],
   ]
-  const tabOn = (t: Tab) => (mode === 'page' ? t === 'approvals' : t === 'approvals' ? false : (t === 'oil') === oilUp)
+  const tabOn = (t: Tab) => (page === 'approvals' ? t === 'approvals' : page === 'balances' ? t === 'balances'
+    : t === 'approvals' || t === 'balances' ? false : (t === 'oil') === oilUp)
   const tabKey = (e: ReactKeyboardEvent, i: number) => {
     const by = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
     if (!by) return
@@ -170,14 +185,14 @@ export function Topbar() {
           type="button"
           role="tab"
           className="intab"
-          data-testid={t === 'oil' ? 'oil-tracker' : t === 'approvals' ? 'lw-tab-approvals' : 'lw-tab-grid'}
+          data-testid={t === 'oil' ? 'oil-tracker' : t === 'approvals' ? 'lw-tab-approvals' : t === 'balances' ? 'lw-tab-balances' : 'lw-tab-grid'}
           aria-selected={tabOn(t)}
           tabIndex={tabOn(t) ? 0 : -1}
-          title={t === 'oil' ? 'OIL balances, credits and history' : t === 'approvals' ? 'Leave waiting for a decision' : 'The leave grid'}
+          title={t === 'oil' ? 'OIL balances, credits and history' : t === 'approvals' ? 'Leave waiting for a decision' : t === 'balances' ? 'Everyone’s balances and grades' : 'The leave grid'}
           onClick={go}
           onKeyDown={e => tabKey(e, i)}
         >
-          {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : <ClockGlyph />}
+          {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : t === 'balances' ? <BalGlyph /> : <ClockGlyph />}
           <span className="intab-t">{label}</span>
           {t === 'approvals' && waiting > 0 && <span className="appr-tabn" data-testid="lw-approvals-count" aria-label={`${waiting} pending`}>{waiting}</span>}
         </button>

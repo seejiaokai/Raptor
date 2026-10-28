@@ -1,0 +1,232 @@
+/* THE BALANCES PAGE AND THE GRADES WINDOW (the Leave War overhaul's M5a — D1482–D1488, D1486; BalancesPage.tsx,
+   GradesSheet.tsx). SCOPED under #page-leavewar like every Leave War stylesheet (matrix.css's header says why).
+   EVERY NUMBER HERE IS THE DRAWING'S OWN (D1478): `docs/mock/lw-overhaul/full-m5a-balances.mjs`, which reads round 14's page
+   (`full-r14-bal.mjs` CSS), round 15's and 16's phone (`full-r15-balphone.mjs` CSS2, `full-r16-balphone.mjs` CSS3 and its
+   PH_COLS), round 19b's read-only figures (`full-r19b-membal.mjs` ROCSS), round 19's phone tabs (`full-r19-nav.mjs`) and
+   round 20d's pending amber (#F2C879). The drawing's `.zbp .x` is `.bp-x` here, its `.zgm` `.bp-gm`, its `.zgw` the Grades
+   window's `.gw-*` — moved over whole, never re-measured. What the drawing could not say (it is a still picture) is marked
+   "(built)": the inner scroll, the sticky headings, the focus rings, a box's refusal. */
+#page-leavewar {
+  /* ---------------------------------------------------------------- the page and its card */
+  .bp { display: flex; flex-direction: column; box-sizing: border-box; padding: 14px 20px 8px; background: #0b0d10; color: #c9d1d9; font: 13px system-ui; }
+  .bp-card { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; background: #11161c; border: 1px solid #2a313a; border-radius: 14px; overflow: hidden; }
+  .bp-bar { display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 14px; border-bottom: 1px solid #2a313a; flex: none; white-space: nowrap; }
+  .bp-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 9px; border: 1px solid #2f3a46; background: #12161b; color: #e6edf3; font: 600 13.5px system-ui; cursor: pointer; }
+  .bp-btn svg { width: 15px; height: 15px; }
+  .bp-seg { display: inline-flex; height: 36px; border: 1px solid #2f3a46; border-radius: 9px; overflow: hidden; flex: none; }
+  .bp-seg button { display: inline-flex; align-items: center; padding: 0 12px; border: 0; font: 600 13.5px system-ui; color: #c9d1d9; background: #12161b; cursor: pointer; }
+  .bp-seg button + button { border-left: 1px solid #2f3a46; }
+  .bp-seg button.on { background: rgba(59, 198, 232, .14); color: #5fd0e6; }
+  .bp-srch { display: inline-flex; align-items: center; gap: 8px; height: 36px; width: 200px; box-sizing: border-box; padding: 0 10px; border-radius: 9px; border: 1px solid #2f3a46; background: #0d1217; color: #6b7785; font: 500 13.5px system-ui; }
+  .bp-srch svg { width: 15px; height: 15px; color: #8a96a3; flex: none; }
+  .bp-srch input { flex: 1; min-width: 0; height: 100%; border: 0; padding: 0; background: transparent; color: #e6edf3; font: inherit; outline: none; }
+  .bp-srch input::placeholder { color: #6b7785; }
+  .bp-srch input::-webkit-search-cancel-button { filter: invert(.6); }
+  .bp-srch:focus-within { border-color: #3bc6e8; }
+  .bp-lock { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; border-radius: 9px; border: 1px solid #2f3a46; background: #12161b; color: #e6edf3; font: 600 13.5px system-ui; cursor: pointer; }
+  .bp-lock .sw { width: 30px; height: 18px; border-radius: 9px; background: #2f3a46; position: relative; }
+  .bp-lock .sw::after { content: ''; position: absolute; left: 2px; top: 2px; width: 14px; height: 14px; border-radius: 50%; background: #c9d1d9; }
+  .bp-lock.on { border-color: rgba(59, 198, 232, .55); background: rgba(59, 198, 232, .14); color: #5fd0e6; }
+  .bp-lock.on .sw { background: #3bc6e8; }
+  .bp-lock.on .sw::after { left: 14px; background: #04222b; }
+  .bp-sp { flex: 1; }
+  .bp-lkw { display: inline-flex; align-items: center; gap: 6px; color: #9aa5b1; font: 600 13px system-ui; padding-right: 4px; }
+  .bp-cutf { position: absolute; left: 0; right: 0; bottom: 0; height: 28px; background: linear-gradient(rgba(17, 22, 28, 0), #11161c); z-index: 3; pointer-events: none; }
+  .bp-empty { padding: 28px 16px; color: #8a96a3; }
+
+  /* (built) focus is always visible — the design guide §3 */
+  .bp button:focus-visible, .bp input:focus-visible, .bp-gm button:focus-visible { outline: 2px solid #3bc6e8; outline-offset: 2px; }
+
+  /* ---------------------------------------------------------------- the desktop table (round 14) */
+  /* (built) the table scrolls inside the card, both ways, so its two heading rows stay at its top */
+  .bp-scroll { flex: 1; min-height: 0; overflow: auto; position: relative; }
+  .bp-table { border-collapse: separate; border-spacing: 0; font-variant-numeric: tabular-nums; }
+  .bp-table th { position: sticky; top: 0; background: #11161c; z-index: 2; font: 600 10px system-ui; letter-spacing: .12em; color: #8a96a3; text-align: right; padding: 0 10px; height: 26px; white-space: nowrap; }
+  .bp-table th.l, .bp-table td.l { text-align: left; }
+  .bp-table tr.h1 th { height: 22px; padding-top: 8px; color: #6b7785; letter-spacing: .14em; }
+  .bp-table tr.h1 th.span { text-align: center; border-bottom: 1px solid #2f3a46; }
+  .bp-table tr.h2 th { border-bottom: 1px solid #2a313a; top: 30px; }
+  .bp-table th.fill { width: 100%; }
+  .bp-table th.tk { min-width: 46px; }
+  /* a kind's pending figure stands after its box in a slot every row keeps; its heading stands over the box (D1437's rule) */
+  .bp-table th.ok { padding-right: 49px; }
+  .bp-table td { height: 40px; padding: 0 10px; text-align: right; border-bottom: 1px solid #1d242c; white-space: nowrap; color: #e6edf3; font-size: 13.5px; }
+  .bp-table td.sep, .bp-table th.sep { border-left: 1px solid #222a33; }
+  .bp-table tr.bp-grp td { height: 34px; background: #0e1318; border-bottom: 1px solid #222a33; text-align: left; font: 800 12.5px system-ui; letter-spacing: .06em; color: #f1f4f7; }
+  .bp-table tr.bp-grp i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin: 0 10px 0 2px; vertical-align: -1px; }
+  .bp-table tr.bp-grp em { font-style: normal; color: #8a96a3; font-weight: 500; letter-spacing: 0; margin-left: 6px; }
+  .bp-table tr.me td { background: rgba(155, 89, 255, .07); }
+  .bp-zwho { display: inline-flex; align-items: center; min-width: 150px; }
+  .bp-zwho .puck { flex: none; }
+
+  /* the name: the schedule's own puck, a tap opening his person window (reading 23) */
+  .bp-name { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; border-radius: 5px; }
+  .bp-puck { display: inline-flex; pointer-events: none; }
+
+  /* a box: "you can type this" — its edge 3.4:1 against the tile (round 14) */
+  .bp-fb { position: relative; display: inline-flex; vertical-align: middle; }
+  .bp-bx { display: inline-flex; align-items: center; justify-content: flex-end; box-sizing: border-box; width: 54px; min-width: 54px; height: 28px; padding: 0 9px; margin: 0; border: 1px solid #66717f; border-radius: 7px; background: #0d1217; color: #f1f4f7; font: 700 13.5px system-ui; font-variant-numeric: tabular-nums; text-align: right; outline: none; }
+  .bp-bx.sm { width: 44px; min-width: 44px; }
+  .bp-bx.z { color: #7d8894; font-weight: 500; }
+  .bp-bx:focus { border-color: #3bc6e8; color: #f1f4f7; }
+  /* (built) a refusal stands at its box, in the warning red, until the box is typed in again */
+  .bp-fb.bad .bp-bx { border-color: #FF7A84; }
+  .bp-err { position: absolute; top: calc(100% + 4px); right: 0; z-index: 6; width: max-content; max-width: 240px; padding: 5px 8px; border-radius: 7px; background: #2a1215; border: 1px solid #FF7A84; color: #FFB3B9; font: 600 12px/1.3 system-ui; white-space: normal; text-align: left; }
+  .bp-z, .bp .z { color: #7d8894; font-weight: 500; }
+  /* read only (round 19b at the desktop's size): its figure's right edge on the box figures' line */
+  .bp-ro { display: inline-flex; align-items: center; justify-content: flex-end; box-sizing: border-box; padding-right: 10px; min-width: 54px; height: 28px; font: 700 13.5px system-ui; color: #f1f4f7; font-variant-numeric: tabular-nums; }
+  .bp-ro.sm { min-width: 44px; }
+  .bp-ro.z { color: #7d8894; font-weight: 500; }
+  .bp-rogd { color: #9aa5b1; font: 500 13px system-ui; }
+  .bp-rogd b { font-weight: 500; color: #8a96a3; margin-left: 8px; }
+
+  /* the grade box (round 14) — "No grade" in amber, dashed, in his own row (D1249) */
+  .bp-gr { display: inline-flex; align-items: center; gap: 8px; box-sizing: border-box; width: 172px; height: 28px; padding: 0 10px; border: 1px solid #66717f; border-radius: 7px; background: #0d1217; color: #e6edf3; font: 600 13px system-ui; cursor: pointer; }
+  .bp-gr .d { color: #8a96a3; font-weight: 500; margin-left: auto; font-variant-numeric: tabular-nums; }
+  .bp-gr svg { width: 10px; height: 10px; color: #8a96a3; flex: none; }
+  .bp-gr.none { border: 1px dashed rgba(242, 200, 121, .8); color: #F2C879; background: transparent; }
+  .bp-gr.none .d { color: inherit; }
+
+  .bp-war { font: 800 15px system-ui; }
+  .bp .neg { color: #FF7A84; }
+  .bp-pend { color: #c9d1d9; }
+  .bp-pend.pd { color: #F2C879; }
+  .bp-opd { display: inline-block; min-width: 34px; margin-left: 5px; text-align: left; font: 500 13.5px system-ui; color: #F2C879; font-variant-numeric: tabular-nums; vertical-align: middle; }
+  .bp-oil { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: #e6edf3; font: inherit; cursor: pointer; }
+  .bp-oil .ch { color: #5fd0e6; margin-left: 6px; font-weight: 700; }
+
+  /* ---------------------------------------------------------------- the grade list a box opens (round 14's `.zgm`) */
+  .bp-gm { position: fixed; z-index: 70; width: 204px; box-sizing: border-box; background: #161b22; border: 1px solid #2f3a46; border-radius: 10px; box-shadow: 0 10px 30px rgba(0, 0, 0, .6); padding: 5px; font: 13px system-ui; color: #e6edf3; }
+  .bp-gm.ph { width: 220px; }
+  .bp-gm button { display: flex; align-items: center; gap: 8px; width: 100%; height: 34px; padding: 0 10px; border: 0; border-radius: 7px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+  .bp-gm button .d { margin-left: auto; color: #8a96a3; font-variant-numeric: tabular-nums; }
+  .bp-gm button.on { background: rgba(59, 198, 232, .14); color: #5fd0e6; }
+  .bp-gm button.on .d { color: #5fd0e6; }
+  .bp-gm button.no { color: #9aa5b1; }
+  .bp-gm button.no.on { color: #5fd0e6; }
+  .bp-gm hr { border: 0; border-top: 1px solid #2a313a; margin: 4px 2px; }
+
+  /* ---------------------------------------------------------------- the phone (round 15's styles, round 16's slide) */
+  .bp.ph { padding: 0; background: #0b0d10; }
+  .bp.ph .bp-card { border: 0; border-radius: 0; background: #0b0d10; }
+  .bp.ph .bp-bar { height: 52px; padding: 0 10px; gap: 6px; border-bottom: 1px solid #222a33; flex-wrap: nowrap; }
+  .bp.ph .bp-btn { height: 36px; padding: 0 9px; font-size: 14px; flex: none; }
+  .bp.ph .bp-btn.ic { width: 36px; padding: 0; justify-content: center; }
+  .bp.ph .bp-btn.ic svg { width: 17px; height: 17px; }
+  .bp.ph .bp-btn.ic.on { border-color: rgba(59, 198, 232, .55); color: #5fd0e6; }
+  .bp-lk { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 36px; height: 36px; padding: 0; border-radius: 9px; border: 1px solid rgba(59, 198, 232, .55); background: rgba(59, 198, 232, .14); color: #5fd0e6; cursor: pointer; }
+  .bp-lk svg { width: 13px; height: 15px; }
+  .bp-lk.off { border-color: #2f3a46; background: #12161b; color: #9aa5b1; }
+  /* a member's phone, locked: round 19b's padlock and words on a slim line of their own under the bar */
+  .bp-lk2 { display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 12px; border-bottom: 1px solid #222a33; color: #9aa5b1; font: 600 13px system-ui; flex: none; }
+  .bp-lk2 svg { width: 14px; height: 14px; }
+  /* (built) the phone's search, opened by its magnifier, on a slim line of its own under the bar */
+  .bp-srchline { display: flex; padding: 6px 10px; border-bottom: 1px solid #222a33; flex: none; }
+  .bp-srchline .bp-srch { width: auto; flex: 1; }
+  .bp-srchline .bp-srch input { font-size: 16px; }
+
+  /* one sideways scroller holds the headings and the rows; the names stay put (round 16). (built) it scrolls down too,
+     the headings held at its top */
+  .bp-hs { flex: 1; min-height: 0; overflow: auto; scrollbar-width: none; position: relative; overscroll-behavior: contain; }
+  .bp-hs::-webkit-scrollbar { display: none; }
+  .bp-zoom { width: max-content; min-width: 100%; }
+  .bp-cols, .bp-row { display: grid; column-gap: 5px; align-items: center; width: max-content; padding: 0 12px 0 0; }
+  .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { grid-template-columns: 132px 54px 44px 46px 50px 50px 76px 76px 76px 76px 76px; }
+  .bp-zoom.taken .bp-cols, .bp-zoom.taken .bp-row { grid-template-columns: 132px repeat(11, 40px); }
+  .bp-cols { position: sticky; top: 0; z-index: 4; height: 28px; border-bottom: 1px solid #2a313a; font: 600 9px system-ui; letter-spacing: .04em; color: #8a96a3; text-align: right; background: #0b0d10; white-space: nowrap; }
+  .bp-cols > span:first-child { position: sticky; left: 0; z-index: 2; padding-left: 12px; align-self: stretch; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; background: #0b0d10; text-align: left; }
+  .bp-cols .sep, .bp-row .sep { border-left: 1px solid #222a33; padding-left: 6px; }
+  .bp-cols .ok { padding-right: 39px; }
+  .bp-row { min-height: 50px; border-bottom: 1px solid #1a2027; text-align: right; font-variant-numeric: tabular-nums; }
+  .bp-row.me { background: rgba(155, 89, 255, .07); }
+  .bp-who { position: sticky; left: 0; z-index: 2; padding-left: 12px; align-self: stretch; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 3px; min-width: 0; text-align: left; background: #0b0d10; }
+  .bp-row.me > .bp-who { background: #120f1a; }
+  .bp-who .puck { max-width: 118px; }
+  .bp-gd { display: inline-flex; align-items: center; gap: 4px; padding: 0; border: 0; background: none; font: 500 11.5px system-ui; color: #9aa5b1; white-space: nowrap; cursor: pointer; }
+  .bp-gd svg { width: 8px; height: 8px; color: #6b7785; }
+  .bp-gd.none { color: #F2C879; font-weight: 600; }
+  .bp-gd.ro { cursor: default; }
+  .bp-row .bp-bx { min-width: 0; width: 100%; height: 30px; padding: 0 7px; font-size: 14px; }
+  .bp-row .bp-fb { display: flex; }
+  .bp-row .bp-pend { font-size: 14px; }
+  .bp-row .bp-war { font: 800 15px system-ui; }
+  .bp-oilc { font: 600 14px system-ui; color: #e6edf3; display: inline-flex; justify-content: flex-end; gap: 5px; }
+  .bp-row .bp-oil .ch { margin-left: 5px; }
+  .bp-oc { display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px; padding-right: 6px; }
+  .bp-oc .bp-fb { flex: none; }
+  .bp-oc .bp-bx { width: 40px; flex: none; }
+  .bp-oc .bp-opd { margin-left: 0; min-width: 30px; font-size: 11.5px; }
+  /* read only, round 19b */
+  .bp-row .bp-ro { min-width: 0; padding-right: 0; height: 30px; font: 700 14px system-ui; }
+  .bp-oc .bp-ro { width: 40px; justify-content: flex-end; }
+  .bp-hs .bp-grp { display: flex; align-items: center; width: max-content; min-width: 100%; box-sizing: border-box; height: 30px; padding: 0; background: #10151b; border-bottom: 1px solid #1d242c; font: 800 12px system-ui; letter-spacing: .06em; color: #f1f4f7; }
+  .bp-hs .bp-grp .gl { position: sticky; left: 0; padding-left: 12px; display: inline-flex; align-items: center; background: #10151b; height: 100%; }
+  .bp-hs .bp-grp i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 9px; }
+  .bp-hs .bp-grp em { font-style: normal; color: #8a96a3; font-weight: 500; letter-spacing: 0; margin-left: 6px; }
+  /* (built) an iPhone zooms the page on a box whose letters are under 16px: never on the page's own boxes (index.html holds
+     the page's zoom on an iPhone; a phone's box keeps the drawing's 14px) */
+
+  /* ---------------------------------------------------------------- the tab row with Balances (round 19 — D1254, D1483) */
+  @media (max-width: 700px) {
+    /* four tabs share the row with ⚙ in round 19's tighter spacing (`full-r19-nav.mjs`); each keeps at least its own words'
+       width (the walk's B-F1, 27 Oct 26), which the drawing's own fit at 402 and 375 left untouched */
+    .lw-top .lw-tabs.lw-tabs .intab { flex: 1 1 auto; padding: 4px 5px; gap: 4px; font-size: 12.5px; }
+    .lw-top .lw-tabs.lw-tabs .intab .btnglyph { width: 13px; height: 13px; }
+  }
+  /* on a narrow iPhone the tabs drop their icons — under 400 wide (reading 13: his 402 and a 390 keep them, a 375 drops them —
+     `full/m5a/m5b-b5-tabs-375-noicons`); the words and Approvals' count stay */
+  @media (max-width: 399.98px) {
+    .lw-top .lw-tabs.lw-tabs .intab .btnglyph { display: none; }
+  }
+
+  /* ---------------------------------------------------------------- the Grades window (round 14's `.zgw`) */
+  /* where it stands: on a desktop under "Grades…", its right edge on the button's (GradesSheet.tsx writes left and top); on a
+     phone in the middle of the screen (D997 — the app's float windows' own way: both edges, automatic margins, its height) */
+  .bidsheet[data-testid="grades-sheet"] {
+    width: 470px; max-width: calc(100vw - 24px); bottom: auto; transform: translate(var(--lw-dx, 0px), var(--lw-dy, 0px));
+    padding: 0; background: #161b22; border: 1px solid #2f3a46; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, .6);
+    color: #c9d1d9; font: 13px system-ui;
+  }
+  @media (max-width: 700px) {
+    .bidsheet[data-testid="grades-sheet"] { left: 12px; right: 12px; width: auto; top: 12px; bottom: 12px; margin: auto 0; height: fit-content; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); }
+  }
+  .bidsheet[data-testid="grades-sheet"] .gw-hd { display: flex; align-items: center; gap: 10px; height: 46px; box-sizing: border-box; padding: 0 14px; margin: 0; top: 0; border-bottom: 1px solid #2a323c; background: #161b22; }
+  .bidsheet[data-testid="grades-sheet"] .gw-hd::before { color: #6b7785; }
+  .bidsheet[data-testid="grades-sheet"] .gw-hd b { font: 800 15px system-ui; letter-spacing: .06em; color: #f1f4f7; }
+  .bidsheet[data-testid="grades-sheet"] .gw-hd .x { margin-left: auto; color: #9aa5b1; font-size: 16px; }
+  .gw-r { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 14px; border-bottom: 1px solid #222a33; color: #e6edf3; font-weight: 600; }
+  .gw-r.h { height: 30px; font: 600 9.5px system-ui; letter-spacing: .1em; color: #8a96a3; }
+  .gw-r.h .dh { width: 130px; text-align: right; white-space: nowrap; letter-spacing: .06em; }
+  .gw-r .n { margin-left: auto; color: #8a96a3; font-weight: 500; white-space: nowrap; }
+  .gw-r .gp { width: 12px; flex: none; padding: 0; border: 0; background: none; color: #6b7785; font: inherit; line-height: 1; }
+  .gw-grip { cursor: grab; height: 30px; }
+  .gw-nmh { width: 160px; flex: none; }
+  .gw-nmw { position: relative; display: inline-flex; flex: none; }
+  .gw-nm { display: inline-flex; align-items: center; box-sizing: border-box; width: 160px; height: 30px; padding: 0 10px; border: 1px solid #66717f; border-radius: 7px; background: #0d1217; color: #f1f4f7; font: 600 13.5px system-ui; outline: none; }
+  .gw-nm:focus { border-color: #3bc6e8; }
+  .gw-nmw.bad .gw-nm { border-color: #FF7A84; }
+  .gw-nmw .bp-err { left: 0; right: auto; }
+  .gw-days { display: inline-flex; flex: none; }
+  /* the "+36" box is a box of the page's own (BalancesPage.tsx FigBox), at the drawing's 130 wide — never the sheets' 40px field */
+  .bidsheet .gw-days .bp-bx.mth-in { width: 130px; min-width: 130px; min-height: 0; height: 28px; padding: 0 9px; border: 1px solid #66717f; border-radius: 7px; background: #0d1217; color: #f1f4f7; font: 700 13.5px system-ui; }
+  .bidsheet .gw-days .bp-bx.mth-in:focus { border-color: #3bc6e8; }
+  .gw-r .xx { width: 18px; flex: none; padding: 0; border: 0; background: none; text-align: center; color: #FF7A84; font-size: 14px; cursor: pointer; }
+  .gw-r.dragging { opacity: .55; }
+  /* ONE landing line a gap (D890) — the ⚙ lists' own line */
+  .gw-r.dragover { box-shadow: inset 0 2px 0 var(--accent); }
+  .gw-r.dragover.after { box-shadow: inset 0 -2px 0 var(--accent); }
+  .gw-ask { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 14px; border-bottom: 1px solid #222a33; background: #1d1810; color: #F2C879; font: 600 12.5px system-ui; }
+  .gw-ask span { flex: 1 1 200px; }
+  .gw-yes, .gw-no { height: 30px; padding: 0 12px; border-radius: 8px; font: 600 13px system-ui; cursor: pointer; }
+  .gw-yes { border: 1px solid #FF7A84; background: transparent; color: #FF7A84; }
+  .gw-no { border: 1px solid #2f3a46; background: #12161b; color: #e6edf3; }
+  .gw-add { padding: 10px 14px; }
+  .gw-ad { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid #2f3a46; background: #12161b; color: #e6edf3; font: 600 13.5px system-ui; cursor: pointer; }
+  .bidsheet[data-testid="grades-sheet"] button:focus-visible, .bidsheet[data-testid="grades-sheet"] input:focus-visible { outline: 2px solid #3bc6e8; outline-offset: 2px; }
+  @media (max-width: 520px) {
+    /* the narrow phone: the holds column and the days box give the name room */
+    .gw-nm, .gw-nmh { width: 120px; }
+    .bidsheet .gw-days .bp-bx.mth-in { width: 64px; min-width: 64px; }
+    .gw-r.h .dh { width: 64px; }
+  }
+}
