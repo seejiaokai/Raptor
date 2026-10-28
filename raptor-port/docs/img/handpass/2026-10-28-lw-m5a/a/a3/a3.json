@@ -1,0 +1,227 @@
+[
+ {
+  "id": "A20 Grades… opens (beside m5c-c1-grades)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sheet box {\"left\":828,\"top\":136,\"right\":1298,\"bottom\":486,\"vh\":860}; Senior pilot 16 people ++36 / Junior pilot 12 people ++33 / Senior WSO 7 people ++21 / Junior WSO 11 people ++18 / Ops A 3 people ++14",
+  "pics": [
+   "20-grades-open"
+  ]
+ },
+ {
+  "id": "A21 rename Junior pilot → \"Junior pilot X\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sheet row 2 \"Junior pilot X\"; Recon's grade box reads \"Junior pilot X+33\"; Undo tip \"Undo — the grades list\"",
+  "pics": [
+   "21-renamed"
+  ]
+ },
+ {
+  "id": "A22 rename to a name another grade has",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "words [\"Another grade has that name\"]; row 2 now \"Senior pilot\"",
+  "pics": [
+   "22-rename-duplicate"
+  ]
+ },
+ {
+  "id": "A22b Escape in a refused name box (reverts, then closes?)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING: sheet still open after one Escape: true; row 2 name \"Junior pilot X\"",
+  "pics": []
+ },
+ {
+  "id": "A23 rename to an empty name",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words [\"Give the grade a name\"]; row 2 \"\"",
+  "pics": [
+   "23-rename-empty"
+  ]
+ },
+ {
+  "id": "A24 \"+ days\" 33 → 35",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "row 2 days \"+35\"; Recon's grade box \"Junior pilot X+35\"; Undo tip \"Undo — the grades list\"",
+  "pics": []
+ },
+ {
+  "id": "A24 \"+ days\" -1",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING: row 2 days box \"+35\"; Recon's box \"Junior pilot X+35\"; words [\"Type the days added each 1 Jan, like 36\"]",
+  "pics": [
+   "24-days-neg"
+  ]
+ },
+ {
+  "id": "A24 \"+ days\" 36.5",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING: row 2 days box \"+36.5\"; Recon's box \"Junior pilot X+36.5\"; words []",
+  "pics": [
+   "24-days-half"
+  ]
+ },
+ {
+  "id": "A24 \"+ days\" x",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING: row 2 days box \"+36.5\"; Recon's box \"Junior pilot X+36.5\"; words [\"Type the days added each 1 Jan, like 36\"]",
+  "pics": [
+   "24-days-x"
+  ]
+ },
+ {
+  "id": "A25 reorder by drag: Ops A up to the top (one landing line while dragging)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "order before sp,jp,sw,jw,opsa, after opsa,sp,jp,sw,jw; landing-line candidates while dragging: []; Undo tip \"Undo — the grades list\"",
+  "pics": [
+   "25-drag-mid",
+   "26-drag-done"
+  ]
+ },
+ {
+  "id": "A26 delete a grade people hold asks first",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "holds before \"12 people\"; the question: \"12 people hold Junior pilot X: they become No grade Delete Keep\"",
+  "pics": [
+   "27-delete-ask"
+  ]
+ },
+ {
+  "id": "A26b \"keep\" leaves it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "rows opsa,sp,jp,sw,jw",
+  "pics": []
+ },
+ {
+  "id": "A27 delete confirmed: holders show \"No grade\" in amber",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sheet order now opsa,sp,sw,jw; Recon's box \"No grade–\" style {\"color\":\"rgb(242, 200, 121)\",\"border\":\"dashed rgba(242, 200, 121, 0.8)\"}; Undo tip \"Undo — the grades list\"",
+  "pics": [
+   "28-after-delete"
+  ]
+ },
+ {
+  "id": "A28 Undo of the delete, Grades window open (updates in place)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "sheet order opsa,sp,jp,sw,jw; Recon's box \"Junior pilot X+33\"; window still open true",
+  "pics": [
+   "29-undo-delete"
+  ]
+ },
+ {
+  "id": "A29 + Grade (name + days, Enter)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "draft ids grade-draft,grade-draft-name,grade-draft-days; rows Ops A ++14 / Senior pilot ++36 / Junior pilot X ++33 / Senior WSO ++21 / Junior WSO ++18 / Test grade ++12; Undo tip \"Undo — the grades list\"",
+  "pics": [
+   "30-add-draft",
+   "31-added"
+  ]
+ },
+ {
+  "id": "A30 + Grade with a name already live",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words \"Another grade has that name\"",
+  "pics": [
+   "32-add-dup"
+  ]
+ },
+ {
+  "id": "A30b + Grade with days \"x\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "words \"Type the days added each 1 Jan, like 36\"",
+  "pics": []
+ },
+ {
+  "id": "A31 Undo of the add",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "order opsa,sp,jp,sw,jw; names Ops A/Senior pilot/Junior pilot X/Senior WSO/Junior WSO",
+  "pics": []
+ },
+ {
+  "id": "A31b ✕ closes the Grades window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "focus bal-grades",
+  "pics": []
+ },
+ {
+  "id": "A32 a row's grade box opens its list (beside m5c-c1-picker)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"top\":615,\"bottom\":840,\"vh\":860,\"opts\":[\"opsa:Ops A+14\",\"sp:Senior pilot+36\",\"jp:Junior pilot X+33\",\"sw:Senior WSO+21\",\"jw:Junior WSO+18\",\"none:No grade–\"]}",
+  "pics": [
+   "33-grade-list"
+  ]
+ },
+ {
+  "id": "A32b keyboard: two Down + Enter picks a grade",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Recon's box was \"Junior pilot+33\" now \"Junior WSO+18\"; list still open false; focus bal-grade-prism; Undo tip \"Undo — Recon’s grade\"",
+  "pics": []
+ },
+ {
+  "id": "A32c pick \"No grade\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box \"No grade–\" style {\"color\":\"rgb(242, 200, 121)\",\"border\":\"dashed rgba(242, 200, 121, 0.8)\"}",
+  "pics": [
+   "34-no-grade"
+  ]
+ },
+ {
+  "id": "A32d Undo twice restores the grade",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "box \"Junior pilot X+33\" (was \"Junior pilot+33\")",
+  "pics": []
+ },
+ {
+  "id": "A32e Escape closes the list, focus back on the box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "list open false; focus bal-grade-prism",
+  "pics": []
+ },
+ {
+  "id": "A33 lock on (beside m5c-c3-lock); admin keeps his boxes and can still type (scn 47)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "aria-checked true; button words \"Lock for members\"; Ranger's boxes 7; Saber typed Ranger 14 → App 14",
+  "pics": [
+   "35-lock-on"
+  ]
+ },
+ {
+  "id": "A34 lock off",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "aria-checked false",
+  "pics": [
+   "36-lock-off"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

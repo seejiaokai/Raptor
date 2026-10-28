@@ -1,0 +1,172 @@
+[
+ {
+  "id": "N0 Ranger opens his own window (My leave): the first visit, no dots",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window \"Ranger\" boxes 7; lines: LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "31a-first-visit"
+  ]
+ },
+ {
+  "id": "N1 his own change: Ranger places his own LL bid on Tue 24 Feb",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": []
+ },
+ {
+  "id": "N2a approve Thu 29 Jan AM",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pressed Approve on its Approvals line",
+  "pics": []
+ },
+ {
+  "id": "N2b refuse Thu 12 – Fri 13 Feb",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pressed Refuse on its Approvals line",
+  "pics": []
+ },
+ {
+  "id": "N2c put back to a bid (26–27 Jan, second tap on the lit Approve)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Approve button before \"dchip dec approve lit|Approved\", after \"null\"",
+  "pics": [
+   "32c-put-back"
+  ]
+ },
+ {
+  "id": "N2d move CCL Mon 2 Mar to Wed 4 Mar",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "move banner gone: true; note ",
+  "pics": [
+   "32d-moved"
+  ]
+ },
+ {
+  "id": "N2e delete CL Tue 17 Mar",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pressed Delete (twice if asked)",
+  "pics": [
+   "32e-deleted"
+  ]
+ },
+ {
+  "id": "N2f re-type Mon 16 Mar AM from PL to FCL",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": []
+ },
+ {
+  "id": "N2g admin places LL Tue 7 Apr already approved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": []
+ },
+ {
+  "id": "N6 (51) the admin opens Ranger's window: no dots for him on it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines: LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Pending | LL Thu 29 Jan, AM 0.5 Approved | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Refused | LL Tue 24 Feb 1 Pending | CCL Wed 4 Mar 1 Pending | FCL Mon 16 Mar, AM 0.5 Approved | LL Tue 7 Apr 1 Approved",
+  "pics": [
+   "32g-admin-opens-ranger"
+  ]
+ },
+ {
+  "id": "N3 Ranger opens his window: the lines Saber changed carry the cyan dot and \"who, when\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Pending put back to a bid by Saber · 29 Oct 01:58 [DOT] {put back to a bid by Saber · 29 Oct 01:58} | LL Thu 29 Jan, AM 0.5 Approved approved by Saber · 29 Oct 01:58 [DOT] {approved by Saber · 29 Oct 01:58} | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Refused refused by Saber · 29 Oct 01:58 [DOT] {refused by Saber · 29 Oct 01:58} | LL Tue 24 Feb 1 Pending | CCL Wed 4 Mar 1 Pending moved by Saber · 29 Oct 01:59 [DOT] {moved by Saber · 29 Oct 01:59} | FCL Mon 16 Mar, AM 0.5 Approved added and approved by Saber · 29 Oct 01:59 [DOT] {added and approved by Saber · 29 Oct 01:59} | CL Tue 17 Mar 1 Deleted deleted by Saber · 29 Oct 01:59 [DOT] {deleted by Saber · 29 Oct 01:59} | LL Tue 7 Apr 1 Approved added and approved by Saber · 29 Oct 01:59 [DOT] {added and approved by Saber · 29 Oct 01:59}",
+  "pics": [
+   "33b-ranger-sees-changes",
+   "33b-window-crop"
+  ]
+ },
+ {
+  "id": "N4 his own bid (24 Feb) is never dotted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"id\":\"pw-line-2026-02-24\",\"text\":\"LL Tue 24 Feb 1 Pending\",\"dot\":false,\"who\":\"\",\"struck\":false}",
+  "pics": [
+   "33b-ranger-sees-changes"
+  ]
+ },
+ {
+  "id": "N5 the deleted line (17 Mar) stays struck through for that visit",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"id\":\"pw-line-2026-03-17\",\"text\":\"CL Tue 17 Mar 1 Deleted deleted by Saber · 29 Oct 01:59\",\"dot\":true,\"who\":\"deleted by Saber · 29 Oct 01:59\",\"struck\":false}",
+  "pics": [
+   "33b-ranger-sees-changes"
+  ]
+ },
+ {
+  "id": "N7 bell lines Ranger has after the decisions",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bell: [\"Your leaveTue 7 Apr LL added and approved · Saber now\",\"Your leaveMon 16 Mar FCL added and approved · Saber now\",\"Your leaveTue 17 Mar CL bid deleted · Saber now\",\"Your leaveMon 2 Mar CCL bid moved to Wed 4 Mar · Saber now\",\"Your leaveMon 26 – Tue 27 Jan LL put back to a bid · Saber now\",\"Your leaveThu 12 – Fri 13 Feb LL refused · Saber now\",\"Your leaveThu 29 Jan LL approved · Saber now\"]",
+  "pics": [
+   "33a-bell"
+  ]
+ },
+ {
+  "id": "N8 close and reopen: no dots, no struck line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Pending | LL Thu 29 Jan, AM 0.5 Approved | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Refused | LL Tue 24 Feb 1 Pending | CCL Wed 4 Mar 1 Pending | FCL Mon 16 Mar, AM 0.5 Approved | LL Tue 7 Apr 1 Approved",
+  "pics": [
+   "33c-reopened"
+  ]
+ },
+ {
+  "id": "N9 reload, sign in, open: still no dots (the visit already written)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Pending | LL Thu 29 Jan, AM 0.5 Approved | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Refused | LL Tue 24 Feb 1 Pending | CCL Wed 4 Mar 1 Pending | FCL Mon 16 Mar, AM 0.5 Approved | LL Tue 7 Apr 1 Approved",
+  "pics": [
+   "33d-after-reload"
+  ]
+ },
+ {
+  "id": "O1 Ranger opens Recon's window: read only, no boxes, no dots, no \"who, when\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "name Recon; boxes 0; App 31 cf 3 war 31; lines ; read-only spans: 7",
+  "pics": [
+   "34a-other-readonly",
+   "34a-other-crop"
+  ]
+ },
+ {
+  "id": "O2 OIL \"›\" in Recon's window opens Recon's OIL tracker",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "tab now \"oil-tracker\"; the window afterwards: closed; tracker words: Grid Balances OIL VIEW JAN - DEC 26 JAN - DEC 27 MY LEAVE · next 26 Jan LVE 12.5 · OIL 0 · 4 pending › ▾ Manning Open fo",
+  "pics": [
+   "34b-oil-opened"
+  ]
+ },
+ {
+  "id": "O3 a member's own window: boxes while unlocked",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "boxes 7; lock null",
+  "pics": [
+   "35a-own-member"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

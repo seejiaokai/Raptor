@@ -1,0 +1,62 @@
+[
+ {
+  "id": "A70 (scn 12) Approve all: each App bal down by his pending days, Pending gone, War bal unchanged",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "Approvals count 13 → 2; button after the first tap: \"Approve 11 — tap again\"; 6 men with LVE pending moved (bane −2.5, slash −1.5, harpoon −4, bruise −0.5, wolf −1, ammo −0.5); mismatches: harpoon: App 16→16, Pending −4→−4, War 12→12 | ammo: App 19.5→19.5, Pending −0.5→−0.5, War 19→19",
+  "pics": [
+   "70-approve-all-armed",
+   "71-approve-all-done"
+  ]
+ },
+ {
+  "id": "A71 (scn 12) one Undo puts all of them back; the page stays where it is (D672)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "every row back as before: true; scroll {\"top\":500,\"left\":0,\"win\":0} → {\"top\":500,\"left\":0,\"win\":0}",
+  "pics": [
+   "72-approve-all-undone"
+  ]
+ },
+ {
+  "id": "A72 (scn 49) proof the member's bell reads: it lists the leave decisions Approve all made",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines before 0, after 5: [\"Your leaveThu 12 – Fri 13 Feb LL approved · Saber now\",\"Your leaveTue 17 Mar CL approved · Saber now\",\"Your leaveMon 2 Mar CCL approved · Saber now\",\"Your leaveMon 16 Mar PL approved · Saber now\"]",
+  "pics": []
+ },
+ {
+  "id": "A73 (scn 49) then a typed figure and a grade change add no bell line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines 5 → 5; new: []",
+  "pics": []
+ },
+ {
+  "id": "A74 (scn 54) a tap on the LVE figure beside a name opens the person window, no breakdown sheet",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid: buttons naming figures/balances: []; the cell reads \"207.5\"; after the tap {\"personWindow\":true,\"sheets\":[]} (the window stands below the screen on a desktop — the host's known fault; Escape closes it)",
+  "pics": [
+   "73-grid-after-drawer-removal",
+   "74-tap-lve-figure"
+  ]
+ },
+ {
+  "id": "A75 (scn 54d) the drag down the LVE figures gives no bar",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "drag-related elements during the drag []; after the lift, bars/buttons offering extra LVE: []; a person window may open instead: false",
+  "pics": [
+   "75-drag-down-lve",
+   "76-after-drag-down-lve"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

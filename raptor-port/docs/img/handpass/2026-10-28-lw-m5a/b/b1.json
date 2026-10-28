@@ -1,0 +1,65 @@
+[
+ {
+  "id": "36 tab row 402",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "labels Grid · Approvals 13 · Balances · OIL; icons true,true,true,true (drawing: kept); gear at x 346-390; one line true; page width 402 vs 402; tabs 16-73 75-196 198-280 282-334",
+  "pics": [
+   "t1-tabs-402"
+  ]
+ },
+ {
+  "id": "36 tab row 390",
+  "size": "390",
+  "verdict": "FAIL",
+  "said": "labels Grid · Approvals 13 · Balances · OIL; icons false,false,false,false (drawing: kept); gear at x 334-378; one line true; page width 390 vs 390; tabs 16-70 72-190 192-271 273-322",
+  "pics": [
+   "t1-tabs-390"
+  ]
+ },
+ {
+  "id": "36 tab row 375",
+  "size": "375",
+  "verdict": "PASS",
+  "said": "labels Grid · Approvals 13 · Balances · OIL; icons false,false,false,false (drawing: dropped); gear at x 319-363; one line true; page width 375 vs 375; tabs 16-66 68-182 184-260 262-307",
+  "pics": [
+   "t1-tabs-375"
+  ]
+ },
+ {
+  "id": "32 quick flick sideways",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "scrollLeft 0->225 of max 416; vertical scroll 0->0; names column left 0 (was 0); heading row top 193 (was 193)",
+  "pics": [
+   "t3a-flick-left"
+  ]
+ },
+ {
+  "id": "32 slow drag sideways back",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "scrollLeft 225->0; names left 0",
+  "pics": [
+   "t3b-slow-back"
+  ]
+ },
+ {
+  "id": "32 diagonal swipe",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "scrollLeft 0->199, scrollTop 0->170, window 0; names left 0, heading top 193",
+  "pics": [
+   "t3c-diagonal"
+  ]
+ },
+ {
+  "id": "32 vertical scroll holds the heading row",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "scrollTop 170->555; heading top 193->193; window scroll 0",
+  "pics": [
+   "t3d-down"
+  ]
+ }
+]

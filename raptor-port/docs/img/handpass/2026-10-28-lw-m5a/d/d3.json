@@ -1,0 +1,52 @@
+[
+ {
+  "id": "row6 route: Pick a range from Thu 31 Dec 26 to Mon 4 Jan 27 in the bid window (Gambit)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "selection after picking both ends read as printed above; window placed: true; Gambit's lines after: 2026-01-08 LL Thu 8 Jan 1 Approved / 2026-01-09 LL Fri 9 Jan 1 Refused / 2026-01-23 LL Fri 23 Jan, AM 0.5 Pending / 2026-02-24 OIL Tue 24 Feb 1 Pending / 2026-07-15 OIL Wed 15 Jul 1 Approved / 2026-07-16 OIL Thu 16 Jul 1 Approved / 2026-12-31 LL Thu 31 Dec 1 Approved",
+  "pics": [
+   "d3-range-bruise-2026-12-31"
+  ]
+ },
+ {
+  "id": "row6 20 Dec: 23 incl 3, LL Thu 31 Dec – Mon 4 Jan approved after typing (spec 21 incl 2)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 21; incl. 2; Pending –; War bal 21; window App 21; window war 21; grid figure 21 · lines 2026-12-31 LL Thu 31 Dec – Mon 4 Jan 2 Approved",
+  "pics": [
+   "d3-row6-20dec-bal-win",
+   "d3-row6-20dec-grid"
+  ]
+ },
+ {
+  "id": "row8 20 Dec: 10 incl 4, LL Tue 29 – Wed 30 Dec pending (spec App 10, Pending −2, War 8)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 10; incl. 4; Pending −2; War bal 8; window App 10; window war 8; grid figure 8",
+  "pics": [
+   "d3-row8-28dec-bal-win",
+   "d3-row8-28dec-grid"
+  ]
+ },
+ {
+  "id": "row8 Approvals line for Diesel (DAYS 2, LVE BAL 8)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Diesel D LL Tue 29 – Wed 30 Dec › 2 days 8 P 27 29 Oct 02:14 · by Saber Approve Refuse",
+  "pics": []
+ },
+ {
+  "id": "ERROR",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "TimeoutError: page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"approvals-page\"]') to be visible\u001b[22m\n",
+  "pics": []
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

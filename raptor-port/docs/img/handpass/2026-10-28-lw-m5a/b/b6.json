@@ -1,0 +1,134 @@
+[
+ {
+  "id": "36 tab row 402 (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "icons YYYY; gear 346-390; tabs 16-71 73-196 198-282 284-334; page width 402/402",
+  "pics": [
+   "w-t1-tabs-402"
+  ]
+ },
+ {
+  "id": "36 tab row 375 (WebKit)",
+  "size": "375 webkit",
+  "verdict": "PASS",
+  "said": "icons nnnn; gear 319-363; tabs 16-64 66-182 184-262 264-307; page width 375/375",
+  "pics": [
+   "w-t1-tabs-375"
+  ]
+ },
+ {
+  "id": "2 Balances page at rest (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "{\"app\":\"15\",\"cf\":\"2\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot · +36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"1 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "w-b1-rest"
+  ]
+ },
+ {
+  "id": "32 slid sideways: the names column stays, the headings follow the figures (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "scrollLeft 0->225; names left 0; heading row left -225 top 194 (was 194)",
+  "pics": [
+   "w-b2-slid"
+  ]
+ },
+ {
+  "id": "32 slid and scrolled down: the heading row held at the top, names at the left (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "scroll 225/400; heading top 194 (was 194); names left 0; window scroll 0",
+  "pics": [
+   "w-b2-slid-down"
+  ]
+ },
+ {
+  "id": "3 typed 16 + Enter (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "App bal 16, War bal 13.5",
+  "pics": [
+   "w-b3-typed"
+  ]
+ },
+ {
+  "id": "19 refused 17.3: its words in view (WebKit)",
+  "size": "402 webkit",
+  "verdict": "FAIL",
+  "said": "{\"text\":\"Type a whole number or a half, like 17 or 17.5\",\"l\":-49,\"r\":191,\"vw\":402}",
+  "pics": [
+   "w-b3-refused"
+  ]
+ },
+ {
+  "id": "29 a tap on CL: the box brought into sight sideways (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "{\"l\":311,\"r\":351,\"whoR\":132,\"id\":\"bal-CL-bane\",\"sl\":416}",
+  "pics": [
+   "w-b4-CL-tapped"
+  ]
+ },
+ {
+  "id": "F padlock on then off (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "after first press true",
+  "pics": [
+   "w-b5-lock-on",
+   "w-b5-lock-on-bar"
+  ]
+ },
+ {
+  "id": "14 person window from a name on Balances, admin (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "{\"name\":\"Ranger\",\"taken\":\"3 taken\",\"lve\":\"LVE3 takenApp balPendingWar bal−2.512.5incl. carried fwd · till 31 Dec\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"cf\":\"2\",\"oil\":\"0›\",\"med\":\"0\",\"lock\":null,\"other\":{\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"},\"boxes\":7,\"year\":{\"value\":\"ahead\",\"options\":[\"2026 and ahead\"]},\"lines\":\"8 lines\",\"box\":{\"left\":10,\"right\":392,\"top\":45,\"bottom\":829,\"width\":382},\"vh\":874,\"vw\":402,\"closeY\":67}",
+  "pics": [
+   "w-c1-own-window"
+  ]
+ },
+ {
+  "id": "close",
+  "size": "402 webkit",
+  "verdict": "NOTE",
+  "said": "closed by close button",
+  "pics": []
+ },
+ {
+  "id": "1 member unlocked (WebKit): his row in boxes, others read only",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "his boxes 7; Saber's 0; tabs 3; gear false",
+  "pics": [
+   "w-m1-member"
+  ]
+ },
+ {
+  "id": "1 member locked (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "helper {\"ok\":true,\"wrote\":true}; words \"Locked by admin\"; boxes 0",
+  "pics": [
+   "w-m2-locked"
+  ]
+ },
+ {
+  "id": "24/42 his own window locked (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "{\"name\":\"Ranger\",\"taken\":\"3 taken\",\"lve\":\"LVE3 takenApp balPendingWar bal15−2.512.5incl. 2 carried fwd · till 31 Dec\",\"pend\":\"−2.5\",\"war\":\"12.5\",\"cf\":\"2\",\"oil\":\"0›\",\"med\":\"0\",\"lock\":\"Locked by admin\",\"other\":{\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"},\"boxes\":0,\"year\":{\"value\":\"ahead\",\"options\":[\"2026 and ahead\"]},\"lines\":\"8 lines\",\"box\":{\"left\":10,\"right\":392,\"top\":44,\"bottom\":831,\"width\":382},\"vh\":874,\"vw\":402,\"closeY\":66}",
+  "pics": [
+   "w-m3-locked-window"
+  ]
+ },
+ {
+  "id": "errors (WebKit)",
+  "size": "402 webkit",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

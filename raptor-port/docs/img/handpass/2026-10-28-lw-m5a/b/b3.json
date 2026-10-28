@@ -1,0 +1,245 @@
+[
+ {
+  "id": "F-lock phone padlock on (admin)",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "aria-checked true; label \"Lock for members: off\" -> \"Locked for members\"; class \"bp-lk off\" -> \"bp-lk\"; admin keeps his boxes: Ranger's row boxes 7",
+  "pics": [
+   "p1-lock-on-q",
+   "p1-lock-on",
+   "p1-lock-on-bar"
+  ]
+ },
+ {
+  "id": "F-lock phone padlock off again",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "aria-checked false; label \"Lock for members: off\"",
+  "pics": [
+   "p1-lock-off-q",
+   "p1-lock-off-again"
+  ]
+ },
+ {
+  "id": "29 tap bal-LVE-bane: the box in plain sight",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box x 137-191, y 461-491; names column ends 132; heading row ends 221; screen 402x874; focused true; top element is the box true; font 14px; scroll {\"top\":0,\"left\":0,\"win\":0}",
+  "pics": [
+   "p2-tap-bal-LVE-bane-q",
+   "p2-tap-bal-LVE-bane"
+  ]
+ },
+ {
+  "id": "29 tap bal-cf-bane: the box in plain sight",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box x 196-240, y 461-491; names column ends 132; heading row ends 221; screen 402x874; focused true; top element is the box true; font 14px; scroll {\"top\":0,\"left\":0,\"win\":0}",
+  "pics": [
+   "p2-tap-bal-cf-bane-q",
+   "p2-tap-bal-cf-bane"
+  ]
+ },
+ {
+  "id": "29 tap bal-CCL-bane: the box in plain sight",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box x 181-221, y 461-491; names column ends 132; heading row ends 221; screen 402x874; focused true; top element is the box true; font 14px; scroll {\"top\":0,\"left\":222,\"win\":0}",
+  "pics": [
+   "p2-tap-bal-CCL-bane-q",
+   "p2-tap-bal-CCL-bane"
+  ]
+ },
+ {
+  "id": "29 tap bal-FCL-bane: the box in plain sight",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box x 262-302, y 461-491; names column ends 132; heading row ends 221; screen 402x874; focused true; top element is the box true; font 14px; scroll {\"top\":0,\"left\":222,\"win\":0}",
+  "pics": [
+   "p2-tap-bal-FCL-bane-q",
+   "p2-tap-bal-FCL-bane"
+  ]
+ },
+ {
+  "id": "29 tap bal-PL-bane: the box in plain sight",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box x 343-383, y 461-491; names column ends 132; heading row ends 221; screen 402x874; focused true; top element is the box true; font 14px; scroll {\"top\":0,\"left\":222,\"win\":0}",
+  "pics": [
+   "p2-tap-bal-PL-bane-q",
+   "p2-tap-bal-PL-bane"
+  ]
+ },
+ {
+  "id": "29 tap bal-EL-bane: the box in plain sight",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box x 230-270, y 461-491; names column ends 132; heading row ends 221; screen 402x874; focused true; top element is the box true; font 14px; scroll {\"top\":0,\"left\":416,\"win\":0}",
+  "pics": [
+   "p2-tap-bal-EL-bane-q",
+   "p2-tap-bal-EL-bane"
+  ]
+ },
+ {
+  "id": "29 tap bal-CL-bane: the box in plain sight",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box x 311-351, y 461-491; names column ends 132; heading row ends 221; screen 402x874; focused true; top element is the box true; font 14px; scroll {\"top\":0,\"left\":416,\"win\":0}",
+  "pics": [
+   "p2-tap-bal-CL-bane-q",
+   "p2-tap-bal-CL-bane"
+  ]
+ },
+ {
+  "id": "29 Tab through the row (the keyboard's next arrow)",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "bal-LVE-bane: x 137-191 in sight | bal-cf-bane: x 196-240 in sight | bal-oil-bane: x 383-401 in sight | bal-CCL-bane: x 181-221 in sight | bal-FCL-bane: x 262-302 in sight | bal-PL-bane: x 343-383 in sight | bal-EL-bane: x 230-270 in sight",
+  "pics": [
+   "p2-tab-3",
+   "p2-tab-6"
+  ]
+ },
+ {
+  "id": "5 box against the keys (stand-in 300 px): bal-LVE-bane",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box y 461-491 of a 574-high screen; heading row ends 221; x 137-191 (names end 132); bars topbar has-undo 0-49, topbar lw-top lw-top-ph 49-102 — a Chromium stand-in only: his iPhone keeps the layout tall and pans the visible screen, so only his phone proves it",
+  "pics": [
+   "p3-keys-bal-LVE-bane"
+  ]
+ },
+ {
+  "id": "5 box against the keys (stand-in 300 px): bal-CL-bane",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box y 461-491 of a 574-high screen; heading row ends 221; x 311-351 (names end 132); bars topbar has-undo 0-49, topbar lw-top lw-top-ph 49-102 — a Chromium stand-in only: his iPhone keeps the layout tall and pans the visible screen, so only his phone proves it",
+  "pics": [
+   "p3-keys-bal-CL-bane"
+  ]
+ },
+ {
+  "id": "5 a box low on the page with the keys up (stand-in)",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "last row gizmo: box y before the tap 834-864; with a 574-high screen 536-566; heading row ends 221; focused true; Chromium stand-in only (his iPhone pans the visible screen instead)",
+  "pics": [
+   "p3-low-row-before",
+   "p3-low-row-keys"
+  ]
+ },
+ {
+  "id": "3 typed 16 + Enter: the figure and War bal",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "App bal 15->16, War bal 12.5->13.5, carried 2, pending −2.5; focus bal-LVE-bane",
+  "pics": [
+   "p4-typed-16"
+  ]
+ },
+ {
+  "id": "19 a refused figure 17.3: words under the box, old figure back",
+  "size": "402",
+  "verdict": "FAIL",
+  "said": "error words {\"text\":\"Type a whole number or a half, like 17 or 17.5\",\"l\":-49,\"r\":191,\"t\":495,\"b\":538,\"w\":240,\"cut\":false,\"vw\":402}; the box now reads 16",
+  "pics": [
+   "p4-refused-17.3"
+  ]
+ },
+ {
+  "id": "19 Escape after the refusal",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "box 16; error still shown: false",
+  "pics": [
+   "p4-after-escape"
+  ]
+ },
+ {
+  "id": "5d carried fwd 40 over App bal 16",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "App bal 16, carried 2; error words Carried forward is from 0 to 16",
+  "pics": [
+   "p4-cf-40"
+  ]
+ },
+ {
+  "id": "Undo once (back to the seed; the refused figures left no step)",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "App bal 15, carried 2; scroll {\"top\":0,\"left\":0,\"win\":0} (before {\"top\":0,\"left\":0,\"win\":0})",
+  "pics": []
+ },
+ {
+  "id": "3 a figure off screen to the right: CL typed 2",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "CL read \"2 −1\"; the box stood x 311-351 when typed (screen 402); scroll {\"top\":0,\"left\":416,\"win\":0}; War bal 12.5, App bal 15 (unchanged: it is another kind)",
+  "pics": [
+   "p5-CL-q",
+   "p5-CL-typed-noenter",
+   "p5-CL-entered"
+  ]
+ },
+ {
+  "id": "Undo of CL",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "CL 1 −1; scroll {\"top\":0,\"left\":416,\"win\":0}",
+  "pics": []
+ },
+ {
+  "id": "17 a typed figure, no Enter, then the view switch pressed",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "data-dirty 1; afterwards App bal 19, War bal 16.5 (saved to Ranger or put back: read the figure)",
+  "pics": [
+   "p5-tapaway"
+  ]
+ },
+ {
+  "id": "D-taken Days taken on a phone",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "columns NAME · GRADE | LL | OL | OIL | CCL | FCL | PL | EL | CL | MED | CSE | OD; no period heading drawn: true; Ranger LL 3, OL –, OIL –, CCL –, FCL –, PL –, EL –, CL –, MED –, CSE –, OD –",
+  "pics": [
+   "p6-taken"
+  ]
+ },
+ {
+  "id": "D-taken the kinds slide sideways too",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "scrollLeft 225; names column left 0",
+  "pics": [
+   "p6-taken-slid"
+  ]
+ },
+ {
+  "id": "28 Find a person \"rec\"",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"found\":true,\"id\":\"bal-row-prism\",\"t\":300,\"b\":350,\"colsB\":270,\"barB\":193,\"mark\":\"bp-row\",\"rowsShown\":1}",
+  "pics": [
+   "p7-search-open",
+   "p7-search-rec"
+  ]
+ },
+ {
+  "id": "41 Grades window on a phone: the heading \"AUTO + LVE ON 1 JAN\"",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"sheet\":{\"l\":12,\"r\":390,\"t\":262,\"b\":612},\"heads\":[{\"text\":\"AUTO + LVE ON 1 JAN\",\"l\":283,\"r\":347,\"sw\":64,\"cw\":64,\"ov\":\"visible\"}]}",
+  "pics": [
+   "p8-grades"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

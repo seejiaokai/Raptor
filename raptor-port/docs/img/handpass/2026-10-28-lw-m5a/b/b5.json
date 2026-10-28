@@ -1,0 +1,115 @@
+[
+ {
+  "id": "1/42 member, unlocked: his own row in boxes, others read only; no Grades, no lock",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "his row boxes 7, Saber's row boxes 0 (figures 17.5 1 0 0 0 0 0); his grade \"Senior pilot · +36\" (button? 0); controls {\"grades\":false,\"lock\":false,\"search\":true}; tabs Grid+icon · Balances+icon · OIL+icon, gear none",
+  "pics": [
+   "r1-member-unlocked"
+  ]
+ },
+ {
+  "id": "42 a tap on his grade words opens no list",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "list shown: false; person window opened: false",
+  "pics": [
+   "r1-grade-tap-q",
+   "r1-grade-tap"
+  ]
+ },
+ {
+  "id": "45 member types LVE 21, carried 3, CL 2",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"app\":\"21\",\"cf\":\"3\",\"pend\":\"−2.5\",\"war\":\"18.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot · +36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"2 −1\",\"boxes\":7,\"readOnly\":[]}; notes ",
+  "pics": [
+   "r2-member-wrote"
+  ]
+ },
+ {
+  "id": "45 after a reload, Saber reads Ranger's row",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "signed out by reload: true; {\"app\":\"21\",\"cf\":\"3\",\"pend\":\"−2.5\",\"war\":\"18.5\",\"oil\":\"0›\",\"grade\":\"Senior pilot · +36\",\"CCL\":\"3 −1\",\"FCL\":\"5\",\"PL\":\"2 −0.5\",\"EL\":\"4\",\"CL\":\"2 −1\",\"boxes\":7,\"readOnly\":[]}",
+  "pics": [
+   "r2-admin-reads"
+  ]
+ },
+ {
+  "id": "46 member: type 22, Undo, Redo (unlocked)",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "typed 22, Undo 21, Redo 22",
+  "pics": []
+ },
+ {
+  "id": "46 his Undo while locked is refused, with its reason",
+  "size": "402",
+  "verdict": "NOT WALKED",
+  "said": "SET-UP LIMIT: the bridge's lock is written as a step in HIS OWN undo list, so his Undo meets the lock step first and the app answers that; the real case (the lock in the admin's list, his earlier figure under it) cannot be built. bridge {\"ok\":true,\"wrote\":true}; read-only figures 22 3 3 5 2 4 2; notes on screen: Switch back to the admin view to undo that.; boxes 0",
+  "pics": [
+   "r3-undo-while-locked"
+  ]
+ },
+ {
+  "id": "46 unlocked again: the same Undo is accepted",
+  "size": "402",
+  "verdict": "NOT WALKED",
+  "said": "App bal 22; notes Switch back to the admin view to undo that.",
+  "pics": [
+   "r3-undo-after-unlock"
+  ]
+ },
+ {
+  "id": "1/5 member locked: all read only, \"Locked by admin\" on a slim line under the bar",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "words \"Locked by admin\"; line y 195-225, page bar ends 195, heading row starts 225; his figures 22 3 3 5 2 4 2",
+  "pics": [
+   "r4-member-locked"
+  ]
+ },
+ {
+  "id": "44 unlock arrives live: his boxes come back without reopening the page",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "boxes 7; locked line shown false",
+  "pics": []
+ },
+ {
+  "id": "44 the lock lands under a typed figure (16, no Enter): refusal shown where he can read it, 16 not saved",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "data-dirty was 1; boxes after 0; read-only App bal 22; notes Ranger LVE App bal not saved: Locked by admin; note box {\"t\":873,\"b\":874,\"l\":-1,\"r\":0,\"vh\":874}; his real Enter has no box left to be pressed in (the box goes)",
+  "pics": [
+   "r4-lock-under-box"
+  ]
+ },
+ {
+  "id": "14 own window: the marks on every leave line, and the window against the top bar",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "{\"lines\":[{\"id\":\"2026-01-19\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true},{\"id\":\"2026-01-26\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true},{\"id\":\"2026-01-29\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true},{\"id\":\"2026-02-02\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true},{\"id\":\"2026-02-12\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true},{\"id\":\"2026-03-02\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true},{\"id\":\"2026-03-16\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true},{\"id\":\"2026-03-17\",\"borderLeft\":\"3px rgb(59, 198, 232)\",\"boxShadow\":\"none\",\"cls\":\"ll-row go\",\"dot\":false,\"goBtn\":true}],\"win\":{\"t\":45,\"b\":829},\"topbar\":{\"t\":0,\"b\":49}}",
+  "pics": [
+   "r5-own-window"
+  ]
+ },
+ {
+  "id": "14 a tap on a leave line takes the grid there",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "pressed \"Mon 19 – Wed 21 Jan\"; window still open: false; grid tab selected: true; ring on a day: true",
+  "pics": [
+   "r5-line-tap-q",
+   "r5-line-tap"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]
