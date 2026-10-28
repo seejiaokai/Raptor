@@ -91,7 +91,10 @@ function dock(p: HTMLElement): void {
   const top = Math.round(Math.max(r.top + 64, bar + 8))
   p.style.left = `${Math.round(Math.max(12, Math.min(r.right, window.innerWidth) - 8 - w))}px`
   p.style.top = `${top}px`
+  p.style.bottom = 'auto'
   p.style.maxHeight = `${Math.max(200, window.innerHeight - top - 10)}px`
+  /* it places itself: the shared window's keyboard follower leaves it alone while no keyboard is up (Sheet.tsx) */
+  p.dataset.docked = '1'
 }
 
 export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
@@ -126,7 +129,7 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   useLayoutEffect(() => {
     const p = PANEL()
     if (!p) return
-    if (phone) { p.style.left = ''; p.style.top = ''; p.style.maxHeight = ''; return }
+    if (phone) { p.style.left = ''; p.style.top = ''; p.style.bottom = ''; p.style.maxHeight = ''; delete p.dataset.docked; return }
     dock(p)
     const re = () => dock(p)
     window.addEventListener('resize', re)

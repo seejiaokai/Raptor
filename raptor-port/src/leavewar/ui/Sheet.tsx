@@ -308,7 +308,10 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
       const sb = screenBox(vv)
       if (sb.layH - vv.height <= KEYBOARD_MIN) {
         // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
-        // take back over.
+        // take back over — except on a window that places itself (the person window docked at the grid's right edge on a
+        // desktop — PersonWindow.tsx dock, `data-docked`): wiping its top dropped it below the screen's foot (the M5a
+        // host probe, 29 Oct 26: its top at 860 on an 860-high screen).
+        if (panel.dataset.docked === '1') return
         panel.style.top = ''
         panel.style.bottom = ''
         panel.style.maxHeight = ''

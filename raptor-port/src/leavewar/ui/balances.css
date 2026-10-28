@@ -227,6 +227,8 @@
     /* the narrow phone: the holds column and the days box give the name room */
     .gw-nm, .gw-nmh { width: 120px; }
     .bidsheet .gw-days .bp-bx.mth-in { width: 64px; min-width: 64px; }
-    .gw-r.h .dh { width: 64px; }
+    /* (built — the M5a host probe, 29 Oct 26: on one line the words ran past the window's edge, "JAN" cut) two lines in
+       the box's width, "AUTO + LVE" over "ON 1 JAN" */
+    .gw-r.h .dh { width: 64px; white-space: normal; line-height: 1.2; }
   }
 }
