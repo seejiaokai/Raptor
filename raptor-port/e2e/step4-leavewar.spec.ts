@@ -685,6 +685,9 @@ test('tap-list permissions: a member gets no decisions, clears only their own bi
 
 test('a reload (not ?fresh) keeps every filed leave, cut, notice and post-out — nothing lost or doubled', async ({ page }) => {
   rulesOnDesktop()
+  /* SINCE M5a each of the five men's figures takes two openings of his person window, MED read under its own today
+     (figures() above) — twenty openings in all, past the default 30s on his PC (the body reached its last line at 30s) */
+  test.slow()
   await openWar(page)
   await page.evaluate(() => {
     const w = window as any
