@@ -142,13 +142,6 @@ describe('a dragged row keeps its frozen cells opaque', () => {
     }
   })
 
-  /* THE FIGURES DRAWER (owner D883, 15 Oct 26 — "a blue line through even
-     through the counters"). The drawer is a second table laid OVER the grid, so
-     the real row's bar runs underneath it: the drawer's copy of the row draws
-     the same 3px line, and it must out-rank the drawer's own box rules — `.fig`
-     sets every box's shadow to none, `.fig.last` carries the drawer's right
-     edge, and the viewer's own row has its band. The last box keeps its edge
-     under the line. That the row WEARS the class is `figdrawer.test.tsx`. */
   /* A FINGER'S WAY IN (his find, 15 Oct 26 — a counter's grip "much hard to activate … compared to the pucks below"):
      both grips take the press over a larger INVISIBLE area (the design guide §6, D487) — inside their own row (4 px
      above and below) and short of the name beside them (4 px to the right, the gap being 5–6 px). */
@@ -162,30 +155,6 @@ describe('a dragged row keeps its frozen cells opaque', () => {
     }
     for (const sel of ['.mx .counts .who .drag', '.whorow .drag'])
       expect(bodiesFor(sel).join(' '), `${sel} anchors its area`).toMatch(/position: relative/)
-  })
-
-  it('the landing bar runs on through the figures drawer, at 3px, top edge or bottom', () => {
-    for (const [sel, edge] of [
-      ['.mxdrawer .mx tbody tr.dragover td', 'inset 0 3px 0'],
-      ['.mxdrawer .mx tbody tr.dragover td.bal', 'inset 0 3px 0'],
-      ['.mxdrawer .mx tbody tr.dragover td.fig.last', 'inset 0 3px 0'],
-      ['.mxdrawer .mx tbody tr.dragover.after td', 'inset 0 -3px 0'],
-      ['.mxdrawer .mx tbody tr.dragover.after td.bal', 'inset 0 -3px 0'],
-      ['.mxdrawer .mx tbody tr.dragover.after td.fig.last', 'inset 0 -3px 0'],
-    ] as const) {
-      const body = bodiesFor(sel).join(' ')
-      expect(body, `${sel} draws the 3px landing bar`).toContain(`${edge} var(--accent)`)
-      expect(body, `${sel} — no light round it (owner D882, D887)`).not.toMatch(/\d+px \d+px var\(--accent\)|rgba\(59, 198, 232/)
-    }
-    // A figure box: `.fig` (0,3,0) and `.fig.last` (0,4,0) set their own shadow.
-    expect(beats('.mxdrawer .mx tbody tr.dragover td.bal', '.mxdrawer .mx .fig')).toBe(true)
-    expect(beats('.mxdrawer .mx tbody tr.dragover td.bal', '.mxdrawer .mx .fig.last')).toBe(true)
-    expect(beats('.mxdrawer .mx tbody tr.dragover td.bal', '.mxdrawer .mx tbody tr.me td')).toBe(true)
-    // The last box ties the viewer's own row's last box (0,5,3) — so it must come LATER in the file.
-    for (const sel of ['.mxdrawer .mx tbody tr.dragover td.fig.last', '.mxdrawer .mx tbody tr.dragover.after td.fig.last']) {
-      expect(indexOf(sel), `${sel} comes after the viewer row's last-box rule`).toBeGreaterThan(indexOf('.mxdrawer .mx tbody tr.me td.fig.last'))
-      expect(bodiesFor(sel).join(' '), `${sel} keeps the drawer's right edge`).toContain('inset -1px 0 0 var(--edge-2)')
-    }
   })
 })
 
@@ -201,32 +170,9 @@ describe('the viewer\'s own row is lit by LINES, never by a wash', () => {
   })
   it('the frozen pair keeps its solid panel, and the row keeps its accent lines', () => {
     expect(bodiesFor('.mx tbody tr.me .who').join(' ')).toMatch(/background: #173C4A/)
-    for (const sel of ['.mx tbody tr.me td', '.mxdrawer .mx tbody tr.me td'])
+    for (const sel of ['.mx tbody tr.me td'])
       expect(bodiesFor(sel).join(' ').replace(/\s+/g, ' '), `${sel} brackets the row`)
         .toMatch(/inset 0 1px 0 rgba\(59, 198, 232, \.55\), inset 0 -1px 0 rgba\(59, 198, 232, \.55\)/)
-  })
-
-  /* …but the row's own panel must not swallow a SELECTED figure box on it
-     (review, 6 Sep 26). The two `tr.me` panels beat the plain committed recipe
-     `.mx td.figbox[data-figsel]` (0,3,1) — the grid's frozen counter cell is a
-     `.bal`, and the drawer restates the row across every figure column — so
-     the one row the owner asked to make more obvious was the one row where a
-     selection stopped showing. The armed brightening (0,5,1) always won, which
-     is why only the RESTING state was dim. Pinned as the arithmetic, not as a
-     string: a later edit to any of the four selectors re-runs the comparison. */
-  it('a selected figure box out-ranks the viewer\'s row — in the grid and in the drawer', () => {
-    const me = ['.mx tbody tr.me .bal', '.mxdrawer .mx tbody tr.me td']
-    for (const sel of me) expect(rulesFor(sel).length, `${sel} is declared`).toBeGreaterThan(0)
-    for (const attr of ['[data-figsel]', '[data-figdrag]']) {
-      const sel = `.mx tbody tr.me td.figbox${attr}`
-      const bodies = bodiesFor(sel)
-      expect(bodies.length, `${sel} is declared`).toBeGreaterThan(0)
-      expect(bodies.join(' '), `${sel} carries the selection wash`).toMatch(/rgba\(59, 198, 232, \.22\)/)
-      for (const row of me) expect(beats(sel, row), `${sel} beats ${row}`).toBe(true)
-      // …and the armed drag still beats the committed rule, or the hold would
-      // stop showing on this row instead.
-      expect(beats(`.mx-outer[data-selecting] .mx td.figbox${attr}`, sel), 'the armed brightening still wins').toBe(true)
-    }
   })
 })
 
@@ -288,20 +234,18 @@ describe('the Rearrange switch rings only for a keyboard, and shows "on" by the 
   })
 })
 
-/* The two docked panels are the third thing only the file can answer for
-   (review, 6 Sep 26). A `position: fixed` box's percentage resolves against the
+/* The docked move banner is the third thing only the file can answer for
+   (review, 6 Sep 26; the balance bar that shared its recipe went with D1491,
+   28 Oct 26). A `position: fixed` box's percentage resolves against the
    initial containing block, which EXCLUDES a classic scrollbar; `100vw`
    INCLUDES it. So `min(880px, 100vw − 24px)` ran the panel a scrollbar's width
    past its own 12px right gutter on any desktop with always-on scrollbars — and
    nothing in this repo's browsers has one, so no drive and no geometry test can
    see it. The file is the only witness. */
-describe('the docked panels measure themselves against the page, not the viewport', () => {
-  it('the shared dock recipe caps at 880px and takes its width from `100%`', () => {
-    const bodies = bodiesFor('.balbar')
-    expect(bodies.length, '.balbar shares the dock recipe').toBeGreaterThan(0)
-    expect(bodiesFor('.mv-banner').length, '…and so does the move banner').toBeGreaterThan(0)
-    const dock = RULES.find(r => r.sels.includes('.balbar') && r.sels.includes('.mv-banner'))
-    expect(dock, 'the two are ONE rule, so they cannot drift apart').toBeTruthy()
+describe('the docked move banner measures itself against the page, not the viewport', () => {
+  it('the dock recipe caps at 880px and takes its width from `100%`', () => {
+    const dock = RULES.find(r => r.sels.includes('.mv-banner') && /width:/.test(r.body))
+    expect(dock, 'the move banner carries the dock recipe').toBeTruthy()
     expect(dock!.body.replace(/\s+/g, ' ')).toContain('width: min(880px, calc(100% - 24px))')
     expect(dock!.body, 'never 100vw — it counts the scrollbar the panel does not sit under').not.toMatch(/100vw/)
   })

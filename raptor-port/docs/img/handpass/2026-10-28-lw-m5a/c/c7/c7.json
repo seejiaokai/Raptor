@@ -1,0 +1,27 @@
+[
+ {
+  "id": "PO3b after his date (clock 1 Mar) his row stands on the grid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row present 1; row text \"Cinder B 19 PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO PO\"",
+  "pics": [
+   "71a-grid-after-date"
+  ]
+ },
+ {
+  "id": "PO4 the posted-out man's window from his name on the grid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"Cinder\" App 19.5 cf 2 pend −0.5 war 19 boxes 7; lines OIL Tue 4 May 1 Approved | LL Wed 5 May, AM 0.5 Pending",
+  "pics": [
+   "71b-window-after-date"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

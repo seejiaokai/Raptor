@@ -1,0 +1,101 @@
+[
+ {
+  "id": "14/24 My leave opens his own window (first visit, member)",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "Ranger: taken 3 taken; LVE tile \"LVE3 takenApp balPendingWar bal−2.512.5incl. carried fwd · till 31 Dec\"; pending −2.5; war 12.5; cf 2; OIL 0›; MED 0; others {\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"}; boxes 7; lock \"null\"; year ahead [2026 and ahead]; window x 10-392, y 45-829 of 402x874; lines: LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "q1-myleave-q",
+   "q1-own-first"
+  ]
+ },
+ {
+  "id": "close",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "closed by close button",
+  "pics": []
+ },
+ {
+  "id": "50 admin approves line 1 and refuses line 2 of Ranger (phone)",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "lines before: Ranger IP LL 29 Jan AM › Approve Refuse 0.5 day 12.5 P 27.5 — || Ranger IP LL 12–13 Feb › Approve Refuse 2 days 12.5 P 27 — || Ranger IP CCL 2 Mar › Approve Refuse 1 day CCL 2 P 26 — || Ranger IP PL 16 Mar AM › Approve Refuse 0.5 day PL 1.5 P 27.5 — || Ranger IP CL 17 Mar › Approve Refuse 1 day CL 0 P 27 —",
+  "pics": [
+   "q2-approved",
+   "q2-refused"
+  ]
+ },
+ {
+  "id": "50 his own window after Saber decided two: dots with who and when",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "Balances row before: App 14.5, pending –, war 14.5; Ranger: taken 3 taken; LVE tile \"LVE3 takenApp balPendingWar bal014.5incl. carried fwd · till 31 Dec\"; pending 0; war 14.5; cf 1.5; OIL 0›; MED 0; others {\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"}; boxes 7; lock \"null\"; year ahead [2026 and ahead]; window x 10-392, y 33-841 of 402x874; dotted 2: LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Approved approved by Saber · 29 Oct 01:57 [DOT] {approved by Saber · 29 Oct 01:57} | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Refused refused by Saber · 29 Oct 01:57 [DOT] {refused by Saber · 29 Oct 01:57} | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "q3-name-q",
+   "q3-own-dots"
+  ]
+ },
+ {
+  "id": "close",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "closed by close button",
+  "pics": []
+ },
+ {
+  "id": "50 close and reopen: no dots",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "dots 0; LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Approved | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Refused | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "q3-own-reopen"
+  ]
+ },
+ {
+  "id": "50 reload: still no dots (the moment kept)",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "signed out by the reload: true; dots 0",
+  "pics": [
+   "q3-own-after-reload"
+  ]
+ },
+ {
+  "id": "24 another man's window (Recon), read only",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "Recon: taken 0 taken; LVE tile \"LVE0 takenApp balPendingWar bal31031incl. 3 carried fwd · till 31 Dec\"; pending 0; war 31; cf 3; OIL 0›; MED 0; others {\"CCL\":\"0\",\"FCL\":\"0\",\"PL\":\"0\",\"EL\":\"0\",\"CL\":\"0\"}; boxes 0; lock \"null\"; year ahead [2026 and ahead]; window x 10-392, y 220-654 of 402x874; lines ",
+  "pics": [
+   "q4-other-q",
+   "q4-other"
+  ]
+ },
+ {
+  "id": "24 OIL > in another man's window opens his OIL tracker",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "oil tab selected: true; window still open: false; page text start: ",
+  "pics": [
+   "q4-oil-q",
+   "q4-oil-tracker"
+  ]
+ },
+ {
+  "id": "42/24 his own window while locked: read only, \"Locked by admin\"",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "lock helper {\"ok\":true,\"wrote\":true}; Ranger: taken 3 taken; LVE tile \"LVE3 takenApp balPendingWar bal14.5014.5incl. 1.5 carried fwd · till 31 Dec\"; pending 0; war 14.5; cf 1.5; OIL 0›; MED 0; others {\"CCL\":\"3\",\"FCL\":\"5\",\"PL\":\"2\",\"EL\":\"4\",\"CL\":\"1\"}; boxes 0; lock \"Locked by admin\"; year ahead [2026 and ahead]; window x 10-392, y 44-831 of 402x874",
+  "pics": [
+   "q5-locked-q",
+   "q5-locked-own-window"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

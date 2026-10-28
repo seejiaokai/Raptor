@@ -17,6 +17,7 @@ import './bidpicker.css'
 import { followVisible } from '../../ui/vvfollow'
 import { holdPageScroll } from '../../ui/floatwin'
 import { screenBox } from '../../ui/kbscroll'
+import { topSheet } from '../../ui/sheetfocus'
 import { usePhone } from './phone'
 
 /* THE PAGE STAYS FULLY SCROLLABLE UNDER A SHEET (owner, 28 Aug 26 — "enable
@@ -33,12 +34,19 @@ import { usePhone } from './phone'
 
 const PAN_THRESH = 6 // px before a gesture commits to an axis
 
+/* THE ORDER THE WAR'S WINDOWS OPENED IN (the fresh read of the M5a fixes, finding 1, 29 Oct 26 — the design guide §3:
+   Escape closes what opened last). Escape and the Tab hold below act only for the topmost window, which they used to find
+   by DOCUMENT order — the last `.bidsheet` in the page. The person window is portalled to the end of the Leave War page
+   (Matrix.tsx), so it was always that last one, whatever opened after it: with it up, a bid window or Grades opened over it
+   lost Escape to it, and the bid window no longer held Tab. Each panel is pushed here as it mounts and taken out as it
+   goes, so the last entry is the window opened last. */
+const OPEN: HTMLElement[] = []
+
 /** How much of the visual viewport must be gone before it counts as a KEYBOARD
  *  rather than a URL bar showing or hiding — below this, a docked panel must
- *  not re-anchor itself. Exported because the balance bar keeps itself above a
- *  phone's keyboard the same way (`BalanceBar.tsx`) and had copied the number:
- *  two literals for one physical judgement is the drift seam the house rules
- *  name (review, 6 Sep 26). */
+ *  not re-anchor itself. Exported since 6 Sep 26, for the grid's balance bar
+ *  (gone with D1491, 28 Oct 26) — two literals for one physical judgement is
+ *  the drift seam the house rules name. */
 export const KEYBOARD_MIN = 120
 
 /* A FINGER SCROLLS THE GRID ITSELF (owner, 6 Sep 26 — "when a window like
@@ -302,18 +310,42 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
     const panel = panelRef.current
     if (!vv || !panel) return
     const GAP = 8
+    /* WHAT STOOD BEFORE THE KEYS CAME UP, put back when they go (the M5a browser tests, 29 Oct 26): a window that places
+       itself — the person window docked at the grid's right edge, the Grades window under "Grades…" — writes its own top
+       and height on the panel. This hook used to clear all three on every no-keyboard call (on opening, and on every
+       focus change), which dropped such a window to its place in the page's flow, off the screen. Now it touches the
+       panel only while a keyboard is up, and on the way down restores exactly what it found. */
+    let before: { top: string; bottom: string; maxHeight: string } | null = null
+    /* …AND WHAT THIS HOOK ITSELF LAST WROTE (the fresh read of the M5a fixes, finding 5, 29 Oct 26): `before` was taken once,
+       at the keys' first frame, so a window that placed itself afresh while they were up — a phone turned sideways while
+       typing, the person window docking again (PersonWindow.tsx), Grades the same — had its old place put back on the way
+       down: the phone form's empty top on a window whose desktop CSS has none, dropped below the screen. A field that no
+       longer holds what this hook wrote was written by another hand, and what it holds now is what goes back. */
+    let wrote: { top: string; bottom: string; maxHeight: string } | null = null
     const place = () => {
       /* the layout's full height from the fixed mark (ui/kbscroll.ts screenBox), not the window's: his iPhone gives the
          window's as what is left below the visible top once the keys have panned the screen (684 − 184 = 500), which read
          as no keyboard at all and dropped the sheet back to its foot, under the keys (his recordings of 25 Oct 26) */
       const sb = screenBox(vv)
       if (sb.layH - vv.height <= KEYBOARD_MIN) {
-        // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
-        // take back over.
-        panel.style.top = ''
-        panel.style.bottom = ''
-        panel.style.maxHeight = ''
+        // No keyboard: drop our overrides, so what stood before (the CSS
+        // bottom-anchor + dvh cap, or the window's own place) takes back over.
+        // (The host probe's `data-docked` guard, 29 Oct 26 — the person window's top at 860 on an 860-high screen — is
+        // folded into this: it kept the person window, but not the Grades window, which places itself the same way.)
+        if (before) {
+          panel.style.top = before.top
+          panel.style.bottom = before.bottom
+          panel.style.maxHeight = before.maxHeight
+          before = null
+        }
+        wrote = null
         return
+      }
+      if (!before) before = { top: panel.style.top, bottom: panel.style.bottom, maxHeight: panel.style.maxHeight }
+      else if (wrote) {
+        if (panel.style.top !== wrote.top) before.top = panel.style.top
+        if (panel.style.bottom !== wrote.bottom) before.bottom = panel.style.bottom
+        if (panel.style.maxHeight !== wrote.maxHeight) before.maxHeight = panel.style.maxHeight
       }
       // Zero any drag offset so the top anchor composes cleanly with the
       // panel's own translateX(-50%) centering.
@@ -327,6 +359,7 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
       panel.style.top = `${top}px`
       panel.style.bottom = 'auto'
       panel.style.maxHeight = `${Math.round(vv.offsetTop + vv.height - top - GAP)}px`
+      wrote = { top: panel.style.top, bottom: panel.style.bottom, maxHeight: panel.style.maxHeight }
     }
     /* frame by frame while the keys move, not a few frames behind them (D1081) */
     return followVisible(place)
@@ -389,6 +422,12 @@ export function Sheet({
   const asPage = page && phone
   const panelRef = useSheetDrag(!full && !asPage)
   useKeyboardInset(panelRef)
+  useEffect(() => {
+    const n = panelRef.current
+    if (!n) return
+    OPEN.push(n)
+    return () => { const i = OPEN.lastIndexOf(n); if (i >= 0) OPEN.splice(i, 1) }
+  }, [panelRef])
   /* A FINGER ON THE WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26; found on this window on his iPhone,
      22 Oct 26 — "I could scroll the page behind this page somehow vertically"). The inner list's `overscroll-behavior:
      contain` (bidpicker.css) holds only where there is something left to scroll; where what is in the window fits, or has
@@ -417,9 +456,18 @@ export function Sheet({
      ever one — but the day two are mounted at once, one press must peel one
      layer rather than clearing the pile. The listener captures so a field's own
      Escape handler cannot swallow it first. */
+  /* …AND A WINDOW OF THE APP'S OWN OPENED OVER IT ANSWERS FIRST (the M5a walk's C-F2, 29 Oct 26 — the design guide §3:
+     Escape closes what opened last). The document viewer a paperclip opens (ui/DocViewer.tsx), and the app's other
+     keyboard-holding windows (ui/sheetfocus.ts — the "No document" question and the rest), are not Leave War sheets, so
+     the topmost-sheet guard below never saw them: one Escape closed the viewer AND the person window under it, this
+     listener being heard first on the same document. While such a window opened AFTER this sheet stands, Escape is left
+     to it; one that was already up when this sheet opened is under it, and changes nothing. */
   useEffect(() => {
+    const under = topSheet()
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      const top = topSheet()
+      if (top && top !== under && !panelRef.current?.contains(top)) return
       /* KEPT-MOUNTED guard (bug-hunt fix, 1 Sep 26): since the Leave War tab
          stays mounted behind a tab switch (LeaveWarPage), a sheet left open
          when the reader switched away keeps this capture listener alive on a
@@ -430,8 +478,7 @@ export function Sheet({
          always. */
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
-      const all = document.querySelectorAll('.bidsheet')
-      if (all.length && all[all.length - 1] !== panelRef.current) return
+      if (OPEN.length && OPEN[OPEN.length - 1] !== panelRef.current) return
       e.stopPropagation()
       closeRef.current()
     }
@@ -450,8 +497,7 @@ export function Sheet({
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
       const panel = panelRef.current
-      const all = document.querySelectorAll('.bidsheet')
-      if (!panel || (all.length && all[all.length - 1] !== panel)) return
+      if (!panel || (OPEN.length && OPEN[OPEN.length - 1] !== panel)) return
       const f = [...panel.querySelectorAll<HTMLElement>(
         'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
       )].filter(el => !el.closest('[hidden], [inert]'))

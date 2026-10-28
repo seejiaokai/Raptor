@@ -3,10 +3,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { setLwOnScreen } from '../state/screen'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
-import { closeDates, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
+import { closeDates, getState, grantTo, selectWar, initStore, leaveFiguresOf, setBidState, setCell, setPeople, setRole, setTypedBalance, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
-import { FigureCell } from './FigureCell'
+import { FigureCell, figWords } from './FigureCell'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
@@ -67,7 +67,11 @@ describe('the counter column', () => {
     expect(top('ramp')).toBe('26')
   })
 
-  it('stacks the days taken under the balance, LL amber then OL red, no minus, nothing for zero', () => {
+  /* REWRITTEN FOR M5a (the build spec §1.4, finding 12): the second line was LL amber and OL red, of all time; it is now
+     ONE amber number — his LL and OL days in the View period, approved and pending, as charged (the drawings' Ranger
+     "12.5 / 7.5"); the top his War bal, the bids already off it (D1153). RAMP's OL on 1 Jan is a public holiday and
+     charges nothing, so his three bids make it 3. */
+  it('stacks his LL and OL days of the View period under his War bal — one amber number, no minus, nothing for zero', () => {
     setRole('admin')
     setCell('ramp', '2026-03-02', 'LL')
     setCell('ramp', '2026-03-03', 'LL')
@@ -75,9 +79,8 @@ describe('the counter column', () => {
     render(<Matrix />)
     expect(top('ramp')).toBe('23')
     const used = screen.getByTestId('bal-ramp').querySelectorAll('.fu b')
-    expect([...used].map(b => b.textContent)).toEqual(['2', '1'])
+    expect([...used].map(b => b.textContent)).toEqual(['3'])
     expect(used[0]!.className).toBe('amber')
-    expect(used[1]!.className).toBe('red')
     // a person with nothing taken shows no used line at all
     expect(screen.getByTestId('bal-tata').querySelectorAll('.fu b')).toHaveLength(0)
   })
@@ -209,13 +212,17 @@ describe('the counter column', () => {
   // refused; a USED number never carries one (the column title's own minus,
   // and the colour, already say it is spent). RESET is the seed's standing
   // example: opens at 2 annual, less four LL days pending in the 2027 war
-  // (a balance counts across every war, not just the one on screen) = −2;
-  // OL taken is 0, so it draws no `.fu` entry at all.
+  // (a balance counts across every war, not just the one on screen) = −2.
+  // Since M5a the second line counts the VIEW period's LL and OL alone (the build spec §1.4): none in Jan – Dec 26, so no
+  // `.fu` entry at all; with Jan – Dec 27 in view, his four — never with a minus.
   it('paints a negative balance red, with its minus, and never a used number with one', () => {
     render(<Matrix />)
     const box = screen.getByTestId('bal-reset')
-    expect(box.querySelector('.fb')!.textContent).toBe('-2')
+    expect(box.querySelector('.fb')!.textContent).toBe('−2')
     expect(box.querySelector('.fb')!.classList.contains('neg')).toBe(true)
+    expect(usedOf('reset')).toEqual([])
+    act(() => selectWar(getState().wars[1]!.period.id))
+    expect(screen.getByTestId('bal-reset').querySelector('.fb')!.textContent).toBe('−2')
     expect(usedOf('reset')).toEqual(['4'])
   })
 })
@@ -253,12 +260,16 @@ describe('an over-wide value drops a type size rather than spilling (spec §2)',
     expect(box(26, [LL(12), OL(0)]).classList.contains('wide')).toBe(false)
   })
 
+  /* (the figure is TYPED since M5a — `setTypedBalance`, the person window's and the Balances page's door; the old "Set" that
+     moved an opening went with the figures sheet. The box beside his name reads his War bal — D1153.) */
   it('reaches the real grid cell, not just the component', () => {
     setRole('admin')
-    setBalance('ramp', 'annual', -100)
+    expect(setTypedBalance('ramp', 'LVE', -200)).toBe(true)
     render(<Matrix />)
+    const war = leaveFiguresOf('ramp').kinds.LVE.war
+    expect(war).toBeLessThan(-99)                      // four characters: the box drops a type size
     expect(screen.getByTestId('bal-ramp').classList.contains('wide')).toBe(true)
-    expect(top('ramp')).toBe('-100')
+    expect(top('ramp')).toBe(figWords(war))            // its true minus, as every surface writes it (walker D's FAIL 5)
     // Every box carries `figbox` — the class the box's own styling hangs off,
     // so `td.bal` at large no longer decides how the manning rows' cell reads.
     expect(screen.getByTestId('bal-ramp').classList.contains('figbox')).toBe(true)
@@ -387,19 +398,10 @@ describe('reordering the figures', () => {
      only drove those controls are skipped (the picker's code leaves whole with M5); the store's own gate and its saving
      are still live, and are re-expressed through the store. */
 
-  // Re-expressed for D1245: no reorder control is reachable for a member (none is opened from the grid at all), and the
-  // store — the real gate — still refuses the write.
-  it('offers a member no reorder controls, and the store refuses the write anyway', () => {
-    setRole('member')
-    render(<Matrix />)
-    expect(screen.queryByTestId('counter-pick')).toBeNull()
-    expect(screen.queryByTestId('figdown-lve')).toBeNull()
-    expect(screen.queryByTestId('counter-reset')).toBeNull()
-    // The write path is the real gate — the interface only hides it.
-    expect(moveFigure('lve', 1)).toBe(false)
-    resetFigureOrder()
-    expect(getState().figureOrder[0]).toBe('lve')
-  })
+  /* (Two tests stood here and below — a member refused the reorder at the store, and the order saved and read back. Their
+     writers, `moveFigure` and `resetFigureOrder`, went with M5a: their one reader, the figures sheet and its picker, was
+     replaced by the person window, which lists every kind whatever a saved order says. The skipped picker tests stay on
+     record.) */
 
   // The admin eye (owner, 6 Sep 26 — "admin should also be able to
   // customise" which figures show at all): hiding a figure in the picker
@@ -465,18 +467,6 @@ describe('reordering the figures', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
   })
 
-  // Re-expressed for D1245: the reorder is the store's write (its arrows left the grid with the counter sheet); what is
-  // pinned is unchanged — the order is saved and a fresh boot reads it back.
-  it('persists the order through the backend', () => {
-    const backend = memoryBackend()
-    initStore(backend)
-    // initStore resets the role (never persisted); re-arm the admin.
-    setRole('admin')
-    expect(moveFigure('lve', 1)).toBe(true)
-    // A fresh boot on the same backend reads the saved order back.
-    initStore(backend)
-    expect(getState().figureOrder[0]).toBe('oil')
-  })
 })
 
 describe('going negative is asked about, never refused', () => {
@@ -526,7 +516,7 @@ describe('going negative is asked about, never refused', () => {
     // shows (D418's shared words, ui/belowzero.ts, 29 Sep 26 — the drag sheet asks in the same sentence)
     expect(said).toContain('LVE')
     expect(said).not.toContain('ANNUAL')
-    expect(said).toMatch(/-\d/)
+    expect(said).toMatch(/−\d/)                       // the true minus, as every surface writes it (walker D's FAIL 5)
   })
 
   // A bid that stays in credit must not stop to ask — the warning is only
@@ -548,8 +538,10 @@ describe('going negative is asked about, never refused', () => {
   // ten working days less the two public holidays the demo war marks (17–18 Feb) — 8, so it asks, at -3.
   it('counts the whole range, not just its first day — its working days, as the column does', () => {
     const was = getState().role
-    setRole('admin')                                   // a balance is set by an admin; the bid itself as before
-    expect(setBalance('dusk', 'annual', 5)).toBe(true)
+    setRole('admin')                                   // a balance is typed by an admin here; the bid itself as before
+    // a War bal of 5 — App bal is typed, his days already pending come off it (D1479)
+    expect(setTypedBalance('dusk', 'LVE', 5 + leaveFiguresOf('dusk').kinds.LVE.pending)).toBe(true)
+    expect(leaveFiguresOf('dusk').kinds.LVE.war).toBe(5)
     setRole(was)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-09'))
@@ -558,115 +550,16 @@ describe('going negative is asked about, never refused', () => {
     fireEvent.click(screen.getByTestId('bid-LL'))
     const said = screen.getByTestId('span-note').textContent!
     expect(said).toContain('DUSK')
-    expect(said).toContain('to -3 LVE')
+    expect(said).toContain('to −3 LVE')
     expect(getState().grid.dusk?.['2026-02-09']).toBeUndefined()
   })
 
 })
 
-describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
-  // Re-expressed for D1245: the column can no longer be turned to MED TOT, so MED TOT's breakdown is opened the way the
-  // grid still offers it — his name, then the MED TOT row of his window. (A tap on his counter cell opens LVE's, pinned
-  // next.) The breakdown asserted is unchanged.
-  it('opens MED TOT\'s breakdown from the person\'s window and breaks it into its three markers', () => {
-    render(<Matrix />)
-    // splice's seed medical: one ATT C (5 Jan) and one OML (6 Jan).
-    fireEvent.click(screen.getByTestId('person-splice'))
-    fireEvent.click(screen.getByTestId('pfig-medtot').querySelector('.crow')!)
-    const sheet = screen.getByTestId('figure-breakdown')
-    expect(sheet.textContent).toContain('SPLICE')
-    expect(sheet.textContent).toContain('MED TOT')
-    const rows = [...sheet.querySelectorAll('.crow-top')].map(r => r.textContent)
-    expect(rows).toEqual(['ATT C1', 'HL0', 'OML1', 'Total2'])
-  })
-
-  it('breaks a balance into opening + granted − taken, and closes', () => {
-    render(<Matrix />)
-    // +LVE is the default figure. RAMP: 12 opening + 14 granted − 0 taken = 26.
-    fireEvent.click(screen.getByTestId('bal-ramp'))
-    const sheet = screen.getByTestId('figure-breakdown')
-    const rows = [...sheet.querySelectorAll('.crow-top')].map(r => r.textContent)
-    // ramp's OL is on New Year's Day (a seeded PH) — taken reads 0 since 3 Sep
-    // 26 — and LVE now splits its taken line per type (LL, OL) rather than one
-    // generic "taken" row (6 Sep 26).
-    expect(rows).toEqual(['opening figure12', 'granted14', 'LL taken0', 'OL taken0', 'Total26'])
-    fireEvent.click(screen.getByTestId('breakdown-close'))
-    expect(screen.queryByTestId('figure-breakdown')).toBeNull()
-  })
-
-  // OIL keeps its own ledger (earned + granted, not only opening), so it no
-  // longer restates as a single line — every one of the eight figures now
-  // defines its own parts (engine/counters.test.ts pins the fallback branch
-  // against a stand-in figure instead, since no real one still takes it).
-  // Gone by D1245: OIL's breakdown was opened by turning the column to +OIL and tapping a cell; the column is LVE alone,
-  // and the person window's +OIL row opens the OIL tracker instead. The parts themselves stay pinned in
-  // engine/counters.test.ts and engine/oiltracker.test.ts (D400); this goes whole with the picker in M5.
-  it.skip('breaks OIL into opening, earned, awarded and taken, and still sums to the balance (D400)', () => {
-    render(<Matrix />)
-    pick('oil')
-    fireEvent.click(screen.getByTestId('bal-ramp'))
-    const rows = [...screen.getByTestId('figure-breakdown').querySelectorAll('.crow-top')].map(r => r.textContent)
-    // ramp: opening 3, nothing the schedule earned, one day AWARDED by hand (3 Jan — the seed's award, a ledger entry
-    // since [OIL-AWARD-IS-A-GRANT]; it read "earned" before D400), one pending half-day OIL taken (10 Feb)
-    // = 3 + 0 + 1 − 0.5 = 3.5. No correction, so no corrections row.
-    expect(rows).toEqual(['opening figure3', 'earned by weekend/PH work0', 'awarded1', 'OIL taken-0.5', 'Total3.5'])
-  })
-
-  // Gone by D1245, as the one above: no way on the grid opens OIL's breakdown now (engine/oiltracker.test.ts pins the
-  // correction apart from the awards, D400).
-  it.skip('a correction on OIL is its own row, itemised apart from the awards', () => {
-    setRole('admin')
-    grantTo(['ramp'], 'oil', -0.5, '2026-09-07', 'Double entry')
-    render(<Matrix />)
-    pick('oil')
-    fireEvent.click(screen.getByTestId('bal-ramp'))
-    const rows = [...screen.getByTestId('figure-breakdown').querySelectorAll('.crow-top')].map(r => r.textContent)
-    expect(rows).toEqual(['opening figure3', 'earned by weekend/PH work0', 'awarded1', 'corrections-0.5', 'OIL taken-0.5', 'Total3'])
-    expect(screen.getByTestId('part-corrections').textContent).toContain('Double entry')
-    expect(screen.getByTestId('part-awarded').textContent).not.toContain('Double entry')
-  })
-
-  /* A grant keyed from the grid's balance bar (6 Sep 26) has to be EXPLAINED
-     somewhere: "granted 2" on its own says nothing about who gave it, when, or
-     why, and the bar is the first way a plain pool has ever been credited. The
-     rows under "granted" itemise the ledger entries behind it — oldest first,
-     the reason shown when there is one — so the number is traceable from the
-     same tap that shows it.
-     Re-expressed for D1245: the column can no longer be turned to +CCL or +OIL. CCL's breakdown is opened from the
-     person's window (his name, then the CCL row), with the same itemised line. OIL's breakdown has no way in from the
-     grid now — his window's +OIL row opens the OIL tracker — so the OIL grant is traced there instead: its box carries
-     the amount and the reason. */
-  it('itemises the grants under "granted": amount, date, approver — and the reason when there is one', () => {
-    setRole('admin')
-    grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')
-    grantTo(['ramp'], 'oil', 1.5, '2026-09-06', 'Det recovery')
-    render(<Matrix />)
-
-    fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('pfig-ccl').querySelector('.crow')!)
-    const ccl = [...screen.getByTestId('breakdown-grants').querySelectorAll('[data-testid^="grant-ol-"]')]
-    expect(ccl.map(r => r.textContent)).toEqual(['+2 · 6 Sep 26 · by admin'])
-    fireEvent.click(screen.getByTestId('breakdown-close'))
-
-    const oilGrant = getState().ledger.find(e => e.personId === 'ramp' && e.counter === 'oil' && e.reason === 'Det recovery')!
-    fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('pfig-oil').querySelector('.crow')!)
-    const box = screen.getByTestId(`oil-entry-${oilGrant.id}`)
-    expect(box.textContent).toContain('1.5')
-    expect(box.textContent).toContain('Det recovery')
-  })
-
-  // A pool nobody has been credited on shows no list at all — an empty
-  // container under "granted 0" would read as a missing row, not as nothing.
-  // Re-expressed for D1245: CCL's breakdown is opened from the person's window, the column being LVE alone.
-  it('shows no grants list where there is nothing granted', () => {
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('pfig-ccl').querySelector('.crow')!)
-    expect(screen.getByTestId('part-granted').textContent).toBe('granted0')
-    expect(screen.queryByTestId('breakdown-grants')).toBeNull()
-  })
-})
+/* (THE PER-PERSON BREAKDOWN SHEET — opening + granted − taken, MED TOT's markers, each grant itemised — went with M5a: a tap
+   on the LVE figure beside a name opens his person window (reading 15), which shows the figures as the official leave app
+   keeps them (D1479) and no breakdown; OIL's own ledger, every award and correction itemised, is the OIL tracker's
+   (oiltracker.test.tsx). Its tests went with it.) */
 
 describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)', () => {
   // Each row's value is now the SAME two-line box the grid cell wears — a
@@ -722,126 +615,28 @@ describe('the viewer\'s row is lit (owner, 17 Aug 26)', () => {
 describe('a callsign opens the all-figures sheet, for everyone (owner, 17 Aug 26)', () => {
   // Set on every plain balance (owner, 6 Sep 26): the eight figures, LVE/
   // CCL/FCL/CL/PL each grow a Set button, OIL does not (the tracker owns it).
-  it('lists the eight with that person\'s numbers, Set on every plain balance', () => {
+  /* Re-expressed for M5a (D1480, D1201): the callsign opens his PERSON WINDOW — every kind's tile at once, a box on every
+     typed kind for an admin, OIL never a box (the tracker is its editor — D1209), MED his medical days. The figures sheet's
+     eight rows (LVE TOT among them, which went to the Balances page's Days taken — D1480's reading) and a row's breakdown
+     went with it. */
+  it('lists every kind with that person\'s figures, a box on every typed kind, never on OIL', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    const sheet = screen.getByTestId('person-figures')
-    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(8)
-    for (const id of ['lve', 'ccl', 'fcl', 'cl', 'pl']) expect(screen.getByTestId(`${id}-edit`)).toBeTruthy()
-    expect(screen.queryByTestId('oil-edit')).toBeNull()   // OIL is the tracker's
+    for (const k of ['LVE', 'OIL', 'MED', 'CCL', 'FCL', 'PL', 'EL', 'CL']) expect(screen.getByTestId(`pw-tile-${k}`)).toBeTruthy()
+    for (const k of ['LVE', 'CCL', 'FCL', 'PL', 'EL', 'CL']) expect(screen.getByTestId(`pw-${k}`).tagName).toBe('INPUT')
+    expect(screen.queryByTestId('pw-OIL')).toBeNull()
+    expect(screen.getByTestId('pw-oil').tagName).toBe('BUTTON')
   })
 
-  it('a figure row opens that figure\'s breakdown for that person', () => {
+  it('his MED tile counts his medical days this year up to today', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-splice'))
-    fireEvent.click(screen.getByTestId('pfig-medtot').querySelector('.crow')!)
-    // The figures sheet hands over to the breakdown — MED TOT, splice's parts.
-    expect(screen.queryByTestId('person-figures')).toBeNull()
-    const bd = screen.getByTestId('figure-breakdown')
-    expect(bd.textContent).toContain('SPLICE')
-    expect(bd.textContent).toContain('MED TOT')
-    const rows = [...bd.querySelectorAll('.crow-top')].map(r => r.textContent)
-    expect(rows).toEqual(['ATT C1', 'HL0', 'OML1', 'Total2'])
+    expect(screen.getByTestId('pw-med').textContent).toBe(String(leaveFiguresOf('splice').medTaken))
+    expect(screen.queryByTestId('figure-breakdown')).toBeNull()
   })
 })
 
-describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to customise")', () => {
-  it('lets an admin hide a figure, and the visible list drops it', () => {
-    setRole('admin')
-    expect(visibleFigures().map(f => f.id)).toEqual(['lve', 'oil', 'ccl', 'fcl', 'cl', 'pl', 'lvetot', 'medtot'])
-    expect(toggleFigure('fcl')).toBe(true)
-    expect(getState().figureHidden).toEqual(['fcl'])
-    expect(visibleFigures().map(f => f.id)).toEqual(['lve', 'oil', 'ccl', 'cl', 'pl', 'lvetot', 'medtot'])
-    expect(toggleFigure('fcl')).toBe(true)
-    expect(visibleFigures()).toHaveLength(8)
-  })
-  it('refuses a member', () => {
-    setRole('member')
-    expect(toggleFigure('fcl')).toBe(false)
-    expect(getState().figureHidden).toEqual([])
-  })
-  it('never hides the last figure showing', () => {
-    setRole('admin')
-    for (const id of ['oil', 'ccl', 'fcl', 'cl', 'pl', 'lvetot', 'medtot']) toggleFigure(id)
-    expect(visibleFigures().map(f => f.id)).toEqual(['lve'])
-    expect(toggleFigure('lve')).toBe(false)
-    expect(visibleFigures().map(f => f.id)).toEqual(['lve'])
-  })
-  // Mirrors moveFigure's own unknown-id no-op (store.ts) — an id naming no
-  // real figure must be refused, not recorded as hidden forever.
-  it('refuses an id that names no real figure', () => {
-    setRole('admin')
-    expect(toggleFigure('bogus')).toBe(false)
-    expect(getState().figureHidden).toEqual([])
-  })
-  it('persists the hidden list and reads it back', () => {
-    const backend = memoryBackend()
-    initStore(backend)
-    setRole('admin')
-    toggleFigure('pl')
-    expect(JSON.parse(backend.read('fighidden')!)).toEqual(['pl'])
-    initStore(backend)
-    expect(getState().figureHidden).toEqual(['pl'])
-  })
-  // A stale `fighidden` blob naming EVERY figure (a squadron's storage from
-  // before a figure was added, or plain corruption) must not boot to an
-  // empty column — `visibleFigures` falls back to the whole order rather
-  // than showing nothing.
-  it('falls back to the whole order when every figure is hidden in storage', () => {
-    const backend = memoryBackend()
-    backend.write('fighidden', JSON.stringify(FIGURES.map(f => f.id)))
-    initStore(backend)
-    expect(visibleFigures().map(f => f.id)).toEqual([...DEFAULT_FIGURE_ORDER])
-  })
-  it('Reset puts the order back AND shows everything again', () => {
-    setRole('admin')
-    toggleFigure('pl')
-    moveFigure('medtot', -1)
-    resetFigureOrder()
-    expect(getState().figureHidden).toEqual([])
-    expect(getState().figureOrder).toEqual([...DEFAULT_FIGURE_ORDER])
-  })
-
-  /* WHO SEES A HIDDEN ROW IN THE PICKER (6 Sep 26 review). Hiding is the
-     admin's control, so the dimmed row with its eye is his way back and it
-     stays. A member cannot un-hide anything, so a dimmed row he taps and
-     nothing happens is an inert control on a production surface — he is not
-     shown it at all.
-     The first two below are gone by D1245 — the dimmed row and its eye were the counter sheet's, no longer opened from
-     the grid (the picker's code leaves whole with M5). The third is re-expressed: a hidden figure is still hidden from
-     a member in the person's window. */
-  it.skip('shows an admin the hidden row, dimmed, with its eye lit', () => {
-    setRole('admin')
-    toggleFigure('pl')
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    expect(screen.getByTestId('figrow-pl').classList.contains('hidden')).toBe(true)
-    expect(screen.getByTestId('figeye-pl').getAttribute('aria-pressed')).toBe('true')
-    expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
-      .toEqual(['LVE', 'OIL', 'CCL', 'FCL', 'CL', 'PL', 'LVE TOT', 'MED TOT'])
-  })
-
-  it.skip('an admin\'s tap on the hidden row un-hides it AND picks it — one gesture', () => {
-    setRole('admin')
-    toggleFigure('pl')
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    fireEvent.click(screen.getByTestId('counter-pl'))
-    expect(getState().figureHidden).toEqual([])
-    expect(screen.getByTestId('counter-name').textContent).toBe('+PL')
-    // ...and the column cycles all eight again, so the dots agree with it.
-    expect(screen.getByTestId('counter-head').querySelectorAll('.cdot')).toHaveLength(8)
-  })
-
-  it('does not offer a member the hidden figure at all', () => {
-    setRole('admin')
-    toggleFigure('pl')
-    setRole('member')
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-ramp'))
-    expect([...screen.getByTestId('person-figures').querySelectorAll('.crow .cn')].map(e => e.textContent))
-      .toEqual(['LVE', 'OIL', 'CCL', 'FCL', 'CL', 'LVE TOT', 'MED TOT'])
-    expect(screen.queryByTestId('pfig-pl')).toBeNull()
-  })
-})
+/* (HIDING A FIGURE — `toggleFigure`, `visibleFigures` and Reset — went with M5a: the figures sheet that read the hidden list
+   was replaced by the person window, which shows every kind whatever an old hidden list says (the spec §4). The saved list
+   is still read and written whole with the war's settings; nothing changes it now.) */

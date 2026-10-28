@@ -13,7 +13,16 @@
    RE-RECORDED 22 Oct 26 for the open dates (D1177), on purpose, and only for what the rulings changed: the closed days
    dim ("locked") for the admin too while anything is open, and every cell of a member's OWN row is tappable ("act" —
    his closed note, D1176). The worlds of the stages became worlds of the open dates: "bidding closed" is every date
-   closed; "published" (gone) is replaced by a war open in part — January closed, a member's today on 1 Feb. */
+   closed; "published" (gone) is replaced by a war open in part — January closed, a member's today on 1 Feb.
+
+   RE-RECORDED 29 Oct 26 for the Leave War overhaul's M5a, on purpose, and only the box beside each name (the build spec
+   §1.4): its top line, his War bal from the one engine, reads the same figure in every world here; its second line is
+   now ONE amber number, his LL and OL days in the View period (approved and pending), where it was LL amber and OL red of
+   all time — so TATA's and JAGUAR's OL turns amber, and RESET's four days and DUSK's half, all in 2027, leave the 2026
+   view. Nothing else in any row moved.
+
+   RE-RECORDED AGAIN 29 Oct 26 (M5a's person window, reading 15), on purpose: the box beside each name's title reads
+   "Tap for his leave", not "Tap for the breakdown" — the tap opens his person window now. Only those words moved. */
 import { act, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { setMemberTodayForTests } from '../engine'

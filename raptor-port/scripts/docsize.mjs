@@ -257,7 +257,9 @@ const RULING_BYTES = [
   /* how-we-work 49000 -> 50500 (27 Oct 26, the skill-notes review): 49,667 bytes with D1414-D1418 (its reader, the
      overnight run's 90% stop, a helper per overnight job, a design lesson in his words, the checking guides' lines) after
      D1402, D1403 and D1366 left as spent; D1414, D1418 and D1419 left as spent at the install, 49,144 bytes then. Room, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 50500],
+  /* how-we-work 50500 -> 52000 (28 Oct 26, D1478 — an approved drawing is the sole source of any later drawing of it):
+     about 50,550 bytes with its line, none trimmed (D136). Room, not a target. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 52000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -346,7 +348,10 @@ const RULING_BYTES = [
      M4's answers (D1420-D1464, merged with code while the size check was deferred — D29), and three more lines here; every
      line a live ruling (D136, D141). The area's split or the archive of what the overhaul retires is [RULINGS-SPENT-PASS]'s.
      Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 114000],
+  /* leave-war 114000 -> 118000 (28 Oct 26, M5a's drawings): 115,140 bytes with D1479-D1489 — his answers to M5a rounds 1
+     and 2 (the person window, the Balances page, the leave year's other kinds); every line a live ruling (D136, D141).
+     The split or the archive of what the overhaul retires is still [RULINGS-SPENT-PASS]'s. Room, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 118000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);

@@ -1,0 +1,115 @@
+[
+ {
+  "id": "T320 admin: tab row at 320",
+  "size": "320 phone",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs grid 12-52, approvals 54-155, balances 157-221, oil-tracker 223-258; gear 268-312; scrollWidth 320/320; count {\"n\":[123,147],\"tab\":[54,155]}; OIL's centre hits OIL: true",
+  "pics": [
+   "admin-tabs-320"
+  ]
+ },
+ {
+  "id": "T320b admin: a press on OIL opens the OIL tracker, not Settings",
+  "size": "320 phone",
+  "verdict": "PASS",
+  "said": "{\"settings\":false,\"oilSel\":\"true\",\"menu\":false}",
+  "pics": [
+   "admin-oil-pressed-320"
+  ]
+ },
+ {
+  "id": "T402 admin: tab row at 402",
+  "size": "402 phone",
+  "verdict": "PASS",
+  "said": "icons YYYY; tabs grid 16-73, approvals 75-196, balances 198-280, oil-tracker 282-334; gear 346-390; scrollWidth 402/402; count {\"n\":[165,188],\"tab\":[75,196]}; OIL's centre hits OIL: true",
+  "pics": [
+   "admin-tabs-402"
+  ]
+ },
+ {
+  "id": "T701 admin: tab row at 701",
+  "size": "701 phone",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs grid 24-64, approvals 66-174, balances 176-243, oil-tracker 245-279; gear 637-681; scrollWidth 701/701; count {\"n\":[143,167],\"tab\":[66,174]}; OIL's centre hits OIL: true",
+  "pics": [
+   "admin-tabs-701"
+  ]
+ },
+ {
+  "id": "T720 admin: tab row at 720",
+  "size": "720 phone",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs grid 24-64, approvals 66-174, balances 176-243, oil-tracker 245-279; gear 656-700; scrollWidth 720/720; count {\"n\":[143,167],\"tab\":[66,174]}; OIL's centre hits OIL: true",
+  "pics": [
+   "admin-tabs-720"
+  ]
+ },
+ {
+  "id": "T720b admin: a press on OIL opens the OIL tracker, not Settings",
+  "size": "720 phone",
+  "verdict": "PASS",
+  "said": "{\"settings\":false,\"oilSel\":\"true\",\"menu\":false}",
+  "pics": [
+   "admin-oil-pressed-720"
+  ]
+ },
+ {
+  "id": "T760 admin: tab row at 760",
+  "size": "760 phone",
+  "verdict": "PASS",
+  "said": "icons nnnn; tabs grid 24-64, approvals 66-174, balances 176-243, oil-tracker 245-279; gear 696-740; scrollWidth 760/760; count {\"n\":[143,167],\"tab\":[66,174]}; OIL's centre hits OIL: true",
+  "pics": [
+   "admin-tabs-760"
+  ]
+ },
+ {
+  "id": "T820 admin: tab row at 820",
+  "size": "820 phone",
+  "verdict": "PASS",
+  "said": "icons YYYY; tabs grid 24-84, approvals 86-214, balances 216-303, oil-tracker 305-359; gear 756-800; scrollWidth 820/820; count {\"n\":[183,207],\"tab\":[86,214]}; OIL's centre hits OIL: true",
+  "pics": [
+   "admin-tabs-820"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "phone admin",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "T320 member: tab row at 320",
+  "size": "320 phone",
+  "verdict": "PASS",
+  "said": "icons nnn; tabs grid 12-103, balances 105-220, oil-tracker 222-308; gear none; scrollWidth 320/320; count null; OIL's centre hits OIL: true",
+  "pics": [
+   "member-tabs-320"
+  ]
+ },
+ {
+  "id": "T320b member: a press on OIL opens the OIL tracker, not Settings",
+  "size": "320 phone",
+  "verdict": "PASS",
+  "said": "{\"settings\":false,\"oilSel\":\"true\",\"menu\":false}",
+  "pics": [
+   "member-oil-pressed-320"
+  ]
+ },
+ {
+  "id": "T375 member: tab row at 375",
+  "size": "375 phone",
+  "verdict": "PASS",
+  "said": "icons nnn; tabs grid 16-122, balances 124-256, oil-tracker 258-359; gear none; scrollWidth 375/375; count null; OIL's centre hits OIL: true",
+  "pics": [
+   "member-tabs-375"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "phone member",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

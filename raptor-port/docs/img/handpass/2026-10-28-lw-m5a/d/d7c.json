@@ -1,0 +1,64 @@
+[
+ {
+  "id": "5d App bal typed 3 while incl. 20 shows (designer: 3 incl 3)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before: 20 incl 20 20 incl 20; after: App 3; after: incl. clamped 3 · error words: none",
+  "pics": [
+   "d7c-5d-app3"
+  ]
+ },
+ {
+  "id": "47 locked: Saber types Ranger's App bal 18 (saved); his own row keeps its boxes; his window reads \"Locked for members\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Ranger App bal saved 18; Saber's own row boxes 7; window padlock words Locked for members",
+  "pics": [
+   "d7c-47-own-window"
+  ]
+ },
+ {
+  "id": "49 admin typed Ranger's figure, changed his grade, locked: Ranger's bell and window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bell lines about balance/grade/lock 0; dots in his window list 0 · bell lines: none; his window lock line \"Locked by admin\", boxes 0",
+  "pics": [
+   "d7c-49-bell",
+   "d7c-49-member-window"
+  ]
+ },
+ {
+  "id": "35 a reload while on the Balances page: where it lands (signed in again by the walk)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "selected tab after the reload and a new sign-in: lw-tab-grid",
+  "pics": [
+   "d7c-35-reload-landing"
+  ]
+ },
+ {
+  "id": "48 the Balances page scrolled to row 41 (Vector): type, Undo — the page does not move",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "scroll before typing {\"top\":1500,\"left\":0,\"win\":0}; scroll after Undo {\"top\":1500,\"left\":0,\"win\":0}; figure back 33 · scroll {\"top\":1500,\"left\":0,\"win\":0} → {\"top\":1500,\"left\":0,\"win\":0} → {\"top\":1500,\"left\":0,\"win\":0}; the page's scroll max after: 1629",
+  "pics": [
+   "d7c-48-undo-scrolled"
+  ]
+ },
+ {
+  "id": "48 the docked window open: type App bal 17 in it, Undo from the top bar — window figure back, window and page where they were",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window App before 18; after typing 17; after Undo 18; window left edge unmoved 968; window top unmoved 121",
+  "pics": [
+   "d7c-48-window-undo"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

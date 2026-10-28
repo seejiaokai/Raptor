@@ -835,7 +835,7 @@ and the Logic page's settings (in ✎ Edit) take a fresh value from the first ch
 through the same `interactions.ts armFreshTime`; a second press, an arrow key or a drag of the caret edits a digit. The
 Leave War's Required P and W cells already did (their pad's first digit replaces — `leavewar/ui/FlyEdit.tsx`). Not
 callsign, mission, remarks, nor an input's start and end (the phone's own time wheel). A press on a box's label counts as a
-press on its box; a box its screen opens with the focus already in it (the Leave War's balance "Set") is marked
+press on its box; a box its screen opens with the focus already in it (the Leave War's balance "Set" *[gone 29 Oct 26 with M5a — a balance box is now `FigBox`, which arms the same way: one tap then typing replaces]*) is marked
 `data-freshfocus` and armed as it opens. Pinned: `ui/freshbox.test.tsx` KF1–KF5, `e2e/kbscroll.spec.ts` KS5.
 
 **On a phone, the box being typed in shows above the keyboard (owner D1048, 19 Oct 26; nothing jumps as the keys open or close, D1081). The box rises IN STEP WITH THE KEYS, proportionately, and nothing else jerks or bounces — not a box already above the keys, and no window held short and grown back or showing the page behind it while the keys move (owner D1412, 27 Oct 26 — his four recordings; the six rounds of 25 Oct 26 are what he judged worse).** `ui/kbscroll.ts`, installed once
@@ -7133,7 +7133,7 @@ that froze everything behind it to a panel you can read the grid around:
   properties so a pointer frame does not re-render the sheet, and resets to zero
   on remount (a fresh open lands where it always did, then you move it).
 - **SMALLER** ("make all the window smaller … theres alot of empty space"). The
-  read-only info panels (a figure's breakdown, `narrow` prop on `Sheet`) pull in
+  read-only info panels (a figure's breakdown *[gone 29 Oct 26 with M5a — the person window replaces it]*, `narrow` prop on `Sheet`) pull in
   to `min(360px, …)` and drop the action sheets' 44px tap rows — those rows are
   read, not tapped. The action sheets (bid, decision, counter picker, person
   editor) keep their 44px targets, which the geometry gate holds.
@@ -7289,6 +7289,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   the drag code hit-tests those). **A row added to the EVENTS block needs an empty box in the Figures drawer**
   (`Matrix.tsx drawerRows`), or every roster row in the drawer sits that many rows too high — found by the browser gate
   while these four sat there (jsdom lays nothing out); in the Manning block, above where the drawer starts, they need none
+  *[SUPERSEDED 29 Oct 26 by M5a, D1245: the drawer and `drawerRows` are removed — no empty box is owed to a drawer any more.]*
   (`ui/figdrawer.test.tsx` states the rule whole).
 - **A Required cell** shows the ONE resolver's figure (`sync.ts flyMonth`): the number in the accent, "NF" on a no-fly
   day, a dash where no figure applies; the day a running figure starts wears a corner mark, its title "16 from Tue 6 Jan
@@ -7713,7 +7714,7 @@ the counters. When rearranging.").** While a man's row or a group heading is dra
 runs unbroken across the name, the counters (the figures columns) and the days. **Built 15 Oct 26**
 (`[LW-LANDING-LINE-FIGURES]`): the figures drawer is a second table laid over the days, so the real row's line ran
 under it; the drawer's copy of the row now wears the same `dragover` / `dragover after` classes (`FiguresDrawer.tsx
-DrawerOver`, set by `Matrix.tsx drawerRows` by the real row's own tests) and draws the same 3px line (`matrix.css`).
+DrawerOver`, set by `Matrix.tsx drawerRows` by the real row's own tests) and draws the same 3px line (`matrix.css`). *[SUPERSEDED 29 Oct 26 by M5a, D1245: with the drawer gone there is no second table; the real row's line runs under no copy.]*
 Pins: `src/leavewar/ui/figdrawer.test.tsx` (the classes), `src/leavewar/ui/rowglow.test.ts` (the line and its
 specificity); walked by `scripts/handpass/lwlanding-drag.mjs` (`docs/handpass/2026-10-15-lw-landing-line.md`).
 **One line a gap, in one place (owner, D890, 15 Oct 26: "Shouldn't it be just 1 position when I try to move between
@@ -9100,6 +9101,8 @@ Why each: a filtered element and an opacity group can never be squashed into a l
 
 ## The figures drawer and the two-line box (owner, 6 Sep 26)
 
+*[SUPERSEDED 29 Oct 26 by M5a — D1245, D1257, D1491: the FIGURES drawer, its corner switch (`▸ FIGURES`), its overlay table, widths, frozen edge, stuck header, title pop-up and figure flash are REMOVED from the grid (`FiguresDrawer.tsx` deleted, its rules gone from `matrix.css`); every balance column now lives on the Balances tab. What stays: the two-line box itself (`ui/FigureCell.tsx`, the first heading's "The box" paragraph and the "never widens, never wraps" rule) — it is the LVE figure beside each name, two lines (War bal; his LL and OL days in the View period), read by `MatrixRows.tsx nameLines`. The passages below describe the drawer as it was built. See §The Leave War's Balances page and §The person window — M5a below.]*
+
 Everyone's figures beside the names at a glance, without losing the one smart
 column when they are put away — the owner's own shape, settled over four rounds
 of mockups drawn on the real bundle: a drawer that pops out to the right of the
@@ -9271,6 +9274,8 @@ size (measured), so a wider font there clips the value rather than spilling it.
 
 ### The picker's figures by role, and the column after a write on the grid
 
+*[SUPERSEDED 29 Oct 26 by M5a, in part — D1245, D1480: the figure picker, hide / show (`figureHidden`, `visibleFigures`, `toggleFigure`), the column that follows the leave just entered (`Matrix.tsx showFigure`, `shownId`) and the person's all-figures sheet are GONE; the grid shows his LVE figure only, and every kind's figures are read in his person window and on the Balances page, whatever `figureHidden` says. The last paragraph (a write on the grid keeps you on the grid, 6 Sep 26) is a separate rule and stands.]*
+
 **Who sees which figures in the PICKER depends on the role.** An admin sees all
 eight, a hidden one dimmed with its eye lit — hiding is his control and the
 dimmed row is the way back, and his tap on it un-hides AND picks in one gesture.
@@ -9334,6 +9339,8 @@ code alone (Astra's final read, 29 Sep 26, F1–F4). Pins `state/balanceafter.te
 `selectsheet.test.tsx`.
 
 ## Bulk balance entry from the figures (owner, 6 Sep 26)
+
+*[SUPERSEDED WHOLE 29 Oct 26 by M5a — D1491 (his "as recommended", 28 Oct 26), D1245, reading 15: the drag down the LVE figures, the docked bar it raised (`BalanceBar.tsx`, deleted) and `wireFigureSelect` / `data-figsel` / `data-figdrag` are REMOVED; a hold on a figure selects nothing and raises no bar, and a tap on the LVE figure no longer opens a breakdown sheet (`FigureBreakdownSheet` deleted) — it opens the man's person window. A leave balance changes only by its box (the Balances page, the person window), by approved leave and by 1 Jan; the store's `setBalance` is gone, replaced by `setTypedBalance`. The OIL tracker's own award form (`CreditForm`, `grantTo`) stays. Pins now: `ui/gridfigures.test.tsx` and e2e "a drag down the LVE figures raises no bar and lights nothing". The text below describes the bar as it was built. See §The Leave War's Balances page and §The person window — M5a below.]*
 
 The figures drawer above shows every pool's balance for everyone; this is how an
 admin CHANGES them from the same place — "drag down a run of people in one
@@ -9461,6 +9468,8 @@ it is clear of the edge bands, because the 48px bottom band is deliberate
 auto-scroll and the first roster rows sit inside it on a 664px viewport.
 
 ### The bar
+
+**GOES WITH M5a (D1491, 28 Oct 26 — "as recommended"):** the grid's drag down the LVE figures and this bar are removed with the FIGURES drawer; a leave balance changes only by its box (the Balances page, the person window), by approved leave and by 1 Jan. The OIL tracker's own award form (`CreditForm`) stays. What follows describes the bar as built until then.
 
 **It is NOT a `Sheet`, and that is a contract, not a shortcut.** A Sheet's touch
 shield swallows presses on the very boxes being selected, and its popup family
@@ -10599,7 +10608,7 @@ title uses, from one shared body (`oilFromWords`). They were two readers once.
   the overlay's copied row heights, the stuck bar's frozen COPY matching the
   drawer's width, the FLASH painting at all, and the corner switch filling its
   sticky cell out of flow; each with what would show and how tight the margin is
-  in `ui-contracts.md` §The figures drawer). Chromium is clean on all four.
+  in `ui-contracts.md` §The figures drawer). Chromium is clean on all four. *[SUPERSEDED 29 Oct 26 by M5a, D1245: the drawer is removed, so its four WebKit-sensitive parts no longer exist.]*
 
 ## A shared store's empty pages — no leave period, no course (`[DB-READINESS]` group A phase 5, 30 Sep 26)
 
@@ -11723,3 +11732,147 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   award, the other half's bid — opens the day's list (D1466); the readings stand — one leave the joined bar's entry, a leave
   button re-typing it, Delete and Move taking only it, the mark on every bid window, calendar days counted, no "Pick a
   range" on such a leave, the chips' whole wrap at 360, Approvals' greyed line after Back (D1467).
+
+## The Leave War's Balances page (the overhaul's M5a, job 3 — D1230, D1242, D1245, D1254, D1255, D1482–D1488, D1490–D1492; BUILT 29 Oct 26)
+
+Built on `claude/leave-war-m5a-screens-ced9d7` from `docs/superpowers/plans/2026-10-28-lw-m5a-build-spec.md` §2.2 to the drawings of
+record (`docs/mock/lw-overhaul/full-m5a-balances.mjs`; D1424, D1478). It replaces the grid's FIGURES drawer, which is removed (the
+superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `FigBox`, the grade box and its list), `ui/balances.css`
+(under `bp-` / `gw-`, scoped to `#page-leavewar`), `ui/lwnav.ts`, `ui/Chrome.tsx` (the tab row), `LeaveWarPage.tsx`. Pins:
+`ui/balances.test.tsx` (31), `ui/phonehead.test.tsx` (the member row is Grid → Balances → OIL).
+
+- **The tab (D1254, D1483):** an admin's row reads Grid · Approvals N · Balances · OIL; a member's Grid · Balances · OIL; ⚙ at the
+  right end. Balances is for everyone, a member included (D1242): `lwnav.ts` makes the page choice general (`LwPage`:
+  `'grid' | 'approvals' | 'balances'`, read by `lwPage()`; `setBalancesUp`); the member guard in `Chrome.tsx` switches only
+  Approvals off. Approvals coming up (`setApprMode` other than 'off') takes Balances down, and the other way round — one page
+  stands in the grid card's place at a time. On a phone the tabs take round 19's tighter spacing and keep at least their words'
+  width (the walk's fix B-F1); the icons drop on a narrow iPhone — the cut-off is the agent's reading (D1483 as corrected).
+- **The page takes the grid card's place, the grid kept mounted (the Approvals pattern):** `LeaveWarPage.tsx Body` reads `lwPage()`,
+  hides the grid card but leaves it mounted, and tells the grid it is off screen (`setLwOnScreen(page === 'grid')`), so it does not
+  fill in the background; the grid's scroll and window of months are kept for the way back. The page opens at its top, fills the
+  screen under the tab row and scrolls inside itself (its headings stay in sight); leaving the Leave War ends the visit, so a return
+  lands on the grid. The bell's Leave War line (`sync.ts openWarAt`) takes Balances down too, and Undo's soft-focus guard
+  (`Matrix.tsx`) reads `lwPage() !== 'grid'` so Undo never scrolls the hidden grid.
+- **The bar is the same in both views (D1484):** Balances | Days taken, Find a person, then — an admin only — Grades… and "Lock
+  for members" at the right; nothing moves when the view switches. A member's bar has no Grades and no switch. On a phone the
+  search is the closed magnifier (a tap opens a slim search line under the bar — a state the drawing did not show, named to him,
+  D1424), and Grades and the padlock are in the bar.
+- **Who is listed (reading 9):** one row a person in the grid's own order and groups (`displayRoster`, `assignGroup`; SXO 12, IP 8 …
+  each group's own heading and colour) — the people on the grid in the View period: a SANS man while SANS is off the war, and a man
+  whose stints miss the period, are not listed. Each name is the schedule's own puck (D1476, D1482 — `sync.ts puckHtml`, the one
+  Approvals draws, not `NamePuck`); a tap on a name opens his person window (D1148; reading 23 — not drawn).
+- **The Balances view's columns (D1482, D1486, D1487):** GRADE · AUTO + LVE ON 1 JAN (a box with the grade and its "+36", its list
+  of grades with their days and "No grade" in amber dashed; a member sees his grade as words with its "+36"); LVE: APP BAL (box),
+  INCL. CARRIED FWD (box), PENDING (amber), WAR BAL (bold); OIL read only, "0 ›" opening his OIL tracker on his row (D1255 —
+  the `lwnav` ask `{ kind: 'oil', id }`); OTHER LEAVE: CCL, FCL, PL, EL, CL — a box each, the pending figure in amber after it,
+  every box keeping its column. Every figure is the store's one engine (`leaveFiguresOf`), so this page, the person window, the
+  grid, My leave and Approvals cannot disagree (`docs/feature-impact.md` §One balance engine).
+- **A BOX ONLY WHERE THE VIEWER MAY TYPE — `balanceProblem` is the ONE rule** (`state/store.ts`): an admin any row; a member his own
+  row while unlocked (D1242, D1487). The page asks it only to decide whether to draw a box; the store asks it again when the box
+  SAVES (§Lock for members). A box saves on **Enter or on leaving it, never on each key**; **Escape puts the old figure back** and
+  the box keeps the keyboard; one tap then typing replaces the figure (D1080). A save is **to the man the box was opened for** —
+  the person, kind and shown figure are taken when the box takes the keyboard, so typing in one man's box and then pressing
+  another name, Days taken, Lock, Grades… or the top bar's Undo / Redo still saves to the first man (the scenario designer's
+  ★17); a box taken off the screen with figures in it (Days taken redraws the row) saves them as it goes, and a refusal there
+  is said in a passing note ("Ranger LVE App bal not saved: Locked by admin" — D850). **`inputMode="text"`**, as the war's
+  Required and Available point boxes (★20): an iPhone's decimal keypad has no minus key and a figure below zero may be typed;
+  "-2", "−2", "2.5" and "+3" are read, anything else shows `balanceProblem`'s words at the box. A save of either LVE box writes
+  the whole row afresh (the spec §1.1); the door is `saveTypedFigure`, shared with the person window. Whether his iPhone shows a
+  minus on that keypad is for his phone to say.
+- **Days taken (D1484, reading 20):** "DAYS TAKEN IN JAN – DEC 26" — the heading names the View period — over LL, OL, OIL, CCL,
+  FCL, PL, EL, CL, MED, CSE, OD: each kind's approved days on dates inside the View period up to today (`engine/leaveyear.ts
+  daysTaken`); a dash for none.
+- **On a phone (D1483, D1236):** the names column (the puck over "Senior pilot · +36 ⌄") stays fixed while the figures slide
+  sideways; the headings stay on their row; a pinch zooms the list out until every column fits — the OIL tracker's own set-up
+  (`ui/pinchzoom.ts wirePinch`: CSS zoom, the headings and names pinned on their axis, `ui/lwzoom.ts` limits). Not testable in
+  jsdom (the icons dropped on a narrow phone, the pinch): the walk's.
+- **Grades… (D1486, D1234, D1229):** the Grades window — the next section.
+- **Speed (`docs/performance.md` §E):** a row is memoised on a signature of its own figures, so typing in one box repaints one box
+  and a save repaints the rows whose figures moved; the hidden grid is untouched.
+- **A member (D1487):** his own row in boxes while unlocked, everyone else's read only; locked, everything read only with the
+  padlock and "Locked by admin" — on a phone on a slim line under the bar; no Grades, no lock switch.
+
+## The Grades window (the overhaul's M5a — D1234, D1486, D1229, D1233, D1490, D890, D641, D997; BUILT 29 Oct 26)
+
+`leavewar/ui/GradesSheet.tsx`, opened from the Balances page's "Grades…" (an admin only); pins in `ui/balances.test.tsx`.
+- **The window** is the app's own `Sheet` in its non-blocking form (D641): dragged by its title, the page behind it still working,
+  under the Grades… button on a desktop and in the middle of the screen on a phone (D997); Escape in a box puts the old words back
+  FIRST and then closes the window, returning the keyboard to the button.
+- **Each grade** is a grip, its name in a box, "19 people" (how many hold it), its "+36" box, a ✕. A name saves on Enter or on
+  leaving it; two grades not deleted cannot share a name (the store's `gradeNameProblem`, its words at the box). "+ Grade" at the
+  foot. The starting list: Senior pilot +36, Junior pilot +33, Senior WSO +21, Junior WSO +18, Ops A +14 (D1229; the engine reads it
+  while `lw.config` holds no list).
+- **"+ days" counts from the next 1 Jan (D1490, `setGradeDays`):** the days a 1 Jan already added stay as they were.
+- **A drag by the grip shows ONE landing line a gap (D890** — the grid's rule: over the lower half of a row, the line on the top
+  of the row below); the grip's arrow keys move a grade one place.
+- **Delete** of a grade people hold asks first, naming how many ("3 people hold Junior WSO: they become No grade"); they become
+  "No grade" from today, the 1 Jans before keep what it added (reading 11); Undo brings it back (`deleteGrade`). A grade nobody
+  holds goes at once. Every change is one command the top bar's Undo takes back (`lw.grades`).
+- **A person's own grade** is set from the grade box's list on the Balances page (one tap; it counts from the next 1 Jan —
+  D1490), stored as `grade:<pid>` (`lw.grade`, an admin's).
+
+## Lock for members (the overhaul's M5a — D1220, D1247, D1488; BUILT 29 Oct 26)
+
+- **One switch for everyone, an admin's only, on the Balances page:** a switch on a desktop; the padlock on a phone, open and unlit
+  when off, closed and lit cyan when on (D1488). Stored in `lw.config` as `balLock` (reads false while absent); command
+  `lw.balLock`, one Undo step ("Undo — the balance lock"); the history line "Balances locked / unlocked for members".
+- **Locked:** a member's boxes go — on the page and in his person window — and the padlock reads "Locked by admin"; an admin keeps
+  his boxes and reads "Locked for members" (the person window's BALANCES heading carries it on every window, another man's too).
+- **THE LOCK IS READ AT SAVE, NOT ONLY WHEN THE BOX IS DRAWN (B6, spec §2.3):** `balanceProblem` is asked again when a box saves
+  and the permissions gate repeats it at the commit (`state/perms.ts ownershipViolation`: `lw.balance` only on a member's own pid,
+  only while `balLock` is off as it stands when the command is saved). So a box left open while an admin locks refuses the
+  save with its reason at the box ("Locked by admin"), and a member's Undo or Redo of an earlier change after the lock is refused
+  alike. If the lock lands while he types and his boxes go, the figure is refused by a passing note (`FigBox`'s own).
+- **A member's phone** shows a slim "Locked by admin" line under the bar; no Grades, no switch.
+
+## The person window (the overhaul's M5a, jobs 1–2 — D1480, D1148, D1201, D1203, D1209, D1220, D1231, D1251–D1253, D1292, D1327, D1328, D1481, D641, D997; BUILT 29 Oct 26)
+
+Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2-desk-drawn`, `m5a-p4-phone-own`, `m5a-p5-phone-locked`,
+`m5a-p6-phone-other`). Code: `leavewar/ui/PersonWindow.tsx`, `ui/personleave.ts` (one man's lines and the new-since marks),
+`ui/LeaveLine.tsx` (the no-puck form), `ui/personwindow.css`, `state/lwseen.ts`; pins `ui/personwindow.test.tsx` (28),
+`ui/gridfigures.test.tsx`. It REPLACES the old figures sheet (`PersonFiguresSheet`) and the breakdown sheet
+(`FigureBreakdownSheet`) — `CounterSheet.tsx` is deleted.
+- **The tiles:** the heading — his name, ✕; then BALANCES with the padlock and "Locked for members" (admin) or "Locked by admin"
+  (member) while locked. LVE (its box, "3 taken"; App bal · Pending · War bal on one line, the pending figure amber; "incl. [2]
+  carried fwd · till 31 Dec" under App bal); OIL ("0 ›", opening his OIL tracker — D1209, D1008; never a box); MED (days this year
+  up to today); then CCL, FCL, PL, EL, CL each a box and, only while its Pending is not 0, "Pending −1 / War bal 2" as a little
+  list (D1253). **Every kind shows, whatever `figureHidden` says.** The boxes are the Balances page's `FigBox`, the same rules
+  (`balanceProblem`, Enter or leaving, Escape, the man taken at focus, `inputMode="text"`), saved through `saveTypedFigure`; an
+  admin any window, a member his own while unlocked; locked, no boxes for a member and boxes kept for an admin.
+- **The leave lines (reading 6):** under LEAVE and the year picker ("2026 and ahead"; past years in its list — D1148; a real list
+  styled as the drawing's button): one line a leave, no puck — the kind's box (look F: filled approved, hollow dashed pending,
+  grey struck refused), the dates ("Thu 29 Jan, AM" for a half), a paperclip where it has papers (a tap opens them read only —
+  D1292), the days, the state (Pending in amber). Only leave kinds (LL, OL, OIL taken, CCL, FCL, PL, EL, CL); a medical, a
+  course, an overseas duty and an Other stay on the grid. Approved leave is the Inputs (one Input, one line); pending and
+  refused are the war's requests, one line a run by `reqRunKey` across every war; the days are `approvals.ts ownDays` (the
+  request on its own). A tap on a line takes the grid there with the ring (D1449, D860 — Approvals' own way): from Approvals
+  to the grid with the slim bar, from Balances to the grid, the OIL tracker closed; on a phone the window closes after the tap. A
+  man with no row on the grid gets no line links (★15).
+- **New since his last visit — the dots and their marks (D1231, D1481; reading 7):** on HIS OWN window only, a line someone else
+  changed after the moment he last opened it wears the cyan dot and a muted line under it — "approved and added by Saber ·
+  yesterday 08:40", "added by …" (filed on the Inputs page by someone else), "changed by …", "placed by …" (a bid an admin put
+  on his row), "changed from LL by …", "put back to a bid by …"; ages as "today 09:05", "yesterday 08:40", "26 Jan 08:40". A
+  leave someone else deleted stays on the list struck through for that visit (several days deleted together are one struck
+  line). His own changes are never new, and a member who never opened his own window sees everything someone else did as new.
+  **Read from the records' own stamps** (a request's `decidedBy` / `decidedAt`, `placedBy` / `placedAt`; an Input's `by` / `at`,
+  `modBy` / `modAt`, `lwBy`) **and, for what leaves no stamp on what stands, the change history's machine marks**
+  (`state/changelines.ts`, THE MACHINE MARKS: `sub` whose leave, `fld` 'deleted' | 'moved' | 'kind' | 'back', `pid` who, `t`, with
+  the dates and codes) — never its words. The visit's moment is `lwseen:<pid>` (`state/lwseen.ts openOwnWindow`, written when
+  anyone opens his OWN window, an admin included; the previous moment kept for that visit), so the dots go when he closes the
+  window and a reload keeps the moment. Another man's window reads only, no dots. Left open: no machine mark for an Input deleted
+  on the Inputs page, so the window cannot strike such a leave through.
+- **Where it stands (A5, D641, D997):** a window that does not block — on a desktop **docked** at the grid's right edge, dragged
+  by its title, the grid working behind it; on a phone **in the middle** of the screen. `Matrix.tsx` **portals it into
+  `#page-leavewar`**, so it stands over the Balances and Approvals pages too (their grid card is hidden behind them).
+- **EVERY WAY IN:** a tap on a name on the grid (`openWho`); a tap on a name on the Balances page (D1148, reading 23); My leave
+  (his own — A1, `askLw({ kind: 'person', id: me })`); **a tap on the LVE figure beside a name (reading 15 — its tooltip "Tap for
+  his leave"; it opened a breakdown sheet before)**; Approvals' line or the bell's line for a man with no row on the grid (B12 —
+  M4's half). A man with no row (a SANS man while SANS is off) is accepted: his window and his typed figure work
+  (`warIdentityIfHidden`).
+- **The grid's figure beside each name (D1245, D1479; `MatrixRows.tsx nameLines` / `nameFigures`, also read by the phone's frozen
+  copy of the names in `Matrix.tsx`):** the grid keeps ONLY the LVE figure, two lines — the first his War bal, the second one
+  amber number, his LL and OL days in the View period, approved and pending (Ranger's drawn "12.5 / 7.5": 5 approved + 2.5
+  pending). Both come from the one engine (`leaveFiguresOf`; the period's days remembered against that cached answer), so the
+  row, the phone's copy, My leave and the tiles agree. Its tooltip reads "Tap for his leave".
+- **What the drawing did not settle (named to him, D1424):** the keyboard and screen-reader forms of what the drawing drew only
+  as pictures; while locked every window shows the padlock, another man's too.

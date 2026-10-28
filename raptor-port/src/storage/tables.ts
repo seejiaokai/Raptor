@@ -48,6 +48,9 @@ export function tableOf(collection: Collection, id: string): string {
       if (id.startsWith('rec:')) return 'LeaveBid'
       if (id.startsWith('ledger:')) return 'LeaveLedger'
       if (id.startsWith('opening:')) return 'LeaveOpening'
+      /* M5a: a typed figure and a person's grade, each its own table (the build spec §3) */
+      if (id.startsWith('bal:')) return 'LeaveBalance'
+      if (id.startsWith('grade:')) return 'LeaveGrade'
       if (id.startsWith('profile:')) return 'LeavePersonProfile'
       return 'Setting'
     case 'settings':
@@ -60,6 +63,7 @@ export function tableOf(collection: Collection, id: string): string {
       if (id.startsWith('reqseen:')) return 'AccessRequestSeen'
       /* when an admin last opened the Leave War's Approvals (M4 8.4): its own table, as the permissions table names it */
       if (id.startsWith('apprseen:')) return 'LeaveApprovalsSeen'
+      if (id.startsWith('lwseen:')) return 'LeaveSeen'
       return 'Setting'
     case 'tracker': return TRACKER(id)
     case 'changes': return 'ChangeBatch'

@@ -5,11 +5,14 @@
 // what was wrong was doing it silently. The balance is named as the column names it (+LVE's "LVE", not the counter's
 // inner name "annual"), so the ask and the red number it predicts read the same.
 
-import { FIGURES, type CounterName } from '../engine'
+import type { CounterName } from '../engine'
+import { BAL_KINDS, KIND_COUNTER } from '../engine/leaveyear'
+import { figWords } from './FigureCell'
 
 export type BelowZero = { callsign: string; counter: CounterName; after: number }
 
-/** What a fill does to one balance — the store's `balanceAfterFill`. */
+/** What a fill does to one balance — the store's `balanceAfterFill`: since M5a his War bal of the kind the code spends,
+ *  through the one engine (OIL the tracker's ledger), before and with the fill. */
 export type BalanceAfter = { counter: CounterName; before: number; after: number }
 
 /** Does this fill take the balance below zero? Only when it ends below zero AND lower than it started: a fill that
@@ -17,14 +20,16 @@ export type BalanceAfter = { counter: CounterName; before: number; after: number
  *  F4, 29 Sep 26 — it asked "takes him to -2" of a Saturday that left him at -2). */
 export const goesBelow = (r: BalanceAfter | null | undefined): r is BalanceAfter => !!r && r.after < 0 && r.after < r.before
 
-/** The column's short name for a counter's balance: "LVE", "OIL", "CCL"… */
+/** A counter's balance by the kind's own name, as every screen names it: "LVE" (LL and OL both spend it), "OIL", "CCL"… */
 export const balanceLabel = (counter: CounterName): string =>
-  FIGURES.find(f => f.kind === 'bal' && f.counter === counter)?.label ?? counter.toUpperCase()
+  BAL_KINDS.find(k => KIND_COUNTER[k] === counter) ?? counter.toUpperCase()
 
-/** "That takes DUSK to -3 LVE. Tap the same leave again to go ahead." — or, for several,
- *  "That takes DUSK to -3 LVE and RAVEN to -1 LVE. …" (a comma between all but the last two). */
+/** "That takes DUSK to −3 LVE. Tap the same leave again to go ahead." — or, for several,
+ *  "That takes DUSK to −3 LVE and RAVEN to −1 LVE. …" (a comma between all but the last two). The figure is written as
+ *  every surface writes it, its true minus (figWords — walker D's FAIL 5: it read "-1" where the grid's figure it predicts
+ *  read "−1"). */
 export function belowZeroAsk(list: readonly BelowZero[]): string {
-  const each = list.map(b => `${b.callsign} to ${b.after} ${balanceLabel(b.counter)}`)
+  const each = list.map(b => `${b.callsign} to ${figWords(b.after)} ${balanceLabel(b.counter)}`)
   const named = each.length > 1 ? `${each.slice(0, -1).join(', ')} and ${each[each.length - 1]}` : each[0] ?? ''
   return `That takes ${named}. Tap the same leave again to go ahead.`
 }

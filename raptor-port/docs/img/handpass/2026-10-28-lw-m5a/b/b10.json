@@ -1,0 +1,46 @@
+[
+ {
+  "id": "2 a SLOW pinch together (40 steps over 1.2 s)",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "zoom 0.491; scroll width 402 vs 402; window scroll 0; page-zoom 1",
+  "pics": [
+   "v1-slow-pinch-together"
+  ]
+ },
+ {
+  "id": "5 a tap on a box at the pinched-out resting place",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "box before {\"x\":67,\"y\":324,\"w\":27,\"h\":15,\"fs\":\"14px\",\"zoomEff\":\"0.49\"}; focused after {\"id\":\"bal-LVE-bane\",\"x\":67,\"y\":324,\"w\":27,\"h\":15,\"fs\":\"14px\"}; zoom 0.491; computed font 14px drawn 0.49x — on his iPhone a box whose letters are drawn under 16 px makes Safari zoom the whole page on focus (only his phone shows it)",
+  "pics": [
+   "v1-tap-pinched-q",
+   "v1-tap-pinched"
+  ]
+ },
+ {
+  "id": "3 typed 16 + Enter at the pinched-out size",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "App bal 16, War bal 13.5; zoom 0.491",
+  "pics": [
+   "v1-typed-pinched"
+  ]
+ },
+ {
+  "id": "2 a SLOW pinch apart; names and heading row held",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "zoom 1.4; scroll 372; names left 0; heading top 193",
+  "pics": [
+   "v1-slow-pinch-apart"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

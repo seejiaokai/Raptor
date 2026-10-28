@@ -860,8 +860,11 @@ export function BidPicker({
             scheduler's data to be typed in as if it were a bid. */}
         {/* the eight in two rows of four, each its kind's colour and what is left of it (M3 5.2–5.6 — LeaveButtons.tsx),
             the row's full width now its label went (round 3's change 6, his D1334) */}
+        {/* each button's "left" is his War bal AFTER this leave is placed on the days the window acts on, in the half picked
+            (the M5a spec §1.6 — the engine's what-if; walker D's FAILs 1–4: it read the figure as it stood, whatever the day
+            or the half) — the very days and code a press writes and the below-zero ask reads */}
         <LeaveButtons portion={portion} onPick={write} filled={approving} lit={lit}
-          figure={wouldLeave ? code => wouldLeave(code, [date])?.before ?? null : undefined} />
+          figure={wouldLeave ? (() => { const ds = selCells().map(c => c.date); return (code: string) => wouldLeave(code, ds)?.after ?? null })() : undefined} />
         {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
       </div>
 

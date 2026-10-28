@@ -103,7 +103,7 @@ describe('Matrix', () => {
     const pill = within(pop).getByText('SC DAY')
     expect(pill.style.background.toLowerCase()).toBe('rgb(230, 114, 166)')
     // the click was swallowed — the callsign's figures sheet stayed shut
-    expect(screen.queryByTestId('person-figures')).toBeNull()
+    expect(screen.queryByTestId('person-window')).toBeNull()
   })
 
   /* A second tap on the same chip closes the popover (a phone has no pointer to

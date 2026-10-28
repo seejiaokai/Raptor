@@ -178,9 +178,10 @@ type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell } |
    release — lives here once, parameterised by WHAT is being selected. The grid
    (`wireSelect`: people × days cells, or a date span on an event line), the
    OIL tracker (`wireRowSelect`: a run of people rows — owner, 2 Sep 26, "use
-   the same mechanics as the leave war grid") and the figure columns
-   (`wireFigureSelect`: a run of people down one figure, 6 Sep 26) are three
-   callers of the same machine, so the phone learns one rhythm for all of them. */
+   the same mechanics as the leave war grid") are two callers of the same
+   machine, so the phone learns one rhythm for both. (A third, the drag down a
+   figure column, went with D1491, 28 Oct 26; the `edge` and `nodes` options
+   below were its, and stay as the core's own.) */
 interface GestureBase<A, P> {
   enabled: () => boolean
   /** The thing under the pointer on pointerdown, or null when the press is
@@ -223,7 +224,7 @@ interface GestureBase<A, P> {
    *  FOURTEEN people.
    *    The dwell is deliberately longer than a drag's own moves take, so it is
    *  a RESTING finger the scroll waits for, not merely one that has crossed the
-   *  band on its way down — see `wireFigureSelect` for the measured numbers. */
+   *  band on its way down (its caller measured 0.3 and 500ms; gone with D1491). */
   edge?: { rate?: number; dwellMs?: number }
 }
 /* WHICH NODE, and HOW it is marked — both are either/or, and the type says so
@@ -439,8 +440,8 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     // than the resting highlight (matrix.css), and Android gets a short haptic.
     // iOS has no web vibrate, so the visual cue carries it there.
     // ...as a class AND an attribute, and the attribute is the durable one: a
-    // wrap whose className React OWNS (the figure select's `.mx-outer`, rebuilt
-    // from `mx-banded`/`lw-sda`/`mx-arranging`/`mx-figures`) loses the class on
+    // wrap whose className React OWNS (as `.mx-outer` was, for the figure select
+    // that went with D1491) loses the class on
     // the next render — a phone drag whose edge auto-scroll turned the band on
     // would go dim mid-drag. The class stays for the day grid's own recipe,
     // which is keyed on it (6 Sep 26 review).
@@ -746,91 +747,6 @@ export function wireRowSelect(wrap: HTMLElement, ctx: RowSelectCtx): () => void 
       if (hit && ctx.order().includes(hit)) lastFocus = hit
       const run = rowRun(ctx.order(), anchor, lastFocus ?? anchor)
       return run ? { ids: run, payload: run } : null
-    },
-    onSelect: ctx.onSelect,
-  })
-}
-
-/* ---- FIGURE SELECT (the counter column and the figures drawer, owner 6 Sep
-   26 — "drag as many as I like and key one number into them all") ----------
-   A run of PEOPLE down ONE figure column. The anchor's figure fixes the pool
-   (the run never widens sideways — one pool per drag, the owner's call); the
-   focus is whichever person's box is under the pointer, in any of a box's
-   three copies (the real cell, the band's copy, a drawer box), all addressed
-   by `data-fig` + `data-person`. Bound on `.mx-outer`, the one ancestor of all
-   three. Painted as an ATTRIBUTE (see the pair below), never a class —
-   FigureCell rebuilds its className on every store change, which is exactly the
-   moment Save lands. A heading, a sub-heading or an event row under the pointer
-   holds the last person (`lastFocus`), the grid's own rule. */
-export interface FigureSelectCtx {
-  order: () => string[]                     // person ids, top → bottom, people only
-  selectable: (figId: string) => boolean    // a balance with a counter; a total never
-  enabled: () => boolean
-  onArm?: () => void
-  onSelect: (sel: FigureSelection) => void
-}
-export type FigureSelection = { fig: string; ids: string[] }
-type FigAnchor = { fig: string; person: string }
-/* TWO WRITERS, TWO ATTRIBUTES, and they must never be one (6 Sep 26 review).
-   React renders `data-figsel` for the COMMITTED selection; the gesture paints
-   `data-figdrag` while a drag is live and wipes its own marks on release.
-   Shared, the gesture's clear stripped boxes React already owned — and React
-   only writes an attribute whose PROP changed, so it never put them back: a
-   second drag overlapping a live selection left a selected person dark, and a
-   cancelled drag (which commits nothing, so nothing re-renders) left the whole
-   selection dark. Both are lit by the same CSS (matrix.css), so a box under a
-   drag looks the same whichever attribute it is wearing. */
-export const FIGSEL_ATTR = 'data-figsel'
-export const FIGDRAG_ATTR = 'data-figdrag'
-const FIGBOX = 'td.figbox[data-fig][data-person]'
-
-const figBoxOf = (el: Element | null | undefined): FigAnchor | null => {
-  const box = el?.closest?.(FIGBOX)
-  return box ? { fig: box.getAttribute('data-fig')!, person: box.getAttribute('data-person')! } : null
-}
-const figBoxAt = (x: number, y: number) => figBoxOf(document.elementFromPoint(x, y))
-
-export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () => void {
-  let lastFocus: string | null = null
-  return wireGesture<FigAnchor, FigureSelection>(outer, {
-    enabled: ctx.enabled,
-    nodes: id => {
-      const i = id.indexOf(':')
-      return Array.from(outer.querySelectorAll(`td.figbox[data-fig="${id.slice(0, i)}"][data-person="${id.slice(i + 1)}"]`))
-    },
-    mark: (el, on) => { if (on) el.setAttribute(FIGDRAG_ATTR, '1'); else el.removeAttribute(FIGDRAG_ATTR) },
-    reset: () => { lastFocus = null },
-    onArm: ctx.onArm,
-    // GENTLE at the edge, unlike the day grid (6 Sep 26 bug hunt). What this
-    // run collects is what a number gets written to, so a finger that simply
-    // ends its drag in a phone's bottom band must not go on gathering people:
-    // 0.3 of the step (≤5px a frame at full depth against the grid's 15), and
-    // not until it has RESTED half a second in the band. The numbers are
-    // measured, not guessed: the drag that started this ran 259px and lit
-    // fourteen; at 0.4 and 220ms it still reached eight, because a drag's own
-    // moves burn a short dwell before the finger has even stopped. Half a
-    // second outlasts the drag, so the wait only begins once the finger really
-    // has come to rest — the same drag now scrolls NOTHING while it is being
-    // made (measured: 0px), and then runs at about a third of the day grid's
-    // pace, ~7 rows a second at the depth a drag like that ends at. Rested
-    // there on purpose a run CAN still be extended past the screen; the bar's
-    // count is the check before Save.
-    edge: { rate: 0.3, dwellMs: 500 },
-    // A HOLD selects, a quick tap still opens the breakdown — the day grid's own
-    // rhythm, on the same feel constants. So an admin's press that dwells past
-    // HOLD (or a mouse that moves past MOUSE_SLOP) commits a selection of the
-    // one person pressed and swallows the trailing click; a plain tap never
-    // arms, and the box's own onClick opens that person's figure as it always
-    // has. Pinned both ways in the e2e.
-    hit: el => {
-      const box = figBoxOf(el)
-      return box && ctx.selectable(box.fig) && ctx.order().includes(box.person) ? box : null
-    },
-    current: (anchor, x, y) => {
-      const hit = figBoxAt(x, y)
-      if (hit && ctx.order().includes(hit.person)) lastFocus = hit.person
-      const run = rowRun(ctx.order(), anchor.person, lastFocus ?? anchor.person)
-      return run ? { ids: run.map(p => `${anchor.fig}:${p}`), payload: { fig: anchor.fig, ids: run } } : null
     },
     onSelect: ctx.onSelect,
   })

@@ -64,12 +64,12 @@ describe('the Leave War grid draws each name as the schedule\'s puck (D1468, D14
     const chip = within(screen.getByTestId('row-tata')).getByTestId('cat-tata')
     fireEvent.click(chip)
     expect(screen.getByTestId('qualpop').textContent).toContain('SC DAY')
-    expect(screen.queryByTestId('person-figures')).toBeNull()
+    expect(screen.queryByTestId('person-window')).toBeNull()
     fireEvent.click(chip)   // a second tap closes it
     expect(screen.queryByTestId('qualpop')).toBeNull()
     fireEvent.click(puckOf('tata').querySelector('.nm')!)
     expect(screen.queryByTestId('qualpop')).toBeNull()
-    expect(screen.getByTestId('person-figures'), 'the name opens his window').toBeTruthy()
+    expect(screen.getByTestId('person-window'), 'the name opens his window').toBeTruthy()
   })
 
   it('the phone\'s frozen copy of a row draws the same puck', () => {

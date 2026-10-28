@@ -100,7 +100,7 @@ describe('no mark in this app glows (D880–D882, D887)', () => {
     expect(body('03-week.css', '.day.today')).toMatch(/border-color:rgba\(59,198,232,\.45\)/)
     expect(body('04-pucks-sections.css', '.puck.san::after')).toMatch(/linear-gradient[\s\S]*box-shadow:inset 0 0 1px #fff/)
     expect(body('matrix.css', '.mx tbody tr.dragover .who')).toMatch(/box-shadow: inset 0 3px 0 var\(--accent\);?\s*$/)
-    expect(body('matrix.css', '.balbar')).toMatch(/border: 1\.5px solid var\(--accent\)[\s\S]*box-shadow: 0 18px 44px rgba\(0, 0, 0, \.7\)/)
+    expect(body('matrix.css', '.mv-banner')).toMatch(/border: 1\.5px solid var\(--accent\)[\s\S]*box-shadow: 0 18px 44px rgba\(0, 0, 0, \.7\)/)
     expect(body('02-shell.css', '.fastsync.on .dot')).toMatch(/background:var\(--ok\)/)
     expect(body('postout.css', '#page-admin .od-c i.g')).toMatch(/background:var\(--ok\)/)
   })

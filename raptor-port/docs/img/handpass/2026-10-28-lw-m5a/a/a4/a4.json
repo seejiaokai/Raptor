@@ -1,0 +1,89 @@
+[
+ {
+  "id": "A40 member, unlocked (beside m5c-c2-desk-open-cut)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "tabs Grid · Balances · OIL, gear none; inputs on the page 8: bal-search,bal-LVE-bane,bal-cf-bane,bal-CCL-bane,bal-FCL-bane,bal-PL-bane,bal-EL-bane,bal-CL-bane; admin bits {\"grades\":false,\"lock\":false,\"locked\":null,\"gradeBoxes\":0}; Ranger's grade words {\"text\":\"Senior pilot+36\",\"color\":\"rgb(154, 165, 177)\",\"tag\":\"SPAN\",\"clickable\":false}; Recon's {\"text\":\"Junior pilot+33\",\"color\":\"rgb(154, 165, 177)\",\"tag\":\"SPAN\",\"clickable\":false}; Saber's row boxes 0, figures 17.5 1 0 0 0 0 0",
+  "pics": [
+   "40-member-open"
+  ]
+ },
+ {
+  "id": "A41 (scn 42) a tap on his grade words opens no picker",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "picker visible false",
+  "pics": []
+ },
+ {
+  "id": "A42 (scn 45) member types LVE 21 incl. 3 and CL 2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "his row App 21 incl. 3 Pending −2.5 War 18.5 CL \"2 −1\"; Undo tip \"Undo — CL balance 1 → 2\"",
+  "pics": [
+   "41-member-typed"
+  ]
+ },
+ {
+  "id": "A42b (scn 45) after a reload, Saber reads Ranger 21 incl. 3, CL 2",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reload signed out true; Saber sees Ranger App 21 incl. 3 War 18.5 CL \"2 −1\"",
+  "pics": []
+ },
+ {
+  "id": "A43 (scn 49) no bell line for a balance change, a grade change or the lock",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Ranger's bell before: 0 lines; after Saber typed 22, set Senior WSO, locked: 0 lines; dot before false after false; new lines: []; (admin's row then: App 22, grade \"Senior WSO+21\")",
+  "pics": []
+ },
+ {
+  "id": "A44 member, locked (beside m5c-c2-desk-locked-cut): all read only, \"Locked by admin\"",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "inputs 1; words \"Locked by admin\"; his row read-only figures 22 3 3 5 2 4 2; his grade words {\"text\":\"Senior WSO+21\",\"color\":\"rgb(154, 165, 177)\",\"tag\":\"SPAN\",\"clickable\":false} (the admin set him Senior WSO: words follow the change, scn 42)",
+  "pics": [
+   "42-member-locked"
+  ]
+ },
+ {
+  "id": "A45 (scn 46) member: two typings, Undo both, Redo both (unlocked)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "typed 19/3 −1; Undo 1 → CL 2 −1; Undo 2 → App 22; Redo ×2 → App 19 CL 3 −1",
+  "pics": []
+ },
+ {
+  "id": "A46 (scn 46) lock flipped by the bridge (stand-in for the admin), then his Undo is refused",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bridge {\"ok\":true,\"wrote\":true}; his row before Undo: 19 3 3 5 2 4 2; after Undo press: 19 3 3 5 2 4 2; notes on screen: Switch back to the admin view to undo that.",
+  "pics": [
+   "43-undo-while-locked"
+  ]
+ },
+ {
+  "id": "A46b unlocked again: the same Undo is accepted",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "READING: his row after Undo, unlocked: App 19 CL 2 −1 (before: 19 CL 2 −1)",
+  "pics": []
+ },
+ {
+  "id": "A47 (scn 36) the admin switched to the member view with Balances up: stays, a member's page",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "{\"page\":true,\"badge\":\"Saber · Member\",\"grades\":false,\"lock\":false,\"inputs\":[\"bal-search\",\"bal-LVE-stiff\",\"bal-cf-stiff\",\"bal-CCL-stiff\",\"bal-FCL-stiff\",\"bal-PL-stiff\",\"bal-EL-stiff\",\"bal-CL-stiff\"],\"tabs\":[\"lw-tab-grid\",\"lw-tab-balances\",\"oil-tracker\"]}",
+  "pics": [
+   "44-admin-member-view"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

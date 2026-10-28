@@ -1,12 +1,11 @@
 // The credit form, and the day chip it is built on.
 //
 // Both lived inside OilTracker.tsx until 6 Sep 26, when the grid grew a bar of
-// its own: a drag down a figure column picks a run of people and the bar takes
-// ONE number for all of them (BalanceBar.tsx). That bar wants the tracker's
-// form, not a second one — the same fields, the same refusals, the same wording
-// — so the form moved out here and the tracker imports it back. Two credit
-// surfaces, one body: they cannot drift into disagreeing about what a valid
-// grant is, and the STORE (grantTo) still has the last word on both.
+// its own (a drag down a figure column, one number for the run) that wanted the
+// tracker's form, not a second one — so the form moved out here and the tracker
+// imports it back. That bar went with D1491 (28 Oct 26); the OIL tracker and the
+// day's list (its half pick) still use this file, and the STORE (grantTo) still
+// has the last word on what a valid grant is.
 
 import { useState, type KeyboardEvent, type ReactNode } from 'react'
 import type { CounterName, Half } from '../engine'

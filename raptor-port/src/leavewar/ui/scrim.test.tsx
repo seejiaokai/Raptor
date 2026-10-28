@@ -55,24 +55,9 @@ const SHEETS: { name: string; testid: string; open: () => void; gone?: true }[] 
       fireEvent.click(screen.getByTestId('cell-asics-2026-01-23'))
     },
   },
-  /* (the person sheet — the war's Edit person — is gone: D460, D461) */
-  {
-    name: 'a figure breakdown',
-    testid: 'figure-breakdown',
-    open: () => {
-      render(<Matrix />)
-      fireEvent.click(screen.getByTestId('person-ramp'))
-      fireEvent.click(screen.getByTestId('pfig-lve').querySelector('.crow')!)
-    },
-  },
-  {
-    name: 'the person figures sheet',
-    testid: 'person-figures',
-    open: () => {
-      render(<Matrix />)
-      fireEvent.click(screen.getByTestId('person-ramp'))
-    },
-  },
+  /* (the person sheet — the war's Edit person — is gone: D460, D461. The figures sheet and a figure's breakdown went with
+     M5a: the person window that replaced both is a window that does NOT block the page (A5, D641), so it has no veil and
+     a press outside never closes it — it is pinned on its own below, not in this table of blocking sheets.) */
   {
     name: 'the new-war sheet',
     testid: 'war-sheet',
@@ -126,18 +111,15 @@ describe('Escape closes a sheet', () => {
     })
   }
 
-  /* Leave War sheets REPLACE one another rather than stacking (a figure's
-     breakdown takes the figures sheet's place; a decision sheet yields to the
-     remarks editor), so one press closes the one sheet there is and the grid is
-     left clear — no orphan scrim, nothing to tab into. */
+  /* Leave War sheets REPLACE one another rather than stacking, so one press closes the one sheet there is and the grid is
+     left clear — no orphan scrim, nothing to tab into. Re-expressed for M5a: the person window (which replaced the figures
+     sheet and its breakdown) closes on Escape too, and leaves nothing behind. */
   it('leaves no sheet and no scrim behind', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('pfig-lve').querySelector('.crow')!)
-    expect(screen.getByTestId('figure-breakdown')).toBeTruthy()
+    expect(screen.getByTestId('person-window')).toBeTruthy()
     fireEvent.keyDown(document, { key: 'Escape' })
-    expect(screen.queryByTestId('figure-breakdown')).toBeNull()
-    expect(screen.queryByTestId('person-figures')).toBeNull()
+    expect(screen.queryByTestId('person-window')).toBeNull()
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
   })
 
@@ -165,12 +147,14 @@ describe('Escape closes a sheet', () => {
     try {
       render(<Matrix />)
       fireEvent.click(screen.getByTestId('person-ramp'))
-      expect(screen.getByTestId('person-figures')).toBeTruthy()
+      expect(screen.getByTestId('person-window')).toBeTruthy()
+      // the window stands in the Leave War's own page (Matrix portals it there — M5a)
+      expect(pg.contains(screen.getByTestId('person-window'))).toBe(true)
       fireEvent.keyDown(document, { key: 'Escape' })
-      expect(screen.getByTestId('person-figures'), 'a hidden tab must not answer Escape').toBeTruthy()
+      expect(screen.getByTestId('person-window'), 'a hidden tab must not answer Escape').toBeTruthy()
       pg.className = 'page on'
       fireEvent.keyDown(document, { key: 'Escape' })
-      expect(screen.queryByTestId('person-figures')).toBeNull()
+      expect(screen.queryByTestId('person-window')).toBeNull()
     } finally { pg.remove() }
   })
 })
@@ -192,12 +176,12 @@ describe('clicking outside a sheet closes it', () => {
     })
   }
 
-  // Re-expressed for D1245: the sheet opened is the person's window (a tap on his name) — the counter sheet it used to
-  // open is no longer reachable from the grid.
+  // Re-expressed for D1245, then for M5a: the sheet opened is the bid picker (a tap on a day) — the person window, which
+  // stood in here, blocks nothing and has no scrim.
   it('leaves no scrim behind once every sheet is shut', () => {
     render(<Matrix />)
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
-    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(scrim())
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
   })
@@ -207,13 +191,14 @@ describe('clicking outside a sheet closes it', () => {
   // counter sheet (whose rows chose a counter) is no longer opened from the grid,
   // so the person's window stands in — a tap on one of its rows hands over to
   // that figure's breakdown, closing the window by choosing, not by dismissal.
+  // Re-expressed for M5a: the bid picker stands in (the person window, which did, has no scrim) — a tap on a leave in it
+  // places the bid, closing the sheet by choosing, not by dismissal.
   it('does not intercept a click on the sheet itself', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('pfig-lve').querySelector('.crow')!)
-    expect(screen.queryByTestId('person-figures')).toBeNull()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    fireEvent.click(screen.getByTestId('bid-LL'))
     // The choice landed, which a swallowed click would not have done.
-    expect(screen.getByTestId('figure-breakdown')).toBeTruthy()
+    expect(getState().grid.dusk['2026-02-11']).toBe('LL')
   })
 
   // Dismissing is not deciding. A bid left pending must still be pending after
@@ -233,29 +218,31 @@ describe('clicking outside a sheet closes it', () => {
 // A horizontal DRAG on the scrim forwards onto the grid and leaves the sheet
 // up; only a plain TAP (no movement) still dismisses.
 // Re-expressed for D1245 here and in the next block: these opened the counter
-// sheet from the column's picker, which is gone; the sheet under test is now the
-// person's window (a tap on his name) — the same Sheet, scrim and title strip.
+// sheet from the column's picker, which is gone; the sheet under test was then the
+// person's window. Since M5a that window blocks nothing (no scrim — A5, D641), so the
+// scrim's pins here use the bid picker (a tap on a day — the same Sheet and scrim);
+// the next block's moving panel stays the person window's, which still drags.
 describe('a sideways drag scrolls the grid, it does not dismiss', () => {
   it('keeps the sheet up when the scrim is dragged left-right', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-ramp'))
-    expect(screen.getByTestId('person-figures')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 260, clientY: 300, pointerId: 1 })
     fireEvent.pointerMove(s, { clientX: 160, clientY: 302, pointerId: 1 }) // 100px left, ~horizontal
     fireEvent.pointerUp(s, { clientX: 160, clientY: 302, pointerId: 1 })
     fireEvent.click(s) // the trailing click a mouse drag produces
-    expect(screen.queryByTestId('person-figures')).toBeTruthy()
+    expect(screen.queryByTestId('bid-picker')).toBeTruthy()
   })
 
   it('still closes on a plain tap with no drag', () => {
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 260, clientY: 300, pointerId: 1 })
     fireEvent.pointerUp(s, { clientX: 260, clientY: 300, pointerId: 1 })
     fireEvent.click(s)
-    expect(screen.queryByTestId('person-figures')).toBeNull()
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 
   it('forwards the drag distance onto the grid scroller', () => {
@@ -266,7 +253,7 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     let sl = 0
     Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
     wrap.scrollLeft = 500
-    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1 })
     fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1 }) // dragged 100px left
@@ -285,12 +272,12 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     let sl = 0
     Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
     wrap.scrollLeft = 6500
-    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const s = scrim()
     fireEvent.pointerMove(s, { clientX: 900, clientY: 300, pointerId: 1, pointerType: 'mouse' })
     fireEvent.pointerMove(s, { clientX: 700, clientY: 320, pointerId: 1, pointerType: 'mouse' })
     expect(wrap.scrollLeft).toBe(6500)
-    expect(screen.queryByTestId('person-figures')).toBeTruthy()
+    expect(screen.queryByTestId('bid-picker')).toBeTruthy()
   })
 
   it('stops panning once the mouse button has been released elsewhere', () => {
@@ -299,7 +286,7 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     let sl = 0
     Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
     wrap.scrollLeft = 500
-    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     const s = scrim()
     fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
     fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
@@ -325,7 +312,7 @@ describe('the page stays live behind a sheet, and the panel moves', () => {
   it('slides the panel when its title strip is dragged', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    const panel = screen.getByTestId('person-figures')
+    const panel = screen.getByTestId('person-window')
     const hd = panel.querySelector('.bidsheet-hd') as HTMLElement
     expect(hd).toBeTruthy()
     // jsdom reports every rect 0×0, so the panel starts at (0,0) and the clamp
@@ -341,10 +328,10 @@ describe('the page stays live behind a sheet, and the panel moves', () => {
   it('does not start a drag from a control on the title strip', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    const panel = screen.getByTestId('person-figures')
+    const panel = screen.getByTestId('person-window')
     // Pressing the ✕ (a button in the strip) must not move the panel — it
     // closes. A press that begins on a button is ignored by the drag handler.
-    const x = screen.getByTestId('pfig-close')
+    const x = screen.getByTestId('pw-close')
     fireEvent.pointerDown(x, { clientX: 100, clientY: 100, pointerId: 3 })
     fireEvent.pointerMove(x, { clientX: 180, clientY: 140, pointerId: 3 })
     expect(panel.style.getPropertyValue('--lw-dx')).toBe('')
@@ -462,5 +449,25 @@ describe('on a touch screen the finger falls through to the grid, and a tap is s
     openBid()
     expect(scrim().className).toBe('sheetscrim')
     expect(scrim().style.pointerEvents).toBe('')
+  })
+})
+
+/* THE PERSON WINDOW DOES NOT BLOCK THE PAGE (M5a — A5, D641): no veil, the grid behind it takes a press, a press outside
+   leaves it up; Escape and its ✕ close it. */
+describe('the person window is a window, not a sheet over the grid', () => {
+  it('has no scrim, and a press on the grid behind it reaches the grid', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    expect(screen.getByTestId('person-window')).toBeTruthy()
+    expect(screen.queryByTestId('sheet-scrim')).toBeNull()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+  })
+  it('a tap on another name switches it to him — one window', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('person-dusk'))
+    expect(screen.getAllByTestId('person-window')).toHaveLength(1)
+    expect(screen.getByTestId('pw-name').textContent).toBe(getState().people.find(p => p.id === 'dusk')!.callsign)
   })
 })

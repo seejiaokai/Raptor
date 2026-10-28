@@ -36,7 +36,8 @@ import { focusDay, getState, rawState, subscribe } from './state/store'
 import { focusDateOf, memberToday } from './engine'
 import { installDayClock } from './ui/dayclock'
 import { ApprovalsPage, SlimBar } from './ui/ApprovalsPage'
-import { apprMode, lwNavVersion, setApprMode, subscribeLwNav, takeRingAsk } from './ui/lwnav'
+import { apprMode, lwNavVersion, lwPage, setApprMode, setBalancesUp, subscribeLwNav, takeRingAsk } from './ui/lwnav'
+import { BalancesPage } from './ui/BalancesPage'
 import { ringCell } from './ui/cellring'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
@@ -69,38 +70,51 @@ let gridYNow = 0
    the slim bar up (a request's dates tapped) the grid shows and the page waits, kept as he left it. Leaving Approvals ends
    the visit. Coming back to the grid from the page restores where he was on it — the page scroll is the window's (the
    standalone "one vertical scroll" rule) — and kicks the grid's measures, as a return to the tab does. */
+/* …AND BALANCES THE SAME WAY (the overhaul's M5a — D1254, D1483): the page in the grid card's place is general now — the
+   grid, Approvals' page or the Balances page (ui/lwnav.ts `lwPage`). Each keeps its own page scroll; Balances fills the
+   screen under the tab row and scrolls inside itself (its drawing, `full-m5a-balances.mjs`), so it opens at the window's
+   top. It is drawn only while up — 50 rows of figures are not kept working behind the grid. */
 function Body() {
   const mode = useSyncExternalStore(subscribeLwNav, apprMode, apprMode)
+  const page = useSyncExternalStore(subscribeLwNav, lwPage, lwPage)
   useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
-  const apprY = useRef(0), was = useRef(mode)
+  const apprY = useRef(0), was = useRef(page)
   useEffect(() => {
     const from = was.current
-    was.current = mode
-    if (from === mode) return
+    was.current = page
+    /* Approvals left from its slim bar (the grid already up): the visit is over, its place forgotten */
+    if (from === page) { if (mode === 'off') apprY.current = 0; return }
     /* he left the Leave War (another page, the bell): the visit is over and the page's own cleanup has already flagged the
        grid off screen — nothing of the grid's is touched, and no other page's scroll (M6) */
     if (!pageOn) { if (mode === 'off') apprY.current = 0; return }
     /* a hidden grid fills nothing in the background (state/screen.ts — the same flag a hidden tab sets) */
-    setLwOnScreen(mode !== 'page')
-    if (mode === 'page') { window.scrollTo(0, apprY.current); return }
+    setLwOnScreen(page === 'grid')
+    if (page === 'approvals') { window.scrollTo(0, apprY.current); return }
+    if (page === 'balances') { window.scrollTo(0, 0); return }
     /* back on the grid: where he was on it */
-    if (from === 'page') { window.scrollTo(0, gridYNow); window.dispatchEvent(new Event('resize')) }
+    window.scrollTo(0, gridYNow); window.dispatchEvent(new Event('resize'))
     if (mode === 'off') apprY.current = 0
-  }, [mode])
+  }, [page, mode])
   useEffect(() => {
     /* only while the Leave War is the page on screen — the window's scroll is every page's (M6) */
-    const on = () => { if (!pageOn) return; if (apprMode() === 'page') apprY.current = window.scrollY; else gridYNow = window.scrollY }
+    const on = () => {
+      if (!pageOn) return
+      const p = lwPage()
+      if (p === 'approvals') apprY.current = window.scrollY
+      else if (p === 'grid') gridYNow = window.scrollY
+    }
     window.addEventListener('scroll', on, { passive: true })
     return () => window.removeEventListener('scroll', on)
   }, [])
   return (
     <>
-      <div className="lw-gridhost" hidden={mode === 'page'}>
+      <div className="lw-gridhost" hidden={page !== 'grid'}>
         {/* the grid's own bar now stands on the grid card (Matrix renders StageBar — D1254) */}
         <GridM />
       </div>
       {mode !== 'off' && <ApprovalsPage shown={mode === 'page'} />}
       {mode === 'bar' && <SlimBar />}
+      {page === 'balances' && <BalancesPage />}
     </>
   )
 }
@@ -195,9 +209,11 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
       /* off the page FIRST, so the mode change below is read as leaving (M6) — and, left from the Approvals page, the next
          return lands on the grid where he was on it, not at the page's scroll */
       pageOn = false
-      if (apprMode() === 'page') savedY.current = gridYNow
-      /* another page: he has left Approvals (M4 8.3 — the visit ends) */
+      if (lwPage() !== 'grid') savedY.current = gridYNow
+      /* another page: he has left Approvals (M4 8.3 — the visit ends), and the Balances page with it (M5a) — the next
+         return lands on the grid */
       setApprMode('off')
+      setBalancesUp(false)
       /* Off screen now: BEFORE the resize kick, so the Matrix sees the flag
          false and shrinks its drawn window back to a few months around the
          current view. That is what keeps the NEXT return cheap — the browser

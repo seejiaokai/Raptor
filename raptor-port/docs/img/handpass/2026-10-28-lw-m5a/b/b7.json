@@ -1,0 +1,21 @@
+[
+ {
+  "id": "6 classic scroll bars (Chromium, bars not hidden) on the Balances page",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "vertical bar 0px, horizontal bar 0px, window bars 15/0; scrollbar-width none; the page's own bar rules [\"#page-leavewar .bp-hs { scrollbar-width: none; overscroll-behavior: contain; flex: 1 1 0%; min-height: 0px; position: relative; overflow: auto; }\",\"#page-leavewar .bp-hs::-webkit-scrollbar { display: none; }\"]; names left 0; scroller right edge 387 of 402",
+  "pics": [
+   "z-bars-balances",
+   "z-bars-slid"
+  ]
+ },
+ {
+  "id": "6 classic scroll bars on the person window",
+  "size": "402",
+  "verdict": "NOTE",
+  "said": "{\"scrollers\":[]}",
+  "pics": [
+   "z-bars-window"
+  ]
+ }
+]

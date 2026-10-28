@@ -20,18 +20,18 @@ const quals = (id: string, patch: Partial<ReturnType<typeof getState>['people'][
   act(() => { setPeople(getState().people.map(p => (p.id === id ? { ...p, ...patch } : p))) })
 
 describe('the Leave War has no Edit person', () => {
-  it('offers a member the figures sheet and no editor', () => {
+  it('offers a member his person window and no editor', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    expect(screen.getByTestId('person-figures')).toBeTruthy()
+    expect(screen.getByTestId('person-window')).toBeTruthy()
     expect(screen.queryByTestId('person-edit')).toBeNull()
   })
 
-  it('offers an admin the figures sheet and no editor either', () => {
+  it('offers an admin the person window and no editor either', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    expect(screen.getByTestId('person-figures')).toBeTruthy()
+    expect(screen.getByTestId('person-window')).toBeTruthy()
     expect(screen.queryByTestId('person-edit')).toBeNull()
     expect(screen.queryByTestId('person-sheet')).toBeNull()
   })

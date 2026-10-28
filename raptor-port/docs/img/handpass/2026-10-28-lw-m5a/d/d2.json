@@ -1,0 +1,64 @@
+[
+ {
+  "id": "2-start both LL approved (fixture)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 12.5; incl. 0; Pending –; War bal 12.5; window App 12.5; window war 12.5; grid figure 12.5",
+  "pics": [
+   "d2-start-bal-win"
+  ]
+ },
+ {
+  "id": "2e move approved 12–13 Feb onto Sat 14–Sun 15 (days given back; formula: 14.5 incl 1.5)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 14.5; incl. 1.5; Pending –; War bal 14.5; window App 14.5; window war 14.5; grid figure 14.5 · lines: LL Mon 19 – Wed 21 Jan 3 Approved / LL Mon 26 – Tue 27 Jan 2 Approved / LL Thu 29 Jan, AM 0.5 Approved / LL Mon 2 Feb 1 Refused / LL Sat 14 – Sun 15 Feb 0 Approved / CCL Mon 2 Mar 1 Pending / PL Mon 16 Mar, AM 0.5 Pending / CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "d2-moved-bal-win"
+  ]
+ },
+ {
+  "id": "2f delete the approved 19–21 Jan leave that stood in the snapshot (+3; netted against 26–27 Jan and 29 Jan AM, typed incl. 4 unchanged: 17.5 incl 4)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 17.5; incl. 4; Pending –; War bal 17.5; window App 17.5; window war 17.5; grid figure 17.5 · taken 0 taken",
+  "pics": [
+   "d2-deleted-bal-win"
+  ]
+ },
+ {
+  "id": "2g a half day (AM LL Mon 9 Feb placed approved): −0.5, shown .5",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 17; incl. 4; Pending –; War bal 17; window App 17; window war 17; grid figure 17 · half line LL Mon 9 Feb, AM 0.5 Approved",
+  "pics": [
+   "d2-half-bal-win",
+   "d2-half-grid"
+  ]
+ },
+ {
+  "id": "2h re-type App bal 20 (incl. as shown 4): the count starts afresh",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 20; incl. 4; Pending –; War bal 20; window App 20; window war 20; grid figure 20",
+  "pics": [
+   "d2-retyped-bal-win"
+  ]
+ },
+ {
+  "id": "2i an Inputs-page leave filed (OL 15–16 Jul, lands approved): −2, carried fwd first (18 incl 2)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 18; incl. 2; Pending –; War bal 18; window App 18; window war 18; grid figure 18 · lines 2026-01-26 LL Mon 26 – Tue 27 Jan 2 Approved / 2026-01-29 LL Thu 29 Jan, AM 0.5 Approved / 2026-02-02 LL Mon 2 Feb 1 Refused / 2026-02-09 LL Mon 9 Feb, AM 0.5 Approved / 2026-02-14 LL Sat 14 – Sun 15 Feb 0 Approved / 2026-03-02 CCL Mon 2 Mar 1 Pending / 2026-03-16 PL Mon 16 Mar, AM 0.5 Pending / 2026-03-17 CL Tue 17 Mar 1 Pending / 2026-07-15 OL Wed 15 – Thu 16 Jul 2 Approved",
+  "pics": [
+   "d2-inputs-bal-win"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

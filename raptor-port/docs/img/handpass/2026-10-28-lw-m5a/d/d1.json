@@ -1,0 +1,89 @@
+[
+ {
+  "id": "1-row1 Ranger, seed (D1479 row 1)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 15; incl. 2; Pending −2.5; War bal 12.5; window App 15; window pend −2.5; window war 12.5; grid figure 12.5; Approvals LVE BAL on the 29 Jan line 12.5 · Approvals LL lines: Ranger IP LL Thu 29 Jan, AM › 0.5 day 12.5 P 27.5 — Approve Refuse | Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 12.5 P 27 — Approve Refuse",
+  "pics": [
+   "d1-row1-bal-win",
+   "d1-row1-grid"
+  ]
+ },
+ {
+  "id": "3 leave buttons \"left\" on a free weekday (designer expects 11.5 = War bal − 1; D1144 reading)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "LL left 12.5, CCL left 2 (War bal is 12.5, CCL War bal 2)",
+  "pics": [
+   "d1-row1-bidwin"
+  ]
+ },
+ {
+  "id": "1-row1 My leave (Ranger signed in)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"MY LEAVE · next 26 Jan LVE 12.5 · OIL 0 · 5 pending ›\"",
+  "pics": []
+ },
+ {
+  "id": "2a approve 12–13 Feb (2 days)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 13; incl. 0; Pending −0.5; War bal 12.5; window war 12.5; grid figure 12.5",
+  "pics": [
+   "d1-X-approved-bal-win",
+   "d1-X-approved-grid"
+  ]
+ },
+ {
+  "id": "2b refuse it back (approved → refused)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 15; incl. 2; Pending −0.5; War bal 14.5",
+  "pics": [
+   "d1-X-refused-bal-win"
+  ]
+ },
+ {
+  "id": "2c put back to a bid (second tap on the lit Refuse)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 15; incl. 2; Pending −2.5; War bal 12.5",
+  "pics": [
+   "d1-X-pending-bal-win"
+  ]
+ },
+ {
+  "id": "1-row2 both approved (D1479 row 2)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 12.5; incl. 0; Pending –; War bal 12.5; window war 12.5; window pend 0; grid figure 12.5 · window pend \"0\", taken \"3 taken\"",
+  "pics": [
+   "d1-row2-bal-win",
+   "d1-row2-grid"
+  ]
+ },
+ {
+  "id": "1-row2 My leave (Ranger signed in)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"MY LEAVE · next 26 Jan LVE 12.5 · OIL 0 · 2.5 pending ›\"",
+  "pics": []
+ },
+ {
+  "id": "2d approve the CCL line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "CCL tile before 3 pend −1 war 2; CCL tile after 2; LVE unchanged 12.5",
+  "pics": [
+   "d1-ccl-bal-win"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

@@ -1,0 +1,79 @@
+[
+ {
+  "id": "F4 (A-F4) page scrolled 0: the two pinned heading rows meet, nothing drawn between or round them",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading cells: row 1 193.0–216.0, row 2 216.0–242.0; gap 0px; scroller top 193.0; sampled points inside the heading block that are not a heading cell: 0 ",
+  "pics": [
+   "40-scrolled-0"
+  ]
+ },
+ {
+  "id": "F4 (A-F4) page scrolled 300: the two pinned heading rows meet, nothing drawn between or round them",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading cells: row 1 193.0–216.0, row 2 216.0–242.0; gap 0px; scroller top 193.0; sampled points inside the heading block that are not a heading cell: 0 ",
+  "pics": [
+   "40-scrolled-300"
+  ]
+ },
+ {
+  "id": "F4 (A-F4) page scrolled 1150: the two pinned heading rows meet, nothing drawn between or round them",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading cells: row 1 193.0–216.0, row 2 216.0–242.0; gap 0px; scroller top 193.0; sampled points inside the heading block that are not a heading cell: 0 ",
+  "pics": [
+   "40-scrolled-1150"
+  ]
+ },
+ {
+  "id": "F4 (A-F4) page scrolled 2400: the two pinned heading rows meet, nothing drawn between or round them",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading cells: row 1 193.0–216.0, row 2 216.0–242.0; gap 0px; scroller top 193.0; sampled points inside the heading block that are not a heading cell: 0 ",
+  "pics": [
+   "40-scrolled-2400"
+  ]
+ },
+ {
+  "id": "F1d emptied box left by Tab: \"Type a figure\", old figure kept",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"Tab, 250ms\",\"v\":\"17.5\",\"e\":\"Type a figure\"} then {\"tag\":\"Tab, 1150ms\",\"v\":\"17.5\",\"e\":\"Type a figure\"}",
+  "pics": [
+   "50-blank-tab"
+  ]
+ },
+ {
+  "id": "F1e emptied box left by a click on empty page: \"Type a figure\", old figure kept",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"click on the page, 250ms\",\"v\":\"17.5\",\"e\":\"Type a figure\"}",
+  "pics": [
+   "51-blank-click-away"
+  ]
+ },
+ {
+  "id": "F1b emptied box left by pressing another box: \"Type a figure\", old figure kept",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"another box pressed, 250ms\",\"v\":\"17.5\",\"e\":\"Type a figure\"}",
+  "pics": [
+   "52-blank-other-box"
+  ]
+ },
+ {
+  "id": "F1f emptied box then the view switch: old figure kept",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"tag\":\"view switch pressed then back\",\"v\":\"17.5\",\"e\":null}",
+  "pics": []
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

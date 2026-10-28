@@ -42,7 +42,7 @@ export type LogicalCollection =
   // leave war (per-cell so the revision map is cell-granular — R4-005); one opening balance per person and counter, one
   // posting window and one personnel label per person ([DB-READINESS] group A, phase 3 — leavewar/state/rows.ts)
   | 'lw.cell' | 'lw.war'
-  | 'lw.ledger' | 'lw.opening' | 'lw.oilpolicy' | 'lw.postouts' | 'lw.label' | 'lw.current' | 'lw.config'
+  | 'lw.ledger' | 'lw.opening' | 'lw.balance' | 'lw.grade' | 'lw.oilpolicy' | 'lw.postouts' | 'lw.label' | 'lw.current' | 'lw.config'
   // tracker (the v3: keys)
   | 'trk.marks' | 'trk.dates' | 'trk.roster' | 'trk.layout' | 'trk.syls'
   | 'trk.plan' | 'trk.pace' | 'trk.lulls' | 'trk.eventinfo' | 'trk.catalogue' | 'trk.courses'

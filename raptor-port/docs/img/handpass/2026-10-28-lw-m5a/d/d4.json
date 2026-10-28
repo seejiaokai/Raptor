@@ -1,0 +1,56 @@
+[
+ {
+  "id": "52 midnight on 31 Dec, page and window left open, no touch: Ranger 37 incl 4 (Senior +36) → 69 incl 33",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "page App bal before 37; page App bal after 69; page incl after 33; window App after 69; window incl after 33; \"taken\" before 5 taken; \"taken\" after 0 taken; CCL tile kept (D1489) 3 pend −1 war 2; FCL kept 5; PL kept 2 pend −0.5 war 1.5; EL kept 4; CL kept 1 pend −1 war 0 · lve tile before \"LVE5 takenApp balPendingWar bal−2.534.5incl. carried fwd · till 31 Dec\", after \"LVE0 takenApp balPendingWar bal069incl. carried fwd · till 31 Dec\"; window \"till 31 Dec\" words in tile",
+  "pics": [
+   "d4-before-midnight",
+   "d4-after-midnight"
+  ]
+ },
+ {
+  "id": "52 the tile words after midnight (\"till 31 Dec\" — the new year's)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LVE tile reads: \"LVE0 takenApp balPendingWar bal069incl. carried fwd · till 31 Dec\" (before: \"LVE5 takenApp balPendingWar bal−2.534.5incl. carried fwd · till 31 Dec\"), MED 0",
+  "pics": [
+   "d4-after-midnight"
+  ]
+ },
+ {
+  "id": "52 the grid's figure beside Ranger after midnight",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grid figure \"69 7.5\" (War bal; his pending bids still stand), Saber's My leave \"MY LEAVE LVE 52.5 · OIL 0 · 0 pending ›\"",
+  "pics": [
+   "d4-grid-after"
+  ]
+ },
+ {
+  "id": "52 Days taken after midnight: its heading follows the View period",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading \"DAYS TAKEN IN JAN - DEC 26\"",
+  "pics": [
+   "d4-taken-after"
+  ]
+ },
+ {
+  "id": "52 the window reopened after midnight: year picker and lines",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "year picker value \"ahead\" options [\"2027 and ahead\",\"2026\"]; 0 lines: ; left-open window read after midnight: year {\"value\":\"ahead\",\"options\":[\"2027 and ahead\",\"2026\"]} lines 8",
+  "pics": [
+   "d4-after-midnight",
+   "d4-window-reopened"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

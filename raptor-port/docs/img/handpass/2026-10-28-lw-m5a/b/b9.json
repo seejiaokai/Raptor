@@ -1,0 +1,59 @@
+[
+ {
+  "id": "25 window of pilot Ranger",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"name\":\"Ranger\",\"puckInHeading\":false,\"puck\":null,\"tiles\":\"LVE 31,137 | OIL 237,137 | MED 306,137 | CCL 31,252 | FCL 100,252 | PL 169,252 | EL 237,252 | CL 306,252\",\"win\":{\"l\":10,\"t\":45,\"r\":392,\"w\":382}}",
+  "pics": [
+   "k-bane-q",
+   "k-bane"
+  ]
+ },
+ {
+  "id": "25 window of WSO Basher",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"name\":\"Basher\",\"puckInHeading\":false,\"puck\":null,\"tiles\":\"LVE 31,313 | OIL 237,313 | MED 306,313 | CCL 31,428 | FCL 100,428 | PL 169,428 | EL 237,428 | CL 306,428\",\"win\":{\"l\":10,\"t\":220,\"r\":392,\"w\":382}}",
+  "pics": [
+   "k-glass-q",
+   "k-glass"
+  ]
+ },
+ {
+  "id": "25 window of OCU Recon",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"name\":\"Recon\",\"puckInHeading\":false,\"puck\":null,\"tiles\":\"LVE 31,313 | OIL 237,313 | MED 306,313 | CCL 31,428 | FCL 100,428 | PL 169,428 | EL 237,428 | CL 306,428\",\"win\":{\"l\":10,\"t\":220,\"r\":392,\"w\":382}}",
+  "pics": [
+   "k-prism-q",
+   "k-prism"
+  ]
+ },
+ {
+  "id": "25 window of ground Cotter",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"name\":\"Cotter\",\"puckInHeading\":false,\"puck\":null,\"tiles\":\"LVE 31,313 | OIL 237,313 | MED 306,313 | CCL 31,428 | FCL 100,428 | PL 169,428 | EL 237,428 | CL 306,428\",\"win\":{\"l\":10,\"t\":220,\"r\":392,\"w\":382}}",
+  "pics": [
+   "k-spanner-q",
+   "k-spanner"
+  ]
+ },
+ {
+  "id": "25 window of ops-A ground Widget",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "{\"name\":\"Widget\",\"puckInHeading\":false,\"puck\":null,\"tiles\":\"LVE 31,313 | OIL 237,313 | MED 306,313 | CCL 31,428 | FCL 100,428 | PL 169,428 | EL 237,428 | CL 306,428\",\"win\":{\"l\":10,\"t\":220,\"r\":392,\"w\":382}}",
+  "pics": [
+   "k-gizmo-q",
+   "k-gizmo"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "402",
+  "verdict": "PASS",
+  "said": "no console error, page error or 4xx",
+  "pics": []
+ }
+]

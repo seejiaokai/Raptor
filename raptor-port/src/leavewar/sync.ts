@@ -23,7 +23,9 @@ import { goesOnProg, INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe } from '../state/perms'
+import { balancesLocked, setHiddenIdentityLookup, snapshotNow } from './state/store'
+import { isBalKind, readTypedBalShape, sameSnapshot, type SnapEntry } from './engine/leaveyear'
 import { SESSION, canEditSched } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
@@ -142,7 +144,7 @@ import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../st
 import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
 import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
-import { askLw, askRing, setApprMode } from './ui/lwnav'
+import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
@@ -273,6 +275,16 @@ export function installAbsenceDoor(): void {
     const date = cellId.slice(iDate + 1)
     return canEditCell(warHolding(getState().wars, date)?.period ?? null, 'member', date, memberToday())
   })
+  /* M5a — A MEMBER'S TYPED FIGURE (perms.ts setLwBalanceProbe): the lock as it stands when his change is saved, the
+     app's today, and whether his snapshot is the one the store builds from his approved leave now; and who a man with
+     no row on the war is, so his figures read his seat (the pilots' 15-day run — the spec §4) */
+  setLwBalanceProbe({
+    locked: () => balancesLocked(),
+    today: () => memberToday(),
+    sameSnap: (snap, pid, kind) => isBalKind(kind) && sameSnapshot(snap as SnapEntry[], snapshotNow(pid, kind)),
+    wellFormed: (row, kind) => readTypedBalShape(row, kind) !== null,
+  })
+  setHiddenIdentityLookup(id => warIdentityIfHidden(id))
   /* a refused war gesture rolled INPUTS back; the absence index was refreshed
      inside it, so re-read it before the repaint (Codex AS4-R2-001) */
   setRefusalHook(() => { refreshAbsences(true) })
@@ -1289,6 +1301,8 @@ export function openWarAt(iso: string, personId?: string | null): void {
   const war = warHolding(rawState().wars, iso)
   if (war && war.period.id !== rawState().currentId) selectWar(war.period.id)
   setApprMode('off')
+  /* …and the Balances page, which stands in the grid card's place as Approvals' page does (M5a — the Balances builder's 3) */
+  setBalancesUp(false)
   const pid = personId ? String(personId) : ''
   const onGrid = !!pid && getState().people.some(p => p.id === pid)
   if (pid && !onGrid) askLw({ kind: 'person', id: pid })

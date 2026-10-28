@@ -8,7 +8,8 @@
 
 export type LwAsk =
   | { kind: 'grid' }
-  | { kind: 'oil' }
+  /* `id`: opened on that person's row (the Balances page's "0 ›" — D1255); none opens it at the top */
+  | { kind: 'oil'; id?: string }
   | { kind: 'settings' }
   | { kind: 'person'; id: string }
 
@@ -36,7 +37,26 @@ export function subscribeLwNav(f: () => void) { subs.add(f); return () => { subs
 export type ApprMode = 'off' | 'page' | 'bar'
 let appr: ApprMode = 'off'
 export const apprMode = (): ApprMode => appr
-export function setApprMode(m: ApprMode) { if (appr !== m) { appr = m; ping() } }
+/* Approvals coming up (its page, or its slim bar over the grid) takes the Balances page down: one page stands in the grid
+   card's place at a time */
+export function setApprMode(m: ApprMode) { if (appr !== m) { appr = m; if (m !== 'off') bal = false; ping() } }
+
+/* THE PAGE IN THE GRID CARD'S PLACE, MADE GENERAL (the overhaul's M5a — D1254, D1483): the grid, Approvals' page or the
+   Balances page. Approvals keeps its own three modes above (its slim bar, its visit); Balances is a page and nothing more —
+   for everyone, a member included, since D1242 (the member guard in the tab row switches only Approvals off). Leaving the
+   Leave War ends it as it ends Approvals' visit, so a return lands on the grid (LeaveWarPage.tsx). View state only — not
+   saved, not undone, repaints no grid. */
+export type LwPage = 'grid' | 'approvals' | 'balances'
+let bal = false
+export const balancesUp = () => bal
+export function setBalancesUp(v: boolean) {
+  if (bal === v) return
+  bal = v
+  if (v) appr = 'off'
+  ping()
+}
+/** which page stands in the grid card's place now — Approvals' slim bar shows the grid */
+export const lwPage = (): LwPage => (appr === 'page' ? 'approvals' : bal ? 'balances' : 'grid')
 
 /* A DAY ASKED FOR FROM OUTSIDE THE PAGE (M4 9.6 — the bell's Leave War line): the page is not on screen yet, so the ask
    waits here and the page's landing takes it INSTEAD of its own first-visit landing (LeaveWarPage.tsx). */

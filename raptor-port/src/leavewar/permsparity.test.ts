@@ -10,7 +10,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, openDates, closeDates,
-  setStretch, setBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
+  setStretch, setTypedBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
   setAvailPoints, saveAvailRow, setReqName, availRules,
 } from './state/store'
 import { memoryBackend } from './state/storage'
@@ -38,7 +38,10 @@ const CASES: { what: string; table: string; letter: Act; owner: string | null; r
       return setBidStates([{ personId: 'tata', date: '2026-01-22' }], 'approved').decided > 0 } },
   { what: 'a hand-typed OIL award', table: T.award, letter: 'C', owner: null, run: () => setDayAward('ramp', '2026-02-07', 1) === null },
   { what: 'a ledger grant', table: T.ledger, letter: 'C', owner: null, run: () => grantTo(['ramp'], 'oil', 1, '2026-02-07', 'weekend duty') === null },
-  { what: 'a balance', table: T.ledger, letter: 'U', owner: null, run: () => setBalance('ramp', 'oil', 5) },
+  /* a typed figure (M5a — B6, D1203): its own row of the table, a member's on his own row only; the old door that moved an
+     opening (`setBalance`, under the ledger's admin row) went with M5a */
+  { what: 'a typed balance on his own row', table: T.balance, letter: 'U', owner: 'ramp', run: () => setTypedBalance('ramp', 'LVE', 5) },
+  { what: 'a typed balance on ANOTHER row', table: T.balance, letter: 'U', owner: 'tata', run: () => setTypedBalance('tata', 'CCL', 2) },
   /* the open dates (D1177 — they replaced the stage and the bid window): the leave period's own record, `lw.open`, an
      admin's as the stage was. Each writer is held to the row by what it did, not only by its answer. */
   { what: 'opening dates for bidding', table: T.war, letter: 'U', owner: null, run: () => openDates('2026-04-01', '2026-04-30') === 'set' && getState().period.open.some(s => s.to === '2026-04-30') },

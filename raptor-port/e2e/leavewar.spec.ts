@@ -23,16 +23,8 @@ import { expect, test, type Locator, type Page } from '@playwright/test'
 import { elevenCounters, login, openManning, pressMore, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
 
 /** Open the figure picker. The whole column header is the control — the two
- *  arrows it replaced were 13px glyphs the owner could not hit on a phone.
- *
- *  The FIGURES drawer (6 Sep 26) is the closed counter column unfolded IN
- *  PLACE, so while it is open its first column stands over that header: the
- *  picker is reached by putting the drawer away, which is what a person does
- *  and what the shared beforeEach already leaves true. Kept here as a guard so
- *  a test that opened the drawer itself still gets to the picker. */
+ *  arrows it replaced were 13px glyphs the owner could not hit on a phone. */
 async function openPicker(page: Page) {
-  const bar = page.locator('[data-testid="figures-toggle"]')
-  if ((await bar.getAttribute('aria-expanded')) === 'true') await bar.click()
   await page.locator('[data-testid="counter-pick"]').click()
 }
 
@@ -122,30 +114,8 @@ if (process.env.LW_WIDE_LETTERS) {
 
 test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
-  /* THE FIGURES DRAWER STARTS PUT AWAY FOR EVERY TEST BUT ITS OWN (6 Sep 26).
-     The desktop project opens it OPEN — that IS its contract, pinned in the
-     drawer block below — and it is an overlay standing over the day columns
-     from the names' right edge out, about nine of them at 1440px. So a cell
-     click, a drag-select or a bounding box aimed at the first fortnight of the
-     war would be answered by the drawer rather than by the grid. Every test
-     outside the drawer block was written for the bare grid; this puts BOTH
-     projects in that one state (the phone already opens there), and the drawer
-     block opens it by hand. The one test that has to see the state the page
-     OPENS in re-opens the app for itself. */
-  await putDrawerAway(page)
 })
 
-/** Put the FIGURES drawer away if it is out. The beforeEach above calls this,
- *  and so must any test that re-opens the app mid-way (`openLeaveWar` again):
- *  a fresh mount decides the drawer's state from the width all over again, so
- *  a desktop comes back with it OUT and over the grid the test is driving. */
-async function putDrawerAway(page: Page) {
-  const bar = page.locator('[data-testid="figures-toggle"]')
-  // The drawer is switched off since the overhaul's M2 (D1245 — the Balances fold goes; its code leaves whole with M5):
-  // no toggle, nothing to put away.
-  if ((await bar.count()) === 0) return
-  if ((await bar.getAttribute('aria-expanded')) === 'true') await bar.click()
-}
 
 // Undo / redo (owner, 30 Aug 26). The click LOGIC is unit-tested in the store
 // and chrome suites; this pins the LAYOUT jsdom can't — disabled with nothing to undo yet, on both widths.
@@ -319,7 +289,7 @@ test('the frozen overlay callsign opens the sheet once the year has scrolled', a
   test.skip(!isPhone(), 'the overlay is a phone-only creature')
   await page.locator('.mx-wrap').evaluate(el => el.scrollBy(600, 0))
   await page.locator('.mxband [data-band-id="slipway"] .whoedit').click()
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
 })
 
 // A MAN'S FIGURES OPEN WHERE THE GRID IS ([AMEND-SMALL-SEEN] (6), the amendment re-test, 24 Sep 26: "a man's figure
@@ -336,11 +306,11 @@ test('a tap on a man\'s name once the year has scrolled opens his figures and le
   expect(before, 'the year has scrolled (or this test proves nothing)').toBeGreaterThan(1000)
   const name = (await page.locator('.mxband [data-band-id="slipway"] .whoedit').boundingBox())!
   await page.touchscreen.tap(name.x + name.width / 2, name.y + name.height / 2)
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
   await page.waitForTimeout(400)
   expect(await at(), 'his figures are open over the same days').toBe(before)
   await page.keyboard.press('Escape')
-  await expect(page.locator('[data-testid="person-figures"]')).toBeHidden()
+  await expect(page.locator('[data-testid="person-window"]')).toBeHidden()
   await page.waitForTimeout(400)
   expect(await at(), 'and the grid is still there once they close').toBe(before)
 })
@@ -1208,10 +1178,8 @@ test('a month button scrolls the grid to that month', async ({ page }) => {
   // clear of the two frozen columns, which are painted OVER the day cells.
   // A jump that forgot their width would put 1 September underneath the
   // callsign column, where it is scrolled-to and invisible at the same time.
-  // (The FIGURES drawer widens that frozen region while it is open — its own
-  // case is "a month jump lands the month clear of the drawer" below; the
-  // selector is scoped to `.mx-wrap` so the drawer's own `th.bal fig` title
-  // cells can never be picked up here.)
+  // (The selector is scoped to `.mx-wrap`, the real grid, so the stuck date
+  // row's copy of the heading is never the one measured.)
   const head = (await page.locator('[data-testid="head-2026-09-01"]').boundingBox())!
   const bal = (await page.locator('.mx-wrap .mxhead th.bal').boundingBox())!
   expect(head.x).toBeGreaterThanOrEqual(bal.x + bal.width - 1)
@@ -1347,7 +1315,6 @@ test('a placed bid survives a reload — the war persists per browser', async ({
 
   await page.reload()
   await openLeaveWar(page)
-  await putDrawerAway(page)
 
   // The bid is still exactly where it was placed (one chip, still reading LL),
   // and a seed cell is still there beside it — proving the whole war persisted
@@ -1378,19 +1345,66 @@ test('the grid offers no medical markers — for a member or an admin', async ({
   await expect(page.locator('[data-testid="bid-HL"]')).toHaveCount(0)
 })
 
-// The owner's "click the individual personnel counter" (17 Aug 26): the cell
-// opens a per-person breakdown whose rows sum to the total on screen. FIVE
-// `.crow-top` rows for the default +LVE figure since 6 Sep 26 — opening
-// figure, granted, LL taken, OL taken, and the Total row — where the old
-// LVE BAL had one undifferentiated "taken" line and so came to four.
-test('tapping a counter cell opens that person\'s breakdown of the shown figure', async ({ page }) => {
+// The owner's "click the individual personnel counter" (17 Aug 26) opened a per-person breakdown of the shown figure.
+// SINCE M5a (reading 15) the tap on the LVE figure beside a name opens his PERSON WINDOW — one window for a man's figures:
+// his tiles, LVE's War bal the very figure the cell shows.
+test('tapping a name\'s LVE figure opens his person window', async ({ page }) => {
+  const cellFig = (await page.locator('[data-testid="bal-ammo"] .fb').textContent())!.trim()
   await page.locator('[data-testid="bal-ammo"]').click()
-  const sheet = page.locator('[data-testid="figure-breakdown"]')
-  await expect(sheet).toBeVisible()
-  await expect(sheet.locator('.crow-top')).toHaveCount(5)
-  await expect(sheet.locator('[data-testid="breakdown-total"]')).toBeVisible()
-  await page.locator('[data-testid="breakdown-close"]').click()
-  await expect(sheet).toHaveCount(0)
+  const win = page.locator('[data-testid="person-window"]')
+  await expect(win).toBeVisible()
+  await expect(page.locator('[data-testid="figure-breakdown"]')).toHaveCount(0)
+  await expect(win.locator('[data-testid^="pw-tile-"]')).toHaveCount(8)
+  await expect(page.locator('[data-testid="pw-LVE-war"]')).toHaveText(cellFig.replace('-', '\u2212'))
+  await page.locator('[data-testid="pw-close"]').click()
+  await expect(win).toHaveCount(0)
+})
+
+/* A WINDOW THAT PLACES ITSELF STANDS ON THE SCREEN (M5a, D1480, D1486 — red on 27e5d655c). On a desktop the person window
+   docks at the grid's right edge and the Grades window under "Grades…"; the shared window's keyboard follower wiped the top
+   each wrote, on opening and on every focus change, so each fell to its place in the page's flow — the person window's top
+   at the screen's foot, its ✕ out of reach. Opened from a name on the grid, from a name on the Balances page, and Grades…
+   on the Balances page: each box wholly inside the screen, and still there once the keyboard has moved inside it. */
+test('on a desktop the person window and the Grades window stand wholly on the screen, from the grid and from Balances', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop docks them; a phone centres them (its own tests)')
+  await lwRole(page, 'admin')
+  const onScreen = async (sel: string, why: string) => {
+    const box = (await page.locator(sel).boundingBox())!
+    const vp = page.viewportSize()!
+    expect(box, `${why}: drawn`).toBeTruthy()
+    expect(box.y, `${why}: its top on the screen`).toBeGreaterThanOrEqual(0)
+    expect(box.x, `${why}: its left on the screen`).toBeGreaterThanOrEqual(0)
+    expect(box.y + box.height, `${why}: its foot on the screen`).toBeLessThanOrEqual(vp.height + 0.5)
+    expect(box.x + box.width, `${why}: its right edge on the screen`).toBeLessThanOrEqual(vp.width + 0.5)
+  }
+  const win = '[data-testid="person-window"]'
+  /* from a name on the grid */
+  await page.locator('[data-testid="person-slipway"]').click()
+  await expect(page.locator(win)).toBeVisible()
+  await onScreen(win, 'from the grid')
+  await page.keyboard.press('Tab')   // a focus change inside it — the moment the follower used to wipe its place
+  await onScreen(win, 'from the grid, after Tab')
+  await page.locator('[data-testid="pw-close"]').click()
+  await expect(page.locator(win)).toHaveCount(0)
+  /* from a name on the Balances page */
+  await page.locator('[data-testid="lw-tab-balances"]').click()
+  await expect(page.locator('[data-testid="balances-page"]')).toBeVisible()
+  await page.locator('[data-testid="bal-name-slipway"]').click()
+  await expect(page.locator(win)).toBeVisible()
+  await onScreen(win, 'from Balances')
+  await page.keyboard.press('Tab')
+  await onScreen(win, 'from Balances, after Tab')
+  await page.locator('[data-testid="pw-close"]').click()
+  await expect(page.locator(win)).toHaveCount(0)
+  /* and Grades… under its button */
+  await page.locator('[data-testid="bal-grades"]').click()
+  const grades = '[data-testid="grades-sheet"]'
+  await expect(page.locator(grades)).toBeVisible()
+  await onScreen(grades, 'Grades…')
+  await page.keyboard.press('Tab')
+  await onScreen(grades, 'Grades…, after Tab')
+  const gb = (await page.locator('[data-testid="bal-grades"]').boundingBox())!
+  expect((await page.locator(grades).boundingBox())!.y, 'Grades… opens under its button').toBeGreaterThanOrEqual(gb.y + gb.height)
 })
 
 // The reason the bid sheet is a fixed-position sheet rather than a popover
@@ -1629,7 +1643,7 @@ test('a drag that would go below zero asks once, then writes on the same leave a
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-FCL"]').click()
-  await expect(page.locator('[data-testid="sel-note"]')).toHaveText(/^That takes \S+ to -3 FCL\. Tap the same leave again to go ahead\.$/)   // the row's callsign, as the roster names him
+  await expect(page.locator('[data-testid="sel-note"]')).toHaveText(/^That takes \S+ to −3 FCL\. Tap the same leave again to go ahead\.$/)   // the row's callsign, as the roster names him
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)   // nothing written yet
   await page.locator('[data-testid="sel-FCL"]').click()
   await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
@@ -1768,12 +1782,10 @@ test('dragging an event row opens the event sheet ranged to the span', async ({ 
    or cursor moving LEFT would make the browser's own pan scroll the grid the
    other way. */
 
-/** The x where the DAY columns begin — the right edge of whatever is frozen in
- *  front of them: the figures drawer when it is out, else the counter column
- *  (the real sticky cell on a desktop, the band's copy on a phone). */
+/** The x where the DAY columns begin — the right edge of the counter column
+ *  frozen in front of them (the real sticky cell on a desktop, the band's copy
+ *  on a phone). */
 async function dayAreaLeft(page: Page, person: string): Promise<number> {
-  const drawer = page.locator('[data-testid="figdrawer"]')
-  if (await drawer.count()) { const d = (await drawer.boundingBox())!; return d.x + d.width }
   const b = (await frozen(page, person, '.bal').boundingBox())!
   return b.x + b.width
 }
@@ -1814,8 +1826,7 @@ async function parkMidYear(page: Page): Promise<number> {
 /** Park mid-year, drag-select from a day cell well clear of the frozen block,
  *  and leave the cursor 20px inside the day area's left edge for long enough
  *  that the auto-scroll can run. Returns where the grid was and where it got
- *  to; the drawer's state is the caller's business, because that is the only
- *  thing the two desktop cases differ by. */
+ *  to. */
 async function parkAndDragToEdge(page: Page): Promise<{ before: number; parked: number }> {
   const before = await parkMidYear(page)
   const [p1] = await threeInARow(page)
@@ -1840,17 +1851,6 @@ test('a drag-select parked at the counter column auto-scrolls the grid left', as
   expect(parked, 'the year ran left under the parked cursor').toBeLessThan(before)
 })
 
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('with the figures drawer open the band starts at the DRAWER\'s edge', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const { before, parked } = await parkAndDragToEdge(page)
-  expect(parked, 'the drawer, not the wrap, is what the band starts past').toBeLessThan(before)
-})
-
 /* The phone's own path: a REAL touch through CDP (the hold-then-drag recipe —
    Playwright's mouse cannot arm the 180ms hold, and DOM touch events scroll
    nothing). It was proved with the drawer open, the case that mattered on his
@@ -1859,7 +1859,7 @@ test.skip('with the figures drawer open the band starts at the DRAWER\'s edge', 
    so the band now starts at the frozen pair's edge — the names and LVE — and the
    held finger is proved against that edge, every other step as it was. */
 // RE-EXPRESSED, D1245 (the overhaul's M2): no drawer to open — the held finger is proved at the frozen names-and-LVE edge.
-test('a held finger dragged to the drawer\'s edge auto-scrolls the grid left', async ({ page }) => {
+test('a held finger dragged to the frozen columns\' edge auto-scrolls the grid left', async ({ page }) => {
   test.skip(!isPhone(), 'the CDP touch path')
   await lwRole(page, 'admin')
   const before = await parkMidYear(page)
@@ -2274,11 +2274,15 @@ test('a negative balance is painted red, and a positive one is not', async ({ pa
   // which the cross-war rule counts — so his balance reads -2; SLIPWAY sits
   // comfortably positive. The colour lives on the box's TOP LINE now (`.fb`,
   // 6 Sep 26), not on the cell: the used numbers under it carry their own.
+  // SINCE M5a the figure is his War bal off a TYPED App bal (D1479, D1482): the demo types every man's LVE, and the one
+  // it sends below zero is ROCKY (typed −2 — demoworld.ts demoBalances), so he is the negative man now; HARPOON's typed
+  // figure leaves him positive. And the figure is written with the true minus "−" since M5a's fixes (walker D's 5 — the
+  // grid's figure takes the Balances page's own writing, figWords), never the hyphen.
   await expect(page.locator('[data-testid="counter-name"]')).toHaveText('+LVE')
-  const neg = await page.locator('[data-testid="bal-harpoon"] .fb').evaluate(el => ({
+  const neg = await page.locator('[data-testid="bal-rocky"] .fb').evaluate(el => ({
     text: el.textContent, colour: getComputedStyle(el).color,
   }))
-  expect(neg.text!.startsWith('-')).toBe(true)
+  expect(neg.text, 'ROCKY reads −2, its minus the true one').toBe('−2')
   const pos = await page.locator('[data-testid="bal-slipway"] .fb')
     .evaluate(el => getComputedStyle(el).color)
   expect(neg.colour).not.toBe(pos)
@@ -2337,419 +2341,6 @@ test.skip('the figures reorder, and Reset restores the default order', async ({ 
   expect((await page.locator('[data-testid="counter-sheet"] .crow .cn').allTextContents())[0]).toBe('LVE')
 })
 
-// ---- THE FIGURES DRAWER (owner, 6 Sep 26) ---------------------------------
-//
-// Every figure for everyone, popped out beside the names OVER the day columns.
-// It is an absolute OVERLAY whose rows copy the real rows' MEASURED heights, so
-// almost nothing here is reachable from the unit suite: jsdom reports every
-// rect as 0×0 and the drawer never even opens there (no `matchMedia`). The
-// shared beforeEach puts it away for the rest of the file; these open it.
-
-const figBar = (page: Page) => page.locator('[data-testid="figures-toggle"]')
-
-async function openDrawer(page: Page) {
-  const bar = figBar(page)
-  if ((await bar.getAttribute('aria-expanded')) === 'false') await bar.click()
-  await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
-}
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('the drawer opens closed on a phone and open on a desktop', async ({ page }) => {
-  // Re-opened from scratch, because the shared beforeEach deliberately puts the
-  // drawer away and this is the one test that has to see the state the page
-  // OPENS in. A desktop has room for eight columns AND the days; a phone does
-  // not, so it opens on the days and offers the figures.
-  await openLeaveWar(page)
-  const bar = figBar(page)
-  await expect(bar).toHaveAttribute('aria-expanded', isPhone() ? 'false' : 'true')
-  await expect(bar).toHaveText(isPhone() ? '▸ FIGURES' : '▾ FIGURES')
-  if (isPhone()) expect(await page.locator('[data-testid="figdrawer"]').count()).toBe(0)
-  else await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('the drawer sits beside the names, its rows level with the days, and closing restores the header', async ({ page }) => {
-  const bar = figBar(page)
-  const headRow = page.locator('.mx-wrap .mxhead tr:last-child')
-  const headBefore = (await headRow.boundingBox())!
-  await openDrawer(page)
-  const drawer = page.locator('[data-testid="figdrawer"]')
-
-  // Its left edge is the names column's RIGHT edge — where the closed counter
-  // column begins — so the first box does not move when the drawer opens.
-  const who = (await frozen(page, 'slipway', '.who').boundingBox())!
-  const d = (await drawer.boundingBox())!
-  expect(Math.abs(d.x - (who.x + who.width))).toBeLessThan(1.5)
-
-  // LEVEL ROWS. The drawer is a SECOND table: it agrees with the grid on
-  // nothing that has not been measured and copied across (syncOverlayHeights,
-  // keyed `data-drawer-key` against the real row's testid). A failure here is
-  // the height sync coming apart, never a tolerance to widen — figures sliding
-  // off their names down a 60-row roster is the fault it would be.
-  const real = (await page.locator('[data-testid="row-slipway"]').boundingBox())!
-  const copy = (await drawer.locator('[data-drawer-key="row-slipway"]').boundingBox())!
-  expect(Math.abs(copy.y - real.y)).toBeLessThan(1.5)
-  expect(Math.abs(copy.height - real.height)).toBeLessThan(1.5)
-
-  // Eight columns, LVE alone taking two title lines, and the colours ARE the
-  // legend — the amber word over the amber number is the whole key.
-  await expect(drawer.locator('th.fig')).toHaveCount(8)
-  await expect(drawer.locator('th.fig[data-fig="lve"] .rot')).toHaveCount(2)
-  const amber = await drawer.locator('th.fig[data-fig="lve"] b.amber').evaluate(el => getComputedStyle(el).color)
-  expect(amber).toBe('rgb(229, 168, 59)')          // --adv, what an LL number wears
-
-  // ONLY the header row grows, to 62 of the GRID's own pixels (measured 62.0 at
-  // 1440px and 49.6 at the phone's 0.8 zoom, which is the same 62). The rows
-  // themselves do not: a two-line box already fits the 22px cell, which is the
-  // reason the roster does not shift under the reader when this opens.
-  const zoom = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom || '1'))
-  const headOpen = (await headRow.boundingBox())!
-  expect(Math.abs(headOpen.height - 62 * zoom)).toBeLessThan(2)
-
-  // ...and the days keep working beside it: 5.3 day columns still read clear of
-  // the drawer on the phone project at its opening zoom (measured 6 Sep 26 —
-  // the design asked for "about five"). Four is the floor a drawer that had
-  // eaten the grid would trip.
-  if (isPhone()) {
-    const wrap = (await page.locator('.mx-wrap').boundingBox())!
-    const day = (await page.locator('.mx-wrap .mxhead th.day').first().boundingBox())!
-    expect((wrap.x + wrap.width - (d.x + d.width)) / day.width).toBeGreaterThan(4)
-  }
-
-  await bar.click()
-  expect(await drawer.count()).toBe(0)
-  const headAfter = (await headRow.boundingBox())!
-  expect(Math.abs(headAfter.height - headBefore.height)).toBeLessThan(1.5)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('a drawer box opens that person\'s breakdown of that figure; a title says what it counts', async ({ page }) => {
-  await openDrawer(page)
-  const drawer = page.locator('[data-testid="figdrawer"]')
-  // THE TITLE POP-UP GOES FIRST, and that order is load-bearing. The pop-up is
-  // screen-fixed off a rect read once, so it dismisses on ANY scroll — its own
-  // contract, and it cannot tell the app's scroll from the reader's. A sheet
-  // takes the page's scroll while it is up and gives it back on the way out
-  // (on a phone the tap on a box scrolled the page 445px, measured 6 Sep 26),
-  // and that restore lands a frame or two after the close: opening the pop-up
-  // behind it dismissed it in the same beat, four times in five. A person
-  // pauses; a test should not have to pretend to.
-  await drawer.locator('th.fig[data-fig="lvetot"] button').click()
-  await expect(page.locator('[data-testid="figpop"]')).toContainText('All leave taken')
-  await page.keyboard.press('Escape')
-  expect(await page.locator('[data-testid="figpop"]').count()).toBe(0)
-  // The box answers for ITS OWN column, not for whatever the closed column
-  // happens to be showing — MED TOT here, while the column sits on +LVE.
-  await drawer.locator('td.fig[data-fig="medtot"][data-person="slipway"]').click()
-  await expect(page.locator('[data-testid="figure-breakdown"]')).toContainText('MED TOT')
-  await page.locator('[data-testid="breakdown-close"]').click()
-  await expect(page.locator('[data-testid="figure-breakdown"]')).toHaveCount(0)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('the stuck header carries the drawer titles, the switch and the month once the roster has scrolled', async ({ page }) => {
-  await openDrawer(page)
-  await page.evaluate(() => window.scrollBy(0, 700))
-  await page.waitForTimeout(300)
-  const mirror = page.locator('[data-testid="sticky-head"]')
-  await expect(mirror).toBeVisible()
-  await expect(mirror.locator('.figbar').first()).toContainText('FIGURES')
-  // The titles ride the bar's FROZEN COPY, which exists only where the browser
-  // can drive the bar's horizontal follow off a scroll timeline (`.lw-sda`).
-  // Where it cannot, the bar falls back to the JS mirror, which has no frozen
-  // copy at all and keeps the plain chip — a documented gap (known-gaps.md
-  // §The stuck header keeps the plain chip), not a silent one. Chromium takes
-  // the scroll-driven path, so this asserts it there rather than skipping.
-  if (await page.locator('.lw-sda').count()) {
-    const copy = mirror.locator('.mxfixed-frozen')
-    await expect(copy.locator('th.fig')).toHaveCount(8)
-    await expect(copy.locator('th.fig').first()).toBeVisible()
-    // THE COPY'S RIGHT EDGE IS THE DRAWER'S RIGHT EDGE. The contract says the
-    // frozen copy "grows from the two closed columns to the drawer's own right
-    // edge" (ui-contracts.md §The figures drawer), and that number is the one
-    // HANDOFF flags as WebKit-sensitive: it is measured in VISUAL pixels off a
-    // box outside the zoomed table, and dividing it by the zoom was what put
-    // the hatched filler on the owner's phone on 6 Sep. A copy a column short
-    // shows a stripe of the scrolling layer's dates beside the figures; a
-    // column long hides one. Counting the cells cannot see either.
-    const cb = (await copy.boundingBox())!
-    const db = (await page.locator('[data-testid="figdrawer"]').boundingBox())!
-    expect(Math.abs((cb.x + cb.width) - (db.x + db.width))).toBeLessThanOrEqual(1.5)
-
-    // ...and the month label still reads. It sticks "just clear of the frozen
-    // columns", which is now the DRAWER — left at the closed pair's offset it
-    // sat under the opaque frozen copy and disappeared (6 Sep 26 review).
-    const lbl = (await mirror.locator('.brakm .brakl').first().boundingBox())!
-    expect(lbl.x).toBeGreaterThanOrEqual(cb.x + cb.width - 1)
-
-    // A PRESS ON THE MIRROR'S TITLE CLOSES AN OPEN POP-UP. Its copies are
-    // read-only spans, so a press on one is an OUTSIDE press by the app's
-    // click-open popup rule — but the "inside" test matched any
-    // `[data-fig] .figtitle`, the mirror's included, and that made the one
-    // press most likely to mean "I am done with this" the one press that did
-    // nothing (6 Sep 26 review).
-    //
-    // Driven rather than gestured, and that is the finding's own point: the
-    // pop-up closes on ANY scroll, so a person cannot open one and then scroll
-    // the mirror into place — which is why the dead spot sat here unseen. The
-    // events are dispatched instead of clicked so nothing scrolls, leaving the
-    // page in the one state where the two can be on screen together.
-    await page.locator('[data-testid="figdrawer"] th.fig[data-fig="lvetot"] button').dispatchEvent('click')
-    await expect(page.locator('[data-testid="figpop"]')).toHaveCount(1)
-    await copy.locator('th.fig[data-fig="lvetot"] .figtitle').dispatchEvent('pointerdown')
-    await expect(page.locator('[data-testid="figpop"]')).toHaveCount(0)
-  }
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The corner's switch was the drawer's way in and out.
-test.skip('the corner switch fills its cell — the whole corner is the tap target', async ({ page }) => {
-  // The type is small on purpose; the TARGET must not be. In flow the button
-  // was its own 15px line inside a 22px cell, so a third of the corner did
-  // nothing when pressed — and on a phone that corner is the only way in and
-  // out of the drawer. The spec asks for a target at least the archive bar's,
-  // and the archive bar's is its whole sticky cell.
-  const cell = page.locator('.mx-wrap .mxhead th.brakhd').first()
-  const bar = figBar(page)
-  const cb = (await cell.boundingBox())!
-  const bb = (await bar.boundingBox())!
-  // The cell's own 1px bottom hairline is the only slack allowed.
-  expect(cb.height - bb.height).toBeLessThanOrEqual(1.5)
-  expect(bb.height).toBeGreaterThan(15)
-  // ...and the cell's full WIDTH as well — the whole corner, not a strip of it.
-  expect(bb.width).toBeGreaterThan(cb.width - 2)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The month rail over the dates went too (D1257).
-test.skip('the corner covers the month rail all the way to the drawer\'s edge', async ({ page }) => {
-  // The month BRACKET's top edge belongs to the month whose first columns now
-  // sit UNDER the drawer, and the frozen corner is only the name + counter
-  // columns wide — so with the figures open a length of rail ran across the
-  // drawer's title row, from the FIGURES bar's right edge to the drawer's
-  // right edge (bug hunt, 6 Sep 26; seen on a phone and on a desktop, at the
-  // TOP of the page — once the page is scrolled the stuck mirror hides it,
-  // which is why the drawer drives never met it). The corner reaches over that
-  // stretch now, so the topmost thing at a point inside it is the corner and
-  // never the rail.
-  await openDrawer(page)
-  await page.evaluate(() => window.scrollTo(0, 0))
-  const bar = (await figBar(page).boundingBox())!
-  const drawer = (await page.locator('[data-testid="figdrawer"]').boundingBox())!
-  const x = bar.x + bar.width + 10
-  const y = bar.y + bar.height / 2
-  // The point has to be IN the gap, or this proves nothing.
-  expect(x, 'the probe sits inside the uncovered stretch').toBeLessThan(drawer.x + drawer.width)
-  const hit = await page.evaluate(([px, py]) => {
-    const el = document.elementFromPoint(px as number, py as number) as HTMLElement | null
-    return { rail: !!el?.closest('.brakm, .brakin'), corner: !!el?.closest('th.brakhd') }
-  }, [x, y])
-  expect(hit.rail, 'no month rail shows beside the FIGURES bar').toBe(false)
-  expect(hit.corner, 'the corner reaches to the drawer\'s edge').toBe(true)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The plain month-jump tests still pin the jump itself.
-test.skip('a month jump lands the month clear of the drawer, not under it', async ({ page }) => {
-  // The jump measures a "frozen width" to know where the visible day strip
-  // begins, and with the drawer out the frozen part IS the drawer — eight
-  // columns, not one. Reading the closed pair instead put 1 September nine
-  // columns UNDER the drawer: scrolled-to and invisible at the same time, the
-  // exact fault the plain month-jump test above exists to stop. Measured before
-  // the fix at 1440px: the head landed at x 210.8 with the drawer's right edge
-  // at 463.
-  await openDrawer(page)
-  const drawer = page.locator('[data-testid="figdrawer"]')
-  await page.locator('[data-testid="month-SEP"]').click()
-  await expect.poll(async () => {
-    const h = await page.locator('[data-testid="head-2026-09-01"]').boundingBox()
-    const d = await drawer.boundingBox()
-    return h && d ? Math.round(h.x - (d.x + d.width)) : -999
-  }, { timeout: 5000 }).toBeGreaterThanOrEqual(-1)
-  const wrapBox = (await page.locator('.mx-wrap').boundingBox())!
-  const head = (await page.locator('[data-testid="head-2026-09-01"]').boundingBox())!
-  expect(head.x + head.width).toBeLessThanOrEqual(wrapBox.x + wrapBox.width + 1)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('a day beside the open drawer still takes a tap', async ({ page }) => {
-  // "The days keep working beside it" (the design's own words) is a claim about
-  // the days being USABLE, not merely visible — and usable is the half that
-  // broke: 24 of the 28 desktop failures this suite opened with were taps
-  // answered by the drawer instead of the grid. The width ratio above proves
-  // day columns are on screen; this proves one of them still opens its sheet.
-  //
-  // The day is chosen at run time — the FIRST empty cell whose column starts
-  // past the drawer's right edge — because how many columns the drawer covers
-  // is a reading of the screen (about nine at 1440px, seven on a phone), not a
-  // constant, and an already-filled cell would open a different sheet.
-  await openDrawer(page)
-  const date = await page.evaluate(() => {
-    const right = document.querySelector('.mxdrawer')!.getBoundingClientRect().right
-    for (const th of document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')) {
-      if (th.getBoundingClientRect().left < right) continue
-      const d = (th as HTMLElement).dataset.testid!.slice(5)
-      const cell = document.querySelector(`[data-testid="cell-slipway-${d}"]`)
-      if (cell && !cell.querySelector('.c')) return d
-    }
-    return null
-  })
-  expect(date, 'a drawn, empty day column clear of the drawer').not.toBeNull()
-  await page.locator(`[data-testid="cell-slipway-${date}"]`).click()
-  // ITS OWN sheet: the tap reached the grid, not the overlay standing beside it.
-  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
-  expect(await page.locator('[data-testid="figure-breakdown"]').count()).toBe(0)
-  await page.locator('[data-testid="bid-cancel"]').click()
-  // ...and the drawer is still out — nothing about tapping a day put it away.
-  await expect(figBar(page)).toHaveAttribute('aria-expanded', 'true')
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('the month strip reads from the drawer\'s edge, not the closed column\'s', async ({ page }) => {
-  // The strip answers "which month is most of what I can see", and it measures
-  // from the FROZEN EDGE — which the drawer moves. That number is CACHED
-  // (`stripGeoRef.current.frozen`) and re-measured only by the layout effect
-  // that watches everything which moves a column edge; the drawer had to join
-  // that list, and this is the pin.
-  //
-  // Nothing here scrolls between the two readings — the grid is parked once and
-  // only the drawer changes — because a scroll can move the column WINDOW, and
-  // that re-runs the same effect and refreshes the cache by accident. (It did:
-  // a first draft of this test that scrolled after opening passed with the fix
-  // reverted.) The parking spot is chosen at run time from the two real edges,
-  // as the point where the closed pair and the drawer disagree BY NAME:
-  // January is the larger half of the strip measured from the closed pair, and
-  // February is measured from the drawer. Reading JAN with the drawer out means
-  // the cache is still the closed pair's — and the `visibleSpan` the fill
-  // engine's rolling target follows is wrong with it, ~250px left of where the
-  // reader is actually looking on a desktop.
-  await openDrawer(page)
-  await settleGrid(page)
-  const at = await page.evaluate(() => {
-    const wrap = document.querySelector('.mx-wrap') as HTMLElement
-    const wr = wrap.getBoundingClientRect()
-    const w = (sel: string) => document.querySelector(sel)!.getBoundingClientRect().width
-    const who = w('.mx-wrap .mxhead th.who')
-    const closed = who + w('.mx-wrap .mxhead th.bal')
-    const open = who + w('.mxdrawer')
-    // January's right edge in the scroller's own CONTENT coordinates — the
-    // space the strip's spans live in. The day columns do not move when the
-    // drawer opens (it is an overlay), so this holds for both readings.
-    const jan = document.querySelector('[data-testid="head-2026-01-31"]')!.getBoundingClientRect()
-    const j = jan.right - wr.left + wrap.scrollLeft
-    // With `d` the distance from the scroll position to that edge: JANUARY is
-    // the larger half measured from the closed pair while d > (client+closed)/2,
-    // and FEBRUARY is measured from the drawer while d < (client+open)/2. The
-    // midpoint of that band is the least fragile point in it.
-    const lo = (wr.width + closed) / 2, hi = (wr.width + open) / 2
-    return { sl: Math.round(j - (lo + hi) / 2), lo: Math.round(lo), hi: Math.round(hi) }
-  })
-  // The band has to exist, or this test would be asserting nothing.
-  expect(at.hi).toBeGreaterThan(at.lo + 20)
-
-  const bar = figBar(page)
-  await bar.click()
-  expect(await page.locator('[data-testid="figdrawer"]').count()).toBe(0)
-  // Park it, then let the grid come to rest before reading: closing the drawer
-  // re-lays the header row and the anchor correction can nudge the scroll a few
-  // pixels after the write, which is enough to move a readout chosen to sit on
-  // a boundary.
-  await settleGrid(page)
-  // ...and force the cached geometry to be re-measured for the state the grid
-  // is actually in NOW. It is measured at MOUNT — on a desktop that is with the
-  // drawer OUT, because that is how the page opens — and the shared beforeEach
-  // then puts the drawer away, so the cache is already a step behind before this
-  // test starts: the JAN reading below would be about that leftover rather than
-  // about the drawer. A one-pixel height change fires the same layout effect a
-  // resize does; the WIDTHS are untouched, so every number measured above holds.
-  const vp = page.viewportSize()!
-  await page.setViewportSize({ width: vp.width, height: vp.height - 1 })
-  await page.setViewportSize(vp)
-  await settleGrid(page)
-  await page.evaluate(sl => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft = sl }, at.sl)
-  await settleGrid(page)
-  expect(await page.evaluate(() => Math.round((document.querySelector('.mx-wrap') as HTMLElement).scrollLeft))).toBe(at.sl)
-  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['JAN'])
-
-  // ...and now the ONLY thing that changes is the drawer.
-  await bar.click()
-  await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
-  await settleGrid(page)
-  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('the month strip follows the drawer WIDENING while it is already out', async ({ page }) => {
-  // The sibling above proves the cached frozen edge follows the drawer opening
-  // and closing. This one proves it follows the drawer CHANGING WIDTH with
-  // `figuresOpen` never moving — which is the case a dep list of hand-named
-  // edge-movers misses, and did (6 Sep 26 review). The reachable path is the
-  // owner's own: an admin hides figures in the picker, opens the drawer, then
-  // presses Undo. The drawer grows a column per step; nothing else changes.
-  //
-  // So the dep is the MEASURED WIDTH (`drawerAt.width`), not a list of the
-  // things that move it. Five figures are hidden rather than one so the two
-  // frozen widths are 5 columns apart (180px desktop / 140px phone) and the
-  // parking band between them is wide enough to read without chasing pixels.
-  await lwRole(page, 'admin')
-  await openPicker(page)
-  for (const id of ['oil', 'ccl', 'fcl', 'cl', 'pl']) await page.locator(`[data-testid="figeye-${id}"]`).click()
-  await page.locator('[data-testid="counter-cancel"]').click()
-
-  await openDrawer(page)
-  await expect(page.locator('.mxdrawer th.fig')).toHaveCount(3)
-  await settleGrid(page)
-
-  const at = await page.evaluate(() => {
-    const wrap = document.querySelector('.mx-wrap') as HTMLElement
-    const wr = wrap.getBoundingClientRect()
-    const who = document.querySelector('.mx-wrap .mxhead th.who')!.getBoundingClientRect().width
-    // The narrow edge as it stands, and the wide one it will grow to: the
-    // drawer's own width now, plus the five columns Undo will give back. Every
-    // non-first title cell is `--figw` wide, so one of them is the step.
-    const narrow = who + document.querySelector('.mxdrawer')!.getBoundingClientRect().width
-    const step = document.querySelector('.mxdrawer th.fig:not(.first)')!.getBoundingClientRect().width
-    const wide = narrow + step * 5
-    const jan = document.querySelector('[data-testid="head-2026-01-31"]')!.getBoundingClientRect()
-    const j = jan.right - wr.left + wrap.scrollLeft
-    const lo = (wr.width + narrow) / 2, hi = (wr.width + wide) / 2
-    return { sl: Math.round(j - (lo + hi) / 2), lo: Math.round(lo), hi: Math.round(hi) }
-  })
-  expect(at.hi).toBeGreaterThan(at.lo + 20)
-
-  await page.evaluate(sl => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft = sl }, at.sl)
-  await settleGrid(page)
-  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['JAN'])
-
-  // Undo until every figure is back. The drawer widens under a strip that has
-  // been told nothing about it; the readout has to follow anyway.
-  const undo = page.locator('#undoBtn')
-  for (let i = 0; i < 8 && (await page.locator('.mxdrawer th.fig').count()) < 8; i++) await undo.click()
-  await expect(page.locator('.mxdrawer th.fig')).toHaveCount(8)
-  await settleGrid(page)
-  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
-})
-
 // SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
 // name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
 // leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
@@ -2780,23 +2371,6 @@ test('the box whose number changed flashes, once', async ({ page }) => {
   ).toBe('lw-figflash')
 })
 
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('an admin hides a figure and the drawer loses that column; a member has no eye', async ({ page }) => {
-  await openPicker(page)
-  await expect(page.locator('[data-testid="figeye-pl"]')).toHaveCount(0)
-  await page.locator('[data-testid="counter-cancel"]').click()
-  await lwRole(page, 'admin')
-  await openPicker(page)
-  await page.locator('[data-testid="figeye-pl"]').click()
-  await page.locator('[data-testid="counter-cancel"]').click()
-  await openDrawer(page)
-  const drawer = page.locator('[data-testid="figdrawer"]')
-  await expect(drawer.locator('th.fig')).toHaveCount(7)
-  await expect(drawer.locator('th.fig[data-fig="pl"]')).toHaveCount(0)
-})
-
 // M2 (D1245): re-expressed — the key now teaches the one column beside the names, LVE; the fit on the screen stands.
 test('the Legend pop-out carries the figures key, and fits the screen', async ({ page }) => {
   await page.locator('[data-testid="legend-open"]').click()
@@ -2817,18 +2391,15 @@ test('the Legend pop-out carries the figures key, and fits the screen', async ({
   expect(await leg.evaluate(el => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0)
 })
 
-// ---- THE FIGURE SELECTION (owner, 6 Sep 26) -------------------------------
+// ---- THE LVE FIGURES BESIDE THE NAMES (M5a, 28 Oct 26) --------------------
 //
-// A drag down ONE figure column picks a run of people, for the docked balance
-// bar that takes one amount for all of them. The run itself is pinned DOM-free
-// in select.test.ts and the wiring in figselect.test.tsx; what needs a real
-// browser is the hit-test — three copies of every box (the real column, the
-// phone's band, the drawer) stacked in one place, with an overlay or two over
-// them — and that the page does not scroll under an armed drag.
+// The drag down a figure column that picked a run of people for a docked
+// balance bar is gone (D1491), and the FIGURES drawer with it (D1245): a leave
+// balance changes only by its box on the Balances page or the person window, by
+// approved leave and by 1 Jan. Pinned in jsdom by gridfigures.test.tsx; here, in
+// a real browser, a drag across the figures on whichever copy this width freezes.
 
-/** A mouse drag from one figure box to another (a run down one column). The
- *  boxes are addressed by figure + person on every copy (the real column, the
- *  band's copy, the drawer). */
+/** A mouse drag from one figure box to another (a run down one column). */
 async function dragFigures(page: Page, from: Locator, to: Locator) {
   const a = (await from.boundingBox())!
   const b = (await to.boundingBox())!
@@ -2859,378 +2430,20 @@ async function threeInARow(page: Page): Promise<string[]> {
   return run
 }
 
-/** One figure box in the drawer. */
-const drawerBox = (page: Page, fig: string, person: string) =>
-  page.locator(`[data-testid="figdrawer"] td.figbox[data-fig="${fig}"][data-person="${person}"]`)
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// A run of people was picked down a drawer column; with no drawer there is no run to pick.
-test.skip('a drag down a drawer column lights the run, on that pool only', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const [p1, , p3] = await threeInARow(page)
-  await dragFigures(page, drawerBox(page, 'ccl', p1!), drawerBox(page, 'ccl', p3!))
-  const lit = page.locator('[data-testid="figdrawer"] td[data-figsel]')
-  await expect(lit).toHaveCount(3)
-  // ONE POOL PER DRAG: the three lit boxes are all CCL, and the closed counter
-  // column — which is showing +LVE — stays dark. A selection is a pool and a
-  // set of people, never a rectangle across the figures.
-  expect(await lit.evaluateAll(els => els.every(e => e.getAttribute('data-fig') === 'ccl'))).toBe(true)
-  expect(await page.locator('td[data-testid^="bal-"][data-figsel]').count()).toBe(0)
-  // The page did not run away under the drag: an armed select owns the pointer
-  // (the same edge-band rule the day grid's drag lives by).
-  expect(await page.evaluate(() => window.scrollY)).toBe(0)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('a drag on a total, or by a member, lights nothing', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const [p1, , p3] = await threeInARow(page)
-  const lit = page.locator('[data-testid="figdrawer"] td[data-figsel]')
-  // A TOTAL is not a balance: there is no pool behind it to key a number into,
-  // so it starts nothing (selectableFigure — a figure with a counter).
-  await dragFigures(page, drawerBox(page, 'lvetot', p1!), drawerBox(page, 'lvetot', p3!))
-  await expect(lit).toHaveCount(0)
-  // A QUICK CLICK IS STILL A CLICK, for the admin who can drag. The gesture is
-  // the day grid's rhythm — a hold (or a mouse past the slop) selects and eats
-  // the trailing click; a plain tap never arms — so the box that now starts a
-  // selection must still open its breakdown when it is simply pressed.
-  await drawerBox(page, 'ccl', p1!).click()
-  await expect(page.locator('[data-testid="figure-breakdown"]')).toBeVisible()
-  await page.locator('[data-testid="breakdown-close"]').click()
-  await expect(page.locator('[data-testid="figure-breakdown"]')).toHaveCount(0)
-  await expect(lit).toHaveCount(0)   // ...and a click selects nobody
-  // ...and keying balances is the admin's: a member's drag down a real pool
-  // does nothing either, and opens no sheet on the way.
-  await lwRole(page, 'member')
-  await dragFigures(page, drawerBox(page, 'ccl', p1!), drawerBox(page, 'ccl', p3!))
-  await expect(lit).toHaveCount(0)
-  expect(await page.locator('[data-testid="figure-breakdown"]').count()).toBe(0)
-  // A PLAIN CLICK is untouched by any of it — the box still opens that person's
-  // breakdown, for a member as for anyone.
-  await drawerBox(page, 'ccl', p1!).click()
-  await expect(page.locator('[data-testid="figure-breakdown"]')).toBeVisible()
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('the band lets a press through to the drawer once the grid has scrolled', async ({ page }) => {
-  test.skip(!isPhone(), 'the band is a phone-only creature')
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  // Once the year has scrolled sideways the band takes the pointer (it is the
-  // copy the reader can actually tap) and it stands ABOVE the drawer for its
-  // heading labels — so its hidden `td.bal` column's ROW answered presses meant
-  // for the drawer's first column. Only the band's names and headings take the
-  // pointer while the figures are open; the rest lets it through.
-  await page.evaluate(() => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft = 300 })
-  await settleGrid(page)
-  const [p1] = await threeInARow(page)
-  /* the first roster row sits four rows further down the page since the Required / Available rows went in under the
-     Event rows (plan §3.3) — below this phone's fold, where a point hit-tests nothing. Bring it on screen first. */
-  await drawerBox(page, 'lve', p1!).evaluate(el => el.scrollIntoView({ block: 'center' }))
-  await settleGrid(page)
-  const b = (await drawerBox(page, 'lve', p1!).boundingBox())!
-  const under = await page.evaluate(
-    ([x, y]) => document.elementFromPoint(x!, y!)?.closest('.mxdrawer td.figbox')?.getAttribute('data-person') ?? null,
-    [b.x + b.width / 2, b.y + b.height / 2],
-  )
-  expect(under).toBe(p1)
-  // ...and the band's own NAME still answers, which is the half the rule must
-  // not cost: it is the only copy of that callsign left on screen once the year
-  // has scrolled, and it opens the person's figures.
-  const who = (await page.locator(`.mxband [data-band-id="${p1}"] .who`).boundingBox())!
-  const onName = await page.evaluate(
-    ([x, y]) => !!document.elementFromPoint(x!, y!)?.closest('.mxband td.who'),
-    [who.x + who.width / 2, who.y + who.height / 2],
-  )
-  expect(onName).toBe(true)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-test.skip('a finger\'s hold-and-drag down the drawer lights the run and does not scroll the page', async ({ page }) => {
-  test.skip(!isPhone(), 'the touch gesture')
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const [p1, , p3] = await threeInARow(page)
-  // PARK THE RUN MID-SCREEN FIRST. A drag that reaches an edge band auto-scrolls
-  // the page on purpose (owner, 30 Aug 26 — "auto scroll to the edge to continue
-  // selecting more"), and where the page opens, the first roster rows sit ~20px
-  // inside the bottom band on this viewport: a drag left there measures that
-  // feature (the page ran 106px and the run grew to eight, 6 Sep 26) instead of
-  // the thing under test, which is that a HOLD takes the finger off the page's
-  // own scroll.
-  const vh = page.viewportSize()!.height
-  await page.evaluate(dy => window.scrollBy(0, dy), (await drawerBox(page, 'ccl', p1!).boundingBox())!.y - vh / 3)
-  await settleGrid(page)
-  const a = (await drawerBox(page, 'ccl', p1!).boundingBox())!
-  const b = (await drawerBox(page, 'ccl', p3!).boundingBox())!
-  expect(b.y + b.height, 'the run is parked clear of the edge bands').toBeLessThan(vh - 60)
-  const y0 = await page.evaluate(() => window.scrollY)
-  // A REAL touch, through CDP — the page's own touch pipeline. Playwright's
-  // touchscreen taps but cannot drag, and dispatched DOM events arm nothing:
-  // the hold is a timer against a real pointerdown.
-  const cdp = await page.context().newCDPSession(page)
-  const x = a.x + a.width / 2
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: a.y + a.height / 2 }] })
-  await page.waitForTimeout(260)   // past HOLD
-  for (let i = 1; i <= 6; i++) {
-    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: a.y + a.height / 2 + ((b.y - a.y) * i) / 6 }] })
+test('a drag down the LVE figures raises no bar and lights nothing, for an admin or a member (D1491)', async ({ page }) => {
+  for (const role of ['admin', 'member'] as const) {
+    await lwRole(page, role)
+    const run = await threeInARow(page)
+    const before = await Promise.all(run.map(p => frozen(page, p, '.bal').textContent()))
+    // The LVE column — whichever copy this width freezes.
+    await dragFigures(page, frozen(page, run[0]!, '.bal'), frozen(page, run[2]!, '.bal'))
+    await expect(page.locator('[data-testid="balance-bar"]')).toHaveCount(0)
+    expect(await page.locator('[data-figsel], [data-figdrag]').count()).toBe(0)
+    expect(await Promise.all(run.map(p => frozen(page, p, '.bal').textContent())), 'no figure moved').toEqual(before)
+    await page.keyboard.press('Escape')   // a sheet the drag's release may have opened
   }
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-  // The three the finger crossed, and not one row more: the scroll lock held,
-  // so the rows did not slide under it.
-  await expect(page.locator('[data-testid="figdrawer"] td[data-figsel]')).toHaveCount(3)
-  expect(await page.evaluate(() => window.scrollY)).toBe(y0)
-})
-
-// ---- THE DOCKED BALANCE BAR (owner, 6 Sep 26) -----------------------------
-//
-// What the selection is FOR: one number for the whole run. The bar is a
-// viewport-docked panel, not a sheet, so everything about where it sits — over
-// a scrolling grid, above a phone's keyboard, clear of the bottom edge — is
-// browser-only. So is the flash on the boxes it just changed.
-
-/** The top number of a figure box in the drawer. */
-const drawerNum = (page: Page, fig: string, person: string) => drawerBox(page, fig, person).locator('.fb')
-
-const bar = (page: Page) => page.locator('[data-testid="balance-bar"]')
-
-/** Select a run of three down one drawer column and wait for the bar. */
-async function pickRun(page: Page, fig: string, run: string[]) {
-  await dragFigures(page, drawerBox(page, fig, run[0]!), drawerBox(page, fig, run[2]!))
-  await expect(bar(page)).toBeVisible()
-}
-
-/** Type an amount into the bar and commit it with Enter, the way a keyboard
- *  does — the bar's own Save is proved by the unit suite. */
-async function keyAmount(page: Page, amount: string) {
-  const amt = page.locator('[data-testid="oil-amt"]')
-  await amt.fill(amount)
-  await amt.press('Enter')
-}
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The balance bar opened from a run picked down a drawer column.
-test.skip('the bar takes one number for the run, the boxes flash, and one Undo takes it all back', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const run = await threeInARow(page)
-  const before = await Promise.all(run.map(p => drawerNum(page, 'ccl', p).textContent()))
-
-  await pickRun(page, 'ccl', run)
-  await expect(page.locator('[data-testid="oil-credit-who"]')).toHaveText('3 people · +CCL')
-  // A plain pool takes the number alone — no date, no reason, no given-by.
-  expect(await page.locator('[data-testid="oil-reason"]').count()).toBe(0)
-  expect(await page.locator('[data-testid="oil-amt"]').inputValue()).toBe('')
-
-  // The flash lives ~700ms, so watch for it rather than polling after the fact:
-  // a round trip that starts once the write has landed can miss the whole thing.
-  await page.evaluate(() => {
-    const w = window as unknown as { __figFlashed: string[] }
-    w.__figFlashed = []
-    new MutationObserver(() => {
-      for (const el of document.querySelectorAll('td.figbox[data-fig="ccl"].flash')) {
-        const p = el.getAttribute('data-person')!
-        if (!w.__figFlashed.includes(p)) w.__figFlashed.push(p)
-      }
-    }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] })
-  })
-
-  await keyAmount(page, '2')
-  await expect(bar(page)).toHaveCount(0)                       // the bar closes on a good write
-  await expect(page.locator('[data-figsel]')).toHaveCount(0)   // ...and the run is released
-  for (const [i, p] of run.entries()) {
-    await expect(drawerNum(page, 'ccl', p!)).toHaveText(String(Number(before[i]) + 2))
-  }
-  const flashed = await page.evaluate(() => (window as unknown as { __figFlashed: string[] }).__figFlashed)
-  expect(flashed.sort()).toEqual([...run].sort())
-
-  // ONE batch, ONE step back: the three credits went in as a single ledger
-  // write, so a single Undo has to undo all three.
-  await page.locator('#undoBtn').click()
-  for (const [i, p] of run.entries()) {
-    await expect(drawerNum(page, 'ccl', p!)).toHaveText(before[i]!)
-  }
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The balance bar opened from a run picked down a drawer column.
-test.skip('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const run = await threeInARow(page)
-  const before = await Promise.all(run.map(p => drawerNum(page, 'ccl', p).textContent()))
-
-  // A typed minus is a correction — the same field, no second control.
-  await pickRun(page, 'ccl', run)
-  await keyAmount(page, '-1.5')
-  await expect(bar(page)).toHaveCount(0)
-  for (const [i, p] of run.entries()) {
-    await expect(drawerNum(page, 'ccl', p!)).toHaveText(String(Math.round((Number(before[i]) - 1.5) * 10) / 10))
-  }
-
-  // Every refusal says why AND keeps the run: a rejected number must not cost
-  // the person the drag they just made.
-  await pickRun(page, 'ccl', run)
-  const err = page.locator('[data-testid="oil-credit-err"]')
-  for (const [typed, says] of [
-    ['0', 'The amount must be a number other than 0'],
-    ['abc', 'Type the days — 2 adds, -2 subtracts'],
-    ['1.25', 'Days come in halves — 1, 1.5, 2 …'],
-  ]) {
-    await keyAmount(page, typed!)
-    await expect(err).toHaveText(says!)
-    await expect(bar(page)).toBeVisible()
-    await expect(page.locator('[data-testid="figdrawer"] td[data-figsel]')).toHaveCount(3)
-  }
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The balance bar opened from a run picked down a drawer column; an OIL credit is made in the OIL tracker (the OIL tab).
-test.skip('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const run = await threeInARow(page)
-  // Two people, not three: the bar's count line is the run's, whatever its size.
-  await dragFigures(page, drawerBox(page, 'oil', run[0]!), drawerBox(page, 'oil', run[1]!))
-  await expect(bar(page)).toBeVisible()
-  await expect(page.locator('[data-testid="oil-credit-who"]')).toHaveText('2 people · +OIL')
-  // OIL alone brings the full form — the pool whose credits are a record.
-  await expect(page.locator('[data-testid="oil-date"]')).toBeVisible()
-  /* its date is the app's own date box (step two of the one date calendar, D901): the calendar floats on the page,
-     outside the bar — a press in it (the month's arrow, then a date) is the bar's, never "a press outside" that drops
-     the run (the walk of 15 Oct 26 found the OIL tracker's twin of this) */
-  await page.locator('[data-testid="oil-date"]').click()
-  await page.locator('[data-testid="dcal-card"] [data-testid="dcal-prev"]').click()
-  await expect(bar(page), 'a press in the calendar keeps the bar').toBeVisible()
-  const pickMonth = await page.locator('[data-testid="dcal-card"] [data-testid="dcal"]').getAttribute('data-month')
-  await page.locator(`[data-testid="dcal-card"] [data-testid="dcal-day-${pickMonth}-10"]`).click()
-  await expect(page.locator('[data-testid="dcal-card"]')).toHaveCount(0)
-  await expect(bar(page)).toBeVisible()
-  await expect(page.locator('[data-testid="oil-date"]')).toHaveAttribute('data-value', `${pickMonth}-10`)
-  await expect(page.locator('[data-testid="oil-given"]')).toBeVisible()
-  await page.locator('[data-testid="oil-amt"]').fill('1')
-  await page.locator('[data-testid="oil-reason"]').fill('Det')
-  await page.locator('[data-testid="oil-credit-save"]').click()
-  await expect(bar(page)).toHaveCount(0)
-
-  // ...and it lands in the TRACKER as an ordinary credit, because it went
-  // through the same writer the tracker's own bar uses.
-  await page.locator('[data-testid="oil-tracker"]').click()
-  const row = page.locator(`[data-testid="oil-row-${run[0]}"]`)
-  await expect(row).toContainText('+1')
-  await expect(row).toContainText('Det')
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The balance bar opened from a run picked down a drawer column.
-test.skip('a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const run = await threeInARow(page)
-
-  // A PRESS ON A DAY still does what a press on a day does (it opens that
-  // cell's sheet) — and drops the run on the way, which is the rule the
-  // tracker set: no Deselect button, anywhere outside puts it away.
-  await pickRun(page, 'ccl', run)
-  const day = await page.evaluate(() => {
-    const d = document.querySelector('[data-testid="figdrawer"]')!.getBoundingClientRect()
-    for (const td of document.querySelectorAll('.mx-wrap td[data-testid^="cell-"]')) {
-      const r = td.getBoundingClientRect()
-      if (r.left > d.right + 20 && r.width > 6 && r.top > 0 && r.bottom < window.innerHeight) {
-        return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
-      }
-    }
-    return null
-  })
-  expect(day, 'a day cell clear of the drawer').not.toBeNull()
-  await page.mouse.click(day!.x, day!.y)
-  await expect(bar(page)).toHaveCount(0)
-  await expect(page.locator('[data-figsel]')).toHaveCount(0)
-  await page.keyboard.press('Escape')                       // put the cell's sheet away again
-  await expect(page.locator('.bidsheet')).toHaveCount(0)
-
-  // PUTTING THE FIGURES AWAY takes the boxes off the screen, so the selection
-  // made against them cannot outlive them.
-  await pickRun(page, 'ccl', run)
-  await figBar(page).click()
-  await expect(bar(page)).toHaveCount(0)
-
-  // A SIDEWAYS SCROLL does not: the bar is docked to the viewport, not parked
-  // in the grid, which is the whole reason it is not a sheet.
-  await openDrawer(page)
-  await pickRun(page, 'ccl', run)
-  await scrollTo(page, '.mx-wrap', 600)
-  await settleGrid(page)
-  await expect(bar(page)).toBeVisible()
-})
-
-test('a member never sees the bar', async ({ page }) => {
-  await lwRole(page, 'member')
-  const run = await threeInARow(page)
-  // The closed counter column — whichever copy this width freezes.
-  await dragFigures(page, frozen(page, run[0]!, '.bal'), frozen(page, run[2]!, '.bal'))
-  await expect(bar(page)).toHaveCount(0)
-  expect(await page.locator('[data-figsel]').count()).toBe(0)
-})
-
-// SKIPPED, D1245 (22 Oct 26 — the overhaul's M2): the grid's Balances fold and its figures drawer are switched off; beside each
-// name the grid shows LVE alone — no drawer, no figure picker, no jump to another figure after a write. The drawer's code
-// leaves whole with M5; every other balance lives on the Balances tab and in a person's window.
-// The balance bar opened from a run picked down a drawer column.
-test.skip('on a phone the bar comes up whole, clear of the bottom edge', async ({ page }) => {
-  test.skip(!isPhone(), 'the touch gesture')
-  await lwRole(page, 'admin')
-  await openDrawer(page)
-  const run = await threeInARow(page)
-  // The same hold-drag as the run test above — park the rows mid-screen first
-  // so an edge band does not auto-scroll the page under the finger.
-  const vh = page.viewportSize()!.height
-  await page.evaluate(dy => window.scrollBy(0, dy), (await drawerBox(page, 'ccl', run[0]!).boundingBox())!.y - vh / 3)
-  await settleGrid(page)
-  const a = (await drawerBox(page, 'ccl', run[0]!).boundingBox())!
-  const b = (await drawerBox(page, 'ccl', run[2]!).boundingBox())!
-  const cdp = await page.context().newCDPSession(page)
-  const x = a.x + a.width / 2
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: a.y + a.height / 2 }] })
-  await page.waitForTimeout(260)   // past HOLD
-  for (let i = 1; i <= 6; i++) {
-    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: a.y + a.height / 2 + ((b.y - a.y) * i) / 6 }] })
-  }
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-
-  await expect(bar(page)).toBeVisible()
-  const box = (await bar(page).boundingBox())!
-  const vp = page.viewportSize()!
-  expect(box.y + box.height).toBeLessThanOrEqual(vp.height)   // nothing under the fold
-  expect(box.x).toBeGreaterThanOrEqual(0)
-  expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 1)
-  // ...and the number it wants is reachable without a sideways scroll inside it.
-  await expect(page.locator('[data-testid="oil-amt"]')).toBeVisible()
-  expect(await bar(page).evaluate(el => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0)
+  await expect(page.locator('[data-testid="figures-toggle"]')).toHaveCount(0)
+  expect(await page.locator('.mxdrawer').count(), 'no figures drawer is drawn (D1245)').toBe(0)
 })
 
 // The figure sheets scroll INSIDE the sheet on a phone, and the header
@@ -3244,10 +2457,10 @@ test.skip('on a phone the bar comes up whole, clear of the bottom edge', async (
 // RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('a scrolled sheet keeps its header and its close button', async ({ page }) => {
   await page.locator('[data-testid="person-slipway"]').click()
-  const sheet = page.locator('[data-testid="person-figures"]')
+  const sheet = page.locator('[data-testid="person-window"]')
   await expect(sheet).toBeVisible()
   await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
-  const x = page.locator('[data-testid="pfig-close"]')
+  const x = page.locator('[data-testid="pw-close"]')
   await expect(x).toBeVisible()
   const box = (await x.boundingBox())!
   const vp = page.viewportSize()!
@@ -3268,10 +2481,13 @@ test('a scrolled sheet keeps its header and its close button', async ({ page }) 
 // here since it only bites when the list overflows, which a fitting sheet does
 // not.)
 // RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
+// RE-EXPRESSED AGAIN, M5a (D1480, D641): a person's figures are his person window now, a window that blocks nothing and
+// draws no scrim — so the scrim's own rule is proved on a cell's bid sheet, the blocking sheet the grid opens most; the
+// person window's own "the page scrolls and it stays put" is the next test.
 test('the page scrolls behind an open sheet, and the panel stays put', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 0))
-  await page.locator('[data-testid="person-slipway"]').click()
-  const sheet = page.locator('[data-testid="person-figures"]')
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  const sheet = page.locator('[data-testid="bid-picker"]')
   await expect(sheet).toBeVisible()
   const topBefore = (await sheet.boundingBox())!.y
 
@@ -3291,6 +2507,25 @@ test('the page scrolls behind an open sheet, and the panel stays put', async ({ 
   const ta = await page.locator('[data-testid="sheet-scrim"]').evaluate(el => getComputedStyle(el).touchAction)
   expect(ta).toBe('pan-y')
   expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden')
+})
+
+// The person window blocks nothing (M5a, D1480; windows do not block — D641): no scrim behind it, the page scrolls
+// freely while it is up, and it stays where it stands — on a desktop docked at the grid's right edge, on a phone in the
+// middle of the screen, wholly on the screen either way.
+test('the person window blocks nothing: no scrim, the page scrolls behind it, it stays put', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.locator('[data-testid="person-slipway"]').click()
+  const win = page.locator('[data-testid="person-window"]')
+  await expect(win).toBeVisible()
+  await expect(page.locator('[data-testid="sheet-scrim"]')).toHaveCount(0)
+  const vp = page.viewportSize()!
+  const before = (await win.boundingBox())!
+  expect(before.y).toBeGreaterThanOrEqual(0)
+  expect(before.y + before.height).toBeLessThanOrEqual(vp.height + 0.5)
+  await page.evaluate(() => window.scrollBy(0, 300))
+  await page.waitForTimeout(100)
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+  expect(Math.abs((await win.boundingBox())!.y - before.y)).toBeLessThan(1.5)
 })
 
 /* THE SWIPE UNDER A SHEET IS THE BROWSER'S OWN, ON THE GRID ITSELF (owner,
@@ -3413,10 +2648,12 @@ test('a finger behind an open sheet scrolls the grid itself; a tap on a cell clo
    drag-to-pan and the click-to-dismiss the desktop has had since 28 Aug go
    through it, and a hover never reaches the grid. Desktop project only. */
 // RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
+// RE-EXPRESSED AGAIN, M5a: the person window blocks nothing (no scrim — A5, D641), so the blocking sheet a press opens is
+// the bid window (a tap on a day).
 test('on a desktop the scrim stays in the way of the mouse', async ({ page }) => {
   test.skip(isPhone(), 'the fine-pointer half')
-  await page.locator('[data-testid="person-slipway"]').click()
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
   expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(false)
   const under = await page.evaluate(() => {
     const el = document.elementFromPoint(200, 300)
@@ -3452,9 +2689,11 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   await expect(page.locator('[data-testid="my-leave-lve"]')).toHaveText(`LVE ${rowLve}`)
 
   await page.locator('[data-testid="person-prowler"]').click()
-  const figs = page.locator('[data-testid="person-figures"]')
+  const figs = page.locator('[data-testid="person-window"]')
   await expect(figs).toBeVisible()
-  await expect(figs.locator('.crow-wrap')).toHaveCount(8)    // the EIGHT figures, 6 Sep 26
+  // his person window (M5a — D1480): eight tiles, LVE, OIL, MED and the five other kinds; another man's reads only
+  await expect(figs.locator('[data-testid^="pw-tile-"]')).toHaveCount(8)
+  await expect(figs.locator('input')).toHaveCount(0)
   // A member reaches no editor from here.
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })
@@ -3602,12 +2841,16 @@ test('a member counter bar is Manning then OIL, adjacent, one row', async ({ pag
   expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
   // no − / + for a member either: the grid is pinched (D1228, D1276)
   await expect(page.locator('[data-testid="lw-zoom-in"]')).toHaveCount(0)
-  // and OIL is the member's tab, right after Grid on the tab row
+  // and the member's tab row is Grid · Balances · OIL (D1254 — Balances built in M5a, D1482), each tab right after the
+  // one before it, on one row
   const g = (await page.locator('[data-testid="lw-tab-grid"]').boundingBox())!
+  const b = (await page.locator('[data-testid="lw-tab-balances"]').boundingBox())!
   const t = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
-  expect(t.x).toBeGreaterThan(g.x)
-  expect(Math.abs(mid(t) - mid(g))).toBeLessThan(4)
-  expect(t.x - (g.x + g.width)).toBeLessThan(24)
+  for (const [l, r] of [[g, b], [b, t]] as const) {
+    expect(r.x).toBeGreaterThan(l.x)
+    expect(Math.abs(mid(r) - mid(l))).toBeLessThan(4)
+    expect(r.x - (l.x + l.width)).toBeLessThan(24)
+  }
 })
 
 // In Rearrange the reorder grip shares the frozen NAME cell, to the LEFT of the
@@ -3707,7 +2950,14 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
   // figure is the same from either screen. HARPOON's four days sit in Apr–Jun
   // and take him to −2 annual, which reads −2 from Jan–Mar too.
   await expect(page.locator('[data-testid="bal-harpoon"] .fb')).toHaveText(before!)
-  expect(before).toBe('-2')
+  // SINCE M5a the figure is his War bal off a typed App bal (D1479; the demo types every man's LVE — demoworld.ts
+  // demoBalances), so the number is no longer −2: what still holds is that the four 2027 days come off it from either
+  // war — his person window says Pending −4, and its War bal is the very figure the grid shows.
+  await page.locator('[data-testid="bal-harpoon"]').click()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
+  await expect(page.locator('[data-testid="pw-LVE-pend"]')).toHaveText('−4')
+  await expect(page.locator('[data-testid="pw-LVE-war"]')).toHaveText(before!.replace('-', '−'))
+  await page.locator('[data-testid="pw-close"]').click()
 })
 
 /** "+ New period" is the period list's last line since the overhaul's M2, an admin's only (D1244) — no "+ New" button on
@@ -4103,7 +3353,7 @@ test('the counter sheet changes the column, and every row with it', async ({ pag
 // into raptor-port's own config (`lw-phone`/`lw-desktop`, 16 Aug 26) — so they
 // skipped everywhere and proved nothing for three weeks. Named correctly now.
 // M2: skipped — D1245: the column beside the names is LVE alone, so a swipe across it cycles nothing (the picker's code
-// leaves whole with M5); the unit test of the hold-and-drag (figselect.test.tsx) pins that a flick no longer changes it.
+// leaves whole with M5); the unit tests (gridfigures.test.tsx) pin that a drag across it changes and raises nothing.
 test('swiping across the counter column cycles it', async ({ page }, testInfo) => {
   test.skip(true, 'D1245 — the column is LVE alone')
   test.skip(testInfo.project.name !== 'lw-phone', 'needs touch emulation')
@@ -4162,7 +3412,7 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
 test('an admin reaches no Edit person from the name sheet', async ({ page }) => {
   await lwRole(page, 'admin')
   await page.locator('[data-testid="person-prowler"]').click()
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="person-sheet"]')).toHaveCount(0)
 })
@@ -5210,13 +4460,7 @@ test('in the Manning block the four rows cover no month button, and the open-bid
         const at = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !(at && (at === b || b.contains(at))) })
       .map(b => b.getAttribute('data-testid')))
     expect(covered, `${state}: something covers these month buttons`).toEqual([])
-    /* 2. the Figures panel, when open, starts at or below the month buttons — never over them or the four rows */
-    const drawer = page.locator('[data-testid="figdrawer"]')
-    if (await drawer.count() && await drawer.isVisible()) {
-      const d = await rect('[data-testid="figdrawer"]'), s = await rect('[data-testid="month-strip"]')
-      expect(d.top, `${state}: the Figures panel reaches above the month buttons`).toBeGreaterThanOrEqual(s.bottom - 1.5)
-    }
-    /* 3. the green open-bidding outline starts under the month buttons, AT the dates. Since M2 the four rows stand under
+    /* 2. the green open-bidding outline starts under the month buttons, AT the dates. Since M2 the four rows stand under
        the dates (D1256), inside the dates' own columns, so the outline's top is the dates' top — never above it, and
        never down in the Manning block (the phone's fault he circled: the outline cutting through the Available rows) */
     const box = await rect('#page-leavewar .lw-bidbox'), s = await rect('[data-testid="month-strip"]'), h = await rect('[data-testid="head-2026-01-02"]')
@@ -5224,7 +4468,6 @@ test('in the Manning block the four rows cover no month button, and the open-bid
     expect(Math.abs(box.top - h.top), `${state}: the bidding outline does not start at the dates`).toBeLessThanOrEqual(1.5)
   }
   await check('as it opens')
-  /* (the Figures panel's other state is not asked again: the drawer is switched off since M2 — D1245) */
   /* and after the block is folded away and brought back: the rows return to the same place, the outline with them */
   await page.locator('[data-testid="counts-toggle"]').click()
   await expect(page.locator('[data-testid="fly-row-req-p"]')).toHaveCount(0)
@@ -5371,7 +4614,6 @@ test('a counter row is dragged between the fixed rows and below all four, and th
   /* SAVED, and the same for everyone: after a reload a member sees the counters where the admin left them */
   await page.reload()
   await openLeaveWar(page)
-  await putDrawerAway(page)
   await openManning(page)   // a fresh page on a phone opens them folded again (D1258)
   expect(await order()).toEqual(moved)
   await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
@@ -6787,7 +6029,6 @@ test('every label and reason on an OIL credit box reads in full, at every zoom s
   await expect.poll(() => page.evaluate(() => (window as any).dayApproved(5))).toBe(true)
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')
-  await putDrawerAway(page)
 
   await page.locator('[data-testid="oil-tracker"]').click()
   await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
@@ -7229,7 +6470,6 @@ test('a tab switch keeps the grid alive: the same node returns, shrinks-and-rebu
 // "open right now".
 test('a green box frames each open stretch, and clears when bidding closes', async ({ page }) => {
   await openLeaveWar(page, 'a')   // admin, so the dates can be opened and closed
-  await putDrawerAway(page)
   const box = page.locator('#page-leavewar .lw-bidbox')
   await expect(box).toHaveCount(1)
   const geo = await page.evaluate(() => {
@@ -7284,7 +6524,6 @@ test('a green box frames each open stretch, and clears when bidding closes', asy
 // M2: re-expressed — Rearrange is entered from ⚙ (D1254) and left by the bar's "⇅ Done".
 test('the open-bidding box keeps its left edge on 1 Jan through Rearrange', async ({ page }) => {
   await openLeaveWar(page, 'a')   // admin, so Rearrange is available
-  await putDrawerAway(page)
   const jan1Left = () => page.evaluate(() =>
     document.querySelector('[data-testid="head-2026-01-01"]').getBoundingClientRect().left)
   const boxLeft = () => page.evaluate(() =>
@@ -7872,11 +7111,11 @@ test('with Approvals\u2019 slim bar up, a window opens above the bar, never over
   await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
   await expect(page.getByTestId('appr-slim')).toBeVisible()
   await page.locator('[data-testid="row-slipway"] .whoedit').first().click()
-  const sheet = page.getByTestId('person-figures')
+  const sheet = page.getByTestId('person-window')
   await expect(sheet).toBeVisible()
   await page.waitForTimeout(300)
   const g = await page.evaluate(() => {
-    const s = document.querySelector<HTMLElement>('[data-testid="person-figures"]')!.getBoundingClientRect()
+    const s = document.querySelector<HTMLElement>('[data-testid="person-window"]')!.getBoundingClientRect()
     const b = document.querySelector<HTMLElement>('[data-testid="appr-slim"]')!.getBoundingClientRect()
     return { sheetBottom: Math.round(s.bottom), barTop: Math.round(b.top), sheetTop: Math.round(s.top) }
   })
@@ -8367,10 +7606,13 @@ test('D1444 on a phone deciding a month’s only request keeps its chip, so noth
   test.skip(!isPhone(), 'the phone’s months')
   await lwRole(page, 'admin')
   await page.setViewportSize({ width: 402, height: 874 })
-  for (const d of ['2026-03-16', '2026-04-14', '2026-06-10', '2026-08-12']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'LL'), d)).toBe(true)
+  /* SINCE M5a the demo gives Ranger (bane) leave of his own (demoworld.ts DEMO_M5A_LEAVE / DEMO_M5A_RECS — approved LL
+     19–21 and 26–27 Jan, requests on 29 Jan, 2, 12, 13 Feb, 2, 16, 17 Mar), so the days placed here are days he left free:
+     16 Mar → 19 Mar, 20 Jan → 23 Jan, 26 Jan → 30 Jan; the six months, and August's one request, are as before */
+  for (const d of ['2026-03-19', '2026-04-14', '2026-06-10', '2026-08-12']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'LL'), d)).toBe(true)
   /* …and lines placed after August's, so its line stands mid-list and the page is not scrolled to its foot (where a shorter
      page is pulled down by the browser and hides the jump) */
-  for (const d of ['2026-01-20', '2026-01-22', '2026-01-26', '2026-01-28', '2026-02-16', '2026-02-18']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'OL'), d)).toBe(true)
+  for (const d of ['2026-01-22', '2026-01-23', '2026-01-28', '2026-01-30', '2026-02-16', '2026-02-18']) expect(await page.evaluate(x => (window as any).lwSetCell('bane', x, 'OL'), d)).toBe(true)
   /* his iPhone's Safari keeps no scroll anchoring, so content shrinking above the finger moves what is under it; Chromium's
      anchoring would hide that once the page is scrolled — it is switched off here to see what he sees */
   await page.addStyleTag({ content: 'html, body, * { overflow-anchor: none !important; }' })
@@ -8574,4 +7816,331 @@ test('D1462 D1463 the bid window title: its day brighter, the switch "Auto-appro
   expect(Number(look.weight)).toBeGreaterThanOrEqual(600)
   expect(look.color, 'the app\'s white').toBe(look.inkRgb)
   expect(look.swH, 'the switch on one line').toBeLessThan(30)
+})
+
+/* ---- THE M5a WALK'S FAULTS (29 Oct 26 — the host's triage, docs/handpass/parts/lw-m5a/walk-triage.md "To fix") ----------
+   Each check below is the walk's own measure, the one a jsdom test cannot take: each failed on build 92b43acf9. */
+async function openBalancesPage(page: Page) {
+  await page.getByTestId('lw-tab-balances').click()
+  await expect(page.getByTestId('balances-page')).toBeVisible()
+  await page.waitForTimeout(200)
+}
+const typeFig = async (page: Page, id: string, v: string) => {
+  const b = page.getByTestId(id)
+  await b.click()
+  await b.fill(v)
+  await b.press('Enter')
+}
+
+/* A-F3: "10.5" in PL and "−12.5" in App bal showed their last digit cut; "−998.5" — as long as the longest figure the store
+   takes (±999) — too. Each box shows its whole figure, keeps its width, and the figures beside it do not move; in the person
+   window too. */
+test('M5a walk A-F3: a box shows its whole figure and keeps its width, nothing beside it moving', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  /* the places are read in the list's own measure (the screen's plus how far it has slid): on a phone a box typed in is
+     brought into sight with its pending figure (the walk's B-F4), sliding the whole list sideways — every column alike, which
+     is no figure moving beside the box */
+  const geo = () => page.evaluate(() => {
+    const r = (id: string) => document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!.getBoundingClientRect()
+    const slid = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.scrollLeft
+    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').right + slid, el: r('bal-EL-bane').left + slid }
+  })
+  const whole = (id: string) => page.getByTestId(id).evaluate((e: HTMLInputElement) => e.scrollWidth <= e.clientWidth + 0.5)
+  const g0 = await geo()
+  await typeFig(page, 'bal-LVE-bane', '-12.5')
+  expect(await whole('bal-LVE-bane'), 'App bal "−12.5" shown whole').toBe(true)
+  await typeFig(page, 'bal-PL-bane', '10.5')
+  expect(await whole('bal-PL-bane'), 'PL "10.5" shown whole').toBe(true)
+  await typeFig(page, 'bal-CCL-bane', '-998.5')
+  expect(await page.getByTestId('bal-CCL-bane').inputValue()).toBe('−998.5')
+  expect(await whole('bal-CCL-bane'), 'CCL "−998.5" shown whole').toBe(true)
+  expect(await geo(), 'the boxes keep their widths and the figures beside them stay where they were').toEqual(g0)
+  await page.getByTestId('bal-name-bane').click()
+  const win = page.getByTestId('person-window')
+  await expect(win).toBeVisible()
+  const pend = () => page.getByTestId('pw-LVE-pend').evaluate(e => e.getBoundingClientRect().left)
+  const pend0 = await pend()
+  await page.getByTestId('pw-LVE').click()
+  await page.getByTestId('pw-LVE').fill('16.5')
+  expect(await whole('pw-LVE'), 'the person window’s box shows "16.5" whole').toBe(true)
+  /* (within half a pixel: GitHub's letters lay the same box out 0.016px apart — the fault this guards moved it 11px) */
+  expect(Math.abs((await pend()) - pend0), 'Pending stays where it was').toBeLessThan(0.5)
+  await page.getByTestId('pw-LVE').fill('-123.5')
+  expect(await whole('pw-LVE'), 'a long figure shown whole, in smaller letters').toBe(true)
+  expect(Math.abs((await pend()) - pend0), 'Pending still where it was').toBeLessThan(0.5)
+  expect(await whole('pw-CCL'), 'the CCL tile’s "−998.5" shown whole').toBe(true)
+})
+
+/* The fresh read of the M5a fixes, finding 6 (29 Oct 26): a refusal under the right-most tile's box in the person window ran
+   about 100px past the window's right edge, and the window cut it — its words were kept inside the Balances page's
+   scrollers or the screen, and the window is neither. They stand inside the window. */
+test('M5a fix read 6: a refusal under a box in the person window stays inside the window', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop’s docked window')
+  await lwRole(page, 'admin')
+  await openBalancesPage(page)
+  await page.getByTestId('bal-name-bane').click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  await typeFig(page, 'pw-CL', '17.3')
+  await expect(page.getByTestId('pw-CL-err')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const r = (q: string) => document.querySelector<HTMLElement>(q)!.getBoundingClientRect()
+    return { err: r('[data-testid="pw-CL-err"]').right, win: r('[data-testid="person-window"]').right }
+  })
+  expect(g.err, `the words' right (${g.err}) inside the window's (${g.win})`).toBeLessThanOrEqual(g.win - 3.5)
+})
+
+/* A-F4: scrolled down, a strip of the rows showed between the LVE / OTHER LEAVE line and the NAME line — the second pinned
+   30 down while the first was shorter. They meet. */
+test('M5a walk A-F4: the two pinned heading lines meet, with no strip of rows between them', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop’s two heading lines')
+  await lwRole(page, 'admin')
+  await openBalancesPage(page)
+  await page.getByTestId('bal-scroll').evaluate((e: HTMLElement) => { e.scrollTop = 400 })
+  await page.waitForTimeout(150)
+  const g = await page.evaluate(() => {
+    const h1 = document.querySelector<HTMLElement>('.bp-table tr.h1 th')!.getBoundingClientRect()
+    const h2 = document.querySelector<HTMLElement>('.bp-table tr.h2 th')!.getBoundingClientRect()
+    const sc = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.getBoundingClientRect()
+    return { h1Top: h1.top, h1Bottom: h1.bottom, h2Top: h2.top, scTop: sc.top }
+  })
+  expect(Math.abs(g.h1Top - g.scTop), 'the first line pinned at the list’s top').toBeLessThanOrEqual(1)
+  expect(Math.abs(g.h2Top - g.h1Bottom), `the second line (${g.h2Top}) meets the first one's foot (${g.h1Bottom})`).toBeLessThanOrEqual(0.5)
+})
+
+/* A-F2: the OIL figures ("0 ›") were set left, 10–23px short of the heading's right edge; every column sets its figures
+   right, under its heading's right edge (the drawing m5b-b1-desk). */
+test('M5a walk A-F2: every OIL figure ends under the OIL heading’s right edge', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop table')
+  await lwRole(page, 'admin')
+  await openBalancesPage(page)
+  const g = await page.evaluate(() => {
+    const th = [...document.querySelectorAll<HTMLElement>('.bp-table tr.h2 th')].find(t => t.textContent === 'OIL')!
+    const rg = document.createRange(); rg.selectNodeContents(th)
+    const head = rg.getBoundingClientRect().right
+    const figs = [...document.querySelectorAll<HTMLElement>('[data-testid^="bal-oil-"]')].map(b => b.getBoundingClientRect().right)
+    return { head, n: figs.length, off: figs.map(r => Math.round((r - head) * 10) / 10).filter(d => Math.abs(d) > 1) }
+  })
+  expect(g.n).toBeGreaterThan(20)
+  expect(g.off, `every OIL figure's right edge on the heading's (${g.head})`).toEqual([])
+})
+
+/* B-F2/F3: on a phone a refusal under App bal ("Type a whole number or a half, like 17 or 17.5") ran from x −49 to 191 —
+   off the screen. Its words stay inside the screen and the sliding list. */
+test('M5a walk B-F2: a refusal’s words stay on the phone’s screen', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s sliding list')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  await typeFig(page, 'bal-LVE-bane', '17.3')
+  const err = page.getByTestId('bal-LVE-bane-err')
+  await expect(err).toHaveText('Type a whole number or a half, like 17 or 17.5')
+  const g = await err.evaluate(e => {
+    const r = e.getBoundingClientRect(), s = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.getBoundingClientRect()
+    return { left: r.left, right: r.right, sl: s.left, sr: s.right, w: window.innerWidth }
+  })
+  expect(g.left, 'its left edge on the screen').toBeGreaterThanOrEqual(Math.max(0, g.sl))
+  expect(g.right, 'its right edge on the screen').toBeLessThanOrEqual(Math.min(g.w, g.sr))
+})
+
+/* B-F5: the phone's Balances page was 120 taller than the screen — opened from a grid scrolled down — and the whole window
+   scrolled, the tab row going under the top bar. The page fits the screen and scrolls only inside itself. */
+test('M5a walk B-F5: on a phone the Balances page fits the screen; the window does not scroll', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.evaluate(() => window.scrollTo(0, 300))
+  await page.waitForTimeout(150)
+  await page.evaluate(() => document.querySelector<HTMLElement>('[data-testid="lw-tab-balances"]')!.click())
+  await expect(page.getByTestId('balances-page')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => ({ doc: document.documentElement.scrollHeight, ih: window.innerHeight, y: window.scrollY }))
+  expect(g.y, 'the page at the window’s top').toBe(0)
+  expect(g.doc, `the document (${g.doc}) no taller than the screen (${g.ih})`).toBeLessThanOrEqual(g.ih + 1)
+})
+
+/* B-F4: a tapped PL box was brought into sight but its amber "−0.5" after it was cut at the screen's edge. The box and its
+   pending figure come into sight together, clear of the names. */
+test('M5a walk B-F4: a tapped box comes into sight with its pending figure', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s sliding list')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('−0.5')
+  await page.getByTestId('bal-PL-bane').focus()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const r = (s: string) => document.querySelector<HTMLElement>(s)!.getBoundingClientRect()
+    const box = r('[data-testid="bal-PL-bane"]'), pd = r('[data-testid="bal-opd-PL-bane"]'), sc = r('[data-testid="bal-scroll"]')
+    const names = document.querySelector<HTMLElement>('[data-testid="bal-row-bane"] .bp-who')!.getBoundingClientRect()
+    return { boxL: box.left, pdR: pd.right, scR: sc.right, namesR: names.right }
+  })
+  expect(g.pdR, 'the pending figure inside the list').toBeLessThanOrEqual(g.scR)
+  expect(g.boxL, 'the box clear of the names').toBeGreaterThanOrEqual(g.namesR)
+})
+
+/* The phone's person window stood at 33–45, over the top bar's lower half (the bar ends at 49); the drawing
+   m5a-p4-phone-own has it under the bar. It stands under the bar. */
+test('M5a walk: on a phone the person window stands under the top bar', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s window')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const w = document.querySelector<HTMLElement>('[data-testid="person-window"]')!.getBoundingClientRect()
+    return { top: w.top, foot: w.bottom, bar: document.querySelector<HTMLElement>('.topbar')!.getBoundingClientRect().bottom }
+  })
+  expect(g.top, `the window's top (${g.top}) under the bar's foot (${g.bar})`).toBeGreaterThanOrEqual(g.bar)
+  expect(g.foot, 'its foot on the screen').toBeLessThanOrEqual(874)
+})
+
+/* The fresh read of the M5a fixes, finding 2 (29 Oct 26): the same fault while Approvals' slim bar is up. approvals.css's
+   phone rule for every window above the bar out-weighed the person window's own height rule, so a tall window stood at
+   about 35, over the top bar again. It stands under the bar and above the slim bar. */
+test('M5a fix read 2: on a phone, with the slim bar up, the person window stands under the top bar', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s window')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const r = (q: string) => document.querySelector<HTMLElement>(q)!.getBoundingClientRect()
+    const w = r('[data-testid="person-window"]')
+    return { top: w.top, foot: w.bottom, bar: r('.topbar').bottom, slim: r('[data-testid="appr-slim"]').top }
+  })
+  expect(g.top, `the window's top (${g.top}) under the bar's foot (${g.bar}) + 8`).toBeGreaterThanOrEqual(g.bar + 7.5)
+  expect(g.foot, `its foot (${g.foot}) above the slim bar (${g.slim})`).toBeLessThanOrEqual(g.slim - 7.5)
+})
+
+/* ---- THE M5a DRAWING DIFFERENCES HE PICKED BACK TO THE DRAWING (29 Oct 26, D1493 — "All as recommended") ---------------
+   Each check measures what the drawing shows; each failed on build 134caf8b4. */
+
+/* A: the desktop person window opened 64 under the grid card's top (y 200 at his PC's 1536 × 864), so its last leave lines
+   stood below the screen's foot; the drawing `full/m5a/m5a-p2-desk-drawn` has it just under the page's top bar, over the tab
+   row, at the grid card's right edge, every line in view. Opened from a name on the grid and from My leave, at his PC's size
+   and a full-HD screen's. */
+test('M5a drawing A (D1493): on a desktop the person window opens just under the top bar, at the grid’s right edge, its leave in view', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop’s docked window (a phone centres it — its own tests)')
+  await lwRole(page, 'admin')
+  /* scoped to the signed-in man (Ranger), as the app always is (openLeaveWar's note), so My leave is drawn */
+  await page.evaluate(() => (window as any).lwSetViewer('bane'))
+  for (const vp of [{ width: 1536, height: 864 }, { width: 1920, height: 1080 }]) {
+    await page.setViewportSize(vp)
+    await page.waitForTimeout(200)
+    for (const from of ['the grid', 'My leave']) {
+      if (from === 'the grid') await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+      else await page.getByTestId('my-leave').click()
+      await expect(page.getByTestId('person-window')).toBeVisible()
+      await page.waitForTimeout(250)
+      const g = await page.evaluate(() => {
+        const r = (q: string) => document.querySelector<HTMLElement>(q)!.getBoundingClientRect()
+        const w = document.querySelector<HTMLElement>('[data-testid="person-window"]')!
+        const wr = w.getBoundingClientRect()
+        const card = document.querySelector<HTMLElement>('#page-leavewar .mx-outer')!.parentElement!.getBoundingClientRect()
+        /* the lower of the app's top bar and the Leave War's own row (tabs, View, My leave, ⚙): at rest that row — the
+           drawing's page was scrolled, its row out of sight; under the app's bar alone the window covered My leave and ⚙ */
+        const bar = Math.max(r('.topbar:not(.lw-top)').bottom, r('#page-leavewar .lw-top').bottom)
+        const hits = (q: string) => { const b = r(q); return b.left < wr.right && b.right > wr.left && b.top < wr.bottom && b.bottom > wr.top }
+        return { top: wr.top, right: wr.right, foot: wr.bottom, bar, cardR: card.right, vh: innerHeight, inner: w.scrollHeight - w.clientHeight,
+          covers: ['[data-testid="my-leave"]', '[data-testid="settings-open"]'].filter(hits) }
+      })
+      const at = `${vp.width}×${vp.height}, from ${from}`
+      expect(g.covers, `${at}: it covers neither My leave nor ⚙`).toEqual([])
+      expect(g.top, `${at}: its top (${g.top}) just under the bar's foot (${g.bar}), as drawn`).toBeGreaterThanOrEqual(g.bar)
+      expect(g.top, `${at}: its top (${g.top}) no lower than the bar's foot + 12`).toBeLessThanOrEqual(g.bar + 12)
+      expect(Math.abs(g.right - (g.cardR - 8)), `${at}: its right edge (${g.right}) 8 inside the grid card's (${g.cardR})`).toBeLessThanOrEqual(1)
+      expect(g.foot, `${at}: its foot on the screen`).toBeLessThanOrEqual(g.vh)
+      expect(g.inner, `${at}: every line of his leave in view, nothing to scroll inside it`).toBeLessThanOrEqual(1)
+      await page.getByTestId('pw-close').click()
+      await expect(page.getByTestId('person-window')).toHaveCount(0)
+    }
+  }
+})
+
+/* B: every line of the person window that takes the grid there drew as a rounded card with a cyan bar down its left edge,
+   10px in from the sides — the schedule's flying-wave block, whose class it shared; the drawing has flat rows between thin
+   lines, only the dot marking a new one. The day panel's own line is untouched. */
+test('M5a drawing B (D1493): the person window’s leave lines are flat rows between thin lines', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  const rows = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid="pw-list"] .ll-row')].map(l => {
+    const s = getComputedStyle(l), list = l.parentElement!.getBoundingClientRect(), b = l.getBoundingClientRect()
+    return { radius: s.borderTopLeftRadius, left: s.borderLeftWidth, top: s.borderTopWidth + ' ' + s.borderTopColor, dl: b.left - list.left, dr: list.right - b.right, bg: s.backgroundColor }
+  }))
+  expect(rows.length, 'his leave is listed').toBeGreaterThan(2)
+  for (const r of rows) {
+    expect(r.radius, 'no rounded card').toBe('0px')
+    expect(r.left, 'no bar down its left edge').toBe('0px')
+    expect(r.top, 'a thin line over it, the drawing’s #222a33').toBe('1px rgb(34, 42, 51)')
+    expect([r.dl, r.dr], 'the row runs the list’s full width').toEqual([0, 0])
+    expect(r.bg, 'no fill').toBe('rgba(0, 0, 0, 0)')
+  }
+})
+
+/* D: on the Balances page each name's callsign stood in the middle of its puck (the page's button centred it); the drawing
+   `full/m5a/m5b-b1-desk` sets it left, as the grid's own name pucks are — one tab away. */
+test('M5a drawing D (D1493): on the Balances page a name’s callsign is set left in its puck, as on the grid', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  /* how far the callsign stands in from where its name box lets it start (its left padding), in the box's own measure — the
+     phone's grid is drawn a step out, so its puck is smaller on screen than the Balances page's */
+  const inset = (sel: string) => page.evaluate(sel => {
+    const nm = document.querySelector<HTMLElement>(sel)!
+    const rg = document.createRange(); rg.selectNodeContents(nm)
+    const b = nm.getBoundingClientRect(), scale = b.width / nm.offsetWidth
+    return (rg.getBoundingClientRect().left - b.left) / scale - parseFloat(getComputedStyle(nm).paddingLeft)
+  }, sel)
+  const grid = await inset('[data-testid="row-bane"] .whoedit .puck .nm')
+  expect(Math.abs(grid), `the grid's callsign at its name's start (${grid})`).toBeLessThanOrEqual(0.5)
+  await openBalancesPage(page)
+  const bal = await inset('[data-testid="bal-name-bane"] .puck .nm')
+  expect(Math.abs(bal), `the callsign ${bal}px in from its name's start, as on the grid`).toBeLessThanOrEqual(0.5)
+})
+
+/* E: in a member's locked row, read only, the amber pending figure after CCL, PL and CL stood 2.6px below its figure on a
+   desktop (walker A, against `m5c-c2-desk-locked-cut`); every figure in the row stands on one line — the same baseline. */
+test('M5a drawing E (D1493): a member’s locked row has its amber pending figures on the line of their figures', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  const lock = page.getByTestId('bal-lock')
+  if ((await lock.getAttribute('aria-checked')) !== 'true') await lock.click()
+  await expect(lock).toHaveAttribute('aria-checked', 'true')
+  await page.getByTestId('lw-tab-grid').click()
+  await lwRole(page, 'member')
+  await page.evaluate(() => (window as any).lwSetViewer('bane'))
+  await openBalancesPage(page)
+  await expect(page.getByTestId('bal-locked')).toBeVisible()
+  await expect(page.locator('[data-testid="bal-row-bane"] input')).toHaveCount(0)
+  /* a text's baseline: its run's box foot less its font's descent (the run's box is the font's own ascent + descent) */
+  const g = await page.evaluate(() => {
+    const cv = document.createElement('canvas').getContext('2d')!
+    const base = (e: HTMLElement) => {
+      const t = [...e.childNodes].find(n => n.nodeType === 3 && n.textContent!.trim()) ?? e.querySelector('*')!.firstChild!
+      const rg = document.createRange(); rg.selectNodeContents(t)
+      const s = getComputedStyle(t.parentElement!)
+      cv.font = `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`
+      return rg.getBoundingClientRect().bottom - cv.measureText(t.textContent!).fontBoundingBoxDescent
+    }
+    const row = document.querySelector<HTMLElement>('[data-testid="bal-row-bane"]')!
+    const app = base(row.querySelector<HTMLElement>('.bp-ro')!)
+    return { app, kinds: ['CCL', 'PL', 'CL'].map(k => {
+      const pd = document.querySelector<HTMLElement>(`[data-testid="bal-opd-${k}-bane"]`)!
+      return { k, text: pd.textContent, fig: base(pd.parentElement!.querySelector<HTMLElement>('.bp-ro')!), pd: base(pd) }
+    }) }
+  })
+  for (const k of g.kinds) {
+    expect(k.text, `${k.k} has a pending figure`).toMatch(/^−/)
+    expect(Math.abs(k.pd - k.fig), `${k.k}: the amber ${k.text} on its figure's line (${k.pd} against ${k.fig})`).toBeLessThanOrEqual(0.5)
+    expect(Math.abs(k.fig - g.app), `${k.k}: its figure on App bal's line`).toBeLessThanOrEqual(0.5)
+  }
 })

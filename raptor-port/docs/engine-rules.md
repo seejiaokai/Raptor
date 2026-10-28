@@ -2745,6 +2745,78 @@ flying line's day starts), `src/leavewar/oilworkstart-published.test.ts` and
 input claims), `src/ui/oilconfirm.test.tsx` (the ask sheet),
 `counters.test.ts` (earned OIL in the balance and the OIL BAL figure).
 
+## The leave year (M5a) — a person's LVE, CCL, FCL, PL, EL and CL figures (owner D1479, D1224, D1235, D1473, D1474, D1489, D1490, D1492 — 28 Oct 26)
+
+**This section SUPERSEDES, for LVE, CCL, FCL, PL, EL and CL, the older reading "a balance is opening + granted − drawn"**
+(`counters.ts balanceOf`, `known-gaps.md`, the older Leave War specs — marked superseded here, M5a, 28 Oct 26). **OIL is
+unchanged:** it is never typed (D1209, D1255); its balance is still the OIL tracker's ledger — opening + earned + awarded +
+corrections − taken − expired — and its `opening:` rows stay bare numbers. The build spec is
+`docs/superpowers/plans/2026-10-28-lw-m5a-build-spec.md` §1; the engine is `src/leavewar/engine/leaveyear.ts` (pure: no
+store, no clock — the caller hands in the app's today, `memberToday`) and its test `leaveyear.test.ts` is the spec's §1.5
+worked table, one `it` a row (the walk's and the tests' expected figures). What is stored is `data-schema.md` §A person's
+leave figures.
+
+**The typed figure and its snapshot.** A person's figure is the one last TYPED from the official leave app: the figure
+(`amount`), for LVE its carried-forward part (`cf`), the DAY it was typed — **the app's today, `memberToday`, never the
+machine's clock** — who typed it, and the SNAPSHOT: his approved leave of that kind as it stood at that moment, a day or
+a half at a time (`date`, `am | pm | day`), never a total. Typing again only corrects the figure and starts the count
+afresh (a save of either LVE box writes the whole row afresh).
+
+**How a leave's days are counted.** By the war's one charging rule (`engine/charge.ts chargedDays`: a weekend or holiday
+charges nothing, except a pilot's run of 15 or more days of LL / OL, 19 Sep 26), run on three stated sets of leave: the
+approved leave now, the approved leave of the snapshot, and the approved leave with the pending added (so a pending bid
+that lengthens a pilot's run past 15 days changes only War bal and Pending, never App bal). **A date no period covers is
+charged by the plain rule** — a weekday 1, a half .5, Saturday and Sunday 0, no holidays known (reading 17; before M5a
+such a date charged nothing). **Both the snapshot and today's leave are charged NOW**, by today's periods, holidays and
+runs: leave already approved when he typed never moves App bal; leave approved since is charged as the war now counts it,
+so a holiday later found on one of its days gives that day back.
+
+**The formula (spec §1.3).** *delta* for a date = what the approved leave now charges on it, less what the snapshot
+charges there NOW for both (negative where a leave was shortened, moved off or deleted). *net(y)* = the sum of *delta*
+over the dates of year *y*; **a date before the typing year counts in the typing year** (a change to an earlier year's
+leave moves the figure now). Grants dated on or after the day typed still count (as days given back in their year).
+- **CCL, FCL, PL, EL, CL:** App bal = typed − every net. **No years, no roll-over** — on 1 Jan they stand as they are
+  (D1489); the new figure is typed from the official app.
+- **LVE has two pools** — carried forward *CF* and this year's *AN* (= typed − cf). **The year's rule**, for any year *y*
+  with *C* the carried forward at its start (*cf* in the typing year, the roll-over's *new CF* after): net(y) ≥ 0 comes off
+  CARRIED-FORWARD FIRST (D1224) — *CF = max(0, C − net)*, *AN = AN − max(0, net − C)*; net(y) < 0 (days given back)
+  leaves *CF = C* and takes the days off *AN*, i.e. **days given back first cancel days taken that year (the netting)
+  and only the rest go back to THIS YEAR'S leave, never to carried forward** (reading 18 — after 1 Jan the war can show up
+  to that many days more than the official app, until App bal is typed again).
+- **Each 1 Jan after the typing year, up to this year (D1235, D1474):** the carried-forward left goes; *new CF = max(0,
+  AN)* (nothing if below zero); *new AN = the grade's days held on that 1 Jan + min(0, AN)* — what was overdrawn still
+  comes off (−2 + 33 = 31). **No grade on that day adds 0** (the roll-over still happens). **A grade, or a grade's "+ days",
+  changed after 1 Jan counts from the NEXT 1 Jan (D1490):** the grade and its days as they held ON that 1 Jan are read
+  (`gradeDaysOn`); a deleted grade adds nothing from the day it went and keeps what past 1 Jans added (reading 11).
+- **Days in a year after this one** (leave approved now for next January) come off now (D1479), **from the total only** —
+  App bal = *CF + AN − Σ net(y) for y after this year*; this year's "incl. N carried fwd" is untouched, since those days
+  use next year's carried forward (D1218, D1473). A later-year day already approved when he typed is in the snapshot, so
+  it is inside the typed figure and never comes off again.
+- **Never typed** reads as typed 0 (cf 0) on **1 Jan of the year of the war's earliest period** (reading 4; this year when
+  no period exists) with an empty snapshot — it moves if an earlier period is created later; each 1 Jan since adds his
+  grade's days and his approved leave since comes off. An old `opening:` row of these kinds (demo data, D56) is read the
+  same way, its number as the figure — never skipped, and never a loop from the year 1970 (the years run from the start year
+  to this year plus the last year holding any of his leave).
+- **The year turns on the app's today** (`memberToday`), so the roll-over, "this year" and the typing day all agree with the
+  clock the rest of the app uses.
+
+**Pending, War bal, taken.** **War bal** = the same formula run with his pending leave counted as approved; **Pending =
+App bal − War bal** (D1479 — so the tile always adds up), both every year, in days never requests (D1217). In one corner
+the two readings part: a pending day in a year whose carried-forward has since ended costs nothing more, so it shows no
+pending figure though the request still waits (reading 19, spec row 8). **"Taken"** (the LVE tile's "3 taken") = his
+approved LVE days charged on dates from 1 Jan of this year up to today (a leave ahead is not taken). **MED** = medical
+days (ATT C, HL, OML) this year up to today, calendar days, a half .5. **Days taken** (the Balances page, D1484) = for each
+column (LL, OL, OIL, CCL, FCL, PL, EL, CL, MED, CSE, OD), its days on dates inside the View period up to today, approved
+only — the leave kinds as charged (weekends free), **MED, CSE and OD as calendar days**, since none of them is charged
+against a balance (a two-week course reads 14 — reading 20). The grid's second line beside a name is his LL and OL days in
+the View period, approved and pending, as charged (`annualUsedIn`).
+
+**One engine, every reader.** `personFigures` (and `daysTaken`, `annualUsedIn`) take the leave as an input — approved,
+pending and an optional what-if set — so the bid windows' "what is left if I place this" and the below-zero ask (D418) read
+the same engine as the person window, the Balances page, the grid's figures, My leave and Approvals' LVE BAL. The store's
+bridge is `leavewar/state/store.ts leaveFiguresOf(pid, whatIf?)`. Tests: `leaveyear.test.ts` (the §1.5 worked table and the
+rest of §1), `leavewar/m5a-gate.test.ts` (who may write).
+
 ## Editable rules (Logic tab)
 
 `VCONF` (20 numbers plus reportText) + `SHIFT_HARD` (6 gradings), admin-only.
