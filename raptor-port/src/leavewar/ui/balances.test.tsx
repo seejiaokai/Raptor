@@ -25,6 +25,7 @@ import { BalancesPage, FigBox, figWords, saveTypedFigure } from './BalancesPage'
 import { deleteAsk } from './GradesSheet'
 import { Topbar } from './Chrome'
 import { lwPage, setApprMode, setBalancesUp, takeLwAsk } from './lwnav'
+import { readFileSync } from 'node:fs'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -607,5 +608,22 @@ describe('the fresh read of the M5a fixes', () => {
       fireEvent.keyDown(typeIn('w-box', '17.3'), { key: 'Enter' })
       expect(screen.getByTestId('w-box-err').style.transform).toBe('translateX(-64px)')   // its right 4 inside the window's 860
     } finally { spy.mockRestore() }
+  })
+})
+
+/* THE DRAWING DIFFERENCES HE PICKED BACK TO THE DRAWING (29 Oct 26, D1493) that live in the stylesheet — jsdom lays nothing
+   out, so these read the rules; the browser tests measure them (e2e/leavewar.spec.ts "M5a drawing D / E"). */
+describe('the M5a drawing differences (D1493)', () => {
+  const css = readFileSync('src/leavewar/ui/balances.css', 'utf8').replace(/\r\n/g, '\n').replace(/\/\*[\s\S]*?\*\//g, '')
+  const rule = (sel: string) => {
+    const at = css.indexOf(`${sel} {`)
+    return at < 0 ? '' : css.slice(at, css.indexOf('}', at))
+  }
+  it('D: a name\'s callsign is set left in its puck, as on the grid (the page\'s button would centre it)', () => {
+    expect(rule('.bp-name')).toMatch(/text-align:\s*left/)
+  })
+  it('E: a read-only figure and the amber pending figure after it share one baseline, on a desktop and a phone', () => {
+    expect(rule('.bp-ro + .bp-opd'), 'the desktop\'s cell').toMatch(/vertical-align:\s*baseline/)
+    expect(rule('.bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd'), 'the phone\'s pair').toMatch(/align-self:\s*baseline/)
   })
 })

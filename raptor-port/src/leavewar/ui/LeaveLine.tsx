@@ -61,8 +61,10 @@ export function LeaveLine({ personId, callsign = '', code, state, from, to, days
       <span className={`ll-state${stateCls}`}>{STATE_WORD[state]}</span>
     </div>
   )
+  /* a line that takes the grid there is `ll-tap` — never `go`, the schedule's flying-wave block (scheduler.css `.go`), whose
+     rounded card, side margins and cyan bar it wore until his pick of 29 Oct 26 (D1493: flat rows, as drawn) */
   return (
-    <div className={`ll-row${state === 'deleted' ? ' gone' : ''}${onGo ? ' go' : ''}${dot ? ' new' : ''}`} data-testid={testid} onClick={onGo}>
+    <div className={`ll-row${state === 'deleted' ? ' gone' : ''}${onGo ? ' ll-tap' : ''}${dot ? ' new' : ''}`} data-testid={testid} onClick={onGo}>
       <span>{dot && <i className="m5-dot" data-testid={testid ? `${testid}-dot` : undefined} aria-label="New since your last visit" />}</span>
       <span className={`c k-${kindOf(code)} s-${look} ll-box`}>{boxText(code)}</span>
       {/* the keyboard's way in is the dates, a button where the line goes somewhere (the row itself takes the pointer) */}

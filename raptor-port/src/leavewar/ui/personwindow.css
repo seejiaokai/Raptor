@@ -10,8 +10,9 @@
    real link, where the window stands. */
 #page-leavewar {
   /* ---------------------------------------------------------------- where it stands (built — the drawing's placing) */
-  /* on a desktop docked at the grid's right edge, 560 wide (PersonWindow.tsx writes its left, top and height from the grid
-     card, as the drawing placed it); dragged by its title (Sheet.tsx — D641), the grid working behind it */
+  /* on a desktop docked at the grid's right edge, 560 wide, just under the app's top bar (PersonWindow.tsx writes its left
+     from the grid card and its top from the bar, as the drawing m5a-p2-desk-drawn stands it — D1493); dragged by its title
+     (Sheet.tsx — D641), the grid working behind it */
   .bidsheet[data-testid="person-window"] {
     width: 560px; max-width: calc(100vw - 24px); bottom: auto; transform: translate(var(--lw-dx, 0px), var(--lw-dy, 0px));
     overflow: auto;
@@ -53,8 +54,8 @@
     .m5-clip { display: inline-flex; vertical-align: -1px; padding: 0 2px; margin-left: 6px; border: 0; background: none; color: #8a96a3; cursor: pointer; }
     .m5-none { padding: 8px 2px; color: #8a96a3; font-size: 13px; }
     /* (built) a line that takes the grid there: the row is the pointer's, its dates the keyboard's */
-    .ll-row.go { cursor: pointer; }
-    .ll-row.go:hover { background: rgba(255, 255, 255, .03); }
+    .ll-row.ll-tap { cursor: pointer; }
+    .ll-row.ll-tap:hover { background: rgba(255, 255, 255, .03); }
     .ll-go { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-align: left; }
     .ll-go:focus-visible, .m5-clip:focus-visible, .m5-yr:focus-visible, .r17-oil:focus-visible { outline: 2px solid #3bc6e8; outline-offset: 2px; border-radius: 4px; }
 

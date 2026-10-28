@@ -77,10 +77,13 @@ function Ro({ v, sm, testid }: { v: number; sm?: boolean; testid?: string }) {
 
 const PANEL = () => document.querySelector<HTMLElement>('[data-testid="person-window"]')
 
-/* WHERE IT DOCKS on a desktop (the drawing's own placing — full-m5a-person.mjs `scene`): its right edge 8px inside the grid
-   card's, its top 64px under the card's (under the grid's own bar), never above the app's top bar; 560 wide; as tall as
-   what is in it down to 10px off the screen's foot. The grid card is hidden behind the Balances and Approvals pages, so
-   there the Leave War's page stands in for it. */
+/* WHERE IT DOCKS on a desktop (the drawing `full/m5a/m5a-p2-desk-drawn` — D1480, D1493): its right edge 8px inside the grid
+   card's, its top 8px under the app's top bar, over the Leave War's tab row; 560 wide; as tall as what is in it down to
+   10px off the screen's foot, so his leave lines stand in view. (The drawing script docked it 64 under the card's top
+   clamped to the screen's — its page was scrolled, the card's top above the screen, so the window stood just under the
+   bar; built from the formula on a page at rest, it stood 64 under the grid card at y 200 and its last lines ran below the
+   screen's foot — his pick of 29 Oct 26 puts it where the picture has it.) The grid card is hidden behind the Balances
+   and Approvals pages, so there the Leave War's page stands in for it. */
 function dock(p: HTMLElement): void {
   const grid = document.querySelector('#page-leavewar .mx-outer')?.parentElement
   let r = grid?.getBoundingClientRect()
@@ -88,7 +91,7 @@ function dock(p: HTMLElement): void {
   if (!r || !r.width) return
   const bar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
   const w = Math.min(560, window.innerWidth - 24)
-  const top = Math.round(Math.max(r.top + 64, bar + 8))
+  const top = Math.round(bar + 8)
   p.style.left = `${Math.round(Math.max(12, Math.min(r.right, window.innerWidth) - 8 - w))}px`
   p.style.top = `${top}px`
   p.style.bottom = 'auto'

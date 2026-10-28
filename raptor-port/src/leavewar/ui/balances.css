@@ -60,7 +60,9 @@
   .bp-zwho .puck { flex: none; }
 
   /* the name: the schedule's own puck, a tap opening his person window (reading 23) */
-  .bp-name { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; border-radius: 5px; }
+  /* its callsign set left in the puck, as the grid's own name pucks are (D1493 — the drawing m5b-b1-desk): a button centres
+     its words, and the puck's name inherited it */
+  .bp-name { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 5px; }
   .bp-puck { display: inline-flex; pointer-events: none; }
 
   /* a box: "you can type this" — its edge 3.4:1 against the tile (round 14) */
@@ -95,6 +97,10 @@
   .bp-pend { color: #c9d1d9; }
   .bp-pend.pd { color: #F2C879; }
   .bp-opd { display: inline-block; min-width: 34px; margin-left: 5px; text-align: left; font: 500 13.5px system-ui; color: #F2C879; font-variant-numeric: tabular-nums; vertical-align: middle; }
+  /* beside a figure read only (a member's row, or anyone's while locked) the amber pending figure stands on that figure's
+     line, its baseline — set middle it stood 2.6px low there (D1493 — walker A against m5c-c2-desk-locked-cut); beside a box
+     it keeps the middle of the box */
+  .bp-ro + .bp-opd { vertical-align: baseline; }
   .bp-oil { display: inline-flex; align-items: center; padding: 0; border: 0; background: none; color: #e6edf3; font: inherit; cursor: pointer; }
   .bp-oil .ch { color: #5fd0e6; margin-left: 6px; font-weight: 700; }
 
@@ -160,6 +166,9 @@
   .bp-oc .bp-fb { flex: none; }
   .bp-oc .bp-bx { width: 40px; flex: none; }
   .bp-oc .bp-opd { margin-left: 0; min-width: 30px; font-size: 11.5px; }
+  /* read only, the phone's figure and its smaller amber pending figure share a baseline, not a middle (D1493 — the middle set
+     the amber 1px above the figure's line) */
+  .bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd { align-self: baseline; }
   /* read only, round 19b */
   .bp-row .bp-ro { min-width: 0; padding-right: 0; height: 30px; font: 700 14px system-ui; }
   .bp-oc .bp-ro { width: 40px; justify-content: flex-end; }

@@ -8019,3 +8019,122 @@ test('M5a fix read 2: on a phone, with the slim bar up, the person window stands
   expect(g.top, `the window's top (${g.top}) under the bar's foot (${g.bar}) + 8`).toBeGreaterThanOrEqual(g.bar + 7.5)
   expect(g.foot, `its foot (${g.foot}) above the slim bar (${g.slim})`).toBeLessThanOrEqual(g.slim - 7.5)
 })
+
+/* ---- THE M5a DRAWING DIFFERENCES HE PICKED BACK TO THE DRAWING (29 Oct 26, D1493 — "All as recommended") ---------------
+   Each check measures what the drawing shows; each failed on build 134caf8b4. */
+
+/* A: the desktop person window opened 64 under the grid card's top (y 200 at his PC's 1536 × 864), so its last leave lines
+   stood below the screen's foot; the drawing `full/m5a/m5a-p2-desk-drawn` has it just under the page's top bar, over the tab
+   row, at the grid card's right edge, every line in view. Opened from a name on the grid and from My leave, at his PC's size
+   and a full-HD screen's. */
+test('M5a drawing A (D1493): on a desktop the person window opens just under the top bar, at the grid’s right edge, its leave in view', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop’s docked window (a phone centres it — its own tests)')
+  await lwRole(page, 'admin')
+  /* scoped to the signed-in man (Ranger), as the app always is (openLeaveWar's note), so My leave is drawn */
+  await page.evaluate(() => (window as any).lwSetViewer('bane'))
+  for (const vp of [{ width: 1536, height: 864 }, { width: 1920, height: 1080 }]) {
+    await page.setViewportSize(vp)
+    await page.waitForTimeout(200)
+    for (const from of ['the grid', 'My leave']) {
+      if (from === 'the grid') await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+      else await page.getByTestId('my-leave').click()
+      await expect(page.getByTestId('person-window')).toBeVisible()
+      await page.waitForTimeout(250)
+      const g = await page.evaluate(() => {
+        const r = (q: string) => document.querySelector<HTMLElement>(q)!.getBoundingClientRect()
+        const w = document.querySelector<HTMLElement>('[data-testid="person-window"]')!
+        const wr = w.getBoundingClientRect()
+        const card = document.querySelector<HTMLElement>('#page-leavewar .mx-outer')!.parentElement!.getBoundingClientRect()
+        return { top: wr.top, right: wr.right, foot: wr.bottom, bar: r('.topbar').bottom, cardR: card.right, vh: innerHeight, inner: w.scrollHeight - w.clientHeight }
+      })
+      const at = `${vp.width}×${vp.height}, from ${from}`
+      expect(g.top, `${at}: its top (${g.top}) just under the bar's foot (${g.bar}), as drawn`).toBeGreaterThanOrEqual(g.bar)
+      expect(g.top, `${at}: its top (${g.top}) no lower than the bar's foot + 12`).toBeLessThanOrEqual(g.bar + 12)
+      expect(Math.abs(g.right - (g.cardR - 8)), `${at}: its right edge (${g.right}) 8 inside the grid card's (${g.cardR})`).toBeLessThanOrEqual(1)
+      expect(g.foot, `${at}: its foot on the screen`).toBeLessThanOrEqual(g.vh)
+      expect(g.inner, `${at}: every line of his leave in view, nothing to scroll inside it`).toBeLessThanOrEqual(1)
+      await page.getByTestId('pw-close').click()
+      await expect(page.getByTestId('person-window')).toHaveCount(0)
+    }
+  }
+})
+
+/* B: every line of the person window that takes the grid there drew as a rounded card with a cyan bar down its left edge,
+   10px in from the sides — the schedule's flying-wave block, whose class it shared; the drawing has flat rows between thin
+   lines, only the dot marking a new one. The day panel's own line is untouched. */
+test('M5a drawing B (D1493): the person window’s leave lines are flat rows between thin lines', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  const rows = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid="pw-list"] .ll-row')].map(l => {
+    const s = getComputedStyle(l), list = l.parentElement!.getBoundingClientRect(), b = l.getBoundingClientRect()
+    return { radius: s.borderTopLeftRadius, left: s.borderLeftWidth, top: s.borderTopWidth + ' ' + s.borderTopColor, dl: b.left - list.left, dr: list.right - b.right, bg: s.backgroundColor }
+  }))
+  expect(rows.length, 'his leave is listed').toBeGreaterThan(2)
+  for (const r of rows) {
+    expect(r.radius, 'no rounded card').toBe('0px')
+    expect(r.left, 'no bar down its left edge').toBe('0px')
+    expect(r.top, 'a thin line over it, the drawing’s #222a33').toBe('1px rgb(34, 42, 51)')
+    expect([r.dl, r.dr], 'the row runs the list’s full width').toEqual([0, 0])
+    expect(r.bg, 'no fill').toBe('rgba(0, 0, 0, 0)')
+  }
+})
+
+/* D: on the Balances page each name's callsign stood in the middle of its puck (the page's button centred it); the drawing
+   `full/m5a/m5b-b1-desk` sets it left, as the grid's own name pucks are — one tab away. */
+test('M5a drawing D (D1493): on the Balances page a name’s callsign is set left in its puck, as on the grid', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  /* how far the callsign stands in from where its name box lets it start (its left padding), in the box's own measure — the
+     phone's grid is drawn a step out, so its puck is smaller on screen than the Balances page's */
+  const inset = (sel: string) => page.evaluate(sel => {
+    const nm = document.querySelector<HTMLElement>(sel)!
+    const rg = document.createRange(); rg.selectNodeContents(nm)
+    const b = nm.getBoundingClientRect(), scale = b.width / nm.offsetWidth
+    return (rg.getBoundingClientRect().left - b.left) / scale - parseFloat(getComputedStyle(nm).paddingLeft)
+  }, sel)
+  const grid = await inset('[data-testid="row-bane"] .whoedit .puck .nm')
+  expect(Math.abs(grid), `the grid's callsign at its name's start (${grid})`).toBeLessThanOrEqual(0.5)
+  await openBalancesPage(page)
+  const bal = await inset('[data-testid="bal-name-bane"] .puck .nm')
+  expect(Math.abs(bal), `the callsign ${bal}px in from its name's start, as on the grid`).toBeLessThanOrEqual(0.5)
+})
+
+/* E: in a member's locked row, read only, the amber pending figure after CCL, PL and CL stood 2.6px below its figure on a
+   desktop (walker A, against `m5c-c2-desk-locked-cut`); every figure in the row stands on one line — the same baseline. */
+test('M5a drawing E (D1493): a member’s locked row has its amber pending figures on the line of their figures', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  const lock = page.getByTestId('bal-lock')
+  if ((await lock.getAttribute('aria-checked')) !== 'true') await lock.click()
+  await expect(lock).toHaveAttribute('aria-checked', 'true')
+  await page.getByTestId('lw-tab-grid').click()
+  await lwRole(page, 'member')
+  await page.evaluate(() => (window as any).lwSetViewer('bane'))
+  await openBalancesPage(page)
+  await expect(page.getByTestId('bal-locked')).toBeVisible()
+  await expect(page.locator('[data-testid="bal-row-bane"] input')).toHaveCount(0)
+  /* a text's baseline: its run's box foot less its font's descent (the run's box is the font's own ascent + descent) */
+  const g = await page.evaluate(() => {
+    const cv = document.createElement('canvas').getContext('2d')!
+    const base = (e: HTMLElement) => {
+      const t = [...e.childNodes].find(n => n.nodeType === 3 && n.textContent!.trim()) ?? e.querySelector('*')!.firstChild!
+      const rg = document.createRange(); rg.selectNodeContents(t)
+      const s = getComputedStyle(t.parentElement!)
+      cv.font = `${s.fontWeight} ${s.fontSize} ${s.fontFamily}`
+      return rg.getBoundingClientRect().bottom - cv.measureText(t.textContent!).fontBoundingBoxDescent
+    }
+    const row = document.querySelector<HTMLElement>('[data-testid="bal-row-bane"]')!
+    const app = base(row.querySelector<HTMLElement>('.bp-ro')!)
+    return { app, kinds: ['CCL', 'PL', 'CL'].map(k => {
+      const pd = document.querySelector<HTMLElement>(`[data-testid="bal-opd-${k}-bane"]`)!
+      return { k, text: pd.textContent, fig: base(pd.parentElement!.querySelector<HTMLElement>('.bp-ro')!), pd: base(pd) }
+    }) }
+  })
+  for (const k of g.kinds) {
+    expect(k.text, `${k.k} has a pending figure`).toMatch(/^−/)
+    expect(Math.abs(k.pd - k.fig), `${k.k}: the amber ${k.text} on its figure's line (${k.pd} against ${k.fig})`).toBeLessThanOrEqual(0.5)
+    expect(Math.abs(k.fig - g.app), `${k.k}: its figure on App bal's line`).toBeLessThanOrEqual(0.5)
+  }
+})
