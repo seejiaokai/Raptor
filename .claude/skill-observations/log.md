@@ -2676,3 +2676,32 @@ its value and never in innerText.
 **Suggested improvement:** In the overnight skill's morning-report step, re-check each listed drawing difference against a picture of the LAST build before it goes to him, and mark any that a later fix closed.
 
 **Principle:** A list of findings is dated by the build it was taken from; before putting it to someone for a decision, re-verify each item against the latest build.
+### Observation 739: A drawing's placement formula is not the spec — its picture is
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** Building the drawing check (D1494) and proving it on the Leave War M5a build. (Numbered past 736–738, held on `claude/leave-war-m5a-screens-ced9d7`.)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** "From the picture to the build" — the drawing script handed to the builder
+
+**Issue:** The approved drawing placed a docked window by a formula on the page's scroll (the card's top + 64, floored at 0). The drawing script had scrolled the page first, so the picture shows the window under the top bar. The builder copied the drawing script's formula verbatim; in the drawing's own scroll position build and drawing match, but with the page at its top the built window stands 136px lower. A by-eye check of the build in its usual state saw the gap; the build's author, reading the script, believed it matched.
+
+**Suggested improvement:** In mockups-on-the-real-app.md §"From the picture to the build", add: a placement a drawing script computes from the live page (scroll, a neighbour's box) is a means of drawing, not a requirement; the builder takes the PICTURE's place and the drawing note says in words where the part stands ("under the top bar, whatever the scroll"). And the drawing check gives every docked or floating part a second state with the page at its top.
+
+**Principle:** A drawing's code reproduces one picture; what the picture means must be written in words, or a builder will copy the code's accidents.
+
+### Observation 740: Drawings drawn on the real app can be replayed exactly — record their measures as they are drawn
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** Building the drawing check (D1494).
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** step 6 — "commit the injection script beside the pictures"
+
+**Issue:** Replaying the committed M5a drawing scripts on the build they were drawn on (served from its built folder inside the test browser, the clock and saved world the scripts already fix) reproduced every one of the 33 approved pictures it re-drew, pixel for pixel. A preload module (`node --import`) that wraps the browser's screenshot measured each named part at the exact moment of the approved picture — no drawing script changed. The drawing thus yields numbers (boxes, colours, where words sit), which the by-eye comparison never had.
+
+**Suggested improvement:** In mockups-on-the-real-app.md step 6, add: draw with the drawing check's recorder beside the script (`raptor-port/scripts/drawcheck/record.mjs`, a part list naming what the build must match), so the record and its whole-screen picture are committed with the drawing; an old drawing is replayed on its own build and its replay proved pixel-identical before its record is trusted.
+
+**Principle:** A picture that was drawn by a script on the real thing is a measurement waiting to be taken; take it when it is drawn, and prove the replay before trusting it.

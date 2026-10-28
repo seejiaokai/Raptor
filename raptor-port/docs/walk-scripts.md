@@ -1,7 +1,7 @@
 # Walk scripts, walkers' briefs and break tests — how they are written, and what each trap has cost
 
 **Tier 2: read before writing a walk script, a walker's brief or a break-test list; every walker's brief names this file.**
-**A walker reads §3 to §7; §1, §2, §8 and §9 are the host's.**
+**A walker reads §3 to §7; §1, §2, §8, §9 and §10 are the host's.**
 The method is `docs/bug-check-order.md` (§4 the fan-out, §5 the re-walk, §7 the walk, §8 the break test) and a walk's
 size is `docs/walk-ledger.md`. This file is the HOW. Every line is here because a walk, a re-walk or a break test once
 reported something untrue — a fault that was the script's own, or a pass that proved nothing. The drivers are in
@@ -288,6 +288,47 @@ list.
   test. And a browser test of an act that shares a code path with its own set-up takes its "before" from a value read
   BEFORE the set-up.
 
-## 10. The drawing check — D1494 (to build)
+## 10. The drawing check (his D1494, 29 Oct 26; a standing step of every build with a drawing, D1495)
 
-His ruling D1494 (29 Oct 26): a script measures a built screen against its approved drawing — each named part's place, size, colour and text alignment, at his iPhone's and a desktop's size — lists every difference over about 2px with marked side-by-side pictures, and fails until each is fixed or put to him (D1426). Until it is built and its wording approved, a screen with a drawing is compared beside it by eye, as D1424 requires. Filed as [DRAWING-CHECK].
+The script is `scripts/drawcheck/` — `record.mjs`, `check.mjs`, `compare.mjs`, a part list per screen under `specs/`,
+and `selftest.mjs`. The worked example is M5a's (`specs/lw-m5a.mjs`). When it is run, and what a difference leads to:
+`docs/bug-check-order.md` §7.0 and §7.10.
+
+- **Record the drawing when it is drawn**, from `raptor-port/`: `DRAWCHECK_SPEC=scripts/drawcheck/specs/<screen>.mjs
+  DRAWCHECK_APPROVED=<the approved pictures' folder> DRAWCHECK_DIST=<the drawing's build> DRAWCHECK_DRAWN_ON='<branch>
+  at <commit>' [DRAWCHECK_ORIGIN=<the address the drawing script opens; default http://localhost:4197>] node --import
+  ./scripts/drawcheck/record.mjs <drawing script>`, the drawing script's own pictures sent to a scratch folder, never the
+  approved one. At each picture the part list names, it saves every part's measure and a whole-screen picture beside
+  the drawing (`docs/mock/<area>/drawcheck/`). Each record says whether its replay drew the approved picture (no pixel
+  more than 24 colour levels off); a record that differs, or that was never compared, is not a record of the approved
+  drawing — find why, or record it again, before trusting it. The drawing's build is the commit it was drawn on, built
+  as §8 says.
+- **Name the parts a person would point at** — the window, a row, a switch and its lit half, a column of figures, a
+  name — each with its drawing selector, its build selector and what is compared. A part inside another is measured
+  from it (`rel`), so a row that moved down the page does not make every figure in it "move". A figure with no box of
+  its own is judged by where its words are drawn (`words-place`), never by an invisible box's width.
+- **Bring the build to the drawing's own world** — the same people, leave and clock, the same lock and switches: each
+  state's `reach` in the part list brings the build there through the same doors the drawing's stage script used
+  (M5a's: the bids by the localhost bridge, approve and refuse pressed in the real window), and returns a sentence when
+  it cannot — the state is then NOT CHECKED. A drawing taken with the page scrolled says nothing about a window docked
+  by the page's position: give every docked or floating part a second state measured against the same record
+  (`drawing.record: '<state>'`) with the page at its top (M5a's window stood 136px lower there, and matched in the
+  drawing's own scroll).
+- **Run it after every change**, from `raptor-port/`: `npm run build`, then `node scripts/drawcheck/check.mjs
+  scripts/drawcheck/specs/<screen>.mjs --dist dist --out docs/img/handpass/<date>-drawcheck-<screen>` (each run empties
+  its `--out` folder: give the run whose pictures go to him a folder of its own, §6). Red while any difference is
+  unexplained, any state has no drawing record, or any state could not be reached (its `reach` returned why); page
+  errors are listed but do not turn it red. Open the pictures before reporting a difference: a part off the screen is
+  listed, not pictured.
+- **A difference in a rule with no visible effect** (an edge of no width, a see-through fill) is the comparing's
+  fault: fix it in `compare.mjs`, add that look to `selftest.mjs` as one that must not count, and name it in the
+  closing report — never drop the part or its check to turn the run green.
+- **Each difference goes to him side by side (D1426)** — the report's pictures are that page's pictures. One he keeps
+  goes into the part list's `accepted` list — `{ state, part, check, why }`, `why` naming his ruling — with `check` set
+  to the one kind of difference he kept (place, width, fill…), so a new difference in the same part still turns the
+  check red (the script refuses an entry without it); the report still shows the kept one, marked. A kept place or
+  size also carries the value the build had (`build`), so a further move of that part is a new difference (added with D1497, 29 Oct 26 — the agent's own way of keeping what he kept).
+- **After any change to the comparing**, run `node scripts/drawcheck/selftest.mjs` (it feeds the comparing each kind
+  of difference M5a showed, and each look that must not count, and fails on a miss); after a change to the measure,
+  the recorder or the runner, re-run the check on M5a's build at 794346689 and compare its report with the committed
+  one.

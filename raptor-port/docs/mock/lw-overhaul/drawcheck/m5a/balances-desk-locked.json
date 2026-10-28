@@ -1,0 +1,272 @@
+{
+ "state": "balances-desk-locked",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+  "shot": "m5c-c2-desk-locked"
+ },
+ "recorded": "2026-10-28T22:30:05.385Z",
+ "drawnOn": "main at 230aa3b85 (the build the M5a drawings were drawn on)",
+ "checkout": "",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 1.25,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "ranger-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 21,
+    "y": 436,
+    "w": 1494,
+    "h": 40
+   },
+   "ink": {
+    "x": 36,
+    "y": 445.5,
+    "w": 1235.8,
+    "h": 20
+   },
+   "text": "Ranger IP Senior pilot +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "tr.me"
+  },
+  "ranger-app": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 394.8,
+    "y": 441.5,
+    "w": 54,
+    "h": 28
+   },
+   "ink": {
+    "x": 423.4,
+    "y": 446.5,
+    "w": 15.4,
+    "h": 18
+   },
+   "text": "15",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.ro"
+  },
+  "ranger-pend": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 591.3,
+    "y": 436,
+    "w": 71.8,
+    "h": 40
+   },
+   "ink": {
+    "x": 626.7,
+    "y": 446.5,
+    "w": 26.5,
+    "h": 18
+   },
+   "text": "−2.5",
+   "typed": false,
+   "look": {
+    "fill": "rgba(155, 89, 255, 0.07)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 200, 121)",
+     "0px none rgb(242, 200, 121)",
+     "1px solid rgb(29, 36, 44)",
+     "0px none rgb(242, 200, 121)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "right",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.pend.pd"
+  },
+  "ranger-pend-line": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 591.3,
+    "y": 436,
+    "w": 71.8,
+    "h": 40
+   },
+   "ink": {
+    "x": 626.7,
+    "y": 446.5,
+    "w": 26.5,
+    "h": 18
+   },
+   "text": "−2.5",
+   "typed": false,
+   "look": {
+    "fill": "rgba(155, 89, 255, 0.07)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 200, 121)",
+     "0px none rgb(242, 200, 121)",
+     "1px solid rgb(29, 36, 44)",
+     "0px none rgb(242, 200, 121)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "right",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.pend.pd"
+  },
+  "ranger-ccl": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 794.1,
+    "y": 441.5,
+    "w": 44,
+    "h": 28
+   },
+   "ink": {
+    "x": 820.4,
+    "y": 446.5,
+    "w": 7.7,
+    "h": 18
+   },
+   "text": "3",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.ro.sm"
+  },
+  "ranger-ccl-pend": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 843.1,
+    "y": 446.5,
+    "w": 34,
+    "h": 18
+   },
+   "ink": {
+    "x": 843.1,
+    "y": 446.5,
+    "w": 16.8,
+    "h": 18
+   },
+   "text": "−1",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 200, 121)",
+     "0px none rgb(242, 200, 121)",
+     "0px none rgb(242, 200, 121)",
+     "0px none rgb(242, 200, 121)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 200, 121)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.opd"
+  }
+ },
+ "approved": {
+  "picture": "m5c-c2-desk-locked.png",
+  "identical": null,
+  "differs": "no approved picture given to compare (DRAWCHECK_APPROVED)"
+ }
+}

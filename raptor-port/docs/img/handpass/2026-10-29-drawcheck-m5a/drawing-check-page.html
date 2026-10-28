@@ -1,0 +1,112 @@
+<title>Drawing Check</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* layout: one reading column; a decision card first, then the proof as numbered picture cards */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --fg: #15191e; --muted: #5b6672; --line: #dde2e8;
+  --accent: #0e7fa3; --pink: #d81b72; --gold: #b88a00; --ok: #1f8a4c; --warn: #b5651d;
+  --display: "IBM Plex Sans Condensed", system-ui, sans-serif; --body: "IBM Plex Sans", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1116; --panel: #151b22; --fg: #e8edf2; --muted: #93a0ad; --line: #26303a;
+  --accent: #3bc6e8; --pink: #ff4fa0; --gold: #ffc400; --ok: #4fc285; --warn: #f0a35a; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d1116; --panel: #151b22; --fg: #e8edf2; --muted: #93a0ad; --line: #26303a;
+  --accent: #3bc6e8; --pink: #ff4fa0; --gold: #ffc400; --ok: #4fc285; --warn: #f0a35a; color-scheme: dark }
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--body); }
+main { max-width: 860px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 22px; }
+h1 { font: 700 30px/1.15 var(--display); margin: 0; text-wrap: balance; letter-spacing: .01em; }
+h2 { font: 700 20px/1.25 var(--display); margin: 8px 0 0; text-wrap: balance; }
+h3 { font: 600 16px/1.3 var(--body); margin: 0; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--muted); }
+.ask { background: var(--panel); border: 2px solid var(--accent); border-radius: 12px; padding: 18px 20px; display: grid; gap: 10px; }
+.ask .k { font: 600 12px/1 var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.ask ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.tally { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.tally div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.tally b { display: block; font: 700 24px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.tally span { color: var(--muted); font-size: 13px; }
+.cards { display: grid; gap: 18px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 10px; min-width: 0; }
+.card header { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.tag { font: 600 12px/1 var(--body); padding: 4px 8px; border-radius: 999px; border: 1px solid currentColor; white-space: nowrap; }
+.tag.fix { color: var(--warn); } .tag.keep { color: var(--muted); } .tag.new { color: var(--pink); } .tag.ok { color: var(--ok); }
+.card img { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: zoom-in; }
+.card .why { color: var(--muted); font-size: 14px; }
+.legend { font-size: 13px; color: var(--muted); }
+.legend i { font-style: normal; font-weight: 700; } .legend .p { color: var(--pink); } .legend .g { color: var(--gold); }
+details { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; }
+summary { cursor: pointer; font-weight: 600; }
+blockquote p + p { margin-top: 8px; }
+blockquote { margin: 10px 0 0; padding: 10px 14px; border-left: 3px solid var(--line); color: var(--fg); font-size: 14px; }
+#zoom { position: fixed; inset: 0; background: rgba(0,0,0,.88); display: grid; place-items: center; padding: 12px; z-index: 20; overflow: auto; }
+#zoom img { max-width: none; width: min(1600px, 200vw); height: auto; }
+a:focus-visible, summary:focus-visible, img:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<main>
+  <h1>The drawing check</h1>
+  <p class="lede">A script that measures a built screen against its approved drawing and lists every difference, each with the drawing and the build side by side. It is built and was tested on the Leave War's M5a screens as they were before this morning's fixes, on your PC's size and your iPhone's.</p>
+
+  <section class="ask" aria-labelledby="ask-h"><span class="k" id="ask-h">Nothing waiting for you</span><p>Answered on 29 Oct: the check is a standing step of every build with a drawing (D1495); every mock-up is drawn in the app's own design (D1496); on live M5a the two window places stay as built and the iPhone's locked Balances page goes back to its drawing, filed to fix (D1497). Below: what it found on M5a before the fixes.</p></section>
+
+  <h2>What it found on M5a</h2>
+  <div class="tally">
+    <div><b>6 of 6</b><span>differences you had been shown, all caught</span></div>
+    <div><b>Grades</b><span>window measured as matching its drawing, as found by eye</span></div>
+    <div><b>2 new</b><span>differences nobody had seen</span></div>
+  </div>
+  <p class="legend">In each picture: left the approved drawing, right the build, below the two laid over each other. <i class="p">Pink</i> rings the drawing's place, <i class="g">yellow</i> the build's. Tap a picture to enlarge it.</p>
+
+  <div class="cards">
+    <article class="card">
+      <header><h3>1 · The person window on a computer sits 136 points lower than drawn</h3><span class="tag fix">being fixed (D1493)</span></header>
+      <p class="why">With the page scrolled, as in the drawing, it matched. With the page at its top it stood lower and its last lines fell below the screen. The build had copied the drawing script's way of placing the window, which depends on the scroll. The check now looks at both.</p>
+      <img src="person-desk-top--window.png" alt="Person window: drawing under the top bar, build 136 points lower" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>2 · Leave lines built as rounded cards with a blue bar</h3><span class="tag fix">being fixed (D1493)</span></header>
+      <p class="why">The drawing has flat rows between thin lines. The check names the rounded corners, the 3-point blue edge, and the line 20 points narrower.</p>
+      <img src="person-desk--leave-line.png" alt="First leave line: flat row in the drawing, rounded card in the build" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>3 · The Balances | Days taken switch is 47 points narrower</h3><span class="tag keep">kept as built (D1493)</span></header>
+      <p class="why">Listed and marked as kept by your ruling, so it no longer stops the check.</p>
+      <img src="balances-desk--switch.png" alt="Switch: wider in the drawing, narrower in the build" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>4 · Names centred in their pucks instead of set left</h3><span class="tag fix">being fixed (D1493)</span></header>
+      <p class="why">On the Balances page, computer and iPhone alike.</p>
+      <img src="balances-desk--ranger-name.png" alt="Ranger's name set left in the drawing, centred in the build" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>5 · A member's locked amber figure 2.6 points low</h3><span class="tag fix">being fixed (D1493)</span></header>
+      <p class="why">Found on the computer's locked Balances row (CCL's pending figure). On the iPhone it sits on its line.</p>
+      <img src="balances-desk-locked--ranger-ccl-pend.png" alt="CCL pending figure slightly lower in the build" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>6 · Days taken's heading has a hyphen, not a dash</h3><span class="tag keep">kept as built (D1493)</span></header>
+      <img src="taken-desk--taken-head.png" alt="Heading JAN – DEC 26 in the drawing, JAN - DEC 26 in the build" tabindex="0">
+    </article>
+    <article class="card">
+      <header><h3>New · On the iPhone's locked Balances page the figures sit 10 points further right</h3><span class="tag new">new, for you to choose</span></header>
+      <p class="why">Ranger's read-only figures (15, and CCL's 3) touch the right edge of their column, where the drawing keeps a small margin. His row also stands 6 points lower on the page. My recommendation: put both back to the drawing in the M5a fixes.</p>
+      <img src="balances-phone-locked--ranger-app.png" alt="App bal figure 15 further right in the build than in the drawing" tabindex="0">
+    </article>
+  </div>
+
+</main>
+<div id="zoom" hidden><img alt=""></div>
+<script>
+const z = document.getElementById('zoom'), zi = z.querySelector('img')
+const open = img => { zi.src = img.src; zi.alt = img.alt; z.hidden = false }
+document.querySelectorAll('.card img').forEach(img => {
+  img.addEventListener('click', () => open(img))
+  img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(img) } })
+})
+z.addEventListener('click', () => { z.hidden = true })
+document.addEventListener('keydown', e => { if (e.key === 'Escape') z.hidden = true })
+</script>

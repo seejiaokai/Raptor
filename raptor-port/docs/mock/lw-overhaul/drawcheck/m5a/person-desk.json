@@ -1,0 +1,353 @@
+{
+ "state": "person-desk",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5a-person.mjs",
+  "shot": "m5a-p2-desk-drawn"
+ },
+ "recorded": "2026-10-28T22:28:51.643Z",
+ "drawnOn": "main at 230aa3b85 (the build the M5a drawings were drawn on)",
+ "checkout": "",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 1.25,
+ "scroll": {
+  "x": 0,
+  "y": 240
+ },
+ "parts": {
+  "window": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 948,
+    "y": 64,
+    "w": 560,
+    "h": 675
+   },
+   "ink": {
+    "x": 971,
+    "y": 85,
+    "w": 521,
+    "h": 619.5
+   },
+   "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal 15 −2.5 12.5 incl. 2 carried fwd · till 31 Dec OIL 0 › MED 0 days CCL 3 Pending −1 War bal 2 FCL 5 PL 2 Pending −0.5 War bal 1.5 EL 4 CL 1 Pending −1 War bal 0 Leave 2026 and ahead ▾ LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending 1",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet.m5p.zz-d"
+  },
+  "title-bar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 961,
+    "y": 75,
+    "w": 534,
+    "h": 37
+   },
+   "ink": {
+    "x": 982.7,
+    "y": 85,
+    "w": 508.3,
+    "h": 17
+   },
+   "text": "Ranger ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet-hd"
+  },
+  "lve-tile": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 969,
+    "y": 159,
+    "w": 309.2,
+    "h": 109
+   },
+   "ink": {
+    "x": 978,
+    "y": 170.5,
+    "w": 168.3,
+    "h": 90
+   },
+   "text": "LVE 3 taken App bal Pending War bal 15 −2.5 12.5 incl. 2 carried fwd · till 31 Dec",
+   "typed": false,
+   "look": {
+    "fill": "rgb(21, 27, 34)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.r17-t.r17-lve"
+  },
+  "year": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1353.3,
+    "y": 398,
+    "w": 131.7,
+    "h": 30
+   },
+   "ink": {
+    "x": 1364.3,
+    "y": 404,
+    "w": 109.7,
+    "h": 17
+   },
+   "text": "2026 and ahead ▾",
+   "typed": false,
+   "look": {
+    "fill": "rgb(17, 22, 28)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(58, 68, 82)",
+     "1px solid rgb(58, 68, 82)",
+     "1px solid rgb(58, 68, 82)",
+     "1px solid rgb(58, 68, 82)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(230, 237, 243)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.lw-btn.m5-yr"
+  },
+  "leave-line": {
+   "found": true,
+   "count": 8,
+   "box": {
+    "x": 969,
+    "y": 440,
+    "w": 518,
+    "h": 34
+   },
+   "ink": {
+    "x": 998.4,
+    "y": 448.5,
+    "w": 478.4,
+    "h": 18
+   },
+   "text": "LL Mon 19 – Wed 21 Jan 3 Approved",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(34, 42, 51)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.ll-row"
+  },
+  "leave-box": {
+   "found": true,
+   "count": 8,
+   "box": {
+    "x": 987,
+    "y": 446.5,
+    "w": 34,
+    "h": 22
+   },
+   "ink": {
+    "x": 998.4,
+    "y": 450,
+    "w": 11.1,
+    "h": 15
+   },
+   "text": "LL",
+   "typed": false,
+   "look": {
+    "fill": "rgba(242, 200, 110, 0.22)",
+    "image": "",
+    "edge": [
+     "0px none rgb(255, 241, 207)",
+     "0px none rgb(255, 241, 207)",
+     "0px none rgb(255, 241, 207)",
+     "0px none rgb(255, 241, 207)"
+    ],
+    "corners": [
+     "4px",
+     "4px",
+     "4px",
+     "4px"
+    ],
+    "shadow": "rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset",
+    "color": "rgb(255, 241, 207)",
+    "align": "start",
+    "justify": "center",
+    "font": "700 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.c.k-ll.s-a.ll-box"
+  },
+  "leave-dates": {
+   "found": true,
+   "count": 8,
+   "box": {
+    "x": 1029,
+    "y": 448.5,
+    "w": 370.8,
+    "h": 18
+   },
+   "ink": {
+    "x": 1029,
+    "y": 448.5,
+    "w": 127.2,
+    "h": 18
+   },
+   "text": "Mon 19 – Wed 21 Jan",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.ll-dates"
+  },
+  "leave-state": {
+   "found": true,
+   "count": 8,
+   "box": {
+    "x": 1423,
+    "y": 449.5,
+    "w": 64,
+    "h": 16
+   },
+   "ink": {
+    "x": 1423,
+    "y": 449.5,
+    "w": 53.8,
+    "h": 16
+   },
+   "text": "Approved",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.ll-state"
+  }
+ },
+ "approved": {
+  "picture": "m5a-p2-desk-drawn.png",
+  "identical": true
+ }
+}
