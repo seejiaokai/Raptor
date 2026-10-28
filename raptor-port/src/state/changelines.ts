@@ -17,6 +17,11 @@
      panel, the OIL tracker — one kind of record since [OIL-AWARD-IS-A-GRANT], 29 Sep 26), and every other credit or
      correction, each on its own day. Automatic credits never make a line (they are the schedule's, not a person's). A
      member placing his own bid is not a line (D263 names decisions).
+   · A PERSON'S LEAVE FIGURES (the Leave War overhaul's M5a — the build spec §3 "The change history", B6, reading 8): a
+     typed figure (`lw.balance`) — "LVE balance 18 → 20", the "from" the running figure shown before the save (the
+     gesture's note), "LVE carried fwd 2 → 3" where that changed; a grade (`lw.grade`) — "Grade Junior pilot → Senior
+     pilot"; each filed under "Leave War · <him>" and read with who did it beside it ("· Ranger"). The grades list
+     (`lw.grades`, the note's own words) and the lock (`lw.balLock`, "Balances locked for members") under the day.
    · QUALS (`people/<pid>`, Fable F5 / Astra DP-07): the callsign, CAT, seat, ground crew, SANS, SXO, a qualification
      tick, archived, deleted — dated the day it was made (a roster change is on no schedule day).
    · A PUBLISH OR A WITHDRAWAL (Fable F3 / Astra DP-07): read from the command's own boundary — the version ids carry the
@@ -153,7 +158,8 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
       for (const p of inn) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · added${tail}`, base({ sub: p, one: 1 }))
       for (const p of out) logAction(null, `${cs(p)} · ${what} ${spanWords(sa)} · taken out${tail}`, base({ sub: p, one: 1 }))
     } }
-  if (!same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · type`, base({ from: String(b.type), to: String(a.type) }))
+  /* (marked `fld: 'kind'` — see THE MACHINE MARKS below — so a man's own window can tell a leave re-typed by someone else) */
+  if (!same(a.type, b.type)) logAction(null, `${who} · ${spanWords(sa)} · type`, base({ from: String(b.type), to: String(a.type), fld: 'kind' }))
   if (!same(sa, sb)) logAction(null, `${who} · ${what}${tail} · dates`, base({ from: spanWords(sb), to: spanWords(sa) }))
   /* the times as a reader sees them — stored times rewritten under an all-day record are no change to it ([HIST-PHONE-HIDE]
      walk: a Save that changed nothing wrote "times: all day → all day") */
@@ -198,7 +204,21 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
    the board's catch-all command diffs every input against the last committed state, so the filing that moved is in its
    envelope and inputLines says it — once. A second writer for that door doubled every such line (Fable's final read, F1). */
 
-/* ---- the Leave War ---- */
+/* ---- the Leave War ----
+   THE MACHINE MARKS (the M5a build spec §3, finding 12). The person window shows a man, on his own window, each change
+   SOMEONE ELSE made to his leave since he last opened it — a leave deleted (struck through for that visit), moved, or its
+   kind changed (D1460) — and it must find those lines by a mark, never by parsing their words (sync.ts alsoSince refuses
+   to, and so must every reader). Each such line carries, on the saved row (engine/editlog.ts ELogRow):
+     · `sub`   — whose leave it is (his person id);
+     · `fld`   — what happened: 'deleted' | 'moved' | 'kind' ('withdrawn' is a member's own bid taken back, M4);
+     · `itype` — the leave's code as it stands after (for 'deleted' the code that went: 'LL', '*LL', 'CCL' …);
+     · `date` (and `end`) — the days it concerns now; for 'moved' also `wdate` (and `wend`) — the days it left;
+     · `from` / `to` — for 'kind', the code before and after ('LL' → 'OL');
+     · `pid`   — who made the change (written by logAction itself), `t` — when (ms).
+   Who reads them: a row is "someone else's change to his leave" when `sub === <his id>`, `fld` is one of the three, and
+   `String(pid) !== <his id>`. The lines are: a pending bid deleted, moved or re-typed on the war (warLines); approved
+   leave deleted or moved on the war (warInputLines — `iid` the Input, `days`/`wdays` its exact days where not one run);
+   an Input's kind changed on the Inputs page or the war (inputLines — 'kind', `iid` the Input). */
 const cellParts = (id: string) => {
   const iDate = id.lastIndexOf(':'), rest = id.slice(0, iDate), iPid = rest.lastIndexOf(':')
   return { date: id.slice(iDate + 1), pid: rest.slice(iPid + 1) }
@@ -229,10 +249,14 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
   /* a request that left one day and reached another is a MOVE (the record keeps its id) */
   for (const [id, g] of gone) {
     const c = came.get(id)
-    if (c && g.rec.kind === 'request') { came.delete(id); say(c, `moved from ${dayWord(g.date)}`, { wdate: g.date }); continue }
+    if (c && g.rec.kind === 'request') { came.delete(id); say(c, `moved from ${dayWord(g.date)}`, { wdate: g.date, fld: 'moved', itype: String(c.rec.code || '') }); continue }
     if (g.rec.kind === 'request') {
       if (approvedFor.has(`${g.pid}|${g.date}`)) continue          // approved — the Input's own line says it
-      if (admin) say(g, 'deleted')
+      /* ITS KIND CHANGED (D1460): the old request goes and one of another code comes on the same day — one line, "kind
+         changed LL → OL", never "deleted" (by an admin; a member re-typing his own bid is no decision, as before) */
+      const retyped = admin ? [...came.entries()].find(([, x]) => x.rec.kind === 'request' && x.pid === g.pid && x.date === g.date && String(x.rec.code) !== String(g.rec.code)) : undefined
+      if (retyped) { came.delete(retyped[0]); say(retyped[1], 'kind changed', { fld: 'kind', itype: String(retyped[1].rec.code || ''), from: String(g.rec.code || ''), to: String(retyped[1].rec.code || '') }); continue }
+      if (admin) say(g, 'deleted', { fld: 'deleted', itype: String(g.rec.code || '') })
       else if (actorPid === g.pid && g.rec.state === 'pending' && !cameOn.has(`${g.pid}|${g.date}`)) say(g, 'bid withdrawn', { fld: 'withdrawn', itype: String(g.rec.code || '') })
     }
   }
@@ -242,6 +266,9 @@ function warLines(env: CommitEnvelope, approvedFor: Set<string>, backToBid: Set<
     if (c.rec.kind === 'request') { if (!backToBid.has(`${c.pid}|${c.date}`) && c.rec.state !== 'pending') say(c, STATE_WORD[c.rec.state] || c.rec.state); continue }
   }
   for (const { was, now } of both) {
+    /* a request re-typed in place, keeping its id — the same kind line (by anyone but its own member) */
+    if (now.rec.kind === 'request' && String(was.rec.code) !== String(now.rec.code) && (admin || actorPid !== now.pid))
+      say(now, 'kind changed', { fld: 'kind', itype: String(now.rec.code || ''), from: String(was.rec.code || ''), to: String(now.rec.code || '') })
     if (now.rec.kind === 'request' && was.rec.state !== now.rec.state) say(now, STATE_WORD[now.rec.state] || now.rec.state)
   }
 }
@@ -346,13 +373,13 @@ function warInputLines(env: CommitEnvelope): WarInputs {
       const fromDays = [...new Set([...gone, ...toDays.filter(d => g.was.has(d))])].sort()
       const was = at(fromDays), now = at(toDays)
       logAction(null, `${who} moved on the Leave War · ${runsWords(fromDays)} → ${runsWords(toDays)}`,
-        { ...base, date: now.date, end: now.end, wdate: was.date, wend: was.end, days: exact(toDays), wdays: exact(fromDays) })
+        { ...base, fld: 'moved', date: now.date, end: now.end, wdate: was.date, wend: was.end, days: exact(toDays), wdays: exact(fromDays) })
     } else if (gone.length) {
       const st = gone.map(d => came.get(`${g.p}|${d}`)).find(x => x != null), was = at(gone)
       logAction(null, st != null
         ? `${who} approval taken back — ${STATE_WORD[st] || st} · ${runsWords(gone)}`
         : `${who} approved leave deleted on the Leave War · ${runsWords(gone)}`,
-        { ...base, date: was.date, end: was.end, days: exact(gone) })
+        { ...base, ...(st != null ? {} : { fld: 'deleted' }), date: was.date, end: was.end, days: exact(gone) })
     } else {
       const now = at(fresh)
       logAction(null, `${who} approved on the Leave War · ${runsWords(fresh)}`, { ...base, date: now.date, end: now.end, days: exact(fresh) })
@@ -454,6 +481,54 @@ function noteLines(c: Change): void {
   for (const id of now) if (!was.has(id)) logAction(null, `${item} · ${csOf(id)} added`, at)
 }
 
+/* ---- a person's leave figures, his grade, the grades list and the lock (M5a — the build spec §3, B6, reading 8) ---- */
+/* a figure as the Leave War writes it: whole, or a half .5 (D1246) */
+const figWord = (n: unknown) => (typeof n === 'number' && Number.isFinite(n) ? String(Math.round(n * 2) / 2) : '')
+const isoDay = (d: unknown) => (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : localToday())
+type BalNote = { k?: string; from?: { amount?: number; cf?: number } | null; to?: { amount?: number; cf?: number } }
+function balanceLines(c: Change, env: CommitEnvelope): void {
+  if (!c.after) return                       // a typed figure is only ever deleted by an Undo, which writes its own line
+  const id = String(c.id), i = id.lastIndexOf(':')
+  const pid = id.slice(0, i), kind = id.slice(i + 1)
+  const a: any = c.after
+  let note: BalNote = {}
+  try { note = JSON.parse(env.detail || 'null') || {} } catch { /* a command with no note: read the record itself */ }
+  const to = note.to ?? { amount: a.amount, ...(typeof a.cf === 'number' ? { cf: a.cf } : {}) }
+  /* "from" is the RUNNING figure he saw before the save (the gesture's note — the build spec §1.1), never the figure last
+     typed, which may be months old */
+  const from = note.from ?? null
+  const at = (extra: any = {}) => ({ date: isoDay(a.day), sect: 'abs', sub: pid, fld: 'balance', itype: kind, ...extra })
+  const head = `Leave War · ${cs(pid)} · `
+  const cfMoved = kind === 'LVE' && typeof to.cf === 'number' && (from ? (from.cf ?? 0) !== to.cf : to.cf !== 0)
+  /* the figure's line — always but where the save changed only its carried-forward part (then that line alone) */
+  if (!from) logAction(null, `${head}${kind} balance →`, at({ to: figWord(to.amount) }))
+  else if (from.amount !== to.amount || !cfMoved) logAction(null, `${head}${kind} balance`, at({ from: figWord(from.amount), to: figWord(to.amount) }))
+  if (cfMoved) {
+    if (from && typeof from.cf === 'number') logAction(null, `${head}${kind} carried fwd`, at({ fld: 'carried', from: figWord(from.cf), to: figWord(to.cf) }))
+    else logAction(null, `${head}${kind} carried fwd →`, at({ fld: 'carried', to: figWord(to.cf) }))
+  }
+}
+function gradeLines(c: Change, env: CommitEnvelope): void {
+  if (!c.after) return
+  const pid = String(c.id)
+  let note: { from?: string; to?: string } = {}
+  try { note = JSON.parse(env.detail || 'null') || {} } catch { /* no note: the line still says the grade changed */ }
+  const hist: any[] = Array.isArray((c.after as any).hist) ? (c.after as any).hist : []
+  const last = hist[hist.length - 1]
+  logAction(null, `Leave War · ${cs(pid)} · Grade`, { date: isoDay(last && last.from), sect: 'abs', sub: pid, fld: 'grade', from: String(note.from ?? '—'), to: String(note.to ?? '—') })
+}
+/* the squadron's grades list (its note: "add Ops B", "rename Ops A → Ops B", "Senior pilot +36", "move Ops A", "delete
+   Ops A") and the one lock — no man's, so filed under the day they were changed ("The day") */
+function configLines(env: CommitEnvelope): void {
+  if (!env.changes.some(c => c.collection === 'lw.config')) return
+  if (env.type === 'lw.grades') logAction(null, `Leave grades · ${env.detail || 'changed'}`, { date: localToday(), sect: 'day' })
+  if (env.type === 'lw.balLock') {
+    const ch: any = env.changes.find(c => c.collection === 'lw.config')
+    const on = !!(ch && ch.after && ch.after.balLock)
+    logAction(null, `Balances ${on ? 'locked' : 'unlocked'} for members`, { date: localToday(), sect: 'day' })
+  }
+}
+
 /* ---- Quals ---- */
 const PERSON_FIELDS: Record<string, string> = {
   cs: 'callsign', q: 'CAT', seat: 'seat', pers: 'ground crew', san: 'SANS', sxo: 'SXO', archived: 'archived', deleted: 'deleted',
@@ -541,9 +616,18 @@ export function logReversed(entry: { label?: string; forward?: Change[] }, dir: 
   if (!sorted.length) {
     /* an Undo line only where its change wrote a line of its own (the change-recording plan §11.9, walker A2-F5): the
        roster, the war's ledger and its postings write theirs dated today (changeLinesFor below), so their Undo does too;
-       a Leave War ⚙ setting, opening or closing dates, a war's dates, a balance, the OIL policy and every settings record write none
-       — until `[HIST-PER-PAGE]` gives Admin, Logic and the war's settings a place — so their Undo writes none either */
-    const wrote = (entry.forward || []).some(c => c.collection === 'people' || c.collection === 'lw.ledger' || c.collection === 'lw.postouts')
+       a Leave War ⚙ setting, opening or closing dates, a war's dates, the OIL policy and every settings record write none
+       — until `[HIST-PER-PAGE]` gives Admin, Logic and the war's settings a place — so their Undo writes none either.
+       Since M5a a typed figure, a grade, the grades list and the lock write theirs (balanceLines, gradeLines,
+       configLines — the build spec §3), so their Undo and Redo do too; any other change to the war's ⚙ record still
+       writes none (the grades list and the lock are told from it by what moved) */
+    const lwOwn = (c: Change) => {
+      if (c.collection === 'lw.balance' || c.collection === 'lw.grade') return true
+      if (c.collection !== 'lw.config') return false
+      const b: any = c.before || {}, a: any = c.after || {}
+      return !same(b.grades, a.grades) || !!b.balLock !== !!a.balLock
+    }
+    const wrote = (entry.forward || []).some(c => c.collection === 'people' || c.collection === 'lw.ledger' || c.collection === 'lw.postouts' || lwOwn(c))
     if (wrote) logAction(null, what, { date: localToday(), sect: 'day' })
     return
   }
@@ -579,6 +663,8 @@ export function changeLinesFor(env: CommitEnvelope): void {
       if (c.collection === 'inputs' && c.id !== '__order') { if (!wi.said.has(c)) inputLines(c, env, war) }
       else if (c.collection === 'lw.ledger') ledgerLines(c)
       else if (c.collection === 'lw.postouts') postoutLines(c, env)
+      else if (c.collection === 'lw.balance') balanceLines(c, env)
+      else if (c.collection === 'lw.grade') gradeLines(c, env)
       else if (c.collection === 'people') personLines(c, env)
       else if (c.collection === 'plan' && String(c.id).startsWith('pp:')) noteLines(c)
     }
@@ -590,7 +676,7 @@ export function changeLinesFor(env: CommitEnvelope): void {
       if (h && env.changes.some(c => c.collection === 'sched.mutes'))
         logAction(h.di, `Warning · ${h.words}`, { sect: 'day', from: h.hidden ? 'flagged' : 'hidden', to: h.hidden ? 'hidden' : 'flagged again' })
     }
-    if (war) warLines(env, wi.approvedFor, wi.backToBid)
+    if (war) { warLines(env, wi.approvedFor, wi.backToBid); configLines(env) }
     else crossLines(env)
     boundaryLines(env)
   } finally {

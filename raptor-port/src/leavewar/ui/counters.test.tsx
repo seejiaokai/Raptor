@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { setLwOnScreen } from '../state/screen'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
-import { closeDates, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
+import { closeDates, getState, grantTo, selectWar, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
 import { FigureCell } from './FigureCell'
@@ -67,7 +67,11 @@ describe('the counter column', () => {
     expect(top('ramp')).toBe('26')
   })
 
-  it('stacks the days taken under the balance, LL amber then OL red, no minus, nothing for zero', () => {
+  /* REWRITTEN FOR M5a (the build spec §1.4, finding 12): the second line was LL amber and OL red, of all time; it is now
+     ONE amber number — his LL and OL days in the View period, approved and pending, as charged (the drawings' Ranger
+     "12.5 / 7.5"); the top his War bal, the bids already off it (D1153). RAMP's OL on 1 Jan is a public holiday and
+     charges nothing, so his three bids make it 3. */
+  it('stacks his LL and OL days of the View period under his War bal — one amber number, no minus, nothing for zero', () => {
     setRole('admin')
     setCell('ramp', '2026-03-02', 'LL')
     setCell('ramp', '2026-03-03', 'LL')
@@ -75,9 +79,8 @@ describe('the counter column', () => {
     render(<Matrix />)
     expect(top('ramp')).toBe('23')
     const used = screen.getByTestId('bal-ramp').querySelectorAll('.fu b')
-    expect([...used].map(b => b.textContent)).toEqual(['2', '1'])
+    expect([...used].map(b => b.textContent)).toEqual(['3'])
     expect(used[0]!.className).toBe('amber')
-    expect(used[1]!.className).toBe('red')
     // a person with nothing taken shows no used line at all
     expect(screen.getByTestId('bal-tata').querySelectorAll('.fu b')).toHaveLength(0)
   })
@@ -209,13 +212,17 @@ describe('the counter column', () => {
   // refused; a USED number never carries one (the column title's own minus,
   // and the colour, already say it is spent). RESET is the seed's standing
   // example: opens at 2 annual, less four LL days pending in the 2027 war
-  // (a balance counts across every war, not just the one on screen) = −2;
-  // OL taken is 0, so it draws no `.fu` entry at all.
+  // (a balance counts across every war, not just the one on screen) = −2.
+  // Since M5a the second line counts the VIEW period's LL and OL alone (the build spec §1.4): none in Jan – Dec 26, so no
+  // `.fu` entry at all; with Jan – Dec 27 in view, his four — never with a minus.
   it('paints a negative balance red, with its minus, and never a used number with one', () => {
     render(<Matrix />)
     const box = screen.getByTestId('bal-reset')
     expect(box.querySelector('.fb')!.textContent).toBe('-2')
     expect(box.querySelector('.fb')!.classList.contains('neg')).toBe(true)
+    expect(usedOf('reset')).toEqual([])
+    act(() => selectWar(getState().wars[1]!.period.id))
+    expect(screen.getByTestId('bal-reset').querySelector('.fb')!.textContent).toBe('-2')
     expect(usedOf('reset')).toEqual(['4'])
   })
 })

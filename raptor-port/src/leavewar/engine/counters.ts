@@ -476,13 +476,7 @@ export function figureLines(f: Figure, ctx: FigureCtx, personId: string): Figure
 }
 export interface FigureLines { top: number; used: { label: string; tone: Tone; value: number }[] }
 
-/** A figure an admin can credit from the grid: every balance that names a
- *  counter — OIL included, whose grant is the tracker's own record. Totals
- *  (and headers, which are not figures) never. ONE predicate: the gesture, the
- *  bar and their tests read it, never a literal list of ids. Deliberately NOT
- *  the person sheet's `settable` (that excludes OIL, because SET moves an
- *  opening figure and OIL's opening belongs to the tracker). */
-export const selectableFigure = (f: Figure | undefined): f is Figure & { counter: CounterName } => !!f?.counter
+/* (`selectableFigure` — which figures the grid's drag down a column could credit — went with that drag, D1491; M5a) */
 
 /** OIL AWARDED to a person — every positive OIL ledger entry, the one kind of
  *  hand-given OIL (D400, D402). */

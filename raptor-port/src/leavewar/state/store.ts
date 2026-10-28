@@ -2740,6 +2740,29 @@ export function installDemoCounters(rules: readonly ManningRule[]): void {
   notify()
 }
 
+/**
+ * THE DEMO'S TYPED FIGURES AND GRADES (the Leave War overhaul's M5a — the build spec §8: "the demo seeded with typed
+ * figures, grades, a man with no grade, pending and approved leave either side of the typed date, so the walk has them").
+ * A third boot-only writer beside `installDemoCounters` and `installDemoOil`, under the same contract: no command, no
+ * persist, no undo step — installDemoWorld lays it on a fresh demo boot only (a shared store's first boot never sees it),
+ * keyed by the people's REAL ids, after the re-key, and `persistBootWorld` then saves it with the rest of the dressed
+ * world as rows (`lw.balance`, `lw.grade` — lwRecords). A figure or a grade the store already holds is left as it is.
+ * The lock is left off (`balLock` absent reads false): the walk turns it on.
+ */
+export function installDemoBalances(extra: { balances: Balances; gradeHist: GradeHists }): void {
+  const balances: Balances = { ...state.balances }
+  for (const [pid, row] of Object.entries(extra.balances)) {
+    const have = balances[pid] ?? {}
+    const add: Partial<Record<BalKind, TypedBal>> = {}
+    for (const [k, t] of Object.entries(row)) if (isBalKind(k) && t && !have[k]) add[k] = t
+    if (Object.keys(add).length) balances[pid] = { ...have, ...add }
+  }
+  const gradeHist: GradeHists = { ...state.gradeHist }
+  for (const [pid, hist] of Object.entries(extra.gradeHist)) if (!gradeHist[pid]) gradeHist[pid] = hist.map(e => ({ ...e }))
+  state = withCurrent({ ...state, balances, gradeHist })
+  notify()
+}
+
 /** Set which role the interface is being used as. Since the Raptor merge the
  *  one production caller is resetSession (../../state/store.ts), which
  *  derives it from the Raptor login on every login and logout — the
@@ -4797,23 +4820,32 @@ export function figureCtxOf(): FigureCtx {
 
 /** What a leave FILL would do to the balance it spends — the one question both leave sheets ask before taking someone
  *  below zero (the one-day sheet, a day or a picked range; the drag-selection sheet since his ruling D418, 29 Sep 26,
- *  "Drag asks too"). `before` and `after` are the SAME figure the balance column shows — `balanceOf`, or for OIL the
- *  tracker's FIFO-and-expiry ledger — read of the wars as they are and as the fill would leave them (`withFill`: each
- *  day rebuilt the way `setCell` changes it, the other half kept). Only the days the store would write count
- *  (`cellProblem` refuses the rest). null for leave that spends no balance. The sheets ask when `after` is below zero
- *  AND below `before` (`belowzero.ts goesBelow`) — a fill that spends nothing never asks, even of a man already in the
- *  red (Astra's final read, F4). */
+ *  "Drag asks too"), and the "left" each leave button shows. `before` and `after` are the SAME figure the grid shows
+ *  beside his name: since M5a his War bal of the kind the code spends (engine/leaveyear.ts, read through
+ *  `leaveFiguresOf` — the build spec §1.4, §1.6), before and with the fill as its what-if (each day's undecided request on
+ *  the half it takes replaced, the other half kept — the store's own fill rule). OIL is not a typed kind (D1209) and stays
+ *  the tracker's FIFO-and-expiry ledger, read of the wars as the fill would leave them (`withFill`). Only the days the
+ *  store would write count (`cellProblem` refuses the rest). null for leave that spends no balance. The sheets ask when
+ *  `after` is below zero AND below `before` (`belowzero.ts goesBelow`) — a fill that spends nothing never asks, even of a
+ *  man already in the red (Astra's final read, F4). */
 export function balanceAfterFill(personId: string, dates: readonly string[], code: string): { counter: CounterName; before: number; after: number } | null {
   const spends = leaveCodeOf(code)?.spends
   if (!spends) return null
   const counter = spends.counter
-  const ctx = figureCtxOf()
-  const read = (sources: FigureCtx['sources']) => counter === 'oil'
-    ? oilLedgerOf({ ...ctx, sources }, personId).balance
-    : balanceOf(ctx.openings, ctx.ledger, sources, personId, counter, ctx)
-  const before = read(ctx.sources)
   const writes = dates.filter(d => !cellProblem(personId, d, code))
-  return { counter, before, after: writes.length ? read(withFill(ctx.sources, personId, writes, code)) : before }
+  if (counter === 'oil') {
+    const ctx = figureCtxOf()
+    const read = (sources: FigureCtx['sources']) => oilLedgerOf({ ...ctx, sources }, personId).balance
+    const before = read(ctx.sources)
+    return { counter, before, after: writes.length ? read(withFill(ctx.sources, personId, writes, code)) : before }
+  }
+  const kind = BAL_KINDS.find(k => KIND_COUNTER[k] === counter)
+  if (!kind) return null
+  const before = leaveFiguresOf(personId).kinds[kind].war
+  if (!writes.length) return { counter, before, after: before }
+  const cell = parseCell(code)
+  const after = leaveFiguresOf(personId, { dates: writes, code: cell?.type ?? code, portion: cell?.portion ?? 'full' }).kinds[kind].war
+  return { counter, before, after }
 }
 
 /** WHAT A BID WOULD DO TO MANNING — the bid windows' day line (D1144, D1213; M3): each day of `dates` the store would

@@ -246,8 +246,30 @@ function eventLabel(entry: UndoEntry): string {
   const name = d && typeof d.text === 'string' && d.text.trim() ? `the event “${d.text.trim()}”` : 'an event'
   return `${entry.type === 'lw.event.remove' ? 'removing ' : ''}${name}${on}`
 }
+/* A TYPED FIGURE (the Leave War overhaul's M5a — the build spec §3, finding 12): the step's own note (`entry.detail`, the
+   gesture's `{k, from, to}` — `from` the running figure he saw before the save) says what it did, in the change
+   history's words: "LVE balance 18 → 20", a first typing "LVE balance → 20", a change of the carried-forward part alone
+   "LVE carried fwd 2 → 3" — never "an opening balance", which is an OIL figure's old record */
+const halfWord = (n: unknown) => (typeof n === 'number' && Number.isFinite(n) ? String(Math.round(n * 2) / 2) : '')
+function balanceLabel(entry: UndoEntry): string {
+  let note: any = null
+  try { note = JSON.parse(entry.detail || 'null') } catch { /* no note: the plain words below */ }
+  const ch = entry.forward.find(c => c.collection === 'lw.balance')
+  const kind = String(note?.k || (ch ? String(ch.id).slice(String(ch.id).lastIndexOf(':') + 1) : '') || 'leave')
+  const to = note?.to, from = note?.from
+  if (!to) return `a ${kind} balance`
+  if (!from) return `${kind} balance → ${halfWord(to.amount)}`
+  if (from.amount === to.amount && kind === 'LVE' && typeof to.cf === 'number' && (from.cf ?? 0) !== to.cf)
+    return `${kind} carried fwd ${halfWord(from.cf ?? 0)} → ${halfWord(to.cf)}`
+  return `${kind} balance ${halfWord(from.amount)} → ${halfWord(to.amount)}`
+}
 function lwLabel(entry: UndoEntry): string {
   if (entry.type === 'lw.open') return openLabel(entry) || 'the open dates on the Leave War'
+  if (entry.type === 'lw.balance') return balanceLabel(entry)
+  /* a person's grade, the squadron's grades list, the members' lock (M5a) — each by its name, never "a Leave War setting" */
+  if (entry.type === 'lw.grade') { const ch = entry.forward.find(c => c.collection === 'lw.grade'); return `${poss(ch ? nameOf(String(ch.id)) : null)}grade` }
+  if (entry.type === 'lw.grades') return 'the grades list'
+  if (entry.type === 'lw.balLock') return 'the balance lock'
   if (entry.type.startsWith('lw.holiday.')) return holidayLabel(entry)
   if (entry.type.startsWith('lw.event.')) return eventLabel(entry)
   if (TYPE_PHRASE[entry.type]) return TYPE_PHRASE[entry.type]

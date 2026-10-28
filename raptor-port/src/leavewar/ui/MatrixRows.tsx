@@ -7,8 +7,9 @@
    `PersonMonth` per month") — a prop added here is a repaint to argue for; `matrix-rows-memo.test.tsx` pins the row's. */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, boxText, canEditRow, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
-import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, recordsAt, reqRunKey } from '../state/store'
+import { addDays, boxText, canEditRow, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx, type FigureLines } from '../engine'
+import { leaveFiguresOf, leaveWorldOf, moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, recordsAt, reqRunKey } from '../state/store'
+import { annualUsedIn, type PersonFigures } from '../engine/leaveyear'
 import type { RequestRec } from '../engine/warrecs'
 import { FigureCell, show } from './FigureCell'
 import { NamePuck } from './NamePuck'
@@ -151,6 +152,32 @@ export function cellOpenable(states: States, role: Role, viewer: string | null, 
     !!view?.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
 }
 
+/* THE FIGURES BESIDE A NAME (the M5a build spec §1.4): his LVE War bal, and his LL and OL days in the View period —
+   approved and pending, as the one charging rule charges them (engine/leaveyear.ts annualUsedIn). The War bal is the
+   store's cached answer (`leaveFiguresOf`, kept until anything the engine reads changes, when it hands back a NEW
+   object); the period's days are remembered against that very object, so they are worked out again exactly when his
+   figures could have moved, and a row drawn again for any other reason reads both for nothing. Exported: the phone's
+   frozen copy of the names (Matrix's band) must read the same two numbers. */
+const USED_IN = new WeakMap<PersonFigures, Map<string, number>>()
+export function nameFigures(pid: string, from: string, to: string): { war: number; used: number } {
+  const f = leaveFiguresOf(pid)
+  let byRange = USED_IN.get(f)
+  if (!byRange) { byRange = new Map(); USED_IN.set(f, byRange) }
+  const k = `${from}|${to}`
+  let used = byRange.get(k)
+  if (used === undefined) {
+    const { world, days } = leaveWorldOf(pid)
+    used = annualUsedIn(world, pid, days, from, to)
+    byRange.set(k, used)
+  }
+  return { war: f.kinds.LVE.war, used }
+}
+/** The two lines as the box beside a name draws them — one reader for the row and the phone's frozen copy. */
+export function nameLines(pid: string, period: Pick<Period, 'start' | 'end'>): FigureLines {
+  const nf = nameFigures(pid, period.start, period.end)
+  return { top: nf.war, used: [{ label: 'LL OL', tone: 'amber', value: nf.used }] }
+}
+
 type PersonRowProps = {
   p: Person
   version: number
@@ -167,11 +194,12 @@ type PersonRowProps = {
   deciding: boolean
   movedShown: boolean
   shown: Figure
-  figureCtx: FigureCtx
-  /** The figure this row's counter box is SELECTED on, or null (Matrix
-   *  `figSel`, 6 Sep 26 — a drag down one figure column). A primitive, so the
-   *  memo only repaints the rows whose own value flips as the run grows. */
-  figSel: string | null
+  /** No longer read: the figures beside the name come from the one engine (`nameFigures`, below). Optional so Matrix's
+   *  prop still type-checks until the grid file drops it. */
+  figureCtx?: FigureCtx
+  /** No longer read — the drag down the LVE column that selected a box went with D1491. Optional for the same reason:
+   *  Matrix still passes `figSel={null}`. */
+  figSel?: string | null
   evKind: Map<string, string>
   lockedCols: Set<string>
   quals: QualPill[]
@@ -291,20 +319,15 @@ export const setPhWidth = (el: HTMLElement, w: string) => {
   s.width = w; s.minWidth = w; s.maxWidth = w
 }
 
-export const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, views, role, viewer, deciding, movedShown, shown, figureCtx, figSel, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
-  // The selected figure's LINES for this person — the two-line box's own
-  // number on top, the days taken from it stacked under (FigureCell, 6 Sep
-  // 26). It has to move the instant a bid is placed, because a pending bid
-  // has been asked for and cannot be asked for twice — and every store
-  // change bumps `version`, so keying the memo on it keeps that true while a
-  // window step (which re-renders the row for its new month but changes no
-  // figure) no longer walks every war's ledger for all ~58 rows. A balance
-  // can go negative (shown red, never refused — the squadron's balances
-  // already run negative, §Counters); a total never does. Every figure
-  // counts across EVERY war, not the one on screen — leave bid in Jan–Mar
-  // still spends against Apr–Jun.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const lines = useMemo(() => figureLines(shown, figureCtx, p.id), [shown, figureCtx, p.id, version])
+export const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, views, role, viewer, deciding, movedShown, shown, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
+  // THE TWO SMALL LINES BESIDE HIS NAME (the M5a build spec §1.4, finding 12): his LVE War bal on top — a bid comes off
+  // at once (D1153), below zero shown red, never refused — and under it his LL and OL days in the View period, approved
+  // and pending, as charged (the drawings' Ranger "12.5 / 7.5"). Both read the one engine, cached by the store until
+  // anything it reads changes (`nameFigures`), so a row drawn again for a new month or any other store change reads them
+  // for nothing. The lines object is keyed on the two NUMBERS, not on the store's version: the memoised box beside the
+  // name (FigureCell) is handed the same object, and so draws again, only when one of his own figures moved.
+  const nf = nameFigures(p.id, period.start, period.end)
+  const lines = useMemo<FigureLines>(() => ({ top: nf.war, used: [{ label: 'LL OL', tone: 'amber', value: nf.used }] }), [nf.war, nf.used])
   return (
     /* `me` lights the VIEWER's own row (owner, 17 Aug 26). While arranging the
        row is a drop target the pointer drag reads by hit-test; the drag SOURCE
@@ -378,7 +401,6 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
         testid={`bal-${p.id}`}
         dataFig={shown.id}
         dataPerson={p.id}
-        selected={figSel === shown.id}
         title={`${p.callsign}: ${shown.label} ${show(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for the breakdown`}
         onClick={() => api.current.setBalOpen({ person: p.id, figureId: shown.id })}
       />

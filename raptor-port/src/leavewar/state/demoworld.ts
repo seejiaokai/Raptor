@@ -22,10 +22,11 @@
 // and re-keying it would corrupt it.
 
 import { INPUTS, filingOf, inpId } from '../../engine/inputs'
-import { seedPeople, SEED_ABSENCES, warHolding, type Ledger, type ManningRule, type Recs } from '../engine'
+import { addDays, parseCell, seedPeople, SEED_ABSENCES, warHolding, type Ledger, type ManningRule, type Person, type Recs } from '../engine'
+import type { Balances, BalKind, GradeHists, SnapEntry, TypedBal } from '../engine/leaveyear'
 import { inputRowFor } from '../absences'
 import { projectPeople } from './raptorRoster'
-import { getState, installDemoCounters, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
+import { getState, installDemoBalances, installDemoCounters, installDemoOil, persistBootWorld, remapPersonKeys, setPeople } from './store'
 
 /**
  * Seed person -> Raptor person. HAND-PICKED so that every mapped Raptor
@@ -204,6 +205,93 @@ const DEMO_WALK_LEAVE: Array<[string, string, string]> = [
   ['decal', '*LL', '2026-02-05'],
 ]
 
+/* THE M5a WALK'S FIGURES (the build spec §8 — "typed figures, grades, a man with no grade, pending and approved leave
+   either side of the typed date, so the walk has them"). Laid on at a fresh demo boot only, like everything above.
+   · RANGER (`bane`, the member account us/us) is the approved drawings' own man (full-m5a-person.mjs RANGER): LVE typed
+     17 incl. 4 carried fwd on Mon 5 Jan 26, his LL 19–21 Jan approved BEFORE he typed (in the snapshot, so it takes
+     nothing off) and 26–27 Jan approved since (App bal 15 incl. 2); pending 29 Jan AM and 12–13 Feb (War bal 12.5), a
+     refused 2 Feb; CCL 3, FCL 5, PL 2, EL 4, CL 1 typed the same day, with a CCL, a PL morning and a CL pending.
+   · Everyone else but every seventh man has LVE typed on Sat 10 Jan 26 (carried forward 0–4, a few halves, one below
+     zero), every third a CCL too; the seed's approved leave dated up to 10 Jan is in each snapshot, the rest comes off
+     (JAGUAR's OL 16–17 Jan, DECAL's morning of 5 Feb, ROULETTE's CCL of 15 Jan). The ones never typed read from the
+     war's first 1 Jan (reading 4).
+   · Grades: a pilot Senior pilot (an instructor) or Junior pilot, a WSO Senior or Junior WSO, ground personnel Ops A;
+     OUTLAW (`casper`) has none, so "No grade" shows in amber. All set from 1 Jan 26.
+   Ids sort after the seed's (a saved war reads its records back in id order — bootseal.test.ts). */
+const RANGER = 'bane'
+const RANGER_DAY = '2026-01-05'
+const DEMO_M5A_RECS: Recs = {
+  [RANGER]: {
+    '2026-01-29': [{ id: 'walk-m5a-1', kind: 'request', code: '*LL', state: 'pending' }],
+    '2026-02-02': [{ id: 'walk-m5a-2', kind: 'request', code: 'LL', state: 'refused' }],
+    '2026-02-12': [{ id: 'walk-m5a-3', kind: 'request', code: 'LL', state: 'pending' }],
+    '2026-02-13': [{ id: 'walk-m5a-4', kind: 'request', code: 'LL', state: 'pending' }],
+    '2026-03-02': [{ id: 'walk-m5a-5', kind: 'request', code: 'CCL', state: 'pending' }],
+    '2026-03-16': [{ id: 'walk-m5a-6', kind: 'request', code: '*PL', state: 'pending' }],
+    '2026-03-17': [{ id: 'walk-m5a-7', kind: 'request', code: 'CL', state: 'pending' }],
+  },
+}
+/* his approved leave — Inputs, approved on the war: [person, code, from, to] */
+const DEMO_M5A_LEAVE: Array<[string, string, string, string]> = [
+  [RANGER, 'LL', '2026-01-19', '2026-01-21'],
+  [RANGER, 'LL', '2026-01-26', '2026-01-27'],
+]
+const NO_GRADE = 'casper'
+const TYPED_DAY = '2026-01-10'
+
+/* every day of an approved leave of `kind` up to `upTo`, a morning or an afternoon where the code marks one — the
+   snapshot a figure typed that day keeps (engine/leaveyear.ts snapshotOf: one entry a day, before any weekend rule) */
+function demoSnapshot(rows: ReadonlyArray<{ person: string; code: string; date: string; to: string }>, pid: string, kind: BalKind, upTo: string): SnapEntry[] {
+  const out: SnapEntry[] = []
+  for (const r of rows) {
+    if (r.person !== pid) continue
+    const cell = parseCell(r.code)
+    if (!cell || (kind === 'LVE' ? cell.type !== 'LL' && cell.type !== 'OL' : cell.type !== kind)) continue
+    for (let d = r.date; d <= r.to && d <= upTo; d = addDays(d, 1)) out.push([d, cell.portion === 'am' ? 'am' : cell.portion === 'pm' ? 'pm' : 'day'])
+  }
+  return out.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0))
+}
+
+/** The figures and grades the M5a walk starts from (above), for the roster as projected. Exported for its test. */
+export function demoBalances(people: readonly Person[]): { balances: Balances; gradeHist: GradeHists } {
+  /* the approved leave the demo files (seed ids dressed onto the roster), the same list installDemoWorld files below */
+  const approved = [
+    ...SEED_ABSENCES.map(a => ({ person: DEMO_MAP[a.person] ?? a.person, code: a.code, date: a.date, to: a.endDate ?? a.date })),
+    ...DEMO_WALK_LEAVE.map(([p, code, date]) => ({ person: DEMO_MAP[p] ?? p, code, date, to: date })),
+    ...DEMO_M5A_LEAVE.map(([person, code, date, to]) => ({ person, code, date, to })),
+  ]
+  const balances: Balances = {}
+  const gradeHist: GradeHists = {}
+  people.forEach((p, i) => {
+    gradeHist[p.id] = [{
+      id: p.id === NO_GRADE ? null
+        : p.seat === 'gnd' ? 'opsa'
+        : p.seat === 'wso' ? (p.band === 'instructor' ? 'sw' : 'jw')
+        : p.band === 'instructor' ? 'sp' : 'jp',
+      from: '2026-01-01',
+    }]
+    if (p.id === RANGER) return
+    if (i % 7 === 6) return                                      // never typed (reading 4)
+    const by = p.id
+    const lve = p.id === DEMO_MAP.cross ? -2 : 10 + ((i * 7) % 25) + (i % 4 === 1 ? 0.5 : 0)
+    const cf = lve <= 0 ? 0 : Math.min(i % 5, Math.floor(lve))
+    const row: Partial<Record<BalKind, TypedBal>> = {
+      LVE: { amount: lve, cf, day: TYPED_DAY, by, snap: demoSnapshot(approved, p.id, 'LVE', TYPED_DAY) },
+    }
+    if (i % 3 === 0 || p.id === DEMO_MAP.roulette) row.CCL = { amount: 2 + (i % 4), day: TYPED_DAY, by, snap: demoSnapshot(approved, p.id, 'CCL', TYPED_DAY) }
+    balances[p.id] = row
+  })
+  if (people.some(p => p.id === RANGER)) {
+    const t = (amount: number, kind: BalKind, cf?: number): TypedBal =>
+      ({ amount, ...(cf !== undefined ? { cf } : {}), day: RANGER_DAY, by: RANGER, snap: demoSnapshot(approved, RANGER, kind, RANGER_DAY) })
+    /* his LL of 19–21 Jan was approved before he typed: in the snapshot whatever its dates (the build spec §1.1) */
+    const lve = t(17, 'LVE', 4)
+    lve.snap = [['2026-01-19', 'day'], ['2026-01-20', 'day'], ['2026-01-21', 'day']]
+    balances[RANGER] = { LVE: lve, CCL: t(3, 'CCL'), FCL: t(5, 'FCL'), PL: t(2, 'PL'), EL: t(4, 'EL'), CL: t(1, 'CL') }
+  }
+  return { balances, gradeHist }
+}
+
 /**
  * Boot-time projection + demo re-key. Called once from main.tsx, after
  * lwInitStore and before the sync wires run.
@@ -242,6 +330,9 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
     if (!(typeof window !== 'undefined' && (window as any).__lwNoDemoCounters === true)) installDemoCounters(DEMO_COUNTERS)
     installDemoOil(DEMO_WALK)
     remapPersonKeys(DEMO_MAP)
+    /* M5a's walk: Ranger's requests (his real id — nothing to re-key), then every man's typed figures and grade */
+    installDemoOil({ recs: DEMO_M5A_RECS, ledger: [] })
+    installDemoBalances(demoBalances(people))
     /* save the DRESSED world now — setPeople above saved the undressed seed, and the next boot, finding a
        started store, never dresses it again ([DB-READINESS] group A phase 0; store.ts persistBootWorld) */
     persistBootWorld()
@@ -257,6 +348,7 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
       ...SEED_ABSENCES.map(a => ({ ...a, to: a.endDate ?? a.date })),
       ...DEMO_OIL_TAKEN.map(([person, date]) => ({ person, code: 'OIL', date, to: date, lw: true })),
       ...DEMO_WALK_LEAVE.map(([person, code, date]) => ({ person, code, date, to: date, lw: true })),
+      ...DEMO_M5A_LEAVE.map(([person, code, date, to]) => ({ person, code, date, to, lw: true })),
     ]
     for (const a of seedRows) {
       const person = DEMO_MAP[a.person] ?? a.person

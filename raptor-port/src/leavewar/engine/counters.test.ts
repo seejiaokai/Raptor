@@ -17,7 +17,6 @@ import {
   figureForLeave,
   figureLines,
   titleLines,
-  selectableFigure,
   grantsFor,
   DEFAULT_FIGURE_ID,
   DEFAULT_FIGURE_ORDER,
@@ -543,12 +542,8 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
   })
 })
 
-describe('selectableFigure and grantsFor (the figures bar, 6 Sep 26)', () => {
-  it('selects every balance, OIL included, and never a total', () => {
-    const by = Object.fromEntries(FIGURES.map(f => [f.id, selectableFigure(f)]))
-    expect(by).toEqual({ lve: true, oil: true, ccl: true, fcl: true, cl: true, pl: true, lvetot: false, medtot: false })
-    expect(selectableFigure(undefined)).toBe(false)
-  })
+/* (the figures bar's `selectableFigure` and its test went with the drag down the LVE column — D1491, M5a) */
+describe('grantsFor (the figures bar, 6 Sep 26)', () => {
   it('lists a person\'s entries on one pool, oldest first, and no other pool\'s', () => {
     const ledger: Ledger = [
       { id: 'ol-2', personId: 'a', counter: 'ccl', amount: 1, date: '2026-03-02', reason: '', approvedBy: 'admin' },

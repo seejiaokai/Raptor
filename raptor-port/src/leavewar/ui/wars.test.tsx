@@ -63,11 +63,15 @@ describe('switching leave war', () => {
 
   // A balance is the same figure whichever war is being looked at, because
   // entitlements are continuous and wars are only windows onto them.
+  /* the balance (the box's top line, his War bal) counts every war, so it does not move; since M5a the line under it is
+     his LL and OL days in the period on view (the build spec §1.4), which does — RESET's four are in 2027 */
   it('leaves a balance unchanged when the war changes', () => {
     render(<Matrix />)
-    const before = screen.getByTestId('bal-reset').textContent
+    const fb = () => screen.getByTestId('bal-reset').querySelector('.fb')!.textContent
+    const before = fb()
     act(() => selectWar(getState().wars[1].period.id))
-    expect(screen.getByTestId('bal-reset').textContent).toBe(before)
+    expect(fb()).toBe(before)
+    expect(screen.getByTestId('bal-reset').querySelector('.fu')?.textContent).toBe('4')
   })
 
   // RESET opens at 2 annual and has four days pending in Apr–Jun, so his

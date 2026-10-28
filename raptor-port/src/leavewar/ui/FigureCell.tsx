@@ -42,7 +42,7 @@ const WIDE_CHARS = 4
 const FLASH_MS = 700
 
 export const FigureCell = memo(function FigureCell({
-  figure, lines, personId, testid, title, onClick, extraClass, dataFig, dataPerson, selected,
+  figure, lines, personId, testid, title, onClick, extraClass, dataFig, dataPerson,
 }: {
   figure: Figure
   lines: FigureLines
@@ -56,13 +56,7 @@ export const FigureCell = memo(function FigureCell({
    *  than a testid — harmless on the grid cell, which nobody reads by these. */
   dataFig?: string
   dataPerson?: string
-  /** The committed selection (Matrix `figSel`) — rendered as `data-figsel` so
-   *  the highlight survives this cell's own re-render. Mid-drag the gesture
-   *  paints its OWN attribute (`data-figdrag`, select.ts) and never touches
-   *  this one: React writes an attribute only when its prop CHANGED, so a mark
-   *  cleared from outside would never come back. The two read as one highlight
-   *  in the CSS. */
-  selected?: boolean
+  /* (`selected` / `data-figsel` — the committed selection of a drag down the LVE column — went with that drag, D1491) */
 }) {
   const prev = useRef<{ id: string; person: string; top: number } | null>(null)
   const [flash, setFlash] = useState(false)
@@ -98,7 +92,6 @@ export const FigureCell = memo(function FigureCell({
       data-testid={testid}
       data-fig={dataFig}
       data-person={dataPerson}
-      data-figsel={selected ? '1' : undefined}
       title={title}
       onClick={onClick}
       onAnimationEnd={() => setFlash(false)}
