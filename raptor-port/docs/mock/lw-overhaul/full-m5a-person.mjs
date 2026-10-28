@@ -159,6 +159,10 @@ const RANGER = { app: '17', appr: '−2', pend: '−2.5', war: '12.5', cf: '4', 
   other: { CCL: ['3', '1', '2'], FCL: ['5'], PL: ['2', '0.5', '1.5'], EL: ['4'], CL: ['1', '1', '0'] } }
 // his question (28 Oct 26): the same window once the 2.5 pending days are approved — War bal does not move (D1472)
 const RANGER_APPROVED = { ...RANGER, pend: '0', appr: '−4.5' }
+// option B (recommended, his rethink of 28 Oct 26): App bal comes down by itself as leave is approved, so the window's
+// pictures draw it so — 17 typed on 5 Jan less 26–27 Jan approved since (2, carried-forward days first), no extra line
+const RANGER_A = RANGER
+const RANGER_B = { ...RANGER, app: '15', appr: '0', cf: '2' }
 // the drawn-in parts of his list: what is new since his last visit (D1231), a deleted leave struck for that visit
 const NEWS = [
   { from: '2026-01-26', isNew: 1, by: 'approved by Saber · yesterday 08:40' },
@@ -207,15 +211,21 @@ async function one(name, who, w, h, touch, o) {
 // Gambit, another man, as a member sees him: read only, no dots (what is new is his own to see — D1231)
 const OTHER = { app: '8.5', appr: '0', pend: '−0.5', war: '8', cf: '2', taken: '1', typed: '12 Jan', oil: '0', med: '0', other: { CCL: ['0'], FCL: ['0'], PL: ['0'], EL: ['0'], CL: ['0'] } }
 await one('m5a-p1-desk-today', 'admin', 1536, 864, false, { today: 1 })
-await one('m5a-p2-desk-drawn', 'admin', 1536, 864, false, { pid: 'bane', F: RANGER, ro: false, lockWords: 'Locked for members', extra: [{ from: '2026-01-19', clip: CLIP }],
-  marks: [['.r17-ap', '1'], ['.m5-list', '2']] })
+await one('m5a-p2-desk-drawn', 'admin', 1536, 864, false, { pid: 'bane', F: RANGER_B, ro: false, lockWords: 'Locked for members', extra: [{ from: '2026-01-19', clip: CLIP }],
+  marks: [['.m5-list', '1']] })
 await one('m5a-p3-phone-today', 'member', 402, 874, true, { today: 1 })
-await one('m5a-p4-phone-own', 'member', 402, 874, true, { pid: 'bane', F: RANGER, ro: false, lockWords: '', extra: NEWS })
-await one('m5a-p5-phone-locked', 'member', 402, 874, true, { pid: 'bane', F: RANGER, ro: true, lockWords: 'Locked by admin', extra: NEWS })
+await one('m5a-p4-phone-own', 'member', 402, 874, true, { pid: 'bane', F: RANGER_B, ro: false, lockWords: '', extra: NEWS })
+await one('m5a-p5-phone-locked', 'member', 402, 874, true, { pid: 'bane', F: RANGER_B, ro: true, lockWords: 'Locked by admin', extra: NEWS })
 await one('m5a-p7-myleave', 'member', 402, 874, true, { myleave: 1 })
 await one('m5a-p8-phone-approved', 'member', 402, 874, true, { pid: 'bane', F: RANGER_APPROVED, ro: false, lockWords: '', extra: NEWS })
+// his rethink (28 Oct 26, "the initial app bal will not change?"): option B — App bal moves down by itself when leave is
+// approved (what the official app will show once he applies it), so it never goes stale; typing it only corrects it.
+// Round 20d's tile exactly, no added line: 17 typed on 5 Jan, less 26–27 Jan approved since (2, from his carried-forward
+// days first — D1224), 2.5 pending; then the same once the 2.5 are approved
+await one('m5a-p9-phone-b-now', 'member', 402, 874, true, { pid: 'bane', F: { ...RANGER, app: '15', appr: '0', cf: '2' }, ro: false, lockWords: '', extra: NEWS })
+await one('m5a-p9-phone-b-approved', 'member', 402, 874, true, { pid: 'bane', F: { ...RANGER, app: '12.5', appr: '0', pend: '0', cf: '0' }, ro: false, lockWords: '', extra: NEWS })
 // an iPhone's letters run about a seventh wider than this browser's: the same window, its words spaced out to match
-await one('m5a-p4w-phone-wide', 'member', 402, 874, true, { pid: 'bane', F: RANGER, ro: false, lockWords: '', extra: NEWS, wide: 1 })
+await one('m5a-p4w-phone-wide', 'member', 402, 874, true, { pid: 'bane', F: RANGER_B, ro: false, lockWords: '', extra: NEWS, wide: 1 })
 await one('m5a-p6-phone-other', 'member', 402, 874, true, { pid: '@Gambit', F: OTHER, ro: true, lockWords: '', extra: [] })
 for (const f of FIT) console.log(...f)
 await browser.close(); console.log('errors:', errs)

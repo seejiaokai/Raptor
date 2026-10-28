@@ -56,62 +56,50 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
   <div class="now">
     <h2>Look at now (newest first)</h2>
     <ol>
-      <li><a href="#q1">Which leave comes off App bal</a>: <span class="rec">recommended</span> leave placed on the Leave War after he typed App bal, not leave dated after it.</li>
-      <li><a href="#q2">The LVE tile after your D1472</a>: <span class="rec">recommended</span> one small line, "Approved since 5 Jan −2", under the three figures you approved.</li>
-      <li><a href="#q3">The whole person window</a>: <span class="rec">recommended</span> as drawn (desktop at the grid's right edge, phone in the middle of the screen).</li>
-      <li><a href="#q4">A "● 3 new" count on My leave</a>: <span class="rec">recommended</span> no.</li>
+      <li><a href="#q1">How App bal behaves after he types it once</a>: <span class="rec">recommended</span> B, it comes down by itself as leave is approved (round 20d's tile exactly).</li>
+      <li><a href="#q2">The whole person window</a>: <span class="rec">recommended</span> as drawn (desktop at the grid's right edge, phone in the middle of the screen).</li>
+      <li><a href="#q3">A "● 3 new" count on My leave</a>: <span class="rec">recommended</span> no.</li>
     </ol>
   </div>
 
   <section id="q1">
-    <span class="q">Question 1 · from your D1472 ("All as recommended", 28 Oct)</span>
-    <h2>Which leave comes off App bal to make War bal?</h2>
-    <p><b>The one fact everything depends on:</b> App bal is the number he copies from the official leave app. The official app takes leave off <b>on the day he applies for it there</b>, not when the leave day arrives. So the number he copies already has every leave he has applied for taken off, and the Leave War should take off only leave the official app does not know about yet.</p>
-    <div class="tw"><table>
-      <thead><tr><th>Date</th><th>What happens</th><th>Official app balance</th></tr></thead>
-      <tbody>
-        <tr><td>2 Jan</td><td>Bids leave for 19–21 Jan on the Leave War. It's approved.</td><td class="n">20</td></tr>
-        <tr><td>3 Jan</td><td>Applies for 19–21 Jan in the official app.</td><td class="n">17</td></tr>
-        <tr><td>5 Jan</td><td>Types <b>17</b> into the Leave War as his App bal.</td><td class="n">17</td></tr>
-        <tr><td>6 Jan</td><td>Bids leave for 26–27 Jan on the Leave War (approved later). Not yet applied in the official app.</td><td class="n">17</td></tr>
-        <tr><td>later</td><td>Bids 2.5 more days on the Leave War. Still pending.</td><td class="n">17</td></tr>
-      </tbody>
-    </table></div>
-    <p><b>What War bal should be:</b> the 17 already has 19–21 Jan off, so the Leave War should take off only 26–27 Jan (2) and the 2.5 pending: 17 − 2 − 2.5 = <b>12.5</b>.</p>
-    <p><b>The question:</b> how does the app know 19–21 Jan is already inside the 17?</p>
+    <span class="q">Question 1 · your rethink (28 Oct): "I will not update it once I input this data"</span>
+    <h2>How App bal behaves after he types it once</h2>
+    <p>Either way, the app takes his leave off by itself and War bal is right. The question is only what the <b>App bal</b> box shows afterwards, since nobody will retype it.</p>
     <div class="split">
       <div class="part good">
-        <h3>A · By when the leave was put on the Leave War <span class="rec">(recommended)</span></h3>
-        <p>19–21 Jan was put on 2 Jan, before he typed 17 on 5 Jan, so it is already counted: skip it. 26–27 Jan was put on 6 Jan, after: take it off.</p>
-        <p>War bal = 17 − 2 − 2.5 = <b>12.5</b>. Correct.</p>
-        <p class="note">Its one weak spot: a leave he bid on the Leave War before typing App bal, but had not yet applied for in the official app, is skipped too. War bal reads too high until he applies for it there and types App bal again, which starts the count afresh, as you ruled.</p>
+        <h3>B · App bal comes down by itself when leave is approved <span class="rec">(recommended)</span></h3>
+        <p>He types his official balance once. From then on, each approved leave comes off App bal, so it always reads what the official app will show once he has applied that leave there. Pending stays in the Pending column until it is approved. Carried-forward days come down first (D1224).</p>
+        <p>It is round 20d's tile exactly: no extra line.</p>
+        <p class="note">He types it again only if the official app ever shows a different number (a correction, leave given outside the Leave War); typing it starts the count afresh. If he forgets to apply an approved leave in the official app, the two numbers differ, which reminds him.</p>
       </div>
       <div class="part">
-        <h3>B · By the leave's own dates</h3>
-        <p>19–21 Jan falls after 5 Jan, so it comes off. So does 26–27 Jan.</p>
-        <p>War bal = 17 − 3 − 2 − 2.5 = <b class="redt">9.5</b>. Wrong: 19–21 Jan is taken off twice, once by the official app and once by the Leave War.</p>
+        <h3>A · App bal stays as typed (the drawing before)</h3>
+        <p>App bal reads 17 for good. Approved leave goes into a growing extra line, "Approved since 5 Jan −4.5", and War bal is worked out from both.</p>
+        <p class="note">With nobody retyping it, App bal soon stops matching the official app, and the extra line keeps growing.</p>
       </div>
     </div>
-    <figure style="max-width:420px"><img src="m5a/m5a-c-reading.png" alt="Ranger's LVE tile: App bal 17, Pending −2.5, War bal 12.5, Approved since 5 Jan −2; under it his leave list with Mon 19 – Wed 21 Jan approved and Mon 26 – Tue 27 Jan approved by Saber yesterday"><figcaption>Drawn with A: only 26–27 Jan counts as "Approved since 5 Jan". 19–21 Jan is still listed, but it is inside the 17.</figcaption></figure>
+    <div class="tw"><table>
+      <thead><tr><th>Ranger, with B</th><th>App bal</th><th>Pending</th><th>War bal</th></tr></thead>
+      <tbody>
+        <tr><td>5 Jan: types his official balance</td><td class="n">17</td><td class="n">0</td><td class="n">17</td></tr>
+        <tr><td>6 Jan: bids 26–27 Jan</td><td class="n">17</td><td class="n amber">−2</td><td class="n">15</td></tr>
+        <tr><td>26–27 Jan approved</td><td class="n">15</td><td class="n">0</td><td class="n">15</td></tr>
+        <tr><td>Bids 2.5 more days</td><td class="n">15</td><td class="n amber">−2.5</td><td class="n">12.5</td></tr>
+        <tr><td>The 2.5 days approved</td><td class="n">12.5</td><td class="n">0</td><td class="n">12.5</td></tr>
+        <tr><td>1 Jan: his grade's days added (D1235)</td><td class="n" colspan="3">by itself, as ruled</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">Leave approved before he typed his balance (his 19–21 Jan) is already inside the number he typed, so it is not taken off again. With B this needs no rule of its own; it was question 1 before.</p>
+    <div class="row">
+      <figure><img src="m5a/m5a-c-b-now.png" alt="Option B on a phone: App bal 15, Pending −2.5, War bal 12.5, incl. 2 carried fwd till 31 Dec; round 20d's tile with no extra line"><figcaption>1. B, today: 26–27 Jan already approved (App bal 15), 2.5 days pending.</figcaption></figure>
+      <figure><img src="m5a/m5a-c-b-approved.png" alt="Option B once the 2.5 days are approved: App bal 12.5, Pending 0, War bal 12.5, incl. 0 carried fwd"><figcaption>2. B, once the 2.5 days are approved: App bal and War bal both 12.5.</figcaption></figure>
+      <figure><img src="m5a/m5a-c-approved.png" alt="Option A once the 2.5 days are approved: App bal 17, Pending 0, War bal 12.5, Approved since 5 Jan −4.5"><figcaption>3. A, the same moment: App bal still 17, an extra line.</figcaption></figure>
+    </div>
   </section>
 
   <section id="q2">
-    <span class="q">Question 2 · the tile you approved in round 18 (D1241, D1252)</span>
-    <h2>The LVE tile now that approved leave comes off too</h2>
-    <p>Round 18's tile reads App bal · Pending · War bal. With approved leave also coming off, 17 − 2.5 no longer makes 12.5, so the tile needs to show the 2 approved days. <span class="rec">Recommended:</span> keep your three figures as they are and add one small line, <b>"Approved since 5 Jan −2"</b>, between them and the carried-forward line. It shows only while some approved leave counts, and its date tells him when he last typed App bal.</p>
-    <p class="note">I tried a fourth figure in the row (App bal · Approved · Pending · War bal). It fits a desktop, but on a phone War bal falls off the tile's edge (35 points too wide), so it is not drawn here.</p>
-    <p><b>Drawn from your approved round 20d, its own code, nothing re-typed</b> (your word, 28 Oct). The only difference is the new line. War bal and OIL and MED differ only because Ranger's figures differ from 20d's sample.</p>
-    <figure><img src="m5a/m5a-c-vs-20d.png" alt="Side by side: round 20d's approved tiles on the left, the redrawn tiles on the right, identical but for the marked line Approved since 5 Jan −2"><figcaption>Left: round 20d as approved. Right: redrawn from its own code. The pink 1 marks the only difference.</figcaption></figure>
-    <p><b>Your question: what it shows once his 2.5 pending days are approved.</b> Pending reads 0, the new line reads "Approved since 5 Jan −4.5", and War bal stays <b>12.5</b>: an approval changes nothing (D1472). When he applies that leave in the official app and types his new App bal (12.5), the line goes and App bal and War bal both read 12.5.</p>
-    <figure style="max-width:420px"><img src="m5a/m5a-c-approved.png" alt="The tiles once the 2.5 days are approved: App bal 17, Pending 0, War bal 12.5, Approved since 5 Jan −4.5"><figcaption>After the approval. "0" is plain, not amber: amber marks a pending figure (D1251).</figcaption></figure>
-    <div class="row">
-      <figure><img src="m5a/m5a-c-tiles.png" alt="The balance tiles on a phone: LVE with App bal 17, Pending −2.5, War bal 12.5, then Approved since 5 Jan −2 and incl. 4 carried fwd till 31 Dec; OIL 0; MED 0 days; CCL 3 with Pending −1 and War bal 2; FCL 5, PL 2, EL 0, CL 1"><figcaption>1. On his phone, unlocked: boxes where he may type (D1203).</figcaption></figure>
-      <figure><img src="m5a/m5a-c-tiles-wide.png" alt="The same tiles with wider letters: 'till 31 Dec' reaches the LVE tile's right edge"><figcaption>2. With an iPhone's wider letters: "till 31 Dec" reaches the tile's edge. If it does not fit on your phone, "till 31 Dec" is the part that moves to its own line.</figcaption></figure>
-    </div>
-  </section>
-
-  <section id="q3">
-    <span class="q">Question 3 · D1148, D1201, D1203, D1220, D1231</span>
+    <span class="q">Question 2 · D1148, D1201, D1203, D1220, D1231</span>
     <h2>The whole person window</h2>
     <p>Today a tap on a name opens a list of eight figure rows. Drawn: the approved tiles at the top, then his leave one line each, the year picker on the right.</p>
     <ul>
@@ -125,7 +113,7 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
     </ul>
     <div class="row">
       <figure><img src="m5a/m5a-p1-desk-today.png" alt="Today on a desktop: Ranger's figures window in the middle of the grid, eight rows LVE, OIL, CCL, FCL, CL, PL, LVE TOT, MED TOT, with Set buttons"><figcaption>1. Desktop, today (admin): eight figure rows over the middle of the grid.</figcaption></figure>
-      <figure><img src="m5a/m5a-p2-desk-drawn.png" alt="Drawn on a desktop: Ranger's window at the grid's right edge, Locked for members, the balance tiles with boxes, and his leave as six lines; marks 1 on the Approved since line and 2 on the leave list"><figcaption>2. Desktop, drawn (admin, locked for members). Marked: 1 the new "Approved since" line, 2 his leave one line each.</figcaption></figure>
+      <figure><img src="m5a/m5a-p2-desk-drawn.png" alt="Drawn on a desktop: Ranger's window at the grid's right edge, Locked for members, round 20d's balance tiles with boxes (App bal 15 as in option B), and his leave one line each, marked 1"><figcaption>2. Desktop, drawn (admin, locked for members), with question 1's B. Marked: his leave, one line each.</figcaption></figure>
     </div>
     <div class="row phones">
       <figure><img src="m5a/m5a-p3-phone-today.png" alt="Today on a phone: My leave opens Ranger's figures window with eight rows"><figcaption>3. Phone, today: My leave opens the same eight rows.</figcaption></figure>
@@ -136,8 +124,8 @@ dialog::backdrop{background:rgba(0,0,0,.85)}
     <p><span class="rec">Recommended:</span> approve the window as drawn, desktop and phone.</p>
   </section>
 
-  <section id="q4">
-    <span class="q">Question 4 · D1231</span>
+  <section id="q3">
+    <span class="q">Question 3 · D1231</span>
     <h2>Should My leave carry a "● 3 new" count?</h2>
     <p>When something changed on his leave since his last visit, My leave could show how many. <span class="rec">Recommended: no.</span> Your D1231 keeps the dots inside the lists, and his bell already tells him each decision as it happens (D1142), so a count here says the same thing a third time.</p>
     <div class="row">
