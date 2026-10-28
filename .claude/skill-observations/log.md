@@ -2582,3 +2582,5 @@ its value and never in innerText.
 **Suggested improvement:** At the head of every project skill (or in the session-start hook): when the loaded base directory is not the current worktree's `.claude/skills/`, diff the two and follow the worktree's copy. A guard better than a line: the hook that injects skills checks the worktree path.
 
 **Principle:** In a worktree, the skill text that governs is the branch's own; a loader that reads a shared root can hand you a stale rulebook with no error.
+
+**Met again 28 Oct 26:** the records-and-M5 chat (`claude/lw-whole-records`) — the session-start hook's task-observer loaded from the main folder (on 26 Oct 26's commit); the worktree's copy differs (the size trigger, the cross-branch `git grep`). Caught by diffing the two; nothing in this session turned on the difference. Every project skill differs the same way, overnight included.
