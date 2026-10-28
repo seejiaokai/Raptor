@@ -413,3 +413,119 @@ describe('the page takes the grid card\'s place', () => {
     } finally { window.scrollTo = was }
   })
 })
+
+/* THE M5a WALK'S FAULTS (29 Oct 26 — the host's triage, `docs/handpass/parts/lw-m5a/walk-triage.md` "To fix, red-first").
+   jsdom has no layout, so where a fault is one of measure the test stands in the browser's measures (a rect, a width) and
+   pins what the page does with them; the browser tests (e2e/leavewar.spec.ts "M5a walk") prove the same on the built app. */
+const R = (left: number, top: number, right: number, bottom: number) =>
+  ({ left, top, right, bottom, width: right - left, height: bottom - top, x: left, y: top, toJSON: () => ({}) }) as DOMRect
+const asPhone = () => {
+  const was = window.matchMedia
+  window.matchMedia = ((q: string) => ({ matches: /max-width:\s*(700|620|430)px/.test(q), media: q, onchange: null, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent: () => false })) as any
+  return () => { window.matchMedia = was }
+}
+describe('the M5a walk\'s faults', () => {
+  it('A-F1: an emptied box + Enter, or left, says "Type a figure" and keeps the old figure; Escape still puts it back silently', () => {
+    render(<BalancesPage />)
+    const was = lve('bane').app
+    fireEvent.keyDown(typeIn('bal-LVE-bane', ''), { key: 'Enter' })
+    expect(screen.getByTestId('bal-LVE-bane-err').textContent).toBe('Type a figure')
+    expect(box('bal-LVE-bane').value).toBe(figWords(was))
+    expect(lve('bane').app).toBe(was)
+    fireEvent.blur(typeIn('bal-CCL-bane', '  '))
+    expect(screen.getByTestId('bal-CCL-bane-err').textContent).toBe('Type a figure')
+    fireEvent.keyDown(typeIn('bal-PL-bane', ''), { key: 'Escape' })
+    fireEvent.blur(box('bal-PL-bane'))
+    expect(screen.queryByTestId('bal-PL-bane-err')).toBeNull()
+  })
+
+  it('A-F3: a figure longer than its box has room for is drawn smaller to fit whole; one that fits keeps the box\'s letters', () => {
+    /* the browser's measure stood in: 8px a letter plus 18 of padding, in a box 34 wide inside its padding */
+    const sw = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollWidth')
+    const cw = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth')
+    Object.defineProperty(HTMLElement.prototype, 'scrollWidth', { configurable: true, get(this: HTMLElement) { return this instanceof HTMLInputElement ? Math.max(52, this.value.length * 8 + 18) : 0 } })
+    Object.defineProperty(HTMLElement.prototype, 'clientWidth', { configurable: true, get(this: HTMLElement) { return this instanceof HTMLInputElement ? 52 : 0 } })
+    try {
+      render(<BalancesPage />)
+      fireEvent.blur(typeIn('bal-LVE-bane', '-12.5'))
+      expect(box('bal-LVE-bane').value).toBe('−12.5')
+      const fs = parseFloat(box('bal-LVE-bane').style.fontSize)
+      expect(fs).toBeGreaterThan(0)
+      expect(fs).toBeLessThan(13.5)
+      fireEvent.blur(typeIn('bal-LVE-bane', '15'))
+      expect(box('bal-LVE-bane').style.fontSize).toBe('')
+    } finally {
+      if (sw) Object.defineProperty(HTMLElement.prototype, 'scrollWidth', sw)
+      if (cw) Object.defineProperty(HTMLElement.prototype, 'clientWidth', cw)
+    }
+  })
+
+  it('A-F4: the second heading line pins where the first one ends, so no strip of rows shows between them', () => {
+    const oh = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetHeight')
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { configurable: true, get(this: HTMLElement) { return this.matches?.('tr.h1') ? 22 : 0 } })
+    try {
+      const { container } = render(<BalancesPage />)
+      const h2 = [...container.querySelectorAll<HTMLElement>('tr.h2 th')]
+      expect(h2.length).toBeGreaterThan(0)
+      for (const th of h2) expect(th.style.top).toBe('22px')
+      fireEvent.click(screen.getByTestId('bal-view-taken'))
+      for (const th of container.querySelectorAll<HTMLElement>('tr.h2 th')) expect(th.style.top).toBe('22px')
+    } finally { if (oh) Object.defineProperty(HTMLElement.prototype, 'offsetHeight', oh) }
+  })
+
+  it('A-F2: the desktop OIL figure is a plain table cell (the phone\'s flex box on the cell set its figures left of the heading)', () => {
+    render(<BalancesPage />)
+    const td = screen.getByTestId('bal-oil-bane').closest('td')!
+    expect(td.className.split(/\s+/)).not.toContain('bp-oilc')
+  })
+
+  it('B-F2: a refusal\'s words are moved inside the sliding area when they would run off its left or right edge', () => {
+    const back = asPhone()
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      if (this.classList.contains('bp-err')) return R(-49, 300, 191, 340)
+      if (this.classList.contains('bp-hs')) return R(0, 200, 402, 874)
+      return R(0, 0, 0, 0)
+    })
+    try {
+      render(<BalancesPage />)
+      fireEvent.keyDown(typeIn('bal-LVE-bane', '17.3'), { key: 'Enter' })
+      const err = screen.getByTestId('bal-LVE-bane-err')
+      expect(err.textContent).toBe('Type a whole number or a half, like 17 or 17.5')
+      expect(err.style.transform).toBe('translateX(53px)')
+    } finally { spy.mockRestore(); back() }
+  })
+
+  it('B-F5: the page fills the screen under the tab row, measured from the page\'s top — a window scrolled when it opens does not make it taller', () => {
+    const sy = Object.getOwnPropertyDescriptor(window, 'scrollY')
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => 120 })
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      return this.matches('[data-testid="balances-page"]') ? R(0, 80, 1024, 80 + 2000) : R(0, 0, 0, 0)
+    })
+    try {
+      render(<BalancesPage />)
+      expect(screen.getByTestId('balances-page').style.height).toBe(`${window.innerHeight - 200}px`)
+    } finally {
+      spy.mockRestore()
+      if (sy) Object.defineProperty(window, 'scrollY', sy); else delete (window as any).scrollY
+    }
+  })
+
+  it('B-F4: a tapped box is brought into sight with its pending figure, clear of the names', async () => {
+    const back = asPhone()
+    let left = 0
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      if (this.classList.contains('bp-hs')) return R(0, 200, 402, 874)
+      if (this.classList.contains('bp-who')) return R(0, 400, 132, 450)
+      if (this.classList.contains('bp-oc') && this.querySelector('[data-testid="bal-PL-bane"]')) return R(330 - left, 400, 420 - left, 450)
+      return R(0, 0, 0, 0)
+    })
+    try {
+      render(<BalancesPage />)
+      const hs = screen.getByTestId('bal-scroll')
+      Object.defineProperty(hs, 'scrollLeft', { configurable: true, get: () => left, set: (v: number) => { left = v } })
+      act(() => { box('bal-PL-bane').focus() })
+      await act(async () => { await new Promise(r => setTimeout(r, 40)) })
+      expect(left).toBe(22)                     // its right edge, the pending figure's, 4 inside the screen's
+    } finally { spy.mockRestore(); back() }
+  })
+})

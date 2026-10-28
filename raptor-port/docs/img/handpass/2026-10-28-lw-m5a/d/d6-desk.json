@@ -1,0 +1,80 @@
+[
+ {
+  "id": "46 member own typing: 15 → 16 → 17, Undo twice, Redo twice (unlocked)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "start 15; typed 16 16; typed 17 17; Undo 1 16; Undo 2 15; Redo twice 17 · his row: boxes 7, War bal at 17: 14.5",
+  "pics": [
+   "d6-desk-01-typed-17",
+   "d6-desk-02-undone-both",
+   "d6-desk-03-redone-both"
+  ]
+ },
+ {
+  "id": "44 the lock lands under his open box (14 typed, no Enter) — the lock flipped by lockViaBridge, the stand-in for the admin",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box typed value before 14; his boxes after 0; App bal shown 17 · bridge {\"ok\":true,\"wrote\":true}; \"Locked by admin\" words: \"Locked by admin\"; note(s) on screen: Ranger LVE App bal not saved: Locked by admin; read-only figures 17 2 3 5 2 4 1; focus on BODY",
+  "pics": [
+   "d6-desk-04-box-open-14",
+   "d6-desk-05-lock-landed"
+  ]
+ },
+ {
+  "id": "44b his Enter after the lock landed (no box left)",
+  "size": "desk",
+  "verdict": "NOT WALKED",
+  "said": "there is no box left to press Enter in (boxes 0); an Enter with nothing focused changed nothing: figures 17 2 3 5 2 4 1; notes Ranger LVE App bal not saved: Locked by admin",
+  "pics": [
+   "d6-desk-05-lock-landed"
+  ]
+ },
+ {
+  "id": "44c his Undo while locked (real press) — refused",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal unchanged 17; refused (a note says so) true · Undo button before the press: undo on, redo off; the words: Switch back to the admin view to undo that.",
+  "pics": [
+   "d6-desk-06-undo-refused"
+  ]
+ },
+ {
+  "id": "44d unlocked again by the stand-in: the 7 boxes come back live",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "boxes back 7; App bal 17",
+  "pics": [
+   "d6-desk-07-unlocked"
+  ]
+ },
+ {
+  "id": "46 the same Undo accepted once unlocked",
+  "size": "desk",
+  "verdict": "NOT WALKED",
+  "said": "the stand-in's lock and unlock are themselves steps on HIS Undo list (the bridge writes them as the person signed in), so his Undo meets the unlock step first and is refused again with \"Switch back to the admin view to undo that.\"; figure after the press 17 — the real order (another person's lock never sits on his list) cannot be reproduced through the bridge",
+  "pics": [
+   "d6-desk-08-undo-accepted"
+  ]
+ },
+ {
+  "id": "45 reload as the member: his figure kept, Undo list empty",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 17; Undo undo off, redo off",
+  "pics": []
+ },
+ {
+  "id": "45 Saber reads Ranger's typed figure",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Ranger's row as the admin sees it: App bal 17, incl. 2, War bal 14.5",
+  "pics": []
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

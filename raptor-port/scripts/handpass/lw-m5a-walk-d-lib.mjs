@@ -112,6 +112,8 @@ export async function pressLoc(w, loc, quickName = null) {
 /* place ONE leave on a cell by whoever is signed in. portion 'full' | 'am' | 'pm'. approve: true/false for an admin */
 export async function placeBid(w, who, iso, type = 'LL', portion = 'full', opts = {}) {
   const P = w.page
+  await L.openGrid(w)
+  await press(w, T('month-' + ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][Number(iso.slice(5, 7)) - 1])); await P.waitForTimeout(1000)
   await L.openCell(w, who, iso)
   if (!(await vis(P, T('bid-picker')))) { console.log(`   !! no bid window for ${who} ${iso}`); return false }
   if (opts.approve !== undefined) await L.approveWhatIEnter(w, opts.approve)

@@ -7730,3 +7730,159 @@ test('D1462 D1463 the bid window title: its day brighter, the switch "Auto-appro
   expect(look.color, 'the app\'s white').toBe(look.inkRgb)
   expect(look.swH, 'the switch on one line').toBeLessThan(30)
 })
+
+/* ---- THE M5a WALK'S FAULTS (29 Oct 26 — the host's triage, docs/handpass/parts/lw-m5a/walk-triage.md "To fix") ----------
+   Each check below is the walk's own measure, the one a jsdom test cannot take: each failed on build 92b43acf9. */
+async function openBalancesPage(page: Page) {
+  await page.getByTestId('lw-tab-balances').click()
+  await expect(page.getByTestId('balances-page')).toBeVisible()
+  await page.waitForTimeout(200)
+}
+const typeFig = async (page: Page, id: string, v: string) => {
+  const b = page.getByTestId(id)
+  await b.click()
+  await b.fill(v)
+  await b.press('Enter')
+}
+
+/* A-F3: "10.5" in PL and "−12.5" in App bal showed their last digit cut; "−998.5" — as long as the longest figure the store
+   takes (±999) — too. Each box shows its whole figure, keeps its width, and the figures beside it do not move; in the person
+   window too. */
+test('M5a walk A-F3: a box shows its whole figure and keeps its width, nothing beside it moving', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  const geo = () => page.evaluate(() => {
+    const r = (id: string) => document.querySelector<HTMLElement>(`[data-testid="${id}"]`)!.getBoundingClientRect()
+    return { app: r('bal-LVE-bane').width, pl: r('bal-PL-bane').width, ccl: r('bal-CCL-bane').width, war: r('bal-war-bane').right, el: r('bal-EL-bane').left }
+  })
+  const whole = (id: string) => page.getByTestId(id).evaluate((e: HTMLInputElement) => e.scrollWidth <= e.clientWidth + 0.5)
+  const g0 = await geo()
+  await typeFig(page, 'bal-LVE-bane', '-12.5')
+  expect(await whole('bal-LVE-bane'), 'App bal "−12.5" shown whole').toBe(true)
+  await typeFig(page, 'bal-PL-bane', '10.5')
+  expect(await whole('bal-PL-bane'), 'PL "10.5" shown whole').toBe(true)
+  await typeFig(page, 'bal-CCL-bane', '-998.5')
+  expect(await page.getByTestId('bal-CCL-bane').inputValue()).toBe('−998.5')
+  expect(await whole('bal-CCL-bane'), 'CCL "−998.5" shown whole').toBe(true)
+  expect(await geo(), 'the boxes keep their widths and the figures beside them stay where they were').toEqual(g0)
+  await page.getByTestId('bal-name-bane').click()
+  const win = page.getByTestId('person-window')
+  await expect(win).toBeVisible()
+  const pend = () => page.getByTestId('pw-LVE-pend').evaluate(e => e.getBoundingClientRect().left)
+  const pend0 = await pend()
+  await page.getByTestId('pw-LVE').click()
+  await page.getByTestId('pw-LVE').fill('16.5')
+  expect(await whole('pw-LVE'), 'the person window’s box shows "16.5" whole').toBe(true)
+  expect(await pend(), 'Pending stays where it was').toBe(pend0)
+  await page.getByTestId('pw-LVE').fill('-123.5')
+  expect(await whole('pw-LVE'), 'a long figure shown whole, in smaller letters').toBe(true)
+  expect(await pend(), 'Pending still where it was').toBe(pend0)
+  expect(await whole('pw-CCL'), 'the CCL tile’s "−998.5" shown whole').toBe(true)
+})
+
+/* A-F4: scrolled down, a strip of the rows showed between the LVE / OTHER LEAVE line and the NAME line — the second pinned
+   30 down while the first was shorter. They meet. */
+test('M5a walk A-F4: the two pinned heading lines meet, with no strip of rows between them', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop’s two heading lines')
+  await lwRole(page, 'admin')
+  await openBalancesPage(page)
+  await page.getByTestId('bal-scroll').evaluate((e: HTMLElement) => { e.scrollTop = 400 })
+  await page.waitForTimeout(150)
+  const g = await page.evaluate(() => {
+    const h1 = document.querySelector<HTMLElement>('.bp-table tr.h1 th')!.getBoundingClientRect()
+    const h2 = document.querySelector<HTMLElement>('.bp-table tr.h2 th')!.getBoundingClientRect()
+    const sc = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.getBoundingClientRect()
+    return { h1Top: h1.top, h1Bottom: h1.bottom, h2Top: h2.top, scTop: sc.top }
+  })
+  expect(Math.abs(g.h1Top - g.scTop), 'the first line pinned at the list’s top').toBeLessThanOrEqual(1)
+  expect(Math.abs(g.h2Top - g.h1Bottom), `the second line (${g.h2Top}) meets the first one's foot (${g.h1Bottom})`).toBeLessThanOrEqual(0.5)
+})
+
+/* A-F2: the OIL figures ("0 ›") were set left, 10–23px short of the heading's right edge; every column sets its figures
+   right, under its heading's right edge (the drawing m5b-b1-desk). */
+test('M5a walk A-F2: every OIL figure ends under the OIL heading’s right edge', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop table')
+  await lwRole(page, 'admin')
+  await openBalancesPage(page)
+  const g = await page.evaluate(() => {
+    const th = [...document.querySelectorAll<HTMLElement>('.bp-table tr.h2 th')].find(t => t.textContent === 'OIL')!
+    const rg = document.createRange(); rg.selectNodeContents(th)
+    const head = rg.getBoundingClientRect().right
+    const figs = [...document.querySelectorAll<HTMLElement>('[data-testid^="bal-oil-"]')].map(b => b.getBoundingClientRect().right)
+    return { head, n: figs.length, off: figs.map(r => Math.round((r - head) * 10) / 10).filter(d => Math.abs(d) > 1) }
+  })
+  expect(g.n).toBeGreaterThan(20)
+  expect(g.off, `every OIL figure's right edge on the heading's (${g.head})`).toEqual([])
+})
+
+/* B-F2/F3: on a phone a refusal under App bal ("Type a whole number or a half, like 17 or 17.5") ran from x −49 to 191 —
+   off the screen. Its words stay inside the screen and the sliding list. */
+test('M5a walk B-F2: a refusal’s words stay on the phone’s screen', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s sliding list')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  await typeFig(page, 'bal-LVE-bane', '17.3')
+  const err = page.getByTestId('bal-LVE-bane-err')
+  await expect(err).toHaveText('Type a whole number or a half, like 17 or 17.5')
+  const g = await err.evaluate(e => {
+    const r = e.getBoundingClientRect(), s = document.querySelector<HTMLElement>('[data-testid="bal-scroll"]')!.getBoundingClientRect()
+    return { left: r.left, right: r.right, sl: s.left, sr: s.right, w: window.innerWidth }
+  })
+  expect(g.left, 'its left edge on the screen').toBeGreaterThanOrEqual(Math.max(0, g.sl))
+  expect(g.right, 'its right edge on the screen').toBeLessThanOrEqual(Math.min(g.w, g.sr))
+})
+
+/* B-F5: the phone's Balances page was 120 taller than the screen — opened from a grid scrolled down — and the whole window
+   scrolled, the tab row going under the top bar. The page fits the screen and scrolls only inside itself. */
+test('M5a walk B-F5: on a phone the Balances page fits the screen; the window does not scroll', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s page')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.evaluate(() => window.scrollTo(0, 300))
+  await page.waitForTimeout(150)
+  await page.evaluate(() => document.querySelector<HTMLElement>('[data-testid="lw-tab-balances"]')!.click())
+  await expect(page.getByTestId('balances-page')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => ({ doc: document.documentElement.scrollHeight, ih: window.innerHeight, y: window.scrollY }))
+  expect(g.y, 'the page at the window’s top').toBe(0)
+  expect(g.doc, `the document (${g.doc}) no taller than the screen (${g.ih})`).toBeLessThanOrEqual(g.ih + 1)
+})
+
+/* B-F4: a tapped PL box was brought into sight but its amber "−0.5" after it was cut at the screen's edge. The box and its
+   pending figure come into sight together, clear of the names. */
+test('M5a walk B-F4: a tapped box comes into sight with its pending figure', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s sliding list')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  await expect(page.getByTestId('bal-opd-PL-bane')).toHaveText('−0.5')
+  await page.getByTestId('bal-PL-bane').focus()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const r = (s: string) => document.querySelector<HTMLElement>(s)!.getBoundingClientRect()
+    const box = r('[data-testid="bal-PL-bane"]'), pd = r('[data-testid="bal-opd-PL-bane"]'), sc = r('[data-testid="bal-scroll"]')
+    const names = document.querySelector<HTMLElement>('[data-testid="bal-row-bane"] .bp-who')!.getBoundingClientRect()
+    return { boxL: box.left, pdR: pd.right, scR: sc.right, namesR: names.right }
+  })
+  expect(g.pdR, 'the pending figure inside the list').toBeLessThanOrEqual(g.scR)
+  expect(g.boxL, 'the box clear of the names').toBeGreaterThanOrEqual(g.namesR)
+})
+
+/* The phone's person window stood at 33–45, over the top bar's lower half (the bar ends at 49); the drawing
+   m5a-p4-phone-own has it under the bar. It stands under the bar. */
+test('M5a walk: on a phone the person window stands under the top bar', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s window')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const w = document.querySelector<HTMLElement>('[data-testid="person-window"]')!.getBoundingClientRect()
+    return { top: w.top, foot: w.bottom, bar: document.querySelector<HTMLElement>('.topbar')!.getBoundingClientRect().bottom }
+  })
+  expect(g.top, `the window's top (${g.top}) under the bar's foot (${g.bar})`).toBeGreaterThanOrEqual(g.bar)
+  expect(g.foot, 'its foot on the screen').toBeLessThanOrEqual(874)
+})

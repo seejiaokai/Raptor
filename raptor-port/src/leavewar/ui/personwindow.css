@@ -17,9 +17,12 @@
     overflow: auto;
   }
   /* on a phone in the middle of the screen (D997 — the app's float windows' own way, as the Grades window): both edges at the
-     drawing's 10px, automatic margins, its own height up to the visible screen less 24 */
+     drawing's 10px, automatic margins, its own height up to the visible screen less 24 — AND UNDER THE TOP BAR (the M5a
+     walk, 29 Oct 26: a window as tall as the screen allowed stood at 33–45, over the bar's lower half, where the drawing
+     `m5a-p4-phone-own` has it under the bar). Still centred on the screen as the drawing places it, its height held so its
+     top is never above the bar's foot + 8 (the bar's live height — ui/topbarvar.ts); a longer list scrolls inside it. */
   @media (max-width: 700px) {
-    .bidsheet[data-testid="person-window"] { left: 10px; right: 10px; width: auto; max-width: none; top: 12px; bottom: 12px; margin: auto 0; height: fit-content; max-height: calc(100vh - 24px); max-height: calc(100dvh - 24px); }
+    .bidsheet[data-testid="person-window"] { left: 10px; right: 10px; width: auto; max-width: none; top: 12px; bottom: 12px; margin: auto 0; height: fit-content; max-height: calc(100vh - 2 * (var(--topbar-h, 0px) + 8px)); max-height: calc(100dvh - 2 * (var(--topbar-h, 0px) + 8px)); }
   }
 
   .bidsheet[data-testid="person-window"] {

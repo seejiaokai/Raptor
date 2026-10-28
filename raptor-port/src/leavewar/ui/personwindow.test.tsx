@@ -27,6 +27,8 @@ import { Topbar } from './Chrome'
 import { figWords } from './BalancesPage'
 import { askLw, balancesUp, lwPage, setApprMode, setBalancesUp, takeLwAsk } from './lwnav'
 import { datesWords, inYear, pastYears, personLeave, whenWords } from './personleave'
+import { DocViewer } from '../../ui/DocViewer'
+import { readFileSync } from 'node:fs'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -442,5 +444,69 @@ describe('the keyboard (the design guide §3)', () => {
     render(<Matrix />)
     act(() => { askLw({ kind: 'person', id: me }) })
     expect(lwSeenAt(me)).toBeGreaterThan(0)
+  })
+})
+
+/* THE M5a WALK'S FAULTS (29 Oct 26 — the host's triage, `docs/handpass/parts/lw-m5a/walk-triage.md`). */
+describe('the M5a walk\'s faults', () => {
+  it('A-F3 / C: a box keeps one width whatever its figure, so the figures beside it never move as it is typed in', () => {
+    render(<Matrix />)
+    open(RANGER)
+    const w0 = box('pw-LVE').style.width
+    fireEvent.blur(typeIn('pw-LVE', '16.5'))
+    expect(box('pw-LVE').value).toBe('16.5')
+    expect(box('pw-LVE').style.width).toBe(w0)
+    typeIn('pw-CCL', '-12.5')
+    const c0 = box('pw-CCL').style.width
+    fireEvent.change(box('pw-CCL'), { target: { value: '3' } })
+    expect(box('pw-CCL').style.width).toBe(c0)
+    expect(box('pw-LVE-cf').style.width).toBe(box('pw-LVE-cf').style.width)
+  })
+
+  it('C-F2 / C-F3: Escape closes the document viewer first, the keyboard back on the paperclip; the next closes the window, the keyboard back on the name', () => {
+    INPUTS.push({ iid: 'pw-ll', person: RANGER, type: 'LL', date: 'Aug 3', endDate: 'Aug 5', yr: 2026, allday: true, remarks: '', docIds: ['d1'] })
+    raptorNotify()
+    render(<><Matrix /><DocViewer /></>)
+    const name = screen.getByTestId(`person-${RANGER}`)
+    name.focus()
+    fireEvent.click(name)
+    const clip = screen.getByTestId(`pw-clip-${D1}`)
+    clip.focus()
+    act(() => { fireEvent.click(clip) })
+    const viewer = document.getElementById('docViewPop')!
+    expect(viewer.hidden).toBe(false)
+    act(() => { fireEvent.keyDown(document.activeElement ?? document, { key: 'Escape' }) })
+    expect(viewer.hidden).toBe(true)
+    expect(screen.queryByTestId('person-window')).toBeTruthy()
+    expect(document.activeElement).toBe(screen.getByTestId(`pw-clip-${D1}`))
+    act(() => { fireEvent.keyDown(document.activeElement ?? document, { key: 'Escape' }) })
+    expect(screen.queryByTestId('person-window')).toBeNull()
+    expect(document.activeElement).toBe(name)
+  })
+
+  it('the phone\'s window stands under the top bar: its place and its height are read from the bar\'s live height (the stylesheet — measured on the built app)', () => {
+    const css = readFileSync('src/leavewar/ui/personwindow.css', 'utf8').replace(/\r\n/g, '\n').replace(/\/\*[\s\S]*?\*\//g, '')
+    const phone = css.slice(css.indexOf('@media (max-width: 700px)'))
+    const rule = phone.slice(0, phone.indexOf('}', phone.indexOf('[data-testid="person-window"]')))
+    expect(rule).toMatch(/max-height:\s*calc\(100dvh - 2 \* \(var\(--topbar-h, 0px\) \+ 8px\)\)/)
+  })
+
+  /* (the LVE figure beside a name is a table cell, never a keyboard stop — the name beside it is the keyboard's way in — so
+     a window it opens has no button to give the keyboard back to) */
+  it('C-F3: closed by Escape or by ✕, the keyboard goes back to My leave and to the name that opened it', () => {
+    ranger()
+    render(<><Topbar /><Matrix /></>)
+    const mine = screen.getByTestId('my-leave')
+    mine.focus(); fireEvent.click(mine)
+    expect(win()).toBeTruthy()
+    act(() => { fireEvent.keyDown(document.activeElement ?? document, { key: 'Escape' }) })
+    expect(screen.queryByTestId('person-window')).toBeNull()
+    expect(document.activeElement).toBe(mine)
+    const name = screen.getByTestId(`person-${RANGER}`)
+    name.focus(); fireEvent.click(name)
+    screen.getByTestId('pw-close').focus()
+    close()
+    expect(screen.queryByTestId('person-window')).toBeNull()
+    expect(document.activeElement).toBe(name)
   })
 })

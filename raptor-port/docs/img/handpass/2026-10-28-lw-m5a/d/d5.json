@@ -1,0 +1,81 @@
+[
+ {
+  "id": "U1 typed figure: 15 → 16, Undo, Redo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "typed 16; after Undo 15; after Redo 16 · Undo note: Undid: LVE balance 15 → 16",
+  "pics": [
+   "d5-fig-undo",
+   "d5-fig-redo"
+  ]
+ },
+ {
+  "id": "U1 after a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal kept 16; Undo list empty (D148) undo off, redo off",
+  "pics": [
+   "d5-fig-reload"
+  ]
+ },
+ {
+  "id": "U2 grade change Senior → Junior, Undo, Redo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after pick Junior pilot+33; after Undo Senior pilot+36; after Redo Junior pilot+33",
+  "pics": [
+   "d5-grade-set",
+   "d5-grade-undo",
+   "d5-grade-redo"
+  ]
+ },
+ {
+  "id": "U2 after a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "grade kept Junior pilot+33",
+  "pics": []
+ },
+ {
+  "id": "U3 grades list: + Grade \"Walker D grade\" +10, Undo, Redo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before 5; in the window after adding 6; after Undo 5; after Redo 6 · names after Redo: Senior pilot / Junior pilot / Senior WSO / Junior WSO / Ops A / Walker D grade",
+  "pics": [
+   "d5-grades-added",
+   "d5-grades-open"
+  ]
+ },
+ {
+  "id": "U3 after a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the added grade kept 6",
+  "pics": []
+ },
+ {
+  "id": "U4 the lock: on, Undo, Redo (the lock is an Undo step — reading)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after pressing true; after Undo false; after Redo true · Undo note: Undid: the balance lock",
+  "pics": [
+   "d5-lock-on",
+   "d5-lock-undo",
+   "d5-lock-redo"
+  ]
+ },
+ {
+  "id": "U4 after a reload",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the lock kept true",
+  "pics": []
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

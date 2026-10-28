@@ -17,6 +17,7 @@ import './bidpicker.css'
 import { followVisible } from '../../ui/vvfollow'
 import { holdPageScroll } from '../../ui/floatwin'
 import { screenBox } from '../../ui/kbscroll'
+import { topSheet } from '../../ui/sheetfocus'
 import { usePhone } from './phone'
 
 /* THE PAGE STAYS FULLY SCROLLABLE UNDER A SHEET (owner, 28 Aug 26 — "enable
@@ -419,9 +420,18 @@ export function Sheet({
      ever one — but the day two are mounted at once, one press must peel one
      layer rather than clearing the pile. The listener captures so a field's own
      Escape handler cannot swallow it first. */
+  /* …AND A WINDOW OF THE APP'S OWN OPENED OVER IT ANSWERS FIRST (the M5a walk's C-F2, 29 Oct 26 — the design guide §3:
+     Escape closes what opened last). The document viewer a paperclip opens (ui/DocViewer.tsx), and the app's other
+     keyboard-holding windows (ui/sheetfocus.ts — the "No document" question and the rest), are not Leave War sheets, so
+     the topmost-sheet guard below never saw them: one Escape closed the viewer AND the person window under it, this
+     listener being heard first on the same document. While such a window opened AFTER this sheet stands, Escape is left
+     to it; one that was already up when this sheet opened is under it, and changes nothing. */
   useEffect(() => {
+    const under = topSheet()
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      const top = topSheet()
+      if (top && top !== under && !panelRef.current?.contains(top)) return
       /* KEPT-MOUNTED guard (bug-hunt fix, 1 Sep 26): since the Leave War tab
          stays mounted behind a tab switch (LeaveWarPage), a sheet left open
          when the reader switched away keeps this capture listener alive on a

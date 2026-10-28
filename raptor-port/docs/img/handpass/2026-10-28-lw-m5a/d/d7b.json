@@ -1,0 +1,91 @@
+[
+ {
+  "id": "5d carried fwd 25 typed with App bal 20, then App bal 3 with incl. 20 showing",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "incl. after 25 typed (clamped) 0 (expected 20); App bal 20; after App bal 3: App 3; after App bal 3: incl. 0 (expected 3) · refusal words under the box: Carried forward is from 0 to 20",
+  "pics": [
+   "d7b-5d-cf25",
+   "d7b-5d-app3"
+  ]
+ },
+ {
+  "id": "4 today 28 Oct 2026: typed 20 incl 3; LL Mon 4 – Tue 5 Jan 2027 approved now → 18 incl 3 (the 2027 days come off the total only)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 18; incl. 3; Pending –; War bal 18; window App 18; window war 18; grid figure 18 · lines 2026-01-14 OIL Wed 14 Jan 1 Approved / 2027-01-04 LL Mon 4 – Tue 5 Jan 2 Approved",
+  "pics": [
+   "d7b-4-now-bal-win"
+  ]
+ },
+ {
+  "id": "4 clock 1 Jan 2027: 17 → carried forward 15 after the 2 days, +33 → 48 incl 15",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 48; incl. 15; Pending –; War bal 48; window App 48; window war 48; grid figure 48",
+  "pics": [
+   "d7b-4-jan1-bal-win"
+  ]
+ },
+ {
+  "id": "2 below-zero ask on a bid made only of weekend days (Saint War bal 10; LL Sat 13 – Sun 21 Feb 2027; the run grows to 21 days)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "LL button read \"10\" before; after the first press the window stays open: true; words:  // all: Saint Sat 13 Feb Auto-approve ✕ No manning row turns amber or red till 21 Feb 27 Document Whole day AM PM 13 Feb 27 – 21 Feb 27 February 2027 › 29 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 13 Feb 27 – 21 Feb 27 LL 10 OL 10 OIL 0 CCL 0 FCL 0 PL 0 EL 0 CL 0 That takes Saint to -1 LVE. Tap the same leave again to go ahead. CSE OD Grant OIL ⋯",
+  "pics": [
+   "d7b-2-ask"
+  ]
+ },
+ {
+  "id": "2b after the second press (the leave placed)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Bal row −1/incl 0/pend –/war −1 · window tile \"App −1 incl 0 pend 0 war −1 · 0 taken\" · grid fig \"-1 21\" · Approvals: ",
+  "pics": [
+   "d7b-2-second-bal-win"
+  ]
+ },
+ {
+  "id": "3 leave button \"left\" — Wed 4 Nov (War bal 18; designer expects 17)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "LL left 18, OL 18, CCL 0, PL 0; day line \"No manning row turns amber or red\"",
+  "pics": [
+   "d7b-left-2026-11-04-full"
+  ]
+ },
+ {
+  "id": "3 leave button \"left\" — Sat 7 Nov (War bal 18; designer expects 18)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL left 18, OL 18, CCL 0, PL 0; day line \"No manning row turns amber or red\"",
+  "pics": [
+   "d7b-left-2026-11-07-full"
+  ]
+ },
+ {
+  "id": "3 leave button \"left\" — PH Wed 18 Feb (War bal 18; designer expects 18)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL left 18, OL 18, CCL 0, PL 0; day line \"No manning row turns amber or red\"",
+  "pics": [
+   "d7b-left-2026-02-18-full"
+  ]
+ },
+ {
+  "id": "3 leave button \"left\" — Wed 4 Nov PM (War bal 18; designer expects 17.5)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "LL left 18, OL 18, CCL 0, PL 0; day line \"No manning row turns amber or red\"",
+  "pics": [
+   "d7b-left-2026-11-04-pm"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

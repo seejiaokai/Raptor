@@ -66,6 +66,46 @@ function Chev() {
 
 /* ------------------------------------------------------------------ a box a figure is typed in */
 
+/** an emptied box's words, in the store's refusals' voice (balanceProblem) */
+const EMPTY_WORDS = 'Type a figure'
+/** the person window's box: four figures' room ("16.5", "−2.5", "100") — longer ones are drawn smaller (fitFigure) */
+const FIT_CH = 4
+/** the smallest letters a long figure is drawn in */
+const FIG_MIN_PX = 9
+
+/** A FIGURE LONGER THAN ITS BOX IS DRAWN SMALLER UNTIL IT FITS (the M5a walk's A-F3). The box's own letters come back the
+ *  moment the figure fits again. Reads the box's measure once; writes only for a figure that overflows. */
+function fitFigure(el: HTMLInputElement): void {
+  if (el.style.fontSize) el.style.fontSize = ''
+  if (el.scrollWidth <= el.clientWidth) return
+  const cs = getComputedStyle(el)
+  const pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0)
+  const base = parseFloat(cs.fontSize) || 13.5
+  const room = el.clientWidth - pad, need = el.scrollWidth - pad
+  let px = Math.max(FIG_MIN_PX, Math.floor((base * room) / Math.max(need, 1) * 2) / 2)
+  el.style.fontSize = `${px}px`
+  /* the letters' widths do not scale exactly with their size: a half point less until it fits, at most a few steps */
+  for (let i = 0; i < 6 && px > FIG_MIN_PX && el.scrollWidth > el.clientWidth; i++) { px -= 0.5; el.style.fontSize = `${px}px` }
+}
+
+/** A REFUSAL'S WORDS MOVED SIDEWAYS INTO SIGHT (the M5a walk's B-F2/F3): inside the page's scroller, 4px off its edges,
+ *  never past the screen's. Under the phone's pinch (CSS zoom on the rows) a screen pixel is not the words' own pixel, so
+ *  the move is given in theirs. */
+function keepInSight(e: HTMLElement): void {
+  e.style.transform = ''
+  const r = e.getBoundingClientRect()
+  if (!r.width) return
+  const area = e.closest('.bp-hs, .bp-scroll')?.getBoundingClientRect()
+  const L = Math.max(area ? area.left : 0, 0) + 4
+  const Rt = Math.min(area ? area.right : window.innerWidth, window.innerWidth) - 4
+  let dx = 0
+  if (r.right > Rt) dx = Rt - r.right
+  if (r.left + dx < L) dx = L - r.left
+  if (!dx) return
+  const s = e.offsetWidth ? r.width / e.offsetWidth : 1
+  e.style.transform = `translateX(${Math.round(dx / (s || 1))}px)`
+}
+
 /** ONE BOX (the spec §1.1, D1080): saves on Enter or on leaving it, never on each key; Escape puts the old figure back; one
  *  tap then typing replaces it — the app's own arming for its figure boxes (ui/interactions.ts, `input.mth-in`). `save`
  *  answers the refusal's words, or null when it saved; the words stand at the box until it is next typed in. */
@@ -79,8 +119,9 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   plus?: boolean
   /** a class of the surface it stands on (the person window's tile box — PersonWindow.tsx, drawn by its own drawing) */
   cls?: string
-  /** the box as wide as its figure, plus this many pixels of its own padding and edge — the person window's tiles draw a
-   *  box that hugs its figure (round 20d's `r17-box`), where the page's columns draw one width */
+  /** the person window's tile box (round 20d's `r17-box`): one width — four figures' room plus this many pixels of its own
+   *  padding and edge — whatever it shows, so the figures beside it never move as it is typed in (the M5a walk's A-F3,
+   *  29 Oct 26: hugging its figure, it widened 42 → 53 for "16.5" and pushed Pending and War bal 11px along) */
   fit?: number
 }) {
   const shown = (plus ? '+' : '') + figWords(value)
@@ -96,7 +137,11 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   const commitText = (t: string | null) => {
     const h = held.current ?? { save, value, shown }
     typed.current = null
-    if (t === null || t.trim() === '' || t === h.shown) return null
+    if (t === null || t === h.shown) return null
+    /* AN EMPTIED BOX SAYS SO (the M5a walk's A-F1, 29 Oct 26): Enter, or leaving it, put the old figure back with nothing
+       said, so a box he cleared to type a new figure read as saved. The old figure stays and the box says what it needs;
+       Escape still puts it back silently (above) */
+    if (t.trim() === '') return EMPTY_WORDS
     const n = readFig(t)
     if (n === h.value) return null
     return h.save(n)
@@ -108,7 +153,8 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   const labelNow = useRef(label)
   labelNow.current = label
   useEffect(() => () => {
-    if (typed.current === null) return
+    /* a box taken away emptied was no save he asked for: nothing is said of it */
+    if (typed.current === null || typed.current.trim() === '') return
     const why = commitText(typed.current)
     if (why) HOOKS.toast(`${labelNow.current} not saved: ${why}`, 'warn')
   }, [])
@@ -122,6 +168,16 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
     el.addEventListener('lw-revert', revert)
     return () => el.removeEventListener('lw-revert', revert)
   }, [])
+  /* THE WHOLE FIGURE, ALWAYS (the M5a walk's A-F3, 29 Oct 26): "10.5" in a CCL box and "−12.5" in App bal showed their
+     last digit cut. The box keeps its drawn width — the columns and the figures beside it never move as it is typed in —
+     and a figure longer than that width holds is drawn in smaller letters until it fits (−999.5, the longest the store
+     takes, included). Measured only when the figure changes; a figure that fits is never touched. */
+  useLayoutEffect(() => { const el = boxRef.current; if (el) fitFigure(el) }, [text, shown])
+  /* A REFUSAL'S WORDS STAY ON THE SCREEN (the M5a walk's B-F2/F3, 29 Oct 26): set under the box's right edge, a long
+     refusal under a box near the phone's left ran off the screen. They are moved sideways, never re-worded, to stand
+     inside the sliding area (the page's scroller), or the screen where the box has none. */
+  const errRef = useRef<HTMLSpanElement | null>(null)
+  useLayoutEffect(() => { const e = errRef.current; if (e) keepInSight(e) }, [err])
   const key = (e: ReactKeyboardEvent<HTMLInputElement>) => {
     /* saved and still his: the next figure typed here is read against the figure this save leaves */
     if (e.key === 'Enter') { e.preventDefault(); commit(); held.current = null }
@@ -139,7 +195,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
     <span className={`bp-fb${err ? ' bad' : ''}`}>
       <input
         className={`mth-in bp-bx${sm ? ' sm' : ''}${value === 0 && text === null ? ' z' : ''}${cls ? ` ${cls}` : ''}`}
-        style={fit != null ? { width: `calc(${Math.max(1, (text ?? shown).length)}ch + ${fit}px)` } : undefined}
+        style={fit != null ? { width: `calc(${FIT_CH}ch + ${fit}px)` } : undefined}
         data-testid={testid}
         ref={boxRef}
         data-dirty={text !== null ? '1' : undefined}
@@ -156,7 +212,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
         onKeyDown={key}
         onBlur={() => { held.current = held.current ?? { save, value, shown }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
       />
-      {err && <span className="bp-err" role="alert" data-testid={testid ? `${testid}-err` : undefined}>{err}</span>}
+      {err && <span className="bp-err" ref={errRef} role="alert" data-testid={testid ? `${testid}-err` : undefined}>{err}</span>}
     </span>
   )
 }
@@ -282,7 +338,9 @@ const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }
           <td>{box('LVE', d.cf, true, 'cf')}</td>
           <td className={`bp-pend${d.pend ? ' pd' : ''}`} data-testid={`bal-pend-${pid}`}>{pend}</td>
           <td className={`bp-war${d.war < 0 ? ' neg' : ''}`} data-testid={`bal-war-${pid}`}>{figWords(d.war)}</td>
-          <td className="sep bp-oilc">{oil}</td>
+          {/* a plain table cell, its figure set right under OIL as every column's is (the M5a walk's A-F2: the phone's
+              flex class on this cell took it out of the table, its figures left of the heading by 10–23px) */}
+          <td className="sep">{oil}</td>
           {OTHER.map((k, i) => (
             <td key={k} className={i ? undefined : 'sep'}>{box(k, d.other[k]!.app, true)}<span className="bp-opd" data-testid={`bal-opd-${k}-${pid}`}>{pendWords(d.other[k]!.pend)}</span></td>
           ))}
@@ -429,14 +487,57 @@ export function BalancesPage() {
 
   /* THE PAGE FILLS THE SCREEN UNDER THE TAB ROW and scrolls inside itself (the drawing's page: its foot 8px off the screen's
      on a desktop, at the screen's foot on a phone), so its headings stay in sight and, on a phone, its names stay put */
+  /* Its top is read in the PAGE's measure (the screen's plus how far the window is scrolled): the page opens at the
+     window's top (LeaveWarPage.tsx Body scrolls there, after this has run), and opened from a grid scrolled down, a top
+     read off the screen was short by that scroll — the page came out 120 taller than the phone's screen and the whole
+     window scrolled, the tab row going under the top bar (the M5a walk's B-F5, 29 Oct 26). */
   useLayoutEffect(() => {
     const el = rootRef.current
     if (!el) return
-    const fit = () => { const top = el.getBoundingClientRect().top; el.style.height = `${Math.max(240, window.innerHeight - Math.max(0, top))}px` }
+    const fit = () => { const top = el.getBoundingClientRect().top + (window.scrollY || 0); el.style.height = `${Math.max(240, window.innerHeight - Math.max(0, top))}px` }
     fit()
     window.addEventListener('resize', fit)
     return () => window.removeEventListener('resize', fit)
   }, [phone])
+
+  /* THE TWO HEADING LINES MEET (the M5a walk's A-F4, 29 Oct 26): the second pinned at the drawing's 30px while the first
+     drew shorter, and a strip of the rows slid between them. The second pins where the first one ends, as measured — the
+     same in every browser, whatever a table cell makes of its height and padding. */
+  const tableRef = useRef<HTMLTableElement | null>(null)
+  useLayoutEffect(() => {
+    const t = tableRef.current
+    if (!t) return
+    const pin = () => {
+      const h = t.querySelector<HTMLElement>('tr.h1')?.offsetHeight ?? 0
+      if (h > 0) t.querySelectorAll<HTMLElement>('tr.h2 th').forEach(th => { th.style.top = `${h}px` })
+    }
+    pin()
+    window.addEventListener('resize', pin)
+    return () => window.removeEventListener('resize', pin)
+  }, [phone, view, groups.length === 0])
+
+  /* A TAPPED BOX COMES INTO SIGHT WITH ITS PENDING FIGURE (the M5a walk's B-F4, 29 Oct 26): the browser slides the phone's
+     list only far enough for the box, and a kind's amber pending figure after it — the figure the typed number changes —
+     was cut at the screen's edge. Once the browser has slid, the box's whole cell (box and pending figure) is brought
+     inside the list, clear of the names held at its left. */
+  const showCell = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
+    const t = e.target as HTMLElement
+    if (!(t instanceof HTMLInputElement)) return
+    const hs = hsRef.current
+    if (!hs) return
+    const later = typeof requestAnimationFrame === 'function' ? requestAnimationFrame : (f: () => void) => setTimeout(f, 16)
+    later(() => {
+      if (!t.isConnected || document.activeElement !== t) return
+      const cell = (t.closest('.bp-oc') as HTMLElement | null) ?? t
+      const c = cell.getBoundingClientRect(), a = hs.getBoundingClientRect()
+      const names = t.closest('.bp-row')?.querySelector('.bp-who')?.getBoundingClientRect()
+      const L = Math.max(a.left, names ? names.right : a.left) + 4, Rt = a.right - 4
+      let dx = 0
+      if (c.right > Rt) dx = c.right - Rt
+      if (c.left - dx < L) dx = c.left - L
+      if (dx) hs.scrollLeft += dx
+    })
+  }, [])
 
   /* PINCH ON A PHONE (D1483, D1236): the list zooms out until every column fits — the OIL tab's set-up (OilTracker.tsx), the
      app's one pinch body: CSS zoom, the headings held on their row and the names on their column while the fingers move,
@@ -552,7 +653,7 @@ export function BalancesPage() {
   const span = view === 'bal' ? 13 : DAYS_TAKEN_COLS.length + 3
   const takenHead = `DAYS TAKEN IN ${period.name}`
   const body = phone ? (
-    <div className="bp-hs" ref={hsRef} data-testid="bal-scroll">
+    <div className="bp-hs" ref={hsRef} data-testid="bal-scroll" onFocus={showCell}>
       <div className={`bp-zoom ${view}`} ref={zoomBox} style={zoom !== 1 ? { zoom } : undefined}>
         <div className="bp-cols" role="presentation">
           <span>NAME · GRADE</span>
@@ -570,7 +671,7 @@ export function BalancesPage() {
     </div>
   ) : (
     <div className="bp-scroll" data-testid="bal-scroll">
-      <table className="bp-table">
+      <table className="bp-table" ref={tableRef}>
         <thead>
           {view === 'bal' ? (
             <>

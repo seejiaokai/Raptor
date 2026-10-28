@@ -32,15 +32,136 @@
   "id": "row8 Approvals line for Diesel (DAYS 2, LVE BAL 8)",
   "size": "desk",
   "verdict": "PASS",
-  "said": "Diesel D LL Tue 29 – Wed 30 Dec › 2 days 8 P 27 29 Oct 02:14 · by Saber Approve Refuse",
+  "said": "Diesel D LL Tue 29 – Wed 30 Dec › 2 days 8 P 27 29 Oct 02:16 · by Saber Approve Refuse",
   "pics": []
  },
  {
-  "id": "ERROR",
+  "id": "row10 (Feb 2027): LL 1–12 Feb approved (10 charged), LL 13–21 Feb pending; run of 21 charges every day (spec App 20, Pending −11, War 9)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 20; incl. 0; Pending −11; War bal 9; window App 20; window war 9; grid figure 9 · Approvals: Nomad C LL Sat 13 – Sun 21 Feb › 5 days 9 P 26 29 Oct 02:16 · by Saber Approve Refuse",
+  "pics": [
+   "d3-row10-bal-win",
+   "d3-row10-grid"
+  ]
+ },
+ {
+  "id": "row10 Approvals DAYS for the bid alone (spec: 5)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Nomad C LL Sat 13 – Sun 21 Feb › 5 days 9 P 26 29 Oct 02:16 · by Saber Approve Refuse",
+  "pics": []
+ },
+ {
+  "id": "row10 bid window \"left\" for LL on Mon 22 Feb (spec: War bal − 1 = 8)",
   "size": "desk",
   "verdict": "FAIL",
-  "said": "TimeoutError: page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"approvals-page\"]') to be visible\u001b[22m\n",
-  "pics": []
+  "said": "LL left 9 (War bal 9)",
+  "pics": [
+   "d3-row10-bidwin-22feb"
+  ]
+ },
+ {
+  "id": "row6 2026-12-31 (spec 21 incl 2)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 21; incl. 2; Pending –; War bal 21; window App 21; window war 21; grid figure 21 · window: 1 taken",
+  "pics": [
+   "d3-row6-d31-bal-win",
+   "d3-row6-d31-grid"
+  ]
+ },
+ {
+  "id": "row8 2026-12-31 (spec App 10, Pending −2, War 8)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 10; incl. 4; Pending −2; War bal 8; window App 10; window war 8; grid figure 8",
+  "pics": [
+   "d3-row8-d31-bal-win"
+  ]
+ },
+ {
+  "id": "row6 2027-01-01 (spec 52 incl 19)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 52; incl. 19; Pending –; War bal 52; window App 52; window war 52; grid figure 52 · window: 0 taken",
+  "pics": [
+   "d3-row6-j1-bal-win",
+   "d3-row6-j1-grid"
+  ]
+ },
+ {
+  "id": "row8 2027-01-01 (spec App 39, Pending –, War 39)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 39; incl. 6; Pending –; War bal 39; window App 39; window war 39; grid figure 39",
+  "pics": [
+   "d3-row8-j1-bal-win"
+  ]
+ },
+ {
+  "id": "row4 (no grade, 37 incl 4) 2027-01-01: spec 33 incl 33",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 33; incl. 33; Pending –; War bal 33; window App 33; window war 33; grid figure 33",
+  "pics": [
+   "d3-row4-j1-bal-win"
+  ]
+ },
+ {
+  "id": "row5 (−2 left, Junior pilot +33) 2027-01-01: spec 31 incl 0",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 31; incl. 0; Pending –; War bal 31; window App 31; window war 31; grid figure 31",
+  "pics": [
+   "d3-row5-j1-bal-win"
+  ]
+ },
+ {
+  "id": "row10 on 1 Jan 2027 (informational, no spec figure: leave still in Feb)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Bal row 53/incl 20/pend −11/war 42 · window tile \"App 53 incl 20 pend −11 war 42 · 0 taken\" · grid fig \"42 21\" · Approvals: LL Sat 13 – Sun 21 Feb › 5 days 42 P 26 29 Oct 02:16 · by Saber Approve Refuse",
+  "pics": [
+   "d3-row10-j1-bal-win"
+  ]
+ },
+ {
+  "id": "row6 2027-01-04 (spec 52 incl 19)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 52; incl. 19; Pending –; War bal 52; window App 52; window war 52; grid figure 52 · window: 1 taken",
+  "pics": [
+   "d3-row6-j4-bal-win",
+   "d3-row6-j4-grid"
+  ]
+ },
+ {
+  "id": "row8 2027-01-04 (spec App 39, Pending –, War 39)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 39; incl. 6; Pending –; War bal 39; window App 39; window war 39; grid figure 39",
+  "pics": [
+   "d3-row8-j4-bal-win"
+  ]
+ },
+ {
+  "id": "row4 (no grade, 37 incl 4) 2027-01-04: spec 33 incl 33",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 33; incl. 33; Pending –; War bal 33; window App 33; window war 33; grid figure 33",
+  "pics": [
+   "d3-row4-j4-bal-win"
+  ]
+ },
+ {
+  "id": "row5 (−2 left, Junior pilot +33) 2027-01-04: spec 31 incl 0",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 31; incl. 0; Pending –; War bal 31; window App 31; window war 31; grid figure 31",
+  "pics": [
+   "d3-row5-j4-bal-win"
+  ]
  },
  {
   "id": "errors (console, page, 4xx)",

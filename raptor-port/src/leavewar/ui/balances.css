@@ -65,7 +65,10 @@
 
   /* a box: "you can type this" — its edge 3.4:1 against the tile (round 14) */
   .bp-fb { position: relative; display: inline-flex; vertical-align: middle; }
-  .bp-bx { display: inline-flex; align-items: center; justify-content: flex-end; box-sizing: border-box; width: 54px; min-width: 54px; height: 28px; padding: 0 9px; margin: 0; border: 1px solid #66717f; border-radius: 7px; background: #0d1217; color: #f1f4f7; font: 700 13.5px system-ui; font-variant-numeric: tabular-nums; text-align: right; outline: none; }
+  /* (built — the M5a walk's A-F3, 29 Oct 26) its figure is set right, so its LEFT padding only holds a long figure off the
+     edge: 3px there, not the drawing's 9, gives "−12.5" and "10.5" their room in the drawn widths; a longer one is drawn in
+     smaller letters (BalancesPage.tsx fitFigure). Every figure's right edge stays where the drawing has it. */
+  .bp-bx { display: inline-flex; align-items: center; justify-content: flex-end; box-sizing: border-box; width: 54px; min-width: 54px; height: 28px; padding: 0 9px 0 3px; margin: 0; border: 1px solid #66717f; border-radius: 7px; background: #0d1217; color: #f1f4f7; font: 700 13.5px system-ui; font-variant-numeric: tabular-nums; text-align: right; outline: none; }
   .bp-bx.sm { width: 44px; min-width: 44px; }
   .bp-bx.z { color: #7d8894; font-weight: 500; }
   .bp-bx:focus { border-color: #3bc6e8; color: #f1f4f7; }
@@ -146,10 +149,11 @@
   .bp-gd svg { width: 8px; height: 8px; color: #6b7785; }
   .bp-gd.none { color: #F2C879; font-weight: 600; }
   .bp-gd.ro { cursor: default; }
-  .bp-row .bp-bx { min-width: 0; width: 100%; height: 30px; padding: 0 7px; font-size: 14px; }
+  .bp-row .bp-bx { min-width: 0; width: 100%; height: 30px; padding: 0 7px 0 3px; font-size: 14px; }
   .bp-row .bp-fb { display: flex; }
   .bp-row .bp-pend { font-size: 14px; }
   .bp-row .bp-war { font: 800 15px system-ui; }
+  /* the phone's OIL cell only — on a desktop the cell stays a table cell (the M5a walk's A-F2) */
   .bp-oilc { font: 600 14px system-ui; color: #e6edf3; display: inline-flex; justify-content: flex-end; gap: 5px; }
   .bp-row .bp-oil .ch { margin-left: 5px; }
   .bp-oc { display: inline-flex; align-items: center; justify-content: flex-end; gap: 3px; padding-right: 6px; }

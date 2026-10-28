@@ -1,0 +1,36 @@
+[
+ {
+  "id": "11b typed 20 (Nov 2026); LL Fri 31 Dec 2027 – Mon 3 Jan 2028 filed on the Inputs page with no 2028 period: −2 by the plain rule",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 18; window App 18 · lines 2026-01-14 OIL Wed 14 Jan 1 Approved / 2027-12-31 LL Fri 31 Dec – Mon 3 Jan 2 Approved",
+  "pics": [
+   "d8-11b-before-bal-win"
+  ]
+ },
+ {
+  "id": "11b the 2028 period created (1 Jan – 31 Dec 28, no holiday yet): nothing that was counted the same way moves",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 18",
+  "pics": [
+   "d8-11b-created-bal-win"
+  ]
+ },
+ {
+  "id": "11b 3 Jan 2028 made a public holiday in the new period: the day comes back (+1)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App bal 19; window App 19 · lines 2026-01-14 OIL Wed 14 Jan 1 Approved / 2027-12-31 LL Fri 31 Dec – Mon 3 Jan 1 Approved",
+  "pics": [
+   "d8-11b-ph-bal-win"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
