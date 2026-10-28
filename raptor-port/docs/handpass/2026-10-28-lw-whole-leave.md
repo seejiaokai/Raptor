@@ -68,8 +68,24 @@ one leave (now opened whole), given separate entries (`movestandard`, `litdecide
 
 ## 5. The walk
 
-*(to come)*
+One Sonnet walker, one assertion script (`scripts/handpass/lw-whole-walk.mjs`), the served build `index-BrWj2PVq.js`
+(port 4183, built under the lock); phone WebKit 402 × 874 (and 360 × 780 for W13), desktop Chromium 1536 × 864 at 1.25. 30
+runs: **26 PASS, 4 FAIL → three findings**; no page or console error. Report `docs/handpass/parts/lw-whole/walk.md`, raw
+`walk-results.json`, pictures `docs/img/handpass/2026-10-28-lw-whole-leave/walk/` (100).
+
+| Finding | The host's reading (pictures opened: W1 phone all / day, W13 360) | Disposition |
+|---|---|---|
+| W6 — the refusal's note amber, the brief said red | Every refusal note in this window is the amber `note warn` (a kept-pending note, a skipped day): the brief's word was wrong, the words right — "Nothing was decided. He posts out on 11 Feb: refuse or delete it." | Not a fault |
+| W9 — Undo with the window open: the desktop's window covers the top bar; on a phone the Undo tap only closes the window (a tap outside closes it — the popup rule) | Older than this change ([LW-WINDOWS-NONBLOCKING], [TRAFFIC-WIN-COVERS-UNDO]'s family); a store change under an open window (W9b) and Undo after ✕ both follow live — PASS | Not this change's; noted under [LW-WINDOWS-NONBLOCKING] |
+| W13 at 360 × 780 — the Duration row wraps, the chips under AM · PM; no word clipped | His iPhone is 402 wide, where the row is one line (D1461's reading: "drawn at 402 in WebKit on one line"); at 360 the row wraps whole, never breaking a chip — the design guide's wrap. "Grant OIL" reading "Grant …" at 360 is the leave rows' own, untouched here | Said to him (R9); no change |
+| **Found by the host in W1's pictures, not flagged:** on "All" the manning line read "Mon 9 Feb" over "No manning row is amber or red" — a date naming no hurt, a line of height, and his drawing (v2) shows the calm line alone | A departure from the approved drawing (D1424) | **Fixed red first** (`DayLine.tsx` — the day named only where a row is; `bidwindow-dayline.test.tsx`); the drag window's calm line loses the same empty date |
+
+Recorded words: W3 the member's bell, ONE line — "Your leave · Mon 9 – Thu 12 Feb · LL approved · Saber · now"; W8 after
+Back, Approvals' line greyed "Already approved by Saber" (as built for any decision made on the grid — said to him); a cyan
+cell carrying Approvals' ring occurred (W8-desk-ringed-cyan). Observations, none a fault of this change: the desktop window
+can cover the leave's last days (it floats, D641); the 30–31 Dec window's "till 2 Jan 27" (the bid's words run across the
+year's end, the store's run — as before); Escape leaves focus on the page (as every war window does — older).
 
 ## 6. The ledger's row
 
-*(after the walk)*
+Added to `docs/walk-ledger.md` (28 Oct 26).

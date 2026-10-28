@@ -39,8 +39,11 @@ export function DayLine({ days, label }: {
   for (const t of w.turned) pairs.push({ id: t.ruleId, level: t.level, name: t.label, fig: `${figs(t.before, t.after)} · ${t.level}` })
   return (
     <div className="bidsheet-dayline" data-testid="bid-dayline">
-      {(many || label) && (
-        <div className="dl-when" data-testid="bid-dayline-when">{[label, many ? dayLabel(w.date) : ''].filter(Boolean).join(' · ')}</div>
+      {/* the day it hurts most, named only where a day hurts: over several days with nothing amber or red no day is worse
+          than another, and a date over the calm line said nothing and cost the window a line — a whole leave's window opens
+          on several days (D1461; version 2 drew the calm line alone — the walk of 28 Oct 26) */}
+      {((many && pairs.length > 0) || label) && (
+        <div className="dl-when" data-testid="bid-dayline-when">{[label, many && pairs.length > 0 ? dayLabel(w.date) : ''].filter(Boolean).join(' · ')}</div>
       )}
       <div className="dl-pairs">
         {pairs.map((p, i) => (
