@@ -8548,3 +8548,28 @@ test('a period picked on Approvals, then a request’s dates: the grid lands on 
     return r.width > 0 && r.left >= w.left && r.right <= w.right + 1
   }), { message: 'the ringed day stands in the grid\u2019s view', timeout: 4000 }).toBe(true)
 })
+
+/* D1462, D1463 (28 Oct 26, his "As recommended for all" to questions 26 and 27): the bid window's title names its day the
+   size of the name, in the app's white — not the small faint grey — and the admin's switch reads "Auto-approve", on one
+   line beside the day and ✕ at his phone's width. Red first: before the change the day was 11px grey and the switch read
+   "Approve what I enter". */
+test('D1462 D1463 the bid window title: its day brighter, the switch "Auto-approve"', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.locator('[data-testid="month-JUN"]').click()
+  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  const sw = page.getByTestId('bid-approve-tick')
+  await expect(sw).toHaveText('Auto-approve')
+  const look = await page.evaluate(() => {
+    const dt = document.querySelector('[data-testid="bid-picker"] .bidsheet-hd .dt') as HTMLElement
+    const ink = getComputedStyle(document.body).getPropertyValue('--ink').trim()
+    const probe = document.createElement('span'); probe.style.color = ink; document.body.appendChild(probe)
+    const inkRgb = getComputedStyle(probe).color; probe.remove()
+    const cs = getComputedStyle(dt), s = (document.querySelector('[data-testid="bid-approve-tick"]') as HTMLElement).getBoundingClientRect()
+    return { size: cs.fontSize, weight: cs.fontWeight, color: cs.color, inkRgb, swH: s.height }
+  })
+  expect(look.size).toBe('13px')
+  expect(Number(look.weight)).toBeGreaterThanOrEqual(600)
+  expect(look.color, 'the app\'s white').toBe(look.inkRgb)
+  expect(look.swH, 'the switch on one line').toBeLessThan(30)
+})

@@ -160,6 +160,17 @@
   letter-spacing: .06em;
 }
 
+/* A window opened on a leave's day or dates names them the size of the name, in the app's white, a little lighter than the
+   name, so the days its buttons act on read at a glance (his D1462, 28 Oct 26 — question 26, drawn by
+   scripts/handpass/lw-whole-leave-mock.mjs). Other windows' subtitles in this place ("settings · squadron-wide") keep the
+   quiet grey above: they are not dates. */
+.bidsheet-hd .dt.when {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: .04em;
+}
+
 .bidsheet-hd .cur {
   font-size: 10px;
   color: var(--ink-3);

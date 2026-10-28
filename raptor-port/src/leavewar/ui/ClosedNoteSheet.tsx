@@ -65,7 +65,7 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
     <Sheet testid="closed-note" label={pending.length ? 'Your pending bid' : 'Bidding is closed'} onClose={closeKeeping}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <button className="x" data-testid="closed-note-close" onClick={closeKeeping} aria-label="Close">✕</button>
       </div>
       {pending.length ? (

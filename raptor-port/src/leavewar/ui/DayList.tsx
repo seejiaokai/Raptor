@@ -338,7 +338,7 @@ export function DayListSheet({
     <Sheet testid="daylist-sheet" label={`${callsign} — ${dayLabel(date)}`} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <button className="x" data-testid="daylist-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
       {/* WHAT THE CLASH MEANS, TO WHOEVER IS READING IT (CURRENT-STATE item A,

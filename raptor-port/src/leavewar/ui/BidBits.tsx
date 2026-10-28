@@ -38,12 +38,13 @@ export function useApproveMemory(): [boolean, (on: boolean) => void] {
   return [on, set]
 }
 
-/** "Approve what I enter" — the app's switch (role switch, its state in `aria-checked`) */
+/** "Approve what I enter" — the app's switch (role switch, its state in `aria-checked`), its words "Auto-approve" since his
+    D1463 (28 Oct 26 — "is there way shorter way to write it but still have the same meaning") */
 export function ApproveSwitch({ on, onChange, testid }: { on: boolean; onChange: (on: boolean) => void; testid: string }) {
   return (
     <button type="button" className={`pp-sw bp-sw${on ? ' on' : ''}`} role="switch" aria-checked={on} data-testid={testid}
       onClick={() => onChange(!on)}>
-      <span className="pp-sw-dot" aria-hidden="true" />Approve what I enter
+      <span className="pp-sw-dot" aria-hidden="true" />Auto-approve
     </button>
   )
 }

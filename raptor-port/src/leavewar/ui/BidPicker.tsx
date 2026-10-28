@@ -579,7 +579,7 @@ export function BidPicker({
           says which leave the day holds, D1331 its half) */}
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         {isAdmin && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
         <button className="x" data-testid="bid-cancel" onClick={closeKeeping} aria-label="Cancel">
           ✕
@@ -1019,7 +1019,7 @@ export function RaptorSheet({
     <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave from Raptor'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         {/* the box's notation, as the bid sheet's "now" (W5's re-walk, NF2) */}
         <span className="cur">{displayCell(code)}{creditShown || leave ? ' · approved' : ''}</span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Close">
@@ -1122,7 +1122,7 @@ export function AwardSheet({
     <Sheet testid="award-sheet" label="Your OIL award" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <span className="cur">{award.code} · OIL award</span>
         <button className="x" data-testid="award-close" onClick={onClose} aria-label="Close">
           ✕
@@ -1212,7 +1212,7 @@ export function PostOutSheet({
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <button className="x" data-testid="postout-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>
@@ -1338,7 +1338,7 @@ export function PostInSheet({
     <Sheet testid="postin-sheet" label="Posted in" onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt">{dayLabel(date)}</span>
+        <span className="dt when">{dayLabel(date)}</span>
         <button className="x" data-testid="postin-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>

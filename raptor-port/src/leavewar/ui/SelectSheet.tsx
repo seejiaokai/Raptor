@@ -398,7 +398,7 @@ export function SelectSheet({
     <Sheet testid="select-sheet" label="Selected days" onClose={closeKeeping} modal={false}>
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
-        <span className="dt" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
+        <span className="dt when" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
         {role === 'admin' && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
         <button className="x" data-testid="sel-cancel" onClick={closeKeeping} aria-label="Cancel">✕</button>
       </div>

@@ -11500,7 +11500,8 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
 `scripts/handpass/lw-declutter-look.mjs`, `lw-declutter-mock.mjs`, `lw-twoday-look.mjs`, `lw-q6-half-am.mjs`, `lw-q7-sideways.mjs`).
 It changes what this section says below wherever the two differ — the order, the labels, the tick, Note, Also:**
 the one-day window, top to bottom: the title bar (who · the day · an admin's switch "Approve what I enter" · ✕ — no "now LL",
-D1331) → the day line, out of its box, naming only what is amber or red, his seat's Available row included, the pairs side by
+D1331; since 28 Oct 26 the switch reads "Auto-approve" — D1463 — and the day or dates are the size of the name, in the app's
+white, a little lighter than the name — D1462, in every window opened on a leave's day or dates, `.bidsheet-hd .dt.when`) → the day line, out of its box, naming only what is amber or red, his seat's Available row included, the pairs side by
 side, a dot between, each pair whole (D1313, D1314; else the calm line alone) → ONE row of actions, four even columns,
 Approve · Refuse · Move · Delete (D1330; on an approved leave Approve is lit and a second tap sends the leave back to waiting;
 none on an empty day) → ONE row Remarks · till · Document, the box dark (D1308), wrapping and growing (D1333) — on an approved
