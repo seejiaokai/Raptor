@@ -8045,9 +8045,15 @@ test('M5a drawing A (D1493): on a desktop the person window opens just under the
         const w = document.querySelector<HTMLElement>('[data-testid="person-window"]')!
         const wr = w.getBoundingClientRect()
         const card = document.querySelector<HTMLElement>('#page-leavewar .mx-outer')!.parentElement!.getBoundingClientRect()
-        return { top: wr.top, right: wr.right, foot: wr.bottom, bar: r('.topbar').bottom, cardR: card.right, vh: innerHeight, inner: w.scrollHeight - w.clientHeight }
+        /* the lower of the app's top bar and the Leave War's own row (tabs, View, My leave, ⚙): at rest that row — the
+           drawing's page was scrolled, its row out of sight; under the app's bar alone the window covered My leave and ⚙ */
+        const bar = Math.max(r('.topbar:not(.lw-top)').bottom, r('#page-leavewar .lw-top').bottom)
+        const hits = (q: string) => { const b = r(q); return b.left < wr.right && b.right > wr.left && b.top < wr.bottom && b.bottom > wr.top }
+        return { top: wr.top, right: wr.right, foot: wr.bottom, bar, cardR: card.right, vh: innerHeight, inner: w.scrollHeight - w.clientHeight,
+          covers: ['[data-testid="my-leave"]', '[data-testid="settings-open"]'].filter(hits) }
       })
       const at = `${vp.width}×${vp.height}, from ${from}`
+      expect(g.covers, `${at}: it covers neither My leave nor ⚙`).toEqual([])
       expect(g.top, `${at}: its top (${g.top}) just under the bar's foot (${g.bar}), as drawn`).toBeGreaterThanOrEqual(g.bar)
       expect(g.top, `${at}: its top (${g.top}) no lower than the bar's foot + 12`).toBeLessThanOrEqual(g.bar + 12)
       expect(Math.abs(g.right - (g.cardR - 8)), `${at}: its right edge (${g.right}) 8 inside the grid card's (${g.cardR})`).toBeLessThanOrEqual(1)

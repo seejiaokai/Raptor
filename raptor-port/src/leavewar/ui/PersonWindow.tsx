@@ -89,7 +89,12 @@ function dock(p: HTMLElement): void {
   let r = grid?.getBoundingClientRect()
   if (!r || !r.width) r = document.getElementById('page-leavewar')?.getBoundingClientRect()
   if (!r || !r.width) return
-  const bar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+  /* under whichever stands lower on screen: the app's top bar, or the Leave War's own row of tabs, View, My leave and ⚙ —
+     the drawing's page was scrolled, its tab row out of sight; at rest, under the bar alone, the window covered My leave and
+     ⚙ (the host's look at the fix, 29 Oct 26 — nothing sits over a control) */
+  const appBar = document.querySelector('.topbar:not(.lw-top)')?.getBoundingClientRect().bottom ?? 0
+  const lwRow = document.querySelector('#page-leavewar .lw-top')?.getBoundingClientRect()
+  const bar = Math.max(appBar, lwRow && lwRow.height ? lwRow.bottom : 0)
   const w = Math.min(560, window.innerWidth - 24)
   const top = Math.round(bar + 8)
   p.style.left = `${Math.round(Math.max(12, Math.min(r.right, window.innerWidth) - 8 - w))}px`

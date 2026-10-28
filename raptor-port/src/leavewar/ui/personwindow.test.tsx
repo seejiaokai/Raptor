@@ -656,6 +656,32 @@ describe('the M5a drawing differences (D1493)', () => {
     }
   })
 
+  it('A: at rest it opens under the Leave War\'s own row (tabs, View, My leave, ⚙), never over My leave or ⚙; scrolled away, under the bar', () => {
+    const rect = (top: number, right: number, bottom: number, left = 0) => ({ top, right, bottom, left, width: right - left, height: bottom - top, x: left, y: top, toJSON() {} }) as DOMRect
+    let rowTop = 70
+    const real = Element.prototype.getBoundingClientRect
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      if (this.classList.contains('lw-top')) return rect(rowTop, 1515, rowTop + 64, 21)
+      if (this.classList.contains('topbar')) return rect(0, 1536, 57)
+      if (this.querySelector(':scope > .mx-outer')) return rect(188, 1515, 2005, 21)
+      return real.call(this)
+    })
+    const iw = window.innerWidth
+    Object.defineProperty(window, 'innerWidth', { configurable: true, value: 1536 })
+    try {
+      render(<><div className="topbar" /><div id="page-leavewar"><div className="topbar lw-top" /><Matrix /></div></>)
+      open(RANGER)
+      expect(win().style.top, 'the Leave War row\'s foot (134) + 8').toBe('142px')
+      act(() => { win().querySelector<HTMLElement>('[data-testid="pw-close"]')!.click() })
+      rowTop = -80
+      open(RANGER)
+      expect(win().style.top, 'its row scrolled above the screen: the bar\'s foot + 8').toBe('65px')
+    } finally {
+      spy.mockRestore()
+      Object.defineProperty(window, 'innerWidth', { configurable: true, value: iw })
+    }
+  })
+
   it('B: a leave line that takes the grid there never wears the schedule\'s flying-wave class (its rounded card and cyan bar); the day panel\'s line is unchanged', () => {
     act(() => { setCell(RANGER, D1, 'LL'); setCell(RANGER, D3, 'CCL') })
     render(<Matrix />)
