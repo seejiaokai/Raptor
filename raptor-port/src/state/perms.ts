@@ -709,7 +709,12 @@ export function setLwRestoreCheck(fn: ReplayCheck | null): void { LW_RESTORE = f
    NOW — read when the change is SAVED, so a box open while the admin locks, and his Undo or Redo after it, are refused
    alike; the app's today; and whether a snapshot is the one the store itself builds from his approved leave at this
    moment. With no war wired a member's balance write is refused. */
-export interface LwBalanceProbe { locked(): boolean; today(): string; sameSnap(snap: unknown[], pid: string, kind: string): boolean }
+export interface LwBalanceProbe {
+  locked(): boolean; today(): string; sameSnap(snap: unknown[], pid: string, kind: string): boolean
+  /** the one exact shape of a typed figure (engine/leaveyear.ts readTypedBalShape — the security read's finding 1): true
+   *  when the row is exactly it, no other field, every snapshot entry a [date, half] pair, the figure within ±999 */
+  wellFormed(row: unknown, kind: string): boolean
+}
 let LW_BAL: LwBalanceProbe | null = null
 export function setLwBalanceProbe(fn: LwBalanceProbe | null): void { LW_BAL = fn }
 const TYPED_KINDS = new Set(['LVE', 'CCL', 'FCL', 'PL', 'EL', 'CL'])
@@ -943,6 +948,15 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
 }
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
+  /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
+     for an ADMIN too — an admin who changed a man's leave could otherwise set that man's moment to now and wipe the dots
+     that tell him (§11: "C R U own" for every role) */
+  if (a && a.role !== 'system') {
+    for (const c of env.changes) {
+      if (c.collection !== 'settings' || !String(c.id).startsWith('lwseen:')) continue
+      if (env.type !== 'lw.seen' || a.personId == null || c.id !== `lwseen:${a.personId}`) return `another person's last visit (${c.collection}/${c.id})`
+    }
+  }
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
   let warRestore: ((c: Change) => boolean) | null | undefined
@@ -1034,7 +1048,7 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
         if (replayed && replayed(c)) break
         const v: any = c.after
-        if (!v || typeof v !== 'object' || Array.isArray(v)) return `a balance that will not read (${where})`
+        if (!v || typeof v !== 'object' || Array.isArray(v) || !LW_BAL.wellFormed(v, kind)) return `a balance that will not read (${where})`
         if (String(v.by) !== pid) return `who typed a balance (${where})`
         if (v.day !== LW_BAL.today()) return `the day a balance was typed (${where})`
         if (!isHalfNum(v.amount)) return `a balance that is not a half (${where})`

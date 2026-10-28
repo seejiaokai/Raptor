@@ -169,10 +169,33 @@ export function snapshotOf(days: DayRecs, kind: BalKind): SnapEntry[] {
   return out
 }
 const HALF_RANK: Record<SnapHalf, number> = { am: 0, pm: 1, day: 2 }
-/** two snapshots the same, compared sorted by date then half */
+const ISO = /^\d{4}-\d{2}-\d{2}$/
+const isEntry = (e: unknown): e is SnapEntry =>
+  Array.isArray(e) && e.length === 2 && typeof e[0] === 'string' && ISO.test(e[0]) && (e[1] === 'am' || e[1] === 'pm' || e[1] === 'day')
+/** two snapshots the same, compared entry by entry, sorted by date then half. Every entry must BE a [yyyy-mm-dd, half]
+ *  pair — the security read's finding 1 (29 Oct 26): a key that ran each entry's two parts together let
+ *  ['2026-07-1', '8day'] pass for ['2026-07-18', 'day'] and charge a forged weekend as a weekday. */
 export function sameSnapshot(a: readonly SnapEntry[], b: readonly SnapEntry[]): boolean {
-  const key = (s: readonly SnapEntry[]) => s.slice().sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : HALF_RANK[x[1]] - HALF_RANK[y[1]])).map(e => `${e[0]}${e[1]}`).join(',')
-  return a.length === b.length && key(a) === key(b)
+  if (a.length !== b.length || !a.every(isEntry) || !b.every(isEntry)) return false
+  const sorted = (s: readonly SnapEntry[]) => s.slice().sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : HALF_RANK[x[1]] - HALF_RANK[y[1]]))
+  const x = sorted(a), y = sorted(b)
+  return x.every((e, i) => e[0] === y[i]![0] && e[1] === y[i]![1])
+}
+
+/** The largest figure a box takes, either way (the security read's finding 3 — without it 1e21 was saved and shown). */
+export const FIG_MAX = 999
+const isHalfIn = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && Number.isInteger(n * 2) && Math.abs(n) <= FIG_MAX
+/** A typed figure's ONE exact shape — the store reads a row with it and the gate asks it of a member's write (the
+ *  security read's finding 1): `amount` a half within ±999, `cf` (LVE only) a half from 0 to the figure, `day` a date,
+ *  `by` a string, `snap` [date, half] pairs, and no other field. Null for anything else. */
+export function readTypedBalShape(x: unknown, kind: string): TypedBal | null {
+  if (!x || typeof x !== 'object' || Array.isArray(x) || !isBalKind(kind)) return null
+  const v = x as any
+  if (Object.keys(v).some(k => !['amount', 'cf', 'day', 'by', 'snap'].includes(k))) return null
+  if (!isHalfIn(v.amount) || typeof v.day !== 'string' || !ISO.test(v.day) || typeof v.by !== 'string' || !Array.isArray(v.snap)) return null
+  if (v.cf !== undefined && (kind !== 'LVE' || !isHalfIn(v.cf) || v.cf < 0 || v.cf > Math.max(v.amount, 0))) return null
+  if (!v.snap.every(isEntry)) return null
+  return { amount: v.amount, ...(v.cf !== undefined ? { cf: v.cf } : {}), day: v.day, by: v.by, snap: v.snap.map((e: SnapEntry) => [e[0], e[1]] as SnapEntry) }
 }
 /* a snapshot as the day views it stood for, so it can be charged NOW like today's leave */
 function snapRow(snap: readonly SnapEntry[], kind: BalKind): Record<string, DayView> {

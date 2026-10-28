@@ -26,6 +26,7 @@ import { setMemberTodayForTests } from './engine'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
 import { lwSeenAt, openOwnWindow } from '../state/lwseen'
+import { sameSnapshot } from './engine/leaveyear'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -88,10 +89,11 @@ describe('what a member\'s typed figure must be (ownershipViolation)', () => {
     expect(ownershipViolation(env([bal({ cf: undefined }, 'bane:OIL')]))).toContain('not typed')
   })
   it('halves only; carried forward only on LVE and from 0 to the figure', () => {
-    expect(ownershipViolation(env([bal({ amount: 17.3 })]))).toContain('not a half')
-    expect(ownershipViolation(env([bal({ cf: 21 })]))).toContain('carried forward')
-    expect(ownershipViolation(env([bal({ cf: -1 })]))).toContain('carried forward')
-    expect(ownershipViolation(env([bal({ cf: 1, snap: snapshotNow('bane', 'CCL') }, 'bane:CCL')]))).toContain('carried forward')
+    /* (refused by the row's one exact shape first since the security read's finding 1, or by the check of its own) */
+    expect(ownershipViolation(env([bal({ amount: 17.3 })]))).toMatch(/not a half|will not read/)
+    expect(ownershipViolation(env([bal({ cf: 21 })]))).toMatch(/carried forward|will not read/)
+    expect(ownershipViolation(env([bal({ cf: -1 })]))).toMatch(/carried forward|will not read/)
+    expect(ownershipViolation(env([bal({ cf: 1, snap: snapshotNow('bane', 'CCL') }, 'bane:CCL')]))).toMatch(/carried forward|will not read/)
   })
   it('a forged typist, day or snapshot is refused (finding 9)', () => {
     expect(ownershipViolation(env([bal({ by: 'stiff' })]))).toContain('who typed')
@@ -115,7 +117,7 @@ describe('what a member\'s typed figure must be (ownershipViolation)', () => {
     const seen = (id: string, type = 'lw.seen') => env([{ collection: 'settings', id, op: 'put', before: null, after: { at: 5 } }], type)
     expect(ownershipViolation(seen('lwseen:bane'))).toBeNull()
     expect(ownershipViolation(seen('lwseen:stiff'))).toContain("another person's last visit")
-    expect(ownershipViolation(seen('lwseen:bane', 'lw.edit'))).toContain("an admin's record")
+    expect(ownershipViolation(seen('lwseen:bane', 'lw.edit'))).toMatch(/an admin's record|another person's last visit/)
   })
 })
 
@@ -173,5 +175,32 @@ describe('through the real doors', () => {
     expect(openOwnWindow('bane', t1)).toBe(0)
     expect(lwSeenAt('bane')).toBe(t1)
     expect(openOwnWindow('bane', T(10))).toBe(t1)
+  })
+})
+
+/* THE SECURITY READ'S FOUR (D1411; docs/handpass/parts/lw-m5a/security-read.md), each red before its fix */
+describe('the security read: four holes closed', () => {
+  it('1. a snapshot entry run together with the next ("2026-07-1" + "8day") never matches a real one; a row of any other shape is refused', () => {
+    expect(sameSnapshot([['2026-07-1', '8day' as any], ['2026-07-19', 'day']], [['2026-07-18', 'day'], ['2026-07-19', 'day']])).toBe(false)
+    expect(ownershipViolation(env([bal({ by: ['bane'] })]))).toContain('will not read')
+    expect(ownershipViolation(env([bal({ junk: 'x'.repeat(50) })]))).toContain('will not read')
+    expect(ownershipViolation(env([bal({ snap: [['2026-07-1', '8day']] })]))).toBeTruthy()
+  })
+  it('2. the history line takes its figures from the saved row and the store\'s own running figure, never the caller\'s', () => {
+    ELOG.rows.length = 0
+    expect(setTypedBalance('bane', 'CCL', 40, undefined, { amount: 39 })).toBe(true)
+    const line = ELOG.rows.filter((r: any) => r.fld === 'balance').pop() as any
+    expect(line.to).toBe('40')
+    expect(line.from).not.toBe('39')
+  })
+  it('3. a figure past ±999 is refused by the box and by a hand-made command', () => {
+    expect(balanceProblem('bane', 'LVE', 1e21)).toMatch(/999/)
+    expect(ownershipViolation(env([bal({ amount: 1e21, cf: 0 })]))).toBeTruthy()
+  })
+  it('4. an admin writes only his own last visit, by its one command', () => {
+    const admin = (id: string, type = 'lw.seen'): any => ({ type, origin: 'user', actor: { role: 'admin', personId: 'stiff' }, changes: [{ collection: 'settings', id, op: 'put', before: null, after: { at: 5 } }] })
+    expect(ownershipViolation(admin('lwseen:bane'))).toContain("another person's last visit")
+    expect(ownershipViolation(admin('lwseen:stiff', 'lw.edit'))).toBeTruthy()
+    expect(ownershipViolation(admin('lwseen:stiff'))).toBeNull()
   })
 })

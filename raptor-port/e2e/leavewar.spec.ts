@@ -289,7 +289,7 @@ test('the frozen overlay callsign opens the sheet once the year has scrolled', a
   test.skip(!isPhone(), 'the overlay is a phone-only creature')
   await page.locator('.mx-wrap').evaluate(el => el.scrollBy(600, 0))
   await page.locator('.mxband [data-band-id="slipway"] .whoedit').click()
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
 })
 
 // A MAN'S FIGURES OPEN WHERE THE GRID IS ([AMEND-SMALL-SEEN] (6), the amendment re-test, 24 Sep 26: "a man's figure
@@ -306,11 +306,11 @@ test('a tap on a man\'s name once the year has scrolled opens his figures and le
   expect(before, 'the year has scrolled (or this test proves nothing)').toBeGreaterThan(1000)
   const name = (await page.locator('.mxband [data-band-id="slipway"] .whoedit').boundingBox())!
   await page.touchscreen.tap(name.x + name.width / 2, name.y + name.height / 2)
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
   await page.waitForTimeout(400)
   expect(await at(), 'his figures are open over the same days').toBe(before)
   await page.keyboard.press('Escape')
-  await expect(page.locator('[data-testid="person-figures"]')).toBeHidden()
+  await expect(page.locator('[data-testid="person-window"]')).toBeHidden()
   await page.waitForTimeout(400)
   expect(await at(), 'and the grid is still there once they close').toBe(before)
 })
@@ -1345,19 +1345,19 @@ test('the grid offers no medical markers — for a member or an admin', async ({
   await expect(page.locator('[data-testid="bid-HL"]')).toHaveCount(0)
 })
 
-// The owner's "click the individual personnel counter" (17 Aug 26): the cell
-// opens a per-person breakdown whose rows sum to the total on screen. FIVE
-// `.crow-top` rows for the default +LVE figure since 6 Sep 26 — opening
-// figure, granted, LL taken, OL taken, and the Total row — where the old
-// LVE BAL had one undifferentiated "taken" line and so came to four.
-test('tapping a counter cell opens that person\'s breakdown of the shown figure', async ({ page }) => {
+// The owner's "click the individual personnel counter" (17 Aug 26) opened a per-person breakdown of the shown figure.
+// SINCE M5a (reading 15) the tap on the LVE figure beside a name opens his PERSON WINDOW — one window for a man's figures:
+// his tiles, LVE's War bal the very figure the cell shows.
+test('tapping a name\'s LVE figure opens his person window', async ({ page }) => {
+  const cellFig = (await page.locator('[data-testid="bal-ammo"] .fb').textContent())!.trim()
   await page.locator('[data-testid="bal-ammo"]').click()
-  const sheet = page.locator('[data-testid="figure-breakdown"]')
-  await expect(sheet).toBeVisible()
-  await expect(sheet.locator('.crow-top')).toHaveCount(5)
-  await expect(sheet.locator('[data-testid="breakdown-total"]')).toBeVisible()
-  await page.locator('[data-testid="breakdown-close"]').click()
-  await expect(sheet).toHaveCount(0)
+  const win = page.locator('[data-testid="person-window"]')
+  await expect(win).toBeVisible()
+  await expect(page.locator('[data-testid="figure-breakdown"]')).toHaveCount(0)
+  await expect(win.locator('[data-testid^="pw-tile-"]')).toHaveCount(8)
+  await expect(page.locator('[data-testid="pw-LVE-war"]')).toHaveText(cellFig.replace('-', '\u2212'))
+  await page.locator('[data-testid="pw-close"]').click()
+  await expect(win).toHaveCount(0)
 })
 
 // The reason the bid sheet is a fixed-position sheet rather than a popover
@@ -2406,10 +2406,10 @@ test('a drag down the LVE figures raises no bar and lights nothing, for an admin
 // RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
 test('a scrolled sheet keeps its header and its close button', async ({ page }) => {
   await page.locator('[data-testid="person-slipway"]').click()
-  const sheet = page.locator('[data-testid="person-figures"]')
+  const sheet = page.locator('[data-testid="person-window"]')
   await expect(sheet).toBeVisible()
   await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
-  const x = page.locator('[data-testid="pfig-close"]')
+  const x = page.locator('[data-testid="pw-close"]')
   await expect(x).toBeVisible()
   const box = (await x.boundingBox())!
   const vp = page.viewportSize()!
@@ -2433,7 +2433,7 @@ test('a scrolled sheet keeps its header and its close button', async ({ page }) 
 test('the page scrolls behind an open sheet, and the panel stays put', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 0))
   await page.locator('[data-testid="person-slipway"]').click()
-  const sheet = page.locator('[data-testid="person-figures"]')
+  const sheet = page.locator('[data-testid="person-window"]')
   await expect(sheet).toBeVisible()
   const topBefore = (await sheet.boundingBox())!.y
 
@@ -2575,10 +2575,12 @@ test('a finger behind an open sheet scrolls the grid itself; a tap on a cell clo
    drag-to-pan and the click-to-dismiss the desktop has had since 28 Aug go
    through it, and a hover never reaches the grid. Desktop project only. */
 // RE-EXPRESSED, D1245 (the overhaul's M2): proved on a person's figure sheet — the figure picker's sheet is gone.
+// RE-EXPRESSED AGAIN, M5a: the person window blocks nothing (no scrim — A5, D641), so the blocking sheet a press opens is
+// the bid window (a tap on a day).
 test('on a desktop the scrim stays in the way of the mouse', async ({ page }) => {
   test.skip(isPhone(), 'the fine-pointer half')
-  await page.locator('[data-testid="person-slipway"]').click()
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
   expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(false)
   const under = await page.evaluate(() => {
     const el = document.elementFromPoint(200, 300)
@@ -2614,9 +2616,11 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   await expect(page.locator('[data-testid="my-leave-lve"]')).toHaveText(`LVE ${rowLve}`)
 
   await page.locator('[data-testid="person-prowler"]').click()
-  const figs = page.locator('[data-testid="person-figures"]')
+  const figs = page.locator('[data-testid="person-window"]')
   await expect(figs).toBeVisible()
-  await expect(figs.locator('.crow-wrap')).toHaveCount(8)    // the EIGHT figures, 6 Sep 26
+  // his person window (M5a — D1480): eight tiles, LVE, OIL, MED and the five other kinds; another man's reads only
+  await expect(figs.locator('[data-testid^="pw-tile-"]')).toHaveCount(8)
+  await expect(figs.locator('input')).toHaveCount(0)
   // A member reaches no editor from here.
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })
@@ -3324,7 +3328,7 @@ test('swiping the day columns leaves the counter alone', async ({ page }, testIn
 test('an admin reaches no Edit person from the name sheet', async ({ page }) => {
   await lwRole(page, 'admin')
   await page.locator('[data-testid="person-prowler"]').click()
-  await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
+  await expect(page.locator('[data-testid="person-window"]')).toBeVisible()
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="person-sheet"]')).toHaveCount(0)
 })
@@ -7023,11 +7027,11 @@ test('with Approvals\u2019 slim bar up, a window opens above the bar, never over
   await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
   await expect(page.getByTestId('appr-slim')).toBeVisible()
   await page.locator('[data-testid="row-slipway"] .whoedit').first().click()
-  const sheet = page.getByTestId('person-figures')
+  const sheet = page.getByTestId('person-window')
   await expect(sheet).toBeVisible()
   await page.waitForTimeout(300)
   const g = await page.evaluate(() => {
-    const s = document.querySelector<HTMLElement>('[data-testid="person-figures"]')!.getBoundingClientRect()
+    const s = document.querySelector<HTMLElement>('[data-testid="person-window"]')!.getBoundingClientRect()
     const b = document.querySelector<HTMLElement>('[data-testid="appr-slim"]')!.getBoundingClientRect()
     return { sheetBottom: Math.round(s.bottom), barTop: Math.round(b.top), sheetTop: Math.round(s.top) }
   })

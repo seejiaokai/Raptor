@@ -78,12 +78,12 @@ describe('the frozen roster columns, drawn once', () => {
     expect(screen.getByTestId('person-ramp').tagName).toBe('BUTTON')
   })
 
-  it('the overlay callsign still opens the person figures sheet', () => {
+  it('the overlay callsign still opens the person window', () => {
     setViewport(true)
     render(<Matrix />)
     const btn = clone()!.querySelector<HTMLButtonElement>('.whoedit')!
     fireEvent.click(btn)
-    expect(screen.getByTestId('pfig-close'), 'tapping the frozen callsign opens the sheet').toBeTruthy()
+    expect(screen.getByTestId('pw-close'), 'tapping the frozen callsign opens the window').toBeTruthy()
   })
 
   /* THE HEIGHT PIN'S ADDRESS BOOK (20 Aug 26 — the vertical misalignment).

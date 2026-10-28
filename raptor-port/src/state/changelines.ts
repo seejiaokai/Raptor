@@ -210,12 +210,13 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
    kind changed (D1460) — and it must find those lines by a mark, never by parsing their words (sync.ts alsoSince refuses
    to, and so must every reader). Each such line carries, on the saved row (engine/editlog.ts ELogRow):
      · `sub`   — whose leave it is (his person id);
-     · `fld`   — what happened: 'deleted' | 'moved' | 'kind' ('withdrawn' is a member's own bid taken back, M4);
+     · `fld`   — what happened: 'deleted' | 'moved' | 'kind' | 'back' — an approval taken back, the leave a request again
+                 (M5a's person window: "put back to a bid"); ('withdrawn' is a member's own bid taken back, M4);
      · `itype` — the leave's code as it stands after (for 'deleted' the code that went: 'LL', '*LL', 'CCL' …);
      · `date` (and `end`) — the days it concerns now; for 'moved' also `wdate` (and `wend`) — the days it left;
      · `from` / `to` — for 'kind', the code before and after ('LL' → 'OL');
      · `pid`   — who made the change (written by logAction itself), `t` — when (ms).
-   Who reads them: a row is "someone else's change to his leave" when `sub === <his id>`, `fld` is one of the three, and
+   Who reads them: a row is "someone else's change to his leave" when `sub === <his id>`, `fld` is one of the four, and
    `String(pid) !== <his id>`. The lines are: a pending bid deleted, moved or re-typed on the war (warLines); approved
    leave deleted or moved on the war (warInputLines — `iid` the Input, `days`/`wdays` its exact days where not one run);
    an Input's kind changed on the Inputs page or the war (inputLines — 'kind', `iid` the Input). */
@@ -379,7 +380,7 @@ function warInputLines(env: CommitEnvelope): WarInputs {
       logAction(null, st != null
         ? `${who} approval taken back — ${STATE_WORD[st] || st} · ${runsWords(gone)}`
         : `${who} approved leave deleted on the Leave War · ${runsWords(gone)}`,
-        { ...base, ...(st != null ? {} : { fld: 'deleted' }), date: was.date, end: was.end, days: exact(gone) })
+        { ...base, fld: st != null ? 'back' : 'deleted', date: was.date, end: was.end, days: exact(gone) })
     } else {
       const now = at(fresh)
       logAction(null, `${who} approved on the Leave War · ${runsWords(fresh)}`, { ...base, date: now.date, end: now.end, days: exact(fresh) })
@@ -493,10 +494,12 @@ function balanceLines(c: Change, env: CommitEnvelope): void {
   const a: any = c.after
   let note: BalNote = {}
   try { note = JSON.parse(env.detail || 'null') || {} } catch { /* a command with no note: read the record itself */ }
-  const to = note.to ?? { amount: a.amount, ...(typeof a.cf === 'number' ? { cf: a.cf } : {}) }
-  /* "from" is the RUNNING figure he saw before the save (the gesture's note — the build spec §1.1), never the figure last
-     typed, which may be months old */
-  const from = note.from ?? null
+  /* the figures come from the SAVED ROW, never the caller's note (the security read's finding 2): "to" always the row;
+     "from" — the running figure before the save, which the store writes into the note itself — only when the note's
+     "to" is this row, else the line has no "from" */
+  const to = { amount: a.amount, ...(typeof a.cf === 'number' ? { cf: a.cf } : {}) }
+  const agrees = !!note.to && note.to.amount === to.amount && (note.to.cf ?? null) === ((to as any).cf ?? null)
+  const from = agrees ? note.from ?? null : null
   const at = (extra: any = {}) => ({ date: isoDay(a.day), sect: 'abs', sub: pid, fld: 'balance', itype: kind, ...extra })
   const head = `Leave War · ${cs(pid)} · `
   const cfMoved = kind === 'LVE' && typeof to.cf === 'number' && (from ? (from.cf ?? 0) !== to.cf : to.cf !== 0)

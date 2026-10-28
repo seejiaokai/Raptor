@@ -102,17 +102,22 @@ async function closeList(page: Page) {
 }
 
 type Fig = 'lve' | 'oil' | 'medtot'
-/** A person's figures, read from the callsign's "every figure" sheet in ONE
- *  opening (it computes afresh when it opens, so it reads the truth even where
- *  the balance COLUMN is stale — see the BUG test for that). Each opening and
- *  closing repaints the grid, which is the slow part on a slow machine, so a
- *  caller that needs three figures asks for all three at once. */
+/* SINCE M5a a man's figures are read from his PERSON WINDOW (the old "every figure" sheet went with it): LVE is the War bal
+   tile figure (what the old balance read — a bid comes off at once, D1153), OIL the "0 ›" figure, and MED TOT the MED tile —
+   his medical days THIS YEAR up to today (the spec §1.4), where the old sheet counted every medical day of every year. The
+   window writes a minus as "−" and OIL with its "›". */
+const FIG_ID: Record<Fig, string> = { lve: 'pw-LVE-war', oil: 'pw-oil', medtot: 'pw-med' }
+const figNum = (t: string | null) => Number(String(t ?? '').replace('−', '-').replace('›', '').trim())
+/** A person's figures, read from his person window in ONE opening (it computes afresh when it opens, so it reads the
+ *  truth even where the balance COLUMN is stale — see the BUG test for that). Each opening and closing repaints the grid,
+ *  which is the slow part on a slow machine, so a caller that needs three figures asks for all three at once. */
 async function figures<F extends Fig>(page: Page, p: string, want: readonly F[]): Promise<Record<F, number>> {
   await page.locator(`[data-testid="person-${p}"]`).scrollIntoViewIfNeeded()
   await page.locator(`[data-testid="person-${p}"]`).click()
   const got = {} as Record<F, number>
-  for (const f of want) got[f] = Number(await page.locator(`[data-testid="pfig-${f}"] .fb`).textContent())
-  await page.locator('[data-testid="pfig-close"]').click()
+  for (const f of want) got[f] = figNum(await page.locator(`[data-testid="${FIG_ID[f]}"]`).textContent())
+  await page.locator('[data-testid="pw-close"]').click()
+  await expect(page.locator('[data-testid="person-window"]')).toHaveCount(0)
   await expect(sheetScrim(page)).toHaveCount(0)
   return got
 }

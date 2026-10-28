@@ -439,7 +439,7 @@ describe('My leave\'s figures (D1141; pending in days, D1217; a half .5, D1246)'
     expect(screen.getByTestId('my-leave-pending').textContent).toBe('1.5 pending')
     expect(screen.getByTestId('my-leave').textContent).toContain('next 2 Feb')
     fireEvent.click(screen.getByTestId('my-leave'))
-    expect(screen.getByTestId('person-figures').getAttribute('aria-label') ?? screen.getByTestId('person-figures').textContent).toContain('MILES')
+    expect(screen.getByTestId('person-window').getAttribute('aria-label') ?? screen.getByTestId('person-window').textContent).toContain('MILES')
   })
 
   it('an admin with no row on the war has no My leave', () => {

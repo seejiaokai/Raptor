@@ -72,8 +72,6 @@ import {
   codeOf as leaveCodeOf,
   oilLedgerOf,
   withFill,
-  grantedTo,
-  drawnFrom,
   localToday,
   bandOverlaps,
   bandAt,
@@ -175,7 +173,7 @@ import {
 import { mergeWar, absencesAt, absenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
 import {
-  BAL_KINDS, isBalKind, KIND_COUNTER, personFigures, snapshotOf, START_GRADES, startYear,
+  BAL_KINDS, FIG_MAX, isBalKind, KIND_COUNTER, personFigures, readTypedBalShape, snapshotOf, START_GRADES, startYear,
   type Balances, type BalKind, type DayRecs, type GradeDef, type GradeHists, type LeaveYearWorld, type PersonFigures, type SnapEntry, type TypedBal, type WhatIf,
 } from '../engine/leaveyear'
 import { creditWorth } from '../engine/credit'
@@ -912,19 +910,8 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
 /* M5a — the two new records, read from untrusted storage (the build spec §3): a figure typed is a half (a figure below
    zero may be typed — reading 10), its carried forward a half from 0 to the figure (LVE only), its day a date, its
    snapshot a list of [date, half]; a grade history a list of { id | null, from }. Anything else is not read. */
-const isHalf = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && Number.isInteger(n * 2)
-export function readTypedBal(x: unknown, kind: string): TypedBal | null {
-  if (!isPlainObject(x) || !isBalKind(kind)) return null
-  const v = x as any
-  if (!isHalf(v.amount) || !isDay(v.day) || typeof v.by !== 'string' || !Array.isArray(v.snap)) return null
-  if (v.cf !== undefined && (kind !== 'LVE' || !isHalf(v.cf) || v.cf < 0 || v.cf > Math.max(v.amount, 0))) return null
-  const snap: SnapEntry[] = []
-  for (const e of v.snap) {
-    if (!Array.isArray(e) || e.length !== 2 || !isDay(e[0]) || !['am', 'pm', 'day'].includes(e[1])) return null
-    snap.push([e[0], e[1]])
-  }
-  return { amount: v.amount, ...(v.cf !== undefined ? { cf: v.cf } : {}), day: v.day, by: v.by, snap }
-}
+/* the one exact shape rule lives in the engine, so the gate asks the same one (the security read's finding 1) */
+export const readTypedBal = readTypedBalShape
 export function readGradeHist(x: unknown): GradeHists[string] | null {
   if (!isPlainObject(x) || !Array.isArray((x as any).hist)) return null
   const out: GradeHists[string] = []
@@ -5066,16 +5053,6 @@ export function removeLedgerEntry(id: string): boolean {
   return gesture(ledgerType(cur.counter, cur.amount), () => dropLedgerIds([id]))
 }
 
-/**
- * Set a person's BALANCE of a counter to read exactly `target` now (owner,
- * 2 Sep 26 — "enable me to manually input and change LVE BAL … every time a
- * LL or OL is taken it deducts from it"). A balance is never stored
- * (counters.ts), so this moves the OPENING FIGURE by whatever makes
- * `opening + granted − drawn` equal the target; the leave already on the
- * grid stays counted and every LL/OL after this deducts as before. The
- * breakdown sheet shows the new opening, so the number is explained, not
- * hidden.
- */
 /* =====================================================================
    M5a — A PERSON'S LEAVE FIGURES (the build spec §1, §3; engine/leaveyear.ts)
    ---------------------------------------------------------------------
@@ -5172,6 +5149,7 @@ const isHalfFig = (n: unknown): n is number => typeof n === 'number' && Number.i
 export function balanceProblem(pid: string, kind: string, amount: number, cf?: number): string | null {
   if (!isBalKind(kind)) return 'OIL is not typed here: it comes from the OIL tracker'
   if (!isHalfFig(amount)) return 'Type a whole number or a half, like 17 or 17.5'
+  if (Math.abs(amount) > FIG_MAX) return `Type a figure from −${FIG_MAX} to ${FIG_MAX}`
   if (cf !== undefined && (kind !== 'LVE' || !isHalfFig(cf) || cf < 0 || cf > Math.max(amount, 0))) return `Carried forward is from 0 to ${Math.max(amount, 0)}`
   if (state.role !== 'admin') {
     if (!state.viewer || pid !== state.viewer) return 'You can change only your own figures'
@@ -5190,7 +5168,12 @@ export function setTypedBalance(pid: string, kind: BalKind, amount: number, cf?:
   const lveCf = kind === 'LVE' ? Math.max(0, Math.min(cf ?? 0, Math.max(amount, 0))) : undefined
   if (balanceProblem(pid, kind, amount, lveCf)) return false
   const rec: TypedBal = { amount, ...(lveCf !== undefined ? { cf: lveCf } : {}), day: memberToday(), by: actorNow() ?? state.viewer ?? '', snap: snapshotNow(pid, kind) }
-  const note = JSON.stringify({ k: kind, from: from ?? null, to: { amount, ...(lveCf !== undefined ? { cf: lveCf } : {}) } })
+  /* "from" is the running figure the store itself shows before the save — never the caller's word (the security read's
+     finding 2: a caller's `from` of 39 wrote "39 → 40" for a jump from 0); `from` is kept in the signature only so the
+     screens' calls stand */
+  void from
+  const was = leaveFiguresOf(pid).kinds[kind]
+  const note = JSON.stringify({ k: kind, from: { amount: was.app, ...(kind === 'LVE' ? { cf: was.cf } : {}) }, to: { amount, ...(lveCf !== undefined ? { cf: lveCf } : {}) } })
   gesture('lw.balance', () => {
     state = withCurrent({ ...state, balances: { ...state.balances, [pid]: { ...state.balances[pid], [kind]: rec } } })
     persistNotify()
@@ -5287,95 +5270,14 @@ export function setBalanceLock(on: boolean): boolean {
   return state.balLock === on
 }
 
-export function setBalance(personId: string, counter: CounterName, target: number): boolean {
-  if (state.role !== 'admin') return false
-  if (!state.people.some(p => p.id === personId)) return false
-  if (!Number.isFinite(target)) return false
-  // Through the same ctx the column reads, or "set to 20" would land on a
-  // different number than the figure shows once a holiday excuses a day.
-  const opening = target - grantedTo(state.ledger, personId, counter) + drawnFrom(getState().wars, personId, counter, figureCtxOf())
-  state = withCurrent({
-    ...state,
-    openings: { ...state.openings, [personId]: { ...state.openings[personId], [counter]: Math.round(opening * 1e6) / 1e6 || 0 } },
-  })
-  persistNotify()
-  return true
-}
+/* (`setBalance` — an admin's "Set" in the old figures sheet, which moved a counter's OPENING figure — went with M5a: no door
+   writes an opening any more; a balance is typed through `setTypedBalance` (the person window and the Balances page), and
+   OIL is never typed — the store refuses it there, `balanceProblem`. The OIL openings already stored stay readable.) */
 
-/* THE COUNTER-COLUMN FIGURE ORDER AND VISIBILITY writers. ADMIN-GATED (owner,
-   17 Aug 26: "normal user should not have authority to change the leave war
-   column arrangement"; extended 6 Sep 26 — "admin should also be able to
-   customise" which figures show at all) — the enforcement is in each writer
-   below, mirroring the event-type library. (The counter SELECTION — which
-   figure the column shows right now — stays ungated view state; only the
-   ORDER and the HIDDEN set are management's.) Persisted under `figorder` and
-   `fighidden`. The order is normalised through `orderedFigures` on every
-   move, so a stored blob missing a new figure (or naming a dead one) is
-   healed the first time it is touched rather than carried forward malformed;
-   `visibleFigures` applies the hidden set on top of that healed order, so a
-   hidden id that no longer exists just never appears in it. */
-
-/** Move a figure one place up (`-1`) or down (`+1`) the column's order.
- *  Clamped at the ends and a no-op for an unknown id — returns whether it
- *  moved so a caller can disable a control at the boundary. */
-export function moveFigure(id: string, dir: -1 | 1): boolean {
-  // The column arrangement is management's (owner, 17 Aug 26: "normal user
-  // should not have authority to change the leave war column arrangement").
-  // Enforced here and not only in the sheet, for the same reason setCell
-  // re-checks: the interface hides what a person may not do, the store is
-  // what makes it true.
-  if (state.role !== 'admin') return false
-  const ids = orderedFigures(state.figureOrder).map(f => f.id)
-  const i = ids.indexOf(id)
-  if (i < 0) return false
-  const j = i + dir
-  if (j < 0 || j >= ids.length) return false
-  ;[ids[i], ids[j]] = [ids[j], ids[i]]
-  state = withCurrent({ ...state, figureOrder: ids })
-  persistNotify()
-  return true
-}
-
-/** Put the column's figures back in their catalogue order, and unhide every
- *  one — a reset is the admin's way back to the factory arrangement, and a
- *  figure they hid and forgot about should not survive it. */
-export function resetFigureOrder(): void {
-  // Same gate as moveFigure — a reset rewrites the arrangement too.
-  if (state.role !== 'admin') return
-  state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER], figureHidden: [] })
-  persistNotify()
-}
-
-/** The figures the column cycles and the drawer shows: the admin's order,
- *  less the hidden ones. Every surface that lists figures reads this, so a
- *  hidden figure disappears from all of them at once. */
-export function visibleFigures(): Figure[] {
-  const hidden = new Set(state.figureHidden)
-  const shown = orderedFigures(state.figureOrder).filter(f => !hidden.has(f.id))
-  // A stale hidden list naming every figure would leave nothing to show —
-  // fall back to the whole order rather than an empty column.
-  return shown.length ? shown : orderedFigures(state.figureOrder)
-}
-
-/** Hide or show one figure. ADMIN-gated, and the last visible figure cannot
- *  be hidden — returns whether anything changed. */
-export function toggleFigure(id: string): boolean {
-  if (state.role !== 'admin') return false
-  // Mirrors moveFigure's unknown-id no-op: an id that names no real figure
-  // (a typo, a stale saved order) must not be recorded as hidden forever —
-  // `orderedFigures` is the same "does this name a real figure" check the
-  // rest of this block already leans on.
-  if (!orderedFigures(state.figureOrder).some(f => f.id === id)) return false
-  const hidden = new Set(state.figureHidden)
-  if (hidden.has(id)) hidden.delete(id)
-  else {
-    if (visibleFigures().length <= 1) return false
-    hidden.add(id)
-  }
-  state = withCurrent({ ...state, figureHidden: [...hidden] })
-  persistNotify()
-  return true
-}
+/* (The counter column's figure ORDER and VISIBILITY writers — `moveFigure`, `resetFigureOrder`, `visibleFigures`,
+   `toggleFigure` — went with M5a: their one reader, the old figures sheet and its picker (CounterSheet.tsx), was replaced by
+   the person window, which shows every kind whatever an old hidden list says (the spec §4). The saved `figureOrder` and
+   `figureHidden` are still read and written whole with the war's settings; nothing changes them now.) */
 
 /* THE MANNING COUNT ROWS' order and visibility (owner, 18 Aug 26: "allow me to
    rearrange or hide some rows that are not needed. Admin only."). Same shape and

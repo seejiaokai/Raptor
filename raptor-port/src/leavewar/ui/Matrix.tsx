@@ -2,10 +2,12 @@ import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRe
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, type DayView } from '../engine/dayview'
 import { INPUTS, remarksTyped } from '../../engine/inputs'
-import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
-import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
+import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, oilOnDay, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
-import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
+import { PersonWindow } from './PersonWindow'
+import { openOwnWindow } from '../../state/lwseen'
+import { ringCell } from './cellring'
 import { FigureCell, show } from './FigureCell'
 import { NamePuck } from './NamePuck'
 import { OilTracker } from './OilTracker'
@@ -29,12 +31,12 @@ import { edgeAutoScroll } from '../../ui/edgescroll'
 import { wirePinch } from '../../ui/pinchzoom'
 import { screenBox } from '../../ui/kbscroll'
 import { phoneLayout } from '../../ui/floatwin'
-import { flushSync } from 'react-dom'
+import { createPortal, flushSync } from 'react-dom'
 import { LW_ZOOM_MAX, lwMonthFitZoom, roundZoom } from './lwzoom'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SettingsSheet } from './SettingsSheet'
 import { StageBar } from './Chrome'
-import { askLw, apprMode, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
+import { askLw, apprMode, balancesUp, lwPage, setApprMode, setBalancesUp, setOilUp, subscribeLwNav, takeLwAsk, lwNavVersion } from './lwnav'
 import { usePhone } from './phone'
 import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
@@ -46,7 +48,7 @@ import { DayPanelHost, openDayPanel } from './DayPanel'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
-import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, PersonRow, type QualPill, type RowApi, type RowDragCfg, freeHalfBeside, ownAwardAlone, setPhWidth } from './MatrixRows'
+import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, PersonRow, type QualPill, type RowApi, type RowDragCfg, freeHalfBeside, nameLines, ownAwardAlone, setPhWidth } from './MatrixRows'
 import './matrix.css'
 
 /** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
@@ -348,14 +350,16 @@ export function Matrix() {
      on the page share the name "Balances". The FIGURES drawer that fold opened (6 Sep 26) was taken out whole with M5a,
      and with it the drag down the LVE figures and the bar it raised (D1491): a leave balance changes only by its box on
      the Balances page or the person window, by approved leave and by 1 Jan. */
-  // Whose counter was tapped, and WHICH figure to break down (owner, 17 Aug
-  // 26). A counter-cell tap opens the column's shown figure; a row tapped
-  // inside the person-figures sheet names its own.
-  const [balOpen, setBalOpen] = useState<{ person: string; figureId: string } | null>(null)
-  // Whose CALLSIGN was tapped — the all-figures sheet, for every role
-  // (owner, same day: "everyone should be able to click on that person's
-  // name and see these logics").
-  const [whoOpen, setWhoOpen] = useState<string | null>(null)
+  /* WHOSE PERSON WINDOW IS OPEN (the overhaul's M5a — D1480, D1148): a tap on his name, on the LVE figure beside it (reading
+     15 — the breakdown that tap opened is gone), My leave, Approvals' or the bell's line for a man with no row, a name on the
+     Balances page. `since` is the visit's moment for HIS OWN window — the moment he last opened it, read and replaced as it
+     opens (state/lwseen.ts — D1231, D1481), taken HERE at the tap, never while drawing (a drawing may run twice); null for
+     anyone else's window, which shows nothing new. */
+  const [who, setWho] = useState<{ id: string; since: number | null } | null>(null)
+  const openWho = useCallback((id: string) => {
+    const me = getState().viewer
+    setWho({ id, since: me && id === me ? openOwnWindow(id) : null })
+  }, [])
   // The QUALIFICATIONS popover (owner, 3 Sep 26 — "hover the mouse over the
   // person to see the qualifications they hold"). A person wears only their CAT
   // chip; every other qualification (SC DAY, TF, NVG…) lives here, shown on a
@@ -378,9 +382,10 @@ export function Matrix() {
     const a = takeLwAsk()
     if (!a) return
     if (a.kind === 'grid') setOilTracker(null)
-    else if (a.kind === 'oil') setOilTracker({ person: null })
+    /* "0 ›" on the Balances page or in a person window opens THAT man's tracker (D1255, D1209) */
+    else if (a.kind === 'oil') setOilTracker({ person: a.id ?? null })
     else if (a.kind === 'settings') setSettings(true)
-    else if (a.kind === 'person') setWhoOpen(a.id)
+    else if (a.kind === 'person') openWho(a.id)
   }, [navSeq])
   useEffect(() => { setOilUp(!!oilTracker) }, [oilTracker])
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
@@ -623,12 +628,6 @@ export function Matrix() {
      name). So the column no longer picks: no picker in its heading, no swipe across it, no jump to OIL or CCL after a
      write — and an admin's hidden-figures list, which orders the person window's figures, never takes LVE off it. */
   const shown = FIGURES.find(f => f.id === DEFAULT_FIGURE_ID)!
-  // Everything a figure needs to read a person's number — the store's one
-  // builder, so this column, the sheets and the tracker read the same OIL
-  // policy and the same "today" (a hand-built literal here used to drift).
-  // Once per store change, not per render — a row prop (see PersonRow).
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const figureCtx = useMemo(() => figureCtxOf(), [version])
   /* WHAT A BALANCE WOULD READ AFTER A LEAVE FILL — one question for the two sheets that fill leave, so both ask the
      same thing with the same number before taking someone below zero: the one-day sheet (a day or a picked range) and
      the drag-selection sheet, which asks too since his ruling D418 (29 Sep 26 — "Drag asks too"). The store answers it
@@ -1744,8 +1743,7 @@ export function Matrix() {
   const rowApi = useRef<RowApi>(null!)
   rowApi.current = {
     startRowDrag,
-    setWhoOpen,
-    setBalOpen,
+    setWhoOpen: openWho,
     /* the tap pins the posting sheet it opens (W3-F5) — read off the day as it stands at the tap */
     setOpen: v => {
       const p = people.find(x => x.id === v.id)
@@ -3339,7 +3337,8 @@ export function Matrix() {
     if (focusSoft) {
       /* …and not at all while the Approvals page stands in the grid's place: the change undone shows there, on its line,
          and a jump of the hidden grid moved the page he is reading (D672; the scenario designer's ★2) */
-      if (apprMode() === 'page') return
+      /* …nor while the Balances page stands there (the same: the page he reads is not moved — the Balances builder's 4) */
+      if (lwPage() !== 'grid') return
       const wrap = wrapRef.current, cell = headCell(focusDate)
       if (wrap && cell && columnInView(cell.getBoundingClientRect(), wrap.getBoundingClientRect(), frozenWidth(wrap))) return
     }
@@ -3827,8 +3826,6 @@ export function Matrix() {
                         deciding={deciding}
                         movedShown={movedShown}
                         shown={shown}
-                        figureCtx={figureCtx}
-                        figSel={null}
                         evKind={evKind}
                         lockedCols={lockedCols}
                         quals={qualsOf.get(p.id) ?? NO_QUALS}
@@ -3977,7 +3974,8 @@ export function Matrix() {
                     </tr>
                   )
                   const p = item.p
-                  const lines = figureLines(shown, figureCtx, p.id)
+                  /* the row's own two lines, from the one engine (MatrixRows.tsx nameLines — the readers' builder's leftover) */
+                  const lines = nameLines(p.id, period)
                   return (
                     // `data-band-id`, NOT a testid: the real row keeps `row-…`
                     // and `bal-…`, and two nodes answering one testid would
@@ -3990,7 +3988,7 @@ export function Matrix() {
                     <tr key={`b-${p.id}`} data-band-id={p.id} data-band-key={`row-${p.id}`} className={p.id === viewer ? 'me' : undefined}>
                       <td className="who">
                         <div className="whorow">
-                          <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
+                          <button className="whoedit" tabIndex={-1} onClick={() => openWho(p.id)}>
                             {namePuck(p)}
                             {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag">SANS</span>}
                           </button>
@@ -4003,7 +4001,7 @@ export function Matrix() {
                         extraClass="bal act"
                         dataFig={shown.id}
                         dataPerson={p.id}
-                        onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
+                        onClick={() => openWho(p.id)}
                       />
                     </tr>
                   )
@@ -4266,41 +4264,32 @@ export function Matrix() {
           wins on a cell that holds a bid, because that is what the stage is
           for; the picker still opens on an empty one, so an admin can add
           leave to a closed sheet without a second control. */}
-      {/* The tapped person's breakdown of one figure — the column's shown
-          one from a counter-cell tap, or whichever row was tapped in the
-          person-figures sheet. Guarded on the person still existing — an
-          admin can delete a row while any sheet is up. Looked up in the FULL catalogue, not the
-          column's `figures` (visible-only, 6 Sep 26): the figure this sheet
-          was asked for was chosen before it opened, and an admin can hide a
-          figure at any moment — including while this very sheet is up — so a
-          lookup that depended on visibility would answer a stale id by
-          silently substituting whatever the column happens to be showing. The
-          reader would then be reading someone's MED TOT under a heading that
-          says CCL, which is worse than showing a figure that has just left the
-          picker. An unknown id (a stale saved order) falls back to the shown
-          one. */}
-      {balOpen && people.some(p => p.id === balOpen.person) && (
-        <FigureBreakdownSheet
-          figure={orderedFigures(figureOrder).find(f => f.id === balOpen.figureId) ?? shown}
-          person={people.find(p => p.id === balOpen.person)!}
-          onClose={() => setBalOpen(null)}
-        />
-      )}
-      {/* The tapped person's ALL-FIGURES sheet — every role's way in from a
-          callsign. A figure row hands over to the breakdown above. (Its
-          admin's "Edit person" is gone — D460, D461: seat, band and SXO change
-          only on Quals.) */}
-      {/* …AND A MAN WITH NO ROW ON THE GRID (the overhaul's M4 — B12, [LW-CLASH-ROWLESS-TAP]): a SANS man while SANS is off
-          the war is not on its roster (sync.ts reprojectRoster), so Approvals' dates, the bell's line and the clash note open
-          his window from his identity as the war would have it (sync.ts warIdentityIfHidden) */}
-      {whoOpen && (people.some(p => p.id === whoOpen) || warIdentityIfHidden(whoOpen)) && (
-        <PersonFiguresSheet
-          person={people.find(p => p.id === whoOpen) ?? warIdentityIfHidden(whoOpen)}
-          onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
-          onOpenOil={() => { setOilTracker({ person: whoOpen }); setWhoOpen(null) }}
-          onSetBalance={role === 'admin' ? (counter, target) => { setBalance(whoOpen, counter, target) } : undefined}
-          onClose={() => setWhoOpen(null)}
-        />
+      {/* THE PERSON WINDOW (M5a — PersonWindow.tsx): a window that does not block, PORTALLED into the Leave War's own page so it
+          stands over the Balances and Approvals pages too — the grid card it is drawn from is hidden behind those (the
+          Balances builder's 1). A man with no row on the grid (a SANS man while SANS is off — B12, [LW-CLASH-ROWLESS-TAP])
+          opens from his identity as the war would have it (sync.ts warIdentityIfHidden); his figures read the same engine.
+          Keyed on the visit, so another man — or his own window opened again — is a fresh window. */}
+      {who && (people.some(p => p.id === who.id) || warIdentityIfHidden(who.id)) && createPortal(
+        <PersonWindow
+          key={`${who.id}|${who.since ?? ''}`}
+          person={people.find(p => p.id === who.id) ?? warIdentityIfHidden(who.id)}
+          since={who.since}
+          hasRow={people.some(p => p.id === who.id)}
+          onClose={() => setWho(null)}
+          /* "0 ›": his OIL tracker, over the grid as the OIL tab opens it — the page in the grid card's place first (the
+             tracker is drawn from the grid card), the window shut so the tracker is not under it */
+          onOil={pid => { setApprMode('off'); setBalancesUp(false); setOilTracker({ person: pid }); setWho(null) }}
+          /* a leave line: the grid at that day, the ring on it — Approvals' own way (its slim bar where its page was up); the
+             OIL tracker shut; on a phone the window shut too, as it stands in the middle over the day */
+          onGo={(pid, date) => {
+            if (apprMode() === 'page') setApprMode('bar')
+            if (balancesUp()) setBalancesUp(false)
+            setOilTracker(null)
+            ringCell(pid, date, apprMode() === 'bar' ? 76 : 0)
+            if (phoneNow) setWho(null)
+          }}
+        />,
+        document.getElementById('page-leavewar') ?? document.body,
       )}
       {/* The qualifications popover (owner, 3 Sep 26). A person wears only their
           CAT chip; this is where every other qualification shows, on a desktop

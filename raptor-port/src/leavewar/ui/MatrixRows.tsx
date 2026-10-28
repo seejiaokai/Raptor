@@ -7,7 +7,7 @@
    `PersonMonth` per month") — a prop added here is a repaint to argue for; `matrix-rows-memo.test.tsx` pins the row's. */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, boxText, canEditRow, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx, type FigureLines } from '../engine'
+import { addDays, boxText, canEditRow, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
 import { leaveFiguresOf, leaveWorldOf, moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, recordsAt, reqRunKey } from '../state/store'
 import { annualUsedIn, type PersonFigures } from '../engine/leaveyear'
 import type { RequestRec } from '../engine/warrecs'
@@ -82,8 +82,8 @@ export const NO_QUALS: QualPill[] = []
 
 export type RowApi = {
   startRowDrag: (e: ReactPointerEvent, id: string, cfg: RowDragCfg) => void
+  /** opens his person window — a tap on his name, or on the LVE figure beside it (reading 15) */
   setWhoOpen: (id: string) => void
-  setBalOpen: (v: { person: string; figureId: string }) => void
   setOpen: (v: { id: string; callsign: string; date: string }) => void
   chipEnter: (id: string, el: HTMLElement) => void
   chipLeave: () => void
@@ -194,12 +194,6 @@ type PersonRowProps = {
   deciding: boolean
   movedShown: boolean
   shown: Figure
-  /** No longer read: the figures beside the name come from the one engine (`nameFigures`, below). Optional so Matrix's
-   *  prop still type-checks until the grid file drops it. */
-  figureCtx?: FigureCtx
-  /** No longer read — the drag down the LVE column that selected a box went with D1491. Optional for the same reason:
-   *  Matrix still passes `figSel={null}`. */
-  figSel?: string | null
   evKind: Map<string, string>
   lockedCols: Set<string>
   quals: QualPill[]
@@ -387,10 +381,9 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
               callsign + chip as every other row, in Rearrange too. */}
         </div>
       </td>
-      {/* A tap opens the person's breakdown of the shown figure — the
-          owner's "click the individual personnel counter" (17 Aug 26). The
-          td is the target, like every grid cell here: a nested button would
-          cost the 44px column its number.
+      {/* A tap opens his person window (M5a reading 15 — it opened a breakdown of this one figure, the owner's "click the
+          individual personnel counter" of 17 Aug 26; one window for a man's figures now). The td is the target, like every
+          grid cell here: a nested button would cost the 44px column its number.
           `dataFig`/`dataPerson` are what the figure DRAG addresses the box by
           (6 Sep 26) — the one vocabulary all three copies of a box share. */}
       <FigureCell
@@ -401,8 +394,8 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
         testid={`bal-${p.id}`}
         dataFig={shown.id}
         dataPerson={p.id}
-        title={`${p.callsign}: ${shown.label} ${show(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for the breakdown`}
-        onClick={() => api.current.setBalOpen({ person: p.id, figureId: shown.id })}
+        title={`${p.callsign}: ${shown.label} ${show(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for his leave`}
+        onClick={() => api.current.setWhoOpen(p.id)}
       />
       {padL && <td className="lwph lwph-l" ref={phL} />}
       {/* The day cells, one memoised block PER MONTH (6 Sep 26). A window step

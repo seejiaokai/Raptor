@@ -19,7 +19,10 @@
    §1.4): its top line, his War bal from the one engine, reads the same figure in every world here; its second line is
    now ONE amber number, his LL and OL days in the View period (approved and pending), where it was LL amber and OL red of
    all time — so TATA's and JAGUAR's OL turns amber, and RESET's four days and DUSK's half, all in 2027, leave the 2026
-   view. Nothing else in any row moved. */
+   view. Nothing else in any row moved.
+
+   RE-RECORDED AGAIN 29 Oct 26 (M5a's person window, reading 15), on purpose: the box beside each name's title reads
+   "Tap for his leave", not "Tap for the breakdown" — the tap opens his person window now. Only those words moved. */
 import { act, render } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { setMemberTodayForTests } from '../engine'

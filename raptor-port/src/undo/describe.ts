@@ -256,7 +256,12 @@ function balanceLabel(entry: UndoEntry): string {
   try { note = JSON.parse(entry.detail || 'null') } catch { /* no note: the plain words below */ }
   const ch = entry.forward.find(c => c.collection === 'lw.balance')
   const kind = String(note?.k || (ch ? String(ch.id).slice(String(ch.id).lastIndexOf(':') + 1) : '') || 'leave')
-  const to = note?.to, from = note?.from
+  /* "to" from the step's saved row, never the note alone; "from" only where the note's "to" is that row (the security
+     read's finding 2) */
+  const a: any = ch && ch.op !== 'delete' ? ch.after : null
+  const to = a ? { amount: a.amount, ...(typeof a.cf === 'number' ? { cf: a.cf } : {}) } : note?.to
+  const agrees = !!a && !!note?.to && note.to.amount === a.amount && (note.to.cf ?? null) === (typeof a.cf === 'number' ? a.cf : null)
+  const from = agrees ? note?.from : null
   if (!to) return `a ${kind} balance`
   if (!from) return `${kind} balance → ${halfWord(to.amount)}`
   if (from.amount === to.amount && kind === 'LVE' && typeof to.cf === 'number' && (from.cf ?? 0) !== to.cf)

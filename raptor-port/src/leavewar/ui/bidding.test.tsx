@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { closeDates, getState, initStore, setBalance, setRole } from '../state/store'
+import { FIGURES } from '../engine'
+import { closeDates, figureCtxOf, getState, grantTo, initStore, leaveFiguresOf, setRole, setTypedBalance } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
@@ -265,10 +266,19 @@ describe('medical is member-filed only — never marked on the grid (owner, 13 S
    tracker, so this note is the whole of what he sees, and it must not be able
    to go quiet unnoticed. The rule is per COUNTER, not one flag for the sheet,
    so CCL is walked too. */
+/* Brought to zero (M5a): the old "Set" (`setBalance`) moved an opening and went with the figures sheet. CCL is TYPED now
+   (`setTypedBalance`); OIL is never typed (D1209, B6) — it is brought to zero by a correction in its ledger, as the OIL
+   tracker makes one. */
+const toZero = (counter: 'oil' | 'ccl') => {
+  if (counter === 'ccl') { expect(setTypedBalance('dusk', 'CCL', 0)).toBe(true); return }
+  const oil = FIGURES.find(f => f.id === 'oil')!.value(figureCtxOf(), 'dusk')
+  if (oil) expect(grantTo(['dusk'], 'oil', -oil, '2026-01-05', 'Brought to zero')).toBeNull()
+  expect(FIGURES.find(f => f.id === 'oil')!.value(figureCtxOf(), 'dusk')).toBe(0)
+}
 describe('a bid that would go below zero asks once, then writes', () => {
-  const warnThenWrite = (type: 'OIL' | 'CCL', counter: 'oil' | 'ccl', title: string) => {
+  const warnThenWrite = (type: 'OIL' | 'CCL', counter: 'oil' | 'ccl') => {
     setRole('admin')
-    expect(setBalance('dusk', counter, 0)).toBe(true)
+    toZero(counter)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     fireEvent.click(screen.getByTestId(`bid-${type}`))
@@ -283,29 +293,30 @@ describe('a bid that would go below zero asks once, then writes', () => {
     expect(screen.queryByTestId('bid-picker')).toBeNull()
     // Re-expressed for D1245 (22 Oct 26 — "on the grid each name keeps only its LVE figure beside it"): the column no
     // longer follows the write to the balance it came off; it stays +LVE. That balance is read where it now lives, in
-    // the person's window (a tap on his name) — one day under, in the red a negative balance wears.
+    // his person window (a tap on his name — M5a) — one day under.
     expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
     fireEvent.click(screen.getByTestId('person-dusk'))
-    const row = screen.getByTestId(`pfig-${counter}`)
-    expect(row.querySelector('.cn')!.textContent).toBe(title.slice(1))
-    const fb = row.querySelector('.fb')!
-    expect(fb.textContent).toBe('-1')
-    expect(fb.className).toContain('neg')
+    if (counter === 'oil') expect(screen.getByTestId('pw-oil').textContent).toBe('−1›')
+    else {
+      expect(leaveFiguresOf('dusk').kinds.CCL.war).toBe(-1)
+      const tile = screen.getByTestId('pw-tile-CCL')
+      expect(tile.textContent + ' ' + (tile.querySelector('input') as HTMLInputElement).value).toContain('−1')
+    }
   }
 
   it('OIL at zero: the note asks, the second tap writes, and +OIL reads −1', () => {
-    warnThenWrite('OIL', 'oil', '+OIL')
+    warnThenWrite('OIL', 'oil')
   })
 
   it('CCL at zero the same way — the confirm is per counter', () => {
-    warnThenWrite('CCL', 'ccl', '+CCL')
+    warnThenWrite('CCL', 'ccl')
   })
 
   /* THE ASK IS FOR WHAT IT SAID (Astra's final read, F2, 29 Sep 26): a one-day ask, then the range widened to three days —
      the same leave once must ask again, with the new figure, never write the three days on the old day's say-so. */
   it('widening to a range after the ask asks again, with the figure for the range', () => {
     setRole('admin')
-    expect(setBalance('dusk', 'ccl', 0)).toBe(true)
+    toZero('ccl')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     fireEvent.click(screen.getByTestId('bid-CCL'))

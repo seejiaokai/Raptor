@@ -69,7 +69,7 @@ function Chev() {
 /** ONE BOX (the spec §1.1, D1080): saves on Enter or on leaving it, never on each key; Escape puts the old figure back; one
  *  tap then typing replaces it — the app's own arming for its figure boxes (ui/interactions.ts, `input.mth-in`). `save`
  *  answers the refusal's words, or null when it saved; the words stand at the box until it is next typed in. */
-export function FigBox({ value, sm, label, testid, save, plus }: {
+export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   value: number
   sm?: boolean
   label: string
@@ -77,6 +77,11 @@ export function FigBox({ value, sm, label, testid, save, plus }: {
   save: (n: number) => string | null
   /** the grades' "+36" — written with its plus sign */
   plus?: boolean
+  /** a class of the surface it stands on (the person window's tile box — PersonWindow.tsx, drawn by its own drawing) */
+  cls?: string
+  /** the box as wide as its figure, plus this many pixels of its own padding and edge — the person window's tiles draw a
+   *  box that hugs its figure (round 20d's `r17-box`), where the page's columns draw one width */
+  fit?: number
 }) {
   const shown = (plus ? '+' : '') + figWords(value)
   const [text, setText] = useState<string | null>(null)
@@ -133,7 +138,8 @@ export function FigBox({ value, sm, label, testid, save, plus }: {
   return (
     <span className={`bp-fb${err ? ' bad' : ''}`}>
       <input
-        className={`mth-in bp-bx${sm ? ' sm' : ''}${value === 0 && text === null ? ' z' : ''}`}
+        className={`mth-in bp-bx${sm ? ' sm' : ''}${value === 0 && text === null ? ' z' : ''}${cls ? ` ${cls}` : ''}`}
+        style={fit != null ? { width: `calc(${Math.max(1, (text ?? shown).length)}ch + ${fit}px)` } : undefined}
         data-testid={testid}
         ref={boxRef}
         data-dirty={text !== null ? '1' : undefined}
@@ -153,6 +159,24 @@ export function FigBox({ value, sm, label, testid, save, plus }: {
       {err && <span className="bp-err" role="alert" data-testid={testid ? `${testid}-err` : undefined}>{err}</span>}
     </span>
   )
+}
+
+/** A TYPED FIGURE SAVED — the page's boxes and the person window's (PersonWindow.tsx), one door: the refusal's words, or
+ *  null when it saved. A save of either LVE box WRITES THE WHOLE ROW AFRESH (the spec §1.1, narrow read 2): the App bal box
+ *  as it then shows and the carried-forward box as it then shows, clamped to 0 … the figure; "from" is the running figure
+ *  shown before (the history line's "18 → 20"). */
+export function saveTypedFigure(pid: string, kind: BalKind, n: number, part?: 'cf'): string | null {
+  const k = leaveFiguresOf(pid).kinds[kind]
+  if (kind === 'LVE') {
+    const amount = part === 'cf' ? k.app : n
+    const cf = part === 'cf' ? n : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
+    const why = balanceProblem(pid, 'LVE', amount, cf)
+    if (why) return why
+    return setTypedBalance(pid, 'LVE', amount, cf, { amount: k.app, cf: k.cf }) ? null : 'Not saved'
+  }
+  const why = balanceProblem(pid, kind, n)
+  if (why) return why
+  return setTypedBalance(pid, kind, n, undefined, { amount: k.app }) ? null : 'Not saved'
 }
 
 /* ------------------------------------------------------------------ the rows */
@@ -400,19 +424,7 @@ export function BalancesPage() {
     grade: (pid, el) => setPick(cur => (cur && cur.pid === pid ? null : { pid, el })),
     /* A SAVE WRITES THE WHOLE ROW AFRESH (narrow read 2): for LVE the App bal box as it then shows and the carried-forward box
        as it then shows, clamped to 0 … the figure; "from" is the running figure shown before (the history line) */
-    save: (pid, kind, n, part) => {
-      const k = leaveFiguresOf(pid).kinds[kind]
-      if (kind === 'LVE') {
-        const amount = part === 'cf' ? k.app : n
-        const cf = part === 'cf' ? n : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
-        const why = balanceProblem(pid, 'LVE', amount, cf)
-        if (why) return why
-        return setTypedBalance(pid, 'LVE', amount, cf, { amount: k.app, cf: k.cf }) ? null : 'Not saved'
-      }
-      const why = balanceProblem(pid, kind, n)
-      if (why) return why
-      return setTypedBalance(pid, kind, n, undefined, { amount: k.app }) ? null : 'Not saved'
-    },
+    save: saveTypedFigure,
   }), [])
 
   /* THE PAGE FILLS THE SCREEN UNDER THE TAB ROW and scrolls inside itself (the drawing's page: its foot 8px off the screen's

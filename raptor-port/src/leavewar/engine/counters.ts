@@ -465,15 +465,9 @@ export const FIGURES: readonly Figure[] = Object.freeze([
 /** The figure the column opens on: how much leave is left. */
 export const DEFAULT_FIGURE_ID = 'lve'
 
-/** The numbers a two-line box shows: the figure's own number on top, and each
- *  used line's days under it. One reader for the closed column, the frozen
- *  overlay and the drawer, so the three cannot disagree. */
-export function figureLines(f: Figure, ctx: FigureCtx, personId: string): FigureLines {
-  return {
-    top: f.value(ctx, personId),
-    used: f.used.map(u => ({ label: u.label, tone: u.tone, value: takenOf(ctx.sources, personId, u.type, ctx) })),
-  }
-}
+/** The numbers a two-line box shows: his figure on top, and each used line's days under it. Since M5a the box beside a
+ *  name reads the one engine (ui/MatrixRows.tsx nameLines); the old reader of a FIGURE here (`figureLines`) went with the
+ *  figures sheet and the phone's frozen copy that called it. */
 export interface FigureLines { top: number; used: { label: string; tone: Tone; value: number }[] }
 
 /* (`selectableFigure` — which figures the grid's drag down a column could credit — went with that drag, D1491; M5a) */

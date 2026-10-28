@@ -93,15 +93,18 @@ describe('a drag down the LVE figures raises no bar and writes nothing (D1491)',
   })
 })
 
-describe('a tap on a name\'s LVE figure still opens his LVE', () => {
-  it('opens the breakdown sheet for that person, for an admin and a member', () => {
+/* M5a reading 15: the tap on the LVE figure beside a name opened a breakdown of that one figure; it opens his person
+   window now — one window for a man's figures */
+describe('a tap on the LVE figure beside a name opens his person window', () => {
+  it('opens his window, for an admin and a member', () => {
     render(<Matrix />)
     for (const role of ['admin', 'member'] as const) {
       act(() => setRole(role))
       fireEvent.click(balCells()[0]!)
-      expect(screen.getByTestId('figure-breakdown')).toBeTruthy()
-      fireEvent.click(screen.getByTestId('breakdown-close'))
+      expect(screen.getByTestId('person-window').getAttribute('aria-label')).toMatch(/'s leave$/)
       expect(screen.queryByTestId('figure-breakdown')).toBeNull()
+      fireEvent.click(screen.getByTestId('pw-close'))
+      expect(screen.queryByTestId('person-window')).toBeNull()
     }
   })
 })

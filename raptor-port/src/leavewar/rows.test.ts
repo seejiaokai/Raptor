@@ -14,7 +14,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import * as LW from './state/store'
 import {
   initStore, getState, rawState, setCell, setRole, decideRequestById, recordsAt, clearRecordById, moveCells,
-  setBalance, setPostOut, setPersLabel, grantTo, removeLedgerEntry, setShowSans, createWar, ingestDutyCredit,
+  setTypedBalance, setPostOut, setPersLabel, grantTo, removeLedgerEntry, setShowSans, createWar, ingestDutyCredit,
   leavewarConverter, lwSyncTurn, lwHistInit, setPeople,
 } from './state/store'
 import { initStore as raptorInitStore } from '../state/store'
@@ -284,12 +284,14 @@ describe('two people at once', () => {
 })
 
 describe('the rest of the war, one row each', () => {
-  it('an opening balance is one row per person and counter', () => {
+  /* (an OPENING was the row the old "Set" wrote — `setBalance`, gone with M5a: no door writes an opening any more. A typed
+     figure is its own row, one per person and kind — the spec §3.) */
+  it('a typed balance is one row per person and kind', () => {
     setRole('admin')
-    expect(setBalance('ramp', 'annual', 12)).toBe(true)
-    expect(J.log.map(o => o[0] + ' ' + o[1])).toEqual(['put opening:ramp:annual'])
+    expect(setTypedBalance('ramp', 'LVE', 12, 2)).toBe(true)
+    expect(J.log.map(o => o[0] + ' ' + o[1])).toEqual(['put bal:ramp:LVE'])
     initStore(J.be)
-    expect(LW.getState().openings.ramp!.annual).toBe(rawState().openings.ramp!.annual)
+    expect(LW.getState().balances.ramp!.LVE).toMatchObject({ amount: 12, cf: 2 })
   })
 
   it('a ledger line is its own row; removing it removes only that row', () => {
@@ -338,7 +340,7 @@ describe('the rest of the war, one row each', () => {
 
   it('no edit ever writes one of the old whole-list records', () => {
     setRole('admin')
-    setCell('ramp', D, 'LL'); setBalance('ramp', 'annual', 3); grantTo(['ramp'], 'oil', 1, '2026-01-05', 'CNY')
+    setCell('ramp', D, 'LL'); setTypedBalance('ramp', 'LVE', 3); grantTo(['ramp'], 'oil', 1, '2026-01-05', 'CNY')
     setPostOut('ramp', '2027-03-01', false); setPersLabel('ramp', 'x')
     for (const k of OLD_BLOBS) expect(J.be.read(k), k).toBeNull()
   })
