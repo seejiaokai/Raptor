@@ -11582,7 +11582,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 
 ## The Leave War's next look changes, ruled 24 Oct 26 ([LW-PICK-HELD-MARK]; four built the same day, marked BUILT)
 
-- **The tapped day keeps the cyan selection mark while its bid window is open (D1289)**, and on a phone the window never hides what was picked (D1290 — built for the one-day window in M3, the red-team fix A5 in `leavewar/ui/Matrix.tsx`; not yet for the drag-selection's window).
+- **The tapped day keeps the cyan selection mark while its bid window is open (D1289)** — *BUILT 28 Oct 26 with [LW-WHOLE-LEAVE-WINDOW] (§A leave of several days opens whole, below): the day tapped, the range picked or the leave's days* — and on a phone the window never hides what was picked (D1290 — built for the one-day window in M3, the red-team fix A5 in `leavewar/ui/Matrix.tsx`; not yet for the drag-selection's window).
 - **The bid windows' Remarks box dark, and shown on an approved leave (D1307, D1308, 24 Oct 26):** *BUILT 24 Oct 26 — §The bid windows after M3, round 3.* a window on an approved leave shows Document and Remarks at once, for everyone who opens it, in place of "Note"; the Remarks box is a dark box, as the Inputs page's input boxes are, so it reads as a place to fill in. Not built (filed as [LW-REMARKS-ALWAYS]).
 - **The bid windows redesigned to reduce clutter (D1311, 24 Oct 26):** *BUILT 24 Oct 26 — §The bid windows after M3, round 3.* fewer rows, labels and buttons on view, every action still reachable — drawn for him first (round 3 of D1301's order). Drawn (https://claude.ai/artifact/AELqyfNh2nbqvPGQKkzFt5). **His D1319:** the way to Grant OIL, Post out and Post in looks plainly pressable, not a bare ⋯; **his D1320:** "Grant OIL" in the green of OIL given (FO / HO's); **his D1326:** that button is a "⋯" in the fourth place of the CSE · OD · UNA row. **His D1330:** one row of actions for an entry wherever it opens — the bid window's Approve · Refuse · Move · Delete; on an approved leave Approve shows lit, and a second tap on it sends the leave back to waiting, in the bid window and the day's list alike (the list's "Back to bid" goes). **His D1331:** on a half day the bid window opens with the day's own half lit in the Duration row (AM for a morning, PM for an afternoon) beside the lit leave — no code in the title. **His D1332, D1334:** round 3 approved as drawn, all eight — change 6, the leave buttons the row's full width, by his own word (D487). **His D1333:** a long remark wraps and the Remarks box grows taller to show it, read-only remarks too. Not built.
 - **Every kind a colour of its own (D1309, 24 Oct 26):** no two kinds share a colour, each told apart at a glance on a phone — OIL taken, the other leave and an overseas duty above all; the colours are his to pick from pictures ([INPUT-COLOURS]). **His pick (D1316): set C** — medical red (238,82,82), OIL taken magenta (226,96,196), course purple (160,100,240), overseas duty a solid slate (128,142,160, filled .58); the leaves and FO / HO as built. **His D1322: no pink; D1323: the OIL taken in chartreuse (170,230,40).; D1325: the unforeseen absence (UNA) a deep teal (20,130,130).** *BUILT 24 Oct 26:* the app's one set of kind colours (`--k-*`, `scheduler/00-foundation-login.css`), read by the war's boxes and buttons (`matrix.css`) and the Inputs calendar's bars; an OIL taken its own kind `oilt` (`codes.ts`), FO / HO green; the Legend's two OIL lines; UNA BUILT with round 2 (24 Oct 26 — its kind `una`, the Legend's "Unavailable: an unforeseen absence", the Inputs calendar's bar at .70); was: UNA's colour waits for round 2's kind.
@@ -11682,3 +11682,25 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   offers "Add to the LL" onto the leave that replaced it (`sync.ts replacedCarry`).
 - **"Placed · Decided" (r7-13):** the bid window's one compact line an entry under its day line — "Placed Ranger · Mon 5
   Jan, 09:12 · Approved Saber · Thu 8 Jan, 08:40" (`ui/PlacedLine.tsx`); nothing where nothing is known.
+
+## A leave of several days opens whole (his D1448, D1461 — [LW-WHOLE-LEAVE-WINDOW], 28 Oct 26)
+
+- **What "the leave" is:** the entry the grid's joined bar draws (D1359) and the Approvals list shows as one line — a bid's
+  days in a row with one run key (`store.ts reqRunKey`), or a war-approved leave's days (one Input) — within the period
+  holding the day tapped (`store.ts leaveRunAt`). Leave filed on the Inputs page, a course or another commitment is not.
+- **The window:** a tap on any day of such a leave opens the bid window on it: the title the leave's dates in the drag
+  window's voice ("9–12 Feb", `BidBits compactSpan`); at the Duration row's right end, in place of "Pick a range", "All
+  <n> days" (picked to start with) and the day tapped ("Tue 10"), each named in full for a screen reader; the window keeps
+  its height. A single-day leave's window is unchanged.
+- **What acts on what is picked:** on "All", Approve and Refuse decide the leave as ONE line (`decideRequests` — one
+  command, one Undo; a refusal leaves every day and says "Nothing was decided." and why); the lit button again sends the
+  whole leave back to pending; Move carries only the leave's own records (`moveSel.only`); Delete takes only them, in one
+  command (`clearRecords`) — an award or the other half's bid on its days stays; a leave button re-types every day of it.
+  On the day, everything is as before. Each press reads the leave again after the words in the box are saved.
+- **The cyan mark (D1289):** every bid window marks on the grid what it acts on — the day tapped, the range picked, or the
+  leave's days — with the drag-selection's own `td.selcell`, kept on while rows re-render or months draw under it, taken
+  off when the window closes. Pin: `leavewar/ui/wholeleave.test.tsx`.
+- **His look (28 Oct 26):** the title keeps "9–12 Feb" (D1465); a day of the leave also holding a second entry — an OIL
+  award, the other half's bid — opens the day's list (D1466); the readings stand — one leave the joined bar's entry, a leave
+  button re-typing it, Delete and Move taking only it, the mark on every bid window, calendar days counted, no "Pick a
+  range" on such a leave, the chips' whole wrap at 360, Approvals' greyed line after Back (D1467).

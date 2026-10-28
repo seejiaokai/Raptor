@@ -342,7 +342,11 @@ const RULING_BYTES = [
      pinch to zoom, rounds 2 and 3 of the bid windows, the M3 build's answers), merged with code while the size check was
      deferred (D29); the replaced ones are archived, the rest live; none is trimmed (D136, D141). The area's split, or the
      archive of what the overhaul's build retires, is [RULINGS-SPENT-PASS]'s, not this change's. Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 106000],
+  /* leave-war 106000 -> 114000 (28 Oct 26, [LW-WHOLE-LEAVE-WINDOW] on his D1465-D1467): about 109,000 bytes on main with
+     M4's answers (D1420-D1464, merged with code while the size check was deferred — D29), and three more lines here; every
+     line a live ruling (D136, D141). The area's split or the archive of what the overhaul retires is [RULINGS-SPENT-PASS]'s.
+     Room, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 114000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);

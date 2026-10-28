@@ -1,0 +1,116 @@
+[
+ {
+  "id": "R1",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "R1-phone-all.png",
+   "R1-phone-day-touch.png",
+   "R1-phone-day.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R1",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "R1-desk-all.png",
+   "R1-desk-day.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R2",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "re-open Tue 10: title=9–12 Feb all=All 4 days remarks=\"Wedding\"",
+   "Fri 13 Remarks box value before the press: \"Wedding\" ; focus: bid-remarks",
+   "cells after: [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\",\"empty\"]"
+  ],
+  "pics": [
+   "R2-phone-before.png",
+   "R2-phone-after.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R2",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "re-open Tue 10: title=9–12 Feb all=All 4 days remarks=\"Wedding\"",
+   "Fri 13 Remarks box value before the press: \"Wedding\" ; focus: bid-remarks",
+   "cells after: [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\",\"empty\"]"
+  ],
+  "pics": [
+   "R2-desk-before.png",
+   "R2-desk-after.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R3",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "re-open Tue 10: title=9–12 Feb all=All 4 days remarks=\"Wedding\"",
+   "Fri 13 Remarks box value before the press: \"Wedding\" ; focus: bid-remarks",
+   "cells after: [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\",\"LL:a\"]"
+  ],
+  "pics": [
+   "R3-phone-before.png",
+   "R3-phone-after.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R3",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "re-open Tue 10: title=9–12 Feb all=All 4 days remarks=\"Wedding\"",
+   "Fri 13 Remarks box value before the press: \"Wedding\" ; focus: bid-remarks",
+   "cells after: [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\",\"LL:a\"]"
+  ],
+  "pics": [
+   "R3-desk-before.png",
+   "R3-desk-after.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R4",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "R4-phone-open.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R4",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "R4-desk-open.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "R5",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "R5-desk-approved.png",
+   "R5-desk-undo.png"
+  ],
+  "fails": []
+ }
+]

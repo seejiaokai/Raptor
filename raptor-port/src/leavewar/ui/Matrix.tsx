@@ -4831,14 +4831,15 @@ export function Matrix() {
              rules (moveCells: refused whole with its reason, the dotted mark once bidding is closed, lands
              undecided). A day that holds nothing this screen may move says so on the sheet instead. */
           onKept={text => setKeptNote({ key: openKey, text })}
-          onMove={cells => {
-            /* the day tapped, or every day of a picked range (D335) — the records on them this role may move (D265) */
-            if (!movableRecords(cells).length) return 'There is nothing here that can be moved.'
+          onMove={(cells, only) => {
+            /* the day tapped, or every day of a picked range (D335) — the records on them this role may move (D265); or a
+               whole leave's own records (D1461 — `only`, as the day's list moves one record by its id, D266) */
+            if (!movableRecords(cells, only).length) return 'There is nothing here that can be moved.'
             const dates = cells.map(c => c.date).sort()
             setSel(null)
             close()
             setEventMoveSel(null); setEventMovePreview(null)
-            setMoveSel({ people: [open.id], from: dates[0]!, to: dates[dates.length - 1]!, cells })
+            setMoveSel({ people: [open.id], from: dates[0]!, to: dates[dates.length - 1]!, cells, ...(only ? { only: [...only] } : {}) })
           }}
           creditShown={openAnyCredit
             ? {

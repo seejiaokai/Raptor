@@ -13,13 +13,13 @@
 // There is no login, so a bid is placed against whichever row was clicked
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, fileStraight, FILED_STRAIGHT, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords } from '../state/store'
+import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deletableRecords, fileStraight, FILED_STRAIGHT, leaveRunAt, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords, type DecideTo, type LeaveRun, type MoveRec } from '../state/store'
 import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
-import { ApproveSwitch, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
+import { ApproveSwitch, compactSpan, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
 import { OilAmount, oilAmountText, oilNumber, oilStart, type OilPick } from './OilAmount'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
@@ -177,8 +177,8 @@ export function BidPicker({
   decide?: { state?: BidState; movedFrom?: string } | null
   /** Pick these days' records up into the grid's move mode (D262) — the matrix closes the sheet and carries them. The
    *  day tapped, or every day of a picked range (D335: a range widens what the sheet acts on). Returns why it could
-   *  not, for the sheet to say. */
-  onMove?: (cells: { personId: string; date: string }[]) => string | void
+   *  not, for the sheet to say. `only`: just these records (a whole leave's own — D1461), as the day's list moves one. */
+  onMove?: (cells: { personId: string; date: string }[], only?: readonly MoveRec[]) => string | void
   /** Take the granted OIL off this day. */
   onCreditClear?: () => void
   onlyPortion?: Portion | null
@@ -219,6 +219,24 @@ export function BidPicker({
   /* WHAT THE WINDOW ACTS ON: the range picked — or this one day, where none is, or where the range picked is only the day
      tapped (round 3: "Just this day" went, so a range picked back to the one day is the one day again — D1332) */
   const span: Range | null = range && !(range.from === date && range.to === date) ? range : null
+  /* A LEAVE OF SEVERAL DAYS OPENS WHOLE (his D1448, D1461 — version 2): the leave the day tapped belongs to (the store's
+     `leaveRunAt` — the joined bar's entry, the Approvals list's line), and the choice at the Duration row's right end of
+     what Approve, Refuse, Move and Delete act on: "All <n> days", picked to start with, or the day tapped. Read on every
+     render (a few days walked), so a leave changed under the open window — an Undo, another tab — is followed; a leave
+     that shrinks to one day leaves the window as built. Never on a free half beside leave filed on the Inputs page. The
+     pick is this window's alone, never saved. */
+  const run = !onlyPortion ? leaveRunAt(personId, date) : null
+  /* "ALL" IS PICKED AT OPEN ONLY ON A WINDOW THAT OPENS ON A LEAVE OF SEVERAL DAYS (D1461; the narrow read's N1): a
+     one-day window whose day joins a leave under it — its words saved as the focus leaves the box, just BEFORE the click
+     on Delete or Approve lands, or another tab — shows the chips with the day tapped picked, so the title, the mark and
+     every press stay on the one day it showed; "All" is one deliberate tap away */
+  const [pick, setPick] = useState<'all' | 'day'>(() => (run ? 'all' : 'day'))
+  /* (a range picked wins — it was picked on a window with no leave of several days, and one joined under it since must not
+     turn the title and the mark to the leave while the buttons act on the range: the code read's F1, its twin) */
+  const whole = run && !span && pick === 'all' ? run : null
+  /* what a range write covers: the range picked, or the whole leave on "All" (a leave button re-types it, CSE · OD · the ⋯'s
+     filings file over it, as over a picked range — the spec's reading R2) */
+  const multi: Range | null = span ?? (whole ? { from: whole.from, to: whole.to } : null)
   const [showCal, setShowCal] = useState(false)
   const [note, setNote] = useState('')
   // Which code the sheet has warned about. A second tap on the SAME leave is
@@ -316,7 +334,18 @@ export function BidPicker({
        second tap on a lit Approve does") */
     const again = !span && decide?.state === bid
     if (again) bid = 'pending'
-    const { decided, why } = setBidStates(selCells(), bid)
+    /* ON "ALL" THE WHOLE LEAVE IS ONE LINE (D1461): Approvals' own writer decides it — one command, one Undo; a refusal by
+       the rules ("He posts out on 11 Feb: refuse or delete it", a locked week) leaves every day as it was and says why */
+    const w = wholeNow()
+    if (w) {
+      const [o] = decideRequests([{ personId, parts: w.parts, to: bid as DecideTo }])
+      if (o && o.kind === 'done') return onClose()
+      /* the whole leave is one line: a refusal leaves every day of it as it was, which the words say first (G8a) */
+      setMoveErr(`Nothing was decided. ${o ? o.why : 'That could not be recorded'}.`.replace(/\.\.$/, '.'))
+      return
+    }
+    /* (a leave that is no longer several days — joined or split under the window — is decided as the one day it now is) */
+    const { decided, why } = setBidStates(cellsOf(null), bid)
     if (decided > 0) return onClose()
     /* the rules' own reason where they gave one — "He posts out on 1 Mar: refuse or delete it" — as Approvals says it (the
        fixes' M5, D1436) */
@@ -354,13 +383,24 @@ export function BidPicker({
   /** WHAT THE SHEET ACTS ON (D335 — "5 keep": the one-day sheet keeps How many, and a picked range widens the
    *  selection): the day tapped, or every day of the range. Decide, Move and Delete all read this, as a drag across
    *  those days would (the drag-selection sheet's own selection). */
-  const selCells = () => (span ? spanCells(span) : [{ personId, date }])
+  /* …or every day of the whole leave on "All" (D1461) */
+  const cellsOf = (w: LeaveRun | null) => (span ? spanCells(span) : w ? w.dates.map(d => ({ personId, date: d })) : [{ personId, date }])
+  const selCells = () => cellsOf(whole)
+  /* THE LEAVE AS IT STANDS AT THE PRESS (the scenario designer's G4): every press saves the words still in a box first
+     (`flushWords`), and words saved can join the leave to a next-door bid with the same words — or another tab may have
+     changed it since the window drew — so each press reads the leave again after the save and acts on that */
+  /* …ONLY on a window that drew a leave of several days, "All" picked, no range picked (the code read's F1): a one-day
+     window whose words join it to a next-door leave at the save acts on its one day, as it always did — never on days it
+     never named; a range picked keeps its range */
+  const wholeNow = (): LeaveRun | null => (run && !span && pick === 'all' && !onlyPortion ? leaveRunAt(personId, date) : null)
   /* The Selected row's two buttons are drawn only where they would do something — the house rule for a control that
      could not work (a disabled chip invites a tap and then refuses it). Move: a record on these days this role may move
      (the store's one rule, D333 — so a member's own bid offers it while bidding is open); Delete: a day a Delete would
      change (an award for the admin, a bid, a leave the war approved and may remove). */
-  const canMoveHere = !!onMove && movableRecords(selCells()).length > 0
-  const canDeleteHere = deletableIn(selCells()) > 0
+  /* On "All" both ask of the LEAVE's own records, not of everything on its days (D1461 — the spec's reading R3): an OIL award
+     or the other half's bid sharing one of its days is not what was picked */
+  const canMoveHere = !!onMove && (whole ? movableRecords(selCells(), whole.recs) : movableRecords(selCells())).length > 0
+  const canDeleteHere = whole ? deletableRecords(whole.recs) > 0 : deletableIn(selCells()) > 0
   /* DECIDE OVER A PICKED RANGE, EVEN FROM A DAY WITH NO BID (the final reads, Fable 4 / Astra 2, both blind): the row was
      drawn from the tapped day alone, so a range holding bids around an empty tapped day offered Move and Delete but no
      Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
@@ -398,7 +438,7 @@ export function BidPicker({
     flushWords()
     /* an Other and an Attach take the window's Duration (his D1365, D1380 — whole day, AM or PM); a course and an overseas
        duty whole days */
-    const r = fileStraight(selCells(), code, !held ? wordsOf(draft) : undefined, code === 'OTH' || code === 'ATCH' ? portion : 'full')
+    const r = fileStraight(cellsOf(wholeNow()), code, !held ? wordsOf(draft) : undefined, code === 'OTH' || code === 'ATCH' ? portion : 'full')
     /* …and where a day of a range was left out (it already held the same kind, a locked week) it is said (round 2's FULL
        check — the fresh code read's F2): as a passing note, since the window closes — the day tapped now holds the input,
        and the grid opens that input's own window for it (the design guide: a press that did less than expected, D850) */
@@ -434,11 +474,42 @@ export function BidPicker({
   const lineDays = useMemo(
     () => (dayLine ? dayLine(selCells().map(c => c.date), dayLineCode(portion)) : []),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [!!dayLine, personId, date, span?.from, span?.to, portion, st],
+    [!!dayLine, personId, date, span?.from, span?.to, whole?.from, whole?.to, portion, st],
   )
+
+  /* THE GRID MARKS WHAT THE WINDOW ACTS ON (his D1289; D1461's drawing): the drag-selection's own cyan (`matrix.css
+     td.selcell`) on the day tapped, the range picked or every day of the leave on "All" — put on the cells while the window
+     is open and taken off when it closes or the pick changes. A class on the cell, never a repaint of the grid
+     (`docs/performance.md` §E — the way `cellring.ts` rings a cell). KEPT ON WHILE THE GRID CHANGES UNDER IT (the scenario
+     designer's G2): a row the store re-renders rebuilds its cells' class (React), a month drawn later — the phone's
+     rolling window — brings a cell that was not there, and a drag's own clear takes the class off what it painted; so the
+     grid is watched while the window is open and the mark laid on again wherever it went missing (a few cells looked up
+     per change — never the grid walked). A class, not a stylesheet rule: the joined bar's own rules (`td:not(.selcell)`)
+     must see it, so a picked day shows its own box as the drawing does. */
+  const markDates = selCells().map(c => c.date).join(',')
+  useLayoutEffect(() => {
+    const ids = markDates.split(',').map(d => `td[data-testid="cell-${personId}-${d}"]`)
+    const marked = new Set<HTMLElement>()
+    const lay = () => {
+      for (const sel of ids) {
+        const e = document.querySelector<HTMLElement>(sel)
+        if (e && !e.classList.contains('selcell')) e.classList.add('selcell')
+        if (e) marked.add(e)
+      }
+    }
+    lay()
+    const grid = document.querySelector<HTMLElement>(`td[data-testid^="cell-${personId}-"]`)?.closest('table') ?? null
+    const watch = grid && typeof MutationObserver !== 'undefined' ? new MutationObserver(lay) : null
+    watch?.observe(grid!, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] })
+    return () => { watch?.disconnect(); for (const e of marked) e.classList.remove('selcell') }
+  }, [markDates, personId])
 
   const write = (code: string) => {
     flushWords()   // words still in a box ride with the write (round 3's FULL check)
+    /* the leave as it stands now the words are saved (G4) — what this press covers, read again, never the drawn one */
+    const whole = wholeNow()
+    const multi: Range | null = span ?? (whole ? { from: whole.from, to: whole.to } : null)
+    const selCells = () => cellsOf(whole)
     /* CLEAR NAMES THE OIL AWARD IT TAKES, AND ASKS ONCE (owner, D260, 27 Sep 26 — "B"; the absence-record re-test, AB1).
        A Clear removes the admin's award on the day with everything else (that stands — his ruling), but it used to do
        it silently and the man's OIL dropped. On a day — or a picked range — holding an award, the first tap names each
@@ -448,6 +519,20 @@ export function BidPicker({
        of Which leave; it is now the Selected row's Delete, the same button and word as the drag-selection sheet's and the
        day's list's. What it takes and how it asks are unchanged (D260). */
     setNoteAt(code ? 'leave' : 'sel')
+    /* DELETE ON "ALL" TAKES THE LEAVE AND NOTHING ELSE ON ITS DAYS (D1461 — the spec's reading R3): its own records, in one
+       command (the store's `clearRecords`); an award sharing a day is not taken, so there is no award to name first */
+    if (!code && whole) {
+      setClearAsked(false); setConfirming(null)
+      const { written, skipped, why: doorWhy } = clearRecords(whole.recs)
+      if (written > 0) onWrote?.('')
+      if (written > 0 && skipped === 0) return onClose()
+      /* a day left says why — the door's own reason where it gave one (a locked week — G8b), else who may change it */
+      const why = doorWhy.length ? doorWhy.join('. ') : `Those days are ${skipWhy('deleted', getState().role)}`
+      return setNote(written === 0 ? `Nothing was deleted. ${why}.` : `${written} of ${whole.dates.length} days deleted. ${why}.`)
+    }
+    /* THE LIT LEAVE TAPPED AGAIN ON "ALL", AUTO-APPROVE OFF (G6): every day already holds this very bid, so nothing is
+       written — the window closes, as the one-day window does, never "none of those days could be written" */
+    if (code && whole && !approving && whole.kind === 'request' && whole.state === 'pending' && whole.parts.every(p => p.code === code)) return onClose()
     if (!code) {
       const cells = span ? spanCells(span) : [{ personId, date }]
       const awards = awardsIn(cells)
@@ -480,7 +565,7 @@ export function BidPicker({
     /* ticked: placed and approved in one command, one Undo (`placeApproved`); a day its approval refuses keeps its bid,
        pending, and is named here — never a whole-window failure */
     if (code && approving) {
-      const why1 = !span ? cellProblem(personId, date, code) : null
+      const why1 = !multi ? cellProblem(personId, date, code) : null
       if (why1) return setNote(why1)
       const r = placeApproved(selCells(), code, newWords)
       if (r.written > 0) onWrote?.(code)
@@ -495,7 +580,7 @@ export function BidPicker({
       return setNote(said)
     }
 
-    if (!span) {
+    if (!multi) {
       /* A refused single-day write used to close the sheet as though it had
          worked: no leave, no message, nothing ([S4-BUGHUNT], 20 Sep 26). Ask
          WHY first, and say it. */
@@ -530,8 +615,8 @@ export function BidPicker({
        code written over each day strips only the war's own records, so a leave the WAR approved inside the span stayed,
        unsaid, and the sheet closed as done. `clearCells` removes it through the absence door (or counts it where it may
        not go — a published war's finished paperwork), exactly as the one-day Clear and a dragged block's Delete do. */
-    const { written, skipped } = code ? setCellRange(personId, span.from, span.to, code, newWords)
-      : clearCells(spanCells(span), clearAsked ? clearIds : awardsIn(spanCells(span)).map(a => a.id))
+    const { written, skipped } = code ? setCellRange(personId, multi.from, multi.to, code, newWords)
+      : clearCells(spanCells(multi), clearAsked ? clearIds : awardsIn(spanCells(multi)).map(a => a.id))
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
     const verb = code ? 'written' : 'deleted'
@@ -579,7 +664,8 @@ export function BidPicker({
           says which leave the day holds, D1331 its half) */}
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
-        <span className="dt when">{dayLabel(date)}</span>
+        {/* on "All" the leave's dates, in the drag window's voice ("9–12 Feb" — BidBits compactSpan); else the day (D1461) */}
+        <span className="dt when">{whole ? compactSpan(whole.from, whole.to) : dayLabel(date)}</span>
         {isAdmin && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
         <button className="x" data-testid="bid-cancel" onClick={closeKeeping} aria-label="Cancel">
           ✕
@@ -644,7 +730,9 @@ export function BidPicker({
           {canMoveHere && (
             <MoveChip testid="decide-shift" onClick={() => {
               flushWords()   // the words saved before the records are picked up (round 3's FULL check)
-              const why = onMove?.(selCells())
+              /* on "All" the leave's own records only (D1461), as the day's list moves one record (D266) */
+              const w = wholeNow()   // the leave as it stands now the words are saved (G4)
+              const why = w ? onMove?.(cellsOf(w), w.recs) : onMove?.(cellsOf(null))
               if (why) setMoveErr(why)
             }} />
           )}
@@ -711,7 +799,28 @@ export function BidPicker({
             <span>· change it on the Inputs page</span>
           </span>
         )}
-        <button
+        {/* ON A LEAVE OF SEVERAL DAYS (his D1461 — version 2): "Pick a range"'s place holds the choice of what Approve,
+            Refuse, Move and Delete act on — "All <n> days" (picked to start with) or the day tapped ("Tue 13") — so the
+            window keeps its height. Picking either takes back an armed question and a note about the other. */}
+        {run && !span && (
+          <span className="bp-scope" role="group" aria-label="What it acts on">
+            {(['all', 'day'] as const).map(k => (
+              <button
+                key={k}
+                type="button"
+                data-testid={`scope-${k}`}
+                className={`pchip${pick === k ? ' on' : ''}`}
+                aria-pressed={pick === k}
+                /* named in full for a screen reader — the dates, the month (the scenario designer's G11) */
+                aria-label={k === 'all' ? `All ${run.dates.length} days, ${compactSpan(run.from, run.to).replace(/\s*–\s*/, ' to ')}` : `Only ${dayLabel(date)}`}
+                onClick={() => { setPick(k); setNote(''); setClearAsked(false); setClearIds([]); setMoveErr(''); setConfirming(null) }}
+              >
+                {k === 'all' ? `All ${run.dates.length} days` : dayLabel(date).split(' ').slice(0, 2).join(' ')}
+              </button>
+            ))}
+          </span>
+        )}
+        {(!run || span) && <button
           data-testid="span-range"
           className={`pchip bp-range${span ? ' on' : ''}`}
           aria-pressed={!!span}
@@ -726,7 +835,7 @@ export function BidPicker({
           onClick={() => { if (showCal) { setShowCal(false); if (range && range.from === range.to) { setRange(null); setNote(''); setClearAsked(false); setClearIds([]); setMoveErr(''); setConfirming(null) } return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
         >
           {span ? shortSpan(span.from, span.to) : 'Pick a range'}
-        </button>
+        </button>}
       </div>
 
       {showCal && (

@@ -1,0 +1,483 @@
+[
+ {
+  "id": "W1",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "W1-phone-all.png",
+   "W1-phone-day-touch.png",
+   "W1-phone-day.png",
+   "W1-phone-closed.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W1",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "W1-desk-all.png",
+   "W1-desk-day.png",
+   "W1-desk-closed.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W2",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "approved cell classes: [\"c k-ll s-a whole jr\",\"c k-ll s-a whole jl jr\",\"c k-ll s-a whole jl jr\",\"c k-ll s-a whole jl\"]",
+   "Approve aria-pressed=true",
+   "Delete first press read: null"
+  ],
+  "pics": [
+   "W2-phone-approved.png",
+   "W2-phone-undo.png",
+   "W2-phone-redo.png",
+   "W2-phone-open-approved.png",
+   "W2-phone-deleted.png",
+   "W2-phone-undo-delete.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W2",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "approved cell classes: [\"c k-ll s-a whole jr\",\"c k-ll s-a whole jl jr\",\"c k-ll s-a whole jl jr\",\"c k-ll s-a whole jl\"]",
+   "Approve aria-pressed=true",
+   "Delete first press read: null"
+  ],
+  "pics": [
+   "W2-desk-approved.png",
+   "W2-desk-undo.png",
+   "W2-desk-redo.png",
+   "W2-desk-open-approved.png",
+   "W2-desk-deleted.png",
+   "W2-desk-undo-delete.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W3",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "window for bane: title=9–12 Feb all=All 4 days",
+   "bell lines (1): [\"Your leaveMon 9 – Thu 12 Feb LL approved · Saber now\"]"
+  ],
+  "pics": [
+   "W3-desk-admin-approved.png",
+   "W3-desk-bell.png",
+   "W3-desk-bell-list.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W4",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "after OIL: [\"LL:w\",\"LL:w\",\"HO:a+LL:w\",\"LL:w\"]",
+   "Delete first press read: null",
+   "after Delete: [\"empty\",\"empty\",\"HO:a\",\"empty\"]"
+  ],
+  "pics": [
+   "W4-phone-daylist.png",
+   "W4-phone-tue-open.png",
+   "W4-phone-after-delete.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W4",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "after OIL: [\"LL:w\",\"LL:w\",\"HO:a+LL:w\",\"LL:w\"]",
+   "Delete first press read: null",
+   "after Delete: [\"empty\",\"empty\",\"HO:a\",\"empty\"]"
+  ],
+  "pics": [
+   "W4-desk-daylist.png",
+   "W4-desk-tue-open.png",
+   "W4-desk-after-delete.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W5",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "Auto-approve at open: true",
+   "Auto-approve on reopen (remembered?): false"
+  ],
+  "pics": [
+   "W5-phone-off.png",
+   "W5-phone-after-lit-press.png",
+   "W5-phone-approved.png",
+   "W5-phone-undo.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W5",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "Auto-approve at open: true",
+   "Auto-approve on reopen (remembered?): false"
+  ],
+  "pics": [
+   "W5-desk-off.png",
+   "W5-desk-after-lit-press.png",
+   "W5-desk-approved.png",
+   "W5-desk-undo.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W6",
+  "size": "phone",
+  "verdict": "FAIL",
+  "notes": [
+   "lwSetPostOut returned true",
+   "window: title=9–12 Feb all=All 4 days tick=true",
+   "refusal note: {\"text\":\"Nothing was decided. He posts out on 11 Feb: refuse or delete it.\",\"color\":\"rgb(242, 200, 121)\",\"cls\":\"note warn bp-wide\",\"role\":null}"
+  ],
+  "pics": [
+   "W6-phone-before.png",
+   "W6-phone-refused-note.png"
+  ],
+  "fails": [
+   "note is red-ish — saw \"rgb(242, 200, 121)\""
+  ]
+ },
+ {
+  "id": "W6",
+  "size": "desk",
+  "verdict": "FAIL",
+  "notes": [
+   "lwSetPostOut returned true",
+   "window: title=9–12 Feb all=All 4 days tick=true",
+   "refusal note: {\"text\":\"Nothing was decided. He posts out on 11 Feb: refuse or delete it.\",\"color\":\"rgb(242, 200, 121)\",\"cls\":\"note warn bp-wide\",\"role\":null}"
+  ],
+  "pics": [
+   "W6-desk-before.png",
+   "W6-desk-refused-note.png"
+  ],
+  "fails": [
+   "note is red-ish — saw \"rgb(242, 200, 121)\""
+  ]
+ },
+ {
+  "id": "W7",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "Approvals Drifter lines: [\"Drifter A LL 9–10 Feb › Approve Refuse 2 days 22 P 27 28 Oct 13:54 · by Saber\",\"Drifter A LL 12 Feb › Approve Refuse 1 day 22 P 27 28 Oct 13:54 · by Saber\"]",
+   "after Refuse: [\"LL:w\",\"LL:w\",\"LL:a\",\"LL:r\"]",
+   "Refuse button now: {\"t\":\"Refused\",\"p\":\"true\",\"dis\":false}"
+  ],
+  "pics": [
+   "W7-phone-wed-approved.png",
+   "W7-phone-mon-open.png",
+   "W7-phone-approvals.png",
+   "W7-phone-thu-refused.png",
+   "W7-phone-thu-back.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W7",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "Approvals Drifter lines: [\"Drifter A LL Mon 9 – Tue 10 Feb › 2 days 22 P 27 28 Oct 13:54 · by Saber Approve Refuse\",\"Drifter A LL Thu 12 Feb › 1 day 22 P 27 28 Oct 13:54 · by Saber Approve Refuse\"]",
+   "after Refuse: [\"LL:w\",\"LL:w\",\"LL:a\",\"LL:r\"]",
+   "Refuse button now: {\"t\":\"Refused\",\"p\":\"true\",\"dis\":false}"
+  ],
+  "pics": [
+   "W7-desk-wed-approved.png",
+   "W7-desk-mon-open.png",
+   "W7-desk-approvals.png",
+   "W7-desk-thu-refused.png",
+   "W7-desk-thu-back.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W8",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "line before: [\"Drifter A LL Mon 9 – Thu 12 Feb › 4 days 22 P 27 28 Oct 13:54 · by Saber Approve Refuse\"]",
+   "ringed cell: cell-slipway-2026-02-09",
+   "td.lw-ring.selcell count: 1 ; ring classes still on: 1",
+   "line after Back: [{\"text\":\"Drifter A LL Mon 9 – Thu 12 Feb › Already approved by Saber 4 days 22 P 27 28 Oct 13:54 · by Saber Approve Refuse\",\"cls\":\"appr-line stale\"}]"
+  ],
+  "pics": [
+   "W8-desk-ring-and-bar.png",
+   "W8-desk-ringed-cyan.png",
+   "W8-desk-approved-on-grid.png",
+   "W8-desk-back-approvals.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W9",
+  "size": "phone",
+  "verdict": "FAIL",
+  "notes": [
+   "with window open: undoBtn: disabled=false aria-disabled=null title=Undo — Drifter’s bid box=249,9,30x30 top=self || redoBtn: disabled=true aria-disabled=null title=Redo box=285,9,30x30 top=self",
+   "Undo with the window open: pressable=true",
+   "window still open after Undo: false ; cells [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\"] ; undoBtn: disabled=false aria-disabled=null title=Undo — Drifter’s bid box=249,9,30x30 top=self || redoBtn: disabled=true aria-disabled=null title=Redo box=285,9,30x30 top=self",
+   "SECOND Undo (window shut): pressable=true cells [\"LL:w\",\"LL:w\",\"LL:w\",\"empty\"]",
+   "Redo: cells [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\"]",
+   "reopened after Redo: [{\"t\":\"All 4 days\",\"p\":\"true\",\"dis\":false},\"9–12 Feb\"] cyan 4"
+  ],
+  "pics": [
+   "W9-phone-open4.png",
+   "W9-phone-undo-open.png",
+   "W9-phone-second-undo.png",
+   "W9-phone-redo-open.png"
+  ],
+  "fails": [
+   "window stays open after Undo and reads All 3 days (seen: window closed; the cells now) — saw [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\"]"
+  ]
+ },
+ {
+  "id": "W9",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "with window open: undoBtn: disabled=false aria-disabled=null title=Undo — Drifter’s bid box=1071,14,34x29 top=sheetscrim || redoBtn: disabled=true aria-disabled=null title=Redo box=1111,14,34x29 top=sheetscrim",
+   "#undoBtn not pressable: locator.click: Timeout 5000ms exceeded.",
+   "Undo with the window open: pressable=false",
+   "Ctrl+Z with the window open: window open=true cells [\"LL:w\",\"LL:w\",\"LL:w\",\"LL:w\"]",
+   "chip after Ctrl+Z: [{\"t\":\"All 4 days\",\"p\":\"true\",\"dis\":false},\"9–12 Feb\"] cyan 4",
+   "close, then Undo: pressable=true cells [\"LL:w\",\"LL:w\",\"LL:w\",\"empty\"]"
+  ],
+  "pics": [
+   "W9-desk-open4.png",
+   "W9-desk-after-ctrl-z.png",
+   "W9-desk-reopen-after-undo.png",
+   "W9-desk-reopen-after-redo.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W9b",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "after the planted removal of Thu 12: window open=true cells [\"LL:w\",\"LL:w\",\"LL:w\",\"empty\"]"
+  ],
+  "pics": [
+   "W9b-phone-removed-under-open.png",
+   "W9b-phone-put-back-under-open.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W9b",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "after the planted removal of Thu 12: window open=true cells [\"LL:w\",\"LL:w\",\"LL:w\",\"empty\"]"
+  ],
+  "pics": [
+   "W9b-desk-removed-under-open.png",
+   "W9b-desk-put-back-under-open.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W10",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "member lwSetCell results: [true,true,true,true]",
+   "move banner: Tap a day to move 4 entries Cancel",
+   "Delete first press read: null"
+  ],
+  "pics": [
+   "W10-phone-open.png",
+   "W10-phone-move-banner.png",
+   "W10-phone-move-confirm.png",
+   "W10-phone-moved.png",
+   "W10-phone-deleted.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W10",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "member lwSetCell results: [true,true,true,true]",
+   "move banner: Tap a day to move 4 entries Cancel",
+   "Delete first press read: null"
+  ],
+  "pics": [
+   "W10-desk-open.png",
+   "W10-desk-move-banner.png",
+   "W10-desk-moved.png",
+   "W10-desk-deleted.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W11",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "placed: [true,true,true,true]",
+   "appr-elsewhere present: 1 text: +3 in JAN - DEC 27 ›",
+   "Approvals (Drifter) in the other period: [\"Drifter A LL 1–2 Jan › Approve Refuse 1 day 23 P 27 28 Oct 13:55 · by Saber\"]",
+   "period label: VIEW"
+  ],
+  "pics": [
+   "W11-phone-open.png",
+   "W11-phone-approved.png",
+   "W11-phone-approvals-27.png",
+   "W11-phone-jan.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W11",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "placed: [true,true,true,true]",
+   "appr-elsewhere present: 1 text: +3 pending in JAN - DEC 27 ›",
+   "Approvals (Drifter) in the other period: [\"Drifter A LL Fri 1 – Sat 2 Jan › 1 day 23 P 27 28 Oct 13:56 · by Saber Approve Refuse\"]",
+   "period label: VIEW"
+  ],
+  "pics": [
+   "W11-desk-open.png",
+   "W11-desk-approved.png",
+   "W11-desk-approvals-27.png",
+   "W11-desk-jan.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W12",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "placed: [true,true,true,true]",
+   "cells before: [\"LL:w\",\"LL:w+OL:w\",\"LL:w\"]",
+   "Delete first press read: null",
+   "cells after: [\"empty\",\"OL:w\",\"empty\"]"
+  ],
+  "pics": [
+   "W12-phone-open.png",
+   "W12-phone-after-delete.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W12",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "placed: [true,true,true,true]",
+   "cells before: [\"LL:w\",\"LL:w+OL:w\",\"LL:w\"]",
+   "Delete first press read: null",
+   "cells after: [\"empty\",\"OL:w\",\"empty\"]"
+  ],
+  "pics": [
+   "W12-desk-open.png",
+   "W12-desk-after-delete.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W13",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [
+   "head geometry: {\"hdL\":25,\"hdR\":377,\"whenL\":111,\"whenR\":180,\"tickL\":247,\"whenClip\":false,\"hdClip\":false,\"kids\":[{\"c\":\"who\",\"l\":47,\"r\":101},{\"c\":\"dt when\",\"l\":111,\"r\":180},{\"c\":\"pp-sw bp-sw on\",\"l\":247,\"r\":344},{\"c\":\"x\",\"l\":358,\"r\":377}]}"
+  ],
+  "pics": [
+   "W13-phone-open.png",
+   "W13-phone-duration-row.png",
+   "W13-phone-title-bar.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W13",
+  "size": "phone360",
+  "verdict": "FAIL",
+  "notes": [
+   "head geometry: {\"hdL\":25,\"hdR\":335,\"whenL\":111,\"whenR\":180,\"tickL\":205,\"whenClip\":false,\"hdClip\":false,\"kids\":[{\"c\":\"who\",\"l\":47,\"r\":101},{\"c\":\"dt when\",\"l\":111,\"r\":180},{\"c\":\"pp-sw bp-sw on\",\"l\":205,\"r\":302},{\"c\":\"x\",\"l\":316,\"r\":335}]}"
+  ],
+  "pics": [
+   "W13-phone360-open.png",
+   "W13-phone360-duration-row.png",
+   "W13-phone360-title-bar.png"
+  ],
+  "fails": [
+   "one line, words inside edges, inside the window — saw {\"tops\":[589,623],\"n\":5,\"clipped\":[],\"pastEdge\":false,\"leftEdge\":false,\"height\":62}"
+  ]
+ },
+ {
+  "id": "W13",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "head geometry: {\"hdL\":501,\"hdR\":1035,\"whenL\":585,\"whenR\":649,\"tickL\":905,\"whenClip\":false,\"hdClip\":false,\"kids\":[{\"c\":\"who\",\"l\":523,\"r\":575},{\"c\":\"dt when\",\"l\":585,\"r\":649},{\"c\":\"pp-sw bp-sw on\",\"l\":905,\"r\":1002},{\"c\":\"x\",\"l\":1016,\"r\":1035}]}"
+  ],
+  "pics": [
+   "W13-desk-open.png",
+   "W13-desk-duration-row.png",
+   "W13-desk-title-bar.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W14",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [
+   "focus right after open: {\"tag\":\"BODY\",\"tid\":\"\",\"id\":\"\",\"cls\":\"\",\"text\":\"142 RAPTOR Edit Sche\",\"fv\":false}",
+   "Tab path (14): bid-approve-tick > bid-cancel > decide-approve > decide-refuse > decide-shift > bid-clear > bid-remarks > bid-till > BUTTON > portion-full > portion-am > portion-pm > scope-all > scope-day",
+   "focus after Enter: {\"tag\":\"BUTTON\",\"tid\":\"scope-day\",\"id\":\"\",\"cls\":\"pchip on\",\"text\":\"Tue 10\",\"fv\":true}",
+   "focus after Escape: {\"tag\":\"BODY\",\"tid\":\"\",\"id\":\"\",\"cls\":\"\",\"text\":\"142 RAPTOR Edit Sche\",\"fv\":false}"
+  ],
+  "pics": [
+   "W14-desk-focus.png",
+   "W14-desk-escaped.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W15",
+  "size": "phone",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "W15-phone-open.png"
+  ],
+  "fails": []
+ },
+ {
+  "id": "W15",
+  "size": "desk",
+  "verdict": "PASS",
+  "notes": [],
+  "pics": [
+   "W15-desk-open.png"
+  ],
+  "fails": []
+ }
+]

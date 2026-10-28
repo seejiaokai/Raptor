@@ -49,6 +49,15 @@ describe('the day line', () => {
     expect(screen.getByTestId('bid-dayline').textContent).toBe('OPSP 12 → 11 · amber')
   })
 
+  /* A WHOLE LEAVE'S WINDOW OPENS ON SEVERAL DAYS (D1461 — version 2, drawn with the calm line alone): where no day hurts, no
+     day is named — a date over "No manning row turns amber or red" said nothing and cost the window a line (the walk of
+     28 Oct 26, W1's pictures) */
+  it('a range where nothing is amber or red names no day: the calm line alone', () => {
+    render(<DayLine days={[0, 1, 2].map(i => day({ date: `2026-02-1${i}`, avail: { seat: 'p', label: 'Available P', before: 26, after: 25, level: null }, turned: [] }))} />)
+    expect(screen.queryByTestId('bid-dayline-when')).toBeNull()
+    expect(screen.getByTestId('bid-dayline').textContent).toBe('No manning row turns amber or red')
+  })
+
   it('a range names the day it hurts most, its date first', () => {
     render(<DayLine days={[day({ date: '2026-02-10', avail: { seat: 'p', label: 'Available P', before: 25, after: 24, level: null }, turned: [] }), day()]} />)
     expect(screen.getByTestId('bid-dayline-when').textContent).toMatch(/11/)
