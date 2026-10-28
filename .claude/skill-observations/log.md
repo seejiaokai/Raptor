@@ -2599,3 +2599,18 @@ its value and never in innerText.
 **Suggested improvement:** Add to plain-language.md's check-before-you-send a mechanical step: list every screen, tile, figure or control the message names; each needs a picture link in the same message (an existing drawing, cropped and marked, is enough) or the message is not sent.
 
 **Principle:** A rule judged case by case ("is this a screen question?") slips under the pressure of a long job; a checklist step that counts the screen names in the draft does not.
+
+### Observation 734: An "all as recommended" ruling was written from the plan's wording, not the page he saw
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** recording the owner's "All as recommended" to the Leave War M5 plan's four points (claude/leave-war-m5-handoff-3a6602)
+**Skill:** New skill candidate: recording-rulings (record-decisions.md's three steps)
+**Type:** internal
+**Phase/Area:** writing a ruling's bold rule after a blanket approval
+
+**Issue:** The owner approved four recommendations shown on a questions page. The agent wrote the rulings from the plan document's fuller wording ("dated on or after the day App bal was last typed"), which carried a condition the page never showed him; it also filed a point the page did show ("each with its own full check") as the agent's reading, and wrote a reason he did not give unlabelled. The fresh reader caught all three.
+
+**Suggested improvement:** In record-decisions.md's step 1: when he approves a page "as recommended", open that page and write each bold rule from the page's own recommended text; anything only in the plan behind it goes under "The agent's readings", marked to check with him.
+
+**Principle:** A blanket approval covers exactly what the approver was shown; the richer internal document behind it is the agent's reading until shown.

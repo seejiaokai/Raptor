@@ -21,14 +21,15 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/leave-war-m5-handoff-3a6602 -->
-### `claude/leave-war-m5-handoff-3a6602` — the Leave War overhaul's M5: PLANNED, waiting for his answers (five points, his page) — written 28 Oct 26, verify before use
-- **After a compaction:** re-read this block and the M5 plan before the next change; note the compaction here with its time.
+### `claude/leave-war-m5-handoff-3a6602` — the Leave War overhaul's M5: PLANNED, its four points ANSWERED (D1472–D1475); one look open (the names' colours) — written 28 Oct 26, verify before use
+- **After a compaction:** re-read this block and the M5 plan before the next change; note the compaction here with its time. Compacted once, 28 Oct 26 about 17:00 (before his "All as recommended").
 - **Done this chat:** the records pull request 583 (notes only, merged by D1407): [LW-WHOLE-LEAVE-WINDOW] archived; the four merged blocks removed; the owed D138 read of D1440–D1447 run (D1439, D1444 marked narrowed by D1464). M5 planned: `raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md` (two helpers' code survey and rulings search folded in).
 - **His page:** https://claude.ai/artifact/EN9B2Ui3EydoTXjc66rUyN (the repo's `raptor-port/docs/mock/lw-overhaul/m5-questions.html`) — newest first: the names as the schedule's puck (his D1468–D1471 of 15:43 and 15:57 — version 2, `*-puck2.png`; drawn by `raptor-port/scripts/handpass/lw-name-pucks-mock.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-28-lw-name-pucks/`; recommended: build as drawn, its own small change before M5 — filed [LW-NAME-PUCKS]), then the plan's four points with the older drawings.
-- **Questions waiting for him (the plan §4):** (1) War bal after an approval — recommended: App bal less every leave, pending or approved, dated on or after the day App bal was typed; (2) a leave across 31 Dec — each day to its own year; (3) D1235's three readings — as read; (4) M5 in two merges, M5a balances first — yes.
-- **Pick up here:** record his answers as rulings (Leave War; this chat's range D1468–D1479 — check the live numbers first), then redraw M5a's screens on the real app (the person window, the balances page — desktop and phone; plan §4's list) and put them in rounds of at most four; then M5a's build spec in M4's shape, on a new branch from main.
+- **Answered 28 Oct 26, "All as recommended" (D1472–D1475, read by a fresh reader, its five fixes taken):** War bal = App bal less his leave pending or approved since App bal was typed (whether "since" goes by a leave's own date is the agent's reading — check it with him at M5a's drawings); a leave across 31 Dec counts each day in its own year; D1235's readings hold; M5 is two merges, M5a then M5b. Taken off his page (D1363).
+- **Still waiting for him:** the names puck's colours — the schedule's lighter colours as drawn (recommended) or the Leave War's darker ones; then [LW-NAME-PUCKS] is built on its own branch from main before M5a.
+- **Pick up here:** record his colours answer (next free number from D1476, range to D1479 — check the live numbers first); build [LW-NAME-PUCKS] if he says so; then redraw M5a's screens on the real app (the person window, the balances page — desktop and phone; plan §4's list) and put them in rounds of at most four; then M5a's build spec in M4's shape, on a new branch from main.
 - **Branch:** `claude/leave-war-m5-handoff-3a6602` — notes only so far.
-- **Notes:** ruling numbers to D1471 (this chat's range D1468–D1479); design lessons to 67 (this branch holds 67–69, D1417); observations to 733. D1468–D1470 and lesson 67 read by a fresh reader (D138, D941), its fixes taken; D1471 and lesson 67's D1471 change read by a second fresh reader — see the commit after it.
+- **Notes:** ruling numbers to D1475 (this chat's range D1468–D1479); design lessons to 67 (this branch holds 67–69, D1417); observations to 733. D1468–D1470 and lesson 67 read by a fresh reader (D138, D941), its fixes taken; D1471 and lesson 67's D1471 change read by a second fresh reader — see the commit after it.
 <!-- /now -->
 ## Next, in order
 
