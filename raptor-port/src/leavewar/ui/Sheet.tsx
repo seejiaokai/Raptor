@@ -35,10 +35,9 @@ const PAN_THRESH = 6 // px before a gesture commits to an axis
 
 /** How much of the visual viewport must be gone before it counts as a KEYBOARD
  *  rather than a URL bar showing or hiding — below this, a docked panel must
- *  not re-anchor itself. Exported because the balance bar keeps itself above a
- *  phone's keyboard the same way (`BalanceBar.tsx`) and had copied the number:
- *  two literals for one physical judgement is the drift seam the house rules
- *  name (review, 6 Sep 26). */
+ *  not re-anchor itself. Exported since 6 Sep 26, for the grid's balance bar
+ *  (gone with D1491, 28 Oct 26) — two literals for one physical judgement is
+ *  the drift seam the house rules name. */
 export const KEYBOARD_MIN = 120
 
 /* A FINGER SCROLLS THE GRID ITSELF (owner, 6 Sep 26 — "when a window like

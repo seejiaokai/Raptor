@@ -180,11 +180,6 @@ touch-action: pan-x pan-y;
      Talisman by 6px. The day grid pays the 26px, which the desktop has. */
   --who-w: 118px;
   --bal-w: 72px;
-  /* One drawer column (owner, 6 Sep 26). Narrow — two digits and a half, which
-     is every figure the squadron actually carries — because the eight of them
-     are paid for out of the days beside them. The drawer's FIRST column keeps
-     `--bal-w` instead, so a box does not move when the drawer opens. */
-  --figw: 36px;
   --sxo: #E8B23B;
   --pers: #E7ECF1;
   /* SANS group swatch (owner, 3 Sep 26 — SANS as their own category at the foot).
@@ -550,8 +545,8 @@ touch-action: pan-x pan-y;
    sticky cost from ~365 cells to a handful; the day headers now ride the
    grid natively, like the body cells directly beneath them. Nothing that
    ACTUALLY freezes is touched: the frozen left columns keep their own
-   left-sticky (`.mx .who, .mx .bal` above), the month labels keep theirs
-   (`.brakl` below), and the fixed mirror is unchanged. `z-index: 1` from the
+   left-sticky (`.mx .who, .mx .bal` above), and the fixed mirror is
+   unchanged. `z-index: 1` from the
    rule above goes inert on a static cell, which is correct — the positioned
    frozen columns (z-index 2/3) must, and still do, paint over the day cells
    sliding under them. */
@@ -1061,43 +1056,6 @@ touch-action: pan-x pan-y;
   box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
 }
 
-/* The FIGURE selection (owner, 6 Sep 26) — the day grid's recipe, keyed on an
-   ATTRIBUTE: the box's className is React's (rebuilt from `wide`/`flash` on
-   every store change), so a class painted by the gesture would be wiped at
-   the very moment Save re-renders the row.
-     TWO attributes, one look: React renders `data-figsel` for the committed
-   selection and the gesture paints `data-figdrag` while a drag is live. They
-   are separate because the gesture wipes its OWN marks on release, and wiping
-   a box React already owned left it dark for good (select.ts) — but they read
-   as one highlight here, so a drag over a live selection never flickers.
-     `[data-selecting]` is the armed-drag brightening, the same beat the day
-   grid's `.mx-wrap.selecting` carries — a phone user must SEE the hold land.
-   An ATTRIBUTE rather than that class because this wrap is `.mx-outer`, whose
-   className React rebuilds (`mx-banded`/`lw-sda`/`mx-arranging`/`mx-figures`):
-   a phone drag whose edge auto-scroll flipped the band on would have lost the
-   brightening mid-drag.
-     THE VIEWER'S OWN ROW needs the last two selectors (review, 6 Sep 26).
-   `.mx tbody tr.me .bal` (0,3,2) and `.mxdrawer .mx tbody tr.me td` (0,3,3)
-   both out-rank the plain recipe (0,3,1), so a box selected on the ONE row the
-   owner asked to make more obvious came back wearing the row's teal instead of
-   the selection's wash — the resting state only; the armed brightening below
-   is (0,5,1) and always won. The `tr.me` selectors are (0,4,3): over both
-   copies of the viewer's row, still under the armed rule. They join this rule's
-   list rather than restating its two declarations, so the resting look cannot
-   drift between the two. */
-.mx td.figbox[data-figsel],
-.mx td.figbox[data-figdrag],
-.mx tbody tr.me td.figbox[data-figsel],
-.mx tbody tr.me td.figbox[data-figdrag] {
-  background: rgba(59, 198, 232, .22);
-  box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6);
-}
-.mx-outer[data-selecting] .mx td.figbox[data-figsel],
-.mx-outer[data-selecting] .mx td.figbox[data-figdrag] {
-  background: rgba(59, 198, 232, .34);
-  box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
-}
-
 /* MOVE-MODE landing preview (owner, 27 Aug 26): where the picked block will
    sit if dropped here. Deliberately a WARM amber, not the accent-blue of the
    selection or the viewer's own tinted row — it must read as "will land here"
@@ -1197,10 +1155,6 @@ touch-action: pan-x pan-y;
     /* The phone keeps the tight counter — the "extended" counter is a desktop
        affordance where there is room; on a phone every px goes to the days. */
     --bal-w: 44px;
-    /* Eight columns at 36 would eat the phone's whole day grid; at 28 about
-       five days stay in view beside the open drawer, which is the size the
-       owner approved on the mock. */
-    --figw: 28px;
   }
 
   .mx .who {
@@ -2265,52 +2219,6 @@ touch-action: pan-x pan-y;
   }
 }
 
-/* The month BRACKET over the dates (owner, 18 Aug 26): one open-topped box
-   per month — a line with two down-ticks, the accent at low volume — so the
-   eye reads where a month starts and ends without hunting for the tiny label
-   on its first day. The label rides sticky just clear of the frozen columns,
-   so mid-month you still know which month you are in. */
-.mx .mxhead th.brakhd {
-  position: sticky;
-  left: 0;
-  z-index: 3;
-  background: var(--panel-2);
-  padding: 2px 4px;
-}
-
-/* The corner above CS/Name is EMPTY now — the ⠿ Rearrange toggle it used to
-   carry moved up to the card-header row (owner, 5 Sep 26 — "the rearrange button
-   goes after [settings]"). The frozen `.brakhd` cell itself stays (above), so the
-   frozen pair's width and where the month brackets start are unchanged. */
-
-.mx .mxhead th.brakm {
-  padding: 4px 3px 0;
-  background: var(--panel-2);
-  vertical-align: bottom;
-}
-
-.mx .mxhead th.brakm .brakin {
-  border: 1px solid rgba(59, 198, 232, .45);
-  border-bottom: none;
-  border-radius: 5px 5px 0 0;
-  height: 15px;
-  display: flex;
-  align-items: flex-start;
-  overflow: visible;
-}
-
-.mx .mxhead th.brakm .brakl {
-  position: sticky;
-  left: calc(var(--who-w) + var(--bal-w) + 6px);
-  display: inline-block;
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: .14em;
-  line-height: 1;
-  color: var(--accent);
-  padding: 3px 5px 0;
-}
-
 /* ---- the frozen date header (owner, 18 Aug 26 phone; 27 Aug 26 desktop too) ----
 
    A fixed MIRROR of the bracket + header rows, shown by Matrix at ANY width
@@ -2563,14 +2471,12 @@ touch-action: pan-x pan-y;
   border: 3px solid var(--panel-2);
 }
 
-/* The two docked panels (the move-mode banner, 27 Aug 26; the balance bar,
-   6 Sep 26): pinned to the foot of the viewport so they are reachable while
+/* The docked move-mode banner (27 Aug 26): pinned to the foot of the viewport so it is reachable while
    the grid scrolls, and LOUD enough to read as a panel that popped up — the
-   first cut of the bar "visually blended in with the background" (owner,
+   first cut of the balance bar that once shared this recipe "visually blended in with the background" (owner,
    6 Sep 26): a raised ground, a solid accent ring (its pale band went, D887), and a short
-   slide up on entry. One recipe, so the two never drift. */
-.mv-banner,
-.balbar {
+   slide up on entry. */
+.mv-banner {
   position: fixed;
   left: 12px;
   bottom: 14px;
@@ -2596,46 +2502,7 @@ touch-action: pan-x pan-y;
 /* @keyframes lw-dockin is at the FILE'S TOP LEVEL, past the closing brace at
    the foot — a keyframes at-rule cannot live inside this file's
    `#page-leavewar { … }` nesting wrapper. Keyframe names are global. */
-@media (prefers-reduced-motion: reduce) { .mv-banner, .balbar { animation: none; } }
-/* The bar hosts the tracker's credit form, whose own rules draw it as a
-   strip under a grid (a top rule, a panel ground): inside the bar those go. */
-.balbar .oil-bar { border-top: 0; background: transparent; padding: 0; width: 100%; }
-.balbar .oil-who { font-size: 13px; font-weight: 800; white-space: nowrap; }
-.balbar .oil-who .pool { color: var(--accent); }
-.balbar .oil-bar .oil-num { width: 70px; }
-.balbar .oil-bar .oil-text { flex: 1 1 150px; min-width: 120px; }
-.balbar .oil-bar .oil-text.given { flex: 1 1 130px; min-width: 110px; }
-.balbar .dchip.approve { margin-left: auto; }
-.balbar .dchip { padding: 7px 16px; border-radius: 999px; font-size: 12px; font-weight: 800; font-family: inherit; }
-.balbar .dchip.approve { background: var(--accent); color: #0b1116; border: 0; }
-.balbar .dchip.cancel { background: transparent; border: 1px solid var(--edge-2); color: var(--ink-2); width: 30px; height: 30px; padding: 0; }
-/* The chip recipe too, for the same reason the buttons needed theirs: it is
-   written as `.bidsheet .tchip` and the bar is not a sheet, so the sign chip
-   and the date chip came up as bare grey browser buttons (live-view pass,
-   6 Sep 26). Same declarations as the sheet's, so the two read alike. */
-.balbar .tchip {
-  background: var(--panel-2);
-  border: 1px solid var(--edge);
-  color: var(--ink-2);
-  padding: 6px 11px;
-  border-radius: 9px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: inherit;
-}
-.balbar .tchip:hover { border-color: rgba(59, 198, 232, .5); color: var(--ink); }
-/* The SIGN chip's own size and its subtracting state are NOT here: they belong
-   to the credit form, which both bars draw, so they live once beside the rest
-   of `.oil-bar` in oiltracker.css. Two copies at equal specificity would be
-   settled by bundle order — the drift seam this file's cascade note warns of. */
-/* A phone has no room for the count, the number AND both buttons on one line:
-   the ✕ wrapped alone onto a second row with the width beside it empty
-   (live-view pass, 6 Sep 26). The count takes its own line instead, so the bar
-   reads top-to-bottom — who it is for, then the number and what to do with it. */
-@media (max-width: 520px) {
-  .balbar .oil-who { flex-basis: 100%; }
-}
+@media (prefers-reduced-motion: reduce) { .mv-banner { animation: none; } }
 .mv-banner .mv-msg { flex: 1; font-size: 12.5px; color: var(--ink); }
 /* The banner sits outside `.bidsheet`, so give its buttons the chip look here.
    Cancel is the quiet default; Confirm wears the accent to read as the primary
@@ -2657,272 +2524,6 @@ touch-action: pan-x pan-y;
   color: var(--accent);
   border-color: rgba(59, 198, 232, .55);
 }
-
-/* ---- THE FIGURES DRAWER (owner, 6 Sep 26) ---------------------------------
-
-   Every figure for everyone, popped out beside the names OVER the day columns
-   — the `.mxband` overlay's mirror image, and built on the same three rules:
-   drawn ONCE, outside the sideways scroller, and never a set of extra cells in
-   the real table (every real row keeps identical cells; the owner's iPhone is
-   the gate). Placed and sized from measured numbers in FiguresDrawer.tsx. */
-.mxdrawer {
-  position: absolute;
-  z-index: 5;            /* above the frozen band (4), below the sheets (79) */
-}
-.mxdrawer table.mx {
-  width: auto;
-  table-layout: fixed;
-  background: var(--panel);
-  /* The drawer stands OVER the days, so it needs a lit edge to read as a thing
-     in front rather than a stripe of the grid. */
-  box-shadow: 6px 0 14px rgba(0, 0, 0, .5);
-}
-/* Column widths: the first is the closed column's own width (so the box does
-   not move when the drawer opens), the rest as narrow as two digits and a
-   half. Each cell still carries `.bal`, which is what gives it the two-line
-   box; these override the frozen column's sticky pinning and hairline, which
-   belong to the real column, not to a copy of it eight wide. */
-.mxdrawer .mx .fig {
-  position: static;
-  left: auto;
-  width: var(--figw); min-width: var(--figw); max-width: var(--figw);
-  box-shadow: none;
-  background: var(--panel);
-}
-.mxdrawer .mx .fig.first { width: var(--bal-w); min-width: var(--bal-w); max-width: var(--bal-w); }
-.mxdrawer .mx .fig.last { box-shadow: inset -1px 0 0 var(--edge-2); }
-/* A heading, a sub-heading or an event line has no figure, so it shows one
-   empty box across the block — in the heading's own colours, so the band still
-   reads across the drawer. */
-.mxdrawer .mx .figfill { background: var(--panel); }
-.mxdrawer .mx tr.grp .figfill {
-  background: var(--bg);
-  border-top: 1px solid var(--edge);
-  border-bottom: 1px solid var(--edge);
-}
-.mxdrawer .mx tr.catsub .figfill { background: var(--bg); }
-/* The viewer's own row keeps its tint AND its accent band across the drawer —
-   `.fig` above turns the frozen column's hairline off, and the band rides the
-   same property. */
-.mxdrawer .mx tbody tr.me td {
-  background: #173C4A;
-  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
-}
-/* The LAST figure column (MED TOT) also carries the drawer's right-edge seam
-   (`.mxdrawer .mx .fig.last`, box-shadow `inset -1px 0 0 --edge-2`). That rule
-   is specificity (0,4,0) — it out-ranks the viewer-row rule just above (0,3,3),
-   so on the VIEWER's own row MED TOT kept only that darker --edge-2 seam and
-   missed the accent band every other cell in the row gets. The one cell then
-   read as a different, darker gridline than the rest of the row (owner, 7 Sep
-   26 — "why does med tot grid lines for the selected user … [look] darker from
-   the rest"). Give the last cell BOTH — the row's accent band AND its own
-   drawer edge — at a specificity (0,5,3) that clears both rules, so MED TOT
-   now matches its row-mates and the drawer's right edge stays continuous. */
-.mxdrawer .mx tbody tr.me td.fig.last {
-  box-shadow:
-    inset 0 1px 0 rgba(59, 198, 232, .55),
-    inset 0 -1px 0 rgba(59, 198, 232, .55),
-    inset -1px 0 0 var(--edge-2);
-}
-/* The Rearrange LANDING LINE across the drawer (owner D883, 15 Oct 26 — "a blue
-   line through even through the counters"). The drawer is a second table laid
-   over the grid, so the real row's line (`.mx tbody tr.dragover td:not(.who)`,
-   further down) runs UNDER it and the line broke across the figures; the drawer's
-   row wears the same `dragover` / `dragover after` classes and draws the same 3px
-   line here. Three rules, each just above the one it must beat: any cell (a
-   heading's empty box has no shadow of its own); a figure box, which `.fig`
-   above sets to none (0,3,0); and the last box, whose drawer edge (`.fig.last`,
-   and the viewer's own row's (0,5,3) rule just above) it keeps under the line —
-   later in the file, so it wins that tie. */
-.mxdrawer .mx tbody tr.dragover td,
-.mxdrawer .mx tbody tr.dragover td.bal { box-shadow: inset 0 3px 0 var(--accent); }
-.mxdrawer .mx tbody tr.dragover.after td,
-.mxdrawer .mx tbody tr.dragover.after td.bal { box-shadow: inset 0 -3px 0 var(--accent); }
-.mxdrawer .mx tbody tr.dragover td.fig.last { box-shadow: inset 0 3px 0 var(--accent), inset -1px 0 0 var(--edge-2); }
-.mxdrawer .mx tbody tr.dragover.after td.fig.last { box-shadow: inset 0 -3px 0 var(--accent), inset -1px 0 0 var(--edge-2); }
-/* A title cell is a FIXED box the words are painted inside. The title is taken
-   out of the cell's own flow (`position: absolute`) so it cannot push the
-   header row taller than the height it was told — with the words in flow the
-   desktop's row came out 67.6px against the grid's 62 and the whole drawer sat
-   a quarter of a row low (measured, 6 Sep 26; the phone hid it, because at the
-   0.8 zoom the same 62 screen pixels are 77 of the table's own). `overflow`
-   clips rather than spilling over the month brackets if a platform's font ever
-   runs the words longer than the box. */
-.mxdrawer .mx .mxhead th.fig,
-.mxfixed .mx .mxhead th.fig {
-  position: relative;
-  left: auto;
-  overflow: hidden;
-  background: var(--panel-2);
-  padding: 0;
-  box-shadow: none;
-}
-.mxfixed .mx .mxhead th.fig.last { box-shadow: inset -1px 0 0 var(--edge-2); }
-.mxdrawer .figtitle,
-.mxfixed .figtitle {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding: 1px 0 2px;
-  background: transparent;
-  border: 0;
-  color: inherit;
-  font: inherit;
-}
-/* Only the drawer's own titles are a control — the mirror's copy is a plain
-   span (FiguresDrawer.tsx), and a hand over a dead button is a lie. */
-.mxdrawer button.figtitle { cursor: pointer; }
-/* Sideways titles: bottom-to-top, one line per row, each word its colour. The
-   title IS the legend (owner, 6 Sep 26) — white a balance, amber LL, red OL
-   and every other day used — so these three colours are the same three the
-   numbers under them wear. */
-.mx .fig .rot {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  display: inline-block;
-  margin: 0 1px;
-  font-size: 8.5px;
-  font-weight: 700;
-  /* .05em, not the .06 the rest of this file's small caps use: the longest
-     title ("+CCL −CCL") runs 56 of the 58 grid pixels the 62px header row
-     leaves it, and the spacing is the one part of that measurement that is
-     decoration. Both numbers scale with the zoom together, so the fit holds at
-     every step (measured at 0.8, 1 and 1.2). */
-  letter-spacing: .05em;
-  line-height: 1;
-  white-space: nowrap;
-  color: var(--ink-2);
-}
-.mx .fig .rot b { font-weight: inherit; }
-.mx .fig .rot b.white { color: var(--ink); }
-.mx .fig .rot b.amber { color: var(--adv); }
-.mx .fig .rot b.red { color: var(--hard); }
-/* While the drawer is open the real header row grows to the titles' height
-   (62px), so the drawer's rows and the day rows beside it stay level; the
-   mirror's frozen copy grows with it. Rows themselves do not grow — a two-line
-   box already fits the 22px cell.
-   62 of the GRID's own pixels, so it scales with the zoom exactly as the
-   titles inside it do (every other length in this file is in the same units).
-   Pinned to the screen instead — `calc(62px / var(--lwz))` — it held at one
-   step out and CLIPPED the words at one step in, where the type is 20% bigger
-   and the box was not: "−MED TOT" read "−MED TO" (measured, 6 Sep 26). */
-.mx-outer.mx-figures .mxhead tr:last-child > th { height: 62px; }
-/* The month-bracket LABEL sticks "just clear of the frozen columns" (its base
-   rule above), and with the drawer open the frozen part IS the drawer — so it
-   starts at the drawer's right edge instead of the closed pair's. Left behind,
-   it sat over the drawer's own title columns rather than the days it names,
-   and in the STUCK bar it went under the opaque frozen copy and disappeared
-   altogether (6 Sep 26 review). `--drawer-w` is measured and published by
-   Matrix on open/close; the fallback is the closed pair, so a first paint
-   before the measurement lands reads exactly as it does today. Both copies —
-   the real header and the mirror — because both draw `bracketRow`. */
-.mx-outer.mx-figures .mx .mxhead th.brakm .brakl {
-  left: calc(var(--who-w) + var(--drawer-w, var(--bal-w)) + 6px);
-}
-/* …and the month RAIL itself has to be covered over the same ground (6 Sep 26
-   bug hunt). `.brakin`'s top border belongs to the month whose first columns
-   now sit UNDER the drawer, so with the figures open the rail's top edge ran
-   across the drawer's title row — from the FIGURES bar's right edge to the
-   drawer's right edge — at the top of the page, on a phone and on a desktop.
-   The frozen corner is only who + counter wide (`th.brakhd`, colSpan 2), so
-   the stretch between it and the drawer's edge was left uncovered, and the
-   drawer's own table starts a row lower.
-     The corner reaches over it with a pseudo-element rather than a colSpan,
-   because the real bracket row's cells belong to the day columns and the
-   drawer is an overlay that must not change them. `th.brakhd` is already
-   `position: sticky`, which is a containing block, so `left: 100%` is its own
-   right edge (see the `.figbar` note below). No `pointer-events: none`: the
-   ground it covers is inert bracket cells, and the corner answering a press
-   there is what the e2e reads.
-     The stuck MIRROR is deliberately excluded — its copy of this row already
-   draws the corner as wide as the drawer (`bracketRow(false, true)`, one cell
-   over the name column and every figure), so the same strip there would paint
-   PAST the drawer's right edge. Hence `.mx-wrap`, the real grid's scroller. */
-.mx-outer.mx-figures .mx-wrap .mx .mxhead th.brakhd::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 100%;
-  width: calc(var(--drawer-w, var(--bal-w)) - var(--bal-w));
-  background: var(--panel-2);
-}
-.mx-outer.mx-figures .mxband td.bal { visibility: hidden; }  /* the drawer's first column covers it */
-/* A group heading's label OVERFLOWS its two frozen columns rightward (the
-   `.grphd` technique) and the drawer stands over exactly that ground, so with
-   the drawer open a phone read "IWSC" for IWSO · 5 and "OPS" for OPS P · 8
-   (seen in the drive, 6 Sep 26). The heading is lifted over the drawer instead
-   — it has nothing to hide there but an empty box, and a heading you cannot
-   read is worse than one written across the figures. Both copies: the desktop's
-   own sticky cell, and the phone's band, which is the copy that shows there. */
-.mx-outer.mx-figures .mxbody tr.grp td.grphd { z-index: 6; }
-.mx-outer.mx-figures .mxband { z-index: 6; }
-/* With the figures open the band stands ABOVE the drawer (z-index 6 over 5,
-   for the heading labels) and, once the grid has scrolled sideways, takes the
-   pointer — so the band answered every press meant for the drawer's first
-   column, which sits over the band's own (hidden) counter column: measured 6
-   Sep 26, `elementFromPoint` on that box returned the band, not the box. Only
-   the band's names and headings take the pointer while the figures are open;
-   everything else lets it through to the drawer box underneath.
-     The `!important` is the one in this file, and it is deliberate: the band
-   ROOT's pointer-events is written on its inline style by `onWrapScroll`
-   (Matrix), imperatively, on every scroll — so a plain rule cannot reach it,
-   and the alternative is teaching a hot per-frame scroll handler about the
-   drawer. Scoped to `.mx-figures`, so the at-rest and no-drawer behaviour the
-   inline style drives is exactly what it was. */
-.mx-outer.mx-figures .mxband { pointer-events: none !important; }
-.mx-outer.mx-figures .mxband td.who,
-.mx-outer.mx-figures .mxband td.grphd { pointer-events: auto; }
-/* The switch in the corner above CS/Name — the archive bar's scale (a HEM, not
-   a heading: it must not outrank the grid it opens).
-
-   It FILLS ITS CELL (6 Sep 26 review). The type is small on purpose, but the
-   TARGET must not be: laid out in flow the button was its own 15px line inside
-   a 22px cell, so a third of the corner — and, on a phone, a third of the only
-   way in and out of the drawer — did nothing when pressed. The spec asks for a
-   tap target at least the archive bar's, and the archive bar's is its whole
-   sticky cell. Taken out of flow and pinned to the cell's four edges instead:
-   `th.brakhd` is already `position: sticky`, which is a containing block, so
-   `inset: 0` is exactly the cell. Out of flow it also adds no height of its
-   own, which is what keeps the bracket row at the 22px it has always been.
-   The button's own side padding replaces the cell padding it now covers. */
-.mx .mxhead th.brakhd .figbar {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  padding: 0 4px;
-  background: transparent;
-  border: 0;
-  font: inherit;
-  font-size: 9.5px;
-  letter-spacing: .08em;
-  font-weight: 700;
-  color: var(--ink-3);
-  line-height: 15px;
-  white-space: nowrap;
-  cursor: pointer;
-}
-.mx .mxhead th.brakhd .figbar.on { color: var(--accent); }
-/* The title pop-up: what a column counts, in the same words as the picker's
-   legend. Screen-fixed so the frozen columns cannot clip it; closes on an
-   outside press or Escape (FiguresDrawer.tsx — the app's click-open popup
-   rule). z above the drawer and the stuck bar, below the sheets. */
-.figpop {
-  position: fixed;
-  z-index: 71;
-  max-width: 260px;
-  padding: 8px 10px;
-  background: var(--panel);
-  border: 1px solid var(--edge-2);
-  border-radius: 8px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .45);
-}
-.figpop-hd { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; margin-bottom: 3px; }
-.figpop-t { font-size: 11.5px; color: var(--ink); line-height: 1.35; }
 
 }
 
@@ -2953,7 +2554,7 @@ touch-action: pan-x pan-y;
 }
 
 /* TOP LEVEL too, same reason — the entry slide the two docked panels share
-   (`.mv-banner, .balbar` above): a short rise so a panel that appeared under
+   (`.mv-banner` above): a short rise so a panel that appeared under
    the reader's hand is seen to arrive rather than simply being there. */
 /* the number pad's caret (FlyEdit.tsx) */
 @keyframes flyedit-caret {

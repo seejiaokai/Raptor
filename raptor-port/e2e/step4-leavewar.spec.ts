@@ -33,24 +33,17 @@ const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct
 
 /* ---- getting around ------------------------------------------------------ */
 
-async function putDrawerAway(page: Page) {
-  const bar = page.locator('[data-testid="figures-toggle"]')
-  if ((await bar.count()) && (await bar.getAttribute('aria-expanded')) === 'true') await bar.click()
-}
-
 /** Log in and open the Leave War (admin by default). */
 async function openWar(page: Page, who: 'a' | 'user' = 'a') {
   await login(page, who)
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')
-  await putDrawerAway(page)
 }
 
 /** Back to the Leave War from another page, the way a person comes back. */
 async function backToWar(page: Page) {
   await go(page, 'leavewar')
   await page.waitForSelector('[data-testid="row-slipway"]')
-  await putDrawerAway(page)
 }
 
 /* EVERY WAIT BELOW WAITS ON A CONDITION, NOT A CLOCK (owner, D87, 23 Sep 26 —
