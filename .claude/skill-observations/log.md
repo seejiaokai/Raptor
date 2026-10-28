@@ -2615,6 +2615,8 @@ its value and never in innerText.
 
 **Principle:** A blanket approval covers exactly what the approver was shown; the richer internal document behind it is the agent's reading until shown.
 
+**Met again 2026-10-28** (claude/leave-war-m5a-screens-ced9d7): D1483's short line said the tabs drop their icons "under 400 wide" — the drawing script's cut-off; the page he answered showed only 375 wide. The fresh reader of D1478–D1489 caught it (and three more). **Proposed guard:** the fresh reader's brief for every blanket-approved ruling names the page version answered (`git show <sha>:<page>`) and checks each number and condition in the short line against it — an unconditional step, not a judgement.
+
 ### Observation 735: A roll-call's search for a removed class was confined to the area's own files
 
 **Status:** OPEN

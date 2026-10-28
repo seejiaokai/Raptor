@@ -59,56 +59,92 @@ verifies each before acting.**
 
 ## 1. The figures — one engine, read everywhere
 
-**1.1 What is stored for a person's leave (D1479, B6).** For each of LVE, CCL, FCL, PL, EL and CL, the figure he (or an
-admin) last TYPED, as the official leave app showed it, with when, by whom, and — for LVE — how many of those days were
-carried forward ("incl. 2 carried fwd"). Typing keeps a snapshot of the approved leave the typed figure already includes
-(§1.2), so that nothing approved before he typed comes off twice. OIL is not typed (D1209, D1255): it stays the OIL
-tracker's earned and awarded record. Halves only: a typed figure is a whole number or a .5, anything else refused with its
-reason; a figure below zero may be typed (an overdrawn balance is real).
+*(Rewritten 28 Oct 26 on the spec's fresh read, findings 1–6: the arithmetic is now one formula with a worked table.)*
 
-**1.2 App bal — the running figure (D1479).** App bal = the typed figure less every day of his approved leave of that kind
-that is not already inside it — worked out as *the days his approved leave charges now* less *the days it charged when he
-typed*, so:
-- a leave approved after he typed comes off, the day it is approved — its days whatever their date (D1479's example:
-  typed 17 on 5 Jan, 26–27 Jan approved → 15);
-- a leave already approved when he typed takes nothing off (it is inside the official figure);
-- an approved leave later deleted, refused back, put back to a bid, shortened or moved gives its days back, and one
-  lengthened takes only its new days (the reading D1479's row names: "a refused or deleted approved leave puts its days
-  back");
-- typing again "only corrects it and starts the count afresh" — a new snapshot.
-"Days a leave charges" is the war's one charging rule (`engine/charge.ts`: weekends and holidays count nothing, except a run
-of 15 or more days of LL / OL, his answer of 19 Sep 26), the same rule Approvals' DAYS and the bid windows' figures use.
+**1.1 What is stored for a person's leave (D1479, B6).** For each of LVE, CCL, FCL, PL, EL and CL, the figure last TYPED,
+as the official leave app showed it: the figure, for LVE the carried-forward part ("incl. 2 carried fwd"), the DAY it was
+typed (the app's today, `memberToday` — never the machine's clock, so a moved clock and a real one never disagree:
+finding 6), who typed it, and **the snapshot** — the days of his approved leave of that kind as they stood at that moment,
+one entry a day and a half (`date`, `half`), never a total (finding 2). OIL is not typed (D1209, D1255). A figure is a whole
+number or a .5; below zero may be typed; carried forward is a whole number or a .5 from 0 to the figure (or 0 when the
+figure is below zero). **A box saves on Enter or on leaving it, never on each key** (finding 13); Escape puts the old figure
+back; one tap then typing replaces it (D1080).
 
-**1.3 The leave year (D1218, D1224, D1229, D1235, D1473, D1474, D1489).** LVE alone has years:
-- a day of leave is charged to the year it falls in (D1473); within a year, carried-forward days go first (D1224);
-- a day in a later year, approved now, comes off now (D1479) and is charged, when its year comes, to that year — so it
-  uses next year's carried-forward days (this year's unused annual leave), never this year's carried-forward days, which
-  end on 31 Dec (D1218; D1473's worked example: 31 Dec takes this year's carried-forward day, 4 Jan next year's);
-- **on 1 Jan, by itself, with no one doing anything:** what is left of the carried-forward days goes; what is left of the
-  year's annual leave becomes the new carried-forward; the grade's days are added (D1235: 37 left of which 4 carried
-  forward, a junior pilot → 33 carried forward and 66 in all); no grade adds nothing; below zero carries nothing forward
-  and the overdrawn days still come off (−2 + 33 = 31 — D1474); pending days count in the year they fall in (D1474);
-- **how it runs (the builder's call, the plan's §4):** worked out, never stored — App bal for any day is computed from the
-  typed figure, its date, the approved leave and the grades held on each 1 Jan since. No command runs on 1 Jan, so nothing
-  waits for an admin to sign in, nothing runs twice, Undo needs nothing of its own, and a member's window is right on 1 Jan
-  before anyone else opens the app. The price: the grade held, and its "+ days", on each past 1 Jan must be known — so a
-  grade given to a person, and a grade's "+ days", are kept with the date they took effect (§3), and the 1 Jan of a year
-  reads what held on that day (Q1, §6).
-- CCL, FCL, PL, EL and CL keep their figures on 1 Jan; each comes down only by approved leave of its own kind, and a new
-  year's figure is typed from the official app (D1489).
+**1.2 How a leave's days are counted.** The war's one charging rule (`engine/charge.ts chargedDays`: a weekend or holiday
+charges nothing, except a pilot's run of 15 or more days of LL / OL, his answer of 19 Sep 26), with two additions:
+- **It is run on a stated set of leave**, and the engine runs it on three sets: the approved leave now, the approved leave
+  of the snapshot, and the approved leave with the pending added. So a pending bid that lengthens a pilot's run past 15
+  days changes only War bal and Pending, never App bal (finding 1).
+- **A date no period covers is charged by the plain rule** — a weekday 1 (a half .5), Saturday and Sunday 0, no holidays
+  known — so Inputs-page leave in a year with no period yet still comes off, and creating that period later moves nothing
+  that was already counted the same way in the snapshot (finding 2). Today such a date charges nothing; this is new and is
+  named to him (reading 17).
+Both the snapshot and today's leave are charged NOW, with today's periods, holidays and runs: a period created, a holiday
+added or a run grown after typing treats the snapshot and today alike, so only a real change to his leave moves App bal.
 
-**1.4 Pending, War bal, taken.** Pending = the days his pending requests of that kind charge, every year (D1217 — days,
-never requests; amber, the word grey — D1251, D1252). War bal = App bal less Pending (D1479) — the one figure the grid
-shows beside his name, My leave's LVE, Approvals' LVE BAL and the bid windows' leave buttons (D1153). "3 taken" (the LVE
-tile) = his approved LVE days on dates from 1 Jan of this year up to today (the drawings' rule: `full-m5a-stage.mjs`, 19–21
-Jan approved and past → 3; 26–27 Jan approved and ahead → not yet taken). MED's "0 days" = medical days on dates this year
-up to today. Days taken (the Balances page) = approved days of each kind on dates inside the View period up to today
-(D1484).
+**1.3 The formula — App bal for one kind.** Let *typed* be the figure, *cf* its carried-forward part and *Y0* the year of
+the day typed. For each date, *delta* = what the approved leave now charges on that date less what the snapshot charges
+there (negative where a leave was shortened, moved off or deleted). Let *net(y)* be the sum of *delta* over the dates of
+year *y*; a date before Y0 counts in Y0 (finding 3c — a change to an earlier year's leave moves the figure now, as the
+official app would show it).
+- **CCL, FCL, PL, EL, CL:** App bal = typed − the sum of every *net(y)*. No years, no roll-over (D1489).
+- **LVE, the typing year Y0:** two pools — carried forward *CF = cf*, this year's *AN = typed − cf*. If *net(Y0)* ≥ 0 it
+  comes off CF first, then AN (D1224): *CF = max(0, cf − net)*, *AN = AN − max(0, net − cf)*. If *net(Y0)* < 0 (days
+  given back) they go back to this year's leave: *CF = cf*, *AN = AN − net* — so "incl. N carried fwd" never shows more
+  than was typed (finding 3a; reading 18).
+- **LVE, each 1 Jan of a year y after Y0, up to this year** (D1235, D1474): the carried-forward left goes; *new CF =
+  max(0, AN)*; *new AN = the grade's days held on 1 Jan y + min(0, AN)* (below zero carries nothing forward and the
+  overdrawn days still come off: −2 + 33 = 31). Then *net(y)* is taken off as above, CF first, days given back to AN.
+  No grade on that day adds 0 (D1474). Grade and its days as they held on that 1 Jan (Q1).
+- **LVE, days in a year after this one** (a leave approved now for next January): they come off now (D1479), from the
+  total only — App bal = *CF + AN − the sum of net(y) for y after this year*; "incl. N carried fwd" is this year's *CF*,
+  untouched, since those days will use next year's carried forward (D1218, D1473). A later-year day already approved
+  when he typed is in the snapshot, so it is inside the typed figure and never comes off again (finding 3b).
+- **Never typed** (finding 5): read as typed 0, cf 0, on 1 Jan of the year of the war's earliest period, with an empty
+  snapshot — so each 1 Jan after it adds his grade's days and his approved leave since comes off (reading 4). **An old
+  row in today's bare-number shape** (demo data, D56) is read the same way, its number as the figure — never skipped, never
+  a loop from the year 1970: the years run from that start year to this year plus the last year holding any of his leave,
+  and a test pins a load that would otherwise loop (finding 5).
 
-**1.5 One engine.** One pure module answers all of §1.2–1.4 for a person, a kind and a day, and every surface reads it —
-the person window's tiles, the Balances page (both views), the grid's figure beside each name, My leave, Approvals' LVE
-BAL, the bid windows' "left" on each leave button, the day panel's figures if it shows any. Today these are worked out in
-more than one place (§4); M5a leaves exactly one. A test feeds the same world to every reader and checks they agree.
+**1.4 Pending, War bal, taken.** War bal = the same formula run with his pending leave counted as approved; Pending =
+App bal − War bal (D1479: War bal is App bal less the pending, so the tile always adds up); both every year (D1217 —
+days, never requests; the figure amber, the word grey — D1251, D1252). In one corner the two readings part: a pending day
+in a year whose carried-forward has since ended costs nothing more, so it shows no pending figure though the request still
+waits (D1474's "counts in the year its days fall in"; reading 19 — the worked table, row 8). War bal is the one figure the
+grid shows beside his name, My leave's LVE, Approvals' LVE BAL and the bid windows' leave buttons (D1153). "3 taken" (the
+LVE tile) = his approved LVE days charged on dates from 1 Jan of this year up to today (the drawings: 19–21 Jan approved
+and past → 3; 26–27 Jan ahead → not taken). MED's tile = medical days this year up to today, calendar days (a half .5).
+**Days taken** (the Balances page, D1484) = for each kind, its days on dates inside the View period up to today, approved
+only — the leave kinds as charged (weekends free, as the figures count them), MED, CSE and OD as calendar days, since none
+of them is charged against a balance (a two-week course reads 14; reading 20). **The grid's two small lines beside a name**
+(`MatrixRows.tsx figureLines`; finding 12): the first War bal, the second his LL and OL days in the View period, approved
+and pending (Ranger's drawn "12.5 / 7.5": 5 approved + 2.5 pending).
+
+**1.5 The worked table — every ruled example through the formula (the walk's and the tests' expected figures).** A junior
+pilot (+33); 2027 holds a period, 1 Jan a public holiday.
+
+| # | Case | Expected | Note |
+|---|---|---|---|
+| 1 | D1479: typed 17 incl. 4 on 5 Jan; LL 26–27 Jan approved after | App bal 15 incl. 2; with 2.5 pending, War bal 12.5 | as ruled |
+| 2 | the same, the 2.5 approved | App bal 12.5, Pending gone, War bal 12.5 | as ruled |
+| 3 | D1235: 37 left incl. 4, nothing since; 1 Jan | 66 incl. 33 | as ruled |
+| 4 | D1474: the same, no grade | 33 incl. 33 | as ruled |
+| 5 | D1474: −2 left (incl. 0); 1 Jan | 31 incl. 0 | as ruled |
+| 6 | D1473: 23 left incl. 3; LL Thu 31 Dec – Mon 4 Jan approved on 20 Dec | 20 Dec: 21 incl. 2 · 31 Dec: 21 incl. 2 · 1 Jan: 52 incl. 19 · after 4 Jan: 52 incl. 19 | **the ruling's narrative reads 22, 53, 52**: it counts the days as they are taken; D1479 (the later ruling, D90) takes a leave off when approved, so only the last figure is the same — reading 21 |
+| 7 | the same leave, approved only on 2 Jan | 31 Dec: 23 incl. 3 · 1 Jan: 53 incl. 20 · 2 Jan: 52 incl. 19 | 31 Dec counts in 2026 (D1473) and takes 2026's carried-forward, which has ended, so only 4 Jan comes off — reading 22 |
+| 8 | D1474: 10 left incl. 4; LL Tue 29 – Wed 30 Dec pending over 1 Jan | 28 Dec: App 10, Pending −2, War 8 · 1 Jan: App 39, Pending —, War 39 | reading 19 |
+| 9 | typed 20 incl. 0 in Nov 2026; LL 2–3 Feb 2027 approved on the Inputs page before typing; the 2027 period created after | 20, unchanged by the period | finding 2 |
+| 10 | a pilot: LL 1–12 approved (10 days charged); LL 13–21 bid, pending | App bal unchanged; Pending and War bal take the run's weekends | finding 1 |
+| 11 | typed 23 incl. 3; a 2-day leave approved before typing then deleted | 25 incl. 3 | days back to this year's leave — reading 18 |
+
+Every row is a unit test of the engine before any screen is built, and rows 1, 2, 6, 8 and 10 are walked on screen (§7).
+
+**1.6 One engine.** One pure module answers §1.3–1.4 for a person, a kind and a day, and every surface reads it. **It takes
+the leave as an input** (approved, pending, and a what-if set), so the bid windows' "what is left if I place this" and the
+below-zero ask read the same engine rather than a second one (finding 12). Its readers, each moved onto it (§4 lists their
+code): the person window's tiles; the Balances page (both views); the grid's two lines beside each name; My leave; Approvals'
+LVE BAL; the bid windows' "left" on each leave button and the below-zero ask (D418) in the one-day and drag windows; the
+below-zero helpers and the top row's figures. A test feeds one world to every reader and checks they agree.
 
 ## 2. The screens
 
@@ -127,8 +163,8 @@ it wears the cyan dot and a muted line under it, "approved by Saber · yesterday
 admin the same way); a leave someone else deleted stays struck through for that visit. Another man's window reads only,
 no dots (`m5a-p6-phone-other`). **Where it stands:** a desktop docked at the grid's right edge, draggable, the grid working
 behind it (A5, D641); a phone in the middle of the screen (D997). **Ways in:** a tap on a name on the grid; My leave (his
-own — A1); Approvals' line or the bell's line for a man with no row (B12 — M4 built that half). A name on the Balances page opens
-nothing (none was drawn).
+own — A1); Approvals' line or the bell's line for a man with no row (B12 — M4 built that half). A name on the Balances page opens his
+person window too, as D1148 has every tap on a person on the Leave War do (not drawn; reading 23 — finding 13).
 
 **2.2 The Balances tab and page (D1482–D1488; job 3).** Built to `m5b-b1-desk`, `m5b-b2-*`, `m5b-b3-*`, `m5c-*`. The tab
 row: Grid · Approvals N · Balances · OIL (admin), Grid · Balances · OIL (member), ⚙ at the right end (D1254); on a phone
@@ -162,71 +198,90 @@ Settings gains no Balances line (D1485).
 
 ## 3. What is stored, and who may write it (D473, D200 — the documents in the same change)
 
-- **The typed figure — `LeaveOpening`, changed shape.** Today `opening:<pid>:<counter>` holds a bare number, back-solved by
-  `setBalance` against every draw of all time (`store.ts` ~L4942), and `readOpenings` (~L477) skips any row that is not a
-  number. It becomes `{ amount, at, by, cf?, base }`: the figure typed, when (ms), who, for LVE the carried-forward part,
-  and `base` — the approved leave's charged days at that moment (LVE: by year; the others: one number) — so §1.2's "not
-  already inside it" is a subtraction. Changed together, or a field is dropped at the next reload: `readOpenings`, the
-  `lw.opening` record mapping (`store.ts` ~L1355, ~L1405–1414), `rows.ts` (`openingKey`, ~L39, ~L117),
-  `docs/data-schema.md` §World 2, `docs/data-model.md` LeaveOpening. A row in the old shape (a bare number — demo data,
-  D56) is read as a figure typed at the beginning of time with an empty `base`, never skipped (D401: an old record must
-  not break a load), with a test. **OIL is refused at the store** (B6): no OIL opening is written by any door; the
-  seed's `oil:` openings (`engine/seed.ts` ~L193–206) are demo data, left readable.
-- **A person's grade — on his profile.** `profile:<pid>` (`LeavePersonProfile`, today `{post?, label?}`) gains `grades:
-  [{ id, from }]` — the grade and the day it took effect, newest last; a change on the day it was set replaces that day's
-  entry. Admin only. The 1 Jan of a year reads the entry in force that day (Q1).
-- **The grades list and the lock — `lw.config`.** `grades: [{ id, name, order, days: [{ n, from }], gone? }]` (a deleted
-  grade kept, marked `gone`, so a past 1 Jan still reads its days) and `balLock: boolean`. `lw.config`'s fields are listed
-  in FOUR places — `store.ts lwRecords` (~L1361–1368), `applyLwRecord` (~L1440–1452), `rows.ts CONFIG_KEYS`
-  (~L128–135), the boot's `readStored` (~L1119's pattern); a field missed in one is lost on reload or by Undo: a test reads
-  each new field back through a reload and an Undo. The starting list (D1229) is seeded once when `grades` is absent.
-- **A member's "last visit" — a settings row of his own, `lwseen:<pid>`**, on M4's `apprseen:` pattern whole
-  (`state/apprseen.ts`): `{ at: ms }`, written through `commitSettingsIntent('lw.seen', { owner: pid }, …)` when he opens
-  his own person window, the previous moment kept for that visit; its prefix in `state/people-settings-commit.ts
-  SETTINGS_ROW_PREFIXES` and its type registered there (`definePermission`, as L335 does for `apprseen` — without it the
-  command layer refuses the type, M4's bug of 27 Oct); `undo/timeline.ts NOT_STEPS`; `storage/tables.ts`. **One step
-  M4's did not need:** `ownershipViolation`'s `settings` case (`perms.ts` ~L995–1005) lets a member write only `seen:` and
-  `noticeseen:` rows of his own; `lwseen:<pid>` joins them, his own pid only.
-- **Who may write — `state/perms.ts` and `docs/data-model.md` §11 together (D200; the parity tests catch a drift).**
-  Today ONE row, `T.ledger`, covers `LeaveOpening`, `LeaveLedger` and `LeaveCounter` (~L76, ~L115), and the balance write
-  rides `lw.edit`, whose gate row is a BID's — a member passes it, and only `setBalance`'s role check and
-  `ownershipViolation`'s "an admin's record" stop him. **M5a splits `LeaveOpening` out to its own row** (admin C R U D,
-  member R and U of his own row) — never by widening `T.ledger`, which would let a member write grants and OIL
-  corrections — and gives the typed figure **its own command, `lw.balance`** (`op(T.opening, 'U', 'required')`,
-  registered in `lwRegisterCommands` ~L1498–1520), an Undo step, with an `ownershipViolation` branch: a member only on his
-  own pid, only while `balLock` is off **as it stands when the command is saved** (so an open box after the lock, and his
-  Undo after the lock, are refused alike — B6), never OIL, halves only. Grades, the grades list and the lock: admin only
-  (`lw.grade`, `lw.config`). `leavewar/permsparity.test.ts` gains the member's own write, his write to another man, his
-  write while locked, his Undo after the lock, an OIL write, a grade write and the lock — each refused or allowed as
-  above. Member view (D292) is a real member to these checks.
-- **The change history (`state/changelines.ts`).** Today a balance writes no line and its Undo none (~L543–546; no
-  handler for `lw.opening` or `lw.config`). New: `openingLines` — "LVE balance 18 → 20 · Ranger" (B6), each kind by its
-  name, carried forward as "LVE carried fwd 2 → 3"; a grade — "Grade Junior pilot → Senior pilot · Saber"; the lock —
-  "Balances locked for members · Saber"; the grades list — added, renamed, its days, deleted. `lw.opening` and
-  `lw.config` join the `wrote` set so Undo's line is written too.
-- **The security read (D1411):** this changes who may write a balance — one extra fresh reader looks only for holes (a
-  member writing another man's figure or a grade, writing while locked, an OIL opening by any door, a forged "by",
-  `lwseen:` of another pid).
+*(Rewritten 28 Oct 26 on the spec's fresh read, findings 7–11.)*
+
+- **The typed figures — a collection of their own, `lw.balance`, rows `bal:<pid>:<kind>`** = `{ amount, cf? (LVE), day,
+  by, snap: [[date, half], …] }`. Not the old `opening:<pid>:<counter>` rows: those stay bare numbers for OIL, which
+  `engine/oiltracker.ts` (~L220), `counters.ts figureParts` (~L384), `readWorldRows` (~L918) and `seedOpenings` read as
+  numbers — a changed shape would turn every OIL balance to nothing (finding 8). No door writes an opening any more; OIL's
+  stay readable (demo data, D56) until [LW-OIL-OPENING-AWARD] is settled; the other kinds' old openings are read once as
+  "never typed" figures (§1.3). The new collection is listed in EVERY place a war collection is (finding 7's list, the
+  same for each new collection below): `readWorldRows`, `lwDecompose`, `applyLwRecord`, `LW_COLLS`, `lwRows`,
+  `LwNow`, the State field, `rows.ts`; a test writes one, reloads, undoes and redoes it and reads it back whole.
+- **A person's grade — a collection of its own, `lw.grade`, rows `grade:<pid>`** = `{ hist: [{ id | null, from }] }`
+  (`null` is "No grade"; `from` a day; a change on the day the last entry was made replaces it). Not on `profile:<pid>`:
+  `rows.ts profileJSON` keeps only `post` and `label`, so the next posting or label write would drop it, and a grade-only
+  profile throws "would be emptied" (finding 7).
+- **The grades list and the lock — `lw.config`**: `grades: [{ id, name, order, days: [{ n, from }], goneFrom? }]` (a deleted
+  grade keeps its days with the day it went, so a 1 Jan before that still reads them and one after adds nothing —
+  finding 11) and `balLock: boolean`. The starting five (D1229) have FIXED ids (`sp`, `jp`, `sw`, `jw`, `opsa`) and are
+  written once, at the first boot that finds no list, as a command of their own — never re-made on each boot, where a
+  generated id would leave every man's grade pointing at nothing after a reload (finding 11). `lw.config`'s fields are
+  listed in four places (`store.ts lwRecords` ~L1361–1368, `applyLwRecord` ~L1440–1452, `rows.ts CONFIG_KEYS` ~L128–135,
+  the boot's `readStored`); both new fields join all four, with the reload-and-Undo test.
+- **A member's "last visit" — a settings row of his own, `lwseen:<pid>` = `{ at: ms }`** (the moment matters here, not the
+  day), on M4's `apprseen:` pattern whole (`state/apprseen.ts`), written through `commitSettingsIntent('lw.seen', { owner:
+  pid }, …)` when anyone opens his OWN person window, an admin included; the previous moment kept for that visit. Every
+  piece M4's needed: a `T.` table, a `PERMS` row (each person C R U his own), a `COMMAND_OPS` entry for `lw.seen` (`cmdAuthorize`
+  refuses an unmapped type — M4's bug of 27 Oct), its `definePermission` in `state/people-settings-commit.ts` and its prefix
+  in `SETTINGS_ROW_PREFIXES`, `undo/timeline.ts NOT_STEPS`, `storage/tables.ts`, §11. And one M4's did not need:
+  `ownershipViolation`'s `settings` case (`perms.ts` ~L995–1005) allows `lwseen:<pid>` only for his own pid AND only under
+  `env.type === 'lw.seen'`, as `seen:` and `noticeseen:` are paired (finding 10c).
+- **The commands, each named, mapped and registered** (`COMMAND_OPS`, `lwRegisterCommands` ~L1498–1520, `undo/describe.ts`
+  words of its own — "Undo: LVE balance 18 → 20", not today's "an opening balance": finding 12; finding 10d): `lw.balance`
+  (a typed figure — an Undo step); `lw.grade` (a person's grade — admin); `lw.grades` (the grades list — admin);
+  `lw.balLock` (the lock — admin); `lw.seen` (not an Undo step).
+- **Who may write — `state/perms.ts` and `docs/data-model.md` §11 together (D200).** Today ONE row, `T.ledger`, covers
+  `LeaveOpening`, `LeaveLedger` and `LeaveCounter` (~L76, ~L115), and the balance write rides `lw.edit`, whose gate row is a
+  BID's. New rows: **`LeaveBalance`** — admin C R U D; member **R for every row** (D1242: every member reads every man's
+  figures — finding 10a) and U of his own; **`LeaveGrade`** — admin C R U D, member R; the grades list and the lock stay
+  under `lw.config`'s admin row. `T.ledger` is never widened (a member would reach grants and OIL corrections).
+  **`ownershipViolation`** (~L916–1015) gains: `lw.balance` — a member only on his own pid, only while `balLock` is off
+  as it stands when the command is saved (an open box after the lock, and his Undo or Redo after it, refused alike — B6);
+  never OIL; and `lw.grade` joined to the "an admin's record" case — its `default: break` would otherwise ALLOW a member's
+  grade write (finding 7).
+- **What the gate recomputes, so a member cannot forge it (finding 9):** for an `lw.balance` row it refuses unless `by` is
+  the writer himself, `day` is the app's today, `amount` and `cf` are halves with 0 ≤ `cf` ≤ max(`amount`, 0), and `snap`
+  equals the snapshot the store itself builds from his approved leave at that moment — so a member cannot type 20 with a
+  snapshot that shows 120, back-date the day before a 1 Jan, or write another man's name as the one who typed it. Each
+  check has a break test (§8).
+- **The change history (`state/changelines.ts`).** Today a balance writes no line and its Undo none (~L543–546). New lines:
+  "LVE balance 18 → 20 · Ranger" (B6), each kind by its name; "LVE carried fwd 2 → 3"; "Grade Junior pilot → Senior pilot ·
+  Saber"; "Balances locked for members · Saber"; the grades list's add, rename, days and delete. `lw.balance`, `lw.grade`,
+  `lw.grades` and `lw.balLock` join the `wrote` set so Undo's line is written too. **And the war's own lines gain machine
+  marks** for a leave deleted, moved and its kind changed (the field and the input kind, not only the words): today an
+  admin deleting a pending bid logs `say(g, 'deleted')` with no field, and the person window's struck-through line cannot be
+  read back from words — `alsoSince` refuses to parse them (finding 12).
+- **The security read (D1411):** this changes who may write a balance — one extra fresh reader looks only for holes, given
+  the list above (a member's write to another man, while locked, of OIL, of a grade, the lock or the list; a forged
+  snapshot, day or name; `lwseen:` of another pid; the old `lw.edit` path to an opening, closed).
 
 ## 4. Where it is built — the code, as read on main (the survey of 28 Oct 26)
 
-**The engine (§1.5).** Today `engine/counters.ts balanceOf` (~L171–184) is `opening + grants (+ earned OIL) − drawnFrom`,
+**The engine (§1.6).** Today `engine/counters.ts balanceOf` (~L171–184) is `opening + grants (+ earned OIL) − drawnFrom`,
 and `drawnFrom` (~L130–141) sums `engine/charge.ts chargedDays` over every war and every date — one running balance a
 kind across all periods, pending requests counted in full (refused nothing). New: one pure module (say
 `engine/leaveyear.ts`) on top of `chargedDays`, which already returns a map by date, so a year is a filter on the date and
-a 15-day run across 31 Dec still decides its days as one run. It splits approved from pending by reading each day's
-records (`v.all` — an Input against a request), since `v.charges` carries no state. It answers, for a person, a kind and
+a 15-day run across 31 Dec still decides its days as one run. It runs `chargedDays` on stated sets of leave (§1.2 — approved now, the snapshot, approved with the pending, a what-if), so
+`chargedDays` must take its records as an input rather than read every view's charges (today `v.charges` carries no
+state: approved and pending are told apart by each day's records, `v.all`), and charges a date no period covers by the
+plain rule. It answers, for a person, a kind and
 a day: App bal, carried fwd and its end date, Pending, War bal, taken; and days taken by kind over a range. Grants still
-count, from the ledger, only those made after the typed moment (whatever Q2 decides, none are lost). `takenOf` /
+count, from the ledger, only those dated on or after the typed day (whatever Q2 decides, none are lost). `takenOf` /
 `lveConOf` / `medConOf` (~L251–303, every source, no range) are replaced by it. **Two things the survey found the engine
 must fix while it is there:** `figureCtxOf()` (store ~L4686–4691) uses `localToday()`, not `memberToday()`, so a test
 clock moves neither OIL's expiry nor a year's end — the year must turn on the app's today; and a man with no row (a SANS
 man while SANS is off) is not in `figureCtxOf().people`, so the pilots' 15-day rule never applies to him — the engine is
-given the off-roster identities too (`sync.ts warIdentityIfHidden`'s source). Leave on dates no period covers is not
-charged, as today (no war holds a view of it); the walk of D1473's example needs a 2027 period.
+given the off-roster identities too (`sync.ts warIdentityIfHidden`'s source). Leave on dates no period covers is charged by the plain rule (§1.2), a change from today. **The figures' memo** (`Matrix.tsx
+figureCtx = useMemo(…, [version])` and the row memo) is keyed on the app's today as well, so a page left open across
+midnight on 31 Dec rolls over at midnight as the today ring does (D1266) — finding 6.
 
-**Its readers, each moved onto it (§5's first list):** the grid's figure beside each name (`Matrix.tsx` ~L655, the fixed
-LVE figure; `FIGURES` / `plainBal('annual')`); `ui/myleave.ts myLeaveOf` (~L26–49) — whose "pending" today counts
+**Its readers, each moved onto it (§5's first list):** the grid's two lines beside each name — drawn per row by
+`MatrixRows.tsx figureLines` (~L307), behind the memo firewall, not by `Matrix.tsx` (~L655 only picks the fixed LVE figure;
+`FIGURES` / `plainBal('annual')`), which today shows LL and OL used of all time, pending included, and becomes §1.4's two
+lines; `store.ts balanceAfterFill` / `withFill` — the below-zero ask (D418) in the one-day window and the drag window
+(`SelectSheet.tsx` ~L248) and the leave buttons' "left", read through the engine's what-if set; `ui/belowzero.ts` and
+`Chrome.tsx` (both read `FIGURES`); `ui/myleave.ts myLeaveOf` (~L26–49) — whose "pending" today counts
 CALENDAR days of every leave-kind request, weekends included, and so disagrees with Approvals: it becomes the sum of every
 kind's Pending; `leavewar/approvals.ts figuresOf` (~L114–163, LVE BAL and DAYS); the bid windows' "left"; the OIL figure
 stays `oilLedgerOf`. A test feeds one world to every reader.
@@ -236,15 +291,15 @@ admin's "Set" (`<input type=number step=0.5>`, any finite number accepted), no E
 on a tap. The rest of the file's `CounterSheet` picker (~L30–199) is dead — Matrix imports only those two. Replaced by a
 new `leavewar/ui/PersonWindow.tsx` drawn from `full-m5a-person.mjs`'s own markup and sizes (D1478); every kind shown
 whatever `figureHidden` says. Mounted where the sheet is (`Matrix.tsx` ~L4660–4668, `whoOpen` ~L388, the asks ~L407–414),
-keeping the `warIdentityIfHidden` fallback — and `setBalance`'s "not on the roster" refusal (~L4944) is lifted for such a
-man, or an admin's typed figure for him fails in silence. **Docked** at the grid's right edge on a desktop (A5): a
+keeping the `warIdentityIfHidden` fallback. `setBalance` (~L4942) goes; the new `lw.balance` writer accepts a man with no
+row (a SANS man while SANS is off), whose figure today fails in silence on its "not on the roster" refusal. **Docked** at the grid's right edge on a desktop (A5): a
 draggable window, not a sheet over the grid, the grid working behind it (D641). **The list:** `leavewar/ui/LeaveLine.tsx`
 (39 lines, used by `DayPanel.tsx` ~L84) gains "no puck" and a muted "who, when" line under it; its rows come from a new
 per-person builder (the day panel's `state/daypanel.ts dayPanelData` works a day at a time): approved leave — one Input,
 one line; pending and refused requests — one line a run by `reqRunKey` (Approvals' `linesOfWar`, `approvals.ts` ~L56–92,
 the pattern); across every war, filtered by the year picker. "Who, when" reads M4's `decidedBy` / `decidedAt` on a request,
-the Input's `by` and stamp, and — for a leave deleted by someone else — the change history's Leave War lines
-(`state/changelines.ts`), as Approvals' "Also since you last looked" does. **My leave** (`Chrome.tsx` ~L221–231) keeps
+the Input's `by` and stamp, and — for a leave deleted, moved or re-typed by someone else — the change history's Leave War
+lines by their new machine marks (§3), never by parsing their words. **My leave** (`Chrome.tsx` ~L221–231) keeps
 `askLw({ kind: 'person', id: me })`; it shows only while the viewer has a row, so a hidden SANS man has none — as today
 (not in M5a). The grid's tap on the LVE figure (`setBalOpen`, ~L384, ~L4647 → `FigureBreakdownSheet`) opens the person
 window instead (reading 15).
@@ -302,7 +357,7 @@ the Grades window (rename, reorder, delete, add, its "+ days"); the roll-over's 
 **The person window** (every way in and every kind of man): a name on the grid (pilot, WSO, ground personnel, OCU "O",
 SANS while on the war); My leave; a man with no row (SANS off the war — from Approvals and the bell); a posted-out man;
 an archived man reached from an old request; one's own, another's, an admin's own.
-**A new-since-last-visit line** (each change someone else can make to his leave): approved, refused, put back to a bid,
+**A new-since-last-visit line** (an admin's own window too) (each change someone else can make to his leave): approved, refused, put back to a bid,
 moved, deleted (struck through), kind changed (D1460), placed approved by an admin (D1422), a whole leave decided, Approve
 all, an Inputs-page change by a scheduler; and his own change of each (never dotted).
 
@@ -311,7 +366,8 @@ all, an Inputs-page change by a scheduler; and his own change of each (never dot
 **Q1 — a person's grade changed after 1 Jan.** Recon is a Junior pilot (+33) on 1 Jan 2027, so 33 days are added; on
 1 Mar 2027 an admin makes him a Senior pilot (+36). *Recommended:* the new grade counts from the next 1 Jan — his 2027
 figures stay as they are, and on 1 Jan 2028 36 are added; the same for a grade's "+ days" changed in the Grades window
-mid-year. *The other way:* the change reaches back to 1 Jan, and his App bal jumps by 3 on 1 Mar. (Picture: the grade box
+mid-year. One cost of A: a wrong grade put right after 1 Jan (on 3 Jan, say) also waits for the next 1 Jan — that year's figure is
+put right by typing App bal. *The other way:* the change reaches back to 1 Jan, and his App bal jumps by 3 on 1 Mar. (Picture: the grade box
 and its list, `full/m5a/m5c-c1-picker`, Recon's row at the top.) Until he answers, nothing else waits: it is decided by one date
 check in the engine.
 
@@ -326,10 +382,12 @@ way to change a balance (its box on the Balances page, every row a box) leaves f
 **Readings built as recommended and named at his look, his to strike — none blocks the build:**
 1. CCL, FCL, PL, EL and CL come down by themselves as their leave is approved, as App bal does (D1479's rule, for every
    typed kind): the box shows the running figure, and its Pending / War bal lines show only while something is pending.
-2. "Since he typed" is counted by what was approved when he typed, not by a leave's dates: a leave already approved then
-   takes nothing off; one lengthened afterwards takes only its new days; one deleted gives its days back.
+2. "Since he typed" is counted by what was approved when he typed, day by day, not by a leave's dates or by when it was
+   approved: a leave already approved then takes nothing off; one lengthened afterwards takes only its new days; one
+   deleted gives its days back.
 3. The grid's FIGURES drawer and its grants go: a balance changes only by its box, by approved leave and by 1 Jan.
-4. A person whose figures were never typed shows 0, and 1 Jan adds his grade's days to that.
+4. A person whose figures were never typed counts from 0 on 1 Jan of the war's first year: each 1 Jan since adds his
+   grade's days and his approved leave since comes off.
 5. "3 taken" is his approved LVE days from 1 Jan up to today; Days taken counts approved days in the View period up to
    today (as the drawings were made).
 6. The person window lists his leave — LL, OL, OIL taken, CCL, FCL, PL, EL, CL; a medical, a course, an overseas duty and
@@ -354,6 +412,20 @@ way to change a balance (its box on the Balances page, every row a box) leaves f
     go-live (D1255 — an award in the OIL tracker) has two side effects today: an award shows on the grid as an FO / HO on
     its date (D402) and follows the OIL expiry rule. Only real data meets it, at the database step, so it is filed as a
     question for then (`[LW-OIL-OPENING-AWARD]`), not built here.
+17. Leave on a date no period covers yet comes off by the plain rule — weekdays count, Saturday and Sunday do not, no
+    holidays known (today such a date counts nothing); creating the period later moves nothing already counted.
+18. Days given back (a leave deleted or shortened) go back to this year's leave, never to carried forward, so "incl. N
+    carried fwd" never shows more than was typed.
+19. A pending day in a year whose carried-forward has ended costs nothing more, so it shows no pending figure on the tile,
+    though the request still waits in his list (D1474 — §1.5 row 8).
+20. Days taken counts leave as the balances charge it (weekends free) and MED, a course and an overseas duty as calendar
+    days (a two-week course reads 14).
+21. D1473's worked example reads 21, 52, 52 (on 31 Dec, 1 Jan, after 4 Jan), not the ruling's 22, 53, 52: D1479, the later
+    ruling, takes a leave off when it is approved, not as its days pass; only the end figure is the same (§1.5 row 6).
+22. A leave approved only after 1 Jan for a day of the year just ended counts in that year (D1473), so a day the ended
+    carried-forward covers costs nothing now (§1.5 row 7).
+23. A tap on a name on the Balances page opens his person window, as every tap on a person on the Leave War does (D1148);
+    it was not drawn.
 
 **Records of each answer:** a ruling row in `leave-war.md` the moment he answers; reading 8's bell line in
 `docs/notifications-register.md` as proposed.
@@ -381,7 +453,14 @@ shortened, moved, deleted, refused back, put back to a bid; an Inputs-page leave
 weekend; a holiday inside a leave; the clock moved to 31 Dec, 1 Jan, 4 Jan; no grade; below zero (−2 → 31); a grade changed
 after 1 Jan (Q1); each other kind kept on 1 Jan; Undo and Redo of a typed figure; a reload.
 **The page × who × the lock:** admin, member own row, member another's row; unlocked, locked, locked while a box is open;
-member's Undo after the lock; admin's member view (D292).
+member's Undo after the lock; admin's member view (D292). **How the lock is walked under an open box** (finding 14 — the war
+carries no change across browser tabs, and Undo's list clears at sign-out, D148): signed in as the member, his box open or
+his change made, the lock is flipped through the localhost bridge as the admin's own command — the stand-in for the other
+person — and the member's Save and Undo are real presses; the bridge's flip is named in the evidence sheet as such (D608:
+the press under test is real).
+**And (finding 14):** a period created after a figure was typed (§1.5 row 9); a pending bid that makes a pilot's 15-day run
+(row 10); the page left open across midnight on 31 Dec (the figures roll over at midnight without a touch); Days taken for
+MED, CSE and OD with weekends inside them; every row of §1.5's table that is marked walked.
 
 1. Admin, desktop: the Balances tab, the page beside `m5b-b1-desk`; type Ranger's App bal and carried fwd, see War bal, the
    grid's figure, My leave and Approvals' LVE BAL follow; Undo (the screen where it was — D672); Redo; reload.
@@ -394,7 +473,8 @@ member's Undo after the lock; admin's member view (D292).
    his save refused with its reason; his Undo of an earlier change refused.
 6. The member (us/us): his own row in boxes, others' read only; his window from My leave with its dots and "who, when"; a
    leave deleted by the admin struck through; close and reopen → no dots; reload → the moment kept.
-7. The clock at 31 Dec 2026, 1 Jan 2027 and 4 Jan 2027 with D1473's worked example; D1474's three cases; D1489's other kinds.
+7. The clock at 20 Dec, 31 Dec 2026, 1 Jan and 4 Jan 2027 with D1473's worked example — §1.5 row 6's figures, not the
+   ruling's narrative (reading 21); D1474's three cases; D1489's other kinds kept.
 8. The person window on a desktop docked at the grid's right edge, dragged, the grid pressed behind it; on a phone in the
    middle; every way in (§5); another man's (read only, no dots); a man with no row.
 9. Phone: the tab row at 402, 390 and 375 (icons kept, kept, dropped — D1483 as corrected); the page at rest, slid, pinched
@@ -406,7 +486,9 @@ member's Undo after the lock; admin's member view (D292).
 
 The rules sweep; scenario design by a fresh model other than the builder (§7 is its seed, not its replacement); the
 roll-call (§5); the door check; the walk sized and walked (§7); the break tests (each new guard broken on purpose goes red —
-the lock read at save, the own-row check, halves only, the snapshot); the demo seeded with typed figures, grades, a man
+the lock read at save, the own-row check, halves only, cf within the figure, the snapshot recomputed, the typed day, the
+name of who typed, a member's grade write refused, `lwseen:` of another pid; and §1.5's table as unit tests before any
+screen); the demo seeded with typed figures, grades, a man
 with no grade, pending and approved leave either side of the typed date, so the walk has them; GitHub's run of the pull
 request as the full check while the repo is public (D1086), the changed tests on his PC; **one fresh, blind Opus read of
 the finished code** (D790) **and the security read** (D1411 — a member writing another man's balance, a member writing
@@ -415,6 +497,15 @@ touched; the evidence sheet with its `Walk:` line; pictures for his look beside 
 written on `[NO-ASTRA-LIST]` (D761): the two ChatGPT reads FULL wants and the other provider's scenario design.
 
 ## 9. Open points and records
+
+**The fresh read of this spec** (28 Oct 26, one blind Opus reader): 14 findings, all taken — §1 rewritten around one
+formula and a worked table (a pending bid never moves App bal; the snapshot kept day by day and charged now; dates no
+period covers charged by the plain rule; carried forward defined in every case; D1473's example under D1479; never-typed
+and old rows bounded; one clock, the app's today), §3 rewritten (the typed figures and the grade each a collection of
+their own, OIL's openings left numeric, every place a collection is listed, the grades' dated shape and fixed ids, the
+member's read of every row, `lw.seen` mapped, the commands named, what the gate recomputes), the missed readers (§4), the
+machine marks on the war's history lines, the box saving on Enter or leaving it, readings 17–23, and the walk's method for
+the lock and its four added scenarios.
 
 **Left to the build — technical (the builder decides and says what he did):** the engine's exact shape (§1.5); how the
 snapshot of §1.2 is held (§3); the grades' dated history (§3); the page's sideways slide and pinch (§4); the seen moment's
