@@ -1,0 +1,59 @@
+[
+ {
+  "id": "M0 before midnight (23:57 on 31 Dec): Ranger's window open, year picker and 2026 lines",
+  "size": "desk",
+  "verdict": "NOTE",
+  "said": "App 37 incl 4; \"5 taken\"; picker {\"value\":\"ahead\",\"options\":[\"2026 and ahead\"]}; 8 lines",
+  "pics": [
+   "01-before-midnight"
+  ]
+ },
+ {
+  "id": "M1 after midnight, window left open, no touch: figures follow (69 incl 33, \"0 taken\")",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "App 69 incl 33; \"0 taken\"",
+  "pics": [
+   "02-after-midnight"
+  ]
+ },
+ {
+  "id": "M2 … the year picker reads \"2027 and ahead\" and the 2026 lines are gone from the list",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "picker value \"ahead\", options [\"2027 and ahead\",\"2026\"]; lines 0: none",
+  "pics": [
+   "02-after-midnight"
+  ]
+ },
+ {
+  "id": "M3 the 2026 lines are one pick away: \"2026\" is in the picker",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "options [\"2027 and ahead\",\"2026\"]",
+  "pics": []
+ },
+ {
+  "id": "M4 2026 picked: the 2026 lines come back",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "8 lines: LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending …",
+  "pics": [
+   "03-picked-2026"
+  ]
+ },
+ {
+  "id": "M5 closed and reopened after midnight: same as the left-open window",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reopened: picker \"ahead\", 0 lines",
+  "pics": []
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

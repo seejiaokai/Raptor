@@ -1,0 +1,20 @@
+[
+ {
+  "id": "F1g Enter on an emptied box, Escape, then the box emptied again and left by pressing another box",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "after Enter {\"v\":\"17.5\",\"e\":\"Type a figure\"}; after Escape {\"v\":\"17.5\",\"e\":null}; second leave {\"v\":\"17.5\",\"e\":null}",
+  "pics": [
+   "60-second-refusal-other-box"
+  ]
+ },
+ {
+  "id": "F1h Enter on an emptied box, then emptied again at once (no Escape) and left by another box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after first Enter {\"v\":\"17.5\",\"e\":\"Type a figure\"}; second leave {\"v\":\"17.5\",\"e\":\"Type a figure\"}",
+  "pics": [
+   "61-second-refusal-no-escape"
+  ]
+ }
+]

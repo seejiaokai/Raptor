@@ -1,0 +1,68 @@
+[
+ {
+  "id": "L0 Ranger before: War bal 12.5, CCL 3 −1 (war 2)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"app\":\"15\",\"war\":\"12.5\",\"CCL\":\"3 −1\"}",
+  "pics": []
+ },
+ {
+  "id": "L1 Wed 4 Feb (free weekday): LL left is War bal − 1 = 11.5; CCL left 1",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL 11.5 · OL 11.5 · CCL 1 · PL 0.5; day line \"No manning row turns amber or red\"",
+  "pics": [
+   "01-left-wed-4-feb"
+  ]
+ },
+ {
+  "id": "L2 Wed 4 Feb, afternoon only: LL left 12 (−0.5)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL 12 · CCL 1.5",
+  "pics": [
+   "02-left-wed-4-feb-pm"
+  ]
+ },
+ {
+  "id": "L3 Sat 7 Feb: LL left 12.5 (a Saturday costs nothing here)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL 12.5 · CCL 2",
+  "pics": [
+   "03-left-sat-7-feb"
+  ]
+ },
+ {
+  "id": "L4 the drag window over Tue 24 – Wed 25 Feb: LL left 10.5 (−2)",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "window open false; \"24–25 Feb · 2 days\"; LL left 10.5; CCL left 0",
+  "pics": [
+   "04-drag-window"
+  ]
+ },
+ {
+  "id": "L5 placing LL on Wed 4 Feb (approved): War bal 12.5 → 11.5, as the button said",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true; App 14 incl 1 pend −2.5 war 11.5",
+  "pics": []
+ },
+ {
+  "id": "L6 the next weekday now reads 10.5",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL 10.5",
+  "pics": [
+   "05-left-after"
+  ]
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

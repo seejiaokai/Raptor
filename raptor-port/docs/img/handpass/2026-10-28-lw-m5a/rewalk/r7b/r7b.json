@@ -1,0 +1,12 @@
+[
+ {
+  "id": "B5 fresh phone: Balances document height vs the screen (no page scroll)",
+  "size": "402",
+  "verdict": "FAIL",
+  "said": "Grid 1520, Approvals 1425, Balances 994 on a 874 screen; page bottom 874, Balances page bottom 874, its scroller bottom 874; a swipe from the tab row: scrollY 75",
+  "pics": [
+   "01-balances",
+   "02-after-swipe"
+  ]
+ }
+]

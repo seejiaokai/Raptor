@@ -1,0 +1,70 @@
+[
+ {
+  "id": "CR1a rename Ops A → Ops B, then Undo: the name reads Ops A",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before \"Ops A | 3 people\" · renamed \"Ops B | 3 people\" · after Undo \"Ops A | 3 people\"",
+  "pics": []
+ },
+ {
+  "id": "CR1b … and after a reload (signed in again): still \"Ops A\", on the sheet and in the holders' grade boxes",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reload signed him out: true; sheet \"Ops A | 3 people\"; holders' boxes [\"Ops A+14\",\"Ops A+14\",\"Ops A+14\"]",
+  "pics": [
+   "01-after-reload-grades"
+  ]
+ },
+ {
+  "id": "CR1c delete Junior WSO (held), Undo, reload: the grade and its holders are back",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "before \"Junior WSO | 11 people\" · deleted: gone, \"No grade\" boxes 12 · Undo: \"No grade\" boxes 1 · after reload \"Junior WSO | 11 people\", \"No grade\" boxes 1",
+  "pics": [
+   "02-delete-undo-reload"
+  ]
+ },
+ {
+  "id": "CR2a Ranger opens his window (his visit): 19–21 Jan LL approved is on his list",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines: LL Mon 19 – Wed 21 Jan 3 Approved | LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": [
+   "10-ranger-before"
+  ]
+ },
+ {
+  "id": "CR2b Saber deletes Ranger's approved LL 19–21 Jan on the Inputs page",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row found 1; asked \"delete for all\" 0; rows left for 19 Jan: 0",
+  "pics": [
+   "11-inputs-list",
+   "12-input-window",
+   "13-after-delete"
+  ]
+ },
+ {
+  "id": "CR2c Ranger opens his window: 19–21 Jan struck through, dotted, \"deleted by Saber …\"",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"LL Mon 19 – Wed 21 Jan 3 Deleted deleted by Saber · 29 Oct 03:49\", dot true, struck false, who \"deleted by Saber · 29 Oct 03:49\"",
+  "pics": [
+   "14-ranger-after"
+  ]
+ },
+ {
+  "id": "CR2d close and reopen: no dot, the struck line gone (the moment kept)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines: LL Mon 26 – Tue 27 Jan 2 Approved | LL Thu 29 Jan, AM 0.5 Pending | LL Mon 2 Feb 1 Refused | LL Thu 12 – Fri 13 Feb 2 Pending | CCL Mon 2 Mar 1 Pending | PL Mon 16 Mar, AM 0.5 Pending | CL Tue 17 Mar 1 Pending",
+  "pics": []
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

@@ -1,0 +1,111 @@
+[
+ {
+  "id": "F3 (A-F3) a box shows its longest figure whole: −998.5, −12.5, 10.5, 123.5, 12.5 typed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bal-LVE-dice=−998.5 (box 54px, text 39.3px of 40px); bal-LVE-shaft=−12.5 (box 54px, text 36.5px of 40px); bal-PL-snap=10.5 (box 44px, text 27px of 30px); bal-LVE-bane=123.5 (box 54px, text 34.7px of 40px); bal-cf-bane=100 (box 44px, text 23.3px of 30px); bal-CCL-bane=12.5 (box 44px, text 27px of 30px); bal-PL-bane=10.5 (box 44px, text 27px of 30px); bal-cf-dice=0 (box 44px, text 7.5px of 30px)",
+  "pics": [
+   "01-longest-figures",
+   "02-longest-crop"
+  ]
+ },
+ {
+  "id": "F3b no column moves when a long figure is typed (heading and cell lefts/widths of Ranger and Dice, and his 5 boxes, before vs after)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "identical to 0.1px",
+  "pics": [
+   "01-longest-figures"
+  ]
+ },
+ {
+  "id": "F2 (A-F2) OIL figures right-set under their heading, 0–1px, steady line to line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "OIL heading right-set; figure right edge 0px from heading's, spread 0px over 50 lines",
+  "pics": [
+   "10-hard-cases",
+   "11-oil-crop"
+  ]
+ },
+ {
+  "id": "A50 (lesson 9, again) every heading over its figures on every line, 50 lines incl. −998.5, 123.5, 10.5, No grade rows",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "50 rows; NAME: left-set, figure edge 0px from it, spread 0px · GRADE · AUTO + LVE ON 1 JAN: left-set, figure edge +11px from it, spread 0px · APP BAL: right-set, figure edge 0px from it, spread 0px · INCL. CARRIED FWD: right-set, figure edge 0px from it, spread 0px · PENDING: right-set, figure edge 0px from it, spread 0px · WAR BAL: right-set, figure edge 0px from it, spread 0px · OIL: right-set, figure edge 0px from it, spread 0px · CCL: right-set, figure edge 0px from it, spread 0px · FCL: right-set, figure edge 0px from it, spread 0px · PL: right-set, figure edge 0px from it, spread 0px · EL: right-set, figure edge 0px from it, spread 0px · CL: right-set, figure edge 0px from it, spread 0px; chips {\"?\":50}",
+  "pics": [
+   "10-hard-cases"
+  ]
+ },
+ {
+  "id": "A51 Days taken: every heading over its figures",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "50 rows; NAME: left-set, figure edge 0px from it, spread 0px · GRADE · AUTO + LVE ON 1 JAN: left-set, figure edge +11px from it, spread 0px · LL: right-set, figure edge 0px from it, spread 0px · OL: right-set, figure edge 0px from it, spread 0px · OIL: right-set, figure edge 0px from it, spread 0px · CCL: right-set, figure edge 0px from it, spread 0px · FCL: right-set, figure edge 0px from it, spread 0px · PL: right-set, figure edge 0px from it, spread 0px · EL: right-set, figure edge 0px from it, spread 0px · CL: right-set, figure edge 0px from it, spread 0px · MED: right-set, figure edge 0px from it, spread 0px · CSE: right-set, figure edge 0px from it, spread 0px · OD: right-set, figure edge 0px from it, spread 0px",
+  "pics": [
+   "12-taken"
+  ]
+ },
+ {
+  "id": "A52 SANS shown: every heading over its figures, SANS rows included",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "61 rows; NAME: left-set, figure edge 0px from it, spread 0px · GRADE · AUTO + LVE ON 1 JAN: left-set, figure edge +11px from it, spread 0px · APP BAL: right-set, figure edge 0px from it, spread 0px · INCL. CARRIED FWD: right-set, figure edge 0px from it, spread 0px · PENDING: right-set, figure edge 0px from it, spread 0px · WAR BAL: right-set, figure edge 0px from it, spread 0px · OIL: right-set, figure edge 0px from it, spread 0px · CCL: right-set, figure edge 0px from it, spread 0px · FCL: right-set, figure edge 0px from it, spread 0px · PL: right-set, figure edge 0px from it, spread 0px · EL: right-set, figure edge 0px from it, spread 0px · CL: right-set, figure edge 0px from it, spread 0px",
+  "pics": [
+   "13-with-sans"
+  ]
+ },
+ {
+  "id": "F4 (A-F4) pinned headings meet with no see-through strip, page scrolled 300",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading rows [[-107,-84],[-84,-58]]; gap between rows 0px; points between them not on a heading: 0 ",
+  "pics": [
+   "20-scrolled-300",
+   "21-scrolled-300-full"
+  ]
+ },
+ {
+  "id": "F4 (A-F4) pinned headings meet with no see-through strip, page scrolled 1150",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "heading rows [[-957,-934],[-934,-908]]; gap between rows 0px; points between them not on a heading: 0 ",
+  "pics": [
+   "20-scrolled-1150",
+   "21-scrolled-1150-full"
+  ]
+ },
+ {
+  "id": "F1 (A-F1) emptied box + Enter: words \"Type a figure\", old figure kept, no Undo step",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box now \"17.5\" (was 17.5); words under it \"Type a figure\"; Undo disabled false -> false",
+  "pics": [
+   "30-blank-enter",
+   "31-blank-enter-crop"
+  ]
+ },
+ {
+  "id": "F1b emptied box, left by pressing another box: words \"Type a figure\", old figure kept",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "box \"17.5\"; words \"null\"",
+  "pics": [
+   "32-blank-leave"
+  ]
+ },
+ {
+  "id": "F1c emptied box + Escape: the old figure back, silently",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box \"17.5\"; words \"null\"",
+  "pics": []
+ },
+ {
+  "id": "errors (console, page, 4xx)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
