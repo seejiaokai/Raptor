@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/drawing-check-b783bd -->
+### `claude/drawing-check-b783bd` — the drawing check (his D1494) BUILT and proved on M5a; its guide wording read and waiting for his approval — written 29 Oct 26, verify before use
+- **Started from** the M5a chat's session (its D1494, [DRAWING-CHECK] — both on `claude/leave-war-m5a-screens-ced9d7` until pull request 586 merges; not repeated here, so nothing doubles at the merge).
+- **Built:** `raptor-port/scripts/drawcheck/` (`record.mjs`, `check.mjs`, `compare.mjs`, `lib.mjs`, `selftest.mjs`, `specs/lw-m5a.mjs`; `docs/file-map.md` row). The drawing is recorded by replaying its own drawing script with the recorder beside it — no drawing script changed; each record says whether the replay drew the approved picture pixel for pixel (all six M5a records: identical).
+- **Proved on M5a** at 794346689 (a detached copy in `C:\dc-794`, the drawings replayed on main 230aa3b85 in `C:\dc-base` — both throwaway, junctioned `node_modules`): every difference the eye listed is caught — the desktop window 136px lower with the page at its top (it matches in the drawing's own scroll; the build copied the drawing script's scroll-dependent placing), the leave lines as rounded cards with a cyan bar, the switch 47px narrower (kept, D1493), names centred, the desktop locked row's amber CCL figure 2.6px low (on the phone it is on the line), the hyphen (kept, D1493); the Grades window matches. Two more nobody had seen: on the iPhone's locked Balances page the read-only figures stand 10px further right than drawn, and the row 6px lower. Report and pictures: `raptor-port/docs/img/handpass/2026-10-29-drawcheck-m5a/report.md`. `selftest.mjs`: 12 of 12, red when the comparing is broken.
+- **Guide wording:** `raptor-port/docs/superpowers/specs/2026-10-29-drawing-check-guide-wording.md` (bug-check order §7.0 and §7.10, walk-scripts §10 — which replaces the M5a branch's placeholder). Read by a fresh, blind Opus reader (D70, D790); put to him; NOT in the guides until he approves.
+- **Pick up here:** his answer on the wording → put it into the two guides (after 586 merges, so §10's placeholder is there to replace), docsize, push. Then offer the M5a chat the check for its D1493 fixes. No merge without his "merge live".
+- **Notes:** no rulings this chat; observations past 738 (the M5a branch holds 736–738).
+<!-- /now -->
 <!-- now:claude/leave-war-m5-handoff-3a6602 -->
 ### `claude/leave-war-m5-handoff-3a6602` — the Leave War's names as the schedule's puck and the month strip's fix LIVE (his "merge live", pull request 585, 28 Oct 26); M5 PLANNED, its four points ANSWERED (D1472–D1475); next: M5a's drawings in a fresh chat — written 28 Oct 26, verify before use
 - **After a compaction:** re-read this block and the M5 plan before the next change; note the compaction here with its time. Compacted once, 28 Oct 26 about 17:00 (before his "All as recommended").
