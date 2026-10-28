@@ -50,15 +50,31 @@ dialog .close { position: fixed; top: calc(10px + env(safe-area-inset-top, 0px))
 
   <div class="todo">
     <h2>What I need from you</h2>
-    <p>Reply "all as recommended", or give the number you want the other way.</p>
-    <ol start="23">
-      <li><a href="#q23">On your iPhone</a>: check that "23 Jan AM ›" stays on one line</li>
+    <p>Reply "all as recommended", or give the number of any you want the other way.</p>
+    <ol>
+      <li><a href="#q25">25</a>: tap a leave of several days and the whole leave opens; a "Tue 13 only" choice changes just the day you tapped. <b>Recommended: yes</b></li>
+      <li><a href="#q24">24</a>: the ring on the day you jump to from Approvals is cyan, matching the date above it. <b>Recommended: yes, cyan</b></li>
+      <li><a href="#q23">23</a>, on your iPhone: check that "23 Jan AM ›" stays on one line</li>
       <li>Reading R22 (below): strike it if you want it the other way</li>
     </ol>
   </div>
 
   <section>
     <h2>Open</h2>
+    <article class="card" id="q25">
+      <div class="head"><span class="num">25</span><h3>A leave of several days: decide it whole, keep single days</h3><span class="rec back">Recommended: one row, two choices</span></div>
+      <p class="why">Today, tapping a day of Trident's 13–16 Apr leave opens a window for that one day, so Approve decides one day of the four. (In Approvals the leave is already one line, and one Approve decides all four days.) <b>As you said:</b> tapping any day of the leave opens the whole leave. The title reads "13 – 16 Apr", and the grid marks all four days. <b>To keep single days:</b> one new row, "All 4 days" (picked to start with) or "Tue 13 only", meaning the day you tapped. Approve, Refuse, Move and Delete act on what's picked, so changing one day takes one extra tap. This matches how the leave already works: one leave, one remark for all its days (D1339). The row shows only on a leave of more than one day. <b>The other way:</b> no new row, and "Pick a range" narrows the window to one day. That's one row fewer, but changing one day takes a calendar and two more taps.</p>
+      <button class="pic" type="button" aria-label="Enlarge: now"><img src="whole/now.png" alt="Now: the window opened on one day of a four-day leave"></button>
+      <button class="pic" type="button" aria-label="Enlarge: whole leave"><img src="whole/rec-all.png" alt="Recommended: the window opened on the whole leave, All 4 days picked"></button>
+      <button class="pic" type="button" aria-label="Enlarge: one day"><img src="whole/rec-one.png" alt="Recommended: Tue 13 only picked, one day marked"></button>
+    </article>
+    <article class="card" id="q24">
+      <div class="head"><span class="num">24</span><h3>The ring on the day you jump to: cyan, not blue</h3><span class="rec back">Recommended: cyan</span></div>
+      <p class="why">You're right, the blue is too dark. When you tap a request's dates in Approvals, the grid rings two things: the date at the top, which is already cyan, and the man's day, which is the app's darker blue. That's one message in two colours, and the more important of the two is the dimmer one. On cyan the day stands out about twice as strongly against the dark grid, and it matches its date. My recommendation: make it cyan on the Leave War only. On the Scheduler Board and the Inputs pages the ring stays the app's blue, because there blue is also the colour of a picked puck. That makes the Leave War an exception to "one mark, one look" (your D876), so it's your call. The lighter blue is a middle option: brighter, but still a different colour from its date.</p>
+      <button class="pic" type="button" aria-label="Enlarge: now"><img src="ring/ring-now.png" alt="Now: the date ringed cyan, the day ringed the app's darker blue"></button>
+      <button class="pic" type="button" aria-label="Enlarge: cyan"><img src="ring/ring-cyan.png" alt="Cyan: the date and the day ringed alike"></button>
+      <button class="pic" type="button" aria-label="Enlarge: lighter blue"><img src="ring/ring-light.png" alt="A lighter blue on the day"></button>
+    </article>
     <article class="card" id="q23">
       <div class="head"><span class="num">23</span><h3>A check only your iPhone can make</h3><span class="rec fix">Please look</span></div>
       <p class="why">Approve and Refuse now use your drawing's letters (your answer 18). In the test browsers that keeps every date on one line at your phone's width. The app uses your phone's own letters, which only your phone shows, so please open Approvals on your iPhone and check that the half-day dates, such as "23 Jan AM ›", stay on one line. On GitHub's machines, whose letters are wider, those two still break.</p>

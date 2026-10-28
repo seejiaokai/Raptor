@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1448 | 28 Oct 26 | A tap on any day of a leave of several days on the Leave War grid opens the whole leave, so one tap decides it all without a drag-selection, and any one of its days can still be decided or changed alone; how that one day is reached is drawn for him with options before anything is built. |
 | D1447 | 28 Oct 26 | The readings put to him on the M4 page stand as built: R12–R17 and R19 (version 6), and R20 — a man's leave is refused only on days from his posting-out date on, whether or not the posting has run, a day before it approving — and R21 — a man deleted on Admin → Users keeps the refusal of his leftover pending leave. |
 | D1446 | 28 Oct 26 | Under a man posting out, the Leave War's Approvals list keeps the build's words — "posting out 1 Mar · Overseas Sqn", where he goes named — not the drawing's "PO 1 Mar". |
 | D1445 | 28 Oct 26 | The Leave War's slim Approvals bar takes the darker fill of his drawings r22-4-desk and r22-6-phone, on a desktop and a phone alike, its edge, words and size unchanged. |
