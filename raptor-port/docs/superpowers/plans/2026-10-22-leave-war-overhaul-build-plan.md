@@ -160,4 +160,4 @@ were weighed: the year-end bid (B3) is latent (the range picker stops at the per
 
 **Where it stands (27 Oct 26 — D1404):** M1, M2 and M3 are live; M4 is next, in a fresh chat of its own, then M5. **M4 planned (27 Oct 26):** `2026-10-27-lw-m4-build-spec.md` — the code read again on main, the Approvals tab drawn (`full/r22-*`), one look and two questions put to him before the build.
 
-**Where it stands (28 Oct 26):** M4 live (pull request 581), then [LW-WHOLE-LEAVE-WINDOW] (582). **M5 planned:** `2026-10-28-lw-m5-plan.md` — its build-plan questions all answered; recommended in two merges, M5a (balances) and M5b (the admin's set-up), his to rule.
+**Where it stands (28 Oct 26):** M4 live (pull request 581), then [LW-WHOLE-LEAVE-WINDOW] (582). **M5 planned:** `2026-10-28-lw-m5-plan.md` — its build-plan questions all answered; recommended in two merges, M5a (balances) and M5b (the admin's set-up). **Ruled 28 Oct 26 (D1475): M5 is two merges, M5a then M5b — six merges in all, not the five of §1.** Its four rule points answered the same day (D1472–D1474).

@@ -7,10 +7,11 @@
    `PersonMonth` per month") — a prop added here is a repaint to argue for; `matrix-rows-memo.test.tsx` pins the row's. */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, boxText, canEditRow, catClass, catText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
+import { addDays, boxText, canEditRow, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, figureLines, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureCtx } from '../engine'
 import { moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, recordsAt, reqRunKey } from '../state/store'
 import type { RequestRec } from '../engine/warrecs'
 import { FigureCell, show } from './FigureCell'
+import { NamePuck } from './NamePuck'
 import { isCommitCode, offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 import { outcomeOf } from '../engine'
@@ -291,7 +292,6 @@ export const setPhWidth = (el: HTMLElement, w: string) => {
 }
 
 export const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, views, role, viewer, deciding, movedShown, shown, figureCtx, figSel, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
-  const has = quals.length > 0
   // The selected figure's LINES for this person — the two-line box's own
   // number on top, the days taken from it stacked under (FigureCell, 6 Sep
   // 26). It has to move the instant a bid is placed, because a pending bid
@@ -346,17 +346,17 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
             title={`${p.callsign} — every figure`}
             onClick={() => api.current.setWhoOpen(p.id)}
           >
-            <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+            {/* the name and its chip as the schedule's own puck (D1468–D1471, D1476 — NamePuck.tsx) */}
+            <NamePuck
+              p={p}
+              quals={quals}
+              testid={`cat-${p.id}`}
+              onChipEnter={el => api.current.chipEnter(p.id, el)}
+              onChipLeave={() => api.current.chipLeave()}
+              onChipClick={el => api.current.chipClick(p, el)}
+            />
             {/* D283 (the approved picture 4a): a SANS posting shown in his old place (Show SANS off) wears a SANS tag */}
             {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag" data-testid={`sans-tag-${p.id}`}>SANS</span>}
-            <span
-              className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
-              data-testid={`cat-${p.id}`}
-              aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
-              onPointerEnter={has ? e => { if (e.pointerType === 'mouse') api.current.chipEnter(p.id, e.currentTarget) } : undefined}
-              onPointerLeave={has ? e => { if (e.pointerType === 'mouse') api.current.chipLeave() } : undefined}
-              onClick={has ? e => { e.stopPropagation(); api.current.chipClick(p, e.currentTarget) } : undefined}
-            >{catText(p) || 'GND'}</span>
           </button>
           {/* The free-text role-label edit box is GONE (owner, 28 Aug 26 —
               "i can edit personnel, dont need to show that, just leave it as

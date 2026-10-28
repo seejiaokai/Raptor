@@ -8193,6 +8193,8 @@ Reset order), `roster.test.ts` (resetRosterOrder …) and `undoaudit.test.ts` (R
 
 ### The zoom buttons, OIL credit boxes that wrap, and the one-line month strip
 
+**Which month is lit (his D1477, 28 Oct 26 — "i click on the jan icon, MAR lights up"):** the month he presses stays lit while the grid sits where the jump left it (its first day at the frozen edge, or the view at the year's end with the month whole on screen — `Matrix.tsx pressedRef`); once he scrolls, the first month from the left with at least half of it on screen, and only where none is, the month filling most of the screen (`monthview.ts monthInView`). It was the month filling most of the screen alone, which on a desktop wide enough for three or four months lit a later one. Checked at 1536, 1536 with the grid zoomed out, a 2560-wide screen and a phone: `scripts/handpass/lw-month-strip-check.mjs`.
+
 **The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
 widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the
 default zoom? Like zoom 1 click out. Put the zoom + - button after oil/oil
@@ -11641,6 +11643,23 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   → Unavail" after a Reject (D1357). A rejected Other's window picks neither and reads "Rejected by a scheduler"; only a
   scheduler moves it (the designer's G5). Goes to is not offered once ALL AVAIL / ALL is among the people picked (G3), and
   such an Other lands on the programme. `ui/inputtitle.test.tsx`, `leavewar/otherunavail.test.tsx`.
+
+## The Leave War's name column — names as pucks (his D1468–D1471, D1476, 28 Oct 26 — BUILT 28 Oct 26, [LW-NAME-PUCKS])
+
+- **A name is a puck, as on the schedule (D1468):** the person's category chip sits inside the name's own box at its right
+  end, not as a separate badge beside it; the chip keeps its colours (OCU's changes to the schedule's, D1469) and its tap or hover that lists his qualifications; a
+  tap on the name still opens his person window; the LVE figure keeps its column beside the name.
+- **The puck is the schedule's own, as the Approvals list draws it (D1471)** — not a restyled bar, so it keeps the schedule's own size and the 4 Sep 26 full-width stretch goes (D1471, as drawn); its seat colours are the schedule's (D1476 — his "Follow the schedule": lighter than the grid's darker bars of 4 Sep 26, which go); ground personnel's puck gains the "G" chip on the Leave War.
+- **An OCU man's chip reads "O" (D1469),** in the schedule's OCU colour (read from the schedule's own chip list — one
+  source); the group's heading stays "OCU".
+- **Ground personnel's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the
+  schedule's own ground-crew puck (no chip) is unchanged.
+- **Built (28 Oct 26):** `leavewar/ui/NamePuck.tsx` draws it for the grid's row (`MatrixRows.tsx`) and the phone's frozen copy
+  (`Matrix.tsx`) — the schedule's `.puck` / `.nm` / `.role` classes, so its look is the scheduler's stylesheet; the chip's text
+  `chipText` (the schedule's `QCHIP` for OCU, "G" for ground personnel), its colour the war's `catClass`; `matrix.css` adds
+  only the shrink to a phone's column and the chip colours the schedule's puck lacks (SXO gold, the personnel grey, ops
+  grey). The grid's pucks carry no `data-person`, so the schedule's selection, highlights and drag never reach them. The
+  OIL tracker's name list keeps its own badge (D1471 covers the grid). Evidence: `docs/handpass/2026-10-28-lw-name-pucks.md`.
 
 ## The Leave War's Approvals, its slim bar and the bell's war lines (the overhaul's M4, 27 Oct 26)
 

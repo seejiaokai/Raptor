@@ -39,7 +39,7 @@ function setViewport(isPhone: boolean) {
 
 const clone = () => document.querySelector('[data-testid="frozen-cols"]')
 const cslist = (root: ParentNode | null) =>
-  root ? Array.from(root.querySelectorAll('.who .cs')).map(el => el.textContent) : []
+  root ? Array.from(root.querySelectorAll('.who .puck .nm')).map(el => el.textContent) : []
 
 beforeEach(() => {
   initStore(memoryBackend())

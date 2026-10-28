@@ -57,6 +57,22 @@ describe('monthInView', () => {
     expect(monthInView([{ label: 'MAY', left: 100, right: 200 }], 0, 800)).toBe('MAY')
   })
 
+  /* HIS WIDE SCREEN (28 Oct 26 — "im looking at feb but the MAR month is shown selected"; his five pictures, JAN to MAY
+     pressed): a desktop wide enough to show three or four months at once lit the month filling the most of it — MAR
+     with February at the left, JUL with May at the left. The month he pressed sits whole at the left edge and is what
+     lights: the first month at least half on screen, and only where none is, the month filling most of it. Days 18px
+     wide, as his pictures measure, a view of 100 days; each view starts 2px into its month, as a landing can. */
+  it('on a screen showing several months, lights the first month mostly on screen, not the longest one there', () => {
+    const W = [31, 28, 31, 30, 31, 30, 31, 31].map(n => n * 18)
+    const LBL = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG']
+    let x = 0
+    const year: MonthSpan[] = W.map((w, i) => { const s = { label: LBL[i]!, left: x, right: x + w }; x += w; return s })
+    const at = (m: string) => year.find(s => s.label === m)!.left + 2
+    for (const m of ['JAN', 'FEB', 'MAR', 'APR', 'MAY']) expect(monthInView(year, at(m), at(m) + 1800), m).toBe(m)
+    // the left month less than half on screen gives way to the next, whole one
+    expect(monthInView(year, at('FEB') + 16 * 18, at('FEB') + 16 * 18 + 1800)).toBe('MAR')
+  })
+
   // Wars whose spans are given out of order, or which share a label across
   // years, must still resolve by position rather than by array index.
   it('answers by overlap, not by array order', () => {

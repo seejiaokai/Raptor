@@ -868,6 +868,12 @@ the reader's instructions or model change, it is run on every case and a change 
    is hidden, waits past its idle time (two seconds and more), comes back by every route (each tab, each ✕, the bell), and
    counts what stands drawn at once without a touch, in WebKit; and every switch between pages is pictured on its first
    frame. (`scripts/handpass/lw-appr-stripes.mjs`, `lw-appr-return-walk.mjs`.)
+11. **A reading worked out from how much is on screen, walked only at the sizes the walks always use (D1477, the Leave War's month
+   strip, 28 Oct 26).** The lit month was the one filling most of the screen; every walk ran at his PC's 1536 and a phone, where a
+   month pressed fills most of it. His own desktop, its grid zoomed out (his pictures measure 18px a day), shows three or four months at once, so JAN pressed lit MAR. **Lesson:** a
+   reading or a mark that depends on how much fits on screen — a wider screen or a zoomed-out grid (which month, which day, what
+   is "in view", what folds) — is walked zoomed out at his 1536 (Ctrl+scroll, D1228) and at a wider screen (2560) as well, and
+   pressed at the year's two ends, where the view cannot scroll as far as the press asks (`scripts/handpass/lw-month-strip-check.mjs`).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

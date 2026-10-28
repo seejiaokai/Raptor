@@ -1783,11 +1783,10 @@ touch-action: pan-x pan-y;
 .mx tbody tr.me .who {
   color: var(--accent);
 }
-/* The full-width seat bar (4 Sep 26) covers most of that tinted panel, so the
-   "this row is you" cue rides the bar itself as a thin accent ring (bug hunt,
-   4 Sep 26) — the seat colour and ink are untouched. The glow past it (6 Sep 26)
-   went 15 Oct 26 (owner D881): the ring and the row's lines carry it. */
-.mx tbody tr.me .who .whoedit .cs { box-shadow: inset 0 0 0 1px var(--accent); } /* no glow past it (owner D881) */
+/* The "this row is you" cue rides the name's puck as a thin accent ring (bug hunt, 4 Sep 26, on the old seat bar; kept
+   on the puck since D1471) — the seat colour and ink are untouched. The glow past it (6 Sep 26) went 15 Oct 26 (owner
+   D881): the ring and the row's lines carry it. */
+.mx tbody tr.me .who .whoedit .puck { outline: 1px solid var(--accent); outline-offset: -1px; } /* above the chip's own fill, so the ring goes all the way round; no glow past it (owner D881) */
 
 /* ---- Categorised roster (owner, 18 Aug 26) ------------------------------ */
 
@@ -1989,51 +1988,20 @@ touch-action: pan-x pan-y;
   min-width: 0;
   flex: 1 1 auto;
 }
-.mx .who .whoedit .catchip { margin-left: auto; }
-.mx .who .whoedit .cs {
-  font-weight: 600;
-  font-size: 12px;
-  color: var(--ink);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  /* Shrinks to ellipsis inside the 76px phone frozen column rather than
-     pushing the cell wider than it is (the "nothing in the callsign column is
-     cut off" gate reads scrollWidth vs clientWidth). */
-  min-width: 0;
-}
-/* The callsign wears the SEAT colour Raptor's pucks wear (owner, 3 Sep 26 —
-   "have the pucks pilot and wso colour to it as well"), the same olive (pilot)
-   / green (WSO) the flight line uses, so a seat reads the same in both apps
-   without a legend.
-
-   IT FILLS THE WHOLE NAME BAR, not just the name (owner, 4 Sep 26 — "make the
-   entire bar of the cs/name to be filled … not only based on how long the name
-   is"): `flex: 1` grows the puck across the frozen column up to the CAT chip, so
-   every row shows a solid seat bar of the same length whatever the callsign.
-   A long name still ellipsises inside it (the nowrap/overflow above) rather
-   than pushing the chip.
-
-   THE FILLS ARE DEEPER than the flight-line pucks (owner, 4 Sep 26 — "make the
-   colour darker … still able to see the pilot or wso colour"): a full-width bar
-   in the mid-tone read too loud across every row, so these are darker takes of
-   the same hues — still plainly olive and green, easier on the eye as a solid
-   run, and the light ink pops. Explicit hex, NOT `var(--fcp/--rcp)`: this is a
-   Leave-War-only darkening and Raptor's flight line keeps its own tone (this
-   file's preamble — never darken it by editing scheduler.css). Ground crew keep
-   the light personnel bar, softened off pure white so a full-width run of it
-   does not glare next to the dark aircrew bars. */
-.mx .who .whoedit .cs.seat-pilot,
-.mx .who .whoedit .cs.seat-wso,
-.mx .who .whoedit .cs.seat-gnd {
-  flex: 1 1 auto;
-  padding: 2px 8px;
-  border-radius: 4px;
-  line-height: 1.3;
-}
-.mx .who .whoedit .cs.seat-pilot { background: #423F1C; color: var(--fcp-ink, #FBFAF0); }
-.mx .who .whoedit .cs.seat-wso   { background: #13402F; color: var(--rcp-ink, #EAFBF3); }
-.mx .who .whoedit .cs.seat-gnd   { background: #E7EBF0; color: #18202C; box-shadow: inset 0 0 0 1px var(--pers-line, #7C8AA0); }
+/* THE NAME IS THE SCHEDULE'S OWN PUCK (his D1468–D1471, D1476 — 28 Oct 26, `NamePuck.tsx`): its look, size and colours
+   come from the scheduler's puck rules (`ui/scheduler/04-pucks-sections.css`) — the darker full-width seat bars of
+   4 Sep 26 ("make the colour darker", "make the entire bar … filled") went with D1476's "Follow the schedule". Two
+   things only are the Leave War's own: the puck may shrink to the frozen column where it is narrower than the puck (a
+   phone's), the name fading at its end as on the schedule while the chip stays whole; and the chip colours the
+   schedule's puck never carries — an SXO's gold, ground personnel's "G" (D1470), a CAT-less ops grey — in the same
+   colours the war's badge wore. */
+.mx .who .whoedit .puck { max-width: 100%; min-width: 0; flex: 0 1 auto; }
+.mx .who .whoedit .puck .role { flex: none; }
+.mx .who .whoedit .puck .role.q-sxo  { background: var(--sxo);    color: #2a1e02; }
+.mx .who .whoedit .puck .role.q-pers { background: var(--pers-line, #7C8AA0); color: #fff; }
+.mx .who .whoedit .puck .role.q-ops  { background: var(--edge-2); color: var(--ink); }
+.mx .who .whoedit .puck .role.has-quals { cursor: help; }
+.mx .who .whoedit .puck .role:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .catchip {
   flex: none;
   font-size: 9px;
@@ -2226,12 +2194,6 @@ touch-action: pan-x pan-y;
   .whorow { gap: 4px; }
   .catchip { padding: 1px 3px; font-size: 8px; letter-spacing: 0; }
   .pers-lbl, .pers-in { display: none; }
-  /* The seat bar's 8px side padding cost a third of the 76px column's name
-     room on a phone; tighter here so fewer callsigns ellipsise (bug hunt,
-     4 Sep 26). The bar still fills the column — only its inset shrinks. */
-  .mx .who .whoedit .cs.seat-pilot,
-  .mx .who .whoedit .cs.seat-wso,
-  .mx .who .whoedit .cs.seat-gnd { padding: 2px 4px; }
   .mx .who .whoedit { gap: 4px; }
 }
 

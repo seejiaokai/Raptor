@@ -27,6 +27,13 @@ export interface MonthSpan {
  * Ties go to the earlier month, which is what stops the label flickering
  * between two answers while the grid is dragged slowly across a boundary —
  * with a strict `>` the first month to reach the maximum keeps it.
+ *
+ * BUT FIRST, A SCREEN WIDE ENOUGH TO SHOW SEVERAL MONTHS (his find, 28 Oct 26, D1477 — "im looking at feb but the MAR month is
+ * shown selected"): his desktop shows three or four months at once, so the month filling the most of it was a later
+ * one — FEB pressed, February whole at the left, MAR lit; MAY pressed, JUL lit. So the first month (from the left) with
+ * at least half of its OWN width on screen is the answer; only where no month is half on screen — a phone's two weeks
+ * across a boundary — does the month filling most of the view decide, as above. A month pressed lands whole at the
+ * left edge, so it is always the one lit.
  */
 export function monthInView(spans: MonthSpan[], viewLeft: number, viewRight: number): string | null {
   if (viewRight <= viewLeft) return null
@@ -37,6 +44,8 @@ export function monthInView(spans: MonthSpan[], viewLeft: number, viewRight: num
   // spans from a map or a reversed list must get the same answer.
   for (const m of [...spans].sort((a, b) => a.left - b.left)) {
     const overlap = Math.min(m.right, viewRight) - Math.max(m.left, viewLeft)
+    // the first month at least half on screen wins outright (a wide screen — see above)
+    if (overlap > 0 && overlap * 2 >= m.right - m.left) return m.label
     if (overlap > most) {
       most = overlap
       best = m.label

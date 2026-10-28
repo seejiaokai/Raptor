@@ -2,11 +2,12 @@ import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRe
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, type DayView } from '../engine/dayview'
 import { INPUTS, remarksTyped } from '../../engine/inputs'
-import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
+import { NamePuck } from './NamePuck'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
 import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
@@ -1144,11 +1145,20 @@ export function Matrix() {
   // correction must run even on a coarse pointer (the fling is already dead —
   // the window only grows left there once the scroll sits at its bound).
   const colShiftRef = useRef(false)
+  /* THE MONTH HE PRESSED (his D1477, 28 Oct 26 — "the month icon lit up is wrong in blue"): a month pressed in the strip
+     stays lit while the grid sits where the jump left it — its first day at the frozen edge, or, at the year's end where
+     the grid cannot scroll that far, the view at its end with the month whole on screen. A scroll that moves it from there
+     hands the lit month back to the readout (monthview.ts). Its index in the war's months, the strip's own order. */
+  const pressedRef = useRef<number | null>(null)
+  /* when it was pressed: a month not drawn yet lands a commit later, so for a moment after the press the view not being
+     there yet is not a scroll away */
+  const pressedAtRef = useRef(0)
   // A different war is a different set of months: start its window over.
   const warRef = useRef(period.id)
   useEffect(() => {
     if (warRef.current === period.id) return
     warRef.current = period.id
+    pressedRef.current = null   // a month pressed in the last war's strip is not this war's (D1477)
     const next = hasLayout() ? windowAround(months.length, defaultMonth) : null
     setColWin(prev => (prev && next && prev.lo === next.lo && prev.hi === next.hi ? prev : next))
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1210,6 +1220,9 @@ export function Matrix() {
 
   const hiddenJumpRef = useRef<string | null>(null)
   const jumpTo = (date: string) => {
+    /* any jump spends a month pressed in the strip (D1477) — the strip's own press sets it again after this call, and a
+       date jumped to from Approvals, the bell, the period or today is the readout's to light (the fix read's 1) */
+    pressedRef.current = null
     const wrap = wrapRef.current
     if (!wrap) return
     /* A JUMP ASKED WHILE THE GRID IS HIDDEN ([LW-APPR-PERIOD-LANDING], 28 Oct 26): a period picked on the Approvals page
@@ -1870,22 +1883,17 @@ export function Matrix() {
      sit). When they hold a displayed qualification it becomes a live control —
      hover (desktop) or tap (phone) to list them; the click is swallowed so it
      never also opens the figures sheet the callsign owns. */
-  const catChip = (p: Person, testid?: string) => {
-    const quals = shownQuals(p)
-    const has = quals.length > 0
-    return (
-      <span
-        className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
-        data-testid={testid}
-        aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
-        onPointerEnter={has ? e => { if (e.pointerType === 'mouse') openQualsAt(p.id, e.currentTarget) } : undefined}
-        onPointerLeave={has ? e => { if (e.pointerType === 'mouse') setQualPop(null) } : undefined}
-        // A second tap on the SAME chip closes it (the phone has no pointer to
-        // leave with); a tap on another chip moves it there.
-        onClick={has ? e => { e.stopPropagation(); if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, e.currentTarget) } : undefined}
-      >{catText(p) || 'GND'}</span>
-    )
-  }
+  const namePuck = (p: Person, testid?: string) => (
+    /* the name and its chip as the schedule's own puck (D1468–D1471, D1476) — the row's own drawer, NamePuck.tsx */
+    <NamePuck
+      p={p}
+      quals={shownQuals(p)}
+      testid={testid}
+      onChipEnter={el => openQualsAt(p.id, el)}
+      onChipLeave={() => setQualPop(null)}
+      onChipClick={el => { if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, el) }}
+    />
+  )
   /* THE EVENT BOX'S OWN WAYS TO CLOSE — the quals popover's, below, for the same reasons: it is anchored in screen
      coordinates, so a scroll or a resize strands it; a pointer-down anywhere but the box and the cell it hangs from
      dismisses it, by a listener and never a scrim, so the next tap and the next drag reach the grid untouched. */
@@ -1930,7 +1938,7 @@ export function Matrix() {
     const close = () => setQualPop(null)
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
-      if (t && !t.closest('.qualpop') && !t.closest('.catchip')) setQualPop(null)
+      if (t && !t.closest('.qualpop') && !t.closest('.lw-chip')) setQualPop(null)
     }
     /* Escape peels the popover first, before any sheet's own Escape (Sheet.tsx
        listens on `document`; the window capture runs ahead of it). */
@@ -2680,7 +2688,17 @@ export function Matrix() {
     const g = stripGeoRef.current
     if (!g) return
     const sl = wrap.scrollLeft
-    paintInView(monthInView(g.spans, sl + g.frozen, sl + g.client))
+    const vl = sl + g.frozen, vr = sl + g.client
+    let lit = monthInView(g.spans, vl, vr)
+    const pi = pressedRef.current
+    if (pi !== null) {
+      const sp = g.spans[pi], end = g.spans[g.spans.length - 1]
+      const day = sp ? (sp.right - sp.left) / 28 : 0
+      const landed = !!sp && !!end && sp.right > vl && (Math.abs(sp.left - vl) <= day * 1.5 || (sp.left >= vl && vr >= end.right - 1))
+      if (landed) lit = sp!.label
+      else if (Date.now() - pressedAtRef.current > 1000) pressedRef.current = null
+    }
+    paintInView(lit)
     // Which months (absolute indices, drawn or placeholder) the view is over —
     // what the fill engine's rolling target follows, and where the grid shrinks
     // to around when the tab is left. Same twelve numbers, no extra read.
@@ -3931,7 +3949,7 @@ export function Matrix() {
                           data-testid={`month-${m.label.replace(' ', '-')}`}
                           aria-current={m.label === inViewRef.current ? 'true' : undefined}
                           title={`Jump to ${m.label}`}
-                          onClick={() => jumpTo(m.first)}
+                          onClick={() => { jumpTo(m.first); pressedRef.current = months.indexOf(m); pressedAtRef.current = Date.now(); measureStrip() }}
                         >
                           {m.label}
                         </button>
@@ -4307,9 +4325,8 @@ export function Matrix() {
                       <td className="who">
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
-                            <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+                            {namePuck(p)}
                             {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag">SANS</span>}
-                            {catChip(p)}
                           </button>
                         </div>
                       </td>

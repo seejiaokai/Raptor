@@ -93,7 +93,9 @@ describe('no mark in this app glows (D880–D882, D887)', () => {
     const body = (file: string, sel: string) => RULES.filter(r => r.file.endsWith(file) && r.sels.split(',').map(s => s.trim()).includes(sel)).map(r => r.body).join(' ')
     expect(body('03-week.css', '.oktake')).toMatch(/outline:2px solid var\(--ok\)/)
     expect(body('matrix.css', '.mx-wrap .lw-bidbox')).toMatch(/border: 2px solid rgba\(74, 140, 100, \.80\)/)
-    expect(body('matrix.css', '.mx tbody tr.me .who .whoedit .cs')).toMatch(/box-shadow: inset 0 0 0 1px var\(--accent\)/)
+    // the "you" ring rides the name's puck since D1471, drawn as an outline so the chip's own fill cannot hide it on its side
+    expect(body('matrix.css', '.mx tbody tr.me .who .whoedit .puck')).toMatch(/outline: 1px solid var\(--accent\); outline-offset: -1px;/)
+    expect(body('matrix.css', '.mx tbody tr.me .who .whoedit .puck')).not.toMatch(/box-shadow/)
     expect(body('tracker.css', '.avail') + body('tracker.css', '.found')).not.toMatch(/drop-shadow/)
     expect(body('03-week.css', '.day.today')).toMatch(/border-color:rgba\(59,198,232,\.45\)/)
     expect(body('04-pucks-sections.css', '.puck.san::after')).toMatch(/linear-gradient[\s\S]*box-shadow:inset 0 0 1px #fff/)
