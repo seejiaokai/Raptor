@@ -1,6 +1,7 @@
 # The drawing check — the guide wording to put to him (D1494, 29 Oct 26)
 
-**Status: DRAFT, not in the guides.** Two working guides change (D70 — Astra and Sol 6.1). With the ChatGPT readers out
+**Status: APPROVED by his "Yes" (D1495, 29 Oct 26) and now in the two guides, word for word; kept as the record of
+what was read and approved.** Two working guides change (D70 — Astra and Sol 6.1). With the ChatGPT readers out
 until about 1 Nov 26, it was read by one fresh, blind Opus reader instead (29 Oct 26, "approve with the fixes": all 16
 taken, below); the two owed reads are written on `[NO-ASTRA-LIST]` (D761) and named to him when it is put to him. Nothing
 goes into the guides before his approval. The script it describes is on `claude/drawing-check-b783bd`

@@ -637,6 +637,11 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   real controls on the exact build and open the pictures; the host checks a helper's evidence and reproduces every
   finding (§4, D588); the `Walk:` line is written (§9; D5). Every roll-call row still gets its mark by being SEEN
   and OPERATED on its own surface (§7.3) — the roll-call is not sized.
+- **A screen with an approved drawing gets the drawing check (his D1494, 29 Oct 26; made a standing step, D1495).** The
+  sizing lines name each such surface's drawing and the check's part list for it (`scripts/drawcheck/specs/`); the
+  check is run as §7.10 says, and the walk does not stand in for it, nor it for the walk. A surface whose drawing has no
+  part list or no record yet gets both first (`docs/walk-scripts.md` §10). A screen drawn at one size only is said so
+  here, and its other size is carried by the walk. Where no drawing exists, nothing here applies.
 - **What a test may carry, and what it may not.** A named test may carry repeated cases of a calculation where the
   sizing step says why their route on screen and their behaviour there are the same as a route already walked. It
   cannot replace seeing and operating a distinct surface, door, role, gesture or order whose behaviour on screen
@@ -795,9 +800,25 @@ his iPhone in one day had passed every walk, each a state no step looked at. So,
   **And a difference found after the build is shown to him before it is put back (his D1426):** side by side, each one
   highlighted with a recommendation, and he chooses which go back to the drawing; an outright fault (words breaking, something
   covered or off screen, a wrong behaviour) is fixed without asking.
-- **The built screen beside its drawing.** A screen built from an approved drawing is measured beside it at his
-  iPhone's width before it goes to him — each row's height, and boxes side by side one height on one centre line
-  (his lessons 42 and 43, `docs/design-practices.md` §9).
+- **The built screen beside its drawing — measured as well as looked at (his D1494, 29 Oct 26; a standing step, D1495).**
+  The drawing check (`scripts/drawcheck/check.mjs`, `docs/walk-scripts.md` §10) measures each named part of the build
+  against the approved drawing at the size that drawing was taken at — where it sits, its size, its fill, edges and
+  corners, where its words sit and what they say — and lists every difference over about 2px with the two side by side
+  and laid over each other. Its part list carries a state at his iPhone's size and at his PC's for every screen drawn
+  at both. It runs while the screen is built and after every fix. The check sees only the parts its list names; the
+  side-by-side look by eye stays, for everything the list does not name.
+  While the screen is built, a difference is put back to the drawing (D1424), or kept on purpose for a better design
+  and named to him with its picture; once the build has gone for his look, each difference is shown to him side by
+  side before any is put back, an outright fault (words breaking, something covered or off screen, a wrong behaviour)
+  fixed without asking (D1426). The check stays red until each difference is put back or he has ruled to keep it — one
+  put to him and not yet answered stays red; a difference he keeps is recorded as §10 says.
+  Each row's height and each pair of side-by-side boxes (his lessons 42 and 43, `docs/design-practices.md` §9) are
+  named as parts with their place and size, so a row taller than drawn or a box off its neighbour's line shows as a
+  difference from the drawing; the check does not test two built boxes against each other, so lesson 43 on a row the
+  drawing does not show is measured by the walk.
+  Checked by eye, M4's screens reached him with differences he found himself (D1424) and M5a's with seven its walk had
+  to find (D1493); run on M5a's build as it stood, the check caught every one that build still had, found the Grades
+  window matching, and found two more nobody had seen.
 - **A close-up of every new or restyled control.** After the walkers return, one picture per new or restyled control,
   cut to it at twice the pixels, beside a neighbour of its kind: over 300 full-screen pictures, three walkers and two
   readers passed two new buttons drawn in the browser's bare grey, which the close-ups showed at once (22 Oct 26).
