@@ -56,11 +56,12 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1476 | 28 Oct 26 | The Leave War grid's name pucks take the schedule's own puck colours — its olive for a pilot, its green for a WSO, its light puck for ground personnel — not the darker name bars the Leave War has worn since 4 Sep 26. |
 | D1475 | 28 Oct 26 | The Leave War overhaul's M5 is built as two merges, not one: M5a, a person's leave figures (the person window with a member's new rows, the balances page with its lock, a member's own writes, the leave year), then M5b, the admin's set-up (the new Settings, Management, holidays and events by file), each with its own full check and his "merge live". |
 | D1474 | 28 Oct 26 | The Leave War's 1 Jan roll-over (D1235) holds as read for its three open cases: a person with no grade set gets the roll-over with nothing added; a leave pending over the new year counts in the year its days fall in; a balance below zero carries nothing forward, and its overdrawn days still come off the new year's days. |
 | D1473 | 28 Oct 26 | A leave that runs across 31 Dec is counted day by day in the year each day falls in, its holidays and weekends counting nothing as the war counts them today — never charged whole to the year it starts in. |
 | D1472 | 28 Oct 26 | On the Leave War, War bal is App bal less his leave pending or approved since App bal was last typed — an approval changes nothing, and typing App bal afresh from the official leave app starts the count again; the app keeps the date App bal was typed. |
-| D1471 | 28 Oct 26 | The Leave War grid's names are the schedule's own puck — the same one the Approvals list draws for each request — not a restyled bar of their own. |
+| D1471 | 28 Oct 26 | The Leave War grid's names are the schedule's own puck — the same one the Approvals list draws for each request — not a restyled bar of their own. — changed by D1476 |
 | D1470 | 28 Oct 26 | On the Leave War ground personnel's chip reads "G", not "GND". |
 | D1469 | 28 Oct 26 | On the Leave War an OCU man's chip reads "O", in the same colour as his puck's OCU chip on the schedule, not "OCU". |
 | D1468 | 28 Oct 26 | On the Leave War grid each person's name is drawn as a puck, as on the schedule: his category chip sits inside the name's own box at its right end, not as a separate badge beside it. |
@@ -441,6 +442,8 @@ decision + a pointer. Owner + date establish authority; keep them.
   Raptor's pucks — explicit deep-olive/deep-green hex in `matrix.css`, NOT
   `var(--fcp/--rcp)` (never darken the flight line via scheduler.css); ground crew
   keep a light bar off pure white. Phone (≤430px): bar side-padding tightens to 4px.
+  *[AMENDED 28 Oct 26 by D1471 and D1476: the grid's names become the schedule's own puck — its size, its
+  colours, its chip — so the full-width bar and its darker hex go with [LW-NAME-PUCKS]; pilots above WSOs stands.]*
 - **The qual catalogue is Raptor's LoX column list, not the holders.** Column list
   lives in `engine/qualcols.ts`; `qualCatalogue` takes keys+headings from it,
   appending any key someone still holds after a removed column (ticks survive).
