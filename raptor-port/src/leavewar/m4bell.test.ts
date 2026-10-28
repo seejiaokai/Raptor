@@ -288,14 +288,29 @@ describe('bidding opened or closed (9.4 — D1214)', () => {
 })
 
 describe('the scenario designer’s faults (★5, ★6, ★7)', () => {
-  it('★5 an admin re-typing his pending bid tells him nothing, by the drag window and by the one-day window alike', () => {
+  /* ★5 as his D1460 has it (28 Oct 26 — reading R15 struck: "I think the user should be informed. if not they might get a
+     shock"): an admin re-typing his pending bid tells him, one line a run, by the drag window and by the one-day window
+     alike — and still never "LL bid deleted" for a bid that stands */
+  it('★5 / D1460 an admin re-typing his pending bid tells him what it now is, by the drag window and by the one-day window alike', () => {
     ranger(); bids('bane'); saber()
     NOTICES.length = 0
     T(9)
     expect(setCellRange('bane', DAYS[0]!, DAYS[1]!, 'OL').written).toBeGreaterThan(0)
     expect(setCell('bane', DAYS[2]!, 'OL')).toBe(true)
     expect(reqs('bane', DAYS[0]!).map(r => r.code)).toEqual(['OL'])
-    expect(lines('bane'), 'no "LL bid deleted" for a bid that still stands').toEqual([])
+    expect(lines('bane').sort()).toEqual(['Your leave · Thu 5 Feb · LL bid changed to OL · Saber', 'Your leave · Tue 3 – Wed 4 Feb · LL bid changed to OL · Saber'])
+  })
+  it('D1460 his own re-type tells nobody, and an Undo of the admin’s takes the line with it', () => {
+    ranger(); bids('bane')
+    NOTICES.length = 0
+    T(9)
+    expect(setCell('bane', DAYS[0]!, 'OL')).toBe(true)
+    expect(lines('bane'), 'his own change').toEqual([])
+    saber()
+    expect(setCell('bane', DAYS[1]!, 'OL')).toBe(true)
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL bid changed to OL · Saber'])
+    globalUndo()
+    expect(lines('bane'), 'the Undo takes the unread line').toEqual([])
   })
   it('★6 "Approve what I enter" placing another kind over his pending bid names the kind placed', () => {
     ranger(); expect(setCell('bane', DAYS[0]!, 'LL')).toBe(true); saber()

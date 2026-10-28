@@ -1588,6 +1588,10 @@ function persistNotify(): void {
       const before = LW_BASELINE
       LW_BASELINE = state
       tellHolidays(before)                       // [OIL-ASK-NOTIFY]: the Event row's writers, a band, an event type — this end
+      /* …and a man's own bid changed by someone else outside a gesture — the one-day window's re-type of a pending bid (his
+         D1460, 28 Oct 26). Only the war's own records change on this path, never an approved leave (an Input), so the
+         leave before and after is the one read now. */
+      if (TELL) { const l = TELL.leave(); const tells = decisionTells('lw.edit', before, state, l, l, actorNow()); if (tells.length) TELL.decisions(tells) }
       cmdDeferEffect(rawNotify)
     },
   })
@@ -2797,8 +2801,10 @@ export function filedSince(since: number): 'CSE' | 'OD' | 'OTH' | 'ATCH' | null 
    the notices, who is still here to be told — is the sync's. */
 export interface WarTell {
   personId: string
-  d: 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel'
+  d: 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel' | 'retyped'
   code: string
+  /** a re-typed bid (D1460): the kind it was */
+  was?: string
   from: string; to: string
   /** where a move took it: the run it now stands on */
   destFrom?: string; destTo?: string
@@ -2840,7 +2846,7 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
     const a = leaveBefore.get(pid), b = leaveAfter.get(pid)
     if (!a || !b || a.size !== b.size || [...a].some(([d, c]) => b.get(d) !== c)) who.add(pid)
   }
-  type Ev = { d: WarTell['d']; code: string; date: string; dest?: string }
+  type Ev = { d: WarTell['d']; code: string; date: string; dest?: string; was?: string }
   const out: WarTell[] = []
   for (const pid of who) {
     if (actor && pid === actor) continue                                  // his own change tells nobody
@@ -2855,8 +2861,11 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
       [...m.keys()].find(k => dateOf(k) === date && overlaps(requestWin(m.get(k)!), requestWin(code)))
     const evs: Ev[] = []
     /* the days where a NEW request came — a re-typed kind is a new record on the same day (store.ts setCell): the bid
-       still stands, so its old record's going is no "deleted" (the scenario designer's ★5; D1142 names no re-type) */
+       still stands, so its old record's going is no "deleted" (the scenario designer's ★5) — it is told as what it now is,
+       "LL bid changed to OL" (his D1460, 28 Oct 26: R15 struck — "if not they might get a shock") */
     const newOn = new Set([...RA].filter(([id]) => !RB.has(id)).map(([, x]) => x.date))
+    const newOnHalf = (date: string, code: string) =>
+      [...RA].find(([nid, x]) => !RB.has(nid) && x.date === date && overlaps(requestWin(x.rec.code), requestWin(code)))?.[1].rec
     const kind = (c: string) => c.replace(/\*/g, '')
     for (const [id, { date, rec }] of RB) {
       const now = RA.get(id)
@@ -2866,7 +2875,11 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
         const g = onHalf(gained, date, rec.code)
         if (g && (type !== 'lw.placeApproved' || kind(gained.get(g)!) === kind(rec.code))) { evs.push({ d: 'approved', code: rec.code, date }); gained.delete(g); continue }
         if (g) continue
-        if (newOn.has(date) && rec.state !== 'refused') continue
+        if (newOn.has(date) && rec.state !== 'refused') {
+          const n = newOnHalf(date, rec.code)
+          if (n && n.state === 'pending' && kind(n.code) !== kind(rec.code)) evs.push({ d: 'retyped', code: n.code, date, was: rec.code })
+          continue
+        }
         /* a refusal another refusal on the same half replaced (decideRequest keeps one) is no news */
         if (type === 'lw.decide' && rec.state === 'refused') continue
         evs.push({ d: 'biddel', code: rec.code, date })
@@ -2874,6 +2887,8 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
       }
       if (now.date !== date) { evs.push({ d: 'bidmoved', code: rec.code, date, dest: now.date }); continue }
       if (now.rec.state !== rec.state) evs.push({ d: now.rec.state === 'refused' ? 'refused' : 'repend', code: rec.code, date })
+      /* …and the same bid with another kind (a re-type that keeps the record — D1460) */
+      else if (now.rec.state === 'pending' && kind(now.rec.code) !== kind(rec.code)) evs.push({ d: 'retyped', code: now.rec.code, date, was: rec.code })
     }
     for (const [id, { date, rec }] of RA) {
       if (RB.has(id)) continue
@@ -2898,12 +2913,12 @@ export function decisionTells(type: string, before: State, after: State, leaveBe
     for (const e of evs) {
       const last = out.length && out[out.length - 1]!.personId === pid ? out[out.length - 1]! : null
       const sameMove = !e.dest || (!!last?.destFrom && dayGap(last.from, last.destFrom) === dayGap(e.date, e.dest))
-      if (last && last.d === e.d && last.code === e.code && addDays(last.to, 1) === e.date && sameMove) {
+      if (last && last.d === e.d && last.code === e.code && last.was === e.was && addDays(last.to, 1) === e.date && sameMove) {
         last.to = e.date
         if (e.dest) last.destTo = e.dest
         continue
       }
-      out.push({ personId: pid, d: e.d, code: e.code, from: e.date, to: e.date, ...(e.dest ? { destFrom: e.dest, destTo: e.dest } : {}) })
+      out.push({ personId: pid, d: e.d, code: e.code, from: e.date, to: e.date, ...(e.dest ? { destFrom: e.dest, destTo: e.dest } : {}), ...(e.was ? { was: e.was } : {}) })
     }
   }
   return out

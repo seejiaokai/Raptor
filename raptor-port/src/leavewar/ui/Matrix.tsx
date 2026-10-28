@@ -1217,6 +1217,9 @@ export function Matrix() {
        moved by nothing and the jump was spent — the grid came back at the month it was on. It is kept, and taken the
        moment the grid shows again (the on-screen listener below); a later ask replaces it. */
     if (wrap.getBoundingClientRect().width === 0) { hiddenJumpRef.current = date; return }
+    /* …and any jump that runs spends a kept one: a request's dates tapped on the Approvals page show the grid and jump in the
+       same press, and the kept landing must never be replayed over that newer jump (the fix read's F1, 28 Oct 26) */
+    hiddenJumpRef.current = null
     const win = colWinRef.current
     const mi = monthIndexOf(date)
     // Tell the fill engine where the view is ABOUT to be, before the scroll

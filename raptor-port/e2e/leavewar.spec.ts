@@ -8528,3 +8528,23 @@ test('D1449 the day brought into view from Approvals is ringed in the Leave War�
   const shadow = await ring.evaluate(e => getComputedStyle(e).boxShadow)
   expect(shadow, 'the ring in cyan (59, 198, 232)').toContain('rgb(59, 198, 232)')
 })
+
+/* THE FIX READ'S F1 (28 Oct 26): a period picked on the Approvals page keeps its landing for when the grid shows again —
+   but a request's dates tapped next, which shows the grid AND rings his day in the same press, must win: the kept landing
+   is spent by any jump that runs, never replayed over a newer one. */
+test('a period picked on Approvals, then a request’s dates: the grid lands on the request’s day, ringed in view', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  const ids = await page.$$eval('[data-testid="war-picker"] option', os => os.map(o => (o as HTMLOptionElement).value))
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await page.waitForTimeout(600)
+  await page.getByTestId('appr-dates').first().click()
+  const ring = page.locator('td.lw-ring')
+  await expect(ring).toHaveCount(1)
+  await expect.poll(() => ring.evaluate(e => {
+    const r = e.getBoundingClientRect(), w = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect()
+    return r.width > 0 && r.left >= w.left && r.right <= w.right + 1
+  }), { message: 'the ringed day stands in the grid\u2019s view', timeout: 4000 }).toBe(true)
+})

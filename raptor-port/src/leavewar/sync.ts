@@ -1229,7 +1229,7 @@ function tellWar(tells: WarTell[]): void {
   const who = by != null ? String(by) : null
   commitInputs(SCHED_TYPES.inputsWrite, () => {
     for (const t of tells) {
-      const part: NoticePart = { k: 'lw', c: t.code, a: t.from, b: t.to, d: t.d, ...(t.destFrom ? { to: t.destFrom, tb: t.destTo } : {}) }
+      const part: NoticePart = { k: 'lw', c: t.code, a: t.from, b: t.to, d: t.d, ...(t.destFrom ? { to: t.destFrom, tb: t.destTo } : {}), ...(t.was ? { w: t.was } : {}) }
       noticeWar([t.personId], who, part)
     }
   })
@@ -1324,7 +1324,7 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
       const last = again[again.length - 1]
       if (last && !hasRead(n.to, last)) continue
       const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
-      made.push({ ...n, what: [{ k: 'lwback', ...(p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id }] })
+      made.push({ ...n, what: [{ k: 'lwback', ...(p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}) }] })
     } else {
       if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => x.to === n.to && (x.what || [])[0]?.k === 'lwback' && ((x.what[0] as any).ref === n.id))) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */

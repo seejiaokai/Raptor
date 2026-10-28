@@ -66,14 +66,14 @@ export type NoticePart =
      `lw` — a decision on HIS leave: `c` the kind as stored (LL, *LL), `a`..`b` its days, `d` what was done, `to`..`tb`
      where a move took it; `again` — a Redo after a "taken back" line (9.3: a fresh line, so it is unread), `ref` the line
      it repeats (the fixes' M9: shown only while that line stands, and only the newest "again" of it). */
-  | { k: 'lw'; c: string; a: string; b: string; d: LwDid; to?: string; tb?: string; again?: true; ref?: string }
+  | { k: 'lw'; c: string; a: string; b: string; d: LwDid; to?: string; tb?: string; again?: true; ref?: string; w?: string }
   /* bidding opened or closed on a stretch (D1214) — `end`: closed because its last date passed (derived, never stored) */
   | { k: 'lwopen'; a: string; b: string; open: boolean; end?: true }
   /* a war line the admin's Undo took back after the member had read it (D1216): `ref` the line it was, `d` what it said */
-  | { k: 'lwback'; c?: string; a: string; b: string; d: LwDid | 'open' | 'close'; ref: string }
+  | { k: 'lwback'; c?: string; a: string; b: string; d: LwDid | 'open' | 'close'; ref: string; w?: string }
 
 /** what the war did to a man's leave, for his bell (M4 9.1, 9.4a, 9.7) */
-export type LwDid = 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel'
+export type LwDid = 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel' | 'retyped'
 
 export interface Notice {
   id: string
@@ -446,6 +446,8 @@ function partWords(p: NoticePart): string {
         case 'added': return p.again ? `${c} added and approved again` : `${c} added and approved`
         case 'bidmoved': return `${c} bid moved to ${to}`
         case 'biddel': return `${c} bid deleted`
+        /* his D1460: what a pending bid of his was changed to, by someone else */
+        case 'retyped': return `${(p.w || '').replace(/\*/g, '')} bid changed to ${c}`
       }
       return c
     }
@@ -456,7 +458,7 @@ function partWords(p: NoticePart): string {
       const what: Record<string, string> = {
         approved: `Approval of ${c}`, added: `Approval of ${c}`, refused: `Refusal of ${c}`, repend: `Return of ${c} to pending`,
         putback: `Put-back of ${c}`, moved: `Move of ${c}`, deleted: `Deletion of ${c}`, bidmoved: `Move of ${c} bid`,
-        biddel: `Deletion of ${c} bid`, open: 'Opening of bidding', close: 'Closing of bidding',
+        biddel: `Deletion of ${c} bid`, retyped: `Change of ${(p.w || '').replace(/\*/g, '')} bid to ${c}`, open: 'Opening of bidding', close: 'Closing of bidding',
       }
       return `${what[p.d] || c} taken back`
     }
