@@ -52,8 +52,8 @@ verifies each before acting.**
   D1478–D1489 had their fresh reader against his words on 28 Oct 26 (D138): eight as recorded; four corrected the same day
   — D1472's and D1248's short lines restated as D1479 and D1484 left them, D1480's home cell (§4 of the plan, not §2), and
   D1483's "under 400 wide", which was the agent's cut-off presented as his (the page showed him only 375 wide).
-- **Two questions for him before the build** (§6: Q1 a grade changed after 1 Jan; Q2 the grid's drag-to-give-days bar).
-  Everything else in this spec is either ruled, drawn, or a reading named in §6 for his look, his to strike, none blocking.
+- **His two questions are answered (28 Oct 26, "as recommended", page version 16):** Q1 → **D1490**, Q2 → **D1491**, and the
+  24 readings stand, none struck → **D1492**. Nothing in this spec waits on him.
 - **Where the build may depart from a drawing:** nowhere on purpose. A departure found needed while building (a fit at an
   iPhone's wider letters, say) is drawn beside the approved picture and put to him first (D1426).
 
@@ -378,6 +378,9 @@ moved, deleted (struck through), kind changed (D1460), placed approved by an adm
 all, an Inputs-page change by a scheduler; and his own change of each (never dotted).
 
 ## 6. Put to him before the build — two questions; the readings his to strike
+
+**ANSWERED 28 Oct 26 — "as recommended" (page version 16): Q1 → D1490 (from the next 1 Jan), Q2 → D1491 (the bar goes),
+the readings → D1492 (all 24 stand). Build as written below.**
 
 **Q1 — a person's grade changed after 1 Jan.** Recon is a Junior pilot (+33) on 1 Jan 2027, so 33 days are added; on
 1 Mar 2027 an admin makes him a Senior pilot (+36). *Recommended:* the new grade counts from the next 1 Jan — his 2027

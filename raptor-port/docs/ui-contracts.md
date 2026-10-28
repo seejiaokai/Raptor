@@ -9462,6 +9462,8 @@ auto-scroll and the first roster rows sit inside it on a 664px viewport.
 
 ### The bar
 
+**GOES WITH M5a (D1491, 28 Oct 26 — "as recommended"):** the grid's drag down the LVE figures and this bar are removed with the FIGURES drawer; a leave balance changes only by its box (the Balances page, the person window), by approved leave and by 1 Jan. The OIL tracker's own award form (`CreditForm`) stays. What follows describes the bar as built until then.
+
 **It is NOT a `Sheet`, and that is a contract, not a shortcut.** A Sheet's touch
 shield swallows presses on the very boxes being selected, and its popup family
 dismisses on scroll — both fatal to a panel that must stay up while the reader
