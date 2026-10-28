@@ -98,5 +98,5 @@ Added to `docs/walk-ledger.md` (28 Oct 26).
   Delete, a re-typed kind or Approve — fixed red first (three cases), and its twin (a range picked loses to a leave joined
   under the window) closed with a fourth; **F2 (LOW)** the browser test could not fail on its one-line claim — it pins
   Arial-width letters at 402 and asserts outright. Commit a244cf5d1.
-- **The narrow read of the fix** (a fresh Opus, the fix commit and F1/F2 only) and **the re-walk** (one Sonnet walker, R1–R5:
-  the calm line, F1 on screen, the single day, Undo): *in progress.*
+- **The narrow read of the fix** (a fresh Opus, the fix commit and F1/F2 only): **N1 (HIGH)** — in a real browser the press takes the focus off the box first, which saves the words and joins the day to the leave before the click lands; "All" was picked at open in every window, so the click took the whole leave. Fixed red first: "All" is picked at open only on a window that opens on a leave of several days (D1461's "picked to start with"); the F1 cases now leave the box before the press (red before). A one-line change, carried by its tests — the last round (the order's §5, about three).
+- **The re-walk** (one Sonnet walker, `docs/handpass/parts/lw-whole/rewalk.md`, pictures `…/rewalk/`): **9 PASS of 9**, no page error — the calm line with no date, F1 on screen (Delete and Approve on the one day only), the single day, one Undo.

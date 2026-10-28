@@ -226,7 +226,11 @@ export function BidPicker({
      that shrinks to one day leaves the window as built. Never on a free half beside leave filed on the Inputs page. The
      pick is this window's alone, never saved. */
   const run = !onlyPortion ? leaveRunAt(personId, date) : null
-  const [pick, setPick] = useState<'all' | 'day'>('all')
+  /* "ALL" IS PICKED AT OPEN ONLY ON A WINDOW THAT OPENS ON A LEAVE OF SEVERAL DAYS (D1461; the narrow read's N1): a
+     one-day window whose day joins a leave under it — its words saved as the focus leaves the box, just BEFORE the click
+     on Delete or Approve lands, or another tab — shows the chips with the day tapped picked, so the title, the mark and
+     every press stay on the one day it showed; "All" is one deliberate tap away */
+  const [pick, setPick] = useState<'all' | 'day'>(() => (run ? 'all' : 'day'))
   /* (a range picked wins — it was picked on a window with no leave of several days, and one joined under it since must not
      turn the title and the mark to the leave while the buttons act on the range: the code read's F1, its twin) */
   const whole = run && !span && pick === 'all' ? run : null

@@ -258,6 +258,9 @@ describe('what Approve, Refuse, Move and Delete act on', () => {
     tap('2026-02-13')
     expect(within(sheet()).queryByTestId('scope-all'), 'a one-day window').toBeNull()
     fireEvent.change(within(sheet()).getByTestId('bid-remarks'), { target: { value: 'Wedding' } })
+    /* a real press takes the focus off the box first, which saves the words and joins the day to the leave BEFORE the click
+       lands (the narrow read's N1 — jsdom's click alone never moved the focus) */
+    fireEvent.blur(within(sheet()).getByTestId('bid-remarks'))
   }
   it('F1: on a one-day window, words that join it to a next-door leave never widen Delete', () => {
     besideWedding()
