@@ -400,7 +400,10 @@ export function Matrix() {
   /* THE TOP ROW'S ASKS (ui/lwnav.ts — D1254): its tabs, ⚙ and My leave open the windows this grid owns, as their buttons
      did when they sat on the grid card's bar. Taken once; the OIL tab reads as chosen while the tracker is up. */
   const navSeq = useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
-  useEffect(() => {
+  /* Taken BEFORE the frame is painted (his video, 28 Oct 26): the OIL tab pressed from the Approvals page turns the page
+     off and asks for the tracker in one press; taken after the paint, the grid showed for one frame before the tracker
+     covered it. */
+  useLayoutEffect(() => {
     const a = takeLwAsk()
     if (!a) return
     if (a.kind === 'grid') setOilTracker(null)
@@ -2994,10 +2997,16 @@ export function Matrix() {
       const prev = prevOnRef.current
       prevOnRef.current = on
       onScreenRef.current = on
+      /* SHOWN AGAIN → read where the view is now and wake the drawing, on a phone as on a desktop (his picture, 28 Oct 26:
+         the grid came back from the Approvals page striped until a finger scrolled it). While hidden the drawing waits for
+         the app to be idle, draws a few months and rests; a change of period meanwhile drew them around where the new
+         period lands, while the view stayed on the month he had left. Only a scroll woke it, and on his iPhone showing
+         the grid sends none. Re-reading the view first lets the fill's "the view comes first" step replace the window
+         with the months on screen. */
+      if (on) { if (!prev) { remeasureRef.current(); kickFillRef.current() } return }
       if (phone) return
       const win = colWinRef.current
       if (!win) return                       // short war drawn whole — nothing to window
-      if (on) { if (!prev) kickFillRef.current(); return } // shown → resume filling the year
       if (!prev) return                      // already hidden at mount → the fill's cap handles it
       // on → off: shrink around the reader's month. The months dropped become
       // placeholders at their MEASURED widths, so nothing moves and the scroll

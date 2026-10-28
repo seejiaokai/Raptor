@@ -8411,3 +8411,72 @@ test('D1444 a month picked, the other period’s link opens it on All, its lines
   expect(await page.locator('[data-testid="approvals-page"] [data-testid^="appr-line-"]').count(), 'its lines shown').toBeGreaterThan(0)
   await expect(page.getByText('Nothing here for these dates.')).toHaveCount(0)
 })
+
+/* HIS VIDEO AND PICTURE OF 28 OCT 26 (09:03, 09:14 — the walk missed both; the order's §7.11 lesson 10). (1) The OIL tab
+   pressed from the Approvals page drew the grid for one frame before the OIL tracker covered it: the tracker was opened
+   by an effect that runs after the frame is painted. (2) On a phone, the grid shown again after the Approvals page came
+   back with every day still striped ("not drawn yet") until a finger scrolled it: while Approvals hid it a change of
+   period drew the grid around the new period's first months, the view stayed on the month he had left, and nothing woke
+   the month-drawing when the grid showed again — only a scroll did. */
+test('the OIL tab pressed from Approvals never shows the grid first (his video, 28 Oct 26)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  const first = await page.evaluate(() => new Promise<{ oil: boolean; grid: boolean }>(ok => {
+    document.querySelector<HTMLElement>('[data-testid="oil-tracker"]')!.click()
+    /* the next frame, before it is painted */
+    requestAnimationFrame(() => {
+      const host = document.querySelector<HTMLElement>('#page-leavewar .lw-gridhost')
+      ok({ oil: !!document.querySelector('[data-testid="oil-window"]'), grid: !!host && !host.hidden })
+    })
+  }))
+  expect(first.oil || !first.grid, `the first frame after the press: the tracker ${first.oil ? 'up' : 'not yet up'}, the grid ${first.grid ? 'showing' : 'hidden'}`).toBe(true)
+})
+
+test('on a phone the grid shown again after Approvals draws the month in view by itself (his picture, 28 Oct 26)', async ({ page }) => {
+  test.skip(!isPhone(), 'a phone draws a rolling window of months; a desktop fills the whole year')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  const seen = () => page.evaluate(() => {
+    const cells = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx td[data-testid^="cell-"]')]
+    const inView = (els: HTMLElement[]) => els.filter(e => {
+      const r = e.getBoundingClientRect()
+      return r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.right > 140 && r.left < innerWidth
+    })
+    const days = inView(cells).map(e => e.dataset.testid!.slice(-10)).sort()
+    return { stripes: inView([...document.querySelectorAll<HTMLElement>('#page-leavewar .mx tbody td.lwph')]).length, days: days.length, first: days[0] ?? '' }
+  })
+  /* where a switch to the second period lands, on the grid in view */
+  const ids = await page.$$eval('[data-testid="war-picker"] option', os => os.map(o => (o as HTMLOptionElement).value))
+  await page.selectOption('[data-testid="war-picker"]', ids[0]!)
+  await page.waitForTimeout(800)
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await expect.poll(async () => (await seen()).first, { message: 'the second period landed' }).not.toBe('')
+  const landed = +(await seen()).first.slice(5, 7)
+  /* the grid taken far from there by a month button, as his was (October from a request's dates in April) */
+  const far = landed <= 6 ? 'OCT' : 'FEB'
+  await page.locator('#page-leavewar button', { hasText: new RegExp(`^${far}$`) }).first().click()
+  await expect.poll(async () => (await seen()).days, { message: `${far} drawn` }).toBeGreaterThan(0)
+  await page.waitForTimeout(1200)
+  /* his path: the Approvals page, the View picker away and back (the grid, hidden, is drawn around where the period lands),
+     then OIL and its ✕ — the grid on screen again, the view still on the far month, and nothing touches it */
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.selectOption('[data-testid="war-picker"]', ids[0]!)
+  await page.waitForTimeout(800)
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  /* …and he reads the list a while: the hidden grid's drawing waits for the app to be idle (two seconds without a touch),
+     draws its few months and then rests, waiting to be woken */
+  await page.waitForTimeout(3500)
+  /* WebKit — his iPhone's engine — sends the grid no scroll event when it is shown again; the test browser may, and that
+     event alone would wake the drawing and hide the fault. From here on the grid's scroll events are held back, as his
+     phone holds them, so only the grid's own wake on being shown can draw the month in view. */
+  await page.evaluate(() => {
+    document.addEventListener('scroll', e => { if ((e.target as Element)?.classList?.contains('mx-wrap')) e.stopImmediatePropagation() }, true)
+  })
+  await page.getByTestId('oil-tracker').click()
+  await page.waitForTimeout(800)
+  await page.getByTestId('oil-close').click()
+  await expect.poll(seen, { message: 'the days in view drawn, no stripes, without a touch', timeout: 4000 }).toEqual(expect.objectContaining({ stripes: 0 }))
+  expect((await seen()).days, 'drawn days in view').toBeGreaterThan(0)
+})
