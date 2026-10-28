@@ -31,7 +31,16 @@ async function durRow(page: Page) {
   return page.locator(`${T('bid-picker')} .bp-dur`).evaluate(row => {
     const sheet = row.closest('[data-testid="bid-picker"]')!.getBoundingClientRect()
     const bs = [...row.querySelectorAll('button')]
+    /* the room the row's buttons need on one line: their widths and the gaps between them (the row's own gap, the chips' 6px) */
+    const gap = parseFloat(getComputedStyle(row).columnGap) || 0
+    const need = bs.reduce((a, b) => a + b.getBoundingClientRect().width, 0) + gap * (bs.length - 2) + 6
+    const chips = bs.filter(b => b.closest('.bp-scope'))
     return {
+      /* ONE LINE WHERE THE ROW HAS THE ROOM — his iPhone at 402 (measured with Arial, close to Apple's letters: 342 of 352
+         for the longest labels); with letters wider still (Linux's, on GitHub's machines) the two chips go to the next line
+         together, whole — never a chip broken (the design guide's wrap) */
+      fits: need <= row.getBoundingClientRect().width + 0.5,
+      chipsTogether: new Set(chips.map(b => Math.round(b.getBoundingClientRect().top))).size <= 1,
       tops: [...new Set(bs.map(b => Math.round(b.getBoundingClientRect().top)))],
       clipped: bs.filter(b => b.scrollWidth > b.clientWidth + 1).map(b => b.textContent),
       pastEdge: bs.some(b => b.getBoundingClientRect().right > sheet.right - 4),
@@ -51,7 +60,8 @@ test('a four-day leave: the choice on one line with Duration, the window\'s heig
   await expect(page.locator(T('scope-all'))).toHaveText('All 4 days')
   await expect(page.locator(T('scope-day'))).toHaveText('Tue 10')
   const all = await durRow(page)
-  expect(all.tops, 'one line').toHaveLength(1)
+  expect(all.tops.length, 'one line where the row has the room').toBe(all.fits ? 1 : 2)
+  expect(all.chipsTogether, 'the two chips together').toBe(true)
   expect(all.clipped, 'no words past their edge').toEqual([])
   expect(all.pastEdge, 'inside the window').toBe(false)
   /* THE CHOICE ADDS NO HEIGHT (D1461 — "the window keeps its height"): the same rows on "All" and on the day, the Duration
@@ -70,7 +80,7 @@ test('a four-day leave: the choice on one line with Duration, the window\'s heig
   await place(page, '2026-02-16', 1)
   await openDay(page, 'FEB', '2026-02-16')
   await expect(page.locator(T('span-range'))).toHaveText('Pick a range')
-  expect(Math.abs((await durRow(page)).height - all.height), 'the row as tall as a single day\'s').toBeLessThan(1)
+  if (all.fits) expect(Math.abs((await durRow(page)).height - all.height), 'the row as tall as a single day\'s').toBeLessThan(1)
 })
 
 test('the longest labels — "All 14 days" beside "Wed 30" — still stand on one line, inside the window', async ({ page }) => {
@@ -79,8 +89,18 @@ test('the longest labels — "All 14 days" beside "Wed 30" — still stand on on
   await expect(page.locator(T('scope-all'))).toHaveText('All 14 days')
   await expect(page.locator(T('scope-day'))).toHaveText('Wed 30')
   const r = await durRow(page)
-  expect(r.tops, 'one line').toHaveLength(1)
+  expect(r.tops.length, 'one line where the row has the room').toBe(r.fits ? 1 : 2)
+  expect(r.chipsTogether, 'the two chips together').toBe(true)
   expect(r.clipped).toEqual([])
   expect(r.pastEdge).toBe(false)
   await expect(page.locator(`${T('bid-picker')} .bidsheet-hd .when`)).toHaveText('17–30 Sep')
+  /* with very wide letters (the project's stress test — e2e/leavewar.spec.ts "with wide letters") the chips go to the next
+     line together, whole, inside the window */
+  await page.addStyleTag({ content: '#page-leavewar, #page-leavewar * { font-family: Verdana, "DejaVu Sans", sans-serif !important }' })
+  await page.waitForTimeout(150)
+  const v = await durRow(page)
+  expect(v.tops.length, 'one line where the row has the room').toBe(v.fits ? 1 : 2)
+  expect(v.chipsTogether, 'the two chips together').toBe(true)
+  expect(v.clipped).toEqual([])
+  expect(v.pastEdge).toBe(false)
 })
