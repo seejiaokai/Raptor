@@ -8480,3 +8480,51 @@ test('on a phone the grid shown again after Approvals draws the month in view by
   await expect.poll(seen, { message: 'the days in view drawn, no stripes, without a touch', timeout: 4000 }).toEqual(expect.objectContaining({ stripes: 0 }))
   expect((await seen()).days, 'drawn days in view').toBeGreaterThan(0)
 })
+
+/* [LW-APPR-PERIOD-LANDING] (found by the walk of his video's fix, 28 Oct 26; he asked for it fixed): a period picked while
+   the Approvals page stands in the grid's place left the grid, on return, at the month on screen before — the landing's
+   jump ran while the grid was hidden and could not scroll it. Picked there, the period lands where a pick on the grid
+   lands: its first open day from today, else today, else its first day (selectWar, D1177). */
+test('a period picked on the Approvals page lands the grid on its first day, as a pick on the grid does', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  const firstSeen = () => page.evaluate(() => {
+    const days = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx td[data-testid^="cell-"]')].filter(e => {
+      const r = e.getBoundingClientRect()
+      return r.width > 0 && r.bottom > 0 && r.top < innerHeight && r.left >= (document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect().left + 100) && r.left < innerWidth
+    }).map(e => e.dataset.testid!.slice(-10)).sort()
+    return days[0] ?? ''
+  })
+  const ids = await page.$$eval('[data-testid="war-picker"] option', os => os.map(o => (o as HTMLOptionElement).value))
+  /* where a pick on the grid lands the second period */
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await expect.poll(firstSeen, { message: 'the second period landed' }).not.toBe('')
+  await page.waitForTimeout(800)
+  const landing = (await firstSeen()).slice(0, 7)
+  /* back to the first period, the grid taken far from that month */
+  await page.selectOption('[data-testid="war-picker"]', ids[0]!)
+  await page.waitForTimeout(800)
+  const far = +landing.slice(5, 7) <= 6 ? 'OCT' : 'FEB'
+  await page.locator('#page-leavewar button', { hasText: new RegExp(`^${far}$`) }).first().click()
+  await page.waitForTimeout(1200)
+  /* the second period picked on the Approvals page, then back to the grid */
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.selectOption('[data-testid="war-picker"]', ids[1]!)
+  await page.waitForTimeout(800)
+  await page.getByTestId('lw-tab-grid').click()
+  await expect.poll(async () => (await firstSeen()).slice(0, 7), { message: `the grid lands in ${landing}, as a pick on the grid does`, timeout: 4000 }).toBe(landing)
+})
+
+/* D1449 (28 Oct 26, his "24 as recommended" — the app's blue "a bit dark"): on the Leave War the day brought into view from
+   Approvals is ringed in the Leave War's cyan, the colour of its date ringed above it, not the app's darker blue. */
+test('D1449 the day brought into view from Approvals is ringed in the Leave War’s cyan', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await page.getByTestId('appr-dates').first().click()
+  const ring = page.locator('td.lw-ring')
+  await expect(ring).toHaveCount(1)
+  const shadow = await ring.evaluate(e => getComputedStyle(e).boxShadow)
+  expect(shadow, 'the ring in cyan (59, 198, 232)').toContain('rgb(59, 198, 232)')
+})

@@ -7,7 +7,7 @@ import { webkit, chromium, devices } from '@playwright/test'
 import path from 'node:path'
 import { mkdirSync } from 'node:fs'
 const PORT = process.env.PORT || 4173
-const OUT = path.resolve('docs/img/handpass/2026-10-28-lw-appr-oil/walk')
+const OUT = path.resolve(process.argv[2] || 'docs/img/handpass/2026-10-28-lw-appr-oil/walk')
 mkdirSync(OUT, { recursive: true })
 const rows = []
 let problems = 0
@@ -27,7 +27,7 @@ async function run(name, launcher, ctxOpts) {
     return {
       grid: !!host && !host.hidden, appr: !!document.querySelector('[data-testid="approvals-page"]:not([hidden])'),
       oil: !!document.querySelector('[data-testid="oil-window"]'), settings: !!document.querySelector('[data-testid="settings-sheet"], .settings-sheet, [aria-label="Settings"][role="dialog"]'),
-      ring: !!document.querySelector('td.lw-ring'), slim: !!document.querySelector('[data-testid="appr-slim"]'),
+      ring: !!document.querySelector('td.lw-ring'), ringColour: document.querySelector('td.lw-ring') ? getComputedStyle(document.querySelector('td.lw-ring')).boxShadow.slice(0, 22) : '', slim: !!document.querySelector('[data-testid="appr-slim"]'),
       stripes: inView('#page-leavewar .mx tbody td.lwph'), days: inView('#page-leavewar .mx td[data-testid^="cell-"]'),
     }
   })
@@ -80,7 +80,8 @@ async function run(name, launcher, ctxOpts) {
   await P.selectOption('[data-testid="war-picker"]', ids[0]); await P.waitForTimeout(3500)
   await P.click('[data-testid="oil-tracker"]'); await P.waitForTimeout(700)
   await P.click('[data-testid="oil-close"]'); await P.waitForTimeout(800); s = await state()
-  await step('8-period-return', 'Period changed on Approvals, back via OIL: the month in view drawn without a touch', s.stripes === 0 && s.days > 0, s)
+  const first8 = await P.evaluate(() => { const w = document.querySelector('#page-leavewar .mx-wrap').getBoundingClientRect().left; const d = [...document.querySelectorAll('#page-leavewar .mx td[data-testid^="cell-"]')].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.left >= w + 100 && r.left < innerWidth }).map(e => e.dataset.testid.slice(-10)).sort(); return d[0] || '' })
+  await step('8-period-return', 'Period changed on Approvals, back via OIL: lands where a pick on the grid lands (JAN – DEC 26 holds today, so today: 28 Oct 26 in view), drawn without a touch', s.stripes === 0 && s.days > 0 && first8 >= '2026-10-21' && first8 <= '2026-10-31', { ...s, first: first8 })
   /* 9. another page of the app and back: the period changed on Approvals, then the week, then the Leave War again */
   await P.locator('#page-leavewar button', { hasText: /^NOV$/ }).first().click(); await P.waitForTimeout(1500)
   await toAppr()

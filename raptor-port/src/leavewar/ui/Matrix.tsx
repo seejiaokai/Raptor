@@ -1208,9 +1208,15 @@ export function Matrix() {
     return who + (wrap.querySelector<HTMLElement>('.bal')?.getBoundingClientRect().width ?? 0)
   }
 
+  const hiddenJumpRef = useRef<string | null>(null)
   const jumpTo = (date: string) => {
     const wrap = wrapRef.current
     if (!wrap) return
+    /* A JUMP ASKED WHILE THE GRID IS HIDDEN ([LW-APPR-PERIOD-LANDING], 28 Oct 26): a period picked on the Approvals page
+       (or anything else that asks while another page stands in the grid's place) measured every box at 0, so the scroll
+       moved by nothing and the jump was spent — the grid came back at the month it was on. It is kept, and taken the
+       moment the grid shows again (the on-screen listener below); a later ask replaces it. */
+    if (wrap.getBoundingClientRect().width === 0) { hiddenJumpRef.current = date; return }
     const win = colWinRef.current
     const mi = monthIndexOf(date)
     // Tell the fill engine where the view is ABOUT to be, before the scroll
@@ -1239,6 +1245,9 @@ export function Matrix() {
     // wherever the grid happens to be scrolled already.
     wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
   }
+  /* the on-screen listener is wired once; it reaches this render's jumpTo through the ref */
+  const jumpToRef = useRef(jumpTo)
+  jumpToRef.current = jumpTo
 
   // Which month the grid is showing, so the strip says where you ARE and not
   // only where you can go. Held as state rather than derived during render
@@ -3003,7 +3012,17 @@ export function Matrix() {
          period lands, while the view stayed on the month he had left. Only a scroll woke it, and on his iPhone showing
          the grid sends none. Re-reading the view first lets the fill's "the view comes first" step replace the window
          with the months on screen. */
-      if (on) { if (!prev) { remeasureRef.current(); kickFillRef.current() } return }
+      if (on) {
+        if (!prev) {
+          remeasureRef.current()
+          /* …and a jump asked while it was hidden lands now ([LW-APPR-PERIOD-LANDING]) */
+          const d = hiddenJumpRef.current
+          hiddenJumpRef.current = null
+          if (d) jumpToRef.current(d)
+          kickFillRef.current()
+        }
+        return
+      }
       if (phone) return
       const win = colWinRef.current
       if (!win) return                       // short war drawn whole — nothing to window
