@@ -500,6 +500,7 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `seen:<pid>` | `{ upto, extra }` | each person's own "seen" for the change history — §The change history above (was one `changeseen` record) |
 | `noticeseen:<pid>` | `{ upto, ids }` | each person's own record of which of his bell's notices he has read — §The bell's notices above; an ADMIN reads every person's (M4 9.3 — his Undo of a war decision asks whether its line was read) |
 | `apprseen:<pid>` | `{ at }` | when this ADMIN last opened the Leave War's Approvals (ms) — what its "New" choice and cyan dots count from (the overhaul's M4, 8.4 — D1231); written when he OPENS the tab (a reload or a dropped page keeps it), by `lw.apprseen`, his own row only, never an Undo step (`state/apprseen.ts`; data-model `LeaveApprovalsSeen`) |
+| `lwseen:<pid>` | `{ at }` | when this PERSON last opened his OWN person window on the Leave War (ms, the moment, not the day) — a line of his leave someone else changed since then wears the cyan dot (the overhaul's M5a, D1231, D1481); written when he opens it (an admin too, on his own window), by `lw.seen`, his own pid only — the gate allows `lwseen:<pid>` only for the signed-in person and only under `lw.seen`; never an Undo step; the previous moment is what "new" counts from for that visit and is kept across a reload (`state/lwseen.ts`; data-model `LeaveSeen`) |
 | `guestview` | `true` or null | the admin's switch letting people waiting for access read the published week as a guest — OFF (null) by default (D204) |
 | `memberfile` | `false` or null | the members' switch — "members may file duties and commitments for other people" (owner D654, D655): ON (null) by default, `false` = admins only. Written only by the admin command `settings.memberfile` (`src/state/memberfile.ts`); a raw write is refused. Read live by `src/state/perms.ts membersFileOn`. Switched off, nothing already filed is removed or altered — a member's right over what he had filed for others simply goes |
 | `rules` | `{ v: { numericRule?: number, reportText?: string }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin` — and, since 7 Oct 26 (D628, D639), the two late cut-offs' seven: `inputCutMode, inputCutWd, inputCutWeeks, sansLead, sansCutMode, sansCutWd, sansCutWeeks` — a mode (0 days / 1 weekday), a weekday (0 = Monday … 6), a number of weeks (1–8), a number of days (0–60)), plus D511 text `reportText` (default `IN TIME + WX/NOTAMS`, trim/CR-LF-to-space, max60, empty falls back); `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`). Numeric keys remain numbers; text travels with the same rules record/reset/snapshot/export/Undo |
@@ -525,9 +526,12 @@ world replaces it, inside the boot's group); the one-time fold (`store.ts leavew
 | `war:<warId>` | `LeaveWar` | the war's `Period` (its days, bands, open dates and last-closed note — D1177) with `ord` — its place among the wars, the order they were created (the period picker's) |
 | `rec:<warId>:<recId>` | `LeaveBid` | ONE of the war's own records (a request, an earned credit, a notice, a UNA — `WarRec` below) with `pid` and `date` (its address) and `ord` (its place at that address). Several share an address; the list there reads back by `(ord, recId)`. A MOVE rewrites the one row (its new `pid` / `date`) |
 | `ledger:<id>` | `LeaveLedger` | one `LedgerEntry`; a reload reads the ledger by (date, entry time, id) — every reader sorts it for itself |
-| `opening:<pid>:<counter>` | `LeaveOpening` | one opening balance, a number |
+| `opening:<pid>:<counter>` | `LeaveOpening` | one opening balance, a number. *[M5a, 28 Oct 26 (D1479): no door writes an opening any more. OIL's stay bare numbers, still read by the OIL tracker (`engine/oiltracker.ts`, `counters.ts figureParts`, `readWorldRows`, `seedOpenings`) until `[LW-OIL-OPENING-AWARD]` is settled; the other counters' old openings (annual, ccl, fcl, pl, el, cl) are read ONCE, as figures never typed (below) — stored demo data, D56.]* |
+| `bal:<pid>:<kind>` | `LeaveBalance` | **a figure TYPED from the official leave app** (M5a, D1479) — one row per person and kind (`kind` one of LVE, CCL, FCL, PL, EL, CL; never OIL, D1209, D1255; the kind read from the RIGHT of the key): `{ amount, cf?, day, by, snap }` — see §A person's leave figures below. Written by `lw.balance` |
+| `grade:<pid>` | `LeaveGrade` | **a person's leave grade over time** (M5a, D1229, D1490): `{ hist: [{ id \| null, from }] }` — `id` null is "No grade", `from` the day it was set (a change counting from the next 1 Jan; a change on the day the last entry was made replaces that entry). Kept in a row of its own, not on `profile:<pid>` (`rows.ts profileJSON` keeps only `post` and `label`). Written by `lw.grade` |
 | `profile:<pid>` | `LeavePersonProfile` | `{ post?, label? }` — his posting window (`post`: the `postouts` entry below) and his personnel label (`label`, the admin's text for a ground-crew row); the row goes when both do |
 | `current`, `oilpolicy`, `eventdefs`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`, `eventrows`, `showsans`, `reqnames` | `Setting` | one key each, as before — only the keys a command changed are written. **`manningorder` — the order of the Manning block's rows — is a list of counter ids and, since D674 (8 Oct 26), may also hold the four fixed rows' TOKENS (`@req-p`, `@req-w`, `@avail-p`, `@avail-w` — `leavewar/engine/fixedrows.ts`): a list that names none of them means "these counters, then the four", which is what every list saved before that day says and what is still saved while no counter stands among or below the four; nothing stored is converted.** **`manningdefs` starts ABSENT and means "no counters" — the Manning block comes with no count rows of its own (D669, 8 Oct 26; until then an absent or unreadable list read as eleven built-in counters, and a pre-19 Aug 26 `manningthresh` overlay was laid over them — that key is no longer read). `manninghidden` is still read and written, so a store from before loads as it was, but nothing consults it: the eye that hid a row became a delete cross and a row can no longer be hidden.** `manningdefs` holds at most `MAX_MANNING_RULES` (60) counters: ONE number for the reader (a longer list reads as damage → no saved list, so no counters) and the writer (a new counter past it is refused, and the form says so) — `[STORE-READER-SWEEP]`, phase 7. **Since the Inputs / SANS redesign (7 Oct 26, D640) the list may also hold `availp` and `availw`** — the two Available rows the SANS calendar reads, stored only once an admin has renamed or re-defined one (until then the built-in definition serves: every pilot / every WSO — "Reset counters", which also put it back, went with D669). They are BESIDE the limit (the list may be 62 long, the ordinary counters still at most 60); each is a `people` count with `threshold` `{amber: 0, red: 0}` — a stored one of any other shape is left out at the read, and a SANS man is never counted whatever its filter says (`leavewar/engine/availrows.ts`). **Since the Leave War overhaul (D1190, D1191, D1202 — batch 3) each may also carry `points: {amber?, red}`** — its amber and red points, each a number plus or minus that day's Required (negatives allowed, at most 99 either way), never an absolute figure: red under Required + `red`, amber under Required + `amber` where set. ABSENT = `{red: 0}`, no amber — the rule the rows always had (red under Required), so every row stored before reads as it did; "red + 0" alone is not written; a pair that will not read is left out and the row still reads; on any other counter the field is dropped. Written with the row's Save (`lw.availrow`). **`reqnames` (D1193, narrowing D668) — `{p?, w?}`, the Required P and Required W rows' names where an admin has renamed one** (trimmed, at most 80 characters; a seat absent reads "Required P" / "Required W"; a blank or the original typed back removes the seat). Absent, or `{}`, = both originals. Written by `lw.reqname`. Distinct from the Raptor-side `settings/flynames` step 1 once wrote (below), which nothing reads. |
+| `grades`, `ballock` | `Setting` | **the two settings the leave year added to `lw.config`** (M5a). `grades` — the squadron's own list of leave grades, `[{ id, name, order, days: [{ n, from }], goneFrom? }]` (D1229, D1234): `days` is dated so a "+ days" change counts from the next 1 Jan (D1490); a deleted grade keeps its record with the day it went (`goneFrom`) so a 1 Jan before that day still reads its days and one after adds nothing (reading 11). **ABSENT until an admin first edits the list** (never an empty list; no command runs at boot): while absent the engine reads the starting five, with FIXED ids so a man's grade never points at nothing after a reload — `sp` Senior pilot +36, `jp` Junior pilot +33, `sw` Senior WSO +21, `jw` Junior WSO +18, `opsa` Ops A +14 (`engine/leaveyear.ts START_GRADES`; D1229); the first edit writes the whole list, starting five included. `ballock` (the config field is `balLock`) — a boolean, "Lock for members" (D1220, D1247, D1488); absent reads false. Both are fields of the one `lw.config` record, written by `lw.grades` and `lw.balLock` (admin only); `rows.ts CONFIG_KEYS` pairs the field with its stored key |
 
 A started store is read as it stands — no opening, ledger entry or window stored means none, never the seed's; a
 row that will not read (or a war claiming a day another already holds, or a record that would break its address's
@@ -566,6 +570,10 @@ groupDefs: GroupDef[]       groupPriority: string[]        groupPriorityCustom: 
 eventRows: number           showSans: boolean
 focusDate: string | null    focusSeq: number
 postOuts: { personId: Person }   // (personEdits went with the war's Edit person — D460, D461)
+balances: Balances          // M5a: pid → kind → TypedBal — the figures typed (`bal:` rows)
+gradeHist: GradeHists       // M5a: pid → GradeEntry[] (`grade:` rows)
+grades: GradeDef[] | undefined   // M5a: the grades list — undefined until an admin first edits it (the starting five are read)
+balLock: boolean            // M5a: "Lock for members"
 ```
 
 ### Records
@@ -581,7 +589,9 @@ postOuts: { personId: Person }   // (personEdits went with the war's Edit person
 | `Cell` | `{ type, portion: 'full' \| 'am' \| 'pm' }` — a parsed code |
 | `States` (derived) | `personId → date → BidRecord` — the main record's colour state; `source: 'raptor'` now means "locked on the war" (filed on the Inputs page, or medical) |
 | `Views` (derived) | `personId → date → DayView` — every record on the day, the main one, the corner mark, the charges (`engine/dayview.ts`) |
-| `Openings` | `personId → { counter: number }` — opening balances |
+| `Openings` | `personId → { counter: number }` — opening balances. *[M5a, 28 Oct 26 (D1479): no longer WRITTEN by any door. Only OIL's are still read, as numbers, by the OIL tracker; the other counters' are read once as never-typed figures — see §A person's leave figures.]* |
+| `TypedBal` | `{ amount, cf?, day, by, snap }` — see §A person's leave figures (M5a) |
+| `GradeDef`, `GradeEntry` | `GradeDef { id, name, order, days: [{ n, from }], goneFrom? }`; `GradeEntry { id: string \| null, from }` — see §A person's leave figures (M5a) |
 | `CounterName` | `'annual' \| 'oil' \| 'ccl' \| 'fcl' \| 'pl' \| 'el' \| 'cl'` |
 | `LedgerEntry` | `id, personId, counter, amount, date, reason, approvedBy, givenBy?, enteredBy?, enteredAt?, half?` — a grant or correction; a positive OIL entry is an OIL AWARD, the ONE kind of hand-given OIL (D400, D402), drawn on the war grid on its date; `enteredBy` / `enteredAt` who entered it and when (D200 (2)); `half: 'am' \| 'pm'` only on an OIL award worth exactly 0.5 (an HO) — the half of its day it is drawn in (D1164), stored as the admin picked it or, unpicked, the other half beside a half-day leave, else the morning; an HO stored without it (before D1164) reads as the morning and still loads, a bad or misplaced one is dropped with the entry kept (D401); a new entry's id is opaque (`ol-…`) |
 | `OilPolicy` | `expiry: { n, unit: 'days' \| 'months' } \| null, historyMonths \| null` |
@@ -593,6 +603,59 @@ postOuts: { personId: Person }   // (personEdits went with the war's Edit person
 | `EventBand` | `{ line, from, to, text, kind?, short? }` — a merged event over a run of dates on one Event line; `short` as on a day, absent where none was typed |
 | `Requirements` | `{ default: { rules: ManningRule[] }, overrides: { key: Requirement } }` |
 | `QualDef` | `{ k, label }` |
+
+### A person's leave figures — the typed figures, grades, the lock and the last visit (M5a, 28 Oct 26)
+
+The Leave War overhaul's M5a (D1479, D1475; build spec `docs/superpowers/plans/2026-10-28-lw-m5a-build-spec.md` §1, §3).
+How a figure is WORKED OUT from these records is `engine-rules.md` §The leave year (M5a); the tables for the database
+step are `data-model.md` (`LeaveBalance`, `LeaveGrade`, `LeaveSeen`; who may write them is §11 there, with
+`state/perms.ts`, together — D200).
+
+| Record | Stored as | Fields | Written by (named command) |
+|---|---|---|---|
+| **LeaveBalance** | `bal:<pid>:<kind>`, one row per person and kind | `{ amount, cf?, day, by, snap }` — see below | `lw.balance` |
+| **LeaveGrade** | `grade:<pid>`, one row per person | `{ hist: [{ id \| null, from }] }` | `lw.grade` (admin) |
+| the grades list | `lw.config` field `grades` (stored key `grades`) | `[{ id, name, order, days: [{ n, from }], goneFrom? }]`; absent until an admin first edits it | `lw.grades` (admin) |
+| the lock | `lw.config` field `balLock` (stored key `ballock`) | boolean; absent reads false | `lw.balLock` (admin) |
+| **LeaveSeen** | `settings/lwseen:<pid>` | `{ at: ms }` | `lw.seen` (his own pid only; never an Undo step) |
+
+**`bal:<pid>:<kind>` = `{ amount, cf?, day, by, snap }`.** `kind` is LVE, CCL, FCL, PL, EL or CL (OIL is never typed —
+D1209, D1255; the gate refuses it at every door). `amount` is a whole number or a .5, below zero allowed (reading 10);
+`cf` is LVE's carried-forward part, a whole number or a .5 from 0 to the figure (0 when the figure is below zero), and
+only ever on LVE; `day` is **the app's today when it was typed** (`memberToday`, never the machine's clock — a moved test
+clock and a real one never disagree); `by` the person who typed it; `snap` the SNAPSHOT — his approved leave of that kind
+as it stood at that moment, `[[date, 'am' | 'pm' | 'day'], …]` sorted by date then half, one entry a day and a half,
+never a total. A save of either LVE box writes the whole row afresh (`amount` as the App bal box then shows, `cf` as the
+carried-forward box then shows, clamped to 0 … max(`amount`, 0)). A row that will not read (`store.ts readTypedBal`) is
+left in storage as it is and not read. **The member's own row: he creates it by his first typing and his Undo deletes it.**
+**What the gate recomputes** (`state/perms.ts ownershipViolation`, so a member cannot forge it): `by` is the writer
+himself, `day` is the app's today, `amount` and `cf` are halves with 0 ≤ `cf` ≤ max(`amount`, 0), and `snap` equals the
+snapshot the store itself builds from his approved leave at that moment — on a forward write; a restore that
+`undo/timeline.ts verifiedReplay` vouches for, image for image, passes (his own Undo, or a Redo the next day). A member
+writes only his own pid and only while `balLock` is off as it stands when the command is saved.
+
+**Never typed / the old openings.** A person with no `bal:` row for a kind is read as typed 0 (cf 0) on 1 Jan of the year
+of the war's earliest period (of this year when none exists), with an empty snapshot. The old `opening:<pid>:<counter>`
+rows of the other kinds (annual, ccl, fcl, pl, el, cl) are read **once** the same way, their number as the figure — stored
+demo data, D56; no door writes one any more. **OIL's `opening:` rows are unchanged: bare numbers, read by the OIL tracker.**
+
+**`grade:<pid>`** — `id` is a grade's id, or `null` for "No grade"; `from` the day set. A grade given after 1 Jan counts
+from the next 1 Jan (D1490); a change on the day the last entry was made replaces that entry. Kept apart from
+`profile:<pid>` because that row keeps only `post` and `label` and a grade-only profile would be refused as empty.
+A grade deleted from the list leaves its holders "No grade" from that day (reading 11).
+
+**The commands.** Each is named, mapped in `state/perms.ts COMMAND_OPS` and registered, so the gate asks the right row
+and Undo has words of its own ("LVE balance 18 → 20"): `lw.balance` (a typed figure — an Undo step; the member's own
+or an admin's), `lw.grade` (admin), `lw.grades` (the list — admin), `lw.balLock` (the lock — admin), `lw.seen` (not an
+Undo step). All five are in every place a war collection or setting is listed: `readWorldRows`, `lwDecompose`,
+`applyLwRecord`, `LW_COLLS`, `lwRows`, `LwNow`, the state fields, `rows.ts`, `storage/tables.ts`. Their change-history
+lines (build spec §3, `state/changelines.ts`; the gesture's `note` carries JSON `{k, from, to}` for a balance, `{from, to}`
+names for a grade, a short string for the list): "LVE balance 18 → 20 · Ranger", "Grade Junior pilot → Senior pilot ·
+Saber", "Balances locked for members · Saber", the list's add, rename, days and delete.
+
+**`settings/lwseen:<pid>` = `{ at: ms }`** — the moment (not the day) he last opened his OWN person window, an admin
+included; the previous moment is what "new since his last visit" counts from for that visit. It follows M4's
+`apprseen:` pattern whole (`state/lwseen.ts`); the gate allows it only for his own pid and only under `lw.seen`.
 
 ### Sync with the scheduler — `src/leavewar/sync.ts`
 

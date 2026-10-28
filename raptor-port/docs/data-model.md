@@ -110,7 +110,7 @@ below; the app's delete is `state/person-delete.ts`, reached from Admin → User
 | `legacyKey` | string | no | the pre-migration `PEOPLE` id, import only |
 
 Relationships: 1–n `QualMark`, `Enrolment`, `Input`, `LeaveBid`,
-`LeaveLedger`, `LeaveOpening`; 0–1 `User`; 0–1 `LeavePersonProfile`;
+`LeaveLedger`, `LeaveOpening`, `LeaveBalance` (up to six: one per kind); 0–1 `User`; 0–1 `LeavePersonProfile`; 0–1 `LeaveGrade`; 0–1 `LeaveSeen` (M5a, 28 Oct 26);
 referenced by every schedule row that seats a body.
 From today: `PEOPLE[id]` — one stored row each since 30 Sep 26 (`raptor:people/<pid>`, with `ord` — the `sortIndex`; `[DB-READINESS]` group A, phase 2; `people/all` until then), plus Leave War's `Person`
 projection. Its two per-person override records, `personedits` and
@@ -806,6 +806,45 @@ App change: none to the OIL derivation — `OilLedger`, `OilCredit` and
 `OilDebit` stay **derived** from these rows plus the OIL policy, and are not
 stored.
 
+**M5a, 28 Oct 26 (D1479): `LeaveOpening` is no longer written for the leave kinds.** The LVE, CCL, FCL, PL, EL and CL
+figures are now TYPED from the official leave app and kept in `LeaveBalance` (next section); no door writes an opening
+any more. `LeaveOpening` stays for **OIL**: its rows are still bare numbers, read by the OIL tracker (`engine/oiltracker.ts`),
+until `[LW-OIL-OPENING-AWARD]` is settled. An old row of another counter (`annual`, `ccl`, `fcl`, `pl`, `el`, `cl`) is read
+once as a figure never typed (demo data, D56) — nothing to migrate.
+
+### LeaveBalance, LeaveGrade, LeaveSeen
+
+*(The Leave War overhaul's M5a, 28 Oct 26 — D1479, D1229, D1490, D1231; app side `docs/data-schema.md` §A person's leave
+figures; how a figure is worked out `docs/engine-rules.md` §The leave year (M5a); who may write: §11.)*
+
+Owner: **Leave War**. A person's leave figures as last typed from the official leave app, his leave grade, and when he
+last looked at his own leave.
+
+| Entity | Fields |
+|---|---|
+| `LeaveBalance` | `personId` (ref Person), `kind` (choice `LVE`, `CCL`, `FCL`, `PL`, `EL`, `CL` — never `OIL`, D1209), `amount` (decimal, a whole number or a .5, may be below zero), `carriedFwd` (decimal, optional — LVE only, a whole number or a .5 from 0 to `amount`, or 0 when `amount` is below zero; app field `cf`), `dayTyped` (date — **the app's today** when it was typed, app field `day`), `typedBy` (ref Person, app field `by`), `snapshot` (JSON `[[date, 'am' \| 'pm' \| 'day'], …]` — his approved leave of that kind as it stood when it was typed, sorted by date then half, one entry a day and a half, never a total; app field `snap`; small and always read whole), `isDeleted`. **Unique on (`personId`, `kind`)** — one row per person and kind |
+| `LeaveGrade` | `personId` (ref Person), `history` (JSON `[{ gradeId \| null, from }]` — `null` is "No grade", `from` a date; app field `hist`; a change counting from the next 1 Jan, D1490). **Unique on `personId`** — one row per person |
+| `LeaveSeen` | `personId` (ref Person), `seenAt` (datetime — the moment he last opened his OWN person window; app field `at`, ms). **Unique on `personId`** |
+
+The squadron's **grades list** (its ids, names, order and dated "+ days", and a deleted grade's `goneFrom`) and **"Lock
+for members"** are not tables of their own: they are `Setting` values under `lw.config` — `grades` (absent until an
+admin first edits it; the starting five `sp` Senior pilot +36, `jp` Junior pilot +33, `sw` Senior WSO +21, `jw` Junior
+WSO +18, `opsa` Ops A +14 are then read — fixed ids, D1229) and `balLock` (boolean, absent = false). A grade a person holds
+(`gradeId`) is that list's `id`.
+
+Relationships: n–1 `Person` (up to six `LeaveBalance` rows, at most one `LeaveGrade` and one `LeaveSeen`).
+**What they replace:** nothing is migrated. They replace the leave kinds' `LeaveOpening` rows, which stop being written
+(OIL's `LeaveOpening` rows stay, above). `LeaveSeen` is the person-own twin of `LeaveApprovalsSeen` (an admin's "last
+opened Approvals", §11).
+From today: one stored row each — `raptor:leavewar/bal:<pid>:<kind>`, `raptor:leavewar/grade:<pid>` and
+`raptor:settings/lwseen:<pid>` (`leavewar/state/rows.ts`, `state/lwseen.ts`, `storage/tables.ts`), written from the command
+that changed them (`lw.balance`, `lw.grade`, `lw.seen`). The grades list and the lock are fields of the `lw.config` record
+(`lw.grades`, `lw.balLock`).
+App change: none to the database beyond these tables. **For the server:** the member's own-row rule on `LeaveBalance`
+(create, change and delete his own, only while the lock is off at the moment of saving) and the forging checks on a
+forward write — `typedBy` is the writer, `dayTyped` is the app's today, `snapshot` is the one the app builds itself from
+his approved leave then — are in §11, `LeaveBalance`; the lock is a `Setting` read when his change is saved.
+
 ### LeavePersonProfile
 *(18 Oct 26, D1001: its personnel `label` — a ground-crew man's flight — is KEPT, for a later option to sort the Leave War by flight; it is not retired.)*
 
@@ -1112,9 +1151,10 @@ The "migration notes" say how each shape maps, should a record ever need convert
 | IndexedDB `raptor-docs` + `docBackend` map | `Attachment` + shared file store | Bytes to the file store, metadata to the row. Ids are already globally unique (`doc-`+UUID). A pre-drawer browser holds `docId`s with no bytes — import them as "no document on file", never fabricate |
 | `ACCOUNTS`, `SESSION`, `ME`, `USERS[]` (code) | `User` | Not migrated — replaced by the auth provider at stage 4. Map each new principal to a `Person` on first sign-in |
 | `raptor:leavewar/wars` | `LeaveWar` + `LeaveBid` | One `LeaveWar` per war; explode `recs` into one `LeaveBid` per stored record (several may share a person/date), `sortIndex` from each list's order (the wars' from theirs). Approved leave is already an `Input` — nothing to convert. *(The app does this itself since 30 Sep 26 — the fold, `leavewar/state/store.ts leavewarConverter`, into the rows of `[DB-READINESS]` group A, phase 3; the same for the four rows below)* |
-| `raptor:leavewar/openings` | `LeaveOpening` | One row per (person, counter) |
+| `raptor:leavewar/openings` | `LeaveOpening` | One row per (person, counter). *(M5a, 28 Oct 26: only OIL's are still written or read as numbers; the other counters' stop being written — the typed figures are `LeaveBalance`, next row — and an old one is read once as a figure never typed, demo data, D56.)* |
+| `raptor:leavewar/bal:<pid>:<kind>` (M5a — the app stores it as a row of its own, never inside `openings`), `raptor:leavewar/grade:<pid>`, `raptor:settings/lwseen:<pid>` | `LeaveBalance`, `LeaveGrade`, `LeaveSeen` | Nothing to migrate (new in M5a, 28 Oct 26; the old openings of the leave kinds are demo data, cleared — D56). One row each, uniqueness (`personId`, `kind`) / `personId` / `personId`; field map in §3 "LeaveBalance, LeaveGrade, LeaveSeen". The grades list and the lock are two fields of the `lw.config` record → `Setting` (below) |
 | `raptor:leavewar/ledger` | `LeaveLedger` | One row per `LedgerEntry`. The OIL ledger stays derived |
-| `raptor:leavewar/oilpolicy`, `eventdefs`, `manningdefs`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `eventrows`, `showsans`, `reqnames`, `current` | `Setting` (scope `leavewar`) | Preferences and definitions, value verbatim, absent = default. **`manningorder` is an ordered list of row keys: counter ids, and — once a counter stands among or below them (D674, 8 Oct 26) — the four fixed rows' tokens `@req-p`, `@req-w`, `@avail-p`, `@avail-w`; a list without the tokens means "these counters, then the four".** **`manningdefs` absent = NO counters** (D669, 8 Oct 26 — a squadron makes its own; there is no built-in set to seed a new squadron's table with). `manninghidden` is carried but no longer used (the eye that hid a count row became a delete cross) — it need not be given a column. **The two Available rows in `manningdefs` (`availp`, `availw`) may carry `points` `{amber?, red}` — their amber and red points, each a number plus or minus that day's Required (D1190, D1191, D1202), absent = red under Required, no amber; `reqnames` is `{p?, w?}`, the Required rows' names where renamed (D1193), absent = "Required P" / "Required W"** (`docs/data-schema.md` has both in full). |
+| `raptor:leavewar/oilpolicy`, `eventdefs`, `manningdefs`, `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `figorder`, `rosterorder`, `manningorder`, `manninghidden`, `fighidden`, `eventrows`, `showsans`, `reqnames`, `grades`, `ballock`, `current` | `Setting` (scope `leavewar`) | Preferences and definitions, value verbatim, absent = default. **`manningorder` is an ordered list of row keys: counter ids, and — once a counter stands among or below them (D674, 8 Oct 26) — the four fixed rows' tokens `@req-p`, `@req-w`, `@avail-p`, `@avail-w`; a list without the tokens means "these counters, then the four".** **`manningdefs` absent = NO counters** (D669, 8 Oct 26 — a squadron makes its own; there is no built-in set to seed a new squadron's table with). `manninghidden` is carried but no longer used (the eye that hid a count row became a delete cross) — it need not be given a column. **The two Available rows in `manningdefs` (`availp`, `availw`) may carry `points` `{amber?, red}` — their amber and red points, each a number plus or minus that day's Required (D1190, D1191, D1202), absent = red under Required, no amber; `reqnames` is `{p?, w?}`, the Required rows' names where renamed (D1193), absent = "Required P" / "Required W"** (`docs/data-schema.md` has both in full). |
 | `raptor:leavewar/perslabels` | `LeavePersonProfile.label` | One profile row per labelled person |
 | `raptor:leavewar/personedits` | — *(D461, 30 Sep 26: dropped whole — the war's Edit person is removed)* — was `LeavePersonProfile.band`; `Person.sxo` | `band` to the profile; `sxo` folds onto the person row; the `seat` override is **dropped** (the person's seat is the seat). The override record disappears |
 | `raptor:leavewar/postouts` | `LeavePersonProfile.fromDate` / `toDate` / `poOutcome` / `poDone`, and his earlier stints (`past` — `[ONE-DOOR]`, D320: a child table of `{ fromDate, toDate }` rows, closed, in order, never overlapping) | An entry exists while either date is set or he has an earlier stint; a profile row is created for each. An old entry with only `poArchive` reads `true` → `overseas`, `false` → `none` (the app reads it so today) |
@@ -1189,7 +1229,7 @@ own side of the difference).
 |---|---|---|---|
 | **Shell** | `Person`, `User`, `Qualification`, `QualMark`, `Setting`, `SchemaVersion` | every module | one shell function per table — `Person` through the people writer the Quals page already uses (`persistPeople` today); a module that needs a person changed calls it, never the table |
 | **Scheduler** | `ScheduleWeek`, `ScheduleDay`, `DayDraft`, `Wave`, `Formation`, `Sortie`, `DutyBlock`, `DutyRow`, `SimRow`, `ProgrammeRow`, `RowPerson`, `Input`, `InputType`, `InputAttachment`, `Attachment`, `Amendment`, `AmendmentRetraction`, `IssuedSignoff`, `TakeOverRequest`, `PlanningPuck`, `DayRemark`, `EditLog`, and at stage 2 `WorkingSignoff`, `ScheduleInputPlacement` (and `ChangeBatch`, written by every module's commands) | Leave War (the published schedule and the leave / medical inputs, as API views); Tracker (nothing today) | the mutation funnel → the storage seam |
-| **Leave War** | `LeaveWar`, `LeaveBid`, `LeaveLedger`, `LeaveCounter`, `LeaveOpening`, `LeavePersonProfile` | Scheduler (approved leave and the four medical markers, as an API view) | its own store → its own doorway |
+| **Leave War** | `LeaveWar`, `LeaveBid`, `LeaveLedger`, `LeaveCounter`, `LeaveOpening`, `LeaveBalance`, `LeaveGrade`, `LeaveSeen`, `LeavePersonProfile` | Scheduler (approved leave and the four medical markers, as an API view) | its own store → its own doorway |
 | **Tracker** | `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Enrolment`, `Attempt`, `Layout`, `CoursePlan` | Shell (a qualification picture from marks, later) | `core.js` → `storage.js`, `Attempt` only through `applySummary` |
 
 `Course` is the Tracker's here, not the shell's as the direction document's
@@ -1541,10 +1581,10 @@ phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock), and
 every table with an own-row rule — `Person` (owned by his linked `User`; a person with no sign-in — D217 — by an
 admin team; round 3, Astra 3: a member edits his own row, which an organisation-owned table cannot allow), `Input`,
-`Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`. **Organisation-owned:** everything else —
+`Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`, and (M5a, 28 Oct 26) `LeaveBalance` and `LeaveSeen` — with the other own-row "seen" records, `NoticeSeen` and `LeaveApprovalsSeen`, which this list had not named. **Organisation-owned:** everything else —
 `ScheduleWeek` (its `ownedBy` is a plain column, not the platform's owner), `Amendment`, `AmendmentRetraction`,
 `IssuedSignoff`, `TakeOverRequest`, `PlanningPuck`, `DayRemark`, `ChangeBatch`, `Qualification`, `Setting`, `SchemaVersion`,
-`EditLog`, `LeaveWar`, `LeavePersonProfile`, `LeaveOpening`, `LeaveLedger`, `LeaveCounter` (moved here 18 Oct 26 with D1008: every member reads every man's, only an admin writes — no own-row rule left), and the Tracker's tables.
+`EditLog`, `LeaveWar`, `LeavePersonProfile`, `LeaveOpening`, `LeaveLedger`, `LeaveCounter` (moved here 18 Oct 26 with D1008: every member reads every man's, only an admin writes — no own-row rule left), `LeaveGrade` (M5a, 28 Oct 26: an admin's alone), and the Tracker's tables.
 *(Note 12 Oct 26 — the one-rule build, owner D755 (3), D756, D763: an `Input` now carries SEVERAL people (`InputPerson`), and its own-row rule is no longer "the row's one person" — the §11 `Input` row says who may do what: its only person, its filer while everyone in it was put in by him, and anyone in it taking HIMSELF out. One owning `User` cannot express the last of these; the app holds it at its commit gate (`src/state/perms.ts inputBreach`, `ownPart`). How the store holds it — the owner being the filer with a server rule for "take myself out", or the rule on `InputPerson` — is for the table format written with the IT side (D473).)*
 
 **The server enforces, the browser mirrors.** Every rule above is a
