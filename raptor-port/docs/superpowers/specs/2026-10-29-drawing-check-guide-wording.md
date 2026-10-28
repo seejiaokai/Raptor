@@ -6,7 +6,7 @@ until about 1 Nov 26, it was read by one fresh, blind Opus reader instead (29 Oc
 taken, below); the two owed reads are written on `[NO-ASTRA-LIST]` (D761) and named to him when it is put to him. Nothing
 goes into the guides before his approval. The script it describes is on `claude/drawing-check-b783bd`
 (`raptor-port/scripts/drawcheck/`), proved on M5a (`raptor-port/docs/img/handpass/2026-10-29-drawcheck-m5a/report.md`).
-Backlog: `[DRAWING-CHECK]` (filed on the M5a branch). §10 replaces the M5a branch's placeholder, so it goes in after
+Its backlog item, done, is in OUTSTANDING-ARCHIVE.md (29 Oct 26). §10 replaces the M5a branch's placeholder, so it goes in after
 pull request 586 merges.
 
 ## 1. `raptor-port/docs/bug-check-order.md`
