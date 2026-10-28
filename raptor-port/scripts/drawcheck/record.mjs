@@ -61,7 +61,12 @@ function patchPage(page) {
       const out = await orig.call(this, opts)
       const approved = process.env.DRAWCHECK_APPROVED && join(resolve(process.env.DRAWCHECK_APPROVED), name + '.png')
       const rec = JSON.parse(readFileSync(join(RECORDS, st.id + '.json'), 'utf8'))
-      if (approved && existsSync(approved)) {
+      // a drawing script writing its pictures INTO the approved folder replaces the approved picture first, and the
+      // comparison would then be of a file with itself: refused, so it never reads as proof
+      if (approved && resolve(approved).toLowerCase() === resolve(opts.path).toLowerCase()) {
+        rec.approved = { picture: name + '.png', identical: null, differs: "not compared: the drawing script wrote its picture over the approved one — send its pictures to a scratch folder" }
+        console.log(`drawcheck: ${st.id} — NOT COMPARED: the drawing script's picture went into the approved folder`)
+      } else if (approved && existsSync(approved)) {
         const r = await pictureDiff(this.context().browser(), approved, opts.path)
         rec.approved = { picture: name + '.png', identical: r.same, ...(r.same ? {} : { differs: r.why || `${r.pixels} pixels in ${JSON.stringify(r.where)}` }) }
         console.log(`drawcheck: ${st.id} — the replayed picture is ${r.same ? 'IDENTICAL to' : 'NOT the same as'} the approved ${name}.png`)

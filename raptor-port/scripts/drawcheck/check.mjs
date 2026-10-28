@@ -28,6 +28,9 @@ const ONLY = (opt('states', '') || '').split(',').filter(Boolean)
 const ALL = args.includes('--all')
 const ORIGIN = spec.origin || 'http://localhost:4311'
 const TOL = spec.tolerance ?? 2
+// a kept difference names his ruling and the ONE kind it keeps: an entry with neither would keep every future
+// difference of that part too, and the check could go green on a change he never saw
+for (const a of spec.accepted || []) if (!a.check || !a.why || !a.state || !a.part) { console.error('a kept difference needs state, part, check and why (his ruling): ' + JSON.stringify(a)); process.exit(2) }
 // one run, one folder (walk-scripts.md §5)
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true })
 
@@ -118,7 +121,7 @@ for (const st of spec.states) {
   st.__png = join(OUT, st.id + '.build.png')
   await page.screenshot({ path: st.__png })
   await ctx.close()
-  const row = { state: st.id, title: st.title, drawing: rec.drawing, approved: rec.approved, parts: [] }
+  const row = { state: st.id, title: st.title, drawing: rec.drawing, approved: rec.approved, size: `${rec.viewport.w} × ${rec.viewport.h} at ${rec.dpr}`, parts: [] }
   let n = 0
   for (const part of st.parts) {
     const D = rec.parts[part.name], B = m.parts[part.name]
@@ -128,7 +131,7 @@ for (const st of spec.states) {
     else diffs = compare(part, D, B, Drel?.found && Drel, Brel?.found && Brel, TOL)
     const acc = spec.accepted || []
     for (const d of diffs) {
-      const a = acc.find(a => a.state === st.id && a.part === part.name && (!a.check || a.check === d.check))
+      const a = acc.find(a => a.state === st.id && a.part === part.name && a.check === d.check)
       d.accepted = a ? a.why : null
       d.counts = !a || ALL
     }
@@ -146,7 +149,8 @@ for (const st of spec.states) {
     row.parts.push({ part: part.name, label: part.label, diffs, picture: pic, measured: { drawing: D, build: B } })
   }
   report.push(row)
-  console.log(`${st.id}: ${st.parts.length} parts measured, ${row.parts.filter(p => p.diffs.length).length} differ` + (rec.approved?.identical === false ? ' — WARNING: the drawing record was not taken from the approved picture' : ''))
+  console.log(`${st.id}: ${st.parts.length} parts measured, ${row.parts.filter(p => p.diffs.length).length} differ` + (rec.approved?.identical === false ? ' — WARNING: the drawing record was not taken from the approved picture'
+    : rec.approved?.identical !== true ? ' — note: this record was never compared with the approved picture' : ''))
 }
 await browser.close()
 
@@ -158,7 +162,7 @@ let md = `# Drawing check — ${spec.name}\n\nBuild: \`${process.env.DRAWCHECK_B
   (ALL ? ' · every difference counted, the kept ones too (--all)' : '') + `\n\n` +
   `**${counting.length ? 'RED' : blocked.length ? 'RED' : 'GREEN'}** — ${counting.length} difference(s) unexplained, ${kept.length} kept as built by his ruling, ${blocked.length} screen(s) not checked.\n\n`
 for (const r of report) {
-  md += `## ${r.title} (\`${r.state}\`)\n\n`
+  md += `## ${r.title} (\`${r.state}\`${r.size ? ', ' + r.size : ''})\n\n`
   if (r.unrecorded) { md += 'No drawing record: record the drawing first.\n\n'; continue }
   if (r.notReached) { md += `NOT CHECKED — ${r.notReached}\n\n`; continue }
   md += `Drawing: \`${r.drawing.script}\` → \`${r.drawing.shot}.png\`` + (r.approved ? ` (the replay ${r.approved.identical ? 'is identical to' : r.approved.identical === false ? 'DIFFERS from' : 'was not compared with'} the approved picture)` : '') + '\n\n'

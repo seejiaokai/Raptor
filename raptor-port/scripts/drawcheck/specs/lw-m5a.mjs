@@ -134,6 +134,12 @@ const deskLockedParts = [
   P('ranger-ccl', "Ranger's CCL figure", `${DR} [data-zk="o-CCL"] .ro`, `${BR} td:has(> [data-testid="bal-opd-CCL-bane"]) .bp-ro`, ['words-place'], { rel: 'ranger-row' }),
   P('ranger-ccl-pend', "Ranger's CCL pending figure (amber)", `${DR} [data-zk="o-CCL"] .opd`, q('bal-opd-CCL-bane'), ['words-y', 'colour'], { rel: 'ranger-ccl' }),
 ]
+// the Balances page on his iPhone, as an admin: the switch, and Ranger's name in the column that stays put
+const phoneBalancesParts = [
+  ...switchParts,
+  P('ranger-row', "Ranger's row", R, BR, ['place', 'height']),
+  P('ranger-name', "Ranger's name", `${R} .puck`, `${BR} .puck`, ['place', 'words-x'], { rel: 'ranger-row' }),
+]
 // a docked window stands where it is drawn whatever the page's scroll: the same drawing, the page left at its top
 const dockParts = personParts.filter(p => p.name === 'window' || p.name === 'title-bar')
 
@@ -174,6 +180,18 @@ export default {
       parts: balancesParts,
     },
     {
+      id: 'balances-phone', title: 'The Balances page, iPhone, admin', phone: true,
+      drawing: { script: 'docs/mock/lw-overhaul/full-m5a-balances.mjs', shot: 'm5b-b2-rest' },
+      async reach(page, { origin }) { await stage(page, origin, 'admin'); await balances(page, 'bal') },
+      parts: phoneBalancesParts,
+    },
+    {
+      id: 'taken-phone', title: 'Days taken, iPhone, admin', phone: true,
+      drawing: { script: 'docs/mock/lw-overhaul/full-m5a-balances.mjs', shot: 'm5b-b3-phone' },
+      async reach(page, { origin }) { await stage(page, origin, 'admin'); await balances(page, 'taken') },
+      parts: switchParts,
+    },
+    {
       id: 'taken-desk', title: 'Days taken, desktop, admin',
       drawing: { script: 'docs/mock/lw-overhaul/full-m5a-balances.mjs', shot: 'm5b-b3-desk' },
       async reach(page, { origin }) { await stage(page, origin, 'admin'); await balances(page, 'taken') },
@@ -202,10 +220,14 @@ export default {
       parts: deskLockedParts,
     },
   ],
-  // the differences he has ruled to keep as built — each with his ruling; they stay in the report, marked, and no longer
-  // turn the check red. D1493 (29 Oct 26, "All as recommended"): the switch and the hyphen stand as built.
+  // the differences he has ruled to keep as built — each with his ruling and the one kind of difference kept, so a new
+  // difference in the same part still turns the check red; they stay in the report, marked.
+  // D1493 (29 Oct 26, "All as recommended"): the switch and the hyphen stand as built.
   accepted: [
-    ...['balances-desk', 'taken-desk'].flatMap(state => ['switch', 'switch-lit'].map(part => ({ state, part, why: 'D1493 — the switch stands as built' }))),
+    ...['balances-desk', 'taken-desk', 'balances-phone', 'taken-phone'].flatMap(state => [
+      ...['width', 'fill'].map(check => ({ state, part: 'switch', check, why: 'D1493 — the switch stands as built' })),
+      ...['place', 'height'].map(check => ({ state, part: 'switch-lit', check, why: 'D1493 — the switch stands as built' })),
+    ]),
     { state: 'taken-desk', part: 'taken-head', check: 'text', why: "D1493 — the period's own name, its hyphen as typed" },
   ],
 }

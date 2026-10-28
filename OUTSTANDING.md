@@ -1851,6 +1851,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The drawing check's guide wording (D1494) — the bug-check order §7.0 and §7.10, walk-scripts §10 — drafted 29 Oct 26 on `claude/drawing-check-b783bd` (`raptor-port/docs/superpowers/specs/2026-10-29-drawing-check-guide-wording.md`), not yet in the guides | one fresh, blind Opus reader (16 findings, all taken) | the guide change's two reads (D70: Astra and Sol 6.1) |
 | The skill-notes review of 27 Oct 26 — the guide drafts from the 152 notes of 13–26 Oct 26, on `claude/observation-log-review-triage-7f6090` | one fresh, blind Opus reader, on his word (D1414) | the guide changes' two reads (D70: Astra and Sol 6.1) |
 | `[GROUP-INPUT-ONE-ROW]` — the schedule's one row for a shared input; LIVE since 11 Oct 26 (pull request #490) | its PLAN: Astra and Sol 6.1, two rounds; its finished CODE: Fable alone, on his word (D749, D752) | Astra's and Sol 6.1's reads of the finished code (`raptor-port/docs/handpass/2026-10-11-group-input-one-row.md`) |
 | The ring colours he found (D751) — fixed on the same branch, LIVE with it | walked and gated (the sheet's §14, WALK tier); no model read of its own | any ChatGPT read |

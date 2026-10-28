@@ -11,13 +11,6 @@ export const { chromium } = require('@playwright/test')
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 export const LAUNCH = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
 
-// The two sizes every drawing is checked at: his PC (1920 × 1080 at 125% — 1536 × 864 of page at 1.25) and his
-// iPhone (402 × 874 at 3). A state may name its own, but these are the defaults.
-export const SIZES = {
-  desk: { viewport: { width: 1536, height: 864 }, deviceScaleFactor: 1.25, hasTouch: false, isMobile: false },
-  phone: { viewport: { width: 402, height: 874 }, deviceScaleFactor: 3, hasTouch: true, isMobile: true },
-}
-
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.ico': 'image/x-icon', '.json': 'application/json', '.woff2': 'font/woff2', '.webmanifest': 'application/manifest+json' }
 

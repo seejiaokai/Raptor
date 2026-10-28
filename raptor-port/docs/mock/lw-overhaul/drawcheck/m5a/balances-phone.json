@@ -1,0 +1,189 @@
+{
+ "state": "balances-phone",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+  "shot": "m5b-b2-rest"
+ },
+ "recorded": "2026-10-28T22:36:12.224Z",
+ "drawnOn": "main at 230aa3b85 (the build the M5a drawings were drawn on)",
+ "checkout": "",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "switch": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 10,
+    "y": 148.8,
+    "w": 217.8,
+    "h": 36
+   },
+   "ink": {
+    "x": 43,
+    "y": 157.8,
+    "w": 151.8,
+    "h": 18
+   },
+   "text": "Balances Days taken",
+   "typed": false,
+   "look": {
+    "fill": "rgba(20, 24, 29, 0.5)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)",
+     "1px solid rgb(47, 58, 70)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.seg.zz-seg"
+  },
+  "switch-lit": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 31,
+    "y": 157.8,
+    "w": 76.5,
+    "h": 18
+   },
+   "ink": {
+    "x": 43,
+    "y": 157.8,
+    "w": 52.5,
+    "h": 18
+   },
+   "text": "Balances",
+   "typed": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.14)",
+    "image": "",
+    "edge": [
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)",
+     "0px none rgb(95, 208, 230)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(95, 208, 230)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.on"
+  },
+  "ranger-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 451.3,
+    "w": 818,
+    "h": 50
+   },
+   "ink": {
+    "x": 12,
+    "y": 460,
+    "w": 772.3,
+    "h": 32.3
+   },
+   "text": "Ranger IP Senior pilot · +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(201, 209, 217)",
+     "0px none rgb(201, 209, 217)",
+     "1px solid rgb(26, 32, 39)",
+     "0px none rgb(201, 209, 217)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(201, 209, 217)",
+    "align": "right",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.row"
+  },
+  "ranger-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 459.3,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 17,
+    "y": 460,
+    "w": 65.2,
+    "h": 12.3
+   },
+   "text": "Ranger IP",
+   "typed": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.sm"
+  }
+ },
+ "approved": {
+  "picture": "m5b-b2-rest.png",
+  "identical": true
+ }
+}
