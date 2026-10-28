@@ -164,4 +164,22 @@ describe('a sheet that places itself keeps its place', () => {
     expect(panel.style.maxHeight).toBe('500px')
     expect(panel.style.bottom).toBe('')
   })
+
+  /* the fresh read of the M5a fixes, finding 5 (29 Oct 26): the place before the keys was taken once, at their first frame,
+     and put back when they went — so a window that placed itself afresh while they were up (a phone turned sideways while
+     typing: the person window docks again) got its old place back on the way down, the phone form's on a desktop form */
+  it('a window that re-places itself while the keys are up keeps its new place when they go down', () => {
+    render(<Docked />)
+    const panel = screen.getByTestId('docked')
+    vv.height = 380
+    vv.dispatchEvent(new Event('resize'))
+    panel.style.top = '200px'                 // the window re-placing itself, the keys still up
+    vv.dispatchEvent(new Event('resize'))
+    expect(panel.style.bottom).toBe('auto')   // still lifted above the keys meanwhile
+    vv.height = 844
+    vv.dispatchEvent(new Event('resize'))
+    expect(panel.style.top).toBe('200px')
+    expect(panel.style.maxHeight).toBe('500px')
+    expect(panel.style.bottom).toBe('')
+  })
 })

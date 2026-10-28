@@ -7867,6 +7867,24 @@ test('M5a walk A-F3: a box shows its whole figure and keeps its width, nothing b
   expect(await whole('pw-CCL'), 'the CCL tile’s "−998.5" shown whole').toBe(true)
 })
 
+/* The fresh read of the M5a fixes, finding 6 (29 Oct 26): a refusal under the right-most tile's box in the person window ran
+   about 100px past the window's right edge, and the window cut it — its words were kept inside the Balances page's
+   scrollers or the screen, and the window is neither. They stand inside the window. */
+test('M5a fix read 6: a refusal under a box in the person window stays inside the window', async ({ page }) => {
+  test.skip(isPhone(), 'the desktop’s docked window')
+  await lwRole(page, 'admin')
+  await openBalancesPage(page)
+  await page.getByTestId('bal-name-bane').click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  await typeFig(page, 'pw-CL', '17.3')
+  await expect(page.getByTestId('pw-CL-err')).toBeVisible()
+  const g = await page.evaluate(() => {
+    const r = (q: string) => document.querySelector<HTMLElement>(q)!.getBoundingClientRect()
+    return { err: r('[data-testid="pw-CL-err"]').right, win: r('[data-testid="person-window"]').right }
+  })
+  expect(g.err, `the words' right (${g.err}) inside the window's (${g.win})`).toBeLessThanOrEqual(g.win - 3.5)
+})
+
 /* A-F4: scrolled down, a strip of the rows showed between the LVE / OTHER LEAVE line and the NAME line — the second pinned
    30 down while the first was shorter. They meet. */
 test('M5a walk A-F4: the two pinned heading lines meet, with no strip of rows between them', async ({ page }) => {
@@ -7971,4 +7989,27 @@ test('M5a walk: on a phone the person window stands under the top bar', async ({
   })
   expect(g.top, `the window's top (${g.top}) under the bar's foot (${g.bar})`).toBeGreaterThanOrEqual(g.bar)
   expect(g.foot, 'its foot on the screen').toBeLessThanOrEqual(874)
+})
+
+/* The fresh read of the M5a fixes, finding 2 (29 Oct 26): the same fault while Approvals' slim bar is up. approvals.css's
+   phone rule for every window above the bar out-weighed the person window's own height rule, so a tall window stood at
+   about 35, over the top bar again. It stands under the bar and above the slim bar. */
+test('M5a fix read 2: on a phone, with the slim bar up, the person window stands under the top bar', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone’s window')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await page.getByTestId('lw-tab-approvals').click()
+  await expect(page.getByTestId('approvals-page')).toBeVisible()
+  await page.locator('[data-testid="approvals-page"] [data-testid="appr-dates"]').first().click()
+  await expect(page.getByTestId('appr-slim')).toBeVisible()
+  await page.locator('[data-testid="row-bane"] .whoedit').first().click()
+  await expect(page.getByTestId('person-window')).toBeVisible()
+  await page.waitForTimeout(300)
+  const g = await page.evaluate(() => {
+    const r = (q: string) => document.querySelector<HTMLElement>(q)!.getBoundingClientRect()
+    const w = r('[data-testid="person-window"]')
+    return { top: w.top, foot: w.bottom, bar: r('.topbar').bottom, slim: r('[data-testid="appr-slim"]').top }
+  })
+  expect(g.top, `the window's top (${g.top}) under the bar's foot (${g.bar}) + 8`).toBeGreaterThanOrEqual(g.bar + 7.5)
+  expect(g.foot, `its foot (${g.foot}) above the slim bar (${g.slim})`).toBeLessThanOrEqual(g.slim - 7.5)
 })

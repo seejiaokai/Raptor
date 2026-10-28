@@ -219,10 +219,22 @@ export function personLeave(pid: string, since: number | null): PwLine[] {
     if (j && j.rows[0]!.t === r.t && j.rows[0]!.itype === r.itype && String(j.rows[0]!.pid) === String(r.pid) && addDays(j.to, 1) === r.date) { j.rows.push(r); j.to = end; continue }
     joined.push({ rows: [r], from: r.date!, to: end })
   }
+  /* A DELETION TAKEN BACK IS NOT LISTED (the fresh read of the fixes, finding 3, 29 Oct 26). An Undo writes only its
+     "Undo — …" line, no machine mark, so the delete's mark outlives it: Saber deleting Ranger's approved LL on the Inputs
+     page and pressing Undo left the LL line standing AND a struck "deleted by Saber" line beside it — a leave of his read
+     as gone that is not. The war's own delete marks always had the same gap. So a deletion is skipped where what it took
+     away stands again: its Input back under its own id (an Undo restores an Input as it was), or — a bid, which has no
+     id to match — a line still standing of the same kind (and, for one day, the same half or the whole day) over every
+     one of its dates. */
+  const standing = out.filter(l => l.state === 'approved' || l.state === 'pending')
+  const back = (iid: string | undefined, code: string, from: string, to: string, half: '' | 'AM' | 'PM') =>
+    (!!iid && standing.some(l => l.key === `i:${iid}`)) ||
+    standing.some(l => l.code === code && l.from <= from && l.to >= to && (!l.half || l.half === half))
   for (const j of joined) {
     const r0 = j.rows[0]!
     const cell = parseCell(r0.itype ?? '')
     if (!cell || !LIST_KINDS.has(cell.type)) continue
+    if (back(r0.iid, cell.type, j.from, j.to, j.from === j.to ? halfOf(cell.portion) : '')) continue
     const dates = j.rows.flatMap(r => r.days ?? (() => { const ds: string[] = []; for (let d = r.date!; d <= (r.end ?? r.date!); d = addDays(d, 1)) ds.push(d); return ds })())
     out.push({
       key: `d:${r0.lineId}`, code: cell.type, state: 'deleted', box: r0.iid ? 'a' : 'w', from: j.from, to: j.to,

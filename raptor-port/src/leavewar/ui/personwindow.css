@@ -31,6 +31,12 @@
      top is never above the bar's foot + 8 (the bar's live height — ui/topbarvar.ts); a longer list scrolls inside it. */
   @media (max-width: 700px) {
     .bidsheet[data-testid="person-window"] { left: 10px; right: 10px; width: auto; max-width: none; top: 12px; bottom: 12px; margin: auto 0; height: fit-content; max-height: calc(100vh - 2 * (var(--topbar-h, 0px) + 8px)); max-height: calc(100dvh - 2 * (var(--topbar-h, 0px) + 8px)); }
+    /* …and while Approvals' slim bar is up (the fresh read of the M5a fixes, finding 2, 29 Oct 26): approvals.css's phone rule
+       for every window above the bar is weightier than the rule above and set its own height, so a tall window stood at
+       about 35, over the top bar again. This one is weightier still. Its foot stands at 64 + the safe area (approvals.css),
+       its top at 12, so a window of this height centres at exactly the bar's foot + 8:
+       12 + (H − 76 − s − h) / 2 = bar + 8  ⇔  h = H − 2·bar − 68 − s. */
+    &:has([data-testid="appr-slim"].ph) .bidsheet[data-testid="person-window"]:not(.full):not(.fullpage) { max-height: calc(100vh - 2 * (var(--topbar-h, 0px) + 8px) - 52px); max-height: calc(100dvh - 2 * (var(--topbar-h, 0px) + 8px) - 52px - env(safe-area-inset-bottom, 0px)); }
   }
 
   .bidsheet[data-testid="person-window"] {

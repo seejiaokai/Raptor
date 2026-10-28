@@ -21,7 +21,7 @@ import { memoryBackend } from '../state/storage'
 import { setMemberTodayForTests } from '../engine'
 import { projectPeople } from '../state/raptorRoster'
 import { wireLeaveWarSync } from '../sync'
-import { BalancesPage, figWords } from './BalancesPage'
+import { BalancesPage, FigBox, figWords, saveTypedFigure } from './BalancesPage'
 import { deleteAsk } from './GradesSheet'
 import { Topbar } from './Chrome'
 import { lwPage, setApprMode, setBalancesUp, takeLwAsk } from './lwnav'
@@ -530,5 +530,73 @@ describe('the M5a walk\'s faults', () => {
       await act(async () => { await new Promise(r => setTimeout(r, 40)) })
       expect(left).toBe(22)                     // its right edge, the pending figure's, 4 inside the screen's
     } finally { spy.mockRestore(); back() }
+  })
+})
+
+describe('the fresh read of the M5a fixes', () => {
+  /* finding 4: the carried-forward clamp ran before the store's half check, so any figure past a bound became a valid
+     half — "25.3" beside an App bal of 20 saved 20 with nothing said, "−0.3" saved 0 — where "17.3" is refused */
+  it('4: carried forward past its bounds is clamped only when it is a half; any other figure meets the store’s refusal', () => {
+    expect(saveTypedFigure('bane', 'LVE', 20)).toBeNull()
+    expect(saveTypedFigure('bane', 'LVE', 5, 'cf')).toBeNull()
+    expect(lve('bane')).toMatchObject({ app: 20, cf: 5 })
+    expect(saveTypedFigure('bane', 'LVE', 25.3, 'cf')).toBe('Carried forward is from 0 to 20')   // the store's own words for any carried forward it does not take
+    expect(lve('bane').cf).toBe(5)
+    expect(saveTypedFigure('bane', 'LVE', -0.3, 'cf')).toBe('Carried forward is from 0 to 20')
+    expect(lve('bane').cf).toBe(5)
+    expect(saveTypedFigure('bane', 'LVE', 25, 'cf')).toBeNull()
+    expect(lve('bane').cf).toBe(20)
+    expect(saveTypedFigure('bane', 'LVE', -1.5, 'cf')).toBeNull()
+    expect(lve('bane').cf).toBe(0)
+  })
+
+  /* finding 7: leaving a box after Enter ran the save again with nothing typed, whose "nothing to say" cleared the words
+     Enter had just put up — "Type a figure" and every refusal gone at a tap away, the old figure standing, nothing said */
+  it('7: a refusal’s words stand when he leaves the box after Enter, until he types in it again', () => {
+    render(<BalancesPage />)
+    const b = typeIn('bal-LVE-bane', '')
+    fireEvent.keyDown(b, { key: 'Enter' })
+    expect(screen.getByTestId('bal-LVE-bane-err').textContent).toBe('Type a figure')
+    fireEvent.blur(b)
+    expect(screen.getByTestId('bal-LVE-bane-err').textContent).toBe('Type a figure')
+    fireEvent.keyDown(typeIn('bal-CCL-bane', '17.3'), { key: 'Enter' })
+    fireEvent.blur(box('bal-CCL-bane'))
+    expect(screen.getByTestId('bal-CCL-bane-err').textContent).toBe('Type a whole number or a half, like 17 or 17.5')
+    fireEvent.change(box('bal-CCL-bane'), { target: { value: '4' } })
+    expect(screen.queryByTestId('bal-CCL-bane-err')).toBeNull()
+  })
+
+  /* the re-walk's r1d (29 Oct 26): Escape put the old figure back and marked the box "leave without saving" — a mark that
+     only a blur cleared, so typing again after it and leaving the box by anything but Enter (another box, a tap away) was
+     thrown away with nothing said: 22, Escape (21 back), 23, another box → 21 stood; an emptied box said nothing either */
+  it('re-walk r1d: after an Escape, a figure typed again and left by another box is saved — or refused in its words', () => {
+    render(<BalancesPage />)
+    const was = lve('bane').app
+    const b = typeIn('bal-LVE-bane', String(was + 1))
+    fireEvent.keyDown(b, { key: 'Escape' })
+    expect(b.value).toBe(figWords(was))
+    fireEvent.change(b, { target: { value: String(was + 2) } })
+    fireEvent.blur(b)
+    expect(lve('bane').app).toBe(was + 2)
+    const c = typeIn('bal-CCL-bane', '3')
+    fireEvent.keyDown(c, { key: 'Escape' })
+    fireEvent.change(c, { target: { value: '' } })
+    fireEvent.blur(c)
+    expect(screen.getByTestId('bal-CCL-bane-err').textContent).toBe('Type a figure')
+  })
+
+  /* finding 6: the words were kept inside the Balances page's scrollers or the screen, but the person window (and Grades)
+     is neither — under a box in its right-hand tiles they ran past the window's edge and were cut there */
+  it('6: a refusal under a box in a war window is kept inside that window', () => {
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      if (this.classList.contains('bp-err')) return R(700, 300, 920, 340)
+      if (this.classList.contains('bidsheet')) return R(300, 100, 860, 800)
+      return R(0, 0, 0, 0)
+    })
+    try {
+      render(<div className="bidsheet"><FigBox value={3} label="CCL" testid="w-box" save={() => 'Type a whole number or a half, like 17 or 17.5'} /></div>)
+      fireEvent.keyDown(typeIn('w-box', '17.3'), { key: 'Enter' })
+      expect(screen.getByTestId('w-box-err').style.transform).toBe('translateX(-64px)')   // its right 4 inside the window's 860
+    } finally { spy.mockRestore() }
   })
 })

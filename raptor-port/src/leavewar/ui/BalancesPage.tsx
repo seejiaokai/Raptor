@@ -97,7 +97,9 @@ function keepInSight(e: HTMLElement): void {
   e.style.transform = ''
   const r = e.getBoundingClientRect()
   if (!r.width) return
-  const area = e.closest('.bp-hs, .bp-scroll')?.getBoundingClientRect()
+  /* …or inside the war window the box stands in (the fresh read of the fixes, finding 6): the person window and Grades clip
+     what runs past their edge, so a refusal under a box in the right-hand tiles was cut there */
+  const area = e.closest('.bp-hs, .bp-scroll, .bidsheet')?.getBoundingClientRect()
   const L = Math.max(area ? area.left : 0, 0) + 4
   const Rt = Math.min(area ? area.right : window.innerWidth, window.innerWidth) - 4
   let dx = 0
@@ -148,7 +150,10 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
     if (n === h.value) return null
     return h.save(n)
   }
-  const commit = () => { const t = text; setText(null); setErr(commitText(t)) }
+  /* nothing typed since the last save leaves the words where they are (the fresh read of the fixes, finding 7): leaving the
+     box after Enter ran this again with nothing typed, and its "nothing to say" cleared the refusal Enter had just put up.
+     Typing, Escape and `lw-revert` clear the words themselves */
+  const commit = () => { const t = text; if (t === null) return; setText(null); setErr(commitText(t)) }
   /* the box leaving the screen with an unsaved figure in it saves it — the browser raises no blur for a box removed */
   /* — and a refusal there (the lock landed while he typed, which takes his boxes away) is said in the app's passing note, the
      box being gone (D850: a refusal out of sight is told) */
@@ -210,7 +215,9 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
         aria-invalid={err ? true : undefined}
         value={text ?? shown}
         onFocus={() => { skip.current = false; held.current = { save, value, shown } }}
-        onChange={e => { held.current = held.current ?? { save, value, shown }; setText(e.target.value); typed.current = e.target.value; if (err) setErr(null) }}
+        /* typing again after an Escape is a new figure to save: the Escape's "leave without saving" mark goes with it (the
+           re-walk's r1d, 29 Oct 26 — 22, Escape, 23, another box: the 23 was dropped with nothing said) */
+        onChange={e => { skip.current = false; held.current = held.current ?? { save, value, shown }; setText(e.target.value); typed.current = e.target.value; if (err) setErr(null) }}
         onKeyDown={key}
         onBlur={() => { held.current = held.current ?? { save, value, shown }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
       />
@@ -231,7 +238,9 @@ export function saveTypedFigure(pid: string, kind: BalKind, n: number, part?: 'c
        FAIL 7, 29 Oct 26: "25" beside an App bal of 20 was refused "Carried forward is from 0 to 20"; it saves 20, and the
        box shows it. A figure that is no number, or no half, still meets the store's refusal (a NaN stays a NaN here). A
        clamp that lands on the figure already shown saves nothing, as a figure typed equal to it does (FigBox) */
-    const cf = part === 'cf' ? Math.max(0, Math.min(n, Math.max(amount, 0))) : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
+    /* only a half is clamped (the fresh read of the fixes, finding 4): clamped first, "25.3" became 20 and saved, nothing said */
+    const half = Number.isFinite(n) && Number.isInteger(n * 2)
+    const cf = part === 'cf' ? (half ? Math.max(0, Math.min(n, Math.max(amount, 0))) : n) : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
     if (part === 'cf' && cf === k.cf) return null
     const why = balanceProblem(pid, 'LVE', amount, cf)
     if (why) return why

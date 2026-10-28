@@ -34,6 +34,14 @@ import { usePhone } from './phone'
 
 const PAN_THRESH = 6 // px before a gesture commits to an axis
 
+/* THE ORDER THE WAR'S WINDOWS OPENED IN (the fresh read of the M5a fixes, finding 1, 29 Oct 26 — the design guide §3:
+   Escape closes what opened last). Escape and the Tab hold below act only for the topmost window, which they used to find
+   by DOCUMENT order — the last `.bidsheet` in the page. The person window is portalled to the end of the Leave War page
+   (Matrix.tsx), so it was always that last one, whatever opened after it: with it up, a bid window or Grades opened over it
+   lost Escape to it, and the bid window no longer held Tab. Each panel is pushed here as it mounts and taken out as it
+   goes, so the last entry is the window opened last. */
+const OPEN: HTMLElement[] = []
+
 /** How much of the visual viewport must be gone before it counts as a KEYBOARD
  *  rather than a URL bar showing or hiding — below this, a docked panel must
  *  not re-anchor itself. Exported since 6 Sep 26, for the grid's balance bar
@@ -308,6 +316,12 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
        focus change), which dropped such a window to its place in the page's flow, off the screen. Now it touches the
        panel only while a keyboard is up, and on the way down restores exactly what it found. */
     let before: { top: string; bottom: string; maxHeight: string } | null = null
+    /* …AND WHAT THIS HOOK ITSELF LAST WROTE (the fresh read of the M5a fixes, finding 5, 29 Oct 26): `before` was taken once,
+       at the keys' first frame, so a window that placed itself afresh while they were up — a phone turned sideways while
+       typing, the person window docking again (PersonWindow.tsx), Grades the same — had its old place put back on the way
+       down: the phone form's empty top on a window whose desktop CSS has none, dropped below the screen. A field that no
+       longer holds what this hook wrote was written by another hand, and what it holds now is what goes back. */
+    let wrote: { top: string; bottom: string; maxHeight: string } | null = null
     const place = () => {
       /* the layout's full height from the fixed mark (ui/kbscroll.ts screenBox), not the window's: his iPhone gives the
          window's as what is left below the visible top once the keys have panned the screen (684 − 184 = 500), which read
@@ -324,9 +338,15 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
           panel.style.maxHeight = before.maxHeight
           before = null
         }
+        wrote = null
         return
       }
       if (!before) before = { top: panel.style.top, bottom: panel.style.bottom, maxHeight: panel.style.maxHeight }
+      else if (wrote) {
+        if (panel.style.top !== wrote.top) before.top = panel.style.top
+        if (panel.style.bottom !== wrote.bottom) before.bottom = panel.style.bottom
+        if (panel.style.maxHeight !== wrote.maxHeight) before.maxHeight = panel.style.maxHeight
+      }
       // Zero any drag offset so the top anchor composes cleanly with the
       // panel's own translateX(-50%) centering.
       panel.style.setProperty('--lw-dx', '0px')
@@ -339,6 +359,7 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
       panel.style.top = `${top}px`
       panel.style.bottom = 'auto'
       panel.style.maxHeight = `${Math.round(vv.offsetTop + vv.height - top - GAP)}px`
+      wrote = { top: panel.style.top, bottom: panel.style.bottom, maxHeight: panel.style.maxHeight }
     }
     /* frame by frame while the keys move, not a few frames behind them (D1081) */
     return followVisible(place)
@@ -401,6 +422,12 @@ export function Sheet({
   const asPage = page && phone
   const panelRef = useSheetDrag(!full && !asPage)
   useKeyboardInset(panelRef)
+  useEffect(() => {
+    const n = panelRef.current
+    if (!n) return
+    OPEN.push(n)
+    return () => { const i = OPEN.lastIndexOf(n); if (i >= 0) OPEN.splice(i, 1) }
+  }, [panelRef])
   /* A FINGER ON THE WINDOW NEVER SCROLLS THE PAGE BEHIND IT (owner D686, 9 Oct 26; found on this window on his iPhone,
      22 Oct 26 — "I could scroll the page behind this page somehow vertically"). The inner list's `overscroll-behavior:
      contain` (bidpicker.css) holds only where there is something left to scroll; where what is in the window fits, or has
@@ -451,8 +478,7 @@ export function Sheet({
          always. */
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
-      const all = document.querySelectorAll('.bidsheet')
-      if (all.length && all[all.length - 1] !== panelRef.current) return
+      if (OPEN.length && OPEN[OPEN.length - 1] !== panelRef.current) return
       e.stopPropagation()
       closeRef.current()
     }
@@ -471,8 +497,7 @@ export function Sheet({
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
       const panel = panelRef.current
-      const all = document.querySelectorAll('.bidsheet')
-      if (!panel || (all.length && all[all.length - 1] !== panel)) return
+      if (!panel || (OPEN.length && OPEN[OPEN.length - 1] !== panel)) return
       const f = [...panel.querySelectorAll<HTMLElement>(
         'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
       )].filter(el => !el.closest('[hidden], [inert]'))

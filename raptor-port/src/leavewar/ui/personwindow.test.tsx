@@ -28,6 +28,7 @@ import { figWords } from './BalancesPage'
 import { askLw, balancesUp, lwPage, setApprMode, setBalancesUp, takeLwAsk } from './lwnav'
 import { datesWords, inYear, pastYears, personLeave, whenWords } from './personleave'
 import { DocViewer } from '../../ui/DocViewer'
+import { globalUndo } from '../../undo'
 import { readFileSync } from 'node:fs'
 
 const mem: Record<string, string> = {}
@@ -576,6 +577,39 @@ describe('the M5a walk\'s figures-over-time faults and the code read', () => {
     ranger()
     const gone = personLeave(RANGER, openOwnWindow(RANGER)).filter(l => l.state === 'deleted')
     expect(gone.map(l => [l.code, l.from])).toEqual([['LL', D3]])
+  })
+
+  /* the fresh read of the fixes, finding 3 (29 Oct 26): an Undo writes only "Undo — …", no machine mark, so the delete's
+     mark stood and his window listed the leave that is back AND a struck "deleted by Saber" line beside it */
+  it('fix read 3: an Undo of his approved leave deleted on the Inputs page leaves no struck line beside the leave that is back', () => {
+    act(() => { expect(writeInputs(() => { INPUTS.push({ iid: 'pwund1', person: RANGER, type: 'LL', date: 'Aug 3', yr: 2026, allday: true, remarks: '', mod: today(), by: 'stiff', at: Date.now() }) })).toBe(true) })
+    ranger()
+    openOwnWindow(RANGER)
+    T(9)
+    saber()
+    act(() => { expect(writeInputs(() => { INPUTS.splice(INPUTS.findIndex((r: any) => r.iid === 'pwund1'), 1) })).toBe(true) })
+    act(() => { globalUndo() })
+    expect(INPUTS.some((r: any) => r.iid === 'pwund1'), 'the Undo put it back').toBe(true)
+    T(10)
+    ranger()
+    const lines = personLeave(RANGER, openOwnWindow(RANGER))
+    expect(lines.filter(l => l.state === 'deleted')).toEqual([])
+    expect(lines.filter(l => l.state === 'approved' && l.from === D1).map(l => l.code)).toEqual(['LL'])
+  })
+
+  it('fix read 3: an Undo of his pending bid deleted on the war leaves no struck line beside the bid that is back', () => {
+    act(() => { setCell(RANGER, D3, 'OL') })
+    ranger()
+    openOwnWindow(RANGER)
+    T(9)
+    saber()
+    act(() => { setCell(RANGER, D3, '') })
+    act(() => { globalUndo() })
+    T(10)
+    ranger()
+    const lines = personLeave(RANGER, openOwnWindow(RANGER))
+    expect(lines.filter(l => l.state === 'deleted')).toEqual([])
+    expect(lines.filter(l => l.state === 'pending' && l.from === D3).map(l => l.code)).toEqual(['OL'])
   })
 
   it('code read 3: a mark lights only the line of its own leave — another kind on the same day stays undotted', () => {
