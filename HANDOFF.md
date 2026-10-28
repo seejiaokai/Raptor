@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/leave-war-m5-handoff-3a6602 -->
+### `claude/leave-war-m5-handoff-3a6602` — the Leave War overhaul's M5: PLANNED, waiting for his four answers — written 28 Oct 26, verify before use
+- **After a compaction:** re-read this block and the M5 plan before the next change; note the compaction here with its time.
+- **Done this chat:** the records pull request 583 (notes only, merged by D1407): [LW-WHOLE-LEAVE-WINDOW] archived; the four merged blocks removed; the owed D138 read of D1440–D1447 run (D1439, D1444 marked narrowed by D1464). M5 planned: `raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md` (two helpers' code survey and rulings search folded in).
+- **Questions waiting for him (the plan §4):** (1) War bal after an approval — recommended: App bal less every leave, pending or approved, dated on or after the day App bal was typed; (2) a leave across 31 Dec — each day to its own year; (3) D1235's three readings — as read; (4) M5 in two merges, M5a balances first — yes.
+- **Pick up here:** record his answers as rulings (Leave War; this chat's range D1468–D1479 — check the live numbers first), then redraw M5a's screens on the real app (the person window, the balances page — desktop and phone; plan §4's list) and put them in rounds of at most four; then M5a's build spec in M4's shape, on a new branch from main.
+- **Branch:** `claude/leave-war-m5-handoff-3a6602` — notes only so far.
+- **Notes:** ruling numbers to D1467; observations to 732 (732 met again).
+<!-- /now -->
 ## Next, in order
 
 **RIGHT NOW (21 Oct 26):** pull request 553 LIVE (the Inputs batch, D994 — its block removed) → his pick, the Insights and Logic small fixes (D994), on `claude/insights-logic-fixes-3416c8` (pull request 554, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
