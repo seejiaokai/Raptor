@@ -1563,3 +1563,17 @@ unread line away and leaves "taken back" for a read one (`sync.ts warNoticesReve
 every place a request is made or rebuilt: `setCell` (a re-typed kind keeps the first), `moveRecords`, the put-back
 (`sync.ts doorDecideApproved`), `replaceClashingBids` and `decideRequest` (both spread the record). A new place that
 rebuilds a request field by field must copy `requestStamps`, or the PLACED column reads a dash.
+
+## A leave of several days, opened whole in its bid window ([LW-WHOLE-LEAVE-WINDOW], 28 Oct 26 — D1448, D1461)
+
+**What one leave is has THREE readers, one definition:** the grid's joined bar (`ui/MatrixRows.tsx entryKey`), the
+Approvals list's line (`approvals.ts linesOfWar`) and the bid window's whole leave (`store.ts leaveRunAt`) all group a
+bid's days by the store's `reqRunKey` (kind, state, words, till tick, documents) and an approved leave's by its one Input.
+A change to what makes days one run is made in `reqRunKey` alone, or the three can disagree (the bar joined, the window
+"All 3 days", Approvals two lines). `leaveRunAt` and Approvals bound a leave by its period; the bar draws only what the
+grid shows. **On "All"** the window decides through Approvals' writer (`decideRequests`), so the bell, Undo and every
+surface Approvals reaches are reached the same way; Move carries `moveSel.only` (the day's list's per-record path); Delete
+writes through `clearRecords` (`lw.edit`, a request by `clearRecordById`'s gates, a war-approved leave by
+`DOOR.removeApproved`). **The cyan mark** (D1289) is a class the window lays on the grid's cells while open — it never
+enters the person rows' memo; the drag-selection's own `selcell` is the same class, so a drag painted while a window is
+open shares it (the window lays its own back on).
