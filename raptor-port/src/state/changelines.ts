@@ -138,8 +138,13 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
   }
   if (b && !a) {
     const s = sb
+    /* HIS LEAVE DELETED OFF THE WAR — on the Inputs page, the board, an edit window — carries the machine mark the person
+       window strikes it through by (THE MACHINE MARKS, below; the code read's 2, 29 Oct 26: it went from his list without a
+       word). Only leave, and never the war's own "approval taken back", whose mark warInputLines writes. `itype` is already
+       its kind; an Input's days are one run (its date to its end), so it needs no `days` */
+    const mark = !war && isLeave(b.type) && !FILED_ON_WAR.has(String(b.type)) ? { fld: 'deleted' } : {}
     logAction(null, `${whoOf(b)} · ${inpLabel(b)} ${war ? 'approval taken back (back to a bid)' : 'deleted'} · ${spanWords(s)}${tail}`,
-      at({ date: s && s.date, end: s && s.end }))
+      at({ date: s && s.date, end: s && s.end, ...mark }))
     return
   }
   if (!a || !b) return
@@ -219,7 +224,8 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
    Who reads them: a row is "someone else's change to his leave" when `sub === <his id>`, `fld` is one of the four, and
    `String(pid) !== <his id>`. The lines are: a pending bid deleted, moved or re-typed on the war (warLines); approved
    leave deleted or moved on the war (warInputLines — `iid` the Input, `days`/`wdays` its exact days where not one run);
-   an Input's kind changed on the Inputs page or the war (inputLines — 'kind', `iid` the Input). */
+   an Input's kind changed on the Inputs page or the war (inputLines — 'kind', `iid` the Input); and an approved leave
+   deleted, or a bid taken away by a clashing input, from the Inputs page (inputLines' delete, crossLines — 'deleted'). */
 const cellParts = (id: string) => {
   const iDate = id.lastIndexOf(':'), rest = id.slice(0, iDate), iPid = rest.lastIndexOf(':')
   return { date: id.slice(iDate + 1), pid: rest.slice(iPid + 1) }
@@ -296,10 +302,16 @@ function crossLines(env: CommitEnvelope): void {
     const { date, pid } = cellParts(String(c.id))
     const bl: any[] = Array.isArray(c.before) ? c.before : [], al: any[] = Array.isArray(c.after) ? c.after : []
     const am = new Set(al.map(r => r.id))
+    /* a request of his still on the day (the half of a bid an input kept) — then the bid is not gone from his list, and no
+       struck line is drawn over the half that stands */
+    const kept = al.some(r => r && r.kind === 'request')
     for (const r of bl) {
       if (am.has(r.id)) continue
       const what = r.kind === 'request' ? (covered.has(`${pid}|${date}`) ? 'bid taken away — an input covers it' : 'bid removed') : ''
-      if (what) logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs', sub: pid })
+      /* …each with the machine mark his person window strikes it through by, its code with its half ('*LL'), so the struck
+         line is rebuilt as the bid was (THE MACHINE MARKS, below; the code read's 2, 29 Oct 26) */
+      const mark = kept ? {} : { fld: 'deleted', itype: String(r.code || '') }
+      if (what) logAction(null, `Leave War · ${cs(pid)} · ${r.code || ''} ${dayWord(date)}: ${what}`.replace('  ', ' '), { date, sect: 'abs', sub: pid, ...mark })
     }
   }
 }

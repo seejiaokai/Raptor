@@ -11,7 +11,7 @@ import { addDays, boxText, canEditRow, codeOf, inSquadron, kindOf, beforeFirstSt
 import { leaveFiguresOf, leaveWorldOf, moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, recordsAt, reqRunKey } from '../state/store'
 import { annualUsedIn, type PersonFigures } from '../engine/leaveyear'
 import type { RequestRec } from '../engine/warrecs'
-import { FigureCell, show } from './FigureCell'
+import { FigureCell, figWords } from './FigureCell'
 import { NamePuck } from './NamePuck'
 import { isCommitCode, offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
@@ -394,7 +394,7 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
         testid={`bal-${p.id}`}
         dataFig={shown.id}
         dataPerson={p.id}
-        title={`${p.callsign}: ${shown.label} ${show(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for his leave`}
+        title={`${p.callsign}: ${shown.label} ${figWords(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for his leave`}
         onClick={() => api.current.setWhoOpen(p.id)}
       />
       {padL && <td className="lwph lwph-l" ref={phL} />}

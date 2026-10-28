@@ -104,10 +104,20 @@ function marksOf(pid: string, me: string, since: number | null): ELogRow[] {
     (r.fld === 'deleted' || r.fld === 'moved' || r.fld === 'kind' || r.fld === 'back'))
 }
 const markVerb = (r: ELogRow) => (r.fld === 'moved' ? 'moved' : r.fld === 'kind' ? `changed from ${parseCell(r.from)?.type ?? r.from}` : 'put back to a bid')
-const markCands = (marks: ELogRow[], from: string, to: string, iid?: string): Cand[] =>
-  marks.filter(r => r.fld !== 'deleted' && r.date && (
-    (iid && (r.iid === iid || (r.iids ?? []).includes(iid))) || overlaps(r.date, r.end ?? r.date, from, to)))
-    .map(r => ({ who: r.pid, at: r.t, verb: markVerb(r) }))
+/* A MARK LIGHTS ONLY THE LINE OF ITS OWN LEAVE (the code read's 3, 29 Oct 26: a CL bid re-typed to FCL on a day whose
+   morning held his approved LL dotted the LL line too, "changed from CL"). A mark is his line's when it names its Input
+   (an Input's own mark always counts), or when its dates overlap the line's AND its leave is the line's kind — and, where
+   both are halves of a day, the same half. `itype` is the leave as it stands after ('kind': the code after, the line's). */
+const markCands = (marks: ELogRow[], from: string, to: string, code: string, half: '' | 'AM' | 'PM', iid?: string): Cand[] =>
+  marks.filter(r => {
+    if (r.fld === 'deleted' || !r.date) return false
+    if (iid && (r.iid === iid || (r.iids ?? []).includes(iid))) return true
+    if (!overlaps(r.date, r.end ?? r.date, from, to)) return false
+    const cell = parseCell(r.itype ?? '')
+    if (!cell || cell.type !== code) return false
+    const markHalf = halfOf(cell.portion)
+    return !(half && markHalf && half !== markHalf)
+  }).map(r => ({ who: r.pid, at: r.t, verb: markVerb(r) }))
 
 /**
  * EVERY LINE OF ONE PERSON'S LEAVE, oldest first, every year (the year picker chooses — `inYear`). `since` is the moment
@@ -142,7 +152,7 @@ export function personLeave(pid: string, since: number | null): PwLine[] {
       cands.push({ who: row.by, at: row.at, verb })
     }
     if (row?.modBy != null && typeof row.modAt === 'number' && row.modAt !== row.at) cands.push({ who: row.modBy, at: row.modAt, verb: 'changed' })
-    cands.push(...markCands(marks, from, to, iid))
+    cands.push(...markCands(marks, from, to, g.code, from === to ? halfOf(g.days[0]!.part) : '', iid))
     out.push({
       key: `i:${iid}`, code: g.code, state: 'approved', box: 'a', from, to,
       half: from === to ? halfOf(g.days[0]!.part) : '',
@@ -188,7 +198,7 @@ export function personLeave(pid: string, since: number | null): PwLine[] {
       if (refused) cands.push({ who: r.decidedBy, at: r.decidedAt, verb: 'refused' })
       else cands.push({ who: r.placedBy, at: r.placedAt, verb: 'placed' })
     }
-    cands.push(...markCands(marks, from, to))
+    cands.push(...markCands(marks, from, to, cell.type, from === to ? halfOf(cell.portion) : ''))
     out.push({
       key: `r:${war}:${first.r.id}`, code: cell.type, state: refused ? 'refused' : 'pending', box: refused ? 'r' : 'w', from, to,
       half: from === to ? halfOf(cell.portion) : '',

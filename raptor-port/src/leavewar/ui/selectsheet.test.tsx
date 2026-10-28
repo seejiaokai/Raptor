@@ -229,7 +229,7 @@ describe('the ask before a drag takes anyone below zero (D418)', () => {
     const onDone = vi.fn()
     mount(rampTwo, { onDone, wouldLeave: zero({ ramp: 0 }) })
     fireEvent.click(screen.getByTestId('sel-CCL'))
-    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to -2 CCL. Tap the same leave again to go ahead.')
+    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to −2 CCL. Tap the same leave again to go ahead.')
     expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
     expect(onDone).not.toHaveBeenCalled()
     fireEvent.click(screen.getByTestId('sel-CCL'))
@@ -251,11 +251,11 @@ describe('the ask before a drag takes anyone below zero (D418)', () => {
   it('a block of several men asks ONCE, naming only those it takes below zero', () => {
     mount(two, { wouldLeave: zero({ ramp: 0, tata: 5 }) })
     fireEvent.click(screen.getByTestId('sel-CCL'))
-    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to -2 CCL. Tap the same leave again to go ahead.')
+    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to −2 CCL. Tap the same leave again to go ahead.')
     cleanup()
     mount(two, { wouldLeave: zero({ ramp: 0, tata: 1 }) })
     fireEvent.click(screen.getByTestId('sel-CCL'))
-    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to -2 CCL and tata to -1 CCL. Tap the same leave again to go ahead.')
+    expect(screen.getByTestId('sel-note').textContent).toBe('That takes ramp to −2 CCL and tata to −1 CCL. Tap the same leave again to go ahead.')
   })
 
   it('a different leave or half asks afresh; a fill that stays at or above zero never asks', () => {

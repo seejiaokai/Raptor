@@ -27,7 +27,7 @@ import {
 import { memoryBackend } from './state/storage'
 import { setMemberTodayForTests } from './engine'
 import { projectPeople } from './state/raptorRoster'
-import { wireLeaveWarSync } from './sync'
+import { warIdentityIfHidden, wireLeaveWarSync } from './sync'
 import { figuresOf, linesOfWar, ownDays } from './approvals'
 import { myLeaveOf } from './ui/myleave'
 import { nameFigures, nameLines } from './ui/MatrixRows'
@@ -113,7 +113,7 @@ describe('one world, every reader agrees (the build spec §1.6)', () => {
     /* the run becomes 16 days, so all 16 cost: 16 − the 10 already charged = 6 more */
     expect(r).toEqual({ counter: 'annual', before: 3, after: -3 })
     expect(goesBelow(r)).toBe(true)
-    expect(belowZeroAsk([{ callsign: 'Ranger', counter: r!.counter, after: r!.after }])).toBe('That takes Ranger to -3 LVE. Tap the same leave again to go ahead.')
+    expect(belowZeroAsk([{ callsign: 'Ranger', counter: r!.counter, after: r!.after }])).toBe('That takes Ranger to −3 LVE. Tap the same leave again to go ahead.')
   })
 
   it('a CCL bid reads its own kind\'s War bal on Approvals, labelled, and the leave button\'s "left" with a fill', () => {
@@ -125,6 +125,22 @@ describe('one world, every reader agrees (the build spec §1.6)', () => {
     expect(myLeaveOf(getState().wars, 'bane', TODAY).pending).toBe(1)
     expect(balanceLabel('ccl')).toBe('CCL')
     expect(balanceLabel('annual')).toBe('LVE')
+  })
+
+  it('§1.5 row 10\'s Monday after the bid (walker D\'s FAIL 1): an LL there leaves War bal − 1 = 8, its afternoon 8.5', () => {
+    row10()
+    /* Mon 22 Jun is no part of the 21-day run's last day (Sun 21 Jun) — it lengthens the run to 22, every day already costing */
+    expect(balanceAfterFill('bane', ['2026-06-22'], 'LL')).toEqual({ counter: 'annual', before: 9, after: 8 })
+    expect(balanceAfterFill('bane', ['2026-06-22'], 'LL*')!.after).toBe(8.5)
+  })
+
+  it('a pilot with no row (SANS off the war): his 15-day bid counts every day in Approvals\' DAYS too, as on his tile (the code read\'s 5)', () => {
+    const sans = Object.keys(PEOPLE).find(id => !getState().people.some(p => p.id === id) && warIdentityIfHidden(id)?.seat === 'pilot')
+    expect(sans, 'the demo holds a SANS pilot the war shows no row for').toBeTruthy()
+    const run = days('2026-06-01', '2026-06-15').map(date => ({ date, code: 'LL' }))        // Mon 1 – Mon 15 Jun: 15 days
+    expect(ownDays(sans!, run)).toBe(15)
+    const f0 = leaveFiguresOf(sans!).kinds.LVE.war
+    expect(f0 - leaveFiguresOf(sans!, { dates: run.map(r => r.date), code: 'LL' }).kinds.LVE.war).toBe(15)
   })
 
   it('OIL stays the tracker\'s: the bid windows and Approvals read its ledger, never a typed figure', () => {

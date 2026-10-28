@@ -83,7 +83,7 @@ describe('switching leave war', () => {
   it('counts leave from a war that is not on screen', () => {
     render(<Matrix />)
     const fb = screen.getByTestId('bal-reset').querySelector('.fb')!
-    expect(fb.textContent).toBe('-2')
+    expect(fb.textContent).toBe('−2')                 // its true minus, as every surface writes it (walker D's FAIL 5)
     expect(fb.classList.contains('neg')).toBe(true)
   })
 })

@@ -7,6 +7,7 @@
 
 import type { CounterName } from '../engine'
 import { BAL_KINDS, KIND_COUNTER } from '../engine/leaveyear'
+import { figWords } from './FigureCell'
 
 export type BelowZero = { callsign: string; counter: CounterName; after: number }
 
@@ -23,10 +24,12 @@ export const goesBelow = (r: BalanceAfter | null | undefined): r is BalanceAfter
 export const balanceLabel = (counter: CounterName): string =>
   BAL_KINDS.find(k => KIND_COUNTER[k] === counter) ?? counter.toUpperCase()
 
-/** "That takes DUSK to -3 LVE. Tap the same leave again to go ahead." — or, for several,
- *  "That takes DUSK to -3 LVE and RAVEN to -1 LVE. …" (a comma between all but the last two). */
+/** "That takes DUSK to −3 LVE. Tap the same leave again to go ahead." — or, for several,
+ *  "That takes DUSK to −3 LVE and RAVEN to −1 LVE. …" (a comma between all but the last two). The figure is written as
+ *  every surface writes it, its true minus (figWords — walker D's FAIL 5: it read "-1" where the grid's figure it predicts
+ *  read "−1"). */
 export function belowZeroAsk(list: readonly BelowZero[]): string {
-  const each = list.map(b => `${b.callsign} to ${b.after} ${balanceLabel(b.counter)}`)
+  const each = list.map(b => `${b.callsign} to ${figWords(b.after)} ${balanceLabel(b.counter)}`)
   const named = each.length > 1 ? `${each.slice(0, -1).join(', ')} and ${each[each.length - 1]}` : each[0] ?? ''
   return `That takes ${named}. Tap the same leave again to go ahead.`
 }

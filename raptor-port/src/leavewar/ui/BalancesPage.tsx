@@ -40,8 +40,10 @@ import { usePhone } from './phone'
 import { useVersion } from './useStore'
 import './balances.css'
 
-/** A figure as the page writes it: halves .5 (D1246), a minus sign, never a hyphen. */
-export const figWords = (n: number) => { const r = Math.round(n * 2) / 2; return (r < 0 ? '−' : '') + String(Math.abs(r)) }
+/** A figure as the page writes it: halves .5 (D1246), a minus sign, never a hyphen — the app's one helper, kept in the
+ *  figure box's module so the grid and the bid windows write a figure through the same words (FigureCell.tsx). */
+import { figWords } from './FigureCell'
+export { figWords }
 /** what a box's words read as a number — "−2", "-2", "17.5", "+3"; NaN for anything else (the store's refusal names it) */
 const readFig = (t: string) => { const s = t.trim().replace(/^\+/, '').replace(/^[−–]/, '-'); return /^-?(\d+(\.\d*)?|\.\d+)$/.test(s) ? Number(s) : NaN }
 
@@ -225,7 +227,12 @@ export function saveTypedFigure(pid: string, kind: BalKind, n: number, part?: 'c
   const k = leaveFiguresOf(pid).kinds[kind]
   if (kind === 'LVE') {
     const amount = part === 'cf' ? k.app : n
-    const cf = part === 'cf' ? n : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
+    /* the carried-forward box typed past its bounds is CLAMPED to 0 … the figure (the spec §1.1), never refused — walker D's
+       FAIL 7, 29 Oct 26: "25" beside an App bal of 20 was refused "Carried forward is from 0 to 20"; it saves 20, and the
+       box shows it. A figure that is no number, or no half, still meets the store's refusal (a NaN stays a NaN here). A
+       clamp that lands on the figure already shown saves nothing, as a figure typed equal to it does (FigBox) */
+    const cf = part === 'cf' ? Math.max(0, Math.min(n, Math.max(amount, 0))) : Math.max(0, Math.min(k.cf, Math.max(n, 0)))
+    if (part === 'cf' && cf === k.cf) return null
     const why = balanceProblem(pid, 'LVE', amount, cf)
     if (why) return why
     return setTypedBalance(pid, 'LVE', amount, cf, { amount: k.app, cf: k.cf }) ? null : 'Not saved'

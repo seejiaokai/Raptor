@@ -19,7 +19,7 @@ import { noticeSeenLoad } from '../state/noticeseen'
 import { cmdAuthorize, ownershipViolation, setLwBalanceProbe } from '../state/perms'
 import {
   balanceProblem, getState, initStore as lwInitStore, leaveFiguresOf, lwHistInit, rawState, setBalanceLock, setPeople,
-  setPersonGrade, setTypedBalance, snapshotNow, addGrade,
+  setPersonGrade, setTypedBalance, snapshotNow, addGrade, deleteGrade, gradeOf, gradesList, renameGrade,
 } from './state/store'
 import { memoryBackend, type StorageBackend } from './state/storage'
 import { setMemberTodayForTests } from './engine'
@@ -168,6 +168,28 @@ describe('through the real doors', () => {
     expect(setBalanceLock(true)).toBe(true)
     expect(setTypedBalance('bane', 'CCL', 2)).toBe(true)
     expect(getState().balLock).toBe(true)
+  })
+  /* THE CODE READ'S 1 (29 Oct 26): the grades list is stored only once an admin first edits it (narrow read 6), so the Undo
+     of that first edit restores a config with no list — and the list saved by the edit must go with it, or the edit comes
+     back on the next reload */
+  it('the Undo of the admin\'s first grades-list rename is kept across a reload: the starting name', () => {
+    expect(lwb.read('grades')).toBeNull()
+    expect(renameGrade('opsa', 'Ops B')).toBe(true)
+    expect(lwb.read('grades')).toBeTruthy()
+    globalUndo()
+    expect(gradesList().find(g => g.id === 'opsa')!.name).toBe('Ops A')
+    expect(lwb.read('grades')).toBeNull()
+    lwInitStore(lwb, { started: true })
+    expect(gradesList().find(g => g.id === 'opsa')!.name).toBe('Ops A')
+  })
+  it('the Undo of the admin\'s first delete of a grade people hold is kept across a reload: they hold it again', () => {
+    expect(setPersonGrade('bane', 'jw')).toBe(true)
+    expect(deleteGrade('jw')).toBe(true)
+    expect(gradeOf('bane')).toBeNull()
+    globalUndo()
+    expect(gradeOf('bane')?.id).toBe('jw')
+    lwInitStore(lwb, { started: true })
+    expect(gradeOf('bane')?.id).toBe('jw')
   })
   it('opening his own window writes his last visit and hands back the one before', () => {
     ranger()

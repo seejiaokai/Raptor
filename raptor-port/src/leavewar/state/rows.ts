@@ -146,7 +146,10 @@ export function lwRows(changes: readonly Change[], now: LwNow): LwRow[] {
         if (c.op === 'delete') break
         const b: any = c.before && typeof c.before === 'object' ? c.before : null, a: any = c.after || {}
         for (const [field, key] of CONFIG_KEYS) {
-          if (!(field in a)) continue
+          /* a field the record had before and has no longer is REMOVED, not left behind: the grades list is absent until an
+             admin first edits it (narrow read 6), so the Undo of that first edit restores a record with no `grades` — and
+             the stored list, left in place, came back on the next reload (the code read's 1, 29 Oct 26) */
+          if (!(field in a)) { if (b && field in b) remove(key); continue }
           const v = configValue(field, a[field])
           if (!b || configValue(field, b[field]) !== v) put(key, v)
         }

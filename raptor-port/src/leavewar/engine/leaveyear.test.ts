@@ -150,6 +150,23 @@ describe('the rest of §1', () => {
     expect(gradeDaysOn(gone, PID, 2028)).toBe(0)
     expect(gradeDaysOn({ ...w, grades: START_GRADES.map(g => (g.id === 'jp' ? { ...g, days: [...g.days, { n: 40, from: '2027-02-01' }] } : g)) }, PID, 2027)).toBe(33)
   })
+  /* THE CODE READ'S 4 (29 Oct 26): the roll-over happens at midnight, so a grade, its "+ days" or its deletion changed ON that
+     1 Jan counts from the next one (D1490, read on to a change made on 1 Jan itself) — never moving what that 1 Jan added */
+  it('a grade, its days or its deletion changed on 1 Jan itself leaves that 1 Jan\'s roll-over as it was (D1490)', () => {
+    const bal = lve(23, 3, '2026-12-10')
+    /* a junior pilot typed 23 incl. 3; on 1 Jan 27 his grade is put right to Senior pilot: 20 carried + 33, not + 36 */
+    const regraded = world({ today: '2027-01-01', balances: bal, gradeHist: { [PID]: [{ id: 'jp', from: '2026-01-01' }, { id: 'sp', from: '2027-01-01' }] } })
+    expect([LVE(regraded, new Map()).app, LVE(regraded, new Map()).cf]).toEqual([53, 20])
+    expect(gradeDaysOn(regraded, PID, 2028)).toBe(36)                                     // the next 1 Jan counts the new grade
+    /* the junior pilots' days changed on 1 Jan 27 */
+    const redays = world({ today: '2027-01-01', balances: bal, gradeHist: junior, grades: START_GRADES.map(g => (g.id === 'jp' ? { ...g, days: [...g.days, { n: 40, from: '2027-01-01' }] } : g)) })
+    expect(gradeDaysOn(redays, PID, 2027)).toBe(33)
+    expect(gradeDaysOn(redays, PID, 2028)).toBe(40)
+    /* the grade deleted on 1 Jan 27: that 1 Jan still added its days; the next adds none */
+    const gone = world({ today: '2027-01-01', balances: bal, gradeHist: junior, grades: START_GRADES.map(g => (g.id === 'jp' ? { ...g, goneFrom: '2027-01-01' } : g)) })
+    expect(LVE(gone, new Map()).app).toBe(53)
+    expect(gradeDaysOn(gone, PID, 2028)).toBe(0)
+  })
   it('never typed: 0 on 1 Jan of the war\'s first year, each 1 Jan since adding his grade, his approved leave since off (reading 4)', () => {
     const days = approved(new Map(), 'LL', '2026-03-02', '2026-03-03')
     const f = LVE(world({ today: '2027-02-01', gradeHist: junior }), days)

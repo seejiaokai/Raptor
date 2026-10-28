@@ -1596,7 +1596,7 @@ test('a drag that would go below zero asks once, then writes on the same leave a
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-FCL"]').click()
-  await expect(page.locator('[data-testid="sel-note"]')).toHaveText(/^That takes \S+ to -3 FCL\. Tap the same leave again to go ahead\.$/)   // the row's callsign, as the roster names him
+  await expect(page.locator('[data-testid="sel-note"]')).toHaveText(/^That takes \S+ to −3 FCL\. Tap the same leave again to go ahead\.$/)   // the row's callsign, as the roster names him
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)   // nothing written yet
   await page.locator('[data-testid="sel-FCL"]').click()
   await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
@@ -2873,7 +2873,7 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
   // figure is the same from either screen. HARPOON's four days sit in Apr–Jun
   // and take him to −2 annual, which reads −2 from Jan–Mar too.
   await expect(page.locator('[data-testid="bal-harpoon"] .fb')).toHaveText(before!)
-  expect(before).toBe('-2')
+  expect(before).toBe('−2')
 })
 
 /** "+ New period" is the period list's last line since the overhaul's M2, an admin's only (D1244) — no "+ New" button on

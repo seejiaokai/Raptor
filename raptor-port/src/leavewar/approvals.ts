@@ -31,7 +31,7 @@ import {
 import { AM, FULL, PM, type DayView } from './engine/dayview'
 import { BAL_KINDS, KIND_COUNTER } from './engine/leaveyear'
 import { dayWhatIf, type DayWhatIf, type WhatIfLevel, type WhatIfWar } from './engine/whatif'
-import { availRules, figureCtxOf, getState, groupIdOf, leaveFiguresOf, rawState, reqRunKey, type DecidePart } from './state/store'
+import { availRules, figureCtxOf, getState, groupIdOf, leaveFiguresOf, peopleCountedFor, rawState, reqRunKey, type DecidePart } from './state/store'
 import { flyAnswer, rosterIsSans } from './sync'
 
 export interface ApprLine {
@@ -129,6 +129,9 @@ export function ownDays(personId: string, parts: ReadonlyArray<{ date: string; c
     const win = cell.portion === 'am' ? AM : cell.portion === 'pm' ? PM : FULL
     held.set(p.date, [...(held.get(p.date) ?? []), { code: cell.type, win }])
   }
+  /* asked of the people the engine asks of him (the store's `peopleCountedFor`): a pilot with no row — a SANS man while
+     SANS is off — is still a pilot, so his own 15-day run counts every day here as on his tile (the code read's 5) */
+  if (!ctx.people?.some(p => p.id === personId)) ctx = { ...ctx, people: peopleCountedFor(personId) }
   for (const [date, list] of held) row[date] = dayView(list.map((x, i) => ({ id: `own:${date}:${i}`, kind: 'request' as const, code: x.code, win: x.win, state: 'pending' as const })))
   /* the wars only for their periods (which days are holidays), never their leave; the request is the one row */
   const sources: LeaveSource[] = [...ctx.sources.map(w => ({ grid: {}, states: {}, views: {}, ...(w.period ? { period: w.period } : {}) })), { grid: {}, states: {}, views: { [personId]: row } }]

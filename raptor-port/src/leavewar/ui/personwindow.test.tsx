@@ -8,15 +8,15 @@ import { storeBackend, HOOKS } from '../../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../../engine/people'
 import { INPUTS } from '../../engine/inputs'
 import { ELOG, elogClear } from '../../engine/editlog'
-import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../../state/store'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputs } from '../../state/store'
 import { accountsLoad, signIn, sessionFor } from '../../state/accounts'
 import { installGlobalUndo } from '../../state/undo-wire'
 import { _resetTimeline } from '../../undo/timeline'
 import { NOTICES } from '../../state/notices'
 import { noticeSeenLoad } from '../../state/noticeseen'
-import { lwSeenAt } from '../../state/lwseen'
+import { lwSeenAt, openOwnWindow } from '../../state/lwseen'
 import {
-  getState, initStore as lwInitStore, leaveFiguresOf, lwHistInit, openDates, setBalanceLock, setBidStates, setCell, setPeople, setRole,
+  dayTurned, getState, initStore as lwInitStore, leaveFiguresOf, lwHistInit, openDates, setBalanceLock, setBidStates, setCell, setPeople, setRole,
 } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { setMemberTodayForTests } from '../engine'
@@ -508,5 +508,91 @@ describe('the M5a walk\'s faults', () => {
     close()
     expect(screen.queryByTestId('person-window')).toBeNull()
     expect(document.activeElement).toBe(name)
+  })
+})
+
+/* WALKER D's FAILs 6 AND 7, ITS NOTE ON PENDING, AND THE CODE READ'S 2 AND 3 (29 Oct 26) */
+describe('the M5a walk\'s figures-over-time faults and the code read', () => {
+  it('D-F6: a window left open across midnight into a new year lists that year and ahead, never the year just ended', () => {
+    act(() => { setCell(RANGER, D1, 'LL') })
+    vi.setSystemTime(new Date(2026, 11, 31, 23, 0, 0)); setMemberTodayForTests('2026-12-31')
+    render(<Matrix />)
+    open(RANGER)
+    expect(screen.getByTestId(`pw-line-${D1}`)).toBeTruthy()
+    act(() => { vi.setSystemTime(new Date(2027, 0, 1, 0, 1, 0)); setMemberTodayForTests('2027-01-01'); dayTurned('2026-12-31', '2027-01-01') })
+    const pick = screen.getByTestId('pw-year') as HTMLSelectElement
+    expect(pick.options[0]!.textContent).toBe('2027 and ahead')
+    expect(pick.value).toBe('ahead')
+    expect(screen.queryByTestId(`pw-line-${D1}`), 'last year\'s leave is under 2026 now').toBeNull()
+    fireEvent.change(pick, { target: { value: '2026' } })
+    expect(screen.getByTestId(`pw-line-${D1}`)).toBeTruthy()
+  })
+
+  it('D-F7: carried forward typed above the figure is saved clamped to the figure (§1.1), and the box shows it', () => {
+    render(<Matrix />)
+    open(RANGER)
+    fireEvent.keyDown(typeIn('pw-LVE', '20'), { key: 'Enter' })
+    fireEvent.keyDown(typeIn('pw-LVE-cf', '25'), { key: 'Enter' })
+    expect(screen.queryByTestId('pw-LVE-cf-err')).toBeNull()
+    expect(getState().balances[RANGER]!.LVE).toMatchObject({ amount: 20, cf: 20 })
+    expect(box('pw-LVE-cf').value).toBe('20')
+    /* below zero: 0 */
+    fireEvent.keyDown(typeIn('pw-LVE-cf', '-3'), { key: 'Enter' })
+    expect(getState().balances[RANGER]!.LVE).toMatchObject({ amount: 20, cf: 0 })
+    expect(box('pw-LVE-cf').value).toBe('0')
+  })
+
+  it('D\'s note: with nothing pending the LVE tile\'s Pending reads "–", as the Balances page does', () => {
+    render(<Matrix />)
+    open(RANGER)
+    expect(leaveFiguresOf(RANGER).kinds.LVE.pending).toBe(0)
+    expect(screen.getByTestId('pw-LVE-pend').textContent).toBe('–')
+  })
+
+  it('code read 2: his approved leave deleted on the Inputs page by someone else is struck through, dotted, for that visit', () => {
+    act(() => { expect(writeInputs(() => { INPUTS.push({ iid: 'pwdel1', person: RANGER, type: 'LL', date: 'Aug 3', yr: 2026, allday: true, remarks: '', mod: today(), by: 'stiff', at: Date.now() }) })).toBe(true) })
+    ranger()
+    const since = openOwnWindow(RANGER)
+    void since
+    T(9)
+    saber()
+    act(() => { expect(writeInputs(() => { INPUTS.splice(INPUTS.findIndex((r: any) => r.iid === 'pwdel1'), 1) })).toBe(true) })
+    T(10)
+    ranger()
+    const gone = personLeave(RANGER, openOwnWindow(RANGER)).filter(l => l.state === 'deleted')
+    expect(gone.map(l => [l.code, l.from, l.to])).toEqual([['LL', D1, D1]])
+    expect(gone[0]!.news?.words).toBe('deleted by Saber · today 09:00')
+  })
+
+  it('code read 2: his pending bid taken away by a clashing input someone else filed on the Inputs page is struck through too', () => {
+    act(() => { setCell(RANGER, D3, 'LL') })
+    ranger()
+    openOwnWindow(RANGER)
+    T(9)
+    saber()
+    act(() => { expect(writeInputs(() => { INPUTS.push({ iid: 'pwatt1', person: RANGER, type: 'ATT C', date: 'Aug 10', yr: 2026, allday: true, remarks: '', mod: today(), by: 'stiff', at: Date.now() }) })).toBe(true) })
+    expect(getState().wars.some(w => (w.recs[RANGER]?.[D3] ?? []).some(r => r.kind === 'request')), 'the bid was taken away').toBe(false)
+    T(10)
+    ranger()
+    const gone = personLeave(RANGER, openOwnWindow(RANGER)).filter(l => l.state === 'deleted')
+    expect(gone.map(l => [l.code, l.from])).toEqual([['LL', D3]])
+  })
+
+  it('code read 3: a mark lights only the line of its own leave — another kind on the same day stays undotted', () => {
+    act(() => {
+      setCell(RANGER, D1, '*LL')
+      setBidStates([{ personId: RANGER, date: D1 }], 'approved')
+      setCell(RANGER, D1, 'CL*')
+    })
+    ranger()
+    openOwnWindow(RANGER)
+    T(9)
+    saber()
+    act(() => { setCell(RANGER, D1, 'FCL*') })
+    T(10)
+    ranger()
+    const lines = personLeave(RANGER, openOwnWindow(RANGER)).filter(l => l.from === D1)
+    expect(lines.find(l => l.code === 'FCL')?.news, 'the re-typed bid is new').toBeTruthy()
+    expect(lines.find(l => l.code === 'LL')?.news ?? null, 'his approved morning was not touched').toBeNull()
   })
 })

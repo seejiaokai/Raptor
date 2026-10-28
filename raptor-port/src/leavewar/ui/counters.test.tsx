@@ -6,7 +6,7 @@ import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
 import { closeDates, getState, grantTo, selectWar, initStore, leaveFiguresOf, setBidState, setCell, setPeople, setRole, setTypedBalance, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
-import { FigureCell } from './FigureCell'
+import { FigureCell, figWords } from './FigureCell'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
@@ -218,11 +218,11 @@ describe('the counter column', () => {
   it('paints a negative balance red, with its minus, and never a used number with one', () => {
     render(<Matrix />)
     const box = screen.getByTestId('bal-reset')
-    expect(box.querySelector('.fb')!.textContent).toBe('-2')
+    expect(box.querySelector('.fb')!.textContent).toBe('−2')
     expect(box.querySelector('.fb')!.classList.contains('neg')).toBe(true)
     expect(usedOf('reset')).toEqual([])
     act(() => selectWar(getState().wars[1]!.period.id))
-    expect(screen.getByTestId('bal-reset').querySelector('.fb')!.textContent).toBe('-2')
+    expect(screen.getByTestId('bal-reset').querySelector('.fb')!.textContent).toBe('−2')
     expect(usedOf('reset')).toEqual(['4'])
   })
 })
@@ -269,7 +269,7 @@ describe('an over-wide value drops a type size rather than spilling (spec §2)',
     const war = leaveFiguresOf('ramp').kinds.LVE.war
     expect(war).toBeLessThan(-99)                      // four characters: the box drops a type size
     expect(screen.getByTestId('bal-ramp').classList.contains('wide')).toBe(true)
-    expect(top('ramp')).toBe(String(war))
+    expect(top('ramp')).toBe(figWords(war))            // its true minus, as every surface writes it (walker D's FAIL 5)
     // Every box carries `figbox` — the class the box's own styling hangs off,
     // so `td.bal` at large no longer decides how the manning rows' cell reads.
     expect(screen.getByTestId('bal-ramp').classList.contains('figbox')).toBe(true)
@@ -516,7 +516,7 @@ describe('going negative is asked about, never refused', () => {
     // shows (D418's shared words, ui/belowzero.ts, 29 Sep 26 — the drag sheet asks in the same sentence)
     expect(said).toContain('LVE')
     expect(said).not.toContain('ANNUAL')
-    expect(said).toMatch(/-\d/)
+    expect(said).toMatch(/−\d/)                       // the true minus, as every surface writes it (walker D's FAIL 5)
   })
 
   // A bid that stays in credit must not stop to ask — the warning is only
@@ -550,7 +550,7 @@ describe('going negative is asked about, never refused', () => {
     fireEvent.click(screen.getByTestId('bid-LL'))
     const said = screen.getByTestId('span-note').textContent!
     expect(said).toContain('DUSK')
-    expect(said).toContain('to -3 LVE')
+    expect(said).toContain('to −3 LVE')
     expect(getState().grid.dusk?.['2026-02-09']).toBeUndefined()
   })
 

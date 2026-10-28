@@ -140,9 +140,12 @@ describe('the page for an admin (D1482)', () => {
     fireEvent.blur(typeIn('bal-LVE-bane', '17'))
     fireEvent.blur(typeIn('bal-cf-bane', '3'))
     expect(lve('bane')).toMatchObject({ app: 17, cf: 3 })
+    /* WAS refused "Carried forward is from 0 to 17", the 3 kept. The spec §1.1 CLAMPS it to 0 … the figure (walker D's
+       FAIL 7, 29 Oct 26): 30 beside an App bal of 17 saves 17, no refusal, and the box shows it */
     fireEvent.blur(typeIn('bal-cf-bane', '30'))
-    expect(screen.getByTestId('bal-cf-bane-err').textContent).toBe('Carried forward is from 0 to 17')
-    expect(lve('bane').cf).toBe(3)
+    expect(screen.queryByTestId('bal-cf-bane-err')).toBeNull()
+    expect(lve('bane')).toMatchObject({ app: 17, cf: 17 })
+    expect(box('bal-cf-bane').value).toBe('17')
   })
   it('below zero is typed with either minus; a half saves; anything else is refused in the store\'s words (★20, reading 10)', () => {
     render(<BalancesPage />)

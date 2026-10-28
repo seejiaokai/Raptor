@@ -218,16 +218,25 @@ export function typedOrStart(w: LeaveYearWorld, pid: string, kind: BalKind): Typ
 }
 
 /** The days a person's grade adds on 1 Jan of `y` (D1235, D1474 — none for no grade; D1490 — the grade and its days as
- *  they held on that 1 Jan). */
+ *  they held on that 1 Jan). The roll-over happens at that midnight, so only what took effect strictly BEFORE that 1 Jan
+ *  counts: a grade given, its "+ days" changed or the grade deleted ON 1 Jan counts from the next 1 Jan, never moving what
+ *  that 1 Jan added (the code read's 4, 29 Oct 26 — the agent's reading of D1490 for a change made on 1 Jan itself; its
+ *  writers date a change with the app's today). `gradeOn` still says what holds on a day. */
 export function gradeDaysOn(w: Pick<LeaveYearWorld, 'grades' | 'gradeHist'>, pid: string, y: number): number {
   const on = jan1(y)
-  const id = gradeOn(w, pid, on)
+  const id = gradeBefore(w, pid, on)
   if (!id) return 0
   const g = w.grades.find(x => x.id === id)
-  if (!g || (g.goneFrom && g.goneFrom <= on)) return 0
+  if (!g || (g.goneFrom && g.goneFrom < on)) return 0
   let n = 0
-  for (const d of g.days) if (d.from <= on) n = d.n
+  for (const d of g.days) if (d.from < on) n = d.n
   return n
+}
+/** His grade's id as it stood just before a day — the last change made before it (null for none). */
+function gradeBefore(w: Pick<LeaveYearWorld, 'gradeHist'>, pid: string, day: string): string | null {
+  let id: string | null = null
+  for (const e of w.gradeHist[pid] ?? []) if (e.from < day) id = e.id
+  return id
 }
 /** His grade's id on a day (null for none). */
 export function gradeOn(w: Pick<LeaveYearWorld, 'gradeHist'>, pid: string, day: string): string | null {

@@ -118,7 +118,11 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   /* a box only where he may type (D1203, D1242, D1220): the store's own rule, asked for a figure it would take */
   const boxes = balanceProblem(pid, 'CCL', 0) === null
   const thisYear = +memberToday().slice(0, 4)
-  const [pick, setPick] = useState<YearPick>({ year: thisYear, ahead: true })
+  /* the picker holds "and ahead" or a past year, never this year's number: "<this year> and ahead" is read from the app's
+     today at each draw, so a window left open across midnight into a new year lists that year and ahead, as its label
+     says (walker D's FAIL 6, 29 Oct 26: the label turned to 2027 while the list kept 2026's leave) */
+  const [picked, setPicked] = useState<'ahead' | number>('ahead')
+  const pick: YearPick = picked === 'ahead' ? { year: thisYear, ahead: true } : { year: picked, ahead: false }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const all = useMemo<PwLine[]>(() => personLeave(pid, since), [pid, since, version])
   const lines = all.filter(l => inYear(l, pick))
@@ -165,7 +169,9 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   const save = (kind: BalKind, part?: 'cf') => (n: number) => saveTypedFigure(pid, kind, n, part)
   const name = person.callsign
   const L = f.kinds.LVE
-  const pend = (n: number) => (n ? `−${figWords(n)}` : '0')
+  /* nothing pending reads "–", as the Balances page writes it (walker D's note, 29 Oct 26: the tile drew "0" beside the
+     page's "–") */
+  const pend = (n: number) => (n ? `−${figWords(n)}` : '–')
   const app = boxes
     ? <FigBox value={L.app} label={`${name} LVE App bal`} testid="pw-LVE" cls="r17-box" fit={16} save={save('LVE')} />
     : <Ro v={L.app} testid="pw-LVE" />
@@ -243,7 +249,7 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
               data-testid="pw-year"
               aria-label="Which year's leave"
               value={pick.ahead ? 'ahead' : String(pick.year)}
-              onChange={e => setPick(e.target.value === 'ahead' ? { year: thisYear, ahead: true } : { year: +e.target.value, ahead: false })}
+              onChange={e => setPicked(e.target.value === 'ahead' ? 'ahead' : +e.target.value)}
             >
               <option value="ahead">{thisYear} and ahead</option>
               {years.map(y => <option key={y} value={String(y)}>{y}</option>)}

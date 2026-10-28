@@ -5108,11 +5108,17 @@ export function gradeDaysNow(g: GradeDef): number {
 }
 export function balancesLocked(): boolean { return state.balLock }
 
-function leaveWorld(pid: string): LeaveYearWorld {
+/** THE PEOPLE A COUNT OF ONE MAN'S DAYS IS ASKED OF — the war's roster, and him too where he has no row (a SANS man while
+ *  SANS is off the war: the spec §4), so the pilots' 15-day rule (engine/charge.ts isPilot) knows his seat. The engine's
+ *  world and Approvals' DAYS (approvals.ts ownDays) read this one list, so the two never part (the code read's 5). */
+export function peopleCountedFor(pid: string): Person[] {
   const hidden = HIDDEN_IDENTITY && !state.people.some(p => p.id === pid) ? HIDDEN_IDENTITY(pid) : null
+  return hidden ? [...state.people, hidden] : state.people
+}
+function leaveWorld(pid: string): LeaveYearWorld {
   return {
     wars: getState().wars, today: memberToday(),
-    ctx: { eventDefs: state.eventDefs, people: hidden ? [...state.people, hidden] : state.people },
+    ctx: { eventDefs: state.eventDefs, people: peopleCountedFor(pid) },
     balances: state.balances, openings: state.openings, ledger: state.ledger, grades: gradesList(), gradeHist: state.gradeHist,
   }
 }

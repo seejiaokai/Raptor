@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { balanceAfterFill, getState, initStore, setRole } from '../state/store'
+import { balanceAfterFill, getState, initStore, leaveFiguresOf, setRole } from '../state/store'
+import { figWords } from './BalancesPage'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { LeaveButtons } from './LeaveButtons'
@@ -43,13 +44,39 @@ describe('the leave buttons', () => {
     expect(screen.getByTestId('bid-LL').textContent).toMatch(/^<LL/)   // the box's own voice for a morning
   })
 
-  it('on the one-day window, the LL button shows the balance column\'s own figure for him', () => {
+  /* WAS "on the one-day window, the LL button shows the balance column's own figure for him" (`.before` — his War bal as it
+     stood). The M5a spec §1.6 reads the buttons' "left" through the engine's what-if: what is left AFTER this leave is placed
+     on the window's day and half (walker D's FAILs 1–4, 29 Oct 26: every button read the figure as it stood, whatever the
+     day or the half) */
+  it('on the one-day window, a leave button reads his War bal after placing it there: a weekday −1, its afternoon −0.5', () => {
     render(<Matrix />)
-    const man = getState().people.find(p => !p.san && getState().grid[p.id]?.['2026-02-11'] === undefined)!
-    fireEvent.click(screen.getByTestId(`cell-${man.id}-2026-02-11`))
-    const sheet = screen.getByTestId('bid-picker')
-    const want = balanceAfterFill(man.id, ['2026-02-11'], 'LL')!.before
-    expect(within(sheet).getByTestId('bid-LL-left').textContent).toBe(String(want).replace('-', '−'))
+    const D = '2026-02-11'                                                     // a Wednesday, no holiday
+    const man = getState().people.find(p => !p.san && getState().grid[p.id]?.[D] === undefined)!
+    const war = leaveFiguresOf(man.id).kinds.LVE.war
+    fireEvent.click(screen.getByTestId(`cell-${man.id}-${D}`))
+    let sheet = screen.getByTestId('bid-picker')
+    expect(within(sheet).getByTestId('bid-LL-left').textContent).toBe(figWords(war - 1))
+    expect(within(sheet).getByTestId('bid-OL-left').textContent).toBe(figWords(war - 1))
+    expect(within(sheet).getByTestId('bid-LL-left').textContent).toBe(figWords(balanceAfterFill(man.id, [D], 'LL')!.after))
+    fireEvent.click(within(sheet).getByTestId('portion-pm'))
+    expect(within(sheet).getByTestId('bid-LL-left').textContent).toBe(figWords(war - 0.5))
+  })
+  it('on the drag window, a leave button reads his War bal after the leave is placed on the days dragged', async () => {
+    const { SelectSheet } = await import('./SelectSheet')
+    const man = getState().people.find(p => !p.san && ['2026-02-10', '2026-02-11'].every(d => getState().grid[p.id]?.[d] === undefined))!
+    const sel = { people: [man.id], from: '2026-02-10', to: '2026-02-11', cells: [{ personId: man.id, date: '2026-02-10' }, { personId: man.id, date: '2026-02-11' }] }
+    const war = leaveFiguresOf(man.id).kinds.LVE.war
+    render(<SelectSheet sel={sel as any} people={() => man.callsign} wouldLeave={(pid, ds, code) => balanceAfterFill(pid, ds, code)}
+      role="admin" canDecide={false} onDone={() => {}} onMove={() => {}} onClose={() => {}} />)
+    expect(screen.getByTestId('sel-LL-left').textContent).toBe(figWords(war - 2))
+  })
+  it('on a Saturday the leave button\'s "left" is his War bal unchanged', () => {
+    render(<Matrix />)
+    const D = '2026-02-14'                                                     // a Saturday
+    const man = getState().people.find(p => !p.san && getState().grid[p.id]?.[D] === undefined && getState().grid[p.id]?.['2026-02-13'] === undefined && getState().grid[p.id]?.['2026-02-16'] === undefined)!
+    const war = leaveFiguresOf(man.id).kinds.LVE.war
+    fireEvent.click(screen.getByTestId(`cell-${man.id}-${D}`))
+    expect(within(screen.getByTestId('bid-picker')).getByTestId('bid-LL-left').textContent).toBe(figWords(war))
   })
 })
 
