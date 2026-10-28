@@ -2,11 +2,12 @@ import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRe
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, type DayView } from '../engine/dayview'
 import { INPUTS, remarksTyped } from '../../engine/inputs'
-import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, catClass, catText, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, orderedFigures, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, figureLines, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, figureCtxOf, oilOnDay, setBalance, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, visibleFigures, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
+import { NamePuck } from './NamePuck'
 import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
 import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
@@ -1870,22 +1871,17 @@ export function Matrix() {
      sit). When they hold a displayed qualification it becomes a live control —
      hover (desktop) or tap (phone) to list them; the click is swallowed so it
      never also opens the figures sheet the callsign owns. */
-  const catChip = (p: Person, testid?: string) => {
-    const quals = shownQuals(p)
-    const has = quals.length > 0
-    return (
-      <span
-        className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
-        data-testid={testid}
-        aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
-        onPointerEnter={has ? e => { if (e.pointerType === 'mouse') openQualsAt(p.id, e.currentTarget) } : undefined}
-        onPointerLeave={has ? e => { if (e.pointerType === 'mouse') setQualPop(null) } : undefined}
-        // A second tap on the SAME chip closes it (the phone has no pointer to
-        // leave with); a tap on another chip moves it there.
-        onClick={has ? e => { e.stopPropagation(); if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, e.currentTarget) } : undefined}
-      >{catText(p) || 'GND'}</span>
-    )
-  }
+  const namePuck = (p: Person, testid?: string) => (
+    /* the name and its chip as the schedule's own puck (D1468–D1471, D1476) — the row's own drawer, NamePuck.tsx */
+    <NamePuck
+      p={p}
+      quals={shownQuals(p)}
+      testid={testid}
+      onChipEnter={el => openQualsAt(p.id, el)}
+      onChipLeave={() => setQualPop(null)}
+      onChipClick={el => { if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, el) }}
+    />
+  )
   /* THE EVENT BOX'S OWN WAYS TO CLOSE — the quals popover's, below, for the same reasons: it is anchored in screen
      coordinates, so a scroll or a resize strands it; a pointer-down anywhere but the box and the cell it hangs from
      dismisses it, by a listener and never a scrim, so the next tap and the next drag reach the grid untouched. */
@@ -1930,7 +1926,7 @@ export function Matrix() {
     const close = () => setQualPop(null)
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
-      if (t && !t.closest('.qualpop') && !t.closest('.catchip')) setQualPop(null)
+      if (t && !t.closest('.qualpop') && !t.closest('.lw-chip')) setQualPop(null)
     }
     /* Escape peels the popover first, before any sheet's own Escape (Sheet.tsx
        listens on `document`; the window capture runs ahead of it). */
@@ -4307,9 +4303,8 @@ export function Matrix() {
                       <td className="who">
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
-                            <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+                            {namePuck(p)}
                             {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag">SANS</span>}
-                            {catChip(p)}
                           </button>
                         </div>
                       </td>

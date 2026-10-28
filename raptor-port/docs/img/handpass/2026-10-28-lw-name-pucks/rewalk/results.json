@@ -1,0 +1,177 @@
+[
+ {
+  "name": "phone admin: every drawn name is a puck",
+  "pass": true,
+  "detail": "98 names, 0 without a puck"
+ },
+ {
+  "name": "phone admin: no old bar or badge left",
+  "pass": true,
+  "detail": "0"
+ },
+ {
+  "name": "phone admin: every chip whole inside its puck",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone admin: every puck inside its column",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone: a pilot's puck is the schedule's own fill",
+  "pass": true,
+  "detail": "rgb(110, 106, 46) vs rgb(110, 106, 46)"
+ },
+ {
+  "name": "phone: a WSO's puck is the schedule's own fill",
+  "pass": true,
+  "detail": "rgb(31, 110, 82) vs rgb(31, 110, 82)"
+ },
+ {
+  "name": "phone: OCU reads \"O\"",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone: ground personnel read \"G\"",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone: every puck one height",
+  "pass": true,
+  "detail": "[12]"
+ },
+ {
+  "name": "phone: the frozen copy draws the same puck, whole",
+  "pass": true,
+  "detail": "{\"n\":49,\"bad\":0,\"cut\":0}"
+ },
+ {
+  "name": "phone: a tap on the chip lists his qualifications",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone: …and opens no window",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone: a second tap (a phone) or moving the mouse away (a desktop) closes the list",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone: a tap on the name opens his window",
+  "pass": true,
+  "detail": "Reaper"
+ },
+ {
+  "name": "phone: Escape closes it",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "phone: in Rearrange every name keeps a whole puck beside its grip",
+  "pass": true,
+  "detail": "50 grips; cut ; over "
+ },
+ {
+  "name": "phone member: his own row's puck wears the accent ring",
+  "pass": true,
+  "detail": "{\"cs\":\"Ranger\",\"ring\":\"solid 1px\"}"
+ },
+ {
+  "name": "phone member: every drawn name is a puck, chips whole",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk admin: every drawn name is a puck",
+  "pass": true,
+  "detail": "49 names, 0 without a puck"
+ },
+ {
+  "name": "desk admin: no old bar or badge left",
+  "pass": true,
+  "detail": "0"
+ },
+ {
+  "name": "desk admin: every chip whole inside its puck",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk admin: every puck inside its column",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk: a pilot's puck is the schedule's own fill",
+  "pass": true,
+  "detail": "rgb(110, 106, 46) vs rgb(110, 106, 46)"
+ },
+ {
+  "name": "desk: a WSO's puck is the schedule's own fill",
+  "pass": true,
+  "detail": "rgb(31, 110, 82) vs rgb(31, 110, 82)"
+ },
+ {
+  "name": "desk: OCU reads \"O\"",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk: ground personnel read \"G\"",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk: every puck one height",
+  "pass": true,
+  "detail": "[15]"
+ },
+ {
+  "name": "desk: a tap on the chip lists his qualifications",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk: …and opens no window",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk: a second tap (a phone) or moving the mouse away (a desktop) closes the list",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk: a tap on the name opens his window",
+  "pass": true,
+  "detail": "Reaper"
+ },
+ {
+  "name": "desk: Escape closes it",
+  "pass": true,
+  "detail": ""
+ },
+ {
+  "name": "desk: in Rearrange every name keeps a whole puck beside its grip",
+  "pass": true,
+  "detail": "49 grips; cut ; over "
+ },
+ {
+  "name": "desk member: his own row's puck wears the accent ring",
+  "pass": true,
+  "detail": "{\"cs\":\"Ranger\",\"ring\":\"solid 1px\"}"
+ },
+ {
+  "name": "desk member: every drawn name is a puck, chips whole",
+  "pass": true,
+  "detail": ""
+ }
+]

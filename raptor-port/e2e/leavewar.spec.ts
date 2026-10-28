@@ -3663,16 +3663,18 @@ test('in Rearrange the name column grows by the grip: callsigns keep their width
   await lwRole(page, 'admin')
   const row = '.mx tbody.mxbody tr[data-testid^="row-"]'
   const clippedNames = () => page.evaluate(sel =>
-    [...document.querySelectorAll(`${sel} .who .cs`)]
+    [...document.querySelectorAll(`${sel} .who .puck .nm`)]   // the name as the schedule's puck (D1471)
       .map(el => el as HTMLElement)
       .filter(el => el.scrollWidth > el.clientWidth + 1)
       .map(el => el.textContent?.trim()), row)
+  const namesFound = () => page.evaluate(sel => document.querySelectorAll(`${sel} .who .puck .nm`).length, row)
   const geo = () => page.evaluate(sel => {
     const who = document.querySelector(`${sel} .who`)!.getBoundingClientRect()
     const bal = document.querySelector(`${sel} .bal`)!.getBoundingClientRect()
     const name = document.querySelector(`${sel} .whoedit`)!.getBoundingClientRect()
     return { whoW: who.width, gap: Math.abs(bal.left - who.right), nameW: name.width }
   }, row)
+  expect(await namesFound(), 'the names are found, so the check below can fail').toBeGreaterThan(10)
   const restClipped = await clippedNames()
   const rest = await geo()
   await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
@@ -6023,7 +6025,7 @@ test('a personnel row shows its callsign, with no edit box, in Rearrange', async
   await rearrangeOn(page)   // ⚙ → "⇅ Rearrange the grid" (D1254)
   await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
   // the callsign is what the name column shows
-  await expect(page.locator('[data-testid="row-torque"] .cs')).toHaveText('Ratchet')
+  await expect(page.locator('[data-testid="row-torque"] .puck .nm')).toHaveText('Ratchet')   // the name as the schedule's puck (D1471)
   await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
 })
 

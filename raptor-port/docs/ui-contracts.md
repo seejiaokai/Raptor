@@ -11642,18 +11642,22 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   scheduler moves it (the designer's G5). Goes to is not offered once ALL AVAIL / ALL is among the people picked (G3), and
   such an Other lands on the programme. `ui/inputtitle.test.tsx`, `leavewar/otherunavail.test.tsx`.
 
-## The Leave War's name column — names as pucks (his D1468–D1470, 28 Oct 26 — RULED, NOT BUILT: [LW-NAME-PUCKS])
+## The Leave War's name column — names as pucks (his D1468–D1471, D1476, 28 Oct 26 — BUILT 28 Oct 26, [LW-NAME-PUCKS])
 
 - **A name is a puck, as on the schedule (D1468):** the person's category chip sits inside the name's own box at its right
   end, not as a separate badge beside it; the chip keeps its colours (OCU's changes to the schedule's, D1469) and its tap or hover that lists his qualifications; a
   tap on the name still opens his person window; the LVE figure keeps its column beside the name.
-- **The puck is the schedule's own, as the Approvals list draws it (D1471)** — not a restyled bar; its seat colours are the schedule's (D1476 — his "Follow the schedule": lighter than the grid's bars of 4 Sep 26, which go, as does their full-width stretch); ground personnel's puck gains the "G" chip on the Leave War.
+- **The puck is the schedule's own, as the Approvals list draws it (D1471)** — not a restyled bar, so it keeps the schedule's own size and the 4 Sep 26 full-width stretch goes (D1471, as drawn); its seat colours are the schedule's (D1476 — his "Follow the schedule": lighter than the grid's darker bars of 4 Sep 26, which go); ground personnel's puck gains the "G" chip on the Leave War.
 - **An OCU man's chip reads "O" (D1469),** in the schedule's OCU colour (read from the schedule's own chip list — one
   source); the group's heading stays "OCU".
 - **Ground personnel's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the
   schedule's own ground-crew puck (no chip) is unchanged.
-- Today (28 Oct 26): `leavewar/ui/MatrixRows.tsx` draws the name and a separate `catchip` badge ("OCU", "GND" from
-  `leavewar/engine/people.ts catText`); the schedule's puck draws its chip inside (`ui/html.ts`, `QCHIP` / `QCLASS`).
+- **Built (28 Oct 26):** `leavewar/ui/NamePuck.tsx` draws it for the grid's row (`MatrixRows.tsx`) and the phone's frozen copy
+  (`Matrix.tsx`) — the schedule's `.puck` / `.nm` / `.role` classes, so its look is the scheduler's stylesheet; the chip's text
+  `chipText` (the schedule's `QCHIP` for OCU, "G" for ground personnel), its colour the war's `catClass`; `matrix.css` adds
+  only the shrink to a phone's column and the chip colours the schedule's puck lacks (SXO gold, the personnel grey, ops
+  grey). The grid's pucks carry no `data-person`, so the schedule's selection, highlights and drag never reach them. The
+  OIL tracker's name list keeps its own badge (D1471 covers the grid). Evidence: `docs/handpass/2026-10-28-lw-name-pucks.md`.
 
 ## The Leave War's Approvals, its slim bar and the bell's war lines (the overhaul's M4, 27 Oct 26)
 

@@ -2614,3 +2614,18 @@ its value and never in innerText.
 **Suggested improvement:** In record-decisions.md's step 1: when he approves a page "as recommended", open that page and write each bold rule from the page's own recommended text; anything only in the plan behind it goes under "The agent's readings", marked to check with him.
 
 **Principle:** A blanket approval covers exactly what the approver was shown; the richer internal document behind it is the agent's reading until shown.
+
+### Observation 735: A roll-call's search for a removed class was confined to the area's own files
+
+**Status:** OPEN
+**Date:** 2026-10-28
+**Session context:** [LW-NAME-PUCKS] — the Leave War grid's name bar and badge replaced by the schedule's puck (claude/leave-war-m5-handoff-3a6602)
+**Skill:** bug-check order §6 (the roll-call)
+**Type:** internal
+**Phase/Area:** the roll-call's list of readers of what a change removes
+
+**Issue:** The removed classes (`.cs`, `.catchip`) were searched for in the Leave War's folder and the browser tests with patterns built around the area's own idioms. The fresh code read then found a style test in the scheduler's folder and two browser tests still reading them — one of which had silently gone vacuous (its list of cut names was now always empty, so it could never fail).
+
+**Suggested improvement:** In §6's row "A change that REMOVES or replaces a control…": a removed class or test id is searched for across the whole app, every test folder and the probes, by each exact selector on its own, uncapped; and every test whose query used it is checked for going vacuous (a guard that it still finds things).
+
+**Principle:** A removal's readers are found by searching for the removed thing everywhere, not where the change lives; a check that reads a removed element passes silently.
