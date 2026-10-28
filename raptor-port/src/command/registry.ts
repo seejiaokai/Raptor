@@ -50,6 +50,8 @@ export const LOGICAL_TO_BLOB: Record<LogicalCollection, string> = {
   'lw.war': 'leavewar',
   'lw.ledger': 'leavewar',
   'lw.opening': 'leavewar',
+  'lw.balance': 'leavewar',
+  'lw.grade': 'leavewar',
   'lw.oilpolicy': 'leavewar',
   'lw.postouts': 'leavewar',
   'lw.label': 'leavewar',

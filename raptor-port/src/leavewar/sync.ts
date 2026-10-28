@@ -23,7 +23,9 @@ import { goesOnProg, INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
-import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe } from '../state/perms'
+import { mayManageRoster, viewerId, me, mayEditInput, setLwDayOpenProbe, setLwBalanceProbe } from '../state/perms'
+import { balancesLocked, setHiddenIdentityLookup, snapshotNow } from './state/store'
+import { isBalKind, sameSnapshot, type SnapEntry } from './engine/leaveyear'
 import { SESSION, canEditSched } from '../state/auth'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (the cross-seam roster
    writers — PO-archive, restore — emit a people change too). */
@@ -273,6 +275,15 @@ export function installAbsenceDoor(): void {
     const date = cellId.slice(iDate + 1)
     return canEditCell(warHolding(getState().wars, date)?.period ?? null, 'member', date, memberToday())
   })
+  /* M5a — A MEMBER'S TYPED FIGURE (perms.ts setLwBalanceProbe): the lock as it stands when his change is saved, the
+     app's today, and whether his snapshot is the one the store builds from his approved leave now; and who a man with
+     no row on the war is, so his figures read his seat (the pilots' 15-day run — the spec §4) */
+  setLwBalanceProbe({
+    locked: () => balancesLocked(),
+    today: () => memberToday(),
+    sameSnap: (snap, pid, kind) => isBalKind(kind) && sameSnapshot(snap as SnapEntry[], snapshotNow(pid, kind)),
+  })
+  setHiddenIdentityLookup(id => warIdentityIfHidden(id))
   /* a refused war gesture rolled INPUTS back; the absence index was refreshed
      inside it, so re-read it before the repaint (Codex AS4-R2-001) */
   setRefusalHook(() => { refreshAbsences(true) })

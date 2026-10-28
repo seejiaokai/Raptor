@@ -200,7 +200,7 @@ function ingest(env: CommitEnvelope): void {
    access (he has no Undo door). Their revisions are still tracked, so nothing reads as out-of-band. */
 /* (…and the Leave War's "taken back" follow-up after an Undo or a Redo — M4 9.3: the line says what the Undo did, and is
    no step of its own) */
-const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.notice', 'lw.apprseen'])
+const NOT_STEPS = new Set<string>(['changes.seen', 'notices.seen', 'access.seen', 'person.backSeen', 'access.request', 'lw.ack', 'lw.notice', 'lw.apprseen', 'lw.seen'])
 
 /* A seen mark written INTO a record a step also holds (his welcome note on his own roster record, "OK, seen" on a Leave
    War day's list, the admins' bell on the requests) — the older step's before- and after-images still hold it unseen,
@@ -528,9 +528,11 @@ export function verifiedReplay(env: { origin: string; type: string; causedBy?: n
      overhaul's M4 security read (its finding 1, 27 Oct 26) — the war's own records: a request's "placed by" / "decided by"
      is written back only by the restore this module is applying, never by a change that merely calls itself one */
   const want = new Map<string, Change>()
-  for (const ch of a.changes) if (ch.collection === 'inputs' || ch.collection === 'lw.cell') want.set(`${ch.collection}/${ch.id}`, ch)
+  /* (M5a: and a member's own typed figure — his Undo or Redo puts back the earlier row with its older day and snapshot) */
+  const replays = (coll: string) => coll === 'inputs' || coll === 'lw.cell' || coll === 'lw.balance'
+  for (const ch of a.changes) if (replays(ch.collection)) want.set(`${ch.collection}/${ch.id}`, ch)
   return (c: Change): boolean => {
-    const w = c.collection === 'inputs' || c.collection === 'lw.cell' ? want.get(`${c.collection}/${c.id}`) : undefined
+    const w = replays(c.collection) ? want.get(`${c.collection}/${c.id}`) : undefined
     if (!w) return false
     if (w.op === 'delete') return c.op === 'delete'
     if (c.op !== 'put') return false

@@ -20,7 +20,7 @@ describe('LOGICAL_TO_BLOB', () => {
   /* [DB-READINESS] group A, phase 3: every war record is a row of the war's own collection — the cell record is still
      cell-granular for undo (R4-005), and lands in one row per record there (leavewar/state/rows.ts) */
   it('keeps every Leave War record in the war\'s own collection, and no stale name', () => {
-    for (const c of ['lw.cell', 'lw.war', 'lw.ledger', 'lw.opening', 'lw.oilpolicy', 'lw.postouts', 'lw.label', 'lw.current', 'lw.config'] as const) {
+    for (const c of ['lw.cell', 'lw.war', 'lw.ledger', 'lw.opening', 'lw.balance', 'lw.grade', 'lw.oilpolicy', 'lw.postouts', 'lw.label', 'lw.current', 'lw.config'] as const) {
       expect(LOGICAL_TO_BLOB[c], c).toBe('leavewar')
     }
     expect(Object.keys(LOGICAL_TO_BLOB)).not.toContain('lw.bid')

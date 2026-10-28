@@ -74,6 +74,11 @@ export const T = {
   bid: 'LeaveBid',
   award: 'LeaveLedger (an OIL award: counter oil, amount above 0)',
   ledger: 'LeaveOpening, LeaveLedger, LeaveCounter',
+  /* M5a (the build spec §3): a figure typed from the official leave app, one row per person and kind; a person's leave
+     grade; when a person last opened his own person window (the new-since-his-last-visit dots) */
+  balance: 'LeaveBalance',
+  grade: 'LeaveGrade',
+  lwseen: 'LeaveSeen',
   profile: 'LeavePersonProfile',
   tracker: 'Course, Syllabus, TrainingEvent, EventPrerequisite, Layout, CoursePlan, Enrolment, Attempt',
 } as const
@@ -113,6 +118,12 @@ export const PERMS: Record<string, PermRow> = {
      tracker and the figure breakdown have always shown; writing stays the admin's */
   [T.award]: row(cell('C R U D'), cell('R')),
   [T.ledger]: row(cell('C R U D'), cell('R')),
+  /* every member reads every man's figures (D1242); he types his own while they are unlocked (D1203, D1220) — his first
+     typing creates the row and his Undo of it deletes it (narrow read 5); the lock, what he may write and what the gate
+     recomputes are `ownershipViolation`'s */
+  [T.balance]: row(cell('C R U D'), cell('R', 'C U D')),
+  [T.grade]: row(cell('C R U D'), cell('R')),
+  [T.lwseen]: row(cell('', 'C R U'), cell('', 'C R U')),
   [T.profile]: row(cell('C R U D'), cell('R')),
   [T.tracker]: row(cell('C R U D'), cell('C R U D')),
 }
@@ -471,6 +482,13 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
      both — a member's clear takes no award and runs as `lw.edit` */
   'lw.award': op(T.award, 'U'),
   'lw.ledger': op(T.ledger, 'U'),
+  /* M5a: a typed figure — an admin's on any row, a member's on his own while unlocked (ownershipViolation); a person's
+     grade, the grades list and the lock — the admin's */
+  'lw.balance': op(T.balance, 'U', 'optional'),
+  'lw.grade': op(T.grade, 'U'),
+  'lw.grades': op(T.setting, 'U'),
+  'lw.balLock': op(T.setting, 'U'),
+  'lw.seen': op(T.lwseen, 'U', 'required'),
   'lw.clear': op(T.bid, 'U', 'optional', [[T.award, 'D']]),
   /* the Tracker: everyone with access edits it (D121) */
   'trk.marks': op(T.tracker, 'U'), 'trk.dates': op(T.tracker, 'U'), 'trk.roster': op(T.tracker, 'U'),
@@ -686,6 +704,16 @@ export function setLwDayOpenProbe(fn: LwDayOpen | null): void { LW_DAY_OPEN = fn
    day not open for him at that moment. */
 let LW_RESTORE: ReplayCheck | null = null
 export function setLwRestoreCheck(fn: ReplayCheck | null): void { LW_RESTORE = fn }
+/* A MEMBER'S TYPED FIGURE (M5a — the build spec §3, B6, finding 9). What the Leave War's store answers for the gate,
+   installed with the open-days probe (leavewar/sync.ts installAbsenceDoor): whether the admin's lock is on as it stands
+   NOW — read when the change is SAVED, so a box open while the admin locks, and his Undo or Redo after it, are refused
+   alike; the app's today; and whether a snapshot is the one the store itself builds from his approved leave at this
+   moment. With no war wired a member's balance write is refused. */
+export interface LwBalanceProbe { locked(): boolean; today(): string; sameSnap(snap: unknown[], pid: string, kind: string): boolean }
+let LW_BAL: LwBalanceProbe | null = null
+export function setLwBalanceProbe(fn: LwBalanceProbe | null): void { LW_BAL = fn }
+const TYPED_KINDS = new Set(['LVE', 'CCL', 'FCL', 'PL', 'EL', 'CL'])
+const isHalfNum = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && Number.isInteger(n * 2)
 export function lwClosedKeys(changes: Change[], actor: CommitEnvelope['actor'] | null | undefined): string[] {
   if (!LW_DAY_OPEN || !actor || actor.role !== 'member') return []
   const out: string[] = []
@@ -990,6 +1018,30 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         break
       }
       case 'lw.current': break
+      /* HIS OWN TYPED FIGURE (M5a, B6, finding 9): only his own row, only while unlocked as it stands when saved; never
+         OIL; halves only, carried forward only on LVE and within the figure; and — on a forward write — typed BY HIM,
+         TODAY, with the snapshot the store builds from his approved leave now, so he cannot type 20 with a snapshot that
+         shows 120, back-date it before a 1 Jan, or name another man as its typist. His own Undo or Redo of it, which the
+         timeline vouches for image for image, puts back the earlier row with its older day and snapshot (narrow read 1);
+         the lock still applies to it. */
+      case 'lw.balance': {
+        const i = c.id.lastIndexOf(':'), bpid = c.id.slice(0, i), kind = c.id.slice(i + 1)
+        if (bpid !== pid) return `another person's balance (${where})`
+        if (!LW_BAL) return `a balance with no Leave War to check it (${where})`
+        if (LW_BAL.locked()) return `balances locked by admin (${where})`
+        if (!TYPED_KINDS.has(kind)) return `a figure that is not typed (${where})`
+        if (c.op === 'delete') break
+        if (replayed === undefined) replayed = env.origin === 'restore' && REPLAY ? REPLAY(env) : null
+        if (replayed && replayed(c)) break
+        const v: any = c.after
+        if (!v || typeof v !== 'object' || Array.isArray(v)) return `a balance that will not read (${where})`
+        if (String(v.by) !== pid) return `who typed a balance (${where})`
+        if (v.day !== LW_BAL.today()) return `the day a balance was typed (${where})`
+        if (!isHalfNum(v.amount)) return `a balance that is not a half (${where})`
+        if (v.cf !== undefined && (kind !== 'LVE' || !isHalfNum(v.cf) || v.cf < 0 || v.cf > Math.max(v.amount, 0))) return `a carried forward outside its figure (${where})`
+        if (!Array.isArray(v.snap) || !LW_BAL.sameSnap(v.snap, pid, kind)) return `a balance's snapshot (${where})`
+        break
+      }
       /* [DRAFT-PENDING] (D170): "Mark all as seen" — a member writes his OWN seen row and no other (EditLogSeen, own row
          — one row per person since [DB-READINESS] group A, phase 4.3) */
       case 'settings':
@@ -1002,8 +1054,15 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
           if (c.id !== `noticeseen:${pid}`) return `another person's read record (${where})`
           break
         }
+        /* when he last opened his own person window on the Leave War (M5a, finding 10c) — his OWN row, by its one command */
+        if (c.id.startsWith('lwseen:') && env.type === 'lw.seen') {
+          if (c.id !== `lwseen:${pid}`) return `another person's last visit (${where})`
+          break
+        }
         return `an admin's record (${where})`
-      case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
+      /* (a person's grade is an admin's record too — without its case the `default` below would let a member write it:
+         finding 7) */
+      case 'lw.war': case 'lw.ledger': case 'lw.opening': case 'lw.grade': case 'lw.oilpolicy': case 'lw.postouts': case 'lw.label': case 'lw.config':
       case 'plan':
       /* the Tracker's flex settings (D1014): the one Tracker record a member never writes, whichever command carries it */
       case 'trk.flex':

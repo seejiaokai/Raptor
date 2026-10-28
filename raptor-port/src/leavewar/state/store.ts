@@ -172,13 +172,17 @@ import {
   type AvailPoints,
   type ReqNames,
 } from '../engine'
-import { mergeWar, absencesAt, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
+import { mergeWar, absencesAt, absenceRows, absenceVersion, awardsAt, awardRows, awardVersion, setAwardRows, type AwardRows, type MergedWar, type RecordSpans, type Views } from './merge'
 import { counterLabel } from '../engine/counters'
+import {
+  BAL_KINDS, isBalKind, KIND_COUNTER, personFigures, snapshotOf, START_GRADES, startYear,
+  type Balances, type BalKind, type DayRecs, type GradeDef, type GradeHists, type LeaveYearWorld, type PersonFigures, type SnapEntry, type TypedBal, type WhatIf,
+} from '../engine/leaveyear'
 import { creditWorth } from '../engine/credit'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 /* [DB-READINESS] group A, phase 3 — the war saved one row per record (state/rows.ts), each list's order on its records
    (command/ord.ts), and the one-time fold of an old store's whole-list records (storage/fold.ts) */
-import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, parseRecKey, parseOpeningKey, type LwNow } from './rows'
+import { lwRows, allRows, WAR, REC, LEDGER, OPENING, PROFILE, BALANCE, GRADE, parseRecKey, parseOpeningKey, parseBalanceKey, type LwNow } from './rows'
 import { mintOrd, byOrd } from '../../command/ord'
 import { registerConverter, type Converter } from '../../storage/fold'
 import type { Entry } from '../../storage/backend'
@@ -376,6 +380,19 @@ interface State {
    *  removes it. The demo overlay's own `to` (no `poArchive`) is not one of
    *  these and still lasts a session. */
   postOuts: Record<string, Person>
+
+  /* ---- M5a: a person's leave figures (the build spec §3; engine/leaveyear.ts) ---- */
+  /** The figures last TYPED from the official leave app, per person and kind (D1479) — `lw.balance`, one row each
+   *  (`bal:<pid>:<kind>`). OIL is never here (D1209). */
+  balances: Balances
+  /** Each person's leave grade over time (D1229, D1490) — `lw.grade`, one row each (`grade:<pid>`). */
+  gradeHist: GradeHists
+  /** The squadron's grades list (D1234, D1486) — `lw.config`'s `grades`. NULL while never edited: the engine then reads
+   *  the starting five (START_GRADES, fixed ids); the first admin edit writes the list whole (the spec's narrow read 6 —
+   *  no command runs at boot). */
+  grades: GradeDef[] | null
+  /** "Lock for members" (D1220, D1247, D1488) — `lw.config`'s `balLock`; false while absent. */
+  balLock: boolean
 }
 
 /** What every screen reads: the raw state with each war MERGED — its own
@@ -457,6 +474,10 @@ function blank(): State {
     focusSoft: false,
     focusQuiet: false,
     postOuts: {},
+    balances: {},
+    gradeHist: {},
+    grades: null,
+    balLock: false,
   })
 }
 
@@ -888,13 +909,54 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
    second war claiming a day another already holds, a record that would break its address's rules (two people each
    bidding the same half at once) — is left in storage as it is and not read: never deleted (plan §2.2), said once. Each
    address's records in their order (ord, id); the wars in theirs; the ledger by date. */
-function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger; postOuts: Record<string, Person>; persLabels: Record<string, string> } {
+/* M5a — the two new records, read from untrusted storage (the build spec §3): a figure typed is a half (a figure below
+   zero may be typed — reading 10), its carried forward a half from 0 to the figure (LVE only), its day a date, its
+   snapshot a list of [date, half]; a grade history a list of { id | null, from }. Anything else is not read. */
+const isHalf = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && Number.isInteger(n * 2)
+export function readTypedBal(x: unknown, kind: string): TypedBal | null {
+  if (!isPlainObject(x) || !isBalKind(kind)) return null
+  const v = x as any
+  if (!isHalf(v.amount) || !isDay(v.day) || typeof v.by !== 'string' || !Array.isArray(v.snap)) return null
+  if (v.cf !== undefined && (kind !== 'LVE' || !isHalf(v.cf) || v.cf < 0 || v.cf > Math.max(v.amount, 0))) return null
+  const snap: SnapEntry[] = []
+  for (const e of v.snap) {
+    if (!Array.isArray(e) || e.length !== 2 || !isDay(e[0]) || !['am', 'pm', 'day'].includes(e[1])) return null
+    snap.push([e[0], e[1]])
+  }
+  return { amount: v.amount, ...(v.cf !== undefined ? { cf: v.cf } : {}), day: v.day, by: v.by, snap }
+}
+export function readGradeHist(x: unknown): GradeHists[string] | null {
+  if (!isPlainObject(x) || !Array.isArray((x as any).hist)) return null
+  const out: GradeHists[string] = []
+  for (const e of (x as any).hist) {
+    if (!isPlainObject(e) || !isDay((e as any).from) || !((e as any).id === null || (typeof (e as any).id === 'string' && (e as any).id))) return null
+    out.push({ id: (e as any).id, from: (e as any).from })
+  }
+  return out
+}
+export function readGrades(x: unknown): GradeDef[] | null {
+  if (!Array.isArray(x)) return null
+  const out: GradeDef[] = []
+  for (const g of x) {
+    if (!isPlainObject(g)) return null
+    const v = g as any
+    if (typeof v.id !== 'string' || !v.id || typeof v.name !== 'string' || typeof v.order !== 'number' || !Array.isArray(v.days)) return null
+    if (!v.days.every((d: any) => isPlainObject(d) && typeof d.n === 'number' && Number.isFinite(d.n) && isDay(d.from))) return null
+    if (v.goneFrom !== undefined && !isDay(v.goneFrom)) return null
+    out.push({ id: v.id, name: v.name, order: v.order, days: v.days.map((d: any) => ({ n: d.n, from: d.from })), ...(v.goneFrom ? { goneFrom: v.goneFrom } : {}) })
+  }
+  return out
+}
+
+function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger; postOuts: Record<string, Person>; persLabels: Record<string, string>; balances: Balances; gradeHist: GradeHists } {
   const periods: Period[] = []
   const recRows: Array<{ key: string; warId: string; pid: string; date: string; rec: WarRec }> = []
   const openings: Openings = {}
   const ledger: Ledger = []
   const postOuts: Record<string, Person> = {}
   const persLabels: Record<string, string> = {}
+  const balances: Balances = {}
+  const gradeHist: GradeHists = {}
   const skipped: string[] = []
   const parse = (k: string): any => { try { return JSON.parse(backend.read(k) ?? 'null') } catch { return undefined } }
   for (const k of backend.keys()) {
@@ -916,6 +978,14 @@ function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger
     } else if (k.startsWith(OPENING)) {
       const o = parseOpeningKey(k), n = parse(k)
       if (o && readOpenings({ [o.pid]: { [o.counter]: n } })) (openings[o.pid] ??= {})[o.counter as CounterName] = n
+      else skipped.push(k)
+    } else if (k.startsWith(BALANCE)) {
+      const at = parseBalanceKey(k), b = at ? readTypedBal(parse(k), at.kind) : null
+      if (at && b) (balances[at.pid] ??= {})[at.kind as BalKind] = b
+      else skipped.push(k)
+    } else if (k.startsWith(GRADE)) {
+      const pid = k.slice(GRADE.length), h = pid ? readGradeHist(parse(k)) : null
+      if (h) gradeHist[pid] = h
       else skipped.push(k)
     } else if (k.startsWith(PROFILE)) {
       const pid = k.slice(PROFILE.length), x = parse(k)
@@ -941,7 +1011,7 @@ function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger
   }
   ledger.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : (a.enteredAt ?? '') < (b.enteredAt ?? '') ? -1 : (a.enteredAt ?? '') > (b.enteredAt ?? '') ? 1 : a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
   if (skipped.length) console.warn(`leavewar: ${skipped.length} saved row(s) this build cannot read are kept as they are, not read: ${skipped.slice(0, 5).join(', ')}${skipped.length > 5 ? ' …' : ''}`)
-  return { wars, openings, ledger, postOuts, persLabels }
+  return { wars, openings, ledger, postOuts, persLabels, balances, gradeHist }
 }
 
 /* what stands now for the half of a man's profile a command did not change (state/rows.ts lwRows) */
@@ -956,7 +1026,7 @@ let BOOT_KEYS: Set<string> | null = null
    entry or window, and its settings-like keys are the code's defaults, which read back the same with no row at all — so
    nothing of the war is stored until someone does something (a demo store's first boot still stores its whole world) */
 function writeWorldRows(recordsOnly = false): void {
-  const isRecord = (k: string) => [WAR, REC, LEDGER, OPENING, PROFILE].some(p => k.startsWith(p))
+  const isRecord = (k: string) => [WAR, REC, LEDGER, OPENING, PROFILE, BALANCE, GRADE].some(p => k.startsWith(p))
   const rows = allRows(lwDecompose(state).values(), nowOf(state)).filter(r => !recordsOnly || isRecord(r.key))
   const keys = new Set(rows.map(r => r.key))
   if (BOOT_KEYS) for (const k of BOOT_KEYS) if (!keys.has(k)) backend.remove(k)
@@ -1118,6 +1188,10 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
   const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
   const reqNames = readStored('reqnames', readReqNames) ?? {}
   const postOuts = stored ? stored.postOuts : {}
+  const balances = stored ? stored.balances : {}
+  const gradeHist = stored ? stored.gradeHist : {}
+  const grades = readStored('grades', readGrades)
+  const balLock = readStored('ballock', x => (typeof x === 'boolean' ? x : null)) ?? false
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -1133,7 +1207,7 @@ export function initStore(b?: StorageBackend, opts: { started?: boolean; seedDem
      back is what Leave War owns about a person (8 Sep 26): the posting-out
      windows, laid onto the projection by setPeople. (The admin's identity
      overrides it read beside them are gone — D460, D461.) */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, reqNames, postOuts })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, reqNames, postOuts, balances, gradeHist, grades, balLock })
   /* every list's order on its records — the seed's, and a stored record not yet placed (command/ord.ts) */
   state = placeRecords(null, state)
   /* the committed world is this one: a command the test hook below runs diffs against it, not the last world */
@@ -1354,6 +1428,12 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
     const row = s.openings[pid] as Record<string, number> | undefined
     for (const c of Object.keys(row || {})) m.set(`lw.opening/${pid}:${c}`, { collection: 'lw.opening', id: `${pid}:${c}`, value: row![c] })
   }
+  /* M5a — one record per typed figure and per person's grade, each its own row (state/rows.ts) */
+  for (const pid of Object.keys(s.balances)) {
+    const row = s.balances[pid] || {}
+    for (const k of Object.keys(row)) m.set(`lw.balance/${pid}:${k}`, { collection: 'lw.balance', id: `${pid}:${k}`, value: (row as any)[k] })
+  }
+  for (const pid of Object.keys(s.gradeHist)) m.set(`lw.grade/${pid}`, { collection: 'lw.grade', id: pid, value: { hist: s.gradeHist[pid] } })
   for (const pid of Object.keys(s.postOuts)) m.set(`lw.postouts/${pid}`, { collection: 'lw.postouts', id: pid, value: s.postOuts[pid] })
   for (const pid of Object.keys(s.persLabels)) m.set(`lw.label/${pid}`, { collection: 'lw.label', id: pid, value: s.persLabels[pid] })
   m.set('lw.oilpolicy/all', { collection: 'lw.oilpolicy', id: 'all', value: s.oilPolicy })
@@ -1365,6 +1445,8 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
       figureHidden: s.figureHidden, groupDefs: s.groupDefs, groupPriority: s.groupPriority,
       groupPriorityCustom: s.groupPriorityCustom, groupColors: s.groupColors,
       requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans, reqNames: s.reqNames,
+      /* the grades list only once an admin has edited it — absent, never an empty list (narrow read 6) */
+      ...(s.grades ? { grades: s.grades } : {}), balLock: s.balLock,
     },
   })
   return m
@@ -1412,6 +1494,22 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
       ;(s as any).openings = openings
       return
     }
+    case 'lw.balance': {
+      /* one typed figure: `<pid>:<kind>`, the kind from the RIGHT */
+      const i = e.id.lastIndexOf(':'), pid = e.id.slice(0, i), k = e.id.slice(i + 1)
+      const all = { ...((s as any).balances as Balances) }
+      const row: Record<string, TypedBal> = { ...(all[pid] || {}) } as Record<string, TypedBal>
+      if (e.op === 'delete') delete row[k]; else row[k] = e.value as TypedBal
+      if (Object.keys(row).length) all[pid] = row; else delete all[pid]
+      ;(s as any).balances = all
+      return
+    }
+    case 'lw.grade': {
+      const all = { ...((s as any).gradeHist as GradeHists) }
+      if (e.op === 'delete') delete all[e.id]; else all[e.id] = (e.value as any).hist
+      ;(s as any).gradeHist = all
+      return
+    }
     case 'lw.label': {
       const labels = { ...((s as any).persLabels as Record<string, string>) }
       if (e.op === 'delete') delete labels[e.id]; else labels[e.id] = e.value as string
@@ -1447,6 +1545,8 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
         requirements: v.requirements, eventRows: v.eventRows, showSans: v.showSans,
         /* a config record from before D1193 carries no names: both rows read their originals */
         reqNames: v.reqNames ?? {},
+        /* M5a: a config record from before the grades list or the lock reads the starting five, unlocked */
+        grades: v.grades ?? null, balLock: v.balLock === true,
       })
       return
     }
@@ -1493,7 +1593,7 @@ export const lwStore: CmdEnlistableStore = {
    layer record registration below AND the undo-store registration (undo-wire.ts):
    an omitted collection would fail the restore reducer with "no restore target".
    `lw.current` is in the list (harmless — nav is never restored). */
-export const LW_COLLS = ['lw.cell', 'lw.war', 'lw.ledger', 'lw.opening', 'lw.oilpolicy', 'lw.postouts', 'lw.label', 'lw.current', 'lw.config'] as const
+export const LW_COLLS = ['lw.cell', 'lw.war', 'lw.ledger', 'lw.opening', 'lw.balance', 'lw.grade', 'lw.oilpolicy', 'lw.postouts', 'lw.label', 'lw.current', 'lw.config'] as const
 
 function lwRegisterCommands(): void {
   if (LW_REGISTERED) return
@@ -1517,6 +1617,9 @@ function lwRegisterCommands(): void {
      (perms.ts COMMAND_OPS — the admin's): an Available row's Save — its name, who it counts and its amber and red points
      (D1190, D1191, D1202) — and a Required row's name (D1193) */
   for (const t of ['lw.availrow', 'lw.reqname']) cmdDefinePermission(t, cmdAnyone)
+  /* M5a — a typed figure, a person's grade, the grades list and the lock: each its own command, so the gate asks its
+     own row of the permissions table (perms.ts COMMAND_OPS) and Undo names it (undo/describe.ts) */
+  for (const t of ['lw.balance', 'lw.grade', 'lw.grades', 'lw.balLock']) cmdDefinePermission(t, cmdAnyone)
   for (const c of LW_COLLS) cmdRegisterRecord({ key: `leavewar:${c}`, cls: 'record', collection: c, module: 'leavewar' })
   /* [DB-READINESS] group A, phase 3 — THE WAR'S ROWS, WRITTEN FROM THE COMMAND STREAM (state/rows.ts): every command's
      changes to the war, mapped to the rows they land in and written through the war's own door at phase 9 — inside the
@@ -1686,6 +1789,7 @@ function historySnap(): string {
     manningOrder: s.manningOrder, manningHidden: s.manningHidden, figureHidden: s.figureHidden,
     groupDefs: s.groupDefs, groupPriority: s.groupPriority, groupPriorityCustom: s.groupPriorityCustom,
     requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans, reqNames: s.reqNames,
+    balances: s.balances, gradeHist: s.gradeHist, grades: s.grades, balLock: s.balLock,
   })
 }
 
@@ -1753,7 +1857,8 @@ function historyApply(i: number): void {
   const snap = JSON.parse(HIST.stack[i]) as Pick<State,
     'wars' | 'openings' | 'ledger' | 'oilPolicy' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
     | 'persLabels' | 'manningOrder' | 'manningHidden' | 'figureHidden' | 'groupDefs'
-    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans' | 'reqNames'>
+    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans' | 'reqNames'
+    | 'balances' | 'gradeHist' | 'grades' | 'balLock'>
   HIST.ix = i
   historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
   locked(() => {
@@ -4939,6 +5044,217 @@ export function removeLedgerEntry(id: string): boolean {
  * breakdown sheet shows the new opening, so the number is explained, not
  * hidden.
  */
+/* =====================================================================
+   M5a — A PERSON'S LEAVE FIGURES (the build spec §1, §3; engine/leaveyear.ts)
+   ---------------------------------------------------------------------
+   One engine every screen reads: the store hands it one man's records on every date and the world beside them, and
+   remembers the answer until anything it reads changes. The writers below are the only doors that change a typed
+   figure, a grade, the grades list or the lock — each its own named command, so the gate asks the right row of the
+   permissions table (state/perms.ts COMMAND_OPS) and Undo names it. */
+
+/** Who a figure is about when he has no row on the war (a SANS man while SANS is off): sync.ts installs the lookup
+ *  (`warIdentityIfHidden`'s source), so the pilots' 15-day rule reaches him too (the spec §4). */
+let HIDDEN_IDENTITY: ((id: string) => Person | null) | null = null
+export function setHiddenIdentityLookup(fn: ((id: string) => Person | null) | null): void { HIDDEN_IDENTITY = fn; FIG_CACHE.clear() }
+
+/** EVERY RECORD OF ONE PERSON ON EVERY DATE: his absences from the Inputs — on every date, whatever period holds it, as
+ *  the absence index is war-agnostic (so leave on a date no period covers still counts — reading 17) — and the war's
+ *  requests on him. */
+export function dayRecsOf(pid: string): DayRecs {
+  const out = new Map<string, Contrib[]>()
+  const abs = absenceRows().get(pid)
+  if (abs) for (const [d, list] of abs) out.set(d, [...list])
+  for (const w of getState().wars) {
+    const row = w.views[pid]
+    if (!row) continue
+    for (const d of Object.keys(row)) {
+      const req = row[d]!.all.filter(c => c.kind === 'request')
+      if (req.length) out.set(d, [...(out.get(d) ?? []), ...req])
+    }
+  }
+  return out
+}
+
+/** the squadron's grades list as it stands — the starting five until an admin first edits it (narrow read 6) */
+export function gradesList(): readonly GradeDef[] { return state.grades ?? START_GRADES }
+/** the grades still on the list (a deleted one keeps its record for past 1 Jans — finding 11), in the admin's order */
+export function liveGrades(): GradeDef[] {
+  const today = memberToday()
+  return gradesList().filter(g => !g.goneFrom || g.goneFrom > today).slice().sort((a, b) => a.order - b.order)
+}
+/** his grade today, null for "No grade" — a grade deleted since reads as none */
+export function gradeOf(pid: string): GradeDef | null {
+  const today = memberToday()
+  let id: string | null = null
+  for (const e of state.gradeHist[pid] ?? []) if (e.from <= today) id = e.id
+  const g = id ? gradesList().find(x => x.id === id) : undefined
+  return g && (!g.goneFrom || g.goneFrom > today) ? g : null
+}
+/** the days a grade adds on the next 1 Jan, as its list reads today ("+36") */
+export function gradeDaysNow(g: GradeDef): number {
+  const today = memberToday()
+  let n = 0
+  for (const d of g.days) if (d.from <= today) n = d.n
+  return n
+}
+export function balancesLocked(): boolean { return state.balLock }
+
+function leaveWorld(pid: string): LeaveYearWorld {
+  const hidden = HIDDEN_IDENTITY && !state.people.some(p => p.id === pid) ? HIDDEN_IDENTITY(pid) : null
+  return {
+    wars: getState().wars, today: memberToday(),
+    ctx: { eventDefs: state.eventDefs, people: hidden ? [...state.people, hidden] : state.people },
+    balances: state.balances, openings: state.openings, ledger: state.ledger, grades: gradesList(), gradeHist: state.gradeHist,
+  }
+}
+/* remembered until anything the engine reads changes — the merged wars (they carry the requests and the periods), the
+   absence index, the figures, the grades, the ledger, the roster, the event types and the app's today */
+const FIG_CACHE = new Map<string, PersonFigures>()
+let FIG_KEY: unknown[] = []
+function figKey(): unknown[] {
+  const st = getState()
+  return [st.wars, absenceVersion(), state.balances, state.gradeHist, state.grades, state.ledger, state.openings, state.people, state.eventDefs, memberToday()]
+}
+/** EVERY FIGURE OF ONE PERSON (engine/leaveyear.ts personFigures) — the person window, the Balances page, the grid's
+ *  figure beside his name, My leave, Approvals' LVE BAL and the bid windows all read this one answer. */
+export function leaveFiguresOf(pid: string, whatIf?: WhatIf): PersonFigures {
+  if (whatIf) return personFigures(leaveWorld(pid), pid, dayRecsOf(pid), whatIf)
+  const key = figKey()
+  if (key.length !== FIG_KEY.length || key.some((k, i) => k !== FIG_KEY[i])) { FIG_CACHE.clear(); FIG_KEY = key }
+  let hit = FIG_CACHE.get(pid)
+  if (!hit) { hit = personFigures(leaveWorld(pid), pid, dayRecsOf(pid)); FIG_CACHE.set(pid, hit) }
+  return hit
+}
+/** what the engine needs to answer a range question (Days taken, the grid's second line) — the same world */
+export function leaveWorldOf(pid: string): { world: LeaveYearWorld; days: DayRecs } {
+  return { world: leaveWorld(pid), days: dayRecsOf(pid) }
+}
+/** the snapshot the store builds now for his kind — what a typed figure keeps, and what the gate compares (finding 9) */
+export function snapshotNow(pid: string, kind: BalKind): SnapEntry[] {
+  return snapshotOf(dayRecsOf(pid), kind)
+}
+
+const isHalfFig = (n: unknown): n is number => typeof n === 'number' && Number.isFinite(n) && Number.isInteger(n * 2)
+/** WHY a typed figure cannot be saved, or null — the store's own refusal (the gate repeats every part of it at the
+ *  commit, so no other door gets round it). The words are what the box shows. */
+export function balanceProblem(pid: string, kind: string, amount: number, cf?: number): string | null {
+  if (!isBalKind(kind)) return 'OIL is not typed here: it comes from the OIL tracker'
+  if (!isHalfFig(amount)) return 'Type a whole number or a half, like 17 or 17.5'
+  if (cf !== undefined && (kind !== 'LVE' || !isHalfFig(cf) || cf < 0 || cf > Math.max(amount, 0))) return `Carried forward is from 0 to ${Math.max(amount, 0)}`
+  if (state.role !== 'admin') {
+    if (!state.viewer || pid !== state.viewer) return 'You can change only your own figures'
+    if (state.balLock) return 'Locked by admin'
+  }
+  if (!state.people.some(p => p.id === pid) && !(HIDDEN_IDENTITY && HIDDEN_IDENTITY(pid))) return 'That person is not on the Leave War'
+  return null
+}
+
+/** TYPE A FIGURE (D1479, B6). The whole row is written afresh (narrow read 2): `amount` as the App bal box then shows,
+ *  for LVE `cf` as the carried-forward box then shows, clamped to 0 … the figure; the day is the app's today, the typist
+ *  the person signed in, the snapshot his approved leave of that kind now. `from` is the running figure shown before the
+ *  save — the history line's "18 → 20" (state/changelines.ts). True when it was saved. A man with no row on the war (a
+ *  SANS man while SANS is off) is accepted (the spec §4). */
+export function setTypedBalance(pid: string, kind: BalKind, amount: number, cf?: number, from?: { amount: number; cf?: number }): boolean {
+  const lveCf = kind === 'LVE' ? Math.max(0, Math.min(cf ?? 0, Math.max(amount, 0))) : undefined
+  if (balanceProblem(pid, kind, amount, lveCf)) return false
+  const rec: TypedBal = { amount, ...(lveCf !== undefined ? { cf: lveCf } : {}), day: memberToday(), by: actorNow() ?? state.viewer ?? '', snap: snapshotNow(pid, kind) }
+  const note = JSON.stringify({ k: kind, from: from ?? null, to: { amount, ...(lveCf !== undefined ? { cf: lveCf } : {}) } })
+  gesture('lw.balance', () => {
+    state = withCurrent({ ...state, balances: { ...state.balances, [pid]: { ...state.balances[pid], [kind]: rec } } })
+    persistNotify()
+  }, { note })
+  return state.balances[pid]?.[kind] === rec
+}
+
+/* the grades list written whole, admin only, as one command — the first edit writes the starting five with it */
+function writeGrades(next: GradeDef[], note: string): boolean {
+  if (state.role !== 'admin') return false
+  gesture('lw.grades', () => { state = withCurrent({ ...state, grades: next }); persistNotify() }, { note })
+  return state.grades === next
+}
+const gradeCopy = (): GradeDef[] => gradesList().map(g => ({ ...g, days: g.days.map(d => ({ ...d })) }))
+/** two grades on the list may not share a name (the spec §2.2) */
+export function gradeNameProblem(name: string, exceptId?: string): string | null {
+  const n = name.trim()
+  if (!n) return 'Give the grade a name'
+  if (liveGrades().some(g => g.id !== exceptId && g.name.trim().toLowerCase() === n.toLowerCase())) return 'Another grade has that name'
+  return null
+}
+export function addGrade(name: string, days: number): string | null {
+  if (gradeNameProblem(name) || !Number.isFinite(days) || days < 0) return null
+  const list = gradeCopy()
+  let id = 'g1'
+  for (let i = 1; list.some(g => g.id === id); i++) id = `g${i}`
+  list.push({ id, name: name.trim(), order: Math.max(-1, ...list.map(g => g.order)) + 1, days: [{ n: days, from: memberToday() }] })
+  return writeGrades(list, `add ${name.trim()}`) ? id : null
+}
+export function renameGrade(id: string, name: string): boolean {
+  if (gradeNameProblem(name, id)) return false
+  const list = gradeCopy(), g = list.find(x => x.id === id)
+  if (!g || g.name === name.trim()) return false
+  const was = g.name
+  g.name = name.trim()
+  return writeGrades(list, `rename ${was} → ${g.name}`)
+}
+/** a grade's "+ days" (D1490 — counts from the next 1 Jan: a change on a day replaces that day's) */
+export function setGradeDays(id: string, days: number): boolean {
+  if (!Number.isFinite(days) || days < 0 || !Number.isInteger(days * 2)) return false
+  const list = gradeCopy(), g = list.find(x => x.id === id)
+  if (!g) return false
+  const today = memberToday()
+  if (gradeDaysNow(g) === days) return false
+  const last = g.days[g.days.length - 1]
+  if (last && last.from === today) last.n = days
+  else g.days.push({ n: days, from: today })
+  return writeGrades(list, `${g.name} +${days}`)
+}
+/** drag a grade to its place among the live grades (D1486, D890) */
+export function moveGrade(id: string, toIndex: number): boolean {
+  const live = liveGrades()
+  const from = live.findIndex(g => g.id === id)
+  if (from < 0) return false
+  const to = Math.max(0, Math.min(live.length - 1, toIndex))
+  if (from === to) return false
+  const order = live.map(g => g.id)
+  order.splice(from, 1); order.splice(to, 0, id)
+  const list = gradeCopy()
+  for (const g of list) { const i = order.indexOf(g.id); if (i >= 0) g.order = i }
+  return writeGrades(list, `move ${live[from]!.name}`)
+}
+/** how many people hold a grade today — what "Delete" asks first (the spec §2.2) */
+export function gradeHolders(id: string): number {
+  let n = 0
+  for (const pid of Object.keys(state.gradeHist)) if (gradeOf(pid)?.id === id) n++
+  return n
+}
+/** delete a grade: its holders read "No grade" from today; past 1 Jans keep what it added (reading 11); Undo brings it back */
+export function deleteGrade(id: string): boolean {
+  const list = gradeCopy(), g = list.find(x => x.id === id)
+  if (!g || g.goneFrom) return false
+  g.goneFrom = memberToday()
+  return writeGrades(list, `delete ${g.name}`)
+}
+/** a person's grade (D1486, D1490 — counts from the next 1 Jan; a second change the same day replaces the first) */
+export function setPersonGrade(pid: string, id: string | null): boolean {
+  if (state.role !== 'admin') return false
+  if (id !== null && !liveGrades().some(g => g.id === id)) return false
+  if ((gradeOf(pid)?.id ?? null) === id) return false
+  const today = memberToday()
+  const hist = [...(state.gradeHist[pid] ?? [])]
+  const was = gradeOf(pid)?.name ?? 'No grade'
+  if (hist.length && hist[hist.length - 1]!.from === today) hist[hist.length - 1] = { id, from: today }
+  else hist.push({ id, from: today })
+  gesture('lw.grade', () => { state = withCurrent({ ...state, gradeHist: { ...state.gradeHist, [pid]: hist } }); persistNotify() },
+    { note: JSON.stringify({ from: was, to: id ? gradesList().find(g => g.id === id)!.name : 'No grade' }) })
+  return state.gradeHist[pid] === hist
+}
+/** "Lock for members" (D1220, D1247, D1488) — the admin's one switch */
+export function setBalanceLock(on: boolean): boolean {
+  if (state.role !== 'admin' || state.balLock === on) return false
+  gesture('lw.balLock', () => { state = withCurrent({ ...state, balLock: on }); persistNotify() })
+  return state.balLock === on
+}
+
 export function setBalance(personId: string, counter: CounterName, target: number): boolean {
   if (state.role !== 'admin') return false
   if (!state.people.some(p => p.id === personId)) return false
