@@ -92,7 +92,11 @@ function dock(p: HTMLElement): void {
   p.style.left = `${Math.round(Math.max(12, Math.min(r.right, window.innerWidth) - 8 - w))}px`
   p.style.top = `${top}px`
   p.style.bottom = 'auto'
-  p.style.maxHeight = `${Math.max(200, window.innerHeight - top - 10)}px`
+  /* its height is the stylesheet's, from this top (personwindow.css): down to 10px off the screen's foot — or, while
+     Approvals' slim bar is up, above the bar, which can come up while the window stands (the walk's A-F6; the M5a browser
+     tests, 29 Oct 26: docked, its foot ran across the bar) */
+  p.style.setProperty('--pw-top', `${top}px`)
+  p.style.maxHeight = ''
   /* it places itself: the shared window's keyboard follower leaves it alone while no keyboard is up (Sheet.tsx) */
   p.dataset.docked = '1'
 }

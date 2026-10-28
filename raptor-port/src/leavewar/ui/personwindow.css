@@ -16,6 +16,14 @@
     width: 560px; max-width: calc(100vw - 24px); bottom: auto; transform: translate(var(--lw-dx, 0px), var(--lw-dy, 0px));
     overflow: auto;
   }
+  /* (built) its height, from the top PersonWindow.tsx docks it at (`--pw-top`): down to 10px off the screen's foot, at least
+     200; while Approvals' slim bar is up, above the bar as every window of the war stands (the walk's A-F6 — approvals.css
+     keeps the others 74px off the foot), so a bar that comes up while the window stands is never crossed */
+  @media (min-width: 700.02px) {
+    .bidsheet[data-testid="person-window"] { max-height: max(200px, calc(100vh - var(--pw-top, 72px) - 10px)); }
+    /* as specific as approvals.css's own rule for the other windows, `:not(.full):not(.fullpage)` and all, so this one wins */
+    &:has([data-testid="appr-slim"]) .bidsheet[data-testid="person-window"]:not(.full):not(.fullpage) { max-height: max(200px, calc(100vh - var(--pw-top, 72px) - 74px)); }
+  }
   /* on a phone in the middle of the screen (D997 — the app's float windows' own way, as the Grades window): both edges at the
      drawing's 10px, automatic margins, its own height up to the visible screen less 24 — AND UNDER THE TOP BAR (the M5a
      walk, 29 Oct 26: a window as tall as the screen allowed stood at 33–45, over the bar's lower half, where the drawing
