@@ -56,6 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1514 | 29 Oct 26 | The Leave War's Events list is split into Holidays (public holidays and Off days) and Squadron events (every other kind, and events with no kind): on a desktop the two side by side in a window twice as wide; on a phone one under the other. |
+| D1513 | 29 Oct 26 | In the Leave War's Events list every line's kind — its coloured square and word (Public holiday, Off day, Working event, No leave) — starts at the same place, so the kinds read down one column; a line with no kind leaves that column empty. |
 | D1512 | 29 Oct 26 | Each line of the Leave War's Events list shows plainly how to edit it and how to delete it — a control a person can see on the line itself, not only a tap on the line that opens the event. |
 | D1511 | 29 Oct 26 | On a phone the Leave War's Events list opens as a full page from the top of the screen, as the "Open for bidding" window does (D1264), so its lines stay in one place as the list grows; a desktop keeps the floating window. |
 | D1506 | 29 Oct 26 | The OIL tracker opened from the Leave War's Approvals page closes back onto that page as he left it — its lit lines, its dots, the dates picked and its place in the list — not onto the grid. |

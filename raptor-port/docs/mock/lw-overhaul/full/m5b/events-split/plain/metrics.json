@@ -7,6 +7,12 @@
   "list": 504,
   "shown": 504
  },
+ "P-A-kinds": {
+  "w": 96,
+  "lefts": [
+   280
+  ]
+ },
  "P-A-sections": {
   "window": {
    "w": 402,
@@ -14,6 +20,12 @@
   },
   "list": 586,
   "shown": 586
+ },
+ "P-C-kinds": {
+  "w": 96,
+  "lefts": [
+   214
+  ]
  },
  "P-C-line-controls": {
   "window": {
@@ -32,6 +44,12 @@
   "list": 504,
   "shown": 504
  },
+ "D-A-kinds": {
+  "w": 96,
+  "lefts": [
+   925
+  ]
+ },
  "D-A-sections": {
   "window": {
    "w": 560,
@@ -39,6 +57,12 @@
   },
   "list": 586,
   "shown": 586
+ },
+ "D-C-kinds": {
+  "w": 96,
+  "lefts": [
+   857
+  ]
  },
  "D-C-line-controls": {
   "window": {
@@ -49,6 +73,13 @@
   "shown": 586
  },
  "D-C-clipped": [],
+ "D-B-kinds": {
+  "w": 96,
+  "lefts": [
+   650,
+   1205
+  ]
+ },
  "D-B-side-by-side": {
   "window": {
    "w": 1120,
@@ -56,5 +87,21 @@
   },
   "list": 332,
   "shown": 332
- }
+ },
+ "D-BC-kinds": {
+  "w": 96,
+  "lefts": [
+   582,
+   1137
+  ]
+ },
+ "D-BC-side-by-side-icons": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-BC-clipped": []
 }

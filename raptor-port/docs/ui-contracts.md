@@ -8423,7 +8423,8 @@ drawings (`scripts/drawcheck/specs/lw-m5b.mjs`, D1495).
 - **Management** (D1502): a built-in Quals column beside SXO (`engine/qualcols.ts`), no ✕ in Edit quals, put back by the
   writer and at load; on the war a qualification group known by its key `mgmt`, first once added (`addGroup`), the
   palette's blue until picked. A man in Management still counts in his seat.
-- **Each line shows how to edit and delete it (D1512, 29 Oct 26 — "theres no edit icon or cross icon") — to build:** a control on the line itself for each, not only the tap that opens the event; drawn for him as question 5 (the app's pencil, D1134, and a ✕ that asks once), built with the Holidays / Squadron events split once he answers.
+- **Split into Holidays and Squadron events (D1514, 29 Oct 26 — "for Q3. ill prefer B") — to build:** public holidays and Off days in one section, every other kind (and no kind) in the other; side by side in a window twice as wide on a desktop, one under the other on a phone; each headed with its name and count.
+- **Each line shows how to edit and delete it (D1512, 29 Oct 26 — "theres no edit icon or cross icon") — to build:** a control on the line itself for each, not only the tap that opens the event; drawn for him as question 5 (the app's pencil, D1134, and a ✕ that asks once), built with the Holidays / Squadron events split once he answers. **Every line's kind starts at the same place (D1513)** — its square and word one column down the list, as wide as its longest word, empty on a line with no kind.
 - **On a phone the Events list is a full page from the top (D1511, 29 Oct 26 — "Events should show at the top"),** as "Open for bidding" is (D1264): `Sheet`'s `page` form; a desktop keeps the floating window.
 - **The Events list** (`leavewar/ui/EventsSheet.tsx`, D1500): Settings' Events… closes Settings and opens it in the same
   frame — "EVENTS" and the period in View; "＋ Event" left, "Edit presets" right; one line an event over the period

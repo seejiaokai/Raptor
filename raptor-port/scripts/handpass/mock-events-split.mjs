@@ -80,6 +80,30 @@ for (const kind of ['P', 'D']) {
   }, { LINES, KW })
   if (built !== 'ok') throw new Error(built)
   const sheetBox = async () => p.locator('[data-testid="events-sheet"]').first().boundingBox()
+  /* D1513 ("can u align the design like the coloured green is the same horizontal alignment with off day, working event
+     etc"): in the proposed frames every line's kind starts at the same place — one column as wide as its longest word, a
+     line with no kind keeping the column empty. "Today" (frame 0) is drawn as the app is. */
+  const alignKinds = () => p.evaluate(() => {
+    const lines = [...document.querySelectorAll('[data-testid="events-list"] .hol-line')]
+    lines.forEach(l => { if (!l.querySelector('.evpeek-kind')) { const e = document.createElement('span'); e.className = 'evpeek-kind mock-nokind'; e.style.visibility = 'hidden'; l.insertBefore(e, l.querySelector('.mock-ctls')) } })
+    const ks = lines.map(l => l.querySelector('.evpeek-kind'))
+    ks.forEach(k => { k.style.width = ''; k.style.justifyContent = '' })
+    const w = Math.ceil(Math.max(...ks.map(k => k.getBoundingClientRect().width)))
+    ks.forEach(k => { k.style.width = w + 'px'; k.style.justifyContent = 'flex-start'; k.style.flex = 'none' })
+    /* the date column as wide as its longest date, not the line's fixed 42%, so the names get the room (on the desktop's
+       side-by-side lists the 42% cut "Off — National Day"); where the name stands under the date (a phone) it is left alone */
+    // a date stacked over its name (a phone) takes back its own size: a width given in an earlier frame would stretch it tall
+    lines.forEach(l => { const d = l.querySelector('.mock-tx .hol-when'); if (d) { d.style.flex = ''; d.style.whiteSpace = '' } })
+    const ws = lines.map(l => l.querySelector('.hol-when')).filter(e => e && !e.closest('.mock-tx'))
+    ws.forEach(e => { e.style.flex = ''; e.style.width = '' })
+    if (ws.length) {
+      ws.forEach(e => { e.style.flex = '0 0 auto'; e.style.whiteSpace = 'nowrap' })
+      const dw = Math.ceil(Math.max(...ws.map(e => e.getBoundingClientRect().width)))
+      ws.forEach(e => { e.style.flex = `0 0 ${dw}px` })
+    }
+    const lefts = ks.filter(k => !k.classList.contains('mock-nokind')).map(k => Math.round(k.getBoundingClientRect().left))
+    return { w, lefts: [...new Set(lefts)] }
+  })
   const snap = async name => {
     const ok = await p.evaluate(() => document.querySelector('[data-testid="events-list"]')?.dataset.mocked === '1')
     if (!ok) throw new Error('the drawn list was wiped before ' + name)
@@ -113,12 +137,13 @@ for (const kind of ['P', 'D']) {
       + (PLAIN ? '.mock-sec{text-decoration:none!important}' : '')  /* the new part, marked on itself */
     document.head.appendChild(st)
   }, { secHTML, PLAIN })
+  metrics[`${kind}-A-kinds`] = await alignKinds()
   await snap('A-sections')
   // C — A, with each line's edit and delete controls on the line itself (D1512, question 5): the app's one pencil (D1134,
   // ui/pen.ts PEN_INNER — copied here as drawn) in a clone of the window's ✕ button, then the ✕; one line shown armed
   // ("Delete?", the ✕ widened, in the ✕'s own red) after its first press
   const PEN = '<svg class="pen-ic solo" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-45 12 12)" fill="currentColor"><rect x="8.5" y="1" width="7" height="4.6" rx="2.4"/><rect x="8.5" y="6.4" width="7" height="12.2" rx=".3"/><path d="M8.5 19.4h7l-2.6 3.1a1.2 1.2 0 0 1-1.8 0Z"/></g></svg>'
-  await p.evaluate(({ delHTML, PEN, PLAIN }) => {
+  const addControls = () => p.evaluate(({ delHTML, PEN, PLAIN }) => {
     const mk = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); const b = t.content.firstElementChild; b.removeAttribute('data-testid'); b.classList.add('mock-ctl'); return b }
     const lines = [...document.querySelectorAll('.mock-split .hol-line')]
     lines.forEach((l, i) => {
@@ -136,6 +161,7 @@ for (const kind of ['P', 'D']) {
       + (PLAIN ? '.mock-ctls{outline:none!important}' : '')
     document.head.appendChild(st)
   }, { delHTML, PEN, PLAIN })
+  await addControls()
   // on a phone the two icons leave the name no room (measured: every name cut to its first letter), so there the name
   // stands under the date, the kind's mark and word and the icons to their right — a drawing choice to put to him
   if (phone) await p.evaluate(() => {
@@ -151,6 +177,7 @@ for (const kind of ['P', 'D']) {
       .mock-split .hol-line .evpeek-kind{flex:none}`
     document.head.appendChild(st)
   })
+  metrics[`${kind}-C-kinds`] = await alignKinds()
   await snap('C-line-controls')
   // the widest a line gets on a phone: does any name, date or kind word lose letters?
   metrics[`${kind}-C-clipped`] = await p.evaluate(() => [...document.querySelectorAll('.mock-split .hol-line')].flatMap(l =>
@@ -166,7 +193,14 @@ for (const kind of ['P', 'D']) {
       const s = document.querySelector('.mock-split'); s.style.flexDirection = 'row'; s.style.gap = '16px'; s.style.alignItems = 'flex-start'
       document.querySelectorAll('.mock-col').forEach(c => { c.style.flex = '1 1 0' })
     })
+    metrics[`${kind}-B-kinds`] = await alignKinds()
     await snap('B-side-by-side')
+    // B as he picked it (D1514), with the line icons (D1512) and the kinds in one column (D1513) — the desktop he will get
+    await addControls()
+    metrics[`${kind}-BC-kinds`] = await alignKinds()
+    await snap('BC-side-by-side-icons')
+    metrics[`${kind}-BC-clipped`] = await p.evaluate(() => [...document.querySelectorAll('.mock-split .hol-line')].flatMap(l =>
+      [...l.querySelectorAll('.hol-when,.hol-name,.evpeek-kind')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)))
   }
   await ctx.close()
 }
