@@ -12,7 +12,7 @@ const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.env.W2_OUT || join(HERE, '../../docs/img/handpass/2026-10-29-lw-m5b/w2')
 const ONLY = process.env.ONLY || ''
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
-const ORIGIN = 'http://localhost:4197', DIST = 'C:/dcm5bdraw/walkdist'
+const ORIGIN = 'http://localhost:4197', DIST = process.env.WALK_DIST || 'C:/dcm5bdraw/walkdist'
 const q = t => `[data-testid="${t}"]`
 mkdirSync(OUT, { recursive: true })
 const on = g => !ONLY || ONLY.split(',').includes(g)

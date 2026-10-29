@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { displayRoster, getState, groupIdOf, groupsInOrder, initStore, rosterFollowsDefault, setRole, setRosterOrder } from '../state/store'
+import { displayRoster, getState, groupIdOf, groupsInOrder, initStore, rosterFollowsDefault, setQualCatalog, setRole, setRosterOrder } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { LIFT_LAND_MS } from '../../ui/lift'
@@ -226,9 +226,71 @@ describe('group colours in ⚙', () => {
     // a press inside the palette leaves it open
     fireEvent.pointerDown(screen.getByTestId(`gpalette-${SCD}`))
     expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
-    // a press anywhere else in the sheet shuts it
+    // a press anywhere else in the sheet shuts it: hidden at the press, gone once the press resolves (F7, below)
     fireEvent.pointerDown(screen.getByTestId('settings-sheet'))
+    expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(true)
+    fireEvent.click(screen.getByTestId('settings-sheet'))
     expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+  })
+
+  /* NOTHING MOVES UNDER THE FINGER (the M5b walk's F7, 29 Oct 26). Adding a group opens its palette under its row; on a
+     phone the next tap — on another "+" chip — closed the palette on the PRESS, the chips below slid up into its room,
+     and the iPhone, which places the tap where the finger lifts, gave it to the chip that slid under the finger: "+ NVG"
+     added for "+ SC DAY". The palette now hides at the press but keeps its room until the press resolves (its click, a
+     cancel, or a short wait after the lift with no click), so the chip pressed is the chip that gets the tap. */
+  it('F7: a press outside the palette hides it but keeps its room until the press resolves', () => {
+    setRole('admin')
+    if (!getState().qualCatalog.some(q => q.k === 'mgmt')) setQualCatalog([...getState().qualCatalog, { k: 'mgmt', label: 'Management' }])
+    render(<Matrix />)
+    openSettings()
+    fireEvent.click(screen.getByTestId('gadd-q:mgmt'))
+    const pal = screen.getByTestId('gpalette-q:mgmt')
+    // the press on the next chip: the palette is hidden, still in the page (its room kept) — nothing below it moves
+    fireEvent.pointerDown(screen.getByTestId(`gadd-${SCD}`))
+    expect(screen.getByTestId('gpalette-q:mgmt')).toBe(pal)
+    expect(pal.classList.contains('closing')).toBe(true)
+    expect(pal.getAttribute('aria-hidden')).toBe('true')
+    // the tap lands: the chip pressed adds ITS group, the old palette goes, the new group's palette opens
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+    expect(screen.getByTestId(`grow-${SCD}`)).toBeTruthy()
+    expect(screen.queryByTestId('gpalette-q:mgmt')).toBeNull()
+    expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(false)
+  })
+
+  it('F7: a press that never becomes a tap (a scroll, a cancel) still closes the palette', () => {
+    vi.useFakeTimers()
+    try {
+      setRole('admin')
+      render(<Matrix />)
+      openSettings()
+      fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+      // cancelled (the browser took the touch for a scroll): gone at once
+      fireEvent.pointerDown(screen.getByTestId('settings-sheet'))
+      fireEvent.pointerCancel(screen.getByTestId('settings-sheet'))
+      act(() => { vi.runOnlyPendingTimers() })
+      expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+      // lifted with no click after it: gone after the short wait
+      fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
+      expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+      fireEvent.pointerDown(screen.getByTestId('settings-sheet'))
+      fireEvent.pointerUp(screen.getByTestId('settings-sheet'))
+      expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(true)
+      act(() => { vi.advanceTimersByTime(1000) })
+      expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    } finally { vi.useRealTimers() }
+  })
+
+  /* F8 of the same walk ("a chip for a column nobody holds adds nothing") did not reproduce on the build (29 Oct 26 — a
+     new column with no holder, desktop and phone, each added its group): what the walker met was F7's slide. Pinned. */
+  it('F8: the chip of a Quals column nobody holds adds its group', () => {
+    setRole('admin')
+    setQualCatalog([...getState().qualCatalog, { k: 'nobodyq', label: 'NOBODY Q' }])
+    expect(getState().people.some(p => (p as any).quals?.nobodyq)).toBe(false)
+    render(<Matrix />)
+    openSettings()
+    fireEvent.click(screen.getByTestId('gadd-q:nobodyq'))
+    expect(screen.getByTestId('grow-q:nobodyq')).toBeTruthy()
+    expect(screen.getByTestId('grow-q:nobodyq').textContent).toContain('NOBODY Q')
   })
 
   /* Escape peels one layer: the palette first, the sheet only on the next press

@@ -1094,6 +1094,8 @@
   background: rgba(255, 255, 255, .04);
   border: 1px solid rgba(42, 49, 58, .8);
 }
+/* closed by an outside press, holding its room until the press resolves (F7 — SettingsSheet.tsx closingFor) */
+.bidsheet .set-palette.closing { visibility: hidden; }
 .bidsheet .set-plab {
   display: block;
   font-size: 9.5px;

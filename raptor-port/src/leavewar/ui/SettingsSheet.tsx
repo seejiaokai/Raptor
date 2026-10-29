@@ -128,16 +128,39 @@ export function SettingsSheet({
   // selected a colour it will auto close … build pop up windows to have auto
   // close feature if i click outside of it").
   const [colorFor, setColorFor] = useState<string | null>(null)
+  /* The palette an outside press has closed, still holding its room until that press resolves (the M5b walk's F7,
+     29 Oct 26). Removed at the press, it let the "+" chips below slide up into its room before the finger lifted, and
+     an iPhone gives the tap to whatever is under the finger at the lift: "+ NVG" was added for "+ SC DAY". So the press
+     hides it (aria-hidden, invisible) and it goes at the press's click, a cancel, or a short wait after a lift with no
+     click — the popup still closes on an outside press, and nothing moves under the finger. */
+  const [closingFor, setClosingFor] = useState<string | null>(null)
   useEffect(() => {
     if (!colorFor) return
+    let pending = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const finish = () => {
+      if (!pending) return
+      pending = false
+      if (timer) clearTimeout(timer)
+      setClosingFor(null)
+      setColorFor(null)
+    }
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
       // A press on the palette itself, or on any group's colour swatch, is not
       // "outside": the swatch owns its own open/close toggle, so leaving it to
       // that button avoids a close-then-reopen fight on the same tap.
       if (t && (t.closest('.set-palette') || t.closest('.set-swbtn'))) return
-      setColorFor(null)
+      pending = true
+      if (timer) clearTimeout(timer)
+      setClosingFor(colorFor)
     }
+    // The click runs this (capture, on document) BEFORE the pressed control's own handler, so a "+" chip's add still
+    // opens its own palette after this one is gone. A lift with no click after it (a scroll that ended as a press, a
+    // long press) closes it after the wait an iPhone may take to send the click; a cancel closes it at once.
+    const onClick = () => finish()
+    const onUp = () => { if (pending) { if (timer) clearTimeout(timer); timer = setTimeout(finish, 450) } }
+    const onCancel = () => finish()
     /* Escape peels the palette first, not the whole sheet: the Sheet's own
        Escape listens on `document` (capture), and a `window` capture listener
        runs ahead of it, so stopping the event here leaves the sheet up. */
@@ -147,13 +170,24 @@ export function SettingsSheet({
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
       e.stopPropagation()
+      pending = false
+      setClosingFor(null)
       setColorFor(null)
     }
     document.addEventListener('pointerdown', onDown, true)
+    document.addEventListener('click', onClick, true)
+    document.addEventListener('pointerup', onUp, true)
+    document.addEventListener('pointercancel', onCancel, true)
     window.addEventListener('keydown', onKey, true)
     return () => {
+      if (timer) clearTimeout(timer)
       document.removeEventListener('pointerdown', onDown, true)
+      document.removeEventListener('click', onClick, true)
+      document.removeEventListener('pointerup', onUp, true)
+      document.removeEventListener('pointercancel', onCancel, true)
       window.removeEventListener('keydown', onKey, true)
+      // a palette closed or replaced while its press was still down never stays hidden for the next one
+      setClosingFor(null)
     }
   }, [colorFor])
 
@@ -326,7 +360,13 @@ export function SettingsSheet({
                   tap stores the pick; the heading swatch and the quals popover pill
                   both take it at once. */}
               {pickable && colorFor === d.id && (
-                <div className="set-palette" data-testid={`gpalette-${d.id}`} role="radiogroup" aria-label={`Colour for ${label(d)}`}>
+                <div
+                  className={`set-palette${closingFor === d.id ? ' closing' : ''}`}
+                  data-testid={`gpalette-${d.id}`}
+                  role="radiogroup"
+                  aria-label={`Colour for ${label(d)}`}
+                  aria-hidden={closingFor === d.id ? true : undefined}
+                >
                   <span className="set-plab">Colour for {label(d)}</span>
                   <div className="set-dots">
                     {PALETTE.map(c => (

@@ -7,14 +7,14 @@ import { fileURLToPath } from 'node:url'
 import { execSync } from 'node:child_process'
 console.log('lw-m5b-walk-w1 v3')
 const HERE = dirname(fileURLToPath(import.meta.url))
-const OUT = resolve(HERE, '../../docs/img/handpass/2026-10-29-lw-m5b/w1')
+const OUT = process.env.W1_OUT || resolve(HERE, '../../docs/img/handpass/2026-10-29-lw-m5b/w1')
 const SCRATCH = process.env.W1_SCRATCH || resolve(HERE, '../../docs/img/handpass/2026-10-29-lw-m5b/w1/_scratch')
 mkdirSync(OUT, { recursive: true }); mkdirSync(SCRATCH, { recursive: true })
 const only = process.argv.slice(2)
 if (!only.length) for (const f of readdirSync(OUT)) if (/\.(png|json)$/.test(f)) rmSync(join(OUT, f))
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
-const ORIGIN = 'http://localhost:4197', DIST = 'C:/dcm5bdraw/walkdist'
+const ORIGIN = 'http://localhost:4197', DIST = process.env.WALK_DIST || 'C:/dcm5bdraw/walkdist'
 const results = []
 const errs = []
 
@@ -733,6 +733,65 @@ async function w114({ C, P, N }) {
 }
 
 // ------------------------------------------------------------------ main
+// ------------------------------------------------------------------ W1-F7 / W1-F8 (the re-walk of findings F7 and F8, 29 Oct 26)
+// A real finger, pressed and lifted as two events (Chrome's touch input, as an iPhone sends it): the palette an add opened
+// must not let the chips below move between the press and the lift, so the chip pressed is the chip added.
+async function fingerOn(W, testid, name) {
+  const p = W.page, loc = T(p, testid)
+  await loc.scrollIntoViewIfNeeded()
+  const b0 = await loc.boundingBox()
+  const x = b0.x + b0.width / 2, y = b0.y + b0.height / 2
+  const cdp = W.phone ? (W.cdp || (W.cdp = await W.ctx.newCDPSession(p))) : null
+  if (cdp) await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+  else { await p.mouse.move(x, y); await p.mouse.down() }
+  await p.waitForTimeout(120)
+  const mid = await p.evaluate(([x, y]) => { const e = document.elementFromPoint(x, y)?.closest('[data-testid]'); return e ? e.dataset.testid : null }, [x, y])
+  const b1 = await loc.boundingBox()
+  if (name) await p.screenshot({ path: join(OUT, name + '-pressed.png') })
+  if (cdp) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  else await p.mouse.up()
+  if (name) await p.screenshot({ path: join(OUT, name + '-lifted.png') })        // D1281: the picture straight after the lift
+  await p.waitForTimeout(700)
+  return { moved: +(b1.y - b0.y).toFixed(1), underFinger: mid }
+}
+async function w1f7(kind, { C, P, N }) {
+  const W = await mk(kind); const p = W.page
+  await go(W, 'leavewar'); await openSettings(W)
+  const a = await fingerOn(W, 'gadd-q:mgmt', `w1-F7-${kind}-1-mgmt`)
+  C(kind + ' "+ Management" added, its palette open', (await T(p, 'grow-q:mgmt').count()) === 1 && (await T(p, 'gpalette-q:mgmt').count()) === 1, a)
+  const before = await p.locator('[data-testid^="grow-"]').evaluateAll(es => es.map(e => e.dataset.testid))
+  const b = await fingerOn(W, 'gadd-q:scDay', `w1-F7-${kind}-2-scday`)
+  const after = await p.locator('[data-testid^="grow-"]').evaluateAll(es => es.map(e => e.dataset.testid))
+  const added = after.filter(x => !before.includes(x))
+  C(kind + ' the chip under the finger did not move between the press and the lift', Math.abs(b.moved) < 1 && b.underFinger === 'gadd-q:scDay', b)
+  C(kind + ' "+ SC DAY" pressed → SC DAY added, nothing else', added.length === 1 && added[0] === 'grow-q:scDay', { added })
+  C(kind + ' the Management palette gone, SC DAY\'s open', (await T(p, 'gpalette-q:mgmt').count()) === 0 && (await T(p, 'gpalette-q:scDay').count()) === 1, {})
+  const c = await fingerOn(W, 'gadd-q:nvg', `w1-F7-${kind}-3-nvg`)
+  const after2 = await p.locator('[data-testid^="grow-"]').evaluateAll(es => es.map(e => e.dataset.testid))
+  const added2 = after2.filter(x => !after.includes(x))
+  C(kind + ' again with SC DAY\'s palette open: "+ NVG" pressed → NVG added, nothing else', Math.abs(c.moved) < 1 && added2.length === 1 && added2[0] === 'grow-q:nvg', { ...c, added2 })
+  await shot(W, `w1-F7-${kind}-4-settled`); P(`w1-F7-${kind}-1-mgmt-lifted`, `w1-F7-${kind}-2-scday-pressed`, `w1-F7-${kind}-2-scday-lifted`, `w1-F7-${kind}-3-nvg-lifted`, `w1-F7-${kind}-4-settled`)
+  await W.ctx.close()
+}
+async function w1f8(kind, { C, P, N }) {
+  const W = await mk(kind); const p = W.page
+  await go(W, 'quals'); await press(W, p.locator('#qEdit')); await p.waitForTimeout(250); await press(W, p.locator('#qEditQuals')); await p.waitForTimeout(300)
+  const before = await p.evaluate(() => [...document.querySelectorAll('th[data-col]')].map(e => e.dataset.col))
+  await p.getByPlaceholder(/LOW LEVEL/i).fill('ZULU WALK'); await press(W, p.getByRole('button', { name: /^Add$/ })); await p.waitForTimeout(400)
+  const after = await p.evaluate(() => [...document.querySelectorAll('th[data-col]')].map(e => e.dataset.col))
+  const key = after.find(k => !before.includes(k)); C(kind + ' a new Quals column, nobody ticked', !!key, { key })
+  await press(W, p.locator('#qSave')); await p.waitForTimeout(300)
+  await go(W, 'leavewar'); await openSettings(W)
+  await fingerOn(W, 'gadd-q:mgmt')                                       // a palette open, as the walker had it
+  const r = await fingerOn(W, 'gadd-q:' + key, `w1-F8-${kind}-chip`)
+  C(kind + ' its "+ ZULU WALK" chip, pressed with a palette open, adds its group (0 people)', (await T(p, 'grow-q:' + key).count()) === 1, r)
+  P(`w1-F8-${kind}-chip-lifted`)
+  await W.ctx.close()
+}
+await run('W1-F7P', 'F7 re-walk: chips pressed with a palette open, phone 402', c => w1f7('P', c))
+await run('W1-F7P375', 'F7 re-walk: the same, phone 375', c => w1f7('P375', c))
+await run('W1-F7D', 'F7 re-walk: the same, desktop (mouse)', c => w1f7('D', c))
+await run('W1-F8P', 'F8 re-walk: a column nobody holds, its chip, phone 402', c => w1f8('P', c))
 await run('W1-01', 'the Settings window, desktop', c => w101('D', c))
 await run('W1-01P', 'the Settings window, phone 402', c => w101('P', c))
 await run('W1-02', 'phone 402: nothing scrolls sideways', c => w102('P', c))

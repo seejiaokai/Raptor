@@ -650,7 +650,7 @@ describe('holidays by file (D1501)', () => {
 
 /* THE WALK'S FINDINGS ON HOLIDAYS BY FILE (29 Oct 26, the evidence sheet's F4–F6) */
 describe('holidays by file — the walk’s findings', () => {
-  async function importBytes(bytes: Uint8Array | string, name = 'holidays.csv') {
+  async function importBytes(bytes: Uint8Array<ArrayBuffer> | string, name = 'holidays.csv') {
     const f = new File([bytes], name, { type: 'text/csv' })
     await act(async () => { fireEvent.change(t('hol-import-file'), { target: { files: [f] } }); await Promise.resolve(); await Promise.resolve() })
     await act(async () => { await new Promise(r => setTimeout(r, 0)) })
