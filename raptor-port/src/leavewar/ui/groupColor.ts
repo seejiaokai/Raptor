@@ -33,6 +33,8 @@ export function isColourable(id: string): boolean {
  *  group, whose colour the stylesheet owns. */
 export function qualSwatch(id: string): string | undefined {
   if (!isColourable(id)) return undefined
+  /* Management (D1502) wears the palette's blue, as drawn in M5b round 1 (D1499) — not a colour drawn by its id */
+  if (id === 'q:mgmt') return '#5AA9E6'
   let h = 0
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0
   return PALETTE[h % PALETTE.length]

@@ -215,3 +215,11 @@ describe('installDemoWorld', () => {
     for (const row of backing) expect(row.iid).toBeTruthy()
   })
 })
+
+/* The war's copy of the Management key is the Quals column's key (D1502): the war never imports Raptor's engine, so the
+   two are held in step here, beside the projection that carries the column across. */
+import { MGMT_KEY as RAPTOR_MGMT } from '../../engine/qualcols'
+import { MGMT_KEY as WAR_MGMT } from '../engine'
+describe('the Management key', () => {
+  it('is the same on both sides of the boundary', () => { expect(WAR_MGMT).toBe(RAPTOR_MGMT) })
+})

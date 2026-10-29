@@ -1013,17 +1013,21 @@
    squeezed into tight rows). Rearranging is NOT here — it happens on the grid.
    ========================================================================== */
 
-/* Counters & rows tray — a raised panel that sets the action buttons apart from
-   the group list below. Reuses the `.rtbtn` chip from matrix.css. */
-.bidsheet .set-tray {
-  margin: 2px 2px 4px;
-  padding: 9px;
-  background: var(--panel-2);
-  border: 1px solid var(--edge);
-  border-radius: 9px;
-}
-.bidsheet .set-ctrls { display: flex; flex-wrap: wrap; gap: 7px; }
-.bidsheet .set-hint { margin-top: 8px; font-size: 10.5px; color: var(--ink-3); letter-spacing: .01em; }
+/* THE THREE LABEL ROWS — Year, Manning, Order (owner D1499, 29 Oct 26; the drawing m5b-d1-settings-*, its ROW_CSS in
+   docs/mock/lw-overhaul/full-m5b-draw.mjs): the bid window's own `.bidsheet-row` and `.lab` (78px), in place of the
+   three trays and their sentences. Reuses the `.rtbtn` chip from matrix.css. */
+.bidsheet .set-rows { padding: 8px 2px 4px; display: flex; flex-direction: column; gap: 2px; }
+.bidsheet .set-rows .bidsheet-row { margin-top: 4px; }
+.bidsheet .set-rows .bidsheet-row .lab { min-width: 78px; }
+
+/* THE EVENTS LIST (owner D1500; the drawing m5b-d2-events-*, its EV_CSS in full-m5b-draw.mjs): "＋ Event" at the left
+   and "Edit presets" at the right of its top row; each event a line of the Calendar window's Holidays list (23-days.css
+   `.hol-list` / `.hol-line`: the date 42%, the name the rest), its kind's mark (matrix.css `.evpeek-kind`) at the end. */
+.bidsheet .bidsheet-row.ev-top { margin: 6px 2px 10px; }
+.bidsheet .ev-top .evtypes-open { margin-left: auto; }
+.bidsheet .ev-list { margin: 0 2px 4px; }
+.bidsheet .ev-list .evpeek-kind { flex: 0 0 auto; margin-left: auto; }
+.bidsheet .ev-empty { margin: 4px 4px 8px; }
 /* Reset counters is destructive — quiet at rest, and matrix.css `.rtbtn.arm`
    turns it red once armed. */
 .bidsheet .rtbtn.set-danger { color: var(--ink-3); }
@@ -1149,6 +1153,12 @@
   font-size: 11px;
 }
 .bidsheet .set-gdel:hover { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+/* EVERYONE ELSE, the groups list's last row (D1499 — as drawn): muted, a dashed empty swatch, no grip and no ✕ — their
+   room kept, so its count stands in the column of the counts above. */
+.bidsheet .set-grow.other .set-gname { color: var(--ink-3); font-weight: 600; cursor: default; }
+.bidsheet .set-grow.other .set-gname:hover { color: var(--ink-3); }
+.bidsheet .set-sw.set-swnone { background: transparent; border: 1px dashed #4a5563; }
+.bidsheet .set-gdel.off { visibility: hidden; }
 /* The SANS row is the odd one out — shown by the switch, not a stored group, and
    counted. A tinted teal panel with a badge, its ✕ just hides SANS again. */
 .bidsheet .set-grow.sans {

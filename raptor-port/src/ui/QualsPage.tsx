@@ -19,7 +19,7 @@ import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
 import { persistPeople } from '../state/people-settings-commit'
-import { DEFAULT_QUAL_COLS, qualCols, setQualCols } from '../engine/qualcols'
+import { DEFAULT_QUAL_COLS, MGMT_KEY, qualCols, setQualCols } from '../engine/qualcols'
 import { useVersion } from './useStore'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
    surface in the app wears. A column is a COMPOSITE thing (a heading and a
@@ -179,7 +179,9 @@ function qualsHead(cols: any[], qSeatView: string, qSort: any, qualsEdit: boolea
            name — a test, a future export — should not have to strip the
            furniture back off it */
         + `<span class="qgrip">⋮⋮</span><span class="qlbl">${esc(c.h)}</span>`
-        + `<span class="qdel" data-del="${c.k}" title="Remove ${esc(c.h)}">${armDel === c.k ? 'remove?' : '✕'}</span></th>`
+        /* MANAGEMENT HAS NO ✕ (owner D1502, 29 Oct 26): the Leave War reads it to draw its Management group first, so it
+           cannot be removed — it still moves (engine/qualcols.ts puts it back where a list leaves it out) */
+        + (c.k === MGMT_KEY ? '' : `<span class="qdel" data-del="${c.k}" title="Remove ${esc(c.h)}">${armDel === c.k ? 'remove?' : '✕'}</span>`) + `</th>`
       return sortTh(c.k, esc(c.h), cls, what + ' · click to bring the qualified to the top')
     }).join('') +
     `<th>Remarks</th></tr></thead>`
@@ -405,7 +407,7 @@ export function QualsPage() {
 
   /* remove a column. WIRED ones arm first — see the note beside WIRED. */
   const delQual = (k: string) => {
-    const c = cols.find((x: any) => x.k === k); if (!c) return
+    const c = cols.find((x: any) => x.k === k); if (!c || k === MGMT_KEY) return   // never Management (D1502)
     if (WIRED[k] && armDel !== k) {
       setArmDel(k)
       return HOOKS.toast(`${c.h} is read by ${WIRED[k]}. Press REMOVE? to take it off the LoX — who already holds it is kept.`)

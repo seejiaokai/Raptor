@@ -23,14 +23,17 @@ beforeEach(() => { initStore(memoryBackend()); setRole('admin'); setDaysWin(null
 afterEach(() => { setDaysWin(null) })
 
 describe('⚙ Settings → Days…', () => {
-  it('is in the sheet for an admin, says what it is for, and sits above the counters', () => {
+  /* WAS "says what it is for" (a tray headed Calendar, its sentence under it). CHANGED by D1499 (M5b, 29 Oct 26): it
+     stands on the "Year" row beside Events…, and its sentence went — its title still says what it is for. */
+  it('is in the sheet for an admin, on the Year row, and sits above the counters', () => {
     render(<Matrix />)
     openSettings()
     const line = screen.getByTestId('settings-days')
     /* on screen the window is "Calendar" (owner, D675, 8 Oct 26) */
     expect(line.textContent).toBe('Calendar…')
-    expect(line.closest('.set-tray')!.previousElementSibling!.textContent).toBe('Calendar')
-    expect(screen.getByTestId('settings-days-hint').textContent).toBe('Day flying, night flying or no fly for each date, and the year’s holidays.')
+    expect(line.closest('.bidsheet-row')!.querySelector('.lab')!.textContent).toBe('Year')
+    expect(screen.queryByTestId('settings-days-hint'), 'the sentence went (D1499)').toBeNull()
+    expect(line.getAttribute('title')).toMatch(/day flying, night flying or no fly/)
     const sheet = screen.getByTestId('settings-sheet')
     const order = [...sheet.querySelectorAll('[data-testid]')].map(n => n.getAttribute('data-testid'))
     expect(order.indexOf('settings-days')).toBeLessThan(order.indexOf('counter-add'))

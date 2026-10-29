@@ -32,6 +32,7 @@ import {
   readGroupDefs,
   SANS_GROUP,
   SANS_GROUP_ID,
+  MGMT_KEY,
   type GroupDef,
   inSquadron,
   isBiddable,
@@ -2473,15 +2474,19 @@ export function addGroup(d: GroupDef): void {
   if (d.id === SANS_GROUP_ID) return
   const current = groupsInOrder().filter(x => x.id !== SANS_GROUP_ID)
   if (current.some(x => x.id === d.id)) return    // already shown
+  /* MANAGEMENT STANDS FIRST (owner D1149, D1200, D1502): the group of the Quals column the war knows by its KEY (never
+     its heading) lands at the very top of the page — and of a custom who-wins order — not merely above the categories.
+     He may drag it elsewhere afterwards, as any group. */
+  const first = d.kind === 'qual' && d.k === MGMT_KEY
   const catAt = current.findIndex(x => x.kind === 'cat')
-  const insertAt = catAt < 0 ? current.length : catAt
+  const insertAt = first ? 0 : catAt < 0 ? current.length : catAt
   const merged = pruneGroups([...current.slice(0, insertAt), d, ...current.slice(insertAt)], state.qualCatalog)
   if (!merged.some(x => x.id === d.id)) return    // a qual key the catalogue lost
   let priority = state.groupPriority
   if (state.groupPriorityCustom) {
     const byId = new Map(merged.map(x => [x.id, x]))
     const pr = groupPriorityIds().filter(id => id !== d.id && id !== SANS_GROUP_ID)
-    const pAt = pr.findIndex(id => byId.get(id)?.kind === 'cat')
+    const pAt = first ? 0 : pr.findIndex(id => byId.get(id)?.kind === 'cat')
     priority = pAt < 0 ? [...pr, d.id] : [...pr.slice(0, pAt), d.id, ...pr.slice(pAt)]
   }
   state = withCurrent({ ...state, groupDefs: merged, groupPriority: priority })

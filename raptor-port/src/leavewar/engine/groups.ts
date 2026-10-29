@@ -58,6 +58,12 @@ export const qualGroupId = (k: string) => `q:${k}`
 export const SANS_GROUP_ID = 'SANS'
 export const SANS_GROUP: GroupDef = { id: SANS_GROUP_ID, kind: 'sans' }
 
+/** The Management column's key (owner D1502, 29 Oct 26): the war knows the Management group by the Quals column's KEY,
+ *  never its heading, and draws it first once added (store.ts addGroup). The column itself is Raptor's
+ *  (`src/engine/qualcols.ts MGMT_KEY` — the war does not import Raptor's engine; `raptorRoster.test.ts` holds the two
+ *  in step). */
+export const MGMT_KEY = 'mgmt'
+
 /** Where people who match NOTHING land. Always last, never removable: an admin
  *  who builds a list of only qualification groups would otherwise strand
  *  everyone else with no row at all — they must still be on the grid. */

@@ -645,6 +645,30 @@ describe('the roster group editor', () => {
     expect(prio.indexOf(night)).toBeLessThan(prio.indexOf('SXO'))        // both above the categories
   })
 
+  /* MANAGEMENT STANDS FIRST (owner D1502, 29 Oct 26; D1149, D1200): the Leave War knows the Management group by its
+     Quals column's KEY, not its heading, and once added it is the first group on the war — above the qualification
+     groups already added, and first in a custom who-wins order too; it may then be dragged like any group. A man in
+     Management still counts in his own seat (groups never move a count). */
+  it('Management, once added, is the first group — whatever its heading says', () => {
+    const mg = qualGroupId('mgmt'), day = qualGroupId('scDay')
+    setQualCatalog([{ k: 'scDay', label: 'SC DAY' }, { k: 'mgmt', label: 'Mgmt (renamed)' }])
+    addGroup({ id: day, kind: 'qual', k: 'scDay' })
+    addGroup({ id: mg, kind: 'qual', k: 'mgmt' })
+    expect(groupsInOrder().map(d => d.id).slice(0, 2)).toEqual([mg, day])
+    expect(groupPriorityIds()[0]).toBe(mg)
+    moveGroupTo(mg, null)                                   // he may still drag it down
+    expect(groupsInOrder().map(d => d.id).at(-1)).toBe(mg)
+  })
+
+  it('Management added under a custom who-wins order ranks first there too', () => {
+    const mg = qualGroupId('mgmt')
+    setQualCatalog([{ k: 'scDay', label: 'SC DAY' }, { k: 'mgmt', label: 'Management' }])
+    moveGroupPriorityTo('PERS', groupPriorityIds()[0]!)     // custom: Personnel first
+    addGroup({ id: mg, kind: 'qual', k: 'mgmt' })
+    expect(groupPriorityIds()[0]).toBe(mg)
+    expect(groupsInOrder()[0]!.id).toBe(mg)
+  })
+
   it('addGroup is admin-gated like every other group writer', () => {
     setRole('member')
     addGroup({ id: qualGroupId('scDay'), kind: 'qual', k: 'scDay' })

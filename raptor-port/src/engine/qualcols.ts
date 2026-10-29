@@ -12,7 +12,7 @@
    headings from here, so a new column is offered the moment it is added and
    under the heading the admin typed.
 
-   Column order is the owner's, left to right (5 Aug 26): SANS, SXO, SCHEDULER,
+   Column order is the owner's, left to right (5 Aug 26): SANS, SXO, MANAGEMENT (D1502), SCHEDULER,
    SC DAY, SC NIGHT, DAAR, NAAR, NVG, IMC, TF — currency and appointments first,
    the flying qualifications after them. The flags (`lav`, `apt`, `scq`, `aar`,
    `fcpOnly`) are the page's rendering hints and travel with the column.
@@ -33,8 +33,15 @@ export type QualCol = {
   fcpOnly?: boolean
 }
 
+/* MANAGEMENT (owner D1502, 29 Oct 26 — "All as recommended"): every squadron starts with an empty Management tick column
+   beside SXO. The Leave War knows it by this KEY, never by its heading, and draws the Management group first once it is
+   added as a group (leavewar/state/store.ts addGroup) — so it cannot be removed: the Quals page offers no ✕ on it, and
+   `setQualCols` / `qualColsLoad` below put it back where a list leaves it out. */
+export const MGMT_KEY = 'mgmt'
+export const MGMT_COL: QualCol = { k: MGMT_KEY, h: 'Management', lav: true }
+
 export const DEFAULT_QUAL_COLS: readonly QualCol[] = [
-  { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true },
+  { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true }, MGMT_COL,
   { k: 'sched', h: 'Scheduler', apt: true },
   { k: 'scDay', h: 'SC DAY', scq: true }, { k: 'scNight', h: 'SC NIGHT', scq: true },
   { k: 'daar', h: 'DAAR', aar: true, fcpOnly: true }, { k: 'naar', h: 'NAAR', aar: true, fcpOnly: true },
@@ -59,6 +66,7 @@ export function qualCols(): readonly QualCol[] {
  *  the engine does not import the store; the page that edits the LoX already
  *  calls Raptor's `notify`, which is the lane Leave War's re-projection rides. */
 export function setQualCols(next: readonly QualCol[]): boolean {
+  next = withMgmt(next)
   if (sameCols(next, cols)) return false
   cols = next
   store.set('qualcols', sameCols(cols, DEFAULT_QUAL_COLS) ? null : cols.map(c => ({ ...c })))
@@ -68,6 +76,14 @@ export function setQualCols(next: readonly QualCol[]): boolean {
 const sameCols = (a: readonly QualCol[], b: readonly QualCol[]) =>
   a.length === b.length && a.every((c, i) => c.k === b[i].k && c.h === b[i].h)
 
+/** The list with Management in it: kept where it already stands (it can be dragged), else put right after SXO — or
+ *  first where there is no SXO column (D1502). */
+function withMgmt(list: readonly QualCol[]): readonly QualCol[] {
+  if (list.some(c => c.k === MGMT_KEY)) return list
+  const at = list.findIndex(c => c.k === 'sxo') + 1
+  return [...list.slice(0, at), { ...MGMT_COL }, ...list.slice(at)]
+}
+
 /** Untrusted storage → the list, or the default when the record is unusable.
  *  Called by initStore beside the other settings loaders. */
 export function qualColsLoad(): void {
@@ -76,7 +92,8 @@ export function qualColsLoad(): void {
   if (!Array.isArray(raw)) return
   /* a stored EMPTY list is a decision — the Quals page's column delete has no last-column guard, and `[]` is what it
      writes — so it reads back empty, not as the default ten ([STORE-READER-SWEEP], [DB-READINESS] phase 7) */
-  if (!raw.length) { cols = []; return }
+  /* …all but Management, which every squadron has (D1502): it is put back at load, nothing written */
+  if (!raw.length) { cols = withMgmt([]); return }
   const clean: QualCol[] = []
   for (const c of raw) {
     if (!c || typeof c !== 'object' || typeof c.k !== 'string' || typeof c.h !== 'string' || !c.k) return
@@ -84,7 +101,7 @@ export function qualColsLoad(): void {
     for (const f of ['lav', 'apt', 'scq', 'aar', 'fcpOnly'] as const) if (c[f] === true) col[f] = true
     clean.push(col)
   }
-  cols = clean
+  cols = withMgmt(clean)
 }
 
 /** Tests only: back to the default ten. */

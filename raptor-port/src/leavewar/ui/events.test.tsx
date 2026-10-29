@@ -61,26 +61,30 @@ describe('the two event lines', () => {
   /* The SANS enable switch (owner, 18 Aug 26) now lives inside ⚙ Settings, admin
      only. The roster effect itself is pinned in roster.test.ts — this pins where
      the control lives and that a click lands on the store. */
-  it('the Show SANS switch shows inside ⚙ Settings for an admin only, and flips the store', () => {
-    const { rerender, unmount } = render(<Matrix />)
+  /* WAS "the Show SANS switch … flips the store". CHANGED by D1221 / D1499 (M5b, 29 Oct 26): SANS is put on the war by
+     "+ SANS", the first of Settings' add chips, and taken off by its row's ✕ — the switch is gone. */
+  it('"+ SANS" shows inside ⚙ Settings for an admin only, and flips the store', () => {
+    const { unmount } = render(<Matrix />)
     expect(screen.queryByTestId('settings-open'), 'a member has no settings').toBeNull()
     // D1254: ⚙ is the top row's now, so the grid alone never draws it — a member asking for ⚙ gets no sheet either
     openSettings()
     expect(screen.queryByTestId('settings-sheet'), 'a member has no settings').toBeNull()
-    expect(screen.queryByTestId('sans-toggle'), 'a member never sees it').toBeNull()
+    expect(screen.queryByTestId('gadd-SANS'), 'a member never sees it').toBeNull()
     unmount()
     setRole('admin')
     const r2 = render(<Matrix />)
-    expect(screen.queryByTestId('sans-toggle'), 'not until Settings is opened').toBeNull()
+    expect(screen.queryByTestId('gadd-SANS'), 'not until Settings is opened').toBeNull()
     openSettings()
     r2.rerender(<Matrix />)
-    const btn = screen.getByTestId('sans-toggle')
-    expect(btn.textContent).toBe('Show SANS')
+    expect(screen.queryByTestId('sans-toggle'), 'the switch is gone (D1221)').toBeNull()
+    const btn = screen.getByTestId('gadd-SANS')
+    expect(btn.textContent).toBe('+ SANS')
     expect(getState().showSans).toBe(false)
     fireEvent.click(btn)
     r2.rerender(<Matrix />)
     expect(getState().showSans).toBe(true)
-    expect(screen.getByTestId('sans-toggle').textContent).toBe('✓ SANS shown')
+    expect(screen.queryByTestId('gadd-SANS'), 'added: the chip goes, the row is there').toBeNull()
+    expect(screen.getByTestId('grow-SANS')).toBeTruthy()
   })
 
   // The seed marks public holidays on line 0, so the row is not empty on

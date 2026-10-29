@@ -570,7 +570,8 @@ describe('the CAT column', () => {
 /* ---- the columns themselves (owner, 5 Aug 26) ---------------------------
    a fixed left-to-right arrangement, Downchit dropped, TF added. */
 describe('the qualification columns', () => {
-  const QCOLS = ['SANS', 'SXO', 'Scheduler', 'SC DAY', 'SC NIGHT', 'DAAR', 'NAAR', 'NVG', 'IMC', 'TF']
+  /* Management beside SXO since D1502 (29 Oct 26): the column every squadron starts with, empty */
+  const QCOLS = ['SANS', 'SXO', 'Management', 'Scheduler', 'SC DAY', 'SC NIGHT', 'DAAR', 'NAAR', 'NVG', 'IMC', 'TF']
 
   it('run SANS → TF in the owner\'s order, between CAT and Remarks', () => {
     const hs = heads()
@@ -829,8 +830,12 @@ describe('Edit quals', () => {
   it('turning it on hands the headings over: they move and delete, not sort', async () => {
     await on()
     expect($('#qtbl').className).toContain('qediting')
-    expect(qualCols().length, 'every qualification column is a handle').toBe(10)
+    expect(qualCols().length, 'every qualification column is a handle').toBe(11)
+    /* every one but Management carries a ✕: the Leave War reads it, so it cannot be removed (D1502) — it still moves */
     expect($$('#qtbl thead th[data-col] .qdel').length).toBe(10)
+    expect($('#qtbl thead th[data-col="mgmt"]'), 'Management is a handle').toBeTruthy()
+    expect($('#qtbl thead th[data-col="mgmt"] .qdel'), 'with no ✕').toBeFalsy()
+    expect($('#qtbl thead th[data-col="mgmt"] .qlbl').textContent).toBe('Management')
     /* the sort attribute is GONE from them, so a drag can never land as a
        click that re-sorts the table under the hand doing the dragging */
     expect($('#qtbl thead th[data-sort="tf"]')).toBeFalsy()

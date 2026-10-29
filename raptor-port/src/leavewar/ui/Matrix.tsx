@@ -17,6 +17,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { FlyRows, type FlyPickApi } from './FlyRows'
 import { EventSheet } from './EventSheet'
+import { EventsSheet } from './EventsSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, leftGrowAbsorbable, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
@@ -392,7 +393,10 @@ export function Matrix() {
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
   // then opens pre-set to that range; a single click leaves it undefined.
-  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string } | null>(null)
+  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string; fresh?: boolean; presets?: boolean } | null>(null)
+  /* THE EVENTS LIST (D1500), opened by ⚙ Settings' Events…: it stays open behind an event's window opened from it, and
+     shows again when that window closes (it is drawn only while no event window is up) */
+  const [eventsOpen, setEventsOpen] = useState(false)
   /* THE BOX A TAP ON A FILLED EVENT CELL OPENS (the Inputs / SANS redesign, plan §3.12; owner D643, D644): the grid
      prints an event's short form, and this is where its full name, its kind and its dates are read — by everyone; an
      admin's carries "Edit". A small menu, not a window (D641's reading 2): screen-fixed like the quals popover, closed
@@ -4352,12 +4356,28 @@ export function Matrix() {
       )}
       {eventEdit && role === 'admin' && (
         <EventSheet
-          key={`${eventEdit.line}-${eventEdit.date}-${eventEdit.to ?? ''}`}
+          key={`${eventEdit.line}-${eventEdit.date}-${eventEdit.to ?? ''}-${eventEdit.fresh ? 'new' : ''}${eventEdit.presets ? 'presets' : ''}`}
           line={eventEdit.line}
           date={eventEdit.date}
           to={eventEdit.to}
+          fresh={eventEdit.fresh}
+          presets={eventEdit.presets}
           onClose={() => setEventEdit(null)}
           onMove={m => { setEventEdit(null); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
+        />
+      )}
+      {/* THE EVENTS LIST (D1500) — an admin's, as ⚙ Settings is; hidden while an event's window opened from it (or from
+          the grid) is up, and back when that closes. "＋ Event" opens a new event on today's month (the period's first
+          when today is outside it), its row found at Save. */}
+      {eventsOpen && !eventEdit && role === 'admin' && (
+        <EventsSheet
+          onClose={() => setEventsOpen(false)}
+          onOpenEvent={l => setEventEdit({ line: l.line, date: l.from })}
+          onAdd={() => {
+            const t = memberToday()
+            setEventEdit({ line: 0, date: t >= period.start && t <= period.end ? t : period.start, fresh: true })
+          }}
+          onPresets={() => setEventEdit({ line: 0, date: period.start, presets: true })}
         />
       )}
       {/* A manning row's explainer — every role's way in from the row's name;
@@ -4392,6 +4412,7 @@ export function Matrix() {
           // Days… opens the scheduler's Days window on the month the grid is showing (the month strip's lit one),
           // through the war's one seam (sync.ts openDays); the sheet closes so it does not cover the window
           onRearrange={() => { setSettings(false); setArranging(true) }}
+          onEvents={() => { setSettings(false); setEventsOpen(true) }}
           onDays={() => {
             setSettings(false)
             const shown = months.find(m => m.label === inViewRef.current) || months[0]
