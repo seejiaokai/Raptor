@@ -98,8 +98,24 @@ for (const kind of ['P', 'D']) {
     ws.forEach(e => { e.style.flex = ''; e.style.width = '' })
     if (ws.length) {
       ws.forEach(e => { e.style.flex = '0 0 auto'; e.style.whiteSpace = 'nowrap' })
-      const dw = Math.ceil(Math.max(...ws.map(e => e.getBoundingClientRect().width)))
+      /* the column is sized for the WIDEST DATE THE APP CAN WRITE, not the widest in this sample (the review's fault 5; his
+         question "even with the longest date it will not touch the name?"): every run of up to 60 days from 1 Jan 26 to the
+         end of 27 is written as the list writes it (EventsSheet.tsx whenSaid) and measured in the line's own letters, so
+         on his iPhone, whose letters are wider, the built column measures his letters the same way; then a fixed gap */
+      const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+      const say = d => `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MO[d.getUTCMonth()]}`
+      const when = (a, b) => b <= a ? say(a) : (a.getUTCMonth() === b.getUTCMonth() && a.getUTCFullYear() === b.getUTCFullYear() ? `${say(a).replace(/ [A-Za-z]+$/, '')} – ${say(b)}` : `${say(a)} – ${say(b)}`)
+      const cs = getComputedStyle(ws[0]), cv = document.createElement('canvas').getContext('2d')
+      cv.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`
+      let widest = '', wmax = 0
+      for (let t = Date.UTC(2026, 0, 1); t < Date.UTC(2028, 0, 1); t += 864e5) for (let k = 0; k <= 60; k++) {
+        const a = new Date(t), b = new Date(t + k * 864e5), txt = when(a, b), w = cv.measureText(txt).width
+        if (w > wmax) { wmax = w; widest = txt }
+      }
+      const GAP = 12
+      const dw = Math.ceil(wmax) + GAP
       ws.forEach(e => { e.style.flex = `0 0 ${dw}px` })
+      window.__widestDate = { widest, w: Math.ceil(wmax), col: dw }
     }
     const lefts = ks.filter(k => !k.classList.contains('mock-nokind')).map(k => Math.round(k.getBoundingClientRect().left))
     return { w, lefts: [...new Set(lefts)] }
@@ -199,6 +215,29 @@ for (const kind of ['P', 'D']) {
     await addControls()
     metrics[`${kind}-BC-kinds`] = await alignKinds()
     await snap('BC-side-by-side-icons')
+    // the widest date the app can write, put on Chinese New Year's line, and the space left before its name measured
+    const lw = await p.evaluate(() => {
+      const l = [...document.querySelectorAll('.mock-split .hol-line')].find(x => x.querySelector('.hol-name')?.textContent === 'Chinese New Year')
+      const d = l.querySelector('.hol-when'); d.textContent = window.__widestDate.widest
+      const r = document.createRange(); r.selectNodeContents(d); const textRight = r.getBoundingClientRect().right
+      return { ...window.__widestDate, gap: Math.round(l.querySelector('.hol-name').getBoundingClientRect().left - textRight) }
+    })
+    // and again in letters about a seventh wider, as his iPhone's are (the guide's fit check): the column re-measured in them
+    metrics[`${kind}-longest`] = lw
+    await snap('BC-longest-date')
+    const wide = await p.evaluate(() => {
+      const st = document.createElement('style'); st.id = 'mockwide'; st.textContent = '.mock-split .hol-line, .mock-split .hol-line *{font-family:Verdana,sans-serif}'  /* a typeface about a seventh wider; letter-spacing would fool the measure, a real wider font does not */; document.head.appendChild(st)
+      return true
+    })
+    metrics[`${kind}-longest-wide-kinds`] = await alignKinds()
+    metrics[`${kind}-longest-wide`] = await p.evaluate(() => {
+      const l = [...document.querySelectorAll('.mock-split .hol-line')].find(x => x.querySelector('.hol-name')?.textContent === 'Chinese New Year')
+      const d = l.querySelector('.hol-when'); d.textContent = window.__widestDate.widest
+      const r = document.createRange(); r.selectNodeContents(d); const textRight = r.getBoundingClientRect().right
+      const n = l.querySelector('.hol-name')
+      return { ...window.__widestDate, gap: Math.round(n.getBoundingClientRect().left - textRight), nameCut: n.scrollWidth > n.clientWidth + 1 }
+    })
+    await snap('BC-longest-date-wide')
     metrics[`${kind}-BC-clipped`] = await p.evaluate(() => [...document.querySelectorAll('.mock-split .hol-line')].flatMap(l =>
       [...l.querySelectorAll('.hol-when,.hol-name,.evpeek-kind')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)))
   }

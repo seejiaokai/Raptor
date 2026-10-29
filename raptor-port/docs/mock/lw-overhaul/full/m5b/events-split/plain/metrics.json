@@ -103,5 +103,43 @@
   "list": 332,
   "shown": 332
  },
- "D-BC-clipped": []
+ "D-longest": {
+  "widest": "Mon 16 Mar – Mon 11 May",
+  "w": 151,
+  "col": 163,
+  "gap": 22
+ },
+ "D-BC-longest-date": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-longest-wide-kinds": {
+  "w": 106,
+  "lefts": [
+   572,
+   1127
+  ]
+ },
+ "D-longest-wide": {
+  "widest": "Wed 18 Mar – Wed 13 May",
+  "w": 169,
+  "col": 181,
+  "gap": 22,
+  "nameCut": false
+ },
+ "D-BC-longest-date-wide": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-BC-clipped": [
+  "Squadron dinner"
+ ]
 }
