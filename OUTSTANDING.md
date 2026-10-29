@@ -153,6 +153,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock.
 - [TRAFFIC-WIN-COVERS-UNDO] — with the Traffic window open the top bar's Undo cannot be pressed (older; found 21 Oct 26).
+- [WIN-RESIZED-OVER-RETRY] — a changes or ALL AVAIL window he has only resized lies over "Not saved — Retry" when a save fails, where the top bar is two lines (older; found 30 Oct 26) — his look first.
 - [WINDOWS-KEEP-KEYS] — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
 - [BOARD-ESCAPE-CLOSE] — Escape does not close the Scheduler Board, though the design guide says Escape closes what opened last (found by the walk of 24 Oct 26; older).
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
@@ -166,11 +167,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [E2E-HIDE-BAR-SEAT] — on his PC a changes-window browser test fails: its seat sits under the hidden bar (the test, not the app; small).
+- [E2E-HIDE-BAR-SEAT] — on his PC a changes-window browser test fails: its seat sits under the hidden bar (the test, not the app; small) — BUILT 30 Oct 26, to archive once live.
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
-- [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
+- [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test — BUILT 30 Oct 26, to archive once live.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
@@ -244,6 +245,7 @@ On a desktop, with the Leave War's grid scrolled down (by hand, or by a request'
 
 ### [E2E-HIDE-BAR-SEAT] On his PC a changes-window browser test fails: the seat it checks sits under the hidden bar (found 28 Oct 26, the night's M4 build)
 The phone test "Hide sends the panel to the bar at the bottom…" (`raptor-port/e2e/changeswin.spec.ts`) brings Tuesday's changed seat into view with the browser's own scroll and then checks that nothing covers it. On his PC (Windows' letters) the seat is already on screen, at 780–795 of 844, and the hidden bar — 12px from the foot, about 51 tall — starts at 780, so the check fails every time: with the night's changed bar (D1442) and with the bar as it was, measured both ways on 28 Oct 26. GitHub's machines pass it. The app is not at fault there — its own tap on a change brings the change clear of the bar; the test's scroll does not. **Fix:** in the test, bring the seat clear of the bar the way the app does (or scroll it above the bar's top) before the check, keeping the check itself. Small; needs no answer from him.
+**BUILT 30 Oct 26 on `claude/steady-tests-1030` (tests only) — to archive once live.** Reproduced here first (red, "nothing covers the dotted seat"). The test now brings the seat into view the way the app does: Show ▴, then a press on the seat's own line in the list — the app takes the schedule to the change and drops the panel to the bar (D167 (2)) — measured once the glide is at rest. The check is kept as it was, and one is added: the seat's whole box above the bar's top, not only its middle. It runs a second time in letters about a seventh wider (the stand-in `e2e/oilwait.spec.ts` uses). A break that made the app's own reveal leave the change at the foot of the screen turned both runs red. Evidence: `raptor-port/docs/handpass/2026-10-30-steady-tests.md`.
 
 ### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
 **What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page
@@ -263,6 +265,17 @@ it once; (7) the way back: putting the previous live version back on Vercel, che
 **For the full security review, from M4's security read (27 Oct 26 — `raptor-port/docs/handpass/parts/lw-m4/security-read.md` §Lower):** (a) older than M4 — on an open day of his own row a member's command may write a war record of ANY kind, an OIL credit (`{kind:'credit', code:'FO', oil:'auto'}`) among them, and the war adds such credits up (`dayview.ts earnsOil`); whether the schedule's credit pass rewrites a forged one was not confirmed; (b) one admin can write another admin's Approvals marker (`apprseen:`), the same pattern as the `reqseen:` row — no fix, a note; (c) a member's notice text is never compared with what his change did (a line about his own input that misdescribes it) — the war's line kinds are refused since M4.
 After four weeks, the scorecard against the baseline. **Place:** after the iPhone keyboard fault (D1366) and M4 (D1404)
 unless he says otherwise; Opus 5.5, high effort; a fresh chat.
+
+### [WIN-RESIZED-OVER-RETRY] A window he has only resized lies over the failed-save warning's Retry (found 30 Oct 26 by the steady-tests job; older; low)
+On a desktop where the top bar runs to two lines (on his PC 1200 and 1366 wide), the changes window and the ALL AVAIL window open just
+under the bar. Resized by its corner and never moved, a window keeps the size he chose — right — but its top with it, because a size
+he chose marks it placed (`raptor-port/src/ui/floatwin.ts`, `data-placed`). When a save then fails, the bar grows by the warning's line
+under the window, and the window lies over that line's right end, "Not saved" and Retry: measured 30 Oct 26, what lies at Retry's
+middle is the changes window at 1200 and 1366; at 1440, with a one-line bar, it is Retry. A window he MOVED there hides the bar by his
+own choice (D587 — a window covers the bar); one he only resized was put there by the app. **To do, if he wants it:** a window only
+resized keeps its size and still opens below the bar's foot as an unmoved one does. A question for him first, with the picture, since
+it reads D587. **Picture:** `raptor-port/docs/handpass/img/2026-10-30-steady-tests/resized-window-over-retry-1200.png`. **Place:** low —
+with the next windows job.
 
 ### [TRAFFIC-WIN-COVERS-UNDO] With the Traffic window open, the top bar's Undo cannot be pressed (found 21 Oct 26 by the walk of the schedule pages; older; low)
 The airspace Traffic window's backdrop lies over the top bar, so a press on Undo / Redo does nothing while it is open (a real click timed out at both sizes) and Ctrl+Z inside the window does nothing either; Undo works after Done. Older behaviour, not caused by [INNERHTML-REPAINT-SWEEP]. **To do:** decide with the window rules (D641 — a window leaves the page behind it working) whether the top bar stays pressable over this window. **Place:** the agent's; with the next windows job. **Evidence:** `raptor-port/docs/handpass/2026-10-21-schedule-pages.md` §4.
@@ -2069,6 +2082,17 @@ with a retry due at the click; (2) "a window he has moved keeps its place and si
 a resized one, an operated ALL AVAIL window and the preview-bar combinations. The report:
 `raptor-port/docs/superpowers/briefs/2026-10-06-owed-small-reads-astra.md` Part 3. **Place (the agent's line):** low — with the next
 change to the failed-save warning or its test.
+**BUILT 30 Oct 26 on `claude/steady-tests-1030` (tests only) — to archive once live.** (1) A press on Retry is now read IN the press: the
+count is taken as the click is captured and again as it bubbles to the document, after the button's own handler — no timer can run
+between. A new test presses Retry a quarter of a second before an automatic retry falls due and holds the press past it: with the
+button's handler taken away the reading is 0 though the retry wrote straight after; with the handler it shows the press's own write
+(a finger at 390, a mouse at 1200). Measured on the way: this Chromium ran the old 0ms reading before an overdue retry, so the old way
+was not fooled here — the new reading no longer rests on that order. (2) New tests: a changes window he has RESIZED, an ALL AVAIL window
+he has moved and resized, and both windows over the board's preview bar — not placed (stays below the bar when the warning pushes it
+down, and when it goes, the bar's buttons reachable, its foot on screen), then placed (keeps its box) — at the three desktop sizes.
+Four breaks, each turned the new tests red and was put back: Retry's handler taken away (8 red); the warning's cap reaching placed windows
+(7 red — the old moved-window test only at 1366); the band no longer telling windows it came (6 red); the preview bar moving a placed
+window (6 red). Found on the way and filed: [WIN-RESIZED-OVER-RETRY]. Evidence: `raptor-port/docs/handpass/2026-10-30-steady-tests.md`.
 
 ### [REST-FIRST-CREW-HINT] Empty formation gives no predictive crew-rest hint for its first occupant (found 2 Oct 26)
 Rally runtime evidence: an empty Wednesday formation resolves reporting to Tuesday11:00, but Ranger gets no pre-placement rest hint. First assignment correctly raises9h crew rest against Monday's overnight endingTuesday02:00. A different remaining crew member supplies a sibling and Ranger's hypothetical placement then correctly gives clearance14:00. Removal restores the missing-first-hint condition. Baseline query contract and a dedicated test explicitly return null for an empty formation; this is existing behaviour, not a new Rally regression, and is not exempted as stored-demo-only harm. The broad guide claim that the query never disagrees has been qualified in `raptor-port/docs/engine-rules.md`.

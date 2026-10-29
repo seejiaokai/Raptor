@@ -208,8 +208,11 @@ for (const [label, size] of [['desktop', DESK], ['phone', PHONE]] as const) {
 
 test.describe('History on a phone — Hide, the bar, Show (D339, D344, D345)', () => {
   test.use({ viewport: PHONE })
-  test('Hide sends the panel to the bar at the bottom; the dotted detail is in view and a tap raises its bubble; Show brings it back; ✕ turns History off', async ({ page }) => {
+  /* IN WIDER LETTERS TOO ([E2E-HIDE-BAR-SEAT], 30 Oct 26): his iPhone's letters are wider than a test machine's, which
+     moves where the seat sits on the page — the same stand-in as e2e/oilwait.spec.ts's, letters about a seventh wider */
+  for (const wider of [false, true]) test(`Hide sends the panel to the bar at the bottom; the dotted detail is in view and a tap raises its bubble; Show brings it back; ✕ turns History off${wider ? ' — in wider letters' : ''}`, async ({ page }) => {
     await hexEditsThenSaber(page)
+    if (wider) await page.evaluate(() => { document.body.style.letterSpacing = '.075em'; window.dispatchEvent(new Event('resize')) })
     await page.click('#histBtn')
     await expect(page.locator('.chgwin:not([hidden])')).toBeVisible()
     await expect(page.locator('.chgwin .cw-hint')).toHaveText('History on: Tap a gold dot on the schedule')
@@ -219,12 +222,35 @@ test.describe('History on a phone — Hide, the bar, Show (D339, D344, D345)', (
     await expect(bar.locator('.cw-barbtn')).toHaveText(/^History on · \d+ changes?\s*Show ▴$/)
     const bb = (await bar.boundingBox())!
     expect(Math.round(PHONE.height - (bb.y + bb.height)), 'the bar sits at the bottom').toBe(12)
-    /* the changed seat, brought into view, is not under the bar and wears its dot; a tap raises its bubble */
+    /* the changed seat, brought into view, is not under the bar and wears its dot; a tap raises its bubble.
+       BROUGHT INTO VIEW THE WAY THE APP BRINGS IT ([E2E-HIDE-BAR-SEAT], 30 Oct 26): Show ▴, then a press on the seat's
+       own line in the list — the app takes the schedule to the change and drops the panel to the bar again (D167 (2)).
+       The browser's own "scroll if needed" left it where it was whenever it was already on screen, and on Windows'
+       letters that was at 780–795 of 844, under the bar that starts at 780 — a fault of the test, never of the app. */
+    await page.click('.chgwin.bar .cw-barbtn')
+    const line = await page.evaluate(() => {
+      const el = ([...document.querySelectorAll('.chgwin button.cw-l')] as HTMLElement[]).find(e => e.offsetParent && (window as any).posKey(e.dataset.cwkey || '') === '1.0.0.0.p')
+      if (!el) return null
+      const r = el.getBoundingClientRect()
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+    })
+    expect(line, 'the seat’s line is in the list').toBeTruthy()
+    await page.mouse.click(line!.x, line!.y)
+    await expect(bar, 'the press drops the panel to the bar').toBeVisible()
+    await expect(page.locator('.chgflash'), 'the press took the schedule to the change (its brief mark)').toHaveCount(1)
+    /* the page glides there: measured once it is at rest */
     const seat = page.locator('#eWeek .day[data-day="1"] [data-slot="1.0.0.0.p"]')
-    await seat.scrollIntoViewIfNeeded()
+    let last = ''
+    for (let i = 0; i < 12; i++) {
+      const at = String(Math.round((await seat.boundingBox())!.y))
+      if (at === last) break
+      last = at; await page.waitForTimeout(110)
+    }
     await expect(seat).toHaveAttribute('data-histdot', '')
     const hit = await seat.evaluate(e => { const r = e.getBoundingClientRect(); const h = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!h && (e === h || e.contains(h)) })
     expect(hit, 'nothing covers the dotted seat').toBe(true)
+    const sb = (await seat.boundingBox())!, bb2 = (await bar.boundingBox())!
+    expect(Math.round(sb.y + sb.height), 'the whole seat sits above the bar, not only its middle').toBeLessThanOrEqual(Math.round(bb2.y))
     await seat.tap().catch(() => seat.click())
     await expect(page.locator('.histbub')).toBeVisible()
     /* Show brings the panel back; ✕ closes it, History with it */
