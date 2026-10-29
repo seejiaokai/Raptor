@@ -51,6 +51,9 @@ for (const kind of ['P', 'D']) {
   await press('settings-open')
   // the Settings window's own section heading, kept as markup to clone ("Groups")
   const secHTML = await p.evaluate(() => document.querySelector('[data-testid="settings-sheet"] .gs-sec')?.outerHTML || '')
+  // …and its group row's ✕ (".set-gdel"), the window's own small square button, cloned for the line controls (D1512)
+  const delHTML = await p.evaluate(() => document.querySelector('[data-testid="settings-sheet"] .set-gdel')?.outerHTML || '')
+  if (!delHTML) throw new Error('no ✕ to clone in Settings')
   await press('settings-events')
   await p.waitForSelector('[data-testid="events-list"]')
   // a neutral tap so no control is left lit (the guide's trap)
@@ -107,6 +110,47 @@ for (const kind of ['P', 'D']) {
     document.head.appendChild(st)
   }, { secHTML })
   await snap('A-sections')
+  // C — A, with each line's edit and delete controls on the line itself (D1512, question 5): the app's one pencil (D1134,
+  // ui/pen.ts PEN_INNER — copied here as drawn) in a clone of the window's ✕ button, then the ✕; one line shown armed
+  // ("Delete?", the ✕ widened, in the ✕'s own red) after its first press
+  const PEN = '<svg class="pen-ic solo" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-45 12 12)" fill="currentColor"><rect x="8.5" y="1" width="7" height="4.6" rx="2.4"/><rect x="8.5" y="6.4" width="7" height="12.2" rx=".3"/><path d="M8.5 19.4h7l-2.6 3.1a1.2 1.2 0 0 1-1.8 0Z"/></g></svg>'
+  await p.evaluate(({ delHTML, PEN }) => {
+    const mk = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); const b = t.content.firstElementChild; b.removeAttribute('data-testid'); b.classList.add('mock-ctl'); return b }
+    const lines = [...document.querySelectorAll('.mock-split .hol-line')]
+    lines.forEach((l, i) => {
+      const box = document.createElement('span'); box.className = 'mock-ctls'
+      const pen = mk(delHTML); pen.innerHTML = PEN; pen.title = 'Edit'; pen.classList.add('mock-pen')
+      const del = mk(delHTML); del.title = 'Delete'
+      if (i === 9) { del.textContent = 'Delete?'; del.classList.add('mock-armed') }
+      box.append(pen, del); l.appendChild(box)
+    })
+    const st = document.createElement('style'); st.id = 'mockcss2'
+    st.textContent = `.mock-split .hol-line{align-items:center}
+      .mock-ctls{display:inline-flex;gap:6px;margin-left:8px;flex:none;outline:2px dashed #3BC6E8;outline-offset:2px;border-radius:6px}
+      .mock-ctl.mock-pen{display:inline-grid;place-items:center;color:var(--ink-2,#c5ced8)}
+      .mock-ctl.mock-armed{width:auto;padding:0 7px;color:#ff5c5c;border-color:rgba(255,92,92,.6);font-weight:600}`
+    document.head.appendChild(st)
+  }, { delHTML, PEN })
+  // on a phone the two icons leave the name no room (measured: every name cut to its first letter), so there the name
+  // stands under the date, the kind's mark and word and the icons to their right — a drawing choice to put to him
+  if (phone) await p.evaluate(() => {
+    document.querySelectorAll('.mock-split .hol-line').forEach(l => {
+      const tx = document.createElement('span'); tx.className = 'mock-tx'
+      tx.append(l.querySelector('.hol-when'), l.querySelector('.hol-name')); l.prepend(tx)
+    })
+    const st = document.createElement('style'); st.id = 'mockcss3'
+    st.textContent = `.mock-split .hol-line{display:flex;gap:8px}
+      .mock-tx{display:flex;flex-direction:column;flex:1 1 auto;min-width:0;gap:2px}
+      .mock-tx .hol-when,.mock-tx .hol-name{flex:none}  /* the line's own 1 1 0 / 42% basis collapses them in a column */
+      .mock-tx .hol-name{white-space:normal}
+      .mock-split .hol-line .evpeek-kind{flex:none}`
+    document.head.appendChild(st)
+  })
+  await snap('C-line-controls')
+  // the widest a line gets on a phone: does any name, date or kind word lose letters?
+  metrics[`${kind}-C-clipped`] = await p.evaluate(() => [...document.querySelectorAll('.mock-split .hol-line')].flatMap(l =>
+    [...l.querySelectorAll('.hol-when,.hol-name,.evpeek-kind')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)))
+  await p.evaluate(() => { document.querySelectorAll('.mock-ctls').forEach(e => e.remove()); document.getElementById('mockcss2')?.remove(); document.getElementById('mockcss3')?.remove(); document.querySelectorAll('.mock-tx').forEach(t => { const l = t.parentElement; l.prepend(...t.childNodes); t.remove() }) })
   if (!phone) {
     // B — side by side, the window twice as wide
     await p.evaluate(() => {

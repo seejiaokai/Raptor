@@ -15,6 +15,15 @@
   "list": 586,
   "shown": 586
  },
+ "P-C-line-controls": {
+  "window": {
+   "w": 402,
+   "h": 874
+  },
+  "list": 644,
+  "shown": 644
+ },
+ "P-C-clipped": [],
  "D-0-today": {
   "window": {
    "w": 560,
@@ -31,6 +40,15 @@
   "list": 586,
   "shown": 586
  },
+ "D-C-line-controls": {
+  "window": {
+   "w": 560,
+   "h": 693
+  },
+  "list": 586,
+  "shown": 586
+ },
+ "D-C-clipped": [],
  "D-B-side-by-side": {
   "window": {
    "w": 1120,
