@@ -2765,3 +2765,23 @@ its value and never in innerText.
 **Suggested improvement:** In walk-scripts' walker brief: a finding is recorded only with its picture and the step that produced it; a note written into a script's text is not evidence. The host reproduces a finding before it is written into the sheet (the order already says so — enforce it at the sheet: no picture name, no finding).
 
 **Principle:** An observation with no captured evidence is a lead to reproduce, not a finding.
+
+### Observation 745: A walk script that reloads must not open the app in its no-save mode
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** D1510 (Quals Management, admin only) — the walk script `quals-mgmt-walk.mjs`
+**Skill:** brainstorming (its walk-script companion, `raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** walk scripts — the start page
+
+**Issue:** The walk copied an older script's `goto('/?fresh=1')`. That start keeps everything in memory only, so every
+`reload()` in the walk began from the demo world again: an admin's tick "did not survive a reload" — six FAILs that were
+the script's, not the app's. A walk that checks a save across a reload proves nothing from that start, and one that
+passes a "kept after reload" step from it passes by accident when the value happened to be the seed's.
+
+**Suggested improvement:** In walk-scripts.md's list of traps: a script that reloads, or checks anything is kept, opens
+`/` in a fresh browser context (which holds no storage, so the first load is still the demo world) — never `?fresh=1`.
+
+**Principle:** A test fixture's "clean start" switch can also switch off the very behaviour under test; check what a
+reset mode disables before reusing it.
