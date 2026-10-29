@@ -32,7 +32,7 @@ const CONFIGS = {
 const STATES = [
   ['viewsched', async p => { await go(p, 'viewsched') }],
   ['editsched', async p => { await go(p, 'editsched') }],
-  ['board', async p => { await go(p, 'editsched'); await p.evaluate(() => window.openScheduler(2)); await p.waitForSelector('.schedboard .sb-days'); await p.waitForTimeout(500) }],
+  ['board', async p => { await go(p, 'editsched'); await p.evaluate(() => window.openScheduler(2)); await p.waitForSelector('.schedboard'); await p.waitForTimeout(800) }],
   ['inputs-cal', async p => { await go(p, 'inputs') }],
   ['inputs-list', async p => { await go(p, 'inputs'); await p.click('#inListBtn'); await p.waitForTimeout(500) }],
   ['quals', async p => { await go(p, 'quals') }],
@@ -43,7 +43,16 @@ const STATES = [
   ['lw-approvals', async p => { await go(p, 'leavewar'); await tap(p, '[data-testid="lw-tab-approvals"]'); await p.waitForTimeout(600) }],
   ['lw-balances', async p => { await go(p, 'leavewar'); await tap(p, '[data-testid="lw-tab-balances"]'); await p.waitForSelector('.bp-cols, .bp-table'); await p.waitForTimeout(600) }],
   ['lw-oil', async p => { await go(p, 'leavewar'); await tap(p, '[data-testid="oil-tracker"]'); await p.waitForTimeout(900) }],
+  ['lw-oil-legend', async p => { await go(p, 'leavewar'); await tap(p, '[data-testid="oil-tracker"]'); await p.waitForTimeout(900); await tap(p, '[data-testid="oil-legend"]'); await p.waitForTimeout(400) }],
+  ['lw-oil-pick', async p => { await go(p, 'leavewar'); await tap(p, '[data-testid="oil-tracker"]'); await p.waitForTimeout(900); await tap(p, '[data-testid="oil-range-pick"]'); await p.waitForTimeout(400) }],
   ['tracker', async p => { await go(p, 'tracker'); await p.waitForTimeout(2500) }],
+  /* the Balances page with its search line open (a third slim line under the bar), and the member's faces: a state whose
+     name ends "-m" signs in as the member (us), whose Balances page carries the lock line and whose Quals row edits */
+  ['lw-balances-srch', async p => { await go(p, 'leavewar'); await tap(p, '[data-testid="lw-tab-balances"]'); await p.waitForSelector('.bp-cols, .bp-table'); if (await p.locator('[data-testid="bal-search-open"]').count()) { await tap(p, '[data-testid="bal-search-open"]'); await p.waitForTimeout(300); await p.evaluate(() => document.activeElement?.blur()) } }],
+  ['lw-balances-m', async p => { await go(p, 'leavewar'); await tap(p, '[data-testid="lw-tab-balances"]'); await p.waitForSelector('.bp-cols, .bp-table'); await p.waitForTimeout(600) }],
+  ['lw-grid-m', async p => { await go(p, 'leavewar'); await p.waitForSelector('[data-testid="lw-tab-grid"]'); await p.waitForTimeout(800) }],
+  ['quals-m', async p => { await go(p, 'quals') }],
+  ['viewsched-m', async p => { await go(p, 'viewsched') }],
 ]
 async function go(p, page) {
   await p.evaluate(pg => window.go(pg), page)
@@ -57,7 +66,7 @@ async function tap(p, sel) {
 }
 
 /* the probe itself — runs in the page; `spill` names an inner scroll box (by its index in the list) to let draw outside */
-const PROBE = async ({ spill }) => {
+const PROBE = async ({ spill, keep }) => {
   const S = document.createElement('style')
   S.textContent = '*{pointer-events:auto!important}'
   document.head.appendChild(S)
@@ -76,11 +85,55 @@ const PROBE = async ({ spill }) => {
     const c = css(e)
     if (c.position === 'fixed') return 'xy'
     let a = ''
-    if (c.position === 'sticky') { if (c.left !== 'auto' || c.right !== 'auto') a += 'x'; if (c.top !== 'auto' || c.bottom !== 'auto') a += 'y' }
+    /* sticky pins only along an axis its scroll box can scroll: Quals' real heading row is sticky top:0 inside a box that
+       scrolls only sideways, so it pins nothing up and down (QualsPage's own comment) — counted, it made the rows under the
+       pinned copy read as a gap between two pinned parts (the first sweep, 30 Oct 26) */
+    if (c.position === 'sticky') {
+      const sc = stickyBox(e)
+      const roomX = sc === document.documentElement ? true : sc.scrollWidth - sc.clientWidth > 1
+      const roomY = sc === document.documentElement ? true : sc.scrollHeight - sc.clientHeight > 1
+      if ((c.left !== 'auto' || c.right !== 'auto') && roomX) a += 'x'
+      if ((c.top !== 'auto' || c.bottom !== 'auto') && roomY) a += 'y'
+    }
     for (const ch of e.getAttribute('data-pinsweep') || '') if (!a.includes(ch)) a += ch
     return a
   }
   const isPos = e => axesOf(e) !== ''
+  /* the box a sticky part sticks in: its nearest ancestor that clips or scrolls, else the page */
+  function stickyBox(e) {
+    for (let x = e.parentElement; x && x !== document.body && x !== document.documentElement; x = x.parentElement) {
+      const c = css(x); if (/(auto|scroll|hidden|clip)/.test(c.overflowX + c.overflowY)) return x
+    }
+    return document.documentElement
+  }
+  /* WHAT OF A PART IS DRAWN: its box cut by every ancestor that clips it (a heading cell past its table's scroll box is not
+     drawn there, and what shows at that point is rightly the page — the first sweep's Quals "covered" headings), and a
+     point in a rounded corner is outside its shape (the week's ‹ › and the crew rail answered "covered" at their corners) */
+  const visRect = e => {
+    const q = e.getBoundingClientRect()
+    let l = q.left, t = q.top, r = q.right, b = q.bottom
+    if (css(e).position !== 'fixed') for (let x = e.parentElement; x && x !== document.documentElement; x = x.parentElement) {
+      const c = css(x), a = x.getBoundingClientRect()
+      const clipX = c.overflowX !== 'visible' || /paint/.test(c.contain), clipY = c.overflowY !== 'visible' || /paint/.test(c.contain)
+      if (clipX) { l = Math.max(l, a.left); r = Math.min(r, a.right) }
+      if (clipY) { t = Math.max(t, a.top); b = Math.min(b, a.bottom) }
+      if (c.position === 'fixed') break
+    }
+    l = Math.max(l, 0); t = Math.max(t, 0); r = Math.min(r, innerWidth); b = Math.min(b, innerHeight)
+    return { left: l, top: t, right: r, bottom: b, width: r - l, height: b - t }
+  }
+  const inShape = (e, x, y) => {
+    const q = e.getBoundingClientRect(), c = css(e)
+    const rad = v => parseFloat(v) || 0
+    const corners = [[rad(c.borderTopLeftRadius), q.left, q.top, 1, 1], [rad(c.borderTopRightRadius), q.right, q.top, -1, 1],
+      [rad(c.borderBottomLeftRadius), q.left, q.bottom, 1, -1], [rad(c.borderBottomRightRadius), q.right, q.bottom, -1, -1]]
+    for (const [r, cx, cy, sx, sy] of corners) {
+      if (r <= 0) continue
+      const ox = cx + sx * r, oy = cy + sy * r
+      if ((x - ox) * sx < 0 && (y - oy) * sy < 0 && (x - ox) ** 2 + (y - oy) ** 2 > (r - 0.5) ** 2) return false
+    }
+    return true
+  }
   const pinAxes = e => { let a = ''; for (let x = e; x && x !== document.documentElement; x = x.parentElement) for (const ch of axesOf(x)) if (!a.includes(ch)) a += ch; return a }
   const holds = (h, need) => { const a = pinAxes(h); return [...need].every(ch => a.includes(ch)) }
   const pinnedOf = e => { for (let x = e; x && x !== document.documentElement; x = x.parentElement) if (isPos(x)) return x; return null }
@@ -110,35 +163,90 @@ const PROBE = async ({ spill }) => {
   const W = innerWidth, H = innerHeight
   const pins = [...document.querySelectorAll('body *')].filter(e => {
     if (!isPos(e) || inOff(e)) return false
-    const q = e.getBoundingClientRect()
+    const q = visRect(e)
     if (q.width < 24 || q.height < 8 || q.bottom <= 0 || q.top >= H || q.right <= 0 || q.left >= W) return false
+    /* a shade over the whole screen behind a window (the OIL tracker's scrim) is see-through by design: it dims, it is
+       not a bar */
+    if (q.width >= W * 0.9 && q.height >= H * 0.9 && alpha(e) < 0.99) return false
     return opOf(e) > 0.02
   })
   /* the inner scroll boxes of the page on screen (for the spill) */
   const boxes = [...page.querySelectorAll('*')].filter(e => {
     const c = css(e), q = e.getBoundingClientRect()
-    if (!/(auto|scroll|hidden)/.test(c.overflowX + c.overflowY) || q.width < 160 || q.height < 120) return false
+    if (!/(auto|scroll)/.test(c.overflowX + c.overflowY) || q.width < 160 || q.height < 120) return false  /* a box that clips but does not scroll (a window, a card) is no list: nothing scrolls under what stands beside it */
     return (e.scrollHeight - e.clientHeight > 40 || e.scrollWidth - e.clientWidth > 40) && q.bottom > 0 && q.top < H
   })
   let spilled = null, undo = null
+  const leaks = [], seen = [], cands = []
   if (spill != null && boxes[spill]) {
     const b = boxes[spill], kid = b.firstElementChild
     spilled = b
+    /* THE BAND AROUND THE BOX (calibrated 30 Oct 26 on the build before D1519's fix): a part that stands beside an inner
+       scroll box — the Balances page's bar over its list — stays put while the list scrolls under its edge, whatever its
+       own position is, so it is never found as sticky or fixed. Before the spill, note what is painted in a band above
+       and left of the box (only a separate part: never the box's own ancestors, whose fill is the box's surroundings);
+       after it, the list let draw past its edge must not answer there, on top or through a part with no fill of its own */
+    const bq = b.getBoundingClientRect()
+    const band = []
+    /* only along an axis the box scrolls: a list that scrolls only sideways (Quals' table, the page scrolling it up and
+       down with what is above it) never has rows under the part above it */
+    const upDown = b.scrollHeight - b.clientHeight > 1, sideways = b.scrollWidth - b.clientWidth > 1
+    for (const d of [0.6, 2, 6, 20, 60, 110]) {
+      if (upDown) for (const f of [0.04, 0.25, 0.5, 0.75, 0.96]) band.push([bq.left + bq.width * f, bq.top - d, 'top'])
+      if (sideways) for (const f of [0.1, 0.5, 0.9]) band.push([bq.left - d, bq.top + bq.height * f, 'left'])
+    }
+    const pre = band.map(([x, y, side]) => {
+      if (x < 0 || x >= W || y < 0 || y >= H) return null
+      const h = topAt(x, y)
+      if (!h || h.contains(b) || b.contains(h)) return null
+      return { x, y, side, h }
+    })
+    /* …AND THE STRIP BETWEEN THE BOX AND THE PART BESIDE IT. Where a part stands a few pixels off the list (a tools row's
+       margin), the strip between them is the surroundings' own fill — an ancestor, skipped above — and a list drawn past
+       its edge shows there as plainly as through a bar: every point of the band closer to the box than the nearest part
+       beside it, within 12px, is asked too */
+    const STRIP = 12
+    for (const [i, [x, y, side]] of band.entries()) {
+      if (pre[i] || x < 0 || x >= W || y < 0 || y >= H) continue
+      /* only where the box's surroundings show now: a point its own content already answers (a seam where two boxes meet on
+         one screen pixel — the Tracker head over its chart) is no strip */
+      { const h0 = topAt(x, y); if (!h0 || !h0.contains(b) || h0 === b) continue }
+      const d = side === 'top' ? bq.top - y : bq.left - x
+      if (d > STRIP) continue
+      /* a part beside the box within 14px, looked for in 1px steps outwards from this point */
+      let part = null
+      for (let k = Math.ceil(d) + 1; k <= STRIP + 2 && !part; k++) {
+        const yy = side === 'top' ? bq.top - k : y, xx = side === 'top' ? x : bq.left - k
+        if (xx < 0 || yy < 0) break
+        const h = topAt(xx, yy)
+        if (h && !h.contains(b) && !b.contains(h)) part = h
+      }
+      if (part) pre[i] = { x, y, side: side + '-strip', h: part }
+    }
     const was = [b.style.overflow, b.style.contain, kid && kid.style.translate]
     b.style.overflow = 'visible'; b.style.contain = 'none'
     if (kid) kid.style.translate = '-120px -120px'
     cs.clear()
     undo = () => { b.style.overflow = was[0]; b.style.contain = was[1]; if (kid) kid.style.translate = was[2] }
+    window.__spillUndo = undo
+    for (const s of pre) {
+      if (!s) continue
+      for (const e of document.elementsFromPoint(s.x, s.y)) {
+        if (opOf(e) <= 0.02) continue
+        if (b.contains(e) && e !== b) { leaks.push({ kind: 'spill-' + s.side, P: name(s.h), hit: name(e), pr: rc(s.h), hr: rc(e), x: Math.round(s.x), y: Math.round(s.y * 10) / 10 }); break }
+        if (alpha(e) >= 0.99) break
+      }
+    }
   }
-  const leaks = [], seen = [], cands = []
   for (const P of pins) {
     if (spilled && spilled.contains(P)) continue
-    const q = P.getBoundingClientRect()
+    const q = visRect(P)
     seen.push({ P: name(P), x: Math.round(q.left), y: Math.round(q.top), w: Math.round(q.width), h: Math.round(q.height) })
     const xs = [0.04, 0.25, 0.5, 0.75, 0.96].map(f => q.left + Math.max(1, Math.min(q.width - 1, q.width * f)))
     const ys = [q.top + 0.6, q.top + q.height / 2, q.bottom - 0.6]
     for (const y of ys) for (const x of xs) {
       if (x < 0 || x >= W || y < 0 || y >= H) continue
+      if (!inShape(P, x, y)) continue
       const h = topAt(x, y); if (!h) continue
       if (!(P === h || P.contains(h))) {
         if (!holds(h, pinAxes(P)) && scrolls(h)) cands.push({ P, h, l: { kind: 'covered', P: name(P), hit: name(h), pr: rc(P), hr: rc(h), x: Math.round(x), y: Math.round(y * 10) / 10 } })
@@ -162,16 +270,19 @@ const PROBE = async ({ spill }) => {
     for (const [side, at, dir] of sides) {
       if (c.position === 'sticky' && c[side] === 'auto') continue
       if (at < 0 || (dir === 'h' ? at >= H : at >= W)) continue
-      const along = dir === 'h' ? xs : [q.top + 2, q.top + q.height / 2, q.bottom - 2]
-      let abut = false
+      /* sampled only along the stretch where the two parts meet (the first sweep: the Leave War's frozen date bar met
+         the frozen names column at its left end, and the rows under the bar's whole length were counted as a gap) */
+      const spans = []
       for (const R of pins) {
         if (R === P || R.contains(P) || P.contains(R)) continue
-        const r = R.getBoundingClientRect()
+        if (spilled && spilled.contains(R)) continue
+        const r = visRect(R)
         const meet = side === 'top' ? r.bottom >= q.top - 3 && r.bottom <= q.top + 1 : side === 'bottom' ? r.top <= q.bottom + 3 && r.top >= q.bottom - 1 : side === 'left' ? r.right >= q.left - 3 && r.right <= q.left + 1 : r.left <= q.right + 3 && r.left >= q.right - 1
         const across = dir === 'h' ? r.left < q.right && r.right > q.left : r.top < q.bottom && r.bottom > q.top
-        if (meet && across) { abut = true; break }
+        if (meet && across) spans.push(dir === 'h' ? [Math.max(r.left, q.left), Math.min(r.right, q.right)] : [Math.max(r.top, q.top), Math.min(r.bottom, q.bottom)])
       }
-      if (!abut) continue
+      if (!spans.length) continue
+      const along = spans.flatMap(([a0, a1]) => [0.1, 0.5, 0.9].map(t => a0 + (a1 - a0) * t))
       for (const a of along) {
         const [x, y] = dir === 'h' ? [a, at] : [at, a]
         if (x < 0 || x >= W || y < 0 || y >= H) continue
@@ -203,9 +314,10 @@ const PROBE = async ({ spill }) => {
     }
     for (const c of cands) if (c.real) leaks.push(c.l)
   }
-  if (undo) undo()
+  if (undo && !keep) undo()
   S.remove()
-  return { leaks, seen, boxes: boxes.map(name), scrollY: Math.round(scrollY), maxY: Math.round(document.scrollingElement.scrollHeight - innerHeight) }
+  const sb = spilled && spilled.getBoundingClientRect()
+  return { leaks, seen, boxes: boxes.map(name), spillBox: sb && { x: sb.left, y: sb.top, w: sb.width, h: sb.height }, scrollY: Math.round(scrollY), maxY: Math.round(document.scrollingElement.scrollHeight - innerHeight) }
 }
 
 /* D1518's own test of a pinned part — it stays put while what is under it scrolls: every absolutely placed element is
@@ -256,12 +368,14 @@ for (const [cname, cfg] of Object.entries(CONFIGS)) {
     p.on('pageerror', e => errors.push(String(e).slice(0, 160)))
     try {
       await p.goto(ORIGIN + '/')
-      await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a'); await p.click('#loginForm button[type=submit]')
+      const member = sname.endsWith('-m')
+      await p.fill('#luser', member ? 'us' : 'ad'); await p.fill('#lpass', member ? 'us' : 'a'); await p.click('#loginForm button[type=submit]')
       await p.waitForSelector('#vWeek .day', { timeout: 20000 })
       await reach(p)
       const max = await p.evaluate(() => document.scrollingElement.scrollHeight - innerHeight)
       const places = max > 40 ? [0, 0.3, 0.6, 0.97].map(f => Math.round(max * f)) : [0]
       for (const [i, y] of places.entries()) {
+        if (process.env.SWEEP_LOG) console.log("..", cname, sname, y)
         await p.evaluate(yy => window.scrollTo(0, yy), y)
         await p.waitForTimeout(350)
         await MARK(p)
@@ -282,7 +396,15 @@ for (const [cname, cfg] of Object.entries(CONFIGS)) {
           const mid = await p.evaluate(PROBE, { spill: null })
           results.push({ config: cname, state: sname, place: `y${y}+inner`, ...mid, errors: [...errors] })
           for (let k = 0; k < Math.min(mid.boxes.length, 4); k++) {
-            const s = await p.evaluate(PROBE, { spill: k })
+            if (process.env.SWEEP_LOG) console.log("..  spill", k, mid.boxes[k])
+            const s = await p.evaluate(PROBE, { spill: k, keep: true })
+            /* a spill that showed is pictured while it stands: the band above the box, where the leak was read */
+            if (s.leaks.length && s.spillBox) {
+              const vp = cfg.ctx.viewport, q = s.spillBox
+              const x = Math.max(0, q.x - 8), yy = Math.max(0, q.y - 130), w = Math.min(vp.width - x, q.w + 16), h = Math.min(vp.height - yy, 180)
+              if (w > 4 && h > 4) await p.screenshot({ path: join(OUT, `${cname}-${sname}-spill${k}.png`), clip: { x, y: yy, width: w, height: h } }).catch(() => {})
+            }
+            await p.evaluate(() => { if (window.__spillUndo) window.__spillUndo(); window.__spillUndo = null })
             results.push({ config: cname, state: sname, place: `y${y}+spill:${mid.boxes[k]}`, ...s, seen: [], errors: [...errors] })
           }
           let n = 0
