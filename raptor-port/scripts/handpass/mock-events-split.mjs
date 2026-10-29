@@ -120,6 +120,55 @@ for (const kind of ['P', 'D']) {
     const lefts = ks.filter(k => !k.classList.contains('mock-nokind')).map(k => Math.round(k.getBoundingClientRect().left))
     return { w, lefts: [...new Set(lefts)] }
   })
+  /* D1515 ("Fix all six"), the design review's fixes, drawn on the proposal:
+     (1) the ✕ arms IN PLACE — its 22px box keeps its size and place, filled red (the Leave War's armed red, bidpicker.css
+         `.creset.cf-del.arm`), and the line's kind column says "Delete — sure?" — so the pencil never moves;
+     (2) after a delete, the app's own bar with buttons (`.secdef-snack`, as "Set as default") at the foot: "<name> deleted"
+         and Undo — the plain passing note cannot be pressed;
+     (3) the two icons stand 14px apart (were 6), each with a finger-sized tap area round it (not drawn — invisible; outlined
+         dashed on the marked copy), and their edge lighter: the app's --ink-3 at .65, about 3:1 on the line (was 1.4:1);
+     (4) the ✕ is the Leave War's red cross at rest (D676, matrix.css `.mrow-btn.del`: a red outline, a pale red cross);
+     (5) the date column: alignKinds above (the widest date the app can write + 12px);
+     (6) a new event: its line wears the app's plain blue ring (D860, the reduced-motion form of `.hol-line.innew`), in view. */
+  const applyFixes = (arm, fresh) => p.evaluate(({ arm, fresh, PLAIN }) => {
+    document.querySelectorAll('.mock-ctls').forEach(c => { c.style.gap = '14px'; c.style.outline = 'none' })
+    document.querySelectorAll('.mock-ctl').forEach(b => { b.style.borderColor = 'rgba(138,150,163,.65)' })
+    document.querySelectorAll('.mock-ctl:not(.mock-pen)').forEach(b => {
+      b.classList.remove('mock-armed'); b.textContent = '✕'; b.style.width = ''; b.style.padding = ''
+      b.style.color = '#FBB4B9'; b.style.borderColor = 'rgba(240,85,95,.6)'; b.style.background = 'transparent'; b.style.fontWeight = ''
+    })
+    if (!PLAIN) document.querySelectorAll('.mock-ctl').forEach(b => { b.style.boxShadow = '0 0 0 9px rgba(59,198,232,.0), 0 0 0 9px transparent'; b.style.outline = '1px dashed rgba(59,198,232,.7)'; b.style.outlineOffset = '9px' })
+    const line = n => [...document.querySelectorAll('[data-testid="events-list"] .hol-line')].find(l => l.querySelector('.hol-name')?.textContent === n)
+    const a = arm && line(arm)
+    if (a) {
+      const x = a.querySelector('.mock-ctl:not(.mock-pen)')
+      x.style.background = '#F0555F'; x.style.borderColor = '#F0555F'; x.style.color = '#1A0508'
+      const k = a.querySelector('.evpeek-kind')
+      k.style.visibility = 'visible'; k.dataset.was = k.innerHTML; k.classList.add('mock-sure')
+      k.innerHTML = '<b style="color:#FBB4B9;font-weight:700">Delete — sure?</b>'
+      if (!document.getElementById('mocksure')) { const st = document.createElement('style'); st.id = 'mocksure'; st.textContent = '.mock-sure::before{display:none!important}'; document.head.appendChild(st) }
+    }
+    const f = fresh && line(fresh)
+    if (f) { f.style.boxShadow = 'inset 0 0 0 2px #1E86FF' }
+  }, { arm, fresh, PLAIN })
+  const showDeleted = (name) => p.evaluate(({ name }) => {
+    const l = [...document.querySelectorAll('[data-testid="events-list"] .hol-line')].find(x => x.querySelector('.hol-name')?.textContent === name)
+    const head = l.closest('.mock-col')?.querySelector('.mock-sec'); l.remove()
+    if (head) head.textContent = head.textContent.replace(/\d+$/, n => String(+n - 1))
+    const bar = document.createElement('div'); bar.className = 'secdef-snack mock-snack'; bar.setAttribute('role', 'status')
+    bar.style.zIndex = '2000'
+    // one line on a phone too: the bar as wide as its words, never wider than the screen less its margins
+    bar.style.display = 'flex'; bar.style.alignItems = 'center'; bar.style.gap = '14px'; bar.style.whiteSpace = 'nowrap'; bar.style.width = 'max-content'; bar.style.maxWidth = 'calc(100vw - 32px)'
+    bar.innerHTML = `<span class="secdef-msg">${name} deleted</span><button class="secdef-btn yes">Undo</button>`
+    document.body.appendChild(bar)
+  }, { name })
+  const showEmpty = () => p.evaluate(() => {
+    document.querySelector('.mock-snack')?.remove()
+    const col = [...document.querySelectorAll('.mock-col')][1]
+    const list = col.querySelector('.mock-part'); const e = document.createElement('p'); e.className = 'hol-empty'
+    e.textContent = 'No squadron events in JAN – DEC 26.'; list.replaceWith(e)
+    const head = col.querySelector('.mock-sec'); head.textContent = head.textContent.replace(/\d+$/, '0')
+  })
   const snap = async name => {
     const ok = await p.evaluate(() => document.querySelector('[data-testid="events-list"]')?.dataset.mocked === '1')
     if (!ok) throw new Error('the drawn list was wiped before ' + name)
@@ -196,6 +245,14 @@ for (const kind of ['P', 'D']) {
   metrics[`${kind}-C-kinds`] = await alignKinds()
   await snap('C-line-controls')
   // the widest a line gets on a phone: does any name, date or kind word lose letters?
+  if (phone) {
+    await applyFixes('Squadron dinner', 'Families day')
+    metrics[`${kind}-F-kinds`] = await alignKinds()
+    await snap('F-fixed')
+    await showDeleted('Squadron dinner')
+    await snap('F-deleted')
+    await p.evaluate(() => document.querySelector('.mock-snack')?.remove())
+  }
   metrics[`${kind}-C-clipped`] = await p.evaluate(() => [...document.querySelectorAll('.mock-split .hol-line')].flatMap(l =>
     [...l.querySelectorAll('.hol-when,.hol-name,.evpeek-kind')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)))
   await p.evaluate(() => { document.querySelectorAll('.mock-ctls').forEach(e => e.remove()); document.getElementById('mockcss2')?.remove(); document.getElementById('mockcss3')?.remove(); document.querySelectorAll('.mock-tx').forEach(t => { const l = t.parentElement; l.prepend(...t.childNodes); t.remove() }) })
@@ -238,6 +295,21 @@ for (const kind of ['P', 'D']) {
       return { ...window.__widestDate, gap: Math.round(n.getBoundingClientRect().left - textRight), nameCut: n.scrollWidth > n.clientWidth + 1 }
     })
     await snap('BC-longest-date-wide')
+    // back to the app's own letters and the sample's own date, then the fixes (D1515)
+    await p.evaluate(() => {
+      document.getElementById('mockwide')?.remove()
+      const l = [...document.querySelectorAll('.mock-split .hol-line')].find(x => x.querySelector('.hol-name')?.textContent === 'Chinese New Year')
+      l.querySelector('.hol-when').textContent = 'Tue 17 – Wed 18 Feb'
+    })
+    await applyFixes('Squadron dinner', 'Families day')
+    metrics[`${kind}-F-kinds`] = await alignKinds()
+    await snap('F-fixed')
+    metrics[`${kind}-F-clipped`] = await p.evaluate(() => [...document.querySelectorAll('.mock-split .hol-line')].flatMap(l =>
+      [...l.querySelectorAll('.hol-when,.hol-name,.evpeek-kind')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)))
+    await showDeleted('Squadron dinner')
+    await snap('F-deleted')
+    await showEmpty()
+    await snap('F-empty')
     metrics[`${kind}-BC-clipped`] = await p.evaluate(() => [...document.querySelectorAll('.mock-split .hol-line')].flatMap(l =>
       [...l.querySelectorAll('.hol-when,.hol-name,.evpeek-kind')].filter(e => e.scrollWidth > e.clientWidth + 1).map(e => e.textContent)))
   }

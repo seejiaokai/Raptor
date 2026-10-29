@@ -35,6 +35,28 @@
   "list": 644,
   "shown": 644
  },
+ "P-F-kinds": {
+  "w": 96,
+  "lefts": [
+   206
+  ]
+ },
+ "P-F-fixed": {
+  "window": {
+   "w": 402,
+   "h": 874
+  },
+  "list": 644,
+  "shown": 644
+ },
+ "P-F-deleted": {
+  "window": {
+   "w": 402,
+   "h": 874
+  },
+  "list": 597,
+  "shown": 597
+ },
  "P-C-clipped": [],
  "D-0-today": {
   "window": {
@@ -139,7 +161,37 @@
   "list": 332,
   "shown": 332
  },
- "D-BC-clipped": [
-  "Squadron dinner"
- ]
+ "D-F-kinds": {
+  "w": 96,
+  "lefts": [
+   574,
+   1129
+  ]
+ },
+ "D-F-fixed": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-F-clipped": [],
+ "D-F-deleted": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-F-empty": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-BC-clipped": []
 }

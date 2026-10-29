@@ -35,6 +35,28 @@
   "list": 644,
   "shown": 644
  },
+ "P-F-kinds": {
+  "w": 96,
+  "lefts": [
+   206
+  ]
+ },
+ "P-F-fixed": {
+  "window": {
+   "w": 402,
+   "h": 874
+  },
+  "list": 644,
+  "shown": 644
+ },
+ "P-F-deleted": {
+  "window": {
+   "w": 402,
+   "h": 874
+  },
+  "list": 597,
+  "shown": 597
+ },
  "P-C-clipped": [],
  "D-0-today": {
   "window": {
@@ -96,6 +118,74 @@
   ]
  },
  "D-BC-side-by-side-icons": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-longest": {
+  "widest": "Mon 16 Mar – Mon 11 May",
+  "w": 151,
+  "col": 163,
+  "gap": 22
+ },
+ "D-BC-longest-date": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-longest-wide-kinds": {
+  "w": 106,
+  "lefts": [
+   572,
+   1127
+  ]
+ },
+ "D-longest-wide": {
+  "widest": "Wed 18 Mar – Wed 13 May",
+  "w": 169,
+  "col": 181,
+  "gap": 22,
+  "nameCut": false
+ },
+ "D-BC-longest-date-wide": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-F-kinds": {
+  "w": 96,
+  "lefts": [
+   574,
+   1129
+  ]
+ },
+ "D-F-fixed": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-F-clipped": [],
+ "D-F-deleted": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ },
+ "D-F-empty": {
   "window": {
    "w": 1120,
    "h": 439
