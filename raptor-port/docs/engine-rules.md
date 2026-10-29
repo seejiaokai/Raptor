@@ -3983,7 +3983,7 @@ the squadron's programme*, not read vs write:
 |---|---|---|
 | Inputs — add / edit / delete | **yes** | yes |
 | Inputs — choosing WHO an input is for | no — always the signed-in person (his own account's callsign — D166) | yes |
-| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT / callsign / remarks | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER but NOT the callsign, which is an admin's to change (D149, 24 Sep 26; D218, 26 Sep 26; BUILT by `[ACCOUNTS]`, 26 Sep 26: `state/quals-write.ts updatePersonField`, checked before anything moves; other rows read as text for him)** | yes, any row |
+| Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT / callsign / remarks | **yes — his OWN row only, every column of it incl. SXO and SCHEDULER but NOT the callsign, which is an admin's to change, nor the Management tick, an admin's to tick (D149, 24 Sep 26; D218, 26 Sep 26; D1510, 29 Oct 26 — his own Management cell reads only; BUILT by `[ACCOUNTS]`, 26 Sep 26: `state/quals-write.ts updatePersonField`, checked before anything moves; other rows read as text for him)** | yes, any row |
 | Admin → Users — accounts, requests, the guest switch | no | yes (never his own account; at least one admin always keeps access) |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Admin → Users — add a person (alone, or with his account), or approve a request with New person (D217, 26 Sep 26 — was Quals' `Add person`, now a button there) | no | yes |

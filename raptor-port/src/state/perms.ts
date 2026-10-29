@@ -356,6 +356,17 @@ export function mayReadMedicalOf(_pid?: any): boolean {
 export const mayEditQualsOf = (pid: any): boolean => may(T.person, 'U', pid, true)
 /* the callsign on his row is the admin's to change (D218, narrowing D149); no session → true */
 export const mayRenameCallsign = (): boolean => roleOf() === null || isAdmin()
+/* the Management tick on his row is the admin's too (D1510, narrowing D149 as D218 did): the Leave War draws its Management
+   group, first on the war, from this tick (D1502). No session → true */
+export const mayTickManagement = (): boolean => roleOf() === null || isAdmin()
+/* what a member's own Quals row may not change, read by the commit gate below (data-model.md §11, the Person row):
+   the callsign (D218), the Management tick (D1510), the archive and placeholder marks */
+const OWN_ROW_ADMIN_ONLY: [string, (p: any) => any][] = [
+  ['his callsign', p => String(p?.cs ?? '')],
+  ['his Management tick', p => !!p?.quals?.mgmt],
+  ['his archive mark', p => !!p?.archived],
+  ['his placeholder mark', p => !!p?.special],
+]
 /* adding, archiving, restoring a person; the LoX column list. No session → true (the
    write-path backstops these replace passed a sessionless call). */
 export const mayManageRoster = (): boolean => may(T.person, 'C', null, true) && may(T.person, 'D', null, true)
@@ -1008,7 +1019,14 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
         if (c.op === 'delete' && env.origin === 'restore' && b && String(b.by) === pid && rides(b.iid)) break
         return `a notice that is not his own change's (${where})`
       }
-      case 'people': if (c.id !== pid) return `another person's row (${where})`; break
+      case 'people': {
+        if (c.id !== pid) return `another person's row (${where})`
+        /* his own row, but never what the admin owns on it (D218, D1510); a delete or a new row of his own is neither
+           his to make, so an absent side reads as an empty person */
+        const b: any = c.before ?? {}, n: any = c.op === 'delete' ? {} : (c.after ?? {})
+        for (const [what, read] of OWN_ROW_ADMIN_ONLY) if (read(b) !== read(n)) return `${what} (${where})`
+        break
+      }
       case 'lw.cell': {
         const parts = c.id.split(':')
         if (parts[parts.length - 2] !== pid) return `another person's war row (${where})`
