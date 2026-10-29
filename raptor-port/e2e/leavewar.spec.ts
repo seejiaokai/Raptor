@@ -7887,11 +7887,11 @@ test('nothing of the Balances list shows behind its bar, whatever the list draws
    they spread across the tile now, War bal ending at its right edge, whatever the line under them holds — and a War bal longer
    than its room is drawn smaller until it fits (GitHub's Linux letters, as an iPhone's, ran "−12.5" 5.9 past at 402 with the
    spread alone). Each figure is typed in App bal, as a person does, and War bal worked out by the app. Wide letters are stood in
-   by Verdana on the figure (§7.9 — the PC's own letters fit "−12.5" without help; Verdana does not, at 375). */
+   by Verdana on the whole tile (§7.9 — the PC's own letters fit without help; Verdana, wider than GitHub's and an iPhone's, does not). */
 test('on a phone the person window\'s War bal stays inside its LVE tile, the longest figure too, at 402 and 375', async ({ page }) => {
   test.skip(!isPhone(), 'the phone\'s tile; a desktop keeps the drawing\'s spacing')
   await lwRole(page, 'admin')
-  await page.addStyleTag({ content: '[data-testid="pw-LVE-war"] { font-family: Verdana, "DejaVu Sans", sans-serif !important }' })
+  await page.addStyleTag({ content: '[data-testid="pw-tile-LVE"] * { font-family: Verdana, "DejaVu Sans", sans-serif !important }' })
   for (const width of [402, 375]) {
     await page.setViewportSize({ width, height: 874 })
     await openBalancesPage(page)
@@ -7901,9 +7901,13 @@ test('on a phone the person window\'s War bal stays inside its LVE tile, the lon
     for (const fig of ['17.5', '−12.5', '−998.5', was]) {
       await typeFig(page, 'pw-LVE', fig)
       await expect(page.getByTestId('pw-LVE-war')).toHaveText(fig)
+      /* what is DRAWN — the figure's letters and the "War bal" heading over it — never the figure's box, which stretches to
+         its column (GitHub's run, 29 Oct 26: the box stood 1.2 past at 375 while its letters were not measured at all) */
       const over = await page.evaluate(() => {
         const t = document.querySelector<HTMLElement>('[data-testid="pw-tile-LVE"]')!, war = t.querySelector<HTMLElement>('[data-testid="pw-LVE-war"]')!
-        return war.getBoundingClientRect().right - (t.getBoundingClientRect().right - parseFloat(getComputedStyle(t).paddingRight))
+        const head = [...t.querySelectorAll<HTMLElement>('.r17-sum .h')].find(h => h.textContent === 'War bal')!
+        const drawn = (e: HTMLElement) => { const r = document.createRange(); r.selectNodeContents(e); return r.getBoundingClientRect().right }
+        return Math.max(drawn(war), drawn(head)) - (t.getBoundingClientRect().right - parseFloat(getComputedStyle(t).paddingRight))
       })
       expect(over, `${width}: War bal "${fig}" runs past its tile`).toBeLessThanOrEqual(0.5)
     }

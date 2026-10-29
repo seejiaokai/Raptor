@@ -1,6 +1,6 @@
 # Drawing check — Leave War M5a
 
-Build: `C:\Users\User\projects\Raptor\.claude\worktrees\lw-rulings-tripwire-1707d1\raptor-port\dist` · run 29 Oct 2026, 23:06 · tolerance 2px
+Build: `C:\Users\User\projects\Raptor\.claude\worktrees\lw-rulings-tripwire-1707d1\raptor-port\dist` · run 29 Oct 2026, 23:30 · tolerance 2px
 
 **GREEN** — 0 difference(s) unexplained, 27 kept as built by his ruling, 0 screen(s) not checked.
 

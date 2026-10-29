@@ -196,8 +196,12 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
       const t = w.closest<HTMLElement>('.r17-lve')
       if (!t || !w.getBoundingClientRect().width) return
       const edge = t.getBoundingClientRect().right - (parseFloat(getComputedStyle(t).paddingRight) || 0)
+      /* the figure's own letters, never its box: the box stretches to its whole column, so its edge never moved as the letters
+         shrank (GitHub's run, 29 Oct 26 — "17.5" 1.2 past at 375 however small it was drawn) */
+      const r = document.createRange()
+      const right = () => { r.selectNodeContents(w); return r.getBoundingClientRect().right }
       let px = parseFloat(getComputedStyle(w).fontSize) || 20
-      for (let i = 0; i < 16 && px > 12 && w.getBoundingClientRect().right > edge + 0.5; i++) { px -= 0.5; w.style.fontSize = `${px}px` }
+      for (let i = 0; i < 16 && px > 12 && right() > edge + 0.5; i++) { px -= 0.5; w.style.fontSize = `${px}px` }
     }
     fit()
     const tile = w.closest<HTMLElement>('.r17-lve')
