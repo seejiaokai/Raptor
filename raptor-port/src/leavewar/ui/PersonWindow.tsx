@@ -181,6 +181,27 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   const save = (kind: BalKind, part?: 'cf') => (n: number) => saveTypedFigure(pid, kind, n, part)
   const name = person.callsign
   const L = f.kinds.LVE
+  /* WAR BAL WHOLE INSIDE ITS TILE, ALWAYS (his iPhone picture, 29 Oct 26 — the agent's fault fix with D1519's job): spread
+     across the tile on a phone (personwindow.css), a long War bal in wide letters — "−12.5" on GitHub's Linux machines, as on
+     an iPhone, 5.9 over at 402 — still ran under OIL. As a figure box does (BalancesPage.tsx fitFigure, the M5a walk's A-F3),
+     a War bal longer than its room is drawn smaller until it ends inside the tile; one that fits keeps the tile's letters.
+     Measured when the figure or the screen's width changes. */
+  const warRef = useRef<HTMLSpanElement | null>(null)
+  useLayoutEffect(() => {
+    const w = warRef.current
+    if (!w) return
+    const fit = () => {
+      w.style.fontSize = ''
+      const t = w.closest<HTMLElement>('.r17-lve')
+      if (!t || !w.getBoundingClientRect().width) return
+      const edge = t.getBoundingClientRect().right - (parseFloat(getComputedStyle(t).paddingRight) || 0)
+      let px = parseFloat(getComputedStyle(w).fontSize) || 20
+      for (let i = 0; i < 16 && px > 12 && w.getBoundingClientRect().right > edge + 0.5; i++) { px -= 0.5; w.style.fontSize = `${px}px` }
+    }
+    fit()
+    window.addEventListener('resize', fit)
+    return () => window.removeEventListener('resize', fit)
+  }, [L.war, phone])
   /* nothing pending reads "–", as the Balances page writes it (walker D's note, 29 Oct 26: the tile drew "0" beside the
      page's "–") */
   const pend = (n: number) => (n ? `−${figWords(n)}` : '–')
@@ -215,7 +236,7 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
               <span className="h" style={{ gridColumn: 3 }}>War bal</span>
               <span className="v" style={{ gridColumn: 1 }}>{app}</span>
               <span className={`v${L.pending ? ' pd' : ''}`} style={{ gridColumn: 2 }} data-testid="pw-LVE-pend">{pend(L.pending)}</span>
-              <span className="v war" style={{ gridColumn: 3 }} data-testid="pw-LVE-war">{figWords(L.war)}</span>
+              <span className="v war" ref={warRef} style={{ gridColumn: 3 }} data-testid="pw-LVE-war">{figWords(L.war)}</span>
             </div>
             {/* THE DATE ON A LINE OF ITS OWN ON A PHONE (his "a", D1520 — his picture: "till 31 Dec" ran into the OIL tile): the
                 desktop keeps the approved one line, its " · till …" inside the carried line; a phone shows the line below it

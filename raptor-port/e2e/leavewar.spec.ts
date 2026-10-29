@@ -7884,23 +7884,27 @@ test('nothing of the Balances list shows behind its bar, whatever the list draws
 
 /* HIS iPHONE PICTURE, 29 Oct 26 (the agent's fault fix, D1426): in the person window's LVE tile the three figures stood 24
    apart, so a four-figure War bal ("17.5", bold 20) ran under the OIL tile on a 375 iPhone, and "−12.5" on his 402. On a phone
-   they spread across the tile now, War bal ending at its right edge, whatever the line under them holds. */
+   they spread across the tile now, War bal ending at its right edge, whatever the line under them holds — and a War bal longer
+   than its room is drawn smaller until it fits (GitHub's Linux letters, as an iPhone's, ran "−12.5" 5.9 past at 402 with the
+   spread alone). Each figure is typed in App bal, as a person does, and War bal worked out by the app. Wide letters are stood in
+   by Verdana on the figure (§7.9 — the PC's own letters fit "−12.5" without help; Verdana does not, at 375). */
 test('on a phone the person window\'s War bal stays inside its LVE tile, the longest figure too, at 402 and 375', async ({ page }) => {
   test.skip(!isPhone(), 'the phone\'s tile; a desktop keeps the drawing\'s spacing')
   await lwRole(page, 'admin')
+  await page.addStyleTag({ content: '[data-testid="pw-LVE-war"] { font-family: Verdana, "DejaVu Sans", sans-serif !important }' })
   for (const width of [402, 375]) {
     await page.setViewportSize({ width, height: 874 })
     await openBalancesPage(page)
     await page.getByTestId('bal-name-stiff').click()
     await expect(page.getByTestId('pw-tile-LVE')).toBeVisible()
-    for (const fig of ['17.5', '−12.5']) {
-      const over = await page.evaluate(f => {
+    const was = await page.getByTestId('pw-LVE').inputValue()
+    for (const fig of ['17.5', '−12.5', '−998.5', was]) {
+      await typeFig(page, 'pw-LVE', fig)
+      await expect(page.getByTestId('pw-LVE-war')).toHaveText(fig)
+      const over = await page.evaluate(() => {
         const t = document.querySelector<HTMLElement>('[data-testid="pw-tile-LVE"]')!, war = t.querySelector<HTMLElement>('[data-testid="pw-LVE-war"]')!
-        const was = war.textContent; war.textContent = f
-        const r = war.getBoundingClientRect().right - (t.getBoundingClientRect().right - parseFloat(getComputedStyle(t).paddingRight))
-        war.textContent = was
-        return r
-      }, fig)
+        return war.getBoundingClientRect().right - (t.getBoundingClientRect().right - parseFloat(getComputedStyle(t).paddingRight))
+      })
       expect(over, `${width}: War bal "${fig}" runs past its tile`).toBeLessThanOrEqual(0.5)
     }
     /* his "a" (D1520): the carried line's date on a line of its own, so neither line runs past the tile */
