@@ -1,0 +1,541 @@
+[
+ {
+  "id": "W2-01-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: Settings closed when Events… opened",
+   "ok: title reads EVENTS: EVENTS",
+   "period: JAN - DEC 26",
+   "ok: ＋ Event at left (x 15 from window edge), Edit presets at right (15 from right edge)",
+   "column boxes (when / name / kind left-right): [{\"w\":[515,728],\"n\":[738,919],\"k\":[929,1021]},{\"w\":[515,728],\"n\":[738,919],\"k\":[929,1021]},{\"w\":[515,728],\"n\":[738,919],\"k\":[929,1021]},{\"w\":[515,728],\"n\":[738,919],\"k\":[929,1021]}]",
+   "ok: when / name left edges and kind right edge line up across 4 lines"
+  ],
+  "pics": [
+   "w2-01-D-settings.png",
+   "w2-01-D-events.png"
+  ]
+ },
+ {
+  "id": "W2-02-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "lines: Thu 1 Jan|PH|Public holiday|PAST ;; Tue 6 – Fri 9 Jan|OVER TODAY|— ;; Fri 23 Jan|Off day|Off day ;; Mon 9 – Fri 13 Feb|EX SHIELD|— ;; Tue 17 – Wed 18 Feb|PH|Public holiday ;; Mon 2 – Fri 6 Mar|No Leave|No leave ;; Mon 16 Mar|SC|Working event ;; Sun 9 Aug|PH|Public holiday ;; Fri 25 Dec|PH|Public holiday",
+   "ok: a one-day PH has the Public holiday mark: {\"id\":\"evline-0-2026-01-01\",\"when\":\"Thu 1 Jan\",\"name\":\"PH\",\"kind\":\"Public holiday\",\"past\":true}",
+   "ok: a PH run shows as one band line (Tue 17 – Wed 18 Feb)",
+   "ok: Off day line has the Off day mark",
+   "ok: No Leave line with its mark: No leave",
+   "ok: SC working event has its mark: Working event",
+   "ok: untagged exercise has no mark",
+   "ok: the 1 Jan PH is greyed (past)",
+   "ok: an event running over today is not greyed: {\"id\":\"evline-1-2026-01-06\",\"when\":\"Tue 6 – Fri 9 Jan\",\"name\":\"OVER TODAY\",\"kind\":\"\",\"past\":false}",
+   "ok: exactly one past line",
+   "past vs future computed look: {\"past\":{\"op\":\"1\",\"name\":\"rgb(138, 150, 163)\"},\"fut\":{\"op\":\"1\",\"name\":\"rgb(241, 244, 247)\"}}",
+   "ok: past line drawn differently from a future one",
+   "2027 period: empty text=\"No events in JAN - DEC 27.\" lines=0",
+   "ok: an empty period says \"No events in …\" (or has lines): No events in JAN - DEC 27."
+  ],
+  "pics": [
+   "w2-02-D-eight-states.png",
+   "w2-02-D-empty-period.png"
+  ]
+ },
+ {
+  "id": "W2-01-P",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: Settings closed",
+   "ok: title EVENTS",
+   "ok: window inside the screen (12..390 of 402)",
+   "ok: ＋ Event left of Edit presets, both inside",
+   "column boxes [{\"w\":[39,175],\"n\":[185,261],\"k\":[271,363]},{\"w\":[39,175],\"n\":[185,298],\"k\":[308,363]},{\"w\":[39,175],\"n\":[185,363]},{\"w\":[39,175],\"n\":[185,261],\"k\":[271,363]}]",
+   "ok: columns line up",
+   "ok: no sideways scroll inside window {\"sw\":376,\"cw\":376,\"doc\":402}",
+   "window top/bottom: 411/860 of 874 (D997: middle of the screen)",
+   "P lines: Thu 1 Jan|PH|Public holiday|PAST ;; Fri 23 Jan|Off day|Off day ;; Mon 9 – Fri 13 Feb|EX SHIELD|— ;; Tue 17 – Wed 18 Feb|PH|Public holiday ;; Mon 2 – Fri 6 Mar|No Leave|No leave ;; Mon 16 Mar|SC|Working event ;; Sun 9 Aug|PH|Public holiday ;; Fri 25 Dec|PH|Public holiday"
+  ],
+  "pics": [
+   "w2-01-P-tap-events.png",
+   "w2-01-P-events.png"
+  ]
+ },
+ {
+  "id": "W2-03-D",
+  "status": "FAIL",
+  "fails": [
+   "a rename changes all five days (one RENAMED5 line Mon 2 – Fri 6 Feb, no REPEAT5 left)",
+   "Delete takes away all five days (no line left of the run)"
+  ],
+  "notes": [
+   "ok: after Save the Events list is back",
+   "lines after save: [{\"id\":\"evline-0-2026-02-02\",\"when\":\"Mon 2 – Fri 6 Feb\",\"name\":\"REPEAT5\",\"kind\":\"\",\"past\":false}]",
+   "ok: the repeat saved as ONE line \"Mon 2 – Fri 6 Feb\"",
+   "grid event cells 2–6 Feb row0: 02:REP 03:REP 04:REP 05:REP 06:REP | bands: ",
+   "window title: EVENT 1 | name box: REPEAT5 | selection:  | foot: ",
+   "mode buttons: event-mode-merge=absent, event-mode-repeat=absent",
+   "days marked in the window calendar: []",
+   "lines after rename: [{\"id\":\"evline-0-2026-02-02\",\"when\":\"Mon 2 Feb\",\"name\":\"RENAMED5\",\"kind\":\"\",\"past\":false},{\"id\":\"evline-0-2026-02-03\",\"when\":\"Tue 3 – Fri 6 Feb\",\"name\":\"REPEAT5\",\"kind\":\"\",\"past\":false}]",
+   "grid row0 2–6 Feb after rename: 02:REN 03:REP 04:REP 05:REP 06:REP",
+   "lines after Delete: [{\"id\":\"evline-0-2026-02-03\",\"when\":\"Tue 3 – Fri 6 Feb\",\"name\":\"REPEAT5\",\"kind\":\"\",\"past\":false}]",
+   "grid row0 2–6 Feb after delete: 02:＋ 03:REP 04:REP 05:REP 06:REP"
+  ],
+  "pics": [
+   "w2-03-D-list-after-repeat.png",
+   "w2-03-D-window-of-repeat.png",
+   "w2-03-D-list-after-rename.png",
+   "w2-03-D-list-after-delete.png"
+  ]
+ },
+ {
+  "id": "W2-04-D",
+  "status": "FAIL",
+  "fails": [
+   "Undo cannot be done with the list open: a press on the Undo arrow lands on the dimming layer and closes the list; Ctrl+Z with the list open does nothing"
+  ],
+  "notes": [
+   "ok: the new line is on the list",
+   "ok: tap, edit, Save: the list comes back with the edited name",
+   "ok: the ✕ goes back to the list and keeps the old name",
+   "ok: Delete: the list comes back without the event",
+   "undo enabled: true; what lies on the Undo button: DIV.sheetscrim",
+   "after a mouse press on the Undo arrow with the list open: list visible=false, ONEDAY back=false",
+   "list reopened; ONEDAY on it: false",
+   "Ctrl+Z with the list open: list visible=true, event back=false",
+   "Undo arrow pressed with the list closed, list reopened: event back=true",
+   "ok: Undo (arrow, list closed) takes the delete back",
+   "after Ctrl+Y: list visible=true, ONEDAY lines=1"
+  ],
+  "pics": [
+   "w2-04-D-after-edit-save.png",
+   "w2-04-D-after-delete.png",
+   "w2-04-D-after-undo-press.png",
+   "w2-04-D-after-ctrlz.png",
+   "w2-04-D-after-undo.png"
+  ]
+ },
+ {
+  "id": "W2-05-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: title NEW EVENT: NEW EVENT",
+   "ok: Save with no day: \"Pick its day — or its first and last day — on the calendar.\"",
+   "lines: [\"Mon 4 May|ONE\",\"Tue 2 – Thu 4 Jun|MERGED\",\"Mon 6 – Wed 8 Jul|REPEATED\"]",
+   "ok: one day, merged run and repeated run all on the list",
+   "after two on the same dates: [\"evline-0-2026-09-07|ROW1\",\"evline-1-2026-09-07|ROW2\"]",
+   "ok: a third on the same dates refused with a reason: \"Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.\"",
+   "ok: ROW3 was not added",
+   "January 2027 days in the Event window: 01-01:disabled 01-02:disabled 01-03:disabled 01-04:disabled 01-05:disabled 01-06:disabled 01-07:disabled 01-08:disabled 01-09:disabled 01-10:disabled 01-11:disabled 01-12:disabled 01-13:disabled 01-14:disabled 01-15:disabled 01-16:disabled 01-17:disabled 01-18:disabled 01-19:disabled 01-20:disabled 01-21:disabled 01-22:disabled 01-23:disabled 01-24:disabled 01-25:disabled 01-26:disabled 01-27:disabled 01-28:disabled 01-29:disabled 01-30:disabled 01-31:disabled",
+   "ok: dates past the period end cannot be picked (all disabled)",
+   "across the period end: sheet still open=false problem=\"\" selection=\"\"",
+   "ACROSS on list: [{\"id\":\"evline-0-2026-12-29\",\"when\":\"Tue 29 Dec\",\"name\":\"ACROSS\",\"kind\":\"\",\"past\":false}]"
+  ],
+  "pics": [
+   "w2-05-D-no-day.png",
+   "w2-05-D-three-kinds.png",
+   "w2-05-D-rows-full.png",
+   "w2-05-D-past-period-end-days.png",
+   "w2-05-D-across-period-end.png"
+  ]
+ },
+ {
+  "id": "W2-05-P",
+  "status": "FAIL",
+  "fails": [
+   "the new line is inside the window and on screen",
+   "the new line is marked (ring): none / none rgb(241, 244, 247) / hol-line"
+  ],
+  "notes": [
+   "lines before: 16",
+   "Event window rect: {\"x\":12,\"y\":208.125,\"w\":378,\"h\":651.875,\"r\":390,\"b\":860}",
+   "new line: {\"found\":true,\"cls\":\"hol-line\",\"shadow\":\"none\",\"outline\":\"none rgb(241, 244, 247)\",\"top\":825,\"bottom\":867,\"sheetTop\":58,\"sheetBottom\":860,\"vh\":874,\"listScroll\":0}"
+  ],
+  "pics": [
+   "w2-05-P-save-tap.png",
+   "w2-05-P-new-line.png",
+   "w2-05-P-new-line-after-7s.png"
+  ]
+ },
+ {
+  "id": "W2-06-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "presets view: events-sheet visible=false event-sheet visible=false types-back=true types-done=true",
+   "ok: the back arrow returns to the Events list",
+   "ok: Done returns to the Events list"
+  ],
+  "pics": [
+   "w2-06-D-presets.png",
+   "w2-06-D-after-back.png",
+   "w2-06-D-after-done.png"
+  ]
+ },
+ {
+  "id": "W2-07-D",
+  "status": "FAIL",
+  "fails": [
+   "a press on an Event cell behind the open list does not open the Event window (the press lands on the window dimming layer; list closed)"
+  ],
+  "notes": [
+   "ok: list open, View changed behind it: JAN - DEC 26 -> JAN - DEC 27, lines 4 -> 0; empty says \"No events in JAN - DEC 27.\"",
+   "ok: back to 2026 the list is as it was",
+   "cell box {\"x\":323.078125,\"y\":519,\"w\":27.03125,\"h\":22,\"r\":350.109375,\"b\":541} sheet box {\"x\":488,\"y\":569,\"w\":560,\"h\":281,\"r\":1048,\"b\":850}",
+   "what lies on the cell: DIV.sheetscrim",
+   "after a mouse press on the Event cell behind the list: Event window=false, list=false"
+  ],
+  "pics": [
+   "w2-07-D-view-changed.png",
+   "w2-07-D-cell-press.png"
+  ]
+ },
+ {
+  "id": "W2-07-P",
+  "status": "FAIL",
+  "fails": [
+   "the Event window opened from the cell: null",
+   "SCRIPT: locator.tap: Timeout 30000ms exceeded. / Call log: / \u001b[2m  - waiting for locator('[data-testid=\"event-cancel\"]')\u001b[22m / "
+  ],
+  "notes": [
+   "cell box {\"x\":188.4375,\"y\":291.265625,\"width\":22.015625,\"height\":17.59375} (events window top 579)",
+   "ok: the list is hidden while it is open"
+  ],
+  "pics": [
+   "w2-07-P-cell-tap.png",
+   "w2-07-P-event-window.png"
+  ]
+ },
+ {
+  "id": "W2-08-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "list {\"x\":1207,\"y\":223,\"w\":300,\"h\":170,\"r\":1507,\"b\":393} filerow {\"x\":1207,\"y\":403,\"w\":300,\"h\":30,\"r\":1507,\"b\":433} export {\"x\":1207,\"y\":403,\"w\":120.6875,\"h\":30,\"r\":1327.6875,\"b\":433} import {\"x\":1335.6875,\"y\":403,\"w\":120.015625,\"h\":30,\"r\":1455.703125,\"b\":433}",
+   "ok: Export / Import sheet sit under the list",
+   "button words: Export sheet | Import sheet",
+   "year now: 2027; list lines: 0; empty: No public holidays or Off days in 2027.; nocover: ",
+   "ok: Export / Import still shown on the year with no holidays (2027)",
+   "ok: and on 2028 (no leave period covers it): nocover=\"No leave period covers 2028 yet.Create it\""
+  ],
+  "pics": [
+   "w2-08-D-buttons-2026.png",
+   "w2-08-D-buttons-empty-year.png",
+   "w2-08-D-buttons-uncovered-year.png"
+  ]
+ },
+ {
+  "id": "W2-08-P",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "list {\"x\":13,\"y\":242,\"w\":376,\"h\":170,\"r\":389,\"b\":412} filerow {\"x\":13,\"y\":422,\"w\":376,\"h\":30,\"r\":389,\"b\":452} export {\"x\":13,\"y\":422,\"w\":120.6875,\"h\":30,\"r\":133.6875,\"b\":452} import {\"x\":141.6875,\"y\":422,\"w\":120.015625,\"h\":30,\"r\":261.703125,\"b\":452}",
+   "ok: phone: Export / Import under the list, inside the screen",
+   "ok: phone: still there on 2027"
+  ],
+  "pics": [
+   "w2-08-P-holidays-part.png",
+   "w2-08-P-tap-export.png",
+   "w2-08-P-buttons-empty-year.png"
+  ]
+ },
+ {
+  "id": "W2-09-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "download name: holidays-2026.csv; bytes 206; first bytes ef bb bf 22",
+   "ok: file named holidays-2026.csv",
+   "ok: starts with the byte-order mark",
+   "file text: \"\\\"From\\\",\\\"To\\\",\\\"Name\\\",\\\"Kind\\\",\\\"On grid\\\"\\r\\n\\\"2026-01-01\\\",\\\"2026-01-01\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\\r\\n\\\"2026-02-17\\\",\\\"2026-02-18\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\\r\\n\\\"2026-08-09\\\",\\\"2026-08-09\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\\r\\n\\\"2026-12-25\\\",\\\"2026-12-25\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\"",
+   "ok: header row: From,To,Name,Kind,On grid",
+   "ok: dates written 2026-08-09",
+   "ok: the Chinese New Year run is one line",
+   "ok: Windows line endings",
+   "re-import preview: {\"counts\":\"0 to add · 4 already here · 0 not read\",\"add\":\"Add 0 holidays\",\"dis\":true,\"classes\":[\"pv-had is-past\",\"pv-had is-past\",\"pv-had is-past\",\"pv-had is-past\"]}",
+   "ok: every line \"already here\", nothing to add, Add greyed: 0 to add · 4 already here · 0 not read / Add 0 holidays"
+  ],
+  "pics": [
+   "w2-09-D-reimport.png"
+  ]
+ },
+ {
+  "id": "W2-10-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "comma, BOM, CRLF: 6 to add · 0 already here · 0 not read | Add 6 holidays || [pv-new] Fri 9 OctTest Nine Octnew ;; [pv-new] Tue 13 OctTest Thirteennew ;; [pv-new] Wed 14 OctTest Fourteennew ;; [pv-new] Thu 15 OctTest Fifteennew ;; [pv-new] Fri 16 OctHari Raya, Day 2new ;; [pv-new] Sat 17 OctTest Seventeennew",
+   "ok: comma, BOM, CRLF counts 6 to add / 0 not read: 6 to add · 0 already here · 0 not read",
+   "ok: comma, BOM, CRLF: every date read day-first (Fri 9 Oct, Tue 13 Oct, Wed 14 Oct, Thu 15 Oct, Fri 16 Oct, Sat 17 Oct)",
+   "ok: comma, BOM, CRLF: quoted name \"Hari Raya, Day 2\" kept whole",
+   "semicolons: 6 to add · 0 already here · 0 not read | Add 6 holidays || [pv-new] Fri 9 OctTest Nine Octnew ;; [pv-new] Tue 13 OctTest Thirteennew ;; [pv-new] Wed 14 OctTest Fourteennew ;; [pv-new] Thu 15 OctTest Fifteennew ;; [pv-new] Fri 16 OctHari Raya, Day 2new ;; [pv-new] Sat 17 OctTest Seventeennew",
+   "ok: semicolons counts 6 to add / 0 not read: 6 to add · 0 already here · 0 not read",
+   "ok: semicolons: every date read day-first (Fri 9 Oct, Tue 13 Oct, Wed 14 Oct, Thu 15 Oct, Fri 16 Oct, Sat 17 Oct)",
+   "ok: semicolons: quoted name \"Hari Raya, Day 2\" kept whole"
+  ],
+  "pics": [
+   "w2-10-D-comma.png",
+   "w2-10-D-semicolon.png"
+  ]
+ },
+ {
+  "id": "W2-11-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "2 to add · 0 already here · 9 not read | Add 2 holidays || [pv-bad] —DeepavaliRow 2: the date “8/11” cannot be read. Write it as 2026-11-08. ;; [pv-bad] —Bad kind rowRow 3: the kind “XYZ” is not one the sheet takes. Write PH or Off day. ;; [pv-bad] —Empty kind rowRow 4: say what it is. Write PH or Off day. ;; [pv-bad] —NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNRow 5: the name is longer than 40 letters. ;; [pv-bad] —Bad on gridRow 6: The short form is one to three letters or digits, with no space. ;; [pv-bad] —To before fromRow 7: its last day is before its first. ;; [pv-new] Mon 12 OctGood onenew ;; [pv-bad] —Good oneRow 9: the same holiday as row 8. ;; [pv-bad] —No periodRow 10: No leave period covers 3 Mar 30 yet — create it, then import again. ;; [pv-bad] —Past endRow 11: Those dates run past 31 Dec 26, the end of the leave period \"JAN - DEC 26\" — add each part to its own period. ;; [pv-new] Tue 20 OctFine newnew",
+   "not read 9: —DeepavaliRow 2: the date “8/11” cannot be read. Write it as 2026-11-08. ;; —Bad kind rowRow 3: the kind “XYZ” is not one the sheet takes. Write PH or Off day. ;; —Empty kind rowRow 4: say what it is. Write PH or Off day. ;; —NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNRow 5: the name is longer than 40 letters. ;; —Bad on gridRow 6: The short form is one to three letters or digits, with no space. ;; —To before fromRow 7: its last day is before its first. ;; —Good oneRow 9: the same holiday as row 8. ;; —No periodRow 10: No leave period covers 3 Mar 30 yet — create it, then import again. ;; —Past endRow 11: Those dates run past 31 Dec 26, the end of the leave period \"JAN - DEC 26\" — add each part to its own period.",
+   "row \"8/11\": pv-bad -> —DeepavaliRow 2: the date “8/11” cannot be read. Write it as 2026-11-08.",
+   "row \"XYZ\": pv-bad -> —Bad kind rowRow 3: the kind “XYZ” is not one the sheet takes. Write PH or Off day.",
+   "row \"Empty kind\": pv-bad -> —Empty kind rowRow 4: say what it is. Write PH or Off day.",
+   "row \"NNNN\": pv-bad -> —NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNRow 5: the name is longer than 40 letters.",
+   "row \"TOOLONG\": NOT LISTED",
+   "row \"To before\": pv-bad -> —To before fromRow 7: its last day is before its first.",
+   "row \"Good one\": pv-new -> Mon 12 OctGood onenew",
+   "row \"No period\": pv-bad -> —No periodRow 10: No leave period covers 3 Mar 30 yet — create it, then import again.",
+   "row \"Past end\": pv-bad -> —Past endRow 11: Those dates run past 31 Dec 26, the end of the leave period \"JAN - DEC 26\" — add each part to its own period.",
+   "ok: every red line carries a reason",
+   "ok: duplicate says \"same as row N\"",
+   "ok: Add counts only the new (2): 2 to add · 0 already here · 9 not read / Add 2 holidays"
+  ],
+  "pics": [
+   "w2-11-D-preview-top.png",
+   "w2-11-D-preview-foot.png"
+  ]
+ },
+ {
+  "id": "W2-12-D",
+  "status": "FAIL",
+  "fails": [
+   "Excel plain-CSV (Windows-1252) accents read right: Mon 26 OctCaf� No�lnew"
+  ],
+  "notes": [
+   "no header => 2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Mon 26 OctNo header Anew ;; [pv-new] Tue 27 OctNo header Bnew",
+   "blank line before header => 1 to add · 0 already here · 0 not read | Add 1 holiday || [pv-new] Mon 26 OctAfter blanknew",
+   "blank commas row before header => 1 to add · 0 already here · 0 not read | Add 1 holiday || [pv-new] Mon 26 OctAfter commasnew",
+   "columns reordered => 1 to add · 0 already here · 0 not read | Add 1 holiday || [pv-new] Mon 26 OctReorderednew",
+   "quoted name with a line break => 1 to add · 0 already here · 0 not read | Add 1 holiday || [pv-new] Mon 26 OctLine one Line twonew",
+   "UTF-8 no BOM, non-English => 1 to add · 0 already here · 0 not read | Add 1 holiday || [pv-new] Mon 26 OctDeepavali தீபாவளி 元旦new",
+   "Windows-1252 (Excel plain CSV) => 1 to add · 0 already here · 0 not read | Add 1 holiday || [pv-new] Mon 26 OctCaf� No�lnew",
+   "ok: a blank line above the header is read: 1 to add · 0 already here · 0 not read",
+   "ok: a \",,,,\" row above the header is read: 1 to add · 0 already here · 0 not read",
+   "ok: reordered columns are read by their headings: 1 to add · 0 already here · 0 not read",
+   "ok: a quoted name with a line break stays one row: 1 to add · 0 already here · 0 not read",
+   "ok: non-English name kept (UTF-8): Mon 26 OctDeepavali தீபாவளி 元旦new",
+   "no header: 2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Mon 26 OctNo header Anew ;; [pv-new] Tue 27 OctNo header Bnew"
+  ],
+  "pics": [
+   "w2-12-D-blank-before-header.png"
+  ]
+ },
+ {
+  "id": "W2-13-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "BEFORE {\"2026-10-09\":{\"ev0\":\"＋\",\"ev1\":\"＋\",\"rows\":{},\"facts\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"},\"2026-10-13\":{\"ev0\":\"＋\",\"ev1\":\"＋\",\"rows\":{},\"facts\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"},\"2026-10-14\":{\"ev0\":\"＋\",\"ev1\":\"＋\",\"rows\":{},\"facts\":\"{\\\"covered\\\":true,\\\"kind\\\":null,\\\"name\\\":\\\"\\\",\\\"short\\\":\\\"\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"}}",
+   "undo title before: Undo",
+   "ok: preview 3 to add: 3 to add · 0 already here · 0 not read / Add 3 holidays",
+   "after Add: preview open=false, saved note=\"\", year=2026",
+   "undo title after: Undo — adding 3 holidays",
+   "ok: one Undo step, \"adding 3 holidays\": Undo — adding 3 holidays",
+   "ring at 0.5 s: {\"cls\":\"hol-line innew\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"outline\":\"none 3px rgb(241, 244, 247)\",\"border\":\"rgb(42, 49, 58)\"}",
+   "ring at 3.5 s: {\"cls\":\"hol-line innew\",\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"outline\":\"none 3px rgb(241, 244, 247)\",\"border\":\"rgb(42, 49, 58)\"}",
+   "ring at 7.5 s: {\"cls\":\"hol-line\",\"shadow\":\"none\",\"outline\":\"none 3px rgb(241, 244, 247)\",\"border\":\"rgb(42, 49, 58)\"}",
+   "ok: the new lines wear a ring after Add that has gone by 7.5 s: rgb(30, 134, 255) 0px 0px 0px 2px inset -> none",
+   "AFTER {\"2026-10-09\":{\"ev0\":\"TN\",\"rows\":{},\"facts\":\"{\\\"covered\\\":true,\\\"kind\\\":\\\"ph\\\",\\\"name\\\":\\\"Test Nine\\\",\\\"short\\\":\\\"TN\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"},\"2026-10-13\":{\"ev0\":\"TT\",\"rows\":{},\"facts\":\"{\\\"covered\\\":true,\\\"kind\\\":\\\"ph\\\",\\\"name\\\":\\\"Test Thirteen\\\",\\\"short\\\":\\\"TT\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"},\"2026-10-14\":{\"ev0\":\"TF\",\"rows\":{},\"facts\":\"{\\\"covered\\\":true,\\\"kind\\\":\\\"ph\\\",\\\"name\\\":\\\"Test Fourteen\\\",\\\"short\\\":\\\"TF\\\",\\\"weekend\\\":false,\\\"availP\\\":28,\\\"availW\\\":18}\"}}",
+   "ok: the grid Event row shows each holiday short form (TN TT TF) on its date: TN,TT,TF",
+   "ok: the day facts (what the calendars tag) say public holiday: {\"covered\":true,\"kind\":\"ph\",\"name\":\"Test Nine\",\"short\":\"TN\",\"weekend\":false,\"availP\":28,\"availW\":18}",
+   "ok: ONE Undo takes all three back: {\"2026-10-09\":\"＋\",\"2026-10-13\":\"＋\",\"2026-10-14\":\"＋\"}; redo title: Redo — adding 3 holidays",
+   "ok: Redo puts all three back: {\"2026-10-09\":\"TN\",\"2026-10-13\":\"TT\",\"2026-10-14\":\"TF\"}",
+   "ok: after a reload they are kept: {\"2026-10-09\":\"TN\",\"2026-10-13\":\"TT\",\"2026-10-14\":\"TF\"}",
+   "page errors: []"
+  ],
+  "pics": [
+   "w2-13-D-after-add-ring.png",
+   "w2-13-D-after-7s.png",
+   "w2-13-D-grid-event-rows-required.png",
+   "w2-13-D-after-undo.png",
+   "w2-13-D-after-reload.png"
+  ]
+ },
+ {
+  "id": "W2-14-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "preview: {\"c\":\"3 to add · 0 already here · 0 not read\",\"a\":\"Add 3 holidays\",\"lines\":[\"Tue 13 OctY26 Testnew\",\"Mon 4 JanY27 Testnew\",\"Wed 3 FebY27 Test Bnew\"]}",
+   "ok: a sheet across 2026 and 2027 reads: 3 to add · 0 already here · 0 not read",
+   "after Add: year shown 2026, saved note \"\", undo: Undo — adding 3 holidays",
+   "2026 list: Thu 1 JanPHPH ;; Tue 17 – Wed 18 FebPHPH ;; Sun 9 AugPHPH ;; Tue 13 OctY26 TestPH ;; Fri 25 DecPHPH",
+   "ok: 2027 list shows both: Mon 4 JanY27 TestPH ;; Wed 3 FebY27 Test BOFF",
+   "ok: after a reload both years kept (2026 Y26: true; 2027 lines: 2)",
+   "ok: one Undo took both years back (2027 lines 0, 2026 Y26 false)"
+  ],
+  "pics": [
+   "w2-14-D-preview.png",
+   "w2-14-D-after-add-2026.png",
+   "w2-14-D-2027-list.png",
+   "w2-14-D-after-undo.png"
+  ]
+ },
+ {
+  "id": "W2-15-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "preview: 2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Tue 20 OctAlpha PHnew ;; [pv-new] Tue 20 OctBeta Offnew",
+   "ok: both rows show as new: 2 to add · 0 already here · 0 not read",
+   "after Add: err=\"Row 3: Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.\" preview open=true",
+   "ok: Add names the row it cannot place: Row 3: Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.",
+   "day facts 20 Oct after refusal: {\"covered\":true,\"kind\":null,\"name\":\"\",\"short\":\"\",\"weekend\":false,\"availP\":28,\"availW\":18}",
+   "ok: nothing was added",
+   "Settings buttons with \"Event row\": ＋ Event row",
+   "second preview: 2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Tue 20 OctAlpha PHnew ;; [pv-new] Tue 20 OctBeta Offnew",
+   "after Add (3 event rows): err=\"\" saved=\"\"",
+   "day facts 20 Oct: {\"covered\":true,\"kind\":\"ph\",\"name\":\"Alpha PH\",\"short\":\"AP\",\"weekend\":false,\"availP\":28,\"availW\":18}",
+   "ok: with a third Event row, Add works"
+  ],
+  "pics": [
+   "w2-15-D-refused.png",
+   "w2-15-D-added.png"
+  ]
+ },
+ {
+  "id": "W2-16-D",
+  "status": "PASS (partial)",
+  "fails": [],
+  "notes": [
+   "bell before: |",
+   "preview 3 to add · 0 already here · 0 not read | Add 3 holidays || [pv-new] Tue 14 JulOil Test Tuenew ;; [pv-new] Thu 16 JulOil Test Thunew ;; [pv-new] Sat 18 JulOil Test Satnew",
+   "OIL surfaces visible after Add: [\"oil-tracker:OIL\",\"my-leave-oil:OIL 0\",\"win-oilday:⠿OIL — Tue 14 JulPublic holiday · Oil Test Tue✕Oil Test Tue is now a public holi\",\"win-oilday-x:✕\"]; page now: leavewar",
+   "page after closing the Calendar: leavewar; bell: |",
+   "bell button box: {\"x\":1190,\"y\":18,\"w\":38,\"h\":28}",
+   "bell lines (5): [\"Oil Test ThuThu 16 Jul2 inputs need an OIL answer · SabernowOil Test TueTue 14 Jul1 input needs an OIL answer · Sabernow\",\"Oil Test ThuThu 16 Jul2 inputs need an OIL answer · Sabernow\",\"Oil Test TueTue 14 Jul1 input needs an OIL answer · Sabernow\",\"Mark all read\",\"Mark all read\"]",
+   "ok: the bell has one line a holiday that needs OIL answers: Oil Test ThuThu 16 Jul2 inputs need an OIL answer · SabernowOil Test TueTue 14 Jul1 input needs an OIL answer · Sabernow ;; Oil Test ThuThu 16 Jul2 inputs need an OIL answer · Sabernow ;; Oil Test TueTue 14 Jul1 input needs an OIL answer · Sabernow ;; Mark all read ;; Mark all read",
+   "holiday lines in the bell: 0 for 3 holidays imported",
+   "PARTIAL: the demo week (13 to 19 Jul) has no published day and Mon to Thu carry hard conflicts so a publish is refused; this run is the unpublished working copy with an accepted appointment on Tue 14 Jul. NOT walked: a published worked weekday waiting for republishing (D2), and the control (a PH on an already-worked Saturday)",
+   "OIL windows still open after Undo: 2; bell badge: |",
+   "bell lines after Undo: [\"Nothing new\"] empty text: Nothing new",
+   "ok: Undo took the holiday lines out of the bell"
+  ],
+  "pics": [
+   "w2-16-D-after-add.png",
+   "w2-16-D-after-close.png",
+   "w2-16-D-bell.png",
+   "w2-16-D-bell-after-undo.png"
+  ]
+ },
+ {
+  "id": "W2-17-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "BEFORE {\"grid\":[\"RangerIP12.57.5LLLLLLLLLLLLLLLLLLCCLPLCL\"],\"approvals\":[\"RangerIPLLThu 29 Jan, AM ›0.5 day12.5P27.5—ApproveRefuse\",\"RangerIPLLThu 12 – Fri 13 Feb ›2 days12.5P27—ApproveRefuse\",\"RangerIPCCLMon 2 Mar ›1 dayCCL 2P26—ApproveRefuse\",\"RangerIPPLMon 16 Mar, AM ›0.5 dayPL 1.5P27.5—ApproveRefuse\",\"RangerIPCLTue 17 Mar ›1 dayCL 0P27—ApproveRefuse\"],\"balances\":[\"RangerIPSenior pilot+36−2.512.50›−1−0.5−1\",\"RangerIP\"],\"daysTaken\":[\"RangerIPSenior pilot+36–––––––––––\",\"RangerIP\"],\"personWindow\":\"person-window: Ranger✕BalancesLVE0 takenApp balPendingWar bal−2.512.5incl. carried fwd · till 31 DecOIL0›MED0daysCCLPending−1War bal2FCLPLPending−0.5War bal1.5ELCLPending−1War bal0Leave2026 and aheadLLMon 19 – Wed 21 Jan3ApprovedLLMon 26 – Tue 27 Jan2ApprovedLLThu 29 Jan, AM0.5PendingLLMon 2 Feb1RefusedLLThu 12 – Fri 13 Feb2PendingCCLMon 2 Mar1PendingPLMon 16 Mar, AM0.5PendingCLTue 17 Mar1Pending\"}",
+   "2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Tue 20 JanLeave Test Approvednew ;; [pv-new] Thu 12 FebLeave Test Pendingnew",
+   "AFTER {\"grid\":[\"RangerIP13.55.5LLLLLLLLLLLLLLLLLLCCLPLCL\"],\"approvals\":[\"RangerIPLLThu 29 Jan, AM ›0.5 day13.5P27.5—ApproveRefuse\",\"RangerIPLLThu 12 – Fri 13 Feb ›1 day13.5P27—ApproveRefuse\",\"RangerIPCCLMon 2 Mar ›1 dayCCL 2P26—ApproveRefuse\",\"RangerIPPLMon 16 Mar, AM ›0.5 dayPL 1.5P27.5—ApproveRefuse\",\"RangerIPCLTue 17 Mar ›1 dayCL 0P27—ApproveRefuse\"],\"balances\":[\"RangerIPSenior pilot+36−1.513.50›−1−0.5−1\",\"RangerIP\"],\"daysTaken\":[\"RangerIPSenior pilot+36–––––––––––\",\"RangerIP\"],\"personWindow\":\"person-window: Ranger✕BalancesLVE0 takenApp balPendingWar bal−1.513.5incl. carried fwd · till 31 DecOIL0›MED0daysCCLPending−1War bal2FCLPLPending−0.5War bal1.5ELCLPending−1War bal0Leave2026 and aheadLLMon 19 – Wed 21 Jan2ApprovedLLMon 26 – Tue 27 Jan2ApprovedLLThu 29 Jan, AM0.5PendingLLMon 2 Feb1RefusedLLThu 12 – Fri 13 Feb1PendingCCLMon 2 Mar1PendingPLMon 16 Mar, AM0.5PendingCLTue 17 Mar1Pending\"}",
+   "ok: something recounted after the two weekdays became public holidays",
+   "grid changed: true",
+   "approvals changed: true",
+   "balances changed: true",
+   "daysTaken changed: false",
+   "personWindow changed: true"
+  ],
+  "pics": [
+   "w2-17-D-grid-after.png"
+  ]
+ },
+ {
+  "id": "W2-18-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Mon 12 JanBehind Testnew ;; [pv-new] Tue 13 JanBehind Test 2new",
+   "the grid Event cell (12 Jan) box {\"x\":313.078125,\"y\":497,\"w\":27.03125,\"h\":22,\"r\":340.109375,\"b\":519}; what lies on it: SPAN.evadd",
+   "after pressing the cell behind: Event window=true, preview still=true, Calendar window=true",
+   "preview now: 2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Mon 12 JanBehind Testnew ;; [pv-new] Tue 13 JanBehind Test 2new",
+   "after Add: 12 Jan facts {\"covered\":true,\"kind\":\"ph\",\"name\":\"PH\",\"short\":\"PH\",\"weekend\":false,\"availP\":29,\"availW\":17}; lines Thu 1 JanPHPH ;; Mon 12 JanPHPH ;; Mon 12 JanBehind TestPH ;; Tue 13 JanBehind Test 2PH ;; Tue 17 – Wed 18 FebPHPH ;; Sun 9 AugPHPH ;; Fri 25 DecPHPH",
+   "error:  | ",
+   "same file imported again: 0 to add · 2 already here · 0 not read | Add 0 holidays (greyed) || [pv-had is-past] Mon 12 JanBehind Test ;; [pv-had is-past] Tue 13 JanBehind Test 2",
+   "ok: importing the same file twice: everything already here, Add greyed: 0 to add · 2 already here · 0 not read",
+   "ok: Cancel puts the list back (7 lines)",
+   "year arrow with preview open: preview=false year=2027 lines=0",
+   "back: preview=false year=2026 lines=7"
+  ],
+  "pics": [
+   "w2-18-D-cell-behind.png",
+   "w2-18-D-after-add.png",
+   "w2-18-D-same-file-twice.png",
+   "w2-18-D-year-arrow-with-preview.png"
+  ]
+ },
+ {
+  "id": "W2-19-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "preview 31 to add · 1 already here · 1 not read Add 31 holidays",
+   "Add button before scrolling: {\"top\":1658,\"bottom\":1686,\"vh\":864,\"inview\":false}",
+   "Add is below the fold of a 31-row preview ({\"top\":1658,\"bottom\":1686,\"vh\":864,\"inview\":false}); reached by scrolling the part",
+   "refusal line: {\"text\":\"Row 33: Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.\",\"top\":809,\"bottom\":857,\"vh\":864,\"onScreen\":true,\"hit\":true,\"covers\":\"P.every-err\",\"addTop\":867}",
+   "ok: the refusal line is on screen and not covered: {\"text\":\"Row 33: Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.\",\"top\":809,\"bottom\":857,\"vh\":864,\"onScreen\":true,\"hit\":true,\"covers\":\"P.every-err\",\"addTop\":867}",
+   "(iPhone Files picker offering .csv and Export saving it: his look, not walkable here)"
+  ],
+  "pics": [
+   "w2-19-D-preview-top.png",
+   "w2-19-D-refusal.png"
+  ]
+ },
+ {
+  "id": "W2-19-P",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "preview 31 to add · 1 already here · 1 not read Add 31 holidays",
+   "Add button before scrolling: {\"top\":1677,\"bottom\":1705,\"vh\":874,\"inview\":false}",
+   "Add is below the fold of a 31-row preview ({\"top\":1677,\"bottom\":1705,\"vh\":874,\"inview\":false}); reached by scrolling the part",
+   "refusal line: {\"text\":\"Row 33: Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.\",\"top\":827,\"bottom\":859,\"vh\":874,\"onScreen\":true,\"hit\":true,\"covers\":\"P.every-err\",\"addTop\":869}",
+   "ok: the refusal line is on screen and not covered: {\"text\":\"Row 33: Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.\",\"top\":827,\"bottom\":859,\"vh\":874,\"onScreen\":true,\"hit\":true,\"covers\":\"P.every-err\",\"addTop\":869}",
+   "(iPhone Files picker offering .csv and Export saving it: his look, not walkable here)"
+  ],
+  "pics": [
+   "w2-19-P-preview-top.png",
+   "w2-19-P-tap-add.png",
+   "w2-19-P-refusal.png"
+  ]
+ },
+ {
+  "id": "W2-20-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: a member has no ⚙ on the Leave War",
+   "ok: no Calendar… / Events… / Events list anywhere in the page",
+   "ok: no Holidays part drawn",
+   "top row controls: lw-tab-grid:true lw-tab-balances:true my-leave:true",
+   "ok: and none at phone width either"
+  ],
+  "pics": [
+   "w2-20-D-member.png",
+   "w2-20-P-width-member.png"
+  ]
+ },
+ {
+  "id": "W2-21-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Wed 21 OctClash PHnew ;; [pv-new] Wed 21 OctClash Offnew",
+   "ok: both read as new: 2 to add · 0 already here · 0 not read",
+   "err: ; 21 Oct facts: {\"covered\":true,\"kind\":\"ph\",\"name\":\"Clash PH\",\"short\":\"CP\",\"weekend\":false,\"availP\":28,\"availW\":18}",
+   "list lines: Thu 1 JanPHPH ;; Tue 17 – Wed 18 FebPHPH ;; Sun 9 AugPHPH ;; Wed 21 OctClash PHPH ;; Wed 21 OctClash OffOFF ;; Fri 25 DecPHPH",
+   "ok: both on the list",
+   "grid Event rows 21 Oct: row0=CP row1=CO"
+  ],
+  "pics": [
+   "w2-21-D-grid.png",
+   "w2-21-D-inputs-page.png"
+  ]
+ }
+]

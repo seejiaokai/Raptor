@@ -1,0 +1,64 @@
+[
+ {
+  "id": "W2-07-P",
+  "status": "FAIL",
+  "fails": [
+   "a tap on an Event cell behind the open list does not open the Event window: the list simply closes (list visible after the tap: false)"
+  ],
+  "notes": [
+   "cell box {\"x\":188.4375,\"y\":291.265625,\"width\":22.015625,\"height\":17.59375} (events window top 579)"
+  ],
+  "pics": [
+   "w2-07-P-cell-tap.png",
+   "w2-07-P-after-tap-settled.png"
+  ]
+ },
+ {
+  "id": "W2-14-D",
+  "status": "FAIL",
+  "fails": [
+   "after Add of a sheet with 2 of 3 rows in 2027 the screen stays on 2026, shows only that year one new line ringed, and says nothing about the two holidays added to 2027 out of view (D850)"
+  ],
+  "notes": [
+   "preview: {\"c\":\"3 to add · 0 already here · 0 not read\",\"a\":\"Add 3 holidays\",\"lines\":[\"Tue 13 OctY26 Testnew\",\"Mon 4 JanY27 Testnew\",\"Wed 3 FebY27 Test Bnew\"]}",
+   "ok: a sheet across 2026 and 2027 reads: 3 to add · 0 already here · 0 not read",
+   "after Add: year shown 2026, saved note \"\", undo: Undo — adding 3 holidays",
+   "2026 list: Thu 1 JanPHPH ;; Tue 17 – Wed 18 FebPHPH ;; Sun 9 AugPHPH ;; Tue 13 OctY26 TestPH ;; Fri 25 DecPHPH",
+   "ok: 2027 list shows both: Mon 4 JanY27 TestPH ;; Wed 3 FebY27 Test BOFF",
+   "ok: after a reload both years kept (2026 Y26: true; 2027 lines: 2)",
+   "ok: one Undo took both years back (2027 lines 0, 2026 Y26 false)"
+  ],
+  "pics": [
+   "w2-14-D-preview.png",
+   "w2-14-D-after-add-2026.png",
+   "w2-14-D-2027-list.png",
+   "w2-14-D-after-undo.png"
+  ]
+ },
+ {
+  "id": "W2-18-D",
+  "status": "FAIL",
+  "fails": [
+   "the preview was not re-checked at Add: after a PH was added on the grid behind it (12 Jan), Add still read \"2 to add\" and put a second PH on 12 Jan (2 lines for that date)"
+  ],
+  "notes": [
+   "2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Mon 12 JanBehind Testnew ;; [pv-new] Tue 13 JanBehind Test 2new",
+   "the grid Event cell (12 Jan) box {\"x\":313.078125,\"y\":497,\"w\":27.03125,\"h\":22,\"r\":340.109375,\"b\":519}; what lies on it: SPAN.evadd",
+   "after pressing the cell behind: Event window=true, preview still=true, Calendar window=true",
+   "preview now: 2 to add · 0 already here · 0 not read | Add 2 holidays || [pv-new] Mon 12 JanBehind Testnew ;; [pv-new] Tue 13 JanBehind Test 2new",
+   "after Add: 12 Jan facts {\"covered\":true,\"kind\":\"ph\",\"name\":\"PH\",\"short\":\"PH\",\"weekend\":false,\"availP\":29,\"availW\":17}; lines Thu 1 JanPHPH ;; Mon 12 JanPHPH ;; Mon 12 JanBehind TestPH ;; Tue 13 JanBehind Test 2PH ;; Tue 17 – Wed 18 FebPHPH ;; Sun 9 AugPHPH ;; Fri 25 DecPHPH",
+   "error:  | ",
+   "same file imported again: 0 to add · 2 already here · 0 not read | Add 0 holidays (greyed) || [pv-had is-past] Mon 12 JanBehind Test ;; [pv-had is-past] Tue 13 JanBehind Test 2",
+   "ok: importing the same file twice: everything already here, Add greyed: 0 to add · 2 already here · 0 not read",
+   "ok: Cancel puts the list back (7 lines)",
+   "year arrow with preview open: preview=false year=2027 lines=0",
+   "back: preview=false year=2026 lines=7"
+  ],
+  "pics": [
+   "w2-18-D-cell-behind.png",
+   "w2-18-D-after-add.png",
+   "w2-18-D-same-file-twice.png",
+   "w2-18-D-year-arrow-with-preview.png"
+  ]
+ }
+]
