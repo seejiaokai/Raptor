@@ -141,7 +141,7 @@ same refused filing made twice.
 | The Leave War unit project (the touched area, whole) | his PC, under the lock | 222 files, 3926 passed, 20 skipped, 0 failed (before the last three pins; those files re-run green: 10 / 13 / 11) |
 | The delete and undo tests of the main project | his PC | `person-delete*.test.ts`, `p6d-deleteonread.test.ts`: 40 passed; `undo/timeline*.test.ts`, `undo-wire.test.ts`: 114 passed |
 | Build (typecheck + bundle) | his PC, under the lock | green |
-| The full set (the original's 728, unit, browser, the Tracker's, rules, documents) | GitHub's run of the pull request (D1086) | see the report — not yet run when this was written |
+| The full set (the original's 728, unit, browser, the Tracker's, rules, documents) | GitHub's run of pull request 592 (D1086) | first run (06cc6dd25): every job green but one browser test — `e2e/leavewar.spec.ts` "on a tablet and a desktop the clash note stays the strip…", whose pattern pinned the old notation (`earns \*?[FH]O\*?`); brought to the new form, both clash tests re-run on his PC under the lock (lw-desktop and lw-phone: 2 passed, 2 skipped by size) — the re-run on GitHub: see the report |
 
 ## 5. The walk — every scenario against its EXPECTED
 
@@ -254,6 +254,7 @@ engines.
 | F5 — the same old grammar in the day's list's lines, the approved-leave window, the bell | **filed** `[LW-HALF-WORDS-ELSEWHERE]`, his to rule (Q3) — the scenario list's S2-8: record, do not fix unasked |
 | F6 — "refuse or delete it" for a man with no row | **filed** `[LW-DELETED-NOROW-WORDS]`, his question (Q1) |
 | F7 — "· approved" on an OIL credit | his question (Q2), with F5's item |
+| F8 — the roll-call's search for the old wording missed one browser test (it spells the phrase with an escaped slash, `Weekend\/PH`, and matched the code by a pattern) — found by GitHub's run, not by the walk | **fixed** (the test's pattern brought to the new form); the lesson is the order's own §6 rule — search each exact old phrase, and each code it prints (`[FH]O`), across `e2e/` and the scripts as well as `src/` |
 
 ## 11. The ledger's row
 
