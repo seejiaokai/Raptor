@@ -7,7 +7,7 @@
    - a month's day cells: `lastDayIn` (../engine) — since the move, `PersonMonth` is its only caller in the app;
    - a row: the `FigureCell` whose test id begins `bal-` — the row's own balance box, handed a fresh click handler each
      time `PersonRow` runs, so it is rendered again exactly when the row is. */
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const count = vi.hoisted(() => ({ month: 0, row: 0 }))
@@ -22,7 +22,7 @@ vi.mock('./FigureCell', async orig => {
   return { ...real, FigureCell: (p: any) => { if (String(p.testid || '').startsWith('bal-')) count.row++; return createElement(real.FigureCell, p) } }
 })
 
-import { initStore, lwUndo, recordsAt, setBidStates, setCell, setRequestWords, setRole } from '../state/store'
+import { initStore, lwUndo, recordsAt, setBidStates, setCell, setDayAward, setRequestWords, setRole } from '../state/store'
 /* a pending bid's own id on a day (ramp's) */
 const recId = (d: string) => recordsAt('ramp', d).find(r => r.kind === 'request')!.id
 import { memoryBackend } from '../state/storage'
@@ -134,5 +134,29 @@ describe('[LW-MONTH-MEMO-UNPINNED] a month whose cells read the change draws aga
     count.month = 0
     act(() => { setCell('ramp', '2026-02-01', 'LL') })
     expect(count.month, 'February, and January, whose last days read 1 Feb').toBe(28 + 31)
+  })
+})
+
+/* THE REACH IS TWO DAYS (JOIN_REACH): a whole-day bid standing on the RIGHT of a day that holds a second whole entry joins the
+   next day only where its run STARTS there (MatrixRows meets — `aRunStarts`), so the first day of February reads the 30th of
+   January, two days back. Taking 30 Jan's bid away must draw February again. */
+describe('[LW-MONTH-MEMO-UNPINNED] a change two days before a month draws that month again', () => {
+  it('30–31 Jan and 1 Feb one bid run, 31 Jan also holding an OIL award: 30 Jan deleted — 1 Feb now joins 31 Jan', () => {
+    render(<Matrix />)
+    act(() => {
+      for (const d of ['2026-01-30', '2026-01-31', '2026-02-01']) setCell('ramp', d, 'LL')
+      expect(setDayAward('ramp', '2026-01-31', 1, { note: 'weekend' })).toBeNull()
+    })
+    const boxes = (iso: string) => [...screen.getByTestId(`cell-ramp-${iso}`).querySelectorAll('.c')].map(c => `${c.textContent}${/\bleft\b/.test(c.className) ? ':left' : /\bright\b/.test(c.className) ? ':right' : ''}${/\bjl\b/.test(c.className) ? ' jl' : ''}${/\bjr\b/.test(c.className) ? ' jr' : ''}`)
+    const day31 = boxes('2026-01-31')
+    expect(day31.some(b => /^LL:right/.test(b)), `the premise: the bid stands on the right of 31 Jan (${day31.join(' | ')})`).toBe(true)
+    const before = boxes('2026-02-01')
+    act(() => { setCell('ramp', '2026-01-30', '') })
+    expect(boxes('2026-01-30')).toEqual([])
+    const fresh = boxes('2026-02-01')
+    /* drawn again: what 1 Feb shows now is what a first draw of the same world shows */
+    cleanup(); render(<Matrix />)
+    expect(fresh, `1 Feb after the delete (before it: ${before.join(' | ')})`).toEqual(boxes('2026-02-01'))
+    expect(fresh, 'and the delete changed what 1 Feb reads').not.toEqual(before)
   })
 })
