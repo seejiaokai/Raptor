@@ -1,0 +1,131 @@
+[
+ {
+  "id": "S1-1 premise",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "NEWBY (post-in 3 Nov) pending LL on 27 Oct: cell LL:s-w; Approvals count 14",
+  "pics": [
+   "s1-1-a-pending"
+  ]
+ },
+ {
+  "id": "S1-1 Approve refused",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "deleted true; count 14 → 14; his line \"NEWBY C LL Tue 27 Oct › 1 day −1 30 Oct 03:32 · by Saber Approve Refus\"; Approve said \"Posted out — refuse or delete it\"; leave inputs written for him: 0",
+  "pics": [
+   "s1-1-b-approvals-after-delete",
+   "s1-1-c-approve-pressed"
+  ]
+ },
+ {
+  "id": "S1-1 Refuse works",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Refuse: lit \"refused\" \"NEWBY C LL Tue 27 Oct › 30 Oct 03:32 · by Saber Approve Refu\"",
+  "pics": [
+   "s1-1-d-refused"
+  ]
+ },
+ {
+  "id": "S1-1 the name the line shows",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "\"NEWBY C LL Tue 27 Oct › 1 day −1 30 Oct \"; a man with no row has no cell to delete the bid from: Refuse is the way",
+  "pics": []
+ },
+ {
+  "id": "S1-9 the new NEWBY approves, the old stays refused",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "new id pmvtxwyhhv98k21; new line lit \"approved\", his leave inputs 1; old man's 0; lines: pmvtxwyhhv98k21: NEWBY C posting in 3 Nov LL Tue 27 Oct › 1 day −1  []",
+  "pics": [
+   "s1-9-a-two-newbys",
+   "s1-9-b-new-approved"
+  ]
+ },
+ {
+  "id": "S1-2 a run Delete posting keeps the date rule",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "PO from 2026-10-26; deleted by the posting true; 22 Oct line lit \"approved\"; 28 Oct said \"He posted out on 26 Oct: refuse or delete it\"",
+  "pics": [
+   "s1-2-a-postout-sheet",
+   "s1-2-b-approvals"
+  ]
+ },
+ {
+  "id": "S1-3 Delete posting set, then deleted on Admin → Users: both refused whole",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "deleted true; 22 Oct \"Posted out — refuse or delete it\"; 28 Oct \"Posted out — refuse or delete it\"",
+  "pics": [
+   "s1-3-approvals"
+  ]
+ },
+ {
+  "id": "S1-4 SANS man, SANS off, approves",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "+SANS found true; SANS row vinci; bid LL:s-w; sans test ids ; row gone with SANS off true; line lit \"approved\"",
+  "pics": [
+   "s1-4-approvals"
+  ]
+ },
+ {
+  "id": "S1-6 (a) Redo after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved \"approved\", Undo → inputs 0; Redo enabled false; after Redo his leave inputs 0; said \"INCO deleted\"",
+  "pics": [
+   "s1-6-a-after-redo"
+  ]
+ },
+ {
+  "id": "S1-6 (b) Undo of a send-back after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after the second tap his inputs 0; after Undo 0; said \"A later change touches the same thing and can’t be undone.\"",
+  "pics": [
+   "s1-6-b-after-undo"
+  ]
+ },
+ {
+  "id": "S1-7 bid window refuses",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "deleted true; his 20 Oct drawn true; window says \"Drifter 20–21 Oct Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 30 Oct, 03:34 Approve Refuse ⇄Move Delete Nothing was decided. Posted out — r\"; cell s-w",
+  "pics": [
+   "s1-7-a-bidwindow"
+  ]
+ },
+ {
+  "id": "S1-7 drag window refuses him, approves the other",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window opened true; said \"Drifter, Ridge 21 Oct · 1 day Auto-approve ✕ Drifter No manning row is amber or red Approve Refuse ⇄Move Delete Whole day AM PM LL OL OIL CCL FCL PL EL CL CSE OD Grant OIL ⋯ 1 decided. 1 not approved:\"; other man's leave inputs 1",
+  "pics": [
+   "s1-7-b-dragwindow"
+  ]
+ },
+ {
+  "id": "S1-7 Auto-approve on a deleted man’s past day",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "cell LL:s-w; window said \"Drifter Sun 18 Oct Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 30 Oct, 03:35 Approve Refuse ⇄Move D\"; his leave inputs 4 (4 before)",
+  "pics": [
+   "s1-7-c-autoapprove"
+  ]
+ },
+ {
+  "id": "S1-5 Approve all: his line answers for itself, the rest go through, one Undo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "13 lines; NEWBY said \"Posted out — refuse or delete it\" (lit \"\"); Ranger approved,approved,approved,approved,approved,approved; war-approved leave 19 → 31 → after one Undo 19; lines lit after Undo 0",
+  "pics": [
+   "s1-5-a-armed",
+   "s1-5-b-after",
+   "s1-5-c-undo"
+  ]
+ }
+]

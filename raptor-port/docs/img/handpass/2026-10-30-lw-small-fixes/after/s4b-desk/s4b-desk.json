@@ -1,0 +1,21 @@
+[
+ {
+  "id": "S4-4 an Off day added: every drawn row’s column tinted at once",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "before {\"rows\":49,\"tinted\":0,\"cls\":\" act\"}; after {\"rows\":49,\"tinted\":49,\"cls\":\"evoff act\"}",
+  "pics": [
+   "s44-a-off-day"
+  ]
+ },
+ {
+  "id": "S4-5 a posting moved across the month’s edge: the hatch follows in both months",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "PO from 2 Dec {\"n29\":false,\"n30\":false,\"d1\":false,\"d2\":true,\"d3\":true} → 30 Nov {\"n29\":false,\"n30\":true,\"d1\":true,\"d2\":true,\"d3\":true} → 2 Dec {\"n29\":false,\"n30\":false,\"d1\":false,\"d2\":true,\"d3\":true}",
+  "pics": [
+   "s45-a-postout-30nov",
+   "s45-b-postout-2dec"
+  ]
+ }
+]
