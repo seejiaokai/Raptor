@@ -23,7 +23,7 @@
      so on his iPhone it is measured in its letters too;
    - a past event (its last day before the app's today) greyed; a new one ringed in its own list and brought into view.
    It keeps nothing of the events: it re-reads the store on every paint (an Undo, a change on the grid). */
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { EVENT_KIND_WORDS, eventLines, memberToday, type EventLine, type EventKind } from '../engine'
 import { deleteEvent, getState, saveEvent } from '../state/store'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
@@ -181,6 +181,15 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
   }, [phone, hasLines, period.start])
   const vars = { ...(cols.kw ? { '--ev-kw': `${cols.kw}px` } : {}), ...(cols.dw ? { '--ev-dw': `${cols.dw}px` } : {}) } as CSSProperties
 
+  const armedLine = armed ? lines.find(l => `${l.line}-${l.from}` === armed) : undefined
+  const saidNow = armedLine ? `Delete ${armedLine.text}, ${whenSaid(armedLine.from, armedLine.to)}? Press again to delete.` : ''
+  /* Escape on the note closes the note only (the window's own Escape leaves it to the note), the keyboard back in the window */
+  const noteKey = (e: ReactKeyboardEvent) => {
+    if (e.key !== 'Escape') return
+    e.stopPropagation()
+    setGone(null)
+    ;(document.querySelector('[data-testid="events-add"]') as HTMLElement | null)?.focus()
+  }
   const pressX = (key: string, l: EventLine) => {
     if (armed !== key) { setArmed(key); return }
     setArmed(null)
@@ -211,8 +220,7 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
           <span className="hol-when">{when}</span>
           <span className="hol-name">{l.text}</span>
         </span>
-        {/* said aloud when it asks (the read's R5) */}
-        <span className={`evpeek-kind ev-kind ${sure ? 'sure' : (l.kind ?? 'none')}`} data-testid={`evkind-${key}`} aria-live="polite">
+        <span className={`evpeek-kind ev-kind ${sure ? 'sure' : (l.kind ?? 'none')}`} data-testid={`evkind-${key}`}>
           {sure ? SURE : (l.kind ? EVENT_KIND_WORDS[l.kind] : '')}
         </span>
         <span className="ev-ctls">
@@ -240,6 +248,9 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
           <button className="rtbtn" data-testid="events-add" title="Add an event — pick its day or days" onClick={onAdd}>＋ Event</button>
           <button className="evtypes-open" data-testid="events-presets" onClick={onPresets}>Edit presets</button>
         </div>
+        {/* THE QUESTION SAID ALOUD (the read's R5): one polite region for the window, which speaks the asking only — a region on
+            each line's kind also spoke the kind's word when the question was taken back (the fix's narrow read) */}
+        <span className="ev-said" data-testid="events-said" aria-live="polite">{saidNow}</span>
         <div className="ev-split" data-testid="events-list" ref={listRef} style={vars}>
           {PARTS.map(p => (
             <section key={p.key} className="ev-col" data-testid={`events-sec-${p.key}`} aria-label={p.word}>
@@ -252,7 +263,7 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
         </div>
       </Sheet>
       {gone && (
-        <div key={gone.n} className="secdef-snack ev-undo sheet-part" role="status" data-testid="events-undo-note">
+        <div key={gone.n} className="secdef-snack ev-undo sheet-part" role="status" data-testid="events-undo-note" onKeyDown={noteKey}>
           <span className="secdef-msg">{gone.name} deleted</span>
           <button ref={undoRef} type="button" className="secdef-btn yes" data-testid="events-undo" onClick={undo}>Undo</button>
         </div>

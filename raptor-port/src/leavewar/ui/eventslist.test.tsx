@@ -441,11 +441,48 @@ describe('the Events list split (D1512–D1516)', () => {
     expect(screen.getByTestId('events-sheet').contains(document.activeElement)).toBe(true)
   })
 
-  it('R5: the asking is said aloud — the kind column is a polite live region', () => {
+  /* (the fix's narrow read, 29 Oct 26: a live region on every line's kind also spoke the kind's word when the question was
+     taken back — one region for the window says only the asking) */
+  it('R5: the asking is said aloud, once — one polite region for the window, silent at rest and once taken back', () => {
     setDayEvent('2026-03-16', 0, 'SC', 'work')
     render(<Matrix />)
     openEvents()
-    expect(screen.getByTestId('evkind-0-2026-03-16').getAttribute('aria-live')).toBe('polite')
+    const said = screen.getByTestId('events-said')
+    expect(said.getAttribute('aria-live')).toBe('polite')
+    expect(screen.getByTestId('events-sheet').contains(said)).toBe(true)
+    expect(said.textContent).toBe('')
+    expect(screen.getByTestId('evkind-0-2026-03-16').getAttribute('aria-live'), 'no region on a line').toBeNull()
+    fireEvent.click(screen.getByTestId('evdel-0-2026-03-16'))
+    expect(said.textContent).toBe('Delete SC, Mon 16 Mar? Press again to delete.')
+    fireEvent.pointerDown(screen.getByTestId('events-head-squadron'))
+    expect(said.textContent).toBe('')
+  })
+
+  it('R2 (the narrow read): from the note’s Undo, Tab goes round the window and Shift+Tab comes back to it', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    const x = screen.getByTestId('evdel-0-2026-03-16')
+    x.focus(); fireEvent.click(x); fireEvent.click(screen.getByTestId('evdel-0-2026-03-16'))
+    const undo = screen.getByTestId('events-undo')
+    expect(document.activeElement).toBe(undo)
+    fireEvent.keyDown(undo, { key: 'Tab' })
+    expect(screen.getByTestId('events-sheet').contains(document.activeElement), 'round to the window’s first button').toBe(true)
+    fireEvent.keyDown(document.activeElement!, { key: 'Tab', shiftKey: true })
+    expect(document.activeElement, 'and back to Undo').toBe(undo)
+  })
+
+  it('R2 (the narrow read): Escape on the note’s Undo closes the note only — the window stays, the keyboard in it', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    const x = screen.getByTestId('evdel-0-2026-03-16')
+    x.focus(); fireEvent.click(x); fireEvent.click(screen.getByTestId('evdel-0-2026-03-16'))
+    fireEvent.keyDown(screen.getByTestId('events-undo'), { key: 'Escape' })
+    expect(screen.queryByTestId('events-undo-note')).toBeNull()
+    expect(screen.getByTestId('events-sheet')).toBeTruthy()
+    expect(document.activeElement).toBe(screen.getByTestId('events-add'))
+    expect(undoPress).not.toHaveBeenCalled()
   })
 
   it('R1, R6: the two lists stand one under the other until the window can hold a line; the tap areas meet without overlap', () => {
@@ -455,7 +492,8 @@ describe('the Events list split (D1512–D1516)', () => {
     expect(block.length, 'a 1100px block').toBeGreaterThan(30)
     expect(block.slice(0, block.indexOf('\n}'))).toContain('.bidsheet .ev-split { flex-direction: column; align-items: stretch; gap: 6px; }')
     expect(block.slice(0, block.indexOf('\n}'))).toContain('#page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(560px, calc(100vw - 24px)); }')
-    has(".bidsheet .ev-ctl::before { content: ''; position: absolute; inset: -9px -7px; }")
+    has(".bidsheet .ev-pen::before { right: -7px; }")
+    has(".bidsheet .ev-x::before { left: -7px; }")
   })
 
   it('the controls are buttons of their own, not inside another button, each with a finger-sized tap area', () => {

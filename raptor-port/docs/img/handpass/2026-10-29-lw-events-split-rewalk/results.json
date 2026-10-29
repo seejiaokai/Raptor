@@ -1,0 +1,492 @@
+[
+ {
+  "id": "P1 Squadron events first, then Holidays",
+  "ok": true,
+  "note": "events-sec-squadron,events-sec-holidays"
+ },
+ {
+  "id": "P1 each event in its own list",
+  "ok": true,
+  "note": "squadron 4, holidays 5"
+ },
+ {
+  "id": "P1 headings carry the counts",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P1 one under the other",
+  "ok": true,
+  "note": "{\"l\":0,\"r\":402,\"t\":0,\"b\":874}"
+ },
+ {
+  "id": "P1 the window inside the screen",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P2 squadron: one kind column, pencils and ✕s each one column (app letters)",
+  "ok": true,
+  "note": "{\"k\":[206],\"p\":[318],\"x\":[354]}"
+ },
+ {
+  "id": "P2 squadron: no date or kind word cut (app letters)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P2 squadron: the buttons 22px, 14px apart (app letters)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "P2 holidays: one kind column, pencils and ✕s each one column (app letters)",
+  "ok": true,
+  "note": "{\"k\":[206],\"p\":[318],\"x\":[354]}"
+ },
+ {
+  "id": "P2 holidays: no date or kind word cut (app letters)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P2 holidays: the buttons 22px, 14px apart (app letters)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "P2 squadron: one kind column, pencils and ✕s each one column (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"k\":[196],\"p\":[318],\"x\":[354]}"
+ },
+ {
+  "id": "P2 squadron: no date or kind word cut (letters a seventh wider)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P2 squadron: the buttons 22px, 14px apart (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "P2 holidays: one kind column, pencils and ✕s each one column (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"k\":[196],\"p\":[318],\"x\":[354]}"
+ },
+ {
+  "id": "P2 holidays: no date or kind word cut (letters a seventh wider)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P2 holidays: the buttons 22px, 14px apart (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "P2 the long name: wraps, whole",
+  "ok": true,
+  "note": "{\"cut\":false,\"h\":48}"
+ },
+ {
+  "id": "P3 the pencil opens the event",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P3 closing it brings the list back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P3 a tap on the line opens it too",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P4 asking: \"Delete — sure?\" in the kind column, the ✕ red",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P4 the ✕ and the pencil have not moved",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P4 nothing deleted yet",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P5 a press elsewhere takes the question back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P6 another ✕ moves the question there",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P7 deleted: gone from the store and the list",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P7 the note: \"Squadron dinner deleted\", one line, in the screen, on top",
+  "ok": true,
+  "note": "{\"t\":\"Squadron dinner deleted\",\"l\":77.9921875,\"r\":324.0078125,\"b\":856,\"h\":50,\"top\":true}"
+ },
+ {
+  "id": "P8 Undo on the note brings it back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P9 the top bar’s Undo brings it back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P9 Redo deletes it again",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P9 the note goes by itself after about seven seconds",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P10 a run deleted every day of it",
+  "ok": true,
+  "note": ",,"
+ },
+ {
+  "id": "P10 one Undo brings the whole run back",
+  "ok": true,
+  "note": "Ex Cope Tiger,Ex Cope Tiger,Ex Cope Tiger"
+ },
+ {
+  "id": "P11 a new event: its own list, ringed, in view",
+  "ok": true,
+  "note": "{\"bands\":1,\"ring\":{\"innew\":true,\"sec\":\"events-sec-squadron\",\"inView\":true}}"
+ },
+ {
+  "id": "P11 its ✕ takes the merged bar whole",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P13 after leaving the page and coming back, nothing still asks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P14 over the Balances page: the list in sight, on top",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P14 closed: the Balances page as he left it",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P15 the note for the longest name: inside the screen, one line, its Undo whole",
+  "ok": true,
+  "note": "{\"l\":16,\"r\":386,\"h\":50,\"uL\":314,\"uR\":371,\"ell\":true,\"t\":\"A squadron event whose name ru\"}"
+ },
+ {
+  "id": "P15 empty: its heading 0 and one line saying so",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P no page errors",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D1 Squadron events first, then Holidays",
+  "ok": true,
+  "note": "events-sec-squadron,events-sec-holidays"
+ },
+ {
+  "id": "D1 each event in its own list",
+  "ok": true,
+  "note": "squadron 4, holidays 5"
+ },
+ {
+  "id": "D1 headings carry the counts",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D1 side by side",
+  "ok": true,
+  "note": "{\"l\":208,\"r\":1328,\"t\":495,\"b\":850}"
+ },
+ {
+  "id": "D1 the window inside the screen",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D2 squadron: one kind column, pencils and ✕s each one column (app letters)",
+  "ok": true,
+  "note": "{\"k\":[574],\"p\":[688],\"x\":[724]}"
+ },
+ {
+  "id": "D2 squadron: no date or kind word cut (app letters)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D2 squadron: the buttons 22px, 14px apart (app letters)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "D2 squadron: every name starts at one place, ≥12px clear of its date (app letters)",
+  "ok": true,
+  "note": "{\"n\":[408],\"gap\":66}"
+ },
+ {
+  "id": "D2 holidays: one kind column, pencils and ✕s each one column (app letters)",
+  "ok": true,
+  "note": "{\"k\":[1129],\"p\":[1243],\"x\":[1279]}"
+ },
+ {
+  "id": "D2 holidays: no date or kind word cut (app letters)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D2 holidays: the buttons 22px, 14px apart (app letters)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "D2 holidays: every name starts at one place, ≥12px clear of its date (app letters)",
+  "ok": true,
+  "note": "{\"n\":[963],\"gap\":59}"
+ },
+ {
+  "id": "D2 squadron: one kind column, pencils and ✕s each one column (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"k\":[564],\"p\":[688],\"x\":[724]}"
+ },
+ {
+  "id": "D2 squadron: no date or kind word cut (letters a seventh wider)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D2 squadron: the buttons 22px, 14px apart (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "D2 squadron: every name starts at one place, ≥12px clear of its date (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"n\":[426],\"gap\":69}"
+ },
+ {
+  "id": "D2 holidays: one kind column, pencils and ✕s each one column (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"k\":[1119],\"p\":[1243],\"x\":[1279]}"
+ },
+ {
+  "id": "D2 holidays: no date or kind word cut (letters a seventh wider)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D2 holidays: the buttons 22px, 14px apart (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"b\":[22],\"g\":[14]}"
+ },
+ {
+  "id": "D2 holidays: every name starts at one place, ≥12px clear of its date (letters a seventh wider)",
+  "ok": true,
+  "note": "{\"n\":[981],\"gap\":60}"
+ },
+ {
+  "id": "D2 the long name: ends in …, one line",
+  "ok": true,
+  "note": "{\"cut\":true,\"h\":16}"
+ },
+ {
+  "id": "D3 the pencil opens the event",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D3 closing it brings the list back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D3 a tap on the line opens it too",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D4 asking: \"Delete — sure?\" in the kind column, the ✕ red",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D4 the ✕ and the pencil have not moved",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D4 nothing deleted yet",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D5 a press elsewhere takes the question back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D6 another ✕ moves the question there",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D7 deleted: gone from the store and the list",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D7 the note: \"Squadron dinner deleted\", one line, in the screen, on top",
+  "ok": true,
+  "note": "{\"t\":\"Squadron dinner deleted\",\"l\":644.9921875,\"r\":891.0078125,\"b\":846,\"h\":50,\"top\":true}"
+ },
+ {
+  "id": "D8 Undo on the note brings it back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D9 the top bar’s Undo brings it back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D9 Redo deletes it again",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D9 the note goes by itself after about seven seconds",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D10 a run deleted every day of it",
+  "ok": true,
+  "note": ",,"
+ },
+ {
+  "id": "D10 one Undo brings the whole run back",
+  "ok": true,
+  "note": "Ex Cope Tiger,Ex Cope Tiger,Ex Cope Tiger"
+ },
+ {
+  "id": "D11 a new event: its own list, ringed, in view",
+  "ok": true,
+  "note": "{\"bands\":1,\"ring\":{\"innew\":true,\"sec\":\"events-sec-squadron\",\"inView\":true}}"
+ },
+ {
+  "id": "D11 its ✕ takes the merged bar whole",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D12 keyboard: Enter on a pencil opens the event",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D12 keyboard: Escape closes it, the list back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D12 keyboard: Enter on a ✕ asks, the focus ring shown",
+  "ok": true,
+  "note": "solid"
+ },
+ {
+  "id": "D12 keyboard: Tab away takes the question back",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D12 keyboard: Enter twice deletes",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D12 keyboard: then it is on the note’s Undo (the read’s R2)",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D12 keyboard: Enter on Undo brings it back, the keyboard on its ✕",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D13 after leaving the page and coming back, nothing still asks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D14 over the Balances page: the list in sight, on top",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D14 closed: the Balances page as he left it",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D15 the note for the longest name: inside the screen, one line, its Undo whole",
+  "ok": true,
+  "note": "{\"l\":493,\"r\":1043,\"h\":50,\"uL\":971,\"uR\":1028,\"ell\":false,\"t\":\"A squadron event whose name ru\"}"
+ },
+ {
+  "id": "D15 empty: its heading 0 and one line saying so",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D no page errors",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "W820 one under the other, every ✕ inside its list, every name room to read",
+  "ok": true,
+  "note": "{\"under\":true,\"xIn\":true,\"minName\":151}"
+ },
+ {
+  "id": "W1024 one under the other, every ✕ inside its list, every name room to read",
+  "ok": true,
+  "note": "{\"under\":true,\"xIn\":true,\"minName\":151}"
+ },
+ {
+  "id": "M16 a member: no Events… and no Events list",
+  "ok": true,
+  "note": "no ⚙"
+ }
+]

@@ -2785,3 +2785,18 @@ passes a "kept after reload" step from it passes by accident when the value happ
 
 **Principle:** A test fixture's "clean start" switch can also switch off the very behaviour under test; check what a
 reset mode disables before reusing it.
+
+### Observation 746: A walk that checks a font-dependent measurement must reopen the surface after changing the letters
+
+**Status:** OPEN
+**Date:** 29 Oct 26
+**Session context:** Building the Leave War's Events list split (D1512–D1516); the walk checked its columns in letters a seventh wider (his iPhone's).
+**Skill:** brainstorming (its guide `mockups-on-the-real-app.md`) and the walk-script guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** the walk script's "wider letters" fit check
+
+**Issue:** The list measures its column widths in its own letters once, when it opens. The walk swapped in a wider typeface on the open list and measured: the kind column looked misaligned (a false failure), because the widths were still the ones measured in the narrower letters. Reopening the list after the swap measured correctly. Separately, the drawing check's colour comparison read the wrong element because the drawing coloured its words in a child element (a bold span) where the build colours the column itself.
+
+**Suggested improvement:** In walk-scripts.md's fit-check trap list: when a surface measures text at open (canvas or layout), apply the wider letters BEFORE opening it, or close and reopen it after. In the mock-up guide: where a drawing styles words through a child element, a drawing-check part names that child for the colour and the column for the place.
+
+**Principle:** A check that changes an input the code reads only once (at mount) must re-run that read, or it tests the stale value, not the code.
