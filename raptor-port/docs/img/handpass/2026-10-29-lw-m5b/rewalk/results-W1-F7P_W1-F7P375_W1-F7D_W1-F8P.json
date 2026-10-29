@@ -1,0 +1,203 @@
+{
+ "results": [
+  {
+   "id": "W1-F7P",
+   "title": "F7 re-walk: chips pressed with a palette open, phone 402",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P \"+ Management\" added, its palette open",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:mgmt"
+     }
+    },
+    {
+     "name": "P the chip under the finger did not move between the press and the lift",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:scDay"
+     }
+    },
+    {
+     "name": "P \"+ SC DAY\" pressed → SC DAY added, nothing else",
+     "ok": true,
+     "obs": {
+      "added": [
+       "grow-q:scDay"
+      ]
+     }
+    },
+    {
+     "name": "P the Management palette gone, SC DAY's open",
+     "ok": true,
+     "obs": {}
+    },
+    {
+     "name": "P again with SC DAY's palette open: \"+ NVG\" pressed → NVG added, nothing else",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:nvg",
+      "added2": [
+       "grow-q:nvg"
+      ]
+     }
+    }
+   ],
+   "pics": [
+    "w1-F7-P-1-mgmt-lifted",
+    "w1-F7-P-2-scday-pressed",
+    "w1-F7-P-2-scday-lifted",
+    "w1-F7-P-3-nvg-lifted",
+    "w1-F7-P-4-settled"
+   ],
+   "notes": []
+  },
+  {
+   "id": "W1-F7P375",
+   "title": "F7 re-walk: the same, phone 375",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P375 \"+ Management\" added, its palette open",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:mgmt"
+     }
+    },
+    {
+     "name": "P375 the chip under the finger did not move between the press and the lift",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:scDay"
+     }
+    },
+    {
+     "name": "P375 \"+ SC DAY\" pressed → SC DAY added, nothing else",
+     "ok": true,
+     "obs": {
+      "added": [
+       "grow-q:scDay"
+      ]
+     }
+    },
+    {
+     "name": "P375 the Management palette gone, SC DAY's open",
+     "ok": true,
+     "obs": {}
+    },
+    {
+     "name": "P375 again with SC DAY's palette open: \"+ NVG\" pressed → NVG added, nothing else",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:nvg",
+      "added2": [
+       "grow-q:nvg"
+      ]
+     }
+    }
+   ],
+   "pics": [
+    "w1-F7-P375-1-mgmt-lifted",
+    "w1-F7-P375-2-scday-pressed",
+    "w1-F7-P375-2-scday-lifted",
+    "w1-F7-P375-3-nvg-lifted",
+    "w1-F7-P375-4-settled"
+   ],
+   "notes": []
+  },
+  {
+   "id": "W1-F7D",
+   "title": "F7 re-walk: the same, desktop (mouse)",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "D \"+ Management\" added, its palette open",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:mgmt"
+     }
+    },
+    {
+     "name": "D the chip under the finger did not move between the press and the lift",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:scDay"
+     }
+    },
+    {
+     "name": "D \"+ SC DAY\" pressed → SC DAY added, nothing else",
+     "ok": true,
+     "obs": {
+      "added": [
+       "grow-q:scDay"
+      ]
+     }
+    },
+    {
+     "name": "D the Management palette gone, SC DAY's open",
+     "ok": true,
+     "obs": {}
+    },
+    {
+     "name": "D again with SC DAY's palette open: \"+ NVG\" pressed → NVG added, nothing else",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:nvg",
+      "added2": [
+       "grow-q:nvg"
+      ]
+     }
+    }
+   ],
+   "pics": [
+    "w1-F7-D-1-mgmt-lifted",
+    "w1-F7-D-2-scday-pressed",
+    "w1-F7-D-2-scday-lifted",
+    "w1-F7-D-3-nvg-lifted",
+    "w1-F7-D-4-settled"
+   ],
+   "notes": []
+  },
+  {
+   "id": "W1-F8P",
+   "title": "F8 re-walk: a column nobody holds, its chip, phone 402",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P a new Quals column, nobody ticked",
+     "ok": true,
+     "obs": {
+      "key": "zuluwalk"
+     }
+    },
+    {
+     "name": "P its \"+ ZULU WALK\" chip, pressed with a palette open, adds its group (0 people)",
+     "ok": true,
+     "obs": {
+      "moved": 0,
+      "underFinger": "gadd-q:zuluwalk"
+     }
+    }
+   ],
+   "pics": [
+    "w1-F8-P-chip-lifted"
+   ],
+   "notes": []
+  }
+ ],
+ "errs": []
+}

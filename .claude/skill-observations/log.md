@@ -2735,3 +2735,33 @@ its value and never in innerText.
 **Suggested improvement:** In walk-scripts §10 "Name the parts", add: a part the drawing script marks with an inline ring (box-shadow or border in the marker colour) leaves that look out of its checks, with a comment naming the marker; better, the recorder could strip the marker styles (`.zz-new` outline, the `#ff2d95` inline shadow) before it measures.
 
 **Principle:** A measurement of an annotated picture must separate the annotation from the design, or the check reports the annotation as a fault.
+
+### Observation 743: Walk fixes pushed with only their unit tests left the PR's build red for three pushes, unseen
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** M5b's FULL check, picking up a handoff mid-walk (fixes F1, F3–F6 already pushed)
+**Skill:** bug-check-order §5 "Between fix rounds" / shipping §The checks — project guides, not skill files
+**Type:** internal
+**Phase/Area:** fixing walk findings, pushing, the handoff
+
+**Issue:** A fix's new test typed a byte array in a way the project's type check (run only by the build) refuses; the fix ran its touched unit tests (which do not type-check), was pushed, and GitHub's whole run went red — build, every browser set — on three pushes in a row. The handoff block said nothing of it; the next chat found it only by reading the run list.
+
+**Suggested improvement:** In the order's "Between fix rounds" and in shipping's touched-tests rule: a fix round runs `npm run build` (the type check) beside its touched tests before the push; and the session-handoff block's checklist reads the branch's last run conclusion and writes it.
+
+**Principle:** A test runner that does not type-check cannot stand in for the build; a handoff states the last check run's result, not only what was meant to run.
+
+### Observation 744: A walker's unpictured note became a finding that did not reproduce
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** M5b's FULL check, finding F8
+**Skill:** walk-scripts (walker briefs) / bug-check-order §7 — project guides
+**Type:** internal
+**Phase/Area:** recording walk findings
+
+**Issue:** The W1 walker hard-coded a note into its script ("a qualification nobody holds adds no group row … picture w1-02-odd-dead-chip") — the picture was never taken. It was recorded as finding F8. Reproduced on the same build it did not happen; a press-and-lift step on the old build showed it was F7's slide (the chips moving under the finger), seen once by hand and misread.
+
+**Suggested improvement:** In walk-scripts' walker brief: a finding is recorded only with its picture and the step that produced it; a note written into a script's text is not evidence. The host reproduces a finding before it is written into the sheet (the order already says so — enforce it at the sheet: no picture name, no finding).
+
+**Principle:** An observation with no captured evidence is a lead to reproduce, not a finding.

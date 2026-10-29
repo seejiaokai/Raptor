@@ -1,0 +1,55 @@
+[
+ {
+  "id": "W2-08-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "list {\"x\":1207,\"y\":223,\"w\":300,\"h\":170,\"r\":1507,\"b\":393} filerow {\"x\":1207,\"y\":403,\"w\":300,\"h\":30,\"r\":1507,\"b\":433} export {\"x\":1207,\"y\":403,\"w\":120.6875,\"h\":30,\"r\":1327.6875,\"b\":433} import {\"x\":1335.6875,\"y\":403,\"w\":120.015625,\"h\":30,\"r\":1455.703125,\"b\":433}",
+   "ok: Export / Import sheet sit under the list",
+   "button words: Export sheet | Import sheet",
+   "year now: 2027; list lines: 0; empty: No public holidays or Off days in 2027.; nocover: ",
+   "ok: Export / Import still shown on the year with no holidays (2027)",
+   "ok: and on 2028 (no leave period covers it): nocover=\"No leave period covers 2028 yet.Create it\""
+  ],
+  "pics": [
+   "w2-08-D-buttons-2026.png",
+   "w2-08-D-buttons-empty-year.png",
+   "w2-08-D-buttons-uncovered-year.png"
+  ]
+ },
+ {
+  "id": "W2-08-P",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "list {\"x\":13,\"y\":242,\"w\":376,\"h\":170,\"r\":389,\"b\":412} filerow {\"x\":13,\"y\":422,\"w\":376,\"h\":30,\"r\":389,\"b\":452} export {\"x\":13,\"y\":422,\"w\":120.6875,\"h\":30,\"r\":133.6875,\"b\":452} import {\"x\":141.6875,\"y\":422,\"w\":120.015625,\"h\":30,\"r\":261.703125,\"b\":452}",
+   "ok: phone: Export / Import under the list, inside the screen",
+   "ok: phone: still there on 2027"
+  ],
+  "pics": [
+   "w2-08-P-holidays-part.png",
+   "w2-08-P-tap-export.png",
+   "w2-08-P-buttons-empty-year.png"
+  ]
+ },
+ {
+  "id": "W2-09-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "download name: holidays-2026.csv; bytes 206; first bytes ef bb bf 22",
+   "ok: file named holidays-2026.csv",
+   "ok: starts with the byte-order mark",
+   "file text: \"\\\"From\\\",\\\"To\\\",\\\"Name\\\",\\\"Kind\\\",\\\"On grid\\\"\\r\\n\\\"2026-01-01\\\",\\\"2026-01-01\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\\r\\n\\\"2026-02-17\\\",\\\"2026-02-18\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\\r\\n\\\"2026-08-09\\\",\\\"2026-08-09\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\\r\\n\\\"2026-12-25\\\",\\\"2026-12-25\\\",\\\"PH\\\",\\\"PH\\\",\\\"PH\\\"\"",
+   "ok: header row: From,To,Name,Kind,On grid",
+   "ok: dates written 2026-08-09",
+   "ok: the Chinese New Year run is one line",
+   "ok: Windows line endings",
+   "re-import preview: {\"counts\":\"0 to add · 4 already here · 0 not read\",\"add\":\"Add 0 holidays\",\"dis\":true,\"classes\":[\"pv-had is-past\",\"pv-had is-past\",\"pv-had is-past\",\"pv-had is-past\"]}",
+   "ok: every line \"already here\", nothing to add, Add greyed: 0 to add · 4 already here · 0 not read / Add 0 holidays"
+  ],
+  "pics": [
+   "w2-09-D-reimport.png"
+  ]
+ }
+]
