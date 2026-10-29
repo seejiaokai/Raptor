@@ -393,10 +393,13 @@ export function Matrix() {
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
   // then opens pre-set to that range; a single click leaves it undefined.
-  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string; fresh?: boolean; presets?: boolean } | null>(null)
+  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string; fresh?: boolean; presets?: boolean; run?: boolean } | null>(null)
   /* THE EVENTS LIST (D1500), opened by ⚙ Settings' Events…: it stays open behind an event's window opened from it, and
      shows again when that window closes (it is drawn only while no event window is up) */
   const [eventsOpen, setEventsOpen] = useState(false)
+  /* a new event just saved from the list, ringed there for the just-added mark's six seconds (the walk's F3) */
+  const [evFresh, setEvFresh] = useState<string | null>(null)
+  useEffect(() => { if (!evFresh) return; const t = setTimeout(() => setEvFresh(null), 6000); return () => clearTimeout(t) }, [evFresh])
   /* THE BOX A TAP ON A FILLED EVENT CELL OPENS (the Inputs / SANS redesign, plan §3.12; owner D643, D644): the grid
      prints an event's short form, and this is where its full name, its kind and its dates are read — by everyone; an
      admin's carries "Edit". A small menu, not a window (D641's reading 2): screen-fixed like the quals popover, closed
@@ -4362,6 +4365,8 @@ export function Matrix() {
           to={eventEdit.to}
           fresh={eventEdit.fresh}
           presets={eventEdit.presets}
+          run={eventEdit.run}
+          onSaved={(line, from) => setEvFresh(`${line}-${from}`)}
           onClose={() => setEventEdit(null)}
           onMove={m => { setEventEdit(null); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
         />
@@ -4372,7 +4377,9 @@ export function Matrix() {
       {eventsOpen && !eventEdit && role === 'admin' && (
         <EventsSheet
           onClose={() => setEventsOpen(false)}
-          onOpenEvent={l => setEventEdit({ line: l.line, date: l.from })}
+          fresh={evFresh}
+          /* a run of one word on several days opens whole (the walk's F1); a merged band opens as it always has */
+          onOpenEvent={l => setEventEdit(l.to > l.from && !getState().period.bands.some(b => b.line === l.line && b.from === l.from) ? { line: l.line, date: l.from, to: l.to, run: true } : { line: l.line, date: l.from })}
           onAdd={() => {
             const t = memberToday()
             setEventEdit({ line: 0, date: t >= period.start && t <= period.end ? t : period.start, fresh: true })

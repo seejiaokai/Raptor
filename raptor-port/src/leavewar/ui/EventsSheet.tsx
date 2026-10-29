@@ -13,6 +13,7 @@
    that window's presets; Matrix keeps this list open behind them and shows it again when they close. It keeps nothing:
    it re-reads the store on every paint (an Undo, a change on the grid). Admin only — Matrix mounts it for an admin, as
    ⚙ Settings. */
+import { useEffect, useRef } from 'react'
 import { EVENT_KIND_WORDS, eventLines, memberToday, type EventLine } from '../engine'
 import { getState } from '../state/store'
 import { Sheet } from './Sheet'
@@ -32,7 +33,7 @@ export const whenSaid = (from: string, to: string): string => {
   return from.slice(0, 7) === to.slice(0, 7) ? `${say(from).replace(/ [A-Za-z]+$/, '')} – ${say(to)}` : `${say(from)} – ${say(to)}`
 }
 
-export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets }: {
+export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
   onClose: () => void
   /** open this event's own window (EventSheet on its row and first day) */
   onOpenEvent: (l: EventLine) => void
@@ -40,8 +41,17 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets }: {
   onAdd: () => void
   /** open the Event window's presets */
   onPresets: () => void
+  /** the line a new event was just saved as (`<row>-<first day>`): ringed with the app's just-added mark and brought into
+   *  view (D850, D860 — the walk's F3: on a phone it sat at the list's cut-off foot, unmarked) */
+  fresh?: string | null
 }) {
   useVersion()
+  const listRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if (!fresh) return
+    const el = listRef.current?.querySelector(`[data-testid="evline-${fresh}"]`) as HTMLElement | null
+    el?.scrollIntoView?.({ block: 'nearest' })
+  }, [fresh])
   const { period, eventRows, eventDefs } = getState()
   const lines = eventLines(period, eventRows, eventDefs, memberToday())
   return (
@@ -58,12 +68,12 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets }: {
       {lines.length === 0
         ? <p className="hol-empty ev-empty" data-testid="events-empty">No events in {period.name}.</p>
         : (
-          <div className="hol-list ev-list" data-testid="events-list">
+          <div className="hol-list ev-list" data-testid="events-list" ref={listRef}>
             {lines.map(l => (
               <button
                 key={`${l.line}-${l.from}`}
                 type="button"
-                className={'hol-line' + (l.past ? ' is-past' : '')}
+                className={'hol-line' + (l.past ? ' is-past' : '') + (fresh === `${l.line}-${l.from}` ? ' innew' : '')}
                 data-testid={`evline-${l.line}-${l.from}`}
                 aria-label={`Open: ${l.text}, ${whenSaid(l.from, l.to)}${l.kind ? ', ' + EVENT_KIND_WORDS[l.kind] : ''}`}
                 onClick={() => onOpenEvent(l)}

@@ -103,7 +103,7 @@ const presetOf = (defs: EventDef[], text: string, kind: EventKind | null): numbe
 const presetNamed = (defs: EventDef[], text: string): number =>
   (defKey(text) ? defs.findIndex(d => defKey(d.name) === defKey(text)) : -1)
 
-export function EventSheet({ line, date, to, fresh = false, presets = false, onClose, onMove }: {
+export function EventSheet({ line, date, to, fresh = false, presets = false, run = false, onClose, onMove, onSaved }: {
   line: number
   date: string
   to?: string
@@ -112,8 +112,13 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, onC
   fresh?: boolean
   /** Opened from the Events list's "Edit presets" (D1500): straight onto the presets, whose ‹ and Done go back. */
   presets?: boolean
+  /** A RUN OF ONE WORD written into each day (the walk's F1, 29 Oct 26): opened from the Events list's one line for it —
+   *  `date` to `to`, on "Repeat each day", so a rename keeps it a word a day and Delete takes every day of it. */
+  run?: boolean
   onClose: () => void
   onMove?: (m: { line: number; from: string; to: string }) => void
+  /** a NEW event saved: its row and first day (the Events list rings it — the walk's F3) */
+  onSaved?: (line: number, from: string) => void
 }) {
   useVersion()
   const { period, eventDefs: defs, eventRows } = getState()
@@ -144,7 +149,7 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, onC
   // word into each cell is the exception, and it is one tap away. An existing
   // band already opened merged, so this only changes the fresh-range case (a
   // plain click that is then ranged, or a drag-swept span).
-  const [mode, setMode] = useState<'merge' | 'repeat'>('merge')
+  const [mode, setMode] = useState<'merge' | 'repeat'>(run ? 'repeat' : 'merge')
   const [range, setRange] = useState<Range | null>(
     fresh ? null : band ? { from: band.from, to: band.to } : { from: date, to: to ?? date },
   )
@@ -222,12 +227,14 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, onC
       from: range?.from, to: range?.to,
       text: textNow, kind, short,
     })
-    if (r.ok) return onClose()
+    if (r.ok) { if (fresh) onSaved?.(at, range!.from); return onClose() }
     setProblem(r.message)
   }
 
   const del = () => {
-    deleteEvent(line, date)
+    /* a run of one word (F1): every day of it, in one command — an empty word written over the run */
+    if (run && to && to !== date) saveEvent({ line, date, scope: 'repeat', from: date, to, text: '', kind: null })
+    else deleteEvent(line, date)
     onClose()
   }
 

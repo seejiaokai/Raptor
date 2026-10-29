@@ -118,3 +118,34 @@ describe('the Events list (D1500)', () => {
     expect(screen.queryByTestId('events-sheet')).toBeNull()
   })
 })
+
+/* THE WALK'S FINDINGS ON THE EVENTS LIST (29 Oct 26, the evidence sheet's F1, F3) */
+describe('the Events list — the walk’s findings', () => {
+  it('F1: a run saved "Repeat each day" opens whole — a rename and a Delete act on every day of it', () => {
+    for (const d of ['2026-02-02', '2026-02-03', '2026-02-04', '2026-02-05', '2026-02-06']) setDayEvent(d, 0, 'REPEAT5')
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('evline-0-2026-02-02'))
+    expect(screen.getByTestId('event-sheet').querySelector('.bidsheet-hd .dt')!.textContent).toMatch(/2.*6 Feb/)
+    expect(screen.getByTestId('event-mode-repeat').className, 'kept as a word on each day').toContain('approve')
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'RENAMED5' } })
+    fireEvent.click(screen.getByTestId('event-apply'))
+    const words = () => getState().period.days.filter(d => d.date >= '2026-02-02' && d.date <= '2026-02-06').map(d => d.events[0])
+    expect(words()).toEqual(Array(5).fill('RENAMED5'))
+    expect(lineTexts()).toContainEqual(['Mon 2 – Fri 6 Feb', 'RENAMED5', null])
+    fireEvent.click(screen.getByTestId('evline-0-2026-02-02'))
+    fireEvent.click(screen.getByTestId('event-delete'))
+    expect(words()).toEqual(Array(5).fill(''))
+  })
+
+  it('F3: a new event saved from the list is ringed in the list, and brought into view', () => {
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('events-add'))
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Late one' } })
+    pickDay('2026-12-28')
+    fireEvent.click(screen.getByTestId('event-apply'))
+    const line = screen.getByTestId('evline-0-2026-12-28')
+    expect(line.classList.contains('innew')).toBe(true)
+  })
+})
