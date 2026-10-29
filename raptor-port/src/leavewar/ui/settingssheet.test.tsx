@@ -280,6 +280,22 @@ describe('group colours in ⚙', () => {
     } finally { vi.useRealTimers() }
   })
 
+  /* A GRIP ABOVE THE PALETTE starts a drag: the palette goes at once (its hidden room would be a gap a drop falls into —
+     the fix read, 29 Oct 26); a grip below it keeps the hold, or it would jump under the finger. */
+  it('F7: a press on a group’s grip above the open palette closes it at once; one below holds it', () => {
+    setRole('admin')
+    render(<Matrix />)
+    openSettings()
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))              // its row goes above the categories, palette open
+    fireEvent.pointerDown(screen.getByTestId('gsdrag-SXO'))         // a category's grip: below the palette
+    expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(true)
+    fireEvent.pointerUp(screen.getByTestId('gsdrag-SXO')); fireEvent.click(screen.getByTestId('gsdrag-SXO'))
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
+    fireEvent.pointerDown(screen.getByTestId(`gsdrag-${SCD}`))      // its own grip: above its palette
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+  })
+
   /* F8 of the same walk ("a chip for a column nobody holds adds nothing") did not reproduce on the build (29 Oct 26 — a
      new column with no holder, desktop and phone, each added its group): what the walker met was F7's slide. Pinned. */
   it('F8: the chip of a Quals column nobody holds adds its group', () => {

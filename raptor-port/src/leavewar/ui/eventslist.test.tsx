@@ -171,7 +171,7 @@ describe('the Events list — the code read’s findings', () => {
     expect(screen.queryByTestId('event-move')).toBeNull()
   })
 
-  it('R3: a refused preset rename in Edit presets from the list stays open and says why, the name put back', () => {
+  it('R3: a refusal already on view (the box left by Tab) never holds Done — it says why, the name put back, and Done leaves', () => {
     render(<Matrix />)
     openEvents()
     fireEvent.click(screen.getByTestId('events-presets'))
@@ -179,13 +179,71 @@ describe('the Events list — the code read’s findings', () => {
     const box = screen.getByTestId('evtype-name-0') as HTMLInputElement
     const was = box.value
     fireEvent.change(box, { target: { value: other } })
-    fireEvent.blur(box)
-    fireEvent.click(screen.getByTestId('types-done'))
-    expect(screen.getByTestId('event-types-sheet'), 'not closed over a refusal').toBeTruthy()
-    expect(screen.getByTestId('event-types-sheet').textContent).toMatch(/already/i)
+    fireEvent.blur(box)                                      // no press: Tab, or Enter
+    expect(screen.getByTestId('event-problem').textContent).toMatch(/already an event type/)
     expect((screen.getByTestId('evtype-name-0') as HTMLInputElement).value).toBe(was)
-    // a second press, the message read, goes back to the list
+    // a kind pressed after it (it succeeds and clears the sentence) holds nothing either (the fix read's finding 1)
     fireEvent.click(screen.getByTestId('types-done'))
+    expect(screen.getByTestId('events-sheet')).toBeTruthy()
+  })
+
+  it('R3: a refusal caused by a press on the backdrop holds the window, as one by Done does', () => {
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('events-presets'))
+    const other = (screen.getByTestId('evtype-name-1') as HTMLInputElement).value
+    const box = screen.getByTestId('evtype-name-0') as HTMLInputElement
+    fireEvent.change(box, { target: { value: other } })
+    const scrims = screen.getAllByTestId('sheet-scrim'); const scrim = scrims[scrims.length - 1]!
+    fireEvent.pointerDown(scrim)
+    fireEvent.blur(box)
+    fireEvent.pointerUp(scrim)
+    fireEvent.click(scrim)
+    expect(screen.getByTestId('event-types-sheet'), 'not closed over the refusal').toBeTruthy()
+    expect(screen.getByTestId('event-problem').textContent).toMatch(/already an event type/)
+  })
+
+  /* R3's walk (29 Oct 26): in a browser the refusal's sentence, drawn as the box lost focus at the PRESS on Done, grew the
+     window under the pointer — Done moved 23px, the release fell on the sentence and the press was lost, so leaving took
+     three presses. The sentence now waits for the press to finish: nothing moves under the pointer. */
+  it('R3: the refusal shows once the press on Done has finished, so that press lands', () => {
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('events-presets'))
+    const other = (screen.getByTestId('evtype-name-1') as HTMLInputElement).value
+    const box = screen.getByTestId('evtype-name-0') as HTMLInputElement
+    fireEvent.change(box, { target: { value: other } })
+    const done = screen.getByTestId('types-done')
+    fireEvent.pointerDown(done)
+    fireEvent.blur(box)                                      // the press takes the focus: the rename is refused here
+    expect(screen.queryByTestId('event-problem'), 'nothing drawn under the pointer mid-press').toBeNull()
+    fireEvent.pointerUp(done)
+    fireEvent.click(done)
+    expect(screen.getByTestId('event-types-sheet')).toBeTruthy()
+    expect(screen.getByTestId('event-problem').textContent).toMatch(/already an event type/)
+    fireEvent.click(screen.getByTestId('types-done'))
+    expect(screen.getByTestId('events-sheet')).toBeTruthy()
+  })
+
+  it('R3: a name still being typed when Done is pressed (an iPhone keeps the focus in the box) is saved or refused first', () => {
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('events-presets'))
+    const other = (screen.getByTestId('evtype-name-1') as HTMLInputElement).value
+    const box = screen.getByTestId('evtype-name-0') as HTMLInputElement
+    const was = box.value
+    box.focus()
+    fireEvent.change(box, { target: { value: other } })
+    fireEvent.click(screen.getByTestId('types-done'))        // no blur before the click
+    expect(screen.getByTestId('event-types-sheet'), 'refused: stays to say so').toBeTruthy()
+    expect(screen.getByTestId('event-problem').textContent).toMatch(/already an event type/)
+    expect((screen.getByTestId('evtype-name-0') as HTMLInputElement).value).toBe(was)
+    // and an accepted one is saved, not lost with the window
+    const box2 = screen.getByTestId('evtype-name-0') as HTMLInputElement
+    box2.focus()
+    fireEvent.change(box2, { target: { value: 'PH renamed' } })
+    fireEvent.click(screen.getByTestId('types-done'))
+    expect(getState().eventDefs[0]!.name).toBe('PH renamed')
     expect(screen.getByTestId('events-sheet')).toBeTruthy()
   })
 })

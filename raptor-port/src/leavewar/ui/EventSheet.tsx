@@ -36,7 +36,7 @@
 // Save and Delete are each ONE command now (state/store.ts saveEvent / deleteEvent): one Undo step, and a refused
 // replacement leaves the event it would have replaced exactly as it was.
 
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   bandAt,
   classifyEvent,
@@ -155,13 +155,59 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
   )
   const [view, setView] = useState<'event' | 'types'>(presets ? 'types' : 'event')
   const [problem, setProblem] = useState('')
-  /* the presets' way back: to the event, or — opened from the Events list's "Edit presets" — to the list. A name or
-     short form refused as its box lost focus (the press on ‹ / Done is what takes the focus) keeps the window open once,
-     so its sentence is read (the code read's R3, 29 Oct 26: from the list the window closed over it, the rename lost with
-     no word); opened from an event, going back to the event window already leaves the sentence on view. */
+  /* THE PRESETS' WAY BACK — to the event, or, opened from the Events list's "Edit presets", to the list (the code read's
+     R3 and its fix read, 29 Oct 26). A name or short form is saved as its box loses focus, and the press that leaves is
+     usually what takes the focus; from the list, the window used to close over a refusal and the rename was lost with no
+     word. Now:
+     - a refusal caused by the press that leaves (Done, ‹, the backdrop, Escape) holds the window open ONCE, so its
+       sentence is read — a refusal met earlier, already on view, never holds a later press;
+     - a box still being typed in when the window is left (an iPhone keeps the focus there when Done is tapped) is saved
+       — or refused — first, not dropped;
+     - the sentence is drawn only once the press has finished: drawn at the press, it grew the window under the pointer,
+       Done moved 23px, and the release fell on the sentence (the press lost; three presses to leave). */
   const typesErr = useRef('')
+  const leaving = useRef(false)
+  const pressing = useRef(false)
+  useEffect(() => {
+    if (view !== 'types') return
+    const down = (e: PointerEvent) => {
+      pressing.current = true
+      const t = e.target as HTMLElement | null
+      // a press on ‹ / Done, or anywhere outside the window (the backdrop), is a press that leaves
+      leaving.current = !!t && (!!t.closest('[data-testid="types-done"], [data-testid="types-back"]') || !t.closest('[data-testid="event-types-sheet"]'))
+    }
+    const up = () => { pressing.current = false }
+    document.addEventListener('pointerdown', down, true)
+    document.addEventListener('pointerup', up, true)
+    document.addEventListener('pointercancel', up, true)
+    return () => {
+      document.removeEventListener('pointerdown', down, true)
+      document.removeEventListener('pointerup', up, true)
+      document.removeEventListener('pointercancel', up, true)
+    }
+  }, [view])
+  /* show a box's refusal: at once, or — mid-press — after the press's click (or a short wait, for a press that never
+     becomes one), so nothing moves under the pointer */
+  const showProblem = (err: string) => {
+    if (!pressing.current) { setProblem(err); return }
+    let done = false
+    const run = () => { if (done) return; done = true; document.removeEventListener('click', onClick, true); clearTimeout(t); setProblem(err) }
+    const onClick = () => run()
+    const t = setTimeout(run, 1500)
+    document.addEventListener('click', onClick, true)
+  }
+  const boxDone = (err: string | null | undefined) => {
+    typesErr.current = err && leaving.current ? err : ''
+    showProblem(err ?? '')
+  }
   const typesBack = () => {
-    if (presets && typesErr.current) { typesErr.current = ''; return }
+    // a box still holding what is being typed: saved (or refused) first, as a press that leaves
+    const a = document.activeElement as HTMLElement | null
+    if (a && a.tagName === 'INPUT' && a.closest('[data-testid="event-types-sheet"]')) { leaving.current = true; a.blur() }
+    const hold = presets && !!typesErr.current
+    leaving.current = false
+    typesErr.current = ''
+    if (hold) return
     if (presets) onClose(); else setView('event')
   }
 
@@ -268,7 +314,7 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
 
   if (view === 'types') {
     return (
-      <Sheet testid="event-types-sheet" label="Event presets" onClose={onClose}>
+      <Sheet testid="event-types-sheet" label="Event presets" onClose={() => (presets ? typesBack() : onClose())}>
         <div className="bidsheet-hd">
           <span className="who">PRESETS</span>
           <span className="dt">name · on grid · kind</span>
@@ -294,8 +340,7 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
                 data-testid={`evtype-name-${i}`}
                 onBlur={e => {
                   const err = updateEventType(i, { name: e.target.value })
-                  setProblem(err ?? '')
-                  typesErr.current = err ?? ''
+                  boxDone(err)
                   if (err) e.target.value = d.name
                 }}
                 onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
@@ -313,8 +358,7 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
                 data-testid={`evtype-short-${i}`}
                 onBlur={e => {
                   const err = updateEventType(i, { short: e.target.value })
-                  setProblem(err ?? '')
-                  typesErr.current = err ?? ''
+                  boxDone(err)
                   if (err) e.target.value = d.short ?? ''
                 }}
                 onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}

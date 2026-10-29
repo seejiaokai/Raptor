@@ -151,6 +151,16 @@ export function SettingsSheet({
       // "outside": the swatch owns its own open/close toggle, so leaving it to
       // that button avoids a close-then-reopen fight on the same tap.
       if (t && (t.closest('.set-palette') || t.closest('.set-swbtn'))) return
+      /* A GRIP ABOVE THE PALETTE starts a drag, not a tap (the fix read, 29 Oct 26): held open for the drag, the hidden
+         palette's room was a blank gap a drop could fall into, doing nothing. Closed at once, the room below the grip
+         goes — nothing under that finger moves. A grip below the palette keeps the hold, or it would jump under the finger. */
+      const pal = document.querySelector('.set-palette')
+      if (t && t.closest('.set-grip') && pal && (pal.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_PRECEDING)) {
+        pending = false
+        setClosingFor(null)
+        setColorFor(null)
+        return
+      }
       pending = true
       if (timer) clearTimeout(timer)
       setClosingFor(colorFor)

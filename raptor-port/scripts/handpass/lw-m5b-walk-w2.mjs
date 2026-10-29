@@ -15,7 +15,7 @@ const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 const ORIGIN = 'http://localhost:4197', DIST = process.env.WALK_DIST || 'C:/dcm5bdraw/walkdist'
 const q = t => `[data-testid="${t}"]`
 mkdirSync(OUT, { recursive: true })
-const on = g => !ONLY || ONLY.split(',').includes(g)
+const on = g => (!ONLY && g !== 'reads') || ONLY.split(',').includes(g)
 if (!ONLY) for (const f of readdirSync(OUT)) rmSync(join(OUT, f), { force: true })
 
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
@@ -896,6 +896,72 @@ if (on('hol4')) {
   await page.ctx.close()
 }
 //__MORE__
+// =================================================================== the fresh code read's findings R1–R4 (re-walk, 29 Oct 26)
+if (on('reads')) {
+  const tapOn = (page, sel) => page.phone ? page.locator(sel).tap() : page.click(sel)
+  for (const phone of [false, true]) {
+    const tag = phone ? 'P' : 'D'
+    let page = await world({ phone })
+    await S('R1-' + tag, async c => {
+      await stage(page, '2026-01-20', 0, 'SC')
+      await openEvents(page)
+      await tapOn(page, q('evline-0-2026-01-20')); await page.waitForTimeout(400)
+      await tapOn(page, q('event-move')); await page.waitForTimeout(500)
+      c.ok(!(await vis(page, q('event-sheet'))) && !(await vis(page, q('events-sheet'))), 'Move… from an event opened in the list: the event window and the list both shut, the grid handed over')
+      c.pic(await shot(page, `r1-${tag}-moving`))
+      const cell = q('event-0-2026-01-22'); await page.locator(cell).scrollIntoViewIfNeeded()
+      await tapOn(page, cell); await page.waitForTimeout(700)
+      c.pic(await shot(page, `r1-${tag}-landed`))
+      // a phone stages the landing and asks "Move this event here?" (its standing two-step move); a desktop lands at once
+      if (await vis(page, q('event-move-confirm'))) { c.note('phone: "Move this event here?" — Confirm pressed'); await tapOn(page, q('event-move-confirm')); await page.waitForTimeout(600) }
+      await openEvents(page)
+      const ls = await lines(page)
+      c.ok(ls.some(l => l.when === 'Thu 22 Jan' && l.name === 'SC') && !ls.some(l => l.when === 'Tue 20 Jan' && l.name === 'SC'), 'one tap on 22 Jan landed it: ' + ls.map(l => l.when + ' ' + l.name).join(' ;; '))
+      await closeAll(page)
+    })
+    await S('R2-' + tag, async c => {
+      for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) await stage(page, d, 0, 'EXER')
+      await openEvents(page)
+      await tapOn(page, q('evline-0-2026-02-02')); await page.waitForTimeout(400)
+      c.ok(await vis(page, q('event-delete')), 'the run opens whole, with Delete')
+      c.ok(!(await vis(page, q('event-move'))), 'and no Move… (it would move its first day only)')
+      c.note('title: ' + await text(page, q('event-sheet') + ' .bidsheet-hd .dt'))
+      c.pic(await shot(page, `r2-${tag}-run-window`))
+      await closeAll(page)
+    })
+    await page.ctx.close()
+  }
+  let page = await world()
+  await S('R3-D', async c => {
+    await openEvents(page)
+    await page.click(q('events-presets')); await page.waitForSelector(q('event-types-sheet'))
+    const other = await page.inputValue(q('evtype-name-1')); const was = await page.inputValue(q('evtype-name-0'))
+    await page.fill(q('evtype-name-0'), other)
+    await page.click(q('types-done')); await page.waitForTimeout(400)
+    c.ok(await vis(page, q('event-types-sheet')), 'Done after a refused rename: the presets window stays open')
+    const msg = await text(page, q('event-problem')); c.ok(/already an event type/.test(msg), 'and says why: ' + msg)
+    c.ok((await page.inputValue(q('evtype-name-0'))) === was, 'the box shows the stored name again: ' + was)
+    c.pic(await shot(page, 'r3-D-refused'))
+    await page.click(q('types-done')); await page.waitForTimeout(400)
+    c.note('after the second Done: presets=' + await vis(page, q('event-types-sheet')) + ' list=' + await vis(page, q('events-sheet')) + ' event=' + await vis(page, q('event-sheet')) + ' problem=' + JSON.stringify(await text(page, q('event-problem'))) + ' focus=' + await page.evaluate(() => document.activeElement?.dataset?.testid || document.activeElement?.tagName))
+    c.pic(await shot(page, 'r3-D-second-done'))
+    c.ok(await vis(page, q('events-sheet')), 'a second Done goes back to the list')
+    await closeAll(page)
+  })
+  await S('R4-D', async c => {
+    await openHolidays(page)
+    const t = 'From\tTo\tName\tKind\r\n2026-05-04\t\tCafé Noël\tPH\r\n'
+    const buf = Buffer.concat([Buffer.from([0xFF, 0xFE]), Buffer.from(t, 'utf16le')])
+    await page.setInputFiles(q('hol-import-file'), { name: 'holidays.txt', mimeType: 'text/plain', buffer: buf }); await page.waitForTimeout(600)
+    const pv = await readPreview(page); c.note(JSON.stringify({ counts: pv.counts, lines: pv.lines?.map(l => l.text) }))
+    c.ok(/^1 to add · 0 already here · 0 not read/.test(pv.counts || '') && pv.lines?.some(l => /Café Noël/.test(l.text)), 'an Excel "Unicode Text" sheet is read: ' + pv.counts)
+    c.pic(await shot(page, 'r4-D-utf16-preview'))
+    await page.click(q('hol-pv-cancel')).catch(() => {})
+    await closeCalendar(page)
+  })
+  await page.ctx.close()
+}
+
 writeFileSync(join(OUT, ONLY ? `_results-${ONLY}.json` : '_results.json'), JSON.stringify(RESULTS, null, 1))
 await browser.close()
 log('\nSUMMARY'); for (const r of RESULTS) log(r.id.padEnd(10), r.status)
