@@ -1,6 +1,6 @@
 # Bug check — Escape closes the Scheduler Board; the Traffic window leaves its bar pressable (30 Oct 26)
 
-The night of 30 Oct 26, job 4 (`claude/board-escape-traffic`, pull request — see §10). Two backlog items:
+The night of 30 Oct 26, job 4 (`claude/board-escape-traffic`, pull request 594). Two backlog items:
 `[BOARD-ESCAPE-CLOSE]` (`OUTSTANDING.md`) and `[TRAFFIC-WIN-COVERS-UNDO]` (its evidence: `2026-10-21-schedule-pages.md` §4).
 Built, walked and checked by the host (Opus 5.5) alone — "Low" tonight, no helpers. The rules: `src/ui/boardescape.ts`,
 `src/ui/Modals.tsx` (AirPop); the contracts: `docs/ui-contracts.md` §Closing the board.
@@ -217,7 +217,7 @@ None — no console error, page error or 4xx response in any world (the ERR rows
 
 - On this PC: the touched unit tests — 59 files, 1773 tests, all green; the build (typecheck) green; the browser spec
   9 of 9 green (under the lock).
-- GitHub's run of the pull request is the full check while the repo is public (D1086): see the pull request.
+- GitHub's run of pull request 594 is the full check while the repo is public (D1086): green on commit cd78558be — the build, unit (raptor 6 shares, Leave War 4), geometry (raptor 4, Leave War phone and desktop), the Tracker's smoke (2), the documents guard; Vercel's preview ready.
 
 ## 11. What the walk and the checks found, and each disposition
 
