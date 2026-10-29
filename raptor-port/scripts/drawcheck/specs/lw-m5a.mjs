@@ -232,5 +232,8 @@ export default {
     // D1497 (29 Oct 26, "As recommended"): kept at the place live M5a has them, so a further move is new
     { state: 'person-desk-top', part: 'window', check: 'place', build: '130', why: 'D1497 — under My leave and the gear at the page top, covering neither' },
     { state: 'person-phone', part: 'window', check: 'place', build: '73', why: 'D1497 — centred, a little shorter than drawn' },
+    // D1498 (29 Oct 26, "All as recommended"): the drawing laid the locked page over the bottom 6px of the member's View row;
+    // the build keeps that row whole, so Ranger's row stays 6px lower than drawn, at the place the build has it
+    { state: 'balances-phone-locked', part: 'ranger-row', check: 'place', build: '483.5', why: "D1498 — the View row whole; the drawing's 6px covered it" },
   ],
 }

@@ -13,6 +13,7 @@ published record or shared drawer — `.bp-row` is the phone's Balances row alon
   figures' right edges on the drawing's), and the View row in the drawing and the build.
 - **Not fixed, put to him (his page, question A):** the 6px is the drawing's own fault — both member drawings lay the page
   over the bottom 6px of the View row, cutting the period picker's and My leave's bottom edges (also in the approved sheet
-  `m5c-c2-phones`). Recommended: keep the build. Until he answers, the check stays red on that one part.
+  `m5c-c2-phones`). Recommended: keep the build. **His answer, 29 Oct 26 (D1498): keep it as built** — the 6px is in
+  the part list's kept list at the build's place (483.5), so the check is green and a further move turns it red.
 - **Gates:** GitHub's run of the pull request (D1086); on his PC the Balances unit file (46 / 46) and the M5a drawing browser
   tests (8 passed, 2 skipped by project).
