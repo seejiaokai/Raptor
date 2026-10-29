@@ -38,12 +38,14 @@ describe('the read-only sheet names an Inputs-filed absence in its own words', (
 })
 
 /* the heading speaks the box's notation (W5's re-walk, NF2, 26 Sep 26): a morning ATT C read "*ATTC" in the heading
-   while its box read "<C" — the same fix the bid sheet's "now" had (W5-F5) */
+   while its box read "<C" — the same fix the bid sheet's "now" had (W5-F5). Since the overhaul the box draws no arrow — a
+   half by where it sits (D1160) — so the heading names the half in words ([LW-HALF-DAY-WORDS-LEFT], 30 Oct 26): "C (morning)" */
 describe('the read-only sheet heading reads as the box does', () => {
-  it('a morning ATT C reads "<C", not "*ATTC"', () => {
+  it('a morning ATT C reads "C (morning)", not "*ATTC" nor "<C"', () => {
     open('*ATTC')
     const hd = screen.getByTestId('raptor-sheet').querySelector('.bidsheet-hd .cur')!.textContent || ''
-    expect(hd).toContain(displayCell('*ATTC'))
+    expect(hd).toBe('C (morning)')
     expect(hd).not.toContain('*ATTC')
+    expect(hd).not.toContain(displayCell('*ATTC'))
   })
 })

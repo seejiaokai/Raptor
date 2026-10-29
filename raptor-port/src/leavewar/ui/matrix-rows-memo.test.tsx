@@ -22,7 +22,9 @@ vi.mock('./FigureCell', async orig => {
   return { ...real, FigureCell: (p: any) => { if (String(p.testid || '').startsWith('bal-')) count.row++; return createElement(real.FigureCell, p) } }
 })
 
-import { initStore, setCell, setRole } from '../state/store'
+import { initStore, lwUndo, recordsAt, setBidStates, setCell, setRequestWords, setRole } from '../state/store'
+/* a pending bid's own id on a day (ramp's) */
+const recId = (d: string) => recordsAt('ramp', d).find(r => r.kind === 'request')!.id
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
@@ -71,5 +73,66 @@ describe('[LW-MONTH-MEMO-UNPINNED] one bid redraws only its own month', () => {
     /* the counter counts DAY cells drawn (lastDayIn runs once a cell): February's 28 alone — it was 5,840, every day of
        every drawn row */
     expect(count.month, 'only the month holding the bid drew again').toBe(28)
+  })
+})
+
+/* [LW-MONTH-MEMO-UNPINNED], 30 Oct 26 — THE GUARD'S SECOND HALF: every month whose cells READ what changed draws again. The
+   guard above (M3 §4) compared a man's code, state and view on the month's OWN days; his D1359's joined bar (25 Oct 26) made
+   a cell read its neighbours' views two days either side — across a month's edge — and each bid's run key (remarks, till
+   tick, documents) from the store, none of which it compared. Found in the running app (the scenario list's S4-1, S4-2): a
+   leave on 1–3 Feb, then 31 Jan approved beside it, left 1 Feb drawn as the bar's start (its code, its rounded edge) until
+   something else redrew February; one remark typed over two bids left them two boxes while Approvals read one leave. */
+describe('[LW-MONTH-MEMO-UNPINNED] a month whose cells read the change draws again', () => {
+  const joins = (iso: string) => {
+    const c = screen.getByTestId(`cell-ramp-${iso}`).querySelector('.c')
+    return c ? `${/\bjl\b/.test(c.className) ? 'jl' : ''}${/\bjr\b/.test(c.className) ? 'jr' : ''}` || '-' : 'empty'
+  }
+  const approve = (dates: string[]) => { expect(setBidStates(dates.map(date => ({ personId: 'ramp', date })), 'approved').decided).toBeGreaterThan(0) }
+
+  it('the premise: January and February are both drawn', () => {
+    render(<Matrix />)
+    expect(screen.getByTestId('cell-ramp-2026-01-31')).toBeTruthy()
+    expect(screen.getByTestId('cell-ramp-2026-02-01')).toBeTruthy()
+  })
+
+  it('S4-1: a leave of 1–3 Feb, then 31 Jan approved beside it — 1 Feb joins to its left (February drawn again)', () => {
+    render(<Matrix />)
+    act(() => { for (const d of ['2026-02-01', '2026-02-02', '2026-02-03']) setCell('ramp', d, 'LL'); approve(['2026-02-01', '2026-02-02', '2026-02-03']) })
+    expect([joins('2026-02-01'), joins('2026-02-02'), joins('2026-02-03')], 'the premise: one bar').toEqual(['jr', 'jljr', 'jl'])
+    act(() => { setCell('ramp', '2026-01-31', 'LL'); approve(['2026-01-31']) })
+    expect(joins('2026-01-31'), '31 Jan joins to its right').toBe('jr')
+    expect(joins('2026-02-01'), '1 Feb is no longer the bar’s start').toBe('jljr')
+  })
+
+  it('S4-1, Undo: 31 Jan taken back — 1 Feb is the bar’s start again', () => {
+    render(<Matrix />)
+    act(() => { for (const d of ['2026-02-01', '2026-02-02']) setCell('ramp', d, 'LL') })
+    expect(joins('2026-02-01')).toBe('jr')
+    act(() => { setCell('ramp', '2026-01-31', 'LL') })
+    expect(joins('2026-02-01'), 'three pending bids of one key: one bar').toBe('jljr')
+    act(() => { lwUndo() })
+    expect(joins('2026-01-31')).toBe('empty')
+    expect(joins('2026-02-01'), 'back to the start').toBe('jr')
+  })
+
+  it('S4-2: one remark typed over two bids with different words — they join (nothing the grid, state or view holds changed)', () => {
+    render(<Matrix />)
+    act(() => {
+      /* placed one by one, each given its own words (a remark changes the whole run it joins — setRequestWords) */
+      for (const [d, w] of [['2026-02-10', 'first'], ['2026-02-11', 'second']] as const) { setCell('ramp', d, 'LL'); setRequestWords('ramp', d, recId(d), { remarks: w }) }
+    })
+    expect([joins('2026-02-10'), joins('2026-02-11')], 'two words: two boxes').toEqual(['-', '-'])
+    act(() => { for (const d of ['2026-02-10', '2026-02-11']) setRequestWords('ramp', d, recId(d), { remarks: 'one leave' }) })
+    expect([joins('2026-02-10'), joins('2026-02-11')], 'one word: one bar').toEqual(['jr', 'jl'])
+  })
+
+  it('…and still skips: a bid mid-month draws only its own month; one on the 1st draws the month before too (its edge days)', () => {
+    render(<Matrix />)
+    count.month = 0
+    act(() => { setCell('ramp', '2026-02-11', 'LL') })
+    expect(count.month, 'February alone').toBe(28)
+    count.month = 0
+    act(() => { setCell('ramp', '2026-02-01', 'LL') })
+    expect(count.month, 'February, and January, whose last days read 1 Feb').toBe(28 + 31)
   })
 })

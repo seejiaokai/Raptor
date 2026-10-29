@@ -14,7 +14,7 @@
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { addDays, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
+import { addDays, codeInWords, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips, outcomeLine } from './OutcomeChips'
 import '../../ui/postout.css'
 import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deletableRecords, fileStraight, FILED_STRAIGHT, leaveRunAt, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords, type DecideTo, type LeaveRun, type MoveRec } from '../state/store'
@@ -1132,8 +1132,10 @@ export function RaptorSheet({
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt when">{dayLabel(date)}</span>
-        {/* the box's notation, as the bid sheet's "now" (W5's re-walk, NF2) */}
-        <span className="cur">{displayCell(code)}{creditShown || leave ? ' · approved' : ''}</span>
+        {/* the code as the box draws it ([LW-HALF-DAY-WORDS-LEFT], 30 Oct 26): an OIL the app credited with its star after its
+            code — "FO*", "HO*", as on the grid (D1306), where this line read "<HO" with none — and a half day in words, never
+            the arrows the grid no longer draws (D1160); an HO's half is the code's own, an FO is whole (as its box) */}
+        <span className="cur">{codeInWords(code, !!creditShown, creditShown && creditShown.code !== 'HO' ? null : undefined)}{creditShown || leave ? ' · approved' : ''}</span>
         <button className="x" data-testid="bid-cancel" onClick={onClose} aria-label="Close">
           ✕
         </button>

@@ -281,6 +281,21 @@ export function kindOf(raw: string): Kind { const r = raw.replace(/[*<>]/g, '');
  *  `displayCell` are not printed on the grid; ATT B / ATT C as the owner's B / C; an app-credited OIL keeps its star. */
 export function boxText(raw: string, auto = false): string { const c = parseCell(raw); const short = c ? (MEDICAL_SHORT[c.type] ?? c.type) : raw; return auto ? `${short}*` : short }
 
+/** A code as a SENTENCE prints it, read the way the grid's box draws it ([LW-HALF-DAY-WORDS-LEFT], 30 Oct 26): its letters,
+ *  then a star where the app credited it (D1306 — "FO*", "HO*"), then its half in words, "HO* (morning)", "LL (afternoon)",
+ *  as the day's list already names a half beside a code. The STORED grammar (`*HO` a morning, `HO*` an afternoon — sync.ts
+ *  notationOf, which a send-back, the bell and Approvals still write and read by) is read here and never printed: in it the
+ *  star means "afternoon", which a reader took for "the app credited it", and the grid no longer draws "*LL" anywhere
+ *  (D1160, D1402). The letters are the box's own (`boxText` — ATT B / ATT C as the owner's B / C). `half` overrides what
+ *  the code says: an OIL credit's own (an HO its half, an FO none — the box draws an FO whole); `null` names no half. */
+export function codeInWords(raw: string, auto = false, half?: 'am' | 'pm' | null): string {
+  const t = String(raw ?? '').trim()
+  const lead = t.startsWith('*'), trail = !lead && t.endsWith('*')
+  const letters = boxText(t.replace(/^\*/, '').replace(/\*$/, ''))
+  const part = half !== undefined ? half : lead ? 'am' : trail ? 'pm' : null
+  return `${letters}${auto ? '*' : ''}${part === 'am' ? ' (morning)' : part === 'pm' ? ' (afternoon)' : ''}`
+}
+
 export interface DayCode {
   code: string
   label: string

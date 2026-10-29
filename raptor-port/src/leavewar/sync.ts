@@ -61,6 +61,7 @@ import {
   liveRequestsOn,
   portionOfCode,
   portionOf,
+  codeInWords,
   overlaps,
   newRecId,
   outcomeOf,
@@ -435,6 +436,15 @@ function doorWrite(fn: () => void): boolean {
    would-be absence against every absence already there (a different leave on the same time, a medical) — skipped and
    reported, nothing consumed. */
 const lockedDates = (): Set<string> => new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+/* IS HE A DELETED MAN — the war's `gone` mark, OR the app's own delete mark ([LW-DELETED-NO-ROW-APPROVE], 30 Oct 26). A man
+   deleted before he ever arrived (his only stint still to come) keeps no row and no posting record on the war
+   (store.ts forgetPersonFrom drops both), so `gone` never sees him — yet a pending bid of his on a day already past (an admin
+   may bid there, D1211) stays behind, and Approvals still lists it (approvals.ts counts every pending line, roster or not):
+   Approve wrote a leave input for a man deleted. The app's people (`PEOPLE[id].deleted`, D290 — set by Admin → Users and by a
+   Delete posting alike) are the one record of a delete that outlives the war's row. Never "no row and no record": a SANS
+   man with SANS off has neither and is no one deleted (the scenario list's S1-4). A Delete POSTING that has run falls to
+   D1436's date rule below, as before (R3c-1) — its kept record still carries the outcome and `poDone`. */
+const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone' || !!(PEOPLE as any)[personId]?.deleted
 function approveWhy(it: { personId: string; date: string; recId: string }, prot: Set<string> = lockedDates()): string | null {
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
@@ -447,7 +457,7 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
      rule below (his days before the date approve), never to this whole refusal. The kept record carries the posting's
      outcome and `poDone` (store.ts markPostingDone; the kept row spreads the record's window). */
   const kept: any = getState().postOuts[it.personId] || getState().people.find(p => p.id === it.personId)
-  if (postedOutBy(it.personId) === 'gone' && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)) return 'Posted out — refuse or delete it'
+  if (deletedMan(it.personId) && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)) return 'Posted out — refuse or delete it'
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po
@@ -895,6 +905,14 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
   return ok ? null : { reason: 'window' }
 }
 
+/* WHAT THE CLASH NOTE PRINTS for one side of the pair ([LW-HALF-DAY-WORDS-LEFT], 30 Oct 26): the code as the grid's box draws
+   it — an OIL the app credited with its star after its code (D1306), a half day named in words, never the stored "*HO" /
+   "LL*" (engine/codes.ts codeInWords). An HO keeps the half its work fell in, an FO none (the box draws an FO whole —
+   MatrixRows placeOf). The stored notation stays on the clash too (`inputCode`, `bidCode`): it is what keys it. */
+function clashCodeShown(c: Contrib): string {
+  if (c.kind === 'credit') return codeInWords(c.code, !!c.auto, c.code === 'HO' ? (portionOf(c.win) === 'pm' ? 'pm' : 'am') : null)
+  return codeInWords(notationOf(c.code, c.win))
+}
 function notationOf(code: string, win: readonly [number, number]): string {
   const p = portionOf(win)
   return p === 'am' ? `*${code}` : p === 'pm' ? `${code}*` : code
@@ -923,7 +941,7 @@ function publishLeaveClashes(): void {
           const wayOut = clashWayOut(holders)
           /* the leave filed on the Inputs page that is in the way — what "Change the leave on Inputs" opens (D827) */
           const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw) : undefined
-          out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), ...(duty ? { kind: 'duty' as const } : {}),
+          out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), inputShown: clashCodeShown(a), bidShown: clashCodeShown(b), ...(duty ? { kind: 'duty' as const } : {}),
             wayOut, war: String(war.period?.id ?? ''), ...(filed ? { iid: String(filed.id) } : {}) })
         }
       }
@@ -985,6 +1003,10 @@ export interface SyncClash {
   inputCode: string
   /** What the squadron already bid. */
   bidCode: string
+  /** The two codes as the note PRINTS them — as the grid's box draws each (`clashCodeShown`); the codes above are the
+   *  stored notation, which keys the clash and is never printed. */
+  inputShown?: string
+  bidShown?: string
   /** Absent for a leave clash; 'duty' when a published weekend/PH duty's OIL
    *  credit (wire 4) found the date already holding something else. */
   kind?: 'duty'

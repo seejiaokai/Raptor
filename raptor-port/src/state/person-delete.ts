@@ -291,6 +291,26 @@ export function deletedRestoreProblem(changes: any[]): string | null {
      accountsAfter; Fable's final read, F5) — would bring his sign-in back */
   const accts = accountsAfter(changes)
   if (accts) for (const id of gone) if (accts.some((a: any) => a && a.pid === id)) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+  /* …AND NEVER AN APPROVAL OF HIS LEFTOVER BID PUT BACK ([LW-DELETED-NO-ROW-APPROVE], 30 Oct 26 — his D1447, reading R21: a
+     man deleted on Admin → Users keeps the refusal of his leftover pending leave; R3-6: "in every door"). The days before his
+     cutoff keep his record (D299), so the check below lets a past input of his come back — but a Redo of an approval, or
+     the Undo of a send-back, made after his delete is that refused approval replayed: the step takes a request of his off
+     the war (`lw.cell <war>:<pid>:<date>`, a request in what is there now and not in what it leaves) and writes the leave the
+     war approved for it (an `inputs` row carrying `lw`, holding him). A war-approved leave of his put back WITHOUT taking a
+     request away (the Undo of its delete) is his past kept, and passes. */
+  for (const id of gone) {
+    const takesBid = (changes || []).some(ch => {
+      if (!ch || ch.collection !== 'lw.cell') return false
+      const parts = String(ch.id || '').split(':')
+      if (parts[parts.length - 2] !== id) return false
+      const reqIds = (list: any) => new Set((Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id)))
+      const now = reqIds(ch.before), left = ch.op === 'delete' ? new Set<string>() : reqIds(ch.after)
+      return [...now].some(r => !left.has(r))
+    })
+    if (!takesBid) continue
+    const writesLeave = (changes || []).some(ch => !!ch && ch.collection === 'inputs' && ch.op === 'put' && !!ch.after && !!ch.after.lw && inInput(ch.after, id))
+    if (writesLeave) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+  }
   for (const ch of changes || []) {
     if (!ch || ch.op !== 'put') continue
     const v = ch.after, rid = String(ch.id || '')
