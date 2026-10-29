@@ -362,12 +362,13 @@ export const mayTickManagement = (): boolean => roleOf() === null || isAdmin()
 /* what a member's own Quals row may not change, read by the commit gate below (data-model.md §11, the Person row):
    the callsign (D218 — compared whole, so another shape that prints the same is still a change), the Management tick
    (D1510 — truthy, as the Leave War reads it), the archive and placeholder marks, and — the security read of 29 Oct 26 —
-   the delete mark and its date, and who archived him and when: archiving and deleting a person are the admin's */
+   the delete mark and its date, and how, when and by whom he was archived: archiving and deleting a person are the admin's.
+   (`sanBy` and `ord` are not here: his own SANS tick drops `sanBy` by design, and §11 does not name his place in the order) */
 const OWN_ROW_ADMIN_ONLY: [string, (p: any) => any][] = [
   ['his callsign', p => JSON.stringify(p?.cs ?? null)],
   ['his Management tick', p => !!p?.quals?.mgmt],
   ['his archive mark', p => !!p?.archived],
-  ['who archived him', p => JSON.stringify([p?.archivedBy ?? null, p?.archivedOn ?? null])],
+  ['who archived him', p => JSON.stringify([p?.archivedBy ?? null, p?.archivedOn ?? null, p?.archivedWho ?? null])],
   ['his delete mark', p => JSON.stringify([!!p?.deleted, p?.deletedFrom ?? null])],
   ['his placeholder mark', p => !!p?.special],
 ]

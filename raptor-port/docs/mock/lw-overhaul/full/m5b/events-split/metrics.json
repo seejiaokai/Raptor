@@ -1,0 +1,42 @@
+{
+ "P-0-today": {
+  "window": {
+   "w": 402,
+   "h": 874
+  },
+  "list": 504,
+  "shown": 504
+ },
+ "P-A-sections": {
+  "window": {
+   "w": 402,
+   "h": 874
+  },
+  "list": 586,
+  "shown": 586
+ },
+ "D-0-today": {
+  "window": {
+   "w": 560,
+   "h": 617
+  },
+  "list": 504,
+  "shown": 504
+ },
+ "D-A-sections": {
+  "window": {
+   "w": 560,
+   "h": 693
+  },
+  "list": 586,
+  "shown": 586
+ },
+ "D-B-side-by-side": {
+  "window": {
+   "w": 1120,
+   "h": 439
+  },
+  "list": 332,
+  "shown": 332
+ }
+}

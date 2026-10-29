@@ -153,6 +153,7 @@ describe('D1510 / D218 — the commit gate refuses a member\'s own-row change of
     ['the delete date', () => { (PEOPLE as any).bane.deletedFrom = '2026-01-05' }, () => String((PEOPLE as any).bane.deletedFrom ?? ''), 'his delete mark'],
     ['the archive date', () => { (PEOPLE as any).bane.archivedOn = '2026-01-05' }, () => String((PEOPLE as any).bane.archivedOn ?? ''), 'who archived him'],
     ['who archived him', () => { (PEOPLE as any).bane.archivedBy = 'po' }, () => String((PEOPLE as any).bane.archivedBy ?? ''), 'who archived him'],
+    ['the admin who archived him', () => { (PEOPLE as any).bane.archivedWho = 'stiff' }, () => String((PEOPLE as any).bane.archivedWho ?? ''), 'who archived him'],
     /* …and a callsign of another shape that prints the same is still a change (the security read's finding 4) */
     ['the callsign\'s shape', () => { (PEOPLE as any).bane.cs = [(PEOPLE as any).bane.cs] }, () => JSON.stringify((PEOPLE as any).bane.cs), 'his callsign'],
   ]
