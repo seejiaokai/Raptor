@@ -4379,6 +4379,44 @@ test.describe('the crew-day picker', () => {
   })
 })
 
+/* NOTHING PINNED OVER THE WEEK SHOWS THE WEEK THROUGH IT (his D1518, 29 Oct 26 — the pinned-part sweep, 30 Oct 26). Three parts
+   stay put while the week scrolls under them and were drawn see-through: on a desktop the bar at the foot that scrolls the
+   days (93% dark and blurred), Edit Schedule's CREW rail at the right edge (a 14% blue tint); on a phone the crew drawer
+   parked at the right edge of Edit Schedule and of the board (96.5%, blurred). Each is now a solid fill in the colour it
+   showed over the page, so it looks as it did and nothing scrolls behind it; the rail's hover (solid blue) is unchanged.
+   Read where each one stands: the fill of the part itself and of nothing above it, its opacity 1, the colour as before. */
+test.describe('the parts pinned over the week are solid (D1518)', () => {
+  const solid = (page: Page, sel: string) => page.evaluate(s => {
+    const e = document.querySelector(s) as HTMLElement | null
+    if (!e) return null
+    const c = getComputedStyle(e), r = e.getBoundingClientRect()
+    return { bg: c.backgroundColor, op: c.opacity, shown: r.width > 0 && r.height > 0 && c.display !== 'none' }
+  }, sel)
+  test('desktop: the days\' scroll bar at the foot and the CREW rail', async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 730 })
+    await login(page)
+    await go(page, 'viewsched')
+    await page.waitForSelector('#vWeek .day')
+    await expect(page.locator('#hscroll.on')).toBeVisible()
+    expect(await solid(page, '#hscroll'), 'View-only Sched: the scroll bar at the foot').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+    await go(page, 'editsched')
+    await page.waitForSelector('#eWeek .day')
+    await expect(page.locator('.ros-rail')).toBeVisible()
+    expect(await solid(page, '#hscroll'), 'Edit Schedule: the scroll bar at the foot').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+    expect(await solid(page, '.ros-rail'), 'Edit Schedule: the CREW rail, the blue tint as it showed over the page').toEqual({ bg: 'rgb(18, 39, 46)', op: '1', shown: true })
+  })
+  test('phone: the crew drawer parked at the right edge, on Edit Schedule and the board', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eWeek .day')
+    expect(await solid(page, '#eRoster'), 'Edit Schedule: the crew drawer').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('.schedboard .sb-ros')
+    expect(await solid(page, '.schedboard .sb-ros'), 'the board: the crew drawer').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+  })
+})
+
 /* ===================================================================
    The mobile Quals freeze + the collapsible legend (owner, 15 Aug 26).
    Both are geometry: jsdom has no sticky positioning and no display:none
@@ -4538,6 +4576,106 @@ test.describe('the frozen callsign column', () => {
     })
     /* waited on what it needs (D87): the re-measure lands a frame after the widening */
     await expect.poll(async () => { const m = await measure(); return m.n > 0 && m.w < 2 }, { message: 'every pinned heading stands over its column again' }).toBe(true)
+  })
+
+  /* ONE COLUMN REFLOWED INSIDE A TABLE OF THE SAME WIDTH ([QUALS-PINNED-COLS-REFLOW], met by the D993 read, 18 Oct 26): on a
+     desktop wider than the table's least width the table fills its box, so a column that grows takes its room from the
+     others and the table's own width stays put — the watch on the table and its scroll box never fired, and each pinned
+     heading kept the width measured at the pin, a few pixels off its column until the page was scrolled up and down. The
+     real heading cells are watched too now. The width is changed here straight in a cell (the claim is the re-measure,
+     not the control that widened it; the walk widens one through the page's own edit). */
+  test('desktop: one column reflowed inside a table of the same width leaves every pinned heading over its column', async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 730 })
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 500))
+    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    const before = await page.evaluate(() => {
+      const t = document.querySelector('#qtbl') as HTMLElement, w = document.querySelector('.qwrap') as HTMLElement
+      return { table: t.getBoundingClientRect().width, range: w.scrollWidth - w.clientWidth }
+    })
+    expect(before.range, 'the table fits its box: nothing to scroll sideways').toBeLessThan(1)
+    /* the IMC column (a tick column) is given a long word: it grows, the columns beside it narrow, the table keeps its width */
+    const moved = await page.evaluate(() => {
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')] as HTMLElement[]
+      const was = real.map(th => th.getBoundingClientRect().width)
+      const k = real.findIndex(th => th.getAttribute('data-sort') === 'imc')
+      const row = (document.querySelector('#qtbl td.qname') as HTMLElement).parentElement!
+      ;(row.children[k] as HTMLElement).textContent = 'a word long enough to widen this column'
+      const now = real.map(th => th.getBoundingClientRect().width)
+      return { k, grew: now[k] - was[k], table: (document.querySelector('#qtbl') as HTMLElement).getBoundingClientRect().width }
+    })
+    expect(moved.k, 'the IMC heading was found').toBeGreaterThan(0)
+    expect(moved.grew, 'that column really grew').toBeGreaterThan(40)
+    expect(Math.abs(moved.table - before.table), 'the table kept its width').toBeLessThan(1)
+    const off = () => page.evaluate(() => {
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')] as HTMLElement[]
+      const mir = [...document.querySelectorAll('[data-testid="qsticky-head"] .qfixed-scroll thead tr:last-child > th')] as HTMLElement[]
+      if (!mir.length || mir.length !== real.length) return 999
+      let w = 0
+      real.forEach((th, i) => {
+        const a = th.getBoundingClientRect(), b = mir[i].getBoundingClientRect()
+        w = Math.max(w, Math.abs(a.left - b.left), Math.abs(a.width - b.width))
+      })
+      return w
+    })
+    /* waited on what it needs (D87): the re-measure lands a frame after the reflow; a second later it must still hold */
+    await expect.poll(off, { message: 'every pinned heading stands over its reflowed column', timeout: 3000 }).toBeLessThan(1.5)
+  })
+
+  /* …AND THROUGH THE APP'S OWN DOORS, TWICE: the item's own case is an Undo (of a remark, a rename) — a change of the store,
+     which draws the table again with new heading cells. The initials are typed long through Edit, Done, the row pinned,
+     then Undo and Redo: each narrows or widens the INITIALS column inside a table of the same width, and each is a new
+     table. The second proves the watch moved onto the cells the first redraw put in place. */
+  test('desktop: an Undo and a Redo that reflow a Quals column leave every pinned heading over its column', async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 730 })
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    /* a row in the middle of the screen with the page scrolled 500 down: the Undo lands on Quals with that row already in
+       view, so the page does not move under the pinned row (the landing scrolls only a row out of sight) */
+    await page.click('#qEdit')
+    await page.evaluate(() => window.scrollTo(0, 500))
+    const pid = await page.evaluate(() => {
+      const mid = innerHeight / 2
+      const rows = [...document.querySelectorAll('#qtbl input[data-init]')] as HTMLInputElement[]
+      const r = rows.find(i => { const q = i.getBoundingClientRect(); return q.top > mid - 120 && q.bottom < mid + 120 })
+      return r ? r.getAttribute('data-init') : null
+    })
+    expect(pid, 'a row stands in the middle of the screen').not.toBeNull()
+    const box = page.locator(`#qtbl input[data-init="${pid}"]`)
+    await box.fill('ABCDEFGHIJKL')
+    await box.press('Enter')
+    await page.click('#qSave')
+    await expect(page.locator('#qtbl input[data-init]')).toHaveCount(0)
+    const wide = await page.evaluate(() => (document.querySelector('#qtbl thead tr:last-child > th:nth-child(2)') as HTMLElement).getBoundingClientRect().width)
+    await page.evaluate(() => window.scrollTo(0, 500))
+    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    const rowTop = () => page.evaluate(id => (document.querySelector(`#qtbl td.qname[data-person="${id}"]`) as HTMLElement).getBoundingClientRect().top, pid)
+    const top0 = await rowTop()
+    expect(top0, 'the edited row is on screen below the pinned row').toBeGreaterThan(120)
+    const off = () => page.evaluate(() => {
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')] as HTMLElement[]
+      const mir = [...document.querySelectorAll('[data-testid="qsticky-head"] .qfixed-scroll thead tr:last-child > th')] as HTMLElement[]
+      if (!mir.length || mir.length !== real.length) return 999
+      let w = 0
+      real.forEach((th, i) => {
+        const a = th.getBoundingClientRect(), b = mir[i].getBoundingClientRect()
+        w = Math.max(w, Math.abs(a.left - b.left), Math.abs(a.width - b.width))
+      })
+      return w
+    })
+    const initW = () => page.evaluate(() => (document.querySelector('#qtbl thead tr:last-child > th:nth-child(2)') as HTMLElement).getBoundingClientRect().width)
+    await expect.poll(off, { message: 'pinned in step to start with' }).toBeLessThan(1.5)
+    await page.click('#undoBtn')
+    await expect.poll(initW, { message: 'the Undo narrowed the initials column' }).toBeLessThan(wide - 20)
+    expect(Math.abs((await rowTop()) - top0), 'the Undo left the page where it was (no scroll re-pinned the row)').toBeLessThan(2)
+    await expect.poll(off, { message: 'after the Undo every pinned heading stands over its column', timeout: 3000 }).toBeLessThan(1.5)
+    await page.click('#redoBtn')
+    await expect.poll(initW, { message: 'the Redo widened it again' }).toBeGreaterThan(wide - 2)
+    expect(Math.abs((await rowTop()) - top0), 'the Redo left the page where it was').toBeLessThan(2)
+    await expect.poll(off, { message: 'after the Redo every pinned heading stands over its column', timeout: 3000 }).toBeLessThan(1.5)
   })
 })
 

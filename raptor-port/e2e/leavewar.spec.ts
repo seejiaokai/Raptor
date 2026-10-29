@@ -7923,6 +7923,43 @@ test('nothing of the Balances list shows behind its bar, whatever the list draws
   }
 })
 
+/* THE OIL TRACKER'S TOOLS ROW, THE SAME WAY (D1518 — the pinned-part sweep, 30 Oct 26; D1504 named its headings as sharing the
+   Balances page's pinch). Over its list stand the sheet's head and the tools row (Show · From first entry · Range · ? · ⚙ and
+   the window's line), then — when open — the legend or the date picker; none had a fill of its own over the list, and the
+   tools row stood 6px off it, so a list drawn past its top edge (his iPhone's spill on the Balances page) showed over the
+   chips and in the strip between. The sweep's forced spill, calibrated red on the Balances build before D1519: the list let
+   draw outside its box and slid 120px up and left. Every point from the sheet's top to the list's top must still be the
+   sheet's own head, tools, legend or picker — never the list — in each of the three states, at both widths. */
+test('nothing of the OIL tracker\'s list shows over its tools row, whatever the list draws past its top (D1518)', async ({ page }) => {
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const states: [string, (() => Promise<void>) | null][] = [
+    ['at rest', null],
+    ['the legend open', async () => { await page.getByTestId('oil-legend').click(); await expect(page.getByTestId('oil-legend-text')).toBeVisible() }],
+    ['the date picker open', async () => { await page.getByTestId('oil-legend').click(); await page.getByTestId('oil-range-pick').click(); await expect(page.locator('.oil-pickrow')).toBeVisible() }],
+  ]
+  for (const [what, open] of states) {
+    if (open) await open()
+    const hits = await page.evaluate(() => {
+      const wrap = document.querySelector<HTMLElement>('[data-testid="oil-list"]')!, grid = wrap.firstElementChild as HTMLElement
+      const sheet = document.querySelector<HTMLElement>('[data-testid="oil-sheet"]')!
+      const wr = wrap.getBoundingClientRect(), sr = sheet.getBoundingClientRect()
+      wrap.style.overflow = 'visible'; wrap.style.contain = 'none'; grid.style.translate = '-120px -120px'
+      const out: string[] = []
+      for (let y = Math.max(sr.top + 1, wr.top - 118); y < wr.top - 0.4; y += 3) for (const f of [0.06, 0.3, 0.5, 0.7, 0.94]) {
+        const x = wr.left + wr.width * f
+        const h = document.elementFromPoint(x, y)
+        if (h && wrap.contains(h)) out.push(`${Math.round(x)},${Math.round(y)}: ${h.className || h.tagName}`)
+      }
+      grid.style.translate = ''; wrap.style.overflow = ''; wrap.style.contain = ''
+      return out
+    })
+    expect(hits, `${what}: something of the list answered above the list`).toEqual([])
+  }
+  const css = await page.evaluate(() => getComputedStyle(document.querySelector('[data-testid="oil-list"]')!).contain)
+  expect(css, 'the list keeps what it draws inside its box').toContain('paint')
+})
+
 /* HIS iPHONE PICTURE, 29 Oct 26 (the agent's fault fix, D1426): in the person window's LVE tile the three figures stood 24
    apart, so a four-figure War bal ("17.5", bold 20) ran under the OIL tile on a 375 iPhone, and "−12.5" on his 402. On a phone
    they spread across the tile now, War bal ending at its right edge, whatever the line under them holds — and a War bal longer

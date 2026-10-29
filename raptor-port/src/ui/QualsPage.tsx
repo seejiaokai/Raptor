@@ -351,6 +351,8 @@ export function QualsPage() {
   const qLiftRef = useRef<HTMLDivElement | null>(null)
   const qLandRef = useRef<string | null>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
+  /* the pinned row's watch of the real heading cells, moved onto new cells whenever the table is drawn again (below) */
+  const watchCellsRef = useRef<(() => void) | null>(null)
   /* PINCH TO ZOOM THE TABLE ON A PHONE (owner D1108, D1110, 21 Oct 26 — [BOARD-PHONE-PINCH-ZOOM]). Two fingers on the table
      zoom the table only — the top bar, the buttons and the Pilots · WSOs · Personnel · All switch stay as they are; out
      until the whole table's width fits, in to twice normal (ui/pinchzoom.ts, the board's body too). The zoom is the
@@ -725,6 +727,11 @@ export function QualsPage() {
         const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
         const cols = cells.map(c => c.getBoundingClientRect().width)
         if (cols.length === 0 || cols.some(w => !w)) return prev
+        /* nothing moved: keep the same state, so a re-measure that finds the row as it was renders nothing (the heading
+           cells are watched below, and a watch reports each cell once as it starts) */
+        const near = (a: number, b: number) => Math.abs(a - b) < 0.05
+        if (prev && near(prev.top, topEdge) && near(prev.left, wr.left) && near(prev.width, wr.width) &&
+          prev.cols.length === cols.length && prev.cols.every((w, i) => near(w, cols[i]))) return prev
         return { top: topEdge, left: wr.left, width: wr.width, cols }
       })
     }
@@ -747,12 +754,28 @@ export function QualsPage() {
        a remark, a change arriving from elsewhere, a scrollbar coming and going — none of them re-pins, and the browser's
        follow (D993) runs on the table's sideways range measured at the pin, so every heading would drift from its
        column by the change. The table's own box and its scroll box are watched; a change of either re-pins with fresh
-       widths, which sets the travel again (the layout effect below). A column that changes width INSIDE a table of the
-       same width (the browser sharing the same total out again — a desktop wider than the table) is not caught here:
-       the travel is still right, the pinned widths a few pixels off until the next pin — older than this, filed as
-       [QUALS-PINNED-COLS-REFLOW]. */
+       widths, which sets the travel again (the layout effect below). AND THE REAL HEADING CELLS ([QUALS-PINNED-COLS-REFLOW],
+       30 Oct 26): a column that changes width INSIDE a table of the same width (the browser sharing the same total out
+       again — a desktop wider than the table's least width) moved neither box, so each pinned heading kept its old width
+       until the next pin. Each cell of the heading row is watched as well; a re-measure that finds nothing moved keeps the
+       state it had (pin's guard), so the watch costs no render. The table is an innerHTML string drawn again on every
+       change of the store (an Undo, a rename — the very changes that reflow a column), which puts NEW heading cells in
+       place of the watched ones: `watchCells` swaps the watch onto them, here and after each redraw (the effect below,
+       on `tableInner`). */
     const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(() => pin(true)) : null
-    if (ro) { if (tblRef.current) ro.observe(tblRef.current); if (wrapRef.current) ro.observe(wrapRef.current) }
+    let watched: Element[] = []
+    const watchCells = () => {
+      if (!ro) return
+      for (const th of watched) ro.unobserve(th)
+      watched = Array.from(tblRef.current?.tHead?.querySelectorAll('tr:last-child > th') ?? [])
+      for (const th of watched) ro.observe(th)
+    }
+    watchCellsRef.current = watchCells
+    if (ro) {
+      if (tblRef.current) ro.observe(tblRef.current)
+      if (wrapRef.current) ro.observe(wrapRef.current)
+      watchCells()
+    }
     onScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
@@ -760,12 +783,16 @@ export function QualsPage() {
       window.removeEventListener('orientationchange', remeasure)
       window.visualViewport?.removeEventListener('resize', remeasure)
       ro?.disconnect()
+      if (watchCellsRef.current === watchCells) watchCellsRef.current = null
       cancelAnimationFrame(raf); clearTimeout(t)
     }
     /* re-measure (drop the stuck bar so the next scroll re-pins with fresh
        widths) whenever the column set, the view, the filter, or either edit mode
        could have changed a column's width or the header's own markup. */
   }, [cols, qSeatView, qSearch, qEditing, qualsEdit, qzEff])
+  /* the table drawn again (a change of the store, a sort, an armed delete) put new heading cells in place: the watch moves
+     onto them ([QUALS-PINNED-COLS-REFLOW]). Declared after the effect that makes the watch, so on a first draw it exists. */
+  useEffect(() => { watchCellsRef.current?.() }, [tableInner])
 
   /* start the mirror at the grid's current sideways position the instant it
      mounts, so its first painted frame is already in step (Leave War's own
