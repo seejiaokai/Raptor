@@ -202,6 +202,9 @@ describe('the keyboard comes back', () => {
     opener.focus()
     expect(document.activeElement).toBe(opener)
     await openBoard(2)
+    /* the keys then go onto the board (a Tab to its Calendar button), and Escape is pressed there */
+    $('#sbCal').focus()
+    expect(document.activeElement).toBe($('#sbCal'))
     await key('Escape')
     expect(boardOpen()).toBe(false)
     const back = document.activeElement as HTMLElement

@@ -142,6 +142,15 @@ describe('a page or a week change closes it', () => {
     expect(AIRKEY, 'the window for last week\'s wave is closed').toBe(null)
     await act(async () => { loadWeek(wk) })
   })
+
+  /* the week change above is closed twice over: by the week reset, and by the wave's own id, which the next week's waves
+     do not carry (airGo). This pins the first on its own — the registry entry a week swap runs — since a wave with no id
+     (an old record) would be found by its place alone */
+  it('the week reset itself closes it', async () => {
+    await openAir(0, flyWave(0))
+    await act(async () => { view.resetViewState('week'); notify() })
+    expect(AIRKEY).toBe(null)
+  })
 })
 
 describe('the window follows its wave', () => {
