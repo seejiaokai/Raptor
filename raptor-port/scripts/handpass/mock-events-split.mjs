@@ -36,6 +36,9 @@ const LINES = [
 ]
 const KW = { off: 'Public holiday', free: 'Off day', nolv: 'No leave', work: 'Working event' }
 const metrics = {}
+/* MOCK_PLAIN=1 draws the same frames WITHOUT the dashed cyan markers that show which parts are new — how the app would look
+   (his question, 29 Oct 26: "will there be a dotted cyan there by default?" — no, the markers are the drawing's own) */
+const PLAIN = process.env.MOCK_PLAIN === '1'
 for (const kind of ['P', 'D']) {
   const phone = kind === 'P'
   const ctx = await b.newContext(phone ? { viewport: { width: 402, height: 874 }, deviceScaleFactor: 3, hasTouch: true, isMobile: true, timezoneId: 'Asia/Singapore' }
@@ -87,7 +90,7 @@ for (const kind of ['P', 'D']) {
   }
   await snap('0-today')
   // A — two sections in the same window
-  await p.evaluate(({ secHTML }) => {
+  await p.evaluate(({ secHTML, PLAIN }) => {
     const list = document.querySelector('[data-testid="events-list"]')
     const lines = [...list.querySelectorAll('.hol-line')]
     const hol = lines.filter(l => l.dataset.mk === 'off' || l.dataset.mk === 'free')
@@ -106,15 +109,16 @@ for (const kind of ['P', 'D']) {
     const st = document.createElement('style'); st.id = 'mockcss'
     st.textContent = `.mock-split{display:flex;flex-direction:column;gap:6px;overflow:auto;min-height:0}
       .mock-col{display:flex;flex-direction:column;min-width:0}
-      .mock-sec{text-decoration:underline dashed #3BC6E8 2px;text-underline-offset:5px}`  /* the new part, marked on itself */
+      .mock-sec{text-decoration:underline dashed #3BC6E8 2px;text-underline-offset:5px}`
+      + (PLAIN ? '.mock-sec{text-decoration:none!important}' : '')  /* the new part, marked on itself */
     document.head.appendChild(st)
-  }, { secHTML })
+  }, { secHTML, PLAIN })
   await snap('A-sections')
   // C — A, with each line's edit and delete controls on the line itself (D1512, question 5): the app's one pencil (D1134,
   // ui/pen.ts PEN_INNER — copied here as drawn) in a clone of the window's ✕ button, then the ✕; one line shown armed
   // ("Delete?", the ✕ widened, in the ✕'s own red) after its first press
   const PEN = '<svg class="pen-ic solo" viewBox="0 0 24 24" aria-hidden="true"><g transform="rotate(-45 12 12)" fill="currentColor"><rect x="8.5" y="1" width="7" height="4.6" rx="2.4"/><rect x="8.5" y="6.4" width="7" height="12.2" rx=".3"/><path d="M8.5 19.4h7l-2.6 3.1a1.2 1.2 0 0 1-1.8 0Z"/></g></svg>'
-  await p.evaluate(({ delHTML, PEN }) => {
+  await p.evaluate(({ delHTML, PEN, PLAIN }) => {
     const mk = (html) => { const t = document.createElement('template'); t.innerHTML = html.trim(); const b = t.content.firstElementChild; b.removeAttribute('data-testid'); b.classList.add('mock-ctl'); return b }
     const lines = [...document.querySelectorAll('.mock-split .hol-line')]
     lines.forEach((l, i) => {
@@ -129,8 +133,9 @@ for (const kind of ['P', 'D']) {
       .mock-ctls{display:inline-flex;gap:6px;margin-left:8px;flex:none;outline:2px dashed #3BC6E8;outline-offset:2px;border-radius:6px}
       .mock-ctl.mock-pen{display:inline-grid;place-items:center;color:var(--ink-2,#c5ced8)}
       .mock-ctl.mock-armed{width:auto;padding:0 7px;color:#ff5c5c;border-color:rgba(255,92,92,.6);font-weight:600}`
+      + (PLAIN ? '.mock-ctls{outline:none!important}' : '')
     document.head.appendChild(st)
-  }, { delHTML, PEN })
+  }, { delHTML, PEN, PLAIN })
   // on a phone the two icons leave the name no room (measured: every name cut to its first letter), so there the name
   // stands under the date, the kind's mark and word and the icons to their right — a drawing choice to put to him
   if (phone) await p.evaluate(() => {
