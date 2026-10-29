@@ -662,6 +662,16 @@ describe('holidays by file — the walk’s findings', () => {
     await importBytes(bytes)
     expect(t('hol-pv-list').querySelector('.hol-name')!.textContent).toBe('Café Noël')
   })
+  it('R4: a sheet saved as Excel’s Unicode Text (UTF-16, tab-separated) is read', async () => {
+    open()
+    const text = 'From\tTo\tName\tKind\r\n2026-05-04\t\tCafé Noël\tPH'
+    const bytes = new Uint8Array(2 + text.length * 2)
+    bytes[0] = 0xFF; bytes[1] = 0xFE                                       // the byte-order mark Excel writes
+    for (let i = 0; i < text.length; i++) { bytes[2 + i * 2] = text.charCodeAt(i) & 0xFF; bytes[3 + i * 2] = text.charCodeAt(i) >> 8 }
+    await importBytes(bytes, 'holidays.txt')
+    expect(t('hol-pv-counts').textContent).toBe('1 to add · 0 already here · 0 not read')
+    expect(t('hol-pv-list').querySelector('.hol-name')!.textContent).toBe('Café Noël')
+  })
   it('F5: holidays added in another year than the one shown are named in a note', async () => {
     open()
     await importBytes('From,To,Name,Kind\r\n2026-05-04,,A,PH\r\n2027-05-04,,B,PH\r\n2027-06-04,,C,PH')

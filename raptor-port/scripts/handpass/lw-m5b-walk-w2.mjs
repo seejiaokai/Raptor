@@ -631,8 +631,8 @@ if (on('hol3')) {
     c.ok(pv.open && /^3 to add/.test(pv.counts), 'a sheet across 2026 and 2027 reads: ' + pv.counts)
     c.pic(await shot(page, 'w2-14-D-preview'))
     await page.click(q('hol-pv-add')); await page.waitForTimeout(500)
-    { const sv = await text(page, q('hol-saved')); const yr = await text(page, q('hol-year')); if (!sv) c.fail('after Add of a sheet with 2 of 3 rows in 2027 the screen stays on ' + yr + ', shows only that year one new line ringed, and says nothing about the two holidays added to 2027 out of view (D850)') }
-    c.note('after Add: year shown ' + await text(page, q('hol-year')) + ', saved note ' + JSON.stringify(await text(page, q('hol-saved'))) + ', undo: ' + await undoTitle(page))
+    { const sv = (await text(page, q('hol-added-note'))) || (await text(page, q('hol-saved'))); const yr = await text(page, q('hol-year')); if (!/2027/.test(sv || '')) c.fail('after Add of a sheet with 2 of 3 rows in 2027 the screen stays on ' + yr + ', shows only that year one new line ringed, and says nothing about the two holidays added to 2027 out of view (D850)') }
+    c.note('after Add: year shown ' + await text(page, q('hol-year')) + ', note ' + JSON.stringify(await text(page, q('hol-added-note'))) + ', undo: ' + await undoTitle(page))
     const l26 = await holLines(page); c.note('2026 list: ' + l26.join(' ;; '))
     c.pic(await shot(page, 'w2-14-D-after-add-2026'))
     await page.click(q('hol-next')); await page.waitForTimeout(400)
@@ -807,6 +807,15 @@ if (on('hol4')) {
     c.note('after Add: 12 Jan facts ' + f + '; lines ' + lns.join(' ;; '))
     c.note('error: ' + await text(page, q('hol-pv-err')) + ' | ' + await text(page, q('hol-err')))
     c.pic(await shot(page, 'w2-18-D-after-add'))
+    // F6 (fixed 29 Oct 26): the first Add read the sheet again, found 12 Jan now here, refused and re-listed; Add again adds only 13 Jan
+    if (await vis(page, q('hol-preview'))) {
+      const pv2 = await readPreview(page); c.note('preview after the refusal: ' + brief2(pv2))
+      c.ok(/^1 to add · 1 already here/.test(pv2.counts || ''), 'the refused Add re-listed the sheet: ' + pv2.counts)
+      await page.click(q('hol-pv-add')); await page.waitForTimeout(800)
+      const l2 = await holLines(page)
+      c.ok(l2.filter(t => t.startsWith('Mon 12 Jan')).length === 1 && l2.some(t => t.startsWith('Tue 13 Jan')), 'Add again: one line on 12 Jan, 13 Jan added: ' + l2.join(' ;; '))
+      c.pic(await shot(page, 'w2-18-D-after-second-add'))
+    } else c.fail('Add with a holiday added behind the preview did not stop to re-list it')
     // same file twice
     pv = await importFile(page, 'b.csv', sheet); c.note('same file imported again: ' + brief2(pv))
     c.ok(pv.open && /^0 to add/.test(pv.counts) && pv.addDisabled, 'importing the same file twice: everything already here, Add greyed: ' + pv.counts)

@@ -106,6 +106,11 @@ const textOf = async (f: File): Promise<string> => {
   const buf: ArrayBuffer = typeof f.arrayBuffer === 'function'
     ? await f.arrayBuffer()
     : await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result as ArrayBuffer); r.onerror = () => no(r.error); r.readAsArrayBuffer(f) })
+  /* …and a sheet saved as Excel's "Unicode Text" (UTF-16 with its byte-order mark, tab-separated) as UTF-16 — read as
+     Windows-1252 every letter had a nothing between it and the next (the code read's R4, 29 Oct 26) */
+  const head = new Uint8Array(buf, 0, Math.min(2, buf.byteLength))
+  if (head[0] === 0xFF && head[1] === 0xFE) return new TextDecoder('utf-16le').decode(buf)
+  if (head[0] === 0xFE && head[1] === 0xFF) return new TextDecoder('utf-16be').decode(buf)
   try { return new TextDecoder('utf-8', { fatal: true }).decode(buf) } catch { return new TextDecoder('windows-1252').decode(buf) }
 }
 

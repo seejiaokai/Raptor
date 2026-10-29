@@ -4368,7 +4368,9 @@ export function Matrix() {
           run={eventEdit.run}
           onSaved={(line, from) => setEvFresh(`${line}-${from}`)}
           onClose={() => setEventEdit(null)}
-          onMove={m => { setEventEdit(null); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
+          // the Events list shuts too: Move… hands the grid over, and the list drawn again over it would take the landing
+          // tap (the code read's R1, 29 Oct 26)
+          onMove={m => { setEventEdit(null); setEventsOpen(false); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
         />
       )}
       {/* THE EVENTS LIST (D1500) — an admin's, as ⚙ Settings is; hidden while an event's window opened from it (or from

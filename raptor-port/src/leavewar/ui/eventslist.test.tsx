@@ -149,3 +149,43 @@ describe('the Events list — the walk’s findings', () => {
     expect(line.classList.contains('innew')).toBe(true)
   })
 })
+
+/* THE FRESH CODE READ'S FINDINGS (29 Oct 26, the evidence sheet's R1–R3) */
+describe('the Events list — the code read’s findings', () => {
+  it('R1: Move… on an event opened from the list hands the grid over — the list does not come back over it', () => {
+    setDayEvent('2026-03-16', 0, 'SC')
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('evline-0-2026-03-16'))
+    fireEvent.click(screen.getByTestId('event-move'))
+    expect(screen.queryByTestId('event-sheet')).toBeNull()
+    expect(screen.queryByTestId('events-sheet'), 'the list stays shut while the event is moved').toBeNull()
+  })
+
+  it('R2: a run of one word on several days, opened whole from the list, offers no Move… (it would move its first day only)', () => {
+    for (const d of ['2026-03-02', '2026-03-03', '2026-03-04']) setDayEvent(d, 0, 'EXER')
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('evline-0-2026-03-02'))
+    expect(screen.getByTestId('event-delete')).toBeTruthy()
+    expect(screen.queryByTestId('event-move')).toBeNull()
+  })
+
+  it('R3: a refused preset rename in Edit presets from the list stays open and says why, the name put back', () => {
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('events-presets'))
+    const other = (screen.getByTestId('evtype-name-1') as HTMLInputElement).value
+    const box = screen.getByTestId('evtype-name-0') as HTMLInputElement
+    const was = box.value
+    fireEvent.change(box, { target: { value: other } })
+    fireEvent.blur(box)
+    fireEvent.click(screen.getByTestId('types-done'))
+    expect(screen.getByTestId('event-types-sheet'), 'not closed over a refusal').toBeTruthy()
+    expect(screen.getByTestId('event-types-sheet').textContent).toMatch(/already/i)
+    expect((screen.getByTestId('evtype-name-0') as HTMLInputElement).value).toBe(was)
+    // a second press, the message read, goes back to the list
+    fireEvent.click(screen.getByTestId('types-done'))
+    expect(screen.getByTestId('events-sheet')).toBeTruthy()
+  })
+})

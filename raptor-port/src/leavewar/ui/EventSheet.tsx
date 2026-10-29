@@ -36,7 +36,7 @@
 // Save and Delete are each ONE command now (state/store.ts saveEvent / deleteEvent): one Undo step, and a refused
 // replacement leaves the event it would have replaced exactly as it was.
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import {
   bandAt,
   classifyEvent,
@@ -154,9 +154,16 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
     fresh ? null : band ? { from: band.from, to: band.to } : { from: date, to: to ?? date },
   )
   const [view, setView] = useState<'event' | 'types'>(presets ? 'types' : 'event')
-  /* the presets' way back: to the event, or — opened from the Events list's "Edit presets" — to the list */
-  const typesBack = () => (presets ? onClose() : setView('event'))
   const [problem, setProblem] = useState('')
+  /* the presets' way back: to the event, or — opened from the Events list's "Edit presets" — to the list. A name or
+     short form refused as its box lost focus (the press on ‹ / Done is what takes the focus) keeps the window open once,
+     so its sentence is read (the code read's R3, 29 Oct 26: from the list the window closed over it, the rename lost with
+     no word); opened from an event, going back to the event window already leaves the sentence on view. */
+  const typesErr = useRef('')
+  const typesBack = () => {
+    if (presets && typesErr.current) { typesErr.current = ''; return }
+    if (presets) onClose(); else setView('event')
+  }
 
   // THIS event's own tag (owner, 18 Aug 26 — "I don't want u to save it as a
   // type"). Tapping a tag used to write the typed word into the squadron's
@@ -288,6 +295,8 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
                 onBlur={e => {
                   const err = updateEventType(i, { name: e.target.value })
                   setProblem(err ?? '')
+                  typesErr.current = err ?? ''
+                  if (err) e.target.value = d.name
                 }}
                 onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
               />
@@ -305,6 +314,7 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
                 onBlur={e => {
                   const err = updateEventType(i, { short: e.target.value })
                   setProblem(err ?? '')
+                  typesErr.current = err ?? ''
                   if (err) e.target.value = d.short ?? ''
                 }}
                 onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
@@ -517,7 +527,10 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
             event's own span to the matrix, which runs the same drag-to-a-day move
             mode the roster uses. Closes the sheet first, exactly like the roster
             Move button. */}
-        {onMove && !fresh && (band || (day && day.events[line])) && (
+        {/* …but not for a run of one word on several days opened whole from the Events list (`run`, the walk's F1): a move
+            takes one day or one band, so it would split the run (the code read's R2, 29 Oct 26) — its window offers
+            Repeat and Delete over the run, as the spec lists. */}
+        {onMove && !fresh && !run && (band || (day && day.events[line])) && (
           <button
             className="dchip move"
             data-testid="event-move"
