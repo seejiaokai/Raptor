@@ -6295,7 +6295,8 @@ test('every admin control is reachable within the viewport', async ({ page }) =>
   await within('war-picker')
   // config controls, folded into ⚙ Settings — Rearrange among them since M2 (D1254)
   await page.locator('[data-testid="settings-open"]').click()
-  for (const id of ['event-add', 'sans-toggle', 'counter-add', 'settings-rearrange']) await within(id)
+  // "+ SANS" in place of the Show SANS switch (D1221, D1499), and Events… beside Calendar… (D1500)
+  for (const id of ['event-add', 'gadd-SANS', 'counter-add', 'settings-rearrange', 'settings-events']) await within(id)
   await expect(page.locator('[data-testid="counter-reset-all"]')).toHaveCount(0)   // "Reset counters" left with the built-in counters (D669)
   await page.locator('[data-testid="settings-close"]').click()
   // rearranging adds one control of its own — "⇅ Done" on the grid's bar, the way out
@@ -6483,7 +6484,7 @@ test('a green box frames each open stretch, and clears when bidding closes', asy
   // ROSTER rows joining re-size the box the same commit (bug-hunt fix,
   // 1 Sep 26 — the measure rides the store version, so a row-count change
   // with every other dep unchanged can no longer leave the box a row short
-  // until the next zoom or resize). The SANS switch is the cleanest such
+  // until the next zoom or resize). Adding SANS ("+ SANS", once the Show SANS switch) is the cleanest such
   // change: a pure Leave War store write that adds the SANS aircrew's rows
   // BELOW the header the box hangs from, touching no zoom/fold/window dep —
   // and it happens without leaving the tab, so no show-side resize kick can
@@ -6491,7 +6492,7 @@ test('a green box frames each open stretch, and clears when bidding closes', asy
   // ABOVE the header row, outside the boxed region; and a PO'd body's row
   // deliberately stays for the months they served — the owner's 19 Aug rule.)
   await page.locator('[data-testid="settings-open"]').click()
-  await page.locator('[data-testid="sans-toggle"]').click()
+  await page.locator('[data-testid="gadd-SANS"]').click()
   await page.locator('[data-testid="settings-close"]').click() // close the sheet
   const grown = await page.evaluate(() =>
     document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().height)

@@ -185,3 +185,21 @@
      would otherwise sit under the fold of a short phone */
   .floatwin.everywin{max-height:calc(100vh - 66px);max-height:calc(100dvh - 66px)}
 }
+
+/* HOLIDAYS BY FILE (owner D1501, 29 Oct 26; the drawing m5b-d3-holidays-*, its FILE_CSS in
+   docs/mock/lw-overhaul/full-m5b-draw.mjs): Export sheet and Import sheet under the list, then an import's preview in
+   the list's place — each row a line of the list, "new" in cyan, a row not read in red with its reason under it. */
+.hol-filerow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hol-pvhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:2px 0 8px;font-size:13px;color:var(--ink-2)}
+.hol-pvhead b{color:var(--ink)}
+.hol-pvlist .hol-line{cursor:default}
+.hol-pvlist .hol-line:hover{background:var(--panel)}
+.hol-pvst{flex:0 0 auto;min-width:30px;text-align:right;font-size:11.5px;color:var(--ink-3)}
+.hol-pvlist .pv-new .hol-pvst{color:#5fd0e6;font-weight:700}
+.hol-pvlist .pv-bad{flex-wrap:wrap}
+.hol-pvlist .pv-bad .hol-name{color:#FF9098}
+.hol-pvwhy{flex-basis:100%;font-size:11.5px;color:#FF9098;padding-left:0}
+.hol-pvfoot{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
+/* a line an import has just added wears the app's one just-added mark for its six seconds (D850, D860) */
+.hol-line.innew{animation:inflash 6s ease-out 1}
+@media (prefers-reduced-motion:reduce){ .hol-line.innew{animation:none;box-shadow:inset 0 0 0 2px #1E86FF} }

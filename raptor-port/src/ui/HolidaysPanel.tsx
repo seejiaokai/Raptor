@@ -34,12 +34,14 @@
    holiday BY ITSELF the moment a leave period covers its first day — however that period came to be (the plan §3.4:
    "the holiday being added is kept and saved once that period exists"). An edit, Cancel or ✕ ends the wait: what is
    saved is only ever what the form held when he pressed Save. */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { FloatWin } from './FloatWindow'
 import {
-  createOilPeriodFor, holidayAdd, holidayChange, holidayRemove, holidayShortHint, holidayWord, holidaysIn, openNewPeriod, uncoveredIn,
-  MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayLine, type HolidayResult,
+  createOilPeriodFor, holidayAdd, holidayChange, holidayCheck, holidayRemove, holidayShortHint, holidaySheetRows, holidayWord, holidaysImport,
+  holidaysIn, openNewPeriod, readHolidaySheet, uncoveredIn, MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayLine, type HolidayResult, type SheetRow,
 } from '../leavewar/sync'
+import { exportCSV } from './export'
+import { DownloadIcon, UploadIcon } from './icons'
 import { RangePicker, type Range } from '../leavewar/ui/RangePicker'
 import { addDays, validIso, weekdayOf } from '../state/flyplan-model'
 import { MONTHS, WD, isoToday, sayDate } from './daysfmt'
@@ -67,6 +69,41 @@ const createWhy = (made: string, year: string | number): string => (made === 'cr
   ? `A leave period already covers part of ${year} — open the Leave War and extend it instead.`
   : `The ${year} leave period could not be created.`)
 
+/* HOLIDAYS BY FILE (owner D1501, 29 Oct 26 — "All as recommended"; his D1155: the app runs on a network with no
+   internet, so it exports a sheet, he has it filled offline and imports it). As drawn in M5b round 1 (m5b-d3-holidays-*,
+   made by full-m5b-draw.mjs FILE_T / PREVIEW_T / FILE_CSS): "Export sheet" and "Import sheet" under the list, the app's
+   one Document button (Export's arrow turned down); an import first lists what the sheet holds in the list's place —
+   each row new, already here, or not read with how to put it right — and adds nothing until "Add n holidays", one command
+   and one Undo step for them all (leavewar/state/store.ts holidaysImport). The sheet's reading and writing are
+   leavewar/engine/holidaysheet.ts; the file is written by the app's one CSV writer (ui/export.ts — Excel's mark, the
+   formula guard). Public holidays and Off days only (D1501). */
+/** one line of an import's preview */
+interface PvLine { row: number; name: string; st: 'new' | 'had' | 'bad'; draft?: HolidayDraft; why?: string }
+const keyOf = (d: { kind: string; from: string; to: string }) => `${d.kind}:${d.from}:${d.to}`
+/** each row of the sheet against the app: already here (a holiday of its kind on its days), the same as a row above,
+ *  one the war cannot take (holidayCheck — the store's own planner, nothing written), or new */
+function previewOf(rows: SheetRow[]): PvLine[] {
+  const seen = new Map<string, number>()
+  return rows.map((r): PvLine => {
+    if (!r.draft) return { row: r.row, name: r.name, st: 'bad', why: r.why }
+    const d = r.draft, k = keyOf(d)
+    const same = seen.get(k)
+    if (same !== undefined) return { row: r.row, name: r.name, st: 'bad', why: `Row ${r.row}: the same holiday as row ${same}.` }
+    seen.set(k, r.row)
+    if (holidaysIn(d.from.slice(0, 4)).some(h => keyOf(h) === k)) return { row: r.row, name: r.name, st: 'had', draft: d }
+    const c = holidayCheck(d)
+    if (!c.ok) {
+      const way = c.reason === 'noperiod' ? ' — create it, then import again.' : ''
+      return { row: r.row, name: r.name, st: 'bad', why: `Row ${r.row}: ${way ? c.message.replace(/\.$/, '') + way : c.message}` }
+    }
+    return { row: r.row, name: r.name, st: 'new', draft: d }
+  })
+}
+/** a file's words, in the browser */
+const textOf = (f: File): Promise<string> => (typeof f.text === 'function'
+  ? f.text()
+  : new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result ?? '')); r.onerror = () => no(r.error); r.readAsText(f) }))
+
 export function HolidaysPanel({ year, setYear, onOpen }: {
   year: number
   setYear: (y: number) => void
@@ -74,6 +111,34 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   onOpen: (line: HolidayLine | null) => void
 }) {
   const [why, setWhy] = useState('')
+  /* an import being looked at: the file's name, its lines, and a refusal at Add */
+  const [pv, setPv] = useState<{ file: string; lines: PvLine[]; err: string } | null>(null)
+  /* the lines just added by an import, ringed with the app's just-added mark for its six seconds (D850, D860) */
+  const [fresh, setFresh] = useState<Set<string>>(() => new Set())
+  useEffect(() => {
+    if (!fresh.size) return
+    const t = setTimeout(() => setFresh(new Set()), 6000)
+    return () => clearTimeout(t)
+  }, [fresh])
+  const fileRef = useRef<HTMLInputElement>(null)
+  const exportSheet = () => exportCSV(`holidays-${year}.csv`, holidaySheetRows(holidaysIn(year)))
+  const importSheet = async (f: File | undefined) => {
+    if (!f) return
+    let text = ''
+    try { text = await textOf(f) } catch { /* unreadable: no rows */ }
+    setPv({ file: f.name, lines: previewOf(readHolidaySheet(text)), err: '' })
+  }
+  const addAll = () => {
+    if (!pv) return
+    const add = pv.lines.filter(l => l.st === 'new')
+    const r = holidaysImport(add.map(l => l.draft!))
+    if (!r.ok) {
+      setPv({ ...pv, err: r.index >= 0 ? `Row ${add[r.index]!.row}: ${r.message}` : r.message })
+      return
+    }
+    setFresh(new Set(add.map(l => keyOf(l.draft!))))
+    setPv(null)
+  }
   const lines = holidaysIn(year)
   const gaps = uncoveredIn(year)
   const today = isoToday()
@@ -82,7 +147,7 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   const step = (by: number) => { setWhy(''); setYear(year + by) }
   /* the year can also be turned from outside — a swipe on the list (ui/DaysWindow.tsx, D786): what was said about the
      year left behind goes with it, as the arrows' own step has it */
-  useEffect(() => { setWhy('') }, [year])
+  useEffect(() => { setWhy(''); setPv(null) }, [year])   // …and an import being looked at
 
   return (
     <div className="hol" data-testid="days-part-holidays">
@@ -110,7 +175,35 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
           {why && <span className="hol-why" data-testid="hol-why" role="alert">{why}</span>}
         </div>
       )}
-      {lines.length === 0
+      {pv ? (
+        <div className="hol-pv" data-testid="hol-preview">
+          <div className="hol-pvhead">
+            <b data-testid="hol-pv-file">{pv.file}</b>
+            <span data-testid="hol-pv-counts">{pv.lines.filter(l => l.st === 'new').length} to add · {pv.lines.filter(l => l.st === 'had').length} already here · {pv.lines.filter(l => l.st === 'bad').length} not read</span>
+          </div>
+          {pv.lines.length > 0 && (
+            <div className="hol-list hol-pvlist" data-testid="hol-pv-list">
+              {pv.lines.map(l => (
+                <div key={l.row} className={`hol-line pv-${l.st}${l.st === 'had' ? ' is-past' : ''}`}>
+                  <span className="hol-when">{l.draft && l.st !== 'bad' ? when(l.draft.from, l.draft.to) : '—'}</span>
+                  <span className="hol-name">{l.name || (l.draft ? holidayWord(l.draft.kind) : '')}</span>
+                  {l.st === 'bad'
+                    ? <span className="hol-pvwhy">{l.why}</span>
+                    : <span className="hol-pvst">{l.st === 'new' ? 'new' : ''}</span>}
+                </div>
+              ))}
+            </div>
+          )}
+          {pv.err && <p className="every-err" data-testid="hol-pv-err" role="alert">{pv.err}</p>}
+          <div className="hol-pvfoot">
+            <button type="button" className="abtn" data-testid="hol-pv-cancel" onClick={() => setPv(null)}>Cancel</button>
+            {(() => {
+              const n = pv.lines.filter(l => l.st === 'new').length
+              return <button type="button" className="abtn primary" data-testid="hol-pv-add" disabled={!n} onClick={addAll}>Add {n} {n === 1 ? 'holiday' : 'holidays'}</button>
+            })()}
+          </div>
+        </div>
+      ) : lines.length === 0
         ? !none && <p className="hol-empty" data-testid="hol-empty">No public holidays or Off days in {year}.</p>
         : (
           <div className="hol-list" data-testid="hol-list">
@@ -118,7 +211,7 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
               <button
                 key={h.id}
                 type="button"
-                className={'hol-line' + (h.to < today ? ' is-past' : '')}
+                className={'hol-line' + (h.to < today ? ' is-past' : '') + (fresh.has(keyOf(h)) ? ' innew' : '')}
                 data-from={h.from}
                 aria-label={`Change: ${h.name}, ${when(h.from, h.to)}, ${KIND_SAID[h.kind]}`}
                 onClick={() => onOpen(h)}
@@ -130,6 +223,18 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
             ))}
           </div>
         )}
+      {!pv && (
+        <div className="hol-filerow" data-testid="hol-filerow">
+          <button type="button" className="abtn docbtn" data-testid="hol-export" title={`Save the ${year} holidays as a sheet to fill in`} onClick={exportSheet}>
+            <DownloadIcon /><span>Export sheet</span>
+          </button>
+          <button type="button" className="abtn docbtn" data-testid="hol-import" title="Bring in holidays from a filled sheet — you see them before anything is added" onClick={() => fileRef.current?.click()}>
+            <UploadIcon /><span>Import sheet</span>
+          </button>
+          <input ref={fileRef} type="file" accept=".csv,text/csv,text/plain" hidden data-testid="hol-import-file"
+            onChange={e => { const f = e.target.files?.[0]; e.target.value = ''; void importSheet(f) }} />
+        </div>
+      )}
     </div>
   )
 }
