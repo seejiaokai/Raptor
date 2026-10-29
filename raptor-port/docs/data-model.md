@@ -137,6 +137,9 @@ re-keyed without touching a mark.
 Relationships: 1–n `QualMark`.
 From today: the `qualcols` setting (`QualCol[]`); Leave War's `QualDef` is
 the same list projected.
+**One built-in row (D1502, 29 Oct 26):** every squadron's table holds the Management column, `key` `mgmt`, beside SXO,
+seeded with the table and never deleted — the Leave War recognises its Management group by this row (its key), not its
+heading, so a rename leaves the war's group in place. Its marks are ordinary `QualMark` rows.
 App change: the column list becomes a table rather than a settings blob, so a
 mark can carry a real foreign key.
 

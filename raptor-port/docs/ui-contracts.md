@@ -8409,6 +8409,36 @@ fifteen schedulers into it (SXO's heading disappears — its people were claimed
 and the roster still holds all 50 people with zero duplicates. Pinned in
 `engine/groups.test.ts`, `roster.test.ts` and `matrix.test.tsx`.
 
+## The Leave War's Settings, its Events list, and holidays by file (the overhaul's M5b, 29 Oct 26 — D1499–D1502)
+
+Built as drawn in M5b round 1 (`docs/mock/lw-overhaul/full/m5b/`, `full-m5b-draw.mjs`), checked part by part against the
+drawings (`scripts/drawcheck/specs/lw-m5b.mjs`, D1495).
+- **Settings** (`leavewar/ui/SettingsSheet.tsx`, D1499): the title "SETTINGS" alone; three label rows in the bid window's
+  row style — Year (Calendar…, Events…), Manning (＋ Counter, ＋ Event row, － Event row while more than the default),
+  Order (⇅ Rearrange the grid, ↺ Reset order, greyed while the roster follows the default, its title saying so); the groups
+  under "Groups", Everyone else as a greyed last row (no grip, a dashed empty square, "last", its count, no ✕ — never a
+  drop target); "+ SANS" the first add chip while SANS is off (D1221, D1215), its row's ✕ taking SANS off again — the
+  Show SANS switch is gone; the explanatory sentences are gone, each button's title keeps what it does. A phone never
+  scrolls it sideways (D1270).
+- **Management** (D1502): a built-in Quals column beside SXO (`engine/qualcols.ts`), no ✕ in Edit quals, put back by the
+  writer and at load; on the war a qualification group known by its key `mgmt`, first once added (`addGroup`), the
+  palette's blue until picked. A man in Management still counts in his seat.
+- **The Events list** (`leavewar/ui/EventsSheet.tsx`, D1500): Settings' Events… closes Settings and opens it in the same
+  frame — "EVENTS" and the period in View; "＋ Event" left, "Edit presets" right; one line an event over the period
+  (a band, or a run of one word on one row, is one line — `engine/eventlist.ts`), each a Holidays-list line with its
+  kind's mark (none for an untagged one), past by the app's today greyed. A tap opens that event's window; the list
+  waits behind it and comes back when it closes. "＋ Event" opens the Event window with nothing picked, on today's month,
+  its row the first one free across the dates picked at Save (refused with the Holidays list's sentence when none is);
+  one day saves as that day, a run as one merged bar unless Repeat. "Edit presets" opens the presets, whose ‹ and Done go
+  back to the list. Admin only.
+- **Holidays by file** (`ui/HolidaysPanel.tsx`, D1501): under the Holidays list, Export sheet (the Document button, its
+  arrow turned down) and Import sheet (the Document button). Export saves `holidays-<year>.csv` (From, To, Name, Kind, On
+  grid) by the app's one CSV writer. Import shows a preview in the list's place: the file's name, "n to add · n already
+  here · n not read", each row as a list line — new ("new" in cyan), already here (greyed), not read ("—", its name red, its
+  reason under it naming the row and how to write it) — then Cancel and "Add n holidays" (greyed at 0). Add is one
+  command, all or nothing, one Undo step; the added lines wear the just-added mark for six seconds. The year's arrows or
+  Cancel put the list back.
+
 ## The Inputs date window is a squadron setting (owner, 28 Aug 26)
 
 "Can i set the default duration how many weeks to look ahead by default … weeks,
