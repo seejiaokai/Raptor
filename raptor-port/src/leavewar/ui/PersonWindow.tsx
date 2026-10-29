@@ -217,7 +217,11 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
               <span className={`v${L.pending ? ' pd' : ''}`} style={{ gridColumn: 2 }} data-testid="pw-LVE-pend">{pend(L.pending)}</span>
               <span className="v war" style={{ gridColumn: 3 }} data-testid="pw-LVE-war">{figWords(L.war)}</span>
             </div>
-            <span className="r17-cf">incl. {cf} carried fwd{till ? ` · till ${till}` : ''}</span>
+            {/* THE DATE ON A LINE OF ITS OWN ON A PHONE (his "a", D1520 — his picture: "till 31 Dec" ran into the OIL tile): the
+                desktop keeps the approved one line, its " · till …" inside the carried line; a phone shows the line below it
+                instead (personwindow.css). Only one of the two is ever shown, so a screen reader reads the date once */}
+            <span className="r17-cf">incl. {cf} carried fwd{till ? <span className="r17-tw">{` · till ${till}`}</span> : null}</span>
+            {till && <span className="r17-till" data-testid="pw-LVE-till">till {till}</span>}
           </div>
           {/* OIL: read only, "0 ›" his OIL tracker (D1209, D1008) — never a box */}
           <div className="r17-t" data-testid="pw-tile-OIL">

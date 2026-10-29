@@ -1,8 +1,8 @@
 # Drawing check — Leave War M5a
 
-Build: `C:\Users\User\projects\Raptor\.claude\worktrees\lw-rulings-tripwire-1707d1\raptor-port\dist` · run 29 Oct 2026, 22:29 · tolerance 2px
+Build: `C:\Users\User\projects\Raptor\.claude\worktrees\lw-rulings-tripwire-1707d1\raptor-port\dist` · run 29 Oct 2026, 22:54 · tolerance 2px
 
-**GREEN** — 0 difference(s) unexplained, 24 kept as built by his ruling, 0 screen(s) not checked.
+**GREEN** — 0 difference(s) unexplained, 27 kept as built by his ruling, 0 screen(s) not checked.
 
 ## The person window, desktop, admin (`person-desk`, 1536 × 864 at 1.25)
 
@@ -34,11 +34,11 @@ Drawing: `docs/mock/lw-overhaul/full-m5a-person.mjs` → `m5a-p4-phone-own.png` 
 
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
-| the window | where it sits (from the top) — 4.5px lower | 68.5 | 73 | kept as built: D1497 — centred, a little shorter than drawn · [picture](person-phone--window.png) |
+| the window | where it sits (from the top) — 4px higher | 68.5 | 64.5 | kept as built: D1497 — centred, a little shorter than drawn; D1520 — a line taller, so it stands higher · [picture](person-phone--window.png) |
 | the window's title bar | matches | | | |
-| the LVE tile | matches | | | |
-| the year picker | matches | | | |
-| the first leave line | matches | | | |
+| the LVE tile | its height — 17px more | 109 | 126 | kept as built: D1520 — the carried line's date on a line of its own · [picture](person-phone--lve-tile.png) |
+| the year picker | where it sits (from the top of window) — 17px lower | 331.5 | 348.5 | kept as built: D1520 — under the tile a line taller · [picture](person-phone--year.png) |
+| the first leave line | where it sits (from the top of window) — 17px lower | 373.5 | 390.5 | kept as built: D1520 — under the tile a line taller · [picture](person-phone--leave-line.png) |
 | the first leave line's leave box | matches | | | |
 | the first leave line's dates | matches | | | |
 | the first leave line's 'Approved' | matches | | | |

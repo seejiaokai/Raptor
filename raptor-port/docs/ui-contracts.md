@@ -11877,6 +11877,12 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
 
 ## The person window (the overhaul's M5a, jobs 1–2 — D1480, D1148, D1201, D1203, D1209, D1220, D1231, D1251–D1253, D1292, D1327, D1328, D1481, D641, D997; BUILT 29 Oct 26)
 
+**On a phone the carried line's date stands on its own line (D1520, 29 Oct 26 — his "a"):** under "incl. [n] carried fwd", in the
+same grey, so it never runs past the LVE tile (his iPhone picture: it ran into OIL); a desktop keeps the one line "incl. [n]
+carried fwd · till <date>". On a phone App bal · Pending · War bal spread across the tile, War bal ending at its right edge (the
+agent's fault fix with D1519's job — "17.5" and "−12.5" had run under OIL). `PersonWindow.tsx` (`r17-till`), `personwindow.css`;
+pinned in `e2e/leavewar.spec.ts`.
+
 Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2-desk-drawn`, `m5a-p4-phone-own`, `m5a-p5-phone-locked`,
 `m5a-p6-phone-other`). Code: `leavewar/ui/PersonWindow.tsx`, `ui/personleave.ts` (one man's lines and the new-since marks),
 `ui/LeaveLine.tsx` (the no-puck form), `ui/personwindow.css`, `state/lwseen.ts`; pins `ui/personwindow.test.tsx` (28),

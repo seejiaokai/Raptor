@@ -78,7 +78,7 @@
         "w": 520,
         "h": 619.5
        },
-       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
+       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
        "typed": false,
        "look": {
         "fill": "rgb(20, 24, 29)",
@@ -258,7 +258,7 @@
         "w": 179.2,
         "h": 90
        },
-       "text": "LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec",
+       "text": "LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd",
        "typed": false,
        "look": {
         "fill": "rgb(21, 27, 34)",
@@ -818,7 +818,7 @@
         "w": 520,
         "h": 619.5
        },
-       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
+       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
        "typed": false,
        "look": {
         "fill": "rgb(20, 24, 29)",
@@ -959,9 +959,9 @@
        "check": "place",
        "what": "where it sits (from the top)",
        "drawing": "68.5",
-       "build": "73",
-       "by": "4.5px lower",
-       "accepted": "D1497 — centred, a little shorter than drawn",
+       "build": "64.5",
+       "by": "4px higher",
+       "accepted": "D1497 — centred, a little shorter than drawn; D1520 — a line taller, so it stands higher",
        "counts": false
       }
      ],
@@ -1013,17 +1013,17 @@
        "count": 1,
        "box": {
         "x": 10,
-        "y": 73,
+        "y": 64.5,
         "w": 382,
-        "h": 728.1
+        "h": 745.1
        },
        "ink": {
         "x": 33,
-        "y": 94,
+        "y": 85.5,
         "w": 342,
-        "h": 672.6
+        "h": 689.6
        },
-       "text": "Ranger ✕ Balances LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Deleted deleted by Saber · today 09:00 LL Mon 2 Feb 1 Refused refused by Saber · today 09:00 LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
+       "text": "Ranger ✕ Balances LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd till 31 Dec OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Deleted deleted by Saber · today 09:00 LL Mon 2 Feb 1 Refused refused by Saber · today 09:00 LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
        "typed": false,
        "look": {
         "fill": "rgb(20, 24, 29)",
@@ -1103,13 +1103,13 @@
        "count": 1,
        "box": {
         "x": 23,
-        "y": 84,
+        "y": 75.5,
         "w": 356,
         "h": 37
        },
        "ink": {
         "x": 44.7,
-        "y": 94,
+        "y": 85.5,
         "w": 330.3,
         "h": 17
        },
@@ -1144,8 +1144,18 @@
     {
      "part": "lve-tile",
      "label": "the LVE tile",
-     "diffs": [],
-     "picture": null,
+     "diffs": [
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "109",
+       "build": "126",
+       "by": "17px more",
+       "accepted": "D1520 — the carried line's date on a line of its own",
+       "counts": false
+      }
+     ],
+     "picture": "person-phone--lve-tile.png",
      "measured": {
       "drawing": {
        "found": true,
@@ -1193,17 +1203,17 @@
        "count": 1,
        "box": {
         "x": 31,
-        "y": 165.5,
+        "y": 157,
         "w": 202.4,
-        "h": 109
+        "h": 126
        },
        "ink": {
         "x": 40,
-        "y": 177,
+        "y": 168.5,
         "w": 184.4,
-        "h": 90
+        "h": 107.5
        },
-       "text": "LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec",
+       "text": "LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd till 31 Dec",
        "typed": false,
        "look": {
         "fill": "rgb(21, 27, 34)",
@@ -1234,8 +1244,18 @@
     {
      "part": "year",
      "label": "the year picker",
-     "diffs": [],
-     "picture": null,
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of window)",
+       "drawing": "331.5",
+       "build": "348.5",
+       "by": "17px lower",
+       "accepted": "D1520 — under the tile a line taller",
+       "counts": false
+      }
+     ],
+     "picture": "person-phone--year.png",
      "measured": {
       "drawing": {
        "found": true,
@@ -1283,7 +1303,7 @@
        "count": 1,
        "box": {
         "x": 236,
-        "y": 404.5,
+        "y": 413,
         "w": 133,
         "h": 30
        },
@@ -1319,8 +1339,18 @@
     {
      "part": "leave-line",
      "label": "the first leave line",
-     "diffs": [],
-     "picture": null,
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of window)",
+       "drawing": "373.5",
+       "build": "390.5",
+       "by": "17px lower",
+       "accepted": "D1520 — under the tile a line taller",
+       "counts": false
+      }
+     ],
+     "picture": "person-phone--leave-line.png",
      "measured": {
       "drawing": {
        "found": true,
@@ -1368,13 +1398,13 @@
        "count": 9,
        "box": {
         "x": 31,
-        "y": 446.5,
+        "y": 455,
         "w": 340,
         "h": 34
        },
        "ink": {
         "x": 60.4,
-        "y": 455,
+        "y": 463.5,
         "w": 300.4,
         "h": 18
        },
@@ -1458,13 +1488,13 @@
        "count": 9,
        "box": {
         "x": 49,
-        "y": 453,
+        "y": 461.5,
         "w": 34,
         "h": 22
        },
        "ink": {
         "x": 60.4,
-        "y": 456.5,
+        "y": 465,
         "w": 11.1,
         "h": 15
        },
@@ -1548,13 +1578,13 @@
        "count": 9,
        "box": {
         "x": 91,
-        "y": 455,
+        "y": 463.5,
         "w": 192.8,
         "h": 18
        },
        "ink": {
         "x": 91,
-        "y": 455,
+        "y": 463.5,
         "w": 128.5,
         "h": 18
        },
@@ -1638,13 +1668,13 @@
        "count": 9,
        "box": {
         "x": 307,
-        "y": 456,
+        "y": 464.5,
         "w": 64,
         "h": 16
        },
        "ink": {
         "x": 307,
-        "y": 456,
+        "y": 464.5,
         "w": 53.8,
         "h": 16
        },

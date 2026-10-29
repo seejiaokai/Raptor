@@ -6962,3 +6962,17 @@ On a phone and a desktop, a period picked with the View picker while the Approva
 ### [LW-BAL-PHONE-LOCKED-FIT] The iPhone's locked Balances page back to its drawing (his D1497 — 29 Oct 26)
 **29 Oct 26 — the 10px fixed, red first** (`claude/leave-war-m5b-iphone-balances-1402b7`, commit 3d2a069c4; `raptor-port/docs/handpass/2026-10-29-lw-bal-phone-locked-fit.md`): a read-only figure on the phone keeps the drawing's 10px at its right; the drawing check on all ten M5a states leaves only the row's 6px. **The 6px is the drawing's own fault:** both member drawings lay the page over the bottom 6px of the View row (the period picker's and My leave's bottom edges cut, in the approved sheet `m5c-c2-phones` too); put to him as question A on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH — **answered 29 Oct 26, keep it as built (D1498)**: kept in `specs/lw-m5a.mjs`'s list at 483.5; the check is green. Done but for going live with pull request 588. **Place:** a small Leave War fix, with M5b or on its own — his choice of timing. **What:** on a member's locked Balances page on a phone, Ranger's read-only figures (App bal 15, CCL 3 — the two measured) stand flush with their column's right edge, 10px right of the drawing's; the page told him it shows on every row, and that the other figures do the same is the agent's reading, checked at the fix (`m5c-c2-phone-locked`, recorded in `raptor-port/docs/mock/lw-overhaul/drawcheck/m5a/balances-phone-locked.json`), and Ranger's row stands 6px lower than drawn — what above it adds the 6px was not looked into. **Done when:** `node scripts/drawcheck/check.mjs scripts/drawcheck/specs/lw-m5a.mjs --dist dist --states balances-phone-locked` is green on those parts (D1495), and the walk's phone pictures of the locked page are opened. **Found:** by the drawing check's run on live M5a (`raptor-port/docs/img/handpass/2026-10-29-drawcheck-m5a-live/report.md`), 29 Oct 26.
 
+
+*Moved here 2026-10-29 by backlog-archive.mjs ([LW-PW-CF-LINE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-PW-CF-LINE] The person window's carried-forward line runs past its tile on a phone (29 Oct 26)
+**His picture (29 Oct 26 — "dec word is exiting the the box can u design something better"):** in Saber's window the LVE tile's
+"incl. [0] carried fwd · till 31 Dec" runs into the OIL tile — measured 6 to 10 points too long at his 402, 17 and more at 375
+(`raptor-port/docs/mock/lw-overhaul/lw-cf-line-draw.mjs`, a letter stand-in calibrated on his picture). **Put to him** on
+https://claude.ai/artifact/4x9nJqMPgQUK8YKHyV7wqH (question 1): **A, recommended** — the date on a line of its own under "incl. [0] carried fwd", the top row of tiles
+16 points taller, fitting at every width measured, Verdana included; **B** — one line, "incl. [0] carried · till 31 Dec", no
+extra height, only just inside at 375 and past the tile in wider letters. **Built already (the agent's fault fix, D1426):**
+on a phone App bal · Pending · War bal spread across the tile, so War bal ("17.5", "−12.5") never runs under OIL
+(`ui/personwindow.css`, pinned by `e2e/leavewar.spec.ts` "War bal stays inside its LVE tile"). **To do:** build his pick
+(phone only — a desktop keeps the approved drawing, D1478), its picture beside the drawing, the drawing check. Ruling then.
+

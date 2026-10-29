@@ -7903,6 +7903,24 @@ test('on a phone the person window\'s War bal stays inside its LVE tile, the lon
       }, fig)
       expect(over, `${width}: War bal "${fig}" runs past its tile`).toBeLessThanOrEqual(0.5)
     }
+    /* his "a" (D1520): the carried line's date on a line of its own, so neither line runs past the tile */
+    const lines = await page.evaluate(() => {
+      const t = document.querySelector<HTMLElement>('[data-testid="pw-tile-LVE"]')!
+      const edge = t.getBoundingClientRect().right - parseFloat(getComputedStyle(t).paddingRight)
+      const out: Record<string, number | string> = {}
+      for (const sel of ['.r17-cf', '.r17-till']) {
+        const el = t.querySelector<HTMLElement>(sel)
+        if (!el || !el.getClientRects().length) { out[sel] = 'not shown'; continue }
+        const r = document.createRange(); r.selectNodeContents(el)
+        out[sel] = Math.round((r.getBoundingClientRect().right - edge) * 10) / 10
+        out[sel + ' text'] = el.innerText.trim()   // what is shown — the desktop's hidden " · till …" is not
+      }
+      return out
+    })
+    expect(lines['.r17-till text'], `${width}: the date stands on a line of its own`).toMatch(/^till \d+ [A-Z][a-z]{2}$/)
+    expect(String(lines['.r17-cf text']), `${width}: the carried line no longer carries the date`).not.toMatch(/till/)
+    expect(Number(lines['.r17-cf']), `${width}: the carried line runs past its tile`).toBeLessThanOrEqual(0.5)
+    expect(Number(lines['.r17-till']), `${width}: the date runs past its tile`).toBeLessThanOrEqual(0.5)
     await page.getByTestId('pw-close').click()
   }
 })
