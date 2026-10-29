@@ -2,7 +2,7 @@
    reference (#shell, .topbar, .page sections). Only the view-only schedule
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
-import { Suspense, lazy, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { Suspense, lazy, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { wireTopbarVar } from './topbarvar'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -126,6 +126,22 @@ export function Shell() {
   /* the top bar's live height for what is held under it as the page scrolls (D1116 — ui/topbarvar.ts) */
   const topbarRef = useRef<HTMLDivElement>(null)
   useEffect(() => wireTopbarVar(topbarRef.current), [])
+  /* EACH PAGE OPENS AT ITS OWN PLACE ([LW-LEAVE-SCROLL-CARRY], found 28 Oct 26). The window's scroll is every page's, so a
+     page that keeps no place of its own came up wherever the page before it was left — Edit Schedule 547px down after a
+     scrolled Leave War, and a page after Edit Schedule at the very bottom, because the browser moved the window to keep
+     the parked edit week and the dozing war "in place" as they left the flow. A page it switches to opens at its top,
+     before it is painted — as Inputs and Quals already did by themselves (D937). Not the Leave War: it puts back where he
+     was on it (LeaveWarPage.tsx savedY), after this. Not the hop between View-only Sched and Edit Schedule: that keeps
+     what it does today (CARRY THE DAY carries his day across it, state/view.ts setPage). On a phone the menu put the old
+     place back as it closed — it no longer does on a page change (Drawer.tsx). */
+  const lastPage = useRef(page)
+  useLayoutEffect(() => {
+    const from = lastPage.current
+    lastPage.current = page
+    if (from === page || page === 'leavewar') return
+    if ((from === 'viewsched' || from === 'editsched') && (page === 'viewsched' || page === 'editsched')) return
+    if (window.scrollY || window.scrollX) window.scrollTo(0, 0)
+  }, [page])
   useEffect(() => {
     const teardown = installIdleTracking()
     const isPhone = typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches

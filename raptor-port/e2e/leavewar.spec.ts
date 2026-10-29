@@ -2217,6 +2217,47 @@ test("pressing the Leave War's controls on a phone never turns a pinned cell see
   await press('#page-leavewar tr.grp td.grphd', 'a group heading (open)')
 })
 
+/* [LW-LEAVE-SCROLL-CARRY] (found 28 Oct 26, the M4 fixes' re-walk, F6): the window's scroll is every page's, so a page
+   with no scroll place of its own opened from the Leave War scrolled down came up 547px down — Edit Schedule from the menu
+   on a desktop, and on a phone the menu itself put the war's place back as it closed. Each page opens at its own top now
+   (as Inputs and Quals already did, D937), by the menu on a desktop and the drawer on a phone, and the war still comes
+   back where he was on it. */
+test('a page opened from the Leave War scrolled down opens at its own top, and the war comes back where he was', async ({ page }) => {
+  await raptorRole(page, 'admin')
+  /* the admin's view drawn in full before anything is measured: its extra controls land above the rows a moment later,
+     and the browser then moves the window to keep the rows where they were — a role switch, not a page change */
+  if (!isPhone()) await page.locator('#topnav a[data-page="editsched"]').waitFor()
+  await page.waitForTimeout(600)
+  const winY = () => page.evaluate(() => Math.round(window.scrollY))
+  const open = async (p: string) => {
+    if (isPhone()) {
+      await page.locator('#burger').click()
+      await page.locator(`#drawerNav a[data-page="${p}"]`).click()
+    } else await page.locator(`#topnav a[data-page="${p}"]`).click()
+    await page.waitForFunction(q => (window as any).CURPAGE === q, p)
+    await page.waitForTimeout(400)
+  }
+  /* what he sees, not a number: the first person's row below the screen's top third, and where it stands on it */
+  const seen = () => page.evaluate(() => {
+    const row = [...document.querySelectorAll<HTMLElement>('#page-leavewar tr[data-testid^="row-"]')]
+      .find(r => { const q = r.getBoundingClientRect(); return q.height > 0 && q.top > innerHeight / 3 && q.bottom < innerHeight })
+    return row ? { id: row.dataset.testid!, top: Math.round(row.getBoundingClientRect().top) } : null
+  })
+  const at = (id: string) => page.evaluate(i => Math.round(document.querySelector(`[data-testid="${i}"]`)!.getBoundingClientRect().top), id)
+  for (const p of ['editsched', 'viewsched', 'logic', 'help', 'admin']) {
+    await page.evaluate(() => window.scrollTo(0, 500))
+    await page.waitForTimeout(300)
+    expect(await winY(), 'the war scrolled down first').toBeGreaterThan(200)
+    const was = (await seen())!
+    expect(was, 'a person\'s row in the middle of the screen').not.toBeNull()
+    await open(p)
+    expect(await winY(), `${p} opens at its own top`).toBe(0)
+    await open('leavewar')
+    const now = await at(was.id)
+    expect(Math.abs(now - was.top), `back on the war from ${p}, ${was.id} where it stood (${was.top}, now ${now})`).toBeLessThanOrEqual(2)
+  }
+})
+
 // The space arithmetic, checked against a real browser rather than read off
 // the stylesheet. The estimate that justified this design was WRONG — it
 // assumed 30px day columns from `min-width`, where the rendered width is
