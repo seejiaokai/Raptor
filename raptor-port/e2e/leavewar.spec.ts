@@ -7837,6 +7837,76 @@ const typeFig = async (page: Page, id: string, v: string) => {
   await b.press('Enter')
 }
 
+/* HIS iPHONE PICTURE, 29 Oct 26 (D1518, D1519): zoomed out, the boxes' bottom edges of the row above showed in the foot of the
+   Balances page's bar, above its line — the bar had no fill of its own, so whatever his iPhone drew past the list's top edge
+   showed through it. This browser cannot make the iPhone's spill, so the test makes it: the list is let draw outside its box
+   and slid up under the bar, as a row past the top edge is. The bar, the lock line and the search line must still be what
+   stands at every point of their own area; and the list keeps what it draws inside its box (paint containment). Red on the
+   build before the fix (a row's box answered at the bar's foot), green after. */
+test('nothing of the Balances list shows behind its bar, whatever the list draws past its top (D1518, D1519)', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone page; the desktop table has the same rules, read below')
+  for (const role of ['admin', 'member'] as const) {
+    await lwRole(page, role)
+    await page.setViewportSize({ width: 402, height: 874 })
+    await openBalancesPage(page)
+    /* the search line open too, a third bar between the bar and the list */
+    const srch = page.getByTestId('bal-search-open')
+    if ((await srch.getAttribute('aria-expanded')) !== 'true') await srch.click()
+    await expect(page.locator('.bp-srchline')).toBeVisible()
+    await page.locator('.bp-srchline input').blur()
+    const hits = await page.evaluate(() => {
+      const hs = document.querySelector<HTMLElement>('.bp-hs')!, zoom = document.querySelector<HTMLElement>('.bp-zoom')!
+      zoom.style.zoom = '0.85'
+      hs.style.overflow = 'visible'
+      zoom.style.translate = '0px -260px'
+      const out: string[] = []
+      for (const sel of ['.bp-bar', '.bp-lk2', '.bp-srchline']) {
+        const el = document.querySelector<HTMLElement>(sel)
+        if (!el) continue
+        const r = el.getBoundingClientRect()
+        for (const y of [r.bottom - 2, r.bottom - 6, r.top + r.height / 2]) for (const x of [r.left + 150, r.left + r.width / 2, r.right - 20]) {
+          const h = document.elementFromPoint(x, y)
+          if (!h || !el.contains(h)) out.push(`${sel} at ${Math.round(x)},${Math.round(y)}: ${h ? h.className || h.tagName : 'nothing'}`)
+        }
+      }
+      zoom.style.translate = ''; hs.style.overflow = ''; zoom.style.zoom = ''
+      return out
+    })
+    expect(hits, `${role}: something of the list answered inside the bar`).toEqual([])
+    const css = await page.evaluate(() => ({
+      hs: getComputedStyle(document.querySelector('.bp-hs')!).contain,
+      bar: getComputedStyle(document.querySelector('.bp-bar')!).backgroundColor,
+    }))
+    expect(css.hs, 'the list keeps what it draws inside its box').toContain('paint')
+    expect(css.bar, 'the bar is solid').toBe('rgb(11, 13, 16)')
+  }
+})
+
+/* HIS iPHONE PICTURE, 29 Oct 26 (the agent's fault fix, D1426): in the person window's LVE tile the three figures stood 24
+   apart, so a four-figure War bal ("17.5", bold 20) ran under the OIL tile on a 375 iPhone, and "−12.5" on his 402. On a phone
+   they spread across the tile now, War bal ending at its right edge, whatever the line under them holds. */
+test('on a phone the person window\'s War bal stays inside its LVE tile, the longest figure too, at 402 and 375', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone\'s tile; a desktop keeps the drawing\'s spacing')
+  await lwRole(page, 'admin')
+  for (const width of [402, 375]) {
+    await page.setViewportSize({ width, height: 874 })
+    await openBalancesPage(page)
+    await page.getByTestId('bal-name-stiff').click()
+    await expect(page.getByTestId('pw-tile-LVE')).toBeVisible()
+    for (const fig of ['17.5', '−12.5']) {
+      const over = await page.evaluate(f => {
+        const t = document.querySelector<HTMLElement>('[data-testid="pw-tile-LVE"]')!, war = t.querySelector<HTMLElement>('[data-testid="pw-LVE-war"]')!
+        const was = war.textContent; war.textContent = f
+        const r = war.getBoundingClientRect().right - (t.getBoundingClientRect().right - parseFloat(getComputedStyle(t).paddingRight))
+        war.textContent = was
+        return r
+      }, fig)
+      expect(over, `${width}: War bal "${fig}" runs past its tile`).toBeLessThanOrEqual(0.5)
+    }
+    await page.getByTestId('pw-close').click()
+  }
+})
+
 /* A-F3: "10.5" in PL and "−12.5" in App bal showed their last digit cut; "−998.5" — as long as the longest figure the store
    takes (±999) — too. Each box shows its whole figure, keeps its width, and the figures beside it do not move; in the person
    window too. */

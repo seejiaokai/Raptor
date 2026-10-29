@@ -451,6 +451,22 @@ describe('the M5a walk\'s faults', () => {
     expect(screen.queryByTestId('bal-PL-bane-err')).toBeNull()
   })
 
+  it('his iPhone, 29 Oct 26: after "Type a figure", the same figure typed again over it (0 over 0) clears the words', () => {
+    /* a box showing 0 emptied and Entered says "Type a figure"; one tap selects the 0 and typing 0 over it leaves the
+       box's text as it was, so the browser's input event reaches the box with no change of value — React raises no
+       onChange for that, and the words stayed with 0 typed (his picture: Echo's CCL) */
+    render(<BalancesPage />)
+    fireEvent.keyDown(typeIn('bal-CCL-bane', ''), { key: 'Enter' })
+    expect(screen.getByTestId('bal-CCL-bane-err').textContent).toBe('Type a figure')
+    const b = box('bal-CCL-bane')
+    expect(b.value).toBe('0')
+    fireEvent.input(b, { target: { value: '0' } })
+    expect(screen.queryByTestId('bal-CCL-bane-err')).toBeNull()
+    fireEvent.keyDown(b, { key: 'Enter' }); fireEvent.blur(b)
+    expect(screen.queryByTestId('bal-CCL-bane-err')).toBeNull()
+    expect(box('bal-CCL-bane').value).toBe('0')
+  })
+
   it('A-F3: a figure longer than its box has room for is drawn smaller to fit whole; one that fits keeps the box\'s letters', () => {
     /* the browser's measure stood in: 8px a letter plus 18 of padding, in a box 34 wide inside its padding */
     const sw = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'scrollWidth')
@@ -779,6 +795,16 @@ describe('the phone’s heading row stays solid (D1504, D1505)', () => {
     expect(rule).toMatch(/position:\s*absolute/)
     expect(rule).toMatch(/bottom:\s*100%/)
     expect(rule).toMatch(/background:\s*#0b0d10/)
+  })
+  it('the bar and the lines under it are solid and stand above the list, which keeps what it draws in its box (D1518, D1519)', () => {
+    /* his iPhone picture, 29 Oct 26: the bar had no fill, so the boxes of a row drawn past the list's top showed in its foot */
+    const css = readFileSync('src/leavewar/ui/balances.css', 'utf8').replace(/\r\n/g, '\n').replace(/\/\*[\s\S]*?\*\//g, '')
+    const ruleOf = (sel: string) => { const at = css.indexOf(sel); return at < 0 ? '' : css.slice(at, css.indexOf('}', at)) }
+    const bars = ruleOf('.bp-bar, .bp-lk2, .bp-srchline {')
+    expect(bars).toMatch(/position:\s*relative/)
+    expect(bars).toMatch(/z-index:\s*6/)
+    expect(bars).toMatch(/background-color:\s*inherit/)
+    expect(ruleOf('.bp-hs, .bp-scroll {')).toMatch(/contain:\s*paint/)
   })
 })
 

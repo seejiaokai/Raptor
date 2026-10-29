@@ -1,0 +1,4968 @@
+{
+ "spec": "Leave War M5a",
+ "dist": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\lw-rulings-tripwire-1707d1\\raptor-port\\dist",
+ "all": false,
+ "report": [
+  {
+   "state": "person-desk",
+   "title": "The person window, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-person.mjs",
+    "shot": "m5a-p2-desk-drawn"
+   },
+   "approved": {
+    "picture": "m5a-p2-desk-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 1.25",
+   "parts": [
+    {
+     "part": "window",
+     "label": "the window",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 948,
+        "y": 64,
+        "w": 560,
+        "h": 675
+       },
+       "ink": {
+        "x": 971,
+        "y": 85,
+        "w": 521,
+        "h": 619.5
+       },
+       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal 15 −2.5 12.5 incl. 2 carried fwd · till 31 Dec OIL 0 › MED 0 days CCL 3 Pending −1 War bal 2 FCL 5 PL 2 Pending −0.5 War bal 1.5 EL 4 CL 1 Pending −1 War bal 0 Leave 2026 and ahead ▾ LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending 1",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet.m5p.zz-d"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 948,
+        "y": 65,
+        "w": 560,
+        "h": 675
+       },
+       "ink": {
+        "x": 971,
+        "y": 86,
+        "w": 520,
+        "h": 619.5
+       },
+       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet.nonmodal"
+      }
+     }
+    },
+    {
+     "part": "title-bar",
+     "label": "the window's title bar",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 961,
+        "y": 75,
+        "w": 534,
+        "h": 37
+       },
+       "ink": {
+        "x": 982.7,
+        "y": 85,
+        "w": 508.3,
+        "h": 17
+       },
+       "text": "Ranger ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 961,
+        "y": 76,
+        "w": 534,
+        "h": 37
+       },
+       "ink": {
+        "x": 982.7,
+        "y": 86,
+        "w": 508.3,
+        "h": 17
+       },
+       "text": "Ranger ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      }
+     }
+    },
+    {
+     "part": "lve-tile",
+     "label": "the LVE tile",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 969,
+        "y": 159,
+        "w": 309.2,
+        "h": 109
+       },
+       "ink": {
+        "x": 978,
+        "y": 170.5,
+        "w": 168.3,
+        "h": 90
+       },
+       "text": "LVE 3 taken App bal Pending War bal 15 −2.5 12.5 incl. 2 carried fwd · till 31 Dec",
+       "typed": false,
+       "look": {
+        "fill": "rgb(21, 27, 34)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.r17-t.r17-lve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 969,
+        "y": 160,
+        "w": 309.2,
+        "h": 109
+       },
+       "ink": {
+        "x": 978,
+        "y": 171.5,
+        "w": 179.2,
+        "h": 90
+       },
+       "text": "LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec",
+       "typed": false,
+       "look": {
+        "fill": "rgb(21, 27, 34)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.r17-t.r17-lve"
+      }
+     }
+    },
+    {
+     "part": "year",
+     "label": "the year picker",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1353.3,
+        "y": 398,
+        "w": 131.7,
+        "h": 30
+       },
+       "ink": {
+        "x": 1364.3,
+        "y": 404,
+        "w": 109.7,
+        "h": 17
+       },
+       "text": "2026 and ahead ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.lw-btn.m5-yr"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1352,
+        "y": 399,
+        "w": 133,
+        "h": 30
+       },
+       "ink": null,
+       "text": "2026 and ahead ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "select.m5-yr"
+      }
+     }
+    },
+    {
+     "part": "leave-line",
+     "label": "the first leave line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 969,
+        "y": 440,
+        "w": 518,
+        "h": 34
+       },
+       "ink": {
+        "x": 998.4,
+        "y": 448.5,
+        "w": 478.4,
+        "h": 18
+       },
+       "text": "LL Mon 19 – Wed 21 Jan 3 Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(34, 42, 51)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.ll-row"
+      },
+      "build": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 969,
+        "y": 441,
+        "w": 518,
+        "h": 34
+       },
+       "ink": {
+        "x": 998.4,
+        "y": 449.5,
+        "w": 478.4,
+        "h": 18
+       },
+       "text": "LL Mon 19 – Wed 21 Jan 3 Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(34, 42, 51)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.ll-row.ll-tap"
+      }
+     }
+    },
+    {
+     "part": "leave-box",
+     "label": "the first leave line's leave box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 987,
+        "y": 446.5,
+        "w": 34,
+        "h": 22
+       },
+       "ink": {
+        "x": 998.4,
+        "y": 450,
+        "w": 11.1,
+        "h": 15
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(242, 200, 110, 0.22)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)"
+        ],
+        "corners": [
+         "4px",
+         "4px",
+         "4px",
+         "4px"
+        ],
+        "shadow": "rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset",
+        "color": "rgb(255, 241, 207)",
+        "align": "start",
+        "justify": "center",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.c.k-ll.s-a.ll-box"
+      },
+      "build": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 987,
+        "y": 447.5,
+        "w": 34,
+        "h": 22
+       },
+       "ink": {
+        "x": 998.4,
+        "y": 451,
+        "w": 11.1,
+        "h": 15
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(242, 200, 110, 0.22)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)"
+        ],
+        "corners": [
+         "4px",
+         "4px",
+         "4px",
+         "4px"
+        ],
+        "shadow": "rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset",
+        "color": "rgb(255, 241, 207)",
+        "align": "start",
+        "justify": "center",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.c.k-ll.s-a.ll-box"
+      }
+     }
+    },
+    {
+     "part": "leave-dates",
+     "label": "the first leave line's dates",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 1029,
+        "y": 448.5,
+        "w": 370.8,
+        "h": 18
+       },
+       "ink": {
+        "x": 1029,
+        "y": 448.5,
+        "w": 127.2,
+        "h": 18
+       },
+       "text": "Mon 19 – Wed 21 Jan",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-dates"
+      },
+      "build": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 1029,
+        "y": 449.5,
+        "w": 370.8,
+        "h": 18
+       },
+       "ink": {
+        "x": 1029,
+        "y": 449.5,
+        "w": 128.5,
+        "h": 18
+       },
+       "text": "Mon 19 – Wed 21 Jan",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-dates"
+      }
+     }
+    },
+    {
+     "part": "leave-state",
+     "label": "the first leave line's 'Approved'",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 1423,
+        "y": 449.5,
+        "w": 64,
+        "h": 16
+       },
+       "ink": {
+        "x": 1423,
+        "y": 449.5,
+        "w": 53.8,
+        "h": 16
+       },
+       "text": "Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-state"
+      },
+      "build": {
+       "found": true,
+       "count": 8,
+       "box": {
+        "x": 1423,
+        "y": 450.5,
+        "w": 64,
+        "h": 16
+       },
+       "ink": {
+        "x": 1423,
+        "y": 450.5,
+        "w": 53.8,
+        "h": 16
+       },
+       "text": "Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-state"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "person-desk-top",
+   "title": "The person window, desktop, admin — the page at its top",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-person.mjs",
+    "shot": "m5a-p2-desk-drawn"
+   },
+   "approved": {
+    "picture": "m5a-p2-desk-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 1.25",
+   "parts": [
+    {
+     "part": "window",
+     "label": "the window",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "64",
+       "build": "130",
+       "by": "66px lower",
+       "accepted": "D1497 — under My leave and the gear at the page top, covering neither",
+       "counts": false
+      }
+     ],
+     "picture": "person-desk-top--window.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 948,
+        "y": 64,
+        "w": 560,
+        "h": 675
+       },
+       "ink": {
+        "x": 971,
+        "y": 85,
+        "w": 521,
+        "h": 619.5
+       },
+       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal 15 −2.5 12.5 incl. 2 carried fwd · till 31 Dec OIL 0 › MED 0 days CCL 3 Pending −1 War bal 2 FCL 5 PL 2 Pending −0.5 War bal 1.5 EL 4 CL 1 Pending −1 War bal 0 Leave 2026 and ahead ▾ LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending 1",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet.m5p.zz-d"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 948,
+        "y": 130,
+        "w": 560,
+        "h": 675
+       },
+       "ink": {
+        "x": 971,
+        "y": 151,
+        "w": 520,
+        "h": 619.5
+       },
+       "text": "Ranger ✕ Balances Locked for members LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet.nonmodal"
+      }
+     }
+    },
+    {
+     "part": "title-bar",
+     "label": "the window's title bar",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 961,
+        "y": 75,
+        "w": 534,
+        "h": 37
+       },
+       "ink": {
+        "x": 982.7,
+        "y": 85,
+        "w": 508.3,
+        "h": 17
+       },
+       "text": "Ranger ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 961,
+        "y": 141,
+        "w": 534,
+        "h": 37
+       },
+       "ink": {
+        "x": 982.7,
+        "y": 151,
+        "w": 508.3,
+        "h": 17
+       },
+       "text": "Ranger ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "person-phone",
+   "title": "His own person window, iPhone, member",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-person.mjs",
+    "shot": "m5a-p4-phone-own"
+   },
+   "approved": {
+    "picture": "m5a-p4-phone-own.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "window",
+     "label": "the window",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "68.5",
+       "build": "73",
+       "by": "4.5px lower",
+       "accepted": "D1497 — centred, a little shorter than drawn",
+       "counts": false
+      }
+     ],
+     "picture": "person-phone--window.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 68.5,
+        "w": 382,
+        "h": 738.9
+       },
+       "ink": {
+        "x": 33,
+        "y": 89.5,
+        "w": 342,
+        "h": 683.4
+       },
+       "text": "Ranger ✕ Balances LVE 3 taken App bal Pending War bal 15 −2.5 12.5 incl. 2 carried fwd · till 31 Dec OIL 0 › MED 0 days CCL 3 Pending −1 War bal 2 FCL 5 PL 2 Pending −0.5 War bal 1.5 EL 4 CL 1 Pending −1 War bal 0 Leave 2026 and ahead ▾ LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved approved by Saber · yesterday 08:40 LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Refused refused by Saber · yesterday 08:42 LL Mon 9 Feb 1 Deleted deleted by Saber · yesterday 08:45 LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet.m5p.zz-d"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 73,
+        "w": 382,
+        "h": 728.1
+       },
+       "ink": {
+        "x": 33,
+        "y": 94,
+        "w": 342,
+        "h": 672.6
+       },
+       "text": "Ranger ✕ Balances LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec OIL 0 › MED 0 days CCL Pending − 1 War bal 2 FCL PL Pending − 0.5 War bal 1.5 EL CL Pending − 1 War bal 0 Leave LL Mon 19 – Wed 21 Jan 3 Approved LL Mon 26 – Tue 27 Jan 2 Approved LL Thu 29 Jan, AM 0.5 Pending LL Mon 2 Feb 1 Deleted deleted by Saber · today 09:00 LL Mon 2 Feb 1 Refused refused by Saber · today 09:00 LL Thu 12 – Fri 13 Feb 2 Pending CCL Mon 2 Mar 1 Pending PL Mon 16 Mar, AM 0.5 Pending CL Tue 17 Mar 1 Pending",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet.nonmodal"
+      }
+     }
+    },
+    {
+     "part": "title-bar",
+     "label": "the window's title bar",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 23,
+        "y": 79.5,
+        "w": 356,
+        "h": 37
+       },
+       "ink": {
+        "x": 44.7,
+        "y": 89.5,
+        "w": 330.3,
+        "h": 17
+       },
+       "text": "Ranger ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 23,
+        "y": 84,
+        "w": 356,
+        "h": 37
+       },
+       "ink": {
+        "x": 44.7,
+        "y": 94,
+        "w": 330.3,
+        "h": 17
+       },
+       "text": "Ranger ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd"
+      }
+     }
+    },
+    {
+     "part": "lve-tile",
+     "label": "the LVE tile",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 31,
+        "y": 161,
+        "w": 202.4,
+        "h": 109
+       },
+       "ink": {
+        "x": 40,
+        "y": 172.5,
+        "w": 168.3,
+        "h": 90
+       },
+       "text": "LVE 3 taken App bal Pending War bal 15 −2.5 12.5 incl. 2 carried fwd · till 31 Dec",
+       "typed": false,
+       "look": {
+        "fill": "rgb(21, 27, 34)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.r17-t.r17-lve"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 31,
+        "y": 165.5,
+        "w": 202.4,
+        "h": 109
+       },
+       "ink": {
+        "x": 40,
+        "y": 177,
+        "w": 184.4,
+        "h": 90
+       },
+       "text": "LVE 3 taken App bal Pending War bal −2.5 12.5 incl. carried fwd · till 31 Dec",
+       "typed": false,
+       "look": {
+        "fill": "rgb(21, 27, 34)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.r17-t.r17-lve"
+      }
+     }
+    },
+    {
+     "part": "year",
+     "label": "the year picker",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 237.3,
+        "y": 400,
+        "w": 131.7,
+        "h": 30
+       },
+       "ink": {
+        "x": 248.3,
+        "y": 406,
+        "w": 109.7,
+        "h": 17
+       },
+       "text": "2026 and ahead ▾",
+       "typed": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.lw-btn.m5-yr"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 236,
+        "y": 404.5,
+        "w": 133,
+        "h": 30
+       },
+       "ink": null,
+       "text": "2026 and ahead ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)",
+         "1px solid rgb(58, 68, 82)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "select.m5-yr"
+      }
+     }
+    },
+    {
+     "part": "leave-line",
+     "label": "the first leave line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 31,
+        "y": 442,
+        "w": 340,
+        "h": 34
+       },
+       "ink": {
+        "x": 60.4,
+        "y": 450.5,
+        "w": 300.4,
+        "h": 18
+       },
+       "text": "LL Mon 19 – Wed 21 Jan 3 Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(34, 42, 51)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.ll-row"
+      },
+      "build": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 31,
+        "y": 446.5,
+        "w": 340,
+        "h": 34
+       },
+       "ink": {
+        "x": 60.4,
+        "y": 455,
+        "w": 300.4,
+        "h": 18
+       },
+       "text": "LL Mon 19 – Wed 21 Jan 3 Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(34, 42, 51)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.ll-row.ll-tap"
+      }
+     }
+    },
+    {
+     "part": "leave-box",
+     "label": "the first leave line's leave box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 49,
+        "y": 448.5,
+        "w": 34,
+        "h": 22
+       },
+       "ink": {
+        "x": 60.4,
+        "y": 452,
+        "w": 11.1,
+        "h": 15
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(242, 200, 110, 0.22)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)"
+        ],
+        "corners": [
+         "4px",
+         "4px",
+         "4px",
+         "4px"
+        ],
+        "shadow": "rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset",
+        "color": "rgb(255, 241, 207)",
+        "align": "start",
+        "justify": "center",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.c.k-ll.s-a.ll-box"
+      },
+      "build": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 49,
+        "y": 453,
+        "w": 34,
+        "h": 22
+       },
+       "ink": {
+        "x": 60.4,
+        "y": 456.5,
+        "w": 11.1,
+        "h": 15
+       },
+       "text": "LL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(242, 200, 110, 0.22)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)",
+         "0px none rgb(255, 241, 207)"
+        ],
+        "corners": [
+         "4px",
+         "4px",
+         "4px",
+         "4px"
+        ],
+        "shadow": "rgba(242, 200, 110, 0.85) 0px 0px 0px 1px inset",
+        "color": "rgb(255, 241, 207)",
+        "align": "start",
+        "justify": "center",
+        "font": "700 11px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.c.k-ll.s-a.ll-box"
+      }
+     }
+    },
+    {
+     "part": "leave-dates",
+     "label": "the first leave line's dates",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 91,
+        "y": 450.5,
+        "w": 192.8,
+        "h": 18
+       },
+       "ink": {
+        "x": 91,
+        "y": 450.5,
+        "w": 127.2,
+        "h": 18
+       },
+       "text": "Mon 19 – Wed 21 Jan",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-dates"
+      },
+      "build": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 91,
+        "y": 455,
+        "w": 192.8,
+        "h": 18
+       },
+       "ink": {
+        "x": 91,
+        "y": 455,
+        "w": 128.5,
+        "h": 18
+       },
+       "text": "Mon 19 – Wed 21 Jan",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-dates"
+      }
+     }
+    },
+    {
+     "part": "leave-state",
+     "label": "the first leave line's 'Approved'",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 307,
+        "y": 451.5,
+        "w": 64,
+        "h": 16
+       },
+       "ink": {
+        "x": 307,
+        "y": 451.5,
+        "w": 53.8,
+        "h": 16
+       },
+       "text": "Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-state"
+      },
+      "build": {
+       "found": true,
+       "count": 9,
+       "box": {
+        "x": 307,
+        "y": 456,
+        "w": 64,
+        "h": 16
+       },
+       "ink": {
+        "x": 307,
+        "y": 456,
+        "w": 53.8,
+        "h": 16
+       },
+       "text": "Approved",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ll-state"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "balances-desk",
+   "title": "The Balances page, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+    "shot": "m5b-b1-desk"
+   },
+   "approved": {
+    "picture": "m5b-b1-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 1.25",
+   "parts": [
+    {
+     "part": "switch",
+     "label": "the Balances | Days taken switch",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "217.8",
+       "build": "171",
+       "by": "46.8px less",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "fill",
+       "what": "its fill colour",
+       "drawing": "rgba(20, 24, 29, 0.5)",
+       "build": "rgba(0, 0, 0, 0)",
+       "by": "",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "balances-desk--switch.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 146.5,
+        "w": 217.8,
+        "h": 36
+       },
+       "ink": {
+        "x": 68,
+        "y": 155.5,
+        "w": 151.8,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(20, 24, 29, 0.5)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.seg.zz-seg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 146.5,
+        "w": 171,
+        "h": 36
+       },
+       "ink": {
+        "x": 48,
+        "y": 155.5,
+        "w": 145,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-seg"
+      }
+     }
+    },
+    {
+     "part": "switch-lit",
+     "label": "the switch's lit half",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of switch)",
+       "drawing": "21",
+       "build": "1",
+       "by": "20px further left",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "place",
+       "what": "where it sits (from the top of switch)",
+       "drawing": "9",
+       "build": "1",
+       "by": "8px higher",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "18",
+       "build": "34",
+       "by": "16px more",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "balances-desk--switch-lit.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 56,
+        "y": 155.5,
+        "w": 76.5,
+        "h": 18
+       },
+       "ink": {
+        "x": 68,
+        "y": 155.5,
+        "w": 52.5,
+        "h": 18
+       },
+       "text": "Balances",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 36,
+        "y": 147.5,
+        "w": 77,
+        "h": 34
+       },
+       "ink": {
+        "x": 48,
+        "y": 155.5,
+        "w": 53,
+        "h": 18
+       },
+       "text": "Balances",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "button.on"
+      }
+     }
+    },
+    {
+     "part": "grades-button",
+     "label": "the \"Grades…\" button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1220.4,
+        "y": 146.5,
+        "w": 79.1,
+        "h": 36
+       },
+       "ink": {
+        "x": 1233.4,
+        "y": 155.5,
+        "w": 53.1,
+        "h": 18
+       },
+       "text": "Grades…",
+       "typed": false,
+       "look": {
+        "fill": "rgb(18, 22, 27)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.btn.zz-grades"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1218.9,
+        "y": 146.5,
+        "w": 79.6,
+        "h": 36
+       },
+       "ink": {
+        "x": 1231.9,
+        "y": 155.5,
+        "w": 53.6,
+        "h": 18
+       },
+       "text": "Grades…",
+       "typed": false,
+       "look": {
+        "fill": "rgb(18, 22, 27)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "button.bp-btn"
+      }
+     }
+    },
+    {
+     "part": "ranger-row",
+     "label": "Ranger's row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 436,
+        "w": 1494,
+        "h": 40
+       },
+       "ink": {
+        "x": 36,
+        "y": 445.5,
+        "w": 1235.8,
+        "h": 20
+       },
+       "text": "Ranger IP Senior pilot +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "tr"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 436,
+        "w": 1494,
+        "h": 40
+       },
+       "ink": {
+        "x": 36,
+        "y": 446.5,
+        "w": 1234,
+        "h": 18
+       },
+       "text": "Ranger IP Senior pilot +36 −2.5 12.5 0 › −1 −0.5 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "tr"
+      }
+     }
+    },
+    {
+     "part": "ranger-name",
+     "label": "Ranger's name",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 31,
+        "y": 450,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 36,
+        "y": 450.8,
+        "w": 65.2,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 31,
+        "y": 450,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 36,
+        "y": 450.8,
+        "w": 65.3,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "normal"
+       },
+       "tag": "span.puck.sm"
+      }
+     }
+    },
+    {
+     "part": "hex-name",
+     "label": "Hex's name (a short one)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 31,
+        "y": 2026,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 36,
+        "y": 2026.8,
+        "w": 63.5,
+        "h": 12.3
+       },
+       "text": "Hex C",
+       "typed": false,
+       "look": {
+        "fill": "rgb(31, 110, 82)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(234, 251, 243)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.r.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 31,
+        "y": 2026,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 36,
+        "y": 2026.8,
+        "w": 63.5,
+        "h": 12.3
+       },
+       "text": "Hex C",
+       "typed": false,
+       "look": {
+        "fill": "rgb(31, 110, 82)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(234, 251, 243)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "normal"
+       },
+       "tag": "span.puck.r.sm"
+      }
+     }
+    },
+    {
+     "part": "ranger-app",
+     "label": "Ranger's App bal box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 441.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.4,
+        "y": 446.5,
+        "w": 15.4,
+        "h": 18
+       },
+       "text": "15",
+       "typed": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bx"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 441.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.3,
+        "y": 447.4,
+        "w": 15.5,
+        "h": 16.2
+       },
+       "text": "15 ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      }
+     }
+    },
+    {
+     "part": "ranger-pend",
+     "label": "Ranger's pending figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 591.3,
+        "y": 436,
+        "w": 71.8,
+        "h": 40
+       },
+       "ink": {
+        "x": 626.7,
+        "y": 446.5,
+        "w": 26.5,
+        "h": 18
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.pend.pd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 591.3,
+        "y": 436,
+        "w": 71.8,
+        "h": 40
+       },
+       "ink": {
+        "x": 626.7,
+        "y": 446.5,
+        "w": 26.5,
+        "h": 18
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.bp-pend.pd"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "balances-phone",
+   "title": "The Balances page, iPhone, admin",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+    "shot": "m5b-b2-rest"
+   },
+   "approved": {
+    "picture": "m5b-b2-rest.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "switch",
+     "label": "the Balances | Days taken switch",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "217.8",
+       "build": "171",
+       "by": "46.8px less",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "fill",
+       "what": "its fill colour",
+       "drawing": "rgba(20, 24, 29, 0.5)",
+       "build": "rgba(0, 0, 0, 0)",
+       "by": "",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "balances-phone--switch.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 148.8,
+        "w": 217.8,
+        "h": 36
+       },
+       "ink": {
+        "x": 43,
+        "y": 157.8,
+        "w": 151.8,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(20, 24, 29, 0.5)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.seg.zz-seg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 148.8,
+        "w": 171,
+        "h": 36
+       },
+       "ink": {
+        "x": 23,
+        "y": 157.8,
+        "w": 145,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-seg"
+      }
+     }
+    },
+    {
+     "part": "switch-lit",
+     "label": "the switch's lit half",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of switch)",
+       "drawing": "21",
+       "build": "1",
+       "by": "20px further left",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "place",
+       "what": "where it sits (from the top of switch)",
+       "drawing": "9",
+       "build": "1",
+       "by": "8px higher",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "18",
+       "build": "34",
+       "by": "16px more",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "balances-phone--switch-lit.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 31,
+        "y": 157.8,
+        "w": 76.5,
+        "h": 18
+       },
+       "ink": {
+        "x": 43,
+        "y": 157.8,
+        "w": 52.5,
+        "h": 18
+       },
+       "text": "Balances",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 11,
+        "y": 149.8,
+        "w": 77,
+        "h": 34
+       },
+       "ink": {
+        "x": 23,
+        "y": 157.8,
+        "w": 53,
+        "h": 18
+       },
+       "text": "Balances",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "button.on"
+      }
+     }
+    },
+    {
+     "part": "ranger-row",
+     "label": "Ranger's row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 451.3,
+        "w": 818,
+        "h": 50
+       },
+       "ink": {
+        "x": 12,
+        "y": 460,
+        "w": 772.3,
+        "h": 32.3
+       },
+       "text": "Ranger IP Senior pilot · +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.row"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 451.3,
+        "w": 818,
+        "h": 50
+       },
+       "ink": {
+        "x": 12,
+        "y": 460,
+        "w": 770.5,
+        "h": 32.3
+       },
+       "text": "Ranger IP Senior pilot · +36 −2.5 12.5 0 › −1 −0.5 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bp-row"
+      }
+     }
+    },
+    {
+     "part": "ranger-name",
+     "label": "Ranger's name",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 459.3,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 17,
+        "y": 460,
+        "w": 65.2,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 459.3,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 17,
+        "y": 460,
+        "w": 65.3,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "normal"
+       },
+       "tag": "span.puck.sm"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "taken-phone",
+   "title": "Days taken, iPhone, admin",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+    "shot": "m5b-b3-phone"
+   },
+   "approved": {
+    "picture": "m5b-b3-phone.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "switch",
+     "label": "the Balances | Days taken switch",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "217.8",
+       "build": "171",
+       "by": "46.8px less",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "fill",
+       "what": "its fill colour",
+       "drawing": "rgba(20, 24, 29, 0.5)",
+       "build": "rgba(0, 0, 0, 0)",
+       "by": "",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "taken-phone--switch.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 148.8,
+        "w": 217.8,
+        "h": 36
+       },
+       "ink": {
+        "x": 43,
+        "y": 157.8,
+        "w": 151.8,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(20, 24, 29, 0.5)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.seg.zz-seg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 148.8,
+        "w": 171,
+        "h": 36
+       },
+       "ink": {
+        "x": 23,
+        "y": 157.8,
+        "w": 145,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-seg"
+      }
+     }
+    },
+    {
+     "part": "switch-lit",
+     "label": "the switch's lit half",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of switch)",
+       "drawing": "105.5",
+       "build": "78",
+       "by": "27.5px further left",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "place",
+       "what": "where it sits (from the top of switch)",
+       "drawing": "9",
+       "build": "1",
+       "by": "8px higher",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "18",
+       "build": "34",
+       "by": "16px more",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "taken-phone--switch-lit.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 115.5,
+        "y": 157.8,
+        "w": 91.3,
+        "h": 18
+       },
+       "ink": {
+        "x": 128.5,
+        "y": 157.8,
+        "w": 66.3,
+        "h": 18
+       },
+       "text": "Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 88,
+        "y": 149.8,
+        "w": 92,
+        "h": 34
+       },
+       "ink": {
+        "x": 101,
+        "y": 157.8,
+        "w": 67,
+        "h": 18
+       },
+       "text": "Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "button.on"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "taken-desk",
+   "title": "Days taken, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+    "shot": "m5b-b3-desk"
+   },
+   "approved": {
+    "picture": "m5b-b3-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 1.25",
+   "parts": [
+    {
+     "part": "switch",
+     "label": "the Balances | Days taken switch",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "217.8",
+       "build": "171",
+       "by": "46.8px less",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "fill",
+       "what": "its fill colour",
+       "drawing": "rgba(20, 24, 29, 0.5)",
+       "build": "rgba(0, 0, 0, 0)",
+       "by": "",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "taken-desk--switch.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 146.5,
+        "w": 217.8,
+        "h": 36
+       },
+       "ink": {
+        "x": 68,
+        "y": 155.5,
+        "w": 151.8,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(20, 24, 29, 0.5)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.seg.zz-seg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 146.5,
+        "w": 171,
+        "h": 36
+       },
+       "ink": {
+        "x": 48,
+        "y": 155.5,
+        "w": 145,
+        "h": 18
+       },
+       "text": "Balances Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-seg"
+      }
+     }
+    },
+    {
+     "part": "switch-lit",
+     "label": "the switch's lit half",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of switch)",
+       "drawing": "105.5",
+       "build": "78",
+       "by": "27.5px further left",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "place",
+       "what": "where it sits (from the top of switch)",
+       "drawing": "9",
+       "build": "1",
+       "by": "8px higher",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      },
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "18",
+       "build": "34",
+       "by": "16px more",
+       "accepted": "D1493 — the switch stands as built",
+       "counts": false
+      }
+     ],
+     "picture": "taken-desk--switch-lit.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 140.5,
+        "y": 155.5,
+        "w": 91.3,
+        "h": 18
+       },
+       "ink": {
+        "x": 153.5,
+        "y": 155.5,
+        "w": 66.3,
+        "h": 18
+       },
+       "text": "Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 113,
+        "y": 147.5,
+        "w": 92,
+        "h": 34
+       },
+       "ink": {
+        "x": 126,
+        "y": 155.5,
+        "w": 67,
+        "h": 18
+       },
+       "text": "Days taken",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.14)",
+        "image": "",
+        "edge": [
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "0px none rgb(95, 208, 230)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(95, 208, 230)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "button.on"
+      }
+     }
+    },
+    {
+     "part": "taken-head",
+     "label": "Days taken's heading",
+     "diffs": [
+      {
+       "check": "text",
+       "what": "its words",
+       "drawing": "DAYS TAKEN IN JAN – DEC 26",
+       "build": "DAYS TAKEN IN JAN - DEC 26",
+       "by": "",
+       "accepted": "D1493 — the period's own name, its hyphen as typed",
+       "counts": false
+      }
+     ],
+     "picture": "taken-desk--taken-head.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 383.8,
+        "y": 193,
+        "w": 506,
+        "h": 23
+       },
+       "ink": {
+        "x": 551.9,
+        "y": 201,
+        "w": 170.8,
+        "h": 14
+       },
+       "text": "DAYS TAKEN IN JAN – DEC 26",
+       "typed": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(107, 119, 133)",
+         "0px none rgb(107, 119, 133)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(107, 119, 133)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.4px"
+       },
+       "tag": "th.span.sep"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 383.8,
+        "y": 193,
+        "w": 506,
+        "h": 23
+       },
+       "ink": {
+        "x": 552.4,
+        "y": 201,
+        "w": 169.8,
+        "h": 14
+       },
+       "text": "DAYS TAKEN IN JAN - DEC 26",
+       "typed": false,
+       "look": {
+        "fill": "rgb(17, 22, 28)",
+        "image": "",
+        "edge": [
+         "0px none rgb(107, 119, 133)",
+         "0px none rgb(107, 119, 133)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(34, 42, 51)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(107, 119, 133)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 10px",
+        "spacing": "1.4px"
+       },
+       "tag": "th.span.sep"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "grades-desk",
+   "title": "The Grades window, desktop, admin",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+    "shot": "m5c-c1-grades"
+   },
+   "approved": {
+    "picture": "m5c-c1-grades.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 1.25",
+   "parts": [
+    {
+     "part": "window",
+     "label": "the Grades window",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 829.5,
+        "y": 190.5,
+        "w": 470,
+        "h": 350
+       },
+       "ink": {
+        "x": 844.5,
+        "y": 203.5,
+        "w": 440,
+        "h": 319
+       },
+       "text": "⠿ Grades ✕ GRADE HOLDS AUTO + LVE ON 1 JAN ⠿ Senior pilot 19 people +36 ✕ ⠿ Junior pilot 8 people +33 ✕ ⠿ Senior WSO 9 people +21 ✕ ⠿ Junior WSO 9 people +18 ✕ ⠿ Ops A 3 people +14 ✕ + Grade",
+       "typed": false,
+       "look": {
+        "fill": "rgb(22, 27, 34)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "12px",
+         "12px",
+         "12px",
+         "12px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.6) 0px 10px 30px 0px",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.zgw.zz-gw"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 828.5,
+        "y": 190.5,
+        "w": 470,
+        "h": 350
+       },
+       "ink": {
+        "x": 844.6,
+        "y": 204,
+        "w": 435.6,
+        "h": 318.5
+       },
+       "text": "Grades ✕ GRADE HOLDS AUTO + LVE ON 1 JAN ⠿ 16 people ✕ ⠿ 12 people ✕ ⠿ 7 people ✕ ⠿ 11 people ✕ ⠿ 3 people ✕ + Grade",
+       "typed": false,
+       "look": {
+        "fill": "rgb(22, 27, 34)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)",
+         "1px solid rgb(47, 58, 70)"
+        ],
+        "corners": [
+         "12px",
+         "12px",
+         "12px",
+         "12px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.6) 0px 10px 30px 0px",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet.nonmodal"
+      }
+     }
+    },
+    {
+     "part": "title-bar",
+     "label": "the Grades window's title bar",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 830.5,
+        "y": 191.5,
+        "w": 468,
+        "h": 46
+       },
+       "ink": {
+        "x": 844.5,
+        "y": 203.5,
+        "w": 440,
+        "h": 21
+       },
+       "text": "⠿ Grades ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(42, 50, 60)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.hd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 829.5,
+        "y": 191.5,
+        "w": 468,
+        "h": 46
+       },
+       "ink": {
+        "x": 865.2,
+        "y": 204,
+        "w": 414.3,
+        "h": 20
+       },
+       "text": "Grades ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgb(22, 27, 34)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(42, 50, 60)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bidsheet-hd.gw-hd"
+      }
+     }
+    },
+    {
+     "part": "first-grade",
+     "label": "the first grade",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 830.5,
+        "y": 267.5,
+        "w": 468,
+        "h": 44
+       },
+       "ink": {
+        "x": 844.5,
+        "y": 279.5,
+        "w": 436.7,
+        "h": 19
+       },
+       "text": "⠿ Senior pilot 19 people +36 ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "1px solid rgb(34, 42, 51)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.r.zz-g1"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 829.5,
+        "y": 267.5,
+        "w": 468,
+        "h": 44
+       },
+       "ink": {
+        "x": 844.6,
+        "y": 280.5,
+        "w": 435.6,
+        "h": 17
+       },
+       "text": "⠿ 16 people ✕",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(230, 237, 243)",
+         "0px none rgb(230, 237, 243)",
+         "1px solid rgb(34, 42, 51)",
+         "0px none rgb(230, 237, 243)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(230, 237, 243)",
+        "align": "start",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.gw-r.gw-row"
+      }
+     }
+    },
+    {
+     "part": "first-days",
+     "label": "the first grade's + days box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1126.5,
+        "y": 275,
+        "w": 130,
+        "h": 28
+       },
+       "ink": {
+        "x": 1221.6,
+        "y": 280,
+        "w": 24.9,
+        "h": 18
+       },
+       "text": "+36",
+       "typed": false,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bx"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1125.5,
+        "y": 275,
+        "w": 130,
+        "h": 28
+       },
+       "ink": {
+        "x": 1220.4,
+        "y": 280.9,
+        "w": 25.1,
+        "h": 16.2
+       },
+       "text": "+36 ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)",
+         "1px solid rgb(102, 113, 127)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "balances-phone-locked",
+   "title": "The Balances page locked, iPhone, member",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+    "shot": "m5c-c2-phone-locked"
+   },
+   "approved": {
+    "picture": "m5c-c2-phone-locked.png",
+    "identical": null,
+    "differs": "no approved picture given to compare (DRAWCHECK_APPROVED)"
+   },
+   "size": "402 × 874 at 3",
+   "parts": [
+    {
+     "part": "ranger-row",
+     "label": "Ranger's row",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "477.5",
+       "build": "483.5",
+       "by": "6px lower",
+       "accepted": "D1498 — the View row whole; the drawing's 6px covered it",
+       "counts": false
+      }
+     ],
+     "picture": "balances-phone-locked--ranger-row.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 477.5,
+        "w": 818,
+        "h": 50
+       },
+       "ink": {
+        "x": 12,
+        "y": 486.2,
+        "w": 772.3,
+        "h": 32.3
+       },
+       "text": "Ranger IP Senior pilot · +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(155, 89, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.row.me"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 483.5,
+        "w": 818,
+        "h": 50
+       },
+       "ink": {
+        "x": 12,
+        "y": 492.2,
+        "w": 770.5,
+        "h": 32.3
+       },
+       "text": "Ranger IP Senior pilot · +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(155, 89, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "1px solid rgb(26, 32, 39)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bp-row.me"
+      }
+     }
+    },
+    {
+     "part": "ranger-name",
+     "label": "Ranger's name",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 485.5,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 17,
+        "y": 486.2,
+        "w": 65.2,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 491.5,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 17,
+        "y": 492.2,
+        "w": 65.3,
+        "h": 12.3
+       },
+       "text": "Ranger IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "normal"
+       },
+       "tag": "span.puck.sm"
+      }
+     }
+    },
+    {
+     "part": "ranger-app",
+     "label": "Ranger's App bal figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 7,
+       "box": {
+        "x": 137,
+        "y": 487,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 165,
+        "y": 492.5,
+        "w": 16,
+        "h": 19
+       },
+       "text": "15",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ro"
+      },
+      "build": {
+       "found": true,
+       "count": 7,
+       "box": {
+        "x": 137,
+        "y": 493,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 165,
+        "y": 498.5,
+        "w": 16,
+        "h": 19
+       },
+       "text": "15",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-ro"
+      }
+     }
+    },
+    {
+     "part": "ranger-pend",
+     "label": "Ranger's pending figure (amber)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 245,
+        "y": 492.5,
+        "w": 46,
+        "h": 19
+       },
+       "ink": {
+        "x": 263.5,
+        "y": 492.5,
+        "w": 27.5,
+        "h": 19
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.pend.pd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 245,
+        "y": 498.5,
+        "w": 46,
+        "h": 19
+       },
+       "ink": {
+        "x": 263.5,
+        "y": 498.5,
+        "w": 27.5,
+        "h": 19
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-pend.pd"
+      }
+     }
+    },
+    {
+     "part": "ranger-ccl",
+     "label": "Ranger's CCL figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 399,
+        "y": 487,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 425,
+        "y": 492.5,
+        "w": 8,
+        "h": 19
+       },
+       "text": "3",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ro.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 5,
+       "box": {
+        "x": 403,
+        "y": 493,
+        "w": 40,
+        "h": 30
+       },
+       "ink": {
+        "x": 425,
+        "y": 498.5,
+        "w": 8,
+        "h": 19
+       },
+       "text": "3",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-ro.sm"
+      }
+     }
+    },
+    {
+     "part": "ranger-ccl-pend",
+     "label": "Ranger's CCL pending figure (amber)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 3,
+       "box": {
+        "x": 446,
+        "y": 494.5,
+        "w": 30,
+        "h": 15
+       },
+       "ink": {
+        "x": 446,
+        "y": 494.5,
+        "w": 14.3,
+        "h": 15
+       },
+       "text": "−1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.opd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 446,
+        "y": 501.5,
+        "w": 30,
+        "h": 15
+       },
+       "ink": {
+        "x": 446,
+        "y": 501.5,
+        "w": 12.5,
+        "h": 15
+       },
+       "text": "−1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "balances-desk-locked",
+   "title": "The Balances page locked, desktop, member",
+   "drawing": {
+    "script": "docs/mock/lw-overhaul/full-m5a-balances.mjs",
+    "shot": "m5c-c2-desk-locked"
+   },
+   "approved": {
+    "picture": "m5c-c2-desk-locked.png",
+    "identical": null,
+    "differs": "no approved picture given to compare (DRAWCHECK_APPROVED)"
+   },
+   "size": "1536 × 864 at 1.25",
+   "parts": [
+    {
+     "part": "ranger-row",
+     "label": "Ranger's row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 436,
+        "w": 1494,
+        "h": 40
+       },
+       "ink": {
+        "x": 36,
+        "y": 445.5,
+        "w": 1235.8,
+        "h": 20
+       },
+       "text": "Ranger IP Senior pilot +36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "tr.me"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 21,
+        "y": 436,
+        "w": 1494,
+        "h": 40
+       },
+       "ink": {
+        "x": 36,
+        "y": 446.5,
+        "w": 1234,
+        "h": 18
+       },
+       "text": "Ranger IP Senior pilot + 36 15 2 −2.5 12.5 0 › 3 −1 5 2 −0.5 4 1 −1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)",
+         "0px none rgb(201, 209, 217)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(201, 209, 217)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "tr.me"
+      }
+     }
+    },
+    {
+     "part": "ranger-app",
+     "label": "Ranger's App bal figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 441.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.4,
+        "y": 446.5,
+        "w": 15.4,
+        "h": 18
+       },
+       "text": "15",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ro"
+      },
+      "build": {
+       "found": true,
+       "count": 7,
+       "box": {
+        "x": 394.8,
+        "y": 441.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.4,
+        "y": 446.5,
+        "w": 15.4,
+        "h": 18
+       },
+       "text": "15",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-ro"
+      }
+     }
+    },
+    {
+     "part": "ranger-pend",
+     "label": "Ranger's pending figure (amber)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 591.3,
+        "y": 436,
+        "w": 71.8,
+        "h": 40
+       },
+       "ink": {
+        "x": 626.7,
+        "y": 446.5,
+        "w": 26.5,
+        "h": 18
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(155, 89, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.pend.pd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 591.3,
+        "y": 436,
+        "w": 71.8,
+        "h": 40
+       },
+       "ink": {
+        "x": 626.7,
+        "y": 446.5,
+        "w": 26.5,
+        "h": 18
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(155, 89, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.bp-pend.pd"
+      }
+     }
+    },
+    {
+     "part": "ranger-pend-line",
+     "label": "Ranger's pending figure on his row's line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 591.3,
+        "y": 436,
+        "w": 71.8,
+        "h": 40
+       },
+       "ink": {
+        "x": 626.7,
+        "y": 446.5,
+        "w": 26.5,
+        "h": 18
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(155, 89, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.pend.pd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 591.3,
+        "y": 436,
+        "w": 71.8,
+        "h": 40
+       },
+       "ink": {
+        "x": 626.7,
+        "y": 446.5,
+        "w": 26.5,
+        "h": 18
+       },
+       "text": "−2.5",
+       "typed": false,
+       "look": {
+        "fill": "rgba(155, 89, 255, 0.07)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "1px solid rgb(29, 36, 44)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "right",
+        "justify": "normal",
+        "font": "400 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "td.bp-pend.pd"
+      }
+     }
+    },
+    {
+     "part": "ranger-ccl",
+     "label": "Ranger's CCL figure",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 794.1,
+        "y": 441.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 820.4,
+        "y": 446.5,
+        "w": 7.7,
+        "h": 18
+       },
+       "text": "3",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.ro.sm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 794.3,
+        "y": 441.5,
+        "w": 44,
+        "h": 28
+       },
+       "ink": {
+        "x": 820.6,
+        "y": 446.5,
+        "w": 7.7,
+        "h": 18
+       },
+       "text": "3",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-ro.sm"
+      }
+     }
+    },
+    {
+     "part": "ranger-ccl-pend",
+     "label": "Ranger's CCL pending figure (amber)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 843.1,
+        "y": 446.5,
+        "w": 34,
+        "h": 18
+       },
+       "ink": {
+        "x": 843.1,
+        "y": 446.5,
+        "w": 16.8,
+        "h": 18
+       },
+       "text": "−1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.opd"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 843.3,
+        "y": 446.5,
+        "w": 34,
+        "h": 18
+       },
+       "ink": {
+        "x": 843.3,
+        "y": 446.5,
+        "w": 14.7,
+        "h": 18
+       },
+       "text": "−1",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)",
+         "0px none rgb(242, 200, 121)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(242, 200, 121)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 13.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-opd"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

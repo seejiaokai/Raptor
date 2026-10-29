@@ -913,6 +913,17 @@ the reader's instructions or model change, it is run on every case and a change 
    in a window fixed near the top, and on his iPhone a tapped box there was carried to the very top of the screen. **Lesson:**
    a keyboard walk's roll-call is made by searching the code for every box to type in, page and window, never from memory,
    and each is tapped on the phone.
+15. **A pinned bar checked by where it sits, never by what it lets through (D1518, D1519, the Balances page, 29 Oct 26).** The
+   fix of D1505 measured where the heading strip stood and widened its dark cover, in WebKit and Chromium, where nothing spilled;
+   on his iPhone, zoomed out, a row's boxes showed through the bar above it, which had no fill of its own. **Lesson:** every bar
+   over a scrolling area is checked for its own fill and its place above what scrolls (it stands in front, solid), and the walk
+   forces the spill a test browser does not draw — the list let draw past its edge and slid under the bar — red on the build
+   before the fix (`scripts/handpass/lw-bal-spill-calib.mjs`); and a pinned part is walked zoomed in and out and scrolled.
+16. **A warning cleared only by a change of value (his picture of Echo's CCL, 29 Oct 26).** The walks typed new figures after a
+   refusal; none typed the same figure again. A fresh tap readies a box so typing replaces it (D1080) by rewriting the box, and
+   the same figure typed leaves it as it was, so the box's change never fired and "Type a figure" stayed. **Lesson:** after every
+   refusal or warning at a box, the walk taps away, taps the box afresh and types the figure it shows; and a "tap away" is
+   checked to have left the box — a window's title bar is its drag handle and keeps the keys (`scripts/handpass/lw-typefig-walk.mjs`).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

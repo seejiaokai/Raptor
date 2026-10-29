@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1518 | 29 Oct 26 | Nothing pinned on screen leaks: a bar, a heading row or any other part that stays put while what is under it scrolls covers, edge to edge, everything behind it, with no gap above, below or between pinned parts through which that content shows — at every zoom and every scroll position, on a phone and on a desktop. |
 | D1509 | 29 Oct 26 | The one settings gear everywhere in the app is the Leave War's drawn line gear, the ⚙ symbol going wherever it stands today (the Inputs calendar, the OIL tracker, the Tracker's flex settings, the Scheduler Board's flying-waves gear). |
 | D1508 | 29 Oct 26 | Every calendar icon in the app is Edit Schedule's line calendar, drawn by the app — never the 📅 symbol; and the whole app is looked over again for anything else drawn differently where it should match, icons included, each put to him with pictures before it changes (D1124). |
 | D1507 | 29 Oct 26 | Every settings gear in the app is one design, drawn by the app so every device shows it alike — never the ⚙ symbol, which an iPhone draws as a picture of its own; which gear is put to him with pictures before it is built (recommended: the Leave War's line gear). — changed by D1509 |
