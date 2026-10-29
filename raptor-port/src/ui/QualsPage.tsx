@@ -727,11 +727,6 @@ export function QualsPage() {
         const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
         const cols = cells.map(c => c.getBoundingClientRect().width)
         if (cols.length === 0 || cols.some(w => !w)) return prev
-        /* nothing moved: keep the same state, so a re-measure that finds the row as it was renders nothing (the heading
-           cells are watched below, and a watch reports each cell once as it starts) */
-        const near = (a: number, b: number) => Math.abs(a - b) < 0.05
-        if (prev && near(prev.top, topEdge) && near(prev.left, wr.left) && near(prev.width, wr.width) &&
-          prev.cols.length === cols.length && prev.cols.every((w, i) => near(w, cols[i]))) return prev
         return { top: topEdge, left: wr.left, width: wr.width, cols }
       })
     }
@@ -757,8 +752,8 @@ export function QualsPage() {
        widths, which sets the travel again (the layout effect below). AND THE REAL HEADING CELLS ([QUALS-PINNED-COLS-REFLOW],
        30 Oct 26): a column that changes width INSIDE a table of the same width (the browser sharing the same total out
        again — a desktop wider than the table's least width) moved neither box, so each pinned heading kept its old width
-       until the next pin. Each cell of the heading row is watched as well; a re-measure that finds nothing moved keeps the
-       state it had (pin's guard), so the watch costs no render. The table is an innerHTML string drawn again on every
+       until the next pin. Each cell of the heading row is watched as well. (A guard that kept the old state when nothing
+       had moved was tried and taken out: its break test showed it changed nothing a person sees.) The table is an innerHTML string drawn again on every
        change of the store (an Undo, a rename — the very changes that reflow a column), which puts NEW heading cells in
        place of the watched ones: `watchCells` swaps the watch onto them, here and after each redraw (the effect below,
        on `tableInner`). */

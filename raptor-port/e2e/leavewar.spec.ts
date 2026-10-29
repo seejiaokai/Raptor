@@ -7948,8 +7948,13 @@ test('nothing of the OIL tracker\'s list shows over its tools row, whatever the 
       const out: string[] = []
       for (let y = Math.max(sr.top + 1, wr.top - 118); y < wr.top - 0.4; y += 3) for (const f of [0.06, 0.3, 0.5, 0.7, 0.94]) {
         const x = wr.left + wr.width * f
-        const h = document.elementFromPoint(x, y)
-        if (h && wrap.contains(h)) out.push(`${Math.round(x)},${Math.round(y)}: ${h.className || h.tagName}`)
+        /* down through everything drawn at the point: the list must not be reached before a solid fill (a part over it
+           with no fill of its own answers the point, and the list still shows through it — the break test's find) */
+        for (const e of document.elementsFromPoint(x, y)) {
+          if (wrap.contains(e) && e !== wrap) { out.push(`${Math.round(x)},${Math.round(y)}: ${(e as HTMLElement).className || e.tagName}`); break }
+          const bg = getComputedStyle(e).backgroundColor, a = bg.match(/[\d.]+/g)
+          if (a && (a.length < 4 || +a[3]! >= 0.99)) break
+        }
       }
       grid.style.translate = ''; wrap.style.overflow = ''; wrap.style.contain = ''
       return out

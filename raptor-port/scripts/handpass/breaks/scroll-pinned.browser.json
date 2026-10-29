@@ -79,13 +79,6 @@
    "file": "src/ui/QualsPage.tsx",
    "find": "  useEffect(() => { watchCellsRef.current?.() }, [tableInner])",
    "put": ""
-  },
-  {
-   "n": 12,
-   "name": "Quals' re-measure that finds nothing moved renders nothing (the guard off — a render saved, nothing a person sees)",
-   "file": "src/ui/QualsPage.tsx",
-   "find": "          prev.cols.length === cols.length && prev.cols.every((w, i) => near(w, cols[i]))) return prev",
-   "put": "          false) return prev"
   }
  ]
 }
