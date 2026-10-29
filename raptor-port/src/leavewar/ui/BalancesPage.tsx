@@ -510,7 +510,8 @@ export function BalancesPage() {
     /* a tap on a name opens his person window, as every tap on a person on the Leave War does (D1148; reading 23) */
     name: pid => askLw({ kind: 'person', id: pid }),
     /* OIL is read only here: "0 ›" opens his OIL tracker (D1255) — the OIL tab's page, on his row */
-    oil: pid => { setBalancesUp(false); askLw({ kind: 'oil', id: pid }) },
+    /* the tracker is drawn over this page, which stays up under it, so its ✕ comes back here as he left it (D1503) */
+    oil: pid => askLw({ kind: 'oil', id: pid }),
     grade: (pid, el) => setPick(cur => (cur && cur.pid === pid ? null : { pid, el })),
     /* A SAVE WRITES THE WHOLE ROW AFRESH (narrow read 2): for LVE the App bal box as it then shows and the carried-forward box
        as it then shows, clamped to 0 … the figure; "from" is the running figure shown before (the history line) */
@@ -603,7 +604,16 @@ export function BalancesPage() {
       pin: () => {
         const box = zoomBox.current; if (!box) return []
         const out: { el: HTMLElement; x: boolean; y: boolean }[] = []
-        box.querySelectorAll<HTMLElement>('.bp-cols > span').forEach((s, i) => out.push({ el: s, x: i === 0, y: true }))
+        /* THE WHOLE STRIP IS HELD, not only its words (his recordings, 29 Oct 26 — D1504): with only the words held, the
+           strip's dark fill went with the list, so mid-pinch the rows showed through the words and the strip, carried down,
+           cut a row in two. The strip is held on its line (it still grows and shrinks, and slides sideways, with the
+           figures); inside it, only the name heading is held on its column. */
+        const strip = box.querySelector<HTMLElement>('.bp-cols')
+        if (strip) {
+          out.push({ el: strip, x: false, y: true })
+          const name = strip.querySelector<HTMLElement>(':scope > span')
+          if (name) out.push({ el: name, x: true, y: false })
+        }
         box.querySelectorAll<HTMLElement>('.bp-row > .bp-who, .bp-grp .gl').forEach(el => out.push({ el, x: true, y: false }))
         return out
       },

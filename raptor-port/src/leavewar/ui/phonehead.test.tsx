@@ -358,7 +358,7 @@ describe('the tab row (D1254)', () => {
     expect(lwPage()).toBe('balances')
     expect(screen.getByTestId('lw-tab-balances').tabIndex).toBe(0)
     fireEvent.keyDown(screen.getByTestId('lw-tab-balances'), { key: 'ArrowRight' })
-    expect(lwPage()).toBe('grid')
+    expect(lwPage()).toBe('balances')                                // the tracker is drawn over the page, which stays (D1503)
     expect(screen.getByTestId('oil-sheet')).toBeTruthy()
     expect(screen.getByTestId('oil-tracker').tabIndex).toBe(0)
     fireEvent.keyDown(screen.getByTestId('oil-tracker'), { key: 'ArrowLeft' })

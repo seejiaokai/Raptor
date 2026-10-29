@@ -78,7 +78,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
 
 **Inputs and calendars**
-- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 10, 12, 15, 17, 18) next.
+- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 10, 12, 15, 17, 18) next, with the icons (D1507 one gear, D1508 Edit Schedule's calendar — 29 Oct 26).
 - [TITLE-CHECK-SEEN] — three older small finds left: one line a man in "To go out", a re-accepted request read as a words change, a long OIL Earn name cut on a phone.
 - [ALLAVAIL-CHECK-SEEN] — the ALL AVAIL / Event check's older small finds, none fixed.
 - [CAL-CHECK-SEEN] — the calendar job's small finds still open: a phone on its side, two gesture finds, the windows' five, each man's LATE tag on a shared card.

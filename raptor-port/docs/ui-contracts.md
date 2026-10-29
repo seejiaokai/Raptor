@@ -11816,6 +11816,16 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   sideways; the headings stay on their row; a pinch zooms the list out until every column fits — the OIL tracker's own set-up
   (`ui/pinchzoom.ts wirePinch`: CSS zoom, the headings and names pinned on their axis, `ui/lwzoom.ts` limits). Not testable in
   jsdom (the icons dropped on a narrow phone, the pinch): the walk's.
+- **The heading row stays solid and on top (D1504, D1505, 29 Oct 26 — his iPhone recordings and picture):** at rest the row of
+  column headings sits flush under the page's bar, nothing of the rows showing above it; while the fingers pinch, the whole
+  row — its dark strip with its words — is held on its line, so no row shows through it, and no row is drawn torn or cut
+  part-way. Pinned in `ui/balances.test.tsx`; the pinch itself is the walk's.
+- **OIL from this page comes back to it (D1503, 29 Oct 26 — his recording):** the OIL tracker opened from the Balances page —
+  a person's OIL figure, the OIL tab while the page is up, or the OIL line of a person window opened on it — is drawn over the
+  page, which stays as it was underneath; its ✕ (or Escape) shows the page again as he left it — the same view, place in the
+  list and zoom. Another tab pressed while the tracker is up goes to that tab. **The Approvals page the same (D1506):** the
+  tracker opened over it — a person window's OIL line, the OIL tab — does not end its visit (D1421 narrowed); its ✕ shows the
+  page again with its lit lines, dots, dates and place. Pinned in `ui/balances.test.tsx`.
 - **Grades… (D1486, D1234, D1229):** the Grades window — the next section.
 - **Speed (`docs/performance.md` §E):** a row is memoised on a signature of its own figures, so typing in one box repaints one box
   and a save repaints the rows whose figures moved; the hidden grid is untouched.
