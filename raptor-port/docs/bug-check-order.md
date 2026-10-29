@@ -922,8 +922,9 @@ the reader's instructions or model change, it is run on every case and a change 
 16. **A warning cleared only by a change of value (his picture of Echo's CCL, 29 Oct 26).** The walks typed new figures after a
    refusal; none typed the same figure again. A fresh tap readies a box so typing replaces it (D1080) by rewriting the box, and
    the same figure typed leaves it as it was, so the box's change never fired and "Type a figure" stayed. **Lesson:** after every
-   refusal or warning at a box, the walk taps away, taps the box afresh and types the figure it shows; and a "tap away" is
-   checked to have left the box — a window's title bar is its drag handle and keeps the keys (`scripts/handpass/lw-typefig-walk.mjs`).
+   refusal or warning at a box, the walk taps away, taps the box afresh and types the figure it shows
+   (`scripts/handpass/lw-typefig-walk.mjs`). *Also (the walk's own lesson, not his fault):* a "tap away" is checked to have
+   left the box — a window's title bar is its drag handle and keeps the keys.
 
 ## 8. Making the checks FIND rather than CONFIRM
 

@@ -11827,9 +11827,9 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   row — its dark strip with its words — is held on its line, so no row shows through it, and no row is drawn torn or cut
   part-way. Pinned in `ui/balances.test.tsx`; the pinch itself is the walk's.
 - **Nothing of the rows shows behind the bar or the headings, at every zoom and scroll (D1519, 29 Oct 26 — his picture, zoomed
-  out; the app-wide rule is D1518):** D1505's fix held only at the zoom it was checked at; on his iPhone, zoomed out, the boxes of
-  a row showed in a band between the bar and the headings. Redone so it holds zoomed in and out and scrolled, checked on the
-  iPhone's own browser engine.
+  out; the app-wide rule is D1518):** D1505's fix was checked only in test browsers, which never drew the spill; on his iPhone,
+  zoomed out, the boxes of a row showed through the foot of the bar, just above the headings. The bar, the lock line and the
+  search line are solid and stand above the list, whose paint is held in its box (`ui/balances.css`); a forced spill checks it.
 - **OIL from this page comes back to it (D1503, 29 Oct 26 — his recording):** the OIL tracker opened from the Balances page —
   a person's OIL figure, the OIL tab while the page is up, or the OIL line of a person window opened on it — is drawn over the
   page, which stays as it was underneath; its ✕ (or Escape) shows the page again as he left it — the same view, place in the
