@@ -2705,3 +2705,18 @@ its value and never in innerText.
 **Suggested improvement:** In mockups-on-the-real-app.md step 6, add: draw with the drawing check's recorder beside the script (`raptor-port/scripts/drawcheck/record.mjs`, a part list naming what the build must match), so the record and its whole-screen picture are committed with the drawing; an old drawing is replayed on its own build and its replay proved pixel-identical before its record is trusted.
 
 **Principle:** A picture that was drawn by a script on the real thing is a measurement waiting to be taken; take it when it is drawn, and prove the replay before trusting it.
+
+### Observation 741: A drawing laid over the live page can cover the page's own parts, and a ruling "back to the drawing" then copies the cover
+
+**Status:** OPEN
+**Date:** 29 Oct 26
+**Session context:** the Leave War's iPhone locked Balances page brought back to its approved drawing (a ruled fix found by the drawing check), then M5b's drawings
+**Skill:** brainstorming (its reference mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** "The Method" step 3 (one transform) and "Traps When Injecting Into a Live Page"
+
+**Issue:** The approved drawing of a member's Balances page was a panel laid onto the running app at a fixed place. On the member's screen the row above it (a period picker and a summary box) was a few pixels taller than on the admin's, so the drawn panel covered that row's bottom 6px: two boxes lost their bottom edges. Nobody saw it at approval; the drawing check later reported the built page 6px "lower than drawn", and the owner ruled "back to the drawing". Following the ruling literally would have built the covering into the app. Only cropping the band where the drawing meets the live page showed the cause. A second thing: the approved picture existed only inside a side-by-side sheet, so the check could not confirm the replayed drawing pixel for pixel.
+
+**Suggested improvement:** In "Traps", add: after injecting a panel or window at a measured place, look at its top and bottom edges against the live parts beside it, on every role and size drawn (a part above it may be taller for one role), and assert in the script that no live control's box is overlapped by the injected one. In "Showing It": keep each approved state's picture as its own file beside any side-by-side sheet, so a later measurement can compare against it.
+
+**Principle:** A drawing is evidence of intent, not ground truth: before building "to the drawing" a difference measured against it, look at where the drawing meets the live page — a drawing's own defect is found there, and copying it is a regression.
