@@ -288,6 +288,16 @@ async function walk(world) {
       await press(p, world, dir, ++n, '.nav a[data-page="inputs"]', 'inputs-tab'); await sleep(600)
       await shot(p, dir, ++n, 'inputs-tab-settled')
       check(world, 'T9', 'a page tab with the window open: Inputs opens, the window closed', (await p.evaluate(() => window.CURPAGE)) === 'inputs' && !(await airUp(p)), `page ${await p.evaluate(() => window.CURPAGE)}, traffic ${await airUp(p)}`)
+      /* the third page the window opens from (lesson 12): View-only Sched — its tab, the window from a wave; the page
+         carries no Undo (it changes nothing, D347), so the bar's bell is what a press must meet */
+      await press(p, world, dir, ++n, '.nav a[data-page="viewsched"]', 'viewsched-tab'); await sleep(600)
+      await p.locator('#vWeek [data-air]:visible').first().scrollIntoViewIfNeeded()
+      await press(p, world, dir, ++n, '#vWeek [data-air]:visible', 'traffic-viewsched'); await sleep(400)
+      await shot(p, dir, ++n, 'traffic-viewsched')
+      m = await boxVsBar(p, barSel)
+      const vu = await meets(p, '#notifyBell')
+      check(world, 'T10', 'View-only Sched: the window opens below the top bar, a press at the bell meets the bell', (await airUp(p)) && !!m && m.boxTop >= m.barFoot && vu.found && vu.isIt, `${JSON.stringify(m)} undo ${JSON.stringify(vu)}`)
+      await press(p, world, dir, ++n, '#airDone', 'viewsched-done'); await sleep(300)
     }
   } catch (e) {
     check(world, 'X', 'the walk ran to its end', false, String(e && e.message || e).slice(0, 300))

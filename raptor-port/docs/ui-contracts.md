@@ -1536,6 +1536,32 @@ merely *hidden* is not equivalent: at phone width the burger menu sits
 outside the modal's stacking context and stays keyboard-focusable behind it,
 so a live-but-unpainted board was reachable with ordinary taps.
 
+**Escape closes the board as ✓ Done does (`[BOARD-ESCAPE-CLOSE]`, 30 Oct 26 — `ui/boardescape.ts`; D349's reading (a), the
+design guide §2 "Escape closes what opened last").** Only with the keyboard nowhere or on a button of the board, and only
+with nothing over it. In one of the board's own boxes Escape is the box's: it puts the old time or words back and leaves
+the box (D1011, `textedit.ts routeKeyDown`), the board staying — the next Escape closes it; the board's search box is only
+left. A window, sheet or menu over the board (`windowOverSchedule`, the topmost sheet, the changes and ALL AVAIL windows,
+the bell's list, the OIL list, `.wavemenu` menus, the ⋯ menu, a date box's calendar, any `.floatwin` or veiled
+`.airpop`), a picked seat (`ARM`, put down first) or a drag under way answers first or keeps the board. What stands over
+the board is read as the key goes DOWN (the window's capture phase, before any window closes itself on the same press —
+the bell's list does) and the board closes as it comes back UP at the window, only if no listener stopped or answered it;
+a held key's repeats are not a press. When the board closes by any way out, the keyboard goes back to where it was when
+the board opened (`sheetfocus.ts locate`), or off the board's hidden buttons. Pinned by `ui/boardescape.test.tsx` and
+`e2e/board-escape-traffic.spec.ts`; the day's date that opens the board takes no keyboard (`OUTSTANDING.md`
+`[BOARD-OPEN-BY-KEYS]`).
+
+**The Traffic window leaves the bar over it pressable (`[TRAFFIC-WIN-COVERS-UNDO]`, 30 Oct 26 — `ui/Modals.tsx AirPop`).**
+Its veil (`.airpop.air-below`) starts at the foot of the bar over it — the top bar, or the Scheduler Board's own bar while
+the board is open — measured as it opens, on a resize and whenever the bar's height changes; the box is held inside what
+is left (`max-height:min(80vh,100%)`). Undo and Redo of that bar (`#undoBtn`/`#redoBtn`, `#sbUndo`/`#sbRedo`) work with
+the window open, and the list is read back from the model; the edit log's "before" is taken again whenever a change behind
+the window redraws its list. Any other control of the bar first closes the window (a capture-phase click listener) and
+then does its job — what it opens is drawn under the veil's layer (460). The window closes on a page change and a week
+change (`VIEW_RESET` `'page'`/`'week'`, `pops.ts AIRKEY_NAV`) and follows its wave by the wave's `rid` (`pops.ts
+AIRRID`, `Modals.tsx airGo`) when an undo moves it, closing when the wave is gone. A press on the veil still closes it.
+The other veiled windows (`.airpop`) keep the veil over the bar: `OUTSTANDING.md` `[VEILED-WINDOWS-BAR]`. Pinned by
+`ui/trafficwin.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
+
 **A rendered read-only board has exactly two routes in**, and every
 read-only path (`stoRO`/`mvRO`/`ro`, `sbGrip`'s `.ro` track, `applyDrop`'s
 mode check) is live defence for them: a published-version preview (`pv`), or

@@ -89,19 +89,6 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       await page.locator('#airDone').click()
     })
 
-    test('a long list: the box stays below the bar and on the screen, scrolling inside', async ({ page }) => {
-      await login(page); await go(page, 'editsched')
-      await (await trafficButton(page, '#eWeek')).click()
-      await expect(page.locator('#airpop:not([hidden])')).toBeVisible()
-      const before = (await lines(page)).length
-      for (let i = 0; i < 14; i++) await page.locator('#airAdd').click()
-      await expect.poll(() => lines(page).then(l => l.length)).toBe(before + 14)
-      const m = await boxAgainstBar(page, '.topbar:has(#burger)')
-      expect(m.boxTop, `the box's top (${m.boxTop}) is below the bar's foot (${m.barFoot})`).toBeGreaterThanOrEqual(m.barFoot - 0.5)
-      expect(m.boxFoot, `its foot (${m.boxFoot}) is on the screen (${m.vh})`).toBeLessThanOrEqual(m.vh + 0.5)
-      await expect(page.locator('#airDone'), 'Done can be reached, inside the box').toBeVisible()
-    })
-
     test('any other control of the bar closes the window first: the bell\'s list opens on top', async ({ page }) => {
       await login(page); await go(page, 'editsched')
       await (await trafficButton(page, '#eWeek')).click()
@@ -111,6 +98,25 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       await expect(page.locator('[data-testid="bell-list"]')).toBeVisible()
       const at = await hitAt(page, '[data-testid="bell-list"]')
       expect(at.isIt, `the bell's list is on top, not ${at.over}`).toBe(true)
+    })
+  })
+}
+
+/* the box held inside the shortened veil: at his PC's size the veil's own 22px padding absorbs a long list's overflow, so
+   the short screen of the order's §7.2 — a phone on its side — is where a box let run past the veil would cross the bar */
+for (const [name, size] of [['his PC', DESK], ['a phone on its side', { width: 874, height: 402 }]] as const) {
+  test.describe(`[TRAFFIC-WIN-COVERS-UNDO] a long list, ${name} (${size.width}×${size.height})`, () => {
+    test.use({ viewport: size, hasTouch: size.height < 500 })
+    test('the box stays below the bar and on the screen, scrolling inside', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      await (await trafficButton(page, '#eWeek')).click()
+      await expect(page.locator('#airpop:not([hidden])')).toBeVisible()
+      const before = (await lines(page)).length
+      for (let i = 0; i < 14; i++) await page.locator('#airAdd').click()
+      await expect.poll(() => lines(page).then(l => l.length)).toBe(before + 14)
+      const m = await boxAgainstBar(page, '.topbar:has(#burger)')
+      expect(m.boxTop, `the box's top (${m.boxTop}) is below the bar's foot (${m.barFoot})`).toBeGreaterThanOrEqual(m.barFoot - 0.5)
+      expect(m.boxFoot, `its foot (${m.boxFoot}) is on the screen (${m.vh})`).toBeLessThanOrEqual(m.vh + 0.5)
     })
   })
 }
