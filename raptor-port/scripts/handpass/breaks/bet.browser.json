@@ -1,0 +1,50 @@
+{
+ "about": "[BOARD-ESCAPE-CLOSE] and [TRAFFIC-WIN-COVERS-UNDO] (30 Oct 26) — what only a browser sees: each line broken, the app built, e2e/board-escape-traffic.spec.ts run against it. Run: npx vite preview --port 4190 --strictPort (serving dist), then node scripts/handpass/breaks-browser.mjs scripts/handpass/breaks/bet.browser.json",
+ "spec": "e2e/board-escape-traffic.spec.ts",
+ "grep": "",
+ "port": 4190,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "Escape never closes the board (the closing line cut)",
+   "file": "src/ui/boardescape.ts",
+   "find": "    if (w === 'leave') { (e.target as HTMLElement).blur(); return }\n    closeScheduler()\n",
+   "put": "    if (w === 'leave') { (e.target as HTMLElement).blur(); return }\n"
+  },
+  {
+   "n": 2,
+   "name": "nothing is ever over the board (a window's Escape closes the board under it)",
+   "file": "src/ui/boardescape.ts",
+   "find": "export function overBoard(): boolean {\n",
+   "put": "export function overBoard(): boolean {\n  if (Date.now() > 0) return false\n"
+  },
+  {
+   "n": 3,
+   "name": "the Traffic window's veil covers the bar again (its top not set)",
+   "file": "src/ui/Modals.tsx",
+   "find": "n.style.top = b > 0 ? b + 'px' : ''",
+   "put": "n.style.top = ''"
+  },
+  {
+   "n": 4,
+   "name": "Undo and Redo close the window like any other bar control",
+   "file": "src/ui/Modals.tsx",
+   "find": "      if (t.closest(AIR_KEEPS)) return\n",
+   "put": ""
+  },
+  {
+   "n": 5,
+   "name": "another bar control leaves the window open (the bell's list drawn under the veil)",
+   "file": "src/ui/Modals.tsx",
+   "find": "      if (t.closest(AIR_KEEPS)) return\n      setAirKey(null); notify()\n",
+   "put": "      if (t.closest(AIR_KEEPS)) return\n"
+  },
+  {
+   "n": 6,
+   "name": "the box is not held inside the shortened veil (a long list runs under the bar)",
+   "file": "src/ui/scheduler/08-windows-tools.css",
+   "find": ".airpop.air-below>.airpop-box{max-height:min(80vh,100%)}",
+   "put": ""
+  }
+ ]
+}

@@ -1,0 +1,122 @@
+[
+ {
+  "n": 1,
+  "name": "[BOARD-ESCAPE-CLOSE] Escape never closes the board",
+  "file": "src/ui/boardescape.ts",
+  "find": "    if (w === 'leave') { (e.target as HTMLElement).blur(); return }\n    closeScheduler()\n",
+  "put": "    if (w === 'leave') { (e.target as HTMLElement).blur(); return }\n",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 2,
+  "name": "a held key's repeat counts as a press",
+  "file": "src/ui/boardescape.ts",
+  "find": "e.key === 'Escape' && !e.repeat && !e.isComposing",
+  "put": "e.key === 'Escape' && !e.isComposing",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 3,
+  "name": "a picked seat no longer goes first",
+  "file": "src/ui/boardescape.ts",
+  "find": "if (SBDAY == null || CURPAGE !== 'editsched' || ARM || overBoard()) return ''",
+  "put": "if (SBDAY == null || CURPAGE !== 'editsched' || overBoard()) return ''",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 4,
+  "name": "the board's search box is not left (Escape there does nothing)",
+  "file": "src/ui/boardescape.ts",
+  "find": "    if (t.id === 'searchB' && t.closest('#schedBoard')) return 'leave'\n",
+  "put": "",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 5,
+  "name": "what stands over the board is read as the key comes up, not down (the ⋯ menu closes, then the board too)",
+  "file": "src/ui/boardescape.ts",
+  "find": "    const w = want; want = ''\n",
+  "put": "    const w = e.key === 'Escape' && !e.repeat ? boardEscapeWants(e.target) : ''; want = ''\n",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 6,
+  "name": "the board's flags are not asked (a window over it no longer counts)",
+  "file": "src/ui/boardescape.ts",
+  "find": "  if (windowOverSchedule() || topSheet() || AVAILWIN || CHGWIN || BELLLIST || OILLIST) return true\n",
+  "put": "",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 7,
+  "name": "the keyboard is not brought back when the board closes",
+  "file": "src/ui/SchedBoard.tsx",
+  "find": "      if (to && to.isConnected) to.focus({ preventScroll: true })\n",
+  "put": "",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 8,
+  "name": "the keyboard is left on the closed board's hidden buttons",
+  "file": "src/ui/SchedBoard.tsx",
+  "find": "      else if (inBoard) now!.blur()\n",
+  "put": "",
+  "tests": ["src/ui/boardescape.test.tsx"]
+ },
+ {
+  "n": 9,
+  "name": "[TRAFFIC-WIN-COVERS-UNDO] another bar control leaves the window open",
+  "file": "src/ui/Modals.tsx",
+  "find": "      if (t.closest(AIR_KEEPS)) return\n      setAirKey(null); notify()\n",
+  "put": "      if (t.closest(AIR_KEEPS)) return\n",
+  "tests": ["src/ui/trafficwin.test.tsx"]
+ },
+ {
+  "n": 10,
+  "name": "Undo and Redo close the window like any other bar control",
+  "file": "src/ui/Modals.tsx",
+  "find": "      if (t.closest(AIR_KEEPS)) return\n",
+  "put": "",
+  "tests": ["src/ui/trafficwin.test.tsx"]
+ },
+ {
+  "n": 11,
+  "name": "a page change leaves the window open (setPage's page reset cut)",
+  "file": "src/state/view.ts",
+  "find": "  if(p!==CURPAGE)resetViewState('page');\n",
+  "put": "",
+  "tests": ["src/ui/trafficwin.test.tsx"]
+ },
+ {
+  "n": 12,
+  "name": "a week change leaves the window open",
+  "file": "src/ui/pops.ts",
+  "find": "scopes: ['week', 'page'], reset: () => setAirKey(null) })",
+  "put": "scopes: ['page'], reset: () => setAirKey(null) })",
+  "tests": ["src/ui/trafficwin.test.tsx"]
+ },
+ {
+  "n": 13,
+  "name": "the window does not follow its wave by its id (shows the wave now at its old place)",
+  "file": "src/ui/Modals.tsx",
+  "find": "  if (!AIRRID || (w && w.rid === AIRRID)) return w || null\n",
+  "put": "  return w || null\n",
+  "tests": ["src/ui/trafficwin.test.tsx"]
+ },
+ {
+  "n": 14,
+  "name": "a wave taken away leaves the window open on nothing",
+  "file": "src/ui/Modals.tsx",
+  "find": "  useLayoutEffect(() => { if (AIRKEY != null && !airGo()) setAirKey(null) })\n",
+  "put": "",
+  "tests": ["src/ui/trafficwin.test.tsx"]
+ },
+ {
+  "n": 15,
+  "name": "the edit log's before is not refreshed when a change behind the window redraws it",
+  "file": "src/ui/Modals.tsx",
+  "find": "    if (!body.contains(document.activeElement)) TRWAS = traffic.slice()\n",
+  "put": "",
+  "tests": ["src/ui/trafficwin.test.tsx"]
+ }
+]

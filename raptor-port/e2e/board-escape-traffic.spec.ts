@@ -89,6 +89,19 @@ for (const [name, size] of [['his PC', DESK], ['his iPhone', PHONE]] as const) {
       await page.locator('#airDone').click()
     })
 
+    test('a long list: the box stays below the bar and on the screen, scrolling inside', async ({ page }) => {
+      await login(page); await go(page, 'editsched')
+      await (await trafficButton(page, '#eWeek')).click()
+      await expect(page.locator('#airpop:not([hidden])')).toBeVisible()
+      const before = (await lines(page)).length
+      for (let i = 0; i < 14; i++) await page.locator('#airAdd').click()
+      await expect.poll(() => lines(page).then(l => l.length)).toBe(before + 14)
+      const m = await boxAgainstBar(page, '.topbar:has(#burger)')
+      expect(m.boxTop, `the box's top (${m.boxTop}) is below the bar's foot (${m.barFoot})`).toBeGreaterThanOrEqual(m.barFoot - 0.5)
+      expect(m.boxFoot, `its foot (${m.boxFoot}) is on the screen (${m.vh})`).toBeLessThanOrEqual(m.vh + 0.5)
+      await expect(page.locator('#airDone'), 'Done can be reached, inside the box').toBeVisible()
+    })
+
     test('any other control of the bar closes the window first: the bell\'s list opens on top', async ({ page }) => {
       await login(page); await go(page, 'editsched')
       await (await trafficButton(page, '#eWeek')).click()
