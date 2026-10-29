@@ -22,7 +22,7 @@ import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { addRosterPerson } from '../state/roster-add'
 import { deletePerson } from '../state/person-delete'
 import { installGlobalUndo } from '../state/undo-wire'
-import { globalUndo, globalRedo } from '../undo'
+import { globalUndo, globalRedo, undoState } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import {
   changeAbsenceById, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveCells, placeApproved, recordsAt, setBidStates, setCell, setPeople, setShowSans, type DecideLine,
@@ -221,6 +221,9 @@ describe('the reader’s finding 1: Redo of an Auto-approve placement after his 
     expect(placeApproved([{ personId: id, date: PAST }], 'LL').approved).toBe(1)
     expect(globalUndo().ok).toBe(true)
     expect(deletePerson(id)).toBeNull(); raptorNotify()
+    /* the step is passed over for good, so Redo is not offered (the walk's "Redo offered false") — the timeline's dead-step
+       ask is handed the step itself, whose module tells a war step from an Inputs-page one */
+    expect(undoState().canRedo, 'Redo not offered').toBe(false)
     globalRedo()
     expect(warLeave(id), 'the Redo wrote no approved leave').toHaveLength(0)
   })
@@ -339,6 +342,18 @@ describe('the narrow read’s finding 1: a Delete posting run late — the days 
     expect(decideRequests([line('bane', GAP, 'approved')])[0]).toEqual({ kind: 'refused', why: 'He posted out on 12 Jul: refuse or delete it' })
     expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
   })
+  /* the posting's own date is the first day refused (D1447 R20, "from his posting-out date on"), the day before it approves:
+     the live door and the restore read that first day from one place (sync.ts postingOutFrom) */
+  it('the posting’s own date, 12 Jul: refused live and on Redo; 11 Jul approves', () => {
+    setCell('bane', '2026-07-12', 'LL'); setCell('bane', '2026-07-11', 'LL')
+    expect(decideRequests([line('bane', '2026-07-12', 'approved')])[0]!.kind).toBe('done')
+    expect(globalUndo().ok).toBe(true)
+    postLate()
+    globalRedo()
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 12'), 'the Redo wrote no leave on the posting’s date').toBe(false)
+    expect(decideRequests([line('bane', '2026-07-12', 'approved')])[0]).toEqual({ kind: 'refused', why: 'He posted out on 12 Jul: refuse or delete it' })
+    expect(decideRequests([line('bane', '2026-07-11', 'approved')])[0]!.kind).toBe('done')
+  })
   it('Redo of an approval of his 13 Jul after the posting ran: refused', () => {
     setCell('bane', GAP, 'LL')
     expect(decideRequests([line('bane', GAP, 'approved')])[0]!.kind).toBe('done')
@@ -354,6 +369,26 @@ describe('the narrow read’s finding 1: a Delete posting run late — the days 
     postLate()
     globalUndo()
     expect(onGap()).toBe(false)
+  })
+  /* a request taken back BEFORE the first refused day is no approval the live door refuses, even where the leave it joins
+     runs on into the refused days: his 11 Jul approved beside his approved 12 Jul is one leave of two days, and the live door
+     approves 11 Jul (it is before the posting's date) — so its Undo and Redo go through too */
+  it('his 11 Jul beside his approved 12 Jul: the Undo of its send-back and the Redo of its approval come back after the posting ran late', () => {
+    setCell('bane', '2026-07-12', 'LL'); setCell('bane', '2026-07-11', 'LL')
+    expect(decideRequests([line('bane', '2026-07-12', 'approved')])[0]!.kind).toBe('done')
+    const [a] = decideRequests([line('bane', '2026-07-11', 'approved')])
+    expect(a!.kind).toBe('done')
+    const span = () => warLeave('bane').map((r: any) => [r.date, r.endDate ?? r.date])
+    expect(span()).toEqual([['Jul 11', 'Jul 12']])
+    expect(decideRequests([{ personId: 'bane', to: 'pending', parts: (a as any).parts }])[0]!.kind).toBe('done')
+    expect(span()).toEqual([['Jul 12', 'Jul 12']])
+    postLate()
+    expect(globalUndo().ok, 'the Undo of the send-back').toBe(true)
+    expect(span()).toEqual([['Jul 11', 'Jul 12']])
+    expect(globalUndo().ok).toBe(true)
+    expect(span()).toEqual([['Jul 12', 'Jul 12']])
+    expect(globalRedo().ok, 'the Redo of the approval').toBe(true)
+    expect(span()).toEqual([['Jul 11', 'Jul 12']])
   })
   it('Redo of a place-and-approve on his 13 Jul: refused', () => {
     expect(placeApproved([{ personId: 'bane', date: GAP }], 'LL').approved).toBe(1)
