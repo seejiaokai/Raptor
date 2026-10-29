@@ -10740,7 +10740,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
   Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
-- **The page arrives at its top** (the app keeps the window's scroll from page to page) and, while a month is up,
+- **The page arrives at its top** (since 30 Oct 26 every page does, in `ui/Shell.tsx` — §A page opens at its own top, at the end of this file) and, while a month is up,
   drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
   stands 8px in from each edge.
 - **The top row:** the tabs and the tools (the month's arrows, Today, the switch, the filters, the gear) share one line
@@ -11932,3 +11932,25 @@ Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2
   row, the phone's copy, My leave and the tiles agree. Its tooltip reads "Tap for his leave".
 - **What the drawing did not settle (named to him, D1424):** the keyboard and screen-reader forms of what the drawing drew only
   as pictures; while locked every window shows the padlock, another man's too.
+
+## A page opens at its own top; nothing pinned shows what scrolls under it (30 Oct 26 — [LW-LEAVE-SCROLL-CARRY], D1518)
+
+- **Each page opens at its own place ([LW-LEAVE-SCROLL-CARRY]).** The window's scroll is every page's, so a page that keeps no
+  place of its own came up wherever the one before it was left (Edit Schedule 547px down after a scrolled Leave War; a page after
+  Edit Schedule at the very bottom, the browser holding the parked week "in place" as it left the flow). `ui/Shell.tsx` puts the
+  window at its top in a layout effect on a page change, before the new page paints — except on arriving at the Leave War (it
+  puts back where he was, `LeaveWarPage.tsx savedY`) and on the View-only Sched ↔ Edit Schedule hop (as it was). A page that
+  lands somewhere on purpose lands after it: Quals' focused row, Admin's new-person form, the Inputs card, an Undo's day, the
+  bell's Leave War line. On a phone the menu puts the old page's scroll back only when it closes on the page it opened on
+  (`ui/Drawer.tsx`). Pins: `e2e/leavewar.spec.ts` "a page opened from the Leave War scrolled down opens at its own top…";
+  walked by `scripts/handpass/scroll-pinned-walk.mjs`.
+- **A pinned part is a solid surface in front of what scrolls under it (D1518).** Each is filled in the colour it shows over
+  the page and stands above what scrolls: the Balances page's bar and lines (D1519, above), the OIL tracker's head, tools and
+  open legend or picker as one box `.oil-top` over its list, whose paint is held in its box (`leavewar/ui/oiltracker.css`), the
+  desktop week's scroll bar at the foot and Edit Schedule's CREW rail (`#12272e`, the blue tint it showed), and the phone's
+  parked crew drawer on Edit Schedule and the board (`ui/scheduler/03-week.css`, `13-board-rows-responsive.css`). The desktop
+  week's ‹ › arrows are still frosted glass — his question (`[WEEK-ARROWS-SEE-THROUGH]`). Pins: `e2e/geometry.spec.ts` "the
+  parts pinned over the week are solid (D1518)", `e2e/leavewar.spec.ts` "nothing of the OIL tracker's list shows over its
+  tools row…". **How a pinned part is checked:** `scripts/handpass/pinned-sweep.mjs` on every page, zoomed in and out and
+  scrolled, with a list forced to draw past its box (calibrated red on the Balances build before D1519), and
+  `scripts/handpass/pinned-pinch.mjs` under a pinch — `docs/handpass/2026-10-30-scroll-pinned.md`.
