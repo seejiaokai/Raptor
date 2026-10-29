@@ -816,6 +816,8 @@ Met again 27 Oct 26 (`claude/leave-war-m4-planning-d18224`, M4's build): a `node
 
 Met again 24 Oct 26 (`claude/lw-m3-placing-leave`, the M3 follow-ups): five edit scripts written inline in the shell broke — a template literal's backticks inside a `node -e "…"` were run by bash as commands (two picture names came out blank), a `\\[` in a heredoc reached the regex unescaped, a `"\\n"` became a real line break. Each was redone with the file-writing tool and ran first time. The guard stands as proposed: every multi-line or quote-bearing script goes through the file tool, unconditionally.
 
+Met again 29 Oct 26 (`claude/lw-rulings-tripwire`, the closing records after M5b): a command began `cat > "$TMP/../x" 2>/dev/null;` before a heredoc and stalled two minutes until stopped; redone through the file tool. The guard ([SHELL-SCRIPT-GUARD]) is still what is missing.
+
 ### Observation 610: Before/after pictures of the live app need no second checkout or server
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): WS §8 (the archive leaves the docs out; served by routing inside the test browser, on localhost)
@@ -2800,3 +2802,33 @@ reset mode disables before reusing it.
 **Suggested improvement:** In walk-scripts.md's fit-check trap list: when a surface measures text at open (canvas or layout), apply the wider letters BEFORE opening it, or close and reopen it after. In the mock-up guide: where a drawing styles words through a child element, a drawing-check part names that child for the colour and the column for the place.
 
 **Principle:** A check that changes an input the code reads only once (at mount) must re-run that read, or it tests the stale value, not the code.
+
+### Observation 747: A handoff's "next" named a merge the plan does not have
+
+**Status:** OPEN
+**Date:** 29 Oct 26
+**Session context:** the closing records after the Leave War's M5b went live
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing "Pick up here" / "Next" in the outgoing block
+
+**Issue:** The outgoing block, and the backlog line it copied, said "next by D1250's order: the overhaul's M6". The approved plan had five merges, later split to six (M5a, M5b), and its ruling's full row said M5b was the last. The next chat would have opened a fresh chat for a job that does not exist; it was caught only by reading the plan and the ruling's full row before answering "what is next".
+
+**Suggested improvement:** In the handoff skill's "Pick up here" step: when the next step names a numbered piece of a plan (a merge, a phase, a batch), open the plan and its ruling and confirm that piece exists and is not the last already done; say "the plan is finished" when it is.
+
+**Principle:** A "next step" written from the series' pattern (M1…M5, so M6) is a guess; check it against the plan that defines the series before handing it on.
+
+### Observation 748: A "notes-only" job that edits a check script is not notes-only
+
+**Status:** OPEN
+**Date:** 29 Oct 26
+**Session context:** raising two rulings files' size tripwires after M5b
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** naming how the next job ships
+
+**Issue:** The block called the tripwire job "a notes-only pull request (D1407 — merges by itself once green)". The tripwires live in `raptor-port/scripts/docsize.mjs`, which D1407's list of notes does not include, so the pull request waits for his "merge live". Read as written, the next chat might have merged a script change without his word.
+
+**Suggested improvement:** Where a handoff says how a job ships, name the files it will change and check them against shipping.md's notes-only list; a size-tripwire raise is always a script change.
+
+**Principle:** Whether a change may merge by itself is decided by the files it touches, not by what kind of job it is called.

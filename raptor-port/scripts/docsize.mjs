@@ -259,7 +259,11 @@ const RULING_BYTES = [
      D1402, D1403 and D1366 left as spent; D1414, D1418 and D1419 left as spent at the install, 49,144 bytes then. Room, not a target. */
   /* how-we-work 50500 -> 52000 (28 Oct 26, D1478 — an approved drawing is the sole source of any later drawing of it):
      about 50,550 bytes with its line, none trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 52000],
+  /* how-we-work 52000 -> 54000 (29 Oct 26, the closing records of pull request 588): 52,308 bytes with D1494-D1496 (the
+     drawing check and a mock-up standardised to the app) and D1507-D1509 (M5b's look), merged with code while the size
+     check was deferred (D29); every line live (D136), and what a chat loads is not trimmed without his word (D1262).
+     The spent and restated rows are still [RULINGS-SPENT-PASS]'s. Room, not a target. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 54000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -351,7 +355,12 @@ const RULING_BYTES = [
   /* leave-war 114000 -> 118000 (28 Oct 26, M5a's drawings): 115,140 bytes with D1479-D1489 — his answers to M5a rounds 1
      and 2 (the person window, the Balances page, the leave year's other kinds); every line a live ruling (D136, D141).
      The split or the archive of what the overhaul retires is still [RULINGS-SPENT-PASS]'s. Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 118000],
+  /* leave-war 118000 -> 124000 (29 Oct 26, the closing records of pull request 588): 121,292 bytes with D1490-D1517 -
+     M5a's last answers, M5b (D1499-D1502), his look's finds (D1503-D1511), the Events list as redrawn (D1512-D1516) and
+     D1517 - merged with code while the size check was deferred (D29); every line a live ruling (D136), not trimmed
+     without his word (D1262). Room for M6's first answers; the split or the archive of what the overhaul retires is
+     still [RULINGS-SPENT-PASS]'s. Room, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 124000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);
