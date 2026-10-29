@@ -781,3 +781,23 @@ describe('the phone’s heading row stays solid (D1504, D1505)', () => {
     expect(rule).toMatch(/background:\s*#0b0d10/)
   })
 })
+
+/* the keyboard read's finding 2 (29 Oct 26): the grade list is fixed to the screen and placed under its box — with the keys
+   up (a figure being typed) his iPhone measures from the visible top, so the list went up by the whole slide */
+describe('the grade list stays under its box when the keys have slid the page (his keyboard readout)', () => {
+  it('placed in the screen’s own measure: 167 points of slide do not lift it', () => {
+    const r = (top: number, bottom: number, left = 0, right = 0) =>
+      ({ top, bottom, left, right, width: right - left, height: bottom - top, x: left, y: top, toJSON: () => ({}) }) as DOMRect
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      const s = (this as HTMLElement).style
+      if (s && s.position === 'fixed' && s.top === '0px' && s.left === '0px') return r(-167, -167)
+      if ((this as HTMLElement).dataset?.testid === 'bal-grade-bane') return r(300 - 167, 330 - 167, 140, 230)
+      return r(0, 0)
+    })
+    try {
+      render(<BalancesPage />)
+      fireEvent.click(screen.getByTestId('bal-grade-bane'))
+      expect(parseFloat(screen.getByTestId('bal-grade-list').style.top)).toBe(334)
+    } finally { spy.mockRestore() }
+  })
+})

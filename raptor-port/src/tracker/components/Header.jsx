@@ -6,6 +6,7 @@ import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 import Legend from './Legend.jsx';
 import FlexSettings from './FlexSettings.jsx';
+import { fixedOrigin } from '../../ui/kbscroll';
 
 /* The panel is always in the DOM and hidden with CSS, never conditionally
    rendered. Two reasons: the file name and the save tick-boxes have to stay
@@ -26,11 +27,13 @@ function Menu({ id, label, title, children, icon, active }) {
   useLayoutEffect(() => {
     if (!open || !btn.current) { setAt(null); return; }
     const place = () => {
-      const r = btn.current.getBoundingClientRect();
+      /* in the screen's own measure, not the slid one (his keyboard readout — ui/kbscroll.ts fixedOrigin) */
+      const r = btn.current.getBoundingClientRect(), o = fixedOrigin();
       const w = 200, pad = 6;
       setAt({
         left: Math.round(Math.max(pad, Math.min(r.left, innerWidth - w - pad))),
-        top: Math.round(r.bottom + 5),
+        top: Math.round(r.bottom - o.top + 5),
+        /* the room below: the window's height is read from the visible top too (his readout: 684 → 517), so the old sum stands */
         maxHeight: Math.round(innerHeight - r.bottom - 5 - pad),
       });
     };
@@ -108,7 +111,7 @@ function HeaderSearch() {
     if (!open) { setAt(null); return; }
     const place = () => {
       const h = document.querySelector('header');
-      setAt({ top: Math.round(h ? h.getBoundingClientRect().bottom + 4 : 44) });
+      setAt({ top: Math.round(h ? h.getBoundingClientRect().bottom - fixedOrigin().top + 4 : 44) });
     };
     place();
     addEventListener('resize', place);

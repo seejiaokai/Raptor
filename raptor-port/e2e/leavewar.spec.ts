@@ -7719,9 +7719,13 @@ test('on a phone the grid shown again after Approvals draws the month in view by
   await page.evaluate(() => {
     document.addEventListener('scroll', e => { if ((e.target as Element)?.classList?.contains('mx-wrap')) e.stopImmediatePropagation() }, true)
   })
+  /* OIL and its ✕ come back to the Approvals page now (D1506, 29 Oct 26 — the tracker is drawn over the page that is up),
+     so the grid is shown again by the Grid tab, as he would go back to it */
   await page.getByTestId('oil-tracker').click()
   await page.waitForTimeout(800)
   await page.getByTestId('oil-close').click()
+  await expect(page.getByTestId('approvals-page'), 'OIL’s close comes back to Approvals (D1506)').toBeVisible()
+  await page.getByTestId('lw-tab-grid').click()
   await expect.poll(seen, { message: 'the days in view drawn, no stripes, without a touch', timeout: 4000 }).toEqual(expect.objectContaining({ stripes: 0 }))
   expect((await seen()).days, 'drawn days in view').toBeGreaterThan(0)
 })

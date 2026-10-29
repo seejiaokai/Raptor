@@ -31,6 +31,7 @@ import {
 } from '../state/store'
 import { puckHtml } from '../sync'
 import { wirePinch } from '../../ui/pinchzoom'
+import { fixedOrigin } from '../../ui/kbscroll'
 import { askLw, setBalancesUp } from './lwnav'
 import { LW_ZOOM_MAX, roundZoom } from './lwzoom'
 import { rowInWindow } from './Matrix'
@@ -422,7 +423,8 @@ function GradePick({ pid, anchor, phone, onClose }: { pid: string; anchor: HTMLE
       role="menu"
       aria-label="Grade"
       data-testid="bal-grade-list"
-      style={{ left: Math.max(8, Math.min(r.left, window.innerWidth - (phone ? 228 : 212))), top: r.bottom + 4 }}
+      /* its top in the screen's own measure, not the one the keys slid (his keyboard readout — ui/kbscroll.ts fixedOrigin) */
+      style={{ left: Math.max(8, Math.min(r.left, window.innerWidth - (phone ? 228 : 212))), top: r.bottom - fixedOrigin().top + 4 }}
       onKeyDown={key}
     >
       {list.map(g => (

@@ -29,6 +29,7 @@ import { OILWAIT, OILBAR } from '../state/view'
 import { OilConfirm } from './OilConfirm'
 import { WAIT_WORDS, answerOilWait, leaveOilWait, oilBarAgain, oilBarOk } from './oilwait'
 import { useVersion } from './useStore'
+import { fixedOrigin } from './kbscroll'
 
 export function OilWait() {
   useVersion()
@@ -103,7 +104,8 @@ function Bar({ top }: { top?: boolean }) {
     const bar = top ? n.closest('.topbar') as HTMLElement | null : null
     const place = () => {
       fitOneLine(n)
-      if (bar) n.style.top = `${Math.max(0, Math.round(bar.getBoundingClientRect().bottom) - n.offsetHeight - (parseFloat(getComputedStyle(bar).borderBottomWidth) || 0))}px`
+      /* the bar's foot in the screen's own measure, not the slid one (his keyboard readout — kbscroll.ts fixedOrigin) */
+      if (bar) n.style.top = `${Math.max(0, Math.round(bar.getBoundingClientRect().bottom - fixedOrigin().top) - n.offsetHeight - (parseFloat(getComputedStyle(bar).borderBottomWidth) || 0))}px`
     }
     place()
     window.addEventListener('resize', place)
