@@ -142,18 +142,27 @@ describe('D1510 — on Quals only an admin ticks Management; a member keeps ever
    that changes what his row's admin owns — Management (D1510), the callsign (D218), the archive mark and the placeholder
    mark (data-model.md §11) — rolls back whole, even when it skips the Quals write */
 describe('D1510 / D218 — the commit gate refuses a member\'s own-row change of what the admin owns', () => {
-  const cases: [string, () => void, () => any][] = [
-    ['Management', () => { (PEOPLE as any).bane.quals.mgmt = !(PEOPLE as any).bane.quals.mgmt }, () => !!(PEOPLE as any).bane.quals.mgmt],
-    ['the callsign', () => { (PEOPLE as any).bane.cs = 'Zulu9' }, () => (PEOPLE as any).bane.cs],
-    ['the archive mark', () => { (PEOPLE as any).bane.archived = true }, () => !!(PEOPLE as any).bane.archived],
-    ['the placeholder mark', () => { (PEOPLE as any).bane.special = true }, () => !!(PEOPLE as any).bane.special],
+  /* [what, the write, what proves it, the gate's own words — so the test proves THIS rule refused (the code read)] */
+  const cases: [string, () => void, () => any, string][] = [
+    ['Management', () => { (PEOPLE as any).bane.quals.mgmt = !(PEOPLE as any).bane.quals.mgmt }, () => !!(PEOPLE as any).bane.quals.mgmt, 'his Management tick'],
+    ['the callsign', () => { (PEOPLE as any).bane.cs = 'Zulu9' }, () => (PEOPLE as any).bane.cs, 'his callsign'],
+    ['the archive mark', () => { (PEOPLE as any).bane.archived = true }, () => !!(PEOPLE as any).bane.archived, 'his archive mark'],
+    ['the placeholder mark', () => { (PEOPLE as any).bane.special = true }, () => !!(PEOPLE as any).bane.special, 'his placeholder mark'],
+    /* the security read (29 Oct 26): deleting a person is the admin's too (§11), and so are its marks and the archive's */
+    ['the delete mark', () => { (PEOPLE as any).bane.deleted = true }, () => !!(PEOPLE as any).bane.deleted, 'his delete mark'],
+    ['the delete date', () => { (PEOPLE as any).bane.deletedFrom = '2026-01-05' }, () => String((PEOPLE as any).bane.deletedFrom ?? ''), 'his delete mark'],
+    ['the archive date', () => { (PEOPLE as any).bane.archivedOn = '2026-01-05' }, () => String((PEOPLE as any).bane.archivedOn ?? ''), 'who archived him'],
+    ['who archived him', () => { (PEOPLE as any).bane.archivedBy = 'po' }, () => String((PEOPLE as any).bane.archivedBy ?? ''), 'who archived him'],
+    /* …and a callsign of another shape that prints the same is still a change (the security read's finding 4) */
+    ['the callsign\'s shape', () => { (PEOPLE as any).bane.cs = [(PEOPLE as any).bane.cs] }, () => JSON.stringify((PEOPLE as any).bane.cs), 'his callsign'],
   ]
-  for (const [what, write, read] of cases) {
+  for (const [what, write, read, said] of cases) {
     it(`${what}: rolled back`, () => {
       asMember('bane')
       const before = read()
       const r: any = commitPeopleEdit(write, { owner: 'bane' })
       expect(r.ok).toBe(false)
+      expect(String(r.message)).toBe(`member-writes-own: ${said} (people/bane)`)
       expect(read()).toBe(before)
     })
     it(`${what}: an admin's command stands`, () => {

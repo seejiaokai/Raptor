@@ -360,11 +360,15 @@ export const mayRenameCallsign = (): boolean => roleOf() === null || isAdmin()
    group, first on the war, from this tick (D1502). No session → true */
 export const mayTickManagement = (): boolean => roleOf() === null || isAdmin()
 /* what a member's own Quals row may not change, read by the commit gate below (data-model.md §11, the Person row):
-   the callsign (D218), the Management tick (D1510), the archive and placeholder marks */
+   the callsign (D218 — compared whole, so another shape that prints the same is still a change), the Management tick
+   (D1510 — truthy, as the Leave War reads it), the archive and placeholder marks, and — the security read of 29 Oct 26 —
+   the delete mark and its date, and who archived him and when: archiving and deleting a person are the admin's */
 const OWN_ROW_ADMIN_ONLY: [string, (p: any) => any][] = [
-  ['his callsign', p => String(p?.cs ?? '')],
+  ['his callsign', p => JSON.stringify(p?.cs ?? null)],
   ['his Management tick', p => !!p?.quals?.mgmt],
   ['his archive mark', p => !!p?.archived],
+  ['who archived him', p => JSON.stringify([p?.archivedBy ?? null, p?.archivedOn ?? null])],
+  ['his delete mark', p => JSON.stringify([!!p?.deleted, p?.deletedFrom ?? null])],
   ['his placeholder mark', p => !!p?.special],
 ]
 /* adding, archiving, restoring a person; the LoX column list. No session → true (the
