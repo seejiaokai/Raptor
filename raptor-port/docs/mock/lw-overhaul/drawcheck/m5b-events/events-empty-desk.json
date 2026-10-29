@@ -1,0 +1,758 @@
+{
+ "state": "events-empty-desk",
+ "drawing": {
+  "script": "scripts/handpass/mock-events-split.mjs",
+  "shot": "D-F-empty"
+ },
+ "recorded": "2026-10-29T11:03:10.894Z",
+ "drawnOn": "claude/leave-war-m5b-iphone-balances-1402b7 at 9f90febe8",
+ "checkout": "9f90febe8",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 1.25,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "window": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 208,
+    "y": 411,
+    "w": 1120,
+    "h": 439
+   },
+   "ink": {
+    "x": 223,
+    "y": 432,
+    "w": 1088,
+    "h": 387.5
+   },
+   "text": "EVENTS JAN - DEC 26 ✕ ＋ Event Edit presets Squadron events · 0 No squadron events in JAN – DEC 26. Holidays · 7 Thu 1 Jan New Year's Day Public holiday ✕ Tue 17 – Wed 18 Feb Chinese New Year Public holiday ✕ Fri 3 Apr Good Friday Public holiday ✕ Fri 1 May Labour Day Public holiday ✕ Sun 9 Aug National Day Public holiday ✕ Mon 10 Aug Off — National Day Off day ✕ Fri 25 Dec Christmas Day Public holiday ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet"
+  },
+  "title": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 242.7,
+    "y": 432,
+    "w": 57.5,
+    "h": 17
+   },
+   "ink": {
+    "x": 242.7,
+    "y": 432,
+    "w": 57.5,
+    "h": 17
+   },
+   "text": "EVENTS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 13px",
+    "spacing": "1.3px"
+   },
+   "tag": "span.who"
+  },
+  "period": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 310.3,
+    "y": 434,
+    "w": 72.3,
+    "h": 15
+   },
+   "ink": {
+    "x": 310.3,
+    "y": 434,
+    "w": 72.3,
+    "h": 15
+   },
+   "text": "JAN - DEC 26",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "0.66px"
+   },
+   "tag": "span.dt"
+  },
+  "add": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 223,
+    "y": 467,
+    "w": 68,
+    "h": 28
+   },
+   "ink": {
+    "x": 234,
+    "y": 476,
+    "w": 46,
+    "h": 12
+   },
+   "text": "＋ Event",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn"
+  },
+  "presets": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1227.8,
+    "y": 468,
+    "w": 85.2,
+    "h": 26
+   },
+   "ink": {
+    "x": 1238.8,
+    "y": 473,
+    "w": 63.2,
+    "h": 16
+   },
+   "text": "Edit presets",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.evtypes-open"
+  },
+  "sq-head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 221,
+    "y": 505,
+    "w": 539,
+    "h": 32
+   },
+   "ink": {
+    "x": 223,
+    "y": 517,
+    "w": 137,
+    "h": 14
+   },
+   "text": "Squadron events · 0",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 10px",
+    "spacing": "1.2px"
+   },
+   "tag": "div.gs-sec.mock-sec"
+  },
+  "hol-head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 776,
+    "y": 505,
+    "w": 539,
+    "h": 32
+   },
+   "ink": {
+    "x": 778,
+    "y": 517,
+    "w": 81,
+    "h": 14
+   },
+   "text": "Holidays · 7",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 10px",
+    "spacing": "1.2px"
+   },
+   "tag": "div.gs-sec.mock-sec"
+  },
+  "hol-list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 778,
+    "y": 537,
+    "w": 535,
+    "h": 296
+   },
+   "ink": {
+    "x": 790,
+    "y": 551,
+    "w": 505,
+    "h": 268.5
+   },
+   "text": "Thu 1 Jan New Year's Day Public holiday ✕ Tue 17 – Wed 18 Feb Chinese New Year Public holiday ✕ Fri 3 Apr Good Friday Public holiday ✕ Fri 1 May Labour Day Public holiday ✕ Sun 9 Aug National Day Public holiday ✕ Mon 10 Aug Off — National Day Off day ✕ Fri 25 Dec Christmas Day Public holiday ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.hol-list.ev-list.mock-part"
+  },
+  "h1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 779,
+    "y": 538,
+    "w": 533,
+    "h": 42
+   },
+   "ink": {
+    "x": 790,
+    "y": 551,
+    "w": 505,
+    "h": 16
+   },
+   "text": "Thu 1 Jan New Year's Day Public holiday ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line.is-past"
+  },
+  "h1-when": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 790,
+    "y": 551,
+    "w": 163,
+    "h": 16
+   },
+   "ink": {
+    "x": 790,
+    "y": 551,
+    "w": 52.2,
+    "h": 16
+   },
+   "text": "Thu 1 Jan",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-when"
+  },
+  "h1-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 963,
+    "y": 551,
+    "w": 156,
+    "h": 16
+   },
+   "ink": {
+    "x": 963,
+    "y": 551,
+    "w": 86.4,
+    "h": 16
+   },
+   "text": "New Year's Day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-name"
+  },
+  "h1-kind": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1129,
+    "y": 551,
+    "w": 96,
+    "h": 16
+   },
+   "ink": {
+    "x": 1144,
+    "y": 551,
+    "w": 76.9,
+    "h": 16
+   },
+   "text": "Public holiday",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.off"
+  },
+  "h1-pen": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1243,
+    "y": 548,
+    "w": 22,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-gdel.mock-ctl.mock-pen"
+  },
+  "h1-x": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1279,
+    "y": 548,
+    "w": 22,
+    "h": 22
+   },
+   "ink": {
+    "x": 1286,
+    "y": 553.5,
+    "w": 9,
+    "h": 12
+   },
+   "text": "✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(240, 85, 95, 0.6)",
+     "1px solid rgba(240, 85, 95, 0.6)",
+     "1px solid rgba(240, 85, 95, 0.6)",
+     "1px solid rgba(240, 85, 95, 0.6)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 180, 185)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-gdel.mock-ctl"
+  },
+  "h6": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 779,
+    "y": 748,
+    "w": 533,
+    "h": 42
+   },
+   "ink": {
+    "x": 790,
+    "y": 761.5,
+    "w": 505,
+    "h": 16
+   },
+   "text": "Mon 10 Aug Off — National Day Off day ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line"
+  },
+  "h6-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 963,
+    "y": 761.5,
+    "w": 156,
+    "h": 16
+   },
+   "ink": {
+    "x": 963,
+    "y": 761.5,
+    "w": 115.1,
+    "h": 16
+   },
+   "text": "Off — National Day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-name"
+  },
+  "h6-kind": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1129,
+    "y": 761.5,
+    "w": 96,
+    "h": 16
+   },
+   "ink": {
+    "x": 1144,
+    "y": 761.5,
+    "w": 40.5,
+    "h": 16
+   },
+   "text": "Off day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.free"
+  },
+  "sq-empty": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 221,
+    "y": 541,
+    "w": 539,
+    "h": 44
+   },
+   "ink": {
+    "x": 225,
+    "y": 555,
+    "w": 203.2,
+    "h": 16
+   },
+   "text": "No squadron events in JAN – DEC 26.",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "p.hol-empty"
+  }
+ },
+ "approved": {
+  "picture": "D-F-empty.png",
+  "identical": true
+ }
+}

@@ -218,7 +218,10 @@ export function installProbeBridge() {
     w.lwSetCell = (p: string, d: string, code: string) => lwSetCell(p, d, code)
     w.lwSetPostOut = (p: string, from: string | null) => lwSetPostOut(p, from)
     /* a word on a day's Event line of the war on screen ("PH", "Off day") — what the calendars and Days show as a tag */
-    w.lwSetDayEvent = (d: string, line: number, text: string) => lwSetDayEvent(d, line, text)
+    /* …with its kind where a drawing names one ('off', 'free', 'nolv', 'work' — the Events list's drawing check, D1516) */
+    w.lwSetDayEvent = (d: string, line: number, text: string, kind?: 'off' | 'free' | 'nolv' | 'work' | null) => lwSetDayEvent(d, line, text, kind ?? null)
+    /* every event of the war on screen, as the Events list reads them (its drawing check stages a year of its own) */
+    w.lwEventDays = () => { const p = lwGetState().period; return { bands: p.bands.length, days: p.days.filter(d => d.events.some(Boolean)).map(d => [d.date, d.events]) } }
     /* a leave period, as the war's own "+ New" sheet makes one — a test of a year covered only in part starts from it */
     w.lwCreateWar = (name: string, start: string, end: string) => lwCreateWar(name, start, end)
     /* a Leave War counter, saved through the SAME writer the "+ Counter" form uses — as an admin, the role the test had

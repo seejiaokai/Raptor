@@ -1027,9 +1027,62 @@
    `.hol-list` / `.hol-line`: the date 42%, the name the rest), its kind's mark (matrix.css `.evpeek-kind`) at the end. */
 .bidsheet .bidsheet-row.ev-top { margin: 6px 2px 10px; }
 .bidsheet .ev-top .evtypes-open { margin-left: auto; }
+/* SPLIT, AND EACH LINE'S OWN EDIT AND DELETE (his D1512–D1516; the drawing of record: mock-events-split.mjs's F- frames,
+   whose comment block names each value below). On a desktop the window twice as wide (560 → 1120) and the two lists side
+   by side, 16px apart; on the Leave War's phone (ui/phone.ts, 700 — where the window is a full page) one under the
+   other, 6px apart, and each line's date stands over its name. */
+#page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(1120px, calc(100vw - 24px)); }
+/* (each list keeps the one list's old 2px sides and 4px foot, as the drawing's lists do; an empty one's line the Holidays
+   list's own `.hol-empty`) */
+.bidsheet .ev-split { display: flex; gap: 16px; align-items: flex-start; }
 .bidsheet .ev-list { margin: 0 2px 4px; }
-.bidsheet .ev-list .evpeek-kind { flex: 0 0 auto; margin-left: auto; }
-.bidsheet .ev-empty { margin: 4px 4px 8px; }
+.bidsheet .ev-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+/* the line: the date (as wide as the widest date the app can write + 12px — EventsSheet.tsx measures it), the name, the
+   kind's column (as wide as its widest word, D1513), then the pencil and the ✕ */
+.bidsheet .ev-line { align-items: center; }
+.bidsheet .ev-tx { display: contents; }
+.bidsheet .ev-line .hol-when { flex: 0 0 var(--ev-dw, 42%); white-space: nowrap; }
+.bidsheet .ev-line .ev-kind { flex: 0 0 var(--ev-kw, auto); justify-content: flex-start; }
+.bidsheet .ev-kind.none::before { visibility: hidden; }
+/* asking (fixes 1 and 4): "Delete — sure?" in the kind's place, in the Leave War's pale red, the square gone */
+.bidsheet .ev-kind.sure { color: #FBB4B9; font-weight: 700; }
+.bidsheet .ev-kind.sure::before { display: none; }
+/* the two buttons: the Settings window's small square button (`.set-gdel` — 22px, a 5px corner), 14px apart, their edge
+   the app's --ink-3 at .65 (about 3:1 on the line — fix 3); the ✕ the Leave War's red cross (D676, matrix.css
+   `.mrow-btn.del`), armed in place solid red (`.creset.cf-del.arm`); each a 40px tap area round its drawn box */
+.bidsheet .ev-ctls { display: inline-flex; gap: 14px; margin-left: 8px; flex: none; }
+.bidsheet .ev-ctl {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: 1px solid rgba(138, 150, 163, .65);
+  border-radius: 5px;
+  color: var(--ink-2);
+  font-size: 11px;
+  cursor: pointer;
+}
+.bidsheet .ev-ctl::before { content: ''; position: absolute; inset: -9px; }
+.bidsheet .ev-pen:hover { border-color: var(--ink-2); color: var(--ink); }
+.bidsheet .ev-x { color: #FBB4B9; border-color: rgba(240, 85, 95, .6); }
+.bidsheet .ev-x:hover { border-color: #F0555F; color: #FFD9DC; }
+.bidsheet .ev-x.arm { background: #F0555F; border-color: #F0555F; color: #1A0508; }
+.bidsheet .ev-ctl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 700px) {
+  .bidsheet .ev-split { flex-direction: column; align-items: stretch; gap: 6px; }
+  .bidsheet .ev-line { gap: 8px; }
+  .bidsheet .ev-tx { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; gap: 2px; }
+  /* (the line's own 42% / 1 1 0 bases collapse them in a column) */
+  .bidsheet .ev-tx .hol-when, .bidsheet .ev-tx .hol-name { flex: none; }
+  .bidsheet .ev-tx .hol-name { white-space: normal; }
+}
+/* the note after a delete (fix 2): the app's bar with a button (`.secdef-snack`, as "Set as default"), one line on a
+   phone too — as wide as its words, never wider than the screen less its margins; drawn over the full-page window */
+#page-leavewar .secdef-snack.ev-undo { flex-wrap: nowrap; gap: 14px; white-space: nowrap; width: max-content; max-width: calc(100vw - 32px); }
 /* Reset counters is destructive — quiet at rest, and matrix.css `.rtbtn.arm`
    turns it red once armed. */
 .bidsheet .rtbtn.set-danger { color: var(--ink-3); }

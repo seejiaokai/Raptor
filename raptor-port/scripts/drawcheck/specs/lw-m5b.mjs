@@ -46,15 +46,6 @@ async function management(page) {
   await page.keyboard.press('Escape'); await page.waitForTimeout(300)
   if (!(await page.locator(q('settings-sheet')).isVisible())) return 'staging: Escape closed Settings, not only the palette'
 }
-// the drawing's four events, written through the store's own writer as the drawing wrote them (the localhost bridge)
-async function stageEvents(page) {
-  const put = (d, line, t) => page.evaluate(([d, line, t]) => window.lwSetDayEvent(d, line, t), [d, line, t])
-  await put('2026-01-23', 0, 'Off day')
-  for (const d of ['2026-02-09', '2026-02-10', '2026-02-11', '2026-02-12', '2026-02-13']) await put(d, 0, 'EX SHIELD')
-  for (const d of ['2026-03-02', '2026-03-03', '2026-03-04', '2026-03-05', '2026-03-06']) await put(d, 1, 'No Leave')
-  await put('2026-03-16', 0, 'SC')
-  await page.waitForTimeout(600)
-}
 async function holidays(page, phone) {
   await page.click(q('settings-open')); await page.waitForTimeout(500)
   await page.click(q('settings-days')); await page.waitForTimeout(900)
@@ -117,20 +108,6 @@ const settingsSansParts = [
   ...settingsTop,
   P('sans-row', 'the SANS row at the foot', q('grow-SANS'), q('grow-SANS'), ['place', 'size', ...LOOK], { rel: 'window' }),
 ]
-const E = q('settings-sheet'), EB = q('events-sheet')
-const eventsParts = [
-  P('window', 'the Events window', E, EB, ['place', 'width', ...LOOK]),
-  P('title', 'its title "EVENTS"', `${E} .bidsheet-hd .who`, `${EB} .bidsheet-hd .who`, ['place', 'words-x'], { rel: 'window' }),
-  P('period', 'the period in View', `${E} .bidsheet-hd .dt`, q('events-period'), ['place', 'words-x'], { rel: 'window' }),
-  P('add', '＋ Event', `${E} .zz-evtop .rtbtn`, q('events-add'), ['place', 'size', ...LOOK], { rel: 'window' }),
-  P('presets', 'Edit presets', `${E} .zz-evtop .evtypes-open`, q('events-presets'), ['place', 'size', ...LOOK], { rel: 'window' }),
-  P('list', 'the list', `${E} .zz-evlist`, q('events-list'), ['place', 'width', ...LOOK], { rel: 'window' }),
-  P('line1', 'the first line (1 Jan, past)', `${E} .zz-evlist .hol-line:first-child`, `${q('events-list')} .hol-line:first-child`, ['place', 'size', 'fill'], { rel: 'list' }),
-  P('line1-when', "the first line's date", `${E} .zz-evlist .hol-line:first-child .hol-when`, `${q('events-list')} .hol-line:first-child .hol-when`, ['place', 'colour', 'words-x'], { rel: 'line1' }),
-  P('line1-kind', "the first line's kind mark", `${E} .zz-evlist .hol-line:first-child .evpeek-kind`, `${q('events-list')} .hol-line:first-child .evpeek-kind`, ['place', 'words-place'], { rel: 'line1' }),
-  P('line2-name', "the second line's name (Off day, to come)", `${E} .zz-evlist .hol-line:nth-child(2) .hol-name`, `${q('events-list')} .hol-line:nth-child(2) .hol-name`, ['place', 'colour', 'words-x'], { rel: 'list' }),
-  P('line3', 'the third line (EX SHIELD, no kind)', `${E} .zz-evlist .hol-line:nth-child(3)`, `${q('events-list')} .hol-line:nth-child(3)`, ['place', 'size'], { rel: 'list' }),
-]
 const H = q('days-part-holidays')
 const fileParts = [
   P('part', 'the Holidays part', H, H, ['place', 'width']),
@@ -175,16 +152,8 @@ export default {
         const why = await management(page); if (why) return why
         await page.click(q('gadd-SANS')); await page.waitForTimeout(500)
       }, parts: settingsSansParts },
-    { id: 'events-desk', title: 'The Events list, desktop, admin', drawing: { script: D, shot: 'm5b-d2-events-desk' },
-      async reach(page, { origin }) {
-        await signIn(page, origin); await toWar(page); await stageEvents(page)
-        await page.click(q('settings-open')); await page.waitForTimeout(500); await page.click(q('settings-events')); await page.waitForTimeout(500)
-      }, parts: eventsParts },
-    { id: 'events-phone', title: 'The Events list, iPhone, admin', phone: true, drawing: { script: D, shot: 'm5b-d2-events-phone' },
-      async reach(page, { origin }) {
-        await signIn(page, origin); await toWar(page); await stageEvents(page)
-        await page.click(q('settings-open')); await page.waitForTimeout(500); await page.click(q('settings-events')); await page.waitForTimeout(500)
-      }, parts: eventsParts },
+    // (the Events list's two states left on 29 Oct 26: D1516's redraw superseded their round-1 drawing; the list is measured
+    //  against the redraw by lw-m5b-events.mjs — their old records stay in the records folder, unread)
     { id: 'holidays-buttons-desk', title: 'Export sheet and Import sheet, desktop, admin', drawing: { script: D, shot: 'm5b-d3-holidays-buttons-desk' },
       async reach(page, { origin }) { await signIn(page, origin); await toWar(page); const w = await holidays(page, false); if (w) return w; await holidaysInView(page) }, parts: fileParts },
     { id: 'holidays-buttons-phone', title: 'Export sheet and Import sheet, iPhone, admin', phone: true, drawing: { script: D, shot: 'm5b-d3-holidays-buttons-phone' },

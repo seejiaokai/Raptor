@@ -1,0 +1,1204 @@
+{
+ "state": "events-fixed-phone",
+ "drawing": {
+  "script": "scripts/handpass/mock-events-split.mjs",
+  "shot": "P-F-fixed"
+ },
+ "recorded": "2026-10-29T11:03:04.646Z",
+ "drawnOn": "claude/leave-war-m5b-iphone-balances-1402b7 at 9f90febe8",
+ "checkout": "9f90febe8",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "window": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 874
+   },
+   "ink": {
+    "x": 12,
+    "y": 20,
+    "w": 374,
+    "h": 706
+   },
+   "text": "EVENTS JAN - DEC 26 ✕ ＋ Event Edit presets Squadron events · 5 Mon 9 – Fri 20 Mar Ex Pitch Black Working event ✕ Mon 6 – Fri 17 Apr ORE — no leave No leave ✕ Fri 22 May Squadron dinner Delete — sure? ✕ Mon 7 – Fri 11 Sep Ex Cope Tiger Working event ✕ Sat 31 Oct Families day ✕ Holidays · 7 Thu 1 Jan New Year's Day Public holiday ✕ Tue 17 – Wed 18 Feb Chinese New Year Public holiday ✕ Fri 3 Apr Good Friday Public holiday ✕ Fri 1 May Labour Day Public holiday ✕ Sun 9 Aug National Day Public holiday ✕ Mon 10 Aug Off — National Day Off day ✕ Fri 25 Dec Christmas Day Public holiday ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet.fullpage"
+  },
+  "title": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 20,
+    "w": 57.5,
+    "h": 17
+   },
+   "ink": {
+    "x": 12,
+    "y": 20,
+    "w": 57.5,
+    "h": 17
+   },
+   "text": "EVENTS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 13px",
+    "spacing": "1.3px"
+   },
+   "tag": "span.who"
+  },
+  "period": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 79.5,
+    "y": 22,
+    "w": 72.3,
+    "h": 15
+   },
+   "ink": {
+    "x": 79.5,
+    "y": 22,
+    "w": 72.3,
+    "h": 15
+   },
+   "text": "JAN - DEC 26",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "0.66px"
+   },
+   "tag": "span.dt"
+  },
+  "add": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 55,
+    "w": 68,
+    "h": 28
+   },
+   "ink": {
+    "x": 25,
+    "y": 64,
+    "w": 46,
+    "h": 12
+   },
+   "text": "＋ Event",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn"
+  },
+  "presets": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 302.8,
+    "y": 56,
+    "w": 85.2,
+    "h": 26
+   },
+   "ink": {
+    "x": 313.8,
+    "y": 61,
+    "w": 63.2,
+    "h": 16
+   },
+   "text": "Edit presets",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.evtypes-open"
+  },
+  "sq-head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 93,
+    "w": 378,
+    "h": 32
+   },
+   "ink": {
+    "x": 14,
+    "y": 105,
+    "w": 137,
+    "h": 14
+   },
+   "text": "Squadron events · 5",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 10px",
+    "spacing": "1.2px"
+   },
+   "tag": "div.gs-sec.mock-sec"
+  },
+  "hol-head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 371,
+    "w": 378,
+    "h": 32
+   },
+   "ink": {
+    "x": 14,
+    "y": 383,
+    "w": 81,
+    "h": 14
+   },
+   "text": "Holidays · 7",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 10px",
+    "spacing": "1.2px"
+   },
+   "tag": "div.gs-sec.mock-sec"
+  },
+  "hol-list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 403,
+    "w": 374,
+    "h": 330
+   },
+   "ink": {
+    "x": 26,
+    "y": 410,
+    "w": 344,
+    "h": 316
+   },
+   "text": "Thu 1 Jan New Year's Day Public holiday ✕ Tue 17 – Wed 18 Feb Chinese New Year Public holiday ✕ Fri 3 Apr Good Friday Public holiday ✕ Fri 1 May Labour Day Public holiday ✕ Sun 9 Aug National Day Public holiday ✕ Mon 10 Aug Off — National Day Off day ✕ Fri 25 Dec Christmas Day Public holiday ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.hol-list.ev-list.mock-part"
+  },
+  "h1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 15,
+    "y": 404,
+    "w": 372,
+    "h": 46
+   },
+   "ink": {
+    "x": 26,
+    "y": 410,
+    "w": 344,
+    "h": 34
+   },
+   "text": "Thu 1 Jan New Year's Day Public holiday ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line.is-past"
+  },
+  "h1-when": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 26,
+    "y": 410,
+    "w": 172,
+    "h": 16
+   },
+   "ink": {
+    "x": 26,
+    "y": 410,
+    "w": 52.2,
+    "h": 16
+   },
+   "text": "Thu 1 Jan",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-when"
+  },
+  "h1-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 26,
+    "y": 428,
+    "w": 172,
+    "h": 16
+   },
+   "ink": {
+    "x": 26,
+    "y": 428,
+    "w": 86.4,
+    "h": 16
+   },
+   "text": "New Year's Day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-name"
+  },
+  "h1-kind": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 206,
+    "y": 419,
+    "w": 96,
+    "h": 16
+   },
+   "ink": {
+    "x": 221,
+    "y": 419,
+    "w": 76.9,
+    "h": 16
+   },
+   "text": "Public holiday",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.off"
+  },
+  "h1-pen": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 318,
+    "y": 416,
+    "w": 22,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-gdel.mock-ctl.mock-pen"
+  },
+  "h1-x": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 354,
+    "y": 416,
+    "w": 22,
+    "h": 22
+   },
+   "ink": {
+    "x": 361,
+    "y": 421.5,
+    "w": 9,
+    "h": 12
+   },
+   "text": "✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(240, 85, 95, 0.6)",
+     "1px solid rgba(240, 85, 95, 0.6)",
+     "1px solid rgba(240, 85, 95, 0.6)",
+     "1px solid rgba(240, 85, 95, 0.6)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 180, 185)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-gdel.mock-ctl"
+  },
+  "h6": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 15,
+    "y": 638,
+    "w": 372,
+    "h": 47
+   },
+   "ink": {
+    "x": 26,
+    "y": 645,
+    "w": 344,
+    "h": 34
+   },
+   "text": "Mon 10 Aug Off — National Day Off day ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line"
+  },
+  "h6-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 26,
+    "y": 663,
+    "w": 172,
+    "h": 16
+   },
+   "ink": {
+    "x": 26,
+    "y": 663,
+    "w": 115.1,
+    "h": 16
+   },
+   "text": "Off — National Day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-name"
+  },
+  "h6-kind": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 206,
+    "y": 654,
+    "w": 96,
+    "h": 16
+   },
+   "ink": {
+    "x": 221,
+    "y": 654,
+    "w": 40.5,
+    "h": 16
+   },
+   "text": "Off day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.free"
+  },
+  "sq-list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 125,
+    "w": 374,
+    "h": 236
+   },
+   "ink": {
+    "x": 26,
+    "y": 132,
+    "w": 344,
+    "h": 222
+   },
+   "text": "Mon 9 – Fri 20 Mar Ex Pitch Black Working event ✕ Mon 6 – Fri 17 Apr ORE — no leave No leave ✕ Fri 22 May Squadron dinner Delete — sure? ✕ Mon 7 – Fri 11 Sep Ex Cope Tiger Working event ✕ Sat 31 Oct Families day ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.hol-list.ev-list.mock-part"
+  },
+  "s1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 15,
+    "y": 126,
+    "w": 372,
+    "h": 46
+   },
+   "ink": {
+    "x": 26,
+    "y": 132,
+    "w": 344,
+    "h": 34
+   },
+   "text": "Mon 9 – Fri 20 Mar Ex Pitch Black Working event ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line.is-past"
+  },
+  "s1-when": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 26,
+    "y": 132,
+    "w": 172,
+    "h": 16
+   },
+   "ink": {
+    "x": 26,
+    "y": 132,
+    "w": 104.6,
+    "h": 16
+   },
+   "text": "Mon 9 – Fri 20 Mar",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-when"
+  },
+  "s1-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 26,
+    "y": 150,
+    "w": 172,
+    "h": 16
+   },
+   "ink": {
+    "x": 26,
+    "y": 150,
+    "w": 77.5,
+    "h": 16
+   },
+   "text": "Ex Pitch Black",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-name"
+  },
+  "s1-kind": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 206,
+    "y": 141,
+    "w": 96,
+    "h": 16
+   },
+   "ink": {
+    "x": 221,
+    "y": 141,
+    "w": 80.3,
+    "h": 16
+   },
+   "text": "Working event",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.work"
+  },
+  "s2-kind": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 206,
+    "y": 188,
+    "w": 96,
+    "h": 16
+   },
+   "ink": {
+    "x": 221,
+    "y": 188,
+    "w": 48.6,
+    "h": 16
+   },
+   "text": "No leave",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.nolv"
+  },
+  "s3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 15,
+    "y": 219,
+    "w": 372,
+    "h": 47
+   },
+   "ink": {
+    "x": 26,
+    "y": 226,
+    "w": 344,
+    "h": 34
+   },
+   "text": "Fri 22 May Squadron dinner Delete — sure? ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line"
+  },
+  "s3-sure": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 206,
+    "y": 235,
+    "w": 96,
+    "h": 16
+   },
+   "ink": {
+    "x": 206,
+    "y": 235,
+    "w": 87.5,
+    "h": 16
+   },
+   "text": "Delete — sure?",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "flex-start",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.mock-nokind.mock-sure"
+  },
+  "s3-sure-words": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 206,
+    "y": 235,
+    "w": 87.5,
+    "h": 16
+   },
+   "ink": {
+    "x": 206,
+    "y": 235,
+    "w": 87.5,
+    "h": 16
+   },
+   "text": "Delete — sure?",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(251, 180, 185)",
+     "0px none rgb(251, 180, 185)",
+     "0px none rgb(251, 180, 185)",
+     "0px none rgb(251, 180, 185)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 180, 185)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "b"
+  },
+  "s3-pen": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 318,
+    "y": 232,
+    "w": 22,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)",
+     "1px solid rgba(138, 150, 163, 0.65)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-gdel.mock-ctl.mock-pen"
+  },
+  "s3-x": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 354,
+    "y": 232,
+    "w": 22,
+    "h": 22
+   },
+   "ink": {
+    "x": 361,
+    "y": 237.5,
+    "w": 9,
+    "h": 12
+   },
+   "text": "✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(240, 85, 95)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(240, 85, 95)",
+     "1px solid rgb(240, 85, 95)",
+     "1px solid rgb(240, 85, 95)",
+     "1px solid rgb(240, 85, 95)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(26, 5, 8)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-gdel.mock-ctl"
+  },
+  "s5": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 15,
+    "y": 313,
+    "w": 372,
+    "h": 47
+   },
+   "ink": {
+    "x": 26,
+    "y": 320,
+    "w": 344,
+    "h": 34
+   },
+   "text": "Sat 31 Oct Families day ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "rgb(30, 134, 255) 0px 0px 0px 2px inset",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line"
+  }
+ },
+ "approved": {
+  "picture": "P-F-fixed.png",
+  "identical": true
+ }
+}

@@ -2,17 +2,24 @@
    period in View, one line each by date (a band one line), its kind's mark, past ones greyed; "＋ Event" and "Edit
    presets" at its top; a tap opens the event; no filter chips. Pinned through the grid as the ⚙ press reaches it. */
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getState, initStore, setDayEvent, setRole } from '../state/store'
+
+/* the Undo on the note after a delete is the top bar's own Undo (the one timeline — ui/topbits.tsx globalUndoEngine); a
+   unit test has no timeline wired, so its press is caught here and the restore itself is proved by the walk */
+const undoPress = vi.fn()
+vi.mock('../../ui/topbits', async orig => ({ ...(await orig<typeof import('../../ui/topbits')>()), globalUndoEngine: () => ({ canUndo: true, canRedo: false, undoTitle: 'Undo', redoTitle: 'Redo', undo: undoPress, redo: () => {} }) }))
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { setMemberTodayForTests } from '../engine'
 import { askLw } from './lwnav'
+import { readFileSync } from 'node:fs'
 
 const openSettings = () => act(() => { askLw({ kind: 'settings' }) })
 const openEvents = () => { openSettings(); fireEvent.click(screen.getByTestId('settings-events')) }
+/* (a line with no kind keeps its kind's column, empty, since D1513 — read here as no kind) */
 const lineTexts = () => [...screen.getByTestId('events-list').querySelectorAll('.hol-line')].map(b =>
-  [b.querySelector('.hol-when')!.textContent, b.querySelector('.hol-name')!.textContent, b.querySelector('.evpeek-kind')?.textContent ?? null])
+  [b.querySelector('.hol-when')!.textContent, b.querySelector('.hol-name')!.textContent, b.querySelector('.evpeek-kind')?.textContent || null])
 
 /* a day picked on the new event's own calendar, as a finger does: its month stepped to, then one tap (one day) */
 const pickDay = (iso: string) => {
@@ -245,5 +252,160 @@ describe('the Events list — the code read’s findings', () => {
     fireEvent.click(screen.getByTestId('types-done'))
     expect(getState().eventDefs[0]!.name).toBe('PH renamed')
     expect(screen.getByTestId('events-sheet')).toBeTruthy()
+  })
+})
+
+/* THE SPLIT, AND EACH LINE'S OWN EDIT AND DELETE (his D1512–D1516, 29 Oct 26; the drawing of record the F- frames of
+   scripts/handpass/mock-events-split.mjs): Squadron events first, then Holidays (public holidays and Off days), each under
+   the Settings window's own section heading with its count; every line its kind in one column (empty for none), then the
+   app's pencil and a ✕ that asks once — "Delete — sure?" in the kind's place, the ✕ red — and a second press deletes,
+   a note at the foot naming it with Undo; an empty list keeps its heading and one line. */
+const sec = (k: 'squadron' | 'holidays') => screen.getByTestId('events-sec-' + k)
+const secNames = (k: 'squadron' | 'holidays') => [...sec(k).querySelectorAll('.hol-line .hol-name')].map(n => n.textContent)
+const dayWord = (iso: string, line = 0) => getState().period.days.find(d => d.date === iso)!.events[line]
+describe('the Events list split (D1512–D1516)', () => {
+  beforeEach(() => { undoPress.mockClear() })
+
+  it('Squadron events first, then Holidays — public holidays and Off days there, every other kind and none here', () => {
+    setDayEvent('2026-03-09', 0, 'Ex Pitch Black', 'work')
+    setDayEvent('2026-04-06', 1, 'ORE', 'nolv')
+    setDayEvent('2026-05-22', 0, 'Squadron dinner')
+    setDayEvent('2026-08-10', 1, 'Off — National Day', 'free')
+    render(<Matrix />)
+    openEvents()
+    const list = screen.getByTestId('events-list')
+    const secs = [...list.querySelectorAll('[data-testid^="events-sec-"]')].map(s => s.getAttribute('data-testid'))
+    expect(secs).toEqual(['events-sec-squadron', 'events-sec-holidays'])
+    expect(secNames('squadron')).toEqual(['Ex Pitch Black', 'ORE', 'Squadron dinner'])
+    expect(secNames('holidays')).toContain('PH')
+    expect(secNames('holidays')).toContain('Off — National Day')
+    expect(secNames('holidays')).not.toContain('Squadron dinner')
+    const head = (k: 'squadron' | 'holidays') => screen.getByTestId('events-head-' + k)
+    expect(head('squadron').textContent).toBe('Squadron events · 3')
+    expect(head('holidays').textContent).toBe(`Holidays · ${secNames('holidays').length}`)
+    expect(head('squadron').classList.contains('gs-sec'), 'the Settings window’s own heading').toBe(true)
+  })
+
+  it('every line keeps a kind column — its mark, or empty for an event with no kind (D1513)', () => {
+    setDayEvent('2026-05-22', 0, 'Squadron dinner')
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    const kind = (key: string) => screen.getByTestId('evkind-' + key)
+    expect(kind('0-2026-05-22').textContent).toBe('')
+    expect(kind('0-2026-05-22').classList.contains('none')).toBe(true)
+    expect(kind('0-2026-03-16').textContent).toBe('Working event')
+    expect(kind('0-2026-03-16').classList.contains('work')).toBe(true)
+  })
+
+  it('each line has the app’s pencil, which opens the event as a tap on the line does (D1512)', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    const pen = screen.getByTestId('evedit-0-2026-03-16')
+    expect(pen.tagName).toBe('BUTTON')
+    expect(pen.querySelector('svg.pen-ic'), 'the drawn pencil, never a typed one').toBeTruthy()
+    expect(pen.getAttribute('aria-label')).toBe('Edit SC')
+    fireEvent.click(pen)
+    expect((screen.getByTestId('event-text') as HTMLInputElement).value).toBe('SC')
+    fireEvent.click(screen.getByTestId('event-cancel'))
+    // the line itself still opens it
+    fireEvent.click(screen.getByTestId('evline-0-2026-03-16'))
+    expect((screen.getByTestId('event-text') as HTMLInputElement).value).toBe('SC')
+  })
+
+  it('the ✕ asks once: its first press arms it in place — "Delete — sure?" in the kind’s column — and deletes nothing', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    const x = screen.getByTestId('evdel-0-2026-03-16')
+    expect(x.textContent).toBe('✕')
+    expect(x.getAttribute('aria-label')).toBe('Delete SC')
+    fireEvent.click(x)
+    expect(screen.getByTestId('events-sheet'), 'the list stays').toBeTruthy()
+    expect(screen.queryByTestId('event-sheet'), 'no event window').toBeNull()
+    expect(dayWord('2026-03-16')).toBe('SC')
+    const armed = screen.getByTestId('evdel-0-2026-03-16')
+    expect(armed.classList.contains('arm')).toBe(true)
+    expect(armed.textContent, 'the cross keeps its box').toBe('✕')
+    expect(armed.getAttribute('aria-label')).toBe('Delete SC — press again to delete')
+    expect(screen.getByTestId('evkind-0-2026-03-16').textContent).toBe('Delete — sure?')
+    expect(screen.getByTestId('evkind-0-2026-03-16').classList.contains('sure')).toBe(true)
+  })
+
+  it('a second press deletes it, and a note at the foot names it with Undo — the top bar’s own Undo', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('evdel-0-2026-03-16'))
+    fireEvent.click(screen.getByTestId('evdel-0-2026-03-16'))
+    expect(dayWord('2026-03-16')).toBe('')
+    expect(screen.queryByTestId('evline-0-2026-03-16'), 'gone from the list').toBeNull()
+    const note = screen.getByTestId('events-undo-note')
+    expect(note.classList.contains('secdef-snack'), 'the app’s own bar with a button').toBe(true)
+    expect(note.getAttribute('role')).toBe('status')
+    expect(note.querySelector('.secdef-msg')!.textContent).toBe('SC deleted')
+    fireEvent.click(screen.getByTestId('events-undo'))
+    expect(undoPress).toHaveBeenCalledTimes(1)
+    expect(screen.queryByTestId('events-undo-note'), 'the note goes once pressed').toBeNull()
+  })
+
+  it('the ask is taken back by any other press — another line’s ✕ moves it, a press elsewhere clears it', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    setDayEvent('2026-05-22', 0, 'Squadron dinner')
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('evdel-0-2026-03-16'))
+    fireEvent.pointerDown(screen.getByTestId('evdel-0-2026-05-22'))
+    fireEvent.click(screen.getByTestId('evdel-0-2026-05-22'))
+    expect(screen.getByTestId('evdel-0-2026-03-16').classList.contains('arm')).toBe(false)
+    expect(screen.getByTestId('evkind-0-2026-03-16').textContent).toBe('Working event')
+    expect(screen.getByTestId('evdel-0-2026-05-22').classList.contains('arm')).toBe(true)
+    expect(dayWord('2026-03-16'), 'nothing deleted').toBe('SC')
+    // a press anywhere else in the window takes it back
+    fireEvent.pointerDown(screen.getByTestId('events-head-squadron'))
+    expect(screen.getByTestId('evdel-0-2026-05-22').classList.contains('arm')).toBe(false)
+    expect(dayWord('2026-05-22')).toBe('Squadron dinner')
+  })
+
+  it('a ✕ on a run of one word over several days deletes every day of it, in one go', () => {
+    for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) setDayEvent(d, 0, 'REPEAT3')
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('evdel-0-2026-02-02'))
+    fireEvent.click(screen.getByTestId('evdel-0-2026-02-02'))
+    expect(['2026-02-02', '2026-02-03', '2026-02-04'].map(d => dayWord(d))).toEqual(['', '', ''])
+  })
+
+  it('an empty list keeps its heading, its count 0, and one line saying so (D1515 fix 6)', () => {
+    render(<Matrix />)
+    openEvents()
+    expect(secNames('squadron'), 'the seed holds holidays only').toEqual([])
+    expect(screen.getByTestId('events-head-squadron').textContent).toBe('Squadron events · 0')
+    expect(screen.getByTestId('events-empty-squadron').textContent).toBe(`No squadron events in ${getState().period.name}.`)
+  })
+
+  it('a new event lands in its own list, ringed (D1515 fix 6)', () => {
+    render(<Matrix />)
+    openEvents()
+    fireEvent.click(screen.getByTestId('events-add'))
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Families day' } })
+    pickDay('2026-10-31')
+    fireEvent.click(screen.getByTestId('event-apply'))
+    const line = screen.getByTestId('evline-0-2026-10-31')
+    expect(sec('squadron').contains(line)).toBe(true)
+    expect(line.classList.contains('innew')).toBe(true)
+  })
+
+  it('the controls are buttons of their own, not inside another button, each with a finger-sized tap area', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    const line = screen.getByTestId('evline-0-2026-03-16')
+    expect(line.tagName, 'a line holding two buttons is not itself a button').not.toBe('BUTTON')
+    expect(line.querySelectorAll('button').length).toBe(2)
+    const css = readFileSync('src/leavewar/ui/bidpicker.css', 'utf8').replace(/\r\n/g, '\n')
+    // the tap area: the drawn 22px box, a 40px target round it (the review's fix 3)
+    expect(css).toMatch(/\.bidsheet \.ev-ctl::before \{[^}]*inset: -9px/)
   })
 })
