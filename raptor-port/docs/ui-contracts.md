@@ -11826,6 +11826,10 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   column headings sits flush under the page's bar, nothing of the rows showing above it; while the fingers pinch, the whole
   row — its dark strip with its words — is held on its line, so no row shows through it, and no row is drawn torn or cut
   part-way. Pinned in `ui/balances.test.tsx`; the pinch itself is the walk's.
+- **Nothing of the rows shows behind the bar or the headings, at every zoom and scroll (D1519, 29 Oct 26 — his picture, zoomed
+  out; the app-wide rule is D1518):** D1505's fix was checked only in test browsers, which never drew the spill; on his iPhone,
+  zoomed out, the boxes of a row showed through the foot of the bar, just above the headings. The bar, the lock line and the
+  search line are solid and stand above the list, whose paint is held in its box (`ui/balances.css`); a forced spill checks it.
 - **OIL from this page comes back to it (D1503, 29 Oct 26 — his recording):** the OIL tracker opened from the Balances page —
   a person's OIL figure, the OIL tab while the page is up, or the OIL line of a person window opened on it — is drawn over the
   page, which stays as it was underneath; its ✕ (or Escape) shows the page again as he left it — the same view, place in the
@@ -11872,6 +11876,12 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
 - **A member's phone** shows a slim "Locked by admin" line under the bar; no Grades, no switch.
 
 ## The person window (the overhaul's M5a, jobs 1–2 — D1480, D1148, D1201, D1203, D1209, D1220, D1231, D1251–D1253, D1292, D1327, D1328, D1481, D641, D997; BUILT 29 Oct 26)
+
+**On a phone the carried line's date stands on its own line (D1520, 29 Oct 26 — his "a"):** under "incl. [n] carried fwd", in the
+same grey, so it never runs past the LVE tile (his iPhone picture: it ran into OIL); a desktop keeps the one line "incl. [n]
+carried fwd · till <date>". On a phone App bal · Pending · War bal spread across the tile, War bal ending at its right edge (the
+agent's fault fix with D1519's job — "17.5" and "−12.5" had run under OIL). `PersonWindow.tsx` (`r17-till`), `personwindow.css`;
+pinned in `e2e/leavewar.spec.ts`.
 
 Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2-desk-drawn`, `m5a-p4-phone-own`, `m5a-p5-phone-locked`,
 `m5a-p6-phone-other`). Code: `leavewar/ui/PersonWindow.tsx`, `ui/personleave.ts` (one man's lines and the new-since marks),

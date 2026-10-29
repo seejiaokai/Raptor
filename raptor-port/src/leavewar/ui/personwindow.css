@@ -100,6 +100,22 @@
     /* LVE: three columns, the labels over their figures, every one from the left (D1238, D1239) */
     .r17-lve { grid-column: span 3; }
     .r17-sum { grid-row: 2 / span 2; display: grid; grid-template-columns: max-content max-content max-content; justify-content: start; grid-template-rows: 12px 30px; row-gap: 5px; column-gap: 24px; }
+    /* ON A PHONE THE THREE SPREAD ACROSS THE TILE (his iPhone picture, 29 Oct 26 — the agent's fault fix, D1426): 24 apart, a
+       four-figure War bal ("17.5", bold 20) ran under the OIL tile on a 375 iPhone, and "−12.5" on his 402; App bal stays at the
+       tile's left, War bal ends at its right, Pending between, never under 4 apart (GitHub's wider letters needed every point at 375). A desktop keeps the drawing's 24. */
+    /* the tile's one column is the tile's own width, never a longer line's inside it, so the spread reaches the tile's edge */
+    @media (max-width: 700px) { .r17-lve { grid-template-columns: minmax(0, 1fr); } .r17-lve .r17-sum { column-gap: 4px; justify-content: space-between; } }
+    /* THE CARRIED LINE'S DATE (his "a", D1520 — drawn as option A, docs/mock/lw-overhaul/lw-cf-line-draw.mjs): a desktop keeps the
+       one line "incl. [n] carried fwd · till <date>"; on a phone the date stands on a fifth row of its own, in the same grey, and
+       the tile is one line taller */
+    /* (the desktop's " · till …" joins the carried words as one run, as it was before the split — no gap of the line's own) */
+    .r17-tw { display: contents; }
+    .r17-till { display: none; }
+    @media (max-width: 700px) {
+      .r17-lve { grid-template-rows: 22px 12px 30px 14px 12px; }
+      .r17-lve .r17-tw { display: none; }
+      .r17-lve .r17-till { display: block; grid-row: 5; font: 600 11px/1 system-ui; color: #8a96a3; white-space: nowrap; }
+    }
     .r17-sum .h { grid-row: 1; font: 600 10.5px/12px system-ui; color: #8a96a3; text-align: left; white-space: nowrap; }
     .r17-sum .v { grid-row: 2; display: flex; align-items: center; justify-content: flex-start; font: 700 15px/1 system-ui; font-variant-numeric: tabular-nums; color: #c9d1d9; }
     .r17-sum .v.pd { color: #F2C879; }

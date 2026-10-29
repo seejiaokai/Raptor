@@ -235,6 +235,10 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
         /* typing again after an Escape is a new figure to save: the Escape's "leave without saving" mark goes with it (the
            re-walk's r1d, 29 Oct 26 — 22, Escape, 23, another box: the 23 was dropped with nothing said) */
         onChange={e => { skip.current = false; held.current = held.current ?? { save, value, shown }; setText(e.target.value); typed.current = e.target.value; if (err) setErr(null) }}
+        /* ANY TYPING CLEARS THE WORDS, the same figure typed over itself too (his iPhone, 29 Oct 26 — "it says type a figure
+           even tho I've typed 0"): one tap selects the 0, and a 0 typed over it leaves the box's text as it was, so React
+           raises no onChange and the words stayed. The browser's own input event still comes, and it is enough to clear them */
+        onInput={() => { if (err) setErr(null) }}
         onKeyDown={key}
         onBlur={() => { held.current = held.current ?? { save, value, shown }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
       />

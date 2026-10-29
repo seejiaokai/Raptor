@@ -11,6 +11,12 @@
   .bp { display: flex; flex-direction: column; box-sizing: border-box; padding: 14px 20px 8px; background: #0b0d10; color: #c9d1d9; font: 13px system-ui; }
   .bp-card { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; background: #11161c; border: 1px solid #2a313a; border-radius: 14px; overflow: hidden; }
   .bp-bar { display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 14px; border-bottom: 1px solid #2a313a; flex: none; white-space: nowrap; }
+  /* NOTHING OF THE LIST SHOWS BEHIND THE BAR (his iPhone picture, 29 Oct 26 — D1518, D1519): the bar, and the slim lock and
+     search lines under it, had no fill of their own, so where his iPhone drew a row past the list's top edge (zoomed out,
+     the boxes' bottom edges of the row above showed in the bar's foot, above its line) it showed straight through. Each is
+     now solid, in the card's own colour, and stands above the list; the list itself keeps what it draws inside its box. */
+  .bp-bar, .bp-lk2, .bp-srchline { position: relative; z-index: 6; background-color: inherit; }
+  .bp-hs, .bp-scroll { contain: paint; }
   .bp-btn { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 9px; border: 1px solid #2f3a46; background: #12161b; color: #e6edf3; font: 600 13.5px system-ui; cursor: pointer; }
   .bp-btn svg { width: 15px; height: 15px; }
   .bp-seg { display: inline-flex; height: 36px; border: 1px solid #2f3a46; border-radius: 9px; overflow: hidden; flex: none; }
@@ -146,7 +152,7 @@
   /* the strip's dark fill reaches up past its own top (his picture, 29 Oct 26 — D1505): the scroller cuts it off at its
      top, so it shows nothing at rest; where a phone draws the stuck row a few pixels below the scroller's top, it covers what
      of a row would show above the headings */
-  .bp-cols::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 24px; background: #0b0d10; pointer-events: none; }
+  .bp-cols::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 64px; background: #0b0d10; pointer-events: none; }
   .bp-cols > span:first-child { position: sticky; left: 0; z-index: 2; padding-left: 12px; align-self: stretch; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; background: #0b0d10; text-align: left; }
   .bp-cols .sep, .bp-row .sep { border-left: 1px solid #222a33; padding-left: 6px; }
   .bp-cols .ok { padding-right: 39px; }

@@ -181,6 +181,39 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   const save = (kind: BalKind, part?: 'cf') => (n: number) => saveTypedFigure(pid, kind, n, part)
   const name = person.callsign
   const L = f.kinds.LVE
+  /* WAR BAL WHOLE INSIDE ITS TILE, ALWAYS (his iPhone picture, 29 Oct 26 — the agent's fault fix with D1519's job): spread
+     across the tile on a phone (personwindow.css), a long War bal in wide letters — "−12.5" on GitHub's Linux machines, as on
+     an iPhone, 5.9 over at 402 — still ran under OIL. As a figure box does (BalancesPage.tsx fitFigure, the M5a walk's A-F3),
+     a War bal longer than its room is drawn smaller until it ends inside the tile; one that fits keeps the tile's letters.
+     Measured when the figure changes and whenever the tile's own width does — the window settles its width after it opens
+     (GitHub's run, 29 Oct 26: measured at the opening, "17.5" stood 1.2 past at 375), so the tile is watched, not the screen. */
+  const warRef = useRef<HTMLSpanElement | null>(null)
+  useLayoutEffect(() => {
+    const w = warRef.current
+    if (!w) return
+    const fit = () => {
+      w.style.fontSize = ''
+      const t = w.closest<HTMLElement>('.r17-lve')
+      if (!t || !w.getBoundingClientRect().width) return
+      const edge = t.getBoundingClientRect().right - (parseFloat(getComputedStyle(t).paddingRight) || 0)
+      /* the figure's own letters, never its box: the box stretches to its whole column, so its edge never moved as the letters
+         shrank (GitHub's run, 29 Oct 26 — "17.5" 1.2 past at 375 however small it was drawn) */
+      const r = document.createRange()
+      const right = () => { r.selectNodeContents(w); return r.getBoundingClientRect().right }
+      let px = parseFloat(getComputedStyle(w).fontSize) || 20
+      for (let i = 0; i < 16 && px > 12 && right() > edge + 0.5; i++) { px -= 0.5; w.style.fontSize = `${px}px` }
+    }
+    fit()
+    const tile = w.closest<HTMLElement>('.r17-lve')
+    /* the tile's width, not the war figure's own: a change of the figure's letters must not set the watch off again */
+    let lastW = -1
+    const ro = typeof ResizeObserver === 'function' && tile
+      ? new ResizeObserver(es => { const cw = es[0]?.contentRect.width ?? 0; if (Math.abs(cw - lastW) < 0.5) return; lastW = cw; fit() })
+      : null
+    if (ro && tile) ro.observe(tile)
+    window.addEventListener('resize', fit)
+    return () => { ro?.disconnect(); window.removeEventListener('resize', fit) }
+  }, [L.war, phone])
   /* nothing pending reads "–", as the Balances page writes it (walker D's note, 29 Oct 26: the tile drew "0" beside the
      page's "–") */
   const pend = (n: number) => (n ? `−${figWords(n)}` : '–')
@@ -215,9 +248,13 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
               <span className="h" style={{ gridColumn: 3 }}>War bal</span>
               <span className="v" style={{ gridColumn: 1 }}>{app}</span>
               <span className={`v${L.pending ? ' pd' : ''}`} style={{ gridColumn: 2 }} data-testid="pw-LVE-pend">{pend(L.pending)}</span>
-              <span className="v war" style={{ gridColumn: 3 }} data-testid="pw-LVE-war">{figWords(L.war)}</span>
+              <span className="v war" ref={warRef} style={{ gridColumn: 3 }} data-testid="pw-LVE-war">{figWords(L.war)}</span>
             </div>
-            <span className="r17-cf">incl. {cf} carried fwd{till ? ` · till ${till}` : ''}</span>
+            {/* THE DATE ON A LINE OF ITS OWN ON A PHONE (his "a", D1520 — his picture: "till 31 Dec" ran into the OIL tile): the
+                desktop keeps the approved one line, its " · till …" inside the carried line; a phone shows the line below it
+                instead (personwindow.css). Only one of the two is ever shown, so a screen reader reads the date once */}
+            <span className="r17-cf">incl. {cf} carried fwd{till ? <span className="r17-tw">{` · till ${till}`}</span> : null}</span>
+            {till && <span className="r17-till" data-testid="pw-LVE-till">till {till}</span>}
           </div>
           {/* OIL: read only, "0 ›" his OIL tracker (D1209, D1008) — never a box */}
           <div className="r17-t" data-testid="pw-tile-OIL">

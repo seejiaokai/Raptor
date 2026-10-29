@@ -56,6 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1520 | 29 Oct 26 | On a phone the person window's LVE tile shows "till <date>" on a line of its own under "incl. [n] carried fwd", in the same grey, so the line never runs past the tile; a desktop keeps the approved one line, "incl. [n] carried fwd · till <date>". |
+| D1519 | 29 Oct 26 | On a phone the Leave War's Balances page shows nothing of its rows behind or through its bar, or between it and its row of column headings — at every zoom and every scroll position, at rest and while the fingers move; D1505's fix, checked only in test browsers that never drew the spill, is redone so it holds at all of them. |
 | D1517 | 29 Oct 26 | Between a phone and a desktop — up to 1100 wide, an iPad or a narrow window — the Leave War's Events list keeps its one-list width and its two lists stand one under the other, as on a phone; above 1100 they stand side by side in the window twice as wide. |
 | D1516 | 29 Oct 26 | The Leave War's Events list is built as redrawn on 29 Oct 26: Squadron events first (on a desktop the left list, on a phone the top one), then Holidays; the ✕ asks once — its first press arms it, a second deletes. |
 | D1515 | 29 Oct 26 | The Events list design review's six fixes are made: the cross arms in place, red; an Undo note after a delete; finger-sized tap areas and a lighter edge; "Delete — sure?" and a red cross; the date column fits the widest date; a new event ringed in its list, an empty list says so. — changed by D1516 |

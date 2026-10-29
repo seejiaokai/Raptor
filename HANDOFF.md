@@ -20,15 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/lw-rulings-tripwire -->
-### `claude/lw-rulings-tripwire` — the closing records after the Leave War's M5b (pull request 588), LIVE on his "merge live" of 29 Oct 26 (pull request 589) — written 29 Oct 26 — verify before use
-- **Done:** the Leave War rulings file's tripwire 118000 -> 124000 and How we work's 52000 -> 54000, each with its reason (`raptor-port/scripts/docsize.mjs` — D1490–D1517 and D1494–D1496, D1507–D1509 merged with code while the size check was deferred, D29; nothing trimmed, D136, D1262); `[LW-BAL-PHONE-LOCKED-FIT]` archived (live with pull request 588); `[LW-OVERHAUL]`'s line corrected — there is no M6: D1250's six merges are all live, M5b the last (D1475). Documents only.
-- **Branch:** `claude/lw-rulings-tripwire`, cut from `main` after pull request 588 (no upstream set — `push.default=upstream` trap). NOT notes-only: the tripwires live in a check script, outside D1407's list, so its pull request waited for his "merge live" — given 29 Oct 26, merged; a new job starts level with `main`.
-- **Gates:** `npm run docsize` green; nothing else touched (no app code, no document a check reads).
-- **Open questions for him:** none. Kept for him until he says so (D994): `[SYSTEM-PASS-SAVES-ROSTER]`, `[QUALS-COL-WAR-GROUP-ASK]`, `[LINE-ICONS-ELSEWHERE-ASK]`.
+<!-- now:claude/lw-bal-header-gap -->
+### `claude/lw-bal-header-gap` — his three iPhone finds on the Leave War (29 Oct 26) and his "a" for the leave box (D1518–D1520), LIVE on his "merge live" of 29 Oct 26 (pull request 590) — written 29 Oct 26 — verify before use
+- **Done:** the Balances page's bar, lock line and search line solid and above the list, the list's paint held in its box (D1518, D1519); any typing clears a figure box's words (the same figure typed after a fresh tap left them); on a phone the person window's App bal · Pending · War bal spread across the LVE tile, so War bal never runs under OIL, and the carried line's date stands on a line of its own (his "a", D1520). Design lesson 72 (D1518), §7.11 lessons 15–16. Evidence: `raptor-port/docs/handpass/2026-10-29-lw-bal-gap.md` (WALK).
+- **Branch:** `claude/lw-bal-header-gap`, cut from `main` after pull request 589; merged on his "merge live" of 29 Oct 26 (pull request 590, its checks green on the closing push). A new job starts level with `main`.
+- **Gates:** `ui/balances.test.tsx` and `ui/personwindow.test.tsx` green; `e2e/leavewar.spec.ts` Balances / person window / pinned / M5a 33 passed (19 phone-only skipped on desktop); the build; the drawing check green on M5a, M5b and the Events list. GitHub's run of the pull request is the full check (D1086).
+- **Open questions for him:** none — he looked on his iPhone (the headings flush under the bar) and said "merge live". Kept for him until he says so (D994): `[SYSTEM-PASS-SAVES-ROSTER]`, `[QUALS-COL-WAR-GROUP-ASK]`, `[LINE-ICONS-ELSEWHERE-ASK]`.
+- **Reads:** one fresh, blind Opus reader of design lesson 72, §7.11 lessons 15–16 and D1518, D1519 (D941, D1297): lessons 15–16 OK; four wordings fixed as it gave them (the band is through the bar, not between; D1518 keeps to his words; D1519 names the right cause; lesson 16 marks the walk's own point). No code read (WALK).
 - **Running when written:** none; the check lock is free.
-- **Pick up here:** the overhaul's build is finished. Left of it: his iPhone look at what M5a owes (`OUTSTANDING.md` `[LW-OVERHAUL]`), then his pick from the Leave War's own items in the priority list; `[RULINGS-SPENT-PASS]` would bring both rulings files back down, only on his word (D1262).
-- **Opening line:** Switch this chat to a fresh branch level with `main`: `git fetch origin`, `git switch -c claude/<job> origin/main`, then `git branch --unset-upstream`. Read `HANDOFF.md` — the `claude/lw-rulings-tripwire` block under `## Now` — and start the job I name.
+- **Pick up here:** nothing left of this job. Next: his pick from the Leave War's own items in the priority list, or `[PINNED-LEAK-SWEEP]` with a screen's next job; `[RULINGS-SPENT-PASS]` only on his word (D1262).
+- **Opening line:** Switch this chat to a fresh branch level with `main`: `git fetch origin`, `git switch -c claude/<job> origin/main`, then `git branch --unset-upstream`. Read `HANDOFF.md` — the `claude/lw-bal-header-gap` block under `## Now` — and start the job I name.
 <!-- /now -->
 ## Next, in order
 
