@@ -1,0 +1,25 @@
+{
+ "desk": {
+  "box": [
+   488,
+   58,
+   560,
+   792
+  ],
+  "scrollH": 919,
+  "words": 215,
+  "text": "SETTINGS | counters, rows & groups | ✕ | CALENDAR | Calendar… | Day flying, night flying or no fly for each date, and the year’s holidays. | COUNTERS & ROWS | ＋ Counter | ＋ Event row | Show SANS | Showing SANS puts them on the roster as their own group at the very bottom, and on the days they are available they count toward the manning numbers like everyone else. | ROSTER ORDER | ⇅ Rearrange the grid | ↺ Reset order | In the default order — each group as listed below, pilots above WSOs, then by CAT and callsign. | GROUPS — SHOWN, TOP TO BOTTOM | drag ⠿ to reorder · tap a name for who is in it · tap a colour square to change it | ⠿ | SXO | CAT | 12 | ✕ | ⠿ | IP | CAT | 8 | ✕ | ⠿ | OPS P | CAT | 8 | ✕ | ⠿ | IWSO | CAT | 5 | ✕ | ⠿ | OPS W | CAT | 11 | ✕ | ⠿ | OCU | CAT | 3 | ✕ | ⠿ | Personnel | CAT | 3 | ✕ | Anyone no group above claims is shown under Everyone else, always last. | ADD A GROUP | the qualification options — grows as the squadron adds Quals | + Scheduler | + SC DAY | + SC NIGHT | + DAAR | + NAAR | + NVG | + IMC | + TF | ▸ | WHO WINS WHEN SOMEONE FITS TWO | follows the page — rarely needed | Back to the standard groups"
+ },
+ "desk-hol": "Holidays | ‹ | 2026 | › | + Add | Public holidays and Off days, the whole year. | Thu 1 Jan | PH | PH | Tue 17 – Wed 18 Feb | PH | PH | Sun 9 Aug | PH | PH | Fri 25 Dec | PH | PH",
+ "phone": {
+  "box": [
+   12,
+   58,
+   378,
+   802
+  ],
+  "scrollH": 1006,
+  "words": 215,
+  "text": "SETTINGS | counters, rows & groups | ✕ | CALENDAR | Calendar… | Day flying, night flying or no fly for each date, and the year’s holidays. | COUNTERS & ROWS | ＋ Counter | ＋ Event row | Show SANS | Showing SANS puts them on the roster as their own group at the very bottom, and on the days they are available they count toward the manning numbers like everyone else. | ROSTER ORDER | ⇅ Rearrange the grid | ↺ Reset order | In the default order — each group as listed below, pilots above WSOs, then by CAT and callsign. | GROUPS — SHOWN, TOP TO BOTTOM | drag ⠿ to reorder · tap a name for who is in it · tap a colour square to change it | ⠿ | SXO | CAT | 12 | ✕ | ⠿ | IP | CAT | 8 | ✕ | ⠿ | OPS P | CAT | 8 | ✕ | ⠿ | IWSO | CAT | 5 | ✕ | ⠿ | OPS W | CAT | 11 | ✕ | ⠿ | OCU | CAT | 3 | ✕ | ⠿ | Personnel | CAT | 3 | ✕ | Anyone no group above claims is shown under Everyone else, always last. | ADD A GROUP | the qualification options — grows as the squadron adds Quals | + Scheduler | + SC DAY | + SC NIGHT | + DAAR | + NAAR | + NVG | + IMC | + TF | ▸ | WHO WINS WHEN SOMEONE FITS TWO | follows the page — rarely needed | Back to the standard groups"
+ }
+}
