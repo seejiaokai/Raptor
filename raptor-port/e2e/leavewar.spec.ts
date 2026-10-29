@@ -8144,3 +8144,29 @@ test('M5a drawing E (D1493): a member’s locked row has its amber pending figur
     expect(Math.abs(k.fig - g.app), `${k.k}: its figure on App bal's line`).toBeLessThanOrEqual(0.5)
   }
 })
+
+/* [LW-BAL-PHONE-LOCKED-FIT] (D1497, found by the drawing check on live M5a): on a phone a read-only figure — a member's
+   locked row, or anyone else's — ends 10px in from its cell's right edge, where a typed box's figure ends (a box's edge and
+   padding), as `m5c-c2-phone-locked` draws it; the build had set it flush with the edge, 10px further right. */
+test('M5a drawing F (D1497): on a phone a read-only figure ends where a box’s figure would, 10px in from its edge', async ({ page }) => {
+  test.skip(!isPhone(), 'the phone\'s rows only — a desktop\'s read-only figures are table cells, checked by E')
+  await lwRole(page, 'admin')
+  await page.setViewportSize({ width: 402, height: 874 })
+  await openBalancesPage(page)
+  const lock = page.getByTestId('bal-lock')
+  if ((await lock.getAttribute('aria-checked')) !== 'true') await lock.click()
+  await expect(lock).toHaveAttribute('aria-checked', 'true')
+  await page.getByTestId('lw-tab-grid').click()
+  await lwRole(page, 'member')
+  await page.evaluate(() => (window as any).lwSetViewer('bane'))
+  await openBalancesPage(page)
+  await expect(page.getByTestId('bal-locked')).toBeVisible()
+  /* how far a figure's words stand in from the right edge of its own figure box, in the box's own measure (the pinch scales it) */
+  const inset = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('[data-testid="bal-row-bane"] .bp-ro')].map(e => {
+    const rg = document.createRange(); rg.selectNodeContents(e)
+    const b = e.getBoundingClientRect(), scale = b.width / e.offsetWidth
+    return { text: e.textContent, gap: (b.right - rg.getBoundingClientRect().right) / scale }
+  }))
+  expect(inset.length, 'his row is read only, its figures drawn as words').toBeGreaterThan(3)
+  for (const f of inset) expect(Math.abs(f.gap - 10), `the figure ${f.text} ends ${f.gap}px in from its edge, not 10`).toBeLessThanOrEqual(0.5)
+})

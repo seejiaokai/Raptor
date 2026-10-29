@@ -169,9 +169,11 @@
   /* read only, the phone's figure and its smaller amber pending figure share a baseline, not a middle (D1493 — the middle set
      the amber 1px above the figure's line) */
   .bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd { align-self: baseline; }
-  /* read only, round 19b */
-  .bp-row .bp-ro { min-width: 0; padding-right: 0; height: 30px; font: 700 14px system-ui; }
-  .bp-oc .bp-ro { width: 40px; justify-content: flex-end; }
+  /* read only, round 19b. Its words keep the drawing's 10px at their right, so a figure read only ends where a box's figure
+     ends (a box's edge and padding) — set flush they stood 10px right of `m5c-c2-phone-locked` ([LW-BAL-PHONE-LOCKED-FIT],
+     D1497, found by the drawing check). A kind's figure is at least a box wide and grows to its left for a longer one. */
+  .bp-row .bp-ro { min-width: 0; padding-right: 10px; height: 30px; font: 700 14px system-ui; }
+  .bp-oc .bp-ro { width: auto; min-width: 40px; justify-content: flex-end; }
   .bp-hs .bp-grp { display: flex; align-items: center; width: max-content; min-width: 100%; box-sizing: border-box; height: 30px; padding: 0; background: #10151b; border-bottom: 1px solid #1d242c; font: 800 12px system-ui; letter-spacing: .06em; color: #f1f4f7; }
   .bp-hs .bp-grp .gl { position: sticky; left: 0; padding-left: 12px; display: inline-flex; align-items: center; background: #10151b; height: 100%; }
   .bp-hs .bp-grp i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 9px; }

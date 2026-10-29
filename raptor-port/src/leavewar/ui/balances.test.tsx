@@ -626,4 +626,10 @@ describe('the M5a drawing differences (D1493)', () => {
     expect(rule('.bp-ro + .bp-opd'), 'the desktop\'s cell').toMatch(/vertical-align:\s*baseline/)
     expect(rule('.bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd'), 'the phone\'s pair').toMatch(/align-self:\s*baseline/)
   })
+  /* [LW-BAL-PHONE-LOCKED-FIT] (D1497): on a phone a read-only figure keeps the drawing's 10px at its right, so it ends where a
+     box's figure ends; the browser test "M5a drawing F" measures it */
+  it('F: on a phone a read-only figure keeps 10px at its right, as a box\'s figure does', () => {
+    expect(rule('.bp-row .bp-ro')).toMatch(/padding-right:\s*10px/)
+    expect(rule('.bp-row .bp-ro')).not.toMatch(/padding-right:\s*0/)
+  })
 })
