@@ -40,3 +40,13 @@ describe('D1264 — the "Open for bidding" window is a full page from the top on
     if (src != null) expect(src).toMatch(/<Sheet testid="open-dates"[^>]*\bpage\b/)
   })
 })
+
+/* D1511 (owner, 29 Oct 26 — "Events should show at the top"): the Events list takes the same full page from the top on a
+   phone, so its lines stay where they are as the list grows */
+describe('D1511 — the Events list is a full page from the top on a phone', () => {
+  it('the window itself asks for the page form', async () => {
+    const src = await import('./EventsSheet.tsx?raw').then(m => (m as any).default as string).catch(() => null)
+    expect(src, 'the source read').not.toBeNull()
+    expect(src!).toMatch(/<Sheet testid="events-sheet"[^>]*\bpage\b/)
+  })
+})

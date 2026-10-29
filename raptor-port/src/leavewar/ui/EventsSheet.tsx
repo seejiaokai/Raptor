@@ -54,8 +54,9 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
   }, [fresh])
   const { period, eventRows, eventDefs } = getState()
   const lines = eventLines(period, eventRows, eventDefs, memberToday())
+  /* on a phone a full page from the top, as "Open for bidding" (D1511 — "Events should show at the top") */
   return (
-    <Sheet testid="events-sheet" label="Events" onClose={onClose}>
+    <Sheet testid="events-sheet" label="Events" onClose={onClose} page>
       <div className="bidsheet-hd">
         <span className="who">EVENTS</span>
         <span className="dt" data-testid="events-period">{period.name}</span>

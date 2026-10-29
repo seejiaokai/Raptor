@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1511 | 29 Oct 26 | On a phone the Leave War's Events list opens as a full page from the top of the screen, as the "Open for bidding" window does (D1264), so its lines stay in one place as the list grows; a desktop keeps the floating window. |
 | D1506 | 29 Oct 26 | The OIL tracker opened from the Leave War's Approvals page closes back onto that page as he left it — its lit lines, its dots, the dates picked and its place in the list — not onto the grid. |
 | D1505 | 29 Oct 26 | On a phone the Balances page's row of column headings sits flush under the page's bar, at rest and at every zoom, so nothing of the rows shows above it. |
 | D1504 | 29 Oct 26 | On a phone, while the Balances page is pinched, its row of column headings stays a solid strip with nothing showing through it, and no row is drawn torn or cut part-way; at the lift both stay so. |

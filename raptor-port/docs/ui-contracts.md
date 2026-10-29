@@ -8423,6 +8423,7 @@ drawings (`scripts/drawcheck/specs/lw-m5b.mjs`, D1495).
 - **Management** (D1502): a built-in Quals column beside SXO (`engine/qualcols.ts`), no ✕ in Edit quals, put back by the
   writer and at load; on the war a qualification group known by its key `mgmt`, first once added (`addGroup`), the
   palette's blue until picked. A man in Management still counts in his seat.
+- **On a phone the Events list is a full page from the top (D1511, 29 Oct 26 — "Events should show at the top"),** as "Open for bidding" is (D1264): `Sheet`'s `page` form; a desktop keeps the floating window.
 - **The Events list** (`leavewar/ui/EventsSheet.tsx`, D1500): Settings' Events… closes Settings and opens it in the same
   frame — "EVENTS" and the period in View; "＋ Event" left, "Edit presets" right; one line an event over the period
   (a band, or a run of one word on one row, is one line — `engine/eventlist.ts`), each a Holidays-list line with its

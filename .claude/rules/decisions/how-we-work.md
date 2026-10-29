@@ -12,8 +12,9 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1509 | 29 Oct 26 | The one settings gear everywhere in the app is the Leave War's drawn line gear, the ⚙ symbol going wherever it stands today (the Inputs calendar, the OIL tracker, the Tracker's flex settings, the Scheduler Board's flying-waves gear). |
 | D1508 | 29 Oct 26 | Every calendar icon in the app is Edit Schedule's line calendar, drawn by the app — never the 📅 symbol; and the whole app is looked over again for anything else drawn differently where it should match, icons included, each put to him with pictures before it changes (D1124). |
-| D1507 | 29 Oct 26 | Every settings gear in the app is one design, drawn by the app so every device shows it alike — never the ⚙ symbol, which an iPhone draws as a picture of its own; which gear is put to him with pictures before it is built (recommended: the Leave War's line gear). |
+| D1507 | 29 Oct 26 | Every settings gear in the app is one design, drawn by the app so every device shows it alike — never the ⚙ symbol, which an iPhone draws as a picture of its own; which gear is put to him with pictures before it is built (recommended: the Leave War's line gear). — changed by D1509 |
 | D1496 | 29 Oct 26 | Every mock-up's design is standardised to the rest of the app: each part drawn the way the app already draws that kind of part, so a design is the app's own, not a new look. |
 | D1495 | 29 Oct 26 | The drawing check is a standing step of every build that has an approved drawing: run while the screen is built and after every fix, red until each difference is put back or he has ruled to keep it, beside the look by eye and the walk, never instead of them — the wording approved as drafted. |
 | D1494 | 29 Oct 26 | A drawing check is built as its own job: a script that measures a built screen against its approved drawing — where each part sits, its size, colour and text alignment — at his iPhone's and a desktop's size, lists every difference over about 2px with marked pictures side by side, and fails until each is fixed or put to him. — changed by D1495 |
