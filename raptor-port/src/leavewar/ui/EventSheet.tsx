@@ -36,13 +36,14 @@
 // Save and Delete are each ONE command now (state/store.ts saveEvent / deleteEvent): one Undo step, and a refused
 // replacement leaves the event it would have replaced exactly as it was.
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   bandAt,
   classifyEvent,
   dayEventKind,
   dayEventShort,
   defKey,
+  freeEventLine,
   EVENT_KINDS,
   EVENT_KIND_WORDS,
   normShort,
@@ -102,13 +103,29 @@ const presetOf = (defs: EventDef[], text: string, kind: EventKind | null): numbe
 const presetNamed = (defs: EventDef[], text: string): number =>
   (defKey(text) ? defs.findIndex(d => defKey(d.name) === defKey(text)) : -1)
 
-export function EventSheet({ line, date, to, onClose, onMove }: { line: number; date: string; to?: string; onClose: () => void; onMove?: (m: { line: number; from: string; to: string }) => void }) {
+export function EventSheet({ line, date, to, fresh = false, presets = false, run = false, onClose, onMove, onSaved }: {
+  line: number
+  date: string
+  to?: string
+  /** A NEW event from the Events list's "＋ Event" (D1500): opened with nothing picked, on `date`'s month; its Event
+   *  row is found at Save — the first one free across the dates picked, as a holiday's is (store.ts holidayPlan). */
+  fresh?: boolean
+  /** Opened from the Events list's "Edit presets" (D1500): straight onto the presets, whose ‹ and Done go back. */
+  presets?: boolean
+  /** A RUN OF ONE WORD written into each day (the walk's F1, 29 Oct 26): opened from the Events list's one line for it —
+   *  `date` to `to`, on "Repeat each day", so a rename keeps it a word a day and Delete takes every day of it. */
+  run?: boolean
+  onClose: () => void
+  onMove?: (m: { line: number; from: string; to: string }) => void
+  /** a NEW event saved: its row and first day (the Events list rings it — the walk's F3) */
+  onSaved?: (line: number, from: string) => void
+}) {
   useVersion()
-  const { period, eventDefs: defs } = getState()
+  const { period, eventDefs: defs, eventRows } = getState()
   // The band (if any) that owns this cell. Editing it means replacing it, so
   // it is captured up front and removed on apply/delete.
-  const band = bandAt(period.bands, line, date)
-  const day = period.days.find(d => d.date === date)
+  const band = fresh ? null : bandAt(period.bands, line, date)
+  const day = fresh ? undefined : period.days.find(d => d.date === date)
   // A DRAG opens the sheet already ranged from the swept span (owner, 27 Aug
   // 26); a plain click leaves `to` undefined and opens on the one day.
   const dragged = to !== undefined && to !== date
@@ -124,7 +141,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
       : { text: t, kind: day ? dayEventKind(day, line) : null, short: day ? dayEventShort(day, line) : null }
   })
   const [text, setText] = useState(orig ? orig.text : '')
-  const [scope, setScope] = useState<'day' | 'range'>(band || dragged ? 'range' : 'day')
+  const [scope, setScope] = useState<'day' | 'range'>(band || dragged || fresh ? 'range' : 'day')
   // A RANGE opens on ONE MERGED BAR (owner, 28 Aug 26 — "can the default
   // selection be one merged bar instead of repeat each day"). A span of days
   // that share a name is nearly always one thing — an exercise, a detachment,
@@ -132,12 +149,67 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
   // word into each cell is the exception, and it is one tap away. An existing
   // band already opened merged, so this only changes the fresh-range case (a
   // plain click that is then ranged, or a drag-swept span).
-  const [mode, setMode] = useState<'merge' | 'repeat'>('merge')
+  const [mode, setMode] = useState<'merge' | 'repeat'>(run ? 'repeat' : 'merge')
   const [range, setRange] = useState<Range | null>(
-    band ? { from: band.from, to: band.to } : { from: date, to: to ?? date },
+    fresh ? null : band ? { from: band.from, to: band.to } : { from: date, to: to ?? date },
   )
-  const [view, setView] = useState<'event' | 'types'>('event')
+  const [view, setView] = useState<'event' | 'types'>(presets ? 'types' : 'event')
   const [problem, setProblem] = useState('')
+  /* THE PRESETS' WAY BACK — to the event, or, opened from the Events list's "Edit presets", to the list (the code read's
+     R3 and its fix read, 29 Oct 26). A name or short form is saved as its box loses focus, and the press that leaves is
+     usually what takes the focus; from the list, the window used to close over a refusal and the rename was lost with no
+     word. Now:
+     - a refusal caused by the press that leaves (Done, ‹, the backdrop, Escape) holds the window open ONCE, so its
+       sentence is read — a refusal met earlier, already on view, never holds a later press;
+     - a box still being typed in when the window is left (an iPhone keeps the focus there when Done is tapped) is saved
+       — or refused — first, not dropped;
+     - the sentence is drawn only once the press has finished: drawn at the press, it grew the window under the pointer,
+       Done moved 23px, and the release fell on the sentence (the press lost; three presses to leave). */
+  const typesErr = useRef('')
+  const leaving = useRef(false)
+  const pressing = useRef(false)
+  useEffect(() => {
+    if (view !== 'types') return
+    const down = (e: PointerEvent) => {
+      pressing.current = true
+      const t = e.target as HTMLElement | null
+      // a press on ‹ / Done, or anywhere outside the window (the backdrop), is a press that leaves
+      leaving.current = !!t && (!!t.closest('[data-testid="types-done"], [data-testid="types-back"]') || !t.closest('[data-testid="event-types-sheet"]'))
+    }
+    const up = () => { pressing.current = false }
+    document.addEventListener('pointerdown', down, true)
+    document.addEventListener('pointerup', up, true)
+    document.addEventListener('pointercancel', up, true)
+    return () => {
+      document.removeEventListener('pointerdown', down, true)
+      document.removeEventListener('pointerup', up, true)
+      document.removeEventListener('pointercancel', up, true)
+    }
+  }, [view])
+  /* show a box's refusal: at once, or — mid-press — after the press's click (or a short wait, for a press that never
+     becomes one), so nothing moves under the pointer */
+  const showProblem = (err: string) => {
+    if (!pressing.current) { setProblem(err); return }
+    let done = false
+    const run = () => { if (done) return; done = true; document.removeEventListener('click', onClick, true); clearTimeout(t); setProblem(err) }
+    const onClick = () => run()
+    const t = setTimeout(run, 1500)
+    document.addEventListener('click', onClick, true)
+  }
+  const boxDone = (err: string | null | undefined) => {
+    typesErr.current = err && leaving.current ? err : ''
+    showProblem(err ?? '')
+  }
+  const typesBack = () => {
+    // a box still holding what is being typed: saved (or refused) first, as a press that leaves
+    const a = document.activeElement as HTMLElement | null
+    if (a && a.tagName === 'INPUT' && a.closest('[data-testid="event-types-sheet"]')) { leaving.current = true; a.blur() }
+    const hold = presets && !!typesErr.current
+    leaving.current = false
+    typesErr.current = ''
+    if (hold) return
+    if (presets) onClose(); else setView('event')
+  }
 
   // THIS event's own tag (owner, 18 Aug 26 — "I don't want u to save it as a
   // type"). Tapping a tag used to write the typed word into the squadron's
@@ -195,19 +267,27 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
     /* THE SHORT FORM SAVED ON THE EVENT: what he typed in "On grid"; untouched, the one it had while its name stands;
        else none — it then prints its preset's or one from its name, and follows them if they change. */
     const short = gridTyped ? grid : sameText ? orig!.short : null
+    if (fresh && !range) return setProblem('Pick its day — or its first and last day — on the calendar.')
     if (scope !== 'day' && !range) return setProblem('Pick the dates first.')
+    /* A NEW EVENT FROM THE LIST: its row is the first one free across its dates (engine/holidays.ts freeEventLine — the
+       Holidays list's own finder), and one day picked saves as that day, a run as the merge or repeat chosen */
+    const at = fresh ? freeEventLine(period, eventRows, range!.from, range!.to) : line
+    if (at < 0) return setProblem('Every Event row is already used on those dates — add an Event row in the Leave War’s ⚙ Settings, then try again.')
+    const oneDay = fresh && range!.from === range!.to
     const r = saveEvent({
-      line, date,
-      scope: scope === 'day' ? 'day' : mode,
+      line: at, date: fresh ? range!.from : date,
+      scope: scope === 'day' || oneDay ? 'day' : mode,
       from: range?.from, to: range?.to,
       text: textNow, kind, short,
     })
-    if (r.ok) return onClose()
+    if (r.ok) { if (fresh) onSaved?.(at, range!.from); return onClose() }
     setProblem(r.message)
   }
 
   const del = () => {
-    deleteEvent(line, date)
+    /* a run of one word (F1): every day of it, in one command — an empty word written over the run */
+    if (run && to && to !== date) saveEvent({ line, date, scope: 'repeat', from: date, to, text: '', kind: null })
+    else deleteEvent(line, date)
     onClose()
   }
 
@@ -234,11 +314,11 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
 
   if (view === 'types') {
     return (
-      <Sheet testid="event-types-sheet" label="Event presets" onClose={onClose}>
+      <Sheet testid="event-types-sheet" label="Event presets" onClose={() => (presets ? typesBack() : onClose())}>
         <div className="bidsheet-hd">
           <span className="who">PRESETS</span>
           <span className="dt">name · on grid · kind</span>
-          <button className="x" data-testid="types-back" onClick={() => setView('event')} aria-label="Back">
+          <button className="x" data-testid="types-back" onClick={typesBack} aria-label="Back">
             ‹
           </button>
         </div>
@@ -260,7 +340,8 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
                 data-testid={`evtype-name-${i}`}
                 onBlur={e => {
                   const err = updateEventType(i, { name: e.target.value })
-                  setProblem(err ?? '')
+                  boxDone(err)
+                  if (err) e.target.value = d.name
                 }}
                 onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
               />
@@ -277,7 +358,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
                 data-testid={`evtype-short-${i}`}
                 onBlur={e => {
                   const err = updateEventType(i, { short: e.target.value })
-                  setProblem(err ?? '')
+                  boxDone(err)
                   if (err) e.target.value = d.short ?? ''
                 }}
                 onKeyDown={e => e.key === 'Enter' && (e.target as HTMLInputElement).blur()}
@@ -311,7 +392,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
           <button className="dchip" data-testid="types-reset" onClick={() => resetEventTypes()}>
             Reset to standard
           </button>
-          <button className="dchip approve" data-testid="types-done" onClick={() => setView('event')}>
+          <button className="dchip approve" data-testid="types-done" onClick={typesBack}>
             Done
           </button>
           {problem && <span className="note warn" data-testid="event-problem">{problem}</span>}
@@ -323,8 +404,8 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
   return (
     <Sheet testid="event-sheet" label="Edit event" onClose={onClose}>
       <div className="bidsheet-hd">
-        <span className="who">EVENT {line + 1}</span>
-        <span className="dt">{scope === 'range' && range ? shortSpan(range.from, range.to) : shortSpan(date, date)}</span>
+        <span className="who">{fresh ? 'NEW EVENT' : `EVENT ${line + 1}`}</span>
+        <span className="dt">{scope === 'range' && range ? shortSpan(range.from, range.to) : fresh ? '' : shortSpan(date, date)}</span>
         <button className="evtypes-open" data-testid="event-edit-types" onClick={() => setView('types')}>
           Edit presets
         </button>
@@ -379,7 +460,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
              window (calendar + Save/Delete) shows. Tapping "A range" is a
              button, which drops the keyboard on its own, so switching a day to
              a range reveals the full window too. */
-          autoFocus={!(band || dragged)}
+          autoFocus={!(band || dragged || fresh)}
           onChange={e => setText(e.target.value)}
           /* Enter/Return closes the keyboard (owner, 1 Sep 26 — "when I press
              enter the keyboard should close"). It blurs the field rather than
@@ -427,8 +508,9 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
         </>
       )}
 
-      {/* One day, or a span. */}
-      <div className="bidsheet-row evscope">
+      {/* One day, or a span. (A new event from the list has no day yet: its calendar is the choice — one tap a day,
+          two a run.) */}
+      {!fresh && <div className="bidsheet-row evscope">
         <button
           className={`dchip${scope === 'day' ? ' approve' : ''}`}
           data-testid="event-scope-day"
@@ -443,7 +525,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
         >
           A range
         </button>
-      </div>
+      </div>}
 
       {scope === 'range' && (
         <>
@@ -468,6 +550,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
               testid="event"
               min={period.start}
               max={period.end}
+              anchor={fresh ? date : undefined}
               value={range}
               onChange={setRange}
             />
@@ -488,7 +571,10 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
             event's own span to the matrix, which runs the same drag-to-a-day move
             mode the roster uses. Closes the sheet first, exactly like the roster
             Move button. */}
-        {onMove && (band || (day && day.events[line])) && (
+        {/* …but not for a run of one word on several days opened whole from the Events list (`run`, the walk's F1): a move
+            takes one day or one band, so it would split the run (the code read's R2, 29 Oct 26) — its window offers
+            Repeat and Delete over the run, as the spec lists. */}
+        {onMove && !fresh && !run && (band || (day && day.events[line])) && (
           <button
             className="dchip move"
             data-testid="event-move"
@@ -500,7 +586,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
         <button className="dchip save" data-testid="event-apply" onClick={apply}>
           Save
         </button>
-        {(band || (day && day.events[line])) && (
+        {!fresh && (band || (day && day.events[line])) && (
           <button className="dchip refuse" data-testid="event-delete" onClick={del}>
             Delete
           </button>

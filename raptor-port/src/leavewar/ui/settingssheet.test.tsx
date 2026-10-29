@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { displayRoster, getState, groupsInOrder, initStore, rosterFollowsDefault, setRole, setRosterOrder } from '../state/store'
+import { displayRoster, getState, groupIdOf, groupsInOrder, initStore, rosterFollowsDefault, setQualCatalog, setRole, setRosterOrder } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { LIFT_LAND_MS } from '../../ui/lift'
@@ -119,7 +119,7 @@ describe('the ⚙ Settings sheet', () => {
     // counters & rows live here now
     expect(screen.getByTestId('counter-add')).toBeTruthy()
     expect(screen.getByTestId('event-add')).toBeTruthy()
-    expect(screen.getByTestId('sans-toggle')).toBeTruthy()
+    expect(screen.getByTestId('gadd-SANS')).toBeTruthy()   // "+ SANS" in place of the Show SANS switch (D1221, D1499)
     expect(screen.queryByTestId('counter-reset-all')).toBeNull()   // "Reset counters" left with the built-in counters (D669)
     // the groups editor is folded in
     expect(screen.getByTestId('group-reset')).toBeTruthy()
@@ -128,13 +128,13 @@ describe('the ⚙ Settings sheet', () => {
     expect(screen.queryByTestId('roster-autosort')).toBeNull()
   })
 
-  it('Show SANS adds the SANS group row, whose ✕ hides SANS again', () => {
+  it('"+ SANS" adds the SANS group row, whose ✕ hides SANS again (D1221)', () => {
     setRole('admin')
     render(<Matrix />)
     openSettings()
-    // no SANS group row until the switch is on
+    // no SANS group row until it is added
     expect(screen.queryByTestId('grow-SANS')).toBeNull()
-    fireEvent.click(screen.getByTestId('sans-toggle'))
+    fireEvent.click(screen.getByTestId('gadd-SANS'))
     expect(getState().showSans).toBe(true)
     expect(screen.getByTestId('grow-SANS')).toBeTruthy()
     // the SANS row's ✕ is the hide, not a stored-group removal
@@ -226,9 +226,87 @@ describe('group colours in ⚙', () => {
     // a press inside the palette leaves it open
     fireEvent.pointerDown(screen.getByTestId(`gpalette-${SCD}`))
     expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
-    // a press anywhere else in the sheet shuts it
+    // a press anywhere else in the sheet shuts it: hidden at the press, gone once the press resolves (F7, below)
     fireEvent.pointerDown(screen.getByTestId('settings-sheet'))
+    expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(true)
+    fireEvent.click(screen.getByTestId('settings-sheet'))
     expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+  })
+
+  /* NOTHING MOVES UNDER THE FINGER (the M5b walk's F7, 29 Oct 26). Adding a group opens its palette under its row; on a
+     phone the next tap — on another "+" chip — closed the palette on the PRESS, the chips below slid up into its room,
+     and the iPhone, which places the tap where the finger lifts, gave it to the chip that slid under the finger: "+ NVG"
+     added for "+ SC DAY". The palette now hides at the press but keeps its room until the press resolves (its click, a
+     cancel, or a short wait after the lift with no click), so the chip pressed is the chip that gets the tap. */
+  it('F7: a press outside the palette hides it but keeps its room until the press resolves', () => {
+    setRole('admin')
+    if (!getState().qualCatalog.some(q => q.k === 'mgmt')) setQualCatalog([...getState().qualCatalog, { k: 'mgmt', label: 'Management' }])
+    render(<Matrix />)
+    openSettings()
+    fireEvent.click(screen.getByTestId('gadd-q:mgmt'))
+    const pal = screen.getByTestId('gpalette-q:mgmt')
+    // the press on the next chip: the palette is hidden, still in the page (its room kept) — nothing below it moves
+    fireEvent.pointerDown(screen.getByTestId(`gadd-${SCD}`))
+    expect(screen.getByTestId('gpalette-q:mgmt')).toBe(pal)
+    expect(pal.classList.contains('closing')).toBe(true)
+    expect(pal.getAttribute('aria-hidden')).toBe('true')
+    // the tap lands: the chip pressed adds ITS group, the old palette goes, the new group's palette opens
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+    expect(screen.getByTestId(`grow-${SCD}`)).toBeTruthy()
+    expect(screen.queryByTestId('gpalette-q:mgmt')).toBeNull()
+    expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(false)
+  })
+
+  it('F7: a press that never becomes a tap (a scroll, a cancel) still closes the palette', () => {
+    vi.useFakeTimers()
+    try {
+      setRole('admin')
+      render(<Matrix />)
+      openSettings()
+      fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+      // cancelled (the browser took the touch for a scroll): gone at once
+      fireEvent.pointerDown(screen.getByTestId('settings-sheet'))
+      fireEvent.pointerCancel(screen.getByTestId('settings-sheet'))
+      act(() => { vi.runOnlyPendingTimers() })
+      expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+      // lifted with no click after it: gone after the short wait
+      fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
+      expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+      fireEvent.pointerDown(screen.getByTestId('settings-sheet'))
+      fireEvent.pointerUp(screen.getByTestId('settings-sheet'))
+      expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(true)
+      act(() => { vi.advanceTimersByTime(1000) })
+      expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    } finally { vi.useRealTimers() }
+  })
+
+  /* A GRIP ABOVE THE PALETTE starts a drag: the palette goes at once (its hidden room would be a gap a drop falls into —
+     the fix read, 29 Oct 26); a grip below it keeps the hold, or it would jump under the finger. */
+  it('F7: a press on a group’s grip above the open palette closes it at once; one below holds it', () => {
+    setRole('admin')
+    render(<Matrix />)
+    openSettings()
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))              // its row goes above the categories, palette open
+    fireEvent.pointerDown(screen.getByTestId('gsdrag-SXO'))         // a category's grip: below the palette
+    expect(screen.getByTestId(`gpalette-${SCD}`).classList.contains('closing')).toBe(true)
+    fireEvent.pointerUp(screen.getByTestId('gsdrag-SXO')); fireEvent.click(screen.getByTestId('gsdrag-SXO'))
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
+    fireEvent.pointerDown(screen.getByTestId(`gsdrag-${SCD}`))      // its own grip: above its palette
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+  })
+
+  /* F8 of the same walk ("a chip for a column nobody holds adds nothing") did not reproduce on the build (29 Oct 26 — a
+     new column with no holder, desktop and phone, each added its group): what the walker met was F7's slide. Pinned. */
+  it('F8: the chip of a Quals column nobody holds adds its group', () => {
+    setRole('admin')
+    setQualCatalog([...getState().qualCatalog, { k: 'nobodyq', label: 'NOBODY Q' }])
+    expect(getState().people.some(p => (p as any).quals?.nobodyq)).toBe(false)
+    render(<Matrix />)
+    openSettings()
+    fireEvent.click(screen.getByTestId('gadd-q:nobodyq'))
+    expect(screen.getByTestId('grow-q:nobodyq')).toBeTruthy()
+    expect(screen.getByTestId('grow-q:nobodyq').textContent).toContain('NOBODY Q')
   })
 
   /* Escape peels one layer: the palette first, the sheet only on the next press
@@ -336,7 +414,7 @@ describe('drag to reorder in ⚙', () => {
     setRole('admin')
     render(<Matrix />)
     openSettings()
-    fireEvent.click(screen.getByTestId('sans-toggle'))
+    fireEvent.click(screen.getByTestId('gadd-SANS'))
     expect(screen.queryByTestId('gsdrag-SANS')).toBeNull()
     expect(screen.getByTestId('gsdrag-IP')).toBeTruthy()
   })
@@ -458,7 +536,8 @@ describe('⚙ Settings — Reset order', () => {
     expect(getState().rosterOrder).toEqual([])
     expect(btn().disabled).toBe(true)
     expect(btn().textContent).toMatch(/Reset order/)
-    expect(screen.getByTestId('roster-order-hint').textContent).toMatch(/default order/)
+    // its line went with D1499; the button's own title says so
+    expect(btn().title).toBe('The roster is already in the default order')
   })
   it('asks once, then puts a hand-arranged roster back in the default order', () => {
     setRosterOrder(['ramp', 'ace'])
@@ -477,7 +556,7 @@ describe('⚙ Settings — Reset order', () => {
     expect(getState().rosterOrder.length).toBeGreaterThan(0)
     open()
     expect(btn().disabled).toBe(true)
-    expect(screen.getByTestId('roster-order-hint').textContent).toMatch(/In the default order/)
+    expect(btn().title).toBe('The roster is already in the default order')
   })
   /* (W2's walk, 26 Sep 26, had Reset counters and Reset order take each other's "Really reset?" back. Reset counters is
      gone — D669, 8 Oct 26 — so Reset order's is the only such question on the sheet; its test went with the button.) */
@@ -542,5 +621,91 @@ describe('⚙ Settings — Reset order', () => {
     const order = getState().rosterOrder.slice()
     fireEvent.click(btn())
     expect(getState().rosterOrder, 'one tap only asks again').toEqual(order)
+  })
+})
+
+/* THE SETTINGS WINDOW AS DRAWN IN M5b ROUND 1 (owner D1499, 29 Oct 26 — "All as recommended"; the drawing
+   docs/mock/lw-overhaul/full/m5b/m5b-d1-settings-*; it answers D1205 "very wordy and not clean"). Label rows Year
+   (Calendar…, Events…), Manning (＋ Counter, ＋ Event row) and Order (Rearrange the grid, Reset order); the groups with
+   Everyone else as a greyed last row; "+ SANS" first among the add chips; the explanatory sentences gone. */
+describe('the Settings window as drawn (D1499)', () => {
+  beforeEach(() => { setRole('admin') })
+  const rowOf = (lab: string) => [...document.querySelectorAll('[data-testid="settings-sheet"] .set-rows .bidsheet-row')]
+    .find(r => r.querySelector('.lab')?.textContent === lab) as HTMLElement | undefined
+  const ids = (el: Element | undefined) => [...(el?.querySelectorAll('button[data-testid]') ?? [])].map(b => b.getAttribute('data-testid'))
+
+  it('its title is "SETTINGS" alone, and its three label rows carry their buttons in order', () => {
+    render(<Matrix />)
+    openSettings()
+    const hd = screen.getByTestId('settings-sheet').querySelector('.bidsheet-hd')!
+    expect(hd.querySelector('.who')!.textContent).toBe('SETTINGS')
+    expect(hd.querySelector('.dt'), 'no "counters, rows & groups"').toBeNull()
+    const labs = [...document.querySelectorAll('[data-testid="settings-sheet"] .set-rows .lab')].map(l => l.textContent)
+    expect(labs).toEqual(['Year', 'Manning', 'Order'])
+    expect(ids(rowOf('Year'))).toEqual(['settings-days', 'settings-events'])
+    expect(ids(rowOf('Manning'))).toEqual(['counter-add', 'event-add'])
+    expect(ids(rowOf('Order'))).toEqual(['settings-rearrange', 'roster-reset-order'])
+    expect(screen.getByTestId('settings-events').textContent).toBe('Events…')
+  })
+
+  it('the trays, their headings and every explanatory sentence are gone', () => {
+    render(<Matrix />)
+    openSettings()
+    const sheet = screen.getByTestId('settings-sheet')
+    expect(sheet.querySelector('.set-tray'), 'no trays').toBeNull()
+    expect(sheet.querySelector('.set-hint, .gs-hint, .gs-note'), 'no sentence at rest').toBeNull()
+    expect(screen.queryByTestId('sans-toggle'), 'the Show SANS switch went (D1221)').toBeNull()
+    const heads = [...sheet.querySelectorAll('.gs-sec')].map(h => h.textContent)
+    expect(heads).toEqual(['Groups', 'Add a group'])
+    expect(sheet.textContent).not.toMatch(/rarely needed/)
+    expect(screen.getByTestId('who-wins-toggle').textContent).toMatch(/follows the page/)
+  })
+
+  it('"+ SANS" is the first add chip while SANS is off, and comes back when its row\'s ✕ takes SANS off (D1215)', () => {
+    render(<Matrix />)
+    openSettings()
+    const chips = () => [...screen.getByTestId('group-offer').querySelectorAll('button')].map(b => b.textContent)
+    expect(chips()[0]).toBe('+ SANS')
+    fireEvent.click(screen.getByTestId('gadd-SANS'))
+    expect(getState().showSans).toBe(true)
+    expect(chips()).not.toContain('+ SANS')
+    expect(screen.getByTestId('grow-SANS').textContent).toMatch(/shown · counted/)
+    fireEvent.click(screen.getByTestId('gdrop-SANS'))
+    expect(getState().showSans).toBe(false)
+    expect(chips()[0]).toBe('+ SANS')
+  })
+
+  it('Everyone else is the last, greyed row — no grip, no colour, no ✕ — with "last" and its count', () => {
+    render(<Matrix />)
+    openSettings()
+    const list = screen.getByTestId('group-chosen')
+    const ee = screen.getByTestId('grow-OTHER')
+    expect(list.lastElementChild).toBe(ee)
+    expect(ee.classList.contains('other')).toBe(true)
+    expect(ee.querySelector('.set-gname')!.textContent).toBe('Everyone else')
+    expect(ee.querySelector('.set-gkd')!.textContent).toBe('last')
+    expect(ee.querySelector('.set-gct')!.textContent, 'the standard groups claim everyone').toBe('0')
+    expect(ee.querySelector('[data-testid^="gsdrag-"]'), 'it never moves').toBeNull()
+    expect(ee.querySelector('button.set-gdel'), 'it cannot be removed').toBeNull()
+    expect(ee.hasAttribute('data-grow'), 'a drag never lands on it').toBe(false)
+    expect(ee.querySelector('.set-sw')!.classList.contains('set-swnone')).toBe(true)
+  })
+
+  it('Everyone else counts the people no group claims', () => {
+    render(<Matrix />)
+    openSettings()
+    // drop every built-in group but SXO: everyone who is not an SXO falls to Everyone else
+    for (const id of ['IP', 'OPSP', 'IWSO', 'OPSW', 'OCU', 'PERS']) fireEvent.click(screen.getByTestId(`gdrop-${id}`))
+    const n = getState().people.filter(p => groupIdOf(p) === 'OTHER').length
+    expect(n, 'the case: people no group claims').toBeGreaterThan(0)
+    expect(screen.getByTestId('grow-OTHER').querySelector('.set-gct')!.textContent).toBe(String(n))
+  })
+
+  it('Events… closes Settings and opens the Events list', () => {
+    render(<Matrix />)
+    openSettings()
+    fireEvent.click(screen.getByTestId('settings-events'))
+    expect(screen.queryByTestId('settings-sheet')).toBeNull()
+    expect(screen.getByTestId('events-sheet')).toBeTruthy()
   })
 })

@@ -232,6 +232,11 @@ function holidayLabel(entry: UndoEntry): string {
   const dated = d && /^\d{4}-\d{2}-\d{2}$/.test(String(d.from)) && /^\d{4}-\d{2}-\d{2}$/.test(String(d.to))
   const on = dated ? ` on ${flySpan([String(d.from), String(d.to)])}` : ''
   const off = d && d.kind === 'off'
+  /* holidays by file (D1501): "adding 7 holidays", one Undo step for the whole import */
+  if (entry.type === 'lw.holiday.import') {
+    const n = d && Number.isInteger(d.n) && d.n > 0 ? d.n : 0
+    return n === 1 ? `adding 1 holiday${on}` : n ? `adding ${n} holidays` : 'adding holidays from a sheet'
+  }
   if (entry.type === 'lw.holiday.remove') return `removing the ${off ? 'Off day' : 'public holiday'}${on}`
   if (entry.type === 'lw.holiday.change') return `a change to the ${off ? 'Off day' : 'public holiday'}${on}`
   return `${off ? 'an Off day' : 'a public holiday'}${on}`

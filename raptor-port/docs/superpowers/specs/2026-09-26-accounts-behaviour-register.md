@@ -13,7 +13,7 @@ fails when a line here has no test naming its id (`raptor-port/scripts/rulecheck
 | AC5 | The accounts load safely: loading never writes; a list with no admin gets the seed admin added, and the seed admin wins any collision; bad entries are dropped | Fable R2-6, Astra R3-4 | `state/accounts.test.ts` |
 | AC6 | An account change is one command; its keys roll back together | Astra R2-3 | `state/accounts.test.ts` |
 | AC7 | A member's command changes only his own records; a guest files nothing | D200 (3), D149 | `state/accounts.test.ts`, `state/quals-write.test.ts` |
-| AC8 | On the Quals page a member edits his OWN row, every column but the callsign (an admin's, D218); never another's; an admin any | D149, D218 | `state/quals-write.test.ts`, `ui/quals.test.tsx` |
+| AC8 | On the Quals page a member edits his OWN row, every column but the callsign (an admin's, D218) and the Management tick (an admin's, D1510); never another's; an admin any | D149, D218, D1510 | `state/quals-write.test.ts`, `ui/quals.test.tsx` |
 | AC9 | The Leave War's own writers agree with the permissions table | D200 (3) | `leavewar/permsparity.test.ts` |
 | AC10 | No "View as", no role toggle; the badge names the signed-in person | D166 (3) | `ui/accounts-ui.test.tsx` |
 | AC11 | The access screens: request access (the four fields — NP4), waiting (what he gave, in one line), switched off — each with Sign out; waiting, with the guest switch on, one tap into the guest view | D204, D221, D214 | `ui/accounts-ui.test.tsx`, `ui/accounts-newperson.test.tsx` |

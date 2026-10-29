@@ -1567,6 +1567,20 @@ every place a request is made or rebuilt: `setCell` (a re-typed kind keeps the f
 (`sync.ts doorDecideApproved`), `replaceClashingBids` and `decideRequest` (both spread the record). A new place that
 rebuilds a request field by field must copy `requestStamps`, or the PLACED column reads a dash.
 
+## The admin's set-up — Settings, Management, the Events list, holidays by file (the overhaul's M5b, 29 Oct 26 — D1499–D1502)
+
+- **Management** is a Quals column every squadron has (`mgmt`, beside SXO, never removable). Ripples: the Quals table and
+  its export; the war's projection (`raptorRoster.qualCatalogue`); every reader of the war's groups — the grid's headings,
+  Settings, the Balances page's and the OIL tracker's group headings, the quals popover, the counter filters; the change
+  history's Quals line. Groups never move a manning count.
+- **"+ SANS"** replaces the Show SANS switch: the same stored flag (`showSans`), so every reader of it is unchanged.
+- **The Events list** reads the period on screen's days and bands; its "＋ Event" writes through `saveEvent` (one
+  command), so the Event rows, the calendars' tags, the Required rows and OIL follow as for an event placed on the grid.
+- **Holidays by file**: the import writes the holidays' own records through their own planner, in one command
+  (`lw.holiday.import`): the Holidays list, the grid's Event rows, the Inputs / SANS calendars' tags, the Required rows
+  (no fly), and — for a public holiday over published weekend work — the OIL question and the bell (D783, inside the
+  same command, so its Undo takes them too). A sheet across two years writes each line to the period holding it.
+
 ## A leave of several days, opened whole in its bid window ([LW-WHOLE-LEAVE-WINDOW], 28 Oct 26 — D1448, D1461)
 
 **What one leave is has THREE readers, one definition:** the grid's joined bar (`ui/MatrixRows.tsx entryKey`), the

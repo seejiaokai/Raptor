@@ -1,0 +1,917 @@
+{
+ "state": "settings-phone",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5b-draw.mjs",
+  "shot": "m5b-d1-settings-phone"
+ },
+ "recorded": "2026-10-29T02:20:12.605Z",
+ "drawnOn": "claude/leave-war-m5b-iphone-balances-1402b7 at 9ec918a12",
+ "checkout": "9a5812f14",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "window": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 137,
+    "w": 378,
+    "h": 723
+   },
+   "ink": {
+    "x": 27,
+    "y": 158,
+    "w": 355,
+    "h": 676.5
+   },
+   "text": "SETTINGS ✕ Year Calendar… Events… 2 Manning ＋ Counter ＋ Event row Order ⇅ Rearrange the grid ↺ Reset order 1 Groups ⠿ Management qual 2 ✕ 3 ⠿ SXO cat 12 ✕ ⠿ IP cat 8 ✕ ⠿ OPS P cat 8 ✕ ⠿ IWSO cat 5 ✕ ⠿ OPS W cat 11 ✕ ⠿ OCU cat 3 ✕ ⠿ Personnel cat 3 ✕ Everyone else last 0 4 Add a group + SANS 5 + Scheduler + SC DAY + SC NIGHT + DAAR + NAAR + NVG + IMC + TF ▸ Who wins when someone fits two follows the page Back to the standard groups",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet"
+  },
+  "title": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 46.7,
+    "y": 158,
+    "w": 73.5,
+    "h": 17
+   },
+   "ink": {
+    "x": 46.7,
+    "y": 158,
+    "w": 73.5,
+    "h": 17
+   },
+   "text": "SETTINGS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 13px",
+    "spacing": "1.3px"
+   },
+   "tag": "span.who"
+  },
+  "rows": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 25,
+    "y": 193,
+    "w": 352,
+    "h": 106
+   },
+   "ink": {
+    "x": 27,
+    "y": 183,
+    "w": 355,
+    "h": 106
+   },
+   "text": "Year Calendar… Events… 2 Manning ＋ Counter ＋ Event row Order ⇅ Rearrange the grid ↺ Reset order 1",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.zz-rows.zz-new"
+  },
+  "year-label": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 27,
+    "y": 210,
+    "w": 78,
+    "h": 14
+   },
+   "ink": {
+    "x": 27,
+    "y": 210,
+    "w": 29.6,
+    "h": 14
+   },
+   "text": "Year",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 10px",
+    "spacing": "1.4px"
+   },
+   "tag": "span.lab"
+  },
+  "calendar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 111,
+    "y": 205,
+    "w": 82.7,
+    "h": 24
+   },
+   "ink": {
+    "x": 122,
+    "y": 211,
+    "w": 60.7,
+    "h": 12
+   },
+   "text": "Calendar…",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn"
+  },
+  "events": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 199.7,
+    "y": 205,
+    "w": 71.2,
+    "h": 24
+   },
+   "ink": {
+    "x": 210.7,
+    "y": 196,
+    "w": 64.2,
+    "h": 27
+   },
+   "text": "Events… 2",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn.zz-new"
+  },
+  "counter": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 111,
+    "y": 235,
+    "w": 80.8,
+    "h": 28
+   },
+   "ink": {
+    "x": 122,
+    "y": 244,
+    "w": 58.8,
+    "h": 12
+   },
+   "text": "＋ Counter",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn"
+  },
+  "rearrange": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 111,
+    "y": 269,
+    "w": 136.7,
+    "h": 26
+   },
+   "ink": {
+    "x": 122,
+    "y": 275,
+    "w": 114.7,
+    "h": 12
+   },
+   "text": "⇅ Rearrange the grid",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn"
+  },
+  "reset": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 253.7,
+    "y": 269,
+    "w": 98.3,
+    "h": 26
+   },
+   "ink": {
+    "x": 264.7,
+    "y": 275,
+    "w": 76.3,
+    "h": 12
+   },
+   "text": "↺ Reset order",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn.set-danger.set-order"
+  },
+  "groups-head": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 25,
+    "y": 299,
+    "w": 352,
+    "h": 32
+   },
+   "ink": {
+    "x": 27,
+    "y": 311,
+    "w": 48.6,
+    "h": 14
+   },
+   "text": "Groups",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 10px",
+    "spacing": "1.2px"
+   },
+   "tag": "div.gs-sec"
+  },
+  "mgmt-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 27,
+    "y": 333,
+    "w": 348,
+    "h": 34
+   },
+   "ink": {
+    "x": 36.1,
+    "y": 323,
+    "w": 343.9,
+    "h": 35.5
+   },
+   "text": "⠿ Management qual 2 ✕ 3",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.set-grow.zz-new"
+  },
+  "mgmt-swatch": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 58,
+    "y": 343,
+    "w": 14,
+    "h": 14
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(79, 163, 224)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "4px",
+     "4px",
+     "4px",
+     "4px"
+    ],
+    "shadow": "rgba(255, 255, 255, 0.18) 0px 0px 0px 1px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.set-sw.set-swbtn"
+  },
+  "mgmt-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 81,
+    "y": 340,
+    "w": 198,
+    "h": 20
+   },
+   "ink": {
+    "x": 85,
+    "y": 342,
+    "w": 85.1,
+    "h": 16
+   },
+   "text": "Management",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "6px",
+     "6px",
+     "6px",
+     "6px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "800 12px",
+    "spacing": "0.72px"
+   },
+   "tag": "button.set-gname"
+  },
+  "mgmt-count": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 322,
+    "y": 342.5,
+    "w": 16,
+    "h": 15
+   },
+   "ink": {
+    "x": 332,
+    "y": 342.5,
+    "w": 6,
+    "h": 15
+   },
+   "text": "2",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "right",
+    "justify": "normal",
+    "font": "600 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.set-gct"
+  },
+  "mgmt-x": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 347,
+    "y": 339,
+    "w": 22,
+    "h": 22
+   },
+   "ink": {
+    "x": 354,
+    "y": 344.5,
+    "w": 9,
+    "h": 12
+   },
+   "text": "✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-gdel"
+  },
+  "sxo-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 27,
+    "y": 367,
+    "w": 348,
+    "h": 35
+   },
+   "ink": {
+    "x": 36.1,
+    "y": 376.5,
+    "w": 326.9,
+    "h": 17
+   },
+   "text": "⠿ SXO cat 12 ✕",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(42, 49, 58, 0.55)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.set-grow"
+  },
+  "other-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 27,
+    "y": 612,
+    "w": 348,
+    "h": 35
+   },
+   "ink": {
+    "x": 81,
+    "y": 603,
+    "w": 299,
+    "h": 35
+   },
+   "text": "Everyone else last 0 4",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(42, 49, 58, 0.55)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.set-grow.zz-new"
+  },
+  "other-swatch": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 58,
+    "y": 625,
+    "w": 10,
+    "h": 10
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px dashed rgb(74, 85, 99)",
+     "1px dashed rgb(74, 85, 99)",
+     "1px dashed rgb(74, 85, 99)",
+     "1px dashed rgb(74, 85, 99)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.set-sw"
+  },
+  "other-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 77,
+    "y": 620,
+    "w": 205,
+    "h": 20
+   },
+   "ink": {
+    "x": 81,
+    "y": 622,
+    "w": 83.8,
+    "h": 16
+   },
+   "text": "Everyone else",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "6px",
+     "6px",
+     "6px",
+     "6px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "0.72px"
+   },
+   "tag": "button.set-gname"
+  },
+  "other-count": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 322,
+    "y": 622.5,
+    "w": 16,
+    "h": 15
+   },
+   "ink": {
+    "x": 332,
+    "y": 622.5,
+    "w": 6,
+    "h": 15
+   },
+   "text": "0",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "right",
+    "justify": "normal",
+    "font": "600 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.set-gct"
+  },
+  "who-wins": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 25,
+    "y": 762,
+    "w": 352,
+    "h": 35
+   },
+   "ink": {
+    "x": 37,
+    "y": 772,
+    "w": 328,
+    "h": 15
+   },
+   "text": "▸ Who wins when someone fits two follows the page",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(255, 255, 255)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13.3333px",
+    "spacing": "normal"
+   },
+   "tag": "button.set-disc"
+  },
+  "sans-chip": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 25,
+    "y": 685,
+    "w": 66,
+    "h": 30
+   },
+   "ink": {
+    "x": 37,
+    "y": 676,
+    "w": 58,
+    "h": 32
+   },
+   "text": "+ SANS 5",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.tchip.zz-new"
+  }
+ },
+ "approved": {
+  "picture": "m5b-d1-settings-phone.png",
+  "identical": true
+ }
+}

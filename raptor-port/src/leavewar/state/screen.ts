@@ -25,6 +25,15 @@ export function setLwOnScreen(next: boolean): void {
   listeners.forEach(fn => fn())
 }
 
+/* LEAVING THE LEAVE WAR, said to every listener even when the grid was already off screen (the fresh read's finding 1,
+   29 Oct 26): while the Balances or Approvals page stands in the grid's place the flag is already false, so the leave
+   changed nothing and a window armed over that page ("Really reset?", a Delete) was never told — it came back armed, one
+   tap from acting. Every listener that only reads the flag sees no change in it (the fill returns on an unchanged false). */
+export function lwLeft(): void {
+  onScreen = false
+  listeners.forEach(fn => fn())
+}
+
 export function subLwScreen(fn: () => void): () => void {
   listeners.add(fn)
   return () => { listeners.delete(fn) }

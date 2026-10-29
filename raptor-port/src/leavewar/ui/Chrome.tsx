@@ -164,10 +164,11 @@ export function Topbar() {
     ['grid', 'Grid', () => { setApprMode('off'); setBalancesUp(false); askLw({ kind: 'grid' }) }],
     ...(admin ? [['approvals', 'Approvals', () => { askLw({ kind: 'grid' }); setApprMode('page') }] as [Tab, string, () => void]] : []),
     ['balances', 'Balances', () => { askLw({ kind: 'grid' }); setBalancesUp(true) }],
-    ['oil', 'OIL', () => { setApprMode('off'); setBalancesUp(false); askLw({ kind: 'oil' }) }],
+    /* drawn over the page that is up, which stays under it: its ✕ comes back there (D1503, D1506) */
+    ['oil', 'OIL', () => askLw({ kind: 'oil' })],
   ]
-  const tabOn = (t: Tab) => (page === 'approvals' ? t === 'approvals' : page === 'balances' ? t === 'balances'
-    : t === 'approvals' || t === 'balances' ? false : (t === 'oil') === oilUp)
+  const tabOn = (t: Tab) => (oilUp ? t === 'oil' : page === 'approvals' ? t === 'approvals' : page === 'balances' ? t === 'balances'
+    : t === 'grid')
   const tabKey = (e: ReactKeyboardEvent, i: number) => {
     const by = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0
     if (!by) return

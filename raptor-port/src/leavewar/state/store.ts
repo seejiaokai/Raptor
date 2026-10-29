@@ -32,6 +32,7 @@ import {
   readGroupDefs,
   SANS_GROUP,
   SANS_GROUP_ID,
+  MGMT_KEY,
   type GroupDef,
   inSquadron,
   isBiddable,
@@ -1599,7 +1600,7 @@ function lwRegisterCommands(): void {
   /* the Holidays list's three writers (holidayAdd / holidayChange / holidayRemove below): their own types so Undo can
      say "a public holiday on 9 Aug"; admin only, by perms.ts COMMAND_OPS and by the writers themselves — and the
      Event sheet's Save and Delete (saveEvent / deleteEvent), for the same two reasons */
-  for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove', 'lw.event.save', 'lw.event.remove']) cmdDefinePermission(t, cmdAnyone)
+  for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove', 'lw.holiday.import', 'lw.event.save', 'lw.event.remove']) cmdDefinePermission(t, cmdAnyone)
   /* the Manning block's two settings of the overhaul's batch 3, each its own command so the gate asks the Setting row
      (perms.ts COMMAND_OPS — the admin's): an Available row's Save — its name, who it counts and its amber and red points
      (D1190, D1191, D1202) — and a Required row's name (D1193) */
@@ -2473,15 +2474,19 @@ export function addGroup(d: GroupDef): void {
   if (d.id === SANS_GROUP_ID) return
   const current = groupsInOrder().filter(x => x.id !== SANS_GROUP_ID)
   if (current.some(x => x.id === d.id)) return    // already shown
+  /* MANAGEMENT STANDS FIRST (owner D1149, D1200, D1502): the group of the Quals column the war knows by its KEY (never
+     its heading) lands at the very top of the page — and of a custom who-wins order — not merely above the categories.
+     He may drag it elsewhere afterwards, as any group. */
+  const first = d.kind === 'qual' && d.k === MGMT_KEY
   const catAt = current.findIndex(x => x.kind === 'cat')
-  const insertAt = catAt < 0 ? current.length : catAt
+  const insertAt = first ? 0 : catAt < 0 ? current.length : catAt
   const merged = pruneGroups([...current.slice(0, insertAt), d, ...current.slice(insertAt)], state.qualCatalog)
   if (!merged.some(x => x.id === d.id)) return    // a qual key the catalogue lost
   let priority = state.groupPriority
   if (state.groupPriorityCustom) {
     const byId = new Map(merged.map(x => [x.id, x]))
     const pr = groupPriorityIds().filter(id => id !== d.id && id !== SANS_GROUP_ID)
-    const pAt = pr.findIndex(id => byId.get(id)?.kind === 'cat')
+    const pAt = first ? 0 : pr.findIndex(id => byId.get(id)?.kind === 'cat')
     priority = pAt < 0 ? [...pr, d.id] : [...pr.slice(0, pAt), d.id, ...pr.slice(pAt)]
   }
   state = withCurrent({ ...state, groupDefs: merged, groupPriority: priority })
@@ -4539,7 +4544,7 @@ const holFail = (reason: HolidayFail, message: string): HolidayResult => ({ ok: 
 
 /* What a holiday write would do, worked out and checked before anything changes: the periods to write, or the refusal.
    `replacing` = the line being changed (its record is taken away first, and its own days then count as free). */
-function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null): HolidayResult | { writes: Array<[string, Period]>; draft: HolidayDraft } {
+function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null, wars: LeaveWar[] = state.wars): HolidayResult | { writes: Array<[string, Period]>; draft: HolidayDraft } {
   if (state.role !== 'admin') return holFail('forbidden', 'Only an admin can change the holidays.')
   if (!h || typeof h !== 'object' || (h.kind !== 'ph' && h.kind !== 'off') || !validDate(h.from) || !validDate(h.to) || h.to < h.from)
     return holFail('bad', 'Choose public holiday or Off day, and a first and last day — the last cannot be before the first.')
@@ -4554,7 +4559,7 @@ function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null): HolidayResu
 
   let source: LeaveWar | undefined, cleared: Period | null = null
   if (replacing) {
-    source = state.wars.find(w => w.period.id === replacing.warId)
+    source = wars.find(w => w.period.id === replacing.warId)
     cleared = source ? withoutHoliday(source.period, replacing, state.eventDefs) : null
     if (!source || !cleared) return holFail('gone', 'That holiday is no longer there — it was changed on the Leave War.')
     /* A CHANGE THAT NAMES NO SHORT FORM KEEPS THE ONE THE HOLIDAY HAD — while its name stands. Under a new name the
@@ -4570,7 +4575,7 @@ function holidayPlan(h: HolidayDraft, replacing: HolidayRef | null): HolidayResu
     }
   }
   const draft: HolidayDraft = { kind: h.kind, name, from: h.from, to: h.to, ...(short ? { short } : {}) }
-  const target = warHolding(state.wars, draft.from)
+  const target = warHolding(wars, draft.from)
   if (!target) return holFail('noperiod', `No leave period covers ${holDate(draft.from)} yet.`)
   if (draft.to > target.period.end) return holFail('crosses', `Those dates run past ${holDate(target.period.end)}, the end of the leave period "${target.period.name}" — add each part to its own period.`)
   const base = source && source === target ? cleared! : target.period
@@ -4598,6 +4603,43 @@ export function holidayChange(line: HolidayRef, h: HolidayDraft): HolidayResult 
   if ('ok' in plan) return plan
   return holidayRun('lw.holiday.change', 'change', plan.writes, plan.draft)
 }
+/** What `holidayAdd` would answer, worked out without writing anything — the import's preview asks it of each line of a
+ *  sheet before he presses Add (D1501). */
+export function holidayCheck(h: HolidayDraft): HolidayResult {
+  const plan = holidayPlan(h, null)
+  return 'ok' in plan ? plan : { ok: true }
+}
+
+/* HOLIDAYS BY FILE — "ADD n HOLIDAYS" (owner D1501, 29 Oct 26 — "an import first lists what it holds … and adds nothing
+   until Add is pressed"). Every new line of the sheet in ONE command, `lw.holiday.import`: one Undo step ("adding 7
+   holidays"), ALL OR NOTHING — each line is planned against the wars as the lines before it leave them (its period, its
+   free Event row: `holidayPlan`, the one planner `holidayAdd` uses), and if any is refused nothing is written and the
+   refusal names that line (`index`, the draft's place in the list). Inside the command a public holiday's own
+   after-effects run as for one holiday (the gesture's `tellHolidays` — the OIL question for published work, D783).
+   Admin only, as every holiday writer. */
+export type HolidayImportResult = { ok: true; added: number } | { ok: false; index: number; reason: HolidayFail; message: string }
+export function holidaysImport(drafts: HolidayDraft[]): HolidayImportResult {
+  if (state.role !== 'admin') return { ok: false, index: -1, reason: 'forbidden', message: 'Only an admin can change the holidays.' }
+  if (!Array.isArray(drafts) || !drafts.length) return { ok: false, index: -1, reason: 'bad', message: 'There are no holidays to add.' }
+  let wars = state.wars
+  const changed = new Map<string, Period>()
+  let firstWar = ''
+  for (let i = 0; i < drafts.length; i++) {
+    const plan = holidayPlan(drafts[i]!, null, wars)
+    if ('ok' in plan) return plan.ok ? { ok: false, index: i, reason: 'bad', message: '' } : { ok: false, index: i, reason: plan.reason, message: plan.message }
+    for (const [id, period] of plan.writes) {
+      changed.set(id, period)
+      if (!firstWar) firstWar = id
+      wars = wars.map(w => (w.period.id === id ? { ...w, period } : w))
+    }
+  }
+  const froms = drafts.map(d => d.from).sort(), tos = drafts.map(d => d.to).sort()
+  /* the note Undo's words are made from (undo/describe.ts holidayLabel) and its landing reads (state/undo-wire.ts) */
+  const note = JSON.stringify({ op: 'import', n: drafts.length, from: froms[0], to: tos[tos.length - 1] })
+  gesture('lw.holiday.import', () => { for (const [id, period] of changed) updateWar(id, w => ({ ...w, period })) }, { warId: firstWar, note })
+  return { ok: true, added: drafts.length }
+}
+
 export function holidayRemove(line: HolidayRef): HolidayResult {
   if (state.role !== 'admin') return holFail('forbidden', 'Only an admin can change the holidays.')
   const war = line && typeof line === 'object' ? state.wars.find(w => w.period.id === line.warId) : undefined

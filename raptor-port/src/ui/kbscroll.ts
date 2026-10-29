@@ -128,6 +128,17 @@ export function screenBox(vv: { height: number, offsetTop: number, offsetLeft?: 
   return { top, bottom: top + vv.height, left: r.left + (vv.offsetLeft || 0), layTop: r.top, layLeft: r.left, layH }
 }
 
+/** WHERE THE SCREEN'S OWN TOP-LEFT STANDS in the measure every box is given in (his keyboard readout, 29 Oct 26 — his
+ *  iPhone with `?kbdebug`, the Tracker's Flex settings): once the keys slide the page, his phone gives every measure from
+ *  the VISIBLE top, so something fixed at the screen's top reads 167 points above zero — while a fixed window's own
+ *  `top` still counts from the screen's top. A window placed by hand under a button or a bar (top = the button's foot)
+ *  went up by the whole slide, its box carried to the very top of the screen. Every such window takes its place from the
+ *  button's measure LESS this: `top: r.bottom - fixedOrigin().top`. Zero wherever nothing has slid (a desktop, jsdom). */
+export function fixedOrigin(): { top: number, left: number } {
+  const b = screenBox({ height: 0, offsetTop: 0 })
+  return { top: b.layTop, left: b.layLeft }
+}
+
 const scrolls = (a: Element) => {
   const oy = getComputedStyle(a).overflowY
   return (oy === 'auto' || oy === 'scroll' || oy === 'overlay') && a.scrollHeight > a.clientHeight + 1

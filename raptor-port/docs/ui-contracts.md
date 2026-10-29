@@ -8409,6 +8409,42 @@ fifteen schedulers into it (SXO's heading disappears — its people were claimed
 and the roster still holds all 50 people with zero duplicates. Pinned in
 `engine/groups.test.ts`, `roster.test.ts` and `matrix.test.tsx`.
 
+## The Leave War's Settings, its Events list, and holidays by file (the overhaul's M5b, 29 Oct 26 — D1499–D1502)
+
+Built as drawn in M5b round 1 (`docs/mock/lw-overhaul/full/m5b/`, `full-m5b-draw.mjs`), checked part by part against the
+drawings (`scripts/drawcheck/specs/lw-m5b.mjs`, D1495).
+- **Settings** (`leavewar/ui/SettingsSheet.tsx`, D1499): the title "SETTINGS" alone; three label rows in the bid window's
+  row style — Year (Calendar…, Events…), Manning (＋ Counter, ＋ Event row, － Event row while more than the default),
+  Order (⇅ Rearrange the grid, ↺ Reset order, greyed while the roster follows the default, its title saying so); the groups
+  under "Groups", Everyone else as a greyed last row (no grip, a dashed empty square, "last", its count, no ✕ — never a
+  drop target); "+ SANS" the first add chip while SANS is off (D1221, D1215), its row's ✕ taking SANS off again — the
+  Show SANS switch is gone; the explanatory sentences are gone, each button's title keeps what it does. A phone never
+  scrolls it sideways (D1270).
+- **Management** (D1502): a built-in Quals column beside SXO (`engine/qualcols.ts`), no ✕ in Edit quals, put back by the
+  writer and at load; on the war a qualification group known by its key `mgmt`, first once added (`addGroup`), the
+  palette's blue until picked. A man in Management still counts in his seat.
+- **Squadron events first, the ✕ asks once (D1516, 29 Oct 26 — "As recommended") — built 29 Oct 26 (`leavewar/ui/EventsSheet.tsx`; the drawing check `scripts/drawcheck/specs/lw-m5b-events.mjs`):** Squadron events the left list on a desktop and the top one on a phone, then Holidays; the drawing of record the mock-up script's F- frames.
+- **The design review's six fixes (D1515, 29 Oct 26 — "Fix all six") — built 29 Oct 26:** the ✕ arms in place, red, its size and place kept (the pencil never moves); a foot note with Undo after a delete; finger-sized tap areas, the drawn boxes unchanged, a lighter edge; "Delete — sure?" and a red cross; the date column as wide as the widest date the app can write plus a fixed gap; a new event in its own list, in view, ringed; an empty list keeps its heading and one line.
+- **Split into Holidays and Squadron events (D1514, 29 Oct 26 — "for Q3. ill prefer B") — built 29 Oct 26:** public holidays and Off days in one section, every other kind (and no kind) in the other; side by side in a window twice as wide on a desktop, one under the other on a phone; each headed with its name and count.
+- **As built, 29 Oct 26 — the readings taken in the build (the agent's, his to change):** side by side only above 1100 wide (the window 1120); up to 1100 (an iPad, a narrow window) the window keeps its one-list 560 and the lists stand one under the other, as on a phone — kept by his "merge live" to the page that put it to him (D1517) — two lists side by side there left a name no room (the fresh code read's R1); the note's Undo is the top bar's own (one step, the newest — nothing else can add a step while the window is up); the note stays seven seconds, as the app's other offer with a button; the keyboard: after a delete it is on the note's Undo, after Undo on the line's ✕; Tab goes round the window and the note together, Escape on the note closes the note only; the asking is said aloud once, by one region for the window; any other press, a blur, a page switch takes the question back; a line is not itself a button (it holds two), the pencil is the keyboard's way to open it; the line's hover tint is a mouse's only; on a touch screen the window's shield lets a tap on the note through (`.sheet-part`, `Sheet.tsx`).
+- **Each line shows how to edit and delete it (D1512, 29 Oct 26 — "theres no edit icon or cross icon") — built 29 Oct 26:** a control on the line itself for each, not only the tap that opens the event; drawn for him as question 5 (the app's pencil, D1134, and a ✕ that asks once), built with the Holidays / Squadron events split once he answers. **Every line's kind starts at the same place (D1513)** — its square and word one column down the list, as wide as its longest word, empty on a line with no kind.
+- **On a phone the Events list is a full page from the top (D1511, 29 Oct 26 — "Events should show at the top"),** as "Open for bidding" is (D1264): `Sheet`'s `page` form; a desktop keeps the floating window.
+- **The Events list** (`leavewar/ui/EventsSheet.tsx`, D1500): Settings' Events… closes Settings and opens it in the same
+  frame — "EVENTS" and the period in View; "＋ Event" left, "Edit presets" right; one line an event over the period
+  (a band, or a run of one word on one row, is one line — `engine/eventlist.ts`), each a Holidays-list line with its
+  kind's mark (none for an untagged one), past by the app's today greyed. A tap opens that event's window; the list
+  waits behind it and comes back when it closes. "＋ Event" opens the Event window with nothing picked, on today's month,
+  its row the first one free across the dates picked at Save (refused with the Holidays list's sentence when none is);
+  one day saves as that day, a run as one merged bar unless Repeat. "Edit presets" opens the presets, whose ‹ and Done go
+  back to the list. Admin only.
+- **Holidays by file** (`ui/HolidaysPanel.tsx`, D1501): under the Holidays list, Export sheet (the Document button, its
+  arrow turned down) and Import sheet (the Document button). Export saves `holidays-<year>.csv` (From, To, Name, Kind, On
+  grid) by the app's one CSV writer. Import shows a preview in the list's place: the file's name, "n to add · n already
+  here · n not read", each row as a list line — new ("new" in cyan), already here (greyed), not read ("—", its name red, its
+  reason under it naming the row and how to write it) — then Cancel and "Add n holidays" (greyed at 0). Add is one
+  command, all or nothing, one Undo step; the added lines wear the just-added mark for six seconds. The year's arrows or
+  Cancel put the list back.
+
 ## The Inputs date window is a squadron setting (owner, 28 Aug 26)
 
 "Can i set the default duration how many weeks to look ahead by default … weeks,
@@ -11786,6 +11822,16 @@ superseded sections above). Code: `leavewar/ui/BalancesPage.tsx` (the page, `Fig
   sideways; the headings stay on their row; a pinch zooms the list out until every column fits — the OIL tracker's own set-up
   (`ui/pinchzoom.ts wirePinch`: CSS zoom, the headings and names pinned on their axis, `ui/lwzoom.ts` limits). Not testable in
   jsdom (the icons dropped on a narrow phone, the pinch): the walk's.
+- **The heading row stays solid and on top (D1504, D1505, 29 Oct 26 — his iPhone recordings and picture):** at rest the row of
+  column headings sits flush under the page's bar, nothing of the rows showing above it; while the fingers pinch, the whole
+  row — its dark strip with its words — is held on its line, so no row shows through it, and no row is drawn torn or cut
+  part-way. Pinned in `ui/balances.test.tsx`; the pinch itself is the walk's.
+- **OIL from this page comes back to it (D1503, 29 Oct 26 — his recording):** the OIL tracker opened from the Balances page —
+  a person's OIL figure, the OIL tab while the page is up, or the OIL line of a person window opened on it — is drawn over the
+  page, which stays as it was underneath; its ✕ (or Escape) shows the page again as he left it — the same view, place in the
+  list and zoom. Another tab pressed while the tracker is up goes to that tab. **The Approvals page the same (D1506):** the
+  tracker opened over it — a person window's OIL line, the OIL tab — does not end its visit (D1421 narrowed); its ✕ shows the
+  page again with its lit lines, dots, dates and place. Pinned in `ui/balances.test.tsx`.
 - **Grades… (D1486, D1234, D1229):** the Grades window — the next section.
 - **Speed (`docs/performance.md` §E):** a row is memoised on a signature of its own figures, so typing in one box repaints one box
   and a save repaints the rows whose figures moved; the hidden grid is untouched.

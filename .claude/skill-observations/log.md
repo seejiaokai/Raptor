@@ -2705,3 +2705,98 @@ its value and never in innerText.
 **Suggested improvement:** In mockups-on-the-real-app.md step 6, add: draw with the drawing check's recorder beside the script (`raptor-port/scripts/drawcheck/record.mjs`, a part list naming what the build must match), so the record and its whole-screen picture are committed with the drawing; an old drawing is replayed on its own build and its replay proved pixel-identical before its record is trusted.
 
 **Principle:** A picture that was drawn by a script on the real thing is a measurement waiting to be taken; take it when it is drawn, and prove the replay before trusting it.
+
+### Observation 741: A drawing laid over the live page can cover the page's own parts, and a ruling "back to the drawing" then copies the cover
+
+**Status:** OPEN
+**Date:** 29 Oct 26
+**Session context:** the Leave War's iPhone locked Balances page brought back to its approved drawing (a ruled fix found by the drawing check), then M5b's drawings
+**Skill:** brainstorming (its reference mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** "The Method" step 3 (one transform) and "Traps When Injecting Into a Live Page"
+
+**Issue:** The approved drawing of a member's Balances page was a panel laid onto the running app at a fixed place. On the member's screen the row above it (a period picker and a summary box) was a few pixels taller than on the admin's, so the drawn panel covered that row's bottom 6px: two boxes lost their bottom edges. Nobody saw it at approval; the drawing check later reported the built page 6px "lower than drawn", and the owner ruled "back to the drawing". Following the ruling literally would have built the covering into the app. Only cropping the band where the drawing meets the live page showed the cause. A second thing: the approved picture existed only inside a side-by-side sheet, so the check could not confirm the replayed drawing pixel for pixel.
+
+**Suggested improvement:** In "Traps", add: after injecting a panel or window at a measured place, look at its top and bottom edges against the live parts beside it, on every role and size drawn (a part above it may be taller for one role), and assert in the script that no live control's box is overlapped by the injected one. In "Showing It": keep each approved state's picture as its own file beside any side-by-side sheet, so a later measurement can compare against it.
+
+**Principle:** A drawing is evidence of intent, not ground truth: before building "to the drawing" a difference measured against it, look at where the drawing meets the live page — a drawing's own defect is found there, and copying it is a regression.
+
+### Observation 742: A drawing's own marker ring is measured as a design difference by the drawing check
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** M5b's build (the Leave War's Settings, Events list, holidays by file, Management on Quals) and its drawing-check part list, recorded from full-m5b-draw.mjs
+**Skill:** walk-scripts §10 (the drawing check) — project guide, not a skill file
+**Type:** internal
+**Phase/Area:** writing a part list; the comparing's "look" checks
+
+**Issue:** The M5b drawing marked its new Quals heading with an inset pink box-shadow (its pointer at the change, set inline by the drawing script). The part list compared the heading's whole look, so the run reported "its shadow — drawing pink ring, built none" as an unexplained difference. Every other marked part in that drawing used an outline (not measured), so only the one drawn with a box-shadow tripped it.
+
+**Suggested improvement:** In walk-scripts §10 "Name the parts", add: a part the drawing script marks with an inline ring (box-shadow or border in the marker colour) leaves that look out of its checks, with a comment naming the marker; better, the recorder could strip the marker styles (`.zz-new` outline, the `#ff2d95` inline shadow) before it measures.
+
+**Principle:** A measurement of an annotated picture must separate the annotation from the design, or the check reports the annotation as a fault.
+
+### Observation 743: Walk fixes pushed with only their unit tests left the PR's build red for three pushes, unseen
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** M5b's FULL check, picking up a handoff mid-walk (fixes F1, F3–F6 already pushed)
+**Skill:** bug-check-order §5 "Between fix rounds" / shipping §The checks — project guides, not skill files
+**Type:** internal
+**Phase/Area:** fixing walk findings, pushing, the handoff
+
+**Issue:** A fix's new test typed a byte array in a way the project's type check (run only by the build) refuses; the fix ran its touched unit tests (which do not type-check), was pushed, and GitHub's whole run went red — build, every browser set — on three pushes in a row. The handoff block said nothing of it; the next chat found it only by reading the run list.
+
+**Suggested improvement:** In the order's "Between fix rounds" and in shipping's touched-tests rule: a fix round runs `npm run build` (the type check) beside its touched tests before the push; and the session-handoff block's checklist reads the branch's last run conclusion and writes it.
+
+**Principle:** A test runner that does not type-check cannot stand in for the build; a handoff states the last check run's result, not only what was meant to run.
+
+### Observation 744: A walker's unpictured note became a finding that did not reproduce
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** M5b's FULL check, finding F8
+**Skill:** walk-scripts (walker briefs) / bug-check-order §7 — project guides
+**Type:** internal
+**Phase/Area:** recording walk findings
+
+**Issue:** The W1 walker hard-coded a note into its script ("a qualification nobody holds adds no group row … picture w1-02-odd-dead-chip") — the picture was never taken. It was recorded as finding F8. Reproduced on the same build it did not happen; a press-and-lift step on the old build showed it was F7's slide (the chips moving under the finger), seen once by hand and misread.
+
+**Suggested improvement:** In walk-scripts' walker brief: a finding is recorded only with its picture and the step that produced it; a note written into a script's text is not evidence. The host reproduces a finding before it is written into the sheet (the order already says so — enforce it at the sheet: no picture name, no finding).
+
+**Principle:** An observation with no captured evidence is a lead to reproduce, not a finding.
+
+### Observation 745: A walk script that reloads must not open the app in its no-save mode
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** D1510 (Quals Management, admin only) — the walk script `quals-mgmt-walk.mjs`
+**Skill:** brainstorming (its walk-script companion, `raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** walk scripts — the start page
+
+**Issue:** The walk copied an older script's `goto('/?fresh=1')`. That start keeps everything in memory only, so every
+`reload()` in the walk began from the demo world again: an admin's tick "did not survive a reload" — six FAILs that were
+the script's, not the app's. A walk that checks a save across a reload proves nothing from that start, and one that
+passes a "kept after reload" step from it passes by accident when the value happened to be the seed's.
+
+**Suggested improvement:** In walk-scripts.md's list of traps: a script that reloads, or checks anything is kept, opens
+`/` in a fresh browser context (which holds no storage, so the first load is still the demo world) — never `?fresh=1`.
+
+**Principle:** A test fixture's "clean start" switch can also switch off the very behaviour under test; check what a
+reset mode disables before reusing it.
+
+### Observation 746: A walk that checks a font-dependent measurement must reopen the surface after changing the letters
+
+**Status:** OPEN
+**Date:** 29 Oct 26
+**Session context:** Building the Leave War's Events list split (D1512–D1516); the walk checked its columns in letters a seventh wider (his iPhone's).
+**Skill:** brainstorming (its guide `mockups-on-the-real-app.md`) and the walk-script guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** the walk script's "wider letters" fit check
+
+**Issue:** The list measures its column widths in its own letters once, when it opens. The walk swapped in a wider typeface on the open list and measured: the kind column looked misaligned (a false failure), because the widths were still the ones measured in the narrower letters. Reopening the list after the swap measured correctly. Separately, the drawing check's colour comparison read the wrong element because the drawing coloured its words in a child element (a bold span) where the build colours the column itself.
+
+**Suggested improvement:** In walk-scripts.md's fit-check trap list: when a surface measures text at open (canvas or layout), apply the wider letters BEFORE opening it, or close and reopen it after. In the mock-up guide: where a drawing styles words through a child element, a drawing-check part names that child for the colour and the column for the place.
+
+**Principle:** A check that changes an input the code reads only once (at mount) must re-run that read, or it tests the stale value, not the code.

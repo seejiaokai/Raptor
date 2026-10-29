@@ -20,7 +20,7 @@ import { _resetTimeline } from '../undo/timeline'
 import { installGlobalUndo } from '../state/undo-wire'
 import { projectPeople } from './state/raptorRoster'
 import {
-  addEventBand, addEventRow, getState, holidayAdd, holidayChange, holidayRemove, initStore as lwInitStore, lwHistInit,
+  addEventBand, addEventRow, getState, holidayAdd, holidayChange, holidayCheck, holidayRemove, holidaysImport, initStore as lwInitStore, lwHistInit,
   setDayEvent, setPeople, setRole,
 } from './state/store'
 import { memoryBackend, type StorageBackend } from './state/storage'
@@ -375,5 +375,66 @@ describe('the three are an admin’s, by the one permissions list', () => {
   it('each has its row: the leave period’s, an admin’s to change', () => {
     for (const t of ['lw.holiday.add', 'lw.holiday.change', 'lw.holiday.remove'])
       expect(COMMAND_OPS[t], t).toMatchObject({ table: T.war, act: 'U', own: 'never' })
+  })
+})
+
+/* HOLIDAYS BY FILE (owner D1501, 29 Oct 26): Import sheet's "Add n holidays" — every new line of the sheet in ONE
+   command, `lw.holiday.import`: one Undo step, all or nothing, each line planned against the war as the lines before it
+   leave it (its row found as a holiday's is), each written to the period holding its date. `holidayCheck` is the same
+   plan without the write — what the preview asks of each line before he presses Add. */
+describe('import (D1501)', () => {
+  it('adds every line in one command and one Undo step that says how many', () => {
+    expect(holidaysImport([one('2026-05-01', 'ph', 'Labour Day'), { kind: 'off', name: '', from: '2026-06-01', to: '2026-06-03' }]))
+      .toEqual({ ok: true, added: 2 })
+    expect(commandStream().at(-1)!.type).toBe('lw.holiday.import')
+    expect(dayFacts('2026-05-01')).toMatchObject({ kind: 'ph', name: 'Labour Day' })
+    expect(line(2026, '2026-06-01')).toMatchObject({ to: '2026-06-03', kind: 'off', src: 'band' })
+    expect(undoState().undoLabel).toContain('adding 2 holidays')
+    expect(globalUndo().ok).toBe(true)
+    expect(dayFacts('2026-05-01').kind).toBeNull()
+    expect(holidaysIn(2026).some(h => h.from === '2026-06-01')).toBe(false)
+    expect(globalRedo().ok).toBe(true)
+    expect(dayFacts('2026-05-01').kind).toBe('ph')
+    expect(dayFacts('2026-06-02').kind).toBe('off')
+  })
+
+  it('plans each line against the lines before it: two on one day take two rows', () => {
+    expect(holidaysImport([one('2026-05-04', 'ph', 'A'), one('2026-05-04', 'off', 'B')])).toEqual({ ok: true, added: 2 })
+    expect(day('2026-05-04').events.slice(0, 2)).toEqual(['A', 'B'])
+  })
+
+  it('is all or nothing: a line that cannot go in refuses the whole import, naming the line', () => {
+    const before = JSON.stringify(war('y2026').period)
+    const n = commandStream().length
+    const r = holidaysImport([one('2026-05-01', 'ph', 'Labour Day'), one('2031-05-01', 'ph', 'Far off')])
+    expect(r).toMatchObject({ ok: false, index: 1, reason: 'noperiod' })
+    expect((r as any).message).toMatch(/No leave period covers 1 May 31 yet/)
+    expect(JSON.stringify(war('y2026').period), 'nothing added').toBe(before)
+    expect(commandStream().length, 'no command').toBe(n)
+  })
+
+  it('…and so is a run of lines that fills every Event row', () => {
+    const r = holidaysImport([one('2026-05-05', 'ph', 'A'), one('2026-05-05', 'ph', 'B'), one('2026-05-05', 'ph', 'C')])
+    expect(r).toMatchObject({ ok: false, index: 2, reason: 'full' })
+    expect(day('2026-05-05').events.filter(Boolean)).toEqual([])
+  })
+
+  it("is an admin's only, and an empty list adds nothing", () => {
+    setRole('member')
+    expect(holidaysImport([one('2026-05-01')])).toMatchObject({ ok: false, reason: 'forbidden' })
+    expect(dayFacts('2026-05-01').kind).toBeNull()
+    setRole('admin')
+    expect(holidaysImport([])).toMatchObject({ ok: false, reason: 'bad' })
+  })
+
+  it('holidayCheck plans a line without writing it', () => {
+    const before = JSON.stringify(war('y2026').period)
+    expect(holidayCheck(one('2026-05-01'))).toEqual({ ok: true })
+    expect(holidayCheck(one('2031-05-01'))).toMatchObject({ ok: false, reason: 'noperiod' })
+    expect(JSON.stringify(war('y2026').period)).toBe(before)
+  })
+
+  it('the command gate maps lw.holiday.import to the LeaveWar row, as its siblings', () => {
+    expect(COMMAND_OPS['lw.holiday.import']).toMatchObject({ table: T.war, act: 'U' })
   })
 })

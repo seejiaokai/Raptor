@@ -1,0 +1,152 @@
+[
+ {
+  "id": "P-1 his own Management cell reads only",
+  "ok": true,
+  "note": "{\"ro\":true,\"title\":\"Only an admin can tick Management\",\"cursor\":\"default\"}"
+ },
+ {
+  "id": "P-1 and says whose it is",
+  "ok": true,
+  "note": "Only an admin can tick Management"
+ },
+ {
+  "id": "P-1 a press ticks nothing",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-1 and says why",
+  "ok": true,
+  "note": "Only an admin can tick Management"
+ },
+ {
+  "id": "P-1 SXO beside it still ticks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-1 and unticks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-1 a qualification (TF) still ticks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-1 another man's Management reads as text, as his whole row does",
+  "ok": true,
+  "note": "dj"
+ },
+ {
+  "id": "P-2 after a reload his Management is as it was",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-3 the admin's Ranger Management cell is live",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-3 his press ticks it",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-3 the tick survives a reload",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-4 Ranger sees the admin's ✓",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-4 his press cannot take it off",
+  "ok": true,
+  "note": "Only an admin can tick Management"
+ },
+ {
+  "id": "P no page errors",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 his own Management cell reads only",
+  "ok": true,
+  "note": "{\"ro\":true,\"title\":\"Only an admin can tick Management\",\"cursor\":\"default\"}"
+ },
+ {
+  "id": "D-1 and says whose it is",
+  "ok": true,
+  "note": "Only an admin can tick Management"
+ },
+ {
+  "id": "D-1 a press ticks nothing",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 and says why",
+  "ok": true,
+  "note": "Only an admin can tick Management"
+ },
+ {
+  "id": "D-1 SXO beside it still ticks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 and unticks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 a qualification (TF) still ticks",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 another man's Management reads as text, as his whole row does",
+  "ok": true,
+  "note": "dj"
+ },
+ {
+  "id": "D-2 after a reload his Management is as it was",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-3 the admin's Ranger Management cell is live",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-3 his press ticks it",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-3 the tick survives a reload",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-4 Ranger sees the admin's ✓",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-4 his press cannot take it off",
+  "ok": true,
+  "note": "Only an admin can tick Management"
+ },
+ {
+  "id": "D no page errors",
+  "ok": true,
+  "note": ""
+ }
+]

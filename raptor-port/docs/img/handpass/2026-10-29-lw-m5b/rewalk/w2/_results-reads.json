@@ -1,0 +1,83 @@
+[
+ {
+  "id": "R1-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: Move… from an event opened in the list: the event window and the list both shut, the grid handed over",
+   "ok: one tap on 22 Jan landed it: Thu 1 Jan PH ;; Thu 22 Jan SC ;; Tue 17 – Wed 18 Feb PH ;; Sun 9 Aug PH ;; Fri 25 Dec PH"
+  ],
+  "pics": [
+   "r1-D-moving.png",
+   "r1-D-landed.png"
+  ]
+ },
+ {
+  "id": "R2-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: the run opens whole, with Delete",
+   "ok: and no Move… (it would move its first day only)",
+   "title: 2 Feb 26 – 4 Feb 26"
+  ],
+  "pics": [
+   "r2-D-run-window.png"
+  ]
+ },
+ {
+  "id": "R1-P",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: Move… from an event opened in the list: the event window and the list both shut, the grid handed over",
+   "phone: \"Move this event here?\" — Confirm pressed",
+   "ok: one tap on 22 Jan landed it: Thu 1 Jan PH ;; Thu 22 Jan SC ;; Tue 17 – Wed 18 Feb PH ;; Sun 9 Aug PH ;; Fri 25 Dec PH"
+  ],
+  "pics": [
+   "r1-P-moving.png",
+   "r1-P-landed.png"
+  ]
+ },
+ {
+  "id": "R2-P",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: the run opens whole, with Delete",
+   "ok: and no Move… (it would move its first day only)",
+   "title: 2 Feb 26 – 4 Feb 26"
+  ],
+  "pics": [
+   "r2-P-run-window.png"
+  ]
+ },
+ {
+  "id": "R3-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "ok: Done after a refused rename: the presets window stays open",
+   "ok: and says why: Off day is already an event type",
+   "ok: the box shows the stored name again: PH",
+   "after the second Done: presets=false list=true event=false problem=\"\" focus=BODY",
+   "ok: a second Done goes back to the list"
+  ],
+  "pics": [
+   "r3-D-refused.png",
+   "r3-D-second-done.png"
+  ]
+ },
+ {
+  "id": "R4-D",
+  "status": "PASS",
+  "fails": [],
+  "notes": [
+   "{\"counts\":\"1 to add · 0 already here · 0 not read\",\"lines\":[\"Mon 4 MayCafé Noëlnew\"]}",
+   "ok: an Excel \"Unicode Text\" sheet is read: 1 to add · 0 already here · 0 not read"
+  ],
+  "pics": [
+   "r4-D-utf16-preview.png"
+  ]
+ }
+]

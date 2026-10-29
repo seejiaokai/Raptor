@@ -151,6 +151,18 @@ export function DatabaseIcon() {
 
 /** An up-arrow rising from a tray — attach/upload a supporting document
  *  (the medical inputs' mandatory paperwork). Lucide "upload" shape. */
+/* EXPORT'S ARROW (D1501, M5b round 1 — the one new glyph his page named): the Document button's own tray with its arrow
+   turned down, for the Calendar window's "Export sheet" beside "Import sheet" */
+export function DownloadIcon() {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v3a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-3" />
+      <path d="M12 4v11M7.5 10.5 12 15l4.5-4.5" />
+    </svg>
+  )
+}
+
 export function UploadIcon() {
   return (
     <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"

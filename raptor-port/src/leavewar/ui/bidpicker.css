@@ -1013,17 +1013,93 @@
    squeezed into tight rows). Rearranging is NOT here — it happens on the grid.
    ========================================================================== */
 
-/* Counters & rows tray — a raised panel that sets the action buttons apart from
-   the group list below. Reuses the `.rtbtn` chip from matrix.css. */
-.bidsheet .set-tray {
-  margin: 2px 2px 4px;
-  padding: 9px;
-  background: var(--panel-2);
-  border: 1px solid var(--edge);
-  border-radius: 9px;
+/* THE THREE LABEL ROWS — Year, Manning, Order (owner D1499, 29 Oct 26; the drawing m5b-d1-settings-*, its ROW_CSS in
+   docs/mock/lw-overhaul/full-m5b-draw.mjs): the bid window's own `.bidsheet-row` and `.lab` (78px), in place of the
+   three trays and their sentences. Reuses the `.rtbtn` chip from matrix.css. */
+.bidsheet .set-rows { padding: 8px 2px 4px; display: flex; flex-direction: column; gap: 2px; }
+/* (scoped to the page as the drawing's own rule was: a plainer selector lost to a later 6px margin on the window's rows —
+   the drawing check's run of 29 Oct 26 measured each row 2px lower than drawn) */
+#page-leavewar .bidsheet .set-rows .bidsheet-row { margin-top: 4px; }
+.bidsheet .set-rows .bidsheet-row .lab { min-width: 78px; }
+
+/* THE EVENTS LIST (owner D1500; the drawing m5b-d2-events-*, its EV_CSS in full-m5b-draw.mjs): "＋ Event" at the left
+   and "Edit presets" at the right of its top row; each event a line of the Calendar window's Holidays list (23-days.css
+   `.hol-list` / `.hol-line`: the date 42%, the name the rest), its kind's mark (matrix.css `.evpeek-kind`) at the end. */
+.bidsheet .bidsheet-row.ev-top { margin: 6px 2px 10px; }
+.bidsheet .ev-top .evtypes-open { margin-left: auto; }
+/* SPLIT, AND EACH LINE'S OWN EDIT AND DELETE (his D1512–D1516; the drawing of record: mock-events-split.mjs's F- frames,
+   whose comment block names each value below). On a desktop the window twice as wide (560 → 1120) and the two lists side
+   by side, 16px apart; on the Leave War's phone (ui/phone.ts, 700 — where the window is a full page) one under the
+   other, 6px apart, and each line's date stands over its name. */
+#page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(1120px, calc(100vw - 24px)); }
+/* (each list keeps the one list's old 2px sides and 4px foot, as the drawing's lists do; an empty one's line the Holidays
+   list's own `.hol-empty`) */
+.bidsheet .ev-split { display: flex; gap: 16px; align-items: flex-start; }
+.bidsheet .ev-list { margin: 0 2px 4px; }
+.bidsheet .ev-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; }
+/* the line: the date (as wide as the widest date the app can write + 12px — EventsSheet.tsx measures it), the name, the
+   kind's column (as wide as its widest word, D1513), then the pencil and the ✕ */
+.bidsheet .ev-line { align-items: center; }
+.bidsheet .ev-tx { display: contents; }
+.bidsheet .ev-line .hol-when { flex: 0 0 var(--ev-dw, 42%); white-space: nowrap; }
+.bidsheet .ev-line .ev-kind { flex: 0 0 var(--ev-kw, auto); justify-content: flex-start; }
+.bidsheet .ev-kind.none::before { visibility: hidden; }
+/* asking (fixes 1 and 4): "Delete — sure?" in the kind's place, in the Leave War's pale red, the square gone */
+.bidsheet .ev-kind.sure { color: #FBB4B9; font-weight: 700; }
+.bidsheet .ev-kind.sure::before { display: none; }
+/* the two buttons: the Settings window's small square button (`.set-gdel` — 22px, a 5px corner), 14px apart, their edge
+   the app's --ink-3 at .65 (about 3:1 on the line — fix 3); the ✕ the Leave War's red cross (D676, matrix.css
+   `.mrow-btn.del`), armed in place solid red (`.creset.cf-del.arm`); each a 40px tap area round its drawn box */
+.bidsheet .ev-ctls { display: inline-flex; gap: 14px; margin-left: 8px; flex: none; }
+.bidsheet .ev-ctl {
+  position: relative;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: none;
+  border: 1px solid rgba(138, 150, 163, .65);
+  border-radius: 5px;
+  color: var(--ink-2);
+  font-size: 11px;
+  cursor: pointer;
 }
-.bidsheet .set-ctrls { display: flex; flex-wrap: wrap; gap: 7px; }
-.bidsheet .set-hint { margin-top: 8px; font-size: 10.5px; color: var(--ink-3); letter-spacing: .01em; }
+.bidsheet .ev-ctl::before { content: ''; position: absolute; inset: -9px; }
+/* (7px on the side the other button is on, so the two areas meet 14px apart and never overlap — the read's R6) */
+.bidsheet .ev-pen::before { right: -7px; }
+.bidsheet .ev-x::before { left: -7px; }
+/* the question said aloud, seen by no one (the read's R5) */
+.bidsheet .ev-said { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.bidsheet .ev-pen:hover { border-color: var(--ink-2); color: var(--ink); }
+.bidsheet .ev-x { color: #FBB4B9; border-color: rgba(240, 85, 95, .6); }
+.bidsheet .ev-x:hover { border-color: #F0555F; color: #FFD9DC; }
+.bidsheet .ev-x.arm { background: #F0555F; border-color: #F0555F; color: #1A0508; }
+.bidsheet .ev-ctl:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* the line's hover tint for a mouse only: an iPhone keeps a tapped place "hovered", and a delete slides the next line under
+   the finger, which then stood tinted for no reason (the Events walk, 29 Oct 26 — its pictures right after a tap) */
+@media (hover: none) { .bidsheet .ev-line:hover { background: var(--panel); } }
+/* WIDE ENOUGH FOR TWO? Side by side only once each list can hold a line beside its date, kind and buttons: under 1100 (an
+   iPad, a narrow window) two lists left the name nothing and cut the ✕ off at the list's edge (the fresh code read's R1) —
+   there the window keeps its one-list width and the lists stand one under the other, as on a phone */
+@media (max-width: 1100px) {
+  #page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(560px, calc(100vw - 24px)); }
+  .bidsheet .ev-split { flex-direction: column; align-items: stretch; gap: 6px; }
+}
+@media (max-width: 700px) {
+  .bidsheet .ev-line { gap: 8px; }
+  .bidsheet .ev-tx { display: flex; flex-direction: column; flex: 1 1 auto; min-width: 0; gap: 2px; }
+  /* (the line's own 42% / 1 1 0 bases collapse them in a column) */
+  .bidsheet .ev-tx .hol-when, .bidsheet .ev-tx .hol-name { flex: none; }
+  .bidsheet .ev-tx .hol-name { white-space: normal; }
+}
+/* the note after a delete (fix 2): the app's bar with a button (`.secdef-snack`, as "Set as default"), one line on a
+   phone too — as wide as its words, never wider than the screen less its margins; drawn over the full-page window */
+#page-leavewar .secdef-snack.ev-undo { flex-wrap: nowrap; gap: 14px; white-space: nowrap; width: max-content; max-width: calc(100vw - 32px); }
+/* a name too long for the note ends in "…", its Undo always whole (the Events walk's F2: it ran both off a phone's screen) */
+#page-leavewar .secdef-snack.ev-undo .secdef-msg { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+#page-leavewar .secdef-snack.ev-undo .secdef-btn { flex: none; }
 /* Reset counters is destructive — quiet at rest, and matrix.css `.rtbtn.arm`
    turns it red once armed. */
 .bidsheet .rtbtn.set-danger { color: var(--ink-3); }
@@ -1088,6 +1164,8 @@
   background: rgba(255, 255, 255, .04);
   border: 1px solid rgba(42, 49, 58, .8);
 }
+/* closed by an outside press, holding its room until the press resolves (F7 — SettingsSheet.tsx closingFor) */
+.bidsheet .set-palette.closing { visibility: hidden; }
 .bidsheet .set-plab {
   display: block;
   font-size: 9.5px;
@@ -1149,6 +1227,12 @@
   font-size: 11px;
 }
 .bidsheet .set-gdel:hover { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+/* EVERYONE ELSE, the groups list's last row (D1499 — as drawn): muted, a dashed empty swatch, no grip and no ✕ — their
+   room kept, so its count stands in the column of the counts above. */
+.bidsheet .set-grow.other .set-gname { color: var(--ink-3); font-weight: 600; cursor: default; }
+.bidsheet .set-grow.other .set-gname:hover { color: var(--ink-3); }
+.bidsheet .set-sw.set-swnone { background: transparent; border: 1px dashed #4a5563; }
+.bidsheet .set-gdel.off { visibility: hidden; }
 /* The SANS row is the odd one out — shown by the switch, not a stored group, and
    counted. A tinted teal panel with a badge, its ✕ just hides SANS again. */
 .bidsheet .set-grow.sans {

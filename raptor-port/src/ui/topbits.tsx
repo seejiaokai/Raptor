@@ -28,6 +28,7 @@ import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../stat
 import { useVersion } from './useStore'
 import { holdPageScroll } from './floatwin'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
+import { fixedOrigin } from './kbscroll'
 
 /* ---- the Sync chip (a demonstration toggle — there is no server yet; the one state for both bars) ---- */
 let FASTSYNC = false
@@ -143,9 +144,10 @@ export function BellList() {
       const bell = (BELLAT ? document.getElementById(BELLAT) : null)
         || [...document.querySelectorAll<HTMLElement>('.bellbtn')].find(b => b.offsetParent !== null) || document.querySelector<HTMLElement>('.bellbtn')
       if (!bell) return
-      const b = bell.getBoundingClientRect()
+      /* in the screen's own measure, not the slid one (his keyboard readout — kbscroll.ts fixedOrigin) */
+      const b = bell.getBoundingClientRect(), o = fixedOrigin()
       const wide = typeof window.matchMedia === 'function' && window.matchMedia('(max-width:820px)').matches
-      setAt({ top: Math.round(b.bottom + 6), right: Math.max(8, Math.round(window.innerWidth - b.right)), wide })
+      setAt({ top: Math.round(b.bottom - o.top + 6), right: Math.max(8, Math.round(window.innerWidth - b.right)), wide })
     }
     place()
     window.addEventListener('resize', place)

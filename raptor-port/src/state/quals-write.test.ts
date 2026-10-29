@@ -8,7 +8,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { setSession, setMe } from './auth'
 import { initStore, resetSession } from './store'
-import { updatePersonField, OWN_ROW_ONLY, RENAME_ADMIN_ONLY, type QualsOp } from './quals-write'
+import { updatePersonField, OWN_ROW_ONLY, RENAME_ADMIN_ONLY, MGMT_ADMIN_ONLY, type QualsOp } from './quals-write'
 import { commitPeopleEdit } from './people-settings-commit'
 import { defineInvariant } from '../command'
 import { HOOKS } from '../engine/hooks'
@@ -96,6 +96,89 @@ describe('D218 — on Quals only an admin changes a callsign; a member keeps eve
     asAdmin()
     expect(updatePersonField('bane', op('bane'))).toBe(null)
     expect(read('bane')).toBe('Zulu9')
+  })
+})
+
+/* D1510 (29 Oct 26, his "All as recommended" — narrowing D149 as D218 did): on Quals only an admin ticks the Management
+   column. The Leave War draws its Management group from this tick (D1502), so a member who ticked his own would move
+   himself into the group the war puts first. Refused at the screen, this write and the commit gate alike. */
+describe('D1510 — on Quals only an admin ticks Management; a member keeps every other column of his row', () => {
+  const mgmt = (id: string) => !!(PEOPLE as any)[id].quals.mgmt
+  it('a member on his own row — refused, with its reason; nothing changes', () => {
+    asMember('bane')
+    const said: string[] = []; const t = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      const before = mgmt('bane')
+      expect(updatePersonField('bane', { tick: 'mgmt' })).toBe(MGMT_ADMIN_ONLY)
+      expect(mgmt('bane')).toBe(before)
+      expect(said).toContain(MGMT_ADMIN_ONLY)
+    } finally { HOOKS.toast = t }
+  })
+  it('a member already ticked by the admin cannot untick himself either', () => {
+    asAdmin()
+    expect(updatePersonField('bane', { tick: 'mgmt' })).toBe(null)
+    expect(mgmt('bane')).toBe(true)
+    asMember('bane')
+    expect(updatePersonField('bane', { tick: 'mgmt' })).toBe(MGMT_ADMIN_ONLY)
+    expect(mgmt('bane')).toBe(true)
+  })
+  it('an admin, on any row — ticked and unticked', () => {
+    asAdmin()
+    const before = mgmt('bane')
+    expect(updatePersonField('bane', { tick: 'mgmt' })).toBe(null)
+    expect(mgmt('bane')).toBe(!before)
+    expect(updatePersonField('bane', { tick: 'mgmt' })).toBe(null)
+    expect(mgmt('bane')).toBe(before)
+  })
+  it('the member still ticks the columns beside it (SXO, a qualification)', () => {
+    asMember('bane')
+    expect(updatePersonField('bane', { tick: 'sxo' })).toBe(null)
+    expect(updatePersonField('bane', { tick: 'imc' })).toBe(null)
+  })
+})
+
+/* the commit gate is the last lock (perms.ts ownershipViolation, the database step's rule): a member's own-row command
+   that changes what his row's admin owns — Management (D1510), the callsign (D218), the archive mark and the placeholder
+   mark (data-model.md §11) — rolls back whole, even when it skips the Quals write */
+describe('D1510 / D218 — the commit gate refuses a member\'s own-row change of what the admin owns', () => {
+  /* [what, the write, what proves it, the gate's own words — so the test proves THIS rule refused (the code read)] */
+  const cases: [string, () => void, () => any, string][] = [
+    ['Management', () => { (PEOPLE as any).bane.quals.mgmt = !(PEOPLE as any).bane.quals.mgmt }, () => !!(PEOPLE as any).bane.quals.mgmt, 'his Management tick'],
+    ['the callsign', () => { (PEOPLE as any).bane.cs = 'Zulu9' }, () => (PEOPLE as any).bane.cs, 'his callsign'],
+    ['the archive mark', () => { (PEOPLE as any).bane.archived = true }, () => !!(PEOPLE as any).bane.archived, 'his archive mark'],
+    ['the placeholder mark', () => { (PEOPLE as any).bane.special = true }, () => !!(PEOPLE as any).bane.special, 'his placeholder mark'],
+    /* the security read (29 Oct 26): deleting a person is the admin's too (§11), and so are its marks and the archive's */
+    ['the delete mark', () => { (PEOPLE as any).bane.deleted = true }, () => !!(PEOPLE as any).bane.deleted, 'his delete mark'],
+    ['the delete date', () => { (PEOPLE as any).bane.deletedFrom = '2026-01-05' }, () => String((PEOPLE as any).bane.deletedFrom ?? ''), 'his delete mark'],
+    ['the archive date', () => { (PEOPLE as any).bane.archivedOn = '2026-01-05' }, () => String((PEOPLE as any).bane.archivedOn ?? ''), 'who archived him'],
+    ['who archived him', () => { (PEOPLE as any).bane.archivedBy = 'po' }, () => String((PEOPLE as any).bane.archivedBy ?? ''), 'who archived him'],
+    ['the admin who archived him', () => { (PEOPLE as any).bane.archivedWho = 'stiff' }, () => String((PEOPLE as any).bane.archivedWho ?? ''), 'who archived him'],
+    /* …and a callsign of another shape that prints the same is still a change (the security read's finding 4) */
+    ['the callsign\'s shape', () => { (PEOPLE as any).bane.cs = [(PEOPLE as any).bane.cs] }, () => JSON.stringify((PEOPLE as any).bane.cs), 'his callsign'],
+  ]
+  for (const [what, write, read, said] of cases) {
+    it(`${what}: rolled back`, () => {
+      asMember('bane')
+      const before = read()
+      const r: any = commitPeopleEdit(write, { owner: 'bane' })
+      expect(r.ok).toBe(false)
+      expect(String(r.message)).toBe(`member-writes-own: ${said} (people/bane)`)
+      expect(read()).toBe(before)
+    })
+    it(`${what}: an admin's command stands`, () => {
+      asAdmin()
+      const before = read()
+      const r: any = commitPeopleEdit(write, { owner: 'bane' })
+      expect(r.ok).not.toBe(false)
+      expect(read()).not.toBe(before)
+    })
+  }
+  it('his own initials in the same kind of command still pass', () => {
+    asMember('bane')
+    const r: any = commitPeopleEdit(() => { (PEOPLE as any).bane.initials = 'MINE' }, { owner: 'bane' })
+    expect(r.ok).not.toBe(false)
+    expect((PEOPLE as any).bane.initials).toBe('MINE')
   })
 })
 

@@ -143,6 +143,10 @@
   .bp-zoom.bal .bp-cols, .bp-zoom.bal .bp-row { grid-template-columns: 132px 54px 44px 46px 50px 50px 76px 76px 76px 76px 76px; }
   .bp-zoom.taken .bp-cols, .bp-zoom.taken .bp-row { grid-template-columns: 132px repeat(11, 40px); }
   .bp-cols { position: sticky; top: 0; z-index: 4; height: 28px; border-bottom: 1px solid #2a313a; font: 600 9px system-ui; letter-spacing: .04em; color: #8a96a3; text-align: right; background: #0b0d10; white-space: nowrap; }
+  /* the strip's dark fill reaches up past its own top (his picture, 29 Oct 26 — D1505): the scroller cuts it off at its
+     top, so it shows nothing at rest; where a phone draws the stuck row a few pixels below the scroller's top, it covers what
+     of a row would show above the headings */
+  .bp-cols::before { content: ''; position: absolute; left: 0; right: 0; bottom: 100%; height: 24px; background: #0b0d10; pointer-events: none; }
   .bp-cols > span:first-child { position: sticky; left: 0; z-index: 2; padding-left: 12px; align-self: stretch; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; background: #0b0d10; text-align: left; }
   .bp-cols .sep, .bp-row .sep { border-left: 1px solid #222a33; padding-left: 6px; }
   .bp-cols .ok { padding-right: 39px; }
@@ -169,9 +173,11 @@
   /* read only, the phone's figure and its smaller amber pending figure share a baseline, not a middle (D1493 — the middle set
      the amber 1px above the figure's line) */
   .bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd { align-self: baseline; }
-  /* read only, round 19b */
-  .bp-row .bp-ro { min-width: 0; padding-right: 0; height: 30px; font: 700 14px system-ui; }
-  .bp-oc .bp-ro { width: 40px; justify-content: flex-end; }
+  /* read only, round 19b. Its words keep the drawing's 10px at their right, so a figure read only ends where a box's figure
+     ends (a box's edge and padding) — set flush they stood 10px right of `m5c-c2-phone-locked` ([LW-BAL-PHONE-LOCKED-FIT],
+     D1497, found by the drawing check). A kind's figure is at least a box wide and grows to its left for a longer one. */
+  .bp-row .bp-ro { min-width: 0; padding-right: 10px; height: 30px; font: 700 14px system-ui; }
+  .bp-oc .bp-ro { width: auto; min-width: 40px; justify-content: flex-end; }
   .bp-hs .bp-grp { display: flex; align-items: center; width: max-content; min-width: 100%; box-sizing: border-box; height: 30px; padding: 0; background: #10151b; border-bottom: 1px solid #1d242c; font: 800 12px system-ui; letter-spacing: .06em; color: #f1f4f7; }
   .bp-hs .bp-grp .gl { position: sticky; left: 0; padding-left: 12px; display: inline-flex; align-items: center; background: #10151b; height: 100%; }
   .bp-hs .bp-grp i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 9px; }

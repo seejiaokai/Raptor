@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1510 | 29 Oct 26 | On Quals only an admin ticks the Management column: a member's own Management cell reads only, and a member's command that changes it is refused — he still ticks every other column of his own row. |
 | D1108 | 21 Oct 26 | On a phone, Quals can be pinched to zoom in and out, as the Scheduler Board's desktop layout can (D1107), so its wide table can be seen whole or read close. — changed by D1110 |
 | D1105 | 21 Oct 26 | A posting out with Delete chosen says plainly that the app deletes him by itself on the date: the sheet's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck.", and until the date his row reads "posting out <date> · auto delete"; the button stays "Delete" (D298). |
 | D1102 | 21 Oct 26 | On the Post out sheet, changing the date of a posting whose outcome is Delete to today or earlier asks the same tap-twice question as the Delete button before he is deleted; the date is not saved until the second tap. |
@@ -135,4 +136,4 @@ scrolls it sideways: `inputs.md` (D893).
 | D218 | 26 Sep 26 | On Quals only an admin changes a callsign. |
 | D166 | 25 Sep 26 | Accounts are built in the app now, shaped as the real thing: the Admin tab manages accounts, each tied to one callsign; signing in makes you that callsign ("View as" goes); the Leave War follows the signed-in callsign; records name the callsign; an admin may switch himself to the member view and back (D292). — changed by D292 |
 | D165 | 25 Sep 26 | His plan for accounts at the database step: everyone signs in with their own defence mail account; an admin (him) creates each person in the app — callsign, name, admin or member — and ties it to that person's defence mail address; "View as" goes away, because every account already IS a callsign. |
-| D149 | 24 Sep 26 | On Quals a member edits his own row only — every column of it — never another person's; the callsign is an admin's to change (D218). — changed by D218 |
+| D149 | 24 Sep 26 | On Quals a member edits his own row only — every column of it — never another person's; the callsign is an admin's to change (D218). — changed by D1510, D218 |

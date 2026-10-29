@@ -539,3 +539,156 @@ describe('one side window at a time', () => {
     expect(within(t('win-days')).getByTestId('days-wd-3').getAttribute('aria-expanded')).toBe('true')
   })
 })
+
+/* HOLIDAYS BY FILE (owner D1501, 29 Oct 26 — "All as recommended"; the drawings m5b-d3-holidays-buttons-* and
+   -preview-*): Export sheet and Import sheet under the Holidays list; the sheet holds public holidays and Off days only;
+   an import first lists what it holds — new, already here, or not read with how to put it right — and adds nothing
+   until "Add n holidays", one Undo step (the store's half: leavewar/holidays.test.ts "import"; the sheet's reading:
+   leavewar/engine/holidaysheet.test.ts). */
+describe('holidays by file (D1501)', () => {
+  const SAMPLE = [
+    'From,To,Name,Kind,On grid',
+    '2026-01-01,2026-01-01,New Year’s Day,PH,',      // already here (the demo's 1 Jan PH)
+    '2026-04-03,,Good Friday,PH,',
+    '2026-05-01,,Labour Day,PH,',
+    '8/11,,Deepavali,PH,',                          // not read
+    '2026-06-01,2026-06-02,Block off,Off day,',
+    '2026-05-01,,Labour Day again,PH,',             // the same holiday as row 4
+  ].join('\r\n')
+  async function importFile(text: string, name = 'holidays-2026.csv') {
+    const f = new File([text], name, { type: 'text/csv' })
+    await act(async () => { fireEvent.change(t('hol-import-file'), { target: { files: [f] } }); await Promise.resolve(); await Promise.resolve() })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+  }
+  const pvLines = () => [...t('hol-pv-list').querySelectorAll('.hol-line')].map(n =>
+    [n.querySelector('.hol-when')!.textContent, n.querySelector('.hol-name')!.textContent, n.className.match(/pv-(new|had|bad)/)![1], n.querySelector('.hol-pvwhy')?.textContent ?? null])
+
+  it('Export sheet and Import sheet stand under the list, as the app’s Document button, the export arrow turned down', () => {
+    open()
+    const row = t('hol-filerow')
+    expect(row.previousElementSibling).toBe(t('hol-list'))
+    const [ex, im] = [t('hol-export'), t('hol-import')]
+    expect(ex.textContent).toBe('Export sheet')
+    expect(im.textContent).toBe('Import sheet')
+    for (const b of [ex, im]) expect(b.className).toContain('abtn docbtn')
+    expect(ex.querySelector('svg path:last-child')!.getAttribute('d'), 'down').toBe('M12 4v11M7.5 10.5 12 15l4.5-4.5')
+    expect(im.querySelector('svg path:last-child')!.getAttribute('d'), 'up — the Document button’s own').toBe('M12 15V4M7.5 8.5 12 4l4.5 4.5')
+  })
+
+  it('Export sheet saves the year’s holidays as holidays-<year>.csv, in the sheet Import reads', async () => {
+    const realURL = URL.createObjectURL
+    let blob: Blob | null = null, file = ''
+    ;(URL as any).createObjectURL = (b: Blob) => { blob = b; return 'blob:x' }
+    const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) { file = this.download })
+    try {
+      open()
+      fireEvent.click(t('hol-export'))
+      expect(file).toBe('holidays-2026.csv')
+      const text = await (blob as unknown as Blob).text()
+      const rows = text.replace(/^\uFEFF/, '').split('\r\n')
+      expect(rows[0]).toBe('"From","To","Name","Kind","On grid"')
+      expect(rows.slice(1).length).toBe(lines(2026).length)
+      expect(rows[1]).toBe('"2026-01-01","2026-01-01","PH","PH","PH"')
+    } finally { (URL as any).createObjectURL = realURL; click.mockRestore() }
+  })
+
+  it('Import sheet lists what the sheet holds — new, already here, not read with its reason — and adds nothing yet', async () => {
+    open()
+    const before = JSON.stringify(lines(2026))
+    await importFile(SAMPLE)
+    expect(q('hol-list'), 'the preview takes the list’s place').toBeNull()
+    expect(t('hol-pv-file').textContent).toBe('holidays-2026.csv')
+    expect(t('hol-pv-counts').textContent).toBe('3 to add · 1 already here · 2 not read')
+    expect(pvLines()).toEqual([
+      ['Thu 1 Jan', 'New Year’s Day', 'had', null],
+      ['Fri 3 Apr', 'Good Friday', 'new', null],
+      ['Fri 1 May', 'Labour Day', 'new', null],
+      ['—', 'Deepavali', 'bad', 'Row 5: the date “8/11” cannot be read. Write it as 2026-11-08.'],
+      ['Mon 1 – Tue 2 Jun', 'Block off', 'new', null],
+      ['—', 'Labour Day again', 'bad', 'Row 7: the same holiday as row 4.'],
+    ])
+    expect(t('hol-pv-add').textContent).toBe('Add 3 holidays')
+    expect(JSON.stringify(lines(2026)), 'nothing added').toBe(before)
+  })
+
+  it('Add n holidays adds the new lines in one step: the list is back, each added line ringed; one Undo takes them all', async () => {
+    open()
+    await importFile(SAMPLE)
+    fireEvent.click(t('hol-pv-add'))
+    expect(q('hol-preview')).toBeNull()
+    expect(shown().map(s => s[1])).toEqual(expect.arrayContaining(['Good Friday', 'Labour Day', 'Block off']))
+    const ringed = [...t('hol-list').querySelectorAll('.hol-line.innew')].map(n => n.querySelector('.hol-name')!.textContent)
+    expect(ringed.sort()).toEqual(['Block off', 'Good Friday', 'Labour Day'])
+    expect(undoState().undoLabel).toContain('adding 3 holidays')
+    act(() => { globalUndo() })
+    expect(lines(2026).some(h => h.name === 'Good Friday' || h.name === 'Block off')).toBe(false)
+  })
+
+  it('Cancel puts the list back and adds nothing; a sheet with nothing new has Add greyed', async () => {
+    open()
+    await importFile(SAMPLE)
+    fireEvent.click(t('hol-pv-cancel'))
+    expect(t('hol-list')).toBeTruthy()
+    expect(lines(2026).some(h => h.name === 'Good Friday')).toBe(false)
+    await importFile('From,To,Name,Kind\r\n2026-01-01,,New Year’s Day,PH')
+    expect((t('hol-pv-add') as HTMLButtonElement).disabled).toBe(true)
+    expect(t('hol-pv-add').textContent).toBe('Add 0 holidays')
+  })
+
+  it('a line no leave period covers is not read, with the way out in words', async () => {
+    open()
+    await importFile(`From,To,Name,Kind\r\n${FREE}-05-01,,Labour Day,PH`)
+    expect(pvLines()[0]).toEqual(['—', 'Labour Day', 'bad', `Row 2: No leave period covers 1 May ${String(FREE).slice(2)} yet — create it, then import again.`])
+  })
+
+  it('a file that holds no holidays says so, and the list stays', async () => {
+    open()
+    await importFile('just some words')
+    expect(t('hol-pv-counts').textContent).toBe('0 to add · 0 already here · 1 not read')
+  })
+})
+
+/* THE WALK'S FINDINGS ON HOLIDAYS BY FILE (29 Oct 26, the evidence sheet's F4–F6) */
+describe('holidays by file — the walk’s findings', () => {
+  async function importBytes(bytes: Uint8Array<ArrayBuffer> | string, name = 'holidays.csv') {
+    const f = new File([bytes], name, { type: 'text/csv' })
+    await act(async () => { fireEvent.change(t('hol-import-file'), { target: { files: [f] } }); await Promise.resolve(); await Promise.resolve() })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+  }
+  it('F4: a sheet saved as Excel’s plain CSV (Windows-1252) reads its accented names as written', async () => {
+    open()
+    const text = 'From,To,Name,Kind\r\n2026-05-04,,Café Noël,PH'
+    const bytes = Uint8Array.from([...text].map(c => c.charCodeAt(0)))      // one byte a letter: é = 0xE9, ë = 0xEB
+    await importBytes(bytes)
+    expect(t('hol-pv-list').querySelector('.hol-name')!.textContent).toBe('Café Noël')
+  })
+  it('R4: a sheet saved as Excel’s Unicode Text (UTF-16, tab-separated) is read', async () => {
+    open()
+    const text = 'From\tTo\tName\tKind\r\n2026-05-04\t\tCafé Noël\tPH'
+    const bytes = new Uint8Array(2 + text.length * 2)
+    bytes[0] = 0xFF; bytes[1] = 0xFE                                       // the byte-order mark Excel writes
+    for (let i = 0; i < text.length; i++) { bytes[2 + i * 2] = text.charCodeAt(i) & 0xFF; bytes[3 + i * 2] = text.charCodeAt(i) >> 8 }
+    await importBytes(bytes, 'holidays.txt')
+    expect(t('hol-pv-counts').textContent).toBe('1 to add · 0 already here · 0 not read')
+    expect(t('hol-pv-list').querySelector('.hol-name')!.textContent).toBe('Café Noël')
+  })
+  it('F5: holidays added in another year than the one shown are named in a note', async () => {
+    open()
+    await importBytes('From,To,Name,Kind\r\n2026-05-04,,A,PH\r\n2027-05-04,,B,PH\r\n2027-06-04,,C,PH')
+    fireEvent.click(t('hol-pv-add'))
+    expect(t('hol-added-note').textContent).toBe('Also added: 2 holidays in 2027.')
+  })
+  it('F6: a holiday added behind an open preview is not added twice — the preview is read again and says so', async () => {
+    open()
+    await importBytes('From,To,Name,Kind\r\n2026-05-04,,A,PH\r\n2026-05-05,,B,PH')
+    act(() => { holidayAdd({ kind: 'ph', name: 'A', from: '2026-05-04', to: '2026-05-04' }) })
+    fireEvent.click(t('hol-pv-add'))
+    expect(q('hol-preview'), 'nothing added: the preview stays, read again').toBeTruthy()
+    expect(t('hol-pv-counts').textContent).toBe('1 to add · 1 already here · 0 not read')
+    expect(t('hol-pv-err').textContent).toMatch(/changed since/)
+    expect(lines(2026).filter(h => h.from === '2026-05-04')).toHaveLength(1)
+    fireEvent.click(t('hol-pv-add'))
+    expect(q('hol-preview')).toBeNull()
+    expect(lines(2026).some(h => h.from === '2026-05-05')).toBe(true)
+  })
+})

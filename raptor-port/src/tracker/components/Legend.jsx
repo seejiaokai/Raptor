@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
+import { fixedOrigin } from '../../ui/kbscroll';
 
 /* THE TRACKER'S LEGEND (owner D1007, D1018 — 18 Oct 26, approved "as recommended" on the pictures
    docs/img/handpass/2026-10-18-trk-flex-legend/07-legend-*, 07b-, 08-): a "Legend" button beside ☰ Show All in the
@@ -74,8 +75,9 @@ export default function Legend() {
   useLayoutEffect(() => {
     if (!open || !btn.current) { setAt(null); return; }
     const place = () => {
-      const r = btn.current.getBoundingClientRect(), w = Math.min(WIDTH, innerWidth - 2 * PAD);
-      setAt({ left: Math.round(Math.max(PAD, Math.min(r.left, innerWidth - w - PAD))), top: Math.round(r.bottom + 5) });
+      /* in the screen's own measure, not the slid one (his keyboard readout — ui/kbscroll.ts fixedOrigin) */
+      const r = btn.current.getBoundingClientRect(), o = fixedOrigin(), w = Math.min(WIDTH, innerWidth - 2 * PAD);
+      setAt({ left: Math.round(Math.max(PAD, Math.min(r.left, innerWidth - w - PAD))), top: Math.round(r.bottom - o.top + 5) });
     };
     place();
     addEventListener('resize', place);

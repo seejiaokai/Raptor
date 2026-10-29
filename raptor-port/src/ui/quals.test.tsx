@@ -335,6 +335,38 @@ describe('the Quals page (tfin)', () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
+  /* D1510 (29 Oct 26): only an admin ticks Management — a member's own Management cell reads only, as his callsign does
+     (D218); every other cell of his row still ticks */
+  it('D1510: a member\'s own Management cell reads only; a press is refused with its reason', async () => {
+    resyncPeopleBaseline()
+    const said: string[] = []; const t = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      await act(async () => { setSession({ user: 'acus', role: 'main', pid: 'bane', name: 'us' }); setMe('bane'); notify() })
+      await click($('#qEdit'))
+      const cell = $('#qtbl td[data-q="bane|mgmt"]')
+      expect(cell, 'his Management cell is drawn').toBeTruthy()
+      expect(cell.classList.contains('qro'), 'and reads only').toBe(true)
+      expect(cell.getAttribute('title'), 'saying whose it is').toBe('Only an admin can tick Management')
+      const had = !!PEOPLE.bane.quals.mgmt
+      await click(cell)
+      expect(!!PEOPLE.bane.quals.mgmt, 'a press changes nothing').toBe(had)
+      expect(said).toContain('Only an admin can tick Management')
+      /* the cell beside it is still his */
+      expect($('#qtbl td[data-q="bane|sxo"]').classList.contains('qro'), 'SXO stays his').toBe(false)
+      await click($('#qSave'))
+      /* an admin's own and anyone's Management cell is live */
+      await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+      await click($('#qEdit'))
+      expect($('#qtbl td[data-q="bane|mgmt"]').classList.contains('qro'), 'an admin ticks it').toBe(false)
+      await click($('#qtbl td[data-q="bane|mgmt"]'))
+      expect(!!PEOPLE.bane.quals.mgmt, 'and the tick lands').toBe(!had)
+      await click($('#qtbl td[data-q="bane|mgmt"]'))
+      expect(!!PEOPLE.bane.quals.mgmt).toBe(had)
+      await click($('#qSave'))
+    } finally { HOOKS.toast = t }
+  })
+
   /* [ONE-DOOR] (owner D310, 27 Sep 26 — "one door as proposed, Quals loses archive") REPLACED "an admin in editing mode
      gets the archive ✕, and it archives": archive, restore and the archived man's rename live on Admin → Users now
      (ui/onedoor-users.test.tsx, leavewar/onedoor.test.ts); Quals keeps quals, CAT, flight and initials */
@@ -570,7 +602,8 @@ describe('the CAT column', () => {
 /* ---- the columns themselves (owner, 5 Aug 26) ---------------------------
    a fixed left-to-right arrangement, Downchit dropped, TF added. */
 describe('the qualification columns', () => {
-  const QCOLS = ['SANS', 'SXO', 'Scheduler', 'SC DAY', 'SC NIGHT', 'DAAR', 'NAAR', 'NVG', 'IMC', 'TF']
+  /* Management beside SXO since D1502 (29 Oct 26): the column every squadron starts with, empty */
+  const QCOLS = ['SANS', 'SXO', 'Management', 'Scheduler', 'SC DAY', 'SC NIGHT', 'DAAR', 'NAAR', 'NVG', 'IMC', 'TF']
 
   it('run SANS → TF in the owner\'s order, between CAT and Remarks', () => {
     const hs = heads()
@@ -829,8 +862,12 @@ describe('Edit quals', () => {
   it('turning it on hands the headings over: they move and delete, not sort', async () => {
     await on()
     expect($('#qtbl').className).toContain('qediting')
-    expect(qualCols().length, 'every qualification column is a handle').toBe(10)
+    expect(qualCols().length, 'every qualification column is a handle').toBe(11)
+    /* every one but Management carries a ✕: the Leave War reads it, so it cannot be removed (D1502) — it still moves */
     expect($$('#qtbl thead th[data-col] .qdel').length).toBe(10)
+    expect($('#qtbl thead th[data-col="mgmt"]'), 'Management is a handle').toBeTruthy()
+    expect($('#qtbl thead th[data-col="mgmt"] .qdel'), 'with no ✕').toBeFalsy()
+    expect($('#qtbl thead th[data-col="mgmt"] .qlbl').textContent).toBe('Management')
     /* the sort attribute is GONE from them, so a drag can never land as a
        click that re-sorts the table under the hand doing the dragging */
     expect($('#qtbl thead th[data-sort="tf"]')).toBeFalsy()

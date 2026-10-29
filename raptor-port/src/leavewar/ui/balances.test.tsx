@@ -27,6 +27,13 @@ import { Topbar } from './Chrome'
 import { lwPage, setApprMode, setBalancesUp, takeLwAsk } from './lwnav'
 import { readFileSync } from 'node:fs'
 
+/* the pinch's set-up, read by the heading tests (D1504): the real helper otherwise */
+let lastPinch: any = null
+vi.mock('../../ui/pinchzoom', async orig => {
+  const real: any = await orig()
+  return { ...real, wirePinch: (o: any) => { lastPinch = o; return real.wirePinch(o) } }
+})
+
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
 const ISNAP = JSON.stringify(INPUTS)
@@ -253,11 +260,12 @@ describe('Days taken (D1484, reading 20)', () => {
 })
 
 describe('OIL is read only; a name opens his window (D1255, reading 23)', () => {
-  it('"0 ›" leaves the page for his OIL tracker; a name asks for his person window', () => {
+  /* since D1503 (his look at M5b, 29 Oct 26) the page stays up under the tracker, so its ✕ comes back to it */
+  it('"0 ›" asks for his OIL tracker over the page, which stays up; a name asks for his person window', () => {
     setBalancesUp(true)
     render(<BalancesPage />)
     fireEvent.click(screen.getByTestId('bal-oil-bane'))
-    expect(lwPage()).toBe('grid')
+    expect(lwPage()).toBe('balances')
     expect(takeLwAsk()).toEqual({ kind: 'oil', id: 'bane' })
     expect(screen.queryByTestId('bal-OIL-bane')).toBeNull()
   })
@@ -625,5 +633,171 @@ describe('the M5a drawing differences (D1493)', () => {
   it('E: a read-only figure and the amber pending figure after it share one baseline, on a desktop and a phone', () => {
     expect(rule('.bp-ro + .bp-opd'), 'the desktop\'s cell').toMatch(/vertical-align:\s*baseline/)
     expect(rule('.bp-oc > .bp-ro, .bp-oc > .bp-ro + .bp-opd'), 'the phone\'s pair').toMatch(/align-self:\s*baseline/)
+  })
+  /* [LW-BAL-PHONE-LOCKED-FIT] (D1497): on a phone a read-only figure keeps the drawing's 10px at its right, so it ends where a
+     box's figure ends; the browser test "M5a drawing F" measures it */
+  it('F: on a phone a read-only figure keeps 10px at its right, as a box\'s figure does', () => {
+    expect(rule('.bp-row .bp-ro')).toMatch(/padding-right:\s*10px/)
+    expect(rule('.bp-row .bp-ro')).not.toMatch(/padding-right:\s*0/)
+  })
+})
+
+/* HIS LOOK AT M5b (29 Oct 26 — D1503, D1506, and his ⚙ question): the windows the grid owns (the OIL tracker, ⚙ Settings,
+   the Events list and an event's window) were drawn inside the grid card, which is hidden while the Balances or Approvals
+   page stands in its place — so OIL from those pages first took the page down (and its ✕ landed on the grid), and ⚙ there
+   opened a window nobody could see. They are drawn over whatever page is up now; closing one shows that page as it was. */
+describe('the windows the grid owns open over the page that is up (D1503, D1506)', () => {
+  const seen = (el: Element | null) => { for (let n = el; n; n = n.parentElement) if ((n as HTMLElement).hidden) return false; return !!el }
+  const mountPage = async () => {
+    const { LeaveWarPage } = await import('../LeaveWarPage')
+    return render(<LeaveWarPage active={true} />)
+  }
+  it('Balances: a man\'s OIL figure opens the tracker over the page; its ✕ shows the same page, never the grid', async () => {
+    await mountPage()
+    fireEvent.click(screen.getByTestId('lw-tab-balances'))
+    const page = screen.getByTestId('balances-page')
+    fireEvent.click(document.querySelector('[data-testid^="bal-oil-"]')!)
+    expect(seen(screen.getByTestId('oil-sheet'))).toBe(true)
+    expect(screen.getByTestId('oil-tracker').getAttribute('aria-selected')).toBe('true')
+    fireEvent.click(screen.getByTestId('oil-close'))
+    expect(screen.queryByTestId('oil-sheet')).toBeNull()
+    expect(lwPage()).toBe('balances')
+    expect(screen.getByTestId('balances-page')).toBe(page)            // the same page, not drawn afresh: its view, place and zoom kept
+  })
+  it('Balances: the OIL tab, and My leave\'s OIL line, the same', async () => {
+    await mountPage()
+    fireEvent.click(screen.getByTestId('lw-tab-balances'))
+    fireEvent.click(screen.getByTestId('oil-tracker'))
+    expect(seen(screen.getByTestId('oil-sheet'))).toBe(true)
+    fireEvent.click(screen.getByTestId('oil-close'))
+    expect(lwPage()).toBe('balances')
+    fireEvent.click(screen.getByTestId('my-leave'))
+    fireEvent.click(screen.getByTestId('pw-oil'))
+    expect(seen(screen.getByTestId('oil-sheet'))).toBe(true)
+    fireEvent.click(screen.getByTestId('oil-close'))
+    expect(lwPage()).toBe('balances')
+  })
+  it('Approvals: My leave → OIL → ✕ comes back to Approvals, the visit kept', async () => {
+    await mountPage()
+    fireEvent.click(screen.getByTestId('lw-tab-approvals'))
+    const page = screen.getByTestId('approvals-page')
+    fireEvent.click(screen.getByTestId('my-leave'))
+    fireEvent.click(screen.getByTestId('pw-oil'))
+    expect(seen(screen.getByTestId('oil-sheet'))).toBe(true)
+    fireEvent.click(screen.getByTestId('oil-close'))
+    expect(lwPage()).toBe('approvals')
+    expect(screen.getByTestId('approvals-page')).toBe(page)
+    fireEvent.click(screen.getByTestId('oil-tracker'))
+    fireEvent.click(screen.getByTestId('oil-close'))
+    expect(lwPage()).toBe('approvals')
+  })
+  it('another tab pressed while the tracker is up goes to that tab, the tracker shut', async () => {
+    await mountPage()
+    fireEvent.click(screen.getByTestId('lw-tab-balances'))
+    fireEvent.click(screen.getByTestId('oil-tracker'))
+    fireEvent.click(screen.getByTestId('lw-tab-grid'))
+    expect(screen.queryByTestId('oil-sheet')).toBeNull()
+    expect(lwPage()).toBe('grid')
+  })
+  it('⚙ on the Balances and Approvals pages opens Settings where he can see it; Events… opens over the page too', async () => {
+    await mountPage()
+    for (const tab of ['lw-tab-balances', 'lw-tab-approvals']) {
+      fireEvent.click(screen.getByTestId(tab))
+      fireEvent.click(screen.getByTestId('settings-open'))
+      expect(seen(screen.getByTestId('settings-sheet'))).toBe(true)
+      fireEvent.click(screen.getByTestId('settings-events'))
+      expect(seen(screen.getByTestId('events-sheet'))).toBe(true)
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.queryByTestId('events-sheet')).toBeNull()
+      expect(lwPage()).toBe(tab === 'lw-tab-balances' ? 'balances' : 'approvals')
+    }
+  })
+  /* the fresh read's finding 1 (29 Oct 26): a window armed over the Balances page ("Really reset?") must be disarmed when he
+     leaves the Leave War — the grid was already off screen there, so the leave changed no signal and nothing heard it */
+  it('an armed "Really reset?" over the Balances page is taken back when he leaves the Leave War', async () => {
+    const { setRosterOrder, getState } = await import('../state/store')
+    const ids = getState().people.slice(0, 2).map(p => p.id)
+    setRosterOrder([ids[1]!, ids[0]!])
+    const { LeaveWarPage } = await import('../LeaveWarPage')
+    const { rerender } = render(<LeaveWarPage active={true} />)
+    fireEvent.click(screen.getByTestId('lw-tab-balances'))
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('roster-reset-order'))
+    expect(screen.getByTestId('roster-reset-order').textContent).toBe('Really reset?')
+    act(() => rerender(<LeaveWarPage active={false} />))
+    act(() => rerender(<LeaveWarPage active={true} />))
+    const b = screen.queryByTestId('roster-reset-order')
+    expect(b?.textContent ?? '', 'one tap on coming back must never reset').not.toBe('Really reset?')
+  })
+  /* the fresh read's finding 2: from Approvals' slim bar (the grid already up) Rearrange keeps the visit */
+  it('Rearrange from the grid with Approvals’ slim bar up keeps the Approvals visit', async () => {
+    const { apprMode } = await import('./lwnav')
+    const { LeaveWarPage } = await import('../LeaveWarPage')
+    render(<LeaveWarPage active={true} />)
+    fireEvent.click(screen.getByTestId('lw-tab-approvals'))
+    act(() => setApprMode('bar'))
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('settings-rearrange'))
+    expect(apprMode()).toBe('bar')
+  })
+  it('Rearrange the grid, pressed from Settings over a page, brings the grid up — it is done on the grid', async () => {
+    await mountPage()
+    fireEvent.click(screen.getByTestId('lw-tab-balances'))
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('settings-rearrange'))
+    expect(lwPage()).toBe('grid')
+  })
+})
+
+/* HIS LOOK AT M5b (29 Oct 26 — D1504, D1505, three iPhone recordings and a picture): mid-pinch the headings' words were
+   held on their line but their dark strip went with the list, so the rows showed through the words and the strip, carried
+   down, cut a row in two. The whole strip is held now, the name heading on its column; and at rest the strip reaches up
+   past its own top, so nothing of a row shows above it at the top of the list. The browser walk measures it
+   (scripts/handpass/lw-bal-head-probe.mjs). */
+describe('the phone’s heading row stays solid (D1504, D1505)', () => {
+  it('a pinch holds the whole heading strip on its line, the name heading on its column, the names on theirs', () => {
+    const back = asPhone()
+    try {
+      lastPinch = null
+      render(<BalancesPage />)
+      expect(lastPinch, 'the pinch is wired on a phone').toBeTruthy()
+      const pins = lastPinch.pin() as { el: HTMLElement; x: boolean; y: boolean }[]
+      const strip = pins.find(c => c.el.classList.contains('bp-cols'))
+      expect(strip, 'the strip itself, with its dark fill, is held — not only its words').toBeTruthy()
+      expect(strip!.y).toBe(true)
+      expect(strip!.x).toBe(false)
+      const words = pins.filter(c => c.el.parentElement?.classList.contains('bp-cols'))
+      expect(words.length, 'one heading: the name’s, held on its column inside the held strip').toBe(1)
+      expect(words[0]!.el.textContent).toBe('NAME · GRADE')
+      expect(words[0]).toMatchObject({ x: true, y: false })
+    } finally { back() }
+  })
+  it('at rest the strip’s dark fill reaches up past its top, so no row shows above it', () => {
+    const css = readFileSync('src/leavewar/ui/balances.css', 'utf8').replace(/\r\n/g, '\n').replace(/\/\*[\s\S]*?\*\//g, '')
+    const at = css.indexOf('.bp-cols::before {')
+    const rule = at < 0 ? '' : css.slice(at, css.indexOf('}', at))
+    expect(rule).toMatch(/position:\s*absolute/)
+    expect(rule).toMatch(/bottom:\s*100%/)
+    expect(rule).toMatch(/background:\s*#0b0d10/)
+  })
+})
+
+/* the keyboard read's finding 2 (29 Oct 26): the grade list is fixed to the screen and placed under its box — with the keys
+   up (a figure being typed) his iPhone measures from the visible top, so the list went up by the whole slide */
+describe('the grade list stays under its box when the keys have slid the page (his keyboard readout)', () => {
+  it('placed in the screen’s own measure: 167 points of slide do not lift it', () => {
+    const r = (top: number, bottom: number, left = 0, right = 0) =>
+      ({ top, bottom, left, right, width: right - left, height: bottom - top, x: left, y: top, toJSON: () => ({}) }) as DOMRect
+    const spy = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      const s = (this as HTMLElement).style
+      if (s && s.position === 'fixed' && s.top === '0px' && s.left === '0px') return r(-167, -167)
+      if ((this as HTMLElement).dataset?.testid === 'bal-grade-bane') return r(300 - 167, 330 - 167, 140, 230)
+      return r(0, 0)
+    })
+    try {
+      render(<BalancesPage />)
+      fireEvent.click(screen.getByTestId('bal-grade-bane'))
+      expect(parseFloat(screen.getByTestId('bal-grade-list').style.top)).toBe(334)
+    } finally { spy.mockRestore() }
   })
 })

@@ -1,4 +1,4 @@
-import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type RefCallback, type TouchEvent } from 'react'
+import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, type DayView } from '../engine/dayview'
 import { INPUTS, remarksTyped } from '../../engine/inputs'
@@ -17,6 +17,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { FlyRows, type FlyPickApi } from './FlyRows'
 import { EventSheet } from './EventSheet'
+import { EventsSheet } from './EventsSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, leftGrowAbsorbable, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
@@ -392,7 +393,13 @@ export function Matrix() {
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
   // then opens pre-set to that range; a single click leaves it undefined.
-  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string } | null>(null)
+  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string; fresh?: boolean; presets?: boolean; run?: boolean } | null>(null)
+  /* THE EVENTS LIST (D1500), opened by ⚙ Settings' Events…: it stays open behind an event's window opened from it, and
+     shows again when that window closes (it is drawn only while no event window is up) */
+  const [eventsOpen, setEventsOpen] = useState(false)
+  /* a new event just saved from the list, ringed there for the just-added mark's six seconds (the walk's F3) */
+  const [evFresh, setEvFresh] = useState<string | null>(null)
+  useEffect(() => { if (!evFresh) return; const t = setTimeout(() => setEvFresh(null), 6000); return () => clearTimeout(t) }, [evFresh])
   /* THE BOX A TAP ON A FILLED EVENT CELL OPENS (the Inputs / SANS redesign, plan §3.12; owner D643, D644): the grid
      prints an event's short form, and this is where its full name, its kind and its dates are read — by everyone; an
      admin's carries "Edit". A small menu, not a window (D641's reading 2): screen-fixed like the quals popover, closed
@@ -3512,6 +3519,12 @@ export function Matrix() {
 
   const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id
 
+  /* WINDOWS DRAWN OVER THE PAGE THAT IS UP (his look at M5b, 29 Oct 26 — D1503, D1506, and his ⚙ question): the grid card
+     is hidden while the Balances or Approvals page stands in its place, so a window drawn inside it could not be seen there —
+     OIL from those pages had to take the page down first (its ✕ then landed on the grid) and ⚙ opened nothing he could see.
+     The windows the top row and those pages open are drawn on the Leave War's page instead, as the person window already is:
+     over the grid, Approvals or Balances alike, and closing one leaves that page exactly as it was. */
+  const drawnOnPage = (n: ReactNode) => createPortal(n, document.getElementById('page-leavewar') ?? document.body)
   return (
     <div className="stage">
       <div className="card" ref={cardRef}>
@@ -4276,9 +4289,9 @@ export function Matrix() {
           since={who.since}
           hasRow={people.some(p => p.id === who.id)}
           onClose={() => setWho(null)}
-          /* "0 ›": his OIL tracker, over the grid as the OIL tab opens it — the page in the grid card's place first (the
-             tracker is drawn from the grid card), the window shut so the tracker is not under it */
-          onOil={pid => { setApprMode('off'); setBalancesUp(false); setOilTracker({ person: pid }); setWho(null) }}
+          /* "0 ›": his OIL tracker, drawn over whatever page is up, which stays under it (D1503, D1506); the window shut so
+             the tracker is not under it */
+          onOil={pid => { setOilTracker({ person: pid }); setWho(null) }}
           /* a leave line: the grid at that day, the ring on it — Approvals' own way (its slim bar where its page was up); the
              OIL tracker shut; on a phone the window shut too, as it stands in the middle over the day */
           onGo={(pid, date) => {
@@ -4343,22 +4356,45 @@ export function Matrix() {
       })()}
       {/* The OIL tracker — everyone's balances, or one person's ledger. The
           person guard matches the sheets above: a row can go while it is up. */}
-      {oilTracker && (oilTracker.person === null || people.some(p => p.id === oilTracker.person)) && (
+      {oilTracker && (oilTracker.person === null || people.some(p => p.id === oilTracker.person)) && drawnOnPage(
         <OilTracker
           key={oilTracker.person ?? '*'}
           person={oilTracker.person}
           onClose={() => setOilTracker(null)}
-        />
+        />,
       )}
-      {eventEdit && role === 'admin' && (
+      {eventEdit && role === 'admin' && drawnOnPage(
         <EventSheet
-          key={`${eventEdit.line}-${eventEdit.date}-${eventEdit.to ?? ''}`}
+          key={`${eventEdit.line}-${eventEdit.date}-${eventEdit.to ?? ''}-${eventEdit.fresh ? 'new' : ''}${eventEdit.presets ? 'presets' : ''}`}
           line={eventEdit.line}
           date={eventEdit.date}
           to={eventEdit.to}
+          fresh={eventEdit.fresh}
+          presets={eventEdit.presets}
+          run={eventEdit.run}
+          onSaved={(line, from) => setEvFresh(`${line}-${from}`)}
           onClose={() => setEventEdit(null)}
-          onMove={m => { setEventEdit(null); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
-        />
+          // the Events list shuts too: Move… hands the grid over, and the list drawn again over it would take the landing
+          // tap (the code read's R1, 29 Oct 26)
+          // …and the grid comes up: a move lands on it, whatever page the list was opened over
+          onMove={m => { setEventEdit(null); setEventsOpen(false); if (apprMode() === 'page') setApprMode('off'); setBalancesUp(false); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
+        />,
+      )}
+      {/* THE EVENTS LIST (D1500) — an admin's, as ⚙ Settings is; hidden while an event's window opened from it (or from
+          the grid) is up, and back when that closes. "＋ Event" opens a new event on today's month (the period's first
+          when today is outside it), its row found at Save. */}
+      {eventsOpen && !eventEdit && role === 'admin' && drawnOnPage(
+        <EventsSheet
+          onClose={() => setEventsOpen(false)}
+          fresh={evFresh}
+          /* a run of one word on several days opens whole (the walk's F1); a merged band opens as it always has */
+          onOpenEvent={l => setEventEdit(l.to > l.from && !getState().period.bands.some(b => b.line === l.line && b.from === l.from) ? { line: l.line, date: l.from, to: l.to, run: true } : { line: l.line, date: l.from })}
+          onAdd={() => {
+            const t = memberToday()
+            setEventEdit({ line: 0, date: t >= period.start && t <= period.end ? t : period.start, fresh: true })
+          }}
+          onPresets={() => setEventEdit({ line: 0, date: period.start, presets: true })}
+        />,
       )}
       {/* A manning row's explainer — every role's way in from the row's name;
           what it OFFERS (the amber/red fields) is derived from the role
@@ -4374,15 +4410,15 @@ export function Matrix() {
       )}
       {/* The counter form — new counter (null) or a rework of one row's rule.
           Keyed so switching counters resets every draft field. */}
-      {counterEdit !== false && role === 'admin' && (
-        <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
+      {counterEdit !== false && role === 'admin' && drawnOnPage(
+        <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />,
       )}
       {/* The ⚙ SETTINGS sheet — all admin config (counters, event rows, Show
           SANS, the roster groups). Admin only at the affordance AND at every
           store writer it calls — the standing role doctrine. The who-wins list
           reorders through the one drag machine (the display order is dragged on
           the grid instead, see the category headings below). */}
-      {settings && role === 'admin' && (
+      {settings && role === 'admin' && drawnOnPage(
         <SettingsSheet
           onClose={() => setSettings(false)}
           // + Counter opens the counter builder, a sheet of its own — close the
@@ -4391,7 +4427,10 @@ export function Matrix() {
           onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
           // Days… opens the scheduler's Days window on the month the grid is showing (the month strip's lit one),
           // through the war's one seam (sync.ts openDays); the sheet closes so it does not cover the window
-          onRearrange={() => { setSettings(false); setArranging(true) }}
+          // rearranging is done on the grid: it comes up, whatever page Settings was opened over — from Approvals' slim bar the
+          // grid is already up, and the visit is kept (the fresh read's finding 2)
+          onRearrange={() => { setSettings(false); if (apprMode() === 'page') setApprMode('off'); setBalancesUp(false); setArranging(true) }}
+          onEvents={() => { setSettings(false); setEventsOpen(true) }}
           onDays={() => {
             setSettings(false)
             const shown = months.find(m => m.label === inViewRef.current) || months[0]
@@ -4405,7 +4444,7 @@ export function Matrix() {
           // Reset order judges the men the grid DRAWS — the same test the rows below are filtered by
           // ([LW-SETTINGS-SMALL]); a changed window re-renders this component, so the sheet follows it
           shown={p => rowInWindow(p, visWinRef.current, rowSpans)}
-        />
+        />,
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}

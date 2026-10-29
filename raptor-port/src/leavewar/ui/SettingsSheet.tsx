@@ -24,6 +24,7 @@ import {
   groupLabel,
   type Person,
   matchesGroup,
+  OTHER_ID,
   OTHER_LABEL,
   SANS_GROUP_ID,
   type GroupDef,
@@ -57,6 +58,7 @@ export function SettingsSheet({
   onClose,
   onAddCounter,
   onDays,
+  onEvents,
   onRearrange,
   onGroupDragStart,
   onPriorityDragStart,
@@ -70,6 +72,8 @@ export function SettingsSheet({
   onAddCounter: () => void
   /** Open Days — the admin's window that says what kind of day each date is (Matrix closes this sheet first). */
   onDays: () => void
+  /** Open the Events list — the Event rows' events over the period in View (D1500; Matrix closes this sheet first). */
+  onEvents?: () => void
   /** Turn the grid's Rearrange on — the drag handles on its rows (Matrix closes this sheet first). Rearrange moved here
    *  from the grid card's bar (D1254). */
   onRearrange?: () => void
@@ -124,16 +128,49 @@ export function SettingsSheet({
   // selected a colour it will auto close … build pop up windows to have auto
   // close feature if i click outside of it").
   const [colorFor, setColorFor] = useState<string | null>(null)
+  /* The palette an outside press has closed, still holding its room until that press resolves (the M5b walk's F7,
+     29 Oct 26). Removed at the press, it let the "+" chips below slide up into its room before the finger lifted, and
+     an iPhone gives the tap to whatever is under the finger at the lift: "+ NVG" was added for "+ SC DAY". So the press
+     hides it (aria-hidden, invisible) and it goes at the press's click, a cancel, or a short wait after a lift with no
+     click — the popup still closes on an outside press, and nothing moves under the finger. */
+  const [closingFor, setClosingFor] = useState<string | null>(null)
   useEffect(() => {
     if (!colorFor) return
+    let pending = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const finish = () => {
+      if (!pending) return
+      pending = false
+      if (timer) clearTimeout(timer)
+      setClosingFor(null)
+      setColorFor(null)
+    }
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
       // A press on the palette itself, or on any group's colour swatch, is not
       // "outside": the swatch owns its own open/close toggle, so leaving it to
       // that button avoids a close-then-reopen fight on the same tap.
       if (t && (t.closest('.set-palette') || t.closest('.set-swbtn'))) return
-      setColorFor(null)
+      /* A GRIP ABOVE THE PALETTE starts a drag, not a tap (the fix read, 29 Oct 26): held open for the drag, the hidden
+         palette's room was a blank gap a drop could fall into, doing nothing. Closed at once, the room below the grip
+         goes — nothing under that finger moves. A grip below the palette keeps the hold, or it would jump under the finger. */
+      const pal = document.querySelector('.set-palette')
+      if (t && t.closest('.set-grip') && pal && (pal.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_PRECEDING)) {
+        pending = false
+        setClosingFor(null)
+        setColorFor(null)
+        return
+      }
+      pending = true
+      if (timer) clearTimeout(timer)
+      setClosingFor(colorFor)
     }
+    // The click runs this (capture, on document) BEFORE the pressed control's own handler, so a "+" chip's add still
+    // opens its own palette after this one is gone. A lift with no click after it (a scroll that ended as a press, a
+    // long press) closes it after the wait an iPhone may take to send the click; a cancel closes it at once.
+    const onClick = () => finish()
+    const onUp = () => { if (pending) { if (timer) clearTimeout(timer); timer = setTimeout(finish, 450) } }
+    const onCancel = () => finish()
     /* Escape peels the palette first, not the whole sheet: the Sheet's own
        Escape listens on `document` (capture), and a `window` capture listener
        runs ahead of it, so stopping the event here leaves the sheet up. */
@@ -143,13 +180,24 @@ export function SettingsSheet({
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
       e.stopPropagation()
+      pending = false
+      setClosingFor(null)
       setColorFor(null)
     }
     document.addEventListener('pointerdown', onDown, true)
+    document.addEventListener('click', onClick, true)
+    document.addEventListener('pointerup', onUp, true)
+    document.addEventListener('pointercancel', onCancel, true)
     window.addEventListener('keydown', onKey, true)
     return () => {
+      if (timer) clearTimeout(timer)
       document.removeEventListener('pointerdown', onDown, true)
+      document.removeEventListener('click', onClick, true)
+      document.removeEventListener('pointerup', onUp, true)
+      document.removeEventListener('pointercancel', onCancel, true)
       window.removeEventListener('keydown', onKey, true)
+      // a palette closed or replaced while its press was still down never stays hidden for the next one
+      setClosingFor(null)
     }
   }, [colorFor])
 
@@ -168,37 +216,44 @@ export function SettingsSheet({
   const swClass = (id: string) => `set-sw g-${id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
 
   return (
-    <Sheet testid="settings-sheet" label="Roster, counters and groups" onClose={onClose}>
+    <Sheet testid="settings-sheet" label="Settings" onClose={onClose}>
+      {/* THE WINDOW AS DRAWN IN M5b ROUND 1 (owner D1499, 29 Oct 26 — "All as recommended"; it answers his D1205, "very
+          wordy and not clean and not intuitive"; the drawing docs/mock/lw-overhaul/full/m5b/m5b-d1-settings-*, made by
+          full-m5b-draw.mjs). The title is "SETTINGS" alone; the three trays and their sentences became the bid window's
+          own label rows — Year, Manning, Order — and the groups' sentences went (215 words to 104). What each button
+          does still rides its title, read on a hover and by a screen reader. */}
       <div className="bidsheet-hd">
         <span className="who">SETTINGS</span>
-        <span className="dt">counters, rows &amp; groups</span>
         <button className="x" data-testid="settings-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
 
-      {/* ---- Days (the Inputs / SANS calendar job, plan §3.3; the fourth mock-ups' "the way in") — the same line the
-          two calendars' settings carry. ON SCREEN IT IS "CALENDAR" (owner, D675, 8 Oct 26 — "Change it to Calendar instead
-          of days"); the code and the working records still call the window Days. It opens the scheduler's Days window, where each date is set day flying, night
-          flying or no fly: what the Required rows at the foot of the Manning block show as "NF", and count as 0 — and
-          where the year's public holidays and Off days are one list (the same records as the Event rows here). The
-          sheet closes first — Days is a window that leaves the grid working behind it (D641), and this sheet would
-          cover it. */}
-      <div className="gs-sec">Calendar</div>
-      <div className="set-tray">
-        <div className="set-ctrls">
+      <div className="set-rows">
+        {/* ---- Year: Calendar… — the Inputs / SANS calendar job's way in (plan §3.3). ON SCREEN IT IS "CALENDAR" (owner,
+            D675, 8 Oct 26); the code and the working records still call the window Days. It opens the scheduler's Days
+            window, where each date is set day flying, night flying or no fly, and where the year's public holidays and
+            Off days are one list (the same records as the Event rows here). The sheet closes first — Days is a window
+            that leaves the grid working behind it (D641), and this sheet would cover it.
+            Events… (D1500) opens the Event rows' events over the period in View as one list; this sheet closes first too. */}
+        <div className="bidsheet-row">
+          <span className="lab">Year</span>
           <button
             className="rtbtn"
             data-testid="settings-days"
             title="Open the Calendar — set each date day flying, night flying or no fly, and the year's holidays"
             onClick={onDays}
           >Calendar…</button>
+          <button
+            className="rtbtn"
+            data-testid="settings-events"
+            title="Every event on the Event rows, in the period in View"
+            onClick={onEvents}
+          >Events…</button>
         </div>
-        <div className="set-hint" data-testid="settings-days-hint">Day flying, night flying or no fly for each date, and the year’s holidays.</div>
-      </div>
-
-      {/* ---- counters & rows ------------------------------------------------- */}
-      <div className="gs-sec">Counters &amp; rows</div>
-      <div className="set-tray">
-        <div className="set-ctrls">
+        {/* ---- Manning: the counters and the Event rows. ("↺ Reset counters" stood here until D669 (owner, 8 Oct 26): the
+            Manning block now comes with no counters, so there is nothing to go back to.) The Show SANS switch that
+            stood here went with D1221 / D1499: "+ SANS" is the first of the add chips below. */}
+        <div className="bidsheet-row">
+          <span className="lab">Manning</span>
           <button
             className="rtbtn"
             data-testid="counter-add"
@@ -221,36 +276,15 @@ export function SettingsSheet({
               onClick={() => removeEventRow()}
             >－ Event row</button>
           )}
-          <button
-            className={`rtbtn${showSans ? ' on' : ''}`}
-            data-testid="sans-toggle"
-            aria-pressed={showSans}
-            title={showSans ? 'Take SANS aircrew off the leave war roster' : 'Put SANS aircrew on the leave war roster'}
-            onClick={() => setShowSans(!showSans)}
-          >{showSans ? '✓ SANS shown' : 'Show SANS'}</button>
-          {/* "↺ Reset counters" stood here until D669 (owner, 8 Oct 26): it put the built-in counters back, and the
-              Manning block now comes with none — there is nothing to go back to. A counter is deleted with the cross
-              on its row in Rearrange (or from its own form), and Undo brings it back. */}
         </div>
-      </div>
-      <div className="gs-note">
-        Showing SANS puts them on the roster as <b>their own group at the very bottom</b>,
-        and on the days they are available they <b>count toward the manning numbers</b> like
-        everyone else.
-      </div>
-
-      {/* ---- the roster's row order (owner, D160, 24 Sep 26 — "9 yes": a "Reset order" line HERE; the grid's old
-          Auto-sort button and strip stay gone). People are still rearranged by hand on the grid (⇅); this only
-          takes a hand arrangement back to the default. It asks once — fifty rows
-          arranged by hand are real work — and is greyed, with a line saying so, while the roster already follows
-          the default. The store clears the saved order (resetRosterOrder), so a man who joins later lands in his
-          ranked place too; the one Undo brings the arrangement back. */}
-      <div className="gs-sec">Roster order</div>
-      <div className="set-tray">
-        <div className="set-ctrls">
-          {/* REARRANGE, MOVED HERE FROM THE GRID CARD'S BAR (D1254 — the navigation as drawn in round 19: "Rearrange
-              into ⚙"). It turns the grid's drag handles on and closes this window; the grid's bar then carries "Done",
-              the one way out, as the old ⇅ toggle was (owner, 6 Sep 26). */}
+        {/* ---- Order: REARRANGE (moved here from the grid card's bar, D1254 — it turns the grid's drag handles on and
+            closes this window; the grid's bar then carries "Done", the one way out) and RESET ORDER (owner, D160, 24 Sep
+            26 — "9 yes": a "Reset order" line here; the grid's old Auto-sort button and strip stay gone). Reset order asks
+            once — fifty rows arranged by hand are real work — and is greyed while the roster already follows the default
+            (its title says so; the sentence under it went with D1499). The store clears the saved order (resetRosterOrder),
+            so a man who joins later lands in his ranked place too; the one Undo brings the arrangement back. */}
+        <div className="bidsheet-row">
+          <span className="lab">Order</span>
           {onRearrange && (
             <button className="rtbtn" data-testid="settings-rearrange" title="Drag people and category blocks on the grid" onClick={onRearrange}>
               ⇅ Rearrange the grid
@@ -260,7 +294,7 @@ export function SettingsSheet({
             className={`rtbtn set-danger set-order${armOrder ? ' arm' : ''}`}
             data-testid="roster-reset-order"
             disabled={!handOrder}
-            title={handOrder ? 'Put every row back in the default order' : 'The roster is already in the default order'}
+            title={handOrder ? 'Put every row back in the default order — each group as listed below, pilots above WSOs, then by CAT and callsign' : 'The roster is already in the default order'}
             onClick={() => {
               if (!armOrder) { setArmOrder(true); return }
               setArmOrder(false)
@@ -268,18 +302,10 @@ export function SettingsSheet({
             }}
           >{armOrder ? 'Really reset?' : '↺ Reset order'}</button>
         </div>
-        <div className="set-hint" data-testid="roster-order-hint">
-          {handOrder
-            ? 'Arranged by hand. Reset order puts every row back in the default order — each group as listed below, pilots above WSOs, then by CAT and callsign. It asks once; Undo brings your arrangement back.'
-            : 'In the default order — each group as listed below, pilots above WSOs, then by CAT and callsign.'}
-        </div>
       </div>
 
       {/* ---- the groups shown, top to bottom ---------------------------------- */}
-      <div className="gs-sec">
-        Groups — shown, top to bottom
-        <span className="gs-hint">drag ⠿ to reorder · tap a name for who is in it · tap a colour square to change it</span>
-      </div>
+      <div className="gs-sec">Groups</div>
       <div className="set-grows" data-testid="group-chosen">
         {chosen.map(d => {
           const isSans = d.kind === 'sans'
@@ -344,7 +370,13 @@ export function SettingsSheet({
                   tap stores the pick; the heading swatch and the quals popover pill
                   both take it at once. */}
               {pickable && colorFor === d.id && (
-                <div className="set-palette" data-testid={`gpalette-${d.id}`} role="radiogroup" aria-label={`Colour for ${label(d)}`}>
+                <div
+                  className={`set-palette${closingFor === d.id ? ' closing' : ''}`}
+                  data-testid={`gpalette-${d.id}`}
+                  role="radiogroup"
+                  aria-label={`Colour for ${label(d)}`}
+                  aria-hidden={closingFor === d.id ? true : undefined}
+                >
                   <span className="set-plab">Colour for {label(d)}</span>
                   <div className="set-dots">
                     {PALETTE.map(c => (
@@ -366,9 +398,19 @@ export function SettingsSheet({
             </Fragment>
           )
         })}
-      </div>
-      <div className="gs-note">
-        Anyone no group above claims is shown under <b>{OTHER_LABEL}</b>, always last.
+        {/* EVERYONE ELSE, THE LIST'S LAST ROW (D1499 — in place of the sentence "Anyone no group above claims is shown
+            under Everyone else, always last"): where people no group claims are drawn, always last on the grid. It cannot
+            be moved or removed, so it has no grip, no colour and no ✕ — their places kept, so its count lines up with
+            the rows above; no `data-grow`, so a drag never lands on it. A SANS man never falls into it (D1215: SANS is
+            off the roster altogether until "+ SANS"). */}
+        <div className="set-grow other" data-testid="grow-OTHER">
+          <span className="set-grip off" aria-hidden="true" />
+          <span className="set-sw set-swnone" aria-hidden="true" />
+          <span className="set-gname">{OTHER_LABEL}</span>
+          <span className="set-gkd">last</span>
+          <span className="set-gct">{people.filter(p => homeOf.get(p.id) === OTHER_ID).length}</span>
+          <span className="set-gdel off" aria-hidden="true" />
+        </div>
       </div>
 
       {/* who is in the tapped group */}
@@ -402,11 +444,16 @@ export function SettingsSheet({
       })()}
 
       {/* ---- add a group ---------------------------------------------------- */}
-      <div className="gs-sec">
-        Add a group
-        <span className="gs-hint">the qualification options — grows as the squadron adds Quals</span>
-      </div>
+      <div className="gs-sec">Add a group</div>
       <div className="gs-chips" data-testid="group-offer">
+        {/* "+ SANS" FIRST, while SANS is off (owner D1221, D1499; D1215 — SANS men are off the war unless he puts them on,
+            the squadron's main way): it puts them on as their own group at the foot, counted by seat like everyone
+            else; its row's ✕ takes them off again. It replaced the Show SANS switch. */}
+        {!showSans && (
+          <button className="tchip" data-testid="gadd-SANS" title="Put SANS aircrew on the Leave War, as their own group at the foot" onClick={() => setShowSans(true)}>
+            + SANS
+          </button>
+        )}
         {offered.filter(d => !chosenIds.has(d.id)).map(d => (
           <button
             key={d.id}
@@ -419,7 +466,7 @@ export function SettingsSheet({
             + {label(d)}
           </button>
         ))}
-        {offered.every(d => chosenIds.has(d.id)) && <span className="gs-empty">every group is already shown</span>}
+        {showSans && offered.every(d => chosenIds.has(d.id)) && <span className="gs-empty">every group is already shown</span>}
       </div>
 
       {/* ---- who wins (the override, tucked away) ---------------------------- */}
@@ -431,7 +478,7 @@ export function SettingsSheet({
       >
         <span className="cv">{whoOpen ? '▾' : '▸'}</span>
         <span className="dl">Who wins when someone fits two</span>
-        <span className="dh">{custom ? 'custom order set' : 'follows the page — rarely needed'}</span>
+        <span className="dh">{custom ? 'custom order set' : 'follows the page'}</span>
       </button>
       {whoOpen && (
         <>

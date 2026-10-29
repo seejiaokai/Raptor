@@ -127,7 +127,10 @@ function useGridPan(movedRef: { current: boolean }, closeRef: { current: () => v
       /* nor the app's date calendar, which a sheet's date box floats over the whole page (ui/DateBox.tsx — a layer on
          <body>, so not inside any sheet): shielded, a tap on one of its dates would be eaten and would CLOSE the sheet
          whose date was being picked */
-      if (el?.closest('.bidsheet, .dcal-layer')) return
+      /* …nor a sheet's own part drawn on the page outside its panel (`.sheet-part`): the Events list's note with Undo after a
+         delete stands at the foot of the screen, and shielded, its Undo was eaten and the list CLOSED (the Events walk's F1,
+         29 Oct 26) */
+      if (el?.closest('.bidsheet, .dcal-layer, .sheet-part')) return
       e.stopPropagation()
       if (e.type === 'mousedown') e.preventDefault()
       if (e.type === 'click') closeRef.current()
@@ -479,6 +482,9 @@ export function Sheet({
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
       if (OPEN.length && OPEN[OPEN.length - 1] !== panelRef.current) return
+      /* Escape on a sheet's own part drawn on the page (`.sheet-part` — the Events list's note) closes that part only: it
+         opened last (the design guide §3); the part answers it itself (the Events fix's narrow read, 29 Oct 26) */
+      if ((e.target as Element | null)?.closest?.('.sheet-part')) return
       e.stopPropagation()
       closeRef.current()
     }
@@ -498,13 +504,16 @@ export function Sheet({
       if (pg && !pg.classList.contains('on')) return
       const panel = panelRef.current
       if (!panel || (OPEN.length && OPEN[OPEN.length - 1] !== panel)) return
-      const f = [...panel.querySelectorAll<HTMLElement>(
-        'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
-      )].filter(el => !el.closest('[hidden], [inert]'))
+      const SEL = 'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+      /* the sheet's own parts drawn on the page (`.sheet-part` — the Events list's note with Undo) are in the round too, after
+         the panel's own: the keyboard reaches them and comes back to them (the Events fix's narrow read, 29 Oct 26) */
+      const parts = [...document.querySelectorAll<HTMLElement>('.sheet-part')].flatMap(p => [...p.querySelectorAll<HTMLElement>(SEL)])
+      const f = [...panel.querySelectorAll<HTMLElement>(SEL), ...parts].filter(el => !el.closest('[hidden], [inert]'))
+      const inside = (el: HTMLElement) => panel.contains(el) || !!el.closest('.sheet-part')
       if (!f.length) { e.preventDefault(); return }
       const first = f[0]!, last = f[f.length - 1]!
       const at = document.activeElement as HTMLElement | null
-      if (!at || !panel.contains(at)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); return }
+      if (!at || !inside(at)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); return }
       if (!e.shiftKey && at === last) { e.preventDefault(); first.focus() }
       else if (e.shiftKey && at === first) { e.preventDefault(); last.focus() }
     }

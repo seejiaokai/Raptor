@@ -23,7 +23,8 @@ import { PEOPLE, deriveQuals, isInstrPilot } from '../engine/people'
 import { renameCallsign } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
-import { mayEditQualsOf, mayRenameCallsign } from './perms'
+import { mayEditQualsOf, mayRenameCallsign, mayTickManagement } from './perms'
+import { MGMT_KEY } from '../engine/qualcols'
 import { commitPeopleEdit } from './people-settings-commit'
 
 export type QualsOp =
@@ -41,6 +42,7 @@ export const qualI = (p: any, k: string) => !!(p && AAR_I_KEYS.indexOf(k) >= 0 &
 
 export const OWN_ROW_ONLY = 'You can only edit your own row'
 export const RENAME_ADMIN_ONLY = 'Only an admin can change a callsign'
+export const MGMT_ADMIN_ONLY = 'Only an admin can tick Management'
 
 /* returns null when done, or the refusal (already toasted) */
 export function updatePersonField(pid: string, op: QualsOp): string | null {
@@ -48,6 +50,7 @@ export function updatePersonField(pid: string, op: QualsOp): string | null {
   if (!p) return 'That person is not on the roster'
   if (!mayEditQualsOf(pid)) { HOOKS.toast(OWN_ROW_ONLY, 'warn'); return OWN_ROW_ONLY }
   if ('callsign' in op && !mayRenameCallsign()) { HOOKS.toast(RENAME_ADMIN_ONLY, 'warn'); return RENAME_ADMIN_ONLY }   // D218
+  if ('tick' in op && op.tick === MGMT_KEY && !mayTickManagement()) { HOOKS.toast(MGMT_ADMIN_ONLY, 'warn'); return MGMT_ADMIN_ONLY }   // D1510
   let refused: string | null = null
   const r: any = commitPeopleEdit(() => {
     if ('tick' in op) {

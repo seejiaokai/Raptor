@@ -3,6 +3,9 @@
    looks tappable that is not his */
 .qtbl.editing tr.qro .qcell{cursor:default}
 .qtbl.editing tr.qro .qcell:hover{background:none}
+/* D1510: his own Management cell is the admin's to tick, so it reads as text on his own row too */
+.qtbl.editing .qcell.qro{cursor:default}
+.qtbl.editing .qcell.qro:hover{background:none}
 
 /* ============================================================================================================
    THE ONE CHANGES WINDOW ([DRAFT-PENDING], 28 Sep 26 — the owner's D167, D168, D170; the design of record

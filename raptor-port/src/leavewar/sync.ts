@@ -2728,7 +2728,9 @@ export interface WarDayFacts extends DayFacts {
  *  stands for (engine/holidays.ts HolidayRef: its period, where it is, its dates, kind and name) and an id for the list.
  *  The list's three writers take the line itself: holidayChange(line, …), holidayRemove(line). */
 export interface HolidayLine extends HolidayRef { id: string }
-export { holidayAdd, holidayChange, holidayRemove, type HolidayResult, type HolidayFail } from './state/store'
+export { holidayAdd, holidayChange, holidayCheck, holidayRemove, holidaysImport, type HolidayResult, type HolidayFail, type HolidayImportResult } from './state/store'
+/* holidays by file (D1501): the sheet the Calendar window's Export sheet writes and Import sheet reads */
+export { holidaySheetRows, readHolidaySheet, type SheetRow } from './engine/holidaysheet'
 export { MAX_HOLIDAY_NAME, type HolidayDraft, type HolidayRef } from './engine'
 
 let WF_VER = 0

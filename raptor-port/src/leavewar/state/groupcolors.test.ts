@@ -70,3 +70,12 @@ describe('group colours', () => {
     expect(getState().groupColors).toEqual({ [SCD]: '#ABCDEF' })
   })
 })
+
+/* MANAGEMENT'S SWATCH (M5b, D1502; the drawing m5b-d1-settings): the palette's blue until a colour is picked, so the
+   group reads as drawn (the drawing's blue was not a palette colour; #5AA9E6 is the nearest). */
+import { qualSwatch } from '../ui/groupColor'
+describe("Management's default colour", () => {
+  it('is the palette blue', () => {
+    expect(qualSwatch(qualGroupId('mgmt'))).toBe('#5AA9E6')
+  })
+})

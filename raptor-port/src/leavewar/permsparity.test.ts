@@ -10,7 +10,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import {
   initStore, getState, setRole, setViewer, setCell, setBidStates, setDayAward, grantTo, openDates, closeDates,
-  setStretch, setTypedBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, saveEvent, deleteEvent, setDayEvent,
+  setStretch, setTypedBalance, setPostOut, holidayAdd, holidayChange, holidayRemove, holidaysImport, saveEvent, deleteEvent, setDayEvent,
   setAvailPoints, saveAvailRow, setReqName, availRules,
 } from './state/store'
 import { memoryBackend } from './state/storage'
@@ -52,6 +52,8 @@ const CASES: { what: string; table: string; letter: Act; owner: string | null; r
   { what: 'a holiday added from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayAdd({ kind: 'ph', name: '', from: '2026-05-01', to: '2026-05-01' }).ok },
   { what: 'a holiday changed from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayChange(XMAS, { kind: 'ph', name: 'Christmas Day', from: '2026-12-25', to: '2026-12-25' }).ok },
   { what: 'a holiday removed from the Holidays list', table: T.war, letter: 'U', owner: null, run: () => holidayRemove(XMAS).ok },
+  /* holidays by file (D1501): Import sheet's "Add n holidays", one command over the LeaveWar row, as its siblings */
+  { what: 'holidays added from a sheet', table: T.war, letter: 'U', owner: null, run: () => holidaysImport([{ kind: 'ph', name: 'Labour Day', from: '2026-05-01', to: '2026-05-01' }]).ok },
   /* the Event sheet's Save and Delete, each one command (plan §3.12) — the leave period's own record too */
   { what: 'an event saved from the Event sheet', table: T.war, letter: 'U', owner: null, run: () => saveEvent({ line: 0, date: '2026-05-12', scope: 'day', text: 'National Day', kind: 'off', short: 'NAT' }).ok },
   { what: 'an event deleted from the Event sheet', table: T.war, letter: 'U', owner: null, run: () => {

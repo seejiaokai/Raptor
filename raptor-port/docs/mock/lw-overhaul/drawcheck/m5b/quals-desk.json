@@ -1,0 +1,148 @@
+{
+ "state": "quals-desk",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5b-draw.mjs",
+  "shot": "m5b-d4-quals-desk"
+ },
+ "recorded": "2026-10-29T02:20:49.391Z",
+ "drawnOn": "claude/leave-war-m5b-iphone-balances-1402b7 at 9ec918a12",
+ "checkout": "9a5812f14",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 1.25,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "sxo-head": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 495.5,
+    "y": 170.5,
+    "w": 65,
+    "h": 23.3
+   },
+   "ink": {
+    "x": 508.7,
+    "y": 176.1,
+    "w": 23.4,
+    "h": 12
+   },
+   "text": "SXO",
+   "typed": false,
+   "look": {
+    "fill": "rgb(42, 39, 64)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(207, 198, 239)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.42px"
+   },
+   "tag": "th.insort.lav"
+  },
+  "mgmt-head": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 560.5,
+    "y": 170.5,
+    "w": 134.6,
+    "h": 23.3
+   },
+   "ink": {
+    "x": 579.9,
+    "y": 176.1,
+    "w": 80.6,
+    "h": 12
+   },
+   "text": "MANAGEMENT",
+   "typed": false,
+   "look": {
+    "fill": "rgb(42, 39, 64)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "rgb(255, 45, 149) 0px 0px 0px 2px inset",
+    "color": "rgb(207, 198, 239)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.42px"
+   },
+   "tag": "th.insort.lav"
+  },
+  "mgmt-anvil": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 560.5,
+    "y": 243.3,
+    "w": 134.6,
+    "h": 26.5
+   },
+   "ink": {
+    "x": 623.5,
+    "y": 249,
+    "w": 8.6,
+    "h": 15
+   },
+   "text": "✓",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "td.qcell"
+  }
+ },
+ "approved": {
+  "picture": "m5b-d4-quals-desk.png",
+  "identical": true
+ }
+}

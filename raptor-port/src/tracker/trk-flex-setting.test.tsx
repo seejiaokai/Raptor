@@ -285,3 +285,37 @@ describe('D462 / D120 — kept: one stored row, read at boot, carried by a whole
     }
   })
 })
+
+/* HIS KEYBOARD READOUT (29 Oct 26, his iPhone with ?kbdebug): the keys opened and the phone slid the page 167 points to show
+   the box; on that phone every measure is then taken from the visible top, so a window fixed to the screen, put back under
+   its ⚙ on the resize, read the button 167 points higher than its own `top` means — and went up 167 more, the box carried
+   to the very top. The window's place is worked out from where the screen's own top stands in that measure. */
+describe('his keyboard readout — the window stays under its ⚙ when the keys slide the page', () => {
+  it('the phone slides the page 167 points: the window\'s place, in the screen\'s own measure, does not move', async () => {
+    if ($('[data-testid=trk-flex]')) await press($('[data-testid=trk-flex-x]')!)
+    await press($('#flexBtn')!)
+    const win = $('[data-testid=trk-flex]') as HTMLElement
+    const r = (top: number, bottom: number, left = 0, right = 0) =>
+      ({ top, bottom, left, right, width: right - left, height: bottom - top, x: left, y: top, toJSON: () => ({}) }) as DOMRect
+    let slide = 0
+    const real = Element.prototype.getBoundingClientRect
+    Element.prototype.getBoundingClientRect = function (this: Element) {
+      /* anything fixed at the screen's own top-left (the app's probe) is measured where the slide put it */
+      const s = (this as HTMLElement).style
+      if (s && s.position === 'fixed' && s.top === '0px' && s.left === '0px') return r(-slide, -slide)
+      if ((this as HTMLElement).id === 'flexBtn') return r(60 - slide, 96 - slide, 300, 340)
+      return real.call(this)
+    }
+    try {
+      await act(async () => { window.dispatchEvent(new Event('resize')); await tick() })
+      const before = parseFloat(win.style.top)
+      expect(before).toBe(101)
+      slide = 167
+      await act(async () => { window.dispatchEvent(new Event('resize')); await tick() })
+      expect(parseFloat(win.style.top), 'the same place on the screen: not 167 higher').toBe(before)
+    } finally {
+      Element.prototype.getBoundingClientRect = real
+      await press($('[data-testid=trk-flex-x]')!)
+    }
+  })
+})

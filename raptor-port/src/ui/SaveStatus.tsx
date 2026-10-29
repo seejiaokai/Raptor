@@ -17,6 +17,7 @@
    Pinned by e2e/save-note.spec.ts; the contract: docs/ui-contracts.md §The failed-save warning. */
 import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import type { Postman, SaveStatus as Status } from '../storage/postman'
+import { fixedOrigin } from './kbscroll'
 
 let source: Postman | null = null
 const subs = new Set<() => void>()
@@ -60,7 +61,8 @@ function useFollowTheBar(el: { current: HTMLElement | null }, s: Status) {
     const bar = n.closest('.topbar') as HTMLElement | null
     if (!bar) return
     const place = () => {
-      const bottom = Math.round(bar.getBoundingClientRect().bottom)
+      /* the bar's foot in the screen's own measure, not the slid one (his keyboard readout — kbscroll.ts fixedOrigin) */
+      const bottom = Math.round(bar.getBoundingClientRect().bottom - fixedOrigin().top)
       /* …and where the bar that waits on an OIL answer has the bar's last line (ui/OilWaitSheet.tsx — D831, D840), the
          failed-save warning is the line ABOVE it: losing work is the graver of the two */
       const under = bar.querySelector<HTMLElement>('.oilband.is-top')
