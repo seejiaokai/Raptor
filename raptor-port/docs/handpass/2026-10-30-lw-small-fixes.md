@@ -362,3 +362,11 @@ filed, not built tonight. Astra and Sol 6.1 are out (D761): the job is on `[NO-A
 the drag window, Admin → Users, the post sheets, the clash note, the credited sheet, the grid's joined bar; the Inputs page's
 window for fix 3) · 21 scenarios walked (both builds for the 6 faults), and the reads' 4 re-walked on both builds, 4 carried by tests, 7 set aside · MISSING: 2 fixed
 (Undo / Redo re-approving; the month's edge), 2 filed (the old grammar elsewhere; the words for a man with no row)
+
+**The narrow read of the second fix round, fdc66f528 → 77cb09bc5** (a fresh Opus reader of the round only, D790; read only) — its
+report as it arrived: `docs/handpass/parts/lw-sf1030/read-fix2.md`. Verdict: both fixes do what their findings asked; nothing lets
+leave back that the live door refuses. Two LOW over-refusals beside them — (A) the Redo of a war move of his approved leave across
+a late posting's date, new in d30c6a369; (B) the Redo of an Inputs-page lengthening over his own pending bid, older in the job —
+**filed, not built** (`[LW-DELETED-RESTORE-OVERREFUSE]`, with the reader's exact fixes), by the coordinator: this was the job's
+third read, the order's cap of about three fix rounds (§5), and both refuse rather than let anything wrong in. **The last round:**
+d30c6a369 / 77cb09bc5; what carries the rest: the filed item.
