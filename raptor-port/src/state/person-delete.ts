@@ -65,7 +65,7 @@ import { mayDeletePerson, byAfterLeaving } from './perms'
 import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
 import { stampChanged, stampWho } from './inputstamp'
-import { deletePersonOnWar, refusedWhole, warIdentityIfHidden } from '../leavewar/sync'
+import { deletePersonOnWar, refusedFrom, warIdentityIfHidden } from '../leavewar/sync'
 import { inputDates } from '../leavewar/absences'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
@@ -284,7 +284,7 @@ export function applyDelete(id: string, cutoff: string): void {
    `sched.book` `<wk>#<di>` (that day's `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `pp:<id>`, `weekstash`
    `<wk>#<di>` (a saved week's day row — state/weekrows.ts; its other rows name no day he could be put back on). */
 const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?? null).includes(`"${id}"`) } catch (_e) { return false } }
-export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo'): string | null {
+export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', module?: string): string | null {
   const gone = Object.keys(PEOPLE).filter(id => (PEOPLE as any)[id] && (PEOPLE as any)[id].deleted)
   if (!gone.length) return null
   /* the accounts the step would leave — one row per account since [DB-READINESS] group A, phase 4.4: an account row put
@@ -307,25 +307,33 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo'): st
      the request test above: an Undo that adds war-approved days without taking a request is the Undo of a delete — his past.
      …ONLY FOR A MAN REFUSED WHOLE (the read's finding 2): a Delete POSTING that has run marks him deleted too, yet his days
      before the posting's date still approve at the live door (D1447 R20, D1436 — sync.ts refusedWhole, the one body
-     approveWhy asks); his days from the cutoff are refused by the check below, as for every deleted man. */
-  const lwDays = (row: any, id: string): number => (row && row.lw && inInput(row, id) ? inputDates(row).length : 0)
+     approveWhy asks); his days from the cutoff are refused by the check below, as for every deleted man.
+     …FROM THE DAY THE LIVE DOOR REFUSES (the narrow read of fdc66f528, finding 1): a Delete posting dated before the day it ran
+     deletes him only from the run day, and his days between keep their records — the live door refuses them, so every count
+     and test here reads only his days from `refusedFrom` (sync.ts — '' every day for a man refused whole).
+     …AND ONLY THE WAR'S OWN STEPS ARE COUNTED AS APPROVALS (its finding 2): an admin's Inputs-page edit that lengthens his
+     war-approved leave keeps the war's mark (ui/inputedit.tsx) and is allowed live after his delete (D321 (10)); what tells
+     it from an approval is the step's module — a war step is `lw` (`lw.decide`, `lw.placeApproved`), an Inputs-page step
+     `inputs`. Any other Redo falls to the request test, as an Undo does. */
   for (const id of gone) {
-    if (!refusedWhole(id)) continue
-    if (dir === 'redo') {
-      const added = (changes || []).reduce((n, ch) => (ch && ch.collection === 'inputs' ? n + lwDays(ch.op === 'delete' ? null : ch.after, id) - lwDays(ch.before, id) : n), 0)
+    const from = refusedFrom(id)
+    if (from == null) continue
+    const lwDays = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)
+    if (dir === 'redo' && module === 'lw') {
+      const added = (changes || []).reduce((n, ch) => (ch && ch.collection === 'inputs' ? n + lwDays(ch.op === 'delete' ? null : ch.after) - lwDays(ch.before) : n), 0)
       if (added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
       continue
     }
     const takesBid = (changes || []).some(ch => {
       if (!ch || ch.collection !== 'lw.cell') return false
       const parts = String(ch.id || '').split(':')
-      if (parts[parts.length - 2] !== id) return false
+      if (parts[parts.length - 2] !== id || parts[parts.length - 1]! < from) return false
       const reqIds = (list: any) => new Set((Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id)))
       const now = reqIds(ch.before), left = ch.op === 'delete' ? new Set<string>() : reqIds(ch.after)
       return [...now].some(r => !left.has(r))
     })
     if (!takesBid) continue
-    const writesLeave = (changes || []).some(ch => !!ch && ch.collection === 'inputs' && ch.op === 'put' && !!ch.after && !!ch.after.lw && inInput(ch.after, id))
+    const writesLeave = (changes || []).some(ch => !!ch && ch.collection === 'inputs' && ch.op === 'put' && lwDays(ch.after) > 0)
     if (writesLeave) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
   }
   for (const ch of changes || []) {

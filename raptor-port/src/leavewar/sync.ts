@@ -453,6 +453,15 @@ export function refusedWhole(personId: string): boolean {
   const kept: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
   return deletedMan(personId) && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)
 }
+/** FROM WHICH DAY A DELETED MAN'S LEAVE IS REFUSED — '' every day (refused whole), a date for a Delete POSTING that has run (the
+ *  first day the war draws him posted out — `postingOutFrom`, the day `postingOutWhy` refuses from), null for a man not deleted.
+ *  The restore refusal reads it (state/person-delete.ts deletedRestoreProblem): a posting dated before the day it ran deletes
+ *  him only from the run day (person-delete.ts deleteCutoff), so his days between the two keep their records, and the live
+ *  door refuses them; Undo and Redo refuse them too (the narrow read of fdc66f528, finding 1). */
+export function refusedFrom(personId: string): string | null {
+  if (refusedWhole(personId)) return ''
+  return deletedMan(personId) ? postingOutFrom(personId) : null
+}
 function approveWhy(it: { personId: string; date: string; recId: string }, prot: Set<string> = lockedDates()): string | null {
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
@@ -481,10 +490,16 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
    Delete posting included) his days from the date are refused as before it, the words in the past tense, and his days
    before it approve — a man DELETED on Admin → Users is refused whole by `approveWhy`'s own check above (R3-6, R3c-1,
    pending his word). */
-function postingOutWhy(personId: string, date: string): string | null {
+/* the first day his posting refuses — the day after his last in the squadron; none for a SANS posting (D283) or none at all */
+function postingOutFrom(personId: string): string | null {
   const w: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
-  if (!w || !w.to || date <= w.to || outcomeOf(w) === 'sans') return null
-  const on = dayMon(addDays(w.to, 1))
+  if (!w || !w.to || outcomeOf(w) === 'sans') return null
+  return addDays(w.to, 1)
+}
+function postingOutWhy(personId: string, date: string): string | null {
+  const from = postingOutFrom(personId)
+  if (!from || date < from) return null
+  const on = dayMon(from)
   return postedOutBy(personId) ? `He posted out on ${on}: refuse or delete it` : `He posts out on ${on}: refuse or delete it`
 }
 /* WHY `doorDecideApproved` WOULD SKIP ONE ITEM (the same one body, M4 8.3) */

@@ -25,7 +25,7 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import {
-  changeAbsenceById, decideRequests, getState, initStore as lwInitStore, lwHistInit, placeApproved, recordsAt, setBidStates, setCell, setPeople, setShowSans, type DecideLine,
+  changeAbsenceById, decideRequests, getState, initStore as lwInitStore, lwHistInit, moveCells, placeApproved, recordsAt, setBidStates, setCell, setPeople, setShowSans, type DecideLine,
 } from './state/store'
 import type { RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
@@ -321,5 +321,93 @@ describe('the reader’s finding 2: a Delete POSTING that has run — the restor
     postRun()
     expect(globalRedo().ok).toBe(true)
     expect(warLeave('bane').some((r: any) => r.date === 'Jul 10')).toBe(true)
+  })
+})
+
+/* THE NARROW READ OF fdc66f528 (`docs/handpass/parts/lw-sf1030/read-fix1.md`), its cases moved in. Finding 1: a Delete
+   posting dated BEFORE the day it ran (dated 12 Jul, run on 15 Jul) deletes him from the run day, so his days from the
+   posting's date up to then (13, 14 Jul) keep their records — the live door refuses them ("He posted out on 12 Jul: refuse or
+   delete it"), and the restore must too. Finding 2: an admin's lengthening of his war-approved leave on the Inputs page keeps
+   the war's mark, so a Redo of it after his delete is no approval — the live edit is allowed (D321 (10)). */
+describe('the narrow read’s finding 1: a Delete posting run late — the days between its date and the day it ran', () => {
+  const GAP = '2026-07-13'
+  const postLate = () => { expect(postOut('bane', '2026-07-12', 'delete')).toBe(true); runPoOutcomes(); raptorNotify(); expect((PEOPLE as any).bane.deletedFrom).toBe('2026-07-15') }
+  const onGap = () => warLeave('bane').some((r: any) => r.date === 'Jul 13')
+  it('the live door, for comparison: his 13 Jul refused, his 10 Jul approved', () => {
+    setCell('bane', GAP, 'LL'); setCell('bane', PAST, 'LL')
+    postLate()
+    expect(decideRequests([line('bane', GAP, 'approved')])[0]).toEqual({ kind: 'refused', why: 'He posted out on 12 Jul: refuse or delete it' })
+    expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+  })
+  it('Redo of an approval of his 13 Jul after the posting ran: refused', () => {
+    setCell('bane', GAP, 'LL')
+    expect(decideRequests([line('bane', GAP, 'approved')])[0]!.kind).toBe('done')
+    expect(globalUndo().ok).toBe(true)
+    postLate()
+    globalRedo()
+    expect(onGap()).toBe(false)
+  })
+  it('Undo of a send-back of his 13 Jul after the posting ran: refused', () => {
+    setCell('bane', GAP, 'LL')
+    const [a] = decideRequests([line('bane', GAP, 'approved')])
+    expect(decideRequests([{ personId: 'bane', to: 'pending', parts: (a as any).parts }])[0]!.kind).toBe('done')
+    postLate()
+    globalUndo()
+    expect(onGap()).toBe(false)
+  })
+  it('Redo of a place-and-approve on his 13 Jul: refused', () => {
+    expect(placeApproved([{ personId: 'bane', date: GAP }], 'LL').approved).toBe(1)
+    expect(globalUndo().ok).toBe(true)
+    postLate()
+    globalRedo()
+    expect(onGap()).toBe(false)
+  })
+  it('Redo of an approval of his 10 Jul, before the posting’s date, after it ran late: goes back', () => {
+    setCell('bane', PAST, 'LL')
+    expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+    expect(globalUndo().ok).toBe(true)
+    postLate()
+    expect(globalRedo().ok).toBe(true)
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 10')).toBe(true)
+  })
+})
+
+describe('the narrow read’s finding 2: an Inputs-page edit of his war-approved leave is no approval', () => {
+  const approved10 = () => { setCell('bane', PAST, 'LL'); expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done'); return warLeave('bane').find((r: any) => r.date === 'Jul 10') as any }
+  it('the live edit, for comparison: after his delete an admin lengthens it on the Inputs page', () => {
+    const row = approved10()
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    expect(writeInputs(() => { row.endDate = 'Jul 11' })).toBe(true)
+  })
+  it('lengthened on the Inputs page, Undo, he is deleted, Redo: the lengthening is back', () => {
+    const row = approved10()
+    expect(writeInputs(() => { row.endDate = 'Jul 11' })).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    expect(globalRedo().ok).toBe(true)
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 10' && r.endDate === 'Jul 11')).toBe(true)
+  })
+  it('shortened on the Inputs page, he is deleted, Undo (which lengthens it back): it comes back', () => {
+    const row = approved10()
+    expect(writeInputs(() => { row.endDate = 'Jul 11' })).toBe(true)
+    const r2 = warLeave('bane').find((r: any) => r.date === 'Jul 10') as any
+    expect(writeInputs(() => { delete r2.endDate })).toBe(true)
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    expect(globalUndo().ok).toBe(true)
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 10' && r.endDate === 'Jul 11')).toBe(true)
+  })
+  it('a remarks edit on the Inputs page, Undo, he is deleted, Redo: goes through', () => {
+    const row = approved10()
+    expect(writeInputs(() => { row.remarks = 'Bali' })).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    expect(globalRedo().ok).toBe(true)
+  })
+  it('a war move of his approved leave, Undo, he is deleted, Redo: goes through (adds no days)', () => {
+    approved10()
+    expect(moveCells([{ personId: 'bane', date: PAST }], -1)).toBeTruthy()
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    expect(globalRedo().ok).toBe(true)
   })
 })
