@@ -54,7 +54,7 @@
     "n": 6,
     "name": "fix 1: any input of his put back counts as the war's approval (the lw mark not asked)",
     "file": "src/state/person-delete.ts",
-    "find": "ch.op === 'put' && !!ch.after && !!ch.after.lw && inInput(ch.after, id))",
+    "find": "ch.op === 'put' && lwDays(ch.after) > 0)",
     "put": "ch.op === 'put' && !!ch.after && inInput(ch.after, id))",
     "tests": [
       "src/leavewar/deletednorow.test.ts"
@@ -199,8 +199,8 @@
     "n": 20,
     "name": "the read's fix 2: the restore refusal asks no shared predicate (a run Delete posting refused whole in Undo / Redo)",
     "file": "src/state/person-delete.ts",
-    "find": "    if (!refusedWhole(id)) continue",
-    "put": "    if (!(PEOPLE as any)[id]?.deleted) continue",
+    "find": "    const from = refusedFrom(id)",
+    "put": "    const from = (PEOPLE as any)[id]?.deleted ? '' : null",
     "tests": [
       "src/leavewar/deletednorow.test.ts"
     ]
@@ -209,7 +209,7 @@
     "n": 21,
     "name": "the read's fix 1: a Redo judged like an Undo (a place-and-approve's Redo let through)",
     "file": "src/state/person-delete.ts",
-    "find": "    if (dir === 'redo') {",
+    "find": "    if (dir === 'redo' && module === 'lw') {",
     "put": "    if (false) {",
     "tests": [
       "src/leavewar/deletednorow.test.ts"
@@ -229,8 +229,8 @@
     "n": 23,
     "name": "the read's fix 1: the timeline's direction not handed on",
     "file": "src/state/undo-wire.ts",
-    "find": "    deadRefusal: (changes, dir) => deletedRestoreProblem(changes as any, dir),",
-    "put": "    deadRefusal: (changes, dir) => deletedRestoreProblem(changes as any),",
+    "find": "    deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, dir, entry?.scope?.module),",
+    "put": "    deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, undefined, entry?.scope?.module),",
     "tests": [
       "src/leavewar/deletednorow.test.ts"
     ]
@@ -239,8 +239,78 @@
     "n": 24,
     "name": "the read's fix 1: any leave input of his counted, not only the war's (the Inputs page's leave refused on Redo)",
     "file": "src/state/person-delete.ts",
-    "find": "(row && row.lw && inInput(row, id) ? inputDates(row).length : 0)",
-    "put": "(row && inInput(row, id) ? inputDates(row).length : 0)",
+    "find": "(row && row.lw && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)",
+    "put": "(row && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 25,
+    "name": "the narrow read's fix 1: every day of his leave counted, not only those from the day the live door refuses",
+    "file": "src/state/person-delete.ts",
+    "find": "inputDates(row).filter(d => d >= from).length",
+    "put": "inputDates(row).length",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 26,
+    "name": "the narrow read's fix 1: a request taken back on any day counted, not only from the refused day",
+    "file": "src/state/person-delete.ts",
+    "find": "if (parts[parts.length - 2] !== id || parts[parts.length - 1]! < from) return false",
+    "put": "if (parts[parts.length - 2] !== id) return false",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 27,
+    "name": "the narrow read's fix 1: a man deleted by a posting refused on every day (refusedFrom ignores the posting's date)",
+    "file": "src/leavewar/sync.ts",
+    "find": "  return deletedMan(personId) ? postingOutFrom(personId) : null",
+    "put": "  return deletedMan(personId) ? '' : null",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 28,
+    "name": "the narrow read's fix 1: the live door's posting line one day late (shared postingOutFrom)",
+    "file": "src/leavewar/sync.ts",
+    "find": "  if (!from || date < from) return null",
+    "put": "  if (!from || date <= from) return null",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 29,
+    "name": "the narrow read's fix 2: every Redo judged by the leave it adds, the Inputs page's too",
+    "file": "src/state/person-delete.ts",
+    "find": "    if (dir === 'redo' && module === 'lw') {",
+    "put": "    if (dir === 'redo') {",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 30,
+    "name": "the narrow read's fix 2: the step not handed to the dead-step ask (deadFor)",
+    "file": "src/undo/timeline.ts",
+    "find": "hooks.deadRefusal(dir === 'undo' ? e.inverse : e.forward, dir, e)",
+    "put": "hooks.deadRefusal(dir === 'undo' ? e.inverse : e.forward, dir)",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 31,
+    "name": "the narrow read's fix 2: the step not handed to the commit's second ask (restoreCommit)",
+    "file": "src/undo/timeline.ts",
+    "find": "hooks.deadRefusal(changes, dir, entry))",
+    "put": "hooks.deadRefusal(changes, dir))",
     "tests": [
       "src/leavewar/deletednorow.test.ts"
     ]

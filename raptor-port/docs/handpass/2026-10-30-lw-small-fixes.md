@@ -236,6 +236,20 @@ whose own "the war's only" mark break 24 pins red; on the Undo path no step was 
 away and writes a leave the war did not approve (an Inputs-page filing that replaced his bid is undone the other way — its
 request comes back); the mark is kept, as the rule's own statement of what it refuses.
 
+**After the narrow read's fixes (d30c6a369) — the whole list re-run, 31 breaks (breaks 6, 20, 21, 23 and 24 moved onto their
+lines as they now read; breaks 25–31 the new guard lines): first 23 of 31 caught.** Breaks 20 and 21 were skipped (their lines
+had moved — put back on the new lines: both CAUGHT). Break 28 (the live door's posting line one day late) stayed green — no test
+on the posting's own date: pinned ("the posting's own date, 12 Jul: refused live and on Redo; 11 Jul approves"), re-run CAUGHT.
+Break 30 (the step not handed to the dead-step ask) stayed green — the press was still refused at the commit, so nothing tested
+that Redo is not OFFERED: `undoState().canRedo` pinned false (the walk's "Redo offered false"), re-run CAUGHT. Break 26 (a
+request taken back on any day counted, not only from the refused day) stayed green — pinned with a leave that joins across the
+first refused day ("his 11 Jul beside his approved 12 Jul…": the live door approves 11 Jul, so its Undo and Redo go through), re-run
+CAUGHT. Break 6, moved onto the new "writes the war's leave" line, is CAUGHT now (it was a second guard on its old line). **Final:
+29 of 31 caught.** Two second guards, each with its reason: break 15 as above; break 31 (the step not handed to the commit's
+second ask) — the dispatcher asks the same question of the same step first (`deadFor`, now handed the step) and passes the step
+over before the commit is reached, so the commit's second ask only matters if the store changed between the two, which one
+synchronous step cannot do; kept, as the commit's own statement of what it refuses.
+
 ## 8. The measure (S4-3, `docs/performance.md` Part 1)
 
 The unit grid's counter (`matrix-rows-memo.test.tsx` — day cells drawn): a mid-month bid 28 on `main` and after; a bid on the
@@ -295,7 +309,56 @@ tests of the main project 132 passed; the build green. Break list re-run whole a
 A narrow read of the fix commit is owed (§5 "a fix is new code"). Astra and Sol 6.1 are out (D761): this job goes on
 `[NO-ASTRA-LIST]` with the reads it went without.
 
-**Walk:** `docs/handpass/2026-10-30-lw-small-fixes.md` · 116 pictures · 9 surfaces (Approvals, Approve all, the bid window,
+**The narrow read of fdc66f528** (a fresh Opus reader of the fix commit only, D790; read only) — its report as it arrived:
+`docs/handpass/parts/lw-sf1030/read-fix1.md`. Two findings and one observation; both findings reproduced red in the repository's
+own tests first (the reader's scratch cases moved into `deletednorow.test.ts`: 4 of the 10 new tests red on fdc66f528) and in
+the running app on fdc66f528's build (S1-2 (c) and S1-6 (d): both FAIL — `docs/img/handpass/2026-10-30-lw-small-fixes/rewalk2/s1-desk-before/`),
+then fixed and green (commit d30c6a369).
+
+| # | The claim | Disposition | The fix |
+|---|---|---|---|
+| F1 (LOW-MEDIUM) | After a Delete posting that ran LATE (dated 12 Jul, run 15 Jul — he is deleted from the run day), a Redo of an approval, the Undo of a send-back or the Redo of a place-and-approve writes war-approved leave on his days between (13, 14 Jul), which the live door refuses ("He posted out on 12 Jul: refuse or delete it") | **confirmed — new in this change** (a partial undoing of 14403cf57's guard by fdc66f528: on 14403cf57 all three were refused; on `main` there is no restore refusal at all) | `sync.ts refusedFrom` — '' (every day) for a man refused whole, the posting's first day for a Delete posting that has run, none for a man not deleted — read from the same `postingOutFrom` the live door's `postingOutWhy` reads; the restore refusal counts and tests only his days from it |
+| F2 (LOW) | A Redo of an admin's Inputs-page lengthening of his war-approved leave (the edit keeps the war's mark) is refused after his delete and passed over for good — though the same edit made live is allowed (D321 (10)) | **confirmed — new in fdc66f528** | the timeline hands the step itself to its dead-step ask and the commit's second ask; only a Leave War step (`module: 'lw'` — `lw.decide`, `lw.placeApproved`) is judged by the days it adds; any other Redo falls to the request test, as an Undo does |
+| Obs. | A man posted out but NOT deleted (an Overseas posting): a Redo of an approval made before the posting, on a day after its date, is not refused, where the live door refuses it | **recorded — older (also on `main`), filed, not built:** `[LW-POSTED-OUT-RESTORE]` | none tonight — the choice below |
+
+**The choice, and why (the coordinator's brief: build the general rule only if it stays one body with the live door and every
+twin path can be pinned; otherwise fix 1 and 2 and file it).** Fixed 1 and 2 as given; the observation filed. Three reasons:
+(1) **the rulings do not plainly cover it** — D1436's full row rules the Approvals list's Approve, and its "wherever leave is
+approved, the bid windows included" is the agent's reading about the doors, not about Undo / Redo; D321 (8) makes a posting out no
+Undo step ("Undo post out" takes it back), so whether a Redo after a posting is refused is a question the rulings leave open;
+(2) **the restore refusal for a deleted man rests on "a delete is final"** — it is cached on the step for good (`deadFor`), right
+only because nothing can lift it; a man posted out but not deleted can have his posting moved or taken back ("Undo post out") or
+be posted as SANS, so his refusal would belong in the uncached `restoreRefusal` beside D1263's closed-day rule, with twin paths of
+its own (a posting moved earlier or later, taken back, turned SANS, run or not yet run) — a design of its own, not a last fix
+round's line; (3) **no new harm**: it is older than this change and also on `main`.
+
+**Every twin path, a test each** (`deletednorow.test.ts` now 35 — 12 new this round): F1 — the live door for comparison (13 Jul
+refused, 10 Jul approved); the Redo of an approval of 13 Jul, the Undo of a send-back of 13 Jul, the Redo of a place-and-approve on
+13 Jul — **refused**; the posting's own date, 12 Jul, refused live and on Redo, 11 Jul approving; the Redo of an approval of 10 Jul
+(before the posting's date) — **goes back**; a leave joined across the first refused day (11 Jul approved beside an approved 12 Jul) —
+the Undo of its send-back and the Redo of its approval **go through**, as the live door approves 11 Jul. F2 — the live lengthening
+after his delete (allowed); the Redo of a lengthening, the Undo of a shortening, the Redo of a remarks edit, the Redo of a war move —
+**go through**; and the Redo of a place-and-approve for a man refused whole is **not offered** (`undoState().canRedo` false). The
+earlier 23 stay green.
+
+**Gates after the fix (his PC, under the lock):** the Leave War project, the delete and undo tests of the main project
+(`person-delete.test.ts`, `person-delete.wire.test.ts`, `p6d-deleteonread.test.ts`, `undo/timeline.test.ts`,
+`timeline-cr.test.ts`, `undo-wire.test.ts`) and the build — all green; `deletednorow.test.ts` re-run green after the last two
+pins (35 passed). Break list: §7 (29 of 31, two second guards).
+
+**Re-walked on the fixed build** (frozen at d30c6a369; only what this touches): desktop 1536 at 1.25 — S1-2, S1-2 (b), **S1-2 (c)**
+(a Delete posting run late: approve his day between, Undo, post him out dated four days ago, Redo — not offered, his leave
+unchanged; the live Approve then says "He posted out on 26 Oct: refuse or delete it"), S1-6 (a), (b), (c), **S1-6 (d)** (his
+approved leave lengthened by a day in the Inputs page's window, Undo, deleted on Admin → Users, Redo — offered, the leave two days
+again, the war's mark kept): **all 7 PASS** (`rewalk2/s1-desk/`); phone WebKit 402 — S1-2 (c), S1-6 (d): **PASS**
+(`rewalk2/s1-phone/`); on fdc66f528's build both new steps **FAIL** as the reader said (`rewalk2/s1-desk-before/`). The walk script's
+own trap (one, the phone): after a bid the grid had scrolled the day into view and the tab row sat above the screen — the script
+now closes the window and returns the page to its top first.
+
+This was the last fix round on this piece: one more narrow read of d30c6a369 is owed; what it finds that is not a clear fault is
+filed, not built tonight. Astra and Sol 6.1 are out (D761): the job is on `[NO-ASTRA-LIST]`.
+
+**Walk:** `docs/handpass/2026-10-30-lw-small-fixes.md` · 152 pictures · 9 surfaces (Approvals, Approve all, the bid window,
 the drag window, Admin → Users, the post sheets, the clash note, the credited sheet, the grid's joined bar; the Inputs page's
-window for fix 3) · 21 scenarios walked (both builds for the 6 faults), 4 carried by tests, 7 set aside · MISSING: 2 fixed
+window for fix 3) · 21 scenarios walked (both builds for the 6 faults), and the reads' 4 re-walked on both builds, 4 carried by tests, 7 set aside · MISSING: 2 fixed
 (Undo / Redo re-approving; the month's edge), 2 filed (the old grammar elsewhere; the words for a man with no row)

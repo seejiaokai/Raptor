@@ -8,7 +8,7 @@ const { T } = L
 const SIZE = process.env.SIZE || 'desk'
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const want = id => !ONLY.length || ONLY.includes(id)
-console.log('[lw-sf-s1 v2]', SIZE, ONLY.join(',') || 'all')
+console.log('[lw-sf-s1 v3]', SIZE, ONLY.join(',') || 'all')
 L.clearOut()
 const TODAY = new Date(); const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 const addD = (s, n) => { const d = new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)); d.setDate(d.getDate() + n); return iso(d) }
@@ -97,6 +97,9 @@ const linesOf = async pid => (await L.apprLines(P)).filter(l => l.who === pid)
 const leaveInputs = async (pid, day) => (await L.inputsOf(P, pid)).filter(r => r.lw && /L/.test(r.type))
 const whyOn = async (pid, n = 0) => P.evaluate(([pid, n]) => { const ls = [...document.querySelectorAll(`[data-testid="approvals-page"] [data-testid="appr-line-${pid}"]`)].filter(e => e.getBoundingClientRect().height > 0); const e = ls[n]?.querySelector('[data-testid="appr-why"]'); return e ? e.textContent.trim() : null }, [pid, n])
 const lineIdx = async (pid, dayWord) => (await linesOf(pid)).findIndex(l => l.text.includes(dayWord))
+/* the bid window closed and the page back at its top: on a phone the grid scrolled the tapped day into view (D1290),
+   which leaves the tab row above the screen */
+const settle = async () => { await L.closeWin(w); await P.evaluate(() => { window.scrollTo(0, 0); for (const e of document.querySelectorAll('#page-leavewar, #page-leavewar *, main, body, html')) if (e.scrollTop > 0) e.scrollTop = 0 }); await P.waitForTimeout(250) }
 const dm = s => `${+s.slice(8, 10)} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+s.slice(5, 7) - 1]}`
 
 /* ---------- S1-1: a never-arrived man, deleted, his past pending bid ---------- */
@@ -383,6 +386,72 @@ if (want('s1-2b')) {
   await L.shot(w, 's1-2b-after-redo')
   L.rec('S1-2 (b) a run Delete posting: the Redo of his day before the date goes back, as the live door approves it', SIZE,
     gone && n1 === n0 + 1 && n2 === n0 && n3 === n0 + 1 ? 'PASS' : 'FAIL', `his leave ${n0} → approved ${n1} → Undo ${n2}; deleted by the posting ${gone}; Redo offered ${redoOn} → ${n3}; said ${JSON.stringify(said)}`, ['s1-2b-after-redo'])
+}
+
+/* ---------- the narrow read's finding 1: a Delete posting dated before the day it ran — his day between (S1-2 c) ---------- */
+if (want('s1-2c')) {
+  await world()
+  const id = await L.pidOf(P, 'Drifter')
+  const gap = addD(today, -2), poDay = addD(today, -4)     // the posting dated 4 days ago runs today: he is deleted from today
+  await pendingLL(id, gap); await settle()
+  await L.openApprovals(w)
+  const n0 = (await leaveInputs(id)).length
+  await L.apprPress(w, id, 'appr-approve', await lineIdx(id, String(+gap.slice(8, 10))))
+  const n1 = (await leaveInputs(id)).length
+  await L.undo(w)
+  await postOutDelete(id, poDay, null); await settle()
+  const cut = await P.evaluate(id => window.PEOPLE[id] && window.PEOPLE[id].deletedFrom, id)
+  await L.openWar(w); await L.openGrid(w); await settle()
+  const redoOn = await P.evaluate(() => { const b = document.querySelector('#redoBtn'); return b ? !b.disabled : null })
+  await L.redo(w); await settle()
+  const n3 = (await leaveInputs(id)).length
+  await L.openApprovals(w)
+  const i = await lineIdx(id, String(+gap.slice(8, 10)))
+  if (i >= 0) await L.apprPress(w, id, 'appr-approve', i)
+  const live = i >= 0 ? await whyOn(id, i) : '(no line)'
+  await L.shot(w, 's1-2c-gap-day')
+  L.rec('S1-2 (c) a Delete posting run late: his day between its date and the run day — Redo refused, as the live door', SIZE,
+    n1 === n0 + 1 && cut === today && n3 === n0 && /^He posted out on .*: refuse or delete it$/.test(live || '') ? 'PASS' : 'FAIL',
+    `approved ${n0} → ${n1}; deleted from ${cut} (the posting dated ${dm(poDay)}); Redo offered ${redoOn} → his leave ${n3}; the live Approve then said "${live}"`, ['s1-2c-gap-day'])
+}
+/* ---------- the narrow read's finding 2: an Inputs-page lengthening of his war-approved leave, Redo after his delete ---------- */
+if (want('s1-6d')) {
+  await world()
+  const id = await L.pidOf(P, 'Drifter')
+  const d = addD(today, -9), d2 = addD(today, -8)
+  await pendingLL(id, d); await settle()
+  await L.openApprovals(w)
+  await L.apprPress(w, id, 'appr-approve', await lineIdx(id, String(+d.slice(8, 10))))
+  const before = (await leaveInputs(id)).length
+  /* the Inputs page (its calendar, the default view): the leave's own bar opens its window; the Dates calendar takes a tap
+     for the new start and a tap for the new end (D681); a leave saved with no document asks once, "No document" saves */
+  const row = (await leaveInputs(id)).find(r => r.date === dm(d).split(' ').reverse().join(' '))
+  const iid = row ? String(row.iid) : null
+  await P.evaluate(() => window.go('inputs')); await P.waitForTimeout(600)
+  let lengthened = false
+  const bar = P.locator(`.ib-bar[data-iid="${iid}"]`).first()
+  if (iid && await bar.count()) {
+    await bar.scrollIntoViewIfNeeded(); await bar.click({ position: { x: 5, y: 5 } }); await P.waitForTimeout(600)
+    if (await P.locator(T(`inpEdCal-day-${d}`)).count()) {
+      await L.press(w, T(`inpEdCal-day-${d}`)); await L.press(w, T(`inpEdCal-day-${d2}`)); await P.waitForTimeout(200)
+      await L.shot(w, 's1-6d-a-window')
+      await L.press(w, '#inpEditSave'); await P.waitForTimeout(500)
+      if (await L.vis(P, T('docconf-nodoc'))) { await L.press(w, T('docconf-nodoc')); await P.waitForTimeout(500) }
+      lengthened = await P.evaluate(iid => { const r = (window.INPUTS || []).find(r => String(r.iid) === iid); return !!r && !!r.endDate && !!r.lw }, iid)
+    }
+  }
+  await L.shot(w, 's1-6d-a-lengthened')
+  await L.undo(w)
+  const undone = await P.evaluate(iid => { const r = (window.INPUTS || []).find(r => String(r.iid) === iid); return !!r && !r.endDate }, iid)
+  await deleteOnUsers(id)
+  await P.evaluate(() => window.go('inputs')); await P.waitForTimeout(400)
+  const redoOn = await P.evaluate(() => { const b = document.querySelector('#redoBtn'); return b ? !b.disabled : null })
+  await L.redo(w)
+  const back = await P.evaluate(iid => { const r = (window.INPUTS || []).find(r => String(r.iid) === iid); return !!r && !!r.endDate }, iid)
+  const said = await P.evaluate(() => (window.__said || []).slice(-2))
+  await L.shot(w, 's1-6d-b-after-redo')
+  L.rec('S1-6 (d) an Inputs-page lengthening of his approved leave: Redo after his delete goes through (D321 (10))', SIZE,
+    before >= 1 && lengthened && undone && back ? 'PASS' : 'FAIL', `iid ${iid}; lengthened (the war's mark kept) ${lengthened}; Undo ${undone}; Redo offered ${redoOn} → lengthened again ${back}; said ${JSON.stringify(said)}`, ['s1-6d-a-window', 's1-6d-a-lengthened', 's1-6d-b-after-redo'])
 }
 
 console.log('errors:', w?.errs.length ? w.errs : 'none')
