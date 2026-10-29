@@ -1,0 +1,162 @@
+[
+ {
+  "id": "P-1 a man's OIL figure opens the tracker",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-1 the OIL tab reads as chosen while it is up",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-1 ✕ comes back to the Balances page",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-1 at the same place in the list",
+  "ok": true,
+  "note": "before 300 (scrolled to 300), after 300"
+ },
+ {
+  "id": "P-2 the OIL tab over Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-2 its ✕ back to Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-2 My leave → OIL over Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-2 its ✕ back to Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-3 ⚙ on Balances opens Settings in sight",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-3 Events… over Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-3 closed, Balances still up",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-4 My leave → OIL over Approvals",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-4 its ✕ back to Approvals",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-4 ⚙ on Approvals opens Settings in sight",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P-5 Rearrange brings the grid up",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "P no page errors",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 a man's OIL figure opens the tracker",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 the OIL tab reads as chosen while it is up",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 ✕ comes back to the Balances page",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-1 at the same place in the list",
+  "ok": true,
+  "note": "before 300 (scrolled to 300), after 300"
+ },
+ {
+  "id": "D-2 the OIL tab over Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-2 its ✕ back to Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-2 My leave → OIL over Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-2 its ✕ back to Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-3 ⚙ on Balances opens Settings in sight",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-3 Events… over Balances",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-3 closed, Balances still up",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-4 My leave → OIL over Approvals",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-4 its ✕ back to Approvals",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-4 ⚙ on Approvals opens Settings in sight",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-5 Rearrange brings the grid up",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D no page errors",
+  "ok": true,
+  "note": ""
+ }
+]

@@ -896,6 +896,23 @@ the reader's instructions or model change, it is run on every case and a change 
    reading or a mark that depends on how much fits on screen — a wider screen or a zoomed-out grid (which month, which day, what
    is "in view", what folds) — is walked zoomed out at his 1536 (Ctrl+scroll, D1228) and at a wider screen (2560) as well, and
    pressed at the year's two ends, where the view cannot scroll as far as the press asks (`scripts/handpass/lw-month-strip-check.mjs`).
+12. **A window opened from one page only (D1503, D1506 and his ⚙ question, the Leave War M5b look, 29 Oct 26).** The walks opened the
+   OIL tracker and ⚙ Settings from the grid; from the Balances and Approvals pages — which stand in the grid's place while the
+   grid, which owns those windows, is hidden — OIL first took the page down (its ✕ then landed on the grid) and ⚙ opened a
+   window nobody could see. **Lesson:** the roll-call lists every page each window can be opened from — each tab, each
+   button, My leave, a person window — and the walk opens it from each, closes it, and asks: is the window in sight, and is
+   the page under it the one he left, at the same place (`scripts/handpass/lw-m5b-look-walk.mjs`).
+13. **A pinch walked at the top of a list only (D1504, D1505, the Balances page, 29 Oct 26).** The M5a walk pinched the Balances
+   page near its top, where the app holds the picture's top edge still. Part-way down, the fingers drifting as a person's do,
+   the heading's words were held but its dark strip rode with the list — the rows showed through the words and the strip cut
+   a row in two. **Lesson:** a pinch is walked part-way down a list as well as at its top, the fingers drifting, with a
+   picture held mid-pinch, and the walk asks whether every pinned row's fill stays behind its words
+   (`scripts/handpass/lw-bal-head-probe.mjs`).
+14. **A window with boxes left off the keyboard walk's list (his recording of the Tracker's Flex settings, 29 Oct 26).** The keyboard
+   walks of 19–27 Oct 26 went over the windows they remembered; none opened the Tracker's Flex settings, whose boxes sit low
+   in a window fixed near the top, and on his iPhone a tapped box there was carried to the very top of the screen. **Lesson:**
+   a keyboard walk's roll-call is made by searching the code for every box to type in, page and window, never from memory,
+   and each is tapped on the phone.
 
 ## 8. Making the checks FIND rather than CONFIRM
 
