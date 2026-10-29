@@ -21,15 +21,15 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/lw-bal-header-gap -->
-### `claude/lw-bal-header-gap` — his three iPhone finds on the Leave War (29 Oct 26): the gap behind the Balances bar, "Type a figure" that stayed, the person window's LVE tile — written 29 Oct 26 — verify before use
+### `claude/lw-bal-header-gap` — his three iPhone finds on the Leave War (29 Oct 26) and his "a" for the leave box (D1518–D1520), LIVE on his "merge live" of 29 Oct 26 (pull request 590) — written 29 Oct 26 — verify before use
 - **Done:** the Balances page's bar, lock line and search line solid and above the list, the list's paint held in its box (D1518, D1519); any typing clears a figure box's words (the same figure typed after a fresh tap left them); on a phone the person window's App bal · Pending · War bal spread across the LVE tile, so War bal never runs under OIL, and the carried line's date stands on a line of its own (his "a", D1520). Design lesson 72 (D1518), §7.11 lessons 15–16. Evidence: `raptor-port/docs/handpass/2026-10-29-lw-bal-gap.md` (WALK).
-- **Branch:** `claude/lw-bal-header-gap`, cut from `main` after pull request 589, no upstream until its first push (`push.default=upstream` trap). Changes the app, so it waits for his "merge live".
+- **Branch:** `claude/lw-bal-header-gap`, cut from `main` after pull request 589; merged on his "merge live" of 29 Oct 26 (pull request 590, its checks green on the closing push). A new job starts level with `main`.
 - **Gates:** `ui/balances.test.tsx` and `ui/personwindow.test.tsx` green; `e2e/leavewar.spec.ts` Balances / person window / pinned / M5a 33 passed (19 phone-only skipped on desktop); the build; the drawing check green on M5a, M5b and the Events list. GitHub's run of the pull request is the full check (D1086).
-- **Open questions for him:** none. His iPhone look is owed: the bar while he pinches and scrolls, the warning, the leave box (https://claude.ai/artifact/4x9nJqMPgQUK8YKHyV7wqH). Kept for him until he says so (D994): `[SYSTEM-PASS-SAVES-ROSTER]`, `[QUALS-COL-WAR-GROUP-ASK]`, `[LINE-ICONS-ELSEWHERE-ASK]`.
+- **Open questions for him:** none — he looked on his iPhone (the headings flush under the bar) and said "merge live". Kept for him until he says so (D994): `[SYSTEM-PASS-SAVES-ROSTER]`, `[QUALS-COL-WAR-GROUP-ASK]`, `[LINE-ICONS-ELSEWHERE-ASK]`.
 - **Reads:** one fresh, blind Opus reader of design lesson 72, §7.11 lessons 15–16 and D1518, D1519 (D941, D1297): lessons 15–16 OK; four wordings fixed as it gave them (the band is through the bar, not between; D1518 keeps to his words; D1519 names the right cause; lesson 16 marks the walk's own point). No code read (WALK).
 - **Running when written:** none; the check lock is free.
-- **Pick up here:** his iPhone look, then his "merge live" (GitHub's run of pull request 590 green first). Next after it: his pick from the Leave War's own items in the priority list. His Days taken questions were answered in the chat (it is worked out from approved leave over the period in View, nothing stored or reset).
-- **Opening line:** Switch this chat to the branch `claude/lw-bal-header-gap`: `git fetch origin`, `git switch claude/lw-bal-header-gap`, `git pull --ff-only`. Read `HANDOFF.md` — the `claude/lw-bal-header-gap` block under `## Now` — and carry on from his look at pull request 590.
+- **Pick up here:** nothing left of this job. Next: his pick from the Leave War's own items in the priority list, or `[PINNED-LEAK-SWEEP]` with a screen's next job; `[RULINGS-SPENT-PASS]` only on his word (D1262).
+- **Opening line:** Switch this chat to a fresh branch level with `main`: `git fetch origin`, `git switch -c claude/<job> origin/main`, then `git branch --unset-upstream`. Read `HANDOFF.md` — the `claude/lw-bal-header-gap` block under `## Now` — and start the job I name.
 <!-- /now -->
 ## Next, in order
 
