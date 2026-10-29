@@ -20,17 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/leave-war-m5b-iphone-balances-1402b7 -->
-### `claude/leave-war-m5b-iphone-balances-1402b7` — the Leave War's M5b, LIVE on his "merge live" of 29 Oct 26 (pull request 588) — written 29 Oct 26 — verify before use
-- **Where it started:** M5b (D1499–D1502) and his look's finds (D1503–D1511), FULL-checked; D1510 built; the Events list as redrawn (D1512–D1516) built red first, the drawing check green against his F- frames, walked 98/98, a fresh code read and the fix's narrow read (evidence `raptor-port/docs/handpass/2026-10-29-lw-m5b.md` §1–§11).
-- **Shipped:** pull request 588, merged on his "merge live" of 29 Oct 26 (D1088 — the closing records pushed first, their run green). Rulings this chat: D1517 → `leave-war.md` (the in-between width kept, his "merge live" to the page that recommended it).
-- **Unfinished:** the docs-only closing records — the Leave War rulings file (and How we work's) over their tripwires (docsize OVER, deferred while code rode the branch — D141, D29): a notes-only pull request moves what does not belong (D1407 — merges by itself once green). Still open, kept for him (D994): `[SYSTEM-PASS-SAVES-ROSTER]`, `[QUALS-COL-WAR-GROUP-ASK]`, `[LINE-ICONS-ELSEWHERE-ASK]`. Next by D1250's order: the overhaul's M6, in a fresh chat.
-- **Branch:** `claude/leave-war-m5b-iphone-balances-1402b7` — merged; a new job starts level with `main`.
-- **Gates:** GitHub's full run green on every push of pull request 588 (D1086); this chat's local runs: the Leave War's suite 3,901 pass, the walk 98/98, the drawing checks green.
-- **Open questions for him:** none.
+<!-- now:claude/lw-rulings-tripwire -->
+### `claude/lw-rulings-tripwire` — the closing records after the Leave War's M5b (pull request 588), LIVE on his "merge live" of 29 Oct 26 (pull request 589) — written 29 Oct 26 — verify before use
+- **Done:** the Leave War rulings file's tripwire 118000 -> 124000 and How we work's 52000 -> 54000, each with its reason (`raptor-port/scripts/docsize.mjs` — D1490–D1517 and D1494–D1496, D1507–D1509 merged with code while the size check was deferred, D29; nothing trimmed, D136, D1262); `[LW-BAL-PHONE-LOCKED-FIT]` archived (live with pull request 588); `[LW-OVERHAUL]`'s line corrected — there is no M6: D1250's six merges are all live, M5b the last (D1475). Documents only.
+- **Branch:** `claude/lw-rulings-tripwire`, cut from `main` after pull request 588 (no upstream set — `push.default=upstream` trap). NOT notes-only: the tripwires live in a check script, outside D1407's list, so its pull request waited for his "merge live" — given 29 Oct 26, merged; a new job starts level with `main`.
+- **Gates:** `npm run docsize` green; nothing else touched (no app code, no document a check reads).
+- **Open questions for him:** none. Kept for him until he says so (D994): `[SYSTEM-PASS-SAVES-ROSTER]`, `[QUALS-COL-WAR-GROUP-ASK]`, `[LINE-ICONS-ELSEWHERE-ASK]`.
 - **Running when written:** none; the check lock is free.
-- **Pick up here:** the docs-only tripwire job above, then M6 (`raptor-port/docs/superpowers/plans/` — the overhaul's build plan, D1250).
-- **Opening line:** Switch this chat to a fresh branch level with `main`: `git fetch origin`, `git switch -c claude/lw-rulings-tripwire origin/main`. Read `HANDOFF.md` — the `claude/leave-war-m5b-iphone-balances-1402b7` block under `## Now` — then do the docs-only closing records (the rulings files' tripwires) and tell me what is next for the Leave War overhaul.
+- **Pick up here:** the overhaul's build is finished. Left of it: his iPhone look at what M5a owes (`OUTSTANDING.md` `[LW-OVERHAUL]`), then his pick from the Leave War's own items in the priority list; `[RULINGS-SPENT-PASS]` would bring both rulings files back down, only on his word (D1262).
+- **Opening line:** Switch this chat to a fresh branch level with `main`: `git fetch origin`, `git switch -c claude/<job> origin/main`, then `git branch --unset-upstream`. Read `HANDOFF.md` — the `claude/lw-rulings-tripwire` block under `## Now` — and start the job I name.
 <!-- /now -->
 ## Next, in order
 
