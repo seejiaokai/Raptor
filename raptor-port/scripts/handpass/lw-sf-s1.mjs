@@ -8,7 +8,7 @@ const { T } = L
 const SIZE = process.env.SIZE || 'desk'
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const want = id => !ONLY.length || ONLY.includes(id)
-console.log('[lw-sf-s1 v1]', SIZE, ONLY.join(',') || 'all')
+console.log('[lw-sf-s1 v2]', SIZE, ONLY.join(',') || 'all')
 L.clearOut()
 const TODAY = new Date(); const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 const addD = (s, n) => { const d = new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)); d.setDate(d.getDate() + n); return iso(d) }
@@ -335,6 +335,54 @@ if (want('s1-7d')) {
   await L.shot(w, 's1-7d-a-grant-window')
   await L.closeWin(w)
   L.rec('S1-7 the day’s list (fixture)', SIZE, 'RECORDED', `grant button found ${granted}; cell ${JSON.stringify((await L.cellInfo(P, id, d1))?.boxes.map(b => b.text))}`, ['s1-7d-a-grant-window'])
+}
+
+/* ---------- the blind read's finding 1: Redo of an Auto-approve placement after his delete (S1-6 c, d) ---------- */
+if (want('s1-6c')) {
+  await world()
+  const postIn = addD(today, SIZE === 'phone' ? 2 : 4), past = addD(today, SIZE === 'phone' ? -2 : -3)
+  const id = await addPerson('AUTO', postIn)
+  /* the bid window from the post-in sheet's "Place leave or OIL here instead…", Auto-approve ON: it lands approved */
+  await L.openWar(w); await L.openGrid(w)
+  await L.openCell(w, id, past)
+  if (await L.vis(P, T('postin-place'))) await L.press(w, T('postin-place'))
+  await P.waitForTimeout(300)
+  await L.autoApprove(w, true)
+  await L.placeLeave(w, 'LL')
+  const placed = await leaveInputs(id)
+  await L.undo(w)
+  const afterUndo = await leaveInputs(id)
+  await deleteOnUsers(id)
+  await L.openWar(w); await L.openGrid(w)
+  const redoOn = await P.evaluate(() => { const b = document.querySelector('#redoBtn'); return b ? !b.disabled : null })
+  await L.redo(w)
+  const afterRedo = await leaveInputs(id)
+  await L.shot(w, 's1-6c-after-redo')
+  L.rec('S1-6 (c) Redo of an Auto-approve placement after his delete', SIZE, placed.length === 1 && afterUndo.length === 0 && afterRedo.length === 0 ? 'PASS' : 'FAIL',
+    `placed approved ${placed.length}; after Undo ${afterUndo.length}; Redo offered ${redoOn}; after Redo his leave ${afterRedo.length}`, ['s1-6c-after-redo'])
+}
+/* ---------- the blind read's finding 2: a Delete posting that has run — the Redo of his day before the date (S1-2 b) ---------- */
+if (want('s1-2b')) {
+  await world()
+  const id = await L.pidOf(P, 'Drifter')
+  const past = addD(today, -8), poDay = addD(today, -4)
+  await pendingLL(id, past)
+  await L.openApprovals(w)
+  const n0 = (await leaveInputs(id)).length
+  await L.apprPress(w, id, 'appr-approve', await lineIdx(id, String(+past.slice(8, 10))))
+  const n1 = (await leaveInputs(id)).length
+  await L.undo(w)
+  const n2 = (await leaveInputs(id)).length
+  await postOutDelete(id, poDay, null)
+  const gone = await P.evaluate(id => !!(window.PEOPLE[id] && window.PEOPLE[id].deleted), id)
+  await L.openWar(w); await L.openGrid(w)
+  const redoOn = await P.evaluate(() => { const b = document.querySelector('#redoBtn'); return b ? !b.disabled : null })
+  await L.redo(w)
+  const n3 = (await leaveInputs(id)).length
+  const said = await P.evaluate(() => (window.__said || []).slice(-3))
+  await L.shot(w, 's1-2b-after-redo')
+  L.rec('S1-2 (b) a run Delete posting: the Redo of his day before the date goes back, as the live door approves it', SIZE,
+    gone && n1 === n0 + 1 && n2 === n0 && n3 === n0 + 1 ? 'PASS' : 'FAIL', `his leave ${n0} → approved ${n1} → Undo ${n2}; deleted by the posting ${gone}; Redo offered ${redoOn} → ${n3}; said ${JSON.stringify(said)}`, ['s1-2b-after-redo'])
 }
 
 console.log('errors:', w?.errs.length ? w.errs : 'none')

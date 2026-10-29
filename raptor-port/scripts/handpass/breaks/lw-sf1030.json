@@ -1,97 +1,248 @@
 [
-  { "n": 1, "name": "fix 1: the app's own delete mark not read (the war's 'gone' alone, as on main)",
+  {
+    "n": 1,
+    "name": "fix 1: the app's own delete mark not read (the war's 'gone' alone, as on main)",
     "file": "src/leavewar/sync.ts",
     "find": "const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone' || !!(PEOPLE as any)[personId]?.deleted",
     "put": "const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone'",
-    "tests": ["src/leavewar/deletednorow.test.ts"] },
-  { "n": 2, "name": "fix 1: the run-Delete-posting carve-out dropped (R3c-1) — the delete mark would refuse his days before the date",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 2,
+    "name": "fix 1: the run-Delete-posting carve-out dropped from the shared predicate (R3c-1) — his days before the date refused, at the live door and in Undo / Redo",
     "file": "src/leavewar/sync.ts",
-    "find": "  if (deletedMan(it.personId) && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)) return 'Posted out — refuse or delete it'",
-    "put": "  if (deletedMan(it.personId)) return 'Posted out — refuse or delete it'",
-    "tests": ["src/leavewar/m4decide.test.ts", "src/leavewar/deletednorow.test.ts"] },
-  { "n": 3, "name": "fix 1: a deleted man's refusal sees every man as deleted (the SANS-off man, S1-4)",
+    "find": "  return deletedMan(personId) && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)",
+    "put": "  return deletedMan(personId)",
+    "tests": [
+      "src/leavewar/m4decide.test.ts",
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 3,
+    "name": "fix 1: a deleted man's refusal sees every man as deleted (the SANS-off man, S1-4)",
     "file": "src/leavewar/sync.ts",
     "find": "const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone' || !!(PEOPLE as any)[personId]?.deleted",
     "put": "const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone' || !(PEOPLE as any)[personId]?.archived",
-    "tests": ["src/leavewar/deletednorow.test.ts"] },
-  { "n": 4, "name": "fix 1: Undo / Redo of an approval after his delete not refused",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 4,
+    "name": "fix 1: Undo / Redo of an approval after his delete not refused",
     "file": "src/state/person-delete.ts",
     "find": "    if (writesLeave) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`",
     "put": "    if (writesLeave && false) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`",
-    "tests": ["src/leavewar/deletednorow.test.ts"] },
-  { "n": 5, "name": "fix 1: the restore's 'takes a bid of his away' test answers no",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 5,
+    "name": "fix 1: the restore's 'takes a bid of his away' test answers no",
     "file": "src/state/person-delete.ts",
     "find": "      return [...now].some(r => !left.has(r))",
     "put": "      return false",
-    "tests": ["src/leavewar/deletednorow.test.ts"] },
-  { "n": 6, "name": "fix 1: any input of his put back counts as the war's approval (the lw mark not asked)",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 6,
+    "name": "fix 1: any input of his put back counts as the war's approval (the lw mark not asked)",
     "file": "src/state/person-delete.ts",
     "find": "ch.op === 'put' && !!ch.after && !!ch.after.lw && inInput(ch.after, id))",
     "put": "ch.op === 'put' && !!ch.after && inInput(ch.after, id))",
-    "tests": ["src/leavewar/deletednorow.test.ts"] },
-  { "n": 7, "name": "fix 2: the clash prints the stored notation again",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 7,
+    "name": "fix 2: the clash prints the stored notation again",
     "file": "src/leavewar/sync.ts",
     "find": "  return codeInWords(notationOf(c.code, c.win))\n}",
     "put": "  return notationOf(c.code, c.win)\n}",
-    "tests": ["src/leavewar/halfwords.test.tsx"] },
-  { "n": 8, "name": "fix 2: a credit loses its star in the clash note",
+    "tests": [
+      "src/leavewar/halfwords.test.tsx"
+    ]
+  },
+  {
+    "n": 8,
+    "name": "fix 2: a credit loses its star in the clash note",
     "file": "src/leavewar/sync.ts",
     "find": "  if (c.kind === 'credit') return codeInWords(c.code, !!c.auto, c.code === 'HO' ? (portionOf(c.win) === 'pm' ? 'pm' : 'am') : null)",
     "put": "  if (c.kind === 'credit') return codeInWords(c.code, false, c.code === 'HO' ? (portionOf(c.win) === 'pm' ? 'pm' : 'am') : null)",
-    "tests": ["src/leavewar/halfwords.test.tsx"] },
-  { "n": 9, "name": "fix 2: an FO credit names its half in the clash note",
+    "tests": [
+      "src/leavewar/halfwords.test.tsx"
+    ]
+  },
+  {
+    "n": 9,
+    "name": "fix 2: an FO credit names its half in the clash note",
     "file": "src/leavewar/sync.ts",
     "find": "  if (c.kind === 'credit') return codeInWords(c.code, !!c.auto, c.code === 'HO' ? (portionOf(c.win) === 'pm' ? 'pm' : 'am') : null)",
     "put": "  if (c.kind === 'credit') return codeInWords(notationOf(c.code, c.win), !!c.auto)",
-    "tests": ["src/leavewar/halfwords.test.tsx"] },
-  { "n": 10, "name": "fix 2: the note reads the stored leave code",
+    "tests": [
+      "src/leavewar/halfwords.test.tsx"
+    ]
+  },
+  {
+    "n": 10,
+    "name": "fix 2: the note reads the stored leave code",
     "file": "src/leavewar/ui/Chrome.tsx",
     "find": "${c.bidShown ?? c.bidCode}",
     "put": "${c.bidCode}",
-    "tests": ["src/leavewar/halfwords.test.tsx", "src/leavewar/clashwayout.test.tsx"] },
-  { "n": 11, "name": "fix 2: the credited sheet's title back to displayCell (no star, arrows)",
+    "tests": [
+      "src/leavewar/halfwords.test.tsx",
+      "src/leavewar/clashwayout.test.tsx"
+    ]
+  },
+  {
+    "n": 11,
+    "name": "fix 2: the credited sheet's title back to displayCell (no star, arrows)",
     "file": "src/leavewar/ui/BidPicker.tsx",
     "find": "{codeInWords(code, !!creditShown, creditShown && creditShown.code !== 'HO' ? null : undefined)}",
     "put": "{displayCell(code)}",
-    "tests": ["src/leavewar/halfwords.test.tsx", "src/leavewar/ui/raptorsheet.test.tsx"] },
-  { "n": 12, "name": "fix 2: the sheet names an FO's half",
+    "tests": [
+      "src/leavewar/halfwords.test.tsx",
+      "src/leavewar/ui/raptorsheet.test.tsx"
+    ]
+  },
+  {
+    "n": 12,
+    "name": "fix 2: the sheet names an FO's half",
     "file": "src/leavewar/ui/BidPicker.tsx",
     "find": "{codeInWords(code, !!creditShown, creditShown && creditShown.code !== 'HO' ? null : undefined)}",
     "put": "{codeInWords(code, !!creditShown)}",
-    "tests": ["src/leavewar/halfwords.test.tsx"] },
-  { "n": 13, "name": "fix 4: the month's memo asks no neighbour day and no record (the guard as on main)",
+    "tests": [
+      "src/leavewar/halfwords.test.tsx"
+    ]
+  },
+  {
+    "n": 13,
+    "name": "fix 4: the month's memo asks no neighbour day and no record (the guard as on main)",
     "file": "src/leavewar/ui/MatrixRows.tsx",
     "find": "    if (!same(av?.[d], bv?.[d]) || !same(ar?.[d], br?.[d])) return false",
     "put": "    if ((d >= first && d <= last) && !same(av?.[d], bv?.[d])) return false",
-    "tests": ["src/leavewar/ui/matrix-rows-memo.test.tsx"] },
-  { "n": 14, "name": "fix 4: the records not compared by content",
+    "tests": [
+      "src/leavewar/ui/matrix-rows-memo.test.tsx"
+    ]
+  },
+  {
+    "n": 14,
+    "name": "fix 4: the records not compared by content",
     "file": "src/leavewar/ui/MatrixRows.tsx",
     "find": "    if (!same(av?.[d], bv?.[d]) || !same(ar?.[d], br?.[d])) return false",
     "put": "    if (!same(av?.[d], bv?.[d])) return false",
-    "tests": ["src/leavewar/ui/matrix-rows-memo.test.tsx"] },
-  { "n": 15, "name": "fix 4: the fast path ignores the records",
+    "tests": [
+      "src/leavewar/ui/matrix-rows-memo.test.tsx"
+    ]
+  },
+  {
+    "n": 15,
+    "name": "fix 4: the fast path ignores the records",
     "file": "src/leavewar/ui/MatrixRows.tsx",
     "find": "  if (ag === bg && as === bs && av === bv && ar === br) return true",
     "put": "  if (ag === bg && as === bs && av === bv) return true",
-    "tests": ["src/leavewar/ui/matrix-rows-memo.test.tsx"] },
-  { "n": 16, "name": "fix 4: the month is handed no records (the joined bar's run keys lost)",
+    "tests": [
+      "src/leavewar/ui/matrix-rows-memo.test.tsx"
+    ]
+  },
+  {
+    "n": 16,
+    "name": "fix 4: the month is handed no records (the joined bar's run keys lost)",
     "file": "src/leavewar/ui/MatrixRows.tsx",
     "find": "          recs={recs?.[p.id]}",
     "put": "          recs={undefined}",
-    "tests": ["src/leavewar/ui/joinedbar.test.tsx", "src/leavewar/ui/matrix-rows-memo.test.tsx"] },
-  { "n": 17, "name": "fix 4: the grid hands its rows no records",
+    "tests": [
+      "src/leavewar/ui/joinedbar.test.tsx",
+      "src/leavewar/ui/matrix-rows-memo.test.tsx"
+    ]
+  },
+  {
+    "n": 17,
+    "name": "fix 4: the grid hands its rows no records",
     "file": "src/leavewar/ui/Matrix.tsx",
     "find": "                        recs={curRecs}",
     "put": "                        recs={undefined}",
-    "tests": ["src/leavewar/ui/joinedbar.test.tsx", "src/leavewar/ui/matrix-rows-memo.test.tsx"] },
-  { "n": 18, "name": "fix 4: the edge reach one day, not two",
+    "tests": [
+      "src/leavewar/ui/joinedbar.test.tsx",
+      "src/leavewar/ui/matrix-rows-memo.test.tsx"
+    ]
+  },
+  {
+    "n": 18,
+    "name": "fix 4: the edge reach one day, not two",
     "file": "src/leavewar/ui/MatrixRows.tsx",
     "find": "export const JOIN_REACH = 2",
     "put": "export const JOIN_REACH = 1",
-    "tests": ["src/leavewar/ui/matrix-rows-memo.test.tsx", "src/leavewar/ui/joinedbar.test.tsx"] },
-  { "n": 19, "name": "fix 4: the month's memo taken off (every month draws on every write)",
+    "tests": [
+      "src/leavewar/ui/matrix-rows-memo.test.tsx",
+      "src/leavewar/ui/joinedbar.test.tsx"
+    ]
+  },
+  {
+    "n": 19,
+    "name": "fix 4: the month's memo taken off (every month draws on every write)",
     "file": "src/leavewar/ui/MatrixRows.tsx",
     "find": "}, sameMonth)",
     "put": "}, () => false)",
-    "tests": ["src/leavewar/ui/matrix-rows-memo.test.tsx"] }
+    "tests": [
+      "src/leavewar/ui/matrix-rows-memo.test.tsx"
+    ]
+  },
+  {
+    "n": 20,
+    "name": "the read's fix 2: the restore refusal asks no shared predicate (a run Delete posting refused whole in Undo / Redo)",
+    "file": "src/state/person-delete.ts",
+    "find": "    if (!refusedWhole(id)) continue",
+    "put": "    if (!(PEOPLE as any)[id]?.deleted) continue",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 21,
+    "name": "the read's fix 1: a Redo judged like an Undo (a place-and-approve's Redo let through)",
+    "file": "src/state/person-delete.ts",
+    "find": "    if (dir === 'redo') {",
+    "put": "    if (false) {",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 22,
+    "name": "the read's fix 1: a Redo refused only for two or more days added",
+    "file": "src/state/person-delete.ts",
+    "find": "      if (added > 0) return",
+    "put": "      if (added > 1) return",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 23,
+    "name": "the read's fix 1: the timeline's direction not handed on",
+    "file": "src/state/undo-wire.ts",
+    "find": "    deadRefusal: (changes, dir) => deletedRestoreProblem(changes as any, dir),",
+    "put": "    deadRefusal: (changes, dir) => deletedRestoreProblem(changes as any),",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  },
+  {
+    "n": 24,
+    "name": "the read's fix 1: any leave input of his counted, not only the war's (the Inputs page's leave refused on Redo)",
+    "file": "src/state/person-delete.ts",
+    "find": "(row && row.lw && inInput(row, id) ? inputDates(row).length : 0)",
+    "put": "(row && inInput(row, id) ? inputDates(row).length : 0)",
+    "tests": [
+      "src/leavewar/deletednorow.test.ts"
+    ]
+  }
 ]

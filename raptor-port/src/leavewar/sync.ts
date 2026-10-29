@@ -445,6 +445,14 @@ const lockedDates = (): Set<string> => new Set(protectedDates().map((d: any) => 
    man with SANS off has neither and is no one deleted (the scenario list's S1-4). A Delete POSTING that has run falls to
    D1436's date rule below, as before (R3c-1) — its kept record still carries the outcome and `poDone`. */
 const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone' || !!(PEOPLE as any)[personId]?.deleted
+/** IS EVERY PENDING BID OF HIS REFUSED — a man deleted, but not by a Delete POSTING that has run (that falls to D1436's date
+ *  rule — R3c-1: his kept record carries the outcome and `poDone`). The ONE body the live door (`approveWhy`) and the
+ *  restore refusal (state/person-delete.ts deletedRestoreProblem) ask, so Undo and Redo never disagree with Approve (the
+ *  blind code read of 14403cf57, finding 2). */
+export function refusedWhole(personId: string): boolean {
+  const kept: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
+  return deletedMan(personId) && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)
+}
 function approveWhy(it: { personId: string; date: string; recId: string }, prot: Set<string> = lockedDates()): string | null {
   const war = warHolding(rawState().wars, it.date)
   const rec = war ? recsAt(war.recs, it.personId, it.date).find((r): r is RequestRec => r.kind === 'request' && r.id === it.recId) : undefined
@@ -456,8 +464,7 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
      outcome marks him gone too once it has run, and a Delete posting IS a posting out — so it falls to D1436's one date
      rule below (his days before the date approve), never to this whole refusal. The kept record carries the posting's
      outcome and `poDone` (store.ts markPostingDone; the kept row spreads the record's window). */
-  const kept: any = getState().postOuts[it.personId] || getState().people.find(p => p.id === it.personId)
-  if (deletedMan(it.personId) && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)) return 'Posted out — refuse or delete it'
+  if (refusedWhole(it.personId)) return 'Posted out — refuse or delete it'
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po

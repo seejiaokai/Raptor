@@ -25,12 +25,12 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo, globalRedo } from '../undo'
 import { _resetTimeline } from '../undo/timeline'
 import {
-  decideRequests, getState, initStore as lwInitStore, lwHistInit, recordsAt, setBidStates, setCell, setPeople, setShowSans, type DecideLine,
+  changeAbsenceById, decideRequests, getState, initStore as lwInitStore, lwHistInit, placeApproved, recordsAt, setBidStates, setCell, setPeople, setShowSans, type DecideLine,
 } from './state/store'
 import type { RequestRec } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { wireLeaveWarSync } from './sync'
+import { postOut, runPoOutcomes, wireLeaveWarSync } from './sync'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -199,5 +199,127 @@ describe('a Redo of an Inputs-page leave that replaced his bid still comes back 
     expect(deletePerson(id)).toBeNull(); raptorNotify()
     globalRedo()
     expect(INPUTS.some((r: any) => r.iid === 'dn-in-1'), 'his leave filed on the Inputs page is back').toBe(true)
+  })
+})
+
+/* THE BLIND CODE READ OF 14403cf57 (`docs/handpass/parts/lw-sf1030/read-opus.md`), each claim reproduced here first.
+   Finding 1: Auto-approve places AND approves in one gesture (`placeApproved` — the bid window and the drag window), so its
+   step takes no request off the war — the restore refusal, which looked for one, let its Redo write approved leave for a man
+   deleted since. Finding 2: a Delete POSTING that has run marks him deleted too, and the restore refusal refused his days
+   before the posting's date, which the live door approves (D1447 R20, D1436, R3c-1). Every twin path is listed below, a test
+   each (the bug-check order §5: Undo AND Redo, each kind of step that can carry his approval). */
+describe('the reader’s finding 1: Redo of an Auto-approve placement after his delete', () => {
+  const warOn = (p: string, d: string) => warLeave(p).filter((r: any) => r.date === d)
+  it('the live door, for comparison: Auto-approve on his past day after his delete lands pending', () => {
+    const id = addIncoming('Newby')
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    placeApproved([{ personId: id, date: PAST }], 'LL')
+    expect(warLeave(id)).toHaveLength(0)
+  })
+  it('the bid window, a man never arrived: placed approved, Undo, delete him, Redo — no approved leave', () => {
+    const id = addIncoming('Newby')
+    expect(placeApproved([{ personId: id, date: PAST }], 'LL').approved).toBe(1)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    globalRedo()
+    expect(warLeave(id), 'the Redo wrote no approved leave').toHaveLength(0)
+  })
+  it('the bid window, a man who had arrived (Ranger): the same', () => {
+    expect(placeApproved([{ personId: 'bane', date: PAST }], 'LL').approved).toBe(1)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    globalRedo()
+    expect(warOn('bane', 'Jul 10')).toHaveLength(0)
+  })
+  it('the drag window: two days of one man placed approved at once, Undo, delete him, Redo — none written', () => {
+    const id = addIncoming('Newby')
+    expect(placeApproved([{ personId: id, date: '2026-07-09' }, { personId: id, date: PAST }], 'LL').approved).toBe(2)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    globalRedo()
+    expect(warLeave(id)).toHaveLength(0)
+  })
+  it('placed approved over his pending bid already there: Undo, delete, Redo — none written', () => {
+    const id = addIncoming('Newbz')
+    setCell(id, PAST, 'LL')
+    expect(placeApproved([{ personId: id, date: PAST }], 'LL').approved).toBe(1)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    globalRedo()
+    expect(warLeave(id)).toHaveLength(0)
+  })
+  it('an approval that EXTENDS his leave (the day beside approved leave): Undo, delete, Redo — the leave stays one day', () => {
+    const id = addIncoming('Ext')
+    setCell(id, PAST, 'LL'); setCell(id, '2026-07-11', 'LL')
+    expect(decideRequests([line(id, PAST, 'approved')])[0]!.kind).toBe('done')
+    expect(decideRequests([line(id, '2026-07-11', 'approved')])[0]!.kind).toBe('done')
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    globalRedo()
+    expect(warLeave(id).map((r: any) => [r.date, r.endDate ?? r.date]), 'only the first day approved').toEqual([['Jul 10', 'Jul 10']])
+  })
+  it('Approve → Refuse (D1428), then delete him, Undo: the approval is not put back', () => {
+    const id = addIncoming('Swap')
+    setCell(id, PAST, 'LL')
+    const [a] = decideRequests([line(id, PAST, 'approved')])
+    expect(decideRequests([{ personId: id, to: 'refused', parts: (a as any).parts }])[0]!.kind).toBe('done')
+    expect(warLeave(id)).toHaveLength(0)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    globalUndo()
+    expect(warLeave(id)).toHaveLength(0)
+  })
+  it('his approved leave deleted on the war, then he is deleted, Undo: it comes back — his past kept, no request taken', () => {
+    const id = addIncoming('Kept')
+    setCell(id, PAST, 'LL')
+    expect(decideRequests([line(id, PAST, 'approved')])[0]!.kind).toBe('done')
+    const iid = String(warLeave(id)[0].iid)
+    expect(changeAbsenceById(id, PAST, iid, 'removed')).toBeNull()
+    expect(warLeave(id)).toHaveLength(0)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    expect(globalUndo().ok).toBe(true)
+    expect(warLeave(id), 'the Undo of a delete puts his past back').toHaveLength(1)
+  })
+  it('his approved leave deleted on the war, Undo, then he is deleted, Redo: the delete goes through (no leave added)', () => {
+    const id = addIncoming('Gone')
+    setCell(id, PAST, 'LL')
+    decideRequests([line(id, PAST, 'approved')])
+    const iid = String(warLeave(id)[0].iid)
+    expect(changeAbsenceById(id, PAST, iid, 'removed')).toBeNull()
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    expect(globalRedo().ok).toBe(true)
+    expect(warLeave(id)).toHaveLength(0)
+  })
+})
+
+describe('the reader’s finding 2: a Delete POSTING that has run — the restore agrees with the live door', () => {
+  const postRun = () => { expect(postOut('bane', '2026-07-12', 'delete')).toBe(true); runPoOutcomes(); raptorNotify(); expect((PEOPLE as any).bane.deleted).toBe(true) }
+  it('the live door, for comparison: after the posting ran, his day before the date approves', () => {
+    setCell('bane', PAST, 'LL')
+    postRun()
+    expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+  })
+  it('approved, Undo, the posting runs, Redo: the approval of his day before the date goes back', () => {
+    setCell('bane', PAST, 'LL')
+    expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+    expect(globalUndo().ok).toBe(true)
+    postRun()
+    expect(globalRedo().ok).toBe(true)
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 10')).toBe(true)
+  })
+  it('approved, sent back, the posting runs, Undo: the approval of his day before the date comes back', () => {
+    setCell('bane', PAST, 'LL')
+    const [a] = decideRequests([line('bane', PAST, 'approved')])
+    expect(decideRequests([{ personId: 'bane', to: 'pending', parts: (a as any).parts }])[0]!.kind).toBe('done')
+    postRun()
+    expect(globalUndo().ok).toBe(true)
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 10')).toBe(true)
+  })
+  it('placed approved, Undo, the posting runs, Redo: his day before the date is approved again', () => {
+    expect(placeApproved([{ personId: 'bane', date: PAST }], 'LL').approved).toBe(1)
+    expect(globalUndo().ok).toBe(true)
+    postRun()
+    expect(globalRedo().ok).toBe(true)
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 10')).toBe(true)
   })
 })

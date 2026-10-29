@@ -65,7 +65,8 @@ import { mayDeletePerson, byAfterLeaving } from './perms'
 import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
 import { stampChanged, stampWho } from './inputstamp'
-import { deletePersonOnWar, warIdentityIfHidden } from '../leavewar/sync'
+import { deletePersonOnWar, refusedWhole, warIdentityIfHidden } from '../leavewar/sync'
+import { inputDates } from '../leavewar/absences'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
 
@@ -283,7 +284,7 @@ export function applyDelete(id: string, cutoff: string): void {
    `sched.book` `<wk>#<di>` (that day's `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `pp:<id>`, `weekstash`
    `<wk>#<di>` (a saved week's day row — state/weekrows.ts; its other rows name no day he could be put back on). */
 const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?? null).includes(`"${id}"`) } catch (_e) { return false } }
-export function deletedRestoreProblem(changes: any[]): string | null {
+export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo'): string | null {
   const gone = Object.keys(PEOPLE).filter(id => (PEOPLE as any)[id] && (PEOPLE as any)[id].deleted)
   if (!gone.length) return null
   /* the accounts the step would leave — one row per account since [DB-READINESS] group A, phase 4.4: an account row put
@@ -297,8 +298,24 @@ export function deletedRestoreProblem(changes: any[]): string | null {
      the Undo of a send-back, made after his delete is that refused approval replayed: the step takes a request of his off
      the war (`lw.cell <war>:<pid>:<date>`, a request in what is there now and not in what it leaves) and writes the leave the
      war approved for it (an `inputs` row carrying `lw`, holding him). A war-approved leave of his put back WITHOUT taking a
-     request away (the Undo of its delete) is his past kept, and passes. */
+     request away (the Undo of its delete) is his past kept, and passes.
+     …AND A REDO THAT APPROVES HIS LEAVE IN ANY FORM (the blind code read of 14403cf57, finding 1): Auto-approve places and
+     approves in ONE gesture (store.ts placeApproved — the bid window and the drag window), so its step takes no request off
+     the war, and its Redo wrote approved leave for a man deleted since. A Redo re-takes a step made forward, and a forward
+     step that ADDS days of war-approved leave for him — an approval, a place-and-approve, an approval that extends a leave —
+     is an approval; one that moves, shortens or deletes his leave, or edits its words, adds none and passes. An Undo keeps
+     the request test above: an Undo that adds war-approved days without taking a request is the Undo of a delete — his past.
+     …ONLY FOR A MAN REFUSED WHOLE (the read's finding 2): a Delete POSTING that has run marks him deleted too, yet his days
+     before the posting's date still approve at the live door (D1447 R20, D1436 — sync.ts refusedWhole, the one body
+     approveWhy asks); his days from the cutoff are refused by the check below, as for every deleted man. */
+  const lwDays = (row: any, id: string): number => (row && row.lw && inInput(row, id) ? inputDates(row).length : 0)
   for (const id of gone) {
+    if (!refusedWhole(id)) continue
+    if (dir === 'redo') {
+      const added = (changes || []).reduce((n, ch) => (ch && ch.collection === 'inputs' ? n + lwDays(ch.op === 'delete' ? null : ch.after, id) - lwDays(ch.before, id) : n), 0)
+      if (added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+      continue
+    }
     const takesBid = (changes || []).some(ch => {
       if (!ch || ch.collection !== 'lw.cell') return false
       const parts = String(ch.id || '').split(':')
