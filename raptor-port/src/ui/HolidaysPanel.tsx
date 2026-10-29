@@ -100,9 +100,14 @@ function previewOf(rows: SheetRow[]): PvLine[] {
   })
 }
 /** a file's words, in the browser */
-const textOf = (f: File): Promise<string> => (typeof f.text === 'function'
-  ? f.text()
-  : new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result ?? '')); r.onerror = () => no(r.error); r.readAsText(f) }))
+/* …as UTF-8, and where its bytes are not UTF-8, as Windows-1252 — what Excel's plain "CSV" saves on a Windows PC (the
+   walk's F4, 29 Oct 26: "Café Noël" came out garbled and would have been saved so) */
+const textOf = async (f: File): Promise<string> => {
+  const buf: ArrayBuffer = typeof f.arrayBuffer === 'function'
+    ? await f.arrayBuffer()
+    : await new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(r.result as ArrayBuffer); r.onerror = () => no(r.error); r.readAsArrayBuffer(f) })
+  try { return new TextDecoder('utf-8', { fatal: true }).decode(buf) } catch { return new TextDecoder('windows-1252').decode(buf) }
+}
 
 export function HolidaysPanel({ year, setYear, onOpen }: {
   year: number
@@ -128,8 +133,17 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
     try { text = await textOf(f) } catch { /* unreadable: no rows */ }
     setPv({ file: f.name, lines: previewOf(readHolidaySheet(text)), err: '' })
   }
+  /* a note after Add naming holidays that went into another year than the one shown — out of view (D850; the walk's F5) */
+  const [addedNote, setAddedNote] = useState('')
   const addAll = () => {
     if (!pv) return
+    /* READ AGAIN AT ADD (the walk's F6): something may have been added behind the open preview (the grid's Event row, an
+       Undo) — a line now already here is not added twice; where anything changed, the preview shows it and waits */
+    const again = previewOf(pv.lines.map(l => ({ row: l.row, name: l.name, draft: l.draft, why: l.st === 'bad' && !l.draft ? l.why : undefined })))
+    if (again.some((l, i) => l.st !== pv.lines[i]!.st)) {
+      setPv({ ...pv, lines: again, err: 'The holidays changed since this sheet was read — check the lines, then press Add again.' })
+      return
+    }
     const add = pv.lines.filter(l => l.st === 'new')
     const r = holidaysImport(add.map(l => l.draft!))
     if (!r.ok) {
@@ -137,6 +151,9 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
       return
     }
     setFresh(new Set(add.map(l => keyOf(l.draft!))))
+    const byYear = new Map<string, number>()
+    for (const l of add) { const y = l.draft!.from.slice(0, 4); if (+y !== year) byYear.set(y, (byYear.get(y) ?? 0) + 1) }
+    setAddedNote(byYear.size ? `Also added: ${[...byYear].map(([y, n]) => `${n} ${n === 1 ? 'holiday' : 'holidays'} in ${y}`).join(', ')}.` : '')
     setPv(null)
   }
   const lines = holidaysIn(year)
@@ -147,7 +164,7 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   const step = (by: number) => { setWhy(''); setYear(year + by) }
   /* the year can also be turned from outside — a swipe on the list (ui/DaysWindow.tsx, D786): what was said about the
      year left behind goes with it, as the arrows' own step has it */
-  useEffect(() => { setWhy(''); setPv(null) }, [year])   // …and an import being looked at
+  useEffect(() => { setWhy(''); setPv(null); setAddedNote('') }, [year])   // …and an import being looked at
 
   return (
     <div className="hol" data-testid="days-part-holidays">
@@ -223,6 +240,7 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
             ))}
           </div>
         )}
+      {!pv && addedNote && <p className="hol-saved" data-testid="hol-added-note" role="status">{addedNote}</p>}
       {!pv && (
         <div className="hol-filerow" data-testid="hol-filerow">
           <button type="button" className="abtn docbtn" data-testid="hol-export" title={`Save the ${year} holidays as a sheet to fill in`} onClick={exportSheet}>

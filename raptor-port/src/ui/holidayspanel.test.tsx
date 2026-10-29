@@ -647,3 +647,38 @@ describe('holidays by file (D1501)', () => {
     expect(t('hol-pv-counts').textContent).toBe('0 to add · 0 already here · 1 not read')
   })
 })
+
+/* THE WALK'S FINDINGS ON HOLIDAYS BY FILE (29 Oct 26, the evidence sheet's F4–F6) */
+describe('holidays by file — the walk’s findings', () => {
+  async function importBytes(bytes: Uint8Array | string, name = 'holidays.csv') {
+    const f = new File([bytes], name, { type: 'text/csv' })
+    await act(async () => { fireEvent.change(t('hol-import-file'), { target: { files: [f] } }); await Promise.resolve(); await Promise.resolve() })
+    await act(async () => { await new Promise(r => setTimeout(r, 0)) })
+  }
+  it('F4: a sheet saved as Excel’s plain CSV (Windows-1252) reads its accented names as written', async () => {
+    open()
+    const text = 'From,To,Name,Kind\r\n2026-05-04,,Café Noël,PH'
+    const bytes = Uint8Array.from([...text].map(c => c.charCodeAt(0)))      // one byte a letter: é = 0xE9, ë = 0xEB
+    await importBytes(bytes)
+    expect(t('hol-pv-list').querySelector('.hol-name')!.textContent).toBe('Café Noël')
+  })
+  it('F5: holidays added in another year than the one shown are named in a note', async () => {
+    open()
+    await importBytes('From,To,Name,Kind\r\n2026-05-04,,A,PH\r\n2027-05-04,,B,PH\r\n2027-06-04,,C,PH')
+    fireEvent.click(t('hol-pv-add'))
+    expect(t('hol-added-note').textContent).toBe('Also added: 2 holidays in 2027.')
+  })
+  it('F6: a holiday added behind an open preview is not added twice — the preview is read again and says so', async () => {
+    open()
+    await importBytes('From,To,Name,Kind\r\n2026-05-04,,A,PH\r\n2026-05-05,,B,PH')
+    act(() => { holidayAdd({ kind: 'ph', name: 'A', from: '2026-05-04', to: '2026-05-04' }) })
+    fireEvent.click(t('hol-pv-add'))
+    expect(q('hol-preview'), 'nothing added: the preview stays, read again').toBeTruthy()
+    expect(t('hol-pv-counts').textContent).toBe('1 to add · 1 already here · 0 not read')
+    expect(t('hol-pv-err').textContent).toMatch(/changed since/)
+    expect(lines(2026).filter(h => h.from === '2026-05-04')).toHaveLength(1)
+    fireEvent.click(t('hol-pv-add'))
+    expect(q('hol-preview')).toBeNull()
+    expect(lines(2026).some(h => h.from === '2026-05-05')).toBe(true)
+  })
+})
