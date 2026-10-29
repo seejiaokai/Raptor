@@ -138,3 +138,19 @@ describe('the stored grammar stays — a send-back lands a morning bid (S2-9)', 
     expect(r.map(x => (x as any).code)).toEqual(['*LL'])
   })
 })
+
+/* an FO is drawn whole whatever half its work fell in (MatrixRows placeOf): its half is never named, in the note or the sheet */
+describe('an FO earned in one half of the day still reads whole', () => {
+  it('the clash note: six and a half hours of morning work earns "FO*", never "FO* (morning)"', () => {
+    setCell('bane', SAT, 'OL')
+    baneWorks('05:00', '11:30')
+    publishSat()
+    const c = clashOf('bane')
+    expect(c.inputCode, 'its stored notation carries the morning').toBe('*FO')
+    expect(clashWhat(c)).toBe('Weekend/PH work earns FO*, but the day holds OL')
+  })
+  it('the sheet: a morning FO reads "FO* · approved"', () => {
+    render(<RaptorSheet callsign="Ranger" date={SAT} code="*FO" creditShown={{ code: 'FO', days: 1, half: 'am' }} onClose={() => {}} />)
+    expect(screen.getByTestId('raptor-sheet').querySelector('.bidsheet-hd .cur')!.textContent).toBe('FO* · approved')
+  })
+})

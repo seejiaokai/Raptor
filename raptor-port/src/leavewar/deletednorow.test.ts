@@ -17,7 +17,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS, holds } from '../engine/inputs'
-import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession, writeInputs } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { addRosterPerson } from '../state/roster-add'
 import { deletePerson } from '../state/person-delete'
@@ -182,5 +182,22 @@ describe('Undo and Redo never put back an approval for a man since deleted (S1-6
     expect(globalUndo().ok).toBe(true)
     expect(globalRedo().ok).toBe(true)
     expect(warLeave(id)).toHaveLength(1)
+  })
+})
+
+/* THE REFUSAL IS THE APPROVAL ALONE: a leave of his filed on the Inputs page over his bid — not one the war approved — is
+   his past kept when a Redo puts it back after his delete (D299, D321: leave may still be added on a deleted man's past
+   days); only the war's approval of his leftover bid is refused (R21) */
+describe('a Redo of an Inputs-page leave that replaced his bid still comes back after his delete', () => {
+  it('filed over his pending bid, Undo, delete him, Redo: his leave is back, the war never approved it', () => {
+    const id = addIncoming('Filed')
+    setCell(id, PAST, 'LL')
+    const row = { iid: 'dn-in-1', person: id, type: 'LL', date: 'Jul 10', yr: 2026, allday: true, remarks: '', mod: '2026-07-01', by: 'stiff', at: 1 }
+    expect(writeInputs(() => { INPUTS.push(row) })).toBe(true)
+    expect(recordsAt(id, PAST).some(r => r.kind === 'request'), 'the filing replaced his bid').toBe(false)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson(id)).toBeNull(); raptorNotify()
+    globalRedo()
+    expect(INPUTS.some((r: any) => r.iid === 'dn-in-1'), 'his leave filed on the Inputs page is back').toBe(true)
   })
 })
