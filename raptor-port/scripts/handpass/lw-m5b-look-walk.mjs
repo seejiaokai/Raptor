@@ -60,6 +60,17 @@ for (const kind of ['P', 'D']) {
   // 5. Rearrange from Settings over Approvals brings the grid, rearranging
   await press(T('settings-rearrange'))
   C(kind + '-5 Rearrange brings the grid up', !(await vis('approvals-page')) && await p.locator('.mx-outer.mx-arranging').count() > 0); await shot('5-rearrange-grid')
+  // 6. the read's finding 1: "Really reset?" armed over Balances, the Leave War left and come back to — never one tap from acting
+  await press(T('lw-tab-balances')); await press(T('settings-open'))
+  const ro = T('roster-reset-order')
+  if (await ro.isEnabled()) {
+    await press(ro); const armed = (await ro.textContent()) === 'Really reset?'
+    await p.evaluate(() => window.go('editsched')); await p.waitForTimeout(600)
+    await p.evaluate(() => window.go('leavewar')); await p.waitForTimeout(800)
+    const t = (await ro.count()) ? await ro.textContent() : '(window closed)'
+    C(kind + '-6 an armed Reset order is taken back when he leaves and comes back', armed && t !== 'Really reset?', 'on return: ' + t)
+    await shot('6-reset-after-return')
+  } else C(kind + '-6 (Reset order greyed: the roster is in its default order — armed in the unit test)', true)
   // (another tab while the tracker is up: the tracker covers the tab row, as it always has — the unit test presses it)
   C(kind + ' no page errors', errs.length === 0, errs.join(' | '))
   await ctx.close()

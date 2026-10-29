@@ -75,6 +75,11 @@
   "note": ""
  },
  {
+  "id": "P-6 (Reset order greyed: the roster is in its default order — armed in the unit test)",
+  "ok": true,
+  "note": ""
+ },
+ {
   "id": "P no page errors",
   "ok": true,
   "note": ""
@@ -151,6 +156,11 @@
  },
  {
   "id": "D-5 Rearrange brings the grid up",
+  "ok": true,
+  "note": ""
+ },
+ {
+  "id": "D-6 (Reset order greyed: the roster is in its default order — armed in the unit test)",
   "ok": true,
   "note": ""
  },

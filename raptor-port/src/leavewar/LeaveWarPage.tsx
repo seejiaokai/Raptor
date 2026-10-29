@@ -31,7 +31,7 @@ import { memo, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { Topbar } from './ui/Chrome'
 import { Matrix } from './ui/Matrix'
 import { WarSheet } from './ui/WarSheet'
-import { setLwOnScreen } from './state/screen'
+import { lwLeft, setLwOnScreen } from './state/screen'
 import { focusDay, getState, rawState, subscribe } from './state/store'
 import { focusDateOf, memberToday } from './engine'
 import { installDayClock } from './ui/dayclock'
@@ -219,7 +219,7 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
          current view. That is what keeps the NEXT return cheap — the browser
          re-styles a small grid on reveal, not the whole year (owner, 5 Sep 26).
          The fill rebuilds the year again once the tab is shown. */
-      setLwOnScreen(false)
+      lwLeft()
       /* The hide-side kick. The same measured-at-zero sweep that makes the
          show-side resize safe makes this one USEFUL: the Matrix's fixed
          bottom scrollbar is React state fed by a rect measurement, so one

@@ -712,6 +712,34 @@ describe('the windows the grid owns open over the page that is up (D1503, D1506)
       expect(lwPage()).toBe(tab === 'lw-tab-balances' ? 'balances' : 'approvals')
     }
   })
+  /* the fresh read's finding 1 (29 Oct 26): a window armed over the Balances page ("Really reset?") must be disarmed when he
+     leaves the Leave War — the grid was already off screen there, so the leave changed no signal and nothing heard it */
+  it('an armed "Really reset?" over the Balances page is taken back when he leaves the Leave War', async () => {
+    const { setRosterOrder, getState } = await import('../state/store')
+    const ids = getState().people.slice(0, 2).map(p => p.id)
+    setRosterOrder([ids[1]!, ids[0]!])
+    const { LeaveWarPage } = await import('../LeaveWarPage')
+    const { rerender } = render(<LeaveWarPage active={true} />)
+    fireEvent.click(screen.getByTestId('lw-tab-balances'))
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('roster-reset-order'))
+    expect(screen.getByTestId('roster-reset-order').textContent).toBe('Really reset?')
+    act(() => rerender(<LeaveWarPage active={false} />))
+    act(() => rerender(<LeaveWarPage active={true} />))
+    const b = screen.queryByTestId('roster-reset-order')
+    expect(b?.textContent ?? '', 'one tap on coming back must never reset').not.toBe('Really reset?')
+  })
+  /* the fresh read's finding 2: from Approvals' slim bar (the grid already up) Rearrange keeps the visit */
+  it('Rearrange from the grid with Approvals’ slim bar up keeps the Approvals visit', async () => {
+    const { apprMode } = await import('./lwnav')
+    const { LeaveWarPage } = await import('../LeaveWarPage')
+    render(<LeaveWarPage active={true} />)
+    fireEvent.click(screen.getByTestId('lw-tab-approvals'))
+    act(() => setApprMode('bar'))
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('settings-rearrange'))
+    expect(apprMode()).toBe('bar')
+  })
   it('Rearrange the grid, pressed from Settings over a page, brings the grid up — it is done on the grid', async () => {
     await mountPage()
     fireEvent.click(screen.getByTestId('lw-tab-balances'))

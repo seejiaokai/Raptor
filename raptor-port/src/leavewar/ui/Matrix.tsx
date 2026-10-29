@@ -4289,8 +4289,8 @@ export function Matrix() {
           since={who.since}
           hasRow={people.some(p => p.id === who.id)}
           onClose={() => setWho(null)}
-          /* "0 ›": his OIL tracker, over the grid as the OIL tab opens it — the page in the grid card's place first (the
-             tracker is drawn from the grid card), the window shut so the tracker is not under it */
+          /* "0 ›": his OIL tracker, drawn over whatever page is up, which stays under it (D1503, D1506); the window shut so
+             the tracker is not under it */
           onOil={pid => { setOilTracker({ person: pid }); setWho(null) }}
           /* a leave line: the grid at that day, the ring on it — Approvals' own way (its slim bar where its page was up); the
              OIL tracker shut; on a phone the window shut too, as it stands in the middle over the day */
@@ -4377,7 +4377,7 @@ export function Matrix() {
           // the Events list shuts too: Move… hands the grid over, and the list drawn again over it would take the landing
           // tap (the code read's R1, 29 Oct 26)
           // …and the grid comes up: a move lands on it, whatever page the list was opened over
-          onMove={m => { setEventEdit(null); setEventsOpen(false); setApprMode('off'); setBalancesUp(false); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
+          onMove={m => { setEventEdit(null); setEventsOpen(false); if (apprMode() === 'page') setApprMode('off'); setBalancesUp(false); setSel(null); setMoveSel(null); setMovePreview(null); setEventMoveSel(m) }}
         />,
       )}
       {/* THE EVENTS LIST (D1500) — an admin's, as ⚙ Settings is; hidden while an event's window opened from it (or from
@@ -4427,8 +4427,9 @@ export function Matrix() {
           onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
           // Days… opens the scheduler's Days window on the month the grid is showing (the month strip's lit one),
           // through the war's one seam (sync.ts openDays); the sheet closes so it does not cover the window
-          // rearranging is done on the grid: it comes up, whatever page Settings was opened over
-          onRearrange={() => { setSettings(false); setApprMode('off'); setBalancesUp(false); setArranging(true) }}
+          // rearranging is done on the grid: it comes up, whatever page Settings was opened over — from Approvals' slim bar the
+          // grid is already up, and the visit is kept (the fresh read's finding 2)
+          onRearrange={() => { setSettings(false); if (apprMode() === 'page') setApprMode('off'); setBalancesUp(false); setArranging(true) }}
           onEvents={() => { setSettings(false); setEventsOpen(true) }}
           onDays={() => {
             setSettings(false)
