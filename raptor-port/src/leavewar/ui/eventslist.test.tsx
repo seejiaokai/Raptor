@@ -305,7 +305,7 @@ describe('the Events list split (D1512–D1516)', () => {
     const pen = screen.getByTestId('evedit-0-2026-03-16')
     expect(pen.tagName).toBe('BUTTON')
     expect(pen.querySelector('svg.pen-ic'), 'the drawn pencil, never a typed one').toBeTruthy()
-    expect(pen.getAttribute('aria-label')).toBe('Edit SC')
+    expect(pen.getAttribute('aria-label')).toBe('Edit SC, Mon 16 Mar')
     fireEvent.click(pen)
     expect((screen.getByTestId('event-text') as HTMLInputElement).value).toBe('SC')
     fireEvent.click(screen.getByTestId('event-cancel'))
@@ -320,7 +320,7 @@ describe('the Events list split (D1512–D1516)', () => {
     openEvents()
     const x = screen.getByTestId('evdel-0-2026-03-16')
     expect(x.textContent).toBe('✕')
-    expect(x.getAttribute('aria-label')).toBe('Delete SC')
+    expect(x.getAttribute('aria-label')).toBe('Delete SC, Mon 16 Mar')
     fireEvent.click(x)
     expect(screen.getByTestId('events-sheet'), 'the list stays').toBeTruthy()
     expect(screen.queryByTestId('event-sheet'), 'no event window').toBeNull()
@@ -328,7 +328,7 @@ describe('the Events list split (D1512–D1516)', () => {
     const armed = screen.getByTestId('evdel-0-2026-03-16')
     expect(armed.classList.contains('arm')).toBe(true)
     expect(armed.textContent, 'the cross keeps its box').toBe('✕')
-    expect(armed.getAttribute('aria-label')).toBe('Delete SC — press again to delete')
+    expect(armed.getAttribute('aria-label')).toBe('Delete SC, Mon 16 Mar — press again to delete')
     expect(screen.getByTestId('evkind-0-2026-03-16').textContent).toBe('Delete — sure?')
     expect(screen.getByTestId('evkind-0-2026-03-16').classList.contains('sure')).toBe(true)
   })
@@ -425,6 +425,37 @@ describe('the Events list split (D1512–D1516)', () => {
     const css = readFileSync('src/leavewar/ui/bidpicker.css', 'utf8').replace(/\r\n/g, '\n')
     expect(css).toMatch(/#page-leavewar \.secdef-snack\.ev-undo \.secdef-msg \{[^}]*min-width: 0;[^}]*text-overflow: ellipsis/)
     expect(css).toMatch(/#page-leavewar \.secdef-snack\.ev-undo \.secdef-btn \{ flex: none; \}/)
+  })
+
+  /* THE FRESH CODE READ'S FINDINGS (29 Oct 26) */
+  it('R2: after a delete the keyboard is on the note’s Undo, so it can be reached; after Undo it is back in the window', async () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    const x = screen.getByTestId('evdel-0-2026-03-16')
+    x.focus(); fireEvent.click(x); fireEvent.click(screen.getByTestId('evdel-0-2026-03-16'))
+    expect(document.activeElement, 'not lost with its line').toBe(screen.getByTestId('events-undo'))
+    fireEvent.click(screen.getByTestId('events-undo'))
+    await act(async () => { await new Promise(r => setTimeout(r, 20)) })
+    // the line is not back here (the timeline is not wired in a unit test): the keyboard goes to the window's first button
+    expect(screen.getByTestId('events-sheet').contains(document.activeElement)).toBe(true)
+  })
+
+  it('R5: the asking is said aloud — the kind column is a polite live region', () => {
+    setDayEvent('2026-03-16', 0, 'SC', 'work')
+    render(<Matrix />)
+    openEvents()
+    expect(screen.getByTestId('evkind-0-2026-03-16').getAttribute('aria-live')).toBe('polite')
+  })
+
+  it('R1, R6: the two lists stand one under the other until the window can hold a line; the tap areas meet without overlap', () => {
+    const css = readFileSync('src/leavewar/ui/bidpicker.css', 'utf8').replace(/\r\n/g, '\n')
+    const has = (s: string) => expect(css.includes(s), s).toBe(true)
+    const block = css.slice(css.indexOf('@media (max-width: 1100px) {'))
+    expect(block.length, 'a 1100px block').toBeGreaterThan(30)
+    expect(block.slice(0, block.indexOf('\n}'))).toContain('.bidsheet .ev-split { flex-direction: column; align-items: stretch; gap: 6px; }')
+    expect(block.slice(0, block.indexOf('\n}'))).toContain('#page-leavewar .bidsheet[data-testid="events-sheet"]:not(.fullpage) { width: min(560px, calc(100vw - 24px)); }')
+    has(".bidsheet .ev-ctl::before { content: ''; position: absolute; inset: -9px -7px; }")
   })
 
   it('the controls are buttons of their own, not inside another button, each with a finger-sized tap area', () => {

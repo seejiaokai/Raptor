@@ -75,6 +75,8 @@ const PARTS: { key: Part; word: string; none: string }[] = [
   { key: 'holidays', word: 'Holidays', none: 'holidays' },
 ]
 const SURE = 'Delete — sure?'
+/* the widest date, once for each letters and year */
+const WIDEST = new Map<string, string>()
 /* the note after a delete stays as the app's other offer with a button does ("Set as default", SecDefaultSnackbar.tsx) */
 const NOTE_MS = 7000
 
@@ -103,8 +105,10 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
   const listRef = useRef<HTMLDivElement>(null)
   /* the line whose ✕ was pressed once and now asks (D1516) */
   const [armed, setArmed] = useState<string | null>(null)
-  /* the note after a delete: the event's name, and a count so a second delete restarts the clock */
-  const [gone, setGone] = useState<{ name: string; n: number } | null>(null)
+  /* the note after a delete: the event's name and line, whether the keyboard was on its ✕, and a count so a second delete
+     restarts the clock */
+  const [gone, setGone] = useState<{ name: string; key: string; kb: boolean; n: number } | null>(null)
+  const undoRef = useRef<HTMLButtonElement>(null)
   useEffect(() => {
     if (!fresh) return
     const el = listRef.current?.querySelector(`[data-testid="evline-${fresh}"]`) as HTMLElement | null
@@ -126,9 +130,16 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
   /* …and when the Leave War leaves the screen: the page is kept mounted, so the question could wait across a page switch
      for a press from someone who no longer knows it was the second ([LW-ARMS-PAGE-LEAVE-REST]) */
   useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setArmed(null); setGone(null) } }), [])
+  /* THE KEYBOARD AFTER A DELETE (the fresh code read's R2, 29 Oct 26): the ✕ it was on goes with its line, so it is put on
+     the note's Undo — which it could not otherwise reach, the window holding Tab inside itself — and when the note goes by
+     itself, back into the window */
   useEffect(() => {
     if (!gone) return
-    const t = setTimeout(() => setGone(null), NOTE_MS)
+    if (gone.kb) undoRef.current?.focus()
+    const t = setTimeout(() => {
+      if (document.activeElement === undoRef.current) (document.querySelector('[data-testid="events-add"]') as HTMLElement | null)?.focus()
+      setGone(null)
+    }, NOTE_MS)
     return () => clearTimeout(t)
   }, [gone])
 
@@ -159,7 +170,11 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
     let dw: number | undefined
     if (!phone) {
       const df = fontOf(when)
-      const widest = widestWhen(Number(period.start.slice(0, 4)), c => measure(df, c))
+      /* worked out once for each letters and year (about 35 ms — the read's R4): the list opens again each time an event
+         opened from it closes */
+      const ck = `${df}|${period.start.slice(0, 4)}`
+      let widest = WIDEST.get(ck)
+      if (widest === undefined) { widest = widestWhen(Number(period.start.slice(0, 4)), c => measure(df, c)); WIDEST.set(ck, widest) }
       dw = Math.ceil(measure(df, widest)) + 12
     }
     setCols(c => (c.kw === kw && c.dw === dw ? c : { kw, dw }))
@@ -169,13 +184,22 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
   const pressX = (key: string, l: EventLine) => {
     if (armed !== key) { setArmed(key); return }
     setArmed(null)
-    if (deleteLine(l)) setGone(g => ({ name: l.text, n: (g?.n ?? 0) + 1 }))
+    const kb = document.activeElement instanceof HTMLElement && document.activeElement.dataset.testid === `evdel-${key}`
+    if (deleteLine(l)) setGone(g => ({ name: l.text, key, kb, n: (g?.n ?? 0) + 1 }))
   }
-  const undo = () => { setGone(null); globalUndoEngine().undo() }
+  /* Undo, and the keyboard back on the line it brought back (its ✕), else on the window's first button */
+  const undo = () => {
+    const key = gone?.key, kb = document.activeElement === undoRef.current
+    setGone(null)
+    globalUndoEngine().undo()
+    if (kb) setTimeout(() => ((document.querySelector(`[data-testid="evdel-${key}"]`) ?? document.querySelector('[data-testid="events-add"]')) as HTMLElement | null)?.focus(), 0)
+  }
 
   const line = (l: EventLine) => {
     const key = `${l.line}-${l.from}`
     const sure = armed === key
+    /* its date in each button's name too, so two events of one name are told apart when read aloud (the read's R5) */
+    const when = whenSaid(l.from, l.to)
     return (
       <div
         key={key}
@@ -184,17 +208,18 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
         onClick={() => onOpenEvent(l)}
       >
         <span className="ev-tx">
-          <span className="hol-when">{whenSaid(l.from, l.to)}</span>
+          <span className="hol-when">{when}</span>
           <span className="hol-name">{l.text}</span>
         </span>
-        <span className={`evpeek-kind ev-kind ${sure ? 'sure' : (l.kind ?? 'none')}`} data-testid={`evkind-${key}`}>
+        {/* said aloud when it asks (the read's R5) */}
+        <span className={`evpeek-kind ev-kind ${sure ? 'sure' : (l.kind ?? 'none')}`} data-testid={`evkind-${key}`} aria-live="polite">
           {sure ? SURE : (l.kind ? EVENT_KIND_WORDS[l.kind] : '')}
         </span>
         <span className="ev-ctls">
-          <button type="button" className="ev-ctl ev-pen" data-testid={`evedit-${key}`} aria-label={`Edit ${l.text}`} title="Edit"
+          <button type="button" className="ev-ctl ev-pen" data-testid={`evedit-${key}`} aria-label={`Edit ${l.text}, ${when}`} title="Edit"
             onClick={e => { e.stopPropagation(); onOpenEvent(l) }}><PenIcon solo /></button>
           <button type="button" className={'ev-ctl ev-x' + (sure ? ' arm' : '')} data-testid={`evdel-${key}`}
-            aria-label={sure ? `Delete ${l.text} — press again to delete` : `Delete ${l.text}`} title={sure ? 'Press again to delete' : 'Delete'}
+            aria-label={sure ? `Delete ${l.text}, ${when} — press again to delete` : `Delete ${l.text}, ${when}`} title={sure ? 'Press again to delete' : 'Delete'}
             onClick={e => { e.stopPropagation(); pressX(key, l) }}
             onBlur={() => { if (sure) setArmed(null) }}>✕</button>
         </span>
@@ -229,7 +254,7 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
       {gone && (
         <div key={gone.n} className="secdef-snack ev-undo sheet-part" role="status" data-testid="events-undo-note">
           <span className="secdef-msg">{gone.name} deleted</span>
-          <button type="button" className="secdef-btn yes" data-testid="events-undo" onClick={undo}>Undo</button>
+          <button ref={undoRef} type="button" className="secdef-btn yes" data-testid="events-undo" onClick={undo}>Undo</button>
         </div>
       )}
     </>

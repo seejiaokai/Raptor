@@ -199,7 +199,10 @@ for (const kind of ['P', 'D']) {
     C(kind + '12 keyboard: Tab away takes the question back', !(await T('evdel-0-2026-03-09').evaluate(e => e.classList.contains('arm'))) && (await word('2026-03-09')) === 'Ex Pitch Black')
     await T('evdel-0-2026-03-09').focus(); await p.keyboard.press('Enter'); await p.keyboard.press('Enter'); await p.waitForTimeout(300)
     C(kind + '12 keyboard: Enter twice deletes', (await word('2026-03-09')) === '')
-    await bar('undoBtn')
+    C(kind + '12 keyboard: then it is on the note’s Undo (the read’s R2)', await p.evaluate(() => document.activeElement?.dataset.testid === 'events-undo'))
+    await p.keyboard.press('Enter'); await p.waitForTimeout(400)
+    C(kind + '12 keyboard: Enter on Undo brings it back, the keyboard on its ✕', (await word('2026-03-09')) === 'Ex Pitch Black' && await p.evaluate(() => document.activeElement?.dataset.testid === 'evdel-0-2026-03-09'))
+    await shot('12b-keyboard-undone')
   }
 
   // 13. a page switch while asking, and back: the question is gone
@@ -233,6 +236,29 @@ for (const kind of ['P', 'D']) {
   C(kind + '15 empty: its heading 0 and one line saying so', (await T('events-head-squadron').textContent()) === 'Squadron events · 0' && (await T('events-empty-squadron').textContent()) === `No squadron events in ${await T('events-period').textContent()}.`)
   await shot('15-empty')
   C(kind + ' no page errors', errs.length === 0, errs.slice(0, 3).join(' | '))
+  await ctx.close()
+}
+
+// 17. the widths between (the fresh code read's R1): an iPad upright (820) and a 1024 window, as the admin
+for (const [w, h, touch] of [[820, 1180, true], [1024, 768, false]]) {
+  const ctx = await b.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 2, hasTouch: touch, isMobile: touch, timezoneId: 'Asia/Singapore' })
+  await serveDist(ctx, ORIGIN, DIST)
+  const p = await ctx.newPage()
+  await p.clock.setFixedTime(new Date('2026-04-02T09:00:00+08:00'))
+  await p.goto(ORIGIN + '/?fresh=1')
+  await p.fill('#luser', 'ad'); await p.fill('#lpass', 'a'); await p.click('#loginForm button[type=submit]')
+  await p.waitForSelector('#vWeek .day', { state: 'attached', timeout: 20000 })
+  await p.evaluate(() => window.go('leavewar')); await p.waitForSelector('[data-testid="settings-open"]', { timeout: 20000 }); await p.waitForTimeout(600)
+  for (const [ds, name, k] of LINES) for (const d of ds) await p.evaluate(([d, name, k]) => window.lwSetDayEvent(d, 0, name, k), [d, name, k])
+  for (const id of ['settings-open', 'settings-events']) { const l = p.locator(`[data-testid="${id}"]`).first(); if (touch) await l.tap(); else await l.click(); await p.waitForTimeout(450) }
+  const g = await p.evaluate(() => {
+    const a = document.querySelector('[data-testid="events-sec-squadron"]').getBoundingClientRect(), hh = document.querySelector('[data-testid="events-sec-holidays"]').getBoundingClientRect()
+    const ls = [...document.querySelectorAll('.ev-line')]
+    return { under: hh.top >= a.bottom, xIn: ls.every(l => l.querySelector('.ev-x').getBoundingClientRect().right <= l.closest('.hol-list').getBoundingClientRect().right - 1),
+      minName: Math.min(...ls.map(l => Math.round(l.querySelector('.hol-name').getBoundingClientRect().width))) }
+  })
+  C(`W${w} one under the other, every ✕ inside its list, every name room to read`, g.under && g.xIn && g.minName >= 100, JSON.stringify(g))
+  await p.screenshot({ path: join(OUT, `W${w}-lists.png`) })
   await ctx.close()
 }
 
