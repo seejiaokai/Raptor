@@ -229,6 +229,13 @@ man's day views a new object whenever his records change (the merge rebuilds his
 taken when they changed; the behaviour is pinned by break 14 (the records not compared: red). **Final: 18 of 19 caught, the
 19th a second guard with its reason.**
 
+**After the read's fixes (fdc66f528) — the whole list re-run, 24 breaks (break 2 moved onto the shared predicate `refusedWhole`;
+breaks 20–24 the new guard lines): 22 of 24 caught.** Break 15 as above. Break 6 (the Undo path's "the war's leave only" mark,
+`!!ch.after.lw`) now stays green — reading (4), a second guard: since the fix a Redo is judged by the war-approved days it adds,
+whose own "the war's only" mark break 24 pins red; on the Undo path no step was found whose undoing both takes a request of his
+away and writes a leave the war did not approve (an Inputs-page filing that replaced his bid is undone the other way — its
+request comes back); the mark is kept, as the rule's own statement of what it refuses.
+
 ## 8. The measure (S4-3, `docs/performance.md` Part 1)
 
 The unit grid's counter (`matrix-rows-memo.test.tsx` — day cells drawn): a mid-month bid 28 on `main` and after; a bid on the
@@ -262,9 +269,31 @@ Added to `docs/walk-ledger.md` (30 Oct 26).
 
 ## 12. The reads (D790)
 
-The fresh, blind Opus read of the finished code is arranged by the night's coordinating chat after this sheet (fix 1 and fix
-4 touch saved leave and the undo restore — §4 rank 2; D1411's security read does not apply: no sign-in or permission rule
-changed). Astra and Sol 6.1 are out (D761): this job goes on `[NO-ASTRA-LIST]` when the reads are recorded.
+**The blind Opus read of 14403cf57** (a fresh reader, blind to the builder; read only) — its report as it arrived:
+`docs/handpass/parts/lw-sf1030/read-opus.md`. Two findings and one observation; each claim reproduced red in the repository's
+own tests first (`deletednorow.test.ts`, the reader's scratch cases moved in, plus the drag window's two-cell form) and in the
+running app (the walk script's S1-6 (c) and S1-2 (b), on the build before the fixes: both FAIL —
+`docs/img/handpass/2026-10-30-lw-small-fixes/rewalk/before-read-fix/`), then fixed and green (commit fdc66f528).
+
+| # | The claim | Disposition | The fix |
+|---|---|---|---|
+| R1 (MEDIUM) | A Redo of an Auto-approve placement (the bid window or the drag window — `placeApproved`) writes approved leave for a man deleted since: its step creates and approves in one gesture, so it takes no request off the war, and the restore refusal looked for one | **confirmed — older than this change** (main has no restore refusal at all), inside this change's own promise ("in every door") | the timeline's direction reaches `deletedRestoreProblem` (`undo-wire.ts deadRefusal`); a Redo that ADDS days of war-approved leave for a deleted man is refused; an Undo keeps the request test |
+| R2 (LOW) | The restore refusal refused a man posted out with Delete once the posting had run, on his days before its date — which the live door approves (D1447 R20, D1436, R3c-1) | **confirmed — new in this change** | one predicate, `sync.ts refusedWhole`, asked by `approveWhy` and the restore refusal alike; his days from the cutoff are still refused by the older check |
+| Obs. | A step that approved several men at once (Approve all, a drag window), undone and then one of them deleted, can never be redone: the step is atomic and is passed over whole; the other men's lines stay pending and are approved again by hand | **recorded, not a finding** — Undo / Redo takes whole steps by design | none |
+
+**Every twin path, a test each** (the order's §5 — a fix that turns a refusal into a skip): Redo of an approval (Approvals), of
+a place-and-approve in the bid window (a man never arrived, and one who had), of the drag window's place-and-approve over two
+days, of a place-and-approve over a pending bid already there, of an approval that extends a leave; Undo of a send-back, of an
+Approve → Refuse switch (D1428); Undo of a delete of his approved leave — **passes** (his past kept); Redo of that delete —
+passes; a run Delete posting: the Redo of an approval, the Undo of a send-back and the Redo of a place-and-approve on his day
+before the date — **pass**, as the live door approves. 23 tests in `deletednorow.test.ts`, 5 of the new ones red before the
+fix. Re-walked on the fixed build (`rewalk/s1-desk/`): S1-2, S1-2 (b), S1-6 (a), (b), (c), S1-7 — all PASS.
+
+**Gates after the fix (his PC, under the lock):** the Leave War project 222 files, 3943 passed, 20 skipped; the delete and undo
+tests of the main project 132 passed; the build green. Break list re-run whole after the last change (§7, below).
+
+A narrow read of the fix commit is owed (§5 "a fix is new code"). Astra and Sol 6.1 are out (D761): this job goes on
+`[NO-ASTRA-LIST]` with the reads it went without.
 
 **Walk:** `docs/handpass/2026-10-30-lw-small-fixes.md` · 116 pictures · 9 surfaces (Approvals, Approve all, the bid window,
 the drag window, Admin → Users, the post sheets, the clash note, the credited sheet, the grid's joined bar; the Inputs page's

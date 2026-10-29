@@ -1,0 +1,75 @@
+[
+ {
+  "id": "S1-2 a run Delete posting keeps the date rule",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "PO from 2026-10-26; deleted by the posting true; 22 Oct line lit \"approved\"; 28 Oct said \"He posted out on 26 Oct: refuse or delete it\"",
+  "pics": [
+   "s1-2-a-postout-sheet",
+   "s1-2-b-approvals"
+  ]
+ },
+ {
+  "id": "S1-6 (a) Redo after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved \"approved\", Undo → inputs 0; Redo enabled false; after Redo his leave inputs 0; said \"INCO deleted\"",
+  "pics": [
+   "s1-6-a-after-redo"
+  ]
+ },
+ {
+  "id": "S1-6 (b) Undo of a send-back after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after the second tap his inputs 0; after Undo 0; said \"A later change touches the same thing and can’t be undone.\"",
+  "pics": [
+   "s1-6-b-after-undo"
+  ]
+ },
+ {
+  "id": "S1-7 bid window refuses",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "deleted true; his 20 Oct drawn true; window says \"Drifter 20–21 Oct Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 30 Oct, 04:41 Approve Refuse ⇄Move Delete Nothing was decided. Posted out — r\"; cell s-w",
+  "pics": [
+   "s1-7-a-bidwindow"
+  ]
+ },
+ {
+  "id": "S1-7 drag window refuses him, approves the other",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window opened true; said \"Drifter, Ridge 21 Oct · 1 day Auto-approve ✕ Drifter No manning row is amber or red Approve Refuse ⇄Move Delete Whole day AM PM LL OL OIL CCL FCL PL EL CL CSE OD Grant OIL ⋯ 1 decided. 1 not approved:\"; other man's leave inputs 1",
+  "pics": [
+   "s1-7-b-dragwindow"
+  ]
+ },
+ {
+  "id": "S1-7 Auto-approve on a deleted man’s past day",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "cell LL:s-w; window said \"Drifter Sun 18 Oct Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 30 Oct, 04:41 Approve Refuse ⇄Move D\"; his leave inputs 4 (4 before)",
+  "pics": [
+   "s1-7-c-autoapprove"
+  ]
+ },
+ {
+  "id": "S1-6 (c) Redo of an Auto-approve placement after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed approved 1; after Undo 0; Redo offered false; after Redo his leave 0",
+  "pics": [
+   "s1-6c-after-redo"
+  ]
+ },
+ {
+  "id": "S1-2 (b) a run Delete posting: the Redo of his day before the date goes back, as the live door approves it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "his leave 4 → approved 5 → Undo 4; deleted by the posting true; Redo offered true → 5; said [\"Undid: a decision on a bid\",\"Redid: a decision on a bid\"]",
+  "pics": [
+   "s1-2b-after-redo"
+  ]
+ }
+]
