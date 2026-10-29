@@ -1,0 +1,230 @@
+{
+ "state": "holidays-buttons-phone",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5b-draw.mjs",
+  "shot": "m5b-d3-holidays-buttons-phone"
+ },
+ "recorded": "2026-10-29T02:20:41.473Z",
+ "drawnOn": "claude/leave-war-m5b-iphone-balances-1402b7 at 9ec918a12",
+ "checkout": "9a5812f14",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "part": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 178,
+    "w": 376,
+    "h": 274
+   },
+   "ink": {
+    "x": 13,
+    "y": 185,
+    "w": 381,
+    "h": 259
+   },
+   "text": "Holidays ‹ 2026 › + Add Public holidays and Off days, the whole year. Thu 1 Jan PH PH Tue 17 – Wed 18 Feb PH PH Sun 9 Aug PH PH Fri 25 Dec PH PH Export sheet Import sheet 6",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.hol"
+  },
+  "list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 242,
+    "w": 376,
+    "h": 170
+   },
+   "ink": {
+    "x": 25,
+    "y": 256,
+    "w": 346,
+    "h": 142.5
+   },
+   "text": "Thu 1 Jan PH PH Tue 17 – Wed 18 Feb PH PH Sun 9 Aug PH PH Fri 25 Dec PH PH",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.hol-list"
+  },
+  "file-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 422,
+    "w": 376,
+    "h": 30
+   },
+   "ink": {
+    "x": 48,
+    "y": 412,
+    "w": 346,
+    "h": 32
+   },
+   "text": "Export sheet Import sheet 6",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.zz-filerow.zz-new"
+  },
+  "export": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 422,
+    "w": 120.7,
+    "h": 30
+   },
+   "ink": {
+    "x": 48,
+    "y": 430,
+    "w": 72.7,
+    "h": 14
+   },
+   "text": "Export sheet",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.abtn.docbtn"
+  },
+  "import": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 141.7,
+    "y": 422,
+    "w": 120,
+    "h": 30
+   },
+   "ink": {
+    "x": 176.7,
+    "y": 430,
+    "w": 72,
+    "h": 14
+   },
+   "text": "Import sheet",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.abtn.docbtn"
+  }
+ },
+ "approved": {
+  "picture": "m5b-d3-holidays-buttons-phone.png",
+  "identical": true
+ }
+}

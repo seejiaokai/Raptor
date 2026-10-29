@@ -1,0 +1,476 @@
+{
+ "state": "events-phone",
+ "drawing": {
+  "script": "docs/mock/lw-overhaul/full-m5b-draw.mjs",
+  "shot": "m5b-d2-events-phone"
+ },
+ "recorded": "2026-10-29T02:20:26.859Z",
+ "drawnOn": "claude/leave-war-m5b-iphone-balances-1402b7 at 9ec918a12",
+ "checkout": "9a5812f14",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "window": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 411,
+    "w": 378,
+    "h": 449
+   },
+   "ink": {
+    "x": 38,
+    "y": 432,
+    "w": 335,
+    "h": 397.5
+   },
+   "text": "EVENTS JAN – DEC 26 ✕ ＋ Event Edit presets Thu 1 Jan PH Public holiday Fri 23 Jan Off day Off day Mon 9 – Fri 13 Feb EX SHIELD Tue 17 – Wed 18 Feb PH Public holiday Mon 2 – Fri 6 Mar No Leave No leave Mon 16 Mar SC Working event Sun 9 Aug PH Public holiday Fri 25 Dec PH Public holiday",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.55) 0px 18px 48px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bidsheet"
+  },
+  "title": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 46.7,
+    "y": 432,
+    "w": 57.5,
+    "h": 17
+   },
+   "ink": {
+    "x": 46.7,
+    "y": 432,
+    "w": 57.5,
+    "h": 17
+   },
+   "text": "EVENTS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 13px",
+    "spacing": "1.3px"
+   },
+   "tag": "span.who"
+  },
+  "period": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 114.3,
+    "y": 434,
+    "w": 73.4,
+    "h": 15
+   },
+   "ink": {
+    "x": 114.3,
+    "y": 434,
+    "w": 73.4,
+    "h": 15
+   },
+   "text": "JAN – DEC 26",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "0.66px"
+   },
+   "tag": "span.dt"
+  },
+  "add": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 27,
+    "y": 467,
+    "w": 68,
+    "h": 28
+   },
+   "ink": {
+    "x": 38,
+    "y": 476,
+    "w": 46,
+    "h": 12
+   },
+   "text": "＋ Event",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn"
+  },
+  "presets": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 289.8,
+    "y": 468,
+    "w": 85.2,
+    "h": 26
+   },
+   "ink": {
+    "x": 300.8,
+    "y": 473,
+    "w": 63.2,
+    "h": 16
+   },
+   "text": "Edit presets",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.evtypes-open"
+  },
+  "list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 27,
+    "y": 505,
+    "w": 348,
+    "h": 338
+   },
+   "ink": {
+    "x": 39,
+    "y": 519,
+    "w": 324,
+    "h": 310.5
+   },
+   "text": "Thu 1 Jan PH Public holiday Fri 23 Jan Off day Off day Mon 9 – Fri 13 Feb EX SHIELD Tue 17 – Wed 18 Feb PH Public holiday Mon 2 – Fri 6 Mar No Leave No leave Mon 16 Mar SC Working event Sun 9 Aug PH Public holiday Fri 25 Dec PH Public holiday",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.hol-list.zz-evlist"
+  },
+  "line1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 28,
+    "y": 506,
+    "w": 346,
+    "h": 42
+   },
+   "ink": {
+    "x": 39,
+    "y": 519,
+    "w": 324,
+    "h": 16
+   },
+   "text": "Thu 1 Jan PH Public holiday",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line.is-past"
+  },
+  "line1-when": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 519,
+    "w": 136.1,
+    "h": 16
+   },
+   "ink": {
+    "x": 39,
+    "y": 519,
+    "w": 52.2,
+    "h": 16
+   },
+   "text": "Thu 1 Jan",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-when"
+  },
+  "line1-kind": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 271.1,
+    "y": 519,
+    "w": 91.9,
+    "h": 16
+   },
+   "ink": {
+    "x": 286.1,
+    "y": 519,
+    "w": 76.9,
+    "h": 16
+   },
+   "text": "Public holiday",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.evpeek-kind.off"
+  },
+  "line2-name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 185.1,
+    "y": 561.5,
+    "w": 112.5,
+    "h": 16
+   },
+   "ink": {
+    "x": 185.1,
+    "y": 561.5,
+    "w": 43.7,
+    "h": 16
+   },
+   "text": "Off day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.hol-name"
+  },
+  "line3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 28,
+    "y": 590,
+    "w": 346,
+    "h": 42
+   },
+   "ink": {
+    "x": 39,
+    "y": 603.5,
+    "w": 207.4,
+    "h": 16
+   },
+   "text": "Mon 9 – Fri 13 Feb EX SHIELD",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.hol-line"
+  }
+ },
+ "approved": {
+  "picture": "m5b-d2-events-phone.png",
+  "identical": true
+ }
+}

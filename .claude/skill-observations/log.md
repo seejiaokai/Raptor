@@ -2720,3 +2720,18 @@ its value and never in innerText.
 **Suggested improvement:** In "Traps", add: after injecting a panel or window at a measured place, look at its top and bottom edges against the live parts beside it, on every role and size drawn (a part above it may be taller for one role), and assert in the script that no live control's box is overlapped by the injected one. In "Showing It": keep each approved state's picture as its own file beside any side-by-side sheet, so a later measurement can compare against it.
 
 **Principle:** A drawing is evidence of intent, not ground truth: before building "to the drawing" a difference measured against it, look at where the drawing meets the live page — a drawing's own defect is found there, and copying it is a regression.
+
+### Observation 742: A drawing's own marker ring is measured as a design difference by the drawing check
+
+**Status:** OPEN
+**Date:** 2026-10-29
+**Session context:** M5b's build (the Leave War's Settings, Events list, holidays by file, Management on Quals) and its drawing-check part list, recorded from full-m5b-draw.mjs
+**Skill:** walk-scripts §10 (the drawing check) — project guide, not a skill file
+**Type:** internal
+**Phase/Area:** writing a part list; the comparing's "look" checks
+
+**Issue:** The M5b drawing marked its new Quals heading with an inset pink box-shadow (its pointer at the change, set inline by the drawing script). The part list compared the heading's whole look, so the run reported "its shadow — drawing pink ring, built none" as an unexplained difference. Every other marked part in that drawing used an outline (not measured), so only the one drawn with a box-shadow tripped it.
+
+**Suggested improvement:** In walk-scripts §10 "Name the parts", add: a part the drawing script marks with an inline ring (box-shadow or border in the marker colour) leaves that look out of its checks, with a comment naming the marker; better, the recorder could strip the marker styles (`.zz-new` outline, the `#ff2d95` inline shadow) before it measures.
+
+**Principle:** A measurement of an annotated picture must separate the annotation from the design, or the check reports the annotation as a fault.

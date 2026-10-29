@@ -1017,7 +1017,9 @@
    docs/mock/lw-overhaul/full-m5b-draw.mjs): the bid window's own `.bidsheet-row` and `.lab` (78px), in place of the
    three trays and their sentences. Reuses the `.rtbtn` chip from matrix.css. */
 .bidsheet .set-rows { padding: 8px 2px 4px; display: flex; flex-direction: column; gap: 2px; }
-.bidsheet .set-rows .bidsheet-row { margin-top: 4px; }
+/* (scoped to the page as the drawing's own rule was: a plainer selector lost to a later 6px margin on the window's rows —
+   the drawing check's run of 29 Oct 26 measured each row 2px lower than drawn) */
+#page-leavewar .bidsheet .set-rows .bidsheet-row { margin-top: 4px; }
 .bidsheet .set-rows .bidsheet-row .lab { min-width: 78px; }
 
 /* THE EVENTS LIST (owner D1500; the drawing m5b-d2-events-*, its EV_CSS in full-m5b-draw.mjs): "＋ Event" at the left
