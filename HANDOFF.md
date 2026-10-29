@@ -21,9 +21,9 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/lw-rulings-tripwire -->
-### `claude/lw-rulings-tripwire` — the closing records after the Leave War's M5b (pull request 588) — written 29 Oct 26 — verify before use
+### `claude/lw-rulings-tripwire` — the closing records after the Leave War's M5b (pull request 588), LIVE on his "merge live" of 29 Oct 26 (pull request 589) — written 29 Oct 26 — verify before use
 - **Done:** the Leave War rulings file's tripwire 118000 -> 124000 and How we work's 52000 -> 54000, each with its reason (`raptor-port/scripts/docsize.mjs` — D1490–D1517 and D1494–D1496, D1507–D1509 merged with code while the size check was deferred, D29; nothing trimmed, D136, D1262); `[LW-BAL-PHONE-LOCKED-FIT]` archived (live with pull request 588); `[LW-OVERHAUL]`'s line corrected — there is no M6: D1250's six merges are all live, M5b the last (D1475). Documents only.
-- **Branch:** `claude/lw-rulings-tripwire`, cut from `main` after pull request 588 (no upstream set — `push.default=upstream` trap). NOT notes-only: the tripwires live in a check script, outside D1407's list, so its pull request waits for his "merge live".
+- **Branch:** `claude/lw-rulings-tripwire`, cut from `main` after pull request 588 (no upstream set — `push.default=upstream` trap). NOT notes-only: the tripwires live in a check script, outside D1407's list, so its pull request waited for his "merge live" — given 29 Oct 26, merged; a new job starts level with `main`.
 - **Gates:** `npm run docsize` green; nothing else touched (no app code, no document a check reads).
 - **Open questions for him:** none. Kept for him until he says so (D994): `[SYSTEM-PASS-SAVES-ROSTER]`, `[QUALS-COL-WAR-GROUP-ASK]`, `[LINE-ICONS-ELSEWHERE-ASK]`.
 - **Running when written:** none; the check lock is free.
