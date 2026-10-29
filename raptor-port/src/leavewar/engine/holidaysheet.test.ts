@@ -85,6 +85,24 @@ describe('the sheet read (Import sheet)', () => {
     expect(r).toEqual([{ row: 2, name: 'Vesak Day', draft: { kind: 'ph', name: 'Vesak Day', from: '2026-06-01', to: '2026-06-01' } }])
   })
 
+  /* the scenario design's W2-12 (29 Oct 26): a spreadsheet can save blank rows above the header — the header is still
+     found, its separator read from it, and the rows keep the spreadsheet's own numbers */
+  it('blank rows above the header: the header is still found, and the row numbers stay the spreadsheet’s', () => {
+    const r = readHolidaySheet('\r\n;;\r\nName;Kind;From\r\nVesak Day;PH;2026-06-01\r\n')
+    expect(r).toEqual([{ row: 4, name: 'Vesak Day', draft: { kind: 'ph', name: 'Vesak Day', from: '2026-06-01', to: '2026-06-01' } }])
+  })
+
+  /* the security read's finding (29 Oct 26): the sheet's year was found by a sort that counted the rows again on every
+     comparison — a sheet of thousands of rows across many years froze the page before the preview drew */
+  it('a sheet of thousands of rows over thousands of years is read at once', () => {
+    const rows = ['From,To,Name,Kind']
+    for (let i = 0; i < 20000; i++) rows.push(`${2000 + (i % 8000)}-01-01,,H${i},PH`)
+    const t0 = performance.now()
+    const r = readHolidaySheet(rows.join('\n'))
+    expect(r).toHaveLength(20000)
+    expect(performance.now() - t0, 'milliseconds').toBeLessThan(1500)
+  })
+
   it('an empty file reads as no rows', () => {
     expect(readHolidaySheet('')).toEqual([])
     expect(readHolidaySheet('﻿' + SHEET_HEAD.join(',') + '\r\n')).toEqual([])

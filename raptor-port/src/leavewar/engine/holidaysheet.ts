@@ -32,7 +32,8 @@ export interface SheetRow { row: number; name: string; draft?: HolidayDraft; why
 /** the sheet's rows of cells, a quoted cell's commas, quotes and line breaks kept as written */
 function cellsOf(text: string): string[][] {
   const t = text.replace(/^﻿/, '')
-  const first = t.split(/\r?\n/, 1)[0] ?? ''
+  /* the separator is read from the first line holding anything — a spreadsheet may save blank rows above the header */
+  const first = t.split(/\r?\n/).find(l => /[^\s,;\t]/.test(l)) ?? ''
   const count = (c: string) => first.split(c).length - 1
   const sep = [',', ';', '\t'].reduce((a, c) => (count(c) > count(a) ? c : a), ',')
   const rows: string[][] = []
@@ -94,7 +95,10 @@ export function readHolidaySheet(text: string): SheetRow[] {
   if (!rows.length) return []
   /* the header, by its words; none: the sheet's own order */
   const key = (s: string) => s.trim().toLowerCase().replace(/\s+/g, ' ')
-  const head = rows[0]!.map(key)
+  /* the header is the first row holding anything (blank rows above it keep their numbers) */
+  const top = rows.findIndex(r => r.some(c => c.trim() !== ''))
+  if (top < 0) return []
+  const head = rows[top]!.map(key)
   const hasHead = head.includes('from')
   const col = (names: string[], at: number) => {
     if (!hasHead) return at
@@ -103,12 +107,16 @@ export function readHolidaySheet(text: string): SheetRow[] {
   const ix = { from: col(['from'], 0), to: col(['to'], 1), name: col(['name'], 2), kind: col(['kind'], 3), short: col(['on grid', 'ongrid', 'short'], 4) }
   const cell = (r: string[], i: number) => (i >= 0 ? (r[i] ?? '').trim() : '')
   /* the sheet's year — the one most of its readable first days fall in — for the example in a "write it as" */
-  const years = rows.slice(hasHead ? 1 : 0).map(r => dateOf(cell(r, ix.from))).filter(Boolean).map(d => +d!.slice(0, 4))
-  const year = years.length ? +[...new Set(years)].sort((a, b) => years.filter(y => y === b).length - years.filter(y => y === a).length)[0]! : new Date().getUTCFullYear()
+  const years = rows.slice(hasHead ? top + 1 : 0).map(r => dateOf(cell(r, ix.from))).filter(Boolean).map(d => +d!.slice(0, 4))
+  /* each year counted once (the security read, 29 Oct 26: a sort that re-counted on every comparison froze the page on a
+     sheet of thousands of rows) — the most common wins, the first met on a tie */
+  const tally = new Map<number, number>()
+  for (const y of years) tally.set(y, (tally.get(y) ?? 0) + 1)
+  const year = tally.size ? [...tally].reduce((a, b) => (b[1] > a[1] ? b : a))[0] : new Date().getUTCFullYear()
 
   const out: SheetRow[] = []
   rows.forEach((r, i) => {
-    if (hasHead && i === 0) return
+    if (hasHead && i === top) return
     if (r.every(c => c.trim() === '')) return
     const row = i + 1
     const name = unguard(cell(r, ix.name)).replace(/\s+/g, ' ')
