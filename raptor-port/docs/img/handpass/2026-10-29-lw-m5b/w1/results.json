@@ -1,0 +1,2385 @@
+{
+ "results": [
+  {
+   "id": "W1-01",
+   "title": "the Settings window, desktop",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "D title \"SETTINGS\" alone",
+     "ok": true,
+     "obs": [
+      "SETTINGS"
+     ]
+    },
+    {
+     "name": "D no \"Show SANS\"",
+     "ok": true,
+     "obs": "SETTINGS✕YearCalendar…Events…Manning＋ Counter＋ Event rowOrder⇅ Rearrange the grid↺ Reset orderGroups⠿SXOcat12✕⠿IPcat8✕⠿OPS Pcat8✕⠿IWSOcat5✕⠿OPS Wcat11✕⠿OCUcat3✕"
+    },
+    {
+     "name": "D label rows YEAR / MANNING / ORDER present",
+     "ok": true,
+     "obs": [
+      "YEAR",
+      "MANNING",
+      "ORDER",
+      "GROUPS",
+      "ADD A GROUP"
+     ]
+    },
+    {
+     "name": "D Year row: Calendar… and Events…",
+     "ok": true,
+     "obs": [
+      "Calendar…",
+      "Events…"
+     ]
+    },
+    {
+     "name": "D Manning row: ＋ Counter and ＋ Event row",
+     "ok": true,
+     "obs": [
+      "＋ Counter",
+      "＋ Event row"
+     ]
+    },
+    {
+     "name": "D Order row: Rearrange and Reset order",
+     "ok": true,
+     "obs": [
+      "⇅ Rearrange the grid",
+      "↺ Reset order"
+     ]
+    },
+    {
+     "name": "D Reset order greyed",
+     "ok": true,
+     "obs": {
+      "text": "↺ Reset order",
+      "disabled": true,
+      "l": 731.7,
+      "t": 294,
+      "r": 830,
+      "b": 320,
+      "w": 98.3,
+      "h": 26
+     }
+    },
+    {
+     "name": "D first buttons on one column (left edges within 1.5px)",
+     "ok": true,
+     "obs": [
+      589,
+      589,
+      589
+     ]
+    },
+    {
+     "name": "D Events… / ＋ Event row left edges as in the drawing (Events 1.6px right of Event row, ±1px)",
+     "ok": true,
+     "obs": {
+      "eventsL": 677.7,
+      "eventRowL": 675.8,
+      "diff": 1.9
+     }
+    },
+    {
+     "name": "D each row's buttons on one line",
+     "ok": true,
+     "obs": [
+      230,
+      230,
+      260,
+      260,
+      294,
+      294
+     ]
+    },
+    {
+     "name": "D \"+ SANS\" first chip",
+     "ok": true,
+     "obs": [
+      "+ SANS",
+      "+ Management",
+      "+ Scheduler",
+      "+ SC DAY",
+      "+ SC NIGHT",
+      "+ DAAR",
+      "+ NAAR",
+      "+ NVG",
+      "+ IMC",
+      "+ TF"
+     ]
+    },
+    {
+     "name": "D nothing outside the sheet / no sideways scroll",
+     "ok": true,
+     "obs": {
+      "over": [],
+      "scroll": {
+       "sw": 558,
+       "cw": 558
+      },
+      "docOverflow": 0
+     }
+    }
+   ],
+   "pics": [
+    "w1-01-desk-tap",
+    "w1-01-desk-before",
+    "w1-01-desk"
+   ],
+   "notes": [
+    "D sheet box {\"l\":488,\"t\":162,\"r\":1048,\"b\":850,\"w\":560,\"h\":688}; drawing: desktop sheet ~558 wide (left ~490), phone ~377 wide (left ~12)"
+   ]
+  },
+  {
+   "id": "W1-01P",
+   "title": "the Settings window, phone 402",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P title \"SETTINGS\" alone",
+     "ok": true,
+     "obs": [
+      "SETTINGS"
+     ]
+    },
+    {
+     "name": "P no \"Show SANS\"",
+     "ok": true,
+     "obs": "SETTINGS✕YearCalendar…Events…Manning＋ Counter＋ Event rowOrder⇅ Rearrange the grid↺ Reset orderGroups⠿SXOcat12✕⠿IPcat8✕⠿OPS Pcat8✕⠿IWSOcat5✕⠿OPS Wcat11✕⠿OCUcat3✕"
+    },
+    {
+     "name": "P label rows YEAR / MANNING / ORDER present",
+     "ok": true,
+     "obs": [
+      "YEAR",
+      "MANNING",
+      "ORDER",
+      "GROUPS",
+      "ADD A GROUP"
+     ]
+    },
+    {
+     "name": "P Year row: Calendar… and Events…",
+     "ok": true,
+     "obs": [
+      "Calendar…",
+      "Events…"
+     ]
+    },
+    {
+     "name": "P Manning row: ＋ Counter and ＋ Event row",
+     "ok": true,
+     "obs": [
+      "＋ Counter",
+      "＋ Event row"
+     ]
+    },
+    {
+     "name": "P Order row: Rearrange and Reset order",
+     "ok": true,
+     "obs": [
+      "⇅ Rearrange the grid",
+      "↺ Reset order"
+     ]
+    },
+    {
+     "name": "P Reset order greyed",
+     "ok": true,
+     "obs": {
+      "text": "↺ Reset order",
+      "disabled": true,
+      "l": 253.7,
+      "t": 269,
+      "r": 352,
+      "b": 295,
+      "w": 98.3,
+      "h": 26
+     }
+    },
+    {
+     "name": "P first buttons on one column (left edges within 1.5px)",
+     "ok": true,
+     "obs": [
+      111,
+      111,
+      111
+     ]
+    },
+    {
+     "name": "P Events… / ＋ Event row left edges as in the drawing (Events 1.6px right of Event row, ±1px)",
+     "ok": true,
+     "obs": {
+      "eventsL": 199.7,
+      "eventRowL": 197.8,
+      "diff": 1.9
+     }
+    },
+    {
+     "name": "P each row's buttons on one line",
+     "ok": true,
+     "obs": [
+      205,
+      205,
+      235,
+      235,
+      269,
+      269
+     ]
+    },
+    {
+     "name": "P \"+ SANS\" first chip",
+     "ok": true,
+     "obs": [
+      "+ SANS",
+      "+ Management",
+      "+ Scheduler",
+      "+ SC DAY",
+      "+ SC NIGHT",
+      "+ DAAR",
+      "+ NAAR",
+      "+ NVG",
+      "+ IMC",
+      "+ TF"
+     ]
+    },
+    {
+     "name": "P nothing outside the sheet / no sideways scroll",
+     "ok": true,
+     "obs": {
+      "over": [],
+      "scroll": {
+       "sw": 376,
+       "cw": 376
+      },
+      "docOverflow": 0
+     }
+    }
+   ],
+   "pics": [
+    "w1-01-phone-tap",
+    "w1-01-phone-before",
+    "w1-01-phone"
+   ],
+   "notes": [
+    "phone: picture 179 ms after the lift (screenshot call began right after the tap resolved)",
+    "P sheet box {\"l\":12,\"t\":137,\"r\":390,\"b\":860,\"w\":378,\"h\":723}; drawing: desktop sheet ~558 wide (left ~490), phone ~377 wide (left ~12)"
+   ]
+  },
+  {
+   "id": "W1-02",
+   "title": "phone 402: nothing scrolls sideways",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P long-named qualification column added",
+     "ok": true,
+     "obs": {
+      "before": 11,
+      "after": 12,
+      "newKey": "nightvisiong"
+     }
+    },
+    {
+     "name": "P long group name is in the list",
+     "ok": true,
+     "obs": [
+      "Management",
+      "NIGHT VISION G",
+      "SXO",
+      "IP",
+      "OPS P",
+      "IWSO",
+      "OPS W",
+      "OCU",
+      "Personnel",
+      "SANS",
+      "Everyone else"
+     ]
+    },
+    {
+     "name": "P nothing sticks out of the sheet sideways",
+     "ok": true,
+     "obs": []
+    },
+    {
+     "name": "P sheet does not scroll sideways",
+     "ok": true,
+     "obs": {
+      "sw": 376,
+      "cw": 376
+     }
+    },
+    {
+     "name": "P page does not scroll sideways",
+     "ok": true,
+     "obs": 0
+    },
+    {
+     "name": "P no inner sideways scroller",
+     "ok": true,
+     "obs": []
+    },
+    {
+     "name": "P no word or button cut off",
+     "ok": true,
+     "obs": {
+      "clipped": [],
+      "names": []
+     }
+    }
+   ],
+   "pics": [
+    "w1-02-P-added",
+    "w1-02-P-top",
+    "w1-02-P-foot"
+   ],
+   "notes": [
+    "holder tick landed: 1",
+    "a qualification nobody holds adds no group row when its chip is pressed (picture w1-02-odd-dead-chip); one holder ticked so the long-named group can exist",
+    "after SANS: SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "after Management: q:mgmt,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "after long: q:mgmt,q:nightvisiong,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "before who-wins press: q:mgmt,q:nightvisiong,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "who-wins box {\"x\":25,\"y\":762,\"width\":352,\"height\":35}",
+    "after who-wins press: q:mgmt,q:nightvisiong,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "P sheet {\"l\":12,\"t\":58,\"r\":390,\"b\":860,\"w\":378,\"h\":802}, vw 402, vertical scroll of sheet 479"
+   ]
+  },
+  {
+   "id": "W1-02b",
+   "title": "phone 375: nothing scrolls sideways",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P375 long-named qualification column added",
+     "ok": true,
+     "obs": {
+      "before": 11,
+      "after": 12,
+      "newKey": "nightvisiong"
+     }
+    },
+    {
+     "name": "P375 long group name is in the list",
+     "ok": true,
+     "obs": [
+      "Management",
+      "NIGHT VISION G",
+      "SXO",
+      "IP",
+      "OPS P",
+      "IWSO",
+      "OPS W",
+      "OCU",
+      "Personnel",
+      "SANS",
+      "Everyone else"
+     ]
+    },
+    {
+     "name": "P375 nothing sticks out of the sheet sideways",
+     "ok": true,
+     "obs": []
+    },
+    {
+     "name": "P375 sheet does not scroll sideways",
+     "ok": true,
+     "obs": {
+      "sw": 349,
+      "cw": 349
+     }
+    },
+    {
+     "name": "P375 page does not scroll sideways",
+     "ok": true,
+     "obs": 0
+    },
+    {
+     "name": "P375 no inner sideways scroller",
+     "ok": true,
+     "obs": []
+    },
+    {
+     "name": "P375 no word or button cut off",
+     "ok": true,
+     "obs": {
+      "clipped": [],
+      "names": []
+     }
+    }
+   ],
+   "pics": [
+    "w1-02-P375-added",
+    "w1-02-P375-top",
+    "w1-02-P375-foot"
+   ],
+   "notes": [
+    "holder tick landed: 1",
+    "a qualification nobody holds adds no group row when its chip is pressed (picture w1-02-odd-dead-chip); one holder ticked so the long-named group can exist",
+    "after SANS: SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "after Management: q:mgmt,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "after long: q:mgmt,q:nightvisiong,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "before who-wins press: q:mgmt,q:nightvisiong,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "who-wins box {\"x\":25,\"y\":789,\"width\":325,\"height\":48}",
+    "after who-wins press: q:mgmt,q:nightvisiong,SXO,IP,OPSP,IWSO,OPSW,OCU,PERS,SANS,OTHER",
+    "P375 sheet {\"l\":12,\"t\":58,\"r\":363,\"b\":798,\"w\":351,\"h\":740}, vw 375, vertical scroll of sheet 586"
+   ]
+  },
+  {
+   "id": "W1-03",
+   "title": "+ SANS and its ✕",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "SANS row text has \"shown · counted\"",
+     "ok": true,
+     "obs": "SANSshown · counted11✕"
+    },
+    {
+     "name": "SANS row has no grip",
+     "ok": true,
+     "obs": "grip count 0"
+    },
+    {
+     "name": "SANS row has a ✕",
+     "ok": true,
+     "obs": "x count 1"
+    },
+    {
+     "name": "SANS row is at the foot, above Everyone else",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "SANS",
+      "OTHER"
+     ]
+    },
+    {
+     "name": "Everyone else count same after \"+ SANS\"",
+     "ok": true,
+     "obs": {
+      "before": "0",
+      "after": "0"
+     }
+    },
+    {
+     "name": "grid gained a SANS group at the foot",
+     "ok": true,
+     "obs": {
+      "before": [
+       "SXO",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS"
+      ],
+      "after": [
+       "SXO",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS",
+       "SANS"
+      ]
+     }
+    },
+    {
+     "name": "SANS heading is out of view (not scrolled to), grid scroll unchanged",
+     "ok": true,
+     "obs": {
+      "pos": {
+       "top": 2005,
+       "vh": 864
+      },
+      "st0": {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        180,
+        0
+       ]
+      },
+      "st1": {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        180,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "name": "Settings' order matches the grid's order",
+     "ok": true,
+     "obs": {
+      "settings": [
+       "SXO",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS",
+       "SANS"
+      ],
+      "grid": [
+       "SXO",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS",
+       "SANS"
+      ]
+     }
+    },
+    {
+     "name": "✕ removes the SANS row",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "OTHER"
+     ]
+    },
+    {
+     "name": "Everyone else count same after ✕",
+     "ok": true,
+     "obs": {
+      "before": "0",
+      "after": "0"
+     }
+    },
+    {
+     "name": "\"+ SANS\" chip is back first",
+     "ok": true,
+     "obs": [
+      "+ SANS",
+      "+ Management",
+      "+ Scheduler",
+      "+ SC DAY",
+      "+ SC NIGHT",
+      "+ DAAR",
+      "+ NAAR",
+      "+ NVG",
+      "+ IMC",
+      "+ TF"
+     ]
+    },
+    {
+     "name": "grid SANS group gone",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    }
+   ],
+   "pics": [
+    "w1-03-desk-sans",
+    "w1-03-desk-grid-after-close",
+    "w1-03-desk-sans-removed"
+   ],
+   "notes": []
+  },
+  {
+   "id": "W1-04",
+   "title": "Undo / Redo of SANS, reload",
+   "status": "FAIL",
+   "err": null,
+   "checks": [
+    {
+     "name": "Undo greyed to start",
+     "ok": true,
+     "obs": {
+      "undo": {
+       "title": "Undo",
+       "off": true,
+       "text": "↶ Undo",
+       "w": 34
+      },
+      "redo": {
+       "title": "Redo",
+       "off": true,
+       "text": "↷ Redo"
+      }
+     }
+    },
+    {
+     "name": "Undo lit after + SANS, its words read \"Undo — a Leave War setting\"",
+     "ok": true,
+     "obs": {
+      "undo": {
+       "title": "Undo — a Leave War setting",
+       "off": false,
+       "text": "↶ Undo",
+       "w": 34
+      },
+      "redo": {
+       "title": "Redo",
+       "off": true,
+       "text": "↷ Redo"
+      }
+     }
+    },
+    {
+     "name": "with ⚙ open the lit Undo arrow undoes + SANS (by mouse or Ctrl+Z)",
+     "ok": false,
+     "obs": {
+      "under": "sheet-scrim",
+      "ctrlZ_sansStill": true,
+      "mousePress": {
+       "sheetStays": false,
+       "sansStill": true
+      }
+     }
+    },
+    {
+     "name": "closed: grid has SANS group",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "SANS"
+     ]
+    },
+    {
+     "name": "closed: Undo takes the SANS group off the grid",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    },
+    {
+     "name": "closed: Redo puts it back",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "SANS"
+     ]
+    },
+    {
+     "name": "✕ with ⚙ closed afterwards: no SANS on grid",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    },
+    {
+     "name": "closed: Undo of ✕ brings SANS group back",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "SANS"
+     ]
+    },
+    {
+     "name": "after reload the SANS group is still on the grid",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "SANS"
+     ]
+    },
+    {
+     "name": "after reload Settings lists SANS",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "SANS",
+      "OTHER"
+     ]
+    }
+   ],
+   "pics": [
+    "w1-04-after-add",
+    "w1-04-undo-press-with-settings-open",
+    "w1-04-closed-undo",
+    "w1-04-after-reload"
+   ],
+   "notes": [
+    "after + SANS: {\"undo\":{\"title\":\"Undo — a Leave War setting\",\"off\":false,\"text\":\"↶ Undo\",\"w\":34},\"redo\":{\"title\":\"Redo\",\"off\":true,\"text\":\"↷ Redo\"}}",
+    "with Settings open: the point of the lit Undo arrow belongs to sheet-scrim; Ctrl+Z left SANS in; a real mouse press there: Settings closed, SANS still in"
+   ]
+  },
+  {
+   "id": "W1-05",
+   "title": "Quals: MANAGEMENT column",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "MANAGEMENT sits right after SXO",
+     "ok": true,
+     "obs": [
+      "san",
+      "sxo",
+      "mgmt",
+      "sched",
+      "scDay",
+      "scNight",
+      "daar",
+      "naar",
+      "nvg",
+      "imc",
+      "tf"
+     ]
+    },
+    {
+     "name": "MANAGEMENT has no ✕, SXO has one",
+     "ok": true,
+     "obs": {
+      "mgmt": {
+       "k": "mgmt",
+       "l": 606,
+       "t": "⋮⋮Management",
+       "x": false
+      },
+      "sxo": {
+       "k": "sxo",
+       "l": 536,
+       "t": "⋮⋮SXO✕",
+       "x": true
+      }
+     }
+    },
+    {
+     "name": "grip drag moved MANAGEMENT before SANS",
+     "ok": true,
+     "obs": [
+      "mgmt",
+      "san",
+      "sxo",
+      "sched",
+      "scDay",
+      "scNight",
+      "daar",
+      "naar",
+      "nvg",
+      "imc",
+      "tf"
+     ]
+    },
+    {
+     "name": "after Done + reload the order holds",
+     "ok": true,
+     "obs": {
+      "before": [
+       "mgmt",
+       "san",
+       "sxo",
+       "sched",
+       "scDay",
+       "scNight",
+       "daar",
+       "naar",
+       "nvg",
+       "imc",
+       "tf"
+      ],
+      "after": [
+       "mgmt",
+       "san",
+       "sxo",
+       "sched",
+       "scDay",
+       "scNight",
+       "daar",
+       "naar",
+       "nvg",
+       "imc",
+       "tf"
+      ]
+     }
+    },
+    {
+     "name": "adding \"Management\" is refused (column count unchanged)",
+     "ok": true,
+     "obs": {
+      "cols": 11,
+      "was": 11,
+      "message": "DTEchoIW | DTRelayIW | DTEchoIW | DTRelayIW | LStaticIW | LStaticIW | DTEchoIW | DTRelayIW | Management is already on the LoX"
+     }
+    },
+    {
+     "name": "adding \"mgmt\" is refused (column count unchanged)",
+     "ok": true,
+     "obs": {
+      "cols": 11,
+      "was": 11,
+      "message": "DTEchoIW | DTRelayIW | DTEchoIW | DTRelayIW | LStaticIW | LStaticIW | DTEchoIW | DTRelayIW | mgmt is already on the LoX"
+     }
+    },
+    {
+     "name": "adding \"MANAGEMENT\" is refused (column count unchanged)",
+     "ok": true,
+     "obs": {
+      "cols": 11,
+      "was": 11,
+      "message": "DTEchoIW | DTRelayIW | DTEchoIW | DTRelayIW | LStaticIW | LStaticIW | DTEchoIW | DTRelayIW | MANAGEMENT is already on the LoX"
+     }
+    },
+    {
+     "name": "adding \"management\" is refused (column count unchanged)",
+     "ok": true,
+     "obs": {
+      "cols": 11,
+      "was": 11,
+      "message": "DTEchoIW | DTRelayIW | DTEchoIW | DTRelayIW | LStaticIW | LStaticIW | DTEchoIW | DTRelayIW | management is already on the LoX"
+     }
+    }
+   ],
+   "pics": [
+    "w1-05-order-before",
+    "w1-05-after-drag",
+    "w1-05-after-reload",
+    "w1-05-refused"
+   ],
+   "notes": []
+  },
+  {
+   "id": "W1-06",
+   "title": "ticks under the heading, desktop",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "D view: MANAGEMENT ticks centred under heading (±1px)",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 134.6,
+      "thCx": 627.74,
+      "labelCx": 620.23,
+      "n": 4,
+      "devs": [
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "name": "D view: control column SXO the same",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 65,
+      "thCx": 527.95,
+      "labelCx": 520.45,
+      "n": 12,
+      "devs": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "name": "D view: the heading WORDS sit the same way over MANAGEMENT as over SXO (offset equal, ±1.5px)",
+     "ok": true,
+     "obs": {
+      "mgmtWordsOffsetFromBox": -7.51,
+      "sxoWordsOffsetFromBox": -7.5
+     }
+    },
+    {
+     "name": "D Edit quals: ticks centred under the MANAGEMENT heading box (±1px)",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 102.6,
+      "thCx": 657.52,
+      "labelCx": 661,
+      "n": 4,
+      "devs": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "name": "D Edit quals: SXO control",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 70,
+      "thCx": 571.24,
+      "labelCx": 562.42,
+      "n": 12,
+      "devs": [
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    }
+   ],
+   "pics": [
+    "w1-06-desk-view",
+    "w1-06-desk-editquals"
+   ],
+   "notes": [
+    "D in every column the heading words stand 7.51px left of the tick centre (box centre); the drawing crop-d4-quals-desk shows the same ~9 picture-px left",
+    "D Edit quals: heading box centre 657.52, label ink centre 661 (grip beside the label)"
+   ]
+  },
+  {
+   "id": "W1-06P",
+   "title": "ticks under the heading, phone (and pinched)",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P view: MANAGEMENT ticks centred under heading (±1px)",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 110.6,
+      "thCx": 200.66,
+      "labelCx": 193.16,
+      "n": 4,
+      "devs": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "name": "P view: control column SXO the same",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 53.4,
+      "thCx": 118.63,
+      "labelCx": 111.13,
+      "n": 12,
+      "devs": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "name": "P view: the heading WORDS sit the same way over MANAGEMENT as over SXO (offset equal, ±1.5px)",
+     "ok": true,
+     "obs": {
+      "mgmtWordsOffsetFromBox": -7.5,
+      "sxoWordsOffsetFromBox": -7.5
+     }
+    },
+    {
+     "name": "P Edit quals: ticks centred under the MANAGEMENT heading box (±1px)",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 102.6,
+      "thCx": 201.15,
+      "labelCx": 204.63,
+      "n": 4,
+      "devs": [
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "name": "P Edit quals: SXO control",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 70,
+      "thCx": 114.87,
+      "labelCx": 106.05,
+      "n": 12,
+      "devs": [
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01,
+       -0.01
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    },
+    {
+     "name": "phone: the pinch changed the heading width (page really pinched)",
+     "ok": true,
+     "obs": {
+      "before": 110.6,
+      "after": 49.9
+     }
+    },
+    {
+     "name": "phone pinched out: ticks centred under heading (±1px)",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "thW": 49.9,
+      "thCx": 163.7,
+      "labelCx": 160.36,
+      "n": 4,
+      "devs": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "cellDevs": [
+       0,
+       0,
+       0,
+       0
+      ]
+     }
+    }
+   ],
+   "pics": [
+    "w1-06-phone-view",
+    "w1-06-phone-editquals",
+    "w1-06-phone-pinched"
+   ],
+   "notes": [
+    "P in every column the heading words stand 7.5px left of the tick centre (box centre); the drawing crop-d4-quals-desk shows the same ~9 picture-px left",
+    "P Edit quals: heading box centre 201.15, label ink centre 204.63 (grip beside the label)"
+   ]
+  },
+  {
+   "id": "W1-07",
+   "title": "nobody ticked",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "\"+ Management\" is offered with nobody ticked",
+     "ok": true,
+     "obs": "offered 1"
+    },
+    {
+     "name": "Management row appears in Settings with 0",
+     "ok": true,
+     "obs": "⠿Managementqual0✕"
+    },
+    {
+     "name": "grid draws a Management heading (0)",
+     "ok": true,
+     "obs": {
+      "groups": [
+       "SXO",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS"
+      ],
+      "count": null
+     }
+    },
+    {
+     "name": "after ticking Reaper on Quals (no reload) he stands under Management",
+     "ok": true,
+     "obs": {
+      "where": {
+       "found": true,
+       "under": "q:mgmt",
+       "copies": 1
+      },
+      "count": "· 1"
+     }
+    }
+   ],
+   "pics": [
+    "w1-07-offered",
+    "w1-07-settings-0",
+    "w1-07-grid-0",
+    "w1-07-grid-1"
+   ],
+   "notes": [
+    "grid groups with 0 people: [\"SXO\",\"IP\",\"OPSP\",\"IWSO\",\"OPSW\",\"OCU\",\"PERS\"]; Management heading count text: null"
+   ]
+  },
+  {
+   "id": "W1-08",
+   "title": "Reaper and Anvil",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "Management first in Settings",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "OTHER"
+     ]
+    },
+    {
+     "name": "its swatch is blue",
+     "ok": true,
+     "obs": "rgb(90, 169, 230)"
+    },
+    {
+     "name": "Management first on the grid",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    },
+    {
+     "name": "grid swatch blue too",
+     "ok": true,
+     "obs": {
+      "grid": "rgb(90, 169, 230)",
+      "settings": "rgb(90, 169, 230)"
+     }
+    },
+    {
+     "name": "Reaper and Anvil under Management, once each",
+     "ok": true,
+     "obs": [
+      {
+       "found": true,
+       "under": "q:mgmt",
+       "copies": 1
+      },
+      {
+       "found": true,
+       "under": "q:mgmt",
+       "copies": 1
+      }
+     ]
+    },
+    {
+     "name": "IP / OPS P / Available P on 3 days unchanged (D1200)",
+     "ok": true,
+     "obs": {
+      "ip": [
+       [
+        "16",
+        "16",
+        "16"
+       ],
+       [
+        "16",
+        "16",
+        "16"
+       ]
+      ],
+      "opsp": [
+       [
+        "12",
+        "11",
+        "11"
+       ],
+       [
+        "12",
+        "11",
+        "11"
+       ]
+      ],
+      "availP": [
+       [
+        "28",
+        "27",
+        "27"
+       ],
+       [
+        "28",
+        "27",
+        "27"
+       ]
+      ]
+     }
+    },
+    {
+     "name": "every other count row and Available W unchanged too",
+     "ok": true,
+     "obs": {
+      "before": {
+       "count-sets": [
+        "17",
+        "18",
+        "18"
+       ],
+       "count-ip": [
+        "16",
+        "16",
+        "16"
+       ],
+       "count-iwso": [
+        "6",
+        "7",
+        "7"
+       ],
+       "count-opsp": [
+        "12",
+        "11",
+        "11"
+       ],
+       "count-opsw": [
+        "11",
+        "11",
+        "11"
+       ],
+       "count-sxo": [
+        "12",
+        "12",
+        "12"
+       ],
+       "avail-p": [
+        "28",
+        "27",
+        "27"
+       ],
+       "req-p": [
+        "–",
+        "–",
+        "–"
+       ],
+       "avail-w": [
+        "17",
+        "18",
+        "18"
+       ],
+       "req-w": [
+        "–",
+        "–",
+        "–"
+       ]
+      },
+      "after": "same"
+     }
+    }
+   ],
+   "pics": [
+    "w1-08-settings",
+    "w1-08-grid"
+   ],
+   "notes": [
+    "before: {\"count-sets\":[\"17\",\"18\",\"18\"],\"count-ip\":[\"16\",\"16\",\"16\"],\"count-iwso\":[\"6\",\"7\",\"7\"],\"count-opsp\":[\"12\",\"11\",\"11\"],\"count-opsw\":[\"11\",\"11\",\"11\"],\"count-sxo\":[\"12\",\"12\",\"12\"],\"avail-p\":[\"28\",\"27\",\"27\"],\"req-p\":[\"–\",\"–\",\"–\"],\"avail-w\":[\"17\",\"18\",\"18\"],\"req-w\":[\"–\",\"–\",\"–\"]}"
+   ]
+  },
+  {
+   "id": "W1-09",
+   "title": "custom Who-wins, drag, ✕, re-add",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "a custom Who-wins order was made (IP above SXO)",
+     "ok": true,
+     "obs": {
+      "before": [
+       "SXO",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS"
+      ],
+      "after": [
+       "IP",
+       "SXO",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS"
+      ],
+      "summary": [
+       "meone fits twofollows the page",
+       "meone fits twocustom order set"
+      ]
+     }
+    },
+    {
+     "name": "Management first in the custom Who-wins list",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "IP",
+      "SXO",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    },
+    {
+     "name": "Management first in the groups list",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "OTHER"
+     ]
+    },
+    {
+     "name": "Anvil (IP) is drawn once, under Management",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "under": "q:mgmt",
+      "copies": 1
+     }
+    },
+    {
+     "name": "Management first on the grid",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    },
+    {
+     "name": "Management dragged below SXO in Settings",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "q:mgmt",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "OTHER"
+     ]
+    },
+    {
+     "name": "the grid follows the new order",
+     "ok": true,
+     "obs": {
+      "grid": [
+       "SXO",
+       "q:mgmt",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS"
+      ],
+      "settings": [
+       "SXO",
+       "q:mgmt",
+       "IP",
+       "OPSP",
+       "IWSO",
+       "OPSW",
+       "OCU",
+       "PERS",
+       "OTHER"
+      ]
+     }
+    },
+    {
+     "name": "Anvil still drawn once and under Management",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "under": "q:mgmt",
+      "copies": 1
+     }
+    },
+    {
+     "name": "✕ removes Management and its chip returns",
+     "ok": true,
+     "obs": [
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "OTHER"
+     ]
+    },
+    {
+     "name": "re-added: first again in Settings",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "OTHER"
+     ]
+    },
+    {
+     "name": "re-added: first again in Who-wins",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "IP",
+      "SXO",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    },
+    {
+     "name": "re-added: first again on the grid",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    }
+   ],
+   "pics": [
+    "w1-09-custom",
+    "w1-09-added",
+    "w1-09-dragged",
+    "w1-09-grid-after-drag",
+    "w1-09-removed",
+    "w1-09-readded"
+   ],
+   "notes": [
+    "gprio-IP markup: <div class=\"crow-wrap gs-row\" data-gprio=\"IP\" data-testid=\"gprio-IP\"><span class=\"drag\" data-testid=\"gpdrag-IP\" title=\"Drag to change where IP ranks\" style=\"touch-action: none;\">⠿</span><span class=\"crow bdrow\"><span class=\"crow-top\"><span class=\"cn\">2. IP</span></span></span></div>"
+   ]
+  },
+  {
+   "id": "W1-10",
+   "title": "Undo / Redo of the tick and the group",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "Quals: both ticks stand",
+     "ok": true,
+     "obs": [
+      1,
+      1
+     ]
+    },
+    {
+     "name": "Quals: Undo takes the last tick off",
+     "ok": true,
+     "obs": [
+      1,
+      0
+     ]
+    },
+    {
+     "name": "Quals: Redo puts it back",
+     "ok": true,
+     "obs": 1
+    },
+    {
+     "name": "Undo of \"+ Management\" removes the group",
+     "ok": true,
+     "obs": {
+      "mg": null,
+      "sxo": "· 12",
+      "groups": 7,
+      "scroll": {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        480,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "name": "Undo of the tick repaints: SXO count and the grid follow",
+     "ok": true,
+     "obs": {
+      "sxo": [
+       "· 10",
+       "· 12",
+       "· 12",
+       "· 12",
+       "· 10"
+      ]
+     }
+    },
+    {
+     "name": "Redo of the tick brings back the group",
+     "ok": true,
+     "obs": {
+      "mg": null,
+      "sxo": "· 12",
+      "groups": 7,
+      "scroll": {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        480,
+        0
+       ]
+      }
+     }
+    },
+    {
+     "name": "Redo of \"+ Management\": the group is back with its people",
+     "ok": true,
+     "obs": {
+      "start": [
+       "· 2",
+       "· 10"
+      ],
+      "end": [
+       "· 2",
+       "· 10"
+      ]
+     }
+    },
+    {
+     "name": "screen did not jump: scroll position the same through all four",
+     "ok": true,
+     "obs": [
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        480,
+        0
+       ]
+      },
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        480,
+        0
+       ]
+      },
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        480,
+        0
+       ]
+      },
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        480,
+        0
+       ]
+      },
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        480,
+        0
+       ]
+      }
+     ]
+    },
+    {
+     "name": "Undo of the tick repaints the Leave War: Management 3 -> 2, SXO 9 -> 10, Snap leaves the group",
+     "ok": true,
+     "obs": {
+      "start": "· 3/· 9",
+      "afterUndo": "· 2/· 10"
+     }
+    },
+    {
+     "name": "Redo of the tick repaints it back",
+     "ok": true,
+     "obs": {
+      "afterRedo": "· 3/· 9"
+     }
+    },
+    {
+     "name": "screen did not jump through the tick Undo / Redo",
+     "ok": true,
+     "obs": [
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        780,
+        0
+       ]
+      },
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        780,
+        0
+       ]
+      },
+      {
+       "win": [
+        0,
+        0
+       ],
+       "mx-wrap": [
+        780,
+        0
+       ]
+      }
+     ]
+    }
+   ],
+   "pics": [
+    "w1-10-quals-undo",
+    "w1-10-start",
+    "w1-10-undo-group-",
+    "w1-10-undo-tick-",
+    "w1-10-redo-tick-",
+    "w1-10-redo-group-",
+    "w1-10-c-undo-tick",
+    "w1-10-c-redo-tick"
+   ],
+   "notes": [
+    "Quals undo words: {\"undo\":{\"title\":\"Undo — Anvil’s quals\",\"off\":false,\"text\":\"↶ Undo\",\"w\":34},\"redo\":{\"title\":\"Redo\",\"off\":true,\"text\":\"↷ Redo\"}}",
+    "start: {\"mg\":\"· 2\",\"sxo\":\"· 10\",\"groups\":8,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[480,0]}}",
+    "Undo (group): {\"mg\":null,\"sxo\":\"· 12\",\"groups\":7,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[480,0]}}",
+    "Undo (tick): {\"mg\":null,\"sxo\":\"· 12\",\"groups\":7,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[480,0]}}",
+    "Redo (tick): {\"mg\":null,\"sxo\":\"· 12\",\"groups\":7,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[480,0]}}",
+    "Redo (group): {\"mg\":\"· 2\",\"sxo\":\"· 10\",\"groups\":8,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[480,0]}}",
+    "part C start (3 ticked): {\"mg\":\"· 3\",\"sxo\":\"· 9\",\"groups\":8,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[780,0]}}",
+    "part C undo: {\"mg\":\"· 2\",\"sxo\":\"· 10\",\"groups\":8,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[780,0]}} redo: {\"mg\":\"· 3\",\"sxo\":\"· 9\",\"groups\":8,\"scroll\":{\"win\":[0,0],\"mx-wrap\":[780,0]}}"
+   ]
+  },
+  {
+   "id": "W1-11",
+   "title": "member on the desktop",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "D member sees Quals Edit",
+     "ok": true,
+     "obs": true
+    },
+    {
+     "name": "D another man's tick is refused",
+     "ok": true,
+     "obs": {
+      "before": 0,
+      "after": 0,
+      "message": "You can only edit your own row"
+     }
+    },
+    {
+     "name": "D Leave War shows the Management heading",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS"
+     ]
+    },
+    {
+     "name": "D Reaper (ticked by the admin) is under it",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "under": "q:mgmt",
+      "copies": 1
+     }
+    },
+    {
+     "name": "D Ranger is under it iff his own tick was allowed",
+     "ok": true,
+     "obs": {
+      "allowed": true,
+      "row": {
+       "found": true,
+       "under": "q:mgmt",
+       "copies": 1
+      }
+     }
+    },
+    {
+     "name": "D no ⚙",
+     "ok": true,
+     "obs": 0
+    },
+    {
+     "name": "D no Events… (nor Calendar…, counter, event-row controls)",
+     "ok": true,
+     "obs": "none found"
+    }
+   ],
+   "pics": [
+    "w1-11-desk-own",
+    "w1-11-desk-other",
+    "w1-11-desk-lw"
+   ],
+   "notes": [
+    "D member (Ranger) own Management tick: before 0, after 1 -> ALLOWED; message \"\""
+   ]
+  },
+  {
+   "id": "W1-11P",
+   "title": "member on the phone",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "P member sees Quals Edit",
+     "ok": true,
+     "obs": true
+    },
+    {
+     "name": "P another man's tick is refused",
+     "ok": true,
+     "obs": {
+      "before": 0,
+      "after": 0,
+      "message": "You can only edit your own row"
+     }
+    },
+    {
+     "name": "P Leave War shows the Management heading",
+     "ok": true,
+     "obs": [
+      "q:mgmt",
+      "SXO",
+      "IP",
+      "OPSP",
+      "IWSO",
+      "OPSW",
+      "OCU",
+      "PERS",
+      "grp g-q-mgmt",
+      "grp g-sxo",
+      "grp g-ip",
+      "grp g-opsp",
+      "grp g-iwso",
+      "grp g-opsw",
+      "grp g-ocu",
+      "grp g-pers"
+     ]
+    },
+    {
+     "name": "P Reaper (ticked by the admin) is under it",
+     "ok": true,
+     "obs": {
+      "found": true,
+      "under": "q:mgmt",
+      "copies": 1
+     }
+    },
+    {
+     "name": "P Ranger is under it iff his own tick was allowed",
+     "ok": true,
+     "obs": {
+      "allowed": true,
+      "row": {
+       "found": true,
+       "under": "q:mgmt",
+       "copies": 1
+      }
+     }
+    },
+    {
+     "name": "P no ⚙",
+     "ok": true,
+     "obs": 0
+    },
+    {
+     "name": "P no Events… (nor Calendar…, counter, event-row controls)",
+     "ok": true,
+     "obs": "none found"
+    }
+   ],
+   "pics": [
+    "w1-11-phone-own",
+    "w1-11-phone-other",
+    "w1-11-phone-lw"
+   ],
+   "notes": [
+    "logout is behind the phone menu; opening it",
+    "P member (Ranger) own Management tick: before 0, after 1 -> ALLOWED; message \"\""
+   ]
+  },
+  {
+   "id": "W1-12",
+   "title": "names, popover, counter form, history, export",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "pressing Management's name shows its members (Reaper and Anvil)",
+     "ok": true,
+     "obs": "SETTINGS ✕ YEAR Calendar… Events… MANNING ＋ Counter ＋ Event row ORDER ⇅ Rearrange the grid ↺ Reset order GROUPS ⠿ Management QUAL 2 ✕ ⠿ SXO CAT 10 ✕ ⠿ IP CAT 8 ✕ ⠿ OPS P CAT 8 ✕ ⠿ IWSO CAT 5 ✕ ⠿ OPS W CAT 11 ✕ ⠿ OCU CAT 3 ✕ ⠿ Personnel CAT 3 ✕ Everyone else LAST 0 SHOWN IN MANAGEMENT Anvil Reaper AD"
+    },
+    {
+     "name": "the chip popover lists Management in a blue pill",
+     "ok": true,
+     "obs": [
+      {
+       "t": "Reaper · quals",
+       "bg": "rgba(0, 0, 0, 0)",
+       "color": "rgb(138, 150, 163)"
+      },
+      {
+       "t": "Management",
+       "bg": "rgb(90, 169, 230)",
+       "color": "rgb(18, 22, 27)"
+      },
+      {
+       "t": "SXO",
+       "bg": "rgb(232, 178, 59)",
+       "color": "rgb(18, 22, 27)"
+      }
+     ]
+    },
+    {
+     "name": "the counter form's filters list Management",
+     "ok": true,
+     "obs": [
+      "san:SANS",
+      "sxo:SXO",
+      "mgmt:Management",
+      "sched:Scheduler",
+      "scDay:SC DAY",
+      "scNight:SC NIGHT",
+      "daar:DAAR",
+      "naar:NAAR",
+      "nvg:NVG",
+      "imc:IMC",
+      "tf:TF"
+     ]
+    },
+    {
+     "name": "Quals export carries MANAGEMENT",
+     "ok": true,
+     "obs": {
+      "file": "142-LoX-FCP.csv",
+      "found": true
+     }
+    }
+   ],
+   "pics": [
+    "w1-12-mgmt-name",
+    "w1-12-other-name",
+    "w1-12-chip-popover",
+    "w1-12-counter-form",
+    "w1-12-history"
+   ],
+   "notes": [
+    "after pressing Management's name: aria-pressed=true; sheet text: SETTINGS ✕ YEAR Calendar… Events… MANNING ＋ Counter ＋ Event row ORDER ⇅ Rearrange the grid ↺ Reset order GROUPS ⠿ Management QUAL 2 ✕ ⠿ SXO CAT 10 ✕ ⠿ IP CAT 8 ✕ ⠿ OPS P CAT 8 ✕ ⠿ IWSO CAT 5 ✕ ⠿ OPS W CAT 11 ✕ ⠿ OCU CAT 3 ✕ ⠿ Personnel CAT 3 ✕ Everyone else LAST 0 SHOWN IN MANAGEMENT Anvil Reaper AD",
+    "after pressing Everyone else: SETTINGS ✕ YEAR Calendar… Events… MANNING ＋ Counter ＋ Event row ORDER ⇅ Rearrange the grid ↺ Reset order GROUPS ⠿ Management QUAL 2 ✕ ⠿ SXO CAT 10 ✕ ⠿ IP CAT 8 ✕ ⠿ OPS P CAT 8 ✕ ⠿ IWSO CAT 5 ✕ ⠿ OPS W CAT 11 ✕ ⠿ OCU CAT 3 ✕ ⠿ Personnel CAT 3 ✕ Everyone else LAST 0 SHOWN IN MANAGEMENT Anvil Reaper AD",
+    "Edit Schedule history-ish buttons: [\"histBtn|Changes — every change this week, and who made it\",\"oil-tracker|OIL balances, credits and history\",\"fly-name-avail-p|Rename Available P, change who it counts, or set its amber and red\",\"fly-name-avail-w|Rename Available W, change who it counts, or set its amber and red\"]",
+    "change history \"Management ✓ · Saber\": NOT RUN: the only history surfaces found (Edit Schedule Changes window, Admin Edit history) list schedule edits; the Management tick (made on Quals as Saber, Anvil Reaper ticked) appears in neither (picture w1-12-history)",
+    "export file 142-LoX-FCP.csv starts with \"ï»¿\\\"\""
+   ]
+  },
+  {
+   "id": "W1-13",
+   "title": "every way in and out of Settings",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "⚙ opens Settings",
+     "ok": true,
+     "obs": "open"
+    },
+    {
+     "name": "⚙ again closes it (toggle)",
+     "ok": true,
+     "obs": {
+      "gearAtPoint": "sheet-scrim",
+      "sheet": false
+     }
+    },
+    {
+     "name": "✕ closes it",
+     "ok": true,
+     "obs": "closed"
+    },
+    {
+     "name": "Escape closes it",
+     "ok": true,
+     "obs": false
+    },
+    {
+     "name": "a click outside (on the page title strip) closes it",
+     "ok": true,
+     "obs": {
+      "sheet": false
+     }
+    },
+    {
+     "name": "Calendar… opens the Calendar window and Settings closes",
+     "ok": true,
+     "obs": {
+      "label": "Calendar… pressed",
+      "sheet": false,
+      "wins": [
+       "win-days \"⠿ Calendar admins only ✕\"",
+       "days-parts \"‹ January 2026 › Today C\"",
+       "days-part-month \"‹ January 2026 › Today C\"",
+       "days-month \"January 2026\"",
+       "days-today \"Today\"",
+       "days-grid \"MON ▾ TUE ▾ WED ▾ THU ▾ \""
+      ]
+     }
+    },
+    {
+     "name": "Events… opens the Events list and Settings closes",
+     "ok": true,
+     "obs": {
+      "label": "Events… pressed",
+      "sheet": false,
+      "wins": [
+       "events-sheet \"EVENTS JAN - DEC 26 ✕ ＋ \"",
+       "events-period \"JAN - DEC 26\"",
+       "events-add \"＋ Event\"",
+       "events-presets \"Edit presets\"",
+       "events-list \"Thu 1 Jan PH Public holi\""
+      ]
+     }
+    },
+    {
+     "name": "Rearrange: Settings closes and the bar says \"⇅ Done\"",
+     "ok": true,
+     "obs": {
+      "sheet": false,
+      "done": [
+       "⇅ Done"
+      ]
+     }
+    },
+    {
+     "name": "\"⇅ Done\" ends Rearrange",
+     "ok": true,
+     "obs": 0
+    },
+    {
+     "name": "＋ Counter opens the form and Settings closes",
+     "ok": true,
+     "obs": {
+      "form": 1,
+      "sheet": false
+     }
+    },
+    {
+     "name": "Escape closes the counter form",
+     "ok": true,
+     "obs": 0
+    },
+    {
+     "name": "a press on a grid cell beside the open Settings: Settings closes, the press does not reach the cell (nothing half-open)",
+     "ok": true,
+     "obs": {
+      "sheetAfter": false,
+      "before": [
+       "settings-sheet \"SETTINGS ✕ YEAR Calendar\"",
+       "settings-events \"Events…\""
+      ],
+      "after": []
+     }
+    },
+    {
+     "name": "a second press on the same cell then works (its window opens)",
+     "ok": true,
+     "obs": [
+      "bid-picker \"Drifter Wed 11 Feb Auto-\""
+     ]
+    }
+   ],
+   "pics": [
+    "w1-13-open",
+    "w1-13-after-outside",
+    "w1-13-calendar",
+    "w1-13-events",
+    "w1-13-rearrange",
+    "w1-13-counter",
+    "w1-13-cell-behind",
+    "w1-13-cell-second-press"
+   ],
+   "notes": [
+    "{\"label\":\"start\",\"sheet\":false,\"wins\":[]}",
+    "{\"label\":\"⚙ pressed again\",\"sheet\":false,\"wins\":[]}",
+    "{\"label\":\"Calendar… pressed\",\"sheet\":false,\"wins\":[\"win-days \\\"⠿ Calendar admins only ✕\\\"\",\"days-parts \\\"‹ January 2026 › Today C\\\"\",\"days-part-month \\\"‹ January 2026 › Today C\\\"\",\"days-month \\\"January 2026\\\"\",\"days-today \\\"Today\\\"\",\"days-grid \\\"MON ▾ TUE ▾ WED ▾ THU ▾ \\\"\"]}",
+    "{\"label\":\"Calendar closed by Escape\",\"sheet\":false,\"wins\":[]}",
+    "{\"label\":\"Events… pressed\",\"sheet\":false,\"wins\":[\"events-sheet \\\"EVENTS JAN - DEC 26 ✕ ＋ \\\"\",\"events-period \\\"JAN - DEC 26\\\"\",\"events-add \\\"＋ Event\\\"\",\"events-presets \\\"Edit presets\\\"\",\"events-list \\\"Thu 1 Jan PH Public holi\\\"\"]}",
+    "{\"label\":\"Events closed by Escape\",\"sheet\":false,\"wins\":[]}",
+    "{\"label\":\"Rearrange pressed\",\"sheet\":false,\"wins\":[]}",
+    "{\"label\":\"＋ Counter pressed\",\"sheet\":false,\"wins\":[\"counter-form \\\"New counter build a coun\\\"\"]}",
+    "cell behind-side target {\"id\":\"cell-slipway-2026-02-11\",\"x\":1124.75,\"y\":761,\"top\":{\"testid\":\"sheet-scrim\"}}",
+    "cell pressed beside the open sheet: sheet stays=false; windows before [\"settings-sheet \\\"SETTINGS ✕ YEAR Calendar\\\"\",\"settings-events \\\"Events…\\\"\"] after []"
+   ]
+  },
+  {
+   "id": "W1-14",
+   "title": "Reset order, －Event row, Everyone else",
+   "status": "PASS",
+   "err": null,
+   "checks": [
+    {
+     "name": "Reset order greyed at the start",
+     "ok": true,
+     "obs": {
+      "text": "↺ Reset order",
+      "disabled": true,
+      "cls": "rtbtn set-danger set-order",
+      "color": "rgb(241, 244, 247)",
+      "opacity": "0.45"
+     }
+    },
+    {
+     "name": "Reset order lit after a person was carried to a new place",
+     "ok": true,
+     "obs": {
+      "rows": [
+       "dice,shaft,snap,pump,bane,stiff",
+       "shaft,dice,snap,pump,bane,stiff"
+      ],
+      "r2": {
+       "text": "↺ Reset order",
+       "disabled": false,
+       "cls": "rtbtn set-danger set-order",
+       "color": "rgb(241, 244, 247)",
+       "opacity": "1"
+      }
+     }
+    },
+    {
+     "name": "first press asks \"Really reset?\"",
+     "ok": true,
+     "obs": {
+      "text": "Really reset?",
+      "disabled": false,
+      "cls": "rtbtn set-danger set-order arm",
+      "color": "rgb(255, 92, 92)",
+      "opacity": "1"
+     }
+    },
+    {
+     "name": "nothing is reset by the first press",
+     "ok": true,
+     "obs": "shaft,dice,snap,pump,bane,stiff"
+    },
+    {
+     "name": "second press puts the order back and greys the button again",
+     "ok": true,
+     "obs": {
+      "r4": {
+       "text": "↺ Reset order",
+       "disabled": true,
+       "cls": "rtbtn set-danger set-order",
+       "color": "rgb(241, 244, 247)",
+       "opacity": "0.45"
+      },
+      "rows": [
+       "dice,shaft,snap,pump,bane,stiff",
+       "shaft,dice,snap,pump,bane,stiff",
+       "dice,shaft,snap,pump,bane,stiff"
+      ]
+     }
+    },
+    {
+     "name": "after ＋ Event row a －Event row button appears",
+     "ok": true,
+     "obs": {
+      "before": [
+       "＋ Event row"
+      ],
+      "after": [
+       "＋ Event row",
+       "－ Event row"
+      ],
+      "sheetStill": true
+     }
+    },
+    {
+     "name": "Everyone else reads 0 to start and above 0 once a group is removed",
+     "ok": true,
+     "obs": {
+      "start": "0",
+      "after": "3",
+      "row": {
+       "cls": "set-grow other",
+       "text": "Everyone elselast3",
+       "color": "rgb(138, 150, 163)"
+      }
+     }
+    }
+   ],
+   "pics": [
+    "w1-14-reset-grey",
+    "w1-14-reset-after-add",
+    "w1-14-reset-lit",
+    "w1-14-really",
+    "w1-14-reset-done",
+    "w1-14-event-row",
+    "w1-14-other-0",
+    "w1-14-other-above-0"
+   ],
+   "notes": [
+    "after adding a group: {\"text\":\"↺ Reset order\",\"disabled\":true,\"cls\":\"rtbtn set-danger set-order\",\"color\":\"rgb(241, 244, 247)\",\"opacity\":\"0.45\"}",
+    "grid rows before / after the carry: dice,shaft,snap,pump,bane,stiff / shaft,dice,snap,pump,bane,stiff",
+    "after the second press: {\"text\":\"↺ Reset order\",\"disabled\":true,\"cls\":\"rtbtn set-danger set-order\",\"color\":\"rgb(241, 244, 247)\",\"opacity\":\"0.45\"} rows dice,shaft,snap,pump,bane,stiff"
+   ]
+  }
+ ],
+ "errs": []
+}
