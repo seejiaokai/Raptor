@@ -127,7 +127,10 @@ function useGridPan(movedRef: { current: boolean }, closeRef: { current: () => v
       /* nor the app's date calendar, which a sheet's date box floats over the whole page (ui/DateBox.tsx — a layer on
          <body>, so not inside any sheet): shielded, a tap on one of its dates would be eaten and would CLOSE the sheet
          whose date was being picked */
-      if (el?.closest('.bidsheet, .dcal-layer')) return
+      /* …nor a sheet's own part drawn on the page outside its panel (`.sheet-part`): the Events list's note with Undo after a
+         delete stands at the foot of the screen, and shielded, its Undo was eaten and the list CLOSED (the Events walk's F1,
+         29 Oct 26) */
+      if (el?.closest('.bidsheet, .dcal-layer, .sheet-part')) return
       e.stopPropagation()
       if (e.type === 'mousedown') e.preventDefault()
       if (e.type === 'click') closeRef.current()

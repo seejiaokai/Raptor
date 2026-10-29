@@ -397,6 +397,36 @@ describe('the Events list split (D1512–D1516)', () => {
     expect(line.classList.contains('innew')).toBe(true)
   })
 
+  /* THE WALK'S F1 (29 Oct 26, on the phone): the note is drawn on the page, outside the window, and on a touch screen the
+     window's shield (Sheet.tsx useGridPan) takes every tap outside a window as one on the grid under it — it ate the tap on
+     Undo and CLOSED the list, so the delete was never taken back. jsdom has no matchMedia: a phone's is put in. */
+  it('F1: on a touch screen a tap on the note’s Undo undoes — the shield does not eat it, the list stays', () => {
+    const origMM = window.matchMedia
+    ;(window as any).matchMedia = (q: string) => ({ matches: q.includes('coarse'), media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} })
+    try {
+      setDayEvent('2026-03-16', 0, 'SC', 'work')
+      render(<Matrix />)
+      openEvents()
+      const tap = (el: Element) => {
+        for (const type of ['pointerdown', 'mousedown', 'pointerup', 'mouseup'] as const) fireEvent(el, new MouseEvent(type, { bubbles: true, cancelable: true }))
+        fireEvent.click(el)
+      }
+      tap(screen.getByTestId('evdel-0-2026-03-16')); tap(screen.getByTestId('evdel-0-2026-03-16'))
+      expect(dayWord('2026-03-16')).toBe('')
+      tap(screen.getByTestId('events-undo'))
+      expect(undoPress).toHaveBeenCalledTimes(1)
+      expect(screen.queryByTestId('events-sheet'), 'the list stays open').toBeTruthy()
+    } finally { (window as any).matchMedia = origMM }
+  })
+
+  /* THE WALK'S F2 (29 Oct 26, on the phone): a name too long for the note ran it off both sides of the screen, Undo with it —
+     the note is one line, so its words end in "…" and its Undo always stands whole (measured on the phone by the walk) */
+  it('F2: a long name in the note ends in …, its Undo never pushed off the screen', () => {
+    const css = readFileSync('src/leavewar/ui/bidpicker.css', 'utf8').replace(/\r\n/g, '\n')
+    expect(css).toMatch(/#page-leavewar \.secdef-snack\.ev-undo \.secdef-msg \{[^}]*min-width: 0;[^}]*text-overflow: ellipsis/)
+    expect(css).toMatch(/#page-leavewar \.secdef-snack\.ev-undo \.secdef-btn \{ flex: none; \}/)
+  })
+
   it('the controls are buttons of their own, not inside another button, each with a finger-sized tap area', () => {
     setDayEvent('2026-03-16', 0, 'SC', 'work')
     render(<Matrix />)

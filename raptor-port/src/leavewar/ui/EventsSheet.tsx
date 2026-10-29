@@ -147,7 +147,8 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
     const root = listRef.current
     const when = root?.querySelector('.ev-line .hol-when') as HTMLElement | null
     const kind = root?.querySelector('.ev-line .ev-kind') as HTMLElement | null
-    if (!when || !kind || typeof window.matchMedia !== 'function') return
+    /* (nothing laid out — a browser without layout, as the unit tests' — measures nothing) */
+    if (!when || !kind || !when.getBoundingClientRect().width) return
     const cv = document.createElement('canvas').getContext('2d')
     if (!cv) return
     const fontOf = (e: HTMLElement, weight?: string) => { const s = getComputedStyle(e); return `${s.fontStyle} ${weight ?? s.fontWeight} ${s.fontSize} ${s.fontFamily}` }
@@ -226,7 +227,7 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
         </div>
       </Sheet>
       {gone && (
-        <div key={gone.n} className="secdef-snack ev-undo" role="status" data-testid="events-undo-note">
+        <div key={gone.n} className="secdef-snack ev-undo sheet-part" role="status" data-testid="events-undo-note">
           <span className="secdef-msg">{gone.name} deleted</span>
           <button type="button" className="secdef-btn yes" data-testid="events-undo" onClick={undo}>Undo</button>
         </div>
