@@ -164,7 +164,7 @@ for (const kind of ['P', 'D']) {
   }, { name })
   const showEmpty = () => p.evaluate(() => {
     document.querySelector('.mock-snack')?.remove()
-    const col = [...document.querySelectorAll('.mock-col')][1]
+    const col = [...document.querySelectorAll('.mock-col')].find(c => /Squadron/i.test(c.querySelector('.mock-sec')?.textContent || ''))
     const list = col.querySelector('.mock-part'); const e = document.createElement('p'); e.className = 'hol-empty'
     e.textContent = 'No squadron events in JAN – DEC 26.'; list.replaceWith(e)
     const head = col.querySelector('.mock-sec'); head.textContent = head.textContent.replace(/\d+$/, '0')
@@ -192,7 +192,8 @@ for (const kind of ['P', 'D']) {
     const wrap = document.createElement('div'); wrap.className = 'mock-split'; wrap.dataset.testid = 'events-list'
     const colA = document.createElement('div'); colA.className = 'mock-col'; colA.append(head('Holidays', hol.length), box(hol))
     const colB = document.createElement('div'); colB.className = 'mock-col'; colB.append(head('Squadron events', ev.length), box(ev))
-    wrap.append(colA, colB); wrap.dataset.mocked = '1'
+    // Squadron events first (D1516, 29 Oct 26 — "As recommended" to question 4): the left list on a desktop, the top one on a phone
+    wrap.append(colB, colA); wrap.dataset.mocked = '1'
     wrap.setAttribute('data-testid', 'events-list')
     list.replaceWith(wrap)
     const st = document.createElement('style'); st.id = 'mockcss'

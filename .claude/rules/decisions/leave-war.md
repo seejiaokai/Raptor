@@ -56,8 +56,9 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1515 | 29 Oct 26 | The Events list design review's six fixes are made: the cross arms in place, red; an Undo note after a delete; finger-sized tap areas and a lighter edge; "Delete — sure?" and a red cross; the date column fits the widest date; a new event ringed in its list, an empty list says so. |
-| D1514 | 29 Oct 26 | The Leave War's Events list is split into Holidays (public holidays and Off days) and Squadron events (every other kind, and events with no kind): on a desktop the two side by side in a window twice as wide; on a phone one under the other. |
+| D1516 | 29 Oct 26 | The Leave War's Events list is built as redrawn on 29 Oct 26: Squadron events first (on a desktop the left list, on a phone the top one), then Holidays; the ✕ asks once — its first press arms it, a second deletes. |
+| D1515 | 29 Oct 26 | The Events list design review's six fixes are made: the cross arms in place, red; an Undo note after a delete; finger-sized tap areas and a lighter edge; "Delete — sure?" and a red cross; the date column fits the widest date; a new event ringed in its list, an empty list says so. — changed by D1516 |
+| D1514 | 29 Oct 26 | The Leave War's Events list is split into Holidays (public holidays and Off days) and Squadron events (every other kind, and events with no kind): on a desktop the two side by side in a window twice as wide; on a phone one under the other. — changed by D1516 |
 | D1513 | 29 Oct 26 | In the Leave War's Events list every line's kind — its coloured square and word (Public holiday, Off day, Working event, No leave) — starts at the same place, so the kinds read down one column; a line with no kind leaves that column empty. |
 | D1512 | 29 Oct 26 | Each line of the Leave War's Events list shows plainly how to edit it and how to delete it — a control a person can see on the line itself, not only a tap on the line that opens the event. |
 | D1511 | 29 Oct 26 | On a phone the Leave War's Events list opens as a full page from the top of the screen, as the "Open for bidding" window does (D1264), so its lines stay in one place as the list grows; a desktop keeps the floating window. |
