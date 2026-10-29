@@ -1,4 +1,5 @@
 import { VIEW_RESET } from '../state/view'
+import { DAYS } from '../engine/data'
 /* Which pop-ups are open — module state so the delegated click routing can
    open them; the components read it and re-render via the store version. */
 export let DAYPOP: number | null = null
@@ -7,9 +8,21 @@ export let INSIGHTS = false
 export let INSIGHTS_ALL = false
 export function setInsights(on: boolean) { if (!on || !INSIGHTS) INSIGHTS_ALL=false; INSIGHTS = on }
 export function setInsightsAll(on: boolean) { INSIGHTS_ALL=on }
-/* the airspace/traffic popup: which wave it is looking at, as 'di|gi' */
+/* the airspace/traffic popup: which wave it is looking at, as 'di|gi' — and THAT WAVE'S OWN HIDDEN ID (`AIRRID`, the rid
+   every row carries — engine/rowids.ts), taken as it opens. Since the top bar's Undo and Redo can be pressed with the
+   window up ([TRAFFIC-WIN-COVERS-UNDO], 30 Oct 26), an undo can put a wave back in front of this one, or take this one
+   away: the window follows its wave by the id (Modals.tsx airGo — `reKeyAir` writes its new place), and closes when the
+   wave is gone, never showing another wave's traffic under this one's place. */
 export let AIRKEY: string | null = null
-export function setAirKey(k: string | null) { AIRKEY = k }
+export let AIRRID = ''
+export function setAirKey(k: string | null) {
+  AIRKEY = k
+  const [di, gi] = k ? k.split('|') : []
+  const w = k ? DAYS[+di!]?.waves?.[+gi!] : null
+  AIRRID = w && typeof w.rid === 'string' ? w.rid : ''
+}
+/* the same wave, found at another place — its id kept */
+export function reKeyAir(k: string) { AIRKEY = k }
 /* the Manage-users modal flag lived here until 23 Aug 26 — Manage users is a
    section of the Admin PAGE now (ui/AdminPage.tsx), so there is no popup
    state to hold: the page unmounts with the session like every other page. */
@@ -165,6 +178,7 @@ export const POPS_RESET: { name: string; reset: () => void }[] = [
   { name: 'INSIGHTS', reset: () => setInsights(false) },
   { name: 'INSIGHTS_ALL', reset: () => setInsightsAll(false) },
   { name: 'AIRKEY', reset: () => setAirKey(null) },
+  { name: 'AIRRID', reset: () => setAirKey(null) },   // set and cleared with the window's wave — one setter for the pair
   { name: 'TPLEDIT', reset: () => setTplEdit(false) },
   { name: 'WAVEEDIT', reset: () => setWaveEdit(false) },
   { name: 'DAYTPLEDIT', reset: () => setDayTplEdit(false) },
@@ -198,3 +212,8 @@ export function windowOverSchedule(): boolean {
 }
 VIEW_RESET.push({ name: 'POPS', scopes: ['session'], reset: resetPopsForSession })
 VIEW_RESET.push({name:'INSIGHTS_ALL',scopes:['week'],reset:()=>setInsightsAll(false)})
+/* THE TRAFFIC WINDOW CLOSES ON A PAGE OR A WEEK CHANGE ([TRAFFIC-WIN-COVERS-UNDO], 30 Oct 26), as the ALL AVAIL window does
+   (owner D66). While its veil covered the top bar nothing could change either under it; with the bar's Undo and Redo free
+   (Modals.tsx), an undo can land on another page or week — and a nav tab pressed by the keys changes page — and the
+   window's 'di|gi' would then name a wave of a week or page nobody is looking at. */
+VIEW_RESET.push({ name: 'AIRKEY_NAV', scopes: ['week', 'page'], reset: () => setAirKey(null) })

@@ -602,6 +602,8 @@ export function setPage(p:any){
      on one would list the wrong crowd on the other (D44). The week and session
      halves are in VIEW_RESET below. */
   if(p!==CURPAGE)setAvailWin(null);
+  /* …and every window registered for a page change (VIEW_RESET 'page' — the Traffic window) */
+  if(p!==CURPAGE)resetViewState('page');
   /* …and the changes window, for the same reason ([DRAFT-PENDING]) — Edit Schedule and View-only Sched show different
      copies of a day, so a list opened on one would jump to the wrong copy on the other */
   if(p!==CURPAGE&&CHGWIN)setChgWin(null);
@@ -955,7 +957,10 @@ export function toggleNotePub(key:any){ if(!canEditSched())return false; const k
    WARNOFF is cleared on a WEEK swap only — loadWeek RESTORES it from the arriving
    week's saved copy right after. It is NOT cleared at a sign-in: a hidden warning is
    kept with its day for everyone until someone flags it again (owner D469, 1 Oct 26). */
-type ResetScope = 'session' | 'week'
+/* 'page' (30 Oct 26, [TRAFFIC-WIN-COVERS-UNDO]) — cleared on a real page change (setPage), for a window that belongs to
+   the page it was opened on and lives outside view.ts (ui/pops.ts's Traffic window); the hand-written page closes in
+   setPage stay where they are. */
+type ResetScope = 'session' | 'week' | 'page'
 export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void }[] = [
   /* per-day / per-week panel and preview sets — both a new session and a new
      week must start from their defaults, or a fold/preview points at a day or
