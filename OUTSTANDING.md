@@ -137,6 +137,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix.
 - [MEMBER-EDITPAGE-CHECK] — a check: a member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons.
 - [SYSTEM-PASS-SAVES-ROSTER] — the app's own posting pass saves the whole roster as it stands in memory, so a change made outside every command (from a browser's console) rides into it unchecked — a small fix, found by D1510's security read.
+- [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
 - [GUEST-SAVE-WARNING] — a check: does anything a guest does get saved through the app's saver? If not, close it with the reason.
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
@@ -346,6 +347,10 @@ each with its own bug check. **21 Oct 26:** round 1 answered (D1141-D1144); his 
 ### [SYSTEM-PASS-SAVES-ROSTER] The posting pass saves every unsaved roster change, unchecked (found 29 Oct 26 by D1510's security read)
 
 The posting pass (`raptor-port/src/leavewar/sync.ts`, the `lw.postoutRun` command, around line 2184) commits as the app itself (the system actor, which the commit gate `perms.ts ownershipViolation` lets through) and enlists the people store, whose before-image is the last SAVED roster; its finish saves the whole live roster. So any change made to a person in memory outside every command — only possible from a browser's console today — is saved with it, past the own-row rule (D149, D218, D1510). Not D1510's to fix (older, and console-only), but the database step translates this gate. **Fix:** before the pass enlists the people store, put the roster back to its saved baseline; and a hard rule that a `lw.postoutRun` change to `people` touches only the men due to post out. Red first; the security read's report is quoted in `raptor-port/docs/handpass/2026-10-29-lw-m5b.md` §10.
+
+### [LINE-ICONS-ELSEWHERE-ASK] Other lists that may want D1512's edit and cross icons (named 29 Oct 26, D852)
+
+His D1512 ("theres no edit icon or cross icon") is for the Leave War's Events list; lesson 71 keeps it there. Places the agent names where a line also opens only by a tap, none changed: (1) the Calendar window's Holidays list (`raptor-port/src/ui/HolidaysPanel.tsx`) — the same line, the same holidays; (2) the Inputs page's List rows; (3) the Event window's presets list. Each one he takes up is drawn for him before it is built. Lean: (1) yes, with the Events list's build, since it shows the same holidays.
 
 ### [QUALS-COL-WAR-GROUP-ASK] A question for him: a member's own ticks and the Leave War's groups (kept under D994)
 
