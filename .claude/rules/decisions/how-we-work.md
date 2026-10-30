@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1531 | 31 Oct 26 | React Doctor — the free React code check the SWiFT kit runs and the PPCoE's own scan is based on — may be downloaded and run on Raptor to count its findings for the M365 move plan; it changes nothing in the app, runs with its tracking off, and comes from the same public package store as the app's other building tools. |
 | D1530 | 31 Oct 26 | Three points of the SWiFT build-and-deploy kit are set aside for now, on his order: all its red flags (among them whether the flying schedule or the Tracker count as operational information), its rule against hosting on Vercel, and its rule that the GitHub project be private; Vercel and the public project stay as they are until he says otherwise. |
 | D1523 | 30 Oct 26 | A window he has resized but never moved moves down below a failed save's "Not saved" band, as a window not yet placed does, so the band and its Retry are never covered (D587); a window he has moved keeps its place. |
 | D1518 | 29 Oct 26 | Nothing pinned on screen leaks: a bar, or any other part that stays put while what is under it scrolls, shows none of that content behind it or through a gap at its edges — at every zoom and every scroll position; the desktop week's ‹ › arrows excepted, which stay see-through (D1522). — changed by D1522 |

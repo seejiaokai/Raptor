@@ -20,6 +20,19 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/m365-move-plan -->
+### `claude/m365-move-plan` — THE NIGHT OF 31 OCT 26 (`/overnight 12`, Low): four jobs, one fresh helper each, one after another — written 31 Oct 26 05:45 — verify before use
+- **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time. (Compacted once, 31 Oct 26 about 05:30, before the night started.)
+- **His selection (31 Oct 26 05:35, "Go"):** jobs 1–4 below and "yes" to the one question — React Doctor may be run to count its findings (D1531). Low (D1104 — he was not asked "Low or Medium?"; 12 hours is plenty, so Low): per job one builder helper, one Sonnet walker where the job walks, one fresh blind Opus reader; this chat coordinates, checks each result and keeps the records (D1416). Nothing merges, nothing touches `main`. His hours end about 17:30; the last hour is for the morning report.
+- **This branch also carries** D1530 (the SWiFT kit's red flags, Vercel and the public project set aside) and D1531 — notes only, cut from `main` at 6333d8003's parent plus that commit.
+- **Job 1 — this branch, nothing in the app changes, about 1½ h:** the M365 move plan page — every point of the SWiFT kit against Raptor (less the three D1530 sets aside), each sized small / medium / big, in a recommended order, with React Doctor's count (D1531); he strikes what he will not follow. Check: one fresh reader compares the page with the kit; that reader also reads D1531's short line against its full row (D138).
+- **Job 2 — `claude/lw-roster-restore-fixes` from `main`, FULL, about 4 h:** `[SYSTEM-PASS-SAVES-ROSTER]` (the posting pass puts the roster back to its saved state before it starts, and changes only the men due to post out) and `[LW-DELETED-RESTORE-OVERREFUSE]` (Undo / Redo allows what the live screen allows for a deleted man). Red first; walk with pictures; a fresh blind Opus code read and the security read (D1411).
+- **Job 3 — `claude/secrets-scan-scorecard` from `main`, about 2½ h:** `[REVIEW-LAYERS]`'s secrets scan (D1408 — a GitHub check that stops a pull request carrying a password or key; one scan of the whole history, any real key listed for him) and the scorecard's first count (D1409). Tests with a planted fake key; one fresh reader.
+- **Job 4 — `claude/pinch-fixes-1031` from `main`, WALK, about 3 h:** `[QUALS-PINCH-MID]` and `[LW-PINCH-IN-CORNER]` (pinned parts stay put mid-pinch — D1287). A finger walk in a phone browser with pictures mid-pinch; a fresh read; his iPhone look owed.
+- **Allowance at the start:** weekly 63%, 5-hour 4%, this chat 19% full.
+- **Questions waiting for him:** none yet.
+- **Running when written (05:45):** job 1 starting; the check lock free. Pull requests 595 (the week drag, D1529) and 578 open, not this night's.
+<!-- /now -->
 <!-- now:claude/lw-scroll-pinned-sweep -->
 ### `claude/lw-scroll-pinned-sweep` — the night of 30 Oct 26 and its day after: D1525 and D1523 built and green; the week arrows BUILT on this branch (his D1526); four pull requests open, none merged — written 30 Oct 26 15:30 — verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change. (Compacted once, 30 Oct 26 about 12:00.)

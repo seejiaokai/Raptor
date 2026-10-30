@@ -38,6 +38,8 @@ for every save, the table list written on our side, screens switched inside the 
 GitHub project be private — Vercel and the public project stay until he says otherwise. Its other points are not yet
 ruled. Its own files, marked OFFICIAL (CLOSED), are kept out of this public project — the agent's reading, not
 checked with him.
+**React Doctor**, the kit's code check, may be run on Raptor to count its findings for the move plan (D1531) — a count
+and a list, nothing fixed without his word; whether new code follows its rules is his to rule once he has seen the count.
 
 ## Read in this order
 
