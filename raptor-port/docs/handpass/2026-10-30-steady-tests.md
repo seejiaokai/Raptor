@@ -126,3 +126,5 @@ a crew change through the one write path — the one thing no control can do; Re
 Every picture that decides a row opened by the host. **Walk:** `docs/handpass/2026-10-30-steady-tests.md` §5 · 12 pictures
 (`docs/img/handpass/2026-10-30-steady-tests/d1523/`) · 2 surfaces (the changes window resized, moved) at 3 desktop sizes · 6 checks,
 6 as expected · the ALL AVAIL window carried by the browser tests (the same body)
+
+**His look (30 Oct 26):** *"those looks right"* — his look at the previews, the Retry fix included. **Merged on his "merge live" (31 Oct 26).**
