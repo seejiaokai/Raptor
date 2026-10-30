@@ -401,6 +401,8 @@ same page): 4 checks × 2 sizes, all as expected, no errors — the day's list "
 and approved", "OL (PM) added and approved"; his approved-leave window "LL (AM)"; his closed-day window "LL (AM) · pending". Every
 phone picture opened by the host: nothing wraps or is covered.
 
+**His look (30 Oct 26):** *"those looks right"* — his look at the previews, AM / PM in the day's list and the bell included. **Merged on his "merge live" (31 Oct 26).**
+
 **Walk:** `docs/handpass/2026-10-30-lw-small-fixes.md` §13 · 15 pictures (`docs/img/handpass/2026-10-30-lw-small-fixes/s5`, `s5-phone`)
 · 4 surfaces (the day's list, the bell, the approved-leave window, the closed-day window) · 8 checks walked, 8 as expected · the clash
 note, the credited-OIL window and the held-half line carried by unit pins (their words come from the same fold)
