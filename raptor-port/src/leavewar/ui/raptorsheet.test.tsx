@@ -44,7 +44,7 @@ describe('the read-only sheet heading reads as the box does', () => {
   it('a morning ATT C reads "C (morning)", not "*ATTC" nor "<C"', () => {
     open('*ATTC')
     const hd = screen.getByTestId('raptor-sheet').querySelector('.bidsheet-hd .cur')!.textContent || ''
-    expect(hd).toBe('C (morning)')
+    expect(hd).toBe('C (AM)')   // D1525: AM / PM after the code
     expect(hd).not.toContain('*ATTC')
     expect(hd).not.toContain(displayCell('*ATTC'))
   })

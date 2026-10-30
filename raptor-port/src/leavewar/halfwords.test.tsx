@@ -70,15 +70,15 @@ const cs = (id: string) => getState().people.find(p => p.id === id)!.callsign
 describe('codeInWords — one form for a code in a sentence', () => {
   it('a credited code wears its star after it; a half is named in words; the stored stars are never printed', () => {
     expect(codeInWords('FO', true)).toBe('FO*')
-    expect(codeInWords('*HO', true)).toBe('HO* (morning)')
-    expect(codeInWords('HO*', true)).toBe('HO* (afternoon)')
+    expect(codeInWords('*HO', true)).toBe('HO* (AM)')
+    expect(codeInWords('HO*', true)).toBe('HO* (PM)')
     expect(codeInWords('HO', false)).toBe('HO')                    // a hand-given HO stays starless (the star is the app's)
-    expect(codeInWords('*LL')).toBe('LL (morning)')
-    expect(codeInWords('LL*')).toBe('LL (afternoon)')
+    expect(codeInWords('*LL')).toBe('LL (AM)')
+    expect(codeInWords('LL*')).toBe('LL (PM)')
     expect(codeInWords('LL')).toBe('LL')
-    expect(codeInWords('*ATTC')).toBe('C (morning)')               // the box's own letters (the owner's C)
+    expect(codeInWords('*ATTC')).toBe('C (AM)')               // the box's own letters (the owner's C)
     expect(codeInWords('*FO', true, null)).toBe('FO*')              // an FO is drawn whole: its half is never named
-    expect(codeInWords('HO', true, 'pm')).toBe('HO* (afternoon)')
+    expect(codeInWords('HO', true, 'pm')).toBe('HO* (PM)')
   })
 })
 
@@ -90,25 +90,25 @@ describe('the clash note prints each code as its box draws it (S2-1, S2-2, S2-3)
     expect(clashWhat(c)).toBe('Weekend/PH work earns FO*, but the day holds approved LL')
     expect(stripLine(cs('plasma'))).toBe(`${cs('plasma')} · Sat 18 Jul · Weekend/PH work earns FO*, but the day holds approved LL. Change the approved leave ›`)
   })
-  it('a credited morning: "HO* (morning)", never "*HO"', () => {
+  it('a credited morning: "HO* (AM)", never "*HO"', () => {
     setCell('bane', SAT, 'OL')
     baneWorks('09:00', '12:00')
     publishSat()
     const c = clashOf('bane')
     expect(c.inputCode, 'the stored notation is kept on the clash, for its key').toBe('*HO')
-    expect(clashWhat(c)).toBe('Weekend/PH work earns HO* (morning), but the day holds OL')
+    expect(clashWhat(c)).toBe('Weekend/PH work earns HO* (AM), but the day holds OL')
   })
-  it('a credited afternoon: "HO* (afternoon)" — the star no longer means "afternoon"', () => {
+  it('a credited afternoon: "HO* (PM)" — the star no longer means "afternoon"', () => {
     setCell('bane', SAT, 'OL')
     baneWorks('13:00', '16:00')
     publishSat()
-    expect(clashWhat(clashOf('bane'))).toBe('Weekend/PH work earns HO* (afternoon), but the day holds OL')
+    expect(clashWhat(clashOf('bane'))).toBe('Weekend/PH work earns HO* (PM), but the day holds OL')
   })
-  it('the leave side, half a day: "OL (morning)", never "*OL"', () => {
+  it('the leave side, half a day: "OL (AM)", never "*OL"', () => {
     setCell('bane', SAT, '*OL')
     baneWorks('09:00', '12:00')
     publishSat()
-    expect(clashWhat(clashOf('bane'))).toBe('Weekend/PH work earns HO* (morning), but the day holds OL (morning)')
+    expect(clashWhat(clashOf('bane'))).toBe('Weekend/PH work earns HO* (AM), but the day holds OL (AM)')
   })
 })
 
@@ -118,13 +118,13 @@ describe('the "OIL the app credited" sheet’s title reads as the box (S2-4)', (
     render(<RaptorSheet callsign="Fable" date={SAT} code="FO" creditShown={{ code: 'FO', days: 1 }} onClose={() => {}} />)
     expect(title()).toBe('FO* · approved')
   })
-  it('a credited morning HO: "HO* (morning) · approved", never "<HO · approved"', () => {
+  it('a credited morning HO: "HO* (AM) · approved", never "<HO · approved"', () => {
     render(<RaptorSheet callsign="Ranger" date={SAT} code="*HO" creditShown={{ code: 'HO', days: 0.5, half: 'am' }} onClose={() => {}} />)
-    expect(title()).toBe('HO* (morning) · approved')
+    expect(title()).toBe('HO* (AM) · approved')
   })
-  it('a morning leave filed on the Inputs page: "LL (morning) · approved", no arrow', () => {
+  it('a morning leave filed on the Inputs page: "LL (AM) · approved", no arrow', () => {
     render(<RaptorSheet callsign="Ranger" date={SAT} code="*LL" onClose={() => {}} />)
-    expect(title()).toBe('LL (morning) · approved')
+    expect(title()).toBe('LL (AM) · approved')
   })
 })
 
@@ -141,7 +141,7 @@ describe('the stored grammar stays — a send-back lands a morning bid (S2-9)', 
 
 /* an FO is drawn whole whatever half its work fell in (MatrixRows placeOf): its half is never named, in the note or the sheet */
 describe('an FO earned in one half of the day still reads whole', () => {
-  it('the clash note: six and a half hours of morning work earns "FO*", never "FO* (morning)"', () => {
+  it('the clash note: six and a half hours of morning work earns "FO*", never "FO* (AM)"', () => {
     setCell('bane', SAT, 'OL')
     baneWorks('05:00', '11:30')
     publishSat()

@@ -1,0 +1,38 @@
+[
+ {
+  "id": "D1525 the day’s list names each half AM / PM",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "lines: AM · approved | PM · approved",
+  "pics": [
+   "a1-daylist"
+  ]
+ },
+ {
+  "id": "D1525 his bell names the half: \"LL (AM) added and approved\", \"OL (PM) …\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "bell: Your leaveTue 17 NovLL (AM) added and approved · SabernowYour leaveThu 12 NovOL (PM) added and approved · SabernowYour leaveThu 12 NovLL (AM) added and approved · Sabernow | Mark all read",
+  "pics": [
+   "a2-bell"
+  ]
+ },
+ {
+  "id": "D1525 his approved-leave window: \"LL (AM)\" in its title",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "opened remarks-sheet; title \"LL (AM)\"",
+  "pics": [
+   "a3-approved"
+  ]
+ },
+ {
+  "id": "D1525 his pending morning bid’s window (look only — closed-day window if the day is closed)",
+  "size": "phone",
+  "verdict": "LOOK",
+  "said": "opened closed-note; says \"LL (AM) · pending\"",
+  "pics": [
+   "a4-bid"
+  ]
+ }
+]

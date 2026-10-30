@@ -229,6 +229,9 @@ describe('a clashing input replaces an undecided bid (owner rule, H1, answer B, 
     expect(file('ammo', 'OL', 'Feb 10', { allday: false, half: 'am', s: 0, e: 720 })).toBe(true)
     const req = recsAt('ammo', '2026-02-10').find(r => r.kind === 'request') as any
     expect(req).toMatchObject({ id, code: 'LL*', state: 'pending' })
+    /* his D1525: the sentence names the half that went after its code — "LL (AM) bid", never "bid on 10 Feb (morning)" */
+    expect(said.some(m => m.includes('LL (AM) bid on 10 Feb')), said.join(' | ')).toBe(true)
+    expect(said.some(m => m.includes('(morning)'))).toBe(false)
   })
 
   it('a course, overseas duty or ATT B leaves the bid alone', () => {

@@ -370,3 +370,37 @@ a late posting's date, new in d30c6a369; (B) the Redo of an Inputs-page lengthen
 **filed, not built** (`[LW-DELETED-RESTORE-OVERREFUSE]`, with the reader's exact fixes), by the coordinator: this was the job's
 third read, the order's cap of about three fix rounds (§5), and both refuse rather than let anything wrong in. **The last round:**
 d30c6a369 / 77cb09bc5; what carries the rest: the filed item.
+
+## 13. His D1525 — a half day written AM / PM (30 Oct 26, the day after)
+
+**The change:** wherever the Leave War writes a half day in words, the half follows the code as AM or PM — "LL (AM)", "HO* (PM)" —
+and a whole day is the code alone (his answer to the morning page's question 4). Built red first: 28 tests pinned the new words and
+failed on the old, then passed; 7 older tests that pinned "morning" / "afternoon" were changed to the ruled words (each traced to
+D1525). **Tier:** §5 says words only → NONE; done as a LOOK with a short walk, because the words change length on a phone and he is
+shown each place (D921). **The roll-call — every place a half is written beside a code:**
+
+| Place | Before | Now |
+|---|---|---|
+| The clash note (desktop line, phone list) | "HO* (morning)" | "HO* (AM)" — unit pins (`halfwords.test.tsx`) |
+| The credited-OIL window's title | "HO* (morning) · approved" | "HO* (AM) · approved" — unit pins |
+| The read-only window of an entry filed on the Inputs page | "C (morning)" | "C (AM)" — unit pin |
+| The day's list — each entry beside its box | "Morning · approved" | "AM · approved" — walked |
+| The day's list — his live bid in the clash line | "Your <LL (morning) bid is still live" | "Your LL (AM) bid is still live" — unit pin |
+| The day's list — a replaced bid's notice | "Your <LL bid was replaced…" | "Your LL (AM) bid was replaced…" — unit pin |
+| An HO's half beside its worth (the day's list, the bid window, his own award) | "half a day, morning" | "half a day, AM" — unit pins |
+| His approved-leave window's title | "<LL" | "LL (AM)" — walked |
+| His closed-day window | "LL Morning · pending" / "LL Whole day · pending" | "LL (AM) · pending" / "LL · pending" — walked |
+| The bid window's held-half line beside an Other (D1371, narrowed) | "Morning" | "AM" — unit pin |
+| The bell | "LL approved" (the half dropped) | "LL (AM) approved", "replaces your LL (PM) bid" — walked |
+| A filing over his bid — its passing sentence | "your LL bid on 10 Feb (morning)" | "your LL (AM) bid on 10 Feb" — unit pin |
+| Left on purpose | "The morning is LL, filed on the Inputs page" (the half is the subject); a refusal "two undecided requests on the morning"; the Legend's "Morning (AM)"; the bid window's leave buttons (D1331) | unchanged |
+
+**Gates:** the Leave War unit set 3984 run (7 old-words tests changed, then all green), the bell's scheduler-side readers 247/247,
+the build clean. **The walk** (`scripts/handpass/lw-sf-s5.mjs` — the admin places through the bid window, then Ranger signs in on the
+same page): 4 checks × 2 sizes, all as expected, no errors — the day's list "AM · approved | PM · approved"; his bell "LL (AM) added
+and approved", "OL (PM) added and approved"; his approved-leave window "LL (AM)"; his closed-day window "LL (AM) · pending". Every
+phone picture opened by the host: nothing wraps or is covered.
+
+**Walk:** `docs/handpass/2026-10-30-lw-small-fixes.md` §13 · 15 pictures (`docs/img/handpass/2026-10-30-lw-small-fixes/s5`, `s5-phone`)
+· 4 surfaces (the day's list, the bell, the approved-leave window, the closed-day window) · 8 checks walked, 8 as expected · the clash
+note, the credited-OIL window and the held-half line carried by unit pins (their words come from the same fold)

@@ -793,7 +793,8 @@ export function BidPicker({
         {onlyPortion && heldOther && (
           <span className="note bp-wide bp-heldline" data-testid="bid-heldhalf">
             <EntryBox code={heldOther.code} fill="a" place={onlyPortion === 'pm' ? 'top' : 'bot'} />
-            <span>{onlyPortion === 'pm' ? 'Morning' : 'Afternoon'}</span>
+            {/* its half after its box as AM / PM (his D1525 — narrowing D1371's "Morning" / "Afternoon") */}
+            <span>{onlyPortion === 'pm' ? 'AM' : 'PM'}</span>
             {heldOther.to && <span>· {heldOther.to}</span>}
             {heldOther.remarks && <span className="bp-heldwords">“{heldOther.remarks}”</span>}
             <span>· change it on the Inputs page</span>

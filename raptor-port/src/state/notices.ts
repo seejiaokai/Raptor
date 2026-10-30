@@ -411,6 +411,15 @@ export function noticeRun(a: string, b?: string | null): string {
 }
 const cs = (id: string): string => { const p: any = PEOPLE[id]; return p && p.cs ? String(p.cs) : String(id) }
 const names = (who: readonly string[]): string => (who.length <= 2 ? who.map(cs).join(', ') : `${who.length} people`)
+/* A Leave War code in a bell line (his D1525, 30 Oct 26): its letters, then its half as AM / PM — "LL (AM)" — from the
+   stored grammar ("*LL" a morning, "LL*" an afternoon), a whole day the code alone. Only leave rides these lines, never an
+   app-credited OIL, so the star here is always the half (the war's own fold is leavewar/engine/codes.ts codeInWords). */
+const lwCode = (c: string): string => {
+  const t = String(c ?? '').trim()
+  if (t.startsWith('*')) return `${t.slice(1)} (AM)`
+  if (t.endsWith('*')) return `${t.slice(0, -1)} (PM)`
+  return t
+}
 function partWords(p: NoticePart): string {
   switch (p.k) {
     case 'del': return 'Deleted'
@@ -422,7 +431,7 @@ function partWords(p: NoticePart): string {
     case 'on': return 'Back on the programme'
     case 'unav': return 'Filed under Unavailable'
     case 'unavoff': return 'Taken out of Unavailable'
-    case 'rbid': return `replaces your ${p.c.replace(/\*/g, '')} bid`
+    case 'rbid': return `replaces your ${lwCode(p.c)} bid`
     case 'when': {
       const days = p.a ? (p.b && p.b !== p.a ? `${noticeDay(p.a)} – ${noticeDay(p.b)}` : noticeDay(p.a)) : ''
       return 'Now ' + [days, p.t || ''].filter(Boolean).join(' ')
@@ -434,7 +443,7 @@ function partWords(p: NoticePart): string {
     /* (its count is the line's own, read live: noticeWords) */
     case 'oilhol': return 'Inputs need an OIL answer'
     case 'lw': {
-      const c = p.c.replace(/\*/g, '')
+      const c = lwCode(p.c)
       const to = p.to ? noticeRun(p.to, p.tb) : ''
       switch (p.d) {
         case 'approved': return p.again ? `${c} approved again` : `${c} approved`
@@ -447,7 +456,7 @@ function partWords(p: NoticePart): string {
         case 'bidmoved': return `${c} bid moved to ${to}`
         case 'biddel': return `${c} bid deleted`
         /* his D1460: what a pending bid of his was changed to, by someone else */
-        case 'retyped': return `${(p.w || '').replace(/\*/g, '')} bid changed to ${c}`
+        case 'retyped': return `${lwCode(p.w || '')} bid changed to ${c}`
       }
       return c
     }
@@ -491,7 +500,7 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
      replaces your LL bid") */
   const rb = (n.what || []).filter(p => p.k === 'rbid')
   const main = (n.what || []).filter(p => p.k !== 'rbid').slice(0, 2).map(partWords).join(', ')
-  const tail = rb.length ? `replaces your ${[...new Set(rb.map(p => (p as any).c.replace(/\*/g, '')))].join(', ')} bid` : ''
+  const tail = rb.length ? `replaces your ${[...new Set(rb.map(p => lwCode((p as any).c)))].join(', ')} bid` : ''
   return { name: n.name, day: noticeDay(n.day), what: main && tail ? `${main} · ${tail}` : main || tail, who: n.by ? cs(n.by) : '' }
 }
 
