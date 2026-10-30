@@ -267,6 +267,7 @@ After four weeks, the scorecard against the baseline. **Place:** after the iPhon
 unless he says otherwise; Opus 5.5, high effort; a fresh chat.
 
 ### [WIN-RESIZED-OVER-RETRY] A window he has only resized lies over the failed-save warning's Retry (found 30 Oct 26 by the steady-tests job; older; low)
+**RULED 30 Oct 26 (his "Q5 ok" — D1523): move such a window down below the band, as a window not yet placed is; to build.**
 On a desktop where the top bar runs to two lines (on his PC 1200 and 1366 wide), the changes window and the ALL AVAIL window open just
 under the bar. Resized by its corner and never moved, a window keeps the size he chose — right — but its top with it, because a size
 he chose marks it placed (`raptor-port/src/ui/floatwin.ts`, `data-placed`). When a save then fails, the bar grows by the warning's line

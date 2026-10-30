@@ -91,3 +91,5 @@ at 1440 (a one-line bar). Picture: `img/2026-10-30-steady-tests/resized-window-o
 Each changed spec run in full (the `raptor` project — the only one either runs in), three times in a row, under the check lock:
 74 tests a run (`changeswin.spec.ts` 16, `save-note.spec.ts` 58) — run 1: 74 passed (48.2 s); run 2: 74 passed (48.2 s);
 run 3: 74 passed (48.7 s); none flaky, none retried. The full check is GitHub's run of the pull request (D1086).
+
+**His answer (30 Oct 26, "Q5 ok" — D1523):** a window he has resized but never moved moves down below the failed save's band, as a window not yet placed does; `[WIN-RESIZED-OVER-RETRY]` is to build.
