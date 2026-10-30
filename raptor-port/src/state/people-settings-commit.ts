@@ -366,6 +366,38 @@ export function registerPeopleSettingsCommandLayer(): void {
   }
 }
 
+/* PUT THE ROSTER IN MEMORY BACK TO WHAT IS SAVED ([SYSTEM-PASS-SAVES-ROSTER], D1510's security read, 29 Oct 26 — built
+   31 Oct 26). Every roster write in the app is made inside its own command, which saves it as it ends (advancePeople moves
+   the baseline on), so outside a command the live roster IS the saved one — except for a change made in memory outside
+   every command, which only a browser's console can make. A command that runs as the app itself (the posting pass) would
+   save such a change unchecked, because the baseline it diffs against is the saved roster and its finish takes the whole
+   live roster. So the pass calls this first: each person whose live record differs from his saved one gets his saved
+   record back, IN PLACE (the same object, so nothing holding him reads a stale copy); a person in memory and not saved
+   goes; a saved person missing from memory comes back, in his place in the order. Never called inside another command's
+   reducer — there the live roster holds that command's own unsaved change (sync.ts runPoOutcomes decides). Returns the
+   ids it put back. */
+export function revertUnsavedPeople(): string[] {
+  if (PEOPLE_BASELINE == null) return []
+  const base = JSON.parse(PEOPLE_BASELINE)
+  const out: string[] = []
+  let added = false
+  for (const id of Object.keys(PEOPLE)) {
+    if (isPlaceholderBody(id) && !(id in base)) continue      // the placeholder pucks are code, never saved rows
+    if (!(id in base)) { delete (PEOPLE as any)[id]; out.push(id); continue }
+    if (JSON.stringify((PEOPLE as any)[id]) === JSON.stringify(base[id])) continue
+    const p: any = (PEOPLE as any)[id]
+    if (p && typeof p === 'object' && base[id] && typeof base[id] === 'object') {
+      for (const k of Object.keys(p)) delete p[k]
+      Object.assign(p, base[id])
+    } else (PEOPLE as any)[id] = base[id]
+    out.push(id)
+  }
+  for (const id of Object.keys(base)) if (!(id in PEOPLE)) { (PEOPLE as any)[id] = base[id]; out.push(id); added = true }
+  if (added) reorderPeople()
+  if (out.length) indexCallsigns()
+  return out
+}
+
 /* re-sync the people baseline to the CURRENT PEOPLE. MUST run after any path that
    replaces the roster out-of-band — above all persist.ts hydrate() at boot, which
    rewrites PEOPLE in place with the STORED roster AFTER this module's registration

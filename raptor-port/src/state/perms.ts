@@ -973,6 +973,17 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
       if (env.type !== 'lw.seen' || a.personId == null || c.id !== `lwseen:${a.personId}`) return `another person's last visit (${c.collection}/${c.id})`
     }
   }
+  /* THE POSTING PASS CHANGES ONLY THE MEN IT POSTS OUT ([SYSTEM-PASS-SAVES-ROSTER], D1510's security read, 29 Oct 26 —
+     built 31 Oct 26). The pass runs as the app itself, which nothing below asks, so its own command is held here: a change
+     to a person rides in it only beside that man's posting record (every outcome — Overseas Sqn, SANS, Delete — writes his
+     posting as it runs: its done mark, or a delete's closed window). A change to anyone else is a change the pass never
+     made — a person changed in memory outside every command — and the whole pass is refused (it runs again on the next
+     pass, after leavewar/sync.ts runPoOutcomes has put the roster back to what is saved). The database step translates
+     this as: the pass's service account updates a Person only in the changeset that carries out his posting. */
+  if (a && a.role === 'system' && env.type === 'lw.postoutRun') {
+    const posted = new Set(env.changes.filter(c => c.collection === 'lw.postouts').map(c => String(c.id)))
+    for (const c of env.changes) if (c.collection === 'people' && !posted.has(String(c.id))) return `the posting pass may change only the men it posts out (people/${c.id})`
+  }
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
   let warRestore: ((c: Change) => boolean) | null | undefined

@@ -446,3 +446,55 @@ describe('the narrow read’s finding 2: an Inputs-page edit of his war-approved
     expect(globalRedo().ok).toBe(true)
   })
 })
+
+/* THE NARROW READ OF THE SECOND FIX ROUND (`docs/handpass/parts/lw-sf1030/read-fix2.md`), its two over-refusals —
+   [LW-DELETED-RESTORE-OVERREFUSE], built 31 Oct 26. Finding A: a war move of his approved leave that CROSSES the first refused
+   day nets no days, yet counted as adding days from that day, so its Redo was refused for good though the same move live goes
+   through. Finding B: an admin's Inputs-page lengthening of his war-approved leave over his own pending bid — the inputs door
+   swaps the bid for a notice — fell to the request test on its Redo and was refused, though the live edit is allowed
+   (D321 (10)). */
+describe('the second narrow read’s finding A: a war move across the posting’s date', () => {
+  const postLate = () => { expect(postOut('bane', '2026-07-12', 'delete')).toBe(true); runPoOutcomes(); raptorNotify(); expect((PEOPLE as any).bane.deletedFrom).toBe('2026-07-15') }
+  const on = (d: string) => warLeave('bane').some((r: any) => r.date === d)
+  it('the live door, for comparison: after the posting ran late, his approved 10 Jul moves to 13 Jul', () => {
+    setCell('bane', PAST, 'LL'); expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+    postLate()
+    expect(moveCells([{ personId: 'bane', date: PAST }], 3)).toBeTruthy()
+    expect(on('Jul 13')).toBe(true)
+  })
+  it('moved 10 → 13 Jul, Undo, the posting runs late, Redo: the move goes back — not refused, not passed over', () => {
+    setCell('bane', PAST, 'LL'); expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+    expect(moveCells([{ personId: 'bane', date: PAST }], 3)).toBeTruthy()
+    expect(on('Jul 13')).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(on('Jul 10')).toBe(true)
+    postLate()
+    expect(undoState().canRedo, 'Redo still offered').toBe(true)
+    expect(globalRedo().ok, 'the Redo of the move').toBe(true)
+    expect(on('Jul 13')).toBe(true)
+    expect(on('Jul 10')).toBe(false)
+  })
+})
+
+describe('the second narrow read’s finding B: an Inputs-page lengthening over his own pending bid', () => {
+  it('lengthened 10 → 10–11 Jul over his pending 11 Jul bid, Undo, he is deleted, Redo: the lengthening is back', () => {
+    setCell('bane', PAST, 'LL'); expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+    expect(setCell('bane', '2026-07-11', 'LL')).toBe(true)
+    expect(req('bane', '2026-07-11').state).toBe('pending')
+    const row = warLeave('bane').find((r: any) => r.date === 'Jul 10') as any
+    expect(writeInputs(() => { row.endDate = 'Jul 11' })).toBe(true)
+    expect(recordsAt('bane', '2026-07-11').some(r => r.kind === 'request'), 'the inputs door took his bid').toBe(false)
+    expect(globalUndo().ok).toBe(true)
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    expect(undoState().canRedo, 'Redo still offered').toBe(true)
+    expect(globalRedo().ok, 'the Redo of the lengthening').toBe(true)
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 10' && r.endDate === 'Jul 11')).toBe(true)
+  })
+  it('the live edit, for comparison: after his delete the same lengthening over his pending bid goes through', () => {
+    setCell('bane', PAST, 'LL'); expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
+    expect(setCell('bane', '2026-07-11', 'LL')).toBe(true)
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    const row = warLeave('bane').find((r: any) => r.date === 'Jul 10') as any
+    expect(writeInputs(() => { row.endDate = 'Jul 11' })).toBe(true)
+  })
+})

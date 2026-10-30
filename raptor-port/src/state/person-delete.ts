@@ -314,14 +314,30 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', mod
      …AND ONLY THE WAR'S OWN STEPS ARE COUNTED AS APPROVALS (its finding 2): an admin's Inputs-page edit that lengthens his
      war-approved leave keeps the war's mark (ui/inputedit.tsx) and is allowed live after his delete (D321 (10)); what tells
      it from an approval is the step's module — a war step is `lw` (`lw.decide`, `lw.placeApproved`), an Inputs-page step
-     `inputs`. Any other Redo falls to the request test, as an Undo does. */
+     `inputs`.
+     …A MOVE ADDS NO DAYS, EVEN ACROSS THE FIRST REFUSED DAY (the narrow read of the second fix round, `read-fix2.md`
+     finding A, [LW-DELETED-RESTORE-OVERREFUSE] — built 31 Oct 26): counted only from `from`, a war move of his approved leave
+     from before that day to after it read as adding days, and its Redo was refused for good, though the same move live goes
+     through. A war step's Redo is refused only when it adds days of war-approved leave for him OVERALL and adds days from the
+     first refused day — an approval, a place-and-approve, an approval that extends a leave into the refused days.
+     …AND ONLY A WAR STEP APPROVES (its finding B): every other Redo that takes a request of his and writes war-marked leave
+     is the inputs door's swap — an admin's Inputs-page edit that lengthens his war-approved leave over his own pending bid,
+     the bid swapped for a notice — which is allowed live after his delete (D321 (10)); the read's survey of every writer
+     found no other. So no Redo falls to the request test; an Undo keeps it. */
   for (const id of gone) {
     const from = refusedFrom(id)
     if (from == null) continue
     const lwDays = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)
-    if (dir === 'redo' && module === 'lw') {
-      const added = (changes || []).reduce((n, ch) => (ch && ch.collection === 'inputs' ? n + lwDays(ch.op === 'delete' ? null : ch.after) - lwDays(ch.before) : n), 0)
-      if (added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+    if (dir === 'redo') {
+      if (module === 'lw') {
+        const all = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).length : 0)
+        let grew = 0, added = 0
+        for (const ch of changes || []) if (ch && ch.collection === 'inputs') {
+          const a = ch.op === 'delete' ? null : ch.after
+          grew += all(a) - all(ch.before); added += lwDays(a) - lwDays(ch.before)
+        }
+        if (grew > 0 && added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+      }
       continue
     }
     const takesBid = (changes || []).some(ch => {
