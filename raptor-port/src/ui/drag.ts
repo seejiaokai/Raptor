@@ -19,7 +19,8 @@ import { oilWaitThen, oilWaitAlso } from './oilwait'
 import { OIL_NO_MOVE } from './oilmode'
 import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
-import { edgeStep, TOUCH_EDGE } from './edgescroll'
+import { edgeStep, EDGE, TOUCH_EDGE } from './edgescroll'
+import { panDays } from './pan'
 import { scaleOf } from './pinchzoom'
 
 const editMode = () => HOOKS.editMode()
@@ -694,7 +695,7 @@ function underPoint(x: any, y: any, ghost: any) {
   const stack: any[] = typeof (document as any).elementsFromPoint === 'function' ? (document as any).elementsFromPoint(x, y) : [document.elementFromPoint(x, y)]
   return stack.find((n: any) => n && !(ghost && ghost.contains(n))) || null
 }
-function tdOver(x: any, y: any) {
+function tdOver(x: any, y: any, scroll = true) {
   const g = TD.ghost
   /* TD.ox/oy is where the mouse press landed inside the puck, so its ghost
      stays pinned to that spot; a finger's ghost is centred (ox = oy = 0 with
@@ -718,7 +719,48 @@ function tdOver(x: any, y: any) {
     TD.over = t
     hoverWhy(t)
   }
-  if (!TD.wide) tdAutoScroll(y)
+  if (!TD.wide && scroll) tdAutoScroll(y)
+}
+/* A MAN HELD AT THE WEEK'S SIDE STEPS THE WEEK A DAY (owner D1529, 31 Oct 26 — "A — a day at a time", chosen on the
+   week-drag page over a smooth slide; the design guide's drag rule, D895). On Edit Schedule a man carried with the mouse
+   could only be dropped on a day already in view: held at the week's left or right side the week never moved
+   ([WEEK-DRAG-EDGE-PAN]). Now, held in the app's mouse edge band (ui/edgescroll.ts EDGE) at the week's side, the week
+   steps one day after WEEK_STEP_WAIT — exactly one press of ‹ / › (pan.ts panDays, so the front day lands flush, D275) —
+   and again each WEEK_STEP_WAIT while he stays. The wait is what lets a name only PASS THROUGH the side: every name from
+   the crew panel crosses the week's right side on its way in. It stops at Monday and Sunday (`cross` false): a week
+   loaded under a held man repaints the cells he is aiming at.
+   - The side is the week's own box, its visible part only, and only where the pointer is over the week itself or over a
+     ‹ › arrow — never over the crew panel beside it, a window over the week, or the bars above it.
+   - The band the man was picked up in is dead until the pointer has left it (as ui/edgescroll.ts), so a man on the front
+     day's edge is not carried off by his own press.
+   - A frame loop, not the moves: a mouse held still must keep stepping. While the week glides, the cell under the
+     pointer is read again (tdOver without its up-and-down scroll, which stays on the moves as before).
+   - The mouse only: a finger's drag keeps its own behaviour (TD.wide for the board's desktop layout on a phone). */
+export const WEEK_STEP_WAIT = 500
+function weekSide(w: HTMLElement, x: number, y: number): -1 | 0 | 1 {
+  const r = w.getBoundingClientRect()
+  if (y < Math.max(r.top, 0) || y > Math.min(r.bottom, window.innerHeight)) return 0
+  const s = x < r.left + EDGE ? -1 : x > r.right - EDGE ? 1 : 0
+  if (!s) return 0
+  const el: any = underPoint(x, y, TD && TD.ghost)
+  return el && el.closest && (el.closest('#eWeek') || el.closest('.week-nav')) ? s : 0
+}
+function weekStepLoop() {
+  const w = document.getElementById('eWeek') as HTMLElement | null
+  if (!w) return
+  let held = weekSide(w, TD.x, TD.y), dir = 0, since = 0, sl = w.scrollLeft
+  const tick = () => {
+    if (!TD || !TD.armed || !TD.mouse) return
+    const s = weekSide(w, TD.x, TD.y)
+    if (held && s !== held) held = 0
+    const now = Date.now()
+    if (!s || held) dir = 0
+    else if (s !== dir) { dir = s; since = now }
+    else if (now - since >= WEEK_STEP_WAIT) { panDays(s, false); since = now }
+    if (w.scrollLeft !== sl) { sl = w.scrollLeft; tdOver(TD.x, TD.y, false) }
+    TD.raf = requestAnimationFrame(tick)
+  }
+  TD.raf = requestAnimationFrame(tick)
 }
 /* CARRIED TO THE EDGE, THE DAY FOLLOWS — the board's desktop layout on a phone (owner D1107, 21 Oct 26 — "when I drag
    the puck to drop, when I hit the edge of the zoom it should auto scroll"; the design guide's drag rule, D895). There the
@@ -802,6 +844,7 @@ function tdArm() {
   dndOn(TD.src)
   tdOver(TD.x, TD.y)
   if (TD.wide) tdWideLoop()
+  else if (TD.mouse && view.CURPAGE === 'editsched' && window.innerWidth > 820) weekStepLoop()
   if (!TD.mouse && navigator.vibrate) try { navigator.vibrate(12) } catch (_) {}
 }
 function onPointerDown(e: PointerEvent) {
