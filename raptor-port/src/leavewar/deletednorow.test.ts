@@ -498,3 +498,36 @@ describe('the second narrow read’s finding B: an Inputs-page lengthening over 
     expect(writeInputs(() => { row.endDate = 'Jul 11' })).toBe(true)
   })
 })
+
+/* THE SECURITY READ OF 7d0c12b24 (`docs/handpass/parts/lw-rr1031/read-security.md` 4) — two admin-side leads older than the
+   fix round, each given one red test before it is filed or fixed. */
+describe('the security read’s older leads', () => {
+  /* (a) the restore check's last test asked only an input's START against his cutoff: an input that starts before it and
+     runs past it, put back by Undo / Redo after his delete, put him back on days from his cutoff */
+  it('an input of his lengthened past his cutoff, Undo, he is deleted, Redo: refused — he is not put back on his days from it', () => {
+    const row = { iid: 'dn-in-span', person: 'bane', type: 'LL', date: 'Jul 10', yr: 2026, allday: true, remarks: '', mod: '2026-07-01', by: 'stiff', at: 1 }
+    expect(writeInputs(() => { INPUTS.push(row as any) })).toBe(true)
+    const r = () => INPUTS.find((x: any) => x.iid === 'dn-in-span') as any
+    expect(writeInputs(() => { r().endDate = 'Jul 20' })).toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(r().endDate).toBeUndefined()
+    expect(deletePerson('bane')).toBeNull(); raptorNotify()
+    globalRedo()
+    expect(r().endDate, 'his input still ends where it did, before his cutoff of 15 Jul').toBeUndefined()
+  })
+  /* (b) the war count is a net sum: one war step that approves a day the late posting refuses AND sends back another
+     approved day of his adds nothing overall, so its Redo passed. No screen sends that pair in one command (Approvals and
+     the bid windows decide one way at a time) — filed, [LW-DELETED-REDO-NETSUM]. Written as the RIGHT behaviour and marked
+     `it.fails` while the fault stands: it goes red the day the fix lands, and is then made a plain `it` */
+  it.fails('one war step approving his refused 13 Jul and sending back his 10 Jul, Undo, the posting runs late, Redo: refused — FILED [LW-DELETED-REDO-NETSUM]', () => {
+    setCell('bane', PAST, 'LL'); setCell('bane', '2026-07-13', 'LL')
+    const [a] = decideRequests([line('bane', PAST, 'approved')])
+    expect(a!.kind).toBe('done')
+    const out = decideRequests([line('bane', '2026-07-13', 'approved'), { personId: 'bane', to: 'pending', parts: (a as any).parts }])
+    expect(out.map(o => o.kind)).toEqual(['done', 'done'])
+    expect(globalUndo().ok).toBe(true)
+    expect(postOut('bane', '2026-07-12', 'delete')).toBe(true); runPoOutcomes(); raptorNotify()
+    globalRedo()
+    expect(warLeave('bane').some((r: any) => r.date === 'Jul 13'), 'no approval written on a day the posting refuses').toBe(false)
+  })
+})

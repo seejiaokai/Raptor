@@ -240,6 +240,15 @@ himself; the projection case); 2 the put-back inside a person's command (the add
 6 an added person left (the put-back's own test); 7 fix A's overall count removed (finding A's pin); 8 fix B's Redo sent to
 the request test (finding B's pin). Every file put back as it was (`git status`: no source touched by the runner).
 
+**Fix round 1 (31 Oct 26, after the two reads — §8):** twelve breaks added (9–20), one per condition the round added — the
+done mark the posting's own date (9), its date come (10), changed by this pass (11), the person's fields (12), a SANS
+posting's other qualifications (13), the outcome's marks (14), another man's account row (15), the posted man's account's
+role, owner or name (16), the first-write allowance kept to the first write (17), any other settings row (18), the put-back's
+ALL / ALL AVAIL only (19), the restore check's input on any day from his cutoff (20); break 5's line had been replaced by the
+round, so it was retargeted at the new rule. Each new gate condition has a test only it satisfies in `postout-roster.test.ts`
+(the five written for 9, 11, 13, 17 and 18 after the fix, proved by their breaks). **Whole list: 20 of 20 CAUGHT**; the runner
+left no source touched.
+
 ## 8. The reads — owed
 
 - A fresh, blind Opus code read of the change (D790; never this chat), handed the finished code and this sheet with the walk's
@@ -277,5 +286,35 @@ the request test (finding B's pin). Every file put back as it was (`git status`:
   the date without firing the page's timers, and the day clock (D1266) moves the ring at its midnight timer or when the page
   is shown again. Checked on the fixed build with the browser's clock: at 23:58 the ring on 4 Nov; the clock RUN past
   midnight — on 5 Nov; a jump to 6 Nov — still 5 Nov; the page then shown again (a focus) — 6 Nov.
+
+**Fix round 1 (31 Oct 26) — what the two reads asked, and the re-walk of what it touched.** The reads:
+`parts/lw-rr1031/read-opus.md` (no findings, three tidiness notes) and `parts/lw-rr1031/read-security.md` (1 Medium at the
+database step, 2–4 Low). Built red first:
+- the commit gate's rule for the posting pass tightened (`state/perms.ts postingPassViolation`, security 1(a)) — the posting
+  change must be that posting's own done mark (`poDone` = the day after `to`, as `markPostingDone` writes it, a date come), or
+  a Delete's record removed; his person may change only in that outcome's own fields with its mark set (the lists read from
+  `runPoOutcomes` and `applyDelete`; `forgetPersonFrom` writes the war only); the pass's settings rows only the posted men's
+  accounts, and for a Delete the request and bell row that go with his account — with the accounts' first write (the whole
+  list, from none stored) allowed only as such. Red: the six exploit tests ("a Management tick slipped onto the posted man",
+  "a new callsign …", "another man's posting record touched … and his Management tick", "a delete mark cleared …", "a done
+  mark not yet due …", "another man's account row …") each failed ".toMatch() expects to receive a string, but got object" —
+  the gate let it through; every real outcome (Overseas with his account suspended, SANS, Delete) passes as it ran. "Transfer"
+  is not an outcome the app accepts yet (D281 — its chip is greyed), so it has no run to test. `data-model.md` §11 says the
+  same. *(The test's storage was given its key list, so an account is a record a change names, as on a built site — without
+  it no account change had ever reached the gate's test.)*
+- the put-back skips only ALL and ALL AVAIL (security 3) — red "expected [] to deeply equal [ 'ghost2' ]";
+- the restore check asks an input on ANY day from his cutoff (security 4, the older lead that reproduced) — red "his input
+  still ends where it did …: expected 'Jul 20' to be undefined" (a Redo of an Inputs-page lengthening past his cutoff put him
+  back); the reader's one line;
+- the net-sum lead also reproduced (expected false, got true) — reachable from no screen; filed `[LW-DELETED-REDO-NETSUM]`, its
+  test kept as `it.fails`;
+- filed: `[SERVER-SIDE-PASSES]` (security 1(b) and 2), `[SYSTEM-ACTOR-ONE-TEST]` (the code read's note 1); the stale comment of
+  the code read's note 2 corrected.
+
+**The re-walk (run by the builder — a script run; the host opens the deciding pictures):** RR-P1 to RR-P4 at the desktop on the
+rebuilt fixed build, `after/s2-desk-fix1/` — **4 / 4 PASS**, no console or page errors; deciding pictures
+`rr-p1-c-quals-after-reload.png` (Ace's Management empty after the reload), `rr-p4-c-users.png` (no Drifter between Diesel and
+Echo). The account path of the tightened rule (a posted man with a sign-in) is carried by the unit tests' real passes — the walk's
+Drifter has none.
 
 Rulings: none this job.

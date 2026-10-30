@@ -382,7 +382,9 @@ export function revertUnsavedPeople(): string[] {
   const out: string[] = []
   let added = false
   for (const id of Object.keys(PEOPLE)) {
-    if (isPlaceholderBody(id) && !(id in base)) continue      // the placeholder pucks are code, never saved rows
+    /* the placeholder pucks are code, never saved rows — ALL and ALL AVAIL by their ids alone: a body added in memory and
+       marked `special` is no placeholder and goes (the security read of 7d0c12b24, 3 — it stalled every pass until a reload) */
+    if ((id === 'all' || id === 'allavail') && !(id in base)) continue
     if (!(id in base)) { delete (PEOPLE as any)[id]; out.push(id); continue }
     if (JSON.stringify((PEOPLE as any)[id]) === JSON.stringify(base[id])) continue
     const p: any = (PEOPLE as any)[id]

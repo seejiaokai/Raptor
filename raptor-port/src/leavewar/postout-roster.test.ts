@@ -56,7 +56,8 @@ afterAll(() => { vi.useRealTimers(); storeBackend.impl = null })
 beforeEach(() => {
   vi.setSystemTime(new Date(2026, 6, 15, 9, 0, 0))
   Object.keys(mem).forEach(k => delete mem[k])
-  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v } }
+  /* with its key list, so the settings rows (an account) are records a command's change names, as on a built site */
+  storeBackend.impl = { getItem: (k: string) => (k in mem ? mem[k]! : null), setItem: (k: string, v: string) => { mem[k] = v }, keys: () => Object.keys(mem) }
   const p0 = JSON.parse(PEOPLE0)
   for (const k of Object.keys(PEOPLE)) delete (PEOPLE as any)[k]
   Object.assign(PEOPLE, p0); indexCallsigns()
@@ -174,6 +175,13 @@ describe('the put-back itself, and where it must not run', () => {
     expect(P('stiff')).toEqual(stiff)
     expect(revertUnsavedPeople(), 'nothing left to put back').toEqual([])
   })
+  it('a body added in memory and marked as a placeholder is put back out too — only ALL and ALL AVAIL are code', () => {
+    ;(PEOPLE as any).ghost2 = { cs: 'GHOST2', seat: 'FCP', q: 'C', quals: {}, special: true }
+    expect(revertUnsavedPeople()).toEqual(['ghost2'])
+    expect((PEOPLE as any).ghost2).toBeUndefined()
+    expect(P('all'), 'the ALL puck stays').toBeTruthy()
+    expect(P('allavail'), 'the ALL AVAIL puck stays').toBeTruthy()
+  })
   it('a posting that comes due inside a person’s own command (an add with his post-in date): that command’s new man is kept', () => {
     postAhead('bane', 'overseas')
     expect(addRosterPerson({ cs: 'Newby', ini: '', seat: 'FCP', cat: 'C' } as any, '2026-07-25')).toBeNull()
@@ -207,10 +215,11 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     seq: 1, at: '', actor: { id: 'system', role: 'system', session: null } as any, origin: 'projection',
     scope: { module: 'people' } as any, type: 'lw.postoutRun', changes, emit: true,
   } as any)
-  const person = (id: string) => ({ op: 'put', collection: 'people', id, before: { cs: id }, after: { cs: id, archived: true } })
-  const posting = (id: string) => ({ op: 'put', collection: 'lw.postouts', id, before: { to: '2026-07-19' }, after: { to: '2026-07-19', poDone: '2026-07-20' } })
+  /* an Overseas Sqn posting dated 14 Jul, run on 15 Jul (today): his archive by the posting, and the posting's done mark */
+  const person = (id: string) => ({ op: 'put', collection: 'people', id, before: { cs: id }, after: { cs: id, archived: true, archivedBy: 'po', archivedOn: '2026-07-14' } })
+  const posting = (id: string) => ({ op: 'put', collection: 'lw.postouts', id, before: { to: '2026-07-13', poOutcome: 'overseas' }, after: { to: '2026-07-13', poOutcome: 'overseas', poDone: '2026-07-14' } })
   it('a person changed beside nobody’s posting is refused', () => {
-    expect(ownershipViolation(env([person('rocky')]))).toMatch(/posting pass may change only the men it posts out \(people\/rocky\)/)
+    expect(ownershipViolation(env([person('rocky')]))).toMatch(/posting pass may change only the men it posts out.*\(people\/rocky\)/)
   })
   it('a second man changed beside one man’s posting is refused', () => {
     expect(ownershipViolation(env([person('bane'), posting('bane'), person('rocky')]))).toMatch(/people\/rocky/)
@@ -221,5 +230,106 @@ describe('the hard rule: a posting pass changes a person only where it carries o
   })
   it('only the posting pass is held to it — another command by the app itself is not', () => {
     expect(ownershipViolation({ ...env([person('rocky')]), type: 'lw.sync' } as any)).toBeNull()
+  })
+  /* THE SECURITY READ OF 7d0c12b24 (`docs/handpass/parts/lw-rr1031/read-security.md` 1(a)) — the rule matched by id alone:
+     any change to a man's posting record let any change to his person ride beside it, and the pass's account rows were not
+     asked at all. Each exploit below is a REAL pass's envelope with one thing slipped in. */
+  const realPass = (id: string, outcome: 'overseas' | 'sans' | 'delete'): CommitEnvelope => {
+    postAhead(id, outcome)
+    const n = commandStream().length
+    runPoOutcomes()
+    const envs = passEnvs(n)
+    expect(envs, 'the pass ran').toHaveLength(1)
+    return JSON.parse(JSON.stringify(envs[0]))
+  }
+  const ch = (e: CommitEnvelope, coll: string, id: string): any => e.changes.find(c => c.collection === coll && c.id === id)
+  it('every real outcome passes the gate as it ran — Overseas Sqn with his account suspended, SANS, Delete', () => {
+    const o = realPass('bane', 'overseas')
+    expect(o.changes.some(c => c.collection === 'settings' && String(c.id).startsWith('account:')), 'the suspension is in it').toBe(true)
+    expect(ownershipViolation(o)).toBeNull()
+  })
+  it('SANS, as it ran', () => { expect(ownershipViolation(realPass('rocky', 'sans'))).toBeNull() })
+  it('Delete (his account and person), as it ran', () => { expect(ownershipViolation(realPass('bane', 'delete'))).toBeNull() })
+  it('a Management tick slipped onto the posted man himself is refused', () => {
+    const e = realPass('bane', 'overseas')
+    ch(e, 'people', 'bane').after.quals.mgmt = true
+    expect(ownershipViolation(e)).toMatch(/posting pass may change only .*people\/bane/)
+  })
+  it('a new callsign slipped onto the posted man is refused', () => {
+    const e = realPass('bane', 'overseas')
+    ch(e, 'people', 'bane').after.cs = 'HACKED'
+    expect(ownershipViolation(e)).toMatch(/people\/bane/)
+  })
+  it('another man’s posting record touched (not its done mark) and his Management tick beside it is refused', () => {
+    const e = realPass('bane', 'overseas')
+    const r = JSON.parse(JSON.stringify(P('rocky')))
+    e.changes.push({ op: 'put', collection: 'lw.postouts', id: 'rocky', before: { to: null }, after: { to: null, label: 'x' } } as any)
+    e.changes.push({ op: 'put', collection: 'people', id: 'rocky', before: r, after: { ...r, quals: { ...r.quals, mgmt: true } } } as any)
+    expect(ownershipViolation(e)).toMatch(/people\/rocky/)
+  })
+  it('a delete mark cleared beside a posting’s done mark is refused', () => {
+    const e = realPass('bane', 'overseas')
+    const r = JSON.parse(JSON.stringify(P('rocky')))
+    e.changes.push({ op: 'put', collection: 'lw.postouts', id: 'rocky', before: { to: '2026-07-13', poOutcome: 'delete' }, after: { to: '2026-07-13', poOutcome: 'delete', poDone: '2026-07-14' } } as any)
+    e.changes.push({ op: 'put', collection: 'people', id: 'rocky', before: { ...r, deleted: true, deletedFrom: '2026-07-01', archived: true, archivedBy: 'del' }, after: { ...r, deleted: false, archived: false } } as any)
+    expect(ownershipViolation(e)).toMatch(/people\/rocky/)
+  })
+  it('a posting’s done mark not yet due (its date still to come) does not vouch for his change', () => {
+    const e = realPass('bane', 'overseas')
+    const p = ch(e, 'lw.postouts', 'bane')
+    p.after.to = '2026-08-01'; p.after.poDone = '2026-08-02'
+    expect(ownershipViolation(e)).toMatch(/people\/bane/)
+  })
+  it('once the accounts are stored, the posted man’s own account row alone (suspended) passes', () => {
+    const e = realPass('bane', 'overseas')
+    const acc = e.changes.find(c => c.collection === 'settings' && (c.after as any)?.pid === 'bane')!
+    ;(acc as any).before = { ...(acc.after as any), on: true }
+    delete (acc as any).before.offBy
+    e.changes = e.changes.filter(c => c.collection !== 'settings' || c === acc)
+    expect(ownershipViolation(e)).toBeNull()
+    ;(acc as any).after = { ...(acc.after as any), role: 'admin' }
+    expect(ownershipViolation(e), 'his role changed with it').toMatch(/settings\/account:/)
+  })
+  /* each condition of the tightened rule with a test only it satisfies (the break list, walk-scripts §9) */
+  const storedAccountsPass = (): CommitEnvelope => {
+    const e = realPass('bane', 'overseas')
+    const acc = e.changes.find(c => c.collection === 'settings' && (c.after as any)?.pid === 'bane')!
+    ;(acc as any).before = { ...(acc.after as any), on: true }
+    delete (acc as any).before.offBy
+    e.changes = e.changes.filter(c => c.collection !== 'settings' || c === acc)
+    return e
+  }
+  it('a done mark that is not the posting’s own date does not vouch for his change', () => {
+    const e = realPass('bane', 'overseas')
+    ch(e, 'lw.postouts', 'bane').after.poDone = '2026-07-01'
+    expect(ownershipViolation(e)).toMatch(/people\/bane/)
+  })
+  it('a posting already done, touched again (its mark unchanged), does not vouch for his change', () => {
+    const e = realPass('bane', 'overseas')
+    const r = JSON.parse(JSON.stringify(P('rocky')))
+    const done = { to: '2026-07-19', poOutcome: 'overseas', poDone: '2026-07-20' }
+    e.changes.push({ op: 'put', collection: 'lw.postouts', id: 'rocky', before: done, after: { ...done, label: 'x' } } as any)
+    e.changes.push({ op: 'put', collection: 'people', id: 'rocky', before: r, after: { ...r, archived: true, archivedBy: 'po', archivedOn: '2026-07-20' } } as any)
+    expect(ownershipViolation(e)).toMatch(/people\/rocky/)
+  })
+  it('a SANS posting carries no other qualification with it', () => {
+    const e = realPass('rocky', 'sans')
+    ch(e, 'people', 'rocky').after.quals.mgmt = true
+    expect(ownershipViolation(e)).toMatch(/people\/rocky/)
+  })
+  it('once the accounts are stored, a new account row for another man is refused', () => {
+    const e = storedAccountsPass()
+    e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz8', before: null, after: { id: 'zz8', name: 'evil', role: 'admin', pid: 'rocky', on: true } } as any)
+    expect(ownershipViolation(e)).toMatch(/settings\/account:zz8/)
+  })
+  it('any other settings row in the pass is refused', () => {
+    const e = storedAccountsPass()
+    e.changes.push({ op: 'put', collection: 'settings', id: 'rules', before: { a: 1 }, after: { a: 2 } } as any)
+    expect(ownershipViolation(e)).toMatch(/settings\/rules/)
+  })
+  it('another man’s account row in the pass is refused', () => {
+    const e = realPass('rocky', 'sans')
+    e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz9', before: { id: 'zz9', name: 'us', role: 'member', pid: 'bane', on: true }, after: { id: 'zz9', name: 'us', role: 'admin', pid: 'bane', on: true } } as any)
+    expect(ownershipViolation(e)).toMatch(/settings\/account:zz9/)
   })
 })

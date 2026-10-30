@@ -92,6 +92,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Leave War**
 - [LW-POSTED-OUT-RESTORE] — a man posted out but not deleted (overseas, another squadron): Redo can put back an approval of his leave on a day after his posting's date, which Approve refuses (older, also on main; found 30 Oct 26).
 - [LW-DELETED-RESTORE-OVERREFUSE] — two rare cases where Undo / Redo refuses, for a deleted man, a change the live screen still allows (a war move of his approved leave across a late posting's date; an Inputs-page lengthening over his own pending bid) — nothing wrong is written; the reader's exact fixes in the item (found 30 Oct 26, the small fixes' third read). **BUILT 31 Oct 26 on `claude/lw-roster-restore-fixes`** — its walk, reads and his "merge live" still to come.
+- [LW-DELETED-REDO-NETSUM] — for a deleted man, one war step that approves a day his late posting refuses AND sends back another approved day of his adds nothing overall, so its Redo is let through; no screen sends that pair in one step (older; found 31 Oct 26 by a security read).
 - [LW-PINCH-IN-CORNER] — mid-pinch in on the Leave War grid (a phone), the names column's rows are drawn over the stretched corner and date row until the lift (older; found 30 Oct 26).
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -205,6 +206,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Database step — at the end (D473)**
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [SERVER-SIDE-PASSES] — every pass the app runs under its own name (the posting pass, the war's sync, the inputs' sync) runs on the server at the database step, never under a credential a browser holds, limited to the rows it owns.
+- [SYSTEM-ACTOR-ONE-TEST] — "the app itself" is decided two ways (the posting pass's wait by a command's origin, the commit gate by its actor); make them one before any seed or remote commit exists.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
 - [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
 - [IT-QUESTIONS] — the IT side's written answers (licences, plug-ins, retention, the first admin).
@@ -357,6 +360,45 @@ each with its own bug check. **21 Oct 26:** round 1 answered (D1141-D1144); his 
 
 The posting pass (`raptor-port/src/leavewar/sync.ts`, the `lw.postoutRun` command, around line 2184) commits as the app itself (the system actor, which the commit gate `perms.ts ownershipViolation` lets through) and enlists the people store, whose before-image is the last SAVED roster; its finish saves the whole live roster. So any change made to a person in memory outside every command — only possible from a browser's console today — is saved with it, past the own-row rule (D149, D218, D1510). Not D1510's to fix (older, and console-only), but the database step translates this gate. **Fix:** before the pass enlists the people store, put the roster back to its saved baseline; and a hard rule that a `lw.postoutRun` change to `people` touches only the men due to post out. Red first; the security read's report is quoted in `raptor-port/docs/handpass/2026-10-29-lw-m5b.md` §10.
 **BUILT 31 Oct 26 on `claude/lw-roster-restore-fixes`** (the overnight run's job 2): run as its own command, the pass first puts the roster in memory back to what is saved (`state/people-settings-commit.ts revertUnsavedPeople`, called by `leavewar/sync.ts runPoOutcomes` before it enlists the people store); joined inside a person's own command it puts nothing back (that command's own roster change is live then, and the change is judged as his); woken inside a command the app itself runs, it waits and runs as its own command after it. The hard rule is in the commit gate (`state/perms.ts ownershipViolation`: a `lw.postoutRun` change to a person only beside his posting record) and in `raptor-port/docs/data-model.md` §11. Tests `leavewar/postout-roster.test.ts`, red first. Walk scripts `raptor-port/scripts/handpass/lw-rr-s2.mjs`; evidence sheet (draft, walk to come) `raptor-port/docs/handpass/2026-10-31-lw-roster-restore.md`. Left as it was, by design: an ADMIN's own roster command still takes the whole live roster as saved (every roster command's finish does), so a console change rides an admin's next roster command; a member's is refused by the gate. Not archived until it merges.
+**Fix round 1 (31 Oct 26, after the fresh code read and the security read — `raptor-port/docs/handpass/parts/lw-rr1031/`):** the gate's rule tightened (`state/perms.ts postingPassViolation`: the posting's own done mark, the outcome's fields alone, the posted men's account rows alone); the put-back skips only ALL and ALL AVAIL; what is left for the database step is filed as `[SERVER-SIDE-PASSES]` and `[SYSTEM-ACTOR-ONE-TEST]`.
+
+### [SERVER-SIDE-PASSES] Every pass the app runs under its own name runs on the server at the database step (filed 31 Oct 26 — the security read of `claude/lw-roster-restore-fixes`)
+
+**What:** today the app's own passes run in every signed-in browser, a member's too, and commit as the app itself, which
+the commit gate does not limit by role: the posting pass (`raptor-port/src/leavewar/sync.ts runPoOutcomes`, `lw.postoutRun`
+— runs from every notify through `lwSyncTurn`), the war's sync projection (`leavewar/state/store.ts`, `lw.sync`) and the
+inputs projection (`writeInputsBatchProjection`). Translated as they stand, the database would need a service account a
+member's browser could use. **The rule for the database step:** each such pass runs on the server (a scheduled flow or a
+server-side handler), never under a credential a browser holds, and is limited to the rows it owns — the posting pass to
+the men whose posting it carries out, as the commit gate's `postingPassViolation` (`state/perms.ts`) and
+`raptor-port/docs/data-model.md` §11 already say for that one pass. **Sources:**
+`raptor-port/docs/handpass/parts/lw-rr1031/read-security.md` findings 1(b) (Medium at the database step) and 2 (Low — the
+war's and the inputs' projections). **Place:** the database step (D473); nothing to build before it.
+
+### [SYSTEM-ACTOR-ONE-TEST] "The app itself" is decided in two places — make them one (filed 31 Oct 26 — the code read of `claude/lw-roster-restore-fixes`, tidiness note 1)
+
+**What:** the posting pass's wait under another command (`raptor-port/src/leavewar/sync.ts runPoOutcomes`) keys on
+`parent.origin === 'projection'`; the commit gate (`state/perms.ts ownershipViolation`) keys on `actor.role === 'system'`. A
+command run as the app itself with another origin — a `seed`, or a `remote` change at the database step — would let the
+pass join it unjudged and put nothing back. No production `seed` or `remote` command exists today, so nothing can reach it.
+**The reader's fix:** key the wait on `parent.actor?.role === 'system'`, so the two agree; a test with a system-actor parent
+of another origin. **Place:** before the first `seed` or `remote` command is written (the database step); not built now.
+Source: `raptor-port/docs/handpass/parts/lw-rr1031/read-opus.md`.
+
+### [LW-DELETED-REDO-NETSUM] A deleted man's Redo: one war step approving a refused day and sending back another is let through (found 31 Oct 26 — the security read of `claude/lw-roster-restore-fixes`, 4)
+
+**What happens:** Ranger has approved LL on 10 Jul and a pending LL on 13 Jul; ONE war step approves 13 Jul and sends 10 Jul
+back (`decideRequests` with both lines); Undo; a Delete posting dated 12 Jul runs late (15 Jul), so his 13 Jul is refused
+live; Redo puts the approval of 13 Jul back. **Cause:** `state/person-delete.ts deletedRestoreProblem` counts a war step's
+war-approved days as a net sum (overall, and from the first refused day): +1 on 13 Jul and −1 on 10 Jul sum to nothing. The
+code before the second fix round summed the same way (older). **Reach:** no screen sends an approval and a send-back in one
+step — Approvals, Approve all, the bid windows and the day's list each decide one way at a time — so it is reached only by
+calling the writer directly. **The test:** `raptor-port/src/leavewar/deletednorow.test.ts`, "one war step approving his
+refused 13 Jul and sending back his 10 Jul …", marked `it.fails` while the fault stands (it goes red the day it is fixed).
+**Why filed, not fixed:** the likely fix — for a war step's Redo, also refuse when it takes a request of his off a day from
+the first refused day and writes his war-approved leave there (the Undo's request test, with its day) — must first be
+checked against every war writer so it never refuses a move the live door allows (RR-A); not obviously right in a fix
+round. **Place:** with the next Leave War batch; small; nothing waits on it.
 
 ### [LINE-ICONS-ELSEWHERE-ASK] Other lists that may want D1512's edit and cross icons (named 29 Oct 26, D852)
 

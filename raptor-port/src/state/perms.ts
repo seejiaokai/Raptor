@@ -962,6 +962,87 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
   }
   return null
 }
+/* WHAT A POSTING'S RUN MAY CHANGE ([SYSTEM-PASS-SAVES-ROSTER], the security read's 1(a)) — read off the envelope alone, so the
+   database step can hold the same rule on the changeset. The fields each outcome writes, from the code that writes them:
+   Overseas Sqn (leavewar/sync.ts runPoOutcomes) archived, archivedBy 'po', archivedOn; SANS (the same) san, quals.san,
+   sanQ, sanBy 'po'; Delete (state/person-delete.ts applyDelete) deleted, deletedFrom, archived, archivedBy 'del'. A
+   posting with no outcome runs nothing, and 'transfer' is not an outcome yet (D281). The settings rows: Overseas suspends
+   his account (state/accounts.ts suspendForPosting); Delete removes it, a request waiting under its sign-in name and his
+   bell's row (dropAccountOfPid). */
+const PASS_FIELDS: Record<string, string[]> = {
+  overseas: ['archived', 'archivedBy', 'archivedOn'],
+  sans: ['san', 'quals', 'sanQ', 'sanBy'],
+  delete: ['deleted', 'deletedFrom', 'archived', 'archivedBy'],
+}
+const passOutcomeOf = (p: any): string | undefined =>
+  !p ? undefined : typeof p.poOutcome === 'string' ? p.poOutcome : p.poArchive === true ? 'overseas' : p.poArchive === false ? 'none' : undefined
+const isoAddDay = (iso: string): string => {
+  const [y, m, d] = iso.split('-').map(Number)
+  const t = new Date(Date.UTC(y!, m! - 1, d! + 1))
+  return `${t.getUTCFullYear()}-${String(t.getUTCMonth() + 1).padStart(2, '0')}-${String(t.getUTCDate()).padStart(2, '0')}`
+}
+const localIsoToday = (): string => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
+export function postingPassViolation(env: CommitEnvelope): string | null {
+  const today = localIsoToday()
+  /* each man whose posting this pass carries out, with its outcome: his posting record's change is its done mark — `poDone`
+     set, from anything else, to the posting's own date (the day after his last day in, `to`), a date already come — or, for
+     a Delete of a man who never arrived, his record removed (store.ts forgetPersonFrom) on a date already come */
+  const posted = new Map<string, string>()
+  for (const c of env.changes) {
+    if (c.collection !== 'lw.postouts') continue
+    const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
+    let date: string | null = null, outcome: string | undefined
+    if (f && typeof f.to === 'string' && ISO_DAY.test(f.to) && f.poDone === isoAddDay(f.to) && (!b || b.poDone !== f.poDone)) { date = f.poDone; outcome = passOutcomeOf(f) }
+    else if (!f && b && typeof b.to === 'string' && ISO_DAY.test(b.to) && passOutcomeOf(b) === 'delete') { date = isoAddDay(b.to); outcome = 'delete' }
+    if (date && date <= today && outcome) posted.set(String(c.id), outcome)
+  }
+  const refuse = (c: Change) => `the posting pass may change only the men it posts out, and only as their posting does (${c.collection}/${c.id})`
+  const accounts = new Map<string, any>()   // account id → its row before, for each posted man's account the pass changes
+  /* THE FIRST WRITE OF THE ACCOUNTS STORES THE WHOLE LIST (state/accounts.ts writeAccounts — a store that has never written
+     them holds the seeded list in memory, and the loader reads "no rows" as the seeded list, so the first write puts every
+     row): a row another man's that this pass PUTS where none was stored is allowed only while no account row in it was
+     stored before — that first write — never beside rows already stored */
+  const acctRows = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith('account:'))
+  const firstStore = acctRows.length > 0 && acctRows.every(c => c.before == null)
+  for (const c of env.changes) {
+    if (c.collection === 'people') {
+      const outcome = posted.get(String(c.id))
+      const fields = outcome ? PASS_FIELDS[outcome] : undefined
+      const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
+      if (!fields || !b || !f) return refuse(c)
+      for (const k of new Set([...Object.keys(b), ...Object.keys(f)])) {
+        if (JSON.stringify(b[k]) === JSON.stringify(f[k])) continue
+        if (!fields.includes(k)) return refuse(c)
+      }
+      if (outcome === 'sans') {
+        const qb = b.quals || {}, qf = f.quals || {}
+        for (const k of new Set([...Object.keys(qb), ...Object.keys(qf)])) if (k !== 'san' && JSON.stringify(qb[k]) !== JSON.stringify(qf[k])) return refuse(c)
+      }
+      const marked = outcome === 'overseas' ? f.archived === true && f.archivedBy === 'po'
+        : outcome === 'sans' ? f.san === true && f.sanBy === 'po'
+          : f.deleted === true && f.archived === true && f.archivedBy === 'del'
+      if (!marked) return refuse(c)
+    } else if (c.collection === 'settings' && String(c.id).startsWith('account:')) {
+      const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
+      const pid = String((b && b.pid) ?? (f && f.pid) ?? '')
+      if (!posted.has(pid)) { if (firstStore && !b && c.op === 'put') continue; return refuse(c) }
+      if (f && b && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)
+      if (b) accounts.set(String(c.id).slice('account:'.length), b)
+    }
+  }
+  /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name and his bell's
+     row, both removed; nothing else */
+  for (const c of env.changes) {
+    if (c.collection !== 'settings' || String(c.id).startsWith('account:')) continue
+    const b: any = c.before, id = String(c.id)
+    const ok = c.op === 'delete' && (
+      (id.startsWith('accessreq:') && !!b && [...accounts.values()].some(a => a.name === b.name))
+      || (id.startsWith('reqseen:') && accounts.has(id.slice('reqseen:'.length))))
+    if (!ok) return refuse(c)
+  }
+  return null
+}
 export function ownershipViolation(env: CommitEnvelope): string | null {
   const a = env.actor
   /* WHEN A PERSON LAST OPENED HIS OWN WINDOW (M5a — the security read's finding 4): his own row, by its one command,
@@ -980,9 +1061,14 @@ export function ownershipViolation(env: CommitEnvelope): string | null {
      made — a person changed in memory outside every command — and the whole pass is refused (it runs again on the next
      pass, after leavewar/sync.ts runPoOutcomes has put the roster back to what is saved). The database step translates
      this as: the pass's service account updates a Person only in the changeset that carries out his posting. */
+  /* …TIGHTENED BY THE SECURITY READ OF 7d0c12b24 (`docs/handpass/parts/lw-rr1031/read-security.md` 1(a)): matched by id
+     alone, ANY change to a man's posting record vouched for ANY change to his person, and the pass's account rows were not
+     asked at all. Now (postingPassViolation): the posting change must be that posting's own done mark, its date come; his
+     person may differ only in that outcome's own fields, its marks set; and the pass's settings rows are only the posted
+     men's accounts (and, for a Delete, the request and bell row that go with his account). */
   if (a && a.role === 'system' && env.type === 'lw.postoutRun') {
-    const posted = new Set(env.changes.filter(c => c.collection === 'lw.postouts').map(c => String(c.id)))
-    for (const c of env.changes) if (c.collection === 'people' && !posted.has(String(c.id))) return `the posting pass may change only the men it posts out (people/${c.id})`
+    const bad = postingPassViolation(env)
+    if (bad) return bad
   }
   if (!a || a.role === 'system' || a.role === 'admin') return null
   let replayed: ((c: Change) => boolean) | null | undefined
