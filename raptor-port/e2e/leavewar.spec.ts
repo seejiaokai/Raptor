@@ -7027,7 +7027,7 @@ test('on a tablet and a desktop the clash note stays the strip under the open-da
   expect(rows).toHaveLength(2)
   /* each credit as its box draws it — its star after its code, a half in words, never the stored "*HO"
      ([LW-HALF-DAY-WORDS-LEFT], D1306) */
-  for (const t of rows) expect(t).toMatch(/^.+ · Sat 18 Jul · Weekend\/PH work earns (FO\*|HO\* \((morning|afternoon)\)), but the day holds (LL|OL)\. Decide the bid ›$/)
+  for (const t of rows) expect(t).toMatch(/^.+ · Sat 18 Jul · Weekend\/PH work earns (FO\*|HO\* \((AM|PM)\)), but the day holds (LL|OL)\. Decide the bid ›$/)
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
   const who = rows[0]!.split(' · ')[0]!
   await page.locator('[data-testid="clash-go-0"]').click()
