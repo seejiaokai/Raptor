@@ -69,6 +69,14 @@
     border-top: 1px solid var(--edge);
     overscroll-behavior: contain;
   }
+  /* NOTHING OF THE LIST SHOWS OVER ITS TOOLS (his D1518, 29 Oct 26 — the pinned-part sweep, 30 Oct 26). Everything above the
+     list (the head, the tools row, an open legend or date picker) is one box, `.oil-top`, filled in the sheet's own colour
+     across the sheet's whole width and up to its top edge (its margins undo the sheet's padding, its padding puts the
+     same room back, so nothing moves), and stacked over the list's frozen cells (they reach z 5). The strips that used to
+     lie between the parts and the list are inside it now. And the list keeps what it draws inside its box. */
+  .oil-top { position: relative; z-index: 6; flex: 0 0 auto; display: flex; flex-direction: column; background: var(--panel); margin: -8px -10px 0; padding: 8px 10px 0; }
+  .oil-wrap { contain: paint; }
+  @media (max-width: 520px) { .oil-top { margin: -6px -8px 0; padding: 6px 8px 0; } }
   .oil-wrap.selecting { cursor: crosshair; user-select: none; }
   .oil-empty { padding: 14px 12px; }
 

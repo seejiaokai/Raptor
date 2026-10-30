@@ -2217,6 +2217,47 @@ test("pressing the Leave War's controls on a phone never turns a pinned cell see
   await press('#page-leavewar tr.grp td.grphd', 'a group heading (open)')
 })
 
+/* [LW-LEAVE-SCROLL-CARRY] (found 28 Oct 26, the M4 fixes' re-walk, F6): the window's scroll is every page's, so a page
+   with no scroll place of its own opened from the Leave War scrolled down came up 547px down — Edit Schedule from the menu
+   on a desktop, and on a phone the menu itself put the war's place back as it closed. Each page opens at its own top now
+   (as Inputs and Quals already did, D937), by the menu on a desktop and the drawer on a phone, and the war still comes
+   back where he was on it. */
+test('a page opened from the Leave War scrolled down opens at its own top, and the war comes back where he was', async ({ page }) => {
+  await raptorRole(page, 'admin')
+  /* the admin's view drawn in full before anything is measured: its extra controls land above the rows a moment later,
+     and the browser then moves the window to keep the rows where they were — a role switch, not a page change */
+  if (!isPhone()) await page.locator('#topnav a[data-page="editsched"]').waitFor()
+  await page.waitForTimeout(600)
+  const winY = () => page.evaluate(() => Math.round(window.scrollY))
+  const open = async (p: string) => {
+    if (isPhone()) {
+      await page.locator('#burger').click()
+      await page.locator(`#drawerNav a[data-page="${p}"]`).click()
+    } else await page.locator(`#topnav a[data-page="${p}"]`).click()
+    await page.waitForFunction(q => (window as any).CURPAGE === q, p)
+    await page.waitForTimeout(400)
+  }
+  /* what he sees, not a number: the first person's row below the screen's top third, and where it stands on it */
+  const seen = () => page.evaluate(() => {
+    const row = [...document.querySelectorAll<HTMLElement>('#page-leavewar tr[data-testid^="row-"]')]
+      .find(r => { const q = r.getBoundingClientRect(); return q.height > 0 && q.top > innerHeight / 3 && q.bottom < innerHeight })
+    return row ? { id: row.dataset.testid!, top: Math.round(row.getBoundingClientRect().top) } : null
+  })
+  const at = (id: string) => page.evaluate(i => Math.round(document.querySelector(`[data-testid="${i}"]`)!.getBoundingClientRect().top), id)
+  for (const p of ['editsched', 'viewsched', 'logic', 'help', 'admin']) {
+    await page.evaluate(() => window.scrollTo(0, 500))
+    await page.waitForTimeout(300)
+    expect(await winY(), 'the war scrolled down first').toBeGreaterThan(200)
+    const was = (await seen())!
+    expect(was, 'a person\'s row in the middle of the screen').not.toBeNull()
+    await open(p)
+    expect(await winY(), `${p} opens at its own top`).toBe(0)
+    await open('leavewar')
+    const now = await at(was.id)
+    expect(Math.abs(now - was.top), `back on the war from ${p}, ${was.id} where it stood (${was.top}, now ${now})`).toBeLessThanOrEqual(2)
+  }
+})
+
 // The space arithmetic, checked against a real browser rather than read off
 // the stylesheet. The estimate that justified this design was WRONG — it
 // assumed 30px day columns from `min-width`, where the rendered width is
@@ -7882,6 +7923,48 @@ test('nothing of the Balances list shows behind its bar, whatever the list draws
     expect(css.hs, 'the list keeps what it draws inside its box').toContain('paint')
     expect(css.bar, 'the bar is solid').toBe('rgb(11, 13, 16)')
   }
+})
+
+/* THE OIL TRACKER'S TOOLS ROW, THE SAME WAY (D1518 — the pinned-part sweep, 30 Oct 26; D1504 named its headings as sharing the
+   Balances page's pinch). Over its list stand the sheet's head and the tools row (Show · From first entry · Range · ? · ⚙ and
+   the window's line), then — when open — the legend or the date picker; none had a fill of its own over the list, and the
+   tools row stood 6px off it, so a list drawn past its top edge (his iPhone's spill on the Balances page) showed over the
+   chips and in the strip between. The sweep's forced spill, calibrated red on the Balances build before D1519: the list let
+   draw outside its box and slid 120px up and left. Every point from the sheet's top to the list's top must still be the
+   sheet's own head, tools, legend or picker — never the list — in each of the three states, at both widths. */
+test('nothing of the OIL tracker\'s list shows over its tools row, whatever the list draws past its top (D1518)', async ({ page }) => {
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const states: [string, (() => Promise<void>) | null][] = [
+    ['at rest', null],
+    ['the legend open', async () => { await page.getByTestId('oil-legend').click(); await expect(page.getByTestId('oil-legend-text')).toBeVisible() }],
+    ['the date picker open', async () => { await page.getByTestId('oil-legend').click(); await page.getByTestId('oil-range-pick').click(); await expect(page.locator('.oil-pickrow')).toBeVisible() }],
+  ]
+  for (const [what, open] of states) {
+    if (open) await open()
+    const hits = await page.evaluate(() => {
+      const wrap = document.querySelector<HTMLElement>('[data-testid="oil-list"]')!, grid = wrap.firstElementChild as HTMLElement
+      const sheet = document.querySelector<HTMLElement>('[data-testid="oil-sheet"]')!
+      const wr = wrap.getBoundingClientRect(), sr = sheet.getBoundingClientRect()
+      wrap.style.overflow = 'visible'; wrap.style.contain = 'none'; grid.style.translate = '-120px -120px'
+      const out: string[] = []
+      for (let y = Math.max(sr.top + 1, wr.top - 118); y < wr.top - 0.4; y += 3) for (const f of [0.06, 0.3, 0.5, 0.7, 0.94]) {
+        const x = wr.left + wr.width * f
+        /* down through everything drawn at the point: the list must not be reached before a solid fill (a part over it
+           with no fill of its own answers the point, and the list still shows through it — the break test's find) */
+        for (const e of document.elementsFromPoint(x, y)) {
+          if (wrap.contains(e) && e !== wrap) { out.push(`${Math.round(x)},${Math.round(y)}: ${(e as HTMLElement).className || e.tagName}`); break }
+          const bg = getComputedStyle(e).backgroundColor, a = bg.match(/[\d.]+/g)
+          if (a && (a.length < 4 || +a[3]! >= 0.99)) break
+        }
+      }
+      grid.style.translate = ''; wrap.style.overflow = ''; wrap.style.contain = ''
+      return out
+    })
+    expect(hits, `${what}: something of the list answered above the list`).toEqual([])
+  }
+  const css = await page.evaluate(() => getComputedStyle(document.querySelector('[data-testid="oil-list"]')!).contain)
+  expect(css, 'the list keeps what it draws inside its box').toContain('paint')
 })
 
 /* HIS iPHONE PICTURE, 29 Oct 26 (the agent's fault fix, D1426): in the person window's LVE tile the three figures stood 24

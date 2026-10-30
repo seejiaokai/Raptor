@@ -925,6 +925,12 @@ the reader's instructions or model change, it is run on every case and a change 
    refusal or warning at a box, the walk taps away, taps the box afresh and types the figure it shows
    (`scripts/handpass/lw-typefig-walk.mjs`). *Also (the walk's own lesson, not his fault):* a "tap away" is checked to have
    left the box — a window's title bar is its drag handle and keeps the keys.
+17. **A control that changes a page's width, checked at rest only (his pictures of Edit Schedule's crew panel, D1528, 30 Oct 26).**
+   The pinned-part sweep made the CREW tab solid and pictured it, but never pressed it: hiding the crew panel slid it past the
+   window's edge (the browser's own grey sideways bar came up) and left the week's foot bar at its old width. **Lesson:** every
+   control that shows, hides or resizes a part of a page is pressed, both ways and back, and after each press the walk measures
+   that the page is no wider than the window and that everything sized from the changed part (a foot bar, a pinned header)
+   fits it again (`scripts/handpass/crew-toggle-walk.mjs`).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

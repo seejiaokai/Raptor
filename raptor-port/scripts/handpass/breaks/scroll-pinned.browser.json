@@ -1,0 +1,84 @@
+{
+ "spec": "e2e/geometry.spec.ts e2e/leavewar.spec.ts",
+ "grep": "reflow|parts pinned over the week|OIL tracker.s list shows over|opens at its own top",
+ "port": 4189,
+ "breaks": [
+  {
+   "n": 1,
+   "name": "a page switched to opens at its own top (Shell's layout effect off)",
+   "file": "src/ui/Shell.tsx",
+   "find": "    if (window.scrollY || window.scrollX) window.scrollTo(0, 0)",
+   "put": ""
+  },
+  {
+   "n": 2,
+   "name": "the phone menu puts the old scroll back only when it closes on the page it opened on (the condition off)",
+   "file": "src/ui/Drawer.tsx",
+   "find": "      if (CURPAGE === on) { el.scrollTop = y; el.scrollLeft = x }",
+   "put": "      { el.scrollTop = y; el.scrollLeft = x }"
+  },
+  {
+   "n": 3,
+   "name": "the days' scroll bar at the foot solid (its old 93% blurred fill back)",
+   "file": "src/ui/scheduler/03-week.css",
+   "find": "  padding:6px 10px;background:var(--bg);border-top:1px solid var(--edge);",
+   "put": "  padding:6px 10px;background:rgba(11,13,16,.93);backdrop-filter:blur(7px);border-top:1px solid var(--edge);"
+  },
+  {
+   "n": 4,
+   "name": "the CREW rail solid (its old 14% tint back)",
+   "file": "src/ui/scheduler/03-week.css",
+   "find": "    background:#12272e;color:var(--accent);cursor:pointer;",
+   "put": "    background:rgba(59,198,232,.14);color:var(--accent);cursor:pointer;"
+  },
+  {
+   "n": 5,
+   "name": "Edit Schedule's phone crew drawer solid (its old 96.5% blurred fill back)",
+   "file": "src/ui/scheduler/03-week.css",
+   "find": "    background:var(--bg);box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);",
+   "put": "    background:rgba(11,13,16,.965);backdrop-filter:blur(8px);box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);"
+  },
+  {
+   "n": 6,
+   "name": "the board's phone crew drawer solid (its old 96.5% blurred fill back)",
+   "file": "src/ui/scheduler/13-board-rows-responsive.css",
+   "find": "    background:var(--bg);\n    box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);",
+   "put": "    background:rgba(11,13,16,.965);backdrop-filter:blur(8px);\n    box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);"
+  },
+  {
+   "n": 7,
+   "name": "the OIL tracker's top stacked over its list (its stacking off)",
+   "file": "src/leavewar/ui/oiltracker.css",
+   "find": "  .oil-top { position: relative; z-index: 6; flex: 0 0 auto;",
+   "put": "  .oil-top { flex: 0 0 auto;"
+  },
+  {
+   "n": 8,
+   "name": "the OIL tracker's top filled in the sheet's colour (its fill off)",
+   "file": "src/leavewar/ui/oiltracker.css",
+   "find": "flex-direction: column; background: var(--panel); margin: -8px -10px 0;",
+   "put": "flex-direction: column; margin: -8px -10px 0;"
+  },
+  {
+   "n": 9,
+   "name": "the OIL tracker's list keeps what it draws inside its box (paint containment off)",
+   "file": "src/leavewar/ui/oiltracker.css",
+   "find": "  .oil-wrap { contain: paint; }",
+   "put": ""
+  },
+  {
+   "n": 10,
+   "name": "Quals' pinned row watches the real heading cells (the watch off)",
+   "file": "src/ui/QualsPage.tsx",
+   "find": "      for (const th of watched) ro.observe(th)",
+   "put": ""
+  },
+  {
+   "n": 11,
+   "name": "Quals' watch moves onto the cells a redraw puts in place (the move off)",
+   "file": "src/ui/QualsPage.tsx",
+   "find": "  useEffect(() => { watchCellsRef.current?.() }, [tableInner])",
+   "put": ""
+  }
+ ]
+}

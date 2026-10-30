@@ -1,0 +1,188 @@
+{
+ "record": [
+  {
+   "state": "v2",
+   "rest": [
+    [
+     "weekPrev",
+     0,
+     14,
+     false
+    ],
+    [
+     "weekNext",
+     1522,
+     14,
+     false
+    ]
+   ]
+  },
+  {
+   "state": "v2 pointer 48px from the left edge",
+   "near": [
+    [
+     "weekPrev",
+     0,
+     38,
+     true
+    ],
+    [
+     "weekNext",
+     1522,
+     14,
+     false
+    ]
+   ]
+  },
+  {
+   "state": "v2 pointer 48px from the right edge",
+   "near": [
+    [
+     "weekPrev",
+     0,
+     14,
+     false
+    ],
+    [
+     "weekNext",
+     1498,
+     38,
+     true
+    ]
+   ]
+  },
+  {
+   "state": "v2 pointer at the left edge, 140px above",
+   "away": [
+    [
+     "weekPrev",
+     0,
+     14,
+     false
+    ],
+    [
+     "weekNext",
+     1522,
+     14,
+     false
+    ]
+   ]
+  },
+  {
+   "state": "v2 › pressed three times, pointer held",
+   "presses": [
+    [
+     [
+      "weekPrev",
+      0,
+      14,
+      false
+     ],
+     [
+      "weekNext",
+      1498,
+      38,
+      true
+     ]
+    ],
+    [
+     [
+      "weekPrev",
+      0,
+      14,
+      false
+     ],
+     [
+      "weekNext",
+      1498,
+      38,
+      true
+     ]
+    ],
+    [
+     [
+      "weekPrev",
+      0,
+      14,
+      false
+     ],
+     [
+      "weekNext",
+      1498,
+      38,
+      true
+     ]
+    ]
+   ]
+  },
+  {
+   "state": "e3",
+   "rest": [
+    [
+     "weekPrev",
+     0,
+     14,
+     false
+    ],
+    [
+     "weekNext",
+     1522,
+     14,
+     false
+    ]
+   ]
+  },
+  {
+   "state": "e3 pointer 48px from the left edge",
+   "near": [
+    [
+     "weekPrev",
+     0,
+     38,
+     true
+    ],
+    [
+     "weekNext",
+     1522,
+     14,
+     false
+    ]
+   ]
+  },
+  {
+   "state": "e3 pointer 48px from the right edge",
+   "near": [
+    [
+     "weekPrev",
+     0,
+     14,
+     false
+    ],
+    [
+     "weekNext",
+     1498,
+     38,
+     true
+    ]
+   ]
+  },
+  {
+   "state": "e3 pointer at the left edge, 140px above",
+   "away": [
+    [
+     "weekPrev",
+     0,
+     14,
+     false
+    ],
+    [
+     "weekNext",
+     1522,
+     14,
+     false
+    ]
+   ]
+  }
+ ],
+ "errs": []
+}
