@@ -1,0 +1,22 @@
+[
+ {
+  "id": "RR-A the Redo of a move across the posting’s date, after it ran late",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "approved true; moved true; Undo put it back true; deleted from 2026-11-04; Redo offered true; after Redo leave on 2 Nov 1, on 26 Oct 0; said [\"Undid: moving a bid\",\"Redid: moving a bid\"]",
+  "pics": [
+   "rr-a-a-before-redo",
+   "rr-a-b-after-redo"
+  ]
+ },
+ {
+  "id": "RR-B the Redo of an Inputs-page lengthening over his pending bid, after his delete",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "approved true; bid true; lengthened true (grid 27 Oct: LL:s-a); Undo true; deleted true; Redo offered true; after Redo Oct 26–Oct 27; said [\"Drifter deleted\",\"Redid: a personal input\"]",
+  "pics": [
+   "rr-b-a-before-redo",
+   "rr-b-b-after-redo"
+  ]
+ }
+]
