@@ -230,7 +230,14 @@ test added, failing first). **The fix's narrow reads (§5 — the same fresh rea
 finger held over a second then lifted still left it open (the echo follows the lift) — the lift and a cancel now count too;
 round 3 found that closing on the finger's press could shrink an arrow the mouse had opened from under the tap on a touch
 laptop — both arrows now close on the lift, never the press. Each red first in the unit tests; round 3 is the last (the cap),
-with nothing left open. Re-walk 19/19; browser tests 44/44; unit 38/38. The read also found the short line of D1526
+with nothing left open. Re-walk 19/19; browser tests 44/44; unit 38/38.
+**His look at the open arrow — D1527 (30 Oct 26):** *"U didnt show me a mock up of how transparent it is. make it similar to
+the old one"*, with a close-up of the old arrow at rest. The open look ("still slightly transparent" read as 0.9, lit blue) had
+been chosen and built without a picture first — lesson 73 in the design guide's §9. Now the open arrow is the old arrow's
+look exactly: frosted at 0.75, grey edge and arrow. Drawn close up three ways at the same spot
+(`scripts/handpass/week-arrows-look.mjs`, `docs/img/handpass/2026-10-30-week-arrows/look/`: the old arrow, as first built,
+now) and put to him on the arrows page; the browser test now asserts 0.75, the old glass and no blue; browser tests 44/44,
+walk 19/19. The read also found the short line of D1526
 faithful to its full row (D138).
 **Found, not this change's:** a man dragged with a mouse to the left or right edge of Edit Schedule never pans the week
 sideways — measured the same with today's arrows, with the new tab and with no arrows at all; filed `[WEEK-DRAG-EDGE-PAN]`.

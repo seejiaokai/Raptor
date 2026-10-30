@@ -5803,7 +5803,8 @@ for(const width of [390,1440]) {
 
 /* D1526 (30 Oct 26 — "sliding tab but make it still slightly transparent"): the desktop week's ‹ › arrows are a slim tab,
    14 × 70, flush on the window's edge, over the front day's border and margin only; the pointer near (the full arrow's
-   38 × 70 footprint plus 24px) slides it out to the full arrow, still slightly see-through (0.9); pressed again and again it
+   38 × 70 footprint plus 24px) slides it out to the full arrow, looking as the old arrow did at rest (D1527: 0.75, grey,
+   never lit blue); pressed again and again it
    stays open and in place (D1122); no slide under reduced motion. The drawing that is the spec:
    scripts/handpass/week-arrows-draw-d.mjs. */
 test('D1526 the week arrows are a slim edge tab that slides out when the pointer comes near', async ({ page }) => {
@@ -5842,7 +5843,11 @@ test('D1526 the week arrows are a slim edge tab that slides out when the pointer
   await expect.poll(() => width('weekPrev')).toBe(38)
   const p1 = await nav('weekPrev')
   expect(p1.left, 'it opens from the edge, not moving').toBe(0)
-  expect(p1.opacity, 'open, still slightly see-through').toBeCloseTo(0.9, 2)
+  expect(p1.opacity, 'open, as see-through as the old arrow at rest (D1527)').toBeCloseTo(0.75, 2)
+  const look = await page.evaluate(() => { const cs = getComputedStyle(document.getElementById('weekPrev')!), root = getComputedStyle(document.documentElement)
+    return { color: cs.color, edge: cs.borderTopColor, bg: cs.backgroundColor, ink2: root.getPropertyValue('--ink-2').trim() } })
+  expect(look.bg, 'the old frosted glass').toBe('rgba(20, 24, 29, 0.82)')
+  expect(look.color, 'a grey arrow, not lit blue').not.toMatch(/59, 198, 232/)
   expect(await width('weekNext'), 'the other stays slim').toBe(14)
 
   await page.mouse.move(5, p0.mid - 140)

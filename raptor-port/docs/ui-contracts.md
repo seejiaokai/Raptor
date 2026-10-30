@@ -247,7 +247,7 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   five-flags evidence sheet §3d. **Since D1526 (30 Oct 26 — his ask) the arrows are a slim tab** (14 × 70, flush on the
   window's edge, over the front day's border and margin only — its words start 31 in) that slides out to the full 38-wide
   arrow while the pointer is inside that arrow's footprint plus 24px, or a key reaches it, and back when it leaves; open, it
-  stays slightly see-through (0.9). Never on :hover, and a mouse move within a second of a finger touching or lifting is ignored (a lifted finger closes both) — a
+  looks as the old arrow did at rest (D1527): frosted at 0.75, grey edge and arrow, never lit blue. Never on :hover, and a mouse move within a second of a finger touching or lifting is ignored (a lifted finger closes both) — a
   tapped button keeps its hover, and Safari sends a pretend mouse move to the tapped spot, either of which held it open
   after a tap on an iPad on its side. Pressed again and again it stays open and in place (D1122). The rule is one class,
   `.near`, set by `pan.ts` from the pointer; the look is `03-week.css`.

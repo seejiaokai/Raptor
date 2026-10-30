@@ -63,7 +63,7 @@ const settleWeek = async (page, wk) => { let last = -1, still = 0; for (let i = 
   for (let i = 1; i <= 10; i++) await page.mouse.move(300 - 25.2 * i, p0.mid, { steps: 1 })
   const p1 = await settled(page, 'weekPrev', 38)
   await shot(page, 'a2-open-left', LEFT)
-  rec('A2 a slow approach from the week opens ‹ to the full arrow, still slightly see-through', p1.width === 38 && p1.left === 0 && Math.abs(p1.opacity - .9) < .01,
+  rec('A2 a slow approach from the week opens ‹ to the full arrow, as see-through as the old arrow (D1527)', p1.width === 38 && p1.left === 0 && Math.abs(p1.opacity - .75) < .01,
     `‹ ${p1.left}+${p1.width} at ${p1.opacity}`, ['a2-open-left'])
 
   await page.mouse.move(700, p0.mid); const pa = await settled(page, 'weekPrev', 14)
