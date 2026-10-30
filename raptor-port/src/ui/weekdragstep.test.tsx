@@ -100,7 +100,9 @@ describe('a man held at the week\'s side steps the week a day (D1529)', () => {
     expect(landed, 'not before the wait').toEqual([])
     hold(200)
     expect(landed, 'one day, as one press of ›').toEqual([STEP])
-    hold(WEEK_STEP_WAIT + 50)
+    hold(250 + WEEK_STEP_WAIT - 100)      // the glide lands at 250 ms; the wait runs from there
+    expect(landed, 'the day stands still a full wait after the week lands').toEqual([STEP])
+    hold(200)
     expect(landed, 'held on: the next day').toEqual([STEP, 2 * STEP])
   })
 
@@ -126,6 +128,14 @@ describe('a man held at the week\'s side steps the week a day (D1529)', () => {
     carry(RIGHT + 30, 450, $('#eRoster'))
     hold(WEEK_STEP_WAIT * 3)
     expect(landed).toEqual([])
+  })
+
+  it('with the crew panel hidden, the strip beside the week at the window\'s edge counts as the side (the walk, W12)', () => {
+    const board = $('.edit-board')
+    expect(board, 'the board the week and the crew panel sit in').toBeTruthy()
+    carry(RIGHT + 10, 450, board)
+    hold(WEEK_STEP_WAIT + 50)
+    expect(landed, 'pushed to the window\'s edge, past the week\'s own box').toEqual([STEP])
   })
 
   it('above or below the week, at its side, the week does not move', () => {

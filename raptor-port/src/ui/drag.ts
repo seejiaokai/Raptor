@@ -729,8 +729,10 @@ function tdOver(x: any, y: any, scroll = true) {
    and again each WEEK_STEP_WAIT while he stays. The wait is what lets a name only PASS THROUGH the side: every name from
    the crew panel crosses the week's right side on its way in. It stops at Monday and Sunday (`cross` false): a week
    loaded under a held man repaints the cells he is aiming at.
-   - The side is the week's own box, its visible part only, and only where the pointer is over the week itself or over a
-     ‹ › arrow — never over the crew panel beside it, a window over the week, or the bars above it.
+   - The side is the week's own box, its visible part only, and only where the pointer is over the week itself, a ‹ ›
+     arrow, or the board's own bare margin beside the week (with the crew panel hidden that margin is the last strip at
+     the window's edge, where a hand pushes the mouse — the walk of 31 Oct 26, W12) — never over the crew panel, a
+     window over the week, or the bars above it.
    - The band the man was picked up in is dead until the pointer has left it (as ui/edgescroll.ts), so a man on the front
      day's edge is not carried off by his own press.
    - A frame loop, not the moves: a mouse held still must keep stepping. While the week glides, the cell under the
@@ -743,7 +745,7 @@ function weekSide(w: HTMLElement, x: number, y: number): -1 | 0 | 1 {
   const s = x < r.left + EDGE ? -1 : x > r.right - EDGE ? 1 : 0
   if (!s) return 0
   const el: any = underPoint(x, y, TD && TD.ghost)
-  return el && el.closest && (el.closest('#eWeek') || el.closest('.week-nav')) ? s : 0
+  return el && el.closest && (el.closest('#eWeek') || el.closest('.week-nav') || (el.classList && el.classList.contains('edit-board'))) ? s : 0
 }
 function weekStepLoop() {
   const w = document.getElementById('eWeek') as HTMLElement | null
@@ -757,7 +759,10 @@ function weekStepLoop() {
     if (!s || held) dir = 0
     else if (s !== dir) { dir = s; since = now }
     else if (now - since >= WEEK_STEP_WAIT) { panDays(s, false); since = now }
-    if (w.scrollLeft !== sl) { sl = w.scrollLeft; tdOver(TD.x, TD.y, false) }
+    /* the wait runs from where the week came to rest, not from the press: a glide takes about a third of a second, and
+       counted from the press the next step began a moment after it landed — the day he is aiming at never stood still
+       (the walk of 31 Oct 26, W1) */
+    if (w.scrollLeft !== sl) { sl = w.scrollLeft; if (dir) since = now; tdOver(TD.x, TD.y, false) }
     TD.raf = requestAnimationFrame(tick)
   }
   TD.raf = requestAnimationFrame(tick)
