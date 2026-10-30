@@ -2863,3 +2863,18 @@ reset mode disables before reusing it.
 
 **Principle:** A comparison picture is only evidence once the build it shows is proven — run the change's checks on it and expect them to fail.
 
+
+### Observation 751: The background-command guard refuses a full path written the Git Bash way
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** [WEEK-DRAG-EDGE-PAN] — installing packages in a fresh worktree in the background before taking pictures
+**Skill:** New skill candidate: none — the project's background-command guard (`.claude/hooks/bg-cwd-guard.mjs`, D162)
+**Type:** internal
+**Phase/Area:** a backgrounded npm command in a worktree
+
+**Issue:** `cd /c/Users/User/projects/Raptor/.claude/worktrees/<wt>/raptor-port && npm ci` run in the background was refused as if it did not move into raptor-port; the same command with `cd "C:/Users/User/…/raptor-port"` passed. The refusal's advice ("move in by its FULL path") was already followed — only the spelling differed. Cost one round trip.
+
+**Suggested improvement:** the guard reads `/c/…` (Git Bash's form) as the same path as `C:/…` and `C:\…`; until then, the line in `raptor-port/CLAUDE.md` §Build & verify and the guard's message say "written `C:/…`".
+
+**Principle:** A guard that checks a path must accept every spelling the shell it guards accepts, or its refusal sends the agent to do what it already did.
