@@ -204,6 +204,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [USER-GUIDE] — a guide for users and admins — wanted, not started, not urgent.
 
 **Database step — at the end (D473)**
+- [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
 - [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
@@ -234,6 +235,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [M365-MOVE-PLAN] The M365 move plan — his strikes owed (written 31 Oct 26, D1530, D1531)
+Every point of the SWiFT build-and-deploy kit set against Raptor, numbered in the recommended order, with React Doctor's
+count: `raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`. Waiting on him: the points he strikes, the
+his-call points, and whether new code follows the code check's rules. Nothing on it is built until he says so; the kit's
+red flags, its Vercel rule and its private-project rule are set aside (D1530).
 
 ### [WEEK-DRAG-EDGE-PAN] A man dragged with a mouse to the edge of Edit Schedule never pans the week sideways (found 30 Oct 26, the arrows' walk)
 On a desktop, a man's name dragged with a mouse and held at the left or right edge of Edit Schedule's week scrolls the page

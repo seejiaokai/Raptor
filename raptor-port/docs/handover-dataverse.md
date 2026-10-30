@@ -40,6 +40,8 @@ ruled. Its own files, marked OFFICIAL (CLOSED), are kept out of this public proj
 checked with him.
 **React Doctor**, the kit's code check, may be run on Raptor to count its findings for the move plan (D1531) — a count
 and a list, nothing fixed without his word; whether new code follows its rules is his to rule once he has seen the count.
+**The move plan** — every point of the kit set against Raptor, numbered for him to strike, with React Doctor's count:
+`docs/superpowers/plans/2026-10-31-m365-move-plan.md` (`[M365-MOVE-PLAN]`).
 
 ## Read in this order
 
