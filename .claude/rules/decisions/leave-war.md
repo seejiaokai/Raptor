@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1524 | 30 Oct 26 | The window for an OIL the app credited keeps "· approved" after its code in its title — "FO* · approved", "HO* · approved" — as built on the branch `claude/lw-small-fixes-1030`. |
 | D1521 | 30 Oct 26 | A man deleted on Admin → Users before he ever arrived keeps the words his leftover leave line on Approvals shows, "Posted out — refuse or delete it" (D1447 R21), though he has no row on the grid to delete it from; Refuse beside it takes the line away. |
 | D1520 | 29 Oct 26 | On a phone the person window's LVE tile shows "till <date>" on a line of its own under "incl. [n] carried fwd", in the same grey, so the line never runs past the tile; a desktop keeps the approved one line, "incl. [n] carried fwd · till <date>". |
 | D1519 | 29 Oct 26 | On a phone the Leave War's Balances page shows nothing of its rows behind or through its bar, or between it and its row of column headings — at every zoom and every scroll position, at rest and while the fingers move; D1505's fix, checked only in test browsers that never drew the spill, is redone so it holds at all of them. |
