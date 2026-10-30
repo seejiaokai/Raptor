@@ -236,6 +236,21 @@ man; fix A's "overall" count removed (back to the first-refused-day count); fix 
 
 ## 9. Walk
 
-`Walk:` owed — the walker's run of §5 at both sizes on both builds, the pictures opened by the host.
+**The walker's run, 31 Oct 26 (Sonnet 5.5; the host opens the deciding pictures — D1271).** Fixed build = this branch's head 49c8e6776, rebuilt under the lock before the run (the older build pre-dated a later change to the posting pass). `origin/main`'s build = `C:\Users\User\rrm\raptor-port\dist`. Pictures in `docs/img/handpass/2026-10-31-lw-roster-restore/{after,before}/{s1,s2}-{desk,phone}/`, each run's result list beside them. No console or page errors in any of the eight runs. Every step pressed on screen as the scripts do, bar RR-P1's one console step (the fault's premise).
+
+| # | Fixed, desktop | Fixed, phone | `origin/main` (desktop / phone) | What the pictures show |
+|---|---|---|---|---|
+| RR-A0 | PASS | — | PASS / — | `after/s1-desk/rr-a0-a-postout`, `rr-a0-c-after-move`: Drifter's LL sits on 2 Nov inside the PO stripe after the live Move |
+| **RR-A** | **PASS** | **PASS** | **FAIL / FAIL (the fault seen)** | `rr-a-a-before-redo`: Redo arrow lit on the fixed build, greyed on `main`; `rr-a-b-after-redo` (crop): LL on 2 Nov on the fixed build, still on 26 Oct on `main` |
+| RR-B0 | PASS | — | PASS / — | `rr-b0-b-saved`: Inputs calendar bar 26–27 Oct after the live edit |
+| **RR-B** | **PASS** | **PASS** | **FAIL / FAIL (the fault seen)** | `rr-b-a-before-redo`: Redo lit (fixed) / greyed (`main`); `rr-b-b-after-redo`: bar runs 26–27 Oct (fixed) / 26 Oct alone (`main`) |
+| RR-C1 | PASS | — | PASS / — | `rr-c1-after-redo`: Redo greyed; Drifter's row is below the fold in the picture, so the empty leave is the script's count, not pictured |
+| RR-C2 | PASS | — | PASS / — | `rr-c2-approvals`: his 2 Nov line reads "He posted out on 30 Oct: refuse or delete it", Approve not lit |
+| **RR-P1** | **PASS** | **PASS** | **FAIL / FAIL (the fault seen)** | `rr-p1-c-quals-after-reload`: Ace's Management cell empty (fixed) / ticked (`main`); `rr-p1-d-users`: Drifter in the archived fold "Archived 5 Nov 26 by his posting (Overseas Sqn)" |
+| RR-P2 | PASS | PASS | PASS / — | `rr-p2-b-after-reload`: Ace's TF ticked after the reload |
+| RR-P3 | PASS | — | PASS / — | `rr-p3-b-users`: "Archived 4 Nov 26 by his posting (Overseas Sqn)" |
+| RR-P4 | PASS | — | PASS / — | `rr-p4-a-postout` (Delete chosen, "Tap again to delete Drifter"); `rr-p4-c-users` shows only the top of Admin → Users, not Drifter's place — his absence is the script's reading, not pictured |
+
+**Fixed build: desktop 10 / 10, phone 4 / 4.** **Breaks: 3 / 3 on `origin/main` at the desktop (RR-A, RR-B, RR-P1 fail), 3 / 3 at the phone**; the seven that must not change passed on `main` at the desktop. Not run: nothing. Notes for the host: (1) the next-morning picture of RR-P1 (`rr-p1-b-next-morning`) shows the grid's today ring still on 4 Nov although the browser clock is on 5 Nov — the stand-in clock jump, not this change; (2) RR-C1's and RR-P4's pictures do not show the thing they claim (see the rows); their scripts' counts do.
 
 Rulings: none this job.
