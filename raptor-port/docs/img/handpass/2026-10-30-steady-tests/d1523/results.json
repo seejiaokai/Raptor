@@ -1,0 +1,56 @@
+[
+ {
+  "id": "1366 resized only: below the band, Retry pressed, back at its size",
+  "verdict": "PASS",
+  "said": "before 1030,112,320,576; band 0,103,1366,36 → window 1030,148,320,540; at Retry's middle: Retry; after 1030,112,320,576; errors none",
+  "pics": [
+   "1366-a1-resized",
+   "1366-a2-band",
+   "1366-a3-after"
+  ]
+ },
+ {
+  "id": "1366 moved: keeps its place and size through the band",
+  "verdict": "PASS",
+  "said": "before 770,232,380,560; with the band 770,232,380,560; after 770,232,380,560; errors none",
+  "pics": [
+   "1366-b1-moved-band"
+  ]
+ },
+ {
+  "id": "1200 resized only: below the band, Retry pressed, back at its size",
+  "verdict": "PASS",
+  "said": "before 864,112,320,676; band 0,103,1200,36 → window 864,148,320,640; at Retry's middle: Retry; after 864,112,320,676; errors none",
+  "pics": [
+   "1200-a1-resized",
+   "1200-a2-band",
+   "1200-a3-after"
+  ]
+ },
+ {
+  "id": "1200 moved: keeps its place and size through the band",
+  "verdict": "PASS",
+  "said": "before 604,232,380,560; with the band 604,232,380,560; after 604,232,380,560; errors none",
+  "pics": [
+   "1200-b1-moved-band"
+  ]
+ },
+ {
+  "id": "1440 resized only: below the band, Retry pressed, back at its size",
+  "verdict": "PASS",
+  "said": "before 1104,96,320,780; band 0,57,1440,36 → window 1104,96,320,780; at Retry's middle: Retry; after 1104,96,320,780; errors none",
+  "pics": [
+   "1440-a1-resized",
+   "1440-a2-band",
+   "1440-a3-after"
+  ]
+ },
+ {
+  "id": "1440 moved: keeps its place and size through the band",
+  "verdict": "PASS",
+  "said": "before 844,216,380,560; with the band 844,216,380,560; after 844,216,380,560; errors none",
+  "pics": [
+   "1440-b1-moved-band"
+  ]
+ }
+]

@@ -166,11 +166,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [E2E-HIDE-BAR-SEAT] — on his PC a changes-window browser test fails: its seat sits under the hidden bar (the test, not the app; small).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
-- [SAVE-NOTE-TEST-GAPS] — two soft spots in the failed-save warning's browser test.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
@@ -258,9 +256,6 @@ before building** (whether a held drag at the week's side should step the days a
 
 ### [LW-POSTED-OUT-RESTORE] A man posted out but not deleted: Redo can put back an approval on a day after his posting's date (found 30 Oct 26, the small fixes' narrow read, its observation)
 **What happens:** a man with a posting out that is not a Delete (overseas, another squadron, archive) — an approval of his leave on a day after his posting's date, made before the posting was set, then undone; the posting set (run or not); Redo puts the approval back and writes the war-approved leave, where the live Approve refuses it ("He posts out on 1 Mar: refuse or delete it" — D1436). Reproduced by the reader in a scratch test with an Overseas posting (`raptor-port/docs/handpass/parts/lw-sf1030/read-fix1.md`, "Observation"). **Older:** on `main` too — neither restore refusal reads posting dates. **Why it was not built with the small fixes** (`raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §12, the narrow read): D1436 rules the Approvals list's Approve, and its "wherever leave is approved" is the agent's reading about the doors, not about Undo / Redo; D321 (8) makes a posting out no Undo step; and the deleted man's restore refusal is cached on the step for good ("a delete is final"), which a posting — moved, taken back by "Undo post out", or turned SANS — is not. **The likely shape:** a refusal in the uncached restore check (`state/undo-wire.ts restoreRefusal`, beside D1263's closed-day rule) that asks the live door's own posting test (`leavewar/sync.ts postingOutWhy` / `refusedFrom`) for every day the step's Redo adds — one body with Approve — with a test for each twin path: a posting moved earlier and later, taken back, turned SANS, run and not yet run, an Undo of a send-back, a place-and-approve. **Ask him first** whether Undo / Redo should keep the posting's date rule (recommended: yes — the two doors agree, D754), with a picture. **Place:** low; nothing waits on it; a stored case is not a finding (D56), only new Redos are.
-
-### [E2E-HIDE-BAR-SEAT] On his PC a changes-window browser test fails: the seat it checks sits under the hidden bar (found 28 Oct 26, the night's M4 build)
-The phone test "Hide sends the panel to the bar at the bottom…" (`raptor-port/e2e/changeswin.spec.ts`) brings Tuesday's changed seat into view with the browser's own scroll and then checks that nothing covers it. On his PC (Windows' letters) the seat is already on screen, at 780–795 of 844, and the hidden bar — 12px from the foot, about 51 tall — starts at 780, so the check fails every time: with the night's changed bar (D1442) and with the bar as it was, measured both ways on 28 Oct 26. GitHub's machines pass it. The app is not at fault there — its own tap on a change brings the change clear of the bar; the test's scroll does not. **Fix:** in the test, bring the seat clear of the bar the way the app does (or scroll it above the bar's top) before the check, keeping the check itself. Small; needs no answer from him.
 
 ### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
 **What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page
@@ -2058,16 +2053,6 @@ unnamed lines an unreadable clock is explained once per line under the box. **Pl
 **The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** a request's window opened from the schedule (on the Inputs page it is a window the page behind
 works with, D641, and holds nothing), Week insights, the document viewer and the Flying waves window take and keep the keyboard;
 Insights and Flying waves close on Escape too (test `ui/windowkeys.test.tsx`). **The three low leftovers above stay open.**
-
-### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
-Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound
-in the app. Two weaknesses in `raptor-port/e2e/save-note.spec.ts`, neither a fault a person can meet: (1) the proof that a press on
-Retry itself tried to save reads the write counter one task later (`setTimeout(…, 0)`), so an automatic retry falling due at that very
-moment could pass for the press — sample it in the same click, after the button's own handler, and repeat the disabled-handler check
-with a retry due at the click; (2) "a window he has moved keeps its place and size" is pinned for a MOVED changes window only — add
-a resized one, an operated ALL AVAIL window and the preview-bar combinations. The report:
-`raptor-port/docs/superpowers/briefs/2026-10-06-owed-small-reads-astra.md` Part 3. **Place (the agent's line):** low — with the next
-change to the failed-save warning or its test.
 
 ### [REST-FIRST-CREW-HINT] Empty formation gives no predictive crew-rest hint for its first occupant (found 2 Oct 26)
 Rally runtime evidence: an empty Wednesday formation resolves reporting to Tuesday11:00, but Ranger gets no pre-placement rest hint. First assignment correctly raises9h crew rest against Monday's overnight endingTuesday02:00. A different remaining crew member supplies a sibling and Ranger's hypothetical placement then correctly gives clearance14:00. Removal restores the missing-first-hint condition. Baseline query contract and a dedicated test explicitly return null for an empty formation; this is existing behaviour, not a new Rally regression, and is not exempted as stored-demo-only harm. The broad guide claim that the query never disagrees has been qualified in `raptor-port/docs/engine-rules.md`.

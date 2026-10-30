@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1523 | 30 Oct 26 | A window he has resized but never moved moves down below a failed save's "Not saved" band, as a window not yet placed does, so the band and its Retry are never covered (D587); a window he has moved keeps its place. |
 | D1518 | 29 Oct 26 | Nothing pinned on screen leaks: a bar, or any other part that stays put while what is under it scrolls, shows none of that content behind it or through a gap at its edges — at every zoom and every scroll position; the desktop week's ‹ › arrows excepted, which stay see-through (D1522). — changed by D1522 |
 | D1509 | 29 Oct 26 | The one settings gear everywhere in the app is the Leave War's drawn line gear, the ⚙ symbol going wherever it stands today (the Inputs calendar, the OIL tracker, the Tracker's flex settings, the Scheduler Board's flying-waves gear). |
 | D1508 | 29 Oct 26 | Every calendar icon in the app is Edit Schedule's line calendar, drawn by the app — never the 📅 symbol; and the whole app is looked over again for anything else drawn differently where it should match, icons included, each put to him with pictures before it changes (D1124). |
