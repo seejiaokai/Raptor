@@ -124,7 +124,11 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
   /* reserve the rail's lane at the right; position:relative makes .edit-board the
      containing block for the collapsed (absolute) roster, so right:0 lands on the
      board's own right edge rather than the viewport's */
-  .edit-board{padding-right:26px;position:relative}
+  .edit-board{padding-right:26px;position:relative;overflow-x:clip}
+  /* overflow-x:clip (his find, D1528, 30 Oct 26, with four pictures): the hidden crew panel slides out past the window's right
+     edge, and without a clip the page counted it as width — the browser's own grey sideways scroll bar came up at the
+     foot of Edit Schedule, which View-only never shows. clip, not hidden: it makes no scroll box, so the open panel's
+     position:sticky still holds against the page. */
   /* OPEN = a clean, full-height TRUE-BLACK opaque side panel (owner, 26 Aug 26
      follow-up — "I can see the bleeding of it behind … make it a full black
      opaque side panel"). The old panel used var(--panel) #14181d, the SAME tone

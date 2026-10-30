@@ -5896,3 +5896,30 @@ test('D1526 a finger tap on the slim week arrow steps the day and leaves it slim
   expect(await w(), 'the ‹ tab untouched').toBe(14)
   await ctx.close()
 })
+
+/* His find (30 Oct 26, with four pictures): on Edit Schedule, hiding the crew panel brought up the browser's own grey
+   sideways scroll bar at the very foot of the page — View-only has none — and the week's foot bar kept its old width as
+   the panel went and came back. The hidden panel slides out past the window's right edge, and the page counted it as
+   width; the foot bar is measured on scroll and resize only, never on the panel's toggle. */
+test('the crew panel hidden and shown again: no browser sideways scroll bar, and the foot bar fits the week each time', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 780 })
+  await login(page)
+  await go(page, 'editsched')
+  const measure = () => page.evaluate(() => {
+    const d = document.documentElement, w = document.getElementById('eWeek')!.getBoundingClientRect(), b = document.getElementById('hscroll')!.getBoundingClientRect()
+    return { pageOver: d.scrollWidth - d.clientWidth, weekL: Math.round(w.left), weekW: Math.round(w.width), barL: Math.round(b.left), barW: Math.round(b.width) }
+  })
+  const check = async (when: string) => {
+    await expect.poll(async () => { const m = await measure(); return Math.abs(m.barW - m.weekW) <= 2 && Math.abs(m.barL - m.weekL) <= 2 }, `${when}: the foot bar spans the week`).toBe(true)
+    const m = await measure()
+    expect(m.pageOver, `${when}: the page is no wider than the window (no grey browser scroll bar)`).toBeLessThanOrEqual(0)
+    return m
+  }
+  const open = await check('crew panel open')
+  await page.locator('.ros-rail').click()
+  const hidden = await check('crew panel hidden')
+  expect(hidden.weekW, 'the week took the panel\'s room').toBeGreaterThan(open.weekW + 100)
+  await page.locator('.ros-rail').click()
+  const back = await check('crew panel shown again')
+  expect(Math.abs(back.weekW - open.weekW), 'back to its first width').toBeLessThanOrEqual(2)
+})

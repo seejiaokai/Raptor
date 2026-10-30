@@ -243,8 +243,33 @@ faithful to its full row (D138).
 **Found, not this change's:** a man dragged with a mouse to the left or right edge of Edit Schedule never pans the week
 sideways — measured the same with today's arrows, with the new tab and with no arrows at all; filed `[WEEK-DRAG-EDGE-PAN]`.
 
+## His find: the crew panel's hide (D1528, 30 Oct 26)
+
+**His words and pictures:** on Edit Schedule at his PC, the foot bar did not resize as the crew panel was hidden and shown,
+and the browser's own grey sideways bar came up at the foot of the page, where View-only has none. **Cause:** the hidden
+panel slides past the window's right edge (`position:absolute` + a transform) and the page counted it as width (253 at
+1600); the foot bar is measured on scroll and resize only. **Fix:** `.edit-board{overflow-x:clip}` (`03-week.css`), and the
+CREW tab's press measures the foot bar again on the next frame (`interactions.ts`). **Tier: WALK** (a page's layout at the
+crew panel's toggle; §5 questions 1–3, 7, 8 NO). **Red first:** a browser test (`e2e/geometry.spec.ts`, "the crew panel
+hidden and shown again…") failed — page 253 wider than the window; a break test (the re-measure taken out) failed on
+"shown again: the foot bar spans the week"; green 53/53 with the week, arrow and crew tests. **Walk**
+(`scripts/handpass/crew-toggle-walk.mjs`, pictures `docs/img/handpass/2026-10-30-crew-toggle/`): 18/18 at 1600 × 780 and
+1536 × 730 at 1.25 with a real mouse on the CREW tab — open, hidden, shown, hidden again: the page window-wide and the foot
+bar spanning the week each time; the open panel still pinned while scrolled 700 down (the clip keeps its sticky); hidden
+while scrolled, the same; View-only untouched; no page errors. **Every page** measured at 1600, 1536 and 1280: none wider
+than the window. **Why the walk missed it:** §7.11 lesson 17 (a control that changes a page's width, checked at rest only).
+**The fresh read (Opus, blind — D790):** the code — no findings (the clip keeps the panel's sticky; nothing inside the board
+pokes out sideways; the phone untouched; the next frame measures the final width). D1528's short line faithful; lesson 17
+faithful; lesson 74 corrected to mark his question's "yes" as the agent's reading. Its one open question — does the crew
+panel's ‹ day › change its width without a redraw? — pressed three times at 1600: the panel stays 247 wide, the foot bar
+spans the week, the page window-wide.
+**His look at the three previews (30 Oct 26):** *"those looks right"* — read as his look at 591's iPhone items, 592's AM / PM
+and 593's Retry.
+
 ## Walk:
 
 `Walk: docs/handpass/2026-10-30-scroll-pinned.md · 81 pictures · 15 surfaces · 57 orders · MISSING: 0 (the week arrows a question for him; three older pinch finds filed)`
+
+`Walk (D1528, the crew panel's hide): docs/handpass/2026-10-30-scroll-pinned.md §His find: the crew panel's hide · 18 pictures · 2 sizes · 18 checks · MISSING: 0`
 
 `Walk (D1526, the week arrows): docs/handpass/2026-10-30-scroll-pinned.md §The week arrows built · 13 pictures · 2 surfaces (View-only Sched, Edit Schedule) + the phone, 820 and an iPad on its side by finger · 19 checks · MISSING: 0 (a mouse drag never pans the week sideways — older, filed [WEEK-DRAG-EDGE-PAN])`

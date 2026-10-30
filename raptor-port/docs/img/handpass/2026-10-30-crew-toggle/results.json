@@ -1,0 +1,138 @@
+[
+ {
+  "name": "1600 — crew panel open: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1323; bar 0+1323",
+  "pics": [
+   "1600-1-open"
+  ]
+ },
+ {
+  "name": "1600 — hidden: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1574; bar 0+1574",
+  "pics": [
+   "1600-2-hidden"
+  ]
+ },
+ {
+  "name": "1600 — shown again: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1323; bar 0+1323",
+  "pics": [
+   "1600-3-shown"
+  ]
+ },
+ {
+  "name": "1600 — hidden again: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1574; bar 0+1574",
+  "pics": [
+   "1600-4-hidden-again"
+  ]
+ },
+ {
+  "name": "1600 — the week takes the panel's room and gives it back",
+  "result": "PASS",
+  "said": "1323 → 1574 → 1323",
+  "pics": []
+ },
+ {
+  "name": "1600 — scrolled down 700: the open crew panel stays pinned in view",
+  "result": "PASS",
+  "said": "panel top 212 → 66",
+  "pics": [
+   "1600-5-scrolled-open"
+  ]
+ },
+ {
+  "name": "1600 — hidden while scrolled down: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "over 0; week 1574; bar 1574",
+  "pics": [
+   "1600-6-scrolled-hidden"
+  ]
+ },
+ {
+  "name": "1600 — View-only as before: no browser scroll bar, the foot bar spans the week",
+  "result": "PASS",
+  "said": "over 0; week 1600; bar 1600",
+  "pics": [
+   "1600-7-viewonly"
+  ]
+ },
+ {
+  "name": "1600 — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "1536 — crew panel open: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1259; bar 0+1259",
+  "pics": [
+   "1536-1-open"
+  ]
+ },
+ {
+  "name": "1536 — hidden: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1510; bar 0+1510",
+  "pics": [
+   "1536-2-hidden"
+  ]
+ },
+ {
+  "name": "1536 — shown again: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1259; bar 0+1259",
+  "pics": [
+   "1536-3-shown"
+  ]
+ },
+ {
+  "name": "1536 — hidden again: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "page over by 0; week 0+1510; bar 0+1510",
+  "pics": [
+   "1536-4-hidden-again"
+  ]
+ },
+ {
+  "name": "1536 — the week takes the panel's room and gives it back",
+  "result": "PASS",
+  "said": "1259 → 1510 → 1259",
+  "pics": []
+ },
+ {
+  "name": "1536 — scrolled down 700: the open crew panel stays pinned in view",
+  "result": "PASS",
+  "said": "panel top 212 → 66",
+  "pics": [
+   "1536-5-scrolled-open"
+  ]
+ },
+ {
+  "name": "1536 — hidden while scrolled down: page window-wide, foot bar spans the week",
+  "result": "PASS",
+  "said": "over 0; week 1510; bar 1510",
+  "pics": [
+   "1536-6-scrolled-hidden"
+  ]
+ },
+ {
+  "name": "1536 — View-only as before: no browser scroll bar, the foot bar spans the week",
+  "result": "PASS",
+  "said": "over 0; week 1536; bar 1536",
+  "pics": [
+   "1536-7-viewonly"
+  ]
+ },
+ {
+  "name": "1536 — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

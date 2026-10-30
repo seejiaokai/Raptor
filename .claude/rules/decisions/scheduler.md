@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1528 | 30 Oct 26 | Edit Schedule, like View-only, never shows the browser's own grey sideways scroll bar on a desktop — the week's foot bar is its one sideways scroll — and that foot bar fits the week each time the crew panel is hidden or shown. |
 | D1527 | 30 Oct 26 | The week's ‹ › arrow, slid out, looks as the old arrow did at rest — the same frosted glass at the same see-through level, grey edge and grey arrow, never lit blue nor more solid; the slim tab and its slide stay as D1526. |
 | D1526 | 30 Oct 26 | The desktop week's ‹ › arrows become a slim tab, 14 wide and 70 tall, flush on the window's edge, that slides out to today's full arrow when the pointer comes near and back when it leaves — see-through at rest and still slightly see-through when open; his word for the size change (D487). — changed by D1527 |
 | D1522 | 30 Oct 26 | The desktop week's ‹ › arrows stay see-through, not solid — an exception to D1518 — because they already cover the day's information at times; and a design in which the arrows block nothing behind them is looked for with the design skill and drawn for him, before and after, before anything changes. — changed by D1526 |

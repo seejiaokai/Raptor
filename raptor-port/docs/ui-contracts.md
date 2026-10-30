@@ -239,6 +239,10 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **Hiding the crew panel never widens the page, and the foot bar follows** (his D1528, 30 Oct 26): `.edit-board` clips
+  sideways (`overflow-x:clip` — no scroll box, so the open panel's sticky holds), so the hidden panel sliding past the window's
+  edge is never page width and no browser sideways bar comes up; the CREW tab's press measures the foot bar again on the
+  next frame (`interactions.ts`, `hsSync`). Gated in `e2e/geometry.spec.ts`; walked by `scripts/handpass/crew-toggle-walk.mjs`.
 - **No room beside the ‹ arrow — the day at the front sits flush at the week's left edge** (owner, D275, 27 Sep 26 —
   "I still prefer these", of the full-screen before and after). The floating ‹ arrow (`.week-nav`, fixed 8px in, 38px
   wide) sits over the first few pixels of that day, by his choice: it can cover the start of an opened "⚠ N issues"
