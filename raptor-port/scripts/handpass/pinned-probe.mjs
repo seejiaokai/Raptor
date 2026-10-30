@@ -99,6 +99,8 @@ export const PROBE = async ({ spill, keep }) => {
   const W = innerWidth, H = innerHeight
   const pins = [...document.querySelectorAll('body *')].filter(e => {
     if (!isPos(e) || inOff(e)) return false
+    /* the desktop week's ‹ › arrows stay see-through on purpose (his D1522, 30 Oct 26) */
+    if (e.classList.contains('week-nav')) return false
     const q = visRect(e)
     if (q.width < 24 || q.height < 8 || q.bottom <= 0 || q.top >= H || q.right <= 0 || q.left >= W) return false
     /* a shade over the whole screen behind a window (the OIL tracker's scrim) is see-through by design: it dims, it is

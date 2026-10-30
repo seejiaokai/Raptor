@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1522 | 30 Oct 26 | The desktop week's ‹ › arrows stay see-through, not solid — an exception to D1518 — because they already cover the day's information at times; and a design in which the arrows block nothing behind them is looked for with the design skill and drawn for him, before and after, before anything changes. |
 | D1442 | 28 Oct 26 | On a phone the changes window's bar — the window hidden while History is on — takes the slim Approvals bar's plain look (D1440): "Show ▴" as plain cyan words and a plain ✕, each keeping its full tap area; its words stay as they are. |
 | D1412 | 27 Oct 26 | When the keyboard opens on a phone, the box tapped rises in step with the keys, proportionately, and nothing else on screen jerks or bounces — not a box already above the keys, and no window shortening and growing back or showing the page behind it; the app's smooth feel outranks any mechanism, and a fix that trades it away made the app worse. |
 | D1383 | 26 Oct 26 | Before the app is put out for testing, signing in always opens on today's date; until then it may open on the demo week's date, because the demo data is what is being worked on. |

@@ -6,7 +6,7 @@ The night of 30 Oct 26, job 1 (unattended, Low). Three backlog items in one batc
 
 ## Questions waiting for him
 
-1. **The desktop week's ‹ › arrows are see-through.** They float over the days on View-only Sched and Edit Schedule (since
+1. **ANSWERED 30 Oct 26 (D1522): keep them see-through; a design where they block nothing is filed as `[WEEK-ARROWS-NO-BLOCK]`.** **The desktop week's ‹ › arrows are see-through.** They float over the days on View-only Sched and Edit Schedule (since
    long — frosted glass, drawn at three-quarters strength), so the day under an arrow shows through it as the week scrolls:
    picture `docs/img/handpass/2026-10-30-scroll-pinned/q1-week-arrows-marked.png` (the arrow ringed; the day's cyan edge and
    "RU · BFM" through it). Making them solid changes how they look (they would no longer be glass), so it is his to say.
