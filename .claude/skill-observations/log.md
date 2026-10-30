@@ -2832,3 +2832,19 @@ reset mode disables before reusing it.
 **Suggested improvement:** Where a handoff says how a job ships, name the files it will change and check them against shipping.md's notes-only list; a size-tripwire raise is always a script change.
 
 **Principle:** Whether a change may merge by itself is decided by the files it touches, not by what kind of job it is called.
+
+### Observation 749: A search for words a ruling changes must also read the tests' patterns
+
+**Status:** OPEN
+**Date:** 2026-10-30
+**Session context:** building D1525 (a half day written "LL (AM)" in place of "LL (morning)") on `claude/lw-small-fixes-1030`
+**Skill:** New skill candidate: wording-change sweep (or the bug-check order's roll-call)
+**Type:** open-source
+**Phase/Area:** finding every test that pins the old words before the change is pushed
+
+**Issue:** The unit and browser tests were searched for the old words as literal strings ("(morning)", "Morning ·"); two browser tests escaped — one held the words inside a regular expression (`\((morning|afternoon)\)`), one in an array of expected lines a grep for `toBe(` lines missed. GitHub's full run caught both after the push, costing a red run and a second push.
+
+**Suggested improvement:** When a ruling changes words the app prints, search every test folder (unit and browser) for each old word ALONE, case-insensitive, with no assertion pattern around it, and read each hit; add the browser folder's hits to the red-first run before the first push.
+
+**Principle:** A test can pin text in many shapes — a literal, a pattern, a list — so the search for changed words looks for the bare word, not for one shape of assertion.
+

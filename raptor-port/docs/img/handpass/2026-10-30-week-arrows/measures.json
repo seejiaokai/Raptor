@@ -1,0 +1,203 @@
+{
+ "record": [
+  {
+   "state": "view, Monday list open",
+   "opt": "T",
+   "under": [
+    {
+     "which": "weekPrev",
+     "box": [
+      8,
+      345,
+      38,
+      70
+     ],
+     "words": []
+    },
+    {
+     "which": "weekNext",
+     "box": [
+      1490,
+      345,
+      38,
+      70
+     ],
+     "words": [
+      ": FIRST WAVE VL IN TIME ",
+      ": FIRST WAVE RU IN TIME ",
+      "FCP / RCP",
+      "RMKS"
+     ]
+    }
+   ],
+   "margin": {
+    "card": 20,
+    "words": 31
+   }
+  },
+  {
+   "state": "view, Monday list open",
+   "opt": "C",
+   "under": [
+    {
+     "which": "weekPrev",
+     "box": [
+      0,
+      345,
+      14,
+      70
+     ],
+     "words": []
+    },
+    {
+     "which": "weekNext",
+     "box": [
+      1522,
+      345,
+      14,
+      70
+     ],
+     "words": [
+      ": FIRST WAVE VL IN TIME ",
+      ": FIRST WAVE RU IN TIME ",
+      "RMKS"
+     ]
+    }
+   ],
+   "margin": {
+    "card": 20,
+    "words": 31
+   }
+  },
+  {
+   "state": "view, two › presses",
+   "opt": "T",
+   "under": [
+    {
+     "which": "weekPrev",
+     "box": [
+      8,
+      345,
+      38,
+      70
+     ],
+     "words": [
+      "CS MSN"
+     ]
+    },
+    {
+     "which": "weekNext",
+     "box": [
+      1490,
+      345,
+      38,
+      70
+     ],
+     "words": [
+      "No flying — ground day."
+     ]
+    }
+   ],
+   "margin": {
+    "card": 20,
+    "words": 31
+   }
+  },
+  {
+   "state": "view, two › presses",
+   "opt": "C",
+   "under": [
+    {
+     "which": "weekPrev",
+     "box": [
+      0,
+      345,
+      14,
+      70
+     ],
+     "words": []
+    },
+    {
+     "which": "weekNext",
+     "box": [
+      1522,
+      345,
+      14,
+      70
+     ],
+     "words": [
+      "No flying — ground day."
+     ]
+    }
+   ],
+   "margin": {
+    "card": 20,
+    "words": 31
+   }
+  },
+  {
+   "state": "edit, two › presses",
+   "opt": "T",
+   "under": [
+    {
+     "which": "weekPrev",
+     "box": [
+      8,
+      345,
+      38,
+      70
+     ],
+     "words": [
+      "Common Programme",
+      "NO FLYING - GROUND TRAIN"
+     ]
+    },
+    {
+     "which": "weekNext",
+     "box": [
+      1490,
+      345,
+      38,
+      70
+     ],
+     "words": []
+    }
+   ],
+   "margin": {
+    "card": 20,
+    "words": 31
+   }
+  },
+  {
+   "state": "edit, two › presses",
+   "opt": "C",
+   "under": [
+    {
+     "which": "weekPrev",
+     "box": [
+      0,
+      345,
+      14,
+      70
+     ],
+     "words": []
+    },
+    {
+     "which": "weekNext",
+     "box": [
+      1522,
+      345,
+      14,
+      70
+     ],
+     "words": []
+    }
+   ],
+   "margin": {
+    "card": 20,
+    "words": 31
+   }
+  }
+ ],
+ "errs": []
+}
