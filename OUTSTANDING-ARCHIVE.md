@@ -6976,3 +6976,9 @@ on a phone App bal · Pending · War bal spread across the tile, so War bal ("17
 (`ui/personwindow.css`, pinned by `e2e/leavewar.spec.ts` "War bal stays inside its LVE tile"). **To do:** build his pick
 (phone only — a desktop keeps the approved drawing, D1478), its picture beside the drawing, the drawing check. Ruling then.
 
+
+*Moved here 2026-10-30 by backlog-archive.mjs ([LW-DELETED-NOROW-WORDS]). Forward facts: `raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md`.*
+
+### [LW-DELETED-NOROW-WORDS] A man deleted before he arrived: "refuse or delete it" with no cell to delete it from (found 30 Oct 26, the small fixes' walk, S1-1)
+His leftover line on Approvals now reads "Posted out — refuse or delete it" (D1447 R21's words), but he has no row on the grid, so "delete it" cannot be followed — Refuse works and takes the line out of the count. **His question (D994 — when he says so):** keep the words as they are (recommended: they are his ruled words, and Refuse stands beside them on the line), or say only "refuse it" for a man with no row. Picture: `raptor-port/docs/img/handpass/2026-10-30-lw-small-fixes/after/s1-desk/s1-1-c-approve-pressed.png` (the line at the foot). **Place:** low; nothing waits on it.
+
