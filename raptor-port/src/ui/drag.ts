@@ -744,7 +744,11 @@ function weekSide(w: HTMLElement, x: number, y: number): -1 | 0 | 1 {
   if (y < Math.max(r.top, 0) || y > Math.min(r.bottom, window.innerHeight)) return 0
   const s = x < r.left + EDGE ? -1 : x > r.right - EDGE ? 1 : 0
   if (!s) return 0
-  const el: any = underPoint(x, y, TD && TD.ghost)
+  /* what is under the pointer is read at a point inside the page: on his Windows browser the page's own up-and-down scroll
+     bar takes the last ~15px at the window's edge, where a pushed mouse rests and the browser finds no element (the code
+     read of 31 Oct 26, 1 — the walk's browser hid its scroll bars); the band itself still uses the real x */
+  const cw = document.documentElement.clientWidth || window.innerWidth
+  const el: any = underPoint(Math.max(0, Math.min(x, cw - 1)), y, TD && TD.ghost)
   return el && el.closest && (el.closest('#eWeek') || el.closest('.week-nav') || (el.classList && el.classList.contains('edit-board'))) ? s : 0
 }
 function weekStepLoop() {
@@ -753,6 +757,9 @@ function weekStepLoop() {
   let held = weekSide(w, TD.x, TD.y), dir = 0, since = 0, sl = w.scrollLeft
   const tick = () => {
     if (!TD || !TD.armed || !TD.mouse) return
+    /* the page left, or the window narrowed to the phone layout, while he holds: no stepping there (no desktop arrows,
+       D1529 is the desktop's), but the loop waits, so widening back carries on (the code read of 31 Oct 26, 2) */
+    if (view.CURPAGE !== 'editsched' || window.innerWidth <= 820) { dir = 0; TD.raf = requestAnimationFrame(tick); return }
     const s = weekSide(w, TD.x, TD.y)
     if (held && s !== held) held = 0
     const now = Date.now()

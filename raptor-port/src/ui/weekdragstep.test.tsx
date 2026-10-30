@@ -138,6 +138,37 @@ describe('a man held at the week\'s side steps the week a day (D1529)', () => {
     expect(landed, 'pushed to the window\'s edge, past the week\'s own box').toEqual([STEP])
   })
 
+  it('pushed onto the page\'s own scroll bar at the window\'s edge, it still counts as the side (the code read, 1)', () => {
+    /* on his Windows browser the page's up-and-down scroll bar takes the last ~15px; the browser finds no element there */
+    const de = document.documentElement
+    Object.defineProperty(de, 'clientWidth', { value: 1300, configurable: true })
+    const board = $('.edit-board')
+    const was = (document as any).elementFromPoint
+    ;(document as any).elementFromPoint = (x: number) => (x >= 1300 ? null : under)
+    try {
+      carry(1310, 450, board)
+      hold(WEEK_STEP_WAIT + 50)
+      expect(landed, 'over the scroll bar, read as the strip just inside it').toEqual([STEP])
+    } finally {
+      ;(document as any).elementFromPoint = was
+      delete (de as any).clientWidth
+    }
+  })
+
+  it('the window narrowed to the phone layout mid-drag: the side stops stepping (the code read, 2)', () => {
+    const iw = window.innerWidth
+    carry(RIGHT - 10, 450, aDay())
+    Object.defineProperty(window, 'innerWidth', { value: 800, configurable: true, writable: true })
+    try {
+      hold(WEEK_STEP_WAIT * 3)
+      expect(landed, 'no desktop arrows, no stepping').toEqual([])
+    } finally {
+      Object.defineProperty(window, 'innerWidth', { value: iw, configurable: true, writable: true })
+    }
+    hold(WEEK_STEP_WAIT + 50)
+    expect(landed, 'wide again: it steps').toEqual([STEP])
+  })
+
   it('above or below the week, at its side, the week does not move', () => {
     carry(RIGHT - 10, 150, aDay())
     hold(WEEK_STEP_WAIT * 3)

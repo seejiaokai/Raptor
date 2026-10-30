@@ -97,7 +97,7 @@ residual. The walk script resets it as a hand's wheel does.
 
 ## Tests and break tests
 
-- `src/ui/weekdragstep.test.tsx` — 10 (4 red before the build; 2 more red before the walk's fixes).
+- `src/ui/weekdragstep.test.tsx` — 12 (4 red before the build; 2 more red before the walk's fixes; 2 more before the code read's).
 - Break tests, each caught: the drag allowed to cross into another week (2 failed); no wait (5 failed).
 - `src/ui/drag.test.tsx`, `src/ui/pan.test.tsx` — green with it (109 in the three files).
 - `e2e/geometry.spec.ts` "the week pans by whole day boxes" — 3/3 in Chromium at 1536 × 730, the new test among them.
@@ -106,7 +106,21 @@ residual. The walk script resets it as a hand's wheel does.
 ## The code read
 
 A fresh, blind Opus reader (D790), given the ruling, the diff, this sheet's walk and the exclusions (D56; the two older items
-above). Its findings and their dispositions: below.
+above). Two findings, both fixed red first; one question.
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 (medium) | On his Windows browser the page's own up-and-down scroll bar takes the last ~15px at the window's edge; a mouse pushed there finds no element, so with the crew panel hidden the week never stepped. The walk missed it: its headless browser hides scroll bars. | **Fixed:** what is under the pointer is read at a point just inside the page; the band keeps the real position. Test "pushed onto the page's own scroll bar…" (red first). Walked with scroll bars shown, `scripts/handpass/week-drag-step-scrollbar.mjs`: on the build before the fix S1 FAIL (`scrollbar-before/`), after it S1 and S2 PASS (`scrollbar/`). |
+| 2 (low) | The window narrowed to 820 or less, or the page changed, mid-drag: the side kept stepping in the phone layout. | **Fixed:** the loop steps only on Edit Schedule above 820, and waits otherwise. Test "the window narrowed to the phone layout mid-drag…" (red first). |
+| Q | With the crew panel hidden, the CREW tab sits at the window's edge near the top: held there, nothing steps. | Kept: it is a button, above the day's lists; the edge below it steps. |
+
+**Met in the re-walk of fix 1, the agent's reading, named to him:** with the crew panel SHOWN, a mouse pushed past the panel to
+the window's very edge (the strip beside the › arrow) also steps the week — so the window's right edge does the same with the
+panel shown or hidden, beside the arrow that means "next day" (`scrollbar/edge-panel-shown.png`). Over the crew panel itself,
+nothing steps (W9).
+
+Both fixes are a guard of a line or two, not rewritten logic, so no second narrow read (§5 "a fix is new code"). Re-walk after
+both: `rewalk2/` 18/18, `scrollbar/` 2/2; tests 111 in the three files.
 
 ## Not walked, and why
 
