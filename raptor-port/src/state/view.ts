@@ -536,7 +536,8 @@ export function setAvailFoot(s: string, id = '') { AVAILWIN_FOOT = s; AVAILWIN_F
    applies on a phone, where the stylesheet owns the panel's size, and a phone
    box never applies on a desktop — each layout keeps its own, so a trip
    through the other one gives it back. */
-export type AvailBox = { x: number, y: number, w: number, h: number, phone?: boolean }
+/* `moved` — he dragged it there by its bar; a box with only a size of his (resized, never moved) is placed by the app (D1523) */
+export type AvailBox = { x: number, y: number, w: number, h: number, phone?: boolean, moved?: boolean }
 export let AVAILWIN_BOX: AvailBox | null = null
 export function setAvailWinBox(b: AvailBox | null) { AVAILWIN_BOX = b }
 

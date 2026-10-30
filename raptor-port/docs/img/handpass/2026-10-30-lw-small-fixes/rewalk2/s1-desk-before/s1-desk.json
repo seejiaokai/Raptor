@@ -1,0 +1,22 @@
+[
+ {
+  "id": "S1-2 (c) a Delete posting run late: his day between its date and the run day — Redo refused, as the live door",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "approved 4 → 5; deleted from 2026-10-30 (the posting dated 26 Oct); Redo offered true → his leave 5; the live Approve then said \"(no line)\"",
+  "pics": [
+   "s1-2c-gap-day"
+  ]
+ },
+ {
+  "id": "S1-6 (d) an Inputs-page lengthening of his approved leave: Redo after his delete goes through (D321 (10))",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "iid imvu1vnxezl15fo; lengthened (the war's mark kept) true; Undo true; Redo offered false → lengthened again false; said [\"Undid: a personal input\",\"Drifter deleted\"]",
+  "pics": [
+   "s1-6d-a-window",
+   "s1-6d-a-lengthened",
+   "s1-6d-b-after-redo"
+  ]
+ }
+]

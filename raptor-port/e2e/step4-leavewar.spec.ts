@@ -613,23 +613,23 @@ test('the tap list: approve one half, refuse the other, un-approve back to a bid
   await tap(page, P, D)
   await page.locator('[data-testid^="dl-approve-"]').first().click()
   expect(await listLines(page)).toEqual([
-    'Morning · approved',
-    'Afternoon · pending',
+    'AM · approved',                                // the half after its box as AM / PM (his D1525)
+    'PM · pending',
   ])
   expect(await inputsOf(page, P)).toContain('LL Feb 11 am0-720')
   await page.locator('[data-testid^="dl-refuse-"]').last().click()
-  expect((await listLines(page))[1]).toBe('Afternoon · refused')
+  expect((await listLines(page))[1]).toBe('PM · refused')
   await closeList(page)
 
   await undo(page)                                  // the refusal
   await tap(page, P, D)
-  expect((await listLines(page))[1]).toBe('Afternoon · pending')
+  expect((await listLines(page))[1]).toBe('PM · pending')
   await closeList(page)
   await redo(page)
 
   await tap(page, P, D)
   await page.locator('[data-testid="daylist"] .dl-acts .dchip.approve.lit').click()
-  expect((await listLines(page))[0]).toBe('Morning · pending')
+  expect((await listLines(page))[0]).toBe('AM · pending')
   expect((await inputsOf(page, P)).filter(r => r.startsWith('LL Feb 11'))).toHaveLength(0)
   await closeList(page)
   await undo(page)

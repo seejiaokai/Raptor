@@ -11,7 +11,7 @@
 // check — the buttons are only offered where it would succeed.
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
-import { canDecide, canEditRow, codeOf, displayCell, type Period, type Role } from '../engine'
+import { canDecide, canEditRow, codeInWords, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
@@ -32,17 +32,10 @@ const hhmm = (n: number) => `${String(Math.floor(n / 60)).padStart(2, '0')}:${St
 const same = (a: Win, b: Win) => a[0] === b[0] && a[1] === b[1]
 function partOf(w: Win): string {
   if (same(w, FULL)) return ''
-  if (same(w, AM)) return 'morning'
-  if (same(w, PM)) return 'afternoon'
+  /* AM / PM, his D1525 (30 Oct 26): the half a line names beside its box, and after a code in a sentence */
+  if (same(w, AM)) return 'AM'
+  if (same(w, PM)) return 'PM'
   return `${hhmm(w[0])}–${hhmm(w[1])}`
-}
-/* The STORED notation for this contribution — `*LL` for a morning — which is
-   then folded for the screen by `displayCell`, so the list and the box cannot
-   say different things about the same record. */
-function notation(c: Contrib): string {
-  if (same(c.win, AM)) return `*${c.code}`
-  if (same(c.win, PM)) return `${c.code}*`
-  return c.code
 }
 /* What a line CALLS a record: the arrows for a half day, a trailing star when
    the app put it there, and the medical markers in the owner's own short form
@@ -52,6 +45,9 @@ const shown = (code: string, auto = false) => {
   const d = displayCell(code, auto)
   return d.replace(/\bC\b/, 'ATT C').replace(/\bB\b/, 'ATT B')
 }
+/* A code inside a SENTENCE (his D1525): the box's letters, then its half as AM / PM — "LL (AM)" — never the arrows
+   `displayCell` gives a box ("<LL"); ATT C keeps its space here, as `shown` gives it */
+const inWords = (code: string) => codeInWords(code).replace(/^C\b/, 'ATT C').replace(/^B\b/, 'ATT B')
 /* the catalogue's words for a code, without repeating the code itself
    (a medical's label is "medical — ATT C") */
 const nameOf = (code: string) => {
@@ -160,7 +156,7 @@ export function DayListSheet({
      refused bid is not live and is nobody's news. */
   const liveBids = view.all
     .filter(c => c.kind === 'request' && c.state !== 'refused')
-    .map(c => `${shown(notation(c))}${partOf(c.win) ? ` (${partOf(c.win)})` : ''}`)
+    .map(c => `${shown(c.code)}${partOf(c.win) ? ` (${partOf(c.win)})` : ''}`)   // "LL (AM)" — his D1525, never "<LL (morning)"
   /* EACH ENTRY'S WORDS SAVED BEFORE ITS ACTION (round 3's FULL check): its words row hands this list a ref; every button of
      the entry's row runs it first, so words still in the box ride with the approval, the send-back, the refusal or the move */
   const flushers = useRef<Record<string, FlushRef>>({})
@@ -303,7 +299,7 @@ export function DayListSheet({
     // a replaced-bid notice
     const n = raw.find(r => r.id === c.id) as NoticeRec | undefined
     const whose = own ? 'Your' : `${callsign}’s`
-    const text = `${whose} ${shown(n?.code ?? c.code)} bid was replaced by ${n?.byType ?? 'another entry'}${n?.byWho ? ` (${n.byWho})` : ''}`
+    const text = `${whose} ${inWords(n?.code ?? c.code)} bid was replaced by ${n?.byType ?? 'another entry'}${n?.byWho ? ` (${n.byWho})` : ''}`
     const actions: ReactElement[] = []
     /* WHAT THE BID CARRIED (M4 9.3a — M3's leftover (7)): its remarks and its documents, kept on the notice, each document
        opening read only; and, where the leave that replaced it is his and still stands, one tap puts them onto it */

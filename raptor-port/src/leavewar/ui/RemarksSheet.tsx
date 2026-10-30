@@ -15,7 +15,7 @@
 // ROUND 3's ONE ROW (his D1354, 25 Oct 26 — round 3's Q2 "as recommended"): the window carries the bid windows' one row —
 // the dark box that wraps, its till, Document (`ReqWords.tsx LeaveWords`) — saved as it changes, in place of the older
 // labelled Document and Remarks rows, the light box and its own Save; words typed and not yet saved go with the closing.
-import { displayCell } from '../engine'
+import { codeInWords } from '../engine'
 import { Sheet } from './Sheet'
 import { inputDayLabel } from './dates'
 import { LeaveWords } from './ReqWords'
@@ -47,7 +47,8 @@ export function RemarksSheet({
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt when">{span}</span>
-        <span className="cur">{displayCell(code)}</span>
+        {/* its code, its half after it as AM / PM (his D1525) — "LL (AM)", never the box's "<LL" */}
+        <span className="cur">{codeInWords(code)}</span>
         <button className="x" data-testid="remarks-cancel" onClick={onClose} aria-label="Close">✕</button>
       </div>
       <LeaveWords row={row} personId={personId} testPrefix="remarks" />

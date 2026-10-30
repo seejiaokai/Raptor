@@ -239,12 +239,22 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **Hiding the crew panel never widens the page, and the foot bar follows** (his D1528, 30 Oct 26): `.edit-board` clips
+  sideways (`overflow-x:clip` — no scroll box, so the open panel's sticky holds), so the hidden panel sliding past the window's
+  edge is never page width and no browser sideways bar comes up; the CREW tab's press measures the foot bar again on the
+  next frame (`interactions.ts`, `hsSync`). Gated in `e2e/geometry.spec.ts`; walked by `scripts/handpass/crew-toggle-walk.mjs`.
 - **No room beside the ‹ arrow — the day at the front sits flush at the week's left edge** (owner, D275, 27 Sep 26 —
   "I still prefer these", of the full-screen before and after). The floating ‹ arrow (`.week-nav`, fixed 8px in, 38px
   wide) sits over the first few pixels of that day, by his choice: it can cover the start of an opened "⚠ N issues"
   list and of the front day's first line. A 54px room was built ([VIEW-ARROW-OVER-LIST], 26 Sep 26) and taken out before
-  it merged (`[ARROW-ROOM-OUT]`); do not put it back, nor the lighter idea first named with it (the arrow fading until
-  the pointer is near), without his ask. The build's roll-call of every landing is the five-flags evidence sheet §3d.
+  it merged (`[ARROW-ROOM-OUT]`); do not put it back without his ask. The build's roll-call of every landing is the
+  five-flags evidence sheet §3d. **Since D1526 (30 Oct 26 — his ask) the arrows are a slim tab** (14 × 70, flush on the
+  window's edge, over the front day's border and margin only — its words start 31 in) that slides out to the full 38-wide
+  arrow while the pointer is inside that arrow's footprint plus 24px, or a key reaches it, and back when it leaves; open, it
+  looks as the old arrow did at rest (D1527): frosted at 0.75, grey edge and arrow, never lit blue. Never on :hover, and a mouse move within a second of a finger touching or lifting is ignored (a lifted finger closes both) — a
+  tapped button keeps its hover, and Safari sends a pretend mouse move to the tapped spot, either of which held it open
+  after a tap on an iPad on its side. Pressed again and again it stays open and in place (D1122). The rule is one class,
+  `.near`, set by `pan.ts` from the pointer; the look is `03-week.css`.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a
@@ -10766,7 +10776,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
   Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
-- **The page arrives at its top** (the app keeps the window's scroll from page to page) and, while a month is up,
+- **The page arrives at its top** (since 30 Oct 26 every page does, in `ui/Shell.tsx` — §A page opens at its own top, at the end of this file) and, while a month is up,
   drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
   stands 8px in from each edge.
 - **The top row:** the tabs and the tools (the month's arrows, Today, the switch, the filters, the gear) share one line
@@ -11660,6 +11670,12 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The bid windows redesigned to reduce clutter (D1311, 24 Oct 26):** *BUILT 24 Oct 26 — §The bid windows after M3, round 3.* fewer rows, labels and buttons on view, every action still reachable — drawn for him first (round 3 of D1301's order). Drawn (https://claude.ai/artifact/AELqyfNh2nbqvPGQKkzFt5). **His D1319:** the way to Grant OIL, Post out and Post in looks plainly pressable, not a bare ⋯; **his D1320:** "Grant OIL" in the green of OIL given (FO / HO's); **his D1326:** that button is a "⋯" in the fourth place of the CSE · OD · UNA row. **His D1330:** one row of actions for an entry wherever it opens — the bid window's Approve · Refuse · Move · Delete; on an approved leave Approve shows lit, and a second tap on it sends the leave back to waiting, in the bid window and the day's list alike (the list's "Back to bid" goes). **His D1331:** on a half day the bid window opens with the day's own half lit in the Duration row (AM for a morning, PM for an afternoon) beside the lit leave — no code in the title. **His D1332, D1334:** round 3 approved as drawn, all eight — change 6, the leave buttons the row's full width, by his own word (D487). **His D1333:** a long remark wraps and the Remarks box grows taller to show it, read-only remarks too. Not built.
 - **Every kind a colour of its own (D1309, 24 Oct 26):** no two kinds share a colour, each told apart at a glance on a phone — OIL taken, the other leave and an overseas duty above all; the colours are his to pick from pictures ([INPUT-COLOURS]). **His pick (D1316): set C** — medical red (238,82,82), OIL taken magenta (226,96,196), course purple (160,100,240), overseas duty a solid slate (128,142,160, filled .58); the leaves and FO / HO as built. **His D1322: no pink; D1323: the OIL taken in chartreuse (170,230,40).; D1325: the unforeseen absence (UNA) a deep teal (20,130,130).** *BUILT 24 Oct 26:* the app's one set of kind colours (`--k-*`, `scheduler/00-foundation-login.css`), read by the war's boxes and buttons (`matrix.css`) and the Inputs calendar's bars; an OIL taken its own kind `oilt` (`codes.ts`), FO / HO green; the Legend's two OIL lines; UNA BUILT with round 2 (24 Oct 26 — its kind `una`, the Legend's "Unavailable: an unforeseen absence", the Inputs calendar's bar at .70); was: UNA's colour waits for round 2's kind.
 - **The star on an OIL the app credited stays a letter (D1306, 24 Oct 26 — "Q4 keep it"):** "FO*", "HO*", as built; no corner mark.
+  **And every sentence that names such a code prints it as its box draws it ([LW-HALF-DAY-WORDS-LEFT], 30 Oct 26):** the clash
+  note (the desktop line and the phone's list — `ui/Chrome.tsx clashWhat`) and the "OIL the app credited" sheet's title
+  (`BidPicker.tsx RaptorSheet`) read "FO*", "HO* (morning)", "LL (afternoon)" — the star after the code where the app
+  credited it, a half named in words, an FO always whole (as its box), the box's own letters (B, C) — through ONE helper,
+  `engine/codes.ts codeInWords`. The STORED grammar (`*HO` a morning, `HO*` an afternoon — `sync.ts notationOf`) is never
+  printed and never changed: a send-back builds its request from it, the bell keys halves by it. Pins: `halfwords.test.tsx`.
 - **The Leave War's OIL taken and FO / HO colours (D1291):** an OIL taken and an FO / HO given are no longer one green (D1175 narrowed); which keeps the green is his to pick from pictures.
 - **The Leave War's document chips open the viewer (D1292):** a chip, tapped, shows its picture or PDF in the app's document viewer, straight after it is added too; its ✕ still takes it off.
 - **The Inputs list on a phone uses the full width (D1293) — BUILT 24 Oct 26:** its day headings and cards take the screen's width less the margin the filters above them have (`scheduler/06-inputs.css` — the list's box loses the desktop table's 20px sides under 820); the Medical tab's sections the same (`16-medical.css .med-body`). Found checking it: six windows (the Inputs and SANS days, the Calendar window and its "Every" window, the SANS settings, an input's own window) kept a desktop width of the screen less 32 and so stood 8px short of the right edge on a phone — now the screen less 24, the phone's own 12px a side. Pin: `e2e/inputs-calendar.spec.ts` (D1293, at 390 and 402).
@@ -11701,7 +11717,10 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **The joined bar (D1359):** next-door boxes of one entry (one input, or a bid run with one set of words) carry `jl` /
   `jr` and meet over the day line, the code once at each piece's start; a middle day holding a second entry breaks it; a
   half-day run joins top to top; a day the drag selects is drawn as before. `MatrixRows.tsx joinClasses`,
-  `joinedbar.test.tsx`. Its rules (and D1370's outline) name `#page-leavewar` — written after `matrix.css`'s wrapper they
+  `joinedbar.test.tsx`. **A day's join reads its neighbours two days either side, across a month's edge, and each bid's run
+  key from the man's own records, handed to the month as a prop (`recs`) — never read from the store — so a month's memo
+  compares what its cells read (`JOIN_REACH`, `sameDays`; [LW-MONTH-MEMO-UNPINNED], 30 Oct 26 — 30 Nov approved beside 1–3
+  Dec once left 1 Dec drawn as the bar's start). Pins: `matrix-rows-memo.test.tsx`.** Its rules (and D1370's outline) name `#page-leavewar` — written after `matrix.css`'s wrapper they
   lost to it and nothing was ever painted (the M3 build's FULL check); what is painted is pinned in a real browser,
   `e2e/round2-leavewar.spec.ts` "a leave over three days…". An Attach's day in the day's list and the held-half line name
   where he is attached ("ATCH · 145 Sqn · change it on the Inputs page").
@@ -11958,3 +11977,25 @@ Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2
   row, the phone's copy, My leave and the tiles agree. Its tooltip reads "Tap for his leave".
 - **What the drawing did not settle (named to him, D1424):** the keyboard and screen-reader forms of what the drawing drew only
   as pictures; while locked every window shows the padlock, another man's too.
+
+## A page opens at its own top; nothing pinned shows what scrolls under it (30 Oct 26 — [LW-LEAVE-SCROLL-CARRY], D1518)
+
+- **Each page opens at its own place ([LW-LEAVE-SCROLL-CARRY]).** The window's scroll is every page's, so a page that keeps no
+  place of its own came up wherever the one before it was left (Edit Schedule 547px down after a scrolled Leave War; a page after
+  Edit Schedule at the very bottom, the browser holding the parked week "in place" as it left the flow). `ui/Shell.tsx` puts the
+  window at its top in a layout effect on a page change, before the new page paints — except on arriving at the Leave War (it
+  puts back where he was, `LeaveWarPage.tsx savedY`) and on the View-only Sched ↔ Edit Schedule hop (as it was). A page that
+  lands somewhere on purpose lands after it: Quals' focused row, Admin's new-person form, the Inputs card, an Undo's day, the
+  bell's Leave War line. On a phone the menu puts the old page's scroll back only when it closes on the page it opened on
+  (`ui/Drawer.tsx`). Pins: `e2e/leavewar.spec.ts` "a page opened from the Leave War scrolled down opens at its own top…";
+  walked by `scripts/handpass/scroll-pinned-walk.mjs`.
+- **A pinned part is a solid surface in front of what scrolls under it (D1518).** Each is filled in the colour it shows over
+  the page and stands above what scrolls: the Balances page's bar and lines (D1519, above), the OIL tracker's head, tools and
+  open legend or picker as one box `.oil-top` over its list, whose paint is held in its box (`leavewar/ui/oiltracker.css`), the
+  desktop week's scroll bar at the foot and Edit Schedule's CREW rail (`#12272e`, the blue tint it showed), and the phone's
+  parked crew drawer on Edit Schedule and the board (`ui/scheduler/03-week.css`, `13-board-rows-responsive.css`). The desktop
+  week's ‹ › arrows are still frosted glass — his question (`[WEEK-ARROWS-SEE-THROUGH]`). Pins: `e2e/geometry.spec.ts` "the
+  parts pinned over the week are solid (D1518)", `e2e/leavewar.spec.ts` "nothing of the OIL tracker's list shows over its
+  tools row…". **How a pinned part is checked:** `scripts/handpass/pinned-sweep.mjs` on every page, zoomed in and out and
+  scrolled, with a list forced to draw past its box (calibrated red on the Balances build before D1519), and
+  `scripts/handpass/pinned-pinch.mjs` under a pinch — `docs/handpass/2026-10-30-scroll-pinned.md`.

@@ -1,0 +1,38 @@
+[
+ {
+  "id": "S1-3 Delete posting set, then deleted on Admin → Users: both refused whole",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "deleted true; 22 Oct \"Posted out — refuse or delete it\"; 28 Oct \"Posted out — refuse or delete it\"",
+  "pics": [
+   "s1-3-approvals"
+  ]
+ },
+ {
+  "id": "S1-7 bid window refuses",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "deleted true; his 20 Oct drawn true; window says \"Drifter 20–21 Oct Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 30 Oct, 03:02 Approve Refuse ⇄Move Delete Nothing was decided. Posted out — r\"; cell s-w",
+  "pics": [
+   "s1-7-a-bidwindow"
+  ]
+ },
+ {
+  "id": "S1-7 drag window refuses him, approves the other",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window opened true; said \"Drifter, Ridge 21 Oct · 1 day Auto-approve ✕ Drifter No manning row is amber or red Approve Refuse ⇄Move Delete Whole day AM PM LL OL OIL CCL FCL PL EL CL CSE OD Grant OIL ⋯ 1 decided. 1 not approved:\"; other man's leave inputs 1",
+  "pics": [
+   "s1-7-b-dragwindow"
+  ]
+ },
+ {
+  "id": "S1-7 Auto-approve on a deleted man’s past day",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "cell LL:s-w; window said \"Drifter Sun 18 Oct Auto-approve ✕ No manning row is amber or red Placed Saber · Fri 30 Oct, 03:02 Approve Refuse ⇄Move D\"; his leave inputs 4 (4 before)",
+  "pics": [
+   "s1-7-c-autoapprove"
+  ]
+ }
+]

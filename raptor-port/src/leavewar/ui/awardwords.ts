@@ -10,9 +10,9 @@ export type AwardNamed = { personId: string; date: string; days: number }
 /** An award's worth in the confirms' voice: "1 day", "half a day", "3 days" (his own example reads "Dash 1 day"). */
 export const awardDays = (n: number): string => (n === 0.5 ? 'half a day' : `${n} day${n === 1 ? '' : 's'}`)
 
-/** An HO's half in a sentence (owner, D1164): "morning" / "afternoon", as the day's list names a half day's leave. The
- *  chips that pick it say AM / PM, as the window's other half-day chips do. */
-export const halfWord = (h: 'am' | 'pm'): string => (h === 'pm' ? 'afternoon' : 'morning')
+/** An HO's half in a sentence beside its box or its worth (owner, D1164): "AM" / "PM" since his D1525 (30 Oct 26 — a half
+ *  day in words reads AM or PM wherever the war writes it, as its chips and the day's list do): "half a day, AM". */
+export const halfWord = (h: 'am' | 'pm'): string => (h === 'pm' ? 'PM' : 'AM')
 
 /** "2 OIL awards (DASH 1 day, FABLE 3 days)" — each award by whose it is and what it is worth; the DAY is added only
  *  when one man has more than one in the list, so each line still names one award. */

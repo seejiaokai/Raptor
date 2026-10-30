@@ -63,8 +63,8 @@ describe('the bid window’s +OIL panel', () => {
   it('an HO already on the day opens on HO · 0.5, says its half in words, and keeps it', () => {
     expect(setDayAward(P, TUE, 0.5, { half: 'pm', note: 'Recall' })).toBeNull()
     openOil()
-    expect(screen.getByTestId('oil-current').textContent).toContain('half a day of OIL, afternoon')
-    expect(screen.getByTestId('oil-detail-days').textContent).toContain('half a day, afternoon')
+    expect(screen.getByTestId('oil-current').textContent).toContain('half a day of OIL, PM')
+    expect(screen.getByTestId('oil-detail-days').textContent).toContain('half a day, PM')
     expect(lit('oil-pick-ho')).toBe(true)
     fireEvent.click(screen.getByTestId('oil-give'))
     expect(awardsOnDay(P, TUE)).toHaveLength(1)
@@ -93,7 +93,7 @@ describe('the bid window’s +OIL panel', () => {
 describe('an award opened read only says which half', () => {
   it('the member’s own award window', () => {
     render(<AwardSheet callsign="SLAMMED" date={TUE} award={{ code: 'HO', days: 0.5, note: 'Recall', half: 'pm' }} onClose={() => {}} />)
-    expect(screen.getByTestId('oil-detail-days').textContent).toBe('half a day, afternoon')
+    expect(screen.getByTestId('oil-detail-days').textContent).toBe('half a day, PM')
   })
 
   it('the day’s list, when the day holds more than one record, and its editor changes the half', () => {
@@ -102,8 +102,8 @@ describe('an award opened read only says which half', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${TUE}`))
     const id = awardsOnDay(P, TUE)[0]!.id
-    expect(screen.getByTestId(`oil-detail-days-${id}`).textContent).toBe('half a day, morning')
-    expect(screen.getByTestId('daylist-sheet').textContent).toContain('OIL award, morning')   // beside its HO box (round 3, D1327)
+    expect(screen.getByTestId(`oil-detail-days-${id}`).textContent).toBe('half a day, AM')
+    expect(screen.getByTestId('daylist-sheet').textContent).toContain('OIL award, AM')   // beside its HO box (round 3, D1327)
     expect(screen.getByTestId('daylist-sheet').querySelector('.dl-box .c.k-oil')!.textContent).toBe('HO')
     fireEvent.click(screen.getByTestId(`dl-oil-edit-${id}`))
     expect(screen.getByTestId(`oil-edit-half-${id}-am`).getAttribute('aria-pressed')).toBe('true')

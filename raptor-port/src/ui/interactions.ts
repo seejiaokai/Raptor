@@ -37,7 +37,7 @@ import { openAvailWinFrom } from './AvailWindow'
 import { withDaySnap, lateMates } from './html'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { findInputCell, hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
-import { pickRosDay } from './pan'
+import { pickRosDay, hsSync } from './pan'
 import { isStandalone, saTyped, saFlies, CURWEEK } from '../engine/waves'
 import { WARN } from '../engine/validate'
 import { hm24,parseHM } from '../engine/time'
@@ -1329,6 +1329,9 @@ export function routeClick(e: MouseEvent) {
       } else er.style.top = ''
     }
     document.body.classList.toggle('ros-collapsed')
+    /* the week takes or gives back the panel's room at once, so the foot bar under it is measured again on the next
+       frame (his find, D1528, 30 Oct 26: it kept its old width as the panel went and came back) */
+    requestAnimationFrame(() => hsSync())
     e.stopPropagation(); return
   }
   if (t.closest('[data-disarm]')) { view.disarmSlot(); notify(); e.stopPropagation(); return }

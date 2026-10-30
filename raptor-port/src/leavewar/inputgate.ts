@@ -332,7 +332,8 @@ export function replaceClashingBids(claims: readonly BidClaim[], byWho: string, 
            bid" — noted for this command's notice pass (a member's own filing over his own bid tells him nothing: own(p)) */
         for (const iid of iids) noteReplacedBid(cmd, iid, p, r.code)
       }
-      said.push(`${own(p) ? 'your' : `${cs(p)}'s`} ${bare} bid on ${dm(d)}${keep ? ` (${gone.startsWith('*') ? 'morning' : 'afternoon'})` : ''}`)
+      /* the half that went, after the code as AM / PM (his D1525): "your LL (AM) bid on 10 Feb" */
+      said.push(`${own(p) ? 'your' : `${cs(p)}'s`} ${bare}${keep ? ` (${gone.startsWith('*') ? 'AM' : 'PM'})` : ''} bid on ${dm(d)}`)
     }
     if (drop.length) edits.push({ personId: p, date: d, drop, add })
   }

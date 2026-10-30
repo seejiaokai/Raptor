@@ -29,10 +29,17 @@ const TOPBAR = '.topbar:has(#burger)'   // Raptor's own bar — the Leave War's 
 
 /* STORAGE IS MADE TO REFUSE, AND EVERY ATTEMPT TO WRITE IS COUNTED. One wrapper stays in place for the whole test — it
    refuses while `__lsRefuse` is set and writes for real when it is not — so the count runs through refusal and
-   recovery alike. EVERY press on a Retry is measured too: the count is read as the click is captured and again one
-   task later, before any timer of the app's own can run — the write that press caused, apart from the app's automatic
-   retry (1s, 2s, 4s … storage/postman.ts), which would otherwise pass for it (Astra's second read, R2-3). */
-async function failSaves(page: Page) {
+   recovery alike. EVERY press on a Retry is measured too, IN THE PRESS ITSELF: the count is read as the click is
+   captured and again as it bubbles up to the document — after the button's own handler, and before any timer can run,
+   since nothing else runs while one click is being handled. So the write counted is the one that press caused, never
+   the app's automatic retry (1s, 2s, 4s … storage/postman.ts) falling due at that moment. The count used to be read one
+   task later (a 0ms timer), where a retry already due could run first and pass for the press (Astra's read of the last
+   round, 6 Oct 26 — [SAVE-NOTE-TEST-GAPS] (1)). Whether it does depends on the order in which a browser runs its due
+   timers — this Chromium, measured 30 Oct 26, ran the 0ms one first — so the reading no longer rests on that order.
+   AN AUTOMATIC RETRY DUE AT THE PRESS. The wrapper notes when storage last refused, and a timer of a second or more set
+   straight after that is the app's retry being armed (postman.ts arm(backoff)): its due time is kept in `__autoDue`.
+   With `__holdTill` set, the press's capture holds the page until then, so that retry falls due inside the press. */
+async function failSaves(page: Page, shows: string = BAR) {
   await page.evaluate(() => {
     const w = window as any
     if (!w.__lsSetWas) {
@@ -40,31 +47,76 @@ async function failSaves(page: Page) {
       w.__lsTries = 0
       Storage.prototype.setItem = function (this: Storage, ...a: [string, string]) {
         w.__lsTries++
-        if (w.__lsRefuse) throw new DOMException('The quota has been exceeded (test: forced)', 'QuotaExceededError')
+        if (w.__lsRefuse) { w.__refusedAt = performance.now(); throw new DOMException('The quota has been exceeded (test: forced)', 'QuotaExceededError') }
         return w.__lsSetWas.apply(this, a)
       }
+      const st = window.setTimeout
+      window.setTimeout = function (this: any, fn: any, ms?: number, ...rest: any[]) {
+        const id = st.call(window, fn, ms, ...rest)
+        if (typeof ms === 'number' && ms >= 1000 && w.__refusedAt != null && performance.now() - w.__refusedAt < 50) w.__autoDue = performance.now() + ms
+        return id
+      } as any
       document.addEventListener('click', e => {
         if (!(e.target as HTMLElement).closest('.savestat button, .saveband button')) return
         /* storage works again FROM this press, when the test has armed it — never before the press: the app's own
            retry could otherwise save first and take the button away before the press reached it */
         if (w.__lsArmed) { w.__lsArmed = false; w.__lsRefuse = false }
         const before = w.__lsTries
+        w.__retryBefore = before
         w.__retryWrote = null
-        setTimeout(() => { w.__retryWrote = w.__lsTries - before }, 0)
+        w.__pressTries = before
+        w.__dueAtPress = w.__autoDue
+        /* held to a retry's deadline: did the press land before it was due? then hold until it is */
+        w.__landed = w.__holdTill ? performance.now() < w.__autoDue : null
+        if (w.__holdTill) { while (performance.now() < w.__holdTill) { /* the page held */ } w.__holdTill = 0 }
       }, true)
+      /* the reading IN THE PRESS: the document's own bubbling listener, after React's (it listens on the app's root) */
+      document.addEventListener('click', e => {
+        if (!(e.target as HTMLElement).closest('.savestat button, .saveband button') || w.__retryBefore == null) return
+        w.__retryWrote = w.__lsTries - w.__retryBefore
+        w.__retryBefore = null
+      })
     }
     w.__lsRefuse = true
     /* a change through the one write path, so there is something to save */
     w.fillSlot('1.0.0.0.p', w.DAYS[1].waves[0].formations[0].aircraft[0].p === 'casper' ? 'bane' : 'casper'); w.afterSchedMutate()
   })
-  await page.waitForSelector(BAR)
+  /* the warning where it shows — the top bar's, or a full-screen surface's own band over it */
+  await page.waitForSelector(shows)
 }
 /* a real press on the Retry inside `sel`, and the proof that THAT press tried to save */
 async function pressRetry(page: Page, sel: string, touch: boolean) {
   await page.evaluate(() => { (window as any).__retryWrote = null })
   const l = page.locator(sel + ' button').first()
   if (touch) await l.tap(); else await l.click()
-  await expect.poll(() => page.evaluate(() => (window as any).__retryWrote), { message: 'the press on Retry made an attempt to save, itself' }).toBeGreaterThan(0)
+  /* waited for only until it EXISTS — its value was fixed inside the press, so the wait lets nothing else in */
+  await expect.poll(() => page.evaluate(() => (window as any).__retryWrote), { message: 'the press on Retry was read in the press itself' }).not.toBeNull()
+  expect(await page.evaluate(() => (window as any).__retryWrote), 'the press on Retry made an attempt to save, itself').toBeGreaterThan(0)
+}
+/* A press on Retry landing as the app's automatic retry falls due ([SAVE-NOTE-TEST-GAPS] (1)): the press is made a
+   quarter of a second before a retry's deadline and held in its own handling until past it. `disabled` takes the
+   button's own handler away first (the one React reads at the press) — a button that does nothing. Returns the reading
+   in the press and the writes counted from the press until the next retry is armed — which a retry falling due at the
+   press has then made; tries again on the next retry if the press came too late. */
+async function pressAtTheDeadline(page: Page, sel: string, touch: boolean, disabled: boolean) {
+  if (disabled) await page.locator(sel + ' button').first().evaluate(b => {
+    const k = Object.keys(b).find(x => x.startsWith('__reactProps$'))!
+    ;(b as any)[k].onClick = () => { /* the handler taken away */ }
+  })
+  for (let tries = 0; tries < 5; tries++) {
+    const left = await page.evaluate(() => (window as any).__autoDue - performance.now())
+    /* too close (or no retry armed yet): let it go by — the next is armed further off */
+    if (!(left > 450)) { await page.waitForTimeout(Math.max(0, left || 0) + 200); continue }
+    await page.waitForTimeout(left - 250)
+    await page.evaluate(() => { const w = window as any; w.__holdTill = w.__autoDue + 30; w.__retryWrote = null; w.__landed = null })
+    const l = page.locator(sel + ' button').first()
+    if (touch) await l.tap(); else await l.click()
+    /* the retry due at the press has run once the next one is armed */
+    await expect.poll(() => page.evaluate(() => { const w = window as any; return w.__retryWrote != null && w.__autoDue !== w.__dueAtPress })).toBe(true)
+    const r = await page.evaluate(() => { const w = window as any; return { landed: w.__landed, now: w.__retryWrote, since: w.__lsTries - w.__pressTries } })
+    if (r.landed) return r
+  }
+  throw new Error('no press landed before a retry was due')
 }
 /* Retry while storage still refuses: it tries at once, and the warning stays */
 async function retryRefused(page: Page, sel: string, touch: boolean) {
@@ -110,6 +162,68 @@ function look(page: Page, sel: string) {
     return { there: true, seen, covers: [...under].map(name), h: Math.round(nr.height) }
   }, sel)
 }
+
+/* THE TWO MOVABLE WINDOWS, worked with by a real mouse ([SAVE-NOTE-TEST-GAPS] (2)) */
+const CHG = '.chgwin:not([hidden])', AVAIL = '.availwin:not([hidden])'
+const winBox = async (page: Page, sel: string) => { const b = (await page.locator(sel).first().boundingBox())!; return [b.x, b.y, b.width, b.height].map(Math.round) }
+/* moved by its bar's grip */
+async function dragWin(page: Page, sel: string, dx: number, dy: number) {
+  const g = (await page.locator(sel + ' .win-bar .win-grip').first().boundingBox())!
+  await page.mouse.move(g.x + g.width / 2, g.y + g.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(g.x + g.width / 2 + dx, g.y + g.height / 2 + dy, { steps: 8 })
+  await page.mouse.up()
+  await expect.poll(() => page.locator(sel).first().evaluate(n => n.hasAttribute('data-placed')), { message: 'the window knows it has been placed' }).toBe(true)
+}
+/* resized by the browser's own corner (the windows' `resize:both`): 60px narrower or wider (`dx`) and pulled down to the foot of the
+   screen — as tall as the stylesheet lets it be (on a short screen it is that tall already) — then the schedule redrawn
+   behind it, as when he goes on working: the drawing after the resize is what marks it placed */
+async function resizeWin(page: Page, sel: string, dx: number) {
+  const b = (await page.locator(sel).first().boundingBox())!
+  const w0 = Math.round(b.width)
+  await page.mouse.move(b.x + b.width - 3, b.y + b.height - 3)
+  await page.mouse.down()
+  await page.mouse.move(b.x + b.width - 3 + dx, page.viewportSize()!.height - 2, { steps: 10 })
+  await page.mouse.up()
+  await expect.poll(async () => Math.abs(Math.round((await page.locator(sel).first().boundingBox())!.width) - w0), { message: 'the corner changed the window’s width' }).toBeGreaterThan(40)
+  await expect.poll(async () => {
+    await page.evaluate(() => (window as any).afterSchedMutate())
+    return page.locator(sel).first().evaluate(n => n.hasAttribute('data-placed'))
+  }, { message: 'the resized window knows it has been placed' }).toBe(true)
+  /* the cap the warning would bring (36px under the stylesheet's own) would reach it: it is taller than that */
+  const h = Math.round((await page.locator(sel).first().boundingBox())!.height)
+  expect(h, 'the resized window is taller than the warning’s cap would let it be').toBeGreaterThan(page.viewportSize()!.height - 120 - 36)
+}
+/* the warning comes (at `band`) and goes, and the window's box is the one it had. It goes by the app's own retry, once
+   storage works again — not by a press on Retry: a window he has placed may lie over the warning (D587 — a window covers
+   the bar; and see [WIN-RESIZED-OVER-RETRY]), and what is asked here is the window's box, not the warning's reach */
+async function keepsItsBox(page: Page, sel: string, what: string, band: string) {
+  const b0 = await winBox(page, sel)
+  await failSaves(page, band)
+  await expect(page.locator(band).first()).toBeVisible()
+  await page.waitForTimeout(400)   // long enough for a stylesheet cap to have been recorded as "his size", were there one
+  expect(await winBox(page, sel), `${what}, with the warning up`).toEqual(b0)
+  await page.evaluate(() => { (window as any).__lsRefuse = false })
+  await expect(page.locator(band)).toHaveCount(0, { timeout: 40_000 })
+  await page.waitForTimeout(400)
+  expect(await winBox(page, sel), `${what}, once the warning has gone`).toEqual(b0)
+}
+/* the board's preview bar and the window `sel`: does the window start below the bar, can a finger at each of the bar's
+   buttons press it, and where is the window's foot */
+const clearOfPreview = (page: Page, sel: string) => page.evaluate(sel => {
+  const bar = [...document.querySelectorAll('#schedBoard .dprev-bar')].find(x => (x as HTMLElement).offsetWidth) as HTMLElement | undefined
+  const w = document.querySelector(sel)!.getBoundingClientRect()
+  if (!bar) return { below: false, hits: [] as string[], foot: Math.round(w.bottom) }
+  const r = bar.getBoundingClientRect()
+  return {
+    below: Math.round(w.top) >= Math.round(r.bottom),
+    hits: [...bar.querySelectorAll('button')].map(b => {
+      const q = b.getBoundingClientRect(), at = document.elementFromPoint(q.left + q.width / 2, q.top + q.height / 2)
+      return `${(b as HTMLElement).innerText.trim()}: ${at && (at === b || b.contains(at)) ? 'reachable' : 'COVERED'}`
+    }),
+    foot: Math.round(w.bottom),
+  }
+}, sel)
 
 /* the Tracker shows ✓ Save changes only with an unsaved chart edit — one is made the way a person makes it */
 async function trackerUnsaved(page: Page) {
@@ -182,6 +296,23 @@ for (const [label, viewport, touch] of SIZES) {
       await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
       await go(page, 'viewsched')
       await expect.poll(() => page.locator(TOPBAR).evaluate(b => Math.round(b.getBoundingClientRect().height))).toBe(bar0.h)
+    })
+
+    /* THE PROOF THAT A PRESS SAVED CANNOT BE FOOLED BY THE AUTOMATIC RETRY ([SAVE-NOTE-TEST-GAPS] (1) — Astra's read of
+       the last round, 6 Oct 26). The press lands as a retry falls due. With Retry's own handler taken away, the reading
+       in the press finds no write, though the retry that was due has written straight after it — the write a later
+       reading could have taken for the press. With the handler in place the reading in the press finds the press's own
+       write. One phone size and one desktop size: a finger's press and a mouse's. */
+    if (label === 'phone 390' || label === 'desktop 1200') for (const disabled of [true, false]) test(`a press on Retry is told apart from the automatic retry falling due at that moment — ${disabled ? 'Retry’s handler taken away' : 'Retry as built'}`, async ({ page }) => {
+      test.setTimeout(120_000)
+      await login(page)
+      await go(page, 'viewsched')
+      await failSaves(page)
+      const r = await pressAtTheDeadline(page, BAR, touch, disabled)
+      if (disabled) {
+        expect(r.since, 'the automatic retry due at the press has written, straight after it').toBeGreaterThan(0)
+        expect(r.now, 'in the press, with Retry’s handler taken away: no write — the retry is not taken for the press').toBe(0)
+      } else expect(r.now, 'in the press, with Retry’s handler: the press wrote').toBeGreaterThan(0)
     })
 
     test('the full-screen board shows it under its own bar; the Inputs calendar and the Medical tab leave it to the top bar', async ({ page }) => {
@@ -422,6 +553,94 @@ for (const [label, viewport, touch] of SIZES) {
       await expect(page.locator('.topbar > .savestat')).toHaveCount(0)
       await page.waitForTimeout(400)
       expect(await box(), 'the moved window, once the warning has gone').toEqual(b0)
+    })
+
+    /* …AND ONE HE HAS RESIZED, AN ALL AVAIL WINDOW HE HAS WORKED WITH, AND THE BOARD'S PREVIEW BAR ([SAVE-NOTE-TEST-GAPS]
+       (2) — Astra's read of the last round, 6 Oct 26: the rule was pinned for a MOVED changes window only). A resize is
+       his size from its first frame (floatwin.ts records it, and the next drawing marks the window placed); made as tall
+       as the screen allows, so the warning's cap — 36px shorter — would bite at every desktop size were it to reach the
+       window. */
+    /* …BUT A WINDOW HE HAS ONLY RESIZED, NEVER MOVED, MOVES DOWN BELOW THE WARNING (his D1523, 30 Oct 26 — "Q5 ok";
+       [WIN-RESIZED-OVER-RETRY]). Where the top bar is two lines (1200, 1366) a resized changes window kept its top just under
+       the bar, and the warning's line grew under it: "Not saved" and Retry lay under the window. Its place was the app's, not
+       his — so it now opens below the bar's foot as an unmoved window does, keeping the width he chose and the height he chose
+       while that fits; its foot stays on the screen; and once the warning goes it is back where it was, at its size. */
+    if (!touch) test('a changes window he has only resized moves below the warning, leaves Retry pressable, and is back at its size when it goes', async ({ page }) => {
+      await login(page)
+      await go(page, 'editsched')
+      await page.locator('#histBtn').click()
+      await expect(page.locator(CHG)).toBeVisible()
+      await resizeWin(page, CHG, -60)
+      const b0 = await winBox(page, CHG)
+      await failSaves(page)
+      await expect.poll(async () => (await look(page, BAR)).seen, { message: 'the warning is whole and on top' }).toBe(true)
+      const band = (await page.locator(BAR).first().boundingBox())!
+      await expect.poll(async () => (await winBox(page, CHG))[1], { message: 'the window starts below the warning' }).toBeGreaterThanOrEqual(Math.round(band.y + band.height))
+      const rb = (await page.locator(BAR + ' button').boundingBox())!
+      const hit = await page.evaluate(([x, y]) => (document.elementFromPoint(x, y) as HTMLElement | null)?.closest('.savestat button') ? 'Retry' : 'something else', [rb.x + rb.width / 2, rb.y + rb.height / 2])
+      expect(hit, 'what is at Retry’s middle with the resized changes window open').toBe('Retry')
+      const b1 = await winBox(page, CHG)
+      expect(b1[0], 'it keeps its left edge').toBe(b0[0])
+      expect(b1[2], 'it keeps the width he chose').toBe(b0[2])
+      expect(b1[1] + b1[3], 'its foot stays on the screen').toBeLessThanOrEqual(viewport.height)
+      await page.waitForTimeout(400)   // long enough for a cap to have been recorded as "his size", were it to be
+      await page.evaluate(() => { (window as any).__lsRefuse = false })
+      await expect(page.locator(BAR)).toHaveCount(0, { timeout: 40_000 })
+      await expect.poll(() => winBox(page, CHG), { message: 'once the warning has gone: its place and the size he chose' }).toEqual(b0)
+    })
+    if (!touch) test('an ALL AVAIL window he has moved and resized keeps its place and size when the warning comes and when it goes', async ({ page }) => {
+      await login(page)
+      await go(page, 'editsched')
+      await page.evaluate(() => { const w = window as any; w.DAYS[0].allhands = [{ prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' }]; w.afterSchedMutate() })
+      const p = page.locator('#eWeek [data-oilsent]').first()
+      await p.scrollIntoViewIfNeeded(); await p.click()
+      await expect(page.locator(AVAIL)).toBeVisible()
+      await dragWin(page, AVAIL, -420, 0)   // sideways only: its corner stays on a short screen, and it can still be pulled taller than the cap
+      await resizeWin(page, AVAIL, 60)
+      await keepsItsBox(page, AVAIL, 'the moved and resized ALL AVAIL window', BAR)
+    })
+    /* THE BOARD'S PREVIEW BAR (a published day looked at as its original, "← Back to live copy"): a window he has NOT
+       placed opens below that bar — its own inline place, which the warning's stylesheet rule never outranks — and the
+       warning, arriving under the board's own bar, moves the preview bar down by its band: the window must follow it,
+       its foot still on the screen, and follow it back when the warning goes. A window he HAS placed keeps its box
+       through both, preview bar or not. */
+    if (!touch) for (const [name, sel] of [['changes', CHG], ['ALL AVAIL', AVAIL]] as const) test(`on the board’s preview bar: the ${name} window, not placed, stays clear of the bar; placed, it keeps its box — when the warning comes and when it goes`, async ({ page }) => {
+      test.setTimeout(90_000)
+      await login(page)
+      await go(page, 'editsched')
+      await page.evaluate(() => {
+        const w = window as any
+        w.DAYS[0].allhands = [{ prog: 'SAFETY BRIEF', str: '08:00', end: '10:00', who: 'allavail' }]
+        w.afterSchedMutate()
+        const g = w.signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+        w.setDayApproved(0, true)
+        w.openScheduler(0)
+        w.setDayPreview(0, w.dayCurVer(0))
+      })
+      await page.waitForSelector('#schedBoard .dprev-bar', { state: 'visible' })
+      if (sel === AVAIL) await page.locator('#schedBoard .pv-frozen [data-oilsent]:visible').first().click()
+      else await page.click('#sbHist')
+      await expect(page.locator(sel)).toBeVisible()
+      const onBoard = '#schedBoard .saveband'
+      const clear = async (when: string) => {
+        await expect.poll(async () => (await clearOfPreview(page, sel)).below, { message: `${when}: the ${name} window starts below the preview bar` }).toBe(true)
+        const c = await clearOfPreview(page, sel)
+        expect(c.hits.length, `${when}: the preview bar has its buttons`).toBeGreaterThan(0)
+        for (const h of c.hits) expect(h, `${when}: every button of the preview bar is reachable`).toMatch(/reachable$/)
+        expect(c.foot, `${when}: the window ends on the screen`).toBeLessThanOrEqual(viewport.height)
+      }
+      await clear('before the warning')
+      await failSaves(page, onBoard)
+      await expect.poll(async () => (await look(page, onBoard)).seen, { message: 'the board shows the warning, whole and on top' }).toBe(true)
+      await page.waitForTimeout(400)
+      await clear('with the warning up')
+      await retrySaves(page, onBoard, touch)
+      await expect(page.locator(onBoard)).toHaveCount(0)
+      await page.waitForTimeout(400)
+      await clear('once the warning has gone')
+      /* now placed: dragged away from the corner, over the day */
+      await dragWin(page, sel, -480, 140)
+      await keepsItsBox(page, sel, `the placed ${name} window over the preview`, onBoard)
     })
 
     /* the changes window stays open while a person works, and opens 96px down the right edge — under a two-line bar

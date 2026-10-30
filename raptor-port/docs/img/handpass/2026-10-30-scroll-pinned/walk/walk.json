@@ -1,0 +1,515 @@
+[
+ {
+  "id": "L1 editsched from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on editsched at 0, settled at 0",
+  "pics": [
+   "desk-L1-editsched.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from editsched",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-editsched-back.png"
+  ]
+ },
+ {
+  "id": "L1 viewsched from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on viewsched at 0, settled at 0",
+  "pics": [
+   "desk-L1-viewsched.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from viewsched",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-viewsched-back.png"
+  ]
+ },
+ {
+  "id": "L1 inputs from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on inputs at 0, settled at 0",
+  "pics": [
+   "desk-L1-inputs.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from inputs",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-inputs-back.png"
+  ]
+ },
+ {
+  "id": "L1 quals from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on quals at 0, settled at 0",
+  "pics": [
+   "desk-L1-quals.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from quals",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-quals-back.png"
+  ]
+ },
+ {
+  "id": "L1 logic from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on logic at 0, settled at 0",
+  "pics": [
+   "desk-L1-logic.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from logic",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-logic-back.png"
+  ]
+ },
+ {
+  "id": "L1 help from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on help at 0, settled at 0",
+  "pics": [
+   "desk-L1-help.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from help",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-help-back.png"
+  ]
+ },
+ {
+  "id": "L1 admin from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on admin at 0, settled at 0",
+  "pics": [
+   "desk-L1-admin.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from admin",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-admin-back.png"
+  ]
+ },
+ {
+  "id": "L1 tracker from the scrolled Leave War",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on tracker at 0, settled at 0",
+  "pics": [
+   "desk-L1-tracker.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from tracker",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "row-slipway stood at 250, now 250",
+  "pics": [
+   "desk-L1-tracker-back.png"
+  ]
+ },
+ {
+  "id": "L2 View-only Sched scrolled, then Edit Schedule: the hop keeps what it does today (not sent to the top by the change)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "View-only at 400; Edit Schedule's first frame at 400, settled at 400",
+  "pics": [
+   "desk-L2-hop.png"
+  ]
+ },
+ {
+  "id": "L3 fixture: typed in the box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\" → \"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H WALK\" (dn:3.0)",
+  "pics": [
+   "desk-L3-typed.png"
+  ]
+ },
+ {
+  "id": "L3 Undo on the scrolled Leave War lands on Edit Schedule, the change undone, Thursday in view",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "first frame on editsched at y 0; the box reads \"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\"; Thursday's front edge at 0 (week 0–1259)",
+  "pics": [
+   "desk-L3-undo-landed.png"
+  ]
+ },
+ {
+  "id": "L4 fixture: the initials typed and kept",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"\" → \"WK\" (ignite)",
+  "pics": []
+ },
+ {
+  "id": "L4 Undo on the scrolled Leave War lands on Quals with the changed row on screen, clear of the pinned row",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "first frame on quals at y 548; initials \"\" (was \"\"); the row at 384–411",
+  "pics": [
+   "desk-L4-undo-landed.png"
+  ]
+ },
+ {
+  "id": "L5 Quals scrolled, \"+ Add person\": Admin opens with the new person's form in view",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Quals at 548; the form at 233–497, window at 3189",
+  "pics": [
+   "desk-L5-addperson.png"
+  ]
+ },
+ {
+  "id": "P1 the CREW rail at rest (solid, its blue tint) and under the pointer (solid blue, unchanged)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "at rest rgb(18, 39, 46)",
+  "pics": [
+   "desk-P1-rail-rest.png",
+   "desk-P1-rail-hover.png"
+  ]
+ },
+ {
+  "id": "P1 the days' scroll bar at the foot pressed (a day on): still solid, the days moving under it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "its fill read",
+  "pics": [
+   "desk-P1-hscroll-pressed.png"
+  ]
+ },
+ {
+  "id": "P1 the OIL tracker's \"?\" pressed over a scrolled list: the tools, the legend and the head one solid surface",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "the top's fill rgb(20, 24, 29)",
+  "pics": [
+   "desk-P1-oil-legend-q.png",
+   "desk-P1-oil-legend.png"
+  ]
+ },
+ {
+  "id": "L7 the bell's Leave War line tapped on a scrolled Quals: the Leave War at 24 Mar, the day in sight and ringed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Quals at 548; first frame on leavewar at y 0; the day at 212,661, seen true, ring true",
+  "pics": [
+   "desk-L7-bell-tap-q.png",
+   "desk-L7-bell-landed.png"
+  ]
+ },
+ {
+  "id": "page errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "L1 editsched from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on editsched at 0, settled at 0",
+  "pics": [
+   "phone-L1-editsched.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from editsched",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-editsched-back.png"
+  ]
+ },
+ {
+  "id": "L1 viewsched from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on viewsched at 0, settled at 0",
+  "pics": [
+   "phone-L1-viewsched.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from viewsched",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-viewsched-back.png"
+  ]
+ },
+ {
+  "id": "L1 inputs from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on inputs at 0, settled at 0",
+  "pics": [
+   "phone-L1-inputs.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from inputs",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-inputs-back.png"
+  ]
+ },
+ {
+  "id": "L1 quals from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on quals at 0, settled at 0",
+  "pics": [
+   "phone-L1-quals.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from quals",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-quals-back.png"
+  ]
+ },
+ {
+  "id": "L1 logic from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on logic at 0, settled at 0",
+  "pics": [
+   "phone-L1-logic.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from logic",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-logic-back.png"
+  ]
+ },
+ {
+  "id": "L1 help from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on help at 0, settled at 0",
+  "pics": [
+   "phone-L1-help.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from help",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-help-back.png"
+  ]
+ },
+ {
+  "id": "L1 admin from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on admin at 0, settled at 0",
+  "pics": [
+   "phone-L1-admin.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from admin",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-admin-back.png"
+  ]
+ },
+ {
+  "id": "L1 tracker from the scrolled Leave War",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "war at 500; first frame on tracker at 0, settled at 0",
+  "pics": [
+   "phone-L1-tracker.png"
+  ]
+ },
+ {
+  "id": "L1 back on the Leave War from tracker",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "row-pike stood at 296, now 296",
+  "pics": [
+   "phone-L1-tracker-back.png"
+  ]
+ },
+ {
+  "id": "L2 View-only Sched scrolled, then Edit Schedule: the hop keeps what it does today (not sent to the top by the change)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "View-only at 400; Edit Schedule's first frame at 400, settled at 400",
+  "pics": [
+   "phone-L2-hop.png"
+  ]
+ },
+ {
+  "id": "L3 fixture: typed in the box",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\" → \"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H WALK\" (dn:3.0)",
+  "pics": [
+   "phone-L3-typed.png"
+  ]
+ },
+ {
+  "id": "L3 Undo on the scrolled Leave War lands on Edit Schedule, the change undone, Thursday in view",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "first frame on editsched at y 0; the box reads \"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\"; Thursday's front edge at 0 (week 0–402)",
+  "pics": [
+   "phone-L3-undo-landed.png"
+  ]
+ },
+ {
+  "id": "L4 fixture: the initials typed and kept",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"\" → \"WK\" (ignite)",
+  "pics": []
+ },
+ {
+  "id": "L4 Undo on the scrolled Leave War lands on Quals with the changed row on screen, clear of the pinned row",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "first frame on quals at y 467; initials \"\" (was \"\"); the row at 522–549",
+  "pics": [
+   "phone-L4-undo-landed.png"
+  ]
+ },
+ {
+  "id": "L5 Quals scrolled, \"+ Add person\": Admin opens with the new person's form in view",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Quals at 467; the form at 333–625, window at 2824",
+  "pics": [
+   "phone-L5-addperson.png"
+  ]
+ },
+ {
+  "id": "L6 the menu opened and closed on a scrolled page: the page keeps its place",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "View-only at 500, after the menu 500",
+  "pics": [
+   "phone-L6-menu-closed.png"
+  ]
+ },
+ {
+  "id": "L6 a page picked from the menu on a scrolled page opens at its top",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "first frame on Logic at 0, settled 0",
+  "pics": [
+   "phone-L6-menu-logic.png"
+  ]
+ },
+ {
+  "id": "P1 the crew drawer pressed open, right after and settled: solid over the week",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "its fill read",
+  "pics": [
+   "phone-P1-drawer-tab-q.png",
+   "phone-P1-drawer-open.png"
+  ]
+ },
+ {
+  "id": "P1 the OIL tracker's \"?\" pressed over a scrolled list: the tools, the legend and the head one solid surface",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the top's fill rgb(20, 24, 29)",
+  "pics": [
+   "phone-P1-oil-legend-q.png",
+   "phone-P1-oil-legend.png"
+  ]
+ },
+ {
+  "id": "L7 the bell's Leave War line tapped on a scrolled Quals: the Leave War at 24 Mar, the day in sight and ringed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Quals at 429; first frame on leavewar at y 0; the day at 108,408, seen true, ring true",
+  "pics": [
+   "phone-L7-bell-tap-q.png",
+   "phone-L7-bell-landed.png"
+  ]
+ },
+ {
+  "id": "page errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "P2 the OIL tracker's head, tools, window line and list where they stood before the fix (wide letters)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "every part within 0.5px",
+  "pics": [
+   "phone-P2-oil-before.png",
+   "phone-P2-oil-after.png"
+  ]
+ },
+ {
+  "id": "P2 the OIL tracker's head, tools, window line and list where they stood before the fix (wide letters)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "every part within 0.5px",
+  "pics": [
+   "desk-P2-oil-before.png",
+   "desk-P2-oil-after.png"
+  ]
+ }
+]
