@@ -49,11 +49,13 @@ export function Drawer() {
   useEffect(() => {
     if (!DRAWER) return
     const el = document.scrollingElement || document.documentElement
-    const y = el.scrollTop, x = el.scrollLeft
+    const y = el.scrollTop, x = el.scrollLeft, on = CURPAGE
     document.body.classList.add('dw-lock')
     return () => {
       document.body.classList.remove('dw-lock')
-      el.scrollTop = y; el.scrollLeft = x
+      /* only when he closed the menu on the page he opened it on: a page picked from it opens at its own place
+         (Shell.tsx — [LW-LEAVE-SCROLL-CARRY]), and putting the old page's scroll back carried it onto the new one */
+      if (CURPAGE === on) { el.scrollTop = y; el.scrollLeft = x }
     }
   }, [DRAWER])
   return (

@@ -2832,3 +2832,34 @@ reset mode disables before reusing it.
 **Suggested improvement:** Where a handoff says how a job ships, name the files it will change and check them against shipping.md's notes-only list; a size-tripwire raise is always a script change.
 
 **Principle:** Whether a change may merge by itself is decided by the files it touches, not by what kind of job it is called.
+
+### Observation 749: A search for words a ruling changes must also read the tests' patterns
+
+**Status:** OPEN
+**Date:** 2026-10-30
+**Session context:** building D1525 (a half day written "LL (AM)" in place of "LL (morning)") on `claude/lw-small-fixes-1030`
+**Skill:** New skill candidate: wording-change sweep (or the bug-check order's roll-call)
+**Type:** open-source
+**Phase/Area:** finding every test that pins the old words before the change is pushed
+
+**Issue:** The unit and browser tests were searched for the old words as literal strings ("(morning)", "Morning ·"); two browser tests escaped — one held the words inside a regular expression (`\((morning|afternoon)\)`), one in an array of expected lines a grep for `toBe(` lines missed. GitHub's full run caught both after the push, costing a red run and a second push.
+
+**Suggested improvement:** When a ruling changes words the app prints, search every test folder (unit and browser) for each old word ALONE, case-insensitive, with no assertion pattern around it, and read each hit; add the browser folder's hits to the red-first run before the first push.
+
+**Principle:** A test can pin text in many shapes — a literal, a pattern, a list — so the search for changed words looks for the bare word, not for one shape of assertion.
+
+### Observation 750: A before picture must prove it is of the old build
+
+**Status:** OPEN
+**Date:** 2026-10-30
+**Session context:** showing him two built changes before and after, on `claude/lw-scroll-pinned-sweep`, with the after pictures taken on their own branches
+**Skill:** brainstorming/mockups-on-the-real-app.md (or the bug-check order's evidence sheet)
+**Type:** open-source
+**Phase/Area:** taking "before" pictures to put beside a change's "after"
+
+**Issue:** The checkout's built bundle was served for the before pictures, but the same checkout had earlier been switched to the change's branch and built there, so the served bundle already carried the change: the before walk passed every check of the new words. It was caught only because the walk's own checks passed where they should have failed; the bundle was rebuilt from the branch without the change and the walk then failed as a before should.
+
+**Suggested improvement:** Before taking before pictures, rebuild from the base (or confirm the built bundle's source), and treat the change's own checks FAILING on that build as the proof it is the old one; a before walk whose checks pass is not a before.
+
+**Principle:** A comparison picture is only evidence once the build it shows is proven — run the change's checks on it and expect them to fail.
+

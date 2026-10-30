@@ -208,8 +208,9 @@ export function InputsPage() {
   if (INPVIEW !== 'med') inputsView.current = INPVIEW
   type Tab = 'inputs' | 'sans' | 'med'
   const tab: Tab = INPVIEW === 'med' ? 'med' : INPMODE === 'sans' ? 'sans' : 'inputs'
-  /* ARRIVING ON THE PAGE SHOWS IT FROM ITS TOP. The app keeps the window's scroll from page to page (the week opens
-     scrolled to its day on a phone), and this page starts with its tabs: found on the first look at the running build
+  /* ARRIVING ON THE PAGE SHOWS IT FROM ITS TOP. The app kept the window's scroll from page to page (the week opens
+     scrolled to its day on a phone) — since 30 Oct 26 every page change puts it at the top (ui/Shell.tsx,
+     [LW-LEAVE-SCROLL-CARRY]), and this stays as a second guard — and this page starts with its tabs: found on the first look at the running build
      — the calendar came up scrolled, its tabs and tools hidden under the top bar. (The Tracker does the same on its
      own arrival.) Only where the window IS scrolled, so a layout-less test environment is never asked to scroll. */
   useEffect(() => { if (window.scrollY) window.scrollTo(0, 0) }, [])

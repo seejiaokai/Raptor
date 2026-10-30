@@ -4379,6 +4379,44 @@ test.describe('the crew-day picker', () => {
   })
 })
 
+/* NOTHING PINNED OVER THE WEEK SHOWS THE WEEK THROUGH IT (his D1518, 29 Oct 26 — the pinned-part sweep, 30 Oct 26). Three parts
+   stay put while the week scrolls under them and were drawn see-through: on a desktop the bar at the foot that scrolls the
+   days (93% dark and blurred), Edit Schedule's CREW rail at the right edge (a 14% blue tint); on a phone the crew drawer
+   parked at the right edge of Edit Schedule and of the board (96.5%, blurred). Each is now a solid fill in the colour it
+   showed over the page, so it looks as it did and nothing scrolls behind it; the rail's hover (solid blue) is unchanged.
+   Read where each one stands: the fill of the part itself and of nothing above it, its opacity 1, the colour as before. */
+test.describe('the parts pinned over the week are solid (D1518)', () => {
+  const solid = (page: Page, sel: string) => page.evaluate(s => {
+    const e = document.querySelector(s) as HTMLElement | null
+    if (!e) return null
+    const c = getComputedStyle(e), r = e.getBoundingClientRect()
+    return { bg: c.backgroundColor, op: c.opacity, shown: r.width > 0 && r.height > 0 && c.display !== 'none' }
+  }, sel)
+  test('desktop: the days\' scroll bar at the foot and the CREW rail', async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 730 })
+    await login(page)
+    await go(page, 'viewsched')
+    await page.waitForSelector('#vWeek .day')
+    await expect(page.locator('#hscroll.on')).toBeVisible()
+    expect(await solid(page, '#hscroll'), 'View-only Sched: the scroll bar at the foot').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+    await go(page, 'editsched')
+    await page.waitForSelector('#eWeek .day')
+    await expect(page.locator('.ros-rail')).toBeVisible()
+    expect(await solid(page, '#hscroll'), 'Edit Schedule: the scroll bar at the foot').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+    expect(await solid(page, '.ros-rail'), 'Edit Schedule: the CREW rail, the blue tint as it showed over the page').toEqual({ bg: 'rgb(18, 39, 46)', op: '1', shown: true })
+  })
+  test('phone: the crew drawer parked at the right edge, on Edit Schedule and the board', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eWeek .day')
+    expect(await solid(page, '#eRoster'), 'Edit Schedule: the crew drawer').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+    await page.evaluate(() => (window as any).openScheduler(2))
+    await page.waitForSelector('.schedboard .sb-ros')
+    expect(await solid(page, '.schedboard .sb-ros'), 'the board: the crew drawer').toEqual({ bg: 'rgb(11, 13, 16)', op: '1', shown: true })
+  })
+})
+
 /* ===================================================================
    The mobile Quals freeze + the collapsible legend (owner, 15 Aug 26).
    Both are geometry: jsdom has no sticky positioning and no display:none
@@ -4538,6 +4576,106 @@ test.describe('the frozen callsign column', () => {
     })
     /* waited on what it needs (D87): the re-measure lands a frame after the widening */
     await expect.poll(async () => { const m = await measure(); return m.n > 0 && m.w < 2 }, { message: 'every pinned heading stands over its column again' }).toBe(true)
+  })
+
+  /* ONE COLUMN REFLOWED INSIDE A TABLE OF THE SAME WIDTH ([QUALS-PINNED-COLS-REFLOW], met by the D993 read, 18 Oct 26): on a
+     desktop wider than the table's least width the table fills its box, so a column that grows takes its room from the
+     others and the table's own width stays put — the watch on the table and its scroll box never fired, and each pinned
+     heading kept the width measured at the pin, a few pixels off its column until the page was scrolled up and down. The
+     real heading cells are watched too now. The width is changed here straight in a cell (the claim is the re-measure,
+     not the control that widened it; the walk widens one through the page's own edit). */
+  test('desktop: one column reflowed inside a table of the same width leaves every pinned heading over its column', async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 730 })
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 500))
+    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    const before = await page.evaluate(() => {
+      const t = document.querySelector('#qtbl') as HTMLElement, w = document.querySelector('.qwrap') as HTMLElement
+      return { table: t.getBoundingClientRect().width, range: w.scrollWidth - w.clientWidth }
+    })
+    expect(before.range, 'the table fits its box: nothing to scroll sideways').toBeLessThan(1)
+    /* the IMC column (a tick column) is given a long word: it grows, the columns beside it narrow, the table keeps its width */
+    const moved = await page.evaluate(() => {
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')] as HTMLElement[]
+      const was = real.map(th => th.getBoundingClientRect().width)
+      const k = real.findIndex(th => th.getAttribute('data-sort') === 'imc')
+      const row = (document.querySelector('#qtbl td.qname') as HTMLElement).parentElement!
+      ;(row.children[k] as HTMLElement).textContent = 'a word long enough to widen this column'
+      const now = real.map(th => th.getBoundingClientRect().width)
+      return { k, grew: now[k] - was[k], table: (document.querySelector('#qtbl') as HTMLElement).getBoundingClientRect().width }
+    })
+    expect(moved.k, 'the IMC heading was found').toBeGreaterThan(0)
+    expect(moved.grew, 'that column really grew').toBeGreaterThan(40)
+    expect(Math.abs(moved.table - before.table), 'the table kept its width').toBeLessThan(1)
+    const off = () => page.evaluate(() => {
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')] as HTMLElement[]
+      const mir = [...document.querySelectorAll('[data-testid="qsticky-head"] .qfixed-scroll thead tr:last-child > th')] as HTMLElement[]
+      if (!mir.length || mir.length !== real.length) return 999
+      let w = 0
+      real.forEach((th, i) => {
+        const a = th.getBoundingClientRect(), b = mir[i].getBoundingClientRect()
+        w = Math.max(w, Math.abs(a.left - b.left), Math.abs(a.width - b.width))
+      })
+      return w
+    })
+    /* waited on what it needs (D87): the re-measure lands a frame after the reflow; a second later it must still hold */
+    await expect.poll(off, { message: 'every pinned heading stands over its reflowed column', timeout: 3000 }).toBeLessThan(1.5)
+  })
+
+  /* …AND THROUGH THE APP'S OWN DOORS, TWICE: the item's own case is an Undo (of a remark, a rename) — a change of the store,
+     which draws the table again with new heading cells. The initials are typed long through Edit, Done, the row pinned,
+     then Undo and Redo: each narrows or widens the INITIALS column inside a table of the same width, and each is a new
+     table. The second proves the watch moved onto the cells the first redraw put in place. */
+  test('desktop: an Undo and a Redo that reflow a Quals column leave every pinned heading over its column', async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 730 })
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    /* a row in the middle of the screen with the page scrolled 500 down: the Undo lands on Quals with that row already in
+       view, so the page does not move under the pinned row (the landing scrolls only a row out of sight) */
+    await page.click('#qEdit')
+    await page.evaluate(() => window.scrollTo(0, 500))
+    const pid = await page.evaluate(() => {
+      const mid = innerHeight / 2
+      const rows = [...document.querySelectorAll('#qtbl input[data-init]')] as HTMLInputElement[]
+      const r = rows.find(i => { const q = i.getBoundingClientRect(); return q.top > mid - 120 && q.bottom < mid + 120 })
+      return r ? r.getAttribute('data-init') : null
+    })
+    expect(pid, 'a row stands in the middle of the screen').not.toBeNull()
+    const box = page.locator(`#qtbl input[data-init="${pid}"]`)
+    await box.fill('ABCDEFGHIJKL')
+    await box.press('Enter')
+    await page.click('#qSave')
+    await expect(page.locator('#qtbl input[data-init]')).toHaveCount(0)
+    const wide = await page.evaluate(() => (document.querySelector('#qtbl thead tr:last-child > th:nth-child(2)') as HTMLElement).getBoundingClientRect().width)
+    await page.evaluate(() => window.scrollTo(0, 500))
+    await expect(page.locator('[data-testid="qsticky-head"]')).toBeVisible()
+    const rowTop = () => page.evaluate(id => (document.querySelector(`#qtbl td.qname[data-person="${id}"]`) as HTMLElement).getBoundingClientRect().top, pid)
+    const top0 = await rowTop()
+    expect(top0, 'the edited row is on screen below the pinned row').toBeGreaterThan(120)
+    const off = () => page.evaluate(() => {
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')] as HTMLElement[]
+      const mir = [...document.querySelectorAll('[data-testid="qsticky-head"] .qfixed-scroll thead tr:last-child > th')] as HTMLElement[]
+      if (!mir.length || mir.length !== real.length) return 999
+      let w = 0
+      real.forEach((th, i) => {
+        const a = th.getBoundingClientRect(), b = mir[i].getBoundingClientRect()
+        w = Math.max(w, Math.abs(a.left - b.left), Math.abs(a.width - b.width))
+      })
+      return w
+    })
+    const initW = () => page.evaluate(() => (document.querySelector('#qtbl thead tr:last-child > th:nth-child(2)') as HTMLElement).getBoundingClientRect().width)
+    await expect.poll(off, { message: 'pinned in step to start with' }).toBeLessThan(1.5)
+    await page.click('#undoBtn')
+    await expect.poll(initW, { message: 'the Undo narrowed the initials column' }).toBeLessThan(wide - 20)
+    expect(Math.abs((await rowTop()) - top0), 'the Undo left the page where it was (no scroll re-pinned the row)').toBeLessThan(2)
+    await expect.poll(off, { message: 'after the Undo every pinned heading stands over its column', timeout: 3000 }).toBeLessThan(1.5)
+    await page.click('#redoBtn')
+    await expect.poll(initW, { message: 'the Redo widened it again' }).toBeGreaterThan(wide - 2)
+    expect(Math.abs((await rowTop()) - top0), 'the Redo left the page where it was').toBeLessThan(2)
+    await expect.poll(off, { message: 'after the Redo every pinned heading stands over its column', timeout: 3000 }).toBeLessThan(1.5)
   })
 })
 
@@ -5662,3 +5800,126 @@ for(const width of [390,1440]) {
     }
   })
 }
+
+/* D1526 (30 Oct 26 — "sliding tab but make it still slightly transparent"): the desktop week's ‹ › arrows are a slim tab,
+   14 × 70, flush on the window's edge, over the front day's border and margin only; the pointer near (the full arrow's
+   38 × 70 footprint plus 24px) slides it out to the full arrow, looking as the old arrow did at rest (D1527: 0.75, grey,
+   never lit blue); pressed again and again it
+   stays open and in place (D1122); no slide under reduced motion. The drawing that is the spec:
+   scripts/handpass/week-arrows-draw-d.mjs. */
+test('D1526 the week arrows are a slim edge tab that slides out when the pointer comes near', async ({ page }) => {
+  await page.setViewportSize({ width: 1536, height: 730 })
+  await login(page)
+  await go(page, 'viewsched')
+  const nav = (id: string) => page.evaluate(i => {
+    const b = document.getElementById(i)!, r = b.getBoundingClientRect(), cs = getComputedStyle(b)
+    return { left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), mid: Math.round(r.top + r.height / 2),
+      opacity: +cs.opacity, near: b.classList.contains('near'), edge: document.documentElement.clientWidth }
+  }, id)
+  const width = (id: string) => nav(id).then(n => n.width)
+  await page.mouse.move(700, 120)
+  await expect.poll(() => width('weekPrev')).toBe(14)
+  const p0 = await nav('weekPrev'), n0 = await nav('weekNext')
+  expect(p0.left, '‹ flush on the left edge').toBe(0)
+  expect(n0.right, '› flush on the right edge').toBe(n0.edge)
+  expect(n0.width, '› slim at rest').toBe(14)
+  expect(p0.opacity, 'see-through at rest, as today').toBeCloseTo(0.75, 2)
+
+  /* at rest the left tab lies over no word of the front day: nothing with text of its own under its box */
+  const under = await page.evaluate(() => {
+    const b = document.getElementById('weekPrev')!, r = b.getBoundingClientRect(); b.style.pointerEvents = 'none'
+    const words: string[] = []
+    for (let y = r.top + 2; y < r.bottom - 1; y += 4) for (let x = r.left + 1; x < r.right; x += 3) {
+      const e = document.elementFromPoint(x, y); if (!e || e.closest('.week-nav')) continue
+      const own = [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent!.trim()).join('')
+      if (own) words.push(own)
+    }
+    b.style.pointerEvents = ''
+    return words
+  })
+  expect(under, 'the slim ‹ tab covers none of the front day\'s words').toEqual([])
+
+  await page.mouse.move(48, p0.mid)
+  await expect.poll(() => width('weekPrev')).toBe(38)
+  const p1 = await nav('weekPrev')
+  expect(p1.left, 'it opens from the edge, not moving').toBe(0)
+  expect(p1.opacity, 'open, as see-through as the old arrow at rest (D1527)').toBeCloseTo(0.75, 2)
+  const look = await page.evaluate(() => { const cs = getComputedStyle(document.getElementById('weekPrev')!), root = getComputedStyle(document.documentElement)
+    return { color: cs.color, edge: cs.borderTopColor, bg: cs.backgroundColor, ink2: root.getPropertyValue('--ink-2').trim() } })
+  expect(look.bg, 'the old frosted glass').toBe('rgba(20, 24, 29, 0.82)')
+  expect(look.color, 'a grey arrow, not lit blue').not.toMatch(/59, 198, 232/)
+  expect(await width('weekNext'), 'the other stays slim').toBe(14)
+
+  await page.mouse.move(5, p0.mid - 140)
+  await expect.poll(() => width('weekPrev'), 'at the edge, well above it: slim again').toBe(14)
+
+  /* pressed three times without moving the pointer: open and in the same place each time */
+  await page.mouse.move(n0.edge - 19, n0.mid)
+  await expect.poll(() => width('weekNext')).toBe(38)
+  const at = await nav('weekNext')
+  for (let i = 0; i < 3; i++) {
+    await page.mouse.down(); await page.mouse.up()
+    await page.waitForTimeout(250)
+    const n = await nav('weekNext')
+    expect([n.left, n.width, n.near], `press ${i + 1}`).toEqual([at.left, 38, true])
+  }
+
+  /* Edit Schedule draws the same tab */
+  await page.mouse.move(700, 120)
+  await go(page, 'editsched')
+  await expect.poll(() => width('weekPrev')).toBe(14)
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const dur = await page.evaluate(() => getComputedStyle(document.getElementById('weekPrev')!).transitionDuration)
+  expect(dur.split(',').every(d => parseFloat(d) === 0), 'no slide under reduced motion').toBe(true)
+  await page.emulateMedia({ reducedMotion: null })
+})
+
+/* D1526: a finger tap on the slim tab steps the week. (The fresh read's finding — Safari keeps a tapped button in its
+   hover state, so a tab that opened on :hover stayed open after a tap on an iPad on its side — needs WebKit to show: this
+   suite's Chromium does not hold a tap's hover. It is pinned in the walk, scripts/handpass/week-arrows-walk.mjs step E1.) */
+test('D1526 a finger tap on the slim week arrow steps the day and leaves it slim', async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 1180, height: 820 }, hasTouch: true })
+  const page = await ctx.newPage()
+  await login(page)
+  await go(page, 'viewsched')
+  const w = () => page.evaluate(() => Math.round(document.getElementById('weekPrev')!.getBoundingClientRect().width))
+  const nx = () => page.evaluate(() => Math.round(document.getElementById('weekNext')!.getBoundingClientRect().width))
+  await expect.poll(nx).toBe(14)
+  const b = (await page.locator('#weekNext').boundingBox())!
+  const sl = () => page.evaluate(() => Math.round(document.getElementById('vWeek')!.scrollLeft))
+  const s0 = await sl()
+  await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2)
+  await expect.poll(sl, 'the tap stepped the week').not.toBe(s0)
+  await page.waitForTimeout(400)
+  expect(await nx(), 'after the tap the › tab is slim again, not held open by the tap').toBe(14)
+  expect(await w(), 'the ‹ tab untouched').toBe(14)
+  await ctx.close()
+})
+
+/* His find (30 Oct 26, with four pictures): on Edit Schedule, hiding the crew panel brought up the browser's own grey
+   sideways scroll bar at the very foot of the page — View-only has none — and the week's foot bar kept its old width as
+   the panel went and came back. The hidden panel slides out past the window's right edge, and the page counted it as
+   width; the foot bar is measured on scroll and resize only, never on the panel's toggle. */
+test('the crew panel hidden and shown again: no browser sideways scroll bar, and the foot bar fits the week each time', async ({ page }) => {
+  await page.setViewportSize({ width: 1600, height: 780 })
+  await login(page)
+  await go(page, 'editsched')
+  const measure = () => page.evaluate(() => {
+    const d = document.documentElement, w = document.getElementById('eWeek')!.getBoundingClientRect(), b = document.getElementById('hscroll')!.getBoundingClientRect()
+    return { pageOver: d.scrollWidth - d.clientWidth, weekL: Math.round(w.left), weekW: Math.round(w.width), barL: Math.round(b.left), barW: Math.round(b.width) }
+  })
+  const check = async (when: string) => {
+    await expect.poll(async () => { const m = await measure(); return Math.abs(m.barW - m.weekW) <= 2 && Math.abs(m.barL - m.weekL) <= 2 }, `${when}: the foot bar spans the week`).toBe(true)
+    const m = await measure()
+    expect(m.pageOver, `${when}: the page is no wider than the window (no grey browser scroll bar)`).toBeLessThanOrEqual(0)
+    return m
+  }
+  const open = await check('crew panel open')
+  await page.locator('.ros-rail').click()
+  const hidden = await check('crew panel hidden')
+  expect(hidden.weekW, 'the week took the panel\'s room').toBeGreaterThan(open.weekW + 100)
+  await page.locator('.ros-rail').click()
+  const back = await check('crew panel shown again')
+  expect(Math.abs(back.weekW - open.weekW), 'back to its first width').toBeLessThanOrEqual(2)
+})

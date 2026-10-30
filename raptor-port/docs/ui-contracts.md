@@ -239,12 +239,22 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   (which is why the edge hint above is retired). The "day a–b of n" read-out
   (`pan.ts:dayRangeText`) counts from the day step, never `scrollWidth ÷ n`,
   because the spacer is part of `scrollWidth`. Gated in `e2e/geometry.spec.ts`.
+- **Hiding the crew panel never widens the page, and the foot bar follows** (his D1528, 30 Oct 26): `.edit-board` clips
+  sideways (`overflow-x:clip` — no scroll box, so the open panel's sticky holds), so the hidden panel sliding past the window's
+  edge is never page width and no browser sideways bar comes up; the CREW tab's press measures the foot bar again on the
+  next frame (`interactions.ts`, `hsSync`). Gated in `e2e/geometry.spec.ts`; walked by `scripts/handpass/crew-toggle-walk.mjs`.
 - **No room beside the ‹ arrow — the day at the front sits flush at the week's left edge** (owner, D275, 27 Sep 26 —
   "I still prefer these", of the full-screen before and after). The floating ‹ arrow (`.week-nav`, fixed 8px in, 38px
   wide) sits over the first few pixels of that day, by his choice: it can cover the start of an opened "⚠ N issues"
   list and of the front day's first line. A 54px room was built ([VIEW-ARROW-OVER-LIST], 26 Sep 26) and taken out before
-  it merged (`[ARROW-ROOM-OUT]`); do not put it back, nor the lighter idea first named with it (the arrow fading until
-  the pointer is near), without his ask. The build's roll-call of every landing is the five-flags evidence sheet §3d.
+  it merged (`[ARROW-ROOM-OUT]`); do not put it back without his ask. The build's roll-call of every landing is the
+  five-flags evidence sheet §3d. **Since D1526 (30 Oct 26 — his ask) the arrows are a slim tab** (14 × 70, flush on the
+  window's edge, over the front day's border and margin only — its words start 31 in) that slides out to the full 38-wide
+  arrow while the pointer is inside that arrow's footprint plus 24px, or a key reaches it, and back when it leaves; open, it
+  looks as the old arrow did at rest (D1527): frosted at 0.75, grey edge and arrow, never lit blue. Never on :hover, and a mouse move within a second of a finger touching or lifting is ignored (a lifted finger closes both) — a
+  tapped button keeps its hover, and Safari sends a pretend mouse move to the tapped spot, either of which held it open
+  after a tap on an iPad on its side. Pressed again and again it stays open and in place (D1122). The rule is one class,
+  `.near`, set by `pan.ts` from the pointer; the look is `03-week.css`.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a
@@ -10740,7 +10750,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
   and no failed-save band of its own, and a tab press never lands "where Medical was opened from". **No form of the
   Inputs tab offers SANS availability** (D620): the List's add form and edit in place, "+ Input", and an input already *[GONE 10 Oct 26 — D729: the List has no add form of its own; its "+ Input" opens the input's window (`ui/inputedit.tsx`), which does this now.]*
   filed cannot be turned into one; a SANS commitment's own editor keeps the full list.
-- **The page arrives at its top** (the app keeps the window's scroll from page to page) and, while a month is up,
+- **The page arrives at its top** (since 30 Oct 26 every page does, in `ui/Shell.tsx` — §A page opens at its own top, at the end of this file) and, while a month is up,
   drops the body's foot room (`body.in-cal`) — a month that fits leaves the page nothing to scroll. On a phone the page
   stands 8px in from each edge.
 - **The top row:** the tabs and the tools (the month's arrows, Today, the switch, the filters, the gear) share one line
@@ -11932,3 +11942,25 @@ Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2
   row, the phone's copy, My leave and the tiles agree. Its tooltip reads "Tap for his leave".
 - **What the drawing did not settle (named to him, D1424):** the keyboard and screen-reader forms of what the drawing drew only
   as pictures; while locked every window shows the padlock, another man's too.
+
+## A page opens at its own top; nothing pinned shows what scrolls under it (30 Oct 26 — [LW-LEAVE-SCROLL-CARRY], D1518)
+
+- **Each page opens at its own place ([LW-LEAVE-SCROLL-CARRY]).** The window's scroll is every page's, so a page that keeps no
+  place of its own came up wherever the one before it was left (Edit Schedule 547px down after a scrolled Leave War; a page after
+  Edit Schedule at the very bottom, the browser holding the parked week "in place" as it left the flow). `ui/Shell.tsx` puts the
+  window at its top in a layout effect on a page change, before the new page paints — except on arriving at the Leave War (it
+  puts back where he was, `LeaveWarPage.tsx savedY`) and on the View-only Sched ↔ Edit Schedule hop (as it was). A page that
+  lands somewhere on purpose lands after it: Quals' focused row, Admin's new-person form, the Inputs card, an Undo's day, the
+  bell's Leave War line. On a phone the menu puts the old page's scroll back only when it closes on the page it opened on
+  (`ui/Drawer.tsx`). Pins: `e2e/leavewar.spec.ts` "a page opened from the Leave War scrolled down opens at its own top…";
+  walked by `scripts/handpass/scroll-pinned-walk.mjs`.
+- **A pinned part is a solid surface in front of what scrolls under it (D1518).** Each is filled in the colour it shows over
+  the page and stands above what scrolls: the Balances page's bar and lines (D1519, above), the OIL tracker's head, tools and
+  open legend or picker as one box `.oil-top` over its list, whose paint is held in its box (`leavewar/ui/oiltracker.css`), the
+  desktop week's scroll bar at the foot and Edit Schedule's CREW rail (`#12272e`, the blue tint it showed), and the phone's
+  parked crew drawer on Edit Schedule and the board (`ui/scheduler/03-week.css`, `13-board-rows-responsive.css`). The desktop
+  week's ‹ › arrows are still frosted glass — his question (`[WEEK-ARROWS-SEE-THROUGH]`). Pins: `e2e/geometry.spec.ts` "the
+  parts pinned over the week are solid (D1518)", `e2e/leavewar.spec.ts` "nothing of the OIL tracker's list shows over its
+  tools row…". **How a pinned part is checked:** `scripts/handpass/pinned-sweep.mjs` on every page, zoomed in and out and
+  scrolled, with a list forced to draw past its box (calibrated red on the Balances build before D1519), and
+  `scripts/handpass/pinned-pinch.mjs` under a pinch — `docs/handpass/2026-10-30-scroll-pinned.md`.
