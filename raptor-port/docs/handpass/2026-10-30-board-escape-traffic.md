@@ -232,3 +232,5 @@ None — no console error, page error or 4xx response in any world (the ERR rows
 | No Ctrl+Z on the schedule pages | filed `[SCHED-CTRL-Z]`, a question for later (older) |
 
 `Walk: docs/handpass/2026-10-30-board-escape-traffic.md · 126 pictures · 9 surfaces · 10 orders · MISSING: 0 fixed / 0 ruled / 3 filed`
+
+**Merged on his "merge live" (31 Oct 26)** — his "Yes" to merging 592, 593 and 594 after 591; main brought in first, its two built items archived.
