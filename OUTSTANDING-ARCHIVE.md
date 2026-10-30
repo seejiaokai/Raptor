@@ -7047,3 +7047,50 @@ Since the batch every grid box, both sheets' chips and the Legend read a half da
 **BUILT 30 Oct 26 on `claude/lw-small-fixes-1030` (pull request 592) — to archive once live.** Red first (28 tests failing on the old words, then green); every place it went is named in D1525's full row; walked through the app's controls at 1536 and on WebKit at 402 (`scripts/handpass/lw-sf-s5.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-30-lw-small-fixes/s5*/`, evidence `raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §13). Left as sentences on purpose: where the half is the subject ("The morning is LL, filed on the Inputs page"; "two undecided requests on the morning") and the Legend's "Morning (AM)".
 Since the overhaul a half day is drawn by its box's half (D1160, D1402 — the Legend teaches it by size) and a credited OIL wears its star after its code (D1306). Read in the code on 30 Oct 26 (the scenario list's S2-8 — record, do not fix unasked): the day's list's lines ("your <LL bid was replaced by …", the clash line's "<LL (morning)", a credited HO there printed with no star — `src/leavewar/ui/DayList.tsx shown`), a member's approved-leave window's title (`ui/RemarksSheet.tsx`, "<LL"), the bell (its stars stripped — "LL approved", the half not said — `src/state/notices.ts`). The bid window's own leave buttons ("<LL" with AM picked) are D1331's reading and stay. **To do:** picture each for him (D853) on one page, recommending each print as the clash note now does (`engine/codes.ts codeInWords`); nothing changes before his word. **Place:** low, with the next Leave War batch.
 
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([E2E-HIDE-BAR-SEAT]). Forward facts: `raptor-port/docs/handpass/2026-10-30-steady-tests.md`.*
+
+### [E2E-HIDE-BAR-SEAT] On his PC a changes-window browser test fails: the seat it checks sits under the hidden bar (found 28 Oct 26, the night's M4 build)
+The phone test "Hide sends the panel to the bar at the bottom…" (`raptor-port/e2e/changeswin.spec.ts`) brings Tuesday's changed seat into view with the browser's own scroll and then checks that nothing covers it. On his PC (Windows' letters) the seat is already on screen, at 780–795 of 844, and the hidden bar — 12px from the foot, about 51 tall — starts at 780, so the check fails every time: with the night's changed bar (D1442) and with the bar as it was, measured both ways on 28 Oct 26. GitHub's machines pass it. The app is not at fault there — its own tap on a change brings the change clear of the bar; the test's scroll does not. **Fix:** in the test, bring the seat clear of the bar the way the app does (or scroll it above the bar's top) before the check, keeping the check itself. Small; needs no answer from him.
+**BUILT 30 Oct 26 on `claude/steady-tests-1030` (tests only) — to archive once live.** Reproduced here first (red, "nothing covers the dotted seat"). The test now brings the seat into view the way the app does: Show ▴, then a press on the seat's own line in the list — the app takes the schedule to the change and drops the panel to the bar (D167 (2)) — measured once the glide is at rest. The check is kept as it was, and one is added: the seat's whole box above the bar's top, not only its middle. It runs a second time in letters about a seventh wider (the stand-in `e2e/oilwait.spec.ts` uses). A break that made the app's own reveal leave the change at the foot of the screen turned both runs red. Evidence: `raptor-port/docs/handpass/2026-10-30-steady-tests.md`.
+
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([WIN-RESIZED-OVER-RETRY]). Forward facts: `raptor-port/docs/handpass/2026-10-30-steady-tests.md`.*
+
+### [WIN-RESIZED-OVER-RETRY] A window he has only resized lies over the failed-save warning's Retry (found 30 Oct 26 by the steady-tests job; older; low)
+**RULED 30 Oct 26 (his "Q5 ok" — D1523): move such a window down below the band, as a window not yet placed is; to build.**
+**BUILT 30 Oct 26 on `claude/steady-tests-1030` (pull request 593) — to archive once live.** A window's box now says whether he MOVED it (`raptor-port/src/ui/floatwin.ts`, `moved`); one only resized keeps his size and left edge and is placed under the bars as an unplaced one is, a cap holding its foot on the screen that is never saved as his size. Red first (`e2e/save-note.spec.ts`, "…only resized moves below the warning…": failed at 1200 and 1366), a break test (the cap guard taken out: caught), the window tests green (1398 unit, 34 + 58 browser), walked at 1366, 1200 and 1440 (`scripts/handpass/win-resized-retry-walk.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-30-steady-tests/d1523/`; evidence `raptor-port/docs/handpass/2026-10-30-steady-tests.md` §5).
+On a desktop where the top bar runs to two lines (on his PC 1200 and 1366 wide), the changes window and the ALL AVAIL window open just
+under the bar. Resized by its corner and never moved, a window keeps the size he chose — right — but its top with it, because a size
+he chose marks it placed (`raptor-port/src/ui/floatwin.ts`, `data-placed`). When a save then fails, the bar grows by the warning's line
+under the window, and the window lies over that line's right end, "Not saved" and Retry: measured 30 Oct 26, what lies at Retry's
+middle is the changes window at 1200 and 1366; at 1440, with a one-line bar, it is Retry. A window he MOVED there hides the bar by his
+own choice (D587 — a window covers the bar); one he only resized was put there by the app. **To do, if he wants it:** a window only
+resized keeps its size and still opens below the bar's foot as an unmoved one does. A question for him first, with the picture, since
+it reads D587. **Picture:** `raptor-port/docs/handpass/img/2026-10-30-steady-tests/resized-window-over-retry-1200.png`. **Place:** low —
+with the next windows job.
+
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([SAVE-NOTE-TEST-GAPS]). Forward facts: `raptor-port/docs/handpass/2026-10-30-steady-tests.md`.*
+
+### [SAVE-NOTE-TEST-GAPS] Two soft spots in the failed-save warning's browser test (Astra's read of the last round, 6 Oct 26 — tests only, the app is right)
+Astra read commit `bcc69fc8` (the last round of `[SAVE-NOTE-COVERS]`, never independently read before): the three repairs are sound
+in the app. Two weaknesses in `raptor-port/e2e/save-note.spec.ts`, neither a fault a person can meet: (1) the proof that a press on
+Retry itself tried to save reads the write counter one task later (`setTimeout(…, 0)`), so an automatic retry falling due at that very
+moment could pass for the press — sample it in the same click, after the button's own handler, and repeat the disabled-handler check
+with a retry due at the click; (2) "a window he has moved keeps its place and size" is pinned for a MOVED changes window only — add
+a resized one, an operated ALL AVAIL window and the preview-bar combinations. The report:
+`raptor-port/docs/superpowers/briefs/2026-10-06-owed-small-reads-astra.md` Part 3. **Place (the agent's line):** low — with the next
+change to the failed-save warning or its test.
+**BUILT 30 Oct 26 on `claude/steady-tests-1030` (tests only) — to archive once live.** (1) A press on Retry is now read IN the press: the
+count is taken as the click is captured and again as it bubbles to the document, after the button's own handler — no timer can run
+between. A new test presses Retry a quarter of a second before an automatic retry falls due and holds the press past it: with the
+button's handler taken away the reading is 0 though the retry wrote straight after; with the handler it shows the press's own write
+(a finger at 390, a mouse at 1200). Measured on the way: this Chromium ran the old 0ms reading before an overdue retry, so the old way
+was not fooled here — the new reading no longer rests on that order. (2) New tests: a changes window he has RESIZED, an ALL AVAIL window
+he has moved and resized, and both windows over the board's preview bar — not placed (stays below the bar when the warning pushes it
+down, and when it goes, the bar's buttons reachable, its foot on screen), then placed (keeps its box) — at the three desktop sizes.
+Four breaks, each turned the new tests red and was put back: Retry's handler taken away (8 red); the warning's cap reaching placed windows
+(7 red — the old moved-window test only at 1366); the band no longer telling windows it came (6 red); the preview bar moving a placed
+window (6 red). Found on the way and filed: [WIN-RESIZED-OVER-RETRY]. Evidence: `raptor-port/docs/handpass/2026-10-30-steady-tests.md`.
+
