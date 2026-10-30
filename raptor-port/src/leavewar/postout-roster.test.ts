@@ -23,7 +23,8 @@ import { initStore as raptorInitStore, notify as raptorNotify, resetSession } fr
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
 import { commandStream, commitProjection } from '../command'
 import type { CommitEnvelope } from '../command'
-import { peopleStore } from '../state/people-settings-commit'
+import { peopleStore, revertUnsavedPeople } from '../state/people-settings-commit'
+import { addRosterPerson } from '../state/roster-add'
 import { ownershipViolation } from '../state/perms'
 import { updatePersonField } from '../state/quals-write'
 import { getState, initStore as lwInitStore, setPeople } from './state/store'
@@ -153,6 +154,35 @@ describe('an ordinary change made in the app is never lost or reverted by the pa
     expect(getState().postOuts.bane!.poDone).toBe('2026-07-15')
     const envs = commandStream().slice(n)
     expect(envs.every(e => peopleIn(e).every(id => id === 'bane'))).toBe(true)
+  })
+})
+
+/* THE TWO LAYERS, EACH WITH ITS OWN TEST (the break list `scripts/handpass/breaks/lw-rr1031.json`, walk-scripts §9): the
+   gate's rule refuses a pass carrying a stray change, so the put-back's own work and the "never inside a person's own
+   command" rule need tests that only they can satisfy */
+describe('the put-back itself, and where it must not run', () => {
+  it('puts back a changed person in place, drops a person added in memory, brings back one removed — and says which', () => {
+    const rocky = P('rocky')
+    const savedCs = saved('rocky').cs
+    rocky.cs = 'HACKED'
+    ;(PEOPLE as any).ghost = { cs: 'GHOST', seat: 'FCP', q: 'C', quals: {} }
+    const stiff = P('stiff'); delete (PEOPLE as any).stiff
+    expect(revertUnsavedPeople().sort()).toEqual(['ghost', 'rocky', 'stiff'])
+    expect(P('rocky'), 'the same object, put back in place').toBe(rocky)
+    expect(P('rocky').cs).toBe(savedCs)
+    expect((PEOPLE as any).ghost).toBeUndefined()
+    expect(P('stiff')).toEqual(stiff)
+    expect(revertUnsavedPeople(), 'nothing left to put back').toEqual([])
+  })
+  it('a posting that comes due inside a person’s own command (an add with his post-in date): that command’s new man is kept', () => {
+    postAhead('bane', 'overseas')
+    expect(addRosterPerson({ cs: 'Newby', ini: '', seat: 'FCP', cat: 'C' } as any, '2026-07-25')).toBeNull()
+    const id = Object.keys(PEOPLE).find(k => P(k).cs === 'Newby')
+    expect(id, 'the new man is on the roster').toBeTruthy()
+    expect(saved(id!), 'and saved').toBeTruthy()
+    raptorNotify(); runPoOutcomes()
+    expect(P('bane').archived, 'the posting ran').toBe(true)
+    expect(P(id!), 'the new man still there after the pass').toBeTruthy()
   })
 })
 

@@ -14,7 +14,7 @@ const L = await import('./lw-rr-lib.mjs')
 const SIZE = process.env.SIZE || 'desk'
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const want = id => !ONLY.length || ONLY.includes(id)
-console.log('[lw-rr-s2 v1]', SIZE, ONLY.join(',') || 'all', 'today', L.TODAY)
+console.log('[lw-rr-s2 v2]', SIZE, ONLY.join(',') || 'all', 'today', L.TODAY)
 L.clearOut()
 const TOMORROW = L.day(1)
 let w = null, P = null
@@ -109,7 +109,20 @@ if (want('rr-p4')) {
   const p2 = await person(id)
   await L.adminUsers(w)
   const row = await L.usersRow(w, id)
+  /* the place in the A–Z list where his row stood, brought into view: the row before it outlined (the walk of 31 Oct 26: a
+     picture of the list's top did not show where he would be) */
+  const near = await P.evaluate(() => {
+    const rows = [...document.querySelectorAll('#accList [data-person]')].filter(e => e.getBoundingClientRect().height > 0)
+    const cs = e => (e.querySelector('.acc-main')?.textContent || e.textContent || '').trim()
+    const before = rows.filter(e => cs(e).localeCompare('Drifter', undefined, { sensitivity: 'base' }) < 0).pop()
+    if (!before) return null
+    before.scrollIntoView({ block: 'center' }); before.style.outline = '2px dashed #ff4fd8'; before.style.outlineOffset = '-3px'
+    const next = before.nextElementSibling
+    return { before: cs(before).slice(0, 30), next: next ? cs(next).slice(0, 30) : null }
+  })
+  await P.waitForTimeout(200)
   await L.shot(w, 'rr-p4-c-users')
+  console.log('   Admin → Users around his place:', JSON.stringify(near))
   L.rec('RR-P4 a Delete posting runs the next morning and is saved', SIZE, !p0.deleted && p1.deleted && p2.deleted && row === null ? 'PASS' : 'FAIL',
     `posting ${po.date}: "${po.line}"; his row "${tag0}"; deleted before the date ${p0.deleted}; the next morning ${p1.deleted}; after a reload ${p2.deleted}; his Admin → Users row ${JSON.stringify(row)}`, ['rr-p4-a-postout', 'rr-p4-b-next-morning', 'rr-p4-c-users'])
 }

@@ -1,0 +1,96 @@
+[
+ {
+  "n": 1,
+  "name": "fix 1: the put-back skipped — the pass saves the roster as it stands in memory",
+  "file": "src/leavewar/sync.ts",
+  "find": "          if (own) revertUnsavedPeople()",
+  "put": "          if (own) void 0",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 2,
+  "name": "fix 1: the put-back run inside a person's own command too (joined)",
+  "file": "src/leavewar/sync.ts",
+  "find": "  const own = !parent\n",
+  "put": "  const own = true\n",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 3,
+  "name": "fix 1: the wait under a projection removed — the pass joins the app's own command",
+  "file": "src/leavewar/sync.ts",
+  "find": "  if (parent && parent.origin === 'projection' && cmdDeferEffect(runPoOutcomes)) return\n",
+  "put": "\n",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 4,
+  "name": "fix 1: the gate's rule removed",
+  "file": "src/state/perms.ts",
+  "find": "  if (a && a.role === 'system' && env.type === 'lw.postoutRun') {",
+  "put": "  if (false) {",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 5,
+  "name": "fix 1: the gate's rule narrowed to one man (only the first person changed is asked)",
+  "file": "src/state/perms.ts",
+  "find": "    for (const c of env.changes) if (c.collection === 'people' && !posted.has(String(c.id))) return",
+  "put": "    for (const c of env.changes.filter(c => c.collection === 'people').slice(0, 1)) if (!posted.has(String(c.id))) return",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 6,
+  "name": "fix 1: the put-back leaves a person added in memory",
+  "file": "src/state/people-settings-commit.ts",
+  "find": "    if (!(id in base)) { delete (PEOPLE as any)[id]; out.push(id); continue }",
+  "put": "    if (!(id in base)) continue",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 7,
+  "name": "fix 2 (A): the 'overall' count removed — back to counting from the first refused day only",
+  "file": "src/state/person-delete.ts",
+  "find": "        if (grew > 0 && added > 0) return",
+  "put": "        if (added > 0) return",
+  "tests": [
+   "src/leavewar/deletednorow.test.ts",
+   "src/state/person-delete.test.ts"
+  ]
+ },
+ {
+  "n": 8,
+  "name": "fix 2 (B): a non-war Redo sent to the request test again",
+  "file": "src/state/person-delete.ts",
+  "find": "        if (grew > 0 && added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`\n      }\n      continue\n    }",
+  "put": "        if (grew > 0 && added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`\n        continue\n      }\n    }",
+  "tests": [
+   "src/leavewar/deletednorow.test.ts",
+   "src/state/person-delete.test.ts"
+  ]
+ }
+]

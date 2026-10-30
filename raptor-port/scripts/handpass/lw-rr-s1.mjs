@@ -11,7 +11,7 @@ const L = await import('./lw-rr-lib.mjs')
 const SIZE = process.env.SIZE || 'desk'
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const want = id => !ONLY.length || ONLY.includes(id)
-console.log('[lw-rr-s1 v1]', SIZE, ONLY.join(',') || 'all', 'today', L.TODAY)
+console.log('[lw-rr-s1 v2]', SIZE, ONLY.join(',') || 'all', 'today', L.TODAY)
 L.clearOut()
 const DEL = /has been deleted — that change can.t be undone/
 
@@ -121,7 +121,9 @@ if (want('rr-c1')) {
   const offered = await L.redoOffered(w)
   await L.redo(w)
   const n = (await leaveAt(id, A)).length
-  await L.shot(w, 'rr-c1-after-redo')
+  /* his row brought into view and framed (the walk of 31 Oct 26: a whole-screen picture left it below the fold) */
+  await L.reachCell(w, id, A)
+  await L.rowShot(w, id, L.day(-11), L.day(-7), 'rr-c1-after-redo')
   L.rec('RR-C1 the Redo of an approval after his delete stays refused', SIZE, ap && undone && del && n === 0 ? 'PASS' : 'FAIL',
     `approved ${ap}; Undo ${undone}; deleted ${del}; Redo offered ${offered}; his leave on ${L.dm(A)} after Redo ${n}`, ['rr-c1-after-redo'])
 }

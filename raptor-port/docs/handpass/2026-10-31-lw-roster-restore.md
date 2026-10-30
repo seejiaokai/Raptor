@@ -219,11 +219,26 @@ false … 26 Oct alone"), RR-P1 FAIL ("Ace's Management in memory true; after a 
 - **The bell** — a Redo writes the notices of the step it repeats; this change only lets two such steps through, and a
   deleted man has no sign-in. Nothing of the bell's code changed.
 
-## 7. Break tests
+## 7. Break tests (§8.4) — `scripts/handpass/breaks/lw-rr1031.json`
 
-Owed to the host (FULL, §8.4): a list in `scripts/handpass/breaks/` — the put-back skipped; the put-back run inside a
-person's command; the wait under a projection removed (already proved red, §4); the gate's rule removed or narrowed to one
-man; fix A's "overall" count removed (back to the first-refused-day count); fix B's Redo sent to the request test again.
+Eight breaks, one per line the draft owed (the gate's rule broken two ways; one more for the put-back's own work), run by
+`node scripts/handpass/breaks.mjs scripts/handpass/breaks/lw-rr1031.json` against `leavewar/postout-roster.test.ts`,
+`postout-outcomes.test.ts`, `poarchive.test.ts` (fix 1) and `leavewar/deletednorow.test.ts`, `state/person-delete.test.ts`
+(fix 2). **First run: 6 of 8 caught.** Two stayed green, each a rule held in two layers (walk-scripts §9) — the gate's rule
+refuses a pass carrying a stray change, its rollback puts the roster back, and the next pass runs clean, so the outcome
+looked right:
+- break 2 (the put-back run inside a person's own command) — reading (1), no test: no test had a posting come due inside a
+  person's own command. New test "a posting that comes due inside a person's own command (an add with his post-in date):
+  that command's new man is kept" (`postout-roster.test.ts`) — red on break 2 (the add's new man put back out of the
+  roster), green on the fix;
+- break 6 (the put-back leaves a person added in memory) — reading (1) for the put-back's own layer: new test "puts back a
+  changed person in place, drops a person added in memory, brings back one removed — and says which" — red on break 6.
+
+**Re-run of the whole list after the two tests: 8 of 8 CAUGHT** — 1 the put-back skipped (the console case on the man
+himself; the projection case); 2 the put-back inside a person's command (the add); 3 the wait under a projection removed
+(the projection case); 4 the gate's rule removed (both gate cases); 5 the rule narrowed to one man (the second man refused);
+6 an added person left (the put-back's own test); 7 fix A's overall count removed (finding A's pin); 8 fix B's Redo sent to
+the request test (finding B's pin). Every file put back as it was (`git status`: no source touched by the runner).
 
 ## 8. The reads — owed
 
@@ -252,5 +267,15 @@ man; fix A's "overall" count removed (back to the first-refused-day count); fix 
 | RR-P4 | PASS | — | PASS / — | `rr-p4-a-postout` (Delete chosen, "Tap again to delete Drifter"); `rr-p4-c-users` shows only the top of Admin → Users, not Drifter's place — his absence is the script's reading, not pictured |
 
 **Fixed build: desktop 10 / 10, phone 4 / 4.** **Breaks: 3 / 3 on `origin/main` at the desktop (RR-A, RR-B, RR-P1 fail), 3 / 3 at the phone**; the seven that must not change passed on `main` at the desktop. Not run: nothing. Notes for the host: (1) the next-morning picture of RR-P1 (`rr-p1-b-next-morning`) shows the grid's today ring still on 4 Nov although the browser clock is on 5 Nov — the stand-in clock jump, not this change; (2) RR-C1's and RR-P4's pictures do not show the thing they claim (see the rows); their scripts' counts do.
+
+**The host's two notes, answered (31 Oct 26, the builder):**
+- **RR-C1's and RR-P4's pictures, re-taken on the fixed build** (scripts v2: RR-C1 frames Drifter's row round 26 Oct; RR-P4
+  brings his place in Admin → Users' A–Z list into view, the row before it outlined): `after/s1-desk-retake/rr-c1-after-redo.png`
+  — his 26 Oct holds only the dashed pending LL, no approved leave; `after/s2-desk-retake/rr-p4-c-users.png` — Diesel (outlined)
+  is followed by Echo, no Drifter between them. Both runs PASS; the first walk's pictures are kept as they were.
+- **The today ring on 4 Nov after the clock moved** is the stand-in's jump, not a fault: the test browser's clock jump moves
+  the date without firing the page's timers, and the day clock (D1266) moves the ring at its midnight timer or when the page
+  is shown again. Checked on the fixed build with the browser's clock: at 23:58 the ring on 4 Nov; the clock RUN past
+  midnight — on 5 Nov; a jump to 6 Nov — still 5 Nov; the page then shown again (a focus) — 6 Nov.
 
 Rulings: none this job.
